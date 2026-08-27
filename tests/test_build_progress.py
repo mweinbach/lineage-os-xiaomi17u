@@ -326,6 +326,38 @@ class BuildProgressTests(unittest.TestCase):
         self.assertTrue(applied["only_expected_worktree_change"])
         self.assertFalse(applied["built_policy_verified"])
 
+    def test_init_hardening_is_bound_without_a_runtime_or_bootloader_claim(self):
+        source = next(row for row in self.record["source_adjustments"] if row["project"] == "system/core")
+        metadata = json.loads((ROOT / "patches/evolution/init-boot-properties.json").read_text())
+        self.assertEqual({key: value for key, value in source.items() if key != "installation"}, metadata)
+        self.assertEqual(hashlib.sha256((ROOT / source["patch"]).read_bytes()).hexdigest(), source["patch_sha256"])
+        applied = source["installation"]
+        self.assertEqual(applied["sha256"], "e8893a3c2e26cd19ba5ad0b6c521d19a214de6f5ae295c3316701dd2736f02c3")
+        self.assertTrue(applied["only_expected_worktree_changes"])
+        self.assertTrue(applied["all_eighteen_historical_outputs_unchanged"])
+        self.assertTrue(applied["known_spoofing_helpers_disabled_by_default"])
+        self.assertTrue(applied["existing_ro_boot_properties_write_once"])
+        for key in ("libinit_hooks_and_initial_property_sources_verified", "android_compilation_verified",
+                    "runtime_property_values_verified", "bootloader_unlock_state_verified", "phone_accessed",
+                    "android_output_modified"):
+            self.assertFalse(applied[key])
+
+    def test_independent_factory_readback_does_not_relabel_source_checks_as_a_build(self):
+        audit = self.record["factory_candidate"]["independent_source_audit"]
+        self.assertEqual(audit["sha256"], "a3fab1746edcb26b9ec1e954451d524cfebaf2cc75c20691f700ac9b94d8d676")
+        self.assertEqual(audit["device_file_count"], 10)
+        self.assertEqual(audit["vendor_file_count"], 17)
+        self.assertEqual(audit["source_file_bytes_hashed"], 5727913542)
+        self.assertEqual(audit["additional_receipt_bytes_hashed"], 470020)
+        self.assertEqual(audit["guest_vendor_images_hashed"], 2)
+        for key in ("all_expected_paths_present_no_extra_files", "all_file_identities_unchanged",
+                    "all_hashes_and_sizes_match"):
+            self.assertTrue(audit[key])
+        for key in ("kernel_payload_files_rehashed_by_this_audit", "other_source_projects_audited",
+                    "out_accessed", "effective_build_configuration_verified", "source_or_out_written",
+                    "factory_origin_verified"):
+            self.assertFalse(audit[key])
+
 
 if __name__ == "__main__":
     unittest.main()

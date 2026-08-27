@@ -11,7 +11,7 @@
   "phone_modifications_performed": false,
   "base_source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
   "base_source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
-  "local_source_note": "The resolved manifest pins upstream projects. Authored device/kernel sources, private input receipts and explicit vendor-property/SELinux patches supplement that base.",
+  "local_source_note": "The resolved manifest pins upstream projects. Authored device/kernel sources, private input receipts and explicit vendor-property, SELinux and init-property patches supplement that base. Historical source audits keep their original project counts.",
   "kernel_bundle": {
     "receipt": "artifacts/kernel-inputs/nezha-xiaomi-eu-candidate-v2/receipt.json",
     "sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
@@ -345,6 +345,100 @@
         "other_policy_statements_unchanged": true,
         "all_eighteen_historical_outputs_unchanged": true,
         "built_policy_verified": false
+      }
+    },
+    {
+      "schema_version": 1,
+      "project": "system/core",
+      "origin": "https://github.com/Evolution-X/system_core.git",
+      "base_commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+      "patch": "patches/evolution/0003-preserve-boot-properties.patch",
+      "patch_sha256": "c7072d03ca42de08837513b863ee90b2896f2adaabf02ab88c3dd155c9cc3f47",
+      "files": [
+        {
+          "path": "init/Android.bp",
+          "before_sha256": "da1f40d38866a9d2210beb614e25be55a38537901bee50da999bb5becb04b605",
+          "before_size_bytes": 18797,
+          "after_sha256": "753e21f935e0a138544b65baf57ad4431adadfedf2c6b9526931ba821e1e22fa",
+          "after_size_bytes": 18797,
+          "before_git_blob": "068773db4521285df8c6ca00465403be05d3ccf1",
+          "after_git_blob": "39294f9c75f912e8c1795f7363cf0eda04e8c188"
+        },
+        {
+          "path": "init/property_service.cpp",
+          "before_sha256": "3c569b56b36cf052e07aaeb2fed2644c6ef88519d5de5a7c808f0b543266891b",
+          "before_size_bytes": 67548,
+          "after_sha256": "d82faacbbeb80256a416ca81cb9c877def16c3140aa57f4126db41889a67a887",
+          "after_size_bytes": 67643,
+          "before_git_blob": "67c6de19f0968ed818efe37fa3a9624c71ab3cae",
+          "after_git_blob": "5f9027ee6fcff7fb487a19f5150026acb1e4f779"
+        }
+      ],
+      "purpose": "Disable the pinned Evolution init helpers that replace boot/build identity properties and keep existing ro.boot.* values write-once even during the vendor override window.",
+      "source_capture_receipts": [
+        {
+          "path": "artifacts/source-contracts/nezha-init-helper-sources-v1/receipt.json",
+          "sha256": "0702d45dd906b4d5b0c6d24f68f07fff9a6d0aa44ae8ae4de8bd296a2e71360e",
+          "size_bytes": 5836
+        },
+        {
+          "path": "artifacts/source-contracts/nezha-init-helper-runtime-source-v1/receipt.json",
+          "sha256": "b6ed9602b6bcaf5f4e501a97ef7e8d24052969fe183271aa6fb4047a135a584a",
+          "size_bytes": 4335
+        }
+      ],
+      "spoof_safetynet_default": 0,
+      "default_definitions_changed": 2,
+      "guarded_helpers": [
+        "SetSafetyNetProps",
+        "LoadReleaseBuildProperties",
+        "LoadDebugProperties",
+        "LoadVbMetaOverrides"
+      ],
+      "newly_guarded_helpers": [
+        "LoadReleaseBuildProperties",
+        "LoadDebugProperties",
+        "LoadVbMetaOverrides"
+      ],
+      "read_only_behavior": {
+        "existing_ro_boot_replacement_allowed": false,
+        "initial_property_creation_changed": false,
+        "other_vendor_read_only_override_behavior_changed": false
+      },
+      "preserved_checks": [
+        "legal property names and values",
+        "property SELinux permission checks",
+        "property socket authorization",
+        "ordinary read-only property checks outside vendor initialization"
+      ],
+      "vendor_property_hooks_removed": false,
+      "vendor_api_derivation_changed": false,
+      "signature_checks_changed": false,
+      "rollback_checks_changed": false,
+      "verification_requirements": [
+        "Apply only to the exact pinned source after checking both original files, Git blob IDs and patch hash; preserve previous source and build evidence.",
+        "Build both init stages and verify the actual compiled SPOOF_SAFETYNET=0 flags. The source patch alone does not establish an image or runtime result.",
+        "Verify generated images and init provenance without running any firmware executable or modifying the phone.",
+        "Keep libinit hooks, initial property sources, effective runtime properties and bootloader state as separate verification requirements. This patch does not prove that all property masking paths are absent."
+      ],
+      "installation": {
+        "private_receipt": "reports/init-boot-properties-apply-v1-receipt.json",
+        "sha256": "e8893a3c2e26cd19ba5ad0b6c521d19a214de6f5ae295c3316701dd2736f02c3",
+        "guest_receipt": "/work/validation/nezha-init-boot-properties-v1/receipt.json",
+        "completed_at": "2026-08-27T23:49:25.640354+00:00",
+        "workspace_commit": "0cc6663324e9c7635cf2a23f1400c0074ba6eb42",
+        "previous_source_preserved_under": "/work/validation/nezha-init-boot-properties-v1/before",
+        "git_apply_check_passed": true,
+        "only_expected_worktree_changes": true,
+        "all_eighteen_historical_outputs_unchanged": true,
+        "known_spoofing_helpers_disabled_by_default": true,
+        "existing_ro_boot_properties_write_once": true,
+        "libinit_hooks_and_initial_property_sources_verified": false,
+        "android_compilation_verified": false,
+        "runtime_property_values_verified": false,
+        "bootloader_unlock_state_verified": false,
+        "phone_accessed": false,
+        "android_output_modified": false
       }
     }
   ],
@@ -1126,6 +1220,30 @@
     "treble_labeling_errors_required_in_source": true,
     "treble_labeling_check_passed": false,
     "full_rom_verified": false,
-    "phone_accessed": false
+    "phone_accessed": false,
+    "independent_source_audit": {
+      "private_receipt": "reports/factory-v8-independent-source-audit-proof-v1.json",
+      "sha256": "a3fab1746edcb26b9ec1e954451d524cfebaf2cc75c20691f700ac9b94d8d676",
+      "guest_result": {
+        "path": "reports/factory-v8-independent-source-audit-v1.json",
+        "sha256": "faf49c79a87da01e2252f64763504e60c234f397edc6bbe23fbe0c6f2f9f469e",
+        "size_bytes": 14819
+      },
+      "completed_at": "2026-08-27T23:35:12.060655+00:00",
+      "device_file_count": 10,
+      "vendor_file_count": 17,
+      "source_file_bytes_hashed": 5727913542,
+      "additional_receipt_bytes_hashed": 470020,
+      "all_expected_paths_present_no_extra_files": true,
+      "all_file_identities_unchanged": true,
+      "all_hashes_and_sizes_match": true,
+      "kernel_payload_files_rehashed_by_this_audit": false,
+      "other_source_projects_audited": false,
+      "out_accessed": false,
+      "effective_build_configuration_verified": false,
+      "guest_vendor_images_hashed": 2,
+      "source_or_out_written": false,
+      "factory_origin_verified": false
+    }
   }
 }

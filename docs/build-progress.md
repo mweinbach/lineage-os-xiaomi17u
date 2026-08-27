@@ -26,13 +26,17 @@ any eventual device experiment, which needs separate user authorization.
 | `vendor/xiaomi/nezha` | Factory vendor/ODM EROFS inputs plus the nine byte-identical selected Camera dependencies and their [recorded XML derivations](camera-inputs.md) |
 | `vendor/lineage/config/common.mk` | Two recorded defaults made optional so Nezha can enforce privileged permissions and prohibit OTA downgrade |
 | `system/sepolicy/private/su.te` | The unconditional permissive-su declaration removed; all permission grants and assertions retained |
+| `system/core/init` | Known boot/build property masking helpers disabled; existing `ro.boot.*` values kept write-once |
 
 The public platform manifest and all its project revisions were preserved.
 No second sync or replacement source checkout was created. The resolved
 manifest describes the upstream base; local source/admission receipts and the
-[pinned property patch](../patches/evolution/security-properties.json) describe
-the additional inputs and modified vendor file. They must travel together in
-any build provenance record.
+[vendor property patch](../patches/evolution/security-properties.json),
+[SELinux enforcement patch](../patches/evolution/selinux-enforcement.json) and
+[init property patch](../patches/evolution/init-boot-properties.json) describe
+the additional inputs and three modified Repo projects. They must travel
+together in any build provenance record. Historical source audits below
+describe their own earlier checkpoints.
 
 The initial transfer verified **975 files / 5,932,585,937 bytes** inside the
 owning VM. No home directory, Downloads directory, credentials or phone
@@ -46,12 +50,20 @@ preserved. Always verify destination contents from the actual builder view.
 
 The source templates are committed. The large input bundles and generated
 receipts remain ignored. To reproduce the device configuration from existing
-verified bundles, choose a new output path:
+verified bundles, choose a new output path. The current factory profile uses
+all three explicit factory-contract arguments together:
 
 ```sh
+factory_analysis=artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b
 python3 scripts/generate_device_tree.py generate \
+  --variant user \
   --kernel-receipt artifacts/kernel-inputs/nezha-xiaomi-eu-candidate-v2/receipt.json \
-  --vendor-receipt artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-camera-v2/vendor-inputs.json \
+  --vendor-receipt artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1/vendor-inputs.json \
+  --firmware-layout "$factory_analysis/normalized-layout-v1/firmware-layout.json" \
+  --vintf-contract "$factory_analysis/build-property-comparison-v2/analysis/vintf-properties.json" \
+  --factory-boot-contract research/factory-boot-contract.json \
+  --partition-metadata research/partition-metadata.json \
+  --fstab-source "$factory_analysis/boot-analysis/ramdisk-comparison-v2/text-members/vendor_boot-0001.txt" \
   --output artifacts/device-candidates/nezha-framework-NEW
 python3 scripts/generate_device_tree.py validate \
   --output artifacts/device-candidates/nezha-framework-NEW \
@@ -201,6 +213,13 @@ files and 18 historical output artifacts were checked unchanged. No output
 directory was reset. Installation receipt SHA256:
 `9775be640f7e37d722113e5c86d1774daa1da6ecafa8468637018ea62a6ea7dc`.
 
+An independent read-only audit at `23:35:12 UTC` rehashed all 10 installed
+device files and 17 vendor files, including both replacement images:
+5,727,913,542 bytes, with no missing or extra files. It also checked the
+admission and kernel receipt bindings, without repeating the full kernel
+payload audit or accessing either output directory. Audit receipt SHA256:
+`a3fab1746edcb26b9ec1e954451d524cfebaf2cc75c20691f700ac9b94d8d676`.
+
 V8 also requires Treble labeling errors rather than warnings and rejects an
 unreviewed tracking list. This alone does not schedule or pass the labeling
 test at platform policy version `202504`. Separately, the pinned source's
@@ -212,13 +231,27 @@ hashes. Its installation receipt SHA256 is
 No build or zero-permissive-domain result for these new inputs is claimed
 yet; the earlier user v7 result remains a different policy snapshot.
 
+The pinned init source was hardened at `23:49:25 UTC`. Both init-stage
+defaults now use `SPOOF_SAFETYNET=0`; the previously unconditional release,
+debug and vbmeta property helper calls now obey that guard. Existing
+`ro.boot.*` values remain write-once even during vendor property initialization.
+Property name/value, SELinux and socket checks are unchanged. The exact-source
+patch and both resulting Git blobs passed isolated application checks before
+installation. The original files and all 18 earlier output artifacts were
+preserved. Installation receipt SHA256:
+`e8893a3c2e26cd19ba5ad0b6c521d19a214de6f5ae295c3316701dd2736f02c3`.
+This is source hardening, not a runtime property or bootloader-state result;
+libinit hooks and initial property sources still need separate verification.
+
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from
 pinned sources. Repeating the same ten unmodified CIL inputs with the actual
 Soong-built x86-64 compiler returned the same seven neverallow failures.
-No policy binary was produced, and no assertion was filtered. A combined
-Evolution/vendor policy check remains a separate experiment; building the
-compiler tools alone does not establish policy compatibility.
+No policy binary was produced, and no assertion was filtered. The later
+[factory/user policy check](selinux-user-integration.md) reduced the combined
+Evolution/vendor diagnostics to five assertion sites using actual `user`
+outputs. It still failed and produced no policy binary. Building the compiler
+tools or source policy alone does not establish factory-policy compatibility.
 
 The built host checker also passed a [vendor/ODM VINTF load and merge](vintf-validation.md)
 with the unchanged active APEX list and exact CAS/Widevine fragments. The
@@ -280,8 +313,10 @@ The separately supplied factory-named TGZ is now readable under `sources/`.
 Its [intake and image extraction](factory-firmware-intake.md) passed; the
 earlier Downloads timeouts remain historical observations. It has its own
 provenance and [passing selected AVB/filesystem checks](factory-firmware-validation.md).
-The installed build still uses the
-explicit Xiaomi.eu bundles above; no new factory image was silently substituted.
+The installed v8 candidate now uses its factory vendor/ODM images through the
+explicit transfer and admission above. Earlier build results retain their
+Xiaomi.eu input identities; the current kernel bundle retains that provenance
+as well. No package has been silently relabelled as authenticated OEM input.
 
 No ROM boot, camera/Leica function, IMS, fingerprint, charging, encryption or
 other hardware behavior has been established on Evolution X. Run `make test`
