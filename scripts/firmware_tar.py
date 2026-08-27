@@ -37,7 +37,21 @@ IMAGE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]*\.img(?:\.[0-9]+)?\Z")
 
 
 class BoundedTarInfo(tarfile.TarInfo):
-    """Bound metadata before tarfile reads GNU/PAX extended header bodies."""
+    """Reject malformed headers and bound GNU/PAX extended header bodies."""
+
+    @classmethod
+    def frombuf(cls, buf, encoding, errors):
+        # TarFile.next() can treat malformed headers after a valid member as
+        # EOF. That consumes the bad header before our trailer check can see
+        # it, allowing a false integrity receipt. Propagate these failures
+        # outside tarfile's HeaderError hierarchy, including missing headers.
+        # A complete zero block remains EOFHeaderError; the caller separately
+        # requires the second zero block and checks all remaining TAR/GZIP data.
+        try:
+            return super().frombuf(buf, encoding, errors)
+        except (tarfile.InvalidHeaderError, tarfile.TruncatedHeaderError,
+                tarfile.EmptyHeaderError) as exc:
+            raise IntakeError("invalid or incomplete TAR member header") from exc
 
     def _proc_member(self, archive):
         metadata_types = (tarfile.XHDTYPE, tarfile.XGLTYPE, tarfile.GNUTYPE_LONGNAME,

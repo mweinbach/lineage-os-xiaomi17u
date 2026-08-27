@@ -46,6 +46,28 @@ class FirmwareTarTests(unittest.TestCase):
     def extract(self, **kwargs):
         return images.extract_images(self.intake, self.output, expected_sha256=self.sha, **kwargs)
 
+    def package_with_tail(self, tail):
+        """Put an exact TAR suffix after one complete, extractable member."""
+        def replace_tail(encoded):
+            raw = gzip.decompress(encoded)
+            # One 512-byte USTAR header and one padded four-byte body.
+            self.assertEqual(raw[1024:1536], bytes(512))
+            return gzip.compress(raw[:1024] + tail)
+        self.package([("images/boot.img", b"boot")], transform=replace_tail)
+
+    def assert_bad_header_is_not_published(self):
+        before = (self.intake / "firmware.tgz").read_bytes()
+        # The wrapper checksum is valid; the error must be in the TAR headers.
+        gzip.decompress(before)
+        self.assertEqual(hashlib.sha256(before).hexdigest(), self.sha)
+        with mock.patch.object(images, "publish_new_directory", wraps=images.publish_new_directory) as publish:
+            with self.assertRaisesRegex(images.IntakeError, "invalid or incomplete TAR member header"):
+                self.extract()
+            publish.assert_not_called()
+        self.assertFalse(self.output.exists())
+        self.assertEqual(list(self.output.parent.iterdir()), [])
+        self.assertEqual((self.intake / "firmware.tgz").read_bytes(), before)
+
     def test_extracts_only_images_and_records_gzip_integrity_and_readback(self):
         self.package()
         before = (self.intake / "firmware.tgz").read_bytes()
@@ -74,6 +96,14 @@ class FirmwareTarTests(unittest.TestCase):
         entry.pax_headers = {"comment": "bounded metadata"}
         self.package([(entry, b"boot")], format=tarfile.PAX_FORMAT)
         self.assertEqual(self.extract()["image_count"], 1)
+
+    def test_gnu_longname_metadata_retains_bounded_header_handling(self):
+        name = "n" * 128 + "/images/boot.img"
+        self.package([(name, b"boot")], format=tarfile.GNU_FORMAT)
+        receipt = self.extract()
+        self.assertEqual(receipt["image_count"], 1)
+        self.assertEqual(receipt["images"][0]["archive_member"], name)
+        self.assertTrue(receipt["tar_header_checksums_verified"])
 
     def test_rejects_large_pax_header_before_body_parse(self):
         entry = tarfile.TarInfo("nezha/images/boot.img")
@@ -136,8 +166,66 @@ class FirmwareTarTests(unittest.TestCase):
             value[0] ^= 1
             return gzip.compress(value)
         self.package(transform=corrupt)
-        with self.assertRaises(tarfile.TarError):
-            self.extract()
+        self.assert_bad_header_is_not_published()
+
+    def test_rejects_late_invalid_header_before_valid_zero_padding(self):
+        invalid = bytearray(tarfile.TarInfo("unselected-member").tobuf())
+        invalid[148:156] = b"0000000\0"
+        self.package_with_tail(bytes(invalid) + bytes(1024))
+        self.assert_bad_header_is_not_published()
+
+    def test_rejects_late_numeric_header_error_with_valid_checksum(self):
+        invalid = bytearray(tarfile.TarInfo("unselected-member").tobuf())
+        invalid[124:136] = b"bad-size!!!!"
+        invalid[148:156] = b" " * 8
+        checksum = sum(invalid)
+        invalid[148:156] = f"{checksum:06o}\0 ".encode()
+        self.assertEqual(tarfile.calc_chksums(invalid)[0], checksum)
+        self.package_with_tail(bytes(invalid) + bytes(1024))
+        self.assert_bad_header_is_not_published()
+
+    def test_rejects_late_truncated_headers_in_valid_gzip(self):
+        header = tarfile.TarInfo("truncated-member").tobuf()
+        for length in (1, 255, 511):
+            with self.subTest(length=length):
+                self.package_with_tail(header[:length])
+                self.assert_bad_header_is_not_published()
+
+    def test_rejects_eof_without_any_tar_end_marker(self):
+        self.package_with_tail(b"")
+        self.assert_bad_header_is_not_published()
+
+    def test_accepts_two_zero_end_markers_with_optional_zero_record_padding(self):
+        for padding in (0, 8192):
+            with self.subTest(padding=padding):
+                self.package_with_tail(bytes(1024 + padding))
+                output = self.output.parent / ("valid-padding-" + str(padding))
+                result = images.extract_images(self.intake, output, expected_sha256=self.sha)
+                self.assertEqual((output / "boot.img").read_bytes(), b"boot")
+                self.assertEqual(result["decompressed_archive_bytes"], 2048 + padding)
+                self.assertTrue(result["gzip_stream_crc_verified"])
+                self.assertTrue(result["tar_header_checksums_verified"])
+
+    def test_zero_header_still_has_distinct_end_marker_semantics(self):
+        with self.assertRaises(tarfile.EOFHeaderError):
+            images.BoundedTarInfo.frombuf(bytes(512), "utf-8", "strict")
+        entry = images.BoundedTarInfo.frombuf(tarfile.TarInfo("valid").tobuf(), "utf-8", "strict")
+        self.assertIsInstance(entry, images.BoundedTarInfo)
+        self.assertEqual(entry.name, "valid")
+
+    def test_cli_cannot_report_success_for_late_invalid_header(self):
+        invalid = bytearray(tarfile.TarInfo("unselected-member").tobuf())
+        invalid[148:156] = b"0000000\0"
+        self.package_with_tail(bytes(invalid) + bytes(1024))
+        with mock.patch.object(sys, "stdout", new=io.StringIO()) as stdout:
+            with mock.patch.object(sys, "stderr", new=io.StringIO()) as stderr:
+                code = images.main(["--intake", str(self.intake), "--output", str(self.output),
+                                    "--expected-sha256", self.sha])
+        self.assertEqual(code, 1)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertIn("invalid or incomplete TAR member header", stderr.getvalue())
+        self.assertFalse(self.output.exists())
+        self.assertEqual(list(self.output.parent.iterdir()), [])
 
     def test_rejects_duplicate_case_alias_unsafe_and_multiple_image_roots(self):
         sets = [
