@@ -75,6 +75,14 @@
       "purpose": "Other-device reference only: myron configuration, unverified nezha layout, AVB test settings. Not an active dependency."
     },
     {
+      "name": "miuicamera-packaging-reference",
+      "url": "https://github.com/Evolution-X-Devices/device_xiaomi_peridot-miuicamera.git",
+      "branch": "bka",
+      "commit": "5f2bdfecdbd12c5deaf9ccf94b365e1fc4596426",
+      "path": "upstream/miuicamera-packaging-reference",
+      "purpose": "Evolution X camera packaging example for Peridot only: permissions, overlays and proprietary dependency categories. Not compatible with nezha by assumption."
+    },
+    {
       "name": "micode-index",
       "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource.git",
       "branch": "README",

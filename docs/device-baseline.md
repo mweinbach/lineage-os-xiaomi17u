@@ -55,6 +55,12 @@ Its presence is not proof that it can run on Evolution X. Package inventory
 also identifies Xiaomi CameraTools, CameraMind, Gallery, and MiuixEditor, plus
 Qualcomm IMS packages. Their data and APKs were not copied by this collection.
 
+The [camera analysis](camera-baseline.md) records its actual manifest, ELF
+dependencies and associated interface declarations. The
+[firmware source record](firmware-source.md) identifies the matching official
+China package and the incomplete download; that package has not replaced this
+xiaomi.eu baseline.
+
 ## Observed layout and hardware contracts
 
 `lpdump` reports Virtual A/B metadata version 10.2 with three metadata slots,
