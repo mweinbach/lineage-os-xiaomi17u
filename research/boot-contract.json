@@ -1,0 +1,1174 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "status": "requirements recorded; supplied images fail complete AVB consistency",
+  "device": {
+    "codename": "nezha",
+    "platform": "SM8850 / canoe",
+    "hardware_region": "CN",
+    "build_ready": false,
+    "lunch_target": null
+  },
+  "provenance": {
+    "source_kind": "user-provided",
+    "source_url": null,
+    "origin_verified": false,
+    "package_kind": "modified Xiaomi.eu package, not authenticated Xiaomi factory firmware",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "package_size_bytes": 9914891416,
+    "declared_public_build_label": "OS3.0.309.0.WPACNXM",
+    "filename": "xiaomi.eu_NEZHA_OS3.0.309.0.WPACNXM_16.zip",
+    "archive_integrity_verified": true,
+    "phone_accessed_by_this_analysis": false,
+    "firmware_executed": false,
+    "inputs_unchanged": true
+  },
+  "evidence": {
+    "private_directory": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/boot-analysis",
+    "final_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+    "initial_receipt_sha256": "2ced6662e0452582ae7371cf85e1907c4be51beda7fedcb6e6c5aab0da9fd4f6",
+    "component_receipt_sha256": "ecdc974e9e4d9b2df8b64331bd82c395bc47499e7b8db8e3cd5b7a2c60d6bb3b",
+    "verification_receipt_sha256": "6a75bd65289e8d661b330bf4d007e680f5c377f8694c1c1af7ab847300fab54b",
+    "by_name_baseline_sha256": "d4e89db16b49c613f8d45e49d99454ed8893257eea53b6bc0d5ea227d8beebc7",
+    "physical_geometry_attempt_sha256": "109d731e84339b063732a77596428238e7c1bace62fe71bcc425bf2ebf73a2d4",
+    "raw_artifacts_are_git_ignored": true
+  },
+  "inspection_tools": {
+    "unpack_bootimg": {
+      "repository": "upstream/aosp-mkbootimg",
+      "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+      "source": "unpack_bootimg.py",
+      "sha256": "06b54dd9a07c5281778e29e234e76f6e3faee8bf0c904a5ef88fdee30eeed12e"
+    },
+    "avbtool": {
+      "repository": "upstream/aosp-avb",
+      "commit": "c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb",
+      "source": "avbtool.py",
+      "sha256": "14dc8d6ec533f551ec05ffd9a986ced0fd1290a201f62c91dad329dd51dfe3ed"
+    },
+    "mkdtboimg": {
+      "repository": "upstream/aosp-libufdt",
+      "commit": "10c6b5f81069d6d78c7ef3833458f4d51d02e2a6",
+      "source": "utils/src/mkdtboimg.py",
+      "sha256": "ea9507427f4f691e4de27ba6918db7880511448e9dd63a80874a79c1fcaffd82"
+    }
+  },
+  "image_files": [
+    {
+      "path": "boot.img",
+      "archive_member": "images/boot.img",
+      "size_bytes": 100663296,
+      "sha256": "09b63576f263257fbc2cbe98ab8c4c1a70a0580acf721b9bd9a809e38f38916e",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "SHA256_RSA4096",
+        "rollback_index": 1769904000,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 39985152,
+        "vbmeta_offset": 39985152,
+        "public_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1"
+      },
+      "initial_avbtool_verify_exit_code": 0,
+      "boot_header": {
+        "magic": "ANDROID!",
+        "version": 4,
+        "header_size": 1584,
+        "page_size_bytes": 4096,
+        "kernel_size_bytes": 39963136,
+        "ramdisk_size_bytes": 0,
+        "os_version_patch_field": 0,
+        "signature_section_size": 0
+      }
+    },
+    {
+      "path": "init_boot.img",
+      "archive_member": "images/init_boot.img",
+      "size_bytes": 8388608,
+      "sha256": "eff601b4be2f40cf49ebe3a7bb47dcb2db8b20f7f1fc718c1cc0551412944e77",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "NONE",
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 2924544,
+        "vbmeta_offset": 2924544,
+        "public_key_sha256": null
+      },
+      "initial_avbtool_verify_exit_code": 0,
+      "boot_header": {
+        "magic": "ANDROID!",
+        "version": 4,
+        "header_size": 1584,
+        "page_size_bytes": 4096,
+        "kernel_size_bytes": 0,
+        "ramdisk_size_bytes": 2916992,
+        "os_version_patch_field": 0,
+        "signature_section_size": 0
+      }
+    },
+    {
+      "path": "vendor_boot.img",
+      "archive_member": "images/vendor_boot.img",
+      "size_bytes": 100663296,
+      "sha256": "20349b30fe10cb30f75579f1f02f7dd26bcb3b0af543bd261a5877634991854d",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "NONE",
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 22618112,
+        "vbmeta_offset": 22618112,
+        "public_key_sha256": null
+      },
+      "initial_avbtool_verify_exit_code": 1,
+      "boot_header": {
+        "magic": "VNDRBOOT",
+        "version": 4,
+        "page_size_bytes": 4096,
+        "header_size": 2128,
+        "vendor_ramdisk_size_bytes": 18107283,
+        "dtb_size_bytes": 4496880,
+        "ramdisk_table_size_bytes": 108,
+        "ramdisk_table_entry_count": 1,
+        "ramdisk_table_entry_size": 108,
+        "bootconfig_size_bytes": 270
+      }
+    },
+    {
+      "path": "recovery.img",
+      "archive_member": "images/recovery.img",
+      "size_bytes": 104857600,
+      "sha256": "a6f2c77608026fcfe6221e5191c501b0ac880658f76c55231879ed198ce8a0f9",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "SHA256_RSA4096",
+        "rollback_index": 1,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 30412800,
+        "vbmeta_offset": 30412800,
+        "public_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1"
+      },
+      "initial_avbtool_verify_exit_code": 0,
+      "boot_header": {
+        "magic": "ANDROID!",
+        "version": 4,
+        "header_size": 1584,
+        "page_size_bytes": 4096,
+        "kernel_size_bytes": 0,
+        "ramdisk_size_bytes": 30407261,
+        "os_version_patch_field": 0,
+        "signature_section_size": 0
+      }
+    },
+    {
+      "path": "dtbo.img",
+      "archive_member": "images/dtbo.img",
+      "size_bytes": 23068672,
+      "sha256": "ee84d721396fee5f82b5230b1472b5f165ba253eba50d44e9156b538c8a40f62",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "NONE",
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 1495111,
+        "vbmeta_offset": 1499136,
+        "public_key_sha256": null
+      },
+      "initial_avbtool_verify_exit_code": 0,
+      "dtbo_header": {
+        "magic": 3619138334,
+        "total_size": 1495111,
+        "header_size": 32,
+        "entry_size": 32,
+        "entry_count": 1,
+        "entry_offset": 32,
+        "page_size": 4096,
+        "version": 0
+      }
+    },
+    {
+      "path": "vbmeta.img",
+      "archive_member": "images/vbmeta.img",
+      "size_bytes": 12288,
+      "sha256": "295d273ae4a4b4a9471abfa495ce95f94a48c8fc7210008252a5ca7d7fdbfaf7",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "SHA256_RSA4096",
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": null,
+        "vbmeta_offset": 0,
+        "public_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1"
+      },
+      "initial_avbtool_verify_exit_code": 1
+    },
+    {
+      "path": "vbmeta_system.img",
+      "archive_member": "images/vbmeta_system.img",
+      "size_bytes": 4096,
+      "sha256": "7e814282a0240e0aa97a6a62e8c267f33714451a2b62f483561da642d140a4a4",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "SHA256_RSA4096",
+        "rollback_index": 1769904000,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": null,
+        "vbmeta_offset": 0,
+        "public_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1"
+      },
+      "initial_avbtool_verify_exit_code": 1
+    },
+    {
+      "path": "pvmfw.img",
+      "archive_member": "images/pvmfw.img",
+      "size_bytes": 1048576,
+      "sha256": "fa0f8c7a48699663eaefe0c6e5761325b2612df34cc9ef8a7ad764a2f9395e98",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "NONE",
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 778240,
+        "vbmeta_offset": 778240,
+        "public_key_sha256": null
+      },
+      "initial_avbtool_verify_exit_code": 0,
+      "boot_header": {
+        "magic": "ANDROID!",
+        "version": 3,
+        "header_size": 1580,
+        "page_size_bytes": 4096,
+        "kernel_size_bytes": 773888,
+        "ramdisk_size_bytes": 0,
+        "os_version_patch_field": 536871335,
+        "signature_section_size": null
+      }
+    },
+    {
+      "path": "qtvm_dtbo.img",
+      "archive_member": "images/qtvm_dtbo.img",
+      "size_bytes": 5242880,
+      "sha256": "f0bf3cf01ff634732459fa50dce05d2fdd9912c83215015b081a511bfa6b50c7",
+      "crc_verified": true,
+      "physical_partition_size_verified": false,
+      "avb": {
+        "algorithm": "SHA256_RSA4096",
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0,
+        "original_image_size": 522832,
+        "vbmeta_offset": 524288,
+        "public_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1"
+      },
+      "initial_avbtool_verify_exit_code": 0,
+      "dtbo_header": {
+        "magic": 3619138334,
+        "total_size": 522832,
+        "header_size": 32,
+        "entry_size": 32,
+        "entry_count": 2,
+        "entry_offset": 32,
+        "page_size": 0,
+        "version": 0
+      }
+    }
+  ],
+  "physical_partitions": {
+    "verified_size_count": 0,
+    "physical_sizes_and_offsets_verified": false,
+    "observed_slotted_names": [
+      "boot_a",
+      "boot_b",
+      "dtbo_a",
+      "dtbo_b",
+      "init_boot_a",
+      "init_boot_b",
+      "recovery_a",
+      "recovery_b",
+      "vbmeta_a",
+      "vbmeta_b",
+      "vbmeta_system_a",
+      "vbmeta_system_b",
+      "vendor_boot_a",
+      "vendor_boot_b"
+    ],
+    "super_by_name_target": "/dev/block/sda33",
+    "actual_bootloader_unlock_state": "unresolved",
+    "geometry_warning": "Package file lengths and AVB covered lengths are not independently measured physical partition sizes"
+  },
+  "kernel": {
+    "release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "matches_live_baseline_release": true,
+    "architecture": "arm64",
+    "sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "size_bytes": 39963136,
+    "arm64_image_header": {
+      "text_offset": 0,
+      "image_size": 40697856,
+      "flags": 10
+    },
+    "runtime_page_size_bytes": 4096,
+    "ikconfig_sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+    "ikconfig_size_bytes": 220352,
+    "selected_config": {
+      "CONFIG_IKCONFIG": "y",
+      "CONFIG_BOOT_CONFIG": "y",
+      "CONFIG_ARM64_4K_PAGES": "y",
+      "CONFIG_ARM64_16K_PAGES": "n",
+      "CONFIG_ARM64_64K_PAGES": "n",
+      "CONFIG_MODULES": "y",
+      "CONFIG_MODULE_UNLOAD": "y",
+      "CONFIG_MODVERSIONS": "y",
+      "CONFIG_MODULE_SIG": "y",
+      "CONFIG_MODULE_SIG_FORCE": "n",
+      "CONFIG_DM_VERITY": "y",
+      "CONFIG_ANDROID_VENDOR_HOOKS": "y",
+      "CONFIG_SECURITY_SELINUX": "y",
+      "CONFIG_SECURITY_SELINUX_BOOTPARAM": "n"
+    },
+    "replacement_kernel_compatibility_tested": false,
+    "exact_reproducible_kernel_source_and_build_not_established": true
+  },
+  "ramdisks": {
+    "init_boot": {
+      "compressed_sha256": "764c3ae037089d9ad85b8c5c6175ed04458e2ddacc3a06afe60709c65f9b03e7",
+      "cpio_sha256": "37743dfaad677c44ad24b63973faa805d56f3ade644891a254e72ed17c171abc",
+      "cpio_bytes": 5436160,
+      "entry_count": 24,
+      "module_count": 0,
+      "compression": "legacy-lz4",
+      "archive_format": "newc-cpio",
+      "links_materialized_or_followed": false
+    },
+    "vendor_boot": {
+      "compressed_sha256": "c7cc0671b998b17421b41ba81e6c74d3fdcc768ab0254d9adfd29d060a4ebcd0",
+      "cpio_sha256": "cea7093779bf6fa4fd275ee5452bc6c902c26bb20d62bc20e7c4d83d123d1834",
+      "cpio_bytes": 48236800,
+      "entry_count": 440,
+      "module_count": 430,
+      "compression": "legacy-lz4",
+      "archive_format": "newc-cpio",
+      "links_materialized_or_followed": false
+    },
+    "recovery": {
+      "compressed_sha256": "21ed80d706206420f846315e7da86e6112189ef3a22a8e3b5f95f3dad8748af3",
+      "cpio_sha256": "13083e8177001c912c0078e03f59c79dccdbe0895a6b62ce2019bae47dfa7cd7",
+      "cpio_bytes": 53929472,
+      "entry_count": 1036,
+      "module_count": 0,
+      "compression": "legacy-lz4",
+      "archive_format": "newc-cpio",
+      "links_materialized_or_followed": false
+    }
+  },
+  "vendor_ramdisk": {
+    "table_entries": 1,
+    "table_entry_type": 1,
+    "table_entry_type_name": "platform",
+    "table_entry_name": "",
+    "board_id": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "elf_module_count": 430,
+    "elf_machine": 183,
+    "vermagic": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64",
+    "module_vermagic_release_differs_from_boot_kernel": true,
+    "kmi_crc_signature_and_runtime_compatibility": "not established; release-string difference alone is not an incompatibility verdict",
+    "load_lists": [
+      {
+        "path": "lib/modules/modules.load",
+        "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "entries": 157,
+        "unique_entries": 154,
+        "duplicates": {
+          "bootinfo.ko": 2,
+          "debug_ext.ko": 2,
+          "smcinvoke_dlkm.ko": 2
+        },
+        "missing_module_names": []
+      },
+      {
+        "path": "lib/modules/modules.load.recovery",
+        "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "entries": 435,
+        "unique_entries": 424,
+        "duplicates": {
+          "bootinfo.ko": 2,
+          "debug_ext.ko": 2,
+          "msm_drm.ko": 2,
+          "msm_ext_display.ko": 2,
+          "sync_fence.ko": 2,
+          "msm_hw_fence.ko": 2,
+          "msm_hfi_core.ko": 2,
+          "msm-mmrm.ko": 2,
+          "smcinvoke_dlkm.ko": 2,
+          "synx-driver.ko": 2,
+          "ipclite.ko": 2
+        },
+        "missing_module_names": []
+      }
+    ],
+    "modules_dep_entries": 430,
+    "missing_dependency_files": [],
+    "bootconfig": {
+      "androidboot.hardware": "qcom",
+      "androidboot.memcg": "1",
+      "androidboot.usbcontroller": "a600000.dwc3",
+      "androidboot.load_modules_parallel": "true",
+      "androidboot.hypervisor.protected_vm.supported": "true",
+      "androidboot.hypervisor.version": "gunyah",
+      "androidboot.vendor.qspa": "true",
+      "androidboot.serialconsole": "0"
+    },
+    "bootconfig_sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f"
+  },
+  "first_stage_fstab": {
+    "archive_path": "first_stage_ramdisk/fstab.qcom",
+    "sha256": "1556b7e72c49c2a13ec4172e553279dcca672f2749834ac47630f2774c8a4bb7",
+    "logical_mounts": [
+      {
+        "source": "system",
+        "mount_point": "/system",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "system",
+        "mount_point": "/system",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "system_ext",
+        "mount_point": "/system_ext",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "system_ext",
+        "mount_point": "/system_ext",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "product",
+        "mount_point": "/product",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "product",
+        "mount_point": "/product",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "mi_ext",
+        "mount_point": "/mnt/vendor/mi_ext",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount,nofail"
+      },
+      {
+        "source": "mi_ext",
+        "mount_point": "/mnt/vendor/mi_ext",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount,nofail"
+      },
+      {
+        "source": "vendor",
+        "mount_point": "/vendor",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "vendor",
+        "mount_point": "/vendor",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "vendor_dlkm",
+        "mount_point": "/vendor_dlkm",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "vendor_dlkm",
+        "mount_point": "/vendor_dlkm",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "system_dlkm",
+        "mount_point": "/system_dlkm",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "system_dlkm",
+        "mount_point": "/system_dlkm",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "odm",
+        "mount_point": "/odm",
+        "filesystem": "ext4",
+        "mount_flags": "ro,barrier=1,discard",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      },
+      {
+        "source": "odm",
+        "mount_point": "/odm",
+        "filesystem": "erofs",
+        "mount_flags": "ro",
+        "fs_mgr_flags": "wait,slotselect,logical,first_stage_mount"
+      }
+    ],
+    "logical_mounts_contain_avb_or_verify_flags": false,
+    "safe_as_evolution_template": false,
+    "reason": "Modified package fstab does not request AVB verification on these logical entries"
+  },
+  "device_trees": {
+    "vendor_boot_dtb_count": 8,
+    "dtbo_entry_count": 1,
+    "qtvm_dtbo_entry_count": 2,
+    "trees": [
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 576290,
+        "sha256": "6402d377ba57ea948113537929a617a55f9dd228c22e4bd69468530360b0675b",
+        "model": [
+          "Qualcomm Technologies, Inc. Canoe Alt. Thermal Profile v2 SoC"
+        ],
+        "compatible": [
+          "qcom,canoe"
+        ],
+        "qcom_msm_id_u32": [
+          16777876,
+          131072
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 570887,
+        "sha256": "cf3e5089cd213475ebd3c64ca2dabaad8e1d87248fbec918d47a11338c9c4dc7",
+        "model": [
+          "Qualcomm Technologies, Inc. Canoe Alt. Thermal Profile SoC"
+        ],
+        "compatible": [
+          "qcom,canoe"
+        ],
+        "qcom_msm_id_u32": [
+          16777876,
+          65536
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 576208,
+        "sha256": "5464f2847c675bf2a1f736a5d23cdadccf3e9b79dc3b57a2120b4824ae855e97",
+        "model": [
+          "Qualcomm Technologies, Inc. Canoe v2 SoC"
+        ],
+        "compatible": [
+          "qcom,canoe"
+        ],
+        "qcom_msm_id_u32": [
+          660,
+          131072
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 570867,
+        "sha256": "938ee26c4e98c545817480574d43774f6a7b93f9a888e73bf9fd1f1ba8843bbc",
+        "model": [
+          "Qualcomm Technologies, Inc. Canoe SoC"
+        ],
+        "compatible": [
+          "qcom,canoe"
+        ],
+        "qcom_msm_id_u32": [
+          660,
+          65536
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 532666,
+        "sha256": "558769939531331244df9a4a880d21d71325bbe42b4f8a8ca987ec1f759ea509",
+        "model": [
+          "Qualcomm Technologies, Inc. CanoeP Alt. Thermal Profile v2 SoC"
+        ],
+        "compatible": [
+          "qcom,canoep"
+        ],
+        "qcom_msm_id_u32": [
+          16843413,
+          131072
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 532919,
+        "sha256": "e126de6c494b1112837f649220fb8b2a0e8e64b1635c0dd37f4107f45f3d4df6",
+        "model": [
+          "Qualcomm Technologies, Inc. CanoeP Alt. Thermal Profile SoC"
+        ],
+        "compatible": [
+          "qcom,canoep"
+        ],
+        "qcom_msm_id_u32": [
+          16843413,
+          65536
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 571192,
+        "sha256": "11bb34ba91bacede27164013e2d1a916ac3950443d38a4a200cbd89796f4a522",
+        "model": [
+          "Qualcomm Technologies, Inc. CanoeP v2 SoC"
+        ],
+        "compatible": [
+          "qcom,canoep"
+        ],
+        "qcom_msm_id_u32": [
+          661,
+          131072
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "vendor_boot/dtb",
+        "bytes": 565851,
+        "sha256": "6dc58aad3904bd4f417f21da36340265f1bfc3ee214bfdf04318b736788d9b4e",
+        "model": [
+          "Qualcomm Technologies, Inc. CanoeP SoC"
+        ],
+        "compatible": [
+          "qcom,canoep"
+        ],
+        "qcom_msm_id_u32": [
+          661,
+          65536
+        ],
+        "qcom_board_id_u32": [
+          0,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "dtbo",
+        "bytes": 1495047,
+        "sha256": "4bb4b31bca5de3e354a565304d1ea277ac6d9b70e2760a40147d9f151a691f99",
+        "model": [
+          "Qualcomm Technologies, Inc. Nezha based on SM8850"
+        ],
+        "compatible": [
+          "qcom,canoe-mtp",
+          "qcom,canoe",
+          "qcom,canoep-mtp",
+          "qcom,canoep",
+          "qcom,mtp"
+        ],
+        "qcom_msm_id_u32": [
+          661,
+          131072,
+          660,
+          65536,
+          660,
+          131072,
+          16777876,
+          65536,
+          661,
+          65536,
+          16777877,
+          65536,
+          16777876,
+          131072,
+          16777877,
+          131072
+        ],
+        "qcom_board_id_u32": [
+          8,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "qtvm_dtbo",
+        "bytes": 513062,
+        "sha256": "86c4bb047e935061633223c28bb4549b4e4b0a7badbbb9bd3e9929c48e9f160f",
+        "model": [
+          "Qualcomm Technologies, Inc. Canoe SVM MTP"
+        ],
+        "compatible": [
+          "qcom,canoe-mtp",
+          "qcom,canoe",
+          "qcom,canoep-mtp",
+          "qcom,canoep",
+          "qcom,mtp"
+        ],
+        "qcom_msm_id_u32": [
+          661,
+          131072,
+          660,
+          65536,
+          660,
+          131072,
+          16777876,
+          65536,
+          661,
+          65536,
+          16777877,
+          65536,
+          16777876,
+          131072,
+          16777877,
+          131072
+        ],
+        "qcom_board_id_u32": [
+          8,
+          0
+        ],
+        "dtc_exit_code": 0
+      },
+      {
+        "source": "qtvm_dtbo",
+        "bytes": 9674,
+        "sha256": "422516b20750e67536a5c809e58947d24faf98c1f3f588d4b3ba94199528c205",
+        "model": [
+          "Qualcomm Technologies, Inc. Canoe OEMVM MTP"
+        ],
+        "compatible": [
+          "qcom,canoe-mtp",
+          "qcom,canoe",
+          "qcom,canoep-mtp",
+          "qcom,canoep",
+          "qcom,mtp"
+        ],
+        "qcom_msm_id_u32": [
+          66197,
+          65536,
+          197269,
+          65536,
+          16974484,
+          65536,
+          66196,
+          65536,
+          66197,
+          131072,
+          197269,
+          131072,
+          16843412,
+          65536,
+          16843413,
+          65536,
+          16974484,
+          131072,
+          16974485,
+          131072,
+          197268,
+          131072,
+          16843412,
+          131072,
+          16843413,
+          131072,
+          66196,
+          131072,
+          16974485,
+          65536,
+          197268,
+          65536
+        ],
+        "qcom_board_id_u32": [
+          8,
+          0
+        ],
+        "dtc_exit_code": 0
+      }
+    ],
+    "live_dtb_selection_verified": false,
+    "dtc_parse_is_not_hardware_compatibility_test": true
+  },
+  "avb": {
+    "full_image_set_verification_passed": false,
+    "trusted_oem_key_supplied": false,
+    "signatures": {
+      "vbmeta": {
+        "algorithm": "SHA256_RSA4096",
+        "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "embedded_signature_valid": true,
+        "trusted_oem_key": false,
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0
+      },
+      "vbmeta_system": {
+        "algorithm": "SHA256_RSA4096",
+        "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "embedded_signature_valid": true,
+        "trusted_oem_key": false,
+        "rollback_index": 1769904000,
+        "rollback_index_location_in_header": 0,
+        "flags": 0
+      },
+      "boot": {
+        "algorithm": "SHA256_RSA4096",
+        "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "embedded_signature_valid": true,
+        "trusted_oem_key": false,
+        "rollback_index": 1769904000,
+        "rollback_index_location_in_header": 0,
+        "flags": 0
+      },
+      "recovery": {
+        "algorithm": "SHA256_RSA4096",
+        "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "embedded_signature_valid": true,
+        "trusted_oem_key": false,
+        "rollback_index": 1,
+        "rollback_index_location_in_header": 0,
+        "flags": 0
+      },
+      "qtvm_dtbo": {
+        "algorithm": "SHA256_RSA4096",
+        "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "embedded_signature_valid": true,
+        "trusted_oem_key": false,
+        "rollback_index": 0,
+        "rollback_index_location_in_header": 0,
+        "flags": 0
+      }
+    },
+    "chain_key_checks": [
+      {
+        "partition": "boot",
+        "rollback_index_location": 3,
+        "parent_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "child_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "keys_match": true,
+        "expected_key_origin": "Corresponding child image, not an independently trusted OEM key",
+        "flags": 0
+      },
+      {
+        "partition": "recovery",
+        "rollback_index_location": 1,
+        "parent_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "child_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "keys_match": true,
+        "expected_key_origin": "Corresponding child image, not an independently trusted OEM key",
+        "flags": 0
+      },
+      {
+        "partition": "vbmeta_system",
+        "rollback_index_location": 2,
+        "parent_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "child_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+        "keys_match": true,
+        "expected_key_origin": "Corresponding child image, not an independently trusted OEM key",
+        "flags": 0
+      }
+    ],
+    "top_level_hashes_passed": [
+      "countrycode",
+      "dtbo",
+      "init_boot",
+      "pvmfw"
+    ],
+    "standalone_signed_image_checks_passed_using_embedded_key": [
+      "boot",
+      "recovery",
+      "qtvm_dtbo"
+    ],
+    "unsigned_footer_hash_checks_passed": [
+      "init_boot",
+      "dtbo",
+      "pvmfw"
+    ],
+    "vendor_boot_hash_failure": {
+      "image_size": 22618112,
+      "salt": "4dcefe592c7dbe6d5ede4a7f3de84b31ff21ed0d627885fb4845e36fc8101c03",
+      "digest": "f0e73c5f16e761cbbc5b65a44787b87fabeb1e23df3087c9a960ac8d9ea4b0a2",
+      "independent_calculated_digest": "98dddd002f7e3d5959d8654a4018fcc6d32cb3382525d7c6301016430964e291",
+      "input_file_sha256": "20349b30fe10cb30f75579f1f02f7dd26bcb3b0af543bd261a5877634991854d"
+    },
+    "vendor_boot_expected_descriptor_also_present_in_signed_vbmeta": true,
+    "logical_partition_checks": [
+      {
+        "descriptor_source": "vbmeta",
+        "partition": "mi_ext",
+        "file_size_bytes": 109318144,
+        "descriptor_data_bytes": 109445120,
+        "tree_offset": 109445120,
+        "tree_size": 868352,
+        "fec_offset": 110313472,
+        "fec_size": 876544,
+        "root_digest": "d751fdcbe81abcb481ba8931567c8782d6c6e193dea8a40f52abd82e2fd776f4",
+        "salt": "4dcefe592c7dbe6d5ede4a7f3de84b31ff21ed0d627885fb4845e36fc8101c03",
+        "bounds": {
+          "data_fits": false,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-preflight-data-range-exceeds-image",
+        "aosp_descriptor_verify_called": false,
+        "reason": "Refused unsafe verification: pinned generate_hash_tree does not terminate on a zero-byte EOF read before the declared data length"
+      },
+      {
+        "descriptor_source": "vbmeta",
+        "partition": "odm",
+        "file_size_bytes": 4679843840,
+        "descriptor_data_bytes": 4678270976,
+        "tree_offset": 4678270976,
+        "tree_size": 36843520,
+        "fec_offset": 4715114496,
+        "fec_size": 37281792,
+        "root_digest": "537279b187c6d51ac94d6ac37b855aa073391814d0dcc6114362447a6e96c440",
+        "salt": "0878c1dbacec693ccc32acf1d12eee90723b3153360fa66a3ab04197212acbde",
+        "bounds": {
+          "data_fits": true,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-descriptor-check",
+        "aosp_descriptor_verify_called": true,
+        "aosp_descriptor_verify_result": false
+      },
+      {
+        "descriptor_source": "vbmeta",
+        "partition": "system_dlkm",
+        "file_size_bytes": 16506880,
+        "descriptor_data_bytes": 16506880,
+        "tree_offset": 16506880,
+        "tree_size": 135168,
+        "fec_offset": 16642048,
+        "fec_size": 139264,
+        "root_digest": "6ca4ca591e90a9fcfeb37960e66ebeb4c194cc874dda4b1ce81974a2962125a1",
+        "salt": "0878c1dbacec693ccc32acf1d12eee90723b3153360fa66a3ab04197212acbde",
+        "bounds": {
+          "data_fits": true,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-descriptor-check",
+        "aosp_descriptor_verify_called": true,
+        "aosp_descriptor_verify_result": false,
+        "calculated_root_digest": "19951b4512994d95b7aaed4a839aa30788accf466c8a72e79b0e0aef8beec1b4",
+        "root_digest_matches": false,
+        "generated_tree_sha256": "38d0349cf1a1093a6ee887a9241550fdabed0a3ef5539c9fde2e36886c94ad46"
+      },
+      {
+        "descriptor_source": "vbmeta",
+        "partition": "vendor",
+        "file_size_bytes": 941506560,
+        "descriptor_data_bytes": 941649920,
+        "tree_offset": 941649920,
+        "tree_size": 7426048,
+        "fec_offset": 949075968,
+        "fec_size": 7503872,
+        "root_digest": "ada22301226841b7c56ffafade2d6f4889abfb2456271a269443520d85b8b4bd",
+        "salt": "1f1ef22f0916ba72b94533a55cbe4a6283bf78caa0776ee892f1c69aab7fdef5",
+        "bounds": {
+          "data_fits": false,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-preflight-data-range-exceeds-image",
+        "aosp_descriptor_verify_called": false,
+        "reason": "Refused unsafe verification: pinned generate_hash_tree does not terminate on a zero-byte EOF read before the declared data length"
+      },
+      {
+        "descriptor_source": "vbmeta",
+        "partition": "vendor_dlkm",
+        "file_size_bytes": 53035008,
+        "descriptor_data_bytes": 53035008,
+        "tree_offset": 53035008,
+        "tree_size": 421888,
+        "fec_offset": 53456896,
+        "fec_size": 425984,
+        "root_digest": "9991a79ac2cec66dce4d4916e01f8046e01f753d627783e97e954e2d9c2bf883",
+        "salt": "0878c1dbacec693ccc32acf1d12eee90723b3153360fa66a3ab04197212acbde",
+        "bounds": {
+          "data_fits": true,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-descriptor-check",
+        "aosp_descriptor_verify_called": true,
+        "aosp_descriptor_verify_result": false,
+        "calculated_root_digest": "32c35dff6b2d4f4e1ebd510564e1e0cc0a407898dc06a900d2638bcd2ead2534",
+        "root_digest_matches": false,
+        "generated_tree_sha256": "a643fc470a7f7939d9a26bd27acf6f432e2f51bccaa66bf218fba73544c7a246"
+      },
+      {
+        "descriptor_source": "vbmeta_system",
+        "partition": "product",
+        "file_size_bytes": 3712385024,
+        "descriptor_data_bytes": 4850307072,
+        "tree_offset": 4850307072,
+        "tree_size": 38199296,
+        "fec_offset": 4888506368,
+        "fec_size": 38649856,
+        "root_digest": "e715967d80252a3c4b1a246cce84801ad96ddb081717c2969410082e850f4a22",
+        "salt": "3c5400592bf84a69e8910ddbfeb58eb0dfa928a62a499dba4025982858f37561",
+        "bounds": {
+          "data_fits": false,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-preflight-data-range-exceeds-image",
+        "aosp_descriptor_verify_called": false,
+        "reason": "Refused unsafe verification: pinned generate_hash_tree does not terminate on a zero-byte EOF read before the declared data length"
+      },
+      {
+        "descriptor_source": "vbmeta_system",
+        "partition": "system",
+        "file_size_bytes": 850591744,
+        "descriptor_data_bytes": 895102976,
+        "tree_offset": 895102976,
+        "tree_size": 7057408,
+        "fec_offset": 902160384,
+        "fec_size": 7135232,
+        "root_digest": "7b9cb94550672dbce64a8c7e9c8b5702ca37e1e0928ffe7e3b61447b144377a8",
+        "salt": "aca9a7920c39a3a0b4c9f712ab223c86c544239fe5b7db9cd0d7de33fd6eaacc",
+        "bounds": {
+          "data_fits": false,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-preflight-data-range-exceeds-image",
+        "aosp_descriptor_verify_called": false,
+        "reason": "Refused unsafe verification: pinned generate_hash_tree does not terminate on a zero-byte EOF read before the declared data length"
+      },
+      {
+        "descriptor_source": "vbmeta_system",
+        "partition": "system_ext",
+        "file_size_bytes": 685998080,
+        "descriptor_data_bytes": 699715584,
+        "tree_offset": 699715584,
+        "tree_size": 5517312,
+        "fec_offset": 705232896,
+        "fec_size": 5578752,
+        "root_digest": "ab2697fc166835028de062163b2cf89989d683f7dca5b61360abcd4f555bef0a",
+        "salt": "aca9a7920c39a3a0b4c9f712ab223c86c544239fe5b7db9cd0d7de33fd6eaacc",
+        "bounds": {
+          "data_fits": false,
+          "tree_fits": false,
+          "fec_fits": false
+        },
+        "fec_cryptographic_verification_performed": false,
+        "status": "failed-preflight-data-range-exceeds-image",
+        "aosp_descriptor_verify_called": false,
+        "reason": "Refused unsafe verification: pinned generate_hash_tree does not terminate on a zero-byte EOF read before the declared data length"
+      }
+    ],
+    "logical_images_with_recognized_avb_footer": 0,
+    "stored_device_rollback_indices_verified": false,
+    "follow_chain_partitions_not_run_reason": "Logical data lengths are inconsistent with signed descriptors; fail-closed preflight prevents pinned AOSP EOF loop",
+    "verification_bypass_flags_used": false,
+    "images_padded_or_patched": false
+  },
+  "bring_up_gates": [
+    "Obtain an authenticated matching baseline or resolve retained AVB metadata against verified original inputs; do not reuse these inconsistent images as a verified chain.",
+    "Independently establish physical boot partition sizes, slot behavior, actual bootloader authorization/unlock state and stored rollback constraints.",
+    "Review Android 16 4 KiB GKI integration with complete vendor/system DLKM module versions, symbols, CRCs, dependencies and signatures.",
+    "Keep boot v4, separate init_boot and recovery ramdisks, vendor DTBs/DTBO and firmware dependencies distinct; do not import another model's geometry.",
+    "Implement and validate AVB, first-stage fstab and enforcing SELinux requirements rather than copying modified verification omissions.",
+    "Complete device/common/vendor integration and VINTF checks before registering an Evolution lunch target; no ROM boot or native feature is established."
+  ],
+  "private_parser_selftests": {
+    "count": 14,
+    "result": "passed",
+    "scope": "synthetic CPIO/FDT/ELF parser safety; not device or Android build tests"
+  }
+}
