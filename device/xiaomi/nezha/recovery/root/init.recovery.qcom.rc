@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+# Minimal authored glue. The existing bootloader supplies controller/device
+# paths; this source does not substitute another model's hardware addresses.
+
+on init
+    setprop sys.usb.configfs 1
+
+on property:ro.boot.usbcontroller=*
+    setprop sys.usb.controller ${ro.boot.usbcontroller}
+
+on fs
+    wait /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
