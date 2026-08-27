@@ -8,14 +8,15 @@ import json
 import os
 from pathlib import Path
 import struct
+import sys
 import tempfile
 import unittest
 from unittest import mock
 
 
-SPEC = importlib.util.spec_from_file_location(
-    "sparse_images", Path(__file__).resolve().parents[1] / "scripts" / "sparse_images.py"
-)
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+SPEC = importlib.util.spec_from_file_location("sparse_images", SCRIPTS / "sparse_images.py")
 sparse = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(sparse)
 
@@ -423,6 +424,21 @@ class SparseImageTests(unittest.TestCase):
             with self.assertRaisesRegex(sparse.SparseError, "appeared during"):
                 self.reconstruct()
         self.assertEqual((self.destination / "evidence").read_bytes(), b"preserve")
+        self.assertEqual(list(self.root.glob(".*.stage-*")), [])
+        self.assertEqual(list(self.root.glob(".*.sparse.lock")), [])
+
+    def test_last_instant_empty_destination_is_never_replaced(self):
+        original = sparse.publish_new_directory
+        appeared = []
+        def race(staging, destination):
+            destination.mkdir()
+            appeared.append(destination.stat().st_ino)
+            original(staging, destination)
+        with mock.patch.object(sparse, "publish_new_directory", side_effect=race):
+            with self.assertRaises(FileExistsError):
+                self.reconstruct()
+        self.assertEqual(self.destination.stat().st_ino, appeared[0])
+        self.assertEqual(list(self.destination.iterdir()), [])
         self.assertEqual(list(self.root.glob(".*.stage-*")), [])
         self.assertEqual(list(self.root.glob(".*.sparse.lock")), [])
 

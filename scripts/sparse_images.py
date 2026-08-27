@@ -24,6 +24,8 @@ import struct
 import sys
 import tempfile
 
+from artifact_files import publish_new_directory
+
 
 MAGIC = 0xED26FF3A
 HEADER = struct.Struct("<I4H4I")
@@ -308,7 +310,7 @@ def reconstruct_images(paths, *, expected_pieces, output_dir, parent_sha256,
             _directory(destination.parent)
             if os.path.lexists(destination):
                 raise SparseError("output directory appeared during reconstruction; refusing to overwrite it")
-            staging.rename(destination)
+            publish_new_directory(staging, destination)
             staging = None
         return {"output_dir": str(destination), "receipt": receipt}
     finally:
