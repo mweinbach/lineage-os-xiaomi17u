@@ -9,8 +9,9 @@ No policy binary was produced, so permissive-domain analysis did not run.
 This result concerns the captured modified package under the recorded compiler
 configuration. It does not establish that the connected phone is permissive,
 that a native feature is broken, or that Evolution framework policy is
-incompatible. The phone was not accessed. The later check with actual Soong
-x86-64 host tools is separate and was not performed by this experiment.
+incompatible. The phone was not accessed. A separate follow-up with the actual
+Soong-built x86-64 tools now corroborates all seven failures; the native
+experiment and its original receipts remain unchanged.
 
 The [sanitized contract](../research/selinux-contract.json) records every input
 path/hash, compiler and source pin, failed attempt, diagnostic location and
@@ -156,10 +157,26 @@ in the public record. The ignored `reports/run-selinux-stock-v3.py` records the
 guarded one-off procedure; its output directory must be new. v1 and v2 remain
 available rather than being overwritten.
 
-The next corroboration is to build actual Soong `secilc` and `sepolicy-analyze`
-targets, then repeat the same ten-input strict check with their x86-64 binaries
-and a new result directory. That comparison remains separate from this native
-record, including if a different compiler produces a different result.
+The actual Nezha module build subsequently produced Soong `secilc` and
+`sepolicy-analyze`. At **21:31:08 UTC**, the x86-64 compiler completed the same
+ten-input strict check in a new validation directory, also exiting **255**.
+All seven assertion locations and ten conflicting allow locations match the
+native result exactly. The 5,403,225 input bytes and their order were unchanged.
+The follow-up again produced no policy or contexts output; permissive-domain
+analysis therefore did not run. No `-N`, stock precompiled binary or modified
+CIL was supplied.
+
+The compiler SHA256 is
+`0e1f73449ac82302d88d721b2fa106aad9ae895d9cb92afd69b31aae2253dff7`;
+the analyzer SHA256 is
+`a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669`.
+Their build/output provenance is in [build progress](build-progress.md).
+The comparison receipt, `reports/selinux-soong-stock-v1.json`, has SHA256
+`2b421ac62f0365cec12208bda0e3c71b87361140c1e8f075949703f273556133`.
+Source and Android OUT were read-only to this isolated compiler invocation;
+only its new validation directory and `/tmp` were writable. No phone was
+accessed. This follow-up still concerns the **modified Xiaomi.eu package**,
+not the newly supplied factory images, which require their own policy check.
 
 For the first actual Evolution policy compatibility check, build
 `plat_sepolicy.cil`, `plat_mapping_file`, `plat_sepolicy_genfs_202504.cil`,

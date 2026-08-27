@@ -250,12 +250,46 @@ class SelinuxContractTests(unittest.TestCase):
             self.assertEqual(values[key], [])
         self.assertTrue(observation["normal_source_product_policy_targets_do_not_cover_captured_vendor_odm_cil"])
         next_checks = self.record["next_checks"]
-        self.assertEqual(next_checks["soong_x86_64_corroboration"]["status"], "not-run-in-this-record")
+        self.assertEqual(next_checks["soong_x86_64_corroboration"]["status"], "executed-same-seven-strict-failures")
         self.assertEqual(next_checks["soong_x86_64_corroboration"]["targets"], ["secilc", "sepolicy-analyze"])
         self.assertEqual(len(next_checks["framework_policy_targets"]), 7)
         self.assertIn("sepolicy_neverallows", next_checks["source_policy_test_targets"])
         self.assertIn("sepolicy_dev_type_test", next_checks["source_policy_test_targets"])
         self.assertTrue(next_checks["permissive_check_required_even_for_userdebug"])
+
+    def test_actual_soong_compiler_corroboration_keeps_native_history(self):
+        native = self.record["strict_stock_compile"]
+        check = self.record["soong_stock_compile"]
+        self.assertEqual(check["native_receipt_sha256"], native["receipt"]["sha256"])
+        self.assertEqual(check["exit_code"], 255)
+        self.assertEqual(check["native_exit_code"], native["exit_code"])
+        self.assertTrue(check["matches_native_exit_code"])
+        self.assertFalse(check["strict_compilation_passed"])
+        self.assertTrue(check["input_order_and_bytes_unchanged"])
+        self.assertEqual(check["input_count"], 10)
+        self.assertEqual(check["input_bytes"], native["input_bytes"])
+        self.assertEqual(check["argv"][1:7], native["argv"][1:7])
+        self.assertEqual(check["argv"][11:], native["argv"][11:])
+        self.assertEqual(check["neverallow_assertions_failed"], 7)
+        self.assertEqual(check["conflicting_allow_references"], 10)
+        self.assertTrue(check["diagnostic_locations_match_native"])
+        self.assertEqual(check["outputs"], [])
+        self.assertIsNone(check["permissive_analysis"])
+        for flag in ("neverallow_checks_disabled", "stock_precompiled_policy_used",
+                     "evolution_vendor_policy_compatibility_verified", "android_source_modified",
+                     "android_out_modified", "phone_accessed", "firmware_executed", "origin_verified"):
+            self.assertFalse(check[flag])
+        self.assertNotIn("-N", check["argv"])
+        self.assertNotIn("--disable-neverallow", check["argv"])
+        for tool in check["tools"].values():
+            self.assertEqual(tool["elf_machine"], 62)
+            self.assertIn("/host/linux-x86/bin/", tool["path"])
+        progress = json.loads((ROOT / "research/build-progress.json").read_text())
+        proof = progress["camera_build"]["output_verification"]
+        self.assertEqual(check["build_output_receipt_sha256"], proof["sha256"])
+        tools = {Path(row["path"]).name: row for row in proof["host_tools"]}
+        for name, tool in check["tools"].items():
+            self.assertEqual(tool["sha256"], tools[name]["sha256"])
 
     def test_sandbox_bounds_source_and_inputs_without_hiding_exceptions(self):
         isolation = self.record["isolation"]

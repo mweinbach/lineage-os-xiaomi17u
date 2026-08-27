@@ -5,7 +5,7 @@
     "codename": "nezha",
     "hardware_region": "CN"
   },
-  "status": "exact policy inputs captured; native tools built; strict modified-stock CIL compilation failed seven neverallow assertions",
+  "status": "exact modified stock policy inputs captured; native and actual Soong tools agree on seven strict neverallow failures",
   "provenance": {
     "source_kind": "user-provided modified Xiaomi.eu package",
     "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
@@ -1642,12 +1642,13 @@
   },
   "next_checks": {
     "soong_x86_64_corroboration": {
-      "status": "not-run-in-this-record",
+      "status": "executed-same-seven-strict-failures",
       "targets": [
         "secilc",
         "sepolicy-analyze"
       ],
-      "method": "Use newly built Soong x86-64 tools with the same ten immutable CIL inputs and flags, recording results in a new output directory; retain the native result."
+      "method": "Use newly built Soong x86-64 tools with the same ten immutable CIL inputs and flags, recording results in a new output directory; retain the native result.",
+      "followup_record_key": "soong_stock_compile"
     },
     "host_tool_targets": [
       "secilc",
@@ -1754,5 +1755,115 @@
     "https://github.com/Evolution-X/system_core/blob/241488ea392c01079941d86ddc458b8a0c9ae6e1/init/selinux.cpp",
     "https://android.googlesource.com/platform/external/selinux/+/085c131ad1b984bfa8ffdafee7a976e9d89f403c/secilc/secilc.c",
     "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/cc/config/global.go"
-  ]
+  ],
+  "soong_stock_compile": {
+    "receipt": {
+      "path": "reports/selinux-soong-stock-v1.json",
+      "sha256": "2b421ac62f0365cec12208bda0e3c71b87361140c1e8f075949703f273556133"
+    },
+    "guest_receipt": "/work/validation/nezha-selinux-soong-stock-v1/receipt.json",
+    "started_at": "2026-08-27T21:30:43.743059+00:00",
+    "completed_at": "2026-08-27T21:31:08.970380+00:00",
+    "native_receipt_sha256": "4170c9a452fc6bf9ab13968be3efb662c649b0346ca4f4ec94ae95b539bb0e73",
+    "build_output_receipt_sha256": "517abf483adf40ec5dcb0386231667f03be93771a73e0d6746096f4f8ee8d399",
+    "tool_architecture": "Linux x86-64 through Rosetta, built by the actual Nezha Soong graph",
+    "tools": {
+      "secilc": {
+        "path": "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/bin/secilc",
+        "sha256": "0e1f73449ac82302d88d721b2fa106aad9ae895d9cb92afd69b31aae2253dff7",
+        "elf_machine": 62,
+        "size_bytes": 1368096
+      },
+      "sepolicy-analyze": {
+        "path": "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/bin/sepolicy-analyze",
+        "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669",
+        "elf_machine": 62,
+        "size_bytes": 543160
+      }
+    },
+    "argv": [
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/bin/secilc",
+      "-m",
+      "-M",
+      "true",
+      "-G",
+      "-c",
+      "30",
+      "-o",
+      "/work/validation/nezha-selinux-soong-stock-v1/results/stock-strict.policy",
+      "-f",
+      "/work/validation/nezha-selinux-soong-stock-v1/results/stock-strict.file_contexts",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system/etc/selinux/plat_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system/etc/selinux/mapping/202504.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system_ext/etc/selinux/system_ext_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system_ext/etc/selinux/mapping/202504.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/product/etc/selinux/product_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/product/etc/selinux/mapping/202504.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/vendor/etc/selinux/plat_pub_versioned.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/vendor/etc/selinux/vendor_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/odm/etc/selinux/odm_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system/etc/selinux/plat_sepolicy_genfs_202504.cil"
+    ],
+    "sandbox_argv": [
+      "/work/evolution/prebuilts/build-tools/linux-x86/bin/nsjail",
+      "-H",
+      "android-selinux-soong",
+      "--cwd",
+      "/work/validation/nezha-selinux-soong-stock-v1",
+      "-t",
+      "90",
+      "-e",
+      "--proc_rw",
+      "-u",
+      "nobody",
+      "-g",
+      "nogroup",
+      "--rlimit_as",
+      "soft",
+      "--rlimit_core",
+      "soft",
+      "--rlimit_cpu",
+      "soft",
+      "--rlimit_fsize",
+      "soft",
+      "--rlimit_nofile",
+      "soft",
+      "--nice_level",
+      "5",
+      "-R",
+      "/",
+      "-B",
+      "/work/validation/nezha-selinux-soong-stock-v1",
+      "-R",
+      "/work/validation/nezha-selinux-stock-v3/inputs",
+      "-B",
+      "/tmp",
+      "--disable_clone_newcgroup",
+      "-q",
+      "--"
+    ],
+    "input_order_and_bytes_unchanged": true,
+    "input_count": 10,
+    "input_bytes": 5403225,
+    "exit_code": 255,
+    "strict_compilation_passed": false,
+    "native_exit_code": 255,
+    "matches_native_exit_code": true,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "2bbf4205d294e5785d7ce33c7e69004b6478be724b9efb949ac46818b5f9e214",
+    "outputs": [],
+    "permissive_analysis": null,
+    "neverallow_checks_disabled": false,
+    "stock_precompiled_policy_used": false,
+    "evolution_vendor_policy_compatibility_verified": false,
+    "android_source_modified": false,
+    "android_out_modified": false,
+    "phone_accessed": false,
+    "firmware_executed": false,
+    "origin_verified": false,
+    "neverallow_assertions_failed": 7,
+    "conflicting_allow_references": 10,
+    "diagnostic_locations_match_native": true,
+    "input_scope": "The same ten unmodified Xiaomi.eu CIL inputs and order as the earlier native check; not the newly supplied factory package."
+  }
 }
