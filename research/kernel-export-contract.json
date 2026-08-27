@@ -1,0 +1,350 @@
+{
+  "device": "nezha",
+  "evidence": {
+    "corroboration_producer": {
+      "path": "reports/kernel-export-corroboration-v1.py",
+      "sha256": "9138c5f761df62bc4c084942c1f8270062bf9eac707111320acac4258a5563a8",
+      "size_bytes": 12153
+    },
+    "corroboration_receipt": {
+      "path": "artifacts/source-contracts/nezha-kernel-exports-v1/corroboration-v1/receipt.json",
+      "sha256": "4ae03a7d08afe2a16e91f5e6f38068906882ee56ff0788555f4e24e77d2072f2",
+      "size_bytes": 9287
+    },
+    "format_source_receipt": {
+      "path": "artifacts/source-contracts/nezha-kernel-exports-v1/source-format-v1/receipt.json",
+      "sha256": "ccafc6836d762fc270bbf9667455bdca819c7750cfecc1a802aa4db53474268c",
+      "size_bytes": 4132
+    },
+    "independent_firmware_acquisitions": false,
+    "independent_outputs": [
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/independent-v1/import-comparison.json",
+        "sha256": "b703b265365944467b0ba6b658795a0f5e2710bfccc706a4035866d33d164612",
+        "size_bytes": 304844
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/independent-v1/recovered-exports.json",
+        "sha256": "4f8d6af85b809c09d985ea01f95e52498a46b3e22025f6a94e9210e5faa4be7c",
+        "size_bytes": 4601602
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/independent-v1/synthetic-tests.txt",
+        "sha256": "1246f076b90843257e8565686969b4f24742ce4436acbbd63fbfed1536a56ada",
+        "size_bytes": 1975
+      }
+    ],
+    "independent_producer": {
+      "path": "reports/kernel-export-independent-v1.py",
+      "sha256": "ebef505c31fc2baa624447a1aad7a0ecf8f71c6b083e6a58e31e1ee87b1743a6",
+      "size_bytes": 37534
+    },
+    "independent_receipt": {
+      "path": "artifacts/source-contracts/nezha-kernel-exports-v1/independent-v1/receipt.json",
+      "sha256": "0c0440a6ed599c711e8df304d89e34df127ef3cdbeb053a99e61a4aa691d6a1b",
+      "size_bytes": 7465
+    },
+    "primary_outputs": [
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/result-v1/kallsyms-contract.json",
+        "sha256": "c5b14ab132f7e03901b14994ca22791eecacdda8b61997993643f3f6e25df73c",
+        "size_bytes": 1413
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/result-v1/kernel-exports.json",
+        "sha256": "03a9b7b893bfd198d2f9ad80e54c36535799ae4d6cbebe76f4040f85439cc37b",
+        "size_bytes": 3745629
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/result-v1/remaining-import-comparison.json",
+        "sha256": "7cb333ba208d212c3d85a05462b7d78c90ff1ecd7783623d25e2801413103b07",
+        "size_bytes": 209500
+      }
+    ],
+    "primary_producer": {
+      "path": "reports/kernel-export-recovery-v1.py",
+      "sha256": "be2c6499c33f5d7b2c51cb4a68eeb25707ed070631abf740bf88f7b8bc71d09f",
+      "size_bytes": 24061
+    },
+    "primary_receipt": {
+      "path": "artifacts/source-contracts/nezha-kernel-exports-v1/result-v1/receipt.json",
+      "sha256": "840959f47afc410c5bab307275badbb91fa225cf8b4e305d42946fc615948943",
+      "size_bytes": 7128
+    },
+    "prior_import_expectations": {
+      "path": "artifacts/source-contracts/nezha-zram-plan-v1/exports-and-pairs.json",
+      "sha256": "ac0c0b17d969315f6178e61be0f2b652afa2898ea468139d95775a252c043436",
+      "size_bytes": 80699
+    },
+    "prior_pair_receipt": {
+      "path": "artifacts/source-contracts/nezha-zram-plan-v1/receipt.json",
+      "sha256": "44669f2a0d2830957f3227ced8bd79d155b82a32c82e00bd3462b3b4c38efa41",
+      "size_bytes": 16245
+    },
+    "private_directory": "artifacts/source-contracts/nezha-kernel-exports-v1",
+    "shared_input_image_and_source_format": true
+  },
+  "export_sections": [
+    {
+      "record_count": 3375,
+      "record_size_bytes": 12,
+      "section": "__ksymtab",
+      "size_bytes": 40500,
+      "start": 25714272,
+      "stop": 25754772
+    },
+    {
+      "record_count": 5522,
+      "record_size_bytes": 12,
+      "section": "__ksymtab_gpl",
+      "size_bytes": 66264,
+      "start": 25754772,
+      "stop": 25821036
+    },
+    {
+      "record_count": 3375,
+      "record_size_bytes": 4,
+      "section": "__kcrctab",
+      "size_bytes": 13500,
+      "start": 25821036,
+      "stop": 25834536
+    },
+    {
+      "record_count": 5522,
+      "record_size_bytes": 4,
+      "section": "__kcrctab_gpl",
+      "size_bytes": 22088,
+      "start": 25834536,
+      "stop": 25856624
+    }
+  ],
+  "format": {
+    "crc_record": "direct little-endian unsigned 32-bit value; not an address or displacement",
+    "export_record": "three signed 32-bit displacements relative to each field at offsets 0, 4 and 8",
+    "individual_crc_names_present_in_kallsyms": false,
+    "reference_commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+    "reference_identifies_stock_source": false,
+    "sources": [
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "arch/arm64/Makefile",
+        "sha256": "ca03c511ad7915448b3dc71e32cc47d67ef862ff29e5928be6b69292bf53d6a4",
+        "size_bytes": 8576,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/arch/arm64/Makefile"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "arch/arm64/kernel/vmlinux.lds.S",
+        "sha256": "d4a190848b0228d2552a28b8c48ef397fcd3f76410ef89b7f607547f444a352f",
+        "size_bytes": 10503,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/arch/arm64/kernel/vmlinux.lds.S"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "include/asm-generic/vmlinux.lds.h",
+        "sha256": "a225a0f1424e1c8771ebec988d3ef85382d67fac3cf0276842cab73bedc74f3b",
+        "size_bytes": 34277,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/include/asm-generic/vmlinux.lds.h"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "include/linux/export-internal.h",
+        "sha256": "851bacf90bc83a17862d734604dc91d644dfedc173d3ea7218a7873653115d70",
+        "size_bytes": 2354,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/include/linux/export-internal.h"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "kernel/kallsyms.c",
+        "sha256": "a5af43d0062179f606f7a6d4f51e319ea4d3805ea6fe8c242bff15b326428bab",
+        "size_bytes": 22750,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/kernel/kallsyms.c"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "kernel/module/internal.h",
+        "sha256": "bc8c8a4542d277f7c16f52aa11aceccdab3106b3f45f7f65d0cfb35e0143194a",
+        "size_bytes": 13128,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/kernel/module/internal.h"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "kernel/module/main.c",
+        "sha256": "4aee1e6e6f0fe3ba14bd03e36f4e0382a906eec69f0b08d967df2358bf8be5c1",
+        "size_bytes": 100983,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/kernel/module/main.c"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "kernel/module/version.c",
+        "sha256": "87acf846c68e0ac7678924b1faecd1ebaa666c9093b8df0ef7f58f6e8e49388e",
+        "size_bytes": 3705,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/kernel/module/version.c"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "scripts/kallsyms.c",
+        "sha256": "9da30067d42f0a5bee23f5234c654efa2a59d83b44c0fea71859e583735523f2",
+        "size_bytes": 18126,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/scripts/kallsyms.c"
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "path": "scripts/mksysmap",
+        "sha256": "3b2ad8da5cff1a8018f1dfe6cf750282b956f7ef3e4f41d35a2f5619679dacd2",
+        "size_bytes": 2054,
+        "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/scripts/mksysmap"
+      }
+    ],
+    "table_pairing": "same index in independently name-sorted normal or GPL symbol and CRC tables"
+  },
+  "kallsyms": {
+    "all_markers_and_name_index_verified": true,
+    "decimal_anchor_occurrences": 46,
+    "marker_count": 492,
+    "name_array_bytes": 1998651,
+    "raw_base_used_for_file_mapping": false,
+    "self_anchor_offset_delta": 0,
+    "self_symbol_count_verified": 8,
+    "structural_token_candidates": 1,
+    "symbol_count": 125924,
+    "table_file_offsets": {
+      "kallsyms_markers": 23078376,
+      "kallsyms_names": 21079720,
+      "kallsyms_num_syms": 21079712,
+      "kallsyms_offsets": 23081768,
+      "kallsyms_relative_base": 23585464,
+      "kallsyms_seqs_of_names": 23585472,
+      "kallsyms_token_index": 23081256,
+      "kallsyms_token_table": 23080344
+    },
+    "verified_layout_candidates": 1
+  },
+  "kernel": {
+    "data_endian": "little",
+    "declared_memory_size_including_bss": 40697856,
+    "exact_stock_source_identity_verified": false,
+    "format_configuration": {
+      "CONFIG_HAVE_ARCH_PREL32_RELOCATIONS": "y",
+      "CONFIG_KALLSYMS": "y",
+      "CONFIG_KALLSYMS_ALL": "y",
+      "CONFIG_MODVERSIONS": "y"
+    },
+    "ikconfig_sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+    "image_file_size_bytes": 39963136,
+    "image_header_flags": 10,
+    "image_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "memory_extent_is_physical_partition_capacity": false,
+    "page_size_bytes": 4096,
+    "release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k"
+  },
+  "module_layout_example": {
+    "class": "normal",
+    "crc": "0xe976b219",
+    "crc_file_offset": 25828968,
+    "index": 1983,
+    "namespace": "",
+    "record_file_offset": 25738068,
+    "value_file_offset": 1875804
+  },
+  "namespace_observation": {
+    "kernel_export_namespace": "MINIDUMP",
+    "module_family": "vendor",
+    "module_name": "zram",
+    "module_sha256": "7315cd4effbe0bc8e4ada9364732a1adb3219988bc9b8c3337ed2dde1b5efea4",
+    "runtime_namespace_or_license_admission_verified": false,
+    "section_file_offset": 98648,
+    "section_size_bytes": 356,
+    "selected_fields_in_original_order": [
+      "license=Dual BSD/GPL",
+      "import_ns=MINIDUMP"
+    ],
+    "static_namespace_declaration_matches_export": true,
+    "symbol": "si_swapinfo"
+  },
+  "observed_date": "2026-08-27",
+  "provenance": {
+    "existing_input_avb_failures_changed": false,
+    "input_avb_status": "failed",
+    "origin_url": null,
+    "origin_verified": false,
+    "package_kind": "user-provided modified Xiaomi.eu ZIP",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69"
+  },
+  "recovered_exports": {
+    "all_record_labels_and_value_symbols_crosschecked": true,
+    "all_records_equal_between_readers": true,
+    "gpl": 5522,
+    "non_file_backed_values_within_memory_extent": 58,
+    "normal": 3375,
+    "normalized_map_sha256": "85514487c8c45c915b29937b8ab235bebbf5c209d011dd1d8cfee3bce661e122",
+    "total": 8897
+  },
+  "schema_version": 1,
+  "scope": {
+    "all_stock_module_imports_checked": false,
+    "description": "Static kernel export CRC check for the previously unresolved zram/zsmalloc family imports",
+    "distinct_module_payloads_represented": 4,
+    "families": [
+      "vendor",
+      "gki"
+    ],
+    "full_stock_module_instances": 914,
+    "historical_pair_receipts_modified": false,
+    "prior_import_tables_reused": true,
+    "prior_public_record": "research/zram-module-plan.json",
+    "recorded_module_instances_represented": 6
+  },
+  "selected_imports": {
+    "distinct_kernel_symbols": 263,
+    "family_expectation_total": 359,
+    "gki": {
+      "expectation_count": 115,
+      "match_count": 115,
+      "mismatch_count": 0,
+      "missing_count": 0,
+      "nonempty_export_namespace_count": 0
+    },
+    "mixed_family_zs_malloc_mismatch_unchanged": true,
+    "other_module_imports_checked": false,
+    "pair_owned_expectations_excluded_per_family": 10,
+    "selected_crc_check_passed": true,
+    "shared_kernel_symbols": 96,
+    "vendor": {
+      "expectation_count": 244,
+      "match_count": 244,
+      "mismatch_count": 0,
+      "missing_count": 0,
+      "nonempty_export_namespace_count": 1
+    }
+  },
+  "synthetic_validation": {
+    "independent_parser_tests": 18,
+    "modinfo_observer_checks": 2,
+    "primary_parser_tests": 15,
+    "primary_test_log": {
+      "path": "reports/kernel-export-recovery-tests-v2.log",
+      "sha256": "0116382f261175f2b19841a40531cc78008b71e8ff158ad26115b7bc272197eb",
+      "size_bytes": 2701
+    },
+    "tracked_tests_reparse_private_firmware": false
+  },
+  "validation_limits": {
+    "all_914_module_instances_checked": false,
+    "firmware_executed": false,
+    "firmware_uploaded": false,
+    "full_kernel_abi_verified": false,
+    "guest_accessed": false,
+    "image_mounted": false,
+    "kernel_or_module_bytes_modified": false,
+    "native_features_tested": false,
+    "origin_authenticated": false,
+    "phone_accessed": false,
+    "protected_symbol_policy_verified": false,
+    "runtime_gpl_license_admission_verified": false,
+    "runtime_module_load_tested": false,
+    "runtime_namespace_admission_verified": false,
+    "signature_trust_verified": false,
+    "stock_source_rebuilt": false
+  }
+}
