@@ -1,0 +1,1280 @@
+{
+  "allocator_abi": {
+    "all_exports_have_checked_definitions_and_prel32_relocations": true,
+    "crc_tables_are_direct_unrelocated_little_endian_u32": true,
+    "different_family_mismatching_symbols": [
+      "zs_malloc"
+    ],
+    "other_kernel_or_module_exports_verified": false,
+    "same_family_all_ten_crc_match": true,
+    "same_named_providers_must_not_be_mixed": true,
+    "symbols": {
+      "zs_compact": {
+        "gki": {
+          "zram_expected_crc": "0x1adb0f8b",
+          "zsmalloc_export_crc": "0x1adb0f8b"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x1adb0f8b",
+          "zsmalloc_export_crc": "0x1adb0f8b"
+        }
+      },
+      "zs_create_pool": {
+        "gki": {
+          "zram_expected_crc": "0x47767183",
+          "zsmalloc_export_crc": "0x47767183"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x47767183",
+          "zsmalloc_export_crc": "0x47767183"
+        }
+      },
+      "zs_destroy_pool": {
+        "gki": {
+          "zram_expected_crc": "0x9ec155af",
+          "zsmalloc_export_crc": "0x9ec155af"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x9ec155af",
+          "zsmalloc_export_crc": "0x9ec155af"
+        }
+      },
+      "zs_free": {
+        "gki": {
+          "zram_expected_crc": "0x67f232bf",
+          "zsmalloc_export_crc": "0x67f232bf"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x67f232bf",
+          "zsmalloc_export_crc": "0x67f232bf"
+        }
+      },
+      "zs_get_total_pages": {
+        "gki": {
+          "zram_expected_crc": "0x1adb0f8b",
+          "zsmalloc_export_crc": "0x1adb0f8b"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x1adb0f8b",
+          "zsmalloc_export_crc": "0x1adb0f8b"
+        }
+      },
+      "zs_huge_class_size": {
+        "gki": {
+          "zram_expected_crc": "0xa8db768c",
+          "zsmalloc_export_crc": "0xa8db768c"
+        },
+        "vendor": {
+          "zram_expected_crc": "0xa8db768c",
+          "zsmalloc_export_crc": "0xa8db768c"
+        }
+      },
+      "zs_malloc": {
+        "gki": {
+          "zram_expected_crc": "0x36f39fe1",
+          "zsmalloc_export_crc": "0x36f39fe1"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x1804f5bc",
+          "zsmalloc_export_crc": "0x1804f5bc"
+        }
+      },
+      "zs_map_object": {
+        "gki": {
+          "zram_expected_crc": "0xe372115a",
+          "zsmalloc_export_crc": "0xe372115a"
+        },
+        "vendor": {
+          "zram_expected_crc": "0xe372115a",
+          "zsmalloc_export_crc": "0xe372115a"
+        }
+      },
+      "zs_pool_stats": {
+        "gki": {
+          "zram_expected_crc": "0xcb0c1dfc",
+          "zsmalloc_export_crc": "0xcb0c1dfc"
+        },
+        "vendor": {
+          "zram_expected_crc": "0xcb0c1dfc",
+          "zsmalloc_export_crc": "0xcb0c1dfc"
+        }
+      },
+      "zs_unmap_object": {
+        "gki": {
+          "zram_expected_crc": "0x67f232bf",
+          "zsmalloc_export_crc": "0x67f232bf"
+        },
+        "vendor": {
+          "zram_expected_crc": "0x67f232bf",
+          "zsmalloc_export_crc": "0x67f232bf"
+        }
+      }
+    }
+  },
+  "candidate_integration": {
+    "authored_selector_fix": {
+      "commit": "3de727e76a5d7fb92bf25682aabe0ffc3c0235bd",
+      "kernel_inputs_included_at_product_scope": true,
+      "missing_selector_is_error": true,
+      "product_source": {
+        "path": "device/xiaomi/nezha/device.mk",
+        "sha256": "81243400a8c5bbd2e8fb83d3f250ccffcd4fa60f4be5b4bb1266d5cc0a07adac",
+        "size_bytes": 1611
+      },
+      "separate_system_blocklist_retained": true,
+      "staged_into_guest_at_review": false,
+      "stock_vendor_selector_copy_requested": true,
+      "target_image_path_readback_verified": false,
+      "vendor_general_blocklist_changed": false
+    },
+    "current_wrapper_system_blocklist_variable": "BOARD_SYSTEM_KERNEL_MODULES_BLOCKLIST_FILE",
+    "default_selected_family": "vendor",
+    "inspected_snapshot": {
+      "admission_path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v5/admission.json",
+      "admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+      "installation_receipt_path": "reports/device-v5-installation.json",
+      "installation_receipt_sha256": "d391deb862f4254b1018d30d02d4da2cf64cba2d53810cc5e5a726a7c5c0a23c",
+      "later_authored_fix_commit": "3de727e76a5d7fb92bf25682aabe0ffc3c0235bd",
+      "later_fix_staged_into_guest": false,
+      "name": "nezha-xiaomi-eu-framework-v5",
+      "product_source": {
+        "path": "device/xiaomi/nezha/device.mk",
+        "sha256": "81f49aa8ece7f367457094684b159b9a2182557c298262b2eb5d3c692b57be9f",
+        "size_bytes": 822
+      },
+      "stock_vendor_selector_copy_requested": false,
+      "target_image_path_readback_verified": false
+    },
+    "install_paths_required": [
+      {
+        "names": [
+          "zram",
+          "zsmalloc"
+        ],
+        "path": "vendor_dlkm/lib/modules/system_dlkm.modules.blocklist",
+        "role": "explicit prefilter consumed by retained stock system loader",
+        "target_image_readback_verified": false
+      },
+      {
+        "names": [
+          "zram",
+          "zsmalloc"
+        ],
+        "path": "system_dlkm/lib/modules/modules.blocklist",
+        "role": "system-local blocklist consumed by a stage-scoped dependency loader",
+        "target_image_readback_verified": false
+      }
+    ],
+    "keep_all_four_distinct_payloads": true,
+    "kernel_modversions_signing_selinux_and_avb_checks_preserved": true,
+    "preserve_module_bytes_and_signatures": true,
+    "preserve_original_ordered_lists_as_evidence": true,
+    "regenerate_dependency_indexes_for_each_installed_stage": true,
+    "switch_to_list_driven_system_loading_requires_review_of_additional_21_modules": true,
+    "vendor_general_blocklist_must_exclude_pair": true,
+    "wrapper_only_is_not_proof_of_stock_selector_installation": true
+  },
+  "device": "nezha",
+  "evidence": {
+    "exports_and_pairs_sha256": "ac0c0b17d969315f6178e61be0f2b652afa2898ea468139d95775a252c043436",
+    "independent_observations_sha256": "4cacba362d620578038d74e59b113387989f429b1b239cb6d351ddcc482ed6e0",
+    "kernel_bundle_receipt_sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+    "original_boot_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+    "original_crc_receipt_sha256": "c57b374acf5830a23ba79b0437674e1a9f8d26d68eecc55eea65f43230dd2c4a",
+    "receipt": {
+      "path": "artifacts/source-contracts/nezha-zram-plan-v1/receipt.json",
+      "sha256": "44669f2a0d2830957f3227ced8bd79d155b82a32c82e00bd3462b3b4c38efa41"
+    },
+    "source_observations_sha256": "a47fed046482d0df6acd15851e0e64f6b613b9b75c04d56da5e4935a97136fdc",
+    "stock_loader_capture_receipt_sha256": "b77834aa15e71615fab6cff54889a5fff3a5ecd12948d4c1b71cc696bf4a0ff0"
+  },
+  "instances": [
+    {
+      "bundle_path": "modules/vendor_ramdisk/zram.ko",
+      "family": "vendor",
+      "sha256": "7315cd4effbe0bc8e4ada9364732a1adb3219988bc9b8c3337ed2dde1b5efea4"
+    },
+    {
+      "bundle_path": "modules/vendor_ramdisk/zsmalloc.ko",
+      "family": "vendor",
+      "sha256": "5d936bcf3972ad25411f03440794d29abb1133bc77492cde63b79c2d47b168da"
+    },
+    {
+      "bundle_path": "modules/vendor_dlkm/zram.ko",
+      "family": "vendor",
+      "sha256": "7315cd4effbe0bc8e4ada9364732a1adb3219988bc9b8c3337ed2dde1b5efea4"
+    },
+    {
+      "bundle_path": "modules/vendor_dlkm/zsmalloc.ko",
+      "family": "vendor",
+      "sha256": "5d936bcf3972ad25411f03440794d29abb1133bc77492cde63b79c2d47b168da"
+    },
+    {
+      "bundle_path": "modules/system_dlkm/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/kernel/drivers/block/zram/zram.ko",
+      "family": "gki",
+      "sha256": "ecacbd66a0be40d52524dfd56d6782d698512fa15495c7cae4e42ae25a6d34ac"
+    },
+    {
+      "bundle_path": "modules/system_dlkm/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/kernel/mm/zsmalloc.ko",
+      "family": "gki",
+      "sha256": "f5d5ce5e8a3f58151f1dc9070cbf5efaf65de515a74707c442977cbdb79b30fd"
+    }
+  ],
+  "kernel": {
+    "base_kernel_export_crcs_verified": false,
+    "explicit_config": {
+      "CONFIG_BASIC_MODVERSIONS": "y",
+      "CONFIG_EXTENDED_MODVERSIONS": "y",
+      "CONFIG_MODULE_SIG": "y",
+      "CONFIG_MODULE_SIG_PROTECT": "y",
+      "CONFIG_MODVERSIONS": "y",
+      "CONFIG_ZRAM": "m",
+      "CONFIG_ZSMALLOC": "m"
+    },
+    "ikconfig_sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+    "image_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k"
+  },
+  "load_lists": [
+    {
+      "area": "vendor_ramdisk",
+      "kind": "modules.blocklist",
+      "noncomment_count": 60,
+      "relevant_entries": [],
+      "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+      "size_bytes": 1325,
+      "source_member": "lib/modules/modules.blocklist",
+      "source_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "unique_noncomment_count": 59
+    },
+    {
+      "area": "vendor_ramdisk",
+      "kind": "modules.dep",
+      "noncomment_count": 430,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 265,
+          "text": "/lib/modules/zsmalloc.ko:"
+        },
+        {
+          "noncomment_index_1based": 402,
+          "text": "/lib/modules/zram.ko: /lib/modules/zsmalloc.ko"
+        }
+      ],
+      "sha256": "0ab564376d473e7ba7c5e3b1c797b57f93500d43d60eef999072785a76e20b34",
+      "size_bytes": 134144,
+      "source_member": "lib/modules/modules.dep",
+      "source_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "unique_noncomment_count": 430
+    },
+    {
+      "area": "vendor_ramdisk",
+      "kind": "modules.load",
+      "noncomment_count": 157,
+      "relevant_entries": [],
+      "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+      "size_bytes": 2404,
+      "source_member": "lib/modules/modules.load",
+      "source_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "unique_noncomment_count": 154
+    },
+    {
+      "area": "vendor_ramdisk",
+      "kind": "modules.load.recovery",
+      "noncomment_count": 435,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 152,
+          "text": "zram.ko"
+        },
+        {
+          "noncomment_index_1based": 408,
+          "text": "zsmalloc.ko"
+        }
+      ],
+      "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+      "size_bytes": 7205,
+      "source_member": "lib/modules/modules.load.recovery",
+      "source_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "unique_noncomment_count": 424
+    },
+    {
+      "area": "vendor_ramdisk",
+      "kind": "modules.softdep",
+      "noncomment_count": 22,
+      "relevant_entries": [],
+      "sha256": "646495a49690d0b527480b26cecf8d8afc5834a9b553b1264412382d2c5aa124",
+      "size_bytes": 926,
+      "source_member": "lib/modules/modules.softdep",
+      "source_receipt_sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "unique_noncomment_count": 22
+    },
+    {
+      "area": "vendor_dlkm",
+      "kind": "modules.blocklist",
+      "noncomment_count": 60,
+      "relevant_entries": [],
+      "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+      "size_bytes": 1325,
+      "source_member": "/lib/modules/modules.blocklist",
+      "source_receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+      "unique_noncomment_count": 59
+    },
+    {
+      "area": "vendor_dlkm",
+      "kind": "modules.dep",
+      "noncomment_count": 381,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 229,
+          "text": "/vendor/lib/modules/zsmalloc.ko:"
+        },
+        {
+          "noncomment_index_1based": 356,
+          "text": "/vendor/lib/modules/zram.ko: /vendor/lib/modules/zsmalloc.ko"
+        }
+      ],
+      "sha256": "8d6caedcfe7d69f3e193f08ef387003bb750ca39e1c2048b16b66cfaf3625706",
+      "size_bytes": 69975,
+      "source_member": "/lib/modules/modules.dep",
+      "source_receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+      "unique_noncomment_count": 381
+    },
+    {
+      "area": "vendor_dlkm",
+      "kind": "modules.load",
+      "noncomment_count": 576,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 1,
+          "text": "zram.ko"
+        },
+        {
+          "noncomment_index_1based": 257,
+          "text": "zsmalloc.ko"
+        }
+      ],
+      "sha256": "a359f35fdca6f62971111a1c98a09011fcc69ecc90216083cbd8bd74588eb631",
+      "size_bytes": 9795,
+      "source_member": "/lib/modules/modules.load",
+      "source_receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+      "unique_noncomment_count": 381
+    },
+    {
+      "area": "vendor_dlkm",
+      "kind": "modules.softdep",
+      "noncomment_count": 26,
+      "relevant_entries": [],
+      "sha256": "38949ab45d1c5af3c8cbe69eb05e6acde85936a05b870a3e380820126e85c476",
+      "size_bytes": 1139,
+      "source_member": "/lib/modules/modules.softdep",
+      "source_receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+      "unique_noncomment_count": 26
+    },
+    {
+      "area": "vendor_dlkm",
+      "kind": "system_dlkm.modules.blocklist",
+      "noncomment_count": 2,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 1,
+          "text": "blocklist zram"
+        },
+        {
+          "noncomment_index_1based": 2,
+          "text": "blocklist zsmalloc"
+        }
+      ],
+      "sha256": "370cb88e7e8915f34e94bd6b93616f263be8a3523adc15fb554a712dc016a03f",
+      "size_bytes": 151,
+      "source_member": "/lib/modules/system_dlkm.modules.blocklist",
+      "source_receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+      "unique_noncomment_count": 2
+    },
+    {
+      "area": "system_dlkm",
+      "kind": "modules.dep",
+      "noncomment_count": 103,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 3,
+          "text": "kernel/mm/zsmalloc.ko:"
+        },
+        {
+          "noncomment_index_1based": 13,
+          "text": "kernel/drivers/block/zram/zram.ko: kernel/mm/zsmalloc.ko"
+        }
+      ],
+      "sha256": "6bf280c1b981d2f7e3c42b874162e8a1a801d5e36fcc555026b7b512fc368efe",
+      "size_bytes": 6703,
+      "source_member": "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/modules.dep",
+      "source_receipt_sha256": "12ec2a9a382554686c84acb0db121c23aba8d50643193c8912ff9fc88306878d",
+      "unique_noncomment_count": 103
+    },
+    {
+      "area": "system_dlkm",
+      "kind": "modules.load",
+      "noncomment_count": 82,
+      "relevant_entries": [
+        {
+          "noncomment_index_1based": 3,
+          "text": "kernel/mm/zsmalloc.ko"
+        },
+        {
+          "noncomment_index_1based": 13,
+          "text": "kernel/drivers/block/zram/zram.ko"
+        }
+      ],
+      "sha256": "b9db7e970fab5e3f0e5e7b55285b668ca0a7b7aa1d62a249ca02d4e09025d6ff",
+      "size_bytes": 2728,
+      "source_member": "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/modules.load",
+      "source_receipt_sha256": "12ec2a9a382554686c84acb0db121c23aba8d50643193c8912ff9fc88306878d",
+      "unique_noncomment_count": 82
+    },
+    {
+      "area": "system_dlkm",
+      "kind": "modules.softdep",
+      "noncomment_count": 0,
+      "relevant_entries": [],
+      "sha256": "ac2de753255c506934be29e69261f1485f51ee9cf9c2bf467bcc0c4cf95f8713",
+      "size_bytes": 55,
+      "source_member": "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/modules.softdep",
+      "source_receipt_sha256": "12ec2a9a382554686c84acb0db121c23aba8d50643193c8912ff9fc88306878d",
+      "unique_noncomment_count": 0
+    }
+  ],
+  "module_families": {
+    "gki": {
+      "modules": {
+        "zram": {
+          "appended_signature_marker_present": true,
+          "declared_dependencies": [
+            "zsmalloc"
+          ],
+          "exports": {},
+          "import_version_count": 90,
+          "internal_module_name": "zram",
+          "sha256": "ecacbd66a0be40d52524dfd56d6782d698512fa15495c7cae4e42ae25a6d34ac",
+          "signature_trusted_by_kernel": null,
+          "size_bytes": 77338
+        },
+        "zsmalloc": {
+          "appended_signature_marker_present": true,
+          "declared_dependencies": [],
+          "exports": {
+            "zs_compact": {
+              "checked_export_relocations": 3,
+              "crc": "0x1adb0f8b",
+              "crc_file_offset": 184,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 0,
+              "function_offset": 5988,
+              "function_section": ".text",
+              "function_size_bytes": 3176,
+              "ksymtab_section_offset": 0,
+              "namespace": ""
+            },
+            "zs_create_pool": {
+              "checked_export_relocations": 3,
+              "crc": "0x47767183",
+              "crc_file_offset": 188,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 4,
+              "function_offset": 9184,
+              "function_section": ".text",
+              "function_size_bytes": 1172,
+              "ksymtab_section_offset": 12,
+              "namespace": ""
+            },
+            "zs_destroy_pool": {
+              "checked_export_relocations": 3,
+              "crc": "0x9ec155af",
+              "crc_file_offset": 192,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 8,
+              "function_offset": 10360,
+              "function_section": ".text",
+              "function_size_bytes": 584,
+              "ksymtab_section_offset": 24,
+              "namespace": ""
+            },
+            "zs_free": {
+              "checked_export_relocations": 3,
+              "crc": "0x67f232bf",
+              "crc_file_offset": 196,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 12,
+              "function_offset": 4808,
+              "function_section": ".text",
+              "function_size_bytes": 536,
+              "ksymtab_section_offset": 36,
+              "namespace": ""
+            },
+            "zs_get_total_pages": {
+              "checked_export_relocations": 3,
+              "crc": "0x1adb0f8b",
+              "crc_file_offset": 200,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 16,
+              "function_offset": 72,
+              "function_section": ".text",
+              "function_size_bytes": 8,
+              "ksymtab_section_offset": 48,
+              "namespace": ""
+            },
+            "zs_huge_class_size": {
+              "checked_export_relocations": 3,
+              "crc": "0xa8db768c",
+              "crc_file_offset": 204,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 20,
+              "function_offset": 1352,
+              "function_section": ".text",
+              "function_size_bytes": 12,
+              "ksymtab_section_offset": 60,
+              "namespace": ""
+            },
+            "zs_malloc": {
+              "checked_export_relocations": 3,
+              "crc": "0x36f39fe1",
+              "crc_file_offset": 208,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 24,
+              "function_offset": 1368,
+              "function_section": ".text",
+              "function_size_bytes": 1068,
+              "ksymtab_section_offset": 72,
+              "namespace": ""
+            },
+            "zs_map_object": {
+              "checked_export_relocations": 3,
+              "crc": "0xe372115a",
+              "crc_file_offset": 212,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 28,
+              "function_offset": 84,
+              "function_section": ".text",
+              "function_size_bytes": 676,
+              "ksymtab_section_offset": 84,
+              "namespace": ""
+            },
+            "zs_pool_stats": {
+              "checked_export_relocations": 3,
+              "crc": "0xcb0c1dfc",
+              "crc_file_offset": 216,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 32,
+              "function_offset": 9168,
+              "function_section": ".text",
+              "function_size_bytes": 12,
+              "ksymtab_section_offset": 96,
+              "namespace": ""
+            },
+            "zs_unmap_object": {
+              "checked_export_relocations": 3,
+              "crc": "0x67f232bf",
+              "crc_file_offset": 220,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 36,
+              "function_offset": 764,
+              "function_section": ".text",
+              "function_size_bytes": 584,
+              "ksymtab_section_offset": 108,
+              "namespace": ""
+            }
+          },
+          "import_version_count": 53,
+          "internal_module_name": "zsmalloc",
+          "sha256": "f5d5ce5e8a3f58151f1dc9070cbf5efaf65de515a74707c442977cbdb79b30fd",
+          "signature_trusted_by_kernel": null,
+          "size_bytes": 62066
+        }
+      },
+      "remaining_distinct_import_expectations": 115,
+      "remaining_import_providers_verified": false,
+      "vermagic_release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k"
+    },
+    "vendor": {
+      "modules": {
+        "zram": {
+          "appended_signature_marker_present": false,
+          "declared_dependencies": [
+            "zsmalloc"
+          ],
+          "exports": {
+            "wakeup_xswapds": {
+              "checked_export_relocations": 3,
+              "crc": "0xd272d446",
+              "crc_file_offset": 76,
+              "crc_section": "__kcrctab",
+              "crc_section_offset": 0,
+              "function_offset": 54872,
+              "function_section": ".text",
+              "function_size_bytes": 416,
+              "ksymtab_section_offset": 0,
+              "namespace": ""
+            }
+          },
+          "import_version_count": 236,
+          "internal_module_name": "zram",
+          "sha256": "7315cd4effbe0bc8e4ada9364732a1adb3219988bc9b8c3337ed2dde1b5efea4",
+          "signature_trusted_by_kernel": null,
+          "size_bytes": 266528
+        },
+        "zsmalloc": {
+          "appended_signature_marker_present": false,
+          "declared_dependencies": [],
+          "exports": {
+            "zs_compact": {
+              "checked_export_relocations": 3,
+              "crc": "0x1adb0f8b",
+              "crc_file_offset": 208,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 0,
+              "function_offset": 6104,
+              "function_section": ".text",
+              "function_size_bytes": 3172,
+              "ksymtab_section_offset": 0,
+              "namespace": ""
+            },
+            "zs_create_pool": {
+              "checked_export_relocations": 3,
+              "crc": "0x47767183",
+              "crc_file_offset": 212,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 4,
+              "function_offset": 9296,
+              "function_section": ".text",
+              "function_size_bytes": 1108,
+              "ksymtab_section_offset": 12,
+              "namespace": ""
+            },
+            "zs_destroy_pool": {
+              "checked_export_relocations": 3,
+              "crc": "0x9ec155af",
+              "crc_file_offset": 216,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 8,
+              "function_offset": 10408,
+              "function_section": ".text",
+              "function_size_bytes": 584,
+              "ksymtab_section_offset": 24,
+              "namespace": ""
+            },
+            "zs_free": {
+              "checked_export_relocations": 3,
+              "crc": "0x67f232bf",
+              "crc_file_offset": 220,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 12,
+              "function_offset": 4924,
+              "function_section": ".text",
+              "function_size_bytes": 536,
+              "ksymtab_section_offset": 36,
+              "namespace": ""
+            },
+            "zs_get_total_pages": {
+              "checked_export_relocations": 3,
+              "crc": "0x1adb0f8b",
+              "crc_file_offset": 224,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 16,
+              "function_offset": 72,
+              "function_section": ".text",
+              "function_size_bytes": 8,
+              "ksymtab_section_offset": 48,
+              "namespace": ""
+            },
+            "zs_huge_class_size": {
+              "checked_export_relocations": 3,
+              "crc": "0xa8db768c",
+              "crc_file_offset": 228,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 20,
+              "function_offset": 1476,
+              "function_section": ".text",
+              "function_size_bytes": 12,
+              "ksymtab_section_offset": 60,
+              "namespace": ""
+            },
+            "zs_lookup_class_index": {
+              "checked_export_relocations": 3,
+              "crc": "0xa1b94edd",
+              "crc_file_offset": 232,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 24,
+              "function_offset": 4,
+              "function_section": ".text",
+              "function_size_bytes": 64,
+              "ksymtab_section_offset": 72,
+              "namespace": ""
+            },
+            "zs_malloc": {
+              "checked_export_relocations": 3,
+              "crc": "0x1804f5bc",
+              "crc_file_offset": 236,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 28,
+              "function_offset": 1492,
+              "function_section": ".text",
+              "function_size_bytes": 1068,
+              "ksymtab_section_offset": 84,
+              "namespace": ""
+            },
+            "zs_map_object": {
+              "checked_export_relocations": 3,
+              "crc": "0xe372115a",
+              "crc_file_offset": 240,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 32,
+              "function_offset": 808,
+              "function_section": ".text",
+              "function_size_bytes": 76,
+              "ksymtab_section_offset": 96,
+              "namespace": ""
+            },
+            "zs_map_object_straddle_info": {
+              "checked_export_relocations": 3,
+              "crc": "0x3ed5ddb8",
+              "crc_file_offset": 244,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 36,
+              "function_offset": 84,
+              "function_section": ".text",
+              "function_size_bytes": 28,
+              "ksymtab_section_offset": 108,
+              "namespace": ""
+            },
+            "zs_pool_stats": {
+              "checked_export_relocations": 3,
+              "crc": "0xcb0c1dfc",
+              "crc_file_offset": 248,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 40,
+              "function_offset": 9280,
+              "function_section": ".text",
+              "function_size_bytes": 12,
+              "ksymtab_section_offset": 120,
+              "namespace": ""
+            },
+            "zs_unmap_object": {
+              "checked_export_relocations": 3,
+              "crc": "0x67f232bf",
+              "crc_file_offset": 252,
+              "crc_section": "__kcrctab_gpl",
+              "crc_section_offset": 44,
+              "function_offset": 888,
+              "function_section": ".text",
+              "function_size_bytes": 584,
+              "ksymtab_section_offset": 132,
+              "namespace": ""
+            }
+          },
+          "import_version_count": 46,
+          "internal_module_name": "zsmalloc",
+          "sha256": "5d936bcf3972ad25411f03440794d29abb1133bc77492cde63b79c2d47b168da",
+          "signature_trusted_by_kernel": null,
+          "size_bytes": 56296
+        }
+      },
+      "remaining_distinct_import_expectations": 244,
+      "remaining_import_providers_verified": false,
+      "vermagic_release": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k"
+    }
+  },
+  "observed_date": "2026-08-27",
+  "provenance": {
+    "input_avb_status": "failed",
+    "origin_url": null,
+    "origin_verified": false,
+    "package_kind": "user-provided modified Xiaomi.eu ZIP",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69"
+  },
+  "schema_version": 1,
+  "scope": "Static provider exports and boot-stage loading requirements; no runtime module load validation",
+  "source_integration": {
+    "files": [
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "include/linux/zsmalloc.h",
+        "sha256": "c447e9f904822fa79255f02e98ecb377516118e4c59f33b6f437144e615a4bf6",
+        "size_bytes": 1746
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "include/linux/export.h",
+        "sha256": "26653a86d8208e2f176d6da31c47258a448875ebde6dff972cdd8d74938bb6c1",
+        "size_bytes": 2476
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "include/linux/module.h",
+        "sha256": "aa56aa295114d8262cfd9fabd1fbc88b1ef177f0e509614d4e6ba30942dea366",
+        "size_bytes": 28184
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "mm/zsmalloc.c",
+        "sha256": "e69f9240fc50424cb6b36eaeada3eaf685520e1d69407113ac3a875b05cfc654",
+        "size_bytes": 56796
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "scripts/mod/modpost.c",
+        "sha256": "58dcace630b6d46430edd427aee028a7d0a44912db250cec512181300e9b2baa",
+        "size_bytes": 61286
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "include/asm-generic/vmlinux.lds.h",
+        "sha256": "a225a0f1424e1c8771ebec988d3ef85382d67fac3cf0276842cab73bedc74f3b",
+        "size_bytes": 34277
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "kernel/module/version.c",
+        "sha256": "87acf846c68e0ac7678924b1faecd1ebaa666c9093b8df0ef7f58f6e8e49388e",
+        "size_bytes": 3705
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "kernel/module/main.c",
+        "sha256": "4aee1e6e6f0fe3ba14bd03e36f4e0382a906eec69f0b08d967df2358bf8be5c1",
+        "size_bytes": 100983
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "libmodprobe/libmodprobe.cpp",
+        "sha256": "55db6d39f7c5e565d7920421676dc2f361de95fa1060d33c125495a6896f63d5",
+        "size_bytes": 11614
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "libmodprobe/include/modprobe/modprobe.h",
+        "sha256": "96babfd6c2feac9f19f65c7052a48d5a89ce873d485f5833bba3d1b300c57f69",
+        "size_bytes": 3091
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "init/first_stage_init.cpp",
+        "sha256": "dd69639b649c49aaa8513f05f2cf0dc7bf2695d564018ae1f31ec31ea2d769a1",
+        "size_bytes": 22395
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "init/first_stage_mount.cpp",
+        "sha256": "35b3c701209d5522661279e5e081cc213119b8703890fe7b54ea7166f2886410",
+        "size_bytes": 33929
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "init/builtins.cpp",
+        "sha256": "bc3968c342470bc6604b7f41ea3255cc9fa66349a5274e9985b4bdf3f4beda91",
+        "size_bytes": 48133
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "android/ACK_SHA",
+        "sha256": "8b105941b7278fcb915efcac4b50ffd7418a2ce9bac92ebda12e0b73bb00d079",
+        "size_bytes": 67
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "include/linux/zsmalloc.h",
+        "sha256": "110e34318df830d475141d6f71c05841b533edfa9bbb9b4a2eca6545d3a17867",
+        "size_bytes": 1871
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "mm/zsmalloc.c",
+        "sha256": "3487c0ee11ccf788d58b741ec7a59432caecbc7176ec6141bd1a50b1755b4ff4",
+        "size_bytes": 57806
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "mm/modules.bzl",
+        "sha256": "f6fcf8bf978132688e60cf550d5f257dc5700faaf9bdcdd47427ac42ae09460d",
+        "size_bytes": 239
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "drivers/block/zram/modules.bzl",
+        "sha256": "30a5a43a8f0cb0360b130fc60c7976045504bbc06257dd84fecd3a6f7e2400b6",
+        "size_bytes": 563
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "drivers/block/zram/zram_drv.c",
+        "sha256": "e6c673ccda7087ecea9359f24f7479b75a543d9f789a8018eff6207adb856235",
+        "size_bytes": 76760
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "drivers/soc/qcom/qpace/modules.bzl",
+        "sha256": "30936a37f0d1d52939ae7ef276c273a62166a71f545ff3e409e8567cdf0ca598",
+        "size_bytes": 459
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "drivers/soc/qcom/qpace/qpace.h",
+        "sha256": "326ce62f81d7810e95907320d47aeec47e7f030502dcea3c186ca75018a1affd",
+        "size_bytes": 6348
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "configs/canoe_perf.bzl",
+        "sha256": "efa1a94176ead2177fd3d2cde5e46885130a6fa9dc710da22c60d9ded2ae6379",
+        "size_bytes": 16287
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "kleaf-scripts/modules_unprotected.bzl",
+        "sha256": "438f9c0633578f9a0051c267757a57f42fa45da3561d55a9b4d953e37c0d486c",
+        "size_bytes": 2257
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.systemdlkm_blocklist.msm.canoe",
+        "sha256": "370cb88e7e8915f34e94bd6b93616f263be8a3523adc15fb554a712dc016a03f",
+        "size_bytes": 151
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.list.msm.canoe",
+        "sha256": "95f4bcf9d38a43edacea17721cfbbf9409735ae74e9e5304be5ccb38c71ccd10",
+        "size_bytes": 1964
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.systemdlkm_blocklist.msm.popsicle",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.list.msm.popsicle",
+        "sha256": "4d04f8b684203cd0b8f1f0fef938c4b012873ebf41d698441f54af5ad0323ada",
+        "size_bytes": 52
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.systemdlkm_blocklist.msm.pudding",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.list.msm.pudding",
+        "sha256": "4d04f8b684203cd0b8f1f0fef938c4b012873ebf41d698441f54af5ad0323ada",
+        "size_bytes": 52
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.systemdlkm_blocklist.msm.pandora",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "group": "micode",
+        "path": "modules-lists/modules.list.msm.pandora",
+        "sha256": "69dd7dd60e6a5101fcb8b0bf192c27d0109c1823f850eeecea3fa08783599f99",
+        "size_bytes": 31
+      },
+      {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "group": "ack",
+        "path": "include/linux/export-internal.h",
+        "sha256": "851bacf90bc83a17862d734604dc91d644dfedc173d3ea7218a7873653115d70",
+        "size_bytes": 2354
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "libmodprobe/libmodprobe_ext.cpp",
+        "sha256": "0a22849293ac23f4e50c74c1a55b2100fb8ef0b571521c75b1fa578d5f75f497",
+        "size_bytes": 2738
+      },
+      {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "group": "evolution-system-core",
+        "path": "libmodprobe/module_config.cpp",
+        "sha256": "03d02755095806ba77201ced3246db643ed13aa0fbbb35c31e0bb595c1e7fc27",
+        "size_bytes": 11800
+      }
+    ],
+    "qpace": {
+      "canoe_literal_request": "n",
+      "captured_qpace_modules": 0,
+      "captured_zram_qpace_imports": 0,
+      "declared_target_config": "CONFIG_QTI_PAGE_COMPRESSION_ENGINE",
+      "effective_config_or_runtime_hardware_inferred": false,
+      "header_contains_disabled_stubs": true
+    },
+    "references": {
+      "ack": {
+        "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+        "repository": "https://android.googlesource.com/kernel/common",
+        "role": "ACK pin declared by MiCode, not established as the captured stock kernel source",
+        "tag": "android16-6.12-2025-06_r8"
+      },
+      "evolution_system_core": {
+        "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "repository": "https://github.com/Evolution-X/system_core",
+        "role": "candidate first-stage libmodprobe semantics, not identity of the captured vendor modprobe executable"
+      },
+      "micode": {
+        "branch": "popsicle-w-oss",
+        "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "repository": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource",
+        "role": "vendor/DDK source reference, not verified complete Nezha module source"
+      }
+    },
+    "required_before_source_replacement": [
+      "Build both vendor modules together against the chosen exact 4 KiB base and its generated headers and Module.symvers.",
+      "Resolve captured vendor source differences including wakeup_xswapds before claiming stock source equivalence.",
+      "Check every importer against authoritative kernel and module-provider export CRCs, namespaces and KMI lists; do not patch expected CRCs.",
+      "Verify signatures and protected-symbol policy with the chosen trusted kernel; do not adopt sibling signing reductions."
+    ],
+    "source_equivalence_gaps": {
+      "ack_and_micode_zs_malloc_literal_prototypes_match": true,
+      "captured_export_crc": "0xd272d446",
+      "captured_vendor_zram_extra_export": "wakeup_xswapds",
+      "different_crc_cause_established": false,
+      "export_present_in_pinned_micode_source_text": false,
+      "matching_prototype_is_not_abi_proof": true,
+      "source_search": {
+        "exit_code": 1,
+        "literal": "wakeup_xswapds",
+        "matching_lines": 0,
+        "revision": "45705be1220b4cfa8100516ad86711656c0b634e",
+        "scope": "all tracked files at the exact MiCode commit",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "vendor_zsmalloc_extra_exports": [
+        "zs_lookup_class_index",
+        "zs_map_object_straddle_info"
+      ]
+    },
+    "vendor_required_targets": [
+      {
+        "config": "CONFIG_ZSMALLOC",
+        "files": [
+          "mm/zsmalloc.c",
+          "include/linux/zsmalloc.h"
+        ],
+        "name": "mm/zsmalloc",
+        "out": "zsmalloc.ko"
+      },
+      {
+        "config": "CONFIG_ZRAM",
+        "declared_ddk_dependencies": [
+          "mm/zsmalloc",
+          "drivers/soc/qcom/qpace/qpace_drv"
+        ],
+        "files": [
+          "drivers/block/zram/zram_drv.c",
+          "drivers/block/zram/zcomp.c",
+          "drivers/block/zram/zram_drv.h",
+          "drivers/block/zram/zcomp.h",
+          "drivers/soc/qcom/qpace/qpace.h"
+        ],
+        "name": "drivers/block/zram/zram",
+        "out": "zram.ko"
+      }
+    ]
+  },
+  "stages": [
+    {
+      "id": "normal_first_stage",
+      "pair_explicitly_requested": [],
+      "request_area": "vendor_ramdisk",
+      "request_list": "modules.load",
+      "required_action": "Preserve the captured list; do not promote either pair into normal first-stage loading. Neither name is a hard/soft dependency of listed modules in the captured indexes.",
+      "runtime_loaded": null,
+      "selected_family": null
+    },
+    {
+      "id": "recovery_first_stage",
+      "pair_explicitly_requested": [
+        "zram",
+        "zsmalloc"
+      ],
+      "request_area": "vendor_ramdisk",
+      "request_list": "modules.load.recovery",
+      "required_action": "Use the ramdisk copies and a ramdisk-local dependency index. Keep original request order while the dependency loader inserts zsmalloc before zram.",
+      "required_insertion_order": [
+        "zsmalloc",
+        "zram"
+      ],
+      "runtime_loaded": null,
+      "selected_family": "vendor"
+    },
+    {
+      "blocked_family": "gki",
+      "excluded_names": [
+        "zram",
+        "zsmalloc"
+      ],
+      "id": "normal_system_dlkm",
+      "pair_explicitly_requested": [
+        "zsmalloc",
+        "zram"
+      ],
+      "request_area": "system_dlkm",
+      "required_action": "Keep GKI payloads distinct and excluded from this stage. Preserve the stock vendor-side selector and a system-local blocklist before the vendor pair can load.",
+      "runtime_loaded": null,
+      "selected_family": null
+    },
+    {
+      "id": "normal_vendor_dlkm",
+      "pair_explicitly_requested": [
+        "zram",
+        "zsmalloc"
+      ],
+      "request_area": "vendor_dlkm",
+      "request_list": "modules.load",
+      "required_action": "Use the vendor_dlkm copies and its own dependency index. The first configured module is zram; its hard dependency must load the matching allocator before insertion.",
+      "required_insertion_order": [
+        "zsmalloc",
+        "zram"
+      ],
+      "runtime_loaded": null,
+      "selected_family": "vendor"
+    }
+  ],
+  "stock_loader_policy": {
+    "init_rc": {
+      "artifact": "stock-init.qti.kernel.rc",
+      "capture_receipt_sha256": "558a271ef89837517f9bc52a1651a75a1a6159a6b026ce85945c06a837cbed8e",
+      "image_path": "/etc/init/hw/init.qti.kernel.rc",
+      "sha256": "c5a0ea38929744975e15d1acec7a2c4566572c75c40a0bdcbe8aaf9428f1de12",
+      "size_bytes": 8467
+    },
+    "init_trigger": "early-init",
+    "scripts": [
+      {
+        "image_path": "/bin/system_dlkm_modprobe.sh",
+        "sha256": "bf0bb64a007d9525389c96c2c509ff839f6d7fdd829860779d273513b18ced59",
+        "size_bytes": 1774
+      },
+      {
+        "image_path": "/bin/vendor_modprobe.sh",
+        "sha256": "0d773f29a657de1dfabbbc8139cb04468656e6a5755f6e68d08d9815ba74b141",
+        "size_bytes": 2273
+      }
+    ],
+    "scripts_executed": false,
+    "service_order": [
+      {
+        "action": "exec_start",
+        "service": "gki.modprobe"
+      },
+      {
+        "action": "start",
+        "service": "vendor.modprobe"
+      }
+    ],
+    "system": {
+      "eligible_file_count": 101,
+      "explicit_script_blocklist": [
+        "zram.ko",
+        "zsmalloc.ko"
+      ],
+      "extra_eligible_beyond_modules_load": [
+        "clk-gate_test.ko",
+        "clk-test.ko",
+        "clk_kunit_helpers.ko",
+        "dev_addr_lists_test.ko",
+        "ext4-inode-test.ko",
+        "fat_test.ko",
+        "hid-uclogic-test.ko",
+        "iio-test-format.ko",
+        "input_test.ko",
+        "kunit-example-test.ko",
+        "kunit-test.ko",
+        "kunit.ko",
+        "lib_test.ko",
+        "of_kunit_helpers.ko",
+        "platform-test.ko",
+        "regmap-kunit.ko",
+        "regmap-ram.ko",
+        "regmap-raw-ram.ko",
+        "soc-topology-test.ko",
+        "soc-utils-test.ko",
+        "time_test.ko"
+      ],
+      "find_order_recorded": false,
+      "inventory_module_count": 103,
+      "load_list_after_exclusions": 80,
+      "load_list_entry_count": 82,
+      "runtime_tested": false,
+      "successful_initial_modprobe_needed_before_remaining_attempts": true
+    },
+    "vendor": {
+      "deduplication": "sort -uk2 then sort -nk1 retains one numbered occurrence per module name",
+      "first_listed_module": "zram.ko",
+      "first_module_invoked_synchronously": true,
+      "general_and_audio_blocklists_filtered": true,
+      "module_directory_preference": [
+        "/vendor_dlkm/lib/modules",
+        "/vendor/lib/modules"
+      ],
+      "readiness_property_written_after_wait": "vendor.all.modules.ready",
+      "remaining_invocations_parallel": true,
+      "successful_runtime_loads_inferred": false,
+      "uses_modules_load": true
+    },
+    "vendor_modprobe_binary_implementation_verified": false
+  },
+  "validation": {
+    "checks_disabled": false,
+    "complete_kernel_kmi_verified": false,
+    "distinct_payloads": 4,
+    "firmware_executed": false,
+    "guest_accessed": false,
+    "kernel_rebuilt": false,
+    "llvm_export_records_crosschecked": 36,
+    "module_instances_rehashed": 6,
+    "phone_accessed": false,
+    "public_source_files_rehashed": 34,
+    "runtime_load_tested": false,
+    "same_family_allocator_exports_verified": true,
+    "signature_trust_verified": false,
+    "source_binary_equivalence_verified": false,
+    "stock_lists_rehashed": 13,
+    "synthetic_inspector_tests_passed": 11,
+    "target_images_verified": false
+  }
+}
