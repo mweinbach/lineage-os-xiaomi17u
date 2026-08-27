@@ -1,0 +1,3 @@
+# A unified patch's blank context lines contain a required leading space.
+# Validate added source lines with git apply --check --whitespace=error instead.
+patches/**/*.patch whitespace=-blank-at-eol

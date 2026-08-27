@@ -10,7 +10,13 @@
     "platform": "SM8850 / canoe",
     "baseline": "research/device-baseline.json",
     "build_ready": false,
-    "lunch_target": null
+    "lunch_target": null,
+    "development_target": {
+      "lunch_target": "lineage_nezha-bp4a-userdebug",
+      "profile": "framework-checks",
+      "configuration_verified": true,
+      "evidence": "research/build-progress.json"
+    }
   },
   "platform": {
     "reference": "evolution-manifest",

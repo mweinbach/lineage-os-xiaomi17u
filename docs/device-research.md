@@ -187,7 +187,12 @@ workspace does not request account credentials, automate unlocking, recommend
 paid unlock services, or provide bypasses. Unlocking can erase data and change
 device security; it is outside the setup task.
 
-## Evidence required before creating a real build target
+## Evidence required for a complete ROM and device testing
+
+An authored Nezha framework product now passes actual Soong/Kati; see
+[build progress](build-progress.md). The remaining gates below govern complete
+ROM integration and hardware tests. They do not prohibit local source
+generation, kernel adaptation or module compilation.
 
 | Gate | Required evidence | Current state |
 | --- | --- | --- |
@@ -197,12 +202,13 @@ device security; it is outside the setup task.
 | Boot and kernel contract | Boot/init_boot/vendor_boot/recovery headers, DTB/DTBO, module lists and kernel ABI, first-stage mounts, dynamic partition metadata, AVB/rollback metadata. | Supplied images, DTs and 914 module instances inspected; retained AVB fails, physical capacities remain unverified, and matching imported CRCs do not establish kernel exports. See the [boot contract](boot-contract.md). |
 | Vendor contract | VINTF manifests/matrices, vendor API/FCM, HAL services, proprietary file list, ELF dependencies, init and SELinux policies. | Eight logical images reconstructed/extracted; 1,306 selected regular files captured and all 432 earlier live XML files matched. Effective manifest selection, full dependency closure and Evolution X compatibility remain pending; see [VINTF](vintf-contract.md). |
 | Native feature baseline | Repeatable stock tests and private artifacts for the features in [native-features.md](native-features.md). | No device tests run. |
-| Build host | Native Linux x86-64, or explicitly verified Apple Container ARM64/Rosetta with case-sensitive storage and adequate disk/RAM. | All 1,179 platform projects and 99 LFS payloads verified; downloaded host tools and the Soong OUT_DIR bootstrap query passed. Kati/product configuration, Ninja sandboxing and Android compilation remain unverified; see [Apple Container](apple-container.md). |
+| Build host | Native Linux x86-64, or explicitly verified Apple Container ARM64/Rosetta with case-sensitive storage and adequate disk/RAM. | All 1,179 platform projects and 99 LFS payloads verified; downloaded host tools, Nezha Soong/Kati configuration and standalone Ninja sandbox tests passed. Android module/full-ROM results remain separate checks; see [build progress](build-progress.md). |
 
 Android's [VINTF documentation](https://source.android.com/docs/core/architecture/vintf)
 explains the compatibility contract between system and vendor. Matching the
-marketing Android version alone is not enough. Keep candidate trees in
-`upstream/`; activate a local manifest only after its complete dependency graph
-and stock compatibility have been established. Keep firmware, blobs, APKs,
+marketing Android version alone is not enough. Keep third-party reference trees
+in `upstream/`; authored Nezha sources are under `device/` and `kernel/` with
+hash-bound private inputs. Activate a local manifest only after its dependency
+revisions have been reviewed. Keep firmware, blobs, APKs,
 logs, serials, and personal data in ignored storage, with non-sensitive hashes
 and provenance recorded separately.

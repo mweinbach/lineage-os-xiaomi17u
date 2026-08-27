@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "completed_at": "2026-08-27T18:11:19.500296+00:00",
+  "source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+  "source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+  "build_tools_commit": "412724a805835d89234d67c363f7ada7f5f8a67f",
+  "soong_commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+  "guest_receipt": "/work/out/nsjail-ninja-20260827T1814Z/receipt.json",
+  "private_receipt": "reports/next-phase-nsjail-ninja.json",
+  "private_receipt_sha256": "d5b7fbe849aa6061934cbfbcbdf40708e301be85fc1ac38e44bfd0570062db37",
+  "passed": true,
+  "source_write_refused_with_erofs": true,
+  "network_interfaces_inside_jail": [
+    "lo"
+  ],
+  "hostname_inside_jail": "android-build",
+  "uid_inside_jail": 65534,
+  "global_uid_mapping": 0,
+  "ninja_and_clang_executed_inside_jail": true,
+  "host_program_executed_inside_jail": true,
+  "input_files": [
+    {
+      "path": "prebuilts/build-tools/linux-x86/bin/nsjail",
+      "sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280",
+      "elf_machine": 62
+    },
+    {
+      "path": "prebuilts/build-tools/linux-x86/bin/ninja",
+      "sha256": "b3c53a693d6496f3214464fac05fe53ba155489cc071861d9414e2128913c1a2",
+      "elf_machine": 62
+    },
+    {
+      "path": "prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+      "sha256": "af0f25ca6818aed54c1cab03dc591acd549f385b8447148326a413e3e59c22b7",
+      "elf_machine": 62
+    }
+  ],
+  "outputs": [
+    {
+      "name": "probe",
+      "size_bytes": 6064,
+      "sha256": "fff96812fa374ed1178e24fade06bb98af9e4d1127c35d1965fd43633c82e21f",
+      "elf_machine": 62
+    },
+    {
+      "name": "android-arm64.o",
+      "size_bytes": 840,
+      "sha256": "995432f220c53dc9fa465c7c2fdcfa9aedf6cd1303c5e7b2b62ba82e33cfaa6e",
+      "elf_machine": 183
+    }
+  ],
+  "checks_disabled_by_this_probe": [],
+  "cgroup_namespace": "The same --disable_clone_newcgroup flag used by pinned Soong; no new restriction was removed.",
+  "android_module_build_verified": false,
+  "full_rom_build_verified": false,
+  "phone_accessed": false,
+  "limits": [
+    "Standalone Ninja invocation using the reviewed upstream Ninja sandbox arguments, not a Soong-generated product graph.",
+    "Root outside the user namespace maps to nobody inside; upstream logs the global root mapping.",
+    "Android output is a freestanding ARM64 object, not a Bionic-linked executable or a device test.",
+    "Pinned upstream still disables its basic dumpvars/Kati/Soong sandbox and allows Ninja fallback; reject any fallback in actual build validation."
+  ]
+}

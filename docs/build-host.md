@@ -9,8 +9,9 @@ also built a standalone x86-64 C program that then executed successfully.
 The full platform sync completed there; all 1,179 project revisions, clean
 worktrees and remotes, plus all 99 LFS payload hashes, passed independent
 verification. The unmodified Soong entry point also compiled four x86-64 host
-tools and successfully queried `OUT_DIR`. An Android 16 platform build is not
-yet verified. See the
+tools and successfully queried `OUT_DIR`. The authored Nezha product now also
+passes Soong/Kati configuration, and the Ninja sandbox has runtime proof.
+A complete Android 16 ROM build is not yet verified. See the
 [Apple Container workflow](apple-container.md) for the observed configuration,
 Ninja artifact hashes, receipt, commands, and status checks.
 
@@ -34,8 +35,13 @@ resolved revisions afterward.
 
 That `OUT_DIR` query uses a fast path without Kati or product configuration.
 Normal Soong startup includes source discovery, but this probe did not capture
-a separate finder artifact receipt. Android module builds, `lunch`, sandbox
-behavior and remaining host prebuilts still need validation. The pinned Soong
+a separate finder artifact receipt. The subsequent Nezha product query did
+exercise Kati and returned the expected device, architecture and API levels.
+A later
+[standalone sandbox test](../research/apple-sandbox.json) ran Ninja/Clang and a
+host program under the upstream nsjail arguments, with source writes refused
+and network interfaces isolated. Android module builds, `lunch`, sandboxing of
+the actual product graph and remaining host prebuilts still need validation. The pinned Soong
 source disables its basic dumpvars/Kati/Soong sandbox upstream and permits a
 Ninja fallback after an nsjail failure. No sandbox setting was changed by the
 probe, and a future fallback must count as failed sandbox validation. See the
@@ -142,11 +148,12 @@ nested Repo trees. Adding a real device manifest requires a deliberate update
 to that validation policy after the device dependencies are reviewed; never
 delete an existing user's manifest merely to get past a preflight failure.
 
-## What still blocks a device build
+## Complete ROM requirements and current module checks
 
 The platform workflow now accepts a verified native Linux host or the explicitly
-selected Apple/Rosetta experiment. Neither route supplies a working Xiaomi 17
-Ultra product. The candidate `nezha` and `sm8850-common`
+selected Apple/Rosetta experiment. The authored Nezha profile passes product
+configuration; a complete Xiaomi 17 Ultra ROM is not yet verified. The public
+candidate `nezha` and `sm8850-common`
 checkouts under `upstream/` are quarantined references. They are **not** copied
 to `device/` and no local manifest activates them. See
 [`device-research.md`](device-research.md) for the concrete defects.
@@ -165,19 +172,24 @@ this phone and its matching stock package:
 5. Evolution product integration. The selected manifest installs
    `Evolution-X/vendor_evolution` at **`vendor/lineage`**, not `vendor/evolution`.
 
-Once those checks pass, the intended command sequence on native Linux is below.
-Inside the Apple Container shell, the source directory is `/work/evolution`.
-The standalone Ninja proof and Soong `OUT_DIR` bootstrap do not validate
-`lunch`, product configuration or Android compilation. No device build target
-has been registered.
+The authored framework profile is already installed and its product
+configuration passed. The checks above still govern a complete ROM, not
+whether local compiler validation may proceed. Inside the existing owning
+Apple Container VM, this command repeats the verified product query:
 
 ```sh
-# FUTURE ONLY: this target is not registered or buildable in this workspace yet.
-cd /srv/android/evolution
-. build/envsetup.sh
-lunch lineage_nezha-bp4a-userdebug
-m evolution
+cd /work/evolution
+env PATH="$PWD/prebuilts/build-tools/path/linux-x86:$PATH" \
+  OUT_DIR=out-nezha-framework-20260827T1835Z \
+  TARGET_PRODUCT=lineage_nezha TARGET_RELEASE=bp4a \
+  TARGET_BUILD_VARIANT=userdebug \
+  build/soong/soong_ui.bash --dumpvars-mode \
+  '--vars=TARGET_DEVICE TARGET_ARCH TARGET_BOARD_PLATFORM BOARD_AVB_ENABLE'
 ```
+
+See [build progress](build-progress.md) for module checks and subsequent fixes.
+Do not invoke full-ROM/OTA targets on this framework-only profile; its complete
+partition and signing integration has not been admitted.
 
 Do not run copied device-tree extraction or build scripts until their contents
 have been reviewed. A successful compilation is not permission to flash. Device

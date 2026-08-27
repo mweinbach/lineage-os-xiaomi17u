@@ -57,10 +57,11 @@ the guarded `default.xml` selection.
 The original task `evolution-nezha-sync-20260827155847261123` finished after
 **57m 15.296s** and stopped naturally. No second sync was started and no source
 checkout was reset or discarded. After confirming exclusive volume ownership,
-a follow-up shell independently checked the completed ext4 checkout:
+a follow-up shell independently checked the completed ext4 checkout at
+`2026-08-27T17:05Z`, before the later authored product and recorded vendor patch:
 
 - All **1,179** project HEADs equal the resolved manifest's full commit IDs.
-- All **1,179** worktrees are clean, including untracked-file checks; all project
+- All **1,179** worktrees were clean, including untracked-file checks; all project
   remote URLs match the manifest. `.repo/project.list` matches exactly.
 - Manifest and Repo origins, commits, clean status, and the sole `default.xml`
   selector passed before and after the audit. No local device manifest exists.
@@ -199,14 +200,27 @@ not set a finder-skip flag, but no separate finder artifact receipt was
 captured. It did not build an Android module, kernel or ROM, run Ninja build
 actions, select a product, or register a Nezha target.
 
-**Sandbox operation remains unverified.** At Soong commit
+**The standalone Ninja sandbox now passes runtime checks.** The follow-up
+[sandbox record](../research/apple-sandbox.json) uses the pinned AOSP `nsjail`,
+Ninja and Clang with the upstream Ninja sandbox argument set. It built and ran
+an x86-64 program inside the jail and produced an Android ARM64 object. A
+deliberate source write was rejected with `EROFS`, the jail exposed only the
+loopback network interface, and its hostname/UID matched the requested
+namespace settings. The guest receipt is
+`/work/out/nsjail-ninja-20260827T1814Z/receipt.json`, SHA256
+`d5b7fbe849aa6061934cbfbcbdf40708e301be85fc1ac38e44bfd0570062db37`.
+This is a standalone test, not a Soong-generated Android module graph or ROM.
+
+At Soong commit
 `cbcbea9e65503ca15b363a0b06dda88fdbcb0154`, upstream
 [`sandbox_linux.go`](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/ui/build/sandbox_linux.go)
 already has `basicSandbox.Enabled=false` for dumpvars, Kati and Soong. Ninja's
 sandbox is enabled in that source, but an unsuccessful nsjail probe logs
 `Build sandboxing disabled due to nsjail error.` and can fall back to execution
-without that sandbox. These are source observations, not a runtime sandbox
-test or settings changed here. A future fallback must count as **failed
+without that sandbox. Those upstream settings were not changed. The probe
+retains the upstream cgroup-namespace exception; root in the guest maps to
+`nobody` inside the user namespace, which nsjail reports explicitly. A fallback
+in an actual build must still count as **failed
 sandbox validation**, even if the build exits successfully; do not weaken
 checks or add broad capabilities to conceal it.
 
@@ -365,10 +379,13 @@ is useful reference material, not a recipe adopted unchanged. This workspace
 does not adopt its verification bypasses, startup source edits, broad runtime
 capabilities, or copy-on-write assumption.
 
-The remaining work is still concrete: validate product configuration, Android
-module builds and sandbox behavior under Rosetta, and complete the Nezha device/common/
-kernel/vendor integration. Official Xiaomi CDN downloads remain partial. The
-separately supplied [Xiaomi.eu package](provided-firmware.md) has passed local
+The authored Nezha product now passes actual Soong/Kati configuration. The
+[current build record](build-progress.md) tracks Android module compilation and
+its failures and fixes; a complete ROM and the full kernel/vendor/framework
+integration remain unverified. Earlier command-line Xiaomi CDN downloads remain
+partial. An official-named TGZ is now visible in Downloads at its expected full
+length, but content reads timed out, so it has not been hashed or admitted.
+The separately supplied [Xiaomi.eu package](provided-firmware.md) has passed local
 SHA256 and full ZIP CRC checks, but its origin is unverified and it is not
 authenticated factory firmware. Its extraction requirements and embedded
 identity must be kept separate from the official baseline. No stock-feature

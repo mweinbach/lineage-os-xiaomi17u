@@ -1,16 +1,19 @@
 # Nezha integration plan and activation gates
 
 This plan applies to the user's **China-hardware Xiaomi 17 Ultra (`nezha`,
-SM8850 / `canoe`)** and Evolution X **Android 16 QPR2 `bka`**. It does not
-register a product. `config/sources.json` deliberately retains
-`build_ready=false` and `lunch_target=null`.
+SM8850 / `canoe`)** and Evolution X **Android 16 QPR2 `bka`**. An authored
+`framework-checks` product is now registered and passes Soong/Kati. It is
+recorded under `device.development_target` in `config/sources.json`; the
+complete-ROM fields remain `build_ready=false` and `lunch_target=null`.
+See [current build progress](build-progress.md). Missing hardware/flash
+prerequisites do not prevent safe local source generation and module checks.
 
 The supplied Xiaomi.eu package is useful for identifying the actual hardware
 and software dependencies. It is **not a valid signed image set**: the retained
 AVB metadata disagrees with vendor_boot and the logical images. Local archive,
 sparse, LP and EROFS checks passing does not override those failures. Keep it
-as a modified research input, separate from the still-incomplete official
-China download.
+as a modified research input, separate from the full-size but still-unverified
+official-named China download.
 
 The [later community release](community-bringup.md) makes a substantial Nezha
 Camera port a concrete research lead. Its private device tree and official
@@ -39,14 +42,15 @@ keep acquisition facts separate from integration hypotheses.
 
 ## Intended source boundaries
 
-The paths below are a design for future reviewed integration, **not directories
-installed into the platform checkout**.
+The authored device tree, stock-kernel wrapper and generated vendor/kernel
+inputs are installed for framework checks. The table also identifies later
+integration work; its remaining requirements do not prohibit that profile.
 
-| Future component | Responsibility | Admission requirements |
+| Component | Responsibility | Complete integration requirements |
 | --- | --- | --- |
 | `device/xiaomi/nezha` | Exact product identity, physical layout, device overlays, init, recovery and device policy | Verified CN variant/partition contract, complete product makefile and pinned dependencies. Do not rename the public popsicle makefile and assume the remaining tree works. |
 | `device/xiaomi/sm8850-common` | Only hardware/services demonstrably shared by the supported SM8850 devices | Review components individually against Nezha. The Myron reference's board geometry and AVB test settings are not acceptable defaults. |
-| `device/xiaomi/nezha-kernel` or a reviewed source-kernel integration | Kernel, DTB/DTBO, vendor ramdisk modules, vendor_dlkm and system_dlkm inputs | Exact hashes and provenance; module ABI and load-order checks; confirmed source and redistribution obligations. The public popsicle kernel release is not established as an Ultra source release. |
+| `kernel/xiaomi/nezha` with private `vendor/xiaomi/nezha-kernel` inputs | Kernel, DTB/DTBO, vendor ramdisk modules, vendor_dlkm and system_dlkm inputs | Exact hashes and provenance; module ABI and load-order checks; confirmed source and redistribution obligations. The private DTS roundtrip is a source-adaptation basis; it does not prove a rebuilt kernel boots. |
 | `vendor/xiaomi/nezha` | Generated proprietary files and makefiles from a reviewed Nezha extraction list | Resolve every listed file to an exact source image/hash; preserve its partition and architecture; review ELF dependencies, VINTF, init, permissions and licenses. Do not copy another vendor tree or calibration data. |
 | Separate Nezha Camera package | Xiaomi Camera, narrowly required framework/JNI/service dependencies and feature configuration | Basic Camera2/HAL operation first; permission/signature and linker-namespace review; distinct feature tests for Leica processing, lenses, video and accessories. |
 | `vendor/lineage` | Evolution X product configuration from the selected manifest | The manifest uses this path for `Evolution-X/vendor_evolution`; do not inherit a guessed `vendor/evolution` product path. |
@@ -56,7 +60,7 @@ revisions. The workspace intentionally refuses unreviewed local manifests.
 Changing that guard and activating a complete product must be a deliberate
 change with tests, not a way to silence missing-product errors.
 
-## Boot and kernel work before product activation
+## Boot and kernel work before a complete ROM or device test
 
 1. Obtain a complete matching unmodified China package and verify its internal
    AVB consistency. Record the actual source and signing evidence; embedded-key
@@ -122,8 +126,9 @@ The platform checkpoint now has a successful Repo result, unchanged manifest/
 Repo pins, 1,179 verified clean project checkouts, a resolved manifest with full
 commit IDs, and verified content hashes for all 99 LFS files. The
 [source record](../research/source-sync.json) documents that checkpoint.
-Rosetta's real host-tool proofs remain separate from an Android module, kernel
-or ROM build result.
+Rosetta's real host-tool proofs and the later successful Nezha product
+configuration remain separate from an Android module, kernel or ROM build
+result. [Build progress](build-progress.md) records the current compiler checks.
 
 After dependency admission, check product inheritance, artifact paths, VINTF,
 ELF dependencies, kernel module compatibility, SELinux and AVB before attempting

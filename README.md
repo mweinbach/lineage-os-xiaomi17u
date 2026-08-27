@@ -4,9 +4,9 @@ An unofficial bring-up workspace for **Xiaomi 17 Ultra (`nezha`), China hardware
 starting from **Evolution X Android 16 QPR2 (`bka`)** and investigating retention
 of Xiaomi's camera and other native features.
 
-**The research/setup tooling and local Apple Container builder work. Evolution X
-has fully synced in its Linux volume, with all 1,179 project revisions verified. A
-buildable Nezha device tree and a flashable ROM are not present yet.** No phone
+**Evolution X has fully synced in its Linux volume, with all 1,179 project
+revisions verified. An authored Nezha product now passes Soong/Kati configuration;
+Android module compilation is being validated. A flashable ROM is not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
@@ -29,8 +29,10 @@ should be unlocked, wiped, or flashed as part of workspace setup.
   files are ignored by Git.
 - Source-gap research and a concrete feature dependency/test matrix. Camera
   preview or APK installation alone will not establish Leica feature parity.
-- Matching official China firmware URLs and acquisition receipts. Official CDN
-  attempts remain partial. The user separately supplied a Xiaomi.eu ZIP under
+- Matching official China firmware URLs and acquisition receipts. Earlier CLI
+  downloads remain partial; a separate full-size fastboot TGZ is visible in
+  Downloads but its content reads time out, so it is not yet verified. The user
+  separately supplied a Xiaomi.eu ZIP under
   `sources/`; its separate intake copy and all 84 ZIP entries passed integrity
   checks. Its download origin is unverified, and it is not authenticated Xiaomi
   factory firmware. See [the supplied-package receipt](docs/provided-firmware.md)
@@ -42,8 +44,11 @@ should be unlocked, wiped, or flashed as part of workspace setup.
   images.** These are modified research inputs, not a valid signed image set.
 - Exact boot/kernel/DTBO and module evidence, plus 13 camera dependency seeds
   with file/image hashes. The package's Camera APK matches the live snapshot.
-  Physical boot-partition sizes, module ABI compatibility and a viable device
-  product remain unresolved.
+  Physical boot-partition sizes and module ABI compatibility remain unresolved.
+- An authored `lineage_nezha-bp4a-userdebug` product, verified private vendor/kernel
+  bundles, and exact Nezha DTS source roundtrips. Actual product configuration
+  passed in the existing VM. See [build progress](docs/build-progress.md) for
+  module-build results and the separate complete-ROM/device-testing gates.
 
 This Mac can also host the Linux build environment through **Apple Container +
 Rosetta**. The working configuration uses a pinned Ubuntu 24.04 ARM64 image,
@@ -135,22 +140,26 @@ properties do not independently establish physical variant or bootloader state.
 | [Captured camera](docs/camera-baseline.md) | Actual APK, native library dependencies, framework hooks and camera HAL declarations |
 | [Stock collection](docs/stock-evidence.md) | Read-only capture, privacy, and partial-result handling |
 | [Firmware intake](docs/firmware-intake.md) | Preserve local ROM packages and provenance without executing scripts |
+| [Fastboot extraction](docs/fastboot-extraction.md) | Bounded TAR/GZIP image extraction with hashes and full-stream integrity checks |
 | [Matching firmware](docs/firmware-source.md) | Verified Xiaomi CDN URLs, partial download status, and safe resumption requirements |
 | [Supplied Xiaomi.eu package](docs/provided-firmware.md) | Verified local integrity, unverified origin, embedded identity and sparse super layout |
 | [Firmware analysis](docs/firmware-analysis.md) | Verified sparse reconstruction, logical layout and filesystem checks |
 | [Boot/kernel/AVB contract](docs/boot-contract.md) | Exact boot formats, modules, DTs and retained verification failures |
 | [VINTF and permissions](docs/vintf-contract.md) | Guarded filesystem captures, exact live XML matches and framework compatibility gates |
-| [Nezha integration plan](docs/nezha-integration.md) | Future device/vendor/kernel boundaries and product activation gates |
+| [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
+| [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
+| [Camera build inputs](docs/camera-inputs.md) | Narrow system-ext dependency selection with strict ELF and Java checks |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 
-## What must happen before building or testing the ROM
+## What remains before a complete ROM or phone test
 
 1. Establish the exact official China firmware baseline and resolve the
    supplied modified package's AVB inconsistencies. Preserve the Xiaomi.eu app
    snapshot and dependency evidence separately; do not repair verification
    failures by disabling checks or copying its modified fstab.
-2. Complete the Nezha product/common/vendor/kernel dependencies. The public
+2. Complete the authored Nezha product's hardware, policy and signing integration.
+   Safe framework/module checks already have a registered product. The public
    Nezha scaffold has a missing product makefile, stale model identity, and
    absent vendor/kernel inputs. Other-device partition/AVB settings must not
    be copied into an active configuration.

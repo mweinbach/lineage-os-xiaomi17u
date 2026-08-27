@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "hardware_region": "CN",
+  "profile": "framework-checks",
+  "lunch_target": "lineage_nezha-bp4a-userdebug",
+  "configuration_verified": true,
+  "android_modules_verified": false,
+  "full_rom_verified": false,
+  "device_boot_verified": false,
+  "phone_modifications_performed": false,
+  "base_source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+  "base_source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+  "local_source_note": "The resolved manifest pins upstream projects. Additional authored device/kernel sources, private input receipts and the recorded vendor patch supplement that base.",
+  "kernel_bundle": {
+    "receipt": "artifacts/kernel-inputs/nezha-xiaomi-eu-candidate-v2/receipt.json",
+    "sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+    "file_count": 950,
+    "module_instances": 914
+  },
+  "vendor_bundle": {
+    "receipt": "artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-base-v1/vendor-inputs.json",
+    "sha256": "b4865b273f2c03706cbb3712fc123b711015b450aec3b40e3c17e54337e1f983",
+    "profile": "prebuilt-vendor-odm"
+  },
+  "device_admission": {
+    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v3/admission.json",
+    "sha256": "29e53ea5d4dfc6a8f4817f01c42cc7f3fcf73a97629a17253770a9b4a8f89fd2",
+    "source_commit": "777820337d7cec40873add1f95ee705a011da19d"
+  },
+  "installation": {
+    "guest_receipt": "/work/candidates/nezha-framework-20260827T1817Z/installation.json",
+    "private_receipt": "reports/candidate-installation.json",
+    "sha256": "c4e83919c8034be9937525ed0ac8f904c237cc48a5f893240031cd647139d66e",
+    "transferred_file_count": 975,
+    "transferred_bytes_verified": 5932585937,
+    "transfer": "container exec stream with hash verification and readback; no host bind mount added",
+    "device_source_updates": [
+      {
+        "version": 2,
+        "private_receipt": "reports/device-v2-source-update.json",
+        "sha256": "67783991a204fe85c81397bd5699b8d72789922e8505e7819a69a9b6750e59eb",
+        "admission_sha256": "5ce7697d7aabff77d18c59c092b7c6a9a2b415154e62920168167d4ceb3469a0",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/README.md",
+            "before_sha256": "7cd49da4f2fdf4f6ce6f590df73f353f152b87120f70cd38fcba51c7241ce7dc",
+            "after_sha256": "c6e77fd6b8a08a5e56696225bea8d3f00fb8c9d315be24a1d96149605d9fe80c"
+          },
+          {
+            "path": "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+            "before_sha256": "6f9fba3da1e818317809cc2cf02e076a31ac5a5e4d6dc4febdf34048c52cf0c6",
+            "after_sha256": "9e908230882f25a43a9d28023c70b9857567a8172179474cc95856bbab70f62b"
+          }
+        ]
+      },
+      {
+        "version": 3,
+        "private_receipt": "reports/device-v3-source-update.json",
+        "sha256": "427b0c75e0562890f33b0bea535fbf4ec875725a1d5322e352ef564e6bd72682",
+        "admission_sha256": "29e53ea5d4dfc6a8f4817f01c42cc7f3fcf73a97629a17253770a9b4a8f89fd2",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/BoardConfig.mk",
+            "before_sha256": "e662eadb53939ac53a334ba2b67fa8445319b4ba4473d892eea8d14feb603882",
+            "after_sha256": "dda01ff95e86a35cb94bedbfd5953d7995aaab48eb1c587463fd4c8f9c997fc5"
+          }
+        ]
+      }
+    ]
+  },
+  "product_configuration": {
+    "completed_at": "2026-08-27T18:28:40.695040+00:00",
+    "exit_code": 0,
+    "values": {
+      "TARGET_PRODUCT": "lineage_nezha",
+      "TARGET_DEVICE": "nezha",
+      "TARGET_ARCH": "arm64",
+      "TARGET_BOARD_PLATFORM": "canoe",
+      "PRODUCT_MODEL": "Xiaomi 17 Ultra",
+      "BOARD_KERNEL_PAGESIZE": "4096",
+      "BOARD_AVB_ENABLE": "true",
+      "PRODUCT_SHIPPING_API_LEVEL": "36",
+      "BOARD_SHIPPING_API_LEVEL": "202504"
+    },
+    "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/kati-1/receipt.json",
+    "private_receipt": "reports/nezha-kati-1-receipt.json",
+    "sha256": "f6c787a2c125119340219075aef9c772f2dc9146c4d5f13ec204d3b50013be4a",
+    "input_profile_version": "v1; later v2/v3 preserve identity and add explicit rollback default/full Lineage hook",
+    "disabled_checks": []
+  },
+  "source_adjustments": [
+    {
+      "schema_version": 1,
+      "project": "vendor/lineage",
+      "origin": "https://github.com/Evolution-X/vendor_evolution.git",
+      "base_commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "patch": "patches/evolution/0001-allow-device-to-enforce-security-properties.patch",
+      "patch_sha256": "84aee914e14fb6f7e82351a3163998fe793c5e2a3d8dfac32d3a123b27d0729f",
+      "files": [
+        {
+          "path": "config/common.mk",
+          "before_sha256": "a0b49c75c1055d73e7984c7cab73dc608a9b1b298d7ba710372dd1a1360edf35",
+          "after_sha256": "2747b367f0a0bc4f758b31ee88833cbb829a24be8a74e3ff9b11bbbae75a36ca"
+        }
+      ],
+      "purpose": "Allow Nezha to require false for downgrade and enforce for privileged permissions without conflicting inherited unconditional properties. No duplicate-property check is disabled."
+    }
+  ],
+  "module_build": {
+    "targets": [
+      "libbase",
+      "checkvintf"
+    ],
+    "out_dir": "out-nezha-framework-20260827T1835Z",
+    "state": "running",
+    "attempts": [
+      {
+        "number": 1,
+        "result": "failed",
+        "error": "Missing Lineage Soong kernel variable exports",
+        "resolution": "Use complete BoardConfigLineage.mk after stock prebuilt selector",
+        "fix_commit": "777820337d7cec40873add1f95ee705a011da19d",
+        "started_at": "2026-08-27T18:31:12.512633+00:00",
+        "completed_at": "2026-08-27T18:32:34.437665+00:00",
+        "argv": [
+          "/work/evolution/build/soong/soong_ui.bash",
+          "--make-mode",
+          "-j12",
+          "libbase",
+          "checkvintf"
+        ],
+        "out_dir": "/work/out/nezha-framework-20260827T1835Z",
+        "exit_code": 1,
+        "timed_out": false,
+        "sandbox_fallback_observed": false,
+        "passed": false,
+        "private_receipt": "reports/nezha-modules-1-receipt.json",
+        "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/modules-1/receipt.json",
+        "sha256": "4ab4787152370e923219beb71b36e42d7d9b8809eb41ae28179978793a23c755"
+      },
+      {
+        "number": 2,
+        "result": "failed",
+        "error": "platform_testing continuous_instrumentation_metric_tests rejects an absolute host-tool output path",
+        "resolution": "Use the supported relative out-prefix symlink to the same physical output directory; pinned Soong source and artifact-path checks remain unchanged.",
+        "started_at": "2026-08-27T18:36:56.608161+00:00",
+        "completed_at": "2026-08-27T18:37:59.357277+00:00",
+        "argv": [
+          "/work/evolution/build/soong/soong_ui.bash",
+          "--make-mode",
+          "-j12",
+          "libbase",
+          "checkvintf"
+        ],
+        "out_dir": "/work/out/nezha-framework-20260827T1835Z",
+        "exit_code": 1,
+        "timed_out": false,
+        "sandbox_fallback_observed": false,
+        "passed": false,
+        "private_receipt": "reports/nezha-modules-2-receipt.json",
+        "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/modules-2/receipt.json",
+        "sha256": "1e0499de3dcf1efc23d214c77a560eeb54c727f2b2d4ac41c3ae8e71c902d2e6"
+      },
+      {
+        "number": 3,
+        "result": "running",
+        "out_dir": "out-nezha-framework-20260827T1835Z",
+        "physical_out_dir": "/work/out/nezha-framework-20260827T1835Z",
+        "guest_log_directory": "/work/validation/nezha-framework-20260827T1835Z/modules-3",
+        "driver_sha256": "7defc70b92c95cdc40140581754f95e8c4a0ed11c26c1dc6a5b9594a4f507d3f"
+      }
+    ],
+    "physical_out_dir": "/work/out/nezha-framework-20260827T1835Z",
+    "output_alias": {
+      "created_at": "2026-08-27T18:51:38.843480+00:00",
+      "working_directory": "/work/evolution",
+      "lexical_out_dir": "out-nezha-framework-20260827T1835Z",
+      "physical_out_dir": "/work/out/nezha-framework-20260827T1835Z",
+      "symlink": "/work/evolution/out-nezha-framework-20260827T1835Z",
+      "symlink_target": "../out/nezha-framework-20260827T1835Z",
+      "same_inode": true,
+      "source_commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "source_modified": false,
+      "disabled_checks": [],
+      "reason": "Use supported relative out-prefix spelling for pinned CI packaging code while preserving the existing ext4 output and its path guards.",
+      "private_receipt": "reports/nezha-output-alias.json",
+      "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/output-alias.json",
+      "sha256": "389ca3fac2e3cc54e60f396d5d1cf5c801daea820c93815dd9dd6a543fb7a5c5",
+      "output_markers_preserved": true
+    }
+  },
+  "limits": [
+    "Input package is modified Xiaomi.eu with failed retained AVB and unverified origin; local input hashing does not authenticate it.",
+    "Source AVB failures do not prevent safe product/module checks. Complete target-files/OTA/super and flash admission remain false.",
+    "Image lengths/LP declarations are build budgets, not measured physical partition fit.",
+    "Actual bootloader unlock state, VINTF/policy, kernel-export ABI and native-feature behavior remain unverified.",
+    "A completed official-named TGZ is visible in Downloads by size only; content reads timed out and it has not been accepted."
+  ]
+}
