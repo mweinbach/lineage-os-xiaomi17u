@@ -1,0 +1,69 @@
+diff --git a/init/Android.bp b/init/Android.bp
+index 068773db4521285df8c6ca00465403be05d3ccf1..39294f9c75f912e8c1795f7363cf0eda04e8c188 100644
+--- a/init/Android.bp
++++ b/init/Android.bp
+@@ -130,7 +130,7 @@
+         "-DREBOOT_BOOTLOADER_ON_PANIC=0",
+         "-DSHUTDOWN_ZERO_TIMEOUT=0",
+         "-DWORLD_WRITABLE_KMSG=0",
+-        "-DSPOOF_SAFETYNET=1",
++        "-DSPOOF_SAFETYNET=0",
+         "-Wall",
+         "-Werror",
+         "-Wextra",
+@@ -450,7 +450,7 @@
+         "-DSHUTDOWN_ZERO_TIMEOUT=0",
+         "-DLOG_UEVENTS=0",
+         "-DSEPOLICY_VERSION=30", // TODO(jiyong): externalize the version number
+-        "-DSPOOF_SAFETYNET=1",
++        "-DSPOOF_SAFETYNET=0",
+     ] + GLOBAL_HWASAN_OPTIONS,
+ 
+     product_variables: {
+diff --git a/init/property_service.cpp b/init/property_service.cpp
+index 67c6de19f0968ed818efe37fa3a9624c71ab3cae..5f9027ee6fcff7fb487a19f5150026acb1e4f779 100644
+--- a/init/property_service.cpp
++++ b/init/property_service.cpp
+@@ -403,9 +403,9 @@
+     } else {
+         prop_info* pi = (prop_info*)__system_property_find(name.c_str());
+         if (pi != nullptr) {
+-            // ro.* properties are actually "write-once", unless the system decides to
+-            if (StartsWith(name, "ro.") && !weaken_prop_override_security &&
+-                    !StartsWith(name, "ro.boot.vbmeta.")) {
++            // Preserve bootloader values even while applying vendor property defaults.
++            if (StartsWith(name, "ro.") &&
++                    (!weaken_prop_override_security || StartsWith(name, "ro.boot."))) {
+                 *error = "Read-only property was already set";
+                 return {PROP_ERROR_READ_ONLY_PROPERTY};
+             }
+@@ -1442,7 +1442,9 @@
+       }
+     }
+ 
+-    LoadReleaseBuildProperties();
++    if (SPOOF_SAFETYNET) {
++        LoadReleaseBuildProperties();
++    }
+ 
+     // Restore the normal property override security after init extension is executed
+     weaken_prop_override_security = false;
+@@ -1664,12 +1666,12 @@
+                 // Always enable usb adb if device is booted with debug ramdisk.
+                 update_sys_usb_config();
+             }
+-            weaken_prop_override_security = true;
+-
+-            LoadDebugProperties();
+-            LoadVbMetaOverrides();
+-
+-            weaken_prop_override_security = false;
++            if (SPOOF_SAFETYNET) {
++                weaken_prop_override_security = true;
++                LoadDebugProperties();
++                LoadVbMetaOverrides();
++                weaken_prop_override_security = false;
++            }
+ 
+             InitPropertySet("ro.persistent_properties.ready", "true");
+             persistent_properties_loaded = true;
