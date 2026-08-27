@@ -48,6 +48,17 @@ device-tree `model`, and device-tree `compatible` returned permission denied.
 These are evidence gaps, not a reason to root the phone. VINTF/permission pulls,
 the camera APK pull, `lpdump`, and the other inventory commands succeeded.
 
+A separate follow-up at **2026-08-27T16:29:50Z** revalidated the same explicitly
+selected, authorized Xiaomi/Nezha device and read its current by-name links.
+Boot, init_boot, vendor_boot, DTBO, recovery, vbmeta and vbmeta_system have A/B
+names; `super` is a single named block partition. All **30** attempted sysfs
+`size`/`start` reads for these 15 block nodes were denied. The follow-up is
+`partial`, with 39 commands and 79 hashed artifacts under ignored
+`evidence/partition-sysfs-20260827T1631Z/`. The directory label is not the
+collection timestamp. No privilege escalation or phone modification followed.
+Physical boot-chain partition capacities and offsets therefore remain unknown;
+neither ZIP image lengths nor the presence of an A/B name establishes them.
+
 The camera APK came from `/product/priv-app/MiuiCamera/MiuiCamera.apk`, is
 170,279,563 bytes, and has SHA-256
 `cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79`.

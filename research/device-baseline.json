@@ -57,5 +57,19 @@
     "raw_evidence_may_contain_private_data": true,
     "private_raw_evidence_is_git_ignored": true
   },
+  "partition_geometry_followup": {
+    "observed_at_utc": "2026-08-27T16:29:50.610478+00:00",
+    "status": "partial",
+    "identity_revalidated": true,
+    "by_name_links_read": true,
+    "selected_partition_nodes": 15,
+    "sysfs_size_start_reads": 30,
+    "sysfs_reads_denied": 30,
+    "physical_partition_sizes_verified": false,
+    "commands": 39,
+    "hashed_artifacts": 79,
+    "private_manifest_sha256": "6742ba32dff8cfe13c565e1a4f46c7bd5ef042f6dcf98102628dbd6ef5e2df53",
+    "phone_access": "read-only; no privilege escalation or modifications"
+  },
   "evolution_x_hardware_testing": "not performed"
 }
