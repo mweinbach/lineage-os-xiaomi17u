@@ -1,0 +1,505 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "status": "three vendor APEX packages inspected; installed package bytes and two active VINTF fragments match Xiaomi.eu",
+  "provenance": {
+    "source_kind": "user-provided modified Xiaomi.eu package",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "source_url": null,
+    "origin_verified": false,
+    "oem_signature_authenticated": false,
+    "vendor_image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+    "vendor_image_bytes": 941506560,
+    "capture_receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/vendor-apex-capture-v1/receipt.json",
+      "sha256": "11b81a5a735d6ce22a94052fb71491277c210b3730c2a08c20605f2b07ccd55e",
+      "size_bytes": 2106
+    },
+    "raw_proprietary_files_git_ignored": true
+  },
+  "inspection": {
+    "script": "scripts/apex_inputs.py",
+    "script_sha256": "f95a7063dea75746537da63425902e69528218f2e4cc4590ba68b07ee5d0783a",
+    "payload_filesystem": "ext4",
+    "debugfs_version": "1.47.4",
+    "debugfs_sha256": "aacdaf85fab9aab4a555f7ebebba169aff981744f297030d9a2e5813f65b3483",
+    "tool_source_receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/tool-sources-v1/receipt.json",
+      "sha256": "4b0ce56c02a3dd8320f01b62ec1eb44f198a59e8a57b7a217e7959c67286e9db",
+      "size_bytes": 3757
+    },
+    "zip_entries_crc_verified": 29,
+    "debugfs_commands_passed": 51,
+    "inventory_entries_excluding_roots": 29,
+    "captured_regular_files": 16,
+    "captured_regular_bytes": 5656378,
+    "image_mounted": false,
+    "firmware_executed": false,
+    "symlinks_followed": false,
+    "failed_initial_attempts_preserved": [
+      "cas-v1",
+      "cas-v2"
+    ],
+    "initial_failure_reasons": [
+      "terminal blank line",
+      "exact empty directory slots"
+    ],
+    "earlier_successful_receipts_preserved": [
+      "cas-v3",
+      "widevine-v1",
+      "wifi-v1"
+    ]
+  },
+  "modules": [
+    {
+      "module_name": "com.android.hardware.cas",
+      "declared_version": 1,
+      "vendor_package_path": "/vendor/apex/com.android.hardware.cas.apex",
+      "package_sha256": "7d0ddec71e4b6a84a55e76faf147332a1908a89a0706836a72e85877f2569210",
+      "package_bytes": 380928,
+      "payload_sha256": "8b56e0a810d5a31064858f61ced2d923721c2e8326c1b948500283f1adde057d",
+      "payload_bytes": 274432,
+      "outer_inner_manifest_sha256": "03dbdb5672d2b4bc1999088b8caffcf3a37a2f693c33950ca94e1b90a3550350",
+      "outer_inner_manifest_byte_identical": true,
+      "required_native_libs_declared_order": [
+        ":mediacas",
+        "libbinder_ndk.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "inventory_entries_excluding_root": 9,
+      "regular_files": 4,
+      "elf_files": 1,
+      "captured_regular_bytes": 173731,
+      "symlink_entries": 0,
+      "vintf": [
+        {
+          "payload_path": "/etc/vintf/android.hardware.cas-service.xml",
+          "runtime_path": "/apex/com.android.hardware.cas/etc/vintf/android.hardware.cas-service.xml",
+          "sha256": "8532b0a9f68693ad7251f98717c2c5fce45c74399338d1565d917d826ea94666",
+          "immediate_vintf_child": true,
+          "root_attributes": {
+            "type": "device",
+            "version": "9.0"
+          },
+          "hals": [
+            {
+              "attributes": {
+                "format": "aidl"
+              },
+              "declared_versions": [],
+              "format": "aidl",
+              "fqnames": [
+                "IMediaCasService/default"
+              ],
+              "interfaces": [],
+              "name": "android.hardware.cas"
+            }
+          ]
+        }
+      ],
+      "init_services": [
+        {
+          "name": "vendor.cas-default",
+          "executable": "/apex/com.android.hardware.cas/bin/hw/android.hardware.cas-service.example",
+          "executable_present_as_regular": true
+        }
+      ],
+      "bundled_sonames": [],
+      "dt_needed_union": [
+        "libbinder_ndk.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "dt_needed_not_bundled_by_soname": [
+        "libbinder_ndk.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "static_inspection_receipt": {
+        "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/cas-v4/receipt.json",
+        "sha256": "5168577588ea015ec3b681fe2f151fd3986ffa0fcaaf083450f7dd1662438a57",
+        "size_bytes": 22563
+      },
+      "debugfs_commands_passed": 15,
+      "zip_entries_crc_verified": 10
+    },
+    {
+      "module_name": "com.google.android.widevine",
+      "declared_version": 190250226,
+      "vendor_package_path": "/vendor/apex/com.google.android.widevine.nonupdatable.apex",
+      "package_sha256": "4a680a496773eb72bcf4beba906b8ba8ac660bd8a5f116a2ad4f169d7dd820a8",
+      "package_bytes": 5619712,
+      "payload_sha256": "7b409d985b978a3cc91d211fea63eee3cd1d86de14e341e284cea087bef917e1",
+      "payload_bytes": 5529600,
+      "outer_inner_manifest_sha256": "3dde0a8199f49d54306a4ac5d9acadb15209fdcd541a5ea4b850d2440cd10767",
+      "outer_inner_manifest_byte_identical": true,
+      "required_native_libs_declared_order": [
+        "liboemcrypto.so",
+        "libbinder_ndk.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "inventory_entries_excluding_root": 16,
+      "regular_files": 10,
+      "elf_files": 7,
+      "captured_regular_bytes": 5482582,
+      "symlink_entries": 0,
+      "vintf": [
+        {
+          "payload_path": "/etc/vintf/com.google.android.widevine.xml",
+          "runtime_path": "/apex/com.google.android.widevine/etc/vintf/com.google.android.widevine.xml",
+          "sha256": "dc98d59d89ac79ab822017873c0f21d15f7695b03ecb18f04303f2c8b2a28791",
+          "immediate_vintf_child": true,
+          "root_attributes": {
+            "type": "device",
+            "version": "9.0"
+          },
+          "hals": [
+            {
+              "attributes": {
+                "format": "aidl"
+              },
+              "declared_versions": [],
+              "format": "aidl",
+              "fqnames": [
+                "IDrmFactory/widevine"
+              ],
+              "interfaces": [],
+              "name": "android.hardware.drm"
+            }
+          ]
+        }
+      ],
+      "init_services": [
+        {
+          "name": "vendor.drm-widevine-hal",
+          "executable": "/apex/com.google.android.widevine/bin/hw/android.hardware.drm-service.widevine",
+          "executable_present_as_regular": true
+        },
+        {
+          "name": "vendor.drm-widevine-hal-rikers",
+          "executable": "/apex/com.google.android.widevine/bin/hw/android.hardware.drm-service.widevine-rikers",
+          "executable_present_as_regular": false
+        }
+      ],
+      "bundled_sonames": [
+        "libaconfig_storage_read_api_cc.so",
+        "libbase.so",
+        "libc++.so",
+        "libcrypto.so",
+        "libcutils.so",
+        "wv_media_drm_flags_c_lib.so"
+      ],
+      "dt_needed_union": [
+        "libaconfig_storage_read_api_cc.so",
+        "libbase.so",
+        "libbinder_ndk.so",
+        "libc++.so",
+        "libc.so",
+        "libcrypto.so",
+        "libcutils.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so",
+        "wv_media_drm_flags_c_lib.so"
+      ],
+      "dt_needed_not_bundled_by_soname": [
+        "libbinder_ndk.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "static_inspection_receipt": {
+        "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/widevine-v2/receipt.json",
+        "sha256": "16ecc4250c3509f0a54115e854e7bd390955927937488d74c388ad169bd0c976",
+        "size_bytes": 41381
+      },
+      "debugfs_commands_passed": 28,
+      "zip_entries_crc_verified": 9
+    },
+    {
+      "module_name": "com.xiaomi.wifi",
+      "declared_version": 1,
+      "vendor_package_path": "/vendor/apex/com.xiaomi.wifi.apex",
+      "package_sha256": "d7dfac2c2d52773409b59f89a78daf9cdc487c6ec3fa30493a9b63c7900f66dc",
+      "package_bytes": 348160,
+      "payload_sha256": "6923e5a139c44777967d8b1244b41f6f85fdc28034b03c964ef004ae07553456",
+      "payload_bytes": 270336,
+      "outer_inner_manifest_sha256": "db63c5ac1f13d4a73bf7cf370585f5f3dad237bd58d0d241f38a9acd0f1a791b",
+      "outer_inner_manifest_byte_identical": true,
+      "required_native_libs_declared_order": [],
+      "inventory_entries_excluding_root": 4,
+      "regular_files": 2,
+      "elf_files": 0,
+      "captured_regular_bytes": 65,
+      "symlink_entries": 0,
+      "vintf": [],
+      "init_services": [],
+      "bundled_sonames": [],
+      "dt_needed_union": [],
+      "dt_needed_not_bundled_by_soname": [],
+      "static_inspection_receipt": {
+        "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/wifi-v2/receipt.json",
+        "sha256": "76da440c3328eb870efcaf4eb6cfe07259861d21f7e0c6d30627fbfe3ec94013",
+        "size_bytes": 12731
+      },
+      "debugfs_commands_passed": 8,
+      "zip_entries_crc_verified": 10,
+      "wifi_compat": {
+        "path": "/apex/com.xiaomi.wifi/etc/wifi_compat.json",
+        "sha256": "c563038a22f78e94f9213aeaa5691855d49707779f26896e7931c60b34ec451b",
+        "declared_vendor": true,
+        "declared_os_versions_count": 0,
+        "runtime_semantics_verified": false
+      }
+    }
+  ],
+  "external_dependencies": {
+    "capture_receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/vendor-apex-dependency-capture-v1/receipt.json",
+      "sha256": "1441763cbb0bf67de1afe865d4a0b81c090b87c06101e00fccb9a6e70692f87c",
+      "size_bytes": 1753
+    },
+    "files": [
+      {
+        "vendor_path": "/vendor/lib64/liboemcrypto.so",
+        "sha256": "45cf98897c2e0dfb33f3946f459f7522bcb3cd9c9ce2c472c4d7df84e6a1cf39",
+        "size_bytes": 296576,
+        "elf": {
+          "class_bits": 64,
+          "endianness": "little",
+          "machine": 183,
+          "needed": [
+            "libutils.so",
+            "liblog.so",
+            "libQSEEComAPI.so",
+            "libcpion.so",
+            "libminkdescriptor.so",
+            "libcutils.so",
+            "libtrustedapploader.so",
+            "vendor.qti.hardware.display.config-V7-ndk.so",
+            "libpower.so",
+            "libcrypto.so",
+            "libbinder_ndk.so",
+            "libc++.so",
+            "libc.so",
+            "libm.so",
+            "libdl.so"
+          ],
+          "soname": "liboemcrypto.so",
+          "search_paths": []
+        }
+      },
+      {
+        "vendor_path": "/vendor/lib64/mediacas/libclearkeycasplugin.so",
+        "sha256": "9c1beb44372902b543ee8c20fedfe4bf4ffeefa0ef87ecf4e9cacb5d99375603",
+        "size_bytes": 114552,
+        "elf": {
+          "class_bits": 64,
+          "endianness": "little",
+          "machine": 183,
+          "needed": [
+            "libprotobuf-cpp-full-21.12.so",
+            "libutils.so",
+            "liblog.so",
+            "libcrypto.so",
+            "libstagefright_foundation.so",
+            "libprotobuf-cpp-lite-21.12.so",
+            "libc++.so",
+            "libc.so",
+            "libm.so",
+            "libdl.so"
+          ],
+          "soname": "libclearkeycasplugin.so",
+          "search_paths": []
+        }
+      }
+    ],
+    "namespace_and_symbol_resolution_verified": false
+  },
+  "independent_elf_check": {
+    "receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/independent-readelf-v1/receipt.json",
+      "sha256": "a6de10b518d8af2832dd97f5dc129bcf1a8001d448623841bcc5c6bf37280c17",
+      "size_bytes": 15032
+    },
+    "files_verified": 10,
+    "apex_elf_files": 8,
+    "external_vendor_elf_files": 2,
+    "tool": "Android NDK 28.2.13676358 llvm-readobj",
+    "tool_sha256": "37e565359be0c9f2868348dd314416a420d137ee84c891ec8474cf7d29cfd995",
+    "class_machine_endianness_needed_soname_search_paths_match": true
+  },
+  "stock_observations": {
+    "schema_version": 1,
+    "operation": "validated-stock-apex-evidence-binding",
+    "active_metadata": {
+      "path": "evidence/apex-active-20260827T191818Z/selected-vendor-apex.json",
+      "sha256": "2742db32a5091b0dcc18f85bca68cfef101c62cfcb684f0d0ab2bedfa8cbbee7",
+      "size_bytes": 2058
+    },
+    "active_xml_sha256": "77c8b054a58d64c9568c30d150bb36465b89107eac48cb8545600fdc75a1f02b",
+    "active_total_entries": 39,
+    "active_vendor_count": 3,
+    "active_odm_count": 0,
+    "selected_active_modules": [
+      {
+        "moduleName": "com.android.hardware.cas",
+        "modulePath": "/vendor/apex/com.android.hardware.cas.apex",
+        "preinstalledModulePath": "/vendor/apex/com.android.hardware.cas.apex",
+        "versionCode": "1",
+        "versionName": "",
+        "isFactory": "true",
+        "isActive": "true",
+        "lastUpdateMillis": "1230768000",
+        "provideSharedApexLibs": "false",
+        "partition": "VENDOR"
+      },
+      {
+        "moduleName": "com.google.android.widevine",
+        "modulePath": "/vendor/apex/com.google.android.widevine.nonupdatable.apex",
+        "preinstalledModulePath": "/vendor/apex/com.google.android.widevine.nonupdatable.apex",
+        "versionCode": "190250226",
+        "versionName": "",
+        "isFactory": "true",
+        "isActive": "true",
+        "lastUpdateMillis": "1230768000",
+        "provideSharedApexLibs": "false",
+        "partition": "VENDOR"
+      },
+      {
+        "moduleName": "com.xiaomi.wifi",
+        "modulePath": "/vendor/apex/com.xiaomi.wifi.apex",
+        "preinstalledModulePath": "/vendor/apex/com.xiaomi.wifi.apex",
+        "versionCode": "1",
+        "versionName": "",
+        "isFactory": "true",
+        "isActive": "true",
+        "lastUpdateMillis": "1230768000",
+        "provideSharedApexLibs": "false",
+        "partition": "VENDOR"
+      }
+    ],
+    "content_comparison": {
+      "path": "evidence/apex-content-20260827T192009Z/comparison.json",
+      "sha256": "df1da46e592450ffb63b3202eb39c8d5e3a0207767dc5f55863820618f3a51f8",
+      "size_bytes": 4789
+    },
+    "raw_all_matched_value": false,
+    "matched": [
+      {
+        "path": "/vendor/apex/com.android.hardware.cas.apex",
+        "sha256": "7d0ddec71e4b6a84a55e76faf147332a1908a89a0706836a72e85877f2569210",
+        "size_bytes": 380928,
+        "kind": "vendor-apex-package"
+      },
+      {
+        "path": "/vendor/apex/com.google.android.widevine.nonupdatable.apex",
+        "sha256": "4a680a496773eb72bcf4beba906b8ba8ac660bd8a5f116a2ad4f169d7dd820a8",
+        "size_bytes": 5619712,
+        "kind": "vendor-apex-package"
+      },
+      {
+        "path": "/vendor/apex/com.xiaomi.wifi.apex",
+        "sha256": "d7dfac2c2d52773409b59f89a78daf9cdc487c6ec3fa30493a9b63c7900f66dc",
+        "size_bytes": 348160,
+        "kind": "vendor-apex-package"
+      },
+      {
+        "path": "/apex/com.android.hardware.cas/etc/vintf/android.hardware.cas-service.xml",
+        "sha256": "8532b0a9f68693ad7251f98717c2c5fce45c74399338d1565d917d826ea94666",
+        "size_bytes": 373,
+        "kind": "active-vintf-fragment"
+      },
+      {
+        "path": "/apex/com.google.android.widevine/etc/vintf/com.google.android.widevine.xml",
+        "sha256": "dc98d59d89ac79ab822017873c0f21d15f7695b03ecb18f04303f2c8b2a28791",
+        "size_bytes": 349,
+        "kind": "active-vintf-fragment"
+      }
+    ],
+    "unavailable": [
+      {
+        "path": "/apex/com.android.hardware.cas/apex_manifest.pb",
+        "reason": "Permission denied returned as content despite transport success",
+        "diagnostic_sha256": "b6562607e7a2d97b51cc84edceca0d0c9a1481ba1ac7fa30b437185d1d02a889",
+        "diagnostic_bytes": 72,
+        "transport_status": "ok",
+        "payload_read_status": "unavailable"
+      },
+      {
+        "path": "/apex/com.google.android.widevine/apex_manifest.pb",
+        "reason": "Permission denied returned as content despite transport success",
+        "diagnostic_sha256": "e692566e30bfca6f15f7deee97c2322a913fc4344eee73347f068dbdd16c18bd",
+        "diagnostic_bytes": 75,
+        "transport_status": "ok",
+        "payload_read_status": "unavailable"
+      },
+      {
+        "path": "/apex/com.xiaomi.wifi/apex_manifest.pb",
+        "reason": "Permission denied returned as content despite transport success",
+        "diagnostic_sha256": "566e0e8f4d1aa2fc6984fe2ad9d612a49f0e991760d464e6042494b61a01e796",
+        "diagnostic_bytes": 63,
+        "transport_status": "ok",
+        "payload_read_status": "unavailable"
+      }
+    ],
+    "phone_modified": false,
+    "scope": "observed Xiaomi.eu stock baseline, not Evolution X activation or feature behavior",
+    "binding_receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/live-evidence-binding-v1.json",
+      "sha256": "a25cfc2a33acaffaf85a31cfbbc8499fb806533974b4b5d90aa171845beb33c7",
+      "size_bytes": 4427
+    }
+  },
+  "validation_boundaries": {
+    "stock_active_selection_observed": true,
+    "stock_package_bytes_matched": 3,
+    "stock_active_vintf_fragments_matched": 2,
+    "direct_active_manifest_reads_unavailable": 3,
+    "apex_payload_avb_verification_attempted": false,
+    "apex_container_signature_verification_attempted": false,
+    "oem_origin_authenticated": false,
+    "evolution_activation_verified": false,
+    "effective_vintf_compatibility_established_by_this_record": false,
+    "elf_dependency_closure_verified": false,
+    "drm_security_level_verified": false,
+    "feature_behavior_verified": false,
+    "phone_modified": false
+  },
+  "primary_sources": [
+    {
+      "project": "system/apex",
+      "commit": "97548ed51112062a4d1762a7dffa0cadcc09bda9",
+      "path": "proto/apex_manifest.proto"
+    },
+    {
+      "project": "system/linkerconfig",
+      "commit": "12743643593c9f13784ed30424db2ea09a7bc65f",
+      "path": "contents/namespace/vendordefault.cc",
+      "meaning": ":mediacas requires the vendor mediacas namespace"
+    },
+    {
+      "project": "system/libvintf",
+      "commit": "69c456ea4aa2f503a2904cfbc11f279a3b2efb09",
+      "path": "Apex.cpp",
+      "meaning": "uses real active APEX module names and VENDOR/ODM partition selection"
+    },
+    {
+      "project": "e2fsprogs",
+      "commit": "7ee1d505ef3b37831215f490411f346fe57e9053",
+      "path": "debugfs/ls.c",
+      "tag": "v1.47.4"
+    }
+  ]
+}
