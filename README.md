@@ -11,9 +11,9 @@ should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
 
-- Nine pinned source/reference checkouts, including Evolution X's official
+- Twelve pinned source/reference checkouts, including Evolution X's official
   manifest and product configuration, Lineage extraction and Xiaomi hardware
-  tools, Google's Repo launcher, and clearly labeled incomplete device/common
+  tools, Google's Repo launcher, AOSP boot/AVB/DTBO inspectors, and clearly labeled incomplete device/common
   tree references. Exact URLs and revisions are in
   [`config/sources.json`](config/sources.json).
 - Tested source-fetch, host-check, Linux initialization/sync, firmware-intake,
@@ -146,7 +146,7 @@ verified research in separate commits. This folder intentionally retains its
 original `lineage-os-xiaomi17u` name; the selected ROM is Evolution X.
 
 The offline suite covers source safety, both host modes, container boundaries,
-firmware intake, and private device evidence. All nine pinned references were
+firmware intake, and private device evidence. All twelve pinned references were
 verified, and real Repo initialization inside Apple Container passed with
 signature checks enabled and matching manifest/Repo commits. Full platform sync
 and device build results are tracked separately; no complete Android ROM build

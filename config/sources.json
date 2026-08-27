@@ -91,6 +91,33 @@
       "purpose": "Official Xiaomi kernel release index snapshot; no confirmed Xiaomi 17 Ultra release in this index."
     },
     {
+      "name": "aosp-mkbootimg",
+      "url": "https://android.googlesource.com/platform/system/tools/mkbootimg",
+      "branch": "android-16.0.0_r4",
+      "revision_kind": "tag",
+      "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+      "path": "upstream/aosp-mkbootimg",
+      "purpose": "Official Android 16 boot-image parser for offline inspection only; no firmware installer is executed."
+    },
+    {
+      "name": "aosp-avb",
+      "url": "https://android.googlesource.com/platform/external/avb",
+      "branch": "android-16.0.0_r4",
+      "revision_kind": "tag",
+      "commit": "c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb",
+      "path": "upstream/aosp-avb",
+      "purpose": "Official Android 16 avbtool for read-only image metadata and signature/digest inspection; not an authorization to sign or modify images."
+    },
+    {
+      "name": "aosp-libufdt",
+      "url": "https://android.googlesource.com/platform/system/libufdt",
+      "branch": "android-16.0.0_r4",
+      "revision_kind": "tag",
+      "commit": "10c6b5f81069d6d78c7ef3833458f4d51d02e2a6",
+      "path": "upstream/aosp-libufdt",
+      "purpose": "Official Android 16 mkdtboimg parser for offline DTBO table inspection; no device tree from another phone is adopted."
+    },
+    {
       "name": "repo-tool",
       "url": "https://gerrit.googlesource.com/git-repo",
       "branch": "stable",
