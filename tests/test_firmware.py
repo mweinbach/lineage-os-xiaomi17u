@@ -377,6 +377,107 @@ class FirmwareIntakeTests(unittest.TestCase):
         self.assertEqual(stdout.getvalue(), "")
         self.assertFalse(self.artifacts.exists())
 
+    def test_default_url_mode_preserves_legacy_metadata_schema(self):
+        first = self.intake()
+        self.assertEqual(first["metadata"]["schema_version"], 1)
+        self.assertNotIn("source_kind", first["metadata"])
+        self.assertNotIn("origin_verified", first["metadata"])
+        self.assertEqual(set(first["metadata"]), {
+            "schema_version", "filename", "device", "build", "region", "source_url",
+            "sha256", "size_bytes", "collected_at_utc",
+        })
+        second = self.intake(source_kind="url")
+        self.assertTrue(second["reused"])
+        self.assertEqual(second["metadata"], first["metadata"])
+
+    def test_unknown_origin_requires_explicit_user_provided_mode(self):
+        for source_kind in ("url",):
+            with self.subTest(source_kind=source_kind), self.assertRaisesRegex(firmware.IntakeError, "explicitly user-provided"):
+                self.intake(source_url=None, source_kind=source_kind)
+        self.assertFalse(self.artifacts.exists())
+
+    def test_user_provided_package_records_unknown_origin_truthfully(self):
+        first = self.intake(source_kind="user-provided", source_url=None)
+        metadata = first["metadata"]
+        self.assertEqual(metadata["schema_version"], 2)
+        self.assertEqual(metadata["source_kind"], "user-provided")
+        self.assertIsNone(metadata["source_url"])
+        self.assertIs(metadata["origin_verified"], False)
+        self.assertEqual(Path(first["firmware_path"]).read_bytes(), self.contents)
+        second = self.intake(source_kind="user-provided", source_url=None)
+        self.assertTrue(second["reused"])
+        self.assertEqual(second["metadata"], metadata)
+
+    def test_user_provided_mode_does_not_verify_optional_url(self):
+        result = self.intake(source_kind="user-provided")
+        self.assertEqual(result["metadata"]["source_url"], self.options["source_url"])
+        self.assertIs(result["metadata"]["origin_verified"], False)
+
+    def test_user_provided_optional_url_still_requires_safe_https(self):
+        for url in ("", "file:///tmp/firmware.zip", "http://example.com/firmware.zip", "https://user:secret@example.com/file.zip"):
+            with self.subTest(url=url), self.assertRaises(firmware.IntakeError):
+                self.intake(source_kind="user-provided", source_url=url)
+        self.assertFalse(self.artifacts.exists())
+
+    def test_provenance_mode_cannot_relabel_an_existing_package(self):
+        first = self.intake(source_kind="user-provided", source_url=None)
+        path = Path(first["metadata_path"])
+        before = path.read_bytes()
+        with self.assertRaises(firmware.IntakeError):
+            self.intake()
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_later_url_cannot_silently_replace_unknown_origin(self):
+        first = self.intake(source_kind="user-provided", source_url=None)
+        before = Path(first["metadata_path"]).read_bytes()
+        with self.assertRaisesRegex(firmware.IntakeError, "source_url"):
+            self.intake(source_kind="user-provided")
+        self.assertEqual(Path(first["metadata_path"]).read_bytes(), before)
+
+    def test_origin_verification_cannot_be_falsely_set_in_existing_metadata(self):
+        result = self.intake(source_kind="user-provided", source_url=None)
+        path = Path(result["metadata_path"])
+        metadata = {**result["metadata"], "origin_verified": True}
+        path.write_text(json.dumps(metadata))
+        with self.assertRaisesRegex(firmware.IntakeError, "origin_verified"):
+            self.intake(source_kind="user-provided", source_url=None)
+        self.assertEqual(json.loads(path.read_text()), metadata)
+
+    def test_unsupported_provenance_kinds_are_rejected(self):
+        for source_kind in ("", "official", "downloaded", None):
+            with self.subTest(source_kind=source_kind), self.assertRaisesRegex(firmware.IntakeError, "source kind"):
+                self.intake(source_kind=source_kind)
+        self.assertFalse(self.artifacts.exists())
+
+    def test_cli_still_requires_source_url_by_default(self):
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr), self.assertRaises(SystemExit) as result:
+            firmware.main([
+                str(self.source), "--device", "test-product", "--build", "test-build", "--region", "test-region",
+            ])
+        self.assertEqual(result.exception.code, 2)
+        self.assertIn("--source-url is required", stderr.getvalue())
+        self.assertFalse(self.artifacts.exists())
+
+    def test_cli_user_provided_does_not_need_or_invent_a_url(self):
+        intake = firmware.intake_firmware
+
+        def with_temp_output(*args, **kwargs):
+            return intake(*args, **kwargs, artifacts_dir=self.artifacts)
+
+        stdout = io.StringIO()
+        with mock.patch.object(firmware, "intake_firmware", side_effect=with_temp_output):
+            with contextlib.redirect_stdout(stdout):
+                code = firmware.main([
+                    str(self.source), "--device", "test-product", "--build", "test-build",
+                    "--region", "test-region", "--source-kind", "user-provided",
+                ])
+        self.assertEqual(code, 0)
+        metadata = json.loads(stdout.getvalue())["metadata"]
+        self.assertEqual(metadata["source_kind"], "user-provided")
+        self.assertIsNone(metadata["source_url"])
+        self.assertIs(metadata["origin_verified"], False)
+
 
 if __name__ == "__main__":
     unittest.main()

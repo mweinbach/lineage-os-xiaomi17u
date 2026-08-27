@@ -1,10 +1,11 @@
-# Stock firmware intake
+# Firmware intake
 
 `scripts/firmware.py` preserves an existing local firmware package and its
 provenance for bring-up research. It does not download firmware, connect to a
 phone, extract images, run included programs, unlock a bootloader, or flash
 anything. A successful intake does not establish that a package belongs to this
-phone or that Evolution X can boot it.
+phone, authenticate its publisher, or establish that Evolution X can boot it.
+Stock and modified ROM packages must keep distinct provenance.
 
 ## Select an exact stock baseline
 
@@ -51,9 +52,40 @@ python3 scripts/firmware.py '/absolute/path/to/original-stock-package.tgz' \
 If a checksum is available from an independent trusted source, add
 `--expected-sha256` followed by its 64 hexadecimal characters. This is optional
 because not every publisher supplies SHA256. A locally computed checksum detects
-changes to the package; by itself it does not establish authenticity. The source
-URL must use HTTPS and must not contain user credentials or a fragment. Use a
-stable provenance URL without login tokens or expiring signed credentials.
+changes to the package; by itself it does not establish authenticity. The default
+provenance mode is `--source-kind url`, which requires `--source-url`. That URL
+must use HTTPS and must not contain user credentials or a fragment. Use a stable
+provenance URL without login tokens or expiring signed credentials. The tool
+records the supplied URL but does not verify that the file was downloaded there.
+
+### A user-provided package with unknown download origin
+
+If the user supplies a local file and its download origin is not known, select
+that provenance explicitly rather than inventing a URL:
+
+```sh
+python3 scripts/firmware.py '/absolute/path/to/user-provided-package.zip' \
+  --device 'VERIFIED_PRODUCT' \
+  --build 'DECLARED_FIRMWARE_BUILD' \
+  --region 'VERIFIED_BASELINE_REGION' \
+  --source-kind user-provided \
+  --inspect
+```
+
+Only `--source-kind user-provided` permits an omitted URL. Its schema-version-2
+metadata records `source_kind: "user-provided"`, `source_url: null`, and
+`origin_verified: false`. An optional supplied URL must still pass the same
+HTTPS checks and does not change `origin_verified` to true. This mode is not a
+claim of official firmware, trustworthy authorship, or verified download origin.
+Device, build, and region values remain declared provenance and must be compared
+with embedded metadata; a matching filename is not independent verification.
+
+Default URL-mode metadata retains the existing schema version 1 and remains
+compatible with previously accepted packages. A repeated intake cannot silently
+change the provenance mode, add a previously unknown origin, or rewrite the
+original receipt. See [the provided Xiaomi.eu package](provided-firmware.md) for
+a concrete record that distinguishes its filename/build label from embedded
+metadata and from official Xiaomi firmware.
 
 The destination is fixed relative to this repository, regardless of the current
 working directory:
@@ -70,7 +102,9 @@ time; normal filesystem access-time behavior is outside its control. It creates
 a separate copy, so allow at least the package's size in free disk space.
 
 Metadata contains the original basename, SHA256, byte length, declared device,
-build, region, source URL, schema version, and UTC collection timestamp. JSON
+build, region, source URL (or explicit null for unknown user-provided origin),
+schema version, and UTC collection timestamp. User-provided metadata additionally
+records its provenance mode and the unverified origin status. JSON
 printed to stdout includes those fields, output paths, and whether an existing
 copy was reused. Input paths are not stored in metadata.
 
@@ -149,6 +183,7 @@ python3 -m unittest discover -s tests -v
 ```
 
 Firmware tests create temporary local fixtures and exercise checksums,
-idempotence, corruption, filename and metadata validation, symlink rejection,
-partial-copy cleanup, concurrency locks, and ZIP/TAR inventories. They require
+idempotence, corruption, filename and metadata validation, explicit unknown-origin
+provenance, legacy URL metadata compatibility, symlink rejection, partial-copy
+cleanup, concurrency locks, and ZIP/TAR inventories. They require
 only Python's standard library and neither a network connection nor a phone.

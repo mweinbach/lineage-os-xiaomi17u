@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Preserve a local stock firmware package and its provenance; never flash it."""
+"""Preserve a local firmware package and its provenance; never flash it."""
 
 from __future__ import annotations
 
@@ -220,7 +220,8 @@ def intake_firmware(
     device: str,
     build: str,
     region: str,
-    source_url: str,
+    source_url: str | None = None,
+    source_kind: str = "url",
     expected_sha256: str | None = None,
     inspect: bool = False,
     artifacts_dir: str | Path = DEFAULT_ARTIFACTS_DIR,
@@ -229,14 +230,20 @@ def intake_firmware(
     source = Path(source).expanduser().absolute()
     filename = _filename(source.name)
     expected_sha256 = _checksum(expected_sha256)
+    if source_kind not in ("url", "user-provided"):
+        raise IntakeError("source kind must be url or user-provided")
+    if source_kind == "url" and source_url is None:
+        raise IntakeError("source URL is required unless source kind is explicitly user-provided")
     fields = {
         "schema_version": 1,
         "filename": filename,
         "device": _text(device, "device"),
         "build": _text(build, "build"),
         "region": _text(region, "region", 80),
-        "source_url": _source_url(source_url),
+        "source_url": _source_url(source_url) if source_url is not None else None,
     }
+    if source_kind == "user-provided":
+        fields.update({"schema_version": 2, "source_kind": "user-provided", "origin_verified": False})
     checksum, size = _hash_file(source)
     if size == 0:
         raise IntakeError("firmware package is empty")
@@ -295,14 +302,17 @@ def intake_firmware(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("file", type=Path, help="existing local stock firmware package")
-    parser.add_argument("--device", required=True, help="verified stock product/device identifier")
-    parser.add_argument("--build", required=True, help="exact stock firmware build identifier")
+    parser.add_argument("file", type=Path, help="existing local firmware package")
+    parser.add_argument("--device", required=True, help="verified product/device identifier")
+    parser.add_argument("--build", required=True, help="exact declared firmware build identifier")
     parser.add_argument("--region", required=True, help="verified firmware region, not an inferred country")
-    parser.add_argument("--source-url", required=True, help="HTTPS source provenance; no download occurs")
+    parser.add_argument("--source-kind", choices=("url", "user-provided"), default="url", help="provenance mode; user-provided explicitly permits an unknown download origin")
+    parser.add_argument("--source-url", help="HTTPS source provenance; required unless source-kind is user-provided")
     parser.add_argument("--expected-sha256", help="independently supplied SHA256, when available")
     parser.add_argument("--inspect", action="store_true", help="include ZIP/TAR member inventory without extraction")
     args = parser.parse_args(argv)
+    if args.source_kind == "url" and args.source_url is None:
+        parser.error("--source-url is required unless --source-kind user-provided is explicitly selected")
     try:
         result = intake_firmware(
             args.file,
@@ -310,6 +320,7 @@ def main(argv: list[str] | None = None) -> int:
             build=args.build,
             region=args.region,
             source_url=args.source_url,
+            source_kind=args.source_kind,
             expected_sha256=args.expected_sha256,
             inspect=args.inspect,
         )
