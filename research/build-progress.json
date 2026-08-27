@@ -11,7 +11,7 @@
   "phone_modifications_performed": false,
   "base_source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
   "base_source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
-  "local_source_note": "The resolved manifest pins upstream projects. Additional authored device/kernel sources, private input receipts and the recorded vendor patch supplement that base.",
+  "local_source_note": "The resolved manifest pins upstream projects. Authored device/kernel sources, private input receipts and explicit vendor-property/SELinux patches supplement that base.",
   "kernel_bundle": {
     "receipt": "artifacts/kernel-inputs/nezha-xiaomi-eu-candidate-v2/receipt.json",
     "sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
@@ -19,18 +19,26 @@
     "module_instances": 914
   },
   "vendor_bundle": {
-    "receipt": "artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-camera-v2/vendor-inputs.json",
-    "sha256": "0a6a70317eed9c1df1e30112eed10361ba49d5e8afa89fbd6b1feb507a8d09bc",
+    "receipt": "artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1/vendor-inputs.json",
+    "sha256": "811f7904adbec2fa99d933179b1247d0c2e30f80a2ba7e0b54c8a2e713917360",
     "profile": "prebuilt-vendor-odm-with-explicit-system-ext-extras",
     "selected_camera_files": 9,
     "selected_camera_bytes": 542236,
-    "source_camera_apk_included": false
+    "source_camera_apk_included": false,
+    "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "input_avb_status": "verified",
+    "origin_verified": false
   },
   "device_admission": {
-    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-user-v7/admission.json",
-    "sha256": "76ca669fa526bcc040aa107b64f9bb702c7cf467444fb9e9dbe75c97a92c84df",
-    "source_commit": "d784dc4e8f96de6672dc29f8e4d4fd539d5be929",
-    "variant": "user"
+    "path": "artifacts/device-candidates/nezha-factory-framework-user-v8/admission.json",
+    "sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+    "source_commit": "1ada856722569c32e8475a7ad30bafebec215b28",
+    "variant": "user",
+    "mixed_package_sources": true,
+    "source_packages": {
+      "kernel": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+      "vendor": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b"
+    }
   },
   "installation": {
     "guest_receipt": "/work/candidates/nezha-framework-20260827T1817Z/installation.json",
@@ -180,6 +188,70 @@
         "old_source_directories_preserved": true,
         "transferred_small_files": 10,
         "transferred_small_bytes": 18733
+      },
+      {
+        "version": 8,
+        "private_receipt": "reports/factory-v8-installation.json",
+        "sha256": "9775be640f7e37d722113e5c86d1774daa1da6ecafa8468637018ea62a6ea7dc",
+        "guest_receipt": "/work/candidates/nezha-factory-v8/installation.json",
+        "completed_at": "2026-08-27T23:28:02.494824+00:00",
+        "admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+        "previous_admission_sha256": "76ca669fa526bcc040aa107b64f9bb702c7cf467444fb9e9dbe75c97a92c84df",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/BoardConfig.mk",
+            "before_sha256": "7cbefa4e8e0b95cbcddc6bffa1293565a9c67594455d124c360e5ee7d0336bbf",
+            "after_sha256": "03988f13df129116de55fcd5598845580074d62811f4bf953f2c99bc4765e1fd"
+          },
+          {
+            "path": "device/xiaomi/nezha/README.md",
+            "before_sha256": "c7640ceb8026d6cd65d08e26d06010ba0d2b0940a4a91585bc66b9684c454398",
+            "after_sha256": "ba7970fd4210fe3458c402a991709d05530763a9e5983b4872271ea3847cf209"
+          },
+          {
+            "path": "device/xiaomi/nezha/device.mk",
+            "before_sha256": "81243400a8c5bbd2e8fb83d3f250ccffcd4fa60f4be5b4bb1266d5cc0a07adac",
+            "after_sha256": "969859112fdb9de3692aa10ba0a56307c6479c105470058a983dfbee1dc793ed"
+          },
+          {
+            "path": "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+            "before_sha256": "9e908230882f25a43a9d28023c70b9857567a8172179474cc95856bbab70f62b",
+            "after_sha256": "16859ed3be0387b94ea1d198cabe2635a8bf82f3b2cbd0f32522f2c58e2e1e20"
+          },
+          {
+            "path": "device/xiaomi/nezha/generated/fstab.qcom",
+            "before_sha256": "a2588bfb31e2f23bf4a697ad6be678b8b052ed4ee139b8f41db053887eeff6e9",
+            "after_sha256": "f1406e41b969daed6156892e2abafea20293a9e3cd532b7e42de6bf7ca7a987e"
+          }
+        ],
+        "atomic_directory_exchange": true,
+        "old_source_directories_preserved": true,
+        "readback_verified": true,
+        "kernel_bundle_bytes_unchanged": true,
+        "camera_extra_bytes_unchanged": true,
+        "vendor_images_changed_to_factory": true,
+        "variant": "user",
+        "effective_configuration_verified": false,
+        "all_eighteen_historical_outputs_unchanged": true,
+        "output_directories_reset": false,
+        "previous_sources": [
+          {
+            "group": "vendor",
+            "target": "/work/evolution/vendor/xiaomi/nezha",
+            "stage": "/work/candidates/nezha-factory-v8/streamed/vendor-inputs",
+            "backup": "/work/candidates/nezha-factory-v8/previous-vendor-source",
+            "exchanged": true,
+            "preserved": true
+          },
+          {
+            "group": "device",
+            "target": "/work/evolution/device/xiaomi/nezha",
+            "stage": "/work/candidates/nezha-factory-v8/streamed/candidate/device/xiaomi/nezha",
+            "backup": "/work/candidates/nezha-factory-v8/previous-device-source",
+            "exchanged": true,
+            "preserved": true
+          }
+        ]
       }
     ],
     "independent_v3_audit": {
@@ -226,6 +298,54 @@
         }
       ],
       "purpose": "Allow Nezha to require false for downgrade and enforce for privileged permissions without conflicting inherited unconditional properties. No duplicate-property check is disabled."
+    },
+    {
+      "schema_version": 1,
+      "project": "system/sepolicy",
+      "origin": "https://github.com/Evolution-X/system_sepolicy.git",
+      "base_commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+      "patch": "patches/evolution/0002-remove-permissive-su.patch",
+      "patch_sha256": "7ff91ebdf07d3ec5f2b3849fcb2cb41dfe1337c53b16855385b07c4ee13e3f4b",
+      "files": [
+        {
+          "path": "private/su.te",
+          "before_sha256": "aa90a463c2e7a98f749c474f08c864be65467bca8118481de0388e8ce85e924f",
+          "before_size_bytes": 5255,
+          "after_sha256": "111c6d9384480ef07d0e47cabdc69cc990112831b783a6e14db619b26ca2dc01",
+          "after_size_bytes": 5193,
+          "before_git_blob": "690f305ff32fb59b3c37b9a45ecc7f25e968fe93",
+          "after_git_blob": "dfd18a91357f9b20eb1d59d3c49ad211b8865aba"
+        }
+      ],
+      "purpose": "Keep su subject to SELinux rules in this Nezha checkout, including user builds. Remove the unconditional permissive declaration, not its type or permission rules.",
+      "removed_policy_statements": [
+        "permissive su;"
+      ],
+      "allow_rules_changed": false,
+      "neverallow_rules_changed": false,
+      "historical_api_snapshots_changed": false,
+      "upstream_permissive_allowlists_changed": false,
+      "source_capture_receipt": {
+        "path": "artifacts/source-contracts/nezha-su-permissive-source-v1/receipt.json",
+        "sha256": "0d22a0000d53b52bf6158bc1672dada1fadf31641fefcc8c70fd6560c7368c2e"
+      },
+      "verification_requirements": [
+        "Apply only to the exact pinned source after verifying the original file and patch hashes; preserve original inputs and earlier outputs.",
+        "Compile the new policy with all neverallow assertions retained.",
+        "Run unfiltered sepolicy-analyze permissive and require empty output. The normal source targets allowlist su and cannot prove this alone.",
+        "Keep factory vendor/ODM compatibility, contexts, runtime enforcement and boot testing separate from this source hardening."
+      ],
+      "installation": {
+        "private_receipt": "reports/selinux-enforcement-apply-v1-receipt.json",
+        "sha256": "f776922d1e1167fa53998d0bbf8983fea0f11a9a756b160f75b4e4405918542b",
+        "guest_receipt": "/work/validation/nezha-selinux-enforcement-v1/receipt.json",
+        "completed_at": "2026-08-27T23:29:36.328593+00:00",
+        "previous_source_preserved": "/work/validation/nezha-selinux-enforcement-v1/before/su.te",
+        "only_expected_worktree_change": true,
+        "other_policy_statements_unchanged": true,
+        "all_eighteen_historical_outputs_unchanged": true,
+        "built_policy_verified": false
+      }
     }
   ],
   "module_build": {
@@ -972,5 +1092,40 @@
       "sepolicy_test",
       "sepolicy_dev_type_test"
     ]
+  },
+  "previous_vendor_bundles": [
+    {
+      "receipt": "artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-camera-v2/vendor-inputs.json",
+      "sha256": "0a6a70317eed9c1df1e30112eed10361ba49d5e8afa89fbd6b1feb507a8d09bc",
+      "profile": "prebuilt-vendor-odm-with-explicit-system-ext-extras",
+      "selected_camera_files": 9,
+      "selected_camera_bytes": 542236,
+      "source_camera_apk_included": false,
+      "device_source_versions": [
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "factory_candidate": {
+    "state": "installed_not_built",
+    "input_reuse_record": "research/factory-input-reuse.json",
+    "admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+    "kernel_provenance_relabelled": false,
+    "package_geometry_is_not_live_capacity": true,
+    "dtbo_package_extent_bytes": 33554432,
+    "dtbo_stored_image_bytes": 23068672,
+    "factory_fstab_source_sha256": "94a202513e73c5e05233fe6d0ef6d0de7b8fa6264562cff01723ec7f398bc535",
+    "generated_fstab_sha256": "f1406e41b969daed6156892e2abafea20293a9e3cd532b7e42de6bf7ca7a987e",
+    "factory_logical_flags_preserved": true,
+    "factory_boot_verification_rows": 5,
+    "device_node_globs_preserved": 2,
+    "vendor_image_replacement_applied": true,
+    "treble_labeling_errors_required_in_source": true,
+    "treble_labeling_check_passed": false,
+    "full_rom_verified": false,
+    "phone_accessed": false
   }
 }

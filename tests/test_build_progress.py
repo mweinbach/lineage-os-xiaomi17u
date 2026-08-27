@@ -289,6 +289,43 @@ class BuildProgressTests(unittest.TestCase):
         self.assertTrue(user["all_eleven_old_artifacts_unchanged"])
         self.assertTrue(all(row["matches_previous"] for row in old))
 
+    def test_factory_adoption_preserves_prior_inputs_and_does_not_promote_trust(self):
+        update = self.installed_version(8)
+        self.assertEqual(update["previous_admission_sha256"], self.installed_version(7)["admission_sha256"])
+        self.assertTrue(update["atomic_directory_exchange"])
+        self.assertTrue(update["old_source_directories_preserved"])
+        self.assertTrue(update["kernel_bundle_bytes_unchanged"])
+        self.assertTrue(update["camera_extra_bytes_unchanged"])
+        self.assertTrue(update["vendor_images_changed_to_factory"])
+        self.assertTrue(update["all_eighteen_historical_outputs_unchanged"])
+        self.assertFalse(update["output_directories_reset"])
+        self.assertFalse(update["effective_configuration_verified"])
+        vendor = self.record["vendor_bundle"]
+        self.assertEqual(vendor["sha256"], "811f7904adbec2fa99d933179b1247d0c2e30f80a2ba7e0b54c8a2e713917360")
+        self.assertEqual(vendor["input_avb_status"], "verified")
+        self.assertFalse(vendor["origin_verified"])
+        self.assertNotEqual(vendor["sha256"], self.record["camera_build"]["input_vendor_receipt_sha256"])
+        prior = self.record["previous_vendor_bundles"][0]
+        self.assertEqual(prior["sha256"], self.record["camera_build"]["input_vendor_receipt_sha256"])
+        factory = self.record["factory_candidate"]
+        self.assertEqual(factory["dtbo_package_extent_bytes"], 33554432)
+        self.assertEqual(factory["dtbo_stored_image_bytes"], 23068672)
+        self.assertFalse(factory["kernel_provenance_relabelled"])
+        self.assertFalse(factory["full_rom_verified"])
+        self.assertFalse(factory["treble_labeling_check_passed"])
+        self.assertTrue(factory["factory_logical_flags_preserved"])
+        self.assertEqual(factory["factory_boot_verification_rows"], 5)
+
+    def test_permissive_su_source_patch_is_not_yet_a_policy_binary_proof(self):
+        source = next(row for row in self.record["source_adjustments"] if row["project"] == "system/sepolicy")
+        self.assertEqual(hashlib.sha256((ROOT / source["patch"]).read_bytes()).hexdigest(), source["patch_sha256"])
+        self.assertEqual(source["removed_policy_statements"], ["permissive su;"])
+        applied = source["installation"]
+        self.assertEqual(applied["sha256"], "f776922d1e1167fa53998d0bbf8983fea0f11a9a756b160f75b4e4405918542b")
+        self.assertTrue(applied["other_policy_statements_unchanged"])
+        self.assertTrue(applied["only_expected_worktree_change"])
+        self.assertFalse(applied["built_policy_verified"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -23,8 +23,9 @@ any eventual device experiment, which needs separate user authorization.
 | `device/xiaomi/nezha` | Authored product plus generated boot, partition-budget and enforcing first-stage fstab configuration |
 | `kernel/xiaomi/nezha` | Stock-prebuilt integration wrapper, not a fabricated source-kernel tree |
 | `vendor/xiaomi/nezha-kernel` | 950 hash-verified files, including the exact Image, DTB/DTBO, 914 module instances and preserved ordered load/block lists |
-| `vendor/xiaomi/nezha` | Unchanged vendor/ODM EROFS inputs plus nine selected Camera dependency files and their [recorded XML derivations](camera-inputs.md) |
+| `vendor/xiaomi/nezha` | Factory vendor/ODM EROFS inputs plus the nine byte-identical selected Camera dependencies and their [recorded XML derivations](camera-inputs.md) |
 | `vendor/lineage/config/common.mk` | Two recorded defaults made optional so Nezha can enforce privileged permissions and prohibit OTA downgrade |
+| `system/sepolicy/private/su.te` | The unconditional permissive-su declaration removed; all permission grants and assertions retained |
 
 The public platform manifest and all its project revisions were preserved.
 No second sync or replacement source checkout was created. The resolved
@@ -162,7 +163,7 @@ the EROFS images. The vendor-side system selector is present with its stock
 hash. This is not a complete signed image set or a successful vendor-policy
 compatibility result; those boundaries are explicit in that separate record.
 
-Current admission **v7** was installed at `22:26:29 UTC`, preserving v6.
+Admission **v7** was installed at `22:26:29 UTC`, preserving v6.
 It records the stricter `user` variant and registers that lunch choice alongside
 the existing `userdebug` choice. Both remain framework-checks products; `eng`
 and complete-ROM/flash admission remain rejected. The kernel/vendor bundles,
@@ -183,6 +184,33 @@ Combining that exact policy with the new user outputs is a separate check,
 not a pass established by these successful framework targets. No live Ninja
 namespace snapshot was captured for this attempt; its logs show no sandbox
 fallback. Earlier sandbox observations retain their own attempt identities.
+
+Current admission **v8** was installed at `23:28:02 UTC`. It uses the separately
+verified factory vendor/ODM images, factory API/property facts, factory fstab
+flags and package GPT budgets. Its DTBO budget is now **32 MiB**, with the
+unchanged 22 MiB stock input. All eight logical AVB declarations, five boot
+verification rows, GSI key-path references, encryption fields and two inert
+vold device-node patterns are retained. The existing kernel bundle keeps its
+Xiaomi.eu provenance; equality with selected factory components does not
+relabel its origin. See [factory input reuse](factory-input-reuse.md).
+
+The same owning VM received 30 files totaling 5,727,927,659 bytes through a
+hash-checked stream, with destination readback. Both old device/vendor trees
+are preserved under `/work/candidates/nezha-factory-v8/`. All 950 kernel input
+files and 18 historical output artifacts were checked unchanged. No output
+directory was reset. Installation receipt SHA256:
+`9775be640f7e37d722113e5c86d1774daa1da6ecafa8468637018ea62a6ea7dc`.
+
+V8 also requires Treble labeling errors rather than warnings and rejects an
+unreviewed tracking list. This alone does not schedule or pass the labeling
+test at platform policy version `202504`. Separately, the pinned source's
+unconditional `permissive su;` statement was removed at `23:29:36 UTC`, with
+the original file preserved and all other policy statements unchanged.
+The [patch](../patches/evolution/selinux-enforcement.json) binds both source
+hashes. Its installation receipt SHA256 is
+`f776922d1e1167fa53998d0bbf8983fea0f11a9a756b160f75b4e4405918542b`.
+No build or zero-permissive-domain result for these new inputs is claimed
+yet; the earlier user v7 result remains a different policy snapshot.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from
