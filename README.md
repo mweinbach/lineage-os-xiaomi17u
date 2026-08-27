@@ -137,6 +137,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Source research](docs/device-research.md) | Verified branches, device-tree defects, kernel gaps |
 | [Community bring-up](docs/community-bringup.md) | Later XDA release, Leica port reports, private-tree and firmware limits |
 | [MiCode kernel review](docs/micode-popsicle-review.md) | Exact shared kernel/KMI evidence and remaining Nezha board gaps |
+| [Kernel configuration audit](kernel/xiaomi/nezha/config-audit/README.md) | All 812 explicit ACK requests match stock; separate DDK comparisons and preservation assertions |
 | [Native features](docs/native-features.md) | Camera/Leica, IMS, fingerprint, charging, display, audio, accessories |
 | [Captured camera](docs/camera-baseline.md) | Actual APK, native library dependencies, framework hooks and camera HAL declarations |
 | [Stock collection](docs/stock-evidence.md) | Read-only capture, privacy, and partial-result handling |
@@ -152,6 +153,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](docs/camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
+| [Camera APK integration](docs/camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 

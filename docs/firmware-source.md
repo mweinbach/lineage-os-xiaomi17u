@@ -17,6 +17,14 @@ into `sources/`; no macOS permission or browser access control was bypassed.
 The [fastboot extractor](fastboot-extraction.md) is ready for the verified
 intake. Do not confuse this file with the small earlier CLI partial below.
 
+The `19:51 UTC` metadata check still found that exact size and allocated disk
+blocks covering the file. A fresh ordinary content probe and Chrome connection
+retry still timed out. Allocation and a finished-looking filename do not prove
+archive integrity or origin; the cause of the access failure remains unresolved.
+No browser profile, cookie store, privileged read or permission workaround was
+used. The metadata receipt remains private under
+`reports/official-download-metadata-20260827T1952Z.json`.
+
 ## Why this build
 
 The [connected phone baseline](device-baseline.md), also recorded in

@@ -22,6 +22,11 @@ Camera port a concrete research lead. Its private device tree and official
 modified `.309` snapshot. The [public MiCode branch review](micode-popsicle-review.md)
 establishes shared kernel/KMI/compiler-family evidence while preserving the
 unresolved exact Nezha board and module requirements.
+The subsequent [configuration audit](../kernel/xiaomi/nezha/config-audit/README.md)
+finds all 812 explicit ACK base-defconfig requests in the captured GKI with
+matching values. It keeps the vendor DDK dictionaries separate and generates
+20 stock-derived preservation assertions. This advances the source baseline
+without pretending those literal comparisons resolve the complete kernel build.
 
 ## Evidence to use, and what it does not establish
 
@@ -112,6 +117,13 @@ mappings against actual file locations, and review each privileged permission
 and signing requirement. Optional `uses-native-library` declarations, including
 MediaTek-named adapters in the shared APK, must not automatically become Nezha
 vendor dependencies.
+
+The [APK import review](camera-apk-integration.md) now supplies concrete signing,
+4 KiB layout and manifest checks. The remaining build work includes a real
+DEX class-loader provider and an explicit signing/privilege/packaging contract.
+Neither a module-name alias nor a global relaxed library check supplies those
+requirements. Keep the existing signature and raw captures unchanged while
+reviewing any new derived input.
 
 Keep IMS separate from basic modem/data operation, and fingerprint/trusted
 services separate from ordinary touch/display operation. Preserve target-specific

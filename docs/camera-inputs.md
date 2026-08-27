@@ -159,6 +159,10 @@ extension JARs, init scripts and other MIUI framework files are also excluded.
 The APK's install-time optional declarations do not prove which dependencies a
 particular capture mode needs. Signature, class-loader, policy and feature
 testing remain separate work described in the [Camera baseline](camera-baseline.md).
+The later [APK integration review](camera-apk-integration.md) records actual
+signature, alignment, preprocessing and manifest-name checks, including the
+inherited relaxed setting and the exact class-loader provider gap. It does
+not import or modify the APK.
 
 ## Generated private bundle and reproduction
 
