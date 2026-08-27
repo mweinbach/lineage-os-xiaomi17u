@@ -1,0 +1,721 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-27T23:19:37.469617+00:00",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "scope": "Receipt-backed factory input comparisons and host staging; this record does not establish guest adoption, a build, a boot or native-feature compatibility.",
+  "packages": {
+    "factory": {
+      "sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "source_kind": "user-provided",
+      "source_url": null,
+      "origin_verified": false
+    },
+    "xiaomi_eu": {
+      "sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+      "modified_package": true,
+      "retained_separately": true
+    }
+  },
+  "evidence": {
+    "factory_property_comparison": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/build-property-comparison-v2/analysis/receipt.json",
+      "sha256": "349783a63894190afcecef489707800a0e03c851b58cac64375774021c08a901",
+      "size_bytes": 55304
+    },
+    "factory_property_values": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/build-property-comparison-v2/analysis/vintf-properties.json",
+      "sha256": "d377ae5021b580a6e0aef25c5056c87cc820dbefd5cdebc6e7bbcf0961b5a697",
+      "size_bytes": 13806
+    },
+    "normalized_factory_layout": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/normalized-layout-v1/firmware-layout.json",
+      "sha256": "8fa822ebe52e9ea1cfea2e6215af150623c6321d782291f9588ddb84636de1c0",
+      "size_bytes": 19387
+    },
+    "layout_normalization": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/normalized-layout-v1/receipt.json",
+      "sha256": "897830714ee38bc7193a003684e62e5b653b7d52b6bee7d1cbe23928109090c5",
+      "size_bytes": 5282
+    },
+    "camera_comparison": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/camera-comparison-v1/receipt.json",
+      "sha256": "0994eddaa3a718e2edfd42d1ec125c1647757f02293f2210bf29437c2e384f63",
+      "size_bytes": 32288
+    },
+    "dlkm_comparison": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/analysis/receipt.json",
+      "sha256": "70e4471ba25fcce901c37aface8f88e4d22b067fc963d1a3f8b12227fb23b018",
+      "size_bytes": 4769
+    },
+    "dlkm_file_comparison": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/analysis/comparison.json",
+      "sha256": "fc9872cde366b60fecdffd24344006613abf9775c31eca4b077c34e570eb9559",
+      "size_bytes": 680752
+    },
+    "factory_boot_record": {
+      "path": "research/factory-boot-contract.json",
+      "sha256": "b3ab3adc8458d4cac38506d800016f2d6f2ab0256e46261684f3441b4e2419b0",
+      "size_bytes": 42935
+    },
+    "independent_layout_review": {
+      "path": "reports/factory-layout-independent-review-v1.json",
+      "sha256": "04aa9f32ed114b9dfe7c59b7b336b47e68e09cf8016fc6fb40c6487360a7b716",
+      "size_bytes": 25912
+    },
+    "independent_small_file_readback": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/normalized-layout-readback-v1/receipt.json",
+      "sha256": "1c36c558a7f4b863921975f68b156576ce15258c24be882f75d20565af2a9684",
+      "size_bytes": 27403
+    },
+    "host_vendor_bundle": {
+      "path": "artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1/vendor-inputs.json",
+      "sha256": "811f7904adbec2fa99d933179b1247d0c2e30f80a2ba7e0b54c8a2e713917360",
+      "size_bytes": 11837
+    },
+    "factory_camera_selection": {
+      "path": "artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1-selection.json",
+      "sha256": "c82cf07f512342d7e20cc155a6425bf89d272c6c1fb3fc258e89e50473f7a8d2",
+      "size_bytes": 3866
+    },
+    "factory_selection_derivation": {
+      "path": "reports/factory-camera-selection-derivation-v1.json",
+      "sha256": "0fb51972ba98e7e349509d836b9422a1bb17a2add1cc4fc557bbd23506b36c66",
+      "size_bytes": 816
+    },
+    "canonical_inventory_adapter": {
+      "path": "reports/factory-vendor-inventory-adapter-v1.json",
+      "sha256": "e691fa2bf39e8abed1aae44b36a39a068a34f4dc6aa40ba175ee2b5bde3dee8c",
+      "size_bytes": 1400
+    }
+  },
+  "properties": {
+    "logical_image_count": 8,
+    "property_file_count": 9,
+    "whole_file_byte_match_count": 0,
+    "whole_file_byte_difference_count": 9,
+    "selected_critical_property_count": 69,
+    "selected_critical_value_difference_count": 0,
+    "source_image_bytes_hashed_by_guarded_capture": 12477939712,
+    "factory_and_eu_property_bytes_rehashed": 136129,
+    "files": [
+      {
+        "runtime_path": "/mi_ext/etc/build.prop",
+        "factory_sha256": "f0b1bdd24b21e16ee5d4bb1842f816895ae97b9cae96387502c0d92b6c7b5aaf",
+        "factory_size_bytes": 957,
+        "eu_sha256": "5f1c03fb78c1578b7f9f071d830d7a35cdbc476bc4c6fe8c17dcbaa187001449",
+        "eu_size_bytes": 797,
+        "selected_critical_property_count": 0,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/odm/etc/build.prop",
+        "factory_sha256": "b4a5f8b818d0dbe8a3a400cba6890deaca5012737ff24baa903518027a94287b",
+        "factory_size_bytes": 18903,
+        "eu_sha256": "605227e2ea6a2c7cf11c431a5bc03d32ce45907a732133fe38c409ea0847773d",
+        "eu_size_bytes": 18818,
+        "selected_critical_property_count": 7,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/product/etc/build.prop",
+        "factory_sha256": "3ab98a14f6550f0985d3c1d54255cdf77e588335038eb8b0b92b37ef5476ce1a",
+        "factory_size_bytes": 12163,
+        "eu_sha256": "5a9d22fdc17ca168d255e21567730dc7f7e713ee408329209a8d8ebeadde7691",
+        "eu_size_bytes": 12586,
+        "selected_critical_property_count": 7,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "factory_sha256": "2c2811af2c883b7c114d8de2b217e2643f57cbecbd464ade00c31b3d6e81071f",
+        "factory_size_bytes": 11883,
+        "eu_sha256": "7cb496f8ca074b9bfe97c9eac7cea81909069cda71c96df4a3783babd2aa69aa",
+        "eu_size_bytes": 12087,
+        "selected_critical_property_count": 19,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/system_dlkm/etc/build.prop",
+        "factory_sha256": "6f5b60ba0854b53218b704e754393fa1cae03506d255878196cdba115e768c45",
+        "factory_size_bytes": 1246,
+        "eu_sha256": "9ed85132074bf22c077d101291d27d40718db762d5f579edd0d7401f01116195",
+        "eu_size_bytes": 1245,
+        "selected_critical_property_count": 6,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/system_ext/etc/build.prop",
+        "factory_sha256": "7576ccdbb863b28e0371c29c59d03bec68b89bbc5c9669220971bd636e9f5fc8",
+        "factory_size_bytes": 5047,
+        "eu_sha256": "c3b76f040a5ab225eed6934af9959f5bd37bccae898b39bb3615e122454f29d8",
+        "eu_size_bytes": 4956,
+        "selected_critical_property_count": 6,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "factory_sha256": "2ea7fe521d0e7010bc3f068db034baf2056ae274023a964ff8a770ff726f4703",
+        "factory_size_bytes": 15320,
+        "eu_sha256": "0db3c4dad5631d225a354854d4811a20146bbd3308b64671691f4c50244acf53",
+        "eu_size_bytes": 15243,
+        "selected_critical_property_count": 12,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/vendor/odm_dlkm/etc/build.prop",
+        "factory_sha256": "e3717ee9e0664508a5af41f06b75ae99318b94482a6937bc43253d45292bd367",
+        "factory_size_bytes": 1197,
+        "eu_sha256": "7f790c0c0fd81f84846c08a9a26a59f38374155933c7384b1487608798ebb7ce",
+        "eu_size_bytes": 1190,
+        "selected_critical_property_count": 6,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      },
+      {
+        "runtime_path": "/vendor_dlkm/etc/build.prop",
+        "factory_sha256": "5864cfac7bd99919e6f2c9b0c280240405fcf062606a3f6606878ecfeb5a676c",
+        "factory_size_bytes": 1246,
+        "eu_sha256": "43c1db6f2c1a308d6811c5d3cc4aba8a4dfd606983566529d509d9ce7f1356c4",
+        "eu_size_bytes": 1245,
+        "selected_critical_property_count": 6,
+        "whole_file_bytes_equal": false,
+        "selected_critical_values_equal": true
+      }
+    ],
+    "selected_key_values": [
+      {
+        "runtime_path": "/odm/etc/build.prop",
+        "key": "ro.product.first_api_level",
+        "factory_and_eu_value": "36"
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "key": "ro.board.first_api_level",
+        "factory_and_eu_value": "202504"
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "key": "ro.board.api_level",
+        "factory_and_eu_value": "202504"
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "key": "ro.board.api_frozen",
+        "factory_and_eu_value": "true"
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "key": "ro.vendor.build.version.sdk",
+        "factory_and_eu_value": "36"
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "key": "ro.vendor.build.security_patch",
+        "factory_and_eu_value": "2026-02-01"
+      },
+      {
+        "runtime_path": "/vendor/build.prop",
+        "key": "ro.board.platform",
+        "factory_and_eu_value": "canoe"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.build.version.sdk",
+        "factory_and_eu_value": "36"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.build.version.security_patch",
+        "factory_and_eu_value": "2026-07-01"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.llndk.api_level",
+        "factory_and_eu_value": "202504"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.build.type",
+        "factory_and_eu_value": "user"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.debuggable",
+        "factory_and_eu_value": "0"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.secure",
+        "factory_and_eu_value": "1"
+      },
+      {
+        "runtime_path": "/system/build.prop",
+        "key": "ro.adb.secure",
+        "factory_and_eu_value": "1"
+      }
+    ],
+    "uninterpreted_lines": [
+      {
+        "source": "factory",
+        "runtime_path": "/odm/etc/build.prop",
+        "interpreted_as_empty_assignment": false,
+        "line": 480,
+        "literal": "ro.vendor.mitee_support",
+        "reason": "observed bare key without equals sign"
+      },
+      {
+        "source": "xiaomi_eu",
+        "runtime_path": "/odm/etc/build.prop",
+        "interpreted_as_empty_assignment": false,
+        "line": 479,
+        "literal": "ro.vendor.mitee_support",
+        "reason": "observed bare key without equals sign"
+      }
+    ],
+    "uninterpreted_line_was_not_an_empty_assignment": true,
+    "runtime_precedence_or_imports_resolved": false,
+    "effective_vintf_verified_by_this_comparison": false,
+    "initial_analysis": {
+      "capture_completed": true,
+      "analysis_completed": false,
+      "cause": "The first strict analysis rejected the bare ro.vendor.mitee_support line. The second records that observed line without interpreting it as an assignment.",
+      "driver": {
+        "path": "reports/inspect-factory-properties-v1.py",
+        "sha256": "af053b5026551984d840fdcfd1226339951e80e63067c8607839f62b9e09031b",
+        "size_bytes": 14119
+      },
+      "log": {
+        "path": "reports/factory-property-comparison-v1.log",
+        "sha256": "89b87d889ed8683b98b8476114ed0ea0ead84c5c9d1dc32de3c163f5851032d9",
+        "size_bytes": 974
+      },
+      "original_capture_receipts_preserved": true,
+      "firmware_corrupt_claimed": false
+    }
+  },
+  "normalized_layout": {
+    "logical_partition_count": 16,
+    "populated_partition_count": 8,
+    "empty_b_partition_count": 8,
+    "allocated_logical_bytes": 12477939712,
+    "super_declared_bytes": 15300820992,
+    "raw_super_sha256": "ce1c84662c00818ffc39217b61670cea5aadfd5952e4eafaacb9f2d64b9b7c09",
+    "group_name": "qti_dynamic_partitions_a",
+    "group_maximum_bytes": 15290335232,
+    "group_allocated_bytes": 12477939712,
+    "geometry_is_package_metadata_not_live_capacity": true,
+    "logical_extraction_receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/receipt.json",
+      "sha256": "a7c2fc5ab8f23f6a5dc723736b006e8293f4c07c0dd92a5f28cc1eca46e2fc95",
+      "size_bytes": 3601
+    },
+    "external_avb_receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/avb-verification-v1/receipt.json",
+      "sha256": "5f22d51a23ba989f71bf6a37844bbade71b5c02b17e36c3ca77290ab9a795c58",
+      "size_bytes": 20790
+    },
+    "filesystem_receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/filesystem-validation-v2/receipt.json",
+      "sha256": "339843cdc69f8247d19fdd3d29a0bc52f6e15296c318312e937002a551cd6318",
+      "size_bytes": 7987
+    },
+    "recorded_avb_status": "passed",
+    "vendor_tool_mapped_avb_status": "verified",
+    "mapping_is_not_new_authentication": true,
+    "vendor_base_plan_accepted": true,
+    "base_plan_exercised_camera_extra_guards": false,
+    "device_derive_variants_accepted": [
+      "user",
+      "userdebug"
+    ],
+    "schema_plans_used_historical_eu_boot_reference": true,
+    "schema_plans_were_mixed_package_references": true,
+    "device_target_generated_by_normalization": false,
+    "historical_eu_layout_unchanged": true
+  },
+  "module_payloads": {
+    "dlkm": {
+      "scope": "All regular files below /lib/modules in the two DLKM images.",
+      "file_count": 504,
+      "module_file_instances": 484,
+      "metadata_file_count": 20,
+      "file_bytes": 143279456,
+      "partitions": [
+        {
+          "partition": "system_dlkm",
+          "file_count": 117,
+          "module_file_instances": 103,
+          "metadata_file_count": 14,
+          "file_bytes": 14227225,
+          "factory_image_sha256": "d8ca80231ebe2b1958fc18112ce7d7de139ba12fe040f4469f8886f148467465",
+          "eu_image_sha256": "5470344df2770d9ebb1c3341d36f771922556a13db5b1d8f37f219553de24d26",
+          "files_added": 0,
+          "files_removed": 0,
+          "files_changed": 0,
+          "all_file_bytes_equal_eu_source_and_existing_bundle": true
+        },
+        {
+          "partition": "vendor_dlkm",
+          "file_count": 387,
+          "module_file_instances": 381,
+          "metadata_file_count": 6,
+          "file_bytes": 129052231,
+          "factory_image_sha256": "a9cf0a231c22c58bbe6fc73b4cfc2dab71b7c3a65225825ee46961deeca7031b",
+          "eu_image_sha256": "514e5608592de4c3388a5a6bf3bc8a5c84554333cbee83aab3fdd001428f2cb1",
+          "files_added": 0,
+          "files_removed": 0,
+          "files_changed": 0,
+          "all_file_bytes_equal_eu_source_and_existing_bundle": true
+        }
+      ],
+      "all_bytes_equal_eu_source_and_existing_bundle": true
+    },
+    "vendor_ramdisk_module_file_instances": 430,
+    "vendor_ramdisk_all_module_bytes_equal_eu": true,
+    "vendor_ramdisk_comparison_receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/receipt.json",
+      "size_bytes": 365509,
+      "sha256": "138df4eff3d7f916bb6c24f9a91bd7e4ec2fae5c7a42bc5526bda1bf7c76330f"
+    },
+    "combined_module_file_instances": 914,
+    "unique_module_count": null,
+    "count_basis": "914 .ko file instances across vendor_boot, vendor_dlkm and system_dlkm; names or payloads can repeat across locations. This is not 914 unique modules or loaded modules.",
+    "appended_signature_bytes_included_when_present": true,
+    "stripping_or_resigning_performed_by_comparison": false,
+    "abi_or_provider_selection_verified_by_equality": false,
+    "module_signature_trust_verified_by_equality": false,
+    "modules_loaded_by_comparison": false
+  },
+  "camera": {
+    "original_source_file_count": 9,
+    "original_source_total_bytes": 544623,
+    "all_original_source_bytes_equal_eu": true,
+    "selected_output_count": 9,
+    "selected_output_total_bytes": 542236,
+    "direct_output_count": 7,
+    "derived_xml_output_count": 2,
+    "type_counts": {
+      "dex_jar": 4,
+      "shared_library": 1,
+      "xml": 4
+    },
+    "all_selected_outputs_reproduced_from_factory_sources": true,
+    "files": [
+      {
+        "source_runtime_path": "/system_ext/etc/permissions/platform-miui.xml",
+        "source_size_bytes": 2597,
+        "source_sha256": "96da583654521934b27e6a4ce4eba994fa709a20864cd5117338bf1537a488d6",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+        "selected_size_bytes": 180,
+        "selected_sha256": "72b03ab4cb59c5de507171723f29a8fd6483b1f9104d32d02008eac82fe7eb53",
+        "type": "xml",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": false,
+        "derivation": {
+          "kind": "library-registration-v1",
+          "library_name": "camerax-vendor-extensions.jar",
+          "source_library_file": "/system_ext/framework/camerax-vendor-extensions.jar",
+          "library_file": "/system_ext/framework/camerax-vendor-extensions.jar",
+          "recipe_sha256": "1d5fecb75037e027146e16c59a1326ca9c4a1b1ea74ae22d2bea5ab708a6b29c"
+        }
+      },
+      {
+        "source_runtime_path": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+        "source_size_bytes": 335,
+        "source_sha256": "7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+        "selected_size_bytes": 335,
+        "selected_sha256": "7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1",
+        "type": "xml",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      },
+      {
+        "source_runtime_path": "/system_ext/etc/permissions/miui-cameraopt.xml",
+        "source_size_bytes": 797,
+        "source_sha256": "5088b9b19d251e3a2c24ce435c02a3c4f0fd6ce3d81a68d1a6c1c435598c2371",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/etc/permissions/miui-cameraopt.xml",
+        "selected_size_bytes": 797,
+        "selected_sha256": "5088b9b19d251e3a2c24ce435c02a3c4f0fd6ce3d81a68d1a6c1c435598c2371",
+        "type": "xml",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      },
+      {
+        "source_runtime_path": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+        "source_size_bytes": 188,
+        "source_sha256": "3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+        "selected_size_bytes": 218,
+        "selected_sha256": "52de3422c1c7bf138883f82951e3fac202277a6c5b562ec2921d289a2c2fbabd",
+        "type": "xml",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": false,
+        "derivation": {
+          "kind": "library-registration-v1",
+          "library_name": "vendor.xiaomi.hardware.postprocservice-V1-java",
+          "source_library_file": "/system/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+          "library_file": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+          "recipe_sha256": "1572ed0983cf005e3b62fe3fc13f55ba80ffa3ccec9a0aca48dbb4caf7302c80"
+        }
+      },
+      {
+        "source_runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+        "source_size_bytes": 72829,
+        "source_sha256": "924a37162f9924367c500693ec3609fa4a5482bb4037f1bae4f2344d51929021",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+        "selected_size_bytes": 72829,
+        "selected_sha256": "924a37162f9924367c500693ec3609fa4a5482bb4037f1bae4f2344d51929021",
+        "type": "dex_jar",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      },
+      {
+        "source_runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+        "source_size_bytes": 43102,
+        "source_sha256": "bc172175a20cc1cb2e58e9a15f92249198798cf5483127e9a1d0cfeeb560ea02",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+        "selected_size_bytes": 43102,
+        "selected_sha256": "bc172175a20cc1cb2e58e9a15f92249198798cf5483127e9a1d0cfeeb560ea02",
+        "type": "dex_jar",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      },
+      {
+        "source_runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+        "source_size_bytes": 326413,
+        "source_sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+        "selected_size_bytes": 326413,
+        "selected_sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+        "type": "dex_jar",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      },
+      {
+        "source_runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+        "source_size_bytes": 13298,
+        "source_sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+        "selected_size_bytes": 13298,
+        "selected_sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+        "type": "dex_jar",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      },
+      {
+        "source_runtime_path": "/system_ext/lib64/libcamera_algoup_jni.xiaomi.so",
+        "source_size_bytes": 85064,
+        "source_sha256": "b1cfe6702e8da2427027c395e3b2c7efac1857917f041e7697f15b380802a184",
+        "source_bytes_equal_eu": true,
+        "selected_runtime_path": "/system_ext/lib64/libcamera_algoup_jni.xiaomi.so",
+        "selected_size_bytes": 85064,
+        "selected_sha256": "b1cfe6702e8da2427027c395e3b2c7efac1857917f041e7697f15b380802a184",
+        "type": "shared_library",
+        "selected_output_reproduced_from_factory": true,
+        "selected_output_is_original_factory_file": true
+      }
+    ],
+    "factory_selection_changes_only_package_sha256": true,
+    "historical_selection_sha256": "be4f441d2f4424ce2b1add72df04565d0736cc64542aec81c91df9f589dbb5a7",
+    "historical_selection_preserved": true,
+    "apk_included": false,
+    "apk_executed": false,
+    "runtime_class_loader_or_camera_feature_compatibility_verified": false
+  },
+  "canonical_inventory_adapter": {
+    "file_count": 2,
+    "files": [
+      {
+        "source": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/system_ext/inventory.json",
+        "destination": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs/system_ext_a-inventory/inventory.json",
+        "sha256": "bc53750daaf9b7747aaf5b7d5ea54ddfce439c796da8658c35eec45b37bf63e3",
+        "size_bytes": 429688,
+        "source_unchanged": true,
+        "destination_readback_verified": true
+      },
+      {
+        "source": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/system_ext/receipt.json",
+        "destination": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs/system_ext_a-inventory/receipt.json",
+        "sha256": "83547126d6de4fb414bad6508f5b845060d2cf89c12bfe23b394057c80799f56",
+        "size_bytes": 991,
+        "source_unchanged": true,
+        "destination_readback_verified": true
+      }
+    ],
+    "metadata_copies_byte_identical": true,
+    "originals_preserved": true,
+    "receipt_contents_changed": false,
+    "images_rescanned": false,
+    "guards_disabled": false,
+    "links_used": false,
+    "initial_stage": {
+      "stdout": {
+        "path": "reports/factory-vendor-input-stage-v1.json",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stderr": {
+        "path": "reports/factory-vendor-input-stage-v1.stderr",
+        "sha256": "e4c5906f9eb6cf2d2b0abb6c4679ff178d39b8588b8e0d42b016915b578bd950",
+        "size_bytes": 200
+      },
+      "failure": "Required canonical EROFS inventory parent directory was absent.",
+      "bundle_publication_reached": false,
+      "success_json_emitted": false
+    },
+    "successful_stage": {
+      "stdout": {
+        "path": "reports/factory-vendor-input-stage-v2.json",
+        "sha256": "811f7904adbec2fa99d933179b1247d0c2e30f80a2ba7e0b54c8a2e713917360",
+        "size_bytes": 11837
+      },
+      "stderr": {
+        "path": "reports/factory-vendor-input-stage-v2.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    }
+  },
+  "host_vendor_bundle": {
+    "operation": "vendor-inputs-stage",
+    "profile": "prebuilt-vendor-odm-with-explicit-system-ext-extras",
+    "install_path": "vendor/xiaomi/nezha",
+    "host_staging_complete": true,
+    "image_count": 2,
+    "extra_count": 9,
+    "generated_file_count": 5,
+    "total_blob_bytes": 5727872540,
+    "image_bytes": 5727330304,
+    "extra_bytes": 542236,
+    "generated_file_bytes_not_in_blob_total": 5354,
+    "images": {
+      "odm": {
+        "path": "proprietary/images/odm.img",
+        "readback_verified": true,
+        "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+        "size_bytes": 4767621120,
+        "source_partition": "odm_a"
+      },
+      "vendor": {
+        "path": "proprietary/images/vendor.img",
+        "readback_verified": true,
+        "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+        "size_bytes": 959709184,
+        "source_partition": "vendor_a"
+      }
+    },
+    "generated_files": [
+      {
+        "path": ".gitignore",
+        "readback_verified": true,
+        "sha256": "240a3e0d37d2e86b614063f5347eb02d4f99ca6c254de6b82871ff8d95532a7d",
+        "size_bytes": 14
+      },
+      {
+        "path": "Android.bp",
+        "readback_verified": true,
+        "sha256": "2e2920529efe2fa0c1ea46e65b5ecdb96f1945953959b4cc1e0cc9a981593a6f",
+        "size_bytes": 3324
+      },
+      {
+        "path": "BoardConfigVendor.mk",
+        "readback_verified": true,
+        "sha256": "951ca6f06fd63a54398be6dbba93181cfd103a70448452f849103532f005d819",
+        "size_bytes": 280
+      },
+      {
+        "path": "README.vendor-inputs.txt",
+        "readback_verified": true,
+        "sha256": "4dd652e46e41710d427ef3c68f54df5fc186c29d420e092c82fe4b0a1bb6c1fa",
+        "size_bytes": 899
+      },
+      {
+        "path": "nezha-vendor.mk",
+        "readback_verified": true,
+        "sha256": "4bc01bd44c61e1d45d756baf70c77cc41494ab17a98366fa7e23b871bd9999a1",
+        "size_bytes": 837
+      }
+    ],
+    "source": {
+      "capture_receipt_sha256": [
+        "1fb1e4d74ae4bdbdf39f278b675576b74fee5148f32bf1ec7f677c93456dc50f",
+        "faa3791f9f3b67ddfce7a7d84fa271deb3e66eb5fac8d8a90fd5939bb2785ec6"
+      ],
+      "input_avb_status": "verified",
+      "logical_receipt_sha256": "a7c2fc5ab8f23f6a5dc723736b006e8293f4c07c0dd92a5f28cc1eca46e2fc95",
+      "origin_verified": false,
+      "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "raw_super_sha256": "ce1c84662c00818ffc39217b61670cea5aadfd5952e4eafaacb9f2d64b9b7c09",
+      "selection_sha256": "c82cf07f512342d7e20cc155a6425bf89d272c6c1fb3fc258e89e50473f7a8d2",
+      "source_kind": "user-provided",
+      "source_record_sha256": "8fa822ebe52e9ea1cfea2e6215af150623c6321d782291f9588ddb84636de1c0",
+      "source_trust_is_from_record_not_reauthenticated": true
+    },
+    "verification": {
+      "avb_checked_by_this_tool": false,
+      "firmware_executed": false,
+      "full_dependency_closure_verified": false,
+      "input_blob_hashes_checked": true,
+      "kernel_or_dlkm_files_generated": false,
+      "phone_modified": false,
+      "retained_vbmeta_reused": false,
+      "signature_or_elf_checks_disabled": false
+    },
+    "guest_adoption_proven_by_this_receipt": false,
+    "build_or_device_compatibility_proven_by_this_receipt": false,
+    "origin_url_retained_in_bound_normalized_source_record": null
+  },
+  "independent_validation": {
+    "layout_review_passed": true,
+    "layout_review_material_findings": 0,
+    "critical_factory_values_independently_parsed": 69,
+    "small_file_readback_count": 88,
+    "small_file_readback_bytes": 3360249,
+    "small_file_hashes_and_lengths_match": true,
+    "prior_full_offline_test_count": 968,
+    "prior_full_offline_test_log": {
+      "path": "reports/factory-input-normalization-full-tests-v1.log",
+      "sha256": "6354989be9706383b6c20ccf9a9b9ab2de0171261747d61b614279ef0d5dc845",
+      "size_bytes": 158213,
+      "test_count": 968
+    },
+    "tests_are_not_android_build_or_phone_tests": true
+  },
+  "publication_boundaries": {
+    "fresh_image_access": false,
+    "firmware_executed": false,
+    "guest_accessed": false,
+    "phone_accessed": false,
+    "proprietary_payloads_or_signing_keys_published": false,
+    "historical_records_rewritten": false,
+    "build_inputs_activated_by_this_publication": false,
+    "oem_origin_or_trust_root_authenticated": false,
+    "phone_partition_fit_or_rollback_verified": false,
+    "rom_boot_or_native_features_verified": false
+  },
+  "related_records": [
+    "research/factory-boot-contract.json",
+    "research/factory-framework-contract.json",
+    "research/factory-firmware-validation.json",
+    "research/camera-dependencies.json"
+  ]
+}
