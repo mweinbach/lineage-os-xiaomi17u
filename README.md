@@ -6,8 +6,8 @@ of Xiaomi's camera and other native features.
 
 **The research/setup tooling and local Apple Container builder work. Evolution X
 is initialized in its Linux volume; the full source sync is in progress. A
-buildable Nezha device tree and a flashable ROM are not present yet.** No phone should be
-unlocked, wiped, or flashed as part of workspace setup.
+buildable Nezha device tree and a flashable ROM are not present yet.** No phone
+should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
 
@@ -30,17 +30,22 @@ unlocked, wiped, or flashed as part of workspace setup.
 - Source-gap research and a concrete feature dependency/test matrix. Camera
   preview or APK installation alone will not establish Leica feature parity.
 - Matching official China firmware URLs and acquisition receipts. Official CDN
-  attempts remain partial. The user separately supplied the matching Xiaomi.eu
-  ZIP under `sources/`; it is distinct from Xiaomi's official factory package.
+  attempts remain partial. The user separately supplied a Xiaomi.eu ZIP under
+  `sources/`; its separate intake copy and all 84 ZIP entries passed integrity
+  checks. Its download origin is unverified, and it is not authenticated Xiaomi
+  factory firmware. See [the supplied-package receipt](docs/provided-firmware.md)
+  for its hash and the difference between its filename and embedded build label.
 
 This Mac can also host the Linux build environment through **Apple Container +
 Rosetta**. The working configuration uses a pinned Ubuntu 24.04 ARM64 image,
 amd64 runtime libraries, 16 vCPUs, 128 GiB RAM and an 800 GiB persistent ext4
 volume. An x86-64 probe and a freshly crosscompiled program ran successfully.
+The actual AOSP Android 16 Ninja prebuilt, with its matching bundled libraries,
+also built a small x86-64 C program that executed successfully under Rosetta.
 Source lives at `/work/evolution` inside that volume, with output and cache
-alongside it. This is an explicitly verified experimental path, not a claim
-that macOS builds Android natively or that a full Android 16 ROM build passed.
-See the [Apple Container guide](docs/apple-container.md).
+alongside it. This verifies useful Android host-tool execution, not a full
+Android 16 ROM build or compatibility with every prebuilt. See the
+[Apple Container guide](docs/apple-container.md) for the receipt and sync checks.
 
 ## Start here
 
@@ -117,6 +122,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Stock collection](docs/stock-evidence.md) | Read-only capture, privacy, and partial-result handling |
 | [Firmware intake](docs/firmware-intake.md) | Preserve local ROM packages and provenance without executing scripts |
 | [Matching firmware](docs/firmware-source.md) | Verified Xiaomi CDN URLs, partial download status, and safe resumption requirements |
+| [Supplied Xiaomi.eu package](docs/provided-firmware.md) | Verified local integrity, unverified origin, embedded identity and sparse super layout |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 

@@ -4,18 +4,22 @@ The earlier claim that this Mac could only be a control/research host was too
 narrow. **Apple Container with Rosetta is now configured and has passed the
 workspace's execution and filesystem checks on this Mac.** It runs an ARM64
 Linux guest with translated x86-64 Linux tools and a named ext4 source volume.
+An actual AOSP Android 16 Ninja prebuilt and its matching bundled libraries
+also built a standalone x86-64 C program that then executed successfully.
 Repo initialization completed there; a full source sync has been launched, but
-its completion and an Android 16 build are not yet verified. See the
+its completion and an Android 16 platform build are not yet verified. See the
 [Apple Container workflow](apple-container.md) for the observed configuration,
-commands, and status checks.
+Ninja artifact hashes, receipt, commands, and status checks.
 
 Native Linux x86-64 remains the default host mode and the environment described
 by [AOSP's requirements](https://source.android.com/docs/setup/start/requirements).
 The Apple route is an explicit experiment, not native x86-64 execution or
 official AOSP support for macOS. The ordinary Mac APFS checkout is still case
 insensitive; the Android checkout lives on the guest's ext4 volume, not this
-host directory. Rosetta executes the checked x86-64 probes, but compatibility
-with every Android prebuilt remains to be demonstrated.
+host directory. Rosetta executes the checked x86-64 probes and AOSP Ninja, but
+Soong, AOSP Clang/JDK and the rest of the Android build toolchain still need
+validation. The Ninja test used the guest's `x86_64-linux-gnu-gcc` cross-compiler;
+it did not build an Android module.
 
 For the native route, use Ubuntu 24.04 LTS with 64 GiB RAM
 and at least 400 GiB free on a case-sensitive filesystem. Budget 600 GiB or more
@@ -36,7 +40,10 @@ python3 scripts/apple_container.py sync --jobs 8 --detach --dry-run
 The preview does not launch a second sync. The actual wrapper rejects another
 VM attachment while the project volume is in use. Use the
 [full runbook](apple-container.md) for setup, smoke tests, synchronization and
-an interactive shell. Do not run the native Ubuntu package installer on macOS.
+an interactive shell. The running sync's older immutable bundle may report
+zero projects before `.repo/project.list` exists; inspect logs and Git storage
+inside that existing VM before diagnosing a failure. Do not restart it merely
+to refresh the status code. Do not run the native Ubuntu package installer on macOS.
 The wrapper selects `--host-mode apple-rosetta` inside the verified Linux guest;
 the default `workspace.py` mode remains `native`.
 
@@ -134,7 +141,8 @@ this phone and its matching stock package:
 
 Once those checks pass, the intended command sequence on native Linux is below.
 Inside the Apple Container shell, the source directory is `/work/evolution`.
-No `lunch` or Android compilation has been validated by the host smoke tests.
+The standalone Ninja proof does not validate `lunch`, Soong, or Android
+compilation. No device build target has been registered.
 
 ```sh
 # FUTURE ONLY: this target is not registered or buildable in this workspace yet.

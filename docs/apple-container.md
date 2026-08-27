@@ -20,6 +20,7 @@ Observed on **2026-08-27**:
 | Persistent storage | Named ext4 volume `evolution-nezha-work`, 800 GiB capacity; 787.4 GiB free at the preparation check |
 | Source / output / cache | `/work/evolution` / `/work/out/evolution` / `/work/cache/ccache` |
 | Rosetta execution | Direct x86-64 ELF probe passed; a freshly cross-compiled C program also executed successfully |
+| Actual AOSP host tool | Android 16 Ninja `1.9.0.git`, with matching bundled libraries, built a small x86-64 C program that executed successfully |
 | Filesystem | ext4 and case-sensitive file behavior verified |
 | Repo initialization | Completed in `/work/evolution`, with manifest and Repo implementation pins verified and signature checks enabled |
 | Full sync | Detached sync launched at `2026-08-27T15:58:47Z`; completion not yet verified in this record |
@@ -47,6 +48,36 @@ The Android source pins are unchanged:
 Both are recorded in [`config/sources.json`](../config/sources.json). Individual
 Android projects still follow manifest refs until a successful sync produces a
 resolved manifest. Repo initialization is not a completed source checkout.
+
+## Actual AOSP Ninja proof
+
+The test under `/work/validation/aosp-ninja-20260827T160141Z` used AOSP's
+`platform/prebuilts/build-tools` tag **`android-16.0.0_r4`**, including
+`linux-x86/bin/ninja` and its matching `linux-x86/lib64/libjemalloc5.so` and
+`libc++.so`. The receipt records the source URLs, Git blob IDs, file sizes,
+SHA256 hashes and ELF machine `62` (x86-64) for all three inputs. Their hashes
+were rechecked from the existing guest and match the receipt:
+
+| Artifact | SHA256 |
+| --- | --- |
+| `linux-x86/bin/ninja` | `b3c53a693d6496f3214464fac05fe53ba155489cc071861d9414e2128913c1a2` |
+| `linux-x86/lib64/libjemalloc5.so` | `5e156eed108c3ab4bd0122e7cdb6de06de633890366f0bf37093c0003bd2949c` |
+| `linux-x86/lib64/libc++.so` | `debd1e923abe6fe535980b69be8d1b66ca3a214ab865b46f4e3ce5c929d158f0` |
+
+Ninja reported `1.9.0.git`. Its build rule invoked `x86_64-linux-gnu-gcc` on a
+standalone C program. Both the Ninja build and the resulting executable exited
+with code `0`; the program printed `aosp-ninja-rosetta-build-ok`. The compiler
+was the guest's cross-compiler, not an AOSP Clang build. This proves execution
+of this real Android host prebuilt and its libraries under Rosetta, rather than
+only a synthetic probe. It does **not** prove Soong/Clang/JDK compatibility, a
+completed platform sync, an Android module/ROM build, or a working Nezha target.
+
+The matching local log is `reports/apple-aosp-ninja-smoke.log`; the persistent
+guest receipt is
+`/work/validation/aosp-ninja-20260827T160141Z/receipt.json`. Both explicitly record
+`full_android_build_tested=false`. These ignored/private build-host artifacts
+are separate from offline workspace unit tests. No phone was used for this
+proof.
 
 ## Commands from the Mac repository root
 
@@ -79,8 +110,9 @@ python3 scripts/apple_container.py shell
 Do not rerun this entire sequence while the existing sync is active; use
 `status`. These commands are also exposed as `make apple-setup`,
 `make apple-doctor`, `make apple-smoke`, `make apple-init`, `make apple-sync`,
-`make apple-status`, and `make apple-shell`. Use the Python form when choosing
-`--detach` or `--dry-run` explicitly.
+`make apple-sync-bg`, `make apple-status`, and `make apple-shell`.
+`make apple-sync-bg JOBS=8` is the detached form; use the Python form when
+choosing `--dry-run` explicitly.
 
 | Operation | What it does |
 | --- | --- |
@@ -106,6 +138,32 @@ work, `launch_exit_code=0` means the container was launched, not that Repo sync
 succeeded. A running container or a growing project count is progress only.
 
 Use `python3 scripts/apple_container.py status` to inspect the current task.
+The existing task `evolution-nezha-sync-20260827155847261123` uses an older
+immutable control bundle. Its inventory can show zero listed/checked-out
+projects before Repo creates `.repo/project.list` during the initial fetch.
+That does not mean no data has downloaded. The current host code distinguishes
+an absent list from zero projects, but it does not replace a running VM's
+control bundle. Do not restart a healthy sync to update that display.
+
+At the **`2026-08-27T16:16:23Z` checkpoint**, the same VM was running with `27G`
+under `/work/evolution/.repo`, 383 Git directories under `.repo/projects`,
+377 under `.repo/project-objects`, and `745G` free on `/work`. These are dated
+fetch-progress observations, not counts of successfully downloaded or checked
+out projects, and not a percentage of the final source tree.
+
+Use logs and actual state in that VM when the summary is ambiguous:
+
+```sh
+container logs -n 80 evolution-nezha-sync-20260827155847261123
+container exec evolution-nezha-sync-20260827155847261123 du -sh /work/evolution/.repo
+container exec evolution-nezha-sync-20260827155847261123 df -h /work
+```
+
+For a later task, take its name from `.tools/apple-container/last-task.json`
+instead of reusing this checkpoint's name. `container exec` inspects the
+already running VM; do not attach the volume to a second VM for status checks.
+Growing Git storage indicates activity, not that every fetch succeeded.
+
 The guest wrapper emits `EVOLUTION_TASK_RESULT` with `operation`, `status`, and
 `exit_code` when the source operation ends. Confirm a final successful sync
 result, preserved manifest/Repo pins, and the resolved manifest before declaring
@@ -163,7 +221,11 @@ does not adopt its verification bypasses, startup source edits, broad runtime
 capabilities, or copy-on-write assumption.
 
 The remaining work is still concrete: finish and verify the Android 16 sync,
-test the actual Android build tools, complete the Nezha device/common/kernel/
-vendor integration, and obtain the fully verified matching firmware package.
-The firmware CDN download remains partial. No stock-feature parity, complete
-ROM, build duration, or Rosetta compatibility with every prebuilt is promised.
+exercise the wider Android build toolchain, and complete the Nezha device/common/
+kernel/vendor integration. Official Xiaomi CDN downloads remain partial. The
+separately supplied [Xiaomi.eu package](provided-firmware.md) has passed local
+SHA256 and full ZIP CRC checks, but its origin is unverified and it is not
+authenticated factory firmware. Its extraction requirements and embedded
+identity must be kept separate from the official baseline. No stock-feature
+parity, complete ROM, build duration, or Rosetta compatibility with every
+prebuilt is promised.
