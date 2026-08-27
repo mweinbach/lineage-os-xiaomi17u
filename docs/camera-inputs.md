@@ -89,7 +89,10 @@ The JNI module preserves its original filename and partition, restricts its
 source to `target.android_arm64`, keeps stripping off to preserve the captured
 bytes, and requests `check_elf_files: true`. It does not override
 `system_shared_libs` or set a broken-prebuilt allowance. A generated property is
-not evidence that the build actually ran its ELF validator. [Pinned Soong linker rules](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/cc/linker.go)
+not evidence that the build actually ran its ELF validator. The later
+[completed Camera dependency build](build-progress.md) records that actual
+action, including its 20 shared-library inputs and 16 KiB alignment check.
+[Pinned Soong linker rules](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/cc/linker.go)
 
 ## Java registration and deliberately excluded inputs
 
@@ -97,13 +100,22 @@ All four JARs are DEX archives, not ordinary `.class` JARs. Their original stems
 and system-ext installation paths are preserved. The private Soong module names
 do not establish their runtime shared-library names or the Camera APK's
 class-loader context: the pinned `dex_import` does not expose `provides_uses_lib`.
-The selection does not change signature or uses-library settings, but that is
-not proof of strict APK validation: the current product inherits
+The selection does not change signature or uses-library settings. The original
+v4 product inherited
 `RELAX_USES_LIBRARY_CHECK=true` from `vendor/extras/bcr/bcr.mk`. The generated
-dexpreopt configuration confirms that value. It must be corrected and verified
-before APK integration; the Camera APK is not part of this dependency build.
+dexpreopt configuration confirmed that value. The later v5 device correction
+was installed and its regenerated configuration verifies
+`RelaxUsesLibraryCheck=false` while dexpreopt remains enabled. The four JARs
+now have verified ODEX and VDEX outputs. These JAR results are not proof of
+strict APK validation and do not establish the Camera APK's context or
+signature compatibility; it remains outside the bundle.
 Signature and preprocessed-APK checks have not been exercised by these JAR
 imports. [Pinned DEX importer](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/java.go)
+
+The separate [DEX import patch](dex-import-uses-library.md) adds a strict
+runtime provider with exact names and ordered required dependencies. It is
+tested in isolated fixtures but is not yet installed in the Linux checkout;
+the existing module names and bundle remain unchanged.
 
 Companion and cameraopt XMLs remain byte-for-byte copies and point to the selected
 JARs under `/system_ext/framework/`. **Two derived XML registrations** address

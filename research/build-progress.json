@@ -27,9 +27,9 @@
     "source_camera_apk_included": false
   },
   "device_admission": {
-    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v5/admission.json",
-    "sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
-    "source_commit": "91832e011a2703e73fd093afc7b0ee0f0ad5704d"
+    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v6/admission.json",
+    "sha256": "6addb681f59e2a240b328a19a35c06d198225ad8d098b30f78c9009bfc291b04",
+    "source_commit": "3de727e76a5d7fb92bf25682aabe0ffc3c0235bd"
   },
   "installation": {
     "guest_receipt": "/work/candidates/nezha-framework-20260827T1817Z/installation.json",
@@ -120,6 +120,30 @@
         "kernel_vendor_receipts_unchanged": true,
         "transferred_small_files": 10,
         "transferred_small_bytes": 17140
+      },
+      {
+        "private_receipt": "reports/device-v6-installation.json",
+        "sha256": "ab7e791bca52cca3d0742a1179939e1ecc49c78cf0cb7857543da8947c6d59c7",
+        "guest_receipt": "/work/candidates/nezha-dlkm-selector-v6/installation.json",
+        "completed_at": "2026-08-27T21:34:15.380397+00:00",
+        "admission_sha256": "6addb681f59e2a240b328a19a35c06d198225ad8d098b30f78c9009bfc291b04",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/device.mk",
+            "before_sha256": "81f49aa8ece7f367457094684b159b9a2182557c298262b2eb5d3c692b57be9f",
+            "after_sha256": "81243400a8c5bbd2e8fb83d3f250ccffcd4fa60f4be5b4bb1266d5cc0a07adac"
+          }
+        ],
+        "atomic_directory_exchange": true,
+        "kernel_vendor_receipts_unchanged": true,
+        "system_dlkm_vendor_selector_copy_required": true,
+        "effective_configuration_verified": false,
+        "readback_verified": true,
+        "version": 6,
+        "previous_admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+        "old_source_directories_preserved": true,
+        "transferred_small_files": 10,
+        "transferred_small_bytes": 17929
       }
     ],
     "independent_v3_audit": {
@@ -325,11 +349,11 @@
     "Source AVB failures do not prevent safe product/module checks. Complete target-files/OTA/super and flash admission remain false.",
     "Image lengths/LP declarations are build budgets, not measured physical partition fit.",
     "Vendor/ODM VINTF load/merge passed including active vendor APEX fragments; full framework compatibility, enforcing policy, kernel-export ABI, bootloader state and native-feature behavior remain unverified.",
-    "A completed official-named TGZ is visible in Downloads by size only; content reads timed out and it has not been accepted.",
-    "Captured modified stock CIL failed seven strict neverallow assertions with native pinned tools. No combined Evolution/vendor policy has passed; no assertions were disabled."
+    "A separately intake-verified factory-named TGZ is now available under sources; its origin is unverified. The installed v6 build still uses the separately recorded Xiaomi.eu bundles.",
+    "Captured modified stock CIL failed seven strict neverallow assertions with native and actual Soong-built x86-64 tools. No combined Evolution/vendor policy has passed; no assertions were disabled."
   ],
   "camera_build": {
-    "state": "running",
+    "state": "passed",
     "targets": [
       "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
       "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
@@ -355,10 +379,10 @@
     "strict_elf_checks_required": true,
     "camera_function_verified": false,
     "sandbox_observation": {
-      "private_receipt": "reports/nezha-camera-1-sandbox.json",
-      "sha256": "30916dc00013762cb2e8d05bbb86ab42e6f80f38f47c3f1bfade62c5926f977e",
-      "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-1/sandbox-process.json",
-      "observed_at": "2026-08-27T19:37:34.502359+00:00",
+      "private_receipt": "reports/nezha-camera-2-sandbox.json",
+      "sha256": "ba59079d798c28caf7af81cd427c39ac8a44b6f41a616bac8178a27dadd4ce53",
+      "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-2/sandbox-process.json",
+      "observed_at": "2026-08-27T20:58:32.893704+00:00",
       "ninja_ran_under_nsjail": true,
       "namespace_separation": {
         "mnt": true,
@@ -369,7 +393,7 @@
       "source_read_only": true,
       "output_read_write": true,
       "checks_disabled_by_this_probe": [],
-      "scope": "Observed the actual Camera product Ninja process and its mount table; no namespace entry, process modification or build-completion claim."
+      "scope": "Actual Camera continuation Ninja mount table; source read-only and OUT read-write; no process or namespace modification."
     },
     "attempts": [
       {
@@ -409,20 +433,304 @@
       },
       {
         "number": 2,
-        "result": "running",
+        "result": "passed",
         "deadline_seconds": 7200,
         "input_admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
         "incremental_output_preserved": true,
         "previous_attempt_sha256": "8c3d6ff059fe08ca1a68380cda543e2d9463c2982580313fa60234cd486fb490",
         "guest_log_directory": "/work/validation/nezha-framework-20260827T1835Z/camera-2",
-        "driver_sha256": "9924aa11c257c5b3e6fa20538f0f67ef639816a55b894a47f07d96ccfabacc93"
+        "driver_sha256": "9924aa11c257c5b3e6fa20538f0f67ef639816a55b894a47f07d96ccfabacc93",
+        "started_at": "2026-08-27T20:47:29.779409+00:00",
+        "completed_at": "2026-08-27T21:17:15.501869+00:00",
+        "exit_code": 0,
+        "timed_out": false,
+        "sandbox_fallback_observed": false,
+        "passed": true,
+        "checks_disabled_by_this_probe": [],
+        "argv": [
+          "/work/evolution/build/soong/soong_ui.bash",
+          "--make-mode",
+          "-j12",
+          "libbase",
+          "checkvintf",
+          "secilc",
+          "sepolicy-analyze",
+          "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
+          "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
+          "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
+          "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
+          "nezha_system_ext_framework_camerax_vendor_extensions_jar",
+          "nezha_system_ext_framework_com_xiaomi_hardware_camera_companion_V1_jar",
+          "nezha_system_ext_framework_miui_cameraopt_jar",
+          "nezha_system_ext_framework_vendor_xiaomi_hardware_postprocservice_V1_java_jar",
+          "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so"
+        ],
+        "private_receipt": "reports/nezha-camera-2-receipt.json",
+        "sha256": "890368868de6b6e9822f24bb79e358c84ba269f48a0898830e50388e2eb953b9",
+        "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-2/receipt.json",
+        "ninja_actions_completed": 4206,
+        "sandbox_observation": {
+          "private_receipt": "reports/nezha-camera-2-sandbox.json",
+          "sha256": "ba59079d798c28caf7af81cd427c39ac8a44b6f41a616bac8178a27dadd4ce53",
+          "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-2/sandbox-process.json",
+          "observed_at": "2026-08-27T20:58:32.893704+00:00",
+          "ninja_ran_under_nsjail": true,
+          "namespace_separation": {
+            "mnt": true,
+            "net": true,
+            "pid": true,
+            "user": true
+          },
+          "source_read_only": true,
+          "output_read_write": true,
+          "checks_disabled_by_this_probe": [],
+          "scope": "Actual Camera continuation Ninja mount table; source read-only and OUT read-write; no process or namespace modification."
+        }
       }
     ],
     "additional_validation_tool_targets": [
       "secilc",
       "sepolicy-analyze"
     ],
-    "strict_uses_library_checks_required": true
+    "strict_uses_library_checks_required": true,
+    "output_verification": {
+      "private_receipt": "reports/nezha-camera-2-output-verification.json",
+      "sha256": "517abf483adf40ec5dcb0386231667f03be93771a73e0d6746096f4f8ee8d399",
+      "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-2/output-verification.json",
+      "verified_at": "2026-08-27T21:28:24.190591+00:00",
+      "build_receipt_sha256": "890368868de6b6e9822f24bb79e358c84ba269f48a0898830e50388e2eb953b9",
+      "device_admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+      "vendor_receipt_sha256": "0a6a70317eed9c1df1e30112eed10361ba49d5e8afa89fbd6b1feb507a8d09bc",
+      "all_nine_outputs_verified": true,
+      "all_four_jars_preoptimized": true,
+      "source_files_unchanged": true,
+      "android_binaries_executed": false,
+      "camera_apk_included": false,
+      "camera_function_verified": false,
+      "phone_accessed": false,
+      "full_rom_verified": false,
+      "dexpreopt_outputs": [
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/camerax-vendor-extensions.odex",
+          "size_bytes": 17328,
+          "sha256": "2966b9a02838f17f942c44b7a59235b8bc4317cfd1ee3d417482fb85ba615ad9",
+          "mtime": "2026-08-27T21:12:49.232787+00:00",
+          "elf_class": 64,
+          "elf_machine": 183,
+          "module": "nezha_system_ext_framework_camerax_vendor_extensions_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/camerax-vendor-extensions.vdex",
+          "size_bytes": 1152,
+          "sha256": "0ff915ad806c1bb8041700014fed9ef99595c6a04de70ba9295b9552c278e5dc",
+          "mtime": "2026-08-27T21:12:49.216787+00:00",
+          "module": "nezha_system_ext_framework_camerax_vendor_extensions_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/com.xiaomi.hardware.camera.companion-V1.odex",
+          "size_bytes": 17328,
+          "sha256": "6b7b6ac97b936dd3bba50ffdaac6ff056f7bcc8855041c6b3f082cc6b45123ca",
+          "mtime": "2026-08-27T21:12:49.440787+00:00",
+          "elf_class": 64,
+          "elf_machine": 183,
+          "module": "nezha_system_ext_framework_com_xiaomi_hardware_camera_companion_V1_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/com.xiaomi.hardware.camera.companion-V1.vdex",
+          "size_bytes": 860,
+          "sha256": "ee39a818281d1cd6b320baa3d8af99dec748ba33b59bc8863e7b0e10d526c796",
+          "mtime": "2026-08-27T21:12:49.528787+00:00",
+          "module": "nezha_system_ext_framework_com_xiaomi_hardware_camera_companion_V1_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/miui-cameraopt.odex",
+          "size_bytes": 17328,
+          "sha256": "4b6780035a19fb0237062ee79705989a243187dc5526c5f30857f6ff27359bd7",
+          "mtime": "2026-08-27T21:12:49.664787+00:00",
+          "elf_class": 64,
+          "elf_machine": 183,
+          "module": "nezha_system_ext_framework_miui_cameraopt_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/miui-cameraopt.vdex",
+          "size_bytes": 6356,
+          "sha256": "fdd16657ddff712df8bb130ba1f50e06e968dadc3a7eed0c33f1ba54c31f3b69",
+          "mtime": "2026-08-27T21:12:49.768787+00:00",
+          "module": "nezha_system_ext_framework_miui_cameraopt_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/vendor.xiaomi.hardware.postprocservice-V1-java.odex",
+          "size_bytes": 17328,
+          "sha256": "df7834c363a68a89115701716ee3a34d0627daf5ffba95e27cd240bff882cab1",
+          "mtime": "2026-08-27T21:12:49.888787+00:00",
+          "elf_class": 64,
+          "elf_machine": 183,
+          "module": "nezha_system_ext_framework_vendor_xiaomi_hardware_postprocservice_V1_java_jar"
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/oat/arm64/vendor.xiaomi.hardware.postprocservice-V1-java.vdex",
+          "size_bytes": 292,
+          "sha256": "38b6a8d3cf5a3945bff232ae9abc5dab2f03822920b06d2b6008ecb1dda9e250",
+          "mtime": "2026-08-27T21:12:49.972787+00:00",
+          "module": "nezha_system_ext_framework_vendor_xiaomi_hardware_postprocservice_V1_java_jar"
+        }
+      ],
+      "host_tools": [
+        {
+          "path": "host/linux-x86/bin/secilc",
+          "size_bytes": 1368096,
+          "sha256": "0e1f73449ac82302d88d721b2fa106aad9ae895d9cb92afd69b31aae2253dff7",
+          "mtime": "2026-08-27T21:12:18.297986+00:00",
+          "elf_class": 64,
+          "elf_machine": 62
+        },
+        {
+          "path": "host/linux-x86/bin/sepolicy-analyze",
+          "size_bytes": 543160,
+          "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669",
+          "mtime": "2026-08-27T21:12:18.849986+00:00",
+          "elf_class": 64,
+          "elf_machine": 62
+        },
+        {
+          "path": "host/linux-x86/bin/checkvintf",
+          "size_bytes": 6179856,
+          "sha256": "672c43b9208a2bb24d192d9fcbe12644712996c7e79a0d38ac2f36d6d65b40b0",
+          "mtime": "2026-08-27T19:09:51.176629+00:00",
+          "elf_class": 64,
+          "elf_machine": 62
+        }
+      ],
+      "outputs": [
+        {
+          "path": "target/product/nezha/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+          "size_bytes": 180,
+          "sha256": "72b03ab4cb59c5de507171723f29a8fd6483b1f9104d32d02008eac82fe7eb53",
+          "mtime": "2026-08-27T21:12:18.977986+00:00",
+          "module": "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
+          "runtime_path": "/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+          "source_sha256": "72b03ab4cb59c5de507171723f29a8fd6483b1f9104d32d02008eac82fe7eb53",
+          "type": "xml",
+          "bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+          "size_bytes": 335,
+          "sha256": "7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1",
+          "mtime": "2026-08-27T21:12:19.077986+00:00",
+          "module": "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
+          "runtime_path": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+          "source_sha256": "7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1",
+          "type": "xml",
+          "bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/etc/permissions/miui-cameraopt.xml",
+          "size_bytes": 797,
+          "sha256": "5088b9b19d251e3a2c24ce435c02a3c4f0fd6ce3d81a68d1a6c1c435598c2371",
+          "mtime": "2026-08-27T21:12:19.205197+00:00",
+          "module": "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
+          "runtime_path": "/system_ext/etc/permissions/miui-cameraopt.xml",
+          "source_sha256": "5088b9b19d251e3a2c24ce435c02a3c4f0fd6ce3d81a68d1a6c1c435598c2371",
+          "type": "xml",
+          "bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+          "size_bytes": 218,
+          "sha256": "52de3422c1c7bf138883f82951e3fac202277a6c5b562ec2921d289a2c2fbabd",
+          "mtime": "2026-08-27T21:12:19.323934+00:00",
+          "module": "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
+          "runtime_path": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+          "source_sha256": "52de3422c1c7bf138883f82951e3fac202277a6c5b562ec2921d289a2c2fbabd",
+          "type": "xml",
+          "bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/camerax-vendor-extensions.jar",
+          "size_bytes": 72829,
+          "sha256": "924a37162f9924367c500693ec3609fa4a5482bb4037f1bae4f2344d51929021",
+          "mtime": "2026-08-27T21:12:19.429986+00:00",
+          "module": "nezha_system_ext_framework_camerax_vendor_extensions_jar",
+          "runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+          "source_sha256": "924a37162f9924367c500693ec3609fa4a5482bb4037f1bae4f2344d51929021",
+          "type": "dex_jar",
+          "zip_entries": 2,
+          "all_zip_member_contents_match": true,
+          "zip_crc_verified": true,
+          "container_bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+          "size_bytes": 43102,
+          "sha256": "bc172175a20cc1cb2e58e9a15f92249198798cf5483127e9a1d0cfeeb560ea02",
+          "mtime": "2026-08-27T21:12:19.565986+00:00",
+          "module": "nezha_system_ext_framework_com_xiaomi_hardware_camera_companion_V1_jar",
+          "runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+          "source_sha256": "bc172175a20cc1cb2e58e9a15f92249198798cf5483127e9a1d0cfeeb560ea02",
+          "type": "dex_jar",
+          "zip_entries": 2,
+          "all_zip_member_contents_match": true,
+          "zip_crc_verified": true,
+          "container_bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/miui-cameraopt.jar",
+          "size_bytes": 326413,
+          "sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+          "mtime": "2026-08-27T21:12:19.669986+00:00",
+          "module": "nezha_system_ext_framework_miui_cameraopt_jar",
+          "runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+          "source_sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+          "type": "dex_jar",
+          "zip_entries": 2,
+          "all_zip_member_contents_match": true,
+          "zip_crc_verified": true,
+          "container_bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+          "size_bytes": 13298,
+          "sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+          "mtime": "2026-08-27T21:12:19.784391+00:00",
+          "module": "nezha_system_ext_framework_vendor_xiaomi_hardware_postprocservice_V1_java_jar",
+          "runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+          "source_sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+          "type": "dex_jar",
+          "zip_entries": 2,
+          "all_zip_member_contents_match": true,
+          "zip_crc_verified": true,
+          "container_bytes_match": true
+        },
+        {
+          "path": "target/product/nezha/system_ext/lib64/libcamera_algoup_jni.xiaomi.so",
+          "size_bytes": 85064,
+          "sha256": "b1cfe6702e8da2427027c395e3b2c7efac1857917f041e7697f15b380802a184",
+          "mtime": "2026-08-27T21:12:19.845986+00:00",
+          "elf_class": 64,
+          "elf_machine": 183,
+          "module": "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so",
+          "runtime_path": "/system_ext/lib64/libcamera_algoup_jni.xiaomi.so",
+          "source_sha256": "b1cfe6702e8da2427027c395e3b2c7efac1857917f041e7697f15b380802a184",
+          "type": "shared_library",
+          "bytes_match": true
+        }
+      ],
+      "jni_elf_validation": {
+        "stamp": {
+          "path": "soong/.intermediates/vendor/xiaomi/nezha/nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so/android_arm64_armv8-a_shared/libcamera_algoup_jni.xiaomi.so.check_elf_file",
+          "size_bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "mtime": "2026-08-27T21:15:53.310388+00:00"
+        },
+        "ninja_file_sha256": "a111be8b5cdbe4577605bf84c6af1ad459e47635e43646f9fbfb5c6916434f8d",
+        "max_page_size": 16384,
+        "shared_library_inputs": 20,
+        "allow_undefined_symbols": false,
+        "ninja_action_recorded": true,
+        "rule": "g.cc.checkElfFile"
+      }
+    }
   },
   "post_module_source_audit": {
     "private_receipt": "reports/post-module-source-audit.json",

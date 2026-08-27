@@ -12,6 +12,10 @@ class BuildProgressTests(unittest.TestCase):
     def setUp(self):
         self.record = json.loads((ROOT / "research/build-progress.json").read_text())
 
+    def installed_version(self, version):
+        return next(row for row in self.record["installation"]["device_source_updates"]
+                    if row["version"] == version)
+
     def test_development_target_is_separate_from_complete_rom_admission(self):
         device = json.loads((ROOT / "config/sources.json").read_text())["device"]
         self.assertFalse(device["build_ready"])
@@ -111,7 +115,7 @@ class BuildProgressTests(unittest.TestCase):
         self.assertTrue(camera["ninja_read_only_source_required"])
         self.assertTrue(camera["strict_elf_checks_required"])
         self.assertFalse(camera["camera_function_verified"])
-        self.assertEqual(camera["input_admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(camera["input_admission_sha256"], self.installed_version(5)["admission_sha256"])
         self.assertEqual(len(camera["targets"]), 9)
 
     def test_camera_source_mount_is_observed_not_just_requested(self):
@@ -137,7 +141,7 @@ class BuildProgressTests(unittest.TestCase):
         self.assertTrue(second["incremental_output_preserved"])
         self.assertEqual(second["previous_attempt_sha256"], first["sha256"])
         self.assertNotEqual(first["input_admission_sha256"], second["input_admission_sha256"])
-        self.assertEqual(second["input_admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(second["input_admission_sha256"], self.installed_version(5)["admission_sha256"])
         self.assertEqual(camera["additional_validation_tool_targets"], ["secilc", "sepolicy-analyze"])
 
     def test_effective_java_configuration_is_strict_without_disabling_dexpreopt(self):
@@ -146,7 +150,7 @@ class BuildProgressTests(unittest.TestCase):
         self.assertTrue(proof["dexpreopt_enabled"])
         self.assertFalse(proof["apk_imported_or_validated"])
         self.assertEqual(proof["checks_disabled"], [])
-        self.assertEqual(proof["device_admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(proof["device_admission_sha256"], self.installed_version(5)["admission_sha256"])
         configs = {Path(row["path"]).name: row for row in proof["configurations"]}
         dexpreopt = configs["dexpreopt-lineage_nezha.config"]["values"]
         self.assertFalse(dexpreopt["RelaxUsesLibraryCheck"])
@@ -157,10 +161,86 @@ class BuildProgressTests(unittest.TestCase):
         soong = configs["soong.lineage_nezha.variables"]["values"]
         self.assertTrue(soong["WithDexpreopt"])
         self.assertFalse(soong["SelinuxIgnoreNeverallows"])
-        update = self.record["installation"]["device_source_updates"][-1]
+        update = self.installed_version(5)
         self.assertTrue(update["atomic_directory_exchange"])
         self.assertTrue(update["kernel_vendor_receipts_unchanged"])
         self.assertGreater(configs["dexpreopt-lineage_nezha.config"]["mtime"], update["completed_at"])
+
+    def test_camera_continuation_completed_without_weakening_checks(self):
+        camera = self.record["camera_build"]
+        attempt = camera["attempts"][-1]
+        self.assertEqual(camera["state"], "passed")
+        self.assertEqual(attempt["number"], 2)
+        self.assertEqual(attempt["result"], "passed")
+        self.assertTrue(attempt["passed"])
+        self.assertEqual(attempt["exit_code"], 0)
+        self.assertFalse(attempt["timed_out"])
+        self.assertFalse(attempt["sandbox_fallback_observed"])
+        self.assertEqual(attempt["checks_disabled_by_this_probe"], [])
+        self.assertEqual(attempt["ninja_actions_completed"], 4206)
+        self.assertGreater(attempt["completed_at"], attempt["started_at"])
+        self.assertEqual(attempt["sandbox_observation"], camera["sandbox_observation"])
+        proof = camera["output_verification"]
+        self.assertEqual(proof["build_receipt_sha256"], attempt["sha256"])
+        self.assertEqual(proof["device_admission_sha256"], attempt["input_admission_sha256"])
+        self.assertEqual(proof["vendor_receipt_sha256"], camera["input_vendor_receipt_sha256"])
+
+    def test_camera_outputs_preserve_inputs_and_include_real_preoptimization(self):
+        camera = self.record["camera_build"]
+        proof = camera["output_verification"]
+        self.assertTrue(proof["all_nine_outputs_verified"])
+        self.assertTrue(proof["source_files_unchanged"])
+        self.assertEqual({row["module"] for row in proof["outputs"]}, set(camera["targets"]))
+        self.assertEqual(len(proof["outputs"]), 9)
+        jars = [row for row in proof["outputs"] if row["type"] == "dex_jar"]
+        self.assertEqual(len(jars), 4)
+        for output in proof["outputs"]:
+            self.assertRegex(output["sha256"], r"^[a-f0-9]{64}$")
+            self.assertEqual(output["sha256"], output["source_sha256"])
+            if output["type"] == "dex_jar":
+                self.assertTrue(output["all_zip_member_contents_match"])
+                self.assertTrue(output["zip_crc_verified"])
+                self.assertTrue(output["container_bytes_match"])
+            else:
+                self.assertTrue(output["bytes_match"])
+        self.assertTrue(proof["all_four_jars_preoptimized"])
+        self.assertEqual(len(proof["dexpreopt_outputs"]), 8)
+        for jar in jars:
+            outputs = [row for row in proof["dexpreopt_outputs"] if row["module"] == jar["module"]]
+            self.assertEqual({Path(row["path"]).suffix for row in outputs}, {".odex", ".vdex"})
+            for row in outputs:
+                self.assertGreater(row["size_bytes"], 0)
+                self.assertRegex(row["sha256"], r"^[a-f0-9]{64}$")
+                if row["path"].endswith(".odex"):
+                    self.assertEqual(row["elf_machine"], 183)
+        for flag in ("android_binaries_executed", "camera_apk_included", "camera_function_verified",
+                     "phone_accessed", "full_rom_verified"):
+            self.assertFalse(proof[flag])
+
+    def test_jni_validation_ran_and_host_policy_tools_are_distinct(self):
+        proof = self.record["camera_build"]["output_verification"]
+        jni = proof["jni_elf_validation"]
+        self.assertTrue(jni["ninja_action_recorded"])
+        self.assertEqual(jni["rule"], "g.cc.checkElfFile")
+        self.assertEqual(jni["max_page_size"], 16384)
+        self.assertEqual(jni["shared_library_inputs"], 20)
+        self.assertFalse(jni["allow_undefined_symbols"])
+        self.assertTrue(jni["stamp"]["path"].endswith(".check_elf_file"))
+        self.assertEqual({Path(row["path"]).name for row in proof["host_tools"]},
+                         {"secilc", "sepolicy-analyze", "checkvintf"})
+        self.assertTrue(all(row["elf_machine"] == 62 for row in proof["host_tools"]))
+
+    def test_v6_selector_install_does_not_relabel_historical_camera_proof(self):
+        update = self.installed_version(6)
+        previous = self.installed_version(5)
+        self.assertEqual(update["previous_admission_sha256"], previous["admission_sha256"])
+        self.assertTrue(update["readback_verified"])
+        self.assertTrue(update["atomic_directory_exchange"])
+        self.assertTrue(update["old_source_directories_preserved"])
+        self.assertTrue(update["kernel_vendor_receipts_unchanged"])
+        self.assertTrue(update["system_dlkm_vendor_selector_copy_required"])
+        self.assertEqual([row["path"] for row in update["changes"]], ["device/xiaomi/nezha/device.mk"])
+        self.assertNotEqual(update["admission_sha256"], self.record["camera_build"]["input_admission_sha256"])
 
 
 if __name__ == "__main__":

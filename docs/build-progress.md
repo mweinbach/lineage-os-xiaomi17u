@@ -2,7 +2,10 @@
 
 The authored `lineage_nezha-bp4a-userdebug` product now passes actual
 Soong/Kati configuration and has built Android ARM64 `libbase.so` plus the
-x86-64 host `checkvintf` tool in the existing Apple Container source checkout. It
+x86-64 host `checkvintf` tool in the existing Apple Container source checkout.
+The nine selected Camera dependency modules and the Soong policy tools have
+also built successfully, with output hashes and actual checker execution
+verified. The Camera APK itself is not included. The product
 selects Nezha, canoe, ARM64, 4 KiB kernel pages, shipping API 36 and board API
 202504, with AVB enabled. The [build record](../research/build-progress.json)
 contains the exact inputs, receipts and subsequent compilation results.
@@ -110,11 +113,11 @@ experiment; its current result is in the build record.
 
 The first Camera attempt reached its one-hour probe deadline at `20:26:45 UTC`
 and was cancelled. No compiler failure preceded the cancellation. All compiled
-outputs were retained; the second attempt resumes in the same directory with
+outputs were retained; the second attempt resumed in the same directory with
 a two-hour bound and adds the Soong `secilc` and `sepolicy-analyze` host tools.
 This is not a clean build or another source sync.
 
-Current device admission **v5** was installed at `20:46:42 UTC` by an atomic
+Device admission **v5** was installed at `20:46:42 UTC` by an atomic
 directory exchange, preserving v4 outside the checkout. Only BoardConfig and
 its README changed; the kernel and vendor bundles did not. The regenerated
 dexpreopt configuration now has **`RelaxUsesLibraryCheck=false`**, while
@@ -124,11 +127,40 @@ This corrects the inherited BCR relaxation without disabling preoptimization.
 It establishes the generated configuration, not validation or installation of
 the [Camera APK](camera-apk-integration.md), which remains outside the bundle.
 
+The second Camera attempt **passed at 21:17:15 UTC**, completing 4,206
+incremental Ninja actions without a timeout or sandbox fallback. The actual
+Ninja observation at `20:58:32 UTC` again confirms four separate namespaces,
+read-only source and read-write output. Its receipt is separate from the
+first attempt's observation. The build receipt has SHA256
+`890368868de6b6e9822f24bb79e358c84ba269f48a0898830e50388e2eb953b9`.
+
+All nine installed dependency files match their admitted source hashes.
+The four JARs also pass member-content and CRC comparison, and all four have
+generated ARM64 ODEX and VDEX outputs. The JNI library's actual
+`g.cc.checkElfFile` action completed with 20 shared-library inputs, the
+16 KiB page-alignment check and no undefined-symbol exemption. The output
+verification receipt has SHA256
+`517abf483adf40ec5dcb0386231667f03be93771a73e0d6746096f4f8ee8d399`.
+The built `secilc`, `sepolicy-analyze` and `checkvintf` files are x86-64 host
+tools; none of these results proves Camera or Leica behavior on the phone.
+
+Current device admission **v6** was installed at `21:34:15 UTC`, preserving v5
+and all existing outputs. Its only source change copies the stock
+`system_dlkm.modules.blocklist` selector into vendor_dlkm, where the stock
+loader expects it. This is separate from system_dlkm's own blocklist and
+does not block the intended vendor ZRAM pair. The kernel and vendor input
+receipts are unchanged. See the [ZRAM contract](zram-module-plan.md).
+Installation receipt SHA256:
+`ab7e791bca52cca3d0742a1179939e1ecc49c78cf0cb7857543da8947c6d59c7`.
+The Camera pass above belongs to v5, not this later source installation.
+
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from
-pinned sources. No policy binary was produced, and no assertion was filtered.
-Actual Soong-tool corroboration and a combined Evolution/vendor policy check
-are subsequent experiments, not implied by building the compiler tools.
+pinned sources. Repeating the same ten unmodified CIL inputs with the actual
+Soong-built x86-64 compiler returned the same seven neverallow failures.
+No policy binary was produced, and no assertion was filtered. A combined
+Evolution/vendor policy check remains a separate experiment; building the
+compiler tools alone does not establish policy compatibility.
 
 The built host checker also passed a [vendor/ODM VINTF load and merge](vintf-validation.md)
 with the unchanged active APEX list and exact CAS/Widevine fragments. The
@@ -186,10 +218,11 @@ uses an explicitly identified AOSP development key; this is not an OEM key,
 production signing policy or an accepted flashable image set. Input hashes,
 correctly generated signatures and device trust are separate questions.
 
-The official-named fastboot TGZ is visible in Downloads at the expected full
-length, but normal content reads timed out. It has not been hashed, validated
-or admitted. See [acquisition status](firmware-source.md). It can replace the
-modified baseline only after normal access, intake and image verification.
+The separately supplied factory-named TGZ is now readable under `sources/`.
+Its [intake and image extraction](factory-firmware-intake.md) passed; the
+earlier Downloads timeouts remain historical observations. It has its own
+provenance and validation receipts. The installed build still uses the
+explicit Xiaomi.eu bundles above; no new factory image was silently substituted.
 
 No ROM boot, camera/Leica function, IMS, fingerprint, charging, encryption or
 other hardware behavior has been established on Evolution X. Run `make test`
