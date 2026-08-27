@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN",
+    "soc": "SM8850"
+  },
+  "dtc": {
+    "sha256": "f826ffc72ecf7c44fed8e027e0851d4525df47bc1586f4ce395634aee3de9998",
+    "version": "Version: DTC 1.7.2"
+  },
+  "references": [
+    {
+      "name": "micode-popsicle-kernel",
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource.git",
+      "branch": "popsicle-w-oss",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e"
+    },
+    {
+      "name": "micode-popsicle-devicetree",
+      "url": "https://github.com/MiCode/kernel_devicetree.git",
+      "branch": "popsicle-w-oss",
+      "commit": "667482462e15458b602a2688a94efd47a5010141"
+    }
+  ],
+  "adaptation": {
+    "current_operation": "private stock DTB-to-DTS-to-DTB graph round trip",
+    "vendor_dtb_count": 8,
+    "nezha_overlay_count": 1,
+    "overlay_identity": {
+      "model": "Qualcomm Technologies, Inc. Nezha based on SM8850",
+      "qcom,board-id": [
+        8,
+        0
+      ],
+      "xiaomi,miboard-id": [
+        5,
+        0
+      ]
+    },
+    "decompile_arguments": [
+      "-I",
+      "dtb",
+      "-O",
+      "dts"
+    ],
+    "recompile_arguments": [
+      "-I",
+      "dts",
+      "-O",
+      "dtb"
+    ],
+    "force_output": false,
+    "suppress_warnings": false,
+    "generate_new_symbols": false,
+    "required_graph_preservation": [
+      "all nodes and property bytes",
+      "child order",
+      "memory reservation entries",
+      "boot CPU ID",
+      "phandle values",
+      "__symbols__",
+      "__fixups__",
+      "__local_fixups__"
+    ],
+    "future_source_layout": {
+      "base_sources": "trees/dtb-0000/source.dts through trees/dtb-0007/source.dts",
+      "nezha_overlay_source": "trees/nezha-overlay-0000/source.dts",
+      "scope": "Nezha-specific derived sources in a separate complete pinned Kleaf/MiCode workspace",
+      "build_target": null
+    },
+    "future_steps": [
+      "Preserve the original bundle, generated sources, graph hashes and DTC diagnostics as the initial Nezha baseline.",
+      "Resolve the complete GKI, Kleaf, SoC, DT and toolchain dependencies before defining a Nezha build target.",
+      "Adapt only Nezha-specific generated sources to the reviewed DT build interface, preserving the eight base entries and separate Nezha overlay.",
+      "Compare all rebuilt graphs and exact Nezha identity before considering overlay-application or device tests."
+    ]
+  },
+  "limits": [
+    "Generated DTS and DTB files stay in ignored private output directories; this tracked recipe contains metadata only.",
+    "A graph round trip does not establish binary byte equality; claim binary equality only when the actual bytes or full hashes match.",
+    "Expanded DTS does not recover original labels, macros, include boundaries, comments or license notices, and does not establish redistribution rights.",
+    "The pinned Popsicle references are shared-platform research inputs, not a Nezha board definition or complete build manifest.",
+    "Do not substitute sibling board IDs, copy a Popsicle defconfig, invent an unverified BUILD target, or adopt debug signing/KMI relaxations.",
+    "This operation does not apply overlays, build a kernel or modules, change AVB or SELinux, stage into the source volume, access a phone, or establish runtime compatibility.",
+    "The Xiaomi.eu input bundle retains its recorded unverified origin and failed package AVB status after a successful DT graph round trip."
+  ]
+}
