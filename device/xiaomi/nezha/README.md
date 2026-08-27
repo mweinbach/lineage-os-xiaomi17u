@@ -48,6 +48,17 @@ establish that the product used that mode. Actual build observations must record
 the selected mode separately. This does not change the upstream basic
 Soong/Kati sandbox setting or grant any writable-source exceptions.
 
+The board also requires `RELAX_USES_LIBRARY_CHECK := false` after inherited
+board configuration and rejects a conflicting command-line value. The pinned
+Evolution telephony product includes BCR, whose makefile globally sets this
+relaxation to `true`. Product inheritance precedes BoardConfig, and dexpreopt
+locks the value later. Setting only `PRODUCT_BROKEN_VERIFY_USES_LIBRARIES=false`
+would not undo an already defined `RELAX_USES_LIBRARY_CHECK`. Verify the
+generated dexpreopt JSON reports `RelaxUsesLibraryCheck: false`, with dexpreopt
+still enabled, after installing this source. This setting preserves the check;
+it does not supply missing Camera shared-library declarations or prove APK
+compatibility.
+
 Boot-image budgets use supplied image lengths and super/group declarations.
 They are candidate build budgets, not measurements of physical partitions.
 Dynamic framework partitions size themselves during the build. Public AOSP

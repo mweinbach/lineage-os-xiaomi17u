@@ -460,6 +460,20 @@ class NezhaBoardHookTests(unittest.TestCase):
         self.assertNotIn("BUILD_BROKEN_SRC_DIR_RW_ALLOWLIST", board)
         self.assertLess(board.index(setting), board.index("include vendor/lineage/config/BoardConfigLineage.mk"))
 
+    def test_board_overrides_inherited_global_uses_library_relaxation(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        setting = "RELAX_USES_LIBRARY_CHECK := false"
+        self.assertEqual(board.count(setting), 1)
+        self.assertGreater(board.index(setting), board.index("include vendor/lineage/config/BoardConfigLineage.mk"))
+        self.assertNotIn("RELAX_USES_LIBRARY_CHECK ?=", board)
+        self.assertNotIn("RELAX_USES_LIBRARY_CHECK := true", board)
+
+    def test_conflicting_uses_library_override_is_rejected(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        guard = "ifneq ($(RELAX_USES_LIBRARY_CHECK),false)\n$(error Nezha requires strict APK uses-library validation)\nendif"
+        self.assertIn(guard, board)
+        self.assertGreater(board.index(guard), board.index("RELAX_USES_LIBRARY_CHECK := false"))
+
 
 if __name__ == "__main__":
     unittest.main()

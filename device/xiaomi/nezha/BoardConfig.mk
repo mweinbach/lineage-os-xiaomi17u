@@ -50,3 +50,11 @@ endif
 # The full hook also exports kernel variables to Lineage's Soong generators.
 # Include it after the explicit prebuilt selector and all local board values.
 include vendor/lineage/config/BoardConfigLineage.mk
+
+# The inherited BCR product sets this global relaxation before BoardConfig is
+# read. Require exact APK uses-library checks before dexpreopt locks the value.
+# A conflicting command-line override must fail instead of weakening checks.
+RELAX_USES_LIBRARY_CHECK := false
+ifneq ($(RELAX_USES_LIBRARY_CHECK),false)
+$(error Nezha requires strict APK uses-library validation)
+endif
