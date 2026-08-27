@@ -17,10 +17,13 @@ by [AOSP's requirements](https://source.android.com/docs/setup/start/requirement
 The Apple route is an explicit experiment, not native x86-64 execution or
 official AOSP support for macOS. The ordinary Mac APFS checkout is still case
 insensitive; the Android checkout lives on the guest's ext4 volume, not this
-host directory. Rosetta executes the checked x86-64 probes and AOSP Ninja, but
-Soong, AOSP Clang/JDK and the rest of the Android build toolchain still need
-validation. The Ninja test used the guest's `x86_64-linux-gnu-gcc` cross-compiler;
-it did not build an Android module.
+host directory. The original Ninja test used the guest's
+`x86_64-linux-gnu-gcc` cross-compiler. A subsequent set of 13 checks used the
+downloaded Clang/LLD, Ninja, JDK 21 and Go to compile and execute standalone host
+programs; Clang also produced an Android ARM64 object. All passed, with hashes
+and source commits in [the host-tool record](../research/apple-host-tools.json).
+Neither test built an Android module. Soong orchestration, sandbox behavior and
+the remaining host prebuilts still require separate validation.
 
 For the native route, use Ubuntu 24.04 LTS with 64 GiB RAM
 and at least 400 GiB free on a case-sensitive filesystem. Budget 600 GiB or more

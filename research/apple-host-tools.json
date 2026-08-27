@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "host_mode": "apple-rosetta",
+  "host_architecture": "aarch64",
+  "image_digest": "sha256:82960bf5b04070ffa323bb37eaa4e77d1b189f7bdcd0c31204d5d8ac092d36ca",
+  "source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+  "source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+  "started_at": "2026-08-27T17:07:15.174479+00:00",
+  "completed_at": "2026-08-27T17:07:29.457967+00:00",
+  "versions": {
+    "clang": "Android clang-r563880c, 21.0.0, build 14054515",
+    "lld": "21.0.0",
+    "ninja": "1.9.0.git",
+    "jdk": "OpenJDK 21.0.4+-12414455 Android_PDK",
+    "go": "go1.24.1 linux/amd64"
+  },
+  "project_heads": {
+    "prebuilts/clang/host/linux-x86": "9916fb51ccb914d62d35ad9a7b9b21d2ef046928",
+    "prebuilts/build-tools": "412724a805835d89234d67c363f7ada7f5f8a67f",
+    "prebuilts/jdk/jdk21": "ef5bcc92586b839ae3dbacc154127092fa4002ec",
+    "prebuilts/go/linux-x86": "71c50d4d0da8b3dee5c70ee45789d001674ca5f6",
+    "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "build/blueprint": "c39c8a4c103f1393f015a5befa7726f0c14c9bc2"
+  },
+  "inputs": [
+    {
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+      "bytes": 3681711,
+      "sha256": "af0f25ca6818aed54c1cab03dc591acd549f385b8447148326a413e3e59c22b7",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/clang/host/linux-x86/clang-r563880c/bin/ld.lld",
+      "bytes": 68882328,
+      "sha256": "784146955ed87545385bf5c89b3b920ca7fe3ac83e034c3e6c53783ce544adf1",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/build-tools/linux-x86/bin/ninja",
+      "bytes": 434712,
+      "sha256": "b3c53a693d6496f3214464fac05fe53ba155489cc071861d9414e2128913c1a2",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/build-tools/linux-x86/lib64/libc++.so",
+      "bytes": 1368544,
+      "sha256": "debd1e923abe6fe535980b69be8d1b66ca3a214ab865b46f4e3ce5c929d158f0",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/build-tools/linux-x86/lib64/libjemalloc5.so",
+      "bytes": 390960,
+      "sha256": "5e156eed108c3ab4bd0122e7cdb6de06de633890366f0bf37093c0003bd2949c",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/jdk/jdk21/linux-x86/bin/java",
+      "bytes": 8528,
+      "sha256": "cfa21aeadd00925925c9e1287f5c08f3e04ee7f26a9e23d9dbfb16149153d842",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/jdk/jdk21/linux-x86/bin/javac",
+      "bytes": 8824,
+      "sha256": "18351d7a271f6b8bd17f9e8fef6bb04baa7cf008cbc8a3a782a93a2f5c48ecfa",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/jdk/jdk21/linux-x86/lib/server/libjvm.so",
+      "bytes": 26010448,
+      "sha256": "53aebc862cb667bae382a429af95e06bd269b27ce3ddb0d7e39b922049156f16",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/jdk/jdk21/linux-x86/lib/modules",
+      "bytes": 141608978,
+      "sha256": "4bddbec43a2fbf497528b9b0227a285e80c015c825921dc7a4181bdb4176ad36",
+      "elf_machine": null
+    },
+    {
+      "source_path": "prebuilts/go/linux-x86/bin/go",
+      "bytes": 14314606,
+      "sha256": "467614dc12ce73e28cc9aa8d28bdef259ada3bcc4392f205aaaed6fff44d8cab",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/go/linux-x86/pkg/tool/linux_amd64/compile",
+      "bytes": 20897360,
+      "sha256": "a00ef33aebc7b6ff0fe84295669c3df29e9f52186bdda58ac7ae8c0237f03194",
+      "elf_machine": 62
+    },
+    {
+      "source_path": "prebuilts/go/linux-x86/pkg/tool/linux_amd64/link",
+      "bytes": 6230678,
+      "sha256": "92bb04d577c279b4e21dc00a03dc5ea3d8344ce9e80978187d2ae062c39a55ce",
+      "elf_machine": 62
+    }
+  ],
+  "tests": [
+    {
+      "name": "clang-version",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "lld-version",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "ninja-version",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "java21-version",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "javac21-version",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "go-version",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "ninja-clang-host-build",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "clang-host-program",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "clang-android-arm64-object",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "javac21-compile",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "java21-program",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "go-compile",
+      "exit_code": 0,
+      "passed": true
+    },
+    {
+      "name": "go-program",
+      "exit_code": 0,
+      "passed": true
+    }
+  ],
+  "outputs": [
+    {
+      "path": "probe.c",
+      "bytes": 29,
+      "sha256": "2ad75d95660563887d8d3f1d0ae1dcf18c2379cbd83a5c72f5ab276351ee6949",
+      "elf_machine": null
+    },
+    {
+      "path": "Hello.java",
+      "bytes": 113,
+      "sha256": "9803882b77df39b60596351748e2423e46b422c81aa13547712b8e2be9c1db30",
+      "elf_machine": null
+    },
+    {
+      "path": "hello.go",
+      "bytes": 78,
+      "sha256": "12733f2a84bcb4e864385d3e5ef386b2cd07a7af2bf308219fe39e2a924fdc34",
+      "elf_machine": null
+    },
+    {
+      "path": "build.ninja",
+      "bytes": 188,
+      "sha256": "3d4871d83746cd2138c4051359bc0699c65e8677646f1de668bcd30e9fb009bf",
+      "elf_machine": null
+    },
+    {
+      "path": "probe",
+      "bytes": 6064,
+      "sha256": "fff96812fa374ed1178e24fade06bb98af9e4d1127c35d1965fd43633c82e21f",
+      "elf_machine": 62
+    },
+    {
+      "path": "android-arm64.o",
+      "bytes": 840,
+      "sha256": "995432f220c53dc9fa465c7c2fdcfa9aedf6cd1303c5e7b2b62ba82e33cfaa6e",
+      "elf_machine": 183
+    },
+    {
+      "path": "classes/Hello.class",
+      "bytes": 423,
+      "sha256": "deecf37ce9745a7d1f3e027d505e2e1982781b1bab08e97b86a6507a703545f7",
+      "elf_machine": null
+    },
+    {
+      "path": "hello-go",
+      "bytes": 2217294,
+      "sha256": "c62a3266edc4c54832cddbfc0293413743858a14b35e400e38d1ea091ceef04e",
+      "elf_machine": 62
+    }
+  ],
+  "all_tests_passed": true,
+  "input_hashes_unchanged": true,
+  "private_receipt": {
+    "host_path": "reports/source-sync-20260827/host-tools.json",
+    "guest_path": "/work/validation/synced-host-tools-20260827T1709Z/receipt.json",
+    "sha256": "bab0c41f1299f477b1cd8827b0762cb45a26226ed358bdccb4195d2fc40486d2"
+  },
+  "scope": "Standalone host-tool checks only; direct tool execution is not the complete Android build pipeline.",
+  "full_android_build_verified": false,
+  "android_module_built": false,
+  "android_bionic_link_or_runtime_tested": false,
+  "phone_modified": false,
+  "limits": [
+    "C host linking uses guest GCC runtime files and downloaded Clang/LLD; not a platform module.",
+    "Android ARM64 test creates a freestanding object only; it does not execute on the phone."
+  ]
+}

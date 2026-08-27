@@ -116,6 +116,35 @@ guest receipt is
 are separate from offline workspace unit tests. No phone was used for this
 proof.
 
+## Downloaded Clang, JDK and Go proofs
+
+After the completed source audit, **13 standalone checks passed** using the
+actual downloaded host tools. Input files were hashed before and after use;
+the selected executables were verified as x86-64 ELF. Their owning project
+commits match the resolved manifest. The
+[machine-readable evidence](../research/apple-host-tools.json) records all
+tool/input/output hashes and exact project revisions.
+
+| Downloaded tool | Verified operation under Rosetta |
+| --- | --- |
+| Android Clang `r563880c`, 21.0.0, and LLD 21.0.0 | Compiled and linked a tiny x86-64 C executable; the executable ran successfully |
+| AOSP Ninja `1.9.0.git` | Ran that Clang/LLD build with its matching bundled libraries |
+| The same Android Clang | Produced an ELF AArch64 object for `aarch64-linux-android36` |
+| Android OpenJDK `21.0.4+-12414455` | `javac` compiled a Java class and `java` executed it successfully |
+| Downloaded Go `1.24.1 linux/amd64` | Built a standalone Go program, which executed successfully; network module/toolchain downloads were disabled for this probe |
+
+The C host link used the guest's GCC runtime files. The ARM64 result is a
+freestanding object only, with no Bionic link or phone execution. These tests
+do not establish an Android module, kernel or ROM build, nor compatibility with
+every host prebuilt. No firmware executable was involved.
+
+The guest receipt is
+`/work/validation/synced-host-tools-20260827T1709Z/receipt.json`, SHA256
+`bab0c41f1299f477b1cd8827b0762cb45a26226ed358bdccb4195d2fc40486d2`.
+Its byte-identical host copy is `reports/source-sync-20260827/host-tools.json`;
+the invocation log is `reports/synced-host-tools-smoke.log`. Build orchestration
+and sandbox behavior remain separate checks.
+
 ## Commands from the Mac repository root
 
 Use the project wrapper, not a second manually mounted VM. All operations accept

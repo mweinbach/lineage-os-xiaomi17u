@@ -51,6 +51,8 @@ amd64 runtime libraries, 16 vCPUs, 128 GiB RAM and an 800 GiB persistent ext4
 volume. An x86-64 probe and a freshly crosscompiled program ran successfully.
 The actual AOSP Android 16 Ninja prebuilt, with its matching bundled libraries,
 also built a small x86-64 C program that executed successfully under Rosetta.
+After sync, the downloaded Clang/LLD, Ninja, JDK 21 and Go passed 13 standalone
+checks, including compilation and execution of C, Java and Go programs.
 Source lives at `/work/evolution` inside that volume, with output and cache
 alongside it. This verifies useful Android host-tool execution, not a full
 Android 16 ROM build or compatibility with every prebuilt. See the
