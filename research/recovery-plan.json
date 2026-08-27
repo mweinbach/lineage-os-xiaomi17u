@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "hardware_region": "CN",
+  "review_date": "2026-08-27",
+  "status": "researched; separate TWRP implementation follows core ROM bring-up",
+  "scope": {
+    "recovery_is_bootloader_corruption_protection": false,
+    "working_boot_chain_required": true,
+    "new_recovery_target_registered": false,
+    "recovery_source_synced": false,
+    "recovery_image_built": false,
+    "device_changes_authorized": false,
+    "phone_accessed": false,
+    "guest_accessed": false,
+    "downloaded_code_executed": false,
+    "other_device_settings_adopted": false,
+    "review_is_comprehensive_security_audit": false
+  },
+  "evidence": {
+    "private_receipt": {
+      "path": "artifacts/source-contracts/nezha-recovery-plan-v1/receipt.json",
+      "sha256": "f07607300c58473b9cb698e26c40859e23a785623f1f5ebdeb89a397defa33d9",
+      "artifact_count": 65
+    },
+    "pinned_repositories": 5,
+    "source_files": 45,
+    "source_bytes": 757838,
+    "primary_web_pages": 10,
+    "source_git_blob_hashes_verified": true,
+    "source_refs_rechecked": true,
+    "stock_header_logs_rehashed_against_receipt": true,
+    "firmware_reextracted_for_this_review": false
+  },
+  "stock": {
+    "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "package_kind": "user-provided China fastboot TGZ, separately preserved from modified Xiaomi.eu ZIP",
+    "origin_url": null,
+    "origin_verified": false,
+    "trusted_oem_key_supplied": false,
+    "archive_receipt_sha256": "c0686eab1092809faad2c865662a8616e9eea5492c7afd0e7bfcae8447a74567",
+    "boot_receipt_sha256": "19a0cf859e91b283684c03ab1691f8469e3c87c5a01b8fc6a1eae1d5e65b1f37",
+    "avb_receipt_sha256": "5f22d51a23ba989f71bf6a37844bbade71b5c02b17e36c3ca77290ab9a795c58",
+    "selected_root_chain_and_qtvm_checks_passed": true,
+    "verification_bypass_flags_used": false,
+    "device_rollback_counters_checked": false,
+    "headers": {
+      "boot": {
+        "image_sha256": "09b63576f263257fbc2cbe98ab8c4c1a70a0580acf721b9bd9a809e38f38916e",
+        "image_size_bytes": 100663296,
+        "header_version": 4,
+        "unpack_log_sha256": "8e97539b56475d989557d38b92eda457a7acf76796e7f825ae5eb42743e29699",
+        "kernel_size_bytes": 39963136,
+        "ramdisk_size_bytes": 0
+      },
+      "init_boot": {
+        "image_sha256": "eff601b4be2f40cf49ebe3a7bb47dcb2db8b20f7f1fc718c1cc0551412944e77",
+        "image_size_bytes": 8388608,
+        "header_version": 4,
+        "unpack_log_sha256": "412caf4ad6672b7f6fe5b0f59ab9b18e378b276ffc2b33c6aa0888ae4aee8a9f",
+        "kernel_size_bytes": 0,
+        "ramdisk_size_bytes": 2916992
+      },
+      "recovery": {
+        "image_sha256": "a6f2c77608026fcfe6221e5191c501b0ac880658f76c55231879ed198ce8a0f9",
+        "image_size_bytes": 104857600,
+        "header_version": 4,
+        "unpack_log_sha256": "2e0351f825f4cbcddebfdb5e5d03b510d4f63fcc11c23080316e27b4a99dd003",
+        "kernel_size_bytes": 0,
+        "ramdisk_size_bytes": 30407261
+      },
+      "vendor_boot": {
+        "image_sha256": "c98aebae56e098eee6e758b8ac387ffd6dd5ec2cf051b389e97ae77d7a3404d3",
+        "image_size_bytes": 100663296,
+        "header_version": 4,
+        "unpack_log_sha256": "cad61d03172e17215f9f0c7eaafec3371eda86d20663f4955cd338013f3e0e71",
+        "page_size_bytes": 4096,
+        "ramdisk_size_bytes": 18107362,
+        "dtb_size_bytes": 4496880
+      }
+    },
+    "dedicated_ab_recovery_names_observed": true,
+    "recovery_kernel_source_partition": "boot",
+    "vendor_boot_supplies": "DTBs, vendor ramdisk and its staged kernel-module dependencies",
+    "generic_ramdisk_source_partition": "init_boot",
+    "recovery_image_size_is_not_live_partition_measurement": true,
+    "live_physical_partition_sizes_verified": false,
+    "package_gpt_contract": {
+      "analysis_receipt_sha256": "18c98f119761417a0ff11a7a107a713fce6fd7a99b9bb1288b300387fa7fcf3d",
+      "analysis_sha256": "f979ef51db85fa97556d68bdd00140bf3a731024899441a0d5f2785caa5a84cb",
+      "independent_receipt_sha256": "94b3525a182a1576e0ec0d8910318f37a80693714c9bcf2beac41bff0d100cd1",
+      "sector_size_bytes": 4096,
+      "package_lun": 4,
+      "slot_sizes_equal": true,
+      "partition_size_bytes_per_slot": {
+        "boot": 100663296,
+        "init_boot": 8388608,
+        "vendor_boot": 100663296,
+        "recovery": 104857600,
+        "dtbo": 33554432
+      },
+      "recovery_lba_extents": {
+        "a": [203206, 228805],
+        "b": [434030, 459629]
+      },
+      "package_partition_extents_verified": true,
+      "physical_phone_capacity_verified": false,
+      "flashable_gpt_admitted": false,
+      "growth_placeholders_resolved": false
+    },
+    "recovery_chain": {
+      "rollback_index": 1,
+      "rollback_index_location": 1,
+      "flags": 0,
+      "embedded_signature_valid": true,
+      "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1"
+    },
+    "vbmeta_system_chain": {
+      "rollback_index": 1769904000,
+      "rollback_index_location": 2
+    },
+    "factory_fstab_reconciliation_required": true
+  },
+  "source_references": [
+    {
+      "id": "missmytime",
+      "repository": "https://github.com/MissMyTime/twrp_device_sm8850",
+      "branch": "main",
+      "commit": "17525a886e43c26c350fb3db9b260c55e4360dc8",
+      "role": "Nezha-specific community recovery and encryption reference; no adoption or local runtime proof",
+      "tree_sha256": "3296b20062b00588a8f5b1552c4d70433ab71243c7ecb4be22e9f2a323222b03",
+      "adopted": false
+    },
+    {
+      "id": "antocorvo",
+      "repository": "https://github.com/antocorvo3000/twrp-xiaomi-17-series",
+      "branch": "main",
+      "commit": "4a35185d43782b4dd460a7f456d674c0976c0859",
+      "role": "Community comparison with incompatible active board settings and unconfirmed Nezha decryption",
+      "tree_sha256": "c84896853aa3045b9ba27b5026860589778e907ac8a6ec05d41042fbe9a35783",
+      "adopted": false
+    },
+    {
+      "id": "teamwin",
+      "repository": "https://github.com/TeamWin/android_bootable_recovery",
+      "branch": "android-12.1",
+      "commit": "5c3d206a5eeb3d446bcda8248a405a4b278bab5c",
+      "role": "Official recovery source baseline, not official Nezha device support",
+      "tree_sha256": "a0908f56643253b2db6d3ca6d6b7f9773c9a1424f3bec4b03ae4413be59c0b02",
+      "adopted": false
+    },
+    {
+      "id": "twrp_test_manifest",
+      "repository": "https://github.com/TWRP-Test/platform_manifest_twrp_aosp",
+      "branch": "twrp-16.0",
+      "commit": "d2188a9345857fb078c391e8cb3e259a21e941e5",
+      "role": "Android 16 experimental recovery manifest named by MissMyTime's build guide",
+      "tree_sha256": "ebe29327bd9fc8f7febdb587398642888f8f1dfbcb0fe3b8dc0eb33543d8d93d",
+      "adopted": false
+    },
+    {
+      "id": "official_manifest",
+      "repository": "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp",
+      "branch": "twrp-12.1",
+      "commit": "6dc117d9cbd08430daa16db2013560e1c4017fa8",
+      "role": "Minimal manifest linked by TeamWin's compilation guide",
+      "tree_sha256": "e86fb377d41734a0c2370ddacccbff0721521e4788c2f61ab416ad616d9b911a",
+      "adopted": false
+    }
+  ],
+  "reviewed_config_files": [
+    {
+      "source": "missmytime",
+      "path": "docs/BUILD.md",
+      "sha256": "122725afe12b4cbb61a1b31c43c3b68dd625789f0a04281c1a5b2b90e96bdfbe",
+      "git_blob_sha1": "d2633bafcf376ba36e78bc51459e66a0f99968da",
+      "size_bytes": 4472
+    },
+    {
+      "source": "missmytime",
+      "path": "docs/xiaomi-nezha.md",
+      "sha256": "c053909d3933c6bc38e06238575fb44c4e869023467c1fd8e96f9780031b61f5",
+      "git_blob_sha1": "4ef20bdbc3cab0cb1af32e767e648b0d6b3ebc64",
+      "size_bytes": 2790
+    },
+    {
+      "source": "missmytime",
+      "path": "device/xiaomi/nezha/BoardConfig.mk",
+      "sha256": "78bc6b722c35d3df6285e0668dcf5ffabbd8f7625561135e27b6021a43bd43f7",
+      "git_blob_sha1": "914ffbc782d44300bccb76633856e8d5802716ac",
+      "size_bytes": 15339
+    },
+    {
+      "source": "missmytime",
+      "path": "device/xiaomi/nezha/recovery.fstab",
+      "sha256": "a2dae68c8cc14f0f796a0e60164b4ec5fa067ec8665483449e4759cc734dad32",
+      "git_blob_sha1": "600f6006236ae65ea692acae299603c319773265",
+      "size_bytes": 5057
+    },
+    {
+      "source": "missmytime",
+      "path": "device/xiaomi/nezha/sepolicy/recovery.te",
+      "sha256": "446c658585d03382c0fd648046c3a1f54919646f0af07ed6a2958fd17843b37e",
+      "git_blob_sha1": "edb2b6d893c86d63dca28811357db4b6a7e809d8",
+      "size_bytes": 232
+    },
+    {
+      "source": "missmytime",
+      "path": "patches/nezha/README.md",
+      "sha256": "b614730f595ff99c99d0bb6ee0786285969cdfba51ac44919ba1f897b46365c5",
+      "git_blob_sha1": "96d16323334512e24aaf9f1e86f4a613850f0297",
+      "size_bytes": 1313
+    },
+    {
+      "source": "missmytime",
+      "path": "patches/nezha/patches/system_vold/key_storage_recovery_safety.patch",
+      "sha256": "f692c8fe86089b0294b15895c4e6f0647520612fb74c647943137cbdc82f9a51",
+      "git_blob_sha1": "ffb6e9f9db9043aa7149e32e3c8fe269c8cd36f6",
+      "size_bytes": 12815
+    },
+    {
+      "source": "antocorvo",
+      "path": "twrp_device_xiaomi_nezha/README.md",
+      "sha256": "da65fd09c62d8ef36ae8c36291abd48a3073085fffd88491e728a52483c0efc4",
+      "git_blob_sha1": "82cc32d5d470cf1bcd3a21b5fff93074ee1369ac",
+      "size_bytes": 2583
+    },
+    {
+      "source": "antocorvo",
+      "path": "twrp_device_xiaomi_nezha/BoardConfig.mk",
+      "sha256": "b6d725eed31d52c28b61bf12e21330dc242ba97800b07d2b1d0f1f4d37cbf172",
+      "git_blob_sha1": "c462389c98585033dcf32d10f9ca38ef0c10bb11",
+      "size_bytes": 9391
+    },
+    {
+      "source": "antocorvo",
+      "path": "twrp_device_xiaomi_nezha/init/fstab.default",
+      "sha256": "8c1eaaeadf31bda4b428f5193d4d20150a0d3d4391b7a7099a83662051c7ea4e",
+      "git_blob_sha1": "1a125f5c9260ebd88baf43d8a6f69083137c0e5c",
+      "size_bytes": 5557
+    },
+    {
+      "source": "antocorvo",
+      "path": "twrp_device_xiaomi_nezha/AndroidProducts.mk",
+      "sha256": "87add85bd76b75748ae64198f6f30eb1a901d83dd488716d4506aa7875648df9",
+      "git_blob_sha1": "6b2a15823c69ae66f60e2c3fed671a468b141c2f",
+      "size_bytes": 722
+    },
+    {
+      "source": "antocorvo",
+      "path": "twrp_device_xiaomi_nezha/vendor.prop",
+      "sha256": "c2f85f7468ac537b824b4060fd6faa759bac88440ddfc9607e4014807c3aa92f",
+      "git_blob_sha1": "a67e7732aa6be8de9fc2fe43626577334aabe7b9",
+      "size_bytes": 1309
+    },
+    {
+      "source": "antocorvo",
+      "path": "twrp_device_xiaomi_nezha/patches/0001-vold-fix-synthetic-password-gcm.patch",
+      "sha256": "a99c07a7271e5a7d48f98061ae38607343ddcac9cdf877dc734ec15ec470ca5c",
+      "git_blob_sha1": "890fc6c327d5a3718feff6e7cedc03a67fb1aaab",
+      "size_bytes": 3748
+    }
+  ],
+  "primary_references": [
+    {
+      "id": "aosp-boot",
+      "url": "https://source.android.com/docs/core/architecture/partitions/generic-boot",
+      "observed_at": "2026-08-27T21:30:55.404720+00:00",
+      "sha256": "de1926ec3ed6cfb987baf3a0911dcf73dbf1e52e2d0a73bd20ec7a9ea774375c"
+    },
+    {
+      "id": "aosp-bootloader",
+      "url": "https://source.android.com/docs/core/architecture/bootloader",
+      "observed_at": "2026-08-27T21:30:56.180583+00:00",
+      "sha256": "622f4df8011dc30ccf593e2b4a0932ec510aa317a89c1d21c0063057e8546b0a"
+    },
+    {
+      "id": "aosp-fbe",
+      "url": "https://source.android.com/docs/security/features/encryption/file-based",
+      "observed_at": "2026-08-27T21:30:56.740546+00:00",
+      "sha256": "bd1596a76f87d757520c157200112408d13418d1692ead78e5f00b45b3687fc5"
+    },
+    {
+      "id": "aosp-metadata",
+      "url": "https://source.android.com/docs/security/features/encryption/metadata",
+      "observed_at": "2026-08-27T21:30:57.559704+00:00",
+      "sha256": "ff8d55b927f0c4afe73e5750e73445903b286ea8c290fe29a7ee48c6a788a1c0"
+    },
+    {
+      "id": "aosp-wrapped-keys",
+      "url": "https://source.android.com/docs/security/features/encryption/hw-wrapped-keys",
+      "observed_at": "2026-08-27T21:30:58.412469+00:00",
+      "sha256": "7aac383929565192bb43c2d9ce19511ecf09e3c1e11ee893ecbab278e27de76e"
+    },
+    {
+      "id": "aosp-virtual-ab",
+      "url": "https://source.android.com/docs/core/ota/virtual_ab",
+      "observed_at": "2026-08-27T21:30:59.176007+00:00",
+      "sha256": "f0b2cdc5b35daa2f68b4c52feeb9364cccb6c8274fb97c7f3f5dda271a5767d9"
+    },
+    {
+      "id": "teamwin-compiling",
+      "url": "https://twrp.me/faq/howtocompiletwrp.html",
+      "observed_at": "2026-08-27T21:30:59.543705+00:00",
+      "sha256": "8a41162bbc2a816609b3a951f4c6a0db172fbf12e1d7f44aba1bbd241a7635c0"
+    },
+    {
+      "id": "teamwin-backup-exclusions",
+      "url": "https://twrp.me/faq/backupexclusions.html",
+      "observed_at": "2026-08-27T21:30:59.882063+00:00",
+      "sha256": "867e943a6a59f152961ee541458e24ecdfb2121af9b8c147eda748c9002e7ec1"
+    },
+    {
+      "id": "teamwin-encryption",
+      "url": "https://twrp.me/faq/encryptionsupport.html",
+      "observed_at": "2026-08-27T21:31:00.230379+00:00",
+      "sha256": "0cf01ee6f726e2a0365b34932ba391da8cb03007de15dc3fb37e680f3d9e97de"
+    },
+    {
+      "id": "teamwin-xiaomi-devices",
+      "url": "https://twrp.me/Devices/Xiaomi/",
+      "observed_at": "2026-08-27T21:31:00.323057+00:00",
+      "sha256": "bfb50fd22e44782f251757509ed680de8ba1b0a5f6b8872cf42ed62fd2d4f3a7"
+    }
+  ],
+  "community_findings": {
+    "missmytime": {
+      "upstream_only_lunch": "twrp_nezha-bp2a-eng",
+      "header_version": 4,
+      "excludes_kernel_from_recovery": true,
+      "recovery_image_size_declared": 104857600,
+      "manual_decryption": true,
+      "useful_review_topics": [
+        "Nezha secure-element route selection",
+        "display/touch/USB integration",
+        "preventing persistent recovery key upgrades",
+        "separate Nezha vold changes"
+      ],
+      "security_settings_not_adopted": {
+        "ALLOW_MISSING_DEPENDENCIES": true,
+        "BUILD_BROKEN_DUP_RULES": true,
+        "BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES": true,
+        "BUILD_BROKEN_PLUGIN_VALIDATION": [
+          "soong-libaosprecovery_defaults",
+          "soong-libguitwrp_defaults",
+          "soong-libminuitwrp_defaults",
+          "soong-vold_defaults"
+        ],
+        "permissive_domains": [
+          "recovery",
+          "hal_vibrator_default"
+        ],
+        "PLATFORM_VERSION": "99.87.36",
+        "PLATFORM_SECURITY_PATCH": "2099-12-31",
+        "VENDOR_SECURITY_PATCH": "2099-12-31",
+        "BOOT_SECURITY_PATCH": "2099-12-31"
+      },
+      "keymint_patch_review": "Device patch selects installed-system version/patch environment and avoids persistent upgraded-key write-back; no equivalence, safety or decryption test established here.",
+      "guide_kernel_location_error": "docs/BUILD.md says kernel remains in vendor_boot; the same repository's Nezha BoardConfig and our stock headers put the kernel in boot.",
+      "device_decryption_verified_here": false,
+      "full_tree_admitted": false
+    },
+    "antocorvo": {
+      "upstream_only_lunch": "twrp_sm8750_thales-ap2a-eng",
+      "reported_by_maintainer": [
+        "boot",
+        "touch",
+        "ADB/fastbootd"
+      ],
+      "decryption_status_reported": "not confirmed fully working on real hardware",
+      "incompatible_active_settings": {
+        "TARGET_BOARD_PLATFORM": "xiaomi_sm8750",
+        "TARGET_NO_RECOVERY": true,
+        "BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT": true,
+        "BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT": true,
+        "BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX_LOCATION": 1,
+        "metadata_fstype_in_init_fstab": "ext4",
+        "BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES": true,
+        "PLATFORM_VERSION": "99.87.36",
+        "vendor.gatekeeper.disable_spu": "true",
+        "vendor.gatekeeper.is_security_level_spu": "0"
+      },
+      "strongbox_removed_by_reference": true,
+      "useful_patch_review": "Synthetic-password AES-GCM tag splitting, authentication-result checks and zero initialization; needs tests against the chosen base before any port.",
+      "device_decryption_verified_here": false,
+      "full_tree_admitted": false
+    }
+  },
+  "source_selection": {
+    "preferred_layout_reference": "missmytime",
+    "preferred_reference_is_not_approved_full_tree": true,
+    "experimental_manifest_reference": "twrp_test_manifest",
+    "official_manifest_reference": "official_manifest",
+    "official_teamwin_xiaomi_index_contains_nezha": false,
+    "full_transitive_manifest_resolved": false,
+    "base_rom_checkout_must_not_be_repurposed": true,
+    "separate_source_and_output_required": true,
+    "same_ext4_volume_concurrent_writer_forbidden": true,
+    "source_or_patch_scripts_executed": false
+  },
+  "requirements": {
+    "boot_and_modules": [
+      "Use separate header-v4 recovery ramdisk; do not move it to vendor_boot or insert an unverified kernel.",
+      "Keep exact Nezha DTBs/DTBO, 4 KiB kernel and complete recovery module dependency closure.",
+      "Keep vendor and GKI zram/zsmalloc pairs distinct and follow the recorded per-stage selector.",
+      "Confirm bootloader slot, boot/vendor_boot/init_boot dependencies and size limits from package metadata plus later authorized live checks."
+    ],
+    "storage_and_encryption": [
+      "Derive recovery fstab from the new factory set; confirm its filesystem and encryption formats against the earlier F2FS/wrapped-key baseline, and preserve AVB and logical/slot flags.",
+      "Verify KeyMint, Gatekeeper, Weaver, secure-element route, TEE/firmware and wrapped-key interfaces for this actual variant.",
+      "Preserve real OS/vendor/boot patch levels; never use future dates or fake version strings.",
+      "Keep automatic decryption, automatic formatting, snapshot mutations and key-blob write-back out of initial tests.",
+      "Validate wrong credentials fail without key migration or fallback that weakens authentication; never request credentials in logs or source."
+    ],
+    "safety_controls": [
+      "Keep SELinux enforcing and neverallow checks enabled.",
+      "Keep VINTF, ELF, signature, AVB and rollback checks enabled.",
+      "Keep critical bootloader, GPT, firmware and persistent-security partitions outside initial write support.",
+      "Do not use another model's firmware, geometry, crypto route, policy or AVB chain.",
+      "Do not assume a recovery backup can restore hardware-backed state or that a spare slot is independently bootable."
+    ],
+    "backups": [
+      "Test backup scope and restore behavior separately; a successful UI boot is not a proven recovery path.",
+      "Keep copies off-device and verify hashes.",
+      "Include internal media in a separate backup plan; ordinary TWRP data backups exclude /data/media.",
+      "Preserve same-device, same-version metadata and hardware-backed credential dependencies; do not copy another phone's persistent identity or keys."
+    ],
+    "virtual_ab": [
+      "Observe snapshot and merge state before any later authorized modification.",
+      "Do not present Virtual A/B as two independent complete super partitions.",
+      "Validate recovery, boot-control HAL, userspace fastboot and snapshot handling against the chosen platform; do not auto-merge or alter active slots in a smoke test."
+    ]
+  },
+  "phases": [
+    {
+      "id": "research",
+      "status": "completed_with_limits",
+      "phone_changes": false,
+      "deliverable": "Pinned source review, stock header/AVB bindings and a recovery contract; no new lunch target."
+    },
+    {
+      "id": "local_recovery",
+      "status": "pending_after_core_rom_bringup",
+      "phone_changes": false,
+      "deliverable": "Isolated source/output, reviewed patch queue, device-derived ramdisk and strict host build/format/AVB/policy checks; no firmware-script execution."
+    },
+    {
+      "id": "authorized_boot_smoke",
+      "status": "requires_specific_user_authorization",
+      "phone_changes": true,
+      "deliverable": "Verified existing boot chain and rollback plan; test display/touch, USB/ADB and correct partitions without automatic data decrypt/format, slot changes or snapshot mutation."
+    },
+    {
+      "id": "authorized_fbe_validation",
+      "status": "requires_specific_user_authorization",
+      "phone_changes": true,
+      "deliverable": "Validate exact secure services, metadata and CE/DE access, credential-failure handling, no persistent key upgrade and safe return to Android."
+    },
+    {
+      "id": "authorized_restore_validation",
+      "status": "requires_specific_user_authorization",
+      "phone_changes": true,
+      "deliverable": "Separately scoped backup/restore, media coverage, slot/OTA/snapshot and stock-return tests before claiming rescue capability."
+    }
+  ],
+  "validation": {
+    "recovery_compiled": false,
+    "recovery_booted": false,
+    "enforcing_recovery_policy_verified": false,
+    "userdata_decryption_verified": false,
+    "backup_restore_verified": false,
+    "bootloader_damage_recovery_verified": false,
+    "checks_disabled": false,
+    "firmware_installers_executed": false,
+    "phone_modified": false
+  }
+}
