@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "status": "static dependency seeds; not a port or complete library closure",
+  "device": "nezha",
+  "hardware_region": "CN",
+  "provenance": {
+    "source_kind": "user-provided",
+    "firmware_kind": "modified Xiaomi.eu",
+    "origin_verified": false,
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "package_avb_consistent": false
+  },
+  "camera_apk": {
+    "size_bytes": 170279563,
+    "sha256": "cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79",
+    "matches_live_camera": true
+  },
+  "artifacts": [
+    {
+      "runtime_path": "/odm/lib64/libmialgo_utils.so",
+      "image_sha256": "cf342dadf1d8da6748c2cf6959bc04ce96226b27617e8bc16363eb51a2071d62",
+      "sha256": "b2e24f4f7e1799ef3b82ce2fbf2e3fffdad1ac0b5e208676ba3aafac0ca95734",
+      "size_bytes": 132872,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libc++_shared.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/odm/lib64/libmiocr.so",
+      "image_sha256": "cf342dadf1d8da6748c2cf6959bc04ce96226b27617e8bc16363eb51a2071d62",
+      "sha256": "6a00133de07b59d25d373c0c6c5e2adc0d0af2e28160f5a72891fee1707744d4",
+      "size_bytes": 4210032,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libEGL.so",
+        "libGLESv2.so",
+        "libSNPE.so",
+        "libc++_shared.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so",
+        "libz.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/odm/lib64/libxmi_slow_motion_mein.so",
+      "image_sha256": "cf342dadf1d8da6748c2cf6959bc04ce96226b27617e8bc16363eb51a2071d62",
+      "sha256": "f7e852d3bb0bcbde666bed9f4188cce751607699e5bdf14e1cc92bccfa162ecc",
+      "size_bytes": 3208760,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libc.so",
+        "libcdsprpc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/vendor/lib64/libOpenCL.so",
+      "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+      "sha256": "f91a32f24df374859f2314daf844f58f6fada78b09ce22e87f624bb7791e2d5e",
+      "size_bytes": 100296,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libc++.so",
+        "libc.so",
+        "libcutils.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/vendor/lib64/libSNPE.so",
+      "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+      "sha256": "8de05b4bf1caab07166ba87646e89cb7de1dea4889d7b64f1d77739235b1494b",
+      "size_bytes": 18424824,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libEGL.so",
+        "libGLESv2.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/vendor/lib64/libcdsprpc.so",
+      "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+      "sha256": "e247237a2bcf648d47c6596f6c81035fb7fecefa34f94f41a9ba65679ce733ae",
+      "size_bytes": 612672,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libbinder_ndk.so",
+        "libc++.so",
+        "libc.so",
+        "libcutils.so",
+        "libdl.so",
+        "libdmabufheap.so",
+        "libhardware.so",
+        "libhidlbase.so",
+        "liblog.so",
+        "libm.so",
+        "libutils.so",
+        "libvmmem.so",
+        "vendor.qti.hardware.dsp-V1-ndk.so",
+        "vendor.qti.hardware.dsp@1.0.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/vendor/lib64/libmialgo_ai_vision.so",
+      "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+      "sha256": "e8540ef6480a260f793f8eda9f5d0171ff632c78d4c7612761788182e8f48f0f",
+      "size_bytes": 269960,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "libSNPE.so",
+        "libc++_shared.so",
+        "libc.so",
+        "libdl.so",
+        "liblog.so",
+        "libm.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/vendor/framework/androidx.camera.extensions.impl.jar",
+      "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+      "sha256": "99019a772ed8ba70c4627bf265853a9f6f0bb1c8e79da7fbd1966853dbcd0c25",
+      "size_bytes": 120990
+    },
+    {
+      "runtime_path": "/system_ext/lib64/libcamera_algoup_jni.xiaomi.so",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "sha256": "b1cfe6702e8da2427027c395e3b2c7efac1857917f041e7697f15b380802a184",
+      "size_bytes": 85064,
+      "elf_bits": 64,
+      "elf_machine": 183,
+      "needed": [
+        "android.hidl.token@1.0-utils.so",
+        "libandroid.so",
+        "libandroid_runtime.so",
+        "libbase.so",
+        "libbinder.so",
+        "libc++.so",
+        "libc.so",
+        "libcamera_client.so",
+        "libcamera_metadata.so",
+        "libcutils.so",
+        "libdl.so",
+        "libgui.so",
+        "liblog.so",
+        "libm.so",
+        "libmedia_jni_utils.so",
+        "libnativehelper.so",
+        "libnativewindow.so",
+        "libui.so",
+        "libutils.so",
+        "libvndksupport.so"
+      ],
+      "readelf_crosscheck": true
+    },
+    {
+      "runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "sha256": "924a37162f9924367c500693ec3609fa4a5482bb4037f1bae4f2344d51929021",
+      "size_bytes": 72829
+    },
+    {
+      "runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "sha256": "bc172175a20cc1cb2e58e9a15f92249198798cf5483127e9a1d0cfeeb560ea02",
+      "size_bytes": 43102
+    },
+    {
+      "runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+      "size_bytes": 326413
+    },
+    {
+      "runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+      "size_bytes": 13298
+    }
+  ],
+  "complete_transitive_closure": false,
+  "evolution_x_hardware_tested": false,
+  "private_receipt_sha256": "6f169d691f89f849f3d06cc4e4b0cc740890511d25a2e5c6c445fdf395bd56fa",
+  "tool_references": {
+    "extract_utils_commit": "19a1e68e47bbe9ba446e167b2d402953bd7e0c87",
+    "ndk_revision": "28.2.13676358",
+    "llvm_readelf_binary_sha256": "37e565359be0c9f2868348dd314416a420d137ee84c891ec8474cf7d29cfd995",
+    "dump_erofs_binary_sha256": "43d8dd8fba701c86091293af0bd20d8ac4a8617d715e30c57db8fff546ec3fad"
+  },
+  "unlocated_optional_manifest_names": [
+    "libcamera_imagecodec_jni.xiaomi.so",
+    "libcamera_ispinterface_jni.xiaomi.so",
+    "libneuron_adapter.so",
+    "libneuron_adapter_mgvi.so",
+    "libneuronusdk_adapter.mtk.so"
+  ],
+  "unlocated_search_scope": "searched top-level lib64/framework directories in ODM, vendor, product, system_ext and system; not an exhaustive APEX or dynamic-load audit",
+  "review_gates": [
+    "preserve partition and linker namespace boundaries",
+    "resolve transitive libraries, exported symbols and dynamic loads",
+    "review framework JAR mappings, signatures and privileged permissions",
+    "validate enforcing SELinux and VINTF",
+    "perform separately authorized camera and Leica feature tests"
+  ]
+}

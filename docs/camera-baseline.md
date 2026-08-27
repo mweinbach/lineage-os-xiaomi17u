@@ -148,6 +148,61 @@ These four mappings are system-side evidence. They are not direct
 inspected in this pass. The unusual `/system/framework/` postprocessing path is
 transcribed as captured rather than normalized to `/system_ext/`.
 
+## Supplied-package dependency follow-up
+
+The later offline image inspection found the **same Camera APK bytes** inside
+the supplied Xiaomi.eu product image: size `170279563`, SHA256
+`cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79`.
+This ties the earlier app analysis to this package. It does not authenticate
+Xiaomi's factory firmware or establish that the entire installed system is
+identical to the archive.
+
+Thirteen external files were captured by reading regular EROFS inodes, without
+mounting an image, materializing filesystem links, or executing firmware code.
+Their exact file and parent-image hashes are in the sanitized
+[`research/camera-dependencies.json`](../research/camera-dependencies.json).
+The eight native libraries are AArch64 ELF64; their `DT_NEEDED` lists agree
+between pinned Lineage extraction code and Android NDK `28.2.13676358`
+`llvm-readelf`.
+
+| Source partition | Captured native libraries |
+| --- | --- |
+| ODM `/lib64` | `libmialgo_utils.so`, `libmiocr.so`, `libxmi_slow_motion_mein.so` |
+| Vendor `/lib64` | `libOpenCL.so`, `libSNPE.so`, `libcdsprpc.so`, `libmialgo_ai_vision.so` |
+| System_ext `/lib64` | `libcamera_algoup_jni.xiaomi.so` |
+
+This establishes several additional edges in the dependency graph:
+
+- `libmiocr` and `libmialgo_ai_vision` require `libSNPE`; the latter also needs
+  `libc++_shared`. The ODM slow-motion library requires vendor `libcdsprpc`.
+- `libcdsprpc` requires `libvmmem`, `libdmabufheap` and both QTI DSP
+  `vendor.qti.hardware.dsp-V1-ndk.so` / `vendor.qti.hardware.dsp@1.0.so`, among
+  other libraries. Copying only the camera-facing JNI wrapper does not close
+  this dependency chain.
+- The system_ext algorithm JNI library links private framework components,
+  including `libandroid_runtime`, `libgui`, `libcamera_client` and
+  `libmedia_jni_utils`. A matching architecture does not establish matching
+  framework symbols or a permitted linker namespace on Evolution X.
+
+The captured JARs are vendor `androidx.camera.extensions.impl.jar`, and
+system_ext `miui-cameraopt.jar`, `camerax-vendor-extensions.jar`,
+`com.xiaomi.hardware.camera.companion-V1.jar` and
+`vendor.xiaomi.hardware.postprocservice-V1-java.jar`. The last file's actual
+system_ext location needs reconciliation with the earlier permission XML's
+`/system/framework/` mapping; do not silently normalize or copy that mapping.
+The JAR bytes are inventoried, not decompiled or proven compatible.
+
+Two optional Xiaomi JNI names and three optional MediaTek-named adapters were
+not found in the searched top-level library directories. This is a bounded
+search, not proof of absence from every APEX or dynamic loading path, and it
+does not make those entries required Nezha dependencies.
+
+The archive's AVB consistency failures still apply to these research inputs.
+No library was patched, no ELF verification was disabled, and the complete
+transitive/dynamic dependency closure remains open. The
+[Nezha integration plan](nezha-integration.md) keeps this camera work separate
+from baseline hardware bring-up.
+
 ## Local evidence and limits
 
 The original private collection is `evidence/xiaomi-eu-20260827T1530Z/`;
@@ -162,9 +217,14 @@ decoded `manifest.xml`, `manifest-summary.json`, `zip-inventory.json`,
 `elf-dynamic-dependencies.json`, and independent `readelf/` outputs. Extracted
 ELF inputs also remain ignored. No full decompilation was needed.
 
-This establishes a reproducible initial dependency inventory. It does not yet
+The follow-up receipts are under ignored
+`artifacts/firmware-analysis/<package-sha256>/native-dependencies/`, with the
+APK comparison in `camera-package-comparison.json` alongside that directory.
+
+This establishes a reproducible dependency inventory. It does not yet
 establish factory provenance, the complete library closure, linkage into every
 camera feature, SELinux policy, signing compatibility, working Leica processing
-or lens/accessory support. The immediate missing evidence is the matching
-external libraries/JARs and their interfaces from the same China firmware,
-followed by controlled device tests after a viable ROM exists.
+or lens/accessory support. Remaining work includes a verified unmodified
+firmware baseline, the remaining transitive dependencies and interfaces,
+framework/signing integration, and controlled device tests after a viable ROM
+exists.
