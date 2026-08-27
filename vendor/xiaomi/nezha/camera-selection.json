@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+  "modules": [
+    {
+      "runtime_path": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+      "sha256": "7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1",
+      "size_bytes": 335,
+      "type": "xml"
+    },
+    {
+      "runtime_path": "/system_ext/etc/permissions/miui-cameraopt.xml",
+      "sha256": "5088b9b19d251e3a2c24ce435c02a3c4f0fd6ce3d81a68d1a6c1c435598c2371",
+      "size_bytes": 797,
+      "type": "xml"
+    },
+    {
+      "runtime_path": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+      "sha256": "3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7",
+      "size_bytes": 188,
+      "type": "xml"
+    },
+    {
+      "runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+      "sha256": "924a37162f9924367c500693ec3609fa4a5482bb4037f1bae4f2344d51929021",
+      "size_bytes": 72829,
+      "type": "dex_jar"
+    },
+    {
+      "runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+      "sha256": "bc172175a20cc1cb2e58e9a15f92249198798cf5483127e9a1d0cfeeb560ea02",
+      "size_bytes": 43102,
+      "type": "dex_jar"
+    },
+    {
+      "runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+      "sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+      "size_bytes": 326413,
+      "type": "dex_jar"
+    },
+    {
+      "runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+      "sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+      "size_bytes": 13298,
+      "type": "dex_jar"
+    },
+    {
+      "runtime_path": "/system_ext/lib64/libcamera_algoup_jni.xiaomi.so",
+      "sha256": "b1cfe6702e8da2427027c395e3b2c7efac1857917f041e7697f15b380802a184",
+      "size_bytes": 85064,
+      "type": "shared_library",
+      "shared_libs": [
+        "android.hidl.token@1.0-utils",
+        "libandroid",
+        "libandroid_runtime",
+        "libbase",
+        "libbinder",
+        "libc",
+        "libc++",
+        "libcamera_client",
+        "libcamera_metadata",
+        "libcutils",
+        "libdl",
+        "libgui",
+        "liblog",
+        "libm",
+        "libmedia_jni_utils",
+        "libnativehelper",
+        "libnativewindow",
+        "libui",
+        "libutils",
+        "libvndksupport"
+      ]
+    }
+  ]
+}
