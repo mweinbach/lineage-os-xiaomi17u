@@ -787,5 +787,23 @@
     "checks_disabled": [],
     "phone_accessed": false,
     "note": "The dexpreopt configuration changed after v5 installation. Unchanged Soong variables retain their earlier mtime; their observed bytes still require dexpreopt. This is configuration proof, not APK validation."
+  },
+  "boot_dlkm_build": {
+    "record": "research/boot-dlkm-build.json",
+    "sha256": "a7e07fcba00891d621ee09a23d11732827692de90e42851ff00afd8d385101a7",
+    "state": "passed",
+    "variant": "userdebug",
+    "input_admission_sha256": "6addb681f59e2a240b328a19a35c06d198225ad8d098b30f78c9009bfc291b04",
+    "build_receipt_sha256": "f920c2adba3dace5aa4b7dc067b195d5bfdd40539dee1acf07b46fa2063fbc99",
+    "images": [
+      "boot",
+      "dtbo",
+      "vendor_dlkm",
+      "system_dlkm"
+    ],
+    "ninja_actions_completed": 2656,
+    "all_484_module_bytes_preserved_in_images": true,
+    "full_rom_verified": false,
+    "device_boot_verified": false
   }
 }

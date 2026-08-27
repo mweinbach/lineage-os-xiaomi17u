@@ -1,0 +1,675 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "hardware_region": "CN",
+  "profile": "framework-checks",
+  "variant": "userdebug",
+  "observed_on": "2026-08-27",
+  "scope": "Actual boot/DTBO/DLKM packaging and framework-policy module checks only; not a complete image set or phone validation.",
+  "inputs": {
+    "device_admission_sha256": "6addb681f59e2a240b328a19a35c06d198225ad8d098b30f78c9009bfc291b04",
+    "device_admission_version": 6,
+    "kernel_receipt_sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+    "vendor_receipt_sha256": "0a6a70317eed9c1df1e30112eed10361ba49d5e8afa89fbd6b1feb507a8d09bc",
+    "source_package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "source_package_kind": "user-provided modified Xiaomi.eu",
+    "origin_verified": false,
+    "source_image_set_avb_passed": false,
+    "factory_images_substituted": false
+  },
+  "build": {
+    "started_at": "2026-08-27T21:45:25.673321+00:00",
+    "completed_at": "2026-08-27T22:01:05.737127+00:00",
+    "argv": [
+      "/work/evolution/build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j12",
+      "bootimage",
+      "dtboimage",
+      "vendor_dlkmimage",
+      "system_dlkmimage",
+      "out-nezha-framework-20260827T1835Z/target/product/nezha/vendor_dlkm/lib/modules/system_dlkm.modules.blocklist",
+      "secilc",
+      "sepolicy-analyze",
+      "checkfc",
+      "checkseapp",
+      "property_info_checker",
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "plat_sepolicy_genfs_202504.cil",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file",
+      "sepolicy_neverallows",
+      "sepolicy_test",
+      "sepolicy_dev_type_test"
+    ],
+    "out_dir": "out-nezha-framework-20260827T1835Z",
+    "physical_out_dir": "/work/out/nezha-framework-20260827T1835Z",
+    "exit_code": 0,
+    "timed_out": false,
+    "sandbox_fallback_observed": false,
+    "passed": true,
+    "checks_disabled_by_this_probe": [],
+    "previous_camera_attempt_sha256": "890368868de6b6e9822f24bb79e358c84ba269f48a0898830e50388e2eb953b9",
+    "incremental_output_preserved": true,
+    "deadline_seconds": 7200,
+    "receipt": {
+      "path": "reports/nezha-boot-policy-v6-1-receipt.json",
+      "sha256": "f920c2adba3dace5aa4b7dc067b195d5bfdd40539dee1acf07b46fa2063fbc99",
+      "size_bytes": 66498
+    },
+    "ninja_actions_completed": 2656
+  },
+  "sandbox": {
+    "receipt": {
+      "path": "reports/nezha-boot-policy-v6-1-sandbox.json",
+      "sha256": "5c60aeb39ab02a826a66f706e11b72905026100193d494585d4ed7274355771e",
+      "size_bytes": 4576
+    },
+    "observed_at": "2026-08-27T21:57:19.394335+00:00",
+    "namespace_separation": {
+      "mnt": true,
+      "net": true,
+      "pid": true,
+      "user": true
+    },
+    "source_read_only": true,
+    "output_read_write": true,
+    "ninja_parent": "nsjail",
+    "observation_did_not_enter_namespace": true
+  },
+  "output_snapshot": {
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-boot-policy-v6-1/guest-output-snapshot.json",
+      "sha256": "443315edc5bbb9f54918f1245aa875ec098d061b7156eb1468b0f2f77e462f12",
+      "size_bytes": 252612
+    },
+    "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/boot-policy-v6-1/output-snapshot.json",
+    "host_transfer_receipt": {
+      "path": "artifacts/build-validation/nezha-boot-policy-v6-1/image-transfer.json",
+      "sha256": "ff8c0604acd81ed16297b1449cf50944d939feb23a23534f9b8e4c5e2a182ccf",
+      "size_bytes": 1160
+    },
+    "host_copies_readback_verified": true,
+    "images": [
+      {
+        "path": "target/product/nezha/boot.img",
+        "size_bytes": 100663296,
+        "sha256": "2a66ccf63dee818b16408dfe569f8140db49b56f599b402167333684c3fdae06",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/dtbo.img",
+        "size_bytes": 23068672,
+        "sha256": "e8ff519dd50331df0b1edea7417d376e0d3329a2ce2bec71fea3c1abff97ac8a",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/vendor_dlkm.img",
+        "size_bytes": 54124544,
+        "sha256": "7844c6ca606de5c8257b7467c640777b77298e86af210b3aaeea0229e2465a55",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/system_dlkm.img",
+        "size_bytes": 8417280,
+        "sha256": "d26b9d0258e98b0d039101f50806ea8a7e8531883ba55c04541f6b235c14c347",
+        "identity_stable": true
+      }
+    ],
+    "effective_configurations": [
+      {
+        "path": "soong/dexpreopt-lineage_nezha.config",
+        "size_bytes": 5269,
+        "sha256": "6a52b3ab5846076bcde7d83f12d8f8219679d91787c3cbc6ee48bc17e65aeaa8",
+        "identity_stable": true,
+        "values": {
+          "RelaxUsesLibraryCheck": false,
+          "DisablePreopt": false,
+          "DisablePreoptBootImages": false,
+          "DisablePreoptModules": []
+        }
+      },
+      {
+        "path": "soong/soong.lineage_nezha.variables",
+        "size_bytes": 338915,
+        "sha256": "eec9992f249c0a6ce6b908887c552d471aa6ee3262660191f000471c3573fe7c",
+        "identity_stable": true,
+        "values": {
+          "WithDexpreopt": true,
+          "SelinuxIgnoreNeverallows": false,
+          "DeviceCheckPrebuiltMaxPageSize": true,
+          "DeviceMaxPageSizeSupported": "16384"
+        }
+      }
+    ],
+    "framework_policy_outputs": [
+      {
+        "path": "target/product/nezha/system/etc/selinux/plat_sepolicy.cil",
+        "size_bytes": 3149674,
+        "sha256": "87013669c357868bd3c4a0c32b64ed1328bcba7ed463db3a9fffb3b281bf9780",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/system/etc/selinux/mapping/202504.cil",
+        "size_bytes": 229237,
+        "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "size_bytes": 142,
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/system_ext/etc/selinux/mapping/202504.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/product/etc/selinux/product_sepolicy.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/product/etc/selinux/mapping/202504.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "identity_stable": true
+      }
+    ],
+    "source_policy_test_outputs": [
+      {
+        "path": "target/product/nezha/obj/ETC/sepolicy_test_intermediates/sepolicy_test",
+        "size_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "identity_stable": true
+      },
+      {
+        "path": "target/product/nezha/obj/ETC/sepolicy_dev_type_test_intermediates/sepolicy_dev_type_test",
+        "size_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "identity_stable": true
+      }
+    ]
+  },
+  "kernel": {
+    "size_bytes": 39963136,
+    "sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "matches_exact_admitted_prebuilt": true,
+    "boot_header_version": 4,
+    "ramdisk_size": 0
+  },
+  "dtbo": {
+    "entry_count": 1,
+    "all_entry_bytes_match_stock": true,
+    "overlay_sha256": "4bb4b31bca5de3e354a565304d1ea277ac6d9b70e2760a40147d9f151a691f99",
+    "container_bytes_match_stock": false
+  },
+  "image_inspection": {
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-boot-policy-v6-1/image-inspection-v1/receipt.json",
+      "sha256": "20301063ee3d780fc6b26962031fbe52b438e8c63767a47a8a94bcd91072907e",
+      "size_bytes": 19195
+    },
+    "tools": {
+      "unpack_bootimg": {
+        "repository": "upstream/aosp-mkbootimg",
+        "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+        "source": "unpack_bootimg.py",
+        "sha256": "06b54dd9a07c5281778e29e234e76f6e3faee8bf0c904a5ef88fdee30eeed12e"
+      },
+      "avbtool": {
+        "repository": "upstream/aosp-avb",
+        "commit": "c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb",
+        "source": "avbtool.py",
+        "sha256": "14dc8d6ec533f551ec05ffd9a986ced0fd1290a201f62c91dad329dd51dfe3ed"
+      },
+      "mkdtboimg": {
+        "repository": "upstream/aosp-libufdt",
+        "commit": "10c6b5f81069d6d78c7ef3833458f4d51d02e2a6",
+        "source": "utils/src/mkdtboimg.py",
+        "sha256": "ea9507427f4f691e4de27ba6918db7880511448e9dd63a80874a79c1fcaffd82"
+      }
+    },
+    "fsck_tool_sha256": "69c81657d6c30c0fd598f1bfa3e0461984864549e3afaf6365f2197ffffd1fc6",
+    "avb": [
+      {
+        "image": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "embedded_signature_present": true,
+        "embedded_key_sha256": "7728e30f50bfa5cea165f473175a08803f6a8346642b5aa10913e9d9e6defef6",
+        "matches_engineering_test_key": true,
+        "original_image_size": 39968768,
+        "descriptors": [
+          {
+            "type": "hash",
+            "partition": "boot",
+            "data_size_bytes": 39968768,
+            "bounds_verified": true
+          }
+        ],
+        "embedded_signature_verified": true
+      },
+      {
+        "image": "dtbo",
+        "algorithm": "NONE",
+        "flags": 0,
+        "rollback_index": 0,
+        "embedded_signature_present": false,
+        "embedded_key_sha256": null,
+        "matches_engineering_test_key": false,
+        "original_image_size": 1495111,
+        "descriptors": [
+          {
+            "type": "hash",
+            "partition": "dtbo",
+            "data_size_bytes": 1495111,
+            "bounds_verified": true
+          }
+        ],
+        "embedded_signature_verified": false
+      },
+      {
+        "image": "vendor_dlkm",
+        "algorithm": "NONE",
+        "flags": 0,
+        "rollback_index": 0,
+        "embedded_signature_present": false,
+        "embedded_key_sha256": null,
+        "matches_engineering_test_key": false,
+        "original_image_size": 53026816,
+        "descriptors": [
+          {
+            "type": "hashtree",
+            "partition": "vendor_dlkm",
+            "data_size_bytes": 53026816,
+            "tree_offset": 53026816,
+            "tree_size": 421888,
+            "fec_offset": 53448704,
+            "fec_size": 425984,
+            "bounds_verified": true,
+            "fec_cryptographic_verification_performed": false
+          }
+        ],
+        "embedded_signature_verified": false
+      },
+      {
+        "image": "system_dlkm",
+        "algorithm": "NONE",
+        "flags": 0,
+        "rollback_index": 0,
+        "embedded_signature_present": false,
+        "embedded_key_sha256": null,
+        "matches_engineering_test_key": false,
+        "original_image_size": 8171520,
+        "descriptors": [
+          {
+            "type": "hashtree",
+            "partition": "system_dlkm",
+            "data_size_bytes": 8171520,
+            "tree_offset": 8171520,
+            "tree_size": 69632,
+            "fec_offset": 8241152,
+            "fec_size": 65536,
+            "bounds_verified": true,
+            "fec_cryptographic_verification_performed": false
+          }
+        ],
+        "embedded_signature_verified": false
+      }
+    ],
+    "commands": [
+      {
+        "label": "engineering-public-key",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:44.926156+00:00",
+        "completed_at": "2026-08-27T22:08:45.013858+00:00"
+      },
+      {
+        "label": "avb-info-boot",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.031498+00:00",
+        "completed_at": "2026-08-27T22:08:45.114460+00:00"
+      },
+      {
+        "label": "avb-verify-boot",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.114958+00:00",
+        "completed_at": "2026-08-27T22:08:45.262426+00:00"
+      },
+      {
+        "label": "avb-info-dtbo",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.263083+00:00",
+        "completed_at": "2026-08-27T22:08:45.353517+00:00"
+      },
+      {
+        "label": "avb-verify-dtbo",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.353956+00:00",
+        "completed_at": "2026-08-27T22:08:45.432791+00:00"
+      },
+      {
+        "label": "avb-info-vendor_dlkm",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.433519+00:00",
+        "completed_at": "2026-08-27T22:08:45.522814+00:00"
+      },
+      {
+        "label": "avb-verify-vendor_dlkm",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.523172+00:00",
+        "completed_at": "2026-08-27T22:08:45.667935+00:00"
+      },
+      {
+        "label": "avb-info-system_dlkm",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.668519+00:00",
+        "completed_at": "2026-08-27T22:08:45.759219+00:00"
+      },
+      {
+        "label": "avb-verify-system_dlkm",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.759587+00:00",
+        "completed_at": "2026-08-27T22:08:45.846115+00:00"
+      },
+      {
+        "label": "unpack-boot",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.846507+00:00",
+        "completed_at": "2026-08-27T22:08:45.889787+00:00"
+      },
+      {
+        "label": "dtbo-built",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.906461+00:00",
+        "completed_at": "2026-08-27T22:08:45.954118+00:00"
+      },
+      {
+        "label": "dtbo-original",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:45.954550+00:00",
+        "completed_at": "2026-08-27T22:08:45.997431+00:00"
+      },
+      {
+        "label": "fsck-vendor_dlkm",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:46.000285+00:00",
+        "completed_at": "2026-08-27T22:08:46.049874+00:00"
+      },
+      {
+        "label": "fsck-system_dlkm",
+        "exit_code": 0,
+        "started_at": "2026-08-27T22:08:46.050250+00:00",
+        "completed_at": "2026-08-27T22:08:46.062803+00:00"
+      }
+    ],
+    "engineering_public_key_sha256": "7728e30f50bfa5cea165f473175a08803f6a8346642b5aa10913e9d9e6defef6",
+    "all_four_internal_avb_checks_passed": true,
+    "both_erofs_data_checks_passed": true,
+    "image_sources_unchanged": true,
+    "complete_new_vbmeta_chain_built": false,
+    "signed_by_authenticated_xiaomi_key": false,
+    "device_acceptance_verified": false,
+    "checks_disabled": []
+  },
+  "dlkm_contents": {
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-boot-policy-v6-1/dlkm-content-verification-v2/receipt.json",
+      "sha256": "944fae7ecf0bf009a63c836232faad690e3a4e291e58c490cc00d0524211af06",
+      "size_bytes": 2498
+    },
+    "source_snapshot_sha256": "443315edc5bbb9f54918f1245aa875ec098d061b7156eb1468b0f2f77e462f12",
+    "kernel_receipt_sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+    "all_484_module_bytes_preserved_inside_images": true,
+    "vendor_side_system_selector": {
+      "path": "target/product/nezha/vendor_dlkm/lib/modules/system_dlkm.modules.blocklist",
+      "size_bytes": 151,
+      "sha256": "370cb88e7e8915f34e94bd6b93616f263be8a3523adc15fb554a712dc016a03f",
+      "identity_stable": true,
+      "source_path": "modules/vendor_dlkm/system_dlkm.modules.blocklist",
+      "bytes_match": true
+    },
+    "stages": [
+      {
+        "stage": "vendor_dlkm",
+        "image_sha256": "7844c6ca606de5c8257b7467c640777b77298e86af210b3aaeea0229e2465a55",
+        "inventory_receipt_sha256": "dad224fd63befc4a17e6e1b35f1f3921aa037ddb4f625fab90177fd815bdb4aa",
+        "inventory_sha256": "cbd620bf7f074414f68fb8a56940b15ea44f4b64e8eebff4f9b5a6c98b29d664",
+        "capture_receipt_sha256": "8877e01c96aad39cbe3ac1f9a33d4cebdd95c3909caf6ef81675adb90e8635d3",
+        "captured_files": 387,
+        "module_count": 381,
+        "all_captured_files_rehashed": true,
+        "all_module_and_metadata_bytes_match_staged_output": true,
+        "module_set_exactly_matches_staged_output": true,
+        "load_order_preserved": true,
+        "blocklist_directives_preserved": true,
+        "vendor_side_system_selector_captured": true,
+        "module_bytes": 128919368,
+        "ordered_load_count": 576,
+        "unique_load_count": 381,
+        "load_list": {
+          "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.load",
+          "size_bytes": 9795,
+          "sha256": "a359f35fdca6f62971111a1c98a09011fcc69ecc90216083cbd8bd74588eb631",
+          "identity_stable": true
+        },
+        "blocklist": {
+          "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.blocklist",
+          "size_bytes": 1325,
+          "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+          "identity_stable": true
+        },
+        "blocklist_directives": [
+          "blocklist 8250_of",
+          "blocklist adc-tm",
+          "blocklist atomic64_test",
+          "blocklist dummy-cpufreq",
+          "blocklist dummy_hcd",
+          "blocklist dummy_hcd",
+          "blocklist e4000",
+          "blocklist failover",
+          "blocklist fc0011",
+          "blocklist fc0012",
+          "blocklist fc0013",
+          "blocklist fc2580",
+          "blocklist ipclite_test",
+          "blocklist it913x",
+          "blocklist limits_stat",
+          "blocklist limits_stress",
+          "blocklist lkdtm",
+          "blocklist llcc_perfmon",
+          "blocklist locktorture",
+          "blocklist m88rs6000t",
+          "blocklist max2165",
+          "blocklist mc44s803",
+          "blocklist mmrm_test_module",
+          "blocklist msi001",
+          "blocklist mt2060",
+          "blocklist mt2063",
+          "blocklist mt20xx",
+          "blocklist mt2131",
+          "blocklist mt2266",
+          "blocklist mxl301rf",
+          "blocklist net_failover",
+          "blocklist qca_cld3_kiwi",
+          "blocklist qm1d1b0004",
+          "blocklist qm1d1c0042",
+          "blocklist qt1010",
+          "blocklist r820t",
+          "blocklist rcutorture",
+          "blocklist rtc-test",
+          "blocklist si2157",
+          "blocklist tda18212",
+          "blocklist tda18218",
+          "blocklist tda18250",
+          "blocklist tda18271",
+          "blocklist tda827x",
+          "blocklist tda8290",
+          "blocklist tda9887",
+          "blocklist tea5761",
+          "blocklist tea5767",
+          "blocklist test_user_copy",
+          "blocklist torture",
+          "blocklist tua9001",
+          "blocklist tuner-simple",
+          "blocklist tuner-types",
+          "blocklist tuner-xc2028",
+          "blocklist vmw_vsock_virtio_transport",
+          "blocklist vmw_vsock_virtio_transport_common",
+          "blocklist vsock",
+          "blocklist vsock_diag",
+          "blocklist xc4000",
+          "blocklist xc5000"
+        ],
+        "metadata_files": [
+          {
+            "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.alias",
+            "size_bytes": 118889,
+            "sha256": "b913f21f1ec6977011b01efce62a72c5539e214cead0923f0483ff1a52ee373a",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.blocklist",
+            "size_bytes": 1325,
+            "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.dep",
+            "size_bytes": 76754,
+            "sha256": "dab780a41ccad9d4ab1923bcb27f09c575264d7401199242dfe11f18b92f7f7a",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.load",
+            "size_bytes": 9795,
+            "sha256": "a359f35fdca6f62971111a1c98a09011fcc69ecc90216083cbd8bd74588eb631",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/vendor_dlkm/lib/modules/modules.softdep",
+            "size_bytes": 1139,
+            "sha256": "38949ab45d1c5af3c8cbe69eb05e6acde85936a05b870a3e380820126e85c476",
+            "identity_stable": true
+          }
+        ]
+      },
+      {
+        "stage": "system_dlkm",
+        "image_sha256": "d26b9d0258e98b0d039101f50806ea8a7e8531883ba55c04541f6b235c14c347",
+        "inventory_receipt_sha256": "36a5dee76dd5e7e9d8f570ddcaf70867e45940248f97b1f14b657591a350239c",
+        "inventory_sha256": "02aae88badbfef3b4f51dcc62e626af60339977b998cba1e5dc036aec7ac6a06",
+        "capture_receipt_sha256": "0059a110c4726deea2d94b75335d29d30abda00adb9a6178a3d282553862103c",
+        "captured_files": 108,
+        "module_count": 103,
+        "all_captured_files_rehashed": true,
+        "all_module_and_metadata_bytes_match_staged_output": true,
+        "module_set_exactly_matches_staged_output": true,
+        "load_order_preserved": true,
+        "blocklist_directives_preserved": true,
+        "vendor_side_system_selector_captured": false,
+        "module_bytes": 13785694,
+        "ordered_load_count": 82,
+        "unique_load_count": 82,
+        "load_list": {
+          "path": "target/product/nezha/system_dlkm/lib/modules/modules.load",
+          "size_bytes": 992,
+          "sha256": "ee1bd1a1c5c863ff1f5e9d87a4484a4fea754c04826f07184f7d4935ffe2d0ff",
+          "identity_stable": true
+        },
+        "blocklist": {
+          "path": "target/product/nezha/system_dlkm/lib/modules/modules.blocklist",
+          "size_bytes": 150,
+          "sha256": "51d9d58a62d97f1c0eedc1e621c11c7ac4a10dec281ad464a68bde052fe79e33",
+          "identity_stable": true
+        },
+        "blocklist_directives": [
+          "blocklist zram",
+          "blocklist zsmalloc"
+        ],
+        "metadata_files": [
+          {
+            "path": "target/product/nezha/system_dlkm/lib/modules/modules.alias",
+            "size_bytes": 68456,
+            "sha256": "c07b8621198e3ba890ef8098f736aebe9c3d9be3f76a0067126de215a49f2401",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/system_dlkm/lib/modules/modules.blocklist",
+            "size_bytes": 150,
+            "sha256": "51d9d58a62d97f1c0eedc1e621c11c7ac4a10dec281ad464a68bde052fe79e33",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/system_dlkm/lib/modules/modules.dep",
+            "size_bytes": 6602,
+            "sha256": "efb198e485b5efe72282a20f133ca0b6189129abcf4224a3a32bf761cf7cc29c",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/system_dlkm/lib/modules/modules.load",
+            "size_bytes": 992,
+            "sha256": "ee1bd1a1c5c863ff1f5e9d87a4484a4fea754c04826f07184f7d4935ffe2d0ff",
+            "identity_stable": true
+          },
+          {
+            "path": "target/product/nezha/system_dlkm/lib/modules/modules.softdep",
+            "size_bytes": 55,
+            "sha256": "ac2de753255c506934be29e69261f1485f51ee9cf9c2bf467bcc0c4cf95f8713",
+            "identity_stable": true
+          }
+        ]
+      }
+    ],
+    "module_abi_compatibility_verified": false,
+    "module_loading_tested": false,
+    "metadata_scope": "Module bytes match admitted stock. Load lists retain admitted ordered basenames; blocklists retain directives. Build core regenerates other depmod metadata and flattens module paths; all captured generated metadata matches staged output, not a claim that every original depmod file was copied.",
+    "earlier_preflight_failure": {
+      "path": "artifacts/build-validation/nezha-boot-policy-v6-1/dlkm-content-verification-v1/failure.json",
+      "sha256": "cbbb40bbd8e216252151a9526df7073f0d385945001421e39e9fa358c5b291b7",
+      "size_bytes": 536
+    }
+  },
+  "policy_scope": {
+    "framework_input_count": 7,
+    "platform_neverallow_target_passed": true,
+    "source_policy_test_targets_passed": [
+      "sepolicy_test",
+      "sepolicy_dev_type_test"
+    ],
+    "stock_vendor_odm_cil_included_in_these_targets": false,
+    "combined_vendor_policy_compatibility_verified": false,
+    "permissive_domain_absence_verified": false,
+    "note": "The separate combined framework/factory check failed strict assertions. Normal source-policy targets do not include the captured proprietary vendor/ODM CIL."
+  },
+  "boundaries": {
+    "complete_rom_build_verified": false,
+    "init_boot_image_built_by_this_probe": false,
+    "vendor_boot_image_built_by_this_probe": false,
+    "recovery_image_built_by_this_probe": false,
+    "new_root_vbmeta_chain_verified": false,
+    "physical_device_fit_verified": false,
+    "device_boot_verified": false,
+    "module_signature_cryptography_verified": false,
+    "module_abi_verified": false,
+    "native_feature_verified": false,
+    "phone_accessed": false,
+    "checks_disabled": [],
+    "raw_images_or_blobs_committed": false
+  }
+}

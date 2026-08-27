@@ -7,7 +7,8 @@ of Xiaomi's camera and other native features.
 **Evolution X has fully synced in its Linux volume, with all 1,179 project
 revisions verified. An authored Nezha product passes Soong/Kati configuration
 and has built ARM64 libbase, all nine selected Camera dependency modules and
-the host VINTF/policy tools. A flashable ROM is not present.** No phone
+the host VINTF/policy tools. Boot, DTBO and both DLKM images also build and
+pass their recorded content checks. A flashable ROM is not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
@@ -157,6 +158,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Vendor APEX dependencies](docs/apex-dependencies.md) | Guarded CAS, Widevine and Wi-Fi payload inspection and matching active-package evidence |
 | [SELinux contract](docs/selinux-contract.md) | Exact stock policy inputs and seven strict neverallow failures; no policy or device pass claimed |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
+| [Boot/DLKM build](docs/boot-dlkm-build.md) | Four built engineering images, exact kernel/overlay and 484 preserved module payloads |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](docs/camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](docs/camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |

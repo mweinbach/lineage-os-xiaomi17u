@@ -154,6 +154,14 @@ Installation receipt SHA256:
 `ab7e791bca52cca3d0742a1179939e1ecc49c78cf0cb7857543da8947c6d59c7`.
 The Camera pass above belongs to v5, not this later source installation.
 
+The v6 [boot/DLKM build](boot-dlkm-build.md) subsequently passed at
+`22:01:05 UTC`, producing boot, DTBO and both DLKM images plus the requested
+framework policy inputs/tests. Independent inspection verifies the exact
+kernel and DTBO payloads, internal AVB checks and all 484 module hashes inside
+the EROFS images. The vendor-side system selector is present with its stock
+hash. This is not a complete signed image set or a successful vendor-policy
+compatibility result; those boundaries are explicit in that separate record.
+
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from
 pinned sources. Repeating the same ten unmodified CIL inputs with the actual
