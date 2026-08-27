@@ -206,6 +206,271 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         self.assertFalse(plan["required_source_adjustments"][0]["applied_by_generator"])
         self.assertEqual(generator.validate(first), plan)
 
+    def factory_inputs(self):
+        """Tiny invented payloads with complete receipt links, never private firmware."""
+        inputs = self.generation_inputs()
+        kernel = json.loads(inputs["kernel_receipt"].read_text())
+        kernel["roles"].update(kernel="kernel/Image", dtb="dtb/vendor.dtb",
+                               dtbo="dtbo/dtbo.img", bootconfig="reference/vendor.bootconfig")
+        for role in ("dtb", "dtbo", "bootconfig"):
+            data = ("synthetic " + role).encode()
+            path = inputs["kernel_receipt"].parent / kernel["roles"][role]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            kernel["files"].append({"path": kernel["roles"][role], "size_bytes": len(data),
+                                    "sha256": hashlib.sha256(data).hexdigest(), "readback_verified": True})
+        inputs["kernel_receipt"].write_text(json.dumps(kernel))
+        plan = self.plan()
+        rows = []
+        for name, filesystem in plan["logical_filesystems"].items():
+            mount = "/mnt/vendor/mi_ext" if name == "mi_ext" else "/" + name
+            flags = "wait,slotselect,avb=" + plan["avb_descriptor_owners"][name] + ",logical,first_stage_mount"
+            if name == "system":
+                flags += ",avb_keys=/avb/test-only-fixture.avbpubkey"
+            rows.append(f"{name} {mount} {filesystem} ro {flags}")
+        rows += [f"/dev/block/by-name/{name} /{name} emmc defaults slotselect,avb=vbmeta,first_stage_mount"
+                 for name in plan["image_budgets"]]
+        rows += [METADATA_ROW, DATA_ROW, "overlay /system/framework overlay ro,lowerdir=/fixture check,nofail",
+                 "/devices/platform/test-usb/*.controller /storage/test vfat nosuid,nodev wait,voldmanaged=fixture:auto"]
+        raw = ("# Synthetic license notice retained\n" + "\n".join(rows) + "\n").encode()
+        fstab = self.root / "factory.fstab"
+        fstab.write_bytes(raw)
+        data_rows = []
+        for row in (METADATA_ROW, DATA_ROW):
+            source, mount, filesystem, options, flags = row.split()
+            data_rows.append({"source": source, "mount_point": mount, "filesystem": filesystem,
+                              "mount_options": options.split(","), "fs_mgr_flags": flags.split(",")})
+        contract = {"factory_sha256": hashlib.sha256(raw).hexdigest(), "factory_size_bytes": len(raw),
+                    "rows_in_each": len(rows), "normal_data_rows": data_rows}
+        package = {"sha256": "3" * 64, "source_kind": "user-provided", "source_url": None,
+                   "origin_verified": False}
+        files = {item["path"]: item for item in kernel["files"]}
+        components = []
+        for role, path in (("kernel", "unpacked/boot/kernel"), ("dtb", "unpacked/vendor_boot/dtb"),
+                           ("bootconfig", "unpacked/vendor_boot/bootconfig")):
+            item = files[kernel["roles"][role]]
+            components.append({"path": path, "size_bytes": item["size_bytes"],
+                               "factory_sha256": item["sha256"], "xiaomi_eu_sha256": item["sha256"],
+                               "bytes_match_eu": True})
+
+        def reference(name, record):
+            path = self.root / "artifacts/factory-reference" / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            raw = (json.dumps(dict(schema_version=1, **record)) + "\n").encode()
+            path.write_bytes(raw)
+            return {"path": path.relative_to(self.root).as_posix(), "sha256": hashlib.sha256(raw).hexdigest(),
+                    "size_bytes": len(raw)}
+
+        header = reference("headers.json", {"factory_package_sha256": "3" * 64,
+                           "xiaomi_eu_package_sha256": "2" * 64, "components": components})
+        ramdisk = reference("ramdisk.json", {"factory_package_sha256": "3" * 64,
+                            "inputs_identity_and_hash_rechecked": True,
+                            "artifacts": [{"path": "text-members/vendor_boot-0001.txt",
+                                           "sha256": contract["factory_sha256"], "size_bytes": len(raw)}]})
+        sizes, luns = [], []
+        for name in (*plan["image_budgets"], "super"):
+            extent = plan["super"]["bytes"] if name == "super" else plan["image_budgets"][name]["bytes"]
+            if name == "dtbo":
+                extent = 32 * 1024 ** 2
+            labels = ["super"] if name == "super" else [name + "_a", name + "_b"]
+            entries = [{"label": label, "type_guid_zero": False, "first_lba": 16 + i * extent // 4096,
+                        "last_lba": 15 + (i + 1) * extent // 4096, "size_bytes": extent}
+                       for i, label in enumerate(labels)]
+            gpt = {"header_crc32_verified": True, "entry_array_crc32_verified": True, "entries": entries}
+            lun = len(luns)
+            luns.append({"lun": lun, "primary_backup_entry_arrays_identical": True, "sector_size_bytes": 4096,
+                         "gpt": {"main": {"headers": [gpt]}, "backup": {"headers": [copy.deepcopy(gpt)]}}})
+            item = {"name": name, "labels": labels, "lun": lun, "package_extent_bytes": extent,
+                    "stored_image_bytes": extent, "stored_image_sha256": "a" * 64}
+            if name == "dtbo":
+                item.update(stored_image_bytes=files[kernel["roles"]["dtbo"]]["size_bytes"],
+                            stored_image_sha256=files[kernel["roles"]["dtbo"]]["sha256"])
+            sizes.append(item)
+        image_rows = []
+        for item in sizes:
+            copy_record = {"size_bytes": item["stored_image_bytes"], "sha256": item["stored_image_sha256"],
+                           "regular_nonsymlink": True, "identity_stable": True, "matches_expected_sha256": True}
+            image_rows.append({"path": item["name"] + ".img", "expected_size_bytes": item["stored_image_bytes"],
+                               "expected_sha256": item["stored_image_sha256"], "both_match_verified_archive": True,
+                               "archive_image": copy_record, "user_extracted_image": copy.deepcopy(copy_record)})
+        image_receipt = reference("images.json", {"package_sha256": "3" * 64, "source_kind": "user-provided",
+                                  "source_url": None, "origin_verified": False, "images": image_rows,
+                                  "image_count": len(image_rows), "all_images_match": True})
+        analysis = reference("gpt-analysis.json", {"sector_size_bytes": 4096, "luns": luns,
+                             "physical_phone_geometry_verified": False, "flashable_gpt_admitted": False})
+        receipt = reference("gpt-receipt.json", {"parent_package_sha256": "3" * 64,
+                            "input_hashes_and_identity_rechecked": True,
+                            "output": {**analysis, "readback_verified": True}})
+        factory = {"schema_version": 1, "device": {"codename": "nezha", "hardware_region": "CN"},
+                   "packages": {"factory": package, "xiaomi_eu": {"sha256": "2" * 64}},
+                   "image_readback": {"receipt": image_receipt},
+                   "header_component_readback": {"receipt": header, "components": components},
+                   "ramdisk_comparison": {"receipt": ramdisk}, "normal_vendor_fstab": contract,
+                   "vendor_bootconfig": {"declarations": plan["bootconfig"]}}
+        partitions = {"schema_version": 1, "device": factory["device"], "package": package,
+                      "inspection": {"receipt": receipt, "analysis": analysis}, "build_relevant_sizes": sizes}
+        factory_path, partition_path = self.root / "factory.json", self.root / "partitions.json"
+        factory_path.write_text(json.dumps(factory))
+        partition_path.write_text(json.dumps(partitions))
+        return dict(inputs, factory_boot_contract=factory_path, partition_metadata=partition_path, fstab_source=fstab)
+
+    def test_factory_generation_binds_geometry_and_preserves_flags_and_provenance(self):
+        inputs = self.factory_inputs()
+        output = self.root / "artifacts/factory-candidate"
+        plan = generator.generate(output, variant="user", **inputs)
+        self.assertEqual(generator.validate(output), plan)
+        self.assertEqual(plan["image_budgets"]["dtbo"]["bytes"], 33554432)
+        self.assertIn("GPT", plan["image_budgets"]["dtbo"]["basis"])
+        self.assertTrue(plan["factory_profile"]["kernel_dtb_dtbo_bootconfig_bytes_match"])
+        self.assertFalse(plan["factory_profile"]["kernel_bundle_provenance_relabelled"])
+        self.assertTrue(plan["mixed_package_sources"])
+        self.assertFalse(plan["admission"]["physical_partition_fit_verified"])
+        self.assertFalse(plan["admission"]["flash_allowed"])
+        self.assertFalse(plan["avb_policy"]["source_image_set_verified"])
+        fstab = (output / generator.DEVICE_PATH / "generated/fstab.qcom").read_text()
+        self.assertIn("# Synthetic license notice retained", fstab)
+        self.assertIn("avb_keys=/avb/test-only-fixture.avbpubkey", fstab)
+        self.assertIn(DATA_ROW, fstab)
+        self.assertIn(METADATA_ROW, fstab)
+        self.assertNotIn("lowerdir=", fstab)
+        self.assertEqual(len(plan["fstab"]["factory_boot_verification_rows"]), 5)
+        self.assertTrue(plan["fstab"]["factory_logical_flags_preserved"])
+        self.assertIn("/devices/platform/test-usb/*.controller /storage/test", fstab)
+        self.assertEqual(plan["fstab"]["device_node_globs_preserved"], 1)
+        self.assertFalse(plan["fstab"]["device_node_globs_expanded"])
+        board = (output / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        self.assertIn("BOARD_DTBOIMG_PARTITION_SIZE := 33554432", board)
+        with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+            generator.validate(output, purpose="target-files")
+
+    def test_factory_generation_requires_all_three_explicit_inputs(self):
+        inputs = self.factory_inputs()
+        for missing in ("factory_boot_contract", "partition_metadata", "fstab_source"):
+            with self.subTest(missing=missing):
+                invalid = dict(inputs, **{missing: None})
+                with self.assertRaisesRegex(generator.CandidateError, "requires boot contract"):
+                    generator.generate(self.root / "artifacts/refused", **invalid)
+
+    def test_factory_rejects_other_package_origin_or_component_claims(self):
+        inputs = self.factory_inputs()
+        path = inputs["factory_boot_contract"]
+        original = json.loads(path.read_text())
+        mutations = [
+            lambda r: r["device"].update(codename="popsicle"),
+            lambda r: r["device"].update(hardware_region="GLOBAL"),
+            lambda r: r["packages"]["factory"].update(sha256="4" * 64),
+            lambda r: r["packages"]["factory"].update(origin_verified=True),
+            lambda r: r["packages"]["xiaomi_eu"].update(sha256="5" * 64),
+            lambda r: r["header_component_readback"]["components"][0].update(factory_sha256="6" * 64),
+            lambda r: r["vendor_bootconfig"]["declarations"].update(**{"androidboot.hardware": "other"}),
+            lambda r: r["normal_vendor_fstab"].update(factory_sha256="7" * 64),
+        ]
+        for index, change in enumerate(mutations):
+            with self.subTest(index=index):
+                record = copy.deepcopy(original)
+                change(record)
+                path.write_text(json.dumps(record))
+                with self.assertRaises(generator.CandidateError):
+                    generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_factory_rejects_budget_changes_not_present_in_gpt(self):
+        inputs = self.factory_inputs()
+        path = inputs["partition_metadata"]
+        original = json.loads(path.read_text())
+        for change in (
+            lambda r: r["build_relevant_sizes"][0].update(package_extent_bytes=4096),
+            lambda r: r["build_relevant_sizes"][0].update(labels=["boot_b", "boot_a"]),
+            lambda r: r["build_relevant_sizes"][0].update(stored_image_bytes=2 ** 40),
+            lambda r: r["build_relevant_sizes"][0].update(stored_image_bytes=True),
+            lambda r: r["build_relevant_sizes"].append(copy.deepcopy(r["build_relevant_sizes"][0])),
+        ):
+            record = copy.deepcopy(original)
+            change(record)
+            path.write_text(json.dumps(record))
+            with self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_factory_receipt_tampering_is_rejected_before_publication(self):
+        inputs = self.factory_inputs()
+        record = json.loads(inputs["partition_metadata"].read_text())
+        path = self.root / record["inspection"]["analysis"]["path"]
+        path.write_bytes(path.read_bytes() + b" ")
+        with self.assertRaisesRegex(generator.CandidateError, "reference hash/size mismatch"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_factory_stored_length_must_match_the_bound_image_readback(self):
+        inputs = self.factory_inputs()
+        path = inputs["partition_metadata"]
+        record = json.loads(path.read_text())
+        record["build_relevant_sizes"][0]["stored_image_bytes"] = 1
+        path.write_text(json.dumps(record))
+        with self.assertRaisesRegex(generator.CandidateError, "stored-image summary differs"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_factory_dtbo_cannot_be_substituted_through_bundle_and_summary(self):
+        inputs = self.factory_inputs()
+        path = inputs["kernel_receipt"]
+        kernel = json.loads(path.read_text())
+        data = b"another synthetic overlay"
+        (path.parent / kernel["roles"]["dtbo"]).write_bytes(data)
+        item = next(f for f in kernel["files"] if f["path"] == kernel["roles"]["dtbo"])
+        item.update(sha256=hashlib.sha256(data).hexdigest(), size_bytes=len(data))
+        path.write_text(json.dumps(kernel))
+        path = inputs["partition_metadata"]
+        record = json.loads(path.read_text())
+        budget = next(b for b in record["build_relevant_sizes"] if b["name"] == "dtbo")
+        budget.update(stored_image_sha256=item["sha256"], stored_image_bytes=len(data))
+        path.write_text(json.dumps(record))
+        with self.assertRaisesRegex(generator.CandidateError, "stored-image summary differs"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_factory_image_readback_must_agree_in_both_copies(self):
+        inputs = self.factory_inputs()
+        factory_path = inputs["factory_boot_contract"]
+        factory = json.loads(factory_path.read_text())
+        ref = factory["image_readback"]["receipt"]
+        path = self.root / ref["path"]
+        record = json.loads(path.read_bytes())
+        record["images"][0]["user_extracted_image"]["sha256"] = "b" * 64
+        raw = json.dumps(record).encode()
+        path.write_bytes(raw)
+        ref.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        factory_path.write_text(json.dumps(factory))
+        with self.assertRaisesRegex(generator.CandidateError, "image copy hash/size/identity mismatch"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_factory_fstab_keeps_all_original_flags_or_refuses_the_input(self):
+        inputs = self.factory_inputs()
+        contract = json.loads(inputs["factory_boot_contract"].read_text())["normal_vendor_fstab"]
+        path = inputs["fstab_source"]
+        original = path.read_text()
+        for changed in (
+            original.replace("avb=vbmeta_system,", "", 1),
+            original.replace("avb=vbmeta_system", "avb=vbmeta", 1),
+            original.replace("avb=vbmeta_system", "avb=vbmeta_system,avb=other", 1),
+            original.replace("slotselect,avb=vbmeta,first_stage_mount", "slotselect,first_stage_mount", 1),
+            original.replace("aes-256-xts:wrappedkey_v0", "aes-256-xts", 1),
+            original.replace(DATA_ROW, DATA_ROW + "\n" + DATA_ROW),
+            original.replace("/devices/platform/test-usb/*.controller", "/dev/block/*.controller"),
+            original.replace("voldmanaged=fixture:auto", "notmanaged=fixture:auto"),
+            original.replace("/devices/platform/test-usb/*.controller", "/devices/$(touch-other)"),
+        ):
+            raw = changed.encode()
+            path.write_bytes(raw)
+            expected = dict(contract, factory_sha256=hashlib.sha256(raw).hexdigest(), factory_size_bytes=len(raw))
+            with self.assertRaises(generator.CandidateError):
+                generator.render_factory_fstab(self.plan(), expected, path)
+
+    def test_factory_fstab_requires_its_exact_hash(self):
+        inputs = self.factory_inputs()
+        contract = json.loads(inputs["factory_boot_contract"].read_text())["normal_vendor_fstab"]
+        inputs["fstab_source"].write_text("# not the admitted file\n")
+        with self.assertRaisesRegex(generator.CandidateError, "fstab hash/size mismatch"):
+            generator.render_factory_fstab(self.plan(), contract, inputs["fstab_source"])
+
     def test_default_variant_remains_userdebug_and_explicit_user_changes_only_variant(self):
         default = self.plan()
         self.assertEqual(default["variant"], "userdebug")

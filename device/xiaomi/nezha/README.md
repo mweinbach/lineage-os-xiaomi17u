@@ -21,9 +21,10 @@ to select the stricter user variant and record that selection in
 BoardConfig requires exactly one of these variants and rejects `eng`, which
 weakens upstream AVB policy. Both variants retain the same AVB, SELinux, APK
 validation, source-sandbox and packaging gates. Registering the user lunch
-choice does not establish that a user build succeeds or boots, or authorize
-flashing. Keep user validation in a separate `OUT_DIR` to preserve existing
-userdebug outputs.
+choice does not itself establish build or boot success, or authorize flashing.
+The separately recorded user framework policy/tool build now passes; factory
+vendor compatibility remains a separate check. Keep user validation in a
+separate `OUT_DIR` to preserve existing userdebug outputs.
 
 The optional `--device-baseline`, `--boot-contract`, `--firmware-layout` and
 `--vintf-contract` arguments select new sanitized records. Values and image
@@ -34,6 +35,23 @@ The boot contract's `evidence.private_directory` must also contain its hashed
 `final-receipt.json` and `logs/unpack-vendor_boot.stdout.txt`. The generator
 reads that report without running an unpacker, and reproduces the observed
 vendor-boot addresses using a zero base and explicit offsets.
+
+Factory-derived candidates additionally require `--factory-boot-contract`,
+`--partition-metadata` and an explicit `--fstab-source` together. Select the
+factory layout and matching factory vendor bundle; the existing kernel bundle
+keeps its original Xiaomi.eu provenance. The generator binds the comparison
+receipts and checks that kernel, DTB, DTBO and bootconfig bytes match. Package
+extents must agree with both hash-bound GPT copies and the LP super size.
+The factory DTBO budget is 32 MiB, not its stored image's 22 MiB length.
+
+This mode selects the observed logical filesystem rows and retains their
+factory AVB and GSI key-path flags, all five boot verification rows, exact
+userdata encryption settings and physical/vold storage declarations. Device
+node patterns stay inert text; the generator never expands or executes them.
+Other logical filesystem alternatives and stock framework overlay/bind mounts
+are not selected. Original leading notices are retained. No successful source
+comparison promotes package origin, live partition fit, key trust, full policy
+compatibility or flash admission.
 
 The generator copies this authored source and writes `generated/` includes,
 an authored AVB-enabled fstab, the reviewed property patch, and `admission.json`.
@@ -71,8 +89,9 @@ still enabled, after installing this source. This setting preserves the check;
 it does not supply missing Camera shared-library declarations or prove APK
 compatibility.
 
-Boot-image budgets use supplied image lengths and super/group declarations.
-They are candidate build budgets, not measurements of physical partitions.
+Without the explicit factory profile, boot-image budgets use supplied image
+lengths and super/group declarations. Factory mode uses verified package GPT
+extents. Both are candidate build budgets, not live partition measurements.
 Dynamic framework partitions size themselves during the build. Public AOSP
 engineering AVB keys sign newly built artifacts; they are not Xiaomi keys and
 must not be enrolled or represented as OEM authentication. Existing source AVB

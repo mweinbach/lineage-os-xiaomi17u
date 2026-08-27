@@ -470,9 +470,233 @@ def render_fstab(plan, boot, source):
     return "\n".join(lines) + "\n"
 
 
+def _bound_reference(reference, workspace_root):
+    """Bind a prior inspection without executing its tools or trusting a path alone."""
+    path = Path(workspace_root) / _relative(reference["path"])
+    record, identity = _read_json(path)
+    _require(identity == {key: reference[key] for key in ("sha256", "size_bytes")},
+             "factory inspection reference hash/size mismatch")
+    return record
+
+
+def _factory_profile(plan, kernel, factory_boot_path, partition_path, workspace_root):
+    """Admit package geometry and a factory fstab, retaining mixed-source provenance."""
+    factory, factory_identity = _read_json(factory_boot_path)
+    partitions, partition_identity = _read_json(partition_path)
+    _require(_codename(factory) == _codename(partitions) == "nezha", "wrong factory device")
+    _require(factory["device"]["hardware_region"] == partitions["device"]["hardware_region"] == "CN",
+             "factory profile requires China hardware records")
+    package = factory["packages"]["factory"]
+    package_sha = _digest(package["sha256"], "factory package")
+    _require(package_sha == partitions["package"]["sha256"] == plan["source_packages"]["vendor"],
+             "factory profile and vendor package disagree")
+    _require(factory["packages"]["xiaomi_eu"]["sha256"] == plan["source_packages"]["kernel"],
+             "factory comparison does not cover this kernel bundle")
+    _require(package["source_kind"] == "user-provided" and package["source_url"] is None
+             and package["origin_verified"] is False, "factory origin must not be promoted")
+    _require(all(partitions["package"][key] == package[key]
+                 for key in ("source_kind", "source_url", "origin_verified")),
+             "factory package provenance differs")
+    image_readback = _bound_reference(factory["image_readback"]["receipt"], workspace_root)
+    _require(image_readback["package_sha256"] == package_sha and image_readback["all_images_match"] is True
+             and all(image_readback[key] == package[key]
+                     for key in ("source_kind", "source_url", "origin_verified")),
+             "factory image readback package/provenance differs")
+    images = {item["path"]: item for item in image_readback["images"]}
+    _require(len(images) == len(image_readback["images"]) == image_readback["image_count"],
+             "factory image readback contains duplicate or missing entries")
+    for item in images.values():
+        expected = {"sha256": _digest(item["expected_sha256"], "factory image"),
+                    "size_bytes": _integer(item["expected_size_bytes"], "factory image length")}
+        _require(item["both_match_verified_archive"] is True, "factory image copies do not match")
+        for copy_name in ("archive_image", "user_extracted_image"):
+            copy = item[copy_name]
+            _require(all(copy[key] == value for key, value in expected.items()) and
+                     all(copy[key] is True for key in
+                         ("regular_nonsymlink", "identity_stable", "matches_expected_sha256")),
+                     "factory image copy hash/size/identity mismatch")
+
+    header = factory["header_component_readback"]
+    header_receipt = _bound_reference(header["receipt"], workspace_root)
+    _require(header_receipt["factory_package_sha256"] == package_sha
+             and header_receipt["xiaomi_eu_package_sha256"] == plan["source_packages"]["kernel"]
+             and header_receipt["components"] == header["components"],
+             "factory component comparison differs from its receipt")
+    components = {item["path"]: item for item in header["components"]}
+    _require(len(components) == len(header["components"]), "duplicate factory component")
+    bundle_files = {item["path"]: item for item in kernel["files"]}
+    for role, component_path in (("kernel", "unpacked/boot/kernel"),
+                                 ("dtb", "unpacked/vendor_boot/dtb"),
+                                 ("bootconfig", "unpacked/vendor_boot/bootconfig")):
+        item = components[component_path]
+        bundled = bundle_files[kernel["roles"][role]]
+        _require(item["bytes_match_eu"] is True and
+                 item["factory_sha256"] == item["xiaomi_eu_sha256"] == bundled["sha256"] and
+                 item["size_bytes"] == bundled["size_bytes"],
+                 f"factory {role} does not match the verified kernel bundle")
+    _require(factory["vendor_bootconfig"]["declarations"] == plan["bootconfig"],
+             "factory bootconfig declarations differ")
+    ramdisk = _bound_reference(factory["ramdisk_comparison"]["receipt"], workspace_root)
+    _require(ramdisk["factory_package_sha256"] == package_sha and
+             ramdisk["inputs_identity_and_hash_rechecked"] is True,
+             "factory ramdisk inspection does not cover this package")
+    fstab = factory["normal_vendor_fstab"]
+    fstab_members = [item for item in ramdisk["artifacts"]
+                     if item["path"] == "text-members/vendor_boot-0001.txt"]
+    _require(len(fstab_members) == 1 and fstab_members[0]["sha256"] == fstab["factory_sha256"]
+             and fstab_members[0]["size_bytes"] == fstab["factory_size_bytes"],
+             "factory fstab is not bound by the ramdisk inspection")
+
+    inspection = partitions["inspection"]
+    receipt = _bound_reference(inspection["receipt"], workspace_root)
+    analysis = _bound_reference(inspection["analysis"], workspace_root)
+    _require(receipt["parent_package_sha256"] == package_sha and
+             receipt["input_hashes_and_identity_rechecked"] is True and
+             receipt["output"]["readback_verified"] is True and
+             all(receipt["output"][key] == inspection["analysis"][key]
+                 for key in ("sha256", "size_bytes")), "GPT analysis receipt does not bind its output")
+    _require(analysis["sector_size_bytes"] == 4096 and
+             analysis["physical_phone_geometry_verified"] is False and
+             analysis["flashable_gpt_admitted"] is False, "package GPT is not a live or flash admission")
+    sizes = {item["name"]: item for item in partitions["build_relevant_sizes"]}
+    _require(len(sizes) == len(partitions["build_relevant_sizes"]), "duplicate factory budget")
+    luns = {item["lun"]: item for item in analysis["luns"]}
+    _require(len(luns) == len(analysis["luns"]), "duplicate factory LUN")
+    for name in (*plan["image_budgets"], "super"):
+        item = sizes[name]
+        image = images[name + ".img"]
+        _require(item["stored_image_bytes"] == image["expected_size_bytes"] and
+                 item["stored_image_sha256"] == image["expected_sha256"],
+                 "factory stored-image summary differs from its image readback")
+        labels = [name] if name == "super" else [name + "_a", name + "_b"]
+        _require(item["labels"] == labels, "factory partition labels differ")
+        extent = _integer(item["package_extent_bytes"], "factory partition extent")
+        _require(extent % 4096 == 0, "unaligned factory extent")
+        lun = luns[item["lun"]]
+        _require(lun["primary_backup_entry_arrays_identical"] is True and
+                 lun["sector_size_bytes"] == 4096, "unverified GPT main/backup pair")
+        for side in ("main", "backup"):
+            headers = lun["gpt"][side]["headers"]
+            _require(len(headers) == 1, "ambiguous factory GPT header")
+            gpt = headers[0]
+            _require(gpt["header_crc32_verified"] is True and gpt["entry_array_crc32_verified"] is True,
+                     "unverified GPT checksums")
+            for label in labels:
+                matches = [entry for entry in gpt["entries"] if entry["label"] == label]
+                _require(len(matches) == 1, "missing or duplicate factory partition")
+                entry = matches[0]
+                _require(entry["type_guid_zero"] is False and entry["size_bytes"] == extent
+                         and type(entry["first_lba"]) is int and entry["first_lba"] >= 0
+                         and type(entry["last_lba"]) is int and entry["last_lba"] >= entry["first_lba"]
+                         and (entry["last_lba"] - entry["first_lba"] + 1) * 4096 == extent,
+                         "factory extent differs from its finite GPT entry")
+        if name == "super":
+            _require(extent == plan["super"]["bytes"], "factory GPT and LP super sizes disagree")
+        else:
+            _require(_integer(item["stored_image_bytes"], "factory image length") <= extent,
+                     "factory image exceeds its package extent")
+            plan["image_budgets"][name] = {
+                "bytes": extent, "basis": "verified factory package GPT extent; live capacity unverified",
+                "stored_image_bytes": item["stored_image_bytes"],
+            }
+    dtbo = bundle_files[kernel["roles"]["dtbo"]]
+    _require(dtbo["sha256"] == sizes["dtbo"]["stored_image_sha256"] and
+             dtbo["size_bytes"] == sizes["dtbo"]["stored_image_bytes"], "factory DTBO payload differs")
+    plan["factory_profile"] = {
+        "package_sha256": package_sha, "origin_verified": False,
+        "factory_boot_record": factory_identity, "partition_record": partition_identity,
+        "image_readback_receipt": factory["image_readback"]["receipt"],
+        "header_receipt": header["receipt"], "gpt_receipt": inspection["receipt"],
+        "ramdisk_receipt": factory["ramdisk_comparison"]["receipt"],
+        "gpt_analysis": inspection["analysis"], "kernel_dtb_dtbo_bootconfig_bytes_match": True,
+        "kernel_bundle_provenance_relabelled": False, "physical_phone_geometry_verified": False,
+    }
+    return fstab
+
+
+def render_factory_fstab(plan, contract, source):
+    """Select observed filesystems without removing factory AVB or crypto flags."""
+    identity, raw = _read_file(source, limit=MAX_TEXT_BYTES, collect=True)
+    _require(identity == {"sha256": contract["factory_sha256"],
+                          "size_bytes": contract["factory_size_bytes"]}, "factory fstab hash/size mismatch")
+    text = raw.decode("utf-8")
+    rows, comments = [], []
+    for line in text.splitlines():
+        content = line.split("#", 1)[0].strip()
+        if not content:
+            if not rows:
+                comments.append(line)
+            continue
+        fields = content.split()
+        _require(len(fields) == 5 and
+                 re.fullmatch(r"[A-Za-z0-9_./,:=+@%*-]+", fields[0]) and
+                 all(re.fullmatch(r"[A-Za-z0-9_./,:=+@%-]+", f) for f in fields[1:]),
+                 "malformed or unsafe factory fstab row")
+        _require("*" not in fields[0] or fields[0].startswith("/devices/"),
+                 "factory device-node glob is not a /devices path")
+        rows.append(fields)
+    _require(len(rows) == contract["rows_in_each"], "factory fstab row count differs")
+    selected, logical, physical, verified_boot = [], [], [], []
+    for fields in rows:
+        name, mount, filesystem, _, flags_text = fields
+        flags = flags_text.split(",")
+        if name in plan["logical_filesystems"]:
+            if filesystem != plan["logical_filesystems"][name]:
+                continue
+            _require(name not in logical, "duplicate factory logical mount")
+            _require([f for f in flags if f == "avb" or f.startswith("avb=")] ==
+                     ["avb=" + plan["avb_descriptor_owners"][name]] and
+                     {"wait", "slotselect", "logical", "first_stage_mount"} <= set(flags),
+                     "factory logical mount lacks the required verified-boot flags")
+            logical.append(name)
+        elif name.startswith(("/dev/block/", "/devices/")):
+            _require(filesystem in ("ext4", "f2fs", "vfat", "emmc", "erofs"),
+                     "unsupported factory physical filesystem")
+            if name.startswith("/devices/"):
+                _require(mount.startswith("/storage/") and filesystem == "vfat" and
+                         any(flag.startswith("voldmanaged=") for flag in flags),
+                         "factory device-node pattern requires a vold-managed storage row")
+            physical.append(fields)
+            if mount[1:] in plan["image_budgets"]:
+                _require(name == "/dev/block/by-name/" + mount[1:] and filesystem == "emmc"
+                         and [f for f in flags if f == "avb" or f.startswith("avb=")] == ["avb=vbmeta"]
+                         and {"slotselect", "first_stage_mount"} <= set(flags),
+                         "factory boot row lacks its verified-boot contract")
+                verified_boot.append(mount[1:])
+        else:
+            continue  # Framework overlay/bind mounts require a separate integration.
+        selected.append(" ".join(fields))
+    _require(set(logical) == set(plan["logical_filesystems"]), "factory logical mounts incomplete")
+    _require(sorted(verified_boot) == sorted(plan["image_budgets"]), "factory boot mounts incomplete")
+    for expected in contract["normal_data_rows"]:
+        matches = [row for row in physical if row[1] == expected["mount_point"]]
+        fields = [expected["source"], expected["mount_point"], expected["filesystem"],
+                  ",".join(expected["mount_options"]), ",".join(expected["fs_mgr_flags"])]
+        _require(matches == [fields], "factory data/metadata mount or encryption flags changed")
+    _require({"/data", "/metadata"} == {row["mount_point"] for row in contract["normal_data_rows"]},
+             "factory encrypted data/metadata contract missing")
+    data = next(row for row in physical if row[1] == "/data")
+    _require(all(token in data[4] for token in ("fileencryption=", "metadata_encryption=", "keydirectory=")),
+             "factory userdata lacks encryption requirements")
+    plan["fstab"] = {
+        **identity, "logical_mounts": logical, "physical_mounts": [row[1] for row in physical],
+        "source": "factory vendor ramdisk", "stock_overlay_mounts_adopted": False,
+        "logical_avb_enabled": True, "factory_logical_flags_preserved": True,
+        "factory_boot_verification_rows": verified_boot, "vendor_image_replacement_applied": False,
+        "device_node_globs_preserved": sum("*" in row[0] for row in physical),
+        "device_node_globs_expanded": False,
+    }
+    return "\n".join([*comments, "# Selected factory rows for Nezha framework checks; no flash admission.",
+                      "# Original flags retained; other filesystem alternatives and overlays not selected.",
+                      *selected, ""])
+
+
 def _render_board(plan):
+    budget_note = ("# Factory GPT extents and LP declarations are not live partition measurements."
+                   if "factory_profile" in plan else
+                   "# Image lengths and LP sizes are candidate budgets, not physical measurements.")
     lines = ["# Generated from receipt-bound Nezha facts. Framework-checks only.",
-             "# Image lengths and LP sizes are candidate budgets, not physical measurements.",
+             budget_note,
              "BOARD_BOOT_HEADER_VERSION := 4", "BOARD_INIT_BOOT_HEADER_VERSION := 4",
              "BOARD_MKBOOTIMG_ARGS += --header_version 4",
              "BOARD_MKBOOTIMG_INIT_ARGS += --header_version 4", "BOARD_KERNEL_PAGESIZE := 4096"]
@@ -544,16 +768,25 @@ def _load_records(record_paths):
 
 def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_source=None,
              variant="userdebug", workspace_root=ROOT, template_root=ROOT / DEVICE_PATH,
-             patch_source_root=ROOT):
+             patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None):
     variant = _build_variant(variant)
+    factory_selected = factory_boot_contract is not None or partition_metadata is not None
+    if factory_selected:
+        _require(factory_boot_contract is not None and partition_metadata is not None and fstab_source is not None,
+                 "factory generation requires boot contract, partition metadata and explicit fstab source")
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
     _bind_vendor_header(plan, records["boot-contract"], workspace_root)
-    if fstab_source is None:
+    if factory_selected:
+        contract = _factory_profile(plan, kernel, factory_boot_contract, partition_metadata, workspace_root)
+        fstab = render_factory_fstab(plan, contract, fstab_source)
+    elif fstab_source is None:
         role = _relative(kernel.get("roles", {}).get("fstab"))
         fstab_source = Path(kernel_receipt).parent / role
-    fstab = render_fstab(plan, records["boot-contract"], fstab_source)
+        fstab = render_fstab(plan, records["boot-contract"], fstab_source)
+    else:
+        fstab = render_fstab(plan, records["boot-contract"], fstab_source)
     payloads = {}
     _bind_security_patch(plan, patch_source_root, payloads)
     for name in TEMPLATE_FILES:
@@ -637,6 +870,10 @@ def main(argv=None):
             sub.add_argument("--kernel-receipt", type=Path, required=True)
             sub.add_argument("--vendor-receipt", type=Path, required=True)
             sub.add_argument("--fstab-source", type=Path)
+            sub.add_argument("--factory-boot-contract", type=Path,
+                             help="factory component/fstab comparison, requires partition metadata and explicit fstab")
+            sub.add_argument("--partition-metadata", type=Path,
+                             help="verified factory package GPT record; never a live-capacity or flash admission")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -652,7 +889,8 @@ def main(argv=None):
             else:
                 result = generate(args.output, record_paths=paths, kernel_receipt=args.kernel_receipt,
                                   vendor_receipt=args.vendor_receipt, fstab_source=args.fstab_source,
-                                  variant=args.variant)
+                                  variant=args.variant, factory_boot_contract=args.factory_boot_contract,
+                                  partition_metadata=args.partition_metadata)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
