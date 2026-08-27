@@ -1,0 +1,1758 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "status": "exact policy inputs captured; native tools built; strict modified-stock CIL compilation failed seven neverallow assertions",
+  "provenance": {
+    "source_kind": "user-provided modified Xiaomi.eu package",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "source_url": null,
+    "origin_verified": false,
+    "oem_signature_authenticated": false,
+    "input_avb_status": "failed",
+    "raw_policy_or_proprietary_files_committed": false
+  },
+  "capture": {
+    "script": "scripts/erofs_inventory.py",
+    "script_sha256": "733255afce307edef06b534d4b8f6d3db30d1f7c45d91f1a7341ec4156e438a3",
+    "plan": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/capture-plan-v1.json",
+      "sha256": "34ad1fe534afd5b46582ef02ec7b5b86950d5f58994c9c15aedbab23f993e619",
+      "size_bytes": 14053
+    },
+    "total_files": 60,
+    "total_bytes": 7721996,
+    "all_captured_files_rehashed": true,
+    "image_mounted": false,
+    "firmware_executed": false,
+    "phone_accessed": false,
+    "partitions": [
+      {
+        "partition": "vendor",
+        "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+        "image_size_bytes": 941506560,
+        "capture_receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/vendor-capture-v1/receipt.json",
+          "sha256": "e9a404ca0a8ca85d7588ce59a6d15fe538fa77d936e38b9b8a27fee086c9bdb7",
+          "size_bytes": 5899
+        },
+        "inventory_sha256": "987bdfdae8eaafc111a4e808dc88720ce73b8bb43b0e456d7971e89fa7daa804",
+        "inventory_receipt_sha256": "b842eabe2e1aaed954564cadf32693f731b35c7ac7d7770aae0a1739d328246a",
+        "capture_files": 14,
+        "capture_bytes": 2361353,
+        "files": [
+          {
+            "image_path": "/etc/selinux/genfs_labels_version.txt",
+            "runtime_path": "/vendor/etc/selinux/genfs_labels_version.txt",
+            "nid": 8588542,
+            "captured_file": "files/0001",
+            "size_bytes": 7,
+            "sha256": "ce5b095f33cfad2ece2557566ec55c87dcb81fb1a275fdc6f032369f1ea4fb9d",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/plat_pub_versioned.cil",
+            "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+            "nid": 8591990,
+            "captured_file": "files/0002",
+            "size_bytes": 396303,
+            "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/plat_sepolicy_vers.txt",
+            "runtime_path": "/vendor/etc/selinux/plat_sepolicy_vers.txt",
+            "nid": 8591613,
+            "captured_file": "files/0003",
+            "size_bytes": 7,
+            "sha256": "ce5b095f33cfad2ece2557566ec55c87dcb81fb1a275fdc6f032369f1ea4fb9d",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/selinux_denial_metadata",
+            "runtime_path": "/vendor/etc/selinux/selinux_denial_metadata",
+            "nid": 8592508,
+            "captured_file": "files/0004",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_file_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_file_contexts",
+            "nid": 8591866,
+            "captured_file": "files/0005",
+            "size_bytes": 152798,
+            "sha256": "61636a25fe035910150de0ddd9e85d3b157ff2eb75431cda69434e34eab7152c",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_hwservice_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_hwservice_contexts",
+            "nid": 8593402,
+            "captured_file": "files/0006",
+            "size_bytes": 8966,
+            "sha256": "49faa3a959a7eb57966607357679eb1d84ab26851995b972ec91c6664b4c4123",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_keystore2_key_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_keystore2_key_contexts",
+            "nid": 8605824,
+            "captured_file": "files/0007",
+            "size_bytes": 929,
+            "sha256": "f9936e8aad7dd08e6409b9cbfd2a05c7a5ffe476905941184b497de1aa2f0448",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_mac_permissions.xml",
+            "runtime_path": "/vendor/etc/selinux/vendor_mac_permissions.xml",
+            "nid": 8605855,
+            "captured_file": "files/0008",
+            "size_bytes": 2429,
+            "sha256": "c62c3c4621b17338db0f12b630711d0aa4e068e62141e82166fa723e1a110e4a",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_property_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_property_contexts",
+            "nid": 8592629,
+            "captured_file": "files/0009",
+            "size_bytes": 65138,
+            "sha256": "1ea657519b3869186b340700beffa8e7669aec87a7f542a708db7e2e9c0fa692",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_seapp_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_seapp_contexts",
+            "nid": 8605952,
+            "captured_file": "files/0010",
+            "size_bytes": 1453,
+            "sha256": "b9898af2521118c829a2991d9262ce947e2dcf1bf2a7a6f4b58b0def5f1794ba",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_sepolicy.cil",
+            "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+            "nid": 8605999,
+            "captured_file": "files/0011",
+            "size_bytes": 1703505,
+            "sha256": "85b1339d099b44ab6604860c37309e6bbc1dc7b0be6fd00ea1c7370e77652ca0",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_service_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_service_contexts",
+            "nid": 8592633,
+            "captured_file": "files/0012",
+            "size_bytes": 22950,
+            "sha256": "24b0dd7503df441b0282c602be6fdd04e1beb9ce73fb227224c7ed97eeb97412",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vendor_tee_service_contexts",
+            "runtime_path": "/vendor/etc/selinux/vendor_tee_service_contexts",
+            "nid": 8606028,
+            "captured_file": "files/0013",
+            "size_bytes": 927,
+            "sha256": "855bfc0b490c46a2ad13f0d4e615d3b128b6652dc93adad1087244c529fb21a9",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/vndservice_contexts",
+            "runtime_path": "/vendor/etc/selinux/vndservice_contexts",
+            "nid": 8592510,
+            "captured_file": "files/0014",
+            "size_bytes": 5941,
+            "sha256": "282b7dd3366c73cb85d000ee5bec4ea092e378cf7dec35b168c9b53aba4e147c",
+            "readback_verified": true
+          }
+        ]
+      },
+      {
+        "partition": "odm",
+        "image_sha256": "cf342dadf1d8da6748c2cf6959bc04ce96226b27617e8bc16363eb51a2071d62",
+        "image_size_bytes": 4679843840,
+        "capture_receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/odm-capture-v1/receipt.json",
+          "sha256": "d1b3c689546ffdc54b60a76c4468bae9d2f07d7cb8124467ea592c3c6a483366",
+          "size_bytes": 4929
+        },
+        "inventory_sha256": "77c259aa0ade488486741024ee44aee5fda562106d4f0f2e60e6dcaeefeb65d1",
+        "inventory_receipt_sha256": "c3a2f32fa8f7a3967ce8fcc8f8d6921e16144b67b69d0aaaf588d6c6355a51cf",
+        "capture_files": 11,
+        "capture_bytes": 1750633,
+        "files": [
+          {
+            "image_path": "/etc/selinux/odm_file_contexts",
+            "runtime_path": "/odm/etc/selinux/odm_file_contexts",
+            "nid": 98491645,
+            "captured_file": "files/0001",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/odm_hwservice_contexts",
+            "runtime_path": "/odm/etc/selinux/odm_hwservice_contexts",
+            "nid": 98187005,
+            "captured_file": "files/0002",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/odm_mac_permissions.xml",
+            "runtime_path": "/odm/etc/selinux/odm_mac_permissions.xml",
+            "nid": 98491258,
+            "captured_file": "files/0003",
+            "size_bytes": 101,
+            "sha256": "9fc6e3bc49b67055ec3e2059f5fce7c7e5b72069697d82f963aec4dd2d61fcf0",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/odm_property_contexts",
+            "runtime_path": "/odm/etc/selinux/odm_property_contexts",
+            "nid": 98497451,
+            "captured_file": "files/0004",
+            "size_bytes": 918,
+            "sha256": "f020bb1adcdfa68dea4cfffdd2e59eb5efa1b302c126e325b1dd8232f9fe8152",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/odm_seapp_contexts",
+            "runtime_path": "/odm/etc/selinux/odm_seapp_contexts",
+            "nid": 98181117,
+            "captured_file": "files/0005",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/odm_sepolicy.cil",
+            "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+            "nid": 98496508,
+            "captured_file": "files/0006",
+            "size_bytes": 14292,
+            "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/odm_service_contexts",
+            "runtime_path": "/odm/etc/selinux/odm_service_contexts",
+            "nid": 98490876,
+            "captured_file": "files/0007",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/precompiled_sepolicy",
+            "runtime_path": "/odm/etc/selinux/precompiled_sepolicy",
+            "nid": 98497378,
+            "captured_file": "files/0008",
+            "size_bytes": 1735127,
+            "sha256": "1bf243706282691bdea9ad478bd95fa4504d8021046045cb99b7a68202d5f49d",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256",
+            "runtime_path": "/odm/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256",
+            "nid": 98491900,
+            "captured_file": "files/0009",
+            "size_bytes": 65,
+            "sha256": "bce5c9002f1214d50ee6617b09c997ca0af8718f3c409d35b996b73ba56bcbfc",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256",
+            "runtime_path": "/odm/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256",
+            "nid": 98496635,
+            "captured_file": "files/0010",
+            "size_bytes": 65,
+            "sha256": "efeefbb5dccce6eb6fd35228e1d0342bb461b39b01ee55dc2475fbc2d95597cc",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256",
+            "runtime_path": "/odm/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256",
+            "nid": 98496762,
+            "captured_file": "files/0011",
+            "size_bytes": 65,
+            "sha256": "a14d0d85aa6386c97c4768e96c236852ec541206c304a91f91955184ebd7fea6",
+            "readback_verified": true
+          }
+        ]
+      },
+      {
+        "partition": "system",
+        "image_sha256": "f7d23fc0b3c471e4907bacc5ec53e63bc826a5305cf82e0e508ca3c57901a5c2",
+        "image_size_bytes": 850591744,
+        "capture_receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/system-capture-v1/receipt.json",
+          "sha256": "94fa249e47cc3cebcbdeba0987c29d98a595f9954567f230b8ee11b5ba2c8670",
+          "size_bytes": 5671
+        },
+        "inventory_sha256": "b46f682b27968b701329e756d2a64c806de112e47ed2b402040356e49ff064f7",
+        "inventory_receipt_sha256": "ed0a7279eb8310567e336f8101b82cad2a10df37a653e2fb33c692161973c966",
+        "capture_files": 13,
+        "capture_bytes": 2814626,
+        "files": [
+          {
+            "image_path": "/system/etc/selinux/mapping/202504.cil",
+            "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+            "nid": 11104746,
+            "captured_file": "files/0001",
+            "size_bytes": 229372,
+            "sha256": "4a8e7712c941ee0fff52a13bf2187284d93a7966cec979f2d324f7ed841ceb3e",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_file_contexts",
+            "runtime_path": "/system/etc/selinux/plat_file_contexts",
+            "nid": 11102585,
+            "captured_file": "files/0002",
+            "size_bytes": 48370,
+            "sha256": "df2c81add304fa5ca0e0724ad42c0d7fd6fd443b6da7fdc085df5f03a7823c9c",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_hwservice_contexts",
+            "runtime_path": "/system/etc/selinux/plat_hwservice_contexts",
+            "nid": 11105273,
+            "captured_file": "files/0003",
+            "size_bytes": 8865,
+            "sha256": "e9f9f83ce1dfec4b036e09baa3b5cedeb27e8855b59164d42979ef5903f10668",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_keystore2_key_contexts",
+            "runtime_path": "/system/etc/selinux/plat_keystore2_key_contexts",
+            "nid": 11128448,
+            "captured_file": "files/0004",
+            "size_bytes": 2184,
+            "sha256": "ece08d255fca87084a49288aa059bad5106c9d24ec1af25ebb5487140bba8c97",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_mac_permissions.xml",
+            "runtime_path": "/system/etc/selinux/plat_mac_permissions.xml",
+            "nid": 11104235,
+            "captured_file": "files/0005",
+            "size_bytes": 17316,
+            "sha256": "ba82df5a1df65e93a80266c036159583d83ba3f8470d850ca1a86a516eda6798",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_property_contexts",
+            "runtime_path": "/system/etc/selinux/plat_property_contexts",
+            "nid": 11104239,
+            "captured_file": "files/0006",
+            "size_bytes": 121507,
+            "sha256": "e3763b9fa0e4410cb91f0b9affe21bab0b30ab0a52c7abf669b3266041f631e5",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_seapp_contexts",
+            "runtime_path": "/system/etc/selinux/plat_seapp_contexts",
+            "nid": 11104245,
+            "captured_file": "files/0007",
+            "size_bytes": 4242,
+            "sha256": "48d9443f9634197b7c3c704677161ab8f6b71dae0e899657e96d5ecb5e351611",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "nid": 11104857,
+            "captured_file": "files/0008",
+            "size_bytes": 2338618,
+            "sha256": "1514f2d3978a8868f71cce12d4e6e9521acf9dd6211b455eeae31f2fc589130f",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_sepolicy_and_mapping.sha256",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy_and_mapping.sha256",
+            "nid": 11104249,
+            "captured_file": "files/0009",
+            "size_bytes": 65,
+            "sha256": "bce5c9002f1214d50ee6617b09c997ca0af8718f3c409d35b996b73ba56bcbfc",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+            "nid": 11105642,
+            "captured_file": "files/0010",
+            "size_bytes": 142,
+            "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_sepolicy_genfs_202604.cil",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202604.cil",
+            "nid": 11105648,
+            "captured_file": "files/0011",
+            "size_bytes": 142,
+            "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_service_contexts",
+            "runtime_path": "/system/etc/selinux/plat_service_contexts",
+            "nid": 11105654,
+            "captured_file": "files/0012",
+            "size_bytes": 42334,
+            "sha256": "effdccb1acbc67a1efd6a856c6e02a1c629d5aa5722f2b62efbb346b1582a163",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/system/etc/selinux/plat_tee_service_contexts",
+            "runtime_path": "/system/etc/selinux/plat_tee_service_contexts",
+            "nid": 11128520,
+            "captured_file": "files/0013",
+            "size_bytes": 1469,
+            "sha256": "dfdf3105d7d699fc6868b642172f224b47b37d139e63cb0012dcf1747e4e2554",
+            "readback_verified": true
+          }
+        ]
+      },
+      {
+        "partition": "system_ext",
+        "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+        "image_size_bytes": 685998080,
+        "capture_receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/system_ext-capture-v1/receipt.json",
+          "sha256": "7caba9f2ae7cdf6aab2f21d855437d50694a1eb308268fbf9ede09f2fb679a9b",
+          "size_bytes": 4920
+        },
+        "inventory_sha256": "7aa0cfdecac4617dc4959a5278e540ee0f4a3c3cdbed83288fbb782ccb45c6d4",
+        "inventory_receipt_sha256": "57d8bdb263e2e90b05f9570be71b714729940b8def899e925019c8e666fc35f0",
+        "capture_files": 11,
+        "capture_bytes": 713632,
+        "files": [
+          {
+            "image_path": "/etc/selinux/mapping/202504.cil",
+            "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+            "nid": 4654203,
+            "captured_file": "files/0001",
+            "size_bytes": 41501,
+            "sha256": "eb47c59eef303d8cd03c25ed20110fc4ac71e4749b2dc8e94987b796485b80eb",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_file_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_file_contexts",
+            "nid": 4652540,
+            "captured_file": "files/0002",
+            "size_bytes": 16030,
+            "sha256": "8a39cf105a9098166d362c7da9566c12f92993c9f9708cf9e3d6df79dce47010",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_hwservice_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_hwservice_contexts",
+            "nid": 4654314,
+            "captured_file": "files/0003",
+            "size_bytes": 433,
+            "sha256": "05151cf8e83257565e5c434aea1bdf369109455f11e1fe346bfb613999f4dad9",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_keystore2_key_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_keystore2_key_contexts",
+            "nid": 4654395,
+            "captured_file": "files/0004",
+            "size_bytes": 930,
+            "sha256": "ec8bcb6f35acc73f810ee1e03f2127261852c0cbcd69da5afeffb39b04295077",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_mac_permissions.xml",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_mac_permissions.xml",
+            "nid": 4653946,
+            "captured_file": "files/0005",
+            "size_bytes": 101,
+            "sha256": "9fc6e3bc49b67055ec3e2059f5fce7c7e5b72069697d82f963aec4dd2d61fcf0",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_property_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_property_contexts",
+            "nid": 4653307,
+            "captured_file": "files/0006",
+            "size_bytes": 30955,
+            "sha256": "b5ec8cbb8191346a0d80d997a0591baa89a94d0d38df096d9f48e055b845e6dd",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_seapp_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_seapp_contexts",
+            "nid": 4653564,
+            "captured_file": "files/0007",
+            "size_bytes": 7090,
+            "sha256": "58d98d572af27865eb65a4f2f06d617969fcebbc612b89a2037e268599e304ae",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_sepolicy.cil",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "nid": 4654428,
+            "captured_file": "files/0008",
+            "size_bytes": 604304,
+            "sha256": "ad08e0790346f712eb6028a67ad113b96db57fdef8e17fdde4af81b04653ae8b",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_sepolicy_and_mapping.sha256",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy_and_mapping.sha256",
+            "nid": 4653435,
+            "captured_file": "files/0009",
+            "size_bytes": 65,
+            "sha256": "a14d0d85aa6386c97c4768e96c236852ec541206c304a91f91955184ebd7fea6",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_service_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_service_contexts",
+            "nid": 4652411,
+            "captured_file": "files/0010",
+            "size_bytes": 11295,
+            "sha256": "a37a1959df1f21964d97c5e5883e2257036b196622f405147496f9ff162aca63",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/system_ext_tee_service_contexts",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_tee_service_contexts",
+            "nid": 4669952,
+            "captured_file": "files/0011",
+            "size_bytes": 928,
+            "sha256": "d0a45807aed645a26d32d4623451588b7ed148d20fe3cb892b217229e739ab9e",
+            "readback_verified": true
+          }
+        ]
+      },
+      {
+        "partition": "product",
+        "image_sha256": "d23bfffe911ae205262dee779792deb43ec5312bf02547e0f13ee860252c81b9",
+        "image_size_bytes": 3712385024,
+        "capture_receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/product-capture-v1/receipt.json",
+          "sha256": "f913cd3737bf11b9cf49f45402dc8d9202f48b8b3016e653455865f771fcb882",
+          "size_bytes": 4887
+        },
+        "inventory_sha256": "3f6b342536d7a3b41929e3a447965205e9c57c4a59bf1479bad0c2ecf7db52ba",
+        "inventory_receipt_sha256": "98b4b49c64ade538b1fd08d90395fed27e0f88dcca637673ac3c461eb2f0fba4",
+        "capture_files": 11,
+        "capture_bytes": 81752,
+        "files": [
+          {
+            "image_path": "/etc/selinux/mapping/202504.cil",
+            "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+            "nid": 63252950,
+            "captured_file": "files/0001",
+            "size_bytes": 542,
+            "sha256": "934bb77bba43f8dfe26c7eabb1498adb5a5656992d1c35fba815b62128a0b263",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_file_contexts",
+            "runtime_path": "/product/etc/selinux/product_file_contexts",
+            "nid": 63607640,
+            "captured_file": "files/0002",
+            "size_bytes": 887,
+            "sha256": "bcea6da8d3e09943b73d05c1603d0f7544b9f28247476c59b4c8f17a5a0615cd",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_hwservice_contexts",
+            "runtime_path": "/product/etc/selinux/product_hwservice_contexts",
+            "nid": 63254268,
+            "captured_file": "files/0003",
+            "size_bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_keystore2_key_contexts",
+            "runtime_path": "/product/etc/selinux/product_keystore2_key_contexts",
+            "nid": 63607767,
+            "captured_file": "files/0004",
+            "size_bytes": 931,
+            "sha256": "4a5637d882694e5a0e9015a2ae708e7303f06914ff8469723bd52cdad00ffd7d",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_mac_permissions.xml",
+            "runtime_path": "/product/etc/selinux/product_mac_permissions.xml",
+            "nid": 63607800,
+            "captured_file": "files/0005",
+            "size_bytes": 101,
+            "sha256": "9fc6e3bc49b67055ec3e2059f5fce7c7e5b72069697d82f963aec4dd2d61fcf0",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_property_contexts",
+            "runtime_path": "/product/etc/selinux/product_property_contexts",
+            "nid": 63712512,
+            "captured_file": "files/0006",
+            "size_bytes": 2846,
+            "sha256": "de0ad8f2ee647664316e5de918bf4ef306225d4840c720eabcee0e460c0ef738",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_seapp_contexts",
+            "runtime_path": "/product/etc/selinux/product_seapp_contexts",
+            "nid": 63712604,
+            "captured_file": "files/0007",
+            "size_bytes": 702,
+            "sha256": "2fd04f9d730e073a00621765150741958e02e9ba6a4aa4079d3ac68908aadbf0",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_sepolicy.cil",
+            "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+            "nid": 63250044,
+            "captured_file": "files/0008",
+            "size_bytes": 74646,
+            "sha256": "5a73184910a527bfefbf6a6ff6fe38665cd95ffe8920c9593ec8ec2f8ba145db",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_sepolicy_and_mapping.sha256",
+            "runtime_path": "/product/etc/selinux/product_sepolicy_and_mapping.sha256",
+            "nid": 63252220,
+            "captured_file": "files/0009",
+            "size_bytes": 65,
+            "sha256": "efeefbb5dccce6eb6fd35228e1d0342bb461b39b01ee55dc2475fbc2d95597cc",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_service_contexts",
+            "runtime_path": "/product/etc/selinux/product_service_contexts",
+            "nid": 63607671,
+            "captured_file": "files/0010",
+            "size_bytes": 103,
+            "sha256": "26dbd3f533249aa2c3bb2c72f516d271a0950ee4a4e262498b394fa3d14e2076",
+            "readback_verified": true
+          },
+          {
+            "image_path": "/etc/selinux/product_tee_service_contexts",
+            "runtime_path": "/product/etc/selinux/product_tee_service_contexts",
+            "nid": 63250390,
+            "captured_file": "files/0011",
+            "size_bytes": 929,
+            "sha256": "86e745c7fbdd10b894a40d5b6e614f432215f245c5b9da40b69a45fad0a7c8c7",
+            "readback_verified": true
+          }
+        ]
+      }
+    ],
+    "selection": "All regular vendor/ODM SELinux files; framework policy/context/hash files, exact 202504 mappings and both observed genfs snippets. Older mappings, bug_map and separate userdebug platform CIL were not selected."
+  },
+  "versions": {
+    "vendor_policy_version_text": "202504\n",
+    "vendor_genfs_version_text": "202504\n",
+    "binary_policy_format_version": 30,
+    "vintf_declared_kernel_policy_version": "30",
+    "platform_build_policy_version": 30,
+    "same_version_does_not_prove_policy_or_kernel_compatibility": true
+  },
+  "precompiled_reference": {
+    "runtime_path": "/odm/etc/selinux/precompiled_sepolicy",
+    "sha256": "1bf243706282691bdea9ad478bd95fa4504d8021046045cb99b7a68202d5f49d",
+    "size_bytes": 1735127,
+    "magic_hex": "0xf97cff8c",
+    "identifier": "SE Linux",
+    "policy_version": 30,
+    "config_flags_hex": "0xc0000001",
+    "mls_flag_set": true,
+    "unknown_handling_bits": 0,
+    "android_netlink_route_flag_set": true,
+    "android_netlink_getneigh_flag_set": true,
+    "symbol_table_count": 8,
+    "object_context_table_count": 7,
+    "inspection_scope": "bounded header and content hash only",
+    "used_as_compiler_input": false,
+    "installed_or_loaded": false,
+    "binary_semantics_or_permissive_domains_verified": false
+  },
+  "precompiled_metadata_comparison": {
+    "formula": "SHA256(exact framework CIL bytes followed immediately by exact mapping/202504.cil bytes)",
+    "source_rule": "system/sepolicy/Android.bp:515-556 at e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+    "pairs": [
+      {
+        "partition": "system",
+        "framework_metadata_path": "/system/etc/selinux/plat_sepolicy_and_mapping.sha256",
+        "odm_metadata_path": "/odm/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256",
+        "cil_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "mapping_path": "/system/etc/selinux/mapping/202504.cil",
+        "retained_digest": "c37aca3045588c5292d6c36cf8d2f5329cda352e9e6c5501909459a92d5c221b",
+        "odm_digest": "c37aca3045588c5292d6c36cf8d2f5329cda352e9e6c5501909459a92d5c221b",
+        "computed_cil_then_mapping_digest": "7e6f8144d3105936fb8e70efaaf140625e57bdcfba961f40c62ce8eacc88ac61",
+        "stored_metadata_pair_equal": true,
+        "recomputed_cil_mapping_matches_metadata": false
+      },
+      {
+        "partition": "system_ext",
+        "framework_metadata_path": "/system_ext/etc/selinux/system_ext_sepolicy_and_mapping.sha256",
+        "odm_metadata_path": "/odm/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256",
+        "cil_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "mapping_path": "/system_ext/etc/selinux/mapping/202504.cil",
+        "retained_digest": "6434f557ce9ff2943ba9534654bb30c81ecedd57709345d557c761c265eb4a1d",
+        "odm_digest": "6434f557ce9ff2943ba9534654bb30c81ecedd57709345d557c761c265eb4a1d",
+        "computed_cil_then_mapping_digest": "13ecaf4d78c98034f2a4d530b8da2bd64b171b92a8576930b86532ae12fce797",
+        "stored_metadata_pair_equal": true,
+        "recomputed_cil_mapping_matches_metadata": false
+      },
+      {
+        "partition": "product",
+        "framework_metadata_path": "/product/etc/selinux/product_sepolicy_and_mapping.sha256",
+        "odm_metadata_path": "/odm/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256",
+        "cil_path": "/product/etc/selinux/product_sepolicy.cil",
+        "mapping_path": "/product/etc/selinux/mapping/202504.cil",
+        "retained_digest": "4d40edad87bc5e43855574df98ad8a5d8402749910250b24304d76cf18b0664d",
+        "odm_digest": "4d40edad87bc5e43855574df98ad8a5d8402749910250b24304d76cf18b0664d",
+        "computed_cil_then_mapping_digest": "8e67bc6e3ebff84341e90cd3b98c08b6bec6e06a81453cf3adcb092a4b2e5537",
+        "stored_metadata_pair_equal": true,
+        "recomputed_cil_mapping_matches_metadata": false
+      }
+    ],
+    "all_stored_pairs_equal": true,
+    "all_recomputed_pairs_match": false,
+    "init_compares_stored_metadata_not_actual_cil_bytes": true,
+    "cause_of_discrepancy_verified": false,
+    "policy_bytes_or_metadata_repaired": false,
+    "pinned_recipe_reference": {
+      "project": "system/sepolicy",
+      "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+      "path": "Android.bp",
+      "sha256": "17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8"
+    },
+    "genfs_cil_included_in_pinned_hash_recipes": false,
+    "recipe_applied_is_pinned_bka_not_authenticated_xiaomi_build": true,
+    "xiaomi_original_hash_recipe_and_input_order_verified": false,
+    "ordered_genrule_inputs": [
+      {
+        "module": "plat_sepolicy_and_mapping.sha256_gen",
+        "source_line": 515,
+        "input_modules": [
+          ":plat_sepolicy.cil",
+          ":plat_mapping_file"
+        ],
+        "runtime_input_paths": [
+          "/system/etc/selinux/plat_sepolicy.cil",
+          "/system/etc/selinux/mapping/202504.cil"
+        ]
+      },
+      {
+        "module": "system_ext_sepolicy_and_mapping.sha256_gen",
+        "source_line": 532,
+        "input_modules": [
+          ":system_ext_sepolicy.cil",
+          ":system_ext_mapping_file"
+        ],
+        "runtime_input_paths": [
+          "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+          "/system_ext/etc/selinux/mapping/202504.cil"
+        ]
+      },
+      {
+        "module": "product_sepolicy_and_mapping.sha256_gen",
+        "source_line": 550,
+        "input_modules": [
+          ":product_sepolicy.cil",
+          ":product_mapping_file"
+        ],
+        "runtime_input_paths": [
+          "/product/etc/selinux/product_sepolicy.cil",
+          "/product/etc/selinux/mapping/202504.cil"
+        ]
+      }
+    ],
+    "exact_genrule_command": "cat $(in) | sha256sum | cut -d' ' -f1 > $(out)"
+  },
+  "cil_inventory": {
+    "files": [
+      {
+        "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+        "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+        "size_bytes": 396303,
+        "top_level_form_counts": {
+          "type": 1475,
+          "typeattribute": 2335,
+          "typeattributeset": 311,
+          "allow": 305,
+          "neverallow": 432,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+        "sha256": "85b1339d099b44ab6604860c37309e6bbc1dc7b0be6fd00ea1c7370e77652ca0",
+        "size_bytes": 1703505,
+        "top_level_form_counts": {
+          "type": 1644,
+          "typeattribute": 563,
+          "typeattributeset": 969,
+          "allow": 11944,
+          "neverallow": 615,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+        "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+        "size_bytes": 14292,
+        "top_level_form_counts": {
+          "type": 1,
+          "typeattribute": 0,
+          "typeattributeset": 2,
+          "allow": 19,
+          "neverallow": 0,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+        "sha256": "4a8e7712c941ee0fff52a13bf2187284d93a7966cec979f2d324f7ed841ceb3e",
+        "size_bytes": 229372,
+        "top_level_form_counts": {
+          "type": 0,
+          "typeattribute": 1420,
+          "typeattributeset": 1420,
+          "allow": 0,
+          "neverallow": 0,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "sha256": "1514f2d3978a8868f71cce12d4e6e9521acf9dd6211b455eeae31f2fc589130f",
+        "size_bytes": 2338618,
+        "top_level_form_counts": {
+          "type": 1892,
+          "typeattribute": 1428,
+          "typeattributeset": 1273,
+          "allow": 11796,
+          "neverallow": 4855,
+          "typepermissive": 0,
+          "handleunknown": 1,
+          "mls": 1
+        }
+      },
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "size_bytes": 142,
+        "top_level_form_counts": {
+          "type": 0,
+          "typeattribute": 0,
+          "typeattributeset": 0,
+          "allow": 0,
+          "neverallow": 0,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202604.cil",
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "size_bytes": 142,
+        "top_level_form_counts": {
+          "type": 0,
+          "typeattribute": 0,
+          "typeattributeset": 0,
+          "allow": 0,
+          "neverallow": 0,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+        "sha256": "eb47c59eef303d8cd03c25ed20110fc4ac71e4749b2dc8e94987b796485b80eb",
+        "size_bytes": 41501,
+        "top_level_form_counts": {
+          "type": 0,
+          "typeattribute": 264,
+          "typeattributeset": 264,
+          "allow": 0,
+          "neverallow": 0,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "sha256": "ad08e0790346f712eb6028a67ad113b96db57fdef8e17fdde4af81b04653ae8b",
+        "size_bytes": 604304,
+        "top_level_form_counts": {
+          "type": 531,
+          "typeattribute": 404,
+          "typeattributeset": 234,
+          "allow": 4385,
+          "neverallow": 174,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+        "sha256": "934bb77bba43f8dfe26c7eabb1498adb5a5656992d1c35fba815b62128a0b263",
+        "size_bytes": 542,
+        "top_level_form_counts": {
+          "type": 0,
+          "typeattribute": 3,
+          "typeattributeset": 3,
+          "allow": 0,
+          "neverallow": 0,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      },
+      {
+        "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+        "sha256": "5a73184910a527bfefbf6a6ff6fe38665cd95ffe8920c9593ec8ec2f8ba145db",
+        "size_bytes": 74646,
+        "top_level_form_counts": {
+          "type": 14,
+          "typeattribute": 3,
+          "typeattributeset": 21,
+          "allow": 136,
+          "neverallow": 5,
+          "typepermissive": 0,
+          "handleunknown": 0,
+          "mls": 0
+        }
+      }
+    ],
+    "total_files": 11,
+    "total_neverallow_forms": 6081,
+    "total_typepermissive_forms": 0,
+    "parse_scope": "balanced top-level CIL form inventory, not compiler or runtime policy verification",
+    "stock_platform_mls": true,
+    "stock_platform_handleunknown": "deny"
+  },
+  "current_product_observation": {
+    "receipt": {
+      "path": "reports/selinux-source-review-20260827/policy-product-variables.json",
+      "sha256": "09651b3d1000702b867cd31516871bc32f5c51b23905871c5f92338b66748393",
+      "size_bytes": 1550
+    },
+    "source_variables_sha256": "6bfe0e2b5ff44bb0d58631a1196f41f063323f8b4471563832a9bc7c401244b5",
+    "selected_values": {
+      "MainlineSepolicyDevCertificates": "build/make/target/product/security/",
+      "MainlineBluetoothSepolicyDevCertificates": "build/make/target/product/security/",
+      "BoardVendorSepolicyDirs": [],
+      "BoardOdmSepolicyDirs": [],
+      "SystemExtPublicSepolicyDirs": [],
+      "SystemExtPrivateSepolicyDirs": [],
+      "BoardSepolicyM4Defs": [],
+      "BoardSepolicyVers": "202504",
+      "SystemExtSepolicyPrebuiltApiDirs": [],
+      "ProductSepolicyPrebuiltApiDirs": [],
+      "PlatformSepolicyVersion": "202504",
+      "PlatformSepolicyCompatVersions": [
+        "29.0",
+        "30.0",
+        "31.0",
+        "32.0",
+        "33.0",
+        "34.0",
+        "202404"
+      ],
+      "ProductPublicSepolicyDirs": [],
+      "ProductPrivateSepolicyDirs": [],
+      "SelinuxIgnoreNeverallows": false,
+      "SepolicyFreezeTestExtraDirs": [],
+      "SepolicyFreezeTestExtraPrebuiltDirs": [],
+      "EnforceSELinuxTrebleLabeling": false,
+      "SELinuxTrebleLabelingTrackingListFile": "",
+      "VendorVars.ANDROID": {
+        "BOARD_GENFS_LABELS_VERSION": "202504",
+        "CHECK_DEV_TYPE_VIOLATIONS": "true",
+        "HAS_BOARD_PRODUCT_SEPOLICY_PREBUILT_DIRS": "",
+        "HAS_BOARD_SYSTEM_EXT_SEPOLICY_PREBUILT_DIRS": "",
+        "PLATFORM_SEPOLICY_COMPAT_VERSIONS": "29.0 30.0 31.0 32.0 33.0 34.0 202404",
+        "PLATFORM_SEPOLICY_VERSION": "202504",
+        "PRODUCT_PRECOMPILED_SEPOLICY": "true"
+      }
+    },
+    "platform_and_board_policy_versions": "202504",
+    "genfs_labels_version": "202504",
+    "ignore_neverallows": false,
+    "debuggable": true,
+    "vendor_odm_and_system_ext_policy_source_directories_empty": true,
+    "normal_source_product_policy_targets_do_not_cover_captured_vendor_odm_cil": true
+  },
+  "native_tools": {
+    "architecture": "native Linux AArch64",
+    "different_from_soong_x86_64_host_tools": true,
+    "public_source_projects": {
+      "external/selinux": {
+        "head": "085c131ad1b984bfa8ffdafee7a976e9d89f403c",
+        "clean": true
+      },
+      "system/sepolicy": {
+        "head": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+        "clean": true
+      }
+    },
+    "source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+    "source_review_receipt": {
+      "path": "reports/selinux-source-review-20260827/receipt.json",
+      "sha256": "4ea4a3a73c660261310ae4899664ae67737a5e10ac24507dbcc821a08c7cbd13",
+      "size_bytes": 4413
+    },
+    "supplemental_source_receipt": {
+      "path": "reports/selinux-source-review-20260827/tool-sources-extra/receipt.json",
+      "sha256": "ea2c76f3a6e244127ced27bd5aba8ef0e380edd143574d5f7a940d6ad6b31478",
+      "size_bytes": 4682
+    },
+    "tools": {
+      "gcc": {
+        "path": "/usr/bin/gcc",
+        "resolved_path": "/usr/bin/aarch64-linux-gnu-gcc-13",
+        "size_bytes": 990040,
+        "sha256": "a20520ee21543f243d40636a9181a142c45ecd989de31ab86b99a8ea5ada870d",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "version_stdout_sha256": "8497f84b2b8334c413d9c6166bd39d009ba55d2ff60a8f23e66dfa5819c2b048",
+        "version_stderr_sha256": "3ea20c65d9d256dc00899e787b6c8ae97f1da2c3a6388b71d26539dc93449aa0"
+      },
+      "make": {
+        "path": "/usr/bin/make",
+        "resolved_path": "/usr/bin/make",
+        "size_bytes": 267672,
+        "sha256": "abbecc214fcadef6530d1cc137bde7ceb74cae3f6b992c7d10a8669a7314c7e0",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "GNU Make 4.3",
+        "version_stdout_sha256": "d8ccbe3c066e729f6a85e3fafc577e259567ce4490c674ef5fcc99d41ce18513",
+        "version_stderr_sha256": "3d92d03bddf2c574a64049d440817948bfa1bae1c39e7ddc261fae22c151989b"
+      },
+      "flex": {
+        "path": "/usr/bin/flex",
+        "resolved_path": "/usr/bin/flex",
+        "size_bytes": 463776,
+        "sha256": "b0b03937b2b0ed6c8992dbee72c1978c4b545c14c8444b5256fb87d67a30f676",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "flex 2.6.4",
+        "version_stdout_sha256": "0b71b9cbea2df209ca42958e8f8c149ee5c090a644b6a2a32b67725506aa353f",
+        "version_stderr_sha256": "0b5dad4f3b55273a0825336bec481d4e301867163ab4803fb9f9026bbb7a6169"
+      },
+      "ar": {
+        "path": "/usr/bin/ar",
+        "resolved_path": "/usr/bin/aarch64-linux-gnu-ar",
+        "size_bytes": 67824,
+        "sha256": "f4583a612510e038dbc1ae8afb5eae5f0445c435bdd7c4c28e78acc7e757d2b1",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "GNU ar (GNU Binutils for Ubuntu) 2.42",
+        "version_stdout_sha256": "7ac005d69683d0de20ba048eade500afe576c8e0e802f903f4e1a31428942755",
+        "version_stderr_sha256": "33ffc5d3754eef7a60723101bb97857835fd6ef1d9c5df0163a79e6750726a3e"
+      },
+      "ranlib": {
+        "path": "/usr/bin/ranlib",
+        "resolved_path": "/usr/bin/aarch64-linux-gnu-ranlib",
+        "size_bytes": 67824,
+        "sha256": "824de22ce448c3567e631425f7754a6df72e90bd758079daa94f1aa6edf41513",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "GNU ranlib (GNU Binutils for Ubuntu) 2.42",
+        "version_stdout_sha256": "bf03a38f82c08e8bb3e9bc9cd6242011e7654667c07ad60194fd81db1365b06e",
+        "version_stderr_sha256": "4883e7c72ba80b0094458a7fa01554bf3b18c833ed26cb7adf51f5bf3e30ed7d"
+      },
+      "as": {
+        "path": "/usr/bin/as",
+        "resolved_path": "/usr/bin/aarch64-linux-gnu-as",
+        "size_bytes": 464304,
+        "sha256": "1ffda50efb6d91b6b05ef933aced099595c36577594c0296c91161f2d13db374",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "GNU assembler (GNU Binutils for Ubuntu) 2.42",
+        "version_stdout_sha256": "98e7c707e4f0f606982fe89acb21c5503184d877893b986e38ce8f9e8bb7d7b0",
+        "version_stderr_sha256": "7614c20703ae6298ee458210ecfc8363e4bd6e05f1ade473699118deb0713e7f"
+      },
+      "ld": {
+        "path": "/usr/bin/ld",
+        "resolved_path": "/usr/bin/aarch64-linux-gnu-ld.bfd",
+        "size_bytes": 1710520,
+        "sha256": "1e4d3369b76845fa8e099b83513bf28f6f722e046f9b2cde1378c9e27f96d19c",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": "GNU ld (GNU Binutils for Ubuntu) 2.42",
+        "version_stdout_sha256": "cbb0374a4d23f91537f8588348c460085a38ba5af336bed511060b72a1e76bf7",
+        "version_stderr_sha256": "b577a70a4812d5415428eb5d2470f660f9e8fa514d52b452db409752a3552a0a"
+      },
+      "cc1": {
+        "path": "/usr/libexec/gcc/aarch64-linux-gnu/13/cc1",
+        "resolved_path": "/usr/libexec/gcc/aarch64-linux-gnu/13/cc1",
+        "size_bytes": 26761448,
+        "sha256": "64edfe466dd55c4216c006e9fa237af012e4974281dd4d11640aacfc3b3693af",
+        "elf_class_bits": 64,
+        "elf_machine": 183,
+        "version_first_line": null,
+        "version_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "version_stderr_sha256": "5ebbd828453ecbea9b684c900cb8eb0b8d31064990284ef08ee756676f473cb0"
+      }
+    },
+    "outputs": {
+      "secilc": {
+        "path": "/work/validation/nezha-selinux-stock-v3/bin/secilc",
+        "resolved_path": "/work/validation/nezha-selinux-stock-v3/bin/secilc",
+        "size_bytes": 691792,
+        "sha256": "69df24f6627b23efeccd5825522a633200bf5534392380257f7a0a0b89c4ee40",
+        "elf_class_bits": 64,
+        "elf_machine": 183
+      },
+      "sepolicy-analyze": {
+        "path": "/work/validation/nezha-selinux-stock-v3/bin/sepolicy-analyze",
+        "resolved_path": "/work/validation/nezha-selinux-stock-v3/bin/sepolicy-analyze",
+        "size_bytes": 299880,
+        "sha256": "3c1147620d40f5000596ec7deeb0daa0b20cd52bffce14c10e4775c5e4f3aace",
+        "elf_class_bits": 64,
+        "elf_machine": 183
+      },
+      "libsepol.a": {
+        "path": "/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/src/libsepol.a",
+        "resolved_path": "/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/src/libsepol.a",
+        "size_bytes": 1782000,
+        "sha256": "5b34864ba1d5c11140d35fb4f3d2cb6fefbb2fac48a7b58ed432f4ab5c54fb93"
+      }
+    },
+    "source_file_count": 183,
+    "source_bytes": 2228086,
+    "all_original_and_copied_source_bytes_unchanged": true,
+    "source_projects_clean_after": true,
+    "android_define": {
+      "flag": "-DANDROID",
+      "source": "build/soong/cc/config/global.go:116",
+      "reference_sha256": "0ab30ef71460a65d1c06dd84b35b997c12a1b6f75fe1d36d8c81b10c6b5dcd85",
+      "full_libsepol_secilc_analyzer_build_definitions_reviewed": true,
+      "applies_to_library_and_both_tools": true,
+      "internal_assertions_not_disabled": true,
+      "source_or_policy_bytes_changed": false,
+      "previous_attempt_receipt_sha256": "b3f157187610917e02b9258202b21366110e80306d4e6e738462ef7f9eff851d"
+    },
+    "warning_adjustment": {
+      "flag": "-Wno-error=unused-function",
+      "scope": "copied libsepol native Makefile CFLAGS only",
+      "all_other_default_makefile_flags_retained": true,
+      "warning_remains_visible": true,
+      "matching_pinned_soong_unused_function_exception_found": false,
+      "pinned_soong_flags_receipt_sha256": "eb070d9dfb89ffc4282a16a1f9c3896ee3642ec06a1dd70ea7e6e14a47340c23",
+      "previous_attempt_receipt_sha256": "56e5499020b4bd69aa94d39a146d826ee90f7a2def56dde727314405edcd4b28",
+      "policy_rules_or_neverallow_checks_changed": false
+    },
+    "build_commands": [
+      {
+        "name": "build-libsepol",
+        "argv": [
+          "/usr/bin/make",
+          "-C",
+          "/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/src",
+          "-j2",
+          "libsepol.a",
+          "CC=/usr/bin/gcc",
+          "AR=/usr/bin/ar",
+          "RANLIB=/usr/bin/ranlib",
+          "CFLAGS=-Werror -Wall -W -Wundef -Wshadow -Wmissing-format-attribute -O2 -fno-semantic-interposition -Wno-error=unused-function -DANDROID"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "build-secilc",
+        "argv": [
+          "/usr/bin/gcc",
+          "-DANDROID",
+          "-D_GNU_SOURCE",
+          "-D_FILE_OFFSET_BITS=64",
+          "-Wall",
+          "-Wshadow",
+          "-Werror",
+          "-O2",
+          "-I/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/include",
+          "-I/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/cil/include",
+          "/work/validation/nezha-selinux-stock-v3/source/selinux/secilc/secilc.c",
+          "/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/src/libsepol.a",
+          "-o",
+          "/work/validation/nezha-selinux-stock-v3/bin/secilc"
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "build-sepolicy-analyze",
+        "argv": [
+          "/usr/bin/gcc",
+          "-DANDROID",
+          "-D_GNU_SOURCE",
+          "-Wall",
+          "-Werror",
+          "-O2",
+          "-I/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/include",
+          "-I/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/cil/include",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/sepolicy-analyze.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/dups.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/neverallow.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/perm.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/typecmp.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/booleans.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/attribute.c",
+          "/work/validation/nezha-selinux-stock-v3/source/sepolicy/tools/sepolicy-analyze/utils.c",
+          "/work/validation/nezha-selinux-stock-v3/source/selinux/libsepol/src/libsepol.a",
+          "-o",
+          "/work/validation/nezha-selinux-stock-v3/bin/sepolicy-analyze"
+        ],
+        "exit_code": 0
+      }
+    ],
+    "attempts": [
+      {
+        "attempt": 1,
+        "receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/native-stock-check-v1/receipt.json",
+          "sha256": "56e5499020b4bd69aa94d39a146d826ee90f7a2def56dde727314405edcd4b28",
+          "size_bytes": 78199
+        },
+        "summary": "Native libsepol Makefile treats the unused cil_attrib_roletype helper as a GCC error.",
+        "started_at": "2026-08-27T20:03:43.201814+00:00",
+        "completed_at": "2026-08-27T20:03:47.712493+00:00",
+        "source_files": 182,
+        "source_bytes": 2223909,
+        "strict_compilation_attempted": false,
+        "strict_stock_cil_compilation_passed": false,
+        "steps": [
+          {
+            "name": "build-libsepol",
+            "exit_code": 2,
+            "expected_exit_code": 0,
+            "passed": false,
+            "stdout_sha256": "eae8d679d6adde0684c38b0fd2e587f1104873cdd6a24741698eac3ffe6e0949",
+            "stderr_sha256": "42bb6fc29b0f71bf454d09f963d3a8069226a89bb8ccca034a49fadebfb6fae4"
+          }
+        ]
+      },
+      {
+        "attempt": 2,
+        "receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/native-stock-check-v2/receipt.json",
+          "sha256": "b3f157187610917e02b9258202b21366110e80306d4e6e738462ef7f9eff851d",
+          "size_bytes": 84406
+        },
+        "summary": "Library and analyzer compile; secilc selects installed-header layout without the Android host define.",
+        "started_at": "2026-08-27T20:05:52.342157+00:00",
+        "completed_at": "2026-08-27T20:05:59.155907+00:00",
+        "source_files": 182,
+        "source_bytes": 2223909,
+        "strict_compilation_attempted": false,
+        "strict_stock_cil_compilation_passed": false,
+        "steps": [
+          {
+            "name": "build-libsepol",
+            "exit_code": 0,
+            "expected_exit_code": 0,
+            "passed": true,
+            "stdout_sha256": "ccb97422868abdca9a2c19895f45aa384e5a1d43d1df92580dc18d2a4ec86a74",
+            "stderr_sha256": "7bfef808f1971eb8d5f20c1cb4f0190e2bcc805a59d3cfae4f6ac88976bea8b5"
+          },
+          {
+            "name": "build-secilc",
+            "exit_code": 1,
+            "expected_exit_code": 0,
+            "passed": false,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr_sha256": "707835348ffca782b937e942a7548203dfa7ca28168394cf408b710d950bbc0b"
+          },
+          {
+            "name": "build-sepolicy-analyze",
+            "exit_code": 0,
+            "expected_exit_code": 0,
+            "passed": true,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr_sha256": "169edf8128aa41ea1983488be29724e00c98a5bfe83420c663255f877c3be2f6"
+          }
+        ]
+      },
+      {
+        "attempt": 3,
+        "receipt": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/native-stock-check-v3/receipt.json",
+          "sha256": "4170c9a452fc6bf9ab13968be3efb662c649b0346ca4f4ec94ae95b539bb0e73",
+          "size_bytes": 93234
+        },
+        "summary": "Tools compile with the pinned Android define; strict stock CIL compilation reports seven neverallow violations.",
+        "started_at": "2026-08-27T20:09:30.446725+00:00",
+        "completed_at": "2026-08-27T20:10:05.115257+00:00",
+        "source_files": 183,
+        "source_bytes": 2228086,
+        "strict_compilation_attempted": true,
+        "strict_stock_cil_compilation_passed": false,
+        "steps": [
+          {
+            "name": "build-libsepol",
+            "exit_code": 0,
+            "expected_exit_code": 0,
+            "passed": true,
+            "stdout_sha256": "33b0aeef6b983f0f1d9b65185322210ea3b2eb2694bf1257402aa4406db7cd40",
+            "stderr_sha256": "3dc056e5e61b26cb029d3c857008565a6c07b8f8392025df4a1156d791818e84"
+          },
+          {
+            "name": "build-secilc",
+            "exit_code": 0,
+            "expected_exit_code": 0,
+            "passed": true,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr_sha256": "0bb9bc310b5149019935ab385744191cd05d9e41715ecd506bd6acbc14121816"
+          },
+          {
+            "name": "build-sepolicy-analyze",
+            "exit_code": 0,
+            "expected_exit_code": 0,
+            "passed": true,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr_sha256": "fac68fab74709afa4d74950bd48df39df84fc19b98a7e9024a8401f8f8e57e47"
+          },
+          {
+            "name": "compile-stock-strict",
+            "exit_code": 255,
+            "expected_exit_code": 0,
+            "passed": false,
+            "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderr_sha256": "078c40850c0cd8f979efd70b0436de0a665c5cbb12b0e062fefe223d513f345a"
+          }
+        ]
+      }
+    ]
+  },
+  "strict_stock_compile": {
+    "receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/native-stock-check-v3/receipt.json",
+      "sha256": "4170c9a452fc6bf9ab13968be3efb662c649b0346ca4f4ec94ae95b539bb0e73",
+      "size_bytes": 93234
+    },
+    "started_at": "2026-08-27T20:09:38.542216+00:00",
+    "completed_at": "2026-08-27T20:10:04.960341+00:00",
+    "argv": [
+      "/work/validation/nezha-selinux-stock-v3/bin/secilc",
+      "-m",
+      "-M",
+      "true",
+      "-G",
+      "-c",
+      "30",
+      "-o",
+      "/work/validation/nezha-selinux-stock-v3/results/stock-strict.policy",
+      "-f",
+      "/work/validation/nezha-selinux-stock-v3/results/stock-strict.file_contexts",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system/etc/selinux/plat_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system/etc/selinux/mapping/202504.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system_ext/etc/selinux/system_ext_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system_ext/etc/selinux/mapping/202504.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/product/etc/selinux/product_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/product/etc/selinux/mapping/202504.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/vendor/etc/selinux/plat_pub_versioned.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/vendor/etc/selinux/vendor_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/odm/etc/selinux/odm_sepolicy.cil",
+      "/work/validation/nezha-selinux-stock-v3/inputs/system/etc/selinux/plat_sepolicy_genfs_202504.cil"
+    ],
+    "sandbox_argv": [
+      "/work/evolution/prebuilts/build-tools/linux-x86/bin/nsjail",
+      "-H",
+      "android-selinux-stock",
+      "--cwd",
+      "/work/validation/nezha-selinux-stock-v3",
+      "-t",
+      "90",
+      "-e",
+      "--proc_rw",
+      "-u",
+      "nobody",
+      "-g",
+      "nogroup",
+      "--rlimit_as",
+      "soft",
+      "--rlimit_core",
+      "soft",
+      "--rlimit_cpu",
+      "soft",
+      "--rlimit_fsize",
+      "soft",
+      "--rlimit_nofile",
+      "soft",
+      "--nice_level",
+      "10",
+      "-R",
+      "/",
+      "-B",
+      "/work/validation/nezha-selinux-stock-v3",
+      "-R",
+      "/work/validation/nezha-selinux-stock-v3/inputs",
+      "-B",
+      "/tmp",
+      "--disable_clone_newcgroup",
+      "-q",
+      "--"
+    ],
+    "timeout_seconds": 90,
+    "exit_code": 255,
+    "passed": false,
+    "input_order": [
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "sha256": "1514f2d3978a8868f71cce12d4e6e9521acf9dd6211b455eeae31f2fc589130f",
+        "size_bytes": 2338618,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      },
+      {
+        "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+        "sha256": "4a8e7712c941ee0fff52a13bf2187284d93a7966cec979f2d324f7ed841ceb3e",
+        "size_bytes": 229372,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "sha256": "ad08e0790346f712eb6028a67ad113b96db57fdef8e17fdde4af81b04653ae8b",
+        "size_bytes": 604304,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+        "sha256": "eb47c59eef303d8cd03c25ed20110fc4ac71e4749b2dc8e94987b796485b80eb",
+        "size_bytes": 41501,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      },
+      {
+        "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+        "sha256": "5a73184910a527bfefbf6a6ff6fe38665cd95ffe8920c9593ec8ec2f8ba145db",
+        "size_bytes": 74646,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      },
+      {
+        "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+        "sha256": "934bb77bba43f8dfe26c7eabb1498adb5a5656992d1c35fba815b62128a0b263",
+        "size_bytes": 542,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      },
+      {
+        "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+        "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+        "size_bytes": 396303,
+        "later_evolution_role": "retain exact stock vendor/ODM input"
+      },
+      {
+        "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+        "sha256": "85b1339d099b44ab6604860c37309e6bbc1dc7b0be6fd00ea1c7370e77652ca0",
+        "size_bytes": 1703505,
+        "later_evolution_role": "retain exact stock vendor/ODM input"
+      },
+      {
+        "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+        "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+        "size_bytes": 14292,
+        "later_evolution_role": "retain exact stock vendor/ODM input"
+      },
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "size_bytes": 142,
+        "later_evolution_role": "replace with generated Evolution framework counterpart"
+      }
+    ],
+    "input_files": 10,
+    "input_bytes": 5403225,
+    "input_hashes_unchanged_after": true,
+    "neverallow_checks_disabled": false,
+    "source_or_policy_rules_changed": false,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "078c40850c0cd8f979efd70b0436de0a665c5cbb12b0e062fefe223d513f345a",
+    "neverallow_assertions_failed": 7,
+    "conflicting_allow_references": 10,
+    "diagnostics": [
+      {
+        "assertion": {
+          "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+          "line": 9892,
+          "upstream_line_marker": null
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "line": 4583
+          },
+          {
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "line": 4681
+          }
+        ],
+        "diagnostic_summary": "CameraMind and miuibooster find vendor_hal_perf2_service."
+      },
+      {
+        "assertion": {
+          "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+          "line": 67,
+          "upstream_line_marker": "device/qcom/sepolicy/generic/product/private/qvirtmgr.te:41"
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+            "line": 65
+          }
+        ],
+        "diagnostic_summary": "vendor_qvirtmgr adds vendor_qvirtmgr_service."
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+          "line": 7093,
+          "upstream_line_marker": null
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "line": 7092
+          }
+        ],
+        "diagnostic_summary": "virtual_keyboard adds virtual_keyboard_service."
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+          "line": 29504,
+          "upstream_line_marker": "system/sepolicy/private/system_server.te:1454"
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 28405
+          },
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 28406
+          }
+        ],
+        "diagnostic_summary": "system_server executes dalvikcache_data_file and apex_art_data_file."
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+          "line": 15445,
+          "upstream_line_marker": "system/sepolicy/private/domain.te:1881"
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 28405
+          },
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 28406
+          }
+        ],
+        "diagnostic_summary": "The same system_server execute grants conflict with a domain assertion."
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+          "line": 9872,
+          "upstream_line_marker": "system/sepolicy/private/app.te:680"
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "line": 4454
+          }
+        ],
+        "diagnostic_summary": "updater writes cache_recovery_file symlinks."
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+          "line": 9871,
+          "upstream_line_marker": "system/sepolicy/private/app.te:680"
+        },
+        "conflicting_allow_locations": [
+          {
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "line": 4451
+          }
+        ],
+        "diagnostic_summary": "updater writes cache_file symlinks."
+      }
+    ],
+    "output_presence_receipt": {
+      "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/selinux-analysis/native-stock-check-v3/output-presence.json",
+      "sha256": "cf039393d70f9861b20713a6fe8717d504334134f62a8a793388c1fc31018a01",
+      "size_bytes": 161
+    },
+    "policy_binary_created": false,
+    "file_contexts_output_created": false,
+    "permissive_analysis": {
+      "status": "not-run-no-generated-policy",
+      "passed": false,
+      "permissive_domain_count": null,
+      "planned_argv": [
+        "/work/validation/nezha-selinux-stock-v3/bin/sepolicy-analyze",
+        "/work/validation/nezha-selinux-stock-v3/results/stock-strict.policy",
+        "permissive"
+      ],
+      "nonempty_output_would_not_be_filtered": true
+    },
+    "stock_precompiled_binary_used": false,
+    "evolution_framework_compatibility_check": false,
+    "proves_phone_is_permissive": false,
+    "proves_feature_is_broken": false
+  },
+  "isolation": {
+    "guest_directory": "/work/validation/nezha-selinux-stock-v3",
+    "source_and_android_out_read_only_to_tools": true,
+    "read_write_bind_paths": [
+      "/work/validation/nezha-selinux-stock-v3",
+      "/tmp"
+    ],
+    "stock_inputs_read_only_bind": true,
+    "native_make_jobs": 2,
+    "no_soong_or_ninja_run": true,
+    "no_network_or_package_install": true,
+    "no_phone_access": true,
+    "nsjail_sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280",
+    "nsjail_architecture": "x86-64 under Rosetta",
+    "proc_read_write": true,
+    "cgroup_namespace_enabled": false,
+    "outer_uid_gid_zero_warning_retained": true
+  },
+  "next_checks": {
+    "soong_x86_64_corroboration": {
+      "status": "not-run-in-this-record",
+      "targets": [
+        "secilc",
+        "sepolicy-analyze"
+      ],
+      "method": "Use newly built Soong x86-64 tools with the same ten immutable CIL inputs and flags, recording results in a new output directory; retain the native result."
+    },
+    "host_tool_targets": [
+      "secilc",
+      "checkpolicy",
+      "sepolicy-analyze",
+      "checkfc",
+      "checkseapp",
+      "property_info_checker",
+      "sepolicy_tests",
+      "treble_sepolicy_tests"
+    ],
+    "framework_policy_targets": [
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "plat_sepolicy_genfs_202504.cil",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file"
+    ],
+    "source_policy_test_targets": [
+      "sepolicy_neverallows",
+      "sepolicy_test",
+      "sepolicy_dev_type_test"
+    ],
+    "source_policy_test_scope": "Tests generated source policy only until captured Nezha vendor/ODM inputs are explicitly routed into a separate combined-policy check. Empty board policy directories do not establish Nezha vendor coverage.",
+    "combined_input_routing": "Replace the seven system/system_ext/product CIL and mapping/genfs inputs with generated Evolution counterparts; retain exact vendor plat_pub_versioned.cil, vendor_sepolicy.cil and odm_sepolicy.cil with recorded hashes. Preserve neverallows and every failure.",
+    "context_checks": [
+      {
+        "kind": "file",
+        "tool": "checkfc",
+        "argument_order": [
+          "NEW_COMPILED_POLICY",
+          "EXACT_PARTITION_FILE_CONTEXTS"
+        ]
+      },
+      {
+        "kind": "property",
+        "tool": "property_info_checker",
+        "argument_order": [
+          "NEW_COMPILED_POLICY",
+          "EXACT_PROPERTY_CONTEXTS_FILES"
+        ]
+      },
+      {
+        "kind": "binder_service",
+        "tool": "checkfc",
+        "argument_order": [
+          "-s",
+          "NEW_COMPILED_POLICY",
+          "EXACT_SERVICE_CONTEXTS"
+        ]
+      },
+      {
+        "kind": "hwbinder_service",
+        "tool": "checkfc",
+        "argument_order": [
+          "-l",
+          "NEW_COMPILED_POLICY",
+          "EXACT_HWSERVICE_CONTEXTS"
+        ]
+      },
+      {
+        "kind": "vndbinder_service",
+        "tool": "checkfc",
+        "argument_order": [
+          "-v",
+          "NEW_COMPILED_POLICY",
+          "EXACT_VNDSERVICE_CONTEXTS"
+        ]
+      },
+      {
+        "kind": "app",
+        "tool": "checkseapp",
+        "argument_order": [
+          "-p",
+          "NEW_COMPILED_POLICY",
+          "EXACT_SEAPP_CONTEXTS_FILES"
+        ]
+      }
+    ],
+    "permissive_check_required_even_for_userdebug": true,
+    "compiled_policy_must_not_be_installed_as_a_test": true,
+    "kernel_load_and_device_service_checks_separate": true
+  },
+  "verification_boundaries": {
+    "capture_integrity_verified": true,
+    "source_pins_and_native_tool_build_verified": true,
+    "strict_stock_compile_executed_with_neverallows": true,
+    "strict_stock_compile_passed": false,
+    "permissive_domain_analysis_executed": false,
+    "actual_evolution_policy_compatibility_verified": false,
+    "captured_contexts_validated_against_new_policy": false,
+    "kernel_policy_load_or_enforcing_behavior_tested": false,
+    "stock_precompiled_policy_authenticated": false,
+    "phone_modified": false,
+    "android_source_modified": false,
+    "android_out_modified": false,
+    "full_rom_or_native_feature_verified": false
+  },
+  "primary_sources": [
+    "https://github.com/Evolution-X/system_sepolicy/blob/e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27/Android.bp",
+    "https://github.com/Evolution-X/system_sepolicy/blob/e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27/build/soong/policy.go",
+    "https://github.com/Evolution-X/system_core/blob/241488ea392c01079941d86ddc458b8a0c9ae6e1/init/selinux.cpp",
+    "https://android.googlesource.com/platform/external/selinux/+/085c131ad1b984bfa8ffdafee7a976e9d89f403c/secilc/secilc.c",
+    "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/cc/config/global.go"
+  ]
+}
