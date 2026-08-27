@@ -87,6 +87,17 @@ The build regenerates dependency/alias/softdep metadata, while blocklists pass
 through its syntax validator. Original metadata remains in the bundle for
 comparison; generated filesystem bytes are not claimed to equal stock.
 
+The authored device product also copies the captured system selector to
+`vendor_dlkm/lib/modules/system_dlkm.modules.blocklist`. The retained vendor
+loader reads that exact path before discovering system modules. The separate
+`BOARD_SYSTEM_KERNEL_MODULES_BLOCKLIST_FILE` still requests the same bytes as
+system_dlkm's own `modules.blocklist`; neither path replaces the other.
+The product reads the verified generated input makefile before expanding its
+copy source. A missing selector is an error. These two system exclusions are
+not merged into vendor's general blocklist, which would block the intended
+vendor ZRAM/allocator pair. Installation and actual loader behavior require
+separate output and device checks; source declarations alone do not prove them.
+
 The recovery list above produces `modules.load.recovery` in the vendor ramdisk.
 It does not populate a separate recovery image. Empty normal load lists map to
 the build's literal `false` sentinel. This prevents implicit load-all on the

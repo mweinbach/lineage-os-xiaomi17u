@@ -444,6 +444,20 @@ class GenerateDeviceTreeTests(unittest.TestCase):
 
 
 class NezhaBoardHookTests(unittest.TestCase):
+    def test_stock_loader_gets_its_vendor_dlkm_selector_without_blocking_vendor_modules(self):
+        product = (generator.ROOT / "device/xiaomi/nezha/device.mk").read_text()
+        include = "include $(NEZHA_KERNEL_INPUTS)/kernel-inputs.mk"
+        copy = "$(NEZHA_STOCK_SYSTEM_MODULES_BLOCKLIST_FILE):$(TARGET_COPY_OUT_VENDOR_DLKM)/lib/modules/system_dlkm.modules.blocklist"
+        self.assertEqual(product.count(include), 1)
+        self.assertEqual(product.count(copy), 1)
+        self.assertLess(product.index(include), product.index(copy))
+        self.assertIn("ifeq ($(strip $(NEZHA_STOCK_SYSTEM_MODULES_BLOCKLIST_FILE)),)", product)
+        self.assertIn("$(error Nezha requires the captured system DLKM selection blocklist)", product)
+        self.assertNotIn("BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(NEZHA_STOCK_SYSTEM_MODULES_BLOCKLIST_FILE)", product)
+        wrapper = (generator.ROOT / "kernel/xiaomi/nezha/stock-prebuilt.mk").read_text()
+        self.assertIn("BOARD_SYSTEM_KERNEL_MODULES_BLOCKLIST_FILE := $(NEZHA_STOCK_SYSTEM_MODULES_BLOCKLIST_FILE)", wrapper)
+        self.assertIn("BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(NEZHA_STOCK_VENDOR_MODULES_BLOCKLIST_FILE)", wrapper)
+
     def test_full_lineage_hook_follows_prebuilt_selector_and_board_values(self):
         board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
         hook = "include vendor/lineage/config/BoardConfigLineage.mk"
