@@ -41,6 +41,13 @@ result from this profile is admitted for flashing, including when compilation
 succeeds. Unknown physical capacities or bootloader state do not prevent
 configuration generation; they remain separate flash-promotion gates.
 
+The product explicitly makes the source tree read-only inside Ninja's sandbox
+with `BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false`. The pinned `bka` release's
+default allowed source writes; a standalone read-only sandbox probe did not
+establish that the product used that mode. Actual build observations must record
+the selected mode separately. This does not change the upstream basic
+Soong/Kati sandbox setting or grant any writable-source exceptions.
+
 Boot-image budgets use supplied image lengths and super/group declarations.
 They are candidate build budgets, not measurements of physical partitions.
 Dynamic framework partitions size themselves during the build. Public AOSP

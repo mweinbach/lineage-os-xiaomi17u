@@ -453,6 +453,13 @@ class NezhaBoardHookTests(unittest.TestCase):
         self.assertGreater(board.index(hook), board.index("BOARD_AVB_ENABLE := true"))
         self.assertNotIn("BOARD_USES_QCOM_HARDWARE := true", board)
 
+    def test_product_requires_read_only_source_for_ninja(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        setting = "BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false"
+        self.assertEqual(board.count(setting), 1)
+        self.assertNotIn("BUILD_BROKEN_SRC_DIR_RW_ALLOWLIST", board)
+        self.assertLess(board.index(setting), board.index("include vendor/lineage/config/BoardConfigLineage.mk"))
+
 
 if __name__ == "__main__":
     unittest.main()

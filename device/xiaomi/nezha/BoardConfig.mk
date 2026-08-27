@@ -33,6 +33,10 @@ TARGET_RECOVERY_FSTAB := $(NEZHA_DEVICE_PATH)/generated/fstab.qcom
 # generated admission record never authorizes flashing or key enrollment.
 BOARD_AVB_ENABLE := true
 
+# bka's release defaults permit source writes inside the Ninja sandbox. Require
+# build actions to write into OUT_DIR instead; this strengthens that default.
+BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false
+
 ifneq ($(TARGET_BUILD_VARIANT),userdebug)
 $(error Nezha framework-checks product requires userdebug; eng weakens upstream AVB policy)
 endif
