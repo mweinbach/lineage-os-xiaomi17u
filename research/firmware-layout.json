@@ -1,0 +1,794 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "purpose": "Verified modified-package layout for offline research; not approved BoardConfig or a signed flashable partition set.",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "package": {
+    "source_kind": "user-provided",
+    "source_url": null,
+    "origin_verified": false,
+    "distribution": "Xiaomi.eu modified package",
+    "filename": "xiaomi.eu_NEZHA_OS3.0.309.0.WPACNXM_16.zip",
+    "size_bytes": 9914891416,
+    "sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "declared_build": "OS3.0.309.0.WPACNXM",
+    "embedded_incremental": "16OS3.1.260714.203507406.QCPECN.S",
+    "original_retained": true,
+    "original_and_intake_copy_hashes_verified": true,
+    "archive_entry_count": 84,
+    "archive_crc_entries_verified": 84,
+    "image_members_extracted": 66,
+    "image_member_crcs_verified": 66,
+    "installers_extracted_or_executed": false
+  },
+  "sparse_representation": {
+    "version": "1.0",
+    "magic": "0xed26ff3a",
+    "file_header_size_bytes": 28,
+    "chunk_header_size_bytes": 12,
+    "piece_count": 15,
+    "block_size_bytes": 4096,
+    "total_blocks_per_piece": 3735552,
+    "expanded_size_bytes": 15300820992,
+    "all_header_checksums_zero": true,
+    "crc32_chunk_count": 0,
+    "semantics": "nonoverlapping RAW/FILL overlays; DONT_CARE preserves prior data; unwritten bytes are zero",
+    "chunk_counts": {
+      "raw": 172,
+      "fill": 5,
+      "dont_care": 37
+    },
+    "written_bytes": 11049590784,
+    "unwritten_zero_bytes": 4251230208,
+    "write_range_count": 177,
+    "independent_implementations_match": true,
+    "inputs_match_archive_extraction_receipt": true,
+    "pieces": [
+      {
+        "name": "super.img.0",
+        "size_bytes": 738599124,
+        "sha256": "9a2f45bbf666131ed72f4d9c92869bf9dc2d249f34c2239e33e88371d7b71aa3",
+        "total_chunks": 15
+      },
+      {
+        "name": "super.img.1",
+        "size_bytes": 738197688,
+        "sha256": "d238e426bf082cac99ba6ba9f71eba4a823f6a9d57e86d616b2317a601f25e7e",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.2",
+        "size_bytes": 738197688,
+        "sha256": "3a30090f455c4a7d58ced45a3d14cecab27dd7046a6134c45f49da4b92965840",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.3",
+        "size_bytes": 738197688,
+        "sha256": "de4df268c503397ec5ab59d9ce40cf35fc4b38209c4a620f7781535ccbf57af7",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.4",
+        "size_bytes": 767394020,
+        "sha256": "a6dbcbd8a0d7aadd5db879e2e10ad7304102a9d09c4877b7979e5cbf675025bb",
+        "total_chunks": 16
+      },
+      {
+        "name": "super.img.5",
+        "size_bytes": 738197688,
+        "sha256": "888a81452ee0bdf8a3ef9ed4a25021fa40c92d4fea11dd5a61978cffb109671f",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.6",
+        "size_bytes": 758325456,
+        "sha256": "9ab61a394fd734d48b35a6fc6694f57fec61ca04a30018e3cada1de4575e274f",
+        "total_chunks": 15
+      },
+      {
+        "name": "super.img.7",
+        "size_bytes": 738197688,
+        "sha256": "662a9b0a645f14f2a7fc70cf59e18be2e2370a40f3159a668a7c8d38724a2fcb",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.8",
+        "size_bytes": 738197688,
+        "sha256": "16550b80fdd1c4df3522520a0cb00b0f0686f23552eda18950f59470e29b5e9e",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.9",
+        "size_bytes": 738197688,
+        "sha256": "67890ccaada33d5a43c19eb1efb81080d338ed22744b4bf72b23a6153dc495d4",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.10",
+        "size_bytes": 738197688,
+        "sha256": "5ada94f186be1d4a358d0a8131c2d245855a2dc699a8ba97b1486972f1e18937",
+        "total_chunks": 13
+      },
+      {
+        "name": "super.img.11",
+        "size_bytes": 759595216,
+        "sha256": "d803a2f5373919aeb508904e8b15f9ce8ae1e6264bb30cbad801e983ec8524c9",
+        "total_chunks": 15
+      },
+      {
+        "name": "super.img.12",
+        "size_bytes": 799989992,
+        "sha256": "0f19b529e9a16dda2ba2ba1a8e6662dcf207f0e98c9567c343ba0f03db496892",
+        "total_chunks": 17
+      },
+      {
+        "name": "super.img.13",
+        "size_bytes": 787112200,
+        "sha256": "ea0ed1c8cdc88ed437d83fd517d249d099ad59e40b397e96514f562fef8b9d0a",
+        "total_chunks": 19
+      },
+      {
+        "name": "super.img.14",
+        "size_bytes": 532975800,
+        "sha256": "e84e9a6f5c8fbbd51e2d3760b4673a4d7d0d5e97c2410b0d849b7bb168249345",
+        "total_chunks": 13
+      }
+    ]
+  },
+  "raw_image": {
+    "filename": "super.raw.img",
+    "size_bytes": 15300820992,
+    "sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+    "parent_package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69"
+  },
+  "logical_metadata": {
+    "version": "10.2",
+    "sector_size_bytes": 512,
+    "geometry": {
+      "magic": "0x616c4467",
+      "struct_size": 52,
+      "metadata_max_size": 65536,
+      "metadata_slot_count": 3,
+      "logical_block_size": 4096,
+      "metadata_region_end": 405504
+    },
+    "geometry_checksum_sha256": "12ff55f0aba7b506f25cb5da5dca09344234e8df1d9c93ae82a499d98019467e",
+    "geometry_struct_sha256": "bb51bbfa583316a57f8a78459c926727d8d4a007b1b43129613294c4f84e1108",
+    "geometry_copy_offsets_bytes": [
+      4096,
+      8192
+    ],
+    "all_geometry_checksums_valid": true,
+    "geometry_copies_identical": true,
+    "header": {
+      "magic": "0x414c5030",
+      "header_size": 256,
+      "tables_size": 1232,
+      "flags": 1,
+      "virtual_ab_device": true,
+      "overlays_active": false,
+      "unknown_flags": 0,
+      "header_checksum_sha256": "139a635b8f2ad6af48af0fb0f6612985e09ff46e31c451ebd85f80e11692163a",
+      "tables_checksum_sha256": "aecc9cdb4f2f8e5bdc4151644ca711c81505949bae07d29f5357e201ecfdc29f"
+    },
+    "tables": {
+      "partitions": {
+        "offset": 0,
+        "num_entries": 16,
+        "entry_size": 52
+      },
+      "extents": {
+        "offset": 832,
+        "num_entries": 8,
+        "entry_size": 24
+      },
+      "groups": {
+        "offset": 1024,
+        "num_entries": 3,
+        "entry_size": 48
+      },
+      "block_devices": {
+        "offset": 1168,
+        "num_entries": 1,
+        "entry_size": 64
+      }
+    },
+    "slots": [
+      {
+        "slot": 0,
+        "primary_offset": 12288,
+        "backup_offset": 208896,
+        "primary_checksum_valid": true,
+        "backup_checksum_valid": true,
+        "copies_identical": true,
+        "metadata_sha256": "9f1487616c2b46dbc5c0164888e2e889ca4f2b21a738c667d938df2d27322484"
+      },
+      {
+        "slot": 1,
+        "primary_offset": 77824,
+        "backup_offset": 274432,
+        "primary_checksum_valid": true,
+        "backup_checksum_valid": true,
+        "copies_identical": true,
+        "metadata_sha256": "9f1487616c2b46dbc5c0164888e2e889ca4f2b21a738c667d938df2d27322484"
+      },
+      {
+        "slot": 2,
+        "primary_offset": 143360,
+        "backup_offset": 339968,
+        "primary_checksum_valid": true,
+        "backup_checksum_valid": true,
+        "copies_identical": true,
+        "metadata_sha256": "9f1487616c2b46dbc5c0164888e2e889ca4f2b21a738c667d938df2d27322484"
+      }
+    ],
+    "all_slots_identical": true,
+    "physical_devices": [
+      {
+        "index": 0,
+        "partition_name": "super",
+        "first_logical_sector": 2048,
+        "alignment": 1048576,
+        "alignment_offset": 0,
+        "size_bytes": 15300820992,
+        "flags": 0
+      }
+    ],
+    "physical_device_sizes_are_metadata_declarations": true,
+    "groups": [
+      {
+        "index": 0,
+        "name": "default",
+        "flags": 0,
+        "slot_suffixed": false,
+        "maximum_size": 0,
+        "allocated_size": 0
+      },
+      {
+        "index": 1,
+        "name": "qti_dynamic_partitions_a",
+        "flags": 0,
+        "slot_suffixed": false,
+        "maximum_size": 15290335232,
+        "allocated_size": 11049185280
+      },
+      {
+        "index": 2,
+        "name": "qti_dynamic_partitions_b",
+        "flags": 0,
+        "slot_suffixed": false,
+        "maximum_size": 15290335232,
+        "allocated_size": 0
+      }
+    ],
+    "extracted_metadata_slot": 0,
+    "on_disk_names_retained": true,
+    "empty_b_extents_imply_physical_partition_absence": false
+  },
+  "partitions": [
+    {
+      "name": "odm_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 4679843840,
+      "extents": [
+        {
+          "index": 0,
+          "num_sectors": 9140320,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 2048,
+          "target_source": 0,
+          "physical_offset_bytes": 1048576
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "odm_a.img",
+        "sha256": "cf342dadf1d8da6748c2cf6959bc04ce96226b27617e8bc16363eb51a2071d62",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "odm_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "product_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 3712385024,
+      "extents": [
+        {
+          "index": 1,
+          "num_sectors": 7250752,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 9144320,
+          "target_source": 0,
+          "physical_offset_bytes": 4681891840
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "product_a.img",
+        "sha256": "d23bfffe911ae205262dee779792deb43ec5312bf02547e0f13ee860252c81b9",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "product_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "system_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 850591744,
+      "extents": [
+        {
+          "index": 2,
+          "num_sectors": 1661312,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 16396288,
+          "target_source": 0,
+          "physical_offset_bytes": 8394899456
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "system_a.img",
+        "sha256": "f7d23fc0b3c471e4907bacc5ec53e63bc826a5305cf82e0e508ca3c57901a5c2",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "system_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "system_dlkm_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 16506880,
+      "extents": [
+        {
+          "index": 3,
+          "num_sectors": 32240,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 18059264,
+          "target_source": 0,
+          "physical_offset_bytes": 9246343168
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "system_dlkm_a.img",
+        "sha256": "5470344df2770d9ebb1c3341d36f771922556a13db5b1d8f37f219553de24d26",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "system_dlkm_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "system_ext_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 685998080,
+      "extents": [
+        {
+          "index": 4,
+          "num_sectors": 1339840,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 18092032,
+          "target_source": 0,
+          "physical_offset_bytes": 9263120384
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "system_ext_a.img",
+        "sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "system_ext_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "vendor_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 941506560,
+      "extents": [
+        {
+          "index": 5,
+          "num_sectors": 1838880,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 19433472,
+          "target_source": 0,
+          "physical_offset_bytes": 9949937664
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "vendor_a.img",
+        "sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "vendor_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "vendor_dlkm_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 53035008,
+      "extents": [
+        {
+          "index": 6,
+          "num_sectors": 103584,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 21272576,
+          "target_source": 0,
+          "physical_offset_bytes": 10891558912
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "vendor_dlkm_a.img",
+        "sha256": "514e5608592de4c3388a5a6bf3bc8a5c84554333cbee83aab3fdd001428f2cb1",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "vendor_dlkm_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    },
+    {
+      "name": "mi_ext_a",
+      "attributes": 1,
+      "group_index": 1,
+      "group_name": "qti_dynamic_partitions_a",
+      "size_bytes": 109318144,
+      "extents": [
+        {
+          "index": 7,
+          "num_sectors": 213512,
+          "target_type": 0,
+          "target_type_name": "LINEAR",
+          "target_data": 21377024,
+          "target_source": 0,
+          "physical_offset_bytes": 10945036288
+        }
+      ],
+      "extraction": {
+        "status": "extracted",
+        "filename": "mi_ext_a.img",
+        "sha256": "c7c16f067719335d9878925417c4a551c6795c032afba912a75bcc92816ec9f8",
+        "parent_image_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+        "readback_verified": true,
+        "independent_extractor_matches": true
+      },
+      "filesystem": {
+        "format": "EROFS",
+        "magic": "0xe0f5e1e2",
+        "magic_offset_bytes": 1024,
+        "read_only_integrity_exit_code": 0,
+        "superblock_checksum_checks_enabled": true
+      }
+    },
+    {
+      "name": "mi_ext_b",
+      "attributes": 1,
+      "group_index": 2,
+      "group_name": "qti_dynamic_partitions_b",
+      "size_bytes": 0,
+      "extents": [],
+      "extraction": {
+        "status": "not_extracted_empty",
+        "sha256": null
+      },
+      "filesystem": null
+    }
+  ],
+  "filesystem_validation": {
+    "tool": "fsck.erofs",
+    "package": "erofs-utils",
+    "version": "1.9.4",
+    "tool_sha256": "69c81657d6c30c0fd598f1bfa3e0461984864549e3afaf6365f2197ffffd1fc6",
+    "command_flags": [
+      "--extract"
+    ],
+    "destination_argument_provided": false,
+    "file_extraction_requested": false,
+    "superblock_checksum_checks_enabled": true,
+    "verified_image_count": 8,
+    "all_exit_codes_zero": true,
+    "publisher_authenticity_verified": false
+  },
+  "physical_partition_geometry": {
+    "status": "unresolved",
+    "package_image_lengths_are_physical_partition_sizes": false,
+    "read_only_attempt": {
+      "partition_count": 15,
+      "requested_fields": [
+        "size",
+        "start"
+      ],
+      "command_count": 30,
+      "successful_reads": 0,
+      "failure": "Permission denied",
+      "privilege_escalation_performed": false
+    }
+  },
+  "verification_boundaries": {
+    "avb_partition_set_status": "failed",
+    "signed_flashable_partition_set": false,
+    "vendor_boot_content_digest_matches": false,
+    "logical_avb_descriptor_ranges": [
+      {
+        "partition": "mi_ext_a",
+        "descriptor_parent": "vbmeta",
+        "actual_size_bytes": 109318144,
+        "descriptor_data_size_bytes": 109445120,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "odm_a",
+        "descriptor_parent": "vbmeta",
+        "actual_size_bytes": 4679843840,
+        "descriptor_data_size_bytes": 4678270976,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "system_dlkm_a",
+        "descriptor_parent": "vbmeta",
+        "actual_size_bytes": 16506880,
+        "descriptor_data_size_bytes": 16506880,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "vendor_a",
+        "descriptor_parent": "vbmeta",
+        "actual_size_bytes": 941506560,
+        "descriptor_data_size_bytes": 941649920,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "vendor_dlkm_a",
+        "descriptor_parent": "vbmeta",
+        "actual_size_bytes": 53035008,
+        "descriptor_data_size_bytes": 53035008,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "product_a",
+        "descriptor_parent": "vbmeta_system",
+        "actual_size_bytes": 3712385024,
+        "descriptor_data_size_bytes": 4850307072,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "system_a",
+        "descriptor_parent": "vbmeta_system",
+        "actual_size_bytes": 850591744,
+        "descriptor_data_size_bytes": 895102976,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      },
+      {
+        "partition": "system_ext_a",
+        "descriptor_parent": "vbmeta_system",
+        "actual_size_bytes": 685998080,
+        "descriptor_data_size_bytes": 699715584,
+        "complete_declared_hashtree_present": false,
+        "complete_declared_fec_present": false
+      }
+    ],
+    "missing_bytes_may_be_synthesized": false,
+    "first_stage_fstab_avb_or_verify_flags_present": false,
+    "publisher_authenticity": "unverified",
+    "approved_for_boardconfig": false,
+    "lunch_target": null,
+    "full_evolution_x_build_tested": false,
+    "evolution_x_hardware_tested": false,
+    "phone_modifications_performed": false
+  },
+  "evidence": {
+    "private_analysis_root": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "receipts": [
+      "archive-images/receipt.json",
+      "reconstructed/receipt.json",
+      "upstream-crosscheck/receipt.json",
+      "reconstruction-verification.json",
+      "logical-partitions/receipt.json",
+      "lp-upstream-crosscheck/receipt.json",
+      "filesystem-validation/receipt.json",
+      "boot-analysis/avb-analysis-complete.json"
+    ],
+    "physical_geometry_receipt": "evidence/partition-sysfs-20260827T1631Z/geometry.json"
+  },
+  "tool_references": {
+    "image_extraction": {
+      "script": "scripts/firmware_images.py",
+      "workspace_commit": "6b5406c7a3cd5bbf87bd12c6044002d283e78afc"
+    },
+    "sparse_reconstruction": {
+      "script": "scripts/sparse_images.py",
+      "workspace_commit": "660c6604c5eb58bac0426ad1a29d6a359bc844c9",
+      "tool_sha256_at_reconstruction": "99857f137408b3532c2da0eb996a8808dc5fdaf9c2cf1a809e288d14800d7416"
+    },
+    "logical_partition_inspection": {
+      "script": "scripts/logical_partitions.py",
+      "workspace_commit": "fbe5ffad7d7cf69132a8c8d8dc19ce6318692d17"
+    },
+    "aosp_libsparse_format": {
+      "commit": "68be0c2c0006a0740d0b1809abe4717308f90d15",
+      "url": "https://android.googlesource.com/platform/system/core/+/68be0c2c0006a0740d0b1809abe4717308f90d15/libsparse/sparse_format.h"
+    },
+    "aosp_liblp_format": {
+      "commit": "a3b721a32242006b59cb12bd62c9133632af3a2d",
+      "url": "https://android.googlesource.com/platform/system/core/+/a3b721a32242006b59cb12bd62c9133632af3a2d/fs_mgr/liblp/"
+    },
+    "independent_extract_utils": {
+      "branch": "lineage-23.2",
+      "commit": "19a1e68e47bbe9ba446e167b2d402953bd7e0c87",
+      "url": "https://github.com/LineageOS/android_tools_extract-utils.git",
+      "lp_source_sha256": "32a0b1eddf5d83398f22fea6c025d6d11dbb179c172d00785a7c1dac7987fe84"
+    }
+  }
+}
