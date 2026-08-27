@@ -328,7 +328,7 @@ def audit(*, recipe_path, source_root, output_dir, candidate_config=None, expect
         require(pointer == [recipe['references']['ack']['commit'], recipe['references']['ack']['tag']],
                 'MiCode ACK pointer disagrees with the reviewed source pin')
         stock = parsed['stock_config']
-        assertions = make_assertions(stock, recipe['assertions'])
+        assertions = make_assertions(stock, recipe.get('assertions'))
         profiles = []
         for profile in recipe['profiles']:
             comparison = compare_requests(stock, parsed, profile['sources'])

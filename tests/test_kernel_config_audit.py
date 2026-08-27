@@ -334,6 +334,13 @@ class AuditWorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(audit.ConfigAuditError, 'duplicate JSON'):
             self.run_audit()
 
+    def test_missing_assertions_are_a_validation_error_before_output_creation(self):
+        self.recipe.pop('assertions')
+        self.save_recipe()
+        with self.assertRaisesRegex(audit.ConfigAuditError, 'assertions is required'):
+            self.run_audit()
+        self.assertFalse((self.artifacts / 'result').exists())
+
     def test_source_path_traversal_is_rejected(self):
         self.recipe['sources'][0]['path'] = '../stock_config'
         self.save_recipe()

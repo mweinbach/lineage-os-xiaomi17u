@@ -83,6 +83,15 @@ The private run is
 is `88b60ea98f6069dd286d6491f07e96c4493ab6fd82158186a6e0aa99d49dfbb5`.
 The source-intake receipt is the sibling `intake.json`, SHA256
 `b386673c9899d6abfc8d0171f75badf475798d206c0102a15aa761360fbd061a`.
+
+A follow-up fixes malformed recipes with no `assertions` list: they now report
+a validation error before creating output, rather than an uncaught key error.
+The original run and its producer at commit `15ea8c3` remain preserved. The
+updated auditor ran against the same inputs into `result-v2/`, whose receipt is
+`19175b0f89188851f8c09c31c730a268cd008c10bb96473821a50d4bda21c0d6`.
+All three output data files and all input hashes are unchanged. The separate
+readback is in `reports/kernel-config-followup-integrity.json`.
+
 The run produces only four JSON files:
 
 - `stock-symbols.json`: all 6,405 observed values and their original line numbers.
