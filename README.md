@@ -150,6 +150,7 @@ properties do not independently establish physical variant or bootloader state.
 | [VINTF and permissions](docs/vintf-contract.md) | Guarded filesystem captures, exact live XML matches and framework compatibility gates |
 | [Actual VINTF validation](docs/vintf-validation.md) | Successful vendor/ODM and active APEX load/merge; separate framework-definition and compatibility limits |
 | [Vendor APEX dependencies](docs/apex-dependencies.md) | Guarded CAS, Widevine and Wi-Fi payload inspection and matching active-package evidence |
+| [SELinux contract](docs/selinux-contract.md) | Exact stock policy inputs and seven strict neverallow failures; no policy or device pass claimed |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](docs/camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |

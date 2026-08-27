@@ -38,6 +38,12 @@ packages to the captured firmware by content hashes. These results establish
 inputs and static declarations, not Evolution service activation or DRM
 eligibility. The authored product has built its first Android modules; nine
 selected Camera dependencies are undergoing a separate compilation check.
+
+The [SELinux contract](selinux-contract.md) also preserves seven neverallow
+failures from strict compilation of the captured modified stock policy.
+Those findings guide policy integration; they do not establish a permissive
+phone or a broken native feature. No rules were filtered, and the eventual
+Evolution/vendor combination must pass its own enforcing-policy checks.
 APK signing, class-loader integration and feature tests remain distinct steps.
 
 The later [XDA community review](community-bringup.md) provides maintainer reports

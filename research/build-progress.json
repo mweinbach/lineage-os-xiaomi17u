@@ -27,9 +27,9 @@
     "source_camera_apk_included": false
   },
   "device_admission": {
-    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v4/admission.json",
-    "sha256": "6bd7e3f14e47dfa96efa33f193fc7f7f8d8499f3ff8d562d5f96ddd42fb03d2f",
-    "source_commit": "da1c507913ac3b0abecaf2ec63e7a7020146f690"
+    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v5/admission.json",
+    "sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+    "source_commit": "91832e011a2703e73fd093afc7b0ee0f0ad5704d"
   },
   "installation": {
     "guest_receipt": "/work/candidates/nezha-framework-20260827T1817Z/installation.json",
@@ -94,6 +94,32 @@
         "vendor_images_unchanged": true,
         "transferred_small_files": 25,
         "transferred_small_bytes": 575475
+      },
+      {
+        "version": 5,
+        "private_receipt": "reports/device-v5-installation.json",
+        "guest_receipt": "/work/candidates/nezha-strict-java-v5/installation.json",
+        "sha256": "d391deb862f4254b1018d30d02d4da2cf64cba2d53810cc5e5a726a7c5c0a23c",
+        "admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+        "previous_admission_sha256": "6bd7e3f14e47dfa96efa33f193fc7f7f8d8499f3ff8d562d5f96ddd42fb03d2f",
+        "completed_at": "2026-08-27T20:46:42.952750+00:00",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/BoardConfig.mk",
+            "before_sha256": "c66b809842e7e7699d972fab9ab86649da6d129c0dfa55e364725dbdc45c92a1",
+            "after_sha256": "8a0913b67ca2434178526a5decfb2b17bfd3b63ecbdd82c06a0f5e2c8b0ae7e9"
+          },
+          {
+            "path": "device/xiaomi/nezha/README.md",
+            "before_sha256": "fa54e6ce96e542613f9f762abf7e6c1d9ccb6880dedb0b10609d94a751fc18b5",
+            "after_sha256": "719de3f46e004412d15d82ab8cf69c3ece4b96f62d1c106f240cf5abf60222a6"
+          }
+        ],
+        "old_source_directories_preserved": true,
+        "atomic_directory_exchange": true,
+        "kernel_vendor_receipts_unchanged": true,
+        "transferred_small_files": 10,
+        "transferred_small_bytes": 17140
       }
     ],
     "independent_v3_audit": {
@@ -299,7 +325,8 @@
     "Source AVB failures do not prevent safe product/module checks. Complete target-files/OTA/super and flash admission remain false.",
     "Image lengths/LP declarations are build budgets, not measured physical partition fit.",
     "Vendor/ODM VINTF load/merge passed including active vendor APEX fragments; full framework compatibility, enforcing policy, kernel-export ABI, bootloader state and native-feature behavior remain unverified.",
-    "A completed official-named TGZ is visible in Downloads by size only; content reads timed out and it has not been accepted."
+    "A completed official-named TGZ is visible in Downloads by size only; content reads timed out and it has not been accepted.",
+    "Captured modified stock CIL failed seven strict neverallow assertions with native pinned tools. No combined Evolution/vendor policy has passed; no assertions were disabled."
   ],
   "camera_build": {
     "state": "running",
@@ -320,10 +347,10 @@
     ],
     "out_dir": "out-nezha-framework-20260827T1835Z",
     "physical_out_dir": "/work/out/nezha-framework-20260827T1835Z",
-    "input_admission_sha256": "6bd7e3f14e47dfa96efa33f193fc7f7f8d8499f3ff8d562d5f96ddd42fb03d2f",
+    "input_admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
     "input_vendor_receipt_sha256": "0a6a70317eed9c1df1e30112eed10361ba49d5e8afa89fbd6b1feb507a8d09bc",
-    "guest_log_directory": "/work/validation/nezha-framework-20260827T1835Z/camera-1",
-    "driver_sha256": "ea714f05d8f3732c63c68fe23d3ad051e38eff41655aa5218cfd1fd024816fc3",
+    "guest_log_directory": "/work/validation/nezha-framework-20260827T1835Z/camera-2",
+    "driver_sha256": "9924aa11c257c5b3e6fa20538f0f67ef639816a55b894a47f07d96ccfabacc93",
     "ninja_read_only_source_required": true,
     "strict_elf_checks_required": true,
     "camera_function_verified": false,
@@ -343,7 +370,59 @@
       "output_read_write": true,
       "checks_disabled_by_this_probe": [],
       "scope": "Observed the actual Camera product Ninja process and its mount table; no namespace entry, process modification or build-completion claim."
-    }
+    },
+    "attempts": [
+      {
+        "started_at": "2026-08-27T19:26:45.335265+00:00",
+        "completed_at": "2026-08-27T20:26:45.712767+00:00",
+        "exit_code": 1,
+        "timed_out": true,
+        "sandbox_fallback_observed": false,
+        "passed": false,
+        "checks_disabled_by_this_probe": [],
+        "number": 1,
+        "result": "timed_out",
+        "deadline_seconds": 3600,
+        "input_admission_sha256": "6bd7e3f14e47dfa96efa33f193fc7f7f8d8499f3ff8d562d5f96ddd42fb03d2f",
+        "private_receipt": "reports/nezha-camera-1-receipt.json",
+        "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-1/receipt.json",
+        "sha256": "8c3d6ff059fe08ca1a68380cda543e2d9463c2982580313fa60234cd486fb490",
+        "resolution": "Resume incrementally from the same preserved output directory with a longer bounded deadline; no compile failure preceded the probe cancellation.",
+        "driver_sha256": "ea714f05d8f3732c63c68fe23d3ad051e38eff41655aa5218cfd1fd024816fc3",
+        "sandbox_observation": {
+          "private_receipt": "reports/nezha-camera-1-sandbox.json",
+          "sha256": "30916dc00013762cb2e8d05bbb86ab42e6f80f38f47c3f1bfade62c5926f977e",
+          "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-1/sandbox-process.json",
+          "observed_at": "2026-08-27T19:37:34.502359+00:00",
+          "ninja_ran_under_nsjail": true,
+          "namespace_separation": {
+            "mnt": true,
+            "net": true,
+            "pid": true,
+            "user": true
+          },
+          "source_read_only": true,
+          "output_read_write": true,
+          "checks_disabled_by_this_probe": [],
+          "scope": "Observed the actual Camera product Ninja process and its mount table; no namespace entry, process modification or build-completion claim."
+        }
+      },
+      {
+        "number": 2,
+        "result": "running",
+        "deadline_seconds": 7200,
+        "input_admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+        "incremental_output_preserved": true,
+        "previous_attempt_sha256": "8c3d6ff059fe08ca1a68380cda543e2d9463c2982580313fa60234cd486fb490",
+        "guest_log_directory": "/work/validation/nezha-framework-20260827T1835Z/camera-2",
+        "driver_sha256": "9924aa11c257c5b3e6fa20538f0f67ef639816a55b894a47f07d96ccfabacc93"
+      }
+    ],
+    "additional_validation_tool_targets": [
+      "secilc",
+      "sepolicy-analyze"
+    ],
+    "strict_uses_library_checks_required": true
   },
   "post_module_source_audit": {
     "private_receipt": "reports/post-module-source-audit.json",
@@ -356,5 +435,49 @@
     "unexpected_project_changes": 0,
     "authored_directories_outside_repo_projects_not_included": true,
     "lfs_contents_rehashed": false
+  },
+  "strict_java_configuration": {
+    "private_receipt": "reports/nezha-v5-effective-java-config.json",
+    "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-2/strict-java-config.json",
+    "sha256": "a1288fd08e3e9238bc68fde278f0f6a6ebf66fa135c3d613a8a008072a15d82d",
+    "schema_version": 1,
+    "observed_at": "2026-08-27T20:49:35.503367+00:00",
+    "device_admission_sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7",
+    "installation_sha256": "d391deb862f4254b1018d30d02d4da2cf64cba2d53810cc5e5a726a7c5c0a23c",
+    "board_config_sha256": "8a0913b67ca2434178526a5decfb2b17bfd3b63ecbdd82c06a0f5e2c8b0ae7e9",
+    "configurations": [
+      {
+        "path": "/work/out/nezha-framework-20260827T1835Z/soong/dexpreopt-lineage_nezha.config",
+        "sha256": "6a52b3ab5846076bcde7d83f12d8f8219679d91787c3cbc6ee48bc17e65aeaa8",
+        "size_bytes": 5269,
+        "mtime": "2026-08-27T20:47:42.447302+00:00",
+        "values": {
+          "RelaxUsesLibraryCheck": false,
+          "DisablePreopt": false,
+          "DisablePreoptBootImages": false,
+          "DisablePreoptModules": [],
+          "OnlyPreoptArtBootImage": false
+        }
+      },
+      {
+        "path": "/work/out/nezha-framework-20260827T1835Z/soong/soong.lineage_nezha.variables",
+        "sha256": "6bfe0e2b5ff44bb0d58631a1196f41f063323f8b4471563832a9bc7c401244b5",
+        "size_bytes": 338782,
+        "mtime": "2026-08-27T19:26:58.804229+00:00",
+        "values": {
+          "WithDexpreopt": true,
+          "UncompressPrivAppDex": true,
+          "DeviceMaxPageSizeSupported": "16384",
+          "DeviceCheckPrebuiltMaxPageSize": true,
+          "SelinuxIgnoreNeverallows": false
+        }
+      }
+    ],
+    "strict_uses_library_check_effective": true,
+    "dexpreopt_enabled": true,
+    "apk_imported_or_validated": false,
+    "checks_disabled": [],
+    "phone_accessed": false,
+    "note": "The dexpreopt configuration changed after v5 installation. Unchanged Soong variables retain their earlier mtime; their observed bytes still require dexpreopt. This is configuration proof, not APK validation."
   }
 }

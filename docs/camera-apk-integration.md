@@ -4,8 +4,8 @@ The captured Camera APK has a valid existing v3 signature and passes the ZIP
 and ELF layout checks for Nezha's observed **4 KiB kernel**. No APK was imported,
 rewritten, signed, installed or executed. The next integration work is concrete:
 provide the Java class-loader metadata that Soong requires, resolve the APK's
-privilege/signing/DEX-packaging contract, and verify the authored strict-check
-override in a new build configuration.
+privilege/signing/DEX-packaging contract, and validate its actual strict APK
+build rule. The later v5 configuration has verified the strict-check override.
 
 The [sanitized record](../research/camera-apk-integration.json) preserves the
 observations, tool hashes, source pins and remaining gates. This is separate
@@ -123,9 +123,13 @@ be described as strict APK validation. [Pinned BCR assignment](https://github.co
 Commit `91832e011a2703e73fd093afc7b0ee0f0ad5704d` authors
 `RELAX_USES_LIBRARY_CHECK := false` at the end of Nezha's
 [BoardConfig](../device/xiaomi/nezha/BoardConfig.mk), with a guard rejecting a
-conflicting effective value. The local v5 admission contains that fix. **At
-this snapshot, v5 was not installed and no new generated configuration had
-verified the override.** The earlier running build used v4.
+conflicting effective value. The local v5 admission contains that fix. At the
+original APK-review snapshot, v5 was not installed; its record correctly
+retains the observed v4 value. A later installation at `20:46:42 UTC` and
+generated-configuration readback at `20:49:35 UTC` confirmed
+`RelaxUsesLibraryCheck=false`, with dexpreopt still enabled. The separate
+[build record](build-progress.md) binds that follow-up receipt. This does not
+claim that the Camera APK has been imported or passed its complete build rule.
 
 The location follows the pinned include order: `envsetup.mk` loads product
 configuration at line 351, then board configuration at line 368. Later,
@@ -136,12 +140,12 @@ cannot override BCR's existing global assignment.
 [Pinned include order](https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/core/envsetup.mk),
 [dexpreopt variable handling](https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/core/dex_preopt_config.mk)
 
-The next admitted configuration must show `RelaxUsesLibraryCheck=false`,
+The v5 configuration readback shows `RelaxUsesLibraryCheck=false`,
 `DisablePreopt=false` and `OnlyPreoptArtBootImage=false` in
 `dexpreopt-lineage_nezha.config`, plus `WithDexpreopt=true` in
 `soong.lineage_nezha.variables`. Actual APK manifest-check commands must omit
-`--enforce-uses-libraries-relax`. Authored settings and offline tests do not
-replace that generated-config and command verification.
+`--enforce-uses-libraries-relax`; that later APK command check is still pending.
+Authored settings and offline tests do not replace actual command verification.
 
 ## Unresolved decisions and evidence
 

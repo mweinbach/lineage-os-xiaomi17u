@@ -162,8 +162,12 @@ class CameraApkIntegrationTests(unittest.TestCase):
         self.assertLess(board.index("include vendor/lineage/config/BoardConfigLineage.mk"), board.index(strict))
         self.assertIn("ifneq ($(RELAX_USES_LIBRARY_CHECK),false)", board)
         self.assertIn("Nezha requires strict APK uses-library validation", board)
-        self.assertIn("At this snapshot, v5 was not installed", self.document)
-        self.assertIn("The earlier running build used v4", self.document)
+        self.assertIn("original APK-review snapshot, v5 was not installed", self.document)
+        self.assertIn("retains the observed v4 value", self.document)
+        followup = json.loads((ROOT / "research/build-progress.json").read_text())["strict_java_configuration"]
+        self.assertEqual(followup["device_admission_sha256"], self.record["authored_strict_fix"]["admission"]["sha256"])
+        self.assertTrue(followup["strict_uses_library_check_effective"])
+        self.assertFalse(followup["apk_imported_or_validated"])
 
     def test_primary_source_revisions_match_the_resolved_manifest(self):
         manifest = ET.parse(ROOT / "research/source-snapshots/evolution-bka-20260827.xml").getroot()

@@ -101,12 +101,34 @@ Neither observation should be substituted for the other, and the upstream
 basic Soong/Kati sandbox remains unchanged. Observing the running process is
 not a successful build result.
 
-The current v4 device admission selects Camera bundle v2 and that stronger
+The v4 device admission selected Camera bundle v2 and that stronger
 source setting. Both earlier installed source directories were preserved
 outside the Android checkout before replacement; only 575,475 bytes of small
 files crossed from the host. Vendor/ODM images were copied and reverified
 inside the same VM with unchanged hashes. The Camera build is a separate
 experiment; its current result is in the build record.
+
+The first Camera attempt reached its one-hour probe deadline at `20:26:45 UTC`
+and was cancelled. No compiler failure preceded the cancellation. All compiled
+outputs were retained; the second attempt resumes in the same directory with
+a two-hour bound and adds the Soong `secilc` and `sepolicy-analyze` host tools.
+This is not a clean build or another source sync.
+
+Current device admission **v5** was installed at `20:46:42 UTC` by an atomic
+directory exchange, preserving v4 outside the checkout. Only BoardConfig and
+its README changed; the kernel and vendor bundles did not. The regenerated
+dexpreopt configuration now has **`RelaxUsesLibraryCheck=false`**, while
+`WithDexpreopt=true` and `DisablePreopt=false`. The effective-setting receipt
+has SHA256 `a1288fd08e3e9238bc68fde278f0f6a6ebf66fa135c3d613a8a008072a15d82d`.
+This corrects the inherited BCR relaxation without disabling preoptimization.
+It establishes the generated configuration, not validation or installation of
+the [Camera APK](camera-apk-integration.md), which remains outside the bundle.
+
+The separate [SELinux contract](selinux-contract.md) captures the exact stock
+policy inputs and reports seven neverallow failures using native tools from
+pinned sources. No policy binary was produced, and no assertion was filtered.
+Actual Soong-tool corroboration and a combined Evolution/vendor policy check
+are subsequent experiments, not implied by building the compiler tools.
 
 The built host checker also passed a [vendor/ODM VINTF load and merge](vintf-validation.md)
 with the unchanged active APEX list and exact CAS/Widevine fragments. The

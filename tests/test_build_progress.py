@@ -125,6 +125,43 @@ class BuildProgressTests(unittest.TestCase):
         self.assertEqual(sandbox["checks_disabled_by_this_probe"], [])
         self.assertFalse(self.record["camera_build"]["camera_function_verified"])
 
+    def test_camera_timeout_keeps_incremental_outputs_and_attempt_history(self):
+        camera = self.record["camera_build"]
+        first, second = camera["attempts"][:2]
+        self.assertEqual(first["result"], "timed_out")
+        self.assertTrue(first["timed_out"])
+        self.assertFalse(first["passed"])
+        self.assertEqual(first["deadline_seconds"], 3600)
+        self.assertEqual(first["checks_disabled_by_this_probe"], [])
+        self.assertEqual(second["deadline_seconds"], 7200)
+        self.assertTrue(second["incremental_output_preserved"])
+        self.assertEqual(second["previous_attempt_sha256"], first["sha256"])
+        self.assertNotEqual(first["input_admission_sha256"], second["input_admission_sha256"])
+        self.assertEqual(second["input_admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(camera["additional_validation_tool_targets"], ["secilc", "sepolicy-analyze"])
+
+    def test_effective_java_configuration_is_strict_without_disabling_dexpreopt(self):
+        proof = self.record["strict_java_configuration"]
+        self.assertTrue(proof["strict_uses_library_check_effective"])
+        self.assertTrue(proof["dexpreopt_enabled"])
+        self.assertFalse(proof["apk_imported_or_validated"])
+        self.assertEqual(proof["checks_disabled"], [])
+        self.assertEqual(proof["device_admission_sha256"], self.record["device_admission"]["sha256"])
+        configs = {Path(row["path"]).name: row for row in proof["configurations"]}
+        dexpreopt = configs["dexpreopt-lineage_nezha.config"]["values"]
+        self.assertFalse(dexpreopt["RelaxUsesLibraryCheck"])
+        self.assertFalse(dexpreopt["DisablePreopt"])
+        self.assertFalse(dexpreopt["DisablePreoptBootImages"])
+        self.assertEqual(dexpreopt["DisablePreoptModules"], [])
+        self.assertFalse(dexpreopt["OnlyPreoptArtBootImage"])
+        soong = configs["soong.lineage_nezha.variables"]["values"]
+        self.assertTrue(soong["WithDexpreopt"])
+        self.assertFalse(soong["SelinuxIgnoreNeverallows"])
+        update = self.record["installation"]["device_source_updates"][-1]
+        self.assertTrue(update["atomic_directory_exchange"])
+        self.assertTrue(update["kernel_vendor_receipts_unchanged"])
+        self.assertGreater(configs["dexpreopt-lineage_nezha.config"]["mtime"], update["completed_at"])
+
 
 if __name__ == "__main__":
     unittest.main()
