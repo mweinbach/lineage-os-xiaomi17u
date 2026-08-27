@@ -4,9 +4,11 @@
   "device": {
     "name": "Xiaomi 17 Ultra",
     "codename": "nezha",
-    "identity_status": "codename from community sources; user reports China edition with xiaomi.eu; live identity pending",
-    "hardware_region": "China (user-reported)",
-    "installed_rom": "xiaomi.eu (user-reported)",
+    "identity_status": "nezha confirmed through read-only ADB on 2026-08-27; modified-ROM properties are not immutable hardware proof",
+    "hardware_region": "China (user report corroborated by ro.boot.hwc=CN)",
+    "installed_rom": "xiaomi.eu OS3.0.309.0.WPACNXM, Android 16",
+    "platform": "SM8850 / canoe",
+    "baseline": "research/device-baseline.json",
     "build_ready": false,
     "lunch_target": null
   },

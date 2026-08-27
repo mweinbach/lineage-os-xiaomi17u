@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "provenance": "Read-only ADB inventory of the user's currently installed xiaomi.eu ROM, not a pristine Xiaomi stock image or an Evolution X test",
+  "device": {
+    "codename": "nezha",
+    "manufacturer": "Xiaomi",
+    "user_reported_region": "China",
+    "reported_hwc": "CN",
+    "reported_model": "2512BPNDAG",
+    "reported_mod_device": "nezha_xiaomieu_global",
+    "reported_vendor_device": "mivendor",
+    "soc": "SM8850",
+    "board_platform": "canoe",
+    "abi": "arm64-v8a"
+  },
+  "firmware": {
+    "android": "16",
+    "sdk": 36,
+    "system_incremental": "OS3.0.309.0.WPACNXM",
+    "vendor_incremental": "OS3.0.309.0.WPACNXM",
+    "system_security_patch": "2026-07-01",
+    "vendor_security_patch": "2026-02-01",
+    "kernel_release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "page_size_bytes": 4096,
+    "selinux": "Enforcing"
+  },
+  "boot_state": {
+    "reported_slot_suffix": "_a",
+    "reported_flash_locked": "1",
+    "reported_verifiedbootstate": "green",
+    "reported_vbmeta_device_state": "locked",
+    "actual_bootloader_state": "unverified; modified-ROM properties may be masked, and bootconfig was not readable"
+  },
+  "observed_dynamic_partitions": {
+    "source": "Successful lpdump of the current modified installation; not an approved BoardConfig",
+    "metadata_version": "10.2",
+    "metadata_slots": 3,
+    "super_bytes": 15300820992,
+    "group_max_bytes": 15290335232,
+    "groups": ["qti_dynamic_partitions_a", "qti_dynamic_partitions_b"],
+    "partitions_per_slot": ["odm", "product", "system", "system_dlkm", "system_ext", "vendor", "vendor_dlkm", "mi_ext"],
+    "snapshot_update_state": "none"
+  },
+  "collection": {
+    "status": "partial",
+    "commands": 71,
+    "hashed_artifacts": 575,
+    "xml_files": 432,
+    "system_packages": 363,
+    "unavailable_reads": ["/proc/partitions", "/sys/firmware/devicetree/base/model", "/sys/firmware/devicetree/base/compatible"],
+    "private_manifest_sha256": "0b837fea843cbc9d21326abb554f04dfdcf9e06bf91dee7caad4f243e0a914cb",
+    "camera_apk_sha256": "cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79",
+    "camera_apk_bytes": 170279563,
+    "camera_stock_path": "/product/priv-app/MiuiCamera/MiuiCamera.apk",
+    "contains_private_data": false,
+    "private_raw_evidence_is_git_ignored": true
+  },
+  "evolution_x_hardware_testing": "not performed"
+}
