@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-08-27T17:17:36.955286+00:00",
+  "completed_at": "2026-08-27T17:18:39.987249+00:00",
+  "out_dir": "/work/out/soong-bootstrap-20260827T1721Z",
+  "path_prefix": "/work/evolution/prebuilts/build-tools/path/linux-x86",
+  "native_arch": "aarch64",
+  "translated_uname_arch": "x86_64",
+  "uname_symlink_target": "../../linux-x86/bin/toybox",
+  "input_sha256": {
+    "build/soong/soong_ui.bash": "89ad12d5dbf57a4a201c9081a101a593597e7b1e21d47b3e829c94038530b574",
+    "build/soong/scripts/microfactory.bash": "1ccc059ef4c17bbb3b200d7d99505f1e71ebc89615e2ab9a3df7a57a629ec6a4",
+    "build/blueprint/microfactory/microfactory.bash": "c961b6f9cb0f3b7b464167c7c262cd5a8cd94cab2979a7c0b0799fcbf7843b08",
+    "prebuilts/build-tools/linux-x86/bin/toybox": "f945dbf9678a41a738605c01e37f8a0ec090751797deaa9efffcbd19d651c027",
+    "prebuilts/go/linux-x86/bin/go": "467614dc12ce73e28cc9aa8d28bdef259ada3bcc4392f205aaaed6fff44d8cab"
+  },
+  "input_hashes_unchanged": true,
+  "exit_code": 0,
+  "timed_out": false,
+  "stdout": "/work/out/soong-bootstrap-20260827T1721Z\n",
+  "stderr": "",
+  "source_unchanged": true,
+  "passed": true,
+  "checks_disabled_by_this_probe": [],
+  "module_or_rom_build_attempted": false,
+  "kati_product_configuration_tested": false,
+  "ninja_sandbox_tested": false,
+  "full_android_build_verified": false,
+  "phone_accessed": false,
+  "scope": "Bootstrap four Go host binaries and query the OUT_DIR fast path; no Kati, product or Ninja build.",
+  "source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+  "source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+  "project_heads": {
+    "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "build/blueprint": "c39c8a4c103f1393f015a5befa7726f0c14c9bc2",
+    "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "prebuilts/build-tools": "412724a805835d89234d67c363f7ada7f5f8a67f",
+    "prebuilts/go/linux-x86": "71c50d4d0da8b3dee5c70ee45789d001674ca5f6"
+  },
+  "command": [
+    "build/soong/soong_ui.bash",
+    "--dumpvar-mode",
+    "OUT_DIR"
+  ],
+  "outputs": [
+    {
+      "size": 18987199,
+      "sha256": "9d198a97614b04ed634cdcca501b31fa89b88e3c8e31fa25202ed1b16f1df030",
+      "elf_machine": 62,
+      "name": "soong_ui"
+    },
+    {
+      "size": 4228193,
+      "sha256": "29f587f6bbaa36f2ab6f7455ed6db494cffbbe5e25c538367dfe29e56b427e27",
+      "elf_machine": 62,
+      "name": "mk2rbc"
+    },
+    {
+      "size": 4989161,
+      "sha256": "56065d1a89763fe40fa357a4537d31baaa13c6ee20cff44d7123c98b33fef40d",
+      "elf_machine": 62,
+      "name": "rbcrun"
+    },
+    {
+      "size": 7567206,
+      "sha256": "84bdfaecd6e3ec57d86de84a521112b3f10d9a35abf0fa66ae085a7d6f457840",
+      "elf_machine": 62,
+      "name": "release-config"
+    }
+  ],
+  "private_receipt": {
+    "guest_path": "/work/validation/soong-bootstrap-20260827T1721Z/receipt.json",
+    "host_path": "reports/source-sync-20260827/soong-bootstrap.json",
+    "sha256": "5baaded71c7f0794520af150fb339ab24a429a5eb8bdde568667fe56badf4c8d"
+  },
+  "post_bootstrap_source_audit": {
+    "guest_path": "/work/validation/source-audit-20260827T1730Z/receipt.json",
+    "host_path": "reports/source-sync-20260827/post-bootstrap-source-audit.json",
+    "sha256": "0005ba649db46dfd58420a3725886b3d6e49bcef36dfdc4ecf0ab6c9a07584fb",
+    "completed_at": "2026-08-27T17:19:53.460871+00:00",
+    "project_count": 1179,
+    "head_match_count": 1179,
+    "clean_project_count": 1179,
+    "origin_match_count": 1179,
+    "manifest_and_repo_pins_verified_before_and_after": true,
+    "project_list_matches_manifest": true,
+    "failure_count": 0
+  },
+  "limits": [
+    "Uses the existing prebuilt x86 Toybox uname only through a command-scoped PATH; native guest architecture remains aarch64.",
+    "OUT_DIR takes a Soong fast path without Kati or product configuration. The pinned entry point normally performs output setup and source discovery first; the probe did not set a finder-skip flag, but no independent finder artifact receipt was captured.",
+    "The four outputs were compiled; only soong_ui execution was demonstrated by this query.",
+    "The pinned upstream Soong source already disables basic sandboxing for dumpvars, Kati and Soong; this probe did not change those settings or verify runtime sandbox operation.",
+    "This upstream Soong revision can fall back after an nsjail probe failure. Such a fallback must count as failed sandbox validation in a future build.",
+    "No Android module, kernel or ROM was built and no device target was registered."
+  ]
+}

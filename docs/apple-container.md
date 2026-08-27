@@ -24,6 +24,7 @@ Observed on **2026-08-27**:
 | Filesystem | ext4 and case-sensitive file behavior verified |
 | Repo initialization | Completed in `/work/evolution`, with manifest and Repo implementation pins verified and signature checks enabled |
 | Full sync | Completed at `2026-08-27T16:56:02Z`, exit `0`; all 1,179 project HEADs, clean worktrees and remotes verified afterward |
+| Soong bootstrap | Unmodified entry point compiled four x86-64 host tools and successfully queried `OUT_DIR`; no product or Android module build |
 | Android build / device support | No full Android 16 compilation or functional Nezha ROM established |
 
 Disk and memory figures are measurements from that check, not reserved free
@@ -144,6 +145,82 @@ The guest receipt is
 Its byte-identical host copy is `reports/source-sync-20260827/host-tools.json`;
 the invocation log is `reports/synced-host-tools-smoke.log`. Build orchestration
 and sandbox behavior remain separate checks.
+
+## Soong bootstrap proof and sandbox limit
+
+The original `build/soong/soong_ui.bash --dumpvar-mode OUT_DIR` entry point
+passed on **2026-08-27**, using a previously absent output directory:
+`/work/out/soong-bootstrap-20260827T1721Z`. It compiled `soong_ui`, `mk2rbc`,
+`rbcrun` and `release-config`; all four outputs are ELF machine `62` (x86-64).
+The newly compiled `soong_ui` executed and printed that exact output path with
+a newline, exit `0`, and empty stderr. This does not establish independent
+execution of the other three tools. Their sizes, hashes, input hashes and five
+owning project revisions are in the
+[Soong bootstrap record](../research/soong-bootstrap.json).
+
+The command prepended the existing
+`/work/evolution/prebuilts/build-tools/path/linux-x86` directory to its own
+`PATH`. Its existing `uname` symlink points to `../../linux-x86/bin/toybox`;
+this x86-64 tool reported `x86_64` under Rosetta while `/usr/bin/uname -m`
+still reported the guest's native `aarch64`. No shim, source patch, replacement
+of `/usr/bin/uname`, or global PATH change was made. This matters because the
+[pinned microfactory script](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/scripts/microfactory.bash)
+sets `GOROOT` from `uname -m`, overwriting an inherited value. The selected
+checkout supplies `prebuilts/go/linux-x86`, not `prebuilts/go/linux-arm64`.
+
+For a deliberate repeat, first use the wrapper's status and host/source checks
+and obtain the sole volume-owning guest shell. Use a **new** output directory;
+do not reuse the recorded proof directory. The command shape is:
+
+```sh
+# Inside the guarded guest shell, not on macOS or in another writer VM.
+(
+  set -eu
+  cd /work/evolution
+  soong_probe_validation="$(mktemp -d /work/validation/soong-repeat.XXXXXXXX)"
+  soong_probe_out="/work/out/$(basename "$soong_probe_validation")"
+  test ! -e "$soong_probe_out"
+  test ! -L "$soong_probe_out"
+  PATH="$PWD/prebuilts/build-tools/path/linux-x86:$PATH" \
+    OUT_DIR="$soong_probe_out" GOCACHE="$soong_probe_validation/go-cache" \
+    GOTOOLCHAIN=local GOENV=off GOPROXY=off GOSUMDB=off \
+    GIT_OPTIONAL_LOCKS=0 GIT_TERMINAL_PROMPT=0 \
+    build/soong/soong_ui.bash --dumpvar-mode OUT_DIR
+)
+```
+
+The recorded probe additionally captured hashes and before/after source status;
+a later repeat needs its own evidence. No build checks were disabled by this
+probe. In the pinned source, [`OUT_DIR` is a fast path](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/ui/build/dumpvars.go)
+that does not invoke Kati or product configuration. The
+[normal entry path](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/cmd/soong_ui/main.go)
+includes output setup and source discovery before that query. The probe did
+not set a finder-skip flag, but no separate finder artifact receipt was
+captured. It did not build an Android module, kernel or ROM, run Ninja build
+actions, select a product, or register a Nezha target.
+
+**Sandbox operation remains unverified.** At Soong commit
+`cbcbea9e65503ca15b363a0b06dda88fdbcb0154`, upstream
+[`sandbox_linux.go`](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/ui/build/sandbox_linux.go)
+already has `basicSandbox.Enabled=false` for dumpvars, Kati and Soong. Ninja's
+sandbox is enabled in that source, but an unsuccessful nsjail probe logs
+`Build sandboxing disabled due to nsjail error.` and can fall back to execution
+without that sandbox. These are source observations, not a runtime sandbox
+test or settings changed here. A future fallback must count as **failed
+sandbox validation**, even if the build exits successfully; do not weaken
+checks or add broad capabilities to conceal it.
+
+The bootstrap's private guest receipt is
+`/work/validation/soong-bootstrap-20260827T1721Z/receipt.json`, SHA256
+`5baaded71c7f0794520af150fb339ab24a429a5eb8bdde568667fe56badf4c8d`.
+Its verified host copy is `reports/source-sync-20260827/soong-bootstrap.json`;
+the invocation log is `reports/soong-bootstrap.log`. A subsequent complete
+source audit again found all **1,179** HEADs, clean worktrees and origins
+matching the resolved manifest, with the manifest/Repo guards intact. Its
+guest receipt is `/work/validation/source-audit-20260827T1730Z/receipt.json`,
+SHA256 `0005ba649db46dfd58420a3725886b3d6e49bcef36dfdc4ecf0ab6c9a07584fb`;
+the verified copy is `reports/source-sync-20260827/post-bootstrap-source-audit.json`.
+No phone was accessed.
 
 ## Commands from the Mac repository root
 
@@ -288,8 +365,8 @@ is useful reference material, not a recipe adopted unchanged. This workspace
 does not adopt its verification bypasses, startup source edits, broad runtime
 capabilities, or copy-on-write assumption.
 
-The remaining work is still concrete: validate Android build orchestration
-under Rosetta and complete the Nezha device/common/
+The remaining work is still concrete: validate product configuration, Android
+module builds and sandbox behavior under Rosetta, and complete the Nezha device/common/
 kernel/vendor integration. Official Xiaomi CDN downloads remain partial. The
 separately supplied [Xiaomi.eu package](provided-firmware.md) has passed local
 SHA256 and full ZIP CRC checks, but its origin is unverified and it is not

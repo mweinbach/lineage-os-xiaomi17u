@@ -8,7 +8,9 @@ An actual AOSP Android 16 Ninja prebuilt and its matching bundled libraries
 also built a standalone x86-64 C program that then executed successfully.
 The full platform sync completed there; all 1,179 project revisions, clean
 worktrees and remotes, plus all 99 LFS payload hashes, passed independent
-verification. An Android 16 platform build is not yet verified. See the
+verification. The unmodified Soong entry point also compiled four x86-64 host
+tools and successfully queried `OUT_DIR`. An Android 16 platform build is not
+yet verified. See the
 [Apple Container workflow](apple-container.md) for the observed configuration,
 Ninja artifact hashes, receipt, commands, and status checks.
 
@@ -22,8 +24,23 @@ host directory. The original Ninja test used the guest's
 downloaded Clang/LLD, Ninja, JDK 21 and Go to compile and execute standalone host
 programs; Clang also produced an Android ARM64 object. All passed, with hashes
 and source commits in [the host-tool record](../research/apple-host-tools.json).
-Neither test built an Android module. Soong orchestration, sandbox behavior and
-the remaining host prebuilts still require separate validation.
+Neither test built an Android module. The later
+[Soong bootstrap record](../research/soong-bootstrap.json) establishes compilation
+of `soong_ui`, `mk2rbc`, `rbcrun` and `release-config`, plus execution of `soong_ui`.
+It used a fresh output directory and the existing prebuilt Toybox `uname` through
+a command-scoped PATH. Native guest architecture remained `aarch64`; no source
+or system tool was patched. All 1,179 source projects remained clean at their
+resolved revisions afterward.
+
+That `OUT_DIR` query uses a fast path without Kati or product configuration.
+Normal Soong startup includes source discovery, but this probe did not capture
+a separate finder artifact receipt. Android module builds, `lunch`, sandbox
+behavior and remaining host prebuilts still need validation. The pinned Soong
+source disables its basic dumpvars/Kati/Soong sandbox upstream and permits a
+Ninja fallback after an nsjail failure. No sandbox setting was changed by the
+probe, and a future fallback must count as failed sandbox validation. See the
+[bootstrap proof and repeat command](apple-container.md#soong-bootstrap-proof-and-sandbox-limit)
+for exact receipts, source references and limits.
 
 For the native route, use Ubuntu 24.04 LTS with 64 GiB RAM
 and at least 400 GiB free on a case-sensitive filesystem. Budget 600 GiB or more
@@ -150,8 +167,9 @@ this phone and its matching stock package:
 
 Once those checks pass, the intended command sequence on native Linux is below.
 Inside the Apple Container shell, the source directory is `/work/evolution`.
-The standalone Ninja proof does not validate `lunch`, Soong, or Android
-compilation. No device build target has been registered.
+The standalone Ninja proof and Soong `OUT_DIR` bootstrap do not validate
+`lunch`, product configuration or Android compilation. No device build target
+has been registered.
 
 ```sh
 # FUTURE ONLY: this target is not registered or buildable in this workspace yet.
