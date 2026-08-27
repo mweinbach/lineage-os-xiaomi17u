@@ -1,0 +1,1302 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-27T22:17:48.624891+00:00",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "scope": "Static comparison of the factory-named package boot components with preserved Xiaomi.eu evidence; no image, init script, fstab or module is executed on the phone.",
+  "packages": {
+    "factory": {
+      "sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "source_kind": "user-provided",
+      "source_url": null,
+      "origin_verified": false
+    },
+    "xiaomi_eu": {
+      "sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+      "modified_package": true,
+      "retained_separately": true
+    }
+  },
+  "image_readback": {
+    "receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/user-image-readback-v1/receipt.json",
+      "size_bytes": 15160,
+      "sha256": "2c5c406b9374f7e1a191d994c0f6c4de25516e74ff857a3e4bde3e63c4b4eddb"
+    },
+    "source_directory": "sources/nezha_images_OS3.0.309.0.WPACNXM_16.0/images",
+    "image_count": 19,
+    "total_image_bytes_per_directory": 14852407336,
+    "both_directories_rehashed": true,
+    "all_images_match": true,
+    "images": [
+      {
+        "path": "boot.img",
+        "size_bytes": 100663296,
+        "sha256": "09b63576f263257fbc2cbe98ab8c4c1a70a0580acf721b9bd9a809e38f38916e",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "vbmeta.img",
+        "size_bytes": 12288,
+        "sha256": "295d273ae4a4b4a9471abfa495ce95f94a48c8fc7210008252a5ca7d7fdbfaf7",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "vm-persist.img",
+        "size_bytes": 110882988,
+        "sha256": "3835340ae368d550df5b9a3ee71ffb119ddaa9951fcb68bcd4936f0f60590bf1",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "vm-bootsys.img",
+        "size_bytes": 33583300,
+        "sha256": "8ae159ab49904c6e6a1448dfc37cedb1177839d346b5d314b357dd0017c7eb6a",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "vbmeta_system.img",
+        "size_bytes": 4096,
+        "sha256": "7e814282a0240e0aa97a6a62e8c267f33714451a2b62f483561da642d140a4a4",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "qtvm-dtbo.img",
+        "size_bytes": 5242880,
+        "sha256": "f0bf3cf01ff634732459fa50dce05d2fdd9912c83215015b081a511bfa6b50c7",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "misc.img",
+        "size_bytes": 8192,
+        "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "super.img",
+        "size_bytes": 12438543008,
+        "sha256": "fe2c6b4abe4a36c871be184350132dfed1aa1b32ada0b051923a19835affa8f5",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "init_boot.img",
+        "size_bytes": 8388608,
+        "sha256": "eff601b4be2f40cf49ebe3a7bb47dcb2db8b20f7f1fc718c1cc0551412944e77",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "recovery.img",
+        "size_bytes": 104857600,
+        "sha256": "a6f2c77608026fcfe6221e5191c501b0ac880658f76c55231879ed198ce8a0f9",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "vendor_boot.img",
+        "size_bytes": 100663296,
+        "sha256": "c98aebae56e098eee6e758b8ac387ffd6dd5ec2cf051b389e97ae77d7a3404d3",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "dummy.img",
+        "size_bytes": 8192,
+        "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "userdata.img",
+        "size_bytes": 1873871592,
+        "sha256": "dd8fa2ad675b118e7e8f608678940203264dd56cf5af8f488beb5f41771af7a5",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "countrycode.img",
+        "size_bytes": 1048576,
+        "sha256": "8dd5e9a411ccc142c079b2796e7180442f3ec9e04a3e44eb7f4eaa782ec5b360",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "pvmfw.img",
+        "size_bytes": 1048576,
+        "sha256": "fa0f8c7a48699663eaefe0c6e5761325b2612df34cc9ef8a7ad764a2f9395e98",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "dtbo.img",
+        "size_bytes": 23068672,
+        "sha256": "ee84d721396fee5f82b5230b1472b5f165ba253eba50d44e9156b538c8a40f62",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "metadata.img",
+        "size_bytes": 2236644,
+        "sha256": "78b0ff0868f577f008df3917f430e7e356842d14b5cc307b786071dfc4fa8e60",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "persist.img",
+        "size_bytes": 48234496,
+        "sha256": "239a149bf07ce6796236f37ff770f5f5a47e1a5c35f0f31ad20cf344ee08975d",
+        "archive_and_user_copy_match": true
+      },
+      {
+        "path": "rescue.img",
+        "size_bytes": 41036,
+        "sha256": "b4458d0362ce811e0b518d098031d46a1077a551ea3df6c013f31178aab1ab16",
+        "archive_and_user_copy_match": true
+      }
+    ]
+  },
+  "header_component_readback": {
+    "receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/header-component-readback-v1/receipt.json",
+      "size_bytes": 5446,
+      "sha256": "534873e0b25e1ca48a9d1fc83c8a83c6d460146f7ac8070b0c5df4f3b3edf6f2"
+    },
+    "factory_initial_receipt_sha256": "19a0cf859e91b283684c03ab1691f8469e3c87c5a01b8fc6a1eae1d5e65b1f37",
+    "eu_component_receipt_sha256": "ecdc974e9e4d9b2df8b64331bd82c395bc47499e7b8db8e3cd5b7a2c60d6bb3b",
+    "pinned_unpacker": {
+      "repository": "upstream/aosp-mkbootimg",
+      "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+      "source": "unpack_bootimg.py",
+      "sha256": "06b54dd9a07c5281778e29e234e76f6e3faee8bf0c904a5ef88fdee30eeed12e"
+    },
+    "headers": {
+      "boot": {
+        "header_version": 4,
+        "kernel_size_bytes": 39963136,
+        "ramdisk_size_bytes": 0,
+        "boot_signature_field_bytes": 0,
+        "image_first_4096_bytes_sha256": "b1fe5100c52fc91d927af4252144d95d7de78b8d4b66af8f64a958bd01ad4d21",
+        "pinned_unpack_log_sha256": "8e97539b56475d989557d38b92eda457a7acf76796e7f825ae5eb42743e29699",
+        "header_matches_pinned_unpack_log": true
+      },
+      "init_boot": {
+        "header_version": 4,
+        "kernel_size_bytes": 0,
+        "ramdisk_size_bytes": 2916992,
+        "boot_signature_field_bytes": 0,
+        "image_first_4096_bytes_sha256": "0a5011eb253d5875071912a163febf1006472114b9444f34c67508453f79cd6e",
+        "pinned_unpack_log_sha256": "412caf4ad6672b7f6fe5b0f59ab9b18e378b276ffc2b33c6aa0888ae4aee8a9f",
+        "header_matches_pinned_unpack_log": true
+      },
+      "recovery": {
+        "header_version": 4,
+        "kernel_size_bytes": 0,
+        "ramdisk_size_bytes": 30407261,
+        "boot_signature_field_bytes": 0,
+        "image_first_4096_bytes_sha256": "3fe7c99862241fc9122a08c4da04a3d66d704154459c28b836d548f0b884b099",
+        "pinned_unpack_log_sha256": "2e0351f825f4cbcddebfdb5e5d03b510d4f63fcc11c23080316e27b4a99dd003",
+        "header_matches_pinned_unpack_log": true
+      },
+      "vendor_boot": {
+        "header_version": 4,
+        "page_size_bytes": 4096,
+        "header_size_bytes": 2128,
+        "vendor_ramdisk_size_bytes": 18107362,
+        "dtb_size_bytes": 4496880,
+        "bootconfig_size_bytes": 270,
+        "ramdisk_table_bytes": 108,
+        "ramdisk_table_entry_count": 1,
+        "ramdisk_table_entry_size_bytes": 108,
+        "ramdisk_type": 1,
+        "ramdisk_offset": 0,
+        "ramdisk_name_empty": true,
+        "ramdisk_board_id_words_all_zero": true,
+        "image_first_4096_bytes_sha256": "b94a200bd197144721844ea0cd2b0a60b1fb259a3cc2a911734cb87f36e38d18",
+        "pinned_unpack_log_sha256": "cad61d03172e17215f9f0c7eaafec3371eda86d20663f4955cd338013f3e0e71",
+        "header_matches_pinned_unpack_log": true
+      }
+    },
+    "components": [
+      {
+        "path": "unpacked/boot/kernel",
+        "factory_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+        "xiaomi_eu_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+        "size_bytes": 39963136,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "unpacked/init_boot/kernel",
+        "factory_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xiaomi_eu_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "unpacked/recovery/kernel",
+        "factory_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xiaomi_eu_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "unpacked/vendor_boot/dtb",
+        "factory_sha256": "1a5c30b75e816f33dd36caa114faa7bc656605e4ac9ffe786726538b37ada22d",
+        "xiaomi_eu_sha256": "1a5c30b75e816f33dd36caa114faa7bc656605e4ac9ffe786726538b37ada22d",
+        "size_bytes": 4496880,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "unpacked/vendor_boot/bootconfig",
+        "factory_sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f",
+        "xiaomi_eu_sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f",
+        "size_bytes": 270,
+        "bytes_match_eu": true
+      }
+    ],
+    "zero_boot_signature_field_does_not_establish_avb_disabled": true
+  },
+  "ramdisk_comparison": {
+    "receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/receipt.json",
+      "size_bytes": 365509,
+      "sha256": "138df4eff3d7f916bb6c24f9a91bd7e4ec2fae5c7a42bc5526bda1bf7c76330f"
+    },
+    "started_at_utc": "2026-08-27T22:06:51.327595+00:00",
+    "finished_at_utc": "2026-08-27T22:06:52.039678+00:00",
+    "script": {
+      "path": "reports/inspect-factory-ramdisks-v2.py",
+      "sha256": "94924796643c5da7e4a0d981ad718e7f0f687488cd3c4e2bb99f6b068e1f4185"
+    },
+    "lz4": {
+      "version": "1.10.0",
+      "sha256": "b7dccdc84a76f0359c26c67393a6d50b4b073f8bf85078dca7ccf877502b00e5"
+    },
+    "reused_parser_source": {
+      "source": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/boot-analysis/inspect-components.py",
+      "sha256": "f0c572a2ee414e92925c5c1daf9dc5b77787f32646b6888a427d29a3a9954a79",
+      "reused_function_names": [
+        "hash_bytes",
+        "parse_cpio"
+      ],
+      "old_top_level_workflow_executed": false,
+      "additional_complete_archive_and_input_bounds_checked": true
+    },
+    "decompression_timeout_seconds_per_ramdisk": 120,
+    "decompression_limit_bytes_per_ramdisk": 536870912,
+    "all_three_lz4_commands_exited_zero": true,
+    "input_identity_and_hash_rechecked": true,
+    "ramdisks": {
+      "init_boot": {
+        "compressed_size_bytes": 2916992,
+        "compressed_sha256": "764c3ae037089d9ad85b8c5c6175ed04458e2ddacc3a06afe60709c65f9b03e7",
+        "cpio_size_bytes": 5436160,
+        "cpio_sha256": "37743dfaad677c44ad24b63973faa805d56f3ade644891a254e72ed17c171abc",
+        "entry_count": 24,
+        "archive_count": 1,
+        "zero_padding_bytes": 24,
+        "module_count": 0,
+        "module_hash_matches_with_eu": 0,
+        "eu_module_count": 0,
+        "cpio_sha256_matches_eu": true,
+        "compressed_sha256_matches_eu": true,
+        "comparison": {
+          "compared_fields": [
+            "kind",
+            "mode",
+            "uid",
+            "gid",
+            "nlink",
+            "size_bytes",
+            "sha256",
+            "link_target"
+          ],
+          "cpio_content_offsets_not_compared_as_file_metadata": true,
+          "mtime_not_present_in_reused_parser_inventory": true,
+          "equal_entry_count": 24,
+          "changed_entries": [],
+          "added_entries": [],
+          "removed_entries": [],
+          "entry_order_equal": true
+        }
+      },
+      "vendor_boot": {
+        "compressed_size_bytes": 18107362,
+        "compressed_sha256": "e30b3aee0c98510c50f14c8dd3b6cb14457a56aa59640dceacefb7ac30ca0778",
+        "cpio_size_bytes": 48237312,
+        "cpio_sha256": "26c5c433214b1abcbf2e2a8aae0afe73cb555839e17bda0a6b9ba76c1d7fc0af",
+        "entry_count": 440,
+        "archive_count": 1,
+        "zero_padding_bytes": 76,
+        "module_count": 430,
+        "module_hash_matches_with_eu": 430,
+        "eu_module_count": 430,
+        "cpio_sha256_matches_eu": false,
+        "compressed_sha256_matches_eu": false,
+        "comparison": {
+          "compared_fields": [
+            "kind",
+            "mode",
+            "uid",
+            "gid",
+            "nlink",
+            "size_bytes",
+            "sha256",
+            "link_target"
+          ],
+          "cpio_content_offsets_not_compared_as_file_metadata": true,
+          "mtime_not_present_in_reused_parser_inventory": true,
+          "equal_entry_count": 439,
+          "changed_entries": [
+            {
+              "archive": 0,
+              "path": "first_stage_ramdisk/fstab.qcom",
+              "different_fields": [
+                "size_bytes",
+                "sha256"
+              ],
+              "factory": {
+                "kind": 32768,
+                "mode": "0o100644",
+                "uid": 0,
+                "gid": 0,
+                "nlink": 1,
+                "size_bytes": 13661,
+                "sha256": "94a202513e73c5e05233fe6d0ef6d0de7b8fa6264562cff01723ec7f398bc535",
+                "link_target": null
+              },
+              "xiaomi_eu": {
+                "kind": 32768,
+                "mode": "0o100644",
+                "uid": 0,
+                "gid": 0,
+                "nlink": 1,
+                "size_bytes": 13076,
+                "sha256": "1556b7e72c49c2a13ec4172e553279dcca672f2749834ac47630f2774c8a4bb7",
+                "link_target": null
+              }
+            }
+          ],
+          "added_entries": [],
+          "removed_entries": [],
+          "entry_order_equal": true
+        }
+      },
+      "recovery": {
+        "compressed_size_bytes": 30407261,
+        "compressed_sha256": "21ed80d706206420f846315e7da86e6112189ef3a22a8e3b5f95f3dad8748af3",
+        "cpio_size_bytes": 53929472,
+        "cpio_sha256": "13083e8177001c912c0078e03f59c79dccdbe0895a6b62ce2019bae47dfa7cd7",
+        "entry_count": 1036,
+        "archive_count": 1,
+        "zero_padding_bytes": 160,
+        "module_count": 0,
+        "module_hash_matches_with_eu": 0,
+        "eu_module_count": 0,
+        "cpio_sha256_matches_eu": true,
+        "compressed_sha256_matches_eu": true,
+        "comparison": {
+          "compared_fields": [
+            "kind",
+            "mode",
+            "uid",
+            "gid",
+            "nlink",
+            "size_bytes",
+            "sha256",
+            "link_target"
+          ],
+          "cpio_content_offsets_not_compared_as_file_metadata": true,
+          "mtime_not_present_in_reused_parser_inventory": true,
+          "equal_entry_count": 1036,
+          "changed_entries": [],
+          "added_entries": [],
+          "removed_entries": [],
+          "entry_order_equal": true
+        }
+      }
+    }
+  },
+  "vendor_ramdisk_modules": {
+    "factory_module_count": 430,
+    "eu_module_count": 430,
+    "same_path_content_hash_matches": 430,
+    "module_metadata_files": [
+      {
+        "path": "lib/modules/modules.alias",
+        "sha256": "16931d51bdefc1b000df88e0bd3a03d320436d51a602499e8bcaaae00b992841",
+        "size_bytes": 54479,
+        "noncomment_line_count": 1174,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.blocklist",
+        "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+        "size_bytes": 1325,
+        "noncomment_line_count": 60,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.dep",
+        "sha256": "0ab564376d473e7ba7c5e3b1c797b57f93500d43d60eef999072785a76e20b34",
+        "size_bytes": 134144,
+        "noncomment_line_count": 430,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.load",
+        "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "size_bytes": 2404,
+        "noncomment_line_count": 157,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.load.recovery",
+        "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "size_bytes": 7205,
+        "noncomment_line_count": 435,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.softdep",
+        "sha256": "646495a49690d0b527480b26cecf8d8afc5834a9b553b1264412382d2c5aa124",
+        "size_bytes": 926,
+        "noncomment_line_count": 22,
+        "bytes_match_eu": true
+      }
+    ],
+    "ordered_load_lists": [
+      {
+        "path": "lib/modules/modules.load",
+        "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "entry_count": 157,
+        "unique_entry_count": 154,
+        "duplicates": {
+          "bootinfo.ko": 2,
+          "debug_ext.ko": 2,
+          "smcinvoke_dlkm.ko": 2
+        },
+        "missing_module_filenames": [],
+        "ordered_entries_preserved": true,
+        "modules_loaded": false
+      },
+      {
+        "path": "lib/modules/modules.load.recovery",
+        "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "entry_count": 435,
+        "unique_entry_count": 424,
+        "duplicates": {
+          "bootinfo.ko": 2,
+          "debug_ext.ko": 2,
+          "msm_drm.ko": 2,
+          "msm_ext_display.ko": 2,
+          "sync_fence.ko": 2,
+          "msm_hw_fence.ko": 2,
+          "msm_hfi_core.ko": 2,
+          "msm-mmrm.ko": 2,
+          "smcinvoke_dlkm.ko": 2,
+          "synx-driver.ko": 2,
+          "ipclite.ko": 2
+        },
+        "missing_module_filenames": [],
+        "ordered_entries_preserved": true,
+        "modules_loaded": false
+      }
+    ],
+    "loadability_verified": false,
+    "kernel_export_crc_or_signature_trust_verified": false,
+    "dlkm_scope": "vendor_dlkm and system_dlkm are inspected separately; this module count covers only vendor_boot."
+  },
+  "vendor_bootconfig": {
+    "size_bytes": 270,
+    "sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f",
+    "bytes_match_eu": true,
+    "declarations": {
+      "androidboot.hardware": "qcom",
+      "androidboot.memcg": "1",
+      "androidboot.usbcontroller": "a600000.dwc3",
+      "androidboot.load_modules_parallel": "true",
+      "androidboot.hypervisor.protected_vm.supported": "true",
+      "androidboot.hypervisor.version": "gunyah",
+      "androidboot.vendor.qspa": "true",
+      "androidboot.serialconsole": "0"
+    },
+    "live_bootconfig_verified": false
+  },
+  "normal_vendor_fstab": {
+    "archive_path": "first_stage_ramdisk/fstab.qcom",
+    "factory_size_bytes": 13661,
+    "factory_sha256": "94a202513e73c5e05233fe6d0ef6d0de7b8fa6264562cff01723ec7f398bc535",
+    "eu_size_bytes": 13076,
+    "eu_sha256": "1556b7e72c49c2a13ec4172e553279dcca672f2749834ac47630f2774c8a4bb7",
+    "rows_in_each": 61,
+    "non_flag_columns_equal": true,
+    "existing_flag_order_preserved": true,
+    "avb_added_row_count": 21,
+    "avb_keys_added_row_count": 2,
+    "flag_changes": [
+      {
+        "source": "system",
+        "mount_point": "/system",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta_system",
+          "avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey:/avb/u-gsi.avbpubkey:/avb/v-gsi.avbpubkey:/avb/w-gsi.avbpubkey"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "system",
+        "mount_point": "/system",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta_system",
+          "avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey:/avb/t-gsi.avbpubkey:/avb/u-gsi.avbpubkey:/avb/v-gsi.avbpubkey:/avb/w-gsi.avbpubkey"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "system_ext",
+        "mount_point": "/system_ext",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta_system"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "system_ext",
+        "mount_point": "/system_ext",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta_system"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "product",
+        "mount_point": "/product",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta_system"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "product",
+        "mount_point": "/product",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta_system"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "mi_ext",
+        "mount_point": "/mnt/vendor/mi_ext",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "mi_ext",
+        "mount_point": "/mnt/vendor/mi_ext",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "vendor",
+        "mount_point": "/vendor",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "vendor",
+        "mount_point": "/vendor",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "vendor_dlkm",
+        "mount_point": "/vendor_dlkm",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "vendor_dlkm",
+        "mount_point": "/vendor_dlkm",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "system_dlkm",
+        "mount_point": "/system_dlkm",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "system_dlkm",
+        "mount_point": "/system_dlkm",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "odm",
+        "mount_point": "/odm",
+        "filesystem": "ext4",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "odm",
+        "mount_point": "/odm",
+        "filesystem": "erofs",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "/dev/block/by-name/boot",
+        "mount_point": "/boot",
+        "filesystem": "emmc",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "/dev/block/by-name/init_boot",
+        "mount_point": "/init_boot",
+        "filesystem": "emmc",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "/dev/block/by-name/vendor_boot",
+        "mount_point": "/vendor_boot",
+        "filesystem": "emmc",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "/dev/block/by-name/dtbo",
+        "mount_point": "/dtbo",
+        "filesystem": "emmc",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      },
+      {
+        "source": "/dev/block/by-name/recovery",
+        "mount_point": "/recovery",
+        "filesystem": "emmc",
+        "added_flags": [
+          "avb=vbmeta"
+        ],
+        "removed_flags": []
+      }
+    ],
+    "normal_data_rows": [
+      {
+        "line": 91,
+        "source": "/dev/block/by-name/metadata",
+        "mount_point": "/metadata",
+        "filesystem": "f2fs",
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard"
+        ],
+        "fs_mgr_flags": [
+          "wait",
+          "check",
+          "formattable",
+          "first_stage_mount"
+        ],
+        "verification_flags": [],
+        "encryption_flags": []
+      },
+      {
+        "line": 93,
+        "source": "/dev/block/bootdevice/by-name/userdata",
+        "mount_point": "/data",
+        "filesystem": "f2fs",
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard",
+          "reserve_root=32768",
+          "resgid=1065",
+          "fsync_mode=nobarrier",
+          "inlinecrypt",
+          "atgc"
+        ],
+        "fs_mgr_flags": [
+          "latemount",
+          "wait",
+          "check",
+          "formattable",
+          "fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0",
+          "keydirectory=/metadata/vold/metadata_encryption",
+          "metadata_encryption=aes-256-xts:wrappedkey_v0",
+          "quota",
+          "reservedsize=128M",
+          "sysfs_path=/sys/devices/platform/soc/1d84000.ufshc",
+          "checkpoint=fs"
+        ],
+        "verification_flags": [],
+        "encryption_flags": [
+          "fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0",
+          "keydirectory=/metadata/vold/metadata_encryption",
+          "metadata_encryption=aes-256-xts:wrappedkey_v0"
+        ]
+      }
+    ],
+    "encryption_flags_equal_to_eu": true,
+    "fstab_applied": false
+  },
+  "gsi_key_references": {
+    "path_count": 7,
+    "paths": [
+      {
+        "path": "/avb/q-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      },
+      {
+        "path": "/avb/r-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      },
+      {
+        "path": "/avb/s-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      },
+      {
+        "path": "/avb/t-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      },
+      {
+        "path": "/avb/u-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      },
+      {
+        "path": "/avb/v-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      },
+      {
+        "path": "/avb/w-gsi.avbpubkey",
+        "matching_cpio_entries": []
+      }
+    ],
+    "scope": "Only these three CPIO inventories were checked. Key-loading behavior and other stages/filesystems were not examined; this does not establish a stock boot failure or authorize removing key flags.",
+    "key_contents_published": false,
+    "key_flags_removed": false,
+    "stock_boot_failure_inferred": false
+  },
+  "stock_recovery_fstabs": [
+    {
+      "archive_path": "miui.factoryreset.fstab",
+      "size_bytes": 426,
+      "sha256": "e5d88b7eabc695bc3ed0d4149afac495f0b266abbe2204ea4a7554e1f31fd4e8",
+      "bytes_match_eu": true,
+      "row_count": 2,
+      "data_and_metadata_rows": [
+        {
+          "line": 4,
+          "source": "/dev/block/bootdevice/by-name/userdata",
+          "mount_point": "/data",
+          "filesystem": "f2fs",
+          "mount_options": [
+            "noatime",
+            "nosuid",
+            "nodev",
+            "fsync_mode=nobarrier",
+            "reserve_root=32768",
+            "resgid=1065"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "check",
+            "fileencryption=ice",
+            "wrappedkey",
+            "quota",
+            "reservedsize=128M",
+            "latemount"
+          ],
+          "verification_flags": [],
+          "encryption_flags": [
+            "fileencryption=ice",
+            "wrappedkey"
+          ]
+        }
+      ],
+      "logical_rows": [],
+      "applied_or_adopted_for_twrp": false
+    },
+    {
+      "archive_path": "system/etc/recovery.fstab",
+      "size_bytes": 3709,
+      "sha256": "daccf8b606e5fbb90537ae9f023d8d9a05c5a8f0d8283026e7931a92a6ced9b1",
+      "bytes_match_eu": true,
+      "row_count": 11,
+      "data_and_metadata_rows": [
+        {
+          "line": 34,
+          "source": "/dev/block/bootdevice/by-name/metadata",
+          "mount_point": "/metadata",
+          "filesystem": "f2fs",
+          "mount_options": [
+            "noatime",
+            "nosuid",
+            "nodev",
+            "discard"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "check",
+            "formattable",
+            "wrappedkey",
+            "first_stage_mount"
+          ],
+          "verification_flags": [],
+          "encryption_flags": [
+            "wrappedkey"
+          ]
+        },
+        {
+          "line": 35,
+          "source": "/dev/block/bootdevice/by-name/userdata",
+          "mount_point": "/data",
+          "filesystem": "f2fs",
+          "mount_options": [
+            "noatime",
+            "nosuid",
+            "nodev",
+            "discard",
+            "reserve_root=32768",
+            "resgid=1065",
+            "fsync_mode=nobarrier"
+          ],
+          "fs_mgr_flags": [
+            "latemount",
+            "wait",
+            "check",
+            "formattable",
+            "fileencryption=ice",
+            "wrappedkey",
+            "keydirectory=/metadata/vold/metadata_encryption",
+            "quota",
+            "reservedsize=128M",
+            "sysfs_path=/sys/devices/platform/soc/1d84000.ufshc",
+            "checkpoint=fs"
+          ],
+          "verification_flags": [],
+          "encryption_flags": [
+            "fileencryption=ice",
+            "wrappedkey",
+            "keydirectory=/metadata/vold/metadata_encryption"
+          ]
+        }
+      ],
+      "logical_rows": [
+        {
+          "line": 29,
+          "source": "system",
+          "mount_point": "/system",
+          "filesystem": "ext4",
+          "mount_options": [
+            "ro",
+            "barrier=1",
+            "discard"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "slotselect",
+            "avb=vbmeta_system",
+            "logical",
+            "first_stage_mount"
+          ],
+          "verification_flags": [
+            "avb=vbmeta_system"
+          ],
+          "encryption_flags": []
+        },
+        {
+          "line": 30,
+          "source": "system_ext",
+          "mount_point": "/system_ext",
+          "filesystem": "ext4",
+          "mount_options": [
+            "ro",
+            "barrier=1",
+            "discard"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "slotselect",
+            "avb=vbmeta_system",
+            "logical",
+            "first_stage_mount"
+          ],
+          "verification_flags": [
+            "avb=vbmeta_system"
+          ],
+          "encryption_flags": []
+        },
+        {
+          "line": 31,
+          "source": "product",
+          "mount_point": "/product",
+          "filesystem": "ext4",
+          "mount_options": [
+            "ro",
+            "barrier=1",
+            "discard"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "slotselect",
+            "avb=vbmeta_system",
+            "logical",
+            "first_stage_mount"
+          ],
+          "verification_flags": [
+            "avb=vbmeta_system"
+          ],
+          "encryption_flags": []
+        },
+        {
+          "line": 32,
+          "source": "vendor",
+          "mount_point": "/vendor",
+          "filesystem": "ext4",
+          "mount_options": [
+            "ro",
+            "barrier=1",
+            "discard"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "slotselect",
+            "avb",
+            "logical",
+            "first_stage_mount"
+          ],
+          "verification_flags": [
+            "avb"
+          ],
+          "encryption_flags": []
+        },
+        {
+          "line": 33,
+          "source": "odm",
+          "mount_point": "/odm",
+          "filesystem": "ext4",
+          "mount_options": [
+            "ro",
+            "barrier=1",
+            "discard"
+          ],
+          "fs_mgr_flags": [
+            "wait",
+            "slotselect",
+            "avb",
+            "logical",
+            "first_stage_mount"
+          ],
+          "verification_flags": [
+            "avb"
+          ],
+          "encryption_flags": []
+        }
+      ],
+      "applied_or_adopted_for_twrp": false
+    }
+  ],
+  "recovery_fstab_limit": "The recovery fstab retains ext4-only logical declarations and fileencryption=ice/wrappedkey, unlike the normal vendor first-stage alternatives and explicit encryption algorithms. These are captured literals, not a ready TWRP fstab or proof of recovery decryption.",
+  "literal_boot_service_inventory": [
+    {
+      "ramdisk": "init_boot",
+      "name": "snapuserd",
+      "source_rc": "system/etc/init/snapuserd.rc",
+      "executable_path": "/system/bin/snapuserd",
+      "present_in_same_cpio": true,
+      "member_sha256": "1807bcb1c9080b455472f1cb9933b8176cb776e2141262c071009b5e7f2f779f",
+      "member_kind": 40960,
+      "executed": false
+    },
+    {
+      "ramdisk": "init_boot",
+      "name": "snapuserd_proxy",
+      "source_rc": "system/etc/init/snapuserd.rc",
+      "executable_path": "/system/bin/snapuserd",
+      "present_in_same_cpio": true,
+      "member_sha256": "1807bcb1c9080b455472f1cb9933b8176cb776e2141262c071009b5e7f2f779f",
+      "member_kind": 40960,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "factoryreset",
+      "source_rc": "miui.factoryreset.rc",
+      "executable_path": "/system/bin/recovery",
+      "present_in_same_cpio": true,
+      "member_sha256": "1e045024db9ac7a6dc4b05ec25a0bad63b01da1d39062f5784f3610e84c2c01d",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "vendor.boot-qti",
+      "source_rc": "system/etc/init/android.hardware.boot-service.qti.recovery.rc",
+      "executable_path": "/system/bin/hw/android.hardware.boot-service.qti.recovery",
+      "present_in_same_cpio": true,
+      "member_sha256": "49aa77a960bf6b22ab804fa68c54f51f18907effad9d968ca1fcd051ea0fb8b6",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "vendor.fastboot-default",
+      "source_rc": "system/etc/init/android.hardware.fastboot-service.example_recovery.rc",
+      "executable_path": "/system/bin/hw/android.hardware.fastboot-service.example_recovery",
+      "present_in_same_cpio": true,
+      "member_sha256": "4cd0f133db6a5ff2831bc440db91325beb2be2e064d6c67ec0f6ef65681cd67c",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "vendor.health-recovery",
+      "source_rc": "system/etc/init/android.hardware.health-service.qti_recovery.rc",
+      "executable_path": "/system/bin/hw/android.hardware.health-service.qti_recovery",
+      "present_in_same_cpio": true,
+      "member_sha256": "f9959c404495ab6ae0370dca8bd7e6eed2c75ff741502f503c1d1d07346134dd",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "ueventd",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "executable_path": "/system/bin/ueventd",
+      "present_in_same_cpio": true,
+      "member_sha256": "bb54068aea85faa7e487530083366be9962390af822e4c71ef1aca7033c83e66",
+      "member_kind": 40960,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "charger",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "executable_path": "/system/bin/charger",
+      "present_in_same_cpio": false,
+      "member_sha256": null,
+      "member_kind": null,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "recovery",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "executable_path": "/system/bin/recovery",
+      "present_in_same_cpio": true,
+      "member_sha256": "1e045024db9ac7a6dc4b05ec25a0bad63b01da1d39062f5784f3610e84c2c01d",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "adbd",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "executable_path": "/system/bin/adbd",
+      "present_in_same_cpio": true,
+      "member_sha256": "27db3dffd7a25c2720299188216264f9abdd6648317068a54cab617bef5c31ce",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "fastbootd",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "executable_path": "/system/bin/fastbootd",
+      "present_in_same_cpio": true,
+      "member_sha256": "cfd66c12c7dfc23f6402c2fcf99756e12ff77f15f49b4602f6d47b5eafddbf5e",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "logd",
+      "source_rc": "system/etc/init/logd.rc",
+      "executable_path": "/system/bin/logd",
+      "present_in_same_cpio": true,
+      "member_sha256": "0a418d03a8ed9f3b3e90f84fb3782495882aa054e182a740a78a95be90158f7c",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "logd-reinit",
+      "source_rc": "system/etc/init/logd.rc",
+      "executable_path": "/system/bin/logd",
+      "present_in_same_cpio": true,
+      "member_sha256": "0a418d03a8ed9f3b3e90f84fb3782495882aa054e182a740a78a95be90158f7c",
+      "member_kind": 32768,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "logd-auditctl",
+      "source_rc": "system/etc/init/logd.rc",
+      "executable_path": "/system/bin/auditctl",
+      "present_in_same_cpio": false,
+      "member_sha256": null,
+      "member_kind": null,
+      "executed": false
+    },
+    {
+      "ramdisk": "recovery",
+      "name": "servicemanager",
+      "source_rc": "system/etc/init/servicemanager.recovery.rc",
+      "executable_path": "/system/bin/servicemanager",
+      "present_in_same_cpio": true,
+      "member_sha256": "4f7432a2da51b39ccb4f736456a8fa444d22278a35421bbb7f59a9916640d71c",
+      "member_kind": 32768,
+      "executed": false
+    }
+  ],
+  "unresolved_literal_init_dependencies": [
+    {
+      "ramdisk": "recovery",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "referenced_path": "/init.recovery.${ro.hardware}.rc",
+      "contains_unresolved_property": true,
+      "present_in_same_cpio": false,
+      "runtime_failure_inferred": false
+    },
+    {
+      "ramdisk": "recovery",
+      "source_rc": "system/etc/init/hw/init.rc",
+      "referenced_path": "/system/bin/charger",
+      "contains_unresolved_property": false,
+      "present_in_same_cpio": false,
+      "runtime_failure_inferred": false
+    },
+    {
+      "ramdisk": "recovery",
+      "source_rc": "system/etc/init/logd.rc",
+      "referenced_path": "/system/bin/auditctl",
+      "contains_unresolved_property": false,
+      "present_in_same_cpio": false,
+      "runtime_failure_inferred": false
+    },
+    {
+      "ramdisk": "recovery",
+      "source_rc": "system/etc/ueventd.rc",
+      "referenced_path": "/vendor/etc/ueventd.rc",
+      "contains_unresolved_property": false,
+      "present_in_same_cpio": false,
+      "runtime_failure_inferred": false
+    },
+    {
+      "ramdisk": "recovery",
+      "source_rc": "system/etc/ueventd.rc",
+      "referenced_path": "/odm/etc/ueventd.rc",
+      "contains_unresolved_property": false,
+      "present_in_same_cpio": false,
+      "runtime_failure_inferred": false
+    }
+  ],
+  "independent_output_readback": {
+    "receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-readback-v1/receipt.json",
+      "size_bytes": 26402,
+      "sha256": "fbdc7a9262b9fd6cf60f89d8e6a55fdeaf082109b3237e3d5ab72a55d37d990b"
+    },
+    "artifact_count_rehashed": 31,
+    "artifacts_total_bytes_rehashed": 108712012,
+    "cpio_member_contents_rehashed": 1500,
+    "all_output_hashes_match": true,
+    "cpio_parser_reused": false
+  },
+  "wrapper_attempt_history": {
+    "trusted_lz4_exit_code": 44,
+    "cause": "Buffered Python cursor rewind did not rewind the descriptor passed to LZ4; no firmware corruption was inferred.",
+    "fd_offset_diagnostic": {
+      "python_logical_offset": 0,
+      "inherited_os_descriptor_offset": 4096,
+      "legacy_lz4_magic_correct": true
+    },
+    "original_failed_script_sha256": "2392e644c72a662408edd23623ea9ef571154aa0333d8fc2e1d925fb59c57ca8",
+    "original_failed_log_sha256": "558354ffa70f49880ab279c2a1ed24923f206bcf95e4b91fa9af47999a9d9077",
+    "regression_before_fix_log_sha256": "89d879bf799d3b8a09ad7094f426686fb6b41bef0d369299b6805c3f15a58050",
+    "failed_staging_preserved": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/.ramdisk-comparison-f45t6hyj",
+    "fixed_attempt": "ramdisk-comparison-v2",
+    "no_success_claimed_for_v1": true,
+    "fixed_attempt_receipt_sha256": "138df4eff3d7f916bb6c24f9a91bd7e4ec2fae5c7a42bc5526bda1bf7c76330f",
+    "fixed_attempt_child_stdin_offset_bytes": 0,
+    "firmware_corrupt_claimed": false
+  },
+  "private_offline_validation": {
+    "wrapper_test_count": 10,
+    "wrapper_tests_log": {
+      "path": "reports/factory-ramdisk-wrapper-tests-v2.log",
+      "size_bytes": 1643,
+      "sha256": "13df93b81b41c0701629598edae8cabae93a4061e6dc1bffbd710433edd1ae56"
+    },
+    "reused_parser_test_count": 14,
+    "reused_parser_tests_log": {
+      "path": "reports/factory-reused-cpio-parser-tests-v1.log",
+      "size_bytes": 1517,
+      "sha256": "f95b9ec4ea77b142075d0cf095e56f8aa5c446fc17638596484753b481d9ef09"
+    },
+    "tests_require_phone": false,
+    "tests_execute_firmware": false
+  },
+  "verification_boundaries": {
+    "phone_accessed": false,
+    "guest_accessed": false,
+    "images_mounted": false,
+    "cpio_paths_or_links_materialized": false,
+    "firmware_executed": false,
+    "fstab_or_init_declarations_applied": false,
+    "build_inputs_changed": false,
+    "twrp_fstab_adopted": false,
+    "custom_recovery_built": false,
+    "recovery_decryption_verified": false,
+    "rom_boot_or_feature_compatibility_verified": false,
+    "physical_partition_sizes_verified": false,
+    "oem_origin_or_trust_root_authenticated": false,
+    "raw_firmware_or_key_contents_published": false
+  },
+  "related_records": [
+    "research/factory-firmware-intake.json",
+    "research/partition-metadata.json",
+    "research/boot-contract.json",
+    "research/recovery-plan.json"
+  ]
+}
