@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "discovery": {
+    "user_supplied_thread": "https://xdaforums.com/t/dev-xiaomi-17-ultra-nezha-lineageos-bring-up-started.4785557/",
+    "original_author": "kevte89!",
+    "original_author_stopped_separate_effort_on": "2026-06-25",
+    "author_confirmation": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/#post-90639594"
+  },
+  "successor_release": {
+    "url": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/",
+    "author": "JohnTheFarm3r",
+    "device": "nezha",
+    "rom": "LineageOS 23.2",
+    "android": "16",
+    "latest_changelog_date_observed": "2026-08-11",
+    "download_page": "https://drive.google.com/file/d/1NcaeVLukOuuLYwnsO4GwFgPCdVGP5sjn/view",
+    "filename_observed": "LineageOS-Xiaomi17U_nezha-fastboot-20260811.zip",
+    "archive_downloaded": false,
+    "archive_hash_verified": false,
+    "archive_inspected": false,
+    "tested_on_this_phone": false,
+    "adopted_as_evolution_source": false
+  },
+  "source_availability": {
+    "device_tree_public": false,
+    "basis": "Author explicitly states the device tree is private; no private source access attempted.",
+    "statement_date": "2026-08-10",
+    "statement_url": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/page-3#post-90691410",
+    "kernel_reference_linked_by_author": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/tree/popsicle-w-oss",
+    "kernel_link_proves_exact_nezha_build_inputs": false,
+    "complete_reproducible_source_manifest_obtained": false,
+    "camera_port_source_obtained": false
+  },
+  "firmware_baselines": {
+    "release_requires": "OS3.0.307.0.WPACNXM",
+    "release_requires_unmodified_china_firmware": true,
+    "this_workspace_observed_label": "OS3.0.309.0.WPACNXM",
+    "this_workspace_input_kind": "modified Xiaomi.eu",
+    "equivalence_established": false,
+    "extra_global_modem_attachment_applicable_to_cn_device": false,
+    "firmware_change_authorized_or_performed": false
+  },
+  "reported_feature_leads": [
+    {
+      "feature": "Substantial Xiaomi and Leica Camera port",
+      "status": "maintainer_report_only",
+      "source": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/#post-90638370",
+      "evolution_device_tested": false
+    },
+    {
+      "feature": "Camera Session Manager and third-party camera service integration",
+      "status": "maintainer_report_only",
+      "source": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/page-2#post-90656476",
+      "evolution_device_tested": false
+    },
+    {
+      "feature": "Nezha power-profile overlay correction",
+      "status": "maintainer_report_only",
+      "source": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/page-2#post-90666150",
+      "evolution_device_tested": false
+    }
+  ],
+  "private_receipt": {
+    "path": "reports/community-review-20260827/receipt.json",
+    "sha256": "618502342022a3e59cdc3aca936d15c661845d44ccd93dd6af6b2f37765d3a36"
+  },
+  "safety": {
+    "phone_modified": false,
+    "maintainer_contacted": false,
+    "private_access_attempted": false,
+    "firmware_installer_executed": false,
+    "global_modem_adopted": false,
+    "integrity_hiding_or_root_patches_adopted": false
+  },
+  "limitations": [
+    "Published feature reports about another ROM are useful leads, not reproduced Evolution X hardware results.",
+    "A downloadable image does not provide a reviewable product tree or establish compatibility with the current firmware baseline.",
+    "The user's original bring-up thread and the later release are distinct efforts with distinct authors."
+  ]
+}
