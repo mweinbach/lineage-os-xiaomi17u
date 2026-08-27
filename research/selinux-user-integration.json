@@ -1,0 +1,310 @@
+{
+  "schema_version": 1,
+  "device": {"codename": "nezha", "hardware_region": "CN"},
+  "snapshot": {"name": "user-v7-framework-with-exact-factory-vendor-v2", "compiler_started_at": "2026-08-27T23:02:23.643477+00:00", "compiler_completed_at": "2026-08-27T23:02:40.905496+00:00", "historical_result_not_replaced_by_later_source_hardening": true},
+  "provenance": {"factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b", "factory_source_kind": "user-provided China fastboot TGZ", "source_url": null, "origin_verified": false, "oem_trust_root_authenticated": false, "internal_avb_pass_authenticates_origin": false, "factory_capture_record": "research/factory-framework-contract.json", "historical_userdebug_record": "research/factory-framework-contract.json", "source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml"},
+  "receipts": {
+    "user_build": {"path": "reports/nezha-user-policy-v7-receipt.json", "sha256": "5dff46fcbbbe5ffd0d8a8a046ac93c070b61ebf2c63dc70c2ae3dd573df25fc8", "size_bytes": 68779},
+    "user_preflight": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-user-preflight-v2b/receipt.json", "sha256": "63fb87053742384a588c844bc60723aac9e0400993d46bd0e3525555f2b9bfc2", "size_bytes": 9954},
+    "user_check": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-user-check-v2/receipt.json", "sha256": "e544850869664a710bdf3ab1eb34975fe309723055a35a2bbe5e53b4139ed98e", "size_bytes": 41655},
+    "user_readback": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-user-check-v2/readback-receipt.json", "sha256": "758be8de499b9815fd48856469e307c76b5e7ef698081c55fa283a6f48357f4f", "size_bytes": 4531},
+    "policy_capture": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/policy-receipt.json", "sha256": "e9b44133f73254493736496d1fb50b7402b96f3c3b395bbd042b0b35b35fedb3", "size_bytes": 74014},
+    "userdebug_check": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-check-v1/receipt.json", "sha256": "f03d74c6380c9dcba51b29247c06673f693a81d826bed95d3957decd7fbcef29", "size_bytes": 29796},
+    "variant_source": {"path": "artifacts/source-contracts/nezha-policy-variant-v2/receipt.json", "sha256": "de232d89435f9f1bc263359ea32e53736259a9de1e8d3c814cd84a64e82e6cf4", "size_bytes": 3552},
+    "treble_source": {"path": "artifacts/source-contracts/nezha-treble-labeling-v1/receipt.json", "sha256": "7f4bdfa6bc3959584d690dfde8672ed8b8a4d425a9d67fc0aaf9842cd443b984", "size_bytes": 4228},
+    "su_source": {"path": "artifacts/source-contracts/nezha-su-permissive-source-v1/receipt.json", "sha256": "0d22a0000d53b52bf6158bc1672dada1fadf31641fefcc8c70fd6560c7368c2e", "size_bytes": 3706},
+    "init_mapping_analysis": {"path": "artifacts/source-contracts/nezha-init-mapping-analysis-v1/final-receipt-v2.json", "sha256": "717a22bdad8ccc2665669013d7757ce0cc103f2a9c1132acd0966d0fb6d99a11", "size_bytes": 16789},
+    "init_mapping_summary": {"path": "artifacts/source-contracts/nezha-init-mapping-analysis-v1/summary-v2.json", "sha256": "f0463fd7fa270458aec4764a32254e57333bc2111d25dd13ea764aa6f30f1b92", "size_bytes": 19401},
+    "init_helper_source": {"path": "artifacts/source-contracts/nezha-init-helper-sources-v1/receipt.json", "sha256": "0702d45dd906b4d5b0c6d24f68f07fff9a6d0aa44ae8ae4de8bd296a2e71360e", "size_bytes": 5836},
+    "init_helper_reference_search": {"path": "artifacts/source-contracts/nezha-init-helper-sources-v1/helper-grep-receipt.json", "sha256": "1b83fbccbe2b85818f096d236cc5dd829fde872e0614311078e46799a7b4a088", "size_bytes": 1344},
+    "isolated_compute_analysis": {"path": "artifacts/source-contracts/nezha-isolated-compute-analysis-v1/receipt.json", "sha256": "87041dffaf1d1190214a90f10eb5ed506acda166437fa76fedef9297f55d391c", "size_bytes": 13963},
+    "isolated_compute_permissions": {"path": "artifacts/source-contracts/nezha-isolated-compute-analysis-v1/permission-audit.json", "sha256": "ec8bdafd1a3b889036a6152e25ee0ac9d0254797bf2aa6e0d18c3f69a2041586", "size_bytes": 15498},
+    "binder_analysis": {"path": "artifacts/source-contracts/nezha-binder-role-analysis-v1/receipt.json", "sha256": "e69ba4901edb15cd8e59fcdfa27ec436ccb136a130c0a7372482232c78a00755", "size_bytes": 431919},
+    "binder_users_corroboration": {"path": "artifacts/source-contracts/nezha-binder-role-analysis-v1/users-corroboration.json", "sha256": "8ad965bbb9cd16a1c083726dd88a721559e22b1031c3c5a2076f8cd966c69903", "size_bytes": 1308}
+  },
+  "source_projects": {
+    "system/sepolicy": {"commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "repository": "https://github.com/Evolution-X/system_sepolicy"},
+    "build/soong": {"commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154", "repository": "https://github.com/Evolution-X/build_soong"},
+    "build/make": {"commit": "a438ca40c6ed779042f806142b1165ba1360a7b2", "repository": "https://github.com/Evolution-X/build"},
+    "system/core": {"commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1", "repository": "https://github.com/Evolution-X/system_core"},
+    "external/selinux": {"commit": "085c131ad1b984bfa8ffdafee7a976e9d89f403c", "repository": "https://android.googlesource.com/platform/external/selinux"}
+  },
+  "source_files": [
+    {"project": "build/make", "path": "core/Makefile", "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2", "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e", "size_bytes": 378285, "receipt": "treble_source"},
+    {"project": "build/make", "path": "core/soong_config.mk", "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2", "sha256": "7d333ed88412e94d77ab367d4f2eb883fd2795b3bec841a88f4bba476987580b", "size_bytes": 49437, "receipt": "treble_source"},
+    {"project": "build/soong", "path": "android/config.go", "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154", "sha256": "07d5779f92c93858e6996e9609ce49e8b8f882a66c195d82698066fe0198b011", "size_bytes": 86467, "receipt": "treble_source"},
+    {"project": "build/soong", "path": "filesystem/android_device.go", "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154", "sha256": "0b1e84f592dd2e5c3f0f9ba84aeaf81dcf71a1b87057c8cfba443f503ab5d8c7", "size_bytes": 94011, "receipt": "treble_source"},
+    {"project": "system/sepolicy", "path": "tests/treble_labeling_tests.py", "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "sha256": "6d365c2f83990924eb010134d27917cedb6673c99d08f58d0e3a7fa5f1e1e835", "size_bytes": 20004, "receipt": "treble_source"},
+    {"project": "system/sepolicy", "path": "private/su.te", "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "sha256": "aa90a463c2e7a98f749c474f08c864be65467bca8118481de0388e8ce85e924f", "size_bytes": 5255, "receipt": "su_source"},
+    {"project": "system/sepolicy", "path": "build/soong/policy.go", "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "sha256": "06a99dde2e42d0d8a3aed07990d4d6ebe79f8f153f59e498369c32504ccf9971", "size_bytes": 19164, "receipt": "su_source"},
+    {"project": "system/sepolicy", "path": "build/soong/compat_cil.go", "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "sha256": "4f7e451908e48091c6388afcb92c02266f99f9bb89a6b2475c1a41a95586647f", "size_bytes": 7425, "receipt": "su_source"},
+    {"project": "system/sepolicy", "path": "Android.bp", "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "sha256": "17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8", "size_bytes": 43467, "receipt": "su_source"},
+    {"project": "system/core", "path": "rootdir/init.rc", "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1", "sha256": "ab5c2219e622d9ab3753e73b74dfe2f71d87d1431d235cc029b538ccf6f9654d", "size_bytes": 60783, "receipt": "init_helper_source"}
+  ],
+  "framework_build": {"product": "lineage_nezha", "release": "bp4a", "variant": "user", "passed": true, "receipt": "user_build", "out": "/work/out/nezha-user-policy-20260827T2220Z", "prior_out": "/work/out/nezha-framework-20260827T1835Z", "eleven_prior_artifacts_unchanged": true, "is_complete_rom_build": false},
+  "observed_configuration": {
+    "source_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/soong.lineage_nezha.variables",
+    "readback": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-user-check-v2/guest-artifacts/configuration/soong.lineage_nezha.variables", "sha256": "e00daa42d329e0c8495079854554dd1f6fe38c348da1a22bc2dfc4381545f3f7", "size_bytes": 339023},
+    "values": {"DeviceName": "nezha", "DeviceProduct": "lineage_nezha", "Debuggable": false, "Eng": false, "Platform_sdk_version": 36, "PlatformSepolicyVersion": "202504", "BoardSepolicyVers": "202504", "SelinuxIgnoreNeverallows": false, "EnforceSELinuxTrebleLabeling": false, "SELinuxTrebleLabelingTrackingListFile": "", "BoardVendorSepolicyDirs": [], "BoardOdmSepolicyDirs": [], "SystemExtPublicSepolicyDirs": [], "SystemExtPrivateSepolicyDirs": [], "ProductPublicSepolicyDirs": [], "ProductPrivateSepolicyDirs": []},
+    "snapshot_not_post_hardening_configuration": true
+  },
+  "strict_check": {
+    "receipt": "user_check",
+    "input_count": 10,
+    "framework_input_count": 7,
+    "factory_input_count": 3,
+    "input_bytes": 5361195,
+    "input_order": [
+      {"runtime_path": "/system/etc/selinux/plat_sepolicy.cil", "sha256": "ab01b223e9004c41964330b1b7ebe9b0a7a3250bda622eeecc988bc1bce21961", "size_bytes": 3012624, "origin": "generated-evolution-framework"},
+      {"runtime_path": "/system/etc/selinux/mapping/202504.cil", "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b", "size_bytes": 229237, "origin": "generated-evolution-framework"},
+      {"runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil", "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b", "size_bytes": 1, "origin": "generated-evolution-framework"},
+      {"runtime_path": "/system_ext/etc/selinux/mapping/202504.cil", "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b", "size_bytes": 1, "origin": "generated-evolution-framework"},
+      {"runtime_path": "/product/etc/selinux/product_sepolicy.cil", "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b", "size_bytes": 1, "origin": "generated-evolution-framework"},
+      {"runtime_path": "/product/etc/selinux/mapping/202504.cil", "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b", "size_bytes": 1, "origin": "generated-evolution-framework"},
+      {"runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil", "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8", "size_bytes": 396303, "origin": "exact-captured-factory"},
+      {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500", "size_bytes": 1708593, "origin": "exact-captured-factory"},
+      {"runtime_path": "/odm/etc/selinux/odm_sepolicy.cil", "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191", "size_bytes": 14292, "origin": "exact-captured-factory"},
+      {"runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil", "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b", "size_bytes": 142, "origin": "generated-evolution-framework"}
+    ],
+    "tool_build_receipt": "user_build",
+    "tools": {
+      "secilc": {"path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/secilc", "sha256": "1481d17c86dfc4b0ac47bd150f604425e718386379b690d06f60e417376b9a34", "size_bytes": 1368080, "elf_machine": 62},
+      "sepolicy-analyze": {"path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/sepolicy-analyze", "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669", "size_bytes": 543160, "elf_machine": 62},
+      "nsjail": {"path": "/work/evolution/prebuilts/build-tools/linux-x86/bin/nsjail", "sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280", "size_bytes": 284176},
+      "sandbox-observer": {"path": "/usr/bin/python3.12", "sha256": "1401f5c1ddd9e8f9d77622113a8d04b5f7ef57c0e3f40dd29db248a5aa91622e", "size_bytes": 7845048, "elf_machine": 183, "provenance": "Existing Ubuntu guest Python executable; observer only, not a policy compiler"}
+    },
+    "host_driver": {"path": "reports/check-evolution-user-factory-policy-v2.py", "sha256": "b7852e9e6785774d8c9397a91b968878562be078d7fd8efd0e50130bb1421cb7", "size_bytes": 26212},
+    "guest_driver_sha256": "4ac4e5c3192d3faa5aa8f65c1edddd07743a0d9b316206cd33c97637695cdf8a",
+    "compiler_flags": ["-m", "-M", "true", "-G", "-c", "30"],
+    "neverallow_checks_disabled": false,
+    "input_files_omitted": 0,
+    "source_or_policy_rules_changed": false,
+    "stock_precompiled_policy_used": false,
+    "exit_code": 255,
+    "passed": false,
+    "binary_outputs": [],
+    "permissive_analysis": null,
+    "diagnostic_log": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-user-check-v2/guest-artifacts/logs/compile-evolution-user-factory-strict.stderr", "sha256": "05e912ac0c74087ac314333958d44782f51017d56645b77d76980285fe0f4fab", "size_bytes": 4316},
+    "displayed_allow_locations": 11,
+    "assertion_sites": 5,
+    "displayed_locations_are_complete_conflict_inventory": false,
+    "diagnostics": [
+      {
+        "assertion": {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 6044},
+        "displayed_allow_locations": [
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 43169,
+            "source_location": {"path": "system/sepolicy/private/isolated_compute_app.te", "line": 17}
+          }
+        ],
+        "abbreviated_matching_rules": null
+      },
+      {
+        "assertion": {"runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil", "line": 5931},
+        "displayed_allow_locations": [
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 41740,
+            "source_location": {"path": "system/sepolicy/private/init_dev_config.te", "line": 10}
+          }
+        ],
+        "abbreviated_matching_rules": null
+      },
+      {
+        "assertion": {"runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil", "line": 5746},
+        "displayed_allow_locations": [
+          {
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "line": 41720,
+            "source_location": {"path": "system/sepolicy/private/init_dev_config.te", "line": 9}
+          }
+        ],
+        "abbreviated_matching_rules": null
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+          "line": 24642,
+          "source_location": {"path": "system/sepolicy/private/domain.te", "line": 2224}
+        },
+        "displayed_allow_locations": [
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 5536},
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 5540},
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 7728},
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 11491}
+        ],
+        "abbreviated_matching_rules": {"displayed": 4, "total": 35}
+      },
+      {
+        "assertion": {
+          "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+          "line": 24637,
+          "source_location": {"path": "system/sepolicy/private/domain.te", "line": 2223}
+        },
+        "displayed_allow_locations": [
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 5537},
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 5539},
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 7729},
+          {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 11492}
+        ],
+        "abbreviated_matching_rules": {"displayed": 4, "total": 32}
+      }
+    ]
+  },
+  "guards": {
+    "input_files_before_after": 10,
+    "framework_source_files_before_after": 7,
+    "tools_before_after": 4,
+    "provenance_files_before_after": 3,
+    "historical_artifacts_before_after": 11,
+    "all_hashes_and_identities_unchanged": true,
+    "source_projects_clean_before_and_after": {
+      "external/selinux": {"head": "085c131ad1b984bfa8ffdafee7a976e9d89f403c", "tracked_worktree_clean": true},
+      "system/sepolicy": {"head": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "tracked_worktree_clean": true}
+    },
+    "errors": [],
+    "android_source_modified": false,
+    "android_out_modified": false,
+    "new_build_or_vm_started_by_check": false,
+    "phone_accessed": false,
+    "firmware_executed": false
+  },
+  "sandbox": {
+    "validation_directory": "/work/validation/nezha-selinux-evolution-user-factory-v2",
+    "source_and_both_outs_and_inputs_read_only": true,
+    "mount_flags_observed_by_trusted_python_before_compile": true,
+    "observed_read_only": {"/": true, "/work/evolution": true, "/work/out/nezha-user-policy-20260827T2220Z": true, "/work/out/nezha-framework-20260827T1835Z": true, "/work/validation/nezha-selinux-evolution-user-factory-v2/inputs": true, "/work/validation/nezha-selinux-evolution-user-factory-v2/provenance": true, "/work/validation/nezha-selinux-evolution-user-factory-v2": false, "/tmp": false},
+    "observed_matches_expected": true,
+    "namespace_tmp_backing_path": "/work/validation/nezha-selinux-evolution-user-factory-v2/tmp",
+    "writable_backing_paths": ["/work/validation/nezha-selinux-evolution-user-factory-v2"],
+    "observer_stdout": {"path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/selinux-evolution-user-check-v2/guest-artifacts/logs/observe-sandbox-mount-flags.stdout", "sha256": "4f30e20186f2ef3f1a9ac5b0e09d5ca0e4df6155f9bbb857d48d9736c0efd869", "size_bytes": 806},
+    "compiler_sandbox_recipe_preserved_in_receipt": true
+  },
+  "variant_comparison": {
+    "historical_userdebug_assertion_sites": 21,
+    "historical_userdebug_displayed_locations": 27,
+    "user_assertion_sites": 5,
+    "user_displayed_locations": 11,
+    "debug_guarded_sites_no_longer_reported": {"llkd_ptrace": 15, "codec2_su_tcp": 1},
+    "only_one_of_seven_framework_input_hashes_changed": true,
+    "changed_runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+    "same_factory_vendor_odm_hashes": true,
+    "historical_receipts_preserved": true,
+    "user_variant_is_compatible": false
+  },
+  "permissive_declaration": {
+    "declared_types": ["su"],
+    "top_level_declaration_count_across_ten_inputs": 1,
+    "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+    "line": 4231,
+    "input_sha256": "ab01b223e9004c41964330b1b7ebe9b0a7a3250bda622eeecc988bc1bce21961",
+    "normalized_form_sha256": "b50b79fe33c8a03de84b89a3a9fa7dd4d0c7ab847f3e6a52f656b38687621199",
+    "source": {"project": "system/sepolicy", "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "path": "private/su.te", "line": 137, "sha256": "aa90a463c2e7a98f749c474f08c864be65467bca8118481de0388e8ce85e924f", "size_bytes": 5255, "userdebug_macro_closes_at_line": 134, "declaration_is_outside_variant_guard": true},
+    "binary_analysis_performed": false,
+    "runtime_enforcement_inferred": false,
+    "historical_v7_input_modified": false,
+    "scope": "Declaration in the preserved failed user-v7 assembly, not a compiled or loaded binary result."
+  },
+  "upstream_permissive_check_limits": {"consumer_path": "system/sepolicy/build/soong/policy.go", "consumer_line": 542, "checks_only_nondebuggable_nonrecovery_binary": true, "filter_allowlist_line": 548, "precompiled_user_allowlist": ["backuptool", "su"], "precompiled_allowlist_path": "system/sepolicy/Android.bp", "precompiled_allowlist_line": 718, "base_platform_user_allowlist": ["su"], "base_platform_allowlist_line": 815, "compatibility_generator_path": "system/sepolicy/build/soong/compat_cil.go", "compatibility_ignore_neverallow_line": 169, "compatibility_allowlist_line": 171, "compatibility_target_is_not_our_strict_compiler": true, "unfiltered_permissive_analysis_required_after_strict_binary": true, "normal_target_pass_proves_zero_permissive_domains": false},
+  "treble_labeling": {
+    "observed_flag": "EnforceSELinuxTrebleLabeling",
+    "observed_value": false,
+    "product_variable": "PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING",
+    "unset_or_nontrue_exports_false": true,
+    "ordinary_violations_are_warnings_unless_true": true,
+    "same_as_secilc_neverallow_switch": false,
+    "consumers": [
+      {"project": "build/make", "path": "core/soong_config.mk", "line": 714, "behavior": "Export whether the product value contains literal true."},
+      {"project": "build/make", "path": "core/Makefile", "line": 3542, "behavior": "Append --treat_as_warnings unless product flag is true."},
+      {"project": "build/soong", "path": "android/config.go", "line": 2644, "behavior": "Read the optional boolean through Bool; nil means false."},
+      {"project": "build/soong", "path": "filesystem/android_device.go", "line": 1950, "behavior": "Append --treat_as_warnings when configuration is false."},
+      {"project": "system/sepolicy", "path": "tests/treble_labeling_tests.py", "line": 519, "behavior": "Downgrade ordinary violation diagnostics and omit the exit-1 path when --treat_as_warnings is present."}
+    ],
+    "automatic_dependency": {"minimum_platform_sepolicy_version": "202604", "observed_platform_sepolicy_version": "202504", "kati_path": "build/make/core/Makefile", "kati_line": 3567, "kati_target": "droidcore", "soong_path": "build/soong/filesystem/android_device.go", "soong_line": 438, "soong_also_requires_system_image": true, "observed_version_meets_threshold": false},
+    "missing_input_skip": {"flag_true_does_not_prevent_skip": true, "kati_source_line": 3513, "soong_source_line": 1903, "skip_timestamp_is_not_test_pass": true},
+    "required_input_classes": ["platform APK list", "vendor APK list", "platform seapp contexts", "vendor seapp contexts", "vendor file contexts", "combined precompiled binary", "framework-only precompiled binary", "aapt2"],
+    "more_than_one_combined_binary_is_error": true,
+    "user_violator_attribute_is_separate_hard_error": {"path": "system/sepolicy/tests/treble_labeling_tests.py", "line": 471, "attribute": "treble_labeling_violators", "warning_switch_does_not_bypass": true},
+    "tracking_list_observed_empty": true,
+    "source_based_next_requirement": "Explicit true plus an actual non-skipped check with complete inputs; retain the real platform API version and no waivers.",
+    "flag_changed_by_this_probe": false,
+    "test_executed": false,
+    "test_passed": false
+  },
+  "remaining_group_analysis": {
+    "init_properties": {
+      "assertion_sites": 2,
+      "mapping_split_hypothesis_supported": false,
+      "factory_evolution_and_source_identity_map": {"attribute": "init_202504", "members": ["init"], "factory_cil_line": 2434, "evolution_cil_line": 2431, "source_path": "private/compat/202504/202504.cil", "source_line": 2019},
+      "helper_is_explicit_new_object": {"source_path": "private/compat/202504/202504.ignore.cil", "source_lines": [12, 13], "types": ["init_dev_config", "init_dev_config_exec"]},
+      "mapping_difference": {"factory_only_form_count": 3, "evolution_only_form_count": 0, "only_differing_symbol": "sysfs_therm_202504", "init_mapping_difference_observed": false},
+      "rejected_widening_static_footprint": {"direct_atom_occurrences_audited": 2107, "changed_attribute_sets": 17, "adds_mlstrustedsubject": true, "affected_allow_forms": 1414, "allow_forms_with_new_subject": 1085, "allow_forms_with_new_target": 328, "allow_forms_with_removed_target": 1, "affected_neverallow_forms": 108, "neverallow_forms_exempting_helper": 100, "affected_dontaudit_forms": 336, "affected_transition_forms": 331, "affected_mls_constraint_forms": 96, "counts_are_not_unique_effective_permission_deltas": true},
+      "helper_execution_contract": {"project": "system/core", "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1", "path": "rootdir/init.rc", "exec_start_line": 79, "service_line": 1352, "exec_path_property": "ro.vendor.init_dev_config.path", "process_label_line": 1355, "device_executable_or_required_property_writes_verified": false},
+      "source_direction": "Keep the identity mapping and both assertions. Prove the actual vendor helper, invocation and required writes before considering a capability-specific restriction of its source allowances.",
+      "tests_passed": 8,
+      "bound_input_records_reverified": 37,
+      "candidate_compiled": false
+    },
+    "isolated_compute": {
+      "assertion_sites": 1,
+      "cause": "Factory product policy supplies a DSP client membership absent from the generated newline-only Evolution product policy.",
+      "factory_assignment": {"runtime_path": "/product/etc/selinux/product_sepolicy.cil", "line": 15, "member": "isolated_compute_app", "attribute": "vendor_hal_dspmanager_client"},
+      "same_service_is_allowed_for_isolated_compute_in_both_assemblies": true,
+      "allowed_service_assignment": {"runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil", "line": 659},
+      "historical_isolated_compute_mapping_identical": true,
+      "hypothetical_exact_membership": {"applied_to_source_or_input": false, "changed_attribute_sets": 2, "newly_applicable_existing_vendor_rule_lines": [6035, 6036, 6037, 6038, 6039, 6040, 6041], "added_directed_binder_permissions": 4, "added_directed_fd_permissions": 2, "added_service_find_permissions": 0, "all_five_audited_edges_match_factory": true, "neverallow_intersections_on_five_edges": 0, "complete_policy_pass_verified": false},
+      "edges": [
+        {"source": "isolated_compute_app", "target": "vendor_dspservice", "class": "binder", "before": [], "after_hypothetical": ["call", "transfer"], "factory": ["call", "transfer"], "added": ["call", "transfer"]},
+        {"source": "vendor_dspservice", "target": "isolated_compute_app", "class": "binder", "before": [], "after_hypothetical": ["call", "transfer"], "factory": ["call", "transfer"], "added": ["call", "transfer"]},
+        {"source": "isolated_compute_app", "target": "vendor_dspservice", "class": "fd", "before": [], "after_hypothetical": ["use"], "factory": ["use"], "added": ["use"]},
+        {"source": "vendor_dspservice", "target": "isolated_compute_app", "class": "fd", "before": [], "after_hypothetical": ["use"], "factory": ["use"], "added": ["use"]},
+        {"source": "isolated_compute_app", "target": "vendor_hal_dspmanager_aidlservice", "class": "service_manager", "before": ["find"], "after_hypothetical": ["find"], "factory": ["find"], "added": []}
+      ],
+      "product_vendor_source_ownership_verified": false,
+      "runtime_privacy_and_feature_behavior_verified": false,
+      "tests_passed": 24,
+      "bound_references_reverified": 35,
+      "candidate_compiled": false
+    },
+    "binder_objects": {
+      "assertion_sites": 2,
+      "assertion_match_counts": {"target_non_domain": 35, "source_non_domain": 32},
+      "distinct_source_locations": 67,
+      "distinct_normalized_statements": 65,
+      "directed_concrete_edges": 39,
+      "distinct_directed_permission_tuples": 70,
+      "related_fd_allow_forms": 32,
+      "full_rule_inventory_public": false,
+      "all_matches_from_factory_vendor_cil": true,
+      "role_r_domain_count": 596,
+      "role_r_types_exactly_equal_domain_members": true,
+      "factory_context_files_audited": 34,
+      "factory_context_bytes": 562898,
+      "objects": [
+        {"type": "connectivity_native_service", "roles": ["object_r"], "in_domain": false, "source_matches": 2, "target_matches": 2, "eligible_provider_domains": ["system_server"], "provider_identity_verified_on_device": false},
+        {"type": "hal_mediaeventgatherservice_service", "roles": ["object_r"], "in_domain": false, "source_matches": 26, "target_matches": 26, "eligible_provider_domains": ["hal_mediaeventgatherservice_default"], "provider_identity_verified_on_device": false},
+        {"type": "hal_mipowerhalservice_service", "roles": ["object_r"], "in_domain": false, "source_matches": 0, "target_matches": 1, "eligible_provider_domains": ["hal_mipowerservice_default"], "provider_identity_verified_on_device": false},
+        {"type": "hal_visdisplaysrv_service", "roles": ["object_r"], "in_domain": false, "source_matches": 0, "target_matches": 2, "eligible_provider_domains": ["hal_visdisplaysrv_default"], "provider_identity_verified_on_device": false},
+        {"type": "vendor_hal_display_config_hwservice", "roles": ["object_r"], "in_domain": false, "source_matches": 4, "target_matches": 4, "eligible_provider_domains": ["hal_graphics_composer_default", "hal_visdisplaysrv_default", "vendor_hal_citsensorservice_xiaomi_default", "vendor_hal_displayfeature_xiaomi_default"], "provider_identity_verified_on_device": false}
+      ],
+      "process_transition_allow_and_entrypoint_matches_for_objects": 0,
+      "normal_process_ipc_authorized_by_mistyped_rules": false,
+      "all_four_single_provider_cases_already_have_process_binder_grants": true,
+      "display_provider_limit": "Service registration add permissions identify eligible domains, not actual running server SIDs. Four domains may register the display-config HW service. Rild has matching existing Binder grants only for hal_graphics_composer_default among those four; no broad grant to the others is justified by this static audit.",
+      "source_direction": ["Preserve both Binder assertions and service lookup/registration operations.", "Correct reviewed source Binder/FD macro arguments; retain existing process-domain grants.", "Prove actual provider SIDs before any missing permission; do not grant all display-provider candidates.", "Do not mark service objects as domains or remove assertions; original vendor macro source remains unavailable.", "Require strict compilation, unfiltered permissive analysis and separate device tests after reviewed changes."],
+      "source_macro_origins_proven": false,
+      "live_change_safety_verified": false,
+      "tests_passed": 14,
+      "bound_files_reverified": 57,
+      "candidate_compiled": false
+    },
+    "all_analysis_inputs_preserved": true,
+    "all_assertions_retained": true,
+    "source_changes_or_derivative_compiles_performed": false,
+    "full_private_inventories_not_redistributed": true
+  },
+  "remaining_validation": ["Source-level corrections with explicit provenance; no broad historical init mapping or object-to-domain relabeling.", "Strict combined policy compilation with all assertions followed by unfiltered permissive-domain analysis requiring an empty result.", "Complete contexts and explicitly enforced, non-skipped Treble labeling checks without API spoofing or waiver lists.", "VINTF, HAL and native-service integration; a complete image build and separately authorized device tests."],
+  "limits": {"full_rom_built": false, "policy_binary_generated": false, "policy_loaded_on_phone": false, "selinux_enforcement_on_evolution_verified": false, "treble_labeling_test_passed": false, "native_features_verified": false, "boot_verified": false},
+  "source_files_scope": "Ten directly cited files; complete source inventories and independently verified Git blob IDs remain in bound private receipts."
+}
