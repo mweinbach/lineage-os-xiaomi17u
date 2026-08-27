@@ -1,0 +1,703 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-27T20:58:51.581291+00:00",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "scope": "Host-only intake, complete TAR/GZIP integrity, image extraction and byte-hash observations; no firmware execution or device operation.",
+  "package": {
+    "build": "OS3.0.309.0.WPACNXM",
+    "collected_at_utc": "2026-08-27T20:55:26.142372+00:00",
+    "device": "nezha",
+    "filename": "nezha_images_OS3.0.309.0.WPACNXM_20260714.0000.00_16.0_cn_1081d3072b.tgz",
+    "origin_verified": false,
+    "region": "CN",
+    "schema_version": 2,
+    "sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "size_bytes": 12778943953,
+    "source_kind": "user-provided",
+    "source_url": null,
+    "source_path": "sources/nezha_images_OS3.0.309.0.WPACNXM_20260714.0000.00_16.0_cn_1081d3072b.tgz",
+    "description": "Factory-named local China fastboot TGZ; its actual download origin and OEM authenticity remain unverified.",
+    "declared_identity_verified_from_embedded_properties": false,
+    "original_regular_nonsymlink": true,
+    "original_identity_stable_through_intake_and_extraction": true,
+    "original_retained": true,
+    "separate_intake_copy_readback_verified": true,
+    "original_rehashed_after_extraction": true,
+    "original_and_intake_copy_sha256_match": true,
+    "intake_path": "artifacts/firmware/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "metadata_sha256": "db2ba223b00c75522e7252eaff27729305876a187f16c7407a8471f844df53eb",
+    "reference_url": "https://bigota.d.miui.com/OS3.0.309.0.WPACNXM/nezha_images_OS3.0.309.0.WPACNXM_20260714.0000.00_16.0_cn_1081d3072b.tgz",
+    "reference_url_role": "Previously checked official CDN URL with matching filename and advertised length; not evidence this local file was downloaded there.",
+    "reference_head_size_bytes": 12778943953,
+    "reference_head_size_matches": true,
+    "independently_published_sha256": null,
+    "oem_key_authenticated": false
+  },
+  "intake": {
+    "started_at_utc": "2026-08-27T20:55:08.405479+00:00",
+    "finished_at_utc": "2026-08-27T20:55:26.182609+00:00",
+    "exit_code": 0,
+    "timeout_seconds": 600,
+    "disk_free_before_bytes": 1389409792000,
+    "command": [
+      "python3",
+      "scripts/firmware.py",
+      "sources/nezha_images_OS3.0.309.0.WPACNXM_20260714.0000.00_16.0_cn_1081d3072b.tgz",
+      "--device",
+      "nezha",
+      "--build",
+      "OS3.0.309.0.WPACNXM",
+      "--region",
+      "CN",
+      "--source-kind",
+      "user-provided"
+    ],
+    "source_url_invented": false,
+    "receipt": {
+      "path": "reports/factory-firmware-intake-20260827T2055Z/receipt.json",
+      "sha256": "0528661ff1663d5266108721dbc42f80326d0ba04fae69009e59bc717310d29f",
+      "size_bytes": 3477
+    }
+  },
+  "extraction": {
+    "started_at_utc": "2026-08-27T20:56:03.471772+00:00",
+    "finished_at_utc": "2026-08-27T20:57:05.876631+00:00",
+    "exit_code": 0,
+    "timeout_seconds": 900,
+    "disk_free_before_bytes": 1376103038976,
+    "command": [
+      "python3",
+      "scripts/firmware_tar.py",
+      "--intake",
+      "artifacts/firmware/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "--expected-sha256",
+      "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "--output",
+      "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/archive-images"
+    ],
+    "output_directory": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/archive-images",
+    "archive_format": "tar-gzip",
+    "member_count": 127,
+    "regular_member_count": 125,
+    "directory_member_count": 2,
+    "decompressed_archive_bytes": 15325941760,
+    "gzip_stream_crc_verified": true,
+    "tar_header_checksums_verified": true,
+    "entire_gzip_stream_drained": true,
+    "tar_zero_trailer_checked": true,
+    "image_count": 19,
+    "total_image_bytes": 14852407336,
+    "only_regular_image_members_extracted": true,
+    "all_image_hashes_readback_verified": true,
+    "existing_outputs_overwritten": false,
+    "installers_extracted_or_executed": false,
+    "links_or_special_files_created": false,
+    "limits": {
+      "image_bytes": 68719476736,
+      "archive_decompressed_bytes": 137438953472,
+      "trailer_bytes": 1048576,
+      "catalog_members": 20000
+    },
+    "receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/archive-images/receipt.json",
+      "sha256": "c0686eab1092809faad2c865662a8616e9eea5492c7afd0e7bfcae8447a74567",
+      "size_bytes": 23837
+    },
+    "run_receipt": {
+      "path": "reports/factory-firmware-intake-20260827T2055Z/extraction-run.json",
+      "sha256": "890a155517db60ab954f3228b1e9df89a84cef08cda89cd0067faaa7b1b7eaaf",
+      "size_bytes": 2167
+    }
+  },
+  "postpublication_readback": {
+    "started_at_utc": "2026-08-27T20:58:39.092334+00:00",
+    "finished_at_utc": "2026-08-27T20:58:51.581291+00:00",
+    "original_and_all_images_verified": true,
+    "original_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "image_count": 19,
+    "all_identities_stable": true,
+    "all_hashes_match": true,
+    "block_size_bytes": 4194304,
+    "receipt": {
+      "path": "reports/factory-firmware-intake-20260827T2055Z/readback-verification.json",
+      "sha256": "e926dab3183de7d0d3fb36321b30cfbc89c605b8ba7b0fca8e45618c430582ba",
+      "size_bytes": 7953
+    }
+  },
+  "images": [
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/boot.img",
+      "path": "boot.img",
+      "size_bytes": 100663296,
+      "sha256": "09b63576f263257fbc2cbe98ab8c4c1a70a0580acf721b9bd9a809e38f38916e",
+      "readback_verified": true,
+      "header_kind": "android-boot",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 100663296,
+        "sha256": "09b63576f263257fbc2cbe98ab8c4c1a70a0580acf721b9bd9a809e38f38916e",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/vbmeta.img",
+      "path": "vbmeta.img",
+      "size_bytes": 12288,
+      "sha256": "295d273ae4a4b4a9471abfa495ce95f94a48c8fc7210008252a5ca7d7fdbfaf7",
+      "readback_verified": true,
+      "header_kind": "avb-vbmeta",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 12288,
+        "sha256": "295d273ae4a4b4a9471abfa495ce95f94a48c8fc7210008252a5ca7d7fdbfaf7",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/vm-persist.img",
+      "path": "vm-persist.img",
+      "size_bytes": 110882988,
+      "sha256": "3835340ae368d550df5b9a3ee71ffb119ddaa9951fcb68bcd4936f0f60590bf1",
+      "readback_verified": true,
+      "header_kind": "android-sparse",
+      "sparse_header": {
+        "magic_hex": "0xed26ff3a",
+        "major_version": 1,
+        "minor_version": 0,
+        "file_header_size": 28,
+        "chunk_header_size": 12,
+        "block_size_bytes": 4096,
+        "total_blocks": 27648,
+        "total_chunks": 12,
+        "image_checksum": 0,
+        "expanded_size_bytes": 113246208,
+        "scope": "header only; sparse chunks and logical metadata not inspected by this observation"
+      },
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/vm-bootsys.img",
+      "path": "vm-bootsys.img",
+      "size_bytes": 33583300,
+      "sha256": "8ae159ab49904c6e6a1448dfc37cedb1177839d346b5d314b357dd0017c7eb6a",
+      "readback_verified": true,
+      "header_kind": "android-sparse",
+      "sparse_header": {
+        "magic_hex": "0xed26ff3a",
+        "major_version": 1,
+        "minor_version": 0,
+        "file_header_size": 28,
+        "chunk_header_size": 12,
+        "block_size_bytes": 4096,
+        "total_blocks": 8448,
+        "total_chunks": 14,
+        "image_checksum": 0,
+        "expanded_size_bytes": 34603008,
+        "scope": "header only; sparse chunks and logical metadata not inspected by this observation"
+      },
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 34603008,
+        "sha256": "3258178035d6422ec1df0e90f8e10e0f1d50a70b72d858162ec5ef98585b76fc",
+        "size_matches": false,
+        "sha256_matches": false
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/vbmeta_system.img",
+      "path": "vbmeta_system.img",
+      "size_bytes": 4096,
+      "sha256": "7e814282a0240e0aa97a6a62e8c267f33714451a2b62f483561da642d140a4a4",
+      "readback_verified": true,
+      "header_kind": "avb-vbmeta",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 4096,
+        "sha256": "7e814282a0240e0aa97a6a62e8c267f33714451a2b62f483561da642d140a4a4",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/qtvm-dtbo.img",
+      "path": "qtvm-dtbo.img",
+      "size_bytes": 5242880,
+      "sha256": "f0bf3cf01ff634732459fa50dce05d2fdd9912c83215015b081a511bfa6b50c7",
+      "readback_verified": true,
+      "header_kind": "unclassified",
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/misc.img",
+      "path": "misc.img",
+      "size_bytes": 8192,
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "readback_verified": true,
+      "header_kind": "unclassified",
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/super.img",
+      "path": "super.img",
+      "size_bytes": 12438543008,
+      "sha256": "fe2c6b4abe4a36c871be184350132dfed1aa1b32ada0b051923a19835affa8f5",
+      "readback_verified": true,
+      "header_kind": "android-sparse",
+      "sparse_header": {
+        "magic_hex": "0xed26ff3a",
+        "major_version": 1,
+        "minor_version": 0,
+        "file_header_size": 28,
+        "chunk_header_size": 12,
+        "block_size_bytes": 4096,
+        "total_blocks": 3735552,
+        "total_chunks": 220,
+        "image_checksum": 0,
+        "expanded_size_bytes": 15300820992,
+        "scope": "header only; sparse chunks and logical metadata not inspected by this observation"
+      },
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/init_boot.img",
+      "path": "init_boot.img",
+      "size_bytes": 8388608,
+      "sha256": "eff601b4be2f40cf49ebe3a7bb47dcb2db8b20f7f1fc718c1cc0551412944e77",
+      "readback_verified": true,
+      "header_kind": "android-boot",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 8388608,
+        "sha256": "eff601b4be2f40cf49ebe3a7bb47dcb2db8b20f7f1fc718c1cc0551412944e77",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/recovery.img",
+      "path": "recovery.img",
+      "size_bytes": 104857600,
+      "sha256": "a6f2c77608026fcfe6221e5191c501b0ac880658f76c55231879ed198ce8a0f9",
+      "readback_verified": true,
+      "header_kind": "android-boot",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 104857600,
+        "sha256": "a6f2c77608026fcfe6221e5191c501b0ac880658f76c55231879ed198ce8a0f9",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/vendor_boot.img",
+      "path": "vendor_boot.img",
+      "size_bytes": 100663296,
+      "sha256": "c98aebae56e098eee6e758b8ac387ffd6dd5ec2cf051b389e97ae77d7a3404d3",
+      "readback_verified": true,
+      "header_kind": "android-vendor-boot",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 100663296,
+        "sha256": "20349b30fe10cb30f75579f1f02f7dd26bcb3b0af543bd261a5877634991854d",
+        "size_matches": true,
+        "sha256_matches": false
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/dummy.img",
+      "path": "dummy.img",
+      "size_bytes": 8192,
+      "sha256": "9f1dcbc35c350d6027f98be0f5c8b43b42ca52b7604459c0c42be3aa88913d47",
+      "readback_verified": true,
+      "header_kind": "unclassified",
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/userdata.img",
+      "path": "userdata.img",
+      "size_bytes": 1873871592,
+      "sha256": "dd8fa2ad675b118e7e8f608678940203264dd56cf5af8f488beb5f41771af7a5",
+      "readback_verified": true,
+      "header_kind": "android-sparse",
+      "sparse_header": {
+        "magic_hex": "0xed26ff3a",
+        "major_version": 1,
+        "minor_version": 0,
+        "file_header_size": 28,
+        "chunk_header_size": 12,
+        "block_size_bytes": 4096,
+        "total_blocks": 11796480,
+        "total_chunks": 58,
+        "image_checksum": 0,
+        "expanded_size_bytes": 48318382080,
+        "scope": "header only; sparse chunks and logical metadata not inspected by this observation"
+      },
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/countrycode.img",
+      "path": "countrycode.img",
+      "size_bytes": 1048576,
+      "sha256": "8dd5e9a411ccc142c079b2796e7180442f3ec9e04a3e44eb7f4eaa782ec5b360",
+      "readback_verified": true,
+      "header_kind": "unclassified",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 1048576,
+        "sha256": "8dd5e9a411ccc142c079b2796e7180442f3ec9e04a3e44eb7f4eaa782ec5b360",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/pvmfw.img",
+      "path": "pvmfw.img",
+      "size_bytes": 1048576,
+      "sha256": "fa0f8c7a48699663eaefe0c6e5761325b2612df34cc9ef8a7ad764a2f9395e98",
+      "readback_verified": true,
+      "header_kind": "android-boot",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 1048576,
+        "sha256": "fa0f8c7a48699663eaefe0c6e5761325b2612df34cc9ef8a7ad764a2f9395e98",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/dtbo.img",
+      "path": "dtbo.img",
+      "size_bytes": 23068672,
+      "sha256": "ee84d721396fee5f82b5230b1472b5f165ba253eba50d44e9156b538c8a40f62",
+      "readback_verified": true,
+      "header_kind": "unclassified",
+      "xiaomi_eu_same_basename": {
+        "size_bytes": 23068672,
+        "sha256": "ee84d721396fee5f82b5230b1472b5f165ba253eba50d44e9156b538c8a40f62",
+        "size_matches": true,
+        "sha256_matches": true
+      }
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/metadata.img",
+      "path": "metadata.img",
+      "size_bytes": 2236644,
+      "sha256": "78b0ff0868f577f008df3917f430e7e356842d14b5cc307b786071dfc4fa8e60",
+      "readback_verified": true,
+      "header_kind": "android-sparse",
+      "sparse_header": {
+        "magic_hex": "0xed26ff3a",
+        "major_version": 1,
+        "minor_version": 0,
+        "file_header_size": 28,
+        "chunk_header_size": 12,
+        "block_size_bytes": 4096,
+        "total_blocks": 16384,
+        "total_chunks": 16,
+        "image_checksum": 0,
+        "expanded_size_bytes": 67108864,
+        "scope": "header only; sparse chunks and logical metadata not inspected by this observation"
+      },
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/persist.img",
+      "path": "persist.img",
+      "size_bytes": 48234496,
+      "sha256": "239a149bf07ce6796236f37ff770f5f5a47e1a5c35f0f31ad20cf344ee08975d",
+      "readback_verified": true,
+      "header_kind": "unclassified",
+      "xiaomi_eu_same_basename": null
+    },
+    {
+      "archive_member": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rescue.img",
+      "path": "rescue.img",
+      "size_bytes": 41036,
+      "sha256": "b4458d0362ce811e0b518d098031d46a1077a551ea3df6c013f31178aab1ab16",
+      "readback_verified": true,
+      "header_kind": "android-sparse",
+      "sparse_header": {
+        "magic_hex": "0xed26ff3a",
+        "major_version": 1,
+        "minor_version": 0,
+        "file_header_size": 28,
+        "chunk_header_size": 12,
+        "block_size_bytes": 4096,
+        "total_blocks": 32768,
+        "total_chunks": 4,
+        "image_checksum": 0,
+        "expanded_size_bytes": 134217728,
+        "scope": "header only; sparse chunks and logical metadata not inspected by this observation"
+      },
+      "xiaomi_eu_same_basename": null
+    }
+  ],
+  "xiaomi_eu_byte_comparison": {
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "description": "Separate user-provided modified Xiaomi.eu baseline; neither package authenticates the other.",
+    "receipt_sha256": "1f749f25336d1eddcbb58fdd9ab5fc55a8649f268bf95aa8234351d80865ab11",
+    "same_basename_exact_sha256_matches": [
+      "boot.img",
+      "countrycode.img",
+      "dtbo.img",
+      "init_boot.img",
+      "pvmfw.img",
+      "recovery.img",
+      "vbmeta.img",
+      "vbmeta_system.img"
+    ],
+    "same_basename_sha256_differences": [
+      "vendor_boot.img",
+      "vm-bootsys.img"
+    ],
+    "same_basename_absent_from_xiaomi_eu": [
+      "dummy.img",
+      "metadata.img",
+      "misc.img",
+      "persist.img",
+      "qtvm-dtbo.img",
+      "rescue.img",
+      "super.img",
+      "userdata.img",
+      "vm-persist.img"
+    ],
+    "scope": "Archive image bytes only. Sparse-versus-raw representation can change hashes without changing expanded bytes; no such conversion was performed here."
+  },
+  "geometry_metadata_catalog": {
+    "scope": "Names and declared lengths only; not extracted, parsed or applied by this intake slice.",
+    "candidate_count": 37,
+    "candidates": [
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_main1.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_empty4.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_both1.bin",
+        "size_bytes": 45056,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_both2.bin",
+        "size_bytes": 45056,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_main3.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_empty1.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_empty5.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_backup4.bin",
+        "size_bytes": 20480,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_empty0.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rawprogram2.xml",
+        "size_bytes": 3548,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_main0.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/patch5.xml",
+        "size_bytes": 6267,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_backup3.bin",
+        "size_bytes": 20480,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_backup0.bin",
+        "size_bytes": 20480,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rawprogram4.xml",
+        "size_bytes": 29523,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/patch0.xml",
+        "size_bytes": 6259,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/patch4.xml",
+        "size_bytes": 6271,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_main4.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/patch2.xml",
+        "size_bytes": 6271,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/patch1.xml",
+        "size_bytes": 6271,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/patch3.xml",
+        "size_bytes": 6263,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rawprogram3.xml",
+        "size_bytes": 1859,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/partition_ext_p1.xml",
+        "size_bytes": 27347,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_backup1.bin",
+        "size_bytes": 20480,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_main2.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_both3.bin",
+        "size_bytes": 45056,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_empty3.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_empty2.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_both4.bin",
+        "size_bytes": 45056,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rawprogram0.xml",
+        "size_bytes": 10413,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_both0.bin",
+        "size_bytes": 45056,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_backup2.bin",
+        "size_bytes": 20480,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rawprogram1.xml",
+        "size_bytes": 3681,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_backup5.bin",
+        "size_bytes": 20480,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_both5.bin",
+        "size_bytes": 45056,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/rawprogram5.xml",
+        "size_bytes": 3255,
+        "kind": "file"
+      },
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/gpt_main5.bin",
+        "size_bytes": 24576,
+        "kind": "file"
+      }
+    ],
+    "other_xml": [
+      {
+        "name": "nezha_images_OS3.0.309.0.WPACNXM_16.0/images/qsahara_device_programmer.xml",
+        "size_bytes": 564,
+        "kind": "file"
+      }
+    ],
+    "device_programmer_extracted_or_executed": false,
+    "package_geometry_parsed_by_intake": false,
+    "physical_phone_geometry_verified": false
+  },
+  "header_observations_receipt": {
+    "path": "reports/factory-firmware-intake-20260827T2055Z/image-observations.json",
+    "sha256": "7c659e3da68cd9bd2d31ea770954dfdcfd81ee51a00cb736206b776a9f3d1f69",
+    "size_bytes": 16929
+  },
+  "tools": [
+    {
+      "path": "scripts/firmware.py",
+      "sha256": "8370101e4b95e6749ee8a060a3699fd3581ca26bb56712ae89a2ff06a76cf77e"
+    },
+    {
+      "path": "scripts/firmware_tar.py",
+      "sha256": "8681f71a42ce57d69fb461c7d4a225888b40f32b4b374ff3eadc8ca0e561f2fd"
+    },
+    {
+      "path": "scripts/firmware_images.py",
+      "sha256": "362c4d68d7941f02278164a1bbb45959ebead2c8716d07c982b62d737bc1fa44"
+    },
+    {
+      "path": "scripts/artifact_files.py",
+      "sha256": "ddc784d1c378510c66621d95af267790ab7fb1965ac5951926b471e897bd6343"
+    }
+  ],
+  "extractor_last_changed_commit": "76eb9807c30df1de1c973b989c456f1ae2fffb6d",
+  "verification_boundaries": {
+    "publisher_authenticity": "unverified",
+    "avb_checked_by_intake": false,
+    "sparse_chunks_or_logical_metadata_checked_by_intake": false,
+    "filesystems_checked_by_intake": false,
+    "kernel_module_or_vintf_compatibility_checked_by_intake": false,
+    "physical_phone_partition_sizes_verified": false,
+    "boardconfig_or_build_inputs_changed": false,
+    "phone_accessed": false,
+    "phone_modified": false,
+    "guest_or_source_volume_accessed": false,
+    "firmware_executed": false,
+    "flash_or_restore_authorized": false,
+    "proprietary_content_committed": false,
+    "previous_xiaomi_eu_evidence_replaced_or_reclassified": false
+  }
+}
