@@ -112,6 +112,38 @@ class VolumeTests(unittest.TestCase):
         with patch.object(apple, "json_command", return_value=items):
             self.assertEqual([item["id"] for item in apple.active_volume_users(self.config, self.volume)], ["a", "b"])
 
+    def test_buildkit_memory_mount_does_not_block_unrelated_volume(self):
+        items = [{"id": "buildkit", "status": {"state": "running"}, "configuration": {"mounts": [
+            {"source": "", "destination": "/run", "type": {"tmpfs": {}}, "options": []},
+            {"source": "/private/unrelated-builder", "type": {"virtiofs": {}}},
+        ]}}]
+        with patch.object(apple, "json_command", return_value=items):
+            self.assertEqual(apple.active_volume_users(self.config, self.volume), [])
+
+    def test_tmpfs_label_does_not_hide_nonempty_volume_identity(self):
+        for source in (self.config["volume"], self.volume["source"]):
+            items = [{"id": "writer", "status": {"state": "running"}, "configuration": {"mounts": [
+                {"source": source, "type": {"tmpfs": {}}},
+            ]}}]
+            with self.subTest(source=source), patch.object(apple, "json_command", return_value=items):
+                self.assertEqual([item["id"] for item in apple.active_volume_users(self.config, self.volume)], ["writer"])
+
+    def test_only_exact_memory_mount_shape_accepts_empty_source(self):
+        mounts = [
+            {"source": ""},
+            {"source": "", "type": {"virtiofs": {}}},
+            {"source": "", "type": {"tmpfs": None}},
+            {"source": "", "type": {"tmpfs": {}, "virtiofs": {}}},
+            {"source": "", "type": "tmpfs"},
+            {"source": None, "type": {"tmpfs": {}}},
+            {"type": {"tmpfs": {}}},
+        ]
+        for mount in mounts:
+            items = [{"id": "unknown", "status": {"state": "running"}, "configuration": {"mounts": [mount]}}]
+            with self.subTest(mount=mount), patch.object(apple, "json_command", return_value=items):
+                with self.assertRaisesRegex(ValueError, "Cannot interpret an active container mount"):
+                    apple.active_volume_users(self.config, self.volume)
+
     def test_second_writer_refused_before_image_or_bundle_operations(self):
         with patch.object(apple, "volume_info", return_value=self.volume), \
              patch.object(apple, "active_volume_users", return_value=[{"id": "existing-sync"}]), \

@@ -112,7 +112,11 @@ def active_volume_users(config, volume):
         if item.get("status", {}).get("state") == "stopped":
             continue
         settings = item.get("configuration", {})
-        sources = [mount.get("source") for mount in settings.get("mounts", [])]
+        # Apple Container 1.0 represents BuildKit's memory-backed /run as an
+        # enum-shaped tmpfs mount with an empty source. It cannot attach an
+        # ext4 backing file. Continue to reject every other unknown identity.
+        sources = [mount.get("source") for mount in settings.get("mounts", [])
+                   if not (mount.get("type") == {"tmpfs": {}} and mount.get("source") == "")]
         if any(not isinstance(source, str) or not source for source in sources):
             raise ValueError("Cannot interpret an active container mount; refusing a second volume attachment")
         if (config["volume"] in sources
