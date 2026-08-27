@@ -1,0 +1,2122 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "status": "static XML and file contract; effective VINTF and Evolution X compatibility not verified",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN",
+    "platform": "canoe",
+    "build_ready": false,
+    "lunch_target": null
+  },
+  "provenance": {
+    "source_kind": "user-provided",
+    "package_kind": "user-provided modified Xiaomi.eu package",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "source_url": null,
+    "origin_verified": false,
+    "raw_super_sha256": "25882bf770e43c6eaceb8b2209ed32b77145553a5d641c47966d7147be55ade7",
+    "logical_partition_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/logical-partitions/receipt.json",
+    "logical_partition_receipt_sha256": "0c03279fc0b9e217357a76c7fef768421a62bd011a3420d1911eed787b05e6f1",
+    "analysis": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/vintf-analysis-v2.json",
+    "analysis_sha256": "9cb43cc441ca5c2ac985ec61a8493dcb36522bda8f52aab8e54d6d8192e87a14",
+    "analysis_v1_properties_usable": false,
+    "private_artifacts_git_ignored": true,
+    "phone_accessed_by_this_analysis": false,
+    "firmware_executed": false,
+    "image_mounted": false,
+    "symlinks_followed": false
+  },
+  "inspection": {
+    "script": "scripts/erofs_inventory.py",
+    "tool": {
+      "path": "/opt/homebrew/Cellar/erofs-utils/1.9.4/bin/dump.erofs",
+      "requested_path": "/opt/homebrew/bin/dump.erofs",
+      "sha256": "43d8dd8fba701c86091293af0bd20d8ac4a8617d715e30c57db8fff546ec3fad",
+      "size_bytes": 243904,
+      "version": "dump.erofs (erofs-utils) 1.9.4"
+    },
+    "hash_inputs_before_batch": true,
+    "verify_input_identity_after_batch": true,
+    "capture_regular_files_only": true,
+    "capture_path_and_inode_rechecked": true,
+    "output_sha256_readback_verified": true,
+    "publish_new_private_directory_only": true
+  },
+  "scope": {
+    "logical_images": 8,
+    "inventory_entries": 16038,
+    "contract_capture_files": 1306,
+    "contract_capture_bytes": 343023223,
+    "separate_vendor_camera_capture_files": 7,
+    "separate_manual_native_seed_files": 13,
+    "vintf_xml_files": 209,
+    "hal_elements": 1120,
+    "document_counts": [
+      {
+        "xml_kind": "manifest",
+        "xml_type": "device",
+        "documents": 177,
+        "hal_elements": 221,
+        "hal_formats": {
+          "aidl": 220,
+          "native": 1
+        }
+      },
+      {
+        "xml_kind": "manifest",
+        "xml_type": "framework",
+        "documents": 22,
+        "hal_elements": 37,
+        "hal_formats": {
+          "aidl": 19,
+          "hidl": 17,
+          "native": 1
+        }
+      },
+      {
+        "xml_kind": "compatibility-matrix",
+        "xml_type": "framework",
+        "documents": 9,
+        "hal_elements": 859,
+        "hal_formats": {
+          "aidl": 528,
+          "hidl": 328,
+          "native": 3
+        }
+      },
+      {
+        "xml_kind": "compatibility-matrix",
+        "xml_type": "device",
+        "documents": 1,
+        "hal_elements": 3,
+        "hal_formats": {
+          "aidl": 3
+        }
+      }
+    ],
+    "device_manifest_empty_override_elements": 22,
+    "matrix_hal_elements_with_optional_attribute": 0,
+    "counts_are_unmerged_xml_elements_not_running_services": true,
+    "active_apex_manifests_included": false
+  },
+  "partitions": [
+    {
+      "name": "mi_ext_a",
+      "image_sha256": "c7c16f067719335d9878925417c4a551c6795c032afba912a75bcc92816ec9f8",
+      "image_size_bytes": 109318144,
+      "inventory_entries": 129,
+      "inventory_sha256": "dc8696fb44cb3e75ffb16536b9e68ea4c6221386a297b3b343b81f53c46a02a9",
+      "inventory_receipt_sha256": "c852c747946e3af596deeb997f0a3eda13731bf47407adca64aa72f083f9e475",
+      "capture_files": 2,
+      "capture_bytes": 1027,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/mi_ext-contract-capture/receipt.json",
+      "capture_receipt_sha256": "81d47c30647526e2dbc893109bc60ca1fa4891abbff2be0d958b61bb4127beb8"
+    },
+    {
+      "name": "odm_a",
+      "image_sha256": "cf342dadf1d8da6748c2cf6959bc04ce96226b27617e8bc16363eb51a2071d62",
+      "image_size_bytes": 4679843840,
+      "inventory_entries": 3052,
+      "inventory_sha256": "77c259aa0ade488486741024ee44aee5fda562106d4f0f2e60e6dcaeefeb65d1",
+      "inventory_receipt_sha256": "c3a2f32fa8f7a3967ce8fcc8f8d6921e16144b67b69d0aaaf588d6c6355a51cf",
+      "capture_files": 104,
+      "capture_bytes": 7629181,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/odm-contract-capture/receipt.json",
+      "capture_receipt_sha256": "48b4fb597c746679ecbeda509489cc71a45b1255778eac9fd8c162bbdbd6394d"
+    },
+    {
+      "name": "product_a",
+      "image_sha256": "d23bfffe911ae205262dee779792deb43ec5312bf02547e0f13ee860252c81b9",
+      "image_size_bytes": 3712385024,
+      "inventory_entries": 2229,
+      "inventory_sha256": "3f6b342536d7a3b41929e3a447965205e9c57c4a59bf1479bad0c2ecf7db52ba",
+      "inventory_receipt_sha256": "98b4b49c64ade538b1fd08d90395fed27e0f88dcca637673ac3c461eb2f0fba4",
+      "capture_files": 41,
+      "capture_bytes": 170389823,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/product-contract-capture/receipt.json",
+      "capture_receipt_sha256": "8352410edff9bf1bd7d89002fe33281b56b00c953d938f807bcbaf289d90305c"
+    },
+    {
+      "name": "system_a",
+      "image_sha256": "f7d23fc0b3c471e4907bacc5ec53e63bc826a5305cf82e0e508ca3c57901a5c2",
+      "image_size_bytes": 850591744,
+      "inventory_entries": 3371,
+      "inventory_sha256": "b46f682b27968b701329e756d2a64c806de112e47ed2b402040356e49ff064f7",
+      "inventory_receipt_sha256": "ed0a7279eb8310567e336f8101b82cad2a10df37a653e2fb33c692161973c966",
+      "capture_files": 125,
+      "capture_bytes": 1028837,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/system-contract-capture/receipt.json",
+      "capture_receipt_sha256": "a14975d26a13818f2c75b89bc8053f65c24bbb35025b67e121e491d9f8e17815"
+    },
+    {
+      "name": "system_dlkm_a",
+      "image_sha256": "5470344df2770d9ebb1c3341d36f771922556a13db5b1d8f37f219553de24d26",
+      "image_size_bytes": 16506880,
+      "inventory_entries": 306,
+      "inventory_sha256": "b59f3d3430bdd11888a39f25c970f6bde7b6a65c553974bdf5363c93ae4cbd13",
+      "inventory_receipt_sha256": "a4fb3b1d87053472c01cf3c18065938b3263e003359a765513d126aa961355a4",
+      "capture_files": 118,
+      "capture_bytes": 14228470,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/system_dlkm-contract-capture/receipt.json",
+      "capture_receipt_sha256": "12ec2a9a382554686c84acb0db121c23aba8d50643193c8912ff9fc88306878d"
+    },
+    {
+      "name": "system_ext_a",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "image_size_bytes": 685998080,
+      "inventory_entries": 2677,
+      "inventory_sha256": "7aa0cfdecac4617dc4959a5278e540ee0f4a3c3cdbed83288fbb782ccb45c6d4",
+      "inventory_receipt_sha256": "57d8bdb263e2e90b05f9570be71b714729940b8def899e925019c8e666fc35f0",
+      "capture_files": 146,
+      "capture_bytes": 700161,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/system_ext-contract-capture/receipt.json",
+      "capture_receipt_sha256": "93289dcbfbf6178e7d58477bd9afc68de1f868cf8ce9df532e69e90c3c2986b4"
+    },
+    {
+      "name": "vendor_a",
+      "image_sha256": "29857df564130923b3786b11b4ad29a0c16522e1def37aed7fe09329d673da43",
+      "image_size_bytes": 941506560,
+      "inventory_entries": 3878,
+      "inventory_sha256": "987bdfdae8eaafc111a4e808dc88720ce73b8bb43b0e456d7971e89fa7daa804",
+      "inventory_receipt_sha256": "b842eabe2e1aaed954564cadf32693f731b35c7ac7d7770aae0a1739d328246a",
+      "capture_files": 382,
+      "capture_bytes": 19992248,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/vendor-contract-capture/receipt.json",
+      "capture_receipt_sha256": "558a271ef89837517f9bc52a1651a75a1a6159a6b026ce85945c06a837cbed8e"
+    },
+    {
+      "name": "vendor_dlkm_a",
+      "image_sha256": "514e5608592de4c3388a5a6bf3bc8a5c84554333cbee83aab3fdd001428f2cb1",
+      "image_size_bytes": 53035008,
+      "inventory_entries": 396,
+      "inventory_sha256": "0afc1c2d41dba0022d3499b92cef90e3d55b8b3f489fa00274c1d9f0686166b2",
+      "inventory_receipt_sha256": "1942e5b693ceace0b71495acc46b5337a21f55050905c0c62eeb5b4e1190b93f",
+      "capture_files": 388,
+      "capture_bytes": 129053476,
+      "capture_receipt": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/erofs/vendor_dlkm-contract-capture/receipt.json",
+      "capture_receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad"
+    }
+  ],
+  "live_comparison": {
+    "baseline_manifest": "evidence/xiaomi-eu-20260827T1530Z/manifest.json",
+    "baseline_manifest_sha256": "0b837fea843cbc9d21326abb554f04dfdcf9e06bf91dee7caad4f243e0a914cb",
+    "xml_paths_and_sha256_equal": 432,
+    "vintf_xml": 209,
+    "permission_xml": 223,
+    "all_compared_xml_paths_and_sha256_match": true,
+    "proves_complete_os_identity": false,
+    "proves_effective_vintf": false
+  },
+  "properties_by_source": {
+    "/mi_ext/etc/build.prop": {},
+    "/odm/etc/build.prop": {
+      "ro.odm.build.version.incremental": "OS3.0.309.0.WPACNXM",
+      "ro.product.first_api_level": "36"
+    },
+    "/product/etc/build.prop": {
+      "ro.build.version.incremental": "OS3.0.309.0.WPACNXM"
+    },
+    "/system/build.prop": {
+      "ro.build.version.incremental": "16OS3.1.260714.203507406.QCPECN.S",
+      "ro.build.version.sdk": "36",
+      "ro.build.version.security_patch": "2026-07-01",
+      "ro.llndk.api_level": "202504"
+    },
+    "/system_dlkm/etc/build.prop": {},
+    "/system_ext/etc/build.prop": {},
+    "/vendor/build.prop": {
+      "ro.vendor.build.version.incremental": "OS3.0.309.0.WPACNXM",
+      "ro.vendor.build.version.sdk": "36",
+      "ro.board.first_api_level": "202504",
+      "ro.board.api_level": "202504",
+      "ro.board.api_frozen": "true",
+      "ro.vendor.build.security_patch": "2026-02-01",
+      "ro.board.platform": "canoe"
+    },
+    "/vendor/odm_dlkm/etc/build.prop": {},
+    "/vendor_dlkm/etc/build.prop": {}
+  },
+  "runtime_properties_not_verified": [
+    "ro.boot.product.vendor.sku",
+    "ro.boot.product.hardware.sku",
+    "ro.vendor.api_level"
+  ],
+  "vendor_manifest_candidates": [
+    {
+      "source": "/vendor/etc/vintf/manifest_canoe.xml",
+      "attributes": {
+        "version": "9.0",
+        "type": "device",
+        "target-level": "202504"
+      },
+      "sepolicy_version": "202504",
+      "explicit_kernel_element": false,
+      "runtime_selection_verified": false,
+      "hal_elements": [
+        {
+          "source": "/vendor/etc/vintf/manifest_canoe.xml",
+          "name": "android.hardware.secure_element",
+          "format": "aidl",
+          "declared_versions": [],
+          "fqnames": [
+            "ISecureElement/eSE1"
+          ]
+        },
+        {
+          "source": "/vendor/etc/vintf/manifest_canoe.xml",
+          "name": "vendor.qti.sla.service",
+          "format": "aidl",
+          "declared_versions": [],
+          "fqnames": [
+            "ISlaAIDLService/default"
+          ]
+        },
+        {
+          "source": "/vendor/etc/vintf/manifest_canoe.xml",
+          "name": "vendor.xiaomi.aidl.minet",
+          "format": "aidl",
+          "declared_versions": [],
+          "fqnames": [
+            "IMiNetAIDLService/default"
+          ]
+        },
+        {
+          "source": "/vendor/etc/vintf/manifest_canoe.xml",
+          "name": "vendor.xiaomi.aidl.mipowerhal",
+          "format": "aidl",
+          "declared_versions": [],
+          "fqnames": [
+            "IMiPowerHalAIDLService/default"
+          ]
+        },
+        {
+          "source": "/vendor/etc/vintf/manifest_canoe.xml",
+          "name": "vendor.xiaomi.aidl.miwill",
+          "format": "aidl",
+          "declared_versions": [],
+          "fqnames": [
+            "IMiwillAIDLService/default"
+          ]
+        }
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest_alor.xml",
+      "attributes": {
+        "version": "9.0",
+        "type": "device",
+        "target-level": "202504"
+      },
+      "sepolicy_version": "202504",
+      "explicit_kernel_element": false,
+      "runtime_selection_verified": false,
+      "hal_elements": [
+        {
+          "source": "/vendor/etc/vintf/manifest_alor.xml",
+          "name": "android.hardware.secure_element",
+          "format": "aidl",
+          "declared_versions": [],
+          "fqnames": [
+            "ISecureElement/eSE1"
+          ]
+        }
+      ]
+    }
+  ],
+  "selected_device_hal_declarations": [
+    {
+      "source": "/odm/etc/vintf/manifest/AHBF-V3-service.xml",
+      "name": "android.hardware.biometrics.fingerprint",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IFingerprint/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/android.hardware.biometrics.face-v4.xml",
+      "name": "android.hardware.biometrics.face",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IFace/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/android.hardware.security.keymint-service.strongbox-thales.xml",
+      "name": "android.hardware.security.keymint",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IKeyMintDevice/strongbox"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/android.hardware.security.keymint-service.strongbox-thales.xml",
+      "name": "android.hardware.security.keymint",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IRemotelyProvisionedComponent/strongbox"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/android.hardware.security.sharedsecret-service.strongbox-thales.xml",
+      "name": "android.hardware.security.sharedsecret",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "ISharedSecret/strongbox"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/android.hardware.weaver-service.thales.xml",
+      "name": "android.hardware.weaver",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "IWeaver/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/miaon_frame.xml",
+      "name": "vendor.xiaomi.sensor.aonframe",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IMiAonFrame/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/misensor_camera.xml",
+      "name": "vendor.xiaomi.sensor.camera",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IMiCam/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/mseccam.xml",
+      "name": "vendor.xiaomi.hardware.seccam",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IMiSecCam/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/nfc-service-st.xml",
+      "name": "android.hardware.nfc",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "INfc/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/uwbhal-saidl.xml",
+      "name": "android.hardware.uwb",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IUwb/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.aon.auth.xml",
+      "name": "vendor.xiaomi.hardware.aon.auth",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IAONAuth/default"
+      ]
+    },
+    {
+      "source": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.vibratorfeature.service.xml",
+      "name": "android.hardware.vibrator",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "override": "true",
+      "fqnames": [
+        "IVibrator/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.camera.provider.external.xml",
+      "name": "android.hardware.camera.provider",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "ICameraProvider/external/0"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.gatekeeper-service-qti.xml",
+      "name": "android.hardware.gatekeeper",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IGatekeeper/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.gnss-aidl-service-qti.xml",
+      "name": "android.hardware.gnss",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IGnss/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.health-service.qti.xml",
+      "name": "android.hardware.health",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IHealth/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.powerstats-service.xml",
+      "name": "android.hardware.power.stats",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "IPowerStats/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.config.xml",
+      "name": "android.hardware.radio.config",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioConfig/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.data.xml",
+      "name": "android.hardware.radio.data",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioData/slot1",
+        "IRadioData/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.messaging.xml",
+      "name": "android.hardware.radio.messaging",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioMessaging/slot1",
+        "IRadioMessaging/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.modem.xml",
+      "name": "android.hardware.radio.modem",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioModem/slot1",
+        "IRadioModem/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.network.xml",
+      "name": "android.hardware.radio.network",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioNetwork/slot1",
+        "IRadioNetwork/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.sap.xml",
+      "name": "android.hardware.radio.sap",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "ISap/slot1",
+        "ISap/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.sim.xml",
+      "name": "android.hardware.radio.sim",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioSim/slot1",
+        "IRadioSim/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.radio.voice.xml",
+      "name": "android.hardware.radio.voice",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IRadioVoice/slot1",
+        "IRadioVoice/slot2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.secure_element.xml",
+      "name": "android.hardware.secure_element",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "ISecureElement/SIM1",
+        "ISecureElement/SIM2"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.security.onekeymint-service-qti.xml",
+      "name": "android.hardware.security.keymint",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IKeyMintDevice/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.security.onekeymint-service-qti.xml",
+      "name": "android.hardware.security.keymint",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IRemotelyProvisionedComponent/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.security.secretkeeper-service-qti.xml",
+      "name": "android.hardware.security.secretkeeper",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "ISecretkeeper/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.security.secureclock-service-qti.xml",
+      "name": "android.hardware.security.secureclock",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "ISecureClock/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.security.sharedsecret-service-qti.xml",
+      "name": "android.hardware.security.sharedsecret",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "ISharedSecret/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.sensors-multihal.xml",
+      "name": "android.hardware.sensors",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "ISensors/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.thermal-service.qti.xml",
+      "name": "android.hardware.thermal",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IThermal/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.usb-service.qti.xml",
+      "name": "android.hardware.usb",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IUsb/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.usb.gadget-service.qti.xml",
+      "name": "android.hardware.usb.gadget",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IUsbGadget/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.wifi-service.xml",
+      "name": "android.hardware.wifi",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IWifi/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.wifi.hostapd.xml",
+      "name": "android.hardware.wifi.hostapd",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IHostapd/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/android.hardware.wifi.supplicant.xml",
+      "name": "android.hardware.wifi.supplicant",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "ISupplicant/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/audioeffectservice_qti.xml",
+      "name": "android.hardware.audio.effect",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IFactory/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/bcs-ranging.xml",
+      "name": "android.hardware.bluetooth.ranging",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "IBluetoothChannelSounding/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/bluetooth_audio.xml",
+      "name": "android.hardware.bluetooth.audio",
+      "format": "aidl",
+      "declared_versions": [
+        "5"
+      ],
+      "fqnames": [
+        "IBluetoothAudioProviderFactory/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/bluetooth_hci.xml",
+      "name": "android.hardware.bluetooth",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IBluetoothHci/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/imsdcservice-saidl.xml",
+      "name": "vendor.qti.ims.datachannelservice",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IDataChannelService/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml",
+      "name": "android.hardware.audio.core",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IConfig/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml",
+      "name": "android.hardware.audio.core",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IModule/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml",
+      "name": "android.hardware.audio.core",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IModule/r_submix"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml",
+      "name": "android.hardware.audio.core",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IModule/usb"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/manifest_btaudiocoreservices_qti.xml",
+      "name": "android.hardware.audio.core",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "IModule/bluetooth"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/mapper.qti.xml",
+      "name": "mapper",
+      "format": "native",
+      "declared_versions": [],
+      "fqnames": [
+        "@5.0/qti"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/power.xml",
+      "name": "android.hardware.power",
+      "format": "aidl",
+      "declared_versions": [
+        "6"
+      ],
+      "fqnames": [
+        "IPower/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.camera.offlinecamera-impl.xml",
+      "name": "vendor.qti.hardware.camera.offlinecamera",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "interfaces": [
+        {
+          "name": "IOfflineCameraService",
+          "instances": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.camera.provider.xml",
+      "name": "android.hardware.camera.provider",
+      "format": "aidl",
+      "declared_versions": [
+        "3"
+      ],
+      "fqnames": [
+        "ICameraProvider/vendor_qti/0"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.hardware.display.allocator-service.xml",
+      "name": "android.hardware.graphics.allocator",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "IAllocator/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v4.xml",
+      "name": "android.hardware.graphics.composer3",
+      "format": "aidl",
+      "declared_versions": [
+        "4"
+      ],
+      "fqnames": [
+        "IComposer/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.hardware.lights.service.xml",
+      "name": "android.hardware.light",
+      "format": "aidl",
+      "declared_versions": [
+        "2"
+      ],
+      "fqnames": [
+        "ILights/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml",
+      "name": "vendor.qti.hardware.radio.ims",
+      "format": "aidl",
+      "declared_versions": [
+        "20"
+      ],
+      "fqnames": [
+        "IImsRadio/imsradio0",
+        "IImsRadio/imsradio1"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.qti.ims.factoryaidlservice.xml",
+      "name": "vendor.qti.ims.factoryaidlservice",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IImsFactory/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.xiaomi.camera.aon-impl.xml",
+      "name": "vendor.xiaomi.hardware.aon",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IAlwaysOn/miaonservicehal"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.camera.mivimessage-service.xml",
+      "name": "vendor.xiaomi.hardware.camera.mivimessage",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IService/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.dynamiccameraserver.xml",
+      "name": "vendor.xiaomi.hardware.camera.synthetic",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IVirtualCameraRegistrar/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.postprocservice-service.xml",
+      "name": "vendor.xiaomi.hardware.postprocservice",
+      "format": "aidl",
+      "declared_versions": [],
+      "fqnames": [
+        "IPostProcService/default"
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.quickcamera.xml",
+      "name": "vendor.xiaomi.hardware.quickcamera",
+      "format": "aidl",
+      "declared_versions": [
+        "1"
+      ],
+      "interfaces": [
+        {
+          "name": "IQuickCameraService",
+          "instances": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ],
+  "nested_profile_empty_overrides": [
+    {
+      "source": "/vendor/etc/vintf/manifest/qspa/qspa-modem.xml",
+      "activation_verified": false,
+      "empty_overrides": [
+        {
+          "name": "vendor.qti.hardware.radio.am",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.atfwd",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.ims",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.ims.datachannelservice",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.ims.factoryaidlservice",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.internal.deviceinfo",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.lpa",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.qcrilhook",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.qtiradio",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.qtiradioconfig",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.uim",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.uim_remote_client",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "vendor.qti.hardware.radio.uim_remote_server",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.config",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.data",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.messaging",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.modem",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.network",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.sap",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.sim",
+          "format": "aidl",
+          "override": "true"
+        },
+        {
+          "name": "android.hardware.radio.voice",
+          "format": "aidl",
+          "override": "true"
+        }
+      ]
+    },
+    {
+      "source": "/vendor/etc/vintf/manifest/qspa/qspa-nav.xml",
+      "activation_verified": false,
+      "empty_overrides": [
+        {
+          "name": "android.hardware.gnss",
+          "format": "aidl",
+          "override": "true",
+          "optional": "true"
+        }
+      ]
+    }
+  ],
+  "device_to_framework_matrix": {
+    "source": "/vendor/etc/vintf/compatibility_matrix.xml",
+    "system_sdk_versions": [
+      "36"
+    ],
+    "requirements": [
+      {
+        "source": "/vendor/etc/vintf/compatibility_matrix.xml",
+        "name": "android.frameworks.sensorservice",
+        "format": "aidl",
+        "declared_versions": []
+      },
+      {
+        "source": "/vendor/etc/vintf/compatibility_matrix.xml",
+        "name": "vendor.qti.hardware.sigma_miracast_aidl",
+        "format": "aidl",
+        "declared_versions": []
+      },
+      {
+        "source": "/vendor/etc/vintf/compatibility_matrix.xml",
+        "name": "vendor.qti.qccsyshal_aidl",
+        "format": "aidl",
+        "declared_versions": [],
+        "interfaces": [
+          {
+            "name": "IQccsyshal",
+            "instances": [
+              "default"
+            ]
+          }
+        ]
+      }
+    ],
+    "matching_static_framework_manifest_declarations": [
+      {
+        "source": "/system/etc/vintf/manifest.xml",
+        "name": "android.frameworks.sensorservice",
+        "format": "aidl",
+        "declared_versions": [],
+        "fqnames": [
+          "ISensorManager/default"
+        ]
+      },
+      {
+        "source": "/system/etc/vintf/manifest.xml",
+        "name": "android.frameworks.sensorservice",
+        "format": "hidl",
+        "declared_versions": [],
+        "max-level": "8",
+        "fqnames": [
+          "@1.0::ISensorManager/default"
+        ]
+      },
+      {
+        "source": "/system_ext/etc/vintf/manifest/vendor.qti.hardware.sigma_miracast_aidl.xml",
+        "name": "vendor.qti.hardware.sigma_miracast_aidl",
+        "format": "aidl",
+        "declared_versions": [],
+        "fqnames": [
+          "ISigma_miracast/default"
+        ]
+      },
+      {
+        "source": "/system_ext/etc/vintf/manifest/vendor.qti.qccsyshal_aidl-service.xml",
+        "name": "vendor.qti.qccsyshal_aidl",
+        "format": "aidl",
+        "declared_versions": [],
+        "fqnames": [
+          "IQccsyshal/default"
+        ]
+      }
+    ],
+    "merged_compatibility_verified": false
+  },
+  "legacy_matrix_only_camera_name": {
+    "declaration": {
+      "source": "/system/etc/vintf/compatibility_matrix.device.xml",
+      "name": "vendor.xiaomi.hardware.campostproc",
+      "format": "hidl",
+      "declared_versions": [
+        "1.0"
+      ],
+      "interfaces": [
+        {
+          "name": "IMiPostProcService",
+          "instances": [
+            "default"
+          ]
+        }
+      ]
+    },
+    "matching_device_manifest_declarations": 0,
+    "optional_attribute_present": false,
+    "runtime_service_verified": false
+  },
+  "kernel_matrix": {
+    "source": "/system/etc/vintf/compatibility_matrix.202504.xml",
+    "framework_level": "202504",
+    "minimum_version": "6.12.0",
+    "kernel_level": "202504",
+    "kernel_fragment_count": 11,
+    "unconditional_config_count": 260,
+    "conditional_fragments": [
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_ARM",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 3
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_ARM64",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 14
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_X86",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 8
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_X86_64",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 1
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_ACPI",
+            "type": "tristate",
+            "value": "n"
+          }
+        ],
+        "config_count": 1
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_OF",
+            "type": "tristate",
+            "value": "n"
+          }
+        ],
+        "config_count": 1
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_EXT4_FS",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 1
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_F2FS_FS",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 1
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_HAVE_ARCH_VMAP_STACK",
+            "type": "tristate",
+            "value": "y"
+          },
+          {
+            "name": "CONFIG_KASAN_SW_TAGS",
+            "type": "tristate",
+            "value": "n"
+          }
+        ],
+        "config_count": 1
+      },
+      {
+        "conditions_all": [
+          {
+            "name": "CONFIG_CC_HAS_AUTO_VAR_INIT_ZERO",
+            "type": "tristate",
+            "value": "y"
+          }
+        ],
+        "config_count": 1
+      }
+    ],
+    "config_elements_across_all_fragments": 292,
+    "selected_unconditional_requirements": [
+      {
+        "name": "CONFIG_ANDROID_BINDERFS",
+        "type": "tristate",
+        "value": "y"
+      },
+      {
+        "name": "CONFIG_ANDROID_BINDER_IPC",
+        "type": "tristate",
+        "value": "y"
+      },
+      {
+        "name": "CONFIG_DM_VERITY",
+        "type": "tristate",
+        "value": "y"
+      },
+      {
+        "name": "CONFIG_MODULES",
+        "type": "tristate",
+        "value": "y"
+      },
+      {
+        "name": "CONFIG_MODVERSIONS",
+        "type": "tristate",
+        "value": "y"
+      },
+      {
+        "name": "CONFIG_SECURITY_SELINUX",
+        "type": "tristate",
+        "value": "y"
+      }
+    ],
+    "observed_kernel_release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "numeric_minimum_met": true,
+    "numeric_comparison_is_complete_compatibility": false,
+    "effective_kernel_fcm_verified": false,
+    "all_applicable_configs_matched": false,
+    "kernel_module_contract": "research/boot-contract.json"
+  },
+  "framework_policy_matrix": {
+    "source": "/system/etc/vintf/compatibility_matrix.device.xml",
+    "kernel_sepolicy_version": "30",
+    "sepolicy_versions": [
+      "29.0",
+      "30.0",
+      "31.0",
+      "32.0",
+      "33.0",
+      "34.0",
+      "202404",
+      "202504"
+    ],
+    "vbmeta_version_field": "1.0",
+    "vbmeta_field_proves_package_authenticity": false
+  },
+  "shipped_numbered_framework_matrix_levels": [
+    "5",
+    "6",
+    "7",
+    "8",
+    "202404",
+    "202504"
+  ],
+  "postproc_library_path": {
+    "permission_source": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+    "library_name": "vendor.xiaomi.hardware.postprocservice-V1-java",
+    "declared_path": "/system/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+    "observed_regular_file": {
+      "runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+      "image_sha256": "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef",
+      "sha256": "7078503117b60cf8cce688fd742908a73a7cd284aafae6327cbef9b3d6138c56",
+      "size_bytes": 13298
+    },
+    "image_nid": 5685760,
+    "declared_path_entry_observed_in_system_inventory": false,
+    "matching_alias_observed": false,
+    "runtime_path_resolution_verified": false,
+    "native_seed_receipt_record": "research/camera-dependencies.json"
+  },
+  "source_files": {
+    "/mi_ext/etc/build.prop": {
+      "logical_partition": "mi_ext_a",
+      "sha256": "5f1c03fb78c1578b7f9f071d830d7a35cdbc476bc4c6fe8c17dcbaa187001449",
+      "size_bytes": 797,
+      "nid": 79,
+      "captured_file": "files/0001"
+    },
+    "/odm/etc/build.prop": {
+      "logical_partition": "odm_a",
+      "sha256": "605227e2ea6a2c7cf11c431a5bc03d32ce45907a732133fe38c409ea0847773d",
+      "size_bytes": 18818,
+      "nid": 882039,
+      "captured_file": "files/0001"
+    },
+    "/odm/etc/vintf/manifest/AHBF-V3-service.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "d6eae99d3e16bf4158750bf11feaf0ab78de60c1a2cf4de89b76d4e892ffcc25",
+      "size_bytes": 322,
+      "nid": 98527084,
+      "captured_file": "files/0065",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/android.hardware.biometrics.face-v4.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "5d3b8eb085eb696b3fa8188484f7a771eeb9b0cf02742c672048d36aebab6e48",
+      "size_bytes": 324,
+      "nid": 98527417,
+      "captured_file": "files/0066",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/android.hardware.security.keymint-service.strongbox-thales.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "c60f3eb777149fbf4c1fd127b93d287cdee4c1adb531fd255782d324e6ad09e9",
+      "size_bytes": 542,
+      "nid": 98527429,
+      "captured_file": "files/0067",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/android.hardware.security.sharedsecret-service.strongbox-thales.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "e9b2d463dc714e28a374941a2a74c6166ddab89e4efd257a596b0f8de2bafe6c",
+      "size_bytes": 338,
+      "nid": 98527448,
+      "captured_file": "files/0068",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/android.hardware.weaver-service.thales.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "89de9acd89f78b4657ae02d7b28e701aec4ce7cf6b7c0b1750a93e391c9b018d",
+      "size_bytes": 314,
+      "nid": 98527461,
+      "captured_file": "files/0069",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/miaon_frame.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "906128d4166cef2370bc9298e0a34c2ed533d5c249c4415091552d16faf2d04c",
+      "size_bytes": 279,
+      "nid": 98527605,
+      "captured_file": "files/0080",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/misensor_camera.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "76f4cd580373c33feef10e94c36bd9b950ceda19ec38e135a467b3ea9c836f6a",
+      "size_bytes": 280,
+      "nid": 98527642,
+      "captured_file": "files/0083",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/mseccam.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "0f70b69aab2273d45c7c8f0705e31d9f751246abdf054f72e4fb0129125fc68f",
+      "size_bytes": 259,
+      "nid": 98527675,
+      "captured_file": "files/0085",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/nfc-service-st.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "732e0536aea15f3e730db9f4acb3fac394da0a6c8fa38418893fc12ae202c576",
+      "size_bytes": 276,
+      "nid": 98527685,
+      "captured_file": "files/0086",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/uwbhal-saidl.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "4a9103f3e577114b1dc3987958010e0e5c84d030f9703f8f13d981b7b885e4a1",
+      "size_bytes": 254,
+      "nid": 98527696,
+      "captured_file": "files/0088",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.aon.auth.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "88ff7e7b9f09b1620e34d94cbf4526955711c7d3f109619f841febbcd6d2e5c3",
+      "size_bytes": 293,
+      "nid": 98527706,
+      "captured_file": "files/0089",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.vibratorfeature.service.xml": {
+      "logical_partition": "odm_a",
+      "sha256": "9d9e02baaff1c260a165e769614a9addf91beeefae47edb1e8d13a95e548265f",
+      "size_bytes": 342,
+      "nid": 98527821,
+      "captured_file": "files/0098",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/product/etc/build.prop": {
+      "logical_partition": "product_a",
+      "sha256": "5a9d22fdc17ca168d255e21567730dc7f7e713ee408329209a8d8ebeadde7691",
+      "size_bytes": 12586,
+      "nid": 27268217,
+      "captured_file": "files/0001"
+    },
+    "/system/build.prop": {
+      "logical_partition": "system_a",
+      "sha256": "7cb496f8ca074b9bfe97c9eac7cea81909069cda71c96df4a3783babd2aa69aa",
+      "size_bytes": 12087,
+      "nid": 348,
+      "captured_file": "files/0001"
+    },
+    "/system/etc/vintf/compatibility_matrix.202504.xml": {
+      "logical_partition": "system_a",
+      "sha256": "a21eba5d7ccf35458f3ca2e8205ea0be5105c4206537b4c95eb32ec4ca10d3c8",
+      "size_bytes": 60855,
+      "nid": 11113723,
+      "captured_file": "files/0108",
+      "xml_kind": "compatibility-matrix",
+      "xml_type": "framework"
+    },
+    "/system/etc/vintf/compatibility_matrix.device.xml": {
+      "logical_partition": "system_a",
+      "sha256": "378f41d642384e0896b88ad9d08791e3202f6ce897fba70f10600cd32b0fdd26",
+      "size_bytes": 94740,
+      "nid": 11138038,
+      "captured_file": "files/0113",
+      "xml_kind": "compatibility-matrix",
+      "xml_type": "framework"
+    },
+    "/system/etc/vintf/manifest.xml": {
+      "logical_partition": "system_a",
+      "sha256": "0cac7c5627653a5e5ae386e9420a2d6102dd23a18e7126a672bb873b60a302a1",
+      "size_bytes": 2498,
+      "nid": 11139968,
+      "captured_file": "files/0114",
+      "xml_kind": "manifest",
+      "xml_type": "framework"
+    },
+    "/system_dlkm/etc/build.prop": {
+      "logical_partition": "system_dlkm_a",
+      "sha256": "9ed85132074bf22c077d101291d27d40718db762d5f579edd0d7401f01116195",
+      "size_bytes": 1245,
+      "nid": 87,
+      "captured_file": "files/0001"
+    },
+    "/system_ext/etc/build.prop": {
+      "logical_partition": "system_ext_a",
+      "sha256": "c3b76f040a5ab225eed6934af9959f5bd37bccae898b39bb3615e122454f29d8",
+      "size_bytes": 4956,
+      "nid": 1821310,
+      "captured_file": "files/0001"
+    },
+    "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml": {
+      "logical_partition": "system_ext_a",
+      "sha256": "3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7",
+      "size_bytes": 188,
+      "nid": 4653788,
+      "captured_file": "files/0126"
+    },
+    "/system_ext/etc/vintf/manifest/vendor.qti.hardware.sigma_miracast_aidl.xml": {
+      "logical_partition": "system_ext_a",
+      "sha256": "2753999b5d500f0362544ee07021cb7ac2b44901a9528cf71507dd9bbfe07873",
+      "size_bytes": 347,
+      "nid": 4671774,
+      "captured_file": "files/0138",
+      "xml_kind": "manifest",
+      "xml_type": "framework"
+    },
+    "/system_ext/etc/vintf/manifest/vendor.qti.qccsyshal_aidl-service.xml": {
+      "logical_partition": "system_ext_a",
+      "sha256": "05251536915bb7727df26541eda2a75b6a5c3e147c373afad622e1b3024a81de",
+      "size_bytes": 308,
+      "nid": 4671732,
+      "captured_file": "files/0140",
+      "xml_kind": "manifest",
+      "xml_type": "framework"
+    },
+    "/vendor/build.prop": {
+      "logical_partition": "vendor_a",
+      "sha256": "0db3c4dad5631d225a354854d4811a20146bbd3308b64671691f4c50244acf53",
+      "size_bytes": 15243,
+      "nid": 92,
+      "captured_file": "files/0001"
+    },
+    "/vendor/etc/vintf/compatibility_matrix.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "c20215ca383a5a205da20d8c9947e68826cc16ac95a384a8fef02832d2649f9f",
+      "size_bytes": 597,
+      "nid": 8606059,
+      "captured_file": "files/0236",
+      "xml_kind": "compatibility-matrix",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.camera.provider.external.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "bb71ff4e0c902507bba43421823ded929a87b031cc38a7112564b27c48427c1d",
+      "size_bytes": 310,
+      "nid": 8592231,
+      "captured_file": "files/0240",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.gatekeeper-service-qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "5fb402e995b91cc597dba9cf1e469591872e33dd1d4251491ca141b439fea285",
+      "size_bytes": 297,
+      "nid": 8776192,
+      "captured_file": "files/0243",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.gnss-aidl-service-qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "4d05beefa674cf791561b9a546ec61de684ffa73c11cb1d9112d1325e3312ac7",
+      "size_bytes": 304,
+      "nid": 8776203,
+      "captured_file": "files/0244",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.health-service.qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "b9890d7ea0425ed299cce9561d6ff44f1e1d280fd66f476e785ad173f19b1ab3",
+      "size_bytes": 309,
+      "nid": 8776214,
+      "captured_file": "files/0245",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.powerstats-service.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "555f6a40b0fc9f7ea0fe4e14e4b7ddced0514a9d30bd3ce94db69cda3f42416c",
+      "size_bytes": 317,
+      "nid": 8776237,
+      "captured_file": "files/0247",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.config.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "25ff2f590f2c6b8a0329f3875261b6bdc54a975d371aeb74f06683e87c575743",
+      "size_bytes": 317,
+      "nid": 8776249,
+      "captured_file": "files/0248",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.data.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "32dfd6154852e3a012904758964dd5caffd9f797964bfd3190235cc2d09b04c6",
+      "size_bytes": 347,
+      "nid": 8776261,
+      "captured_file": "files/0249",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.messaging.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "88a2402f9c908151912a2ea43d441c5072ff33bec0f87ec6dd3b76e88a2edf09",
+      "size_bytes": 371,
+      "nid": 8776274,
+      "captured_file": "files/0250",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.modem.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "17b73f2d813cd3ad112d018ddaeb3ad578314aeb8f278e6ad33893bea75c0a04",
+      "size_bytes": 355,
+      "nid": 8776288,
+      "captured_file": "files/0251",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.network.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "ea2889fdf4530a1cf1b2fc393f90b320192e83fdaff45e8dfc5496c3a690ff7e",
+      "size_bytes": 363,
+      "nid": 8776301,
+      "captured_file": "files/0252",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.sap.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "ab962a4ee97d45730588ee0585beb986553d5e95c0a7d583e03e2de7db7573bf",
+      "size_bytes": 308,
+      "nid": 8776320,
+      "captured_file": "files/0253",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.sim.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "8861ae9ae8d1e1b467a6639e86d8fb0769d24f32f8538e6f4a304af9d05a1c31",
+      "size_bytes": 347,
+      "nid": 8776332,
+      "captured_file": "files/0254",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.radio.voice.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "e7e43ee56b7f3c906d6511dd729dcfe1b5f475faa9ec00d7d0662612f2bfe717",
+      "size_bytes": 355,
+      "nid": 8776345,
+      "captured_file": "files/0255",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.secure_element.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "459e501c5375536d697f582cf90fd394c4f9f2491e52b5bf1882410b4ab4e6e9",
+      "size_bytes": 336,
+      "nid": 8776358,
+      "captured_file": "files/0256",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.security.onekeymint-service-qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "71b43ecedc2949f09d0445b49486ceb2c04bbb5b14f46e121dd6db5873ebf9aa",
+      "size_bytes": 526,
+      "nid": 8776370,
+      "captured_file": "files/0257",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.security.secretkeeper-service-qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "ea13713aedb1ae5f163fbb11aec37a40abd48058b5ec6dc2998d56f0e00b0aa5",
+      "size_bytes": 360,
+      "nid": 8776388,
+      "captured_file": "files/0258",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.security.secureclock-service-qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "e6215f1a179f762deab881785479c0174ec9ac8ab7d7d0034f9f5cc8e141d428",
+      "size_bytes": 318,
+      "nid": 8776401,
+      "captured_file": "files/0259",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.security.sharedsecret-service-qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "69ec653a168cfd305e3d545e7a9502a73a4ee42f9e3089f120b601df12f10fa1",
+      "size_bytes": 321,
+      "nid": 8776413,
+      "captured_file": "files/0260",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.sensors-multihal.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "fcc6446c3f5a1255e423a58305924c094990acbc34c297469a0d52b097108ed3",
+      "size_bytes": 311,
+      "nid": 8776425,
+      "captured_file": "files/0261",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.thermal-service.qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "b52093a925b594026aa9c1117d85aa7388bd69d4a282a456e62689c12b21f8f4",
+      "size_bytes": 307,
+      "nid": 8776448,
+      "captured_file": "files/0262",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.usb-service.qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "d01230c4a553d69db478ede9b2b4d2716986c80bc424d5fc7f378257dc43e84b",
+      "size_bytes": 262,
+      "nid": 8776437,
+      "captured_file": "files/0263",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.usb.gadget-service.qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "037e01470fdb8add8af1eea12040bf38636d439382a5fe0867f75802e6e573b8",
+      "size_bytes": 282,
+      "nid": 8776460,
+      "captured_file": "files/0264",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.wifi-service.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "b0244c7741b58325669b372154776f5b800f6c19c73f08688ad1aaa45ba596a8",
+      "size_bytes": 297,
+      "nid": 8776471,
+      "captured_file": "files/0265",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.wifi.hostapd.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "2bb8b7148536575a9022ad2bb008a02ed2f0fbcec341b0efbbc5f59e470e8881",
+      "size_bytes": 304,
+      "nid": 8776482,
+      "captured_file": "files/0266",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/android.hardware.wifi.supplicant.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "274686e58b747d64159d3fa76390b72929ce6836c5967645fc159f1aca661968",
+      "size_bytes": 475,
+      "nid": 8776493,
+      "captured_file": "files/0267",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/audioeffectservice_qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "e100c5f7e4529674777ab83938d92edfab2dc4d048c4f808a6340ef2c445bba3",
+      "size_bytes": 320,
+      "nid": 8776521,
+      "captured_file": "files/0269",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/bcs-ranging.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "83ea9b36f33133f45876fd9e97b715bd2e189901ba513964eba79d56f86dd5d5",
+      "size_bytes": 339,
+      "nid": 8776544,
+      "captured_file": "files/0271",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/bluetooth_audio.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "2a0e267800e97c8b18c3482535dfc7ed87ad64b4463e17e4bf6a0376f6e586b8",
+      "size_bytes": 330,
+      "nid": 8776576,
+      "captured_file": "files/0273",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/bluetooth_hci.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "e1241716393915da7756a60c63e347c0235521768c0dfdfdc5384d9683dfcc37",
+      "size_bytes": 292,
+      "nid": 8776588,
+      "captured_file": "files/0274",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/imsdcservice-saidl.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "19a1e58de7f92fdeca55a0c10e6e1e39d3907657b098e0d821f7f3219628b44b",
+      "size_bytes": 346,
+      "nid": 8776767,
+      "captured_file": "files/0290",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "b10dafb2fd11044f4bb6c19dde6aa967531abee184bcdd1ee0916575f47a1444",
+      "size_bytes": 783,
+      "nid": 8776780,
+      "captured_file": "files/0291",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/manifest_btaudiocoreservices_qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "363ce3925be415bd736a80164a7becb96614920261401ed5cd9ea732abbad667",
+      "size_bytes": 329,
+      "nid": 8776818,
+      "captured_file": "files/0293",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/mapper.qti.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "d5f18a308a516e1f0fe80fd599b2d9cc0efb45f83e84ae702ade77a2a0d332da",
+      "size_bytes": 223,
+      "nid": 8776866,
+      "captured_file": "files/0297",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/power.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "41159ba41cc19f9b172479caf644794a252edba7bf8938a00b92e84069a749e2",
+      "size_bytes": 266,
+      "nid": 8776918,
+      "captured_file": "files/0302",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/qspa/qspa-modem.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "58d16c76011df3056a70d3673d4936fc75e9ebc51222eb6007c64344cc53a741",
+      "size_bytes": 2486,
+      "nid": 8777893,
+      "captured_file": "files/0306",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/qspa/qspa-nav.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "e35e2c516f74a6166a22ed7e6f1138ee15a5cecae61a710c7636c7eb8f95562c",
+      "size_bytes": 294,
+      "nid": 8777973,
+      "captured_file": "files/0307",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.camera.offlinecamera-impl.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "214e5330b77cb5c935bb643a3fb87e8390369706c05a009594dc4fd985049632",
+      "size_bytes": 464,
+      "nid": 8777048,
+      "captured_file": "files/0314",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.camera.provider.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "415852b40ef1f67c1932f1f0eb4cb91bd94c3f8c6bfdb236f5a2ed7cee29b73f",
+      "size_bytes": 339,
+      "nid": 8777064,
+      "captured_file": "files/0315",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.hardware.display.allocator-service.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "a4cbe94cf2812ef4df07307520b3960b9ec4cd6bb05ee5b31bd82772529e6f37",
+      "size_bytes": 324,
+      "nid": 8777184,
+      "captured_file": "files/0325",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v4.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "d5222a40400ac72a26a3e9f118f3c47c93a89df70326187b52806db23adcd4c6",
+      "size_bytes": 1120,
+      "nid": 8777216,
+      "captured_file": "files/0326",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.hardware.lights.service.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "92ccde3dff84c56b715e83a56175bfa36cb7f80b368fc1ed181a50771f115e72",
+      "size_bytes": 297,
+      "nid": 8777290,
+      "captured_file": "files/0331",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "db85ea4a6324d07279fb46d5ed9b0337c4386838402e78e4e2ddb5923d2bc576",
+      "size_bytes": 362,
+      "nid": 8777368,
+      "captured_file": "files/0337",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.qti.ims.factoryaidlservice.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "8b7bc71ce0bad9647b2bd018b7a4408babbea5603e5b1a27c4d8a8190ab6bb25",
+      "size_bytes": 293,
+      "nid": 8777671,
+      "captured_file": "files/0351",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.xiaomi.camera.aon-impl.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "64b3d1ed064383ff2616181e5d2dc3089f4a39085f9b203c47dbbcc073f347ca",
+      "size_bytes": 298,
+      "nid": 8777715,
+      "captured_file": "files/0356",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.camera.mivimessage-service.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "63f22d655157511b48d2613954f349a964c748d647091464a07ef7a828c6d5c4",
+      "size_bytes": 349,
+      "nid": 8777472,
+      "captured_file": "files/0362",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.dynamiccameraserver.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "feca3e6c5ba44129d4bfd5b5f47d1aaddd0ff37ccf182b1fffaa4061741fc4b9",
+      "size_bytes": 326,
+      "nid": 8777499,
+      "captured_file": "files/0364",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.postprocservice-service.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "c006883101b41d9c6946c7edda250ab398ae7437897c30364b8402a544a19211",
+      "size_bytes": 329,
+      "nid": 8777560,
+      "captured_file": "files/0369",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.quickcamera.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "eac0a6174ad1e3821e4707be27ff0cc9516e234e166c1251dd03769d6efe3d06",
+      "size_bytes": 335,
+      "nid": 8777572,
+      "captured_file": "files/0370",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest_alor.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "f75119737f4b7ec9292df3b90e7083d8f879d61cf0be45dc21970578ba11a944",
+      "size_bytes": 340,
+      "nid": 8626417,
+      "captured_file": "files/0375",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/etc/vintf/manifest_canoe.xml": {
+      "logical_partition": "vendor_a",
+      "sha256": "3ea5780e87654ac313a9a6fd96fa8200b858a25033ebd63b36264fc372ff9b2b",
+      "size_bytes": 1150,
+      "nid": 8704205,
+      "captured_file": "files/0376",
+      "xml_kind": "manifest",
+      "xml_type": "device"
+    },
+    "/vendor/odm_dlkm/etc/build.prop": {
+      "logical_partition": "vendor_a",
+      "sha256": "7f790c0c0fd81f84846c08a9a26a59f38374155933c7384b1487608798ebb7ce",
+      "size_bytes": 1190,
+      "nid": 29269120,
+      "captured_file": "files/0382"
+    },
+    "/vendor_dlkm/etc/build.prop": {
+      "logical_partition": "vendor_dlkm_a",
+      "sha256": "43c1db6f2c1a308d6811c5d3cc4aba8a4dfd606983566529d509d9ce7f1356c4",
+      "size_bytes": 1245,
+      "nid": 80,
+      "captured_file": "files/0001"
+    }
+  },
+  "verification_boundaries": {
+    "xml_well_formedness_and_recorded_hashes_verified": true,
+    "schema_validation_with_libvintf_performed": false,
+    "effective_manifest_selection_verified": false,
+    "checkvintf_against_evolution_x_performed": false,
+    "device_vintf_test_performed": false,
+    "proprietary_dependency_closure_complete": false,
+    "evolution_x_hardware_tested": false,
+    "avb_image_set_consistent": false
+  },
+  "next_gates": [
+    "Establish an authenticated exact-device firmware baseline and resolve the modified package AVB failures without relaxing checks.",
+    "Determine vendor/ODM SKU properties, effective manifest merging, active APEX declarations and the runtime vendor API level from authorized read-only evidence.",
+    "Run libvintf/checkvintf against the assembled Evolution X framework and reviewed vendor/ODM inputs, including the applicable kernel version/config/FCM, SELinux and system-SDK constraints.",
+    "Provide and verify actual proprietary HAL services plus framework/system_ext counterparts, ELF/linker/Java dependencies, permissions, signatures, init rules and enforcing policy.",
+    "Resolve the postproc permission path against the assembled filesystem without assuming an unobserved alias.",
+    "Validate module ABI/signatures against the intended kernel and perform separately authorized VINTF/VTS and native-feature device tests after a buildable Nezha target exists."
+  ],
+  "primary_references": [
+    "https://source.android.com/docs/core/architecture/vintf/objects",
+    "https://source.android.com/docs/core/architecture/vintf/comp-matrices",
+    "https://source.android.com/docs/core/architecture/vintf/match-rules",
+    "https://source.android.com/docs/core/architecture/api-flags"
+  ]
+}
