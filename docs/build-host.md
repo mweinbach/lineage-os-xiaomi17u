@@ -11,7 +11,10 @@ worktrees and remotes, plus all 99 LFS payload hashes, passed independent
 verification. The unmodified Soong entry point also compiled four x86-64 host
 tools and successfully queried `OUT_DIR`. The authored Nezha product now also
 passes Soong/Kati configuration and has built ARM64 `libbase.so` plus the
-x86-64 host `checkvintf` tool. The actual Ninja process was observed under nsjail.
+x86-64 host `checkvintf` tool. All nine selected Camera dependency modules and
+the Soong policy tools also built; all four JARs have verified ODEX/VDEX outputs.
+The actual Camera Ninja process was observed under nsjail with read-only source
+and read-write output. These are module checks, not Camera hardware tests.
 A complete Android 16 ROM build is not yet verified. See the
 [Apple Container workflow](apple-container.md) for the observed configuration,
 Ninja artifact hashes, receipt, commands, and status checks.

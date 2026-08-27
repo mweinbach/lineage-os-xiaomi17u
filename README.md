@@ -6,8 +6,8 @@ of Xiaomi's camera and other native features.
 
 **Evolution X has fully synced in its Linux volume, with all 1,179 project
 revisions verified. An authored Nezha product passes Soong/Kati configuration
-and has built ARM64 libbase plus the host VINTF checker. Camera dependency
-compilation is underway. A flashable ROM is not present.** No phone
+and has built ARM64 libbase, all nine selected Camera dependency modules and
+the host VINTF/policy tools. A flashable ROM is not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
@@ -31,21 +31,23 @@ should be unlocked, wiped, or flashed as part of workspace setup.
 - Source-gap research and a concrete feature dependency/test matrix. Camera
   preview or APK installation alone will not establish Leica feature parity.
 - Matching official China firmware URLs and acquisition receipts. Earlier CLI
-  downloads remain partial; a separate full-size fastboot TGZ is visible in
-  Downloads but its content reads time out, so it is not yet verified. The user
-  separately supplied a Xiaomi.eu ZIP under
-  `sources/`; its separate intake copy and all 84 ZIP entries passed integrity
-  checks. Its download origin is unverified, and it is not authenticated Xiaomi
-  factory firmware. See [the supplied-package receipt](docs/provided-firmware.md)
-  for its hash and the difference between its filename and embedded build label.
+  downloads remain partial. The separately supplied factory-named TGZ is now
+  readable under `sources/`; its full archive and all 19 extracted images passed
+  integrity checks. Its selected Android AVB chain and all eight logical
+  filesystems pass, without establishing an authenticated Xiaomi trust root.
+  See [factory validation](docs/factory-firmware-validation.md). The earlier
+  [Xiaomi.eu ZIP](docs/provided-firmware.md) remains a separate modified input,
+  with its own provenance, hashes and embedded build-label discrepancy.
 - Verified extraction of all 66 supplied image members, reconstruction of the
   15 sparse super overlays, and extraction of eight populated logical images.
   Independent tools produced matching hashes, and all eight EROFS checks passed.
-  **Retained AVB metadata fails against vendor_boot and all eight logical
+  **That Xiaomi.eu package's retained AVB metadata fails against vendor_boot and all eight logical
   images.** These are modified research inputs, not a valid signed image set.
 - Exact boot/kernel/DTBO and module evidence, plus 13 camera dependency seeds
   with file/image hashes. The package's Camera APK matches the live snapshot.
-  Physical boot-partition sizes and module ABI compatibility remain unresolved.
+  Factory GPT/XML now supplies exact package partition extents, including
+  32 MiB DTBO despite its 22 MiB image. Live phone capacities and complete module
+  ABI compatibility remain unresolved.
 - An authored `lineage_nezha-bp4a-userdebug` product, verified private vendor/kernel
   bundles, and exact Nezha DTS source roundtrips. Actual product configuration
   and the first Android module build passed in the existing VM. See [build progress](docs/build-progress.md) for
@@ -144,6 +146,9 @@ properties do not independently establish physical variant or bootloader state.
 | [Firmware intake](docs/firmware-intake.md) | Preserve local ROM packages and provenance without executing scripts |
 | [Fastboot extraction](docs/fastboot-extraction.md) | Bounded TAR/GZIP image extraction with hashes and full-stream integrity checks |
 | [Matching firmware](docs/firmware-source.md) | Verified Xiaomi CDN URLs, partial download status, and safe resumption requirements |
+| [Factory intake](docs/factory-firmware-intake.md) | Separate user-provided China TGZ, preserved original and verified extraction |
+| [Factory validation](docs/factory-firmware-validation.md) | Independent sparse reconstruction, logical layout, passing selected AVB chain and EROFS checks |
+| [Partition metadata](docs/partition-metadata.md) | Verified package GPT/XML extents, growth placeholders and live-capacity limits |
 | [Supplied Xiaomi.eu package](docs/provided-firmware.md) | Verified local integrity, unverified origin, embedded identity and sparse super layout |
 | [Firmware analysis](docs/firmware-analysis.md) | Verified sparse reconstruction, logical layout and filesystem checks |
 | [Boot/kernel/AVB contract](docs/boot-contract.md) | Exact boot formats, modules, DTs and retained verification failures |
@@ -155,6 +160,9 @@ properties do not independently establish physical variant or bootloader state.
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](docs/camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](docs/camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
+| [DEX runtime provider](docs/dex-import-uses-library.md) | Tested strict Soong patch for DEX shared libraries; guest integration still pending |
+| [ZRAM module plan](docs/zram-module-plan.md) | Distinct vendor/GKI providers, ordered loader behavior and selector requirements |
+| [Recovery plan](docs/recovery-plan.md) | TWRP after core ROM bring-up, correct Nezha layout and bootloader-protection limits |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 

@@ -221,7 +221,8 @@ correctly generated signatures and device trust are separate questions.
 The separately supplied factory-named TGZ is now readable under `sources/`.
 Its [intake and image extraction](factory-firmware-intake.md) passed; the
 earlier Downloads timeouts remain historical observations. It has its own
-provenance and validation receipts. The installed build still uses the
+provenance and [passing selected AVB/filesystem checks](factory-firmware-validation.md).
+The installed build still uses the
 explicit Xiaomi.eu bundles above; no new factory image was silently substituted.
 
 No ROM boot, camera/Leica function, IMS, fingerprint, charging, encryption or

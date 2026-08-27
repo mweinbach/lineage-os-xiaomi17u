@@ -395,9 +395,13 @@ capabilities, or copy-on-write assumption.
 The authored Nezha product now passes actual Soong/Kati configuration. The
 [current build record](build-progress.md) tracks Android module compilation and
 its failures and fixes; a complete ROM and the full kernel/vendor/framework
-integration remain unverified. Earlier command-line Xiaomi CDN downloads remain
-partial. An official-named TGZ is now visible in Downloads at its expected full
-length, but content reads timed out, so it has not been hashed or admitted.
+integration remain unverified. All nine selected Camera dependency modules
+have now built, with four JARs preoptimized and the JNI ELF check observed.
+The actual Camera Ninja sandbox has read-only source and read-write output.
+Earlier command-line Xiaomi CDN downloads remain partial. The separately
+supplied factory-named TGZ under `sources/` now has [verified intake and image
+results](factory-firmware-validation.md), including the selected AVB chain.
+It has not silently replaced the explicitly bound Xiaomi.eu build inputs.
 The separately supplied [Xiaomi.eu package](provided-firmware.md) has passed local
 SHA256 and full ZIP CRC checks, but its origin is unverified and it is not
 authenticated factory firmware. Its extraction requirements and embedded

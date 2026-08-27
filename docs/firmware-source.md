@@ -2,20 +2,30 @@
 
 Verified on **2026-08-27**: the exact China build
 `OS3.0.309.0.WPACNXM` for `nezha` is available from Xiaomi's HTTPS CDN.
-**A complete package has not yet been accepted by the intake tool.** The first
+**A separately supplied complete factory-named package is now intake-verified.**
+It is readable under `sources/`, with SHA256
+`d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b`.
+All 19 extracted images, the selected Android AVB chain and all eight logical
+filesystems passed their recorded checks. See [intake](factory-firmware-intake.md)
+and [image validation](factory-firmware-validation.md). The user's extracted
+image directory also matches those verified copies. Its provenance remains
+user-provided with an unknown download URL and unauthenticated OEM root; a
+matching CDN filename does not change that status.
+
+The earlier
 CLI transfers were stopped at explicit time limits after measuring rates that
 would require days; those CLI downloads are no longer running.
 
-A later check found the matching fastboot filename in the user's Downloads
+Before the successful intake, a check found the matching fastboot filename in the user's Downloads
 directory at exactly **12,778,943,953 bytes**, with no matching `.crdownload`
-file. This is a completed-file candidate, not an integrity result. Directory
+file. That was only a completed-file candidate, not an integrity result. Directory
 enumeration returned `EINTR` and a bounded content read timed out, so no full
-hash, archive validation or origin metadata has yet been obtained from that
+hash, archive validation or origin metadata was obtained from that
 file. The stalled read-only probes were stopped without changing the file.
-It can be accepted when normal content access succeeds or the user copies it
-into `sources/`; no macOS permission or browser access control was bypassed.
-The [fastboot extractor](fastboot-extraction.md) is ready for the verified
-intake. Do not confuse this file with the small earlier CLI partial below.
+Normal access later succeeded from `sources/`; no macOS permission or browser
+access control was bypassed. The [fastboot extractor](fastboot-extraction.md)
+then processed the verified intake. The small earlier CLI partial below was
+not promoted into usable firmware.
 
 The `19:51 UTC` metadata check still found that exact size and allocated disk
 blocks covering the file. A fresh ordinary content probe and Chrome connection
