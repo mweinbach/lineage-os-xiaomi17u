@@ -4,8 +4,9 @@ An unofficial bring-up workspace for **Xiaomi 17 Ultra (`nezha`), China hardware
 starting from **Evolution X Android 16 QPR2 (`bka`)** and investigating retention
 of Xiaomi's camera and other native features.
 
-**The research/setup tooling works. A complete ROM source sync, a buildable
-Nezha device tree, and a flashable ROM are not present yet.** No phone should be
+**The research/setup tooling and local Apple Container builder work. Evolution X
+is initialized in its Linux volume; the full source sync is in progress. A
+buildable Nezha device tree and a flashable ROM are not present yet.** No phone should be
 unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
@@ -28,14 +29,18 @@ unlocked, wiped, or flashed as part of workspace setup.
   files are ignored by Git.
 - Source-gap research and a concrete feature dependency/test matrix. Camera
   preview or APK installation alone will not establish Leica feature parity.
-- Matching official China firmware URLs and acquisition receipts. Download
-  attempts were stopped because the official CDNs were too slow; only clearly
-  labeled partial files exist. No full firmware package has been accepted yet.
+- Matching official China firmware URLs and acquisition receipts. Official CDN
+  attempts remain partial. The user separately supplied the matching Xiaomi.eu
+  ZIP under `sources/`; it is distinct from Xiaomi's official factory package.
 
-The local Mac is the control/research host. Full Android builds require Linux
-on x86-64 and a case-sensitive filesystem. The current Mac/ARM64/APFS directory
-does not pass those requirements; no full platform sync or emulated build was
-started here. The [build-host guide](docs/build-host.md) covers the Linux path.
+This Mac can also host the Linux build environment through **Apple Container +
+Rosetta**. The working configuration uses a pinned Ubuntu 24.04 ARM64 image,
+amd64 runtime libraries, 16 vCPUs, 128 GiB RAM and an 800 GiB persistent ext4
+volume. An x86-64 probe and a freshly crosscompiled program ran successfully.
+Source lives at `/work/evolution` inside that volume, with output and cache
+alongside it. This is an explicitly verified experimental path, not a claim
+that macOS builds Android natively or that a full Android 16 ROM build passed.
+See the [Apple Container guide](docs/apple-container.md).
 
 ## Start here
 
@@ -44,8 +49,23 @@ make help
 make test
 make doctor
 make verify
-make source-plan
+make apple-status
+make apple-plan
 ```
+
+`make apple-status` is safe while the current source sync runs. When the volume
+is idle, the reproducible local setup sequence is:
+
+```sh
+make apple-setup
+make apple-init
+make apple-sync-bg JOBS=8
+make apple-status
+```
+
+Only a generated control bundle is mounted read-only. Source/output/cache stay
+on Linux ext4; no host home directory, credentials, or phone evidence is shared.
+The wrapper refuses a second writer VM. Do not prune or delete the named volume.
 
 `make refs` reproduces the small reference checkouts without downloading the
 full Android platform. It verifies existing checkouts instead of discarding
@@ -62,8 +82,9 @@ make init SOURCE_DIR=/srv/android/evolution
 make sync SOURCE_DIR=/srv/android/evolution JOBS=8
 ```
 
-This gets the **platform**, not a complete Nezha product. `init` and `sync`
-enforce the host checks and preserve local work. The platform manifest is pinned;
+Both container and native Linux workflows get the **platform**, not a complete
+Nezha product. `init` and `sync` enforce their explicit host checks and preserve
+local work. The platform manifest is pinned;
 its branch-based project revisions become fully recorded after a successful
 sync saves a resolved manifest. No unverified device manifest is activated.
 
@@ -97,6 +118,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Firmware intake](docs/firmware-intake.md) | Preserve local ROM packages and provenance without executing scripts |
 | [Matching firmware](docs/firmware-source.md) | Verified Xiaomi CDN URLs, partial download status, and safe resumption requirements |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
+| [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 
 ## What must happen before building or testing the ROM
 
@@ -106,8 +128,9 @@ properties do not independently establish physical variant or bootloader state.
    Nezha scaffold has a missing product makefile, stale model identity, and
    absent vendor/kernel inputs. Other-device partition/AVB settings must not
    be copied into an active configuration.
-3. Sync the platform on a supported Linux x86-64 host, integrate reviewed device
-   sources, and validate VINTF, kernel-module compatibility, and enforcing policy.
+3. Finish the platform sync in the Apple Container volume or on native Linux
+   x86-64, integrate reviewed device sources, and validate VINTF, kernel-module
+   compatibility, and enforcing policy.
 4. Compile and test hardware features in stages, with a separately authorized
    recovery/backup plan before any device changes. No native feature is currently
    claimed to work on Evolution X.
@@ -116,7 +139,9 @@ The Git history keeps the setup, source tools, firmware intake, collector, and
 verified research in separate commits. This folder intentionally retains its
 original `lineage-os-xiaomi17u` name; the selected ROM is Evolution X.
 
-Setup validation on 2026-08-27: **108 offline tests passed**, all **nine** pinned
-reference checkouts verified clean, and a real **manifest-only** Repo
-initialization passed with signature verification and matching manifest/Repo
-commits. That metadata smoke test did not sync projects or compile Android.
+The offline suite covers source safety, both host modes, container boundaries,
+firmware intake, and private device evidence. All nine pinned references were
+verified, and real Repo initialization inside Apple Container passed with
+signature checks enabled and matching manifest/Repo commits. Full platform sync
+and device build results are tracked separately; no complete Android ROM build
+has been claimed.

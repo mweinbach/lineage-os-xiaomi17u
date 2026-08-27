@@ -177,9 +177,9 @@ device security; it is outside the setup task.
 | Authorized development device | Explicitly selected target and observed bootloader state; official eligibility is only an additional gate if it is locked. | Read-only target identified. Current Android locked/green properties are not independent proof of actual bootloader state. No boot-state change authorized. |
 | Stock baseline | Matching official China package and current xiaomi.eu package/extraction recorded separately; origin URL, region, build, SHA-256, and acquisition date. | Running incremental is `OS3.0.309.0.WPACNXM`; matching official package is still required. Do not substitute global firmware. |
 | Boot and kernel contract | Boot/init_boot/vendor_boot/recovery headers, DTB/DTBO, module lists and kernel ABI, first-stage mounts, dynamic partition metadata, AVB/rollback metadata. | Running kernel version recorded; full contract still missing. Derive from the stock package without running its flash scripts. |
-| Vendor contract | VINTF manifests/matrices, vendor API/FCM, HAL services, proprietary file list, ELF dependencies, init and SELinux policies. | Missing. Validate against the selected Evolution X platform. |
+| Vendor contract | VINTF manifests/matrices, vendor API/FCM, HAL services, proprietary file list, ELF dependencies, init and SELinux policies. | Current Xiaomi.eu VINTF/permissions and camera dependencies captured; full extraction and Evolution X compatibility validation remain pending. |
 | Native feature baseline | Repeatable stock tests and private artifacts for the features in [native-features.md](native-features.md). | No device tests run. |
-| Build host | Supported Linux x86-64 host, case-sensitive filesystem, adequate disk/RAM, verified manifest and pinned dependencies. | The current Mac control host is not the Android build host. |
+| Build host | Native Linux x86-64, or explicitly verified Apple Container ARM64/Rosetta with case-sensitive storage and adequate disk/RAM. | Apple Container's ext4 volume, x86-64 execution, and pinned Repo initialization passed here. Full Android 16 compilation remains unverified; see [Apple Container](apple-container.md). |
 
 Android's [VINTF documentation](https://source.android.com/docs/core/architecture/vintf)
 explains the compatibility contract between system and vendor. Matching the

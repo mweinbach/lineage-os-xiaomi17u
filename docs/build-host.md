@@ -1,18 +1,46 @@
 # Build host and source workflow
 
-The local Mac is the control/research host. Its current APFS directory is case
-insensitive and its CPU is ARM64. Neither an ARM Linux container nor a
-case-sensitive disk image makes Android's x86-64 host prebuilts native on this
-machine. No VM, emulation job, full source sync, or paid server was started.
+The earlier claim that this Mac could only be a control/research host was too
+narrow. **Apple Container with Rosetta is now configured and has passed the
+workspace's execution and filesystem checks on this Mac.** It runs an ARM64
+Linux guest with translated x86-64 Linux tools and a named ext4 source volume.
+Repo initialization completed there; a full source sync has been launched, but
+its completion and an Android 16 build are not yet verified. See the
+[Apple Container workflow](apple-container.md) for the observed configuration,
+commands, and status checks.
 
-Use a native x86-64 Linux machine, preferably Ubuntu 24.04 LTS, with 64 GiB RAM
+Native Linux x86-64 remains the default host mode and the environment described
+by [AOSP's requirements](https://source.android.com/docs/setup/start/requirements).
+The Apple route is an explicit experiment, not native x86-64 execution or
+official AOSP support for macOS. The ordinary Mac APFS checkout is still case
+insensitive; the Android checkout lives on the guest's ext4 volume, not this
+host directory. Rosetta executes the checked x86-64 probes, but compatibility
+with every Android prebuilt remains to be demonstrated.
+
+For the native route, use Ubuntu 24.04 LTS with 64 GiB RAM
 and at least 400 GiB free on a case-sensitive filesystem. Budget 600 GiB or more
 for the source, outputs, firmware, and compiler cache. These are conservative
-workspace checks based on [AOSP's host requirements](https://source.android.com/docs/setup/start/requirements),
-which specify x86-64 Linux, 400 GB disk, and 64 GB RAM. Source includes host JDK
+workspace checks; AOSP specifies x86-64 Linux, 400 GB disk, and 64 GB RAM.
+Source includes host JDK
 and other prebuilts; do not choose a random system Java version to fix builds.
 
-## Prepare the Linux machine
+## Use the prepared Apple Container environment
+
+Start with status, because a detached sync may already be using the volume:
+
+```sh
+python3 scripts/apple_container.py status
+python3 scripts/apple_container.py sync --jobs 8 --detach --dry-run
+```
+
+The preview does not launch a second sync. The actual wrapper rejects another
+VM attachment while the project volume is in use. Use the
+[full runbook](apple-container.md) for setup, smoke tests, synchronization and
+an interactive shell. Do not run the native Ubuntu package installer on macOS.
+The wrapper selects `--host-mode apple-rosetta` inside the verified Linux guest;
+the default `workspace.py` mode remains `native`.
+
+## Prepare a native Linux machine
 
 Copy or clone this small Git repository to the Linux machine. Do not copy a
 partially populated Android tree from a case-insensitive volume. The reference
@@ -34,7 +62,7 @@ or install packages on macOS. Choose a directory writable by your build user.
 The doctor is a prerequisite check, not a guarantee every Android dependency is
 installed or enough resources are assigned inside a container.
 
-## Fetch the platform
+## Fetch the platform on native Linux
 
 The selected platform is Evolution X **Android 16 QPR2, branch `bka`**. The
 [upstream README](https://github.com/Evolution-X/manifest/blob/bka/README.mkdn)
@@ -57,7 +85,10 @@ your normal Git author identity on the Linux host beforehand.
 without destructive force flags, manifest updates, or Repo self-updates. It
 verifies both the installed `.repo/repo` implementation and manifest origin/SHA,
 not only the external launcher. It saves a `repo manifest -r` snapshot under
-ignored `reports/` only after sync succeeds. The initial manifest pin is **not**
+ignored `reports/` only after sync succeeds. The Apple wrapper uses the same
+checks; its reports live in the selected control snapshot on the persistent
+volume, as described in [apple-container.md](apple-container.md).
+The initial manifest pin is **not**
 a complete dependency lock: most upstream project entries reference branches.
 Preserve the resolved snapshot with each build, and review it before committing
 a sanitized version for reproducible handoff.
@@ -80,8 +111,9 @@ delete an existing user's manifest merely to get past a preflight failure.
 
 ## What still blocks a device build
 
-The platform can be synced on a supported host, but it does not include a
-working Xiaomi 17 Ultra product. The candidate `nezha` and `sm8850-common`
+The platform workflow now accepts a verified native Linux host or the explicitly
+selected Apple/Rosetta experiment. Neither route supplies a working Xiaomi 17
+Ultra product. The candidate `nezha` and `sm8850-common`
 checkouts under `upstream/` are quarantined references. They are **not** copied
 to `device/` and no local manifest activates them. See
 [`device-research.md`](device-research.md) for the concrete defects.
@@ -100,7 +132,9 @@ this phone and its matching stock package:
 5. Evolution product integration. The selected manifest installs
    `Evolution-X/vendor_evolution` at **`vendor/lineage`**, not `vendor/evolution`.
 
-Once those checks pass, the intended command sequence is:
+Once those checks pass, the intended command sequence on native Linux is below.
+Inside the Apple Container shell, the source directory is `/work/evolution`.
+No `lunch` or Android compilation has been validated by the host smoke tests.
 
 ```sh
 # FUTURE ONLY: this target is not registered or buildable in this workspace yet.
