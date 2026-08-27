@@ -242,6 +242,53 @@ class BuildProgressTests(unittest.TestCase):
         self.assertEqual([row["path"] for row in update["changes"]], ["device/xiaomi/nezha/device.mk"])
         self.assertNotEqual(update["admission_sha256"], self.record["camera_build"]["input_admission_sha256"])
 
+    def test_user_variant_has_a_fresh_output_and_its_own_source_admission(self):
+        update = self.installed_version(7)
+        previous = self.installed_version(6)
+        self.assertEqual(update["variant"], "user")
+        self.assertEqual(update["previous_variant"], "userdebug")
+        self.assertEqual(update["previous_admission_sha256"], previous["admission_sha256"])
+        self.assertTrue(update["old_source_directories_preserved"])
+        self.assertTrue(update["atomic_directory_exchange"])
+        self.assertTrue(update["kernel_vendor_receipts_unchanged"])
+        self.assertEqual({row["path"] for row in update["changes"]},
+                         {"device/xiaomi/nezha/AndroidProducts.mk", "device/xiaomi/nezha/BoardConfig.mk",
+                          "device/xiaomi/nezha/README.md"})
+        user = self.record["user_policy_build"]
+        self.assertEqual(user["input_admission_sha256"], update["admission_sha256"])
+        self.assertEqual(user["target_variant"], "user")
+        self.assertTrue(user["fresh_output"])
+        self.assertNotEqual(user["physical_out_dir"], user["old_output_directory"])
+        self.assertEqual(user["old_output_directory"], self.record["module_build"]["physical_out_dir"])
+        self.assertFalse(user["old_output_reset_or_installclean_requested"])
+        self.assertEqual(user["old_artifact_hashes_before_verified"], 11)
+        self.assertFalse(user["full_rom_verified"])
+        self.assertFalse(user["phone_accessed"])
+
+    def test_user_framework_targets_pass_without_relabeling_factory_policy(self):
+        user = self.record["user_policy_build"]
+        self.assertEqual(user["state"], "passed")
+        self.assertTrue(user["passed"])
+        self.assertEqual(user["exit_code"], 0)
+        self.assertFalse(user["timed_out"])
+        self.assertFalse(user["sandbox_fallback_observed"])
+        self.assertFalse(user["live_ninja_namespace_snapshot_captured"])
+        self.assertEqual(user["checks_disabled_by_this_probe"], [])
+        self.assertEqual(user["ninja_actions_completed"], 2788)
+        self.assertGreater(user["completed_at"], user["started_at"])
+        self.assertEqual(user["sha256"],
+                         "5dff46fcbbbe5ffd0d8a8a046ac93c070b61ebf2c63dc70c2ae3dd573df25fc8")
+        self.assertFalse(user["source_policy_targets_include_captured_vendor_cil"])
+        self.assertFalse(user["combined_factory_vendor_policy_passed"])
+        self.assertTrue({"sepolicy_neverallows", "sepolicy_test", "sepolicy_dev_type_test"}
+                        <= set(user["targets"]))
+        self.assertNotIn("bootimage", user["targets"])
+        old = user["old_output_artifacts"]
+        self.assertEqual(len(old), 11)
+        self.assertEqual(len({row["path"] for row in old}), 11)
+        self.assertTrue(user["all_eleven_old_artifacts_unchanged"])
+        self.assertTrue(all(row["matches_previous"] for row in old))
+
 
 if __name__ == "__main__":
     unittest.main()

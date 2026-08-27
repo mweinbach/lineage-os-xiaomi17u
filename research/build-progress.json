@@ -27,9 +27,10 @@
     "source_camera_apk_included": false
   },
   "device_admission": {
-    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v6/admission.json",
-    "sha256": "6addb681f59e2a240b328a19a35c06d198225ad8d098b30f78c9009bfc291b04",
-    "source_commit": "3de727e76a5d7fb92bf25682aabe0ffc3c0235bd"
+    "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-user-v7/admission.json",
+    "sha256": "76ca669fa526bcc040aa107b64f9bb702c7cf467444fb9e9dbe75c97a92c84df",
+    "source_commit": "d784dc4e8f96de6672dc29f8e4d4fd539d5be929",
+    "variant": "user"
   },
   "installation": {
     "guest_receipt": "/work/candidates/nezha-framework-20260827T1817Z/installation.json",
@@ -144,6 +145,41 @@
         "old_source_directories_preserved": true,
         "transferred_small_files": 10,
         "transferred_small_bytes": 17929
+      },
+      {
+        "private_receipt": "reports/device-user-v7-installation.json",
+        "sha256": "4e01f4ba023e07aaec605baf341b7b4bd696e09a67862f91b811a5ebde67c120",
+        "guest_receipt": "/work/candidates/nezha-user-variant-v7/installation.json",
+        "completed_at": "2026-08-27T22:26:29.871089+00:00",
+        "admission_sha256": "76ca669fa526bcc040aa107b64f9bb702c7cf467444fb9e9dbe75c97a92c84df",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/AndroidProducts.mk",
+            "before_sha256": "7b7c37ca97ae958255948953f23294bf70e52a93f199cf3f0ea98a196c09c42e",
+            "after_sha256": "b6c7963ccf24c251038160b924b3cdc816c04a7544c96bbf7ff2429f5e52424c"
+          },
+          {
+            "path": "device/xiaomi/nezha/BoardConfig.mk",
+            "before_sha256": "8a0913b67ca2434178526a5decfb2b17bfd3b63ecbdd82c06a0f5e2c8b0ae7e9",
+            "after_sha256": "7cbefa4e8e0b95cbcddc6bffa1293565a9c67594455d124c360e5ee7d0336bbf"
+          },
+          {
+            "path": "device/xiaomi/nezha/README.md",
+            "before_sha256": "719de3f46e004412d15d82ab8cf69c3ece4b96f62d1c106f240cf5abf60222a6",
+            "after_sha256": "c7640ceb8026d6cd65d08e26d06010ba0d2b0940a4a91585bc66b9684c454398"
+          }
+        ],
+        "atomic_directory_exchange": true,
+        "kernel_vendor_receipts_unchanged": true,
+        "readback_verified": true,
+        "variant": "user",
+        "previous_variant": "userdebug",
+        "effective_configuration_verified": false,
+        "version": 7,
+        "previous_admission_sha256": "6addb681f59e2a240b328a19a35c06d198225ad8d098b30f78c9009bfc291b04",
+        "old_source_directories_preserved": true,
+        "transferred_small_files": 10,
+        "transferred_small_bytes": 18733
       }
     ],
     "independent_v3_audit": {
@@ -805,5 +841,136 @@
     "all_484_module_bytes_preserved_in_images": true,
     "full_rom_verified": false,
     "device_boot_verified": false
+  },
+  "user_policy_build": {
+    "state": "passed",
+    "target_product": "lineage_nezha",
+    "target_release": "bp4a",
+    "target_variant": "user",
+    "input_admission_sha256": "76ca669fa526bcc040aa107b64f9bb702c7cf467444fb9e9dbe75c97a92c84df",
+    "out_dir": "out-nezha-user-policy-20260827T2220Z",
+    "physical_out_dir": "/work/out/nezha-user-policy-20260827T2220Z",
+    "guest_log_directory": "/work/validation/nezha-user-policy-20260827T2220Z",
+    "fresh_output": true,
+    "old_output_directory": "/work/out/nezha-framework-20260827T1835Z",
+    "old_output_reset_or_installclean_requested": false,
+    "old_artifact_hashes_before_verified": 11,
+    "output_alias": {
+      "private_receipt": "reports/nezha-user-policy-v7-output-alias.json",
+      "sha256": "73659b621b4629cbefbff650fe6c742772d65acd5b2ed5048d6bb716cfb5c5b6",
+      "guest_receipt": "/work/validation/nezha-user-policy-20260827T2220Z/output-alias.json",
+      "created_at": "2026-08-27T22:27:45.506261+00:00",
+      "source_alias": "/work/evolution/out-nezha-user-policy-20260827T2220Z",
+      "target": "../out/nezha-user-policy-20260827T2220Z",
+      "physical_output": "/work/out/nezha-user-policy-20260827T2220Z",
+      "fresh_output": true,
+      "old_output": "/work/out/nezha-framework-20260827T1835Z",
+      "old_output_reset_or_installclean_requested": false,
+      "old_artifact_hashes_before_verified": 11
+    },
+    "driver_sha256": "4940f843477ab7d61a9534cd2ae687b43c0fa683f52a7e773fa39f06fd5a095f",
+    "full_rom_verified": false,
+    "combined_factory_vendor_policy_passed": false,
+    "phone_accessed": false,
+    "private_receipt": "reports/nezha-user-policy-v7-receipt.json",
+    "sha256": "5dff46fcbbbe5ffd0d8a8a046ac93c070b61ebf2c63dc70c2ae3dd573df25fc8",
+    "guest_receipt": "/work/validation/nezha-user-policy-20260827T2220Z/receipt.json",
+    "ninja_actions_completed": 2788,
+    "live_ninja_namespace_snapshot_captured": false,
+    "source_policy_targets_include_captured_vendor_cil": false,
+    "started_at": "2026-08-27T22:27:45.506385+00:00",
+    "completed_at": "2026-08-27T22:44:46.418159+00:00",
+    "exit_code": 0,
+    "passed": true,
+    "timed_out": false,
+    "deadline_seconds": 7200,
+    "sandbox_fallback_observed": false,
+    "checks_disabled_by_this_probe": [],
+    "old_output_artifacts": [
+      {
+        "path": "target/product/nezha/boot.img",
+        "size_bytes": 100663296,
+        "sha256": "2a66ccf63dee818b16408dfe569f8140db49b56f599b402167333684c3fdae06",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/dtbo.img",
+        "size_bytes": 23068672,
+        "sha256": "e8ff519dd50331df0b1edea7417d376e0d3329a2ce2bec71fea3c1abff97ac8a",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/vendor_dlkm.img",
+        "size_bytes": 54124544,
+        "sha256": "7844c6ca606de5c8257b7467c640777b77298e86af210b3aaeea0229e2465a55",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/system_dlkm.img",
+        "size_bytes": 8417280,
+        "sha256": "d26b9d0258e98b0d039101f50806ea8a7e8531883ba55c04541f6b235c14c347",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/system/etc/selinux/plat_sepolicy.cil",
+        "size_bytes": 3149674,
+        "sha256": "87013669c357868bd3c4a0c32b64ed1328bcba7ed463db3a9fffb3b281bf9780",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/system/etc/selinux/mapping/202504.cil",
+        "size_bytes": 229237,
+        "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "size_bytes": 142,
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/system_ext/etc/selinux/mapping/202504.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/product/etc/selinux/product_sepolicy.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "matches_previous": true
+      },
+      {
+        "path": "target/product/nezha/product/etc/selinux/mapping/202504.cil",
+        "size_bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "matches_previous": true
+      }
+    ],
+    "all_eleven_old_artifacts_unchanged": true,
+    "targets": [
+      "secilc",
+      "sepolicy-analyze",
+      "checkfc",
+      "checkseapp",
+      "property_info_checker",
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "plat_sepolicy_genfs_202504.cil",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file",
+      "sepolicy_neverallows",
+      "sepolicy_test",
+      "sepolicy_dev_type_test"
+    ]
   }
 }

@@ -144,7 +144,7 @@ verification receipt has SHA256
 The built `secilc`, `sepolicy-analyze` and `checkvintf` files are x86-64 host
 tools; none of these results proves Camera or Leica behavior on the phone.
 
-Current device admission **v6** was installed at `21:34:15 UTC`, preserving v5
+Device admission **v6** was installed at `21:34:15 UTC`, preserving v5
 and all existing outputs. Its only source change copies the stock
 `system_dlkm.modules.blocklist` selector into vendor_dlkm, where the stock
 loader expects it. This is separate from system_dlkm's own blocklist and
@@ -161,6 +161,28 @@ kernel and DTBO payloads, internal AVB checks and all 484 module hashes inside
 the EROFS images. The vendor-side system selector is present with its stock
 hash. This is not a complete signed image set or a successful vendor-policy
 compatibility result; those boundaries are explicit in that separate record.
+
+Current admission **v7** was installed at `22:26:29 UTC`, preserving v6.
+It records the stricter `user` variant and registers that lunch choice alongside
+the existing `userdebug` choice. Both remain framework-checks products; `eng`
+and complete-ROM/flash admission remain rejected. The kernel/vendor bundles,
+generated geometry and fstab are unchanged. Installation receipt SHA256:
+`4e01f4ba023e07aaec605baf341b7b4bd696e09a67862f91b811a5ebde67c120`.
+
+A separate user policy/tool build passed at `22:44:46 UTC` in the fresh output
+`/work/out/nezha-user-policy-20260827T2220Z`, through its matching source-root
+`out-nezha-user-policy-20260827T2220Z` alias. Reusing the userdebug output for a
+variant switch could trigger install-clean behavior; this experiment does not
+request that operation or reset the previous output. Its four verified images
+and seven framework files were rehashed before and after: all eleven are
+unchanged. The 2,788-action build included the framework neverallow, policy and
+device-type tests. Build receipt SHA256:
+`5dff46fcbbbe5ffd0d8a8a046ac93c070b61ebf2c63dc70c2ae3dd573df25fc8`.
+Those source targets do not include the captured factory vendor/ODM CIL.
+Combining that exact policy with the new user outputs is a separate check,
+not a pass established by these successful framework targets. No live Ninja
+namespace snapshot was captured for this attempt; its logs show no sandbox
+fallback. Earlier sandbox observations retain their own attempt identities.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from
