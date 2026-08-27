@@ -5,8 +5,9 @@ starting from **Evolution X Android 16 QPR2 (`bka`)** and investigating retentio
 of Xiaomi's camera and other native features.
 
 **Evolution X has fully synced in its Linux volume, with all 1,179 project
-revisions verified. An authored Nezha product now passes Soong/Kati configuration;
-Android module compilation is being validated. A flashable ROM is not present.** No phone
+revisions verified. An authored Nezha product passes Soong/Kati configuration
+and has built ARM64 libbase plus the host VINTF checker. Camera dependency
+compilation is underway. A flashable ROM is not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
@@ -47,7 +48,7 @@ should be unlocked, wiped, or flashed as part of workspace setup.
   Physical boot-partition sizes and module ABI compatibility remain unresolved.
 - An authored `lineage_nezha-bp4a-userdebug` product, verified private vendor/kernel
   bundles, and exact Nezha DTS source roundtrips. Actual product configuration
-  passed in the existing VM. See [build progress](docs/build-progress.md) for
+  and the first Android module build passed in the existing VM. See [build progress](docs/build-progress.md) for
   module-build results and the separate complete-ROM/device-testing gates.
 
 This Mac can also host the Linux build environment through **Apple Container +

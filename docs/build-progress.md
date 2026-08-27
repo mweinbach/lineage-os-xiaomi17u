@@ -1,7 +1,8 @@
 # Nezha product and build progress
 
 The authored `lineage_nezha-bp4a-userdebug` product now passes actual
-Soong/Kati configuration in the existing Apple Container source checkout. It
+Soong/Kati configuration and has built Android ARM64 `libbase.so` plus the
+x86-64 host `checkvintf` tool in the existing Apple Container source checkout. It
 selects Nezha, canoe, ARM64, 4 KiB kernel pages, shipping API 36 and board API
 202504, with AVB enabled. The [build record](../research/build-progress.json)
 contains the exact inputs, receipts and subsequent compilation results.
@@ -19,7 +20,7 @@ any eventual device experiment, which needs separate user authorization.
 | `device/xiaomi/nezha` | Authored product plus generated boot, partition-budget and enforcing first-stage fstab configuration |
 | `kernel/xiaomi/nezha` | Stock-prebuilt integration wrapper, not a fabricated source-kernel tree |
 | `vendor/xiaomi/nezha-kernel` | 950 hash-verified files, including the exact Image, DTB/DTBO, 914 module instances and preserved ordered load/block lists |
-| `vendor/xiaomi/nezha` | Verified vendor/ODM EROFS inputs and generated build files; Camera additions have a separate [selection](camera-inputs.md) |
+| `vendor/xiaomi/nezha` | Unchanged vendor/ODM EROFS inputs plus nine selected Camera dependency files and their [recorded XML derivations](camera-inputs.md) |
 | `vendor/lineage/config/common.mk` | Two recorded defaults made optional so Nezha can enforce privileged permissions and prohibit OTA downgrade |
 
 The public platform manifest and all its project revisions were preserved.
@@ -46,7 +47,7 @@ verified bundles, choose a new output path:
 ```sh
 python3 scripts/generate_device_tree.py generate \
   --kernel-receipt artifacts/kernel-inputs/nezha-xiaomi-eu-candidate-v2/receipt.json \
-  --vendor-receipt artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-base-v1/vendor-inputs.json \
+  --vendor-receipt artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-camera-v2/vendor-inputs.json \
   --output artifacts/device-candidates/nezha-framework-NEW
 python3 scripts/generate_device_tree.py validate \
   --output artifacts/device-candidates/nezha-framework-NEW \
@@ -74,6 +75,33 @@ missing Lineage Soong exports; the device now includes the complete
 `BoardConfigLineage.mk` hook after its prebuilt selector and board values.
 The [current build record](../research/build-progress.json) tracks later
 errors and fixes without turning failed attempts into successful builds.
+
+The third module attempt completed successfully at `2026-08-27T19:09:52Z`
+after 4,591 Ninja actions. Independent ELF and SHA256 checks distinguish the
+218,624-byte ARM64 `libbase.so` from the 6,179,856-byte x86-64 host checker.
+The host checker subsequently executed; the Android library was not run on
+the phone. This proves selected modules through the real Nezha product graph,
+not a complete image set or a working native feature.
+
+An independent post-build audit checked all 1,179 project HEADs and remotes.
+Exactly 1,178 worktrees were clean; the only project change was the recorded
+vendor property patch. Authored directories outside Repo have separate input
+receipts. No unexpected project edits were found and no source sync was
+repeated.
+
+The actual Ninja process was observed under nsjail with separate mount,
+network, PID and user namespaces. Its initial product configuration mounted
+source **read-write**, unlike the earlier standalone read-only probe.
+The later authored board setting explicitly requires read-only source for the
+Camera build. Neither observation should be substituted for the other, and
+the upstream basic Soong/Kati sandbox remains unchanged.
+
+The current v4 device admission selects Camera bundle v2 and that stronger
+source setting. Both earlier installed source directories were preserved
+outside the Android checkout before replacement; only 575,475 bytes of small
+files crossed from the host. Vendor/ODM images were copied and reverified
+inside the same VM with unchanged hashes. The Camera build is a separate
+experiment; its current result is in the build record.
 
 The second attempt found an upstream CI-packaging assumption about output
 paths. With an absolute `OUT_DIR`, the host Perfetto path reached the normal

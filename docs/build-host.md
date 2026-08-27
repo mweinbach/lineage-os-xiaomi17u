@@ -10,7 +10,8 @@ The full platform sync completed there; all 1,179 project revisions, clean
 worktrees and remotes, plus all 99 LFS payload hashes, passed independent
 verification. The unmodified Soong entry point also compiled four x86-64 host
 tools and successfully queried `OUT_DIR`. The authored Nezha product now also
-passes Soong/Kati configuration, and the Ninja sandbox has runtime proof.
+passes Soong/Kati configuration and has built ARM64 `libbase.so` plus the
+x86-64 host `checkvintf` tool. The actual Ninja process was observed under nsjail.
 A complete Android 16 ROM build is not yet verified. See the
 [Apple Container workflow](apple-container.md) for the observed configuration,
 Ninja artifact hashes, receipt, commands, and status checks.
@@ -40,8 +41,11 @@ exercise Kati and returned the expected device, architecture and API levels.
 A later
 [standalone sandbox test](../research/apple-sandbox.json) ran Ninja/Clang and a
 host program under the upstream nsjail arguments, with source writes refused
-and network interfaces isolated. Android module builds, `lunch`, sandboxing of
-the actual product graph and remaining host prebuilts still need validation. The pinned Soong
+and network interfaces isolated. A subsequent real Nezha module build passed;
+the actual Ninja namespace observation found source mounted read-write under
+the initial product configuration. The newer board setting requires read-only
+source for subsequent checks. The shell `lunch` helper, remaining host tools and
+a complete ROM still need separate validation. The pinned Soong
 source disables its basic dumpvars/Kati/Soong sandbox upstream and permits a
 Ninja fallback after an nsjail failure. No sandbox setting was changed by the
 probe, and a future fallback must count as failed sandbox validation. See the

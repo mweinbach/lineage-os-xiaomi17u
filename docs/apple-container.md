@@ -18,14 +18,15 @@ Observed on **2026-08-27**:
 | Completed image index digest | `sha256:82960bf5b04070ffa323bb37eaa4e77d1b189f7bdcd0c31204d5d8ac092d36ca` |
 | Source/build VM allocation | 16 vCPUs, 128 GiB RAM; guest reported 125.7 GiB RAM |
 | Persistent storage | Named ext4 volume `evolution-nezha-work`, 800 GiB capacity; 787.4 GiB free at the preparation check |
-| Source / output / cache | `/work/evolution` / `/work/out/evolution` / `/work/cache/ccache` |
+| Configured source / output / cache defaults | `/work/evolution` / `/work/out/evolution` / `/work/cache/ccache`; module experiments use the separate output recorded below |
 | Rosetta execution | Direct x86-64 ELF probe passed; a freshly cross-compiled C program also executed successfully |
 | Actual AOSP host tool | Android 16 Ninja `1.9.0.git`, with matching bundled libraries, built a small x86-64 C program that executed successfully |
 | Filesystem | ext4 and case-sensitive file behavior verified |
 | Repo initialization | Completed in `/work/evolution`, with manifest and Repo implementation pins verified and signature checks enabled |
 | Full sync | Completed at `2026-08-27T16:56:02Z`, exit `0`; all 1,179 project HEADs, clean worktrees and remotes verified afterward |
 | Soong bootstrap | Unmodified entry point compiled four x86-64 host tools and successfully queried `OUT_DIR`; no product or Android module build |
-| Android build / device support | No full Android 16 compilation or functional Nezha ROM established |
+| Nezha Android modules | Real product graph built ARM64 `libbase.so` and x86-64 host `checkvintf`; output hashes and actual Ninja namespace observation recorded |
+| Complete ROM / device support | No complete Android 16 ROM or functional Nezha build established |
 
 Disk and memory figures are measurements from that check, not reserved free
 resources or promises about future builds. The separate image-build VM uses
@@ -202,7 +203,8 @@ actions, select a product, or register a Nezha target.
 
 **The standalone Ninja sandbox now passes runtime checks.** The follow-up
 [sandbox record](../research/apple-sandbox.json) uses the pinned AOSP `nsjail`,
-Ninja and Clang with the upstream Ninja sandbox argument set. It built and ran
+Ninja and Clang with the supported read-only-source form of the upstream Ninja
+sandbox arguments. It built and ran
 an x86-64 program inside the jail and produced an Android ARM64 object. A
 deliberate source write was rejected with `EROFS`, the jail exposed only the
 loopback network interface, and its hostname/UID matched the requested
@@ -210,6 +212,17 @@ namespace settings. The guest receipt is
 `/work/out/nsjail-ninja-20260827T1814Z/receipt.json`, SHA256
 `d5b7fbe849aa6061934cbfbcbdf40708e301be85fc1ac38e44bfd0570062db37`.
 This is a standalone test, not a Soong-generated Android module graph or ROM.
+
+The subsequent Nezha `libbase checkvintf` build passed through 4,591 Ninja
+actions. Its actual Ninja process ran under nsjail in separate mount, network,
+PID and user namespaces, without a fallback. That initial product selected a
+**read-write** source mount; the standalone probe above did not establish the
+product's mount mode. The later authored board setting requires read-only
+source for the Camera build. The [build record](../research/build-progress.json)
+binds these distinct observations to their input versions, output hashes and
+receipts. The product output is physically
+`/work/out/nezha-framework-20260827T1835Z`, reached through its recorded relative
+source-root alias.
 
 At Soong commit
 `cbcbea9e65503ca15b363a0b06dda88fdbcb0154`, upstream

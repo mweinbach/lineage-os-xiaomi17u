@@ -51,7 +51,8 @@ class BuildProgressTests(unittest.TestCase):
     def test_current_admission_is_bound_to_installed_source_updates(self):
         record = self.record
         updates = record["installation"]["device_source_updates"]
-        self.assertEqual([item["version"] for item in updates], [2, 3])
+        versions = [item["version"] for item in updates]
+        self.assertEqual(versions, list(range(2, versions[-1] + 1)))
         self.assertEqual(updates[-1]["admission_sha256"], record["device_admission"]["sha256"])
         for update in updates:
             self.assertRegex(update["sha256"], r"^[a-f0-9]{64}$")
@@ -79,6 +80,39 @@ class BuildProgressTests(unittest.TestCase):
             self.assertRegex(attempt["sha256"], r"^[a-f0-9]{64}$")
             self.assertIn("exit_code", attempt)
             self.assertIn("completed_at", attempt)
+
+    def test_android_output_is_distinct_from_host_tool_and_rom(self):
+        record = self.record
+        self.assertTrue(record["android_modules_verified"])
+        self.assertEqual(record["module_build"]["state"], "passed")
+        successful = record["module_build"]["attempts"][-1]
+        self.assertEqual(successful["exit_code"], 0)
+        self.assertTrue(successful["passed"])
+        self.assertFalse(successful["sandbox_fallback_observed"])
+        proof = record["module_build"]["output_verification"]
+        outputs = {row["path"]: row for row in proof["outputs"]}
+        self.assertEqual(outputs["target/product/nezha/system/lib64/libbase.so"]["elf_machine"], 183)
+        self.assertEqual(outputs["host/linux-x86/bin/checkvintf"]["elf_machine"], 62)
+        for output in outputs.values():
+            self.assertEqual(output["elf_class"], 64)
+            self.assertRegex(output["sha256"], r"^[a-f0-9]{64}$")
+        self.assertFalse(proof["android_binary_executed"])
+        self.assertFalse(record["full_rom_verified"])
+        self.assertFalse(record["device_boot_verified"])
+
+    def test_product_sandbox_observation_is_not_the_standalone_readonly_claim(self):
+        sandbox = self.record["module_build"]["sandbox_observation"]
+        self.assertTrue(sandbox["ninja_ran_under_nsjail"])
+        self.assertTrue(all(sandbox["namespace_separation"].values()))
+        self.assertFalse(sandbox["source_read_only"])
+        self.assertTrue(sandbox["output_read_write"])
+        self.assertEqual(sandbox["checks_disabled_by_this_probe"], [])
+        camera = self.record["camera_build"]
+        self.assertTrue(camera["ninja_read_only_source_required"])
+        self.assertTrue(camera["strict_elf_checks_required"])
+        self.assertFalse(camera["camera_function_verified"])
+        self.assertEqual(camera["input_admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(len(camera["targets"]), 9)
 
 
 if __name__ == "__main__":

@@ -58,6 +58,7 @@
     "Standalone Ninja invocation using the reviewed upstream Ninja sandbox arguments, not a Soong-generated product graph.",
     "Root outside the user namespace maps to nobody inside; upstream logs the global root mapping.",
     "Android output is a freestanding ARM64 object, not a Bionic-linked executable or a device test.",
-    "Pinned upstream still disables its basic dumpvars/Kati/Soong sandbox and allows Ninja fallback; reject any fallback in actual build validation."
+    "Pinned upstream still disables its basic dumpvars/Kati/Soong sandbox and allows Ninja fallback; reject any fallback in actual build validation.",
+    "This standalone probe explicitly selected the supported read-only source mount; the first real Nezha product build selected read-write source. See research/build-progress.json for the actual product observation and later stronger board setting."
   ]
 }
