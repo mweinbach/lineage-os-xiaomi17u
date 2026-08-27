@@ -1,0 +1,11 @@
+diff --git a/private/su.te b/private/su.te
+index 690f305ff32fb59b3c37b9a45ecc7f25e968fe93..dfd18a91357f9b20eb1d59d3c49ad211b8865aba 100644
+--- a/private/su.te
++++ b/private/su.te
+@@ -132,6 +132,3 @@
+   typeattribute su hal_wifi_hostapd_client;
+   typeattribute su hal_wifi_supplicant_client;
+ ')
+-
+-# su is also permissive to permit setenforce.
+-permissive su;

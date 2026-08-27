@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "project": "system/sepolicy",
+  "origin": "https://github.com/Evolution-X/system_sepolicy.git",
+  "base_commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+  "patch": "patches/evolution/0002-remove-permissive-su.patch",
+  "patch_sha256": "7ff91ebdf07d3ec5f2b3849fcb2cb41dfe1337c53b16855385b07c4ee13e3f4b",
+  "files": [
+    {
+      "path": "private/su.te",
+      "before_sha256": "aa90a463c2e7a98f749c474f08c864be65467bca8118481de0388e8ce85e924f",
+      "before_size_bytes": 5255,
+      "after_sha256": "111c6d9384480ef07d0e47cabdc69cc990112831b783a6e14db619b26ca2dc01",
+      "after_size_bytes": 5193,
+      "before_git_blob": "690f305ff32fb59b3c37b9a45ecc7f25e968fe93",
+      "after_git_blob": "dfd18a91357f9b20eb1d59d3c49ad211b8865aba"
+    }
+  ],
+  "purpose": "Keep su subject to SELinux rules in this Nezha checkout, including user builds. Remove the unconditional permissive declaration, not its type or permission rules.",
+  "removed_policy_statements": [
+    "permissive su;"
+  ],
+  "allow_rules_changed": false,
+  "neverallow_rules_changed": false,
+  "historical_api_snapshots_changed": false,
+  "upstream_permissive_allowlists_changed": false,
+  "source_capture_receipt": {
+    "path": "artifacts/source-contracts/nezha-su-permissive-source-v1/receipt.json",
+    "sha256": "0d22a0000d53b52bf6158bc1672dada1fadf31641fefcc8c70fd6560c7368c2e"
+  },
+  "verification_requirements": [
+    "Apply only to the exact pinned source after verifying the original file and patch hashes; preserve original inputs and earlier outputs.",
+    "Compile the new policy with all neverallow assertions retained.",
+    "Run unfiltered sepolicy-analyze permissive and require empty output. The normal source targets allowlist su and cannot prove this alone.",
+    "Keep factory vendor/ODM compatibility, contexts, runtime enforcement and boot testing separate from this source hardening."
+  ]
+}
