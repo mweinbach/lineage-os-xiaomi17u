@@ -23,11 +23,11 @@ class FirmwareImageTests(unittest.TestCase):
         self.root = Path(self.temp.name).resolve()
         self.output = self.root / "artifacts" / "images"
 
-    def package(self, members=None):
+    def package(self, members=None, *, compression=zipfile.ZIP_DEFLATED):
         data = io.BytesIO()
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
-            with zipfile.ZipFile(data, "w", zipfile.ZIP_DEFLATED) as archive:
+            with zipfile.ZipFile(data, "w", compression) as archive:
                 for name, content in members or [("images/boot.img", b"ANDROID!fixture"),
                                                  ("images/super.img.0", b"sparse fixture"),
                                                  ("install.sh", b"do not run")]:
@@ -44,6 +44,17 @@ class FirmwareImageTests(unittest.TestCase):
 
     def extract(self, **kwargs):
         return images.extract_images(self.intake, self.output, expected_sha256=self.sha, **kwargs)
+
+    def intake_snapshot(self):
+        return {name: ((self.intake / name).read_bytes(),
+                       images._signature((self.intake / name).stat()))
+                for name in ("firmware.zip", "metadata.json")}
+
+    def assert_failed_extraction_preserves(self, expected_intake):
+        self.assertFalse(self.output.exists())
+        self.assertEqual(list(self.output.parent.iterdir()), [])
+        self.assertEqual({path.name for path in self.intake.iterdir()}, set(expected_intake))
+        self.assertEqual(self.intake_snapshot(), expected_intake)
 
     def test_extracts_only_images_with_readback_hashes_and_original_provenance(self):
         self.package()
@@ -185,12 +196,89 @@ class FirmwareImageTests(unittest.TestCase):
             self.extract()
 
     def test_rejects_corrupt_zip_crc(self):
+        self.package(compression=zipfile.ZIP_STORED)
+        package = self.intake / "firmware.zip"
+        raw = bytearray(package.read_bytes())
+        # Corrupt the second image's stored bytes, leaving its ZIP CRC intact.
+        raw[raw.index(b"sparse fixture")] ^= 1
+        package.write_bytes(raw)
+        # The intake hash describes the corrupted package so extraction reaches
+        # actual ZIP reading instead of failing at the outer SHA256 check.
+        self.sha = hashlib.sha256(raw).hexdigest()
+        renamed = self.root / self.sha
+        self.intake.rename(renamed)
+        self.intake = renamed
+        self.metadata["sha256"] = self.sha
+        (self.intake / "metadata.json").write_text(json.dumps(self.metadata))
+        before = self.intake_snapshot()
+        with self.assertRaisesRegex(zipfile.BadZipFile, "Bad CRC-32.*super.img.0"):
+            self.extract()
+        self.assert_failed_extraction_preserves(before)
+
+    def test_rejects_metadata_mutation_and_preserves_changed_input(self):
         self.package()
-        # Force a CRC failure from the stdlib boundary, including cleanup after staging.
-        with mock.patch.object(images.zipfile.ZipFile, "open", side_effect=zipfile.BadZipFile("Bad CRC")):
-            with self.assertRaises(zipfile.BadZipFile):
+        expected_intake = self.intake_snapshot()
+        metadata_path = self.intake / "metadata.json"
+        changed_metadata = json.dumps({**self.metadata, "build": "changed-during-extraction"}).encode()
+        fsync = images.os.fsync
+        mutations = []
+
+        def mutate_after_first_image_write(descriptor):
+            fsync(descriptor)
+            if not mutations:
+                metadata_path.write_bytes(changed_metadata)
+                mutations.append(images._signature(metadata_path.stat()))
+
+        with mock.patch.object(images.os, "fsync", side_effect=mutate_after_first_image_write):
+            with self.assertRaisesRegex(images.IntakeError, "intake metadata changed during extraction"):
                 self.extract()
-        self.assertFalse(self.output.exists())
+        self.assertEqual(len(mutations), 1)
+        expected_intake["metadata.json"] = (changed_metadata, mutations[0])
+        self.assert_failed_extraction_preserves(expected_intake)
+
+    def test_rejects_package_mutation_after_hash_and_preserves_changed_input(self):
+        self.package()
+        expected_intake = self.intake_snapshot()
+        package = self.intake / "firmware.zip"
+        image_entries = images._image_entries
+        mutations = []
+
+        def mutate_after_package_hash(*args):
+            entries = image_entries(*args)
+            with package.open("ab") as stream:
+                stream.write(b"changed-during-extraction")
+            mutations.append(images._signature(package.stat()))
+            return entries
+
+        with mock.patch.object(images, "_image_entries", side_effect=mutate_after_package_hash):
+            with self.assertRaisesRegex(images.IntakeError, "package changed during extraction"):
+                self.extract()
+        self.assertEqual(len(mutations), 1)
+        expected_intake["firmware.zip"] = (
+            expected_intake["firmware.zip"][0] + b"changed-during-extraction", mutations[0],
+        )
+        self.assert_failed_extraction_preserves(expected_intake)
+
+    def test_rejects_staged_readback_corruption_and_preserves_intake(self):
+        self.package()
+        before = self.intake_snapshot()
+        open_regular = images._open_regular
+        corruptions = []
+
+        def corrupt_second_image_before_readback(path):
+            if path.name == "super.img.0":
+                self.assertEqual(path.parent.parent, self.output.parent)
+                self.assertTrue((path.parent / "boot.img").is_file())
+                path.write_bytes(b"corrupted staged image")
+                corruptions.append(path)
+            return open_regular(path)
+
+        with mock.patch.object(images, "_open_regular", side_effect=corrupt_second_image_before_readback):
+            with self.assertRaisesRegex(images.IntakeError, "extracted output failed SHA256 readback"):
+                self.extract()
+        self.assertEqual(len(corruptions), 1)
+        self.assertFalse(corruptions[0].exists())
+        self.assert_failed_extraction_preserves(before)
 
 
 if __name__ == "__main__":
