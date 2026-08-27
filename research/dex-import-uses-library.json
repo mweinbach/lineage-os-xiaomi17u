@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "observed_utc": "2026-08-27T21:28:56.765314+00:00",
+  "purpose": "Provide exact-name runtime uses-library metadata for DEX imports without weakening APK or dexpreopt checks.",
+  "source": {
+    "project": "build/soong",
+    "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "url": "https://github.com/Evolution-X/build_soong/tree/cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+    "snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac"
+  },
+  "patch": {
+    "path": "patches/evolution/dex-import-uses-library.patch",
+    "sha256": "30358a2e304f6a1ad536c4b2ad0a4ad114ab7ddbc649266dd42b89944eb7e708",
+    "files": [
+      {
+        "path": "java/java.go",
+        "before_sha256": "c87d46743c32e4f9381dd7d828ff8e4f7c88387c382a8a5f3a927a01962b8e0b",
+        "after_sha256": "3a734817ece2c86529a24b989ce1de2f07114ec40c2cafc73c630a856f9ae844",
+        "added_file": false
+      },
+      {
+        "path": "java/Android.bp",
+        "before_sha256": "7686886416e7a9904896615c53b9d7378b1115997fb11058a783c53c154c66ec",
+        "after_sha256": "45d2dec7100165c18545906c5e4876f3b94028835d052aabd62739c3120f66c3",
+        "added_file": false
+      },
+      {
+        "path": "java/dex_import_test.go",
+        "before_sha256": null,
+        "after_sha256": "9fdae6601f597dc6e34be4d49c9d8eedb77d7958f227b6ddf468c9b816d63d25",
+        "added_file": true
+      }
+    ],
+    "guest_source_modified_by_this_work": false
+  },
+  "contract": {
+    "runtime_name": "Resolved module name, without a namespace qualifier or prebuilt_ prefix",
+    "required_jar_dependency_property": "uses_libs",
+    "ordered_required_dependencies": true,
+    "nested_contexts_preserved": true,
+    "unsupported_dex_import_properties": [
+      "provides_uses_lib",
+      "optional_uses_libs",
+      "enforce_uses_libs",
+      "exclude_uses_libs"
+    ],
+    "actual_build_and_install_paths": true,
+    "installation_stem_and_partition_preserved": true,
+    "class_file_compilation_provider_added": false,
+    "permission_xml_generated_or_validated_by_patch": false,
+    "dependency_errors": [
+      "missing_required",
+      "class_only",
+      "not_java",
+      "sdk_stubs_only",
+      "cycle"
+    ],
+    "optional_app_dependency_supported": true,
+    "optional_aliases_supported": false,
+    "app_manifest_validation_modified": false,
+    "dexpreopt_disabled_or_relaxed": false
+  },
+  "verification": {
+    "source_archives": {
+      "path": "reports/dex-import-clc-20260827/source-archives.json",
+      "sha256": "fdd76b4385613cbc30372fd87074f88edfdb9840eac05912c6cd65168f5c8154",
+      "projects": [
+        {
+          "path": "build/make",
+          "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+          "sha256": "54ff7ce3621747494dd724fa0cdb15df9064c689b7ee81649d771f038c63c1dc",
+          "size_bytes": 30720,
+          "regular_files": 5,
+          "skipped_nonregular": []
+        },
+        {
+          "path": "build/soong",
+          "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+          "sha256": "d3ab82365cb29974fc5109b6553ddb8051ac90acddee0100dd32623d257d2a0b",
+          "size_bytes": 14684160,
+          "regular_files": 1374,
+          "skipped_nonregular": [
+            {
+              "path": "bin/ktgrep",
+              "type": "b'2'",
+              "linkname": "jgrep"
+            }
+          ]
+        },
+        {
+          "path": "build/blueprint",
+          "revision": "c39c8a4c103f1393f015a5befa7726f0c14c9bc2",
+          "sha256": "ab97e8b7a9597a37c26c254b624592646bd4fc62a607a5f4565a7f8b3366cb14",
+          "size_bytes": 1495040,
+          "regular_files": 163,
+          "skipped_nonregular": [
+            {
+              "path": "pathtools/testdata/dangling/a/a/f",
+              "type": "b'2'",
+              "linkname": "../../f"
+            },
+            {
+              "path": "pathtools/testdata/dangling/b",
+              "type": "b'2'",
+              "linkname": "a"
+            },
+            {
+              "path": "pathtools/testdata/dangling/c",
+              "type": "b'2'",
+              "linkname": "a/a"
+            },
+            {
+              "path": "pathtools/testdata/dangling/d",
+              "type": "b'2'",
+              "linkname": "c"
+            },
+            {
+              "path": "pathtools/testdata/dangling/dangling",
+              "type": "b'2'",
+              "linkname": "missing"
+            },
+            {
+              "path": "pathtools/testdata/dangling/e",
+              "type": "b'2'",
+              "linkname": "a/a/a"
+            },
+            {
+              "path": "pathtools/testdata/symlinks/b",
+              "type": "b'2'",
+              "linkname": "a"
+            },
+            {
+              "path": "pathtools/testdata/symlinks/c",
+              "type": "b'2'",
+              "linkname": "a/a"
+            },
+            {
+              "path": "pathtools/testdata/symlinks/d",
+              "type": "b'2'",
+              "linkname": "c"
+            },
+            {
+              "path": "pathtools/testdata/symlinks/e",
+              "type": "b'2'",
+              "linkname": "a/a/a"
+            }
+          ]
+        },
+        {
+          "path": "external/go-cmp",
+          "revision": "163db04d0a17fd9b25316c6203d2d911a40461f6",
+          "sha256": "c77981314d601f5627e316bee7537adb862494b35ba5b42108080de55fb69a0b",
+          "size_bytes": 522240,
+          "regular_files": 52,
+          "skipped_nonregular": []
+        },
+        {
+          "path": "external/golang-protobuf",
+          "revision": "fcb969a6e0df55f1460721e1b9c4f2c4d2b5a47f",
+          "sha256": "3feb2b1e886c4bba63dcb3ee8170b12ffc82cef24f4884fff413284f0a9cb06f",
+          "size_bytes": 10024960,
+          "regular_files": 451,
+          "skipped_nonregular": []
+        },
+        {
+          "path": "external/pogreb",
+          "revision": "c7851d75ff3a7b8228f548f7235d48cee9130971",
+          "sha256": "0faf9897fcd895ab57a92f8874a54bca64bb328bd78db83b07e715e9b1d339c7",
+          "size_bytes": 194560,
+          "regular_files": 62,
+          "skipped_nonregular": []
+        },
+        {
+          "path": "external/starlark-go",
+          "revision": "4947cdc739c985f6d86941e22894f5cefe7c9e9a",
+          "sha256": "7903bffa45e52f117f9bb722ca585b941d12a9716bf21a4cd14948729c1a2c5f",
+          "size_bytes": 1003520,
+          "regular_files": 94,
+          "skipped_nonregular": []
+        }
+      ],
+      "all_archives_rehashed": true
+    },
+    "patch_application": {
+      "path": "reports/dex-import-clc-20260827/patch-apply-verification.json",
+      "sha256": "1954364b35a885d46b6bf4fe6793059b3d4b6671f1fc421687bd89aed14f5b66",
+      "base_files_from_pinned_archive": true,
+      "whitespace_check_passed": true,
+      "patched_file_hashes_match": true,
+      "reverse_check_passed": true,
+      "gofmt_clean": true
+    },
+    "go_fixtures": {
+      "receipt": {
+        "path": "reports/dex-import-clc-20260827/patched-java-verification.json",
+        "sha256": "b15572c850e2c1865b9968f3f9b18218266e6d116195aeea1099f2a65949fcaf"
+      },
+      "environment": {
+        "go_version": "go version go1.26.2 darwin/arm64",
+        "go_binary_sha256": "912f19a1a95ffe44a9e349d8283c74eb1d2eace37aad3ca6ef7b9ae321eb709f",
+        "test_os": "darwin",
+        "test_arch": "amd64",
+        "translation": "Rosetta",
+        "GOPROXY": "off",
+        "GOSUMDB": "off",
+        "GOTOOLCHAIN": "local",
+        "GOENV": "off",
+        "CGO_ENABLED": "0",
+        "GOMAXPROCS": "8"
+      },
+      "baseline": {
+        "path": "baseline-amd64-full-java-tests.jsonl",
+        "sha256": "48ee518e352c3fdb456f381a0a23053ba2bb2c4f041eea7d149eefea72ba4581",
+        "test_and_subtest_actions": {
+          "pass": 853,
+          "fail": 35,
+          "skip": 28
+        },
+        "failed_tests_and_subtests": [
+          "TestAndroidResourceProcessor",
+          "TestAndroidResourceProcessor/app_dependency_lib_resource_processor",
+          "TestAndroidResourceProcessor/app_resource_processor",
+          "TestAndroidResourceProcessor/legacy",
+          "TestAndroidResourceProcessor/lib_dependency_lib_resource_processor",
+          "TestAndroidResourceProcessor/resource_processor",
+          "TestBinary",
+          "TestDataDeviceBinsBuildsDeviceBinary",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_32_with_compile_multilib:\"32\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_32_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_64_with_compile_multilib:\"64\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_64_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_64_with_compile_multilib:\"first\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_both_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_first_with_compile_multilib:\"64\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_first_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_first_with_compile_multilib:\"first\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_prefer32_with_compile_multilib:\"32\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_prefer32_with_compile_multilib:\"both\"",
+          "TestGenLib",
+          "TestImageNames",
+          "TestJNIABI",
+          "TestJNIPackaging",
+          "TestJNISDK",
+          "TestJavaFuzz",
+          "TestJniAsRequiredDeps",
+          "TestNativeRequiredDepOfJavaBinary",
+          "TestProtoStream",
+          "TestStl",
+          "TestTest",
+          "TestUpdatableApps_ErrorIfDepMinSdkVersionIsHigher",
+          "TestUpdatableApps_ErrorIfJniLibDoesntSupportMinSdkVersion",
+          "TestUpdatableApps_JniLibShouldBeBuiltAgainstMinSdkVersion",
+          "TestUpdatableApps_JniLibsShouldShouldSupportMinSdkVersion",
+          "TestUpdatableApps_TransitiveDepsShouldSetMinSdkVersion"
+        ],
+        "package_result": "fail"
+      },
+      "patched": {
+        "path": "patched-exact-name-full-java-tests-verified.jsonl",
+        "sha256": "97fe151a07e944163448449b76de4a7980f2baa1e73432e2d719b488b78767da",
+        "test_and_subtest_actions": {
+          "pass": 869,
+          "fail": 35,
+          "skip": 28
+        },
+        "failed_tests_and_subtests": [
+          "TestAndroidResourceProcessor",
+          "TestAndroidResourceProcessor/app_dependency_lib_resource_processor",
+          "TestAndroidResourceProcessor/app_resource_processor",
+          "TestAndroidResourceProcessor/legacy",
+          "TestAndroidResourceProcessor/lib_dependency_lib_resource_processor",
+          "TestAndroidResourceProcessor/resource_processor",
+          "TestBinary",
+          "TestDataDeviceBinsBuildsDeviceBinary",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_32_with_compile_multilib:\"32\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_32_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_64_with_compile_multilib:\"64\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_64_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_64_with_compile_multilib:\"first\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_both_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_first_with_compile_multilib:\"64\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_first_with_compile_multilib:\"both\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_first_with_compile_multilib:\"first\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_prefer32_with_compile_multilib:\"32\"",
+          "TestDataDeviceBinsBuildsDeviceBinary/data_device_bins_prefer32_with_compile_multilib:\"both\"",
+          "TestGenLib",
+          "TestImageNames",
+          "TestJNIABI",
+          "TestJNIPackaging",
+          "TestJNISDK",
+          "TestJavaFuzz",
+          "TestJniAsRequiredDeps",
+          "TestNativeRequiredDepOfJavaBinary",
+          "TestProtoStream",
+          "TestStl",
+          "TestTest",
+          "TestUpdatableApps_ErrorIfDepMinSdkVersionIsHigher",
+          "TestUpdatableApps_ErrorIfJniLibDoesntSupportMinSdkVersion",
+          "TestUpdatableApps_JniLibShouldBeBuiltAgainstMinSdkVersion",
+          "TestUpdatableApps_JniLibsShouldShouldSupportMinSdkVersion",
+          "TestUpdatableApps_TransitiveDepsShouldSetMinSdkVersion"
+        ],
+        "package_result": "fail"
+      },
+      "added_passing_tests_and_subtests": [
+        "TestDexImportUsesLibraryDependencyCycle",
+        "TestDexImportUsesLibraryInvalidDependency",
+        "TestDexImportUsesLibraryInvalidDependency/class_only",
+        "TestDexImportUsesLibraryInvalidDependency/missing_required",
+        "TestDexImportUsesLibraryInvalidDependency/not_java",
+        "TestDexImportUsesLibraryInvalidDependency/sdk_stubs_only",
+        "TestDexImportUsesLibraryNamespaceAndNestedContexts",
+        "TestDexImportUsesLibraryProvider",
+        "TestDexImportUsesLibraryProvider/default",
+        "TestDexImportUsesLibraryProvider/stem",
+        "TestDexImportUsesLibraryProvider/system_ext",
+        "TestDexImportUsesLibraryUnsupportedProperties",
+        "TestDexImportUsesLibraryUnsupportedProperties/enforce_uses_libs",
+        "TestDexImportUsesLibraryUnsupportedProperties/exclude_uses_libs",
+        "TestDexImportUsesLibraryUnsupportedProperties/optional_uses_libs",
+        "TestDexImportUsesLibraryUnsupportedProperties/provides_uses_lib"
+      ],
+      "unchanged_existing_named_results": true,
+      "known_failure_families_named_count": {
+        "lineage_resource_expected_output_mismatch": 6,
+        "macos_sdk_27_not_in_upstream_supported_list": 29
+      },
+      "package_exit_code": 1,
+      "package_failure_events": 1,
+      "full_suite_passed": false,
+      "fixture_tests_execute_build_rules": false,
+      "linux_guest_go_test_executed": false,
+      "failure_diagnostic_comparison": {
+        "failed_tests_and_subtests_compared": 35,
+        "all_normalized_diagnostic_sets_equal": true,
+        "normalization": [
+          "Remove test lifecycle and elapsed-time lines.",
+          "Compare sets of nonblank diagnostic lines without whitespace padding or repetition.",
+          "Normalize errs[INDEX] and checked COUNT error(s) counters; retain diagnostic text."
+        ],
+        "path": "reports/dex-import-clc-20260827/failure-diagnostic-comparison.json",
+        "sha256": "13c128abaf2c2135061d7e5526bffc3765ac132560579ffaebf4aef78084cef7"
+      }
+    },
+    "python_roundtrip": {
+      "receipt": {
+        "path": "reports/dex-import-clc-20260827/context-roundtrip/receipt.json",
+        "sha256": "ff9985c4e7ef0afd049a4322d74c204b47e0e4080c6e6c685289492056d24210"
+      },
+      "tools": {
+        "scripts/construct_context.py": {
+          "sha256": "cc42f3665864e2082aab59238e245fab479860e43d7102a227880b05203d7d1a",
+          "size_bytes": 4506
+        },
+        "scripts/manifest_check.py": {
+          "sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+          "size_bytes": 14901
+        },
+        "scripts/manifest.py": {
+          "sha256": "4ce7cf7d4a9f2086ee7a815aa7624ee3dccfde00e383dedecbe6cb553f2a9fa5",
+          "size_bytes": 4758
+        }
+      },
+      "generated_context": {
+        "path": "reports/dex-import-clc-20260827/context-roundtrip/generated-context.json",
+        "sha256": "eb1b630558b77f2d7e0ac15eed214a9bf1bc15b55421831c4c6d464ec5bbbd90"
+      },
+      "fixture_name": "TestDexImportUsesLibraryNamespaceAndNestedContexts",
+      "command_results": [
+        {
+          "name": "all-runtime-names",
+          "exit_code": 0
+        },
+        {
+          "name": "required-subtree-retained",
+          "exit_code": 0
+        },
+        {
+          "name": "wrong-alias-filtered",
+          "exit_code": 0
+        },
+        {
+          "name": "manifest-exact",
+          "exit_code": 0
+        },
+        {
+          "name": "manifest-reordered",
+          "exit_code": 255
+        },
+        {
+          "name": "manifest-wrong-runtime-name",
+          "exit_code": 255
+        },
+        {
+          "name": "manifest-missing-direct-library",
+          "exit_code": 255
+        },
+        {
+          "name": "manifest-nested-library-promoted",
+          "exit_code": 255
+        }
+      ],
+      "expected_results_passed": 8,
+      "strict_negative_cases": 4,
+      "synthetic_inputs_only": true,
+      "actual_pinned_scripts_executed": true,
+      "dex2oat_executed": false
+    },
+    "workspace_tests": {
+      "path": "reports/dex-import-clc-20260827/workspace-tests.log",
+      "sha256": "379ea95b9eb26bccee27deffe8c09770bc4a75d63bfff4e9175e35c46df22cef",
+      "command": [
+        "make",
+        "test"
+      ],
+      "completed_utc": "2026-08-27T21:32:53.100740+00:00",
+      "exit_code": 0,
+      "unittest_count": 783,
+      "focused_contract_count": 12,
+      "shell_syntax_passed": true,
+      "private_inputs_required": false,
+      "includes_current_shared_worktree": true
+    },
+    "workspace_tests_followup": {
+      "path": "reports/dex-import-clc-20260827/workspace-tests-final.log",
+      "sha256": "8c528018cd832c9516fd0135e5e652471609dcf3d0d931ff85f329993e59c943",
+      "command": [
+        "make",
+        "test"
+      ],
+      "completed_utc": "2026-08-27T21:37:31.017723+00:00",
+      "exit_code": 0,
+      "unittest_count": 813,
+      "focused_contract_count": 12,
+      "shell_syntax_passed": true,
+      "includes_current_shared_worktree": true
+    }
+  },
+  "scope": {
+    "guest_source_changed": false,
+    "vendor_module_names_changed": false,
+    "camera_apk_imported": false,
+    "apk_rewritten_or_signed": false,
+    "signature_or_privilege_policy_changed": false,
+    "phone_accessed": false,
+    "camera_runtime_verified": false,
+    "make_defined_app_consumers_verified": false
+  },
+  "remaining_work": [
+    "Review and apply only to the exact pinned guest source between builds; verify source hashes and actual Soong rebuild.",
+    "Create a separately admitted vendor selection using exact runtime module names and verified permissions XML dependencies; include required modules in the product.",
+    "Verify generated product_packages names and complete host/device class-loader contexts with actual product inputs.",
+    "Resolve Camera signing, privileged permissions and compressed DEX packaging before any real APK import.",
+    "Verify the actual APK manifest-check rule stays strict and complete dexpreopt succeeds.",
+    "VINTF, SELinux, native ABI and device feature tests remain separate gates."
+  ]
+}

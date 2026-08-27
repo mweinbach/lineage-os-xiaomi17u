@@ -1,0 +1,311 @@
+--- a/java/java.go
++++ b/java/java.go
+@@ -3626,6 +3626,11 @@
+ 
+ 	// set the name of the output
+ 	Stem *string
++
++	// Ordered shared library dependencies of this DEX jar. These must match the
++	// runtime dependencies in its installed permissions XML; they are not Java
++	// compilation dependencies.
++	Uses_libs proptools.Configurable[[]string]
+ }
+ 
+ type DexImport struct {
+@@ -3639,6 +3644,7 @@
+ 	dexJarFile OptionalDexJarPath
+ 
+ 	dexpreopter
++	usesLibrary usesLibrary
+ }
+ 
+ func (j *DexImport) Prebuilt() *android.Prebuilt {
+@@ -3659,6 +3665,13 @@
+ 
+ func (j *DexImport) IsInstallable() bool {
+ 	return true
++}
++
++func (j *DexImport) DepsMutator(ctx android.BottomUpMutatorContext) {
++	// Reuse the shared library dependency handling without exposing APK-only
++	// properties such as enforce_uses_libs or exclude_uses_libs on a DEX jar.
++	j.usesLibrary.usesLibraryProperties.Uses_libs = j.properties.Uses_libs
++	j.usesLibrary.deps(ctx, false)
+ }
+ 
+ func (j *DexImport) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+@@ -3712,6 +3725,25 @@
+ 
+ 	j.dexJarFile = makeDexJarPathFromPath(dexOutputFile)
+ 
++	// A present dependency without a DEX implementation cannot provide a
++	// complete runtime context. Do not silently disable preoptimization or
++	// emit a context with missing host/device paths for this prebuilt jar.
++	ctx.VisitDirectDepsProxy(func(dep android.ModuleProxy) {
++		if _, ok := ctx.OtherModuleDependencyTag(dep).(usesLibraryDependencyTag); !ok {
++			return
++		}
++		info, ok := android.OtherModuleProvider(ctx, dep, JavaInfoProvider)
++		if !ok || info.UsesLibraryDependencyInfo == nil ||
++			info.DexJarBuildPath.PathOrNil() == nil || info.UsesLibraryDependencyInfo.DexJarInstallPath == nil {
++			ctx.ModuleErrorf("uses-library dependency %q must provide a DEX jar and an install path", ctx.OtherModuleName(dep))
++		}
++	})
++	if ctx.Failed() {
++		return
++	}
++	j.usesLibrary.usesLibraryProperties.Uses_libs = j.properties.Uses_libs
++	j.classLoaderContexts = j.usesLibrary.classLoaderContextForUsesLibDeps(ctx)
++
+ 	j.dexpreopt(ctx, android.RemoveOptionalPrebuiltPrefix(ctx.ModuleName()), dexOutputFile)
+ 
+ 	if apexInfo.IsForPlatform() {
+@@ -3732,6 +3764,16 @@
+ 	return j.dexJarFile
+ }
+ 
++func (j *DexImport) DexJarInstallPath() android.Path {
++	return j.dexpreopter.installPath
++}
++
++func (j *DexImport) ClassLoaderContexts() dexpreopt.ClassLoaderContextMap {
++	return j.classLoaderContexts
++}
++
++var _ UsesLibraryDependency = (*DexImport)(nil)
++
+ var _ android.ApexModule = (*DexImport)(nil)
+ 
+ // Implements android.ApexModule
+@@ -3741,8 +3783,10 @@
+ 
+ // dex_import imports a `.jar` file containing classes.dex files.
+ //
+-// A dex_import module cannot be used as a dependency of a java_* or android_* module, it can only be installed
+-// to the device.
++// A dex_import module can be installed and used as a runtime uses-library
++// dependency. It does not provide class files for Java compilation or static
++// linking. Its name must match the runtime library name, and its permissions
++// XML registration must be installed separately.
+ func DexImportFactory() android.Module {
+ 	module := &DexImport{}
+ 
+--- a/java/Android.bp
++++ b/java/Android.bp
+@@ -103,6 +103,7 @@
+         "container_test.go",
+         "bootclasspath_fragment_test.go",
+         "device_host_converter_test.go",
++        "dex_import_test.go",
+         "dex_test.go",
+         "dexpreopt_test.go",
+         "dexpreopt_config_test.go",
+--- /dev/null
++++ b/java/dex_import_test.go
+@@ -0,0 +1,206 @@
++// SPDX-License-Identifier: Apache-2.0
++
++package java
++
++import (
++	"encoding/json"
++	"fmt"
++	"testing"
++
++	"android/soong/android"
++	"android/soong/dexpreopt"
++)
++
++func TestDexImportUsesLibraryProvider(t *testing.T) {
++	for _, test := range []struct {
++		name, properties, devicePath string
++	}{
++		{"default", "", "/system/framework/shared.jar"},
++		{"stem", `stem: "installed",`, "/system/framework/installed.jar"},
++		{"system_ext", `stem: "installed", system_ext_specific: true,`, "/system_ext/framework/installed.jar"},
++	} {
++		t.Run(test.name, func(t *testing.T) {
++			result := PrepareForTestWithDexpreopt.RunTestWithBp(t, fmt.Sprintf(`
++				dex_import {
++					name: "shared",
++					jars: ["input.jar"],
++					%s
++				}
++				android_app_import {
++					name: "app",
++					apk: "app.apk",
++					preprocessed: true,
++					uses_libs: ["shared"],
++				}
++			`, test.properties))
++			shared := result.ModuleForTests(t, "shared", "android_common")
++			info, _ := android.OtherModuleProvider(result, shared.Module(), JavaInfoProvider)
++			if info.UsesLibraryDependencyInfo == nil {
++				t.Fatal("DEX import must export its uses-library provider")
++			}
++			android.AssertBoolEquals(t, "valid host DEX path", true, info.DexJarBuildPath.Valid())
++			android.AssertStringEquals(t, "host DEX path", ".intermediates/shared/android_common/shared.jar",
++				android.NormalizePathForTesting(info.DexJarBuildPath.Path()))
++			android.AssertIntEquals(t, "no invented class-file provider", 0, len(info.HeaderJars))
++
++			configText := android.ContentFromFileRuleForTests(t, result.TestContext,
++				shared.Output("dexpreopt/shared/dexpreopt.config"))
++			config, err := dexpreopt.ParseModuleConfig(android.PathContextForTesting(result.Config), []byte(configText))
++			if err != nil {
++				t.Fatal(err)
++			}
++			android.AssertStringEquals(t, "runtime name is module name", "shared", config.ProvidesUsesLibrary)
++			android.AssertStringEquals(t, "dexpreopt install location", test.devicePath, config.DexLocation)
++			shared.Rule("dexpreopt")
++
++			app := result.ModuleForTests(t, "app", "android_common")
++			contexts := app.Module().(*AndroidAppImport).classLoaderContexts[dexpreopt.AnySdkVersion]
++			android.AssertIntEquals(t, "one direct runtime library", 1, len(contexts))
++			android.AssertStringEquals(t, "CLC runtime name", "shared", contexts[0].Name)
++			android.AssertStringEquals(t, "CLC install path", test.devicePath, contexts[0].Device)
++			android.AssertStringEquals(t, "CLC host path", info.DexJarBuildPath.Path().String(), contexts[0].Host.String())
++			android.AssertIntEquals(t, "leaf context", 0, len(contexts[0].Subcontexts))
++			verify := app.Rule("verify_uses_libraries").RuleParams.Command
++			android.AssertStringDoesContain(t, "strict manifest rule", verify, "--enforce-uses-libraries ")
++			android.AssertStringDoesContain(t, "manifest runtime name", verify, "--uses-library shared ")
++			android.AssertStringDoesNotContain(t, "no relaxed manifest check", verify, "--enforce-uses-libraries-relax")
++			app.Rule("dexpreopt")
++		})
++	}
++}
++
++func TestDexImportUsesLibraryNamespaceAndNestedContexts(t *testing.T) {
++	result := android.GroupFixturePreparers(
++		PrepareForTestWithDexpreopt,
++		android.PrepareForTestWithNamespace,
++		android.FixtureModifyProductVariables(func(variables android.FixtureProductVariables) {
++			variables.NamespacesToExport = []string{"vendor/example"}
++		}),
++		android.FixtureAddTextFile("vendor/example/Android.bp", `
++			soong_namespace {}
++			dex_import {
++				name: "runtime.parent",
++				jars: ["parent.jar"],
++				stem: "original",
++				system_ext_specific: true,
++				uses_libs: ["runtime.required", "runtime.second"],
++			}
++		`),
++	).RunTestWithBp(t, `
++		dex_import { name: "runtime.leaf", jars: ["leaf.jar"], }
++		dex_import {
++			name: "runtime.required",
++			jars: ["required.jar"],
++			uses_libs: ["runtime.leaf"],
++		}
++		dex_import {
++			name: "runtime.second",
++			jars: ["second.jar"],
++			product_specific: true,
++		}
++		android_app_import {
++			name: "app",
++			apk: "app.apk",
++			preprocessed: true,
++			optional_uses_libs: ["//vendor/example:runtime.parent", "runtime.leaf"],
++		}
++	`)
++	parent := result.ModuleForTests(t, "runtime.parent", "android_common")
++	info, _ := android.OtherModuleProvider(result, parent.Module(), JavaInfoProvider)
++	contexts := info.UsesLibraryDependencyInfo.GetClassLoaderContexts()[dexpreopt.AnySdkVersion]
++	android.AssertIntEquals(t, "two declared dependencies", 2, len(contexts))
++	android.AssertStringEquals(t, "first dependency", "runtime.required", contexts[0].Name)
++	android.AssertStringEquals(t, "second dependency", "runtime.second", contexts[1].Name)
++	android.AssertBoolEquals(t, "required dependency", false, contexts[0].Optional)
++	android.AssertBoolEquals(t, "required second dependency", false, contexts[1].Optional)
++	android.AssertStringEquals(t, "second install partition", "/product/framework/runtime.second.jar", contexts[1].Device)
++	android.AssertIntEquals(t, "one nested leaf", 1, len(contexts[0].Subcontexts))
++	android.AssertStringEquals(t, "nested leaf", "runtime.leaf", contexts[0].Subcontexts[0].Name)
++	android.AssertStringEquals(t, "nested host path", ".intermediates/runtime.leaf/android_common/runtime.leaf.jar",
++		android.NormalizePathForTesting(contexts[0].Subcontexts[0].Host))
++	parent.Rule("dexpreopt")
++
++	app := result.ModuleForTests(t, "app", "android_common")
++	appContexts := app.Module().(*AndroidAppImport).classLoaderContexts[dexpreopt.AnySdkVersion]
++	android.AssertIntEquals(t, "direct app libraries are not flattened", 2, len(appContexts))
++	android.AssertStringEquals(t, "first direct library", "runtime.parent", appContexts[0].Name)
++	android.AssertStringEquals(t, "second direct library", "runtime.leaf", appContexts[1].Name)
++	android.AssertBoolEquals(t, "parent is optional for app", true, appContexts[0].Optional)
++	android.AssertBoolEquals(t, "leaf is optional for app", true, appContexts[1].Optional)
++	android.AssertStringEquals(t, "parent install path", "/system_ext/framework/original.jar", appContexts[0].Device)
++	android.AssertDeepEquals(t, "preserved subtree", contexts, appContexts[0].Subcontexts)
++
++	verify := app.Rule("verify_uses_libraries").RuleParams.Command
++	android.AssertStringDoesContain(t, "ordered manifest names", verify,
++		"--optional-uses-library runtime.parent --optional-uses-library runtime.leaf ")
++	android.AssertStringDoesNotContain(t, "no namespace in manifest name", verify, "//vendor/example:")
++	android.AssertStringDoesNotContain(t, "no nested library promoted to manifest", verify, "--uses-library runtime.required")
++	android.AssertStringDoesNotContain(t, "no relaxed manifest check", verify, "--enforce-uses-libraries-relax")
++	contextJSON, err := extractContextJson(app.Rule("dexpreopt").RuleParams.Command)
++	if err != nil {
++		t.Fatal(err)
++	}
++	jsonParent := contextJSON["any"].([]interface{})[0].(map[string]interface{})
++	android.AssertStringEquals(t, "dex2oat runtime library", "runtime.parent", jsonParent["Name"].(string))
++	android.AssertIntEquals(t, "dex2oat nested dependency count", 2, len(jsonParent["Subcontexts"].([]interface{})))
++	serialized, err := json.Marshal(contextJSON)
++	if err != nil {
++		t.Fatal(err)
++	}
++	// These synthetic rule inputs can also be exercised by construct_context.py
++	// and manifest_check.py without requiring a real APK or executing dex2oat.
++	t.Logf("fixture_context_json: %s", serialized)
++	t.Logf("fixture_verify_command: %s", verify)
++}
++
++func TestDexImportUsesLibraryInvalidDependency(t *testing.T) {
++	for _, test := range []struct {
++		name, dependency, pattern string
++	}{
++		{"missing_required", "", `depends on undefined module "dep"`},
++		{"class_only", `java_import { name: "dep", jars: ["classes.jar"], }`,
++			`uses-library dependency "dep" must provide a DEX jar and an install path`},
++		{"not_java", `filegroup { name: "dep", srcs: ["classes.jar"], }`,
++			`uses-library dependency "dep" must provide a DEX jar and an install path`},
++		{"sdk_stubs_only", `java_sdk_library_import { name: "dep", public: { jars: ["stubs.jar"] }, }`,
++			`uses-library dependency "dep" must provide a DEX jar and an install path`},
++	} {
++		t.Run(test.name, func(t *testing.T) {
++			PrepareForTestWithDexpreopt.
++				ExtendWithErrorHandler(android.FixtureExpectsAtLeastOneErrorMatchingPattern(test.pattern)).
++				RunTestWithBp(t, `
++					dex_import {
++						name: "shared",
++						jars: ["shared.jar"],
++						uses_libs: ["dep"],
++					}
++				`+test.dependency)
++		})
++	}
++}
++
++func TestDexImportUsesLibraryUnsupportedProperties(t *testing.T) {
++	for _, test := range []struct{ name, value string }{
++		{"provides_uses_lib", `"alias"`},
++		{"optional_uses_libs", `["optional"]`},
++		{"enforce_uses_libs", `false`},
++		{"exclude_uses_libs", `["excluded"]`},
++	} {
++		t.Run(test.name, func(t *testing.T) {
++			PrepareForTestWithDexpreopt.
++				ExtendWithErrorHandler(android.FixtureExpectsAtLeastOneErrorMatchingPattern(`unrecognized property "`+test.name+`"`)).
++				RunTestWithBp(t, fmt.Sprintf(`
++					dex_import { name: "shared", jars: ["shared.jar"], %s: %s, }
++				`, test.name, test.value))
++		})
++	}
++}
++
++func TestDexImportUsesLibraryDependencyCycle(t *testing.T) {
++	PrepareForTestWithDexpreopt.
++		ExtendWithErrorHandler(android.FixtureExpectsAtLeastOneErrorMatchingPattern(`encountered dependency cycle`)).
++		RunTestWithBp(t, `
++			dex_import { name: "first", jars: ["first.jar"], uses_libs: ["second"], }
++			dex_import { name: "second", jars: ["second.jar"], uses_libs: ["first"], }
++		`)
++}

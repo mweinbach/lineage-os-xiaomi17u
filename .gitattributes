@@ -1,3 +1,4 @@
-# A unified patch's blank context lines contain a required leading space.
+# Unified patches prefix context with a space, including blank lines and Go's
+# tab-indented source. These exceptions apply to patch text, not source files.
 # Validate added source lines with git apply --check --whitespace=error instead.
-patches/**/*.patch whitespace=-blank-at-eol
+patches/**/*.patch whitespace=-blank-at-eol,-space-before-tab
