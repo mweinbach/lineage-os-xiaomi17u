@@ -443,5 +443,16 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             generator.validate(self.root)
 
 
+class NezhaBoardHookTests(unittest.TestCase):
+    def test_full_lineage_hook_follows_prebuilt_selector_and_board_values(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        hook = "include vendor/lineage/config/BoardConfigLineage.mk"
+        self.assertEqual(board.count(hook), 1)
+        self.assertNotIn("include vendor/lineage/config/BoardConfigKernel.mk", board)
+        self.assertGreater(board.index(hook), board.index("include kernel/xiaomi/nezha/stock-prebuilt.mk"))
+        self.assertGreater(board.index(hook), board.index("BOARD_AVB_ENABLE := true"))
+        self.assertNotIn("BOARD_USES_QCOM_HARDWARE := true", board)
+
+
 if __name__ == "__main__":
     unittest.main()

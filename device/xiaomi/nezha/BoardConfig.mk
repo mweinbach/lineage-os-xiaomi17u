@@ -19,8 +19,6 @@ TARGET_NO_BOOTLOADER := true
 include $(NEZHA_DEVICE_PATH)/generated/BoardConfigCandidate.mk
 include kernel/xiaomi/nezha/stock-prebuilt.mk
 include $(NEZHA_VENDOR_PATH)/BoardConfigVendor.mk
-# The explicit prebuilt selector must precede the Lineage kernel hook.
-include vendor/lineage/config/BoardConfigKernel.mk
 
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
@@ -44,3 +42,7 @@ endif
 ifneq ($(strip $(filter target-files-package otapackage updatepackage bacon superimage super_empty,$(MAKECMDGOALS))),)
 $(error Nezha framework-checks profile does not admit complete target-files, OTA or super packaging; see generated admission.json)
 endif
+
+# The full hook also exports kernel variables to Lineage's Soong generators.
+# Include it after the explicit prebuilt selector and all local board values.
+include vendor/lineage/config/BoardConfigLineage.mk
