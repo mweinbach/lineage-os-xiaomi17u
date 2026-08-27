@@ -111,10 +111,10 @@ and `WPACNXM` vendor baseline. Keep the current xiaomi.eu application snapshot
 separate from the matching official China firmware used for vendor extraction.
 
 The [Apple Container and Rosetta environment](apple-container.md) is now prepared
-on this Mac: x86-64 execution and ext4/case-sensitivity checks passed, Repo was
-initialized, and a full source sync was launched. That corrects the earlier
-native-Linux-only host assumption; full sync completion and Android 16
-compilation remain unverified. Still required are complete device/common/vendor/
+on this Mac: x86-64 execution and ext4/case-sensitivity checks passed, and the
+full platform sync completed with all 1,179 project revisions verified. That
+corrects the earlier native-Linux-only host assumption; Android 16 compilation
+remains unverified. Still required are complete device/common/vendor/
 kernel integration, verified matching stock firmware and extraction rules, and
 an explicitly authorized recovery/backup/testing plan before any physical ROM
 experiment. No Evolution X hardware feature has been tested yet.

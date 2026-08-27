@@ -107,9 +107,11 @@ preservation plan; completing this repository's tooling does not authorize it.
 
 ## Progressive validation
 
-The platform checkpoint requires a successful Repo task result, unchanged
-manifest/Repo pins, complete project checkout and a resolved manifest with full
-commit IDs. Rosetta's real Ninja proof is useful, but it is not a Soong, kernel
+The platform checkpoint now has a successful Repo result, unchanged manifest/
+Repo pins, 1,179 verified clean project checkouts, a resolved manifest with full
+commit IDs, and verified content hashes for all 99 LFS files. The
+[source record](../research/source-sync.json) documents that checkpoint.
+Rosetta's real host-tool proofs remain separate from an Android module, kernel
 or ROM build result.
 
 After dependency admission, check product inheritance, artifact paths, VINTF,

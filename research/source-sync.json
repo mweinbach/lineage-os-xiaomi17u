@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-08-27",
+  "platform": {
+    "name": "Evolution X",
+    "android": "16 QPR2",
+    "branch": "bka",
+    "manifest_commit": "cc4ebb8db9750afba6049825127304b09327f7c1",
+    "repo_commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77"
+  },
+  "sync": {
+    "container": "evolution-nezha-sync-20260827155847261123",
+    "started_at": "2026-08-27T15:58:47.261456+00:00",
+    "completed_at": "2026-08-27T16:56:02.557709+00:00",
+    "exit_code": 0,
+    "status": "complete",
+    "duration_seconds": 3435.296253,
+    "container_stopped_naturally": true,
+    "second_sync_started": false
+  },
+  "storage": {
+    "source_dir": "/work/evolution",
+    "out_dir": "/work/out/evolution",
+    "cache_dir": "/work/cache",
+    "volume": "evolution-nezha-work",
+    "filesystem": "ext4",
+    "capacity_gib": 800,
+    "post_sync_free_disk_gib": 610.0,
+    "image_digest": "sha256:82960bf5b04070ffa323bb37eaa4e77d1b189f7bdcd0c31204d5d8ac092d36ca"
+  },
+  "resolved_manifest": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "bytes": 287546,
+    "project_count": 1179,
+    "purpose": "Historical dependency snapshot only; not an active device manifest or permission to change the source selector.",
+    "original_guest_path": "/work/control/8ef07db7e8ccd6dbf9ad6be3c5af0981453b783b6b308acca72dabb4a2bed3cc/reports/resolved-manifest-20260827T165601Z.xml"
+  },
+  "checkout_verification": {
+    "started_at": "2026-08-27T17:05:31.619140+00:00",
+    "completed_at": "2026-08-27T17:05:58.528345+00:00",
+    "project_list_matches_manifest": true,
+    "project_count": 1179,
+    "head_match_count": 1179,
+    "clean_project_count": 1179,
+    "origin_match_count": 1179,
+    "manifest_and_repo_pins_verified_before_and_after": true
+  },
+  "lfs_verification": {
+    "project_count": 5,
+    "file_count": 99,
+    "verified_at": "2026-08-27T17:08:20.929963+00:00",
+    "bytes_hashed": 3608373955,
+    "all_content_hashes_match_lfs_oids": true
+  },
+  "remote_project_counts": {
+    "aosp": 881,
+    "evo": 63,
+    "github": 234,
+    "github-non-los": 1
+  },
+  "evolution_vendor": {
+    "path": "vendor/lineage",
+    "url": "https://github.com/Evolution-X/vendor_evolution",
+    "head": "11d2966a3294a0a692fc958127c770cfe9c00a3c"
+  },
+  "private_receipts": {
+    "source_audit": {
+      "host_path": "reports/source-sync-20260827/source-audit.json",
+      "guest_path": "/work/validation/source-audit-20260827T1705Z/receipt.json",
+      "sha256": "62f0113668c4c8d904134b6eb69b699ece1cba05babbf0c277edb17b9297e87c"
+    },
+    "lfs_content": {
+      "host_path": "reports/source-sync-20260827/lfs-content-verification.json",
+      "guest_path": "/work/validation/source-audit-20260827T1705Z/lfs-content-verification.json",
+      "sha256": "a633c3807f9ce7411be1d45d880ba9f9e4af067b25767760e9a6deb1c30711b2"
+    }
+  },
+  "device_target_registered": false,
+  "full_android_build_verified": false,
+  "hardware_features_tested_on_evolution": false,
+  "limits": [
+    "A resolved manifest records this checkout; it does not guarantee upstream retention or a successful build.",
+    "Source completeness is separate from Nezha product, kernel, vendor, AVB, VINTF and physical-device prerequisites.",
+    "The platform source guard still admits only the configured default.xml, without a local device manifest."
+  ]
+}

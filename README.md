@@ -5,7 +5,7 @@ starting from **Evolution X Android 16 QPR2 (`bka`)** and investigating retentio
 of Xiaomi's camera and other native features.
 
 **The research/setup tooling and local Apple Container builder work. Evolution X
-is initialized in its Linux volume; the full source sync is in progress. A
+has fully synced in its Linux volume, with all 1,179 project revisions verified. A
 buildable Nezha device tree and a flashable ROM are not present yet.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
@@ -67,8 +67,9 @@ make apple-status
 make apple-plan
 ```
 
-`make apple-status` is safe while the current source sync runs. When the volume
-is idle, the reproducible local setup sequence is:
+`make apple-status` inspects the latest operation without attaching another VM.
+The source sync is already complete; do not repeat setup or sync to resume this
+checkout. For a new environment only, with an idle volume, the setup sequence is:
 
 ```sh
 make apple-setup
@@ -148,9 +149,9 @@ properties do not independently establish physical variant or bootloader state.
    Nezha scaffold has a missing product makefile, stale model identity, and
    absent vendor/kernel inputs. Other-device partition/AVB settings must not
    be copied into an active configuration.
-3. Finish the platform sync in the Apple Container volume or on native Linux
-   x86-64, integrate reviewed device sources, and validate VINTF, kernel-module
-   compatibility, and enforcing policy.
+3. Validate Android build orchestration on the prepared host, integrate reviewed
+   device sources into the verified platform checkout, and validate VINTF,
+   kernel-module compatibility, and enforcing policy.
 4. Compile and test hardware features in stages, with a separately authorized
    recovery/backup plan before any device changes. No native feature is currently
    claimed to work on Evolution X.
@@ -161,7 +162,9 @@ original `lineage-os-xiaomi17u` name; the selected ROM is Evolution X.
 
 The offline suite covers source safety, both host modes, container boundaries,
 firmware intake, and private device evidence. All twelve pinned references were
-verified, and real Repo initialization inside Apple Container passed with
-signature checks enabled and matching manifest/Repo commits. Full platform sync
-and device build results are tracked separately; no complete Android ROM build
-has been claimed.
+verified. The completed platform sync preserved signature checks and the
+manifest/Repo pins. Every project HEAD, clean worktree and remote matched the
+[resolved snapshot](research/source-snapshots/evolution-bka-20260827.xml), and all
+99 Git LFS files passed content-hash verification. The
+[source verification record](research/source-sync.json) remains separate from
+device build results; no complete Android ROM build has been claimed.

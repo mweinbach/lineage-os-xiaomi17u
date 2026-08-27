@@ -23,7 +23,7 @@ Observed on **2026-08-27**:
 | Actual AOSP host tool | Android 16 Ninja `1.9.0.git`, with matching bundled libraries, built a small x86-64 C program that executed successfully |
 | Filesystem | ext4 and case-sensitive file behavior verified |
 | Repo initialization | Completed in `/work/evolution`, with manifest and Repo implementation pins verified and signature checks enabled |
-| Full sync | Detached sync launched at `2026-08-27T15:58:47Z`; completion not yet verified in this record |
+| Full sync | Completed at `2026-08-27T16:56:02Z`, exit `0`; all 1,179 project HEADs, clean worktrees and remotes verified afterward |
 | Android build / device support | No full Android 16 compilation or functional Nezha ROM established |
 
 Disk and memory figures are measurements from that check, not reserved free
@@ -45,9 +45,46 @@ The Android source pins are unchanged:
 - Google Repo implementation:
   `b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77`.
 
-Both are recorded in [`config/sources.json`](../config/sources.json). Individual
-Android projects still follow manifest refs until a successful sync produces a
-resolved manifest. Repo initialization is not a completed source checkout.
+Both are recorded in [`config/sources.json`](../config/sources.json). The completed
+checkout now has an [archival resolved manifest](../research/source-snapshots/evolution-bka-20260827.xml)
+and [sanitized verification record](../research/source-sync.json). The snapshot
+records all project commits; it does not activate a device manifest or change
+the guarded `default.xml` selection.
+
+## Completed source verification
+
+The original task `evolution-nezha-sync-20260827155847261123` finished after
+**57m 15.296s** and stopped naturally. No second sync was started and no source
+checkout was reset or discarded. After confirming exclusive volume ownership,
+a follow-up shell independently checked the completed ext4 checkout:
+
+- All **1,179** project HEADs equal the resolved manifest's full commit IDs.
+- All **1,179** worktrees are clean, including untracked-file checks; all project
+  remote URLs match the manifest. `.repo/project.list` matches exactly.
+- Manifest and Repo origins, commits, clean status, and the sole `default.xml`
+  selector passed before and after the audit. No local device manifest exists.
+- All **99 Git LFS payloads** in five projects were materialized. Hashing their
+  **3,608,373,955 bytes** matched every recorded LFS object ID.
+- A fresh host preflight passed with **610.0 GiB free** on the shared ext4 source/
+  output volume and 125.7 GiB guest RAM. Those are dated observations.
+
+The resolved manifest is 287,546 bytes with SHA256
+`a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac`.
+The original remains under
+`/work/control/8ef07db7e8ccd6dbf9ad6be3c5af0981453b783b6b308acca72dabb4a2bed3cc/reports/resolved-manifest-20260827T165601Z.xml`.
+The committed snapshot has identical bytes; all used project URLs were checked
+as public HTTPS without credentials. Upstream's unused `private` remote
+declaration has no projects in this checkout.
+
+The full per-project receipt is
+`/work/validation/source-audit-20260827T1705Z/receipt.json`, SHA256
+`62f0113668c4c8d904134b6eb69b699ece1cba05babbf0c277edb17b9297e87c`.
+Its separate `lfs-content-verification.json` has SHA256
+`a633c3807f9ce7411be1d45d880ba9f9e4af067b25767760e9a6deb1c30711b2`.
+Matching host copies are in ignored `reports/source-sync-20260827/`.
+The sync completion log and task backup are also retained under `reports/`;
+`.tools/apple-container/last-task.json` describes the latest operation, which
+may be the later verification shell rather than this completed sync.
 
 ## Actual AOSP Ninja proof
 
@@ -138,8 +175,8 @@ work, `launch_exit_code=0` means the container was launched, not that Repo sync
 succeeded. A running container or a growing project count is progress only.
 
 Use `python3 scripts/apple_container.py status` to inspect the current task.
-The existing task `evolution-nezha-sync-20260827155847261123` uses an older
-immutable control bundle. Its inventory can show zero listed/checked-out
+The completed task `evolution-nezha-sync-20260827155847261123` used an older
+immutable control bundle. Its inventory could show zero listed/checked-out
 projects before Repo creates `.repo/project.list` during the initial fetch.
 That does not mean no data has downloaded. The current host code distinguishes
 an absent list from zero projects, but it does not replace a running VM's
@@ -151,12 +188,14 @@ under `/work/evolution/.repo`, 383 Git directories under `.repo/projects`,
 fetch-progress observations, not counts of successfully downloaded or checked
 out projects, and not a percentage of the final source tree.
 
-Use logs and actual state in that VM when the summary is ambiguous:
+The completed task's logs remain available. For future running tasks, use their
+actual state when the summary is ambiguous:
 
 ```sh
 container logs -n 80 evolution-nezha-sync-20260827155847261123
-container exec evolution-nezha-sync-20260827155847261123 du -sh /work/evolution/.repo
-container exec evolution-nezha-sync-20260827155847261123 df -h /work
+# Replace RUNNING_TASK with the current, running VM from last-task.json.
+container exec RUNNING_TASK du -sh /work/evolution/.repo
+container exec RUNNING_TASK df -h /work
 ```
 
 For a later task, take its name from `.tools/apple-container/last-task.json`
@@ -220,8 +259,8 @@ is useful reference material, not a recipe adopted unchanged. This workspace
 does not adopt its verification bypasses, startup source edits, broad runtime
 capabilities, or copy-on-write assumption.
 
-The remaining work is still concrete: finish and verify the Android 16 sync,
-exercise the wider Android build toolchain, and complete the Nezha device/common/
+The remaining work is still concrete: validate Android build orchestration
+under Rosetta and complete the Nezha device/common/
 kernel/vendor integration. Official Xiaomi CDN downloads remain partial. The
 separately supplied [Xiaomi.eu package](provided-firmware.md) has passed local
 SHA256 and full ZIP CRC checks, but its origin is unverified and it is not

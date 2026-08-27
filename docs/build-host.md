@@ -6,8 +6,9 @@ workspace's execution and filesystem checks on this Mac.** It runs an ARM64
 Linux guest with translated x86-64 Linux tools and a named ext4 source volume.
 An actual AOSP Android 16 Ninja prebuilt and its matching bundled libraries
 also built a standalone x86-64 C program that then executed successfully.
-Repo initialization completed there; a full source sync has been launched, but
-its completion and an Android 16 platform build are not yet verified. See the
+The full platform sync completed there; all 1,179 project revisions, clean
+worktrees and remotes, plus all 99 LFS payload hashes, passed independent
+verification. An Android 16 platform build is not yet verified. See the
 [Apple Container workflow](apple-container.md) for the observed configuration,
 Ninja artifact hashes, receipt, commands, and status checks.
 
@@ -40,10 +41,11 @@ python3 scripts/apple_container.py sync --jobs 8 --detach --dry-run
 The preview does not launch a second sync. The actual wrapper rejects another
 VM attachment while the project volume is in use. Use the
 [full runbook](apple-container.md) for setup, smoke tests, synchronization and
-an interactive shell. The running sync's older immutable bundle may report
-zero projects before `.repo/project.list` exists; inspect logs and Git storage
-inside that existing VM before diagnosing a failure. Do not restart it merely
-to refresh the status code. Do not run the native Ubuntu package installer on macOS.
+an interactive shell. The initial sync's older immutable bundle could report
+zero projects before `.repo/project.list` existed; that display was not evidence
+of an empty download. The original task has now completed and stopped naturally.
+For later running tasks, inspect logs and Git storage in the owning VM before
+diagnosing a failure. Do not run the native Ubuntu package installer on macOS.
 The wrapper selects `--host-mode apple-rosetta` inside the verified Linux guest;
 the default `workspace.py` mode remains `native`.
 
@@ -99,6 +101,10 @@ The initial manifest pin is **not**
 a complete dependency lock: most upstream project entries reference branches.
 Preserve the resolved snapshot with each build, and review it before committing
 a sanitized version for reproducible handoff.
+The completed 2026-08-27 checkout now has an
+[exact archival snapshot](../research/source-snapshots/evolution-bka-20260827.xml)
+and [verification record](../research/source-sync.json). It remains outside the
+active manifest selection; it does not register a Nezha target.
 
 Reference fetches (`make refs`) deliberately skip large Git LFS assets. They
 are useful for review and are **not** the complete build checkout. Existing
