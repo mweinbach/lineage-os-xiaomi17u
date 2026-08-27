@@ -2,9 +2,20 @@
 
 Verified on **2026-08-27**: the exact China build
 `OS3.0.309.0.WPACNXM` for `nezha` is available from Xiaomi's HTTPS CDN.
-**A complete official package has not been downloaded or accepted by the intake
-tool.** Transfers were stopped at explicit time limits after measuring rates
-that would require days. No download remains running in the background.
+**A complete package has not yet been accepted by the intake tool.** The first
+CLI transfers were stopped at explicit time limits after measuring rates that
+would require days; those CLI downloads are no longer running.
+
+A later check found the matching fastboot filename in the user's Downloads
+directory at exactly **12,778,943,953 bytes**, with no matching `.crdownload`
+file. This is a completed-file candidate, not an integrity result. Directory
+enumeration returned `EINTR` and a bounded content read timed out, so no full
+hash, archive validation or origin metadata has yet been obtained from that
+file. The stalled read-only probes were stopped without changing the file.
+It can be accepted when normal content access succeeds or the user copies it
+into `sources/`; no macOS permission or browser access control was bypassed.
+The [fastboot extractor](fastboot-extraction.md) is ready for the verified
+intake. Do not confuse this file with the small earlier CLI partial below.
 
 ## Why this build
 
