@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN",
+    "architecture": "arm64"
+  },
+  "stock": {
+    "source_kind": "user-provided modified Xiaomi.eu package",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "kernel_release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "source_url": null,
+    "origin_verified": false,
+    "input_avb_status": "failed"
+  },
+  "references": {
+    "ack": {
+      "url": "https://android.googlesource.com/kernel/common",
+      "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+      "tag": "android16-6.12-2025-06_r8",
+      "role": "base common kernel reference, not proven exact source of the captured GKI"
+    },
+    "micode": {
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource.git",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "branch": "popsicle-w-oss",
+      "role": "Canoe/vendor DDK request dictionaries; sibling overrides are comparison-only"
+    }
+  },
+  "sources": [
+    {
+      "id": "ack_gki_defconfig",
+      "path": "ack/arch/arm64/configs/gki_defconfig",
+      "sha256": "9cc3451168d5bfcffb1399696ff935263b48b5453c198a42d55e8af479feadab",
+      "size_bytes": 20882,
+      "format": "kconfig",
+      "role": "ack_gki_requests",
+      "repository": "ack",
+      "upstream_path": "arch/arm64/configs/gki_defconfig",
+      "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+      "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/arch/arm64/configs/gki_defconfig?format=TEXT"
+    },
+    {
+      "id": "ack_reference_1",
+      "path": "ack/Makefile",
+      "sha256": "97f2b5b9e8cf3f2acbb4f204969765cbcdc85a6ce507128e1df13173f5ce99b7",
+      "size_bytes": 71463,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "ack",
+      "upstream_path": "Makefile",
+      "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+      "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/Makefile?format=TEXT"
+    },
+    {
+      "id": "ack_reference_2",
+      "path": "ack/build.config.constants",
+      "sha256": "c0c28955e4fe2c38c76c1bd4a822a2c55ac06f03f3aab20782f3f9ee04f1192d",
+      "size_bytes": 205,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "ack",
+      "upstream_path": "build.config.constants",
+      "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+      "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/build.config.constants?format=TEXT"
+    },
+    {
+      "id": "ack_reference_3",
+      "path": "ack/build.config.gki.aarch64",
+      "sha256": "b84a79103f5e0dea917120bffc7cca13a838e75b58554b46b91f3dbc0aa2d5d3",
+      "size_bytes": 617,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "ack",
+      "upstream_path": "build.config.gki.aarch64",
+      "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+      "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/build.config.gki.aarch64?format=TEXT"
+    },
+    {
+      "id": "ack_reference_4",
+      "path": "ack/BUILD.bazel",
+      "sha256": "d59fd84b266471fe5682812982fc6f15708fadd869b3d34d70751d80ec332316",
+      "size_bytes": 103148,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "ack",
+      "upstream_path": "BUILD.bazel",
+      "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+      "url": "https://android.googlesource.com/kernel/common/+/f1bdb13583da85a47fcf1632a78ef52d6e6da651/BUILD.bazel?format=TEXT"
+    },
+    {
+      "id": "micode_ack_pointer",
+      "path": "micode/android/ACK_SHA",
+      "sha256": "8b105941b7278fcb915efcac4b50ffd7418a2ce9bac92ebda12e0b73bb00d079",
+      "size_bytes": 67,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "micode",
+      "upstream_path": "android/ACK_SHA",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "793b7efd83e8981f57c48a67f8961f62b7895c4a"
+    },
+    {
+      "id": "canoe_perf",
+      "path": "micode/configs/canoe_perf.bzl",
+      "sha256": "efa1a94176ead2177fd3d2cde5e46885130a6fa9dc710da22c60d9ded2ae6379",
+      "size_bytes": 16287,
+      "format": "starlark_config_dict",
+      "role": "vendor_ddk_requests",
+      "repository": "micode",
+      "upstream_path": "configs/canoe_perf.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "6e263ea1b2616ae486f9b0d408d90ae4fd5a8942",
+      "dictionary_name": "canoe_perf_config"
+    },
+    {
+      "id": "popsicle_perf",
+      "path": "micode/configs/popsicle_perf.bzl",
+      "sha256": "3bc71c351c4cd36b44f7312d6d061d60fdaeb939c5e0a6d9172e250b67a3a4f6",
+      "size_bytes": 493,
+      "format": "starlark_config_dict",
+      "role": "sibling_ddk_requests",
+      "repository": "micode",
+      "upstream_path": "configs/popsicle_perf.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "e39374831698d933664e331471bfc3d5a5e5063b",
+      "dictionary_name": "popsicle_perf_config"
+    },
+    {
+      "id": "pudding_perf",
+      "path": "micode/configs/pudding_perf.bzl",
+      "sha256": "352a8cce046f65a7039ae88811394663a21f9a583944e1b835cd11d7305f756c",
+      "size_bytes": 361,
+      "format": "starlark_config_dict",
+      "role": "sibling_ddk_requests",
+      "repository": "micode",
+      "upstream_path": "configs/pudding_perf.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "fefabde2892a8f63fcb060fed479ce7158db13b5",
+      "dictionary_name": "pudding_perf_config"
+    },
+    {
+      "id": "pandora_perf",
+      "path": "micode/configs/pandora_perf.bzl",
+      "sha256": "3c3ebef92463e5b4838b3a57aafb76f7b72582bec41910df6e7340f76b7b5792",
+      "size_bytes": 324,
+      "format": "starlark_config_dict",
+      "role": "sibling_ddk_requests",
+      "repository": "micode",
+      "upstream_path": "configs/pandora_perf.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "3d0b3ce5f97b01dff9c92a123c905312c4167fbd",
+      "dictionary_name": "pandora_perf_config"
+    },
+    {
+      "id": "micode_reference_10",
+      "path": "micode/kleaf-scripts/modules_register.bzl",
+      "sha256": "030faf9402fcc900445fd5963066e061281a42150d7e3cd9302570b0d79c82ea",
+      "size_bytes": 11011,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "micode",
+      "upstream_path": "kleaf-scripts/modules_register.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "7965b17588b4720477569d7151665c8c4d0743f5"
+    },
+    {
+      "id": "micode_reference_11",
+      "path": "micode/kleaf-scripts/defconfig_fragment.bzl",
+      "sha256": "b432ffa0aa96244232b85a0cd760a9755602b9f458914ba32b0ab5ed59b6b036",
+      "size_bytes": 3203,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "micode",
+      "upstream_path": "kleaf-scripts/defconfig_fragment.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "3325bdeadb2b1547770f220b672dea5025354169"
+    },
+    {
+      "id": "micode_reference_12",
+      "path": "micode/kleaf-scripts/android_build.bzl",
+      "sha256": "c8f3006c9be67fecb6d61c7cff15d881c141ca2d45d804c874d03aa36010d23d",
+      "size_bytes": 13861,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "micode",
+      "upstream_path": "kleaf-scripts/android_build.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "bfa1ffcd69270d4326feb1f56c11fd29bb148e31"
+    },
+    {
+      "id": "micode_reference_13",
+      "path": "micode/kleaf-scripts/targets/popsicle.bzl",
+      "sha256": "85309c37e4b254aef94da90c581187fc6ec95844e556713666d19a5d9d5c1fe5",
+      "size_bytes": 2178,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "micode",
+      "upstream_path": "kleaf-scripts/targets/popsicle.bzl",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "d671f9f3c3e712969061f81733c99ea04791f457"
+    },
+    {
+      "id": "micode_reference_14",
+      "path": "micode/BUILD.bazel",
+      "sha256": "cbdc956bf9acf6b1df918706dcbf4c714da1438c53d7b58a1cf0529f8c725b2f",
+      "size_bytes": 10190,
+      "format": "reference",
+      "role": "source_reference",
+      "repository": "micode",
+      "upstream_path": "BUILD.bazel",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "git_blob_sha1": "09fec8f635ce62259bf975b6c52646f179156839"
+    },
+    {
+      "id": "stock_config",
+      "path": "stock/kernel.config",
+      "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+      "size_bytes": 220352,
+      "format": "kconfig",
+      "role": "observed_stock_config",
+      "repository": "stock-evidence",
+      "upstream_path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/boot-analysis/kernel.config"
+    },
+    {
+      "id": "stock_receipt",
+      "path": "stock/final-receipt.json",
+      "sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "size_bytes": 43229,
+      "format": "stock_receipt",
+      "role": "stock_receipt",
+      "repository": "stock-evidence",
+      "upstream_path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/boot-analysis/final-receipt.json"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "ack_gki",
+      "sources": [
+        "ack_gki_defconfig"
+      ],
+      "scope": "Explicit ACK base defconfig requests compared with observed full stock IKCONFIG; defaults and dependencies are not evaluated."
+    },
+    {
+      "id": "canoe_ddk",
+      "sources": [
+        "canoe_perf"
+      ],
+      "scope": "Shared Canoe vendor DDK requests compared with observed GKI values; this is not a base-kernel defconfig."
+    },
+    {
+      "id": "popsicle_ddk_reference",
+      "sources": [
+        "canoe_perf",
+        "popsicle_perf"
+      ],
+      "scope": "Comparison-only sibling request dictionary composition. No settings are adopted for Nezha and no effective configuration is inferred."
+    },
+    {
+      "id": "pudding_ddk_reference",
+      "sources": [
+        "canoe_perf",
+        "pudding_perf"
+      ],
+      "scope": "Comparison-only sibling request dictionary composition. No settings are adopted for Nezha and no effective configuration is inferred."
+    },
+    {
+      "id": "pandora_ddk_reference",
+      "sources": [
+        "canoe_perf",
+        "pandora_perf"
+      ],
+      "scope": "Comparison-only sibling request dictionary composition. No settings are adopted for Nezha and no effective configuration is inferred."
+    }
+  ],
+  "assertions": [
+    {
+      "symbol": "CONFIG_ARM64",
+      "expected": "y",
+      "reason": "Preserve the observed instruction-set architecture."
+    },
+    {
+      "symbol": "CONFIG_ARM64_4K_PAGES",
+      "expected": "y",
+      "reason": "Preserve the exact observed 4 KiB kernel page configuration."
+    },
+    {
+      "symbol": "CONFIG_ARM64_16K_PAGES",
+      "expected": "n",
+      "reason": "Do not select a different page-size configuration."
+    },
+    {
+      "symbol": "CONFIG_ARM64_64K_PAGES",
+      "expected": "n",
+      "reason": "Do not select a different page-size configuration."
+    },
+    {
+      "symbol": "CONFIG_MODULES",
+      "expected": "y",
+      "reason": "Preserve support for the captured staged module inputs."
+    },
+    {
+      "symbol": "CONFIG_MODVERSIONS",
+      "expected": "y",
+      "reason": "Preserve module symbol version checks."
+    },
+    {
+      "symbol": "CONFIG_BASIC_MODVERSIONS",
+      "expected": "y",
+      "reason": "Preserve the observed classic symbol-version table format."
+    },
+    {
+      "symbol": "CONFIG_EXTENDED_MODVERSIONS",
+      "expected": "y",
+      "reason": "Preserve the observed extended symbol-version table format."
+    },
+    {
+      "symbol": "CONFIG_MODULE_SIG",
+      "expected": "y",
+      "reason": "Preserve kernel module signature support."
+    },
+    {
+      "symbol": "CONFIG_MODULE_SIG_ALL",
+      "expected": "y",
+      "reason": "Do not reduce the captured GKI module-signing configuration."
+    },
+    {
+      "symbol": "CONFIG_MODULE_SIG_PROTECT",
+      "expected": "y",
+      "reason": "Preserve the observed protected-module signature behavior."
+    },
+    {
+      "symbol": "CONFIG_TRIM_UNUSED_KSYMS",
+      "expected": "y",
+      "reason": "Do not replace the observed symbol-trimming configuration with relaxed debug settings."
+    },
+    {
+      "symbol": "CONFIG_CFI_CLANG",
+      "expected": "y",
+      "reason": "Preserve the captured control-flow integrity configuration."
+    },
+    {
+      "symbol": "CONFIG_CFI_PERMISSIVE",
+      "expected": "n",
+      "reason": "Do not make control-flow integrity permissive."
+    },
+    {
+      "symbol": "CONFIG_DM_VERITY",
+      "expected": "y",
+      "reason": "Preserve verity support."
+    },
+    {
+      "symbol": "CONFIG_SECURITY_SELINUX",
+      "expected": "y",
+      "reason": "Preserve SELinux support."
+    },
+    {
+      "symbol": "CONFIG_DEFAULT_SECURITY_SELINUX",
+      "expected": "y",
+      "reason": "Preserve the recorded default security module selection."
+    },
+    {
+      "symbol": "CONFIG_SECURITY_SELINUX_BOOTPARAM",
+      "expected": "n",
+      "reason": "Do not enable a boot parameter to disable SELinux."
+    },
+    {
+      "symbol": "CONFIG_ANDROID_VENDOR_HOOKS",
+      "expected": "y",
+      "reason": "Preserve the vendor hook interface used by Android modules."
+    },
+    {
+      "symbol": "CONFIG_BOOT_CONFIG",
+      "expected": "y",
+      "reason": "Preserve vendor bootconfig support."
+    }
+  ],
+  "output_policy": {
+    "private_artifacts_only": true,
+    "generate_defconfig": false,
+    "execute_source": false,
+    "infer_absent_as_n": false,
+    "resolve_kconfig": false,
+    "build_kernel": false,
+    "invent_external_modules": false
+  }
+}
