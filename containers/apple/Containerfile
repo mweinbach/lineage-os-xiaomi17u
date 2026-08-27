@@ -1,0 +1,57 @@
+# Ubuntu 24.04 official Linux ARM64 manifest; provenance is in base-image.json.
+ARG UBUNTU_IMAGE=docker.io/library/ubuntu@sha256:95fa486768020359141f1318720f43e7982ef926c792891d984aef9aaf05e7ea
+FROM --platform=linux/arm64 ${UBUNTU_IMAGE}
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Minimal Ubuntu does not ship the HTTPS CA bundle. Bootstrap only that native
+# package with Ubuntu's existing signed APT configuration; never disable checks.
+RUN test "$(dpkg --print-architecture)" = arm64 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Replace the default source before enabling multiarch: ports has no amd64 index.
+COPY ubuntu-arm64.sources /etc/apt/sources.list.d/ubuntu.sources
+COPY ubuntu-amd64.sources /etc/apt/sources.list.d/ubuntu-amd64.sources
+
+RUN dpkg --add-architecture amd64 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bc bison build-essential ca-certificates ccache cpio curl file flex \
+        fontconfig git git-lfs gnupg libelf-dev libncurses-dev libssl-dev \
+        libxml2-utils locales lz4 openjdk-21-jdk-headless openssh-client patch \
+        pkg-config python3 rsync unzip xz-utils xsltproc zip zlib1g-dev zstd \
+        gcc-x86-64-linux-gnu libc6-dev-amd64-cross binutils-x86-64-linux-gnu \
+        libc6:amd64 libgcc-s1:amd64 libstdc++6:amd64 zlib1g:amd64 \
+        libbz2-1.0:amd64 libelf1t64:amd64 liblz4-1:amd64 libncurses6:amd64 \
+        libncursesw6:amd64 libssl3t64:amd64 libtinfo6:amd64 libxml2:amd64 \
+        libzstd1:amd64 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY rosetta-probe.c verify-image.py /opt/evolution/image/
+COPY builder-marker /opt/evolution/apple-container-builder
+COPY base-image.json /opt/evolution/base-image.json
+
+# The compiler itself is ARM64. It emits an amd64 ELF; neither that ELF nor the
+# amd64 loader is executed during image construction. Rosetta is a runtime test.
+RUN install -d -m 0755 /opt/evolution/bin /work/evolution /work/out/evolution /work/cache/ccache \
+    && x86_64-linux-gnu-gcc -O2 -Wall -Wextra -Werror -fPIE -pie \
+        -Wl,--dynamic-linker=/lib64/ld-linux-x86-64.so.2 \
+        /opt/evolution/image/rosetta-probe.c -o /opt/evolution/bin/rosetta-probe \
+    && chown 0:0 /opt/evolution/apple-container-builder /opt/evolution/bin/rosetta-probe \
+    && chmod 0644 /opt/evolution/apple-container-builder \
+    && chmod 0755 /opt/evolution/bin/rosetta-probe \
+    && python3 /opt/evolution/image/verify-image.py \
+    && dpkg-query -W -f='${binary:Package}\t${Version}\n' > /opt/evolution/installed-packages.tsv
+
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    OUT_DIR=/work/out/evolution \
+    CCACHE_DIR=/work/cache/ccache \
+    PATH=/opt/evolution/bin:${PATH}
+
+WORKDIR /work/evolution
+# No entrypoint patches or copies sources; an explicit command replaces bash.
+CMD ["/bin/bash"]

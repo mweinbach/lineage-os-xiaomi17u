@@ -1,0 +1,8 @@
+*
+!Containerfile
+!ubuntu-arm64.sources
+!ubuntu-amd64.sources
+!builder-marker
+!rosetta-probe.c
+!verify-image.py
+!base-image.json

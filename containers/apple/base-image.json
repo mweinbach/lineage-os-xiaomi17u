@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-08-27",
+  "registry": "docker.io/library/ubuntu",
+  "tag_used_for_discovery": "24.04",
+  "platform": "linux/arm64/v8",
+  "index_digest": "sha256:33ceb71981b602c1a7443a53469e4dba065f7503eab3078a2d7a57a2ab987517",
+  "arm64_manifest_digest": "sha256:95fa486768020359141f1318720f43e7982ef926c792891d984aef9aaf05e7ea",
+  "config_digest": "sha256:5b8c0c14690ed170da4e663fe0bae0d58efe59661e791296ffab28ed2113b650",
+  "verification": "Manifest response bodies were SHA256-hashed and matched the official registry content digests. No container pull or execution was performed during resolution."
+}
