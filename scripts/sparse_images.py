@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect or reconstruct numbered Android sparse overlays without flashing.
+"""Expand one Android sparse image or reconstruct numbered sparse overlays.
 
 Format: AOSP system/core 68be0c2c0006a0740d0b1809abe4717308f90d15,
 libsparse/sparse_format.h. Overlay semantics were checked against LineageOS
@@ -73,12 +73,19 @@ def _ordered_paths(paths, expected_pieces):
     paths = [_absolute(path) for path in paths]
     if len(paths) != expected_pieces:
         raise SparseError(f"expected {expected_pieces} pieces, received {len(paths)}")
+    # A factory archive can contain one complete sparse image rather than
+    # numbered overlays. Preserve its real name and use all the same bounds,
+    # checksum, file-identity and publication checks; never rename the input.
+    if expected_pieces == 1 and re.fullmatch(r".+\.img", paths[0].name):
+        if not paths[0].name.isprintable():
+            raise SparseError("image name must be printable")
+        return paths
     indexed = []
     family = None
     for path in paths:
         match = re.fullmatch(r"(.+\.img)\.(0|[1-9][0-9]*)", path.name)
         if not match or not path.name.isprintable():
-            raise SparseError("inputs must be numbered image paths such as super.img.0")
+            raise SparseError("inputs must be one .img file or numbered image paths such as super.img.0")
         current = (path.parent, match[1])
         if family is not None and current != family:
             raise SparseError("all pieces must have the same image basename and directory")
@@ -324,7 +331,7 @@ def main(argv=None):
     subparsers = parser.add_subparsers(dest="operation", required=True)
     for operation in ("inspect", "reconstruct"):
         command = subparsers.add_parser(operation)
-        command.add_argument("inputs", nargs="+", type=Path, help="explicit numbered image pieces; sorted numerically")
+        command.add_argument("inputs", nargs="+", type=Path, help="one .img file, or explicit numbered image pieces sorted numerically")
         command.add_argument("--expected-pieces", required=True, type=int, help="count verified from the complete archive inventory")
         command.add_argument("--max-output-bytes", type=int, default=MAX_OUTPUT_BYTES)
         if operation == "reconstruct":

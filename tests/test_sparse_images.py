@@ -113,6 +113,64 @@ class SparseImageTests(unittest.TestCase):
             self.assertEqual(path.read_bytes(), content)
             self.assertEqual(sparse._signature(path.stat()), signature)
 
+    def test_single_image_keeps_its_name_and_integrity_in_inspection(self):
+        single = self.root / "super.img"
+        single.write_bytes(self.first.read_bytes())
+        before = sorted(self.root.iterdir())
+        result = self.inspect([single], expected_pieces=1)
+        self.assertEqual(result["piece_count"], 1)
+        self.assertEqual(result["inputs"][0]["name"], "super.img")
+        self.assertEqual(result["inputs"][0]["sha256"], hashlib.sha256(single.read_bytes()).hexdigest())
+        self.assertEqual(result["expanded_size_bytes"], 64)
+        self.assertEqual(sorted(self.root.iterdir()), before)
+
+    def test_single_image_reconstruction_preserves_input_and_sparse_holes(self):
+        single = self.root / "super.img"
+        single.write_bytes(fixture([(sparse.DONT_CARE, 1, b""),
+                                    (sparse.RAW, 1, b"Z" * 16),
+                                    (sparse.FILL, 1, b"abcd"),
+                                    (sparse.DONT_CARE, 1, b"")]))
+        before = (single.read_bytes(), sparse._signature(single.stat()))
+        result = self.reconstruct([single], expected_pieces=1)
+        expected = bytes(16) + b"Z" * 16 + b"abcd" * 4 + bytes(16)
+        self.assertEqual((self.destination / "super.raw.img").read_bytes(), expected)
+        self.assertEqual(result["receipt"]["inputs"][0]["name"], "super.img")
+        self.assertEqual(result["receipt"]["output"]["sha256"], hashlib.sha256(expected).hexdigest())
+        self.assertEqual((single.read_bytes(), sparse._signature(single.stat())), before)
+
+    def test_single_image_keeps_checksum_size_and_symlink_rejection(self):
+        single = self.root / "super.img"
+        for data, options, error in [
+            (fixture([(sparse.RAW, 1, bytes(16))], checksum=1), {}, "checksum"),
+            (fixture([(sparse.DONT_CARE, 5, b"")]), {"max_output_bytes": 64}, "size limit"),
+            (fixture([(sparse.RAW, 1, bytes(16)), (sparse.CRC32, 0, bytes(4))]), {}, "CRC32"),
+        ]:
+            single.write_bytes(data)
+            with self.subTest(error=error), self.assertRaisesRegex(sparse.SparseError, error):
+                self.reconstruct([single], expected_pieces=1, **options)
+            self.assert_no_outputs()
+        single.unlink()
+        single.symlink_to(self.first)
+        with self.assertRaisesRegex(sparse.SparseError, "not a regular file"):
+            self.reconstruct([single], expected_pieces=1)
+        self.assert_no_outputs()
+
+    def test_single_image_rejects_unapproved_names_and_nonzero_numbered_start(self):
+        for name in ["super.raw", "super.img.1", "super.img.01", "super\n.img", "super.img\n"]:
+            single = self.root / name
+            single.write_bytes(self.first.read_bytes())
+            with self.subTest(name=name), self.assertRaises(sparse.SparseError):
+                self.inspect([single], expected_pieces=1)
+
+    def test_cli_accepts_a_single_image_with_an_explicit_inventory_count(self):
+        single = self.root / "super.img"
+        single.write_bytes(self.first.read_bytes())
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            code = sparse.main(["inspect", "--expected-pieces", "1", str(single)])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(stdout.getvalue())["inputs"][0]["name"], "super.img")
+
     def test_numeric_order_places_ten_after_nine(self):
         paths = []
         for index in range(15):

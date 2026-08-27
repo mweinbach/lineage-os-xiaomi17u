@@ -197,8 +197,14 @@ limit is 64 GiB. It does not extract the package's installers or bundled platfor
 binaries. Archive extraction and sparse reconstruction publish new directories
 atomically without replacing existing destinations, including empty directories.
 
-`sparse_images.py` requires the expected piece count from a complete inventory,
-numeric fragment ordering, matching geometry and disjoint RAW/FILL writes. It
+`sparse_images.py` also accepts one unnumbered `.img` with `--expected-pieces 1`,
+as found in the separately received factory-named TGZ. The input keeps its
+original name; no artificial `.0` copy or rename is required. Its receipt still
+must be linked to the archive's image hash before accepting the reconstruction.
+The same checksum, bounds, file-identity and no-overwrite checks apply.
+
+Numbered overlays require the expected piece count from a complete inventory,
+numeric fragment ordering, matching geometry and disjoint RAW/FILL writes. The tool
 supports sparse version 1.0 and rejects nonzero header checksums and all CRC32
 chunks as unsupported. Defaults bound expanded output to 64 GiB, fragments to
 1,024 and total chunks to 100,000. The parent package hash in this receipt alone
