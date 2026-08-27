@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "image": "evolution-nezha-builder:ubuntu24.04-v1",
+  "volume": "evolution-nezha-work",
+  "volume_size_gib": 800,
+  "project_label": "evonezha",
+  "cpus": 16,
+  "memory_gib": 128,
+  "builder_cpus": 8,
+  "builder_memory_gib": 16,
+  "host_reserve_gib": 100,
+  "source_dir": "/work/evolution",
+  "out_dir": "/work/out/evolution",
+  "cache_dir": "/work/cache",
+  "host_mode": "apple-rosetta"
+}

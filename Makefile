@@ -4,6 +4,7 @@ JOBS ?= 8
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test init sync source-plan linux-packages stock-plan
+.PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 
 help:
 	@printf '%s\n' \
@@ -12,6 +13,11 @@ help:
 	  'make doctor          Report build-host prerequisites' \
 	  'make test            Run offline workspace tests' \
 	  'make source-plan     Preview full platform init/sync commands' \
+	  'make apple-status    Inspect this Mac Apple Container source task' \
+	  'make apple-setup     Build/test the Apple Container + Rosetta environment' \
+	  'make apple-init      Initialize Evolution X in persistent Linux storage' \
+	  'make apple-sync-bg   Start a named background source sync in that VM' \
+	  'make apple-shell     Open the source-volume shell when no task is active' \
 	  'make linux-packages  Print Ubuntu 24.04 build dependencies' \
 	  'make init            Initialize full platform (Linux x86-64 only)' \
 	  'make sync JOBS=8     Sync full platform and save resolved manifest' \
@@ -45,3 +51,32 @@ sync:
 
 stock-plan:
 	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --dry-run
+
+apple-setup:
+	$(PYTHON) scripts/apple_container.py setup
+
+apple-doctor:
+	$(PYTHON) scripts/apple_container.py doctor
+
+apple-smoke:
+	$(PYTHON) scripts/apple_container.py smoke
+
+apple-init:
+	$(PYTHON) scripts/apple_container.py init
+
+apple-sync:
+	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)"
+
+apple-sync-bg:
+	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" --detach
+
+apple-status:
+	$(PYTHON) scripts/apple_container.py status
+
+apple-shell:
+	$(PYTHON) scripts/apple_container.py shell
+
+apple-plan:
+	$(PYTHON) scripts/apple_container.py setup --dry-run
+	$(PYTHON) scripts/apple_container.py init --dry-run
+	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" --detach --dry-run
