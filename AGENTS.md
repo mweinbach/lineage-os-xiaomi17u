@@ -20,8 +20,16 @@ device tree. Keep verified facts separate from assumptions and unresolved work.
   and hashes; do not redistribute proprietary files without permission.
 - Retain SELinux enforcement and verified-boot/rollback constraints in the
   design. Do not claim a stock feature works without a reproducible device test.
-- `upstream/` contains reference checkouts. `sources/` is reserved for the large
-  Android repo checkout on a supported Linux x86-64, case-sensitive filesystem.
+- `upstream/` contains reference checkouts. Full source checkouts belong on a
+  case-sensitive Linux filesystem: native Linux x86-64, or the explicitly
+  verified Apple Container ARM64 + Rosetta path. The latter uses a persistent
+  ext4 named volume and remains an experimental Android build environment.
+- Apple Container bind mounts are not assumed to be copy-on-write. Share only
+  the generated control bundle read-only; keep source, output and cache in the
+  named volume. Do not mount home directories, phone evidence, or credentials.
+- Never attach the same ext4 source volume to concurrent writer VMs. Do not
+  prune volumes or delete existing source checkouts. Keep signature, artifact
+  path, SELinux and device-compatibility checks enabled in container builds.
 - Do not start a full source sync or build without checking disk, OS,
   architecture, filesystem case sensitivity, and the selected manifest.
 - Favor available Codex tools and relevant skills. Coordinate file ownership

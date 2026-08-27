@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import stat
 import subprocess
 import tempfile
 import unittest
@@ -117,19 +118,27 @@ class HostTests(unittest.TestCase):
     def setUp(self):
         self.config = workspace.load_config()
 
-    def report(self, system, machine, case=True, ram=128, free=600):
+    def report(self, system, machine, case=True, ram=128, free=600, host_mode="native", translation=None):
         with tempfile.TemporaryDirectory() as directory, \
              patch.object(workspace.platform, "system", return_value=system), \
              patch.object(workspace.platform, "machine", return_value=machine), \
              patch.object(workspace, "case_sensitive", return_value=case), \
              patch.object(workspace, "memory_gib", return_value=ram), \
              patch.object(workspace.shutil, "which", return_value="/bin/tool"), \
+             patch.object(workspace, "rosetta_report", return_value=translation) as rosetta, \
              patch.object(workspace.shutil, "disk_usage") as disk:
             disk.return_value.free = free * workspace.GIB
-            return workspace.host_report(Path(directory), self.config["host_requirements"])
+            report = workspace.host_report(Path(directory), self.config["host_requirements"], host_mode)
+            if host_mode == "native":
+                rosetta.assert_not_called()
+            return report
 
     def test_linux_x86_64_passes(self):
-        self.assertTrue(self.report("Linux", "x86_64")["supported_build_host"])
+        report = self.report("Linux", "x86_64")
+        self.assertTrue(report["supported_build_host"])
+        self.assertTrue(report["native_build_host"])
+        self.assertFalse(report["experimental_build_host"])
+        self.assertEqual(report["host_status"], "native-ready")
 
     def test_apple_silicon_and_arm_linux_are_not_native_build_hosts(self):
         for system, machine in (("Darwin", "arm64"), ("Linux", "aarch64")):
@@ -138,6 +147,50 @@ class HostTests(unittest.TestCase):
     def test_disk_ram_and_case_checks(self):
         for args in ({"free": 399}, {"ram": 32}, {"ram": None}, {"case": False}):
             self.assertFalse(self.report("Linux", "x86_64", **args)["supported_build_host"])
+
+    def test_explicit_rosetta_mode_passes_only_with_verified_execution(self):
+        translation = {"marker_trusted": True, "probe_elf_verified": True,
+                       "runtime": {"loader": True, "libc": True}, "probe_success": True}
+        report = self.report("Linux", "aarch64", host_mode="apple-rosetta", translation=translation)
+        self.assertTrue(report["supported_build_host"])
+        self.assertFalse(report["native_build_host"])
+        self.assertTrue(report["experimental_build_host"])
+        self.assertEqual(report["host_status"], "experimental-rosetta-ready")
+        self.assertIn("Experimental", report["note"])
+
+    def test_rosetta_does_not_bypass_storage_ram_or_filesystem_checks(self):
+        translation = {"marker_trusted": True, "probe_elf_verified": True,
+                       "runtime": {"loader": True, "libc": True}, "probe_success": True}
+        for options in ({"free": 399}, {"ram": 32}, {"case": False}):
+            with self.subTest(options=options):
+                report = self.report("Linux", "aarch64", host_mode="apple-rosetta", translation=translation, **options)
+                self.assertFalse(report["supported_build_host"])
+                self.assertEqual(report["host_status"], "blocked")
+
+    def test_rosetta_needs_marker_runtime_and_real_elf_execution(self):
+        valid = {"marker_trusted": True, "probe_elf_verified": True,
+                 "runtime": {"loader": True, "libc": True}, "probe_success": True}
+        for key, value in (("marker_trusted", False), ("probe_elf_verified", False),
+                           ("probe_success", False), ("runtime", {"loader": False})):
+            with self.subTest(key=key):
+                report = self.report("Linux", "arm64", host_mode="apple-rosetta", translation=dict(valid, **{key: value}))
+                self.assertFalse(report["supported_build_host"])
+
+    def test_environment_variable_cannot_enable_rosetta_mode(self):
+        with patch.dict(os.environ, {"EVOLUTION_HOST_MODE": "apple-rosetta", "ROSETTA_ENABLED": "1"}):
+            self.assertFalse(self.report("Linux", "aarch64")["supported_build_host"])
+
+    def test_source_and_output_free_space_are_not_added(self):
+        with patch.dict(os.environ, {"OUT_DIR": "build-out"}):
+            report = self.report("Linux", "x86_64", free=450)
+        self.assertTrue(report["source_output_share_filesystem"])
+        self.assertEqual(report["free_disk_gib"], 450)
+        self.assertEqual(report["output_free_disk_gib"], 450)
+        self.assertEqual(report["output_dir"], str(Path(report["source_dir"]) / "build-out"))
+
+    def test_unknown_host_mode_is_rejected(self):
+        with self.assertRaisesRegex(ValueError, "Unknown host mode"):
+            workspace.host_report(Path("/not-created"), self.config["host_requirements"], "unsafe-arm")
 
     def test_gpg_is_required_to_keep_repo_signature_verification(self):
         with tempfile.TemporaryDirectory() as directory, \
@@ -167,6 +220,214 @@ class HostTests(unittest.TestCase):
             workspace.synchronize(self.config, target, jobs=4, dry_run=True)
             self.assertFalse(target.exists())
             run.assert_not_called()
+
+    def test_rosetta_dry_run_does_not_execute_probe(self):
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(workspace, "run") as run, \
+             patch.object(workspace, "rosetta_report") as probe, contextlib.redirect_stdout(io.StringIO()):
+            target = Path(directory) / "new-source-tree"
+            workspace.initialize(self.config, target, dry_run=True, host_mode="apple-rosetta")
+            workspace.synchronize(self.config, target, jobs=4, dry_run=True, host_mode="apple-rosetta")
+            self.assertFalse(target.exists())
+            probe.assert_not_called()
+            run.assert_not_called()
+
+
+class RosettaTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name).resolve()
+        self.marker = self.root / "marker"
+        self.marker.write_bytes(workspace.APPLE_BUILDER_MARKER_CONTENT)
+        self.probe = self.root / "probe"
+        self.probe.write_bytes(self.elf_header())
+        self.probe.chmod(0o755)
+        self.library = self.root / "library"
+        self.library.write_bytes(self.elf_header(elf_type=3))
+
+    @staticmethod
+    def elf_header(machine=62, elf_class=2, endianness=1, elf_type=2):
+        header = bytearray(64)
+        header[:7] = bytes([0x7f, ord("E"), ord("L"), ord("F"), elf_class, endianness, 1])
+        header[16:18] = elf_type.to_bytes(2, "little")
+        header[18:20] = machine.to_bytes(2, "little")
+        header[20:24] = (1).to_bytes(4, "little")
+        return bytes(header)
+
+    def fake_trusted_file(self, path, **kwargs):
+        if path == workspace.APPLE_BUILDER_MARKER:
+            return self.marker
+        if path == workspace.ROSETTA_PROBE:
+            self.assertTrue(kwargs["executable"])
+            return self.probe
+        self.assertIn(path, workspace.AMD64_RUNTIME.values())
+        self.assertTrue(kwargs["allow_symlinks"])
+        return self.library
+
+    def report(self, stdout=None, exit_code=0, effect=None):
+        result = subprocess.CompletedProcess([str(self.probe)], exit_code,
+                                             workspace.ROSETTA_PROBE_OUTPUT + "\n" if stdout is None else stdout, "")
+        with patch.object(workspace, "trusted_root_file", side_effect=self.fake_trusted_file), \
+             patch.object(workspace.subprocess, "run", return_value=result, side_effect=effect) as process:
+            report = workspace.rosetta_report("Linux", "aarch64")
+        return report, process
+
+    def test_direct_x86_64_execution_is_verified(self):
+        report, process = self.report()
+        self.assertTrue(report["marker_trusted"])
+        self.assertTrue(report["probe_elf_verified"])
+        self.assertTrue(all(report["runtime"].values()))
+        self.assertTrue(report["probe_attempted"])
+        self.assertTrue(report["probe_success"])
+        self.assertEqual(process.call_args.args[0], [str(self.probe)])
+        self.assertIs(process.call_args.kwargs["shell"], False)
+        self.assertEqual(process.call_args.kwargs["stdin"], subprocess.DEVNULL)
+        self.assertEqual(process.call_args.kwargs["timeout"], 15)
+
+    def test_host_and_non_arm_linux_are_never_probed(self):
+        for system, machine in (("Darwin", "arm64"), ("Linux", "x86_64"), ("Linux", "riscv64")):
+            with self.subTest(system=system, machine=machine), \
+                 patch.object(workspace, "trusted_root_file") as trusted, \
+                 patch.object(workspace.subprocess, "run") as process:
+                report = workspace.rosetta_report(system, machine)
+                trusted.assert_not_called()
+                process.assert_not_called()
+                self.assertFalse(report["probe_success"])
+
+    def test_missing_marker_prevents_all_execution(self):
+        with patch.object(workspace, "trusted_root_file", side_effect=FileNotFoundError("missing marker")), \
+             patch.object(workspace.subprocess, "run") as process:
+            report = workspace.rosetta_report("Linux", "arm64")
+        process.assert_not_called()
+        self.assertFalse(report["marker_trusted"])
+        self.assertTrue(report["errors"])
+
+    def test_wrong_marker_content_is_refused(self):
+        self.marker.write_bytes(b"unreviewed-arm-builder\n")
+        report, process = self.report()
+        process.assert_not_called()
+        self.assertFalse(report["marker_trusted"])
+
+    def test_scripts_and_arm_binaries_are_not_executed(self):
+        for content in (b"#!/bin/sh\necho evolution-x86_64-probe-ok\n", self.elf_header(machine=183)):
+            with self.subTest(content=content):
+                self.probe.write_bytes(content)
+                report, process = self.report()
+                process.assert_not_called()
+                self.assertFalse(report["probe_elf_verified"])
+                self.assertFalse(report["probe_success"])
+
+    def test_bad_elf_headers_are_rejected(self):
+        for content in (self.elf_header(elf_class=1), self.elf_header(endianness=2),
+                        self.elf_header(elf_type=1), self.elf_header()[:24], b"not ELF"):
+            with self.subTest(content=content):
+                self.probe.write_bytes(content)
+                with self.assertRaises(ValueError):
+                    workspace.require_x86_64_elf(self.probe)
+
+    def test_runtime_must_be_x86_64_even_when_probe_is_valid(self):
+        self.library.write_bytes(self.elf_header(machine=183))
+        report, process = self.report()
+        process.assert_not_called()
+        self.assertFalse(all(report["runtime"].values()))
+        self.assertFalse(report["probe_success"])
+
+    def test_missing_loader_prevents_probe_execution(self):
+        def trusted(path, **kwargs):
+            if path == workspace.AMD64_RUNTIME["loader"]:
+                raise FileNotFoundError("amd64 loader missing")
+            return self.fake_trusted_file(path, **kwargs)
+        with patch.object(workspace, "trusted_root_file", side_effect=trusted), \
+             patch.object(workspace.subprocess, "run") as process:
+            report = workspace.rosetta_report("Linux", "aarch64")
+        process.assert_not_called()
+        self.assertFalse(report["runtime"]["loader"])
+
+    def test_probe_success_requires_exact_token_and_exit_zero(self):
+        for output, code in (("", 0), (" " + workspace.ROSETTA_PROBE_OUTPUT, 0),
+                             (workspace.ROSETTA_PROBE_OUTPUT + "\nextra", 0),
+                             (workspace.ROSETTA_PROBE_OUTPUT, 1)):
+            with self.subTest(output=output, code=code):
+                report, _ = self.report(stdout=output, exit_code=code)
+                self.assertFalse(report["probe_success"])
+                self.assertTrue(report["errors"])
+
+    def test_probe_timeout_and_exec_failure_do_not_approve_host(self):
+        for error in (subprocess.TimeoutExpired([str(self.probe)], 15), OSError("Exec format error")):
+            with self.subTest(error=error):
+                report, process = self.report(effect=error)
+                process.assert_called_once()
+                self.assertTrue(report["probe_attempted"])
+                self.assertFalse(report["probe_success"])
+
+    def test_probe_environment_excludes_dynamic_loader_injection(self):
+        with patch.dict(os.environ, {"LD_PRELOAD": "/untrusted.so", "LD_LIBRARY_PATH": "/untrusted"}):
+            report, process = self.report()
+        self.assertTrue(report["probe_success"])
+        self.assertNotIn("LD_PRELOAD", process.call_args.kwargs["env"])
+        self.assertNotIn("LD_LIBRARY_PATH", process.call_args.kwargs["env"])
+
+    @staticmethod
+    def metadata(mode, uid=0):
+        return os.stat_result((mode, 1, 1, 1, uid, 0, 64, 0, 0, 0))
+
+    def trust_probe(self, file_mode=0o755, uid=0, parent_mode=0o755, accessible=True):
+        def lstat(path):
+            if path == self.probe:
+                return self.metadata(stat.S_IFREG | file_mode, uid)
+            return self.metadata(stat.S_IFDIR | (parent_mode if path == self.root else 0o755))
+        with patch.object(Path, "lstat", autospec=True, side_effect=lstat), \
+             patch.object(Path, "stat", return_value=self.metadata(stat.S_IFREG | file_mode, uid)), \
+             patch.object(workspace.os, "access", return_value=accessible):
+            return workspace.trusted_root_file(self.probe, executable=True)
+
+    def test_root_owned_immutable_probe_path_is_accepted(self):
+        self.assertEqual(self.trust_probe(), self.probe)
+
+    def test_untrusted_owner_permissions_and_parent_are_refused(self):
+        for options in ({"uid": 1000}, {"file_mode": 0o777}, {"parent_mode": 0o777},
+                        {"file_mode": 0o4755}, {"file_mode": 0o644}, {"accessible": False}):
+            with self.subTest(options=options), self.assertRaises(ValueError):
+                self.trust_probe(**options)
+
+    def test_marker_and_probe_symlinks_are_refused(self):
+        link = self.root / "linked-probe"
+        link.symlink_to(self.probe)
+        def lstat(path):
+            return self.metadata(stat.S_IFLNK | 0o777) if path == link else self.metadata(stat.S_IFDIR | 0o755)
+        with patch.object(Path, "lstat", autospec=True, side_effect=lstat):
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                workspace.trusted_root_file(link)
+
+    def test_root_owned_multiarch_runtime_symlinks_are_allowed(self):
+        link = self.root / "linked-runtime"
+        link.symlink_to(self.library)
+        def lstat(path):
+            return self.metadata(stat.S_IFLNK | 0o777) if path == link else self.metadata(stat.S_IFDIR | 0o755)
+        with patch.object(Path, "lstat", autospec=True, side_effect=lstat), \
+             patch.object(Path, "stat", return_value=self.metadata(stat.S_IFREG | 0o755)):
+            self.assertEqual(workspace.trusted_root_file(link, allow_symlinks=True), self.library)
+
+
+class HostModeCliTests(unittest.TestCase):
+    def test_doctor_passes_explicit_host_mode(self):
+        with patch.object(workspace, "host_report", return_value={"supported_build_host": True}) as report, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(workspace.main(["doctor", "--host-mode", "apple-rosetta", "--require-build-host"]), 0)
+        self.assertEqual(report.call_args.args[2], "apple-rosetta")
+
+    def test_init_and_sync_pass_explicit_host_mode(self):
+        for command, method in (("init", "initialize"), ("sync", "synchronize")):
+            with self.subTest(command=command), patch.object(workspace, method) as operation:
+                self.assertEqual(workspace.main([command, "--host-mode", "apple-rosetta", "--dry-run"]), 0)
+                self.assertEqual(operation.call_args.args[-1], "apple-rosetta")
+
+    def test_cli_default_is_native(self):
+        with patch.object(workspace, "host_report", return_value={"supported_build_host": False}) as report, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(workspace.main(["doctor", "--require-build-host"]), 2)
+        self.assertEqual(report.call_args.args[2], "native")
 
 
 class ReferenceTests(unittest.TestCase):

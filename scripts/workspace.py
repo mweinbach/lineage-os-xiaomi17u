@@ -10,6 +10,7 @@ import platform
 import re
 import shlex
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -20,6 +21,17 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "config/sources.json"
 GIB = 1024 ** 3
+HOST_MODES = ("native", "apple-rosetta")
+APPLE_BUILDER_MARKER = Path("/opt/evolution/apple-container-builder")
+APPLE_BUILDER_MARKER_CONTENT = b"evolution-apple-container-builder-v1\n"
+ROSETTA_PROBE = Path("/opt/evolution/bin/rosetta-probe")
+ROSETTA_PROBE_OUTPUT = "evolution-x86_64-probe-ok"
+AMD64_RUNTIME = {
+    "loader": Path("/lib64/ld-linux-x86-64.so.2"),
+    "libc": Path("/lib/x86_64-linux-gnu/libc.so.6"),
+    "libstdc++": Path("/usr/lib/x86_64-linux-gnu/libstdc++.so.6"),
+    "zlib": Path("/lib/x86_64-linux-gnu/libz.so.1"),
+}
 
 
 def checked_path(root, relative):
@@ -154,35 +166,154 @@ def memory_gib():
         return None
 
 
-def host_report(source_dir, requirements):
+def trusted_root_file(path, allow_symlinks=False, executable=False):
+    """Verify image-owned files and parent directories before executing a probe."""
+    path = Path(path)
+    if not path.is_absolute():
+        raise ValueError("Builder paths must be absolute")
+    # Runtime libraries use standard root-owned multiarch symlinks. The marker
+    # and probe themselves must not be links to a writable workspace mount.
+    resolved = path.resolve(strict=True)
+    for candidate in dict.fromkeys((path, *path.parents, resolved, *resolved.parents)):
+        metadata = candidate.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            if not allow_symlinks or metadata.st_uid != 0:
+                raise ValueError(f"Untrusted symlink in builder path: {path}")
+        elif metadata.st_uid != 0 or metadata.st_mode & 0o022:
+            raise ValueError(f"Builder file or parent is not protected and root-owned: {path}")
+    metadata = resolved.stat()
+    if not stat.S_ISREG(metadata.st_mode) or metadata.st_mode & 0o6000:
+        raise ValueError(f"Builder path is not a regular unprivileged file: {path}")
+    if executable and (not metadata.st_mode & 0o111 or not os.access(resolved, os.X_OK)):
+        raise ValueError(f"Builder probe is not executable: {path}")
+    return resolved
+
+
+def require_x86_64_elf(path):
+    """Inspect ELF identity before attempting any execution; scripts are refused."""
+    with Path(path).open("rb") as stream:
+        header = stream.read(64)
+    if (len(header) < 64 or header[:7] != b"\x7fELF\x02\x01\x01"
+            or int.from_bytes(header[16:18], "little") not in {2, 3}
+            or int.from_bytes(header[18:20], "little") != 62
+            or int.from_bytes(header[20:24], "little") != 1):
+        raise ValueError(f"Not an x86-64 ELF64 executable/shared object: {path}")
+
+
+def rosetta_report(system, machine):
+    report = {
+        "marker_path": str(APPLE_BUILDER_MARKER), "marker_trusted": False,
+        "probe_path": str(ROSETTA_PROBE), "probe_elf_verified": False,
+        "runtime": {name: False for name in AMD64_RUNTIME},
+        "probe_attempted": False, "probe_executed": False, "probe_exit_code": None,
+        "probe_success": False, "errors": [],
+    }
+    if system != "Linux" or machine.lower() not in {"aarch64", "arm64"}:
+        report["errors"].append("apple-rosetta requires the ARM64 Linux builder container, not the macOS host.")
+        return report
+    try:
+        marker = trusted_root_file(APPLE_BUILDER_MARKER)
+        if marker.stat().st_size != len(APPLE_BUILDER_MARKER_CONTENT) or marker.read_bytes() != APPLE_BUILDER_MARKER_CONTENT:
+            raise ValueError("Builder marker does not match the reviewed Apple Container image")
+        report["marker_trusted"] = True
+        probe = trusted_root_file(ROSETTA_PROBE, executable=True)
+        require_x86_64_elf(probe)
+        report["probe_elf_verified"] = True
+        for name, path in AMD64_RUNTIME.items():
+            library = trusted_root_file(path, allow_symlinks=True)
+            require_x86_64_elf(library)
+            report["runtime"][name] = True
+        # Invoke the fixed ELF directly, with no host shell, compiler, downloaded
+        # code, or LD_* environment injection. Rosetta/binfmt must execute it.
+        report["probe_attempted"] = True
+        result = subprocess.run(
+            [str(probe)], stdin=subprocess.DEVNULL, capture_output=True,
+            text=True, shell=False, check=False, timeout=15,
+            env={"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C", "LC_ALL": "C"},
+        )
+        report["probe_executed"] = True
+        report["probe_exit_code"] = result.returncode
+        report["probe_stdout"] = result.stdout[:256]
+        report["probe_stderr"] = result.stderr[:1024]
+        report["probe_success"] = result.returncode == 0 and result.stdout in {
+            ROSETTA_PROBE_OUTPUT, ROSETTA_PROBE_OUTPUT + "\n",
+        }
+        if not report["probe_success"]:
+            report["errors"].append("The x86-64 probe did not return the exact success token with exit code zero.")
+    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        report["errors"].append(f"Rosetta preflight failed: {error}")
+    return report
+
+
+def host_report(source_dir, requirements, host_mode="native"):
+    if host_mode not in HOST_MODES:
+        raise ValueError(f"Unknown host mode: {host_mode}")
     parent = existing_parent(source_dir.resolve())
+    output_dir = Path(os.environ.get("OUT_DIR") or "out").expanduser()
+    if not output_dir.is_absolute():
+        output_dir = source_dir / output_dir
+    output_dir = output_dir.resolve()
+    output_parent = existing_parent(output_dir)
+    shared_filesystem = parent.stat().st_dev == output_parent.stat().st_dev
+    source_disk = shutil.disk_usage(parent)
+    output_disk = source_disk if shared_filesystem else shutil.disk_usage(output_parent)
     ram = memory_gib()
+    system, machine = platform.system(), platform.machine()
     tools = {name: shutil.which(name) for name in ("git", "git-lfs", "gpg", "python3", "make", "adb", "fastboot")}
     checks = {
-        "linux": platform.system() == "Linux",
-        "x86_64": platform.machine().lower() in {"x86_64", "amd64"},
+        "linux": system == "Linux",
         "case_sensitive": case_sensitive(parent),
-        "free_disk": shutil.disk_usage(parent).free >= requirements["min_free_disk_gib"] * GIB,
+        "output_case_sensitive": case_sensitive(output_parent) if output_parent != parent else None,
+        "free_disk": source_disk.free >= requirements["min_free_disk_gib"] * GIB,
         "ram": ram is not None and ram >= requirements["min_ram_gib"],
         "source_tools": all(tools[name] for name in ("git", "git-lfs", "gpg", "python3", "make")),
     }
+    if checks["output_case_sensitive"] is None:
+        checks["output_case_sensitive"] = checks["case_sensitive"]
+    common_passed = all(checks.values())
+    native_architecture = machine.lower() in {"x86_64", "amd64"}
+    translation = None
+    if host_mode == "native":
+        checks["x86_64"] = native_architecture
+    else:
+        translation = rosetta_report(system, machine)
+        checks.update({
+            "arm64": machine.lower() in {"aarch64", "arm64"},
+            "trusted_apple_builder": translation["marker_trusted"],
+            "x86_64_runtime": all(translation["runtime"].values()),
+            "x86_64_execution": translation["probe_elf_verified"] and translation["probe_success"],
+        })
+    selected_passed = all(checks.values())
+    status = ("native-ready" if host_mode == "native" else "experimental-rosetta-ready") if selected_passed else "blocked"
     return {
-        "os": platform.system(), "architecture": platform.machine(),
+        "os": system, "architecture": machine,
+        "host_mode": host_mode, "host_status": status,
+        "native_build_host": common_passed and native_architecture,
+        "experimental_build_host": host_mode == "apple-rosetta" and selected_passed,
         "source_dir": str(source_dir.resolve()), "filesystem_checked_at": str(parent),
+        "output_dir": str(output_dir), "output_filesystem_checked_at": str(output_parent),
+        "source_output_share_filesystem": shared_filesystem,
         "ram_gib": None if ram is None else round(ram, 1),
-        "free_disk_gib": round(shutil.disk_usage(parent).free / GIB, 1),
-        "tools": tools, "checks": checks, "supported_build_host": all(checks.values()),
-        "note": "A host preflight is not proof of a complete toolchain or a buildable device tree.",
+        "free_disk_gib": round(source_disk.free / GIB, 1),
+        "output_free_disk_gib": round(output_disk.free / GIB, 1),
+        "minimum_source_free_disk_gib": requirements["min_free_disk_gib"],
+        "storage_note": "Source and output free space are not additive when they share a filesystem. This gate checks initial source capacity, not a completed build's space requirements.",
+        "tools": tools, "checks": checks, "supported_build_host": selected_passed,
+        "rosetta": translation,
+        "note": ("Experimental Apple Container/Rosetta execution was requested; it is not native x86-64 or proof of a successful full Android build. " if host_mode == "apple-rosetta" else "")
+                + "A host preflight is not proof of a complete toolchain or a buildable device tree.",
     }
 
 
-def require_host(source_dir, config):
-    report = host_report(source_dir, config["host_requirements"])
+def require_host(source_dir, config, host_mode="native"):
+    report = host_report(source_dir, config["host_requirements"], host_mode)
     failures = [key for key, passed in report["checks"].items() if not passed]
     if failures:
         raise ValueError("Source operation blocked by host preflight: " + ", ".join(failures)
-                         + ". Use Linux x86-64, a case-sensitive filesystem, 64 GiB RAM"
-                         + " and at least 400 GiB free. Use fetch for Mac reference checkouts.")
+                         + ". Use native Linux x86-64 or explicitly select apple-rosetta inside the verified ARM64 Linux builder."
+                         + f" Require case-sensitive source/output filesystems, {config['host_requirements']['min_ram_gib']} GiB RAM"
+                         + f" and at least {config['host_requirements']['min_free_disk_gib']} GiB initially free for sources."
+                         + (" " + "; ".join(report.get("rosetta", {}).get("errors", [])) if report.get("rosetta") else ""))
 
 
 def reference_named(config, name):
@@ -274,13 +405,13 @@ def refuse_nested_source(source_dir):
             raise ValueError("Nested Repo source directories are unsafe; the outer checkout was preserved")
 
 
-def initialize(config, source_dir, dry_run=False):
+def initialize(config, source_dir, dry_run=False, host_mode="native"):
     command = init_command(config)
     if dry_run:
         print(f"In {source_dir}:\n" + shlex.join(command))
-        print("Execution requires a supported host; this preview does not initialize or sync.")
+        print(f"Execution requires host mode {host_mode}; this preview does not initialize or sync.")
         return
-    require_host(source_dir, config)
+    require_host(source_dir, config, host_mode)
     refuse_nested_source(source_dir)
     repo_command(config)
     if (source_dir / ".repo").exists() or (source_dir / ".repo").is_symlink():
@@ -294,13 +425,13 @@ def initialize(config, source_dir, dry_run=False):
     verify_source_manifest(config, source_dir)
 
 
-def synchronize(config, source_dir, jobs, dry_run=False):
+def synchronize(config, source_dir, jobs, dry_run=False, host_mode="native"):
     command = sync_command(config, jobs)
     if dry_run:
         print(f"In {source_dir}:\n" + shlex.join(command))
-        print("This previews a full platform download, not a complete Xiaomi device build.")
+        print(f"Host mode {host_mode}: this previews a full platform download, not a complete Xiaomi device build.")
         return
-    require_host(source_dir, config)
+    require_host(source_dir, config, host_mode)
     refuse_nested_source(source_dir)
     repo = repo_command(config)
     verify_source_manifest(config, source_dir)
@@ -324,6 +455,7 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="action", required=True)
     doctor = commands.add_parser("doctor", help="Report supported Android build-host prerequisites")
     doctor.add_argument("--source-dir", type=Path)
+    doctor.add_argument("--host-mode", choices=HOST_MODES, default="native")
     doctor.add_argument("--require-build-host", action="store_true")
     for name in ("fetch", "verify"):
         command = commands.add_parser(name, help=f"{name.capitalize()} pinned reference checkouts")
@@ -331,6 +463,7 @@ def main(argv=None):
     for name in ("init", "sync"):
         command = commands.add_parser(name, help=f"{name.capitalize()} the full platform on a supported host")
         command.add_argument("--source-dir", type=Path)
+        command.add_argument("--host-mode", choices=HOST_MODES, default="native")
         command.add_argument("--dry-run", action="store_true")
         if name == "sync":
             command.add_argument("--jobs", type=int, default=8)
@@ -340,7 +473,7 @@ def main(argv=None):
         source_dir = getattr(args, "source_dir", None) or checked_path(ROOT, config["platform"]["source_dir"])
         source_dir = source_dir.expanduser().resolve()
         if args.action == "doctor":
-            report = host_report(source_dir, config["host_requirements"])
+            report = host_report(source_dir, config["host_requirements"], args.host_mode)
             print(json.dumps(report, indent=2))
             return 2 if args.require_build_host and not report["supported_build_host"] else 0
         if args.action in {"fetch", "verify"}:
@@ -353,9 +486,9 @@ def main(argv=None):
             records = [operation(reference) for reference in selected]
             print(json.dumps({"references": records, "lfs": "Reference fetches skip LFS assets; not a build checkout."}, indent=2))
         elif args.action == "init":
-            initialize(config, source_dir, args.dry_run)
+            initialize(config, source_dir, args.dry_run, args.host_mode)
         elif args.action == "sync":
-            synchronize(config, source_dir, args.jobs, args.dry_run)
+            synchronize(config, source_dir, args.jobs, args.dry_run, args.host_mode)
         return 0
     except (ValueError, KeyError, OSError, subprocess.SubprocessError, StopIteration) as error:
         print(f"error: {error}", file=sys.stderr)
