@@ -1,8 +1,9 @@
 # Selected Camera build inputs
 
 The [explicit selection](../vendor/xiaomi/nezha/camera-selection.json) prepares
-**eight system-ext files** for a separate Camera dependency build check: one
-JNI library, four DEX JARs and three permission XMLs. It is a bounded set of
+**nine system-ext files** for a separate Camera dependency build check: one
+JNI library, four DEX JARs and four permission XMLs. Seven files are unchanged
+captures; two XML registrations are explicitly derived. It is a bounded set of
 captured dependencies, not a complete Camera port or a proven minimum for every
 feature. The Camera APK and full MIUI framework are not included. No phone,
 Downloads folder, container or device tree was accessed or changed by this slice.
@@ -16,8 +17,9 @@ this profile cannot silently be reused with a different package.
 
 ## Exact selection
 
-All paths below are original Android runtime paths under `/system_ext/`.
-The selection JSON records the complete SHA256 and size for every file.
+Paths stay under `/system_ext/`. CameraX has a new, minimal permission filename;
+the other installation paths retain their captured names. The selection JSON
+records the complete SHA256 and size for every output and each derivation source.
 
 | Path after `/system_ext/` | Bytes | Generated Soong type |
 | --- | ---: | --- |
@@ -26,15 +28,17 @@ The selection JSON records the complete SHA256 and size for every file.
 | `framework/com.xiaomi.hardware.camera.companion-V1.jar` | 43,102 | `dex_import` |
 | `framework/miui-cameraopt.jar` | 326,413 | `dex_import` |
 | `framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar` | 13,298 | `dex_import` |
+| `etc/permissions/camerax-vendor-extensions.xml` | 180 | `prebuilt_etc_xml`, derived |
 | `etc/permissions/com.xiaomi.hardware.camera.companion.xml` | 335 | `prebuilt_etc_xml` |
 | `etc/permissions/miui-cameraopt.xml` | 797 | `prebuilt_etc_xml` |
-| `etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml` | 188 | `prebuilt_etc_xml` |
+| `etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml` | 218 | `prebuilt_etc_xml`, derived |
 
-The extra files total **542,026 bytes**. The five binary hashes match the earlier
-[camera dependency record](../research/camera-dependencies.json). The three XML
-hashes also match the earlier live collection at the same paths. Each selected
-XML contains only one `<library>` element, with no permission grants, unrelated
-registrations or app allowlists.
+The extra files total **542,236 bytes**. The five binary hashes match the earlier
+[camera dependency record](../research/camera-dependencies.json). The copied
+companion/cameraopt XML hashes and both XML derivation sources match their earlier
+captures; the original three XMLs from camera-v1 also matched the live collection.
+Each installed XML contains only one `<library>` element, with no permission
+grants, unrelated registrations or app allowlists.
 
 The vendor and ODM native dependencies, camera manifests, tuning and other files
 remain inside their unchanged prebuilt images. This profile does not duplicate
@@ -93,21 +97,54 @@ do not establish their runtime shared-library names or the Camera APK's
 class-loader context: the pinned `dex_import` does not expose `provides_uses_lib`.
 No uses-library, signature or preprocessed-APK check was disabled. [Pinned DEX importer](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/java.go)
 
-The three permission XMLs are copied byte-for-byte. Companion and cameraopt
-point to the selected JARs under `/system_ext/framework/`. The postproc XML still
-points to `/system/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar`,
-while the captured JAR is under `/system_ext/framework/`. No matching alias was
-observed. This discrepancy is preserved and must be resolved explicitly; the
-generator does not rewrite the XML or fabricate a symlink. See the
-[VINTF path evidence](vintf-contract.md#unresolved-postproc-java-path).
+Companion and cameraopt XMLs remain byte-for-byte copies and point to the selected
+JARs under `/system_ext/framework/`. **Two derived XML registrations** address
+the previously identified path/registration gaps in the candidate build inputs.
+They do not establish that Android loaded these libraries at runtime.
 
-`platform-miui.xml` is excluded. Its camera-related entry registers
-`camerax-vendor-extensions.jar` at `/system_ext/framework/camerax-vendor-extensions.jar`,
-but the same file also contains 21 other library mappings and an app-data-isolation
-exception. Copying it wholesale would introduce unrelated MIUI policy and
-references to files not selected here. **CameraX shared-library registration
-remains pending**; a future minimal derived XML must record its source and
-transformation rather than masquerade as an unchanged stock file.
+The pinned framework reads XMLs from `/system_ext/etc/permissions` and registers
+a library by its declared name only if its referenced file exists. That supports
+these separate minimal XMLs and the explicit path correction; it does not prove
+installation or successful class loading on a device. [Pinned SystemConfig reader](https://github.com/Evolution-X/frameworks_base/blob/8140698cc12983deecdbd434220affb5f931bfc6/services/core/java/com/android/server/SystemConfig.java#L1095)
+
+The captured postproc XML still points to
+`/system/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar`, while the
+captured JAR is under `/system_ext/framework/`. No matching alias was observed.
+The v2 recipe keeps the original library name and output XML filename, changes
+only the registration's file attribute to the explicitly selected
+`/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar`, and
+serializes a minimal XML document. Raw captures and the historical
+[VINTF path evidence](vintf-contract.md#unresolved-postproc-java-path) are unchanged;
+no alias or symlink is created.
+
+The second recipe selects the exact CameraX entry from `platform-miui.xml`:
+name `camerax-vendor-extensions.jar`, file
+`/system_ext/framework/camerax-vendor-extensions.jar`. It emits only that entry
+as `camerax-vendor-extensions.xml`. The other 21 library mappings and the
+app-data-isolation exception are excluded, and the whole `platform-miui.xml`
+is never installed by this profile. The `.jar` suffix in the registered library
+name is intentional: it is the observed stock name, not an inferred Soong name.
+
+| Derived XML | Source SHA256 | Output SHA256 |
+| --- | --- | --- |
+| CameraX, selected from 2,597-byte `platform-miui.xml` | `96da583654521934b27e6a4ce4eba994fa709a20864cd5117338bf1537a488d6` | `72b03ab4cb59c5de507171723f29a8fd6483b1f9104d32d02008eac82fe7eb53` |
+| Postproc, corrected from its 188-byte permission XML | `3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7` | `52de3422c1c7bf138883f82951e3fac202277a6c5b562ec2921d289a2c2fbabd` |
+
+The tracked selection records `library-registration-v1` recipes, not proprietary
+XML bytes. The generator rehashes each regular capture and requires one direct
+stock `<library>` entry with exactly the declared `name` and `file` attributes.
+Extra attributes, child content, ambiguous or namespaced selected entries, DTDs
+and entity declarations are rejected; unrelated source entries are not emitted.
+The target must be an explicitly selected system-ext DEX JAR with the same filename.
+Recipe output hashes are checked before staging and read back after writing.
+
+Each derived receipt entry records the original runtime path, image hash, inode,
+capture receipt hash and source-file hash separately from the output path/hash.
+It also records both file attributes and the recipe SHA256, calculated over its
+selection JSON object with sorted keys and compact `,`/`:` separators in UTF-8.
+A derived output is not labeled as an original image inode. These local input
+hash checks do not authenticate the firmware or prove Android class-loader,
+uses-library, signature, symbol or service compatibility.
 
 The stock Camera APK, product-wide privileged permission allowlist, stock window
 extension JARs, init scripts and other MIUI framework files are also excluded.
@@ -117,9 +154,9 @@ testing remain separate work described in the [Camera baseline](camera-baseline.
 
 ## Generated private bundle and reproduction
 
-The guarded EROFS capture used the already inventoried `system_ext_a` image with
+The original guarded EROFS capture used the already inventoried `system_ext_a` image with
 SHA256 `b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef`.
-It copied only the eight selected regular inodes, with canonical path checks,
+It copied only the eight camera-v1 regular inodes, with canonical path checks,
 input identity checks, file hash readback, no mount and no firmware execution.
 Its private receipt is:
 
@@ -128,14 +165,35 @@ artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310
 SHA256 9835144796deae068911d33d4073c175a8bbfd489cb02aa8b551bf7d01f7b36e
 ```
 
-The new vendor tree is under
+The original eight-file vendor tree remains under
 `artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-camera-v1/`. Its
 `vendor-inputs.json` has SHA256
 `d6ca3c1851b370032f7bf9dc7ba396c9e9e526183bdc5e6c6e3b9825c6b583c5`.
-That receipt binds the source record, package, images, selection and captures to
-all installed input paths and generated makefile/Blueprint hashes. The selection
-SHA256 is `7d250613a4ac98002939ece21a4d867af0bdfdc779566fcd3038665c71e33555`.
-The default `nezha-xiaomieu-b29afecc-base-v1` bundle was not modified.
+That receipt binds the source record, package, images, original selection and
+captures to installed input paths and generated makefile/Blueprint hashes. Its
+selection SHA256 is `7d250613a4ac98002939ece21a4d867af0bdfdc779566fcd3038665c71e33555`
+(tracked at commit `a245c17570fa8d15b8585f2ca107dd7049c18463`). Neither this tree
+nor the default `nezha-xiaomieu-b29afecc-base-v1` bundle is modified for v2.
+
+The CameraX derivation additionally uses the existing
+`erofs/system_ext-contract-capture/receipt.json`, SHA256
+`93289dcbfbf6178e7d58477bd9afc68de1f868cf8ce9df532e69e90c3c2986b4`, under the
+same package analysis directory. It binds the original `platform-miui.xml`
+capture to the same `system_ext_a` image. No new firmware or phone capture is
+needed to derive these registrations.
+
+The verified new tree is
+`artifacts/vendor-inputs/nezha-xiaomieu-b29afecc-camera-v2/`. Its
+`vendor-inputs.json` SHA256 is
+`0a6a70317eed9c1df1e30112eed10361ba49d5e8afa89fbd6b1feb507a8d09bc`;
+the current selection SHA256 is
+`be4f441d2f4424ce2b1add72df04565d0736cc64542aec81c91df9f589dbb5a7`.
+The nine extras total 542,236 bytes, with 5,621,892,636 total image/extra bytes.
+Staging verified both derivation inputs, their generated outputs and every
+copied input. An independent readback then rehashed all 16 v2 outputs and all
+22 outputs in base-v1/camera-v1; every hash matched its receipt and the older
+receipt hashes were unchanged. Evidence is retained in
+`reports/camera-inputs-stage-v2.json` and `reports/camera-inputs-integrity-v2.json`.
 
 To reproduce from these existing verified captures, choose a **new** output:
 
@@ -147,6 +205,7 @@ python3 scripts/vendor_inputs.py stage \
   --expected-package-sha256 b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69 \
   --selection vendor/xiaomi/nezha/camera-selection.json \
   --capture-receipt "$camera_analysis/erofs/system_ext-camera-inputs-capture-v1/receipt.json" \
+  --capture-receipt "$camera_analysis/erofs/system_ext-contract-capture/receipt.json" \
   --output artifacts/vendor-inputs/nezha-camera-review-NEW
 ```
 
@@ -165,9 +224,13 @@ nezha_system_ext_framework_miui_cameraopt_jar
 nezha_system_ext_framework_vendor_xiaomi_hardware_postprocservice_V1_java_jar
 ```
 
-The generated `nezha-vendor.mk` lists all eight modules, including the three XML
-imports. No transfer to the Linux checkout or activation in a device tree was
-performed by this slice. Generation and offline tests establish input integrity
+The generated `nezha-vendor.mk` lists all nine modules, including four XML
+imports. The new CameraX XML module is
+`nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml`; the corrected
+postproc keeps module
+`nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml`.
+The five binary target names are unchanged. No transfer to the Linux checkout or
+activation in a device tree was performed by this slice. Generation and offline tests establish input integrity
 and the intended build definitions; a real Soong result, enforcing policy,
 VINTF compatibility and separately authorized hardware tests are still needed
 before claiming any stock Camera or Leica feature works on Evolution X.

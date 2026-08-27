@@ -19,13 +19,19 @@ JARS = {
     "/system_ext/framework/miui-cameraopt.jar",
     "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
 }
-XML = {
+CAPTURED_XML = {
     "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml":
         ("7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1", 335),
     "/system_ext/etc/permissions/miui-cameraopt.xml":
         ("5088b9b19d251e3a2c24ce435c02a3c4f0fd6ce3d81a68d1a6c1c435598c2371", 797),
     "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml":
         ("3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7", 188),
+}
+CAMERAX_XML = "/system_ext/etc/permissions/camerax-vendor-extensions.xml"
+POSTPROC_XML = "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml"
+DERIVED_XML = {
+    CAMERAX_XML: ("72b03ab4cb59c5de507171723f29a8fd6483b1f9104d32d02008eac82fe7eb53", 180),
+    POSTPROC_XML: ("52de3422c1c7bf138883f82951e3fac202277a6c5b562ec2921d289a2c2fbabd", 218),
 }
 
 
@@ -43,11 +49,11 @@ class CameraSelectionTests(unittest.TestCase):
         self.assertEqual(self.selection["package_sha256"], self.camera["provenance"]["package_sha256"])
         self.assertFalse(self.camera["provenance"]["origin_verified"])
         self.assertFalse(self.camera["provenance"]["package_avb_consistent"])
-        self.assertEqual(set(self.modules), {JNI, *JARS, *XML})
-        self.assertEqual(len(self.selection["modules"]), 8)
+        self.assertEqual(set(self.modules), {JNI, *JARS, *CAPTURED_XML, CAMERAX_XML})
+        self.assertEqual(len(self.selection["modules"]), 9)
         self.assertEqual(Counter(m["type"] for m in self.modules.values()),
-                         {"shared_library": 1, "dex_jar": 4, "xml": 3})
-        self.assertEqual(sum(m["size_bytes"] for m in self.modules.values()), 542026)
+                         {"shared_library": 1, "dex_jar": 4, "xml": 4})
+        self.assertEqual(sum(m["size_bytes"] for m in self.modules.values()), 542236)
 
     def test_jni_and_jar_hashes_match_captured_seed_record(self):
         seeds = {artifact["runtime_path"]: artifact for artifact in self.camera["artifacts"]}
@@ -58,12 +64,42 @@ class CameraSelectionTests(unittest.TestCase):
                 self.assertEqual(seeds[path]["image_sha256"],
                                  "b2937ccb0dd38290af629c19064d1bacf4d9167d5074fb86e972f4d30b4c54ef")
 
-    def test_permission_xml_hashes_are_original_not_rewritten(self):
-        for path, (digest, size) in XML.items():
+    def test_copied_permission_xml_hashes_are_original_not_rewritten(self):
+        for path, (digest, size) in CAPTURED_XML.items():
+            if path == POSTPROC_XML:
+                continue
             with self.subTest(path=path):
                 self.assertEqual(self.modules[path]["sha256"], digest)
                 self.assertEqual(self.modules[path]["size_bytes"], size)
                 self.assertEqual(self.modules[path]["type"], "xml")
+                self.assertNotIn("derivation", self.modules[path])
+
+    def test_exact_two_derived_xmls_contain_only_one_selected_jar_registration(self):
+        derived = {path: entry for path, entry in self.modules.items() if "derivation" in entry}
+        self.assertEqual(set(derived), set(DERIVED_XML))
+        for path, entry in derived.items():
+            with self.subTest(path=path):
+                self.assertEqual((entry["sha256"], entry["size_bytes"]), DERIVED_XML[path])
+                recipe = entry["derivation"]
+                self.assertEqual(recipe["kind"], "library-registration-v1")
+                vendor_inputs._registration_recipe(entry)
+                root = ET.fromstring(vendor_inputs._registration_xml(recipe))
+                self.assertEqual(root.tag, "permissions")
+                self.assertEqual(len(root), 1)
+                self.assertEqual(root[0].tag, "library")
+                self.assertEqual(root[0].attrib, {"name": recipe["library_name"], "file": recipe["library_file"]})
+                self.assertIn(recipe["library_file"], JARS)
+
+    def test_camerax_recipe_preserves_exact_stock_name_path_and_source_hash(self):
+        recipe = self.modules[CAMERAX_XML]["derivation"]
+        self.assertEqual(recipe["source"], {
+            "runtime_path": "/system_ext/etc/permissions/platform-miui.xml",
+            "sha256": "96da583654521934b27e6a4ce4eba994fa709a20864cd5117338bf1537a488d6",
+            "size_bytes": 2597,
+        })
+        self.assertEqual(recipe["library_name"], "camerax-vendor-extensions.jar")
+        self.assertEqual(recipe["library_file"], "/system_ext/framework/camerax-vendor-extensions.jar")
+        self.assertEqual(recipe["library_file"], recipe["source_library_file"])
 
     def test_twenty_dt_needed_names_have_explicit_soong_mapping(self):
         seed = next(item for item in self.camera["artifacts"] if item["runtime_path"] == JNI)
@@ -79,8 +115,8 @@ class CameraSelectionTests(unittest.TestCase):
     def test_generator_accepts_profile_and_preserves_native_validation(self):
         modules, digest = vendor_inputs._selection(SELECTION, self.selection["package_sha256"], [])
         self.assertRegex(digest, r"^[a-f0-9]{64}$")
-        self.assertEqual(len(modules), 8)
-        self.assertEqual(len({m["module_name"] for m in modules}), 8)
+        self.assertEqual(len(modules), 9)
+        self.assertEqual(len({m["module_name"] for m in modules}), 9)
         for module in modules:
             if module["type"] == "shared_library":
                 module["elf_bits"] = 64
@@ -88,7 +124,7 @@ class CameraSelectionTests(unittest.TestCase):
         blueprint = "\n".join(vendor_inputs._module_text(module) for module in modules)
         self.assertEqual(blueprint.count("cc_prebuilt_library_shared {"), 1)
         self.assertEqual(blueprint.count("dex_import {"), 4)
-        self.assertEqual(blueprint.count("prebuilt_etc_xml {"), 3)
+        self.assertEqual(blueprint.count("prebuilt_etc_xml {"), 4)
         self.assertIn("android_arm64: {", blueprint)
         self.assertIn('stem: "libcamera_algoup_jni.xiaomi"', blueprint)
         self.assertIn("check_elf_files: true", blueprint)
@@ -107,15 +143,22 @@ class CameraSelectionTests(unittest.TestCase):
         self.assertNotIn("/vendor/framework/androidx.camera.extensions.impl.jar", self.modules)
         self.assertNotIn("/system_ext/etc/permissions/platform-miui.xml", self.modules)
 
-    def test_postproc_discrepancy_is_not_hidden_by_selecting_the_jar(self):
+    def test_postproc_recipe_records_the_original_discrepancy_and_exact_path_correction(self):
         mismatch = self.vintf["postproc_library_path"]
         self.assertIn(mismatch["permission_source"], self.modules)
         self.assertIn(mismatch["observed_regular_file"]["runtime_path"], self.modules)
         self.assertNotEqual(mismatch["declared_path"], mismatch["observed_regular_file"]["runtime_path"])
         self.assertFalse(mismatch["matching_alias_observed"])
         self.assertFalse(mismatch["runtime_path_resolution_verified"])
-        self.assertEqual(self.modules[mismatch["permission_source"]]["sha256"],
+        module = self.modules[mismatch["permission_source"]]
+        recipe = module["derivation"]
+        self.assertEqual(recipe["source"]["sha256"],
                          self.vintf["source_files"][mismatch["permission_source"]]["sha256"])
+        self.assertNotEqual(module["sha256"], recipe["source"]["sha256"])
+        self.assertEqual(recipe["source_library_file"], mismatch["declared_path"])
+        self.assertEqual(recipe["library_file"], mismatch["observed_regular_file"]["runtime_path"])
+        self.assertEqual(recipe["library_name"], "vendor.xiaomi.hardware.postprocservice-V1-java")
+        self.assertEqual(recipe["source"]["runtime_path"], mismatch["permission_source"])
 
     def test_profile_cannot_be_silently_reused_with_another_firmware_package(self):
         with self.assertRaises(vendor_inputs.VendorInputError):
@@ -138,8 +181,8 @@ class CameraSelectionTests(unittest.TestCase):
 
     def test_document_keeps_registration_and_runtime_limits_explicit(self):
         document = " ".join((ROOT / "docs/camera-inputs.md").read_text().split())
-        for text in ("CameraX shared-library registration remains pending", "platform-miui.xml",
-                     "postproc XML still points to", "The Camera APK and full MIUI framework are not included",
+        for text in ("Two derived XML registrations", "platform-miui.xml",
+                     "captured postproc XML still points to", "The Camera APK and full MIUI framework are not included",
                      "No uses-library, signature or preprocessed-APK check was disabled"):
             self.assertIn(text, document)
 

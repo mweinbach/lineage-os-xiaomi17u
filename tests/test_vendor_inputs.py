@@ -144,6 +144,42 @@ class VendorInputTests(unittest.TestCase):
         self.selection_path.write_text(json.dumps(self.selection))
         return self.selection_path
 
+    def add_registration(self, *, old_file=None):
+        self.registration_name = "camerax-vendor-extensions.jar"
+        target = "/system_ext/framework/camerax-vendor-extensions.jar"
+        self.registration_old_file = old_file or target
+        source = (f'<permissions><library name="{self.registration_name}" '
+                  f'file="{self.registration_old_file}"/>'
+                  '<library name="unrelated" file="/system_ext/framework/unrelated.jar"/>'
+                  '<app-data-isolation-whitelisted-app package="unrelated"/></permissions>').encode()
+        self.add_extras([
+            (target, "dex_jar", dex_jar()),
+            ("/system_ext/etc/permissions/platform-miui.xml", "xml", source),
+        ])
+        self.registration_output = ('<?xml version="1.0" encoding="utf-8"?>\n<permissions>\n'
+                                    f'    <library name="{self.registration_name}" file="{target}" />\n'
+                                    '</permissions>\n').encode()
+        captured = self.selection["modules"].pop()
+        self.recipe = {"kind": "library-registration-v1",
+                       "source": {key: captured[key] for key in ("runtime_path", "sha256", "size_bytes")},
+                       "library_name": self.registration_name, "source_library_file": self.registration_old_file,
+                       "library_file": target}
+        self.derived_module = {"runtime_path": "/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+                               "sha256": hashlib.sha256(self.registration_output).hexdigest(),
+                               "size_bytes": len(self.registration_output), "type": "xml", "derivation": self.recipe}
+        self.selection["modules"].append(self.derived_module)
+        self.selection_path.write_text(json.dumps(self.selection))
+        self.registration_source = self.capture_dir / "files/0002"
+        return self.selection_path
+
+    def replace_registration_source(self, content):
+        self.registration_source.write_bytes(content)
+        digest = hashlib.sha256(content).hexdigest()
+        self.capture["files"][1].update(sha256=digest, size_bytes=len(content))
+        self.capture_path.write_text(json.dumps(self.capture))
+        self.recipe["source"].update(sha256=digest, size_bytes=len(content))
+        self.selection_path.write_text(json.dumps(self.selection))
+
     def test_plan_is_metadata_only_and_does_not_create_outputs(self):
         before = self.snapshot()
         with patch.object(vendor, "_copy_blob", side_effect=AssertionError("not a staging operation")):
@@ -545,6 +581,219 @@ class VendorInputTests(unittest.TestCase):
         with patch("subprocess.run", side_effect=AssertionError("no external commands")), \
                 patch("subprocess.Popen", side_effect=AssertionError("no external commands")):
             self.stage()
+
+    def test_registration_plan_neither_reads_source_bytes_nor_claims_verified_inputs(self):
+        selection = self.add_registration()
+        real_open = vendor._open_regular
+
+        def metadata_only(path):
+            if path == self.registration_source or path.parent == self.capture_dir / "files" or path.suffix == ".img":
+                raise AssertionError("plan cannot read blob bytes")
+            return real_open(path)
+
+        with patch.object(vendor, "_derive_registration", side_effect=AssertionError("plan cannot derive")), \
+                patch.object(vendor, "_copy_blob", side_effect=AssertionError("plan cannot copy")), \
+                patch.object(vendor, "_open_regular", side_effect=metadata_only):
+            result = vendor.plan_inputs(self.analysis, self.source_record, selection=selection,
+                                       expected_package_sha256=self.package_sha)
+        derived = next(entry for entry in result["extras"] if "derivation" in entry)
+        self.assertFalse(derived["readback_verified"])
+        self.assertFalse(derived["derivation"]["source"]["hash_verified"])
+        self.assertFalse(result["verification"]["input_blob_hashes_checked"])
+        self.assert_no_output()
+
+    def test_registration_stage_selects_only_one_library_and_records_full_derivation(self):
+        selection = self.add_registration()
+        before = self.snapshot()
+        before.update({str(path): path.read_bytes() for path in
+                       (self.registration_source, self.selection_path, self.capture_path)})
+        with patch("subprocess.run", side_effect=AssertionError("no external commands")), \
+                patch("subprocess.Popen", side_effect=AssertionError("no external commands")):
+            result = self.stage(selection=selection)
+        derived = next(entry for entry in result["extras"] if "derivation" in entry)
+        self.assertEqual((self.output / derived["path"]).read_bytes(), self.registration_output)
+        self.assertEqual(derived["sha256"], hashlib.sha256(self.registration_output).hexdigest())
+        self.assertTrue(derived["readback_verified"])
+        self.assertNotIn("nid", derived)  # The output is derived, not an original image inode.
+        provenance = derived["derivation"]
+        self.assertEqual(provenance["kind"], "library-registration-v1")
+        self.assertEqual(provenance["recipe_sha256"], hashlib.sha256(
+            json.dumps(self.recipe, sort_keys=True, separators=(",", ":")).encode()).hexdigest())
+        self.assertEqual(provenance["source"]["sha256"], self.recipe["source"]["sha256"])
+        self.assertTrue(provenance["source"]["hash_verified"])
+        self.assertEqual(provenance["source"]["nid"], 2)
+        self.assertEqual(provenance["source"]["image_sha256"], self.capture["image"]["sha256"])
+        self.assertEqual(provenance["source"]["capture_receipt_sha256"],
+                         hashlib.sha256(self.capture_path.read_bytes()).hexdigest())
+        self.assertFalse((self.output / "proprietary/system_ext/etc/permissions/platform-miui.xml").exists())
+        self.assertNotIn(b"unrelated", self.registration_output)
+        self.assertFalse(result["verification"]["signature_or_elf_checks_disabled"])
+        self.assertFalse(result["verification"]["full_dependency_closure_verified"])
+        self.assert_preserved(before)
+
+    def test_registration_path_correction_keeps_original_source_and_records_old_and_new(self):
+        selection = self.add_registration(old_file="/system/framework/camerax-vendor-extensions.jar")
+        original = self.registration_source.read_bytes()
+        result = self.stage(selection=selection)
+        derived = next(entry for entry in result["extras"] if "derivation" in entry)
+        recipe = derived["derivation"]
+        self.assertEqual(recipe["source_library_file"], "/system/framework/camerax-vendor-extensions.jar")
+        self.assertEqual(recipe["library_file"], "/system_ext/framework/camerax-vendor-extensions.jar")
+        self.assertEqual(self.registration_source.read_bytes(), original)
+        self.assertEqual((self.output / derived["path"]).read_bytes(), self.registration_output)
+        self.assertTrue(all(not path.is_symlink() for path in self.output.rglob("*")))
+
+    def test_derived_registration_is_deterministic_and_never_changes_earlier_bundle(self):
+        self.stage()
+        base = {path: path.read_bytes() for path in self.output.rglob("*") if path.is_file()}
+        selection = self.add_registration()
+        first, second = self.output.with_name("camera-1"), self.output.with_name("camera-2")
+        self.stage(first, selection=selection)
+        self.stage(second, selection=selection)
+        self.assertEqual({path.relative_to(first): path.read_bytes() for path in first.rglob("*") if path.is_file()},
+                         {path.relative_to(second): path.read_bytes() for path in second.rglob("*") if path.is_file()})
+        self.assertEqual(base, {path: path.read_bytes() for path in base})
+
+    def test_registration_rejects_extra_attributes_tags_nested_entries_and_duplicate_names(self):
+        selection = self.add_registration()
+        selected = f'<library name="{self.registration_name}" file="{self.registration_old_file}"/>'
+        with_dependency = selected.replace("/>", ' dependency="hidden"/>')
+        bad_sources = [
+            f'<permissions bad="1">{selected}</permissions>',
+            f'<permissions>{with_dependency}</permissions>',
+            f'<permissions>{selected.replace("library ", "permission ")}</permissions>',
+            f'<permissions><group>{selected}</group></permissions>',
+            f'<permissions>{selected}{selected}</permissions>',
+            f'<permissions>{selected.replace("/>", "><permission/></library>")}</permissions>',
+            f'<permissions>{selected.replace(self.registration_old_file, "/system/framework/other.jar")}</permissions>',
+            '<permissions/>',
+            '<wrong-root/>',
+            '<permissions><library',
+        ]
+        for content in bad_sources:
+            with self.subTest(content=content):
+                self.replace_registration_source(content.encode())
+                before = self.snapshot()
+                with self.assertRaises(VendorInputError):
+                    self.stage(selection=selection)
+                self.assert_no_output()
+                self.assert_preserved(before)
+
+    def test_registration_rejects_dtd_entity_and_non_utf8_sources(self):
+        selection = self.add_registration()
+        selected = f'<library name="{self.registration_name}" file="{self.registration_old_file}"/>'
+        for content in (f'<!DOCTYPE permissions [<!ENTITY hidden "secret">]><permissions>{selected}</permissions>'.encode(),
+                        f'<permissions>{selected}</permissions>'.encode("utf-16"),
+                        b'\xff<permissions/>'):
+            with self.subTest(content=content):
+                self.replace_registration_source(content)
+                with self.assertRaises(VendorInputError):
+                    self.stage(selection=selection)
+                self.assert_no_output()
+
+    def test_registration_requires_selected_dex_target_and_rejects_filename_changes(self):
+        selection = self.add_registration()
+        original = copy.deepcopy(self.selection)
+        for change in ("missing-target", "wrong-type", "wrong-name", "wrong-partition", "duplicate-name"):
+            with self.subTest(change=change):
+                self.selection = copy.deepcopy(original)
+                if change == "missing-target":
+                    del self.selection["modules"][0]
+                elif change == "wrong-type":
+                    self.selection["modules"][0]["type"] = "xml"
+                elif change == "wrong-name":
+                    self.selection["modules"][1]["derivation"]["source_library_file"] = "/system/framework/other.jar"
+                elif change == "wrong-partition":
+                    self.selection["modules"][1]["derivation"]["library_file"] = "/system/framework/camerax-vendor-extensions.jar"
+                else:
+                    duplicate = copy.deepcopy(self.selection["modules"][1])
+                    duplicate["runtime_path"] = "/system_ext/etc/permissions/another.xml"
+                    self.selection["modules"].append(duplicate)
+                selection.write_text(json.dumps(self.selection))
+                with self.assertRaises(VendorInputError):
+                    self.stage(selection=selection)
+                self.assert_no_output()
+
+    def test_registration_rejects_unbound_sources_unknown_recipes_and_output_hash_changes(self):
+        selection = self.add_registration()
+        original = copy.deepcopy(self.selection)
+        for change in ("source-hash", "source-size", "source-path", "source-bound", "kind", "extra-field",
+                       "unsafe-name", "output-hash", "output-size", "output-path"):
+            with self.subTest(change=change):
+                self.selection = copy.deepcopy(original)
+                module = self.selection["modules"][1]
+                recipe = module["derivation"]
+                if change == "source-hash":
+                    recipe["source"]["sha256"] = "a" * 64
+                elif change == "source-size":
+                    recipe["source"]["size_bytes"] += 1
+                elif change == "source-path":
+                    recipe["source"]["runtime_path"] = "/system_ext/etc/permissions/missing.xml"
+                elif change == "source-bound":
+                    recipe["source"]["size_bytes"] = vendor.MAX_XML_BYTES + 1
+                elif change == "kind":
+                    recipe["kind"] = "arbitrary-xml-transform"
+                elif change == "extra-field":
+                    recipe["allow_checks_off"] = True
+                elif change == "unsafe-name":
+                    recipe["library_name"] = 'injected"/>'
+                elif change == "output-hash":
+                    module["sha256"] = "a" * 64
+                elif change == "output-size":
+                    module["size_bytes"] += 1
+                else:
+                    module["runtime_path"] = "/system_ext/etc/init/register.xml"
+                selection.write_text(json.dumps(self.selection))
+                with self.assertRaises(VendorInputError):
+                    self.stage(selection=selection)
+                self.assert_no_output()
+
+    def test_registration_source_corruption_and_symlink_are_rejected(self):
+        selection = self.add_registration()
+        original = self.registration_source.read_bytes()
+        self.registration_source.write_bytes(original.replace(b"unrelated", b"different"))
+        before = self.registration_source.read_bytes()
+        with self.assertRaisesRegex(VendorInputError, "SHA256"):
+            self.stage(selection=selection)
+        self.assert_no_output()
+        self.assertEqual(self.registration_source.read_bytes(), before)
+        saved = self.registration_source.with_suffix(".saved")
+        self.registration_source.rename(saved)
+        self.registration_source.symlink_to(saved)
+        with self.assertRaises((VendorInputError, IntakeError)):
+            self.stage(selection=selection)
+        self.assert_no_output()
+        self.assertEqual(saved.read_bytes(), before)
+
+    def test_registration_readback_corruption_cleans_staging_and_preserves_captures(self):
+        selection = self.add_registration()
+        original = self.registration_source.read_bytes()
+        real_write = vendor._write_file
+
+        def write_then_corrupt(staging, name, content):
+            result = real_write(staging, name, content)
+            if name == "camerax-vendor-extensions.xml":
+                (staging / name).write_bytes(content + b"x")
+            return result
+
+        with patch.object(vendor, "_write_file", side_effect=write_then_corrupt):
+            with self.assertRaisesRegex(VendorInputError, "readback"):
+                self.stage(selection=selection)
+        self.assert_no_output()
+        self.assertEqual(self.registration_source.read_bytes(), original)
+
+    def test_registration_source_mutation_after_derivation_prevents_publication(self):
+        selection = self.add_registration()
+        real_derive = vendor._derive_registration
+
+        def derive_then_mutate(source, destination):
+            real_derive(source, destination)
+            source["file"].write_bytes(source["file"].read_bytes() + b"\n")
+
+        with patch.object(vendor, "_derive_registration", side_effect=derive_then_mutate):
+            with self.assertRaisesRegex(VendorInputError, "changed"):
+                self.stage(selection=selection)
+        self.assert_no_output()
 
 
 if __name__ == "__main__":

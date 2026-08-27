@@ -4,6 +4,23 @@
   "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
   "modules": [
     {
+      "runtime_path": "/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+      "sha256": "72b03ab4cb59c5de507171723f29a8fd6483b1f9104d32d02008eac82fe7eb53",
+      "size_bytes": 180,
+      "type": "xml",
+      "derivation": {
+        "kind": "library-registration-v1",
+        "source": {
+          "runtime_path": "/system_ext/etc/permissions/platform-miui.xml",
+          "sha256": "96da583654521934b27e6a4ce4eba994fa709a20864cd5117338bf1537a488d6",
+          "size_bytes": 2597
+        },
+        "library_name": "camerax-vendor-extensions.jar",
+        "source_library_file": "/system_ext/framework/camerax-vendor-extensions.jar",
+        "library_file": "/system_ext/framework/camerax-vendor-extensions.jar"
+      }
+    },
+    {
       "runtime_path": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
       "sha256": "7f8be37f7a76c1a2311c26362716612fefe4a2ebac41a2b13fe410f4a2044ca1",
       "size_bytes": 335,
@@ -17,9 +34,20 @@
     },
     {
       "runtime_path": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
-      "sha256": "3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7",
-      "size_bytes": 188,
-      "type": "xml"
+      "sha256": "52de3422c1c7bf138883f82951e3fac202277a6c5b562ec2921d289a2c2fbabd",
+      "size_bytes": 218,
+      "type": "xml",
+      "derivation": {
+        "kind": "library-registration-v1",
+        "source": {
+          "runtime_path": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+          "sha256": "3a22f4bfe89ad6388a67bf7d2f985ae285b602270f7b95cc116b9d46e8236bd7",
+          "size_bytes": 188
+        },
+        "library_name": "vendor.xiaomi.hardware.postprocservice-V1-java",
+        "source_library_file": "/system/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+        "library_file": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar"
+      }
     },
     {
       "runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",

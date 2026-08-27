@@ -7,6 +7,8 @@ No firmware code, installer, ADB command, or external program is executed.
 Selection JSON uses schema_version=1, device=nezha, package_sha256, and modules.
 Each module requires runtime_path, sha256, size_bytes, and type (shared_library,
 dex_jar, or xml); shared_library additionally requires explicit shared_libs.
+XML may carry a library-registration-v1 derivation: extract one verified stock
+library registration and map it to an explicitly selected system_ext DEX JAR.
 Soong properties were reviewed at Evolution-X/build_soong
 cbcbea9e65503ca15b363a0b06dda88fdbcb0154 and extract-utils
 19a1e68e47bbe9ba446e167b2d402953bd7e0c87. Their build checks remain enabled.
@@ -41,6 +43,7 @@ BUFFER_SIZE = 1024 * 1024
 MAX_JSON_BYTES = 64 * 1024**2
 MAX_OUTPUT_BYTES = 64 * 1024**3
 MAX_EXTRA_BYTES = 512 * 1024**2
+MAX_XML_BYTES = 4 * 1024**2
 DISK_RESERVE = 64 * 1024**2
 INSTALL_PATH = "vendor/xiaomi/nezha"
 MODULE_NAME = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.+@-]*\Z")
@@ -144,6 +147,40 @@ def _runtime_path(path):
     return path
 
 
+def _registration_xml(recipe):
+    # Names and paths are restricted to XML-safe ASCII by _registration_recipe.
+    return ('<?xml version="1.0" encoding="utf-8"?>\n<permissions>\n'
+            f'    <library name="{recipe["library_name"]}" file="{recipe["library_file"]}" />\n'
+            '</permissions>\n').encode("utf-8")
+
+
+def _registration_recipe(module):
+    recipe = _object(module["derivation"])
+    if (set(recipe) != {"kind", "source", "library_name", "source_library_file", "library_file"}
+            or recipe["kind"] != "library-registration-v1"):
+        raise VendorInputError("unsupported XML derivation recipe")
+    source = _object(recipe["source"])
+    if set(source) != {"runtime_path", "sha256", "size_bytes"}:
+        raise VendorInputError("XML derivation must bind the exact captured source")
+    _sha(source["sha256"])
+    _positive(source["size_bytes"], MAX_XML_BYTES)
+    for runtime in (module["runtime_path"], _runtime_path(source["runtime_path"])):
+        if PurePosixPath(runtime).parent != PurePosixPath("/system_ext/etc/permissions") or not runtime.endswith(".xml"):
+            raise VendorInputError("XML derivation is limited to system_ext library permission files")
+    name = recipe["library_name"]
+    if not isinstance(name, str) or len(name) > 255 or not MODULE_NAME.fullmatch(name):
+        raise VendorInputError("invalid library registration name")
+    old = PurePosixPath(_runtime_path(recipe["source_library_file"]))
+    new = PurePosixPath(_runtime_path(recipe["library_file"]))
+    if (old.parent not in {PurePosixPath("/system/framework"), PurePosixPath("/system_ext/framework")}
+            or new.parent != PurePosixPath("/system_ext/framework")
+            or new.suffix != ".jar" or old.name != new.name):
+        raise VendorInputError("derived registration must preserve the JAR filename in system_ext/framework")
+    content = _registration_xml(recipe)
+    if len(content) != module["size_bytes"] or hashlib.sha256(content).hexdigest() != module["sha256"]:
+        raise VendorInputError("derived XML output SHA256/size does not match its recipe")
+
+
 def _selection(path, expected_package, metadata):
     if path is None:
         return [], None
@@ -164,6 +201,8 @@ def _selection(path, expected_package, metadata):
         allowed = {"runtime_path", "sha256", "size_bytes", "type"}
         if kind == "shared_library":
             allowed.add("shared_libs")
+        elif kind == "xml" and "derivation" in module:
+            allowed.add("derivation")
         if kind not in {"shared_library", "dex_jar", "xml"} or set(module) != allowed:
             raise VendorInputError("only explicit shared_library, dex_jar and xml selections are supported")
         runtime = _runtime_path(module["runtime_path"])
@@ -185,6 +224,8 @@ def _selection(path, expected_package, metadata):
         entry = dict(module, module_name=name, path="proprietary" + runtime)
         _sha(entry["sha256"])
         _positive(entry["size_bytes"], MAX_EXTRA_BYTES)
+        if "derivation" in entry:
+            _registration_recipe(entry)
         if kind == "shared_library":
             dependencies = entry["shared_libs"]
             if (not isinstance(dependencies, list) or len(dependencies) > 1024
@@ -193,6 +234,17 @@ def _selection(path, expected_package, metadata):
                 raise VendorInputError("shared_libs must be explicit unique Soong module names")
             entry["shared_libs"] = sorted(dependencies)
         result.append(entry)
+    jars = {entry["runtime_path"] for entry in result if entry["type"] == "dex_jar"}
+    registrations = set()
+    for entry in result:
+        if "derivation" not in entry:
+            continue
+        recipe = entry["derivation"]
+        if recipe["library_file"] not in jars:
+            raise VendorInputError("derived registration must name an explicitly selected DEX JAR")
+        if recipe["library_name"] in registrations:
+            raise VendorInputError("duplicate derived library registration name")
+        registrations.add(recipe["library_name"])
     return sorted(result, key=lambda entry: entry["runtime_path"]), digest
 
 
@@ -257,8 +309,9 @@ def _capture_sources(analysis, outputs, modules, paths, metadata):
                 captures[runtime] = candidate
         receipt_hashes.append(capture_sha)
     for module in modules:
-        captured = captures.get(module["runtime_path"])
-        if captured is None or any(module[key] != captured[key] for key in ("sha256", "size_bytes")):
+        expected = module["derivation"]["source"] if "derivation" in module else module
+        captured = captures.get(expected["runtime_path"])
+        if captured is None or any(expected[key] != captured[key] for key in ("sha256", "size_bytes")):
             raise VendorInputError("selected extra is absent from verified captures or its hash/size conflicts")
     return captures, sorted(set(receipt_hashes))
 
@@ -313,13 +366,26 @@ def _context(analysis, source_record, expected_package_sha256, selection, captur
         blobs.append(dict(source, record=entry, kind="image"))
         images[partition] = entry
     for module in modules:
-        captured = captures[module["runtime_path"]]
+        input_record = module["derivation"]["source"] if "derivation" in module else module
+        captured = captures[input_record["runtime_path"]]
         entry = dict(module, source_image_sha256=captured["source_image_sha256"],
-                     capture_receipt_sha256=captured["capture_receipt_sha256"], nid=captured["nid"], readback_verified=False)
-        blobs.append(dict(_file_state(captured["file"]), record=entry, kind=module["type"]))
+                     capture_receipt_sha256=captured["capture_receipt_sha256"], readback_verified=False)
+        if "derivation" in module:
+            recipe = module["derivation"]
+            recipe_sha = hashlib.sha256(json.dumps(recipe, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+            entry["derivation"] = dict(
+                recipe, recipe_sha256=recipe_sha,
+                source=dict(recipe["source"], image_sha256=captured["source_image_sha256"],
+                            capture_receipt_sha256=captured["capture_receipt_sha256"], nid=captured["nid"],
+                            hash_verified=False))
+        else:
+            entry["nid"] = captured["nid"]
+        blobs.append(dict(_file_state(captured["file"]), record=entry, input_record=input_record,
+                          kind="derived_xml" if "derivation" in module else module["type"]))
         extras.append(entry)
     required = sum(blob["record"]["size_bytes"] for blob in blobs)
-    if required > max_bytes or any(blob["signature"][2] != blob["record"]["size_bytes"] for blob in blobs):
+    if required > max_bytes or any(blob["signature"][2] != blob.get("input_record", blob["record"])["size_bytes"]
+                                   for blob in blobs):
         raise VendorInputError("source size differs from receipt or exceeds the output bound")
     receipt = {
         "schema_version": 1, "device": "nezha", "operation": "vendor-inputs-plan",
@@ -340,7 +406,47 @@ def _context(analysis, source_record, expected_package_sha256, selection, captur
                    "DEX imports do not establish app uses-library/class-loader compatibility; APK import is not supported.",
                    "Explicit shared_libs are caller-selected Soong modules; Soong must validate dependencies and symbols.",
                    "Permission XML and its referenced paths are copied unchanged, including unresolved mappings."]}
+    if any("derivation" in module for module in modules):
+        receipt["limits"][-1] = ("Explicit library-registration-v1 XML recipes select one verified stock registration; "
+                                "the recorded path transformation does not establish runtime or class-loader compatibility.")
     return analysis, metadata, blobs, receipt
+
+
+def _derive_registration(source, destination):
+    entry = source["record"]
+    recipe = entry["derivation"]
+    expected = recipe["source"]
+    _unchanged(source)
+    with _open_regular(source["file"]) as stream:
+        if source["signature"] != _signature(os.fstat(stream.fileno())):
+            raise VendorInputError("registration source changed before opening")
+        raw = stream.read(MAX_XML_BYTES + 1)
+        if source["signature"] != _signature(os.fstat(stream.fileno())):
+            raise VendorInputError("registration source changed while reading")
+    _unchanged(source)
+    if len(raw) != expected["size_bytes"] or hashlib.sha256(raw).hexdigest() != expected["sha256"]:
+        raise VendorInputError("registration source SHA256/size mismatch")
+    try:
+        text = raw.decode("utf-8-sig")
+        if "\x00" in text or "<!DOCTYPE" in text.upper() or "<!ENTITY" in text.upper():
+            raise VendorInputError("XML derivation does not accept DTDs, entities or non-UTF-8 input")
+        root = ET.fromstring(text)
+    except (UnicodeError, ET.ParseError) as exc:
+        raise VendorInputError("registration source is not a supported XML document") from exc
+    matches = [node for node in root.iter() if node.get("name") == recipe["library_name"]]
+    if (root.tag != "permissions" or root.attrib or (root.text or "").strip()
+            or len(matches) != 1 or matches[0] not in list(root)):
+        raise VendorInputError("expected one direct stock library registration in permissions")
+    selected = matches[0]
+    if (selected.tag != "library" or selected.attrib != {"name": recipe["library_name"], "file": recipe["source_library_file"]}
+            or len(selected) or (selected.text or "").strip() or (selected.tail or "").strip()):
+        raise VendorInputError("stock library registration has unexpected attributes, content or file path")
+    content = _registration_xml(recipe)
+    destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    _write_file(destination.parent, destination.name, content)
+    _verify_output(destination, entry)
+    expected["hash_verified"] = True
+    entry["readback_verified"] = True
 
 
 def _copy_blob(source, destination):
@@ -409,7 +515,7 @@ def _validate_format(path, entry, kind):
                 raise VendorInputError("ELF architecture conflicts with the selected partition path")
             entry.update(elf_bits=bits, elf_machine=machine)
         elif kind == "xml":
-            if entry["size_bytes"] > 4 * 1024**2:
+            if entry["size_bytes"] > MAX_XML_BYTES:
                 raise VendorInputError("XML exceeds the validation bound")
             try:
                 ET.fromstring(stream.read())
@@ -485,6 +591,8 @@ def _generated_text(receipt):
     if modules:
         product += "PRODUCT_PACKAGES += \\\n    " + " \\\n    ".join(modules) + "\n"
     bp = "// Generated private inputs; original files and validation checks are preserved.\nsoong_namespace {}\n\n"
+    if any("derivation" in entry for entry in receipt["extras"]):
+        bp = "// Generated private inputs; XML derivations are recorded and validation checks are preserved.\nsoong_namespace {}\n\n"
     bp += "\n".join(_module_text(entry) for entry in receipt["extras"])
     readme = ("Private Nezha vendor inputs\n\n"
               f"Install the complete tree at {INSTALL_PATH} in the Linux source checkout.\n"
@@ -548,8 +656,12 @@ def stage_inputs(analysis, source_record, output_dir, *, expected_package_sha256
         staging = Path(tempfile.mkdtemp(prefix="." + destination.name + "-", dir=parent))
         for source in blobs:
             target = staging / source["record"]["path"]
-            _copy_blob(source, target)
-            _validate_format(target, source["record"], source["kind"])
+            if source["kind"] == "derived_xml":
+                _derive_registration(source, target)
+                _validate_format(target, source["record"], "xml")
+            else:
+                _copy_blob(source, target)
+                _validate_format(target, source["record"], source["kind"])
         receipt["operation"] = "vendor-inputs-stage"
         receipt["verification"]["input_blob_hashes_checked"] = True
         for name, content in sorted(_generated_text(receipt).items()):
