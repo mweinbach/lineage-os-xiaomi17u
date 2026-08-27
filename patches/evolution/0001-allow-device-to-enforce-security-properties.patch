@@ -1,0 +1,20 @@
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -93,7 +93,7 @@
+     system/bin/backuptool_postinstall.sh
+ 
+ PRODUCT_PRODUCT_PROPERTIES += \
+-    ro.ota.allow_downgrade=true
++    ro.ota.allow_downgrade?=true
+ endif
+ 
+ # Lineage-specific broadcast actions whitelist
+@@ -126,7 +126,7 @@
+ 
+ # Enable transitional log for Privileged permissions
+ PRODUCT_PRODUCT_PROPERTIES += \
+-    ro.control_privapp_permissions=log
++    ro.control_privapp_permissions?=log
+ 
+ ifneq ($(TARGET_DISABLE_LINEAGE_SDK), true)
+ # Lineage SDK

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "project": "vendor/lineage",
+  "origin": "https://github.com/Evolution-X/vendor_evolution.git",
+  "base_commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+  "patch": "patches/evolution/0001-allow-device-to-enforce-security-properties.patch",
+  "patch_sha256": "84aee914e14fb6f7e82351a3163998fe793c5e2a3d8dfac32d3a123b27d0729f",
+  "files": [
+    {
+      "path": "config/common.mk",
+      "before_sha256": "a0b49c75c1055d73e7984c7cab73dc608a9b1b298d7ba710372dd1a1360edf35",
+      "after_sha256": "2747b367f0a0bc4f758b31ee88833cbb829a24be8a74e3ff9b11bbbae75a36ca"
+    }
+  ],
+  "purpose": "Allow Nezha to require false for downgrade and enforce for privileged permissions without conflicting inherited unconditional properties. No duplicate-property check is disabled."
+}
