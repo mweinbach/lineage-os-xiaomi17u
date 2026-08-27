@@ -1,0 +1,107 @@
+# Build host and source workflow
+
+The local Mac is the control/research host. Its current APFS directory is case
+insensitive and its CPU is ARM64. Neither an ARM Linux container nor a
+case-sensitive disk image makes Android's x86-64 host prebuilts native on this
+machine. No VM, emulation job, full source sync, or paid server was started.
+
+Use a native x86-64 Linux machine, preferably Ubuntu 24.04 LTS, with 64 GiB RAM
+and at least 400 GiB free on a case-sensitive filesystem. Budget 600 GiB or more
+for the source, outputs, firmware, and compiler cache. These are conservative
+workspace checks based on [AOSP's host requirements](https://source.android.com/docs/setup/start/requirements),
+which specify x86-64 Linux, 400 GB disk, and 64 GB RAM. Source includes host JDK
+and other prebuilts; do not choose a random system Java version to fix builds.
+
+## Prepare the Linux machine
+
+Copy or clone this small Git repository to the Linux machine. Do not copy a
+partially populated Android tree from a case-insensitive volume. The reference
+checkouts are ignored and can be reproduced there.
+
+```sh
+bash scripts/setup-linux.sh --print
+bash scripts/setup-linux.sh --install
+make refs
+make test
+make doctor SOURCE_DIR=/srv/android/evolution
+python3 scripts/workspace.py doctor --source-dir /srv/android/evolution --require-build-host
+```
+
+The package installer targets Ubuntu 24.04 and checks the OS/CPU before running
+APT. It does not change global Git configuration, enable swap, start containers,
+or install packages on macOS. Choose a directory writable by your build user.
+The doctor is a prerequisite check, not a guarantee every Android dependency is
+installed or enough resources are assigned inside a container.
+
+## Fetch the platform
+
+The selected platform is Evolution X **Android 16 QPR2, branch `bka`**. The
+[upstream README](https://github.com/Evolution-X/manifest/blob/bka/README.mkdn)
+documents `repo init`, `lunch lineage_codename-bp4a-userdebug`, and `m evolution`.
+The manifest's default branch is now `cnb` (Android 17). This workspace explicitly
+pins `bka`; it does not silently follow the default branch or the removed `bq2`
+branch found in older search results.
+
+```sh
+make source-plan SOURCE_DIR=/srv/android/evolution
+make init SOURCE_DIR=/srv/android/evolution
+make sync SOURCE_DIR=/srv/android/evolution JOBS=8
+```
+
+`init` pins the exact manifest and Google's Repo tool commits in
+[`config/sources.json`](../config/sources.json). It retains Repo's signature
+verification. `sync` downloads the full platform, including Git LFS objects,
+without destructive force flags. It saves a `repo manifest -r` snapshot under
+ignored `reports/` only after sync succeeds. The initial manifest pin is **not**
+a complete dependency lock: most upstream project entries reference branches.
+Preserve the resolved snapshot with each build, and review it before committing
+a sanitized version for reproducible handoff.
+
+Reference fetches (`make refs`) deliberately skip large Git LFS assets. They
+are useful for review and are **not** the complete build checkout. Existing
+references with changed revisions, remotes, or local edits are rejected instead
+of reset. Preserve your local edits in a branch or a separate checkout before
+refreshing a pin. A failed initial fetch may leave an incomplete clone; keep it
+for diagnosis and rename it aside before retrying if verification rejects it.
+
+## What still blocks a device build
+
+The platform can be synced on a supported host, but it does not include a
+working Xiaomi 17 Ultra product. The candidate `nezha` and `sm8850-common`
+checkouts under `upstream/` are quarantined references. They are **not** copied
+to `device/` and no local manifest activates them. See
+[`device-research.md`](device-research.md) for the concrete defects.
+
+Before adding a device manifest, derive and verify all of the following against
+this phone and its matching stock package:
+
+1. A complete `device/xiaomi/nezha` product and compatible SM8850 common tree,
+   including VINTF manifests, overlays, init files, and enforcing SELinux policy.
+2. Exact boot-chain/partition/slot layout, page size, dynamic-partition groups,
+   firmware requirements, and rollback constraints.
+3. A matching kernel/GKI strategy, device DTB/DTBO, and loadable vendor modules.
+   A kernel release for another Xiaomi 17 model is not sufficient evidence.
+4. Proprietary vendor/device blobs extracted from the selected, recorded stock
+   firmware, including camera/IMS dependencies and their compatibility fixes.
+5. Evolution product integration. The selected manifest installs
+   `Evolution-X/vendor_evolution` at **`vendor/lineage`**, not `vendor/evolution`.
+
+Once those checks pass, the intended command sequence is:
+
+```sh
+# FUTURE ONLY: this target is not registered or buildable in this workspace yet.
+cd /srv/android/evolution
+. build/envsetup.sh
+lunch lineage_nezha-bp4a-userdebug
+m evolution
+```
+
+Do not run copied device-tree extraction or build scripts until their contents
+have been reviewed. A successful compilation is not permission to flash. Device
+testing requires a separate recovery/backup plan and explicit user instruction.
+
+For native-feature work, Android's [VINTF documentation](https://source.android.com/docs/core/architecture/vintf)
+explains how framework and vendor requirements must agree. The
+[GKI overview](https://source.android.com/docs/core/architecture/kernel/generic-kernel-image)
+describes the kernel/vendor-module boundary. Neither makes arbitrary vendor
+images or another model's kernel modules interchangeable.

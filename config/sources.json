@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-08-27",
+  "device": {
+    "name": "Xiaomi 17 Ultra",
+    "codename": "nezha",
+    "identity_status": "codename from community sources; user reports China edition with xiaomi.eu; live identity pending",
+    "hardware_region": "China (user-reported)",
+    "installed_rom": "xiaomi.eu (user-reported)",
+    "build_ready": false,
+    "lunch_target": null
+  },
+  "platform": {
+    "reference": "evolution-manifest",
+    "android": "16 QPR2",
+    "branch": "bka",
+    "release_config": "bp4a",
+    "source_dir": "sources/evolution"
+  },
+  "host_requirements": {
+    "min_free_disk_gib": 400,
+    "min_ram_gib": 64,
+    "recommended_disk_gib": 600,
+    "source": "https://source.android.com/docs/setup/start/requirements"
+  },
+  "references": [
+    {
+      "name": "evolution-manifest",
+      "url": "https://github.com/Evolution-X/manifest.git",
+      "branch": "bka",
+      "commit": "cc4ebb8db9750afba6049825127304b09327f7c1",
+      "path": "upstream/evolution-manifest",
+      "purpose": "Official Evolution X Android 16 platform manifest; individual projects remain branch-based until a resolved manifest is saved."
+    },
+    {
+      "name": "evolution-vendor",
+      "url": "https://github.com/Evolution-X/vendor_evolution.git",
+      "branch": "bka",
+      "commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "path": "upstream/evolution-vendor",
+      "purpose": "Evolution X product configuration, installed as vendor/lineage by the platform manifest."
+    },
+    {
+      "name": "extract-utils",
+      "url": "https://github.com/LineageOS/android_tools_extract-utils.git",
+      "branch": "lineage-23.2",
+      "commit": "19a1e68e47bbe9ba446e167b2d402953bd7e0c87",
+      "path": "upstream/extract-utils",
+      "purpose": "Upstream tools for generating proprietary vendor trees from legally obtained stock firmware."
+    },
+    {
+      "name": "hardware-xiaomi",
+      "url": "https://github.com/LineageOS/android_hardware_xiaomi.git",
+      "branch": "lineage-23.2",
+      "commit": "1ad18efb60bc5c3cf794213fb29822837e38c1f8",
+      "path": "upstream/hardware-xiaomi",
+      "purpose": "Xiaomi hardware integration reference, not proof of SM8850 or nezha compatibility."
+    },
+    {
+      "name": "nezha-device-reference",
+      "url": "https://github.com/zeng-chenxi/android_device_xiaomi_nezha.git",
+      "branch": "lineage-23.2",
+      "commit": "6ca312b757597bc052782ade1682b965d9d64dfd",
+      "path": "upstream/nezha-device-reference",
+      "purpose": "INCOMPLETE community reference: missing lineage_nezha.mk and vendor/kernel dependencies, stale popsicle identity. Never installed into the platform checkout automatically."
+    },
+    {
+      "name": "sm8850-common-reference",
+      "url": "https://github.com/xt0032rus/device_xiaomi_sm8850-common.git",
+      "branch": "lineage-23.2",
+      "commit": "b3defe64905f10f2ddd7906f31c112fad5759c5e",
+      "path": "upstream/sm8850-common-reference",
+      "purpose": "Other-device reference only: myron configuration, unverified nezha layout, AVB test settings. Not an active dependency."
+    },
+    {
+      "name": "micode-index",
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource.git",
+      "branch": "README",
+      "commit": "62444eb540a7468f7e329a1bb417dd95c07ac8ab",
+      "path": "upstream/micode-index",
+      "purpose": "Official Xiaomi kernel release index snapshot; no confirmed Xiaomi 17 Ultra release in this index."
+    },
+    {
+      "name": "repo-tool",
+      "url": "https://gerrit.googlesource.com/git-repo",
+      "branch": "stable",
+      "commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77",
+      "path": ".tools/git-repo",
+      "purpose": "Official Google repo launcher and implementation, pinned to the observed stable commit."
+    }
+  ]
+}
