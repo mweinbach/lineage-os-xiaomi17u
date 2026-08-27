@@ -16,10 +16,18 @@ import sys
 import tempfile
 import zipfile
 
-from firmware import (
-    CHUNK_SIZE, MAX_ARCHIVE_MEMBERS, MAX_METADATA_BYTES, IntakeError,
-    _checksum, _directory, _filename, _open_regular, _signature, _unsafe_member,
-)
+if __package__:
+    from .firmware import (
+        CHUNK_SIZE, MAX_ARCHIVE_MEMBERS, MAX_METADATA_BYTES, IntakeError,
+        _checksum, _directory, _filename, _open_regular, _signature, _unsafe_member,
+    )
+    from .artifact_files import publish_new_directory
+else:
+    from firmware import (
+        CHUNK_SIZE, MAX_ARCHIVE_MEMBERS, MAX_METADATA_BYTES, IntakeError,
+        _checksum, _directory, _filename, _open_regular, _signature, _unsafe_member,
+    )
+    from artifact_files import publish_new_directory
 
 
 MAX_IMAGE_BYTES = 64 * 1024**3
@@ -108,6 +116,15 @@ def extract_images(
         raise IntakeError("output already exists; existing evidence was not changed")
     if intake_dir == output_dir or intake_dir in output_dir.parents:
         raise IntakeError("outputs must remain outside immutable intake directory")
+    # APFS can resolve different path spellings to the same intake directory.
+    # Check physical ancestors before creating any output parent directories.
+    intake_identity = intake_dir.stat()
+    for ancestor in output_dir.parents:
+        try:
+            if os.path.samestat(ancestor.stat(), intake_identity):
+                raise IntakeError("outputs must remain outside immutable intake directory")
+        except FileNotFoundError:
+            continue
     package = intake_dir / metadata["filename"]
     staging = None
     lock = None
@@ -180,7 +197,7 @@ def extract_images(
                 (staging / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
                 if os.path.lexists(output_dir):
                     raise IntakeError("output appeared during extraction; refusing replacement")
-                staging.rename(output_dir)
+                publish_new_directory(staging, output_dir)
                 staging = None
                 return receipt
             finally:

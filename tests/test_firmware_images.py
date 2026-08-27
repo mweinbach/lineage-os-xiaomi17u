@@ -71,6 +71,22 @@ class FirmwareImageTests(unittest.TestCase):
             self.extract()
         self.assertEqual((self.output / "keep").read_text(), "keep")
 
+    def test_publication_race_preserves_an_existing_empty_directory(self):
+        self.package()
+        publish = images.publish_new_directory
+        inode = []
+
+        def race(staging, destination):
+            destination.mkdir()
+            inode.append(destination.stat().st_ino)
+            publish(staging, destination)
+
+        with mock.patch.object(images, "publish_new_directory", side_effect=race):
+            with self.assertRaises(FileExistsError):
+                self.extract()
+        self.assertEqual(self.output.stat().st_ino, inode[0])
+        self.assertEqual(list(self.output.iterdir()), [])
+
     def test_rejects_wrong_package_hash_before_creating_output(self):
         self.package()
         with (self.intake / "firmware.zip").open("ab") as stream:
@@ -152,6 +168,16 @@ class FirmwareImageTests(unittest.TestCase):
         self.output = self.intake / "extracted"
         with self.assertRaisesRegex(images.IntakeError, "outside immutable"):
             self.extract()
+
+    def test_rejects_case_alias_of_intake_on_case_insensitive_filesystem(self):
+        self.package()
+        alias = self.root / self.sha.upper()
+        if not alias.exists() or not alias.samefile(self.intake):
+            self.skipTest("filesystem has distinct case-sensitive path identities")
+        self.output = alias / "new-parent" / "extracted"
+        with self.assertRaisesRegex(images.IntakeError, "outside immutable"):
+            self.extract()
+        self.assertFalse((self.intake / "new-parent").exists())
 
     def test_rejects_archive_without_images(self):
         self.package([("install.sh", b"not an image")])

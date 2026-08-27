@@ -2,7 +2,6 @@
 
 import contextlib
 import hashlib
-import importlib.util
 import io
 import json
 from pathlib import Path
@@ -14,11 +13,7 @@ from unittest import mock
 import zipfile
 
 
-SPEC = importlib.util.spec_from_file_location(
-    "firmware_intake", Path(__file__).resolve().parents[1] / "scripts" / "firmware.py"
-)
-firmware = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(firmware)
+from scripts import firmware
 
 
 class FirmwareIntakeTests(unittest.TestCase):
@@ -71,6 +66,22 @@ class FirmwareIntakeTests(unittest.TestCase):
         self.assertEqual(second["metadata"], first["metadata"])
         self.assertEqual(Path(second["metadata_path"]).read_bytes(), metadata_bytes)
         self.assertEqual(destination.stat().st_ino, inode)
+
+    def test_publication_race_does_not_replace_an_existing_empty_directory(self):
+        publish = firmware.publish_new_directory
+        created = []
+
+        def race(staging, destination):
+            destination.mkdir()
+            created.append((destination, destination.stat().st_ino))
+            publish(staging, destination)
+
+        with mock.patch.object(firmware, "publish_new_directory", side_effect=race):
+            with self.assertRaises(FileExistsError):
+                self.intake()
+        destination, inode = created[0]
+        self.assertEqual(destination.stat().st_ino, inode)
+        self.assertEqual(list(destination.iterdir()), [])
 
     def test_checksum_mismatch_does_not_create_artifacts(self):
         with self.assertRaisesRegex(firmware.IntakeError, "SHA256 mismatch"):

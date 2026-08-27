@@ -18,6 +18,11 @@ from datetime import datetime, timezone
 from urllib.parse import urlsplit
 import zipfile
 
+if __package__:
+    from .artifact_files import publish_new_directory
+else:
+    from artifact_files import publish_new_directory
+
 
 DEFAULT_ARTIFACTS_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "firmware"
 CHUNK_SIZE = 1024 * 1024
@@ -283,7 +288,7 @@ def intake_firmware(
                 os.fsync(stream.fileno())
             if os.path.lexists(bucket):
                 raise IntakeError("checksum directory appeared during intake; refusing to overwrite it")
-            staging.rename(bucket)
+            publish_new_directory(staging, bucket)
             staging = None
         result = {
             "firmware_path": str(bucket / filename),
