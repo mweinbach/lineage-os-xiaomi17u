@@ -11,7 +11,7 @@ should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
 
-- Twelve pinned source/reference checkouts, including Evolution X's official
+- Fourteen pinned source/reference checkouts, including Evolution X's official
   manifest and product configuration, Lineage extraction and Xiaomi hardware
   tools, Google's Repo launcher, AOSP boot/AVB/DTBO inspectors, and clearly labeled incomplete device/common
   tree references. Exact URLs and revisions are in
@@ -129,6 +129,8 @@ properties do not independently establish physical variant or bootloader state.
 | --- | --- |
 | [Device baseline](docs/device-baseline.md) | Sanitized findings from this phone |
 | [Source research](docs/device-research.md) | Verified branches, device-tree defects, kernel gaps |
+| [Community bring-up](docs/community-bringup.md) | Later XDA release, Leica port reports, private-tree and firmware limits |
+| [MiCode kernel review](docs/micode-popsicle-review.md) | Exact shared kernel/KMI evidence and remaining Nezha board gaps |
 | [Native features](docs/native-features.md) | Camera/Leica, IMS, fingerprint, charging, display, audio, accessories |
 | [Captured camera](docs/camera-baseline.md) | Actual APK, native library dependencies, framework hooks and camera HAL declarations |
 | [Stock collection](docs/stock-evidence.md) | Read-only capture, privacy, and partial-result handling |
@@ -137,6 +139,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Supplied Xiaomi.eu package](docs/provided-firmware.md) | Verified local integrity, unverified origin, embedded identity and sparse super layout |
 | [Firmware analysis](docs/firmware-analysis.md) | Verified sparse reconstruction, logical layout and filesystem checks |
 | [Boot/kernel/AVB contract](docs/boot-contract.md) | Exact boot formats, modules, DTs and retained verification failures |
+| [VINTF and permissions](docs/vintf-contract.md) | Guarded filesystem captures, exact live XML matches and framework compatibility gates |
 | [Nezha integration plan](docs/nezha-integration.md) | Future device/vendor/kernel boundaries and product activation gates |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
@@ -163,7 +166,7 @@ verified research in separate commits. This folder intentionally retains its
 original `lineage-os-xiaomi17u` name; the selected ROM is Evolution X.
 
 The offline suite covers source safety, both host modes, container boundaries,
-firmware intake, and private device evidence. All twelve pinned references were
+firmware intake, and private device evidence. All fourteen pinned references were
 verified. The completed platform sync preserved signature checks and the
 manifest/Repo pins. Every project HEAD, clean worktree and remote matched the
 [resolved snapshot](research/source-snapshots/evolution-bka-20260827.xml), and all

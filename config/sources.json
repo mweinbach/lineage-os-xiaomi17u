@@ -91,6 +91,22 @@
       "purpose": "Official Xiaomi kernel release index snapshot; no confirmed Xiaomi 17 Ultra release in this index."
     },
     {
+      "name": "micode-popsicle-kernel",
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource.git",
+      "branch": "popsicle-w-oss",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "path": "upstream/micode-popsicle-review",
+      "purpose": "Official shared SM8850 kernel/vendor layer cited by the later community Nezha ROM. Its ACK, KMI and compiler family are relevant; it is not a complete or verified Nezha kernel build. Reference only."
+    },
+    {
+      "name": "micode-popsicle-devicetree",
+      "url": "https://github.com/MiCode/kernel_devicetree.git",
+      "branch": "popsicle-w-oss",
+      "commit": "667482462e15458b602a2688a94efd47a5010141",
+      "path": "upstream/micode-popsicle-devicetree-review",
+      "purpose": "Official sibling SM8850 device-tree reference. Inspected Popsicle/Pudding/Pandora Xiaomi board IDs differ from the extracted Nezha overlay; never substitute their board configuration automatically."
+    },
+    {
       "name": "aosp-mkbootimg",
       "url": "https://android.googlesource.com/platform/system/tools/mkbootimg",
       "branch": "android-16.0.0_r4",

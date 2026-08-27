@@ -12,6 +12,13 @@ sparse, LP and EROFS checks passing does not override those failures. Keep it
 as a modified research input, separate from the still-incomplete official
 China download.
 
+The [later community release](community-bringup.md) makes a substantial Nezha
+Camera port a concrete research lead. Its private device tree and official
+`.307` firmware base do not supply reproducible Evolution X inputs for our
+modified `.309` snapshot. The [public MiCode branch review](micode-popsicle-review.md)
+establishes shared kernel/KMI/compiler-family evidence while preserving the
+unresolved exact Nezha board and module requirements.
+
 ## Evidence to use, and what it does not establish
 
 | Input | Verified observation | Remaining gate |
@@ -26,7 +33,8 @@ China download.
 | Vendor patch level | Supplied vendor build reports `2026-02-01`; system reports `2026-07-01` | Do not rewrite vendor security metadata to the system date. |
 
 The [device baseline](device-baseline.md), [provided package](provided-firmware.md),
-[source audit](device-research.md), and [camera baseline](camera-baseline.md)
+[source audit](device-research.md), [VINTF contract](vintf-contract.md),
+[boot/DLKM contract](boot-contract.md), and [camera baseline](camera-baseline.md)
 keep acquisition facts separate from integration hypotheses.
 
 ## Intended source boundaries
@@ -65,7 +73,10 @@ change with tests, not a way to silence missing-product errors.
 4. Preserve the separation of vendor ramdisk, vendor_dlkm and system_dlkm module
    sets and their load/dependency/block lists. Validate each required module,
    its architecture, KMI/symbol CRCs and signature policy against the chosen
-   kernel. Do not turn off module/signature checks to fit mismatched inputs.
+   kernel. The supplied sets contain distinct zram/zsmalloc variants and one
+   shared imported-symbol CRC disagreement; preserve their selection and
+   blocklist policy for review. Matching imported CRCs do not prove agreement
+   with kernel exports. Do not turn off module/signature checks to fit inputs.
 5. Preserve verified boot, rollback constraints, encrypted storage and enforcing
    SELinux in the new design. Vendor security policy and framework policy need
    compatible mappings; permissive policy and test AVB flags are not bring-up

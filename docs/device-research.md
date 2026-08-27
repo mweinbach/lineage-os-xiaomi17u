@@ -71,6 +71,15 @@ LineageOS testing without providing a complete ROM dependency manifest.
 [Evolution X device organization](https://github.com/Evolution-X-Devices),
 [LineageOS organization](https://github.com/LineageOS)
 
+The user's subsequent XDA lead identified a separate, released unofficial
+Nezha LineageOS 23.2 project with a maintainer-reported Leica Camera port.
+Its author explicitly says the device tree is private. This changes the
+community-work inventory, not the inspected public scaffold's completeness or
+our device-test status. The April bring-up author also confirmed stopping his
+separate effort. See the [community source review](community-bringup.md) for
+dated primary posts, the distinct official `.307` firmware requirement, and
+source-access limits.
+
 ### Why the public Nezha scaffold is not buildable as inspected
 
 The following issues were verified at commit
@@ -136,6 +145,15 @@ matching branch or substitute another model's binaries. These public kernel
 sources do not provide the closed Xiaomi/Qualcomm userspace HALs or Leica image
 processing stack.
 
+The user also supplied `popsicle-w-oss` directly, and the later ROM author cites
+it. A [deeper content review](micode-popsicle-review.md) confirms useful matches:
+its referenced Android common kernel is 6.12.23, Android 16, KMI generation 5,
+with the captured Clang family. That does not establish an exact Nezha build:
+the inspected sibling overlays have different Xiaomi board IDs, and the
+complete GKI/vendor/techpack dependency graph and module exports still need
+validation. The branch is retained as a pinned shared reference, not rejected
+by name and not installed as an active Nezha kernel.
+
 ## Confirm the existing bootloader state
 
 Because xiaomi.eu is already installed, an unlocked bootloader is plausible but
@@ -176,10 +194,10 @@ device security; it is outside the setup task.
 | Device identity | Product/device/model, hardware SKU/region, SoC/board, system and vendor fingerprints; compare with the label and exact official firmware package. | Android reports Nezha, SM8850/canoe, HWC CN, and xiaomi.eu; model property is modified. Exact firmware/physical-variant cross-check still required. |
 | Authorized development device | Explicitly selected target and observed bootloader state; official eligibility is only an additional gate if it is locked. | Read-only target identified. Current Android locked/green properties are not independent proof of actual bootloader state. No boot-state change authorized. |
 | Stock baseline | Matching official China package and current xiaomi.eu package/extraction recorded separately; origin URL, region, build, SHA-256, and acquisition date. | Running incremental is `OS3.0.309.0.WPACNXM`; matching official package is still required. Do not substitute global firmware. |
-| Boot and kernel contract | Boot/init_boot/vendor_boot/recovery headers, DTB/DTBO, module lists and kernel ABI, first-stage mounts, dynamic partition metadata, AVB/rollback metadata. | Running kernel version recorded; full contract still missing. Derive from the stock package without running its flash scripts. |
-| Vendor contract | VINTF manifests/matrices, vendor API/FCM, HAL services, proprietary file list, ELF dependencies, init and SELinux policies. | Current Xiaomi.eu VINTF/permissions and camera dependencies captured; full extraction and Evolution X compatibility validation remain pending. |
+| Boot and kernel contract | Boot/init_boot/vendor_boot/recovery headers, DTB/DTBO, module lists and kernel ABI, first-stage mounts, dynamic partition metadata, AVB/rollback metadata. | Supplied images, DTs and 914 module instances inspected; retained AVB fails, physical capacities remain unverified, and matching imported CRCs do not establish kernel exports. See the [boot contract](boot-contract.md). |
+| Vendor contract | VINTF manifests/matrices, vendor API/FCM, HAL services, proprietary file list, ELF dependencies, init and SELinux policies. | Eight logical images reconstructed/extracted; 1,306 selected regular files captured and all 432 earlier live XML files matched. Effective manifest selection, full dependency closure and Evolution X compatibility remain pending; see [VINTF](vintf-contract.md). |
 | Native feature baseline | Repeatable stock tests and private artifacts for the features in [native-features.md](native-features.md). | No device tests run. |
-| Build host | Native Linux x86-64, or explicitly verified Apple Container ARM64/Rosetta with case-sensitive storage and adequate disk/RAM. | Apple Container's ext4 volume, x86-64 execution, and pinned Repo initialization passed here. Full Android 16 compilation remains unverified; see [Apple Container](apple-container.md). |
+| Build host | Native Linux x86-64, or explicitly verified Apple Container ARM64/Rosetta with case-sensitive storage and adequate disk/RAM. | All 1,179 platform projects and 99 LFS payloads verified; downloaded host tools and the Soong OUT_DIR bootstrap query passed. Kati/product configuration, Ninja sandboxing and Android compilation remain unverified; see [Apple Container](apple-container.md). |
 
 Android's [VINTF documentation](https://source.android.com/docs/core/architecture/vintf)
 explains the compatibility contract between system and vendor. Matching the

@@ -74,6 +74,11 @@
       "host_path": "reports/source-sync-20260827/lfs-content-verification.json",
       "guest_path": "/work/validation/source-audit-20260827T1705Z/lfs-content-verification.json",
       "sha256": "a633c3807f9ce7411be1d45d880ba9f9e4af067b25767760e9a6deb1c30711b2"
+    },
+    "post_bootstrap_source_audit": {
+      "host_path": "reports/source-sync-20260827/post-bootstrap-source-audit.json",
+      "guest_path": "/work/validation/source-audit-20260827T1730Z/receipt.json",
+      "sha256": "0005ba649db46dfd58420a3725886b3d6e49bcef36dfdc4ecf0ab6c9a07584fb"
     }
   },
   "device_target_registered": false,
@@ -83,5 +88,15 @@
     "A resolved manifest records this checkout; it does not guarantee upstream retention or a successful build.",
     "Source completeness is separate from Nezha product, kernel, vendor, AVB, VINTF and physical-device prerequisites.",
     "The platform source guard still admits only the configured default.xml, without a local device manifest."
-  ]
+  ],
+  "post_bootstrap_verification": {
+    "started_at": "2026-08-27T17:19:48.030914+00:00",
+    "completed_at": "2026-08-27T17:19:53.460871+00:00",
+    "project_count": 1179,
+    "head_match_count": 1179,
+    "clean_project_count": 1179,
+    "origin_match_count": 1179,
+    "project_list_matches_manifest": true,
+    "manifest_and_repo_pins_verified_before_and_after": true
+  }
 }

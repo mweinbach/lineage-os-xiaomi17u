@@ -34,6 +34,9 @@ artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310
 | `lp-upstream-crosscheck/receipt.json` | Every logical image's full SHA256 and size matches a separate pinned Lineage LP extraction |
 | `filesystem-validation/receipt.json` | All eight read-only EROFS checks exited 0 with superblock checksum verification enabled |
 | `boot-analysis/avb-analysis-complete.json` | Retained AVB descriptors and the observed content-digest failure; not an approval to flash |
+| `erofs/*-inventory/receipt.json` | 16,038 directory entries inventoried across all eight images, without mounting them |
+| `erofs/*-contract-capture/receipt.json` | 1,306 selected regular files captured with flat output names and hash readbacks; links and special files were not materialized |
+| `boot-analysis/dlkm-contract/receipt.json` | Ramdisk, vendor_dlkm and system_dlkm module sets reconciled without loading or merging them |
 
 The sparse fragments share an address space; their serialized bytes must not be
 concatenated. Each RAW/FILL chunk writes at its declared logical position.
@@ -124,6 +127,9 @@ remained enabled; no checksum-bypass option was used. The tool binary SHA256 was
 `69c81657d6c30c0fd598f1bfa3e0461984864549e3afaf6365f2197ffffd1fc6`.
 This operation did not verify AVB signatures, kernel module compatibility or
 native-feature behavior. Filesystem content/dependency analysis is separate.
+The subsequent [VINTF and permission contract](vintf-contract.md) records the
+guarded inventory/capture workflow, the 432 exact matches to earlier live XML
+evidence, and the framework compatibility checks that remain unperformed.
 
 The retained AVB failures are material. `vendor_boot` does not match its retained
 content digest. `product_a` is 3,712,385,024 bytes, but its retained
@@ -135,8 +141,8 @@ eight logical images contains its complete retained declared hashtree range.
 The inspected first-stage fstab also lacks `avb`/`verify` flags. These modified
 inputs must remain research material. Do not pad images or change their AVB
 descriptors to hide these failures. This fstab is not an approved verification
-policy for a new build. Detailed boot/kernel/AVB requirements are tracked
-separately in `docs/boot-contract.md`.
+policy for a new build. Detailed requirements are tracked in the
+[boot/kernel/AVB contract](boot-contract.md).
 
 Physical boot-partition geometry remains **unresolved**. The authorized phone
 was revalidated before a separate read-only collection attempted `size` and

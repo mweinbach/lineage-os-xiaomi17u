@@ -23,11 +23,20 @@ with another phone's files or make SELinux permissive to hide missing policy.
 
 The supplied-package follow-up has now located and hashed 13 external Camera
 dependencies and confirmed that its Camera APK matches the live snapshot.
-See the [camera findings](camera-baseline.md) and the concrete
+All 432 previously captured live VINTF/permission XML files also match the
+supplied images. See the [VINTF contract](vintf-contract.md),
+[camera findings](camera-baseline.md) and the concrete
 [Nezha integration plan](nezha-integration.md). These are static dependency
 results only. The package's retained AVB metadata does not match its modified
 images, so its fstab and images must not become an unreviewed boot/security
 template for the port. Every hardware acceptance test below remains unrun.
+
+The later [XDA community review](community-bringup.md) provides maintainer reports
+of a substantial Nezha Leica port and camera-session integration on a separate
+LineageOS build. Its device tree is private, it uses a distinct official firmware
+baseline, and the author notes remaining stock-behavior differences. Treat those
+reports as feasibility and dependency leads, not proof of our feature matrix or
+a source package that can be copied into Evolution X.
 
 ## Dependency and acceptance matrix
 
