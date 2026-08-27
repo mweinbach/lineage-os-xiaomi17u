@@ -60,3 +60,10 @@ RELAX_USES_LIBRARY_CHECK := false
 ifneq ($(RELAX_USES_LIBRARY_CHECK),false)
 $(error Nezha requires strict APK uses-library validation)
 endif
+
+ifneq ($(PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING),true)
+$(error Nezha requires Treble labeling violations to remain errors)
+endif
+ifneq ($(strip $(PRODUCT_SELINUX_TREBLE_LABELING_TRACKING_LIST_FILE)),)
+$(error Nezha does not admit unreviewed Treble labeling waivers)
+endif

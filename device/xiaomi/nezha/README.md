@@ -89,6 +89,17 @@ still enabled, after installing this source. This setting preserves the check;
 it does not supply missing Camera shared-library declarations or prove APK
 compatibility.
 
+Treble labeling violations must also remain errors. Product configuration sets
+`PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true`; BoardConfig rejects a
+conflicting value or a nonempty labeling tracking list. The pinned build
+consumers otherwise pass `--treat_as_warnings`. At this product's observed
+platform policy version `202504`, the upstream automatic check requires a
+later policy version, and its missing-input branch can write a skipped-test
+stamp. Therefore this setting is not evidence of a passed labeling check.
+Its eventual explicit validation must supply the complete policy, contexts
+and app inputs and verify that the check actually ran without waivers or a
+skip. The captured user v7 configuration predates this stricter setting.
+
 Without the explicit factory profile, boot-image budgets use supplied image
 lengths and super/group declarations. Factory mode uses verified package GPT
 extents. Both are candidate build budgets, not live partition measurements.

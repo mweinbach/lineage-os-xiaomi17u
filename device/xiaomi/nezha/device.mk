@@ -9,6 +9,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch.mk)
 $(call inherit-product, $(NEZHA_DEVICE_PATH)/generated/device-candidate.mk)
 $(call inherit-product, $(NEZHA_VENDOR_PATH)/nezha-vendor.mk)
 
+# Treat Treble labeling violations as errors when its dedicated check runs.
+# At platform policy 202504, merely setting this does not schedule that check.
+PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
+
 PRODUCT_SOONG_NAMESPACES += \
     $(NEZHA_DEVICE_PATH) \
     $(NEZHA_VENDOR_PATH)

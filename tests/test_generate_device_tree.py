@@ -810,6 +810,19 @@ class GenerateDeviceTreeTests(unittest.TestCase):
 
 
 class NezhaBoardHookTests(unittest.TestCase):
+    def test_treble_labeling_is_strict_without_waivers_or_an_execution_claim(self):
+        product = (generator.ROOT / "device/xiaomi/nezha/device.mk").read_text()
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        doc = (generator.ROOT / "device/xiaomi/nezha/README.md").read_text()
+        self.assertIn("PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true", product)
+        self.assertIn("ifneq ($(PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING),true)", board)
+        self.assertIn("$(error Nezha requires Treble labeling violations to remain errors)", board)
+        self.assertIn("ifneq ($(strip $(PRODUCT_SELINUX_TREBLE_LABELING_TRACKING_LIST_FILE)),)", board)
+        self.assertIn("$(error Nezha does not admit unreviewed Treble labeling waivers)", board)
+        self.assertNotIn("--treat_as_warnings", product + board)
+        self.assertIn("this setting is not evidence of a passed labeling check", doc)
+        self.assertIn("predates this stricter setting", doc)
+
     def test_board_allows_exactly_one_user_or_userdebug_variant_and_keeps_security_guards(self):
         board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
         guard = (
