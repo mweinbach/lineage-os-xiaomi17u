@@ -1,0 +1,602 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-27T17:33:56.241502+00:00",
+  "status": "reference-only; exact Nezha kernel integration unresolved",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "sources": {
+    "kernel": {
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource.git",
+      "branch": "popsicle-w-oss",
+      "commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+      "commit_url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/commit/45705be1220b4cfa8100516ad86711656c0b634e",
+      "tree_sha1": "62471858834b0ab7a447b668856529f68d4af2a0",
+      "commit_date": "2026-03-09T16:04:44+08:00",
+      "local_reference_directory": "upstream/micode-popsicle-review",
+      "tracked_file_count": 2370,
+      "remote_head_verified": true,
+      "origin_verified": true,
+      "git_fsck_exit_code": 0,
+      "worktree_clean": true,
+      "all_reachable_objects_present": true,
+      "case_insensitive_nezha_path_matches": [],
+      "case_insensitive_nezha_text_matches": [],
+      "text_search_command": [
+        "git",
+        "grep",
+        "-n",
+        "-I",
+        "-i",
+        "nezha",
+        "HEAD"
+      ],
+      "text_search_exit_code": 1,
+      "text_search_skips_binary_files": true
+    },
+    "devicetree": {
+      "url": "https://github.com/MiCode/kernel_devicetree.git",
+      "branch": "popsicle-w-oss",
+      "commit": "667482462e15458b602a2688a94efd47a5010141",
+      "commit_url": "https://github.com/MiCode/kernel_devicetree/commit/667482462e15458b602a2688a94efd47a5010141",
+      "tree_sha1": "10fe1d2cae1c279ec851d8df78388920166dfa4d",
+      "commit_date": "2026-03-09T20:38:40+08:00",
+      "local_reference_directory": "upstream/micode-popsicle-devicetree-review",
+      "tracked_file_count": 5837,
+      "remote_head_verified": true,
+      "origin_verified": true,
+      "git_fsck_exit_code": 0,
+      "worktree_clean": true,
+      "all_reachable_objects_present": true,
+      "case_insensitive_nezha_path_matches": [],
+      "case_insensitive_nezha_text_matches": [],
+      "text_search_command": [
+        "git",
+        "grep",
+        "-n",
+        "-I",
+        "-i",
+        "nezha",
+        "HEAD"
+      ],
+      "text_search_exit_code": 1,
+      "text_search_skips_binary_files": true
+    }
+  },
+  "release_index": {
+    "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource",
+    "branch": "README",
+    "commit": "62444eb540a7468f7e329a1bb417dd95c07ac8ab",
+    "file": "README.md",
+    "sha256": "db2dcc10b9c31f830991bea4119c6af4aee54c6fa35e0ad1345532d8cad8fd1b",
+    "popsicle_row_line": 236,
+    "declared_devices": [
+      "Xiaomi 17",
+      "Xiaomi 17 Pro",
+      "Xiaomi 17 Pro Max"
+    ],
+    "base_label": "release-w-qcom-sm8850",
+    "nezha_text_present": false
+  },
+  "ack_reference": {
+    "url": "https://android.googlesource.com/kernel/common",
+    "commit": "f1bdb13583da85a47fcf1632a78ef52d6e6da651",
+    "tag": "android16-6.12-2025-06_r8",
+    "tag_object_sha1": "230b52c4a6cac7d176c0bed41d75e578093b20fb",
+    "tag_peels_to_declared_commit": true,
+    "source_pointer": "android/ACK_SHA",
+    "kernel_version": [
+      6,
+      12,
+      23
+    ],
+    "branch": "android16-6.12",
+    "kmi_generation": 5,
+    "clang_version": "r536225",
+    "makefile_sha256": "97f2b5b9e8cf3f2acbb4f204969765cbcdc85a6ce507128e1df13173f5ce99b7",
+    "build_constants_sha256": "c0c28955e4fe2c38c76c1bd4a822a2c55ac06f03f3aab20782f3f9ee04f1192d",
+    "exact_supplied_kernel_source_verified": false,
+    "live_suffix_lookup": {
+      "repository": "kernel/common",
+      "abbreviated_commit": "75e9b1c7ae7c",
+      "http_status": 404,
+      "absence_from_all_public_sources_established": false
+    }
+  },
+  "build_composition": {
+    "role": "SoC/vendor sources and build definitions; external GKI common tree required",
+    "kernel_directory": "common",
+    "soc_directory": "soc-repo",
+    "default_perf_base_kernel_label": "//common:kernel_aarch64",
+    "consolidate_base_kernel_label": "//soc-repo:kernel_aarch64_consolidate",
+    "device_config_targets": [
+      "popsicle",
+      "pudding",
+      "pandora"
+    ],
+    "target_arch": "canoe",
+    "nezha_config_target_present": false,
+    "local_makefile_version": [
+      6,
+      11,
+      0
+    ],
+    "local_makefile_version_is_effective_gki_version": false,
+    "dt_makefile_label": "//common:Makefile",
+    "image_header_version": 4,
+    "image_packing_page_size_bytes": 4096,
+    "image_packing_page_size_proves_kernel_page_size": false,
+    "reference_base_address_hex": "0x80000000",
+    "reference_earlycon_address_hex": "0x00a9c000",
+    "addresses_approved_for_nezha": false,
+    "required_external_paths": [
+      "common",
+      "build/kernel/kleaf",
+      "build/msm_kernel_extensions.bzl",
+      "external/qcom-dtc",
+      "bootable/bootloader/edk2",
+      "vendor/qcom/opensource/camera-kernel",
+      "vendor/qcom/opensource/display-drivers",
+      "vendor/qcom/opensource/audio-kernel",
+      "vendor/qcom/opensource/wlan",
+      "vendor/xiaomi/proprietary/kernelmodules",
+      "vendor/xiaomi/proprietary/touch"
+    ],
+    "absent_local_inputs": [
+      "Kconfig",
+      "arch/arm64/configs/gki_defconfig",
+      "android/abi_gki_aarch64_qcom",
+      "Module.symvers"
+    ],
+    "complete_external_dependency_manifest_verified": false,
+    "consolidate_settings": {
+      "trim_nonlisted_kmi": false,
+      "kmi_symbol_list_strict_mode": false,
+      "ddk_signing_modules_disabled_fragment_present": true,
+      "adopted_by_workspace": false
+    },
+    "canoe_kernel_abi_target_present": true,
+    "kernel_abi_target_executed": false
+  },
+  "dt_comparison": {
+    "source_kind": "supplied modified Xiaomi.eu image versus published source declarations",
+    "supplied_nezha_dtbo_sha256": "4bb4b31bca5de3e354a565304d1ea277ac6d9b70e2760a40147d9f151a691f99",
+    "supplied_nezha_model": "Qualcomm Technologies, Inc. Nezha based on SM8850",
+    "supplied_nezha_compatible": [
+      "qcom,canoe-mtp",
+      "qcom,canoe",
+      "qcom,canoep-mtp",
+      "qcom,canoep",
+      "qcom,mtp"
+    ],
+    "supplied_nezha_qcom_board_id_u32": [
+      8,
+      0
+    ],
+    "supplied_nezha_xiaomi_miboard_id_u32": [
+      5,
+      0
+    ],
+    "public_overlays": [
+      {
+        "target": "popsicle",
+        "path": "qcom/popsicle-sm8850-overlay.dtso",
+        "model": "Qualcomm Technologies, Inc. Popsicle based on SM8850",
+        "compatible": [
+          "qcom,canoe-mtp",
+          "qcom,canoe",
+          "qcom,canoep-mtp",
+          "qcom,canoep",
+          "qcom,mtp"
+        ],
+        "qcom_board_id_u32": [
+          8,
+          0
+        ],
+        "xiaomi_miboard_id_u32": [
+          1,
+          0
+        ],
+        "qcom_msm_id_pairs_match_supplied_nezha_set": true,
+        "compatible_matches_supplied_nezha": true,
+        "variant_match_verified": false
+      },
+      {
+        "target": "pudding",
+        "path": "qcom/pudding-sm8850-overlay.dtso",
+        "model": "Qualcomm Technologies, Inc. Pudding based on SM8850",
+        "compatible": [
+          "qcom,canoe-mtp",
+          "qcom,canoe",
+          "qcom,canoep-mtp",
+          "qcom,canoep",
+          "qcom,mtp"
+        ],
+        "qcom_board_id_u32": [
+          8,
+          0
+        ],
+        "xiaomi_miboard_id_u32": [
+          2,
+          0
+        ],
+        "qcom_msm_id_pairs_match_supplied_nezha_set": true,
+        "compatible_matches_supplied_nezha": true,
+        "variant_match_verified": false
+      },
+      {
+        "target": "pandora",
+        "path": "qcom/pandora-sm8850-overlay.dtso",
+        "model": "Qualcomm Technologies, Inc. Pandora based on SM8850",
+        "compatible": [
+          "qcom,canoe-mtp",
+          "qcom,canoe",
+          "qcom,canoep-mtp",
+          "qcom,canoep",
+          "qcom,mtp"
+        ],
+        "qcom_board_id_u32": [
+          8,
+          0
+        ],
+        "xiaomi_miboard_id_u32": [
+          3,
+          0
+        ],
+        "qcom_msm_id_pairs_match_supplied_nezha_set": true,
+        "compatible_matches_supplied_nezha": true,
+        "variant_match_verified": false
+      }
+    ],
+    "live_overlay_selection_verified": false,
+    "shared_qualcomm_ids_prove_exact_variant": false
+  },
+  "captured_baseline": {
+    "source_record": "research/boot-contract.json",
+    "source_kind": "user-provided modified Xiaomi.eu package; origin unverified",
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "kernel_release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "ikconfig_sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+    "ikconfig_size_bytes": 220352,
+    "kernel_page_size_bytes": 4096,
+    "clang_family": "r536225",
+    "clang_version_number": 190001,
+    "localversion": "-4k",
+    "kmi_family_from_release": "6.12-android16-5",
+    "module_instances": 914,
+    "distinct_module_payloads": 637,
+    "distinct_normalized_module_names": 635,
+    "module_sets": {
+      "vendor_ramdisk": 430,
+      "vendor_dlkm": 381,
+      "system_dlkm": 103
+    },
+    "module_layout_expected_crc": "0xe976b219",
+    "zs_malloc_expected_crcs": {
+      "vendor_and_ramdisk": "0x1804f5bc",
+      "system_dlkm": "0x36f39fe1"
+    },
+    "kernel_export_crcs_verified": false,
+    "module_provider_export_crcs_verified": false,
+    "module_signatures_verified": false,
+    "module_loading_tested": false,
+    "supplied_system_blocklist": [
+      "zram",
+      "zsmalloc"
+    ],
+    "public_sibling_system_blocklists_empty": true,
+    "public_vendor_zram_zsmalloc_definitions_present": true,
+    "vendor_zram_zsmalloc_binary_equivalence_verified": false
+  },
+  "community_citation": {
+    "source_record": "research/community-bringup.json",
+    "release_url": "https://xdaforums.com/t/rom-unofficial-nezha-xiaomi-17-ultra-lineageos-23-android-16-2026-08-11.4792785/",
+    "kernel_source_link": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/tree/popsicle-w-oss",
+    "kernel_link_post_id": "90638370",
+    "private_device_tree_statement_post_id": "90691410",
+    "private_device_tree_statement_date": "2026-08-10",
+    "public_reproducible_rom_sources_supplied_by_link": false,
+    "author_claims_are_workspace_device_tests": false,
+    "capture_receipt_sha256": "618502342022a3e59cdc3aca936d15c661845d44ccd93dd6af6b2f37765d3a36"
+  },
+  "licenses": {
+    "kernel_copying_expression": "GPL-2.0 WITH Linux-syscall-note",
+    "reviewed_device_overlays_spdx": "BSD-3-Clause",
+    "preserve_source_notices": true,
+    "corresponding_source_review_required_before_binary_distribution": true,
+    "proprietary_userspace_redistribution_rights_established": false,
+    "third_party_license_compliance_determined": false
+  },
+  "verification_boundaries": {
+    "common_soc_and_kmi_family_relevance_verified": true,
+    "exact_nezha_source_release_verified": false,
+    "complete_kernel_build_inputs_verified": false,
+    "exact_china_variant_configuration_verified": false,
+    "replacement_kernel_kmi_compatibility_verified": false,
+    "source_or_firmware_executables_run": false,
+    "kernel_or_rom_build_performed": false,
+    "phone_accessed": false,
+    "phone_modified": false,
+    "security_checks_disabled": false,
+    "active_product_registered": false,
+    "lunch_target": null,
+    "native_feature_compatibility_tested": false
+  },
+  "selected_source_files": [
+    {
+      "repository": "kernel",
+      "path": "COPYING",
+      "git_blob_sha1": "a635a38ef9405fdfcfe97f3a435393c1e9cae971",
+      "sha256": "fb5a425bd3b3cd6071a3a9aff9909a859e7c1158d54d32e07658398cd67eb6a0",
+      "size_bytes": 496,
+      "line_count": 20,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/COPYING"
+    },
+    {
+      "repository": "kernel",
+      "path": "Makefile",
+      "git_blob_sha1": "78a9c0e94b01f0d84eb3cde21f74e952b5b2670f",
+      "sha256": "35f10eb58701324686a5659ca76f6701b5015106fdea3d45be293878c09d0c33",
+      "size_bytes": 71641,
+      "line_count": 2172,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/Makefile"
+    },
+    {
+      "repository": "kernel",
+      "path": "android/ACK_SHA",
+      "git_blob_sha1": "793b7efd83e8981f57c48a67f8961f62b7895c4a",
+      "sha256": "8b105941b7278fcb915efcac4b50ffd7418a2ce9bac92ebda12e0b73bb00d079",
+      "size_bytes": 67,
+      "line_count": 2,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/android/ACK_SHA"
+    },
+    {
+      "repository": "kernel",
+      "path": "BUILD.bazel",
+      "git_blob_sha1": "09fec8f635ce62259bf975b6c52646f179156839",
+      "sha256": "cbdc956bf9acf6b1df918706dcbf4c714da1438c53d7b58a1cf0529f8c725b2f",
+      "size_bytes": 10190,
+      "line_count": 337,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/BUILD.bazel"
+    },
+    {
+      "repository": "kernel",
+      "path": "build.config.constants",
+      "git_blob_sha1": "76dfa83ee93c8aaeeb253b54fcde92a29623c89f",
+      "sha256": "b4768b38c354dc53f248e70c9cb68b720b184eac5c45dec688a54228b1cc83d5",
+      "size_bytes": 169,
+      "line_count": 5,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/build.config.constants"
+    },
+    {
+      "repository": "kernel",
+      "path": "build.config.msm.canoe",
+      "git_blob_sha1": "1fdfabf3ef9b9309b28ad13da13251b6230d3a38",
+      "sha256": "fb87914ad701a512ee4d2ff53f60d4b07223d0c9bd0699ffbc91675e541bb910",
+      "size_bytes": 1079,
+      "line_count": 33,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/build.config.msm.canoe"
+    },
+    {
+      "repository": "kernel",
+      "path": "target_variants.bzl",
+      "git_blob_sha1": "22109ada35234f0e9f222b6ccfb46657308e93b2",
+      "sha256": "2d99b728ca835310863b9ec1c9b666032d1419ddcdc711b747211b72ccf5b32f",
+      "size_bytes": 1333,
+      "line_count": 76,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/target_variants.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "configs/canoe_perf.bzl",
+      "git_blob_sha1": "6e263ea1b2616ae486f9b0d408d90ae4fd5a8942",
+      "sha256": "efa1a94176ead2177fd3d2cde5e46885130a6fa9dc710da22c60d9ded2ae6379",
+      "size_bytes": 16287,
+      "line_count": 444,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/configs/canoe_perf.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "configs/popsicle_perf.bzl",
+      "git_blob_sha1": "e39374831698d933664e331471bfc3d5a5e5063b",
+      "sha256": "3bc71c351c4cd36b44f7312d6d061d60fdaeb939c5e0a6d9172e250b67a3a4f6",
+      "size_bytes": 493,
+      "line_count": 15,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/configs/popsicle_perf.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "configs/pandora_perf.bzl",
+      "git_blob_sha1": "3d0b3ce5f97b01dff9c92a123c905312c4167fbd",
+      "sha256": "3c3ebef92463e5b4838b3a57aafb76f7b72582bec41910df6e7340f76b7b5792",
+      "size_bytes": 324,
+      "line_count": 10,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/configs/pandora_perf.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "configs/pudding_perf.bzl",
+      "git_blob_sha1": "fefabde2892a8f63fcb060fed479ce7158db13b5",
+      "sha256": "352a8cce046f65a7039ae88811394663a21f9a583944e1b835cd11d7305f756c",
+      "size_bytes": 361,
+      "line_count": 11,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/configs/pudding_perf.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "kleaf-scripts/android_build.bzl",
+      "git_blob_sha1": "bfa1ffcd69270d4326feb1f56c11fd29bb148e31",
+      "sha256": "c8f3006c9be67fecb6d61c7cff15d881c141ca2d45d804c874d03aa36010d23d",
+      "size_bytes": 13861,
+      "line_count": 404,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/kleaf-scripts/android_build.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "kleaf-scripts/consolidate.bzl",
+      "git_blob_sha1": "2b929e2af9b0adf0f0c2dfa89ad2f4abf0c69c6e",
+      "sha256": "d7fc05f12fba5bdde93a22d159d21ae1fc1d96e21fbabf6ab93f6d269f2758a7",
+      "size_bytes": 5493,
+      "line_count": 162,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/kleaf-scripts/consolidate.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "kleaf-scripts/dtbs.bzl",
+      "git_blob_sha1": "319689d7582d43457f3154b4ad2aacd91b4ca907",
+      "sha256": "d0efc70c3163aec381127333d14dad3f102d3b82b2fab544f6485fc98c5ee617",
+      "size_bytes": 2809,
+      "line_count": 90,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/kleaf-scripts/dtbs.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "kleaf-scripts/targets/canoe.bzl",
+      "git_blob_sha1": "f6a1dd121d33f224d0cf8fad5dcef6ee54afe4de",
+      "sha256": "4f6d66eaf39316f6c1dd2a56a06739f62c6b1f4eb9bf0478a4b8e480362ff1d5",
+      "size_bytes": 3630,
+      "line_count": 106,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/kleaf-scripts/targets/canoe.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "kleaf-scripts/targets/popsicle.bzl",
+      "git_blob_sha1": "d671f9f3c3e712969061f81733c99ea04791f457",
+      "sha256": "85309c37e4b254aef94da90c581187fc6ec95844e556713666d19a5d9d5c1fe5",
+      "size_bytes": 2178,
+      "line_count": 49,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/kleaf-scripts/targets/popsicle.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "kleaf-scripts/techpack_modules.bzl",
+      "git_blob_sha1": "a7fff60d72b42afaf74bf4c69e48ad9868473258",
+      "sha256": "d35c4f732bd76522aabc1c253c4f75c6834a9149ee46fbbe013c534ef7a0b96e",
+      "size_bytes": 5113,
+      "line_count": 69,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/kleaf-scripts/techpack_modules.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "drivers/block/zram/modules.bzl",
+      "git_blob_sha1": "80d7743de81803b05e109ee236482ddeb3a106f3",
+      "sha256": "30a5a43a8f0cb0360b130fc60c7976045504bbc06257dd84fecd3a6f7e2400b6",
+      "size_bytes": 563,
+      "line_count": 19,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/drivers/block/zram/modules.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "include/linux/zsmalloc.h",
+      "git_blob_sha1": "e439af871c930a3e3902f59c4950f959829005c3",
+      "sha256": "110e34318df830d475141d6f71c05841b533edfa9bbb9b4a2eca6545d3a17867",
+      "size_bytes": 1871,
+      "line_count": 62,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/include/linux/zsmalloc.h"
+    },
+    {
+      "repository": "kernel",
+      "path": "mm/modules.bzl",
+      "git_blob_sha1": "bf1bb6ffe8d9e2f6b1be32ff04be087b71762fb4",
+      "sha256": "f6fcf8bf978132688e60cf550d5f257dc5700faaf9bdcdd47427ac42ae09460d",
+      "size_bytes": 239,
+      "line_count": 10,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/mm/modules.bzl"
+    },
+    {
+      "repository": "kernel",
+      "path": "modules-lists/modules.systemdlkm_blocklist.msm.popsicle",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "line_count": 0,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/modules-lists/modules.systemdlkm_blocklist.msm.popsicle"
+    },
+    {
+      "repository": "kernel",
+      "path": "modules-lists/modules.systemdlkm_blocklist.msm.pudding",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "line_count": 0,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/modules-lists/modules.systemdlkm_blocklist.msm.pudding"
+    },
+    {
+      "repository": "kernel",
+      "path": "modules-lists/modules.systemdlkm_blocklist.msm.pandora",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "line_count": 0,
+      "url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource/blob/45705be1220b4cfa8100516ad86711656c0b634e/modules-lists/modules.systemdlkm_blocklist.msm.pandora"
+    },
+    {
+      "repository": "devicetree",
+      "path": "BUILD.bazel",
+      "git_blob_sha1": "0f4f2ae2e132edf8bd2b68fe29ac80030b8a5f7f",
+      "sha256": "7b36c18621af6e438b50cf7f7b754c7ecd00df81434b4b5293cdf1d4db1fd41f",
+      "size_bytes": 513,
+      "line_count": 22,
+      "url": "https://github.com/MiCode/kernel_devicetree/blob/667482462e15458b602a2688a94efd47a5010141/BUILD.bazel"
+    },
+    {
+      "repository": "devicetree",
+      "path": "qcom/Makefile",
+      "git_blob_sha1": "ca3335c595acac6dc5ac181eee500cd75bac3929",
+      "sha256": "1fd71fc4d18fa9d82177dc2863800224a17964d2863355eecb29a0ccb406fd2c",
+      "size_bytes": 14462,
+      "line_count": 462,
+      "url": "https://github.com/MiCode/kernel_devicetree/blob/667482462e15458b602a2688a94efd47a5010141/qcom/Makefile"
+    },
+    {
+      "repository": "devicetree",
+      "path": "qcom/popsicle-sm8850-overlay.dtso",
+      "git_blob_sha1": "4338823b250f7c133d3344d14ef66be4311b63e3",
+      "sha256": "70ec20675619038f89c1fddd6d77544623e9495f483e413bfc684e8d2c57964b",
+      "size_bytes": 731,
+      "line_count": 23,
+      "url": "https://github.com/MiCode/kernel_devicetree/blob/667482462e15458b602a2688a94efd47a5010141/qcom/popsicle-sm8850-overlay.dtso"
+    },
+    {
+      "repository": "devicetree",
+      "path": "qcom/pudding-sm8850-overlay.dtso",
+      "git_blob_sha1": "6924dc8be0632bb04c928a023cc66ca5bff0949c",
+      "sha256": "dc27c8df5f1ef87100f5161845bb2f80ec37e229e68b5b7267bd8a6c6b000e32",
+      "size_bytes": 687,
+      "line_count": 23,
+      "url": "https://github.com/MiCode/kernel_devicetree/blob/667482462e15458b602a2688a94efd47a5010141/qcom/pudding-sm8850-overlay.dtso"
+    },
+    {
+      "repository": "devicetree",
+      "path": "qcom/pandora-sm8850-overlay.dtso",
+      "git_blob_sha1": "4ee6cfeca38f7eb94ff3a5a2201ee7d88c9a68bd",
+      "sha256": "d39d034fe8db6c14e29c6da6401568362153242da15083eb832b119ce33c2cd0",
+      "size_bytes": 726,
+      "line_count": 24,
+      "url": "https://github.com/MiCode/kernel_devicetree/blob/667482462e15458b602a2688a94efd47a5010141/qcom/pandora-sm8850-overlay.dtso"
+    },
+    {
+      "repository": "devicetree",
+      "path": "qcom/popsicle-sm8850.dtsi",
+      "git_blob_sha1": "7fa4a99375f2d5e6fb48d522f51d8c4c48eb2caa",
+      "sha256": "81536725854ca0d47d33decf6b115a4faef701e01b11f1d096313f7dd76bda30",
+      "size_bytes": 14500,
+      "line_count": 755,
+      "url": "https://github.com/MiCode/kernel_devicetree/blob/667482462e15458b602a2688a94efd47a5010141/qcom/popsicle-sm8850.dtsi"
+    }
+  ],
+  "evidence": {
+    "ignored_report_directory": "reports/micode-popsicle-review-20260827",
+    "receipt_sha256": "9a094677d2164004565a6794a678994a4b47804da29719513e62e27d38086abe",
+    "raw_firmware_and_modules_committed": false
+  },
+  "remaining_requirements": [
+    "Pin the exact GKI base, toolchain/build dependencies, Nezha board configuration, and complete external vendor-module sources or reviewed prebuilt strategy.",
+    "Compare resulting configuration and DT selections with authenticated China firmware; shared Canoe identifiers and image packing sizes are insufficient.",
+    "Validate kernel/provider exported symbol CRCs, module signatures and stage-specific load/blocklist behavior, including zram/zsmalloc; keep KMI checks enabled.",
+    "Review corresponding-source and separate proprietary redistribution obligations before distributing binaries.",
+    "Retain the existing AVB, physical geometry, VINTF, SELinux, bootloader authorization and hardware-test gates."
+  ]
+}
