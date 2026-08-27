@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "observed_on": "2026-08-27",
-  "status": "static XML and file contract; effective VINTF and Evolution X compatibility not verified",
+  "status": "static XML contract and three read-only runtime properties; effective VINTF and Evolution X compatibility not verified",
   "device": {
     "codename": "nezha",
     "hardware_region": "CN",
@@ -22,10 +22,12 @@
     "analysis_sha256": "9cb43cc441ca5c2ac985ec61a8493dcb36522bda8f52aab8e54d6d8192e87a14",
     "analysis_v1_properties_usable": false,
     "private_artifacts_git_ignored": true,
-    "phone_accessed_by_this_analysis": false,
+    "phone_accessed_by_this_analysis": true,
     "firmware_executed": false,
     "image_mounted": false,
-    "symlinks_followed": false
+    "symlinks_followed": false,
+    "initial_offline_file_analysis_accessed_phone": false,
+    "phone_modified": false
   },
   "inspection": {
     "script": "scripts/erofs_inventory.py",
@@ -237,11 +239,112 @@
     "/vendor/odm_dlkm/etc/build.prop": {},
     "/vendor_dlkm/etc/build.prop": {}
   },
-  "runtime_properties_not_verified": [
+  "runtime_properties_not_verified": [],
+  "runtime_properties_missing_from_initial_baseline": [
     "ro.boot.product.vendor.sku",
     "ro.boot.product.hardware.sku",
     "ro.vendor.api_level"
   ],
+  "runtime_property_observations": {
+    "observed_at_utc": "2026-08-27T17:37:55.774425+00:00",
+    "status": "complete",
+    "private_receipt": "evidence/vintf-properties-20260827T173755.444773Z/receipt.json",
+    "private_receipt_sha256": "55b66b04e2cfac954f5e41932afd386d5147acee01c05a2abad9ea68900ab7a0",
+    "private_manifest_sha256": "9acc54441f406890ab98754092246ad85d16914f26c2a6a07d9d25a34cd7667b",
+    "collector": "scripts/collect_stock.py",
+    "collector_sha256": "788dce317f0bc6dd5ce3d40b17c2a8bba141beab30d7831f314ac6bad736b75a",
+    "device_identity": {
+      "manufacturer": "Xiaomi",
+      "codename": "nezha",
+      "non_emulator_preflight_passed": true,
+      "same_explicit_private_serial_as_baseline": true
+    },
+    "properties": {
+      "ro.boot.product.vendor.sku": {
+        "value": "canoe",
+        "status": "ok"
+      },
+      "ro.boot.product.hardware.sku": {
+        "value": "nezha",
+        "status": "ok"
+      },
+      "ro.vendor.api_level": {
+        "value": "202504",
+        "status": "ok"
+      }
+    },
+    "property_stdout_sha256": {
+      "ro.boot.product.vendor.sku": "853c204a79e2e38151b59e0a8ca6e04b1c1d8b6cc32311759b1af449db678d29",
+      "ro.boot.product.hardware.sku": "7bf586f516b3f86aeb159d469fa79619f018a2e9bf2ca903fc622f66289d9559",
+      "ro.vendor.api_level": "ce5b095f33cfad2ece2557566ec55c87dcb81fb1a275fdc6f032369f1ea4fb9d"
+    },
+    "command_count": 8,
+    "command_artifact_count": 16,
+    "command_artifact_readback_verified": true,
+    "requested_properties_only_after_identity_preflight": true,
+    "previous_manifest_sha256": "0b837fea843cbc9d21326abb554f04dfdcf9e06bf91dee7caad4f243e0a914cb",
+    "previous_manifest_unchanged": true,
+    "phone_modified": false,
+    "origin_verified": false,
+    "properties_are_immutable_hardware_proof": false,
+    "complete_effective_vintf_verified": false
+  },
+  "manifest_lookup_inference": {
+    "status": "inference from observed properties, extracted inventory and pinned upstream lookup rules; not execution of the live loader",
+    "reference": {
+      "project": "platform/system/libvintf",
+      "commit": "69c456ea4aa2f503a2904cfbc11f279a3b2efb09",
+      "path": "VintfObject.cpp",
+      "sha256": "400516d6679d96f102915dd7c0a14ddb0e45098b189ece42cb15136e220d04cb",
+      "url": "https://android.googlesource.com/platform/system/libvintf/+/69c456ea4aa2f503a2904cfbc11f279a3b2efb09/VintfObject.cpp",
+      "functions": [
+        "fetchVendorHalManifest",
+        "fetchOdmHalManifest"
+      ]
+    },
+    "vendor_lookup_order": [
+      {
+        "path": "/vendor/etc/vintf/manifest_canoe.xml",
+        "entry_observed_in_image_inventory": true,
+        "type": "regular"
+      },
+      {
+        "path": "/vendor/etc/vintf/manifest.xml",
+        "entry_observed_in_image_inventory": false,
+        "type": null
+      }
+    ],
+    "first_existing_vendor_lookup_path": "/vendor/etc/vintf/manifest_canoe.xml",
+    "alor_manifest_in_observed_sku_lookup_order": false,
+    "odm_lookup_order": [
+      {
+        "path": "/odm/etc/vintf/manifest_nezha.xml",
+        "entry_observed_in_image_inventory": false,
+        "type": null
+      },
+      {
+        "path": "/odm/etc/vintf/manifest.xml",
+        "entry_observed_in_image_inventory": false,
+        "type": null
+      },
+      {
+        "path": "/odm/etc/manifest_nezha.xml",
+        "entry_observed_in_image_inventory": false,
+        "type": null
+      },
+      {
+        "path": "/odm/etc/manifest.xml",
+        "entry_observed_in_image_inventory": false,
+        "type": null
+      }
+    ],
+    "odm_base_manifest_observed_in_image": false,
+    "odm_fragments_observed_in_image": true,
+    "lookup_fallback_requires_name_not_found": true,
+    "live_xiaomi_eu_libvintf_binary_verified_against_reference": false,
+    "complete_fragment_and_apex_merge_verified": false,
+    "loader_schema_validation_performed": false
+  },
   "vendor_manifest_candidates": [
     {
       "source": "/vendor/etc/vintf/manifest_canoe.xml",
@@ -2103,11 +2206,12 @@
     "device_vintf_test_performed": false,
     "proprietary_dependency_closure_complete": false,
     "evolution_x_hardware_tested": false,
-    "avb_image_set_consistent": false
+    "avb_image_set_consistent": false,
+    "requested_runtime_properties_read": true
   },
   "next_gates": [
     "Establish an authenticated exact-device firmware baseline and resolve the modified package AVB failures without relaxing checks.",
-    "Determine vendor/ODM SKU properties, effective manifest merging, active APEX declarations and the runtime vendor API level from authorized read-only evidence.",
+    "Apply the observed vendor SKU canoe, hardware SKU nezha and vendor API 202504 to a verified loader evaluation; resolve actual fragment/APEX selection and effective manifest merging.",
     "Run libvintf/checkvintf against the assembled Evolution X framework and reviewed vendor/ODM inputs, including the applicable kernel version/config/FCM, SELinux and system-SDK constraints.",
     "Provide and verify actual proprietary HAL services plus framework/system_ext counterparts, ELF/linker/Java dependencies, permissions, signatures, init rules and enforcing policy.",
     "Resolve the postproc permission path against the assembled filesystem without assuming an unobserved alias.",
@@ -2117,6 +2221,7 @@
     "https://source.android.com/docs/core/architecture/vintf/objects",
     "https://source.android.com/docs/core/architecture/vintf/comp-matrices",
     "https://source.android.com/docs/core/architecture/vintf/match-rules",
-    "https://source.android.com/docs/core/architecture/api-flags"
+    "https://source.android.com/docs/core/architecture/api-flags",
+    "https://android.googlesource.com/platform/system/libvintf/+/69c456ea4aa2f503a2904cfbc11f279a3b2efb09/VintfObject.cpp"
   ]
 }

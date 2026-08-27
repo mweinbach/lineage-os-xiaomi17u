@@ -5,7 +5,9 @@ baseline**, not a compatible Evolution X product. All **209 VINTF XML files**
 parse, and all **432 previously captured VINTF/permissions XML files** match the
 extracted package at the same runtime path and SHA256. No effective device
 manifest, full `checkvintf` result, or Evolution X hardware behavior has been
-verified. This analysis did not access or change the phone.
+verified. Initial file analysis did not access the phone. A subsequent, narrowly
+scoped read-only follow-up obtained three runtime properties; it made no phone
+changes and preserved the previous evidence.
 
 The [machine-readable record](../research/vintf-contract.json) preserves selected
 declarations, source hashes, inode mappings, receipt hashes and explicit limits.
@@ -90,10 +92,39 @@ alone does not justify adding or expecting a legacy HIDL provider.
 
 Both `/vendor/etc/vintf/manifest_canoe.xml` and `manifest_alor.xml` declare XML
 schema version `9.0`, device target level **202504**, and SELinux version
-**202504**. Neither contains an explicit `<kernel>` element. The `canoe` board
-property makes the canoe file a candidate; it does not prove that libvintf
-selected it. Neither `ro.boot.product.vendor.sku` nor
-`ro.boot.product.hardware.sku` was collected in the previous baseline.
+**202504**. Neither contains an explicit `<kernel>` element. The first baseline
+did not include the SKU selection properties. The later read-only follow-up
+reported:
+
+| Runtime property | Observed value |
+| --- | --- |
+| `ro.boot.product.vendor.sku` | `canoe` |
+| `ro.boot.product.hardware.sku` | `nezha` |
+| `ro.vendor.api_level` | `202504` |
+
+The same explicitly selected private device identity passed the collector's
+authorized-device, Xiaomi/`nezha` and non-emulator preflight. Only those three
+requested properties followed the preflight: eight commands total, including
+ADB version/inventory and three identity properties, with 16 stdout/stderr
+artifacts checked by hash. The new private receipt is
+`evidence/vintf-properties-20260827T173755.444773Z/receipt.json`, SHA256
+`55b66b04e2cfac954f5e41932afd386d5147acee01c05a2abad9ea68900ab7a0`.
+The previous baseline manifest remained byte-identical. These are observations
+from modified Xiaomi.eu, not immutable hardware identity or OEM authentication.
+
+**Lookup inference:** the pinned upstream libvintf source tries the vendor SKU
+path before the default vendor manifest. Applied to `canoe`, its first lookup is
+`/vendor/etc/vintf/manifest_canoe.xml`, a verified regular file in the extracted
+image. The `alor` file is not in that SKU's lookup order. The hardware SKU `nezha`
+produces four ODM base-manifest lookups; none is present in the extracted ODM
+inventory, although ODM fragments are present. This is not a claim that ODM
+services are absent. [Pinned libvintf lookup implementation](https://android.googlesource.com/platform/system/libvintf/+/69c456ea4aa2f503a2904cfbc11f279a3b2efb09/VintfObject.cpp)
+
+The source permits fallback when a file is missing, not to hide other load or
+parse errors. The live Xiaomi.eu libvintf binary was not compared with that
+source; schema checks, actual fragment/APEX merging and the complete effective
+manifest remain unverified. The JSON records lookup order separately from
+runtime-selection success.
 
 | Source file | Selected exact values |
 | --- | --- |
@@ -101,10 +132,11 @@ selected it. Neither `ro.boot.product.vendor.sku` nor
 | `/odm/etc/build.prop` | `ro.product.first_api_level=36` |
 | `/system/build.prop` | SDK `36`; `ro.llndk.api_level=202504`; system security patch `2026-07-01` |
 
-`ro.vendor.api_level` was not present in the nine captured `build.prop` sources
-and was not recorded from the live phone. Do not present an inferred value as a
-live result. Board/vendor API levels use a different scheme from SDK integers;
-the runtime vendor property is derived by Android initialization rules. [AOSP vendor API flags](https://source.android.com/docs/core/architecture/api-flags)
+`ro.vendor.api_level` was not present in the nine captured `build.prop` sources;
+its `202504` value above is now a direct property observation. Board/vendor API
+levels use a different scheme from SDK integers, and the runtime vendor property
+is derived by Android initialization rules. The file properties remain recorded
+separately from the later live reads. [AOSP vendor API flags](https://source.android.com/docs/core/architecture/api-flags)
 
 The system incremental remains `16OS3.1.260714.203507406.QCPECN.S`, while vendor,
 ODM and the product's public label record `OS3.0.309.0.WPACNXM`. These are
@@ -237,7 +269,7 @@ are published without replacing another output.
 Workspace tests use small offline fixtures and mocked subprocesses. They check
 tool safety and record consistency, not device compatibility. Before a first
 device build, the remaining work is an authenticated baseline, effective
-manifest/SKU/APEX resolution, an assembled Evolution X `checkvintf` evaluation,
-proprietary dependency closure and enforcing policy. Hardware and VINTF/VTS tests
-remain separate, explicitly authorized device work; no lunch target is invented
-by this record.
+manifest/fragment/APEX resolution using the observed SKUs, an assembled
+Evolution X `checkvintf` evaluation, proprietary dependency closure and enforcing
+policy. Hardware and VINTF/VTS tests remain separate, explicitly authorized
+device work; no lunch target is invented by this record.

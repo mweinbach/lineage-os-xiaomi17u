@@ -4,9 +4,11 @@ These tests protect provenance and distinctions in the published record; they
 do not revalidate private XML, run libvintf or establish hardware compatibility.
 """
 
+import hashlib
 import json
 from pathlib import Path, PurePosixPath
 import unittest
+import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,14 +32,16 @@ class VintfContractTests(unittest.TestCase):
         self.assertEqual(provenance["raw_super_sha256"], self.layout["raw_image"]["sha256"])
         self.assertIn("modified Xiaomi.eu", provenance["package_kind"])
         self.assertIsNone(provenance["source_url"])
-        for field in ("origin_verified", "phone_accessed_by_this_analysis",
+        self.assertTrue(provenance["phone_accessed_by_this_analysis"])
+        for field in ("origin_verified", "initial_offline_file_analysis_accessed_phone", "phone_modified",
                       "firmware_executed", "image_mounted", "symlinks_followed",
                       "analysis_v1_properties_usable"):
             self.assertIs(provenance[field], False, field)
         self.assertTrue(provenance["private_artifacts_git_ignored"])
         self.assertTrue(provenance["analysis"].endswith("/vintf-analysis-v2.json"))
+        verified = {"xml_well_formedness_and_recorded_hashes_verified", "requested_runtime_properties_read"}
         for field, value in record["verification_boundaries"].items():
-            self.assertIs(value, field == "xml_well_formedness_and_recorded_hashes_verified", field)
+            self.assertIs(value, field in verified, field)
 
     def test_capture_totals_and_parent_image_hashes_agree(self):
         partitions = self.record["partitions"]
@@ -136,8 +140,79 @@ class VintfContractTests(unittest.TestCase):
         for source, values in props.items():
             self.assertIn(source, self.record["source_files"])
             self.assertNotIn("ro.vendor.api_level", values)
-        self.assertEqual(set(self.record["runtime_properties_not_verified"]),
+        self.assertEqual(set(self.record["runtime_properties_missing_from_initial_baseline"]),
                          {"ro.boot.product.vendor.sku", "ro.boot.product.hardware.sku", "ro.vendor.api_level"})
+        self.assertEqual(self.record["runtime_properties_not_verified"], [])
+
+    def test_followup_reports_only_requested_properties_after_identity_checks(self):
+        observation = self.record["runtime_property_observations"]
+        expected = {"ro.boot.product.vendor.sku": "canoe",
+                    "ro.boot.product.hardware.sku": "nezha", "ro.vendor.api_level": "202504"}
+        self.assertEqual(observation["status"], "complete")
+        self.assertEqual(observation["properties"],
+                         {key: {"status": "ok", "value": value} for key, value in expected.items()})
+        self.assertEqual(observation["command_count"], 2 + 3 + len(expected))
+        self.assertEqual(observation["command_artifact_count"], 2 * observation["command_count"])
+        self.assertTrue(observation["requested_properties_only_after_identity_preflight"])
+        self.assertTrue(observation["command_artifact_readback_verified"])
+        self.assertEqual(observation["device_identity"], {
+            "manufacturer": "Xiaomi", "codename": "nezha", "non_emulator_preflight_passed": True,
+            "same_explicit_private_serial_as_baseline": True,
+        })
+        for name, value in expected.items():
+            self.assertEqual(observation["property_stdout_sha256"][name],
+                             hashlib.sha256((value + "\n").encode()).hexdigest())
+        for field in ("phone_modified", "origin_verified", "properties_are_immutable_hardware_proof",
+                      "complete_effective_vintf_verified"):
+            self.assertFalse(observation[field])
+
+    def test_followup_is_a_new_private_receipt_not_a_rewritten_baseline(self):
+        observation = self.record["runtime_property_observations"]
+        path = PurePosixPath(observation["private_receipt"])
+        self.assertFalse(path.is_absolute())
+        self.assertNotIn("..", path.parts)
+        self.assertEqual(path.parts[0], "evidence")
+        self.assertTrue(path.parts[1].startswith("vintf-properties-"))
+        self.assertEqual(path.name, "receipt.json")
+        self.assertNotEqual(str(path.parent),
+                            str(PurePosixPath(self.record["live_comparison"]["baseline_manifest"]).parent))
+        self.assertTrue(observation["previous_manifest_unchanged"])
+        self.assertEqual(observation["previous_manifest_sha256"],
+                         self.record["live_comparison"]["baseline_manifest_sha256"])
+        self.assertEqual(observation["collector"], "scripts/collect_stock.py")
+        for field in ("private_receipt_sha256", "private_manifest_sha256", "collector_sha256"):
+            self.assertRegex(observation[field], r"^[a-f0-9]{64}$")
+
+    def test_lookup_inference_uses_pinned_rules_without_claiming_loader_success(self):
+        lookup = self.record["manifest_lookup_inference"]
+        reference = lookup["reference"]
+        manifest = ET.parse(ROOT / "research/source-snapshots/evolution-bka-20260827.xml").getroot()
+        project = next(p for p in manifest.findall("project") if p.get("path") == "system/libvintf")
+        self.assertEqual(reference["commit"], project.get("revision"))
+        self.assertEqual(reference["project"], project.get("name"))
+        self.assertRegex(reference["sha256"], r"^[a-f0-9]{64}$")
+        self.assertIn(reference["commit"], reference["url"])
+        self.assertIn(reference["url"], self.record["primary_references"])
+        self.assertEqual([entry["path"] for entry in lookup["vendor_lookup_order"]],
+                         ["/vendor/etc/vintf/manifest_canoe.xml", "/vendor/etc/vintf/manifest.xml"])
+        first = lookup["vendor_lookup_order"][0]
+        self.assertEqual(first["path"], lookup["first_existing_vendor_lookup_path"])
+        self.assertTrue(first["entry_observed_in_image_inventory"])
+        self.assertEqual(first["type"], "regular")
+        self.assertIn(first["path"], self.record["source_files"])
+        self.assertFalse(lookup["alor_manifest_in_observed_sku_lookup_order"])
+        self.assertEqual([entry["path"] for entry in lookup["odm_lookup_order"]], [
+            "/odm/etc/vintf/manifest_nezha.xml", "/odm/etc/vintf/manifest.xml",
+            "/odm/etc/manifest_nezha.xml", "/odm/etc/manifest.xml",
+        ])
+        self.assertTrue(all(not e["entry_observed_in_image_inventory"] and e["type"] is None
+                            for e in lookup["odm_lookup_order"]))
+        self.assertFalse(lookup["odm_base_manifest_observed_in_image"])
+        self.assertTrue(lookup["odm_fragments_observed_in_image"])
+        self.assertTrue(lookup["lookup_fallback_requires_name_not_found"])
+        for field in ("live_xiaomi_eu_libvintf_binary_verified_against_reference",
+                      "complete_fragment_and_apex_merge_verified", "loader_schema_validation_performed"):
+            self.assertFalse(lookup[field])
 
     def test_target_candidates_do_not_claim_runtime_sku_selection(self):
         candidates = self.record["vendor_manifest_candidates"]
