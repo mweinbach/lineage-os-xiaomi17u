@@ -340,7 +340,9 @@
       "CONFIG_DM_VERITY": "y",
       "CONFIG_ANDROID_VENDOR_HOOKS": "y",
       "CONFIG_SECURITY_SELINUX": "y",
-      "CONFIG_SECURITY_SELINUX_BOOTPARAM": "n"
+      "CONFIG_SECURITY_SELINUX_BOOTPARAM": "n",
+      "CONFIG_BASIC_MODVERSIONS": "y",
+      "CONFIG_EXTENDED_MODVERSIONS": "y"
     },
     "replacement_kernel_compatibility_tested": false,
     "exact_reproducible_kernel_source_and_build_not_established": true
@@ -404,7 +406,7 @@
     "elf_machine": 183,
     "vermagic": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64",
     "module_vermagic_release_differs_from_boot_kernel": true,
-    "kmi_crc_signature_and_runtime_compatibility": "not established; release-string difference alone is not an incompatibility verdict",
+    "kmi_crc_signature_and_runtime_compatibility": "Imported CRC expectations compared in dlkm_followup; actual kernel/provider exports, signature trust and runtime compatibility remain unverified",
     "load_lists": [
       {
         "path": "lib/modules/modules.load",
@@ -1161,7 +1163,7 @@
   "bring_up_gates": [
     "Obtain an authenticated matching baseline or resolve retained AVB metadata against verified original inputs; do not reuse these inconsistent images as a verified chain.",
     "Independently establish physical boot partition sizes, slot behavior, actual bootloader authorization/unlock state and stored rollback constraints.",
-    "Review Android 16 4 KiB GKI integration with complete vendor/system DLKM module versions, symbols, CRCs, dependencies and signatures.",
+    "Review Android 16 4 KiB GKI integration with actual kernel/provider export CRCs, stage-specific DLKM dependencies, zram/zsmalloc selection, signatures and runtime validation; imported CRC comparisons alone are insufficient.",
     "Keep boot v4, separate init_boot and recovery ramdisks, vendor DTBs/DTBO and firmware dependencies distinct; do not import another model's geometry.",
     "Implement and validate AVB, first-stage fstab and enforcing SELinux requirements rather than copying modified verification omissions.",
     "Complete device/common/vendor integration and VINTF checks before registering an Evolution lunch target; no ROM boot or native feature is established."
@@ -1170,5 +1172,567 @@
     "count": 14,
     "result": "passed",
     "scope": "synthetic CPIO/FDT/ELF parser safety; not device or Android build tests"
+  },
+  "dlkm_followup": {
+    "observed_on": "2026-08-27",
+    "evidence_directory": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/boot-analysis/dlkm-contract",
+    "followup_receipt_sha256": "a9b9ab35b3bf06c2eb31277e46b020512fb9a45beedc3b2a1697e3bf61c4a8f7",
+    "module_metadata_receipt_sha256": "33a4fbe195846c968e2d30a6a2223ccffa211c4f2f7117ca80b3216adf499cac",
+    "crc_audit_directory": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/boot-analysis/dlkm-crc-audit",
+    "crc_audit_receipt_sha256": "c57b374acf5830a23ba79b0437674e1a9f8d26d68eecc55eea65f43230dd2c4a",
+    "original_boot_final_receipt_unchanged": true,
+    "capture_receipts": {
+      "vendor_dlkm": {
+        "receipt_path": "erofs/vendor_dlkm-contract-capture/receipt.json",
+        "receipt_sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+        "image_sha256": "514e5608592de4c3388a5a6bf3bc8a5c84554333cbee83aab3fdd001428f2cb1",
+        "image_size_bytes": 53035008,
+        "captured_files": 388,
+        "selected_files_all_rehashed": true
+      },
+      "system_dlkm": {
+        "receipt_path": "erofs/system_dlkm-contract-capture/receipt.json",
+        "receipt_sha256": "12ec2a9a382554686c84acb0db121c23aba8d50643193c8912ff9fc88306878d",
+        "image_sha256": "5470344df2770d9ebb1c3341d36f771922556a13db5b1d8f37f219553de24d26",
+        "image_size_bytes": 16506880,
+        "captured_files": 118,
+        "selected_files_all_rehashed": true
+      }
+    },
+    "total_module_instances": 914,
+    "distinct_module_payloads": 637,
+    "distinct_normalized_module_names": 635,
+    "sets": {
+      "vendor_ramdisk": {
+        "file_count": 430,
+        "distinct_sha256_count": 430,
+        "distinct_basename_count": 430,
+        "vermagic_counts": {
+          "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64": 430
+        },
+        "signature_appended_marker_count": 0,
+        "modinfo_hard_dependency_edges": 843,
+        "modinfo_hard_dependency_targets": 173,
+        "modinfo_hard_dependency_unresolved": [],
+        "hard_dependency_targets_only_in_other_sets": {
+          "libarc4": [
+            "system_dlkm"
+          ],
+          "rfkill": [
+            "system_dlkm"
+          ]
+        },
+        "unique_imported_symbols": 4376,
+        "cached_dep_omissions": {
+          "module_owners_with_omissions": 2,
+          "missing_edges": 2
+        }
+      },
+      "vendor_dlkm": {
+        "file_count": 381,
+        "distinct_sha256_count": 381,
+        "distinct_basename_count": 381,
+        "vermagic_counts": {
+          "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64": 380,
+          "6.12.23-android16-5-4k SMP preempt mod_unload modversions aarch64": 1
+        },
+        "signature_appended_marker_count": 0,
+        "modinfo_hard_dependency_edges": 945,
+        "modinfo_hard_dependency_targets": 190,
+        "modinfo_hard_dependency_unresolved": [],
+        "hard_dependency_targets_only_in_other_sets": {
+          "boottime": [
+            "vendor_ramdisk"
+          ],
+          "clk_dummy": [
+            "vendor_ramdisk"
+          ],
+          "clk_qcom": [
+            "vendor_ramdisk"
+          ],
+          "cmd_db": [
+            "vendor_ramdisk"
+          ],
+          "crm_v2": [
+            "vendor_ramdisk"
+          ],
+          "debug_regulator": [
+            "vendor_ramdisk"
+          ],
+          "debug_symbol": [
+            "vendor_ramdisk"
+          ],
+          "gh_dbl": [
+            "vendor_ramdisk"
+          ],
+          "gh_mem_notifier": [
+            "vendor_ramdisk"
+          ],
+          "gh_msgq": [
+            "vendor_ramdisk"
+          ],
+          "gh_rm_drv": [
+            "vendor_ramdisk"
+          ],
+          "gh_vcpu_mgr": [
+            "vendor_ramdisk"
+          ],
+          "gpu_stats": [
+            "vendor_ramdisk"
+          ],
+          "hwid": [
+            "vendor_ramdisk"
+          ],
+          "libarc4": [
+            "system_dlkm"
+          ],
+          "llcc_qcom": [
+            "vendor_ramdisk"
+          ],
+          "mdt_loader": [
+            "vendor_ramdisk"
+          ],
+          "mem_buf_dev": [
+            "vendor_ramdisk"
+          ],
+          "mem_object": [
+            "vendor_ramdisk"
+          ],
+          "memory_dump_v2": [
+            "vendor_ramdisk"
+          ],
+          "metis": [
+            "vendor_ramdisk"
+          ],
+          "mi_power": [
+            "vendor_ramdisk"
+          ],
+          "miev": [
+            "vendor_ramdisk"
+          ],
+          "minidump": [
+            "vendor_ramdisk"
+          ],
+          "mist": [
+            "vendor_ramdisk"
+          ],
+          "msm_dma_iommu_mapping": [
+            "vendor_ramdisk"
+          ],
+          "msm_gpi": [
+            "vendor_ramdisk"
+          ],
+          "pinctrl_msm": [
+            "vendor_ramdisk"
+          ],
+          "proxy_consumer": [
+            "vendor_ramdisk"
+          ],
+          "qcom_aoss": [
+            "vendor_ramdisk"
+          ],
+          "qcom_dcvs": [
+            "vendor_ramdisk"
+          ],
+          "qcom_dma_heaps": [
+            "vendor_ramdisk"
+          ],
+          "qcom_iommu_util": [
+            "vendor_ramdisk"
+          ],
+          "qcom_ipc_logging": [
+            "vendor_ramdisk"
+          ],
+          "qcom_pmu_lib": [
+            "vendor_ramdisk"
+          ],
+          "qcom_reboot_reason": [
+            "vendor_ramdisk"
+          ],
+          "qcom_rpmh": [
+            "vendor_ramdisk"
+          ],
+          "qcom_scm": [
+            "vendor_ramdisk"
+          ],
+          "qcom_scmi_client": [
+            "vendor_ramdisk"
+          ],
+          "qrtr": [
+            "vendor_ramdisk"
+          ],
+          "qseecom_proxy": [
+            "vendor_ramdisk"
+          ],
+          "qti_regmap_debugfs": [
+            "vendor_ramdisk"
+          ],
+          "rfkill": [
+            "system_dlkm"
+          ],
+          "sched_walt": [
+            "vendor_ramdisk"
+          ],
+          "secure_buffer": [
+            "vendor_ramdisk"
+          ],
+          "si_core_module": [
+            "vendor_ramdisk"
+          ],
+          "smem": [
+            "vendor_ramdisk"
+          ],
+          "socinfo": [
+            "vendor_ramdisk"
+          ],
+          "spmi_pmic_arb": [
+            "vendor_ramdisk"
+          ],
+          "swinfo": [
+            "vendor_ramdisk"
+          ],
+          "ufs_qcom": [
+            "vendor_ramdisk"
+          ]
+        },
+        "unique_imported_symbols": 4459,
+        "cached_dep_omissions": {
+          "module_owners_with_omissions": 144,
+          "missing_edges": 281
+        }
+      },
+      "system_dlkm": {
+        "file_count": 103,
+        "distinct_sha256_count": 103,
+        "distinct_basename_count": 103,
+        "vermagic_counts": {
+          "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k SMP preempt mod_unload modversions aarch64": 103
+        },
+        "signature_appended_marker_count": 103,
+        "modinfo_hard_dependency_edges": 82,
+        "modinfo_hard_dependency_targets": 31,
+        "modinfo_hard_dependency_unresolved": [],
+        "hard_dependency_targets_only_in_other_sets": {},
+        "unique_imported_symbols": 1967,
+        "cached_dep_omissions": {
+          "module_owners_with_omissions": 0,
+          "missing_edges": 0
+        }
+      }
+    },
+    "pairwise_overlap": [
+      {
+        "areas": [
+          "vendor_ramdisk",
+          "vendor_dlkm"
+        ],
+        "same_payload_count": 277,
+        "same_name_count": 277,
+        "same_name_different_payload": []
+      },
+      {
+        "areas": [
+          "vendor_ramdisk",
+          "system_dlkm"
+        ],
+        "same_payload_count": 0,
+        "same_name_count": 2,
+        "same_name_different_payload": [
+          "zram",
+          "zsmalloc"
+        ]
+      },
+      {
+        "areas": [
+          "vendor_dlkm",
+          "system_dlkm"
+        ],
+        "same_payload_count": 0,
+        "same_name_count": 2,
+        "same_name_different_payload": [
+          "zram",
+          "zsmalloc"
+        ]
+      }
+    ],
+    "same_name_different_payloads": {
+      "zram": [
+        {
+          "area": "vendor_ramdisk",
+          "path": "lib/modules/zram.ko",
+          "sha256": "7315cd4effbe0bc8e4ada9364732a1adb3219988bc9b8c3337ed2dde1b5efea4",
+          "size_bytes": 266528,
+          "vermagic": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64",
+          "signature_marker": false
+        },
+        {
+          "area": "vendor_dlkm",
+          "path": "/lib/modules/zram.ko",
+          "sha256": "7315cd4effbe0bc8e4ada9364732a1adb3219988bc9b8c3337ed2dde1b5efea4",
+          "size_bytes": 266528,
+          "vermagic": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64",
+          "signature_marker": false
+        },
+        {
+          "area": "system_dlkm",
+          "path": "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/kernel/drivers/block/zram/zram.ko",
+          "sha256": "ecacbd66a0be40d52524dfd56d6782d698512fa15495c7cae4e42ae25a6d34ac",
+          "size_bytes": 77338,
+          "vermagic": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k SMP preempt mod_unload modversions aarch64",
+          "signature_marker": true
+        }
+      ],
+      "zsmalloc": [
+        {
+          "area": "vendor_ramdisk",
+          "path": "lib/modules/zsmalloc.ko",
+          "sha256": "5d936bcf3972ad25411f03440794d29abb1133bc77492cde63b79c2d47b168da",
+          "size_bytes": 56296,
+          "vermagic": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64",
+          "signature_marker": false
+        },
+        {
+          "area": "vendor_dlkm",
+          "path": "/lib/modules/zsmalloc.ko",
+          "sha256": "5d936bcf3972ad25411f03440794d29abb1133bc77492cde63b79c2d47b168da",
+          "size_bytes": 56296,
+          "vermagic": "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64",
+          "signature_marker": false
+        },
+        {
+          "area": "system_dlkm",
+          "path": "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/kernel/mm/zsmalloc.ko",
+          "sha256": "f5d5ce5e8a3f58151f1dc9070cbf5efaf65de515a74707c442977cbdb79b30fd",
+          "size_bytes": 62066,
+          "vermagic": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k SMP preempt mod_unload modversions aarch64",
+          "signature_marker": true
+        }
+      ]
+    },
+    "system_module_blocklist": {
+      "path": "/lib/modules/system_dlkm.modules.blocklist",
+      "sha256": "370cb88e7e8915f34e94bd6b93616f263be8a3523adc15fb554a712dc016a03f",
+      "module_names": [
+        "zram",
+        "zsmalloc"
+      ],
+      "runtime_application_verified": false
+    },
+    "focus_ring_bridge": {
+      "area": "vendor_dlkm",
+      "path": "/lib/modules/focus_ring_bridge.ko",
+      "sha256": "2b49b5c4080e5426c57bf4365b11a4b214740e11af76bb4030ed434b55d9610e",
+      "size_bytes": 27352,
+      "vermagic": "6.12.23-android16-5-4k SMP preempt mod_unload modversions aarch64",
+      "declared_depends": [
+        ""
+      ],
+      "functionality_tested": false
+    },
+    "load_lists": [
+      {
+        "area": "vendor_ramdisk",
+        "path": "lib/modules/modules.load",
+        "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "line_count": 157,
+        "unique_entries": 154,
+        "unresolved": [],
+        "nonlocal": [],
+        "repeated_entries": 3,
+        "original_order_preserved_in_private_evidence": true
+      },
+      {
+        "area": "vendor_ramdisk",
+        "path": "lib/modules/modules.load.recovery",
+        "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "line_count": 435,
+        "unique_entries": 424,
+        "unresolved": [],
+        "nonlocal": [],
+        "repeated_entries": 11,
+        "original_order_preserved_in_private_evidence": true
+      },
+      {
+        "area": "vendor_dlkm",
+        "path": "/lib/modules/modules.load",
+        "sha256": "a359f35fdca6f62971111a1c98a09011fcc69ecc90216083cbd8bd74588eb631",
+        "line_count": 576,
+        "unique_entries": 381,
+        "unresolved": [],
+        "nonlocal": [],
+        "repeated_entries": 195,
+        "original_order_preserved_in_private_evidence": true
+      },
+      {
+        "area": "system_dlkm",
+        "path": "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/modules.load",
+        "sha256": "b9db7e970fab5e3f0e5e7b55285b668ca0a7b7aa1d62a249ca02d4e09025d6ff",
+        "line_count": 82,
+        "unique_entries": 82,
+        "unresolved": [],
+        "nonlocal": [],
+        "repeated_entries": 0,
+        "original_order_preserved_in_private_evidence": true
+      }
+    ],
+    "static_dependency_name_closure": {
+      "all_modinfo_hard_dependency_names_present_in_union": true,
+      "cached_dep_paths_resolve_by_name_within_each_capture": true,
+      "namespace_and_alias_policy": "Compare basename/internal module names with .ko suffix removed and '-' mapped to '_'; this is static label closure, not runtime path visibility or symbol/CRC compatibility",
+      "ramdisk_external_system_dependencies": {
+        "cfg80211": "rfkill",
+        "mac80211": "libarc4"
+      },
+      "runtime_paths_and_order_verified": false
+    },
+    "text_alias_indexes": [
+      {
+        "area": "vendor_ramdisk",
+        "sha256": "16931d51bdefc1b000df88e0bd3a03d320436d51a602499e8bcaaae00b992841",
+        "line_count": 1174,
+        "target_count": 163,
+        "unique_alias_pairs": 1174,
+        "unresolved_targets": [],
+        "nonlocal_targets": []
+      },
+      {
+        "area": "vendor_dlkm",
+        "sha256": "341b11a23e4d5546fde796df3fe33fa476e10cfade5a34c231487270858fda25",
+        "line_count": 1117,
+        "target_count": 144,
+        "unique_alias_pairs": 1117,
+        "unresolved_targets": [],
+        "nonlocal_targets": []
+      },
+      {
+        "area": "system_dlkm",
+        "sha256": "b041c231f9c04b4349e5a3b410343df6e3ead8486a0a12d25042cc6b026135c4",
+        "line_count": 1284,
+        "target_count": 47,
+        "unique_alias_pairs": 1284,
+        "unresolved_targets": [],
+        "nonlocal_targets": []
+      }
+    ],
+    "text_alias_rows": 3575,
+    "unique_text_alias_pattern_target_pairs": 2860,
+    "text_alias_patterns_with_multiple_targets": 7,
+    "text_soft_dependencies": [
+      {
+        "area": "vendor_ramdisk",
+        "sha256": "646495a49690d0b527480b26cecf8d8afc5834a9b553b1264412382d2c5aa124",
+        "line_count": 22,
+        "unresolved_labels": [
+          "phy-msm-snps-hs"
+        ]
+      },
+      {
+        "area": "vendor_dlkm",
+        "sha256": "38949ab45d1c5af3c8cbe69eb05e6acde85936a05b870a3e380820126e85c476",
+        "line_count": 26,
+        "unresolved_labels": [
+          "phy-msm-snps-hs",
+          "qcom-arm-smmu-mod",
+          "subsys-pil-tz"
+        ]
+      },
+      {
+        "area": "system_dlkm",
+        "sha256": "ac2de753255c506934be29e69261f1485f51ee9cf9c2bf467bcc0c4cf95f8713",
+        "line_count": 0,
+        "unresolved_labels": []
+      }
+    ],
+    "soft_dependency_limit": "Unresolved labels are absent from parsed text indexes and module/builtin names; binary indexes and runtime alias behavior are not verified",
+    "crc_audit": {
+      "module_count": 914,
+      "all_modules_have_classic_and_extended_sections": true,
+      "classic_extended_shared_entries_agree": true,
+      "intra_set_imported_crc_conflicts": 0,
+      "system_extended_only_long_name_entries": 60,
+      "module_layout_crc_all_modules": "0xe976b219",
+      "pairwise_import_expectation_comparisons": [
+        {
+          "conflicting_symbol_count": 0,
+          "conflicting_symbols": {},
+          "identical_module_content_sha256_count": 277,
+          "left": "vendor_boot",
+          "right": "vendor_dlkm",
+          "shared_symbol_count": 3225,
+          "single_matching_crc_symbol_count": 3225
+        },
+        {
+          "conflicting_symbol_count": 1,
+          "conflicting_symbols": {
+            "zs_malloc": {
+              "system_dlkm": {
+                "0x36f39fe1": [
+                  "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/kernel/drivers/block/zram/zram.ko"
+                ]
+              },
+              "vendor_boot": {
+                "0x1804f5bc": [
+                  "lib/modules/zram.ko"
+                ]
+              }
+            }
+          },
+          "identical_module_content_sha256_count": 0,
+          "left": "vendor_boot",
+          "right": "system_dlkm",
+          "shared_symbol_count": 743,
+          "single_matching_crc_symbol_count": 742
+        },
+        {
+          "conflicting_symbol_count": 1,
+          "conflicting_symbols": {
+            "zs_malloc": {
+              "system_dlkm": {
+                "0x36f39fe1": [
+                  "/lib/modules/6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k/kernel/drivers/block/zram/zram.ko"
+                ]
+              },
+              "vendor_dlkm": {
+                "0x1804f5bc": [
+                  "/lib/modules/zram.ko"
+                ]
+              }
+            }
+          },
+          "identical_module_content_sha256_count": 0,
+          "left": "vendor_dlkm",
+          "right": "system_dlkm",
+          "shared_symbol_count": 840,
+          "single_matching_crc_symbol_count": 839
+        }
+      ],
+      "single_differing_symbol": "zs_malloc",
+      "vendor_zram_expected_crc": "0x1804f5bc",
+      "system_zram_expected_crc": "0x36f39fe1",
+      "source_format_reference_commit": "b26e879f6cc411c763756cd586f505e480950d19",
+      "source_revision_matches_stock_kernel": false,
+      "kernel_export_crcs_verified": false,
+      "module_provider_export_crcs_verified": false,
+      "stock_module_symvers_available": false,
+      "vmlinux_kmi_compatibility_verified": false,
+      "synthetic_malformed_format_tests_passed": 9
+    },
+    "module_signatures": {
+      "system_bounded_pkcs7_envelopes": 103,
+      "signature_bytes_each": 681,
+      "vendor_and_ramdisk_instances_without_appended_marker": 811,
+      "cryptographic_signatures_verified": false,
+      "signer_or_kernel_trust_established": false
+    },
+    "runtime_module_loading_tested": false,
+    "firmware_executed": false,
+    "phone_accessed": false,
+    "avb_failures_resolved": false,
+    "remaining_requirements": [
+      "Validate actual kernel and provider export CRCs and signatures, especially zs_malloc across zram/zsmalloc variants; do not infer acceptance from matching module_layout or release strings.",
+      "Preserve stage-specific module copies, list order and blocklist selection; reconcile vendor/ramdisk hard dependencies on system modules and vendor dependencies on early ramdisk providers.",
+      "Resolve the three remaining text soft-dependency labels without assuming optional, missing, or safe to delete; verify runtime namespace and alias policy.",
+      "Keep existing AVB failures, physical partition geometry, authenticated firmware, VINTF/device integration and hardware validation gates explicit."
+    ]
   }
 }

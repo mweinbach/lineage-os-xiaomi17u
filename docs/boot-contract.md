@@ -123,9 +123,110 @@ lists, not only release labels.
 All named modules and the dependencies in the 430-line `modules.dep` resolve
 within this ramdisk inventory. The lists contain duplicates; preserve their
 observed order as evidence rather than silently rewriting them. This does not
-test load order, symbol resolution, or compatibility with the separate
-`system_dlkm` and `vendor_dlkm` images. Exact reproducible kernel sources and a
-replacement kernel build remain outstanding.
+establish complete ELF dependency closure: the subsequent DLKM inspection
+below finds dependencies outside that cached list. Load order, symbol/CRC
+compatibility, exact reproducible kernel sources, and a replacement kernel
+build remain unverified.
+
+## Verified DLKM inventories and dependencies
+
+The bounded EROFS captures subsequently provided **381 vendor_dlkm modules**
+and **103 system_dlkm modules**, together with their text indexes and lists.
+All 506 captured regular files were rehashed against their capture receipts;
+the 430 ramdisk modules were rechecked against their CPIO offsets and hashes.
+The additive evidence is under `boot-analysis/dlkm-contract/`; its receipt has
+SHA256 `33a4fbe195846c968e2d30a6a2223ccffa211c4f2f7117ca80b3216adf499cac`.
+The original boot `final-receipt.json` remains unchanged. No module was loaded,
+image mounted, or archive pathname materialized by this follow-up.
+
+| Location | Module files | Distinct payloads within location | Observed release family |
+| --- | ---: | ---: | --- |
+| Vendor ramdisk | 430 | 430 | All use the Mi release above |
+| vendor_dlkm | 381 | 381 | 380 use the Mi release; one shorter release string |
+| system_dlkm | 103 | 103 | All match the boot kernel's GKI release |
+
+Across these locations there are **914 file instances, 637 distinct SHA256
+payloads, and 635 distinct module names**. The vendor ramdisk and vendor_dlkm
+share 277 byte-identical modules: 153 occur only in the ramdisk and 104 only in
+vendor_dlkm. No system_dlkm payload is byte-identical to either vendor set.
+This inventory does not justify moving or deduplicating files across boot
+stages.
+
+The two names with different GKI/vendor payloads are `zram.ko` and
+`zsmalloc.ko`. The supplied vendor_dlkm file
+`/lib/modules/system_dlkm.modules.blocklist` names both system versions; its
+SHA256 is `370cb88e7e8915f34e94bd6b93616f263be8a3523adc15fb554a712dc016a03f`.
+That records package selection policy, not proof that the eventual Evolution
+loader applies it correctly. Do not let extraction overwrite one version with
+the other.
+
+The vendor-only exception is `focus_ring_bridge.ko`, 27,352 bytes, SHA256
+`2b49b5c4080e5426c57bf4365b11a4b214740e11af76bb4030ed434b55d9610e`.
+It reports release `6.12.23-android16-5-4k` and an empty `.modinfo` dependency
+list. Its presence and name do not demonstrate a working focus ring or remove
+the need for symbol, CRC, signature, and runtime checks.
+
+| DLKM load list | Entries in original order | Unique module names | Missing local file names |
+| --- | ---: | ---: | ---: |
+| vendor_dlkm `modules.load` | 576 | 381 | 0 |
+| system_dlkm `modules.load` | 82 | 82 | 0 |
+
+The vendor list contains 195 repeated entries; the system list has no repeats.
+The 381-row vendor and 103-row system `modules.dep` files refer to names
+present in their respective captures. These are static name checks using
+basenames/internal module names with hyphens normalized to underscores;
+absolute runtime paths, loader behavior, and symbol resolution were not tested.
+
+ELF `.modinfo` reveals additional dependencies omitted from those local cached
+lists. Vendor_dlkm depends on **49 module names provided only by the vendor
+ramdisk**, plus system_dlkm's `libarc4` and `rfkill`. The ramdisk's
+`mac80211`/`cfg80211` modules also declare `libarc4`/`rfkill`, respectively.
+All declared hard-dependency names are present somewhere in the three sets;
+the sets are not independently complete. Integration must account for the
+actual early-boot/system/vendor loading stages.
+
+The three text alias indexes contain 3,575 rows and 2,860 distinct pattern/target
+pairs. Every target resolves by module name in its own set. Seven USB alias
+patterns list multiple driver targets, so an alias match is not a demonstrated
+driver binding. The parsed text soft-dependency/index data leaves
+`phy-msm-snps-hs`, `qcom-arm-smmu-mod`, and `subsys-pil-tz` unresolved.
+Determine whether these are stale/optional labels or require other inputs;
+do not silently remove them. Binary index interpretation and runtime alias
+resolution remain outside this check.
+
+All 103 system modules contain bounded PKCS#7 signature envelopes with 681
+signature bytes each; none of the 811 vendor/ramdisk module instances has the
+appended marker. Envelope structure does not verify a signature, identify a
+trusted signer, or establish the target kernel's acceptance policy.
+
+The separate `boot-analysis/dlkm-crc-audit/receipt.json` has SHA256
+`c57b374acf5830a23ba79b0437674e1a9f8d26d68eecc55eea65f43230dd2c4a`.
+All 914 modules contain classic and extended symbol-version sections, matching
+the kernel's enabled basic/extended MODVERSIONS configuration. Shared entries
+agree between each module's two sections, and no imported-symbol CRC conflicts
+occur within an individual capture set. The system set also has 60 long-name
+entries present only in the extended table.
+
+| Module sets compared | Shared imported symbols | Matching expected CRCs |
+| --- | ---: | ---: |
+| Vendor ramdisk / vendor_dlkm | 3,225 | 3,225 |
+| Vendor ramdisk / system_dlkm | 743 | 742 |
+| vendor_dlkm / system_dlkm | 840 | 839 |
+
+The single differing symbol is **`zs_malloc`**, imported by `zram`:
+vendor/ramdisk modules expect `0x1804f5bc`, while the system module expects
+`0x36f39fe1`. These are measured binary expectations, not an inference from
+release names. Keep the zram/zsmalloc variants and the recorded blocklist
+selection distinct until their actual provider exports and loader policy are
+validated. All captured modules record `module_layout=0xe976b219`, but that
+single agreement is not a complete KMI check.
+
+This comparison checks imports against other modules' import expectations.
+**It does not check kernel or module-provider export CRCs**, an authoritative
+stock `Module.symvers`, `vmlinux`, signature trust, or actual loadability.
+Format interpretation used pinned Android common reference
+`b26e879f6cc411c763756cd586f505e480950d19`, not a claim that this is the stock
+kernel's source revision. The original AVB failures remain unchanged.
 
 ## Ramdisk, fstab and bootconfig
 
@@ -269,7 +370,9 @@ AVB result into a pass.
    state, and stored rollback constraints separately. Image sizes cannot fill
    those gaps.
 3. Review the Android 16, 4 KiB kernel strategy together with the full module
-   sets, KMI/CRC/signature requirements, dependencies and load order.
+   sets, provider export CRCs, signature requirements, cross-partition load
+   order, and the distinct zram/zsmalloc variants. Resolve the three remaining
+   text soft-dependency labels without assuming the sets load independently.
 4. Preserve the observed separation of boot, init_boot, recovery, vendor boot,
    DTB/DTBO and virtualization firmware. Derive Nezha-specific fstab, AVB and
    enforcing SELinux integration instead of copying this package's omissions
@@ -279,5 +382,7 @@ AVB result into a pass.
    been demonstrated by this inspection.
 
 Fourteen synthetic CPIO/FDT/ELF parser safety tests passed without a phone or
-network. The normal `make test` suite remains separate from these private
-inspection checks, hardware validation, and a full Android build.
+network; the DLKM audit added nine passing malformed-format tests for symbol
+versions and signature envelopes. The normal `make test` suite remains
+separate from these private inspection checks, hardware validation, and a full
+Android build.
