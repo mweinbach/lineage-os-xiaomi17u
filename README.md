@@ -35,6 +35,15 @@ should be unlocked, wiped, or flashed as part of workspace setup.
   checks. Its download origin is unverified, and it is not authenticated Xiaomi
   factory firmware. See [the supplied-package receipt](docs/provided-firmware.md)
   for its hash and the difference between its filename and embedded build label.
+- Verified extraction of all 66 supplied image members, reconstruction of the
+  15 sparse super overlays, and extraction of eight populated logical images.
+  Independent tools produced matching hashes, and all eight EROFS checks passed.
+  **Retained AVB metadata fails against vendor_boot and all eight logical
+  images.** These are modified research inputs, not a valid signed image set.
+- Exact boot/kernel/DTBO and module evidence, plus 13 camera dependency seeds
+  with file/image hashes. The package's Camera APK matches the live snapshot.
+  Physical boot-partition sizes, module ABI compatibility and a viable device
+  product remain unresolved.
 
 This Mac can also host the Linux build environment through **Apple Container +
 Rosetta**. The working configuration uses a pinned Ubuntu 24.04 ARM64 image,
@@ -123,13 +132,18 @@ properties do not independently establish physical variant or bootloader state.
 | [Firmware intake](docs/firmware-intake.md) | Preserve local ROM packages and provenance without executing scripts |
 | [Matching firmware](docs/firmware-source.md) | Verified Xiaomi CDN URLs, partial download status, and safe resumption requirements |
 | [Supplied Xiaomi.eu package](docs/provided-firmware.md) | Verified local integrity, unverified origin, embedded identity and sparse super layout |
+| [Firmware analysis](docs/firmware-analysis.md) | Verified sparse reconstruction, logical layout and filesystem checks |
+| [Boot/kernel/AVB contract](docs/boot-contract.md) | Exact boot formats, modules, DTs and retained verification failures |
+| [Nezha integration plan](docs/nezha-integration.md) | Future device/vendor/kernel boundaries and product activation gates |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 
 ## What must happen before building or testing the ROM
 
-1. Establish the exact official China firmware baseline and extraction inputs,
-   separately from the Xiaomi.eu app snapshot.
+1. Establish the exact official China firmware baseline and resolve the
+   supplied modified package's AVB inconsistencies. Preserve the Xiaomi.eu app
+   snapshot and dependency evidence separately; do not repair verification
+   failures by disabling checks or copying its modified fstab.
 2. Complete the Nezha product/common/vendor/kernel dependencies. The public
    Nezha scaffold has a missing product makefile, stale model identity, and
    absent vendor/kernel inputs. Other-device partition/AVB settings must not

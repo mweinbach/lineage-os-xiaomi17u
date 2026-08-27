@@ -21,6 +21,14 @@ then add Xiaomi-specific services and apps in isolated changes. Keep a stock
 baseline for every proposed feature. Do not overwrite a working vendor stack
 with another phone's files or make SELinux permissive to hide missing policy.
 
+The supplied-package follow-up has now located and hashed 13 external Camera
+dependencies and confirmed that its Camera APK matches the live snapshot.
+See the [camera findings](camera-baseline.md) and the concrete
+[Nezha integration plan](nezha-integration.md). These are static dependency
+results only. The package's retained AVB metadata does not match its modified
+images, so its fstab and images must not become an unreviewed boot/security
+template for the port. Every hardware acceptance test below remains unrun.
+
 ## Dependency and acceptance matrix
 
 The public global hardware baseline is documented in
