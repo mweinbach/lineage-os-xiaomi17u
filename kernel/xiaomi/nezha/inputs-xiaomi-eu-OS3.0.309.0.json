@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN",
+    "soc": "SM8850"
+  },
+  "provenance": {
+    "parent_package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "source_kind": "user-provided",
+    "source_url": null,
+    "origin_verified": false,
+    "package_kind": "modified Xiaomi.eu package, not authenticated Xiaomi factory firmware",
+    "filename": "xiaomi.eu_NEZHA_OS3.0.309.0.WPACNXM_16.zip",
+    "package_size_bytes": 9914891416
+  },
+  "kernel": {
+    "release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "architecture": "arm64",
+    "page_size_bytes": 4096,
+    "boot_header_version": 4,
+    "dtb_count": 8,
+    "dtbo_count": 1,
+    "dtbo_board_id": [
+      8,
+      0
+    ],
+    "dtbo_miboard_id": [
+      5,
+      0
+    ],
+    "boot_security_patch": "2026-02-01"
+  },
+  "validation": {
+    "input_avb_status": "failed",
+    "kernel_abi_verified": false,
+    "module_signatures_verified": false,
+    "device_tested": false
+  },
+  "receipts": {
+    "boot": {
+      "path": "boot-analysis/final-receipt.json",
+      "sha256": "3615d62f4e4a61a11ff476ca47a245fa63a462136c53e688db66979f437879db",
+      "type": "boot-analysis"
+    },
+    "archive": {
+      "path": "archive-images/receipt.json",
+      "sha256": "1f749f25336d1eddcbb58fdd9ab5fc55a8649f268bf95aa8234351d80865ab11",
+      "type": "archive-images"
+    },
+    "vendor": {
+      "path": "erofs/vendor_dlkm-contract-capture/receipt.json",
+      "sha256": "b27754a78c4a1f842ea77c1d2149ed4af945e6ef63879a02a9ad24005ee915ad",
+      "type": "erofs-capture",
+      "image_sha256": "514e5608592de4c3388a5a6bf3bc8a5c84554333cbee83aab3fdd001428f2cb1"
+    },
+    "system": {
+      "path": "erofs/system_dlkm-contract-capture/receipt.json",
+      "sha256": "12ec2a9a382554686c84acb0db121c23aba8d50643193c8912ff9fc88306878d",
+      "type": "erofs-capture",
+      "image_sha256": "5470344df2770d9ebb1c3341d36f771922556a13db5b1d8f37f219553de24d26"
+    },
+    "avb": {
+      "path": "boot-analysis/verification/receipt.json",
+      "sha256": "6a75bd65289e8d661b330bf4d007e680f5c377f8694c1c1af7ab847300fab54b",
+      "type": "avb-verification"
+    }
+  },
+  "files": [
+    {
+      "role": "kernel",
+      "receipt": "boot",
+      "member": "unpacked/boot/kernel",
+      "output": "kernel/Image"
+    },
+    {
+      "role": "dtb",
+      "receipt": "boot",
+      "member": "unpacked/vendor_boot/dtb",
+      "output": "dtb/vendor.dtb"
+    },
+    {
+      "role": "dtbo",
+      "receipt": "archive",
+      "member": "dtbo.img",
+      "output": "dtbo/dtbo.img"
+    },
+    {
+      "role": "kernel_config",
+      "receipt": "boot",
+      "member": "kernel.config",
+      "output": "reference/kernel.config"
+    },
+    {
+      "role": "vendor_ramdisk",
+      "receipt": "boot",
+      "member": "unpacked/vendor_boot/vendor_ramdisk00",
+      "output": "reference/ramdisks/vendor_boot.lz4"
+    },
+    {
+      "role": "init_ramdisk",
+      "receipt": "boot",
+      "member": "unpacked/init_boot/ramdisk",
+      "output": "reference/ramdisks/init_boot.lz4"
+    },
+    {
+      "role": "recovery_ramdisk",
+      "receipt": "boot",
+      "member": "unpacked/recovery/ramdisk",
+      "output": "reference/ramdisks/recovery.lz4"
+    },
+    {
+      "role": "bootconfig",
+      "receipt": "boot",
+      "member": "unpacked/vendor_boot/bootconfig",
+      "output": "reference/vendor.bootconfig"
+    },
+    {
+      "role": "fstab",
+      "receipt": "boot",
+      "member": "text-members/vendor_boot-0001.txt",
+      "output": "config/fstab.qcom"
+    }
+  ],
+  "module_sets": {
+    "vendor_ramdisk": {
+      "source": "cpio-inventory",
+      "receipt": "boot",
+      "cpio_member": "ramdisks/vendor_boot.cpio",
+      "inventory_member": "ramdisks/vendor_boot-inventory.json"
+    },
+    "vendor_dlkm": {
+      "source": "erofs-capture",
+      "receipt": "vendor"
+    },
+    "system_dlkm": {
+      "source": "erofs-capture",
+      "receipt": "system"
+    }
+  },
+  "expected_module_counts": {
+    "vendor_ramdisk": 430,
+    "vendor_dlkm": 381,
+    "system_dlkm": 103
+  },
+  "system_dlkm_blocklist": {
+    "module_set": "vendor_dlkm",
+    "path": "system_dlkm.modules.blocklist"
+  },
+  "required_system_blocklist_modules": [
+    "zram",
+    "zsmalloc"
+  ],
+  "source_reference": {
+    "micode_kernel_commit": "45705be1220b4cfa8100516ad86711656c0b634e",
+    "micode_device_tree_commit": "667482462e15458b602a2688a94efd47a5010141",
+    "usage": "Shared Canoe/KMI reference only; no sibling kernel, overlay or debug fragment is copied."
+  },
+  "limitations": [
+    "Local candidate packaging preserves known failed Xiaomi.eu input AVB and unknown publisher origin; it is not flashing approval.",
+    "Stock compressed ramdisks, IKCONFIG, bootconfig and fstab are reference inputs. No original fstab or prebuilt ramdisk is activated by the generated include.",
+    "Kernel/provider export CRCs, cryptographic module signing trust and runtime loading remain unverified. Different zram/zsmalloc payloads stay separate, with the captured system blocklist.",
+    "The stock load-list order and duplicates are preserved; generated Android depmod metadata and native module loading are not validated by packaging.",
+    "No physical partition capacity, complete Android build, boot success or native-feature result is claimed."
+  ]
+}
