@@ -1,11 +1,14 @@
 """Offline candidate derivation and admission tests; no private inputs required."""
 
 import copy
+from contextlib import redirect_stderr, redirect_stdout
 import hashlib
+import io
 import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 from scripts import generate_device_tree as generator
 
@@ -21,6 +24,11 @@ DATA_ROW = (
     "latemount,wait,check,fileencryption=aes-256-xts:aes-256-cts:v2+wrappedkey_v0,"
     "keydirectory=/metadata/vold/metadata_encryption,"
     "metadata_encryption=aes-256-xts:wrappedkey_v0,checkpoint=fs"
+)
+INVALID_VARIANTS = (
+    "", " ", "eng", "production", "User", "user userdebug", "user eng",
+    "userdebug userdebug", "user\tuserdebug", "user\neng", " user", "user ",
+    None, True, 1, ["user"],
 )
 
 
@@ -43,8 +51,8 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name).resolve()
 
-    def plan(self, records=None):
-        return generator.derive_plan(records or self.records, self.identities)
+    def plan(self, records=None, **options):
+        return generator.derive_plan(records or self.records, self.identities, **options)
 
     def fstab(self, physical=None):
         boot = self.records["boot-contract"]
@@ -65,8 +73,8 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         boot["first_stage_fstab"]["sha256"] = hashlib.sha256(raw).hexdigest()
         return path
 
-    def candidate(self):
-        plan = self.plan()
+    def candidate(self, **options):
+        plan = self.plan(**options)
         payloads = {
             (generator.DEVICE_PATH / name).as_posix(): b"# Synthetic candidate template\n"
             for name in generator.TEMPLATE_FILES
@@ -197,6 +205,99 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                          (ROOT / generator.SECURITY_PATCH).read_bytes())
         self.assertFalse(plan["required_source_adjustments"][0]["applied_by_generator"])
         self.assertEqual(generator.validate(first), plan)
+
+    def test_default_variant_remains_userdebug_and_explicit_user_changes_only_variant(self):
+        default = self.plan()
+        self.assertEqual(default["variant"], "userdebug")
+        self.assertEqual(default, self.plan(variant="userdebug"))
+        user = self.plan(variant="user")
+        self.assertEqual(user, {**default, "variant": "user"})
+        self.assertEqual(user["admission"], default["admission"])
+        self.assertEqual(user["avb_policy"], default["avb_policy"])
+
+    def test_plan_rejects_eng_empty_multiple_and_nonstring_variants(self):
+        for variant in INVALID_VARIANTS:
+            with self.subTest(variant=variant), self.assertRaisesRegex(generator.CandidateError, "variant"):
+                self.plan(variant=variant)
+
+    def test_user_generation_validates_without_changing_security_or_packaging_gates(self):
+        inputs = self.generation_inputs()
+        default_path, user_path = self.root / "artifacts/default", self.root / "artifacts/user"
+        default = generator.generate(default_path, **inputs)
+        user = generator.generate(user_path, variant="user", **inputs)
+        self.assertEqual(default["variant"], "userdebug")
+        self.assertEqual(user, {**default, "variant": "user"})
+        self.assertEqual(generator.validate(user_path), user)
+        self.assertEqual(default["files"], user["files"])
+        for purpose in ("target-files", "flash"):
+            with self.subTest(purpose=purpose), self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(user_path, purpose=purpose)
+        for flag in ("flash_allowed", "complete_target_files_allowed"):
+            changed = copy.deepcopy(user)
+            changed["admission"][flag] = True
+            (user_path / "admission.json").write_text(json.dumps(changed))
+            with self.subTest(flag=flag), self.assertRaisesRegex(generator.CandidateError, "cannot promote"):
+                generator.validate(user_path)
+        changed = copy.deepcopy(user)
+        changed["avb_policy"]["disabled_flags"] = ["--flags 3"]
+        (user_path / "admission.json").write_text(json.dumps(changed))
+        with self.assertRaisesRegex(generator.CandidateError, "AVB policy was weakened"):
+            generator.validate(user_path)
+
+    def test_generate_rejects_invalid_variants_before_reading_inputs_or_creating_output(self):
+        output = self.root / "artifacts/rejected-variant"
+        with mock.patch.object(generator, "_load_records") as load:
+            for variant in INVALID_VARIANTS:
+                with self.subTest(variant=variant), self.assertRaisesRegex(generator.CandidateError, "variant"):
+                    generator.generate(output, record_paths={}, kernel_receipt=None,
+                                       vendor_receipt=None, variant=variant)
+                self.assertFalse(output.exists())
+            load.assert_not_called()
+
+    def test_validation_rejects_missing_and_invalid_variant_in_admission(self):
+        plan = self.candidate()
+        for variant in INVALID_VARIANTS:
+            self.save_admission({**plan, "variant": variant})
+            with self.subTest(variant=variant), self.assertRaisesRegex(generator.CandidateError, "variant"):
+                generator.validate(self.root)
+        plan.pop("variant")
+        self.save_admission(plan)
+        with self.assertRaisesRegex(generator.CandidateError, "variant"):
+            generator.validate(self.root)
+
+    def test_cli_plan_defaults_to_userdebug_and_records_explicit_variant(self):
+        for arguments, expected in (([], "userdebug"), (["--variant", "userdebug"], "userdebug"),
+                                    (["--variant", "user"], "user")):
+            stdout = io.StringIO()
+            with self.subTest(arguments=arguments), redirect_stdout(stdout):
+                self.assertEqual(generator.main(["plan", *arguments]), 0)
+            self.assertEqual(json.loads(stdout.getvalue())["variant"], expected)
+
+    def test_cli_generate_propagates_default_and_explicit_variant(self):
+        for arguments, expected in (([], "userdebug"), (["--variant", "userdebug"], "userdebug"),
+                                    (["--variant", "user"], "user")):
+            with self.subTest(arguments=arguments), mock.patch.object(generator, "generate", return_value={}) as generate:
+                with redirect_stdout(io.StringIO()):
+                    result = generator.main([
+                        "generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                        "--output", "artifacts/cli-user", *arguments,
+                    ])
+                self.assertEqual(result, 0)
+                self.assertEqual(generate.call_args.kwargs["variant"], expected)
+
+    def test_cli_plan_and_generate_reject_invalid_variants_before_work(self):
+        for command in ("plan", "generate"):
+            required = (["--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                         "--output", "artifacts/cli-user"] if command == "generate" else [])
+            for variant in (value for value in INVALID_VARIANTS if isinstance(value, str)):
+                with self.subTest(command=command, variant=variant), \
+                        mock.patch.object(generator, "_load_records") as load, \
+                        mock.patch.object(generator, "generate") as generate:
+                    with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+                        generator.main([command, *required, "--variant", variant])
+                    self.assertEqual(error.exception.code, 2)
+                    load.assert_not_called()
+                    generate.assert_not_called()
 
     def test_generation_refuses_overwrite_and_paths_outside_artifacts(self):
         inputs = self.generation_inputs()
@@ -444,6 +545,35 @@ class GenerateDeviceTreeTests(unittest.TestCase):
 
 
 class NezhaBoardHookTests(unittest.TestCase):
+    def test_board_allows_exactly_one_user_or_userdebug_variant_and_keeps_security_guards(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        guard = (
+            "ifneq ($(TARGET_BUILD_VARIANT),user)\n"
+            "ifneq ($(TARGET_BUILD_VARIANT),userdebug)\n"
+            "$(error Nezha framework-checks product requires user or userdebug; eng weakens upstream AVB policy)\n"
+            "endif\n"
+            "endif"
+        )
+        self.assertIn(guard, board)
+        self.assertNotIn("$(filter user userdebug,$(TARGET_BUILD_VARIANT))", board)
+        for required in (
+            "BOARD_AVB_ENABLE := true",
+            "BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false",
+            "ifneq ($(filter true,$(SELINUX_IGNORE_NEVERALLOWS) $(BUILD_BROKEN_DUP_SYSPROP)),)",
+            "$(error Nezha candidate does not permit SELinux or duplicate-property check bypasses)",
+            "ifneq ($(strip $(filter target-files-package otapackage updatepackage bacon superimage super_empty,$(MAKECMDGOALS))),)",
+            "$(error Nezha framework-checks profile does not admit complete target-files, OTA or super packaging; see generated admission.json)",
+            "RELAX_USES_LIBRARY_CHECK := false",
+            "ifneq ($(RELAX_USES_LIBRARY_CHECK),false)",
+        ):
+            self.assertIn(required, board)
+        self.assertLess(board.index(guard), board.index("include vendor/lineage/config/BoardConfigLineage.mk"))
+
+    def test_lunch_choices_include_user_and_userdebug_but_never_eng(self):
+        products = (generator.ROOT / "device/xiaomi/nezha/AndroidProducts.mk").read_text()
+        choices = products.split("COMMON_LUNCH_CHOICES :=", 1)[1].replace("\\", "").split()
+        self.assertEqual(choices, ["lineage_nezha-bp4a-userdebug", "lineage_nezha-bp4a-user"])
+
     def test_stock_loader_gets_its_vendor_dlkm_selector_without_blocking_vendor_modules(self):
         product = (generator.ROOT / "device/xiaomi/nezha/device.mk").read_text()
         include = "include $(NEZHA_KERNEL_INPUTS)/kernel-inputs.mk"

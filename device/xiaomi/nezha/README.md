@@ -1,8 +1,9 @@
-# Nezha engineering product
+# Nezha framework-checks product
 
-This is authored Android device source for `lineage_nezha-bp4a-userdebug` on
-Evolution X `bka`, using verified local input hashes and the exact stock-prebuilt
-kernel strategy. It does not inherit another phone's common BoardConfig.
+This is authored Android device source for `lineage_nezha-bp4a-userdebug` and
+`lineage_nezha-bp4a-user` on Evolution X `bka`, using verified local input hashes
+and the exact stock-prebuilt kernel strategy. It does not inherit another
+phone's common BoardConfig.
 
 Generate the complete device directory into a new ignored staging root:
 
@@ -12,6 +13,17 @@ python3 scripts/generate_device_tree.py generate \
   --vendor-receipt artifacts/VENDOR_BUNDLE/vendor-inputs.json \
   --output artifacts/device-candidates/nezha-001
 ```
+
+`plan` and `generate` default to `--variant userdebug`. Add `--variant user`
+to select the stricter user variant and record that selection in
+`admission.json`. Both commands accept only the exact values `user` and
+`userdebug`; validation also rejects missing or invalid receipt variants.
+BoardConfig requires exactly one of these variants and rejects `eng`, which
+weakens upstream AVB policy. Both variants retain the same AVB, SELinux, APK
+validation, source-sandbox and packaging gates. Registering the user lunch
+choice does not establish that a user build succeeds or boots, or authorize
+flashing. Keep user validation in a separate `OUT_DIR` to preserve existing
+userdebug outputs.
 
 The optional `--device-baseline`, `--boot-contract`, `--firmware-layout` and
 `--vintf-contract` arguments select new sanitized records. Values and image

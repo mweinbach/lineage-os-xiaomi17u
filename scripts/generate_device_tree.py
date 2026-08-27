@@ -35,6 +35,7 @@ TEMPLATE_FILES = (
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
+BUILD_VARIANTS = ("user", "userdebug")
 FRAMEWORK_PARTITIONS = (
     "system", "system_ext", "product", "vendor", "odm", "vendor_dlkm", "system_dlkm",
 )
@@ -59,6 +60,12 @@ class CandidateError(ValueError):
 def _require(condition, message):
     if not condition:
         raise CandidateError(message)
+
+
+def _build_variant(value):
+    _require(isinstance(value, str) and value in BUILD_VARIANTS,
+             "build variant must be exactly user or userdebug; eng is not admitted")
+    return value
 
 
 def _integer(value, label, maximum=MAX_FILE_BYTES):
@@ -172,8 +179,9 @@ def _file_entries(root, entries):
     return result
 
 
-def derive_plan(records, identities):
+def derive_plan(records, identities, *, variant="userdebug"):
     """Pure derivation from sanitized records; physical fit is never inferred."""
+    variant = _build_variant(variant)
     _require(set(records) == set(RECORD_NAMES), "all four source records are required")
     for name, record in records.items():
         _require(_codename(record) == "nezha", f"not a Nezha record: {name}")
@@ -262,7 +270,7 @@ def derive_plan(records, identities):
         "schema_version": 1,
         "profile": "framework-checks",
         "device": {"codename": "nezha", "hardware_region": "CN", "soc": "SM8850"},
-        "product": "lineage_nezha", "release_config": "bp4a", "variant": "userdebug",
+        "product": "lineage_nezha", "release_config": "bp4a", "variant": variant,
         "input_records": identities,
         "source_packages": {"kernel": boot_package, "vendor": vendor_package},
         "mixed_package_sources": boot_package != vendor_package,
@@ -535,9 +543,11 @@ def _load_records(record_paths):
 
 
 def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_source=None,
-             workspace_root=ROOT, template_root=ROOT / DEVICE_PATH, patch_source_root=ROOT):
+             variant="userdebug", workspace_root=ROOT, template_root=ROOT / DEVICE_PATH,
+             patch_source_root=ROOT):
+    variant = _build_variant(variant)
     records, identities = _load_records(record_paths)
-    plan = derive_plan(records, identities)
+    plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
     _bind_vendor_header(plan, records["boot-contract"], workspace_root)
     if fstab_source is None:
@@ -583,6 +593,7 @@ def validate(output, *, purpose="configuration"):
     _require(purpose in ("configuration", "target-files", "flash"), "unsupported admission purpose")
     plan, _ = _read_json(Path(output) / "admission.json")
     _require(plan.get("profile") == "framework-checks" and _codename(plan) == "nezha", "wrong candidate profile")
+    _build_variant(plan.get("variant"))
     admission = plan["admission"]
     _require(admission["flash_allowed"] is False and admission["complete_target_files_allowed"] is False,
              "candidate receipt cannot promote itself to flash/complete packaging")
@@ -618,6 +629,8 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     for command in ("plan", "generate"):
         sub = commands.add_parser(command)
+        sub.add_argument("--variant", choices=BUILD_VARIANTS, default="userdebug",
+                         help="framework-checks build variant (default: userdebug); never a flash admission")
         for name in RECORD_NAMES:
             sub.add_argument("--" + name, type=Path, default=ROOT / "research" / (name + ".json"))
         if command == "generate":
@@ -635,10 +648,11 @@ def main(argv=None):
         else:
             paths = {name: getattr(args, name.replace("-", "_")) for name in RECORD_NAMES}
             if args.command == "plan":
-                result = derive_plan(*_load_records(paths))
+                result = derive_plan(*_load_records(paths), variant=args.variant)
             else:
                 result = generate(args.output, record_paths=paths, kernel_receipt=args.kernel_receipt,
-                                  vendor_receipt=args.vendor_receipt, fstab_source=args.fstab_source)
+                                  vendor_receipt=args.vendor_receipt, fstab_source=args.fstab_source,
+                                  variant=args.variant)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

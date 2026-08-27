@@ -37,8 +37,10 @@ BOARD_AVB_ENABLE := true
 # build actions to write into OUT_DIR instead; this strengthens that default.
 BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false
 
+ifneq ($(TARGET_BUILD_VARIANT),user)
 ifneq ($(TARGET_BUILD_VARIANT),userdebug)
-$(error Nezha framework-checks product requires userdebug; eng weakens upstream AVB policy)
+$(error Nezha framework-checks product requires user or userdebug; eng weakens upstream AVB policy)
+endif
 endif
 ifneq ($(filter true,$(SELINUX_IGNORE_NEVERALLOWS) $(BUILD_BROKEN_DUP_SYSPROP)),)
 $(error Nezha candidate does not permit SELinux or duplicate-property check bypasses)
