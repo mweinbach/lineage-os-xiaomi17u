@@ -114,6 +114,17 @@ class BuildProgressTests(unittest.TestCase):
         self.assertEqual(camera["input_admission_sha256"], self.record["device_admission"]["sha256"])
         self.assertEqual(len(camera["targets"]), 9)
 
+    def test_camera_source_mount_is_observed_not_just_requested(self):
+        sandbox = self.record["camera_build"]["sandbox_observation"]
+        self.assertRegex(sandbox["sha256"], r"^[a-f0-9]{64}$")
+        self.assertTrue(sandbox["ninja_ran_under_nsjail"])
+        self.assertEqual(set(sandbox["namespace_separation"]), {"mnt", "net", "pid", "user"})
+        self.assertTrue(all(sandbox["namespace_separation"].values()))
+        self.assertTrue(sandbox["source_read_only"])
+        self.assertTrue(sandbox["output_read_write"])
+        self.assertEqual(sandbox["checks_disabled_by_this_probe"], [])
+        self.assertFalse(self.record["camera_build"]["camera_function_verified"])
+
 
 if __name__ == "__main__":
     unittest.main()

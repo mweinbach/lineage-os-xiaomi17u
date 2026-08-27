@@ -2,7 +2,8 @@
 
 This plan applies to the user's **China-hardware Xiaomi 17 Ultra (`nezha`,
 SM8850 / `canoe`)** and Evolution X **Android 16 QPR2 `bka`**. An authored
-`framework-checks` product is now registered and passes Soong/Kati. It is
+`framework-checks` product is now registered, passes Soong/Kati and has built
+Android ARM64 `libbase.so` and the x86-64 host VINTF checker. It is
 recorded under `device.development_target` in `config/sources.json`; the
 complete-ROM fields remain `build_ready=false` and `lunch_target=null`.
 See [current build progress](build-progress.md). Missing hardware/flash
@@ -32,13 +33,16 @@ unresolved exact Nezha board and module requirements.
 | Physical boot chain | Current by-name links include A/B boot, init_boot, vendor_boot, recovery, DTBO, vbmeta and vbmeta_system | All 30 follow-up sysfs size/start reads were denied. Image file sizes are not proof of physical partition capacity or offsets. |
 | Kernel | Extracted boot kernel release matches the running 6.12.23 Android 16 GKI release | Module ABI, symbol CRCs, signatures, DT selection and source/licensing requirements are separate checks. A different vendor module release suffix alone does not prove incompatibility. |
 | Camera APK | Package copy is byte-for-byte identical to the earlier live Camera APK | No Camera or Leica feature has been tested on Evolution X. |
-| Vendor compatibility | Supplied vendor manifest target-level is `202504`; board API level is `202504`; ODM first API level is `36` | Merge and check the actual vendor/ODM manifests against the selected Evolution framework and its policy. Static XML does not prove working services. |
+| Vendor compatibility | Target-level and board API are `202504`; ODM first API is `36`. The built validator loads/merges vendor/ODM plus the observed active vendor APEX fragments successfully. | Full compatibility with the assembled Evolution framework, kernel and policy remains unverified. Static acceptance does not prove working services. |
 | Vendor patch level | Supplied vendor build reports `2026-02-01`; system reports `2026-07-01` | Do not rewrite vendor security metadata to the system date. |
 
 The [device baseline](device-baseline.md), [provided package](provided-firmware.md),
 [source audit](device-research.md), [VINTF contract](vintf-contract.md),
 [boot/DLKM contract](boot-contract.md), and [camera baseline](camera-baseline.md)
 keep acquisition facts separate from integration hypotheses.
+The later [actual VINTF validation](vintf-validation.md) and
+[vendor APEX inspection](apex-dependencies.md) record the checks performed on
+those inputs without replacing the original captures.
 
 ## Intended source boundaries
 
@@ -126,9 +130,10 @@ The platform checkpoint now has a successful Repo result, unchanged manifest/
 Repo pins, 1,179 verified clean project checkouts, a resolved manifest with full
 commit IDs, and verified content hashes for all 99 LFS files. The
 [source record](../research/source-sync.json) documents that checkpoint.
-Rosetta's real host-tool proofs and the later successful Nezha product
-configuration remain separate from an Android module, kernel or ROM build
-result. [Build progress](build-progress.md) records the current compiler checks.
+Rosetta's standalone host-tool proofs, Nezha product configuration and the
+successful first Android module build each have separate receipts. A source
+kernel and complete ROM have not yet been built. [Build progress](build-progress.md)
+records the current Camera compilation and actual read-only Ninja sandbox.
 
 After dependency admission, check product inheritance, artifact paths, VINTF,
 ELF dependencies, kernel module compatibility, SELinux and AVB before attempting

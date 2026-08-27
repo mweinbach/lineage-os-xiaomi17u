@@ -31,6 +31,15 @@ results only. The package's retained AVB metadata does not match its modified
 images, so its fstab and images must not become an unreviewed boot/security
 template for the port. Every hardware acceptance test below remains unrun.
 
+The actual built [VINTF checker](vintf-validation.md) now accepts the vendor/ODM
+manifest load and merge, including the observed active CAS/Widevine fragments.
+The [APEX inspection](apex-dependencies.md) also links the three active vendor
+packages to the captured firmware by content hashes. These results establish
+inputs and static declarations, not Evolution service activation or DRM
+eligibility. The authored product has built its first Android modules; nine
+selected Camera dependencies are undergoing a separate compilation check.
+APK signing, class-loader integration and feature tests remain distinct steps.
+
 The later [XDA community review](community-bringup.md) provides maintainer reports
 of a substantial Nezha Leica port and camera-session integration on a separate
 LineageOS build. Its device tree is private, it uses a distinct official firmware

@@ -93,8 +93,13 @@ The actual Ninja process was observed under nsjail with separate mount,
 network, PID and user namespaces. Its initial product configuration mounted
 source **read-write**, unlike the earlier standalone read-only probe.
 The later authored board setting explicitly requires read-only source for the
-Camera build. Neither observation should be substituted for the other, and
-the upstream basic Soong/Kati sandbox remains unchanged.
+Camera build. Its actual Ninja mount table at `19:37:34 UTC` confirmed source
+read-only and output read-write, with the same four separate namespaces.
+The observation receipt has SHA256
+`30916dc00013762cb2e8d05bbb86ab42e6f80f38f47c3f1bfade62c5926f977e`.
+Neither observation should be substituted for the other, and the upstream
+basic Soong/Kati sandbox remains unchanged. Observing the running process is
+not a successful build result.
 
 The current v4 device admission selects Camera bundle v2 and that stronger
 source setting. Both earlier installed source directories were preserved
@@ -102,6 +107,13 @@ outside the Android checkout before replacement; only 575,475 bytes of small
 files crossed from the host. Vendor/ODM images were copied and reverified
 inside the same VM with unchanged hashes. The Camera build is a separate
 experiment; its current result is in the build record.
+
+The built host checker also passed a [vendor/ODM VINTF load and merge](vintf-validation.md)
+with the unchanged active APEX list and exact CAS/Widevine fragments. The
+stock-framework check reports five HIDL definitions absent from this
+validator's compiled metadata. Full compatibility with the assembled Evolution
+framework remains a separate check; no matrix or APEX list was filtered to
+produce a pass.
 
 The second attempt found an upstream CI-packaging assumption about output
 paths. With an absolute `OUT_DIR`, the host Perfetto path reached the normal

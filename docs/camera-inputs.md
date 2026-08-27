@@ -5,8 +5,10 @@ The [explicit selection](../vendor/xiaomi/nezha/camera-selection.json) prepares
 JNI library, four DEX JARs and four permission XMLs. Seven files are unchanged
 captures; two XML registrations are explicitly derived. It is a bounded set of
 captured dependencies, not a complete Camera port or a proven minimum for every
-feature. The Camera APK and full MIUI framework are not included. No phone,
-Downloads folder, container or device tree was accessed or changed by this slice.
+feature. The Camera APK and full MIUI framework are not included. The verified
+bundle is now installed in the existing builder for the separate module check
+recorded in [build progress](build-progress.md). No Camera APK was installed
+and no phone was modified.
 
 The package remains the user-provided modified Xiaomi.eu input with SHA256
 `b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69`.
@@ -95,7 +97,13 @@ All four JARs are DEX archives, not ordinary `.class` JARs. Their original stems
 and system-ext installation paths are preserved. The private Soong module names
 do not establish their runtime shared-library names or the Camera APK's
 class-loader context: the pinned `dex_import` does not expose `provides_uses_lib`.
-No uses-library, signature or preprocessed-APK check was disabled. [Pinned DEX importer](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/java.go)
+The selection does not change signature or uses-library settings, but that is
+not proof of strict APK validation: the current product inherits
+`RELAX_USES_LIBRARY_CHECK=true` from `vendor/extras/bcr/bcr.mk`. The generated
+dexpreopt configuration confirms that value. It must be corrected and verified
+before APK integration; the Camera APK is not part of this dependency build.
+Signature and preprocessed-APK checks have not been exercised by these JAR
+imports. [Pinned DEX importer](https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/java.go)
 
 Companion and cameraopt XMLs remain byte-for-byte copies and point to the selected
 JARs under `/system_ext/framework/`. **Two derived XML registrations** address
@@ -214,7 +222,7 @@ inspection. A plan does not rehash the blobs or establish their buildability.
 The capture workflow and its canonical image-path rules are documented in the
 [EROFS guide](vintf-contract.md#guarded-read-only-reproduction).
 
-The five binary-module targets for the next Soong check are:
+The five binary-module targets submitted for the Soong check are:
 
 ```text
 nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so
@@ -229,8 +237,10 @@ imports. The new CameraX XML module is
 `nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml`; the corrected
 postproc keeps module
 `nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml`.
-The five binary target names are unchanged. No transfer to the Linux checkout or
-activation in a device tree was performed by this slice. Generation and offline tests establish input integrity
-and the intended build definitions; a real Soong result, enforcing policy,
-VINTF compatibility and separately authorized hardware tests are still needed
-before claiming any stock Camera or Leica feature works on Evolution X.
+The five binary target names are unchanged. Generation and offline tests
+establish input integrity and the intended build definitions. The later
+installation and actual build result are tracked separately in
+[build progress](build-progress.md). Enforcing policy, complete VINTF
+compatibility, APK integration and separately authorized hardware tests are
+still needed before claiming any stock Camera or Leica feature works on
+Evolution X.

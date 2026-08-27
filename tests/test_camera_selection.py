@@ -183,7 +183,8 @@ class CameraSelectionTests(unittest.TestCase):
         document = " ".join((ROOT / "docs/camera-inputs.md").read_text().split())
         for text in ("Two derived XML registrations", "platform-miui.xml",
                      "captured postproc XML still points to", "The Camera APK and full MIUI framework are not included",
-                     "No uses-library, signature or preprocessed-APK check was disabled"):
+                     "RELAX_USES_LIBRARY_CHECK=true", "not proof of strict APK validation",
+                     "Signature and preprocessed-APK checks have not been exercised"):
             self.assertIn(text, document)
 
 

@@ -298,7 +298,7 @@
     "Input package is modified Xiaomi.eu with failed retained AVB and unverified origin; local input hashing does not authenticate it.",
     "Source AVB failures do not prevent safe product/module checks. Complete target-files/OTA/super and flash admission remain false.",
     "Image lengths/LP declarations are build budgets, not measured physical partition fit.",
-    "Actual bootloader unlock state, VINTF/policy, kernel-export ABI and native-feature behavior remain unverified.",
+    "Vendor/ODM VINTF load/merge passed including active vendor APEX fragments; full framework compatibility, enforcing policy, kernel-export ABI, bootloader state and native-feature behavior remain unverified.",
     "A completed official-named TGZ is visible in Downloads by size only; content reads timed out and it has not been accepted."
   ],
   "camera_build": {
@@ -326,7 +326,24 @@
     "driver_sha256": "ea714f05d8f3732c63c68fe23d3ad051e38eff41655aa5218cfd1fd024816fc3",
     "ninja_read_only_source_required": true,
     "strict_elf_checks_required": true,
-    "camera_function_verified": false
+    "camera_function_verified": false,
+    "sandbox_observation": {
+      "private_receipt": "reports/nezha-camera-1-sandbox.json",
+      "sha256": "30916dc00013762cb2e8d05bbb86ab42e6f80f38f47c3f1bfade62c5926f977e",
+      "guest_receipt": "/work/validation/nezha-framework-20260827T1835Z/camera-1/sandbox-process.json",
+      "observed_at": "2026-08-27T19:37:34.502359+00:00",
+      "ninja_ran_under_nsjail": true,
+      "namespace_separation": {
+        "mnt": true,
+        "net": true,
+        "pid": true,
+        "user": true
+      },
+      "source_read_only": true,
+      "output_read_write": true,
+      "checks_disabled_by_this_probe": [],
+      "scope": "Observed the actual Camera product Ninja process and its mount table; no namespace entry, process modification or build-completion claim."
+    }
   },
   "post_module_source_audit": {
     "private_receipt": "reports/post-module-source-audit.json",
