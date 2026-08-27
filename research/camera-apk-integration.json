@@ -1,0 +1,465 @@
+{
+  "alignment": {
+    "all_zip_aligned_16k_does_not_prove_all_elf_aligned_16k": true,
+    "all_zip_crc_verified_entries": 9477,
+    "elf_4k_only_paths": [
+      "lib/arm64-v8a/libHawk.so",
+      "lib/arm64-v8a/libavif_android.so",
+      "lib/arm64-v8a/libpendant.so"
+    ],
+    "elf_pt_load_alignment_and_congruence_16k_pass": 37,
+    "elf_pt_load_alignment_and_congruence_4k_pass": 40,
+    "four_kib_only_elf_details": [
+      {
+        "path": "lib/arm64-v8a/libHawk.so",
+        "pt_load_alignments": [
+          4096
+        ],
+        "sha256": "d50b855580fe43901fe58d076acc7e63c0fc312d8cf7ceac9bb242138283aad8",
+        "size_bytes": 53392
+      },
+      {
+        "path": "lib/arm64-v8a/libavif_android.so",
+        "pt_load_alignments": [
+          4096
+        ],
+        "sha256": "0c1cc68b4a5ef944a0e92f2d31ec28886064ea96a94c6f550a4bf6adb65d5433",
+        "size_bytes": 864424
+      },
+      {
+        "path": "lib/arm64-v8a/libpendant.so",
+        "pt_load_alignments": [
+          4096
+        ],
+        "sha256": "185cbd54f460de1ee786ee41b684db6f563ff54931aa7765c9cbc4ebd82795e5",
+        "size_bytes": 5240
+      }
+    ],
+    "independent_readelf_crosschecked_exception_libraries": 3,
+    "kernel_evidence": "research/boot-contract.json",
+    "kernel_evidence_sha256": "4fead7f08bfdd0c6e46280e154d6720e981298d0dc9deef8e9508e3f734fd865",
+    "native_libraries": 40,
+    "native_stored_and_zip_aligned_16k": 40,
+    "observed_nezha_kernel_page_size_bytes": 4096,
+    "runtime_linking_or_execution_verified": false,
+    "zipalign_check_16k_exit_code": 0,
+    "zipalign_check_4k_exit_code": 0
+  },
+  "apk": {
+    "package": "com.android.camera",
+    "runtime_path": "/product/priv-app/MiuiCamera/MiuiCamera.apk",
+    "sha256": "cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79",
+    "size_bytes": 170279563,
+    "unchanged_after_checks": true,
+    "version_code": 630070100,
+    "version_name": "6.3.007010.0",
+    "zip_crc_verified_entries": 9477
+  },
+  "authored_strict_fix": {
+    "actual_uses_library_commands_must_omit": "--enforce-uses-libraries-relax",
+    "admission": {
+      "board_config_sha256": "8a0913b67ca2434178526a5decfb2b17bfd3b63ecbdd82c06a0f5e2c8b0ae7e9",
+      "path": "artifacts/device-candidates/nezha-xiaomi-eu-framework-v5/admission.json",
+      "sha256": "b08915e0328cb87da5829bc55df2a2b851bbdfad6981ef08c3bab9a50adc7ca7"
+    },
+    "assignment": "RELAX_USES_LIBRARY_CHECK := false",
+    "commit": "91832e011a2703e73fd093afc7b0ee0f0ad5704d",
+    "generated_configuration_readback_verified": false,
+    "installed_at_this_snapshot": false,
+    "path": "device/xiaomi/nezha/BoardConfig.mk",
+    "placement": "after inherited vendor/kernel BoardConfig includes; before dex_preopt_config.mk makes the variable readonly",
+    "rejects_non_false_effective_value": true,
+    "required_next_configuration": {
+      "DisablePreopt": false,
+      "OnlyPreoptArtBootImage": false,
+      "RelaxUsesLibraryCheck": false,
+      "WithDexpreopt": true
+    }
+  },
+  "device": "nezha",
+  "dex_packaging": {
+    "compressed_dex_entries": 8,
+    "compressed_jni_entries": 0,
+    "dex_entries": 8,
+    "preprocessed_required_for_retained_signature_at_target_sdk_35": true,
+    "privileged_check_observed_failure": "Contains compressed dex files and is privileged",
+    "unprivileged_check_pass_does_not_approve_privilege_removal": true
+  },
+  "hardware_region": "CN",
+  "manifest": {
+    "does_not_require_system_uid_by_manifest": true,
+    "extract_native_libs": false,
+    "fresh_aapt2_shared_user_tokens": 0,
+    "min_sdk": 29,
+    "optional_uses_libraries_in_order": [
+      "miui-cameraopt",
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "shared_user_id_declared": false,
+    "shared_user_max_sdk_declared": false,
+    "target_sdk": 35
+  },
+  "next_prerequisites": [
+    "Verify the authored strict override in the next admitted build configuration; do not report the earlier relaxed configuration as strict APK validation.",
+    "Provide real DEX install-path and declared class-loader-context metadata under the observed miui-cameraopt runtime name; a name-only alias is insufficient.",
+    "Choose an approved privilege/signing contract and compatible signed packaging; retain the original APK and record any separately authorized transformation.",
+    "Audit signature-sensitive integrations, transitive Java/native dependencies and enforcing policy before claiming a native feature works."
+  ],
+  "observed_product_policy": {
+    "DeviceCheckPrebuiltMaxPageSize": true,
+    "DeviceMaxPageSizeSupported": 16384,
+    "DisablePreopt": false,
+    "OnlyPreoptArtBootImage": false,
+    "RelaxUsesLibraryCheck": true,
+    "UncompressPrivAppDex": true,
+    "WithDexpreopt": true,
+    "generated_files": {
+      "dexpreopt-lineage_nezha.config": {
+        "sha256": "4ee254c3a6fa3bba00fb2db01e79144ea65c15b7b7bdc5c965e928f7c4aa652c",
+        "size_bytes": 5268
+      },
+      "soong.lineage_nezha.variables": {
+        "sha256": "6bfe0e2b5ff44bb0d58631a1196f41f063323f8b4471563832a9bc7c401244b5",
+        "size_bytes": 338782
+      }
+    },
+    "product_broken_flag_alone_overrides_relaxation": false,
+    "relaxation_source": {
+      "assignment": "RELAX_USES_LIBRARY_CHECK=true",
+      "file_sha256": "3dd0134df3b44c40fb80eba7293a02604beb01686760f29e02a1c8b7f7e27ed3",
+      "included_by": "vendor/lineage/config/telephony.mk:40",
+      "line": 6,
+      "path": "bcr/bcr.mk",
+      "project": "vendor/extras",
+      "revision": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+      "target_include_bcr_default": true
+    },
+    "scope": "Camera-v2 inputs with device-v4 at the review snapshot; not the later authored v5 admission."
+  },
+  "provenance": {
+    "firmware_kind": "modified Xiaomi.eu",
+    "origin_verified": false,
+    "package_avb_consistent": false,
+    "package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "private_evidence_files": {
+      "artifact-checks.json": "93ad9f23ec1f979cec31b31caa6d41636fc2ae194d6b615a3a9f916b1679bf81",
+      "config-order-public-cert.json": "43205282f4b1119e5a85c3428501477e8260613741c263860c81f76fcfa3bfd9",
+      "guest-readonly-v2.json": "95b79f77cb524a12a9b9afa7f305700e75c7ba8e1c1ae0dc250b87f6765f116e",
+      "make-include-order.json": "afbafa73331f4d0cf617d2c11faf2f2a6fc16a2eb0be9d482bb938931b5a5abb",
+      "permission-signature-prerequisites.json": "814e16bd39af8b2149a686f55ed5ec12e22792c3dc47e805da5d49e4158ba788",
+      "pinned-check-results.json": "3d0b41af11b2e16e8cd3a202b6b43b4724d22ff27a91d99b6b855df1838f258c",
+      "policy-origin.json": "9c613b144040b112d4db209d07acfecef1d0bce15bdc8164ebbe4ca90b06287f",
+      "readelf-alignment-crosscheck.json": "f7b64ca9564f1dbc4ec30d7d8f9ca78b28c5e102d3be794c3c29f9b119b98ca4"
+    },
+    "private_review_receipt": {
+      "path": "reports/camera-apk-import-review-20260827/receipt.json",
+      "sha256": "2b0732ea80574aecd436a9e2e2177fc4fdef750599dc802519368c90bbf767a2"
+    },
+    "source_kind": "user-provided"
+  },
+  "review_completed_at": "2026-08-27T19:53:31.793315+00:00",
+  "schema_version": 1,
+  "signature": {
+    "actual_installed_platform_signature_or_future_release_key_verified": false,
+    "apksigner_verifies": true,
+    "certificate_sha256": "f87bd41b5bf1d78023a823b29a40e08ad3d90e7570c96f01d6a804b47245e869",
+    "compared_public_certificates": [
+      {
+        "certificate_der_sha256": "c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8",
+        "path": "build/make/target/product/security/platform.x509.pem",
+        "pem_file_sha256": "9837de028f460c35cc8d3fa45f14eecce30f6fbfe4b93d399aef1acb80c20d14"
+      },
+      {
+        "certificate_der_sha256": "a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc",
+        "path": "build/make/target/product/security/testkey.x509.pem",
+        "pem_file_sha256": "a4384ba815b9499a5ce349b4e33c1755278873fe2eac150a068823f526e6dbde"
+      }
+    ],
+    "key_algorithm": "RSA",
+    "key_size_bits": 2048,
+    "matches_pinned_default_platform_or_testkey": false,
+    "origin_authenticated": false,
+    "permission_grants_verified": false,
+    "pure_platform_signature_permissions_requested": [
+      "android.permission.CONTROL_DEVICE_STATE",
+      "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+      "android.permission.INJECT_EVENTS"
+    ],
+    "signers": 1,
+    "verified_schemes": [
+      "v3"
+    ]
+  },
+  "source_files": [
+    {
+      "path": "java/app_import.go",
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "872d75d0a9002e51d1c48b755738426ca3f65021b74e554d8937f8d0bade87c2",
+      "url": "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/app_import.go"
+    },
+    {
+      "path": "java/app.go",
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "88b591f10b0a0e7e3e2720044566dc997b7f2a03d28763e413a38e2c80af4690",
+      "url": "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/app.go"
+    },
+    {
+      "path": "java/java.go",
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "c87d46743c32e4f9381dd7d828ff8e4f7c88387c382a8a5f3a927a01962b8e0b",
+      "url": "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/java.go"
+    },
+    {
+      "path": "scripts/check_prebuilt_presigned_apk.py",
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "b122f7b0b5224a0ffbf5135751e99d02f1dfcc93f4a1f8ffd1e07b2b98996614",
+      "url": "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/scripts/check_prebuilt_presigned_apk.py"
+    },
+    {
+      "path": "scripts/manifest_check.py",
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+      "url": "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/scripts/manifest_check.py"
+    },
+    {
+      "path": "java/dexpreopt.go",
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "aeb784b9f58c833dfb7ab1e2c580bcfdc44adc68192dec6e1d3414b2c70003d8",
+      "url": "https://github.com/Evolution-X/build_soong/blob/cbcbea9e65503ca15b363a0b06dda88fdbcb0154/java/dexpreopt.go"
+    },
+    {
+      "path": "libs/WindowManager/Jetpack/Android.bp",
+      "project": "frameworks/base",
+      "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+      "sha256": "fe7436c4191dbc7766dad3fa232a7f1be70e81db3af4106e52b8a4e79a8ee435",
+      "url": "https://github.com/Evolution-X/frameworks_base/blob/8140698cc12983deecdbd434220affb5f931bfc6/libs/WindowManager/Jetpack/Android.bp"
+    },
+    {
+      "path": "core/envsetup.mk",
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "17bd8c57f366abaa384614b9ff5872ac162f72739293a1d92ca2d9f9bc443e41",
+      "url": "https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/core/envsetup.mk"
+    },
+    {
+      "path": "core/config.mk",
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "6e3fa7096b649fd7cc51e011aeba3cd7d34b16f6681c9344c7eb5f15114a57ee",
+      "url": "https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/core/config.mk"
+    },
+    {
+      "path": "core/board_config.mk",
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "435a06a259b4d81b284b2a8b193992fe4f0e6544b630abc18c5040d3ddeb2953",
+      "url": "https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/core/board_config.mk"
+    },
+    {
+      "path": "core/dex_preopt_config.mk",
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "e844eafe94f0b5a15efa26e75a7de67cb3caebda2962451eb4045e6c0b4c2433",
+      "url": "https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/core/dex_preopt_config.mk"
+    },
+    {
+      "path": "core/res/AndroidManifest.xml",
+      "project": "frameworks/base",
+      "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+      "sha256": "8230bf30f6b2eeea9df536446f1f904407a6c54a4d3f18e51673e5b28ad80beb",
+      "url": "https://github.com/Evolution-X/frameworks_base/blob/8140698cc12983deecdbd434220affb5f931bfc6/core/res/AndroidManifest.xml"
+    },
+    {
+      "path": "bcr/bcr.mk",
+      "project": "vendor/extras",
+      "revision": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+      "sha256": "3dd0134df3b44c40fb80eba7293a02604beb01686760f29e02a1c8b7f7e27ed3",
+      "url": "https://github.com/Evolution-X/vendor_extras/blob/c401d732c0475b7010c205a2e9bfb0fd6888d0be/bcr/bcr.mk"
+    },
+    {
+      "path": "config/telephony.mk",
+      "project": "vendor/lineage",
+      "revision": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "url": "https://github.com/Evolution-X/vendor_evolution/blob/11d2966a3294a0a692fc958127c770cfe9c00a3c/config/telephony.mk"
+    },
+    {
+      "path": "target/product/security/platform.x509.pem",
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "9837de028f460c35cc8d3fa45f14eecce30f6fbfe4b93d399aef1acb80c20d14",
+      "url": "https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/target/product/security/platform.x509.pem"
+    },
+    {
+      "path": "target/product/security/testkey.x509.pem",
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "a4384ba815b9499a5ce349b4e33c1755278873fe2eac150a068823f526e6dbde",
+      "url": "https://github.com/Evolution-X/build/blob/a438ca40c6ed779042f806142b1165ba1360a7b2/target/product/security/testkey.x509.pem"
+    }
+  ],
+  "source_pins": {
+    "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "frameworks/base": "8140698cc12983deecdbd434220affb5f931bfc6",
+    "vendor/extras": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+    "vendor/lineage": "11d2966a3294a0a692fc958127c770cfe9c00a3c"
+  },
+  "standalone_checks": [
+    {
+      "arguments": [
+        "verify",
+        "--verbose",
+        "--print-certs"
+      ],
+      "exit_code": 0,
+      "name": "apksigner-verify",
+      "scope": "APK signature integrity, not signer origin",
+      "tool": "SDK 36.0.0 apksigner"
+    },
+    {
+      "arguments": [
+        "-c",
+        "-P",
+        "4",
+        "-v",
+        "4"
+      ],
+      "exit_code": 0,
+      "name": "zipalign-4k",
+      "scope": "ZIP data alignment only",
+      "tool": "SDK 36.0.0 zipalign"
+    },
+    {
+      "arguments": [
+        "-c",
+        "-P",
+        "16",
+        "-v",
+        "4"
+      ],
+      "exit_code": 0,
+      "name": "zipalign-16k",
+      "scope": "ZIP data alignment only",
+      "tool": "SDK 36.0.0 zipalign"
+    },
+    {
+      "arguments": [],
+      "exit_code": 1,
+      "name": "presigned-without-preprocessed",
+      "reason": "target SDK 35 requires preprocessed: true",
+      "tool": "pinned check_prebuilt_presigned_apk.py"
+    },
+    {
+      "arguments": [
+        "--preprocessed"
+      ],
+      "exit_code": 0,
+      "name": "preprocessed-normal",
+      "scope": "standalone nonprivileged packaging check, not an import choice",
+      "tool": "pinned check_prebuilt_presigned_apk.py"
+    },
+    {
+      "arguments": [
+        "--preprocessed",
+        "--privileged",
+        "--uncompress-priv-app-dex"
+      ],
+      "exit_code": 1,
+      "name": "preprocessed-privileged-uncompress",
+      "reason": "eight compressed DEX entries under the observed privileged policy",
+      "tool": "pinned check_prebuilt_presigned_apk.py"
+    },
+    {
+      "exit_code": 0,
+      "name": "manifest-exact",
+      "optional_uses_libraries": [
+        "miui-cameraopt",
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "tool": "pinned manifest_check.py"
+    },
+    {
+      "exit_code": 255,
+      "name": "manifest-current-module",
+      "optional_uses_libraries": [
+        "nezha_system_ext_framework_miui_cameraopt_jar",
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "reason": "module name does not match the manifest runtime library name",
+      "tool": "pinned manifest_check.py"
+    },
+    {
+      "exit_code": 0,
+      "name": "manifest-qualified-runtime",
+      "optional_uses_libraries": [
+        "//vendor/xiaomi/nezha:miui-cameraopt",
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "scope": "name comparison only; does not create a CLC provider",
+      "tool": "pinned manifest_check.py"
+    }
+  ],
+  "status": "Read-only APK prerequisite review; not an APK import, complete dependency graph, or device test.",
+  "tool_versions": {
+    "llvm_readelf_binary_sha256": "37e565359be0c9f2868348dd314416a420d137ee84c891ec8474cf7d29cfd995",
+    "ndk_revision": "28.2.13676358",
+    "sdk_build_tools": "36.0.0",
+    "sdk_files_sha256": {
+      "aapt2": "a8844d4089b442b034aed8953deee1893253053c900e03141ae7173e3edd8157",
+      "apksigner": "b47549e373b895ce6ca620d0c7887e674d9615ffa837a86ac601dcfd04adb0f0",
+      "lib/apksigner.jar": "3716d9311e55d2b0918a2fd9d54ba9e406c5f6abeea700b287f11259bc163dec",
+      "source.properties": "7dee6632e9ad6cb111da2bb99d747211e27927061b1276d040bb1d71fded5ebb",
+      "zipalign": "0427144f4a3fd242c5a159e7088637082539ae556bc1d2bbc2032bb775d47cea"
+    }
+  },
+  "uses_library_contract": {
+    "current_cameraopt_module": "nezha_system_ext_framework_miui_cameraopt_jar",
+    "current_dex_import_exposes_provides_uses_lib": false,
+    "current_dex_import_has_uses_library_dependency_provider": false,
+    "current_module_type": "dex_import",
+    "current_namespaced_miui_module_checker_exit_code": 255,
+    "declared_library_order_matters": true,
+    "dependency_graph_with_apk_verified": false,
+    "exact_manifest_checker_exit_code": 0,
+    "next_step": "Implement and test a real DEX uses-library/CLC provider with the observed runtime name and actual DEX paths, or obtain the matching supported Java library inputs; do not declare the installed library missing or disable checks.",
+    "other_three_captured_system_ext_jars_are_not_manifest_uses_libraries": true,
+    "platform_window_java_modules_and_xml_exist_at_pinned_revision": true,
+    "platform_window_module_type": "java_library",
+    "platform_window_modules": [
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "provider_conclusion": "Static inspection of pinned source, independently hash-matched to guest; no APK Soong import attempted.",
+    "provider_extension_implemented": false,
+    "qualified_exact_runtime_name_checker_exit_code": 0,
+    "renaming_dex_import_alone_sufficient": false,
+    "required_uses_libraries": []
+  },
+  "verification_boundaries": {
+    "apk_executed": false,
+    "apk_imported": false,
+    "apk_installed": false,
+    "apk_rewritten": false,
+    "apk_signed": false,
+    "checks_disabled": [],
+    "checks_to_bypass": [],
+    "full_dependency_closure_verified": false,
+    "native_feature_tested": false,
+    "permissions_granted_verified": false,
+    "phone_accessed": false,
+    "runtime_loading_verified": false,
+    "signature_origin_authenticated": false,
+    "standalone_host_validators_exercised": true,
+    "vm_source_or_output_written_by_review": false
+  }
+}
