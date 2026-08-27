@@ -2,8 +2,13 @@
 # Install the Ubuntu host packages; never touches a phone or Android source tree.
 set -euo pipefail
 
+if (( $# > 1 )); then
+  printf '%s\n' 'Choose exactly one option: --print or --install. Nothing was installed.' >&2
+  exit 2
+fi
+
 packages=(
-  git git-lfs gnupg flex bison build-essential zip curl zlib1g-dev
+  git git-lfs gnupg ca-certificates flex bison build-essential zip curl zlib1g-dev
   libc6-dev-i386 libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils
   xsltproc unzip fontconfig python3 python3-venv bc ccache lz4
   libssl-dev libelf-dev rsync

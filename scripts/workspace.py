@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 from urllib.parse import urlparse
+import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +27,12 @@ def checked_path(root, relative):
     part = PurePosixPath(relative)
     if part.is_absolute() or ".." in part.parts or not part.parts:
         raise ValueError(f"Unsafe managed path: {relative!r}")
-    target = (root / relative).resolve()
+    target = root.resolve()
+    for component in part.parts:
+        target = target / component
+        if target.is_symlink():
+            raise ValueError(f"Symlink in managed path: {relative!r}")
+    target = target.resolve()
     if not target.is_relative_to(root.resolve()) or target == root.resolve():
         raise ValueError(f"Managed path escapes workspace: {relative!r}")
     return target
@@ -70,6 +76,7 @@ def run(args, cwd=None, capture=False, timeout=600):
     return subprocess.run(
         [str(arg) for arg in args], cwd=cwd, env=environment,
         text=True, capture_output=capture, check=True, timeout=timeout,
+        stdin=subprocess.DEVNULL, shell=False,
     )
 
 
@@ -79,7 +86,7 @@ def git_value(target, *args):
 
 def verify_reference(reference, root=ROOT):
     target = checked_path(root, reference["path"])
-    if not (target / ".git").is_dir():
+    if not (target / ".git").is_dir() or (target / ".git").is_symlink():
         raise ValueError(f"Missing reference: {reference['name']}; run fetch")
     if Path(git_value(target, "rev-parse", "--show-toplevel")).resolve() != target:
         raise ValueError(f"Not a standalone checkout: {target}")
@@ -98,14 +105,26 @@ def fetch_reference(reference, root=ROOT):
     if (target / ".git").exists():
         # Never reset or silently update an existing checkout.
         return verify_reference(reference, root)
-    if target.exists() and any(target.iterdir()):
+    if target.exists() and (not target.is_dir() or any(target.iterdir())):
         raise ValueError(f"Refusing nonempty reference directory: {target}")
-    target.mkdir(parents=True, exist_ok=True)
-    run(["git", "init", target])
-    run(["git", "-C", target, "remote", "add", "origin", reference["url"]])
-    run(["git", "-C", target, "fetch", "--depth=1", "--no-tags", "origin",
-         reference["commit"]])
-    run(["git", "-C", target, "checkout", "--detach", reference["commit"]])
+    target.parent.mkdir(parents=True, exist_ok=True)
+    # Publish only a verified checkout. A failed fetch must not leave an
+    # incomplete .git at the final path that poisons the next safe retry.
+    with tempfile.TemporaryDirectory(prefix=f".{reference['name']}-fetch-", dir=target.parent) as directory:
+        staging = Path(directory)
+        run(["git", "init", staging])
+        run(["git", "-C", staging, "remote", "add", "origin", reference["url"]])
+        run(["git", "-C", staging, "fetch", "--depth=1", "--no-tags", "origin",
+             reference["commit"]])
+        run(["git", "-C", staging, "checkout", "--detach", reference["commit"]])
+        staged_reference = dict(reference, path=staging.relative_to(root.resolve()).as_posix())
+        verify_reference(staged_reference, root)
+        checked_path(root, reference["path"])
+        if target.exists():
+            if not target.is_dir() or any(target.iterdir()):
+                raise ValueError(f"Reference directory changed during fetch; preserved: {target}")
+            target.rmdir()
+        staging.rename(target)
     return verify_reference(reference, root)
 
 
@@ -138,14 +157,14 @@ def memory_gib():
 def host_report(source_dir, requirements):
     parent = existing_parent(source_dir.resolve())
     ram = memory_gib()
-    tools = {name: shutil.which(name) for name in ("git", "git-lfs", "python3", "make", "adb", "fastboot")}
+    tools = {name: shutil.which(name) for name in ("git", "git-lfs", "gpg", "python3", "make", "adb", "fastboot")}
     checks = {
         "linux": platform.system() == "Linux",
         "x86_64": platform.machine().lower() in {"x86_64", "amd64"},
         "case_sensitive": case_sensitive(parent),
         "free_disk": shutil.disk_usage(parent).free >= requirements["min_free_disk_gib"] * GIB,
         "ram": ram is not None and ram >= requirements["min_ram_gib"],
-        "source_tools": all(tools[name] for name in ("git", "git-lfs", "python3", "make")),
+        "source_tools": all(tools[name] for name in ("git", "git-lfs", "gpg", "python3", "make")),
     }
     return {
         "os": platform.system(), "architecture": platform.machine(),
@@ -182,6 +201,7 @@ def init_command(config):
     # The branch name is metadata; initialize to the exact manifest commit.
     return [sys.executable, str(checked_path(ROOT, tool["path"]) / "repo"), "init",
             "--manifest-url", manifest["url"], "--manifest-branch", manifest["commit"],
+            "--manifest-name", "default.xml",
             "--git-lfs", "--no-clone-bundle", "--current-branch",
             "--repo-url", tool["url"], "--repo-rev", tool["commit"]]
 
@@ -193,20 +213,65 @@ def sync_command(config, jobs):
     # Do not use --force-sync: preserve local source work on reruns.
     return [sys.executable, str(checked_path(ROOT, tool["path"]) / "repo"),
             "sync", "--current-branch", f"--jobs={jobs}", "--no-clone-bundle",
-            "--no-tags", "--fail-fast"]
+            "--no-tags", "--no-manifest-update", "--fail-fast"]
+
+
+def verify_source_checkout(source_dir, relative, reference, description):
+    metadata = source_dir.resolve() / ".repo"
+    checkout = metadata / relative
+    if metadata.is_symlink() or checkout.is_symlink() or not checkout.is_dir():
+        raise ValueError(f"Missing or symlinked {description}; preserve incomplete initialization and use a new empty source directory")
+    if Path(git_value(checkout, "rev-parse", "--show-toplevel")).resolve() != checkout:
+        raise ValueError(f"Unexpected worktree for {description}")
+    git_directory = Path(git_value(checkout, "rev-parse", "--absolute-git-dir")).resolve()
+    if not git_directory.is_relative_to(metadata):
+        raise ValueError(f"Git metadata for {description} escapes the source checkout")
+    if git_value(checkout, "remote", "get-url", "origin") != reference["url"]:
+        raise ValueError(f"Source checkout uses a different {description} origin")
+    if git_value(checkout, "rev-parse", "HEAD") != reference["commit"]:
+        raise ValueError(f"Source checkout uses a different {description} revision")
+    if git_value(checkout, "status", "--porcelain", "--untracked-files=all"):
+        raise ValueError(f"Source {description} has local changes; preserve and review them first")
+
+
+def verify_manifest_selection(source_dir):
+    metadata = source_dir.resolve() / ".repo"
+    selection = metadata / "manifest.xml"
+    if selection.is_symlink() or not selection.is_file() or selection.stat().st_size > 65536:
+        raise ValueError("Missing or unexpected active manifest selector")
+    try:
+        selected = ET.fromstring(selection.read_bytes())
+    except ET.ParseError as error:
+        raise ValueError("Invalid active manifest selector") from error
+    children = list(selected)
+    if (selected.tag != "manifest" or selected.attrib or len(children) != 1
+            or children[0].tag != "include" or children[0].attrib != {"name": "default.xml"}
+            or list(children[0])):
+        raise ValueError("Active manifest must select only the pinned default.xml")
+    local = metadata / "local_manifests"
+    legacy = metadata / "local_manifest.xml"
+    if (local.is_symlink() or (local.exists() and (not local.is_dir() or any(local.glob("*.xml"))))
+            or legacy.exists() or legacy.is_symlink()):
+        raise ValueError("Local manifests need reviewed configuration; files were preserved unchanged")
 
 
 def verify_source_manifest(config, source_dir):
     manifest = reference_named(config, config["platform"]["reference"])
-    checkout = source_dir / ".repo/manifests"
-    if not checkout.is_dir():
-        raise ValueError("No initialized platform manifest; run init first")
-    if git_value(checkout, "remote", "get-url", "origin") != manifest["url"]:
-        raise ValueError("Source checkout uses a different manifest origin")
-    if git_value(checkout, "rev-parse", "HEAD") != manifest["commit"]:
-        raise ValueError("Source checkout uses a different manifest revision")
-    if git_value(checkout, "status", "--porcelain"):
-        raise ValueError("Source manifest has local changes; preserve and review them first")
+    tool = reference_named(config, "repo-tool")
+    # The launcher delegates to .repo/repo: verifying only .tools/git-repo
+    # does not establish which implementation would execute in this checkout.
+    verify_source_checkout(source_dir, "repo", tool, "Repo implementation")
+    verify_source_checkout(source_dir, "manifests", manifest, "manifest")
+    verify_manifest_selection(source_dir)
+
+
+def refuse_nested_source(source_dir):
+    # Repo searches parent directories for .repo and could reinitialize an
+    # unrelated outer tree instead of the requested empty nested directory.
+    for parent in source_dir.resolve().parents:
+        metadata = parent / ".repo"
+        if metadata.exists() or metadata.is_symlink():
+            raise ValueError("Nested Repo source directories are unsafe; the outer checkout was preserved")
 
 
 def initialize(config, source_dir, dry_run=False):
@@ -216,8 +281,9 @@ def initialize(config, source_dir, dry_run=False):
         print("Execution requires a supported host; this preview does not initialize or sync.")
         return
     require_host(source_dir, config)
+    refuse_nested_source(source_dir)
     repo_command(config)
-    if (source_dir / ".repo").exists():
+    if (source_dir / ".repo").exists() or (source_dir / ".repo").is_symlink():
         verify_source_manifest(config, source_dir)
         print("Platform manifest already initialized at the configured revision.")
         return
@@ -235,14 +301,18 @@ def synchronize(config, source_dir, jobs, dry_run=False):
         print("This previews a full platform download, not a complete Xiaomi device build.")
         return
     require_host(source_dir, config)
+    refuse_nested_source(source_dir)
     repo = repo_command(config)
     verify_source_manifest(config, source_dir)
     # LFS must be fetched for build sources, unlike lightweight references.
     environment = os.environ.copy()
     environment["GIT_TERMINAL_PROMPT"] = "0"
+    environment["REPO_SKIP_SELF_UPDATE"] = "1"
     environment.pop("GIT_LFS_SKIP_SMUDGE", None)
     print("+ " + shlex.join(command), flush=True)
-    subprocess.run(command, cwd=source_dir, env=environment, check=True)
+    subprocess.run(command, cwd=source_dir, env=environment, check=True,
+                   stdin=subprocess.DEVNULL, shell=False)
+    verify_source_manifest(config, source_dir)
     output = ROOT / "reports" / ("resolved-manifest-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + ".xml")
     output.parent.mkdir(parents=True, exist_ok=True)
     run(repo + ["manifest", "--revision-as-HEAD", "--output-file", output], cwd=source_dir)

@@ -28,7 +28,8 @@ python3 scripts/workspace.py doctor --source-dir /srv/android/evolution --requir
 ```
 
 The package installer targets Ubuntu 24.04 and checks the OS/CPU before running
-APT. It does not change global Git configuration, enable swap, start containers,
+APT. GnuPG is required so Repo signature verification cannot silently be skipped.
+It does not change global Git configuration, enable swap, start containers,
 or install packages on macOS. Choose a directory writable by your build user.
 The doctor is a prerequisite check, not a guarantee every Android dependency is
 installed or enough resources are assigned inside a container.
@@ -50,8 +51,12 @@ make sync SOURCE_DIR=/srv/android/evolution JOBS=8
 
 `init` pins the exact manifest and Google's Repo tool commits in
 [`config/sources.json`](../config/sources.json). It retains Repo's signature
-verification. `sync` downloads the full platform, including Git LFS objects,
-without destructive force flags. It saves a `repo manifest -r` snapshot under
+verification. Initialization runs without an interactive terminal; configure
+your normal Git author identity on the Linux host beforehand.
+`sync` downloads the full platform, including Git LFS objects,
+without destructive force flags, manifest updates, or Repo self-updates. It
+verifies both the installed `.repo/repo` implementation and manifest origin/SHA,
+not only the external launcher. It saves a `repo manifest -r` snapshot under
 ignored `reports/` only after sync succeeds. The initial manifest pin is **not**
 a complete dependency lock: most upstream project entries reference branches.
 Preserve the resolved snapshot with each build, and review it before committing
@@ -61,8 +66,17 @@ Reference fetches (`make refs`) deliberately skip large Git LFS assets. They
 are useful for review and are **not** the complete build checkout. Existing
 references with changed revisions, remotes, or local edits are rejected instead
 of reset. Preserve your local edits in a branch or a separate checkout before
-refreshing a pin. A failed initial fetch may leave an incomplete clone; keep it
-for diagnosis and rename it aside before retrying if verification rejects it.
+refreshing a pin. New reference fetches are staged and verified before publication;
+a failed transfer does not leave an incomplete checkout at its final path.
+Retry `make refs` after a network failure. An interrupted **platform init** can
+still leave incomplete `.repo` metadata; preserve that directory for diagnosis
+and use a new empty source directory instead of resetting it.
+
+The source wrapper currently allows only the pinned `default.xml` and refuses
+unreviewed `.repo/local_manifests` or a legacy local manifest. It also refuses
+nested Repo trees. Adding a real device manifest requires a deliberate update
+to that validation policy after the device dependencies are reviewed; never
+delete an existing user's manifest merely to get past a preflight failure.
 
 ## What still blocks a device build
 
