@@ -1,0 +1,3 @@
+# Match the isolated-compute client membership in factory product policy.
+# Existing vendor HAL rules provide the reviewed Binder and FD permissions.
+typeattribute isolated_compute_app vendor_hal_dspmanager_client;

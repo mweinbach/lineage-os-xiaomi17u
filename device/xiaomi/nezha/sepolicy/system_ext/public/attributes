@@ -1,0 +1,3 @@
+# Existing Nezha system-ext public DSP client interface.
+# Preserve the factory attribute: do not force expansion or version it.
+attribute vendor_hal_dspmanager_client;

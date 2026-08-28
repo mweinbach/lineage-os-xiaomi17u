@@ -471,6 +471,392 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         with self.assertRaisesRegex(generator.CandidateError, "fstab hash/size mismatch"):
             generator.render_factory_fstab(self.plan(), contract, inputs["fstab_source"])
 
+    def trust_synthetic_dsp_contract(self, inputs, record):
+        """A test-only trust root; the CLI cannot override the reviewed digest."""
+        raw = (json.dumps(record, sort_keys=True) + "\n").encode()
+        inputs["dsp_policy_contract"].write_bytes(raw)
+        patcher = mock.patch.object(generator, "DSP_POLICY_CONTRACT_SHA256", hashlib.sha256(raw).hexdigest())
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def dsp_inputs(self):
+        """Tiny synthetic receipt graph, not firmware or a compiler result."""
+        inputs = self.factory_inputs()
+        record = json.loads((ROOT / generator.DSP_POLICY_RECORD).read_text())
+        contract = record["generator_contract"]
+        contract["factory_package_sha256"] = "3" * 64
+        layout = json.loads(inputs["record_paths"]["firmware-layout"].read_text())
+        partitions = {part["name"]: part for part in layout["partitions"]}
+        contract["vendor_images"] = {
+            name: {"sha256": partitions[name + "_a"]["extraction"]["sha256"],
+                   "size_bytes": partitions[name + "_a"]["size_bytes"]}
+            for name in ("vendor", "odm")
+        }
+        fixture_root = self.root / "artifacts/dsp-fixture"
+
+        def write(name, data):
+            path = fixture_root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            return {"path": path.relative_to(self.root).as_posix(),
+                    "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
+
+        def reference(name, value):
+            return write(name, (json.dumps(dict(schema_version=1, **value)) + "\n").encode())
+
+        contract["policy_inputs"] = [
+            {"runtime_path": row["runtime_path"],
+             **write(f"policy/{i}.cil", f"; synthetic policy data {i}\n".encode())}
+            for i, row in enumerate(contract["policy_inputs"])
+        ]
+        contract["policy_capture_receipt"] = reference("policy-capture.json", {
+            "parent_package_sha256": "3" * 64, "origin_verified": False,
+            "input_order": copy.deepcopy(contract["policy_inputs"]),
+        })
+        contract["source_ownership_receipt"] = reference("ownership.json", {"fixture_only": True})
+        fixture = {
+            "proof_completed": True, "errors": [], "guard_errors": [],
+            "complete_assertion_multiset_equal": True, "complete_assertion_count": 6366,
+            "corresponding_dsp_failure_removed": True, "all_four_other_diagnostics_preserved": True,
+            "baseline_diagnostics": [{"synthetic": True}] * 5,
+            "candidate_diagnostics": [{"synthetic": True}] * 4,
+        }
+        fixture.update({key: False for key in (
+            "neverallow_checks_disabled", "original_assertions_removed", "new_allow_statements_added",
+            "fresh_soong_or_m4_build_performed", "strict_compilation_passed", "android_source_or_out_written",
+            "user_out_accessed", "phone_accessed", "firmware_executed",
+        )})
+        contract["fixture_receipt"] = reference("fixture.json", fixture)
+        outputs = []
+        for i in range(77):
+            row = write(f"readback/{i:03d}", f"synthetic output {i}\n".encode())
+            row["host_path"] = row.pop("path")
+            outputs.append(row)
+        contract["readback_receipt"] = reference("readback.json", {
+            "receipt_sha256": contract["fixture_receipt"]["sha256"], "guest_writes": False,
+            "files": outputs, "total_bytes": sum(row["size_bytes"] for row in outputs),
+        })
+        templates = self.root / "dsp-templates"
+        for name in (*generator.TEMPLATE_FILES, *generator.DSP_POLICY_FILES):
+            path = templates / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT / generator.DEVICE_PATH / name).read_bytes())
+        inputs.update(template_root=templates, dsp_policy_contract=self.root / "dsp-contract.json")
+        self.trust_synthetic_dsp_contract(inputs, record)
+        return inputs
+
+    def change_dsp_bound_record(self, inputs, key, change):
+        contract = json.loads(inputs["dsp_policy_contract"].read_text())
+        reference = contract["generator_contract"][key]
+        path = self.root / reference["path"]
+        record = json.loads(path.read_text())
+        change(record)
+        raw = (json.dumps(record) + "\n").encode()
+        path.write_bytes(raw)
+        reference.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        self.trust_synthetic_dsp_contract(inputs, contract)
+
+    def test_dsp_source_integration_is_explicit_and_deterministic_for_both_variants(self):
+        inputs = self.dsp_inputs()
+        for variant in ("user", "userdebug"):
+            with self.subTest(variant=variant):
+                first, second = [self.root / f"artifacts/dsp-{variant}-{number}" for number in (1, 2)]
+                plan = generator.generate(first, variant=variant, **inputs)
+                self.assertEqual(generator.generate(second, variant=variant, **inputs), plan)
+                self.assertEqual(generator.validate(first), plan)
+                expected = {(generator.DEVICE_PATH / name).as_posix() for name in generator.DSP_POLICY_FILES}
+                expected.add(generator.DSP_POLICY_RECORD.as_posix())
+                self.assertTrue(expected <= {row["path"] for row in plan["files"]})
+                self.assertEqual(len(plan["files"]), len(generator.TEMPLATE_FILES) + 8)
+                for key, value in (("factory_policy_inputs_rehashed", 3), ("fixture_readback_files_rehashed", 77),
+                                   ("fixture_original_assertions_retained", 6366)):
+                    self.assertEqual(plan["dsp_policy"][key], value)
+                self.assertFalse(plan["dsp_policy"]["fresh_soong_or_m4_build_performed"])
+                self.assertFalse(plan["dsp_policy"]["strict_full_policy_compiled"])
+                self.assertFalse(plan["admission"]["flash_allowed"])
+                board = (first / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+                for key, path in generator.DSP_POLICY_WIRING.items():
+                    self.assertEqual(board.count(f"{key} += {path}\n"), 1)
+                for purpose in ("target-files", "flash"):
+                    with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                        generator.validate(first, purpose=purpose)
+
+    def test_dsp_legacy_generation_never_requires_or_includes_the_new_contract(self):
+        inputs = self.generation_inputs()
+        with mock.patch.object(generator, "_bind_dsp_policy", side_effect=AssertionError("unexpected DSP opt-in")):
+            output = self.root / "artifacts/legacy"
+            plan = generator.generate(output, **inputs)
+        self.assertNotIn("dsp_policy", plan)
+        self.assertEqual(len(plan["files"]), len(generator.TEMPLATE_FILES) + 5)
+        for name in generator.DSP_POLICY_FILES:
+            self.assertNotIn(name, generator.TEMPLATE_FILES)
+        with mock.patch.object(generator, "_dsp_contract", side_effect=AssertionError("legacy validator read DSP data")):
+            self.assertEqual(generator.validate(output), plan)
+        board = (output / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        for key in generator.DSP_POLICY_WIRING:
+            self.assertNotIn(key, board)
+
+    def test_dsp_opt_in_does_not_change_the_existing_factory_profile(self):
+        inputs = self.dsp_inputs()
+        legacy_inputs = {key: value for key, value in inputs.items() if key != "dsp_policy_contract"}
+        legacy_path, new_path = self.root / "artifacts/v8-shape", self.root / "artifacts/dsp-enabled"
+        legacy = generator.generate(legacy_path, **legacy_inputs)
+        new = generator.generate(new_path, **inputs)
+        self.assertEqual({k: v for k, v in legacy.items() if k != "files"},
+                         {k: v for k, v in new.items() if k not in {"files", "dsp_policy"}})
+        for row in legacy["files"]:
+            if not row["path"].endswith("generated/BoardConfigCandidate.mk"):
+                self.assertEqual((legacy_path / row["path"]).read_bytes(), (new_path / row["path"]).read_bytes())
+        self.assertEqual(generator.validate(legacy_path), legacy)
+
+    def test_dsp_requires_factory_profile_before_any_record_reads(self):
+        with mock.patch.object(generator, "_load_records") as load:
+            with self.assertRaisesRegex(generator.CandidateError, "explicit factory profile"):
+                generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none",
+                                   vendor_receipt="none", dsp_policy_contract="none")
+            load.assert_not_called()
+
+    def test_dsp_rejects_unknown_modified_or_symlink_contracts(self):
+        inputs = self.dsp_inputs()
+        path, original = inputs["dsp_policy_contract"], inputs["dsp_policy_contract"].read_bytes()
+        for value in (original + b"\n", original.replace(b'nezha-dsp-membership-v1', b'nezha-dsp-membership-v2')):
+            path.write_bytes(value)
+            with self.assertRaisesRegex(generator.CandidateError, "unknown or changed DSP"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+        path.write_bytes(original)
+        link = self.root / "dsp-link.json"
+        link.symlink_to(path)
+        with self.assertRaisesRegex(generator.CandidateError, "symlink refused"):
+            generator.generate(self.root / "artifacts/refused", **dict(inputs, dsp_policy_contract=link))
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_dsp_contract_cannot_redirect_sources_wiring_package_or_images(self):
+        inputs = self.dsp_inputs()
+        baseline = json.loads(inputs["dsp_policy_contract"].read_text())
+        changes = (
+            lambda c: c.update(contract_id="unknown"),
+            lambda c: c.update(profile="flash"),
+            lambda c: c.update(factory_origin_verified=True),
+            lambda c: c["source_files"][0].update(path="device/xiaomi/other/sepolicy/attributes"),
+            lambda c: c["source_files"].append(copy.deepcopy(c["source_files"][0])),
+            lambda c: c["wiring"].update(SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS="$(shell false)"),
+            lambda c: c.update(factory_package_sha256="4" * 64),
+            lambda c: c["vendor_images"]["vendor"].update(sha256="4" * 64),
+            lambda c: c["vendor_images"]["odm"].update(size_bytes=1),
+        )
+        for change in changes:
+            record = copy.deepcopy(baseline)
+            change(record["generator_contract"])
+            self.trust_synthetic_dsp_contract(inputs, record)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_dsp_rehashes_all_three_factory_policy_inputs(self):
+        inputs = self.dsp_inputs()
+        record = json.loads(inputs["dsp_policy_contract"].read_text())
+        for row in record["generator_contract"]["policy_inputs"]:
+            path = self.root / row["path"]
+            original = path.read_bytes()
+            path.write_bytes(original + b"; changed\n")
+            with self.subTest(path=row["runtime_path"]), self.assertRaisesRegex(generator.CandidateError, "policy input hash/size mismatch"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+
+    def test_dsp_rehashes_first_and_last_readback_outputs(self):
+        inputs = self.dsp_inputs()
+        contract = json.loads(inputs["dsp_policy_contract"].read_text())["generator_contract"]
+        readback = json.loads((self.root / contract["readback_receipt"]["path"]).read_text())
+        for index in (0, 76):
+            row = readback["files"][index]
+            path = self.root / row["host_path"]
+            original = path.read_bytes()
+            path.write_bytes(original + b"changed")
+            with self.subTest(index=index), self.assertRaisesRegex(generator.CandidateError, "bundle file hash/size mismatch"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+
+    def test_dsp_never_accepts_changed_assertion_or_scope_results(self):
+        inputs = self.dsp_inputs()
+        baseline = json.loads(inputs["dsp_policy_contract"].read_text())
+        reference = baseline["generator_contract"]["fixture_receipt"]
+        original = (self.root / reference["path"]).read_bytes()
+        changes = [lambda r: r.update(complete_assertion_count=6365),
+                   lambda r: r.update(candidate_diagnostics=[{}] * 3),
+                   lambda r: r.update(guard_errors=["changed input"])]
+        changes.extend(lambda r, key=key: r.update({key: True}) for key in (
+            "neverallow_checks_disabled", "original_assertions_removed", "new_allow_statements_added",
+            "fresh_soong_or_m4_build_performed", "strict_compilation_passed", "android_source_or_out_written",
+            "user_out_accessed", "phone_accessed", "firmware_executed",
+        ))
+        for change in changes:
+            (self.root / reference["path"]).write_bytes(original)
+            self.trust_synthetic_dsp_contract(inputs, baseline)
+            self.change_dsp_bound_record(inputs, "fixture_receipt", change)
+            with self.subTest(change=change), self.assertRaisesRegex(generator.CandidateError, "DSP.*fixture"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_dsp_rejects_readback_count_total_or_receipt_substitution(self):
+        inputs = self.dsp_inputs()
+        baseline = json.loads(inputs["dsp_policy_contract"].read_text())
+        reference = baseline["generator_contract"]["readback_receipt"]
+        original = (self.root / reference["path"]).read_bytes()
+        changes = (lambda r: r.update(receipt_sha256="4" * 64),
+                   lambda r: r.update(guest_writes=True),
+                   lambda r: r["files"].pop(),
+                   lambda r: r.update(total_bytes=r["total_bytes"] + 1),
+                   lambda r: r["files"].__setitem__(76, copy.deepcopy(r["files"][0])))
+        for change in changes:
+            (self.root / reference["path"]).write_bytes(original)
+            self.trust_synthetic_dsp_contract(inputs, baseline)
+            self.change_dsp_bound_record(inputs, "readback_receipt", change)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_dsp_source_tampering_is_rejected_before_publication(self):
+        inputs = self.dsp_inputs()
+        for name in generator.DSP_POLICY_FILES:
+            path = inputs["template_root"] / name
+            original = path.read_bytes()
+            path.write_bytes(original + b"allow domain domain:process signal;\n")
+            with self.subTest(name=name), self.assertRaisesRegex(generator.CandidateError, "DSP policy source file hash/size mismatch"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_dsp_validation_uses_only_the_self_contained_candidate(self):
+        inputs = self.dsp_inputs()
+        output = self.root / "artifacts/dsp-standalone"
+        plan = generator.generate(output, **inputs)
+        with mock.patch.object(generator, "_bound_reference", side_effect=AssertionError("private evidence accessed")):
+            self.assertEqual(generator.validate(output), plan)
+
+    def test_dsp_validation_rejects_source_tampering_even_if_inventory_is_rehashed(self):
+        inputs = self.dsp_inputs()
+        output = self.root / "artifacts/dsp-source-guard"
+        plan = generator.generate(output, **inputs)
+        for name in generator.DSP_POLICY_FILES:
+            relative = (generator.DEVICE_PATH / name).as_posix()
+            path = output / relative
+            original = path.read_bytes()
+            changed = original + b"allow domain domain:process signal;\n"
+            path.write_bytes(changed)
+            updated = copy.deepcopy(plan)
+            next(row for row in updated["files"] if row["path"] == relative).update(
+                sha256=hashlib.sha256(changed).hexdigest(), size_bytes=len(changed))
+            (output / "admission.json").write_text(json.dumps(updated))
+            with self.subTest(name=name), self.assertRaisesRegex(generator.CandidateError, "source file differs from the reviewed"):
+                generator.validate(output)
+            path.write_bytes(original)
+        (output / "admission.json").write_text(json.dumps(plan))
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_dsp_validation_rejects_contract_or_wiring_tampering_with_rehashed_inventory(self):
+        inputs = self.dsp_inputs()
+        output = self.root / "artifacts/dsp-contract-guard"
+        plan = generator.generate(output, **inputs)
+        names = (generator.DSP_POLICY_RECORD.as_posix(),
+                 (generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix())
+        for name in names:
+            path = output / name
+            original = path.read_bytes()
+            changed = (original + b"\n" if name == generator.DSP_POLICY_RECORD.as_posix() else
+                       original.replace(b"PRODUCT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/nezha/",
+                                        b"PRODUCT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/unreviewed/"))
+            path.write_bytes(changed)
+            updated = copy.deepcopy(plan)
+            next(row for row in updated["files"] if row["path"] == name).update(
+                sha256=hashlib.sha256(changed).hexdigest(), size_bytes=len(changed))
+            (output / "admission.json").write_text(json.dumps(updated))
+            with self.subTest(path=name), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            path.write_bytes(original)
+
+    def test_dsp_wiring_cannot_be_commented_out_or_continued_after_inventory_rehash(self):
+        inputs = self.dsp_inputs()
+        output = self.root / "artifacts/dsp-wiring-lines"
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+        path = output / name
+        original = path.read_bytes()
+        first = b"SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += "
+        second = b"PRODUCT_PRIVATE_SEPOLICY_DIRS += "
+        comment = generator._dsp_wiring_lines()[0].encode()
+        changes = (
+            original.replace(first, b"# " + first),
+            original.replace(second, b"# " + second),
+            original.replace(comment + b"\n", comment + b" \\\n"),
+            original.replace(first, b"unreviewed_prefix" + first),
+            original + b"# unreviewed trailing section\n",
+        )
+        # Python text line splitting recognizes separators that Make does not.
+        # The generated section requires its original ASCII LF boundaries.
+        changes += tuple(original.replace(comment + b"\n", comment + separator)
+                         for separator in (b"\x0b", b"\x0c", b"\r", b"\r\n", b"\xc2\x85", b"\xe2\x80\xa8"))
+        for changed in changes:
+            path.write_bytes(changed)
+            updated = copy.deepcopy(plan)
+            next(row for row in updated["files"] if row["path"] == name).update(
+                sha256=hashlib.sha256(changed).hexdigest(), size_bytes=len(changed))
+            (output / "admission.json").write_text(json.dumps(updated))
+            with self.subTest(changed=hashlib.sha256(changed).hexdigest()), \
+                    self.assertRaisesRegex(generator.CandidateError, "DSP board wiring changed"):
+                generator.validate(output)
+
+    def test_dsp_validation_rejects_self_promoted_receipts_and_package_changes(self):
+        inputs = self.dsp_inputs()
+        output = self.root / "artifacts/dsp-admission-guard"
+        plan = generator.generate(output, **inputs)
+        changes = (
+            lambda p: p.update(dsp_policy=None),
+            lambda p: p["dsp_policy"].update(contract_id="unknown"),
+            lambda p: p["dsp_policy"].update(strict_full_policy_compiled=True),
+            lambda p: p["dsp_policy"].update(fresh_soong_or_m4_build_performed=True),
+            lambda p: p["dsp_policy"].update(factory_policy_inputs_rehashed=0),
+            lambda p: p["source_packages"].update(vendor="4" * 64),
+            lambda p: p["factory_profile"].update(package_sha256="4" * 64),
+            lambda p: p["factory_profile"].update(origin_verified=True),
+        )
+        for change in changes:
+            updated = copy.deepcopy(plan)
+            change(updated)
+            (output / "admission.json").write_text(json.dumps(updated))
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_dsp_extra_sources_are_not_admitted_by_legacy_file_lists(self):
+        plan = self.candidate()
+        path = self.root / generator.DEVICE_PATH / generator.DSP_POLICY_FILES[0]
+        path.parent.mkdir(parents=True)
+        data = b"attribute vendor_hal_dspmanager_client;\n"
+        path.write_bytes(data)
+        plan["files"].append({"path": path.relative_to(self.root).as_posix(),
+                              "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)})
+        self.save_admission(plan)
+        with self.assertRaisesRegex(generator.CandidateError, "file set is incomplete or unexpected"):
+            generator.validate(self.root)
+
+    def test_dsp_wiring_without_opt_in_is_refused_even_with_legacy_file_inventory(self):
+        plan = self.candidate()
+        relative = (generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+        path = self.root / relative
+        data = path.read_bytes() + ("\n".join(generator._dsp_wiring_lines()) + "\n").encode()
+        path.write_bytes(data)
+        next(row for row in plan["files"] if row["path"] == relative).update(
+            sha256=hashlib.sha256(data).hexdigest(), size_bytes=len(data))
+        self.save_admission(plan)
+        with self.assertRaisesRegex(generator.CandidateError, "wiring requires an explicit reviewed contract"):
+            generator.validate(self.root)
+
+    def test_cli_dsp_policy_contract_defaults_to_none_and_passes_explicit_path(self):
+        for arguments, expected in (([], None), (["--dsp-policy-contract", "reviewed.json"], Path("reviewed.json"))):
+            with self.subTest(arguments=arguments), mock.patch.object(generator, "generate", return_value={}) as generate:
+                with redirect_stdout(io.StringIO()):
+                    result = generator.main(["generate", "--kernel-receipt", "kernel.json",
+                                             "--vendor-receipt", "vendor.json", "--output", "artifacts/cli-dsp",
+                                             *arguments])
+                self.assertEqual(result, 0)
+                self.assertEqual(generate.call_args.kwargs["dsp_policy_contract"], expected)
+
     def test_default_variant_remains_userdebug_and_explicit_user_changes_only_variant(self):
         default = self.plan()
         self.assertEqual(default["variant"], "userdebug")

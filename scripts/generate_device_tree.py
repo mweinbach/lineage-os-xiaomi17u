@@ -32,6 +32,17 @@ TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery/root/init.recovery.qcom.rc",
 )
+DSP_POLICY_RECORD = PurePosixPath("research/dsp-policy-integration.json")
+DSP_POLICY_CONTRACT_ID = "nezha-dsp-membership-v1"
+DSP_POLICY_CONTRACT_SHA256 = "30720967a28cb558a0e3f90ed26a1f8e7c5b6befde55fea8428bbe8e693cd1f9"
+DSP_POLICY_FILES = (
+    "sepolicy/system_ext/public/attributes",
+    "sepolicy/product/private/isolated_compute_app.te",
+)
+DSP_POLICY_WIRING = {
+    "SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/system_ext/public",
+    "PRODUCT_PRIVATE_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/product/private",
+}
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
@@ -614,6 +625,136 @@ def _factory_profile(plan, kernel, factory_boot_path, partition_path, workspace_
     return fstab
 
 
+def _dsp_contract(path):
+    """Accept only the reviewed publication, never an arbitrary policy recipe."""
+    record, identity = _read_json(path)
+    _require(identity["sha256"] == DSP_POLICY_CONTRACT_SHA256,
+             "unknown or changed DSP policy contract")
+    _require(_codename(record) == "nezha" and record["device"]["hardware_region"] == "CN",
+             "DSP policy contract requires China Nezha")
+    contract = record["generator_contract"]
+    _require(contract["contract_id"] == DSP_POLICY_CONTRACT_ID and
+             contract["profile"] == "framework-checks", "unsupported DSP policy contract")
+    _require(contract["factory_origin_verified"] is False,
+             "DSP policy contract cannot authenticate factory origin")
+    _digest(contract["factory_package_sha256"], "DSP factory package")
+    _require(contract["wiring"] == DSP_POLICY_WIRING, "unexpected DSP policy source wiring")
+    expected = {(DEVICE_PATH / name).as_posix() for name in DSP_POLICY_FILES}
+    sources = contract["source_files"]
+    _require(isinstance(sources, list) and len(sources) == 2 and
+             {entry["path"] for entry in sources} == expected, "unexpected DSP policy source files")
+    for entry in sources:
+        _digest(entry["sha256"], "DSP source file")
+        _integer(entry["size_bytes"], "DSP source file length", MAX_TEXT_BYTES)
+    return contract, identity
+
+
+def _dsp_admission(contract, identity):
+    """A source-only admission; later Soong/device results cannot be inferred."""
+    return {
+        "contract_id": DSP_POLICY_CONTRACT_ID,
+        "contract_record": {"path": DSP_POLICY_RECORD.as_posix(), **identity},
+        "factory_package_sha256": contract["factory_package_sha256"],
+        "factory_origin_verified": False,
+        "required_source_revisions": contract["required_source_revisions"],
+        "source_files": contract["source_files"],
+        "wiring": dict(DSP_POLICY_WIRING),
+        "factory_policy_inputs_rehashed": 3,
+        "fixture_readback_files_rehashed": 77,
+        "fixture_original_assertions_retained": 6366,
+        "fixture_assertion_sites_before": 5,
+        "fixture_assertion_sites_after": 4,
+        "source_checkout_inspected": False,
+        "fresh_soong_or_m4_build_performed": False,
+        "strict_full_policy_compiled": False,
+        "native_dsp_access_verified": False,
+    }
+
+
+def _dsp_wiring_lines():
+    # The complete preceding comment terminates any continued comment before
+    # this section, so neither actual directive can become part of that comment.
+    return ["# Reviewed DSP source interface; full SELinux compatibility remains unverified.",
+            *(f"{name} += {path}" for name, path in DSP_POLICY_WIRING.items())]
+
+
+def _dsp_factory_binding(plan, contract):
+    profile, packages = plan.get("factory_profile"), plan.get("source_packages")
+    _require(isinstance(profile, dict) and isinstance(packages, dict) and
+             profile.get("package_sha256") == packages.get("vendor") == contract["factory_package_sha256"],
+             "DSP policy contract requires its reviewed factory vendor package")
+    _require(profile.get("origin_verified") is False,
+             "DSP policy admission cannot promote factory origin")
+
+
+def _bind_dsp_policy(plan, records, path, workspace_root, template_root, payloads):
+    contract, identity = _dsp_contract(path)
+    _dsp_factory_binding(plan, contract)
+    partitions = {part["name"]: part for part in records["firmware-layout"]["partitions"]}
+    _require(set(contract["vendor_images"]) == {"vendor", "odm"},
+             "DSP policy contract requires both factory images")
+    for name, expected in contract["vendor_images"].items():
+        source = partitions[name + "_a"]
+        _require(expected == {"sha256": source["extraction"]["sha256"],
+                              "size_bytes": source["size_bytes"]},
+                 "DSP policy vendor image differs from its reviewed factory input")
+    policy = _bound_reference(contract["policy_capture_receipt"], workspace_root)
+    _require(policy["parent_package_sha256"] == contract["factory_package_sha256"] and
+             policy["origin_verified"] is False, "DSP policy capture package differs")
+    inputs = contract["policy_inputs"]
+    expected_paths = {"/vendor/etc/selinux/plat_pub_versioned.cil",
+                      "/vendor/etc/selinux/vendor_sepolicy.cil",
+                      "/odm/etc/selinux/odm_sepolicy.cil"}
+    _require(len(inputs) == 3 and {row["runtime_path"] for row in inputs} == expected_paths,
+             "DSP policy contract requires the exact three factory policy inputs")
+    for row in inputs:
+        matches = [item for item in policy["input_order"]
+                   if item["runtime_path"] == row["runtime_path"]]
+        _require(len(matches) == 1 and all(matches[0][key] == row[key]
+                 for key in ("path", "sha256", "size_bytes")), "DSP policy capture binding differs")
+        actual, _ = _read_file(Path(workspace_root) / _relative(row["path"]), limit=MAX_JSON_BYTES)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")},
+                 "DSP factory policy input hash/size mismatch")
+    _bound_reference(contract["source_ownership_receipt"], workspace_root)
+    fixture = _bound_reference(contract["fixture_receipt"], workspace_root)
+    _require(fixture["proof_completed"] is True and not fixture["errors"] and
+             not fixture["guard_errors"] and fixture["complete_assertion_multiset_equal"] is True and
+             fixture["complete_assertion_count"] == 6366 and
+             fixture["corresponding_dsp_failure_removed"] is True and
+             fixture["all_four_other_diagnostics_preserved"] is True and
+             len(fixture["baseline_diagnostics"]) == 5 and len(fixture["candidate_diagnostics"]) == 4,
+             "DSP source fixture does not establish the reviewed assertion reduction")
+    _require(all(fixture[key] is False for key in (
+        "neverallow_checks_disabled", "original_assertions_removed", "new_allow_statements_added",
+        "fresh_soong_or_m4_build_performed", "strict_compilation_passed",
+        "android_source_or_out_written", "user_out_accessed", "phone_accessed", "firmware_executed")),
+        "DSP fixture scope or security checks changed")
+    readback = _bound_reference(contract["readback_receipt"], workspace_root)
+    _require(readback["receipt_sha256"] == contract["fixture_receipt"]["sha256"] and
+             readback["guest_writes"] is False and len(readback["files"]) == 77,
+             "DSP readback does not bind the reviewed fixture")
+    _integer(readback["total_bytes"], "DSP readback byte count", 64 * 1024 * 1024)
+    _require(all(type(row["size_bytes"]) is int and 0 <= row["size_bytes"] <= MAX_JSON_BYTES
+                 for row in readback["files"]) and
+             sum(row["size_bytes"] for row in readback["files"]) == readback["total_bytes"],
+             "DSP readback file sizes differ from its bounded total")
+    entries = [{"path": row["host_path"], "sha256": row["sha256"],
+                "size_bytes": row["size_bytes"]} for row in readback["files"]]
+    files = _file_entries(Path(workspace_root), entries)
+    _require(sum(row["size_bytes"] for row in files.values()) == readback["total_bytes"],
+             "DSP readback byte count differs")
+    for entry in contract["source_files"]:
+        relative = _relative(entry["path"]).relative_to(DEVICE_PATH)
+        actual, raw = _read_file(Path(template_root) / relative, limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual == {key: entry[key] for key in ("sha256", "size_bytes")},
+                 "DSP policy source file hash/size mismatch")
+        payloads[entry["path"]] = raw
+    actual, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == identity, "DSP policy contract changed before publication")
+    payloads[DSP_POLICY_RECORD.as_posix()] = raw
+    plan["dsp_policy"] = _dsp_admission(contract, identity)
+
+
 def render_factory_fstab(plan, contract, source):
     """Select observed filesystems without removing factory AVB or crypto flags."""
     identity, raw = _read_file(source, limit=MAX_TEXT_BYTES, collect=True)
@@ -741,6 +882,8 @@ def _render_board(plan):
     lines.append("BOARD_AVB_VBMETA_SYSTEM := " + " ".join(chained))
     for key, value in sorted(plan["bootconfig"].items()):
         lines.append(f"BOARD_BOOTCONFIG += {key}={value}")
+    if "dsp_policy" in plan:
+        lines.extend(_dsp_wiring_lines())
     return "\n".join(lines) + "\n"
 
 
@@ -768,12 +911,15 @@ def _load_records(record_paths):
 
 def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_source=None,
              variant="userdebug", workspace_root=ROOT, template_root=ROOT / DEVICE_PATH,
-             patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None):
+             patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None,
+             dsp_policy_contract=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
         _require(factory_boot_contract is not None and partition_metadata is not None and fstab_source is not None,
                  "factory generation requires boot contract, partition metadata and explicit fstab source")
+    if dsp_policy_contract is not None:
+        _require(factory_selected, "DSP policy integration requires the explicit factory profile")
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
@@ -792,6 +938,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     for name in TEMPLATE_FILES:
         _, payloads[(DEVICE_PATH / name).as_posix()] = _read_file(
             Path(template_root) / name, limit=MAX_TEXT_BYTES, collect=True)
+    if dsp_policy_contract is not None:
+        _bind_dsp_policy(plan, records, dsp_policy_contract, workspace_root, template_root, payloads)
     generated = DEVICE_PATH / "generated"
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
@@ -837,6 +985,17 @@ def validate(output, *, purpose="configuration"):
     expected |= {(DEVICE_PATH / "generated" / name).as_posix()
                  for name in ("BoardConfigCandidate.mk", "device-candidate.mk", "fstab.qcom")}
     expected |= {SECURITY_PATCH.as_posix(), SECURITY_RECORD.as_posix()}
+    if "dsp_policy" in plan:
+        _require(isinstance(plan["dsp_policy"], dict), "invalid DSP policy admission")
+        contract, identity = _dsp_contract(Path(output) / DSP_POLICY_RECORD)
+        _require(plan["dsp_policy"] == _dsp_admission(contract, identity),
+                 "DSP policy admission differs from the reviewed source contract")
+        _dsp_factory_binding(plan, contract)
+        expected |= {(DEVICE_PATH / name).as_posix() for name in DSP_POLICY_FILES}
+        expected.add(DSP_POLICY_RECORD.as_posix())
+        for entry in contract["source_files"]:
+            _require(files.get(entry["path"]) == {key: entry[key] for key in ("sha256", "size_bytes")},
+                     "DSP policy source file differs from the reviewed contract")
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -849,10 +1008,21 @@ def validate(output, *, purpose="configuration"):
             present.add(path.relative_to(output).as_posix())
             _require(len(present) <= len(expected) + 1, "unexpected candidate file")
     _require(present == expected | {"admission.json"}, "unlisted or missing candidate file")
-    board = (Path(output) / DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+    board_name = (DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+    board_identity, board_bytes = _read_file(Path(output) / board_name, limit=MAX_TEXT_BYTES, collect=True)
+    _require(board_identity == files[board_name], "generated board changed during validation")
+    board = board_bytes.decode("utf-8")
     _require("BOARD_AVB_ENABLE := true" in board, "generated AVB setting absent")
     _require(not re.search(r"--flags\s+[123]|--set_hashtree_disabled_flag|androidboot.selinux=permissive", board),
              "unsafe generated boot policy")
+    if "dsp_policy" in plan:
+        wiring = ("\n" + "\n".join(_dsp_wiring_lines()) + "\n").encode("ascii")
+        _require(board_bytes.endswith(wiring) and
+                 all(board_bytes.count(name.encode("ascii")) == 1 for name in DSP_POLICY_WIRING),
+                 "generated DSP board wiring changed")
+    else:
+        _require(not any(name in board for name in DSP_POLICY_WIRING),
+                 "DSP policy wiring requires an explicit reviewed contract")
     _require(purpose == "configuration", f"{purpose} admission refused: framework-checks is not a complete signed partition set")
     return plan
 
@@ -874,6 +1044,8 @@ def main(argv=None):
                              help="factory component/fstab comparison, requires partition metadata and explicit fstab")
             sub.add_argument("--partition-metadata", type=Path,
                              help="verified factory package GPT record; never a live-capacity or flash admission")
+            sub.add_argument("--dsp-policy-contract", type=Path,
+                             help="explicit reviewed DSP source contract; requires the factory profile, not a policy compatibility admission")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -890,7 +1062,8 @@ def main(argv=None):
                 result = generate(args.output, record_paths=paths, kernel_receipt=args.kernel_receipt,
                                   vendor_receipt=args.vendor_receipt, fstab_source=args.fstab_source,
                                   variant=args.variant, factory_boot_contract=args.factory_boot_contract,
-                                  partition_metadata=args.partition_metadata)
+                                  partition_metadata=args.partition_metadata,
+                                  dsp_policy_contract=args.dsp_policy_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
