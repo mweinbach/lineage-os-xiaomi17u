@@ -210,6 +210,18 @@ source graph. SELinux policy and fuzzer checks, signature verification, ELF
 checks and dependency validation remain enabled. This native profile does not
 run those JVM UI tests and is not a full Android test profile.
 
+The source projection after Graph 13 found retained consumers of `flag-junit`,
+`flag-junit-host` and `libflagtest`. It did not identify an observed Graph 13
+error. The original `platform_testing/libraries/flag-helpers/junit/` and
+`platform_testing/libraries/flag-helpers/libflagtest/` leaves are re-included.
+Their three Blueprint files retain all 12 module definitions, including local
+tests, native flag declarations and defaults, with their original license and
+team metadata. The bounded check found existing selected dependency providers,
+including the genuine SDK generator for
+`framework-configinfrastructure.stubs.module_lib`; no new project is needed
+for these leaves. Platform runner, collector and rule subtrees remain excluded.
+The next real build must still validate variants and generated artifacts.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.

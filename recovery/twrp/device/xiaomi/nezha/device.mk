@@ -138,6 +138,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     platform_testing/libraries/compatibility-common-util/ \
     platform_testing/libraries/annotations/
 
+# The source projection after Graph 13 found retained flag-test consumers.
+# Restore only these providers, including their local tests, native aconfig
+# declarations and defaults. The bounded dependency check uses existing
+# selected providers; runner, collector and rule subtrees remain excluded.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/flag-helpers/junit/ \
+    platform_testing/libraries/flag-helpers/libflagtest/
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true

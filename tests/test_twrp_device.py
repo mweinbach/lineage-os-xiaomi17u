@@ -53,6 +53,8 @@ SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/rdroidtest/",
     "platform_testing/libraries/compatibility-common-util/",
     "platform_testing/libraries/annotations/",
+    "platform_testing/libraries/flag-helpers/junit/",
+    "platform_testing/libraries/flag-helpers/libflagtest/",
 ]
 
 
@@ -483,6 +485,42 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 9", readme)
         self.assertIn("development/build/", readme)
         self.assertIn("SDK distribution", readme)
+
+    def test_projected_flag_helpers_keep_tests_and_existing_dependency_providers(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "platform_testing/libraries/flag-helpers/"
+        self.assertNotIn(parent, scopes)
+        for leaf in ("junit/", "libflagtest/"):
+            self.assertTrue(source_path_allowed(parent + leaf + "Android.bp", scopes))
+            self.assertFalse(source_path_allowed(parent + leaf.rstrip("/") + "_sibling/Android.bp", scopes))
+        self.assertTrue(source_path_allowed(parent + "junit/test/Android.bp", scopes))
+        for source in ("platform_testing/Android.bp", parent + "Android.bp",
+                       "platform_testing/libraries/runner/Android.bp",
+                       "platform_testing/libraries/device-collectors/Android.bp",
+                       "platform_testing/libraries/collectors-helper/Android.bp",
+                       "platform_testing/libraries/junit-rules/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("external/auto/value/Android.bp", "external/jsr305/Android.bp",
+                       "external/guava/Android.bp", "external/junit/Android.bp",
+                       "external/mockito/Android.bp", "external/objenesis/Android.bp",
+                       "platform_testing/libraries/annotations/Android.bp",
+                       "prebuilts/misc/common/androidx-test/Android.bp",
+                       "packages/modules/ConfigInfrastructure/framework/Android.bp",
+                       "packages/modules/common/sdk/Android.bp",
+                       "prebuilts/module_sdk/ConfigInfrastructure/current/Android.bp",
+                       "build/make/tools/aconfig/aconfig_device_paths/Android.bp",
+                       "build/make/tools/aconfig/aconfig_protos/Android.bp",
+                       "build/make/tools/aconfig/aconfig_storage_read_api/Android.bp",
+                       "system/server_configurable_flags/libflags/Android.bp",
+                       "external/googletest/googletest/Android.bp", "system/libbase/Android.bp",
+                       "system/logging/liblog/Android.bp", "tools/tradefederation/core/Android.bp",
+                       "build/make/teams/Android.bp", "build/soong/licenses/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        for fact in ("source projection after Graph 13", "flag-junit-host", "libflagtest",
+                     "framework-configinfrastructure.stubs.module_lib"):
+            self.assertIn(fact, readme)
 
     def test_motion_exclusion_preserves_consumed_test_helper_and_graphics(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
