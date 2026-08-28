@@ -1751,6 +1751,13 @@
       "commit": "86c6b7e9b7217310836f7b8f75d0c764c148b6e5",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 36 error: real AOSP camera-webcam-test genrule required by the retained android-cts-verifier genrule. All four original Blueprints, including app, library and JNI definitions, remain intact. No product package, app installation, signing-key access or webcam functionality is implied."
+    },
+    {
+      "path": "external/giflib",
+      "url": "https://android.googlesource.com/platform/external/giflib",
+      "commit": "ad011248e266cc1bad1489704cc214942231cf09",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libgif cc_library_static required by libhwui and hwui_unit_tests in the graph 40 errors through the Android target of android_graphics_jni. The whole original project and Blueprint, exported headers, SDK settings and MIT license metadata are preserved. This source pin does not establish compiled HWUI or GIF rendering functionality."
     }
   ]
 }

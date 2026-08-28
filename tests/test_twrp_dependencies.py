@@ -324,6 +324,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "968909aac626762c59dbfd098ceb8523f2950d793a68c3dd9d56155f40a43c5a")
 
+    def test_first_249_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:249]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "6a9e406de2eaf5792e5351c32d44e3d364d57e7e31d03ca49d19be67fe9d824a")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1488,7 +1494,7 @@ class ConfigurationTests(Fixture):
             ("packages/services/DeviceAsWebcam", "86c6b7e9b7217310836f7b8f75d0c764c148b6e5",
              "camera-webcam-test genrule", "android-cts-verifier genrule"),
         ]
-        self.assertEqual(len(projects), 249)
+        self.assertGreaterEqual(len(projects), 249)
         self.assertEqual([(p["path"], p["commit"]) for p in projects[247:249]],
                          [(path, commit) for path, commit, _, _ in expected])
         for project, (_, _, provider, consumer) in zip(projects[247:249], expected):
@@ -1506,6 +1512,25 @@ class ConfigurationTests(Fixture):
         for text in ("All four original Blueprints", "app, library and JNI definitions, remain intact",
                      "No product package, app installation, signing-key access or webcam functionality is implied"):
             self.assertIn(text, projects[248]["reason"])
+
+    def test_graph_forty_libgif_source_pin_and_reason(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 250)
+        project = projects[249]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "external/giflib",
+            "url": "https://android.googlesource.com/platform/external/giflib",
+            "commit": "ad011248e266cc1bad1489704cc214942231cf09",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertIn("graph 40 errors", reason)
+        self.assertNotIn("projection", reason.lower())
+        for text in ("libgif cc_library_static", "libhwui and hwui_unit_tests",
+                     "Android target of android_graphics_jni", "whole original project and Blueprint",
+                     "exported headers", "SDK settings", "MIT license metadata are preserved",
+                     "does not establish compiled HWUI or GIF rendering functionality"):
+            self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
