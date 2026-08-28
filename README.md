@@ -25,6 +25,12 @@ The [optional init-helper patch](docs/init-helper-capability.md) addresses
 the remaining two property-write grants; its source adoption and Android
 policy build remain separate work.
 
+The subsequent [combined CIL prototype](docs/helper-policy-projection.md)
+**compiles successfully with zero permissive domains and all 6,366 assertions
+retained**. It combines the Binder correction with the exact two-permission
+helper projection. The corrections are not integrated into the active source
+and image inputs; this is not a complete Android source build or a ROM boot.
+
 ## What is already here
 
 - Fourteen pinned source/reference checkouts, including Evolution X's official

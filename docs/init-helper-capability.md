@@ -45,6 +45,12 @@ runtime compatibility result. A separate isolated Git application check also
 produced the exact expected 1,001-byte source file; the Android checkout was
 not used for that test.
 
+A later [combined CIL prototype](helper-policy-projection.md) projects the two
+SET removals onto the saved platform CIL and compiles successfully with the
+Binder-derived vendor policy. It retains every assertion and reports zero
+permissive domains. That result does not replace the still-needed Android M4
+and source-build validation of this patch.
+
 The factory input review gives a concrete existing media path to preserve.
 Across 253 selected regular vendor/ODM init scripts, property files and SELinux
 context files, there were no literal `init_dev_config` references. Four script

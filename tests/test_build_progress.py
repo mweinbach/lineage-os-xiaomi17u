@@ -459,6 +459,54 @@ class BuildProgressTests(unittest.TestCase):
         self.assertEqual(len(self.record["source_adjustments"]), 3)
         self.assertFalse(details["capability"]["new_board_definition_installed"])
 
+    def test_helper_projection_pass_is_bound_without_claiming_source_adoption(self):
+        proof = self.record["helper_policy_projection"]
+        raw = (ROOT / proof["record"]).read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), proof["record_sha256"])
+        details = json.loads(raw)
+        self.assertEqual(proof["completed_at"], details["completed_at_utc"])
+        self.assertEqual(proof["input_admission_sha256"], self.installed_version(9)["admission_sha256"])
+        self.assertEqual(proof["comparison_receipt_sha256"], details["receipts"]["comparison_capture"]["sha256"])
+        self.assertEqual(proof["readback_receipt_sha256"], details["receipts"]["comparison_readback"]["sha256"])
+        cases = details["comparison"]["cases"]
+        self.assertEqual(proof["assertion_sites"], [case["neverallow_assertion_sites"] for case in cases])
+        self.assertEqual(proof["assertion_sites"], [2, 0])
+        self.assertEqual(proof["compiler_exit_codes"], [case["exit_code"] for case in cases])
+        self.assertEqual(proof["compiler_exit_codes"], [255, 0])
+        self.assertEqual(proof["retained_assertions"], details["preservation"]["total_assertion_occurrences"])
+        self.assertEqual(proof["retained_assertions"], 6366)
+        corrected = cases[1]
+        self.assertEqual(proof["policy_binary"],
+                         {key: corrected["policy_binary"][key] for key in ("size_bytes", "sha256")})
+        self.assertIs(proof["strict_compilation_passed"], True)
+        self.assertIs(corrected["compilation_passed"], True)
+        self.assertIs(proof["zero_permissive_domains"], True)
+        self.assertIs(corrected["unfiltered_permissive_analysis"]["zero_permissive_domains"], True)
+        self.assertIs(proof["raw_readback_completed"], True)
+        self.assertEqual(details["readback"]["status"], "complete")
+        for key in ("new_android_source_build", "active_source_adoption", "vendor_image_modified",
+                    "full_rom_verified", "phone_accessed"):
+            self.assertIs(proof[key], False, key)
+        self.assertFalse(details["limits"]["fresh_android_m4_or_source_policy_build"])
+        self.assertFalse(details["limits"]["active_source_or_generator_adoption"])
+        self.assertEqual(self.record["dsp_policy_build"]["remaining_factory_assertion_sites"], 4)
+        self.assertEqual(len(self.record["source_adjustments"]), 3)
+
+    def test_post_prototype_audit_preserves_the_current_three_source_patches(self):
+        proof = self.record["post_policy_prototype_source_audit"]
+        self.assertEqual(proof["sha256"], "a5644966904e0f85a6101bde80c5253c67c6ded1a7713a114d8179c6addc775c")
+        self.assertEqual(proof["source_snapshot_sha256"], self.record["base_source_snapshot_sha256"])
+        self.assertEqual((proof["project_heads_and_remotes_verified"], proof["clean_projects"],
+                          proof["expected_modified_projects"]), (1179, 1176, 3))
+        self.assertEqual(proof["expected_modified_projects"], len(self.record["source_adjustments"]))
+        self.assertEqual(proof["unexpected_projects"], [])
+        self.assertEqual(proof["local_manifest_files"], [])
+        self.assertGreater(proof["completed_at"], self.record["binder_policy_correction"]["completed_at"])
+        self.assertGreater(proof["completed_at"], self.record["helper_policy_projection"]["completed_at"])
+        for key in ("source_writes_performed", "source_sync_repeated", "lfs_payloads_rehashed",
+                    "ignored_files_audited", "authored_non_repo_directories_audited"):
+            self.assertIs(proof[key], False, key)
+
 
 if __name__ == "__main__":
     unittest.main()

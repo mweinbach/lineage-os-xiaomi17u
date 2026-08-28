@@ -1411,5 +1411,45 @@
     "source_admitted": false,
     "android_source_build_verified": false,
     "runtime_helper_nonuse_verified": false
+  },
+  "helper_policy_projection": {
+    "record": "research/helper-policy-projection.json",
+    "record_sha256": "58b2a911da4c893f00af743d939f337d74d9adff41541ec5d44f5e4730b189dd",
+    "completed_at": "2026-08-28T02:51:01.487114+00:00",
+    "input_admission_sha256": "50fea6a4e94d86ee94ba5514d7dc7b1420c15f5bb4e850ea0c5dcb66c377fb4d",
+    "comparison_receipt_sha256": "32a49f11866bd44b391ba2931a4b7ec22f79a24af000fdb150ce1d11c3e4350e",
+    "readback_receipt_sha256": "d840adba3d1e76562697b517e3865a7829592aea97aa1fd45170ecfe23f86c90",
+    "assertion_sites": [2, 0],
+    "compiler_exit_codes": [255, 0],
+    "retained_assertions": 6366,
+    "policy_binary": {
+      "size_bytes": 1515046,
+      "sha256": "a827e265ee5bd3112eb657b36cf0e20db37328d948b629f97d631d68d8104bf8"
+    },
+    "strict_compilation_passed": true,
+    "zero_permissive_domains": true,
+    "raw_readback_completed": true,
+    "new_android_source_build": false,
+    "active_source_adoption": false,
+    "vendor_image_modified": false,
+    "full_rom_verified": false,
+    "phone_accessed": false
+  },
+  "post_policy_prototype_source_audit": {
+    "private_receipt": "reports/source-audit-after-policy-prototypes-v1-receipt.json",
+    "sha256": "a5644966904e0f85a6101bde80c5253c67c6ded1a7713a114d8179c6addc775c",
+    "size_bytes": 791018,
+    "completed_at": "2026-08-28T02:52:34.040517+00:00",
+    "source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "project_heads_and_remotes_verified": 1179,
+    "clean_projects": 1176,
+    "expected_modified_projects": 3,
+    "unexpected_projects": [],
+    "local_manifest_files": [],
+    "source_writes_performed": false,
+    "source_sync_repeated": false,
+    "lfs_payloads_rehashed": false,
+    "ignored_files_audited": false,
+    "authored_non_repo_directories_audited": false
   }
 }

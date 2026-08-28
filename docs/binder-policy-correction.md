@@ -75,7 +75,9 @@ its readback receipt SHA256 is
 
 The source package remains a user-provided, factory-named China TGZ with
 unauthenticated origin. This experiment neither authenticates an OEM trust
-root nor changes a signed image. A complete combined-policy pass, unfiltered
-analysis of an actual combined binary, reviewed adoption into the vendor
-integration, and separate device tests are still required. No boot or native
-feature compatibility is established by this result.
+root nor changes a signed image. This comparison did not produce a combined
+binary. The later [helper projection](helper-policy-projection.md) adds the
+exact two-SET platform restriction and passes strict compilation and an
+unfiltered permissive-domain check. Reviewed adoption into the source and
+vendor integration, plus separate device tests, are still required. No boot or native
+feature compatibility is established by either prototype.
