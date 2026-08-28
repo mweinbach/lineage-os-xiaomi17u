@@ -19,6 +19,12 @@ python3 scripts/collect_recovery.py --collect \
   --serial '<explicit-authorized-device>' --expected-device nezha
 ```
 
+The current experimental user-build target does not yet provide a verified
+non-root collection path. Its executable-link preflight and several log reads
+have unresolved permission constraints; see the [ADB and log-access readiness
+record](twrp-adb-readiness.md). The commands above describe the collector's
+interface, not successful access on a compiled or booted Nezha recovery.
+
 The placeholder is not a device selector. Use the exact independently verified
 physical device serial, and do not publish it in shared logs or issue reports.
 The tool rejects emulator and network endpoint serial syntax; it never connects

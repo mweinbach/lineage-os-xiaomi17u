@@ -60,3 +60,34 @@ authorized by this proposal.
 The ignored receipt
 `reports/twrp-adb-readiness-source-audit-20260828T122741Z.json` records 15
 exact pinned source hashes and two verified prepared patch postimages.
+
+Authorized ADB does not by itself grant access to every diagnostic. The current
+`user` profile drops the shell to UID 2000 and runs commands in the SELinux
+`shell` domain. A subsequent source review found these distinct limits:
+
+| Diagnostic | Source-based expectation before a device test |
+| --- | --- |
+| `/tmp/recovery.log` | A fresh log is root-owned mode `0666`, but recovery mounts tmpfs over `/tmp`; the reviewed policy does not grant shell access to that tmpfs file. Reopening an existing file preserves its mode. |
+| Logcat | Shell retains the log group, has `read_logd` policy access, and is exempt from framework log-consent prompts. Logd startup and its task-profile inputs still need artifact and runtime verification. |
+| Plain `dmesg` | Shell lacks the required kernel-log capability and policy access. A userdebug build does not remove the shell-domain restriction. |
+| Pstore | Shell can search the directory and read permitted known files, but lacks the directory open/read access used by the collector's initial listing. Device file modes remain unverified. |
+
+The collector's mandatory `readlink /proc/<recovery-pid>/exe` check is another
+possible blocker. Normal Linux cross-UID ptrace-read credential checks are
+expected to reject shell reading a root process's executable link without
+`CAP_SYS_PTRACE`; membership in the readproc group does not establish that
+permission. This is a source-based inference, not a measured result from the
+phone's kernel. The collector currently stops if the check fails. Do not
+silently skip it, enable root ADB, or weaken SELinux to make collection pass.
+
+These findings require a separately reviewed logging design in addition to
+public-key provisioning and adbd startup. Logcat alone is not a substitute for
+the kernel ring buffer or the TWRP recovery log. Required applets, installed
+paths, library dependencies, effective labels and logd's background scheduling
+profile must also be verified in the actual artifact.
+
+The ignored receipt
+`reports/twrp-nonroot-log-readiness-20260828T134206Z-v2.json`, SHA256
+`d669d693e9fae306a2a29838ed4619ac796c225c0e9f13d80e3ae2922239986d`,
+binds 37 reviewed source files and the 16-patch queue. No key, phone, permission
+or collector behavior was changed by this review.
