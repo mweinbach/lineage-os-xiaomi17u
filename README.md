@@ -49,10 +49,17 @@ should be unlocked, wiped, or flashed as part of workspace setup.
   Factory GPT/XML now supplies exact package partition extents, including
   32 MiB DTBO despite its 22 MiB image. Live phone capacities and complete module
   ABI compatibility remain unresolved.
-- An authored `lineage_nezha-bp4a-userdebug` product, verified private vendor/kernel
-  bundles, and exact Nezha DTS source roundtrips. Actual product configuration
-  and the first Android module build passed in the existing VM. See [build progress](docs/build-progress.md) for
-  module-build results and the separate complete-ROM/device-testing gates.
+- An authored product with `lineage_nezha-bp4a-userdebug` and
+  `lineage_nezha-bp4a-user` choices, verified private vendor/kernel bundles, and
+  exact Nezha DTS source roundtrips. Both variants have completed their recorded
+  framework checks. The current candidate explicitly adopts factory vendor/ODM
+  images and factory fstab flags; earlier builds retain their original inputs.
+  See [build progress](docs/build-progress.md) for results and the separate
+  complete-ROM/device-testing gates.
+- A [complete captured-module CRC/provider audit](docs/module-provider-audit.md):
+  every recorded expectation has a matching kernel or module candidate across
+  the captured pool. Stage availability, actual loading, signature trust and
+  full ABI compatibility remain separate checks.
 
 This Mac can also host the Linux build environment through **Apple Container +
 Rosetta**. The working configuration uses a pinned Ubuntu 24.04 ARM64 image,
@@ -149,6 +156,9 @@ properties do not independently establish physical variant or bootloader state.
 | [Matching firmware](docs/firmware-source.md) | Verified Xiaomi CDN URLs, partial download status, and safe resumption requirements |
 | [Factory intake](docs/factory-firmware-intake.md) | Separate user-provided China TGZ, preserved original and verified extraction |
 | [Factory validation](docs/factory-firmware-validation.md) | Independent sparse reconstruction, logical layout, passing selected AVB chain and EROFS checks |
+| [Factory boot contract](docs/factory-boot-contract.md) | Exact ramdisks, headers, DTs, enforcing fstab differences and preserved module bytes |
+| [Factory framework contract](docs/factory-framework-contract.md) | VINTF/XML and policy comparison without assuming framework compatibility |
+| [Factory input reuse](docs/factory-input-reuse.md) | Receipt-bound factory inputs, unchanged dependencies and explicit mixed provenance |
 | [Partition metadata](docs/partition-metadata.md) | Verified package GPT/XML extents, growth placeholders and live-capacity limits |
 | [Supplied Xiaomi.eu package](docs/provided-firmware.md) | Verified local integrity, unverified origin, embedded identity and sparse super layout |
 | [Firmware analysis](docs/firmware-analysis.md) | Verified sparse reconstruction, logical layout and filesystem checks |
@@ -157,6 +167,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Actual VINTF validation](docs/vintf-validation.md) | Successful vendor/ODM and active APEX load/merge; separate framework-definition and compatibility limits |
 | [Vendor APEX dependencies](docs/apex-dependencies.md) | Guarded CAS, Widevine and Wi-Fi payload inspection and matching active-package evidence |
 | [SELinux contract](docs/selinux-contract.md) | Exact stock policy inputs and seven strict neverallow failures; no policy or device pass claimed |
+| [User policy integration](docs/selinux-user-integration.md) | Five remaining combined-policy assertion sites, source ownership and enforcing-policy requirements |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Boot/DLKM build](docs/boot-dlkm-build.md) | Four built engineering images, exact kernel/overlay and 484 preserved module payloads |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
@@ -164,24 +175,27 @@ properties do not independently establish physical variant or bootloader state.
 | [Camera APK integration](docs/camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
 | [DEX runtime provider](docs/dex-import-uses-library.md) | Tested strict Soong patch for DEX shared libraries; guest integration still pending |
 | [ZRAM module plan](docs/zram-module-plan.md) | Distinct vendor/GKI providers, ordered loader behavior and selector requirements |
+| [Kernel exports](docs/kernel-export-contract.md) | Independently decoded stock kernel exports and selected module CRC matches |
+| [Module providers](docs/module-provider-audit.md) | All 914 captured instances, matching global provider candidates and stage/loading limits |
 | [Recovery plan](docs/recovery-plan.md) | TWRP after core ROM bring-up, correct Nezha layout and bootloader-protection limits |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 
 ## What remains before a complete ROM or phone test
 
-1. Establish the exact official China firmware baseline and resolve the
-   supplied modified package's AVB inconsistencies. Preserve the Xiaomi.eu app
-   snapshot and dependency evidence separately; do not repair verification
-   failures by disabling checks or copying its modified fstab.
+1. Complete source authentication and live partition/bootloader verification.
+   The supplied factory package already passes its selected AVB chain and
+   filesystem checks; that does not authenticate its origin or measure this
+   phone. Preserve the Xiaomi.eu failures separately. The current candidate
+   uses the factory fstab declarations without disabling verification.
 2. Complete the authored Nezha product's hardware, policy and signing integration.
    Safe framework/module checks already have a registered product. The public
    Nezha scaffold has a missing product makefile, stale model identity, and
    absent vendor/kernel inputs. Other-device partition/AVB settings must not
    be copied into an active configuration.
-3. Validate Android build orchestration on the prepared host, integrate reviewed
-   device sources into the verified platform checkout, and validate VINTF,
-   kernel-module compatibility, and enforcing policy.
+3. Extend the successful Android module and partial-image builds to a complete
+   product, resolving assembled-framework VINTF, module stage/dependency
+   requirements and the remaining enforcing-policy failures.
 4. Compile and test hardware features in stages, with a separately authorized
    recovery/backup plan before any device changes. No native feature is currently
    claimed to work on Evolution X.

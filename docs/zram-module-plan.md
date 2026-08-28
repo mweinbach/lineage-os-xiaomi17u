@@ -110,6 +110,15 @@ At this review checkpoint, the fix had not been installed in the guest or
 verified in a completed target image. An authored copy rule is not a loader
 or runtime result.
 
+Later checks resolve two parts of that historical checkpoint. The
+[v6 boot/DLKM image inspection](boot-dlkm-build.md) verifies the vendor-side
+selector and all 484 DLKM module payloads inside the built images. The
+[factory comparison](factory-input-reuse.md) finds those DLKM bytes unchanged.
+The [kernel-export check](kernel-export-contract.md) and
+[full module-provider audit](module-provider-audit.md) find CRC-matching
+captured candidates for the remaining imports. They retain the two-family
+`zs_malloc` conflict and do not establish stage availability or actual loading.
+
 The candidate integration needs these concrete checks before replacing or
 shipping module images:
 

@@ -2,8 +2,9 @@
 
 This plan applies to the user's **China-hardware Xiaomi 17 Ultra (`nezha`,
 SM8850 / `canoe`)** and Evolution X **Android 16 QPR2 `bka`**. An authored
-`framework-checks` product is now registered, passes Soong/Kati and has built
-Android ARM64 `libbase.so` and the x86-64 host VINTF checker. It is
+`framework-checks` product is now registered in both `user` and `userdebug`
+variants. Recorded builds include ARM64 `libbase.so`, all nine selected Camera
+dependencies, host validation tools, boot/DTBO and both DLKM images. It is
 recorded under `device.development_target` in `config/sources.json`; the
 complete-ROM fields remain `build_ready=false` and `lunch_target=null`.
 See [current build progress](build-progress.md). Missing hardware/flash
@@ -13,8 +14,11 @@ The supplied Xiaomi.eu package is useful for identifying the actual hardware
 and software dependencies. It is **not a valid signed image set**: the retained
 AVB metadata disagrees with vendor_boot and the logical images. Local archive,
 sparse, LP and EROFS checks passing does not override those failures. Keep it
-as a modified research input, separate from the full-size but still-unverified
-official-named China download.
+as a modified research input. The separately supplied factory-named China TGZ
+now passes [intake, selected AVB-chain and filesystem checks](factory-firmware-validation.md).
+Its origin is still unverified. The current candidate explicitly uses its
+vendor/ODM images, API facts, GPT budgets and enforcing fstab declarations,
+while preserving the older input and build identities.
 
 The [later community release](community-bringup.md) makes a substantial Nezha
 Camera port a concrete research lead. Its private device tree and official
@@ -36,7 +40,7 @@ without pretending those literal comparisons resolve the complete kernel build.
 | Reconstructed package | Independent sparse implementations produce the same 15,300,820,992-byte super; all metadata copies agree; independent LP extraction hashes agree; all eight EROFS checks pass | These are local integrity and format results, not OEM authentication or a flash-safety result. |
 | Dynamic layout | Eight logical partitions per slot, including mi_ext and both DLKM partitions; only A partitions have data in this package | Retain this exact evidence; do not adopt another phone's partition groups or use empty B records to remove A/B support. |
 | Physical boot chain | Current by-name links include A/B boot, init_boot, vendor_boot, recovery, DTBO, vbmeta and vbmeta_system | All 30 follow-up sysfs size/start reads were denied. Image file sizes are not proof of physical partition capacity or offsets. |
-| Kernel | Extracted boot kernel release matches the running 6.12.23 Android 16 GKI release | Module ABI, symbol CRCs, signatures, DT selection and source/licensing requirements are separate checks. A different vendor module release suffix alone does not prove incompatibility. |
+| Kernel | Extracted boot kernel release matches the running 6.12.23 Android 16 GKI release; all 36,963 recorded distinct-module CRC expectations have matching captured providers | The global provider pool does not prove availability at each loading stage, provider selection, signatures, full ABI compatibility or source/licensing compliance. |
 | Camera APK | Package copy is byte-for-byte identical to the earlier live Camera APK | No Camera or Leica feature has been tested on Evolution X. |
 | Vendor compatibility | Target-level and board API are `202504`; ODM first API is `36`. The built validator loads/merges vendor/ODM plus the observed active vendor APEX fragments successfully. | Full compatibility with the assembled Evolution framework, kernel and policy remains unverified. Static acceptance does not prove working services. |
 | Vendor patch level | Supplied vendor build reports `2026-02-01`; system reports `2026-07-01` | Do not rewrite vendor security metadata to the system date. |
@@ -45,6 +49,10 @@ The [device baseline](device-baseline.md), [provided package](provided-firmware.
 [source audit](device-research.md), [VINTF contract](vintf-contract.md),
 [boot/DLKM contract](boot-contract.md), and [camera baseline](camera-baseline.md)
 keep acquisition facts separate from integration hypotheses.
+The [factory boot contract](factory-boot-contract.md),
+[factory input comparison](factory-input-reuse.md) and
+[module provider audit](module-provider-audit.md) extend those observations
+without rewriting the original receipts.
 The later [actual VINTF validation](vintf-validation.md) and
 [vendor APEX inspection](apex-dependencies.md) record the checks performed on
 those inputs without replacing the original captures.
@@ -71,29 +79,34 @@ change with tests, not a way to silence missing-product errors.
 
 ## Boot and kernel work before a complete ROM or device test
 
-1. Obtain a complete matching unmodified China package and verify its internal
-   AVB consistency. Record the actual source and signing evidence; embedded-key
-   signature checks alone do not establish an OEM trust root. Preserve the
-   modified package and its failed checks for comparison.
+1. Preserve the complete factory input and its passing selected AVB chain,
+   while resolving source authentication separately. Embedded-key signature
+   checks alone do not establish an OEM trust root. Keep the modified package
+   and its failed checks for comparison.
 2. Establish physical partition capacities and the recovery/boot arrangement
    without inferring them from image lengths. The existing Android read-only
    interfaces denied the needed reads. Do not escalate privileges or reboot
    merely to fill this gap without a separate user instruction.
-3. Reconcile boot/init_boot/vendor_boot/recovery headers, DT selection and
-   rollback locations with that verified package. The supplied vendor ramdisk
-   fstab lacks `avb`/`verify` mount flags; it is not an enforcing template to
-   transplant into the new ROM.
+3. Validate built boot/init_boot/vendor_boot components against the captured
+   headers, DT selection, rollback locations and package GPT extents. The
+   Xiaomi.eu ramdisk fstab lacks verification flags; the current generated
+   factory profile instead retains all observed logical/boot AVB declarations,
+   GSI key references and encryption fields. Referenced-key availability and
+   complete signed-image integration remain separate requirements.
 4. Preserve the separation of vendor ramdisk, vendor_dlkm and system_dlkm module
    sets and their load/dependency/block lists. Validate each required module,
    its architecture, KMI/symbol CRCs and signature policy against the chosen
    kernel. The supplied sets contain distinct zram/zsmalloc variants and one
    shared imported-symbol CRC disagreement; preserve their selection and
-   blocklist policy for review. Matching imported CRCs do not prove agreement
-   with kernel exports. Do not turn off module/signature checks to fit inputs.
+   blocklist policy for review. The later export audit now supplies matching
+   CRC candidates, but stage availability and actual loading remain unresolved.
+   Do not turn off module/signature checks to fit inputs.
 5. Preserve verified boot, rollback constraints, encrypted storage and enforcing
    SELinux in the new design. Vendor security policy and framework policy need
-   compatible mappings; permissive policy and test AVB flags are not bring-up
-   fixes.
+   compatible mappings. The [user policy integration check](selinux-user-integration.md)
+   still fails at five assertion sites. Inherited permissive-su and property
+   masking behavior now have narrow, pinned source fixes; new binary and
+   runtime proofs must not be inferred from those edits.
 
 No opaque installer or binary from the firmware is an extraction dependency.
 Raw proprietary inputs, public-key inspection artifacts, private logs and
@@ -119,8 +132,9 @@ MediaTek-named adapters in the shared APK, must not automatically become Nezha
 vendor dependencies.
 
 The [APK import review](camera-apk-integration.md) now supplies concrete signing,
-4 KiB layout and manifest checks. The remaining build work includes a real
-DEX class-loader provider and an explicit signing/privilege/packaging contract.
+4 KiB layout and manifest checks. A tested [DEX class-loader provider patch](dex-import-uses-library.md)
+is available, but its guest and Make-app consumer integration remain pending,
+along with an explicit signing/privilege/packaging contract.
 Neither a module-name alias nor a global relaxed library check supplies those
 requirements. Keep the existing signature and raw captures unchanged while
 reviewing any new derived input.
@@ -147,9 +161,9 @@ successful first Android module build each have separate receipts. A source
 kernel and complete ROM have not yet been built. [Build progress](build-progress.md)
 records the current Camera compilation and actual read-only Ninja sandbox.
 
-After dependency admission, check product inheritance, artifact paths, VINTF,
-ELF dependencies, kernel module compatibility, SELinux and AVB before attempting
-an image build. Record the exact manifest, product/kernel/vendor commits,
+Continue checking product inheritance, artifact paths, VINTF, ELF dependencies,
+kernel modules, SELinux and AVB as the partial image builds expand. Record the
+exact manifest, product/kernel/vendor commits,
 firmware and tool hashes with every result. Keep a compilation result separate
 from boot, functional hardware and native-feature results.
 

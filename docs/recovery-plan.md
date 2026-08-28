@@ -46,6 +46,15 @@ The recorded recovery chain has rollback location 1 and index 1;
 a generic recovery tree. The phone's stored rollback counters and actual
 bootloader authorization remain unresolved.
 
+The later [factory ramdisk comparison](factory-boot-contract.md) confirms that
+the captured recovery ramdisk and its payloads match the earlier input. Its
+two recovery fstabs still contain ext4 and legacy ICE/wrapped-key settings
+that differ from the normal EROFS/FBE layout; they are evidence to reconcile,
+not a ready-to-use TWRP decryption configuration. The
+[module-provider audit](module-provider-audit.md) supplies matching captured
+CRC candidates, but recovery-specific dependency availability, loading and
+signature admission remain separate checks.
+
 The recovery build should retain the separate A/B recovery arrangement,
 header v4, LZ4 ramdisk format and exclusion of the kernel from recovery.
 It needs a reviewed module closure for display, touch, storage, USB and
