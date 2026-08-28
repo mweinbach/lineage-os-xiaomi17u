@@ -358,6 +358,46 @@ class BuildProgressTests(unittest.TestCase):
                     "factory_origin_verified"):
             self.assertFalse(audit[key])
 
+    def test_dsp_adoption_is_a_distinct_source_update_with_no_flash_admission(self):
+        update = self.installed_version(9)
+        self.assertEqual(update["admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(update["previous_admission_sha256"], self.installed_version(8)["admission_sha256"])
+        self.assertEqual(update["sha256"], "dae184a0129e4224e851b779e760a38c03a66559d114bf19e7b4590913543a76")
+        self.assertEqual((update["source_payload_file_count"], update["source_payload_bytes"]), (12, 24435))
+        self.assertEqual({row["path"] for row in update["changes"]}, {
+            "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+            "device/xiaomi/nezha/sepolicy/system_ext/public/attributes",
+            "device/xiaomi/nezha/sepolicy/product/private/isolated_compute_app.te"})
+        self.assertEqual([row["path"] for row in update["candidate_metadata_additions"]],
+                         ["research/dsp-policy-integration.json"])
+        for key in ("atomic_directory_exchange", "only_device_source_exchanged", "readback_verified",
+                    "kernel_vendor_receipts_unchanged", "all_63_output_guards_unchanged",
+                    "six_project_revisions_and_statuses_verified", "four_patched_source_files_unchanged",
+                    "case_probes_confined_to_candidate_directory"):
+            self.assertIs(update[key], True)
+        for key in ("output_files_written", "effective_configuration_verified", "full_policy_compilation_verified",
+                    "phone_accessed", "source_sync_repeated", "complete_target_files_admitted", "flash_admitted"):
+            self.assertIs(update[key], False)
+        self.assertEqual(update["old_source_directory_preserved"],
+                         "/work/candidates/nezha-dsp-policy-v9/previous-device-source")
+
+    def test_factory_boot_inspection_retains_v8_admission_and_unsigned_avb_scope(self):
+        proof = self.record["factory_boot_components"]
+        details = json.loads((ROOT / proof["record"]).read_text())
+        self.assertEqual(proof["state"], "built_and_inspected")
+        self.assertEqual(proof["input_admission_sha256"], self.installed_version(8)["admission_sha256"])
+        self.assertNotEqual(proof["input_admission_sha256"], self.record["device_admission"]["sha256"])
+        self.assertEqual(proof["inspection_receipt"]["sha256"],
+                         "cff12cd8e5fc60290758c3c6c2e2a70ebce4f1f22982d345feec4e4a83d9a8e3")
+        self.assertEqual(set(proof["images"]), {"init_boot", "vendor_boot", "dtbo"})
+        for name, image in proof["images"].items():
+            self.assertEqual(image, {key: details["images"][name][key] for key in ("size_bytes", "sha256")})
+        self.assertEqual(proof["vendor_ramdisk_module_count"], 430)
+        for key in ("all_three_avb_blocks_unsigned", "avb_hash_descriptors_verified", "image_contents_inspected"):
+            self.assertIs(proof[key], True)
+        for key in ("complete_signed_chain_verified", "full_rom_verified", "phone_accessed"):
+            self.assertIs(proof[key], False)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -7,8 +7,9 @@ of Xiaomi's camera and other native features.
 **Evolution X has fully synced in its Linux volume, with all 1,179 project
 revisions verified. An authored Nezha product passes Soong/Kati configuration
 and has built ARM64 libbase, all nine selected Camera dependency modules and
-the host VINTF/policy tools. Boot, DTBO and both DLKM images also build and
-pass their recorded content checks. A flashable ROM is not present.** No phone
+the host VINTF/policy tools. Boot, init_boot, vendor_boot, DTBO and both DLKM
+images also build and pass their recorded content checks. A flashable ROM
+and complete signed boot chain are not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
 ## What is already here
@@ -174,6 +175,7 @@ properties do not independently establish physical variant or bootloader state.
 | [DSP policy source](docs/dsp-policy-integration.md) | Explicit factory-bound source option, preserved assertions and separate compiler-fixture scope |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Boot/DLKM build](docs/boot-dlkm-build.md) | Four built engineering images, exact kernel/overlay and 484 preserved module payloads |
+| [Factory-based boot build](docs/factory-boot-build.md) | Inspected user init_boot/vendor_boot/DTBO, 430 retained ramdisk modules and unsigned AVB-block scope |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](docs/camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](docs/camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |

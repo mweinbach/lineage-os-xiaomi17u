@@ -1,11 +1,12 @@
 # Nezha product and build progress
 
-The authored `lineage_nezha-bp4a-userdebug` product now passes actual
-Soong/Kati configuration and has built Android ARM64 `libbase.so` plus the
-x86-64 host `checkvintf` tool in the existing Apple Container source checkout.
-The nine selected Camera dependency modules and the Soong policy tools have
-also built successfully, with output hashes and actual checker execution
-verified. The Camera APK itself is not included. The product
+The authored Nezha product has completed actual user and userdebug component
+builds in the existing Apple Container source checkout. Built and inspected
+outputs include boot, init_boot, vendor_boot, DTBO and both DLKM images across
+their recorded input snapshots. ARM64 `libbase.so`, the nine selected Camera
+dependency modules and the host VINTF/policy tools also built successfully.
+The Camera APK itself is not included, and a complete ROM has not been built.
+The product
 selects Nezha, canoe, ARM64, 4 KiB kernel pages, shipping API 36 and board API
 202504, with AVB enabled. The [build record](../research/build-progress.json)
 contains the exact inputs, receipts and subsequent compilation results.
@@ -63,6 +64,7 @@ python3 scripts/generate_device_tree.py generate \
   --vintf-contract "$factory_analysis/build-property-comparison-v2/analysis/vintf-properties.json" \
   --factory-boot-contract research/factory-boot-contract.json \
   --partition-metadata research/partition-metadata.json \
+  --dsp-policy-contract research/dsp-policy-integration.json \
   --fstab-source "$factory_analysis/boot-analysis/ramdisk-comparison-v2/text-members/vendor_boot-0001.txt" \
   --output artifacts/device-candidates/nezha-framework-NEW
 python3 scripts/generate_device_tree.py validate \
@@ -253,6 +255,25 @@ The subsequent complete source audit matched all 1,179 project HEADs and
 remotes, with exactly three expected patched projects and 1,176 clean ones.
 The audit and successful v8 build have separate receipts; the original source
 installation receipt's compilation fields remain historical observations.
+
+The v8 [boot-content inspection](factory-boot-build.md) subsequently passed
+for the 8 MiB init_boot, 96 MiB vendor_boot and 32 MiB DTBO images. It verified
+the packaged first-stage init, all 430 vendor-ramdisk modules, six metadata
+files, admitted fstab, DTB and DTBO payloads. All three AVB hash descriptors
+pass, but their algorithm is `NONE`: the individual blocks are unsigned and
+do not establish a complete signed chain. The second-stage init was built
+and inspected, but has not been verified inside a completed system image.
+
+The current source admission is **v9**, generated with the explicit
+[DSP policy contract](dsp-policy-integration.md). Its installation changed
+only the generated board wiring and two source-policy files. The v8 source
+directory was preserved, all 63 output guards passed, and the vendor/kernel
+receipts, six checked project revisions and four patched source files remained
+unchanged. The 12 transferred source files total 24,435 bytes; control receipts
+are separate. Installation SHA256:
+`dae184a0129e4224e851b779e760a38c03a66559d114bf19e7b4590913543a76`.
+This installation record does not itself establish the subsequent Soong or
+full factory-policy result.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from

@@ -30,15 +30,16 @@
     "origin_verified": false
   },
   "device_admission": {
-    "path": "artifacts/device-candidates/nezha-factory-framework-user-v8/admission.json",
-    "sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
-    "source_commit": "1ada856722569c32e8475a7ad30bafebec215b28",
+    "path": "artifacts/device-candidates/nezha-factory-framework-user-v9/admission.json",
+    "sha256": "50fea6a4e94d86ee94ba5514d7dc7b1420c15f5bb4e850ea0c5dcb66c377fb4d",
+    "source_commit": "2475343c70d75912719f0663941011a7143ec5b0",
     "variant": "user",
     "mixed_package_sources": true,
     "source_packages": {
       "kernel": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
       "vendor": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b"
-    }
+    },
+    "dsp_policy_contract": "research/dsp-policy-integration.json"
   },
   "installation": {
     "guest_receipt": "/work/candidates/nezha-framework-20260827T1817Z/installation.json",
@@ -252,6 +253,61 @@
             "preserved": true
           }
         ]
+      },
+      {
+        "version": 9,
+        "private_receipt": "reports/device-dsp-v9-installation.json",
+        "sha256": "dae184a0129e4224e851b779e760a38c03a66559d114bf19e7b4590913543a76",
+        "guest_receipt": "/work/candidates/nezha-dsp-policy-v9/installation.json",
+        "completed_at": "2026-08-28T01:08:41.735791+00:00",
+        "admission_sha256": "50fea6a4e94d86ee94ba5514d7dc7b1420c15f5bb4e850ea0c5dcb66c377fb4d",
+        "previous_admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+        "changes": [
+          {
+            "path": "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+            "before_sha256": "16859ed3be0387b94ea1d198cabe2635a8bf82f3b2cbd0f32522f2c58e2e1e20",
+            "after_sha256": "04e0b55429d3e4401b3de756ece896396b3ff04b3ac93ef942511ea654fa2776"
+          },
+          {
+            "path": "device/xiaomi/nezha/sepolicy/product/private/isolated_compute_app.te",
+            "before_sha256": null,
+            "after_sha256": "d0f258575f1f3147d221d808468d5ae23e04be795a7dddeb9abd792f22b7ca98"
+          },
+          {
+            "path": "device/xiaomi/nezha/sepolicy/system_ext/public/attributes",
+            "before_sha256": null,
+            "after_sha256": "66658bc9fe936e88b469c4a57d3e884d8d194e7e1a5a37fe82ef620908d92803"
+          }
+        ],
+        "candidate_metadata_additions": [
+          {
+            "path": "research/dsp-policy-integration.json",
+            "before_sha256": null,
+            "after_sha256": "30720967a28cb558a0e3f90ed26a1f8e7c5b6befde55fea8428bbe8e693cd1f9"
+          }
+        ],
+        "atomic_directory_exchange": true,
+        "only_device_source_exchanged": true,
+        "old_source_directory_preserved": "/work/candidates/nezha-dsp-policy-v9/previous-device-source",
+        "source_payload_file_count": 12,
+        "source_payload_bytes": 24435,
+        "readback_verified": true,
+        "kernel_vendor_receipts_unchanged": true,
+        "all_63_output_guards_unchanged": true,
+        "six_project_revisions_and_statuses_verified": true,
+        "four_patched_source_files_unchanged": true,
+        "required_source_revisions": {
+          "external/selinux": "085c131ad1b984bfa8ffdafee7a976e9d89f403c",
+          "system/sepolicy": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+        },
+        "case_probes_confined_to_candidate_directory": true,
+        "output_files_written": false,
+        "effective_configuration_verified": false,
+        "full_policy_compilation_verified": false,
+        "phone_accessed": false,
+        "source_sync_repeated": false,
+        "complete_target_files_admitted": false,
+        "flash_admitted": false
       }
     ],
     "independent_v3_audit": {
@@ -1204,7 +1260,7 @@
     }
   ],
   "factory_candidate": {
-    "state": "installed_and_user_component_build_passed",
+    "state": "historical_v8_component_build_and_image_inspection_passed",
     "input_reuse_record": "research/factory-input-reuse.json",
     "admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
     "kernel_provenance_relabelled": false,
@@ -1244,7 +1300,8 @@
       "guest_vendor_images_hashed": 2,
       "source_or_out_written": false,
       "factory_origin_verified": false
-    }
+    },
+    "name": "nezha-factory-framework-user-v8"
   },
   "factory_user_security_build": {
     "record": "research/user-security-build.json",
@@ -1257,6 +1314,39 @@
     "remaining_factory_assertion_sites": 5,
     "source_project_heads_and_remotes_verified": 1179,
     "expected_modified_source_projects": 3,
+    "full_rom_verified": false,
+    "phone_accessed": false
+  },
+  "factory_boot_components": {
+    "state": "built_and_inspected",
+    "record": "research/factory-boot-build.json",
+    "input_admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+    "build_receipt_sha256": "869ea7bd4fbb1dd914d5d159ba591efc0a392a44ab63e9a6954281f5755986d6",
+    "inspection_receipt": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/host-boot-validation-v3/receipt.json",
+      "sha256": "cff12cd8e5fc60290758c3c6c2e2a70ebce4f1f22982d345feec4e4a83d9a8e3"
+    },
+    "snapshot_sha256": "a3873195eb76155a502208af5bc037cdaf740acc5df574eab43ef47312ef21e6",
+    "inspection_completed_at": "2026-08-28T01:01:19.369708+00:00",
+    "images": {
+      "init_boot": {
+        "size_bytes": 8388608,
+        "sha256": "eae81b09a6b6f5ee7c1901fef654e407b8d3776a5ec7682a3291f86c76475e0f"
+      },
+      "vendor_boot": {
+        "size_bytes": 100663296,
+        "sha256": "b10bdb2e9f4e12b126982924e2b754717e37da739da2ad4d6f4192742471db86"
+      },
+      "dtbo": {
+        "size_bytes": 33554432,
+        "sha256": "b166ce78ee67b970feb71e10b6123204c30f225b6b867023b75582eedf82fa35"
+      }
+    },
+    "vendor_ramdisk_module_count": 430,
+    "all_three_avb_blocks_unsigned": true,
+    "avb_hash_descriptors_verified": true,
+    "complete_signed_chain_verified": false,
+    "image_contents_inspected": true,
     "full_rom_verified": false,
     "phone_accessed": false
   }
