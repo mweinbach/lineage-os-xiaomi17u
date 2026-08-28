@@ -386,6 +386,12 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -tools/security/ \
     tools/security/remote_provisioning/hwtrust/
 
+# Graph 39's retained vehicle libraries need the original watchdog AIDL owner.
+# Its public versions and internal interface share this one reviewed file.
+# Keep the remaining Car implementation and service scopes excluded.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/services/Car/cpp/watchdog/aidl/Android.bp
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true

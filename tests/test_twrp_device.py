@@ -1,5 +1,6 @@
 """Offline invariants for the real TWRP target, not a device boot test."""
 
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -34,6 +35,8 @@ STS_PROVIDER_BLUEPRINTS = (
 )
 WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp"
 CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
+CAR_WATCHDOG_BLUEPRINT = "packages/services/Car/cpp/watchdog/aidl/Android.bp"
+GRAPH34_ORDERED_RULES_SHA256 = "acb03f16c6e8d6a785466ec0d3f8b483e1e1a790e297220a6e710634a2ffdc36"
 CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
 CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
 CAR_BUILTIN_DEVICE_CTS_PREFIX = "cts/tests/tests/car_builtin/"
@@ -168,7 +171,7 @@ SOURCE_FILE_REINCLUSIONS = {
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
-    CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT,
+    CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_WATCHDOG_BLUEPRINT,
     *ADSERVICES_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
@@ -221,6 +224,7 @@ SOURCE_REINCLUSIONS = [
     CAR_TEAMS_BLUEPRINT,
     *CAR_API_BLUEPRINTS,
     CAR_SETTINGS_FLAGS_BLUEPRINT,
+    CAR_WATCHDOG_BLUEPRINT,
     *ADSERVICES_API_BLUEPRINTS,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
@@ -767,7 +771,7 @@ class TwrpDeviceTests(unittest.TestCase):
         parent = "packages/services/Car/"
         self.assertIn("-" + parent, scopes)
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
-                         {CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS})
+                         {CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_WATCHDOG_BLUEPRINT})
         self.assertTrue(source_path_allowed(CAR_TEAMS_BLUEPRINT, scopes))
         for source in (parent + "Android.bp", parent + "service/Android.bp", parent + "tests/Android.bp",
                        parent + "teams/other.bp", parent + "teams/tests/Android.bp"):
@@ -957,7 +961,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 164)
+        self.assertEqual(len(scopes), 165)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -1162,6 +1166,45 @@ class TwrpDeviceTests(unittest.TestCase):
                      "inherited team", "trendy_team_aaos_framework",
                      "CTS suite membership is collected from selected modules",
                      "164 source rules", "does not claim complete CTS coverage"):
+            self.assertIn(fact, readme)
+
+    def test_graph_thirty_nine_watchdog_adds_one_file_after_unchanged_rules(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertGreaterEqual(len(scopes), 165)
+        prior = json.dumps(scopes[:164], separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(prior).hexdigest(), GRAPH34_ORDERED_RULES_SHA256)
+        self.assertEqual(scopes[164], CAR_WATCHDOG_BLUEPRINT)
+        parent = "packages/services/Car/cpp/watchdog/"
+        self.assertEqual({rule for rule in scopes if rule.lstrip("-").startswith(parent)},
+                         {CAR_WATCHDOG_BLUEPRINT})
+        self.assertTrue(source_path_allowed(CAR_WATCHDOG_BLUEPRINT, scopes))
+        for source in (parent + "Android.bp", parent + "aidl/other.bp",
+                       parent + "aidl/tests/Android.bp", parent + "aidl_sibling/Android.bp",
+                       parent + "server/Android.bp", "packages/services/Car/cpp/powerpolicy/Android.bp",
+                       "packages/services/Car/cpp/telemetry/Android.bp",
+                       "packages/services/Car/service/Android.bp", "packages/services/Car/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in (CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS,
+                       "hardware/interfaces/automotive/vehicle/2.0/default/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/2.0/default/impl/vhal_v2_0/userhal/Android.bp",
+                       "build/make/teams/Android.bp", "build/soong/licenses/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
+                       "external/avb/Android.bp", "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+
+    def test_graph_thirty_nine_watchdog_records_actual_consumers_and_source_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 39", "android.automotive.watchdog-V2-ndk",
+                     "android.hardware.automotive.vehicle@2.0-manager-lib",
+                     "android.hardware.automotive.vehicle@2.0-fake-user-hal-lib",
+                     "vhal_v2_0_target_defaults", CAR_WATCHDOG_BLUEPRINT,
+                     "61256ae811853028effed5c2c7227aebc347dc5e", "no source fetch is needed",
+                     "two AIDL interfaces", "versions 2 and 3", "internal interface importing public V3",
+                     "trendy_team_aaos_framework", "build/make/teams/Android.bp",
+                     "165 source rules", "previous 164 rules retain their order",
+                     "does not install a Car service", "API declarations, feature flags and validators are unchanged"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):

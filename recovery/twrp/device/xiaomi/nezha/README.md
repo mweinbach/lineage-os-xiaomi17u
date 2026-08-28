@@ -615,10 +615,28 @@ incoming consumer of this component. CTS suite membership is collected from
 selected modules and does not impose a fixed dependency on these two tests.
 The separate `cts/hostsidetests/car_builtin/` suite and its PM helper remain
 selected, along with Settings CTS and the existing Car SDK, flags and team
-providers. The current selection has 164 source rules. This changes test
+providers. That selection had 164 source rules. This changes test
 availability in the native recovery profile; it does not claim complete CTS
 coverage, a successful graph or a working recovery. No source definitions,
 test gates or validators are changed.
+
+Graph 39 reports the missing `android.automotive.watchdog-V2-ndk` provider for
+`android.hardware.automotive.vehicle@2.0-manager-lib` and
+`android.hardware.automotive.vehicle@2.0-fake-user-hal-lib`. Both inherit that
+dependency from `vhal_v2_0_target_defaults`. One exact positive rule restores
+`packages/services/Car/cpp/watchdog/aidl/Android.bp` from the already present Car
+revision `61256ae811853028effed5c2c7227aebc347dc5e`; no source fetch is needed.
+The complete original file retains two AIDL interfaces: public watchdog
+versions 2 and 3, and the internal interface importing public V3. Its original
+`trendy_team_aaos_framework` team resolves through the already selected
+`build/make/teams/Android.bp`; the global Apache license provider is also selected.
+
+The current selection has 165 source rules. The previous 164 rules retain
+their order, and the broad Car exclusion remains in place: no neighboring
+watchdog implementation, power, telemetry, service or test Blueprint is
+restored. `PRODUCT_PACKAGES` remains `recovery`; this source-provider repair
+does not install a Car service or establish compilation or device behavior.
+Source definitions, API declarations, feature flags and validators are unchanged.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
