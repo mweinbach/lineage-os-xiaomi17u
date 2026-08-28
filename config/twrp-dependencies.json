@@ -1380,6 +1380,13 @@
       "commit": "61256ae811853028effed5c2c7227aebc347dc5e",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP team metadata for the graph 24 trendy_team_aaos_power_triage error and retained VTS ownership. The full Car project is pinned, but build selection is limited to packages/services/Car/teams/Android.bp and its nine team definitions; no Car runtime, flag or proto libraries are selected."
+    },
+    {
+      "path": "external/fdlibm",
+      "url": "https://android.googlesource.com/platform/external/fdlibm",
+      "commit": "2e70335919bce0de03d619c57d4b7a98f848fd52",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libfdlibm provider required by libopenjdk and libopenjdkd in the graph 25 errors."
     }
   ]
 }

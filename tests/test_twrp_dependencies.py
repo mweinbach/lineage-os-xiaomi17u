@@ -222,6 +222,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "e470fa7807f5bb327cbc7795caf4e03bac5ce6ad5233d5fc7c129f3dede96a12")
 
+    def test_first_196_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:196]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "c41ad2b8d551dd8d841b71231a5b20c5f4c01dfdc0be4590f9e01ad22221611b")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -909,13 +915,23 @@ class ConfigurationTests(Fixture):
 
     def test_graph_twenty_four_car_team_metadata_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 196)
         self.assertEqual(projects[195], {
             "path": "packages/services/Car",
             "url": "https://android.googlesource.com/platform/packages/services/Car",
             "commit": "61256ae811853028effed5c2c7227aebc347dc5e",
             "tag": "android-16.0.0_r1",
             "reason": "Real AOSP team metadata for the graph 24 trendy_team_aaos_power_triage error and retained VTS ownership. The full Car project is pinned, but build selection is limited to packages/services/Car/teams/Android.bp and its nine team definitions; no Car runtime, flag or proto libraries are selected."
+        })
+
+    def test_graph_twenty_five_fdlibm_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 197)
+        self.assertEqual(projects[196], {
+            "path": "external/fdlibm",
+            "url": "https://android.googlesource.com/platform/external/fdlibm",
+            "commit": "2e70335919bce0de03d619c57d4b7a98f848fd52",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libfdlibm provider required by libopenjdk and libopenjdkd in the graph 25 errors."
         })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
