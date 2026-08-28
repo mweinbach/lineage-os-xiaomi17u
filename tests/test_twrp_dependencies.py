@@ -186,6 +186,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "a5bdfd0dfc60d81b244e2fd7108324b8c95ee2ac587256fa490917801b4567ff")
 
+    def test_first_147_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:147]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "351fe5eea9d963cf0919b5fd49e5619e1109937ff7735942aa532d568118053e")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -670,10 +676,9 @@ class ConfigurationTests(Fixture):
             ("external/curl", "80fe7404cfd198a477ffe3d5865c630e33e94adf", "libcurl"),
             ("external/libldac", "ba0389d2de9727375b779fb5890747a8d7dfe3a0", "libldacBT_abr and libldacBT_enc"),
         ]
-        self.assertEqual(len(projects), 147)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[145:]],
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[145:147]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, module) in zip(projects[145:], expected):
+        for project, (_, _, module) in zip(projects[145:147], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -681,6 +686,53 @@ class ConfigurationTests(Fixture):
                 self.assertIn(module, project["reason"])
                 self.assertFalse(project["reason"].startswith("Source audit projection"))
         self.assertIn("preserves the upstream fuzzer", projects[146]["reason"])
+
+    def test_reviewed_graph_twenty_two_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/libwebm", "https://android.googlesource.com/platform/external/libwebm",
+             "103e46e4cd4b6efcf6001f23fa8665fb110abf8d", "libwebm_mkvparser"),
+            ("trusty/user/base", "https://android.googlesource.com/trusty/lib",
+             "388e1c4f148264da6f97c54806c099b609c04e48", "libtrustystorageinterface"),
+            ("external/pdfium", "https://android.googlesource.com/platform/external/pdfium",
+             "61aafefc3df2bda22588c7764d1177018f0af4e4", "libpdfium_static"),
+            ("prebuilts/bundletool", "https://android.googlesource.com/platform/prebuilts/bundletool",
+             "4d55b55cd444c97bc021d35316010f57f62d7844", "bundletool"),
+            ("external/libxaac", "https://android.googlesource.com/platform/external/libxaac",
+             "30de3a01def68d7f856f5e3795f7f806c93ed2f5", "libxaacdec"),
+        ]
+        self.assertEqual([(project["path"], project["url"], project["commit"]) for project in projects[147:152]],
+                         [(path, url, commit) for path, url, commit, _ in expected])
+        for project, (_, _, _, module) in zip(projects[147:152], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 22 error:"))
+        self.assertIn("upstream lib/pmu/include symlink", projects[148]["reason"])
+        self.assertIn("absent trusty/kernel/lib/pmu/include", projects[148]["reason"])
+        self.assertIn("no kernel source is added", projects[148]["reason"])
+        for caveat in ("base/allocator/partition_allocator/*.cc", "skia_shared/*.cpp",
+                       "match no files", "dib/cfx_dibextractor.cpp", "fx_ge_linux.cpp",
+                       "No files or build properties are changed"):
+            self.assertIn(caveat, projects[149]["reason"])
+
+    def test_graph_twenty_two_java_provider_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/libphonenumber", "467b37350ac0c881864fac79358ecaa1265bcc54", "libphonenumber-platform"),
+            ("external/caliper", "dab7f1ed7741aaa71102341533da32d312563359", "caliper-api-target"),
+        ]
+        self.assertEqual(len(projects), 154)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[152:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[152:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 22 error", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+        self.assertIn("libphonenumber-nogeocoder", projects[152]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

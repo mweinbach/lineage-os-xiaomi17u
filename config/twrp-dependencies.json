@@ -1037,6 +1037,55 @@
       "commit": "ba0389d2de9727375b779fb5890747a8d7dfe3a0",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libldacBT_abr and libldacBT_enc providers required by libbt-stack and net_test_stack_a2dp_codecs_native in the graph 21 errors; preserves the upstream fuzzer."
+    },
+    {
+      "path": "external/libwebm",
+      "url": "https://android.googlesource.com/platform/external/libwebm",
+      "commit": "103e46e4cd4b6efcf6001f23fa8665fb110abf8d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP libwebm_mkvparser provider required by retained libmkvextractor."
+    },
+    {
+      "path": "trusty/user/base",
+      "url": "https://android.googlesource.com/trusty/lib",
+      "commit": "388e1c4f148264da6f97c54806c099b609c04e48",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP libtrustystorageinterface provider required by retained libtrustystorage. The upstream lib/pmu/include symlink resolves to absent trusty/kernel/lib/pmu/include, outside the declared storage inputs; no kernel source is added."
+    },
+    {
+      "path": "external/pdfium",
+      "url": "https://android.googlesource.com/platform/external/pdfium",
+      "commit": "61aafefc3df2bda22588c7764d1177018f0af4e4",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP libpdfium_static provider required by retained libpdfclient. Upstream input anomalies remain: third_party/Android.bp globs base/allocator/partition_allocator/*.cc and skia_shared/*.cpp match no files; core/fxge/Android.bp excludes dib/cfx_dibextractor.cpp and fx_ge_linux.cpp are stale. No files or build properties are changed; graph and compile validation remain pending."
+    },
+    {
+      "path": "prebuilts/bundletool",
+      "url": "https://android.googlesource.com/platform/prebuilts/bundletool",
+      "commit": "4d55b55cd444c97bc021d35316010f57f62d7844",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP bundletool provider required by retained build-apex-bundle and apexer_test_host_tools, using the unchanged upstream JAR."
+    },
+    {
+      "path": "external/libxaac",
+      "url": "https://android.googlesource.com/platform/external/libxaac",
+      "commit": "30de3a01def68d7f856f5e3795f7f806c93ed2f5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP libxaacdec provider required by retained libcodec2_soft_xaacdec, preserving upstream tests and fuzzers."
+    },
+    {
+      "path": "external/libphonenumber",
+      "url": "https://android.googlesource.com/platform/external/libphonenumber",
+      "commit": "467b37350ac0c881864fac79358ecaa1265bcc54",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libphonenumber-platform provider required by ext in the graph 22 error; also supplies the original libphonenumber-nogeocoder provider for retained telephony."
+    },
+    {
+      "path": "external/caliper",
+      "url": "https://android.googlesource.com/platform/external/caliper",
+      "commit": "dab7f1ed7741aaa71102341533da32d312563359",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP caliper-api-target provider required by conscrypt-benchmarks in the graph 22 error, preserving the original local caliper-prebuilts module and JAR."
     }
   ]
 }
