@@ -519,6 +519,62 @@
       "commit": "517043524e83921c5b0be8ff2ad92a40376971a9",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libwinpthread provider required by Windows host variants of retained native modules; not an ARM64 recovery runtime library."
+    },
+    {
+      "path": "external/libdivsufsort",
+      "url": "https://android.googlesource.com/platform/external/libdivsufsort",
+      "commit": "f9226d8ff66736207cd7664bcca61b3760045691",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libdivsufsort and libdivsufsort64 providers required by libbsdiff in the graph 13 errors."
+    },
+    {
+      "path": "external/sonivox",
+      "url": "https://android.googlesource.com/platform/external/sonivox",
+      "commit": "0dd66fcbc6f7456fd43d6bef4d2f670dfdc7b6d7",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libsonivoxwithoutjet provider required by libmedia_midiiowrapper in the graph 13 errors."
+    },
+    {
+      "path": "external/apache-commons-compress",
+      "url": "https://android.googlesource.com/platform/external/apache-commons-compress",
+      "commit": "4b700cfd7c3063cd0b00dac8d930dba78eedee0e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP apache-commons-compress provider required by hoststubgen-lib in the graph 13 errors."
+    },
+    {
+      "path": "external/xz-java",
+      "url": "https://android.googlesource.com/platform/external/xz-java",
+      "commit": "e16429ac5ad2d18b7c9e5dbcd673005c5257e7a9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP xz-java provider required by Apache Commons Compress for the graph 13 hoststubgen-lib dependency."
+    },
+    {
+      "path": "external/jsmn",
+      "url": "https://android.googlesource.com/platform/external/jsmn",
+      "commit": "75c0d7b4f48725ffa51f1f5ee7b1af0034e2f280",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 13 error: real AOSP libjsmn provider required by retained libclearkeycasplugin in frameworks/av/drm/mediacas/plugins/clearkey/Android.bp."
+    },
+    {
+      "path": "external/libogg",
+      "url": "https://android.googlesource.com/platform/external/libogg",
+      "commit": "44061a68e8a9b41bd2cfc32a0a2bf2a5caea2478",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 13 error: real AOSP libogg provider required by retained libstagefright in frameworks/av/media/libstagefright/Android.bp."
+    },
+    {
+      "path": "external/vulkan-headers",
+      "url": "https://android.googlesource.com/platform/external/vulkan-headers",
+      "commit": "7e80b474147eb0c6a9464c2e867ae6ba277a3102",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 13 error: real AOSP vulkan_headers provider required by retained frameworks/native/vulkan/libvulkan/Android.bp modules."
+    },
+    {
+      "path": "external/OpenCSD",
+      "url": "https://android.googlesource.com/platform/external/OpenCSD",
+      "commit": "98045c29085b5e10460f0c920d919597fbc91eeb",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 13 error: real AOSP libopencsd_decoder provider required by retained system/extras/simpleperf/Android.bp modules."
     }
   ]
 }

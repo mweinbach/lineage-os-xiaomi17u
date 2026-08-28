@@ -126,6 +126,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "66a247bf90591518ef4a401005fee79897f4ca783e423e7a34b4def5ba668558")
 
+    def test_first_seventy_three_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:73]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "b66a26acd8b784dae18e99df575862e314d13ac8fe2220045a8ba461383e247b")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -331,13 +337,44 @@ class ConfigurationTests(Fixture):
             ("external/googleapis", "99bff8ebcdde5aa21f01049c8c39900beef372e4"),
             ("prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8", "517043524e83921c5b0be8ff2ad92a40376971a9"),
         ]
-        self.assertEqual(len(projects), 73)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[68:]], expected)
-        for project in projects[68:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[68:73]], expected)
+        for project in projects[68:73]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
                 self.assertTrue(project["reason"].strip())
+
+    def test_graph_thirteen_patch_audio_and_archive_providers_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/libdivsufsort", "f9226d8ff66736207cd7664bcca61b3760045691"),
+            ("external/sonivox", "0dd66fcbc6f7456fd43d6bef4d2f670dfdc7b6d7"),
+            ("external/apache-commons-compress", "4b700cfd7c3063cd0b00dac8d930dba78eedee0e"),
+            ("external/xz-java", "e16429ac5ad2d18b7c9e5dbcd673005c5257e7a9"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[73:77]], expected)
+        for project in projects[73:77]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].strip())
+
+    def test_reviewed_native_projections_are_pinned_and_labelled(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/jsmn", "75c0d7b4f48725ffa51f1f5ee7b1af0034e2f280"),
+            ("external/libogg", "44061a68e8a9b41bd2cfc32a0a2bf2a5caea2478"),
+            ("external/vulkan-headers", "7e80b474147eb0c6a9464c2e867ae6ba277a3102"),
+            ("external/OpenCSD", "98045c29085b5e10460f0c920d919597fbc91eeb"),
+        ]
+        self.assertEqual(len(projects), 81)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[77:]], expected)
+        for project in projects[77:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 13 error:"))
+                self.assertIn("Android.bp", project["reason"])
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()
