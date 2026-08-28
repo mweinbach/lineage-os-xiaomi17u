@@ -81,6 +81,12 @@ Patches 29 and 30 address those two causes without disabling warning checks,
 enabling optional features or changing existing recovery operations. No image
 was produced by that attempt; the source and cleanup-state checks still passed.
 
+Graph 55 passed with both fixes, and build 56 compiled the affected C++ files.
+It then stopped on one unused descriptor parameter in `tarWrite.c`. Patch 31
+marks that parameter intentionally unused without adding an I/O operation or
+changing the deferred flush behavior. This fix still requires a new build;
+build 56 produced no image and passed the subsequent source and cleanup checks.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are
@@ -132,6 +138,14 @@ stages the authored target and exact reviewed patches, and refuses unrelated
 changes. The build uses `out-twrp` as a source-relative alias to the isolated
 output directory; source, output and caches remain in ext4. No phone command
 or automatic flashing step is part of these tools.
+
+For a diagnostic compile, the `build` action accepts `--keep-going`. This adds
+an explicit `-k0` to the recorded Soong command so Ninja can collect independent
+failures in one run. Errors still fail the build; source, sandbox, image and
+engineering-signature checks remain enabled. The flag does not allow blocked
+dependencies or failed graph generation to proceed. After a successful
+diagnostic run, repeat `build` without the flag to obtain the normal receipt
+required by artifact verification. The default command remains unchanged.
 
 For an already prepared checkout, run the following from the **new versioned
 control bundle** instead of repeating `prepare`. Set `TWRP_PREVIOUS_CONTROL_ROOT`

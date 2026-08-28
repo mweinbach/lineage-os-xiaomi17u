@@ -1024,6 +1024,163 @@ class PatchRevisionTests(RevisionFixture):
         self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
 
 
+class KeepGoingTests(BuildFixture):
+    def test_keep_going_is_explicit_and_default_commands_are_unchanged(self):
+        normal = ["bash", "build/soong/soong_ui.bash", "--make-mode", "-j8", "recoveryimage"]
+        self.assertEqual(build.command("build", 8), normal)
+        self.assertEqual(build.command("build", 8, keep_going=False), normal)
+        self.assertEqual(build.command("graph", 8), normal[:-1] + ["nothing"])
+        self.assertEqual(build.command("build", 8, keep_going=True), normal[:-1] + ["-k0", "recoveryimage"])
+        for value in (0, 1, "true", "false", None):
+            with self.subTest(value=value), self.assertRaisesRegex(ValueError, "boolean"):
+                build.command("build", 8, keep_going=value)
+
+    def test_keep_going_graph_is_rejected_before_host_or_lock(self):
+        before = set(self.root.rglob("*"))
+        with self.assertRaisesRegex(ValueError, "valid only for the build action"):
+            build.run_build(self.config, self.paths, "graph", "native", 4, "user", self.control, keep_going=True)
+        self.host_mock.assert_not_called()
+        self.process_mock.assert_not_called()
+        self.assertEqual(set(self.root.rglob("*")), before)
+
+    def test_keep_going_cannot_be_injected_through_environment(self):
+        with patch.dict(build.os.environ, {"NINJA_ARGS": "-k0", "NINJA_EXTRA_ARGS": "-k0", "MAKEFLAGS": "-k"}):
+            env = build.environment(self.source, self.paths["out_dir"], "user")
+        for name in ("NINJA_ARGS", "NINJA_EXTRA_ARGS", "MAKEFLAGS"):
+            self.assertNotIn(name, env)
+        self.assertNotIn("-k0", build.command("build", 8))
+
+    def test_keep_going_failure_preserves_nonzero_without_artifact_admission(self):
+        self.prepare()
+        self.write_artifact()  # A stale image must not turn a failed command into success.
+        args = build.command("build", 4, keep_going=True)
+        self.process_mock.side_effect = subprocess.CalledProcessError(17, args)
+        with patch.object(build, "inspect_artifact") as inspect, redirect_stdout(io.StringIO()), \
+                self.assertRaises(subprocess.CalledProcessError) as raised:
+            build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        self.assertEqual(raised.exception.returncode, 17)
+        inspect.assert_not_called()
+        self.assertEqual(self.process_mock.call_count, 1)
+        self.assertTrue(self.process_mock.call_args.kwargs["check"])
+        report = json.loads(next(self.paths["report_dir"].glob("build-failed-*.json")).read_text())
+        self.assertEqual(report["command"], args)
+        self.assertEqual(report["failed_command_exit_code"], 17)
+        self.assertEqual(report["status"], "failed")
+        self.assertTrue(report["diagnostic_only"])
+        self.assertTrue(report["canonical_build_receipt_required"])
+        self.assertNotIn("artifact", report)
+        self.assertFalse(report["flash_admitted"])
+        self.assertFalse(list(self.paths["report_dir"].glob("build-complete-*.json")))
+        self.assertFalse((self.paths["report_dir"] / "build-operation.lock").exists())
+
+    def test_keep_going_success_still_checks_artifact_and_signature(self):
+        self.prepare()
+        def process(args, **kwargs):
+            self.assertTrue(kwargs["check"])
+            self.assertFalse(kwargs["shell"])
+            if args[-1] == "recoveryimage":
+                self.assertEqual(args, build.command("build", 4, keep_going=True))
+                self.write_artifact()
+            else:
+                self.assertIn("verify_image", args)
+                self.assertIn("external/avb/test/data/testkey_rsa4096.pem", args)
+            return SimpleNamespace(returncode=0)
+        self.process_mock.side_effect = process
+        with patch.object(build, "inspect_artifact", wraps=build.inspect_artifact) as inspect, redirect_stdout(io.StringIO()):
+            report = build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        inspect.assert_called_once_with(self.paths)
+        self.assertEqual(self.process_mock.call_count, 2)
+        self.assertEqual(report["command"], build.command("build", 4, keep_going=True))
+        self.assertEqual(report["command_exit_code"], 0)
+        self.assertTrue(report["artifact"]["format_inspected"])
+        self.assertTrue(report["artifact"]["engineering_test_key_signature_verified"])
+        self.assertTrue(report["diagnostic_only"])
+        self.assertTrue(report["canonical_build_receipt_required"])
+        self.assertIn("rerun without --keep-going", report["note"])
+        self.assertFalse(report["artifact"]["runtime_verified"])
+        self.assertFalse(report["flash_admitted"])
+
+    def test_keep_going_success_without_image_still_fails(self):
+        self.prepare()
+        self.process_mock.side_effect = None
+        self.process_mock.return_value = SimpleNamespace(returncode=0)
+        with redirect_stdout(io.StringIO()), self.assertRaisesRegex(ValueError, "without a regular recovery.img"):
+            build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        self.assertFalse(list(self.paths["report_dir"].glob("build-complete-*.json")))
+
+    def test_keep_going_rejects_signature_failure(self):
+        self.prepare()
+        def process(args, **kwargs):
+            if args[-1] == "recoveryimage":
+                self.write_artifact()
+                return SimpleNamespace(returncode=0)
+            raise subprocess.CalledProcessError(3, args)
+        self.process_mock.side_effect = process
+        with redirect_stdout(io.StringIO()), self.assertRaises(subprocess.CalledProcessError):
+            build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        report = json.loads(next(self.paths["report_dir"].glob("build-failed-*.json")).read_text())
+        self.assertEqual(report["failed_command_exit_code"], 3)
+        self.assertEqual(report["status"], "failed")
+        self.assertNotIn("engineering_test_key_signature_verified", report["artifact"])
+        self.assertFalse(report["artifact"]["flash_admitted"])
+        self.assertFalse(report["flash_admitted"])
+        self.assertFalse(list(self.paths["report_dir"].glob("build-complete-*.json")))
+
+    def test_keep_going_rejects_sandbox_fallback_before_artifact_checks(self):
+        self.prepare()
+        def process(args, **kwargs):
+            kwargs["stdout"].write("Build sandboxing disabled due to nsjail error.\n")
+            return SimpleNamespace(returncode=0)
+        self.process_mock.side_effect = process
+        with patch.object(build, "inspect_artifact") as inspect, redirect_stdout(io.StringIO()), \
+                self.assertRaisesRegex(ValueError, "sandbox fallback"):
+            build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        inspect.assert_not_called()
+
+    def test_keep_going_cannot_bypass_host_or_lock_checks(self):
+        self.host_mock.side_effect = ValueError("unsupported host")
+        with self.assertRaisesRegex(ValueError, "unsupported host"):
+            build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        self.host_mock.side_effect = None
+        lock = self.paths["report_dir"] / "build-operation.lock"
+        lock.write_text("another build owns this lock")
+        with self.assertRaisesRegex(ValueError, "owns the lock"):
+            build.run_build(self.config, self.paths, "build", "native", 4, "user", self.control, keep_going=True)
+        self.assertEqual(lock.read_text(), "another build owns this lock")
+        self.process_mock.assert_not_called()
+
+    def test_keep_going_cli_rejects_every_non_build_action_without_probes(self):
+        with patch.object(build.twrp_workspace, "load_config", side_effect=AssertionError("config read")):
+            for action in (None, "plan", "prepare", "revise", "check", "graph"):
+                argv = ([action] if action is not None else []) + ["--keep-going"]
+                with self.subTest(action=action), redirect_stderr(io.StringIO()) as stderr:
+                    self.assertEqual(build.main(argv), 2)
+                self.assertIn("valid only for the build action", stderr.getvalue())
+        self.host_mock.assert_not_called()
+        self.process_mock.assert_not_called()
+
+    def test_keep_going_cli_failure_returns_nonzero_and_preserves_failure_receipt(self):
+        self.prepare()
+        runner = build.run_build
+        def with_fixture_root(*args, **kwargs):
+            return runner(*args, root=self.control, **kwargs)
+        self.process_mock.side_effect = subprocess.CalledProcessError(9, build.command("build", 8, keep_going=True))
+        with patch.object(build.twrp_workspace, "load_config", return_value=self.config), \
+                patch.object(build.twrp_workspace, "paths_for", return_value=self.paths), \
+                patch.object(build, "run_build", side_effect=with_fixture_root), \
+                patch.object(build, "inspect_artifact") as inspect, \
+                redirect_stdout(io.StringIO()) as stdout, redirect_stderr(io.StringIO()) as stderr:
+            self.assertEqual(build.main(["build", "--keep-going"]), 2)
+        inspect.assert_not_called()
+        self.assertIn("error:", stderr.getvalue())
+        self.assertNotIn('"action": "build-complete"', stdout.getvalue())
+        report = json.loads(next(self.paths["report_dir"].glob("build-failed-*.json")).read_text())
+        self.assertEqual(report["failed_command_exit_code"], 9)
+        self.assertIn("-k0", report["command"])
+        self.assertNotIn("artifact", report)
+        self.assertFalse(report["flash_admitted"])
+
+
 class RealControlTests(unittest.TestCase):
     def test_checked_in_controls_are_valid_and_source_only(self):
         config = build.twrp_workspace.load_config()

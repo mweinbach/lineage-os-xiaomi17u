@@ -117,13 +117,20 @@ def operation_lock(paths, action):
             path.unlink()
 
 
-def command(action, jobs):
+def command(action, jobs, *, keep_going=False):
     if type(jobs) is not int or not 1 <= jobs <= 64:
         raise ValueError("Build jobs must be between 1 and 64")
     if action not in {"graph", "build"}:
         raise ValueError("Only graph and dependency-checked recovery compilation are supported")
-    return ["bash", "build/soong/soong_ui.bash", "--make-mode", f"-j{jobs}",
+    if type(keep_going) is not bool:
+        raise ValueError("keep_going must be a boolean")
+    if keep_going and action != "build":
+        raise ValueError("--keep-going is valid only for the build action")
+    args = ["bash", "build/soong/soong_ui.bash", "--make-mode", f"-j{jobs}",
             "nothing" if action == "graph" else "recoveryimage"]
+    if keep_going:
+        args.insert(-1, "-k0")
+    return args
 
 
 def environment(source, output, variant):
@@ -747,16 +754,17 @@ def inspect_artifact(paths):
             "format_inspected": True, "runtime_verified": False, "flash_admitted": False}
 
 
-def run_build(config, paths, action, host_mode, jobs, variant, root=ROOT):
-    command(action, jobs)
+def run_build(config, paths, action, host_mode, jobs, variant, root=ROOT, *, keep_going=False):
+    command(action, jobs, keep_going=keep_going)
     environment(paths["source_dir"], paths["out_dir"], variant)
     host = twrp_workspace.require_host(config, paths, host_mode)
     with operation_lock(paths, action):
-        return run_build_locked(config, paths, action, host_mode, jobs, variant, root, host)
+        return run_build_locked(config, paths, action, host_mode, jobs, variant, root, host,
+                                keep_going=keep_going)
 
 
-def run_build_locked(config, paths, action, host_mode, jobs, variant, root, host):
-    args = command(action, jobs)
+def run_build_locked(config, paths, action, host_mode, jobs, variant, root, host, *, keep_going=False):
+    args = command(action, jobs, keep_going=keep_going)
     env = environment(paths["source_dir"], paths["out_dir"], variant)
     verified = check(config, paths, host_mode, root, host=host)
     now = datetime.now(timezone.utc)
@@ -766,6 +774,11 @@ def run_build_locked(config, paths, action, host_mode, jobs, variant, root, host
               "log_path": str(log_path), "source": verified["source"],
               "build_state_sha256": verified["build_state_sha256"],
               "host_preflight": verified["host_preflight"], "note": LIMITATION}
+    if keep_going:
+        report["diagnostic_only"] = True
+        report["canonical_build_receipt_required"] = True
+        report["note"] += (" Keep-going collects independent Ninja failures without admitting failed builds. "
+                           "Even after success, rerun without --keep-going for the canonical artifact receipt.")
     if variant == "userdebug":
         report["variant_caveat"] = ("userdebug permits bootconfig-selected permissive init behavior. "
                                     "This diagnostic compile does not establish enforcing recovery behavior.")
@@ -821,8 +834,13 @@ def main(argv=None):
     parser.add_argument("--host-mode", choices=twrp_workspace.workspace.HOST_MODES, default="native")
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--variant", choices=VARIANTS, default="user")
+    parser.add_argument("--keep-going", action="store_true",
+                        help="Build-only diagnostic: collect independent Ninja failures; errors still fail. "
+                             "Rerun without this flag for the canonical artifact receipt.")
     args = parser.parse_args(argv)
     try:
+        if args.keep_going and args.action != "build":
+            raise ValueError("--keep-going is valid only for the build action")
         config = twrp_workspace.load_config()
         paths = twrp_workspace.paths_for(config, args.source_dir, args.out_dir, args.report_dir)
         command("build", args.jobs)
@@ -837,7 +855,8 @@ def main(argv=None):
         elif args.action == "check":
             report = check(config, paths, args.host_mode)
         else:
-            report = run_build(config, paths, args.action, args.host_mode, args.jobs, args.variant)
+            report = run_build(config, paths, args.action, args.host_mode, args.jobs, args.variant,
+                               keep_going=args.keep_going)
         print(json.dumps(report, indent=2))
         return 0
     except (ValueError, KeyError, TypeError, UnicodeError, OSError, subprocess.SubprocessError, ET.ParseError) as error:
