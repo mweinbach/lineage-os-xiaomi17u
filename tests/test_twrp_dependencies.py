@@ -288,6 +288,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "39517a2a7b22d56b7c7bda093ef0ae149e7198d07834ad69b488125625252c42")
 
+    def test_first_229_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:229]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "475b0b4a1daa8dbb96290432b613821c768267bf4d80f61aa06c5c2d27987b12")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1226,7 +1232,7 @@ class ConfigurationTests(Fixture):
             ("external/mime-support", "c347c3d8fa4992e655674e6c9f2baa6e18e44ead"),
             ("external/turbine", "babc164379486626467efc50db0833d683c39fd5"),
         ]
-        self.assertEqual(len(projects), 229)
+        self.assertGreaterEqual(len(projects), 229)
         self.assertEqual([(p["path"], p["commit"]) for p in projects[225:229]], expected)
         for project in projects[225:229]:
             with self.subTest(path=project["path"]):
@@ -1254,6 +1260,72 @@ class ConfigurationTests(Fixture):
                      "does not claim a built JAR"):
             self.assertIn(text, projects[228]["reason"])
         self.assertNotIn("java_binary_host", projects[228]["reason"])
+
+    def test_graph_thirty_two_source_provider_batch_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/glide", "2078ac4e2023465dd8f4473554ec65583b9267a6"),
+            ("external/volley", "c34e6c11e6d8f47807f31fe1dbb655ab5ab4534b"),
+            ("external/wycheproof", "bf75d8ae31587a5c81fe70533ea831728b3fdf0e"),
+            ("packages/providers/ContactsProvider", "164078c92d23d173f0f0c986e298dd236d66279b"),
+            ("packages/apps/TvSettings", "139dd3c1a8f626a57271baf4926180f8d1f3bade"),
+            ("test/mlts/benchmark", "4617f7e28793f979153f3b088a79ba796e0268b3"),
+            ("test/mlts/models", "cbb1ae5cfde49ed06ccf4afaa2fae1054364d4f3"),
+        ]
+        self.assertEqual(len(projects), 236)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[229:236]], expected)
+        for project in projects[229:236]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+
+    def test_graph_thirty_two_reasons_preserve_actual_and_transitive_boundaries(self):
+        projects = dependencies.load_config()["projects"]
+        actual_consumers = {
+            "external/glide": ("glide source android_library", "CtsLeanbackJankApp"),
+            "external/wycheproof": ("wycheproof", "wycheproof-keystore",
+                                    "CtsLibcoreWycheproofBCTestCases",
+                                    "CtsLibcoreWycheproofConscryptTestCases",
+                                    "CtsKeystoreWycheproofTestCases"),
+            "packages/providers/ContactsProvider": ("ContactsProviderTestUtils",
+                                                     "E2eeContactKeysProviderTests",
+                                                     "contactsprovider_flags_java_lib",
+                                                     "CtsContactsProviderTestCases"),
+            "packages/apps/TvSettings": ("TvSettingsAPI", "CtsSettingsAPITestCases"),
+            "test/mlts/benchmark": ("NeuralNetworksApiBenchmark_Lib", "libnnbenchmark_jni",
+                                    "VtsHalNeuralnetworksV1_2BenchmarkTestCases",
+                                    "VtsHalNeuralnetworksV1_3BenchmarkTestCases"),
+            "test/mlts/models": ("test_mlts_models_assets",
+                                 "VtsHalNeuralnetworksV1_2BenchmarkTestCases",
+                                 "VtsHalNeuralnetworksV1_3BenchmarkTestCases"),
+        }
+        for project in projects[229:236]:
+            with self.subTest(path=project["path"]):
+                reason = project["reason"]
+                if project["path"] in actual_consumers:
+                    self.assertIn("graph 32 errors", reason)
+                    self.assertNotIn("projection", reason.lower())
+                    for name in actual_consumers[project["path"]]:
+                        self.assertIn(name, reason)
+                else:
+                    self.assertEqual(project["path"], "external/volley")
+                    self.assertTrue(reason.startswith("Source audit projection, not a graph 32 error:"))
+                    for text in ("volley", "original glide source library", "SDK 28",
+                                 "optional org.apache.http.legacy dependency"):
+                        self.assertIn(text, reason)
+        self.assertIn("separate from the preserved graph 31 Glide prebuilt providers", projects[229]["reason"])
+        self.assertNotIn("external/glide", {p["path"] for p in projects[:229]})
+        self.assertIn("prebuilts/maven_repo/bumptech", {p["path"] for p in projects[:229]})
+        for text in ("Original tests, test vectors", "optional empty keystore-cts/android/**/*.java"):
+            self.assertIn(text, projects[231]["reason"])
+        self.assertIn("without a new source scope or test gate", projects[232]["reason"])
+        for text in ("SettingsAPI/Android.bp", "TwoPanelSettingsLib/Android.bp", "TvSliceLib",
+                     "no TV app or root Blueprint is admitted"):
+            self.assertIn(text, projects[233]["reason"])
+        self.assertIn("does not establish performance or neural-network hardware support", projects[234]["reason"])
+        for text in ("asset licenses and attribution metadata", "no asset redistribution rights determination",
+                     "on-device neural-network support is implied"):
+            self.assertIn(text, projects[235]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

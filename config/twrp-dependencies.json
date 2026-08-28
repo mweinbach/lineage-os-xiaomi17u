@@ -1611,6 +1611,55 @@
       "commit": "babc164379486626467efc50db0833d683c39fd5",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 31 error: real AOSP turbine java_library_host required by the retained Kotlin and KAPT tool path with Always_use_prebuilt_sdks=false. Original build rules install framework/turbine.jar through KatiInstalls; no prebuilt substitution or flag change is made, and this source pin does not claim a built JAR."
+    },
+    {
+      "path": "external/glide",
+      "url": "https://android.googlesource.com/platform/external/glide",
+      "commit": "2078ac4e2023465dd8f4473554ec65583b9267a6",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP glide source android_library required by CtsLeanbackJankApp in the graph 32 errors. This source module is separate from the preserved graph 31 Glide prebuilt providers; original sources, SDK settings and license metadata are retained."
+    },
+    {
+      "path": "external/volley",
+      "url": "https://android.googlesource.com/platform/external/volley",
+      "commit": "c34e6c11e6d8f47807f31fe1dbb655ab5ab4534b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 32 error: real AOSP volley required by the original glide source library. Original SDK 28 settings and the optional org.apache.http.legacy dependency are preserved."
+    },
+    {
+      "path": "external/wycheproof",
+      "url": "https://android.googlesource.com/platform/external/wycheproof",
+      "commit": "bf75d8ae31587a5c81fe70533ea831728b3fdf0e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP wycheproof and wycheproof-keystore providers required by CtsLibcoreWycheproofBCTestCases, CtsLibcoreWycheproofConscryptTestCases and CtsKeystoreWycheproofTestCases in the graph 32 errors. Original tests, test vectors and the optional empty keystore-cts/android/**/*.java source glob are preserved."
+    },
+    {
+      "path": "packages/providers/ContactsProvider",
+      "url": "https://android.googlesource.com/platform/packages/providers/ContactsProvider",
+      "commit": "164078c92d23d173f0f0c986e298dd236d66279b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP ContactsProviderTestUtils required by E2eeContactKeysProviderTests and contactsprovider_flags_java_lib required by CtsContactsProviderTestCases in the graph 32 errors. Original ContactsProvider app, flags, change IDs, compatibility and test modules are retained without a new source scope or test gate."
+    },
+    {
+      "path": "packages/apps/TvSettings",
+      "url": "https://android.googlesource.com/platform/packages/apps/TvSettings",
+      "commit": "139dd3c1a8f626a57271baf4926180f8d1f3bade",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP TvSettingsAPI required by CtsSettingsAPITestCases in the graph 32 errors. Selection admits only the complete SettingsAPI/Android.bp and TwoPanelSettingsLib/Android.bp files, including TvSliceLib; no TV app or root Blueprint is admitted."
+    },
+    {
+      "path": "test/mlts/benchmark",
+      "url": "https://android.googlesource.com/platform/test/mlts/benchmark",
+      "commit": "4617f7e28793f979153f3b088a79ba796e0268b3",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP NeuralNetworksApiBenchmark_Lib and libnnbenchmark_jni required by VtsHalNeuralnetworksV1_2BenchmarkTestCases and VtsHalNeuralnetworksV1_3BenchmarkTestCases in the graph 32 errors. Original benchmark, JNI, native and test definitions are preserved; this source pin does not establish performance or neural-network hardware support."
+    },
+    {
+      "path": "test/mlts/models",
+      "url": "https://android.googlesource.com/platform/test/mlts/models",
+      "commit": "cbb1ae5cfde49ed06ccf4afaa2fae1054364d4f3",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP test_mlts_models_assets required by VtsHalNeuralnetworksV1_2BenchmarkTestCases and VtsHalNeuralnetworksV1_3BenchmarkTestCases in the graph 32 errors. Original model and test assets, asset licenses and attribution metadata are preserved; no asset redistribution rights determination or on-device neural-network support is implied."
     }
   ]
 }
