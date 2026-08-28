@@ -13,6 +13,8 @@ SERIES = ROOT / "patches/twrp/series.json"
 SOURCE_SNAPSHOT = ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
 SOURCE_SNAPSHOT_SHA256 = "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051"
 ORIGINAL_PREFIX_SHA256 = "2ec5f5d4c7574391b4f2a2be94081bcddc99af5a4b0b01f665c5ffffd57e8895"
+PREVIOUS_ELEVEN_SHA256 = "5a55847341ce6f0a3b84b7108a3dd142405c3e2e2d48f89c7be3343db510d8a9"
+INITIAL_PROFILE_SHA256 = "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34c8adc9de59"
 PROFILE_BLOCK = (
     '    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {\n'
     '        true: false,\n'
@@ -53,9 +55,29 @@ PROFILE_PROJECTS = {
         "prebuilts/misc", "6e84ee6ddafe39d475876c511a516dbc9f2f19a6", {
             "common/robolectric/Android.bp": ["robolectric-android-all-prebuilts"]}),
 }
+HELPER_PROFILE_PROJECTS = {
+    "0012-native-recovery-settings-ipc-testutils": (
+        "frameworks/base", "99b01a65cc4c104933788b3143285ab6bae65827", {
+            "packages/SettingsLib/Ipc/Android.bp": ["SettingsLibIpc-testutils"]}),
+    "0013-native-recovery-car-ui-test-support": (
+        "prebuilts/sdk", "3b7daadc4e54d51439e5ae9b4dbd96cda8b6104e", {
+            "current/aaos-libs/Android.bp": [
+                "car-ui-lib-testing-support", "car-ui-lib-testing-support-source"]}),
+}
+HELPER_MODULE_TYPES = {
+    "SettingsLibIpc-testutils": "android_library",
+    "car-ui-lib-testing-support": "android_library",
+    "car-ui-lib-testing-support-source": "android_library_import",
+}
+ALL_PROFILE_PROJECTS = {**PROFILE_PROJECTS, **HELPER_PROFILE_PROJECTS}
 
 
 def profile_type(name):
+    if name in HELPER_MODULE_TYPES:
+        return HELPER_MODULE_TYPES[name]
+    if not any(name in names for _, _, paths in PROFILE_PROJECTS.values()
+               for names in paths.values()):
+        raise ValueError("Unapproved native profile module")
     return ("android_robolectric_runtimes" if name == "robolectric-android-all-prebuilts"
             else "android_robolectric_test")
 
@@ -77,7 +99,12 @@ def hunks(section):
 
 
 def validate_profile_insertions(section, expected_names):
-    """Require only the exact enabled blocks, anchored to named test modules."""
+    """Require only the exact enabled blocks, anchored to approved modules."""
+    if any(name in HELPER_MODULE_TYPES for name in expected_names):
+        context = "".join(line[1:] for _, _, _, _, body in hunks(section)
+                          for line in body if line.startswith(" "))
+        if re.search(r"^\s*enabled\s*:", context, re.M):
+            raise ValueError("A helper gate must not duplicate an existing enabled property")
     found = []
     for _, _, _, _, body in hunks(section):
         index = 0
@@ -96,7 +123,7 @@ def validate_profile_insertions(section, expected_names):
                 raise ValueError("Only the exact enabled select with default unset is permitted")
             context = "".join(item[1:] for item in body[:index] if item.startswith(" "))
             match = re.search(
-                r'(android_robolectric_test|android_robolectric_runtimes)\s*\{\n'
+                r'(android_robolectric_test|android_robolectric_runtimes|android_library|android_library_import)\s*\{\n'
                 r'(?:[ \t]*\n)*    name: "([^"\n]+)",\n$', context)
             if not match or match[2] not in expected_names or match[1] != profile_type(match[2]):
                 raise ValueError("Enabled addition is not anchored to an approved module")
@@ -167,7 +194,7 @@ class TwrpPatchTests(unittest.TestCase):
             "0004-require-recovery-adb-auth": (
                 "packages/modules/adb", "ce023afef190b0cea7f8939e9dd5ee3ee79b137b", "daemon/main.cpp"),
         }
-        self.assertEqual(list(self.patches), list(expected) + list(PROFILE_PROJECTS))
+        self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS))
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -183,13 +210,23 @@ class TwrpPatchTests(unittest.TestCase):
         for row in prefix:
             self.assertEqual(hashlib.sha256(self.raw[row["id"]]).hexdigest(), row["patch_sha256"])
 
+    def test_previous_eleven_patches_and_initial_profile_audit_are_unchanged(self):
+        prefix = self.record["patches"][:11]
+        canonical = json.dumps(prefix, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(canonical).hexdigest(), PREVIOUS_ELEVEN_SHA256)
+        for row in prefix:
+            self.assertEqual(hashlib.sha256(self.raw[row["id"]]).hexdigest(), row["patch_sha256"])
+        initial = json.dumps(self.record["native_recovery_profile"], sort_keys=True,
+                             separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(initial).hexdigest(), INITIAL_PROFILE_SHA256)
+
     def test_native_profile_projects_and_files_are_bound_to_the_frozen_base(self):
         snapshot = SOURCE_SNAPSHOT.read_bytes()
         self.assertEqual(hashlib.sha256(snapshot).hexdigest(), SOURCE_SNAPSHOT_SHA256)
         frozen = {item.get("path", item.get("name")): item.attrib
                   for item in ET.fromstring(snapshot).findall("project")}
         modules = []
-        for key, (project, revision, paths) in PROFILE_PROJECTS.items():
+        for key, (project, revision, paths) in ALL_PROFILE_PROJECTS.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
                 self.assertEqual(row["project"], project)
@@ -210,12 +247,13 @@ class TwrpPatchTests(unittest.TestCase):
                         self.assertIs(item["enabled_property_before"], False)
                         self.assertRegex(item["before_module_sha256"], r"^[0-9a-f]{64}$")
                         modules.append(item["name"])
-        self.assertEqual(len(modules), 19)
-        self.assertEqual(len(set(modules)), 19)
+        self.assertEqual(len(modules), 22)
+        self.assertEqual(len(set(modules)), 22)
         self.assertEqual(sum(len(row[2]) for row in PROFILE_PROJECTS.values()), 18)
+        self.assertEqual(sum(len(row[2]) for row in HELPER_PROFILE_PROJECTS.values()), 2)
 
-    def test_native_profile_adds_only_enabled_fields_to_the_exact_test_inventory(self):
-        for key, (_, _, paths) in PROFILE_PROJECTS.items():
+    def test_native_profile_adds_only_enabled_fields_to_the_exact_module_inventory(self):
+        for key, (_, _, paths) in ALL_PROFILE_PROJECTS.items():
             sections = self.text[key].split("diff --git ")[1:]
             for section, source in zip(sections, self.patches[key]["files"]):
                 with self.subTest(patch=key, path=source["path"]):
@@ -245,6 +283,85 @@ class TwrpPatchTests(unittest.TestCase):
         for label, mutated in mutations.items():
             with self.subTest(case=label), self.assertRaises(ValueError):
                 validate_profile_insertions(mutated, names)
+
+    def test_helper_gates_reject_production_names_wrong_types_and_existing_properties(self):
+        for key, (_, _, paths) in HELPER_PROFILE_PROJECTS.items():
+            section = self.text[key].split("diff --git ")[1]
+            names = next(iter(paths.values()))
+            mutations = {
+                "production module": section.replace(f'name: "{names[0]}"',
+                                                     'name: "SettingsLibIpc"'),
+                "wrong factory": section.replace(" android_library {", " java_library {"),
+                "existing enabled property": section.replace(
+                    f'     name: "{names[0]}",\n',
+                    f'     name: "{names[0]}",\n     enabled: true,\n'),
+                "changed default": section.replace("+        default: unset,",
+                                                   "+        default: true,"),
+                "changed source selection": section.replace("+    }),\n",
+                                                           "+    }),\n+    srcs: [],\n"),
+            }
+            if "car-ui-lib-testing-support-source" in names:
+                mutations["prebuilt changed to source factory"] = section.replace(
+                    " android_library_import {", " android_library {")
+            for label, mutated in mutations.items():
+                with self.subTest(patch=key, case=label), self.assertRaises(ValueError):
+                    validate_profile_insertions(mutated, names)
+        with self.assertRaises(ValueError):
+            profile_type("car-ui-lib-source")
+
+    def test_helper_preimages_are_the_reviewed_fresh_mixed_files(self):
+        expected = {
+            "0012-native-recovery-settings-ipc-testutils": (
+                "1a5eb0fdf2f24b926ed51cd01935cbafceed9578b5d26ddea945e0e94d251a2d", 721,
+                ["5b91fb9b4036e3edf7f54ba26806098e262a8264652e1c1e80c9acc66fa2ebd6"]),
+            "0013-native-recovery-car-ui-test-support": (
+                "153d3b207a6e905d899aa1b176fa5eaa30e55d3462792a8c940ed66f61cca0e1", 24289,
+                ["aba241518d4cf577f7d31bd1c00b02d3b773311a617ef1e724a32300e124ee8c",
+                 "58f28bd87fe0eb3469b74d4430550a91bead4e7a03f8e9ffa74fe32352979adb"]),
+        }
+        prior_files = {(row["project"], source["path"])
+                       for row in self.record["patches"][:11] for source in row["files"]}
+        for key, (digest, size, module_digests) in expected.items():
+            row = self.patches[key]
+            source = row["files"][0]
+            with self.subTest(patch=key):
+                self.assertNotIn((row["project"], source["path"]), prior_files)
+                self.assertEqual(source["before_sha256"], digest)
+                self.assertEqual(source["before_size_bytes"], size)
+                self.assertEqual([item["before_module_sha256"] for item in source["profile_modules"]],
+                                 module_digests)
+                self.assertTrue(all(item["enabled_property_before"] is False
+                                    for item in source["profile_modules"]))
+
+    def test_helper_audit_is_separate_from_historical_test_inventory(self):
+        profile = self.record["native_recovery_helper_profile"]
+        self.assertEqual(profile["namespace"], "nezha_twrp")
+        self.assertEqual(profile["boolean_variable"], "native_recovery_only")
+        self.assertIs(profile["selected_value"], True)
+        self.assertIs(profile["enabled_when_selected"], False)
+        self.assertEqual(profile["otherwise"], "unset")
+        self.assertEqual(profile["patch_ids"], list(HELPER_PROFILE_PROJECTS))
+        self.assertEqual(profile["helper_module_count"], 3)
+        self.assertEqual(profile["affected_file_count"], 2)
+        self.assertEqual(profile["affected_base_project_count"], 2)
+        self.assertEqual(profile["total_declared_gate_count"], 22)
+        self.assertIs(profile["supplemental_projects_modified"], False)
+        self.assertEqual(profile["previous_eleven_patch_records_sha256"], PREVIOUS_ELEVEN_SHA256)
+        self.assertEqual(profile["initial_profile_record_sha256"], INITIAL_PROFILE_SHA256)
+        self.assertEqual(len(profile["companion_source_exclusions"]), 6)
+        self.assertIn("frameworks/base/packages/SettingsLib/tests/robotests/Android.bp",
+                      profile["companion_source_exclusions"])
+        self.assertEqual(profile["audited_blueprint_file_count"], 10855)
+        self.assertEqual(profile["audited_make_go_file_count"], 14901)
+        self.assertEqual(len(profile["closed_cut_names"]), 17)
+        self.assertEqual(profile["closed_cut_edge_count"], 12)
+        self.assertEqual(profile["retained_external_consumers_found"], 0)
+        self.assertEqual(profile["helper_internal_dependency"], {
+            "consumer": "car-ui-lib-testing-support", "provider": "car-ui-lib-testing-support-source"})
+        self.assertIn("historical", profile["audit_scope"])
+        self.assertIn("not three additional observed graph errors", profile["provenance"])
+        self.assertIn("not a complete evaluated Soong graph", profile["validation_boundary"])
+        self.assertIn("no missing-dependency or security validation is waived", profile["validation_boundary"])
 
     def test_native_profile_inventory_and_semantics_do_not_claim_runtime_validation(self):
         profile = self.record["native_recovery_profile"]

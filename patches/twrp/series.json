@@ -505,6 +505,72 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0012-native-recovery-settings-ipc-testutils",
+      "project": "frameworks/base",
+      "repository": "https://android.googlesource.com/platform/frameworks/base",
+      "base_commit": "99b01a65cc4c104933788b3143285ab6bae65827",
+      "patch": "patches/twrp/0012-native-recovery-settings-ipc-testutils.patch",
+      "patch_sha256": "eccf03f2b06587c10ef957452dbff2d17537770d3e2f97bb2f6b88f5c2689dcf",
+      "reason": "Select out only the audited Robolectric test helpers when the Nezha native recovery profile is selected; preserve all mixed-file production modules and default-unset behavior.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "packages/SettingsLib/Ipc/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/Ipc/Android.bp?format=TEXT",
+          "before_sha256": "1a5eb0fdf2f24b926ed51cd01935cbafceed9578b5d26ddea945e0e94d251a2d",
+          "after_sha256": "a14eb20289136ed6ccef4cfa3704bf2ef55d70616cac48cada2db4f2b6e18df0",
+          "before_git_blob": "bc5a9364279ddfe8102fca8db655645099d0f99f",
+          "after_git_blob": "c219e156b9b8fee1cff5843e3bd9f2e8b711f060",
+          "before_size_bytes": 721,
+          "after_size_bytes": 857,
+          "profile_modules": [
+            {
+              "type": "android_library",
+              "name": "SettingsLibIpc-testutils",
+              "enabled_property_before": false,
+              "before_module_sha256": "5b91fb9b4036e3edf7f54ba26806098e262a8264652e1c1e80c9acc66fa2ebd6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0013-native-recovery-car-ui-test-support",
+      "project": "prebuilts/sdk",
+      "repository": "https://android.googlesource.com/platform/prebuilts/sdk",
+      "base_commit": "3b7daadc4e54d51439e5ae9b4dbd96cda8b6104e",
+      "patch": "patches/twrp/0013-native-recovery-car-ui-test-support.patch",
+      "patch_sha256": "460e32d5c98bb989ea8bab87c35eba6ce3054356b16a86e824cb09a3b6ace2f3",
+      "reason": "Select out only the audited Robolectric test helpers when the Nezha native recovery profile is selected; preserve all mixed-file production modules and default-unset behavior.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "current/aaos-libs/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/prebuilts/sdk/+/3b7daadc4e54d51439e5ae9b4dbd96cda8b6104e/current/aaos-libs/Android.bp?format=TEXT",
+          "before_sha256": "153d3b207a6e905d899aa1b176fa5eaa30e55d3462792a8c940ed66f61cca0e1",
+          "after_sha256": "724fb9f127f5ceeb56e28beb7e392cbee73a3b87e82e7ef9a1435a51682b6de4",
+          "before_git_blob": "a6e0052a84b5f1a2db02bd09d01ed974cde79608",
+          "after_git_blob": "0d030729ac4685f7755f38ef62faf93b87bf3726",
+          "before_size_bytes": 24289,
+          "after_size_bytes": 24561,
+          "profile_modules": [
+            {
+              "type": "android_library",
+              "name": "car-ui-lib-testing-support",
+              "enabled_property_before": false,
+              "before_module_sha256": "aba241518d4cf577f7d31bd1c00b02d3b773311a617ef1e724a32300e124ee8c"
+            },
+            {
+              "type": "android_library_import",
+              "name": "car-ui-lib-testing-support-source",
+              "enabled_property_before": false,
+              "before_module_sha256": "58f28bd87fe0eb3469b74d4430550a91bead4e7a03f8e9ffa74fe32352979adb"
+            }
+          ]
+        }
+      ]
     }
   ],
   "application_requirements": [
@@ -569,5 +635,74 @@
       "build/make/core/config.mk:320"
     ],
     "validation_boundary": "Offline tests and captured-source apply checks do not prove an Android graph, recovery build, or hardware behavior. The selected profile must be observed in generated Soong VendorVars and VendorVarTypes in the next graph attempt before treating the profile as verified."
+  },
+  "native_recovery_helper_profile": {
+    "namespace": "nezha_twrp",
+    "boolean_variable": "native_recovery_only",
+    "selected_value": true,
+    "enabled_when_selected": false,
+    "otherwise": "unset",
+    "patch_ids": [
+      "0012-native-recovery-settings-ipc-testutils",
+      "0013-native-recovery-car-ui-test-support"
+    ],
+    "helper_module_count": 3,
+    "affected_file_count": 2,
+    "affected_base_project_count": 2,
+    "supplemental_projects_modified": false,
+    "audit_scope": "Graph 14 helper closure. The unchanged native_recovery_profile record describes the initial eighteen Robolectric tests and runtime helper in patches 0005 through 0011; it is historical, not the total current profile inventory.",
+    "initial_profile_record_sha256": "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34c8adc9de59",
+    "previous_eleven_patch_records_sha256": "5a55847341ce6f0a3b84b7108a3dd142405c3e2e2d48f89c7be3343db510d8a9",
+    "total_declared_gate_count": 22,
+    "provenance": "Graph 14 reported Robolectric extension dependencies. These three helper modules are retained consumers identified by the follow-up reverse dependency audit, not three additional observed graph errors.",
+    "companion_source_exclusions": [
+      "external/android_onboarding/java/com/android/onboarding/contracts/testing/Android.bp",
+      "external/android_onboarding/java/com/android/onboarding/testing/Android.bp",
+      "frameworks/base/packages/SettingsLib/tests/robotests/Android.bp",
+      "frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp",
+      "test/robolectric-extensions/Android.bp",
+      "test/robolectric-extensions/clearcut-junit-listener/Android.bp"
+    ],
+    "source_selection_boundary": "The six companion Blueprint file exclusions are applied in the device target, not by this queue. One excludes the previously patched SettingsLibRoboTests file; its historical patch and record remain unchanged. Gate count describes declarations across the queue, not modules remaining in the selected graph.",
+    "audited_blueprint_file_count": 10855,
+    "audited_selected_blueprint_file_count": 10340,
+    "audited_make_go_file_count": 14901,
+    "closed_cut_names": [
+      "Android_Platform_Developer_Experience",
+      "ClearcutJunitListener",
+      "Robolectric-aosp-plugins",
+      "Robolectric-aosp-plugins_tests",
+      "Robolectric_all-target",
+      "Robolectric_shadows_androidx_fragment_upstream",
+      "SettingsLib-robo-testutils",
+      "SettingsLibIpc-testutils",
+      "SettingsLibRoboTests",
+      "SettingsLibShell",
+      "Settings_robolectric_meta_service_file",
+      "TestClearcutJunitListener",
+      "android_onboarding.contracts.testing",
+      "android_onboarding.testing",
+      "android_onboarding.testing.AndroidManifest",
+      "car-ui-lib-testing-support",
+      "car-ui-lib-testing-support-source"
+    ],
+    "closed_cut_edge_count": 12,
+    "retained_external_consumers_found": 0,
+    "helper_internal_dependency": {
+      "consumer": "car-ui-lib-testing-support",
+      "provider": "car-ui-lib-testing-support-source"
+    },
+    "audit_evidence": [
+      {
+        "path": "reports/twrp-graph14-robo-extended-reverse-projection.json",
+        "sha256": "01022fc2c77d8ff86e0271ec5af17f756aa4ea005342cb692084a2adc212bf2c"
+      },
+      {
+        "path": "reports/twrp-graph14-robo-extended-make-go-references.json",
+        "sha256": "c7c2803721ffb9a586d3cd76b93028f7c99d212854d0ee5d0730a76657b00f84"
+      }
+    ],
+    "preserved_behavior": "Only enabled fields are added to the three exact helpers. SettingsLibIpc and the automotive SDK production modules, all dependencies, source lists, defaults and licenses remain byte-for-byte unchanged. This profile intentionally excludes these test helpers and does not claim to run their tests.",
+    "validation_boundary": "The literal Blueprint and Make/Go reference audit is not a complete evaluated Soong graph. Captured preimage checks, syntax checks and offline tests do not prove a recovery build or runtime behavior. The next strict graph must verify the three gates together with all six companion source exclusions; no missing-dependency or security validation is waived."
   }
 }

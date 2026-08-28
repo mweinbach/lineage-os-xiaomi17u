@@ -10,7 +10,15 @@ ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
 MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp"
 AUDIO_TEST_BLUEPRINT = "system/media/audio_utils/tests/Android.bp"
-SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT}
+GRAPH14_TEST_BLUEPRINTS = (
+    "test/robolectric-extensions/Android.bp",
+    "test/robolectric-extensions/clearcut-junit-listener/Android.bp",
+    "external/android_onboarding/java/com/android/onboarding/contracts/testing/Android.bp",
+    "external/android_onboarding/java/com/android/onboarding/testing/Android.bp",
+    "frameworks/base/packages/SettingsLib/tests/robotests/Android.bp",
+    "frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp",
+)
+SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS}
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
@@ -46,7 +54,7 @@ SOURCE_EXCLUSIONS = [
     "-frameworks/opt/net/wifi/",
     "-development/build/",
     "-" + AUDIO_TEST_BLUEPRINT,
-]
+] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/tradefed-error-prone/",
     "frameworks/opt/net/wifi/libwifi_system_iface/",
@@ -559,6 +567,31 @@ class TwrpDeviceTests(unittest.TestCase):
         readme = (DEVICE / "README.md").read_text()
         self.assertIn(AUDIO_TEST_BLUEPRINT, readme)
         self.assertIn("f01e84b958fb6a887dc0e74e4b5ebd159f03860a", readme)
+
+    def test_graph14_file_cuts_preserve_production_ipc_sdk_and_other_source_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in GRAPH14_TEST_BLUEPRINTS:
+            self.assertFalse(source_path_allowed(source, scopes), source)
+            self.assertNotIn("-" + str(Path(source).parent) + "/", scopes)
+        for source in ("test/Android.bp", "test/robolectric-extensions/plugins/Android.bp",
+                       "external/android_onboarding/Android.bp",
+                       "external/android_onboarding/java/com/android/onboarding/contracts/Android.bp",
+                       "external/android_onboarding/java/com/android/onboarding/testing/child/Android.bp",
+                       "frameworks/base/Android.bp", "frameworks/base/packages/SettingsLib/Android.bp",
+                       "frameworks/base/packages/SettingsLib/Ipc/Android.bp",
+                       "frameworks/base/packages/SettingsLib/tests/Android.bp",
+                       "frameworks/base/packages/SettingsLib/tests/robotests/fragment/child/Android.bp",
+                       "prebuilts/sdk/current/aaos-libs/Android.bp",
+                       "system/sepolicy/contexts/Android.bp", "system/sepolicy/tests/Android.bp",
+                       "external/avb/Android.bp", "system/libvintf/Android.bp",
+                       "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        self.assertIn("Graph 14 reported seven missing dependencies", readme)
+        self.assertIn("follow-up projection", readme)
+        self.assertIn("SettingsLibIpc-testutils", readme)
+        self.assertIn("car-ui-lib-testing-support", readme)
 
     def test_vehicle_compatibility_test_scope_keeps_production_aidl(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

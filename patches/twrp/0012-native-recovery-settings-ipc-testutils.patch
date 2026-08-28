@@ -1,0 +1,21 @@
+diff --git a/packages/SettingsLib/Ipc/Android.bp b/packages/SettingsLib/Ipc/Android.bp
+index bc5a9364279ddfe8102fca8db655645099d0f99f..c219e156b9b8fee1cff5843e3bd9f2e8b711f060 100644
+--- a/packages/SettingsLib/Ipc/Android.bp
++++ b/packages/SettingsLib/Ipc/Android.bp
+@@ -20,12 +20,16 @@
+     ],
+     kotlincflags: ["-Xjvm-default=all"],
+ }
+ 
+ android_library {
+     name: "SettingsLibIpc-testutils",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: ["testutils/**/*.kt"],
+     static_libs: [
+         "Robolectric_all-target",
+         "SettingsLibIpc",
+         "androidx.test.core",
+         "flag-junit",

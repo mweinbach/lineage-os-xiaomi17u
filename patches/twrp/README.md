@@ -22,6 +22,8 @@ The initial changes are deliberately small:
 | `0009-native-recovery-devicelock-robolectric` | Select out the two audited DeviceLock Robolectric tests. |
 | `0010-native-recovery-healthfitness-robolectric` | Select out the audited HealthFitness Robolectric test while retaining its device tests and source groups. |
 | `0011-native-recovery-robolectric-runtimes` | Select out the Robolectric runtime helper together with its eighteen implicit test consumers. |
+| `0012-native-recovery-settings-ipc-testutils` | Select out only `SettingsLibIpc-testutils`, preserving the production IPC library and source group in the same file. |
+| `0013-native-recovery-car-ui-test-support` | Select out the automotive Robolectric testing wrapper and its prebuilt source helper, preserving all production automotive SDK modules in the same file. |
 
 Patches 5 through 11 add only an `enabled` property to the nineteen named
 modules recorded in `series.json`. They apply only when the typed Soong Boolean
@@ -32,7 +34,7 @@ products. The Nezha device configuration sets this Boolean through the pinned
 excludes eighteen JVM UI tests and their runtime helper; it does not claim to
 run those tests or to provide the Android framework/automotive test runtime.
 
-The recorded source audit examined 10,836 Blueprint files, including secondary
+The initial source audit examined 10,836 Blueprint files, including secondary
 files. It found eighteen selected Robolectric test constructors, three already
 outside the selected source roots, and no configurable aliases or explicit
 references to the nineteen gated names. The runtime dependencies created
@@ -41,6 +43,30 @@ alongside the helper. Recheck this inventory if the source selection changes.
 Do not exclude the entire SystemUI or Bluetooth Blueprint files: they contain
 production modules, shared defaults, compatibility configuration and licenses
 used by retained modules. The patches preserve those bytes exactly.
+
+Patches 12 and 13 extend the same typed Boolean gate to three test helpers in
+two previously untouched base files. The wrapper
+`car-ui-lib-testing-support` depends on `car-ui-lib-testing-support-source`,
+so both receive the gate. Their source lists, dependencies, licenses and every
+other property remain unchanged. Neither file is excluded: the production IPC
+library and automotive SDK modules remain available.
+
+The follow-up audit covered 10,855 Blueprint files and 14,901 Make/Go files.
+It found no retained consumer outside the reviewed test closure after the
+three gates and six companion Blueprint file exclusions in the device target.
+Graph 14 reported Robolectric extension dependencies; the three helpers were
+identified by the subsequent consumer audit, not by three additional observed
+graph errors. This literal reference audit is not a complete evaluated Soong
+graph, so the next strict graph must verify the combined selection.
+
+The unchanged `native_recovery_profile` record describes the initial eighteen
+tests and runtime helper. The separate `native_recovery_helper_profile` record
+describes this extension and its companion exclusions. The queue now declares
+twenty-two gates across twenty files. This is a historical declaration count:
+one companion exclusion selects out the already-patched SettingsLib Robolectric
+test file without modifying that patch or its receipt. No supplementary source
+project is modified, and all eleven earlier patch records and payloads remain
+unchanged.
 
 The source-backed semantics and per-file module inventory are recorded in
 `series.json`. `ModuleBase.Enabled` supports `select`, and Soong invokes a

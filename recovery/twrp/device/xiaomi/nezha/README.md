@@ -200,8 +200,8 @@ team metadata have real providers in included source paths. The large
 license declaration or dependency check is replaced.
 
 The Nezha native recovery profile explicitly sets the boolean
-`nezha_twrp.native_recovery_only` after the vendor configuration. The reviewed
-source patches use it to disable 19 specific Robolectric test and helper
+`nezha_twrp.native_recovery_only` after the vendor configuration. The original
+source patches gate 19 specific Robolectric test and helper
 modules through their `enabled` selections, with `true: false` and
 `default: unset`. Other products leave the switch unset and retain their
 original enabled behavior. Production SystemUI and Bluetooth modules, package
@@ -222,6 +222,29 @@ including the genuine SDK generator for
 for these leaves. Platform runner, collector and rule subtrees remain excluded.
 The next real build must still validate variants and generated artifacts.
 
+Graph 14 reported seven missing dependencies in the two
+`test/robolectric-extensions` Blueprint files. The follow-up projection found
+four more files containing only related test support: Onboarding's
+`contracts/testing/Android.bp` and `testing/Android.bp`, plus SettingsLib's
+`tests/robotests/Android.bp` and `tests/robotests/fragment/Android.bp`.
+The combined review checked module, shell, manifest, generator and local team
+references across Blueprint properties and 14,901 Make/Go files. Every
+consumer was within the reviewed test scope or already disabled by this
+profile. Exactly these six files are excluded; their parent directories and
+other source files remain included. The existing patch for
+`SettingsLibRoboTests` remains unchanged, even though its Blueprint file is
+now outside the source selection.
+
+Three further projected helpers share files with production code:
+`SettingsLibIpc-testutils`, `car-ui-lib-testing-support` and
+`car-ui-lib-testing-support-source`. Separate reviewed source patches gate
+only those helpers with the same typed profile switch and `default: unset`;
+the IPC and car SDK Blueprint files remain included. These three gates extend
+the original 19 source declarations; the counts do not describe executed
+tests or enabled build targets. They were found by projection, not the seven
+reported Graph 14 errors. Production code, licenses, defaults and validation
+checks are retained.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.
@@ -235,8 +258,8 @@ Blueprint
 `dcb14f2e146f40cf1f212efb220e9aa1f3cfc280` applies literal prefix matching,
 with the longest matching prefix first and unmatched paths allowed. Each
 directory exclusion ends in `/` so it does not hide similarly named siblings.
-The scene and audio test exclusions name individual `Android.bp` files,
-preserving other files and child directories, including the consumed scene
+The scene, audio and reviewed Robolectric support exclusions name individual
+`Android.bp` files, preserving other files and child directories, including the consumed scene
 test helper in `utils`. The documented positive provider prefixes are explicit exceptions
 inside otherwise excluded projects, evaluated by the same longest-prefix rule.
 Dependencies on skipped modules still fail; if recovery requires one of these

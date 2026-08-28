@@ -146,6 +146,20 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     platform_testing/libraries/flag-helpers/junit/ \
     platform_testing/libraries/flag-helpers/libflagtest/
 
+# Graph 14 failed in the two Robolectric extension files. The follow-up
+# projection closed the Onboarding/SettingsLib support files with those tests;
+# their metadata and helpers have no retained external consumers. Exclude
+# exactly these files, not their parent directories or production IPC/SDK code.
+# Keep the existing SettingsLib source patch unchanged even though its test
+# file is now outside this product's selected Blueprint files.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -test/robolectric-extensions/Android.bp \
+    -test/robolectric-extensions/clearcut-junit-listener/Android.bp \
+    -external/android_onboarding/java/com/android/onboarding/contracts/testing/Android.bp \
+    -external/android_onboarding/java/com/android/onboarding/testing/Android.bp \
+    -frameworks/base/packages/SettingsLib/tests/robotests/Android.bp \
+    -frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
