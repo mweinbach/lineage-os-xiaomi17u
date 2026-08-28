@@ -12,6 +12,7 @@ import stat
 import struct
 import subprocess
 import sys
+import tempfile
 import xml.etree.ElementTree as ET
 
 try:
@@ -209,6 +210,8 @@ def prepare_locked(config, paths, host_mode, root, host):
     output = paths["out_dir"]
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise ValueError("Output directory is nonempty without a preparation receipt; files preserved")
+    if twrp_patch_state.patch_plan(reviewed)["has_chains"]:
+        return prepare_chain(config, paths, root, host, reviewed, source_record)
     for patch in reviewed["patches"]:
         twrp_workspace.run(["git", "-C", source / patch["project"], "apply", "--check",
                             "--whitespace=error-all", "--", root / patch["patch"]])
@@ -277,6 +280,249 @@ def write_new_file(root, relative, data):
     return path
 
 
+def chain_git(directory, home, *args):
+    """Run scratch Git without inheriting live indexes, config or attributes."""
+    return subprocess.run(["git", "-c", "core.fileMode=true", "-c", "core.autocrlf=false",
+                           "-c", "core.fsmonitor=false", "-c", "core.ignoreStat=false",
+                           "-c", "core.hooksPath=/dev/null", "-c", "core.attributesFile=/dev/null",
+                           "-C", str(directory), *map(str, args)],
+                          env=twrp_patch_state.chain_git_environment(home), check=True,
+                          capture_output=True, stdin=subprocess.DEVNULL, shell=False, timeout=60)
+
+
+def rehearse_chain(source, reviewed, root, boundary):
+    """Replay and reverse the full queue only in ordinary scratch file copies."""
+    plan = twrp_patch_state.patch_plan(reviewed)
+    if any(Path(relative).name == ".gitattributes" for owner in plan["projects"].values()
+           for relative in owner["files"]):
+        # core.attributesFile disables the global file, not per-directory
+        # attributes. Never copy one into the scratch proof's worktree.
+        raise ValueError("Patch chain rehearsal does not admit Git attribute files")
+    initial = twrp_patch_state.verify_chain_boundary(source, reviewed, boundary)
+    payloads = [text_file(root, entry["patch"]) for entry in reviewed["patches"]]
+    if any(sha256(data) != entry["patch_sha256"] for entry, data in zip(reviewed["patches"], payloads)):
+        raise ValueError("Patch controls changed before scratch rehearsal")
+    with tempfile.TemporaryDirectory(prefix="twrp-chain-rehearsal-") as temporary:
+        scratch = Path(temporary).resolve()
+        home, files, payload_dir = scratch / "home", scratch / "files", scratch / "payloads"
+        for directory in (home, files, payload_dir):
+            directory.mkdir()
+        modes = {}
+        for project, owner in plan["projects"].items():
+            directory = files / project
+            directory.mkdir(parents=True)
+            chain_git(scratch, home, "init", "--quiet", "--template=" + str(home), directory)
+            for relative, chain in owner["files"].items():
+                data, mode = twrp_patch_state.pinned_file(source, project, owner["base_commit"], relative, chain["root"])
+                destination = directory / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                with destination.open("xb") as stream:
+                    stream.write(data)
+                destination.chmod(mode)
+                modes[f"{project}/{relative}"] = mode
+                if len(chain["steps"]) > 1:
+                    for step in chain["steps"]:
+                        twrp_patch_state.chain_patch_index(payloads[step["index"]], relative, step["item"], mode)
+        archived_payloads = [write_new_file(payload_dir, f"{index:04d}.patch", data)
+                             for index, data in enumerate(payloads)]
+
+        def verify_scratch(count):
+            actual = {}
+            for project, owner in plan["projects"].items():
+                directory = files / project
+                found = set()
+                for candidate in directory.rglob("*"):
+                    relative = candidate.relative_to(directory).as_posix()
+                    if relative == ".git" or relative.startswith(".git/"):
+                        continue
+                    if candidate.is_symlink():
+                        raise ValueError("Scratch rehearsal produced a symlink")
+                    if candidate.is_dir():
+                        continue
+                    found.add(relative)
+                if found != set(owner["files"]):
+                    raise ValueError("Scratch rehearsal changed undeclared paths")
+                for relative, chain in owner["files"].items():
+                    item, phase = twrp_patch_state.boundary_item(chain, count)
+                    path = regular_file(directory, relative)
+                    expected = {"sha256": item[phase + "_sha256"], "size_bytes": item[phase + "_size_bytes"],
+                                "mode": f"{modes[f'{project}/{relative}']:04o}"}
+                    require_file_identity(directory, relative, expected)
+                    if phase + "_git_blob" in item and git_blob_sha1(path.read_bytes()) != item[phase + "_git_blob"]:
+                        raise ValueError("Scratch Git blob differs at explicit boundary")
+                    actual[f"{project}/{relative}"] = expected
+            if count == boundary and actual != initial:
+                raise ValueError("Scratch prefix differs from independently verified live boundary")
+            return actual
+
+        verify_scratch(0)
+        for index, entry in enumerate(reviewed["patches"]):
+            verify_scratch(index)
+            directory, payload = files / entry["project"], archived_payloads[index]
+            chain_git(directory, home, "apply", "--check", "--whitespace=error-all", "--", payload)
+            chain_git(directory, home, "apply", "--whitespace=error-all", "--", payload)
+            verify_scratch(index + 1)
+        for index in reversed(range(len(reviewed["patches"]))):
+            entry = reviewed["patches"][index]
+            directory, payload = files / entry["project"], archived_payloads[index]
+            verify_scratch(index + 1)
+            chain_git(directory, home, "apply", "--reverse", "--check", "--whitespace=error-all", "--", payload)
+            chain_git(directory, home, "apply", "--reverse", "--whitespace=error-all", "--", payload)
+            verify_scratch(index)
+    if twrp_patch_state.verify_chain_boundary(source, reviewed, boundary) != initial:
+        raise ValueError("Live source changed during scratch rehearsal")
+    return {"initial_boundary": boundary, "final_boundary": len(reviewed["patches"]),
+            "initial_files": initial, "forward_and_reverse_verified": True,
+            "source_mutated": False, "power_loss_durability_claimed": False}
+
+
+def verify_live_prefix(config, paths, root, reviewed, boundary, expected_source):
+    prefix = {**reviewed, "patches": reviewed["patches"][:boundary]}
+    source = verify_sources(config, paths, prefix, prepared=bool(boundary))
+    if source != expected_source:
+        raise ValueError("Frozen source identity changed during patch chain")
+    verify_supplementary(root, paths, reviewed, source,
+                         patches=prefix["patches"], phase="after" if boundary else "before")
+    return twrp_patch_state.verify_chain_boundary(paths["source_dir"], reviewed, boundary)
+
+
+def archive_chain(archive, source, reviewed, previous, boundary, rehearsal, state_before):
+    """Exclusive process-failure evidence; no claim of fsync/power-loss safety."""
+    evidence = {}
+    def record(relative, data):
+        write_new_file(archive, relative, data)
+        evidence[relative] = {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"}
+    record("controls.after.json", (json.dumps(reviewed, indent=2) + "\n").encode())
+    record("controls.before.json", (json.dumps(previous, indent=2) + "\n").encode())
+    record("chain-plan.json", (json.dumps({"old_boundary": boundary,
+                   "old_build_state_sha256": sha256(state_before) if state_before is not None else None,
+                   "plan": twrp_patch_state.patch_plan(reviewed), "rehearsal": rehearsal}, indent=2) + "\n").encode())
+    for relative, identity in rehearsal["initial_files"].items():
+        data = require_file_identity(source, relative, identity).read_bytes()
+        record("source-before/" + relative, data)
+    return evidence
+
+
+def verify_chain_archive(archive, evidence):
+    for relative, identity in evidence.items():
+        require_file_identity(archive, relative, identity)
+
+
+def apply_chain_steps(config, paths, root, reviewed, previous, previous_root, archive,
+                      boundary, rehearsal, state_before, expected_source, payloads, report, evidence):
+    """Apply only a rehearsed suffix; failure preserves source and old receipt."""
+    state_path = paths["report_dir"] / STATE
+    def record(relative, data):
+        write_new_file(archive, relative, data)
+        evidence[relative] = {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"}
+    def stable():
+        if controls(config, root) != reviewed:
+            raise ValueError("A control bundle changed during patch chain")
+        if previous_root is not None and controls(config, previous_root) != previous:
+            raise ValueError("Previous control bundle changed during patch chain")
+        if state_before is None:
+            if state_path.exists() or state_path.is_symlink():
+                raise ValueError("Build receipt appeared during patch chain")
+        elif twrp_workspace.checked_report(state_path).read_bytes() != state_before:
+            raise ValueError("Active build receipt changed during patch chain")
+        for relative, identity in rehearsal["initial_files"].items():
+            require_file_identity(archive, "source-before/" + relative, {**identity, "mode": "0644"})
+        for name, value in (("controls.before.json", previous), ("controls.after.json", reviewed)):
+            data = (json.dumps(value, indent=2) + "\n").encode()
+            require_file_identity(archive, name, {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"})
+        if state_before is not None:
+            require_file_identity(archive, "build-state.before.json", {
+                "sha256": sha256(state_before), "size_bytes": len(state_before), "mode": "0644"})
+        verify_chain_archive(archive, evidence)
+        for entry, data, relative in payloads:
+            require_file_identity(archive, relative, {
+                "sha256": entry["patch_sha256"], "size_bytes": len(data), "mode": "0644"})
+    stable()
+    verify_live_prefix(config, paths, root, reviewed, boundary, expected_source)
+    for offset, (entry, data, payload_relative) in enumerate(payloads):
+        index = boundary + offset
+        stable()
+        before = verify_live_prefix(config, paths, root, reviewed, index, expected_source)
+        payload = require_file_identity(archive, payload_relative, {
+            "sha256": entry["patch_sha256"], "size_bytes": len(data), "mode": "0644"})
+        step = f"steps/{index:04d}"
+        intent = {"queue_index": index, "patch_id": entry["id"], "patch_sha256": entry["patch_sha256"],
+                  "previous_build_state_sha256": sha256(state_before) if state_before is not None else None,
+                  "controls_before_sha256": sha256((json.dumps(previous, indent=2) + "\n").encode()),
+                  "controls_after_sha256": sha256((json.dumps(reviewed, indent=2) + "\n").encode()),
+                  "files": entry["files"], "before": before, "status": "attempted-not-yet-verified",
+                  "power_loss_durability_claimed": False}
+        record(step + "/intent.json", (json.dumps(intent, indent=2) + "\n").encode())
+        # Detect even an intercepted archive write before touching the source.
+        stable()
+        verify_live_prefix(config, paths, root, reviewed, index, expected_source)
+        report["attempted_patch_ids"].append(entry["id"])
+        # Only this forward call touches live source; scratch reverse is never
+        # reused as a rollback or inferred partial-transition repair.
+        twrp_workspace.run(["git", "-C", paths["source_dir"] / entry["project"], "apply",
+                            "--whitespace=error-all", "--", payload])
+        after = verify_live_prefix(config, paths, root, reviewed, index + 1, expected_source)
+        stable()
+        for item in entry["files"]:
+            relative = f"{entry['project']}/{item['path']}"
+            data = require_file_identity(paths["source_dir"], relative, after[relative]).read_bytes()
+            record(step + "/source-after/" + relative, data)
+        record(step + "/complete.json", (json.dumps({**intent, "status": "verified",
+               "after": after}, indent=2) + "\n").encode())
+        stable()
+        report["applied_patch_ids"].append(entry["id"])
+
+
+def prepare_chain(config, paths, root, host, reviewed, source_record):
+    rehearsal = rehearse_chain(paths["source_dir"], reviewed, root, 0)
+    now = datetime.now(timezone.utc)
+    revision = now.strftime("%Y%m%dT%H%M%S%fZ")
+    archive = twrp_workspace.absolute_path(paths["report_dir"] / "build-preparations" / revision)
+    archive.mkdir(parents=True, exist_ok=False)
+    evidence = archive_chain(archive, paths["source_dir"], reviewed, None, 0, rehearsal, None)
+    payloads = [(entry, text_file(root, entry["patch"]), f"patches/{index:04d}.patch")
+                for index, entry in enumerate(reviewed["patches"])]
+    for _, data, relative in payloads:
+        write_new_file(archive, relative, data)
+        evidence[relative] = {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"}
+    report = {"compile_only": True, "flash_admitted": False, "already_prepared": False,
+              "preparation_archive": str(archive), "source": source_record,
+              "attempted_patch_ids": [], "applied_patch_ids": [], "note": LIMITATION}
+    twrp_workspace.record_action(config, paths, "prepare-start", report)
+    try:
+        apply_chain_steps(config, paths, root, reviewed, None, None, archive, 0, rehearsal,
+                          None, source_record, payloads, report, evidence)
+        target = paths["source_dir"] / TARGET
+        target.mkdir(parents=True, exist_ok=False)
+        for relative, identity in reviewed["target_files"].items():
+            data = text_file(root / TARGET_SOURCE, relative)
+            if sha256(data) != identity["sha256"]:
+                raise ValueError("Controlled target changed during preparation")
+            write_new_file(target, relative, data)
+        output = paths["out_dir"]
+        output.mkdir(parents=True, exist_ok=True)
+        for relative in ("tmp", "cache/go", "cache/xdg"):
+            (output / relative).mkdir(parents=True, exist_ok=False)
+        (paths["source_dir"] / OUT_ALIAS).symlink_to(output, target_is_directory=True)
+        verify_live_prefix(config, paths, root, reviewed, len(reviewed["patches"]), source_record)
+        verify_target(paths["source_dir"], reviewed["target_files"])
+        verify_output(paths)
+        if controls(config, root) != reviewed:
+            raise ValueError("Controlled sources changed before preparation receipt")
+        verify_chain_archive(archive, evidence)
+        state = {**twrp_workspace.identity(config, paths), "controls": reviewed, "source": source_record,
+                 "target_product": PRODUCT, "target_release": RELEASE, "output_alias": OUT_ALIAS,
+                 "compile_only": True, "flash_admitted": False, "host_preflight": host,
+                 "recorded_at": now.isoformat(), "preparation_archive": str(archive), "note": LIMITATION}
+        # Deliberately retain the existing exclusive first-receipt contract.
+        # Atomic no-replace/fsync publication is independent hardening.
+        twrp_workspace.write_report(paths, STATE, json.dumps(state, indent=2) + "\n")
+    except (ValueError, OSError, subprocess.SubprocessError) as error:
+        twrp_workspace.record_action(config, paths, "prepare-failed", {**report, "error": str(error)})
+        raise
+    return twrp_workspace.record_action(config, paths, "prepare", report)
+
+
 def replace_target_file(target, relative, expected, data, revision):
     path = require_file_identity(target, relative, expected)
     temporary = path.with_name(f".{path.name}.twrp-revise-{revision}.tmp")
@@ -319,14 +565,18 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     supplementary = verify_supplementary(root, paths, reviewed, checked["source"],
                                          phase="after", patches=previous["patches"])
     validate_patch_bases(twrp_workspace.load_snapshot(config, paths), reviewed)
-    preimages = verify_patch_files(paths["source_dir"], appended, "before", require_head_preimage=True)
+    chained = twrp_patch_state.patch_plan(reviewed)["has_chains"]
+    rehearsal = rehearse_chain(paths["source_dir"], reviewed, root, len(previous["patches"])) if chained else None
+    preimages = rehearsal["initial_files"] if chained else verify_patch_files(
+        paths["source_dir"], appended, "before", require_head_preimage=True)
     payloads = []
     for index, patch in enumerate(appended["patches"]):
         data = text_file(root, patch["patch"])
         if sha256(data) != patch["patch_sha256"]:
             raise ValueError("Controlled patch changed during revision planning")
-        twrp_workspace.run(["git", "-C", paths["source_dir"] / patch["project"], "apply", "--check",
-                            "--whitespace=error-all", "--", root / patch["patch"]])
+        if not chained:
+            twrp_workspace.run(["git", "-C", paths["source_dir"] / patch["project"], "apply", "--check",
+                                "--whitespace=error-all", "--", root / patch["patch"]])
         payloads.append((patch, data, f"patches/{index:04d}.patch"))
     state_path = twrp_workspace.checked_report(paths["report_dir"] / STATE)
     state_before = state_path.read_bytes()
@@ -349,11 +599,22 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     for relative in changed:
         write_new_file(archive, "target-before/" + relative, before[relative])
         write_new_file(archive, "target-after/" + relative, after[relative])
-    for relative, identity in preimages.items():
-        data = require_file_identity(paths["source_dir"], relative, identity).read_bytes()
-        write_new_file(archive, "source-before/" + relative, data)
+    if chained:
+        evidence = archive_chain(archive, paths["source_dir"], reviewed, previous,
+                                 len(previous["patches"]), rehearsal, state_before)
+        evidence["build-state.before.json"] = {"sha256": sha256(state_before),
+                                                "size_bytes": len(state_before), "mode": "0644"}
+        for relative in changed:
+            for prefix, data in (("target-before/", before[relative]), ("target-after/", after[relative])):
+                evidence[prefix + relative] = {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"}
+    else:
+        for relative, identity in preimages.items():
+            data = require_file_identity(paths["source_dir"], relative, identity).read_bytes()
+            write_new_file(archive, "source-before/" + relative, data)
     for patch, data, relative in payloads:
         write_new_file(archive, relative, data)
+        if chained:
+            evidence[relative] = {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"}
     report = {"compile_only": True, "flash_admitted": False, "already_current": False,
               "previous_control_root": str(previous_root), "revision_archive": str(archive),
               "previous_build_state_sha256": sha256(state_before), "changed_target_files": changed,
@@ -363,7 +624,10 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
               "build_for_this_revision_verified": False, "note": LIMITATION}
     if supplementary is not None:
         report["supplementary_projects"] = supplementary
-    write_new_file(archive, "transition.json", (json.dumps({**report, "controls_after": reviewed}, indent=2) + "\n").encode())
+    transition_bytes = (json.dumps({**report, "controls_after": reviewed}, indent=2) + "\n").encode()
+    write_new_file(archive, "transition.json", transition_bytes)
+    if chained:
+        evidence["transition.json"] = {"sha256": sha256(transition_bytes), "size_bytes": len(transition_bytes), "mode": "0644"}
     twrp_workspace.record_action(config, paths, "revise-start", report)
     try:
         # The prior bundle authorizes only the exact prepared files. Never
@@ -383,7 +647,10 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         verify_target(paths["source_dir"], previous["target_files"])
         if controls(config, root) != reviewed or controls(previous_config, previous_root) != previous:
             raise ValueError("A control bundle changed during target revision")
-        for patch, _, relative in payloads:
+        if chained:
+            apply_chain_steps(config, paths, root, reviewed, previous, previous_root, archive,
+                              len(previous["patches"]), rehearsal, state_before, checked["source"], payloads, report, evidence)
+        for patch, _, relative in (() if chained else payloads):
             single = {"patches": [patch]}
             verify_patch_files(paths["source_dir"], single, "before", require_head_preimage=True)
             payload = regular_file(archive, relative)
@@ -410,6 +677,8 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         verify_output(paths)
         if controls(config, root) != reviewed or controls(previous_config, previous_root) != previous:
             raise ValueError("A control bundle changed during target revision; receipt replacement refused")
+        if chained:
+            verify_chain_archive(archive, evidence)
         state_after = {**json.loads(state_before), "controls": reviewed, "source": source,
                        "host_preflight": host, "recorded_at": now.isoformat(),
                        "previous_build_state_sha256": sha256(state_before), "revision_archive": str(archive),

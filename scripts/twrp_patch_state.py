@@ -10,6 +10,7 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import stat
+import subprocess
 
 try:
     from scripts import twrp_workspace
@@ -94,7 +95,8 @@ def patch_inventory(config, root):
     patches = series.get("patches")
     if not isinstance(patches, list) or not patches:
         raise ValueError("The reviewed TWRP patch queue must not be empty")
-    identifiers, affected, bases = set(), set(), {}
+    identifiers, bases = set(), {}
+    payloads = {}
     for patch in patches:
         identifier = patch["id"]
         if not isinstance(identifier, str) or identifier in identifiers:
@@ -111,15 +113,14 @@ def patch_inventory(config, root):
         data = text_file(root, str(patch_path))
         if not HEX256.fullmatch(patch["patch_sha256"]) or sha256(data) != patch["patch_sha256"]:
             raise ValueError(f"Patch hash mismatch: {identifier}")
+        payloads[identifier] = data
         expected_paths = set()
         if not isinstance(patch["files"], list) or not patch["files"]:
             raise ValueError("Each patch must declare its complete file closure")
         for item in patch["files"]:
             relative = str(relative_path(item["path"]))
-            key = project, relative
-            if key in affected:
-                raise ValueError("Overlapping patch files require a reviewed consolidated patch")
-            affected.add(key)
+            if relative in expected_paths:
+                raise ValueError("Duplicate path within a patch")
             expected_paths.add(relative)
             for phase in ("before", "after"):
                 size = item[phase + "_size_bytes"]
@@ -150,6 +151,12 @@ def patch_inventory(config, root):
         if (len(headers) != len(expected_paths) or set(headers) != expected_paths
                 or headers != old_paths or headers != new_paths):
             raise ValueError("Patch contents differ from the declared file closure")
+    plan = patch_plan({"patches": patches})
+    for project in plan["projects"].values():
+        for chain in project["files"].values():
+            if len(chain["steps"]) > 1:
+                for step in chain["steps"]:
+                    chain_patch_index(payloads[step["patch_id"]], chain["path"], step["item"])
     return {"series_sha256": sha256(raw), "patches": patches}
 
 
@@ -173,12 +180,87 @@ def validate_supplementary_extension(previous, reviewed):
         raise ValueError("Existing supplementary projects must remain unchanged; only reviewed additions are admitted")
 
 
+def patch_plan(reviewed):
+    """Derive ordered roots and tips without changing the reviewed controls.
+
+    This validates metadata even for internal callers. A detached successor is
+    always an orphan; matching bytes alone never authorize a starting state.
+    """
+    projects, identifiers, has_chains = {}, set(), False
+    for index, patch in enumerate(reviewed["patches"]):
+        identifier = patch["id"]
+        if not isinstance(identifier, str) or not identifier or identifier in identifiers:
+            raise ValueError("Duplicate or invalid patch identifier")
+        identifiers.add(identifier)
+        project = str(relative_path(patch["project"]))
+        base = patch["base_commit"]
+        if not isinstance(base, str) or not twrp_workspace.SHA.fullmatch(base):
+            raise ValueError("Each patched project needs one full pinned base revision")
+        owner = projects.setdefault(project, {"base_commit": base, "files": {}})
+        if owner["base_commit"] != base:
+            raise ValueError("Each patched project needs one full pinned base revision")
+        seen = set()
+        if not isinstance(patch["files"], list) or not patch["files"]:
+            raise ValueError("Each patch must declare its complete file closure")
+        for item in patch["files"]:
+            path = str(relative_path(item["path"]))
+            if path in seen:
+                raise ValueError("Duplicate path within a patch")
+            seen.add(path)
+            for phase in ("before", "after"):
+                digest, size = item[phase + "_sha256"], item[phase + "_size_bytes"]
+                if (not isinstance(digest, str) or not HEX256.fullmatch(digest)
+                        or type(size) is not int or not 0 <= size <= 16 * 1024 * 1024):
+                    raise ValueError("Invalid patch preimage/postimage identity")
+                blob = item.get(phase + "_git_blob")
+                if phase + "_git_blob" in item and (not isinstance(blob, str)
+                        or not twrp_workspace.SHA.fullmatch(blob)):
+                    raise ValueError("Invalid patch Git blob identity")
+            if item["before_sha256"] == item["after_sha256"]:
+                raise ValueError("Patch metadata declares no content change")
+            chain = owner["files"].get(path)
+            predecessor = item.get("predecessor_patch_id")
+            if chain is None:
+                if "predecessor_patch_id" in item:
+                    raise ValueError("First patch touch cannot declare a predecessor")
+                chain = owner["files"][path] = {"path": path, "root": item, "steps": []}
+            else:
+                previous = chain["steps"][-1]
+                if (not isinstance(predecessor, str) or not predecessor
+                        or predecessor != previous["patch_id"]):
+                    raise ValueError("Overlapping patch files require their explicit immediate predecessor")
+                for participant in (previous["item"], item):
+                    if any(not isinstance(participant.get(phase + "_git_blob"), str)
+                           or not twrp_workspace.SHA.fullmatch(participant[phase + "_git_blob"])
+                           for phase in ("before", "after")):
+                        raise ValueError("Every chain record requires complete Git blob identities")
+                if any(item["before_" + key] != previous["item"]["after_" + key]
+                       for key in ("sha256", "size_bytes", "git_blob")):
+                    raise ValueError("Patch chain predecessor identity is discontinuous")
+                if item["after_sha256"] == chain["root"]["before_sha256"]:
+                    raise ValueError("Patch chain cannot revert to its original root")
+                has_chains = True
+            chain["steps"].append({"index": index, "patch_id": identifier, "item": item})
+    return {"projects": projects, "has_chains": has_chains, "patch_count": len(reviewed["patches"])}
+
+
+def chain_patch_index(data, relative, item, mode=None):
+    """Require complete Git object IDs for a chain's exact file transition."""
+    sections = data.decode("utf-8").split("diff --git ")[1:]
+    selected = [section for section in sections if section.splitlines()[0] == f"a/{relative} b/{relative}"]
+    if len(selected) != 1:
+        raise ValueError("Chained patch is missing its exact file header")
+    indexes = [line for line in selected[0].splitlines() if line.startswith("index ")]
+    match = re.fullmatch(r"index ([0-9a-f]{40})\.\.([0-9a-f]{40}) (100644|100755)", indexes[0]) if len(indexes) == 1 else None
+    if (match is None or match[1] != item["before_git_blob"] or match[2] != item["after_git_blob"]
+            or mode is not None and int(match[3], 8) & 0o777 != mode):
+        raise ValueError("Chained patch requires full matching Git index identities and pinned mode")
+
+
 def patched_projects(reviewed):
-    result = {}
-    for patch in reviewed["patches"]:
-        entry = result.setdefault(patch["project"], {"base_commit": patch["base_commit"], "files": {}})
-        entry["files"].update({item["path"]: item for item in patch["files"]})
-    return result
+    return {project: {"base_commit": owner["base_commit"],
+                      "files": {path: chain["steps"][-1]["item"] for path, chain in owner["files"].items()}}
+            for project, owner in patch_plan(reviewed)["projects"].items()}
 
 
 def validate_patch_extension(previous, reviewed):
@@ -188,9 +270,11 @@ def validate_patch_extension(previous, reviewed):
     appended = new[len(old):]
     if not appended and previous["series_sha256"] != reviewed["series_sha256"]:
         raise ValueError("Without appended patches, revision requires the exact existing patch queue")
-    # patch_inventory already rejects repeated project/file pairs across the
-    # complete queue, including attempted chains onto an old patch postimage.
-    return {"patches": appended}
+    patch_plan(previous)
+    patch_plan(reviewed)
+    # Preserve full context: an appended successor cannot be verified as an
+    # independently authorized root. The old receipt still supplies authority.
+    return {"patches": appended, "complete_patches": new, "previous_patch_count": len(old)}
 
 
 def patch_owners(frozen, reviewed):
@@ -233,11 +317,80 @@ def git_blob_sha1(data):
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data).hexdigest()
 
 
+def chain_git_environment(home):
+    # No inherited GIT_*, alternate object stores/indexes, startup hooks or
+    # caller configuration. The scratch HOME is empty and never a source home.
+    return {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": str(home),
+            "XDG_CONFIG_HOME": str(home), "LANG": "C", "LC_ALL": "C",
+            "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null",
+            "GIT_ATTR_NOSYSTEM": "1", "GIT_NO_REPLACE_OBJECTS": "1",
+            "GIT_TERMINAL_PROMPT": "0", "GIT_OPTIONAL_LOCKS": "0"}
+
+
+def pinned_file(source, project, base, relative, root):
+    """Read bounded original bytes from the immutable owner, not its index."""
+    directory = twrp_workspace.absolute_path(source / project)
+    args = ["git", "-c", "core.fsmonitor=false", "-c", "core.attributesFile=/dev/null",
+            "-C", str(directory)]
+    def query(*parts):
+        return subprocess.run([*args, *parts], check=True, capture_output=True,
+                              stdin=subprocess.DEVNULL, shell=False, timeout=60,
+                              env=chain_git_environment("/nonexistent")).stdout
+    tree = query("ls-tree", "-z", base, "--", relative)
+    header, separator, name = tree.partition(b"\t")
+    fields = header.split()
+    if (not separator or name != relative.encode() + b"\0" or len(fields) != 3
+            or fields[0] not in {b"100644", b"100755"} or fields[1] != b"blob"
+            or not re.fullmatch(b"[0-9a-f]{40}", fields[2])):
+        raise ValueError("Chain root is not an original pinned regular Git blob")
+    blob = fields[2].decode("ascii")
+    size_raw = query("cat-file", "-s", blob).strip()
+    if not re.fullmatch(b"[0-9]+", size_raw) or int(size_raw) > 16 * 1024 * 1024:
+        raise ValueError("Chain root exceeds its bounded Git blob size")
+    data = query("cat-file", "blob", blob)
+    if (len(data) != int(size_raw) or len(data) != root["before_size_bytes"]
+            or sha256(data) != root["before_sha256"] or git_blob_sha1(data) != blob
+            or "before_git_blob" in root and root["before_git_blob"] != blob):
+        raise ValueError("Chain root bytes differ from the immutable original Git blob")
+    if b"\0" in data:
+        raise ValueError("Chain roots must remain text")
+    data.decode("utf-8")
+    return data, int(fields[0], 8) & 0o777
+
+
+def boundary_item(chain, boundary):
+    candidates = [step for step in chain["steps"] if step["index"] < boundary]
+    return (candidates[-1]["item"], "after") if candidates else (chain["root"], "before")
+
+
+def verify_chain_boundary(source, reviewed, boundary):
+    """Check all declared files at one explicit full-queue prefix."""
+    plan = patch_plan(reviewed)
+    if type(boundary) is not int or not 0 <= boundary <= plan["patch_count"]:
+        raise ValueError("Invalid explicit patch boundary")
+    identities = {}
+    for project, owner in plan["projects"].items():
+        for relative, chain in owner["files"].items():
+            _, mode = pinned_file(source, project, owner["base_commit"], relative, chain["root"])
+            item, phase = boundary_item(chain, boundary)
+            path = regular_file(source / project, relative)
+            if path.stat().st_size != item[phase + "_size_bytes"]:
+                raise ValueError(f"Chain boundary size differs; changes preserved: {project}/{relative}")
+            data = path.read_bytes()
+            if (sha256(data) != item[phase + "_sha256"] or stat.S_IMODE(path.stat().st_mode) != mode
+                    or phase + "_git_blob" in item and git_blob_sha1(data) != item[phase + "_git_blob"]):
+                raise ValueError(f"Chain boundary identity or mode differs; changes preserved: {project}/{relative}")
+            identities[f"{project}/{relative}"] = {"sha256": sha256(data), "size_bytes": len(data), "mode": f"{mode:04o}"}
+    return identities
+
+
 def verify_patch_files(source, reviewed, phase, require_head_preimage=False):
     if phase not in {"before", "after"}:
         raise ValueError("A patch verification phase must be before or after")
     if require_head_preimage and phase != "before":
         raise ValueError("A frozen Git preimage can only be checked before applying a patch")
+    if patch_plan(reviewed)["has_chains"]:
+        return verify_chain_boundary(source, reviewed, 0 if phase == "before" else len(reviewed["patches"]))
     identities = {}
     for project, patch in patched_projects(reviewed).items():
         directory = twrp_workspace.absolute_path(source / project)

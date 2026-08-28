@@ -690,17 +690,33 @@ class TwrpPatchTests(unittest.TestCase):
                     validate_minadbd_gate(mutated, path)
 
     def test_patch_bytes_and_source_versions_are_hash_bound(self):
-        seen = set()
+        # Independent transition checks: repeated paths need an explicit
+        # immediate predecessor, while duplicate records inside a patch never
+        # become a chain. The exact approved queue assertion remains separate.
+        seen = {}
         for key, row in self.patches.items():
             with self.subTest(patch=key):
                 raw = self.raw[key]
                 self.assertTrue(raw.endswith(b"\n"))
                 self.assertEqual(hashlib.sha256(raw).hexdigest(), row["patch_sha256"])
                 self.assertEqual(self.text[key].count("diff --git "), len(row["files"]))
+                seen_in_patch = set()
                 for source in row["files"]:
                     identity = (row["project"], source["path"])
-                    self.assertNotIn(identity, seen)
-                    seen.add(identity)
+                    self.assertNotIn(identity, seen_in_patch)
+                    seen_in_patch.add(identity)
+                    if identity in seen:
+                        previous_id, previous_row, previous_source, original = seen[identity]
+                        self.assertEqual(source.get("predecessor_patch_id"), previous_id)
+                        self.assertEqual(row["base_commit"], previous_row["base_commit"])
+                        self.assertEqual(row.get("repository"), previous_row.get("repository"))
+                        for component in ("sha256", "size_bytes", "git_blob"):
+                            self.assertEqual(source["before_" + component], previous_source["after_" + component])
+                        self.assertNotEqual(source["after_sha256"], original["before_sha256"])
+                    else:
+                        self.assertNotIn("predecessor_patch_id", source)
+                        original = source
+                    seen[identity] = (key, row, source, original)
                     self.assertIn(source["before_git_blob"] + ".." + source["after_git_blob"],
                                   self.text[key])
                     for name in ("before_sha256", "after_sha256"):

@@ -135,9 +135,10 @@ def verify_project(project, target, patches=(), phase="before"):
     twrp_patch_state.validate_patch_bases({}, reviewed)
     if any(entry["project"] != project["path"] for entry in patches):
         raise ValueError("Supplementary patch belongs to a different source owner")
-    files = [str(twrp_patch_state.relative_path(item["path"])) for entry in patches for item in entry["files"]]
-    if len(files) != len(set(files)):
-        raise ValueError("Overlapping supplementary patch files are not admitted")
+    # The shared plan rejects implicit overlap, branches and orphan successors.
+    # Status still contains exactly one unstaged modification per unique file.
+    planned = twrp_patch_state.patch_plan(reviewed)["projects"]
+    files = list(planned.get(project["path"], {}).get("files", {}))
     target = twrp_workspace.absolute_path(target)
     metadata = target / ".git"
     if not target.is_dir() or not metadata.is_dir() or metadata.is_symlink():
