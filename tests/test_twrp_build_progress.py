@@ -83,6 +83,14 @@ class TwrpBuildProgressTests(unittest.TestCase):
             self.assertIs(config[flag], False)
         for flag in ("Enforce_vintf_manifest", "BoardAvbEnable"):
             self.assertIs(config[flag], True)
+        self.assertGreaterEqual(config["attempt"], 12)
+        self.assertEqual(config["VendorVars"]["nezha_twrp"]["native_recovery_only"], "true")
+        self.assertEqual(config["VendorVarTypes"]["nezha_twrp"]["native_recovery_only"], "bool")
+        self.assertRegex(config["source"]["sha256"], r"^[0-9a-f]{64}$")
+        profile = self.record["attempts"][11]["native_recovery_profile_observed"]
+        self.assertEqual(profile["selected_value"], "true")
+        self.assertEqual(profile["variable_type"], "bool")
+        self.assertIs(profile["omitted_robolectric_errors"], True)
 
     def test_build_evidence_does_not_admit_phone_actions_or_oem_trust(self):
         for flag in ("hardware_validation_performed", "flash_admitted",
