@@ -875,6 +875,41 @@
       "project": "system/tools/aidl",
       "reason": "Add the recovery static variant of the genuine AIDL analyzer main library required by the generated SecureClock and Weaver analyzers; preserve interface availability, analyzer generation, existing images, and all strict checks.",
       "repository": "https://android.googlesource.com/platform/system/tools/aidl"
+    },
+    {
+      "base_commit": "99b01a65cc4c104933788b3143285ab6bae65827",
+      "files": [
+        {
+          "after_git_blob": "8f3c54e5b56528f8d70bc8b709bc5157ee117fe5",
+          "after_sha256": "1ed6c797897e61f509e6681c0b34b17cadfdcc394fa81693b53499a36190d4f9",
+          "after_size_bytes": 1301,
+          "before_git_blob": "3916bf3df73d73d3e3d4bb90a349a26b85610bc4",
+          "before_sha256": "5a65dfe1296c13061632d4d4daa26a087c21389751a47068e1ee057788effdd4",
+          "before_size_bytes": 1271,
+          "mode": "100644",
+          "path": "omapi/aidl/Android.bp",
+          "recovery_available_modules": [
+            {
+              "added_property_line": 21,
+              "after_module_sha256": "dab677da4e7cd067b60d265b14da0120596b42932393859093588e25906d85b7",
+              "before_module_sha256": "a1ceeb83bb2cd5f7ae999e6bcf957cefea28968888f0db4907b155448b1ad1f8",
+              "constructor_line": 19,
+              "name": "android.se.omapi",
+              "name_line": 20,
+              "recovery_available_property_after": true,
+              "recovery_available_property_before": false,
+              "type": "aidl_interface"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/omapi/aidl/Android.bp"
+        }
+      ],
+      "id": "0019-enable-omapi-interface-recovery",
+      "patch": "patches/twrp/0019-enable-omapi-interface-recovery.patch",
+      "patch_sha256": "9ae3d4fffa910239f5ef8f2d5bc5581b6708372b91afa8b2155cff2c5401cdfa",
+      "project": "frameworks/base",
+      "reason": "Add recovery availability to the genuine OMAPI AIDL interface so the existing recovery se_omapi service can resolve its native interface dependency; preserve the service, target feature flags, original backends, and strict checks.",
+      "repository": "https://android.googlesource.com/platform/frameworks/base"
     }
   ],
   "application_requirements": [

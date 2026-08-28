@@ -178,6 +178,21 @@ tools are separate from the recovery log collector. The next strict graph and
 build must verify the resulting variants; no installed-image or device result
 is implied by the source checks.
 
+Patch 19 supplies recovery availability for the genuine `android.se.omapi`
+AIDL interface. Graph 38 failed because the existing `se_omapi` executable
+requests a recovery variant even when this target leaves OMAPI disabled. Its
+required NDK interface did not provide that variant. The single added property
+reaches the generated C++ and NDK libraries and C++ analyzer; the pinned AIDL
+generator does not pass it to Java or Rust. Their native dependencies already
+declare recovery availability, including the analyzer helper from patch 18.
+
+The entire original interface, version and import metadata, service source,
+init rules and feature settings remain unchanged. The generated target keeps
+OMAPI and crypto false as typed booleans, so its conditional OMAPI dependencies
+and service requirement remain unselected. Availability does not enable the
+feature or establish secure-element or decryption support. The next strict
+graph and compilation must validate the new native variants.
+
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source
 policy's allow rules and historical policy snapshots remain intact. Keep the

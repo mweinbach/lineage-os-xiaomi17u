@@ -24,6 +24,7 @@ INITIAL_PROFILE_SHA256 = "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34
 MINADBD_GATE_ID = "0014-native-recovery-disable-minadbd"
 ACONFIG_VARIANT_ID = "0017-restore-aconfig-storage-core-images"
 AIDL_ANALYZER_VARIANT_ID = "0018-enable-aidl-analyzer-main-recovery"
+OMAPI_VARIANT_ID = "0019-enable-omapi-interface-recovery"
 MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
 RECOVERY_REVISION = "b70f8e998b302381ecefc6e7f46df1614bd61afc"
 MINADBD_PREIMAGES = {
@@ -283,8 +284,8 @@ class TwrpPatchTests(unittest.TestCase):
         }
         self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS)
                          + [MINADBD_GATE_ID] + SUPPLEMENT_PROFILE_IDS
-                         + [ACONFIG_VARIANT_ID, AIDL_ANALYZER_VARIANT_ID])
-        self.assertEqual(len(self.patches), 18)
+                         + [ACONFIG_VARIANT_ID, AIDL_ANALYZER_VARIANT_ID, OMAPI_VARIANT_ID])
+        self.assertEqual(len(self.patches), 19)
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]

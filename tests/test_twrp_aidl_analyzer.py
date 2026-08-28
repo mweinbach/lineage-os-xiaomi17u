@@ -116,7 +116,7 @@ class AidlAnalyzerTrackedTests(unittest.TestCase):
         cls.row = cls.rows[17]
 
     def test_previous_seventeen_entries_and_metadata_unchanged(self):
-        self.assertEqual(len(self.rows), 18)
+        self.assertGreaterEqual(len(self.rows), 18)
         self.assertEqual(canonical(self.rows[:17]), OLD_SEVENTEEN)
         self.assertEqual(canonical({k: v for k, v in self.series.items() if k != "patches"}), OLD_METADATA)
 
