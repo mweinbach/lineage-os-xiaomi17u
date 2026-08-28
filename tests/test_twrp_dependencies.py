@@ -90,10 +90,16 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "fd8e7aff3ae58eb0703c7202567b4fccf87f29b9f0e1962dff3f999dddfad36d")
 
-    def test_fifteen_supplements_and_original_391_project_snapshot_are_pinned(self):
+    def test_first_fifteen_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:15]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "b066a566e8af26b51541e1581bd90830a6c0a32390c0bf69ac96cac76e340a36")
+
+    def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
-        self.assertEqual(config["projects"], [{
+        self.assertEqual(config["projects"][:21], [{
             "path": "system/bpf", "url": "https://android.googlesource.com/platform/system/bpf",
             "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1", "tag": "android-16.0.0_r1",
             "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
@@ -154,11 +160,69 @@ class ConfigurationTests(Fixture):
         }, {
             "path": "frameworks/opt/net/wifi", "url": "https://android.googlesource.com/platform/frameworks/opt/net/wifi",
             "commit": "1cab31f96d1f903e190708c1ce665520a4a89d10", "tag": "android-16.0.0_r1",
-            "reason": "Real AOSP libwifi-system-iface and libwifi-system-iface-test providers required by the wificond service fuzzer source."}])
+            "reason": "Real AOSP libwifi-system-iface and libwifi-system-iface-test providers required by the wificond service fuzzer source."
+        }, {
+            "path": "external/junit", "url": "https://android.googlesource.com/platform/external/junit",
+            "commit": "56c85a91bba5313da30e5ca94b95b37a2613d641", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP junit and junit-host providers required by retained Java build modules."
+        }, {
+            "path": "external/doclava", "url": "https://android.googlesource.com/platform/external/doclava",
+            "commit": "07b2d9cd367915b6d90c448a2371ab31b58deb5d", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP Doclava documentation tool and defaults required by retained Java build modules."
+        }, {
+            "path": "external/jsilver", "url": "https://android.googlesource.com/platform/external/jsilver",
+            "commit": "020d5f12b76c4b4a21c8edb761b6318e486141b0", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP jsilver template provider required by the Doclava host tool."
+        }, {
+            "path": "external/hamcrest", "url": "https://android.googlesource.com/platform/external/hamcrest",
+            "commit": "a4975acbd7161fbc95f11c1a8f68db544fe5936d", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP hamcrest provider required by JUnit."
+        }, {
+            "path": "external/antlr", "url": "https://android.googlesource.com/platform/external/antlr",
+            "commit": "16467b971bd3e2009fad32dd79016f2c7e421deb", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP antlr-runtime provider required by Doclava defaults."
+        }, {
+            "path": "external/tagsoup", "url": "https://android.googlesource.com/platform/external/tagsoup",
+            "commit": "e55b6311e644c0df77cdb0fded945e53c5890bc8", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP tagsoup provider required by Doclava defaults."}])
         self.assertIn("libnetworkstackutilsjni_deps", config["projects"][1]["reason"])
         self.assertIn("tests/unit/Android.bp", config["projects"][1]["reason"])
         snapshot = dependencies.ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
         self.assertEqual(hashlib.sha256(snapshot.read_bytes()).hexdigest(), config["base"]["frozen_manifest_sha256"])
+
+    def test_graph_nine_cloud_and_native_providers_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/aws-sdk-java-v2", "5b6d2ca932250b95bb8fd65c6430e9425972ef1d"),
+            ("external/aws-crt-java", "d6de37e00133e24434ad586120131e35c6d23064"),
+            ("external/aws-eventstream-java", "4d25ba34e39ebb08772897d606ca054a61b6db82"),
+            ("external/slf4j", "ef7a1a29d4e3942861760eb58b989f069a0f3200"),
+            ("external/jackson-core", "a1462bea974256c3b2d4ae0c61d906592d21e7ef"),
+            ("external/google-cloud-java", "5ba13afc6ce627cb4c71ad1ff1ff62f625022ad2"),
+            ("external/sdk-platform-java", "daf609d6e2f51440e9161eb2cdfc8a3cafacf565"),
+            ("external/google-auth-library-java", "65648776fb0f5e9582c12f6a432712a707fa6324"),
+            ("external/opencensus-java", "f5311957763aa0d5af59a7da58791a7d3d6a153d"),
+            ("external/threetenbp", "b6b56fd22e89d7362d1cf396d66d16975060cc26"),
+            ("external/auto", "df40c3e9b3fc2bb8e37199c7f40ae177fde109b9"),
+            ("external/escapevelocity", "c1615b26efb0acd888b6661506503c0c539dd2ae"),
+            ("external/javapoet", "1b3553d5df7a74703fe646aa212c4b2d7f9adea9"),
+            ("external/google-java-format", "10816b529e1d7005ca788e7b4c5efd1c72957e26"),
+            ("system/media", "f01e84b958fb6a887dc0e74e4b5ebd159f03860a"),
+            ("external/abseil-cpp", "3c03adaaf6c28f5c5c47c753e860b9ac16957b35"),
+            ("external/aac", "46faeaba7093d2ce88645a1da20e379fb5bcc20f"),
+            ("external/flatbuffers", "ba0a3a76154937b0f3c0126062a486e1644ab9e4"),
+            ("external/tinyalsa", "a72ec6d8c6bbeb7ca0293e51e33573640904e99b"),
+            ("external/tinyalsa_new", "86c164eaf9e10240dca32a2c8f0c26a7f88ad97f"),
+            ("external/speex", "6c44585f68f6f7f71c51ff1d56d9a5d0409d2d29"),
+            ("external/google-benchmark", "68f58239bba93c71a39e4cd872bcbf5f69d971ec"),
+        ]
+        self.assertEqual(len(projects), 43)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[21:]], expected)
+        for project in projects[21:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].strip())
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()
