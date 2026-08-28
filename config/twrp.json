@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-08-27",
+  "device": "nezha",
+  "manifest": {
+    "url": "https://github.com/TWRP-Test/platform_manifest_twrp_aosp",
+    "branch": "twrp-16.0",
+    "commit": "d2188a9345857fb078c391e8cb3e259a21e941e5",
+    "name": "default.xml"
+  },
+  "repo_tool": {
+    "url": "https://gerrit.googlesource.com/git-repo",
+    "commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77",
+    "launcher": "/work/evolution/.repo/repo/repo"
+  },
+  "source_dir": "/work/twrp-nezha",
+  "out_dir": "/work/out/twrp-nezha",
+  "report_dir": "/work/validation/twrp-nezha",
+  "host_requirements": {
+    "min_free_disk_gib": 150,
+    "min_ram_gib": 16,
+    "filesystem": "ext4"
+  },
+  "expected_project_count": 392,
+  "pinned_projects": {
+    "bootable/recovery": {
+      "name": "android_bootable_recovery",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "branch": "twrp-16.0",
+      "commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc"
+    },
+    "build/make": {
+      "name": "android_build",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_build",
+      "branch": "twrp-16.0",
+      "commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121"
+    },
+    "build/soong": {
+      "name": "android_build_soong",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_build_soong",
+      "branch": "twrp-16.0",
+      "commit": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7"
+    },
+    "bionic": {
+      "name": "android_bionic",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_bionic",
+      "branch": "twrp-16.0",
+      "commit": "99926c766ef7f121950611f047dba4769a25226c"
+    },
+    "cts": {
+      "name": "android_cts",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_cts",
+      "branch": "twrp-16.0",
+      "commit": "e70f92f52c9830ee8f93d89d032e2b14765c5941"
+    },
+    "external/exfatprogs": {
+      "name": "android_external_exfatprogs",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_exfatprogs",
+      "branch": "twrp-16.0",
+      "commit": "32b1f77915b3ac456d5ac39a9906ae9a8fc91038"
+    },
+    "external/freetype": {
+      "name": "android_external_freetype",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_freetype",
+      "branch": "twrp-16.0",
+      "commit": "e8daa090dd2a18a2d18ca6fbf3059df82031f7fa"
+    },
+    "external/icu": {
+      "name": "android_external_icu",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_icu",
+      "branch": "twrp-16.0",
+      "commit": "6b20f143b6e9aea31a09762db119f1d776f25c9e"
+    },
+    "external/libchrome": {
+      "name": "android_external_libchrome",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_libchrome",
+      "branch": "twrp-16.0",
+      "commit": "ea5e82b2c1b9e741903be0dcdaf66af60b23c951"
+    },
+    "external/libxml2": {
+      "name": "android_external_libxml2",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_libxml2",
+      "branch": "twrp-16.0",
+      "commit": "97b8b0bcb00b062c418758d40db2208fe04ab0c7"
+    },
+    "external/scrypt": {
+      "name": "android_external_scrypt",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_scrypt",
+      "branch": "twrp-16.0",
+      "commit": "6ae39e28aba54ce4e8b394213201c23df5c996ac"
+    },
+    "external/sqlite": {
+      "name": "android_external_sqlite",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_sqlite",
+      "branch": "twrp-16.0",
+      "commit": "0cffd67e0aeca8e7427c5398142ed8edf0e29ce1"
+    },
+    "external/wpa_supplicant_8": {
+      "name": "android_external_wpa_supplicant_8",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_wpa_supplicant_8",
+      "branch": "twrp-16.0",
+      "commit": "19c8ab27b3d7dd00974e9e74c82dd1fe8ba80d9f"
+    },
+    "external/zstd": {
+      "name": "android_external_zstd",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_zstd",
+      "branch": "twrp-16.0",
+      "commit": "7a8e6fea5ce69cdd3c7ed0d18d6480d7770503eb"
+    },
+    "frameworks/hardware/interfaces": {
+      "name": "android_frameworks_hardware_interfaces",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_frameworks_hardware_interfaces",
+      "branch": "twrp-16.0",
+      "commit": "51d97a046f77b7dc3531cc6bb99407539d4e29b6"
+    },
+    "hardware/interfaces": {
+      "name": "android_hardware_interfaces",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_hardware_interfaces",
+      "branch": "twrp-16.0",
+      "commit": "3e2bcbf17426a5783f034c8b0bb0d26743b39892"
+    },
+    "system/core": {
+      "name": "android_system_core",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_core",
+      "branch": "twrp-16.0",
+      "commit": "9292e0ddea6c1e8ff95abc8d3fedd6dd0c722f31"
+    },
+    "system/extras": {
+      "name": "android_system_extras",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_extras",
+      "branch": "twrp-16.0",
+      "commit": "e7a43388bdbb2774b955ed5c7fca1fa83fd61c64"
+    },
+    "system/hardware/interfaces": {
+      "name": "android_system_hardware_interfaces",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_hardware_interfaces",
+      "branch": "twrp-16.0",
+      "commit": "ee6d7c54ce09cffb9808afc86fcd4828be2f077a"
+    },
+    "system/keymaster": {
+      "name": "android_system_keymaster",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_keymaster",
+      "branch": "twrp-16.0",
+      "commit": "9e111ed820350961202c637b4135ff83aa06a70b"
+    },
+    "system/libhidl": {
+      "name": "android_system_libhidl",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_libhidl",
+      "branch": "twrp-16.0",
+      "commit": "9bb79519173ff86773dfd144172bcd789fc88e01"
+    },
+    "system/libziparchive": {
+      "name": "android_system_libziparchive",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_libziparchive",
+      "branch": "twrp-16.0",
+      "commit": "5ad9237353b072d1d36f201f4c3aedac8e080865"
+    },
+    "system/sepolicy": {
+      "name": "android_system_sepolicy",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_sepolicy",
+      "branch": "twrp-16.0",
+      "commit": "f0270686ee017f4de42e1032aca7527031bcc484"
+    },
+    "system/security": {
+      "name": "android_system_security",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_security",
+      "branch": "twrp-16.0",
+      "commit": "d614e274b585a67e80d3d3fbc3a6e9f695998f78"
+    },
+    "system/update_engine": {
+      "name": "android_system_update_engine",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_update_engine",
+      "branch": "twrp-16.0",
+      "commit": "1c8f3771382734e3ff83beaff9f5d7ea09f95402"
+    },
+    "system/vold": {
+      "name": "android_system_vold",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_system_vold",
+      "branch": "twrp-16.0",
+      "commit": "4c83041ec61f9b482085685f1e6aed5a62f103aa"
+    },
+    "vendor/twrp": {
+      "name": "android_vendor_twrp",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_vendor_twrp",
+      "branch": "twrp-16.0",
+      "commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1"
+    },
+    "external/libmicrohttpd": {
+      "name": "android_external_libmicrohttpd",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_external_libmicrohttpd",
+      "branch": "twrp-16.0",
+      "commit": "37408f6e22f1fe935129e11f1a5c9a5091b4b97a"
+    },
+    "external/se_omapi": {
+      "name": "android_se_omapi",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/android_se_omapi",
+      "branch": "twrp-16.0",
+      "commit": "4d1e09a8b18dc3e2bec644e50401e28ea695f3d1"
+    },
+    "external/magisk-prebuilt": {
+      "name": "external_magisk-prebuilt",
+      "remote": "TWRP-A16",
+      "url": "https://github.com/TWRP-Test/external_magisk-prebuilt",
+      "branch": "twrp-16.0",
+      "commit": "06808ed6045f6fdd7752124aba94b9698463c92c"
+    },
+    "external/lptools": {
+      "name": "phhusson/vendor_lptools",
+      "remote": "github",
+      "url": "https://github.com/phhusson/vendor_lptools",
+      "branch": "master",
+      "commit": "c8be7de57b80eab61a6f94ec86464a01fb9056f2"
+    },
+    "external/bash": {
+      "name": "android_external_bash",
+      "remote": "LineageOS",
+      "url": "https://github.com/LineageOS/android_external_bash",
+      "branch": "lineage-23.2",
+      "commit": "1094f161361ad75af92c968da680f2f5b3cf752b"
+    },
+    "external/libncurses": {
+      "name": "android_external_libncurses",
+      "remote": "LineageOS",
+      "url": "https://github.com/LineageOS/android_external_libncurses",
+      "branch": "lineage-23.2",
+      "commit": "cf8d1a3f3b0ab6f9385c3361e1aada7ecc635ad6"
+    },
+    "external/nano": {
+      "name": "android_external_nano",
+      "remote": "LineageOS",
+      "url": "https://github.com/LineageOS/android_external_nano",
+      "branch": "lineage-23.2",
+      "commit": "b83fc23d564c5377fc7c3322e5f75e81d8dad37e"
+    },
+    "external/ntfs-3g": {
+      "name": "android_external_ntfs-3g",
+      "remote": "LineageOS",
+      "url": "https://github.com/LineageOS/android_external_ntfs-3g",
+      "branch": "lineage-23.2",
+      "commit": "e2415df401538976fb89aa20370903e0c46e51ff"
+    },
+    "prebuilts/tools-lineage": {
+      "name": "android_prebuilts_tools-lineage",
+      "remote": "LineageOS",
+      "url": "https://github.com/LineageOS/android_prebuilts_tools-lineage",
+      "branch": "lineage-23.2",
+      "commit": "7cf9452c82a0265d00e8c444f25639b7aa66969d"
+    }
+  },
+  "sync_jobs": 8,
+  "depth": 1,
+  "note": "Experimental Android 16 TWRP source baseline, not a device tree, successful build, or authorization to flash. The first complete sync freezes every project SHA in an external resolved manifest."
+}
