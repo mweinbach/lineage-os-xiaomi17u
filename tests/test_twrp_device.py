@@ -11,14 +11,17 @@ DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
 MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp"
 AUDIO_TEST_BLUEPRINT = "system/media/audio_utils/tests/Android.bp"
 GRAPH14_TEST_BLUEPRINTS = (
-    "test/robolectric-extensions/Android.bp",
-    "test/robolectric-extensions/clearcut-junit-listener/Android.bp",
     "external/android_onboarding/java/com/android/onboarding/contracts/testing/Android.bp",
     "external/android_onboarding/java/com/android/onboarding/testing/Android.bp",
     "frameworks/base/packages/SettingsLib/tests/robotests/Android.bp",
     "frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp",
 )
-SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS}
+TRACING_ROBO_BLUEPRINT = "frameworks/libs/systemui/tracinglib/robolectric/Android.bp"
+RESTORED_ROBO_HELPER_BLUEPRINTS = (
+    "test/robolectric-extensions/Android.bp",
+    "test/robolectric-extensions/clearcut-junit-listener/Android.bp",
+)
+SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS, TRACING_ROBO_BLUEPRINT}
 AEMU_PROVIDER_BLUEPRINTS = (
     "hardware/google/aemu/Android.bp",
     "hardware/google/aemu/base/Android.bp",
@@ -78,13 +81,68 @@ FRAMEWORK_PROVIDER_EXCLUSIONS = (
     "-packages/apps/Traceur/",
 )
 WIFI_TRACKER_BLUEPRINT = "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp"
+SHARED_HELPER_BLUEPRINTS = (
+    "platform_testing/libraries/app-helpers/core/Android.bp",
+    "platform_testing/libraries/app-helpers/handheld/Android.bp",
+    "platform_testing/libraries/app-helpers/handheld/business-card-app-helper/Android.bp",
+    "platform_testing/libraries/app-helpers/handheld/performance-launch-app-helper/Android.bp",
+    "platform_testing/libraries/app-helpers/interfaces/Android.bp",
+    "platform_testing/libraries/app-helpers/spectatio/spectatio-util/Android.bp",
+    "platform_testing/libraries/collectors-helper/adservices/Android.bp",
+    "platform_testing/libraries/collectors-helper/app/Android.bp",
+    "platform_testing/libraries/collectors-helper/generic/Android.bp",
+    "platform_testing/libraries/collectors-helper/jank/Android.bp",
+    "platform_testing/libraries/collectors-helper/lyric/Android.bp",
+    "platform_testing/libraries/collectors-helper/memory/Android.bp",
+    "platform_testing/libraries/collectors-helper/perfetto/Android.bp",
+    "platform_testing/libraries/collectors-helper/power/Android.bp",
+    "platform_testing/libraries/collectors-helper/simpleperf/Android.bp",
+    "platform_testing/libraries/collectors-helper/statsd/Android.bp",
+    "platform_testing/libraries/collectors-helper/system/Android.bp",
+    "platform_testing/libraries/collectors-helper/utilities/Android.bp",
+    "platform_testing/libraries/device-collectors/src/main/Android.bp",
+    "platform_testing/libraries/device-collectors/src/main/platform-collectors/Android.bp",
+    "platform_testing/libraries/flicker/Android.bp",
+    "platform_testing/libraries/flicker/appHelpers/Android.bp",
+    "platform_testing/libraries/flicker/collector/Android.bp",
+    "platform_testing/libraries/flicker/utils/Android.bp",
+    "platform_testing/libraries/health/composers/platform/Android.bp",
+    "platform_testing/libraries/health/options/Android.bp",
+    "platform_testing/libraries/health/rules/Android.bp",
+    "platform_testing/libraries/health/runners/microbenchmark/Android.bp",
+    "platform_testing/libraries/health/utils/Android.bp",
+    "platform_testing/libraries/launcher-helper/Android.bp",
+    "platform_testing/libraries/metrics-helper/Android.bp",
+    "platform_testing/libraries/motion/Android.bp",
+    "platform_testing/libraries/motion/compose/Android.bp",
+    "platform_testing/libraries/motion/compose/values/Android.bp",
+    "platform_testing/libraries/notes-role-test-helper/Android.bp",
+    "platform_testing/libraries/runner/Android.bp",
+    "platform_testing/libraries/screenshot/Android.bp",
+    "platform_testing/libraries/screenshot/utils/compose/Android.bp",
+    "platform_testing/libraries/sts-common-util/device-side/Android.bp",
+    "platform_testing/libraries/system-helpers/activity-helper/Android.bp",
+    "platform_testing/libraries/system-helpers/commands-helper/Android.bp",
+    "platform_testing/libraries/system-helpers/device-helper/Android.bp",
+    "platform_testing/libraries/system-helpers/package-helper/Android.bp",
+    "platform_testing/libraries/system-helpers/sysui-helper/Android.bp",
+    "platform_testing/libraries/system-helpers/user-helper/Android.bp",
+    "platform_testing/libraries/uiautomator-helpers/Android.bp",
+    "platform_testing/libraries/uinput-device-test-helper/Android.bp",
+    "platform_testing/scripts/perf-setup/Android.bp",
+    "platform_testing/tests/health/scenarios/Android.bp",
+    "platform_testing/utils/dpad/Android.bp",
+)
+JUNIT_XML_BLUEPRINT = "platform_testing/libraries/junitxml/Android.bp"
 SOURCE_FILE_REINCLUSIONS = {
+    *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, *ADSERVICES_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + TRACING_ROBO_BLUEPRINT,
     *FRAMEWORK_PROVIDER_EXCLUSIONS,
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
@@ -119,6 +177,7 @@ SOURCE_EXCLUSIONS = [
     "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
+    *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
     *STS_PROVIDER_BLUEPRINTS,
@@ -627,12 +686,12 @@ class TwrpDeviceTests(unittest.TestCase):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
         parent = "platform_testing/libraries/sts-common-util/"
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
-                         set(STS_PROVIDER_BLUEPRINTS))
+                         {*STS_PROVIDER_BLUEPRINTS, parent + "device-side/Android.bp"})
         for source in STS_PROVIDER_BLUEPRINTS:
             self.assertTrue(source_path_allowed(source, scopes), source)
         for source in (parent + "Android.bp", parent + "host-side/tests/Android.bp",
                        parent + "host-side/rootcanal/Android.bp", parent + "host-side/other.bp",
-                       parent + "util/tests/Android.bp", parent + "device-side/Android.bp"):
+                       parent + "util/tests/Android.bp", parent + "device-side/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for source in ("cts/hostsidetests/appsecurity/Android.bp", "cts/Android.bp",
                        "system/core/debuggerd/proto/Android.bp", "external/protobuf/Android.bp",
@@ -819,6 +878,63 @@ class TwrpDeviceTests(unittest.TestCase):
                      "WifiTrackerLib", "does not install Settings", "not a successful build"):
             self.assertIn(fact, readme)
 
+    def test_graph_thirty_one_restores_complete_shared_helper_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(SHARED_HELPER_BLUEPRINTS), 50)
+        for source in (*SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            directory = str(Path(source).parent) + "/"
+            self.assertFalse(source_path_allowed(directory + "other.bp", scopes))
+            self.assertFalse(source_path_allowed(directory + "unrelated/Android.bp", scopes))
+        for source in ("platform_testing/Android.bp", "platform_testing/build/Android.bp",
+                       "platform_testing/libraries/device-collectors/src/test/Android.bp",
+                       "platform_testing/libraries/runner/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_consumed_robolectric_extension_files_are_restored(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in RESTORED_ROBO_HELPER_BLUEPRINTS:
+            self.assertNotIn("-" + source, scopes)
+            self.assertNotIn(source, scopes)
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            self.assertTrue(source_path_allowed(str(Path(source).parent / "child/Android.bp"), scopes))
+        for source in GRAPH14_TEST_BLUEPRINTS:
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertEqual(len(GRAPH14_TEST_BLUEPRINTS), 4)
+        self.assertTrue(source_path_allowed(JUNIT_XML_BLUEPRINT, scopes))
+
+    def test_only_closed_systemui_tracing_robolectric_file_is_excluded(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertFalse(source_path_allowed(TRACING_ROBO_BLUEPRINT, scopes))
+        for source in ("frameworks/libs/systemui/Android.bp",
+                       "frameworks/libs/systemui/animationlib/Android.bp",
+                       "frameworks/libs/systemui/tracinglib/Android.bp",
+                       "frameworks/libs/systemui/tracinglib/robolectric/other.bp",
+                       "frameworks/libs/systemui/tracinglib/robolectric/child/Android.bp",
+                       "frameworks/libs/systemui/viewcapture/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertFalse(any(rule.startswith("-external/robolectric/") for rule in scopes))
+
+    def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(scopes), 146)
+        self.assertEqual(len(scopes), len(set(scopes)))
+        for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
+                       "external/avb/Android.bp", "bootable/recovery/Android.bp",
+                       "frameworks/base/api/ApiDocs.bp", "build/soong/licenses/Android.bp",
+                       "external/robolectric/integration_tests/nativegraphics/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("51 original helper Blueprint files", "Robolectric_all-target",
+                     "ClearcutJunitListener", "junitxml", "tracinglib-robo-test",
+                     "tracinglib-test-app", "three named test guards", "146 source rules",
+                     "not proof of compilation", "Turbine"):
+            self.assertIn(fact, readme)
+
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
         for prefix in ("system/chre/", "external/pigweed/", "external/emboss/"):
@@ -908,7 +1024,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertFalse(source_path_allowed(parent + leaf.rstrip("/") + "_sibling/Android.bp", scopes))
         self.assertTrue(source_path_allowed(parent + "junit/test/Android.bp", scopes))
         for source in ("platform_testing/Android.bp", parent + "Android.bp",
-                       "platform_testing/libraries/runner/Android.bp",
+                       "platform_testing/libraries/runner/other.bp",
                        "platform_testing/libraries/device-collectors/Android.bp",
                        "platform_testing/libraries/collectors-helper/Android.bp",
                        "platform_testing/libraries/junit-rules/Android.bp"):

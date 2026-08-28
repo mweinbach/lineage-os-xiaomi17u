@@ -259,8 +259,9 @@ tests, native flag declarations and defaults, with their original license and
 team metadata. The bounded check found existing selected dependency providers,
 including the genuine SDK generator for
 `framework-configinfrastructure.stubs.module_lib`; no new project is needed
-for these leaves. Platform runner, collector and rule subtrees remain excluded.
-The next real build must still validate variants and generated artifacts.
+for these leaves. Platform runner, collector and rule subtrees remained excluded
+at that stage; the Graph 31 helper restoration is described below. The next
+real build must still validate variants and generated artifacts.
 
 Graph 22 found that the retained `tradefed-test-framework` needs the original
 `test-composers` library. The positive
@@ -269,8 +270,9 @@ Blueprint files from pinned project `7b48625b052b94b1ef24573ef5e8ffa5e2ea9783`.
 All three original modules remain: `test-composers`, `test-composers-tests`
 and `HostTestComposersTests`, together with their source, license and team
 metadata. Their immediate providers already exist in the selected sources.
-The parent health-test aggregate and the device-composer sibling remain
-excluded. This restores build declarations; it does not claim those tests ran
+The parent health-test aggregate and the device-composer sibling remained
+excluded at that stage; the required platform composer is restored below.
+This restores build declarations; it does not claim those tests ran
 or that a recovery image compiled.
 
 Graph 22 also found that the retained framework's
@@ -411,8 +413,9 @@ four more files containing only related test support: Onboarding's
 The combined review checked module, shell, manifest, generator and local team
 references across Blueprint properties and 14,901 Make/Go files. Every
 consumer was within the reviewed test scope or already disabled by this
-profile. Exactly these six files are excluded; their parent directories and
-other source files remain included. The existing patch for
+profile. Exactly these six files were excluded at that stage; their parent
+directories and other source files remained included. Graph 31 restores the two
+consumed extension files, as described below. The existing patch for
 `SettingsLibRoboTests` remains unchanged, even though its Blueprint file is
 now outside the source selection.
 
@@ -479,6 +482,40 @@ from `frameworks/opt/net/wifi` at
 references are independently closed against existing selected providers. This
 preserves the library and resources required by SystemUI and Settings without
 selecting sibling Wi-Fi build files or changing `TW_NO_NETWORK`.
+
+Graph 31 also requires the original collector, Flicker and app-helper libraries.
+The reviewed closure retains 51 original helper Blueprint files: the previously
+restored WifiTrackerLib file plus fifty exact platform_testing files. Their
+76 named declarations include the original performance-setup type registration;
+no replacement helper, flattened test file or synthetic default is introduced.
+Original package metadata, source lists and child library boundaries remain.
+The platform_testing root aggregate and unselected sibling files stay excluded.
+
+The shared runner requires the genuine `Robolectric_all-target` library chain.
+Its two original extension files, initially excluded at Graph 14, are restored
+by removing those negative rules. They retain `Robolectric-aosp-plugins`,
+`ClearcutJunitListener`, their host tests and original team declaration. An exact
+positive rule also restores `junitxml`. Equal-length positive/negative rule ties
+are not used. The other four Graph 14 Onboarding/SettingsLib exclusions and all
+historical patch entries remain unchanged.
+
+The exact SystemUI `tracinglib/robolectric/Android.bp` file is excluded after a
+complete pinned-owner and current-source incoming-reference audit. It contains
+only `tracinglib-robo-test` and its `tracinglib-test-app`; no outside module or
+literal build-path consumer was found. The mixed `animationlib/Android.bp` and
+all production tracing files remain selected. Separate reviewed patches use
+three named test guards for `animationlib_robo_tests`, `CtesqueRoboTests` and
+`NativeGraphicsTests`, only under the typed native recovery setting. Shared
+libraries and normal Android behavior remain intact; the existing disabled
+Robolectric runtime helper is not enabled to mask those test dependencies.
+
+Together these choices produce 146 source rules. Whole original SystemUI and
+Robolectric sources, the MIME data generator and the Turbine compiler-tool
+provider are coordinated source requirements. The dependency and factory audits
+are not proof of compilation, app functionality or a complete runtime closure.
+The next strict graph still validates the selected modules and generated paths.
+No app packages, networking, decryption, device writes or validation waivers
+are enabled by these source selections.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

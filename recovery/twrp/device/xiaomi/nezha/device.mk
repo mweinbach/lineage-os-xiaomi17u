@@ -250,19 +250,82 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     platform_testing/libraries/health/composers/host/
 
-# Graph 14 failed in the two Robolectric extension files. The follow-up
-# projection closed the Onboarding/SettingsLib support files with those tests;
-# their metadata and helpers have no retained external consumers. Exclude
-# exactly these files, not their parent directories or production IPC/SDK code.
-# Keep the existing SettingsLib source patch unchanged even though its test
-# file is now outside this product's selected Blueprint files.
+# Keep the four remaining Graph 14 Onboarding/SettingsLib test-file cuts.
+# The two original Robolectric extension files now have retained consumers and
+# are restored; the original patches remain unchanged. Do not exclude their
+# parents or production IPC/SDK code.
 PRODUCT_SOURCE_ROOT_DIRS += \
-    -test/robolectric-extensions/Android.bp \
-    -test/robolectric-extensions/clearcut-junit-listener/Android.bp \
     -external/android_onboarding/java/com/android/onboarding/contracts/testing/Android.bp \
     -external/android_onboarding/java/com/android/onboarding/testing/Android.bp \
     -frameworks/base/packages/SettingsLib/tests/robotests/Android.bp \
     -frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp
+
+# Graph 31 requires the original shared collectors, Flicker and app helpers.
+# Their complete provider closure spans these fifty existing Blueprint files;
+# WifiTrackerLib above completes the audited fifty-one-file helper cohort.
+# Keep original libraries, tests, package metadata and type registration intact.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/app-helpers/core/Android.bp \
+    platform_testing/libraries/app-helpers/handheld/Android.bp \
+    platform_testing/libraries/app-helpers/handheld/business-card-app-helper/Android.bp \
+    platform_testing/libraries/app-helpers/handheld/performance-launch-app-helper/Android.bp \
+    platform_testing/libraries/app-helpers/interfaces/Android.bp \
+    platform_testing/libraries/app-helpers/spectatio/spectatio-util/Android.bp \
+    platform_testing/libraries/collectors-helper/adservices/Android.bp \
+    platform_testing/libraries/collectors-helper/app/Android.bp \
+    platform_testing/libraries/collectors-helper/generic/Android.bp \
+    platform_testing/libraries/collectors-helper/jank/Android.bp \
+    platform_testing/libraries/collectors-helper/lyric/Android.bp \
+    platform_testing/libraries/collectors-helper/memory/Android.bp \
+    platform_testing/libraries/collectors-helper/perfetto/Android.bp \
+    platform_testing/libraries/collectors-helper/power/Android.bp \
+    platform_testing/libraries/collectors-helper/simpleperf/Android.bp \
+    platform_testing/libraries/collectors-helper/statsd/Android.bp \
+    platform_testing/libraries/collectors-helper/system/Android.bp \
+    platform_testing/libraries/collectors-helper/utilities/Android.bp \
+    platform_testing/libraries/device-collectors/src/main/Android.bp \
+    platform_testing/libraries/device-collectors/src/main/platform-collectors/Android.bp \
+    platform_testing/libraries/flicker/Android.bp \
+    platform_testing/libraries/flicker/appHelpers/Android.bp \
+    platform_testing/libraries/flicker/collector/Android.bp \
+    platform_testing/libraries/flicker/utils/Android.bp \
+    platform_testing/libraries/health/composers/platform/Android.bp \
+    platform_testing/libraries/health/options/Android.bp \
+    platform_testing/libraries/health/rules/Android.bp \
+    platform_testing/libraries/health/runners/microbenchmark/Android.bp \
+    platform_testing/libraries/health/utils/Android.bp \
+    platform_testing/libraries/launcher-helper/Android.bp \
+    platform_testing/libraries/metrics-helper/Android.bp \
+    platform_testing/libraries/motion/Android.bp \
+    platform_testing/libraries/motion/compose/Android.bp \
+    platform_testing/libraries/motion/compose/values/Android.bp \
+    platform_testing/libraries/notes-role-test-helper/Android.bp \
+    platform_testing/libraries/runner/Android.bp \
+    platform_testing/libraries/screenshot/Android.bp \
+    platform_testing/libraries/screenshot/utils/compose/Android.bp \
+    platform_testing/libraries/sts-common-util/device-side/Android.bp \
+    platform_testing/libraries/system-helpers/activity-helper/Android.bp \
+    platform_testing/libraries/system-helpers/commands-helper/Android.bp \
+    platform_testing/libraries/system-helpers/device-helper/Android.bp \
+    platform_testing/libraries/system-helpers/package-helper/Android.bp \
+    platform_testing/libraries/system-helpers/sysui-helper/Android.bp \
+    platform_testing/libraries/system-helpers/user-helper/Android.bp \
+    platform_testing/libraries/uiautomator-helpers/Android.bp \
+    platform_testing/libraries/uinput-device-test-helper/Android.bp \
+    platform_testing/scripts/perf-setup/Android.bp \
+    platform_testing/tests/health/scenarios/Android.bp \
+    platform_testing/utils/dpad/Android.bp
+
+# The shared runner needs the real Robolectric library chain. Its two original
+# extension files are no longer excluded; restore their real XML listener too.
+# The separately reviewed typed test gates leave shared providers selected.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/junitxml/Android.bp
+
+# Only these two closed tracing-test declarations have no outside consumers.
+# Preserve all other SystemUI files, including the mixed animation library file.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -frameworks/libs/systemui/tracinglib/robolectric/Android.bp
 
 # A separate source projection found KeyMint's real libhwtrust_cxx dependency.
 # Keep the original hwtrust libraries, CXX bridge, binaries, tests and metadata.
