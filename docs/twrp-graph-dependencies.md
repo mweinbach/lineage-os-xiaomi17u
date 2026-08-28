@@ -103,3 +103,51 @@ already in the frozen base. These additions address the immediate JNI provider
 chain, not a verified complete graph or runtime networking feature. The record
 binds the exact source files and graph-three log separately from the original
 failure, while the 391-project base remains unchanged.
+
+The fourth graph attempt reported 15 errors, including the missing native-bridge
+libc default. Its real provider is in
+[native_bridge_support](https://android.googlesource.com/platform/frameworks/libs/native_bridge_support/+/b527289974e3883460370012325ab3736d59268a/android_api/libc/Android.bp).
+Retained binary-translation modules also use that project's graphics, audio,
+camera and other proxy filegroups. Restoring only its libc directory would not
+supply those inputs.
+
+The pinned platform_testing root file also declares a large test bundle. The
+Tradefed defaults file has its own package license and no library dependencies,
+so the supported source selector can retain that original file without enabling
+the rest of the project's Blueprint declarations:
+
+```make
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -platform_testing/ \
+    platform_testing/libraries/tradefed-error-prone/
+```
+
+The pinned Blueprint implementation applies the most specific matching prefix
+to each file. Its tests also verify that a retained module still fails if it
+requires a skipped module. This selection supplies the two Tradefed defaults,
+not `MotionTestDefaults` or `rdroidtest.defaults`; those require separate source
+decisions if their consumers remain.
+
+A subsequent static check found Skia's shared graphics defaults missing from
+retained HWUI and RenderEngine modules. The genuine
+[Skia root file](https://android.googlesource.com/platform/external/skia/+/bcb0f77c44783b1800ba37641ba7ecab04f05e07/Android.bp)
+defines both defaults and their libraries. Seventeen of its 22 direct library
+providers were present; five required four additional codec and font projects.
+The initial `libjpeg` name match was a profile or old VNDK module, not the
+required source library.
+
+| Additional provider | Verified r1 commit |
+| --- | --- |
+| native_bridge_support | `b527289974e3883460370012325ab3736d59268a` |
+| Skia | `bcb0f77c44783b1800ba37641ba7ecab04f05e07` |
+| HarfBuzz | `e489c416b6f8d2a9a2e0e85b781d1e4a0c431401` |
+| WebP | `7698c1d3a5cbecdf336510eeb3366d1de752454a` |
+| libjpeg-turbo | `6cedbd6ff13946bef76a015693d02723b0d3226e` |
+| crabbyavif | `9f3e32a2ffc45466eaed69ad522080cbf67f827b` |
+
+Exact recursive source trees show one root `Android.bp` each for Skia and those
+four codec/font projects. Their file hashes, tag objects and dependency chains
+are recorded in `graph4_followup` in the machine-readable audit. These are
+additive source candidates; the original 391-project snapshot is unchanged.
+The explicit provider checks do not prove the full transitive graph, a recovery
+variant, an image build or hardware functionality.

@@ -644,6 +644,360 @@
       "Initial failure counts of 21 errors, seven defaults and five provider projects remain unchanged."
     ]
   },
+  "graph4_followup": {
+    "date": "2026-08-28",
+    "status": "verified_provider_sources_not_a_successful_graph_or_recovery_build",
+    "failure_log": {
+      "path": "reports/twrp-graph-4.log",
+      "sha256": "0cb5cf77f6008bcad465eac3e5ebe31f575e3ae9beb1ee2d723951d1a23d673a",
+      "bytes": 11780,
+      "error_lines": 15
+    },
+    "static_library_audit": {
+      "path": "reports/twrp-missing-defaults-audit.json",
+      "sha256": "bc0b71af2d21d81ae731201772b37019d7b3386efd2e73351a3b928852468de6",
+      "bytes": 65953,
+      "scope": "Snapshot used to distinguish real library definitions from profile or old VNDK modules sharing a name; later audits may replace the report."
+    },
+    "supplementary_project_pins": [
+      {
+        "path": "frameworks/libs/native_bridge_support",
+        "repository": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support",
+        "tag_object": "5da5ad49e2e27d820f0511365ea752463ac087ae",
+        "revision": "b527289974e3883460370012325ab3736d59268a",
+        "providers": [
+          "native_bridge_proxy_libc_defaults",
+          "native_bridge_proxy_*_files"
+        ],
+        "scope": "Whole project: retained binary_translation also uses proxy filegroups outside libc.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      },
+      {
+        "path": "platform_testing",
+        "repository": "https://android.googlesource.com/platform/platform_testing",
+        "tag_object": "227feb216bb23daa476c390cd6d20ef0e24fc55c",
+        "revision": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+        "providers": [
+          "tradefed_defaults",
+          "tradefed_errorprone_defaults"
+        ],
+        "scope": "Only libraries/tradefed-error-prone/ is established as a self-contained Tradefed defaults scope.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      },
+      {
+        "path": "external/skia",
+        "repository": "https://android.googlesource.com/platform/external/skia",
+        "tag_object": "b77084a8778c91753e5c0d59bf0349bc61ded62f",
+        "revision": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+        "providers": [
+          "skia_deps",
+          "skia_renderengine_deps",
+          "libskia",
+          "libskia_renderengine"
+        ],
+        "scope": "Whole project; its only Android.bp is at the root.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      },
+      {
+        "path": "external/harfbuzz_ng",
+        "repository": "https://android.googlesource.com/platform/external/harfbuzz_ng",
+        "tag_object": "75513614b6c78bcb28f1694a82ed19d585f756c9",
+        "revision": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401",
+        "providers": [
+          "libharfbuzz_subset",
+          "libharfbuzz_ng"
+        ],
+        "scope": "Whole project; its only Android.bp is at the root.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      },
+      {
+        "path": "external/webp",
+        "repository": "https://android.googlesource.com/platform/external/webp",
+        "tag_object": "0e075bae2bc674e1f1315336971f5e8c879a3a4e",
+        "revision": "7698c1d3a5cbecdf336510eeb3366d1de752454a",
+        "providers": [
+          "libwebp-decode",
+          "libwebp-encode",
+          "webp-headers"
+        ],
+        "scope": "Whole project; its only Android.bp is at the root.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      },
+      {
+        "path": "external/libjpeg-turbo",
+        "repository": "https://android.googlesource.com/platform/external/libjpeg-turbo",
+        "tag_object": "befb31210607403baabdebf71894c7b14bce2d7d",
+        "revision": "6cedbd6ff13946bef76a015693d02723b0d3226e",
+        "providers": [
+          "libjpeg",
+          "libjpeg-defaults"
+        ],
+        "scope": "Whole project; its only Android.bp is at the root.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      },
+      {
+        "path": "external/rust/crabbyavif",
+        "repository": "https://android.googlesource.com/platform/external/rust/crabbyavif",
+        "tag_object": "8ee50e88fe0fc2b6b99cbe55bfb9f7e8eb4c347c",
+        "revision": "9f3e32a2ffc45466eaed69ad522080cbf67f827b",
+        "providers": [
+          "libcrabbyavif_ffi",
+          "liblibyuv_sys",
+          "libndk_sys"
+        ],
+        "scope": "Whole project; all six declarations are in its only Android.bp at the root.",
+        "tag": "refs/tags/android-16.0.0_r1",
+        "in_frozen_base": false
+      }
+    ],
+    "native_bridge": {
+      "consumer_project": "frameworks/libs/binary_translation",
+      "consumer_revision": "13d2423d7658a7f1146b97cb0389dbd5f50e3429",
+      "consumer_file": "android_api/libc/Android.bp",
+      "consumer_file_sha256": "7768850f04060a5d65feaf753eda04c3ec6cd5729ac5bb6689eec9a6ce9d4328",
+      "consumer_module": "libberberis_proxy_libc",
+      "required_default": "//frameworks/libs/native_bridge_support/android_api/libc:native_bridge_proxy_libc_defaults",
+      "provider_file": "android_api/libc/Android.bp",
+      "provider_semantics": "The actual default supplies seven proxy sources through a namespaced filegroup, five berberis header libraries and Bionic private includes.",
+      "adjacent_modules": "The same file defines guest libc using root native_bridge_stub_library_defaults, which references the project's libnative_bridge_vdso.",
+      "scope_reason": "Other retained binary_translation API files also reference native_bridge proxy filegroups for EGL, GLES, audio, Android, binder, camera, JNI, media, native window, neural networks, Vulkan and WebView. A libc-only source selection is not a complete provider restoration."
+    },
+    "platform_testing_selection": {
+      "selectors": [
+        "-platform_testing/",
+        "platform_testing/libraries/tradefed-error-prone/"
+      ],
+      "root_file_reason": "Root Android.bp declares platform_tests with a large explicit test list; it is not only package metadata.",
+      "selected_file_reason": "libraries/tradefed-error-prone/Android.bp declares its own package license and two real Java quality defaults. It has no srcs, plugins or library dependency declarations.",
+      "license": "Android-Apache-2.0",
+      "mechanism": {
+        "project": "build/blueprint",
+        "revision": "dcb14f2e146f40cf1f212efb220e9aa1f3cfc280",
+        "file": "context.go",
+        "sha256": "32586b8523f2e254a8ee2222638fb2a41e30944fb5ae75caac71c3235fc38ca3",
+        "implementation_lines": [
+          202,
+          224
+        ],
+        "callsite_line": 1043,
+        "behavior": "The longest matching prefix decides whether the Blueprint file is visited; paths with no matching prefix remain allowed.",
+        "test_file": "context_test.go",
+        "test_sha256": "7e8c9eab176bfe6dfabc9ce4a686f9401b8ba6eaef37c53b33bb28783664b1f8",
+        "test_lines": [
+          1393,
+          1419
+        ],
+        "source_url": "https://android.googlesource.com/platform/build/blueprint/+/dcb14f2e146f40cf1f212efb220e9aa1f3cfc280/context.go"
+      },
+      "limits": [
+        "This scope provides neither MotionTestDefaults nor rdroidtest.defaults; consumers of those need a separate reviewed source decision.",
+        "Retained modules depending on skipped definitions still fail dependency resolution; this is not a missing-dependency bypass."
+      ]
+    },
+    "skia": {
+      "provider_file": "external/skia/Android.bp",
+      "provider_lines": {
+        "skia_renderengine_deps": [
+          2077,
+          2109
+        ],
+        "skia_deps": [
+          2111,
+          2156
+        ]
+      },
+      "default_closure": "skia_deps inherits skia_renderengine_deps. Every defaults reference in the root file is defined there except cts_defaults, used by two SkQP test declarations.",
+      "direct_library_audit": {
+        "total": 22,
+        "retained_real_library_providers": 17,
+        "missing_real_library_providers": [
+          "libcrabbyavif_ffi",
+          "libharfbuzz_subset",
+          "libjpeg",
+          "libwebp-decode",
+          "libwebp-encode"
+        ],
+        "correction": "libjpeg initially appeared present by name, but those matches were an fdo_profile and old VNDK prebuilts, not the required source cc_library."
+      },
+      "additional_closure": [
+        "libharfbuzz_subset uses libharfbuzz_ng in the same file; that library uses existing libicu, liblog, libcutils and libutils.",
+        "libwebp-decode and libwebp-encode use same-file webp-headers and have no outside defaults.",
+        "libjpeg uses same-file libjpeg-defaults; the default supplies codec sources and architecture flags without additional library declarations.",
+        "libcrabbyavif_ffi uses same-file NDK/YUV/media-image bindgens and Rust wrappers plus retained media, YUV, logging and rustutils providers. Both its YUV wrapper and libyuv also require the restored libjpeg."
+      ],
+      "retained_crabby_provider_projects": [
+        {
+          "path": "external/libyuv",
+          "revision": "741c38751c436f60c583110f617340b7f3322d94",
+          "module": "libyuv"
+        },
+        {
+          "path": "frameworks/native",
+          "revision": "2827a4a16b0340ecd07c2d5a6c89991799b362bb",
+          "module": "media_plugin_headers"
+        },
+        {
+          "path": "frameworks/av",
+          "revision": "4b2111885ff934799e70eddae2527a9848c3be29",
+          "module": "libmediandk"
+        },
+        {
+          "path": "system/logging",
+          "revision": "d78b713380007d3c0dde14712cbcbec27f491ad9",
+          "module": "liblogger"
+        },
+        {
+          "path": "external/rust/android-crates-io",
+          "revision": "c991cad10330f37e93d82926bd6dae7f4f6647f6",
+          "module": "liblog_rust and logger dependencies"
+        },
+        {
+          "path": "system/librustutils",
+          "revision": "1110a8083ad83dc1b77c1cd03d39665555a34521",
+          "module": "librustutils"
+        }
+      ],
+      "limits": [
+        "This is the explicit provider chain, not proof of the complete transitive Android media/runtime graph.",
+        "Crabby's declarations do not explicitly set recovery_available; source presence does not establish a recovery variant or runtime codec feature."
+      ]
+    },
+    "single_blueprint_trees": [
+      {
+        "project": "external/skia",
+        "revision": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+        "tree_entries": 12057,
+        "android_bp_paths": [
+          "Android.bp"
+        ],
+        "source_url": "https://android.googlesource.com/platform/external/skia/+/bcb0f77c44783b1800ba37641ba7ecab04f05e07/?format=JSON&recursive=1"
+      },
+      {
+        "project": "external/harfbuzz_ng",
+        "revision": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401",
+        "tree_entries": 3700,
+        "android_bp_paths": [
+          "Android.bp"
+        ],
+        "source_url": "https://android.googlesource.com/platform/external/harfbuzz_ng/+/e489c416b6f8d2a9a2e0e85b781d1e4a0c431401/?format=JSON&recursive=1"
+      },
+      {
+        "project": "external/webp",
+        "revision": "7698c1d3a5cbecdf336510eeb3366d1de752454a",
+        "tree_entries": 483,
+        "android_bp_paths": [
+          "Android.bp"
+        ],
+        "source_url": "https://android.googlesource.com/platform/external/webp/+/7698c1d3a5cbecdf336510eeb3366d1de752454a/?format=JSON&recursive=1"
+      },
+      {
+        "project": "external/libjpeg-turbo",
+        "revision": "6cedbd6ff13946bef76a015693d02723b0d3226e",
+        "tree_entries": 308,
+        "android_bp_paths": [
+          "Android.bp"
+        ],
+        "source_url": "https://android.googlesource.com/platform/external/libjpeg-turbo/+/6cedbd6ff13946bef76a015693d02723b0d3226e/?format=JSON&recursive=1"
+      },
+      {
+        "project": "external/rust/crabbyavif",
+        "revision": "9f3e32a2ffc45466eaed69ad522080cbf67f827b",
+        "tree_entries": 161,
+        "android_bp_paths": [
+          "Android.bp"
+        ],
+        "source_url": "https://android.googlesource.com/platform/external/rust/crabbyavif/+/9f3e32a2ffc45466eaed69ad522080cbf67f827b/?format=JSON&recursive=1"
+      }
+    ],
+    "source_files": [
+      {
+        "project": "platform_testing",
+        "path": "Android.bp",
+        "revision": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+        "bytes": 6988,
+        "sha256": "12ffa6228e9de7f601d18aa94c5b4d2f129edbfd078dc4e4626849f91ab2356d",
+        "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/Android.bp"
+      },
+      {
+        "project": "platform_testing",
+        "path": "libraries/tradefed-error-prone/Android.bp",
+        "revision": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+        "bytes": 2506,
+        "sha256": "3a6e37e58348c74503629e20d65b1a9c5c3fb28133a4d96d45d5302537405975",
+        "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/libraries/tradefed-error-prone/Android.bp"
+      },
+      {
+        "project": "frameworks/libs/native_bridge_support",
+        "path": "Android.bp",
+        "revision": "b527289974e3883460370012325ab3736d59268a",
+        "bytes": 1502,
+        "sha256": "8cf69465352d9d6165488cd35fcde16f435fd510a9b16e318eebbf1603307719",
+        "source_url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support/+/b527289974e3883460370012325ab3736d59268a/Android.bp"
+      },
+      {
+        "project": "frameworks/libs/native_bridge_support",
+        "path": "android_api/libc/Android.bp",
+        "revision": "b527289974e3883460370012325ab3736d59268a",
+        "bytes": 4721,
+        "sha256": "96fefd306c1d11a32bf93a282f838b8bb977df97d44cd543730464813831a5b5",
+        "source_url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support/+/b527289974e3883460370012325ab3736d59268a/android_api/libc/Android.bp"
+      },
+      {
+        "project": "external/skia",
+        "path": "Android.bp",
+        "revision": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+        "bytes": 222721,
+        "sha256": "2f5d8697266d2f7945799dd21774092faed33fdf670a1863d5782810b4db8b06",
+        "source_url": "https://android.googlesource.com/platform/external/skia/+/bcb0f77c44783b1800ba37641ba7ecab04f05e07/Android.bp"
+      },
+      {
+        "project": "external/harfbuzz_ng",
+        "path": "Android.bp",
+        "revision": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401",
+        "bytes": 11689,
+        "sha256": "02393c97deee24420fee50100c9beccd5a998bade71b260d170fcdac9ae831f2",
+        "source_url": "https://android.googlesource.com/platform/external/harfbuzz_ng/+/e489c416b6f8d2a9a2e0e85b781d1e4a0c431401/Android.bp"
+      },
+      {
+        "project": "external/webp",
+        "path": "Android.bp",
+        "revision": "7698c1d3a5cbecdf336510eeb3366d1de752454a",
+        "bytes": 7020,
+        "sha256": "8c4db5ab538a816906cd9ce86394c17d005962db952aba14c48f4ccdf0018ed9",
+        "source_url": "https://android.googlesource.com/platform/external/webp/+/7698c1d3a5cbecdf336510eeb3366d1de752454a/Android.bp"
+      },
+      {
+        "project": "external/libjpeg-turbo",
+        "path": "Android.bp",
+        "revision": "6cedbd6ff13946bef76a015693d02723b0d3226e",
+        "bytes": 10441,
+        "sha256": "42685ce51cc58ae26b897c4625ac54a904602ca728d295c867544130c29b137b",
+        "source_url": "https://android.googlesource.com/platform/external/libjpeg-turbo/+/6cedbd6ff13946bef76a015693d02723b0d3226e/Android.bp"
+      },
+      {
+        "project": "external/rust/crabbyavif",
+        "path": "Android.bp",
+        "revision": "9f3e32a2ffc45466eaed69ad522080cbf67f827b",
+        "git_blob": "4db5ebb61534cc8692e0b70d285d1490fde05aa8",
+        "sha256": "0ac293ff7fe5f7550884be71adf2d87b06569da464b2f8d369c0df10580b6111",
+        "source_url": "https://android.googlesource.com/platform/external/rust/crabbyavif/+/9f3e32a2ffc45466eaed69ad522080cbf67f827b/Android.bp"
+      }
+    ],
+    "validation": {
+      "provider_and_filter_checks": 8,
+      "source_pins_verified_with_git_ls_remote": true,
+      "primary_files_read_at_exact_commits": true,
+      "vm_source_writes": false,
+      "sync_or_build_performed_by_this_review": false,
+      "scope_limit": "Initial 21-error and graph-three 19-error records remain unchanged. The immutable 391-project base is separate from proposed additive sources. Actual graph/build results belong to the build attempt records."
+    }
+  },
   "validation": {
     "provider_sources_fetched_at_pinned_r1_commits": true,
     "reference_checkout_sizes_labeled_separately": true,
