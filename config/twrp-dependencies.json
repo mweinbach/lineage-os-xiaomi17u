@@ -400,6 +400,55 @@
       "commit": "bef9e8ef12ad63247afe846957492f4ddb0f2b42",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP okio-lib provider required by the retained okhttp-norepackage library."
+    },
+    {
+      "path": "external/apache-commons-bcel",
+      "url": "https://android.googlesource.com/platform/external/apache-commons-bcel",
+      "commit": "716e385615070dffa9e4201497808536bc692641",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP apache-bcel provider required by the retained platform compatibility libjavac and annotationvisitor tools."
+    },
+    {
+      "path": "external/jemalloc_new",
+      "url": "https://android.googlesource.com/platform/external/jemalloc_new",
+      "commit": "84644256fd89cd940d97c3ee264c6f1ec6daddf1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libjemalloc5_je_prefixed provider required by the retained TiKV host library."
+    },
+    {
+      "path": "system/testing/gtest_extras",
+      "url": "https://android.googlesource.com/platform/system/testing/gtest_extras",
+      "commit": "42ca057d3e9e46671647ca334f4e79552f546d2b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP gtestifier and libgtestifier providers required by the selected jemalloc test generators and libraries."
+    },
+    {
+      "path": "external/libopus",
+      "url": "https://android.googlesource.com/platform/external/libopus",
+      "commit": "0e4b55f930cdf2b853dbdee1f5273f3c1c27f81f",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Opus codec provider required by retained native audio modules."
+    },
+    {
+      "path": "external/bcc",
+      "url": "https://android.googlesource.com/platform/external/bcc",
+      "commit": "d3fb98e35da3af11c4678b6e911d926ac0ad1fff",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libbpf_bcc provider required by retained native BPF modules."
+    },
+    {
+      "path": "external/vixl",
+      "url": "https://android.googlesource.com/platform/external/vixl",
+      "commit": "e685e67c8f41596dad341b086a649e9f4a7d6062",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP VIXL providers required by retained ART native modules."
+    },
+    {
+      "path": "external/image_io",
+      "url": "https://android.googlesource.com/platform/external/image_io",
+      "commit": "ed236bb2d9a3a65a78ea4abca94a2c7c5dbec1b8",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP image I/O providers required by retained native modules."
     }
   ]
 }
