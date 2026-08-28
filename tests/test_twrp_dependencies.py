@@ -1795,7 +1795,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_forty_seven_preserves_first_264_sources_and_metadata(self):
         config = dependencies.load_config()
-        self.assertEqual(len(config["projects"]), 265)
+        self.assertGreaterEqual(len(config["projects"]), 265)
         original = config["projects"][:264]
         encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
@@ -1850,6 +1850,109 @@ class ConfigurationTests(Fixture):
                      "No signing policy, release flag, kernel, firmware or device identity changes",
                      "no recovery feature or Car runtime support is claimed"):
             self.assertIn(text, reason)
+
+    def test_kati_forty_nine_preserves_first_265_sources_and_metadata(self):
+        config = dependencies.load_config()
+        self.assertGreaterEqual(len(config["projects"]), 272)
+        original = config["projects"][:265]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "841b6913ee5afcbd906c07da5a335c176952dd0ff66d38a8fa74615f5f634eda")
+        historical_config = {**config, "projects": original}
+        encoded = (json.dumps(historical_config, indent=2) + "\n").encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "eee29de13c3c8c74339344d8d467fe153cb7e896db7484df66d407aecc497322")
+
+    def test_kati_forty_nine_original_owner_pins_and_origins(self):
+        projects = dependencies.load_config()["projects"][265:272]
+        expected = [
+            ("external/iproute2", "c3b7df8998626da4dbf5706dda0e5faef9096ca6"),
+            ("external/iptables", "f4dd9650d9b7cae091dfdce99c21c51dabdcf0ae"),
+            ("external/newfs_msdos", "2895192e9ccad53eab08c8550403fcae36a1db89"),
+            ("external/tcpdump", "2b22fe73ba75eb229d58db6d709f3f3b67f17bf9"),
+            ("packages/providers/CalendarProvider", "77bed8f978646fc416a7d90f9e97485421961641"),
+            ("frameworks/opt/calendar", "0a8f0578813b86ea2e37dd3ad02723d7eae08301"),
+            ("packages/apps/DocumentsUI", "b0f64324499a3f65aca817d3f221c716d953a800"),
+        ]
+        self.assertEqual([(p["path"], p["commit"]) for p in projects], expected)
+        for project in projects:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+
+    def test_kati_forty_nine_reasons_distinguish_actual_required_modules_from_projection(self):
+        projects = dependencies.load_config()["projects"][265:272]
+        for index in (0, 1, 2, 3, 4, 6):
+            with self.subTest(path=projects[index]["path"]):
+                self.assertTrue(projects[index]["reason"].startswith("Actual Kati 49 error"))
+        for index, consumer, provider in (
+                (0, "dumpstate", "ip and ss"),
+                (1, "dumpstate", "iptables"),
+                (2, "shell_and_utilities_system", "newfs_msdos"),
+                (3, "shell_and_utilities_system", "tcpdump"),
+                (4, "framework-minus-apex-install-dependencies", "calendar-provider-compat-config"),
+                (6, "framework-minus-apex-install-dependencies", "documents-ui-compat-config")):
+            with self.subTest(path=projects[index]["path"]):
+                self.assertIn(consumer, projects[index]["reason"])
+                self.assertIn(provider, projects[index]["reason"])
+        reason = projects[5]["reason"]
+        self.assertTrue(reason.startswith("Source audit projection for the Kati 49 CalendarProvider restoration,"))
+        for text in ("not an observed missing-module error", "calendar-common", "CalendarProvider"):
+            self.assertIn(text, reason)
+
+    def test_kati_native_tools_keep_whole_owners_and_existing_dependencies(self):
+        projects = dependencies.load_config()["projects"][265:269]
+        for project in projects:
+            with self.subTest(path=project["path"]):
+                self.assertIn("whole original", project["reason"])
+                self.assertIn("license metadata", project["reason"])
+                self.assertIn("additional recovery package selection", project["reason"])
+        for text in ("all five Blueprints", "target cc_binary providers", "tc, local libraries",
+                     "headers, defaults and generated inputs"):
+            self.assertIn(text, projects[0]["reason"])
+        for text in ("all five Blueprints", "all 22 named definitions", "internal library and generated-source",
+                     "six SPDX license kinds", "No fake provider, source carving"):
+            self.assertIn(text, projects[1]["reason"])
+        for text in ("newfs_msdos cc_binary", "host_supported true", "BSD license metadata",
+                     "mkfs.fat is not an alias", "no recovery or recovery_available setting is added",
+                     "no filesystem formatting or device operation is performed or claimed"):
+            self.assertIn(text, projects[2]["reason"])
+        for text in ("tcpdump cc_binary", "tcpdump_defaults", "tcpdump_vendor module with stem tcpdump",
+                     "libssl, libcrypto and libpcap", "183 C inputs", "config.h",
+                     "BSD/BSD-4-Clause-UC/ISC/MIT", "no packet capture or network functionality is claimed"):
+            self.assertIn(text, projects[3]["reason"])
+
+    def test_kati_compat_configs_keep_original_src_modules_and_metadata(self):
+        projects = dependencies.load_config()["projects"]
+        for index, provider in ((269, "CalendarProvider"), (271, "docsui-change-ids")):
+            reason = projects[index]["reason"]
+            with self.subTest(path=projects[index]["path"]):
+                self.assertIn("whole original", reason)
+                self.assertIn("platform_compat_config with src " + provider, reason)
+                self.assertIn("package/license/team metadata", reason)
+                self.assertIn("genuine generated SDK", reason)
+                self.assertIn("No synthetic compatibility XML, stub, missing-module waiver", reason)
+                self.assertIn("additional recovery package selection", reason)
+        self.assertIn("both Blueprints", projects[269]["reason"])
+        self.assertIn("separately pinned frameworks/opt/calendar", projects[269]["reason"])
+        self.assertIn("both Blueprints", projects[270]["reason"])
+        self.assertIn("all five Blueprints", projects[271]["reason"])
+
+    def test_kati_cohort_preserves_original_cleanspec_steps_and_existing_state(self):
+        projects = dependencies.load_config()["projects"]
+        for index in (265, 268, 269):
+            with self.subTest(path=projects[index]["path"]):
+                self.assertIn("comments-only CleanSpec.mk adds no active steps", projects[index]["reason"])
+        for index in (266, 267, 271):
+            with self.subTest(path=projects[index]["path"]):
+                self.assertIn("no Android.mk or CleanSpec.mk", projects[index]["reason"])
+        reason = projects[270]["reason"]
+        for text in ("both original CleanSpec steps", "$(OUT_DIR)/target/common/obj/JAVA_LIBRARIES/calendar-common_intermediates",
+                     "Retain the existing clean_steps.mk", "reviewed clean-state guard before Kati",
+                     "no CleanSpec bypass, fabricated clean state or cleanup execution"):
+            self.assertIn(text, reason)
+        self.assertNotIn("no Android.mk or CleanSpec.mk", reason)
+        self.assertNotIn("clean_steps.mk was absent", reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

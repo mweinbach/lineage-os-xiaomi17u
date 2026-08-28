@@ -1863,6 +1863,55 @@
       "commit": "d1edb5049c9e9bcadc38fa1069e6dbb525bb4d43",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection for the graph 47 Car APEX restoration, not an observed missing-provider error: original car-frameworks-service-module java_library satisfies com.android.car.framework-systemserverclasspath-fragment contents. Pin the whole original project; the profile selects only builtInServices/Android.bp, builtInServices/proto/Android.bp and updatableServices/Android.bp. Preserve real car-frameworks-service java_sdk_library, car-frameworks-updatable-service-sources and car-builtin-protos; generated car-frameworks-service.stubs.module_lib comes from the original SDK factory. Keep 29 builtin and nine updatable Java source paths, all eight original API files including six active current/removed files, atoms.proto and jarjar-rules.txt. Preserve original Android-Apache-2.0 package references, both trendy_team_aaos_framework declarations, visibility, installable true, APEX entries and SDK settings. Original unsafe_ignore_missing_latest_api true remains unchanged; no synthetic stubs or new API waiver is introduced, and API-lint execution is not claimed. Ordinary external providers exist; android.car.watchdoglib requires the coordinated Car scope addition, while libprotobuf-java-lite is the original implicit proto dependency. The SDK still creates its real stub/implementation/XML modules and SDK registration; actual generation and variant validation remain for the strict graph. The pinned tree has no namespace declarations, Android.mk, AndroidProducts.mk or CleanSpec.mk; its preupload hook is upstream development tooling, not a selected Blueprint input. Excluded JNI and tests remain in the original checkout; Car product makefiles reference libcarservicehelperjni, but no Car product inheritance or package installation is added. No signing policy, release flag, kernel, firmware or device identity changes; no recovery feature or Car runtime support is claimed."
+    },
+    {
+      "path": "external/iproute2",
+      "url": "https://android.googlesource.com/platform/external/iproute2",
+      "commit": "c3b7df8998626da4dbf5706dda0e5faef9096ca6",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual Kati 49 errors: dumpstate requires the original ip and ss modules. Pin the whole original iproute2 project and all five Blueprints, preserving the real target cc_binary providers, tc, local libraries, headers, defaults and generated inputs. Original package and license metadata and existing tool/library dependencies remain unchanged. The tree has no Android.mk; its comments-only CleanSpec.mk adds no active steps. No recovery/vendor alias, validation bypass or additional recovery package selection is introduced; no network functionality is claimed."
+    },
+    {
+      "path": "external/iptables",
+      "url": "https://android.googlesource.com/platform/external/iptables",
+      "commit": "f4dd9650d9b7cae091dfdce99c21c51dabdcf0ae",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual Kati 49 error: dumpstate requires the original iptables target module. Pin the whole original iptables project and all five Blueprints, preserving all 22 named definitions and their internal library and generated-source dependencies. Original package and license metadata, six SPDX license kinds and declared source/license inputs remain unchanged. The pinned tree has no Android.mk or CleanSpec.mk. No fake provider, source carving, validation bypass or additional recovery package selection is introduced; no firewall or network functionality is claimed."
+    },
+    {
+      "path": "external/newfs_msdos",
+      "url": "https://android.googlesource.com/platform/external/newfs_msdos",
+      "commit": "2895192e9ccad53eab08c8550403fcae36a1db89",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual Kati 49 error: shell_and_utilities_system requires the original newfs_msdos cc_binary. Pin the whole original project and its complete Blueprint, preserving host_supported true, the normal target variant, all original source inputs and BSD license metadata. Existing recovery mkfs.fat is not an alias for this missing module; no recovery or recovery_available setting is added. The pinned tree has no Android.mk or CleanSpec.mk. No validation bypass or additional recovery package selection is introduced; no filesystem formatting or device operation is performed or claimed."
+    },
+    {
+      "path": "external/tcpdump",
+      "url": "https://android.googlesource.com/platform/external/tcpdump",
+      "commit": "2b22fe73ba75eb229d58db6d709f3f3b67f17bf9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual Kati 49 error: shell_and_utilities_system requires the original tcpdump cc_binary. Pin the whole original project and its complete Blueprint, preserving tcpdump_defaults and the separate tcpdump_vendor module with stem tcpdump. Existing libssl, libcrypto and libpcap supply the declared code dependencies; retain the original 183 C inputs, config.h and BSD/BSD-4-Clause-UC/ISC/MIT license metadata. The tree has no Android.mk; its comments-only CleanSpec.mk adds no active steps. No recovery alias, validation bypass or additional recovery package selection is introduced; no packet capture or network functionality is claimed."
+    },
+    {
+      "path": "packages/providers/CalendarProvider",
+      "url": "https://android.googlesource.com/platform/packages/providers/CalendarProvider",
+      "commit": "77bed8f978646fc416a7d90f9e97485421961641",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual Kati 49 error: framework-minus-apex-install-dependencies requires calendar-provider-compat-config. Pin the whole original CalendarProvider project and both Blueprints, retaining its platform_compat_config with src CalendarProvider, the original app, flags, tests, manifests, resources and package/license/team metadata. Its calendar-common dependency is supplied by the separately pinned frameworks/opt/calendar project; existing literal providers and genuine generated SDK exports remain unchanged. The tree has no Android.mk; its comments-only CleanSpec.mk adds no active steps. No synthetic compatibility XML, stub, missing-module waiver or additional recovery package selection is introduced; no calendar functionality is claimed."
+    },
+    {
+      "path": "frameworks/opt/calendar",
+      "url": "https://android.googlesource.com/platform/frameworks/opt/calendar",
+      "commit": "0a8f0578813b86ea2e37dd3ad02723d7eae08301",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection for the Kati 49 CalendarProvider restoration, not an observed missing-module error: original calendar-common is a static library dependency of CalendarProvider and its tests. Pin the whole original frameworks/opt/calendar project and both Blueprints, retaining its library, tests, source files, test manifest and original package/license metadata. Preserve both original CleanSpec steps that remove $(OUT_DIR)/target/common/obj/JAVA_LIBRARIES/calendar-common_intermediates. Retain the existing clean_steps.mk and require the reviewed clean-state guard before Kati; no CleanSpec bypass, fabricated clean state or cleanup execution is part of this source admission. No Android.mk, synthetic library or additional recovery package selection is introduced; no calendar functionality is claimed."
+    },
+    {
+      "path": "packages/apps/DocumentsUI",
+      "url": "https://android.googlesource.com/platform/packages/apps/DocumentsUI",
+      "commit": "b0f64324499a3f65aca817d3f221c716d953a800",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual Kati 49 error: framework-minus-apex-install-dependencies requires documents-ui-compat-config. Pin the whole original DocumentsUI project and all five Blueprints, retaining its platform_compat_config with src docsui-change-ids, original apps, libraries, tests, source/resource inputs and package/license/team metadata. Existing literal dependencies and genuine generated SDK providers remain unchanged. The pinned tree has no Android.mk or CleanSpec.mk. No synthetic compatibility XML, stub, missing-module waiver or additional recovery package selection is introduced; no file-management functionality is claimed."
     }
   ]
 }
