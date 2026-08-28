@@ -78,7 +78,13 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "9eee51c8c2b77a938dad6044243cd8c6c18ecae909c5142b2059adfc4354e0bf")
 
-    def test_seven_supplements_and_original_391_project_snapshot_are_pinned(self):
+    def test_first_seven_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:7]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "dfada91f5e31bf4df2de6d68dbbec59e22092c4bc78e8564aa36be4a720ad8cd")
+
+    def test_eleven_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
         self.assertEqual(config["projects"], [{
@@ -110,7 +116,23 @@ class ConfigurationTests(Fixture):
         }, {
             "path": "external/skia", "url": "https://android.googlesource.com/platform/external/skia",
             "commit": "bcb0f77c44783b1800ba37641ba7ecab04f05e07", "tag": "android-16.0.0_r1",
-            "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."}])
+            "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."
+        }, {
+            "path": "external/harfbuzz_ng", "url": "https://android.googlesource.com/platform/external/harfbuzz_ng",
+            "commit": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libharfbuzz_subset provider required by Skia font subsetting."
+        }, {
+            "path": "external/webp", "url": "https://android.googlesource.com/platform/external/webp",
+            "commit": "7698c1d3a5cbecdf336510eeb3366d1de752454a", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libwebp-decode and libwebp-encode providers required by Skia image codecs."
+        }, {
+            "path": "external/rust/crabbyavif", "url": "https://android.googlesource.com/platform/external/rust/crabbyavif",
+            "commit": "9f3e32a2ffc45466eaed69ad522080cbf67f827b", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libcrabbyavif_ffi provider required by Skia AVIF support."
+        }, {
+            "path": "external/libjpeg-turbo", "url": "https://android.googlesource.com/platform/external/libjpeg-turbo",
+            "commit": "6cedbd6ff13946bef76a015693d02723b0d3226e", "tag": "android-16.0.0_r1",
+            "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."}])
         self.assertIn("libnetworkstackutilsjni_deps", config["projects"][1]["reason"])
         self.assertIn("tests/unit/Android.bp", config["projects"][1]["reason"])
         snapshot = dependencies.ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
