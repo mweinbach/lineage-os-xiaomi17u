@@ -51,6 +51,8 @@ SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/tradefed-error-prone/",
     "frameworks/opt/net/wifi/libwifi_system_iface/",
     "platform_testing/libraries/rdroidtest/",
+    "platform_testing/libraries/compatibility-common-util/",
+    "platform_testing/libraries/annotations/",
 ]
 
 
@@ -407,6 +409,29 @@ class TwrpDeviceTests(unittest.TestCase):
         readme = (DEVICE / "README.md").read_text()
         self.assertIn("platform_testing/libraries/rdroidtest/", readme)
         self.assertIn("rdroidtest.defaults", readme)
+
+    def test_graph11_restores_compatibility_and_annotations_without_test_aggregate(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for provider in ("platform_testing/libraries/compatibility-common-util/",
+                         "platform_testing/libraries/annotations/"):
+            self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
+            self.assertTrue(source_path_allowed(provider + "tests/Android.bp", scopes))
+            self.assertFalse(source_path_allowed(provider.rstrip("/") + "_sibling/Android.bp", scopes))
+        for source in ("platform_testing/Android.bp", "platform_testing/libraries/Android.bp",
+                       "platform_testing/libraries/other/Android.bp", "platform_testing/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("test/suite_harness/common/util/Android.bp",
+                       "frameworks/base/tools/locked_region_code_injection/Android.bp",
+                       "cts/Android.bp", "external/junit/Android.bp", "external/guava/Android.bp",
+                       "external/error_prone/Android.bp", "prebuilts/misc/common/json/Android.bp",
+                       "prebuilts/misc/common/kxml2/Android.bp", "tools/tradefederation/core/Android.bp",
+                       "build/soong/licenses/Android.bp", "build/make/teams/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        for fact in ("Graph 11", "compatibility-common-util-lib", "platform-test-annotations",
+                     "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783"):
+            self.assertIn(fact, readme)
 
     def test_sdk_distribution_scope_preserves_actual_tools_and_validators(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

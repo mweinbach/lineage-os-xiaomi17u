@@ -187,6 +187,18 @@ test file is excluded; production audio and vibrator code, benchmarks,
 fuzzers, other test files and security validators remain included. Required
 production dependencies still need genuine providers, not substitutes.
 
+Graph 11 identified retained consumers of `compatibility-common-util-lib` and
+`platform-test-annotations`. The original
+`platform_testing/libraries/compatibility-common-util/` and
+`platform_testing/libraries/annotations/` subtrees are re-included from the
+pinned Android 16 r1 project at `7b48625b052b94b1ef24573ef5e8ffa5e2ea9783`.
+Their three Blueprint files retain the seven original library, wrapper and
+test modules, including compatibility's child test. Each file declares the
+global Apache license, and the referenced Java libraries, test defaults and
+team metadata have real providers in included source paths. The large
+`platform_testing/Android.bp` test aggregate remains excluded. No module,
+license declaration or dependency check is replaced.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.
@@ -202,8 +214,7 @@ with the longest matching prefix first and unmatched paths allowed. Each
 directory exclusion ends in `/` so it does not hide similarly named siblings.
 The scene and audio test exclusions name individual `Android.bp` files,
 preserving other files and child directories, including the consumed scene
-test helper in `utils`. The
-positive Tradefed, rdroidtest and Wi-Fi provider prefixes are explicit exceptions
+test helper in `utils`. The documented positive provider prefixes are explicit exceptions
 inside otherwise excluded projects, evaluated by the same longest-prefix rule.
 Dependencies on skipped modules still fail; if recovery requires one of these
 modules, restore its reviewed parent sources and revise the scope rather than

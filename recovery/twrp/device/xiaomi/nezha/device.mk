@@ -94,7 +94,7 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 
 # Restore the actual Tradefed defaults without importing platform_testing's
 # unrelated test aggregate. Blueprint's more specific positive prefix admits
-# only this original provider subtree; its own package uses the global license.
+# this original provider subtree; its own package uses the global license.
 # tools/loganalysis, tools/tradefederation/contrib and test/suite_harness stay
 # included. Source synchronization supplies the complete pinned project bytes.
 PRODUCT_SOURCE_ROOT_DIRS += \
@@ -129,6 +129,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 # production audio, benchmarks, fuzzers and all other test Blueprint files.
 PRODUCT_SOURCE_ROOT_DIRS += \
     -system/media/audio_utils/tests/Android.bp
+
+# Graph 11 proved retained suite-harness and framework-tool consumers need
+# these original compatibility/annotation providers. Include their child tests
+# and wrappers too; their own packages use the global Apache license. The
+# platform_testing root test aggregate remains excluded.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/compatibility-common-util/ \
+    platform_testing/libraries/annotations/
 
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
