@@ -1,0 +1,619 @@
+{
+  "comparison": {
+    "assertions_or_diagnostics_filtered": false,
+    "automatic_retry": false,
+    "baseline_input_bytes": 5361292,
+    "baseline_kind": "v9-framework-plus-binder-derived-vendor",
+    "both_compilations_passed": false,
+    "both_policies_passed_strict_and_zero_permissive": false,
+    "cases": [
+      {
+        "compilation_passed": false,
+        "exit_code": 255,
+        "file_contexts": null,
+        "name": "baseline",
+        "neverallow_assertion_sites": 2,
+        "policy_binary": null,
+        "policy_passed_strict_and_zero_permissive": false,
+        "sandbox": {
+          "guest_relative_path": "results/baseline/baseline.sandbox.json",
+          "sha256": "b905bf8ae7ad333c65c0d396f5551ac598a2e1e1bb1ee76fee62adc97d753f15",
+          "size_bytes": 2752
+        },
+        "sandbox_verified": true,
+        "stderr": {
+          "guest_relative_path": "logs/baseline.stderr",
+          "sha256": "c34617a427a3aef28b861b8074c49989ef5cf93984b8cbec33858ad01ab777af",
+          "size_bytes": 1347
+        },
+        "stdout": {
+          "guest_relative_path": "logs/baseline.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "timed_out": false,
+        "unfiltered_permissive_analysis": null
+      },
+      {
+        "compilation_passed": true,
+        "exit_code": 0,
+        "file_contexts": {
+          "guest_relative_path": "results/corrected/file_contexts",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "name": "corrected",
+        "neverallow_assertion_sites": 0,
+        "policy_binary": {
+          "guest_relative_path": "results/corrected/policy",
+          "sha256": "a827e265ee5bd3112eb657b36cf0e20db37328d948b629f97d631d68d8104bf8",
+          "size_bytes": 1515046
+        },
+        "policy_passed_strict_and_zero_permissive": true,
+        "sandbox": {
+          "guest_relative_path": "results/corrected/corrected.sandbox.json",
+          "sha256": "224d1a002a5705470f8f5ee40aeec7350f5c053d38ed0dc7e3580dd9f4c69878",
+          "size_bytes": 2737
+        },
+        "sandbox_verified": true,
+        "stderr": {
+          "guest_relative_path": "logs/corrected.stderr",
+          "sha256": "a57bbce872d4c4877793ebbcc57cdf0fa94622da200e6ddd251d7be29650add6",
+          "size_bytes": 315
+        },
+        "stdout": {
+          "guest_relative_path": "logs/corrected.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "timed_out": false,
+        "unfiltered_permissive_analysis": {
+          "allowlist_applied": false,
+          "exit_code": 0,
+          "mode": "permissive",
+          "reported_domains": [],
+          "sandbox": {
+            "guest_relative_path": "results/corrected/corrected-permissive.sandbox.json",
+            "sha256": "8a54487142725a386cbaa1aee9f03731c4d5c823dc7776bfc6f86a98f929ade4",
+            "size_bytes": 1552
+          },
+          "sandbox_verified": true,
+          "stderr": {
+            "guest_relative_path": "logs/corrected-permissive.stderr",
+            "sha256": "575362e54788dd770f98ced248b112f424541889141f0a13a60548f07cb63c43",
+            "size_bytes": 315
+          },
+          "stdout": {
+            "guest_relative_path": "logs/corrected-permissive.stdout",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size_bytes": 0
+          },
+          "timed_out": false,
+          "zero_permissive_domains": true
+        }
+      }
+    ],
+    "comparison_completed_safely": true,
+    "compiler_flags": [
+      "-m",
+      "-M",
+      "true",
+      "-G",
+      "-c",
+      "30"
+    ],
+    "corrected_input_bytes": 5361292,
+    "corrected_kind": "two-helper-SET-CIL-projection-not-source-build",
+    "corrected_private_policy_passed_strict_and_zero_permissive": true,
+    "driver_exit_code": 0,
+    "driver_invocations": 1,
+    "empty_file_contexts_is_context_validation": false,
+    "expected_site_counts_are_success_gate": false,
+    "factory_vendor_odm_lineage_input_count": 3,
+    "framework_lineage_input_count": 7,
+    "fresh_separate_output_directories": true,
+    "guest_completed_at_utc": "2026-08-28T02:51:01.487114+00:00",
+    "input_count_each": 10,
+    "permissive_allowlists_applied": false,
+    "permissive_analyzer_calls": 1,
+    "precompiled_policy_fallback_used": false,
+    "process_completed_at_utc": "2026-08-28T02:51:01.513784+00:00",
+    "raw_output_guest_root": "/work/validation/nezha-helper-projection-strict-v1",
+    "started_at_utc": "2026-08-28T02:50:13.788425+00:00",
+    "strict_compiler_commands": 2,
+    "unchanged_factory_input_count": 2
+  },
+  "completed_at_utc": "2026-08-28T02:51:01.487114+00:00",
+  "current_source_and_original_factory_policy": {
+    "combined_policy_passed": false,
+    "helper_or_binder_private_derivative_adopted": false,
+    "neverallow_assertion_sites": 4,
+    "original_factory_vendor_image_changed": false,
+    "result_record": "research/dsp-policy-build.json"
+  },
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "input_order": [
+    {
+      "assertions": {
+        "neverallow": 4929,
+        "neverallowx": 390
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "b8353ba3f5336ff28b17508808c4617d47e289be6fe7ca6b37cf4da2a9708130",
+      "corrected_origin": "private two-SET projection of actual v9 platform CIL",
+      "corrected_sha256": "96273e4332ead282eed32ad90bac29f0734365b626b81d2c79d23cc204d2ad7f",
+      "index": 0,
+      "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+      "size_bytes": 3012604
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+      "corrected_origin": "actual v9 framework output",
+      "corrected_sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+      "index": 1,
+      "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+      "size_bytes": 229237
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "7bee774aff706c539a1617c5c2c8f47100fd8987eedeb00e31ab40e1281068ec",
+      "corrected_origin": "actual v9 framework output",
+      "corrected_sha256": "7bee774aff706c539a1617c5c2c8f47100fd8987eedeb00e31ab40e1281068ec",
+      "index": 2,
+      "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+      "size_bytes": 46
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "corrected_origin": "actual v9 framework output",
+      "corrected_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "index": 3,
+      "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+      "size_bytes": 1
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "238af2a9cee8a300b574de03a0d26620fb23c6af0a7814e8ff0b6b84da7d2f5d",
+      "corrected_origin": "actual v9 framework output",
+      "corrected_sha256": "238af2a9cee8a300b574de03a0d26620fb23c6af0a7814e8ff0b6b84da7d2f5d",
+      "index": 4,
+      "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+      "size_bytes": 73
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "corrected_origin": "actual v9 framework output",
+      "corrected_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "index": 5,
+      "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+      "size_bytes": 1
+    },
+    {
+      "assertions": {
+        "neverallow": 432,
+        "neverallowx": 0
+      },
+      "baseline_origin": "unchanged captured factory vendor/ODM CIL",
+      "baseline_sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+      "corrected_origin": "unchanged captured factory vendor/ODM CIL",
+      "corrected_sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+      "index": 6,
+      "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+      "size_bytes": 396303
+    },
+    {
+      "assertions": {
+        "neverallow": 615,
+        "neverallowx": 0
+      },
+      "baseline_origin": "private Binder correction of captured factory vendor CIL",
+      "baseline_sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+      "corrected_origin": "private Binder correction of captured factory vendor CIL",
+      "corrected_sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+      "index": 7,
+      "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+      "size_bytes": 1708593
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "unchanged captured factory vendor/ODM CIL",
+      "baseline_sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+      "corrected_origin": "unchanged captured factory vendor/ODM CIL",
+      "corrected_sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+      "index": 8,
+      "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+      "size_bytes": 14292
+    },
+    {
+      "assertions": {
+        "neverallow": 0,
+        "neverallowx": 0
+      },
+      "baseline_origin": "actual v9 framework output",
+      "baseline_sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+      "corrected_origin": "actual v9 framework output",
+      "corrected_sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+      "index": 9,
+      "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+      "size_bytes": 142
+    }
+  ],
+  "limits": {
+    "active_source_or_generator_adoption": false,
+    "apex_selection_codecs_or_camera_verified": false,
+    "built_or_installed_image_adoption": false,
+    "checks_disabled": [],
+    "complete_treble_labeling_verified": false,
+    "context_files_compatibility_verified": false,
+    "device_boot_verified": false,
+    "firmware_executables_run": false,
+    "fresh_android_m4_or_source_policy_build": false,
+    "full_rom_build_verified": false,
+    "full_vintf_compatibility_verified": false,
+    "original_factory_vendor_policy_pass": false,
+    "phone_accessed": false,
+    "phone_modified": false,
+    "proprietary_files_published": false,
+    "runtime_enforcement_verified": false,
+    "runtime_provider_or_helper_absence_verified": false,
+    "signed_boot_chain_verified": false,
+    "twrp_build_or_device_test_verified": false
+  },
+  "preservation": {
+    "all_non_allow_forms_unchanged": true,
+    "all_original_inputs_unchanged": true,
+    "assertion_occurrences_sha256": "8b9ef9c30cfef6f3f4361aed18ba529939a5037af37a49db26bdcf2828f8d88d",
+    "assertions_removed_or_changed": 0,
+    "corpus_counts": [
+      {
+        "allow_occurrences": 24328,
+        "corpus": "actual_v9",
+        "statements": 57109
+      },
+      {
+        "allow_occurrences": 24261,
+        "corpus": "v9_with_binder_correction",
+        "statements": 57042
+      },
+      {
+        "allow_occurrences": 24259,
+        "corpus": "v9_with_binder_and_capability_projection",
+        "statements": 57040
+      }
+    ],
+    "modeled_closure_counts": {
+      "aliases": 2,
+      "attributes": 4006,
+      "concrete_types": 3640,
+      "role_attributes": 1,
+      "role_memberships": 4,
+      "role_r_types": 596,
+      "role_type_pairs": 4180,
+      "roles": 4,
+      "type_memberships": 664865
+    },
+    "modeled_closure_sha256": "6c966dd50e49b4a2e9fd58326c9b5314430056b56aeecb483ac9ae907af80844",
+    "neverallow_occurrences": 5976,
+    "neverallowx_occurrences": 390,
+    "new_mapping_or_role_memberships": 0,
+    "non_allow_multiset_sha256": "fba60ffaf2e0f92e1f9fcf6968deffaa3590fe94c4542be7cc647e3a028003fa",
+    "total_assertion_occurrences": 6366,
+    "type_role_alias_attribute_mapping_sets_unchanged": true
+  },
+  "projection": {
+    "all_other_bytes_newlines_offsets_and_total_size_preserved": true,
+    "both_parsers_agree_for_all_three_ten_input_corpora": true,
+    "changed_byte_values": 125,
+    "existing_vendor_init_media_set_grant_preserved": true,
+    "independent_byte_prediction_agrees": true,
+    "modeled_attribute_closure_checked": true,
+    "modeled_effective_helper_set_grants_after": 0,
+    "modeled_effective_helper_set_grants_before": 2,
+    "new_permissions": 0,
+    "only_replaced_input_index": 0,
+    "original_platform_sha256": "b8353ba3f5336ff28b17508808c4617d47e289be6fe7ca6b37cf4da2a9708130",
+    "original_platform_size_bytes": 3012604,
+    "other_init_and_vendor_init_permissions_preserved": true,
+    "projected_platform_sha256": "96273e4332ead282eed32ad90bac29f0734365b626b81d2c79d23cc204d2ad7f",
+    "projected_platform_size_bytes": 3012604,
+    "property_reads_and_socket_grants_preserved": true,
+    "removed_whole_allow_forms": 2,
+    "replacement": "Spaces replace exact whole allow forms; CR/LF retained.",
+    "runtime_provider_absence_proven": false,
+    "selected_span_bytes": 133,
+    "selected_statements": [
+      {
+        "compiled_platform_line": 41719,
+        "end_byte_exclusive": 1733833,
+        "object_class": "property_service",
+        "permission": "set",
+        "raw_statement_sha256": "371d815528475b38e01531b5fc53ccd100af37e518b8b7e0b49cc44d8d8062e1",
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "size_bytes": 66,
+        "source_domain": "init_dev_config",
+        "source_line": 9,
+        "source_path": "system/sepolicy/private/init_dev_config.te",
+        "start_byte": 1733767,
+        "target_property": "apexd_select_prop"
+      },
+      {
+        "compiled_platform_line": 41739,
+        "end_byte_exclusive": 1734351,
+        "object_class": "property_service",
+        "permission": "set",
+        "raw_statement_sha256": "c99bbb4fe7897eb4448db129f33a5d8e4e7913719e884f85e2fbc7d068221472",
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "size_bytes": 67,
+        "source_domain": "init_dev_config",
+        "source_line": 10,
+        "source_path": "system/sepolicy/private/init_dev_config.te",
+        "start_byte": 1734284,
+        "target_property": "media_variant_prop"
+      }
+    ]
+  },
+  "provenance": {
+    "baseline_vendor_cil_is_modified": true,
+    "corrected_platform_cil_is_modified": true,
+    "derived_vendor_cil_sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+    "factory_origin_authenticated": false,
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "factory_source_kind": "user-provided factory-named China fastboot TGZ",
+    "factory_source_url": null,
+    "historical_receipts_rewritten": false,
+    "oem_trust_root_authenticated": false,
+    "original_factory_vendor_cil_sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+    "original_images_and_vendor_bundle_changed": false,
+    "prior_binder_record": "research/binder-policy-correction.json",
+    "private_cil_binary_or_raw_logs_published": false,
+    "source_base_revisions": {
+      "external/selinux": "085c131ad1b984bfa8ffdafee7a976e9d89f403c",
+      "system/sepolicy": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+    },
+    "v9_build_receipt_sha256": "64fdf29e9ee07885c6efce95e512be73e417a68fa041b87ccbfedb838955977a",
+    "v9_build_record": "research/dsp-policy-build.json",
+    "v9_host_readback_receipt_sha256": "d64729896b5ab7f48bf8f45f7eef89d82842e68eba182f0b7e11e2bf58e03715",
+    "v9_observed_configuration": {
+      "Debuggable": false,
+      "EnforceSELinuxTrebleLabeling": true,
+      "Eng": false,
+      "SELinuxTrebleLabelingTrackingListFile": "",
+      "SelinuxIgnoreNeverallows": false
+    },
+    "v9_sealing_receipt_sha256": "866de9b93fb0c4624a9892c12c8a8830b23758ce39075774354264a5ba1483c8"
+  },
+  "readback": {
+    "all_host_outputs_rehashed_after_write": true,
+    "all_recorded_inputs_rehashed_twice": true,
+    "collector_source_sha256": "3b03c85ec23fdfc042969d95c66cc5e1734bf59071fd054f82d5c97b93034074",
+    "comparison_guest_receipt_copied_and_hash_verified": true,
+    "compiler_invoked_by_collector": false,
+    "expected_policy_outcome_assumed": false,
+    "guest_files_written_by_collector": false,
+    "guest_reader_source_sha256": "cc82457c8df20d9955f3891089a0a2c2f8cfc8997df96c5c917bdddda6fbba39",
+    "host_inputs_rehashed_after_capture": true,
+    "host_output_directory": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/compiled-comparison-v1",
+    "independent_local_rehash_of_all_raw_outputs": true,
+    "observer_bindings_reverified_twice": 130,
+    "prior_binder_bindings_reverified_by_checker": 77,
+    "raw_output_bytes": 1609831,
+    "raw_output_file_count": 12,
+    "raw_output_layout_matches_guest_relative_paths": true,
+    "raw_outputs_collected_and_rehashed": true,
+    "readback_receipt_excluded_from_raw_output_counts": true,
+    "recorded_comparison_bindings": 129,
+    "second_guest_hash_pass_completed": true,
+    "source_out_or_phone_modified": false,
+    "status": "complete",
+    "stream_sha256": "48a3b8d03d2a4b459cef4f804ec3a87177b87b4d7589e17ba856f7acafd0cf22",
+    "stream_size_bytes": 1646632
+  },
+  "receipts": {
+    "admission": {
+      "path": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/admission-v1/receipt.json",
+      "sha256": "e77fea6656699877b52a057859dda0c6e107c83f541d1ee0826b2b8fa8b81e2a",
+      "size_bytes": 32174
+    },
+    "admission_final_host_readback": {
+      "path": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/final-host-readback-v1.json",
+      "sha256": "f8e6fd1dce6b89df67f32a463be70aa32cf8a7cc243bc3b575ea87d857c51655",
+      "size_bytes": 3579
+    },
+    "checker": {
+      "path": "reports/check-helper-projection-v1.py",
+      "sha256": "19700fa48aca3f530424b9e3579b1fd708ade4c09fabfc4705b2a41181d8559e",
+      "size_bytes": 47162
+    },
+    "comparison_capture": {
+      "path": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/compiled-comparison-v1/receipt.json",
+      "sha256": "32a49f11866bd44b391ba2931a4b7ec22f79a24af000fdb150ce1d11c3e4350e",
+      "size_bytes": 85767
+    },
+    "comparison_guest_receipt": {
+      "path": "reports/helper-projection-comparison-guest-receipt-v1.json",
+      "sha256": "32a49f11866bd44b391ba2931a4b7ec22f79a24af000fdb150ce1d11c3e4350e",
+      "size_bytes": 85767
+    },
+    "comparison_readback": {
+      "path": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/compiled-comparison-v1/readback-receipt.json",
+      "sha256": "d840adba3d1e76562697b517e3865a7829592aea97aa1fd45170ecfe23f86c90",
+      "size_bytes": 52381
+    },
+    "invocation": {
+      "path": "reports/helper-projection-comparison-invocation-v1.json",
+      "sha256": "9f88790c1b516d0ca490f74f9b60abd6d239e6d712bc458e695e6cfdc36b88c7",
+      "size_bytes": 677
+    },
+    "manifest": {
+      "path": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/admission-v1/manifest.json",
+      "sha256": "e02b07b489f784db5b38c495554222e41adbde899e02c6661f8ec98984656d79",
+      "size_bytes": 14776
+    },
+    "prior_binder_comparison": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/receipt.json",
+      "sha256": "257ad9f0c0a1903b9e339897253bc42684041db997bead3c2d81760410a1d514",
+      "size_bytes": 54202
+    },
+    "prior_binder_readback": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/readback-receipt.json",
+      "sha256": "f8308dc4a85ee71ba4095971697cb274f46950996ab6ef611e5738c815a59f7c",
+      "size_bytes": 30566
+    },
+    "process": {
+      "path": "reports/helper-projection-comparison-process-v1.json",
+      "sha256": "ecefe011569837d81b71a58f400ba76d96686b4466c248ce271478be43e94df8",
+      "size_bytes": 894
+    },
+    "projection": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/cil-prototype-v1/result-v1/receipt.json",
+      "sha256": "1c71c39a5e624468decf087d6b7374238f9bbd6452d5bdaeb9840f487bb15781",
+      "size_bytes": 28930
+    },
+    "projection_final_readback": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/cil-prototype-v1/final-readback-v1.json",
+      "sha256": "9e707e29eec2f6dba17cd933277396c21b9278f45aea3c0ee85120223b8ef522",
+      "size_bytes": 4076
+    },
+    "projection_prior_binder_binding": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/cil-prototype-v1/binder-result-binding.json",
+      "sha256": "b7a480c942028d0f86491da8cbb631758efdb32c05e6d525b21fd7ed4f58e9d2",
+      "size_bytes": 26515
+    },
+    "semantic_revalidation": {
+      "path": "artifacts/source-contracts/nezha-helper-projection-comparison-v1/admission-v1/semantic-revalidation.json",
+      "sha256": "19403f484125efc1270db5adc84a303840948fd761a50059a8037a0a31387273",
+      "size_bytes": 31273
+    },
+    "source_macro": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/macro-verification-v1/receipt.json",
+      "sha256": "3b11ed040933efed776c79bf56c9300b827a45df2cc6847deeacbd3fd28e6bf6",
+      "size_bytes": 14635
+    },
+    "transfer": {
+      "path": "reports/helper-projection-admission-transfer-receipt-v1.json",
+      "sha256": "d0dd4e2ac6c69fec56c5102ee01d8a661a7b333cf85e897d6ba6384b556b4d19",
+      "size_bytes": 12953
+    }
+  },
+  "sandbox": {
+    "actual_command_observed_before_exec": true,
+    "all_four_namespace_ids_differ_from_parent": true,
+    "binary_readonly_during_analyzer": true,
+    "child_cpu_limit_seconds": 110,
+    "four_namespaces": [
+      "mnt",
+      "net",
+      "pid",
+      "user"
+    ],
+    "global_root_warnings_preserved": true,
+    "host_unprivileged_execution_claimed": false,
+    "maps_to_global_uid_gid": 0,
+    "maximum_output_file_bytes": 16777216,
+    "namespace_uid_gid": 65534,
+    "observed_capability_sets_all_zero": true,
+    "observed_command_count": 3,
+    "only_active_case_outputs_and_tmp_writable": true,
+    "root_source_all_out_original_evidence_inputs_tools_provenance_readonly": true,
+    "runtime_is_hermetic": false,
+    "source_or_out_written": false,
+    "system_loader_and_libraries_bundled": false
+  },
+  "schema_version": 1,
+  "snapshot": "v9-binder-corrected-policy-plus-private-helper-set-projection",
+  "source_patch_relationship": {
+    "api_version_inference_used": false,
+    "base_commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+    "definition": "target_init_dev_config_property_writes=false",
+    "duplicate_definition_admission_guard_implemented": false,
+    "false_removes_only_two_set_grants": true,
+    "host_macro_grant_occurrences_after": 6,
+    "host_macro_grant_occurrences_before": 8,
+    "host_macro_proof_is_android_m4": false,
+    "host_macro_receipt_sha256": "3b11ed040933efed776c79bf56c9300b827a45df2cc6847deeacbd3fd28e6bf6",
+    "invalid_values_fail_macro_expansion": true,
+    "metadata": "patches/evolution/init-helper-property-writes.json",
+    "new_android_m4_or_source_build_performed": false,
+    "new_definition_installed": false,
+    "patch_sha256": "5017f88c6e4af56f931bccc488a8120487c938d55ecbf5ce38118a6c6b4b0c1a",
+    "runtime_harmlessness_proven": false,
+    "source_patch_admitted_or_installed": false,
+    "source_prefix_preserved_bytes": 208,
+    "source_to_cil_effect_matched_in_full_android_build": false,
+    "undefined_or_true_preserves_upstream_grants": true
+  },
+  "tools_and_runtime": {
+    "libc++.so": {
+      "sha256": "debd1e923abe6fe535980b69be8d1b66ca3a214ab865b46f4e3ce5c929d158f0",
+      "size_bytes": 1368544
+    },
+    "libnl.so": {
+      "sha256": "7db8e04b8c9aee6c1f426f03e5b638fa089626c10ee4b83e688ff455dff13700",
+      "size_bytes": 296776
+    },
+    "libprotobuf-cpp-full.so": {
+      "sha256": "28dbf3fdfb989552cbd7b1afa62c462d9e15f95eed13d063f0581dd569173bb7",
+      "size_bytes": 3538696
+    },
+    "libz-host.so": {
+      "sha256": "b3fd753b1ccca89b8c339adbd4fec0fcd902f0e6a15310a2a2ccb5021cf248ec",
+      "size_bytes": 105000
+    },
+    "nsjail": {
+      "sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280",
+      "size_bytes": 284176
+    },
+    "observer-python": {
+      "sha256": "1401f5c1ddd9e8f9d77622113a8d04b5f7ef57c0e3f40dd29db248a5aa91622e",
+      "size_bytes": 7845048
+    },
+    "secilc": {
+      "sha256": "1481d17c86dfc4b0ac47bd150f604425e718386379b690d06f60e417376b9a34",
+      "size_bytes": 1368080
+    },
+    "sepolicy-analyze": {
+      "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669",
+      "size_bytes": 543160
+    }
+  },
+  "transfer": {
+    "all_file_hashes_read_back_before_and_after_publication": true,
+    "all_files_mode0444": true,
+    "all_host_inputs_unchanged": true,
+    "atomic_no_replace_publication": true,
+    "checker_invoked_by_transfer": false,
+    "existing_source_out_or_evidence_modified": false,
+    "file_bytes": 3275909,
+    "file_count": 13,
+    "framed_stream_bytes": 3278124
+  }
+}
