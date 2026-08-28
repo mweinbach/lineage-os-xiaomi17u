@@ -264,6 +264,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "1a9cc7442df570d0702acb6a606d3c52110c3fde57796641ce49daa71e07f5fd")
 
+    def test_first_210_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:210]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "622eb20771b1f177e52d34ff7a9f48e1dcf266a774193364c34e22b401f0a4ce")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1063,7 +1069,7 @@ class ConfigurationTests(Fixture):
             ("hardware/ril", "6bd627062458024e2cd1c13cf3d0b6c71cdfa495",
              "sap-api-java-static"),
         ]
-        self.assertEqual(len(projects), 210)
+        self.assertGreaterEqual(len(projects), 210)
         self.assertEqual([(p["path"], p["commit"]) for p in projects[208:210]],
                          [(path, commit) for path, commit, _ in expected])
         for project, (_, _, module) in zip(projects[208:210], expected):
@@ -1076,6 +1082,40 @@ class ConfigurationTests(Fixture):
                 self.assertNotIn("projection", project["reason"].lower())
         self.assertIn("SDK settings and test descriptors are preserved", projects[208]["reason"])
         self.assertIn("Java, native and protocol definitions are preserved", projects[209]["reason"])
+
+    def test_graph_thirty_confirmation_ui_and_compose_provider_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/lottie", "649ad7a4c743cd110b6cdda764f832b088f1d953",
+             "lottie_compose", ("SpaLib",)),
+            ("external/cn-cbor", "250a8956c5106b42b96f66c660141693d0ed35ea",
+             "libcn-cbor", ("VtsHalConfirmationUITargetTest", "VtsHalConfirmationUIV1_0TargetTest")),
+        ]
+        self.assertGreaterEqual(len(projects), 212)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[210:212]],
+                         [(path, commit) for path, commit, _, _ in expected])
+        for project, (_, _, module, consumers) in zip(projects[210:212], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 30 errors", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertNotIn("projection", project["reason"].lower())
+                for consumer in consumers:
+                    self.assertIn(consumer, project["reason"])
+        self.assertIn("dependencies and SDK settings are preserved", projects[210]["reason"])
+        self.assertIn("retained Confirmation UI security tests are preserved", projects[211]["reason"])
+
+    def test_reviewed_framework_extensions_projection_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 213)
+        self.assertEqual(projects[212], {
+            "path": "frameworks/ex",
+            "url": "https://android.googlesource.com/platform/frameworks/ex",
+            "commit": "06933c05c643430497ea48c713db04c0feb70d2e",
+            "tag": "android-16.0.0_r1",
+            "reason": "Source audit projection, not a graph 30 error: real AOSP android-common, android-ex-camera2 and androidx.camera.extensions.stub providers required by retained framework and CTS consumers, including CtsPermissionTestCases. Original library, test and SDK definitions are preserved."
+        })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
