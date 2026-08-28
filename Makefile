@@ -5,6 +5,7 @@ JOBS ?= 8
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test init sync source-plan linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
+.PHONY: twrp-plan recovery-logs-plan
 
 help:
 	@printf '%s\n' \
@@ -21,7 +22,9 @@ help:
 	  'make linux-packages  Print Ubuntu 24.04 build dependencies' \
 	  'make init            Initialize full platform (Linux x86-64 only)' \
 	  'make sync JOBS=8     Sync full platform and save resolved manifest' \
-	  'make stock-plan      Preview read-only Xiaomi evidence commands'
+	  'make stock-plan      Preview read-only Xiaomi evidence commands' \
+	  'make twrp-plan       Preview isolated TWRP source and build commands' \
+	  'make recovery-logs-plan Preview bounded recovery diagnostics; no phone access'
 
 doctor:
 	$(PYTHON) scripts/workspace.py doctor --source-dir "$(SOURCE_DIR)"
@@ -51,6 +54,13 @@ sync:
 
 stock-plan:
 	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --dry-run
+
+twrp-plan:
+	$(PYTHON) scripts/twrp_workspace.py plan
+	$(PYTHON) scripts/twrp_build.py plan
+
+recovery-logs-plan:
+	$(PYTHON) scripts/collect_recovery.py
 
 apple-setup:
 	$(PYTHON) scripts/apple_container.py setup
