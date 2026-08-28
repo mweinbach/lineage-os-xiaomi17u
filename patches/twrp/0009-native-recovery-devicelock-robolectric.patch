@@ -1,0 +1,42 @@
+diff --git a/DeviceLockController/tests/robolectric/Android.bp b/DeviceLockController/tests/robolectric/Android.bp
+index 73bf4596952486e7955960af27583b3291adc00b..646e4ef52fb4cce360f97f07a415f36188ec836a 100644
+--- a/DeviceLockController/tests/robolectric/Android.bp
++++ b/DeviceLockController/tests/robolectric/Android.bp
+@@ -15,12 +15,16 @@
+ package {
+     default_applicable_licenses: ["Android-Apache-2.0"],
+ }
+ 
+ android_robolectric_test {
+     name: "DeviceLockControllerRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     team: "trendy_team_android_go",
+     instrumentation_for: "DeviceLockController",
+     java_resource_dirs: [
+         "config",
+     ],
+     srcs: ["src/**/*.java"],
+diff --git a/tests/unittests/Android.bp b/tests/unittests/Android.bp
+index 4aad12b5b9057cfad816c437b154a3530875e172..121d98a23337b6145c21226a9ad4cd50b40157d4 100644
+--- a/tests/unittests/Android.bp
++++ b/tests/unittests/Android.bp
+@@ -20,12 +20,16 @@
+     platform_apis: true,
+     srcs: [],
+ }
+ 
+ android_robolectric_test {
+     name: "DeviceLockUnitTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     team: "trendy_team_android_go",
+     srcs: [
+         "src/**/*.java",
+         ":framework-devicelock-sources",
+     ],
+     java_resource_dirs: ["config"],

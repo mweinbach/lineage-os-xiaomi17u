@@ -1,0 +1,21 @@
+diff --git a/service/Android.bp b/service/Android.bp
+index 4b608dd4b36a5ccbe556b57780de96f414c7e99d..66ee7b70911d3ae89dcd7660f18c97b3c3a8ede8 100644
+--- a/service/Android.bp
++++ b/service/Android.bp
+@@ -137,12 +137,16 @@
+     min_sdk_version: "Tiramisu",
+     apex_available: ["com.android.bt"],
+ }
+ 
+ android_robolectric_test {
+     name: "ServiceBluetoothRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     instrumentation_for: "ServiceBluetoothFakeTestApp",
+ 
+     srcs: [
+         ":statslog-bluetooth-java-gen",
+         "src/ActiveLog.kt",
+         "src/ActiveLogTest.kt",

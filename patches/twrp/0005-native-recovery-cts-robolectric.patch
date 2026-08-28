@@ -1,0 +1,17 @@
+diff --git a/tests/location/Android.bp b/tests/location/Android.bp
+index d2116c054aee86d73415e9a2a12f12eddb861362..d4a2c2bc0fccd61b655ff35f174ff0ee2f55b303 100644
+--- a/tests/location/Android.bp
++++ b/tests/location/Android.bp
+@@ -1,8 +1,12 @@
+ android_robolectric_test {
+     name: "CtsLocationTestCasesRobo",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     instrumentation_for: "MyRoboApplication",
+     static_libs: [
+         "LocationCtsCommon",
+         "androidx.test.ext.junit",
+         "androidx.test.ext.truth",
+         "androidx.test.rules",

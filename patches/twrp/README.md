@@ -15,6 +15,42 @@ The initial changes are deliberately small:
 | `0002-do-not-force-adb-root` | Stop recovery init from automatically requesting root ADB on every debug boot. Explicit debug root support is retained and still needs authenticated transport and enforcing policy. |
 | `0003-preserve-source-on-envsetup` | Stop the vendor shell setup from truncating a VTS makefile when sourced. A build error must be repaired explicitly, not hidden by changing a source file. |
 | `0004-require-recovery-adb-auth` | Require host authentication in the recovery adbd variant, including on unlocked/debuggable devices, and exclude recovery from trade-in/evaluation authentication bypasses. Normal Android adbd behavior is unchanged. |
+| `0005-native-recovery-cts-robolectric` | Select out the one audited CTS Robolectric test for the Nezha native recovery product. |
+| `0006-native-recovery-mobile-data-robolectric` | Select out the audited mobile-data-download Robolectric test. |
+| `0007-native-recovery-framework-robolectric` | Select out twelve audited framework Robolectric tests across eleven files while retaining all shared production modules, defaults, licenses and other tests. |
+| `0008-native-recovery-bluetooth-robolectric` | Select out the Bluetooth Robolectric test while preserving the Bluetooth service, build flags and shared libraries. |
+| `0009-native-recovery-devicelock-robolectric` | Select out the two audited DeviceLock Robolectric tests. |
+| `0010-native-recovery-healthfitness-robolectric` | Select out the audited HealthFitness Robolectric test while retaining its device tests and source groups. |
+| `0011-native-recovery-robolectric-runtimes` | Select out the Robolectric runtime helper together with its eighteen implicit test consumers. |
+
+Patches 5 through 11 add only an `enabled` property to the nineteen named
+modules recorded in `series.json`. They apply only when the typed Soong Boolean
+`nezha_twrp.native_recovery_only` is true. Their `default: unset` branch leaves
+the previous property behavior and inherited defaults intact for other
+products. The Nezha device configuration sets this Boolean through the pinned
+`soong_config_set_bool` Make helper. This native recovery profile deliberately
+excludes eighteen JVM UI tests and their runtime helper; it does not claim to
+run those tests or to provide the Android framework/automotive test runtime.
+
+The recorded source audit examined 10,836 Blueprint files, including secondary
+files. It found eighteen selected Robolectric test constructors, three already
+outside the selected source roots, and no configurable aliases or explicit
+references to the nineteen gated names. The runtime dependencies created
+implicitly by Soong are covered by gating all eighteen selected constructors
+alongside the helper. Recheck this inventory if the source selection changes.
+Do not exclude the entire SystemUI or Bluetooth Blueprint files: they contain
+production modules, shared defaults, compatibility configuration and licenses
+used by retained modules. The patches preserve those bytes exactly.
+
+The source-backed semantics and per-file module inventory are recorded in
+`series.json`. `ModuleBase.Enabled` supports `select`, and Soong invokes a
+module's dependency mutator only when that module is enabled. Ordinary
+dependencies from retained modules to disabled modules still fail under the
+existing strict validation. Existing special treatment of `required` tags is
+unchanged. No missing-dependency allowance or validator bypass is introduced.
+In the next graph attempt, check the generated `VendorVars` and `VendorVarTypes`
+before treating this profile as verified. A successful recovery build remains
+a separate gate; offline tests alone do not prove this selection was applied.
 
 Apply the ordered queue only after resolving the complete selected manifest.
 Require the recorded project HEAD, unmodified input paths and every input hash

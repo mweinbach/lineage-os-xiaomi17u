@@ -1,0 +1,21 @@
+diff --git a/javatests/Android.bp b/javatests/Android.bp
+index 79581455672286dd2fe2a25627d75fb706716891..72d0347d5d68a9035f14e5cfb87b76bb6af6fca7 100644
+--- a/javatests/Android.bp
++++ b/javatests/Android.bp
+@@ -28,12 +28,16 @@
+     ],
+ }
+ 
+ android_robolectric_test {
+ 
+     name: "MobileDataDownloadRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+ 
+     srcs: [
+         "com/google/android/libraries/mobiledatadownload/internal/*.java",
+     ],
+ 
+     exclude_srcs: [

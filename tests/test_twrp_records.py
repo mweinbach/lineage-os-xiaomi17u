@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import unittest
 from urllib.parse import urlparse
+import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,10 +50,18 @@ class TwrpRecordTests(unittest.TestCase):
         pins = {row["path"]: row["commit"] for row in self.upstream["pinned_projects"]}
         for row in self.upstream["aosp_project_pins"]:
             pins[row["path"]] = row["commit"]
+        snapshot = ET.parse(ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml")
+        frozen = {row.get("path", row.get("name")): row.get("revision")
+                  for row in snapshot.getroot().findall("project")}
+        self.assertEqual(len(frozen), 391)
+        for path, commit in pins.items():
+            with self.subTest(known_project=path):
+                self.assertEqual(frozen[path], commit)
         series = json.loads((ROOT / "patches/twrp/series.json").read_text())
         self.assertEqual(series["manifest"]["commit"], self.upstream["manifest"]["commit"])
         for patch in series["patches"]:
-            self.assertEqual(patch["base_commit"], pins[patch["project"]])
+            with self.subTest(patch=patch["id"]):
+                self.assertEqual(patch["base_commit"], frozen[patch["project"]])
 
     def test_source_review_does_not_claim_device_or_build_success(self):
         self.assertTrue(all(value is False for value in self.upstream["scope"].values()))

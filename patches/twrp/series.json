@@ -91,6 +91,420 @@
           "after_size_bytes": 13123
         }
       ]
+    },
+    {
+      "id": "0005-native-recovery-cts-robolectric",
+      "project": "cts",
+      "repository": "https://github.com/TWRP-Test/android_cts",
+      "base_commit": "e70f92f52c9830ee8f93d89d032e2b14765c5941",
+      "patch": "patches/twrp/0005-native-recovery-cts-robolectric.patch",
+      "patch_sha256": "4c8ffb97796c07f39017f48cb31661ec32c08108b927147c80a244dd10eaa728",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "tests/location/Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_cts/e70f92f52c9830ee8f93d89d032e2b14765c5941/tests/location/Android.bp",
+          "before_sha256": "ee5d25cb2bfd9f849647542c21ebc449b57aadb3309e8d55843144209a866474",
+          "after_sha256": "0180ebed33e41c6bd7c2759f8e9cca195cdc84cfe654ac507c09cd11275941ee",
+          "before_git_blob": "d2116c054aee86d73415e9a2a12f12eddb861362",
+          "after_git_blob": "d4a2c2bc0fccd61b655ff35f174ff0ee2f55b303",
+          "before_size_bytes": 1014,
+          "after_size_bytes": 1150,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "CtsLocationTestCasesRobo",
+              "enabled_property_before": false,
+              "before_module_sha256": "8c57173a51bbe98d08e48d342fdeab807bcfee5e088653ebe0622fbb87cc810e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0006-native-recovery-mobile-data-robolectric",
+      "project": "external/mobile-data-download",
+      "repository": "https://android.googlesource.com/platform/external/mobile-data-download",
+      "base_commit": "7cecd5acc893660c66d2e7695bd6723dc0346f5d",
+      "patch": "patches/twrp/0006-native-recovery-mobile-data-robolectric.patch",
+      "patch_sha256": "4f19afde9b676c7eed3879b159a2c45f6024c702812e8b03a6ab0f12d7d2884b",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "javatests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/external/mobile-data-download/+/7cecd5acc893660c66d2e7695bd6723dc0346f5d/javatests/Android.bp?format=TEXT",
+          "before_sha256": "fe38393cf36f5150eb6ad4d48f521b07e36bf5f27ed57132c70b7cfdd87d80f9",
+          "after_sha256": "9b3ed499ca17539e4cc072b8905efcb5f78197bd92a31223fa217ef8729779a0",
+          "before_git_blob": "79581455672286dd2fe2a25627d75fb706716891",
+          "after_git_blob": "72d0347d5d68a9035f14e5cfb87b76bb6af6fca7",
+          "before_size_bytes": 3058,
+          "after_size_bytes": 3194,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "MobileDataDownloadRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "3351fc9f9e87479f0ab691e834cbf52815c140e6d2c1ffe73456d829e85a3dc6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0007-native-recovery-framework-robolectric",
+      "project": "frameworks/base",
+      "repository": "https://android.googlesource.com/platform/frameworks/base",
+      "base_commit": "99b01a65cc4c104933788b3143285ab6bae65827",
+      "patch": "patches/twrp/0007-native-recovery-framework-robolectric.patch",
+      "patch_sha256": "0b09539c8bb60ab4f83d3e4586a54b3a1453e166571f20caaf3a7587f0e17a3e",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "libs/WindowManager/Shell/multivalentTests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/libs/WindowManager/Shell/multivalentTests/Android.bp?format=TEXT",
+          "before_sha256": "f04e3e6a3d66e5e67ed66a0f23fa09530e906e0d295f01c4e80c1cd47c9d4940",
+          "after_sha256": "8aa5fd7c7ce09b5b8e30d287efd47d28334cb8abc74fea6d469e56927d2cfd5f",
+          "before_git_blob": "50666911e3136387aa4e59040e702121586d8474",
+          "after_git_blob": "93d1fb4d04cc974637cd5ab020e902398fff5ba3",
+          "before_size_bytes": 3119,
+          "after_size_bytes": 3255,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "WMShellRobolectricTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "9082e0ebb2d35fd914a91ea484643ad79d403c26adb00e69a6b14ef43cb8db47"
+            }
+          ]
+        },
+        {
+          "path": "packages/CredentialManager/tests/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/CredentialManager/tests/robotests/Android.bp?format=TEXT",
+          "before_sha256": "b559909711fe5634b7e2b9fa56fee7bcf3c15507b5a3d22e7c27c09a30f5667a",
+          "after_sha256": "4d529ebd62b1059deb462e83cb394894ac1eba6036db85b91cb03d5e898e37dd",
+          "before_git_blob": "01f403d3719dcc37023808f5929e51cf33ce2652",
+          "after_git_blob": "0b809a647bf024bc35e9931afd3a889d6b820461",
+          "before_size_bytes": 1838,
+          "after_size_bytes": 1974,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "CredentialManagerScreenshotTest",
+              "enabled_property_before": false,
+              "before_module_sha256": "5df9410e8cb9da1f24cff92644a7516c047558a18b3b8cd5404214de6870ce91"
+            }
+          ]
+        },
+        {
+          "path": "packages/CredentialManager/wear/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/CredentialManager/wear/robotests/Android.bp?format=TEXT",
+          "before_sha256": "08894ae46dced9eca9ffc3a256c95e321844c923afa06ba85358ab2a2dd4d755",
+          "after_sha256": "3e7b8bc1e1fb4536fa62c2291205573c8443c1291362096dffa04eaf38d16660",
+          "before_git_blob": "db3c36355dded01df25e99fc7c1a645458eaef7c",
+          "after_git_blob": "590f2446b6d7eae0d87a58ac94e5e426b8cd21c9",
+          "before_size_bytes": 780,
+          "after_size_bytes": 916,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "CredentialSelectorTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "898566dfba98755e7eabe239d6aa9cbc3c47c77043ffcafcaf3c64ad341051df"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/DataStore/tests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/DataStore/tests/Android.bp?format=TEXT",
+          "before_sha256": "47de4b9f7ed25b1850705eb356f751aba43cbe869ef99424aaf41c7ec2c7bc3a",
+          "after_sha256": "340ab990f35da2f3b0d42365aa87e51901e95b6362afc88f0098f733bbb7c7e1",
+          "before_git_blob": "6044eaba5f899e4d61d8e449e7710f67911fb876",
+          "after_git_blob": "3305299d57453305b5df9f9cd8085aad470e574e",
+          "before_size_bytes": 753,
+          "after_size_bytes": 889,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SettingsLibDataStoreTest",
+              "enabled_property_before": false,
+              "before_module_sha256": "a2226e6bdacffadba45ca461c971d57d0372fcc4d599f88bfaf0ac19ec0676bc"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/Spa/screenshot/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/Spa/screenshot/robotests/Android.bp?format=TEXT",
+          "before_sha256": "bbddac4bc10675788d741b5c481860f3c7e8599490eac631d70086d8b5e43a73",
+          "after_sha256": "005094196198bd3107ec1c5fda2d1e3a4c6dea17a24deb02f3c969ba21da85fd",
+          "before_git_blob": "dd6743b8595c8de50a0408ef4f81d8cebb91a749",
+          "after_git_blob": "c60921345651ca824c2733f85b87f4e7cc73a5a1",
+          "before_size_bytes": 1948,
+          "after_size_bytes": 2084,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SpaRoboRNGTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "d100bcdbd5cfb2bd8af5d612f4c6bf32c66f3342de583bddcf76da32560fb719"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp?format=TEXT",
+          "before_sha256": "240cd9fa9c0bb8a6000c83648273d3952b73e5a9b5696c2dca763ee44f60a9a1",
+          "after_sha256": "ffa0f0f6534bc8dd047f3434b97918bd3a24de4f5d12ab29d78a9d2f9d375611",
+          "before_git_blob": "e3faf73a69fbd40c908f651bdcd64b0fe3224a91",
+          "after_git_blob": "79d35afa2ad626168615ab1a6f3bf3714beaf581",
+          "before_size_bytes": 1418,
+          "after_size_bytes": 1554,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SpaPrivilegedRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "d79d835872fbc10c0f2dc9faf21f3602e5db2f8074e78a4362b8246804309ebf"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/tests/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/tests/robotests/Android.bp?format=TEXT",
+          "before_sha256": "55d01f4a2c60c8a3e0fe18bc821827a92ace0bc3b2bf2fdbaa2c5e39ed73f742",
+          "after_sha256": "f6051d05b81d537489b94d7709900dd34783849e4ab167d371dd7c2bde3fd0a8",
+          "before_git_blob": "54fe40ad14c4a2455237955c79d11d9423651318",
+          "after_git_blob": "5b674b1b2087c56eac4bf433df5d857999d82300",
+          "before_size_bytes": 4141,
+          "after_size_bytes": 4277,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SettingsLibRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "29cf871943753b19b723914a67c0be32ff87ed9b16b21266374a521c1576c796"
+            }
+          ]
+        },
+        {
+          "path": "packages/SystemUI/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SystemUI/Android.bp?format=TEXT",
+          "before_sha256": "9bd6abe658580fa06561c8f08ce6db128091dfc7653fb614f2c333a921dac93b",
+          "after_sha256": "c3381697b8c227560e6f0ff62ad833bc594204c28b80c2f5277fc462808cce95",
+          "before_git_blob": "2b17ae48132c41668253a774ccb871f68ffbe59a",
+          "after_git_blob": "a4ed96b49b576331560ae407c4224eadc76a9f61",
+          "before_size_bytes": 46084,
+          "after_size_bytes": 46356,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SystemUiRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "d05643ecd13610ef54dea6454e578c63f1f88c5e12dfd837589ee9f398acbc6a"
+            },
+            {
+              "type": "android_robolectric_test",
+              "name": "SystemUiRoboTestsInplace",
+              "enabled_property_before": false,
+              "before_module_sha256": "6b75e3e429e73aa44296b2f9a6eb55f610f54ae7bcad7d85245bfbcf3e4e2e1c"
+            }
+          ]
+        },
+        {
+          "path": "services/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/services/robotests/Android.bp?format=TEXT",
+          "before_sha256": "016e7c297e2301928b6c04f3079e8885e4a4b6662bba38f791a3d6e381ddb69b",
+          "after_sha256": "905f3d4cab92d08ed12d8fbc348ab6890c51e4501ee540c6b7bbba195afe828f",
+          "before_git_blob": "8e0eb6b14432a4bcb140c812768b072f59447d48",
+          "after_git_blob": "7b83a1005828a8f8246e2caa45cde1f00a31f5ea",
+          "before_size_bytes": 2204,
+          "after_size_bytes": 2340,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "FrameworksServicesRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "5e62bd62f79b8ed5f2e84adefb078911d72f603b0db7c3a7ac3b108bc9fd1841"
+            }
+          ]
+        },
+        {
+          "path": "services/robotests/backup/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/services/robotests/backup/Android.bp?format=TEXT",
+          "before_sha256": "3de150e8e2365ae2e3d796753f4d0ceb04b3d05ee8016f5d6f7637f57b74793d",
+          "after_sha256": "dd241ff34c1cca06183d3a280a81c498a15c792a4596a39ae744553669234c43",
+          "before_git_blob": "95b38e56f2760f1763422e2f47dc4942c8f4cd82",
+          "after_git_blob": "eaf02c9237208a26fe5cd90a7be71e03a8200219",
+          "before_size_bytes": 2244,
+          "after_size_bytes": 2380,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "BackupFrameworksServicesRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "979d00f54001a294f2ca6435a5029451410e0d9d26add70ec0976f137c3bbd07"
+            }
+          ]
+        },
+        {
+          "path": "tests/InputScreenshotTest/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/tests/InputScreenshotTest/robotests/Android.bp?format=TEXT",
+          "before_sha256": "d079e3a70e75dbaa9bea5312cb8d6c5465abcdbaa038efa4320d981ccbbac5be",
+          "after_sha256": "4dd22c4a1bf848a371eed4ef588c147dd4c4e02762995f866b3ab4e2dfc54779",
+          "before_git_blob": "63a13849ee7f3aebc969aa6a32f79f18db29a2a8",
+          "after_git_blob": "5993e569b750c3b8b499058cbe589914e7a82c09",
+          "before_size_bytes": 1934,
+          "after_size_bytes": 2070,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "InputRoboRNGTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "af0ff31f0b41a51bbe1b6b860a1294a4a2b890ab1101f7c826c589de54b97b5d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0008-native-recovery-bluetooth-robolectric",
+      "project": "packages/modules/Bluetooth",
+      "repository": "https://android.googlesource.com/platform/packages/modules/Bluetooth",
+      "base_commit": "4b73ee6039271ffbf71ebdc8c109fc98eac8e137",
+      "patch": "patches/twrp/0008-native-recovery-bluetooth-robolectric.patch",
+      "patch_sha256": "5135942c00e3239c6af539b1c4c90cc261fdd032ef4dfeb8e775aa5e62185289",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "service/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/4b73ee6039271ffbf71ebdc8c109fc98eac8e137/service/Android.bp?format=TEXT",
+          "before_sha256": "bd23a956f78c2b2c64ab296e300599b66b868ba2ddb0117d2f1e6d35d472c724",
+          "after_sha256": "fec72782e388f7e2efed5f663b6c289e101cbfb9dc6803d4bbb8d615797886b0",
+          "before_git_blob": "4b608dd4b36a5ccbe556b57780de96f414c7e99d",
+          "after_git_blob": "66ee7b70911d3ae89dcd7660f18c97b3c3a8ede8",
+          "before_size_bytes": 5291,
+          "after_size_bytes": 5427,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "ServiceBluetoothRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "01ae6d833467df6c0dda23e38cc9f9226c800aab5ee9f18d10801da5f9d50364"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0009-native-recovery-devicelock-robolectric",
+      "project": "packages/modules/DeviceLock",
+      "repository": "https://android.googlesource.com/platform/packages/modules/DeviceLock",
+      "base_commit": "952de0dacfb9bd720c9ee604affea6bff8132a8a",
+      "patch": "patches/twrp/0009-native-recovery-devicelock-robolectric.patch",
+      "patch_sha256": "4558d2df1d579961149016ef9fc81ca3d64b3830447336462c560a62152f810b",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "DeviceLockController/tests/robolectric/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/DeviceLock/+/952de0dacfb9bd720c9ee604affea6bff8132a8a/DeviceLockController/tests/robolectric/Android.bp?format=TEXT",
+          "before_sha256": "9a824ee1b4dd93325c5b7d95d26fb4215ee2b37750fa9ad379ac5828b58f9153",
+          "after_sha256": "a102e7b3e2d21ab7e23921ca8acea3f5653d99481a130d0b5ea7403d89ce9a4a",
+          "before_git_blob": "73bf4596952486e7955960af27583b3291adc00b",
+          "after_git_blob": "646e4ef52fb4cce360f97f07a415f36188ec836a",
+          "before_size_bytes": 1576,
+          "after_size_bytes": 1712,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "DeviceLockControllerRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "374d1d6206b1c95ce329ad4495a00a76b05cd57f672888d63ef76712524002d9"
+            }
+          ]
+        },
+        {
+          "path": "tests/unittests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/DeviceLock/+/952de0dacfb9bd720c9ee604affea6bff8132a8a/tests/unittests/Android.bp?format=TEXT",
+          "before_sha256": "deaf71cc4ee946e63579a39f5a6bf2123854a72a5418e2c81c026cf01b88f492",
+          "after_sha256": "6a0464647fb350d59cdf6d5a04f6d797385c1b8da074027a8fa6206f840fbd94",
+          "before_git_blob": "4aad12b5b9057cfad816c437b154a3530875e172",
+          "after_git_blob": "121d98a23337b6145c21226a9ad4cd50b40157d4",
+          "before_size_bytes": 1352,
+          "after_size_bytes": 1488,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "DeviceLockUnitTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "b1bc6fcaa1ba9734766d0e2cc925d47840e85e60ff382af1a35ea622648779e7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0010-native-recovery-healthfitness-robolectric",
+      "project": "packages/modules/HealthFitness",
+      "repository": "https://android.googlesource.com/platform/packages/modules/HealthFitness",
+      "base_commit": "c0d64b5a3b88c614e25394499610c39d8926f69d",
+      "patch": "patches/twrp/0010-native-recovery-healthfitness-robolectric.patch",
+      "patch_sha256": "51cefdbd44f755871ee3155fba07b866b66e30882052c7eb25bc60b38d8a1400",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "tests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/HealthFitness/+/c0d64b5a3b88c614e25394499610c39d8926f69d/tests/Android.bp?format=TEXT",
+          "before_sha256": "6814cd292bbd8030ae10a3f9a97c3b8799371eb7418c67b8174a2cedfd0824c3",
+          "after_sha256": "4f9e08abd0dce617a6ea84186f9fe80fa0fad537d6f7bbc7ee36b05b2a655d45",
+          "before_git_blob": "9ceaf533f34dedde14276ada60e5bfb5cf73c500",
+          "after_git_blob": "7ee0de38638a8dc86ccab2a7a9ae890a1ca701d8",
+          "before_size_bytes": 9135,
+          "after_size_bytes": 9271,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "HealthFitnessRoboUnitTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "a4e7cea84658a8872329bed49c13fe8fef19e89b26fe745665e1ddfcd018a9c5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0011-native-recovery-robolectric-runtimes",
+      "project": "prebuilts/misc",
+      "repository": "https://android.googlesource.com/platform/prebuilts/misc",
+      "base_commit": "6e84ee6ddafe39d475876c511a516dbc9f2f19a6",
+      "patch": "patches/twrp/0011-native-recovery-robolectric-runtimes.patch",
+      "patch_sha256": "188f6922c150f0b9f32e9adb7fa806d09c04114f53d1b31c82bf3cf4cee51035",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "common/robolectric/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/prebuilts/misc/+/6e84ee6ddafe39d475876c511a516dbc9f2f19a6/common/robolectric/Android.bp?format=TEXT",
+          "before_sha256": "f19d82e8d05a0f582adff7428f53b0ed3b2bbb6fe9b5e6cbf27a17d231351e2c",
+          "after_sha256": "aad15cad71ce99b91e471dd5918857b3432460babffbca2114cef9494007b726",
+          "before_git_blob": "7ca6747736de6dfe94e1043ba5b9dd0a8cd98137",
+          "after_git_blob": "0ec8bc772f7ad785cba95d3f326320947d34eaef",
+          "before_size_bytes": 474,
+          "after_size_bytes": 610,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_runtimes",
+              "name": "robolectric-android-all-prebuilts",
+              "enabled_property_before": false,
+              "before_module_sha256": "66f8252e27dfccbf9b605c337e32dda3e2f64c9852fc27394eada9ef9a03b2ef"
+            }
+          ]
+        }
+      ]
     }
   ],
   "application_requirements": [
@@ -122,5 +536,38 @@
     "The separate minadbd/sideload transport is not covered by the main adbd authentication patch and is not admitted for stage-0 use.",
     "Omitting crypto or userdata fstab entries does not create a write lock; settings, logging, slot/OTA and stock-recovery mutation paths remain outside this narrow patch set.",
     "No phone access or change is authorized by applying this source patch queue."
-  ]
+  ],
+  "native_recovery_profile": {
+    "namespace": "nezha_twrp",
+    "boolean_variable": "native_recovery_only",
+    "selected_value": true,
+    "enabled_when_selected": false,
+    "otherwise": "unset",
+    "test_module_type": "android_robolectric_test",
+    "test_module_count": 18,
+    "runtime_module_type": "android_robolectric_runtimes",
+    "runtime_module_name": "robolectric-android-all-prebuilts",
+    "affected_file_count": 18,
+    "affected_base_project_count": 7,
+    "supplemental_projects_modified": false,
+    "audited_blueprint_file_count": 10836,
+    "direct_test_constructor_count": 21,
+    "selected_test_constructor_count": 18,
+    "already_source_excluded_test_constructor_count": 3,
+    "secondary_blueprint_test_constructor_count": 0,
+    "configurable_test_module_alias_count": 0,
+    "explicit_references_to_gated_names_in_retained_blueprints": 0,
+    "implicit_runtime_consumers": "The 18 selected android_robolectric_test modules create the runtime dependency through the pinned Soong DepsMutator; all 18 receive the same enabled gate.",
+    "preserved_behavior": "Only enabled properties are added to the listed modules. Production modules, shared libraries, defaults, licenses, source-selection rules, and validation code are unchanged. This profile intentionally excludes these JVM UI tests; it does not claim to run them.",
+    "semantics_sources": [
+      "build/soong/android/module.go:288",
+      "build/soong/android/module.go:1439",
+      "build/soong/android/mutator.go:478",
+      "build/soong/java/robolectric.go:114",
+      "build/soong/java/robolectric.go:356",
+      "build/soong/docs/selects.md:64",
+      "build/make/core/config.mk:320"
+    ],
+    "validation_boundary": "Offline tests and captured-source apply checks do not prove an Android graph, recovery build, or hardware behavior. The selected profile must be observed in generated Soong VendorVars and VendorVarTypes in the next graph attempt before treating the profile as verified."
+  }
 }

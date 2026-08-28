@@ -5,10 +5,59 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import unittest
+import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SERIES = ROOT / "patches/twrp/series.json"
+SOURCE_SNAPSHOT = ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
+SOURCE_SNAPSHOT_SHA256 = "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051"
+ORIGINAL_PREFIX_SHA256 = "2ec5f5d4c7574391b4f2a2be94081bcddc99af5a4b0b01f665c5ffffd57e8895"
+PROFILE_BLOCK = (
+    '    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {\n'
+    '        true: false,\n'
+    '        default: unset,\n'
+    '    }),\n'
+)
+PROFILE_PROJECTS = {
+    "0005-native-recovery-cts-robolectric": (
+        "cts", "e70f92f52c9830ee8f93d89d032e2b14765c5941", {
+            "tests/location/Android.bp": ["CtsLocationTestCasesRobo"]}),
+    "0006-native-recovery-mobile-data-robolectric": (
+        "external/mobile-data-download", "7cecd5acc893660c66d2e7695bd6723dc0346f5d", {
+            "javatests/Android.bp": ["MobileDataDownloadRoboTests"]}),
+    "0007-native-recovery-framework-robolectric": (
+        "frameworks/base", "99b01a65cc4c104933788b3143285ab6bae65827", {
+            "libs/WindowManager/Shell/multivalentTests/Android.bp": ["WMShellRobolectricTests"],
+            "packages/CredentialManager/tests/robotests/Android.bp": ["CredentialManagerScreenshotTest"],
+            "packages/CredentialManager/wear/robotests/Android.bp": ["CredentialSelectorTests"],
+            "packages/SettingsLib/DataStore/tests/Android.bp": ["SettingsLibDataStoreTest"],
+            "packages/SettingsLib/Spa/screenshot/robotests/Android.bp": ["SpaRoboRNGTests"],
+            "packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp": ["SpaPrivilegedRoboTests"],
+            "packages/SettingsLib/tests/robotests/Android.bp": ["SettingsLibRoboTests"],
+            "packages/SystemUI/Android.bp": ["SystemUiRoboTests", "SystemUiRoboTestsInplace"],
+            "services/robotests/Android.bp": ["FrameworksServicesRoboTests"],
+            "services/robotests/backup/Android.bp": ["BackupFrameworksServicesRoboTests"],
+            "tests/InputScreenshotTest/robotests/Android.bp": ["InputRoboRNGTests"]}),
+    "0008-native-recovery-bluetooth-robolectric": (
+        "packages/modules/Bluetooth", "4b73ee6039271ffbf71ebdc8c109fc98eac8e137", {
+            "service/Android.bp": ["ServiceBluetoothRoboTests"]}),
+    "0009-native-recovery-devicelock-robolectric": (
+        "packages/modules/DeviceLock", "952de0dacfb9bd720c9ee604affea6bff8132a8a", {
+            "DeviceLockController/tests/robolectric/Android.bp": ["DeviceLockControllerRoboTests"],
+            "tests/unittests/Android.bp": ["DeviceLockUnitTests"]}),
+    "0010-native-recovery-healthfitness-robolectric": (
+        "packages/modules/HealthFitness", "c0d64b5a3b88c614e25394499610c39d8926f69d", {
+            "tests/Android.bp": ["HealthFitnessRoboUnitTests"]}),
+    "0011-native-recovery-robolectric-runtimes": (
+        "prebuilts/misc", "6e84ee6ddafe39d475876c511a516dbc9f2f19a6", {
+            "common/robolectric/Android.bp": ["robolectric-android-all-prebuilts"]}),
+}
+
+
+def profile_type(name):
+    return ("android_robolectric_runtimes" if name == "robolectric-android-all-prebuilts"
+            else "android_robolectric_test")
 
 
 def changed_lines(patch, prefix):
@@ -25,6 +74,39 @@ def hunks(section):
         body = section[match.end():end].splitlines(keepends=True)
         yield (int(match[1]), int(match[2] or 1), int(match[3]),
                int(match[4] or 1), body)
+
+
+def validate_profile_insertions(section, expected_names):
+    """Require only the exact enabled blocks, anchored to named test modules."""
+    found = []
+    for _, _, _, _, body in hunks(section):
+        index = 0
+        while index < len(body):
+            line = body[index]
+            if line.startswith("-"):
+                raise ValueError("A native profile patch must not remove or replace source")
+            if not line.startswith("+"):
+                index += 1
+                continue
+            end = index
+            while end < len(body) and body[end].startswith("+"):
+                end += 1
+            addition = "".join(item[1:] for item in body[index:end])
+            if addition != PROFILE_BLOCK:
+                raise ValueError("Only the exact enabled select with default unset is permitted")
+            context = "".join(item[1:] for item in body[:index] if item.startswith(" "))
+            match = re.search(
+                r'(android_robolectric_test|android_robolectric_runtimes)\s*\{\n'
+                r'(?:[ \t]*\n)*    name: "([^"\n]+)",\n$', context)
+            if not match or match[2] not in expected_names or match[1] != profile_type(match[2]):
+                raise ValueError("Enabled addition is not anchored to an approved module")
+            if match[2] in found:
+                raise ValueError("Duplicate enabled addition")
+            found.append(match[2])
+            index = end
+    if found != list(expected_names):
+        raise ValueError("Profile module inventory does not match the exact additions")
+    return found
 
 
 def select_android_variant(lines, recovery):
@@ -85,7 +167,7 @@ class TwrpPatchTests(unittest.TestCase):
             "0004-require-recovery-adb-auth": (
                 "packages/modules/adb", "ce023afef190b0cea7f8939e9dd5ee3ee79b137b", "daemon/main.cpp"),
         }
-        self.assertEqual(list(self.patches), list(expected))
+        self.assertEqual(list(self.patches), list(expected) + list(PROFILE_PROJECTS))
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -93,6 +175,101 @@ class TwrpPatchTests(unittest.TestCase):
                 self.assertEqual(row["base_commit"], commit)
                 self.assertEqual([item["path"] for item in row["files"]], [path])
                 self.assertIn(commit, row["files"][0]["source_url"])
+
+    def test_original_four_patch_records_and_payloads_are_an_unchanged_prefix(self):
+        prefix = self.record["patches"][:4]
+        canonical = json.dumps(prefix, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(canonical).hexdigest(), ORIGINAL_PREFIX_SHA256)
+        for row in prefix:
+            self.assertEqual(hashlib.sha256(self.raw[row["id"]]).hexdigest(), row["patch_sha256"])
+
+    def test_native_profile_projects_and_files_are_bound_to_the_frozen_base(self):
+        snapshot = SOURCE_SNAPSHOT.read_bytes()
+        self.assertEqual(hashlib.sha256(snapshot).hexdigest(), SOURCE_SNAPSHOT_SHA256)
+        frozen = {item.get("path", item.get("name")): item.attrib
+                  for item in ET.fromstring(snapshot).findall("project")}
+        modules = []
+        for key, (project, revision, paths) in PROFILE_PROJECTS.items():
+            with self.subTest(patch=key):
+                row = self.patches[key]
+                self.assertEqual(row["project"], project)
+                self.assertEqual(row["base_commit"], revision)
+                self.assertEqual(frozen[project]["revision"], revision)
+                self.assertEqual(row["source_snapshot_sha256"], SOURCE_SNAPSHOT_SHA256)
+                self.assertEqual([item["path"] for item in row["files"]], list(paths))
+                expected_repo = ("https://github.com/TWRP-Test/android_cts" if project == "cts"
+                                 else "https://android.googlesource.com/platform/" + project)
+                self.assertEqual(row["repository"], expected_repo)
+                for source in row["files"]:
+                    self.assertIn(revision, source["source_url"])
+                    self.assertIn(source["path"], source["source_url"])
+                    inventory = source["profile_modules"]
+                    self.assertEqual([item["name"] for item in inventory], paths[source["path"]])
+                    for item in inventory:
+                        self.assertEqual(item["type"], profile_type(item["name"]))
+                        self.assertIs(item["enabled_property_before"], False)
+                        self.assertRegex(item["before_module_sha256"], r"^[0-9a-f]{64}$")
+                        modules.append(item["name"])
+        self.assertEqual(len(modules), 19)
+        self.assertEqual(len(set(modules)), 19)
+        self.assertEqual(sum(len(row[2]) for row in PROFILE_PROJECTS.values()), 18)
+
+    def test_native_profile_adds_only_enabled_fields_to_the_exact_test_inventory(self):
+        for key, (_, _, paths) in PROFILE_PROJECTS.items():
+            sections = self.text[key].split("diff --git ")[1:]
+            for section, source in zip(sections, self.patches[key]["files"]):
+                with self.subTest(patch=key, path=source["path"]):
+                    names = paths[source["path"]]
+                    self.assertEqual(validate_profile_insertions(section, names), names)
+                    self.assertEqual(changed_lines(section, "-"), [])
+                    self.assertEqual(changed_lines(section, "+"),
+                                     PROFILE_BLOCK.splitlines() * len(names))
+                    self.assertEqual(source["after_size_bytes"] - source["before_size_bytes"],
+                                     len(PROFILE_BLOCK.encode()) * len(names))
+
+    def test_native_profile_guard_rejects_production_modules_and_other_edits(self):
+        key = "0005-native-recovery-cts-robolectric"
+        section = self.text[key].split("diff --git ")[1]
+        names = ["CtsLocationTestCasesRobo"]
+        mutations = {
+            "wrong module type": section.replace(" android_robolectric_test {", " android_library {"),
+            "wrong module name": section.replace('name: "CtsLocationTestCasesRobo"', 'name: "production-service"'),
+            "overwrite source": section.replace('     name: "CtsLocationTestCasesRobo",', '-    name: "CtsLocationTestCasesRobo",'),
+            "default enable override": section.replace("+        default: unset,", "+        default: true,"),
+            "disable unrelated products": section.replace("+        default: unset,", "+        default: false,"),
+            "wrong flag namespace": section.replace('"nezha_twrp"', '"other_product"'),
+            "wrong flag type": section.replace("+        true: false,", '+        "true": false,'),
+            "missing dependency bypass": section.replace("+    }),\n", "+    }),\n+    allow_missing_dependencies: true,\n"),
+            "replace inherited property": section.replace("+    enabled:", "-    enabled:"),
+        }
+        for label, mutated in mutations.items():
+            with self.subTest(case=label), self.assertRaises(ValueError):
+                validate_profile_insertions(mutated, names)
+
+    def test_native_profile_inventory_and_semantics_do_not_claim_runtime_validation(self):
+        profile = self.record["native_recovery_profile"]
+        self.assertEqual(profile["namespace"], "nezha_twrp")
+        self.assertEqual(profile["boolean_variable"], "native_recovery_only")
+        self.assertIs(profile["selected_value"], True)
+        self.assertIs(profile["enabled_when_selected"], False)
+        self.assertEqual(profile["otherwise"], "unset")
+        self.assertEqual(profile["test_module_count"], 18)
+        self.assertEqual(profile["runtime_module_name"], "robolectric-android-all-prebuilts")
+        self.assertEqual(profile["affected_file_count"], 18)
+        self.assertEqual(profile["affected_base_project_count"], 7)
+        self.assertIs(profile["supplemental_projects_modified"], False)
+        self.assertEqual(profile["direct_test_constructor_count"],
+                         profile["selected_test_constructor_count"] +
+                         profile["already_source_excluded_test_constructor_count"])
+        self.assertEqual(profile["secondary_blueprint_test_constructor_count"], 0)
+        self.assertEqual(profile["configurable_test_module_alias_count"], 0)
+        self.assertEqual(profile["explicit_references_to_gated_names_in_retained_blueprints"], 0)
+        self.assertIn("build/soong/android/mutator.go:478", profile["semantics_sources"])
+        self.assertIn("build/soong/docs/selects.md:64", profile["semantics_sources"])
+        self.assertIn("build/make/core/config.mk:320", profile["semantics_sources"])
+        self.assertIn("does not claim to run them", profile["preserved_behavior"])
+        self.assertIn("do not prove", profile["validation_boundary"])
+        self.assertIn("VendorVarTypes", profile["validation_boundary"])
 
     def test_patch_bytes_and_source_versions_are_hash_bound(self):
         seen = set()
