@@ -28,7 +28,6 @@ PRODUCT_PACKAGES += recovery
 PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/google/aemu/ \
     -packages/modules/AdServices/ \
-    -hardware/interfaces/neuralnetworks/utils/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
 # The second graph exposed these specific CTS/VTS, automotive and context-hub
@@ -65,15 +64,10 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/interfaces/automotive/vehicle/aidl/impl/current/ \
     -hardware/interfaces/security/secretkeeper/aidl/vts/
 
-# Keep NNAPI's HIDL/AIDL interface definitions. These implementation utilities
-# and their AIDL VTS consumer depend on the absent NeuralNetworks runtime and
-# its external ML libraries; none is part of the initial recovery product.
+# Keep the original NNAPI HAL utilities with the complete NeuralNetworks
+# dependency sources. They are shared providers, not optional test stubs.
+# The unrelated AIDL functional VTS leaf remains outside this recovery profile.
 PRODUCT_SOURCE_ROOT_DIRS += \
-    -hardware/interfaces/neuralnetworks/1.0/utils/ \
-    -hardware/interfaces/neuralnetworks/1.1/utils/ \
-    -hardware/interfaces/neuralnetworks/1.2/utils/ \
-    -hardware/interfaces/neuralnetworks/1.3/utils/ \
-    -hardware/interfaces/neuralnetworks/aidl/utils/ \
     -hardware/interfaces/neuralnetworks/aidl/vts/functional/
 
 # Graph 17 reached the standalone NNAPI CTS test. This reviewed leaf contains

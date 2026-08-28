@@ -764,6 +764,139 @@
       "commit": "323b68127336bb8b8a47ad804487eda722c50489",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP py-pyasn1-modules provider required by the OAuth host library used by ASuite for graph 18."
+    },
+    {
+      "path": "frameworks/proto_logging",
+      "url": "https://android.googlesource.com/platform/frameworks/proto_logging",
+      "commit": "29d96a39adaffda3ad1b08ae17b6befbe2a625fa",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine graph18 Bluetooth proto provider and complete stats/expresslog code generation source; libexpresscatalog requires the real classifier hash libraries."
+    },
+    {
+      "path": "external/libtextclassifier",
+      "url": "https://android.googlesource.com/platform/external/libtextclassifier",
+      "commit": "e1ac719a8a882b1c01f85b4443d0c2961b9f839d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/tensorflow",
+      "url": "https://android.googlesource.com/platform/external/tensorflow",
+      "commit": "b02be12795f49019bc2312316e6bffece143ed21",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/lua",
+      "url": "https://android.googlesource.com/platform/external/lua",
+      "commit": "1ac810dae2874ee161b9e1ae4e0d0ad3f64c08e9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/libutf",
+      "url": "https://android.googlesource.com/platform/external/libutf",
+      "commit": "61e1860912dd2c19dfe4ff59b6f8ce9e69a4339d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/marisa-trie",
+      "url": "https://android.googlesource.com/platform/external/marisa-trie",
+      "commit": "226c01d88c9944271f0b8d8f5969c6b49d61143d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/FP16",
+      "url": "https://android.googlesource.com/platform/external/FP16",
+      "commit": "8c6e6497ecf7aee9220ee39dbacbc57f4437717d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/eigen",
+      "url": "https://android.googlesource.com/platform/external/eigen",
+      "commit": "15bdc8bcfba097ad88c1e4a4afd0d6260c1abc15",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/fft2d",
+      "url": "https://android.googlesource.com/platform/external/fft2d",
+      "commit": "fa0ad63f8b666836f56a823de546390a6e4ff4b6",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/ruy",
+      "url": "https://android.googlesource.com/platform/external/ruy",
+      "commit": "57ee36e9ad21509a1089323c0b9559cbb91701fe",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/gemmlowp",
+      "url": "https://android.googlesource.com/platform/external/gemmlowp",
+      "commit": "3b727b1baa7172cbfc22e9f52371a301b9cac79c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+    },
+    {
+      "path": "external/downloader",
+      "url": "https://android.googlesource.com/platform/external/downloader",
+      "commit": "53a45f0c0d914c6a2d5c31fa077ef0e47b0aa9f9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real android_downloader_lib for the classifier service; six existing AndroidX/Guava/AutoValue dependencies."
+    },
+    {
+      "path": "external/neon_2_sse",
+      "url": "https://android.googlesource.com/platform/external/neon_2_sse",
+      "commit": "80a68eefdccd99baeea4880baa1b4c25f2618725",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real header-only include directory for the TensorFlow Flex delegate; zero upstream Blueprint modules."
+    },
+    {
+      "path": "packages/modules/NeuralNetworks",
+      "url": "https://android.googlesource.com/platform/packages/modules/NeuralNetworks",
+      "commit": "6cd97dca5e3ce0bd539d84d78f777a3576e673e3",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real libneuralnetworks implementation and NDK factory for TensorFlow SDK consumers; retain full tests/fuzzers/Java/native sources without selecting runtime packages for recovery."
+    },
+    {
+      "path": "external/XNNPACK",
+      "url": "https://android.googlesource.com/platform/external/XNNPACK",
+      "commit": "58b652403b0e6edc9b323f4aa3444c561bff7a78",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real libXNNPACK for the retained NNAPI sample driver, including genuine tests and benchmark modules."
+    },
+    {
+      "path": "external/pthreadpool",
+      "url": "https://android.googlesource.com/platform/external/pthreadpool",
+      "commit": "0eebb03dacd53a73fb77bb9accca6a32673e178e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real libpthreadpool for NNAPI/XNNPACK, preserving upstream PTHREADPOOL_USE_CPUINFO=1 and the test module."
+    },
+    {
+      "path": "external/FXdiv",
+      "url": "https://android.googlesource.com/platform/external/FXdiv",
+      "commit": "6e77b01effdc0ef3b002d6a3400f0d5caf9c0174",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real fxdiv_headers for pthreadpool/XNNPACK, preserving tests and metadata."
+    },
+    {
+      "path": "external/cpuinfo",
+      "url": "https://android.googlesource.com/platform/external/cpuinfo",
+      "commit": "2dcdba348d94895452dce0c8da27ea6dcbbc507e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real libcpuinfo and bundled libclog for pthreadpool/XNNPACK; no separate Clog project is needed."
+    },
+    {
+      "path": "external/libprotobuf-mutator",
+      "url": "https://android.googlesource.com/platform/external/libprotobuf-mutator",
+      "commit": "1257b81718eeb7970057853201a6820a336bc5f5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real libprotobuf-mutator for the NNAPI android_fuzzing harness; preserve all upstream mutator properties and fuzzer validation."
     }
   ]
 }

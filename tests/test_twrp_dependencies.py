@@ -156,6 +156,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "5651d857ea80ec14d72399ee6f4e81cdaed2fa7a2db66fd343118290c8e5bf74")
 
+    def test_first_108_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:108]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "d7e1114d3e27da568c2ea9691a7daefecfb5f6b27ef1686dd734213811f68094")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -492,9 +498,8 @@ class ConfigurationTests(Fixture):
             ("external/python/pyasn1", "0071cbf57b52336b8261f3903612a2d4d81669af"),
             ("external/python/pyasn1-modules", "323b68127336bb8b8a47ad804487eda722c50489"),
         ]
-        self.assertEqual(len(projects), 108)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[99:]], expected)
-        for project in projects[99:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[99:108]], expected)
+        for project in projects[99:108]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -504,15 +509,52 @@ class ConfigurationTests(Fixture):
         for module in ("asuite_cc_client", "atest_tradefed.sh", "adevice_fingerprint"):
             self.assertIn(module, projects[99]["reason"])
 
-    def test_122_synthetic_sources_fit_existing_configuration_limits(self):
-        self.config["projects"] = [dict(self.project,
-            path=f"external/synthetic-{index:03d}",
-            url=f"https://android.googlesource.com/platform/external/synthetic-{index:03d}")
-            for index in range(122)]
-        self.save_config()
-        with patch.object(twrp_workspace, "run", side_effect=AssertionError("No process")):
-            self.assertEqual(len(dependencies.load_config(self.control)["projects"]), 122)
-        self.assertLess((self.control / dependencies.CONFIG).stat().st_size, 1024 * 1024)
+    def test_graph_eighteen_proto_and_ml_source_batch_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("frameworks/proto_logging", "29d96a39adaffda3ad1b08ae17b6befbe2a625fa"),
+            ("external/libtextclassifier", "e1ac719a8a882b1c01f85b4443d0c2961b9f839d"),
+            ("external/tensorflow", "b02be12795f49019bc2312316e6bffece143ed21"),
+            ("external/lua", "1ac810dae2874ee161b9e1ae4e0d0ad3f64c08e9"),
+            ("external/libutf", "61e1860912dd2c19dfe4ff59b6f8ce9e69a4339d"),
+            ("external/marisa-trie", "226c01d88c9944271f0b8d8f5969c6b49d61143d"),
+            ("external/FP16", "8c6e6497ecf7aee9220ee39dbacbc57f4437717d"),
+            ("external/eigen", "15bdc8bcfba097ad88c1e4a4afd0d6260c1abc15"),
+            ("external/fft2d", "fa0ad63f8b666836f56a823de546390a6e4ff4b6"),
+            ("external/ruy", "57ee36e9ad21509a1089323c0b9559cbb91701fe"),
+            ("external/gemmlowp", "3b727b1baa7172cbfc22e9f52371a301b9cac79c"),
+            ("external/downloader", "53a45f0c0d914c6a2d5c31fa077ef0e47b0aa9f9"),
+            ("external/neon_2_sse", "80a68eefdccd99baeea4880baa1b4c25f2618725"),
+            ("packages/modules/NeuralNetworks", "6cd97dca5e3ce0bd539d84d78f777a3576e673e3"),
+            ("external/XNNPACK", "58b652403b0e6edc9b323f4aa3444c561bff7a78"),
+            ("external/pthreadpool", "0eebb03dacd53a73fb77bb9accca6a32673e178e"),
+            ("external/FXdiv", "6e77b01effdc0ef3b002d6a3400f0d5caf9c0174"),
+            ("external/cpuinfo", "2dcdba348d94895452dce0c8da27ea6dcbbc507e"),
+            ("external/libprotobuf-mutator", "1257b81718eeb7970057853201a6820a336bc5f5"),
+        ]
+        self.assertEqual(len(projects), 127)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[108:]], expected)
+        for project in projects[108:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].strip())
+        self.assertIn("graph18 Bluetooth proto", projects[108]["reason"])
+        self.assertIn("zero upstream Blueprint modules", projects[120]["reason"])
+        self.assertIn("without selecting runtime packages for recovery", projects[121]["reason"])
+        self.assertIn("preserve all upstream mutator properties", projects[126]["reason"])
+
+    def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
+        for count in (122, 127):
+            with self.subTest(count=count):
+                self.config["projects"] = [dict(self.project,
+                    path=f"external/synthetic-{index:03d}",
+                    url=f"https://android.googlesource.com/platform/external/synthetic-{index:03d}")
+                    for index in range(count)]
+                self.save_config()
+                with patch.object(twrp_workspace, "run", side_effect=AssertionError("No process")):
+                    self.assertEqual(len(dependencies.load_config(self.control)["projects"]), count)
+                self.assertLess((self.control / dependencies.CONFIG).stat().st_size, 1024 * 1024)
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()

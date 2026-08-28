@@ -22,7 +22,6 @@ SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
-    "-hardware/interfaces/neuralnetworks/utils/",
     "-hardware/interfaces/virtualization/capabilities_service/vts/",
     "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/",
     "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21085/",
@@ -41,11 +40,6 @@ SOURCE_EXCLUSIONS = [
     "-hardware/interfaces/automotive/vehicle/aidl/impl/3/",
     "-hardware/interfaces/automotive/vehicle/aidl/impl/current/",
     "-hardware/interfaces/security/secretkeeper/aidl/vts/",
-    "-hardware/interfaces/neuralnetworks/1.0/utils/",
-    "-hardware/interfaces/neuralnetworks/1.1/utils/",
-    "-hardware/interfaces/neuralnetworks/1.2/utils/",
-    "-hardware/interfaces/neuralnetworks/1.3/utils/",
-    "-hardware/interfaces/neuralnetworks/aidl/utils/",
     "-hardware/interfaces/neuralnetworks/aidl/vts/functional/",
     "-cts/tests/tests/neuralnetworks/",
     "-" + MOTION_TEST_BLUEPRINT,
@@ -371,15 +365,23 @@ class TwrpDeviceTests(unittest.TestCase):
                        "hardware/interfaces/security/secretkeeper/aidl/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
 
-    def test_fourth_graph_keeps_nnapi_interfaces_outside_unselected_utilities(self):
+    def test_nnapi_helpers_are_restored_with_the_complete_provider_sources(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
         self.assertNotIn("-hardware/interfaces/neuralnetworks/", scopes)
         for version in ("1.0", "1.1", "1.2", "1.3", "aidl"):
             interface = f"hardware/interfaces/neuralnetworks/{version}/"
             self.assertTrue(source_path_allowed(interface + "Android.bp", scopes))
-            self.assertFalse(source_path_allowed(interface + "utils/Android.bp", scopes))
+            self.assertTrue(source_path_allowed(interface + "utils/Android.bp", scopes))
+        for utility in ("common", "service", "adapter/aidl", "adapter/hidl"):
+            source = f"hardware/interfaces/neuralnetworks/utils/{utility}/Android.bp"
+            self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertTrue(source_path_allowed("hardware/interfaces/neuralnetworks/aidl/aidl_api/Android.bp", scopes))
         self.assertFalse(source_path_allowed("hardware/interfaces/neuralnetworks/aidl/vts/functional/Android.bp", scopes))
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("nine original Blueprint files", "eighteen modules", "six negative prefixes",
+                     "3e2bcbf17426a5783f034c8b0bb0d26743b39892",
+                     "does not install or validate NNAPI execution"):
+            self.assertIn(fact, readme)
 
     def test_original_tradefed_provider_is_reincluded_without_platform_test_aggregate(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

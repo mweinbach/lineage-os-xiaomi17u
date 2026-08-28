@@ -27,7 +27,6 @@ are omitted by the minimal manifest. This recovery product uses the supported
 | --- | --- |
 | `hardware/google/aemu/` | Emulator graphics host tooling without its gfxstream defaults |
 | `packages/modules/AdServices/` | Advertising services and their test collectors |
-| `hardware/interfaces/neuralnetworks/utils/` | Neural-network adapters outside recovery functionality |
 | `hardware/interfaces/virtualization/capabilities_service/vts/` | Virtualization capability VTS tests |
 
 The initial `system/secretkeeper/` exclusion was later removed when restored
@@ -77,24 +76,29 @@ bounded recovery/core/ADB/vold and protected validation source scan. This
 does not establish transitive closure; a dependency that the next graph finds
 must still be restored.
 
-The neural-network review found that restoring only the genuine project's
-root and `common/types` files cannot supply a coherent provider set.
+The initial neural-network review found that restoring only the project's
+root and `common/types` files could not supply a coherent provider set.
 `neuralnetworks_types_cl` needs defaults in `common/Android.bp`, which also
-introduces runtime, shim and external ML dependencies absent from this source
-selection. No reduced or empty copy of those defaults is substituted.
-This recovery does not integrate NNAPI execution, so the product excludes
-the five implementation utility scopes
-`hardware/interfaces/neuralnetworks/{1.0,1.1,1.2,1.3,aidl}/utils/` and the
-single retained consumer
-`hardware/interfaces/neuralnetworks/aidl/vts/functional/`. These utilities
-contain runtime libraries as well as tests. The HIDL and AIDL interface
-definitions remain included. No direct recovery or protected validation
-consumer was found; the AIDL VTS test was the only remaining consumer outside
-the already-excluded canonical utilities, and has no external module references
-in the bounded scan.
+introduces runtime, shim and external ML dependencies. The original temporary
+utility exclusions avoided those absent providers without substituting empty
+defaults. The complete dependency sources are now required by the shared
+text-classifier hash provider reached through graph 18's Bluetooth protobuf
+restoration, so those utility exclusions are removed.
 
-Graph 17 failed at `CtsNNAPITestCases`, which requires the absent
-`CtsNNAPITests_static` and `libneuralnetworks` providers. The product now
+Removing six negative prefixes restores nine original Blueprint files at
+frozen hardware-interface commit `3e2bcbf17426a5783f034c8b0bb0d26743b39892`:
+the five `hardware/interfaces/neuralnetworks/{1.0,1.1,1.2,1.3,aidl}/utils/`
+files and the canonical `utils/{common,service,adapter/aidl,adapter/hidl}/`
+files. They retain eighteen modules, including their original utility tests,
+defaults and metadata. Real `neuralnetworks_types` and utility defaults come
+from the complete pinned NeuralNetworks project, with its external dependencies.
+This source restoration does not install or validate NNAPI execution in
+recovery. HIDL/AIDL interface definitions remain included; the unrelated
+`hardware/interfaces/neuralnetworks/aidl/vts/functional/` test leaf remains
+excluded and has no new incoming dependency in the reviewed NN declarations.
+
+Graph 17 failed at `CtsNNAPITestCases` because `CtsNNAPITests_static` and
+`libneuralnetworks` were absent at that point. The recovery profile still
 excludes only `cts/tests/tests/neuralnetworks/`: its five original Blueprint
 files define four tests and one JNI test library. They retain their original
 source bytes and global Apache package metadata in the checkout. A complete
@@ -394,8 +398,9 @@ recovery fstab nor an invented decryption configuration is used here.
 **An empty fstab does not make TWRP read-only.** The pinned recovery still has
 startup paths that clear bootloader messages, run scripts and pending
 OpenRecoveryScript commands, write settings/logs and disable stock recovery
-replacement. Its source also includes installer, sideload and formatting
-code. The flags above do not remove or prove safe all those paths. Before any
+replacement. Its source also includes installer and formatting code. The
+separate minadbd/sideload guard rejects that transport before changing USB
+state; it does not disable or prove safe the other write paths. Before any
 separately authorized boot test, review and constrain startup/actions, inspect
 the ramdisk and compiled policy, verify authentication and the boot chain, and
 establish a stock-return procedure. Data decryption, metadata access, backups,
