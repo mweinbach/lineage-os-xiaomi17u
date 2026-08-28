@@ -93,6 +93,11 @@ include vendor/twrp/config/BoardConfigSoong.mk
 # supported helper so recovery's boolean selects retain their type checks.
 $(call soong_config_set_bool, twrpGlobalVars, include_se_omapi, false)
 
+# Select the reviewed native recovery profile for this product only. Its source
+# patches gate specific unrelated JVM UI tests, not their production modules
+# or the SELinux, signature, ELF and dependency validators.
+$(call soong_config_set_bool, nezha_twrp, native_recovery_only, true)
+
 ifneq ($(filter $(TARGET_BUILD_VARIANT),user userdebug),$(TARGET_BUILD_VARIANT))
 $(error Nezha TWRP accepts only user or userdebug builds)
 endif

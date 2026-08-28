@@ -199,6 +199,17 @@ team metadata have real providers in included source paths. The large
 `platform_testing/Android.bp` test aggregate remains excluded. No module,
 license declaration or dependency check is replaced.
 
+The Nezha native recovery profile explicitly sets the boolean
+`nezha_twrp.native_recovery_only` after the vendor configuration. The reviewed
+source patches use it to disable 19 specific Robolectric test and helper
+modules through their `enabled` selections, with `true: false` and
+`default: unset`. Other products leave the switch unset and retain their
+original enabled behavior. Production SystemUI and Bluetooth modules, package
+metadata, defaults and shared helpers remain in the source graph. SELinux
+policy and fuzzer checks, signature verification, ELF checks and dependency
+validation remain enabled. This native profile does not run those JVM UI
+tests and is not a full Android test profile.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.

@@ -230,6 +230,38 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertEqual(self.board[setting], "false", setting)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
 
+    def test_native_recovery_profile_is_typed_and_local_to_this_product(self):
+        lines = list(logical_lines(self.board_text))
+        vendor_include = "include vendor/twrp/config/BoardConfigSoong.mk"
+        profile_enable = "$(call soong_config_set_bool, nezha_twrp, native_recovery_only, true)"
+        self.assertEqual(lines.count(profile_enable), 1)
+        self.assertLess(lines.index(vendor_include), lines.index(profile_enable))
+        self.assertEqual([line for line in lines if "native_recovery_only" in line], [profile_enable])
+        self.assertNotIn("native_recovery_only", self.product_text + self.device_text)
+        self.assertNotIn("native_recovery_only", (ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text())
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_native_recovery_profile_keeps_production_and_validation_sources(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in ("frameworks/base/packages/SystemUI/Android.bp",
+                       "frameworks/base/packages/SystemUI/compose/scene/tests/utils/Android.bp",
+                       "packages/modules/Bluetooth/service/Android.bp",
+                       "system/sepolicy/Android.bp", "system/sepolicy/tests/Android.bp",
+                       "system/sepolicy/contexts/Android.bp", "external/avb/Android.bp",
+                       "tools/apksig/Android.bp", "system/libvintf/Android.bp",
+                       "build/soong/Android.bp", "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
+        self.assertEqual(self.device["PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING"], "true")
+        for setting in ("ALLOW_MISSING_DEPENDENCIES", "BUILD_BROKEN_MISSING_REQUIRED_MODULES",
+                        "SELINUX_IGNORE_NEVERALLOWS", "BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES"):
+            self.assertNotEqual(self.board.get(setting), "true", setting)
+            self.assertIn("$(" + setting + ")", self.board_text)
+        readme = (DEVICE / "README.md").read_text()
+        self.assertIn("native_recovery_only", readme)
+        self.assertIn("default: unset", readme)
+        self.assertIn("not a full Android test profile", readme)
+
     def test_theme_output_is_not_faked_in_device_configuration(self):
         # The upstream theme hook reads the runner's OUT environment variable,
         # normally populated by lunch from absolute PRODUCT_OUT. Device config
