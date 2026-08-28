@@ -372,6 +372,34 @@
       "commit": "4ce3b1286e402f28c53e0729925e1cde691fe968",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP slicer_ndk provider required by Dexmaker native agent defaults."
+    },
+    {
+      "path": "external/apache-commons-math",
+      "url": "https://android.googlesource.com/platform/external/apache-commons-math",
+      "commit": "54b2db9e0e10bf0f5f34e97234201980f9757335",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP apache-commons-math3 provider required by the retained CTS API coverage tool."
+    },
+    {
+      "path": "prebuilts/r8",
+      "url": "https://android.googlesource.com/platform/prebuilts/r8",
+      "commit": "318c3c8b381636efd5d7b00d085b07eeb5515949",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP d8 and R8 host dex compiler providers required by retained CTS Dalvik tools."
+    },
+    {
+      "path": "external/google-smali",
+      "url": "https://android.googlesource.com/platform/external/google-smali",
+      "commit": "112192259df4c8cfe9491affe3728f98024a630c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP android-smali dex assembler provider required by retained CTS Dalvik tools."
+    },
+    {
+      "path": "external/okio",
+      "url": "https://android.googlesource.com/platform/external/okio",
+      "commit": "bef9e8ef12ad63247afe846957492f4ddb0f2b42",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP okio-lib provider required by the retained okhttp-norepackage library."
     }
   ]
 }
