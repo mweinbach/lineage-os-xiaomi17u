@@ -39,7 +39,8 @@ That link must already exist in the packaged ramdisk: cgroup setup runs before
 `early-init` and `init`, so a later init-script symlink alone is insufficient.
 The original providers, dependencies, contents, file-context rules, and product
 inheritance are unchanged. All 182 source-selection rules and every other
-non-package device assignment remain unchanged. A future generated product
+non-package device assignment were unchanged by that package addition; later
+source restorations append rules as documented below. A future generated product
 package list should differ from the recorded eight roots only by the three
 explicit additions; that expanded list is not a transitive installed-file
 inventory and must be checked after the next graph.
@@ -431,8 +432,9 @@ latest API text modules. `metalava-manual` is an existing exported-directory
 module, not a missing source folder. Original genrule tool resolution and
 visibility checks remain unchanged.
 
-All other Car Blueprint files, including `service/Android.bp` and the Car tests,
-remain excluded. The earlier closed host CTS subtree stays excluded, while its
+At that stage, all other Car Blueprint files, including `service/Android.bp`
+and the Car tests, remained excluded. The later APEX restoration below selects
+the required service file. The earlier closed host CTS subtree stays excluded, while its
 `cts/hostsidetests/car_builtin/` sibling and the other retained consumers remain selected. This
 restoration is a source-audit projection, not a graph 25 failure or a working
 Car feature. The original source records, flags, generator commands and API
@@ -504,7 +506,7 @@ The source audit accounts for their direct references, metadata and raw inputs;
 it is not a successful build or a claim of complete transitive graph closure.
 SystemUI and the shared platform test/Robolectric sources remain companion work.
 
-The five scoped projects use 17 source rules: one negative directory prefix for
+At that stage, the five scoped projects used 17 source rules: one negative directory prefix for
 each project and twelve exact positive Blueprint files. CellBroadcastService's
 root retains its real stats generator and app definitions; CellBroadcastReceiver
 provides the complete permissions filegroup file. Settings' flags require their
@@ -513,7 +515,7 @@ original license owner in the root file, which also retains `Settings-core` and
 `launcher-aosp-tapl`. Traceur's root keeps `TraceurCommon`, `Traceur-res` and the
 inseparable app declaration. This does not install Settings, Launcher3, Traceur
 or either CellBroadcast app in recovery: at that stage `PRODUCT_PACKAGES` was `recovery`.
-Other Blueprint files in these five projects stay outside this source profile.
+Other Blueprint files in these five projects remained outside the profile at that stage.
 
 The complete original SetupWizard, SetupDesign, SetupCompat and ZXing providers
 need no additional scope rules. The subsampling image library and Dancing Script
@@ -678,9 +680,9 @@ versions 2 and 3, and the internal interface importing public V3. Its original
 `build/make/teams/Android.bp`; the global Apache license provider is also selected.
 
 That selection had 165 source rules. The previous 164 rules retain
-their order, and the broad Car exclusion remains in place: no neighboring
-watchdog implementation, power, telemetry, service or test Blueprint is
-restored. `PRODUCT_PACKAGES` was then `recovery`; this source-provider repair
+their order, and the broad Car exclusion remained in place: that step restored
+no neighboring watchdog implementation, power, telemetry, service or test
+Blueprint. `PRODUCT_PACKAGES` was then `recovery`; this source-provider repair
 does not install a Car service or establish compilation or device behavior.
 Source definitions, API declarations, feature flags and validators are unchanged.
 
@@ -841,11 +843,98 @@ Recursive source trees for these three projects contain no `Android.mk` or
 `CleanSpec.mk`. Goldfish's `AndroidProducts.mk` registers 14 product paths;
 the original product loader imports only the selected `twrp_nezha` product.
 No Goldfish product, board, firmware, kernel or identity is inherited. The
-current selection has 182 source rules: the original 173, four Trusty file
+selection at that stage had 182 source rules: the original 173, four Trusty file
 exclusions and five Goldfish rules, in that order. All other device make
 assignments, signature, AVB, SELinux, VINTF and dependency checks remain
 unchanged. These provider and execution-path checks do not demonstrate a
 successful graph, image build or remote-execution run.
+
+Graph 47 rejects `com.android.cellbroadcast` in the original `apex_available`
+list of `aconfig_settingstheme_exported_flags_java_lib`, at
+`frameworks/base/AconfigFlags.bp:1918` in variant `android_common_apex30`.
+The real APEX definition was filtered out. The target restores these three
+complete files from the already pinned CellBroadcastReceiver revision
+`b97c8a4ffa3946d7206808bf4810746678b44a5c`:
+
+- `packages/apps/CellBroadcastReceiver/Android.bp`
+- `packages/apps/CellBroadcastReceiver/apex/Android.bp`
+- `packages/apps/CellBroadcastReceiver/flags/Android.bp`
+
+The original APEX contains `CellBroadcastApp` and `CellBroadcastServiceModule`.
+The receiver root supplies `CellBroadcastApp`, `CellBroadcastCommon`, its
+shared proto library, and the platform alternative app. The flags file supplies
+`cellbroadcastreceiver_flags_lib` needed by `CellBroadcastCommon`. The service
+root remains selected at revision `1249b4c132181f66cbc5a36168570f12390b4b2d`,
+as does the receiver's existing permissions Blueprint. The rest of both
+projects stays filtered, including the receiver's legacy app, overlays and
+test files.
+
+The complete original APEX defaults, app certificates, APEX key declarations,
+package and license metadata, visibility, manifests, resources, and generation
+rules are preserved. The framework's `apex_available` list is unchanged; no
+APEX name, dependency validator or signature check is bypassed. The selection
+at that step had 185 rules: the unchanged 182-rule prefix followed by these three exact
+file rules. All four recovery package requests and every other device make
+assignment remain unchanged. `TW_EXCLUDE_APEX` stays true; this source
+restoration does not enable installed-system APEX discovery or add a
+CellBroadcast app or APEX to `PRODUCT_PACKAGES`.
+
+This repairs source selection, not a demonstrated build, final image inventory,
+CellBroadcast operation or recovery runtime feature. The next strict graph must
+validate the restored original providers and their dependencies; SELinux, AVB,
+VINTF, signature and license checks remain enabled. This restoration adds no
+API waiver.
+
+A separate source projection after Graph 47 found `com.android.car.framework`
+also filtered from retained `apex_available` lists. This was a projected
+dependency, not another observed Graph 47 diagnostic. Its original APEX,
+`ScriptExecutor`, `android.car-module`, service, proto and support providers
+require thirteen exact Blueprint exceptions from existing owners. Eleven are
+from `packages/services/Car` at `61256ae811853028effed5c2c7227aebc347dc5e`;
+two are VHAL property/configuration files from the frozen base
+`hardware/interfaces` revision `3e2bcbf17426a5783f034c8b0bb0d26743b39892`.
+The exact thirteen paths are listed in `device.mk`. The already selected
+watchdog AIDL file is not added again, and the broad Car and VHAL exclusions
+remain in place around the reviewed files.
+
+The APEX's system-server classpath fragment also needs the original
+`car-frameworks-service-module`. Its owner, `frameworks/opt/car/services`, is
+pinned at `d1edb5049c9e9bcadc38fa1069e6dbb525bb4d43`. A new negative project
+prefix is followed by exactly three complete file exceptions:
+
+- `frameworks/opt/car/services/builtInServices/Android.bp`
+- `frameworks/opt/car/services/builtInServices/proto/Android.bp`
+- `frameworks/opt/car/services/updatableServices/Android.bp`
+
+These retain the real `car-frameworks-service` SDK, `car-builtin-protos`,
+`car-frameworks-updatable-service-sources` and module library. Its generated
+`car-frameworks-service.stubs.module_lib` comes from the original SDK factory;
+no synthetic stub or namespace is introduced. The same factory still creates
+its implementation/XML modules and SDK registration. The original Java, API,
+proto and jarjar inputs are retained. The project's JNI and test Blueprints
+stay excluded, and it has no `Android.mk`, `AndroidProducts.mk` or `CleanSpec.mk`.
+
+The original Car APEX still names `CarServiceUpdatable` and `ScriptExecutor`,
+with `android.car-module` in its bootclasspath fragment. Complete signing,
+file-context, package, license, team and visibility declarations are preserved,
+as are the original shared test helpers in the selected files. No new test
+gate or Car product inheritance is added. Both `android.car-module` and
+`car-frameworks-service` keep upstream `api_lint.enabled: true` and
+`unsafe_ignore_missing_latest_api: true`. The latter disables latest-API
+comparisons and can suppress conditional API lint in the original factory.
+It is not a new waiver, and this audit does not demonstrate API-lint execution
+or identical API validation coverage. Original current/removed API files
+remain required.
+
+The combined selection has 202 rules: the unchanged 182-rule prefix, the three
+CellBroadcast restorations, then these thirteen existing-owner file rules and
+four framework-service rules. Only one source owner is added. All four recovery
+package requests and every non-source device assignment remain unchanged;
+`TW_EXCLUDE_APEX` stays true. No Car app or APEX is added to `PRODUCT_PACKAGES`;
+no Car firmware, kernel, product or device identity is inherited. This is bounded
+source closure, not a successful graph, compilation, image inventory or Car runtime
+test. Generated variants and the actual recovery image still require strict
+build validation.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

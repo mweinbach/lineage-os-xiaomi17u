@@ -152,7 +152,7 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     packages/services/Car/teams/Android.bp
 
 # Retained CTS consumers also require the original Car API/stub generators.
-# Select the five audited provider files, without the Car service or tests.
+# This five-file step preceded the separate Car APEX restoration below.
 PRODUCT_SOURCE_ROOT_DIRS += \
     packages/services/Car/car-lib/Android.bp \
     packages/services/Car/aconfig/Android.bp \
@@ -395,7 +395,7 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 
 # Graph 39's retained vehicle libraries need the original watchdog AIDL owner.
 # Its public versions and internal interface share this one reviewed file.
-# Keep the remaining Car implementation and service scopes excluded.
+# Later reviewed Car APEX providers are restored separately below.
 PRODUCT_SOURCE_ROOT_DIRS += \
     packages/services/Car/cpp/watchdog/aidl/Android.bp
 
@@ -438,6 +438,35 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     device/generic/goldfish/tools/Android.bp \
     -device/generic/goldfish-opengl/ \
     device/generic/goldfish-opengl/Android.bp
+
+# Graph 47 validates the framework settings-theme library's original APEX name.
+# Restore the real CellBroadcast APEX, receiver apps/library and flags together.
+# Keep complete files and their metadata; do not add an APEX or app package.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/apps/CellBroadcastReceiver/Android.bp \
+    packages/apps/CellBroadcastReceiver/apex/Android.bp \
+    packages/apps/CellBroadcastReceiver/flags/Android.bp
+
+# A separate APEX-availability projection needs the original Car framework APEX.
+# Select only its reviewed complete provider files; inherit no Car product.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/services/Car/apex_car_framework/Android.bp \
+    packages/services/Car/packages/ScriptExecutor/Android.bp \
+    packages/services/Car/car-lib-module/Android.bp \
+    packages/services/Car/service/Android.bp \
+    packages/services/Car/car-lib/generated-prop-config/Android.bp \
+    packages/services/Car/libs/car-watchdog-lib/Android.bp \
+    packages/services/Car/libs/procfs-inspector/client/Android.bp \
+    packages/services/Car/cpp/telemetry/proto/Android.bp \
+    packages/services/Car/data/etc/Android.bp \
+    packages/services/Car/cpp/power/aidl/Android.bp \
+    packages/services/Car/cpp/telemetry/cartelemetryd/aidl/Android.bp \
+    hardware/interfaces/automotive/vehicle/aidl/impl/current/utils/test_vendor_properties/Android.bp \
+    hardware/interfaces/automotive/vehicle/aidl/impl/current/default_config/config/Android.bp \
+    -frameworks/opt/car/services/ \
+    frameworks/opt/car/services/builtInServices/Android.bp \
+    frameworks/opt/car/services/builtInServices/proto/Android.bp \
+    frameworks/opt/car/services/updatableServices/Android.bp
 
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.

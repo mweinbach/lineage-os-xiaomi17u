@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
 RECOVERY_PACKAGES = "recovery adbd.recovery cgroups.recovery.json task_profiles.json.recovery"
 RECOVERY_SOURCE_RULES_SHA256 = "dd1778493980e7a93a254483395d1e1059070ed60685932ab2ac74d5b3cea61e"
+GRAPH47_NON_SOURCE_ASSIGNMENTS_SHA256 = "204fa965fd8b30c3984094399eb1c4d9002e08908f848f4bc44644f326cf59e0"
+GRAPH47_CELLBROADCAST_RULES_SHA256 = "1eebbd89b0b17e2ce7066337d1669c375aaa3c022178d578b7b6b5eeb1461c8e"
 MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp"
 AUDIO_TEST_BLUEPRINT = "system/media/audio_utils/tests/Android.bp"
 GRAPH14_TEST_BLUEPRINTS = (
@@ -80,6 +82,27 @@ CAR_API_BLUEPRINTS = (
     "packages/services/Car/libs/car-internal-dep-lib/Android.bp",
     "packages/services/Car/prebuilts/Android.bp",
 )
+CAR_APEX_BLUEPRINTS = (
+    "packages/services/Car/apex_car_framework/Android.bp",
+    "packages/services/Car/packages/ScriptExecutor/Android.bp",
+    "packages/services/Car/car-lib-module/Android.bp",
+    "packages/services/Car/service/Android.bp",
+    "packages/services/Car/car-lib/generated-prop-config/Android.bp",
+    "packages/services/Car/libs/car-watchdog-lib/Android.bp",
+    "packages/services/Car/libs/procfs-inspector/client/Android.bp",
+    "packages/services/Car/cpp/telemetry/proto/Android.bp",
+    "packages/services/Car/data/etc/Android.bp",
+    "packages/services/Car/cpp/power/aidl/Android.bp",
+    "packages/services/Car/cpp/telemetry/cartelemetryd/aidl/Android.bp",
+    "hardware/interfaces/automotive/vehicle/aidl/impl/current/utils/test_vendor_properties/Android.bp",
+    "hardware/interfaces/automotive/vehicle/aidl/impl/current/default_config/config/Android.bp",
+)
+CAR_FRAMEWORK_SERVICES_PARENT = "frameworks/opt/car/services/"
+CAR_FRAMEWORK_SERVICES_BLUEPRINTS = (
+    CAR_FRAMEWORK_SERVICES_PARENT + "builtInServices/Android.bp",
+    CAR_FRAMEWORK_SERVICES_PARENT + "builtInServices/proto/Android.bp",
+    CAR_FRAMEWORK_SERVICES_PARENT + "updatableServices/Android.bp",
+)
 ADSERVICES_API_BLUEPRINTS = tuple("packages/modules/AdServices/" + path for path in (
     "Android.bp",
     "adservices/framework/Android.bp",
@@ -124,6 +147,11 @@ FRAMEWORK_PROVIDER_EXCLUSIONS = (
     "-packages/apps/Settings/",
     "-packages/apps/Launcher3/",
     "-packages/apps/Traceur/",
+)
+CELLBROADCAST_APEX_BLUEPRINTS = (
+    "packages/apps/CellBroadcastReceiver/Android.bp",
+    "packages/apps/CellBroadcastReceiver/apex/Android.bp",
+    "packages/apps/CellBroadcastReceiver/flags/Android.bp",
 )
 WIFI_TRACKER_BLUEPRINT = "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp"
 WIFI_SYSTEM_BLUEPRINT = "frameworks/opt/net/wifi/libwifi_system/Android.bp"
@@ -208,14 +236,17 @@ SOURCE_FILE_REINCLUSIONS = {
     *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
+    *CELLBROADCAST_APEX_BLUEPRINTS,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *CUTTLEFISH_PROVIDER_BLUEPRINTS,
     *GOLDFISH_PROVIDER_BLUEPRINTS,
     TEST_UTILS_BLUEPRINT, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_WATCHDOG_BLUEPRINT,
+    *CAR_APEX_BLUEPRINTS, *CAR_FRAMEWORK_SERVICES_BLUEPRINTS,
     *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + CAR_FRAMEWORK_SERVICES_PARENT,
     "-" + GOLDFISH_PARENT,
     "-" + GOLDFISH_OPENGL_PARENT,
     "-" + CUTTLEFISH_PARENT,
@@ -262,6 +293,7 @@ SOURCE_REINCLUSIONS = [
     *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
+    *CELLBROADCAST_APEX_BLUEPRINTS,
     *AEMU_PROVIDER_BLUEPRINTS,
     *CUTTLEFISH_PROVIDER_BLUEPRINTS,
     *GOLDFISH_PROVIDER_BLUEPRINTS,
@@ -270,6 +302,7 @@ SOURCE_REINCLUSIONS = [
     WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT,
     *CAR_API_BLUEPRINTS,
+    *CAR_APEX_BLUEPRINTS, *CAR_FRAMEWORK_SERVICES_BLUEPRINTS,
     CAR_SETTINGS_FLAGS_BLUEPRINT,
     CAR_WATCHDOG_BLUEPRINT,
     *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS,
@@ -409,10 +442,10 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertTrue(source_path_allowed(provider, scopes), provider)
         self.assertIn("original recovery daemon and logd scheduling inputs", self.device_text)
 
-    def test_recovery_package_addition_preserves_all_source_rules_and_security_flags(self):
+    def test_recovery_package_addition_preserves_source_prefix_and_security_flags(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 182)
-        raw = json.dumps(scopes, separators=(",", ":")).encode()
+        self.assertGreaterEqual(len(scopes), 182)
+        raw = json.dumps(scopes[:182], separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), RECOVERY_SOURCE_RULES_SHA256)
         self.assertEqual(self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"],
                          "ro.secure=1 ro.adb.secure=1")
@@ -433,7 +466,7 @@ class TwrpDeviceTests(unittest.TestCase):
                      "/system/etc/task_profiles.json", "task_profiles_file", "original `/etc` link",
                      "link must already exist in the packaged ramdisk", "cgroup setup runs before",
                      "later init-script symlink alone is insufficient",
-                     "All 182 source-selection rules", "non-package device assignment remain unchanged",
+                     "All 182 source-selection rules", "non-package device assignment were unchanged",
                      "recorded eight roots only by the three explicit additions",
                      "not a transitive installed-file inventory", "default `user` build",
                      "does not alter decryption or network settings", "does not enforce USB-only behavior",
@@ -861,14 +894,15 @@ class TwrpDeviceTests(unittest.TestCase):
                      "separate Car team metadata dependency"):
             self.assertIn(fact, readme)
 
-    def test_car_team_and_api_providers_keep_the_car_service_outside_the_profile(self):
+    def test_car_provider_scope_keeps_only_reviewed_api_and_apex_files(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
         parent = "packages/services/Car/"
         self.assertIn("-" + parent, scopes)
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
-                         {CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_WATCHDOG_BLUEPRINT})
+                         {CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_WATCHDOG_BLUEPRINT,
+                          *(source for source in CAR_APEX_BLUEPRINTS if source.startswith(parent))})
         self.assertTrue(source_path_allowed(CAR_TEAMS_BLUEPRINT, scopes))
-        for source in (parent + "Android.bp", parent + "service/Android.bp", parent + "tests/Android.bp",
+        for source in (parent + "Android.bp", parent + "service/tests/Android.bp", parent + "tests/Android.bp",
                        parent + "teams/other.bp", parent + "teams/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for source in ("packages/services/Car_sibling/Android.bp",
@@ -981,7 +1015,8 @@ class TwrpDeviceTests(unittest.TestCase):
         for excluded in FRAMEWORK_PROVIDER_EXCLUSIONS:
             self.assertIn(excluded, scopes)
             parent = excluded[1:]
-            selected = {path for path in FRAMEWORK_PROVIDER_BLUEPRINTS if path.startswith(parent)}
+            selected = {path for path in (*FRAMEWORK_PROVIDER_BLUEPRINTS, *CELLBROADCAST_APEX_BLUEPRINTS)
+                        if path.startswith(parent)}
             self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, selected)
             for source in selected:
                 self.assertTrue(source_path_allowed(source, scopes), source)
@@ -1056,7 +1091,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 182)
+        self.assertEqual(len(scopes), 202)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -1277,7 +1312,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        parent + "aidl/tests/Android.bp", parent + "aidl_sibling/Android.bp",
                        parent + "server/Android.bp", "packages/services/Car/cpp/powerpolicy/Android.bp",
                        "packages/services/Car/cpp/telemetry/Android.bp",
-                       "packages/services/Car/service/Android.bp", "packages/services/Car/tests/Android.bp"):
+                       "packages/services/Car/service/tests/Android.bp", "packages/services/Car/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for source in (CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS,
                        "hardware/interfaces/automotive/vehicle/2.0/default/Android.bp",
@@ -1551,6 +1586,139 @@ class TwrpDeviceTests(unittest.TestCase):
                      "No Goldfish product, board, firmware, kernel or identity is inherited",
                      "182 source rules", "original 173, four Trusty file exclusions and five Goldfish rules",
                      "do not demonstrate a successful graph, image build or remote-execution run"):
+            self.assertIn(fact, readme)
+
+    def test_graph_forty_seven_cellbroadcast_appends_three_complete_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertGreaterEqual(len(scopes), 185)
+        previous = json.dumps(scopes[:182], separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(previous).hexdigest(), RECOVERY_SOURCE_RULES_SHA256)
+        self.assertEqual(scopes[182:185], list(CELLBROADCAST_APEX_BLUEPRINTS))
+        self.assertEqual(len(CELLBROADCAST_APEX_BLUEPRINTS), 3)
+        for source in CELLBROADCAST_APEX_BLUEPRINTS:
+            self.assertEqual(scopes.count(source), 1)
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = source.removesuffix("Android.bp")
+            for sibling in ("other.bp", "unrelated/Android.bp"):
+                self.assertFalse(source_path_allowed(parent + sibling, scopes), parent + sibling)
+
+    def test_graph_forty_seven_cellbroadcast_keeps_the_remaining_project_filtered(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        receiver = "packages/apps/CellBroadcastReceiver/"
+        service = "packages/modules/CellBroadcastService/"
+        self.assertIn("-" + receiver, scopes)
+        self.assertIn("-" + service, scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(receiver)},
+                         {*CELLBROADCAST_APEX_BLUEPRINTS, receiver + "apex/permissions/Android.bp"})
+        self.assertEqual({rule for rule in scopes if rule.startswith(service)}, {service + "Android.bp"})
+        for path in ("RROSampleTestApp/Android.bp", "apex/testing/Android.bp", "legacy/Android.bp",
+                     "tests/compliancetests/Android.bp", "tests/testapp/Android.bp", "tests/unit/Android.bp"):
+            self.assertFalse(source_path_allowed(receiver + path, scopes), path)
+        for source in (receiver + "apex/permissions/Android.bp", service + "Android.bp",
+                       "frameworks/base/AconfigFlags.bp", "frameworks/base/packages/SettingsLib/Android.bp",
+                       "external/avb/Android.bp", "system/sepolicy/Android.bp", "system/libvintf/Android.bp",
+                       "tools/apksig/Android.bp", "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
+        self.assertEqual(self.board["TW_EXCLUDE_APEX"], "true")
+
+    def test_graph_forty_seven_cellbroadcast_changes_no_other_device_assignments(self):
+        unchanged = {key: value for key, value in self.device.items() if key != "PRODUCT_SOURCE_ROOT_DIRS"}
+        raw = json.dumps(unchanged, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), GRAPH47_NON_SOURCE_ASSIGNMENTS_SHA256)
+
+    def test_graph_forty_seven_cellbroadcast_records_original_providers_and_limits(self):
+        projects = json.loads((ROOT / "config/twrp-dependencies.json").read_text())["projects"]
+        pins = {project["path"]: project["commit"] for project in projects}
+        self.assertEqual(pins["packages/apps/CellBroadcastReceiver"],
+                         "b97c8a4ffa3946d7206808bf4810746678b44a5c")
+        self.assertEqual(pins["packages/modules/CellBroadcastService"],
+                         "1249b4c132181f66cbc5a36168570f12390b4b2d")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in (*CELLBROADCAST_APEX_BLUEPRINTS, "Graph 47",
+                     "aconfig_settingstheme_exported_flags_java_lib", "android_common_apex30",
+                     "frameworks/base/AconfigFlags.bp:1918", "com.android.cellbroadcast",
+                     "b97c8a4ffa3946d7206808bf4810746678b44a5c",
+                     "1249b4c132181f66cbc5a36168570f12390b4b2d",
+                     "CellBroadcastApp", "CellBroadcastServiceModule", "CellBroadcastCommon",
+                     "cellbroadcastreceiver_flags_lib", "platform alternative app",
+                     "APEX key declarations", "package and license metadata",
+                     "framework's `apex_available` list is unchanged",
+                     "185 rules", "unchanged 182-rule prefix", "All four recovery package requests",
+                     "every other device make assignment remain unchanged", "`TW_EXCLUDE_APEX` stays true",
+                     "not a demonstrated build, final image inventory", "license checks remain enabled"):
+            self.assertIn(fact, readme)
+
+    def test_car_apex_projection_appends_exactly_the_reviewed_seventeen_rules(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(scopes), 202)
+        self.assertEqual(len(scopes), len(set(scopes)))
+        previous = json.dumps(scopes[:185], separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(previous).hexdigest(), GRAPH47_CELLBROADCAST_RULES_SHA256)
+        self.assertEqual(len(CAR_APEX_BLUEPRINTS), 13)
+        self.assertEqual(scopes[185:198], list(CAR_APEX_BLUEPRINTS))
+        self.assertEqual(scopes[198:202], ["-" + CAR_FRAMEWORK_SERVICES_PARENT,
+                                         *CAR_FRAMEWORK_SERVICES_BLUEPRINTS])
+        for source in (*CAR_APEX_BLUEPRINTS, *CAR_FRAMEWORK_SERVICES_BLUEPRINTS):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = source.removesuffix("Android.bp")
+            for sibling in ("other.bp", "unrelated/Android.bp"):
+                self.assertFalse(source_path_allowed(parent + sibling, scopes), parent + sibling)
+
+    def test_car_apex_projection_preserves_filtered_neighbors_and_recovery_packages(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual({rule for rule in scopes if rule.startswith(CAR_FRAMEWORK_SERVICES_PARENT)},
+                         set(CAR_FRAMEWORK_SERVICES_BLUEPRINTS))
+        for source in ("packages/services/Car/Android.bp", "packages/services/Car/tests/Android.bp",
+                       "packages/services/Car/service/tests/Android.bp",
+                       "packages/services/Car/cpp/telemetry/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/aidl/impl/current/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/aidl/impl/current/utils/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/aidl/impl/current/default_config/Android.bp",
+                       CAR_FRAMEWORK_SERVICES_PARENT + "Android.bp",
+                       CAR_FRAMEWORK_SERVICES_PARENT + "tests/Android.bp",
+                       CAR_FRAMEWORK_SERVICES_PARENT + "updatableServices/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("packages/services/Car_sibling/Android.bp",
+                       "frameworks/opt/car/services_sibling/Android.bp", "frameworks/opt/car/Android.bp",
+                       "system/sepolicy/Android.bp", "system/sepolicy/apex/Android.bp",
+                       "system/libvintf/Android.bp", "external/avb/Android.bp",
+                       "build/soong/licenses/Android.bp", "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
+        self.assertEqual(self.board["TW_EXCLUDE_APEX"], "true")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+
+    def test_car_apex_projection_records_original_owners_and_api_limits(self):
+        projects = json.loads((ROOT / "config/twrp-dependencies.json").read_text())["projects"]
+        pins = {project["path"]: project["commit"] for project in projects}
+        self.assertEqual(pins["packages/services/Car"],
+                         "61256ae811853028effed5c2c7227aebc347dc5e")
+        self.assertEqual(pins["frameworks/opt/car/services"],
+                         "d1edb5049c9e9bcadc38fa1069e6dbb525bb4d43")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in (*CAR_FRAMEWORK_SERVICES_BLUEPRINTS, "com.android.car.framework",
+                     "projected dependency, not another observed Graph 47 diagnostic",
+                     "thirteen exact Blueprint exceptions", "Eleven are from `packages/services/Car`",
+                     "61256ae811853028effed5c2c7227aebc347dc5e",
+                     "3e2bcbf17426a5783f034c8b0bb0d26743b39892",
+                     "d1edb5049c9e9bcadc38fa1069e6dbb525bb4d43",
+                     "car-frameworks-service-module", "car-frameworks-service.stubs.module_lib",
+                     "car-builtin-protos", "car-frameworks-updatable-service-sources",
+                     "no synthetic stub or namespace", "implementation/XML modules and SDK registration",
+                     "JNI and test Blueprints stay excluded", "CarServiceUpdatable", "ScriptExecutor",
+                     "`android.car-module` in its bootclasspath fragment",
+                     "No new test gate or Car product inheritance",
+                     "`api_lint.enabled: true`", "`unsafe_ignore_missing_latest_api: true`",
+                     "can suppress conditional API lint", "not a new waiver",
+                     "does not demonstrate API-lint execution or identical API validation coverage",
+                     "Original current/removed API files remain required", "202 rules",
+                     "unchanged 182-rule prefix", "Only one source owner is added",
+                     "every non-source device assignment remain unchanged",
+                     "No Car app or APEX is added to `PRODUCT_PACKAGES`",
+                     "no Car firmware, kernel, product or device identity is inherited",
+                     "not a successful graph, compilation, image inventory or Car runtime test"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
