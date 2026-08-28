@@ -47773,7 +47773,7 @@
     "recovery_image_exists": false
   },
   "generated_configuration_observed": {
-    "attempt": 44,
+    "attempt": 45,
     "Allow_missing_dependencies": false,
     "SelinuxIgnoreNeverallows": false,
     "Enforce_vintf_manifest": true,
@@ -47781,8 +47781,8 @@
     "Debuggable": false,
     "source": {
       "path": "/work/out/twrp-nezha/soong/soong.twrp_nezha.variables",
-      "sha256": "8659416b1e65e845d5cd3712aa61193c5e08fd97a2bf08d98cf04f5f1141648b",
-      "size_bytes": 93862
+      "sha256": "e2d8f63677eb1b33bcf9a38682040b9afe7593465befd3e2bdc942826300dafd",
+      "size_bytes": 94329
     },
     "VendorVars": {
       "nezha_twrp": {
