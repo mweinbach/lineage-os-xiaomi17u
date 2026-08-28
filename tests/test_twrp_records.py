@@ -1,13 +1,49 @@
 """Check public TWRP source/stock records without a phone, network or blobs."""
 
+import copy
 import json
 from pathlib import Path
 import unittest
 from urllib.parse import urlparse
-import xml.etree.ElementTree as ET
+
+from scripts import twrp_dependencies, twrp_patch_state, twrp_workspace
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def reviewed_patch_inputs():
+    """Read the public controls with the same validators used by source tools."""
+    snapshot = ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
+    frozen = twrp_workspace.parse_manifest(snapshot.read_text(), resolved=True)
+    config = twrp_workspace.load_config(ROOT / "config/twrp.json")
+    reviewed = twrp_patch_state.patch_inventory(config, ROOT)
+    reviewed["supplementary_projects"] = twrp_dependencies.descriptor(ROOT)
+    return frozen, reviewed
+
+
+def validate_record_owners(frozen, reviewed):
+    """Resolve ownership from pins; an optional label cannot override it."""
+    owners = twrp_patch_state.validate_patch_bases(frozen, reviewed)
+    for patch in reviewed["patches"]:
+        if ("source_owner" in patch
+                and patch["source_owner"] != owners[patch["project"]]["kind"]):
+            raise ValueError("Patch ownership label conflicts with its pinned source catalog")
+    return owners
+
+
+def single_patch_fixture(frozen, reviewed, patch):
+    """Use a real pinned row for mutations without rescanning unrelated owners."""
+    project = patch["project"]
+    fixture = {"patches": [copy.deepcopy(patch)]}
+    if project in frozen:
+        return {project: copy.deepcopy(frozen[project])}, fixture
+    matches = [row for row in reviewed["supplementary_projects"]["projects"]
+               if row["path"] == project]
+    if len(matches) != 1:
+        raise ValueError("Fixture requires one real pinned supplementary owner")
+    fixture["supplementary_projects"] = {"projects": copy.deepcopy(matches)}
+    return {}, fixture
 
 
 class TwrpRecordTests(unittest.TestCase):
@@ -50,9 +86,8 @@ class TwrpRecordTests(unittest.TestCase):
         pins = {row["path"]: row["commit"] for row in self.upstream["pinned_projects"]}
         for row in self.upstream["aosp_project_pins"]:
             pins[row["path"]] = row["commit"]
-        snapshot = ET.parse(ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml")
-        frozen = {row.get("path", row.get("name")): row.get("revision")
-                  for row in snapshot.getroot().findall("project")}
+        frozen_catalog, reviewed = reviewed_patch_inputs()
+        frozen = {path: row["revision"] for path, row in frozen_catalog.items()}
         self.assertEqual(len(frozen), 391)
         for path, commit in pins.items():
             with self.subTest(known_project=path):
@@ -65,21 +100,85 @@ class TwrpRecordTests(unittest.TestCase):
         supplementary = {row["path"]: row for row in supplements["projects"]}
         self.assertEqual(len(supplementary), len(supplements["projects"]))
         self.assertTrue(set(frozen).isdisjoint(supplementary))
+        self.assertEqual(reviewed["patches"], series["patches"])
+        owners = validate_record_owners(frozen_catalog, reviewed)
+        self.assertEqual(set(owners), set(frozen) | set(supplementary))
         # The original queue still belongs to the unchanged Repo snapshot.
         # Additional standalone owners never overwrite a baseline identity.
         for patch in series["patches"][:14]:
             self.assertIn(patch["project"], frozen)
         for patch in series["patches"]:
             with self.subTest(patch=patch["id"]):
+                resolved = owners[patch["project"]]
+                self.assertEqual(patch["base_commit"], resolved["commit"])
+                self.assertEqual(patch["repository"], resolved["url"])
                 if patch["project"] in frozen:
+                    self.assertEqual(resolved["kind"], "base")
                     self.assertEqual(patch["base_commit"], frozen[patch["project"]])
                 else:
                     self.assertTrue(patch["project"] in supplementary,
                                     "Missing pinned supplementary owner: " + patch["project"])
                     owner = supplementary[patch["project"]]
-                    self.assertEqual(patch["source_owner"], "supplementary")
+                    # The catalog is authoritative even when an older immutable
+                    # entry omits this descriptive label. Pins, origin and both
+                    # Git blob identities remain mandatory in the real validator.
+                    self.assertEqual(resolved["kind"], "supplementary")
                     self.assertEqual(patch["base_commit"], owner["commit"])
                     self.assertEqual(patch["repository"], owner["url"])
+
+    def test_owner_labels_are_optional_but_cannot_conflict_with_pinned_ownership(self):
+        frozen, reviewed = reviewed_patch_inputs()
+        expected = validate_record_owners(frozen, reviewed)
+        for patch in reviewed["patches"]:
+            with self.subTest(patch=patch["id"]):
+                fixture_base, fixture = single_patch_fixture(frozen, reviewed, patch)
+                without_label = copy.deepcopy(fixture)
+                without_label["patches"][0].pop("source_owner", None)
+                self.assertEqual(validate_record_owners(fixture_base, without_label)[patch["project"]],
+                                 expected[patch["project"]])
+                mislabeled = copy.deepcopy(fixture)
+                kind = expected[patch["project"]]["kind"]
+                mislabeled["patches"][0]["source_owner"] = (
+                    "base" if kind == "supplementary" else "supplementary")
+                with self.assertRaisesRegex(ValueError, "ownership label conflicts"):
+                    validate_record_owners(fixture_base, mislabeled)
+
+    def test_supplementary_owner_validation_rejects_bad_pins_origins_and_git_blobs(self):
+        frozen, reviewed = reviewed_patch_inputs()
+        owners = validate_record_owners(frozen, reviewed)
+        for patch in reviewed["patches"]:
+            if owners[patch["project"]]["kind"] != "supplementary":
+                continue
+            fixture_base, fixture = single_patch_fixture(frozen, reviewed, patch)
+            for case in ("unknown_owner", "wrong_commit", "wrong_origin", "missing_origin",
+                         "missing_before_blob", "missing_after_blob"):
+                with self.subTest(patch=patch["id"], case=case):
+                    changed = copy.deepcopy(fixture)
+                    item = changed["patches"][0]
+                    # A descriptive label must never authorize any of these.
+                    item["source_owner"] = "supplementary"
+                    if case == "unknown_owner":
+                        item["project"] = "unreviewed/source-owner"
+                    elif case == "wrong_commit":
+                        item["base_commit"] = "0" * 40
+                    elif case == "wrong_origin":
+                        item["repository"] = "https://example.invalid/unreviewed-source"
+                    elif case == "missing_origin":
+                        del item["repository"]
+                    else:
+                        phase = "before" if case == "missing_before_blob" else "after"
+                        del item["files"][0][phase + "_git_blob"]
+                    with self.assertRaises(ValueError):
+                        validate_record_owners(fixture_base, changed)
+
+    def test_supplementary_owners_cannot_overlap_the_base_or_device_target(self):
+        frozen, reviewed = reviewed_patch_inputs()
+        for path in (next(iter(frozen)), "device/xiaomi/nezha"):
+            with self.subTest(path=path):
+                changed = copy.deepcopy(reviewed)
+                changed["supplementary_projects"]["projects"][0]["path"] = path
+                with self.assertRaisesRegex(ValueError, "overlaps"):
+                    validate_record_owners(frozen, changed)
 
     def test_source_review_does_not_claim_device_or_build_success(self):
         self.assertTrue(all(value is False for value in self.upstream["scope"].values()))
