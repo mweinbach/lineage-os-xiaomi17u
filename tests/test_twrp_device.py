@@ -37,6 +37,7 @@ WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/defaul
 CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
 CAR_WATCHDOG_BLUEPRINT = "packages/services/Car/cpp/watchdog/aidl/Android.bp"
 GRAPH34_ORDERED_RULES_SHA256 = "acb03f16c6e8d6a785466ec0d3f8b483e1e1a790e297220a6e710634a2ffdc36"
+GRAPH39_ORDERED_RULES_SHA256 = "bdd5be6308e2e5de6a9f9aa096db199c54639b9fdc08d58e19036de97edf7a77"
 CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
 CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
 CAR_BUILTIN_DEVICE_CTS_PREFIX = "cts/tests/tests/car_builtin/"
@@ -64,6 +65,12 @@ ADSERVICES_API_BLUEPRINTS = tuple("packages/modules/AdServices/" + path for path
     "adservices/libraries/cobalt/Android.bp",
     "adservices/libraries/cobalt/proto/Android.bp",
     "adservices/service-core/proto/Android.bp",
+))
+ADSERVICES_APEX_BLUEPRINTS = tuple("packages/modules/AdServices/" + path for path in (
+    "apex/Android.bp",
+    "adservices/apk/Android.bp",
+    "adservices/service/Android.bp",
+    "apex/permissions/Android.bp",
 ))
 FRAMEWORK_PROVIDER_BLUEPRINTS = (
     "packages/modules/CellBroadcastService/Android.bp",
@@ -172,7 +179,7 @@ SOURCE_FILE_REINCLUSIONS = {
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_WATCHDOG_BLUEPRINT,
-    *ADSERVICES_API_BLUEPRINTS,
+    *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
     "-" + CAR_BUILTIN_DEVICE_CTS_PREFIX,
@@ -225,7 +232,7 @@ SOURCE_REINCLUSIONS = [
     *CAR_API_BLUEPRINTS,
     CAR_SETTINGS_FLAGS_BLUEPRINT,
     CAR_WATCHDOG_BLUEPRINT,
-    *ADSERVICES_API_BLUEPRINTS,
+    *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
     "platform_testing/libraries/tradefed-error-prone/",
@@ -835,7 +842,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "build/soong/licenses/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
         for source in ("packages/modules/AdServices/adservices/Android.bp",
-                       "packages/modules/AdServices/apex/Android.bp",
+                       "packages/modules/AdServices/apex/unrelated/Android.bp",
                        parent + "tests/Android.bp",
                        parent + "flags_sibling/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
@@ -854,7 +861,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual(len(ADSERVICES_API_BLUEPRINTS), 16)
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, {
             parent + "sdksandbox/Android.bp", parent + "sdksandbox/flags/",
-            *ADSERVICES_API_BLUEPRINTS, *SDK_SCENARIO_BLUEPRINTS,
+            *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS, *SDK_SCENARIO_BLUEPRINTS,
             SDK_RUNNER_BLUEPRINT, SDK_CERTIFICATE_BLUEPRINT,
         })
         for source in ADSERVICES_API_BLUEPRINTS:
@@ -862,7 +869,7 @@ class TwrpDeviceTests(unittest.TestCase):
             directory = str(Path(source).parent) + "/"
             for sibling in (directory + "other.bp", directory + "tests/Android.bp"):
                 self.assertFalse(source_path_allowed(sibling, scopes), sibling)
-        for source in (parent + "adservices/apk/Android.bp", parent + "apex/Android.bp",
+        for source in (parent + "adservices/apk/tests/Android.bp", parent + "apex/tests/Android.bp",
                        parent + "adservices/tests/Android.bp", parent + "sdksandbox/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for source in ("frameworks/base/api/Android.bp", "frameworks/base/api/ApiDocs.bp",
@@ -874,7 +881,7 @@ class TwrpDeviceTests(unittest.TestCase):
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("Graph 27", "sixteen exact Blueprint files", "framework-adservices",
                      "framework-sdksandbox", "service-sdksandbox", "65 named declarations",
-                     "original SdkSandbox app definition", "does not install these services",
+                     "original SdkSandbox app definition", "does not add these services to `PRODUCT_PACKAGES`",
                      "API checks and visibility remain unchanged", "root license metadata",
                      "Apache and BSD", "does not establish redistribution clearance"):
             self.assertIn(fact, readme)
@@ -961,7 +968,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 165)
+        self.assertEqual(len(scopes), 169)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -989,7 +996,7 @@ class TwrpDeviceTests(unittest.TestCase):
         for source in ("packages/modules/AdServices/adservices/tests/Android.bp",
                        "packages/modules/AdServices/sdksandbox/tests/Android.bp",
                        "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/Android.bp",
-                       "packages/modules/AdServices/apex/Android.bp"):
+                       "packages/modules/AdServices/apex/unrelated/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
 
@@ -1206,6 +1213,47 @@ class TwrpDeviceTests(unittest.TestCase):
                      "165 source rules", "previous 164 rules retain their order",
                      "does not install a Car service", "API declarations, feature flags and validators are unchanged"):
             self.assertIn(fact, readme)
+
+    def test_graph_forty_two_adservices_apex_appends_only_four_original_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertGreaterEqual(len(scopes), 169)
+        prior = json.dumps(scopes[:165], separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(prior).hexdigest(), GRAPH39_ORDERED_RULES_SHA256)
+        self.assertEqual(scopes[165:169], list(ADSERVICES_APEX_BLUEPRINTS))
+        self.assertEqual(len(ADSERVICES_APEX_BLUEPRINTS), 4)
+        self.assertIn("-packages/modules/AdServices/", scopes)
+        for source in ADSERVICES_APEX_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = str(Path(source).parent) + "/"
+            for sibling in (parent + "other.bp", parent + "unrelated/Android.bp"):
+                self.assertFalse(source_path_allowed(sibling, scopes), sibling)
+        for source in ("packages/modules/AdServices/adservices/tests/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/Android.bp",
+                       "packages/modules/AdServices/apex/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in (*ADSERVICES_API_BLUEPRINTS, *SDK_SCENARIO_BLUEPRINTS,
+                       SDK_RUNNER_BLUEPRINT, SDK_CERTIFICATE_BLUEPRINT,
+                       "frameworks/base/boot/Android.bp", "build/soong/apex/Android.bp",
+                       "build/soong/java/Android.bp", "build/soong/licenses/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
+                       "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_EXCLUDE_APEX"], "true")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+
+    def test_graph_forty_two_adservices_apex_records_scope_and_license_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 42", "platform-bootclasspath", "com.android.adservices",
+                     *ADSERVICES_APEX_BLUEPRINTS, "a6ee8245f54f1719a899809cc8727f7fcce9ca35",
+                     "19 original declarations", "15 named modules", "no source fetch is needed",
+                     "no key material was read or changed", "169 source rules",
+                     "previous 165 rules in their original order", "`TW_EXCLUDE_APEX` remains true",
+                     "not proof of compilation, final image contents", "default_applicable_licenses",
+                     "not inherited from ancestor directories", "earlier claim", "incorrect"):
+            self.assertIn(fact, readme)
+        self.assertNotIn("it inherits the restored AdServices root license metadata", readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

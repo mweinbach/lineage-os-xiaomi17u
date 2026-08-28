@@ -303,22 +303,25 @@ The original declarations are not replaced with device-local copies.
 
 Graph 27 found that the retained framework API aggregates also need the
 generated exportable stubs from `framework-adservices`, `framework-sdksandbox`
-and `service-sdksandbox`. The selection now restores sixteen exact Blueprint
+and `service-sdksandbox`. That selection restored sixteen exact Blueprint
 files from the same pinned AdServices project. Their 65 named declarations
 include the original API providers, package license, shared libraries, linter,
 flags, Cobalt and protobuf generators, and the checked-in Cobalt registry
 filegroup. The original SdkSandbox app definition shares a required provider
-file and is retained unchanged; the AdServices APK and APEX build files and
-the wider test trees remain excluded.
+file and was retained unchanged; the AdServices APK and APEX build files and
+the wider test trees remained excluded at that stage.
 
 The Cobalt registry's bare filegroup has no package declaration of its own.
-With its APK parent build file excluded, it inherits the restored AdServices
-root license metadata, which includes Apache and BSD, instead of that parent's
-Apache-only package metadata. The original declarations and license checks
-are unchanged; this does not establish redistribution clearance.
+The earlier claim that it inherited AdServices root license metadata was
+incorrect. In the pinned Soong implementation, `default_applicable_licenses`
+comes from the module's own package directory and is not inherited from ancestor
+directories. The root's Apache and BSD declarations, or the APK directory's
+package defaults, do not assign those defaults to the Cobalt child. The original
+declarations and license checks are unchanged; this does not establish
+redistribution clearance.
 
-This source selection does not install these services in recovery:
-`PRODUCT_PACKAGES` still contains only `recovery`. API checks and visibility
+This source selection does not add these services to `PRODUCT_PACKAGES`, which
+still contains only `recovery`. API checks and visibility
 remain unchanged, as do the original module definitions and generator commands.
 Shared external providers come from their existing pinned source projects.
 This establishes a reviewed source dependency set, not successful compilation
@@ -631,12 +634,37 @@ versions 2 and 3, and the internal interface importing public V3. Its original
 `trendy_team_aaos_framework` team resolves through the already selected
 `build/make/teams/Android.bp`; the global Apache license provider is also selected.
 
-The current selection has 165 source rules. The previous 164 rules retain
+That selection had 165 source rules. The previous 164 rules retain
 their order, and the broad Car exclusion remains in place: no neighboring
 watchdog implementation, power, telemetry, service or test Blueprint is
 restored. `PRODUCT_PACKAGES` remains `recovery`; this source-provider repair
 does not install a Car service or establish compilation or device behavior.
 Source definitions, API declarations, feature flags and validators are unchanged.
+
+Graph 42 reports that `platform-bootclasspath` cannot resolve
+`com.android.adservices`. Four exact positive rules restore these complete
+original files from the already present AdServices revision
+`a6ee8245f54f1719a899809cc8727f7fcce9ca35`:
+
+- `packages/modules/AdServices/apex/Android.bp`
+- `packages/modules/AdServices/adservices/apk/Android.bp`
+- `packages/modules/AdServices/adservices/service/Android.bp`
+- `packages/modules/AdServices/apex/permissions/Android.bp`
+
+The cohort preserves 19 original declarations, including 15 named modules,
+and the original APEX, APK, service, permission, key and certificate providers.
+Their required providers already exist in the selected source tree; no source
+fetch is needed. Signing declarations are unchanged, and no key material was
+read or changed. The restored APK package's license defaults apply to its own
+directory, not to the Cobalt child described above.
+
+The current selection has 169 source rules, with the previous 165 rules in
+their original order. The broad AdServices exclusion still protects unrelated
+files and test subtrees. `PRODUCT_PACKAGES` remains `recovery`, and
+`TW_EXCLUDE_APEX` remains true; this scope change does not enable installed-system
+APEX discovery. Dependency, APEX, signature and license checks remain enabled.
+This is source-graph repair, not proof of compilation, final image contents or
+AdServices behavior in recovery.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

@@ -392,6 +392,15 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     packages/services/Car/cpp/watchdog/aidl/Android.bp
 
+# Graph 42's retained platform bootclasspath needs the original AdServices APEX.
+# Restore its four reviewed APEX/payload files; keep the wider project excluded.
+# Original signing declarations stay intact, and no product package is added.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/modules/AdServices/apex/Android.bp \
+    packages/modules/AdServices/adservices/apk/Android.bp \
+    packages/modules/AdServices/adservices/service/Android.bp \
+    packages/modules/AdServices/apex/permissions/Android.bp
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
