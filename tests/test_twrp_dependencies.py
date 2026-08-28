@@ -192,6 +192,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "351fe5eea9d963cf0919b5fd49e5619e1109937ff7735942aa532d568118053e")
 
+    def test_first_154_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:154]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "9d7829a4abb1a007ce3bfebeb2680bda3a21676d7333c277a0f64b146a2c0fb0")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -722,10 +728,9 @@ class ConfigurationTests(Fixture):
             ("external/libphonenumber", "467b37350ac0c881864fac79358ecaa1265bcc54", "libphonenumber-platform"),
             ("external/caliper", "dab7f1ed7741aaa71102341533da32d312563359", "caliper-api-target"),
         ]
-        self.assertEqual(len(projects), 154)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[152:]],
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[152:154]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, module) in zip(projects[152:], expected):
+        for project, (_, _, module) in zip(projects[152:154], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -733,6 +738,44 @@ class ConfigurationTests(Fixture):
                 self.assertIn(module, project["reason"])
                 self.assertFalse(project["reason"].startswith("Source audit projection"))
         self.assertIn("libphonenumber-nogeocoder", projects[152]["reason"])
+
+    def test_reviewed_graph_twenty_two_additional_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("frameworks/minikin", "1e1d5d137d487df875d7db69b5ff24e7d0291612", "libminikin"),
+            ("external/accessibility-test-framework", "35527c4073b7219b33e4cb52290b1a577a68810c", "aatf"),
+            ("external/jsoup", "1c57858b5fc8a56e1c284dc60c59a68e7300ae2b", "jsoup"),
+            ("external/ksoap2", "405109123a9513ed7ec91529d62f4f2e040c01ee", "ksoap2"),
+            ("external/nanohttpd", "4711b67f075d8ed195ca46785b125dbea03982c3", "libnanohttpd"),
+            ("frameworks/libs/service_entitlement", "9bdaed61465be24bccdc928bc4d042c8b512fb1d", "service-entitlement"),
+            ("external/nist-sip", "1db572a42315b95f37311478b7701b607fd9810a", "nist-sip"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[154:161]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[154:161], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 22 error:"))
+
+    def test_graph_twenty_two_chre_restoration_dependency_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/pigweed", "6b21bb2df225f4559fcfe495a73d20ba11d87d60", "Pigweed pw_*"),
+            ("external/emboss", "c003e8aff9ab3dce46d1ba22c9002541e45c5178",
+             "emboss_compiler, embossc_script and emboss_runtime_headers"),
+        ]
+        self.assertEqual(len(projects), 163)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[161:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[161:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith(
+                    "Dependency of the full CHRE source restoration for the graph 22 chre_flags error:"))
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

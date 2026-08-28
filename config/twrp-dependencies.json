@@ -1086,6 +1086,69 @@
       "commit": "dab7f1ed7741aaa71102341533da32d312563359",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP caliper-api-target provider required by conscrypt-benchmarks in the graph 22 error, preserving the original local caliper-prebuilts module and JAR."
+    },
+    {
+      "path": "frameworks/minikin",
+      "url": "https://android.googlesource.com/platform/frameworks/minikin",
+      "commit": "1e1d5d137d487df875d7db69b5ff24e7d0291612",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP libminikin provider required by retained libandroid."
+    },
+    {
+      "path": "external/accessibility-test-framework",
+      "url": "https://android.googlesource.com/platform/external/accessibility-test-framework",
+      "commit": "35527c4073b7219b33e4cb52290b1a577a68810c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP aatf provider required by retained a11ychecker."
+    },
+    {
+      "path": "external/jsoup",
+      "url": "https://android.googlesource.com/platform/external/jsoup",
+      "commit": "1c57858b5fc8a56e1c284dc60c59a68e7300ae2b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP jsoup provider required by the approved aatf source."
+    },
+    {
+      "path": "external/ksoap2",
+      "url": "https://android.googlesource.com/platform/external/ksoap2",
+      "commit": "405109123a9513ed7ec91529d62f4f2e040c01ee",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP ksoap2 provider required by retained wifi-service-pre-jarjar. This source addition does not establish device Wi-Fi support."
+    },
+    {
+      "path": "external/nanohttpd",
+      "url": "https://android.googlesource.com/platform/external/nanohttpd",
+      "commit": "4711b67f075d8ed195ca46785b125dbea03982c3",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP libnanohttpd provider required by retained wifi-service-pre-jarjar. This source addition does not establish device Wi-Fi support."
+    },
+    {
+      "path": "frameworks/libs/service_entitlement",
+      "url": "https://android.googlesource.com/platform/frameworks/libs/service_entitlement",
+      "commit": "9bdaed61465be24bccdc928bc4d042c8b512fb1d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP service-entitlement provider required by retained wifi-service-pre-jarjar and Ts43AuthenticationLibrary."
+    },
+    {
+      "path": "external/nist-sip",
+      "url": "https://android.googlesource.com/platform/external/nist-sip",
+      "commit": "1db572a42315b95f37311478b7701b607fd9810a",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 22 error: real AOSP nist-sip provider required by retained voip-common."
+    },
+    {
+      "path": "external/pigweed",
+      "url": "https://android.googlesource.com/platform/external/pigweed",
+      "commit": "6b21bb2df225f4559fcfe495a73d20ba11d87d60",
+      "tag": "android-16.0.0_r1",
+      "reason": "Dependency of the full CHRE source restoration for the graph 22 chre_flags error: real AOSP Pigweed pw_* providers."
+    },
+    {
+      "path": "external/emboss",
+      "url": "https://android.googlesource.com/platform/external/emboss",
+      "commit": "c003e8aff9ab3dce46d1ba22c9002541e45c5178",
+      "tag": "android-16.0.0_r1",
+      "reason": "Dependency of the full CHRE source restoration for the graph 22 chre_flags error: real AOSP emboss_compiler, embossc_script and emboss_runtime_headers providers required by Pigweed."
     }
   ]
 }

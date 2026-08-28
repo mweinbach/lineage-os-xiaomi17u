@@ -30,10 +30,10 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -packages/modules/AdServices/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
-# The second graph exposed these specific CTS/VTS, automotive and context-hub
-# consumers. Their missing parent defaults are unrelated
-# to the first recovery product. CHRE includes a runtime subsystem, not just
-# test generators. Preserve the rest of CTS and the security HAL interfaces.
+# The second graph exposed these specific CTS/VTS and automotive consumers.
+# Preserve the rest of CTS and the security HAL interfaces. The original CHRE
+# exclusion is removed: graph 22 requires its shared flag declarations, and
+# genuine Pigweed/Emboss sources supply the restored subsystem's dependencies.
 PRODUCT_SOURCE_ROOT_DIRS += \
     -cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/ \
     -cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21085/ \
@@ -45,8 +45,7 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -cts/tests/tests/car/ \
     -cts/tests/tests/car_permission_tests/ \
     -hardware/interfaces/automotive/remoteaccess/hal/default/ \
-    -hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/ \
-    -system/chre/
+    -hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/
 
 # Graph 3 proved Connectivity/tests/common also owns shared defaults used by
 # retained modules. Keep it included and restore the genuine Android 16 r1

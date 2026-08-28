@@ -34,7 +34,6 @@ SOURCE_EXCLUSIONS = [
     "-cts/tests/tests/car_permission_tests/",
     "-hardware/interfaces/automotive/remoteaccess/hal/default/",
     "-hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/",
-    "-system/chre/",
     "-hardware/interfaces/automotive/vehicle/vts/",
     "-hardware/interfaces/automotive/audiocontrol/aidl/default/",
     "-hardware/interfaces/automotive/vehicle/aidl/impl/3/",
@@ -519,6 +518,35 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 9", readme)
         self.assertIn("development/build/", readme)
         self.assertIn("SDK distribution", readme)
+
+    def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for prefix in ("system/chre/", "external/pigweed/", "external/emboss/"):
+            self.assertFalse(any(rule.lstrip("-").startswith(prefix) for rule in scopes), prefix)
+            self.assertTrue(source_path_allowed(prefix + "Android.bp", scopes))
+            self.assertTrue(source_path_allowed(prefix + "nested/tests/Android.bp", scopes))
+        for source in ("system/chre/chpp/test/fuzz/Android.bp",
+                       "system/chre/host/hal_generic/Android.bp",
+                       "system/chre/java/test/rpc_service/Android.bp",
+                       "system/chre/java/utils/pigweed/Android.bp",
+                       "frameworks/base/AconfigFlags.bp",
+                       "hardware/interfaces/contexthub/aidl/Android.bp",
+                       "hardware/interfaces/bluetooth/socket/aidl/Android.bp",
+                       "frameworks/hardware/interfaces/stats/aidl/Android.bp",
+                       "hardware/interfaces/soundtrigger/aidl/Android.bp",
+                       "system/hardware/interfaces/media/Android.bp",
+                       "system/sepolicy/tests/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        projects = json.loads((ROOT / "config/twrp-dependencies.json").read_text())["projects"]
+        pins = {project["path"]: project["commit"] for project in projects}
+        self.assertEqual(pins.get("external/pigweed"), "6b21bb2df225f4559fcfe495a73d20ba11d87d60")
+        self.assertEqual(pins.get("external/emboss"), "c003e8aff9ab3dce46d1ba22c9002541e45c5178")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        readme = (DEVICE / "README.md").read_text()
+        for fact in ("Graph 22", "chre_flags", "18 original flags", "22 Blueprint files",
+                     "39be9f48eebb530d56972d967c5ee4d99b2ac3a5", "Pigweed", "Emboss"):
+            self.assertIn(fact, readme)
 
     def test_projected_wifi_hal_restoration_does_not_select_phone_hardware(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

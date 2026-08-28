@@ -44,7 +44,7 @@ SELinux, VINTF and AVB roots:
 | `cts/tests/tests/car/`, `cts/tests/tests/car_permission_tests/` | Automotive framework CTS tests requiring the omitted car framework; other CTS tests remain included. |
 | `hardware/interfaces/automotive/remoteaccess/hal/default/` | Default automotive remote-access service, helper library and its tests requiring vehicle-HAL client defaults; the AIDL interface is retained. |
 | `hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/` | HWCrypto functional VTS tests requiring omitted Rust test defaults; the production security AIDL interface is retained. |
-| `system/chre/` | Context Hub Runtime Environment, its HAL/client libraries and tests requiring Pigweed RPC support. This is an excluded runtime subsystem, not merely a test-generator removal. |
+| `system/chre/` (initially excluded, now restored) | Context Hub Runtime Environment, its HAL/client libraries and tests originally lacked Pigweed RPC support. Graph 22 proved its shared flags have a retained framework consumer; the full original source scope is restored with genuine dependencies. |
 
 Graph 2 also excluded `packages/modules/Connectivity/tests/common/` because
 its coverage test required the absent `libnetworkstackutilsjni_deps` provider.
@@ -250,6 +250,21 @@ metadata. Their immediate providers already exist in the selected sources.
 The parent health-test aggregate and the device-composer sibling remain
 excluded. This restores build declarations; it does not claim those tests ran
 or that a recovery image compiled.
+
+Graph 22 also found that the retained framework's
+`android.chre.flags-aconfig-java` needs `chre_flags`. The original CHRE source
+at `39be9f48eebb530d56972d967c5ee4d99b2ac3a5` is restored in full: 22 Blueprint files
+and 99 named modules, including its runtime libraries, tests, generators and
+metadata. The 18 original flags remain in `system/chre/chre_flags.aconfig`,
+with their original package and system container. No flag definitions are
+copied into the device tree or substituted with a new provider.
+
+Pinned Pigweed and Emboss projects provide the original RPC and code-generation
+dependencies. Their complete build definitions remain selected. Existing AIDL
+interfaces generate the required versioned bindings; historical VNDK name
+matches are not used as substitutes. This restores a shared build dependency,
+not Context Hub support or an installed recovery service. Compilation and
+generated-output checks remain for the next actual build.
 
 The native source projection also found three retained Wi-Fi service modules
 and one test consuming `libwifi-hal`. The positive
