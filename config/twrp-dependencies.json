@@ -1758,6 +1758,13 @@
       "commit": "ad011248e266cc1bad1489704cc214942231cf09",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libgif cc_library_static required by libhwui and hwui_unit_tests in the graph 40 errors through the Android target of android_graphics_jni. The whole original project and Blueprint, exported headers, SDK settings and MIT license metadata are preserved. This source pin does not establish compiled HWUI or GIF rendering functionality."
+    },
+    {
+      "path": "external/ethtool",
+      "url": "https://android.googlesource.com/platform/external/ethtool",
+      "commit": "9d3d10f9bbb011b10c2f9bb4527ee8bc942d3914",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP ethtool cc_binary required by com.android.tethering in the graph 41 error. The whole original project and Blueprint are preserved, including bundled libmnl sources, original GPL/LGPL license metadata, min_sdk_version 30, installable false and existing apex_available entries. Original unmatched source globs remain unchanged. No separate libmnl checkout or app activation is added, and no tethering or network functionality is claimed."
     }
   ]
 }

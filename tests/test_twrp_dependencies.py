@@ -330,6 +330,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "6a9e406de2eaf5792e5351c32d44e3d364d57e7e31d03ca49d19be67fe9d824a")
 
+    def test_first_250_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:250]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "49fa56ab1d4b72881b4b39a546586be7f3ae696b18322156d8017c993c301b32")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1515,7 +1521,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_forty_libgif_source_pin_and_reason(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 250)
+        self.assertGreaterEqual(len(projects), 250)
         project = projects[249]
         self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
             "path": "external/giflib",
@@ -1530,6 +1536,27 @@ class ConfigurationTests(Fixture):
                      "Android target of android_graphics_jni", "whole original project and Blueprint",
                      "exported headers", "SDK settings", "MIT license metadata are preserved",
                      "does not establish compiled HWUI or GIF rendering functionality"):
+            self.assertIn(text, reason)
+
+    def test_graph_forty_one_ethtool_source_pin_and_reason(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 251)
+        project = projects[250]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "external/ethtool",
+            "url": "https://android.googlesource.com/platform/external/ethtool",
+            "commit": "9d3d10f9bbb011b10c2f9bb4527ee8bc942d3914",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertIn("graph 41 error", reason)
+        self.assertNotIn("projection", reason.lower())
+        for text in ("ethtool cc_binary", "com.android.tethering",
+                     "whole original project and Blueprint", "bundled libmnl sources",
+                     "original GPL/LGPL license metadata", "min_sdk_version 30", "installable false",
+                     "existing apex_available entries", "Original unmatched source globs remain unchanged",
+                     "No separate libmnl checkout or app activation is added",
+                     "no tethering or network functionality is claimed"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
