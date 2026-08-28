@@ -1,0 +1,2347 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-28T02:50:49.781681+00:00",
+  "scope": "Standalone native host-tool substitutions, not integration into Soong, a full image, or a distributed build.",
+  "boundaries": {
+    "active_android_checkout_modified": false,
+    "global_toolchain_replaced": false,
+    "system_package_installation": false,
+    "phone_access": false,
+    "signing_keys_used": false,
+    "full_android_build": false,
+    "remote_execution": false
+  },
+  "raw_receipts": [
+    {
+      "path": "reports/arm64-cluster/rust-swap-initial.json",
+      "sha256": "c318c73cfe50d3fac752298b1077cf08cdf85d3511da6ca56034ee06e1e76c6e"
+    },
+    {
+      "path": "reports/arm64-cluster/rust-swap-followup.json",
+      "sha256": "3959d3a4b46ddef5525af963d0f23ec39ea30c0cd56e9970b900d6c475debf48"
+    },
+    {
+      "path": "reports/arm64-cluster/rust-swap-macro.json",
+      "sha256": "45ad833d17b1baf096ae361fd0c9b357305b57006ea9219cfc79bd956d5f83fc"
+    },
+    {
+      "path": "reports/arm64-cluster/rust-musl-runtime.json",
+      "sha256": "ddbfdba0e36cc6218bd8e04a19b276831cfbabcd31a9b7556674e46be4c38881"
+    },
+    {
+      "path": "reports/arm64-cluster/rust-musl-macro.json",
+      "sha256": "3890eb5b31859c4a7c69cc5d1f2be3bb033d8077005736e38ef8767fa13cc79e"
+    },
+    {
+      "path": "reports/arm64-cluster/java-swap-results.json",
+      "sha256": "f61cdd908e17a32c92bade87a430f20dd348048a0db277ec6ded7092f9f2edc7"
+    },
+    {
+      "path": "reports/arm64-cluster/java-swap-jni.json",
+      "sha256": "adc576cc2f37bbb464d61656273e6d712a83693fd5a3ae4bc1840d24f92e5aaf"
+    },
+    {
+      "path": "reports/arm64-cluster/java-swap-inventory.json",
+      "sha256": "790f43697a7a106b21a29219ea5db9819e964c94b19ef5f3cc6b7463680c0852"
+    },
+    {
+      "path": "upstream/arm64-cluster-llvm-swap/llvm-swap-results.json",
+      "sha256": "ea5fe48de4309902abd5d9c1b11f951b71d4323019b44a547dfe5a1367a29483"
+    },
+    {
+      "path": "upstream/arm64-cluster-llvm-swap/elf-inspection.json",
+      "sha256": "a68e69e13fd7b201948083056fd2971acb3130f6ffb788a4a334e42dcdf82faa"
+    }
+  ],
+  "rust": {
+    "official_manifest": {
+      "url": "https://static.rust-lang.org/dist/channel-rust-1.88.0.toml",
+      "sha256": "431b7c5c0b9a511d8e31d29b378bbc74124e8521f14beb92d3a5a5f7e7e55449",
+      "date": "2025-06-26"
+    },
+    "downloads": [
+      {
+        "package": "rustc",
+        "triple": "aarch64-unknown-linux-gnu",
+        "url": "https://static.rust-lang.org/dist/2025-06-26/rustc-1.88.0-aarch64-unknown-linux-gnu.tar.xz",
+        "sha256": "b841d40bb98b2718c6452ec8421a4a8df584fce8d41875bcd9b1af83f52f7d96",
+        "bytes": 60443292,
+        "version": "1.88.0 (6b00bc388 2025-06-23)"
+      },
+      {
+        "package": "rust-std",
+        "triple": "aarch64-unknown-linux-gnu",
+        "url": "https://static.rust-lang.org/dist/2025-06-26/rust-std-1.88.0-aarch64-unknown-linux-gnu.tar.xz",
+        "sha256": "e9ac4ff3c87247a2195fcceddbf1bdeee5c4fd337f014d8f4c4e3ac99002021f",
+        "bytes": 27336216,
+        "version": "1.88.0 (6b00bc388 2025-06-23)"
+      },
+      {
+        "package": "rust-std",
+        "triple": "aarch64-unknown-linux-musl",
+        "url": "https://static.rust-lang.org/dist/2025-06-26/rust-std-1.88.0-aarch64-unknown-linux-musl.tar.xz",
+        "sha256": "b1562ce0836d5071abbbeaf52e3db9ce0d37fa432f5202b8f661aa4881b4c3e4",
+        "bytes": 28772068,
+        "version": "1.88.0 (6b00bc388 2025-06-23)"
+      },
+      {
+        "package": "rustc",
+        "triple": "aarch64-unknown-linux-musl",
+        "url": "https://static.rust-lang.org/dist/2025-06-26/rustc-1.88.0-aarch64-unknown-linux-musl.tar.xz",
+        "sha256": "0e688fc032cdd828f4a448edbf109dc27e4cd13ef54c91633a32a153070d13b6",
+        "bytes": 98695668,
+        "version": "1.88.0 (6b00bc388 2025-06-23)"
+      }
+    ],
+    "probes": [
+      {
+        "id": "stock-rust-version",
+        "command": [
+          "/work/evolution/prebuilts/rust/linux-x86/1.88.0/bin/rustc",
+          "-vV"
+        ],
+        "exit_code": 0,
+        "stdout": "rustc 1.88.0-dev (6b00bc388 2025-06-23) (Android Rust Toolchain version 13951379-linux-x86)\nbinary: rustc\ncommit-hash: 6b00bc3880198600130e1cf62b8f8a93494488cc\ncommit-date: 2025-06-23\nhost: x86_64-unknown-linux-gnu\nrelease: 1.88.0-dev\nLLVM version: 20.1.5\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "stock-musl-rust-version",
+        "command": [
+          "/work/evolution/prebuilts/rust/linux-musl-x86/1.88.0/bin/rustc",
+          "-vV"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "relinterp: /work/evolution/prebuilts/rust/linux-musl-x86/1.88.0/bin/rustc: fatal error: AT_BASE not found in aux vector\n",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-elf",
+        "command": [
+          "readelf",
+          "-h",
+          "-l",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc"
+        ],
+        "exit_code": 0,
+        "stdout": "ELF Header:\n  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 \n  Class:                             ELF64\n  Data:                              2's complement, little endian\n  Version:                           1 (current)\n  OS/ABI:                            UNIX - System V\n  ABI Version:                       0\n  Type:                              DYN (Position-Independent Executable file)\n  Machine:                           AArch64\n  Version:                           0x1\n  Entry point address:               0x3c810\n  Start of program headers:          64 (bytes into file)\n  Start of section headers:          2316120 (bytes into file)\n  Flags:                             0x0\n  Size of this header:               64 (bytes)\n  Size of program headers:           56 (bytes)\n  Number of program headers:         12\n  Size of section headers:           64 (bytes)\n  Number of section headers:         45\n  Section header string table index: 43\n\nProgram Headers:\n  Type           Offset             VirtAddr           PhysAddr\n                 FileSiz            MemSiz              Flags  Align\n  PHDR           0x0000000000000040 0x0000000000000040 0x0000000000000040\n                 0x00000000000002a0 0x00000000000002a0  R      0x8\n  INTERP         0x00000000000002e0 0x00000000000002e0 0x00000000000002e0\n                 0x000000000000001b 0x000000000000001b  R      0x1\n      [Requesting program interpreter: /lib/ld-linux-aarch64.so.1]\n  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000\n                 0x0000000000012754 0x0000000000012754  R      0x10000\n  LOAD           0x0000000000012760 0x0000000000022760 0x0000000000022760\n                 0x0000000000032460 0x0000000000032460  R E    0x10000\n  LOAD           0x0000000000044bc0 0x0000000000064bc0 0x0000000000064bc0\n                 0x0000000000005a60 0x0000000000006440  RW     0x10000\n  LOAD           0x000000000004a620 0x000000000007a620 0x000000000007a620\n                 0x0000000000000220 0x000000000008ac90  RW     0x10000\n  TLS            0x0000000000044bc0 0x0000000000064bc0 0x0000000000064bc0\n                 0x0000000000000a88 0x0000000000000a88  R      0x8\n  DYNAMIC        0x0000000000049f50 0x0000000000069f50 0x0000000000069f50\n                 0x00000000000001f0 0x00000000000001f0  RW     0x8\n  GNU_RELRO      0x0000000000044bc0 0x0000000000064bc0 0x0000000000064bc0\n                 0x0000000000005a60 0x0000000000006440  R      0x1\n  GNU_EH_FRAME   0x000000000000a0d0 0x000000000000a0d0 0x000000000000a0d0\n                 0x000000000000140c 0x000000000000140c  R      0x4\n  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000\n                 0x0000000000000000 0x0000000000000000  RW     0x0\n  NOTE           0x00000000000002fc 0x00000000000002fc 0x00000000000002fc\n                 0x0000000000000020 0x0000000000000020  R      0x4\n\n Section to Segment mapping:\n  Segment Sections...\n   00     \n   01     .interp \n   02     .interp .note.ABI-tag ",
+        "stdout_truncated": true,
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-version",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "-vV"
+        ],
+        "exit_code": 0,
+        "stdout": "rustc 1.88.0 (6b00bc388 2025-06-23)\nbinary: rustc\ncommit-hash: 6b00bc3880198600130e1cf62b8f8a93494488cc\ncommit-date: 2025-06-23\nhost: aarch64-unknown-linux-gnu\nrelease: 1.88.0\nLLVM version: 20.1.5\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-hello-compile",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "hello.rs",
+          "-o",
+          "gnu-hello"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error[E0463]: can't find crate for `std`\n  |\n  = note: the `aarch64-unknown-linux-gnu` target may not be installed\n  = help: consider downloading the target with `rustup target add aarch64-unknown-linux-gnu`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-soong-flags-stable",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "library.rs",
+          "--crate-type=rlib",
+          "-o",
+          "gnu-stable.rlib",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error: the option `Z` is only accepted on the nightly compiler\n\nhelp: consider switching to a nightly toolchain: `rustup default nightly`\n\nnote: selecting a toolchain with `+toolchain` arguments require a rustup proxy; see <https://rust-lang.github.io/rustup/concepts/index.html>\n\nnote: for more information about Rust's stability policy, see <https://doc.rust-lang.org/book/appendix-07-nightly-rust.html#unstable-features>\n\nerror: 1 nightly option were parsed\n\n",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-soong-flags-bootstrap",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "library.rs",
+          "--crate-type=rlib",
+          "-o",
+          "gnu-bootstrap.rlib",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error[E0463]: can't find crate for `std`\n  |\n  = note: the `aarch64-unknown-linux-gnu` target may not be installed\n  = help: consider downloading the target with `rustup target add aarch64-unknown-linux-gnu`\n  = help: consider building the standard library from source with `cargo build -Zbuild-std`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+        "environment_override": {
+          "RUSTC_BOOTSTRAP": "1"
+        }
+      },
+      {
+        "id": "gnu-empty-sysroot",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "library.rs",
+          "--crate-type=rlib",
+          "--sysroot=/dev/null",
+          "-o",
+          "gnu-empty.rlib",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error[E0463]: can't find crate for `std`\n  |\n  = note: the `aarch64-unknown-linux-gnu` target may not be installed\n  = help: consider downloading the target with `rustup target add aarch64-unknown-linux-gnu`\n  = help: consider building the standard library from source with `cargo build -Zbuild-std`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+        "environment_override": {
+          "RUSTC_BOOTSTRAP": "1"
+        }
+      },
+      {
+        "id": "gnu-explicit-stdlib",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "library.rs",
+          "--crate-type=rlib",
+          "--sysroot=/dev/null",
+          "-L",
+          "dependency=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/lib/rustlib/aarch64-unknown-linux-gnu/lib",
+          "--extern",
+          "std=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/lib/rustlib/aarch64-unknown-linux-gnu/lib/libstd-2ec902685bc11f08.rlib",
+          "-o",
+          "gnu-explicit.rlib",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {
+          "RUSTC_BOOTSTRAP": "1"
+        }
+      },
+      {
+        "id": "gnu-stock-stdlib-cross-metadata",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "library.rs",
+          "--crate-type=rlib",
+          "--target=x86_64-unknown-linux-gnu",
+          "--sysroot=/work/evolution/prebuilts/rust/linux-x86/1.88.0",
+          "--emit=metadata",
+          "-o",
+          "gnu-stock-std.rmeta",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error[E0514]: found crate `std` compiled by an incompatible version of rustc\n  |\n  = note: the following crate versions were found:\n          crate `std` compiled by rustc 1.88.0-dev (6b00bc388 2025-06-23) (Android Rust Toolchain version 13951379-linux-x86): /work/evolution/prebuilts/rust/linux-x86/1.88.0/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-5a9ddffdab969d7a.rlib\n          crate `std` compiled by rustc 1.88.0-dev (6b00bc388 2025-06-23) (Android Rust Toolchain version 13951379-linux-x86): /work/evolution/prebuilts/rust/linux-x86/1.88.0/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-5a9ddffdab969d7a.so\n          crate `std` compiled by rustc 1.88.0-dev (6b00bc388 2025-06-23) (Android Rust Toolchain version 13951379-linux-x86): /work/evolution/prebuilts/rust/linux-x86/1.88.0/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd_detect-223cf3dc85b7c1d6.rlib\n  = help: please recompile that crate using this compiler (rustc 1.88.0 (6b00bc388 2025-06-23)) (consider running `cargo clean` first)\n\nerror: cannot find macro `format` in this scope\n --> library.rs:1:29\n  |\n1 | pub fn answer() -> String { format!(\"value={}\", 42) }\n  |                             ^^^^^^\n\nerror[E0412]: cannot find type `String` in this scope\n --> library.rs:1:20\n  |\n1 | pub fn answer() -> String { format!(\"value={}\", 42) }\n  |                    ^^^^^^ not found in this scope\n\nerror[E0514]: found crate `compiler_builtins` compiled by an incompatible version of rustc\n  |\n  = note: the following crate versions were found:\n          crate `compiler_builtins` compiled by rustc 1.88.0-dev (6b00bc388 2025-06-23) (Android Rust Toolchain version 13951379-linux-x86): /work/evolution/prebuilts/rust/linux-x86/1.88.0/lib/rustlib/x86_64-unknown-linux-gnu/lib/libcompiler_builtins-076bceb5ea38680d.rlib\n  = help: please recompile that crate using this compiler (rustc 1.88.0 (6b00bc388 2025-06-23)) (consider running `cargo clean` first)\n\nerror: requires `sized` lang_item\n --> library.rs:1:20\n  |\n1 | pub fn answer() -> String { format!(\"value={}\", 42) }\n  |                    ^^^^^^\n\nerror: aborting due to 5 previous errors\n\nSome errors have detailed explanations: E0412, E0514.\nFor more information about an error, try `rustc --explain E0412`.\n",
+        "environment_override": {
+          "RUSTC_BOOTSTRAP": "1"
+        }
+      },
+      {
+        "id": "gnu-proc-macro-compile",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "macro.rs",
+          "--crate-name=swap_macro",
+          "--crate-type=proc-macro",
+          "-o",
+          "gnu-macro.so"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error[E0463]: can't find crate for `std`\n  |\n  = note: the `aarch64-unknown-linux-gnu` target may not be installed\n  = help: consider downloading the target with `rustup target add aarch64-unknown-linux-gnu`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-elf",
+        "command": [
+          "readelf",
+          "-h",
+          "-l",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc"
+        ],
+        "exit_code": 0,
+        "stdout": "ELF Header:\n  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 \n  Class:                             ELF64\n  Data:                              2's complement, little endian\n  Version:                           1 (current)\n  OS/ABI:                            UNIX - System V\n  ABI Version:                       0\n  Type:                              DYN (Position-Independent Executable file)\n  Machine:                           AArch64\n  Version:                           0x1\n  Entry point address:               0x7b0\n  Start of program headers:          64 (bytes into file)\n  Start of section headers:          9280 (bytes into file)\n  Flags:                             0x0\n  Size of this header:               64 (bytes)\n  Size of program headers:           56 (bytes)\n  Number of program headers:         8\n  Size of section headers:           64 (bytes)\n  Number of section headers:         32\n  Section header string table index: 31\n\nProgram Headers:\n  Type           Offset             VirtAddr           PhysAddr\n                 FileSiz            MemSiz              Flags  Align\n  PHDR           0x0000000000000040 0x0000000000000040 0x0000000000000040\n                 0x00000000000001c0 0x00000000000001c0  R      0x8\n  INTERP         0x0000000000000200 0x0000000000000200 0x0000000000000200\n                 0x000000000000001a 0x000000000000001a  R      0x1\n      [Requesting program interpreter: /lib/ld-musl-aarch64.so.1]\n  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000\n                 0x0000000000000af4 0x0000000000000af4  R E    0x10000\n  LOAD           0x0000000000000d40 0x0000000000010d40 0x0000000000010d40\n                 0x00000000000002c8 0x0000000000000300  RW     0x10000\n  DYNAMIC        0x0000000000000d80 0x0000000000010d80 0x0000000000010d80\n                 0x00000000000001f0 0x00000000000001f0  RW     0x8\n  GNU_EH_FRAME   0x0000000000000984 0x0000000000000984 0x0000000000000984\n                 0x0000000000000054 0x0000000000000054  R      0x4\n  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000\n                 0x0000000000000000 0x0000000000000000  RW     0x10\n  GNU_RELRO      0x0000000000000d40 0x0000000000010d40 0x0000000000010d40\n                 0x00000000000002c0 0x00000000000002c0  R      0x1\n\n Section to Segment mapping:\n  Segment Sections...\n   00     \n   01     .interp \n   02     .interp .hash .gnu.hash .dynsym .dynstr .rela.dyn .rela.plt .init .plt .text .fini .eh_frame_hdr .eh_frame \n   03     .init_array .fini_array .data.rel.ro .dynamic .got .data .bss \n   04     .dynamic \n   05     .eh_frame_hdr \n   06     \n   07     .init_array .fini_array .data.rel.ro .dynamic .got \n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-version",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "-vV"
+        ],
+        "exit_code": null,
+        "error": "[Errno 2] No such file or directory: '/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc'",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-detected-sysroot",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--print",
+          "sysroot"
+        ],
+        "exit_code": 0,
+        "stdout": "/work/arm64-cluster-probes\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-explicit-sysroot-hello",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu",
+          "hello.rs",
+          "-o",
+          "gnu-fixed-hello"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-explicit-sysroot-hello-run",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/gnu-fixed-hello"
+        ],
+        "exit_code": 0,
+        "stdout": "native-rust:aarch64\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-explicit-sysroot-soong-flags",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu",
+          "library.rs",
+          "--crate-type=rlib",
+          "-o",
+          "gnu-fixed-flags.rlib",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {
+          "RUSTC_BOOTSTRAP": "1"
+        }
+      },
+      {
+        "id": "gnu-explicit-sysroot-proc-macro",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu",
+          "macro.rs",
+          "--crate-name=swap_macro",
+          "--crate-type=proc-macro",
+          "-o",
+          "gnu-fixed-macro.so"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-explicit-sysroot-proc-consumer",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu",
+          "macro_user.rs",
+          "--extern",
+          "swap_macro=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/gnu-fixed-macro.so",
+          "-o",
+          "gnu-fixed-macro-user"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "error: extern location for swap_macro is of an unknown type: /work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/gnu-fixed-macro.so\n --> macro_user.rs:1:1\n  |\n1 | extern crate swap_macro;\n  | ^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: file name should be lib*.rlib or lib*.so\n --> macro_user.rs:1:1\n  |\n1 | extern crate swap_macro;\n  | ^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror[E0463]: can't find crate for `swap_macro`\n --> macro_user.rs:1:1\n  |\n1 | extern crate swap_macro;\n  | ^^^^^^^^^^^^^^^^^^^^^^^^ can't find crate\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0463`.\n",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-needed",
+        "command": [
+          "readelf",
+          "-d",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/librustc_driver-3904bc57e15750ed.so"
+        ],
+        "exit_code": 0,
+        "stdout": "\nDynamic section at offset 0xbaff968 contains 30 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so]\n 0x000000000000000e (SONAME)             Library soname: [librustc_driver-3904bc57e15750ed.so]\n 0x000000000000000f (RPATH)              Library rpath: [$ORIGIN/../lib]\n 0x000000000000000c (INIT)               0xa036f0\n 0x000000000000000d (FINI)               0x77c1c78\n 0x0000000000000019 (INIT_ARRAY)         0xb61dc90\n 0x000000000000001b (INIT_ARRAYSZ)       5288 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0xb61f138\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x0000000000000004 (HASH)               0x1c8\n 0x000000006ffffef5 (GNU_HASH)           0x19060\n 0x0000000000000005 (STRTAB)             0xad0c0\n 0x0000000000000006 (SYMTAB)             0x35948\n 0x000000000000000a (STRSZ)              2699950 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000003 (PLTGOT)             0xbb0fb88\n 0x0000000000000002 (PLTRELSZ)           252072 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x9c5e48\n 0x0000000000000007 (RELA)               0x34a308\n 0x0000000000000008 (RELASZ)             6798144 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x0000000000000018 (BIND_NOW)           \n 0x000000006ffffffb (FLAGS_1)            Flags: NOW ORIGIN\n 0x000000006ffffffe (VERNEED)            0x34a2b8\n 0x000000006fffffff (VERNEEDNUM)         1\n 0x000000006ffffff0 (VERSYM)             0x34036e\n 0x000000006ffffff9 (RELACOUNT)          277593\n 0x0000000000000000 (NULL)               0x0\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-explicit-loader-version",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "-vV"
+        ],
+        "exit_code": 127,
+        "stdout": "",
+        "stderr": "Error loading shared library libgcc_s.so.1: No such file or directory (needed by /work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/librustc_driver-3904bc57e15750ed.so)\n",
+        "environment_override": {}
+      },
+      {
+        "id": "gnu-macro-correct-name",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu",
+          "macro.rs",
+          "--crate-name=swap_macro",
+          "--crate-type=proc-macro",
+          "-o",
+          "libswap_macro_gnu.so"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "gnu-macro-consumer-correct-name",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-gnu",
+          "macro_user.rs",
+          "--extern",
+          "swap_macro=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/libswap_macro_gnu.so",
+          "-o",
+          "gnu-native-macro-consumer"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "gnu-macro-run",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/gnu-native-macro-consumer"
+        ],
+        "exit_code": 0,
+        "stdout": "macro=42\n",
+        "stderr": ""
+      },
+      {
+        "id": "gnu-macro-elf",
+        "command": [
+          "readelf",
+          "-h",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/libswap_macro_gnu.so"
+        ],
+        "exit_code": 0,
+        "stdout": "ELF Header:\n  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 \n  Class:                             ELF64\n  Data:                              2's complement, little endian\n  Version:                           1 (current)\n  OS/ABI:                            UNIX - System V\n  ABI Version:                       0\n  Type:                              DYN (Shared object file)\n  Machine:                           AArch64\n  Version:                           0x1\n  Entry point address:               0x0\n  Start of program headers:          64 (bytes into file)\n  Start of section headers:          4598928 (bytes into file)\n  Flags:                             0x0\n  Size of this header:               64 (bytes)\n  Size of program headers:           56 (bytes)\n  Number of program headers:         8\n  Size of section headers:           64 (bytes)\n  Number of section headers:         39\n  Section header string table index: 38\n",
+        "stderr": ""
+      },
+      {
+        "id": "musl-runtime-version",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "-vV"
+        ],
+        "exit_code": 0,
+        "stdout": "rustc 1.88.0 (6b00bc388 2025-06-23)\nbinary: rustc\ncommit-hash: 6b00bc3880198600130e1cf62b8f8a93494488cc\ncommit-date: 2025-06-23\nhost: aarch64-unknown-linux-musl\nrelease: 1.88.0\nLLVM version: 20.1.5\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-runtime-hello",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "hello.rs",
+          "-o",
+          "musl-runtime-hello"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-runtime-hello-run",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/musl-runtime-hello"
+        ],
+        "exit_code": 0,
+        "stdout": "native-rust:aarch64\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-runtime-soong-flags",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "library.rs",
+          "--crate-type=rlib",
+          "-o",
+          "musl-runtime-flags.rlib",
+          "-Z",
+          "unstable-options",
+          "-Z",
+          "stack-protector=strong",
+          "-Z",
+          "remap-cwd-prefix=.",
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "opt-level=3",
+          "-C",
+          "overflow-checks=on",
+          "-C",
+          "force-unwind-tables=yes",
+          "-C",
+          "symbol-mangling-version=v0",
+          "--color=never",
+          "-Z",
+          "dylib-lto",
+          "-Z",
+          "link-native-libraries=no",
+          "-Z",
+          "force-unstable-if-unmarked",
+          "--cfg",
+          "soong"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {
+          "RUSTC_BOOTSTRAP": "1"
+        }
+      },
+      {
+        "id": "musl-runtime-proc-macro-default",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "macro.rs",
+          "--crate-name=swap_macro",
+          "--crate-type=proc-macro",
+          "-o",
+          "libswap_macro_musl.so"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-runtime-proc-consumer",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "macro_user.rs",
+          "--extern",
+          "swap_macro=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/libswap_macro_musl.so",
+          "-o",
+          "musl-runtime-macro-user"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-runtime-proc-run",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/musl-runtime-macro-user"
+        ],
+        "exit_code": 0,
+        "stdout": "macro=42\n",
+        "stderr": "",
+        "environment_override": {}
+      },
+      {
+        "id": "musl-coherent-proc-macro",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "macro.rs",
+          "--crate-name=swap_macro",
+          "--crate-type=proc-macro",
+          "-o",
+          "libswap_macro_musl_coherent.so",
+          "-C",
+          "linker=/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "-C",
+          "link-arg=--target=aarch64-unknown-linux-musl",
+          "-C",
+          "link-arg=-nostartfiles",
+          "-C",
+          "link-arg=-L/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime",
+          "-C",
+          "link-arg=-Wl,-rpath,/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime",
+          "-C",
+          "target-feature=-crt-static"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "musl-coherent-proc-macro-elf",
+        "command": [
+          "readelf",
+          "-h",
+          "-d",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/libswap_macro_musl_coherent.so"
+        ],
+        "exit_code": 0,
+        "stdout": "ELF Header:\n  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 \n  Class:                             ELF64\n  Data:                              2's complement, little endian\n  Version:                           1 (current)\n  OS/ABI:                            UNIX - System V\n  ABI Version:                       0\n  Type:                              DYN (Shared object file)\n  Machine:                           AArch64\n  Version:                           0x1\n  Entry point address:               0x0\n  Start of program headers:          64 (bytes into file)\n  Start of section headers:          4565800 (bytes into file)\n  Flags:                             0x0\n  Size of this header:               64 (bytes)\n  Size of program headers:           56 (bytes)\n  Number of program headers:         10\n  Size of section headers:           64 (bytes)\n  Number of section headers:         34\n  Section header string table index: 32\n\nDynamic section at offset 0x54800 contains 22 entries:\n  Tag        Type                         Name/Value\n 0x000000000000001d (RUNPATH)            Library runpath: [/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime]\n 0x0000000000000001 (NEEDED)             Shared library: [libgcc_s.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libc_musl.so]\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW\n 0x0000000000000007 (RELA)               0xab0\n 0x0000000000000008 (RELASZ)             12264 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000006ffffff9 (RELACOUNT)          502\n 0x0000000000000017 (JMPREL)             0x3a98\n 0x0000000000000002 (PLTRELSZ)           1080 (bytes)\n 0x0000000000000003 (PLTGOT)             0x74a98\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000006 (SYMTAB)             0x270\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000005 (STRTAB)             0x7b4\n 0x000000000000000a (STRSZ)              761 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x790\n 0x000000006ffffff0 (VERSYM)             0x6f0\n 0x000000006ffffffe (VERNEED)            0x750\n 0x000000006fffffff (VERNEEDNUM)         1\n 0x0000000000000000 (NULL)               0x0\n",
+        "stderr": ""
+      },
+      {
+        "id": "musl-coherent-proc-consumer",
+        "command": [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+          "--library-path",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/musl-runtime:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib:/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/lib/rustlib/aarch64-unknown-linux-musl/lib:/work/evolution/prebuilts/build-tools/linux-arm64/lib64",
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl/bin/rustc",
+          "--sysroot=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/toolchains/aarch64-unknown-linux-musl",
+          "macro_user.rs",
+          "--extern",
+          "swap_macro=/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/libswap_macro_musl_coherent.so",
+          "-o",
+          "musl-coherent-macro-user"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "musl-coherent-proc-run",
+        "command": [
+          "/work/arm64-cluster-probes/20260828T023851Z-rust-swap/work/musl-coherent-macro-user"
+        ],
+        "exit_code": 0,
+        "stdout": "macro=42\n",
+        "stderr": ""
+      }
+    ],
+    "coherent_musl_macro_needed": [
+      "libgcc_s.so.1",
+      "libc_musl.so"
+    ],
+    "macro_artifacts": [
+      {
+        "name": "libswap_macro_musl_coherent.so",
+        "sha256": "05e1bc79c7d462a916f801b669989b4b83c74003741121a9d84a7045f0460b7c"
+      },
+      {
+        "name": "musl-coherent-macro-user",
+        "sha256": "8683bb84e3abbe978792313e9b716c3da4788c129b96cb26e333bce782433309"
+      }
+    ],
+    "runtime_package": {
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.22/main/aarch64/libgcc-14.2.0-r6.apk",
+      "sha256": "ba1835eec3ad8a120efd3d5020e561d53553a0513763a08f509e3ce6d4baa9ca",
+      "library_sha256": "2d945d6ce360769b41fbffc652c2440014bbd69416f13fe206fbac19d32c9431",
+      "apk_signature_verified": false,
+      "trust_note": "Fetched from official Alpine HTTPS repository, matched independently recorded package and payload SHA256; APK signature not independently verified. Research-only runtime, not a production package acceptance."
+    },
+    "runtime_signature_followup": {
+      "verified": true,
+      "openssl_result": "Verified OK",
+      "key_url": "https://alpinelinux.org/keys/alpine-devel@lists.alpinelinux.org-616ae350.rsa.pub",
+      "key_sha256": "d11f6b21c61b4274e182eb888883a8ba8acdbf820dcc7a6d82a7d9fc2fd2836d",
+      "signed_compressed_data_sha256": "8d454db3ad6a1a36fb4b967a7c2027b1f42d1cd81530b374c96adb49243a0fad",
+      "index_control_checksum": "Q1gWAlqlkuoc3AxelSD9Lh3Fi3gX0=",
+      "note": "APK control signature independently reverified after the runtime probe; original receipt preserves its earlier not-yet-verified status."
+    },
+    "loader": {
+      "path": "/work/evolution/prebuilts/build-tools/linux-arm64/lib64/libc_musl.so",
+      "sha256": "6d78c8fdc717a30d4f590f9569bebbbe9fe3dd9600f5779f40718f7ef553420e"
+    },
+    "fixture_corrections": [
+      "Manually unpacked GNU compiler autodetected the wrong sysroot; explicit sysroot or explicit libraries resolved it.",
+      "First GNU macro filename lacked the required lib prefix; corrected without changing compiler or source.",
+      "Default Ubuntu linker made the first musl macro depend on libc.so.6; rebuilt using an explicit native musl-targeting Clang and private musl libraries, then verified DT_NEEDED and successful loading."
+    ],
+    "not_established": [
+      "Soong integration",
+      "Android target std rebuild",
+      "PAC/BTI compiler-patch equivalence",
+      "sanitizer or full-device coverage"
+    ]
+  },
+  "java": {
+    "inventory": {
+      "probe_root": "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+      "observed_at": "2026-08-28T02:35:30.192103+00:00",
+      "uname": {
+        "argv": [
+          "/usr/bin/uname",
+          "-a"
+        ],
+        "exit": 0,
+        "stdout": "Linux evolution-nezha-shell-20260827180004772575 6.18.15 #1 SMP Tue Mar 17 01:36:53 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux\n",
+        "stderr": ""
+      },
+      "jdks": [
+        {
+          "root": "/usr/lib/jvm/java-1.21.0-openjdk-arm64",
+          "release": "IMPLEMENTOR=\"Ubuntu\"\nJAVA_RUNTIME_VERSION=\"21.0.12+8-1-24.04-Ubuntu\"\nJAVA_VERSION=\"21.0.12\"\nJAVA_VERSION_DATE=\"2026-07-21\"\nLIBC=\"gnu\"\nMODULES=\"java.base java.compiler java.datatransfer java.xml java.prefs java.desktop java.instrument java.logging java.management java.security.sasl java.naming java.rmi java.management.rmi java.net.http java.scripting java.security.jgss java.transaction.xa java.sql java.sql.rowset java.xml.crypto java.se java.smartcardio jdk.accessibility jdk.internal.jvmstat jdk.attach jdk.charsets jdk.internal.opt jdk.zipfs jdk.compiler jdk.crypto.ec jdk.crypto.cryptoki jdk.dynalink jdk.internal.ed jdk.editpad jdk.hotspot.agent jdk.httpserver jdk.incubator.vector jdk.internal.le jdk.internal.vm.ci jdk.internal.vm.compiler jdk.internal.vm.compiler.management jdk.jartool jdk.javadoc jdk.jcmd jdk.management jdk.management.agent jdk.jconsole jdk.jdeps jdk.jdwp.agent jdk.jdi jdk.jfr jdk.jlink jdk.jpackage jdk.jshell jdk.jsobject jdk.jstatd jdk.localedata jdk.management.jfr jdk.naming.dns jdk.naming.rmi jdk.net jdk.nio.mapmode jdk.random jdk.sctp jdk.security.auth jdk.security.jgss jdk.unsupported jdk.unsupported.desktop jdk.xml.dom\"\nOS_ARCH=\"aarch64\"\nOS_NAME=\"Linux\"\nSOURCE=\"\"\n",
+          "java": {
+            "path": "/usr/lib/jvm/java-1.21.0-openjdk-arm64/bin/java",
+            "exists": true,
+            "resolved": "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+            "size": 67480,
+            "sha256": "4a5df72c75cd5804324e81502bc75c977520727137f4485deeab94c42cec76d1",
+            "elf_machine": 183
+          },
+          "javac": {
+            "path": "/usr/lib/jvm/java-1.21.0-openjdk-arm64/bin/javac",
+            "exists": true,
+            "resolved": "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+            "size": 67520,
+            "sha256": "d9716ad7a2597bab9bdf4a63193649c8d529547daa19750d3e2bcb7ec5dab64f",
+            "elf_machine": 183
+          },
+          "version": {
+            "argv": [
+              "/usr/lib/jvm/java-1.21.0-openjdk-arm64/bin/java",
+              "-XX:-UsePerfData",
+              "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+              "-version"
+            ],
+            "exit": 0,
+            "stdout": "",
+            "stderr": "openjdk version \"21.0.12\" 2026-07-21\nOpenJDK Runtime Environment (build 21.0.12+8-1-24.04-Ubuntu)\nOpenJDK 64-Bit Server VM (build 21.0.12+8-1-24.04-Ubuntu, mixed mode, sharing)\n"
+          }
+        },
+        {
+          "root": "/usr/lib/jvm/java-21-openjdk-arm64",
+          "release": "IMPLEMENTOR=\"Ubuntu\"\nJAVA_RUNTIME_VERSION=\"21.0.12+8-1-24.04-Ubuntu\"\nJAVA_VERSION=\"21.0.12\"\nJAVA_VERSION_DATE=\"2026-07-21\"\nLIBC=\"gnu\"\nMODULES=\"java.base java.compiler java.datatransfer java.xml java.prefs java.desktop java.instrument java.logging java.management java.security.sasl java.naming java.rmi java.management.rmi java.net.http java.scripting java.security.jgss java.transaction.xa java.sql java.sql.rowset java.xml.crypto java.se java.smartcardio jdk.accessibility jdk.internal.jvmstat jdk.attach jdk.charsets jdk.internal.opt jdk.zipfs jdk.compiler jdk.crypto.ec jdk.crypto.cryptoki jdk.dynalink jdk.internal.ed jdk.editpad jdk.hotspot.agent jdk.httpserver jdk.incubator.vector jdk.internal.le jdk.internal.vm.ci jdk.internal.vm.compiler jdk.internal.vm.compiler.management jdk.jartool jdk.javadoc jdk.jcmd jdk.management jdk.management.agent jdk.jconsole jdk.jdeps jdk.jdwp.agent jdk.jdi jdk.jfr jdk.jlink jdk.jpackage jdk.jshell jdk.jsobject jdk.jstatd jdk.localedata jdk.management.jfr jdk.naming.dns jdk.naming.rmi jdk.net jdk.nio.mapmode jdk.random jdk.sctp jdk.security.auth jdk.security.jgss jdk.unsupported jdk.unsupported.desktop jdk.xml.dom\"\nOS_ARCH=\"aarch64\"\nOS_NAME=\"Linux\"\nSOURCE=\"\"\n",
+          "java": {
+            "path": "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+            "exists": true,
+            "resolved": "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+            "size": 67480,
+            "sha256": "4a5df72c75cd5804324e81502bc75c977520727137f4485deeab94c42cec76d1",
+            "elf_machine": 183
+          },
+          "javac": {
+            "path": "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+            "exists": true,
+            "resolved": "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+            "size": 67520,
+            "sha256": "d9716ad7a2597bab9bdf4a63193649c8d529547daa19750d3e2bcb7ec5dab64f",
+            "elf_machine": 183
+          },
+          "version": {
+            "argv": [
+              "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+              "-XX:-UsePerfData",
+              "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+              "-version"
+            ],
+            "exit": 0,
+            "stdout": "",
+            "stderr": "openjdk version \"21.0.12\" 2026-07-21\nOpenJDK Runtime Environment (build 21.0.12+8-1-24.04-Ubuntu)\nOpenJDK 64-Bit Server VM (build 21.0.12+8-1-24.04-Ubuntu, mixed mode, sharing)\n"
+          }
+        },
+        {
+          "root": "/work/evolution/prebuilts/jdk/jdk21/linux-x86",
+          "release": "IMPLEMENTOR=\"N/A\"\nIMPLEMENTOR_VERSION=\"Android_PDK\"\nJAVA_RUNTIME_VERSION=\"21.0.4+-12414455\"\nJAVA_VERSION=\"21.0.4\"\nJAVA_VERSION_DATE=\"2024-07-16\"\nLIBC=\"gnu\"\nMODULES=\"java.base java.compiler java.datatransfer java.xml java.prefs java.desktop java.instrument java.logging java.management java.security.sasl java.naming java.rmi java.management.rmi java.net.http java.scripting java.security.jgss java.transaction.xa java.sql java.sql.rowset java.xml.crypto java.se java.smartcardio jdk.accessibility jdk.internal.jvmstat jdk.attach jdk.charsets jdk.internal.opt jdk.zipfs jdk.compiler jdk.crypto.ec jdk.crypto.cryptoki jdk.dynalink jdk.internal.ed jdk.editpad jdk.hotspot.agent jdk.httpserver jdk.incubator.vector jdk.internal.le jdk.internal.vm.ci jdk.internal.vm.compiler jdk.internal.vm.compiler.management jdk.jartool jdk.javadoc jdk.jcmd jdk.management jdk.management.agent jdk.jconsole jdk.jdeps jdk.jdwp.agent jdk.jdi jdk.jfr jdk.jlink jdk.jpackage jdk.jshell jdk.jsobject jdk.jstatd jdk.localedata jdk.management.jfr jdk.naming.dns jdk.naming.rmi jdk.net jdk.nio.mapmode jdk.random jdk.sctp jdk.security.auth jdk.security.jgss jdk.unsupported jdk.unsupported.desktop jdk.xml.dom\"\nOS_ARCH=\"x86_64\"\nOS_NAME=\"Linux\"\nSOURCE=\".:git:6b7ad37a2855\"\n",
+          "java": {
+            "path": "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+            "exists": true,
+            "resolved": "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+            "size": 8528,
+            "sha256": "cfa21aeadd00925925c9e1287f5c08f3e04ee7f26a9e23d9dbfb16149153d842",
+            "elf_machine": 62
+          },
+          "javac": {
+            "path": "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac",
+            "exists": true,
+            "resolved": "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac",
+            "size": 8824,
+            "sha256": "18351d7a271f6b8bd17f9e8fef6bb04baa7cf008cbc8a3a782a93a2f5c48ecfa",
+            "elf_machine": 62
+          },
+          "version": {
+            "argv": [
+              "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+              "-XX:-UsePerfData",
+              "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+              "-version"
+            ],
+            "exit": 0,
+            "stdout": "",
+            "stderr": "openjdk version \"21.0.4\" 2024-07-16\nOpenJDK Runtime Environment Android_PDK (build 21.0.4+-12414455)\nOpenJDK 64-Bit Server VM Android_PDK (build 21.0.4+-12414455, mixed mode, sharing)\n"
+          }
+        }
+      ],
+      "source_pins": [
+        {
+          "argv": [
+            "git",
+            "-C",
+            "/work/evolution/prebuilts/jdk/jdk21",
+            "-c",
+            "core.fsmonitor=false",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "stdout": "ef5bcc92586b839ae3dbacc154127092fa4002ec\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "/work/evolution/build/soong",
+            "-c",
+            "core.fsmonitor=false",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "stdout": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "/work/evolution/prebuilts/build-tools",
+            "-c",
+            "core.fsmonitor=false",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "stdout": "412724a805835d89234d67c363f7ada7f5f8a67f\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "/work/evolution/prebuilts/r8",
+            "-c",
+            "core.fsmonitor=false",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "stdout": "9a1c3c8fba7f65fba7f2ebceaa4af40bc79d3257\n",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "git",
+            "-C",
+            "/work/evolution/external/turbine",
+            "-c",
+            "core.fsmonitor=false",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exit": 0,
+          "stdout": "48b199d42cf500130d2a947fd0522c5ae6ecc2a1\n",
+          "stderr": ""
+        }
+      ]
+    },
+    "scope": "Isolated Java swap probes using an existing Evolution X build output, not a full AOSP build. Inputs unchanged; output equality applies only to these programs/flags.",
+    "probes": [
+      {
+        "id": "javac-stock-8",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac",
+          "-J-XX:-UsePerfData",
+          "-J-XX:ActiveProcessorCount=2",
+          "-J-Xmx1024m",
+          "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "--release",
+          "8",
+          "-g",
+          "-parameters",
+          "-d",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/stock-8",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "warning: [options] source value 8 is obsolete and will be removed in a future release\nwarning: [options] target value 8 is obsolete and will be removed in a future release\nwarning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n3 warnings\n"
+      },
+      {
+        "id": "java-stock-8",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/stock-8",
+          "probe.Sample"
+        ],
+        "exit_code": 0,
+        "stdout": "sum=6,first=97\n",
+        "stderr": ""
+      },
+      {
+        "id": "javac-stock-17",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac",
+          "-J-XX:-UsePerfData",
+          "-J-XX:ActiveProcessorCount=2",
+          "-J-Xmx1024m",
+          "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "--release",
+          "17",
+          "-g",
+          "-parameters",
+          "-d",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/stock-17",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "java-stock-17",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/stock-17",
+          "probe.Sample"
+        ],
+        "exit_code": 0,
+        "stdout": "sum=6,first=97\n",
+        "stderr": ""
+      },
+      {
+        "id": "javac-stock-21",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac",
+          "-J-XX:-UsePerfData",
+          "-J-XX:ActiveProcessorCount=2",
+          "-J-Xmx1024m",
+          "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "--release",
+          "21",
+          "-g",
+          "-parameters",
+          "-d",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/stock-21",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "java-stock-21",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/stock-21",
+          "probe.Sample"
+        ],
+        "exit_code": 0,
+        "stdout": "sum=6,first=97\n",
+        "stderr": ""
+      },
+      {
+        "id": "javac-native-8",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+          "-J-XX:-UsePerfData",
+          "-J-XX:ActiveProcessorCount=2",
+          "-J-Xmx1024m",
+          "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "--release",
+          "8",
+          "-g",
+          "-parameters",
+          "-d",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/native-8",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "warning: [options] source value 8 is obsolete and will be removed in a future release\nwarning: [options] target value 8 is obsolete and will be removed in a future release\nwarning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n3 warnings\n"
+      },
+      {
+        "id": "java-native-8",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/native-8",
+          "probe.Sample"
+        ],
+        "exit_code": 0,
+        "stdout": "sum=6,first=97\n",
+        "stderr": ""
+      },
+      {
+        "id": "javac-native-17",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+          "-J-XX:-UsePerfData",
+          "-J-XX:ActiveProcessorCount=2",
+          "-J-Xmx1024m",
+          "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "--release",
+          "17",
+          "-g",
+          "-parameters",
+          "-d",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/native-17",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "java-native-17",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/native-17",
+          "probe.Sample"
+        ],
+        "exit_code": 0,
+        "stdout": "sum=6,first=97\n",
+        "stderr": ""
+      },
+      {
+        "id": "javac-native-21",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+          "-J-XX:-UsePerfData",
+          "-J-XX:ActiveProcessorCount=2",
+          "-J-Xmx1024m",
+          "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "--release",
+          "21",
+          "-g",
+          "-parameters",
+          "-d",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/native-21",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "java-native-21",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/classes/native-21",
+          "probe.Sample"
+        ],
+        "exit_code": 0,
+        "stdout": "sum=6,first=97\n",
+        "stderr": ""
+      },
+      {
+        "id": "d8-version-stock",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/d8.jar",
+          "com.android.tools.r8wrappers.D8Wrapper",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "D8(d8-aosp-wrapper) 9.0.10-dev (build 722d11e5bbfd0d48896c84a63f592f7f234e9b8e from go/r8bot (luci-r8-custom-ci-archive-0-kyvb))\n",
+        "stderr": ""
+      },
+      {
+        "id": "r8-version-stock",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-jar",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/r8.jar",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "R8(r8-aosp-wrapper) 9.0.10-dev (build 722d11e5bbfd0d48896c84a63f592f7f234e9b8e from go/r8bot (luci-r8-custom-ci-archive-0-kyvb))\n",
+        "stderr": ""
+      },
+      {
+        "id": "d8-stock",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-Xlog:library=info",
+          "-cp",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/d8.jar",
+          "com.android.tools.r8wrappers.D8Wrapper",
+          "--release",
+          "--min-api",
+          "26",
+          "--lib",
+          "/work/evolution/prebuilts/sdk/current/public/android.jar",
+          "--output",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/d8/stock",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/input.jar"
+        ],
+        "exit_code": 0,
+        "stdout": "[0.226s][info][library] Loaded library libjsvml.so, handle 0x00007fff64022a20\n[0.253s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x00007ffffffff2e0\n[0.270s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libnio.so, handle 0x00007ffff8479e70\n[0.270s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8479e70\n[0.272s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_init in library with handle 0x00007ffff8479e70\n[0.273s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_getcwd in library with handle 0x00007ffff8479e70\n[0.277s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_stat0 in library with handle 0x00007ffff8479e70\n[0.325s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[0.326s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libzip.so, handle 0x00007ffff8482fc0\n[0.326s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8482fc0\n[0.326s][info][library] Found Java_java_util_zip_Inflater_initIDs in library with handle 0x00007ffff8482fc0\n[0.326s][info][library] Found Java_java_util_zip_Inflater_init in library with handle 0x00007ffff8482fc0\n[0.329s][info][library] Found Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x00007ffff8482fc0\n[0.340s][info][library] Found Java_java_util_zip_Inflater_reset in library with handle 0x00007ffff8482fc0\n[0.342s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[0.573s][info][library] Failed to find Java_sun_nio_fs_UnixNativeDispatcher_exists0 in library with handle 0x00007ffff8482fc0\n[0.573s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_exists0 in library with handle 0x00007ffff8479e70\n[0.857s][info][library] Failed to find JNI_OnLoad_jimage in library with handle 0x00007ffffffff2e0\n[0.857s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libjimage.so, handle 0x00007ffff8005a30\n[0.857s][info][library] Failed to find JNI_OnLoad in library with handle 0x00007ffff8005a30\n[0.857s][info][library] Found Java_jdk_internal_jimage_NativeImageBuffer_getNativeMap in library with handle 0x00007ffff8005a30\n[0.920s][info][library] Failed to find Java_java_util_zip_Inflater_end in library with handle 0x00007ffff8005a30\n[0.920s][info][library] Found Java_java_util_zip_Inflater_end in library with handle 0x00007ffff8482fc0\n[1.985s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[1.986s][info][library] Failed to find Java_java_util_zip_Adler32_updateBytes in library with handle 0x00007ffff8005a30\n[1.987s][info][library] Found Java_java_util_zip_Adler32_updateBytes in library with handle 0x00007ffff8482fc0\n[1.988s][info][library] Failed to find Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x00007ffff8005a30\n[1.988s][info][library] Failed to find Java_sun_nio_fs_UnixNativeDispatcher",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "r8-stock",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-Xlog:library=info",
+          "-jar",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/r8.jar",
+          "--release",
+          "--min-api",
+          "26",
+          "--lib",
+          "/work/evolution/prebuilts/sdk/current/public/android.jar",
+          "--output",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/r8/stock",
+          "--pg-conf",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/keep.pro",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/input.jar"
+        ],
+        "exit_code": 0,
+        "stdout": "[0.299s][info][library] Loaded library libjsvml.so, handle 0x00007fff64022a20\n[0.302s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x00007ffffffff2e0\n[0.312s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libnio.so, handle 0x00007ffff8479550\n[0.312s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8479550\n[0.314s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_init in library with handle 0x00007ffff8479550\n[0.315s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_getcwd in library with handle 0x00007ffff8479550\n[0.324s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_stat0 in library with handle 0x00007ffff8479550\n[0.421s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[0.422s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libzip.so, handle 0x00007ffff84833b0\n[0.422s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff84833b0\n[0.422s][info][library] Found Java_java_util_zip_Inflater_initIDs in library with handle 0x00007ffff84833b0\n[0.423s][info][library] Found Java_java_util_zip_Inflater_init in library with handle 0x00007ffff84833b0\n[0.426s][info][library] Found Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x00007ffff84833b0\n[0.436s][info][library] Found Java_java_util_zip_Inflater_reset in library with handle 0x00007ffff84833b0\n[0.437s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[0.677s][info][library] Failed to find Java_sun_nio_fs_UnixNativeDispatcher_exists0 in library with handle 0x00007ffff84833b0\n[0.677s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_exists0 in library with handle 0x00007ffff8479550\n[0.929s][info][library] Failed to find Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x00007ffff84833b0\n[0.929s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x00007ffff8479550\n[0.931s][info][library] Failed to find JNI_OnLoad_net in library with handle 0x00007ffffffff2e0\n[0.931s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libnet.so, handle 0x00007ffff8479c30\n[0.931s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8479c30\n[0.931s][info][library] Found inet_pton in library with handle 0x0000000000000000\n[0.931s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x00007ffffffff2e0\n[0.931s][info][library] Failed to find Java_sun_nio_ch_IOUtil_initIDs in library with handle 0x00007ffff84833b0\n[0.931s][info][library] Found Java_sun_nio_ch_IOUtil_initIDs in library with handle 0x00007ffff8479550\n[0.931s][info][library] Failed to find Java_sun_nio_ch_IOUtil_iovMax in library with handle 0x00007ffff84833b0\n[0.931s][info][library] Found Java_sun_nio_ch_IOUtil_iovMax in library with handle 0x00007ffff8479550\n[0.931s][info][library] Failed to find Ja",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "turbine-stock",
+        "command": [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-Xlog:library=info",
+          "-jar",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/turbine.jar",
+          "--output",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/turbine/stock.jar",
+          "--bootclasspath",
+          "/work/evolution/prebuilts/sdk/current/public/android.jar",
+          "--sources",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java",
+          "--javacopts",
+          "-source",
+          "8",
+          "-target",
+          "8",
+          "--"
+        ],
+        "exit_code": 0,
+        "stdout": "[0.221s][info][library] Loaded library libjsvml.so, handle 0x00007fff64022a20\n[0.224s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x00007ffffffff2e0\n[0.233s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libnio.so, handle 0x00007ffff8479510\n[0.234s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8479510\n[0.236s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_init in library with handle 0x00007ffff8479510\n[0.237s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_getcwd in library with handle 0x00007ffff8479510\n[0.247s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_stat0 in library with handle 0x00007ffff8479510\n[0.308s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[0.309s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libzip.so, handle 0x00007ffff8483350\n[0.309s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8483350\n[0.310s][info][library] Found Java_java_util_zip_Inflater_initIDs in library with handle 0x00007ffff8483350\n[0.310s][info][library] Found Java_java_util_zip_Inflater_init in library with handle 0x00007ffff8483350\n[0.312s][info][library] Found Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x00007ffff8483350\n[0.323s][info][library] Found Java_java_util_zip_Inflater_reset in library with handle 0x00007ffff8483350\n[0.324s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x00007ffffffff2e0\n[0.500s][info][library] Failed to find Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x00007ffff8483350\n[0.500s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x00007ffff8479510\n[0.503s][info][library] Failed to find JNI_OnLoad_net in library with handle 0x00007ffffffff2e0\n[0.503s][info][library] Loaded library /work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/libnet.so, handle 0x00007ffff8479bf0\n[0.503s][info][library] Found JNI_OnLoad in library with handle 0x00007ffff8479bf0\n[0.506s][info][library] Found inet_pton in library with handle 0x0000000000000000\n[0.506s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x00007ffffffff2e0\n[0.506s][info][library] Failed to find Java_sun_nio_ch_IOUtil_initIDs in library with handle 0x00007ffff8483350\n[0.506s][info][library] Found Java_sun_nio_ch_IOUtil_initIDs in library with handle 0x00007ffff8479510\n[0.506s][info][library] Failed to find Java_sun_nio_ch_IOUtil_iovMax in library with handle 0x00007ffff8483350\n[0.506s][info][library] Found Java_sun_nio_ch_IOUtil_iovMax in library with handle 0x00007ffff8479510\n[0.506s][info][library] Failed to find Java_sun_nio_ch_IOUtil_writevMax in library with handle 0x00007ffff8483350\n[0.506s][info][library] Found Java_sun_nio_ch_IOUtil_writevMax in library with handle 0x00007ffff8479510\n[0.506s][info][library] Failed to find Java_sun_nio_ch_FileDispat",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "d8-version-native",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-cp",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/d8.jar",
+          "com.android.tools.r8wrappers.D8Wrapper",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "D8(d8-aosp-wrapper) 9.0.10-dev (build 722d11e5bbfd0d48896c84a63f592f7f234e9b8e from go/r8bot (luci-r8-custom-ci-archive-0-kyvb))\n",
+        "stderr": ""
+      },
+      {
+        "id": "r8-version-native",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-jar",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/r8.jar",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "R8(r8-aosp-wrapper) 9.0.10-dev (build 722d11e5bbfd0d48896c84a63f592f7f234e9b8e from go/r8bot (luci-r8-custom-ci-archive-0-kyvb))\n",
+        "stderr": ""
+      },
+      {
+        "id": "d8-native",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-Xlog:library=info",
+          "-cp",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/d8.jar",
+          "com.android.tools.r8wrappers.D8Wrapper",
+          "--release",
+          "--min-api",
+          "26",
+          "--lib",
+          "/work/evolution/prebuilts/sdk/current/public/android.jar",
+          "--output",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/d8/native",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/input.jar"
+        ],
+        "exit_code": 0,
+        "stdout": "[0.016s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x0000ffff8c047350\n[0.016s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libnio.so, handle 0x0000ffff8435ebb0\n[0.016s][info][library] Found JNI_OnLoad in library with handle 0x0000ffff8435ebb0\n[0.016s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_init in library with handle 0x0000ffff8435ebb0\n[0.016s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_getcwd in library with handle 0x0000ffff8435ebb0\n[0.017s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_stat0 in library with handle 0x0000ffff8435ebb0\n[0.020s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffff8c047350\n[0.021s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libzip.so, handle 0x0000ffff843636e0\n[0.021s][info][library] Found JNI_OnLoad in library with handle 0x0000ffff843636e0\n[0.021s][info][library] Failed to find Java_java_util_zip_Inflater_initIDs in library with handle 0x0000ffff8435ebb0\n[0.021s][info][library] Found Java_java_util_zip_Inflater_initIDs in library with handle 0x0000ffff843636e0\n[0.021s][info][library] Failed to find Java_java_util_zip_Inflater_init in library with handle 0x0000ffff8435ebb0\n[0.021s][info][library] Found Java_java_util_zip_Inflater_init in library with handle 0x0000ffff843636e0\n[0.021s][info][library] Failed to find Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x0000ffff8435ebb0\n[0.021s][info][library] Found Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x0000ffff843636e0\n[0.021s][info][library] Failed to find Java_java_util_zip_Inflater_reset in library with handle 0x0000ffff8435ebb0\n[0.021s][info][library] Found Java_java_util_zip_Inflater_reset in library with handle 0x0000ffff843636e0\n[0.021s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffff8c047350\n[0.041s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_access0 in library with handle 0x0000ffff8435ebb0\n[0.112s][info][library] Failed to find JNI_OnLoad_jimage in library with handle 0x0000ffff8c047350\n[0.112s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libjimage.so, handle 0x0000ffff84005b50\n[0.112s][info][library] Failed to find JNI_OnLoad in library with handle 0x0000ffff84005b50\n[0.112s][info][library] Found Java_jdk_internal_jimage_NativeImageBuffer_getNativeMap in library with handle 0x0000ffff84005b50\n[0.130s][info][library] Failed to find Java_java_util_zip_Inflater_end in library with handle 0x0000ffff84005b50\n[0.130s][info][library] Failed to find Java_java_util_zip_Inflater_end in library with handle 0x0000ffff8435ebb0\n[0.130s][info][library] Found Java_java_util_zip_Inflater_end in library with handle 0x0000ffff843636e0\n[0.443s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffff8c047350\n[0.444s][info][library] Failed to find Java_java_util_zip_Adler32_updateBytes in ",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "r8-native",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-Xlog:library=info",
+          "-jar",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/r8.jar",
+          "--release",
+          "--min-api",
+          "26",
+          "--lib",
+          "/work/evolution/prebuilts/sdk/current/public/android.jar",
+          "--output",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/r8/native",
+          "--pg-conf",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/keep.pro",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/input.jar"
+        ],
+        "exit_code": 0,
+        "stdout": "[0.016s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x0000ffffa885e350\n[0.017s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libnio.so, handle 0x0000ffffa035e980\n[0.017s][info][library] Found JNI_OnLoad in library with handle 0x0000ffffa035e980\n[0.017s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_init in library with handle 0x0000ffffa035e980\n[0.017s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_getcwd in library with handle 0x0000ffffa035e980\n[0.017s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_stat0 in library with handle 0x0000ffffa035e980\n[0.022s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffffa885e350\n[0.023s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libzip.so, handle 0x0000ffffa0363990\n[0.023s][info][library] Found JNI_OnLoad in library with handle 0x0000ffffa0363990\n[0.023s][info][library] Failed to find Java_java_util_zip_Inflater_initIDs in library with handle 0x0000ffffa035e980\n[0.023s][info][library] Found Java_java_util_zip_Inflater_initIDs in library with handle 0x0000ffffa0363990\n[0.023s][info][library] Failed to find Java_java_util_zip_Inflater_init in library with handle 0x0000ffffa035e980\n[0.023s][info][library] Found Java_java_util_zip_Inflater_init in library with handle 0x0000ffffa0363990\n[0.023s][info][library] Failed to find Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x0000ffffa035e980\n[0.023s][info][library] Found Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x0000ffffa0363990\n[0.023s][info][library] Failed to find Java_java_util_zip_Inflater_reset in library with handle 0x0000ffffa035e980\n[0.023s][info][library] Found Java_java_util_zip_Inflater_reset in library with handle 0x0000ffffa0363990\n[0.023s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffffa885e350\n[0.049s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_access0 in library with handle 0x0000ffffa035e980\n[0.112s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x0000ffffa035e980\n[0.112s][info][library] Failed to find JNI_OnLoad_net in library with handle 0x0000ffffa885e350\n[0.112s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libnet.so, handle 0x0000ffffa035ef50\n[0.112s][info][library] Found JNI_OnLoad in library with handle 0x0000ffffa035ef50\n[0.112s][info][library] Found inet_pton in library with handle 0x0000000000000000\n[0.112s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x0000ffffa885e350\n[0.112s][info][library] Found Java_sun_nio_ch_IOUtil_initIDs in library with handle 0x0000ffffa035e980\n[0.112s][info][library] Found Java_sun_nio_ch_IOUtil_iovMax in library with handle 0x0000ffffa035e980\n[0.112s][info][library] Found Java_sun_nio_ch_IOUtil_writevMax in library with handle 0x0000ffffa035e980\n[0.112s][info][library] Found Java_sun_nio_ch_F",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "turbine-native",
+        "command": [
+          "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+          "-XX:-UsePerfData",
+          "-XX:ActiveProcessorCount=2",
+          "-Xmx1024m",
+          "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+          "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+          "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+          "-Xlog:library=info",
+          "-jar",
+          "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/turbine.jar",
+          "--output",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/turbine/native.jar",
+          "--bootclasspath",
+          "/work/evolution/prebuilts/sdk/current/public/android.jar",
+          "--sources",
+          "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/src/probe/Sample.java",
+          "--javacopts",
+          "-source",
+          "8",
+          "-target",
+          "8",
+          "--"
+        ],
+        "exit_code": 0,
+        "stdout": "[0.015s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x0000ffff7fc92350\n[0.015s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libnio.so, handle 0x0000ffff7835e700\n[0.015s][info][library] Found JNI_OnLoad in library with handle 0x0000ffff7835e700\n[0.015s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_init in library with handle 0x0000ffff7835e700\n[0.015s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_getcwd in library with handle 0x0000ffff7835e700\n[0.016s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_stat0 in library with handle 0x0000ffff7835e700\n[0.020s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffff7fc92350\n[0.020s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libzip.so, handle 0x0000ffff78363700\n[0.020s][info][library] Found JNI_OnLoad in library with handle 0x0000ffff78363700\n[0.020s][info][library] Failed to find Java_java_util_zip_Inflater_initIDs in library with handle 0x0000ffff7835e700\n[0.020s][info][library] Found Java_java_util_zip_Inflater_initIDs in library with handle 0x0000ffff78363700\n[0.020s][info][library] Failed to find Java_java_util_zip_Inflater_init in library with handle 0x0000ffff7835e700\n[0.020s][info][library] Found Java_java_util_zip_Inflater_init in library with handle 0x0000ffff78363700\n[0.020s][info][library] Failed to find Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x0000ffff7835e700\n[0.020s][info][library] Found Java_java_util_zip_Inflater_inflateBytesBytes in library with handle 0x0000ffff78363700\n[0.020s][info][library] Failed to find Java_java_util_zip_Inflater_reset in library with handle 0x0000ffff7835e700\n[0.020s][info][library] Found Java_java_util_zip_Inflater_reset in library with handle 0x0000ffff78363700\n[0.020s][info][library] Failed to find JNI_OnLoad_zip in library with handle 0x0000ffff7fc92350\n[0.034s][info][library] Found Java_sun_nio_fs_UnixNativeDispatcher_open0 in library with handle 0x0000ffff7835e700\n[0.035s][info][library] Failed to find JNI_OnLoad_net in library with handle 0x0000ffff7fc92350\n[0.035s][info][library] Loaded library /usr/lib/jvm/java-21-openjdk-arm64/lib/libnet.so, handle 0x0000ffff7835ecd0\n[0.035s][info][library] Found JNI_OnLoad in library with handle 0x0000ffff7835ecd0\n[0.035s][info][library] Found inet_pton in library with handle 0x0000000000000000\n[0.035s][info][library] Failed to find JNI_OnLoad_nio in library with handle 0x0000ffff7fc92350\n[0.035s][info][library] Found Java_sun_nio_ch_IOUtil_initIDs in library with handle 0x0000ffff7835e700\n[0.035s][info][library] Found Java_sun_nio_ch_IOUtil_iovMax in library with handle 0x0000ffff7835e700\n[0.035s][info][library] Found Java_sun_nio_ch_IOUtil_writevMax in library with handle 0x0000ffff7835e700\n[0.035s][info][library] Found Java_sun_nio_ch_FileDispatcherImpl_init0 in library with handle 0x0000ffff7835e700\n[0.036s][info][library] Found Java_sun_nio_ch_Nativ",
+        "stdout_truncated": true,
+        "stderr": ""
+      }
+    ],
+    "comparisons": {
+      "javac-release-8": {
+        "equal": true,
+        "stock": {
+          "probe/Sample.class": "0d260da4092722e4615557cbd088b75fb883551a91a2bba3e6e7a4c8d2255009"
+        },
+        "native": {
+          "probe/Sample.class": "0d260da4092722e4615557cbd088b75fb883551a91a2bba3e6e7a4c8d2255009"
+        }
+      },
+      "javac-release-17": {
+        "equal": true,
+        "stock": {
+          "probe/Sample.class": "0abfe7259efab5513df8b3ba2745b6a5e43b9ba2690ecf0cb1f94fa5dce64b0e"
+        },
+        "native": {
+          "probe/Sample.class": "0abfe7259efab5513df8b3ba2745b6a5e43b9ba2690ecf0cb1f94fa5dce64b0e"
+        }
+      },
+      "javac-release-21": {
+        "equal": true,
+        "stock": {
+          "probe/Sample.class": "edeab3ceaeecb0ec5783d601f1fb2c110b08fb56b4fcae703b54a92179ac52f3"
+        },
+        "native": {
+          "probe/Sample.class": "edeab3ceaeecb0ec5783d601f1fb2c110b08fb56b4fcae703b54a92179ac52f3"
+        }
+      },
+      "d8": {
+        "equal": true,
+        "stock": {
+          "classes.dex": "c76c46b7c749181de8ec7cea64257f9e5e6d31681cd0197d54b68014350057fa"
+        },
+        "native": {
+          "classes.dex": "c76c46b7c749181de8ec7cea64257f9e5e6d31681cd0197d54b68014350057fa"
+        }
+      },
+      "r8": {
+        "equal": true,
+        "stock": {
+          "classes.dex": "9e722754166d93f4d9c434cd73f927ffda3dc8897b548cba92c332934b34549c"
+        },
+        "native": {
+          "classes.dex": "9e722754166d93f4d9c434cd73f927ffda3dc8897b548cba92c332934b34549c"
+        }
+      },
+      "turbine": {
+        "equal_bytes": true,
+        "equal_entries": true,
+        "stock": {
+          "probe/Sample.class": "163e9a8ac7263debc5da2366c37ea1b58e0290d7754dfc30277f18cb3a4a0f8b"
+        },
+        "native": {
+          "probe/Sample.class": "163e9a8ac7263debc5da2366c37ea1b58e0290d7754dfc30277f18cb3a4a0f8b"
+        },
+        "stock_sha256": "55272c96a51cece26a0aeca2eae26a8d7ac38a093b640cb178d1bb30f5ad58ed",
+        "native_sha256": "55272c96a51cece26a0aeca2eae26a8d7ac38a093b640cb178d1bb30f5ad58ed"
+      }
+    },
+    "inputs_before": {
+      "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java": "cfa21aeadd00925925c9e1287f5c08f3e04ee7f26a9e23d9dbfb16149153d842",
+      "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac": "18351d7a271f6b8bd17f9e8fef6bb04baa7cf008cbc8a3a782a93a2f5c48ecfa",
+      "/work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/modules": "4bddbec43a2fbf497528b9b0227a285e80c015c825921dc7a4181bdb4176ad36",
+      "/usr/lib/jvm/java-21-openjdk-arm64/bin/java": "4a5df72c75cd5804324e81502bc75c977520727137f4485deeab94c42cec76d1",
+      "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac": "d9716ad7a2597bab9bdf4a63193649c8d529547daa19750d3e2bcb7ec5dab64f",
+      "/usr/lib/jvm/java-21-openjdk-arm64/lib/modules": "56ab576404f48eb8192e5cf503905ed3c6cfb1faf4a703196bf910e7dc18cf6f",
+      "/work/evolution/prebuilts/sdk/current/public/android.jar": "0239731745d7c50ad77b0c2e1f1e7dc9164451eb66a5aa882abf6899e48902c4",
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/turbine.jar": "fff445d991d1a116d6436d0fcf7975a9963ae3579bb345bff19904867a87e209",
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/d8.jar": "a57e21de93a986056f4f3cfa185b4e0afe82e2ee5f57ef7737d7cf3bbc299dfc",
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/r8.jar": "2d2f525bac1c12f8f67fef2216d8333bb49333114a33820badc5d29ad7f42699"
+    },
+    "inputs_after": {
+      "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java": "cfa21aeadd00925925c9e1287f5c08f3e04ee7f26a9e23d9dbfb16149153d842",
+      "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/javac": "18351d7a271f6b8bd17f9e8fef6bb04baa7cf008cbc8a3a782a93a2f5c48ecfa",
+      "/work/evolution/prebuilts/jdk/jdk21/linux-x86/lib/modules": "4bddbec43a2fbf497528b9b0227a285e80c015c825921dc7a4181bdb4176ad36",
+      "/usr/lib/jvm/java-21-openjdk-arm64/bin/java": "4a5df72c75cd5804324e81502bc75c977520727137f4485deeab94c42cec76d1",
+      "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac": "d9716ad7a2597bab9bdf4a63193649c8d529547daa19750d3e2bcb7ec5dab64f",
+      "/usr/lib/jvm/java-21-openjdk-arm64/lib/modules": "56ab576404f48eb8192e5cf503905ed3c6cfb1faf4a703196bf910e7dc18cf6f",
+      "/work/evolution/prebuilts/sdk/current/public/android.jar": "0239731745d7c50ad77b0c2e1f1e7dc9164451eb66a5aa882abf6899e48902c4",
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/turbine.jar": "fff445d991d1a116d6436d0fcf7975a9963ae3579bb345bff19904867a87e209",
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/d8.jar": "a57e21de93a986056f4f3cfa185b4e0afe82e2ee5f57ef7737d7cf3bbc299dfc",
+      "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/r8.jar": "2d2f525bac1c12f8f67fef2216d8333bb49333114a33820badc5d29ad7f42699"
+    },
+    "inputs_unchanged": true,
+    "jni": {
+      "scope": "Loads Conscrypt native library through the existing signapk classpath; no keys, certificates, signing operation, phone or source modification",
+      "probes": [
+        {
+          "id": "compile",
+          "command": [
+            "/usr/lib/jvm/java-21-openjdk-arm64/bin/javac",
+            "-J-XX:-UsePerfData",
+            "-J-XX:ActiveProcessorCount=2",
+            "-J-Xmx256m",
+            "-J-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+            "-J-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+            "-J-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+            "--release",
+            "8",
+            "-d",
+            "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/jni",
+            "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/jni/ConscryptProbe.java"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": "warning: [options] source value 8 is obsolete and will be removed in a future release\nwarning: [options] target value 8 is obsolete and will be removed in a future release\nwarning: [options] To suppress warnings about obsolete options, use -Xlint:-options.\n3 warnings\n"
+        },
+        {
+          "id": "stock",
+          "command": [
+            "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+            "-XX:-UsePerfData",
+            "-XX:ActiveProcessorCount=2",
+            "-Xmx256m",
+            "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+            "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+            "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+            "-Djava.library.path=/work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64",
+            "-cp",
+            "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/jni:/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/signapk.jar",
+            "ConscryptProbe"
+          ],
+          "exit_code": 0,
+          "stdout": "conscrypt-available\n",
+          "stderr": ""
+        },
+        {
+          "id": "native",
+          "command": [
+            "/usr/lib/jvm/java-21-openjdk-arm64/bin/java",
+            "-XX:-UsePerfData",
+            "-XX:ActiveProcessorCount=2",
+            "-Xmx256m",
+            "-Djava.io.tmpdir=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/tmp",
+            "-Duser.home=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50",
+            "-XX:ErrorFile=/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/logs/hs_err_pid%p.log",
+            "-Djava.library.path=/work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64",
+            "-cp",
+            "/work/arm64-cluster-probes/20260828-java-swap-023530Z-6231cc50/jni:/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/signapk.jar",
+            "ConscryptProbe"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Exception in thread \"main\" java.lang.reflect.InvocationTargetException\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:118)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat ConscryptProbe.main(ConscryptProbe.java:1)\nCaused by: java.lang.UnsatisfiedLinkError: /work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64/libconscrypt_openjdk_jni.so: /work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64/libconscrypt_openjdk_jni.so: cannot open shared object file: No such file or directory (Possible cause: can't load AMD 64 .so on a AARCH64 platform)\n\tat java.base/jdk.internal.loader.NativeLibraries.load(Native Method)\n\tat java.base/jdk.internal.loader.NativeLibraries$NativeLibraryImpl.open(NativeLibraries.java:331)\n\tat java.base/jdk.internal.loader.NativeLibraries.loadLibrary(NativeLibraries.java:197)\n\tat java.base/jdk.internal.loader.NativeLibraries.loadLibrary(NativeLibraries.java:139)\n\tat java.base/jdk.internal.loader.NativeLibraries.findFromPaths(NativeLibraries.java:259)\n\tat java.base/jdk.internal.loader.NativeLibraries.loadLibrary(NativeLibraries.java:251)\n\tat java.base/java.lang.ClassLoader.loadLibrary(ClassLoader.java:2451)\n\tat java.base/java.lang.Runtime.loadLibrary0(Runtime.java:916)\n\tat java.base/java.lang.System.loadLibrary(System.java:2064)\n\tat org.conscrypt.NativeLibraryUtil.loadLibrary(NativeLibraryUtil.java:54)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat org.conscrypt.NativeLibraryLoader$1.run(NativeLibraryLoader.java:297)\n\tat org.conscrypt.NativeLibraryLoader$1.run(NativeLibraryLoader.java:289)\n\tat java.base/java.security.AccessController.doPrivileged(AccessController.java:319)\n\tat org.conscrypt.NativeLibraryLoader.loadLibraryFromHelperClassloader(NativeLibraryLoader.java:289)\n\tat org.conscrypt.NativeLibraryLoader.loadLibrary(NativeLibraryLoader.java:262)\n\tat org.conscrypt.NativeLibraryLoader.load(NativeLibraryLoader.java:162)\n\tat org.conscrypt.NativeLibraryLoader.loadFirstAvailable(NativeLibraryLoader.java:106)\n\tat org.conscrypt.NativeCryptoJni.init(NativeCryptoJni.java:50)\n\tat org.conscrypt.NativeCrypto.<clinit>(NativeCrypto.java:67)\n\tat org.conscrypt.Conscrypt.checkAvailability(Conscrypt.java:132)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\t... 2 more\n\tSuppressed: java.lang.UnsatisfiedLinkError: /work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64/libconscrypt_openjdk_jni.so: /work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64/libconscrypt_openjdk_jni.so: cannot open shared object file: No such file or directory (Possible cause: can't load AMD 64 .so on a AARCH64 platform)\n\t\tat java.base/jdk.internal.loader.NativeLibraries.load(Native Method)\n\t\tat java.base/jdk.internal.loader.NativeLibraries$NativeLibraryImpl.open(NativeLibraries.java:331)\n\t\tat",
+          "stderr_truncated": true
+        }
+      ],
+      "inputs_before": {
+        "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/signapk.jar": "14d390d3a3fdbfb6c2a2d29c18b0f984561d131f0c214b9ab3e292acfef37a3f",
+        "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64/libconscrypt_openjdk_jni.so": "67e77da58645b3292d53f48b67f193363a9d6252e16a762f2dd644a67be69bfb"
+      },
+      "inputs_after": {
+        "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/framework/signapk.jar": "14d390d3a3fdbfb6c2a2d29c18b0f984561d131f0c214b9ab3e292acfef37a3f",
+        "/work/out/nezha-framework-20260827T1835Z/host/linux-x86/lib64/libconscrypt_openjdk_jni.so": "67e77da58645b3292d53f48b67f193363a9d6252e16a762f2dd644a67be69bfb"
+      },
+      "inputs_unchanged": true
+    },
+    "not_established": [
+      "All Java tool compatibility",
+      "Full graph JDK path integration",
+      "Native Conscrypt JNI",
+      "Native JVM with musl JNI"
+    ]
+  },
+  "llvm": {
+    "archive": {
+      "url": "https://github.com/lzhiyong/termux-ndk/releases/download/android-ndk/android-ndk-r29-aarch64.tar.xz",
+      "sha256": "02e10e4ddfe8deaeb0bd0cf29d04c981ed5bc8a5d6b560ebb9e7661f472d684b",
+      "archive_bytes": 360538712
+    },
+    "source_status": "Community release claims r563880c; exact reproducible source equivalence is not established.",
+    "release_tag_commit": "da301d00bd0d3d359b9f6cbdd514c53a924cec81",
+    "inspected_later_build_recipe_commit": "a9898a978cd28951bbbdae989b408cd7dbc11293",
+    "probes": [
+      {
+        "id": "stock-clang-version",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "Android (14054515, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin\n",
+        "stderr": ""
+      },
+      {
+        "id": "stock-lld-version",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/ld.lld",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "LLD 21.0.0 (/mnt/disks/build-disk/src/googleplex-android/llvm-r563880-release/out/llvm-project/llvm 5e96669f06077099aa41290cdb4c5e6fa0f59349) (compatible with GNU linkers)\n",
+        "stderr": ""
+      },
+      {
+        "id": "stock-resource-dir",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "-print-resource-dir"
+        ],
+        "exit_code": 0,
+        "stdout": "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21\n",
+        "stderr": ""
+      },
+      {
+        "id": "native-clang-version",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "Android (dev, +pgo, -bolt, +lto, -mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project)\nTarget: aarch64-unknown-linux-musl\nThread model: posix\nInstalledDir: /work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin\n",
+        "stderr": ""
+      },
+      {
+        "id": "native-lld-version",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld.lld",
+          "--version"
+        ],
+        "exit_code": 0,
+        "stdout": "LLD 21.0.0 (compatible with GNU linkers)\n",
+        "stderr": ""
+      },
+      {
+        "id": "native-resource-dir",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "-print-resource-dir"
+        ],
+        "exit_code": 0,
+        "stdout": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/lib/clang/21\n",
+        "stderr": ""
+      },
+      {
+        "id": "stock-arm64-object",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-O2",
+          "-fPIC",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/probe.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-arm64-thinlto",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-O2",
+          "-fPIC",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/probe.c",
+          "-flto=thin",
+          "-fsplit-lto-unit",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-x86-object",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--target=x86_64-linux-gnu",
+          "-O2",
+          "-fPIC",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/probe.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-x86.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-arm64-object",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-O2",
+          "-fPIC",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/probe.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-arm64-thinlto",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-O2",
+          "-fPIC",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/probe.c",
+          "-flto=thin",
+          "-fsplit-lto-unit",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.bc"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-x86-object",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=x86_64-linux-gnu",
+          "-O2",
+          "-fPIC",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/probe.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-x86.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-thinlto-link",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-nostdlib",
+          "-shared",
+          "-flto=thin",
+          "-fsplit-lto-unit",
+          "-fuse-ld=/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/ld.lld",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-lto.so"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-thinlto-mlgo-link",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-nostdlib",
+          "-shared",
+          "-flto=thin",
+          "-fsplit-lto-unit",
+          "-fuse-ld=/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/ld.lld",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc",
+          "-Wl,-mllvm,-regalloc-enable-advisor=release",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-mlgo.so"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-thinlto-link",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-nostdlib",
+          "-shared",
+          "-flto=thin",
+          "-fsplit-lto-unit",
+          "-fuse-ld=/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld.lld",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-lto.so"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-thinlto-mlgo-link",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-nostdlib",
+          "-shared",
+          "-flto=thin",
+          "-fsplit-lto-unit",
+          "-fuse-ld=/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld.lld",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc",
+          "-Wl,-mllvm,-regalloc-enable-advisor=release",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-mlgo.so"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "ld.lld: error: Requested regalloc eviction advisor analysis could not be created. Using default\nclang: error: linker command failed with exit code 1 (use -v to see invocation)\n"
+      },
+      {
+        "id": "stock-readobj",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/llvm-readobj",
+          "--file-headers",
+          "--sections",
+          "--symbols",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o"
+        ],
+        "exit_code": 0,
+        "stdout": "\nFile: /work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o\nFormat: elf64-littleaarch64\nArch: aarch64\nAddressSize: 64bit\nLoadName: <Not found>\nElfHeader {\n  Ident {\n    Magic: (7F 45 4C 46)\n    Class: 64-bit (0x2)\n    DataEncoding: LittleEndian (0x1)\n    FileVersion: 1\n    OS/ABI: SystemV (0x0)\n    ABIVersion: 0\n    Unused: (00 00 00 00 00 00 00)\n  }\n  Type: Relocatable (0x1)\n  Machine: EM_AARCH64 (0xB7)\n  Version: 1\n  Entry: 0x0\n  ProgramHeaderOffset: 0x0\n  SectionHeaderOffset: 0x308\n  Flags [ (0x0)\n  ]\n  HeaderSize: 64\n  ProgramHeaderEntrySize: 0\n  ProgramHeaderCount: 0\n  SectionHeaderEntrySize: 64\n  SectionHeaderCount: 8\n  StringTableSectionIndex: 1\n}\nSections [\n  Section {\n    Index: 0\n    Name:  (0)\n    Type: SHT_NULL (0x0)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x0\n    Size: 0\n    Link: 0\n    Info: 0\n    AddressAlignment: 0\n    EntrySize: 0\n  }\n  Section {\n    Index: 1\n    Name: .strtab (62)\n    Type: SHT_STRTAB (0x3)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x2A8\n    Size: 92\n    Link: 0\n    Info: 0\n    AddressAlignment: 1\n    EntrySize: 0\n  }\n  Section {\n    Index: 2\n    Name: .text (9)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x6)\n      SHF_ALLOC (0x2)\n      SHF_EXECINSTR (0x4)\n    ]\n    Address: 0x0\n    Offset: 0x40\n    Size: 180\n    Link: 0\n    Info: 0\n    AddressAlignment: 4\n    EntrySize: 0\n  }\n  Section {\n    Index: 3\n    Name: .rela.text (4)\n    Type: SHT_RELA (0x4)\n    Flags [ (0x40)\n      SHF_INFO_LINK (0x40)\n    ]\n    Address: 0x0\n    Offset: 0x278\n    Size: 48\n    Link: 7\n    Info: 2\n    AddressAlignment: 8\n    EntrySize: 24\n  }\n  Section {\n    Index: 4\n    Name: .rodata.cst16 (78)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x12)\n      SHF_ALLOC (0x2)\n      SHF_MERGE (0x10)\n    ]\n    Address: 0x0\n    Offset: 0x100\n    Size: 16\n    Link: 0\n    Info: 0\n    AddressAlignment: 16\n    EntrySize: 16\n  }\n  Section {\n    Index: 5\n    Name: .comment (15)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x30)\n      SHF_MERGE (0x10)\n      SHF_STRINGS (0x20)\n    ]\n    Address: 0x0\n    Offset: 0x110\n    Size: 185\n    Link: 0\n    Info: 0\n    AddressAlignment: 1\n    EntrySize: 1\n  }\n  Section {\n    Index: 6\n    Name: .note.GNU-stack (24)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x1C9\n    Size: 0\n    Link: 0\n    Info: 0\n    AddressAlignment: 1\n    EntrySize: 0\n  }\n  Section {\n    Index: 7\n    Name: .symtab (70)\n    Type: SHT_SYMTAB (0x2)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x1D0\n    Size: 168\n    Link: 1\n    Info: 6\n    AddressAlignment: 8\n    EntrySize: 24\n  }\n]\nSymbols [\n  Symbol {\n    Name:  (0)\n    Value: 0x0\n    Size: 0\n    Binding: Local (0x0)\n    Type: None (0x0)\n    Other: 0\n    Section: Undefined (0x0)\n  }\n  Symbol {\n    Name: probe.c (54)\n    Value: 0x0\n    Size: 0\n    Binding: Local (0x0)\n    Type: File (0x4)\n    Other: 0\n    Section: Absolute (0xFFF1)\n  }\n  Symbol {\n    Name: .rodata.cst16 (0)\n    Value: 0x0\n    Size: 0\n    Binding: Local (",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "stock-objcopy",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/llvm-objcopy",
+          "--strip-debug",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-copy.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-ar",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/llvm-ar",
+          "rcD",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.a",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-text",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+          "-O",
+          "binary",
+          "--only-section=.text",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.text"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-readobj",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readobj",
+          "--file-headers",
+          "--sections",
+          "--symbols",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o"
+        ],
+        "exit_code": 0,
+        "stdout": "\nFile: /work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o\nFormat: elf64-littleaarch64\nArch: aarch64\nAddressSize: 64bit\nLoadName: <Not found>\nElfHeader {\n  Ident {\n    Magic: (7F 45 4C 46)\n    Class: 64-bit (0x2)\n    DataEncoding: LittleEndian (0x1)\n    FileVersion: 1\n    OS/ABI: SystemV (0x0)\n    ABIVersion: 0\n    Unused: (00 00 00 00 00 00 00)\n  }\n  Type: Relocatable (0x1)\n  Machine: EM_AARCH64 (0xB7)\n  Version: 1\n  Entry: 0x0\n  ProgramHeaderOffset: 0x0\n  SectionHeaderOffset: 0x308\n  Flags [ (0x0)\n  ]\n  HeaderSize: 64\n  ProgramHeaderEntrySize: 0\n  ProgramHeaderCount: 0\n  SectionHeaderEntrySize: 64\n  SectionHeaderCount: 8\n  StringTableSectionIndex: 1\n}\nSections [\n  Section {\n    Index: 0\n    Name:  (0)\n    Type: SHT_NULL (0x0)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x0\n    Size: 0\n    Link: 0\n    Info: 0\n    AddressAlignment: 0\n    EntrySize: 0\n  }\n  Section {\n    Index: 1\n    Name: .strtab (62)\n    Type: SHT_STRTAB (0x3)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x2A8\n    Size: 92\n    Link: 0\n    Info: 0\n    AddressAlignment: 1\n    EntrySize: 0\n  }\n  Section {\n    Index: 2\n    Name: .text (9)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x6)\n      SHF_ALLOC (0x2)\n      SHF_EXECINSTR (0x4)\n    ]\n    Address: 0x0\n    Offset: 0x40\n    Size: 180\n    Link: 0\n    Info: 0\n    AddressAlignment: 4\n    EntrySize: 0\n  }\n  Section {\n    Index: 3\n    Name: .rela.text (4)\n    Type: SHT_RELA (0x4)\n    Flags [ (0x40)\n      SHF_INFO_LINK (0x40)\n    ]\n    Address: 0x0\n    Offset: 0x278\n    Size: 48\n    Link: 7\n    Info: 2\n    AddressAlignment: 8\n    EntrySize: 24\n  }\n  Section {\n    Index: 4\n    Name: .rodata.cst16 (78)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x12)\n      SHF_ALLOC (0x2)\n      SHF_MERGE (0x10)\n    ]\n    Address: 0x0\n    Offset: 0x100\n    Size: 16\n    Link: 0\n    Info: 0\n    AddressAlignment: 16\n    EntrySize: 16\n  }\n  Section {\n    Index: 5\n    Name: .comment (15)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x30)\n      SHF_MERGE (0x10)\n      SHF_STRINGS (0x20)\n    ]\n    Address: 0x0\n    Offset: 0x110\n    Size: 185\n    Link: 0\n    Info: 0\n    AddressAlignment: 1\n    EntrySize: 1\n  }\n  Section {\n    Index: 6\n    Name: .note.GNU-stack (24)\n    Type: SHT_PROGBITS (0x1)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x1C9\n    Size: 0\n    Link: 0\n    Info: 0\n    AddressAlignment: 1\n    EntrySize: 0\n  }\n  Section {\n    Index: 7\n    Name: .symtab (70)\n    Type: SHT_SYMTAB (0x2)\n    Flags [ (0x0)\n    ]\n    Address: 0x0\n    Offset: 0x1D0\n    Size: 168\n    Link: 1\n    Info: 6\n    AddressAlignment: 8\n    EntrySize: 24\n  }\n]\nSymbols [\n  Symbol {\n    Name:  (0)\n    Value: 0x0\n    Size: 0\n    Binding: Local (0x0)\n    Type: None (0x0)\n    Other: 0\n    Section: Undefined (0x0)\n  }\n  Symbol {\n    Name: probe.c (54)\n    Value: 0x0\n    Size: 0\n    Binding: Local (0x0)\n    Type: File (0x4)\n    Other: 0\n    Section: Absolute (0xFFF1)\n  }\n  Symbol {\n    Name: .rodata.cst16 (0)\n    Value: 0x0\n    Size: 0\n    Binding: Local (",
+        "stdout_truncated": true,
+        "stderr": ""
+      },
+      {
+        "id": "native-objcopy",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+          "--strip-debug",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-copy.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-ar",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+          "rcD",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.a",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-text",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+          "-O",
+          "binary",
+          "--only-section=.text",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.text"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-remove-comment",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+          "--remove-section=.comment",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-no-comment.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-ar-bitcode",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/llvm-ar",
+          "rcD",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-bitcode.a",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-remove-comment",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+          "--remove-section=.comment",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-no-comment.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-ar-bitcode",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+          "rcD",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-bitcode.a",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "stock-stock-resource-headers",
+        "command": [
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-O2",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-MD",
+          "-MF",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-headers.d",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/headers.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-headers.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-stock-resource-headers",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=aarch64-linux-android36",
+          "-O2",
+          "-ffreestanding",
+          "-resource-dir",
+          "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/lib/clang/21",
+          "-MD",
+          "-MF",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-headers.d",
+          "-c",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/headers.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-headers.o"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "id": "native-x86-executable",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+          "--target=x86_64-linux-gnu",
+          "-O2",
+          "-nostdlib",
+          "-static",
+          "-no-pie",
+          "-fuse-ld=/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld.lld",
+          "-Wl,-e,_start",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/entry.c",
+          "-o",
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-x86-executable"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "clang: warning: argument unused during compilation: '-no-pie' [-Wunused-command-line-argument]\n"
+      },
+      {
+        "id": "run-native-produced-x86",
+        "command": [
+          "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-x86-executable"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "byte_equal": {
+      "generated-object": false,
+      "generated-text": true,
+      "ar-output": true,
+      "objcopy-output": true,
+      "readobj-output": true,
+      "generated-object-without-comment": true,
+      "ar-bitcode-output": true
+    },
+    "elf_inspection": [
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang-21",
+        "size": 78375728,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang-21",
+        "size": 78375728,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang-21",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/clang-21",
+        "size": 78375728,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/ld.lld",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/lld",
+        "size": 54063160,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar",
+        "size": 14856976,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readobj",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readobj",
+        "size": 5456496,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+        "size": 4386240,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-objcopy",
+        "size": 4386240,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm",
+        "resolved": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/unpacked/android-ndk-r29/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-nm",
+        "size": 15669904,
+        "machine": 183,
+        "class": 2,
+        "interpreter": null
+      }
+    ],
+    "nonruntime_libclang_entries": [],
+    "artifacts": [
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-copy.o",
+        "bytes": 1256,
+        "sha256": "cc05d28f3f0e20fe2aa1b1475f53a4088576b83bd60e570cc4a8f2fe8ad097da",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-lto.so",
+        "bytes": 2248,
+        "sha256": "263f91a4b66815d1ca796fb1e8ed244526a843d241c1af933d2daad41dbde665",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native-x86.o",
+        "bytes": 1536,
+        "sha256": "676886e5daff9f871ccc4f706e7f2c00a2b5c3c17e7732d5c3ed7a5bbf6fd788",
+        "elf_machine": 62
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.a",
+        "bytes": 1436,
+        "sha256": "c1881ce0fd27fe9a2aa454fe91a27a790e5cb78e80a215437b4499e1d313f526"
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.bc",
+        "bytes": 2856,
+        "sha256": "fb050002c282bb609d513cb7931143f914637a56d5ffbd5fe4de9ffdfb032d6c",
+        "llvm_bitcode": true
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.o",
+        "bytes": 1240,
+        "sha256": "23e7cb203def87b04373ea55ba1189a7666d4f8bdf3596ab5b0c2992a02549ef",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/native.text",
+        "bytes": 180,
+        "sha256": "5a9bb5822b64e8753a7376977cb067139d29150e9cabd25c7985f4cf46fe6ec7"
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-copy.o",
+        "bytes": 1256,
+        "sha256": "cc05d28f3f0e20fe2aa1b1475f53a4088576b83bd60e570cc4a8f2fe8ad097da",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-lto.so",
+        "bytes": 2376,
+        "sha256": "c62c7517c11d43c83302db0df9477e47261bd35bb2179620676f39b1170fb0b1",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-mlgo.so",
+        "bytes": 2376,
+        "sha256": "c62c7517c11d43c83302db0df9477e47261bd35bb2179620676f39b1170fb0b1",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock-x86.o",
+        "bytes": 1584,
+        "sha256": "0944b728cce65ff3f5cf1b325856ba4c2213deeec99ed2449f73981d22458f13",
+        "elf_machine": 62
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.a",
+        "bytes": 1436,
+        "sha256": "c1881ce0fd27fe9a2aa454fe91a27a790e5cb78e80a215437b4499e1d313f526"
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.bc",
+        "bytes": 2952,
+        "sha256": "f805267cab90f862473589a02eac0f250b10a2527f7303b54b06e34d85c5a85e",
+        "llvm_bitcode": true
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.o",
+        "bytes": 1288,
+        "sha256": "d2aca93bff626f5164cee5ffd3a4c301758c905f4d17dee709dacf141631f471",
+        "elf_machine": 183
+      },
+      {
+        "path": "/work/arm64-cluster-probes/20260828-llvm-swap-023746Z/results/stock.text",
+        "bytes": 180,
+        "sha256": "5a9bb5822b64e8753a7376977cb067139d29150e9cabd25c7985f4cf46fe6ec7"
+      }
+    ],
+    "not_established": [
+      "Exact Android LLVM patch provenance",
+      "Default MLGO support",
+      "Bindgen libclang closure",
+      "Full AOSP action/image correctness",
+      "Production acceptance"
+    ]
+  }
+}
