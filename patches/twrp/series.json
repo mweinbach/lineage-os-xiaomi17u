@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "repository": "https://github.com/TWRP-Test/platform_manifest_twrp_aosp",
+    "branch": "twrp-16.0",
+    "commit": "d2188a9345857fb078c391e8cb3e259a21e941e5"
+  },
+  "status": "source-reviewed; build and device validation are separate gates",
+  "scope": "isolated compile-only recovery experiment",
+  "patches": [
+    {
+      "id": "0001-remove-permissive-su",
+      "project": "system/sepolicy",
+      "repository": "https://github.com/TWRP-Test/android_system_sepolicy",
+      "base_commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+      "patch": "patches/twrp/0001-remove-permissive-su.patch",
+      "patch_sha256": "a4165372f10a512c987b9efcbddd717f904734094e0f3ed97e4f83368feadf5b",
+      "reason": "Remove the active debug su permissive declaration without changing allow or neverallow rules.",
+      "files": [
+        {
+          "path": "private/su.te",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_system_sepolicy/f0270686ee017f4de42e1032aca7527031bcc484/private/su.te",
+          "before_sha256": "3a0ac5bd3c4e8da2a231e0070260a8fe8493208fde5341866ae20ed34188af01",
+          "after_sha256": "6cce0bc2b623683cde6539d6bba90d844979db885c23600a37c5f915de8a8d1f",
+          "before_git_blob": "247fd0b72cfcec9b74b9e9b5dc4e79978b4c567d",
+          "after_git_blob": "98795ee1f37b391a719480d3c510259563df94e5",
+          "before_size_bytes": 5225,
+          "after_size_bytes": 5159
+        }
+      ]
+    },
+    {
+      "id": "0002-do-not-force-adb-root",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0002-do-not-force-adb-root.patch",
+      "patch_sha256": "0fee8a02d1852f38be1d5303a0023f0547305a709d99791a71e74718af31fee6",
+      "reason": "Do not automatically request a root ADB daemon on recovery startup; preserve explicit authenticated debug root support.",
+      "files": [
+        {
+          "path": "etc/init.rc",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/etc/init.rc",
+          "before_sha256": "29d50cc909060f5a3bd1b649eb95cff98997ddda14c7cc814bd7131791a5d274",
+          "after_sha256": "76f57d9baa75bfaea68f4676467958dd3682ad2c7f2e0ee1810c42b98a639a6f",
+          "before_git_blob": "480b529fe5e755815740e6a87ed6898494b77ecf",
+          "after_git_blob": "58f47166d0921ae9dba16aaedb5bf4142e7c34b0",
+          "before_size_bytes": 8395,
+          "after_size_bytes": 8219
+        }
+      ]
+    },
+    {
+      "id": "0003-preserve-source-on-envsetup",
+      "project": "vendor/twrp",
+      "repository": "https://github.com/TWRP-Test/android_vendor_twrp",
+      "base_commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1",
+      "patch": "patches/twrp/0003-preserve-source-on-envsetup.patch",
+      "patch_sha256": "fb4cd519e5cd295a185903b30666f65d4812141a9451c8b0718e9cb12b564ad5",
+      "reason": "Do not truncate the VTS Android.mk when loading the shell environment; retain the source and its dependency checks.",
+      "files": [
+        {
+          "path": "build/envsetup.sh",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_vendor_twrp/b53296dfc420ce65fffe712de380d5abf6c4c2f1/build/envsetup.sh",
+          "before_sha256": "ad04a5ec3af81226a00937bf366f91ca3308d341f841bc637f5217be41b4f8b0",
+          "after_sha256": "5f7167b2c6f4a7b96109e5a44be850a3df6ce86343b8e3430cc23a5fa7ab53f3",
+          "before_git_blob": "de734b706118925f7ce6e9058ed4cd8d75ab073f",
+          "after_git_blob": "d97f1e9f5190d37a3ec49796049f4c51c4542922",
+          "before_size_bytes": 5171,
+          "after_size_bytes": 4994
+        }
+      ]
+    },
+    {
+      "id": "0004-require-recovery-adb-auth",
+      "project": "packages/modules/adb",
+      "repository": "https://android.googlesource.com/platform/packages/modules/adb",
+      "base_commit": "ce023afef190b0cea7f8939e9dd5ee3ee79b137b",
+      "patch": "patches/twrp/0004-require-recovery-adb-auth.patch",
+      "patch_sha256": "48050ccea912eb7caa2cef211f7c0abd92bfd2ece3b8863ff641304ae441c95a",
+      "reason": "Require host authentication for recovery even when unlocked/debuggable; exclude trade-in/evaluation auth bypass from the recovery variant while preserving non-recovery behavior.",
+      "files": [
+        {
+          "path": "daemon/main.cpp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/main.cpp?format=TEXT",
+          "before_sha256": "8b9ea62b9ec742a6f3fe15b3c2612b929dbdc2d57aa86f3609ad54744ddba8ca",
+          "after_sha256": "87934aa1c82e8cb8b728230467b75643fe8462a58a13d60e11f035741e6a157e",
+          "before_git_blob": "931b170211a4aab20069920cdbdc18fc325ee95e",
+          "after_git_blob": "9073e34fdaa81bc3c7a7c72235b8909d3a40359e",
+          "before_size_bytes": 13274,
+          "after_size_bytes": 13123
+        }
+      ]
+    }
+  ],
+  "application_requirements": [
+    "Apply only inside the separately resolved TWRP source tree, never /work/evolution.",
+    "Verify the full selected manifest, each project HEAD and every preimage SHA256 before applying any patch.",
+    "Reject unexpected dirty files, path escapes, mismatched base commits, failed context checks or incomplete application.",
+    "Verify every postimage SHA256 and preserve a receipt and the source diff; never reset unrelated changes."
+  ],
+  "preserved_checks": {
+    "selinux_neverallows": true,
+    "selinux_allow_rules": true,
+    "signature_and_avb_checks": true,
+    "rollback_constraints": true,
+    "artifact_path_checks": true,
+    "elf_checks": true,
+    "dependency_checks": true
+  },
+  "verification_requirements": [
+    "Build the actual recovery and init variants and inspect the generated property files and compile arguments.",
+    "Run the unfiltered sepolicy-analyze permissive check on the actual recovery policy and require empty output.",
+    "Confirm daemon/main.cpp for adbd_system_api_recovery is compiled with __ANDROID_RECOVERY__ and includes the mandatory recovery authentication branch; inspect all linked authentication inputs.",
+    "Require ro.secure=1 and ro.adb.secure=1; confirm actual recovery adbd requires authentication with no trusted key and rejects an unknown key before any log-access claim.",
+    "Keep SELinux enforcing; the normal AOSP init property selection is not replaced by these patches.",
+    "Review all source changes and inspect the final ramdisk and AVB footer before treating any image as a candidate."
+  ],
+  "runtime_limitations": [
+    "No build, boot, authenticated ADB or enforcing device behavior is established by patch metadata or offline tests.",
+    "TWRP still reads and writes BCB arguments, can run pending OpenRecoveryScript/startup scripts, and exposes destructive UI and command actions.",
+    "The separate minadbd/sideload transport is not covered by the main adbd authentication patch and is not admitted for stage-0 use.",
+    "Omitting crypto or userdata fstab entries does not create a write lock; settings, logging, slot/OTA and stock-recovery mutation paths remain outside this narrow patch set.",
+    "No phone access or change is authorized by applying this source patch queue."
+  ]
+}

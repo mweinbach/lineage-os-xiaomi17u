@@ -1,0 +1,2464 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-28T03:45:28.514309+00:00",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN",
+    "soc": "SM8850",
+    "platform": "canoe",
+    "abi": "arm64-v8a"
+  },
+  "scope": "Factory-derived target contract for an independent TWRP recovery product; static inspection only, not an image release or phone test.",
+  "status": {
+    "stock_readback_passed": true,
+    "twrp_build_or_hardware_result_claimed": false,
+    "phone_accessed": false,
+    "guest_accessed": false,
+    "firmware_executed": false,
+    "stock_recovery_binary_or_policy_adopted": false
+  },
+  "provenance": {
+    "factory_package": {
+      "sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "source_kind": "user-provided",
+      "source_url": null,
+      "origin_verified": false
+    },
+    "factory_version": "OS3.0.309.0.WPACNXM_16.0",
+    "image_directory": "sources/nezha_images_OS3.0.309.0.WPACNXM_16.0/images",
+    "private_input_paths_relative_to": "preserved original bring-up workspace",
+    "xiaomi_eu_evidence_retained_separately": true,
+    "raw_images_ramdisks_modules_policy_keys_and_logs_tracked": false
+  },
+  "evidence": {
+    "fresh_readback": {
+      "path": "reports/twrp-stock-contract-v1/receipt.json",
+      "size_bytes": 107354,
+      "sha256": "73139b1139b5638192470c43e9d4b6fa86c0c4e4ce4d7c54c35abbeffbae9c50"
+    },
+    "fresh_driver": {
+      "path": "reports/inspect-twrp-stock-contract-v1.py",
+      "size_bytes": 13679,
+      "sha256": "0a2ab27a65d564612f03b4278466472afb84bab861b791f139e55824eb821f17"
+    },
+    "input_display_summary": {
+      "path": "reports/twrp-stock-input/summary.json",
+      "size_bytes": 12891,
+      "sha256": "3e4a1fe284547498750351c753f3ed98b9496246d7cb7afe4a3d9f366b2ff2dd"
+    },
+    "input_display_detail": {
+      "path": "reports/twrp-stock-input/input-display.json",
+      "size_bytes": 93527,
+      "sha256": "097ab3e044447e3af2444c56d04ae8f76ce44774a6bb9ea034cb0264f1cb21b1"
+    },
+    "touch_firmware_capture_followup": {
+      "path": "reports/twrp-stock-input/firmware-capture-summary.json",
+      "size_bytes": 4376,
+      "sha256": "cd5b8f3d6a9ec2e9368dda11448fd3efee2fba6d90b8852c40a71aad7558651c"
+    },
+    "loader_source_readback": {
+      "path": "reports/twrp-stock-loader-source-v1/receipt.json",
+      "size_bytes": 942,
+      "sha256": "eca88d63a18a4e1717e2e4ba3511fc14d22d30469a2bb97135bcf0122547620e"
+    },
+    "source_records": [
+      {
+        "path": "research/factory-boot-contract.json",
+        "size_bytes": 42935,
+        "sha256": "b3ab3adc8458d4cac38506d800016f2d6f2ab0256e46261684f3441b4e2419b0"
+      },
+      {
+        "path": "research/partition-metadata.json",
+        "size_bytes": 91007,
+        "sha256": "f2e7a6d88c17479473f9ae82c4cf378ad0bb79cd511a2120d6fd6354d2ef6ad0"
+      },
+      {
+        "path": "research/factory-firmware-validation.json",
+        "size_bytes": 46183,
+        "sha256": "36e3750d1adef83d645f4620a4b520d91e5d1f0c239faa34e724d3c70612acb2"
+      },
+      {
+        "path": "research/module-stage-closure.json",
+        "size_bytes": 15853,
+        "sha256": "46ce4c6ca18b12c7d449d6ee78929722e764dee9a14d3f514fc33aeb0e217d40"
+      },
+      {
+        "path": "research/device-baseline.json",
+        "size_bytes": 3049,
+        "sha256": "7cf96f848252a29f8c15f73ae3d2a6ff33f1717dc1d93dc1591c1f2d654d2775"
+      }
+    ],
+    "fresh_file_inputs_rehashed": 29,
+    "fresh_cpio_entries_rehashed": 1500,
+    "recovery_elfs_statically_parsed": 94,
+    "factory_archive_rehashed_this_slice": false,
+    "factory_signature_verification_repeated_this_slice": false
+  },
+  "layout": {
+    "target_partition": "recovery",
+    "slots": [
+      "recovery_a",
+      "recovery_b"
+    ],
+    "package_capacity_bytes_per_slot": 104857600,
+    "image_budget_bytes": 104857600,
+    "size_basis": "independently corroborated package GPT, rawprogram XML and partition XML, not just image length",
+    "physical_phone_capacity_verified": false,
+    "package_sector_size_bytes": 4096,
+    "package_lun": 4,
+    "package_extents": [
+      {
+        "label": "recovery_a",
+        "first_lba": 203206,
+        "last_lba": 228805,
+        "sectors": 25600,
+        "size_bytes": 104857600
+      },
+      {
+        "label": "recovery_b",
+        "first_lba": 434030,
+        "last_lba": 459629,
+        "sectors": 25600,
+        "size_bytes": 104857600
+      }
+    ],
+    "fresh_header": {
+      "avb_footer": {
+        "original_image_size_bytes": 30412800,
+        "vbmeta_offset_bytes": 30412800,
+        "vbmeta_size_bytes": 2240,
+        "version_major": 1,
+        "version_minor": 0
+      },
+      "boot_signature_field_bytes": 0,
+      "cmdline": "",
+      "header_page_sha256": "3fe7c99862241fc9122a08c4da04a3d66d704154459c28b836d548f0b884b099",
+      "header_size_bytes": 1584,
+      "header_version": 4,
+      "kernel_size_bytes": 0,
+      "magic": "ANDROID!",
+      "os_version_encoded": 0,
+      "page_size_bytes": 4096,
+      "ramdisk_magic_hex": "02214c18",
+      "ramdisk_size_bytes": 30407261
+    },
+    "stock_image": {
+      "path": "recovery.img",
+      "size_bytes": 104857600,
+      "sha256": "a6f2c77608026fcfe6221e5191c501b0ac880658f76c55231879ed198ce8a0f9",
+      "archive_and_user_copy_match": true
+    },
+    "stock_ramdisk": {
+      "compressed_size_bytes": 30407261,
+      "compressed_sha256": "21ed80d706206420f846315e7da86e6112189ef3a22a8e3b5f95f3dad8748af3",
+      "cpio_size_bytes": 53929472,
+      "cpio_sha256": "13083e8177001c912c0078e03f59c79dccdbe0895a6b62ce2019bae47dfa7cd7",
+      "entry_count": 1036,
+      "module_count": 0
+    },
+    "ramdisk_compression": "LZ4 legacy frame",
+    "kernel_embedded": false,
+    "dtb_embedded": false,
+    "bootconfig_embedded": false,
+    "temporary_fastboot_boot_supported": null,
+    "stock_recovery_depends_on_intact_boot_and_vendor_boot": true
+  },
+  "shared_boot_inputs": {
+    "header_readback": {
+      "boot": {
+        "boot_signature_field_bytes": 0,
+        "cmdline": "",
+        "header_page_sha256": "b1fe5100c52fc91d927af4252144d95d7de78b8d4b66af8f64a958bd01ad4d21",
+        "header_size_bytes": 1584,
+        "header_version": 4,
+        "kernel_size_bytes": 39963136,
+        "magic": "ANDROID!",
+        "os_version_encoded": 0,
+        "page_size_bytes": 4096,
+        "ramdisk_size_bytes": 0
+      },
+      "init_boot": {
+        "boot_signature_field_bytes": 0,
+        "cmdline": "",
+        "header_page_sha256": "0a5011eb253d5875071912a163febf1006472114b9444f34c67508453f79cd6e",
+        "header_size_bytes": 1584,
+        "header_version": 4,
+        "kernel_size_bytes": 0,
+        "magic": "ANDROID!",
+        "os_version_encoded": 0,
+        "page_size_bytes": 4096,
+        "ramdisk_magic_hex": "02214c18",
+        "ramdisk_size_bytes": 2916992
+      },
+      "vendor_boot": {
+        "bootconfig_size_bytes": 270,
+        "cmdline": "video=vfb:640x400,bpp=32,memsize=3072000 erofs.reserved_pages=64 swinfo.fingerprint=nezha:16/OS3.0.309.0.WPACNXM:user bootconfig",
+        "dtb_load_address": 32505856,
+        "dtb_size_bytes": 4496880,
+        "header_page_sha256": "b94a200bd197144721844ea0cd2b0a60b1fb259a3cc2a911734cb87f36e38d18",
+        "header_size_bytes": 2128,
+        "header_version": 4,
+        "kernel_load_address": 32768,
+        "magic": "VNDRBOOT",
+        "page_size_bytes": 4096,
+        "product_name": "",
+        "ramdisk_load_address": 16777216,
+        "ramdisk_table_entries": 1,
+        "ramdisk_table_entry_size_bytes": 108,
+        "ramdisk_table_size_bytes": 108,
+        "tags_load_address": 256,
+        "vendor_ramdisk_size_bytes": 18107362
+      }
+    },
+    "components": [
+      {
+        "path": "unpacked/boot/kernel",
+        "size_bytes": 39963136,
+        "factory_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8"
+      },
+      {
+        "path": "unpacked/vendor_boot/dtb",
+        "size_bytes": 4496880,
+        "factory_sha256": "1a5c30b75e816f33dd36caa114faa7bc656605e4ac9ffe786726538b37ada22d"
+      },
+      {
+        "path": "unpacked/vendor_boot/bootconfig",
+        "size_bytes": 270,
+        "factory_sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f"
+      }
+    ],
+    "vendor_bootconfig": {
+      "size_bytes": 270,
+      "sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f",
+      "bytes_match_eu": true,
+      "declarations": {
+        "androidboot.hardware": "qcom",
+        "androidboot.memcg": "1",
+        "androidboot.usbcontroller": "a600000.dwc3",
+        "androidboot.load_modules_parallel": "true",
+        "androidboot.hypervisor.protected_vm.supported": "true",
+        "androidboot.hypervisor.version": "gunyah",
+        "androidboot.vendor.qspa": "true",
+        "androidboot.serialconsole": "0"
+      },
+      "live_bootconfig_verified": false
+    },
+    "dtbo": {
+      "path": "dtbo.img",
+      "size_bytes": 23068672,
+      "sha256": "ee84d721396fee5f82b5230b1472b5f165ba253eba50d44e9156b538c8a40f62",
+      "archive_and_user_copy_match": true
+    },
+    "vfb_cmdline_dimensions_are_not_panel_dimensions": true,
+    "preserve_existing_slot_boot_vendor_boot_and_dtbo_for_initial_recovery_target": true
+  },
+  "module_loading": {
+    "vendor_ramdisk_directory": "/lib/modules",
+    "recovery_ramdisk_module_count": 0,
+    "vendor_ramdisk_module_count": 430,
+    "metadata_files": [
+      {
+        "path": "lib/modules/modules.alias",
+        "sha256": "16931d51bdefc1b000df88e0bd3a03d320436d51a602499e8bcaaae00b992841",
+        "size_bytes": 54479,
+        "noncomment_line_count": 1174,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.blocklist",
+        "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+        "size_bytes": 1325,
+        "noncomment_line_count": 60,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.dep",
+        "sha256": "0ab564376d473e7ba7c5e3b1c797b57f93500d43d60eef999072785a76e20b34",
+        "size_bytes": 134144,
+        "noncomment_line_count": 430,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.load",
+        "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "size_bytes": 2404,
+        "noncomment_line_count": 157,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.load.recovery",
+        "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "size_bytes": 7205,
+        "noncomment_line_count": 435,
+        "bytes_match_eu": true
+      },
+      {
+        "path": "lib/modules/modules.softdep",
+        "sha256": "646495a49690d0b527480b26cecf8d8afc5834a9b553b1264412382d2c5aa124",
+        "size_bytes": 926,
+        "noncomment_line_count": 22,
+        "bytes_match_eu": true
+      }
+    ],
+    "recovery_list": "/lib/modules/modules.load.recovery",
+    "recovery_stage": {
+      "earlier_stage_conditional_crc_matches": 0,
+      "expectations": 20345,
+      "hard_closure_modules": 426,
+      "hard_or_pre_cycles": 0,
+      "implicit_module_layout_expectations": 426,
+      "kernel_crc_matches": 17457,
+      "local_crc_matching_provider_ambiguities": 0,
+      "local_hard_predecessor_crc_matches": 2888,
+      "missing_hard_paths": 0,
+      "requests": 435,
+      "successful_loading_proven": false,
+      "unique_requests": 424
+    },
+    "hard_added_modules": [
+      "hdcp_qseecom_dlkm",
+      "smmu_proxy_dlkm"
+    ],
+    "reference_loader": {
+      "repository": "https://github.com/TWRP-Test/android_system_core",
+      "commit": "9292e0ddea6c1e8ff95abc8d3fedd6dd0c722f31",
+      "path": "init/first_stage_init.cpp",
+      "verified_by_parallel_source_audit": true,
+      "independent_source_fetches": [
+        {
+          "path": "reports/twrp-stock-loader-source-v1/first_stage_init.cpp",
+          "source_path": "init/first_stage_init.cpp",
+          "url": "https://raw.githubusercontent.com/TWRP-Test/android_system_core/9292e0ddea6c1e8ff95abc8d3fedd6dd0c722f31/init/first_stage_init.cpp",
+          "size_bytes": 21708,
+          "sha256": "df8392d57102297f330db11e8cbe9b24d18c5cc261d58381a01d77f7240fb415"
+        },
+        {
+          "path": "reports/twrp-stock-loader-source-v1/util.cpp",
+          "source_path": "init/util.cpp",
+          "url": "https://raw.githubusercontent.com/TWRP-Test/android_system_core/9292e0ddea6c1e8ff95abc8d3fedd6dd0c722f31/init/util.cpp",
+          "size_bytes": 28524,
+          "sha256": "8813bf71ad3c917be9e10f8c98654255b79d39935fe310c595afb6ba970c2c95"
+        }
+      ],
+      "recovery_list_selected_before_second_stage_recovery_rc": true,
+      "normal_list_fallback_only_on_stat_failure": true,
+      "empty_list_is_not_normal_list_fallback": true,
+      "recovery_detection": "IsRecoveryMode() and not ForceNormalBoot()",
+      "recovery_marker": "/system/bin/recovery exists (access F_OK)",
+      "normal_first_stage_mounts_skipped_in_recovery": true,
+      "stock_binary_source_identity_proven": false
+    },
+    "do_not_reload_entire_vendor_ramdisk_list_from_recovery_rc": true,
+    "separate_vendor_modules_directory": "/vendor_dlkm/lib/modules",
+    "stock_vendor_module_directory_symlink": "/vendor/lib/modules -> /vendor_dlkm/lib/modules",
+    "selected_module_facts": {
+      "display": [
+        {
+          "filename": "msm_drm.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "synx-driver.ko",
+            "ipclite.ko",
+            "msm_hw_fence.ko",
+            "spmi-pmic-arb.ko",
+            "qcom_va_minidump.ko",
+            "smmu_proxy_dlkm.ko",
+            "llcc-qcom.ko",
+            "sync_fence.ko",
+            "msm_hfi_core.ko",
+            "msm_ext_display.ko",
+            "altmode-glink.ko",
+            "gh_irq_lend.ko",
+            "hdcp_qseecom_dlkm.ko",
+            "smcinvoke_dlkm.ko",
+            "mem_object.ko",
+            "si_core_module.ko",
+            "qseecom_proxy.ko",
+            "drm_display_helper.ko",
+            "panel_event_notifier.ko",
+            "pm8941-pwrkey.ko",
+            "qcom_iommu_util.ko",
+            "dwc3-msm.ko",
+            "wcd_usbss_i2c.ko",
+            "qti-regmap-debugfs.ko",
+            "repeater.ko",
+            "redriver.ko",
+            "qti_pmic_glink.ko",
+            "pdr_interface.ko",
+            "qcom_pdr_msg.ko",
+            "miev.ko",
+            "mca_sysfs.ko",
+            "rproc_qcom_common.ko",
+            "qcom_smd.ko",
+            "qcom_glink_smem.ko",
+            "qcom_glink.ko",
+            "pinctrl-msm.ko",
+            "hwid.ko",
+            "socinfo.ko",
+            "metis.ko",
+            "mist.ko",
+            "qcom-dcvs.ko",
+            "dcvs_fp.ko",
+            "qcom_rpmh.ko",
+            "cmd-db.ko",
+            "qcom-pmu-lib.ko",
+            "qcom_llcc_pmu.ko",
+            "xr-qi.ko",
+            "perf_actuator.ko",
+            "mi_schedule.ko",
+            "qmi_helpers.ko",
+            "clk-qcom.ko",
+            "icc-clk.ko",
+            "crm-v2.ko",
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko",
+            "gdsc-regulator.ko",
+            "debug-regulator.ko",
+            "proxy-consumer.ko",
+            "qcom_scmi_client.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "msm_drm"
+          ],
+          "sha256": "3218d3c1fe5058ebec88af7dbe8764c16999bdff3ca4c08a4fb703ec4fa141dd",
+          "size_bytes": 6608008,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "drm_display_helper.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "drm_display_helper"
+          ],
+          "sha256": "775ba9534fac4f327354509a60295e375d99487b3ffa9152df5dd51c7df464b1",
+          "size_bytes": 282744,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "dispcc-canoe.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "clk-qcom.ko",
+            "icc-clk.ko",
+            "crm-v2.ko",
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko",
+            "gdsc-regulator.ko",
+            "debug-regulator.ko",
+            "proxy-consumer.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "dispcc_canoe"
+          ],
+          "sha256": "d730edf040987b0f0da7e6541d34e9864b6a1f4934c798015072e154243e8de4",
+          "size_bytes": 90648,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "panel_event_notifier.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "panel_event_notifier"
+          ],
+          "sha256": "e73b3d272aef89a363e03fcaa46932ad13b191965240deff8b9a27b7a4ac2bab",
+          "size_bytes": 15696,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "msm_hw_fence.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "rproc_qcom_common.ko",
+            "qcom_smd.ko",
+            "qcom_glink_smem.ko",
+            "qcom_glink.ko",
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "msm_hw_fence"
+          ],
+          "sha256": "2d8c800ac0c1ed43edd36affc6a9c3edbf221e629f2925ba3e75fafff1525e99",
+          "size_bytes": 369624,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "msm_hfi_core.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "msm_hfi_core"
+          ],
+          "sha256": "d83473bb75eec4221d16635b27c39c76eebf58aaa6fd3fa7b42854180ce0c956",
+          "size_bytes": 286904,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "sync_fence.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "sync_fence"
+          ],
+          "sha256": "0716b56779a0c8116c5b9a99854f0fd6285b7be094012656edfe886b24265dcc",
+          "size_bytes": 40232,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "filename": "dmesg_dumper.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "gh_panic_notifier.ko",
+            "gh_vcpu_mgr.ko",
+            "gh_ctrl.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "dmesg_dumper"
+          ],
+          "sha256": "2ee09e113483bc4f6bd1be8d3261e18520f1012cdff5524d2020a39cdf899500",
+          "size_bytes": 43168,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "qcom_dynamic_ramoops.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "qcom_dynamic_ramoops"
+          ],
+          "sha256": "eb57132469a0b4b33832de3753a6c62650c2978fe09036ba8d1dd9344ffd11e6",
+          "size_bytes": 18784,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "qcom_logbuf_boot_log.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "qcom_logbuf_boot_log"
+          ],
+          "sha256": "35d09afbdd1c2306515401c06683727f643b8335cd2f0cb515e080e97fbe8c62",
+          "size_bytes": 16952,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "qcom_logbuf_vendor_hooks.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "qcom_logbuf_vendor_hooks"
+          ],
+          "sha256": "d2e54fc68da8cbc6d9cfa945feda77d08e834a4e87022f90ec137303cedd71c6",
+          "size_bytes": 16144,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        }
+      ],
+      "storage": [
+        {
+          "filename": "ufs-qcom.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "ufshcd-crypto-qti.ko",
+            "qcom_ice.ko",
+            "sched-walt.ko",
+            "hwid.ko",
+            "socinfo.ko",
+            "metis.ko",
+            "mist.ko",
+            "qcom-dcvs.ko",
+            "dcvs_fp.ko",
+            "qcom_rpmh.ko",
+            "cmd-db.ko",
+            "qcom-pmu-lib.ko",
+            "qcom_llcc_pmu.ko",
+            "xr-qi.ko",
+            "perf_actuator.ko",
+            "mi_schedule.ko",
+            "phy-qcom-ufs.ko",
+            "clk-qcom.ko",
+            "icc-clk.ko",
+            "crm-v2.ko",
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko",
+            "gdsc-regulator.ko",
+            "debug-regulator.ko",
+            "proxy-consumer.ko",
+            "qcom_scmi_client.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "ufs_qcom"
+          ],
+          "sha256": "dddbf13875525da0fd30aa214e92a7a9daf6089d558d309e1487a9d09eb51ce2",
+          "size_bytes": 1063008,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "ufshcd-crypto-qti.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "qcom_ice.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "ufshcd_crypto_qti"
+          ],
+          "sha256": "7bed1770b702579577eec7176faf8bad63dfae17aaf8a07d6a6a52e216101b7e",
+          "size_bytes": 19632,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "qcom_ice.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "qcom_ice"
+          ],
+          "sha256": "edc02745d4b48e7ff793f57569b095459b4808b95a73d4ec371933a52bf78453",
+          "size_bytes": 30952,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "phy-qcom-ufs-qmp-v4-canoe.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "phy-qcom-ufs.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "phy_qcom_ufs_qmp_v4_canoe"
+          ],
+          "sha256": "3db6297aae4f8570a87654560ddf24c39400b25de7fdc6cd4251fca53216fae4",
+          "size_bytes": 25776,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "phy-qcom-ufs.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "phy_qcom_ufs"
+          ],
+          "sha256": "d381a12c5fc3718c2f4eb9ec0d6f2283d4aea2456659d13e2ba904cf977a8425",
+          "size_bytes": 51008,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        }
+      ],
+      "usb": [
+        {
+          "filename": "dwc3-msm.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "wcd_usbss_i2c.ko",
+            "qti-regmap-debugfs.ko",
+            "repeater.ko",
+            "redriver.ko",
+            "mca_sysfs.ko",
+            "hwid.ko",
+            "socinfo.ko",
+            "clk-qcom.ko",
+            "icc-clk.ko",
+            "crm-v2.ko",
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko",
+            "gdsc-regulator.ko",
+            "debug-regulator.ko",
+            "proxy-consumer.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "dwc3_msm"
+          ],
+          "sha256": "21f01acbc4b4c77db55e5d24656facec35d383644cbca9b40275602b9024e93f",
+          "size_bytes": 216352,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "phy-msm-m31-eusb2.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "repeater.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "phy_msm_m31_eusb2"
+          ],
+          "sha256": "179bee35099b15f485511df7dd975f1f233aeab0efd15e2fd1ab7fd407393eaa",
+          "size_bytes": 34520,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "phy-msm-ssusb-qmp.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "phy_msm_ssusb_qmp"
+          ],
+          "sha256": "e6317720ca6c81aa0f3fe86da2d1c506f3bbbd0b87dcd830bfafaf2c0efeac77",
+          "size_bytes": 43024,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "phy-qcom-qmp-combo.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [],
+          "listed_for_recovery": true,
+          "module_name": [
+            "phy_qcom_qmp_combo"
+          ],
+          "sha256": "fbcb148914905e53c36ecb0b54b7c35edecf61e66bc0df1e4520093c66dc1a0c",
+          "size_bytes": 82016,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "repeater-qti-pmic-eusb2.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "repeater.ko",
+            "hwid.ko",
+            "socinfo.ko",
+            "smem.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "repeater_qti_pmic_eusb2"
+          ],
+          "sha256": "d3318935b616d5fcf10bb99cf3c26efd3122ca09a2e8da0da50f425583e52a63",
+          "size_bytes": 39176,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "ucsi_qti_glink.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "qti_pmic_glink.ko",
+            "pdr_interface.ko",
+            "qcom_pdr_msg.ko",
+            "rproc_qcom_common.ko",
+            "qcom_smd.ko",
+            "qcom_glink_smem.ko",
+            "qcom_glink.ko",
+            "qmi_helpers.ko",
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "ucsi_qti_glink"
+          ],
+          "sha256": "c99078ebbc0f04badb013bb01efb825310c1bc7598ba85c528b356053e88aa10",
+          "size_bytes": 31816,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        {
+          "filename": "f_fs_ipc_log.ko",
+          "firmware_declarations": [],
+          "hard_dependencies": [
+            "qcom_ipc_logging.ko",
+            "minidump.ko",
+            "smem.ko",
+            "qcom_dma_heaps.ko",
+            "deferred-free-helper.ko",
+            "msm_dma_iommu_mapping.ko",
+            "mem_buf_dev.ko",
+            "gh_mem_notifier.ko",
+            "gh_rm_heap_manager.ko",
+            "mem-prot.ko",
+            "secure_buffer.ko",
+            "qcom-scm.ko",
+            "qcom_tzmem.ko",
+            "gh_rm_drv.ko",
+            "gh_msgq.ko",
+            "gh_dbl.ko",
+            "gh_arm_drv.ko",
+            "debug_symbol.ko"
+          ],
+          "listed_for_recovery": true,
+          "module_name": [
+            "f_fs_ipc_log"
+          ],
+          "sha256": "a5846152c5ef671064899efe942aeeb6181f6dc47ce65f1261bf7fa7c103143c",
+          "size_bytes": 76280,
+          "vermagic": [
+            "6.12.23-android16-5-g0cd5a311d2f7-mi-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        }
+      ]
+    },
+    "hard_closure_and_crc_matches_prove_runtime_admission": false,
+    "module_signatures_loaded_and_trusted": false
+  },
+  "display_and_input": {
+    "factory_sources": [
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/unpacked/boot/kernel",
+        "sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+        "size_bytes": 39963136
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/unpacked/recovery/kernel",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/unpacked/vendor_boot/dtb",
+        "sha256": "1a5c30b75e816f33dd36caa114faa7bc656605e4ac9ffe786726538b37ada22d",
+        "size_bytes": 4496880
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/dtbo/dtbo/entry.0",
+        "sha256": "4bb4b31bca5de3e354a565304d1ea277ac6d9b70e2760a40147d9f151a691f99",
+        "size_bytes": 1495047
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/vendor_boot-inventory.json",
+        "sha256": "81ea2df0c4927f4a58d9587bb09a2809dccd5f75a62542669926fd1d9a5bdec6",
+        "size_bytes": 454747
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/recovery-inventory.json",
+        "sha256": "b05ef61972d42b15da22c2e3743b31b1bd34967e295ac3fa771417fe99c13715",
+        "size_bytes": 360939
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/ramdisks/vendor_boot.cpio",
+        "sha256": "26c5c433214b1abcbf2e2a8aae0afe73cb555839e17bda0a6b9ba76c1d7fc0af",
+        "size_bytes": 48237312
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/ramdisks/recovery.cpio",
+        "sha256": "13083e8177001c912c0078e03f59c79dccdbe0895a6b62ce2019bae47dfa7cd7",
+        "size_bytes": 53929472
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/capture/vendor_dlkm/receipt.json",
+        "sha256": "f8ebfb4fbf5ea715dbc9d17463f54d0d56d58268c24beacf73acf2e59f798368",
+        "size_bytes": 132302
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/capture/vendor_dlkm/files/0354",
+        "sha256": "5bfa810e1d94791a99f97b171f0d72310ff9b58404184a3f2aeb7104ed58f973",
+        "size_bytes": 619608
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/capture/vendor_dlkm/files/0385",
+        "sha256": "526a50e096172bb154f7901a2cb305614d2a30d830f47740132cde229411de52",
+        "size_bytes": 227872
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/inventory.json",
+        "sha256": "3c23471a08548cf30bf8f39f383a3a5acf2afc4b279b62f082587494ef41dd23",
+        "size_bytes": 358469
+      }
+    ],
+    "crc_readback_sources": [
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/ramdisks/vendor_boot.cpio",
+        "sha256": "26c5c433214b1abcbf2e2a8aae0afe73cb555839e17bda0a6b9ba76c1d7fc0af",
+        "size_bytes": 48237312
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/unpacked/boot/kernel",
+        "sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+        "size_bytes": 39963136
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-full-module-audit-v1/result-v1/payloads.json",
+        "sha256": "21fecfcbec146bae32fb94168aaa42f63e665ba7db5407cefe3e788f375a5561",
+        "size_bytes": 11710056
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-full-module-audit-v1/result-v1/provider-comparisons.json",
+        "sha256": "b3fdcd48ebb0769b4923ce1f5b4eb36f4d78d458fcc8c5f45887b7bd5e00c312",
+        "size_bytes": 41079935
+      },
+      {
+        "path": "artifacts/source-contracts/nezha-kernel-exports-v1/result-v1/kernel-exports.json",
+        "sha256": "03a9b7b893bfd198d2f9ad80e54c36535799ae4d6cbebe76f4040f85439cc37b",
+        "size_bytes": 3745629
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/capture/vendor_dlkm/files/0354",
+        "sha256": "5bfa810e1d94791a99f97b171f0d72310ff9b58404184a3f2aeb7104ed58f973",
+        "size_bytes": 619608
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/capture/vendor_dlkm/files/0385",
+        "sha256": "526a50e096172bb154f7901a2cb305614d2a30d830f47740132cde229411de52",
+        "size_bytes": 227872
+      }
+    ],
+    "kernel_config": {
+      "facts": {
+        "CONFIG_DRM": "y",
+        "CONFIG_DRM_FBDEV_EMULATION": "n",
+        "CONFIG_DRM_KMS_HELPER": "y",
+        "CONFIG_FB": "n",
+        "CONFIG_INPUT_EVDEV": "y",
+        "CONFIG_INPUT_TOUCHSCREEN": "y",
+        "CONFIG_MODULE_SIG": "y",
+        "CONFIG_MODULE_SIG_PROTECT": "y",
+        "CONFIG_MODVERSIONS": "y"
+      },
+      "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd"
+    },
+    "display": {
+      "backlight_path_from_stock_recovery_init": "/sys/class/backlight/panel0-backlight/brightness",
+      "compression": "dsc",
+      "explicit_timing_framerates_hz": [
+        24,
+        30,
+        60,
+        90,
+        120
+      ],
+      "interface": "dsi_cmd_mode",
+      "panel_bpp": 30,
+      "panel_families": [
+        "p1_42_02_0a",
+        "p1_42_0d_0b"
+      ],
+      "panel_variant_node_count": 9,
+      "require_drm_candidate_backend": true,
+      "runtime_panel_selection_verified": false,
+      "stock_panel_brightness_max_level": 16383,
+      "stock_recovery_initial_brightness": 200,
+      "timing_resolution": [
+        1200,
+        2608
+      ]
+    },
+    "touch": {
+      "all_11_other_declared_dependency_modules_present_in_vendor_boot": true,
+      "auxiliary_panel_display_resolution_is_not_panel_timing_resolution": true,
+      "auxiliary_panel_display_resolution_property": [
+        1440,
+        3200
+      ],
+      "both_drivers_absent_from_vendor_boot": true,
+      "bus": "SPI",
+      "compatible": "synaptics,tcm-spi",
+      "coordinate_maxima": [
+        1200,
+        2608
+      ],
+      "crc_provider_coverage": {
+        "synaptics_tcm2": {
+          "current_factory_import_bytes_and_provider_name_crc_bytes_reverified": true,
+          "hardware_tested": false,
+          "kernel_crc_match": 148,
+          "module_crc_match_unique_payload": 25,
+          "module_loaded": false,
+          "module_sha256": "5bfa810e1d94791a99f97b171f0d72310ff9b58404184a3f2aeb7104ed58f973",
+          "provider_payload_hashes": [
+            "526a50e096172bb154f7901a2cb305614d2a30d830f47740132cde229411de52",
+            "5ac77116ce5d98488f67f90f9abc26cbf0b6da6f282a57b1591de47ee88bb4a0",
+            "650dfb1c02ebbb171eb035934728504b7837a89bfdb268c7e3cfa7481426e322",
+            "9be1415834d20d6ac2c0585f178016bf314018a929fde9fc3894e945cd6cba55",
+            "c89756e7e37afda5dfd58c87983368ef9f7b9d77e7f7c5166cb1c03e243bfd57"
+          ],
+          "static_export_locations_from_existing_audit": true,
+          "unmatched_versioned_imports": 0,
+          "versioned_import_count": 173
+        },
+        "xiaomi_touch": {
+          "current_factory_import_bytes_and_provider_name_crc_bytes_reverified": true,
+          "hardware_tested": false,
+          "kernel_crc_match": 109,
+          "module_crc_match_unique_payload": 7,
+          "module_loaded": false,
+          "module_sha256": "526a50e096172bb154f7901a2cb305614d2a30d830f47740132cde229411de52",
+          "provider_payload_hashes": [
+            "c34a0e01682dabbdb49fc91df2a8bc8ff9606c2fba6b068d5b8aa138b063917a",
+            "e73b3d272aef89a363e03fcaa46932ad13b191965240deff8b9a27b7a4ac2bab"
+          ],
+          "static_export_locations_from_existing_audit": true,
+          "unmatched_versioned_imports": 0,
+          "versioned_import_count": 116
+        }
+      },
+      "declared_dependency_closure_count": 13,
+      "declared_dependency_closure_filenames": [
+        "gh_arm_drv.ko",
+        "gh_dbl.ko",
+        "gh_irq_lend.ko",
+        "gh_mem_notifier.ko",
+        "gh_msgq.ko",
+        "gh_rm_drv.ko",
+        "miev.ko",
+        "panel_event_notifier.ko",
+        "pinctrl-msm.ko",
+        "qcom-scm.ko",
+        "qcom_tzmem.ko",
+        "synaptics_tcm2.ko",
+        "xiaomi_touch.ko"
+      ],
+      "driver_modules": [
+        {
+          "dependencies": [
+            "xiaomi_touch",
+            "pinctrl_msm",
+            "gh_mem_notifier",
+            "gh_rm_drv",
+            "gh_irq_lend"
+          ],
+          "filename": "synaptics_tcm2.ko",
+          "image_path": "/lib/modules/synaptics_tcm2.ko",
+          "sha256": "5bfa810e1d94791a99f97b171f0d72310ff9b58404184a3f2aeb7104ed58f973",
+          "size_bytes": 619608,
+          "source": "vendor_dlkm"
+        },
+        {
+          "dependencies": [
+            "panel_event_notifier",
+            "miev"
+          ],
+          "filename": "xiaomi_touch.ko",
+          "image_path": "/lib/modules/xiaomi_touch.ko",
+          "sha256": "526a50e096172bb154f7901a2cb305614d2a30d830f47740132cde229411de52",
+          "size_bytes": 227872,
+          "source": "vendor_dlkm"
+        }
+      ],
+      "dtbo_node": "/fragment@64/__overlay__/synaptics_tcm@0",
+      "firmware_candidates": [
+        {
+          "content_hash_captured": true,
+          "partition": "odm",
+          "path": "/firmware/nezha_syna_thp_config.ini",
+          "sha256": "dde4b1a3d79b8d78c8e11911486177e3c1d6a5ffa554701e6198d2eabd8aad26",
+          "size_bytes": 14546,
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0001"
+        },
+        {
+          "content_hash_captured": true,
+          "partition": "odm",
+          "path": "/firmware/nezha_test_limits_S3910P.csv",
+          "sha256": "d23a3f5b0dbf54dfcfe6dae27322807e34785051264876ec1309527aa84c1a0d",
+          "size_bytes": 26870,
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0002"
+        },
+        {
+          "content_hash_captured": true,
+          "partition": "odm",
+          "path": "/firmware/synaptics_spi_nezha_00.img",
+          "sha256": "1df6b9bb9a91ce64ef9bbec05a6553a2c762eae6ff1b5aabf6c89bdc23be201f",
+          "size_bytes": 198920,
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0003"
+        },
+        {
+          "content_hash_captured": true,
+          "partition": "odm",
+          "path": "/firmware/synaptics_spi_nezha_01.img",
+          "sha256": "fc502198fc49ead8719055f53aaa969c3d8fb5fc46a8cdcbecb2a2c33f8a3e62",
+          "size_bytes": 198920,
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0004"
+        }
+      ],
+      "firmware_selection": {
+        "ddic_id_1": "synaptics_spi_nezha_00.img",
+        "ddic_id_2": "synaptics_spi_nezha_01.img",
+        "default": "synaptics_spi_nezha_00.img"
+      },
+      "spi_max_frequency": 15000000,
+      "trusted_touch_environment": "tvm",
+      "trusted_touch_mode": "vm_mode"
+    },
+    "firmware_capture_followup": {
+      "capture_receipt": {
+        "path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/receipt.json",
+        "sha256": "8a7f97d8c6461db8910d8cc4602d0cee9815176c55bd0caae87adc465b0576d2",
+        "size_bytes": 2457
+      },
+      "capture_script": {
+        "path": "scripts/erofs_inventory.py",
+        "sha256": "733255afce307edef06b534d4b8f6d3db30d1f7c45d91f1a7341ec4156e438a3"
+      },
+      "created_at_utc": "2026-08-28T03:44:08.246590+00:00",
+      "factory_archive_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "file_count": 4,
+      "files": [
+        {
+          "capture_mode": "0600",
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0001",
+          "image_path": "/firmware/nezha_syna_thp_config.ini",
+          "independent_output_readback_verified": true,
+          "nid": 99815658,
+          "partition": "odm",
+          "sha256": "dde4b1a3d79b8d78c8e11911486177e3c1d6a5ffa554701e6198d2eabd8aad26",
+          "size_bytes": 14546
+        },
+        {
+          "capture_mode": "0600",
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0002",
+          "image_path": "/firmware/nezha_test_limits_S3910P.csv",
+          "independent_output_readback_verified": true,
+          "nid": 99815661,
+          "partition": "odm",
+          "sha256": "d23a3f5b0dbf54dfcfe6dae27322807e34785051264876ec1309527aa84c1a0d",
+          "size_bytes": 26870
+        },
+        {
+          "capture_mode": "0600",
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0003",
+          "image_path": "/firmware/synaptics_spi_nezha_00.img",
+          "independent_output_readback_verified": true,
+          "nid": 99815936,
+          "partition": "odm",
+          "sha256": "1df6b9bb9a91ce64ef9bbec05a6553a2c762eae6ff1b5aabf6c89bdc23be201f",
+          "size_bytes": 198920
+        },
+        {
+          "capture_mode": "0600",
+          "capture_path": "artifacts/twrp-stock-input/touch-firmware-capture-v1/files/0004",
+          "image_path": "/firmware/synaptics_spi_nezha_01.img",
+          "independent_output_readback_verified": true,
+          "nid": 99816064,
+          "partition": "odm",
+          "sha256": "fc502198fc49ead8719055f53aaa969c3d8fb5fc46a8cdcbecb2a2c33f8a3e62",
+          "size_bytes": 198920
+        }
+      ],
+      "guards": {
+        "existing_summary_and_detail_unchanged": true,
+        "firmware_executed": false,
+        "guest_accessed": false,
+        "image_mounted": false,
+        "max_file_bytes": 4194304,
+        "max_total_bytes": 8388608,
+        "old_captures_replaced": false,
+        "phone_accessed": false,
+        "readback_after_capture_verified": true,
+        "source_full_image_sha256_verified_by_capture": true,
+        "symlinks_followed": false
+      },
+      "limits": [
+        "The captures are proprietary local artifacts, not redistribution permission.",
+        "Source hashes establish byte identity; this capture does not establish publisher authenticity.",
+        "Firmware compatibility and actual use by the driver require a separately authorized device test.",
+        "Previous summary.json and input-display.json remain immutable snapshots; this separate receipt closes their firmware-content-hash gap."
+      ],
+      "operation": "bounded-factory-odm-touch-firmware-capture-readback",
+      "schema_version": 1,
+      "source_image": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/odm_a.img",
+        "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+        "size_bytes": 4767621120
+      },
+      "source_inventory_directory": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm",
+      "source_inventory_receipt_sha256": "1d413e0fa4ad0ab3b40fe06d5cefdc9558980ffa430eb9f2502fa9edf15e8a66",
+      "source_inventory_sha256": "3c23471a08548cf30bf8f39f383a3a5acf2afc4b279b62f082587494ef41dd23",
+      "tool": {
+        "path": "/opt/homebrew/Cellar/erofs-utils/1.9.4/bin/dump.erofs",
+        "requested_path": "/opt/homebrew/bin/dump.erofs",
+        "sha256": "43d8dd8fba701c86091293af0bd20d8ac4a8617d715e30c57db8fff546ec3fad",
+        "size_bytes": 243904,
+        "version": "dump.erofs (erofs-utils) 1.9.4"
+      },
+      "total_bytes": 439256,
+      "validation": {
+        "command": "python3 -m unittest discover -s tests -p 'test_erofs_inventory.py' -v",
+        "exit_code": 0,
+        "network_or_phone_needed": false,
+        "tests_passed": 30
+      },
+      "capture_paths_relative_to": "isolated TWRP worktree"
+    },
+    "firmware_search_directories": [
+      "/etc/firmware/",
+      "/odm/firmware/",
+      "/vendor/firmware/",
+      "/firmware/image/"
+    ],
+    "runtime_claims": {
+      "display_working_verified": false,
+      "firmware_executed": false,
+      "guest_accessed": false,
+      "module_loading_verified": false,
+      "phone_accessed": false,
+      "signature_trust_validated": false,
+      "touch_working_verified": false
+    },
+    "remaining": [
+      "Stage the exact captured ODM touch firmware without exposing unrelated private files or executing firmware on the host.",
+      "Validate effective recovery boot/vendor_boot composition and driver load ordering.",
+      "Verify runtime panel choice, DRM behavior, touch event/axis handling and orientation on authorized hardware.",
+      "CRC provider matching is not proof of full ABI, signature trust, runtime module selection or successful probe."
+    ],
+    "panel_bpp_is_not_a_verified_drm_userspace_pixel_format": true
+  },
+  "usb_and_adb": {
+    "recovery_qcom_init": {
+      "gid": 0,
+      "kind": 32768,
+      "mode": "0o100750",
+      "name": "init.recovery.qcom.rc",
+      "sha256": "d546b0cac17a7b00e63d4a2e24d6dfe99fe4cf517551e64016ae55c53312ae60",
+      "size_bytes": 2175,
+      "uid": 0
+    },
+    "stock_main_init": {
+      "gid": 0,
+      "kind": 32768,
+      "mode": "0o100644",
+      "name": "system/etc/init/hw/init.rc",
+      "sha256": "2375839279e1fa6641fe4c779419c8d361d1409b5f8a6b98680a1ad179e99a31",
+      "size_bytes": 6921,
+      "uid": 0
+    },
+    "stock_ueventd": {
+      "gid": 0,
+      "kind": 32768,
+      "mode": "0o100644",
+      "name": "system/etc/ueventd.rc",
+      "sha256": "9e857b38faaa3df9c7b93dd34ca8db828406f909b260b194257c90c8c2f6d751",
+      "size_bytes": 3330,
+      "uid": 0
+    },
+    "usb_controller_from_vendor_bootconfig": "a600000.dwc3",
+    "controller_property_forwarding": "ro.boot.usbcontroller -> sys.usb.controller",
+    "peripheral_mode_path_template": "/sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/mode",
+    "udc_path_template": "/sys/class/udc/${ro.boot.usbcontroller}",
+    "configfs_enabled_by_qcom_recovery_init": true,
+    "configfs_gadget_root": "/config/usb_gadget/g1",
+    "functionfs_mount_paths": [
+      "/dev/usb-ffs/adb",
+      "/dev/usb-ffs/fastboot"
+    ],
+    "stock_security_properties": {
+      "ro.adb.secure": "1",
+      "ro.board.api_level": "202504",
+      "ro.build.type": "user",
+      "ro.build.version.sdk": "36",
+      "ro.debuggable": "0",
+      "ro.product.cpu.abi": "arm64-v8a",
+      "ro.product.first_api_level": "36",
+      "ro.secure": "1"
+    },
+    "stock_adb_key_link": "/adb_keys -> /product/etc/security/adb_keys",
+    "stock_key_contents_captured_or_adopted": false,
+    "target_requires_explicit_host_authorization": true,
+    "target_key_provisioning_and_auth_prompt_verified": false,
+    "usb_enumeration_or_adb_test_passed": false
+  },
+  "fstab": {
+    "factory_vendor_source": "first_stage_ramdisk/fstab.qcom",
+    "factory_vendor_sha256": "94a202513e73c5e05233fe6d0ef6d0de7b8fa6264562cff01723ec7f398bc535",
+    "stock_recovery_sources": [
+      {
+        "archive_path": "miui.factoryreset.fstab",
+        "size_bytes": 426,
+        "sha256": "e5d88b7eabc695bc3ed0d4149afac495f0b266abbe2204ea4a7554e1f31fd4e8",
+        "bytes_match_eu": true,
+        "row_count": 2,
+        "data_and_metadata_rows": [
+          {
+            "line": 4,
+            "source": "/dev/block/bootdevice/by-name/userdata",
+            "mount_point": "/data",
+            "filesystem": "f2fs",
+            "mount_options": [
+              "noatime",
+              "nosuid",
+              "nodev",
+              "fsync_mode=nobarrier",
+              "reserve_root=32768",
+              "resgid=1065"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "check",
+              "fileencryption=ice",
+              "wrappedkey",
+              "quota",
+              "reservedsize=128M",
+              "latemount"
+            ],
+            "verification_flags": [],
+            "encryption_flags": [
+              "fileencryption=ice",
+              "wrappedkey"
+            ]
+          }
+        ],
+        "logical_rows": [],
+        "applied_or_adopted_for_twrp": false
+      },
+      {
+        "archive_path": "system/etc/recovery.fstab",
+        "size_bytes": 3709,
+        "sha256": "daccf8b606e5fbb90537ae9f023d8d9a05c5a8f0d8283026e7931a92a6ced9b1",
+        "bytes_match_eu": true,
+        "row_count": 11,
+        "data_and_metadata_rows": [
+          {
+            "line": 34,
+            "source": "/dev/block/bootdevice/by-name/metadata",
+            "mount_point": "/metadata",
+            "filesystem": "f2fs",
+            "mount_options": [
+              "noatime",
+              "nosuid",
+              "nodev",
+              "discard"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "check",
+              "formattable",
+              "wrappedkey",
+              "first_stage_mount"
+            ],
+            "verification_flags": [],
+            "encryption_flags": [
+              "wrappedkey"
+            ]
+          },
+          {
+            "line": 35,
+            "source": "/dev/block/bootdevice/by-name/userdata",
+            "mount_point": "/data",
+            "filesystem": "f2fs",
+            "mount_options": [
+              "noatime",
+              "nosuid",
+              "nodev",
+              "discard",
+              "reserve_root=32768",
+              "resgid=1065",
+              "fsync_mode=nobarrier"
+            ],
+            "fs_mgr_flags": [
+              "latemount",
+              "wait",
+              "check",
+              "formattable",
+              "fileencryption=ice",
+              "wrappedkey",
+              "keydirectory=/metadata/vold/metadata_encryption",
+              "quota",
+              "reservedsize=128M",
+              "sysfs_path=/sys/devices/platform/soc/1d84000.ufshc",
+              "checkpoint=fs"
+            ],
+            "verification_flags": [],
+            "encryption_flags": [
+              "fileencryption=ice",
+              "wrappedkey",
+              "keydirectory=/metadata/vold/metadata_encryption"
+            ]
+          }
+        ],
+        "logical_rows": [
+          {
+            "line": 29,
+            "source": "system",
+            "mount_point": "/system",
+            "filesystem": "ext4",
+            "mount_options": [
+              "ro",
+              "barrier=1",
+              "discard"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "slotselect",
+              "avb=vbmeta_system",
+              "logical",
+              "first_stage_mount"
+            ],
+            "verification_flags": [
+              "avb=vbmeta_system"
+            ],
+            "encryption_flags": []
+          },
+          {
+            "line": 30,
+            "source": "system_ext",
+            "mount_point": "/system_ext",
+            "filesystem": "ext4",
+            "mount_options": [
+              "ro",
+              "barrier=1",
+              "discard"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "slotselect",
+              "avb=vbmeta_system",
+              "logical",
+              "first_stage_mount"
+            ],
+            "verification_flags": [
+              "avb=vbmeta_system"
+            ],
+            "encryption_flags": []
+          },
+          {
+            "line": 31,
+            "source": "product",
+            "mount_point": "/product",
+            "filesystem": "ext4",
+            "mount_options": [
+              "ro",
+              "barrier=1",
+              "discard"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "slotselect",
+              "avb=vbmeta_system",
+              "logical",
+              "first_stage_mount"
+            ],
+            "verification_flags": [
+              "avb=vbmeta_system"
+            ],
+            "encryption_flags": []
+          },
+          {
+            "line": 32,
+            "source": "vendor",
+            "mount_point": "/vendor",
+            "filesystem": "ext4",
+            "mount_options": [
+              "ro",
+              "barrier=1",
+              "discard"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "slotselect",
+              "avb",
+              "logical",
+              "first_stage_mount"
+            ],
+            "verification_flags": [
+              "avb"
+            ],
+            "encryption_flags": []
+          },
+          {
+            "line": 33,
+            "source": "odm",
+            "mount_point": "/odm",
+            "filesystem": "ext4",
+            "mount_options": [
+              "ro",
+              "barrier=1",
+              "discard"
+            ],
+            "fs_mgr_flags": [
+              "wait",
+              "slotselect",
+              "avb",
+              "logical",
+              "first_stage_mount"
+            ],
+            "verification_flags": [
+              "avb"
+            ],
+            "encryption_flags": []
+          }
+        ],
+        "applied_or_adopted_for_twrp": false
+      }
+    ],
+    "stock_recovery_rows": [
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta_system",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 29,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/system",
+        "source": "system"
+      },
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta_system",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 30,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/system_ext",
+        "source": "system_ext"
+      },
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta_system",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 31,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/product",
+        "source": "product"
+      },
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 32,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/vendor",
+        "source": "vendor"
+      },
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 33,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/odm",
+        "source": "odm"
+      },
+      {
+        "filesystem": "f2fs",
+        "fs_mgr_flags": [
+          "wait",
+          "check",
+          "formattable",
+          "wrappedkey",
+          "first_stage_mount"
+        ],
+        "line": 34,
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard"
+        ],
+        "mount_point": "/metadata",
+        "source": "/dev/block/bootdevice/by-name/metadata"
+      },
+      {
+        "filesystem": "f2fs",
+        "fs_mgr_flags": [
+          "latemount",
+          "wait",
+          "check",
+          "formattable",
+          "fileencryption=ice",
+          "wrappedkey",
+          "keydirectory=/metadata/vold/metadata_encryption",
+          "quota",
+          "reservedsize=128M",
+          "sysfs_path=/sys/devices/platform/soc/1d84000.ufshc",
+          "checkpoint=fs"
+        ],
+        "line": 35,
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard",
+          "reserve_root=32768",
+          "resgid=1065",
+          "fsync_mode=nobarrier"
+        ],
+        "mount_point": "/data",
+        "source": "/dev/block/bootdevice/by-name/userdata"
+      },
+      {
+        "filesystem": "vfat",
+        "fs_mgr_flags": [
+          "wait"
+        ],
+        "line": 36,
+        "mount_options": [
+          "nosuid",
+          "nodev"
+        ],
+        "mount_point": "/sdcard",
+        "source": "/dev/block/mmcblk1p1"
+      },
+      {
+        "filesystem": "emmc",
+        "fs_mgr_flags": [
+          "defaults"
+        ],
+        "line": 37,
+        "mount_options": [
+          "defaults"
+        ],
+        "mount_point": "/boot",
+        "source": "/dev/block/bootdevice/by-name/boot"
+      },
+      {
+        "filesystem": "emmc",
+        "fs_mgr_flags": [
+          "defaults"
+        ],
+        "line": 38,
+        "mount_options": [
+          "defaults"
+        ],
+        "mount_point": "/misc",
+        "source": "/dev/block/by-name/misc"
+      },
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait"
+        ],
+        "line": 39,
+        "mount_options": [
+          "nosuid",
+          "noatime",
+          "nodev",
+          "barrier=1"
+        ],
+        "mount_point": "/cache",
+        "source": "/dev/block/bootdevice/by-name/rescue"
+      }
+    ],
+    "normal_data_and_metadata_rows": [
+      {
+        "filesystem": "f2fs",
+        "fs_mgr_flags": [
+          "wait",
+          "check",
+          "formattable",
+          "first_stage_mount"
+        ],
+        "line": 91,
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard"
+        ],
+        "mount_point": "/metadata",
+        "source": "/dev/block/by-name/metadata"
+      },
+      {
+        "filesystem": "f2fs",
+        "fs_mgr_flags": [
+          "latemount",
+          "wait",
+          "check",
+          "formattable",
+          "fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0",
+          "keydirectory=/metadata/vold/metadata_encryption",
+          "metadata_encryption=aes-256-xts:wrappedkey_v0",
+          "quota",
+          "reservedsize=128M",
+          "sysfs_path=/sys/devices/platform/soc/1d84000.ufshc",
+          "checkpoint=fs"
+        ],
+        "line": 93,
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard",
+          "reserve_root=32768",
+          "resgid=1065",
+          "fsync_mode=nobarrier",
+          "inlinecrypt",
+          "atgc"
+        ],
+        "mount_point": "/data",
+        "source": "/dev/block/bootdevice/by-name/userdata"
+      }
+    ],
+    "normal_dlkm_rows": [
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 77,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/vendor_dlkm",
+        "source": "vendor_dlkm"
+      },
+      {
+        "filesystem": "erofs",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 78,
+        "mount_options": [
+          "ro"
+        ],
+        "mount_point": "/vendor_dlkm",
+        "source": "vendor_dlkm"
+      },
+      {
+        "filesystem": "ext4",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 80,
+        "mount_options": [
+          "ro",
+          "barrier=1",
+          "discard"
+        ],
+        "mount_point": "/system_dlkm",
+        "source": "system_dlkm"
+      },
+      {
+        "filesystem": "erofs",
+        "fs_mgr_flags": [
+          "wait",
+          "slotselect",
+          "avb=vbmeta",
+          "logical",
+          "first_stage_mount"
+        ],
+        "line": 81,
+        "mount_options": [
+          "ro"
+        ],
+        "mount_point": "/system_dlkm",
+        "source": "system_dlkm"
+      }
+    ],
+    "stock_recovery_fstab_not_safe_as_twrp_fstab": true,
+    "stock_recovery_ext4_only_logical_rows_match_actual_factory_erofs": false,
+    "normal_fileencryption": "aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0",
+    "normal_metadata_encryption": "aes-256-xts:wrappedkey_v0",
+    "metadata_key_directory": "/metadata/vold/metadata_encryption",
+    "initial_target_userdata_mount_decryption_formatting_allowed": false,
+    "initial_target_misc_cache_rescue_persist_writes_allowed": false,
+    "later_readonly_dlkm_mounts_must_preserve": [
+      "logical",
+      "slotselect",
+      "avb=vbmeta",
+      "erofs"
+    ],
+    "decryption_test_passed": false
+  },
+  "policy_and_services": {
+    "stock_monolithic_policy": {
+      "gid": 0,
+      "kind": 32768,
+      "mode": "0o100644",
+      "name": "sepolicy",
+      "sha256": "93ab47624be9fb53108ff4fe0be6599d66d9501b13a5694602c6dd2abea7252c",
+      "size_bytes": 1611785,
+      "uid": 0
+    },
+    "stock_policy_header": {
+      "configuration": 3221225473,
+      "identifier": "SE Linux",
+      "loaded_or_adopted": false,
+      "magic": "0xf97cff8c",
+      "permissive_domain_analysis_performed": false,
+      "policy_version": 30
+    },
+    "stock_context_files": [
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "odm_file_contexts",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "odm_property_contexts",
+        "sha256": "e794a1fb53dacba4f9d2203c01479820f682b7d887cee16e6cebdc5ba269019d",
+        "size_bytes": 936,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "plat_file_contexts",
+        "sha256": "bad5e68113cdf6700fb6869fe56af1e65241a0d72adf8070e9295b340b49e822",
+        "size_bytes": 48488,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "plat_property_contexts",
+        "sha256": "03b0d664b8c5d9397a32ddb9bb8bd78470a7ddd28d35ef1e5dc3ae2618259409",
+        "size_bytes": 120735,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "plat_service_contexts",
+        "sha256": "23aea4c316afd8814d965d9315b14658f063f1173dd475ae1d5dfe114d11b849",
+        "size_bytes": 42257,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "product_file_contexts",
+        "sha256": "c6d733508ee88030c1c1b9b22911b7a3ee3dc7d172b367fb2263e964c8989c23",
+        "size_bytes": 635,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "product_property_contexts",
+        "sha256": "ea3b16e43cac859ae266131ebc4619562b02d785dda797685e21e2fba689e869",
+        "size_bytes": 2874,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "product_service_contexts",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "system_ext_file_contexts",
+        "sha256": "98c377db52332ed070c85254dc63cbedfc3cf1d7d8e21b460d24f9d076d6dc0d",
+        "size_bytes": 3546,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "system_ext_property_contexts",
+        "sha256": "7612952c68386062bf50b6166d69d356a39d0130620a802aa5b427f4e3ce145e",
+        "size_bytes": 8390,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "system_ext_service_contexts",
+        "sha256": "2ca77866e7c99cfa788914010a0f68a992eff2fe871f68831e52853c321f7a2c",
+        "size_bytes": 3009,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "vendor_file_contexts",
+        "sha256": "009d74c83596285b8f98196208868b624ecc1f859019abd603a2d1caf1a52a8c",
+        "size_bytes": 152465,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "vendor_property_contexts",
+        "sha256": "c030891a0718a9d825612cf1bd6160d5c55fd1e5c4229059b751efc6f6daf691",
+        "size_bytes": 65613,
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "kind": 32768,
+        "mode": "0o100644",
+        "name": "vendor_service_contexts",
+        "sha256": "196f0dd98e80f7a66483add5c9e5ff72078f2cd4ea424d9b4cdc246d480925df",
+        "size_bytes": 22634,
+        "uid": 0
+      }
+    ],
+    "services": [
+      {
+        "ramdisk": "init_boot",
+        "name": "snapuserd",
+        "source_rc": "system/etc/init/snapuserd.rc",
+        "executable_path": "/system/bin/snapuserd",
+        "present_in_same_cpio": true,
+        "member_sha256": "1807bcb1c9080b455472f1cb9933b8176cb776e2141262c071009b5e7f2f779f",
+        "member_kind": 40960,
+        "executed": false
+      },
+      {
+        "ramdisk": "init_boot",
+        "name": "snapuserd_proxy",
+        "source_rc": "system/etc/init/snapuserd.rc",
+        "executable_path": "/system/bin/snapuserd",
+        "present_in_same_cpio": true,
+        "member_sha256": "1807bcb1c9080b455472f1cb9933b8176cb776e2141262c071009b5e7f2f779f",
+        "member_kind": 40960,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "factoryreset",
+        "source_rc": "miui.factoryreset.rc",
+        "executable_path": "/system/bin/recovery",
+        "present_in_same_cpio": true,
+        "member_sha256": "1e045024db9ac7a6dc4b05ec25a0bad63b01da1d39062f5784f3610e84c2c01d",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "vendor.boot-qti",
+        "source_rc": "system/etc/init/android.hardware.boot-service.qti.recovery.rc",
+        "executable_path": "/system/bin/hw/android.hardware.boot-service.qti.recovery",
+        "present_in_same_cpio": true,
+        "member_sha256": "49aa77a960bf6b22ab804fa68c54f51f18907effad9d968ca1fcd051ea0fb8b6",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "vendor.fastboot-default",
+        "source_rc": "system/etc/init/android.hardware.fastboot-service.example_recovery.rc",
+        "executable_path": "/system/bin/hw/android.hardware.fastboot-service.example_recovery",
+        "present_in_same_cpio": true,
+        "member_sha256": "4cd0f133db6a5ff2831bc440db91325beb2be2e064d6c67ec0f6ef65681cd67c",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "vendor.health-recovery",
+        "source_rc": "system/etc/init/android.hardware.health-service.qti_recovery.rc",
+        "executable_path": "/system/bin/hw/android.hardware.health-service.qti_recovery",
+        "present_in_same_cpio": true,
+        "member_sha256": "f9959c404495ab6ae0370dca8bd7e6eed2c75ff741502f503c1d1d07346134dd",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "ueventd",
+        "source_rc": "system/etc/init/hw/init.rc",
+        "executable_path": "/system/bin/ueventd",
+        "present_in_same_cpio": true,
+        "member_sha256": "bb54068aea85faa7e487530083366be9962390af822e4c71ef1aca7033c83e66",
+        "member_kind": 40960,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "charger",
+        "source_rc": "system/etc/init/hw/init.rc",
+        "executable_path": "/system/bin/charger",
+        "present_in_same_cpio": false,
+        "member_sha256": null,
+        "member_kind": null,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "recovery",
+        "source_rc": "system/etc/init/hw/init.rc",
+        "executable_path": "/system/bin/recovery",
+        "present_in_same_cpio": true,
+        "member_sha256": "1e045024db9ac7a6dc4b05ec25a0bad63b01da1d39062f5784f3610e84c2c01d",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "adbd",
+        "source_rc": "system/etc/init/hw/init.rc",
+        "executable_path": "/system/bin/adbd",
+        "present_in_same_cpio": true,
+        "member_sha256": "27db3dffd7a25c2720299188216264f9abdd6648317068a54cab617bef5c31ce",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "fastbootd",
+        "source_rc": "system/etc/init/hw/init.rc",
+        "executable_path": "/system/bin/fastbootd",
+        "present_in_same_cpio": true,
+        "member_sha256": "cfd66c12c7dfc23f6402c2fcf99756e12ff77f15f49b4602f6d47b5eafddbf5e",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "logd",
+        "source_rc": "system/etc/init/logd.rc",
+        "executable_path": "/system/bin/logd",
+        "present_in_same_cpio": true,
+        "member_sha256": "0a418d03a8ed9f3b3e90f84fb3782495882aa054e182a740a78a95be90158f7c",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "logd-reinit",
+        "source_rc": "system/etc/init/logd.rc",
+        "executable_path": "/system/bin/logd",
+        "present_in_same_cpio": true,
+        "member_sha256": "0a418d03a8ed9f3b3e90f84fb3782495882aa054e182a740a78a95be90158f7c",
+        "member_kind": 32768,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "logd-auditctl",
+        "source_rc": "system/etc/init/logd.rc",
+        "executable_path": "/system/bin/auditctl",
+        "present_in_same_cpio": false,
+        "member_sha256": null,
+        "member_kind": null,
+        "executed": false
+      },
+      {
+        "ramdisk": "recovery",
+        "name": "servicemanager",
+        "source_rc": "system/etc/init/servicemanager.recovery.rc",
+        "executable_path": "/system/bin/servicemanager",
+        "present_in_same_cpio": true,
+        "member_sha256": "4f7432a2da51b39ccb4f736456a8fa444d22278a35421bbb7f59a9916640d71c",
+        "member_kind": 32768,
+        "executed": false
+      }
+    ],
+    "boot_control_service": "/system/bin/hw/android.hardware.boot-service.qti.recovery",
+    "boot_control_library": "/system/lib64/libboot_control_qti.so",
+    "stock_boot_control_service_facts": {
+      "class_bits": 64,
+      "endianness": "little",
+      "machine": 183,
+      "needed": [
+        "liblog.so",
+        "libboot_control_qti.so",
+        "libbase.so",
+        "libbinder_ndk.so",
+        "android.hardware.boot-V1-ndk.so",
+        "android.hardware.boot@1.1.so",
+        "libc++.so",
+        "libc.so",
+        "libm.so",
+        "libdl.so"
+      ],
+      "search_paths": [],
+      "soname": null
+    },
+    "stock_boot_control_library_facts": {
+      "class_bits": 64,
+      "endianness": "little",
+      "machine": 183,
+      "needed": [
+        "android.hardware.boot@1.1.so",
+        "librecovery_updater.so",
+        "libbase.so",
+        "libcutils.so",
+        "liblog.so",
+        "libz.so",
+        "libc++.so",
+        "libc.so",
+        "libm.so",
+        "libdl.so"
+      ],
+      "search_paths": [],
+      "soname": "libboot_control_qti.so"
+    },
+    "stock_recovery_logd_missing_dependency_basenames": [
+      {
+        "consumer": "system/bin/logd",
+        "needed": "libsysutils.so"
+      },
+      {
+        "consumer": "system/bin/logd",
+        "needed": "libcap.so"
+      }
+    ],
+    "missing_basenames_are_runtime_failure_proof": false,
+    "target_policy_must_be_rebuilt_for_target_init_and_twrp": true,
+    "target_requires_enforcing_without_permissive_domains": true,
+    "target_neverallow_checks_must_remain_enabled": true,
+    "target_policy_binary_and_context_validation_passed": false,
+    "stock_factoryreset_init_import_must_not_be_copied": true
+  },
+  "avb": {
+    "source_record": "research/factory-firmware-validation.json",
+    "source_receipt": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/avb-verification-v1/receipt.json",
+      "sha256": "5f22d51a23ba989f71bf6a37844bbade71b5c02b17e36c3ca77290ab9a795c58",
+      "size_bytes": 20790
+    },
+    "stock_recovery_embedded_signature": {
+      "algorithm": "SHA256_RSA4096",
+      "embedded_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+      "embedded_signature_valid": true,
+      "trusted_oem_key": false,
+      "rollback_index": 1,
+      "rollback_index_location_in_header": 0,
+      "flags": 0
+    },
+    "stock_recovery_chain": {
+      "partition": "recovery",
+      "rollback_index_location": 1,
+      "flags": 0,
+      "parent_and_child_keys_match": true,
+      "public_key_sha256": "e5c32182629bfa8657708e8cad3e3ef83c9764594a213f8a8824e06386b9c5e1",
+      "key_origin": "Corresponding child image, not an independently authenticated OEM root"
+    },
+    "zero_boot_signature_field_does_not_mean_avb_disabled": true,
+    "changing_ramdisk_invalidates_stock_signature": true,
+    "oem_signing_keys_available": false,
+    "custom_image_is_stock_signed": false,
+    "verification_disable_flags_allowed": false,
+    "rollback_counter_reuse_is_authorized": false,
+    "phone_stored_rollback_counters_verified": false
+  },
+  "live_evidence_limit": {
+    "source_record": "research/device-baseline.json",
+    "previous_geometry_observed_at_utc": "2026-08-27T16:29:50.610478+00:00",
+    "by_name_links_previously_read": true,
+    "size_and_start_reads_denied": 30,
+    "physical_phone_capacity_verified": false,
+    "current_slot_or_bootloader_state_revalidated": false,
+    "reported_locked_green_properties_are_not_actual_unlock_proof": true
+  },
+  "initial_target_contract": {
+    "dedicated_ramdisk_only_recovery_image": true,
+    "kernel_source_partition": "boot",
+    "dtb_bootconfig_modules_source_partition": "vendor_boot",
+    "image_header_version": 4,
+    "image_page_size_bytes": 4096,
+    "image_cmdline": "",
+    "ramdisk_compression": "lz4-legacy",
+    "max_package_image_bytes": 104857600,
+    "replace_vendor_boot": false,
+    "copy_stock_init_adbd_recovery_or_monolithic_policy": false,
+    "duplicate_vendor_ramdisk_module_payloads": false,
+    "automatically_decrypt_mount_format_or_upgrade_userdata_keys": false,
+    "automatically_select_slot_merge_snapshot_or_write_misc": false,
+    "authenticated_adb": true,
+    "enforcing_selinux": true
+  },
+  "outstanding_checks": [
+    "Build and inspect the independent recovery target; this record is not a compiled-image claim.",
+    "Validate TWRP policy with neverallows and no permissive domains; check all file/property/service contexts.",
+    "Verify expected recovery-mode detection and successful first-stage loading of the existing vendor ramdisk closure.",
+    "Stage or mount exact Nezha touch modules and firmware with matching providers; vendor_boot does not contain the touch pair.",
+    "Prove DRM rendering, panel brightness and touch coordinates on the authorized hardware.",
+    "Prove authenticated ADB and readable recovery/kernel logs without mounting or modifying userdata.",
+    "Verify live partition capacities, actual bootloader authorization and rollback constraints before any separate phone test.",
+    "Validate boot control, Virtual A/B snapshots and fastbootd before exposing write, slot-change, merge or backup/restore actions.",
+    "Validate Android 16 hardware-wrapped FBE and metadata encryption separately, without key upgrades or formatting."
+  ],
+  "validation": {
+    "offline_source_contract_tests": 21,
+    "offline_apex_elf_and_capture_tests": 34,
+    "offline_erofs_capture_tests": 30,
+    "fresh_readback_passed": true,
+    "full_workspace_tests_run": true,
+    "hardware_validation_is_separate": true,
+    "full_workspace_tests_passed": 1369,
+    "full_workspace_test_command": "python3 -m unittest discover -s tests -v",
+    "full_workspace_tests_exit_code": 0,
+    "full_workspace_test_log": {
+      "path": "reports/twrp-stock-workspace-tests-v1.log",
+      "sha256": "e5ca40a87e3aa245ff3c6a4f6253d23cb9398cf93bd1c918be0f407969e6b4a7",
+      "size_bytes": 230766
+    },
+    "public_record_and_private_receipt_hash_invariants_passed": true
+  }
+}

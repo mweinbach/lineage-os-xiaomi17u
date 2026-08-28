@@ -1,0 +1,13 @@
+diff --git a/build/envsetup.sh b/build/envsetup.sh
+index de734b706118925f7ce6e9058ed4cd8d75ab073f..d97f1e9f5190d37a3ec49796049f4c51c4542922 100644
+--- a/build/envsetup.sh
++++ b/build/envsetup.sh
+@@ -171,8 +171,3 @@
+             export SDCLANG_CONFIG="vendor/qcom/sdclang/sdclang.json"
+             export SDCLANG_AE_CONFIG="vendor/qcom/sdclang/sdclangAE.json"
+ fi
+-
+-# Empty the vts makefile
+-if [ -s $(gettop)/frameworks/base/services/core/xsd/vts/Android.mk ]; then
+-	echo -n "" > $(gettop)/frameworks/base/services/core/xsd/vts/Android.mk
+-fi

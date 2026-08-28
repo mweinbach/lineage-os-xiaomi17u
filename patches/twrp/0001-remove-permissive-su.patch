@@ -1,0 +1,14 @@
+diff --git a/private/su.te b/private/su.te
+index 247fd0b72cfcec9b74b9e9b5dc4e79978b4c567d..98795ee1f37b391a719480d3c510259563df94e5 100644
+--- a/private/su.te
++++ b/private/su.te
+@@ -22,9 +22,6 @@
+   # Allow accessing virtualization (e.g. via the vm command) - ensures virtmgr runs in its
+   # own domain.
+   virtualizationservice_use(su)
+-
+-  # su is also permissive to permit setenforce.
+-  permissive su;
+ 
+   app_domain(su)
+ 
