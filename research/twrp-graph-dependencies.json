@@ -421,6 +421,229 @@
     "Selecting just one Android.bp is not necessarily sufficient: it can contain additional modules, inherit parent licenses/defaults, or refer to headers, aconfig inputs and Rust proc macros.",
     "No speculative full AOSP restoration is recommended. A complete strict recovery graph remains the required validation."
   ],
+  "graph3_followup": {
+    "date": "2026-08-28",
+    "status": "provider restoration identified for a strict retry; no graph or build success claimed",
+    "failure_log": {
+      "path": "reports/twrp-graph-3.log",
+      "sha256": "43194a22ee4bf94b4d15963cfc65d2e231df3ea4b0a03abeab7588052851beec",
+      "size_bytes": 45589
+    },
+    "undefined_default_errors": 19,
+    "missing_default_names": [
+      "ConnectivityTestsLatestSdkDefaults",
+      "connectivity-mainline-presubmit-cc-defaults",
+      "framework-connectivity-internal-test-defaults",
+      "framework-connectivity-test-defaults"
+    ],
+    "cause": "Excluding packages/modules/Connectivity/tests/common removed shared defaults required by retained Connectivity, CTS and telephony test modules.",
+    "shared_common": {
+      "project": "packages/modules/Connectivity",
+      "commit": "627eb3c63e7c7cb3cb9f8ea319e4bb1676079c3a",
+      "path": "tests/common/Android.bp",
+      "sha256": "7542a13f8f2dead8dcb9f5e394fde521d48e87a94a07ab3282de9988c9a68686",
+      "missing_provider_reference_line": 105,
+      "source_url": "https://android.googlesource.com/platform/packages/modules/Connectivity/+/627eb3c63e7c7cb3cb9f8ea319e4bb1676079c3a/tests/common/Android.bp"
+    },
+    "missing_provider": {
+      "module": "libnetworkstackutilsjni_deps",
+      "type": "java_defaults",
+      "project": "packages/modules/NetworkStack",
+      "path": "tests/unit/Android.bp",
+      "jni_libs": [
+        "libnativehelper_compat_libc++",
+        "libapfjniv6",
+        "libapfjninext"
+      ],
+      "evolution_bka_definition_is_not_equivalent": "The inspected current reference uses one libapfjni dependency instead of r1's libapfjniv6/libapfjninext; no definition was copied from it."
+    },
+    "supplementary_project_pins": [
+      {
+        "path": "packages/modules/NetworkStack",
+        "repository": "https://android.googlesource.com/platform/packages/modules/NetworkStack",
+        "tag": "android-16.0.0_r1",
+        "tag_object": "b9e3635abd62335b4aa3bc01372bd9493354e894",
+        "commit": "f9da1fc7154ea007aa835f88e8070c6ac46d54e9",
+        "present_in_frozen_391_manifest": false
+      },
+      {
+        "path": "hardware/google/apf",
+        "repository": "https://android.googlesource.com/platform/hardware/google/apf",
+        "tag": "android-16.0.0_r1",
+        "tag_object": "bb4825c9c4ccded6b0078fe00bb7e57cda7e4c7d",
+        "commit": "40d36d317d9367641e685e88e46343f25b192fc4",
+        "present_in_frozen_391_manifest": false
+      },
+      {
+        "path": "external/libpcap",
+        "repository": "https://android.googlesource.com/platform/external/libpcap",
+        "tag": "android-16.0.0_r1",
+        "tag_object": "35095846d8a2318df9c806535067cf11fb2d164c",
+        "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
+        "present_in_frozen_391_manifest": false
+      }
+    ],
+    "jni_provider_chain": [
+      {
+        "project": "packages/modules/NetworkStack",
+        "path": "tests/unit/jni/Android.bp",
+        "modules": [
+          "libapfjniv6",
+          "libapfjninext"
+        ],
+        "defaults": "libapfjni_defaults",
+        "common_static_libs": [
+          "libapf",
+          "libapfdisassembler",
+          "libpcap",
+          "libapfbuf"
+        ],
+        "variant_static_libs": {
+          "libapfjniv6": [
+            "libapf_v6"
+          ],
+          "libapfjninext": [
+            "libapf_next"
+          ]
+        },
+        "shared_libs": [
+          "liblog",
+          "libnativehelper_compat_libc++"
+        ]
+      },
+      {
+        "project": "hardware/google/apf",
+        "path": "Android.bp",
+        "modules": [
+          "libapf",
+          "libapfdisassembler",
+          "libapfbuf"
+        ],
+        "defaults": [
+          "apf_defaults"
+        ]
+      },
+      {
+        "project": "hardware/google/apf",
+        "path": "v6/Android.bp",
+        "modules": [
+          "libapf_v6"
+        ],
+        "defaults": [
+          "apfv6_defaults"
+        ],
+        "static_libs": [
+          "libapfbuf"
+        ]
+      },
+      {
+        "project": "hardware/google/apf",
+        "path": "next/Android.bp",
+        "modules": [
+          "libapf_next"
+        ],
+        "defaults": [
+          "apfnext_defaults"
+        ],
+        "static_libs": [
+          "libapfbuf"
+        ]
+      },
+      {
+        "project": "external/libpcap",
+        "path": "Android.bp",
+        "modules": [
+          "libpcap"
+        ],
+        "defaults": [
+          "libpcap_defaults"
+        ],
+        "host_supported": true,
+        "vendor_available": true,
+        "sdk_version": "29",
+        "further_declared_library_dependencies": []
+      }
+    ],
+    "already_in_base": [
+      {
+        "path": "libnativehelper",
+        "commit": "5c36ece5ac42b20f0e384d9e57400f2f22aad9fb"
+      },
+      {
+        "path": "system/logging",
+        "commit": "d78b713380007d3c0dde14712cbcbec27f491ad9"
+      }
+    ],
+    "source_files": [
+      {
+        "project": "packages/modules/NetworkStack",
+        "path": "tests/unit/Android.bp",
+        "size_bytes": 3741,
+        "sha256": "c750e0dbe9c5a9cb6d2f575ee4c00fc9e4e14c40e66bd39e22d3580ed45b967a",
+        "source_url": "https://android.googlesource.com/platform/packages/modules/NetworkStack/+/f9da1fc7154ea007aa835f88e8070c6ac46d54e9/tests/unit/Android.bp"
+      },
+      {
+        "project": "packages/modules/NetworkStack",
+        "path": "Android.bp",
+        "size_bytes": 18974,
+        "sha256": "aac9d6e99b5245e93716dc65fe49b21a89ab1335246271bef855e8dc2e1a008d",
+        "source_url": "https://android.googlesource.com/platform/packages/modules/NetworkStack/+/f9da1fc7154ea007aa835f88e8070c6ac46d54e9/Android.bp"
+      },
+      {
+        "project": "packages/modules/NetworkStack",
+        "path": "tests/unit/jni/Android.bp",
+        "size_bytes": 1587,
+        "sha256": "14f5f3645515d8dbb35f587f24daa60ab65d25bebd01a98b267d93e4699df077",
+        "source_url": "https://android.googlesource.com/platform/packages/modules/NetworkStack/+/f9da1fc7154ea007aa835f88e8070c6ac46d54e9/tests/unit/jni/Android.bp"
+      },
+      {
+        "project": "hardware/google/apf",
+        "commit": "40d36d317d9367641e685e88e46343f25b192fc4",
+        "path": "Android.bp",
+        "size_bytes": 2270,
+        "sha256": "b7fa3e833c42db9a68880e84db3fc94246487ec07a68caa3524d9769ba0f4e86",
+        "source_url": "https://android.googlesource.com/platform/hardware/google/apf/+/40d36d317d9367641e685e88e46343f25b192fc4/Android.bp"
+      },
+      {
+        "project": "external/libpcap",
+        "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
+        "path": "Android.bp",
+        "size_bytes": 3753,
+        "sha256": "cae372b3f5d1eda7d387e2129d5e2d12b469902657543c892f1e7ea20d97ea2b",
+        "source_url": "https://android.googlesource.com/platform/external/libpcap/+/2e9a50d7694425ead7595bf98d3a9c0ab790e4f9/Android.bp"
+      },
+      {
+        "project": "hardware/google/apf",
+        "path": "v6/Android.bp",
+        "size_bytes": 1297,
+        "sha256": "a74b96fcb254de780350b9b36051704745b65b3cafd4a095c20b6a5459c086ca",
+        "source_url": "https://android.googlesource.com/platform/hardware/google/apf/+/40d36d317d9367641e685e88e46343f25b192fc4/v6/Android.bp"
+      },
+      {
+        "project": "hardware/google/apf",
+        "path": "next/Android.bp",
+        "size_bytes": 2213,
+        "sha256": "12946c25bc65f3232fb8ba5343a1e8f1f7a11c41c61b39b9615ee448675fc8d2",
+        "source_url": "https://android.googlesource.com/platform/hardware/google/apf/+/40d36d317d9367641e685e88e46343f25b192fc4/next/Android.bp"
+      }
+    ],
+    "reference_size": {
+      "project": "packages/modules/NetworkStack",
+      "commit": "853cb402bf02cd935d06d42c1155b0023eabd3e6",
+      "tracked_bytes": 5635010,
+      "tracked_file_count": 1183,
+      "android_bp_count": 7,
+      "is_r1_size": false,
+      "is_download_estimate": false
+    },
+    "recommendation": "Restore the genuine NetworkStack, APF and libpcap r1 sources and retain Connectivity/tests/common rather than propagate exclusions to its consumers. The immutable 391-project base remains separate from these additions.",
+    "limits": [
+      "The complete NetworkStack project also defines Java/test libraries, generated jarjar rules and SDK shims; isolated default text is not equivalent.",
+      "This establishes immediate JNI providers, not a complete successful Soong graph.",
+      "Source presence does not by itself enable networking or add these test applications to the recovery product.",
+      "Initial failure counts of 21 errors, seven defaults and five provider projects remain unchanged."
+    ]
+  },
   "validation": {
     "provider_sources_fetched_at_pinned_r1_commits": true,
     "reference_checkout_sizes_labeled_separately": true,

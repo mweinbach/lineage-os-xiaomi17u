@@ -48,7 +48,12 @@ class TwrpBuildProgressTests(unittest.TestCase):
                     self.assertRegex(identity["sha256"], r"^[0-9a-f]{64}$")
                     self.assertGreater(identity["size_bytes"], 0)
                 if entry["status"] == "failed":
-                    self.assertNotEqual(entry["failed_command_exit_code"], 0)
+                    if "failed_command_exit_code" in entry:
+                        self.assertNotEqual(entry["failed_command_exit_code"], 0)
+                    else:
+                        # An output/provenance check may fail after the build
+                        # command returns zero. Do not invent a command error.
+                        self.assertTrue(entry["validation_error"])
 
     def test_initial_failures_are_not_rewritten_as_successes(self):
         first, second = self.record["attempts"][:2]

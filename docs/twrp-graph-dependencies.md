@@ -76,3 +76,30 @@ default stubs, missing-dependency bypass or check suppression is recommended.
 Use the smallest real provider scope needed by the retained recovery graph,
 then require the strict graph and subsequent build to pass. This audit alone
 does not prove a successful graph, recovery image, boot or device feature.
+
+The third graph attempt later reported 19 errors after
+`packages/modules/Connectivity/tests/common` was excluded: its shared defaults
+are used by retained Connectivity, CTS and telephony tests. The missing
+`libnetworkstackutilsjni_deps` that prompted that cut belongs to
+[NetworkStack's unit-test defaults](https://android.googlesource.com/platform/packages/modules/NetworkStack/+/f9da1fc7154ea007aa835f88e8070c6ac46d54e9/tests/unit/Android.bp).
+Restore the actual provider and common scope instead of extending the cuts to
+all consumers. This follow-up does not change the initial 21-error record.
+
+The r1 default requires `libnativehelper_compat_libc++`, `libapfjniv6` and
+`libapfjninext`; the newer Evolution definition is different and was not copied.
+The two JNI modules live in NetworkStack's `tests/unit/jni` and require APF
+interpreter/disassembler/buffer libraries plus `libpcap`. All three missing
+projects have independently verified `android-16.0.0_r1` pins:
+
+| Supplementary provider | Pinned commit |
+| --- | --- |
+| [NetworkStack](https://android.googlesource.com/platform/packages/modules/NetworkStack/+/f9da1fc7154ea007aa835f88e8070c6ac46d54e9/) | `f9da1fc7154ea007aa835f88e8070c6ac46d54e9` |
+| [APF](https://android.googlesource.com/platform/hardware/google/apf/+/40d36d317d9367641e685e88e46343f25b192fc4/) | `40d36d317d9367641e685e88e46343f25b192fc4` |
+| [libpcap](https://android.googlesource.com/platform/external/libpcap/+/2e9a50d7694425ead7595bf98d3a9c0ab790e4f9/) | `2e9a50d7694425ead7595bf98d3a9c0ab790e4f9` |
+
+APF's root, `v6` and `next` Blueprint files provide the required native libraries;
+libpcap's root provides its host/vendor library. Nativehelper and logging are
+already in the frozen base. These additions address the immediate JNI provider
+chain, not a verified complete graph or runtime networking feature. The record
+binds the exact source files and graph-three log separately from the original
+failure, while the 391-project base remains unchanged.
