@@ -589,6 +589,20 @@
       "commit": "8ec969cea971fe25ff2d3933a5a9f8504f8e86c9",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 15 error: real AOSP libgsm provider required by retained libcodec2_soft_gsmdec in frameworks/av/media/codec2/components/gsm/Android.bp."
+    },
+    {
+      "path": "external/connectedappssdk",
+      "url": "https://android.googlesource.com/platform/external/connectedappssdk",
+      "commit": "21f658c783c6390c266210e2a7f72282dce74dea",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP ConnectedAppsSDK_Annotations provider required by CTS RemoteFrameworkClasses_Processor_Src in the graph 16 error."
+    },
+    {
+      "path": "tools/security",
+      "url": "https://android.googlesource.com/platform/tools/security",
+      "commit": "8d8a8332751c3b20a87f38dd7cb4039eeea489b5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 15 or 16 error: real AOSP libhwtrust_cxx provider required by retained libkeymint_remote_prov_support. Requires selecting only tools/security/remote_provisioning/hwtrust/ build definitions while retaining the full pristine source project."
     }
   ]
 }

@@ -160,6 +160,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -frameworks/base/packages/SettingsLib/tests/robotests/Android.bp \
     -frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp
 
+# A separate source projection found KeyMint's real libhwtrust_cxx dependency.
+# Keep the original hwtrust libraries, CXX bridge, binaries, tests and metadata.
+# The rest of tools/security is outside this product; none of those excluded
+# modules is a registered service fuzzer. Security validators stay selected.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -tools/security/ \
+    tools/security/remote_provisioning/hwtrust/
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true

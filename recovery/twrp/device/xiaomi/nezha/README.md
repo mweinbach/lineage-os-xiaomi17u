@@ -245,6 +245,26 @@ tests or enabled build targets. They were found by projection, not the seven
 reported Graph 14 errors. Production code, licenses, defaults and validation
 checks are retained.
 
+The `hwtrust` restoration is a separate source-projection finding, not an
+attribution of the observed Graph 16 failure. Retained production code in
+`libkeymint_remote_prov_support` unconditionally needs `libhwtrust_cxx`.
+The genuine `tools/security` project at Android 16 r1 commit
+`8d8a8332751c3b20a87f38dd7cb4039eeea489b5` supplies that provider. The negative
+`tools/security/` prefix and positive `tools/security/remote_provisioning/hwtrust/`
+prefix select its two Blueprint files and all 12 module definitions, including
+the Rust library, CXX bridge, binaries, tests, fixtures and original license
+metadata. The full project remains unchanged, and all 16 external dependency
+providers already exist in selected source paths.
+
+The other 32 Blueprint files declare 43 modules outside this product, including
+three unrelated fuzzers with missing libraries. None of those module names is
+referenced by the service-fuzzer registry, whose 45 unique named fuzzers and
+validator remain intact. KeyMint production code, API checks, SELinux,
+signature and dependency validation are not excluded or patched to bypass the
+missing provider. This selection does not enable recovery decryption or prove
+that `hwtrust` is packaged in the recovery image; variants and linking still
+require the next strict build.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.

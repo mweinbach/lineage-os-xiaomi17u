@@ -138,6 +138,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "ac29d47f3b4645dd4083ea85f06bfa1ee7ad00fe2b84115dd20476c3df3f5dfb")
 
+    def test_first_eighty_three_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:83]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "5dca287ccb9c418f6180e4e0677866d162b9ea00fed806a38d2237364b8c374d")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -387,9 +393,8 @@ class ConfigurationTests(Fixture):
             ("external/arm-trusted-firmware", "54fd6939e177f8ff529b10183254802c76df6d08"),
             ("external/libgsm", "8ec969cea971fe25ff2d3933a5a9f8504f8e86c9"),
         ]
-        self.assertEqual(len(projects), 83)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[81:]], expected)
-        for project in projects[81:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[81:83]], expected)
+        for project in projects[81:83]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -397,6 +402,27 @@ class ConfigurationTests(Fixture):
         self.assertIn("graph 15 error", projects[81]["reason"])
         self.assertTrue(projects[82]["reason"].startswith("Source audit projection, not a graph 15 error:"))
         self.assertIn("libcodec2_soft_gsmdec", projects[82]["reason"])
+
+    def test_graph_sixteen_connected_apps_sdk_provider_is_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(projects[83], {
+            "path": "external/connectedappssdk",
+            "url": "https://android.googlesource.com/platform/external/connectedappssdk",
+            "commit": "21f658c783c6390c266210e2a7f72282dce74dea",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP ConnectedAppsSDK_Annotations provider required by CTS RemoteFrameworkClasses_Processor_Src in the graph 16 error."
+        })
+
+    def test_hwtrust_projection_is_pinned_with_required_build_scope(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 85)
+        self.assertEqual(projects[84], {
+            "path": "tools/security",
+            "url": "https://android.googlesource.com/platform/tools/security",
+            "commit": "8d8a8332751c3b20a87f38dd7cb4039eeea489b5",
+            "tag": "android-16.0.0_r1",
+            "reason": "Source audit projection, not a graph 15 or 16 error: real AOSP libhwtrust_cxx provider required by retained libkeymint_remote_prov_support. Requires selecting only tools/security/remote_provisioning/hwtrust/ build definitions while retaining the full pristine source project."
+        })
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()

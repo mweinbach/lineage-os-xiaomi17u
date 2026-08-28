@@ -54,6 +54,7 @@ SOURCE_EXCLUSIONS = [
     "-frameworks/opt/net/wifi/",
     "-development/build/",
     "-" + AUDIO_TEST_BLUEPRINT,
+    "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/tradefed-error-prone/",
@@ -63,6 +64,7 @@ SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/annotations/",
     "platform_testing/libraries/flag-helpers/junit/",
     "platform_testing/libraries/flag-helpers/libflagtest/",
+    "tools/security/remote_provisioning/hwtrust/",
 ]
 
 
@@ -592,6 +594,37 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("follow-up projection", readme)
         self.assertIn("SettingsLibIpc-testutils", readme)
         self.assertIn("car-ui-lib-testing-support", readme)
+
+    def test_projected_hwtrust_provider_keeps_keymint_and_security_validators(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        provider = "tools/security/remote_provisioning/hwtrust/"
+        for source in (provider + "Android.bp", provider + "cxxbridge/Android.bp",
+                       provider + "tests/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in ("tools/security/Android.bp", "tools/security/remote_provisioning/Android.bp",
+                       "tools/security/remote_provisioning/hwtrust_sibling/Android.bp",
+                       "tools/security/other/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("tools/security_sibling/Android.bp",
+                       "hardware/interfaces/security/keymint/Android.bp",
+                       "hardware/interfaces/security/keymint/support/Android.bp",
+                       "hardware/interfaces/security/keymint/aidl/vts/functional/Android.bp",
+                       "system/security/provisioner/Android.bp", "system/sepolicy/contexts/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
+                       "system/libvintf/Android.bp", "build/soong/Android.bp",
+                       "external/rust/cxx/gen/cmd/Android.bp", "external/rust/cxx/Android.bp",
+                       "external/rust/crates/openssl/Android.bp", "external/boringssl/Android.bp",
+                       "system/libbase/Android.bp", "build/soong/licenses/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertNotIn("-hardware/interfaces/security/", scopes)
+        self.assertNotIn("-system/security/", scopes)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+        readme = (DEVICE / "README.md").read_text()
+        for fact in ("8d8a8332751c3b20a87f38dd7cb4039eeea489b5", "libkeymint_remote_prov_support",
+                     "libhwtrust_cxx", "source-projection finding", "service-fuzzer registry"):
+            self.assertIn(fact, readme)
 
     def test_vehicle_compatibility_test_scope_keeps_production_aidl(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
