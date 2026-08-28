@@ -137,7 +137,8 @@ class Arm64ClusterResearchTests(unittest.TestCase):
 
     def test_research_documents_link_to_existing_local_artifacts(self):
         for name in ("android16-arm64-cluster-report.md",
-                     "android16-arm64-cluster-experiments.md"):
+                     "android16-arm64-cluster-experiments.md",
+                     "android16-arm64-tool-swaps.md"):
             document = ROOT / "docs" / name
             links = re.findall(r"\[[^\]\n]+\]\(([^)\n]+)\)", document.read_text())
             for target in links:
@@ -170,6 +171,8 @@ class Arm64ClusterResearchTests(unittest.TestCase):
             self.assertTrue(gap["runbook_experiments"])
         for name in ledger["evidence_files"] + [ledger["report"], ledger["runbook"]]:
             self.assertTrue((ROOT / name).is_file(), name)
+        self.assertTrue((ROOT / ledger["followup_report"]).is_file())
+        self.assertTrue((ROOT / ledger["followup_evidence"]).is_file())
 
     def test_runbook_separates_proposed_experiments_from_observed_results(self):
         runbook = (ROOT / "docs/android16-arm64-cluster-experiments.md").read_text()
@@ -181,6 +184,58 @@ class Arm64ClusterResearchTests(unittest.TestCase):
         self.assertIn("--remote_update_cache=false", runbook)
         self.assertIn("ThinLTO", runbook)
         self.assertIn("no backend, remote action, full platform graph or full image", runbook)
+
+    def test_tool_swap_probes_preserve_scope_and_download_identity(self):
+        record = json.loads((RESEARCH / "tool-swap-probes.json").read_text())
+        self.assertEqual(record["schema_version"], 1)
+        self.assertTrue(all(value is False for value in record["boundaries"].values()))
+        triples = {item["triple"] for item in record["rust"]["downloads"]}
+        self.assertEqual(triples, {"aarch64-unknown-linux-gnu", "aarch64-unknown-linux-musl"})
+        for download in record["rust"]["downloads"] + [record["llvm"]["archive"]]:
+            self.assertTrue(download["url"].startswith("https://"))
+            self.assertRegex(download["sha256"], r"^[a-f0-9]{64}$")
+        self.assertTrue(record["rust"]["runtime_signature_followup"]["verified"])
+
+    def test_native_rust_success_does_not_hide_metadata_or_libc_failures(self):
+        rust = json.loads((RESEARCH / "tool-swap-probes.json").read_text())["rust"]
+        probes = {p["id"]: p for p in rust["probes"]}
+        for name in ("gnu-explicit-sysroot-soong-flags", "gnu-macro-run",
+                     "musl-runtime-version", "musl-runtime-soong-flags",
+                     "musl-coherent-proc-consumer", "musl-coherent-proc-run"):
+            self.assertEqual(probes[name]["exit_code"], 0, name)
+        self.assertIn("E0514", probes["gnu-stock-stdlib-cross-metadata"]["stderr"])
+        self.assertNotEqual(probes["gnu-soong-flags-stable"]["exit_code"], 0)
+        self.assertIn("libc_musl.so", rust["coherent_musl_macro_needed"])
+        self.assertNotIn("libc.so.6", rust["coherent_musl_macro_needed"])
+        self.assertTrue(rust["fixture_corrections"])
+        self.assertIn("PAC/BTI compiler-patch equivalence", rust["not_established"])
+        self.assertIn("Android host-stdlib semantic parity", rust["not_established"])
+
+    def test_java_byte_comparisons_include_a_real_jni_counterexample(self):
+        java = json.loads((RESEARCH / "tool-swap-probes.json").read_text())["java"]
+        self.assertTrue(java["inputs_unchanged"])
+        self.assertEqual(java["inputs_before"], java["inputs_after"])
+        self.assertTrue(all(p["exit_code"] == 0 for p in java["probes"]))
+        for comparison in java["comparisons"].values():
+            self.assertTrue(comparison.get("equal", comparison.get("equal_bytes")))
+        jni = {p["id"]: p for p in java["jni"]["probes"]}
+        self.assertEqual(jni["stock"]["exit_code"], 0)
+        self.assertNotEqual(jni["native"]["exit_code"], 0)
+        self.assertIn("UnsatisfiedLinkError", jni["native"]["stderr"])
+        self.assertTrue(java["jni"]["inputs_unchanged"])
+
+    def test_native_llvm_receipt_keeps_mlgo_and_libclang_limits(self):
+        llvm = json.loads((RESEARCH / "tool-swap-probes.json").read_text())["llvm"]
+        failures = [p for p in llvm["probes"] if p["exit_code"] != 0]
+        self.assertEqual(len(failures), 1)
+        self.assertIn("mlgo", failures[0]["id"])
+        self.assertIn("regalloc eviction advisor", failures[0]["stderr"])
+        self.assertEqual(llvm["nonruntime_libclang_entries"], [])
+        for name in ("ar-output", "ar-bitcode-output", "objcopy-output", "readobj-output",
+                     "generated-text", "generated-object-without-comment"):
+            self.assertTrue(llvm["byte_equal"][name], name)
+        self.assertFalse(llvm["byte_equal"]["generated-object"])
+        self.assertIn("Community", llvm["source_status"])
 
 
 if __name__ == "__main__":

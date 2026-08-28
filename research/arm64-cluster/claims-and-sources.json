@@ -1,14 +1,17 @@
 {
   "schema_version": 1,
-  "assembled_at": "2026-08-28T02:27:48.576140+00:00",
+  "assembled_at": "2026-08-28T02:57:40.642502+00:00",
   "scope": "Primary-source index, claim-evidence mapping and remaining validation gaps; not a full-build certification.",
   "report": "docs/android16-arm64-cluster-report.md",
   "runbook": "docs/android16-arm64-cluster-experiments.md",
+  "followup_report": "docs/android16-arm64-tool-swaps.md",
+  "followup_evidence": "research/arm64-cluster/tool-swap-probes.json",
   "evidence_files": [
     "research/arm64-cluster/source-pins.json",
     "research/arm64-cluster/upstream-commits.json",
     "research/arm64-cluster/probe-results.json",
-    "research/arm64-cluster/probe-host-detection.patch"
+    "research/arm64-cluster/probe-host-detection.patch",
+    "research/arm64-cluster/tool-swap-probes.json"
   ],
   "sources": [
     {
@@ -1079,6 +1082,11 @@
       "limitation": "Need actual selected-product timing and critical-path evidence."
     }
   ],
+  "followup_claim_updates": {
+    "C04": "External native Rust and JDK packages now have isolated execution evidence, although they remain absent from stock selected paths and are not globally integrated.",
+    "C10": "Native community LLVM compile/utility/ThinLTO probes now passed; full source equivalence, real Soong replay and remote execution remain unverified.",
+    "C13": "Individual compiler installation is much smaller than the full-host estimate: no rustc rebuild was needed for GNU/musl probes. Full Android source-patch parity and platform integration remain separate work."
+  },
   "open_gaps": [
     {
       "id": "G01",

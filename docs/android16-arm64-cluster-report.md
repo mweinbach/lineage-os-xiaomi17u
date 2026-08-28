@@ -9,6 +9,15 @@ public `main`, Android 17 r1, and newer public toolchain mirrors inspected
 separately. The existing Evolution X checkout supplies additional, explicitly
 labeled execution evidence. No phone was accessed or changed.
 
+**Follow-up, 28 August UTC:** external ARM64 Rust, Java and LLVM replacements
+have now been tested in isolation. Official GNU and musl Rust compilers ran
+and loaded native proc macros; native Java matched selected compilation
+outputs; community native LLVM tools passed useful standalone tests.
+These results make initial substitution experiments substantially easier.
+See [which tools can be swapped](android16-arm64-tool-swaps.md) for the new
+evidence and the remaining PAC/BTI, JNI, MLGO and provenance limits. They do
+not establish a full native Soong graph or platform build.
+
 ## 1. Executive answer
 
 **Recommendation D: keep Android 16's existing x86 host configuration initially,
@@ -146,10 +155,10 @@ runtime data; that spelling alone is not a host-execution blocker.
 | microfactory, Soong UI, mk2rbc, rbcrun, release-config | Built from Go source during bootstrap | **Native compilation verified** for all five; the successful query executes microfactory/Soong UI, not necessarily every helper. `runtime.GOARCH` follows the compiled executable, not a runtime environment override. |
 | Ninja, Kati, Toybox and bootstrap tools | `prebuilts/build-tools/linux-arm64/bin` and `path/linux-arm64` | Actual AArch64 binaries. Native Ninja/Python/Toybox smoke tests passed; native Kati ran the product queries. Keep matching libraries and path symlinks. |
 | Python | ARM64 `py3-cmd`/launcher variants and common stdlib in build-tools; observed Python **3.13.1** | Available. Python extension modules and launcher/stdlib/header versions must remain compatible. Replacing this with Ubuntu's Python 3.12 is not an equivalent whole-build fix. |
-| C/C++ compiler and LLD | Soong selects `prebuilts/clang/host/linux-arm64/<effective-version>`; r4 default is **clang-r563880c / LLVM 21** | Matching native package absent from stock manifest. Modern mirrors offer LLVM 22/23 packages, not a demonstrated r4 replacement. Rebuild the exact effective compiler or use Rosetta initially. |
+| C/C++ compiler and LLD | Soong selects `prebuilts/clang/host/linux-arm64/<effective-version>`; r4 default is **clang-r563880c / LLVM 21** | Matching native package absent from stock manifest. A subsequently tested community LLVM21 candidate enables immediate experiments, but exact source equivalence and MLGO remain unresolved. Preserve the original runtime data and a validated fallback. |
 | LLVM utilities and implementation libraries | `llvm-ar`, objcopy/objdump/readobj, symbolizer, `libclang`, `libLLVM`, runtime libraries and helper modules | Must audit executable selection and in-process libraries separately. New mirror changes connect native utility filegroups, but their newer helper/property APIs need a manual r4 adaptation. |
-| Java | UI selects `prebuilts/jdk/jdk21/linux-arm64`; JDK21 repository has Linux x86 and Darwin ARM64, **not Linux ARM64** | Missing selected package. `OVERRIDE_ANDROID_JAVA_HOME` can test a matching ARM64 JDK, but BP modules and JNI dependencies also need review. Native Darwin binaries cannot run in Linux. |
-| Rust compiler / host stdlib | r4 default **1.88.0**; native selection lacks a distribution. `UseHostMusl()` instead selects literal `linux-musl-x86`. | Major closure gap. A native Rust compiler, matching host std/proc macros and correct Soong/prebuilt selection must agree. Modern Rust builder support does not supply these r4 artifacts. |
+| Java | UI selects `prebuilts/jdk/jdk21/linux-arm64`; JDK21 repository has Linux x86 and Darwin ARM64, **not Linux ARM64** | Missing selected AOSP package, but the follow-up native Ubuntu JDK passed javac/Turbine/D8/R8 fixtures. BP paths and JNI need separate work; a blanket swap failed the existing Conscrypt JNI test. |
+| Rust compiler / host stdlib | r4 default **1.88.0**; native selection lacks an AOSP distribution. `UseHostMusl()` instead selects literal `linux-musl-x86`. | Official matching-version GNU/musl ARM64 packages executed in follow-up probes. They need coherent host libraries and selection changes; existing Android rlibs are incompatible, and a downstream PAC/BTI compiler patch remains a production-parity issue. |
 | Bindgen | Rust bindgen selection retains an x86 libclang path for musl | An ARM64 process cannot load x86 `libclang.so`. Preserve an x86 bindgen/libclang pair or rebuild the pair for ARM64 and the correct libc. |
 | Protobuf | Bootstrap's Go protobuf dependency is source; C++ generator `aprotoc` is a built host tool; ARM64 build-tools includes `libprotobuf-cpp-full.so` | Not a reason to wholesale upgrade protobuf. Rebuild the generator/runtime at the branch's versions and preserve generated-code compatibility. |
 | RBE client | Selected `remoteexecution-client/live` bootstrap, reproxy and rewrapper are x86-64 ELF; scanner is also x86-64 | Rosetta fallback is credible. A native client/scanner distribution is a separate port; public Linux ARM64 CIPD packages were not found. |
@@ -347,11 +356,11 @@ Android 16 ARM64 Soong selectors (already present)
 | Ninja/Kati/Python/bootstrap tools | Use the existing r4 ARM64 binaries with their complete libraries, common payloads and path links | Distro Ninja/Kati/Python may lack Android flags, patched semantics or extension ABI |
 | Make architecture and tag | **Manual small backport/patch**; the actual eight-line probe is included separately | This does not fix all hardcoded paths or make a whole platform build valid |
 | Soong/UI/Make output and musl consistency | **Manual integration**, verified by emitted variables and Ninja commands | Avoid `linux_musl-arm64` / `linux-arm64` / `linux-x86` disagreement |
-| Clang/LLD | **Rebuild Android 16's effective revision** using selected architecture/path ideas from `3a4d808…`; use Rosetta until validated | Exact Android patches, resource headers, compiler-rt, libc++, target sysroots, LTO and Rust LLVM compatibility |
+| Clang/LLD | **Trial an external native execution package first**; rebuild from pinned Android sources where provenance/features require it | Exact Android patches, resource headers, compiler-rt, libc++, target sysroots, MLGO/LTO and Rust LLVM compatibility; community sample success is not production parity |
 | Modern native Clang package | **Copy only into an isolated experiment**, not as a drop-in production prebuilt | LLVM 22/23 is not LLVM 21; even a major-version match would not establish equivalence |
 | LLVM utility BP routing | **Manual backport** of the intent of `cd16b93…` and required filegroup helpers | Newer helper functions and `Host_linux_arm64` property wiring are not assumed available unchanged in r4 |
-| Rust compiler and host libraries | **Rebuild from branch-matched source**, adapting the bounded `aec25ae…` architecture/linker/package changes | Stage-0 dependency, rustc/std version locking, musl ABI and proc macros; current builder has Alpine-specific library search paths |
-| JDK21 | Matching native OpenJDK build; distro JDK only for a bounded diagnostic through `OVERRIDE_ANDROID_JAVA_HOME` | Javac/jlink/module layout, Java language level, generated bytecode and JNI; other hardcoded BP paths remain |
+| Rust compiler and host libraries | **Trial official ARM64 1.88.0 with its matching host libraries**, retain Android device std sources, and patch host selection; rebuild the compiler if needed to preserve Android's code-generator fix | Stable versus dev metadata, explicit unstable flags, musl ABI/proc macros and downstream PAC/BTI patch; do not assume every missing prebuilt requires a compiler rebuild merely to experiment |
+| JDK21 | Package a pinned native OpenJDK under the source execution root; trial selected pure-Java actions while retaining a coherent translated JNI fallback | Javac/jlink/module layout, Java language level, generated bytecode and JNI; other hardcoded BP paths remain |
 | Python/protobuf/source utilities | Prefer branch source or existing native package, **not a global version upgrade** | Python extension ABI, generated protobuf/runtime agreement, image and policy output semantics |
 | RBE Go programs / C++ scanner | Rebuild and validate separately, or **Rosetta fallback** initially | Native Go alone does not provide the LLVM scanner; reclient/Bazel build tooling also has x86 assumptions |
 | Misc/vendor helpers | Classify each executed binary: source rebuild, matched prebuilt, or per-process Rosetta fallback | ELF32, proprietary distribution rights and in-process plugins can be hard blockers |
@@ -362,6 +371,13 @@ already native. The size comes from completing and testing multiple compiler,
 runtime and product dependency chains. The native Rust builder's current
 ARM64 musl flags still reference `/usr/lib/gcc/aarch64-alpine-linux-musl/15.2.0/`;
 it is not automatically a hermetic Ubuntu recipe. [Rust builder configuration][rust-builder-config]
+
+That classification concerns complete platform integration and validation.
+It is not a claim that installing each compiler is large work: the
+[follow-up substitutions](android16-arm64-tool-swaps.md) show that external
+native Rust and LLVM packages can bypass compiler construction for bounded
+experiments. Some exact Android behavior still needs downstream patches or
+explicitly qualified configuration changes.
 
 The [experimental Make patch](../research/arm64-cluster/probe-host-detection.patch)
 is evidence of two tested changes, **not a supported host patch set**. It was
@@ -561,9 +577,11 @@ controlled launcher. It is not promised to work by exporting one variable.
 
 The uncertain component is a faithful native **Android 16-version** execution
 package and equivalence with the scanner, not the ability of ARM64 hardware
-to compile for x86. No native compiler replay or remote-wrapper action was
-executed during this research. If that experiment fails, retain translated
-actions or use x86 workers rather than expanding the port without a time limit.
+to compile for x86. The follow-up now demonstrates standalone native compiler,
+utility and ThinLTO-link probes with a community package. A real captured
+Soong-action replay and a remote-wrapper action remain untested. If those
+experiments fail, retain translated actions or use x86 workers rather than
+expanding the port without a time limit.
 
 ## 9. Self-hosted REAPI backends
 
@@ -756,7 +774,7 @@ They are not measured completion times or commitments.
 | --- | --- | --- |
 | Reproduce native bootstrap and Make failure chain | Hours; already demonstrated in this investigation | Exact branch/version and fixture completeness |
 | One x86-profile Rosetta RBE action, self-hosted | Roughly 1–3 engineering days after backend/image prerequisites | Platform configuration, worker sandbox and translator visibility |
-| Matched native Clang execution package and local equivalence probes | Roughly 3–10 engineering days | Older builder adaptation, native bootstrap dependencies, Android patch/config and ThinLTO/MLGO fidelity |
+| Matched native Clang execution package and local equivalence probes | Immediate standalone trials now demonstrated; roughly 3–10 engineering days remains a planning allowance for a maintained equivalent package | External package exists, but reproducible provenance, Android patch/config and ThinLTO/MLGO fidelity remain |
 | C++-only native execution over RBE, small modules | Roughly 1–2 additional weeks | Input scanning, toolchain lists, action wrappers, cache correctness and representative ThinLTO actions |
 | Complete native Android16 host and image validation | **Large: roughly 3–8+ engineer-weeks**, not a two-hour patch | Rust/JNI/ART closure, product tools, compiler and image correctness |
 | Production hardening and repeatable full builds | At least several days after functional success; potentially longer | Long links/JVMs, recovery/retry behavior, reproducibility and real speedup |
