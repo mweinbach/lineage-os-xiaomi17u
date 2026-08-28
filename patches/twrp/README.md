@@ -207,6 +207,45 @@ No density variable, generated-image dependency check, product package or
 TWRP theme generation changes. This restores the real resource provider;
 actual resource installation and final ramdisk contents still require a build.
 
+Patch 21 limits the handwritten `aosp_shared_system_image` module to products
+outside the typed Nezha native recovery profile. Graph 43 reached that unrelated
+generic system image and its missing application dependencies. The patch adds
+only an `enabled` selector: false for this profile and true otherwise, matching
+the original Android image default. Shared image defaults, GSI and VNDK file
+groups remain selected, as do the automatically generated system and recovery
+image modules. The final recovery packaging route and all image checks are
+unchanged.
+
+Patches 22 and 23 exclude two Trusty virtual-machine tests from this recovery
+profile: `libpvmfw_avb.integration_test` and
+`vts_treble_vintf_trusted_hal_test`. Graph 44 reached two unsigned Trusty image
+inputs whose original providers require a separate Trusty OS source build.
+The device target also excludes the four original test-only Blueprint files
+under `guest/trusty/test_vm` and `guest/trusty/test_vm_os`. Those four exclusions
+are not sufficient alone: the two gated tests are their remaining selected
+external consumers.
+
+Only the existing architecture-specific `enabled: true` properties change.
+The Rust AVB test receives the selector in ARM64 and x86-64; the Trusted HAL test
+receives it only in ARM64. Each keeps its top-level `enabled: false`. Selecting
+the typed recovery profile yields false; an absent or false profile yields the
+original true architecture override. All other architectures retain their
+original disabled state. The pinned Blueprint property merger replaces these
+configurable architecture overrides, and both ordinary dependency mutation and
+path-reference dependency mutation skip disabled modules.
+
+Both mixed Blueprint files remain selected. Their complete source lists,
+licenses, defaults, shared production AVB library, AVB test fixtures, normal
+VINTF tests and AIDL sources are unchanged. No VINTF enforcement, service-fuzzer
+registry, signature, rollback, SELinux or missing-dependency check is removed.
+The global source review covered 12,120 Blueprint files, 2,119 Make files and
+13,584 Go files and found no selected consumer of either gated test name. This
+is a source review with explicit parser limits, not a completed graph or a run
+of those tests. The two fresh source paths have separate project pins and
+patch entries. All twenty-one earlier entries remain an unchanged prefix, and
+the other queue metadata is unchanged. The next strict graph must validate the
+combined selection.
+
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source
 policy's allow rules and historical policy snapshots remain intact. Keep the

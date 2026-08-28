@@ -989,6 +989,100 @@
       "project": "build/make",
       "reason": "Disable only the unrelated handwritten generic system image when the typed Nezha native recovery profile is selected; retain every shared default, GSI/VNDK provider, image property, other-product default, and validation implementation.",
       "repository": "https://github.com/TWRP-Test/android_build"
+    },
+    {
+      "base_commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+      "files": [
+        {
+          "after_git_blob": "44c04413fe524b45983b871d95d5a05e0245ad9b",
+          "after_sha256": "41fd6eb66e6ef8f2583f399470f58877891b109fa4c9a24afca3c521145c8fc0",
+          "after_size_bytes": 8389,
+          "before_git_blob": "0d55d7c48ffda774b4d27e2933ab44bbd5390160",
+          "before_sha256": "1dc1eedbe30b6f6e8b8ae69399bcb3c67525a689565627b288b505d471612a77",
+          "before_size_bytes": 8109,
+          "mode": "100644",
+          "path": "guest/pvmfw/avb/Android.bp",
+          "profile_arch_test_modules": [
+            {
+              "after_module_sha256": "93e57c25ceea33d8a6ddffd476d2387b49cf37afd5e463bd65df4104eb4efa60",
+              "architecture_enabled_overrides": [
+                {
+                  "arch": "arm64",
+                  "enabled_before": true,
+                  "enabled_otherwise": true,
+                  "enabled_when_true": false
+                },
+                {
+                  "arch": "x86_64",
+                  "enabled_before": true,
+                  "enabled_otherwise": true,
+                  "enabled_when_true": false
+                }
+              ],
+              "base_enabled_after": false,
+              "base_enabled_before": false,
+              "before_module_sha256": "0ac043b3c28f10473ca9b1a2c02b28402caef954f9d07a7b4d725bcf76e9f0d7",
+              "constructor_line": 24,
+              "name": "libpvmfw_avb.integration_test",
+              "selector_namespace": "nezha_twrp",
+              "selector_type": "bool",
+              "selector_variable": "native_recovery_only",
+              "type": "rust_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/packages/modules/Virtualization/+/c984fc337c11ca5edc03ccf02037b2455dd8fcaf/guest/pvmfw/avb/Android.bp"
+        }
+      ],
+      "id": "0022-native-recovery-trusty-avb-test",
+      "patch": "patches/twrp/0022-native-recovery-trusty-avb-test.patch",
+      "patch_sha256": "409b9000671ce029298dd3f318afd6969758cc511799f80744bd63a9e1eb263c",
+      "project": "packages/modules/Virtualization",
+      "reason": "Exclude only the Trusty-image AVB integration test from the typed Nezha native recovery profile; preserve the production AVB library, all AVB fixtures, signing checks, and original enabled architectures outside that profile.",
+      "repository": "https://android.googlesource.com/platform/packages/modules/Virtualization"
+    },
+    {
+      "base_commit": "9705f94b4d727578335a79e957bf839f273664b6",
+      "files": [
+        {
+          "after_git_blob": "3311dfa09586e35212631d7a5417327c515df6f3",
+          "after_sha256": "15427c057477fd54669beeeade52caa2166dc59e037622b932138890f73ee191",
+          "after_size_bytes": 4310,
+          "before_git_blob": "1453bac3ab42c109dc8fc18f538f214ffa762943",
+          "before_sha256": "e8225a141ca8cf6d8da0037569c24a32c5cace3b0091a6b08714c5172076d989",
+          "before_size_bytes": 4170,
+          "mode": "100644",
+          "path": "treble/vintf/Android.bp",
+          "profile_arch_test_modules": [
+            {
+              "after_module_sha256": "edbd3fe943c22c0dabe413eb4a45351bbc54994dbd9ab8bb77bc674bd1d1a7c3",
+              "architecture_enabled_overrides": [
+                {
+                  "arch": "arm64",
+                  "enabled_before": true,
+                  "enabled_otherwise": true,
+                  "enabled_when_true": false
+                }
+              ],
+              "base_enabled_after": false,
+              "base_enabled_before": false,
+              "before_module_sha256": "e651691bac797115d857dbcfbb8762b7032a03d79cfc34f08efdbd04b02675f8",
+              "constructor_line": 89,
+              "name": "vts_treble_vintf_trusted_hal_test",
+              "selector_namespace": "nezha_twrp",
+              "selector_type": "bool",
+              "selector_variable": "native_recovery_only",
+              "type": "cc_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/test/vts-testcase/hal/+/9705f94b4d727578335a79e957bf839f273664b6/treble/vintf/Android.bp"
+        }
+      ],
+      "id": "0023-native-recovery-trusty-vintf-test",
+      "patch": "patches/twrp/0023-native-recovery-trusty-vintf-test.patch",
+      "patch_sha256": "b8344beffe45185ee4d601f4e819f7c2be5d40f2f87c1c87ef92c5e1862406a3",
+      "project": "test/vts-testcase/hal",
+      "reason": "Exclude only the Trusty virtual-machine Trusted HAL test from the typed Nezha native recovery profile; preserve general VINTF tests, shared defaults and AIDL sources, enforcement, and original enabled architectures outside that profile.",
+      "repository": "https://android.googlesource.com/platform/test/vts-testcase/hal"
     }
   ],
   "application_requirements": [

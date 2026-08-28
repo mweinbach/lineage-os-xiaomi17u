@@ -22,7 +22,20 @@ RESTORED_ROBO_HELPER_BLUEPRINTS = (
     "test/robolectric-extensions/Android.bp",
     "test/robolectric-extensions/clearcut-junit-listener/Android.bp",
 )
-SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS, TRACING_ROBO_BLUEPRINT}
+TRUSTY_TEST_BLUEPRINTS = (
+    "packages/modules/Virtualization/guest/trusty/test_vm/Android.bp",
+    "packages/modules/Virtualization/guest/trusty/test_vm/vm/Android.bp",
+    "packages/modules/Virtualization/guest/trusty/test_vm_os/Android.bp",
+    "packages/modules/Virtualization/guest/trusty/test_vm_os/vm/Android.bp",
+)
+TRUSTY_MIXED_BLUEPRINTS = (
+    "packages/modules/Virtualization/guest/pvmfw/avb/Android.bp",
+    "test/vts-testcase/hal/treble/vintf/Android.bp",
+)
+SOURCE_FILE_EXCLUSIONS = {
+    MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS,
+    TRACING_ROBO_BLUEPRINT, *TRUSTY_TEST_BLUEPRINTS,
+}
 AEMU_PROVIDER_BLUEPRINTS = (
     "hardware/google/aemu/Android.bp",
     "hardware/google/aemu/base/Android.bp",
@@ -35,6 +48,13 @@ CUTTLEFISH_PROVIDER_BLUEPRINTS = (
     CUTTLEFISH_PARENT + "host/commands/append_squashfs_overlay/Android.bp",
 )
 TEST_UTILS_BLUEPRINT = "platform_testing/scripts/Android.bp"
+GOLDFISH_PARENT = "device/generic/goldfish/"
+GOLDFISH_OPENGL_PARENT = "device/generic/goldfish-opengl/"
+GOLDFISH_PROVIDER_BLUEPRINTS = (
+    GOLDFISH_PARENT + "Android.bp",
+    GOLDFISH_PARENT + "tools/Android.bp",
+    GOLDFISH_OPENGL_PARENT + "Android.bp",
+)
 STS_PROVIDER_BLUEPRINTS = (
     "platform_testing/libraries/sts-common-util/host-side/Android.bp",
     "platform_testing/libraries/sts-common-util/util/Android.bp",
@@ -45,6 +65,9 @@ CAR_WATCHDOG_BLUEPRINT = "packages/services/Car/cpp/watchdog/aidl/Android.bp"
 GRAPH34_ORDERED_RULES_SHA256 = "acb03f16c6e8d6a785466ec0d3f8b483e1e1a790e297220a6e710634a2ffdc36"
 GRAPH39_ORDERED_RULES_SHA256 = "bdd5be6308e2e5de6a9f9aa096db199c54639b9fdc08d58e19036de97edf7a77"
 GRAPH42_ORDERED_RULES_SHA256 = "fbbdecd70ea8dc50ae86d8dc0e420d5b54f311293e3d22fea25f969a8fe31ee5"
+GRAPH43_ORDERED_RULES_SHA256 = "5296e6dcc35c038e0528b85ab19fb9ffb09a2604edd999f4d8f363b04882fb16"
+GRAPH44_TRUSTY_RULES_SHA256 = "f016cd594bcfec6669ce7bc31705235b567bc850d3c69d4879ff50e7dcf902ca"
+GRAPH44_OTHER_ASSIGNMENTS_SHA256 = "eae33d5dfdb8a5716a4d9709ab349b15f73b7436632d13812a4b5768613407aa"
 CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
 CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
 CAR_BUILTIN_DEVICE_CTS_PREFIX = "cts/tests/tests/car_builtin/"
@@ -185,11 +208,14 @@ SOURCE_FILE_REINCLUSIONS = {
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *CUTTLEFISH_PROVIDER_BLUEPRINTS,
+    *GOLDFISH_PROVIDER_BLUEPRINTS,
     TEST_UTILS_BLUEPRINT, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_WATCHDOG_BLUEPRINT,
     *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + GOLDFISH_PARENT,
+    "-" + GOLDFISH_OPENGL_PARENT,
     "-" + CUTTLEFISH_PARENT,
     "-" + CAR_BUILTIN_DEVICE_CTS_PREFIX,
     "-" + CAR_SETTINGS_PARENT,
@@ -227,7 +253,7 @@ SOURCE_EXCLUSIONS = [
     "-development/build/",
     "-" + AUDIO_TEST_BLUEPRINT,
     "-tools/security/",
-] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
+] + ["-" + path for path in (*GRAPH14_TEST_BLUEPRINTS, *TRUSTY_TEST_BLUEPRINTS)]
 SOURCE_REINCLUSIONS = [
     *SDK_SCENARIO_BLUEPRINTS, SDK_RUNNER_BLUEPRINT, SDK_CERTIFICATE_BLUEPRINT,
     MAINLINE_DETECTOR_BLUEPRINT,
@@ -236,6 +262,7 @@ SOURCE_REINCLUSIONS = [
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
     *CUTTLEFISH_PROVIDER_BLUEPRINTS,
+    *GOLDFISH_PROVIDER_BLUEPRINTS,
     TEST_UTILS_BLUEPRINT,
     *STS_PROVIDER_BLUEPRINTS,
     WAKEUP_PROTO_BLUEPRINT,
@@ -979,7 +1006,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 173)
+        self.assertEqual(len(scopes), 182)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -1355,6 +1382,125 @@ class TwrpDeviceTests(unittest.TestCase):
                      "`sh_binary_host`", "`test-utils-script`", "`csuite_standalone_zip`",
                      "copies the utility into its host ZIP", "executes or sources the script",
                      "Future test runtime behavior was not exercised", "173 source rules"):
+            self.assertIn(fact, readme)
+
+    def test_graph_forty_four_trusty_exclusions_append_four_exact_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertGreaterEqual(len(scopes), 177)
+        original = json.dumps(scopes[:173], separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(original).hexdigest(), GRAPH43_ORDERED_RULES_SHA256)
+        self.assertEqual(scopes[173:177], ["-" + path for path in TRUSTY_TEST_BLUEPRINTS])
+        for source in TRUSTY_TEST_BLUEPRINTS:
+            self.assertEqual(scopes.count("-" + source), 1)
+            self.assertFalse(source_path_allowed(source, scopes), source)
+            parent = str(Path(source).parent)
+            for neighbor in (parent + "/other.bp", parent + "/utils/Android.bp",
+                             parent + "_sibling/Android.bp"):
+                self.assertTrue(source_path_allowed(neighbor, scopes), neighbor)
+            self.assertNotIn("-" + parent + "/", scopes)
+
+    def test_graph_forty_four_keeps_mixed_avb_vintf_and_production_sources(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in (*TRUSTY_MIXED_BLUEPRINTS,
+                       "packages/modules/Virtualization/Android.bp",
+                       "packages/modules/Virtualization/guest/pvmfw/Android.bp",
+                       "packages/modules/Virtualization/guest/pvmfw/avb/fuzz/Android.bp",
+                       "packages/modules/Virtualization/guest/trusty/Android.bp",
+                       "packages/modules/Virtualization/guest/trusty/security_vm/vm/Android.bp",
+                       "external/avb/Android.bp", "system/libvintf/Android.bp",
+                       "system/sepolicy/Android.bp", "system/sepolicy/tests/Android.bp",
+                       "bootable/recovery/Android.bp", "build/make/core/Makefile"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for prefix in ("packages/modules/Virtualization/",
+                       "packages/modules/Virtualization/guest/trusty/",
+                       "packages/modules/Virtualization/guest/pvmfw/",
+                       "test/vts-testcase/hal/treble/vintf/"):
+            self.assertNotIn("-" + prefix, scopes)
+
+    def test_graph_forty_four_changes_no_other_device_make_assignments(self):
+        unchanged = {key: value for key, value in self.device.items()
+                     if key != "PRODUCT_SOURCE_ROOT_DIRS"}
+        raw = json.dumps(unchanged, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), GRAPH44_OTHER_ASSIGNMENTS_SHA256)
+
+    def test_graph_forty_four_documents_the_required_paired_test_gates(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in (*TRUSTY_TEST_BLUEPRINTS, *TRUSTY_MIXED_BLUEPRINTS,
+                     "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+                     "9705f94b4d727578335a79e957bf839f273664b6",
+                     "16 names", "12,120 Blueprint files", "41,501 named declarations",
+                     "2,119 Make files", "13,584 Go files", "not closed alone",
+                     "libpvmfw_avb.integration_test", "vts_treble_vintf_trusted_hal_test",
+                     "architecture-specific `enabled: true`", "`default: true`",
+                     "No test dependency, factory, visibility or license metadata is edited",
+                     "libpvmfw_avb_nostd", "both AVB fuzzers", "vts_treble_vintf_test_defaults",
+                     "libvintf_service_info_aidl", "normal vendor, framework, no-HIDL and combined VINTF tests",
+                     "177 source rules", "not a successful graph, compilation",
+                     "passing Trusty or VINTF test", "every other device make assignment remain unchanged"):
+            self.assertIn(fact, readme)
+        for fact in ("libpvmfw_avb.integration_test", "vts_treble_vintf_trusted_hal_test",
+                     "Keep their mixed AVB/VINTF files"):
+            self.assertIn(fact, self.device_text)
+
+    def test_goldfish_projection_appends_only_five_reviewed_rules(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        original = json.dumps(scopes[:177], separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(original).hexdigest(), GRAPH44_TRUSTY_RULES_SHA256)
+        additions = ["-" + GOLDFISH_PARENT, *GOLDFISH_PROVIDER_BLUEPRINTS[:2],
+                     "-" + GOLDFISH_OPENGL_PARENT, GOLDFISH_PROVIDER_BLUEPRINTS[2]]
+        self.assertEqual(scopes[177:182], additions)
+        self.assertEqual([rule for rule in scopes if rule.lstrip("-").startswith(
+            (GOLDFISH_PARENT, GOLDFISH_OPENGL_PARENT))], additions)
+        for source in GOLDFISH_PROVIDER_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = source.removesuffix("Android.bp")
+            for sibling in ("other.bp", "unrelated/Android.bp"):
+                self.assertFalse(source_path_allowed(parent + sibling, scopes), parent + sibling)
+
+    def test_goldfish_projection_preserves_device_identity_and_neighbor_sources(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in ("device/generic/goldfish/fstab/Android.bp",
+                       "device/generic/goldfish/wifi/Android.bp",
+                       "device/generic/goldfish/tools/tests/Android.bp",
+                       "device/generic/goldfish-opengl/system/Android.bp",
+                       "device/generic/goldfish-opengl/system/codecs/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("device/generic/Android.bp",
+                       "device/generic/goldfish_sibling/Android.bp",
+                       "device/generic/goldfish-opengl_sibling/Android.bp",
+                       "prebuilts/remoteexecution-client/Android.bp",
+                       "external/openwrt-prebuilts/Android.bp",
+                       "system/sepolicy/Android.bp", "system/libvintf/Android.bp",
+                       "external/avb/Android.bp", "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertFalse(any(rule.lstrip("-").startswith("prebuilts/remoteexecution-client/")
+                             for rule in scopes))
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.product["PRODUCT_DEVICE"], "nezha")
+        self.assertNotIn("PRODUCT_SOONG_NAMESPACES", self.device)
+        active = "\n".join(logical_lines(self.board_text + self.device_text + self.product_text))
+        self.assertNotIn("USE_RBE", active)
+        self.assertNotIn("RBE_", active)
+
+    def test_goldfish_projection_documents_namespace_metadata_and_execution_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in (*GOLDFISH_PROVIDER_BLUEPRINTS,
+                     "40f1fffd800a519f942320f2c265bb7abfa5681f",
+                     "ad6692caa5eeda26fb0dde1a6ca44494f07712d5",
+                     "6bcf0cc83afa9268ca79a442db0dc4b8e29a1266",
+                     "`python_binary_host` named `mk_combined_img`",
+                     "device_generic_goldfish_license", "gen-emulator-info",
+                     "Apache, BSD, GPL-2.0 and MIT", "BY_EXCEPTION_ONLY",
+                     "not licensing clearance", "two of 70 Goldfish Blueprint files",
+                     "one of 13 Goldfish OpenGL Blueprint files",
+                     "no child graphics modules or emulator product",
+                     "`rewrapper` as a `prebuilt_build_tool`", "live/rewrapper",
+                     "without enabling remote execution", "`UseRBE` and `UseGoma` false",
+                     "no `USE_RBE` or `RBE_server_address` environment entry",
+                     "no `Android.mk` or `CleanSpec.mk`", "registers 14 product paths",
+                     "No Goldfish product, board, firmware, kernel or identity is inherited",
+                     "182 source rules", "original 173, four Trusty file exclusions and five Goldfish rules",
+                     "do not demonstrate a successful graph, image build or remote-execution run"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):

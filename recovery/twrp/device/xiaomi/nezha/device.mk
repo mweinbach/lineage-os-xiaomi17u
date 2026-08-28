@@ -413,6 +413,25 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 # Keep the platform test aggregate and unrelated script Blueprints excluded.
 PRODUCT_SOURCE_ROOT_DIRS += platform_testing/scripts/Android.bp
 
+# Graph 44's Trusty test VM files form a bounded scope only with the paired
+# libpvmfw_avb.integration_test and vts_treble_vintf_trusted_hal_test gates.
+# Keep their mixed AVB/VINTF files, production providers and normal checks.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -packages/modules/Virtualization/guest/trusty/test_vm/Android.bp \
+    -packages/modules/Virtualization/guest/trusty/test_vm/vm/Android.bp \
+    -packages/modules/Virtualization/guest/trusty/test_vm_os/Android.bp \
+    -packages/modules/Virtualization/guest/trusty/test_vm_os/vm/Android.bp
+
+# Retained image generators need the original Goldfish mk_combined_img tool.
+# Preserve its root namespace and imported OpenGL namespace, with metadata;
+# do not select the other emulator Blueprint files or inherit its product.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -device/generic/goldfish/ \
+    device/generic/goldfish/Android.bp \
+    device/generic/goldfish/tools/Android.bp \
+    -device/generic/goldfish-opengl/ \
+    device/generic/goldfish-opengl/Android.bp
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true

@@ -1614,7 +1614,7 @@ class ConfigurationTests(Fixture):
 
     def test_reviewed_graph_forty_three_cuttlefish_projection_pin_and_caveats(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 259)
+        self.assertGreaterEqual(len(projects), 259)
         project = projects[258]
         self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
             "path": "device/google/cuttlefish",
@@ -1631,6 +1631,79 @@ class ConfigurationTests(Fixture):
                      "append_squashfs_overlay.test", "global Apache metadata", "Original CleanSpec behavior is preserved",
                      "clean_steps.mk was absent at admission and must be checked again before graph/Kati",
                      "No Cuttlefish device selection, key payload access or runtime support is implied"):
+            self.assertIn(text, reason)
+
+    def test_graph_forty_four_projection_preserves_first_259_sources_and_metadata(self):
+        config = dependencies.load_config()
+        self.assertEqual(len(config["projects"]), 262)
+        original = config["projects"][:259]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "48cdcda834fe1eadbb2a4604a7ec471530b79c7399a068683e749131fff603bc")
+        historical_config = {**config, "projects": original}
+        encoded = (json.dumps(historical_config, indent=2) + "\n").encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "d61d2e5017c28577218acb825406bcb168e7ad386219a0463eed033fa1ad0af7")
+
+    def test_reviewed_graph_forty_four_goldfish_projection_pins(self):
+        projects = dependencies.load_config()["projects"][259:261]
+        expected = [
+            ("device/generic/goldfish", "40f1fffd800a519f942320f2c265bb7abfa5681f"),
+            ("device/generic/goldfish-opengl", "ad6692caa5eeda26fb0dde1a6ca44494f07712d5"),
+        ]
+        self.assertEqual([(p["path"], p["commit"]) for p in projects], expected)
+        for project in projects:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/" + project["path"])
+                self.assertNotIn("/platform/", project["url"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 44 error:"))
+                self.assertIn("whole original root Android.bp", project["reason"])
+                self.assertIn("product inheritance", project["reason"])
+                self.assertIn("device identity", project["reason"])
+
+    def test_reviewed_goldfish_host_script_and_namespace_metadata_are_preserved(self):
+        projects = dependencies.load_config()["projects"]
+        for text in ("mk_combined_img python_binary_host", "unconditional source dependency",
+                     "otatools_package_dep_bins", "tools/Android.bp", "original namespace import",
+                     "device_generic_goldfish_license", "gen-emulator-info", "tools/mk_combined_img.py",
+                     "emulator-info.txt", "tool package explicitly names its own applicable license",
+                     "ancestor package defaults are not assumed to propagate",
+                     "copies the script binary as an input and does not execute it",
+                     "No Android.mk or CleanSpec.mk", "registers 14 products",
+                     "only the selected twrp_nezha product is imported"):
+            self.assertIn(text, projects[259]["reason"])
+        for text in ("original namespace imported by device/generic/goldfish", "fully qualified mk_combined_img",
+                     "empty namespace, its own package declaration", "device_generic_goldfish-opengl_license",
+                     "no ordinary build modules", "LICENSE", "Apache-2.0/BSD/GPL-2.0/MIT",
+                     "BY_EXCEPTION_ONLY metadata", "no licensing clearance is claimed",
+                     "All 12 descendant Blueprints remain outside this recovery profile",
+                     "no Android.mk, AndroidProducts.mk or CleanSpec.mk"):
+            self.assertIn(text, projects[260]["reason"])
+
+    def test_reviewed_graph_forty_four_rewrapper_projection_pin(self):
+        project = dependencies.load_config()["projects"][261]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "prebuilts/remoteexecution-client",
+            "url": "https://android.googlesource.com/platform/prebuilts/remoteexecution-client",
+            "commit": "6bcf0cc83afa9268ca79a442db0dc4b8e29a1266",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertTrue(reason.startswith("Source audit projection, not a graph 44 error:"))
+        for text in ("rewrapper prebuilt_build_tool", "real tools dependency", "art-run-test-host-data-defaults",
+                     "not a generated alias", "sole original root Android.bp", "src live/rewrapper",
+                     "original NOTICE", "no provider, package or license declaration is synthesized",
+                     "no Android.mk, AndroidProducts.mk or CleanSpec.mk", "no source-scope exception is needed"):
+            self.assertIn(text, reason)
+
+    def test_rewrapper_source_admission_does_not_authorize_rbe_execution(self):
+        reason = dependencies.load_config()["projects"][261]["reason"]
+        for text in ("factory creates a host symlink and does not invoke the binary", "UseRBE remains false",
+                     "does not set USE_RBE or RBE_server_address",
+                     "original ART script invokes its wrapper only when RBE_server_address is present",
+                     "No RBE credentials, discovery, remote jobs or network execution are authorized or enabled",
+                     "No tool binary was read, downloaded or invoked by this audit"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):

@@ -720,7 +720,7 @@ or sources the script. Future test runtime behavior was not exercised. The
 `platform_tests` aggregate and other script Blueprints remain excluded, while
 the previously selected `perf-setup/Android.bp` remains selected.
 
-The current selection has 173 source rules, preserving the previous 169 rules
+That selection had 173 source rules, preserving the previous 169 rules
 in their original order, followed by the three Cuttlefish rules and the exact
 script-provider file. No Cuttlefish product, board, identity, kernel or
 firmware is inherited. `PRODUCT_PACKAGES` remains `recovery`, and Nezha retains
@@ -729,6 +729,81 @@ its own AOSP engineering recovery key at
 key payloads. This admits source providers, not Cuttlefish installation or
 runtime support; signature, AVB, SELinux, VINTF and dependency checks remain
 enabled, and compilation and final image contents remain unverified.
+
+Graph 44 reaches Trusty test VM dependencies outside this recovery profile.
+Four exact Blueprint exclusions are appended after the unchanged 173 rules:
+
+- `packages/modules/Virtualization/guest/trusty/test_vm/Android.bp`
+- `packages/modules/Virtualization/guest/trusty/test_vm/vm/Android.bp`
+- `packages/modules/Virtualization/guest/trusty/test_vm_os/Android.bp`
+- `packages/modules/Virtualization/guest/trusty/test_vm_os/vm/Android.bp`
+
+These four files define 16 names at Virtualization revision
+`c984fc337c11ca5edc03ccf02037b2455dd8fcaf`. A static scan of 12,120 Blueprint
+files, 41,501 named declarations, 2,119 Make files and 13,584 Go files found
+two retained tests consuming those providers: `libpvmfw_avb.integration_test`
+and `vts_treble_vintf_trusted_hal_test`. The four exclusions are not closed
+alone. They require the paired source patches that replace only those tests'
+architecture-specific `enabled: true` values with the existing typed
+`nezha_twrp.native_recovery_only` selector: true disables the test, while
+`default: true` preserves its original architecture behavior outside this
+profile. No test dependency, factory, visibility or license metadata is edited.
+
+The mixed `packages/modules/Virtualization/guest/pvmfw/avb/Android.bp` remains
+selected, preserving `libpvmfw_avb_nostd`, production `libpvmfw` consumers and
+both AVB fuzzers. The mixed `test/vts-testcase/hal/treble/vintf/Android.bp`
+at revision `9705f94b4d727578335a79e957bf839f273664b6` also remains selected,
+preserving `vts_treble_vintf_test_defaults`, `libvintf_service_info_aidl`, and
+the normal vendor, framework, no-HIDL and combined VINTF tests. The production
+Trusty security VM, shared signing providers and neighboring Blueprint files
+remain selected. That selection had 177 source rules; product packages,
+security properties and every other device make assignment remain unchanged.
+
+This is a bounded static closure review, not a successful graph, compilation,
+passing Trusty or VINTF test, or runtime proof. Blueprint filtering does not
+disable Make files or arbitrary Go factories. Signature, AVB, SELinux, VINTF
+and strict dependency checks remain enabled; the next graph must still
+validate the combined source patches and exclusions.
+
+A separate provider projection appends five more rules for the original
+Goldfish host utility and its namespace imports. Negative prefixes exclude
+the rest of `device/generic/goldfish/` and `device/generic/goldfish-opengl/`,
+with only these three complete Blueprint files restored:
+
+- `device/generic/goldfish/Android.bp`
+- `device/generic/goldfish/tools/Android.bp`
+- `device/generic/goldfish-opengl/Android.bp`
+
+Goldfish revision `40f1fffd800a519f942320f2c265bb7abfa5681f` supplies the
+original `python_binary_host` named `mk_combined_img`. Its tools file explicitly
+uses the root `device_generic_goldfish_license`; both preserve the original
+Apache and BSD license kinds. The root also defines `gen-emulator-info` and
+the namespace importing `device/generic/goldfish-opengl`. The imported root at
+revision `ad6692caa5eeda26fb0dde1a6ca44494f07712d5` contains only its namespace,
+package and license declaration. Its Apache, BSD, GPL-2.0 and MIT kinds,
+`LICENSE`, and `BY_EXCEPTION_ONLY` metadata remain unchanged. This is not
+licensing clearance. The selection retains two of 70 Goldfish Blueprint files
+and one of 13 Goldfish OpenGL Blueprint files; no child graphics modules or
+emulator product are selected by these rules.
+
+The same projection restores the original `prebuilts/remoteexecution-client`
+revision `6bcf0cc83afa9268ca79a442db0dc4b8e29a1266` without an additional
+source rule. Its one root Blueprint defines `rewrapper` as a
+`prebuilt_build_tool` using `live/rewrapper`. It supplies a retained ART build
+input without enabling remote execution. The inspected generated configuration
+has `UseRBE` and `UseGoma` false, with no `USE_RBE` or `RBE_server_address`
+environment entry. The original ART script uses the remote wrapper only when
+`RBE_server_address` is present. The profile adds no remote-execution setting.
+
+Recursive source trees for these three projects contain no `Android.mk` or
+`CleanSpec.mk`. Goldfish's `AndroidProducts.mk` registers 14 product paths;
+the original product loader imports only the selected `twrp_nezha` product.
+No Goldfish product, board, firmware, kernel or identity is inherited. The
+current selection has 182 source rules: the original 173, four Trusty file
+exclusions and five Goldfish rules, in that order. All other device make
+assignments, signature, AVB, SELinux, VINTF and dependency checks remain
+unchanged. These provider and execution-path checks do not demonstrate a
+successful graph, image build or remote-execution run.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

@@ -1821,6 +1821,27 @@
       "commit": "c6a8b05c38d88e8d19b83fd8d47f75c0686f2e69",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 43 error: real AOSP com.google.cf.apex.key and com.google.cf.apex.certificate declarations and append_squashfs_overlay host tool required by retained APEX and OpenWrt generators. The whole original project is pinned for selection of only apex/keys/Android.bp and host/commands/append_squashfs_overlay/Android.bp, retaining append_squashfs_overlay.test and global Apache metadata. Original CleanSpec behavior is preserved; clean_steps.mk was absent at admission and must be checked again before graph/Kati. No Cuttlefish device selection, key payload access or runtime support is implied."
+    },
+    {
+      "path": "device/generic/goldfish",
+      "url": "https://android.googlesource.com/device/generic/goldfish",
+      "commit": "40f1fffd800a519f942320f2c265bb7abfa5681f",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 44 error: original mk_combined_img python_binary_host is an unconditional source dependency of otatools_package_dep_bins. Select only the whole original root Android.bp and tools/Android.bp, preserving the original namespace import, device_generic_goldfish_license, gen-emulator-info, tools/mk_combined_img.py and emulator-info.txt. The tool package explicitly names its own applicable license; ancestor package defaults are not assumed to propagate. The OTA generator copies the script binary as an input and does not execute it. No Android.mk or CleanSpec.mk exists in the pinned tree; AndroidProducts.mk registers 14 products but only the selected twrp_nezha product is imported. No Goldfish product inheritance, kernel, firmware, device identity or runtime support is added."
+    },
+    {
+      "path": "device/generic/goldfish-opengl",
+      "url": "https://android.googlesource.com/device/generic/goldfish-opengl",
+      "commit": "ad6692caa5eeda26fb0dde1a6ca44494f07712d5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 44 error: original namespace imported by device/generic/goldfish is required for the fully qualified mk_combined_img source reference. Select only the whole original root Android.bp, containing an empty namespace, its own package declaration and device_generic_goldfish-opengl_license, with no ordinary build modules. Preserve LICENSE and original Apache-2.0/BSD/GPL-2.0/MIT license kinds and BY_EXCEPTION_ONLY metadata; no licensing clearance is claimed. All 12 descendant Blueprints remain outside this recovery profile. The pinned tree contains no Android.mk, AndroidProducts.mk or CleanSpec.mk. No emulator graphics implementation, product inheritance, kernel, firmware or device identity is imported."
+    },
+    {
+      "path": "prebuilts/remoteexecution-client",
+      "url": "https://android.googlesource.com/platform/prebuilts/remoteexecution-client",
+      "commit": "6bcf0cc83afa9268ca79a442db0dc4b8e29a1266",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 44 error: original rewrapper prebuilt_build_tool is a real tools dependency of retained ART genrules through art-run-test-host-data-defaults, not a generated alias. The sole original root Android.bp keeps src live/rewrapper and the original NOTICE; no provider, package or license declaration is synthesized. The prebuilt factory creates a host symlink and does not invoke the binary. UseRBE remains false; adding this provider does not set USE_RBE or RBE_server_address, and the original ART script invokes its wrapper only when RBE_server_address is present. No RBE credentials, discovery, remote jobs or network execution are authorized or enabled. No tool binary was read, downloaded or invoked by this audit. The pinned tree contains no Android.mk, AndroidProducts.mk or CleanSpec.mk; no source-scope exception is needed."
     }
   ]
 }
