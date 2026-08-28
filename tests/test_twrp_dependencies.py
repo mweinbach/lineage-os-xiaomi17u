@@ -150,6 +150,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "806456bb8d612d278751cbb8535b22c1a1799a19df2b303791216e2295ec2d37")
 
+    def test_first_eighty_seven_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:87]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "5651d857ea80ec14d72399ee6f4e81cdaed2fa7a2db66fd343118290c8e5bf74")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -435,15 +441,78 @@ class ConfigurationTests(Fixture):
             ("external/flashrom", "0d8ada436607417fbbc39a3271c6f9093189f4ca"),
             ("external/pciutils", "a7121b40f52a45c391cda8fb48430a833522a430"),
         ]
-        self.assertEqual(len(projects), 87)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[85:]], expected)
-        for project in projects[85:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[85:87]], expected)
+        for project in projects[85:87]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
         self.assertIn("libvboot_util and libvboot_host", projects[85]["reason"])
         self.assertIn("does not select or execute the Flashrom CLI", projects[85]["reason"])
         self.assertIn("libpci", projects[86]["reason"])
+
+    def test_graph_eighteen_initial_providers_and_projections_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/parameter-framework", "eede61bcaf52412ab329b8571872b127764e1776"),
+            ("external/python/pyfakefs", "0448befc5e794113ba4533f8d62ce8c3c2feccbe"),
+            ("external/fonttools", "e1fe3e4ad2793916b15cccdc4a7da52a7e1dd0e9"),
+            ("external/libexif", "e6271597ffa3cfd4a67e984e1c2a99c3d4cbcdfd"),
+            ("external/dynamic_depth", "d8b4372b2d0c552e650741eed784aec9b1f9e88d"),
+            ("external/libvpx", "718dd469f67964d8f5fd4c8ebf09513bbfa50146"),
+            ("external/flac", "600f14f40d737144c998e2ec7a483122d3776fbc"),
+            ("external/libaom", "f919cc204179ff88eff36fd60226540c0c7a79bb"),
+            ("external/libopenapv", "c62125fdb4d6b0b7de71fda6b918b37184591a2d"),
+            ("external/tremolo", "bda690e46497e1f65c5077173b9c548e6e0cd5a1"),
+            ("frameworks/wilhelm", "529601b3e1df4cbbf6065bc66a4c30246ffdbe1b"),
+            ("test/vts-testcase/vndk", "ab0f26db5d6a14928538904e3f335a265ba9defd"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[87:99]], expected)
+        for project in projects[87:99]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+        for project in projects[90:98]:
+            with self.subTest(projection=project["path"]):
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 18 error:"))
+        for project in projects[87:90] + projects[98:99]:
+            with self.subTest(observed=project["path"]):
+                self.assertIn("graph 18 errors", project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+
+    def test_graph_eighteen_complete_asuite_host_sources_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("tools/asuite", "dcf45295b954eedb9850194166835fdeaa84ad01"),
+            ("external/jimfs", "49a5260d7a9e5ad68cb04bb0bf7de1c044ca929f"),
+            ("external/python/google-api-python-client", "732370cc0aa5c65d01fde5b95c20270e25c84962"),
+            ("external/python/httplib2", "e025a5ec7cd2edd804c2d394a2c7841ab522db57"),
+            ("external/python/uritemplates", "44fcd14ebb8f3d1793bf1008ac0b881173864ddb"),
+            ("external/python/oauth2client", "6598410cf1b485e24db4a4519ed58eefa6628018"),
+            ("external/python/rsa", "e5a899dcdc7d9a4dd590bf501bccc20db9cb03d0"),
+            ("external/python/pyasn1", "0071cbf57b52336b8261f3903612a2d4d81669af"),
+            ("external/python/pyasn1-modules", "323b68127336bb8b8a47ad804487eda722c50489"),
+        ]
+        self.assertEqual(len(projects), 108)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[99:]], expected)
+        for project in projects[99:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 18", project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+        self.assertIn("complete ASuite build definitions", projects[99]["reason"])
+        for module in ("asuite_cc_client", "atest_tradefed.sh", "adevice_fingerprint"):
+            self.assertIn(module, projects[99]["reason"])
+
+    def test_122_synthetic_sources_fit_existing_configuration_limits(self):
+        self.config["projects"] = [dict(self.project,
+            path=f"external/synthetic-{index:03d}",
+            url=f"https://android.googlesource.com/platform/external/synthetic-{index:03d}")
+            for index in range(122)]
+        self.save_config()
+        with patch.object(twrp_workspace, "run", side_effect=AssertionError("No process")):
+            self.assertEqual(len(dependencies.load_config(self.control)["projects"]), 122)
+        self.assertLess((self.control / dependencies.CONFIG).stat().st_size, 1024 * 1024)
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()

@@ -617,6 +617,153 @@
       "commit": "a7121b40f52a45c391cda8fb48430a833522a430",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libpci provider required by the libflashrom dependency in graph 17."
+    },
+    {
+      "path": "external/parameter-framework",
+      "url": "https://android.googlesource.com/platform/external/parameter-framework",
+      "commit": "eede61bcaf52412ab329b8571872b127764e1776",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP EddParser.py, PFWScriptGenerator.py and hostConfig.py providers required by domainGeneratorPolicy in the graph 18 errors, including its real domainGeneratorConnector and schema inputs."
+    },
+    {
+      "path": "external/python/pyfakefs",
+      "url": "https://android.googlesource.com/platform/external/python/pyfakefs",
+      "commit": "0448befc5e794113ba4533f8d62ce8c3c2feccbe",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP pyfakefs provider required by add3prf_test in the graph 18 errors."
+    },
+    {
+      "path": "external/fonttools",
+      "url": "https://android.googlesource.com/platform/external/fonttools",
+      "commit": "e1fe3e4ad2793916b15cccdc4a7da52a7e1dd0e9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP fontTools provider required by fontchain_linter and update_font_metadata in the graph 18 errors."
+    },
+    {
+      "path": "external/libexif",
+      "url": "https://android.googlesource.com/platform/external/libexif",
+      "commit": "e6271597ffa3cfd4a67e984e1c2a99c3d4cbcdfd",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libexif provider required by retained libcameraservice_device_independent and camera HAL helper libraries."
+    },
+    {
+      "path": "external/dynamic_depth",
+      "url": "https://android.googlesource.com/platform/external/dynamic_depth",
+      "commit": "d8b4372b2d0c552e650741eed784aec9b1f9e88d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libdynamic_depth-internal_headers and libdynamic_depth-public_headers providers required by retained libcameraservice."
+    },
+    {
+      "path": "external/libvpx",
+      "url": "https://android.googlesource.com/platform/external/libvpx",
+      "commit": "718dd469f67964d8f5fd4c8ebf09513bbfa50146",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libvpx provider required by retained Codec2 VP8 and VP9 encoders and decoders."
+    },
+    {
+      "path": "external/flac",
+      "url": "https://android.googlesource.com/platform/external/flac",
+      "commit": "600f14f40d737144c998e2ec7a483122d3776fbc",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libFLAC provider required by the retained Codec2 FLAC encoder."
+    },
+    {
+      "path": "external/libaom",
+      "url": "https://android.googlesource.com/platform/external/libaom",
+      "commit": "f919cc204179ff88eff36fd60226540c0c7a79bb",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libaom provider required by retained Codec2 AV1 encoder and decoder modules."
+    },
+    {
+      "path": "external/libopenapv",
+      "url": "https://android.googlesource.com/platform/external/libopenapv",
+      "commit": "c62125fdb4d6b0b7de71fda6b918b37184591a2d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libopenapv provider required by retained Codec2 APV encoder and decoder modules."
+    },
+    {
+      "path": "external/tremolo",
+      "url": "https://android.googlesource.com/platform/external/tremolo",
+      "commit": "bda690e46497e1f65c5077173b9c548e6e0cd5a1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libvorbisidec provider required by the retained Codec2 Vorbis decoder."
+    },
+    {
+      "path": "frameworks/wilhelm",
+      "url": "https://android.googlesource.com/platform/frameworks/wilhelm",
+      "commit": "529601b3e1df4cbbf6065bc66a4c30246ffdbe1b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 18 error: real AOSP libOpenSLES provider required by retained bootanimation and binary translation proxy modules."
+    },
+    {
+      "path": "test/vts-testcase/vndk",
+      "url": "https://android.googlesource.com/platform/test/vts-testcase/vndk",
+      "commit": "ab0f26db5d6a14928538904e3f335a265ba9defd",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP vts_vndk_utils provider required by vts_kernel_proc_sysrq_trigger_test in the graph 18 errors, preserving the kernel and Treble validation sources."
+    },
+    {
+      "path": "tools/asuite",
+      "url": "https://android.googlesource.com/platform/tools/asuite",
+      "commit": "dcf45295b954eedb9850194166835fdeaa84ad01",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP asuite_proto_java provider required by tradefed-clearcut-client in the graph 18 errors. Keeps the complete ASuite build definitions, including shared asuite_cc_client, atest_tradefed.sh and adevice_fingerprint providers."
+    },
+    {
+      "path": "external/jimfs",
+      "url": "https://android.googlesource.com/platform/external/jimfs",
+      "commit": "49a5260d7a9e5ad68cb04bb0bf7de1c044ca929f",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP jimfs provider required by the complete ASuite host tooling restored for graph 18."
+    },
+    {
+      "path": "external/python/google-api-python-client",
+      "url": "https://android.googlesource.com/platform/external/python/google-api-python-client",
+      "commit": "732370cc0aa5c65d01fde5b95c20270e25c84962",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-google-api-python-client provider required by the complete ASuite host tooling restored for graph 18."
+    },
+    {
+      "path": "external/python/httplib2",
+      "url": "https://android.googlesource.com/platform/external/python/httplib2",
+      "commit": "e025a5ec7cd2edd804c2d394a2c7841ab522db57",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-httplib2 provider required by ASuite, the Google API client and OAuth host libraries for graph 18."
+    },
+    {
+      "path": "external/python/uritemplates",
+      "url": "https://android.googlesource.com/platform/external/python/uritemplates",
+      "commit": "44fcd14ebb8f3d1793bf1008ac0b881173864ddb",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-uritemplate provider required by the Google API Python client used by ASuite for graph 18."
+    },
+    {
+      "path": "external/python/oauth2client",
+      "url": "https://android.googlesource.com/platform/external/python/oauth2client",
+      "commit": "6598410cf1b485e24db4a4519ed58eefa6628018",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-oauth2client provider required by the complete ASuite host tooling restored for graph 18."
+    },
+    {
+      "path": "external/python/rsa",
+      "url": "https://android.googlesource.com/platform/external/python/rsa",
+      "commit": "e5a899dcdc7d9a4dd590bf501bccc20db9cb03d0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-rsa provider required by the OAuth host library dependency of ASuite for graph 18."
+    },
+    {
+      "path": "external/python/pyasn1",
+      "url": "https://android.googlesource.com/platform/external/python/pyasn1",
+      "commit": "0071cbf57b52336b8261f3903612a2d4d81669af",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-pyasn1 provider required by the OAuth and RSA host libraries used by ASuite for graph 18."
+    },
+    {
+      "path": "external/python/pyasn1-modules",
+      "url": "https://android.googlesource.com/platform/external/python/pyasn1-modules",
+      "commit": "323b68127336bb8b8a47ad804487eda722c50489",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-pyasn1-modules provider required by the OAuth host library used by ASuite for graph 18."
     }
   ]
 }
