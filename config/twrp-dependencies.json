@@ -1149,6 +1149,97 @@
       "commit": "c003e8aff9ab3dce46d1ba22c9002541e45c5178",
       "tag": "android-16.0.0_r1",
       "reason": "Dependency of the full CHRE source restoration for the graph 22 chre_flags error: real AOSP emboss_compiler, embossc_script and emboss_runtime_headers providers required by Pigweed."
+    },
+    {
+      "path": "frameworks/rs",
+      "url": "https://android.googlesource.com/platform/frameworks/rs",
+      "commit": "0b7a6a27c1a995a9b5969582599248888799b167",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP libRS, libRS_internal and libRSDriver providers required by retained RenderScript JNI and HAL source."
+    },
+    {
+      "path": "frameworks/compile/libbcc",
+      "url": "https://android.googlesource.com/platform/frameworks/compile/libbcc",
+      "commit": "5b81b8df3c0e34c5e88ce4d913178e852ce2f072",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP libbcc-targets and libbcinfo providers plus original headers required by the approved RenderScript sources."
+    },
+    {
+      "path": "frameworks/compile/slang",
+      "url": "https://android.googlesource.com/platform/frameworks/compile/slang",
+      "commit": "90ad5a5e7c9a8b8e36bc4f82421e7f51745a6059",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP rs-version defaults and llvm-rs-cc compiler required by the approved RenderScript and libbcc sources."
+    },
+    {
+      "path": "external/cblas",
+      "url": "https://android.googlesource.com/platform/external/cblas",
+      "commit": "9a08d559988d01c83eae1d7f0ed8bf1a99c756a1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP libblas and libblasV8 providers required by the approved RenderScript sources; existing Eigen supplies their F77 helpers."
+    },
+    {
+      "path": "prebuilts/ndk",
+      "url": "https://android.googlesource.com/platform/prebuilts/ndk",
+      "commit": "e0e58e67cd11713799cdf6b50ba5843d62881660",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP cpufeatures provider required by librenderscripttoolkit in the approved RenderScript source."
+    },
+    {
+      "path": "external/xmp_toolkit",
+      "url": "https://android.googlesource.com/platform/external/xmp_toolkit",
+      "commit": "4581aa1b0230c0aa1683e2564afc4687f3a22b48",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP xmp_toolkit provider required by the approved RenderScript source."
+    },
+    {
+      "path": "packages/services/Telephony",
+      "url": "https://android.googlesource.com/platform/packages/services/Telephony",
+      "commit": "3066368aaebabf12ee002da3a6ceb46169a79071",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP ecc-protos-lite provider for retained telephony sources, with the whole Telephony project preserved."
+    },
+    {
+      "path": "packages/apps/PhoneCommon",
+      "url": "https://android.googlesource.com/platform/packages/apps/PhoneCommon",
+      "commit": "8167c931b193b19a14de2ebe94b5081e34772732",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP com.android.phone.common-lib provider required by TeleService in the approved Telephony source."
+    },
+    {
+      "path": "external/s2-geometry-library-java",
+      "url": "https://android.googlesource.com/platform/external/s2-geometry-library-java",
+      "commit": "221a93fa99a93436336816289d06bc487e3ee294",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP s2-geometry-library-java provider required by TeleService and satellite storage tools in the approved Telephony source."
+    },
+    {
+      "path": "packages/modules/GeoTZ",
+      "url": "https://android.googlesource.com/platform/packages/modules/GeoTZ",
+      "commit": "15cb260974f84795cf6f415296d79cc26e97f010",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP s2storage_ro, s2storage_rw and s2storage_tools providers required by the approved Telephony source."
+    },
+    {
+      "path": "external/geojson-jackson",
+      "url": "https://android.googlesource.com/platform/external/geojson-jackson",
+      "commit": "8a46ab3fb500c34471b26fd77c85b0fff3c9a752",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP geojson-jackson provider required by the approved GeoTZ tooling."
+    },
+    {
+      "path": "external/jackson-annotations",
+      "url": "https://android.googlesource.com/platform/external/jackson-annotations",
+      "commit": "0f61d1a12af53066055fcde3f094dd385041481e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP jackson-annotations provider required by the approved GeoJSON and Jackson Databind sources."
+    },
+    {
+      "path": "external/jackson-databind",
+      "url": "https://android.googlesource.com/platform/external/jackson-databind",
+      "commit": "94510fd06c9dc10c1deb211d30b1cb153a764fb7",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 23 error: real AOSP jackson-databind provider required by the approved GeoTZ tooling; existing jackson-core source remains unchanged."
     }
   ]
 }

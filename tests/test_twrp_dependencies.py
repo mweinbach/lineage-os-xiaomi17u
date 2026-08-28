@@ -198,6 +198,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "9d7829a4abb1a007ce3bfebeb2680bda3a21676d7333c277a0f64b146a2c0fb0")
 
+    def test_first_163_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:163]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "c24c21b076d4187244fc5c2d7386fc21ec1cf2d31a571f66c32870d31babc6bf")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -766,16 +772,55 @@ class ConfigurationTests(Fixture):
             ("external/emboss", "c003e8aff9ab3dce46d1ba22c9002541e45c5178",
              "emboss_compiler, embossc_script and emboss_runtime_headers"),
         ]
-        self.assertEqual(len(projects), 163)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[161:]],
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[161:163]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, module) in zip(projects[161:], expected):
+        for project, (_, _, module) in zip(projects[161:163], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
                 self.assertIn(module, project["reason"])
                 self.assertTrue(project["reason"].startswith(
                     "Dependency of the full CHRE source restoration for the graph 22 chre_flags error:"))
+
+    def test_reviewed_graph_twenty_three_renderscript_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("frameworks/rs", "0b7a6a27c1a995a9b5969582599248888799b167", "libRSDriver"),
+            ("frameworks/compile/libbcc", "5b81b8df3c0e34c5e88ce4d913178e852ce2f072", "libbcinfo"),
+            ("frameworks/compile/slang", "90ad5a5e7c9a8b8e36bc4f82421e7f51745a6059", "llvm-rs-cc"),
+            ("external/cblas", "9a08d559988d01c83eae1d7f0ed8bf1a99c756a1", "libblasV8"),
+            ("prebuilts/ndk", "e0e58e67cd11713799cdf6b50ba5843d62881660", "cpufeatures"),
+            ("external/xmp_toolkit", "4581aa1b0230c0aa1683e2564afc4687f3a22b48", "xmp_toolkit"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[163:169]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[163:169], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 23 error:"))
+
+    def test_reviewed_graph_twenty_three_telephony_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("packages/services/Telephony", "3066368aaebabf12ee002da3a6ceb46169a79071", "ecc-protos-lite"),
+            ("packages/apps/PhoneCommon", "8167c931b193b19a14de2ebe94b5081e34772732", "com.android.phone.common-lib"),
+            ("external/s2-geometry-library-java", "221a93fa99a93436336816289d06bc487e3ee294", "s2-geometry-library-java"),
+            ("packages/modules/GeoTZ", "15cb260974f84795cf6f415296d79cc26e97f010", "s2storage_ro, s2storage_rw and s2storage_tools"),
+            ("external/geojson-jackson", "8a46ab3fb500c34471b26fd77c85b0fff3c9a752", "geojson-jackson"),
+            ("external/jackson-annotations", "0f61d1a12af53066055fcde3f094dd385041481e", "jackson-annotations"),
+            ("external/jackson-databind", "94510fd06c9dc10c1deb211d30b1cb153a764fb7", "jackson-databind"),
+        ]
+        self.assertEqual(len(projects), 176)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[169:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[169:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 23 error:"))
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
