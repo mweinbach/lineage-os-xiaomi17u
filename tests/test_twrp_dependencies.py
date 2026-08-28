@@ -204,6 +204,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "c24c21b076d4187244fc5c2d7386fc21ec1cf2d31a571f66c32870d31babc6bf")
 
+    def test_first_176_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:176]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "8cbd0097005d05d90f041c32f9052db47fb5a2d9745be3a086cfbce7d9a858b9")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -812,15 +818,55 @@ class ConfigurationTests(Fixture):
             ("external/jackson-annotations", "0f61d1a12af53066055fcde3f094dd385041481e", "jackson-annotations"),
             ("external/jackson-databind", "94510fd06c9dc10c1deb211d30b1cb153a764fb7", "jackson-databind"),
         ]
-        self.assertEqual(len(projects), 176)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[169:]],
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[169:176]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, module) in zip(projects[169:], expected):
+        for project, (_, _, module) in zip(projects[169:176], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
                 self.assertIn(module, project["reason"])
                 self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 23 error:"))
+
+    def test_graph_twenty_three_provider_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("tools/trebuchet", "ce9f55a2ba161e0363727fe85178c67c4b5341ca", "trebuchet-core"),
+            ("external/easymock", "06a9728c3609f856e87db38a6602196cec3ab727", "easymock"),
+            ("external/cpu_features", "3aed778c722edb68321d66a5e1cd7b35ae2c891c", "libcpu_features"),
+            ("external/google-breakpad", "9712c20fc9bbfbac4935993a2ca0b3958c5adad2", "breakpad_client"),
+            ("external/deqp", "230a1897a8c33452735a02a17c63f3c9c6bcb2b1", "CtsDeqpRunnerTests"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[176:181]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[176:181], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 23", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+
+    def test_graph_twenty_three_deqp_dependency_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/deqp-deps/SPIRV-Headers", "aa7b8a45763915dc5ad8f9537232e84e3796a33a", "SPIR-V headers"),
+            ("external/deqp-deps/SPIRV-Tools", "7935793a768d7f6c6b0671cc61fda3286841da0e", "deqp_spirv-tools"),
+            ("external/deqp-deps/glslang", "0733c837682fd25e3363b598947126ff1838908c", "glslang libraries"),
+            ("external/deqp-deps/amber", "166c03c471039f3efc935a68d89b52521870ffd9", "deqp_amber"),
+        ]
+        self.assertEqual(len(projects), 185)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[181:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[181:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith(
+                    "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error:"))
+        for caveat in ("deqp_glslang_ResourceLimits_headers", "glslang/Public/ResourceLimits.h",
+                       "a header file, as an include directory", "original property is retained"):
+            self.assertIn(caveat, projects[183]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

@@ -1240,6 +1240,69 @@
       "commit": "94510fd06c9dc10c1deb211d30b1cb153a764fb7",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 23 error: real AOSP jackson-databind provider required by the approved GeoTZ tooling; existing jackson-core source remains unchanged."
+    },
+    {
+      "path": "tools/trebuchet",
+      "url": "https://android.googlesource.com/platform/tools/trebuchet",
+      "commit": "ce9f55a2ba161e0363727fe85178c67c4b5341ca",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP trebuchet-core provider required by CtsAtraceHostTestCases in the graph 23 error."
+    },
+    {
+      "path": "external/easymock",
+      "url": "https://android.googlesource.com/platform/external/easymock",
+      "commit": "06a9728c3609f856e87db38a6602196cec3ab727",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP easymock provider required by vts-tradefed-tests and tf-contrib-tests in the graph 23 errors."
+    },
+    {
+      "path": "external/cpu_features",
+      "url": "https://android.googlesource.com/platform/external/cpu_features",
+      "commit": "3aed778c722edb68321d66a5e1cd7b35ae2c891c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libcpu_features provider required by ART runtime modules in the graph 23 errors."
+    },
+    {
+      "path": "external/google-breakpad",
+      "url": "https://android.googlesource.com/platform/external/google-breakpad",
+      "commit": "9712c20fc9bbfbac4935993a2ca0b3958c5adad2",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP breakpad_client provider required by root-canal in the graph 23 error."
+    },
+    {
+      "path": "external/deqp",
+      "url": "https://android.googlesource.com/platform/external/deqp",
+      "commit": "230a1897a8c33452735a02a17c63f3c9c6bcb2b1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP CtsDeqpRunnerTests provider required by cts-tradefed-tests in the graph 23 error, with the whole dEQP project preserved."
+    },
+    {
+      "path": "external/deqp-deps/SPIRV-Headers",
+      "url": "https://android.googlesource.com/platform/external/deqp-deps/SPIRV-Headers",
+      "commit": "aa7b8a45763915dc5ad8f9537232e84e3796a33a",
+      "tag": "android-16.0.0_r1",
+      "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP SPIR-V headers and grammar filegroups required by the approved dEQP sources."
+    },
+    {
+      "path": "external/deqp-deps/SPIRV-Tools",
+      "url": "https://android.googlesource.com/platform/external/deqp-deps/SPIRV-Tools",
+      "commit": "7935793a768d7f6c6b0671cc61fda3286841da0e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP deqp_spirv-tools library and local generators required by the approved dEQP sources."
+    },
+    {
+      "path": "external/deqp-deps/glslang",
+      "url": "https://android.googlesource.com/platform/external/deqp-deps/glslang",
+      "commit": "0733c837682fd25e3363b598947126ff1838908c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP glslang libraries and headers. Upstream deqp_glslang_ResourceLimits_headers exports glslang/Public/ResourceLimits.h, a header file, as an include directory. This original property is retained for actual graph and compile validation."
+    },
+    {
+      "path": "external/deqp-deps/amber",
+      "url": "https://android.googlesource.com/platform/external/deqp-deps/amber",
+      "commit": "166c03c471039f3efc935a68d89b52521870ffd9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP deqp_amber library and local generators required by the approved dEQP sources."
     }
   ]
 }
