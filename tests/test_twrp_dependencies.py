@@ -258,6 +258,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "7ba053d5a12e4202d42704c21d294a79123e5394212a93fa4e22a0f7ef95dd1a")
 
+    def test_first_208_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:208]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "1a9cc7442df570d0702acb6a606d3c52110c3fde57796641ce49daa71e07f5fd")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1033,7 +1039,7 @@ class ConfigurationTests(Fixture):
             ("external/nist-pkits", "ee62ccc6b7665d12a4328db024f449f7ca5320fb",
              "nist-pkix-tests", ("core-tests",)),
         ]
-        self.assertEqual(len(projects), 208)
+        self.assertGreaterEqual(len(projects), 208)
         self.assertEqual([(p["path"], p["commit"]) for p in projects[202:208]],
                          [(path, commit) for path, commit, _, _ in expected])
         for project, (_, _, module, consumers) in zip(projects[202:208], expected):
@@ -1048,6 +1054,28 @@ class ConfigurationTests(Fixture):
         self.assertIn("retained Android", projects[202]["reason"])
         self.assertIn("generated header and visibility rules are preserved", projects[202]["reason"])
         self.assertIn("license metadata are preserved", projects[205]["reason"])
+
+    def test_graph_twenty_nine_bluetooth_java_provider_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("frameworks/opt/vcard", "09192f417d6f105cee940f566c0daa0db5fddb20",
+             "com.android.vcard"),
+            ("hardware/ril", "6bd627062458024e2cd1c13cf3d0b6c71cdfa495",
+             "sap-api-java-static"),
+        ]
+        self.assertEqual(len(projects), 210)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[208:210]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[208:210], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 29 errors", project["reason"])
+                self.assertIn("BluetoothLib", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertNotIn("projection", project["reason"].lower())
+        self.assertIn("SDK settings and test descriptors are preserved", projects[208]["reason"])
+        self.assertIn("Java, native and protocol definitions are preserved", projects[209]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

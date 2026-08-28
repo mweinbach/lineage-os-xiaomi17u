@@ -1464,6 +1464,20 @@
       "commit": "ee62ccc6b7665d12a4328db024f449f7ca5320fb",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP nist-pkix-tests provider required by core-tests in the graph 28 errors. Original PKITS tests and test resources are preserved."
+    },
+    {
+      "path": "frameworks/opt/vcard",
+      "url": "https://android.googlesource.com/platform/frameworks/opt/vcard",
+      "commit": "09192f417d6f105cee940f566c0daa0db5fddb20",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP com.android.vcard provider required by BluetoothLib in the graph 29 errors. Original library, SDK settings and test descriptors are preserved."
+    },
+    {
+      "path": "hardware/ril",
+      "url": "https://android.googlesource.com/platform/hardware/ril",
+      "commit": "6bd627062458024e2cd1c13cf3d0b6c71cdfa495",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP sap-api-java-static provider required by BluetoothLib in the graph 29 errors. Original Java, native and protocol definitions are preserved."
     }
   ]
 }
