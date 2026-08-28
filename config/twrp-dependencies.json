@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "base": {
+    "source_dir": "/work/twrp-nezha",
+    "manifest_commit": "d2188a9345857fb078c391e8cb3e259a21e941e5",
+    "repo_commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77",
+    "frozen_manifest_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+    "project_count": 391
+  },
+  "projects": [
+    {
+      "path": "system/bpf",
+      "url": "https://android.googlesource.com/platform/system/bpf",
+      "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+    }
+  ]
+}
