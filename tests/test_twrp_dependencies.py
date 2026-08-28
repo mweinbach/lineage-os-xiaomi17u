@@ -84,7 +84,13 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "dfada91f5e31bf4df2de6d68dbbec59e22092c4bc78e8564aa36be4a720ad8cd")
 
-    def test_eleven_supplements_and_original_391_project_snapshot_are_pinned(self):
+    def test_first_eleven_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:11]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "fd8e7aff3ae58eb0703c7202567b4fccf87f29b9f0e1962dff3f999dddfad36d")
+
+    def test_fifteen_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
         self.assertEqual(config["projects"], [{
@@ -132,7 +138,23 @@ class ConfigurationTests(Fixture):
         }, {
             "path": "external/libjpeg-turbo", "url": "https://android.googlesource.com/platform/external/libjpeg-turbo",
             "commit": "6cedbd6ff13946bef76a015693d02723b0d3226e", "tag": "android-16.0.0_r1",
-            "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."}])
+            "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."
+        }, {
+            "path": "hardware/st/nfc", "url": "https://android.googlesource.com/platform/hardware/st/nfc",
+            "commit": "ffc570734ef14c1d153b0dcc13ce63a733d6540a", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP nfc_service_fuzzer provider required by the SELinux service-fuzzer binding validator. Generic ST source for validation only; not the selected phone NFC HAL."
+        }, {
+            "path": "system/connectivity/wificond", "url": "https://android.googlesource.com/platform/system/connectivity/wificond",
+            "commit": "65a446e53318aa491314d4a858c383676a4499cf", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP wificond_service_fuzzer provider required by the SELinux service-fuzzer binding validator."
+        }, {
+            "path": "packages/modules/Virtualization", "url": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+            "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP virtualizationmanager_fuzzer provider required by the SELinux service-fuzzer binding validator."
+        }, {
+            "path": "frameworks/opt/net/wifi", "url": "https://android.googlesource.com/platform/frameworks/opt/net/wifi",
+            "commit": "1cab31f96d1f903e190708c1ce665520a4a89d10", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libwifi-system-iface and libwifi-system-iface-test providers required by the wificond service fuzzer source."}])
         self.assertIn("libnetworkstackutilsjni_deps", config["projects"][1]["reason"])
         self.assertIn("tests/unit/Android.bp", config["projects"][1]["reason"])
         snapshot = dependencies.ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"

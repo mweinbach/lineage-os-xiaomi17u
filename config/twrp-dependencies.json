@@ -85,6 +85,34 @@
       "commit": "6cedbd6ff13946bef76a015693d02723b0d3226e",
       "tag": "android-16.0.0_r1",
       "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."
+    },
+    {
+      "path": "hardware/st/nfc",
+      "url": "https://android.googlesource.com/platform/hardware/st/nfc",
+      "commit": "ffc570734ef14c1d153b0dcc13ce63a733d6540a",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP nfc_service_fuzzer provider required by the SELinux service-fuzzer binding validator. Generic ST source for validation only; not the selected phone NFC HAL."
+    },
+    {
+      "path": "system/connectivity/wificond",
+      "url": "https://android.googlesource.com/platform/system/connectivity/wificond",
+      "commit": "65a446e53318aa491314d4a858c383676a4499cf",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP wificond_service_fuzzer provider required by the SELinux service-fuzzer binding validator."
+    },
+    {
+      "path": "packages/modules/Virtualization",
+      "url": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+      "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP virtualizationmanager_fuzzer provider required by the SELinux service-fuzzer binding validator."
+    },
+    {
+      "path": "frameworks/opt/net/wifi",
+      "url": "https://android.googlesource.com/platform/frameworks/opt/net/wifi",
+      "commit": "1cab31f96d1f903e190708c1ce665520a4a89d10",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libwifi-system-iface and libwifi-system-iface-test providers required by the wificond service fuzzer source."
     }
   ]
 }
