@@ -1,0 +1,1098 @@
+{
+  "schema_version": 1,
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "snapshot": "factory-user-v8-boot-components",
+  "status": "three_generated_boot_components_validated_not_a_complete_rom",
+  "receipts": {
+    "build": {
+      "path": "reports/nezha-factory-boot-v8-1-receipt.json",
+      "size_bytes": 71231,
+      "sha256": "869ea7bd4fbb1dd914d5d159ba591efc0a392a44ab63e9a6954281f5755986d6"
+    },
+    "guest_manifest": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/guest-manifest.json",
+      "size_bytes": 46581,
+      "sha256": "af85322b5462cd5f9bbc21f82a7fe5a38ef73b185ecb919933102c9d0690e5a7"
+    },
+    "collection": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/collection-receipt.json",
+      "size_bytes": 4991,
+      "sha256": "9b86aeb8b08552c917caab318d2b2489bf5fd5858174cbc4f3490363e6e04c60"
+    },
+    "sealed_snapshot": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/snapshot.json",
+      "size_bytes": 19273,
+      "sha256": "a3873195eb76155a502208af5bc037cdaf740acc5df574eab43ef47312ef21e6"
+    },
+    "validation": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/host-boot-validation-v3/receipt.json",
+      "size_bytes": 427291,
+      "sha256": "cff12cd8e5fc60290758c3c6c2e2a70ebce4f1f22982d345feec4e4a83d9a8e3"
+    },
+    "remaining_schema_preflight": {
+      "path": "reports/factory-boot-v8-v3-preflight-v1.json",
+      "size_bytes": 28073,
+      "sha256": "b37558ec4cb530724c831cdfef99915d3613c29af51c5d7715b5891b56a68e69"
+    },
+    "factory_vendor_inventory": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/vendor_boot-inventory.json",
+      "size_bytes": 454747,
+      "sha256": "81ea2df0c4927f4a58d9587bb09a2809dccd5f75a62542669926fd1d9a5bdec6"
+    },
+    "cpio_source_review": {
+      "path": "reports/factory-boot-v8-cpio-source-v1/receipt.json",
+      "size_bytes": 1918,
+      "sha256": "fea40acea1e5d12d987be354de87dcf9e5bd4347e2d10ea6add40bc71d057058"
+    },
+    "avb_control_flow_review": {
+      "path": "reports/factory-boot-v8-avb-flow-source-v1/receipt.json",
+      "size_bytes": 2987,
+      "sha256": "c4d51847d0e133ff20c6516a58004eb444cda89aa18ec6025835baec36c8f99d"
+    }
+  },
+  "build": {
+    "name": "nezha-factory-boot-v8-1",
+    "target_product": "lineage_nezha",
+    "target_release": "bp4a",
+    "target_variant": "user",
+    "started_at": "2026-08-27T23:53:38.109989+00:00",
+    "completed_at": "2026-08-28T00:17:18.209127+00:00",
+    "ninja_actions_completed": 6551,
+    "exit_code": 0,
+    "passed": true,
+    "component_goals": [
+      "initbootimage",
+      "vendorbootimage",
+      "dtboimage",
+      "init"
+    ],
+    "source_policy_build_record": "research/user-security-build.json",
+    "full_rom_build_verified": false
+  },
+  "provenance": {
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "factory_source_kind": "user-provided",
+    "factory_source_url": null,
+    "factory_origin_verified": false,
+    "device_admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+    "kernel_receipt_sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+    "vendor_receipt_sha256": "811f7904adbec2fa99d933179b1247d0c2e30f80a2ba7e0b54c8a2e713917360",
+    "init_patch_application_sha256": "e8893a3c2e26cd19ba5ad0b6c521d19a214de6f5ae295c3316701dd2736f02c3",
+    "kernel_bundle_input_avb_status_not_relabelled": "failed",
+    "module_equality_is_not_signature_authentication": true,
+    "generated_images_are_new_build_artifacts_not_factory_images": true
+  },
+  "collection": {
+    "completed_at": "2026-08-28T00:40:35.158654+00:00",
+    "guest_seal_path": "/work/validation/nezha-factory-boot-v8-1/sealed-snapshot-v1",
+    "guest_file_count": 29,
+    "host_symbol_reports_added": 2,
+    "host_snapshot_file_count": 31,
+    "host_snapshot_file_bytes": 152380776,
+    "all_stream_hashes_verified": true,
+    "all_snapshot_files_rechecked": true,
+    "no_android_build_active_during_sealing": true,
+    "source_and_out_modified": false,
+    "existing_files_replaced": false,
+    "same_sealed_snapshot_used_for_all_inspections": true,
+    "host_collector_sha256": "de9c3660bc3397b65459abffcdbaa8f431ec96da864992ec7e03b1f75e336d90",
+    "guest_collector_sha256": "04f6c2e89a69ef772b41a79b19401e54040b1299322d001fd7bc639098d49353",
+    "initial_validator_schema_sha256": "0963195249e2873d85554fe3a0c2121c003f85b1da8fe261ff6cd677c3ee7de5",
+    "guest_accessed_for_sealing": true,
+    "phone_accessed": false
+  },
+  "validation": {
+    "completed_at": "2026-08-28T01:01:19.369708+00:00",
+    "revision": 3,
+    "driver": {
+      "path": "reports/validate-factory-boot-v8-v3.py",
+      "sha256": "bccbe8e1498610feac0db3cadde61eb36d3c6fdaf8f0157216b8f6d4debf0ee0"
+    },
+    "passed": true,
+    "input_readback_count": 498,
+    "all_inputs_rechecked": true,
+    "generated_output_files_rehashed": 30,
+    "generated_output_bytes_rehashed_excluding_receipt": 83599532,
+    "pinned_tool_command_count": 11,
+    "guest_accessed": false,
+    "live_out_accessed": false,
+    "images_mounted": false,
+    "firmware_executed": false,
+    "phone_accessed": false,
+    "checks_disabled": []
+  },
+  "images": {
+    "init_boot": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/images/init_boot.img",
+      "size_bytes": 8388608,
+      "sha256": "eae81b09a6b6f5ee7c1901fef654e407b8d3776a5ec7682a3291f86c76475e0f",
+      "package_derived_partition_budget_bytes": 8388608,
+      "fits_package_budget": true,
+      "live_partition_fit_verified": false,
+      "avb": {
+        "original_image_size": 3735552,
+        "vbmeta_offset": 3735552,
+        "vbmeta_size": 832,
+        "algorithm": "NONE",
+        "flags": 0,
+        "rollback_index": 0,
+        "embedded_signature_present": false,
+        "embedded_signature_verified": false,
+        "matches_engineering_test_key": false,
+        "embedded_key_sha256": null,
+        "hash_descriptor_digest_verified": true,
+        "oem_authenticated": false,
+        "complete_new_chain_verified": false,
+        "hash_algorithm": "sha256",
+        "hash_descriptor_flags": 0,
+        "direct_sealed_byte_hash_verified": true,
+        "declared_descriptor_array_exactly_exhausted": true,
+        "descriptor_count": 4,
+        "required_libavb_version": [
+          1,
+          0
+        ],
+        "checked_against_host_libavb_version": [
+          1,
+          3
+        ],
+        "phone_bootloader_libavb_version_verified": false
+      },
+      "properties": {
+        "os_version": "16",
+        "security_patch": "2026-02-01",
+        "fingerprint_sha256": "bb80d7139b86811fc26fe82aa2e5f0e71aad001caf60a0711d3b562d5771e3f4",
+        "fingerprint_variant": "user",
+        "fingerprint_signing_tags": "test-keys"
+      }
+    },
+    "vendor_boot": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/images/vendor_boot.img",
+      "size_bytes": 100663296,
+      "sha256": "b10bdb2e9f4e12b126982924e2b754717e37da739da2ad4d6f4192742471db86",
+      "package_derived_partition_budget_bytes": 100663296,
+      "fits_package_budget": true,
+      "live_partition_fit_verified": false,
+      "avb": {
+        "original_image_size": 22618112,
+        "vbmeta_offset": 22618112,
+        "vbmeta_size": 704,
+        "algorithm": "NONE",
+        "flags": 0,
+        "rollback_index": 0,
+        "embedded_signature_present": false,
+        "embedded_signature_verified": false,
+        "matches_engineering_test_key": false,
+        "embedded_key_sha256": null,
+        "hash_descriptor_digest_verified": true,
+        "oem_authenticated": false,
+        "complete_new_chain_verified": false,
+        "hash_algorithm": "sha256",
+        "hash_descriptor_flags": 0,
+        "direct_sealed_byte_hash_verified": true,
+        "declared_descriptor_array_exactly_exhausted": true,
+        "descriptor_count": 2,
+        "required_libavb_version": [
+          1,
+          0
+        ],
+        "checked_against_host_libavb_version": [
+          1,
+          3
+        ],
+        "phone_bootloader_libavb_version_verified": false
+      },
+      "properties": {
+        "fingerprint_sha256": "bb80d7139b86811fc26fe82aa2e5f0e71aad001caf60a0711d3b562d5771e3f4",
+        "fingerprint_variant": "user",
+        "fingerprint_signing_tags": "test-keys"
+      }
+    },
+    "dtbo": {
+      "path": "artifacts/build-validation/nezha-factory-boot-v8-1/images/dtbo.img",
+      "size_bytes": 33554432,
+      "sha256": "b166ce78ee67b970feb71e10b6123204c30f225b6b867023b75582eedf82fa35",
+      "package_derived_partition_budget_bytes": 33554432,
+      "fits_package_budget": true,
+      "live_partition_fit_verified": false,
+      "avb": {
+        "original_image_size": 1495111,
+        "vbmeta_offset": 1499136,
+        "vbmeta_size": 704,
+        "algorithm": "NONE",
+        "flags": 0,
+        "rollback_index": 0,
+        "embedded_signature_present": false,
+        "embedded_signature_verified": false,
+        "matches_engineering_test_key": false,
+        "embedded_key_sha256": null,
+        "hash_descriptor_digest_verified": true,
+        "oem_authenticated": false,
+        "complete_new_chain_verified": false,
+        "hash_algorithm": "sha256",
+        "hash_descriptor_flags": 0,
+        "direct_sealed_byte_hash_verified": true,
+        "declared_descriptor_array_exactly_exhausted": true,
+        "descriptor_count": 2,
+        "required_libavb_version": [
+          1,
+          0
+        ],
+        "checked_against_host_libavb_version": [
+          1,
+          3
+        ],
+        "phone_bootloader_libavb_version_verified": false
+      },
+      "properties": {
+        "fingerprint_sha256": "bb80d7139b86811fc26fe82aa2e5f0e71aad001caf60a0711d3b562d5771e3f4",
+        "fingerprint_variant": "user",
+        "fingerprint_signing_tags": "test-keys"
+      }
+    }
+  },
+  "headers": {
+    "init_boot": {
+      "header_version": 4,
+      "header_size": 1584,
+      "page_size": 4096,
+      "kernel_size": 0,
+      "ramdisk_size": 3727924,
+      "ramdisk_offset": 4096,
+      "signature_size": 0,
+      "os_version_patch_level_encoded": 536871336,
+      "cmdline": ""
+    },
+    "vendor_boot": {
+      "header_version": 4,
+      "header_size": 2128,
+      "page_size": 4096,
+      "load_addresses": {
+        "kernel": 32768,
+        "ramdisk": 16777216,
+        "tags": 256,
+        "dtb": 32505856
+      },
+      "cmdline": "video=vfb:640x400,bpp=32,memsize=3072000 erofs.reserved_pages=64 bootconfig bootconfig",
+      "product_name": "",
+      "ramdisk_offset": 4096,
+      "ramdisk_size": 18106953,
+      "dtb_offset": 18112512,
+      "dtb_size": 4496880,
+      "table_offset": 22609920,
+      "table_size": 108,
+      "entry_count": 1,
+      "entry_size": 108,
+      "fragment": {
+        "offset": 0,
+        "size_bytes": 18106953,
+        "type": 1,
+        "name": "",
+        "board_id": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "bootconfig_offset": 22614016,
+      "bootconfig_size": 270
+    }
+  },
+  "dtb": {
+    "size_bytes": 4496880,
+    "sha256": "1a5c30b75e816f33dd36caa114faa7bc656605e4ac9ffe786726538b37ada22d",
+    "tree_count": 8,
+    "bytes_match_admitted": true
+  },
+  "dtbo": {
+    "header_words": [
+      3619138334,
+      1495111,
+      32,
+      32,
+      1,
+      32,
+      4096,
+      0
+    ],
+    "entries": [
+      {
+        "index": 0,
+        "size_bytes": 1495047,
+        "offset": 64,
+        "sha256": "4bb4b31bca5de3e354a565304d1ea277ac6d9b70e2760a40147d9f151a691f99",
+        "all_entry_words": [
+          1495047,
+          64,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "all_overlay_bytes_match_admitted": true,
+    "whole_image_bytes_match_admitted": false
+  },
+  "bootconfig": {
+    "size_bytes": 270,
+    "sha256": "597ae0930da0636ed6099bf5a892004f34885bfbe9f424135d5af6cb46b8fd67",
+    "values": {
+      "androidboot.hardware": "qcom",
+      "androidboot.hypervisor.protected_vm.supported": "true",
+      "androidboot.hypervisor.version": "gunyah",
+      "androidboot.load_modules_parallel": "true",
+      "androidboot.memcg": "1",
+      "androidboot.serialconsole": "0",
+      "androidboot.usbcontroller": "a600000.dwc3",
+      "androidboot.vendor.qspa": "true"
+    },
+    "all_eight_admitted_values_retained": true,
+    "additional_keys": [],
+    "bytes_match_sealed_generated_bootconfig": true,
+    "bytes_match_stock_reference": false
+  },
+  "ramdisks": {
+    "init_boot": {
+      "size_bytes": 7159296,
+      "sha256": "5546b97deb9b6b81b4c6c526c2a41d1d3a025205b7597c8efba0a1d8e860754e",
+      "archive_count": 1,
+      "zero_padding_bytes": 36,
+      "entry_count": 42,
+      "unique_path_count": 41,
+      "duplicate_file_symlink_alias_or_metadata_conflicts_allowed": false,
+      "all_directory_occurrences_preserved": true,
+      "metadata_groups": [
+        {
+          "kind": 8192,
+          "permissions_octal": "0644",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 4
+        },
+        {
+          "kind": 16384,
+          "permissions_octal": "0751",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 1
+        },
+        {
+          "kind": 16384,
+          "permissions_octal": "0755",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 21
+        },
+        {
+          "kind": 32768,
+          "permissions_octal": "0644",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 5
+        },
+        {
+          "kind": 32768,
+          "permissions_octal": "0750",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 1
+        },
+        {
+          "kind": 32768,
+          "permissions_octal": "0755",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 3
+        },
+        {
+          "kind": 40960,
+          "permissions_octal": "0755",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 7
+        }
+      ],
+      "paths_materialized": false,
+      "symlinks_followed": false,
+      "timestamps_and_inode_numbers_not_compared_to_factory": true,
+      "repeated_directory_mtime_compared": true,
+      "repeated_directory_inode_ignored": true,
+      "compressed": {
+        "size_bytes": 3727924,
+        "sha256": "37f2a8a0190f64ef914c63c7a292300ef70350e5844536aaae9919e52fa1c39b"
+      }
+    },
+    "vendor_boot": {
+      "size_bytes": 48229632,
+      "sha256": "3e0a0b297ff1e95a01229b521e723f5dee9f9e1efb1f2b2e8b380e7a33064f2e",
+      "archive_count": 1,
+      "zero_padding_bytes": 208,
+      "entry_count": 440,
+      "unique_path_count": 440,
+      "duplicate_file_symlink_alias_or_metadata_conflicts_allowed": false,
+      "all_directory_occurrences_preserved": true,
+      "metadata_groups": [
+        {
+          "kind": 16384,
+          "permissions_octal": "0755",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 3
+        },
+        {
+          "kind": 32768,
+          "permissions_octal": "0644",
+          "uid": 0,
+          "gid": 0,
+          "entry_count": 437
+        }
+      ],
+      "paths_materialized": false,
+      "symlinks_followed": false,
+      "timestamps_and_inode_numbers_not_compared_to_factory": true,
+      "repeated_directory_mtime_compared": true,
+      "repeated_directory_inode_ignored": true,
+      "compressed": {
+        "size_bytes": 18106953,
+        "sha256": "096ca6df32c422ff11fa15b9ff590accb580bc923c86f2d0279d5d531a5e51a0"
+      }
+    }
+  },
+  "repeated_directory": {
+    "cpio": "init_boot",
+    "canonical_path": "dev",
+    "archive": 0,
+    "occurrences": [
+      {
+        "occurrence_index": 0,
+        "header_offset": 0,
+        "content_offset": 116,
+        "inode": 300000,
+        "mode": "0o40755",
+        "uid": 0,
+        "gid": 0,
+        "nlink": 1,
+        "mtime": 0,
+        "size_bytes": 0,
+        "device_major": 0,
+        "device_minor": 0,
+        "rdev_major": 0,
+        "rdev_minor": 0,
+        "checksum": 0
+      },
+      {
+        "occurrence_index": 6,
+        "header_offset": 728,
+        "content_offset": 844,
+        "inode": 300006,
+        "mode": "0o40755",
+        "uid": 0,
+        "gid": 0,
+        "nlink": 1,
+        "mtime": 0,
+        "size_bytes": 0,
+        "device_major": 0,
+        "device_minor": 0,
+        "rdev_major": 0,
+        "rdev_minor": 0,
+        "checksum": 0
+      }
+    ],
+    "all_occurrences_preserved": true,
+    "only_inode_and_offsets_differ": true,
+    "same_archive_same_spelling_required": true,
+    "directory_metadata_must_match": true,
+    "file_symlink_alias_and_ancestor_conflicts_rejected": true,
+    "generation_explanation_is_source_supported_inference": true,
+    "reference_kernel_source_is_not_device_kernel_authentication": true
+  },
+  "vendor_ramdisk_modules": {
+    "count": 430,
+    "total_module_payload_bytes": 47961360,
+    "all_bytes_match_admitted": true,
+    "factory_inventory_matching_payload_count": 430,
+    "factory_matching_mode_uid_gid_count": 430,
+    "module_metadata": {
+      "mode": "0o100644",
+      "uid": 0,
+      "gid": 0
+    },
+    "metadata_file_count": 6,
+    "metadata": [
+      {
+        "cpio_path": "lib/modules/modules.alias",
+        "size_bytes": 54479,
+        "sha256": "16931d51bdefc1b000df88e0bd3a03d320436d51a602499e8bcaaae00b992841",
+        "admitted_sha256": "16931d51bdefc1b000df88e0bd3a03d320436d51a602499e8bcaaae00b992841",
+        "bytes_match_admitted": true,
+        "ordered_noncomment_lines_match_admitted": true,
+        "required_load_or_blocklist_semantics_match": null,
+        "sealed_stage_bytes_compared": true,
+        "sealed_stage_bytes_match": true,
+        "mode": "0o100644",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "cpio_path": "lib/modules/modules.blocklist",
+        "size_bytes": 1325,
+        "sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+        "admitted_sha256": "8d16835bf9836564ac6398549b102036c7cc3c8a9120680899be9ed1fd19cbbf",
+        "bytes_match_admitted": true,
+        "ordered_noncomment_lines_match_admitted": true,
+        "required_load_or_blocklist_semantics_match": true,
+        "sealed_stage_bytes_compared": true,
+        "sealed_stage_bytes_match": true,
+        "mode": "0o100644",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "cpio_path": "lib/modules/modules.dep",
+        "size_bytes": 134144,
+        "sha256": "0ab564376d473e7ba7c5e3b1c797b57f93500d43d60eef999072785a76e20b34",
+        "admitted_sha256": "0ab564376d473e7ba7c5e3b1c797b57f93500d43d60eef999072785a76e20b34",
+        "bytes_match_admitted": true,
+        "ordered_noncomment_lines_match_admitted": true,
+        "required_load_or_blocklist_semantics_match": null,
+        "sealed_stage_bytes_compared": true,
+        "sealed_stage_bytes_match": true,
+        "mode": "0o100644",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "cpio_path": "lib/modules/modules.load",
+        "size_bytes": 2404,
+        "sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "admitted_sha256": "1101cd200b68b007b2dc039b55358dc8c9459023cbf30c2dfd13f591c805aa26",
+        "bytes_match_admitted": true,
+        "ordered_noncomment_lines_match_admitted": true,
+        "required_load_or_blocklist_semantics_match": true,
+        "sealed_stage_bytes_compared": true,
+        "sealed_stage_bytes_match": true,
+        "mode": "0o100644",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "cpio_path": "lib/modules/modules.load.recovery",
+        "size_bytes": 7205,
+        "sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "admitted_sha256": "91eacbd4a84618a9c3e9dab266286757099d2dd5c03d3b4dd2bd74e9d7d68de3",
+        "bytes_match_admitted": true,
+        "ordered_noncomment_lines_match_admitted": true,
+        "required_load_or_blocklist_semantics_match": true,
+        "sealed_stage_bytes_compared": true,
+        "sealed_stage_bytes_match": true,
+        "mode": "0o100644",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "cpio_path": "lib/modules/modules.softdep",
+        "size_bytes": 926,
+        "sha256": "646495a49690d0b527480b26cecf8d8afc5834a9b553b1264412382d2c5aa124",
+        "admitted_sha256": "646495a49690d0b527480b26cecf8d8afc5834a9b553b1264412382d2c5aa124",
+        "bytes_match_admitted": true,
+        "ordered_noncomment_lines_match_admitted": true,
+        "required_load_or_blocklist_semantics_match": null,
+        "sealed_stage_bytes_compared": true,
+        "sealed_stage_bytes_match": true,
+        "mode": "0o100644",
+        "uid": 0,
+        "gid": 0
+      }
+    ],
+    "normal_load_entries": 157,
+    "normal_load_unique_names": 154,
+    "recovery_load_entries": 435,
+    "recovery_load_unique_names": 424,
+    "load_order_and_duplicates_preserved": true,
+    "all_load_names_present": true,
+    "module_abi_and_signature_trust_verified": false,
+    "no_modules_loaded": true
+  },
+  "fstab": {
+    "size_bytes": 5850,
+    "sha256": "f1406e41b969daed6156892e2abafea20293a9e3cd532b7e42de6bf7ca7a987e",
+    "row_count": 29,
+    "avb_row_count": 13,
+    "exact_generated_bytes_match": true,
+    "selected_factory_verification_and_encryption_flags_preserved": true,
+    "raw_factory_fstab_bytes_adopted_wholesale": false,
+    "mounts_or_formatting_performed": false,
+    "cpio_metadata": {
+      "mode": "0o100644",
+      "uid": 0,
+      "gid": 0,
+      "nlink": 1
+    },
+    "verification_rows": [
+      {
+        "source": "system",
+        "mount_point": "/system",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta_system"
+        ]
+      },
+      {
+        "source": "system_ext",
+        "mount_point": "/system_ext",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta_system"
+        ]
+      },
+      {
+        "source": "product",
+        "mount_point": "/product",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta_system"
+        ]
+      },
+      {
+        "source": "mi_ext",
+        "mount_point": "/mnt/vendor/mi_ext",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "vendor",
+        "mount_point": "/vendor",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "vendor_dlkm",
+        "mount_point": "/vendor_dlkm",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "system_dlkm",
+        "mount_point": "/system_dlkm",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "odm",
+        "mount_point": "/odm",
+        "filesystem": "erofs",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "/dev/block/by-name/boot",
+        "mount_point": "/boot",
+        "filesystem": "emmc",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "/dev/block/by-name/init_boot",
+        "mount_point": "/init_boot",
+        "filesystem": "emmc",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "/dev/block/by-name/vendor_boot",
+        "mount_point": "/vendor_boot",
+        "filesystem": "emmc",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "/dev/block/by-name/dtbo",
+        "mount_point": "/dtbo",
+        "filesystem": "emmc",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      },
+      {
+        "source": "/dev/block/by-name/recovery",
+        "mount_point": "/recovery",
+        "filesystem": "emmc",
+        "verification_flags": [
+          "avb=vbmeta"
+        ]
+      }
+    ],
+    "encryption_rows": [
+      {
+        "source": "/dev/block/bootdevice/by-name/userdata",
+        "mount_point": "/data",
+        "filesystem": "f2fs",
+        "mount_options": [
+          "noatime",
+          "nosuid",
+          "nodev",
+          "discard",
+          "reserve_root=32768",
+          "resgid=1065",
+          "fsync_mode=nobarrier",
+          "inlinecrypt",
+          "atgc"
+        ],
+        "encryption_flags": [
+          "fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized+wrappedkey_v0",
+          "keydirectory=/metadata/vold/metadata_encryption",
+          "metadata_encryption=aes-256-xts:wrappedkey_v0"
+        ]
+      },
+      {
+        "source": "/devices/platform/soc/8804000.sdhci/mmc_host*",
+        "mount_point": "/storage/sdcard1",
+        "filesystem": "vfat",
+        "mount_options": [
+          "nosuid",
+          "nodev"
+        ],
+        "encryption_flags": [
+          "encryptable=footer"
+        ]
+      }
+    ]
+  },
+  "init": {
+    "first_stage": {
+      "binary": {
+        "path": "artifacts/build-validation/nezha-factory-boot-v8-1/init/first_stage",
+        "size_bytes": 2713472,
+        "sha256": "e1f34b1dc3473646ac55e56a9731b505a75e6d35fa2366d4c7cf54f016dedd54"
+      },
+      "elf": {
+        "elf_class": 64,
+        "endianness": "little",
+        "machine": 183,
+        "type": 2,
+        "program_header_count": 10,
+        "program_file_bounds_verified": true,
+        "executed": false
+      },
+      "source": {
+        "path": "system/core/init/first_stage_init.cpp",
+        "sha256": "dd69639b649c49aaa8513f05f2cf0dc7bf2695d564018ae1f31ec31ea2d769a1"
+      },
+      "compile_evidence": {
+        "receipt": {
+          "path": "artifacts/build-validation/nezha-factory-boot-v8-1/init-compile/first_stage.json",
+          "size_bytes": 130106,
+          "sha256": "3e72e8c042935e019ffacd03dd3e2da1e8e537aa692d9f6ae2b2637c87b1c798"
+        },
+        "effective_spoof_safetynet_macro": "0",
+        "argv_source": "ninja-command",
+        "argument_count": 445,
+        "response_file_count": 0,
+        "object": {
+          "out_path": "soong/.intermediates/system/core/init/init_first_stage/android_ramdisk_arm64_armv8-a/obj/system/core/init/first_stage_init.o",
+          "size_bytes": 932836,
+          "sha256": "4e110803aa2a534e680993082ddbc76b2caea0e921c5d0b43904e1e21b7b3dff"
+        },
+        "object_mtime_in_build_window": true,
+        "latest_matching_cumulative_ninja_row_mtime_matches_object": true,
+        "cumulative_ninja_log_sha256": "68794776055ddb4c686debe47ef9536fcc84d52028fdba1e359ec6e90c74cbb5",
+        "current_invocation_proven": false,
+        "object_linkage_into_binary_independently_proven": false,
+        "compiler_reexecuted_by_inspection": false,
+        "reproducible_build_proven": false
+      },
+      "symbols": {
+        "stage": "first_stage",
+        "input_binary_sha256": "e1f34b1dc3473646ac55e56a9731b505a75e6d35fa2366d4c7cf54f016dedd54",
+        "tool_sha256": "37e565359be0c9f2868348dd314416a420d137ee84c891ec8474cf7d29cfd995",
+        "evidence_sha256": "d5335804cbae3cfe99d4c32f2c6387457057ff008f95e8a4b5eef0a65591b2dc",
+        "stdout_sha256": "6b922a5f76238d4e42e95dcfcef68a6ac9f17219fe0bb15a6c2b891831a04a4e",
+        "stdout_size_bytes": 254,
+        "exit_code": 0,
+        "symbols_or_their_absence_do_not_prove_runtime_behaviour": true,
+        "receipt": {
+          "path": "artifacts/build-validation/nezha-factory-boot-v8-1/host-evidence/init-symbols/first_stage.json",
+          "size_bytes": 1373,
+          "sha256": "d5335804cbae3cfe99d4c32f2c6387457057ff008f95e8a4b5eef0a65591b2dc"
+        }
+      },
+      "packaging_verified": true,
+      "runtime_behavior_verified": false,
+      "cpio_path": "init",
+      "cpio_metadata": {
+        "mode": "0o100750",
+        "uid": 0,
+        "gid": 0,
+        "nlink": 1
+      },
+      "bytes_match_sealed_built_init": true
+    },
+    "second_stage": {
+      "binary": {
+        "path": "artifacts/build-validation/nezha-factory-boot-v8-1/init/second_stage",
+        "size_bytes": 2708392,
+        "sha256": "3a0001d2b6383a5a97861c288eb82241ae5b88d18b3811f16d7960230abf8ca7"
+      },
+      "elf": {
+        "elf_class": 64,
+        "endianness": "little",
+        "machine": 183,
+        "type": 3,
+        "program_header_count": 12,
+        "program_file_bounds_verified": true,
+        "executed": false
+      },
+      "source": {
+        "path": "system/core/init/property_service.cpp",
+        "sha256": "d82faacbbeb80256a416ca81cb9c877def16c3140aa57f4126db41889a67a887"
+      },
+      "compile_evidence": {
+        "receipt": {
+          "path": "artifacts/build-validation/nezha-factory-boot-v8-1/init-compile/second_stage.json",
+          "size_bytes": 132564,
+          "sha256": "6b683efc86be78e5f30f1a972d5dbc1cad184f55b0b707dd92f6fcf334886741"
+        },
+        "effective_spoof_safetynet_macro": "0",
+        "argv_source": "ninja-command",
+        "argument_count": 457,
+        "response_file_count": 0,
+        "object": {
+          "out_path": "soong/.intermediates/system/core/init/libinit/android_arm64_armv8-a_static/obj/system/core/init/property_service.o",
+          "size_bytes": 1413488,
+          "sha256": "1fb65948a27927345a2bdfe0f3cbd287e075bfa80c35d24f57b493298ebb91a3"
+        },
+        "object_mtime_in_build_window": true,
+        "latest_matching_cumulative_ninja_row_mtime_matches_object": true,
+        "cumulative_ninja_log_sha256": "68794776055ddb4c686debe47ef9536fcc84d52028fdba1e359ec6e90c74cbb5",
+        "current_invocation_proven": false,
+        "object_linkage_into_binary_independently_proven": false,
+        "compiler_reexecuted_by_inspection": false,
+        "reproducible_build_proven": false
+      },
+      "symbols": {
+        "stage": "second_stage",
+        "input_binary_sha256": "3a0001d2b6383a5a97861c288eb82241ae5b88d18b3811f16d7960230abf8ca7",
+        "tool_sha256": "37e565359be0c9f2868348dd314416a420d137ee84c891ec8474cf7d29cfd995",
+        "evidence_sha256": "73087934504ea84bdc693f46f06ddb5d4d8427ed3b5a914a86ea461b17b3bbd8",
+        "stdout_sha256": "eab66ed019417b74387a4e0ac5bbca73604ed92e6dc37803fa983dffddb699d9",
+        "stdout_size_bytes": 131161,
+        "exit_code": 0,
+        "symbols_or_their_absence_do_not_prove_runtime_behaviour": true,
+        "receipt": {
+          "path": "artifacts/build-validation/nezha-factory-boot-v8-1/host-evidence/init-symbols/second_stage.json",
+          "size_bytes": 138208,
+          "sha256": "73087934504ea84bdc693f46f06ddb5d4d8427ed3b5a914a86ea461b17b3bbd8"
+        }
+      },
+      "packaging_verified": false,
+      "runtime_behavior_verified": false,
+      "packaging_into_system_image_verified": false
+    }
+  },
+  "effective_configuration": {
+    "soong": {
+      "Debuggable": false,
+      "Eng": false,
+      "SelinuxIgnoreNeverallows": false,
+      "EnforceSELinuxTrebleLabeling": true,
+      "SELinuxTrebleLabelingTrackingListFile": ""
+    },
+    "dexpreopt": {
+      "RelaxUsesLibraryCheck": false,
+      "DisablePreopt": false
+    },
+    "enabled_treble_flag_is_not_proof_of_test_scheduling_or_runtime_compatibility": true
+  },
+  "referenced_avb_keys": {
+    "count": 7,
+    "paths": [
+      "/avb/q-gsi.avbpubkey",
+      "/avb/r-gsi.avbpubkey",
+      "/avb/s-gsi.avbpubkey",
+      "/avb/t-gsi.avbpubkey",
+      "/avb/u-gsi.avbpubkey",
+      "/avb/v-gsi.avbpubkey",
+      "/avb/w-gsi.avbpubkey"
+    ],
+    "literal_paths_present_in_either_cpio": 0,
+    "first_stage_alternatives_present": 0,
+    "scope": "Only generated init_boot and vendor_boot CPIO paths; no other partitions or runtime mount state.",
+    "key_bytes_exported": false,
+    "absence_is_not_a_boot_failure_conclusion": true,
+    "normal_chained_avb_and_alternative_dsu_key_paths_are_distinct": true,
+    "pinned_fs_mgr_source_commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+    "runtime_key_availability_verified": false,
+    "device_unlock_state_verified": false
+  },
+  "inspector_history": {
+    "attempts": [
+      {
+        "revision": 1,
+        "driver": {
+          "path": "reports/validate-factory-boot-v8.py",
+          "sha256": "0963195249e2873d85554fe3a0c2121c003f85b1da8fe261ff6cd677c3ee7de5"
+        },
+        "failure": {
+          "path": "artifacts/build-validation/nezha-factory-boot-v8-1/.host-boot-validation-e0sqh3rk/failure.json",
+          "size_bytes": 3866,
+          "sha256": "8124248f9303bb5234c4f6771e5e25195c5276b30d036632abb5a4a5a4f59437"
+        },
+        "exception_type": "ValueError",
+        "reason": "Duplicate path in CPIO archive: dev",
+        "explanation": "Strict original parser rejected repeated dev directory entries before occurrence metadata was reviewed.",
+        "preserved": true,
+        "image_or_firmware_corruption_established": false,
+        "successful_validation_receipt_published": false
+      },
+      {
+        "revision": 2,
+        "driver": {
+          "path": "reports/validate-factory-boot-v8-v2.py",
+          "sha256": "ca17cbe633c2453ba33379c23f50700b6ec5accd9d67238fc2d6f0bfd271291d"
+        },
+        "failure": {
+          "path": "artifacts/build-validation/nezha-factory-boot-v8-1/.host-boot-validation-v2-p35yxoiv/failure.json",
+          "size_bytes": 10394,
+          "sha256": "47f7c7ea0116a426bbaca101077ef938a7a85d8121325c71384ccc8ae3160d6a"
+        },
+        "exception_type": "KeyError",
+        "reason": "'entries'",
+        "explanation": "Validator expected inline factory entries; the pinned parent receipt instead binds a separate inventory.",
+        "preserved": true,
+        "image_or_firmware_corruption_established": false,
+        "successful_validation_receipt_published": false
+      }
+    ],
+    "successful_revision": 3,
+    "cpio_parser_unchanged_between_v2_and_v3": true,
+    "standalone_factory_inventory_summary_and_hash_checked": true,
+    "remaining_schema_preflight_input_count": 47,
+    "focused_test_counts": {
+      "host_collector": 38,
+      "guest_collector": 34,
+      "validator_v1": 37,
+      "validator_v2": 50,
+      "validator_v3": 86
+    }
+  },
+  "source_references": {
+    "cpio_generation_and_reference_unpack": [
+      {
+        "path": "reports/factory-boot-v8-cpio-source-v1/mkbootfs.cpp",
+        "size_bytes": 12308,
+        "sha256": "3cb1ef8bb9d60fde87970b95f22b03c4b7b03eb9f7992dca0a80487bb07eec98",
+        "url": "https://raw.githubusercontent.com/Evolution-X/system_core/241488ea392c01079941d86ddc458b8a0c9ae6e1/mkbootfs/mkbootfs.cpp",
+        "final_url": "https://raw.githubusercontent.com/Evolution-X/system_core/241488ea392c01079941d86ddc458b8a0c9ae6e1/mkbootfs/mkbootfs.cpp",
+        "revision": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+        "executed": false
+      },
+      {
+        "path": "reports/factory-boot-v8-cpio-source-v1/build-Makefile",
+        "size_bytes": 378285,
+        "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e",
+        "url": "https://raw.githubusercontent.com/Evolution-X/build/a438ca40c6ed779042f806142b1165ba1360a7b2/core/Makefile",
+        "final_url": "https://raw.githubusercontent.com/Evolution-X/build/a438ca40c6ed779042f806142b1165ba1360a7b2/core/Makefile",
+        "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+        "executed": false
+      },
+      {
+        "path": "reports/factory-boot-v8-cpio-source-v1/linux-initramfs.c",
+        "size_bytes": 18299,
+        "sha256": "4381722366c0fcc6ffe0670ee04bab1159bc55076f897a70e39832650db82d2d",
+        "url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.23/init/initramfs.c",
+        "final_url": "https://raw.githubusercontent.com/gregkh/linux/v6.12.23/init/initramfs.c",
+        "revision": "reference-tag-v6.12.23-not-the-authenticated-device-kernel-source",
+        "executed": false
+      }
+    ],
+    "avb_key_control_flow": [
+      {
+        "path": "artifacts/source-contracts/nezha-zram-plan-v1/sources/evolution-system-core/init/first_stage_mount.cpp",
+        "size_bytes": 33929,
+        "sha256": "35b3c701209d5522661279e5e081cc213119b8703890fe7b54ea7166f2886410",
+        "receipt_path": "artifacts/source-contracts/nezha-zram-plan-v1/sources/receipt.json",
+        "receipt_sha256": "8c49fad098d83ff6d97f7160d87e4805d38762e6d83ad67224dead0e3a9c381c"
+      },
+      {
+        "path": "reports/factory-boot-v8-avb-flow-source-v1/fs_avb.cpp",
+        "size_bytes": 23904,
+        "sha256": "0cf31f1d83b08913da73e963dc407d925f5cf7e6f9941f5b320a9b67bf9055aa",
+        "url": "https://raw.githubusercontent.com/Evolution-X/system_core/241488ea392c01079941d86ddc458b8a0c9ae6e1/fs_mgr/libfs_avb/fs_avb.cpp",
+        "exact_commit_url": true
+      }
+    ]
+  },
+  "tools": {
+    "unpack_bootimg": {
+      "path": "upstream/aosp-mkbootimg/unpack_bootimg.py",
+      "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+      "sha256": "06b54dd9a07c5281778e29e234e76f6e3faee8bf0c904a5ef88fdee30eeed12e"
+    },
+    "avbtool": {
+      "path": "upstream/aosp-avb/avbtool.py",
+      "commit": "c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb",
+      "sha256": "14dc8d6ec533f551ec05ffd9a986ced0fd1290a201f62c91dad329dd51dfe3ed"
+    },
+    "mkdtboimg": {
+      "path": "upstream/aosp-libufdt/utils/src/mkdtboimg.py",
+      "commit": "10c6b5f81069d6d78c7ef3833458f4d51d02e2a6",
+      "sha256": "ea9507427f4f691e4de27ba6918db7880511448e9dd63a80874a79c1fcaffd82"
+    }
+  },
+  "source_policy_scope": {
+    "record": "research/user-security-build.json",
+    "source_policy_binaries_with_zero_permissive_domains": 2,
+    "full_factory_composition_passed": false,
+    "remaining_neverallow_assertion_sites": 5,
+    "full_factory_policy_binary_produced": false,
+    "image_validation_compiled_or_replaced_policy": false
+  },
+  "limits": {
+    "all_three_generated_avb_blocks_are_unsigned": true,
+    "hash_integrity_is_not_signature_authentication": true,
+    "full_vbmeta_chain_verified": false,
+    "signed_by_authenticated_xiaomi_key": false,
+    "live_partition_fit_verified": false,
+    "live_bootloader_state_verified": false,
+    "full_rom_verified": false,
+    "device_boot_verified": false,
+    "native_features_verified": false,
+    "second_stage_init_packaged_into_system_image_verified": false,
+    "init_runtime_behavior_verified": false,
+    "module_loadability_verified": false,
+    "custom_recovery_built_or_tested": false,
+    "phone_accessed": false,
+    "checks_disabled": []
+  }
+}
