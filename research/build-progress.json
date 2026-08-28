@@ -651,12 +651,12 @@
     }
   },
   "limits": [
-    "Input package is modified Xiaomi.eu with failed retained AVB and unverified origin; local input hashing does not authenticate it.",
-    "Source AVB failures do not prevent safe product/module checks. Complete target-files/OTA/super and flash admission remain false.",
-    "Image lengths/LP declarations are build budgets, not measured physical partition fit.",
-    "Vendor/ODM VINTF load/merge passed including active vendor APEX fragments; full framework compatibility, enforcing policy, kernel-export ABI, bootloader state and native-feature behavior remain unverified.",
-    "A separately intake-verified factory-named TGZ is now available under sources; its origin is unverified. The installed v6 build still uses the separately recorded Xiaomi.eu bundles.",
-    "Captured modified stock CIL failed seven strict neverallow assertions with native and actual Soong-built x86-64 tools. No combined Evolution/vendor policy has passed; no assertions were disabled."
+    "The retained kernel/module bundle has modified Xiaomi.eu provenance and failed package AVB. Current vendor/ODM inputs come from the separate factory-named package; neither origin is independently authenticated.",
+    "Local component builds and selected factory AVB checks do not admit complete target-files, OTA, super or flashing; the complete signed chain is not verified.",
+    "Package GPT extents and LP declarations provide build budgets, not measured live partition fit or growth-region capacity.",
+    "Vendor/ODM VINTF load/merge passed including active vendor APEX fragments. Complete framework compatibility, factory policy integration, runtime module loading, bootloader state and native features remain unverified.",
+    "The current v9 source-policy binaries have zero permissive domains. The complete composition with unchanged factory CIL still fails four assertion sites; all 6,366 assertions remain enabled.",
+    "Historical component builds keep their original admissions, variants, package provenance and results; later source installations do not relabel earlier images."
   ],
   "camera_build": {
     "state": "passed",
@@ -1347,6 +1347,39 @@
     "avb_hash_descriptors_verified": true,
     "complete_signed_chain_verified": false,
     "image_contents_inspected": true,
+    "full_rom_verified": false,
+    "phone_accessed": false
+  },
+  "dsp_policy_build": {
+    "record": "research/dsp-policy-build.json",
+    "input_admission_sha256": "50fea6a4e94d86ee94ba5514d7dc7b1420c15f5bb4e850ea0c5dcb66c377fb4d",
+    "build_receipt_sha256": "64fdf29e9ee07885c6efce95e512be73e417a68fa041b87ccbfedb838955977a",
+    "policy_check_receipt_sha256": "419b1a6e4993322ec1a533862ae4c18c5f7d7a42e611243b46c2328e39156d00",
+    "build_passed": true,
+    "build_completed_at": "2026-08-28T01:26:15.353358+00:00",
+    "ninja_actions_completed": 201,
+    "source_policy_binaries_checked": 2,
+    "source_policy_zero_permissive_domains": true,
+    "combined_factory_policy_passed": false,
+    "previous_factory_assertion_sites": 5,
+    "remaining_factory_assertion_sites": 4,
+    "retained_assertion_statements": 6366,
+    "assertions_removed": false,
+    "source_audit": {
+      "private_receipt": "reports/source-audit-after-v9-1-receipt.json",
+      "sha256": "2ea91f7862f09e7f8b41a56ce0df52db151dc9d22027658bca11838acaf344b8",
+      "completed_at": "2026-08-28T01:35:31.989482+00:00",
+      "project_heads_and_remotes_verified": 1179,
+      "clean_projects": 1176,
+      "expected_modified_projects": 3,
+      "unexpected_projects": [],
+      "local_manifest_files": [],
+      "source_writes_performed": false,
+      "source_sync_repeated": false,
+      "lfs_payloads_rehashed": false,
+      "ignored_files_audited": false,
+      "authored_non_repo_directories_audited": false
+    },
     "full_rom_verified": false,
     "phone_accessed": false
   }

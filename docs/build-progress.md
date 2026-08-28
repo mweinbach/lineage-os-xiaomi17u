@@ -6,6 +6,9 @@ outputs include boot, init_boot, vendor_boot, DTBO and both DLKM images across
 their recorded input snapshots. ARM64 `libbase.so`, the nine selected Camera
 dependency modules and the host VINTF/policy tools also built successfully.
 The Camera APK itself is not included, and a complete ROM has not been built.
+The current [DSP-enabled user policy build](dsp-policy-build.md) also passed.
+Its two source-policy binaries have zero permissive domains; the separate
+composition with unchanged factory policy still fails four assertion sites.
 The product
 selects Nezha, canoe, ARM64, 4 KiB kernel pages, shipping API 36 and board API
 202504, with AVB enabled. The [build record](../research/build-progress.json)
@@ -199,7 +202,7 @@ not a pass established by these successful framework targets. No live Ninja
 namespace snapshot was captured for this attempt; its logs show no sandbox
 fallback. Earlier sandbox observations retain their own attempt identities.
 
-Current admission **v8** was installed at `23:28:02 UTC`. It uses the separately
+Admission **v8** was installed at `23:28:02 UTC`. It uses the separately
 verified factory vendor/ODM images, factory API/property facts, factory fstab
 flags and package GPT budgets. Its DTBO budget is now **32 MiB**, with the
 unchanged 22 MiB stock input. All eight logical AVB declarations, five boot
@@ -274,6 +277,23 @@ are separate. Installation SHA256:
 `dae184a0129e4224e851b779e760a38c03a66559d114bf19e7b4590913543a76`.
 This installation record does not itself establish the subsequent Soong or
 full factory-policy result.
+
+The subsequent [v9 policy build](dsp-policy-build.md) passed at `01:26:15 UTC`
+on August 28 after 201 Ninja actions. The actual Soong outputs contain the
+intended DSP attribute and isolated-compute membership. Both source-policy
+binaries pass unfiltered permissive-domain checks. The strict combination of
+all seven new framework CIL files and three unchanged factory files now fails
+four assertion sites instead of five: two Binder conflicts and two init-helper
+property conflicts remain. All 6,366 assertions are retained. No combined
+policy binary or factory compatibility pass is claimed.
+
+This incremental build preserved all 12 checked v8 boot/init artifacts, the
+sealed v8 snapshot and eleven earlier userdebug artifacts. A fresh complete
+source audit again matched all 1,179 project HEADs and remotes, with only the
+three recorded patched projects. It did not repeat the earlier LFS payload
+audit or inspect ignored files and authored directories outside Repo. The
+source checkout and output directories were not reset, and the phone was not
+accessed.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from

@@ -12,6 +12,12 @@ images also build and pass their recorded content checks. A flashable ROM
 and complete signed boot chain are not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
+The current DSP-enabled user policy also builds. Both source-policy binaries
+have zero permissive domains under unfiltered checks. The separate combination
+with the unchanged factory policy now fails four assertion sites, down from
+five, with every security assertion retained. See the
+[DSP build result](docs/dsp-policy-build.md) for the exact scope.
+
 ## What is already here
 
 - Fourteen pinned source/reference checkouts, including Evolution X's official
@@ -170,9 +176,10 @@ properties do not independently establish physical variant or bootloader state.
 | [Actual VINTF validation](docs/vintf-validation.md) | Successful vendor/ODM and active APEX load/merge; separate framework-definition and compatibility limits |
 | [Vendor APEX dependencies](docs/apex-dependencies.md) | Guarded CAS, Widevine and Wi-Fi payload inspection and matching active-package evidence |
 | [SELinux contract](docs/selinux-contract.md) | Exact stock policy inputs and seven strict neverallow failures; no policy or device pass claimed |
-| [User policy integration](docs/selinux-user-integration.md) | Five remaining combined-policy assertion sites, source ownership and enforcing-policy requirements |
+| [User policy integration](docs/selinux-user-integration.md) | Historical user-policy conflicts, source ownership and enforcing-policy requirements |
 | [Hardened user build](docs/user-security-build.md) | Actual v8 component build, two unfiltered zero-permissive source binaries and separate factory-policy failure |
 | [DSP policy source](docs/dsp-policy-integration.md) | Explicit factory-bound source option, preserved assertions and separate compiler-fixture scope |
+| [DSP policy build](docs/dsp-policy-build.md) | Actual user build, two zero-permissive source binaries and four remaining factory-policy assertion sites |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Boot/DLKM build](docs/boot-dlkm-build.md) | Four built engineering images, exact kernel/overlay and 484 preserved module payloads |
 | [Factory-based boot build](docs/factory-boot-build.md) | Inspected user init_boot/vendor_boot/DTBO, 430 retained ramdisk modules and unsigned AVB-block scope |

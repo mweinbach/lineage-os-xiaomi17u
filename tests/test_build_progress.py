@@ -398,6 +398,37 @@ class BuildProgressTests(unittest.TestCase):
         for key in ("complete_signed_chain_verified", "full_rom_verified", "phone_accessed"):
             self.assertIs(proof[key], False)
 
+    def test_dsp_source_build_is_distinct_from_the_failed_factory_composition(self):
+        proof = self.record["dsp_policy_build"]
+        self.assertEqual(proof["input_admission_sha256"], self.installed_version(9)["admission_sha256"])
+        self.assertEqual(proof["record"], "research/dsp-policy-build.json")
+        self.assertTrue((ROOT / proof["record"]).is_file())
+        self.assertEqual(proof["build_receipt_sha256"],
+                         "64fdf29e9ee07885c6efce95e512be73e417a68fa041b87ccbfedb838955977a")
+        self.assertEqual(proof["policy_check_receipt_sha256"],
+                         "419b1a6e4993322ec1a533862ae4c18c5f7d7a42e611243b46c2328e39156d00")
+        self.assertEqual((proof["ninja_actions_completed"], proof["source_policy_binaries_checked"]), (201, 2))
+        self.assertIs(proof["build_passed"], True)
+        self.assertIs(proof["source_policy_zero_permissive_domains"], True)
+        self.assertEqual((proof["previous_factory_assertion_sites"], proof["remaining_factory_assertion_sites"]), (5, 4))
+        self.assertEqual(proof["retained_assertion_statements"], 6366)
+        for key in ("combined_factory_policy_passed", "assertions_removed", "full_rom_verified", "phone_accessed"):
+            self.assertIs(proof[key], False)
+        # The adoption receipt and older v8 result remain historical observations.
+        self.assertFalse(self.installed_version(9)["full_policy_compilation_verified"])
+        self.assertEqual(self.record["factory_user_security_build"]["remaining_factory_assertion_sites"], 5)
+
+    def test_dsp_build_source_audit_keeps_the_exact_three_patch_boundary(self):
+        audit = self.record["dsp_policy_build"]["source_audit"]
+        self.assertEqual(audit["sha256"], "2ea91f7862f09e7f8b41a56ce0df52db151dc9d22027658bca11838acaf344b8")
+        self.assertEqual(audit["project_heads_and_remotes_verified"], 1179)
+        self.assertEqual((audit["clean_projects"], audit["expected_modified_projects"]), (1176, 3))
+        self.assertEqual(audit["unexpected_projects"], [])
+        self.assertEqual(audit["local_manifest_files"], [])
+        for key in ("source_writes_performed", "source_sync_repeated", "lfs_payloads_rehashed",
+                    "ignored_files_audited", "authored_non_repo_directories_audited"):
+            self.assertIs(audit[key], False)
+
 
 if __name__ == "__main__":
     unittest.main()
