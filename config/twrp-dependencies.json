@@ -484,6 +484,41 @@
       "commit": "2abec0b574627877ddc8a2dff7315ca2fe489e56",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP cbor-java provider required by retained Java modules."
+    },
+    {
+      "path": "external/javaparser",
+      "url": "https://android.googlesource.com/platform/external/javaparser",
+      "commit": "f0340d8e30c177f9125cc02e7b512609509b136e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP javaparser and javaparser-symbol-solver providers required by retained code generation and automotive metadata tools."
+    },
+    {
+      "path": "external/javassist",
+      "url": "https://android.googlesource.com/platform/external/javassist",
+      "commit": "f1fbf3c2ab775ce834e0af96b7a85bdc7a0eac65",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Javassist provider required by the JavaParser symbol solver."
+    },
+    {
+      "path": "prebuilts/cmdline-tools",
+      "url": "https://android.googlesource.com/platform/prebuilts/cmdline-tools",
+      "commit": "b5b2dcb54a4387a9eeae5f3fcd8ca9d5420f79ce",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP lint_api provider required by retained framework lint tools."
+    },
+    {
+      "path": "external/googleapis",
+      "url": "https://android.googlesource.com/platform/external/googleapis",
+      "commit": "99bff8ebcdde5aa21f01049c8c39900beef372e4",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP googleapis-field-behavior-java-proto provider required by Tradefed result database protocol definitions."
+    },
+    {
+      "path": "prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8",
+      "url": "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8",
+      "commit": "517043524e83921c5b0be8ff2ad92a40376971a9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libwinpthread provider required by Windows host variants of retained native modules; not an ARM64 recovery runtime library."
     }
   ]
 }

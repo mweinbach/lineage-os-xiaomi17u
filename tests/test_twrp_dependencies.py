@@ -120,6 +120,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "87c86b59ca78b8aedc137d3f0cc632eb10a55a5477341305386c538817ea71af")
 
+    def test_first_sixty_eight_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:68]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "66a247bf90591518ef4a401005fee79897f4ca783e423e7a34b4def5ba668558")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -309,9 +315,25 @@ class ConfigurationTests(Fixture):
             ("external/TestParameterInjector", "3ece4c78c4ff10f1e0e8c78f7390561846f08fd0"),
             ("external/cbor-java", "2abec0b574627877ddc8a2dff7315ca2fe489e56"),
         ]
-        self.assertEqual(len(projects), 68)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[63:]], expected)
-        for project in projects[63:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[63:68]], expected)
+        for project in projects[63:68]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].strip())
+
+    def test_graph_twelve_java_and_windows_host_providers_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/javaparser", "f0340d8e30c177f9125cc02e7b512609509b136e"),
+            ("external/javassist", "f1fbf3c2ab775ce834e0af96b7a85bdc7a0eac65"),
+            ("prebuilts/cmdline-tools", "b5b2dcb54a4387a9eeae5f3fcd8ca9d5420f79ce"),
+            ("external/googleapis", "99bff8ebcdde5aa21f01049c8c39900beef372e4"),
+            ("prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8", "517043524e83921c5b0be8ff2ad92a40376971a9"),
+        ]
+        self.assertEqual(len(projects), 73)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[68:]], expected)
+        for project in projects[68:]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
