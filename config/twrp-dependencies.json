@@ -1849,6 +1849,13 @@
       "commit": "cdb14b57cc698975b796224c507b4d15698b4788",
       "tag": "android-16.0.0_r1",
       "reason": "Actual graph 45 error: libbpf_load_test has a data dependency on the original bpfLoadTpProg.o module in system/bpfprogs/test/Android.bp. Add the whole original project and both Blueprints, retaining timeInState.o, timeInState.bpf and fuseMedia.o rather than synthesizing an object or disabling the mixed production loader and test. Preserve all three C inputs, root GPL-2.0 LICENSE and RESTRICTED metadata, the test package Apache-2.0 declaration, and the original GPL program license marker. Explicit bpf_prog_headers, libcutils_headers and android_bpf_defs plus the factory dependency libbpf_headers already exist; original include directories and Clang builtin stdbool.h are retained. The current RELEASE_BPF_ENABLE_LIBBPF true selects the production timeInState.bpf requirement and does not rename the test object. No release flag, source-scope rule or patch changes are needed. The pinned tree has no Android.mk, AndroidProducts.mk or CleanSpec.mk. No recovery package installation, kernel program loading, hardware functionality or licensing clearance is claimed."
+    },
+    {
+      "path": "packages/modules/ExtServices",
+      "url": "https://android.googlesource.com/platform/packages/modules/ExtServices",
+      "commit": "2ca3d872bb94fc69530437beb75ce77ab91a022f",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual graph 46 errors: auto_value_annotations, jsr330 and android_checker_annotation_stubs reference the missing com.android.extservices APEX in apex_available. Restore the whole original ExtServices project and all 11 Blueprints, including both production APEX variants, apps, tests, native libraries, permissions and aconfig modules. Preserve the genuine com.android.extservices declaration in apex/Android.bp, original key and certificate module declarations, four signing paths, NOTICE and every explicit package license, team and visibility declaration; signing payloads were not read by this audit. The unchanged 182-rule source profile selects all 11 Blueprints. Reviewed ordinary providers, including AdServices-core, android.ext.adservices, libhpke_jni and text classifier libraries, already exist; five SDK wrapper references have genuine selected java_sdk_library owners and their declared input paths exist, while actual generation and variant validation remain for the strict graph. The pinned owner has no namespace declarations, Android.mk, AndroidProducts.mk or CleanSpec.mk. No source-scope, patch, release flag, apex_available validation or signing policy changes. No APEX installation, recovery feature or device support is claimed."
     }
   ]
 }

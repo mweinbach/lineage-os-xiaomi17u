@@ -1708,7 +1708,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_forty_five_preserves_first_262_sources_and_metadata(self):
         config = dependencies.load_config()
-        self.assertEqual(len(config["projects"]), 263)
+        self.assertGreaterEqual(len(config["projects"]), 263)
         original = config["projects"][:262]
         encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
@@ -1740,6 +1740,57 @@ class ConfigurationTests(Fixture):
                      "does not rename the test object", "No release flag, source-scope rule or patch changes",
                      "no Android.mk, AndroidProducts.mk or CleanSpec.mk",
                      "No recovery package installation, kernel program loading, hardware functionality or licensing clearance is claimed"):
+            self.assertIn(text, reason)
+
+    def test_graph_forty_six_preserves_first_263_sources_and_metadata(self):
+        config = dependencies.load_config()
+        self.assertEqual(len(config["projects"]), 264)
+        original = config["projects"][:263]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "2ed0e6ca32d7c3bb302d28f351d900dbffd7ddfc1ffbe1b2a1be2179832563b2")
+        historical_config = {**config, "projects": original}
+        encoded = (json.dumps(historical_config, indent=2) + "\n").encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "f2e551039d1c0fc90b1ee82939eb37bae084fe5887a083a58b75f680949039ab")
+
+    def test_graph_forty_six_extservices_original_source_pin(self):
+        project = dependencies.load_config()["projects"][263]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "packages/modules/ExtServices",
+            "url": "https://android.googlesource.com/platform/packages/modules/ExtServices",
+            "commit": "2ca3d872bb94fc69530437beb75ce77ab91a022f",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertTrue(reason.startswith("Actual graph 46 errors:"))
+        for text in ("auto_value_annotations", "jsr330", "android_checker_annotation_stubs",
+                     "missing com.android.extservices APEX", "apex_available"):
+            self.assertIn(text, reason)
+
+    def test_extservices_restores_whole_original_project_and_signing_metadata(self):
+        reason = dependencies.load_config()["projects"][263]["reason"]
+        for text in ("whole original ExtServices project and all 11 Blueprints",
+                     "both production APEX variants, apps, tests, native libraries, permissions and aconfig modules",
+                     "genuine com.android.extservices declaration in apex/Android.bp",
+                     "original key and certificate module declarations", "four signing paths", "NOTICE",
+                     "every explicit package license, team and visibility declaration",
+                     "signing payloads were not read by this audit"):
+            self.assertIn(text, reason)
+
+    def test_extservices_projection_keeps_existing_dependencies_and_graph_limits(self):
+        reason = dependencies.load_config()["projects"][263]["reason"]
+        for text in ("unchanged 182-rule source profile selects all 11 Blueprints",
+                     "AdServices-core, android.ext.adservices, libhpke_jni and text classifier libraries",
+                     "five SDK wrapper references have genuine selected java_sdk_library owners",
+                     "declared input paths exist", "actual generation and variant validation remain for the strict graph"):
+            self.assertIn(text, reason)
+
+    def test_extservices_admission_preserves_strict_validation_and_device_boundary(self):
+        reason = dependencies.load_config()["projects"][263]["reason"]
+        for text in ("no namespace declarations, Android.mk, AndroidProducts.mk or CleanSpec.mk",
+                     "No source-scope, patch, release flag, apex_available validation or signing policy changes",
+                     "No APEX installation, recovery feature or device support is claimed"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
