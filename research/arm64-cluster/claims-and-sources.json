@@ -1,0 +1,1145 @@
+{
+  "schema_version": 1,
+  "assembled_at": "2026-08-28T02:27:48.576140+00:00",
+  "scope": "Primary-source index, claim-evidence mapping and remaining validation gaps; not a full-build certification.",
+  "report": "docs/android16-arm64-cluster-report.md",
+  "runbook": "docs/android16-arm64-cluster-experiments.md",
+  "evidence_files": [
+    "research/arm64-cluster/source-pins.json",
+    "research/arm64-cluster/upstream-commits.json",
+    "research/arm64-cluster/probe-results.json",
+    "research/arm64-cluster/probe-host-detection.patch"
+  ],
+  "sources": [
+    {
+      "id": "requirements",
+      "url": "https://source.android.com/docs/setup/start/requirements",
+      "publisher_host": "source.android.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "manifest-r4",
+      "url": "https://android.googlesource.com/platform/manifest/+/15128c9e27cfa599c48d294babd39286ee8f1426/default.xml",
+      "publisher_host": "android.googlesource.com",
+      "commit": "15128c9e27cfa599c48d294babd39286ee8f1426",
+      "committer_time_if_recorded": "Tue Dec 02 21:07:28 2025 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "microfactory",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/scripts/microfactory.bash",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "blueprint-mf",
+      "url": "https://android.googlesource.com/platform/build/blueprint/+/c39c8a4c103f1393f015a5befa7726f0c14c9bc2/microfactory/microfactory.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "c39c8a4c103f1393f015a5befa7726f0c14c9bc2",
+      "committer_time_if_recorded": "Mon Sep 15 16:12:03 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "arch",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/android/arch.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "arm-musl",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/cc/config/arm_linux_host.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "ui-config",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/ui/build/config.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "make-env",
+      "url": "https://android.googlesource.com/platform/build/+/b815dded1eafbf06191a6ae306956bb6ed6fb415/core/envsetup.mk",
+      "publisher_host": "android.googlesource.com",
+      "commit": "b815dded1eafbf06191a6ae306956bb6ed6fb415",
+      "committer_time_if_recorded": "Fri Nov 07 04:22:28 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "make-clang",
+      "url": "https://android.googlesource.com/platform/build/+/b815dded1eafbf06191a6ae306956bb6ed6fb415/core/clang/config.mk",
+      "publisher_host": "android.googlesource.com",
+      "commit": "b815dded1eafbf06191a6ae306956bb6ed6fb415",
+      "committer_time_if_recorded": "Fri Nov 07 04:22:28 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "build-tools-script",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/412724a805835d89234d67c363f7ada7f5f8a67f/build-prebuilts.sh",
+      "publisher_host": "android.googlesource.com",
+      "commit": "412724a805835d89234d67c363f7ada7f5f8a67f",
+      "committer_time_if_recorded": "Mon Sep 08 16:31:43 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "build-tools-bp",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/412724a805835d89234d67c363f7ada7f5f8a67f/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "412724a805835d89234d67c363f7ada7f5f8a67f",
+      "committer_time_if_recorded": "Mon Sep 08 16:31:43 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "go-version",
+      "url": "https://android.googlesource.com/platform/prebuilts/go/linux-x86/+/71c50d4d0da8b3dee5c70ee45789d001674ca5f6/VERSION",
+      "publisher_host": "android.googlesource.com",
+      "commit": "71c50d4d0da8b3dee5c70ee45789d001674ca5f6",
+      "committer_time_if_recorded": "Sat Apr 19 14:24:13 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "cc-global",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/cc/config/global.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "jdk-bp",
+      "url": "https://android.googlesource.com/platform/prebuilts/jdk/jdk21/+/ef5bcc92586b839ae3dbacc154127092fa4002ec/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "ef5bcc92586b839ae3dbacc154127092fa4002ec",
+      "committer_time_if_recorded": "Sat Oct 19 07:40:44 2024 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-global",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/rust/config/global.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-prebuilts",
+      "url": "https://android.googlesource.com/platform/prebuilts/rust/+/06a4f29f8512c6b77bdce81dd036a3e39954803b/soong/rustprebuilts.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "06a4f29f8512c6b77bdce81dd036a3e39954803b",
+      "committer_time_if_recorded": "Tue Sep 09 16:13:47 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "bindgen",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/rust/bindgen.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "proto",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/android/proto.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "install-paths",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/android/paths.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "android-config",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/android/config.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "e2fs",
+      "url": "https://android.googlesource.com/platform/external/e2fsprogs/+/3016036da669bb54ea591e00cfd22a56e3b22a83/contrib/android/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "3016036da669bb54ea591e00cfd22a56e3b22a83",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "erofs",
+      "url": "https://android.googlesource.com/platform/external/erofs-utils/+/2c190a73fceb29f00da0558e44bb88ce19ec5bf4/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "2c190a73fceb29f00da0558e44bb88ce19ec5bf4",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "liblp",
+      "url": "https://android.googlesource.com/platform/system/core/+/e9d1fa3705d7fbd0ac1c942bc4c276161bfbfed1/fs_mgr/liblp/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "e9d1fa3705d7fbd0ac1c942bc4c276161bfbfed1",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "lpmake",
+      "url": "https://android.googlesource.com/platform/system/extras/+/3f52a5ab49ba53bc463de658db1d112e001c0280/partition_tools/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "3f52a5ab49ba53bc463de658db1d112e001c0280",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "secilc",
+      "url": "https://android.googlesource.com/platform/external/selinux/+/085c131ad1b984bfa8ffdafee7a976e9d89f403c/secilc/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "085c131ad1b984bfa8ffdafee7a976e9d89f403c",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "mkbootimg",
+      "url": "https://android.googlesource.com/platform/system/tools/mkbootimg/+/954bc3ead5e679005fddf3484d247f2557b3c2c9/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "954bc3ead5e679005fddf3484d247f2557b3c2c9",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "base-system",
+      "url": "https://android.googlesource.com/platform/build/+/b815dded1eafbf06191a6ae306956bb6ed6fb415/target/product/base_system.mk",
+      "publisher_host": "android.googlesource.com",
+      "commit": "b815dded1eafbf06191a6ae306956bb6ed6fb415",
+      "committer_time_if_recorded": "Fri Nov 07 04:22:28 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "dex2oat",
+      "url": "https://android.googlesource.com/platform/art/+/1690c6912a7972c9e62c39b48c706de9b8b18b4a/dex2oat/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "1690c6912a7972c9e62c39b48c706de9b8b18b4a",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "art-runtime",
+      "url": "https://android.googlesource.com/platform/art/+/1690c6912a7972c9e62c39b48c706de9b8b18b4a/runtime/Android.bp",
+      "publisher_host": "android.googlesource.com",
+      "commit": "1690c6912a7972c9e62c39b48c706de9b8b18b4a",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "art-mmap",
+      "url": "https://android.googlesource.com/platform/art/+/1690c6912a7972c9e62c39b48c706de9b8b18b4a/libartbase/base/mem_map.cc",
+      "publisher_host": "android.googlesource.com",
+      "commit": "1690c6912a7972c9e62c39b48c706de9b8b18b4a",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "native-clang",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-arm64/+/3d378df8ab6cfad44289f8af137a30c6eba684b8/",
+      "publisher_host": "android.googlesource.com",
+      "commit": "3d378df8ab6cfad44289f8af137a30c6eba684b8",
+      "committer_time_if_recorded": "Tue Aug 25 16:35:00 2026 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-builder",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/efd615285cdaf2b3417f7a6e272134dcb869fad8/src/llvm_android/hosts.py",
+      "publisher_host": "android.googlesource.com",
+      "commit": "efd615285cdaf2b3417f7a6e272134dcb869fad8",
+      "committer_time_if_recorded": "Thu Aug 27 10:19:07 2026 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-builder",
+      "url": "https://android.googlesource.com/toolchain/android_rust/+/24664bdd11e9f1deb9fb3434c7489a4cc4e4eaec/src/android_rust/build_platform.py",
+      "publisher_host": "android.googlesource.com",
+      "commit": "24664bdd11e9f1deb9fb3434c7489a4cc4e4eaec",
+      "committer_time_if_recorded": "Mon Aug 24 12:27:40 2026 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-builder-config",
+      "url": "https://android.googlesource.com/toolchain/android_rust/+/24664bdd11e9f1deb9fb3434c7489a4cc4e4eaec/src/android_rust/config.py",
+      "publisher_host": "android.googlesource.com",
+      "commit": "24664bdd11e9f1deb9fb3434c7489a4cc4e4eaec",
+      "committer_time_if_recorded": "Mon Aug 24 12:27:40 2026 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-arm-empty",
+      "url": "https://android.googlesource.com/platform/prebuilts/rust-toolchain/linux-arm64/+/5bf291b6aaecfab10b2012dc6cbd7316578d321c/",
+      "publisher_host": "android.googlesource.com",
+      "commit": "5bf291b6aaecfab10b2012dc6cbd7316578d321c",
+      "committer_time_if_recorded": "Fri Jan 09 13:58:09 2026 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "soong-arm-intro",
+      "url": "https://android.googlesource.com/platform/build/soong/+/92ac46d1fe04a94d94025554bcecc5f8cb2416ae",
+      "publisher_host": "android.googlesource.com",
+      "commit": "92ac46d1fe04a94d94025554bcecc5f8cb2416ae",
+      "committer_time_if_recorded": "Thu Feb 27 11:58:35 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "soong-arm-merge",
+      "url": "https://android.googlesource.com/platform/build/soong/+/433dcb4e7f8a93c93dd20361c55056a24e4f786e",
+      "publisher_host": "android.googlesource.com",
+      "commit": "433dcb4e7f8a93c93dd20361c55056a24e4f786e",
+      "committer_time_if_recorded": "Thu Feb 27 14:17:53 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "musl-variants-intro",
+      "url": "https://android.googlesource.com/platform/build/soong/+/a9b2aacf07697e9fa00daf2c6fc76a73392563b7",
+      "publisher_host": "android.googlesource.com",
+      "commit": "a9b2aacf07697e9fa00daf2c6fc76a73392563b7",
+      "committer_time_if_recorded": "Fri Jun 24 13:46:36 2022 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "musl-source-intro",
+      "url": "https://android.googlesource.com/platform/external/musl/+/a7a2ff059d43b2571a5153c312070ab059886231",
+      "publisher_host": "android.googlesource.com",
+      "commit": "a7a2ff059d43b2571a5153c312070ab059886231",
+      "committer_time_if_recorded": "Fri Jun 24 15:51:44 2022 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-target-intro",
+      "url": "https://android.googlesource.com/platform/build/soong/+/1faf82305a5dae78c00cf71156284f39e5bd53a6",
+      "publisher_host": "android.googlesource.com",
+      "commit": "1faf82305a5dae78c00cf71156284f39e5bd53a6",
+      "committer_time_if_recorded": "Tue Jun 28 15:16:15 2022 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "hide-cross-musl",
+      "url": "https://android.googlesource.com/platform/build/soong/+/9a027be6bc304f5fdfaea3fe46f4c2315e031b8b",
+      "publisher_host": "android.googlesource.com",
+      "commit": "9a027be6bc304f5fdfaea3fe46f4c2315e031b8b",
+      "committer_time_if_recorded": "Tue Jun 28 15:16:15 2022 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-musl-intro",
+      "url": "https://android.googlesource.com/platform/build/soong/+/567d342ed830d043602bd0ce7805a6adc69e4612",
+      "publisher_host": "android.googlesource.com",
+      "commit": "567d342ed830d043602bd0ce7805a6adc69e4612",
+      "committer_time_if_recorded": "Fri Jul 01 02:58:14 2022 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "hostcross-intro",
+      "url": "https://android.googlesource.com/platform/build/soong/+/c0f0eb86db82f399618569322cdd36af45472abf",
+      "publisher_host": "android.googlesource.com",
+      "commit": "c0f0eb86db82f399618569322cdd36af45472abf",
+      "committer_time_if_recorded": "Mon Aug 22 14:36:13 2022 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "musl-loader-intro",
+      "url": "https://android.googlesource.com/platform/external/musl/+/ad6291667ccf603d9629378bbdadf0a58711b211",
+      "publisher_host": "android.googlesource.com",
+      "commit": "ad6291667ccf603d9629378bbdadf0a58711b211",
+      "committer_time_if_recorded": "Thu Aug 25 17:48:32 2022 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "musl-sanitizer",
+      "url": "https://android.googlesource.com/platform/build/soong/+/390fc746d0eab743c18033d9e851f5b4ec435a3d",
+      "publisher_host": "android.googlesource.com",
+      "commit": "390fc746d0eab743c18033d9e851f5b4ec435a3d",
+      "committer_time_if_recorded": "Wed May 17 21:59:32 2023 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-old-attempt",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/ead88453249a95fb3f8a4edb49abe06267a4a43c",
+      "publisher_host": "android.googlesource.com",
+      "commit": "ead88453249a95fb3f8a4edb49abe06267a4a43c",
+      "committer_time_if_recorded": "Wed Aug 02 20:57:09 2023 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-old-revert",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/52000803d21413dbfa8332b9462c3bb0f945a0d7",
+      "publisher_host": "android.googlesource.com",
+      "commit": "52000803d21413dbfa8332b9462c3bb0f945a0d7",
+      "committer_time_if_recorded": "Thu Aug 10 07:20:42 2023 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "go-hostcross",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f7a1f6418ce3fa6b5685ab97cf76d5f9c94e5c14",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f7a1f6418ce3fa6b5685ab97cf76d5f9c94e5c14",
+      "committer_time_if_recorded": "Mon Oct 28 10:38:46 2024 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "tools-rename",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/14fe58ad6208eb5f863057b99aa45d907e6c8f52",
+      "publisher_host": "android.googlesource.com",
+      "commit": "14fe58ad6208eb5f863057b99aa45d907e6c8f52",
+      "committer_time_if_recorded": "Thu Feb 27 14:38:34 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "tools-path",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/a5112403ac2eb2b56d00581167411e49af2f8390",
+      "publisher_host": "android.googlesource.com",
+      "commit": "a5112403ac2eb2b56d00581167411e49af2f8390",
+      "committer_time_if_recorded": "Thu Feb 27 14:38:35 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "tools-go",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/762a7b15cdb657ab2f8d1106ed3f72c73ef12986",
+      "publisher_host": "android.googlesource.com",
+      "commit": "762a7b15cdb657ab2f8d1106ed3f72c73ef12986",
+      "committer_time_if_recorded": "Thu Feb 27 14:40:32 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "python-headers",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/aba3dea311239df3acc191434d965ca1f93eed0f",
+      "publisher_host": "android.googlesource.com",
+      "commit": "aba3dea311239df3acc191434d965ca1f93eed0f",
+      "committer_time_if_recorded": "Wed Mar 12 19:26:23 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-native-intro",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/3a4d8082d113b80076d2f3ca8fcdcde1d166b015",
+      "publisher_host": "android.googlesource.com",
+      "commit": "3a4d8082d113b80076d2f3ca8fcdcde1d166b015",
+      "committer_time_if_recorded": "Mon Jan 12 15:59:20 2026 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-native-ci",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/63b7ae2df512c3a09370718fa7c7f6c4820fa62e",
+      "publisher_host": "android.googlesource.com",
+      "commit": "63b7ae2df512c3a09370718fa7c7f6c4820fa62e",
+      "committer_time_if_recorded": "Thu Jan 15 14:06:11 2026 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "clang-bootstrap",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-arm64/+/198cef08637a6133e98b4a80e36f0ca35775fa9a",
+      "publisher_host": "android.googlesource.com",
+      "commit": "198cef08637a6133e98b4a80e36f0ca35775fa9a",
+      "committer_time_if_recorded": "Tue Jan 20 10:18:11 2026 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-native-intro",
+      "url": "https://android.googlesource.com/toolchain/android_rust/+/aec25ae692eef715842a81c438fa36c1ae648c53",
+      "publisher_host": "android.googlesource.com",
+      "commit": "aec25ae692eef715842a81c438fa36c1ae648c53",
+      "committer_time_if_recorded": "Fri Feb 13 22:22:01 2026 +0000",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-native-publish",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/39d0e3ef225b914f11a46e7906c0de8ba234c563",
+      "publisher_host": "android.googlesource.com",
+      "commit": "39d0e3ef225b914f11a46e7906c0de8ba234c563",
+      "committer_time_if_recorded": "Tue Feb 17 10:38:16 2026 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-native-fetch",
+      "url": "https://android.googlesource.com/toolchain/android_rust/+/d2909511721d4ff2a75567f897d482e8b0873ba5",
+      "publisher_host": "android.googlesource.com",
+      "commit": "d2909511721d4ff2a75567f897d482e8b0873ba5",
+      "committer_time_if_recorded": "Fri Feb 27 12:11:39 2026 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "clang-update-apr",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-arm64/+/a70cecf3ce95d669302703e43c38c823af3f8513",
+      "publisher_host": "android.googlesource.com",
+      "commit": "a70cecf3ce95d669302703e43c38c823af3f8513",
+      "committer_time_if_recorded": "Wed Apr 15 14:10:31 2026 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-utility-routing",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/cd16b93a2ae9bec89a83d63f72d49edd751a8381",
+      "publisher_host": "android.googlesource.com",
+      "commit": "cd16b93a2ae9bec89a83d63f72d49edd751a8381",
+      "committer_time_if_recorded": "Mon Jun 22 19:08:45 2026 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "llvm-native-pgo",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/af9e9f01630d3db6dbd933ea5b11c937fb0c5d11",
+      "publisher_host": "android.googlesource.com",
+      "commit": "af9e9f01630d3db6dbd933ea5b11c937fb0c5d11",
+      "committer_time_if_recorded": "Thu Jul 09 14:48:03 2026 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "apple-rosetta",
+      "url": "https://developer.apple.com/documentation/virtualization/running-intel-binaries-in-linux-vms",
+      "publisher_host": "developer.apple.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "apple-lifecycle",
+      "url": "https://developer.apple.com/documentation/apple-silicon/about-the-rosetta-translation-environment",
+      "publisher_host": "developer.apple.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "apple-tso",
+      "url": "https://developer.apple.com/documentation/virtualization/accelerating-the-performance-of-rosetta",
+      "publisher_host": "developer.apple.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "go-runtime",
+      "url": "https://pkg.go.dev/runtime#GOARCH",
+      "publisher_host": "pkg.go.dev",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "binfmt",
+      "url": "https://docs.kernel.org/admin-guide/binfmt-misc.html",
+      "publisher_host": "docs.kernel.org",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "seccomp",
+      "url": "https://docs.kernel.org/userspace-api/seccomp_filter.html",
+      "publisher_host": "docs.kernel.org",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "orb-debug",
+      "url": "https://docs.orbstack.dev/machines/#debugging-with-gdb-lldb",
+      "publisher_host": "docs.orbstack.dev",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "remoteexec",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/remoteexec/remoteexec.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rbe-ui",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/ui/build/rbe.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "make-rbe",
+      "url": "https://android.googlesource.com/platform/build/+/b815dded1eafbf06191a6ae306956bb6ed6fb415/core/rbe.mk",
+      "publisher_host": "android.googlesource.com",
+      "commit": "b815dded1eafbf06191a6ae306956bb6ed6fb415",
+      "committer_time_if_recorded": "Fri Nov 07 04:22:28 2025 -0800",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "cc-builder",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/cc/builder.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "cc-target-flags",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/cc/compiler.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "cc-lto",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/cc/lto.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "java-builder",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/java/builder.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "java-dex",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/java/dex.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rust-builder-r4",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/rust/builder.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "kotlin",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/java/kotlin.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "rule-builder",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/android/rule_builder.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "remote-rule",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f389fa2a2a768a93bc99957e2288f3fbee032bff/android/package_ctx.go",
+      "publisher_host": "android.googlesource.com",
+      "commit": "f389fa2a2a768a93bc99957e2288f3fbee032bff",
+      "committer_time_if_recorded": "Sun Oct 12 23:28:46 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-bin",
+      "url": "https://android.googlesource.com/platform/prebuilts/remoteexecution-client/+/5cd24de91ef37f36ae14e818058ad3158b881af8/live/",
+      "publisher_host": "android.googlesource.com",
+      "commit": "5cd24de91ef37f36ae14e818058ad3158b881af8",
+      "committer_time_if_recorded": "Wed Jul 16 16:42:03 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-docker",
+      "url": "https://android.googlesource.com/platform/prebuilts/remoteexecution-client/+/5cd24de91ef37f36ae14e818058ad3158b881af8/docker/Dockerfile",
+      "publisher_host": "android.googlesource.com",
+      "commit": "5cd24de91ef37f36ae14e818058ad3158b881af8",
+      "committer_time_if_recorded": "Wed Jul 16 16:42:03 2025 -0700",
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-source",
+      "url": "https://github.com/bazelbuild/reclient/tree/dbabdc03691e4a293f0b8b6656cdc27f892c4e54",
+      "publisher_host": "github.com",
+      "commit": "dbabdc03691e4a293f0b8b6656cdc27f892c4e54",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-inputs",
+      "url": "https://github.com/bazelbuild/reclient/blob/dbabdc03691e4a293f0b8b6656cdc27f892c4e54/internal/pkg/inputprocessor/toolchain/inputfiles.go",
+      "publisher_host": "github.com",
+      "commit": "dbabdc03691e4a293f0b8b6656cdc27f892c4e54",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-action",
+      "url": "https://github.com/bazelbuild/reclient/blob/dbabdc03691e4a293f0b8b6656cdc27f892c4e54/internal/pkg/reproxy/action.go",
+      "publisher_host": "github.com",
+      "commit": "dbabdc03691e4a293f0b8b6656cdc27f892c4e54",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-server",
+      "url": "https://github.com/bazelbuild/reclient/blob/dbabdc03691e4a293f0b8b6656cdc27f892c4e54/internal/pkg/reproxy/server.go",
+      "publisher_host": "github.com",
+      "commit": "dbabdc03691e4a293f0b8b6656cdc27f892c4e54",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reclient-paths",
+      "url": "https://github.com/bazelbuild/reclient/blob/dbabdc03691e4a293f0b8b6656cdc27f892c4e54/internal/pkg/pathtranslator/pathtranslator.go",
+      "publisher_host": "github.com",
+      "commit": "dbabdc03691e4a293f0b8b6656cdc27f892c4e54",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "reapi",
+      "url": "https://github.com/bazelbuild/remote-apis/blob/main/build/bazel/remote/execution/v2/remote_execution.proto",
+      "publisher_host": "github.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "reapi-platform",
+      "url": "https://github.com/bazelbuild/remote-apis/blob/main/build/bazel/remote/execution/v2/platform.md",
+      "publisher_host": "github.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "buildfarm-aosp",
+      "url": "https://github.com/buildfarm/buildfarm/blob/05f13afb95aee3d5fac2f60f9527f7358315d389/contrib/aosp/README.md",
+      "publisher_host": "github.com",
+      "commit": "05f13afb95aee3d5fac2f60f9527f7358315d389",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildfarm-guide-intro",
+      "url": "https://github.com/buildfarm/buildfarm/commit/8e4ddc904007fa7035710770498206e69a7581f1",
+      "publisher_host": "github.com",
+      "commit": "8e4ddc904007fa7035710770498206e69a7581f1",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildfarm-run",
+      "url": "https://github.com/buildfarm/buildfarm/blob/05f13afb95aee3d5fac2f60f9527f7358315d389/examples/bf-run",
+      "publisher_host": "github.com",
+      "commit": "05f13afb95aee3d5fac2f60f9527f7358315d389",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildfarm-multiarch",
+      "url": "https://github.com/buildfarm/buildfarm/blob/05f13afb95aee3d5fac2f60f9527f7358315d389/container/defs.bzl",
+      "publisher_host": "github.com",
+      "commit": "05f13afb95aee3d5fac2f60f9527f7358315d389",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildfarm-images",
+      "url": "https://github.com/buildfarm/buildfarm/blob/05f13afb95aee3d5fac2f60f9527f7358315d389/container/BUILD",
+      "publisher_host": "github.com",
+      "commit": "05f13afb95aee3d5fac2f60f9527f7358315d389",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildbarn",
+      "url": "https://github.com/buildbarn/bb-remote-execution/blob/13313e6ab05b00769af48cf5d6e4926ce15b1f2b/README.md",
+      "publisher_host": "github.com",
+      "commit": "13313e6ab05b00769af48cf5d6e4926ce15b1f2b",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildbarn-ci",
+      "url": "https://github.com/buildbarn/bb-remote-execution/blob/13313e6ab05b00769af48cf5d6e4926ce15b1f2b/.github/workflows/main.yaml",
+      "publisher_host": "github.com",
+      "commit": "13313e6ab05b00769af48cf5d6e4926ce15b1f2b",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "buildgrid",
+      "url": "https://buildgrid.build/operation/workers.html",
+      "publisher_host": "buildgrid.build",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "nativelink",
+      "url": "https://github.com/TraceMachina/nativelink/blob/1330267e5a5ef8fedd8d0829f731f124e2f2fada/flake.nix",
+      "publisher_host": "github.com",
+      "commit": "1330267e5a5ef8fedd8d0829f731f124e2f2fada",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "apple-volumes",
+      "url": "https://github.com/apple/container/blob/main/docs/volumes.md",
+      "publisher_host": "github.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "vz",
+      "url": "https://developer.apple.com/documentation/virtualization/vzvirtualmachineconfiguration",
+      "publisher_host": "developer.apple.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "lima",
+      "url": "https://lima-vm.io/docs/config/multi-arch/",
+      "publisher_host": "lima-vm.io",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "tart",
+      "url": "https://github.com/openai/tart/blob/16d186c253a449ccbac640c38b3c00c91c9a68b9/Sources/tart/Commands/Run.swift",
+      "publisher_host": "github.com",
+      "commit": "16d186c253a449ccbac640c38b3c00c91c9a68b9",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "apple-container",
+      "url": "https://github.com/apple/container/blob/ee848e3ebfd7c73b04dd419683be54fb450b8779/docs/technical-overview.md",
+      "publisher_host": "github.com",
+      "commit": "ee848e3ebfd7c73b04dd419683be54fb450b8779",
+      "committer_time_if_recorded": null,
+      "source_type": "pinned_primary_source"
+    },
+    {
+      "id": "orb",
+      "url": "https://docs.orbstack.dev/architecture",
+      "publisher_host": "docs.orbstack.dev",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "utm",
+      "url": "https://docs.getutm.app/advanced/rosetta/",
+      "publisher_host": "docs.getutm.app",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "docker-vmm",
+      "url": "https://docs.docker.com/desktop/features/vmm/",
+      "publisher_host": "docs.docker.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "bb-deploy",
+      "url": "https://github.com/buildbarn/bb-deployments/blob/main/docker-compose/docker-compose.yml",
+      "publisher_host": "github.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "distcc",
+      "url": "https://www.distcc.org/",
+      "publisher_host": "www.distcc.org",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    },
+    {
+      "id": "icecream",
+      "url": "https://github.com/icecc/icecream/blob/master/README.md",
+      "publisher_host": "github.com",
+      "commit": null,
+      "committer_time_if_recorded": null,
+      "source_type": "primary_documentation_or_live_source"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C01",
+      "claim": "Android16 already has native ARM64 Soong/bootstrap and musl selection.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "arch",
+        "microfactory",
+        "soong-arm-intro",
+        "arm-musl"
+      ],
+      "probe_ids": [],
+      "limitation": "This is not full-platform support."
+    },
+    {
+      "id": "C02",
+      "claim": "The r4 bootstrap subset built five AArch64 executables and ran the OUT_DIR query.",
+      "evidence_class": "observed",
+      "source_ids": [
+        "microfactory",
+        "blueprint-mf"
+      ],
+      "probe_ids": [
+        "P02",
+        "P03"
+      ],
+      "limitation": "Microfactory/Soong UI execution is verified; not individual execution of every helper or a full graph."
+    },
+    {
+      "id": "C03",
+      "claim": "Make host detection and tag selection are independently broken on native ARM64.",
+      "evidence_class": "observed",
+      "source_ids": [
+        "make-env",
+        "make-clang"
+      ],
+      "probe_ids": [
+        "P04",
+        "P05",
+        "P06"
+      ],
+      "limitation": "Eight probe lines do not resolve all hardcoded executable/output paths."
+    },
+    {
+      "id": "C04",
+      "claim": "Selected native JDK, effective Clang and Rust packages do not close the stock r4 toolchain.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "jdk-bp",
+        "cc-global",
+        "rust-global",
+        "rust-prebuilts",
+        "bindgen"
+      ],
+      "probe_ids": [
+        "P06"
+      ],
+      "limitation": "Version/libc/architecture closure must be solved; directory renames do not solve in-process ABI."
+    },
+    {
+      "id": "C05",
+      "claim": "Public platform main is not a newer complete native-host patch set; toolchain mirrors differ.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "native-clang",
+        "llvm-builder",
+        "rust-builder",
+        "rust-arm-empty"
+      ],
+      "probe_ids": [],
+      "limitation": "All refs are snapshot observations, not a statement about inaccessible internal development."
+    },
+    {
+      "id": "C06",
+      "claim": "New native LLVM and Rust builder changes are relevant but not Android16 drop-in artifacts.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "llvm-native-intro",
+        "rust-native-intro",
+        "llvm-utility-routing"
+      ],
+      "probe_ids": [],
+      "limitation": "Modern compiler versions/configuration and Rust stage0 requirements differ."
+    },
+    {
+      "id": "C07",
+      "claim": "Rosetta can run the tested x86 Clang/LLD/JDK processes under native ARM64 Ninja.",
+      "evidence_class": "observed",
+      "source_ids": [
+        "apple-rosetta",
+        "apple-lifecycle"
+      ],
+      "probe_ids": [
+        "P07"
+      ],
+      "limitation": "Standalone execution does not establish production stability, full images or performance."
+    },
+    {
+      "id": "C08",
+      "claim": "Android16 RBE has real action wrappers and backend connection mechanisms.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "make-rbe",
+        "remoteexec",
+        "rbe-ui",
+        "cc-builder",
+        "java-dex",
+        "rust-builder-r4"
+      ],
+      "probe_ids": [],
+      "limitation": "Many strategies default local; Kotlin/resources/images are not generally remote."
+    },
+    {
+      "id": "C09",
+      "claim": "Public REAPI backends are feasible; platform/auth and worker environment require integration.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "buildfarm-aosp",
+        "buildfarm-multiarch",
+        "buildfarm-run",
+        "buildbarn-ci",
+        "buildgrid",
+        "nativelink"
+      ],
+      "probe_ids": [],
+      "limitation": "No backend or ARM64 worker artifact was deployed/validated here."
+    },
+    {
+      "id": "C10",
+      "claim": "A separate matched native compiler execution package could avoid a complete native host port.",
+      "evidence_class": "engineering_inference",
+      "source_ids": [
+        "cc-target-flags",
+        "cc-lto",
+        "reclient-action",
+        "reclient-server",
+        "reclient-inputs"
+      ],
+      "probe_ids": [],
+      "limitation": "Requires replay, scanner dependency coverage, dispatch validation, ThinLTO/MLGO parity and actual remote proof."
+    },
+    {
+      "id": "C11",
+      "claim": "Workers need declared CAS inputs and local caches, not full source or a shared out directory.",
+      "evidence_class": "pinned_source",
+      "source_ids": [
+        "reapi",
+        "buildbarn",
+        "bb-deploy"
+      ],
+      "probe_ids": [],
+      "limitation": "Performance and complete input hermeticity remain empirical questions."
+    },
+    {
+      "id": "C12",
+      "claim": "One persistent VZ Linux guest per Studio with Linux-local block storage is the preferred test topology.",
+      "evidence_class": "engineering_inference",
+      "source_ids": [
+        "vz",
+        "lima",
+        "apple-container",
+        "apple-volumes",
+        "bb-deploy",
+        "docker-vmm"
+      ],
+      "probe_ids": [],
+      "limitation": "No measured VM comparison or complete four-machine inventory was collected."
+    },
+    {
+      "id": "C13",
+      "claim": "Full native Android16 integration is Large; a 3-8+ engineer-week estimate is only a planning judgment.",
+      "evidence_class": "engineering_inference",
+      "source_ids": [
+        "rust-builder-config",
+        "rust-musl-intro",
+        "dex2oat",
+        "art-mmap",
+        "jdk-bp"
+      ],
+      "probe_ids": [],
+      "limitation": "Product/vendor tools can expand scope; no full graph/image was attempted."
+    },
+    {
+      "id": "C14",
+      "claim": "distcc/Icecream accelerate a compiler subset, and no exact build-time percentage is justified.",
+      "evidence_class": "engineering_inference",
+      "source_ids": [
+        "distcc",
+        "icecream",
+        "make-rbe"
+      ],
+      "probe_ids": [],
+      "limitation": "Need actual selected-product timing and critical-path evidence."
+    }
+  ],
+  "open_gaps": [
+    {
+      "id": "G01",
+      "priority": "critical",
+      "question": "Matched native Android16 Clang/LLD and ThinLTO/MLGO equivalence",
+      "runbook_experiments": "8, 10, 11",
+      "status": "not_validated"
+    },
+    {
+      "id": "G02",
+      "priority": "critical",
+      "question": "Real uncached remote action with intended ARM64 worker and sandbox",
+      "runbook_experiments": "9, 10",
+      "status": "not_validated"
+    },
+    {
+      "id": "G03",
+      "priority": "critical",
+      "question": "Complete stock image and x86 control-output comparison",
+      "runbook_experiments": "12",
+      "status": "not_validated"
+    },
+    {
+      "id": "G04",
+      "priority": "high",
+      "question": "Native Rust/std/proc macros, bindgen/libclang and JDK/JNI closure for the fully native path",
+      "runbook_experiments": "6, then separate toolchain work",
+      "status": "not_validated"
+    },
+    {
+      "id": "G05",
+      "priority": "high",
+      "question": "ART/dexpreopt, image generators, ADB/fastboot and product-specific host tools",
+      "runbook_experiments": "11, 12",
+      "status": "not_validated"
+    },
+    {
+      "id": "G06",
+      "priority": "high",
+      "question": "Sustained Rosetta JVM/linker/process/sandbox correctness",
+      "runbook_experiments": "7, 10, 12",
+      "status": "not_validated"
+    },
+    {
+      "id": "G07",
+      "priority": "high",
+      "question": "Four-machine resource inventory, real network/storage performance and build speedup",
+      "runbook_experiments": "1, 12",
+      "status": "not_validated"
+    },
+    {
+      "id": "G08",
+      "priority": "medium",
+      "question": "Public r4 reclient binary-to-source mapping and native dependency-scanner build",
+      "runbook_experiments": "10, separate client packaging",
+      "status": "not_validated"
+    }
+  ],
+  "review": {
+    "source_host_history": "reviewed; corrected helper execution, ADB/fastboot closure and LLVM_READOBJ selection",
+    "rbe_backend": "reviewed; corrected ThinLTO/MLGO coverage, dependency-set criterion, wrapper distinction and artifact-publication wording",
+    "vm_runbook": "reviewed; guarded new volumes/directories, verified local image identity, isolated Go settings, retained remote action exit status, and moved remote outputs inside execroot"
+  }
+}
