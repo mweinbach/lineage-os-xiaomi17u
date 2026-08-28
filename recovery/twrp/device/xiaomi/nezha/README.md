@@ -27,9 +27,12 @@ are omitted by the minimal manifest. This recovery product uses the supported
 | --- | --- |
 | `hardware/google/aemu/` | Emulator graphics host tooling without its gfxstream defaults |
 | `packages/modules/AdServices/` | Advertising services and their test collectors |
-| `system/secretkeeper/` | Secretkeeper consumers; this recovery does not enable decryption |
 | `hardware/interfaces/neuralnetworks/utils/` | Neural-network adapters outside recovery functionality |
 | `hardware/interfaces/virtualization/capabilities_service/vts/` | Virtualization capability VTS tests |
+
+The initial `system/secretkeeper/` exclusion was later removed when restored
+virtualization sources introduced real consumers, as described under Graph 6
+below. Disabling recovery decryption does not make a consumed provider optional.
 
 The second graph reached a further set of absent defaults. Its additional
 exclusions are limited to the following consumers, after checking their
@@ -128,6 +131,32 @@ only this test and has no external consumers or shared helper modules in the
 bounded scan. It is excluded while the production radio service and AIDL
 interface remain included. No additional broad source exclusions were added.
 
+Graph 6 passed the literal-default resolution stage and reached the SELinux
+service-fuzzer binding validator. The missing fuzzer providers are restored
+from their genuine source projects; the validator and registry remain intact.
+The wificond provider needs `libwifi-system-iface` and its test-support library.
+The original Wi-Fi project at `1cab31f96d1f903e190708c1ce665520a4a89d10` supplies
+both in the self-contained `frameworks/opt/net/wifi/libwifi_system_iface/`
+subtree. The negative project prefix and longer positive provider prefix retain
+that subtree, including its test support, while leaving unrelated Wi-Fi tracker
+and framework code outside this product. The leaf has its own package using the
+global Apache license. This selection does not enable TWRP networking.
+
+The complete AVF project at `c984fc337c11ca5edc03ccf02037b2455dd8fcaf` supplies
+the missing virtualization fuzzer and `avf_build_flags_rust`. Its
+`guest/microdroid_manager/Android.bp` also consumes `libsecretkeeper_client`
+and `libsecretkeeper_comm_nostd`; the client needs the original Secretkeeper
+core library as well. The former `system/secretkeeper/` exclusion is therefore
+removed to retain those real providers. The separately scoped Secretkeeper
+hardware VTS exclusion is unchanged. The retained Secretkeeper tests also need
+`rdroidtest.defaults`, so the original `platform_testing/libraries/rdroidtest/`
+provider subtree is re-included, with its libraries and tests unchanged. Its
+original module and licensing declarations are retained; no substitute Rust
+defaults are created. Further Rust dependencies must resolve through the actual
+graph; none is stubbed or silently ignored. These source
+restorations do not add recovery packages, enable TWRP decryption, or establish
+a working virtual machine or encrypted-data path on the phone.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.
@@ -143,8 +172,8 @@ with the longest matching prefix first and unmatched paths allowed. Each
 directory exclusion ends in `/` so it does not hide similarly named siblings.
 The single scene-test file prefix names its `Android.bp` instead, preserving
 the separately declared helper in the `utils` child directory. The
-single positive Tradefed-provider prefix is an explicit exception inside an
-otherwise excluded project, evaluated by the same longest-prefix rule.
+positive Tradefed, rdroidtest and Wi-Fi provider prefixes are explicit exceptions
+inside otherwise excluded projects, evaluated by the same longest-prefix rule.
 Dependencies on skipped modules still fail; if recovery requires one of these
 modules, restore its reviewed parent sources and revise the scope rather than
 suppressing the error. Recovery, fs_mgr, SELinux policy and tests, AVB, storage,

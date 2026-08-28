@@ -28,7 +28,6 @@ PRODUCT_PACKAGES += recovery
 PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/google/aemu/ \
     -packages/modules/AdServices/ \
-    -system/secretkeeper/ \
     -hardware/interfaces/neuralnetworks/utils/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
@@ -101,6 +100,21 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     -platform_testing/ \
     platform_testing/libraries/tradefed-error-prone/
+
+# Graph 6 requires the genuine wificond fuzzer and its Wi-Fi interface libraries.
+# Select this self-contained provider and test-support subtree, not unrelated
+# tracker/framework consumers. Its package uses the global Apache license.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -frameworks/opt/net/wifi/ \
+    frameworks/opt/net/wifi/libwifi_system_iface/
+
+# The restored AVF project supplies its build flags and consumes the original
+# Secretkeeper client/communication libraries from microdroid_manager. Keep
+# system/secretkeeper included; source selection does not enable TWRP crypto.
+# Its retained tests require the original Rust test provider in this subtree.
+# Keep its module definitions and metadata unchanged, including its own tests.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/rdroidtest/
 
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.

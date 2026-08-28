@@ -12,7 +12,6 @@ MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/A
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
-    "-system/secretkeeper/",
     "-hardware/interfaces/neuralnetworks/utils/",
     "-hardware/interfaces/virtualization/capabilities_service/vts/",
     "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/",
@@ -42,8 +41,13 @@ SOURCE_EXCLUSIONS = [
     "-hardware/interfaces/automotive/vehicle/aidl/aidl_test/",
     "-hardware/interfaces/broadcastradio/aidl/default/test/",
     "-platform_testing/",
+    "-frameworks/opt/net/wifi/",
 ]
-SOURCE_REINCLUSIONS = ["platform_testing/libraries/tradefed-error-prone/"]
+SOURCE_REINCLUSIONS = [
+    "platform_testing/libraries/tradefed-error-prone/",
+    "frameworks/opt/net/wifi/libwifi_system_iface/",
+    "platform_testing/libraries/rdroidtest/",
+]
 
 
 def logical_lines(text):
@@ -218,7 +222,9 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_source_graph_exclusions_match_the_reviewed_bounded_scopes(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(scopes, SOURCE_EXCLUSIONS + SOURCE_REINCLUSIONS)
+        # Blueprint sorts by prefix length; independent provider pairs may be
+        # grouped together in the product without changing the selected graph.
+        self.assertCountEqual(scopes, SOURCE_EXCLUSIONS + SOURCE_REINCLUSIONS)
         self.assertEqual(len(scopes), len(set(scopes)))
         for scope in scopes:
             if not scope.endswith("/"):
@@ -323,6 +329,65 @@ class TwrpDeviceTests(unittest.TestCase):
                        "frameworks/libs/native_bridge_support/Android.bp",
                        "frameworks/libs/native_bridge_support/android_api/libc/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_sixth_graph_selects_real_wifi_interface_and_test_support(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        provider = "frameworks/opt/net/wifi/libwifi_system_iface/"
+        self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
+        self.assertTrue(source_path_allowed(provider + "testlib/Android.bp", scopes))
+        for source in ("frameworks/opt/net/wifi/Android.bp",
+                       "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp",
+                       "frameworks/opt/net/wifi/libwifi_hal/Android.bp",
+                       "frameworks/opt/net/wifi/libwifi_system/Android.bp",
+                       "frameworks/opt/net/wifi/libwifi_system_iface_sibling/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("system/connectivity/wificond/Android.bp",
+                       "system/sepolicy/tests/Android.bp",
+                       "frameworks/opt/net/wifi_sibling/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_sixth_graph_restores_consumed_secretkeeper_without_enabling_crypto(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertNotIn("-system/secretkeeper/", scopes)
+        for source in ("system/secretkeeper/Android.bp",
+                       "system/secretkeeper/client/Android.bp",
+                       "system/secretkeeper/comm/Android.bp",
+                       "system/secretkeeper/core/Android.bp",
+                       "system/secretkeeper/dice_policy/Android.bp",
+                       "system/secretkeeper/hal/Android.bp",
+                       "packages/modules/Virtualization/build/Android.bp",
+                       "packages/modules/Virtualization/guest/microdroid_manager/Android.bp",
+                       "packages/modules/Virtualization/android/virtmgr/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertFalse(source_path_allowed(
+            "hardware/interfaces/security/secretkeeper/aidl/vts/Android.bp", scopes))
+        for setting in ("TW_INCLUDE_CRYPTO", "TW_INCLUDE_CRYPTO_FBE", "TW_INCLUDE_LIBRESETPROP"):
+            self.assertEqual(self.board[setting], "false", setting)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        for fact in ("Graph 6", "microdroid_manager", "libsecretkeeper_client",
+                     "libsecretkeeper_comm_nostd"):
+            self.assertIn(fact, readme)
+
+    def test_original_rust_test_provider_keeps_secretkeeper_test_definitions(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        provider = "platform_testing/libraries/rdroidtest/"
+        self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
+        self.assertTrue(source_path_allowed(provider + "tests/Android.bp", scopes))
+        for source in ("platform_testing/Android.bp",
+                       "platform_testing/libraries/rdroidtest_sibling/Android.bp",
+                       "platform_testing/libraries/other/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("system/secretkeeper/client/Android.bp",
+                       "system/secretkeeper/comm/Android.bp",
+                       "system/secretkeeper/dice_policy/tests/Android.bp",
+                       "system/logging/rust/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        readme = (DEVICE / "README.md").read_text()
+        self.assertIn("platform_testing/libraries/rdroidtest/", readme)
+        self.assertIn("rdroidtest.defaults", readme)
 
     def test_motion_exclusion_preserves_consumed_test_helper_and_graphics(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
