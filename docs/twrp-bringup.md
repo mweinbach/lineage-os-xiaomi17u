@@ -98,7 +98,8 @@ to the absolute path of the exact previous bundle matching the prepared receipt;
 an arbitrary older bundle or a mutable `latest` alias is not interchangeable.
 
 ```sh
-python3 scripts/twrp_dependencies.py fetch --host-mode apple-rosetta
+python3 scripts/twrp_dependencies.py fetch --host-mode apple-rosetta \
+  --previous-control-root "${TWRP_PREVIOUS_CONTROL_ROOT:?set the exact previous control bundle path}"
 python3 scripts/twrp_build.py revise --host-mode apple-rosetta \
   --previous-control-root "${TWRP_PREVIOUS_CONTROL_ROOT:?set the exact previous control bundle path}"
 ```
@@ -114,9 +115,11 @@ the base snapshot, output and caches. A partial application retains its backups
 and old receipt and blocks automatic retry. Existing outputs retain their
 earlier provenance; the new receipt marks the revision as not yet built or
 validated. Then run the separate `graph` and `build` commands above. Chaining
-edits onto an already patched file, changing the source configuration or changing
+edits onto an already patched file, changing an existing source pin or changing
 the target file set requires separate support; unrelated local edits are not
-adopted.
+adopted. Supplementary source patches must match the exact active previous
+bundle during `fetch`; fetching never applies a proposed patch. The
+[supplement patching guide](twrp-supplement-patching.md) describes those checks.
 
 The default build variant is `user`, which retains init's compile-time
 enforcement behavior. Explicit `userdebug` builds remain diagnostic experiments;
@@ -128,7 +131,9 @@ automatic root ADB and a source-file truncation during environment setup. It
 also requires host authentication in recovery adbd, including on unlocked or
 debuggable devices. The ordinary Android adbd behavior is unchanged. A trusted
 host key and its recovery handling must still be provided and validated; no
-host private key or stock key is bundled.
+host private key or stock key is bundled. The [ADB readiness record](twrp-adb-readiness.md)
+explains why the default user target still needs an authorized public-key input
+and reviewed startup behavior before log access can be tested.
 
 The queue also disables the separate unauthenticated minadbd transport for
 this profile. Both its standalone entrypoint and TWRP's sideload caller return
