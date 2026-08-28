@@ -1744,7 +1744,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_forty_six_preserves_first_263_sources_and_metadata(self):
         config = dependencies.load_config()
-        self.assertEqual(len(config["projects"]), 264)
+        self.assertGreaterEqual(len(config["projects"]), 264)
         original = config["projects"][:263]
         encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
@@ -1791,6 +1791,64 @@ class ConfigurationTests(Fixture):
         for text in ("no namespace declarations, Android.mk, AndroidProducts.mk or CleanSpec.mk",
                      "No source-scope, patch, release flag, apex_available validation or signing policy changes",
                      "No APEX installation, recovery feature or device support is claimed"):
+            self.assertIn(text, reason)
+
+    def test_graph_forty_seven_preserves_first_264_sources_and_metadata(self):
+        config = dependencies.load_config()
+        self.assertEqual(len(config["projects"]), 265)
+        original = config["projects"][:264]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "8baa219ed651174c17fafa7949392a40ce00dd2ec91ec8866e2ab815201b4f06")
+        historical_config = {**config, "projects": original}
+        encoded = (json.dumps(historical_config, indent=2) + "\n").encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "f955d23d7e949cad7a5a5edfef363cfb130fe5e50c97b8ac9e43fd67a825ce1b")
+
+    def test_reviewed_graph_forty_seven_car_services_original_source_pin(self):
+        project = dependencies.load_config()["projects"][264]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "frameworks/opt/car/services",
+            "url": "https://android.googlesource.com/platform/frameworks/opt/car/services",
+            "commit": "d1edb5049c9e9bcadc38fa1069e6dbb525bb4d43",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertTrue(reason.startswith("Source audit projection for the graph 47 Car APEX restoration,"))
+        for text in ("not an observed missing-provider error", "original car-frameworks-service-module java_library",
+                     "com.android.car.framework-systemserverclasspath-fragment contents",
+                     "whole original project", "only builtInServices/Android.bp, builtInServices/proto/Android.bp",
+                     "and updatableServices/Android.bp", "Excluded JNI and tests remain in the original checkout"):
+            self.assertIn(text, reason)
+
+    def test_car_services_preserves_original_sdk_and_raw_input_contract(self):
+        reason = dependencies.load_config()["projects"][264]["reason"]
+        for text in ("real car-frameworks-service java_sdk_library", "car-frameworks-updatable-service-sources",
+                     "car-builtin-protos", "car-frameworks-service.stubs.module_lib comes from the original SDK factory",
+                     "29 builtin and nine updatable Java source paths", "all eight original API files",
+                     "six active current/removed files", "atoms.proto and jarjar-rules.txt",
+                     "Original unsafe_ignore_missing_latest_api true remains unchanged",
+                     "no synthetic stubs or new API waiver", "API-lint execution is not claimed",
+                     "real stub/implementation/XML modules and SDK registration",
+                     "actual generation and variant validation remain for the strict graph"):
+            self.assertIn(text, reason)
+
+    def test_car_services_preserves_package_metadata_and_coordinated_providers(self):
+        reason = dependencies.load_config()["projects"][264]["reason"]
+        for text in ("original Android-Apache-2.0 package references", "both trendy_team_aaos_framework declarations",
+                     "visibility, installable true, APEX entries and SDK settings",
+                     "android.car.watchdoglib requires the coordinated Car scope addition",
+                     "libprotobuf-java-lite is the original implicit proto dependency",
+                     "no namespace declarations, Android.mk, AndroidProducts.mk or CleanSpec.mk",
+                     "preupload hook is upstream development tooling, not a selected Blueprint input"):
+            self.assertIn(text, reason)
+
+    def test_car_services_admission_does_not_select_a_car_product_or_claim_runtime(self):
+        reason = dependencies.load_config()["projects"][264]["reason"]
+        for text in ("Car product makefiles reference libcarservicehelperjni",
+                     "no Car product inheritance or package installation is added",
+                     "No signing policy, release flag, kernel, firmware or device identity changes",
+                     "no recovery feature or Car runtime support is claimed"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
