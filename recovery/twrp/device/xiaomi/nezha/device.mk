@@ -82,6 +82,17 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     -frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp
 
+# Graph 5 found vehicle compatibility and property-annotation tests consuming
+# the omitted vehicle implementation. This directory defines only those three
+# test modules, with no external consumers or shared provider to preserve.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/interfaces/automotive/vehicle/aidl/aidl_test/
+
+# The remaining literal vehicle-header consumer is a single broadcast-radio
+# unit test. Preserve the production radio service and its AIDL interface.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/interfaces/broadcastradio/aidl/default/test/
+
 # Restore the actual Tradefed defaults without importing platform_testing's
 # unrelated test aggregate. Blueprint's more specific positive prefix admits
 # only this original provider subtree; its own package uses the global license.

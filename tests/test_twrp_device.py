@@ -39,6 +39,8 @@ SOURCE_EXCLUSIONS = [
     "-hardware/interfaces/neuralnetworks/aidl/utils/",
     "-hardware/interfaces/neuralnetworks/aidl/vts/functional/",
     "-" + MOTION_TEST_BLUEPRINT,
+    "-hardware/interfaces/automotive/vehicle/aidl/aidl_test/",
+    "-hardware/interfaces/broadcastradio/aidl/default/test/",
     "-platform_testing/",
 ]
 SOURCE_REINCLUSIONS = ["platform_testing/libraries/tradefed-error-prone/"]
@@ -334,6 +336,24 @@ class TwrpDeviceTests(unittest.TestCase):
                 "frameworks/base/tests/InputScreenshotTest/robotests/Android.bp",
                 "external/skia/Android.bp", "frameworks/base/libs/hwui/Android.bp",
                 "frameworks/native/libs/renderengine/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_vehicle_compatibility_test_scope_keeps_production_aidl(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertFalse(source_path_allowed(
+            "hardware/interfaces/automotive/vehicle/aidl/aidl_test/Android.bp", scopes))
+        for source in ("hardware/interfaces/automotive/vehicle/aidl/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/aidl/aidl_api/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/aidl/aidl_test_sibling/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_broadcast_radio_test_scope_keeps_service_and_interface(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertFalse(source_path_allowed(
+            "hardware/interfaces/broadcastradio/aidl/default/test/Android.bp", scopes))
+        for source in ("hardware/interfaces/broadcastradio/aidl/Android.bp",
+                       "hardware/interfaces/broadcastradio/aidl/default/Android.bp",
+                       "hardware/interfaces/broadcastradio/aidl/default/test_sibling/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
 
     def test_second_graph_scope_does_not_hide_entire_cts_or_hardware_interfaces(self):

@@ -112,6 +112,22 @@ SettingsLib and screenshot tests. Those consumers and their dependency checks
 remain included. The actual Skia, HWUI and RenderEngine sources are not cut to
 work around missing graphics providers.
 
+Graph 5 reached one remaining vehicle-default consumer in
+`hardware/interfaces/automotive/vehicle/aidl/aidl_test/`. That scope declares
+only the AIDL/HIDL compatibility test and the C++ and Java property-annotation
+tests. Their implementation providers were already outside the recovery
+product, and the bounded scan found no external consumers or shared helper
+modules in this scope. The test directory is excluded; the production vehicle
+AIDL definitions and API data remain included.
+
+A static follow-up checked the remaining references to the recently excluded
+module names. The only further active reference found was the vehicle header
+`IVehicleHardware`, used by `DefaultBroadcastRadioHalTestCase` in
+`hardware/interfaces/broadcastradio/aidl/default/test/`. That directory declares
+only this test and has no external consumers or shared helper modules in the
+bounded scan. It is excluded while the production radio service and AIDL
+interface remain included. No additional broad source exclusions were added.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.
