@@ -1083,6 +1083,41 @@
       "project": "test/vts-testcase/hal",
       "reason": "Exclude only the Trusty virtual-machine Trusted HAL test from the typed Nezha native recovery profile; preserve general VINTF tests, shared defaults and AIDL sources, enforcement, and original enabled architectures outside that profile.",
       "repository": "https://android.googlesource.com/platform/test/vts-testcase/hal"
+    },
+    {
+      "id": "0024-recovery-usb-only-adb",
+      "project": "packages/modules/adb",
+      "repository": "https://android.googlesource.com/platform/packages/modules/adb",
+      "base_commit": "ce023afef190b0cea7f8939e9dd5ee3ee79b137b",
+      "patch": "patches/twrp/0024-recovery-usb-only-adb.patch",
+      "patch_sha256": "e472bfde972d168fdc8dd1190298a2891d165a083ce3e02898dcd88e8882d792",
+      "reason": "Restrict ordinary recovery ADB host transport admission to USB: reject a missing FunctionFS endpoint and exclude explicit/default socket listeners and the Wi-Fi TLS observer at compile time. Preserve authentication, privilege dropping, SELinux, ordinary Android behavior, and authenticated forwarding services.",
+      "reviewed_candidate_sha256": "8ecb76333df2f0a21323ad929204a9cd78bbf1f650c218fe98ce25740fcc8d4d",
+      "files": [
+        {
+          "path": "daemon/main.cpp",
+          "before_sha256": "87934aa1c82e8cb8b728230467b75643fe8462a58a13d60e11f035741e6a157e",
+          "after_sha256": "8a9aec32ad19c081349aa3fd908e9c406e78b31c2a34ca7651d728e6b576d2b3",
+          "before_git_blob": "9073e34fdaa81bc3c7a7c72235b8909d3a40359e",
+          "after_git_blob": "4a5983abe6931cc41ad40ba2ed195eb8697cb092",
+          "before_size_bytes": 13123,
+          "after_size_bytes": 13521,
+          "mode": "100644",
+          "predecessor_patch_id": "0004-require-recovery-adb-auth",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/main.cpp?format=TEXT"
+        },
+        {
+          "path": "daemon/adb_wifi.cpp",
+          "before_sha256": "d77f683e7c4349d7ea4e742d97482d16ccd2f1fec086a124512a43d4bc5105fb",
+          "after_sha256": "29d449caab9a0d859f5a8a1d5d308430042494fdcd786425497789c0ac32cd6a",
+          "before_git_blob": "a62db3a0d7069727e244d7aeadf0e799a65edcf1",
+          "after_git_blob": "1ca53f672ed0b8449bdfc9ceec33e4185e71b8af",
+          "before_size_bytes": 6676,
+          "after_size_bytes": 6832,
+          "mode": "100644",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/adb_wifi.cpp?format=TEXT"
+        }
+      ]
     }
   ],
   "application_requirements": [
