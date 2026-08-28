@@ -179,7 +179,7 @@ class AconfigVariantTrackedTests(unittest.TestCase):
         cls.patch = (ROOT / PATCH_PATH).read_bytes()
 
     def test_previous_sixteen_entries_and_historical_metadata_unchanged(self):
-        self.assertEqual(len(self.patches), 17)
+        self.assertGreaterEqual(len(self.patches), 17)
         self.assertEqual(canonical_sha256(self.patches[:16]), PREVIOUS_SIXTEEN_SHA256)
         self.assertEqual(canonical_sha256({key: value for key, value in self.record.items()
                                           if key != "patches"}), PREVIOUS_METADATA_SHA256)

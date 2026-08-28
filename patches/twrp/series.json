@@ -840,6 +840,41 @@
       "project": "build/make",
       "reason": "Restore the original Android 16 r1 image availability of the aconfig storage C++ wrapper by removing only TWRP's added recovery_available property; preserve all source and existing core/vendor/product behavior.",
       "repository": "https://github.com/TWRP-Test/android_build"
+    },
+    {
+      "base_commit": "5bde6fcffe8e3ac6feca449f7bc3502eed5fc0f5",
+      "files": [
+        {
+          "after_git_blob": "56f9a993fb3a9a000c6f65d9849c35c20852c93d",
+          "after_sha256": "0e0c0bcd6120d8f54d04600006c086549b3954e59275820c44829406b8b2b1f2",
+          "after_size_bytes": 30179,
+          "before_git_blob": "abffd0c2624fb324092945bda43708bb7249f0bd",
+          "before_sha256": "cafd0a962883328dbddf607bc3b7a287f48accfc5cf520a49d7ac125228ad40a",
+          "before_size_bytes": 30149,
+          "mode": "100644",
+          "path": "Android.bp",
+          "recovery_available_modules": [
+            {
+              "added_property_line": 1122,
+              "after_module_sha256": "3871462122d46ffc7416ebd33b66ffa2c331d74b6cd8223e91f077f2948b5931",
+              "before_module_sha256": "1c593d63e90ba83108673d7963d2a7dbc6e9ca8592faf124adee0e8684d89b81",
+              "constructor_line": 1120,
+              "name": "aidl-analyzer-main",
+              "name_line": 1121,
+              "recovery_available_property_after": true,
+              "recovery_available_property_before": false,
+              "type": "cc_library_static"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/system/tools/aidl/+/5bde6fcffe8e3ac6feca449f7bc3502eed5fc0f5/Android.bp"
+        }
+      ],
+      "id": "0018-enable-aidl-analyzer-main-recovery",
+      "patch": "patches/twrp/0018-enable-aidl-analyzer-main-recovery.patch",
+      "patch_sha256": "1ecd3993ea99e4dd30bce5d3fa1545df6d047ad92cc91632eebabba401bad24f",
+      "project": "system/tools/aidl",
+      "reason": "Add the recovery static variant of the genuine AIDL analyzer main library required by the generated SecureClock and Weaver analyzers; preserve interface availability, analyzer generation, existing images, and all strict checks.",
+      "repository": "https://android.googlesource.com/platform/system/tools/aidl"
     }
   ],
   "application_requirements": [

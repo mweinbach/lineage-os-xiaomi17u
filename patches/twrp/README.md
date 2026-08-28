@@ -166,6 +166,18 @@ the next strict graph; this source audit is not a graph or build success claim.
 The alternative addition of 24 Rust/C++ recovery availability declarations was
 reviewed but not applied. All sixteen earlier patch records remain unchanged.
 
+Patch 18 supplies the recovery variant of the existing `aidl-analyzer-main`
+static library. Graph 37 reached the generated SecureClock and Weaver analyzer
+binaries, which inherit their interfaces' recovery availability and require
+this library. Its two C++ inputs, exported header and genuine `libbase` and
+`libbinder` shared dependencies are present; both dependencies already provide
+recovery variants. Only one availability property is added to the helper.
+The real C++/NDK interface libraries, analyzer generation, source selection,
+product packages and service startup remain unchanged. These Binder analysis
+tools are separate from the recovery log collector. The next strict graph and
+build must verify the resulting variants; no installed-image or device result
+is implied by the source checks.
+
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source
 policy's allow rules and historical policy snapshots remain intact. Keep the
