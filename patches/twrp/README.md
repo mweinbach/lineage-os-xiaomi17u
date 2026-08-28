@@ -207,6 +207,16 @@ statement at entry. No write, close, synchronization or flush operation is added
 the existing state updates and all other source bytes remain unchanged. Actual
 recompilation and device validation are still required.
 
+Patch 32 addresses the user-build policy rejection in diagnostic build 58.
+The pinned `private/twrp.te` marks seven recovery domains permissive regardless
+of build variant. The patch wraps only those declarations in the existing
+`userdebug_or_eng` macro. User recovery no longer selects them; debug and eng
+recovery retain their original statements. All six neighboring allow rules,
+shared macros, neverallow rules and the unfiltered native validator remain
+unchanged. No broad permissions or permissive-domain exceptions are added.
+The next actual user build must produce an empty permissive-domain list;
+source-level tests do not establish a bootable or working recovery.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init

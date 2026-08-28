@@ -1789,6 +1789,108 @@
         "This marks an existing unused descriptor parameter; it does not add I/O, close or sync a descriptor, or change the deferred end-of-tar flush behavior.",
         "Actual Android recompilation and device validation remain required. Offline source checks do not establish a successful build or runtime behavior."
       ]
+    },
+    {
+      "id": "0032-enforce-user-recovery-domains",
+      "project": "system/sepolicy",
+      "repository": "https://github.com/TWRP-Test/android_system_sepolicy",
+      "base_commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+      "patch": "patches/twrp/0032-enforce-user-recovery-domains.patch",
+      "patch_sha256": "50df430c25bb2feb3ed0b07fbe39a2d110310d03a14adc8e5e574db44039a323",
+      "reason": "Diagnostic build58 failed the native sepolicy.recovery validator because the pinned recovery_only block marks adbd, fastbootd, init, logd, postinstall, recovery and ueventd permissive even for user builds. Wrap only those seven declarations in the existing userdebug_or_eng macro. Preserve their original debug/eng recovery behavior, all six neighboring allow statements, every neverallow rule, shared macro definitions and the unfiltered user-build permissive-domain check. No new permission, permissive allowlist, validator bypass, build-variant change or device-runtime claim.",
+      "files": [
+        {
+          "path": "private/twrp.te",
+          "mode": "100644",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_system_sepolicy/f0270686ee017f4de42e1032aca7527031bcc484/private/twrp.te",
+          "before_sha256": "03b63947499c6abbacf35d5a830c1dae03a01dae625bfa27de5fde8df2453833",
+          "after_sha256": "a4d257213731dc8a2560f1674d4045002eef0a145c01c217223921e51378e510",
+          "before_git_blob": "be4a1e9637c64aea610c0404b15cc7a2fbf11db1",
+          "after_git_blob": "0179e3ff26123f8bbed6a457adf5716f4762d135",
+          "before_size_bytes": 416,
+          "after_size_bytes": 456
+        }
+      ],
+      "policy_contract": {
+        "enclosing_macro": "recovery_only",
+        "new_guard": "userdebug_or_eng",
+        "permissive_domains_in_source_order": [
+          "recovery",
+          "init",
+          "logd",
+          "adbd",
+          "fastbootd",
+          "postinstall",
+          "ueventd"
+        ],
+        "unchanged_allow_statements": [
+          "allow kernel unlabeled:file rw_file_perms;",
+          "allow kernel tmpfs:file { read };",
+          "allow kernel recovery:fd { use };",
+          "allow unlabeled unlabeled:filesystem associate;",
+          "allow vendor_init rootfs:dir read;",
+          "allow logd rootfs:file { entrypoint };"
+        ],
+        "macro_source": {
+          "path": "public/te_macros",
+          "commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+          "sha256": "39876a485ea1fe6cf76418268bc058dde7ae50690fd2901051e32125c5678243",
+          "definitions": {
+            "recovery_only": "define(`recovery_only', ifelse(target_recovery, `true', $1, ))\n",
+            "userdebug_or_eng": "define(`userdebug_or_eng', ifelse(target_build_variant, `eng', $1, ifelse(target_build_variant, `userdebug', $1,\n#\n# SUPPRESSED_BY_USERDEBUG_OR_ENG -- this marker is used by CTS -- do not modify\n)))\n"
+          }
+        },
+        "build_variant_source": {
+          "path": "build/soong/policy.go",
+          "commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+          "sha256": "eaae44efdf8b42ec75acfa024b8f86bc48d96227013eeec078bacc9c1be1d57f",
+          "function": "policyConf.buildVariant",
+          "lines": [
+            150,
+            160
+          ]
+        },
+        "recovery_module_source": {
+          "path": "Android.bp",
+          "commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+          "sha256": "28828e32c7a2031195fb7c164ab7389dc210e63668c9f24893c498ab562e8ba4",
+          "conf_module": "recovery_sepolicy.conf",
+          "binary_module": "sepolicy.recovery",
+          "target_recovery": true
+        },
+        "expected_variant_behavior": {
+          "user_recovery_permissive_domains": [],
+          "userdebug_recovery_permissive_domains": [
+            "recovery",
+            "init",
+            "logd",
+            "adbd",
+            "fastbootd",
+            "postinstall",
+            "ueventd"
+          ],
+          "eng_recovery_permissive_domains": [
+            "recovery",
+            "init",
+            "logd",
+            "adbd",
+            "fastbootd",
+            "postinstall",
+            "ueventd"
+          ],
+          "non_recovery_permissive_domains": []
+        },
+        "allow_and_neverallow_rules_unchanged": true,
+        "shared_macros_unchanged": true,
+        "native_validation_unchanged": true,
+        "compiled_policy_revalidation_required": true
+      },
+      "limits": [
+        "Finite offline variant projections are source-level checks, not execution of m4, a policy compiler or sepolicy-analyze.",
+        "The actual user recovery policy must be rebuilt and its unfiltered permissive-domain output must be empty; no current successful policy or image is claimed.",
+        "Existing debug/eng recovery declarations are intentionally retained; this does not establish a secure or working device runtime.",
+        "No global SELinux enforcement switch, allow or neverallow rule, permissive-domain allowlist, validator, signing rule or target identity is changed."
+      ]
     }
   ],
   "application_requirements": [
