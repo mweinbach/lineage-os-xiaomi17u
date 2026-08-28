@@ -988,6 +988,34 @@
       "commit": "1295d6828459cc82c3c29cc5d7d297215250a74b",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP rnnoise_rnn_vad provider required by the WebRTC dependency in graph 20."
+    },
+    {
+      "path": "external/python/absl-py",
+      "url": "https://android.googlesource.com/platform/external/python/absl-py",
+      "commit": "7b59b5e5824651c2c65bf35dcd950a091cf286a5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP absl-py provider required by NetworkStaticLibHostPythonTests and CtsConnectivityMultiDevicesTestCases in the graph 20 errors."
+    },
+    {
+      "path": "external/scapy",
+      "url": "https://android.googlesource.com/platform/external/scapy",
+      "commit": "f377b770d982debb11f5e988d0f65b9e7c5ecd81",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP scapy provider required by CtsConnectivityMultiDevicesTestCases in the graph 20 error."
+    },
+    {
+      "path": "tools/test/mobly_extensions",
+      "url": "https://android.googlesource.com/platform/tools/test/mobly_extensions",
+      "commit": "9b4d9968df2deea5164340bad0c46f724aa5a4f0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP mobly_device_flags provider required by CtsCompanionDeviceManagerMultiDeviceTests and CtsCompanionDeviceManagerMultiDeviceTestCases in the graph 20 errors."
+    },
+    {
+      "path": "external/minigbm",
+      "url": "https://android.googlesource.com/platform/external/minigbm",
+      "commit": "10d2dbeec1d248e7a040ecab225a075caa34b2bf",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libgbm_sys bindings and libgbm provider required by libgbm_rust in the graph 20 error. Upstream build properties remain unchanged."
     }
   ]
 }

@@ -174,6 +174,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "59f36d6c49d093927ea29a065e07f3ddd02b67baa147d8c00b5c39aab1269422")
 
+    def test_first_140_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:140]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "5d10833601cb9dced9c9a00a28e1d66ffd17a65b64439a3ed769f552d8dfc4b5")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -604,9 +610,8 @@ class ConfigurationTests(Fixture):
             ("external/pffft", "efa0bc5d226e063f65b21afd35390cce22e8e09d"),
             ("external/rnnoise", "1295d6828459cc82c3c29cc5d7d297215250a74b"),
         ]
-        self.assertEqual(len(projects), 140)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[136:]], expected)
-        for project in projects[136:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[136:140]], expected)
+        for project in projects[136:140]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -615,6 +620,34 @@ class ConfigurationTests(Fixture):
         self.assertIn("webrtc_audio_processing", projects[136]["reason"])
         self.assertIn("libaudiopreprocessing", projects[136]["reason"])
         self.assertIn("preserving the original SRTP fuzzer", projects[137]["reason"])
+
+    def test_graph_twenty_python_provider_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/python/absl-py", "7b59b5e5824651c2c65bf35dcd950a091cf286a5", "absl-py"),
+            ("external/scapy", "f377b770d982debb11f5e988d0f65b9e7c5ecd81", "scapy"),
+            ("tools/test/mobly_extensions", "9b4d9968df2deea5164340bad0c46f724aa5a4f0", "mobly_device_flags"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[140:143]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[140:143], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 20", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+
+    def test_graph_twenty_minigbm_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 144)
+        self.assertEqual(projects[143], {
+            "path": "external/minigbm",
+            "url": "https://android.googlesource.com/platform/external/minigbm",
+            "commit": "10d2dbeec1d248e7a040ecab225a075caa34b2bf",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libgbm_sys bindings and libgbm provider required by libgbm_rust in the graph 20 error. Upstream build properties remain unchanged."
+        })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
