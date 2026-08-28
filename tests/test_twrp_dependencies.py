@@ -282,6 +282,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "c4f0d87449bf255ec5fad2a4fd52f9cccd94cf3a725c3fd4f0e5b8f758366a00")
 
+    def test_first_225_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:225]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "39517a2a7b22d56b7c7bda093ef0ae149e7198d07834ad69b488125625252c42")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1189,7 +1195,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_thirty_one_glide_prebuilt_source_pin_and_packaging_caveat(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 225)
+        self.assertGreaterEqual(len(projects), 225)
         project = projects[224]
         self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
             "path": "prebuilts/maven_repo/bumptech",
@@ -1211,6 +1217,43 @@ class ConfigurationTests(Fixture):
                        "Java sources and no compiled classes",
                        "does not establish WebP or application runtime support"):
             self.assertIn(caveat, reason)
+
+    def test_reviewed_systemui_robolectric_mime_and_turbine_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("frameworks/libs/systemui", "9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62"),
+            ("external/robolectric", "559c38b2cb0fbd87f2118bdcb8bea6f536164d70"),
+            ("external/mime-support", "c347c3d8fa4992e655674e6c9f2baa6e18e44ead"),
+            ("external/turbine", "babc164379486626467efc50db0833d683c39fd5"),
+        ]
+        self.assertEqual(len(projects), 229)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[225:229]], expected)
+        for project in projects[225:229]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+
+    def test_shared_graph_provider_reasons_preserve_runtime_and_tool_boundaries(self):
+        projects = dependencies.load_config()["projects"]
+        systemui = projects[225]["reason"]
+        self.assertIn("graph 31 errors", systemui)
+        self.assertIn("SystemUI-shared-utils", systemui)
+        self.assertIn("//frameworks/libs/systemui:view_capture", systemui)
+        self.assertNotIn("projection", systemui.lower())
+        for project in projects[226:229]:
+            with self.subTest(path=project["path"]):
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 31 error:"))
+        for text in ("Robolectric_all-target", "platform-parametric-runner-lib", "strict graph trial",
+                     "does not establish compiled or runtime support"):
+            self.assertIn(text, projects[226]["reason"])
+        for text in ("debian.mime.types.minimized", "debian.mime.types.minimized-alt",
+                     "frameworks/base/mime", "license metadata and generator definitions are preserved"):
+            self.assertIn(text, projects[227]["reason"])
+        for text in ("turbine java_library_host", "Kotlin and KAPT", "Always_use_prebuilt_sdks=false",
+                     "framework/turbine.jar", "KatiInstalls", "no prebuilt substitution or flag change",
+                     "does not claim a built JAR"):
+            self.assertIn(text, projects[228]["reason"])
+        self.assertNotIn("java_binary_host", projects[228]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

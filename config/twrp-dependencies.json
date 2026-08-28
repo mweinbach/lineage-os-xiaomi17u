@@ -1583,6 +1583,34 @@
       "commit": "5fa5ea996556070a62957f197876d124f3a1e1b7",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP glide-prebuilt, glide-gifdecoder-prebuilt, glide-disklrucache-prebuilt, glide-annotation-and-compiler-prebuilt, glide-ktx-prebuilt, glide-integration-webpdecoder-prebuilt, glide-compose-prebuilt and glide-annotation-processor providers required by car-telephony-common-source-no-overlayable, car-telephony-common-source, car-telephony-common-aar and PhotopickerLib in the graph 31 errors. The original WebP import uses webpdecoder-2.6.4.16.0-sources.jar with Java sources and no compiled classes; this pin does not establish WebP or application runtime support."
+    },
+    {
+      "path": "frameworks/libs/systemui",
+      "url": "https://android.googlesource.com/platform/frameworks/libs/systemui",
+      "commit": "9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP view_capture provider required by SystemUI-shared-utils through //frameworks/libs/systemui:view_capture in the graph 31 errors. Original library names and metadata are retained for the strict graph trial."
+    },
+    {
+      "path": "external/robolectric",
+      "url": "https://android.googlesource.com/platform/external/robolectric",
+      "commit": "559c38b2cb0fbd87f2118bdcb8bea6f536164d70",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP Robolectric_all-target required by the restored platform-parametric-runner-lib. The complete source project is pinned for the strict graph trial; this admission does not establish compiled or runtime support."
+    },
+    {
+      "path": "external/mime-support",
+      "url": "https://android.googlesource.com/platform/external/mime-support",
+      "commit": "c347c3d8fa4992e655674e6c9f2baa6e18e44ead",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP debian.mime.types.minimized and debian.mime.types.minimized-alt generators required by the retained frameworks/base/mime filegroups. Original input data, license metadata and generator definitions are preserved."
+    },
+    {
+      "path": "external/turbine",
+      "url": "https://android.googlesource.com/platform/external/turbine",
+      "commit": "babc164379486626467efc50db0833d683c39fd5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP turbine java_library_host required by the retained Kotlin and KAPT tool path with Always_use_prebuilt_sdks=false. Original build rules install framework/turbine.jar through KatiInstalls; no prebuilt substitution or flag change is made, and this source pin does not claim a built JAR."
     }
   ]
 }
