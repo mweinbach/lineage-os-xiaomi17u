@@ -1,0 +1,395 @@
+{
+  "allocator_families": {
+    "gki_pair_excluded_by_system_selector": true,
+    "gki_zs_malloc_crc": "0x36f39fe1",
+    "local_matching_payload_ambiguity": false,
+    "matching_local_vendor_hard_predecessor": true,
+    "recovery_vendor_zs_expectations_each": 10,
+    "same_crc_global_gki_alternatives_each": 9,
+    "vendor_zs_malloc_crc": "0x1804f5bc",
+    "wrong_family_crc_accepted": false
+  },
+  "dependency_semantics": {
+    "aliases_and_cache_behavior_distinguished": true,
+    "complete_captured_module_trees_contain_modules_options": false,
+    "cycles_without_cache_progress_are_audit_failures_not_claimed_clean_loader_errors": true,
+    "eexist_identifies_active_payload": false,
+    "hard_requests": "reverse recorded order; canonical-only mandatory paths separated from conditional alias paths",
+    "missing_or_malformed_config_can_silently_change_requests": true,
+    "runtime_command_line_options_and_dynamic_callers_fully_known": false,
+    "sequential_and_parallel_blocklist_root_policies_distinguished": true,
+    "soft_owner_tokens": "raw literal comparison",
+    "soft_pre_failures_ignored_by_reference": true,
+    "soft_pre_graph_path_proves_attempt": false
+  },
+  "device": "nezha",
+  "earlier_stage_requirements": {
+    "consumer_modules": 144,
+    "distinct_symbols": 289,
+    "earlier_selected_membership_proves_successful_loading": false,
+    "normal_first_stage_expectations": 718,
+    "normal_first_stage_provider_payloads": 49,
+    "provider_payloads": 51,
+    "system_providers": [
+      {
+        "consumers": [
+          "btpower",
+          "cfg80211"
+        ],
+        "expectations": 12,
+        "name": "rfkill"
+      },
+      {
+        "consumers": [
+          "mac80211"
+        ],
+        "expectations": 2,
+        "name": "libarc4"
+      }
+    ],
+    "system_stage_expectations": 14,
+    "system_stage_provider_payloads": 2,
+    "vendor_expectations": 732
+  },
+  "evidence": {
+    "bundle_receipt": {
+      "path": "artifacts/kernel-inputs/nezha-xiaomi-eu-candidate-v2/receipt.json",
+      "sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+      "size_bytes": 457217
+    },
+    "factory_dlkm_equality": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/dlkm-comparison-v1/analysis/receipt.json",
+      "sha256": "70e4471ba25fcce901c37aface8f88e4d22b067fc963d1a3f8b12227fb23b018",
+      "size_bytes": 4769
+    },
+    "factory_link_capture": {
+      "path": "artifacts/source-contracts/nezha-module-stage-closure-v1/symlink-text-v3/receipt.json",
+      "sha256": "06c5dd3ba773114b7861fb9faadd37abb309354ce0ce3fa82a7b4d46f5481880",
+      "size_bytes": 3488
+    },
+    "factory_loader_capture": {
+      "path": "artifacts/source-contracts/nezha-module-stage-closure-v1/factory-loader-capture-v1/receipt.json",
+      "sha256": "a8284d52bae20bc7857e4212a8497c09ee40a29e686b5ee8fb672aff8ab4f2cf",
+      "size_bytes": 2428
+    },
+    "factory_ramdisk_equality": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/receipt.json",
+      "sha256": "138df4eff3d7f916bb6c24f9a91bd7e4ec2fae5c7a42bc5526bda1bf7c76330f",
+      "size_bytes": 365509
+    },
+    "final_readback": {
+      "path": "reports/module-stage-final-readback-v2.json",
+      "sha256": "6c5d28a77ed4e298b8bacdea4ae802de54ac8930696a67afe83d63fae252e5ce",
+      "size_bytes": 7820
+    },
+    "global_provider_receipt": {
+      "path": "artifacts/source-contracts/nezha-full-module-audit-v1/result-v2/receipt.json",
+      "sha256": "a19a8da010446dfaba4f5e902091912efd54f57cb1ee1de05db43925e5a64a99",
+      "size_bytes": 233902
+    },
+    "independent_graph": {
+      "path": "reports/module-stage-independent-graph-v1.json",
+      "sha256": "3e0da4eb0b2b42e1714d1641bf6c4659493d7bb13034a6c3c6cb56cac7fb1193",
+      "size_bytes": 1312924
+    },
+    "kernel_export_map": {
+      "path": "artifacts/source-contracts/nezha-kernel-exports-v1/result-v1/kernel-exports.json",
+      "sha256": "03a9b7b893bfd198d2f9ad80e54c36535799ae4d6cbebe76f4040f85439cc37b",
+      "size_bytes": 3745629
+    },
+    "link_test_log": {
+      "path": "reports/module-stage-symlink-text-tests-v3.log",
+      "sha256": "8bfad8a9135888af0d441cce0d864b809569755a3060fc88e242a8379d138a5b",
+      "size_bytes": 1095
+    },
+    "primary_producer": {
+      "path": "reports/nezha-module-stage-closure-v3.py",
+      "sha256": "2758fa9e0dee3fe84e2750f9cdc9fd6f345151aee54841880108708fa76176e0",
+      "size_bytes": 46339
+    },
+    "primary_receipt": {
+      "path": "artifacts/source-contracts/nezha-module-stage-closure-v1/result-v3/receipt.json",
+      "sha256": "530610ac2778fd41c2c58977762f1a33cc34f2b8bdb67e44f2ef60765a183252",
+      "size_bytes": 274540
+    },
+    "primary_test_log": {
+      "path": "reports/module-stage-closure-focused-tests-v3.log",
+      "sha256": "90881bda21c6bf22bf8fbb743f2489a1d9528d7f86ccf292b9f0609bfa4c69c8",
+      "size_bytes": 5493
+    },
+    "primary_test_source": {
+      "path": "reports/test_nezha_module_stage_closure_v3.py",
+      "sha256": "4f654ffd10d6e81b39bfaa352578cf6fa99246314851e381f39604238239f301",
+      "size_bytes": 17037
+    },
+    "source_semantics_receipt": {
+      "path": "reports/module-stage-first-init-review-v1-sources.json",
+      "sha256": "d480f55586ec1c0082aa4221daac724b2d91dfb5c89220230d540b41308843a3",
+      "size_bytes": 7784
+    },
+    "stock_loader_review": {
+      "path": "reports/module-stage-stock-loader-review-v1.json",
+      "sha256": "4386c20ab2d80b69dca835121a741dc61129e532fc0206571f053e5943a09ae8",
+      "size_bytes": 27425
+    },
+    "workspace_test_log": {
+      "path": "reports/module-stage-closure-full-tests-2.log",
+      "sha256": "3bbb9743587d161e4c7ef28269639ae10b59753dec605d69af88a77ec2d5052a",
+      "size_bytes": 176304
+    }
+  },
+  "factory_paths": {
+    "absolute_vendor_dependency_owner_paths_mapped": 381,
+    "input_stability_checked_before_publication": true,
+    "inventory_hash_and_parse_share_buffer": true,
+    "links_followed_or_created": false,
+    "raw_link_text_read_by_explicit_inode": true,
+    "runtime_mount_or_access_verified": false,
+    "stock_toolbox_source_identity_verified": false,
+    "target_and_inode_metadata_readbacks_passed": true,
+    "vendor_modprobe_link_target": "toolbox",
+    "vendor_modules_link_target": "/vendor_dlkm/lib/modules"
+  },
+  "history": {
+    "all_prior_sources_outputs_and_logs_preserved": true,
+    "fixture_failure_explanation": "The guard rejected the macOS temporary directory symlink; the final fixture resolves that directory and all13 tests pass.",
+    "link_reader_review_fixes": "Same-buffer inventory binding, pre-publication input guards, and persisted target/metadata readbacks.",
+    "model_review_fixes": "Alias/cache/blocklist and cycle counterexamples corrected; actual captured counts unchanged.",
+    "preserved_fixture_failure": {
+      "path": "reports/module-stage-symlink-text-tests-v2.log",
+      "sha256": "55b658f6478d0378e1d5353ab46b66916887e501204398da143ef629d2472b51",
+      "size_bytes": 2410
+    },
+    "prior_graph_receipt": {
+      "path": "artifacts/source-contracts/nezha-module-stage-closure-v1/result-v2/receipt.json",
+      "sha256": "bbdf8205f13a0dd89b2a04bb17f64157da8be24ed0db35070e77b43a5d1f355e",
+      "size_bytes": 272626
+    },
+    "provisional_graph_receipt": {
+      "path": "artifacts/source-contracts/nezha-module-stage-closure-v1/result-v1/receipt.json",
+      "sha256": "d0d82586e5be07f4ce3da8d9887ab4fa8afaccdace1f4ab0eda3b36c61a3ba3b",
+      "size_bytes": 268894
+    }
+  },
+  "inputs": {
+    "instances_by_location": {
+      "system_dlkm": 103,
+      "vendor_dlkm": 381,
+      "vendor_ramdisk": 430
+    },
+    "kernel_export_map_count": 8897,
+    "kernel_image_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "module_bytes_or_crc_fields_changed": false,
+    "module_instances": 914,
+    "unique_module_payloads": 637
+  },
+  "limits": {
+    "actual_module_load_verified": false,
+    "android_source_or_out_modified": false,
+    "bootloader_corruption_protection_proven": false,
+    "firmware_executed": false,
+    "firmware_uploaded": false,
+    "full_kernel_abi_verified": false,
+    "guest_accessed": false,
+    "image_mounted": false,
+    "kernel_or_module_bytes_modified": false,
+    "native_features_device_tested": false,
+    "origin_authenticated": false,
+    "parallel_load_order_verified": false,
+    "phone_accessed": false,
+    "protected_symbol_or_kmi_policy_verified": false,
+    "recovery_or_twrp_verified": false,
+    "runtime_gpl_license_admission_verified": false,
+    "runtime_mounts_or_device_compatibility_verified": false,
+    "runtime_namespace_admission_verified": false,
+    "signature_trust_verified": false,
+    "stock_loader_source_identity_verified": false,
+    "successful_stage_provider_availability_verified": false
+  },
+  "missing_soft_dependencies": {
+    "absent_from_captured_module_pool_and_aliases": [
+      "phy-msm-snps-hs",
+      "qcom-arm-smmu-mod",
+      "subsys-pil-tz"
+    ],
+    "missing_soft_target_implies_unresolved_required_import": false,
+    "normal_first_stage_edges": 0,
+    "normal_system_loader_edges": 0,
+    "normal_vendor_loader_edges": 15,
+    "recovery_first_stage_edges": 1,
+    "recovery_target": "phy-msm-snps-hs",
+    "substitute_modules_added": false,
+    "vendor_local_missing_but_selected_in_normal_ramdisk": [
+      "arm_smmu",
+      "llcc_qcom",
+      "qcom_hwspinlock",
+      "qcom_ipcc",
+      "qcom_scmi_client",
+      "socinfo"
+    ],
+    "vendor_unique_target_names": 9
+  },
+  "observed_date": "2026-08-27",
+  "provenance": {
+    "byte_equality_scope": "914 module instances and 26 module metadata files; not all firmware images",
+    "factory_module_and_metadata_byte_equality_corroborated": true,
+    "loader_capture_origin_url": null,
+    "loader_capture_origin_verified": false,
+    "loader_capture_package_kind": "user-provided factory-named TGZ",
+    "loader_capture_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "module_bundle_origin_url": null,
+    "module_bundle_origin_verified": false,
+    "module_bundle_package_kind": "user-provided modified Xiaomi.eu ZIP",
+    "module_bundle_package_sha256": "b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69",
+    "new_firmware_authentication_or_avb_validation_performed": false,
+    "original_xiaomi_eu_avb_failures_changed": false
+  },
+  "reference_sources": {
+    "erofs_utils": {
+      "commit": "f36cadb5c563995ab3aa8572a60ed6b721b9557d",
+      "role": "explicit-inode raw link-text reader format; installed tool separately hashed",
+      "url": "https://github.com/erofs/erofs-utils"
+    },
+    "evolution_system_core": {
+      "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+      "role": "reference init/libmodprobe/toolbox semantics; not stock binary identity",
+      "url": "https://github.com/Evolution-X/system_core"
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "conditional_reference_model": true,
+    "counts_include_one_module_layout_expectation_per_consumer": true,
+    "historical_public_records_modified": false,
+    "normal_and_recovery_are_alternative_trajectories": true,
+    "prior_record": "research/module-provider-audit.json",
+    "stage_eligibility_and_static_provider_paths_checked": true,
+    "stage_rows_are_disjoint_population_counts": false
+  },
+  "selection": {
+    "normal_first_stage": {
+      "list": "modules.load",
+      "parallel_schedule_reconstructed": false,
+      "raw_package_bootconfig_declares_parallel_true": true,
+      "recorded_request_order_preserved": true,
+      "runtime_proc_bootconfig_representation_verified": false
+    },
+    "normal_system_loader": {
+      "child_failures_checked": false,
+      "discovered_regular_paths": 103,
+      "eligible_listed_paths": 80,
+      "eligible_paths": 101,
+      "eligible_unlisted_paths": 21,
+      "excluded_names": [
+        "zram",
+        "zsmalloc"
+      ],
+      "exit_zero_proves_modules_loaded": false,
+      "find_order_known": false,
+      "first_request_synchronous": true,
+      "flatten_mirror_selected": false,
+      "modules_load_is_existence_gate_only": true,
+      "modules_load_rows": 82,
+      "remaining_requests_parallel": true
+    },
+    "normal_vendor_loader": {
+      "audio_blocklist_files_present": false,
+      "child_failures_checked": false,
+      "duplicate_occurrences": 195,
+      "eligible_names": 380,
+      "excluded_names": [
+        "ipclite_test"
+      ],
+      "fallback_directory_or_filter_environment_behavior_fully_verified": false,
+      "first_request_synchronous": true,
+      "first_unique_request": "zram.ko",
+      "modules_load_rows": 576,
+      "readiness_property_proves_modules_loaded": false,
+      "remaining_requests_parallel": true,
+      "retained_duplicate_sort_positions_known": false,
+      "unique_names": 381
+    },
+    "recovery_first_stage": {
+      "fallback_on_empty_contents": false,
+      "fallback_to_normal_only_on_stat_failure": true,
+      "hard_added_names": [
+        "hdcp_qseecom_dlkm",
+        "smmu_proxy_dlkm"
+      ],
+      "list": "modules.load.recovery"
+    }
+  },
+  "stages": {
+    "normal_first_stage": {
+      "earlier_stage_conditional_crc_matches": 0,
+      "expectations": 7542,
+      "hard_closure_modules": 154,
+      "hard_or_pre_cycles": 0,
+      "implicit_module_layout_expectations": 154,
+      "kernel_crc_matches": 6732,
+      "local_crc_matching_provider_ambiguities": 0,
+      "local_hard_predecessor_crc_matches": 810,
+      "missing_hard_paths": 0,
+      "requests": 157,
+      "successful_loading_proven": false,
+      "unique_requests": 154
+    },
+    "normal_system_loader": {
+      "earlier_stage_conditional_crc_matches": 0,
+      "expectations": 5599,
+      "hard_closure_modules": 101,
+      "hard_or_pre_cycles": 0,
+      "implicit_module_layout_expectations": 101,
+      "kernel_crc_matches": 5070,
+      "local_crc_matching_provider_ambiguities": 0,
+      "local_hard_predecessor_crc_matches": 529,
+      "missing_hard_paths": 0,
+      "requests": 101,
+      "successful_loading_proven": false,
+      "unique_requests": 101
+    },
+    "normal_vendor_loader": {
+      "earlier_stage_conditional_crc_matches": 732,
+      "expectations": 23716,
+      "hard_closure_modules": 380,
+      "hard_or_pre_cycles": 0,
+      "implicit_module_layout_expectations": 380,
+      "kernel_crc_matches": 19787,
+      "local_crc_matching_provider_ambiguities": 0,
+      "local_hard_predecessor_crc_matches": 3197,
+      "missing_hard_paths": 0,
+      "requests": 380,
+      "successful_loading_proven": false,
+      "unique_requests": 380
+    },
+    "recovery_first_stage": {
+      "earlier_stage_conditional_crc_matches": 0,
+      "expectations": 20345,
+      "hard_closure_modules": 426,
+      "hard_or_pre_cycles": 0,
+      "implicit_module_layout_expectations": 426,
+      "kernel_crc_matches": 17457,
+      "local_crc_matching_provider_ambiguities": 0,
+      "local_hard_predecessor_crc_matches": 2888,
+      "missing_hard_paths": 0,
+      "requests": 435,
+      "successful_loading_proven": false,
+      "unique_requests": 424
+    }
+  },
+  "validation": {
+    "bundle_files_freshly_rehashed": 950,
+    "final_output_files_rehashed_twice": 6,
+    "final_readback_checks": 11,
+    "final_unique_input_bindings_rehashed_twice": 1001,
+    "independent_graph_synthetic_tests": 7,
+    "independent_stage_sets_and_provider_counts_match": true,
+    "independent_vendor_consumer_symbol_crc_payload_tuples_match": 732,
+    "link_reader_synthetic_tests": 13,
+    "primary_model_synthetic_tests": 46,
+    "prior_result_v2_input_bindings_preserved": 995,
+    "prior_result_v2_output_files_preserved": 6,
+    "workspace_shell_syntax_passed": true,
+    "workspace_tests_before_public_slice": 1061
+  }
+}
