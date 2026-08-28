@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "observed_at": "2026-08-28T02:50:49.781681+00:00",
+  "observed_at": "2026-08-28T02:58:34.083466+00:00",
   "scope": "Standalone native host-tool substitutions, not integration into Soong, a full image, or a distributed build.",
   "boundaries": {
     "active_android_checkout_modified": false,
@@ -837,6 +837,7 @@
     "not_established": [
       "Soong integration",
       "Android target std rebuild",
+      "Android host-stdlib semantic parity",
       "PAC/BTI compiler-patch equivalence",
       "sanitizer or full-device coverage"
     ]

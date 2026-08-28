@@ -7,6 +7,11 @@ all these commands were executed.** Actual observations are in
 particular, no backend, remote action, full platform graph or full image was
 run in this investigation.
 
+A subsequent [tool-substitution follow-up](android16-arm64-tool-swaps.md)
+tested official native Rust, native Java compilation and an external native
+LLVM package. It supplies candidates for the later stages below, but has not
+completed a full Soong action or a remote build.
+
 Run Linux commands in **Bash inside a dedicated ARM64 Linux guest**. Keep
 source, output, logs and caches on its local ext4 disk. Use new directories;
 do not reuse a production `out/`, modify the active Evolution X tree, attach

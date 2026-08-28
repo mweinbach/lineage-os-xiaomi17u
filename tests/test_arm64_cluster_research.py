@@ -137,7 +137,8 @@ class Arm64ClusterResearchTests(unittest.TestCase):
 
     def test_research_documents_link_to_existing_local_artifacts(self):
         for name in ("android16-arm64-cluster-report.md",
-                     "android16-arm64-cluster-experiments.md"):
+                     "android16-arm64-cluster-experiments.md",
+                     "android16-arm64-tool-swaps.md"):
             document = ROOT / "docs" / name
             links = re.findall(r"\[[^\]\n]+\]\(([^)\n]+)\)", document.read_text())
             for target in links:
@@ -170,6 +171,8 @@ class Arm64ClusterResearchTests(unittest.TestCase):
             self.assertTrue(gap["runbook_experiments"])
         for name in ledger["evidence_files"] + [ledger["report"], ledger["runbook"]]:
             self.assertTrue((ROOT / name).is_file(), name)
+        self.assertTrue((ROOT / ledger["followup_report"]).is_file())
+        self.assertTrue((ROOT / ledger["followup_evidence"]).is_file())
 
     def test_runbook_separates_proposed_experiments_from_observed_results(self):
         runbook = (ROOT / "docs/android16-arm64-cluster-experiments.md").read_text()
@@ -206,6 +209,7 @@ class Arm64ClusterResearchTests(unittest.TestCase):
         self.assertNotIn("libc.so.6", rust["coherent_musl_macro_needed"])
         self.assertTrue(rust["fixture_corrections"])
         self.assertIn("PAC/BTI compiler-patch equivalence", rust["not_established"])
+        self.assertIn("Android host-stdlib semantic parity", rust["not_established"])
 
     def test_java_byte_comparisons_include_a_real_jni_counterexample(self):
         java = json.loads((RESEARCH / "tool-swap-probes.json").read_text())["java"]
