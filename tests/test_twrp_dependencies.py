@@ -228,6 +228,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "c41ad2b8d551dd8d841b71231a5b20c5f4c01dfdc0be4590f9e01ad22221611b")
 
+    def test_first_197_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:197]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "47dfb57da3384758dd1917e6345b7bc434c689fdd98605a1e57702e093f5f26c")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -925,7 +931,6 @@ class ConfigurationTests(Fixture):
 
     def test_graph_twenty_five_fdlibm_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 197)
         self.assertEqual(projects[196], {
             "path": "external/fdlibm",
             "url": "https://android.googlesource.com/platform/external/fdlibm",
@@ -933,6 +938,27 @@ class ConfigurationTests(Fixture):
             "tag": "android-16.0.0_r1",
             "reason": "Real AOSP libfdlibm provider required by libopenjdk and libopenjdkd in the graph 25 errors."
         })
+
+    def test_graph_twenty_six_nfc_and_printing_library_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/libcups", "19c37bb83c28ae3325b7a38b72d601fa0a28dde0", ("libcups",)),
+            ("packages/modules/Nfc", "bdd94b3be31253e756355e6e22f2fe8983da6b1e",
+             ("libnfc-nci", "libnfc_nci_jni")),
+        ]
+        self.assertEqual(len(projects), 199)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[197:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, modules) in zip(projects[197:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 26 errors", project["reason"])
+                self.assertIn("retained CTS security cases", project["reason"])
+                for module in modules:
+                    self.assertIn(module, project["reason"])
+        for fact in ("CVE-2019-2180", "CVE-2019-2228", "legacy_by_exception_only"):
+            self.assertIn(fact, projects[197]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

@@ -1387,6 +1387,20 @@
       "commit": "2e70335919bce0de03d619c57d4b7a98f848fd52",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libfdlibm provider required by libopenjdk and libopenjdkd in the graph 25 errors."
+    },
+    {
+      "path": "external/libcups",
+      "url": "https://android.googlesource.com/platform/external/libcups",
+      "commit": "19c37bb83c28ae3325b7a38b72d601fa0a28dde0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libcups provider required by the retained CTS security cases CVE-2019-2180 and CVE-2019-2228 in the graph 26 errors. Original license metadata, including legacy_by_exception_only, is preserved."
+    },
+    {
+      "path": "packages/modules/Nfc",
+      "url": "https://android.googlesource.com/platform/packages/modules/Nfc",
+      "commit": "bdd94b3be31253e756355e6e22f2fe8983da6b1e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libnfc-nci and libnfc_nci_jni providers required by retained CTS security cases in the graph 26 errors."
     }
   ]
 }
