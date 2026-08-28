@@ -143,6 +143,63 @@ class TwrpBuildProgressTests(unittest.TestCase):
                 self.assertEqual(values[name], "")
                 self.assertEqual(types[name], "bool")
 
+    def test_build_commands_distinguish_diagnostic_and_canonical_evidence(self):
+        for entry in self.record["attempts"]:
+            with self.subTest(attempt=entry["number"]):
+                markers = ("diagnostic_only", "canonical_build_receipt_required")
+                for marker in markers:
+                    if marker in entry:
+                        self.assertIs(type(entry[marker]), bool)
+                if entry["action"] != "build":
+                    # Older graph commands retain their recorded argument shape.
+                    self.assertTrue(all(entry.get(marker, False) is False for marker in markers))
+                    continue
+                command = entry["command"]
+                self.assertIsInstance(command, list)
+                diagnostic = "-k0" in command or any(entry.get(marker, False) for marker in markers)
+                self.assertEqual(len(command), 6 if diagnostic else 5)
+                self.assertEqual(command[:3], ["bash", "build/soong/soong_ui.bash", "--make-mode"])
+                self.assertRegex(command[3], r"^-j[1-9][0-9]*$")
+                self.assertEqual(command[4:], ["-k0", "recoveryimage"] if diagnostic else ["recoveryimage"])
+                if diagnostic:
+                    for marker in markers:
+                        self.assertIs(entry.get(marker), True)
+                    if entry["status"] == "completed":
+                        self.assertIsInstance(entry.get("artifact"), dict)
+                        self.assertTrue({"path", "size_bytes", "sha256"}.issubset(entry["artifact"]))
+                        self.assertIs(entry["artifact"].get("flash_admitted"), False)
+                        self.assertIs(entry.get("canonical_artifact_admitted"), False)
+
+    def test_build_failure_evidence_cannot_be_recorded_as_completed(self):
+        for entry in self.record["attempts"]:
+            if entry["action"] == "build":
+                with self.subTest(attempt=entry["number"]):
+                    if ("failed_command_exit_code" in entry or entry.get("validation_error")
+                            or entry.get("command_exit_code", 0) != 0):
+                        self.assertEqual(entry["status"], "failed")
+
+    def test_top_level_compiled_image_requires_a_normal_completed_build(self):
+        artifact = self.record["compiled_recovery_image"]
+        if self.record["status"] == "recovery_image_compiled_artifact_and_hardware_validation_pending":
+            self.assertIsNotNone(artifact)
+        if artifact is None:
+            return
+        normal_builds = [entry for entry in self.record["attempts"]
+                         if entry["action"] == "build" and entry["status"] == "completed"
+                         and entry.get("diagnostic_only", False) is False
+                         and entry.get("canonical_build_receipt_required", False) is False
+                         and len(entry["command"]) == 5
+                         and type(entry.get("command_exit_code")) is int
+                         and entry.get("command_exit_code") == 0
+                         and entry.get("sandbox_fallback_detected") is False
+                         and "failed_command_exit_code" not in entry
+                         and not entry.get("validation_error")
+                         and isinstance(entry.get("artifact"), dict)]
+        identity = {name: artifact[name] for name in ("path", "size_bytes", "sha256")}
+        self.assertTrue(any(all(entry["artifact"].get(name) == value
+                                for name, value in identity.items()) for entry in normal_builds),
+                        "Top-level compiled image requires matching normal completed-build evidence")
+
 
 if __name__ == "__main__":
     unittest.main()
