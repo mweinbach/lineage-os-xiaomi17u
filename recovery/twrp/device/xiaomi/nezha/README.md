@@ -289,16 +289,39 @@ not Context Hub support or an installed recovery service. Compilation and
 generated-output checks remain for the next actual build.
 
 Graph 23 identified the retained framework dependency on
-`sdk_sandbox_exported_flags_lib`. Two narrow positive source prefixes restore
+`sdk_sandbox_exported_flags_lib`. Two narrow positive source prefixes initially restored
 `packages/modules/AdServices/sdksandbox/Android.bp` and its `flags/` leaf from
 the original project at `a6ee8245f54f1719a899809cc8727f7fcce9ca35`. The parent
 file keeps the original package metadata, global Apache license,
 `trendy_team_rubidium_sdk_runtime` team and `sdksandbox-java-defaults`; the
 leaf keeps the flag declaration and both Java flag libraries. Its 10 original
 flags, exported mode, visibility, API settings and container are unchanged.
-Other AdServices runtime and test source files remain excluded. This changes
-source selection only, without adding an SDK sandbox service to recovery or
-replacing original declarations with device-local copies.
+Other AdServices runtime and test source files were excluded at that stage.
+The original declarations are not replaced with device-local copies.
+
+Graph 27 found that the retained framework API aggregates also need the
+generated exportable stubs from `framework-adservices`, `framework-sdksandbox`
+and `service-sdksandbox`. The selection now restores sixteen exact Blueprint
+files from the same pinned AdServices project. Their 65 named declarations
+include the original API providers, package license, shared libraries, linter,
+flags, Cobalt and protobuf generators, and the checked-in Cobalt registry
+filegroup. The original SdkSandbox app definition shares a required provider
+file and is retained unchanged; the AdServices APK and APEX build files and
+the wider test trees remain excluded.
+
+The Cobalt registry's bare filegroup has no package declaration of its own.
+With its APK parent build file excluded, it inherits the restored AdServices
+root license metadata, which includes Apache and BSD, instead of that parent's
+Apache-only package metadata. The original declarations and license checks
+are unchanged; this does not establish redistribution clearance.
+
+This source selection does not install these services in recovery:
+`PRODUCT_PACKAGES` still contains only `recovery`. API checks and visibility
+remain unchanged, as do the original module definitions and generator commands.
+Shared external providers come from their existing pinned source projects.
+This establishes a reviewed source dependency set, not successful compilation
+or SDK sandbox behavior on Nezha; the strict graph and actual build still have
+to validate it.
 
 Graph 24 requires `sts-host-util` from the retained `CtsAppSecurityUtils`.
 Two exact positive prefixes restore the original

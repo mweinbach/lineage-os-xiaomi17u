@@ -1415,6 +1415,13 @@
       "commit": "96b8d0a67118121374f3ed1962e876e533e8908b",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 27 error: real AOSP jarjar host Java library supplies jarjar.jar for the original Soong relocation rule used by ExoPlayer jarjar_rules. Original tool, bundled Maven and Ant imports, and tests are preserved."
+    },
+    {
+      "path": "tools/doc_generation",
+      "url": "https://android.googlesource.com/platform/tools/doc_generation",
+      "commit": "8fb605eb38e53e74c1408ea01d4b7dd6be8ce467",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 27 error: real AOSP switcher4 host Python tool required by the retained ds-docs-switched generator in frameworks/base/api/ApiDocs.bp. Original documentation consumers and tool definitions remain selected."
     }
   ]
 }

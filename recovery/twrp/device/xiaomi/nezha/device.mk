@@ -40,11 +40,32 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     hardware/google/aemu/snapshot/Android.bp
 
 # Graph 23 requires the original exported SDK sandbox flags in the framework.
-# Keep their parent package metadata/defaults and the complete flags leaf;
-# other AdServices runtime and test build files remain outside this profile.
+# Keep their parent package metadata/defaults and the complete flags leaf.
 PRODUCT_SOURCE_ROOT_DIRS += \
     packages/modules/AdServices/sdksandbox/Android.bp \
     packages/modules/AdServices/sdksandbox/flags/
+
+# Graph 27 requires the original AdServices and SDK sandbox API providers.
+# Their shared libraries and generators occupy these sixteen complete files.
+# Preserve the original definitions without installing their runtime services;
+# the wider AdServices source scope remains excluded.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/modules/AdServices/Android.bp \
+    packages/modules/AdServices/adservices/framework/Android.bp \
+    packages/modules/AdServices/adservices/flags/Android.bp \
+    packages/modules/AdServices/adservices/linter/Android.bp \
+    packages/modules/AdServices/shared/libraries/device-side/Android.bp \
+    packages/modules/AdServices/shared/libraries/device-side/proto/Android.bp \
+    packages/modules/AdServices/shared/libraries/side-less/Android.bp \
+    packages/modules/AdServices/adservices/service-core/Android.bp \
+    packages/modules/AdServices/adservices/apk/assets/cobalt/Android.bp \
+    packages/modules/AdServices/sdksandbox/framework/Android.bp \
+    packages/modules/AdServices/sdksandbox/service/Android.bp \
+    packages/modules/AdServices/sdksandbox/service/proto/Android.bp \
+    packages/modules/AdServices/sdksandbox/SdkSandbox/Android.bp \
+    packages/modules/AdServices/adservices/libraries/cobalt/Android.bp \
+    packages/modules/AdServices/adservices/libraries/cobalt/proto/Android.bp \
+    packages/modules/AdServices/adservices/service-core/proto/Android.bp
 
 # Graph 24 needs the original shared STS host utilities. Keep both complete
 # provider files and their metadata without selecting sibling test products.
