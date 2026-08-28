@@ -108,6 +108,12 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -frameworks/opt/net/wifi/ \
     frameworks/opt/net/wifi/libwifi_system_iface/
 
+# The native source audit found retained Wi-Fi service consumers of this
+# original HAL leaf. Do not choose a chipset or enable recovery networking;
+# the unchanged upstream defaults apply with no Wi-Fi vendor configuration.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    frameworks/opt/net/wifi/libwifi_hal/
+
 # The restored AVF project supplies its build flags and consumes the original
 # Secretkeeper client/communication libraries from microdroid_manager. Keep
 # system/secretkeeper included; source selection does not enable TWRP crypto.

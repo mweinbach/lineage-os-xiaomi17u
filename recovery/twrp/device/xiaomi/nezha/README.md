@@ -251,6 +251,19 @@ The parent health-test aggregate and the device-composer sibling remain
 excluded. This restores build declarations; it does not claim those tests ran
 or that a recovery image compiled.
 
+The native source projection also found three retained Wi-Fi service modules
+and one test consuming `libwifi-hal`. The positive
+`frameworks/opt/net/wifi/libwifi_hal/` prefix restores one original Blueprint
+and its nine named declarations from pinned project
+`1cab31f96d1f903e190708c1ce665520a4a89d10`. All eight external dependencies
+selected by the current empty Wi-Fi configuration have existing providers.
+No chipset, driver path or vendor HAL is selected by this target. The unchanged
+upstream configuration uses `libwifi-hal-fallback`; this is source dependency
+restoration, not a Xiaomi Wi-Fi implementation or a hardware-support claim.
+The broader Wi-Fi source filter and the interface-library leaf remain in place,
+and recovery networking stays disabled. This finding was not a graph 22 error;
+the next evaluated graph must still validate the restored declarations.
+
 Graph 14 reported seven missing dependencies in the two
 `test/robolectric-extensions` Blueprint files. The follow-up projection found
 four more files containing only related test support: Onboarding's

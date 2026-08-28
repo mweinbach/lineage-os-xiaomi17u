@@ -54,6 +54,7 @@ SOURCE_EXCLUSIONS = [
 SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/tradefed-error-prone/",
     "frameworks/opt/net/wifi/libwifi_system_iface/",
+    "frameworks/opt/net/wifi/libwifi_hal/",
     "platform_testing/libraries/rdroidtest/",
     "platform_testing/libraries/compatibility-common-util/",
     "platform_testing/libraries/annotations/",
@@ -426,7 +427,6 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertTrue(source_path_allowed(provider + "testlib/Android.bp", scopes))
         for source in ("frameworks/opt/net/wifi/Android.bp",
                        "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp",
-                       "frameworks/opt/net/wifi/libwifi_hal/Android.bp",
                        "frameworks/opt/net/wifi/libwifi_system/Android.bp",
                        "frameworks/opt/net/wifi/libwifi_system_iface_sibling/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
@@ -519,6 +519,33 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 9", readme)
         self.assertIn("development/build/", readme)
         self.assertIn("SDK distribution", readme)
+
+    def test_projected_wifi_hal_restoration_does_not_select_phone_hardware(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        provider = "frameworks/opt/net/wifi/libwifi_hal/"
+        self.assertIn(provider, scopes)
+        self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
+        self.assertTrue(source_path_allowed("frameworks/opt/net/wifi/libwifi_system_iface/Android.bp", scopes))
+        for source in ("frameworks/opt/net/wifi/Android.bp",
+                       "frameworks/opt/net/wifi/service/Android.bp",
+                       "frameworks/opt/net/wifi/libs/Android.bp",
+                       provider.rstrip("/") + "_sibling/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("hardware/interfaces/wifi/aidl/default/Android.bp",
+                       "hardware/libhardware_legacy/Android.bp", "system/libbase/Android.bp",
+                       "system/core/libcutils/Android.bp", "system/core/libutils/Android.bp",
+                       "system/logging/liblog/Android.bp", "external/libnl/Android.bp",
+                       "build/soong/licenses/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertNotIn("BOARD_WLAN_DEVICE", self.board)
+        self.assertNotIn("WIFI_MULTIPLE_VENDOR_HALS", self.board)
+        self.assertNotIn("soong_config_set,wifi,", self.board_text)
+        readme = (DEVICE / "README.md").read_text()
+        for fact in (provider, "libwifi-hal-fallback", "source projection",
+                     "1cab31f96d1f903e190708c1ce665520a4a89d10"):
+            self.assertIn(fact, readme)
 
     def test_graph_twenty_two_host_composers_keep_their_original_tests(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
