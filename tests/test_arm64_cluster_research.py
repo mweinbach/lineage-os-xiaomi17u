@@ -5,7 +5,9 @@ These tests validate the record, not an Android build or a remote worker.
 
 import json
 from pathlib import Path
+import re
 import unittest
+from urllib.parse import unquote
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,6 +55,132 @@ class Arm64ClusterResearchTests(unittest.TestCase):
         refs = {s["requested_ref"] for s in self.pins["sources"]}
         self.assertTrue({"main", "android-16.0.0_r1", "android-16.0.0_r4",
                          "android-17.0.0_r1"}.issubset(refs))
+
+    def test_modern_clang_mirror_is_not_conflated_with_empty_main(self):
+        matches = [s for s in self.pins["sources"]
+                   if s["repository"] == "platform/prebuilts/clang/host/linux-arm64"
+                   and "mirror-goog" in s["requested_ref"]]
+        self.assertTrue(matches)
+        for source in matches:
+            self.assertIn("clang-r584948b", source["tree_entries"])
+            self.assertNotIn("clang-r563880c", source["tree_entries"])
+
+    def test_probe_limits_keep_bootstrap_separate_from_platform_and_rbe(self):
+        record = json.loads((RESEARCH / "probe-results.json").read_text())
+        self.assertEqual(record["schema_version"], 1)
+        for key, value in record["boundaries"].items():
+            with self.subTest(key=key):
+                self.assertIs(value, key == "patches_only_in_isolated_probe_copy")
+        self.assertEqual(record["environment"]["native_machine"], "aarch64")
+        self.assertEqual(record["environment"]["filesystem"], "ext4")
+        self.assertTrue(record["environment"]["case_sensitive"])
+        for dependency in record["original_dependency_state"].values():
+            self.assertEqual(dependency["status"], [])
+
+    def test_native_bootstrap_outputs_and_make_mismatch_are_explicit(self):
+        record = json.loads((RESEARCH / "probe-results.json").read_text())
+        probes = {p["id"]: p for p in record["probes"]}
+        self.assertEqual(probes["P03"]["exit_code"], 0)
+        self.assertEqual(len(probes["P03"]["outputs"]), 5)
+        for output in probes["P03"]["outputs"]:
+            self.assertEqual(output["elf_machine"], 183)
+            self.assertRegex(output["sha256"], r"^[a-f0-9]{64}$")
+        self.assertNotEqual(probes["P04"]["exit_code"], 0)
+        self.assertIn("unknown variable: HOST_ARCH", probes["P04"]["failure"])
+        self.assertEqual(probes["P05"]["result"]["HOST_PREBUILT_TAG"], "linux-x86")
+        self.assertEqual(probes["P06"]["result"]["HOST_PREBUILT_TAG"], "linux-arm64")
+        self.assertEqual(len(probes["P06"]["missing_selected_tools"]), 3)
+
+    def test_hybrid_probe_records_both_execution_architectures(self):
+        record = json.loads((RESEARCH / "probe-results.json").read_text())
+        probe = next(p for p in record["probes"] if p["id"] == "P07")
+        by_name = {Path(p["path"]).name: p for p in probe["files"]}
+        self.assertEqual(probe["exit_code"], 0)
+        for name in ("ninja", "android.o"):
+            self.assertEqual(by_name[name]["elf_machine"], 183)
+        for name in ("clang", "ld.lld", "java", "exit-x86"):
+            self.assertEqual(by_name[name]["elf_machine"], 62)
+
+    def test_probe_patch_is_narrow_and_not_a_security_bypass(self):
+        patch = (RESEARCH / "probe-host-detection.patch").read_text()
+        self.assertEqual(patch.count("diff --git"), 1)
+        self.assertIn("a/core/envsetup.mk b/core/envsetup.mk", patch)
+        for forbidden in ("SELINUX", "ALLOW_MISSING", "DISABLE_SANDBOX", "BUILD_BROKEN"):
+            self.assertNotIn(forbidden, patch)
+
+    def test_commit_history_has_full_hashes_and_dates(self):
+        record = json.loads((RESEARCH / "upstream-commits.json").read_text())
+        seen = set()
+        for commit in record["commits"]:
+            key = (commit["repository"], commit["commit"])
+            with self.subTest(key=key):
+                self.assertNotIn("error", commit)
+                self.assertNotIn(key, seen)
+                seen.add(key)
+                self.assertRegex(commit["commit"], r"^[0-9a-f]{40}$")
+                self.assertTrue(commit["author_time"])
+                self.assertTrue(commit["committer_time"])
+                self.assertTrue(commit["url"].endswith(commit["commit"]))
+
+    def test_report_has_all_deliverables_and_resolved_reference_links(self):
+        report = (ROOT / "docs/android16-arm64-cluster-report.md").read_text()
+        sections = [int(n) for n in re.findall(r"^## (\d+)\.", report, re.M)]
+        self.assertEqual(sections, list(range(1, 15)))
+        definitions = re.findall(r"^\[([^\]]+)\]: (https://\S+)\s*$", report, re.M)
+        names = [name for name, _ in definitions]
+        self.assertEqual(len(names), len(set(names)))
+        used = set(re.findall(r"\[[^\]\n]+\]\[([^\]\n]+)\]", report))
+        self.assertFalse(used - set(names), f"Missing references: {used - set(names)}")
+        for verdict in ("Confirmed working", "Should work", "Experimental",
+                        "Major engineering required", "Not viable"):
+            self.assertIn(verdict, report)
+
+    def test_research_documents_link_to_existing_local_artifacts(self):
+        for name in ("android16-arm64-cluster-report.md",
+                     "android16-arm64-cluster-experiments.md"):
+            document = ROOT / "docs" / name
+            links = re.findall(r"\[[^\]\n]+\]\(([^)\n]+)\)", document.read_text())
+            for target in links:
+                if target.startswith(("https://", "http://", "#")):
+                    continue
+                path = (document.parent / unquote(target.split("#")[0])).resolve()
+                with self.subTest(document=name, target=target):
+                    self.assertTrue(path.is_relative_to(ROOT))
+                    self.assertTrue(path.is_file())
+
+    def test_claims_reference_sources_probes_and_record_unvalidated_gaps(self):
+        ledger = json.loads((RESEARCH / "claims-and-sources.json").read_text())
+        probes = json.loads((RESEARCH / "probe-results.json").read_text())
+        self.assertEqual(ledger["schema_version"], 1)
+        sources = {source["id"] for source in ledger["sources"]}
+        self.assertEqual(len(sources), len(ledger["sources"]))
+        probe_ids = {probe["id"] for probe in probes["probes"]}
+        for claim in ledger["claims"]:
+            with self.subTest(claim=claim["id"]):
+                self.assertIn(claim["evidence_class"],
+                              {"observed", "pinned_source", "engineering_inference"})
+                self.assertTrue(claim["limitation"])
+                self.assertTrue(set(claim["source_ids"]).issubset(sources))
+                self.assertTrue(set(claim["probe_ids"]).issubset(probe_ids))
+                if claim["evidence_class"] == "observed":
+                    self.assertTrue(claim["probe_ids"])
+        self.assertGreaterEqual(len(ledger["open_gaps"]), 8)
+        for gap in ledger["open_gaps"]:
+            self.assertEqual(gap["status"], "not_validated")
+            self.assertTrue(gap["runbook_experiments"])
+        for name in ledger["evidence_files"] + [ledger["report"], ledger["runbook"]]:
+            self.assertTrue((ROOT / name).is_file(), name)
+
+    def test_runbook_separates_proposed_experiments_from_observed_results(self):
+        runbook = (ROOT / "docs/android16-arm64-cluster-experiments.md").read_text()
+        experiments = [int(n) for n in re.findall(r"^## Experiment (\d+) ", runbook, re.M)]
+        self.assertEqual(experiments, list(range(1, 13)))
+        self.assertIn("proposed runbook", runbook)
+        self.assertIn("not implemented artifacts", runbook)
+        self.assertIn("--remote_accept_cache=false", runbook)
+        self.assertIn("--remote_update_cache=false", runbook)
+        self.assertIn("ThinLTO", runbook)
+        self.assertIn("no backend, remote action, full platform graph or full image", runbook)
 
 
 if __name__ == "__main__":

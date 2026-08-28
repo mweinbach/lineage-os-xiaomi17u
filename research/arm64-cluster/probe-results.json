@@ -1,0 +1,604 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-28T01:53:32.674536+00:00",
+  "environment": {
+    "macos_version": "27.0",
+    "macos_build": "26A5421a",
+    "apple_container_version": "1.0.0",
+    "apple_container_commit": "ee848e3ebfd7c73b04dd419683be54fb450b8779",
+    "image_digest": "sha256:82960bf5b04070ffa323bb37eaa4e77d1b189f7bdcd0c31204d5d8ac092d36ca",
+    "native_machine": "aarch64",
+    "kernel": "6.18.15",
+    "logical_cpus_visible": 17,
+    "os_release": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "filesystem": "ext4",
+    "case_sensitive": true,
+    "free_bytes": 590563381248,
+    "memory_total_kib": 131806096,
+    "rlimit_nofile": [
+      1048576,
+      1048576
+    ],
+    "rlimit_nproc": [
+      514924,
+      514924
+    ],
+    "rosetta_handler": "not-at-expected-name"
+  },
+  "original_dependency_state": {
+    "build/soong": {
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "status": []
+    },
+    "build/make": {
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "status": []
+    },
+    "build/blueprint": {
+      "commit": "c39c8a4c103f1393f015a5befa7726f0c14c9bc2",
+      "status": []
+    },
+    "prebuilts/build-tools": {
+      "commit": "412724a805835d89234d67c363f7ada7f5f8a67f",
+      "status": []
+    },
+    "prebuilts/go/linux-x86": {
+      "commit": "71c50d4d0da8b3dee5c70ee45789d001674ca5f6",
+      "status": []
+    },
+    "prebuilts/clang/host/linux-x86": {
+      "commit": "9916fb51ccb914d62d35ad9a7b9b21d2ef046928",
+      "status": []
+    },
+    "prebuilts/jdk/jdk21": {
+      "commit": "ef5bcc92586b839ae3dbacc154127092fa4002ec",
+      "status": []
+    },
+    "prebuilts/rust": {
+      "commit": "06a4f29f8512c6b77bdce81dd036a3e39954803b",
+      "status": []
+    },
+    "prebuilts/remoteexecution-client": {
+      "commit": "5cd24de91ef37f36ae14e818058ad3158b881af8",
+      "status": []
+    },
+    "external/golang-protobuf": {
+      "commit": "fcb969a6e0df55f1460721e1b9c4f2c4d2b5a47f",
+      "status": []
+    },
+    "external/starlark-go": {
+      "commit": "4947cdc739c985f6d86941e22894f5cefe7c9e9a",
+      "status": []
+    },
+    "external/pogreb": {
+      "commit": "c7851d75ff3a7b8228f548f7235d48cee9130971",
+      "status": []
+    },
+    "prebuilts/bazel/common": {
+      "commit": "e24e8ba7c6deed0e2e9c36ad6f255437acd98e0d",
+      "status": []
+    }
+  },
+  "stock_source_pins": {
+    "build/soong": [
+      "platform/build/soong",
+      "f389fa2a2a768a93bc99957e2288f3fbee032bff"
+    ],
+    "build/make": [
+      "platform/build",
+      "b815dded1eafbf06191a6ae306956bb6ed6fb415"
+    ]
+  },
+  "go_archive": {
+    "url": "https://go.dev/dl/go1.24.1.linux-arm64.tar.gz",
+    "sha256": "8df5750ffc0281017fb6070fba450f5d22b600a02081dceef47966ffaf36a3af",
+    "version": "1.24.1"
+  },
+  "probes": [
+    {
+      "id": "P01",
+      "scope": "Existing Evolution X Android16 QPR2 entry point, native PATH",
+      "exit_code": 127,
+      "failure": "Missing prebuilts/go/linux-arm64/bin/go",
+      "root_cause": "Native selector is already implemented; selected Go repository is absent.",
+      "repository": "platform/build/soong",
+      "source_file": "scripts/microfactory.bash",
+      "fix_attempted": "None in original source tree. Create isolated stock-r4 bootstrap subset for follow-up.",
+      "result": "Failure reproduced; original source untouched.",
+      "upstream_equivalent": "92ac46d1fe04a94d94025554bcecc5f8cb2416ae",
+      "command": [
+        "build/soong/soong_ui.bash",
+        "--dumpvar-mode",
+        "OUT_DIR"
+      ]
+    },
+    {
+      "id": "P02",
+      "scope": "Pinned stock r4 Soong/Make bootstrap subset with verified Go1.24.1 ARM64 release",
+      "exit_code": 1,
+      "failure": "microfactory cannot import bytes, fmt, crypto/sha1 and other standard-library packages",
+      "root_cause": "Ordinary Go archive omits installed pkg/linux_arm64 standard-library archives expected by Blueprint direct compile.",
+      "repository": "platform/build/blueprint",
+      "source_file": "microfactory/microfactory.go",
+      "fix_attempted": "GODEBUG=installgoroot=all CGO_ENABLED=0 go install std",
+      "result": {
+        "stdlib_exit_code": 0,
+        "stdlib_exists": true
+      },
+      "upstream_equivalent": "Android16 prebuilts/build-tools/build-prebuilts.sh already sets GODEBUG=installgoroot=all",
+      "command": [
+        "build/soong/soong_ui.bash",
+        "--dumpvar-mode",
+        "OUT_DIR"
+      ]
+    },
+    {
+      "id": "P03",
+      "scope": "Unmodified stock r4 Soong and verified r4 source dependencies; Go1.24.1 ARM64 plus installed stdlib",
+      "exit_code": 0,
+      "failure": null,
+      "root_cause": null,
+      "repository": "platform/build/soong",
+      "source_file": "soong_ui.bash",
+      "fix_attempted": "Go distribution plus archives only; no Soong or Blueprint source edits. Correct omitted support paths in fixture.",
+      "result": "OUT_DIR fast-path query succeeded. Five generated executables have ELF e_machine 183 (AArch64).",
+      "outputs": [
+        {
+          "name": "microfactory_Linux",
+          "sha256": "051c4e44f4e453c6f1c76a816bcff73d9d733ef71b04807208d291f256bdceed",
+          "elf_machine": 183
+        },
+        {
+          "name": "soong_ui",
+          "sha256": "4bd21085e22beb01d84e3a6d598498796b6725856b0c3ac27ab24feb49d24431",
+          "elf_machine": 183
+        },
+        {
+          "name": "mk2rbc",
+          "sha256": "4273311635a2a9aa96664e8ec9ef1c60e9f3b65273277c2c767b34e8b0127aa3",
+          "elf_machine": 183
+        },
+        {
+          "name": "rbcrun",
+          "sha256": "d64673f53c3371df86d52ce2ea6c4f2d098d8884a60b1804438bec46a3b336ef",
+          "elf_machine": 183
+        },
+        {
+          "name": "release-config",
+          "sha256": "73523e5bdf9e466b53811f118218fb771f011bb1731d04088201825010f9d7ad",
+          "elf_machine": 183
+        }
+      ],
+      "upstream_equivalent": "92ac46d1fe04a94d94025554bcecc5f8cb2416ae",
+      "command": [
+        "build/soong/soong_ui.bash",
+        "--dumpvar-mode",
+        "OUT_DIR"
+      ]
+    },
+    {
+      "id": "P04",
+      "scope": "Stock-r4 Make/Kati configuration through native Soong",
+      "exit_code": 2,
+      "failure": "build/make/core/envsetup.mk:195: error: unknown variable: HOST_ARCH",
+      "root_cause": "x86_64-only uname branch leaves HOST_ARCH unset before .KATI_READONLY.",
+      "repository": "platform/build",
+      "source_file": "core/envsetup.mk",
+      "fix_attempted": "None yet.",
+      "result": "Native ckati reached real stock host-detection failure. nsjail launched; this is not a separate sandbox-isolation test.",
+      "upstream_equivalent": null,
+      "command": [
+        "build/soong/soong_ui.bash",
+        "--dumpvars-mode",
+        "--vars=HOST_ARCH HOST_PREBUILT_TAG TARGET_ARCH"
+      ]
+    },
+    {
+      "id": "P05",
+      "scope": "Isolated stock-r4 Make with four-line ARM64 host-detection patch and existing Android16 support paths",
+      "exit_code": 0,
+      "failure": "Configuration succeeds but host tag/output remains linux-x86",
+      "root_cause": "HOST_PREBUILT_ARCH := x86 is independent of HOST_ARCH.",
+      "repository": "platform/build",
+      "source_file": "core/envsetup.mk",
+      "fix_attempted": "Add only aarch64 HOST_ARCH branch.",
+      "result": {
+        "HOST_ARCH": "arm64",
+        "HOST_PREBUILT_TAG": "linux-x86",
+        "HOST_OUT_suffix": "host/linux-x86"
+      },
+      "upstream_equivalent": null,
+      "command": [
+        "build/soong/soong_ui.bash",
+        "--dumpvars-mode",
+        "--vars=HOST_ARCH HOST_PREBUILT_TAG TARGET_ARCH HOST_OUT"
+      ]
+    },
+    {
+      "id": "P06",
+      "scope": "Isolated stock-r4 Make with host detection and host-prebuilt tag edits",
+      "exit_code": 0,
+      "failure": "Selected native JDK21, Android16 Clang and Rust compiler paths do not exist; not yet invoked by full build",
+      "root_cause": "Correct selectors do not supply missing compiler/runtime distributions.",
+      "repository": "platform/build",
+      "source_file": "core/envsetup.mk",
+      "fix_attempted": "Set HOST_PREBUILT_ARCH := arm64 when HOST_ARCH is arm64.",
+      "result": {
+        "HOST_ARCH": "arm64",
+        "HOST_PREBUILT_TAG": "linux-arm64",
+        "HOST_OUT_suffix": "host/linux-arm64",
+        "ANDROID_JAVA_HOME": "prebuilts/jdk/jdk21/linux-arm64"
+      },
+      "missing_selected_tools": [
+        "prebuilts/jdk/jdk21/linux-arm64/bin/java",
+        "prebuilts/clang/host/linux-arm64/clang-r563880c/bin/clang",
+        "prebuilts/rust/linux-arm64/1.88.0/bin/rustc"
+      ],
+      "upstream_equivalent": null,
+      "command": [
+        "build/soong/soong_ui.bash",
+        "--dumpvars-mode",
+        "--vars=HOST_ARCH HOST_PREBUILT_TAG TARGET_ARCH HOST_OUT ANDROID_JAVA_HOME"
+      ]
+    },
+    {
+      "id": "P07",
+      "scope": "Native AOSP Ninja executes pinned translated Android16 Clang/LLD/JDK for standalone programs; not a platform build, not REAPI, not a new sandbox test.",
+      "exit_code": 0,
+      "failure": null,
+      "root_cause": null,
+      "fix_attempted": "Native Ninja runs unchanged pinned x86 Clang/LLD/JDK through Rosetta.",
+      "result": "Android ARM64 object, x86 executable, and Java class produced; x86 executable and translated JVM ran successfully.",
+      "commands": [
+        [
+          "/work/evolution/prebuilts/build-tools/linux-arm64/bin/ninja",
+          "-f",
+          "build.ninja",
+          "-j2",
+          "-v"
+        ],
+        [
+          "/work/arm64-cluster-probes/20260828-hybrid/exit-x86"
+        ],
+        [
+          "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-cp",
+          "/work/arm64-cluster-probes/20260828-hybrid",
+          "Hello"
+        ]
+      ],
+      "files": [
+        {
+          "path": "/work/evolution/prebuilts/build-tools/linux-arm64/bin/ninja",
+          "elf_machine": 183,
+          "sha256": "b5d70608d6825537b3cbff1667a566083b32dac3feb2b10b102fce6a65952104"
+        },
+        {
+          "path": "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang",
+          "elf_machine": 62,
+          "sha256": "af0f25ca6818aed54c1cab03dc591acd549f385b8447148326a413e3e59c22b7"
+        },
+        {
+          "path": "/work/evolution/prebuilts/clang/host/linux-x86/clang-r563880c/bin/ld.lld",
+          "elf_machine": 62,
+          "sha256": "784146955ed87545385bf5c89b3b920ca7fe3ac83e034c3e6c53783ce544adf1"
+        },
+        {
+          "path": "/work/evolution/prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "elf_machine": 62,
+          "sha256": "cfa21aeadd00925925c9e1287f5c08f3e04ee7f26a9e23d9dbfb16149153d842"
+        },
+        {
+          "path": "/work/arm64-cluster-probes/20260828-hybrid/android.o",
+          "elf_machine": 183,
+          "sha256": "a980fb833a498f7b010033638ca13e41de4e7803dce547a953b1d5e6e636a851"
+        },
+        {
+          "path": "/work/arm64-cluster-probes/20260828-hybrid/exit.o",
+          "elf_machine": 62,
+          "sha256": "67f7b8e22d5e5e213009909fef777fbbdb1f7e190769b0a025b31b0b496883da"
+        },
+        {
+          "path": "/work/arm64-cluster-probes/20260828-hybrid/exit-x86",
+          "elf_machine": 62,
+          "sha256": "27fef13139d2e585af7fdb170aa3421a1f51e25bb00805f7acdd6f8cfb2f4cb9"
+        },
+        {
+          "path": "/work/arm64-cluster-probes/20260828-hybrid/Hello.class",
+          "elf_machine": null,
+          "sha256": "dead731e8b2c96c4e7cf60d5cb9a9fe27e798c0413b2ed3db2f9bb486985ab32"
+        }
+      ],
+      "upstream_equivalent": null
+    },
+    {
+      "id": "P08",
+      "scope": "Android16 r4 build-tools ELF inventory and selected native smoke checks",
+      "exit_code": 0,
+      "failure": null,
+      "root_cause": null,
+      "fix_attempted": "None",
+      "result": "All 33 files in linux-arm64/bin are AArch64 ELF, counting symlink aliases. Native Ninja, Python3.13.1, Toybox and nsjail help run. ckati rejects --version but subsequently executes real Make queries in P04-P06.",
+      "build_tools_commit": "412724a805835d89234d67c363f7ada7f5f8a67f",
+      "binary_inventory": [
+        {
+          "path": "linux-arm64/bin/aconfig",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 1972712
+        },
+        {
+          "path": "linux-arm64/bin/acp",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 24400
+        },
+        {
+          "path": "linux-arm64/bin/aidl",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 3528648
+        },
+        {
+          "path": "linux-arm64/bin/bison",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 548712
+        },
+        {
+          "path": "linux-arm64/bin/bloaty",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 3236456
+        },
+        {
+          "path": "linux-arm64/bin/brotli",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 784648
+        },
+        {
+          "path": "linux-arm64/bin/bzip2",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 111032
+        },
+        {
+          "path": "linux-arm64/bin/ckati",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 404976
+        },
+        {
+          "path": "linux-arm64/bin/create_minidebuginfo",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 2425024
+        },
+        {
+          "path": "linux-arm64/bin/edit_monitor",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 16596479
+        },
+        {
+          "path": "linux-arm64/bin/flex",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 451272
+        },
+        {
+          "path": "linux-arm64/bin/gavinhoward-bc",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 119680
+        },
+        {
+          "path": "linux-arm64/bin/hidl-gen",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 4237392
+        },
+        {
+          "path": "linux-arm64/bin/hidl-lint",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 3592704
+        },
+        {
+          "path": "linux-arm64/bin/m4",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 300808
+        },
+        {
+          "path": "linux-arm64/bin/make",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 233920
+        },
+        {
+          "path": "linux-arm64/bin/n2",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 2241704
+        },
+        {
+          "path": "linux-arm64/bin/ninja",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 1522872
+        },
+        {
+          "path": "linux-arm64/bin/nsjail",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 276544
+        },
+        {
+          "path": "linux-arm64/bin/one-true-awk",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 162000
+        },
+        {
+          "path": "linux-arm64/bin/openssl",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 3321064
+        },
+        {
+          "path": "linux-arm64/bin/py3-cmd",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 15798549
+        },
+        {
+          "path": "linux-arm64/bin/py3-launcher-autorun-static64",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 10443968
+        },
+        {
+          "path": "linux-arm64/bin/py3-launcher-autorun64",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 11383272
+        },
+        {
+          "path": "linux-arm64/bin/py3-launcher-static64",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 10443752
+        },
+        {
+          "path": "linux-arm64/bin/py3-launcher64",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 11383304
+        },
+        {
+          "path": "linux-arm64/bin/rkati",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 1513512
+        },
+        {
+          "path": "linux-arm64/bin/tool_event_logger",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 16460803
+        },
+        {
+          "path": "linux-arm64/bin/toybox",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 1360288
+        },
+        {
+          "path": "linux-arm64/bin/xz",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 208448
+        },
+        {
+          "path": "linux-arm64/bin/zipalign",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 219320
+        },
+        {
+          "path": "linux-arm64/bin/ziptime",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 20944
+        },
+        {
+          "path": "linux-arm64/bin/ziptool",
+          "elf_machine": 183,
+          "symlink": false,
+          "bytes": 34128
+        }
+      ],
+      "checks": [
+        {
+          "path": "linux-arm64/bin/ninja",
+          "args": [
+            "--version"
+          ],
+          "exit_code": 0,
+          "output": "1.9.0.git\n",
+          "sha256": "b5d70608d6825537b3cbff1667a566083b32dac3feb2b10b102fce6a65952104"
+        },
+        {
+          "path": "linux-arm64/bin/ckati",
+          "args": [
+            "--version"
+          ],
+          "exit_code": 1,
+          "output": "Unknown flag: --version\n",
+          "sha256": "f7becc4faf992aa09b4fc3b641566579408003fb85f888bee8bd93aa06b35fb8"
+        },
+        {
+          "path": "linux-arm64/bin/py3-cmd",
+          "args": [
+            "-c",
+            "import platform,sys; print(platform.machine()); print(sys.version)"
+          ],
+          "exit_code": 0,
+          "output": "aarch64\n3.13.1 (main, Dec 31 1969, 23:59:59) [Clang 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f0\n",
+          "sha256": "dc4740358da47131a27cd7c524df9f9993551afae030bc275e555763b6dbc0f7"
+        },
+        {
+          "path": "linux-arm64/bin/toybox",
+          "args": [
+            "uname",
+            "-m"
+          ],
+          "exit_code": 0,
+          "output": "aarch64\n",
+          "sha256": "1ba55acf2f09657b3522c8a0b19bf8e35c7eb2d4c8241ac0506e957792323ac3"
+        },
+        {
+          "path": "linux-x86/bin/toybox",
+          "args": [
+            "uname",
+            "-m"
+          ],
+          "exit_code": 0,
+          "output": "x86_64\n",
+          "sha256": "f945dbf9678a41a738605c01e37f8a0ec090751797deaa9efffcbd19d651c027"
+        },
+        {
+          "path": "linux-arm64/bin/nsjail",
+          "args": [
+            "--help"
+          ],
+          "exit_code": 0,
+          "output": " Usage: /work/evolution/prebuilts/build-tools/linux-arm64/bin/nsjail [options] -- path_to_command [args]\n Options:\n  --help|-h \n \tHelp plz..\n\n  --mode|-M VALUE\n \tExecution mode (default: 'o' [MODE_STANDALONE_ONCE]):\n\t  l: [MODE_LISTEN_TCP]\n\t\tWait for connections on a TCP port (specified with --port)\n\t  o: [MODE_STANDALONE_ONCE]\n\t\tLaunch a single process on the console using clone/execve\n\t  e: [MODE_STANDALONE_EXECVE]\n\t\tLaunch a single process on the console using execve\n\t  r: [MODE_STANDALONE_RERUN]\n\t\tLaunch a single process on the console with clone/execve, keep\n\t\tdoing it forever\n\n  --config|-C VALUE\n \tConfiguration file in the config.proto ProtoBuf format (see configs/\n\tdirectory for examples)\n\n  --exec_file|-x VALUE\n \tFile to exec (default: argv[0])\n\n  --execute_fd \n \tUse execveat() to execute a file-descriptor instead of executing the\n\tbinary path. In such case argv[0]/exec_file denotes a file path before\n\tmount namespacing\n\n  --chroot|-c VALUE\n \tDirectory containing / of the jail (default: none)\n\n  --no_pivotroot \n \tWhen creating a mount namespace, use mount(MS_MOVE) and chroot rather\n\tthan pivot_root. Usefull when pivot_root is disallowed (e.g.\n\tinitramfs). Note: escapable i",
+          "sha256": "eb2fe618e69d4e3a4df1b38b114f10047c32e70fe9d12d3679057dd308b55de9"
+        }
+      ],
+      "upstream_equivalent": null
+    }
+  ],
+  "fixture_corrections": [
+    "external/pogreb omitted from initial bootstrap subset; added only after verifying its r4 commit.",
+    "Existing VNDK and other support paths were omitted from the initial configuration subset.",
+    "toolchain/pgo-profiles was omitted from the initial configuration subset."
+  ],
+  "boundaries": {
+    "full_stock_checkout_created": false,
+    "full_platform_graph_generated": false,
+    "full_platform_build_verified": false,
+    "remote_execution_tested": false,
+    "four_machine_cluster_tested": false,
+    "original_checkout_modified_by_probes": false,
+    "phone_accessed": false,
+    "sandbox_checks_disabled": false,
+    "patches_only_in_isolated_probe_copy": true
+  },
+  "raw_logs_directory": "reports/arm64-cluster (ignored)",
+  "isolated_guest_directory": "/work/arm64-cluster-probes/20260828-stock-r4",
+  "scope_note": "Bootstrap uses pinned stock Soong/Make and verified r4 Go dependencies. Subsequent Make product queries borrow read-only-by-convention symlinks to existing Android16 support paths; they are not a stock full-tree build. The source support repositories were not edited by these probes."
+}
