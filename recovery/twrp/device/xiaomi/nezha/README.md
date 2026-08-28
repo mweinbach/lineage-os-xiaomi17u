@@ -41,10 +41,25 @@ SELinux, VINTF and AVB roots:
 | --- | --- |
 | Seven individual `cts/hostsidetests/securitybulletin/securityPatch/CVE-*/` directories | `CVE-2019-1988`, `CVE-2023-21085`, `CVE-2023-40114`, `CVE-2023-4863`, `CVE-2024-43091`, `CVE-2024-43097`, `CVE-2024-43767`; their Skia/STS test defaults are absent. Other security-bulletin tests remain included. |
 | `cts/tests/tests/car/`, `cts/tests/tests/car_permission_tests/` | Automotive framework CTS tests requiring the omitted car framework; other CTS tests remain included. |
-| `packages/modules/Connectivity/tests/common/` | Connectivity coverage tests and shared test defaults requiring NetworkStack test dependencies; production BPF headers remain included. |
 | `hardware/interfaces/automotive/remoteaccess/hal/default/` | Default automotive remote-access service, helper library and its tests requiring vehicle-HAL client defaults; the AIDL interface is retained. |
 | `hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/` | HWCrypto functional VTS tests requiring omitted Rust test defaults; the production security AIDL interface is retained. |
 | `system/chre/` | Context Hub Runtime Environment, its HAL/client libraries and tests requiring Pigweed RPC support. This is an excluded runtime subsystem, not merely a test-generator removal. |
+
+Graph 2 also excluded `packages/modules/Connectivity/tests/common/` because
+its coverage test required the absent `libnetworkstackutilsjni_deps` provider.
+Graph 3 reported 19 missing-default errors because this same `Android.bp`
+defines shared defaults used by retained consumers, including BPF tests.
+That exclusion is now removed,
+leaving 20 source scopes excluded. File-prefix selection cannot remove only
+the coverage test while preserving defaults in the same file.
+
+The corresponding source restoration uses the genuine Android 16 r1
+NetworkStack project at `f9da1fc7154ea007aa835f88e8070c6ac46d54e9`, including
+`tests/unit/Android.bp`, where `libnetworkstackutilsjni_deps` is defined. It
+uses no substitute defaults, copied module stubs, or missing-dependency
+allowlists. Source-sync and subsequent graph receipts must establish the
+restoration and its dependencies; these target changes alone are not proof
+of a successful graph or image. Runtime networking remains disabled.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

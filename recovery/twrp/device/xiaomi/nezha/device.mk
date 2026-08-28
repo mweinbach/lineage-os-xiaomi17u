@@ -35,8 +35,8 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/interfaces/neuralnetworks/utils/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
-# The second graph exposed these specific CTS/VTS, automotive, connectivity
-# test and context-hub consumers. Their missing parent defaults are unrelated
+# The second graph exposed these specific CTS/VTS, automotive and context-hub
+# consumers. Their missing parent defaults are unrelated
 # to the first recovery product. CHRE includes a runtime subsystem, not just
 # test generators. Preserve the rest of CTS and the security HAL interfaces.
 PRODUCT_SOURCE_ROOT_DIRS += \
@@ -49,10 +49,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43767/ \
     -cts/tests/tests/car/ \
     -cts/tests/tests/car_permission_tests/ \
-    -packages/modules/Connectivity/tests/common/ \
     -hardware/interfaces/automotive/remoteaccess/hal/default/ \
     -hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/ \
     -system/chre/
+
+# Graph 3 proved Connectivity/tests/common also owns shared defaults used by
+# retained modules. Keep it included and restore the genuine Android 16 r1
+# NetworkStack provider instead of excluding its dependent tests or inventing
+# libnetworkstackutilsjni_deps.
 
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.

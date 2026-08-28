@@ -26,7 +26,6 @@ SOURCE_EXCLUSIONS = [
     "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43767/",
     "-cts/tests/tests/car/",
     "-cts/tests/tests/car_permission_tests/",
-    "-packages/modules/Connectivity/tests/common/",
     "-hardware/interfaces/automotive/remoteaccess/hal/default/",
     "-hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/",
     "-system/chre/",
@@ -236,6 +235,7 @@ class TwrpDeviceTests(unittest.TestCase):
                 "hardware/interfaces/security/secureclock/aidl/vts/functional/Android.bp",
                 "system/libvintf/Android.bp", "build/soong/Android.bp",
                 "packages/modules/Connectivity/bpf/headers/Android.bp", "system/bpf/Android.bp",
+                "packages/modules/Connectivity/tests/common/Android.bp",
                 "device/xiaomi/nezha/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
@@ -244,6 +244,24 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertNotEqual(self.board.get("SELINUX_IGNORE_NEVERALLOWS"), "true")
         self.assertIn("$(ALLOW_MISSING_DEPENDENCIES)", self.board_text)
         self.assertIn("$(SELINUX_IGNORE_NEVERALLOWS)", self.board_text)
+
+    def test_third_graph_keeps_shared_connectivity_defaults_and_real_provider(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(scopes), 20)
+        self.assertNotIn("-packages/modules/Connectivity/tests/common/", scopes)
+        for source in ("packages/modules/Connectivity/tests/common/Android.bp",
+                       "packages/modules/Connectivity/thread/tests/integration/Android.bp",
+                       "packages/modules/Connectivity/bpf/tests/mts/Android.bp",
+                       "packages/modules/NetworkStack/Android.bp",
+                       "packages/modules/NetworkStack/tests/unit/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        # Restoring source graph providers does not enable runtime networking.
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        self.assertIn("Graph 3", readme)
+        self.assertIn("f9da1fc7154ea007aa835f88e8070c6ac46d54e9", readme)
+        self.assertIn("no substitute defaults", readme)
 
     def test_second_graph_scope_does_not_hide_entire_cts_or_hardware_interfaces(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

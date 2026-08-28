@@ -133,6 +133,70 @@
         "error: system/chre/Android.bp:255:1: \"rpc_world_rpc_header\" depends on undefined module \"pw_rpc_generate_nanopb_rpc_header\"."
       ],
       "resource_generation_verified": true
+    },
+    {
+      "number": 3,
+      "action": "graph",
+      "status": "failed",
+      "recorded_at_utc": "2026-08-28T04:25:58.451194+00:00",
+      "workspace_commit": "dc05af84eca10f8368f59ef5efacdc52a250b4a5",
+      "control_archive": {
+        "path": "reports/twrp-build-control-v3.tar",
+        "sha256": "ad2dc96ea7dd970b31fa88bdf2a196a92069414e93ce4f7fc06b9710dd5e66a2",
+        "size_bytes": 204800
+      },
+      "build_state_sha256": "8770cf20687d7db7e19903f2615276eabcca8c6ac335287fad31ebc10ee8d5c7",
+      "command": [
+        "bash",
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j16",
+        "nothing"
+      ],
+      "target_product": "twrp_nezha",
+      "target_build_variant": "user",
+      "log": {
+        "path": "reports/twrp-graph-3.log",
+        "sha256": "43194a22ee4bf94b4d15963cfc65d2e231df3ea4b0a03abeab7588052851beec",
+        "size_bytes": 45589
+      },
+      "receipt": {
+        "path": "reports/twrp-graph-3-result.json",
+        "sha256": "aafdf9c68685811cdf627c6f4cb23067425bd9f96df70830f6bb4ede3243c5d9",
+        "size_bytes": 4936
+      },
+      "supplementary_projects": [
+        {
+          "path": "system/bpf",
+          "url": "https://android.googlesource.com/platform/system/bpf",
+          "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+        }
+      ],
+      "errors": [
+        "error: packages/modules/Connectivity/thread/tests/integration/Android.bp:46:1: \"ThreadNetworkIntegrationTests\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/thread/tests/utils/Android.bp:22:1: \"ThreadNetworkTestUtils\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/thread/tests/integration/Android.bp:66:1: \"ThreadBorderRouterIntegrationTests\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/cts/net/Android.bp:20:1: \"CtsNetTestCasesDefaults\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/cts/netpermission/updatestatspermission/Android.bp:20:1: \"CtsNetTestCasesUpdateStatsPermission\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/cts/tethering/Android.bp:20:1: \"CtsTetheringTestDefaults\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/cts/hostside/app/Android.bp:22:1: \"CtsHostsideNetworkTestsApp\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/thread/tests/integration/Android.bp:86:1: \"ThreadNetworkTrelDisabledTests\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/unit/Android.bp:75:1: \"ConnectivityUnitTestsLib\" depends on undefined module \"framework-connectivity-internal-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/benchmark/Android.bp:23:1: \"ConnectivityBenchmarkTests\" depends on undefined module \"framework-connectivity-internal-test-defaults\".",
+        "error: packages/modules/Connectivity/thread/tests/cts/Android.bp:22:1: \"CtsThreadNetworkTestCases\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/unit/Android.bp:148:1: \"FrameworksNetTests\" depends on undefined module \"framework-connectivity-internal-test-defaults\".",
+        "error: cts/tests/tests/vcn/Android.bp:20:1: \"CtsVcnTestCases\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/bpf/tests/mts/Android.bp:21:1: \"bpf_existence_test\" depends on undefined module \"connectivity-mainline-presubmit-cc-defaults\".",
+        "error: packages/modules/Connectivity/tests/integration/Android.bp:75:1: \"frameworks-net-integration-testutils\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: cts/tests/netlegacy22.api/Android.bp:20:1: \"CtsNetTestCasesLegacyApi22\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: frameworks/opt/telephony/tests/telephonytests/Android.bp:17:1: \"FrameworksTelephonyTests\" depends on undefined module \"framework-connectivity-test-defaults\".",
+        "error: packages/modules/Connectivity/tests/cts/multidevices/snippet/Android.bp:19:1: \"connectivity_multi_devices_snippet\" depends on undefined module \"ConnectivityTestsLatestSdkDefaults\".",
+        "error: packages/modules/Connectivity/tests/cts/multidevices/snippet/Android.bp:19:1: \"connectivity_multi_devices_snippet\" depends on undefined module \"framework-connectivity-test-defaults\"."
+      ],
+      "resource_generation_verified": true,
+      "failed_command_exit_code": 1
     }
   ],
   "resource_generation": {
