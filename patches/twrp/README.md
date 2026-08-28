@@ -165,6 +165,22 @@ source selection, recovery package, device identity, signature or enforcement
 setting changes. These are source and fixture checks, not a CI archive run or a
 compiled recovery result.
 
+Patch 28 fixes the first actual recovery compilation failure: `libtwrpgui`
+referenced `TW_OZIP_DECRYPT_KEY` even though this target does not configure
+OZIP decryption. The absent-macro branch now reports that OZIP decryption is
+unavailable and returns failure before looking up or executing the decryptor.
+The caller records that failure before changing the archive filename or
+calling the ZIP installer, so the normal GUI operation status no longer
+reports success for this failure. Ordinary ZIP handling and signature checks
+remain unchanged. No key, compiler flag or feature enablement is added.
+
+The helper body when the C++ macro is supplied remains byte-identical; current
+Make-to-GUI key propagation is not established. Its existing subprocess-status
+handling, simulation behavior and GUI cleanup are not repaired by this patch.
+This is not a storage write lock. The complete source identities, missing-key
+branch, caller status and unchanged ZIP path have offline regression tests;
+the normal Android compile and artifact checks are still required.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init

@@ -66,6 +66,14 @@ strict missing-module checks. It does not claim those tests passed. The
 post-graph cleanup check preserved all 1,248 existing clean-step IDs; all 325
 preflight and 325 postflight checks passed without resetting the saved state.
 
+Build 52 then entered actual recovery compilation and reached step 18,042 of
+19,919 before stopping on one compiler error: the GUI's optional OZIP helper
+referenced an unconfigured decryption-key macro. No recovery image was produced.
+The source revision and all 325 cleanup-state checks remained valid afterward.
+Patch 28 guards that unavailable feature and propagates failure through the
+existing GUI status without changing ordinary ZIP installation or supplying a
+key. A resumed compile must establish whether further failures remain.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are

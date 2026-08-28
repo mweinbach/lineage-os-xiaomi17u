@@ -1335,6 +1335,45 @@
           "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_native_tests.mk"
         }
       ]
+    },
+    {
+      "id": "0028-guard-unconfigured-ozip-decryption",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0028-guard-unconfigured-ozip-decryption.patch",
+      "patch_sha256": "9a51886ddc1c0f69d1a9884b6ecf79c1cb30f815be820a72e4e6c631e7a70531",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Guard optional OZIP decryption when TW_OZIP_DECRYPT_KEY is not defined, eliminating the actual libtwrpgui compiler error. Report an unavailable feature before tool lookup, decryption execution, converted ZIP filename changes or flash_zip, and propagate helper failure through the existing GUI operation status. Preserve ordinary ZIP handling and the original helper body when the C++ macro is supplied; do not define a key or change compiler validation.",
+      "files": [
+        {
+          "path": "gui/action.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/gui/action.cpp",
+          "before_size_bytes": 80100,
+          "before_sha256": "35f21ddd81d67d8ff299e3e47af76ec4d0e9056a74a9d15d9f34590f80ead290",
+          "before_git_blob": "65e71b085568f94b3fc58a436901bb299d1eaa74",
+          "after_size_bytes": 80276,
+          "after_sha256": "db3eb2a0495b990423cea830c54df9fb3da033846db4ff4840a2e0a6055cc2cb",
+          "after_git_blob": "8252b0643cf2bebf3c1a180dcb0373c69563d6be"
+        }
+      ],
+      "feature_contract": {
+        "macro": "TW_OZIP_DECRYPT_KEY",
+        "absent_macro_helper_return": 1,
+        "absent_macro_error": "ozip_decrypt_no_key=OZIP decryption is not configured in this recovery.",
+        "caller_failure_ret_val": 1,
+        "configured_cpp_branch_byte_identical": true,
+        "ordinary_zip_flow_byte_identical": true,
+        "supplies_key_or_macro": false,
+        "changes_feature_selection": false
+      },
+      "limits": [
+        "The configured helper branch is preserved only when the C++ macro is supplied. A nonempty Make variable reaching libtwrpgui is not established by current source wiring.",
+        "The existing configured helper ignores the subprocess exit status; this narrow compiler repair does not change that behavior.",
+        "The existing GUI action starts operation bookkeeping before the check and performs queue/system-details cleanup afterward; this is not a global no-side-effects or storage write lock.",
+        "Offline source projection and strict Git rehearsal do not replace the actual Android compile or any hardware validation."
+      ]
     }
   ],
   "application_requirements": [
