@@ -56,12 +56,36 @@ ADSERVICES_API_BLUEPRINTS = tuple("packages/modules/AdServices/" + path for path
     "adservices/libraries/cobalt/proto/Android.bp",
     "adservices/service-core/proto/Android.bp",
 ))
+FRAMEWORK_PROVIDER_BLUEPRINTS = (
+    "packages/modules/CellBroadcastService/Android.bp",
+    "packages/apps/CellBroadcastReceiver/apex/permissions/Android.bp",
+    "packages/apps/Settings/Android.bp",
+    "packages/apps/Settings/aconfig/Android.bp",
+    "packages/apps/Settings/protos/Android.bp",
+    "packages/apps/Settings/src/com/android/settings/biometrics/fingerprint2/lib/Android.bp",
+    "packages/apps/Settings/src/com/android/settings/fuelgauge/protos/Android.bp",
+    "packages/apps/Launcher3/Android.bp",
+    "packages/apps/Launcher3/aconfig/Android.bp",
+    "packages/apps/Launcher3/checks/Android.bp",
+    "packages/apps/Launcher3/shared/Android.bp",
+    "packages/apps/Traceur/Android.bp",
+)
+FRAMEWORK_PROVIDER_EXCLUSIONS = (
+    "-packages/modules/CellBroadcastService/",
+    "-packages/apps/CellBroadcastReceiver/",
+    "-packages/apps/Settings/",
+    "-packages/apps/Launcher3/",
+    "-packages/apps/Traceur/",
+)
+WIFI_TRACKER_BLUEPRINT = "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp"
 SOURCE_FILE_REINCLUSIONS = {
+    *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, *ADSERVICES_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    *FRAMEWORK_PROVIDER_EXCLUSIONS,
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
     "-packages/services/Car/",
@@ -95,6 +119,7 @@ SOURCE_EXCLUSIONS = [
     "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
+    *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
     *STS_PROVIDER_BLUEPRINTS,
     WAKEUP_PROTO_BLUEPRINT,
@@ -479,7 +504,6 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
         self.assertTrue(source_path_allowed(provider + "testlib/Android.bp", scopes))
         for source in ("frameworks/opt/net/wifi/Android.bp",
-                       "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp",
                        "frameworks/opt/net/wifi/libwifi_system/Android.bp",
                        "frameworks/opt/net/wifi/libwifi_system_iface_sibling/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
@@ -751,6 +775,48 @@ class TwrpDeviceTests(unittest.TestCase):
                      "original SdkSandbox app definition", "does not install these services",
                      "API checks and visibility remain unchanged", "root license metadata",
                      "Apache and BSD", "does not establish redistribution clearance"):
+            self.assertIn(fact, readme)
+
+    def test_graph_thirty_one_framework_provider_scope_keeps_complete_original_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(FRAMEWORK_PROVIDER_BLUEPRINTS), 12)
+        self.assertEqual(len(FRAMEWORK_PROVIDER_EXCLUSIONS), 5)
+        for excluded in FRAMEWORK_PROVIDER_EXCLUSIONS:
+            self.assertIn(excluded, scopes)
+            parent = excluded[1:]
+            selected = {path for path in FRAMEWORK_PROVIDER_BLUEPRINTS if path.startswith(parent)}
+            self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, selected)
+            for source in selected:
+                self.assertTrue(source_path_allowed(source, scopes), source)
+                directory = str(Path(source).parent) + "/"
+                self.assertFalse(source_path_allowed(directory + "other.bp", scopes))
+                self.assertFalse(source_path_allowed(directory + "unrelated/Android.bp", scopes))
+            self.assertFalse(source_path_allowed(parent + "tests/Android.bp", scopes))
+            self.assertTrue(source_path_allowed(parent.rstrip("/") + "_sibling/Android.bp", scopes))
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        for source in ("system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
+                       "build/soong/licenses/Android.bp", "frameworks/base/api/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_original_wifi_tracker_provider_is_restored_without_networking(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertIn(WIFI_TRACKER_BLUEPRINT, scopes)
+        self.assertTrue(source_path_allowed(WIFI_TRACKER_BLUEPRINT, scopes))
+        for source in ("frameworks/opt/net/wifi/Android.bp",
+                       "frameworks/opt/net/wifi/libs/WifiTrackerLib/other.bp",
+                       "frameworks/opt/net/wifi/libs/WifiTrackerLib/tests/Android.bp",
+                       "frameworks/opt/net/wifi/libs/WifiTrackerLib_sibling/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_framework_provider_scope_documents_collateral_apps_and_test_only_sources(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 31", "17 source rules", "19 complete original Blueprint files",
+                     "108 named declarations", "Settings-core", "launcher-aosp-tapl",
+                     "TraceurCommon", "original license owner", "test-only dependencies",
+                     "WifiTrackerLib", "does not install Settings", "not a successful build"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):

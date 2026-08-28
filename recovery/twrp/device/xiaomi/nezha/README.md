@@ -446,6 +446,40 @@ missing provider. This selection does not enable recovery decryption or prove
 that `hwtrust` is packaged in the recovery image; variants and linking still
 require the next strict build.
 
+Graph 31 reports missing `setupcompat` and `setupdesign`. The broader framework
+source audit also identifies shared flags, generated sources and helper libraries
+that retained framework and test consumers need. Eleven official Android 16 r1
+projects are pinned in the supplemental source configuration. Their selected
+scope contains 19 complete original Blueprint files and 108 named declarations.
+The source audit accounts for their direct references, metadata and raw inputs;
+it is not a successful build or a claim of complete transitive graph closure.
+SystemUI and the shared platform test/Robolectric sources remain companion work.
+
+The five scoped projects use 17 source rules: one negative directory prefix for
+each project and twelve exact positive Blueprint files. CellBroadcastService's
+root retains its real stats generator and app definitions; CellBroadcastReceiver
+provides the complete permissions filegroup file. Settings' flags require their
+original license owner in the root file, which also retains `Settings-core` and
+`Settings`. Launcher3's four files preserve its flags, shared library, checks and
+`launcher-aosp-tapl`. Traceur's root keeps `TraceurCommon`, `Traceur-res` and the
+inseparable app declaration. This does not install Settings, Launcher3, Traceur
+or either CellBroadcast app in recovery: `PRODUCT_PACKAGES` remains `recovery`.
+Other Blueprint files in these five projects stay outside this source profile.
+
+The complete original SetupWizard, SetupDesign, SetupCompat and ZXing providers
+need no additional scope rules. The subsampling image library and Dancing Script
+font satisfy test-only dependencies in SilkFX and CorePerfTests; they are not
+claimed as recovery runtime requirements or installed assets. Original license
+metadata and the font's special licensing notice remain intact; source selection
+does not establish redistribution clearance.
+
+One additional exact positive rule restores the original `WifiTrackerLib` file
+from `frameworks/opt/net/wifi` at
+`1cab31f96d1f903e190708c1ce665520a4a89d10`. Its four definitions and eight external
+references are independently closed against existing selected providers. This
+preserves the library and resources required by SystemUI and Settings without
+selecting sibling Wi-Fi build files or changing `TW_NO_NETWORK`.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.

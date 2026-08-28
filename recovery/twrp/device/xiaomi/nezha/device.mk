@@ -67,6 +67,29 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     packages/modules/AdServices/adservices/libraries/cobalt/proto/Android.bp \
     packages/modules/AdServices/adservices/service-core/proto/Android.bp
 
+# The graph 31 follow-up source audit found shared framework flags, libraries
+# and generators in these five projects. Keep complete original provider files,
+# including their original license owners and inseparable app declarations.
+# No app is added to PRODUCT_PACKAGES, and dependencies remain strictly checked.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -packages/modules/CellBroadcastService/ \
+    packages/modules/CellBroadcastService/Android.bp \
+    -packages/apps/CellBroadcastReceiver/ \
+    packages/apps/CellBroadcastReceiver/apex/permissions/Android.bp \
+    -packages/apps/Settings/ \
+    packages/apps/Settings/Android.bp \
+    packages/apps/Settings/aconfig/Android.bp \
+    packages/apps/Settings/protos/Android.bp \
+    packages/apps/Settings/src/com/android/settings/biometrics/fingerprint2/lib/Android.bp \
+    packages/apps/Settings/src/com/android/settings/fuelgauge/protos/Android.bp \
+    -packages/apps/Launcher3/ \
+    packages/apps/Launcher3/Android.bp \
+    packages/apps/Launcher3/aconfig/Android.bp \
+    packages/apps/Launcher3/checks/Android.bp \
+    packages/apps/Launcher3/shared/Android.bp \
+    -packages/apps/Traceur/ \
+    packages/apps/Traceur/Android.bp
+
 # Graph 24 needs the original shared STS host utilities. Keep both complete
 # provider files and their metadata without selecting sibling test products.
 PRODUCT_SOURCE_ROOT_DIRS += \
@@ -177,6 +200,12 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 # the unchanged upstream defaults apply with no Wi-Fi vendor configuration.
 PRODUCT_SOURCE_ROOT_DIRS += \
     frameworks/opt/net/wifi/libwifi_hal/
+
+# Retained SystemUI and Settings consumers also need the original tracker
+# library and resources. This exact file has no runner or Robolectric dependency;
+# sibling Wi-Fi build files stay excluded and recovery networking stays disabled.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp
 
 # The restored AVF project supplies its build flags and consumes the original
 # Secretkeeper client/communication libraries from microdroid_manager. Keep
