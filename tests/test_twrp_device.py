@@ -30,13 +30,17 @@ STS_PROVIDER_BLUEPRINTS = (
     "platform_testing/libraries/sts-common-util/util/Android.bp",
 )
 WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp"
+CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
 SOURCE_FILE_REINCLUSIONS = {
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
+    CAR_TEAMS_BLUEPRINT,
 }
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
+    "-packages/services/Car/",
+    "-cts/hostsidetests/car/",
     "-hardware/interfaces/virtualization/capabilities_service/vts/",
     "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/",
     "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21085/",
@@ -69,6 +73,7 @@ SOURCE_REINCLUSIONS = [
     *AEMU_PROVIDER_BLUEPRINTS,
     *STS_PROVIDER_BLUEPRINTS,
     WAKEUP_PROTO_BLUEPRINT,
+    CAR_TEAMS_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
     "platform_testing/libraries/tradefed-error-prone/",
@@ -607,6 +612,44 @@ class TwrpDeviceTests(unittest.TestCase):
         for fact in ("wakeup_client_protos", "original two genrules", "wakeup_client.proto",
                      "3e2bcbf17426a5783f034c8b0bb0d26743b39892", "All three test servers",
                      "separate Car team metadata dependency"):
+            self.assertIn(fact, readme)
+
+    def test_graph_twenty_four_car_team_metadata_does_not_select_a_car_runtime(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "packages/services/Car/"
+        self.assertIn("-" + parent, scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, {CAR_TEAMS_BLUEPRINT})
+        self.assertTrue(source_path_allowed(CAR_TEAMS_BLUEPRINT, scopes))
+        for source in (parent + "Android.bp", parent + "car-lib/Android.bp",
+                       parent + "service/Android.bp", parent + "tests/Android.bp",
+                       parent + "teams/other.bp", parent + "teams/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("packages/services/Car_sibling/Android.bp",
+                       "hardware/interfaces/automotive/remoteaccess/vts/Android.bp",
+                       "hardware/interfaces/automotive/remoteaccess/test_grpc_server/impl/Android.bp",
+                       "build/soong/licenses/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("trendy_team_aaos_power_triage", "nine original team declarations",
+                     "61256ae811853028effed5c2c7227aebc347dc5e", "No Car runtime or flag library",
+                     "normal build-output cleanup", "without inventing team aliases"):
+            self.assertIn(fact, readme)
+
+    def test_graph_twenty_four_car_cts_scope_keeps_siblings_and_shared_security_consumers(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "cts/hostsidetests/car/"
+        self.assertIn("-" + parent, scopes)
+        for source in (parent + "Android.bp", parent + "apps/Android.bp", parent + "nested/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("cts/hostsidetests/Android.bp", "cts/hostsidetests/car_builtin/Android.bp",
+                       "cts/hostsidetests/car_builtin/apps/pm_helper_app/Android.bp",
+                       "cts/hostsidetests/appsecurity/Android.bp", "cts/tests/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("four Blueprint files define eight automotive", "no outside named-module",
+                     "Make or Go consumers", "not replaced with local stubs"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_three_sdk_sandbox_flags_keep_original_metadata(self):

@@ -1373,6 +1373,13 @@
       "commit": "a4305fb793e7a96b3e1baf248b9717f68eedd238",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 24 error: real AOSP libLLVM16_swiftshader and original defaults required by the approved Mesa3D source. Upstream features and vendor declarations are preserved."
+    },
+    {
+      "path": "packages/services/Car",
+      "url": "https://android.googlesource.com/platform/packages/services/Car",
+      "commit": "61256ae811853028effed5c2c7227aebc347dc5e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP team metadata for the graph 24 trendy_team_aaos_power_triage error and retained VTS ownership. The full Car project is pinned, but build selection is limited to packages/services/Car/teams/Android.bp and its nine team definitions; no Car runtime, flag or proto libraries are selected."
     }
   ]
 }

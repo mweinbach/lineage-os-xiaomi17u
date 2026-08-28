@@ -57,6 +57,14 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp
 
+# The Car host CTS subtree is a reviewed closed set of automotive tests.
+# Keep its car_builtin sibling and the remote-access VTS tests. Those retained
+# tests need original Car team metadata, but no Car runtime is selected here.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -cts/hostsidetests/car/ \
+    -packages/services/Car/ \
+    packages/services/Car/teams/Android.bp
+
 # The second graph exposed these specific CTS/VTS and automotive consumers.
 # Preserve the rest of CTS and the security HAL interfaces. The original CHRE
 # exclusion is removed: graph 22 requires its shared flag declarations, and

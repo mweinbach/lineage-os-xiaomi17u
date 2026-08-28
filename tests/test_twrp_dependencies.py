@@ -216,6 +216,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "4bcb97a095b2d547280b772f53e1e73996aabf2846cd73f34210c6a664ddd2c0")
 
+    def test_first_195_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:195]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "e470fa7807f5bb327cbc7795caf4e03bac5ce6ad5233d5fc7c129f3dede96a12")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -887,10 +893,9 @@ class ConfigurationTests(Fixture):
             ("external/mesa3d", "1ab807486dbc8cd2a1bb6c10d2ebebc5e545faca", "mesa_gfxstream_connection_manager"),
             ("external/swiftshader", "a4305fb793e7a96b3e1baf248b9717f68eedd238", "libLLVM16_swiftshader"),
         ]
-        self.assertEqual(len(projects), 195)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[185:]],
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[185:195]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, module) in zip(projects[185:], expected):
+        for project, (_, _, module) in zip(projects[185:195], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -901,6 +906,17 @@ class ConfigurationTests(Fixture):
         self.assertIn("plugin registration and validation are preserved", projects[191]["reason"])
         self.assertIn("LLVM and vendor properties remain unchanged", projects[193]["reason"])
         self.assertIn("features and vendor declarations are preserved", projects[194]["reason"])
+
+    def test_graph_twenty_four_car_team_metadata_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 196)
+        self.assertEqual(projects[195], {
+            "path": "packages/services/Car",
+            "url": "https://android.googlesource.com/platform/packages/services/Car",
+            "commit": "61256ae811853028effed5c2c7227aebc347dc5e",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP team metadata for the graph 24 trendy_team_aaos_power_triage error and retained VTS ownership. The full Car project is pinned, but build selection is limited to packages/services/Car/teams/Android.bp and its nine team definitions; no Car runtime, flag or proto libraries are selected."
+        })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

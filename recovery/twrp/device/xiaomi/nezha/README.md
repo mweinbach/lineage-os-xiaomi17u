@@ -322,8 +322,30 @@ The original `wakeup_client.proto`, protobuf include root, `aprotoc`, gRPC
 generator and both linked libraries are present. The surrounding default HAL
 implementation stays excluded. All three test servers and the remote-access
 AIDL and VTS files remain selected. Their separate Car team metadata dependency
-still requires its original provider; restoring this protocol file alone does
-not resolve that dependency or establish a working automotive service.
+is supplied by the original provider described below; restoring this protocol
+file alone does not resolve that dependency or establish a working automotive
+service.
+
+The remaining graph 24 Car host CTS error belongs to the closed
+`cts/hostsidetests/car/` subtree: four Blueprint files define eight automotive
+test, helper and defaults modules, with no outside named-module, source-path,
+Make or Go consumers found in the reviewed source set. The negative prefix
+excludes only that subtree. Its `car_builtin/` sibling, CTS security helpers and
+remote-access AIDL/VTS files remain selected. The missing Car flag and two
+protobuf providers reside in mixed runtime build files; they are not replaced
+with local stubs or imported for this excluded automotive suite.
+
+The separately retained remote-access tests need `trendy_team_aaos_power_triage`.
+The original Android 16 r1 Car project is pinned at
+`61256ae811853028effed5c2c7227aebc347dc5e`, with a negative
+`packages/services/Car/` prefix and the sole exact positive
+`packages/services/Car/teams/Android.bp`. That complete file preserves nine
+original team declarations and the global Apache package license. No Car
+runtime or flag library is selected. The complete pinned tree has no
+`Android.mk`, `AndroidProducts.mk` or `Makefile` module entrypoints; its original
+root `CleanSpec.mk` still participates in normal build-output cleanup. This
+metadata admission preserves the VTS consumers without inventing team aliases
+or weakening dependency validation. It is not a successful graph or device test.
 
 The native source projection also found three retained Wi-Fi service modules
 and one test consuming `libwifi-hal`. The positive
