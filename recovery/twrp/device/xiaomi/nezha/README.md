@@ -32,6 +32,26 @@ are omitted by the minimal manifest. This recovery product uses the supported
 | `hardware/interfaces/neuralnetworks/utils/` | Neural-network adapters outside recovery functionality |
 | `hardware/interfaces/virtualization/capabilities_service/vts/` | Virtualization capability VTS tests |
 
+The second graph reached a further set of absent defaults. Its additional
+exclusions are limited to the following consumers, after checking their
+declared module names against recovery/core/ADB/vold and the protected build,
+SELinux, VINTF and AVB roots:
+
+| Additional excluded scope | Missing parent and scope limit |
+| --- | --- |
+| Seven individual `cts/hostsidetests/securitybulletin/securityPatch/CVE-*/` directories | `CVE-2019-1988`, `CVE-2023-21085`, `CVE-2023-40114`, `CVE-2023-4863`, `CVE-2024-43091`, `CVE-2024-43097`, `CVE-2024-43767`; their Skia/STS test defaults are absent. Other security-bulletin tests remain included. |
+| `cts/tests/tests/car/`, `cts/tests/tests/car_permission_tests/` | Automotive framework CTS tests requiring the omitted car framework; other CTS tests remain included. |
+| `packages/modules/Connectivity/tests/common/` | Connectivity coverage tests and shared test defaults requiring NetworkStack test dependencies; production BPF headers remain included. |
+| `hardware/interfaces/automotive/remoteaccess/hal/default/` | Default automotive remote-access service, helper library and its tests requiring vehicle-HAL client defaults; the AIDL interface is retained. |
+| `hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/` | HWCrypto functional VTS tests requiring omitted Rust test defaults; the production security AIDL interface is retained. |
+| `system/chre/` | Context Hub Runtime Environment, its HAL/client libraries and tests requiring Pigweed RPC support. This is an excluded runtime subsystem, not merely a test-generator removal. |
+
+These are build-graph scope checks, not executions or passing results for the
+excluded tests. The bounded reference scan found no direct recovery consumer
+of the excluded module names; it is not proof of complete transitive closure.
+If retained modules need one of these providers, the next graph must fail and
+the appropriate source must be restored rather than hiding that dependency.
+
 This includes non-test code and is a product-scope decision, not a general
 claim that all removed modules are optional for Android. Unrelated Android
 platform and test modules are excluded; the table identifies the test scopes.

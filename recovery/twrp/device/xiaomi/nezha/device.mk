@@ -35,6 +35,25 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/interfaces/neuralnetworks/utils/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
+# The second graph exposed these specific CTS/VTS, automotive, connectivity
+# test and context-hub consumers. Their missing parent defaults are unrelated
+# to the first recovery product. CHRE includes a runtime subsystem, not just
+# test generators. Preserve the rest of CTS and the security HAL interfaces.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/ \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21085/ \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-40114/ \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-4863/ \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43091/ \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43097/ \
+    -cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43767/ \
+    -cts/tests/tests/car/ \
+    -cts/tests/tests/car_permission_tests/ \
+    -packages/modules/Connectivity/tests/common/ \
+    -hardware/interfaces/automotive/remoteaccess/hal/default/ \
+    -hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/ \
+    -system/chre/
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true

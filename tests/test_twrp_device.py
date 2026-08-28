@@ -17,6 +17,19 @@ SOURCE_EXCLUSIONS = [
     "-system/secretkeeper/",
     "-hardware/interfaces/neuralnetworks/utils/",
     "-hardware/interfaces/virtualization/capabilities_service/vts/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21085/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-40114/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-4863/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43091/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43097/",
+    "-cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43767/",
+    "-cts/tests/tests/car/",
+    "-cts/tests/tests/car_permission_tests/",
+    "-packages/modules/Connectivity/tests/common/",
+    "-hardware/interfaces/automotive/remoteaccess/hal/default/",
+    "-hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/",
+    "-system/chre/",
 ]
 
 
@@ -219,6 +232,8 @@ class TwrpDeviceTests(unittest.TestCase):
                 "system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
                 "external/f2fs-tools/Android.bp", "system/vold/Android.bp",
                 "hardware/interfaces/boot/Android.bp", "hardware/interfaces/security/keymint/Android.bp",
+                "hardware/interfaces/security/see/hwcrypto/aidl/Android.bp",
+                "hardware/interfaces/security/secureclock/aidl/vts/functional/Android.bp",
                 "system/libvintf/Android.bp", "build/soong/Android.bp",
                 "packages/modules/Connectivity/bpf/headers/Android.bp", "system/bpf/Android.bp",
                 "device/xiaomi/nezha/Android.bp"):
@@ -229,6 +244,22 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertNotEqual(self.board.get("SELINUX_IGNORE_NEVERALLOWS"), "true")
         self.assertIn("$(ALLOW_MISSING_DEPENDENCIES)", self.board_text)
         self.assertIn("$(SELINUX_IGNORE_NEVERALLOWS)", self.board_text)
+
+    def test_second_graph_scope_does_not_hide_entire_cts_or_hardware_interfaces(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for prefix in ("-cts/", "-cts/hostsidetests/securitybulletin/",
+                       "-cts/hostsidetests/securitybulletin/securityPatch/",
+                       "-hardware/interfaces/", "-hardware/interfaces/security/",
+                       "-hardware/interfaces/security/see/hwcrypto/aidl/",
+                       "-packages/modules/Connectivity/", "-packages/modules/Connectivity/bpf/"):
+            self.assertNotIn(prefix, scopes)
+        for source in ("cts/Android.bp", "cts/hostsidetests/securitybulletin/Android.bp",
+                       "cts/hostsidetests/securitybulletin/securityPatch/includes/Android.bp",
+                       "cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21084/Android.bp",
+                       "cts/tests/tests/security/Android.bp", "cts/tests/tests/carrierapi/Android.bp",
+                       "packages/modules/Connectivity/tests/unit/Android.bp",
+                       "hardware/interfaces/automotive/remoteaccess/aidl/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
 
     def test_missing_final_product_packages_are_errors_without_an_allowlist(self):
         active = list(logical_lines(self.product_text))
