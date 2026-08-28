@@ -112,18 +112,20 @@ python3 scripts/twrp_build.py revise --host-mode apple-rosetta \
 
 `revise` verifies the existing target and patch queue before accepting reviewed
 target changes, supplementary additions and appended source patches. Existing
-patch entries must remain an exact unchanged prefix; a new patch can edit only
-previously unpatched files whose contents and modes match the frozen Git base.
-All patch contexts are checked before any source or target change. The tool
+patch entries must remain an exact unchanged prefix. A first touch must match
+the frozen Git base; an explicitly linked successor must name the immediately
+preceding patch and match its exact postimage. The
+[linear patch-chain contract](twrp-linear-patch-chains.md) requires complete
+forward and reverse scratch rehearsal and exact bytes, blobs and modes at every
+boundary. All patch contexts are checked before any source or target change. The tool
 archives the previous receipt, patch payloads, source preimages and changed
 target files under the report directory's `build-revisions`, while preserving
 the base snapshot, output and caches. A partial application retains its backups
 and old receipt and blocks automatic retry. Existing outputs retain their
 earlier provenance; the new receipt marks the revision as not yet built or
-validated. Then run the separate `graph` and `build` commands above. Chaining
-edits onto an already patched file, changing an existing source pin or changing
-the target file set requires separate support; unrelated local edits are not
-adopted. Supplementary source patches must match the exact active previous
+validated. Then run the separate `graph` and `build` commands above. Implicit
+overlap, changed source pins and changes to the target file set are rejected;
+unrelated local edits are not adopted. Supplementary source patches must match the exact active previous
 bundle during `fetch`; fetching never applies a proposed patch. The
 [supplement patching guide](twrp-supplement-patching.md) describes those checks.
 
@@ -138,8 +140,9 @@ also requires host authentication in recovery adbd, including on unlocked or
 debuggable devices. The ordinary Android adbd behavior is unchanged. A trusted
 host key and its recovery handling must still be provided and validated; no
 host private key or stock key is bundled. The [ADB readiness record](twrp-adb-readiness.md)
-explains why the default user target still needs an authorized public-key input
-and reviewed startup behavior before log access can be tested.
+explains the authored secure-user startup request and USB transport restriction,
+along with the remaining authorized public-key input and log-access design.
+No compiled artifact or device test has established that those paths work.
 
 The queue also disables the separate unauthenticated minadbd transport for
 this profile. Both its standalone entrypoint and TWRP's sideload caller return

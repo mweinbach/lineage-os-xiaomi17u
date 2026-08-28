@@ -18,8 +18,12 @@ entry must name its exact project path, pinned commit and repository URL, plus
 the before and after Git blob IDs, SHA-256 hashes and byte lengths for every
 changed file. The payload hash and declared file closure must match. Only text
 edits to existing regular files at the same path are supported. Adding, deleting,
-renaming, changing file mode, or appending a patch to an already patched file is
-rejected. The old patch entries must remain an exact unchanged queue prefix.
+renaming or changing file mode is rejected. The old patch entries must remain
+an exact unchanged queue prefix. An already patched file requires an explicit
+immediate predecessor and exact postimage continuity under the
+[linear patch-chain contract](twrp-linear-patch-chains.md); implicit overlap is
+rejected. Every chain is rehearsed forward and backward in isolated copies
+before applying its live suffix.
 
 `scripts/twrp_patch_state.py` holds the shared read-only checks. It never fetches,
 applies a patch, writes a receipt, acquires a writer lock or resets a checkout.
@@ -33,7 +37,7 @@ helper alongside both runners and their existing workspace helpers.
 | Fetch without previous controls | Every existing checkout and every new clone must be pristine. The proposed queue never permits local changes. |
 | Fetch with `--previous-control-root` | The previous bundle must exactly match the active preparation receipt, staged target, output alias, frozen base and prior patch state. Only those prior patches may be present; newly proposed patches remain unapplied. |
 | Initial prepare | Every owner starts pristine and each supplementary patch preimage matches its pinned Git blob. Complete source, supplementary, target and output checks run again after application and before the preparation receipt is published. |
-| Revise | The old receipt and bundle authorize the old postimages. Appended patches require untouched pinned preimages and are archived before application. The whole new state must pass before the receipt advances. |
+| Revise | The old receipt and bundle authorize the old postimages. First touches require untouched pinned preimages; linked successors require the exact immediate predecessor. Patches and source evidence are archived before application. The whole new state must pass before the receipt advances. |
 | Build check, graph and build | The active bundle must match the receipt, and all source owners must match their recorded phase. Successful build commands receive the same source checks afterward. |
 
 Standalone supplementary `verify` remains pristine by default. Supplying

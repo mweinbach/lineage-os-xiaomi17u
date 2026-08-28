@@ -88,12 +88,31 @@ force an application, discard changes or weaken validation. Keep the original
 resolved manifest and record the applied patches separately.
 
 For an already prepared source tree, `twrp_build.py revise` accepts an appended
-patch only when every old queue entry remains unchanged and the new file was
-not previously patched. It verifies the exact frozen preimage and mode,
-checks all patch contexts, and archives the previous receipt, source bytes and
+patch only when every old queue entry remains unchanged. First touches must
+match their frozen preimage and mode; already patched files require an explicit
+immediate predecessor and exact postimage continuity under the
+[linear patch-chain contract](../../docs/twrp-linear-patch-chains.md).
+The complete queue is rehearsed forward and backward before a linked suffix
+may run. The tool checks all patch contexts and archives the previous receipt, source bytes and
 patch payload before applying anything. It verifies the complete resulting
 source state before advancing the receipt. A partial failure is preserved for
 inspection; the tool does not reset sources or automatically adopt that state.
+
+Patch 24 is the first admitted successor, linking the ADB authentication change
+at slot 4 to a recovery-only USB transport restriction. It also changes the
+previously untouched Wi-Fi transport file. Both complete source postimages are
+recorded in the payload. Recovery retains host authentication and privilege
+dropping, excludes ordinary network listener selection and Wi-Fi TLS discovery,
+and exits if the FunctionFS endpoint is absent. Ordinary Android branches are
+unchanged. This is not a firewall: authenticated forwarding and shell networking
+remain available. The [ADB readiness guide](../../docs/twrp-adb-readiness.md)
+separates source contracts, startup requests, key provisioning and device proof.
+
+The immutable early verification text names `adbd_system_api_recovery`, which
+is an API phony rather than a compiler owner. Actual artifact checks must bind
+`daemon/main.cpp` to `adbd.recovery` and `daemon/adb_wifi.cpp` to the recovery
+variant of `libadbd_core`, with the selected commands and objects confirming
+`__ANDROID_RECOVERY__`. The phony name alone supplies no such evidence.
 
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
