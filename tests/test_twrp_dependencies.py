@@ -72,7 +72,13 @@ class Fixture(unittest.TestCase):
 
 
 class ConfigurationTests(Fixture):
-    def test_four_supplements_and_original_391_project_snapshot_are_pinned(self):
+    def test_first_four_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:4]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "9eee51c8c2b77a938dad6044243cd8c6c18ecae909c5142b2059adfc4354e0bf")
+
+    def test_seven_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
         self.assertEqual(config["projects"], [{
@@ -91,7 +97,20 @@ class ConfigurationTests(Fixture):
         }, {
             "path": "external/libpcap", "url": "https://android.googlesource.com/platform/external/libpcap",
             "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9", "tag": "android-16.0.0_r1",
-            "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."}])
+            "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."
+        }, {
+            "path": "platform_testing", "url": "https://android.googlesource.com/platform/platform_testing",
+            "commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP Tradefed defaults required by retained shared test infrastructure."
+        }, {
+            "path": "frameworks/libs/native_bridge_support",
+            "url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support",
+            "commit": "b527289974e3883460370012325ab3736d59268a", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP native_bridge_proxy_libc_defaults required by the retained binary translation libc proxy."
+        }, {
+            "path": "external/skia", "url": "https://android.googlesource.com/platform/external/skia",
+            "commit": "bcb0f77c44783b1800ba37641ba7ecab04f05e07", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."}])
         self.assertIn("libnetworkstackutilsjni_deps", config["projects"][1]["reason"])
         self.assertIn("tests/unit/Android.bp", config["projects"][1]["reason"])
         snapshot = dependencies.ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
@@ -300,7 +319,7 @@ class ProjectTests(Fixture):
             report = dependencies.verify(self.control, self.source)
         self.assertEqual(self.config["projects"][0], original_bpf)
         self.assertEqual([project["path"] for project in report["projects"]],
-                         ["system/bpf", "packages/modules/NetworkStack", "hardware/google/apf", "external/libpcap"])
+                         [project["path"] for project in self.config["projects"]])
         self.assertEqual([project["actual_head"] for project in report["projects"]],
                          [project["commit"] for project in self.config["projects"]])
         self.assertEqual((self.paths["report_dir"] / twrp_workspace.SNAPSHOT).read_bytes(), snapshot)

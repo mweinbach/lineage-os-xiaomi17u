@@ -36,6 +36,27 @@
       "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."
+    },
+    {
+      "path": "platform_testing",
+      "url": "https://android.googlesource.com/platform/platform_testing",
+      "commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Tradefed defaults required by retained shared test infrastructure."
+    },
+    {
+      "path": "frameworks/libs/native_bridge_support",
+      "url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support",
+      "commit": "b527289974e3883460370012325ab3736d59268a",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP native_bridge_proxy_libc_defaults required by the retained binary translation libc proxy."
+    },
+    {
+      "path": "external/skia",
+      "url": "https://android.googlesource.com/platform/external/skia",
+      "commit": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."
     }
   ]
 }
