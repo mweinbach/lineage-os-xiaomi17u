@@ -55337,7 +55337,32 @@
         "build/make/core/main.mk:530: error: Build failed."
       ],
       "resource_generation_verified": true,
-      "failed_command_exit_code": 1
+      "failed_command_exit_code": 1,
+      "blueprint_generation_observed": {
+        "completed": true,
+        "ninja": {
+          "path": "/work/out/twrp-nezha/soong/build.twrp_nezha.ninja",
+          "size_bytes": 197516983,
+          "sha256": "31c08f9cc399c448f589fbf35651ed0164548ee7a180e7e59e3f48eef5281524"
+        },
+        "legacy_make_started": true,
+        "image_compilation_started": false
+      },
+      "first_kati_clean_state_observed": {
+        "before_graph_absent": true,
+        "after_graph": {
+          "path": "/work/out/twrp-nezha/target/product/nezha/clean_steps.mk",
+          "size_bytes": 164115,
+          "sha256": "bb394c4e0c01d4e1b17823087c3779d121b8a4b9aeb1c49d18c83765d3f2a4c4"
+        },
+        "cleanspec_ninja": {
+          "path": "/work/out/twrp-nezha/build-twrp_nezha-cleanspec.ninja",
+          "size_bytes": 84,
+          "sha256": "f70fb564a44f805153bb08dc9331dd3a15fea068d0c576fdce20f709c1900385"
+        },
+        "cleanspec_ninja_phony_only": true,
+        "state_deleted_or_bypassed": false
+      }
     }
   ],
   "resource_generation": {
