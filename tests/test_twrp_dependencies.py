@@ -270,6 +270,18 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "622eb20771b1f177e52d34ff7a9f48e1dcf266a774193364c34e22b401f0a4ce")
 
+    def test_first_213_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:213]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "cf5861733fd9cdcbd128df209bd622c06d9339c5fa2d6c718fab5880e4f2a1df")
+
+    def test_first_224_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:224]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "c4f0d87449bf255ec5fad2a4fd52f9cccd94cf3a725c3fd4f0e5b8f758366a00")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1108,7 +1120,7 @@ class ConfigurationTests(Fixture):
 
     def test_reviewed_framework_extensions_projection_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 213)
+        self.assertGreaterEqual(len(projects), 213)
         self.assertEqual(projects[212], {
             "path": "frameworks/ex",
             "url": "https://android.googlesource.com/platform/frameworks/ex",
@@ -1116,6 +1128,89 @@ class ConfigurationTests(Fixture):
             "tag": "android-16.0.0_r1",
             "reason": "Source audit projection, not a graph 30 error: real AOSP android-common, android-ex-camera2 and androidx.camera.extensions.stub providers required by retained framework and CTS consumers, including CtsPermissionTestCases. Original library, test and SDK definitions are preserved."
         })
+
+    def test_graph_thirty_one_framework_source_batch_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("packages/modules/CellBroadcastService", "1249b4c132181f66cbc5a36168570f12390b4b2d"),
+            ("packages/apps/CellBroadcastReceiver", "b97c8a4ffa3946d7206808bf4810746678b44a5c"),
+            ("packages/apps/Settings", "0fb38ed81e9b49d5da4be8f50d9d69865c1192e8"),
+            ("packages/apps/Launcher3", "2f5b9b869d86620fdb899bc2df53d523dc9dc6ea"),
+            ("packages/apps/Traceur", "781a9de78af68f825dc0031457c5fc12ff58cf39"),
+            ("frameworks/opt/setupwizard", "8346eb25a87c195812e9255757ae8d3b47173da9"),
+            ("external/setupdesign", "07da2d12899c8a083060b9bdd77473fa93564567"),
+            ("external/setupcompat", "5e79860031bf30df936ebc08db2996874eb0ff9e"),
+            ("external/zxing", "32fbdf1955cc1fad33e6a791284d316dc3834d1b"),
+            ("external/subsampling-scale-image-view", "7c166c441cfc7d2de61396e7ebc0e574c5c6c585"),
+            ("external/google-fonts/dancing-script", "56d6ed7d67ef97d12eae22d95aea33aab2270e1d"),
+        ]
+        self.assertGreaterEqual(len(projects), 224)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[213:224]], expected)
+        for project in projects[213:224]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+
+    def test_graph_thirty_one_source_reasons_and_scope_limits(self):
+        projects = dependencies.load_config()["projects"]
+        actual_consumers = {
+            "external/setupdesign": ("setupdesign", "SettingsLibAvatarPicker"),
+            "external/setupcompat": ("setupcompat", "android_onboarding.contracts.provisioning"),
+        }
+        for project in projects[213:224]:
+            with self.subTest(path=project["path"]):
+                reason = project["reason"]
+                if project["path"] in actual_consumers:
+                    self.assertIn("graph 31 errors", reason)
+                    self.assertNotIn("projection", reason.lower())
+                    for name in actual_consumers[project["path"]]:
+                        self.assertIn(name, reason)
+                else:
+                    self.assertTrue(reason.startswith("Source audit projection, not a graph 31 error:"))
+        for text in ("statslog-cellbroadcast-java-gen", "telephony-common"):
+            self.assertIn(text, projects[213]["reason"])
+        for text in ("apex/permissions/Android.bp", "no receiver app or APEX definition"):
+            self.assertIn(text, projects[214]["reason"])
+        for text in ("aconfig_settings_flags_lib", "root Blueprint", "Settings-core", "Settings app"):
+            self.assertIn(text, projects[215]["reason"])
+        for text in ("com_android_launcher3_flags_lib", "launcher-aosp-tapl", "WindowManager-Shell"):
+            self.assertIn(text, projects[216]["reason"])
+        for text in ("TraceurCommon", "Traceur-res", "Traceur app", "without adding product packages"):
+            self.assertIn(text, projects[217]["reason"])
+        for text in ("setup-wizard-lib", "SimAppDialog", "gingerbread compatibility library"):
+            self.assertIn(text, projects[218]["reason"])
+        self.assertIn("zxing-core-1.7 prebuilt, its version metadata", projects[221]["reason"])
+        for text in ("SilkFX android_test", "test dependency", "no TWRP runtime feature"):
+            self.assertIn(text, projects[222]["reason"])
+        for text in ("GoogleFontDancingScript", "CorePerfTests", "Java test data",
+                     "does not establish a TWRP font installation requirement", "BSD/MIT/OFL",
+                     "special licensing notice", "no license waiver", "distribution rights"):
+            self.assertIn(text, projects[223]["reason"])
+
+    def test_graph_thirty_one_glide_prebuilt_source_pin_and_packaging_caveat(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 225)
+        project = projects[224]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "prebuilts/maven_repo/bumptech",
+            "url": "https://android.googlesource.com/platform/prebuilts/maven_repo/bumptech",
+            "commit": "5fa5ea996556070a62957f197876d124f3a1e1b7",
+            "tag": "android-16.0.0_r1",
+        })
+        self.assertNotIn("external/glide", {p["path"] for p in projects[213:225]})
+        reason = project["reason"]
+        self.assertIn("graph 31 errors", reason)
+        self.assertNotIn("projection", reason.lower())
+        for name in ("glide-prebuilt", "glide-gifdecoder-prebuilt", "glide-disklrucache-prebuilt",
+                     "glide-annotation-and-compiler-prebuilt", "glide-ktx-prebuilt",
+                     "glide-integration-webpdecoder-prebuilt", "glide-compose-prebuilt",
+                     "glide-annotation-processor", "car-telephony-common-source-no-overlayable",
+                     "car-telephony-common-source", "car-telephony-common-aar", "PhotopickerLib"):
+            self.assertIn(name, reason)
+        for caveat in ("original WebP import", "webpdecoder-2.6.4.16.0-sources.jar",
+                       "Java sources and no compiled classes",
+                       "does not establish WebP or application runtime support"):
+            self.assertIn(caveat, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

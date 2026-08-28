@@ -1499,6 +1499,90 @@
       "commit": "06933c05c643430497ea48c713db04c0feb70d2e",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 30 error: real AOSP android-common, android-ex-camera2 and androidx.camera.extensions.stub providers required by retained framework and CTS consumers, including CtsPermissionTestCases. Original library, test and SDK definitions are preserved."
+    },
+    {
+      "path": "packages/modules/CellBroadcastService",
+      "url": "https://android.googlesource.com/platform/packages/modules/CellBroadcastService",
+      "commit": "1249b4c132181f66cbc5a36168570f12390b4b2d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP statslog-cellbroadcast-java-gen required by retained telephony-common. The original root Blueprint and its companion CellBroadcastReceiver allowlist providers are retained."
+    },
+    {
+      "path": "packages/apps/CellBroadcastReceiver",
+      "url": "https://android.googlesource.com/platform/packages/apps/CellBroadcastReceiver",
+      "commit": "b97c8a4ffa3946d7206808bf4810746678b44a5c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP privapp_allowlist_com.android.cellbroadcastservice.xml and platform_privapp_allowlist_com.android.cellbroadcastservice.xml filegroups required by CellBroadcastService. Build selection is limited to the original apex/permissions/Android.bp; no receiver app or APEX definition is selected."
+    },
+    {
+      "path": "packages/apps/Settings",
+      "url": "https://android.googlesource.com/platform/packages/apps/Settings",
+      "commit": "0fb38ed81e9b49d5da4be8f50d9d69865c1192e8",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP aconfig_settings_flags_lib required by retained services.core.unboosted and SystemUI-core. The original license provider shares the root Blueprint with Settings-core and the Settings app, so their definitions and required companion files are retained."
+    },
+    {
+      "path": "packages/apps/Launcher3",
+      "url": "https://android.googlesource.com/platform/packages/apps/Launcher3",
+      "commit": "2f5b9b869d86620fdb899bc2df53d523dc9dc6ea",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP com_android_launcher3_flags_lib and launcher-aosp-tapl required by retained WindowManager-Shell, services.core.unboosted and framework tests. Original launcher, TAPL, flags, shared and check definitions are retained together."
+    },
+    {
+      "path": "packages/apps/Traceur",
+      "url": "https://android.googlesource.com/platform/packages/apps/Traceur",
+      "commit": "781a9de78af68f825dc0031457c5fc12ff58cf39",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP TraceurCommon and Traceur-res required by retained SystemUI-core. The original root Blueprint also contains the Traceur app; its definitions are retained without adding product packages."
+    },
+    {
+      "path": "frameworks/opt/setupwizard",
+      "url": "https://android.googlesource.com/platform/frameworks/opt/setupwizard",
+      "commit": "8346eb25a87c195812e9255757ae8d3b47173da9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP setup-wizard-lib required by retained SimAppDialog. The complete original Blueprint, gingerbread compatibility library and license metadata are preserved."
+    },
+    {
+      "path": "external/setupdesign",
+      "url": "https://android.googlesource.com/platform/external/setupdesign",
+      "commit": "07da2d12899c8a083060b9bdd77473fa93564567",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP setupdesign provider required by SettingsLibAvatarPicker in the graph 31 errors. Original setupdesign-lottie-loading-layout and SDK definitions are preserved; setupcompat is supplied by this batch and Lottie was already pinned."
+    },
+    {
+      "path": "external/setupcompat",
+      "url": "https://android.googlesource.com/platform/external/setupcompat",
+      "commit": "5e79860031bf30df936ebc08db2996874eb0ff9e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP setupcompat provider required by android_onboarding.contracts.provisioning in the graph 31 errors. Original setupcompat_bts, source filegroups and license metadata are preserved."
+    },
+    {
+      "path": "external/zxing",
+      "url": "https://android.googlesource.com/platform/external/zxing",
+      "commit": "32fbdf1955cc1fad33e6a791284d316dc3834d1b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP zxing-core required by retained SettingsLib. Original zxing-core-1.7 prebuilt, its version metadata and the license notice are preserved."
+    },
+    {
+      "path": "external/subsampling-scale-image-view",
+      "url": "https://android.googlesource.com/platform/external/subsampling-scale-image-view",
+      "commit": "7c166c441cfc7d2de61396e7ebc0e574c5c6c585",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP subsampling-scale-image-view required by the selected SilkFX android_test. This supplies a test dependency; no TWRP runtime feature is claimed."
+    },
+    {
+      "path": "external/google-fonts/dancing-script",
+      "url": "https://android.googlesource.com/platform/external/google-fonts/dancing-script",
+      "commit": "56d6ed7d67ef97d12eae22d95aea33aab2270e1d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 31 error: real AOSP GoogleFontDancingScript resources required by CorePerfTests. This supplies Java test data; it does not establish a TWRP font installation requirement. Original BSD/MIT/OFL metadata and special licensing notice are preserved; no license waiver or distribution rights determination is made."
+    },
+    {
+      "path": "prebuilts/maven_repo/bumptech",
+      "url": "https://android.googlesource.com/platform/prebuilts/maven_repo/bumptech",
+      "commit": "5fa5ea996556070a62957f197876d124f3a1e1b7",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP glide-prebuilt, glide-gifdecoder-prebuilt, glide-disklrucache-prebuilt, glide-annotation-and-compiler-prebuilt, glide-ktx-prebuilt, glide-integration-webpdecoder-prebuilt, glide-compose-prebuilt and glide-annotation-processor providers required by car-telephony-common-source-no-overlayable, car-telephony-common-source, car-telephony-common-aar and PhotopickerLib in the graph 31 errors. The original WebP import uses webpdecoder-2.6.4.16.0-sources.jar with Java sources and no compiled classes; this pin does not establish WebP or application runtime support."
     }
   ]
 }
