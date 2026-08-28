@@ -294,6 +294,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "475b0b4a1daa8dbb96290432b613821c768267bf4d80f61aa06c5c2d27987b12")
 
+    def test_first_236_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:236]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "f8212ed54b180abdfc3c6fe398212e9c62d9b264fc2ca40f606a973557f6c408")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1272,7 +1278,7 @@ class ConfigurationTests(Fixture):
             ("test/mlts/benchmark", "4617f7e28793f979153f3b088a79ba796e0268b3"),
             ("test/mlts/models", "cbb1ae5cfde49ed06ccf4afaa2fae1054364d4f3"),
         ]
-        self.assertEqual(len(projects), 236)
+        self.assertGreaterEqual(len(projects), 236)
         self.assertEqual([(p["path"], p["commit"]) for p in projects[229:236]], expected)
         for project in projects[229:236]:
             with self.subTest(path=project["path"]):
@@ -1326,6 +1332,45 @@ class ConfigurationTests(Fixture):
         for text in ("asset licenses and attribution metadata", "no asset redistribution rights determination",
                      "on-device neural-network support is implied"):
             self.assertIn(text, projects[235]["reason"])
+
+    def test_reviewed_cts_plot_replica_and_tv_projection_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/androidplot", "e67b5c11b0a39d07706faa2f5faf820db3848005"),
+            ("external/replicaisland", "f32cc0546b83dd918c94c37850109d311ebabcaf"),
+            ("frameworks/opt/tv/tvsystem", "ddc4040688dca1b980b8744a012d6cf6a62f792c"),
+        ]
+        self.assertEqual(len(projects), 239)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[236:239]], expected)
+        for project in projects[236:239]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+
+    def test_cts_projection_reasons_preserve_upstream_api_tracking_choice(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("androidplot java_library", "CtsVerifierLibT"),
+            ("com.replica.replicaisland android_test_helper_app", "CtsOpenGlPerfTestCases"),
+            ("com.android.libraries.tv.tvsystem java_sdk_library",
+             "CtsSharedLibsApiSignatureTestCases_cts-shared-libs-all-current.api"),
+        ]
+        for project, (provider, consumer) in zip(projects[236:239], expected):
+            with self.subTest(path=project["path"]):
+                reason = project["reason"]
+                self.assertTrue(reason.startswith("Source audit projection, not a graph 33 error:"))
+                self.assertNotIn("graph 33 errors", reason)
+                self.assertIn(provider, reason)
+                self.assertIn(consumer, reason)
+        for text in ("complete original Blueprint", "AndroidPlotDemos", "compiler settings"):
+            self.assertIn(text, projects[236]["reason"])
+        for text in ("instrumentation_for and data", "preserved as test inputs",
+                     "does not add a recovery product package or establish graphics performance"):
+            self.assertIn(text, projects[237]["reason"])
+        for text in (".public.api.txt", ".system.api.txt", "original unsafe_ignore_missing_latest_api:true",
+                     "suppresses released API tracking", "current API checks remain",
+                     "no new waiver is added", "No recovery product package or TV functionality is implied"):
+            self.assertIn(text, projects[238]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

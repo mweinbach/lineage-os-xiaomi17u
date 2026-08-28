@@ -1660,6 +1660,27 @@
       "commit": "cbb1ae5cfde49ed06ccf4afaa2fae1054364d4f3",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP test_mlts_models_assets required by VtsHalNeuralnetworksV1_2BenchmarkTestCases and VtsHalNeuralnetworksV1_3BenchmarkTestCases in the graph 32 errors. Original model and test assets, asset licenses and attribution metadata are preserved; no asset redistribution rights determination or on-device neural-network support is implied."
+    },
+    {
+      "path": "external/androidplot",
+      "url": "https://android.googlesource.com/platform/external/androidplot",
+      "commit": "e67b5c11b0a39d07706faa2f5faf820db3848005",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 33 error: real AOSP androidplot java_library required by retained CtsVerifierLibT. The complete original Blueprint, including AndroidPlotDemos, its source inputs and compiler settings, is preserved."
+    },
+    {
+      "path": "external/replicaisland",
+      "url": "https://android.googlesource.com/platform/external/replicaisland",
+      "commit": "f32cc0546b83dd918c94c37850109d311ebabcaf",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 33 error: real AOSP com.replica.replicaisland android_test_helper_app required by retained CtsOpenGlPerfTestCases through instrumentation_for and data. Original app sources, manifest, resources and licenses are preserved as test inputs; this does not add a recovery product package or establish graphics performance."
+    },
+    {
+      "path": "frameworks/opt/tv/tvsystem",
+      "url": "https://android.googlesource.com/platform/frameworks/opt/tv/tvsystem",
+      "commit": "ddc4040688dca1b980b8744a012d6cf6a62f792c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 33 error: real AOSP com.android.libraries.tv.tvsystem java_sdk_library provides .public.api.txt and .system.api.txt to retained CtsSharedLibsApiSignatureTestCases_cts-shared-libs-all-current.api. The original unsafe_ignore_missing_latest_api:true setting suppresses released API tracking; current API checks remain, and no new waiver is added. No recovery product package or TV functionality is implied."
     }
   ]
 }
