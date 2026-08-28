@@ -40,17 +40,22 @@ That link must already exist in the packaged ramdisk: cgroup setup runs before
 The original providers, dependencies, contents, file-context rules, and product
 inheritance are unchanged. All 182 source-selection rules and every other
 non-package device assignment were unchanged by that package addition; later
-source restorations append rules as documented below. A future generated product
-package list should differ from the recorded eight roots only by the three
-explicit additions; that expanded list is not a transitive installed-file
-inventory and must be checked after the next graph.
+source restorations append rules as documented below. Graph 47 verified a
+generated product package list differing from the recorded eight roots only by
+the three explicit additions. That list is not a transitive installed-file
+inventory, and the graph still failed on an APEX availability check.
 
 The default `user` build, secure ADB properties, authentication patches,
 SELinux enforcement, signature and AVB checks remain in place. This change
 does not alter decryption or network settings, allow root ADB or unauthenticated
 sideload, add a host key, or modify the USB transport. Package selection does
-not enforce USB-only behavior: the original daemon has a TCP/VSOCK fallback
-when USB is unavailable, which needs a separate transport review. Package
+not enforce USB-only behavior: the original daemon had a TCP/VSOCK fallback
+when USB was unavailable. The separate transport review led to patch 0024,
+which excludes network listener selection and Wi-Fi TLS discovery in recovery.
+It preserves authentication and privilege dropping, requests the original USB
+transport when the FunctionFS endpoint exists, and otherwise exits with status 1.
+The ordinary Android branches remain unchanged. This does not prevent network
+sockets opened by an authenticated shell or reverse-forwarding request. Package
 inclusion is not proof of daemon startup, cgroup availability, USB transport,
 authentication or log access. A successful strict build must still verify the
 final ARM64 daemon, JSON contents, paths, labels, `/etc` link and logd
@@ -1030,9 +1035,15 @@ the vendor-ramdisk module set, and need matching `/odm` firmware. Those inputs
 are deliberately absent from this first compile. Do not count a successful
 build as a working display or touch test.
 
-The only authored USB glue selects configfs and forwards the bootloader's
-`ro.boot.usbcontroller`. It does not guess a controller, switch a hardware
-mode, adopt stock keys or add a second module loader. The recovery properties
+The authored USB glue selects configfs and forwards the bootloader's
+`ro.boot.usbcontroller`. It also requests ADB at `post-fs` only for the secure
+user profile when configfs is selected and the boot controller is exactly the
+stock-recorded `a600000.dwc3`. Missing, different or late controller values do
+not trigger that request. The original QCOM RC prefix and upstream userdebug
+startup event are preserved. It does not guess a controller, switch a hardware
+mode, adopt stock keys or add a second module loader. Init may still request
+adbd after failed USB setup; patch 0024 removes the missing-endpoint network
+fallback but does not prove enumeration or policy access. The recovery properties
 require `ro.secure=1` and `ro.adb.secure=1`. No ADB public key is bundled, so
 failure to authenticate must remain a failure; a separately reviewed private
 public-key input and runtime test are needed before relying on ADB. Logd and

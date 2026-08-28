@@ -8,3 +8,15 @@ on init
 
 on property:ro.boot.usbcontroller=*
     setprop sys.usb.controller ${ro.boot.usbcontroller}
+
+# Request authenticated USB ADB on secure user recovery; not readiness proof.
+# Requires packaged authenticated adbd.recovery and patches 0004 and 0024.
+# Only the stock-recorded controller is admitted; all other values stay inactive.
+# Missing FunctionFS ep0
+# makes the patched daemon exit without a network transport fallback.
+# No host key is provisioned; an unknown host must remain unauthorized.
+# Init continues after mount/write failure: controller mode, UDC binding and
+# effective SELinux policy still require separate artifact/hardware validation.
+on post-fs && property:ro.debuggable=0 && property:ro.secure=1 && property:ro.adb.secure=1 && property:sys.usb.configfs=1 && property:ro.boot.usbcontroller=a600000.dwc3
+    setprop sys.usb.controller ${ro.boot.usbcontroller}
+    setprop sys.usb.config adb

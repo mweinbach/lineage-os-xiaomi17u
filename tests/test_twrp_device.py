@@ -1984,12 +1984,17 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertNotIn("persist.sys.disable_rescue", active)
         self.assertFalse(any(path.name == "adb_keys" for path in DEVICE.rglob("*")))
 
-    def test_authored_init_only_forwards_verified_controller_contract(self):
+    def test_authored_init_forwards_verified_controller_and_guards_user_adb(self):
         rc = (DEVICE / "recovery/root/init.recovery.qcom.rc").read_text()
         self.assertEqual(list(logical_lines(rc)), [
             "on init", "setprop sys.usb.configfs 1",
             "on property:ro.boot.usbcontroller=*",
-            "setprop sys.usb.controller ${ro.boot.usbcontroller}"])
+            "setprop sys.usb.controller ${ro.boot.usbcontroller}",
+            "on post-fs && property:ro.debuggable=0 && property:ro.secure=1 && "
+            "property:ro.adb.secure=1 && property:sys.usb.configfs=1 && "
+            "property:ro.boot.usbcontroller=a600000.dwc3",
+            "setprop sys.usb.controller ${ro.boot.usbcontroller}",
+            "setprop sys.usb.config adb"])
         self.assertEqual(self.board["TW_EXCLUDE_DEFAULT_USB_INIT"], "true")
         self.assertIn("recovery/root/init.recovery.qcom.rc", self.device["PRODUCT_COPY_FILES"])
 

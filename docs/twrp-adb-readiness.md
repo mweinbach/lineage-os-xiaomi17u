@@ -3,8 +3,10 @@
 The default `user` target is not ready for authorized ADB log collection. No
 trusted host key is bundled, and no recovery authentication or log-access test
 has passed. Successful compilation or USB enumeration would not establish
-authorized access. This document records source evidence and a proposal, not
-implemented provisioning.
+authorized access. The source now requests authenticated USB ADB on the secure
+user target and removes recovery's network transport fallback. These changes
+have source-contract tests, but no compiled artifact or device validation.
+Public-key provisioning remains a proposal.
 
 The pinned authentication path is:
 
@@ -25,9 +27,14 @@ The pinned authentication path is:
   `gui/action.cpp:2030` only changes USB configuration.
 
 The target deliberately has no userdata mount or decryption integration, so
-stock `/data` authorization cannot be assumed available. The patched init
-automatically requests ADB only for `ro.debuggable=1`; the default user target
-still needs an explicitly reviewed startup path.
+stock `/data` authorization cannot be assumed available. The upstream recovery
+init request remains guarded by `ro.debuggable=1`. The authored QCOM RC now adds
+a separate `post-fs` request only when `ro.debuggable=0`, `ro.secure=1`,
+`ro.adb.secure=1`, `sys.usb.configfs=1`, and the stock-recorded boot controller
+is exactly `a600000.dwc3`. It copies that controller property and requests
+`sys.usb.config=adb`. Missing or different values leave this request inactive;
+a controller discovered after `post-fs` does not replay that event. The original
+406-byte QCOM RC prefix and the upstream userdebug startup event are preserved.
 
 The subsequent startup review confirms that the existing recovery init script
 is reached through `init_second_stage.recovery` and `init_recovery.rc`, at
@@ -37,7 +44,7 @@ does not supply that request, and the GUI's explicit ADB action is not an
 authentication dialog. Logd already receives an explicit `on init` start.
 
 The source packaging review identified three original providers missing from
-the inspected product's eight explicit requests: `adbd.recovery`,
+the inspected product's eight generated roots: `adbd.recovery`,
 `cgroups.recovery.json`, and `task_profiles.json.recovery`. The ADB API phony
 supplies libraries rather than the daemon, and the upstream task-profile request
 is inside the disabled crypto branch. The target now explicitly requests all
@@ -45,22 +52,40 @@ three original modules alongside `recovery`, without enabling crypto or
 inheriting the broad vendor product. This is a source change, not a finding from
 a completed installation graph or ramdisk.
 
-The next generated product configuration must contain the previous eight roots
-plus exactly these three additions. Final packaging must verify the original
+Graph 47's generated product configuration contains the previous eight roots
+plus exactly these three additions. That graph still failed on an unrelated
+APEX availability check. Final packaging must verify the original
 ARM64 daemon at `/system/bin/adbd`, both JSON files in `/system/etc`, their
 existing SELinux labels and the `/etc` link. That link must already exist in
 the ramdisk because cgroup setup precedes the normal `early-init` and `init`
 actions. The [target notes](../recovery/twrp/device/xiaomi/nezha/README.md)
 record the exact provider names, expected paths and remaining artifact checks.
 
-Automatic startup also needs a separate transport restriction. The pinned
-`daemon/main.cpp` falls back to TCP/VSOCK listeners on port 5555 if the FunctionFS
-endpoint `/dev/usb-ffs/adb/ep0` is absent. Explicit listener properties can
-select networking as well. `TW_NO_NETWORK` controls TWRP feature selection;
-it does not remove those adbd paths. A guarded init-event prototype still
-requests the daemon after a failed FunctionFS mount, so that prototype is not
-admitted on its own. Prevent the networking fallback before describing future
-startup as USB-only; retain host authentication and the existing privilege drop.
+Automatic startup is paired with
+[`0024-recovery-usb-only-adb.patch`](../patches/twrp/0024-recovery-usb-only-adb.patch).
+Before this patch, the pinned `daemon/main.cpp` could fall back to TCP/VSOCK
+listeners on port 5555 when `/dev/usb-ffs/adb/ep0` was absent; explicit listener
+properties could also select networking. `TW_NO_NETWORK` did not remove those
+adbd paths. Patch 0024 excludes that listener selection and Wi-Fi TLS discovery
+from recovery builds. After the unchanged privilege drop and authentication
+initialization, recovery exits with status 1 if the FunctionFS endpoint is
+absent; otherwise it requests the original USB transport. Ordinary Android
+branches remain unchanged. The explicit 0004-to-0024 patch chain preserves the
+existing mandatory authentication change.
+
+This restriction controls ordinary ADB host transport, not all networking.
+An authenticated shell or reverse-forwarding request can still open sockets.
+Endpoint presence does not establish USB enumeration, controller readiness or
+SELinux access. Android init continues after individual mount or write failures,
+so the startup action can still request adbd after failed USB setup. No new
+controller-mode write, wait, shell helper, userdata mount, key copy, permission
+change or root request is added. Actual Ninja commands and recovery object files
+must confirm that both changed ADB translation units use the recovery branch.
+
+The public tests reconstruct both complete ADB source postimages from the
+tracked patch and exercise the exact startup predicates, preserved RC prefix,
+authentication and transport source contracts. They do not execute Android init,
+verify a host signature, mount FunctionFS or interact with a phone.
 
 The ignored source receipt `reports/twrp-user-adbd-startup44/handoff.json`,
 SHA256 `953b6c4fb2fe1eaad882df40341950d4aea7d8f98818e8a99d8a830e7e3e7412`,
