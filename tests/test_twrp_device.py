@@ -8,6 +8,16 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
+SOURCE_EXCLUSIONS = [
+    "-tools/loganalysis/",
+    "-tools/tradefederation/contrib/",
+    "-test/suite_harness/",
+    "-hardware/google/aemu/",
+    "-packages/modules/AdServices/",
+    "-system/secretkeeper/",
+    "-hardware/interfaces/neuralnetworks/utils/",
+    "-hardware/interfaces/virtualization/capabilities_service/vts/",
+]
 
 
 def logical_lines(text):
@@ -39,6 +49,16 @@ def assignments(text):
         elif operation != "?=" or name not in values:
             values[name] = value
     return values
+
+
+def source_path_allowed(path, source_roots):
+    """Model Blueprint dcb14f2e context.go:202-223, not its dependency checker."""
+    for entry in sorted(source_roots, key=len, reverse=True):
+        excluded = entry.startswith("-")
+        prefix = entry[1:] if excluded else entry
+        if path.startswith(prefix):
+            return not excluded
+    return True
 
 
 class TwrpDeviceTests(unittest.TestCase):
@@ -151,10 +171,73 @@ class TwrpDeviceTests(unittest.TestCase):
         for setting in ("TW_EXCLUDE_APEX", "TW_EXCLUDE_MTP", "TW_NO_USB_STORAGE",
                         "TW_NO_FLASH_CURRENT_TWRP"):
             self.assertEqual(self.board[setting], "true", setting)
-        for setting in ("AB_OTA_UPDATER", "PRODUCT_USE_DYNAMIC_PARTITIONS", "PRODUCT_VIRTUAL_AB_OTA",
+        # Pinned board_config.mk defaults the A/B updater to true. Preserve
+        # Nezha's actual slot/update model; absence is not an updater disable.
+        self.assertNotIn("AB_OTA_UPDATER", self.board | self.device | self.product)
+        for setting in ("PRODUCT_USE_DYNAMIC_PARTITIONS", "PRODUCT_VIRTUAL_AB_OTA",
                         "TW_OVERRIDE_SYSTEM_PROPS", "TW_PREPARE_DATA_MEDIA_EARLY"):
             self.assertNotEqual((self.board | self.device).get(setting), "true", setting)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_theme_output_is_not_faked_in_device_configuration(self):
+        # The upstream theme hook reads the runner's OUT environment variable,
+        # normally populated by lunch from absolute PRODUCT_OUT. Device config
+        # must not compensate with /recovery or a path to a particular checkout.
+        active = "\n".join(logical_lines(self.board_text + self.device_text + self.product_text))
+        for name in ("OUT", "OUT_DIR", "ANDROID_PRODUCT_OUT", "PRODUCT_OUT"):
+            self.assertNotIn(name, self.board | self.device | self.product)
+        self.assertNotIn("/work/", active)
+        self.assertNotIn("/Users/", active)
+        self.assertNotIn("mkdir", active)
+
+    def test_source_graph_exclusions_match_the_reviewed_bounded_scopes(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(scopes, SOURCE_EXCLUSIONS)
+        self.assertEqual(len(scopes), len(set(scopes)))
+        for scope in scopes:
+            self.assertTrue(scope.startswith("-"))
+            self.assertTrue(scope.endswith("/"))
+            self.assertNotIn("..", Path(scope[1:]).parts)
+            self.assertFalse(Path(scope[1:]).is_absolute())
+        self.assertNotIn("-", scopes)
+
+    def test_source_graph_negative_prefixes_preserve_parents_and_siblings(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for scope in scopes:
+            prefix = scope[1:]
+            with self.subTest(scope=scope):
+                self.assertFalse(source_path_allowed(prefix + "Android.bp", scopes))
+                self.assertFalse(source_path_allowed(prefix + "nested/Android.bp", scopes))
+                self.assertTrue(source_path_allowed(prefix.rstrip("/") + "_sibling/Android.bp", scopes))
+                self.assertTrue(source_path_allowed(str(Path(prefix).parent / "Android.bp"), scopes))
+
+    def test_source_graph_keeps_recovery_security_and_storage_checks(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in (
+                "Android.bp", "bootable/recovery/Android.bp", "bootable/recovery/gui/Android.bp",
+                "system/core/fs_mgr/Android.bp", "system/sepolicy/Android.bp",
+                "system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
+                "external/f2fs-tools/Android.bp", "system/vold/Android.bp",
+                "hardware/interfaces/boot/Android.bp", "hardware/interfaces/security/keymint/Android.bp",
+                "system/libvintf/Android.bp", "build/soong/Android.bp",
+                "packages/modules/Connectivity/bpf/headers/Android.bp", "system/bpf/Android.bp",
+                "device/xiaomi/nezha/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
+        self.assertEqual(self.device["PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING"], "true")
+        self.assertNotEqual(self.board.get("ALLOW_MISSING_DEPENDENCIES"), "true")
+        self.assertNotEqual(self.board.get("SELINUX_IGNORE_NEVERALLOWS"), "true")
+        self.assertIn("$(ALLOW_MISSING_DEPENDENCIES)", self.board_text)
+        self.assertIn("$(SELINUX_IGNORE_NEVERALLOWS)", self.board_text)
+
+    def test_missing_final_product_packages_are_errors_without_an_allowlist(self):
+        active = list(logical_lines(self.product_text))
+        calls = [line for line in active if "enforce-product-packages-exist" in line]
+        self.assertEqual(calls, ["$(call enforce-product-packages-exist)"])
+        self.assertGreater(active.index(calls[0]), active.index(
+            "$(call inherit-product, device/xiaomi/nezha/device.mk)"))
+        for text in (self.board_text, self.device_text, self.product_text):
+            self.assertNotIn("PRODUCT_ENFORCE_PACKAGES_EXIST_ALLOW_LIST", "\n".join(logical_lines(text)))
 
     def test_adb_security_is_explicit_and_no_host_or_stock_keys_are_bundled(self):
         properties = dict(value.split("=", 1) for value in
@@ -195,7 +278,8 @@ class TwrpDeviceTests(unittest.TestCase):
     def test_board_guards_keep_validation_and_correct_image_layout(self):
         self.assertIn("$(filter $(TARGET_BUILD_VARIANT),user userdebug)", self.board_text)
         self.assertIn("ifeq ($(strip $(TARGET_BUILD_VARIANT)),)", self.board_text)
-        for flag in ("ALLOW_MISSING_DEPENDENCIES", "SELINUX_IGNORE_NEVERALLOWS",
+        for flag in ("ALLOW_MISSING_DEPENDENCIES", "BUILD_BROKEN_MISSING_REQUIRED_MODULES",
+                     "SELINUX_IGNORE_NEVERALLOWS",
                      "BUILD_BROKEN_DUP_RULES", "BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES",
                      "BUILD_BROKEN_DUP_SYSPROP", "BUILD_BROKEN_PLUGIN_VALIDATION"):
             self.assertIn(f"$({flag})", self.board_text)
@@ -203,6 +287,8 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("ifneq ($(BOARD_AVB_ENABLE),true)", self.board_text)
         self.assertIn("ifneq ($(BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE),true)", self.board_text)
         self.assertIn("recoveryimage-nodeps bootimage vendorbootimage initbootimage", self.board_text)
+        self.assertIn("ifneq ($(filter address,$(SANITIZE_TARGET)),)", self.board_text)
+        self.assertNotIn("SANITIZE_TARGET", self.board | self.device | self.product)
 
     def test_hardware_defaults_do_not_invent_paths_or_readiness(self):
         self.assertEqual(self.board["TW_THEME"], "portrait_hdpi")

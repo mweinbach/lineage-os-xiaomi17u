@@ -19,6 +19,22 @@ PRODUCT_BUILD_VBMETA_IMAGE := false
 
 PRODUCT_PACKAGES += recovery
 
+# The minimal manifest retains these consumers without their parent defaults.
+# Exclude only subsystems outside this no-network/no-crypto recovery product.
+# Blueprint matches literal prefixes: the terminal slash prevents a similarly
+# named sibling from being excluded. Unmatched paths stay enabled; dependencies
+# on an excluded module remain errors and require a reviewed source restoration.
+# Keep recovery, fs_mgr, SELinux, AVB, storage and device assertions in the graph.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -tools/loganalysis/ \
+    -tools/tradefederation/contrib/ \
+    -test/suite_harness/ \
+    -hardware/google/aemu/ \
+    -packages/modules/AdServices/ \
+    -system/secretkeeper/ \
+    -hardware/interfaces/neuralnetworks/utils/ \
+    -hardware/interfaces/virtualization/capabilities_service/vts/
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true

@@ -94,8 +94,13 @@ endif
 ifeq ($(strip $(TARGET_BUILD_VARIANT)),)
 $(error Nezha TWRP requires an explicit user or userdebug build variant)
 endif
-ifneq ($(filter true,$(ALLOW_MISSING_DEPENDENCIES) $(SELINUX_IGNORE_NEVERALLOWS) $(BUILD_BROKEN_DUP_RULES) $(BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES) $(BUILD_BROKEN_DUP_SYSPROP)),)
+ifneq ($(filter true,$(ALLOW_MISSING_DEPENDENCIES) $(BUILD_BROKEN_MISSING_REQUIRED_MODULES) $(SELINUX_IGNORE_NEVERALLOWS) $(BUILD_BROKEN_DUP_RULES) $(BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES) $(BUILD_BROKEN_DUP_SYSPROP)),)
 $(error Nezha TWRP does not admit dependency, SELinux, duplicate-rule, ELF or property-check bypasses)
+endif
+# The pinned build skips required-module validation in an ASAN target build.
+# A sanitizer profile needs separate review, not a hidden dependency bypass.
+ifneq ($(filter address,$(SANITIZE_TARGET)),)
+$(error Nezha TWRP stage 0 does not admit an ASAN profile that skips required-module checks)
 endif
 ifneq ($(strip $(BUILD_BROKEN_PLUGIN_VALIDATION)),)
 $(error Nezha TWRP does not admit unreviewed plugin-validation exceptions)

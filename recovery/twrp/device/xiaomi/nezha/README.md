@@ -13,6 +13,42 @@ source tree. The product is `twrp_nezha`; its registered lunch choices are
 resolved manifest and source patch receipts first. Do not repurpose the
 existing Evolution product or use `recoveryimage-nodeps`.
 
+The pinned GUI source reads `OUT` from the build environment to place its
+theme under the selected product's `recovery/root/twres`. The runner must
+provide the same absolute product-output directory that `lunch` exports as
+`OUT` and `ANDROID_PRODUCT_OUT`; setting `OUT_DIR` alone is insufficient. No
+checkout-specific output path or `/recovery` directory belongs in this target.
+
+The first graph exposed orphan subsystem consumers whose parent definitions
+are omitted by the minimal manifest. This recovery product uses the supported
+`PRODUCT_SOURCE_ROOT_DIRS` control to exclude these bounded source scopes:
+
+| Excluded scope | Why it is outside this initial product |
+| --- | --- |
+| `tools/loganalysis/`, `tools/tradefederation/contrib/`, `test/suite_harness/` | Host test and log-analysis tooling without the omitted Tradefed definitions |
+| `hardware/google/aemu/` | Emulator graphics host tooling without its gfxstream defaults |
+| `packages/modules/AdServices/` | Advertising services and their test collectors |
+| `system/secretkeeper/` | Secretkeeper consumers; this recovery does not enable decryption |
+| `hardware/interfaces/neuralnetworks/utils/` | Neural-network adapters outside recovery functionality |
+| `hardware/interfaces/virtualization/capabilities_service/vts/` | Virtualization capability VTS tests |
+
+This includes non-test code and is a product-scope decision, not a general
+claim that all removed modules are optional for Android. Unrelated Android
+platform and test modules are excluded; the table identifies the test scopes.
+Blueprint
+`dcb14f2e146f40cf1f212efb220e9aa1f3cfc280` applies literal prefix matching,
+with the longest matching prefix first and unmatched paths allowed. Each
+negative path ends in `/` so it does not hide similarly named siblings.
+Dependencies on skipped modules still fail; if recovery requires one of these
+modules, restore its reviewed parent sources and revise the scope rather than
+suppressing the error. Recovery, fs_mgr, SELinux policy and tests, AVB, storage,
+VINTF and device assertions remain in the graph. Connectivity's BPF headers
+are retained because recovery's `libsysutils` needs `bpf_headers`; missing BPF
+providers must be restored from the pinned Android source, not hidden by a cut.
+The top-level product also calls `enforce-product-packages-exist` without an
+allowlist. Required-module bypass flags and ASAN's implicit exemption from
+that check are rejected by the board config.
+
 The source contract is the experimental
 [TWRP-Test Android 16 manifest](https://github.com/TWRP-Test/platform_manifest_twrp_aosp/tree/d2188a9345857fb078c391e8cb3e259a21e941e5),
 not a claim of official TeamWin device support. The directly inspected source
@@ -91,7 +127,10 @@ verified device capability.
 
 `recovery.fstab` has no active rows. Additional vendor-fstab discovery, APEX
 loading, crypto, MTP, USB mass storage, fastbootd, partition tools and recovery
-repacking are not enabled by this target. Stock normal userdata is F2FS with
+repacking are not enabled by this target. The pinned build's default
+`AB_OTA_UPDATER=true` is retained for Nezha's actual A/B slot/update model;
+its presence does not establish safe slot or snapshot behavior. Stock normal
+userdata is F2FS with
 `wrappedkey_v0` for file and metadata encryption; neither the older ext4/ICE
 recovery fstab nor an invented decryption configuration is used here.
 

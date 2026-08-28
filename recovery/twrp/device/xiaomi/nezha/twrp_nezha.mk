@@ -5,6 +5,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, device/xiaomi/nezha/device.mk)
 
+# This applies to the final product, including inherited packages. There is no
+# allowlist for absent packages; a missing provider must stop the build.
+$(call enforce-product-packages-exist)
+
 PRODUCT_NAME := twrp_nezha
 PRODUCT_DEVICE := nezha
 PRODUCT_BRAND := Xiaomi
