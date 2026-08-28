@@ -144,6 +144,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "5dca287ccb9c418f6180e4e0677866d162b9ea00fed806a38d2237364b8c374d")
 
+    def test_first_eighty_five_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:85]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "806456bb8d612d278751cbb8535b22c1a1799a19df2b303791216e2295ec2d37")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -415,7 +421,6 @@ class ConfigurationTests(Fixture):
 
     def test_hwtrust_projection_is_pinned_with_required_build_scope(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 85)
         self.assertEqual(projects[84], {
             "path": "tools/security",
             "url": "https://android.googlesource.com/platform/tools/security",
@@ -423,6 +428,22 @@ class ConfigurationTests(Fixture):
             "tag": "android-16.0.0_r1",
             "reason": "Source audit projection, not a graph 15 or 16 error: real AOSP libhwtrust_cxx provider required by retained libkeymint_remote_prov_support. Requires selecting only tools/security/remote_provisioning/hwtrust/ build definitions while retaining the full pristine source project."
         })
+
+    def test_graph_seventeen_flashrom_and_pci_providers_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/flashrom", "0d8ada436607417fbbc39a3271c6f9093189f4ca"),
+            ("external/pciutils", "a7121b40f52a45c391cda8fb48430a833522a430"),
+        ]
+        self.assertEqual(len(projects), 87)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[85:]], expected)
+        for project in projects[85:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+        self.assertIn("libvboot_util and libvboot_host", projects[85]["reason"])
+        self.assertIn("does not select or execute the Flashrom CLI", projects[85]["reason"])
+        self.assertIn("libpci", projects[86]["reason"])
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()

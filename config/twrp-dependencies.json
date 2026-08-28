@@ -603,6 +603,20 @@
       "commit": "8d8a8332751c3b20a87f38dd7cb4039eeea489b5",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 15 or 16 error: real AOSP libhwtrust_cxx provider required by retained libkeymint_remote_prov_support. Requires selecting only tools/security/remote_provisioning/hwtrust/ build definitions while retaining the full pristine source project."
+    },
+    {
+      "path": "external/flashrom",
+      "url": "https://android.googlesource.com/platform/external/flashrom",
+      "commit": "0d8ada436607417fbbc39a3271c6f9093189f4ca",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libflashrom provider required by libvboot_util and libvboot_host in the graph 17 errors. Adding the source does not select or execute the Flashrom CLI or authorize device flashing."
+    },
+    {
+      "path": "external/pciutils",
+      "url": "https://android.googlesource.com/platform/external/pciutils",
+      "commit": "a7121b40f52a45c391cda8fb48430a833522a430",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libpci provider required by the libflashrom dependency in graph 17."
     }
   ]
 }
