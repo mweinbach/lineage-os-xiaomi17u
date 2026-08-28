@@ -40,6 +40,7 @@ class Fixture(unittest.TestCase):
         self.base["project_selection"]["expanded_project_count"] = 2
         (self.control / "config/twrp.json").write_text(json.dumps(self.base))
         self.config = dependencies.load_config()
+        self.config["projects"] = [next(project for project in self.config["projects"] if project["path"] == "system/bpf")]
         self.config["base"].update(source_dir=str(self.source), project_count=1,
                                    frozen_manifest_sha256=hashlib.sha256(BASE_MANIFEST.encode()).hexdigest())
         self.save_config()
@@ -71,15 +72,39 @@ class Fixture(unittest.TestCase):
 
 
 class ConfigurationTests(Fixture):
-    def test_bpf_source_and_original_391_project_snapshot_are_pinned(self):
+    def test_four_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
         self.assertEqual(config["projects"], [{
             "path": "system/bpf", "url": "https://android.googlesource.com/platform/system/bpf",
             "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1", "tag": "android-16.0.0_r1",
-            "reason": config["projects"][0]["reason"]}])
+            "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+        }, {
+            "path": "packages/modules/NetworkStack",
+            "url": "https://android.googlesource.com/platform/packages/modules/NetworkStack",
+            "commit": "f9da1fc7154ea007aa835f88e8070c6ac46d54e9", "tag": "android-16.0.0_r1",
+            "reason": config["projects"][1]["reason"]
+        }, {
+            "path": "hardware/google/apf", "url": "https://android.googlesource.com/platform/hardware/google/apf",
+            "commit": "40d36d317d9367641e685e88e46343f25b192fc4", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP APF libraries required by NetworkStack JNI test defaults."
+        }, {
+            "path": "external/libpcap", "url": "https://android.googlesource.com/platform/external/libpcap",
+            "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9", "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."}])
+        self.assertIn("libnetworkstackutilsjni_deps", config["projects"][1]["reason"])
+        self.assertIn("tests/unit/Android.bp", config["projects"][1]["reason"])
         snapshot = dependencies.ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
         self.assertEqual(hashlib.sha256(snapshot.read_bytes()).hexdigest(), config["base"]["frozen_manifest_sha256"])
+
+    def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
+        config = dependencies.load_config()
+        snapshot = dependencies.ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml"
+        frozen = twrp_workspace.parse_manifest(snapshot.read_text(), resolved=True)
+        self.assertEqual(len(frozen), 391)
+        for project in config["projects"]:
+            with self.subTest(path=project["path"]):
+                self.assertFalse(any(twrp_workspace.overlap(Path(project["path"]), Path(path)) for path in frozen))
 
     def test_optional_configuration_preserves_older_control_bundles(self):
         (self.control / dependencies.CONFIG).unlink()
@@ -256,6 +281,47 @@ class ProjectTests(Fixture):
         self.assertTrue(report["verified"])
         self.assertFalse(report["base_worktrees_checked"])
         self.assertEqual(report["base"]["frozen_manifest_sha256"], self.config["base"]["frozen_manifest_sha256"])
+
+    def test_additive_sources_keep_bpf_and_base_snapshot_unchanged(self):
+        original_bpf = copy.deepcopy(self.config["projects"][0])
+        self.config["projects"] = dependencies.load_config()["projects"]
+        self.save_config()
+        projects = {self.source / project["path"]: project for project in self.config["projects"]}
+        for project in self.config["projects"][1:]:
+            (self.source / project["path"] / ".git").mkdir(parents=True)
+        snapshot = (self.paths["report_dir"] / twrp_workspace.SNAPSHOT).read_bytes()
+        def all_projects(target, *args):
+            if args == ("rev-parse", "HEAD"):
+                return projects[target]["commit"]
+            if args == ("remote", "get-url", "origin"):
+                return projects[target]["url"]
+            return self.git(target, *args)
+        with self.base_mocks(), patch.object(dependencies, "git_value", side_effect=all_projects):
+            report = dependencies.verify(self.control, self.source)
+        self.assertEqual(self.config["projects"][0], original_bpf)
+        self.assertEqual([project["path"] for project in report["projects"]],
+                         ["system/bpf", "packages/modules/NetworkStack", "hardware/google/apf", "external/libpcap"])
+        self.assertEqual([project["actual_head"] for project in report["projects"]],
+                         [project["commit"] for project in self.config["projects"]])
+        self.assertEqual((self.paths["report_dir"] / twrp_workspace.SNAPSHOT).read_bytes(), snapshot)
+
+    def test_valid_bpf_does_not_hide_any_wrong_supplementary_commit(self):
+        self.config["projects"] = dependencies.load_config()["projects"]
+        self.save_config()
+        projects = {self.source / project["path"]: project for project in self.config["projects"]}
+        for project in self.config["projects"][1:]:
+            (self.source / project["path"] / ".git").mkdir(parents=True)
+        for changed in self.config["projects"][1:]:
+            def wrong_project(target, *args):
+                if args == ("rev-parse", "HEAD"):
+                    return "f" * 40 if target == self.source / changed["path"] else projects[target]["commit"]
+                if args == ("remote", "get-url", "origin"):
+                    return projects[target]["url"]
+                return self.git(target, *args)
+            with self.subTest(path=changed["path"]), self.base_mocks(), \
+                 patch.object(dependencies, "git_value", side_effect=wrong_project), \
+                 self.assertRaisesRegex(ValueError, changed["path"]):
+                dependencies.verify(self.control, self.source)
 
 
 class FetchTests(Fixture):

@@ -15,6 +15,27 @@
       "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
       "tag": "android-16.0.0_r1",
       "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+    },
+    {
+      "path": "packages/modules/NetworkStack",
+      "url": "https://android.googlesource.com/platform/packages/modules/NetworkStack",
+      "commit": "f9da1fc7154ea007aa835f88e8070c6ac46d54e9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Official AOSP provider of libnetworkstackutilsjni_deps in tests/unit/Android.bp required by retained Connectivity tests/common defaults. Supplements the immutable 391-project baseline without bypassing dependency validation."
+    },
+    {
+      "path": "hardware/google/apf",
+      "url": "https://android.googlesource.com/platform/hardware/google/apf",
+      "commit": "40d36d317d9367641e685e88e46343f25b192fc4",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP APF libraries required by NetworkStack JNI test defaults."
+    },
+    {
+      "path": "external/libpcap",
+      "url": "https://android.googlesource.com/platform/external/libpcap",
+      "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."
     }
   ]
 }
