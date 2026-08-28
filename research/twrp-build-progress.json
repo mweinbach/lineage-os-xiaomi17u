@@ -38604,6 +38604,1795 @@
       ],
       "resource_generation_verified": true,
       "failed_command_exit_code": 1
+    },
+    {
+      "number": 41,
+      "action": "graph",
+      "status": "failed",
+      "recorded_at_utc": "2026-08-28T15:54:11.797439+00:00",
+      "workspace_commit": "c04bc3fe26716e0c089dac0c0d3d58506222bcbf",
+      "control_archive": {
+        "path": "reports/twrp-build-control-v41.tar",
+        "sha256": "2dbf29b3fba334b581f3dea8bb76c004a7ffa48e8ce11dad553c0d42f37a4097",
+        "size_bytes": 501760
+      },
+      "build_state_sha256": "170871cc685454e8601b26086466f7d8589db82a7a5cd76606d6acc1f922bb61",
+      "command": [
+        "bash",
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j16",
+        "nothing"
+      ],
+      "target_product": "twrp_nezha",
+      "target_build_variant": "user",
+      "log": {
+        "path": "reports/twrp-graph-41.log",
+        "sha256": "6d3882948f76f3b14cd6754cb8f0af612d39ea9b8f5227f9c189bb65f45562a4",
+        "size_bytes": 12175
+      },
+      "receipt": {
+        "path": "reports/twrp-graph-41-result.json",
+        "sha256": "10138da0e2c2c8f4b9abbd0b6081ef663c0e08480da0cbc9ffacc5760a933dec",
+        "size_bytes": 4936
+      },
+      "supplementary_projects": [
+        {
+          "path": "system/bpf",
+          "url": "https://android.googlesource.com/platform/system/bpf",
+          "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+        },
+        {
+          "path": "packages/modules/NetworkStack",
+          "url": "https://android.googlesource.com/platform/packages/modules/NetworkStack",
+          "commit": "f9da1fc7154ea007aa835f88e8070c6ac46d54e9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of libnetworkstackutilsjni_deps in tests/unit/Android.bp required by retained Connectivity tests/common defaults. Supplements the immutable 391-project baseline without bypassing dependency validation."
+        },
+        {
+          "path": "hardware/google/apf",
+          "url": "https://android.googlesource.com/platform/hardware/google/apf",
+          "commit": "40d36d317d9367641e685e88e46343f25b192fc4",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP APF libraries required by NetworkStack JNI test defaults."
+        },
+        {
+          "path": "external/libpcap",
+          "url": "https://android.googlesource.com/platform/external/libpcap",
+          "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."
+        },
+        {
+          "path": "platform_testing",
+          "url": "https://android.googlesource.com/platform/platform_testing",
+          "commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Tradefed defaults required by retained shared test infrastructure."
+        },
+        {
+          "path": "frameworks/libs/native_bridge_support",
+          "url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support",
+          "commit": "b527289974e3883460370012325ab3736d59268a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP native_bridge_proxy_libc_defaults required by the retained binary translation libc proxy."
+        },
+        {
+          "path": "external/skia",
+          "url": "https://android.googlesource.com/platform/external/skia",
+          "commit": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."
+        },
+        {
+          "path": "external/harfbuzz_ng",
+          "url": "https://android.googlesource.com/platform/external/harfbuzz_ng",
+          "commit": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libharfbuzz_subset provider required by Skia font subsetting."
+        },
+        {
+          "path": "external/webp",
+          "url": "https://android.googlesource.com/platform/external/webp",
+          "commit": "7698c1d3a5cbecdf336510eeb3366d1de752454a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libwebp-decode and libwebp-encode providers required by Skia image codecs."
+        },
+        {
+          "path": "external/rust/crabbyavif",
+          "url": "https://android.googlesource.com/platform/external/rust/crabbyavif",
+          "commit": "9f3e32a2ffc45466eaed69ad522080cbf67f827b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcrabbyavif_ffi provider required by Skia AVIF support."
+        },
+        {
+          "path": "external/libjpeg-turbo",
+          "url": "https://android.googlesource.com/platform/external/libjpeg-turbo",
+          "commit": "6cedbd6ff13946bef76a015693d02723b0d3226e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."
+        },
+        {
+          "path": "hardware/st/nfc",
+          "url": "https://android.googlesource.com/platform/hardware/st/nfc",
+          "commit": "ffc570734ef14c1d153b0dcc13ce63a733d6540a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP nfc_service_fuzzer provider required by the SELinux service-fuzzer binding validator. Generic ST source for validation only; not the selected phone NFC HAL."
+        },
+        {
+          "path": "system/connectivity/wificond",
+          "url": "https://android.googlesource.com/platform/system/connectivity/wificond",
+          "commit": "65a446e53318aa491314d4a858c383676a4499cf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP wificond_service_fuzzer provider required by the SELinux service-fuzzer binding validator."
+        },
+        {
+          "path": "packages/modules/Virtualization",
+          "url": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+          "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP virtualizationmanager_fuzzer provider required by the SELinux service-fuzzer binding validator."
+        },
+        {
+          "path": "frameworks/opt/net/wifi",
+          "url": "https://android.googlesource.com/platform/frameworks/opt/net/wifi",
+          "commit": "1cab31f96d1f903e190708c1ce665520a4a89d10",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libwifi-system-iface and libwifi-system-iface-test providers required by the wificond service fuzzer source."
+        },
+        {
+          "path": "external/junit",
+          "url": "https://android.googlesource.com/platform/external/junit",
+          "commit": "56c85a91bba5313da30e5ca94b95b37a2613d641",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP junit and junit-host providers required by retained Java build modules."
+        },
+        {
+          "path": "external/doclava",
+          "url": "https://android.googlesource.com/platform/external/doclava",
+          "commit": "07b2d9cd367915b6d90c448a2371ab31b58deb5d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Doclava documentation tool and defaults required by retained Java build modules."
+        },
+        {
+          "path": "external/jsilver",
+          "url": "https://android.googlesource.com/platform/external/jsilver",
+          "commit": "020d5f12b76c4b4a21c8edb761b6318e486141b0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP jsilver template provider required by the Doclava host tool."
+        },
+        {
+          "path": "external/hamcrest",
+          "url": "https://android.googlesource.com/platform/external/hamcrest",
+          "commit": "a4975acbd7161fbc95f11c1a8f68db544fe5936d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP hamcrest provider required by JUnit."
+        },
+        {
+          "path": "external/antlr",
+          "url": "https://android.googlesource.com/platform/external/antlr",
+          "commit": "16467b971bd3e2009fad32dd79016f2c7e421deb",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP antlr-runtime provider required by Doclava defaults."
+        },
+        {
+          "path": "external/tagsoup",
+          "url": "https://android.googlesource.com/platform/external/tagsoup",
+          "commit": "e55b6311e644c0df77cdb0fded945e53c5890bc8",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP tagsoup provider required by Doclava defaults."
+        },
+        {
+          "path": "external/aws-sdk-java-v2",
+          "url": "https://android.googlesource.com/platform/external/aws-sdk-java-v2",
+          "commit": "5b6d2ca932250b95bb8fd65c6430e9425972ef1d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP awssdk-kms and awssdk-url-connection-client providers required by the retained APK signing tools."
+        },
+        {
+          "path": "external/aws-crt-java",
+          "url": "https://android.googlesource.com/platform/external/aws-crt-java",
+          "commit": "d6de37e00133e24434ad586120131e35c6d23064",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP AWS common runtime Java provider required by the AWS signing SDK."
+        },
+        {
+          "path": "external/aws-eventstream-java",
+          "url": "https://android.googlesource.com/platform/external/aws-eventstream-java",
+          "commit": "4d25ba34e39ebb08772897d606ca054a61b6db82",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP AWS event-stream Java provider required by the AWS signing SDK."
+        },
+        {
+          "path": "external/slf4j",
+          "url": "https://android.googlesource.com/platform/external/slf4j",
+          "commit": "ef7a1a29d4e3942861760eb58b989f069a0f3200",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP slf4j-api provider required by the cloud signing libraries."
+        },
+        {
+          "path": "external/jackson-core",
+          "url": "https://android.googlesource.com/platform/external/jackson-core",
+          "commit": "a1462bea974256c3b2d4ae0c61d906592d21e7ef",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP jackson-core provider required by the AWS signing SDK."
+        },
+        {
+          "path": "external/google-cloud-java",
+          "url": "https://android.googlesource.com/platform/external/google-cloud-java",
+          "commit": "5ba13afc6ce627cb4c71ad1ff1ff62f625022ad2",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Google Cloud KMS and KMS protocol providers required by the retained APK signing tools."
+        },
+        {
+          "path": "external/sdk-platform-java",
+          "url": "https://android.googlesource.com/platform/external/sdk-platform-java",
+          "commit": "daf609d6e2f51440e9161eb2cdfc8a3cafacf565",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Google API, GAX, cloud core and common protocol providers required by Google Cloud KMS."
+        },
+        {
+          "path": "external/google-auth-library-java",
+          "url": "https://android.googlesource.com/platform/external/google-auth-library-java",
+          "commit": "65648776fb0f5e9582c12f6a432712a707fa6324",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Google credentials and OAuth HTTP host libraries required by the cloud signing tools."
+        },
+        {
+          "path": "external/opencensus-java",
+          "url": "https://android.googlesource.com/platform/external/opencensus-java",
+          "commit": "f5311957763aa0d5af59a7da58791a7d3d6a153d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP OpenCensus API, gRPC metrics and HTTP utility providers required by the Google cloud signing libraries."
+        },
+        {
+          "path": "external/threetenbp",
+          "url": "https://android.googlesource.com/platform/external/threetenbp",
+          "commit": "b6b56fd22e89d7362d1cf396d66d16975060cc26",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP threetenbp date and time provider required by Google Cloud KMS and GAX."
+        },
+        {
+          "path": "external/auto",
+          "url": "https://android.googlesource.com/platform/external/auto",
+          "commit": "df40c3e9b3fc2bb8e37199c7f40ae177fde109b9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP AutoValue annotations and processor providers required by the cloud signing Java libraries."
+        },
+        {
+          "path": "external/escapevelocity",
+          "url": "https://android.googlesource.com/platform/external/escapevelocity",
+          "commit": "c1615b26efb0acd888b6661506503c0c539dd2ae",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP EscapeVelocity template provider required by the AutoValue processor."
+        },
+        {
+          "path": "external/javapoet",
+          "url": "https://android.googlesource.com/platform/external/javapoet",
+          "commit": "1b3553d5df7a74703fe646aa212c4b2d7f9adea9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP JavaPoet source generation provider required by the Auto processor libraries."
+        },
+        {
+          "path": "external/google-java-format",
+          "url": "https://android.googlesource.com/platform/external/google-java-format",
+          "commit": "10816b529e1d7005ca788e7b4c5efd1c72957e26",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Java formatter provider required by the AutoFactory processor in the selected Auto source tree."
+        },
+        {
+          "path": "system/media",
+          "url": "https://android.googlesource.com/platform/system/media",
+          "commit": "f01e84b958fb6a887dc0e74e4b5ebd159f03860a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP audio system, effects and utility headers and libraries required by retained native modules."
+        },
+        {
+          "path": "external/abseil-cpp",
+          "url": "https://android.googlesource.com/platform/external/abseil-cpp",
+          "commit": "3c03adaaf6c28f5c5c47c753e860b9ac16957b35",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libabsl and libabsl_host providers required by retained native modules."
+        },
+        {
+          "path": "external/aac",
+          "url": "https://android.googlesource.com/platform/external/aac",
+          "commit": "46faeaba7093d2ce88645a1da20e379fb5bcc20f",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libFraunhoferAAC provider required by retained native modules, preserving the upstream license metadata."
+        },
+        {
+          "path": "external/flatbuffers",
+          "url": "https://android.googlesource.com/platform/external/flatbuffers",
+          "commit": "ba0a3a76154937b0f3c0126062a486e1644ab9e4",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP FlatBuffers providers required by retained native modules."
+        },
+        {
+          "path": "external/tinyalsa",
+          "url": "https://android.googlesource.com/platform/external/tinyalsa",
+          "commit": "a72ec6d8c6bbeb7ca0293e51e33573640904e99b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real current AOSP libtinyalsa provider required by the retained media audio libraries."
+        },
+        {
+          "path": "external/tinyalsa_new",
+          "url": "https://android.googlesource.com/platform/external/tinyalsa_new",
+          "commit": "86c164eaf9e10240dca32a2c8f0c26a7f88ad97f",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libtinyalsav2 provider required by the retained media audio route and utility libraries."
+        },
+        {
+          "path": "external/speex",
+          "url": "https://android.googlesource.com/platform/external/speex",
+          "commit": "6c44585f68f6f7f71c51ff1d56d9a5d0409d2d29",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libspeexresampler provider required by the media audio utilities."
+        },
+        {
+          "path": "external/google-benchmark",
+          "url": "https://android.googlesource.com/platform/external/google-benchmark",
+          "commit": "68f58239bba93c71a39e4cd872bcbf5f69d971ec",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libgoogle-benchmark providers and defaults required by the selected AAC benchmark modules."
+        },
+        {
+          "path": "external/testng",
+          "url": "https://android.googlesource.com/platform/external/testng",
+          "commit": "8779cc45e4579acbc3a4ad19e8e99c79e96f793c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP TestNG provider required by retained Java test modules."
+        },
+        {
+          "path": "external/junit-params",
+          "url": "https://android.googlesource.com/platform/external/junit-params",
+          "commit": "6c63c83301825c8b94560b1ff8f8381c2deedc52",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP JUnit parameterized test provider required by retained Java test modules."
+        },
+        {
+          "path": "external/snakeyaml",
+          "url": "https://android.googlesource.com/platform/external/snakeyaml",
+          "commit": "d60b842e114fc22db76c6d84f9aa7950e5e4c2ea",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP SnakeYAML provider required by TestNG."
+        },
+        {
+          "path": "external/guice",
+          "url": "https://android.googlesource.com/platform/external/guice",
+          "commit": "f37a7d76021c22a64143224a14517c3f53b8b137",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Guice dependency injection provider required by TestNG."
+        },
+        {
+          "path": "external/jspecify",
+          "url": "https://android.googlesource.com/platform/external/jspecify",
+          "commit": "35b27b915ed9f1a58b71b29ada4d5ce0b41458ef",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP JSpecify annotation provider required by retained Java modules."
+        },
+        {
+          "path": "external/mockito",
+          "url": "https://android.googlesource.com/platform/external/mockito",
+          "commit": "770ab8835bf0830a64aa833275c513281c47325c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Mockito libraries required by retained Java test modules and Dexmaker wrappers."
+        },
+        {
+          "path": "external/dexmaker",
+          "url": "https://android.googlesource.com/platform/external/dexmaker",
+          "commit": "73e46f3a1e0771fd9cd76e1b50f98b764df565dc",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP mockito-target-minus-junit4 and mockito-target-extended-minus-junit4 providers required by retained Java tests."
+        },
+        {
+          "path": "external/objenesis",
+          "url": "https://android.googlesource.com/platform/external/objenesis",
+          "commit": "ae9bf081469e4beaa2ea02549c417a13baf0c3c8",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Objenesis provider required by Mockito and Dexmaker wrappers."
+        },
+        {
+          "path": "tools/dexter",
+          "url": "https://android.googlesource.com/platform/tools/dexter",
+          "commit": "4ce3b1286e402f28c53e0729925e1cde691fe968",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP slicer_ndk provider required by Dexmaker native agent defaults."
+        },
+        {
+          "path": "external/apache-commons-math",
+          "url": "https://android.googlesource.com/platform/external/apache-commons-math",
+          "commit": "54b2db9e0e10bf0f5f34e97234201980f9757335",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP apache-commons-math3 provider required by the retained CTS API coverage tool."
+        },
+        {
+          "path": "prebuilts/r8",
+          "url": "https://android.googlesource.com/platform/prebuilts/r8",
+          "commit": "318c3c8b381636efd5d7b00d085b07eeb5515949",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP d8 and R8 host dex compiler providers required by retained CTS Dalvik tools."
+        },
+        {
+          "path": "external/google-smali",
+          "url": "https://android.googlesource.com/platform/external/google-smali",
+          "commit": "112192259df4c8cfe9491affe3728f98024a630c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP android-smali dex assembler provider required by retained CTS Dalvik tools."
+        },
+        {
+          "path": "external/okio",
+          "url": "https://android.googlesource.com/platform/external/okio",
+          "commit": "bef9e8ef12ad63247afe846957492f4ddb0f2b42",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP okio-lib provider required by the retained okhttp-norepackage library."
+        },
+        {
+          "path": "external/apache-commons-bcel",
+          "url": "https://android.googlesource.com/platform/external/apache-commons-bcel",
+          "commit": "716e385615070dffa9e4201497808536bc692641",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP apache-bcel provider required by the retained platform compatibility libjavac and annotationvisitor tools."
+        },
+        {
+          "path": "external/jemalloc_new",
+          "url": "https://android.googlesource.com/platform/external/jemalloc_new",
+          "commit": "84644256fd89cd940d97c3ee264c6f1ec6daddf1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libjemalloc5_je_prefixed provider required by the retained TiKV host library."
+        },
+        {
+          "path": "system/testing/gtest_extras",
+          "url": "https://android.googlesource.com/platform/system/testing/gtest_extras",
+          "commit": "42ca057d3e9e46671647ca334f4e79552f546d2b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP gtestifier and libgtestifier providers required by the selected jemalloc test generators and libraries."
+        },
+        {
+          "path": "external/libopus",
+          "url": "https://android.googlesource.com/platform/external/libopus",
+          "commit": "0e4b55f930cdf2b853dbdee1f5273f3c1c27f81f",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Opus codec provider required by retained native audio modules."
+        },
+        {
+          "path": "external/bcc",
+          "url": "https://android.googlesource.com/platform/external/bcc",
+          "commit": "d3fb98e35da3af11c4678b6e911d926ac0ad1fff",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libbpf_bcc provider required by retained native BPF modules."
+        },
+        {
+          "path": "external/vixl",
+          "url": "https://android.googlesource.com/platform/external/vixl",
+          "commit": "e685e67c8f41596dad341b086a649e9f4a7d6062",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP VIXL providers required by retained ART native modules."
+        },
+        {
+          "path": "external/image_io",
+          "url": "https://android.googlesource.com/platform/external/image_io",
+          "commit": "ed236bb2d9a3a65a78ea4abca94a2c7c5dbec1b8",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP image I/O providers required by retained native modules."
+        },
+        {
+          "path": "external/dagger2",
+          "url": "https://android.googlesource.com/platform/external/dagger2",
+          "commit": "eb622db751720f39a1ad974096dd371c75e34482",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Dagger, Hilt and annotation processor providers required by retained Java modules."
+        },
+        {
+          "path": "external/jakarta.inject",
+          "url": "https://android.googlesource.com/platform/external/jakarta.inject",
+          "commit": "6deaa544ee90038fbc099429f3ee47c04c2cce04",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP jakarta.inject provider required by Dagger."
+        },
+        {
+          "path": "external/ksp",
+          "url": "https://android.googlesource.com/platform/external/ksp",
+          "commit": "88db449f6444fd8a8a45e51a1e1a36ab88d820b0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP kotlin_symbol_processing_api provider required by Dagger processors."
+        },
+        {
+          "path": "external/TestParameterInjector",
+          "url": "https://android.googlesource.com/platform/external/TestParameterInjector",
+          "commit": "3ece4c78c4ff10f1e0e8c78f7390561846f08fd0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP TestParameterInjector provider required by retained Java test modules."
+        },
+        {
+          "path": "external/cbor-java",
+          "url": "https://android.googlesource.com/platform/external/cbor-java",
+          "commit": "2abec0b574627877ddc8a2dff7315ca2fe489e56",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP cbor-java provider required by retained Java modules."
+        },
+        {
+          "path": "external/javaparser",
+          "url": "https://android.googlesource.com/platform/external/javaparser",
+          "commit": "f0340d8e30c177f9125cc02e7b512609509b136e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP javaparser and javaparser-symbol-solver providers required by retained code generation and automotive metadata tools."
+        },
+        {
+          "path": "external/javassist",
+          "url": "https://android.googlesource.com/platform/external/javassist",
+          "commit": "f1fbf3c2ab775ce834e0af96b7a85bdc7a0eac65",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Javassist provider required by the JavaParser symbol solver."
+        },
+        {
+          "path": "prebuilts/cmdline-tools",
+          "url": "https://android.googlesource.com/platform/prebuilts/cmdline-tools",
+          "commit": "b5b2dcb54a4387a9eeae5f3fcd8ca9d5420f79ce",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP lint_api provider required by retained framework lint tools."
+        },
+        {
+          "path": "external/googleapis",
+          "url": "https://android.googlesource.com/platform/external/googleapis",
+          "commit": "99bff8ebcdde5aa21f01049c8c39900beef372e4",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP googleapis-field-behavior-java-proto provider required by Tradefed result database protocol definitions."
+        },
+        {
+          "path": "prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8",
+          "url": "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-w64-mingw32-4.8",
+          "commit": "517043524e83921c5b0be8ff2ad92a40376971a9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libwinpthread provider required by Windows host variants of retained native modules; not an ARM64 recovery runtime library."
+        },
+        {
+          "path": "external/libdivsufsort",
+          "url": "https://android.googlesource.com/platform/external/libdivsufsort",
+          "commit": "f9226d8ff66736207cd7664bcca61b3760045691",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libdivsufsort and libdivsufsort64 providers required by libbsdiff in the graph 13 errors."
+        },
+        {
+          "path": "external/sonivox",
+          "url": "https://android.googlesource.com/platform/external/sonivox",
+          "commit": "0dd66fcbc6f7456fd43d6bef4d2f670dfdc7b6d7",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libsonivoxwithoutjet provider required by libmedia_midiiowrapper in the graph 13 errors."
+        },
+        {
+          "path": "external/apache-commons-compress",
+          "url": "https://android.googlesource.com/platform/external/apache-commons-compress",
+          "commit": "4b700cfd7c3063cd0b00dac8d930dba78eedee0e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP apache-commons-compress provider required by hoststubgen-lib in the graph 13 errors."
+        },
+        {
+          "path": "external/xz-java",
+          "url": "https://android.googlesource.com/platform/external/xz-java",
+          "commit": "e16429ac5ad2d18b7c9e5dbcd673005c5257e7a9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP xz-java provider required by Apache Commons Compress for the graph 13 hoststubgen-lib dependency."
+        },
+        {
+          "path": "external/jsmn",
+          "url": "https://android.googlesource.com/platform/external/jsmn",
+          "commit": "75c0d7b4f48725ffa51f1f5ee7b1af0034e2f280",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 13 error: real AOSP libjsmn provider required by retained libclearkeycasplugin in frameworks/av/drm/mediacas/plugins/clearkey/Android.bp."
+        },
+        {
+          "path": "external/libogg",
+          "url": "https://android.googlesource.com/platform/external/libogg",
+          "commit": "44061a68e8a9b41bd2cfc32a0a2bf2a5caea2478",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 13 error: real AOSP libogg provider required by retained libstagefright in frameworks/av/media/libstagefright/Android.bp."
+        },
+        {
+          "path": "external/vulkan-headers",
+          "url": "https://android.googlesource.com/platform/external/vulkan-headers",
+          "commit": "7e80b474147eb0c6a9464c2e867ae6ba277a3102",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 13 error: real AOSP vulkan_headers provider required by retained frameworks/native/vulkan/libvulkan/Android.bp modules."
+        },
+        {
+          "path": "external/OpenCSD",
+          "url": "https://android.googlesource.com/platform/external/OpenCSD",
+          "commit": "98045c29085b5e10460f0c920d919597fbc91eeb",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 13 error: real AOSP libopencsd_decoder provider required by retained system/extras/simpleperf/Android.bp modules."
+        },
+        {
+          "path": "external/arm-trusted-firmware",
+          "url": "https://android.googlesource.com/platform/external/arm-trusted-firmware",
+          "commit": "54fd6939e177f8ff529b10183254802c76df6d08",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP arm_dt_bindings_headers provider required by pvmfw_platform.dts.preprocessed in the graph 15 error, providing headers for retained AVF device tree preprocessing."
+        },
+        {
+          "path": "external/libgsm",
+          "url": "https://android.googlesource.com/platform/external/libgsm",
+          "commit": "8ec969cea971fe25ff2d3933a5a9f8504f8e86c9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 15 error: real AOSP libgsm provider required by retained libcodec2_soft_gsmdec in frameworks/av/media/codec2/components/gsm/Android.bp."
+        },
+        {
+          "path": "external/connectedappssdk",
+          "url": "https://android.googlesource.com/platform/external/connectedappssdk",
+          "commit": "21f658c783c6390c266210e2a7f72282dce74dea",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP ConnectedAppsSDK_Annotations provider required by CTS RemoteFrameworkClasses_Processor_Src in the graph 16 error."
+        },
+        {
+          "path": "tools/security",
+          "url": "https://android.googlesource.com/platform/tools/security",
+          "commit": "8d8a8332751c3b20a87f38dd7cb4039eeea489b5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 15 or 16 error: real AOSP libhwtrust_cxx provider required by retained libkeymint_remote_prov_support. Requires selecting only tools/security/remote_provisioning/hwtrust/ build definitions while retaining the full pristine source project."
+        },
+        {
+          "path": "external/flashrom",
+          "url": "https://android.googlesource.com/platform/external/flashrom",
+          "commit": "0d8ada436607417fbbc39a3271c6f9093189f4ca",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libflashrom provider required by libvboot_util and libvboot_host in the graph 17 errors. Adding the source does not select or execute the Flashrom CLI or authorize device flashing."
+        },
+        {
+          "path": "external/pciutils",
+          "url": "https://android.googlesource.com/platform/external/pciutils",
+          "commit": "a7121b40f52a45c391cda8fb48430a833522a430",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libpci provider required by the libflashrom dependency in graph 17."
+        },
+        {
+          "path": "external/parameter-framework",
+          "url": "https://android.googlesource.com/platform/external/parameter-framework",
+          "commit": "eede61bcaf52412ab329b8571872b127764e1776",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP EddParser.py, PFWScriptGenerator.py and hostConfig.py providers required by domainGeneratorPolicy in the graph 18 errors, including its real domainGeneratorConnector and schema inputs."
+        },
+        {
+          "path": "external/python/pyfakefs",
+          "url": "https://android.googlesource.com/platform/external/python/pyfakefs",
+          "commit": "0448befc5e794113ba4533f8d62ce8c3c2feccbe",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP pyfakefs provider required by add3prf_test in the graph 18 errors."
+        },
+        {
+          "path": "external/fonttools",
+          "url": "https://android.googlesource.com/platform/external/fonttools",
+          "commit": "e1fe3e4ad2793916b15cccdc4a7da52a7e1dd0e9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP fontTools provider required by fontchain_linter and update_font_metadata in the graph 18 errors."
+        },
+        {
+          "path": "external/libexif",
+          "url": "https://android.googlesource.com/platform/external/libexif",
+          "commit": "e6271597ffa3cfd4a67e984e1c2a99c3d4cbcdfd",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libexif provider required by retained libcameraservice_device_independent and camera HAL helper libraries."
+        },
+        {
+          "path": "external/dynamic_depth",
+          "url": "https://android.googlesource.com/platform/external/dynamic_depth",
+          "commit": "d8b4372b2d0c552e650741eed784aec9b1f9e88d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libdynamic_depth-internal_headers and libdynamic_depth-public_headers providers required by retained libcameraservice."
+        },
+        {
+          "path": "external/libvpx",
+          "url": "https://android.googlesource.com/platform/external/libvpx",
+          "commit": "718dd469f67964d8f5fd4c8ebf09513bbfa50146",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libvpx provider required by retained Codec2 VP8 and VP9 encoders and decoders."
+        },
+        {
+          "path": "external/flac",
+          "url": "https://android.googlesource.com/platform/external/flac",
+          "commit": "600f14f40d737144c998e2ec7a483122d3776fbc",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libFLAC provider required by the retained Codec2 FLAC encoder."
+        },
+        {
+          "path": "external/libaom",
+          "url": "https://android.googlesource.com/platform/external/libaom",
+          "commit": "f919cc204179ff88eff36fd60226540c0c7a79bb",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libaom provider required by retained Codec2 AV1 encoder and decoder modules."
+        },
+        {
+          "path": "external/libopenapv",
+          "url": "https://android.googlesource.com/platform/external/libopenapv",
+          "commit": "c62125fdb4d6b0b7de71fda6b918b37184591a2d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libopenapv provider required by retained Codec2 APV encoder and decoder modules."
+        },
+        {
+          "path": "external/tremolo",
+          "url": "https://android.googlesource.com/platform/external/tremolo",
+          "commit": "bda690e46497e1f65c5077173b9c548e6e0cd5a1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libvorbisidec provider required by the retained Codec2 Vorbis decoder."
+        },
+        {
+          "path": "frameworks/wilhelm",
+          "url": "https://android.googlesource.com/platform/frameworks/wilhelm",
+          "commit": "529601b3e1df4cbbf6065bc66a4c30246ffdbe1b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 18 error: real AOSP libOpenSLES provider required by retained bootanimation and binary translation proxy modules."
+        },
+        {
+          "path": "test/vts-testcase/vndk",
+          "url": "https://android.googlesource.com/platform/test/vts-testcase/vndk",
+          "commit": "ab0f26db5d6a14928538904e3f335a265ba9defd",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP vts_vndk_utils provider required by vts_kernel_proc_sysrq_trigger_test in the graph 18 errors, preserving the kernel and Treble validation sources."
+        },
+        {
+          "path": "tools/asuite",
+          "url": "https://android.googlesource.com/platform/tools/asuite",
+          "commit": "dcf45295b954eedb9850194166835fdeaa84ad01",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP asuite_proto_java provider required by tradefed-clearcut-client in the graph 18 errors. Keeps the complete ASuite build definitions, including shared asuite_cc_client, atest_tradefed.sh and adevice_fingerprint providers."
+        },
+        {
+          "path": "external/jimfs",
+          "url": "https://android.googlesource.com/platform/external/jimfs",
+          "commit": "49a5260d7a9e5ad68cb04bb0bf7de1c044ca929f",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP jimfs provider required by the complete ASuite host tooling restored for graph 18."
+        },
+        {
+          "path": "external/python/google-api-python-client",
+          "url": "https://android.googlesource.com/platform/external/python/google-api-python-client",
+          "commit": "732370cc0aa5c65d01fde5b95c20270e25c84962",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-google-api-python-client provider required by the complete ASuite host tooling restored for graph 18."
+        },
+        {
+          "path": "external/python/httplib2",
+          "url": "https://android.googlesource.com/platform/external/python/httplib2",
+          "commit": "e025a5ec7cd2edd804c2d394a2c7841ab522db57",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-httplib2 provider required by ASuite, the Google API client and OAuth host libraries for graph 18."
+        },
+        {
+          "path": "external/python/uritemplates",
+          "url": "https://android.googlesource.com/platform/external/python/uritemplates",
+          "commit": "44fcd14ebb8f3d1793bf1008ac0b881173864ddb",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-uritemplate provider required by the Google API Python client used by ASuite for graph 18."
+        },
+        {
+          "path": "external/python/oauth2client",
+          "url": "https://android.googlesource.com/platform/external/python/oauth2client",
+          "commit": "6598410cf1b485e24db4a4519ed58eefa6628018",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-oauth2client provider required by the complete ASuite host tooling restored for graph 18."
+        },
+        {
+          "path": "external/python/rsa",
+          "url": "https://android.googlesource.com/platform/external/python/rsa",
+          "commit": "e5a899dcdc7d9a4dd590bf501bccc20db9cb03d0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-rsa provider required by the OAuth host library dependency of ASuite for graph 18."
+        },
+        {
+          "path": "external/python/pyasn1",
+          "url": "https://android.googlesource.com/platform/external/python/pyasn1",
+          "commit": "0071cbf57b52336b8261f3903612a2d4d81669af",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-pyasn1 provider required by the OAuth and RSA host libraries used by ASuite for graph 18."
+        },
+        {
+          "path": "external/python/pyasn1-modules",
+          "url": "https://android.googlesource.com/platform/external/python/pyasn1-modules",
+          "commit": "323b68127336bb8b8a47ad804487eda722c50489",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-pyasn1-modules provider required by the OAuth host library used by ASuite for graph 18."
+        },
+        {
+          "path": "frameworks/proto_logging",
+          "url": "https://android.googlesource.com/platform/frameworks/proto_logging",
+          "commit": "29d96a39adaffda3ad1b08ae17b6befbe2a625fa",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine graph18 Bluetooth proto provider and complete stats/expresslog code generation source; libexpresscatalog requires the real classifier hash libraries."
+        },
+        {
+          "path": "external/libtextclassifier",
+          "url": "https://android.googlesource.com/platform/external/libtextclassifier",
+          "commit": "e1ac719a8a882b1c01f85b4443d0c2961b9f839d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/tensorflow",
+          "url": "https://android.googlesource.com/platform/external/tensorflow",
+          "commit": "b02be12795f49019bc2312316e6bffece143ed21",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/lua",
+          "url": "https://android.googlesource.com/platform/external/lua",
+          "commit": "1ac810dae2874ee161b9e1ae4e0d0ad3f64c08e9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/libutf",
+          "url": "https://android.googlesource.com/platform/external/libutf",
+          "commit": "61e1860912dd2c19dfe4ff59b6f8ce9e69a4339d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/marisa-trie",
+          "url": "https://android.googlesource.com/platform/external/marisa-trie",
+          "commit": "226c01d88c9944271f0b8d8f5969c6b49d61143d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/FP16",
+          "url": "https://android.googlesource.com/platform/external/FP16",
+          "commit": "8c6e6497ecf7aee9220ee39dbacbc57f4437717d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/eigen",
+          "url": "https://android.googlesource.com/platform/external/eigen",
+          "commit": "15bdc8bcfba097ad88c1e4a4afd0d6260c1abc15",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/fft2d",
+          "url": "https://android.googlesource.com/platform/external/fft2d",
+          "commit": "fa0ad63f8b666836f56a823de546390a6e4ff4b6",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/ruy",
+          "url": "https://android.googlesource.com/platform/external/ruy",
+          "commit": "57ee36e9ad21509a1089323c0b9559cbb91701fe",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/gemmlowp",
+          "url": "https://android.googlesource.com/platform/external/gemmlowp",
+          "commit": "3b727b1baa7172cbfc22e9f52371a301b9cac79c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Genuine full source provider in the audited classifier/TensorFlow hash dependency closure; preserve all upstream modules and metadata."
+        },
+        {
+          "path": "external/downloader",
+          "url": "https://android.googlesource.com/platform/external/downloader",
+          "commit": "53a45f0c0d914c6a2d5c31fa077ef0e47b0aa9f9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real android_downloader_lib for the classifier service; six existing AndroidX/Guava/AutoValue dependencies."
+        },
+        {
+          "path": "external/neon_2_sse",
+          "url": "https://android.googlesource.com/platform/external/neon_2_sse",
+          "commit": "80a68eefdccd99baeea4880baa1b4c25f2618725",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real header-only include directory for the TensorFlow Flex delegate; zero upstream Blueprint modules."
+        },
+        {
+          "path": "packages/modules/NeuralNetworks",
+          "url": "https://android.googlesource.com/platform/packages/modules/NeuralNetworks",
+          "commit": "6cd97dca5e3ce0bd539d84d78f777a3576e673e3",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real libneuralnetworks implementation and NDK factory for TensorFlow SDK consumers; retain full tests/fuzzers/Java/native sources without selecting runtime packages for recovery."
+        },
+        {
+          "path": "external/XNNPACK",
+          "url": "https://android.googlesource.com/platform/external/XNNPACK",
+          "commit": "58b652403b0e6edc9b323f4aa3444c561bff7a78",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real libXNNPACK for the retained NNAPI sample driver, including genuine tests and benchmark modules."
+        },
+        {
+          "path": "external/pthreadpool",
+          "url": "https://android.googlesource.com/platform/external/pthreadpool",
+          "commit": "0eebb03dacd53a73fb77bb9accca6a32673e178e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real libpthreadpool for NNAPI/XNNPACK, preserving upstream PTHREADPOOL_USE_CPUINFO=1 and the test module."
+        },
+        {
+          "path": "external/FXdiv",
+          "url": "https://android.googlesource.com/platform/external/FXdiv",
+          "commit": "6e77b01effdc0ef3b002d6a3400f0d5caf9c0174",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real fxdiv_headers for pthreadpool/XNNPACK, preserving tests and metadata."
+        },
+        {
+          "path": "external/cpuinfo",
+          "url": "https://android.googlesource.com/platform/external/cpuinfo",
+          "commit": "2dcdba348d94895452dce0c8da27ea6dcbbc507e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real libcpuinfo and bundled libclog for pthreadpool/XNNPACK; no separate Clog project is needed."
+        },
+        {
+          "path": "external/libprotobuf-mutator",
+          "url": "https://android.googlesource.com/platform/external/libprotobuf-mutator",
+          "commit": "1257b81718eeb7970057853201a6820a336bc5f5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real libprotobuf-mutator for the NNAPI android_fuzzing harness; preserve all upstream mutator properties and fuzzer validation."
+        },
+        {
+          "path": "external/openscreen",
+          "url": "https://android.googlesource.com/platform/external/openscreen",
+          "commit": "3f982cf4871df8771c9d4abe6e9a6f8d829b2736",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libopenscreen-discovery and libopenscreen-platform-impl providers required by libadb_host in the graph 19 errors."
+        },
+        {
+          "path": "external/python/parse_type",
+          "url": "https://android.googlesource.com/platform/external/python/parse_type",
+          "commit": "05a141a9980f2357419aa004bcffac985baa0b56",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-parse_type provider required by vts_kernel_proc_file_api_test in the graph 19 errors."
+        },
+        {
+          "path": "external/ply",
+          "url": "https://android.googlesource.com/platform/external/ply",
+          "commit": "137b3d2f79f24c330e1a34782ed49e1516eb65e1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP py-ply provider required by vts_kernel_proc_file_api_test in the graph 19 errors."
+        },
+        {
+          "path": "external/jline",
+          "url": "https://android.googlesource.com/platform/external/jline",
+          "commit": "17e6dd618a45cad3178698c9d02d31ca30254bb2",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP jline host provider required by tradefed-lib-core in the graph 19 errors; uses the unchanged upstream JARs."
+        },
+        {
+          "path": "external/sonic",
+          "url": "https://android.googlesource.com/platform/external/sonic",
+          "commit": "ecc59065227009230b8f52701948de495ec22a58",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 19 error: real AOSP libsonic provider required by retained libaudioprocessing in frameworks/av/media/libaudioprocessing/Android.bp."
+        },
+        {
+          "path": "external/libavc",
+          "url": "https://android.googlesource.com/platform/external/libavc",
+          "commit": "82092580f1dafe88defd88f873016b585bbd9e52",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 19 error: real AOSP libavcdec and libavcenc providers required by retained Codec2 AVC decoder and encoder libraries."
+        },
+        {
+          "path": "external/libhevc",
+          "url": "https://android.googlesource.com/platform/external/libhevc",
+          "commit": "c83a76b084498d55f252f48b2e3786804cdf24b7",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 19 error: real AOSP libhevcdec and libhevcenc providers required by retained Codec2 HEVC decoder and encoder libraries."
+        },
+        {
+          "path": "external/libmpeg2",
+          "url": "https://android.googlesource.com/platform/external/libmpeg2",
+          "commit": "a97c2a1f0a796dc32bed80d3353c69c5fc07c750",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 19 error: real AOSP libmpeg2dec provider required by the retained Codec2 MPEG2 decoder library."
+        },
+        {
+          "path": "system/libsysprop",
+          "url": "https://android.googlesource.com/platform/system/libsysprop",
+          "commit": "0abfc7ad91e9914459b11e65a572de9f8a546365",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP PlatformProperties sysprop sources generating libplatformproperties_rust for libhypervisor_props in the graph 19 error. Existing generators and API/type checks remain unchanged."
+        },
+        {
+          "path": "external/webrtc",
+          "url": "https://android.googlesource.com/platform/external/webrtc",
+          "commit": "57ee4f162c0f4b3ab68faf26596437033f0fa2ba",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP webrtc_audio_processing provider required by libaudiopreprocessing in the graph 20 error."
+        },
+        {
+          "path": "external/libsrtp2",
+          "url": "https://android.googlesource.com/platform/external/libsrtp2",
+          "commit": "3a2bd469a7219556aa17ea771c4887ad94160f7c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libsrtp2 provider required by the WebRTC dependency in graph 20, preserving the original SRTP fuzzer and metadata."
+        },
+        {
+          "path": "external/pffft",
+          "url": "https://android.googlesource.com/platform/external/pffft",
+          "commit": "efa0bc5d226e063f65b21afd35390cce22e8e09d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libpffft provider required by the WebRTC dependency in graph 20."
+        },
+        {
+          "path": "external/rnnoise",
+          "url": "https://android.googlesource.com/platform/external/rnnoise",
+          "commit": "1295d6828459cc82c3c29cc5d7d297215250a74b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP rnnoise_rnn_vad provider required by the WebRTC dependency in graph 20."
+        },
+        {
+          "path": "external/python/absl-py",
+          "url": "https://android.googlesource.com/platform/external/python/absl-py",
+          "commit": "7b59b5e5824651c2c65bf35dcd950a091cf286a5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP absl-py provider required by NetworkStaticLibHostPythonTests and CtsConnectivityMultiDevicesTestCases in the graph 20 errors."
+        },
+        {
+          "path": "external/scapy",
+          "url": "https://android.googlesource.com/platform/external/scapy",
+          "commit": "f377b770d982debb11f5e988d0f65b9e7c5ecd81",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP scapy provider required by CtsConnectivityMultiDevicesTestCases in the graph 20 error."
+        },
+        {
+          "path": "tools/test/mobly_extensions",
+          "url": "https://android.googlesource.com/platform/tools/test/mobly_extensions",
+          "commit": "9b4d9968df2deea5164340bad0c46f724aa5a4f0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP mobly_device_flags provider required by CtsCompanionDeviceManagerMultiDeviceTests and CtsCompanionDeviceManagerMultiDeviceTestCases in the graph 20 errors."
+        },
+        {
+          "path": "external/minigbm",
+          "url": "https://android.googlesource.com/platform/external/minigbm",
+          "commit": "10d2dbeec1d248e7a040ecab225a075caa34b2bf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libgbm_sys bindings and libgbm provider required by libgbm_rust in the graph 20 error. Upstream build properties remain unchanged."
+        },
+        {
+          "path": "external/python/watchdog",
+          "url": "https://android.googlesource.com/platform/external/python/watchdog",
+          "commit": "228887b8167a3cd9f43e04b305f7f9af32ced0d5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP watchdog provider required by edit_monitor_lib in the graph 21 error."
+        },
+        {
+          "path": "external/curl",
+          "url": "https://android.googlesource.com/platform/external/curl",
+          "commit": "80fe7404cfd198a477ffe3d5865c630e33e94adf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcurl provider required by libbrillo-http in the graph 21 error."
+        },
+        {
+          "path": "external/libldac",
+          "url": "https://android.googlesource.com/platform/external/libldac",
+          "commit": "ba0389d2de9727375b779fb5890747a8d7dfe3a0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libldacBT_abr and libldacBT_enc providers required by libbt-stack and net_test_stack_a2dp_codecs_native in the graph 21 errors; preserves the upstream fuzzer."
+        },
+        {
+          "path": "external/libwebm",
+          "url": "https://android.googlesource.com/platform/external/libwebm",
+          "commit": "103e46e4cd4b6efcf6001f23fa8665fb110abf8d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP libwebm_mkvparser provider required by retained libmkvextractor."
+        },
+        {
+          "path": "trusty/user/base",
+          "url": "https://android.googlesource.com/trusty/lib",
+          "commit": "388e1c4f148264da6f97c54806c099b609c04e48",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP libtrustystorageinterface provider required by retained libtrustystorage. The upstream lib/pmu/include symlink resolves to absent trusty/kernel/lib/pmu/include, outside the declared storage inputs; no kernel source is added."
+        },
+        {
+          "path": "external/pdfium",
+          "url": "https://android.googlesource.com/platform/external/pdfium",
+          "commit": "61aafefc3df2bda22588c7764d1177018f0af4e4",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP libpdfium_static provider required by retained libpdfclient. Upstream input anomalies remain: third_party/Android.bp globs base/allocator/partition_allocator/*.cc and skia_shared/*.cpp match no files; core/fxge/Android.bp excludes dib/cfx_dibextractor.cpp and fx_ge_linux.cpp are stale. No files or build properties are changed; graph and compile validation remain pending."
+        },
+        {
+          "path": "prebuilts/bundletool",
+          "url": "https://android.googlesource.com/platform/prebuilts/bundletool",
+          "commit": "4d55b55cd444c97bc021d35316010f57f62d7844",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP bundletool provider required by retained build-apex-bundle and apexer_test_host_tools, using the unchanged upstream JAR."
+        },
+        {
+          "path": "external/libxaac",
+          "url": "https://android.googlesource.com/platform/external/libxaac",
+          "commit": "30de3a01def68d7f856f5e3795f7f806c93ed2f5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP libxaacdec provider required by retained libcodec2_soft_xaacdec, preserving upstream tests and fuzzers."
+        },
+        {
+          "path": "external/libphonenumber",
+          "url": "https://android.googlesource.com/platform/external/libphonenumber",
+          "commit": "467b37350ac0c881864fac79358ecaa1265bcc54",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libphonenumber-platform provider required by ext in the graph 22 error; also supplies the original libphonenumber-nogeocoder provider for retained telephony."
+        },
+        {
+          "path": "external/caliper",
+          "url": "https://android.googlesource.com/platform/external/caliper",
+          "commit": "dab7f1ed7741aaa71102341533da32d312563359",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP caliper-api-target provider required by conscrypt-benchmarks in the graph 22 error, preserving the original local caliper-prebuilts module and JAR."
+        },
+        {
+          "path": "frameworks/minikin",
+          "url": "https://android.googlesource.com/platform/frameworks/minikin",
+          "commit": "1e1d5d137d487df875d7db69b5ff24e7d0291612",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP libminikin provider required by retained libandroid."
+        },
+        {
+          "path": "external/accessibility-test-framework",
+          "url": "https://android.googlesource.com/platform/external/accessibility-test-framework",
+          "commit": "35527c4073b7219b33e4cb52290b1a577a68810c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP aatf provider required by retained a11ychecker."
+        },
+        {
+          "path": "external/jsoup",
+          "url": "https://android.googlesource.com/platform/external/jsoup",
+          "commit": "1c57858b5fc8a56e1c284dc60c59a68e7300ae2b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP jsoup provider required by the approved aatf source."
+        },
+        {
+          "path": "external/ksoap2",
+          "url": "https://android.googlesource.com/platform/external/ksoap2",
+          "commit": "405109123a9513ed7ec91529d62f4f2e040c01ee",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP ksoap2 provider required by retained wifi-service-pre-jarjar. This source addition does not establish device Wi-Fi support."
+        },
+        {
+          "path": "external/nanohttpd",
+          "url": "https://android.googlesource.com/platform/external/nanohttpd",
+          "commit": "4711b67f075d8ed195ca46785b125dbea03982c3",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP libnanohttpd provider required by retained wifi-service-pre-jarjar. This source addition does not establish device Wi-Fi support."
+        },
+        {
+          "path": "frameworks/libs/service_entitlement",
+          "url": "https://android.googlesource.com/platform/frameworks/libs/service_entitlement",
+          "commit": "9bdaed61465be24bccdc928bc4d042c8b512fb1d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP service-entitlement provider required by retained wifi-service-pre-jarjar and Ts43AuthenticationLibrary."
+        },
+        {
+          "path": "external/nist-sip",
+          "url": "https://android.googlesource.com/platform/external/nist-sip",
+          "commit": "1db572a42315b95f37311478b7701b607fd9810a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 22 error: real AOSP nist-sip provider required by retained voip-common."
+        },
+        {
+          "path": "external/pigweed",
+          "url": "https://android.googlesource.com/platform/external/pigweed",
+          "commit": "6b21bb2df225f4559fcfe495a73d20ba11d87d60",
+          "tag": "android-16.0.0_r1",
+          "reason": "Dependency of the full CHRE source restoration for the graph 22 chre_flags error: real AOSP Pigweed pw_* providers."
+        },
+        {
+          "path": "external/emboss",
+          "url": "https://android.googlesource.com/platform/external/emboss",
+          "commit": "c003e8aff9ab3dce46d1ba22c9002541e45c5178",
+          "tag": "android-16.0.0_r1",
+          "reason": "Dependency of the full CHRE source restoration for the graph 22 chre_flags error: real AOSP emboss_compiler, embossc_script and emboss_runtime_headers providers required by Pigweed."
+        },
+        {
+          "path": "frameworks/rs",
+          "url": "https://android.googlesource.com/platform/frameworks/rs",
+          "commit": "0b7a6a27c1a995a9b5969582599248888799b167",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP libRS, libRS_internal and libRSDriver providers required by retained RenderScript JNI and HAL source."
+        },
+        {
+          "path": "frameworks/compile/libbcc",
+          "url": "https://android.googlesource.com/platform/frameworks/compile/libbcc",
+          "commit": "5b81b8df3c0e34c5e88ce4d913178e852ce2f072",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP libbcc-targets and libbcinfo providers plus original headers required by the approved RenderScript sources."
+        },
+        {
+          "path": "frameworks/compile/slang",
+          "url": "https://android.googlesource.com/platform/frameworks/compile/slang",
+          "commit": "90ad5a5e7c9a8b8e36bc4f82421e7f51745a6059",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP rs-version defaults and llvm-rs-cc compiler required by the approved RenderScript and libbcc sources."
+        },
+        {
+          "path": "external/cblas",
+          "url": "https://android.googlesource.com/platform/external/cblas",
+          "commit": "9a08d559988d01c83eae1d7f0ed8bf1a99c756a1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP libblas and libblasV8 providers required by the approved RenderScript sources; existing Eigen supplies their F77 helpers."
+        },
+        {
+          "path": "prebuilts/ndk",
+          "url": "https://android.googlesource.com/platform/prebuilts/ndk",
+          "commit": "e0e58e67cd11713799cdf6b50ba5843d62881660",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP cpufeatures provider required by librenderscripttoolkit in the approved RenderScript source."
+        },
+        {
+          "path": "external/xmp_toolkit",
+          "url": "https://android.googlesource.com/platform/external/xmp_toolkit",
+          "commit": "4581aa1b0230c0aa1683e2564afc4687f3a22b48",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP xmp_toolkit provider required by the approved RenderScript source."
+        },
+        {
+          "path": "packages/services/Telephony",
+          "url": "https://android.googlesource.com/platform/packages/services/Telephony",
+          "commit": "3066368aaebabf12ee002da3a6ceb46169a79071",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP ecc-protos-lite provider for retained telephony sources, with the whole Telephony project preserved."
+        },
+        {
+          "path": "packages/apps/PhoneCommon",
+          "url": "https://android.googlesource.com/platform/packages/apps/PhoneCommon",
+          "commit": "8167c931b193b19a14de2ebe94b5081e34772732",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP com.android.phone.common-lib provider required by TeleService in the approved Telephony source."
+        },
+        {
+          "path": "external/s2-geometry-library-java",
+          "url": "https://android.googlesource.com/platform/external/s2-geometry-library-java",
+          "commit": "221a93fa99a93436336816289d06bc487e3ee294",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP s2-geometry-library-java provider required by TeleService and satellite storage tools in the approved Telephony source."
+        },
+        {
+          "path": "packages/modules/GeoTZ",
+          "url": "https://android.googlesource.com/platform/packages/modules/GeoTZ",
+          "commit": "15cb260974f84795cf6f415296d79cc26e97f010",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP s2storage_ro, s2storage_rw and s2storage_tools providers required by the approved Telephony source."
+        },
+        {
+          "path": "external/geojson-jackson",
+          "url": "https://android.googlesource.com/platform/external/geojson-jackson",
+          "commit": "8a46ab3fb500c34471b26fd77c85b0fff3c9a752",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP geojson-jackson provider required by the approved GeoTZ tooling."
+        },
+        {
+          "path": "external/jackson-annotations",
+          "url": "https://android.googlesource.com/platform/external/jackson-annotations",
+          "commit": "0f61d1a12af53066055fcde3f094dd385041481e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP jackson-annotations provider required by the approved GeoJSON and Jackson Databind sources."
+        },
+        {
+          "path": "external/jackson-databind",
+          "url": "https://android.googlesource.com/platform/external/jackson-databind",
+          "commit": "94510fd06c9dc10c1deb211d30b1cb153a764fb7",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 23 error: real AOSP jackson-databind provider required by the approved GeoTZ tooling; existing jackson-core source remains unchanged."
+        },
+        {
+          "path": "tools/trebuchet",
+          "url": "https://android.googlesource.com/platform/tools/trebuchet",
+          "commit": "ce9f55a2ba161e0363727fe85178c67c4b5341ca",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP trebuchet-core provider required by CtsAtraceHostTestCases in the graph 23 error."
+        },
+        {
+          "path": "external/easymock",
+          "url": "https://android.googlesource.com/platform/external/easymock",
+          "commit": "06a9728c3609f856e87db38a6602196cec3ab727",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP easymock provider required by vts-tradefed-tests and tf-contrib-tests in the graph 23 errors."
+        },
+        {
+          "path": "external/cpu_features",
+          "url": "https://android.googlesource.com/platform/external/cpu_features",
+          "commit": "3aed778c722edb68321d66a5e1cd7b35ae2c891c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcpu_features provider required by ART runtime modules in the graph 23 errors."
+        },
+        {
+          "path": "external/google-breakpad",
+          "url": "https://android.googlesource.com/platform/external/google-breakpad",
+          "commit": "9712c20fc9bbfbac4935993a2ca0b3958c5adad2",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP breakpad_client provider required by root-canal in the graph 23 error."
+        },
+        {
+          "path": "external/deqp",
+          "url": "https://android.googlesource.com/platform/external/deqp",
+          "commit": "230a1897a8c33452735a02a17c63f3c9c6bcb2b1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP CtsDeqpRunnerTests provider required by cts-tradefed-tests in the graph 23 error, with the whole dEQP project preserved."
+        },
+        {
+          "path": "external/deqp-deps/SPIRV-Headers",
+          "url": "https://android.googlesource.com/platform/external/deqp-deps/SPIRV-Headers",
+          "commit": "aa7b8a45763915dc5ad8f9537232e84e3796a33a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP SPIR-V headers and grammar filegroups required by the approved dEQP sources."
+        },
+        {
+          "path": "external/deqp-deps/SPIRV-Tools",
+          "url": "https://android.googlesource.com/platform/external/deqp-deps/SPIRV-Tools",
+          "commit": "7935793a768d7f6c6b0671cc61fda3286841da0e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP deqp_spirv-tools library and local generators required by the approved dEQP sources."
+        },
+        {
+          "path": "external/deqp-deps/glslang",
+          "url": "https://android.googlesource.com/platform/external/deqp-deps/glslang",
+          "commit": "0733c837682fd25e3363b598947126ff1838908c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP glslang libraries and headers. Upstream deqp_glslang_ResourceLimits_headers exports glslang/Public/ResourceLimits.h, a header file, as an include directory. This original property is retained for actual graph and compile validation."
+        },
+        {
+          "path": "external/deqp-deps/amber",
+          "url": "https://android.googlesource.com/platform/external/deqp-deps/amber",
+          "commit": "166c03c471039f3efc935a68d89b52521870ffd9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP deqp_amber library and local generators required by the approved dEQP sources."
+        },
+        {
+          "path": "external/crosvm",
+          "url": "https://android.googlesource.com/platform/external/crosvm",
+          "commit": "8a4abfbaea5567de24e49cc43874c820098987d0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libfuse_rust, libdisk and libcrosvm_control_static providers required by retained AVF sources, with the whole Crosvm project preserved."
+        },
+        {
+          "path": "external/virtio-media",
+          "url": "https://android.googlesource.com/platform/external/virtio-media",
+          "commit": "fef1c2fb80d79b5c526e0c7e40b6bb8838f17786",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libvirtio_media provider required by the approved Crosvm sources."
+        },
+        {
+          "path": "external/wayland",
+          "url": "https://android.googlesource.com/platform/external/wayland",
+          "commit": "91dc38d8c70bd5fc6eaca346c52f5eef1c02a1fb",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libwayland_client_static and libwayland_server providers required by the approved Crosvm graphics sources."
+        },
+        {
+          "path": "external/wayland-protocols",
+          "url": "https://android.googlesource.com/platform/external/wayland-protocols",
+          "commit": "91460fd294110884e6fa5d96ac7ce9c8c67f6339",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libwayland_extension_client_protocols and libwayland_extension_server_protocols providers required by the approved Crosvm graphics sources."
+        },
+        {
+          "path": "external/libepoxy",
+          "url": "https://android.googlesource.com/platform/external/libepoxy",
+          "commit": "220661d543ca0cd3cd73b0e87868064ad4d1e834",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libepoxy provider required by the approved Crosvm graphics sources."
+        },
+        {
+          "path": "external/virglrenderer",
+          "url": "https://android.googlesource.com/platform/external/virglrenderer",
+          "commit": "34d8dbfc7ba18adf8d012a469c26fe00cd0f796e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libvirglrenderer and virgl_headers providers required by the approved Crosvm graphics sources."
+        },
+        {
+          "path": "hardware/google/gfxstream",
+          "url": "https://android.googlesource.com/platform/hardware/google/gfxstream",
+          "commit": "fc0dca02291e1d5ba1d2dad1d0b58b4f2ef255d0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libgfxstream_backend and related providers required by the approved Crosvm graphics sources. Upstream plugin registration and validation are preserved."
+        },
+        {
+          "path": "external/rust/crates/v4l2r",
+          "url": "https://android.googlesource.com/platform/external/rust/crates/v4l2r",
+          "commit": "6397d7473aa4dda5edc7ec4f9e58c7d0962f08e7",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libv4l2r_ffi_static and libv4l2r providers required by the approved Crosvm sources."
+        },
+        {
+          "path": "external/mesa3d",
+          "url": "https://android.googlesource.com/platform/external/mesa3d",
+          "commit": "1ab807486dbc8cd2a1bb6c10d2ebebc5e545faca",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP mesa_gfxstream_connection_manager and related Mesa3D providers required by the approved graphics sources. Upstream LLVM and vendor properties remain unchanged."
+        },
+        {
+          "path": "external/swiftshader",
+          "url": "https://android.googlesource.com/platform/external/swiftshader",
+          "commit": "a4305fb793e7a96b3e1baf248b9717f68eedd238",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 24 error: real AOSP libLLVM16_swiftshader and original defaults required by the approved Mesa3D source. Upstream features and vendor declarations are preserved."
+        },
+        {
+          "path": "packages/services/Car",
+          "url": "https://android.googlesource.com/platform/packages/services/Car",
+          "commit": "61256ae811853028effed5c2c7227aebc347dc5e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP team metadata for the graph 24 trendy_team_aaos_power_triage error and retained VTS ownership. The full Car project is pinned, but build selection is limited to packages/services/Car/teams/Android.bp and its nine team definitions; no Car runtime, flag or proto libraries are selected."
+        },
+        {
+          "path": "external/fdlibm",
+          "url": "https://android.googlesource.com/platform/external/fdlibm",
+          "commit": "2e70335919bce0de03d619c57d4b7a98f848fd52",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libfdlibm provider required by libopenjdk and libopenjdkd in the graph 25 errors."
+        },
+        {
+          "path": "external/libcups",
+          "url": "https://android.googlesource.com/platform/external/libcups",
+          "commit": "19c37bb83c28ae3325b7a38b72d601fa0a28dde0",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcups provider required by the retained CTS security cases CVE-2019-2180 and CVE-2019-2228 in the graph 26 errors. Original license metadata, including legacy_by_exception_only, is preserved."
+        },
+        {
+          "path": "packages/modules/Nfc",
+          "url": "https://android.googlesource.com/platform/packages/modules/Nfc",
+          "commit": "bdd94b3be31253e756355e6e22f2fe8983da6b1e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libnfc-nci and libnfc_nci_jni providers required by retained CTS security cases in the graph 26 errors."
+        },
+        {
+          "path": "external/exoplayer",
+          "url": "https://android.googlesource.com/platform/external/exoplayer",
+          "commit": "562c956cd875e623d041e0819f39125f903722c5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP exoplayer-media_apex provider required by framework-media.impl in the graph 27 errors. Original source modules and API settings are preserved; this source pin does not establish recovery media support."
+        },
+        {
+          "path": "external/jarjar",
+          "url": "https://android.googlesource.com/platform/external/jarjar",
+          "commit": "96b8d0a67118121374f3ed1962e876e533e8908b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 27 error: real AOSP jarjar host Java library supplies jarjar.jar for the original Soong relocation rule used by ExoPlayer jarjar_rules. Original tool, bundled Maven and Ant imports, and tests are preserved."
+        },
+        {
+          "path": "tools/doc_generation",
+          "url": "https://android.googlesource.com/platform/tools/doc_generation",
+          "commit": "8fb605eb38e53e74c1408ea01d4b7dd6be8ce467",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 27 error: real AOSP switcher4 host Python tool required by the retained ds-docs-switched generator in frameworks/base/api/ApiDocs.bp. Original documentation consumers and tool definitions remain selected."
+        },
+        {
+          "path": "external/mpdecimal",
+          "url": "https://android.googlesource.com/platform/external/mpdecimal",
+          "commit": "ed7ca08a5e74aab5f0c5a15cbc08f2364dbe69a3",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libmpdec provider required by the retained Android py3-c-modules source variant in the graph 28 errors. Original native library, generated header and visibility rules are preserved."
+        },
+        {
+          "path": "external/moshi",
+          "url": "https://android.googlesource.com/platform/external/moshi",
+          "commit": "57cf8f201e673c82d1640738c5928ed758a4ff75",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP moshi provider required by androidx.benchmark_benchmark-common in the graph 28 errors. Original Java and Kotlin sources, dependencies and SDK settings are preserved."
+        },
+        {
+          "path": "external/mockftpserver",
+          "url": "https://android.googlesource.com/platform/external/mockftpserver",
+          "commit": "59892565b6b7f8e60db9299b4bb7ace4a16dff7a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP mockftpserver provider required by core-tests in the graph 28 errors. Original library, resources and API settings are preserved."
+        },
+        {
+          "path": "external/javasqlite",
+          "url": "https://android.googlesource.com/platform/external/javasqlite",
+          "commit": "0bdef7b65a85435705cf37408cb3e438d2c2f64e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP sqlite-jdbc provider required by core-tests in the graph 28 errors. Original Java and JNI definitions and license metadata are preserved."
+        },
+        {
+          "path": "external/mockwebserver",
+          "url": "https://android.googlesource.com/platform/external/mockwebserver",
+          "commit": "a94bb9bc1f426fc1ae3e892ff08f0efeb763a809",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP mockwebserver provider required by core-tests, core-ojtests and core-ojtests-public in the graph 28 errors. Original library and test consumers remain selected."
+        },
+        {
+          "path": "external/nist-pkits",
+          "url": "https://android.googlesource.com/platform/external/nist-pkits",
+          "commit": "ee62ccc6b7665d12a4328db024f449f7ca5320fb",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP nist-pkix-tests provider required by core-tests in the graph 28 errors. Original PKITS tests and test resources are preserved."
+        },
+        {
+          "path": "frameworks/opt/vcard",
+          "url": "https://android.googlesource.com/platform/frameworks/opt/vcard",
+          "commit": "09192f417d6f105cee940f566c0daa0db5fddb20",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP com.android.vcard provider required by BluetoothLib in the graph 29 errors. Original library, SDK settings and test descriptors are preserved."
+        },
+        {
+          "path": "hardware/ril",
+          "url": "https://android.googlesource.com/platform/hardware/ril",
+          "commit": "6bd627062458024e2cd1c13cf3d0b6c71cdfa495",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP sap-api-java-static provider required by BluetoothLib in the graph 29 errors. Original Java, native and protocol definitions are preserved."
+        },
+        {
+          "path": "external/lottie",
+          "url": "https://android.googlesource.com/platform/external/lottie",
+          "commit": "649ad7a4c743cd110b6cdda764f832b088f1d953",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP lottie_compose provider required by SpaLib in the graph 30 errors. Original Lottie and Compose library definitions, dependencies and SDK settings are preserved."
+        },
+        {
+          "path": "external/cn-cbor",
+          "url": "https://android.googlesource.com/platform/external/cn-cbor",
+          "commit": "250a8956c5106b42b96f66c660141693d0ed35ea",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcn-cbor provider required by VtsHalConfirmationUITargetTest and VtsHalConfirmationUIV1_0TargetTest in the graph 30 errors. Original native library and retained Confirmation UI security tests are preserved."
+        },
+        {
+          "path": "frameworks/ex",
+          "url": "https://android.googlesource.com/platform/frameworks/ex",
+          "commit": "06933c05c643430497ea48c713db04c0feb70d2e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 30 error: real AOSP android-common, android-ex-camera2 and androidx.camera.extensions.stub providers required by retained framework and CTS consumers, including CtsPermissionTestCases. Original library, test and SDK definitions are preserved."
+        },
+        {
+          "path": "packages/modules/CellBroadcastService",
+          "url": "https://android.googlesource.com/platform/packages/modules/CellBroadcastService",
+          "commit": "1249b4c132181f66cbc5a36168570f12390b4b2d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP statslog-cellbroadcast-java-gen required by retained telephony-common. The original root Blueprint and its companion CellBroadcastReceiver allowlist providers are retained."
+        },
+        {
+          "path": "packages/apps/CellBroadcastReceiver",
+          "url": "https://android.googlesource.com/platform/packages/apps/CellBroadcastReceiver",
+          "commit": "b97c8a4ffa3946d7206808bf4810746678b44a5c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP privapp_allowlist_com.android.cellbroadcastservice.xml and platform_privapp_allowlist_com.android.cellbroadcastservice.xml filegroups required by CellBroadcastService. Build selection is limited to the original apex/permissions/Android.bp; no receiver app or APEX definition is selected."
+        },
+        {
+          "path": "packages/apps/Settings",
+          "url": "https://android.googlesource.com/platform/packages/apps/Settings",
+          "commit": "0fb38ed81e9b49d5da4be8f50d9d69865c1192e8",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP aconfig_settings_flags_lib required by retained services.core.unboosted and SystemUI-core. The original license provider shares the root Blueprint with Settings-core and the Settings app, so their definitions and required companion files are retained."
+        },
+        {
+          "path": "packages/apps/Launcher3",
+          "url": "https://android.googlesource.com/platform/packages/apps/Launcher3",
+          "commit": "2f5b9b869d86620fdb899bc2df53d523dc9dc6ea",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP com_android_launcher3_flags_lib and launcher-aosp-tapl required by retained WindowManager-Shell, services.core.unboosted and framework tests. Original launcher, TAPL, flags, shared and check definitions are retained together."
+        },
+        {
+          "path": "packages/apps/Traceur",
+          "url": "https://android.googlesource.com/platform/packages/apps/Traceur",
+          "commit": "781a9de78af68f825dc0031457c5fc12ff58cf39",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP TraceurCommon and Traceur-res required by retained SystemUI-core. The original root Blueprint also contains the Traceur app; its definitions are retained without adding product packages."
+        },
+        {
+          "path": "frameworks/opt/setupwizard",
+          "url": "https://android.googlesource.com/platform/frameworks/opt/setupwizard",
+          "commit": "8346eb25a87c195812e9255757ae8d3b47173da9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP setup-wizard-lib required by retained SimAppDialog. The complete original Blueprint, gingerbread compatibility library and license metadata are preserved."
+        },
+        {
+          "path": "external/setupdesign",
+          "url": "https://android.googlesource.com/platform/external/setupdesign",
+          "commit": "07da2d12899c8a083060b9bdd77473fa93564567",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP setupdesign provider required by SettingsLibAvatarPicker in the graph 31 errors. Original setupdesign-lottie-loading-layout and SDK definitions are preserved; setupcompat is supplied by this batch and Lottie was already pinned."
+        },
+        {
+          "path": "external/setupcompat",
+          "url": "https://android.googlesource.com/platform/external/setupcompat",
+          "commit": "5e79860031bf30df936ebc08db2996874eb0ff9e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP setupcompat provider required by android_onboarding.contracts.provisioning in the graph 31 errors. Original setupcompat_bts, source filegroups and license metadata are preserved."
+        },
+        {
+          "path": "external/zxing",
+          "url": "https://android.googlesource.com/platform/external/zxing",
+          "commit": "32fbdf1955cc1fad33e6a791284d316dc3834d1b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP zxing-core required by retained SettingsLib. Original zxing-core-1.7 prebuilt, its version metadata and the license notice are preserved."
+        },
+        {
+          "path": "external/subsampling-scale-image-view",
+          "url": "https://android.googlesource.com/platform/external/subsampling-scale-image-view",
+          "commit": "7c166c441cfc7d2de61396e7ebc0e574c5c6c585",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP subsampling-scale-image-view required by the selected SilkFX android_test. This supplies a test dependency; no TWRP runtime feature is claimed."
+        },
+        {
+          "path": "external/google-fonts/dancing-script",
+          "url": "https://android.googlesource.com/platform/external/google-fonts/dancing-script",
+          "commit": "56d6ed7d67ef97d12eae22d95aea33aab2270e1d",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP GoogleFontDancingScript resources required by CorePerfTests. This supplies Java test data; it does not establish a TWRP font installation requirement. Original BSD/MIT/OFL metadata and special licensing notice are preserved; no license waiver or distribution rights determination is made."
+        },
+        {
+          "path": "prebuilts/maven_repo/bumptech",
+          "url": "https://android.googlesource.com/platform/prebuilts/maven_repo/bumptech",
+          "commit": "5fa5ea996556070a62957f197876d124f3a1e1b7",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP glide-prebuilt, glide-gifdecoder-prebuilt, glide-disklrucache-prebuilt, glide-annotation-and-compiler-prebuilt, glide-ktx-prebuilt, glide-integration-webpdecoder-prebuilt, glide-compose-prebuilt and glide-annotation-processor providers required by car-telephony-common-source-no-overlayable, car-telephony-common-source, car-telephony-common-aar and PhotopickerLib in the graph 31 errors. The original WebP import uses webpdecoder-2.6.4.16.0-sources.jar with Java sources and no compiled classes; this pin does not establish WebP or application runtime support."
+        },
+        {
+          "path": "frameworks/libs/systemui",
+          "url": "https://android.googlesource.com/platform/frameworks/libs/systemui",
+          "commit": "9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP view_capture provider required by SystemUI-shared-utils through //frameworks/libs/systemui:view_capture in the graph 31 errors. Original library names and metadata are retained for the strict graph trial."
+        },
+        {
+          "path": "external/robolectric",
+          "url": "https://android.googlesource.com/platform/external/robolectric",
+          "commit": "559c38b2cb0fbd87f2118bdcb8bea6f536164d70",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP Robolectric_all-target required by the restored platform-parametric-runner-lib. The complete source project is pinned for the strict graph trial; this admission does not establish compiled or runtime support."
+        },
+        {
+          "path": "external/mime-support",
+          "url": "https://android.googlesource.com/platform/external/mime-support",
+          "commit": "c347c3d8fa4992e655674e6c9f2baa6e18e44ead",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP debian.mime.types.minimized and debian.mime.types.minimized-alt generators required by the retained frameworks/base/mime filegroups. Original input data, license metadata and generator definitions are preserved."
+        },
+        {
+          "path": "external/turbine",
+          "url": "https://android.googlesource.com/platform/external/turbine",
+          "commit": "babc164379486626467efc50db0833d683c39fd5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 31 error: real AOSP turbine java_library_host required by the retained Kotlin and KAPT tool path with Always_use_prebuilt_sdks=false. Original build rules install framework/turbine.jar through KatiInstalls; no prebuilt substitution or flag change is made, and this source pin does not claim a built JAR."
+        },
+        {
+          "path": "external/glide",
+          "url": "https://android.googlesource.com/platform/external/glide",
+          "commit": "2078ac4e2023465dd8f4473554ec65583b9267a6",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP glide source android_library required by CtsLeanbackJankApp in the graph 32 errors. This source module is separate from the preserved graph 31 Glide prebuilt providers; original sources, SDK settings and license metadata are retained."
+        },
+        {
+          "path": "external/volley",
+          "url": "https://android.googlesource.com/platform/external/volley",
+          "commit": "c34e6c11e6d8f47807f31fe1dbb655ab5ab4534b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 32 error: real AOSP volley required by the original glide source library. Original SDK 28 settings and the optional org.apache.http.legacy dependency are preserved."
+        },
+        {
+          "path": "external/wycheproof",
+          "url": "https://android.googlesource.com/platform/external/wycheproof",
+          "commit": "bf75d8ae31587a5c81fe70533ea831728b3fdf0e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP wycheproof and wycheproof-keystore providers required by CtsLibcoreWycheproofBCTestCases, CtsLibcoreWycheproofConscryptTestCases and CtsKeystoreWycheproofTestCases in the graph 32 errors. Original tests, test vectors and the optional empty keystore-cts/android/**/*.java source glob are preserved."
+        },
+        {
+          "path": "packages/providers/ContactsProvider",
+          "url": "https://android.googlesource.com/platform/packages/providers/ContactsProvider",
+          "commit": "164078c92d23d173f0f0c986e298dd236d66279b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP ContactsProviderTestUtils required by E2eeContactKeysProviderTests and contactsprovider_flags_java_lib required by CtsContactsProviderTestCases in the graph 32 errors. Original ContactsProvider app, flags, change IDs, compatibility and test modules are retained without a new source scope or test gate."
+        },
+        {
+          "path": "packages/apps/TvSettings",
+          "url": "https://android.googlesource.com/platform/packages/apps/TvSettings",
+          "commit": "139dd3c1a8f626a57271baf4926180f8d1f3bade",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP TvSettingsAPI required by CtsSettingsAPITestCases in the graph 32 errors. Selection admits only the complete SettingsAPI/Android.bp and TwoPanelSettingsLib/Android.bp files, including TvSliceLib; no TV app or root Blueprint is admitted."
+        },
+        {
+          "path": "test/mlts/benchmark",
+          "url": "https://android.googlesource.com/platform/test/mlts/benchmark",
+          "commit": "4617f7e28793f979153f3b088a79ba796e0268b3",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP NeuralNetworksApiBenchmark_Lib and libnnbenchmark_jni required by VtsHalNeuralnetworksV1_2BenchmarkTestCases and VtsHalNeuralnetworksV1_3BenchmarkTestCases in the graph 32 errors. Original benchmark, JNI, native and test definitions are preserved; this source pin does not establish performance or neural-network hardware support."
+        },
+        {
+          "path": "test/mlts/models",
+          "url": "https://android.googlesource.com/platform/test/mlts/models",
+          "commit": "cbb1ae5cfde49ed06ccf4afaa2fae1054364d4f3",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP test_mlts_models_assets required by VtsHalNeuralnetworksV1_2BenchmarkTestCases and VtsHalNeuralnetworksV1_3BenchmarkTestCases in the graph 32 errors. Original model and test assets, asset licenses and attribution metadata are preserved; no asset redistribution rights determination or on-device neural-network support is implied."
+        },
+        {
+          "path": "external/androidplot",
+          "url": "https://android.googlesource.com/platform/external/androidplot",
+          "commit": "e67b5c11b0a39d07706faa2f5faf820db3848005",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 33 error: real AOSP androidplot java_library required by retained CtsVerifierLibT. The complete original Blueprint, including AndroidPlotDemos, its source inputs and compiler settings, is preserved."
+        },
+        {
+          "path": "external/replicaisland",
+          "url": "https://android.googlesource.com/platform/external/replicaisland",
+          "commit": "f32cc0546b83dd918c94c37850109d311ebabcaf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 33 error: real AOSP com.replica.replicaisland android_test_helper_app required by retained CtsOpenGlPerfTestCases through instrumentation_for and data. Original app sources, manifest, resources and licenses are preserved as test inputs; this does not add a recovery product package or establish graphics performance."
+        },
+        {
+          "path": "frameworks/opt/tv/tvsystem",
+          "url": "https://android.googlesource.com/platform/frameworks/opt/tv/tvsystem",
+          "commit": "ddc4040688dca1b980b8744a012d6cf6a62f792c",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 33 error: real AOSP com.android.libraries.tv.tvsystem java_sdk_library provides .public.api.txt and .system.api.txt to retained CtsSharedLibsApiSignatureTestCases_cts-shared-libs-all-current.api. The original unsafe_ignore_missing_latest_api:true setting suppresses released API tracking; current API checks remain, and no new waiver is added. No recovery product package or TV functionality is implied."
+        },
+        {
+          "path": "external/jetpack-camera-app",
+          "url": "https://android.googlesource.com/platform/external/jetpack-camera-app",
+          "commit": "bff117dd925374b0023b6ca6e5a237fb5944e581",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP jetpack-camera-app android_app required by other_required_apps in cts/apps/CtsVerifier. Original app, library and instrumentation definitions, including the inert legacy subdirs assignment, are preserved. No APK, installation or camera functionality is claimed."
+        },
+        {
+          "path": "external/accompanist",
+          "url": "https://android.googlesource.com/platform/external/accompanist",
+          "commit": "f083e7c9735aa7806e6fa902923aa021881aee78",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP accompanist-permissions android_library required by jetpack-camera-app, jetpack-camera-app-tests-helper, jetpack-camera-app_feature_permissions and jetpack-camera-app_feature_settings. Original visibility, source, resources and SDK/minSDK checks are preserved; no camera permission behavior or runtime compatibility is claimed."
+        },
+        {
+          "path": "kernel/prebuilts/6.6/arm64",
+          "url": "https://android.googlesource.com/kernel/prebuilts/6.6/arm64",
+          "commit": "810308806a7a4677f8e4a0d37daa707a0832bbea",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android15-6.6-arm64 filesystem definition required by the retained microdroid_gki-android15-6.6_initrd_gen_arm64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+        },
+        {
+          "path": "kernel/prebuilts/6.6/x86_64",
+          "url": "https://android.googlesource.com/kernel/prebuilts/6.6/x86-64",
+          "commit": "88d6379eab0da6425d570d22531c210e40f5abd6",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android15-6.6-x86_64 filesystem definition required by the retained microdroid_gki-android15-6.6_initrd_gen_x86_64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+        },
+        {
+          "path": "kernel/prebuilts/6.12/arm64",
+          "url": "https://android.googlesource.com/kernel/prebuilts/6.12/arm64",
+          "commit": "0af99653adede9524c7dbb36ba901d22e6266404",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android16-6.12-arm64 filesystem definition required by the retained microdroid_gki-android16-6.12_initrd_gen_arm64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+        },
+        {
+          "path": "kernel/prebuilts/6.12/x86_64",
+          "url": "https://android.googlesource.com/kernel/prebuilts/6.12/x86-64",
+          "commit": "0cbffc1bfc41e1e6d399a23d1ffe45875213b67f",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android16-6.12-x86_64 filesystem definition required by the retained microdroid_gki-android16-6.12_initrd_gen_x86_64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+        },
+        {
+          "path": "packages/apps/Car/Settings",
+          "url": "https://android.googlesource.com/platform/packages/apps/Car/Settings",
+          "commit": "64634c7bfc79be369f0cd251d6c61df995cdf8b1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 34 error: real AOSP com_android_car_settings_flags_lib required by retained CtsSettingsTestCases. The whole original project is pinned, while source selection admits only aconfig/Android.bp with com_android_car_settings_flags and its Java flag library. No Car Settings app, APK installation or new test gate is added."
+        },
+        {
+          "path": "external/oboe",
+          "url": "https://android.googlesource.com/platform/external/oboe",
+          "commit": "dd93a0db2d7458fceea325612623b9996feba378",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP oboe cc_library_static required by libaudioloopback_jni in the graph 35 error. Original source, oboe_headers, SDK settings and Apache-2.0/GPL-2.0/MIT license metadata are preserved. This source pin does not establish a built APK or audio-loopback functionality."
+        },
+        {
+          "path": "external/seccomp-tests",
+          "url": "https://android.googlesource.com/platform/external/seccomp-tests",
+          "commit": "e175d3ba7741fe01a89e54ad5989aeb3293b0e3f",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 36 error: real AOSP external_seccomp_tests cc_library_static required by retained libctsos_jni. The whole original project and Android Blueprint are preserved, including mixed Apache/GPL/LGPL license kinds and RESTRICTED metadata. Its ancillary Linux Makefile is not invoked by Android.bp; no standalone Make support or licensing clearance is claimed."
+        },
+        {
+          "path": "packages/services/DeviceAsWebcam",
+          "url": "https://android.googlesource.com/platform/packages/services/DeviceAsWebcam",
+          "commit": "86c6b7e9b7217310836f7b8f75d0c764c148b6e5",
+          "tag": "android-16.0.0_r1",
+          "reason": "Source audit projection, not a graph 36 error: real AOSP camera-webcam-test genrule required by the retained android-cts-verifier genrule. All four original Blueprints, including app, library and JNI definitions, remain intact. No product package, app installation, signing-key access or webcam functionality is implied."
+        },
+        {
+          "path": "external/giflib",
+          "url": "https://android.googlesource.com/platform/external/giflib",
+          "commit": "ad011248e266cc1bad1489704cc214942231cf09",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libgif cc_library_static required by libhwui and hwui_unit_tests in the graph 40 errors through the Android target of android_graphics_jni. The whole original project and Blueprint, exported headers, SDK settings and MIT license metadata are preserved. This source pin does not establish compiled HWUI or GIF rendering functionality."
+        }
+      ],
+      "errors": [
+        "error: packages/modules/Connectivity/Tethering/apex/Android.bp:50:1: \"com.android.tethering\" depends on undefined module \"ethtool\"."
+      ],
+      "resource_generation_verified": true,
+      "failed_command_exit_code": 1
     }
   ],
   "resource_generation": {
