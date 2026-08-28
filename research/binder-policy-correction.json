@@ -1,0 +1,345 @@
+{
+  "comparison": {
+    "assertions_or_diagnostics_filtered": false,
+    "baseline_input_bytes": 5361292,
+    "cases": [
+      {
+        "compilation_passed": false,
+        "exit_code": 255,
+        "file_contexts_produced": false,
+        "name": "baseline",
+        "neverallow_assertion_sites": 4,
+        "policy_binary_produced": false,
+        "sandbox": {
+          "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/results/baseline/baseline.sandbox.json",
+          "sha256": "d1654d17c08fcb3059581c1e68acef1d30fe4ea86fe56852f2e1f0a826f9aeb5",
+          "size_bytes": 2468
+        },
+        "sandbox_verified": true,
+        "stderr": {
+          "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/logs/baseline.stderr",
+          "sha256": "781f885a3dd269c7322e7564df539da460822b681b479e94b899f0489fdbdffa",
+          "size_bytes": 3717
+        },
+        "stdout": {
+          "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/logs/baseline.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "timed_out": false
+      },
+      {
+        "compilation_passed": false,
+        "exit_code": 255,
+        "file_contexts_produced": false,
+        "name": "corrected",
+        "neverallow_assertion_sites": 2,
+        "policy_binary_produced": false,
+        "sandbox": {
+          "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/results/corrected/corrected.sandbox.json",
+          "sha256": "ff77cfcf61d65faffb678f346641eabd7a988b4f3e00a445f1cc6f227b5c6496",
+          "size_bytes": 2451
+        },
+        "sandbox_verified": true,
+        "stderr": {
+          "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/logs/corrected.stderr",
+          "sha256": "c78cb188ce06bc2699524f83750fbdff1ec16b69621ad2a3d5f6f2af23fefe52",
+          "size_bytes": 1311
+        },
+        "stdout": {
+          "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/logs/corrected.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "timed_out": false
+      }
+    ],
+    "combined_permissive_state": null,
+    "comparison_completed_safely": true,
+    "compiler_flags": [
+      "-m",
+      "-M",
+      "true",
+      "-G",
+      "-c",
+      "30"
+    ],
+    "corrected_input_bytes": 5361292,
+    "driver_exit_code": 0,
+    "driver_invocations": 1,
+    "driver_source_sha256": "020d46352a039b801d88197f7635335eb67aea539d3ef14350fdb58d93dd2393",
+    "framework_input_count": 7,
+    "fresh_separate_output_directories": true,
+    "input_count_each": 10,
+    "input_order": [
+      {
+        "assertions": {
+          "neverallow": 4929,
+          "neverallowx": 390
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "sha256": "b8353ba3f5336ff28b17508808c4617d47e289be6fe7ca6b37cf4da2a9708130",
+        "size_bytes": 3012604
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+        "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+        "size_bytes": 229237
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "sha256": "7bee774aff706c539a1617c5c2c8f47100fd8987eedeb00e31ab40e1281068ec",
+        "size_bytes": 46
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+        "sha256": "238af2a9cee8a300b574de03a0d26620fb23c6af0a7814e8ff0b6b84da7d2f5d",
+        "size_bytes": 73
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "assertions": {
+          "neverallow": 432,
+          "neverallowx": 0
+        },
+        "origin": "unchanged factory vendor/ODM",
+        "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+        "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+        "size_bytes": 396303
+      },
+      {
+        "assertions": {
+          "neverallow": 615,
+          "neverallowx": 0
+        },
+        "origin": "unchanged factory vendor/ODM",
+        "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+        "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+        "size_bytes": 1708593
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "unchanged factory vendor/ODM",
+        "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+        "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+        "size_bytes": 14292
+      },
+      {
+        "assertions": {
+          "neverallow": 0,
+          "neverallowx": 0
+        },
+        "origin": "actual v9 framework build",
+        "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "size_bytes": 142
+      }
+    ],
+    "nsjail_sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280",
+    "observer_interpreter_sha256": "1401f5c1ddd9e8f9d77622113a8d04b5f7ef57c0e3f40dd29db248a5aa91622e",
+    "only_replaced_input_index": 7,
+    "permissive_analyzer_calls": 0,
+    "secilc_sha256": "1481d17c86dfc4b0ac47bd150f604425e718386379b690d06f60e417376b9a34",
+    "strict_compiler_commands": 2
+  },
+  "completed_at_utc": "2026-08-28T01:59:50.905124+00:00",
+  "correction": {
+    "bad_binder_groups_after": {
+      "source_non_domain": 0,
+      "target_non_domain": 0
+    },
+    "bad_binder_groups_before": {
+      "source_non_domain": 32,
+      "target_non_domain": 35
+    },
+    "binder_assertions_selected_by_identity_and_closure_not_historical_lines": true,
+    "both_tokenizers_agree_for_all_ten_inputs": true,
+    "changed_byte_values": 5523,
+    "combined_binder_allow_count_after": 3233,
+    "combined_binder_allow_count_before": 3300,
+    "derived_size_bytes": 1708593,
+    "derived_vendor_sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+    "exact_removal_recomputed_against_v9": true,
+    "line_positions_and_all_unselected_bytes_preserved": true,
+    "new_permissions": 0,
+    "original_size_bytes": 1708593,
+    "original_vendor_sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+    "process_domain_count": 596,
+    "provider_retargetings": 0,
+    "removed_distinct_normalized_statements": 65,
+    "removed_occurrences": 67,
+    "replacement": "ASCII spaces within selected forms; CR/LF retained",
+    "role_r_type_count": 596,
+    "selected_span_bytes": 5823,
+    "service_object_type_count": 5,
+    "service_objects_promoted_into_domain": 0,
+    "vendor_binder_allow_count_after": 2076,
+    "vendor_binder_allow_count_before": 2143,
+    "vendor_statement_count_after": 19046,
+    "vendor_statement_count_before": 19113
+  },
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "limits": {
+    "active_source_adoption": false,
+    "build_output_modified": false,
+    "checks_disabled": [],
+    "combined_policy_binary_produced": false,
+    "current_vendor_image_modified_by_this_experiment": false,
+    "device_boot_or_native_features_verified": false,
+    "display_provider_unambiguously_identified": false,
+    "full_combined_policy_pass": false,
+    "full_rom_build_verified": false,
+    "phone_modified": false,
+    "runtime_provider_sid_verified": false,
+    "vendor_bundle_or_odm_image_replaced": false
+  },
+  "preservation": {
+    "all_assertions": 6366,
+    "all_original_inputs_unchanged": true,
+    "assertions_removed_or_changed": 0,
+    "neverallow_statements": 5976,
+    "neverallowx_statements": 390,
+    "related_fd_distinct_statements": 31,
+    "related_fd_occurrences": 32,
+    "role_type_or_mapping_declarations_changed": 0,
+    "service_lookup_or_registration_grants_changed": 0,
+    "valid_process_binder_grants_changed": 0,
+    "vendor_neverallow_statements": 615
+  },
+  "provenance": {
+    "factory_origin_authenticated": false,
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "historical_receipts_rewritten": false,
+    "original_vendor_macro_source_recovered": false,
+    "private_cil_or_raw_logs_published": false,
+    "source_base_revisions": {
+      "external/selinux": "085c131ad1b984bfa8ffdafee7a976e9d89f403c",
+      "system/sepolicy": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+    },
+    "source_kind": "user-provided factory-named China fastboot TGZ",
+    "source_url": null,
+    "v9_build_receipt_sha256": "64fdf29e9ee07885c6efce95e512be73e417a68fa041b87ccbfedb838955977a",
+    "v9_host_readback_receipt_sha256": "d64729896b5ab7f48bf8f45f7eef89d82842e68eba182f0b7e11e2bf58e03715",
+    "v9_sealing_receipt_sha256": "866de9b93fb0c4624a9892c12c8a8830b23758ce39075774354264a5ba1483c8"
+  },
+  "readback": {
+    "guest_files_written_by_collector": false,
+    "observer_inputs_rehashed_twice": 77,
+    "raw_outputs_copied_and_rehashed": 7,
+    "recorded_inputs_rehashed": 76,
+    "transferred_admission_bytes": 1938960,
+    "transferred_admission_files": 14
+  },
+  "receipts": {
+    "comparison": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/receipt.json",
+      "sha256": "257ad9f0c0a1903b9e339897253bc42684041db997bead3c2d81760410a1d514",
+      "size_bytes": 54202
+    },
+    "comparison_readback": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-compiled-comparison-v1/readback-receipt.json",
+      "sha256": "f8308dc4a85ee71ba4095971697cb274f46950996ab6ef611e5738c815a59f7c",
+      "size_bytes": 30566
+    },
+    "derivation": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/result-v1/receipt.json",
+      "sha256": "504ffe8b60035a862955da89d0afbc11ede5470ed6172aa401be229f22d931cd",
+      "size_bytes": 40612
+    },
+    "reviewed_manifest": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-admission-v1/manifest.json",
+      "sha256": "3b5abc6054b289d9d665ee0bef9388857861ce9016e2af0bd06e28b8ee02f934",
+      "size_bytes": 13697
+    },
+    "semantic_revalidation": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-admission-v1/semantic-revalidation.json",
+      "sha256": "c5ba466ceb9d391e83871efec2902194025237b9772af25d5c11fc144ed3c620",
+      "size_bytes": 10413
+    },
+    "transfer": {
+      "path": "reports/binder-v9-admission-transfer-receipt-v1.json",
+      "sha256": "f8a7836f17224247774bc4e19d829226357fe808ba289f69a8f7f3355243859d",
+      "size_bytes": 13095
+    },
+    "v9_admission": {
+      "path": "artifacts/source-contracts/nezha-binder-rule-correction-v1/v9-admission-v1/receipt.json",
+      "sha256": "94b110809d67c38aaeed0d467e03bae5f7c7895fca8e5125b4083a5564366f95",
+      "size_bytes": 21687
+    }
+  },
+  "remaining_failures": [
+    {
+      "object_class": "property_service",
+      "permission": "set",
+      "source_domain": "init_dev_config",
+      "source_line": 10,
+      "source_path": "system/sepolicy/private/init_dev_config.te",
+      "target_property": "media_variant_prop",
+      "versioned_assertion_line": 5931
+    },
+    {
+      "object_class": "property_service",
+      "permission": "set",
+      "source_domain": "init_dev_config",
+      "source_line": 9,
+      "source_path": "system/sepolicy/private/init_dev_config.te",
+      "target_property": "apexd_select_prop",
+      "versioned_assertion_line": 5746
+    }
+  ],
+  "sandbox": {
+    "actual_command_observed_before_exec": true,
+    "all_four_namespace_ids_differ_from_parent": true,
+    "global_root_warnings_preserved": true,
+    "host_unprivileged_execution_claimed": false,
+    "maps_to_global_uid_gid": 0,
+    "namespace_uid_gid": 65534,
+    "observed_capability_sets_all_zero": true,
+    "only_active_case_outputs_and_tmp_writable": true,
+    "root_source_all_out_inputs_tools_and_provenance_readonly": true,
+    "runtime_is_hermetic": false
+  },
+  "schema_version": 1,
+  "snapshot": "v9-derived-vendor-binder-cil-prototype"
+}
