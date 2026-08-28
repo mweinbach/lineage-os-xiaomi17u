@@ -114,6 +114,18 @@ is an API phony rather than a compiler owner. Actual artifact checks must bind
 variant of `libadbd_core`, with the selected commands and objects confirming
 `__ANDROID_RECOVERY__`. The phony name alone supplies no such evidence.
 
+Patch 25 repairs Graph 48's disabled `libc` and `libdl` dependencies in the
+Linux glibc host variant of the fork's `libkeystoreinfo`. It scopes the exact
+existing ordered pair to `target.bionic`, preserving Android, recovery and
+Linux Bionic behavior while allowing other host toolchains to inherit their
+normal defaults. Host support, recovery availability, SQLite, source inputs
+and every other declaration remain unchanged. Recovery still reaches the
+library through `libvold`, even with crypto disabled. Only four wrapper lines
+are added; existing whitespace and the missing final newline remain intact
+so strict forward and reverse application can preserve the original bytes.
+This changes no crypto code, decryption flag, source scope or package request.
+Source-contract tests do not establish a successful host or recovery build.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init
