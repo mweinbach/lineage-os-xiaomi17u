@@ -1842,6 +1842,13 @@
       "commit": "6bcf0cc83afa9268ca79a442db0dc4b8e29a1266",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 44 error: original rewrapper prebuilt_build_tool is a real tools dependency of retained ART genrules through art-run-test-host-data-defaults, not a generated alias. The sole original root Android.bp keeps src live/rewrapper and the original NOTICE; no provider, package or license declaration is synthesized. The prebuilt factory creates a host symlink and does not invoke the binary. UseRBE remains false; adding this provider does not set USE_RBE or RBE_server_address, and the original ART script invokes its wrapper only when RBE_server_address is present. No RBE credentials, discovery, remote jobs or network execution are authorized or enabled. No tool binary was read, downloaded or invoked by this audit. The pinned tree contains no Android.mk, AndroidProducts.mk or CleanSpec.mk; no source-scope exception is needed."
+    },
+    {
+      "path": "system/bpfprogs",
+      "url": "https://android.googlesource.com/platform/system/bpfprogs",
+      "commit": "cdb14b57cc698975b796224c507b4d15698b4788",
+      "tag": "android-16.0.0_r1",
+      "reason": "Actual graph 45 error: libbpf_load_test has a data dependency on the original bpfLoadTpProg.o module in system/bpfprogs/test/Android.bp. Add the whole original project and both Blueprints, retaining timeInState.o, timeInState.bpf and fuseMedia.o rather than synthesizing an object or disabling the mixed production loader and test. Preserve all three C inputs, root GPL-2.0 LICENSE and RESTRICTED metadata, the test package Apache-2.0 declaration, and the original GPL program license marker. Explicit bpf_prog_headers, libcutils_headers and android_bpf_defs plus the factory dependency libbpf_headers already exist; original include directories and Clang builtin stdbool.h are retained. The current RELEASE_BPF_ENABLE_LIBBPF true selects the production timeInState.bpf requirement and does not rename the test object. No release flag, source-scope rule or patch changes are needed. The pinned tree has no Android.mk, AndroidProducts.mk or CleanSpec.mk. No recovery package installation, kernel program loading, hardware functionality or licensing clearance is claimed."
     }
   ]
 }

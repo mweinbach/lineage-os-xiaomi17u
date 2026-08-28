@@ -1635,7 +1635,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_forty_four_projection_preserves_first_259_sources_and_metadata(self):
         config = dependencies.load_config()
-        self.assertEqual(len(config["projects"]), 262)
+        self.assertGreaterEqual(len(config["projects"]), 262)
         original = config["projects"][:259]
         encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
@@ -1704,6 +1704,42 @@ class ConfigurationTests(Fixture):
                      "original ART script invokes its wrapper only when RBE_server_address is present",
                      "No RBE credentials, discovery, remote jobs or network execution are authorized or enabled",
                      "No tool binary was read, downloaded or invoked by this audit"):
+            self.assertIn(text, reason)
+
+    def test_graph_forty_five_preserves_first_262_sources_and_metadata(self):
+        config = dependencies.load_config()
+        self.assertEqual(len(config["projects"]), 263)
+        original = config["projects"][:262]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "d92d0ed7b23433a62fb861d3f82665ebb3a352a4da5ca2ed31db1de749ebe320")
+        historical_config = {**config, "projects": original}
+        encoded = (json.dumps(historical_config, indent=2) + "\n").encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "cbc14838c47a054109a2110b40146f56f680db284f1f8c3db8657905f3530b6b")
+
+    def test_graph_forty_five_bpf_program_source_pin_and_contract(self):
+        project = dependencies.load_config()["projects"][262]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "system/bpfprogs",
+            "url": "https://android.googlesource.com/platform/system/bpfprogs",
+            "commit": "cdb14b57cc698975b796224c507b4d15698b4788",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertTrue(reason.startswith("Actual graph 45 error:"))
+        self.assertNotIn("projection", reason.lower())
+        for text in ("libbpf_load_test", "data dependency", "bpfLoadTpProg.o",
+                     "system/bpfprogs/test/Android.bp", "whole original project and both Blueprints",
+                     "timeInState.o, timeInState.bpf and fuseMedia.o", "mixed production loader and test",
+                     "all three C inputs", "root GPL-2.0 LICENSE and RESTRICTED metadata",
+                     "test package Apache-2.0 declaration", "original GPL program license marker",
+                     "bpf_prog_headers, libcutils_headers and android_bpf_defs",
+                     "factory dependency libbpf_headers", "original include directories",
+                     "Clang builtin stdbool.h", "RELEASE_BPF_ENABLE_LIBBPF true",
+                     "does not rename the test object", "No release flag, source-scope rule or patch changes",
+                     "no Android.mk, AndroidProducts.mk or CleanSpec.mk",
+                     "No recovery package installation, kernel program loading, hardware functionality or licensing clearance is claimed"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
