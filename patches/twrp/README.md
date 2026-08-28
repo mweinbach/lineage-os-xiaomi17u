@@ -200,6 +200,13 @@ explicit overrides remain unchanged, including an explicit empty value. This
 does not sanitize malformed overrides, change the main version or device
 identity, or declare an official release. The actual compile must still pass.
 
+Patch 31 handles the single further unused descriptor parameter reported in
+build 56. `flush_libtar_buffer` uses global state to defer flushing until a later
+write. Its callback signature remains unchanged, with one explicit `(void)fd`
+statement at entry. No write, close, synchronization or flush operation is added;
+the existing state updates and all other source bytes remain unchanged. Actual
+recompilation and device validation are still required.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init

@@ -1751,6 +1751,44 @@
         "This corrects only the undefined Make default. It does not validate or sanitize explicitly configured values, including an explicit empty value.",
         "No warning or security option, feature selection, source revision, official release claim or device identity is changed. The actual Android compile remains required."
       ]
+    },
+    {
+      "id": "0031-explicit-unused-tarwrite-parameter",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0031-explicit-unused-tarwrite-parameter.patch",
+      "patch_sha256": "af2d8b202bd4953d8d565065bcac08fce14b9c70d6bf4746db94e456140ffe88",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Mark the unused fd parameter in flush_libtar_buffer explicitly without changing its signature or body operations. The strict recovery arm64 C compilation reports -Werror,-Wunused-parameter at tarWrite.c:98:30. Preserve the existing deferred end-of-tar buffer state changes, all actual writes, and warning policy.",
+      "files": [
+        {
+          "path": "tarWrite.c",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/tarWrite.c",
+          "before_size_bytes": 2861,
+          "before_sha256": "9ef2f2afaa18d405ba28d4d0d6d34293eb74799f468db5705e6fff5047040d1c",
+          "before_git_blob": "98461452a42ff0e28d4fa22c3fba065683d59994",
+          "after_size_bytes": 2872,
+          "after_sha256": "d55d8913c19c1d0271b7a98bf9f22fcaaafe12f8cac5de6fafe57be8ea5c73ad",
+          "after_git_blob": "d1b4555716099760e39688b3cdfbbf2003032496"
+        }
+      ],
+      "parameter_contract": {
+        "function": "void flush_libtar_buffer(int fd)",
+        "parameter": "fd",
+        "original_line": 98,
+        "original_column": 30,
+        "diagnostic": "-Werror,-Wunused-parameter",
+        "insertion": "\t(void)fd;\n",
+        "added_source_lines": 1,
+        "removed_source_lines": 0,
+        "deferred_flush_preserved": true
+      },
+      "limits": [
+        "This marks an existing unused descriptor parameter; it does not add I/O, close or sync a descriptor, or change the deferred end-of-tar flush behavior.",
+        "Actual Android recompilation and device validation remain required. Offline source checks do not establish a successful build or runtime behavior."
+      ]
     }
   ],
   "application_requirements": [
