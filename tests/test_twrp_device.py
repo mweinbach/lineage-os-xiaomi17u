@@ -9,6 +9,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
+RECOVERY_PACKAGES = "recovery adbd.recovery cgroups.recovery.json task_profiles.json.recovery"
+RECOVERY_SOURCE_RULES_SHA256 = "dd1778493980e7a93a254483395d1e1059070ed60685932ab2ac74d5b3cea61e"
 MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp"
 AUDIO_TEST_BLUEPRINT = "system/media/audio_utils/tests/Android.bp"
 GRAPH14_TEST_BLUEPRINTS = (
@@ -67,7 +69,7 @@ GRAPH39_ORDERED_RULES_SHA256 = "bdd5be6308e2e5de6a9f9aa096db199c54639b9fdc08d58e
 GRAPH42_ORDERED_RULES_SHA256 = "fbbdecd70ea8dc50ae86d8dc0e420d5b54f311293e3d22fea25f969a8fe31ee5"
 GRAPH43_ORDERED_RULES_SHA256 = "5296e6dcc35c038e0528b85ab19fb9ffb09a2604edd999f4d8f363b04882fb16"
 GRAPH44_TRUSTY_RULES_SHA256 = "f016cd594bcfec6669ce7bc31705235b567bc850d3c69d4879ff50e7dcf902ca"
-GRAPH44_OTHER_ASSIGNMENTS_SHA256 = "eae33d5dfdb8a5716a4d9709ab349b15f73b7436632d13812a4b5768613407aa"
+RECOVERY_NON_PACKAGE_ASSIGNMENTS_SHA256 = "ba5e614f22e365ad9ac5541e1cca519dfa1b019f70eaa0540d61bc048ecd9f5f"
 CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
 CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
 CAR_BUILTIN_DEVICE_CTS_PREFIX = "cts/tests/tests/car_builtin/"
@@ -391,6 +393,54 @@ class TwrpDeviceTests(unittest.TestCase):
                         "BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT"):
             self.assertEqual(self.board[setting], "false", setting)
 
+    def test_recovery_packages_add_only_original_adbd_and_scheduling_inputs(self):
+        packages = self.device["PRODUCT_PACKAGES"].split()
+        self.assertEqual(packages, ["recovery", "adbd.recovery", "cgroups.recovery.json",
+                                    "task_profiles.json.recovery"])
+        self.assertEqual(len(packages), len(set(packages)))
+        for invalid in ("adbd", "adbd.recovery.recovery", "cgroups.json",
+                        "cgroups.recovery.json.recovery", "task_profiles.json",
+                        "task_profiles.json.recovery.recovery", "vold", "su"):
+            self.assertNotIn(invalid, packages)
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for provider in ("packages/modules/adb/Android.bp",
+                         "system/core/libprocessgroup/profiles/Android.bp",
+                         "bootable/recovery/etc/Android.bp"):
+            self.assertTrue(source_path_allowed(provider, scopes), provider)
+        self.assertIn("original recovery daemon and logd scheduling inputs", self.device_text)
+
+    def test_recovery_package_addition_preserves_all_source_rules_and_security_flags(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(scopes), 182)
+        raw = json.dumps(scopes, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), RECOVERY_SOURCE_RULES_SHA256)
+        self.assertEqual(self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"],
+                         "ro.secure=1 ro.adb.secure=1")
+        self.assertEqual(self.device["PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING"], "true")
+        self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+        self.assertNotIn("PRODUCT_ADB_KEYS", self.device)
+        self.assertNotIn("TARGET_BUILD_VARIANT", self.device)
+        self.assertNotIn("base_vendor.mk", self.product_text)
+
+    def test_recovery_package_documentation_distinguishes_inputs_from_runtime_proof(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("`adbd.recovery`", "`cgroups.recovery.json`", "`task_profiles.json.recovery`",
+                     "packages/modules/adb/Android.bp", "system/core/libprocessgroup/profiles/Android.bp",
+                     "bootable/recovery/etc/Android.bp", "without a second `.recovery` suffix",
+                     "/system/bin/adbd", "adbd_exec", "/system/etc/cgroups.json", "cgroup_desc_file",
+                     "/system/etc/task_profiles.json", "task_profiles_file", "original `/etc` link",
+                     "link must already exist in the packaged ramdisk", "cgroup setup runs before",
+                     "later init-script symlink alone is insufficient",
+                     "All 182 source-selection rules", "non-package device assignment remain unchanged",
+                     "recorded eight roots only by the three explicit additions",
+                     "not a transitive installed-file inventory", "default `user` build",
+                     "does not alter decryption or network settings", "does not enforce USB-only behavior",
+                     "TCP/VSOCK fallback", "separate transport review", "inclusion is not proof of daemon startup",
+                     "authentication or log access", "device testing remains a separate step requiring authorization"):
+            self.assertIn(fact, readme)
+
     def test_header_ramdisk_and_capacity_match_the_factory_contract(self):
         header = self.stock["headers"]["recovery"]
         limit = self.stock["package_gpt_contract"]["partition_size_bytes_per_slot"]["recovery"]
@@ -443,7 +493,7 @@ class TwrpDeviceTests(unittest.TestCase):
         for setting in ("PRODUCT_USE_DYNAMIC_PARTITIONS", "PRODUCT_VIRTUAL_AB_OTA",
                         "TW_OVERRIDE_SYSTEM_PROPS", "TW_PREPARE_DATA_MEDIA_EARLY"):
             self.assertNotEqual((self.board | self.device).get(setting), "true", setting)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_disabled_omapi_is_exported_as_boolean_after_vendor_configuration(self):
         lines = list(logical_lines(self.board_text))
@@ -458,7 +508,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual(omapi_lines, [typed_disable])
         for setting in ("TW_INCLUDE_CRYPTO", "TW_INCLUDE_CRYPTO_FBE", "TW_INCLUDE_LIBRESETPROP"):
             self.assertEqual(self.board[setting], "false", setting)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_native_recovery_profile_is_typed_and_local_to_this_product(self):
         lines = list(logical_lines(self.board_text))
@@ -469,7 +519,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual([line for line in lines if "native_recovery_only" in line], [profile_enable])
         self.assertNotIn("native_recovery_only", self.product_text + self.device_text)
         self.assertNotIn("native_recovery_only", (ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text())
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_native_recovery_profile_keeps_production_and_validation_sources(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
@@ -571,7 +621,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertTrue(source_path_allowed(source, scopes), source)
         # Restoring source graph providers does not enable runtime networking.
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         self.assertIn("Graph 3", readme)
         self.assertIn("f9da1fc7154ea007aa835f88e8070c6ac46d54e9", readme)
@@ -636,7 +686,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "hardware/interfaces/neuralnetworks/aidl/Android.bp",
                        "system/sepolicy/tests/Android.bp", "external/avb/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("Graph 17", "CtsNNAPITestCases", "CtsNNAPITests_static",
                      "libneuralnetworks", "four tests and one JNI test library",
@@ -657,7 +707,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "frameworks/opt/net/wifi_sibling/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_sixth_graph_restores_consumed_secretkeeper_without_enabling_crypto(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
@@ -676,7 +726,7 @@ class TwrpDeviceTests(unittest.TestCase):
             "hardware/interfaces/security/secretkeeper/aidl/vts/Android.bp", scopes))
         for setting in ("TW_INCLUDE_CRYPTO", "TW_INCLUDE_CRYPTO_FBE", "TW_INCLUDE_LIBRESETPROP"):
             self.assertEqual(self.board[setting], "false", setting)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         for fact in ("Graph 6", "microdroid_manager", "libsecretkeeper_client",
                      "libsecretkeeper_comm_nostd"):
@@ -717,7 +767,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "prebuilts/misc/common/kxml2/Android.bp", "tools/tradefederation/core/Android.bp",
                        "build/soong/licenses/Android.bp", "build/make/teams/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         for fact in ("Graph 11", "compatibility-common-util-lib", "platform-test-annotations",
                      "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783"):
@@ -735,7 +785,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "system/libvintf/Android.bp", "build/make/tools/apicheck/Android.bp",
                        "prebuilts/build-tools/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
         readme = (DEVICE / "README.md").read_text()
         self.assertIn("Graph 9", readme)
@@ -759,7 +809,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "external/mesa3d/Android.bp", "external/swiftshader/Android.bp",
                        "external/wayland-protocols/Android.bp", "build/soong/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("libfuse_rust", "libdisk", "libcrosvm_control_static",
@@ -784,7 +834,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "system/core/debuggerd/proto/Android.bp", "external/protobuf/Android.bp",
                        "build/soong/licenses/Android.bp", "external/auto/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("Graph 24", "sts-host-util", "CtsAppSecurityUtils",
                      "seven named declarations", "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
@@ -804,7 +854,7 @@ class TwrpDeviceTests(unittest.TestCase):
         for source in (parent + "hal/default/Android.bp", parent + "hal/default/test/Android.bp",
                        parent + "hal/default/proto/other.bp", parent + "hal/default/proto/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("wakeup_client_protos", "original two genrules", "wakeup_client.proto",
                      "3e2bcbf17426a5783f034c8b0bb0d26743b39892", "All three test servers",
@@ -826,7 +876,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "hardware/interfaces/automotive/remoteaccess/test_grpc_server/impl/Android.bp",
                        "build/soong/licenses/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("trendy_team_aaos_power_triage", "nine original team declarations",
                      "61256ae811853028effed5c2c7227aebc347dc5e", "historical admission reason unchanged",
@@ -846,7 +896,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "tools/metalava/metalava/Android.bp", "build/soong/java/Android.bp",
                        "build/soong/licenses/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("android.car-test-stubs", "41 named declarations", "car_sdk",
                      "metalava-manual", "visibility checks remain unchanged",
@@ -884,7 +934,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        parent + "tests/Android.bp",
                        parent + "flags_sibling/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("Graph 23", "sdk_sandbox_exported_flags_lib", "10 original flags",
@@ -914,7 +964,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "build/soong/java/sdk_library.go", "build/soong/licenses/Android.bp",
                        "packages/modules/AdServices_sibling/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("Graph 27", "sixteen exact Blueprint files", "framework-adservices",
@@ -940,7 +990,7 @@ class TwrpDeviceTests(unittest.TestCase):
                 self.assertFalse(source_path_allowed(directory + "unrelated/Android.bp", scopes))
             self.assertFalse(source_path_allowed(parent + "tests/Android.bp", scopes))
             self.assertTrue(source_path_allowed(parent.rstrip("/") + "_sibling/Android.bp", scopes))
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         for source in ("system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
                        "build/soong/licenses/Android.bp", "frameworks/base/api/Android.bp"):
@@ -956,7 +1006,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "frameworks/opt/net/wifi/libs/WifiTrackerLib_sibling/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_framework_provider_scope_documents_collateral_apps_and_test_only_sources(self):
         readme = " ".join((DEVICE / "README.md").read_text().split())
@@ -978,7 +1028,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "platform_testing/libraries/device-collectors/src/test/Android.bp",
                        "platform_testing/libraries/runner/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_consumed_robolectric_extension_files_are_restored(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
@@ -1015,7 +1065,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("51 original helper Blueprint files", "Robolectric_all-target",
                      "ClearcutJunitListener", "junitxml", "tracinglib-robo-test",
@@ -1036,7 +1086,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/Android.bp",
                        "packages/modules/AdServices/apex/unrelated/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_graph_thirty_two_tv_api_scope_does_not_select_tv_product(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
@@ -1050,7 +1100,7 @@ class TwrpDeviceTests(unittest.TestCase):
                      "Settings/tests/robotests/Android.bp", "SettingsAPI/tests/Android.bp"):
             self.assertFalse(source_path_allowed(TV_SETTINGS_PARENT + leaf, scopes), leaf)
         self.assertTrue(source_path_allowed("packages/apps/TvSettings_sibling/Android.bp", scopes))
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
 
     def test_graph_thirty_two_provider_scope_documents_real_limits(self):
@@ -1079,7 +1129,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/textexecutor/Android.bp",
                        "cts/common/device-side/util-axt/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_sdk_test_certificate_restores_only_original_provider_blueprint(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
@@ -1093,7 +1143,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for prop in ("PRODUCT_EXTRA_RECOVERY_KEYS", "PRODUCT_DEFAULT_DEV_CERTIFICATE"):
             self.assertNotIn(prop, self.device)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_graph_thirty_three_runner_documents_observed_failure_and_limits(self):
         readme = " ".join((DEVICE / "README.md").read_text().split())
@@ -1121,7 +1171,7 @@ class TwrpDeviceTests(unittest.TestCase):
         for source in ("cts/hostsidetests/securitybulletin/Android.bp", "cts/Android.bp",
                        "cts/common/device-side/util-axt/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("separate CTS lookahead", "CtsSecurityBulletinHostTestCases",
                      "MainlineModuleDetector", "no factory or test settings are changed",
@@ -1145,7 +1195,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "hardware/interfaces/wifi/hostapd/1.0/vts/functional/Android.bp",
                        "hardware/interfaces/wifi/supplicant/1.0/vts/functional/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
 
@@ -1172,7 +1222,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "build/soong/aconfig/aconfig_declarations.go",
                        "build/soong/aconfig/codegen/java_aconfig_library.go"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("CTS source projection", "CtsSettingsTestCases",
                      "com_android_car_settings_flags_lib", "com_android_car_settings_flags",
@@ -1201,7 +1251,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_TEAMS_BLUEPRINT,
                        *CAR_API_BLUEPRINTS):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
     def test_graph_thirty_four_car_builtin_documents_metadata_and_coverage_limits(self):
         readme = " ".join((DEVICE / "README.md").read_text().split())
@@ -1236,7 +1286,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
 
     def test_graph_thirty_nine_watchdog_records_actual_consumers_and_source_limits(self):
@@ -1276,7 +1326,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
                        "bootable/recovery/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_EXCLUDE_APEX"], "true")
         self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
@@ -1311,7 +1361,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertNotIn("-" + parent, scopes)
         self.assertEqual(self.device["PRODUCT_BUILD_RECOVERY_IMAGE"], "true")
         self.assertEqual(self.device["PRODUCT_BUILD_SYSTEM_IMAGE"], "false")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
 
     def test_graph_forty_three_documents_rejected_cuts_and_image_only_gate(self):
@@ -1347,7 +1397,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "system/sepolicy/Android.bp", "system/libvintf/Android.bp",
                        "bootable/recovery/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["BOARD_AVB_RECOVERY_KEY_PATH"],
                          "external/avb/test/data/testkey_rsa4096.pem")
 
@@ -1417,11 +1467,11 @@ class TwrpDeviceTests(unittest.TestCase):
                        "test/vts-testcase/hal/treble/vintf/"):
             self.assertNotIn("-" + prefix, scopes)
 
-    def test_graph_forty_four_changes_no_other_device_make_assignments(self):
+    def test_explicit_package_addition_changes_no_other_device_make_assignments(self):
         unchanged = {key: value for key, value in self.device.items()
-                     if key != "PRODUCT_SOURCE_ROOT_DIRS"}
+                     if key not in {"PRODUCT_SOURCE_ROOT_DIRS", "PRODUCT_PACKAGES"}}
         raw = json.dumps(unchanged, sort_keys=True, separators=(",", ":")).encode()
-        self.assertEqual(hashlib.sha256(raw).hexdigest(), GRAPH44_OTHER_ASSIGNMENTS_SHA256)
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), RECOVERY_NON_PACKAGE_ASSIGNMENTS_SHA256)
 
     def test_graph_forty_four_documents_the_required_paired_test_gates(self):
         readme = " ".join((DEVICE / "README.md").read_text().split())
@@ -1475,7 +1525,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertFalse(any(rule.lstrip("-").startswith("prebuilts/remoteexecution-client/")
                              for rule in scopes))
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.product["PRODUCT_DEVICE"], "nezha")
         self.assertNotIn("PRODUCT_SOONG_NAMESPACES", self.device)
         active = "\n".join(logical_lines(self.board_text + self.device_text + self.product_text))
@@ -1525,7 +1575,7 @@ class TwrpDeviceTests(unittest.TestCase):
         pins = {project["path"]: project["commit"] for project in projects}
         self.assertEqual(pins.get("external/pigweed"), "6b21bb2df225f4559fcfe495a73d20ba11d87d60")
         self.assertEqual(pins.get("external/emboss"), "c003e8aff9ab3dce46d1ba22c9002541e45c5178")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
         readme = (DEVICE / "README.md").read_text()
         for fact in ("Graph 22", "chre_flags", "18 original flags", "22 Blueprint files",
@@ -1550,7 +1600,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "build/soong/licenses/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertNotIn("BOARD_WLAN_DEVICE", self.board)
         self.assertNotIn("WIFI_MULTIPLE_VENDOR_HALS", self.board)
         self.assertNotIn("soong_config_set,wifi,", self.board_text)
@@ -1577,7 +1627,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "build/make/teams/Android.bp", "build/soong/licenses/Android.bp",
                        "tools/tradefederation/core/test_framework/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         for fact in ("Graph 22", provider, "test-composers", "HostTestComposersTests",
                      "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783"):
@@ -1613,7 +1663,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "system/logging/liblog/Android.bp", "tools/tradefederation/core/Android.bp",
                        "build/make/teams/Android.bp", "build/soong/licenses/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         for fact in ("source projection after Graph 13", "flag-junit-host", "libflagtest",
                      "framework-configinfrastructure.stubs.module_lib"):
@@ -1652,7 +1702,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "external/speex/Android.bp", "system/sepolicy/contexts/Android.bp",
                        "system/sepolicy/tests/Android.bp", "external/avb/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         self.assertIn(AUDIO_TEST_BLUEPRINT, readme)
         self.assertIn("f01e84b958fb6a887dc0e74e4b5ebd159f03860a", readme)
@@ -1675,7 +1725,7 @@ class TwrpDeviceTests(unittest.TestCase):
                        "external/avb/Android.bp", "system/libvintf/Android.bp",
                        "bootable/recovery/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         readme = (DEVICE / "README.md").read_text()
         self.assertIn("Graph 14 reported seven missing dependencies", readme)
         self.assertIn("follow-up projection", readme)
@@ -1705,7 +1755,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertTrue(source_path_allowed(source, scopes), source)
         self.assertNotIn("-hardware/interfaces/security/", scopes)
         self.assertNotIn("-system/security/", scopes)
-        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
         self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
         self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
         readme = (DEVICE / "README.md").read_text()

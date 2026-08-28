@@ -13,6 +13,48 @@ source tree. The product is `twrp_nezha`; its registered lunch choices are
 resolved manifest and source patch receipts first. Do not repurpose the
 existing Evolution product or use `recoveryimage-nodeps`.
 
+The device product explicitly requests four original packages: `recovery`,
+`adbd.recovery`, `cgroups.recovery.json`, and `task_profiles.json.recovery`.
+The three additions repair a source-level packaging omission for the intended
+authenticated ADB and log workflow. The minimal inheritance chain does not
+include `base_vendor.mk`, which normally requests the daemon and recovery
+cgroups profile. TWRP requests the task profiles only in its decryption branch,
+which remains disabled here. Its enabled logd branch does not request either
+JSON file, even though logd treats a failed background scheduling profile as
+fatal. Explicit package requests avoid relying on incidental installation.
+
+The pinned original providers retain these exact Soong and Make module names,
+without a second `.recovery` suffix. Their expected paths and existing labels
+inside the recovery ramdisk are:
+
+| Package | Original provider | Expected path and SELinux type |
+| --- | --- | --- |
+| `adbd.recovery` | `packages/modules/adb/Android.bp`, `cc_binary`, `recovery: true`, stem `adbd` | `/system/bin/adbd`, `adbd_exec` |
+| `cgroups.recovery.json` | `system/core/libprocessgroup/profiles/Android.bp`, `prebuilt_etc`, filename `cgroups.json` | `/system/etc/cgroups.json`, `cgroup_desc_file` |
+| `task_profiles.json.recovery` | `bootable/recovery/etc/Android.bp`, `prebuilt_etc` using `:task_profiles.json`, filename `task_profiles.json` | `/system/etc/task_profiles.json`, `task_profiles_file` |
+
+These files are expected under `recovery/root` in the product output; the
+original `/etc` link to `/system/etc` supplies the profile lookup paths.
+That link must already exist in the packaged ramdisk: cgroup setup runs before
+`early-init` and `init`, so a later init-script symlink alone is insufficient.
+The original providers, dependencies, contents, file-context rules, and product
+inheritance are unchanged. All 182 source-selection rules and every other
+non-package device assignment remain unchanged. A future generated product
+package list should differ from the recorded eight roots only by the three
+explicit additions; that expanded list is not a transitive installed-file
+inventory and must be checked after the next graph.
+
+The default `user` build, secure ADB properties, authentication patches,
+SELinux enforcement, signature and AVB checks remain in place. This change
+does not alter decryption or network settings, allow root ADB or unauthenticated
+sideload, add a host key, or modify the USB transport. Package selection does
+not enforce USB-only behavior: the original daemon has a TCP/VSOCK fallback
+when USB is unavailable, which needs a separate transport review. Package
+inclusion is not proof of daemon startup, cgroup availability, USB transport,
+authentication or log access. A successful strict build must still verify the
+final ARM64 daemon, JSON contents, paths, labels, `/etc` link and logd
+dependencies; device testing remains a separate step requiring authorization.
+
 The pinned GUI source reads `OUT` from the build environment to place its
 theme under the selected product's `recovery/root/twres`. The runner must
 provide the same absolute product-output directory that `lunch` exports as
@@ -53,7 +95,7 @@ The ten original Android 16 r1 provider projects are pinned separately in
 SwiftShader LLVM dependency and the genuine Wayland generator. The selected
 Soong already permits that generator plugin; no validation exception is added.
 This is a source dependency restoration, not an observed graph 24 failure or a
-working virtualization or graphics feature. `PRODUCT_PACKAGES` still contains
+working virtualization or graphics feature. At that stage, `PRODUCT_PACKAGES` contained
 only `recovery`. Compilation, linking and device behavior remain unverified.
 
 The second graph reached a further set of absent defaults. Its additional
@@ -322,7 +364,7 @@ declarations and license checks are unchanged; this does not establish
 redistribution clearance.
 
 This source selection does not add these services to `PRODUCT_PACKAGES`, which
-still contains only `recovery`. API checks and visibility
+at that stage contained only `recovery`. API checks and visibility
 remain unchanged, as do the original module definitions and generator commands.
 Shared external providers come from their existing pinned source projects.
 This establishes a reviewed source dependency set, not successful compilation
@@ -470,7 +512,7 @@ original license owner in the root file, which also retains `Settings-core` and
 `Settings`. Launcher3's four files preserve its flags, shared library, checks and
 `launcher-aosp-tapl`. Traceur's root keeps `TraceurCommon`, `Traceur-res` and the
 inseparable app declaration. This does not install Settings, Launcher3, Traceur
-or either CellBroadcast app in recovery: `PRODUCT_PACKAGES` remains `recovery`.
+or either CellBroadcast app in recovery: at that stage `PRODUCT_PACKAGES` was `recovery`.
 Other Blueprint files in these five projects stay outside this source profile.
 
 The complete original SetupWizard, SetupDesign, SetupCompat and ZXing providers
@@ -584,7 +626,7 @@ VTS helpers. One exact positive rule restores
 The four genuine external providers, global Apache license and all eight raw
 files are present. The rule selects only this build file; sibling build files
 remain excluded. The Wi-Fi restoration produced 161 source rules, with networking
-still disabled and `PRODUCT_PACKAGES` still limited to recovery.
+still disabled and `PRODUCT_PACKAGES` then limited to recovery.
 
 The original exported `mock_hal_tool.h` retains its stale
 `wifi_system/hal_tool.h` include. A bounded scan of 185 C/C++ source and header
@@ -638,7 +680,7 @@ versions 2 and 3, and the internal interface importing public V3. Its original
 That selection had 165 source rules. The previous 164 rules retain
 their order, and the broad Car exclusion remains in place: no neighboring
 watchdog implementation, power, telemetry, service or test Blueprint is
-restored. `PRODUCT_PACKAGES` remains `recovery`; this source-provider repair
+restored. `PRODUCT_PACKAGES` was then `recovery`; this source-provider repair
 does not install a Car service or establish compilation or device behavior.
 Source definitions, API declarations, feature flags and validators are unchanged.
 
@@ -661,7 +703,7 @@ directory, not to the Cobalt child described above.
 
 That selection had 169 source rules, with the previous 165 rules in
 their original order. The broad AdServices exclusion still protects unrelated
-files and test subtrees. `PRODUCT_PACKAGES` remains `recovery`, and
+files and test subtrees. `PRODUCT_PACKAGES` was then `recovery`, and
 `TW_EXCLUDE_APEX` remains true; this scope change does not enable installed-system
 APEX discovery. Dependency, APEX, signature and license checks remain enabled.
 This is source-graph repair, not proof of compilation, final image contents or
@@ -723,7 +765,7 @@ the previously selected `perf-setup/Android.bp` remains selected.
 That selection had 173 source rules, preserving the previous 169 rules
 in their original order, followed by the three Cuttlefish rules and the exact
 script-provider file. No Cuttlefish product, board, identity, kernel or
-firmware is inherited. `PRODUCT_PACKAGES` remains `recovery`, and Nezha retains
+firmware is inherited. `PRODUCT_PACKAGES` was then `recovery`, and Nezha retains
 its own AOSP engineering recovery key at
 `external/avb/test/data/testkey_rsa4096.pem`. The scope audit did not read or copy
 key payloads. This admits source providers, not Cuttlefish installation or

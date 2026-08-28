@@ -17,7 +17,14 @@ PRODUCT_BUILD_USERDATA_IMAGE := false
 PRODUCT_BUILD_CACHE_IMAGE := false
 PRODUCT_BUILD_VBMETA_IMAGE := false
 
-PRODUCT_PACKAGES += recovery
+# Request the original recovery daemon and logd scheduling inputs explicitly.
+# The minimal product does not inherit base_vendor, and decryption stays off.
+# Package inclusion does not establish startup, USB, authentication or log access.
+PRODUCT_PACKAGES += \
+    recovery \
+    adbd.recovery \
+    cgroups.recovery.json \
+    task_profiles.json.recovery
 
 # The minimal manifest retains these consumers without their parent defaults.
 # Exclude only subsystems outside this no-network/no-crypto recovery product.

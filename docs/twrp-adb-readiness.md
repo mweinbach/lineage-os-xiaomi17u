@@ -36,14 +36,22 @@ adbd remains a disabled service until requested; the excluded MTP startup path
 does not supply that request, and the GUI's explicit ADB action is not an
 authentication dialog. Logd already receives an explicit `on init` start.
 
-The source packaging review identifies three original providers that need an
-explicit installation decision: `adbd.recovery`, `cgroups.recovery.json`, and
-`task_profiles.json.recovery`. They are absent from the inspected product's
-explicit package requests. The ADB API phony supplies libraries rather than
-the daemon, and the current task-profile request is inside the disabled crypto
-branch. This is not a finding from a completed installation graph or ramdisk.
-No package has been added by this review; final packaging must verify these
-inputs without enabling crypto or inheriting the broad vendor product.
+The source packaging review identified three original providers missing from
+the inspected product's eight explicit requests: `adbd.recovery`,
+`cgroups.recovery.json`, and `task_profiles.json.recovery`. The ADB API phony
+supplies libraries rather than the daemon, and the upstream task-profile request
+is inside the disabled crypto branch. The target now explicitly requests all
+three original modules alongside `recovery`, without enabling crypto or
+inheriting the broad vendor product. This is a source change, not a finding from
+a completed installation graph or ramdisk.
+
+The next generated product configuration must contain the previous eight roots
+plus exactly these three additions. Final packaging must verify the original
+ARM64 daemon at `/system/bin/adbd`, both JSON files in `/system/etc`, their
+existing SELinux labels and the `/etc` link. That link must already exist in
+the ramdisk because cgroup setup precedes the normal `early-init` and `init`
+actions. The [target notes](../recovery/twrp/device/xiaomi/nezha/README.md)
+record the exact provider names, expected paths and remaining artifact checks.
 
 Automatic startup also needs a separate transport restriction. The pinned
 `daemon/main.cpp` falls back to TCP/VSOCK listeners on port 5555 if the FunctionFS
