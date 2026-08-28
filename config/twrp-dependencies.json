@@ -1765,6 +1765,62 @@
       "commit": "9d3d10f9bbb011b10c2f9bb4527ee8bc942d3914",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP ethtool cc_binary required by com.android.tethering in the graph 41 error. The whole original project and Blueprint are preserved, including bundled libmnl sources, original GPL/LGPL license metadata, min_sdk_version 30, installable false and existing apex_available entries. Original unmatched source globs remain unchanged. No separate libmnl checkout or app activation is added, and no tethering or network functionality is claimed."
+    },
+    {
+      "path": "external/google-fonts/carrois-gothic-sc",
+      "url": "https://android.googlesource.com/platform/external/google-fonts/carrois-gothic-sc",
+      "commit": "317d5aad96dac8c1c6ac70fe7f1f77aa0a0bc178",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP CarroisGothicSC filegroup required by generate_font_fallback. The whole original project, font prebuilt, configuration, BSD/MIT/OFL metadata and special licensing notices are preserved. No font rendering or redistribution rights are claimed."
+    },
+    {
+      "path": "external/google-fonts/coming-soon",
+      "url": "https://android.googlesource.com/platform/external/google-fonts/coming-soon",
+      "commit": "e72d9ee22b601fd4e4ae56adc3b74a3d455364e3",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP ComingSoon filegroup required by generate_font_fallback. The whole original project, font prebuilt, configuration, Apache-2.0 metadata and license text are preserved. No font rendering or redistribution rights are claimed."
+    },
+    {
+      "path": "external/google-fonts/cutive-mono",
+      "url": "https://android.googlesource.com/platform/external/google-fonts/cutive-mono",
+      "commit": "f9e9dbc9604e91245765ba59c405712f618ac9bd",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP CutiveMono filegroup required by generate_font_fallback. The whole original project, font prebuilt, configuration, BSD/MIT/OFL metadata and special licensing notices are preserved. No font rendering or redistribution rights are claimed."
+    },
+    {
+      "path": "external/roboto-flex-fonts",
+      "url": "https://android.googlesource.com/platform/external/roboto-flex-fonts",
+      "commit": "e9deeba80f18a1348a113f8ce954f0e5248fabde",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP RobotoFlex filegroup required by generate_font_fallback. The whole original project, font prebuilt, configuration, OFL metadata and notices are preserved. No font rendering or redistribution rights are claimed."
+    },
+    {
+      "path": "external/google-fonts/source-sans-pro",
+      "url": "https://android.googlesource.com/platform/external/google-fonts/source-sans-pro",
+      "commit": "ea777a6c3d98a14c34605c56e1cf36251fd8040b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP SourceSansPro filegroup required by generate_font_fallback. The whole original project, all six font prebuilts, configuration, MIT/OFL and legacy_by_exception_only metadata and special licensing notices are preserved. No font rendering or redistribution rights are claimed."
+    },
+    {
+      "path": "external/fhir/spec/r4",
+      "url": "https://android.googlesource.com/platform/external/fhir/spec/r4",
+      "commit": "8feeb7dabdaf4b99434215b64a8295cf6fc0d0d0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP resource-definitions and type-definitions filegroups required by HealthFitness generate-fhir-spec-r4-binarypb and generate-fhir-spec-r4-textproto. The whole original project, original visibility, LICENSE and MODULE_LICENSE_CC0-1.0 marker are preserved; no package or license module is synthesized. No generated artifact or runtime functionality is claimed."
+    },
+    {
+      "path": "external/shflags",
+      "url": "https://android.googlesource.com/platform/external/shflags",
+      "commit": "ca94e59d5633e0da49cfa9a999b565ca630e1b3d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP shflags sh_binary_host is a required dependency of the retained host brillo_update_payload during the Make stage, not an observed Soong error. The whole original project and Apache-2.0 license metadata are preserved. No installed recovery tool or payload-generation success is claimed."
+    },
+    {
+      "path": "device/google/cuttlefish",
+      "url": "https://android.googlesource.com/device/google/cuttlefish",
+      "commit": "c6a8b05c38d88e8d19b83fd8d47f75c0686f2e69",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 43 error: real AOSP com.google.cf.apex.key and com.google.cf.apex.certificate declarations and append_squashfs_overlay host tool required by retained APEX and OpenWrt generators. The whole original project is pinned for selection of only apex/keys/Android.bp and host/commands/append_squashfs_overlay/Android.bp, retaining append_squashfs_overlay.test and global Apache metadata. Original CleanSpec behavior is preserved; clean_steps.mk was absent at admission and must be checked again before graph/Kati. No Cuttlefish device selection, key payload access or runtime support is implied."
     }
   ]
 }

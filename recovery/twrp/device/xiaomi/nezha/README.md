@@ -27,6 +27,7 @@ are omitted by the minimal manifest. This recovery product uses the supported
 | --- | --- |
 | `hardware/google/aemu/` | Original emulator exclusion; four shared provider files are restored below for the reviewed Crosvm closure |
 | `packages/modules/AdServices/` | Advertising services and their test collectors |
+| `device/google/cuttlefish/` | Cuttlefish device and host source, except the two reviewed signing and host-tool Blueprint files described below |
 | `hardware/interfaces/virtualization/capabilities_service/vts/` | Virtualization capability VTS tests |
 
 The initial `system/secretkeeper/` exclusion was later removed when restored
@@ -658,13 +659,76 @@ fetch is needed. Signing declarations are unchanged, and no key material was
 read or changed. The restored APK package's license defaults apply to its own
 directory, not to the Cobalt child described above.
 
-The current selection has 169 source rules, with the previous 165 rules in
+That selection had 169 source rules, with the previous 165 rules in
 their original order. The broad AdServices exclusion still protects unrelated
 files and test subtrees. `PRODUCT_PACKAGES` remains `recovery`, and
 `TW_EXCLUDE_APEX` remains true; this scope change does not enable installed-system
 APEX discovery. Dependency, APEX, signature and license checks remain enabled.
 This is source-graph repair, not proof of compilation, final image contents or
 AdServices behavior in recovery.
+
+Graph 43 reports 43 absent app and tool dependencies of the handwritten
+`aosp_shared_system_image` declaration. Excluding its entire
+`build/make/target/product/generic/Android.bp` file was rejected: the companion
+`build/make/target/product/gsi/Android.bp` consumes its shared image defaults.
+Excluding both files was also rejected because retained `vts_vndk_utils` in
+`test/vts-testcase/vndk/Android.bp` needs the GSI file's `vndk_lib_lists` provider.
+All three Blueprint files therefore remain selected.
+
+Patch `0021-native-recovery-generic-system-image` instead adds an `enabled`
+selector only to `aosp_shared_system_image`. The existing typed
+`nezha_twrp.native_recovery_only` value disables that one image in this profile;
+the default branch is true, preserving the original enabled behavior for false
+or absent profile values. The generic and GSI defaults, custom module type,
+variables, signing and file-context helpers, and VTS providers remain intact. Recovery's own image
+generation, AVB, size, SELinux and VINTF checks are unchanged. This does not
+establish a successful GSI build or passing GSI/VTS tests.
+
+A separate source projection, not an actual Graph 43 diagnostic, requires two
+original Cuttlefish Blueprint files at revision
+`c6a8b05c38d88e8d19b83fd8d47f75c0686f2e69`. A negative
+`device/google/cuttlefish/` prefix admits only these exact positive exceptions:
+
+- `device/google/cuttlefish/apex/keys/Android.bp`
+- `device/google/cuttlefish/host/commands/append_squashfs_overlay/Android.bp`
+
+The first file preserves `com.google.cf.apex.key` and
+`com.google.cf.apex.certificate` for retained HAL APEX declarations. The second
+preserves the Rust host binary `append_squashfs_overlay` and its original
+`append_squashfs_overlay.test` for retained OpenWrt image generators. Both files
+have their own global Apache package metadata; their four named definitions
+and two package declarations remain unchanged. The only ordinary external
+module dependency is the existing host-capable `libclap`.
+
+Blueprint filtering does not suppress Make autodiscovery. The full project has
+no `Android.mk`, but its root `CleanSpec.mk` is discovered; the finder stops
+descending there rather than independently importing the nested CleanSpec.
+An initial read-only check found `clean_steps.mk` absent. That state must be
+checked again immediately before Kati: absent state initializes the clean-step
+record without running the steps, while existing state can run newly discovered
+steps that remove product and recovery charger/health outputs. Original
+CleanSpec and clean-state handling remain enabled; no clean state is fabricated
+and no output is deleted to force absence.
+
+A separate CTS packaging projection restores only
+`platform_testing/scripts/Android.bp` at the existing revision
+`7b48625b052b94b1ef24573ef5e8ffa5e2ea9783`. Its original `sh_binary_host`
+`test-utils-script` has its own global Apache package and no ordinary module
+dependencies. The retained `csuite_standalone_zip` action copies the utility
+into its host ZIP; neither that action nor the host binary factory executes
+or sources the script. Future test runtime behavior was not exercised. The
+`platform_tests` aggregate and other script Blueprints remain excluded, while
+the previously selected `perf-setup/Android.bp` remains selected.
+
+The current selection has 173 source rules, preserving the previous 169 rules
+in their original order, followed by the three Cuttlefish rules and the exact
+script-provider file. No Cuttlefish product, board, identity, kernel or
+firmware is inherited. `PRODUCT_PACKAGES` remains `recovery`, and Nezha retains
+its own AOSP engineering recovery key at
+`external/avb/test/data/testkey_rsa4096.pem`. The scope audit did not read or copy
+key payloads. This admits source providers, not Cuttlefish installation or
+runtime support; signature, AVB, SELinux, VINTF and dependency checks remain
+enabled, and compilation and final image contents remain unverified.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

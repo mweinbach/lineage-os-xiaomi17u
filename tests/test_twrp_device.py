@@ -29,6 +29,12 @@ AEMU_PROVIDER_BLUEPRINTS = (
     "hardware/google/aemu/host-common/Android.bp",
     "hardware/google/aemu/snapshot/Android.bp",
 )
+CUTTLEFISH_PARENT = "device/google/cuttlefish/"
+CUTTLEFISH_PROVIDER_BLUEPRINTS = (
+    CUTTLEFISH_PARENT + "apex/keys/Android.bp",
+    CUTTLEFISH_PARENT + "host/commands/append_squashfs_overlay/Android.bp",
+)
+TEST_UTILS_BLUEPRINT = "platform_testing/scripts/Android.bp"
 STS_PROVIDER_BLUEPRINTS = (
     "platform_testing/libraries/sts-common-util/host-side/Android.bp",
     "platform_testing/libraries/sts-common-util/util/Android.bp",
@@ -38,6 +44,7 @@ CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
 CAR_WATCHDOG_BLUEPRINT = "packages/services/Car/cpp/watchdog/aidl/Android.bp"
 GRAPH34_ORDERED_RULES_SHA256 = "acb03f16c6e8d6a785466ec0d3f8b483e1e1a790e297220a6e710634a2ffdc36"
 GRAPH39_ORDERED_RULES_SHA256 = "bdd5be6308e2e5de6a9f9aa096db199c54639b9fdc08d58e19036de97edf7a77"
+GRAPH42_ORDERED_RULES_SHA256 = "fbbdecd70ea8dc50ae86d8dc0e420d5b54f311293e3d22fea25f969a8fe31ee5"
 CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
 CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
 CAR_BUILTIN_DEVICE_CTS_PREFIX = "cts/tests/tests/car_builtin/"
@@ -177,11 +184,13 @@ SOURCE_FILE_REINCLUSIONS = {
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
-    *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
+    *AEMU_PROVIDER_BLUEPRINTS, *CUTTLEFISH_PROVIDER_BLUEPRINTS,
+    TEST_UTILS_BLUEPRINT, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_WATCHDOG_BLUEPRINT,
     *ADSERVICES_API_BLUEPRINTS, *ADSERVICES_APEX_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + CUTTLEFISH_PARENT,
     "-" + CAR_BUILTIN_DEVICE_CTS_PREFIX,
     "-" + CAR_SETTINGS_PARENT,
     "-" + TV_SETTINGS_PARENT,
@@ -226,6 +235,8 @@ SOURCE_REINCLUSIONS = [
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
+    *CUTTLEFISH_PROVIDER_BLUEPRINTS,
+    TEST_UTILS_BLUEPRINT,
     *STS_PROVIDER_BLUEPRINTS,
     WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT,
@@ -968,7 +979,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 169)
+        self.assertEqual(len(scopes), 173)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -1254,6 +1265,97 @@ class TwrpDeviceTests(unittest.TestCase):
                      "not inherited from ancestor directories", "earlier claim", "incorrect"):
             self.assertIn(fact, readme)
         self.assertNotIn("it inherits the restored AdServices root license metadata", readme)
+
+    def test_graph_forty_three_image_gate_preserves_generic_gsi_and_vts_sources(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in ("build/make/target/product/generic/Android.bp",
+                       "build/make/target/product/gsi/Android.bp",
+                       "test/vts-testcase/vndk/Android.bp", "build/make/core/Makefile",
+                       "build/make/target/product/generic_ramdisk.mk",
+                       "build/soong/filesystem/Android.bp", "build/soong/fsgen/Android.bp",
+                       "system/gsi/Android.bp", "system/sepolicy/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
+                       "external/avb/Android.bp", "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            self.assertNotIn("-" + source, scopes)
+        for parent in ("build/", "build/make/", "build/make/target/", "build/make/target/product/",
+                       "build/make/target/product/generic/", "build/make/target/product/gsi/",
+                       "test/vts-testcase/", "test/vts-testcase/vndk/"):
+            self.assertNotIn("-" + parent, scopes)
+        self.assertEqual(self.device["PRODUCT_BUILD_RECOVERY_IMAGE"], "true")
+        self.assertEqual(self.device["PRODUCT_BUILD_SYSTEM_IMAGE"], "false")
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
+
+    def test_graph_forty_three_documents_rejected_cuts_and_image_only_gate(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 43", "43 absent app and tool dependencies", "aosp_shared_system_image",
+                     "build/make/target/product/generic/Android.bp",
+                     "build/make/target/product/gsi/Android.bp", "test/vts-testcase/vndk/Android.bp",
+                     "vts_vndk_utils", "vndk_lib_lists", "All three Blueprint files therefore remain selected",
+                     "0021-native-recovery-generic-system-image", "nezha_twrp.native_recovery_only",
+                     "default branch is true, preserving the original enabled behavior for false or absent profile values",
+                     "does not establish a successful GSI build"):
+            self.assertIn(fact, readme)
+        patch = (ROOT / "patches/twrp/0021-native-recovery-generic-system-image.patch").read_text()
+        self.assertIn('+    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {\n'
+                      '+        true: false,\n+        default: true,\n+    }),\n', patch)
+
+    def test_cuttlefish_projection_appends_only_original_provider_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(hashlib.sha256(json.dumps(scopes[:169], separators=(",", ":")).encode()).hexdigest(),
+                         GRAPH42_ORDERED_RULES_SHA256)
+        additions = ["-" + CUTTLEFISH_PARENT, *CUTTLEFISH_PROVIDER_BLUEPRINTS, TEST_UTILS_BLUEPRINT]
+        self.assertEqual(scopes[169:173], additions)
+        self.assertEqual([s for s in scopes if s.lstrip("-").startswith(CUTTLEFISH_PARENT)], additions[:3])
+        for source in CUTTLEFISH_PROVIDER_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = source.removesuffix("Android.bp")
+            for sibling in ("other.bp", "tests/Android.bp"):
+                self.assertFalse(source_path_allowed(parent + sibling, scopes), parent + sibling)
+        for source in ("Android.bp", "guest/Android.bp", "host/Android.bp", "apex/Android.bp"):
+            self.assertFalse(source_path_allowed(CUTTLEFISH_PARENT + source, scopes), source)
+        for source in ("device/google/Android.bp", "device/google/cuttlefish_sibling/Android.bp",
+                       "external/openwrt-prebuilts/Android.bp", "external/avb/Android.bp",
+                       "system/sepolicy/Android.bp", "system/libvintf/Android.bp",
+                       "bootable/recovery/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["BOARD_AVB_RECOVERY_KEY_PATH"],
+                         "external/avb/test/data/testkey_rsa4096.pem")
+
+    def test_cuttlefish_projection_documents_make_signing_and_runtime_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in (*CUTTLEFISH_PROVIDER_BLUEPRINTS,
+                     "c6a8b05c38d88e8d19b83fd8d47f75c0686f2e69",
+                     "com.google.cf.apex.key", "com.google.cf.apex.certificate",
+                     "append_squashfs_overlay.test", "libclap",
+                     "not an actual Graph 43 diagnostic", "four named definitions",
+                     "no `Android.mk`", "root `CleanSpec.mk` is discovered",
+                     "checked again immediately before Kati", "existing state can run newly discovered steps",
+                     "no clean state is fabricated", "no output is deleted to force absence",
+                     "No Cuttlefish product, board, identity, kernel or firmware is inherited",
+                     "did not read or copy key payloads", "compilation and final image contents remain unverified"):
+            self.assertIn(fact, readme)
+
+    def test_test_utils_projection_preserves_other_script_boundaries(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(scopes[172], TEST_UTILS_BLUEPRINT)
+        for source in (TEST_UTILS_BLUEPRINT, "platform_testing/scripts/perf-setup/Android.bp",
+                       "test/app_compat/csuite/integration_tests/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in ("platform_testing/Android.bp", "platform_testing/scripts/other.bp",
+                       "platform_testing/scripts/androidx-perf-setup/Android.bp",
+                       "platform_testing/scripts/map_tests/Android.bp",
+                       "platform_testing/scripts/perf-setup/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertNotIn("platform_testing/scripts/", scopes)
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in (TEST_UTILS_BLUEPRINT, "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+                     "`sh_binary_host`", "`test-utils-script`", "`csuite_standalone_zip`",
+                     "copies the utility into its host ZIP", "executes or sources the script",
+                     "Future test runtime behavior was not exercised", "173 source rules"):
+            self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

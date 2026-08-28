@@ -336,6 +336,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "49fa56ab1d4b72881b4b39a546586be7f3ae696b18322156d8017c993c301b32")
 
+    def test_first_251_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:251]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "054e70e2557607a6971041be2dee6aa41d53b826cdd497bbf2412edd5b9e6a7b")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1540,7 +1546,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_forty_one_ethtool_source_pin_and_reason(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 251)
+        self.assertGreaterEqual(len(projects), 251)
         project = projects[250]
         self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
             "path": "external/ethtool",
@@ -1557,6 +1563,74 @@ class ConfigurationTests(Fixture):
                      "existing apex_available entries", "Original unmatched source globs remain unchanged",
                      "No separate libmnl checkout or app activation is added",
                      "no tethering or network functionality is claimed"):
+            self.assertIn(text, reason)
+
+    def test_reviewed_graph_forty_three_font_projection_pins_and_metadata(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/google-fonts/carrois-gothic-sc", "317d5aad96dac8c1c6ac70fe7f1f77aa0a0bc178", "CarroisGothicSC", "BSD/MIT/OFL"),
+            ("external/google-fonts/coming-soon", "e72d9ee22b601fd4e4ae56adc3b74a3d455364e3", "ComingSoon", "Apache-2.0"),
+            ("external/google-fonts/cutive-mono", "f9e9dbc9604e91245765ba59c405712f618ac9bd", "CutiveMono", "BSD/MIT/OFL"),
+            ("external/roboto-flex-fonts", "e9deeba80f18a1348a113f8ce954f0e5248fabde", "RobotoFlex", "OFL"),
+            ("external/google-fonts/source-sans-pro", "ea777a6c3d98a14c34605c56e1cf36251fd8040b", "SourceSansPro", "legacy_by_exception_only"),
+        ]
+        self.assertGreaterEqual(len(projects), 256)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[251:256]],
+                         [(path, commit) for path, commit, _, _ in expected])
+        for project, (_, _, module, license_note) in zip(projects[251:256], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                reason = project["reason"]
+                self.assertTrue(reason.startswith("Source audit projection, not a graph 43 error:"))
+                for text in (module + " filegroup", "generate_font_fallback", "whole original project",
+                             "configuration", license_note, "No font rendering or redistribution rights are claimed"):
+                    self.assertIn(text, reason)
+        for index in (251, 253, 255):
+            self.assertIn("special licensing notices are preserved", projects[index]["reason"])
+        self.assertIn("all six font prebuilts", projects[255]["reason"])
+
+    def test_reviewed_graph_forty_three_fhir_and_shflags_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/fhir/spec/r4", "8feeb7dabdaf4b99434215b64a8295cf6fc0d0d0"),
+            ("external/shflags", "ca94e59d5633e0da49cfa9a999b565ca630e1b3d"),
+        ]
+        self.assertGreaterEqual(len(projects), 258)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[256:258]], expected)
+        for project in projects[256:258]:
+            self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+            self.assertEqual(project["tag"], "android-16.0.0_r1")
+            self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 43 error:"))
+            self.assertIn("whole original project", project["reason"])
+        for text in ("resource-definitions and type-definitions filegroups", "generate-fhir-spec-r4-binarypb",
+                     "generate-fhir-spec-r4-textproto", "original visibility", "LICENSE", "MODULE_LICENSE_CC0-1.0",
+                     "no package or license module is synthesized", "No generated artifact or runtime functionality is claimed"):
+            self.assertIn(text, projects[256]["reason"])
+        for text in ("shflags sh_binary_host", "required dependency", "host brillo_update_payload",
+                     "during the Make stage, not an observed Soong error", "Apache-2.0 license metadata",
+                     "No installed recovery tool or payload-generation success is claimed"):
+            self.assertIn(text, projects[257]["reason"])
+
+    def test_reviewed_graph_forty_three_cuttlefish_projection_pin_and_caveats(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 259)
+        project = projects[258]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "device/google/cuttlefish",
+            "url": "https://android.googlesource.com/device/google/cuttlefish",
+            "commit": "c6a8b05c38d88e8d19b83fd8d47f75c0686f2e69",
+            "tag": "android-16.0.0_r1",
+        })
+        self.assertNotIn("/platform/", project["url"])
+        reason = project["reason"]
+        self.assertTrue(reason.startswith("Source audit projection, not a graph 43 error:"))
+        for text in ("com.google.cf.apex.key", "com.google.cf.apex.certificate", "append_squashfs_overlay host tool",
+                     "APEX and OpenWrt generators", "whole original project is pinned",
+                     "only apex/keys/Android.bp and host/commands/append_squashfs_overlay/Android.bp",
+                     "append_squashfs_overlay.test", "global Apache metadata", "Original CleanSpec behavior is preserved",
+                     "clean_steps.mk was absent at admission and must be checked again before graph/Kati",
+                     "No Cuttlefish device selection, key payload access or runtime support is implied"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):

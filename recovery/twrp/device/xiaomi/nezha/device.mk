@@ -401,6 +401,18 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     packages/modules/AdServices/adservices/service/Android.bp \
     packages/modules/AdServices/apex/permissions/Android.bp
 
+# A source projection needs original Cuttlefish signing declarations and one
+# host tool. Select only these two complete files; inherit no Cuttlefish product.
+# Blueprint filtering does not suppress the project's original CleanSpec.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -device/google/cuttlefish/ \
+    device/google/cuttlefish/apex/keys/Android.bp \
+    device/google/cuttlefish/host/commands/append_squashfs_overlay/Android.bp
+
+# Retained csuite packaging copies this original host utility into its ZIP.
+# Keep the platform test aggregate and unrelated script Blueprints excluded.
+PRODUCT_SOURCE_ROOT_DIRS += platform_testing/scripts/Android.bp
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
