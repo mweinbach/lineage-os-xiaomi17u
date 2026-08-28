@@ -134,7 +134,23 @@ SHARED_HELPER_BLUEPRINTS = (
     "platform_testing/utils/dpad/Android.bp",
 )
 JUNIT_XML_BLUEPRINT = "platform_testing/libraries/junitxml/Android.bp"
+SDK_SCENARIO_BLUEPRINTS = (
+    "packages/modules/AdServices/adservices/clients/Android.bp",
+    "packages/modules/AdServices/adservices/tests/test-util/Android.bp",
+    "packages/modules/AdServices/sdksandbox/tests/testutils/Android.bp",
+    "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/testrule/Android.bp",
+    "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/textexecutor/Android.bp",
+    "packages/modules/AdServices/shared/testing-libraries/device-side/Android.bp",
+    "packages/modules/AdServices/shared/testing-libraries/host-side/Android.bp",
+    "packages/modules/AdServices/shared/testing-libraries/side-less/Android.bp",
+)
+TV_SETTINGS_PARENT = "packages/apps/TvSettings/"
+TV_SETTINGS_API_BLUEPRINTS = (
+    "packages/apps/TvSettings/SettingsAPI/Android.bp",
+    "packages/apps/TvSettings/TwoPanelSettingsLib/Android.bp",
+)
 SOURCE_FILE_REINCLUSIONS = {
+    *SDK_SCENARIO_BLUEPRINTS, *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
@@ -142,6 +158,7 @@ SOURCE_FILE_REINCLUSIONS = {
     CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, *ADSERVICES_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + TV_SETTINGS_PARENT,
     "-" + TRACING_ROBO_BLUEPRINT,
     *FRAMEWORK_PROVIDER_EXCLUSIONS,
     "-hardware/google/aemu/",
@@ -177,6 +194,7 @@ SOURCE_EXCLUSIONS = [
     "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
+    *SDK_SCENARIO_BLUEPRINTS, *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
@@ -812,7 +830,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual(len(ADSERVICES_API_BLUEPRINTS), 16)
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, {
             parent + "sdksandbox/Android.bp", parent + "sdksandbox/flags/",
-            *ADSERVICES_API_BLUEPRINTS,
+            *ADSERVICES_API_BLUEPRINTS, *SDK_SCENARIO_BLUEPRINTS,
         })
         for source in ADSERVICES_API_BLUEPRINTS:
             self.assertTrue(source_path_allowed(source, scopes), source)
@@ -918,7 +936,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 146)
+        self.assertEqual(len(scopes), 157)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -933,6 +951,44 @@ class TwrpDeviceTests(unittest.TestCase):
                      "ClearcutJunitListener", "junitxml", "tracinglib-robo-test",
                      "tracinglib-test-app", "three named test guards", "146 source rules",
                      "not proof of compilation", "Turbine"):
+            self.assertIn(fact, readme)
+
+    def test_graph_thirty_two_sdk_scenario_uses_eight_complete_original_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertEqual(len(SDK_SCENARIO_BLUEPRINTS), 8)
+        for source in SDK_SCENARIO_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = str(Path(source).parent) + "/"
+            self.assertFalse(source_path_allowed(parent + "other.bp", scopes))
+            self.assertFalse(source_path_allowed(parent + "unrelated/Android.bp", scopes))
+        for source in ("packages/modules/AdServices/adservices/tests/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/testrunner/Android.bp",
+                       "packages/modules/AdServices/apex/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_graph_thirty_two_tv_api_scope_does_not_select_tv_product(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertIn("-" + TV_SETTINGS_PARENT, scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(TV_SETTINGS_PARENT)},
+                         set(TV_SETTINGS_API_BLUEPRINTS))
+        for source in TV_SETTINGS_API_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            self.assertFalse(source_path_allowed(str(Path(source).parent / "other.bp"), scopes))
+        for leaf in ("Android.bp", "Settings/Android.bp", "unbundle/Android.bp",
+                     "Settings/tests/robotests/Android.bp", "SettingsAPI/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(TV_SETTINGS_PARENT + leaf, scopes), leaf)
+        self.assertTrue(source_path_allowed("packages/apps/TvSettings_sibling/Android.bp", scopes))
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+
+    def test_graph_thirty_two_provider_scope_documents_real_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 32", "eight complete original Blueprint files", "25 named declarations",
+                     "CtsSdkSandboxTestScenario", "textexecutor", "TvSettingsAPI", "TvSliceLib",
+                     "139dd3c1a8f626a57271baf4926180f8d1f3bade", "157 source rules",
+                     "does not install a TV product", "no additional Robolectric gate"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):

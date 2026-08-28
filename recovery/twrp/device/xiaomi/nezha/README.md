@@ -509,13 +509,37 @@ three named test guards for `animationlib_robo_tests`, `CtesqueRoboTests` and
 libraries and normal Android behavior remain intact; the existing disabled
 Robolectric runtime helper is not enabled to mask those test dependencies.
 
-Together these choices produce 146 source rules. Whole original SystemUI and
+That cohort produced 146 source rules. Whole original SystemUI and
 Robolectric sources, the MIME data generator and the Turbine compiler-tool
 provider are coordinated source requirements. The dependency and factory audits
 are not proof of compilation, app functionality or a complete runtime closure.
 The next strict graph still validates the selected modules and generated paths.
 No app packages, networking, decryption, device writes or validation waivers
 are enabled by these source selections.
+
+Graph 32 requires `CtsSdkSandboxTestScenario` through a retained CTS WebKit test.
+Eight exact positive rules restore eight complete original Blueprint files in
+AdServices at `a6ee8245f54f1719a899809cc8727f7fcce9ca35`. Their 25 named declarations
+retain the scenario rule, executor, device/host utilities, clients and shared
+providers with original metadata. The upstream path is spelled `textexecutor`.
+All direct references and six SDK-generated library providers were resolved
+against the selected sources. These files add no Robolectric constructors and
+need no additional Robolectric gate. The root test aggregates, unrelated
+sibling files and SDK-sandbox test runner remain outside this selection; any
+later consumed helper must be separately restored, not silently substituted.
+
+`TvSettingsAPI` comes from the original TvSettings project at
+`139dd3c1a8f626a57271baf4926180f8d1f3bade`. A negative project prefix and exactly two
+positive files, `SettingsAPI/Android.bp` and `TwoPanelSettingsLib/Android.bp`,
+retain five declarations including the required `TvSliceLib`. Both packages use
+the existing global Apache license without requiring the TV app's root build
+file. Their 47 direct references and one inherited library dependency resolve;
+the original TV app, unbundled product and Robolectric tests stay excluded.
+This does not install a TV product or change Nezha's device identity.
+
+The combined selection has 157 source rules. These additions preserve security,
+API, signature, variant and dependency validation. They describe source closure,
+not successful CTS execution, Android compilation or recovery hardware support.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

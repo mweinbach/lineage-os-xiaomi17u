@@ -90,6 +90,26 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -packages/apps/Traceur/ \
     packages/apps/Traceur/Android.bp
 
+# Graph 32 requires the original SDK-sandbox test scenario and its helpers.
+# These eight complete provider files retain host/device wrappers, generators,
+# metadata and raw source contracts. The wider AdServices test tree stays out.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/modules/AdServices/adservices/clients/Android.bp \
+    packages/modules/AdServices/adservices/tests/test-util/Android.bp \
+    packages/modules/AdServices/sdksandbox/tests/testutils/Android.bp \
+    packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/testrule/Android.bp \
+    packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/textexecutor/Android.bp \
+    packages/modules/AdServices/shared/testing-libraries/device-side/Android.bp \
+    packages/modules/AdServices/shared/testing-libraries/host-side/Android.bp \
+    packages/modules/AdServices/shared/testing-libraries/side-less/Android.bp
+
+# The retained TV Settings API test needs only these two original library files.
+# Keep the TV app, unbundled product and Robolectric tests outside this profile.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -packages/apps/TvSettings/ \
+    packages/apps/TvSettings/SettingsAPI/Android.bp \
+    packages/apps/TvSettings/TwoPanelSettingsLib/Android.bp
+
 # Graph 24 needs the original shared STS host utilities. Keep both complete
 # provider files and their metadata without selecting sibling test products.
 PRODUCT_SOURCE_ROOT_DIRS += \
