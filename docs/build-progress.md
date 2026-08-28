@@ -9,7 +9,9 @@ The Camera APK itself is not included, and a complete ROM has not been built.
 The current [DSP-enabled user policy build](dsp-policy-build.md) also passed.
 Its two source-policy binaries have zero permissive domains; the separate
 composition with unchanged factory policy still fails four assertion sites.
-The product
+A separate [Binder correction experiment](binder-policy-correction.md) reduces
+the failures to two in copied CIL, without changing the active source or
+vendor image. The product
 selects Nezha, canoe, ARM64, 4 KiB kernel pages, shipping API 36 and board API
 202504, with AVB enabled. The [build record](../research/build-progress.json)
 contains the exact inputs, receipts and subsequent compilation results.
@@ -294,6 +296,23 @@ three recorded patched projects. It did not repeat the earlier LFS payload
 audit or inspect ignored files and authored directories outside Repo. The
 source checkout and output directories were not reset, and the phone was not
 accessed.
+
+The subsequent [Binder comparison](binder-policy-correction.md) compiled the
+same ten inputs twice, replacing only the private vendor CIL in the second
+case. Removing 67 Binder grant occurrences that paired process domains with
+service objects reduced the diagnostics from four assertion sites to two.
+Both compiler invocations still failed with exit code 255 and produced no
+binary. All 6,366 assertions, the related FD grants and valid process Binder
+grants were retained. This is a separate prototype, not a modified factory
+image or a later device source admission.
+
+The remaining sites concern the new `init_dev_config` helper's APEX and media
+property writes. Its [optional source capability](init-helper-capability.md)
+has a tested patch that omits those two grants while preserving property reads,
+socket access, existing init permissions and upstream defaults. The isolated
+Git and host-M4 results are not an Android source build. The new definition is
+not installed, and absent literals in selected factory files do not establish
+permanent helper nonuse or native-feature compatibility.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from

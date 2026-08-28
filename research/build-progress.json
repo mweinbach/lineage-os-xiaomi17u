@@ -1382,5 +1382,34 @@
     },
     "full_rom_verified": false,
     "phone_accessed": false
+  },
+  "binder_policy_correction": {
+    "record": "research/binder-policy-correction.json",
+    "record_sha256": "5a65eef35ed50cc4a4f4eededf042930cc7071241e88eff9b8bdc1e098b59010",
+    "comparison_receipt_sha256": "257ad9f0c0a1903b9e339897253bc42684041db997bead3c2d81760410a1d514",
+    "completed_at": "2026-08-28T01:59:50.905124+00:00",
+    "assertion_sites": [
+      4,
+      2
+    ],
+    "compiler_exit_codes": [
+      255,
+      255
+    ],
+    "retained_assertions": 6366,
+    "combined_policy_binary_produced": false,
+    "active_source_adoption": false,
+    "vendor_image_modified": false,
+    "full_rom_verified": false,
+    "phone_accessed": false
+  },
+  "init_helper_capability_patch": {
+    "record": "patches/evolution/init-helper-property-writes.json",
+    "record_sha256": "a6fe6c6566e4d765a92e4e81aa0b72c8e449da41960bdd5e2e9d584efc56fe11",
+    "patch_sha256": "5017f88c6e4af56f931bccc488a8120487c938d55ecbf5ce38118a6c6b4b0c1a",
+    "status": "tested_optional_source_patch_not_admitted",
+    "source_admitted": false,
+    "android_source_build_verified": false,
+    "runtime_helper_nonuse_verified": false
   }
 }

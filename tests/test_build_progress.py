@@ -429,6 +429,36 @@ class BuildProgressTests(unittest.TestCase):
                     "ignored_files_audited", "authored_non_repo_directories_audited"):
             self.assertIs(audit[key], False)
 
+    def test_binder_prototype_is_separate_from_active_vendor_and_device_sources(self):
+        proof = self.record["binder_policy_correction"]
+        raw = (ROOT / proof["record"]).read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), proof["record_sha256"])
+        details = json.loads(raw)
+        self.assertEqual(proof["comparison_receipt_sha256"], details["receipts"]["comparison"]["sha256"])
+        self.assertEqual(proof["assertion_sites"], [case["neverallow_assertion_sites"]
+                                               for case in details["comparison"]["cases"]])
+        self.assertEqual(proof["assertion_sites"], [4, 2])
+        self.assertEqual(proof["compiler_exit_codes"], [255, 255])
+        self.assertEqual(proof["retained_assertions"], details["preservation"]["all_assertions"])
+        for key in ("combined_policy_binary_produced", "active_source_adoption", "vendor_image_modified",
+                    "full_rom_verified", "phone_accessed"):
+            self.assertIs(proof[key], False, key)
+        self.assertEqual(self.record["dsp_policy_build"]["remaining_factory_assertion_sites"], 4)
+        self.assertEqual(self.record["device_admission"]["sha256"], self.installed_version(9)["admission_sha256"])
+
+    def test_helper_capability_patch_is_not_an_additional_installed_source_patch(self):
+        proof = self.record["init_helper_capability_patch"]
+        raw = (ROOT / proof["record"]).read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), proof["record_sha256"])
+        details = json.loads(raw)
+        self.assertEqual(proof["patch_sha256"], details["patch_sha256"])
+        self.assertEqual(proof["status"], details["status"])
+        self.assertIs(proof["source_admitted"], False)
+        self.assertIs(proof["android_source_build_verified"], False)
+        self.assertIs(proof["runtime_helper_nonuse_verified"], False)
+        self.assertEqual(len(self.record["source_adjustments"]), 3)
+        self.assertFalse(details["capability"]["new_board_definition_installed"])
+
 
 if __name__ == "__main__":
     unittest.main()

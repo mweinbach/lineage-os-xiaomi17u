@@ -18,6 +18,13 @@ with the unchanged factory policy now fails four assertion sites, down from
 five, with every security assertion retained. See the
 [DSP build result](docs/dsp-policy-build.md) for the exact scope.
 
+A separate [Binder correction prototype](docs/binder-policy-correction.md)
+reduces those four sites to two by removing grants to service objects that
+are not process domains. It does not replace the installed vendor image.
+The [optional init-helper patch](docs/init-helper-capability.md) addresses
+the remaining two property-write grants; its source adoption and Android
+policy build remain separate work.
+
 ## What is already here
 
 - Fourteen pinned source/reference checkouts, including Evolution X's official
