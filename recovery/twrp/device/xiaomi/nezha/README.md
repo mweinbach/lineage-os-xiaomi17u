@@ -93,6 +93,20 @@ consumer was found; the AIDL VTS test was the only remaining consumer outside
 the already-excluded canonical utilities, and has no external module references
 in the bounded scan.
 
+Graph 17 failed at `CtsNNAPITestCases`, which requires the absent
+`CtsNNAPITests_static` and `libneuralnetworks` providers. The product now
+excludes only `cts/tests/tests/neuralnetworks/`: its five original Blueprint
+files define four tests and one JNI test library. They retain their original
+source bytes and global Apache package metadata in the checkout. A complete
+text scan across 10,907 BP, 1,701 Make and 13,441 Go files found no outside
+references to those five module names; the single Java-to-JNI edge stays
+within the omitted leaf. The child benchmark, Java and TensorFlow delegate
+tests are projected follow-ups from that source review, not additional
+observed graph failures. Other CTS tests, NNAPI HIDL/AIDL interfaces and the
+SELinux service-fuzzer registry remain selected and unchanged. This scope
+does not validate NNAPI support or substitute historical VNDK libraries for
+the missing runtime.
+
 Tradefed takes the provider-restoration path. Its first-graph exclusions for
 `tools/loganalysis/`, `tools/tradefederation/contrib/` and `test/suite_harness/`
 are removed. The original `platform_testing/libraries/tradefed-error-prone/`

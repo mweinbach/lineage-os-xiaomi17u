@@ -76,6 +76,12 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -hardware/interfaces/neuralnetworks/aidl/utils/ \
     -hardware/interfaces/neuralnetworks/aidl/vts/functional/
 
+# Graph 17 reached the standalone NNAPI CTS test. This reviewed leaf contains
+# four tests and their one JNI test library, with no outside module consumers.
+# Omit that test family only; preserve all NNAPI interfaces and other CTS tests.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -cts/tests/tests/neuralnetworks/
+
 # Omit only the unrelated scene-transition test module. A directory exclusion
 # would also hide tests/utils/Android.bp, whose helper has retained consumers.
 PRODUCT_SOURCE_ROOT_DIRS += \

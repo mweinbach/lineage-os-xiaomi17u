@@ -47,6 +47,7 @@ SOURCE_EXCLUSIONS = [
     "-hardware/interfaces/neuralnetworks/1.3/utils/",
     "-hardware/interfaces/neuralnetworks/aidl/utils/",
     "-hardware/interfaces/neuralnetworks/aidl/vts/functional/",
+    "-cts/tests/tests/neuralnetworks/",
     "-" + MOTION_TEST_BLUEPRINT,
     "-hardware/interfaces/automotive/vehicle/aidl/aidl_test/",
     "-hardware/interfaces/broadcastradio/aidl/default/test/",
@@ -394,6 +395,26 @@ class TwrpDeviceTests(unittest.TestCase):
                        "frameworks/libs/native_bridge_support/Android.bp",
                        "frameworks/libs/native_bridge_support/android_api/libc/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_graph_seventeen_excludes_only_the_closed_nnapi_cts_test_leaf(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        prefix = "cts/tests/tests/neuralnetworks/"
+        for relative in ("Android.bp", "benchmark/Android.bp", "java_test/Android.bp",
+                         "java_test/jni/Android.bp", "tflite_delegate/Android.bp"):
+            self.assertFalse(source_path_allowed(prefix + relative, scopes), relative)
+        for source in ("cts/Android.bp", "cts/tests/Android.bp", "cts/tests/tests/Android.bp",
+                       "cts/tests/tests/neuralnetworks_sibling/Android.bp",
+                       "cts/tests/tests/security/Android.bp",
+                       "hardware/interfaces/neuralnetworks/1.0/Android.bp",
+                       "hardware/interfaces/neuralnetworks/aidl/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "external/avb/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 17", "CtsNNAPITestCases", "CtsNNAPITests_static",
+                     "libneuralnetworks", "four tests and one JNI test library",
+                     "no outside references", "projected follow-ups"):
+            self.assertIn(fact, readme)
 
     def test_sixth_graph_selects_real_wifi_interface_and_test_support(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

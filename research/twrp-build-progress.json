@@ -5294,7 +5294,30 @@
         "error: cts/tests/tests/neuralnetworks/Android.bp:21:1: \"CtsNNAPITestCases\" depends on undefined module \"libneuralnetworks\"."
       ],
       "resource_generation_verified": true,
-      "failed_command_exit_code": 1
+      "failed_command_exit_code": 1,
+      "generated_configuration_observed": {
+        "attempt": 17,
+        "Allow_missing_dependencies": false,
+        "SelinuxIgnoreNeverallows": false,
+        "Enforce_vintf_manifest": true,
+        "BoardAvbEnable": true,
+        "Debuggable": false,
+        "VendorVars": {
+          "nezha_twrp": {
+            "native_recovery_only": "true"
+          }
+        },
+        "VendorVarTypes": {
+          "nezha_twrp": {
+            "native_recovery_only": "bool"
+          }
+        },
+        "source": {
+          "path": "/work/out/twrp-nezha/soong/soong.twrp_nezha.variables",
+          "sha256": "2b1e255d20016a064e8726a986ee77a749dc99b737bd452245fb332d8d1ce77e",
+          "size_bytes": 86614
+        }
+      }
     }
   ],
   "resource_generation": {
@@ -5315,7 +5338,7 @@
     "recovery_image_exists": false
   },
   "generated_configuration_observed": {
-    "attempt": 12,
+    "attempt": 17,
     "Allow_missing_dependencies": false,
     "SelinuxIgnoreNeverallows": false,
     "Enforce_vintf_manifest": true,
@@ -5333,8 +5356,8 @@
     },
     "source": {
       "path": "/work/out/twrp-nezha/soong/soong.twrp_nezha.variables",
-      "sha256": "8875e36546a31d7fa87dd0bc35ffc4e726011e972b76c37ab32b2890008d0573",
-      "size_bytes": 86028
+      "sha256": "2b1e255d20016a064e8726a986ee77a749dc99b737bd452245fb332d8d1ce77e",
+      "size_bytes": 86614
     }
   },
   "limitations": [
