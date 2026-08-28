@@ -6,6 +6,13 @@ the five remaining failures require source integration work. The compact
 [record](../research/selinux-user-integration.json) binds the inputs, compiler,
 configuration, diagnostics and subsequent static audits.
 
+This page preserves the user v7 snapshot. The later
+[hardened v8 source build](user-security-build.md) has zero permissive domains
+in both independently checked source-policy binaries, while its complete
+factory combination still fails the same five assertion sites. The
+[DSP source integration](dsp-policy-integration.md) is a separate, explicit
+device-tree option; its compiler fixture is not a fresh Soong build.
+
 The input set also contains one top-level permissive declaration, for `su`.
 That is a source/CIL observation, not a successful permissive-domain analysis
 of a binary and not evidence about enforcement on the connected phone. Both

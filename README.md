@@ -58,8 +58,10 @@ should be unlocked, wiped, or flashed as part of workspace setup.
   complete-ROM/device-testing gates.
 - A [complete captured-module CRC/provider audit](docs/module-provider-audit.md):
   every recorded expectation has a matching kernel or module candidate across
-  the captured pool. Stage availability, actual loading, signature trust and
-  full ABI compatibility remain separate checks.
+  the captured pool. The [boot-stage audit](docs/module-stage-closure.md) also
+  accounts for static dependency order and the 732 vendor expectations that
+  depend on earlier stages. Successful loading, signature trust and full ABI
+  compatibility remain separate checks.
 
 This Mac can also host the Linux build environment through **Apple Container +
 Rosetta**. The working configuration uses a pinned Ubuntu 24.04 ARM64 image,
@@ -169,6 +171,7 @@ properties do not independently establish physical variant or bootloader state.
 | [SELinux contract](docs/selinux-contract.md) | Exact stock policy inputs and seven strict neverallow failures; no policy or device pass claimed |
 | [User policy integration](docs/selinux-user-integration.md) | Five remaining combined-policy assertion sites, source ownership and enforcing-policy requirements |
 | [Hardened user build](docs/user-security-build.md) | Actual v8 component build, two unfiltered zero-permissive source binaries and separate factory-policy failure |
+| [DSP policy source](docs/dsp-policy-integration.md) | Explicit factory-bound source option, preserved assertions and separate compiler-fixture scope |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Boot/DLKM build](docs/boot-dlkm-build.md) | Four built engineering images, exact kernel/overlay and 484 preserved module payloads |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
@@ -178,6 +181,7 @@ properties do not independently establish physical variant or bootloader state.
 | [ZRAM module plan](docs/zram-module-plan.md) | Distinct vendor/GKI providers, ordered loader behavior and selector requirements |
 | [Kernel exports](docs/kernel-export-contract.md) | Independently decoded stock kernel exports and selected module CRC matches |
 | [Module providers](docs/module-provider-audit.md) | All 914 captured instances, matching global provider candidates and stage/loading limits |
+| [Module boot stages](docs/module-stage-closure.md) | Exact selected closures, conditional earlier-stage providers and stock-loader limits |
 | [Recovery plan](docs/recovery-plan.md) | TWRP after core ROM bring-up, correct Nezha layout and bootloader-protection limits |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
