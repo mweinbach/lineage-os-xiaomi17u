@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "source_snapshot": {
+    "path": "research/source-snapshots/twrp-16.0-linux-20260828.xml",
+    "sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+    "size_bytes": 89628
+  },
+  "base_project_count": 391,
+  "manifest_commit": "d2188a9345857fb078c391e8cb3e259a21e941e5",
+  "status": "graph_dependency_resolution_in_progress",
+  "compiled_recovery_image": null,
+  "hardware_validation_performed": false,
+  "flash_admitted": false,
+  "oem_key_trust_established": false,
+  "phone_commands_run": false,
+  "attempts": [
+    {
+      "number": 1,
+      "action": "graph",
+      "status": "failed",
+      "recorded_at_utc": "2026-08-28T04:00:42.728905+00:00",
+      "workspace_commit": "138b32db76bd250869d813f67d412d512e40d789",
+      "control_archive": {
+        "path": "reports/twrp-build-control.tar",
+        "sha256": "013fab861659b36103afe082c2526745fb394286e1ae803b1bba697e70c142d9",
+        "size_bytes": 174080
+      },
+      "build_state_sha256": null,
+      "command": [
+        "bash",
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j16",
+        "nothing"
+      ],
+      "target_product": "twrp_nezha",
+      "target_build_variant": "user",
+      "failed_command_exit_code": 1,
+      "log": {
+        "path": "reports/twrp-graph-1.log",
+        "sha256": "50e1408ddfdb3e24ba5802822942b7d9d3a1e717ea2c34847a41126ab5da6358",
+        "size_bytes": 24604
+      },
+      "receipt": {
+        "path": "reports/twrp-graph-1-result.json",
+        "sha256": "8ed53286968e4d9d016145d47d15111d67aed50691dfd0fecb4bce63c10f3486",
+        "size_bytes": 4844
+      },
+      "supplementary_projects": [],
+      "errors": [
+        "error: packages/modules/Connectivity/bpf/headers/Android.bp:44:1: \"libbpf_android_test\" depends on undefined module \"bpf_cc_defaults\".",
+        "error: tools/loganalysis/Android.bp:19:1: \"loganalysis\" depends on undefined module \"tradefed_defaults\".",
+        "error: tools/loganalysis/javatests/Android.bp:20:1: \"loganalysis-tests\" depends on undefined module \"tradefed_defaults\".",
+        "error: tools/tradefederation/contrib/Android.bp:19:1: \"tradefed-contrib\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: packages/modules/AdServices/adservices/libraries/collectors-helper/adservices/Android.bp:5:1: \"adservices-collectors-helper\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: hardware/google/aemu/snapshot/Android.bp:10:1: \"gfxstream_snapshot\" depends on undefined module \"gfxstream_defaults\".",
+        "error: hardware/google/aemu/host-common/Android.bp:12:1: \"gfxstream_host_common\" depends on undefined module \"gfxstream_defaults\".",
+        "error: test/suite_harness/common/host-side/tradefed/Android.bp:19:1: \"compatibility-tradefed\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: packages/modules/Connectivity/bpf/loader/Android.bp:33:1: \"netbpfload\" depends on undefined module \"bpf_cc_defaults\".",
+        "error: system/secretkeeper/comm/Android.bp:21:1: \"libsecretkeeper_comm.defaults\" depends on undefined module \"avf_build_flags_rust\".",
+        "error: packages/modules/AdServices/adservices/libraries/collectors-helper/adservices/test/Android.bp:19:1: \"adservices-collectors-helper-test\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: test/suite_harness/common/host-side/tradefed/tests/Android.bp:20:1: \"compatibility-tradefed-tests\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: packages/modules/AdServices/adservices/libraries/collectors-helper/tests/Android.bp:20:1: \"AdservicesCollectorsHelperTest\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: hardware/google/aemu/host-common/Android.bp:56:1: \"gfxstream_host_common_test_support\" depends on undefined module \"gfxstream_defaults\".",
+        "error: hardware/google/aemu/base/Android.bp:78:1: \"gfxstream_base_test_support\" depends on undefined module \"gfxstream_defaults\".",
+        "error: hardware/interfaces/neuralnetworks/utils/adapter/hidl/Android.bp:26:1: \"neuralnetworks_utils_hal_adapter\" depends on undefined module \"neuralnetworks_utils_defaults\".",
+        "error: hardware/interfaces/neuralnetworks/utils/common/Android.bp:26:1: \"neuralnetworks_utils_hal_common\" depends on undefined module \"neuralnetworks_utils_defaults\".",
+        "error: packages/modules/AdServices/adservices/libraries/device-collectors/Android.bp:5:1: \"adservices-device-collectors-lib\" depends on undefined module \"tradefed_errorprone_defaults\".",
+        "error: hardware/google/aemu/base/Android.bp:61:1: \"gfxstream_base_tests\" depends on undefined module \"gfxstream_defaults\".",
+        "error: hardware/interfaces/virtualization/capabilities_service/vts/Android.bp:22:1: \"VtsVmCapabilitiesServiceTest\" depends on undefined module \"rdroidtest.defaults\".",
+        "error: system/secretkeeper/dice_policy/Android.bp:5:1: \"libdice_policy.defaults\" depends on undefined module \"avf_build_flags_rust\"."
+      ],
+      "resource_generation_verified": false
+    },
+    {
+      "number": 2,
+      "action": "graph",
+      "status": "failed",
+      "recorded_at_utc": "2026-08-28T04:19:58.567654+00:00",
+      "workspace_commit": "2276c24f3be65d8d716bcc5172eefb8c25f7e15d",
+      "control_archive": {
+        "path": "reports/twrp-build-control-v2.tar",
+        "sha256": "ae7a581d01d2796ad44376e12c26610857f3d5d6e289099099e1063fe27289f4",
+        "size_bytes": 204800
+      },
+      "build_state_sha256": "6bb4b08e9675d676abbdfb2b1f69c3bb7764551701496ab2f72374060e5a4992",
+      "command": [
+        "bash",
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j16",
+        "nothing"
+      ],
+      "target_product": "twrp_nezha",
+      "target_build_variant": "user",
+      "failed_command_exit_code": 1,
+      "log": {
+        "path": "reports/twrp-graph-2.log",
+        "sha256": "54fed06243af80daea0b1010b3936600169b486b424fa4bae963d8d4fd0fda7b",
+        "size_bytes": 13670
+      },
+      "receipt": {
+        "path": "reports/twrp-graph-2-result.json",
+        "sha256": "92382072133e724f6062888d73cdf79533c6dbec63bf2fa867ee70dd06687d18",
+        "size_bytes": 4936
+      },
+      "supplementary_projects": [
+        {
+          "path": "system/bpf",
+          "url": "https://android.googlesource.com/platform/system/bpf",
+          "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+        }
+      ],
+      "errors": [
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43097/Android.bp:23:1: \"CVE-2024-43097\" depends on undefined module \"skia_deps\".",
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43091/Android.bp:23:1: \"CVE-2024-43091\" depends on undefined module \"skia_deps\".",
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2019-1988/Android.bp:23:1: \"CVE-2019-1988\" depends on undefined module \"skia_deps\".",
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2024-43767/Android.bp:23:1: \"CVE-2024-43767\" depends on undefined module \"skia_deps\".",
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-21085/Android.bp:23:1: \"CVE-2023-21085\" depends on undefined module \"sts_defaults\".",
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-4863/Android.bp:23:1: \"CVE-2023-4863\" depends on undefined module \"sts_defaults\".",
+        "error: cts/hostsidetests/securitybulletin/securityPatch/CVE-2023-40114/Android.bp:23:1: \"CVE-2023-40114\" depends on undefined module \"sts_defaults\".",
+        "error: cts/tests/tests/car/Android.bp:19:1: \"CtsCarTestCases\" depends on undefined module \"car-framework-aconfig-libraries\".",
+        "error: packages/modules/Connectivity/tests/common/Android.bp:93:1: \"ConnectivityCoverageTests\" depends on undefined module \"libnetworkstackutilsjni_deps\".",
+        "error: cts/tests/tests/car_permission_tests/Android.bp:21:1: \"CarSecurityPermissionTest\" depends on undefined module \"car-framework-aconfig-libraries\".",
+        "error: cts/tests/tests/car/lib/CarIntegrationTestUtilsLib/Android.bp:19:1: \"car-integration-test-utils-lib\" depends on undefined module \"car-framework-aconfig-libraries\".",
+        "error: hardware/interfaces/automotive/remoteaccess/hal/default/Android.bp:22:1: \"remote-access-hal-defaults\" depends on undefined module \"vhalclient_defaults\".",
+        "error: system/chre/Android.bp:233:1: \"rpc_world_proto_header\" depends on undefined module \"pw_rpc_generate_nanopb_proto\".",
+        "error: hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/Android.bp:56:1: \"VtsAidlHwCryptoTests\" depends on undefined module \"rdroidtest.defaults\".",
+        "error: system/chre/Android.bp:244:1: \"rpc_world_proto_source\" depends on undefined module \"pw_rpc_generate_nanopb_proto\".",
+        "error: system/chre/Android.bp:255:1: \"rpc_world_rpc_header\" depends on undefined module \"pw_rpc_generate_nanopb_rpc_header\"."
+      ],
+      "resource_generation_verified": true
+    }
+  ],
+  "resource_generation": {
+    "resources": [
+      {
+        "path": "/work/out/twrp-nezha/target/product/nezha/recovery/root/twres/splash.xml",
+        "exists": true,
+        "size_bytes": 1341,
+        "sha256": "750b0a0d6a428e4ac4f541d5ecb28ff2e295d65fe966abf8e762e5e02adc9873"
+      },
+      {
+        "path": "/work/out/twrp-nezha/target/product/nezha/recovery/root/twres/ui.xml",
+        "exists": true,
+        "size_bytes": 29301,
+        "sha256": "8c1a0586692711c07d78ed0e83b2b00466592eeb2325acf8cd2e85bf13f2b16a"
+      }
+    ],
+    "recovery_image_exists": false
+  },
+  "generated_configuration_observed": {
+    "attempt": 2,
+    "Allow_missing_dependencies": false,
+    "SelinuxIgnoreNeverallows": false,
+    "Enforce_vintf_manifest": true,
+    "BoardAvbEnable": true,
+    "Debuggable": false
+  },
+  "limitations": [
+    "Graph generation and resource output do not prove a compiled or bootable recovery.",
+    "The selected recovery profile excludes explicitly reviewed unrelated Android platform and test sources; it is not a full Android CTS or VTS run.",
+    "Compiled SELinux policy, runtime authentication, display, touch, storage, and device boot remain unverified.",
+    "The dedicated kernel-free recovery format depends on the matching existing boot chain; fastboot boot has not been established as a test method."
+  ]
+}
