@@ -1,0 +1,382 @@
+{
+  "schema_version": 1,
+  "project": "system/sepolicy",
+  "base_commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+  "patch": "patches/evolution/0004-gate-init-dev-config-property-writes.patch",
+  "patch_sha256": "5017f88c6e4af56f931bccc488a8120487c938d55ecbf5ce38118a6c6b4b0c1a",
+  "status": "tested_optional_source_patch_not_admitted",
+  "files": [
+    {
+      "path": "private/init_dev_config.te",
+      "before_sha256": "48ccb169eb04e90e87ce9ee68ed037ee9aecadf82fb8600f64cec110d68e114f",
+      "after_sha256": "1ff8ff9a44a9607724409dfc3eb29e49547a0a98400a4442b17ae33bc4ea7da2",
+      "before_git_blob": "fdddc1928841d6217fac11fe6f057785c341f3cb",
+      "after_git_blob": "9f1b66b3a9cb28bf873a63ea568a3d1011783bbf",
+      "before_size_bytes": 299,
+      "after_size_bytes": 1001
+    }
+  ],
+  "source_application_validation": {
+    "receipt": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/git-application-v1/receipt.json",
+      "size_bytes": 1851,
+      "sha256": "214a9b27694ad3cdeb87315fe0036e0ce98046a19dc1bfaa97e800bfed86b262"
+    },
+    "git_apply_check_exit_code": 0,
+    "git_apply_exit_code": 0,
+    "expected_result_bytes_matched": true,
+    "isolated_source_fixture": true,
+    "android_checkout_modified": false,
+    "policy_compiler_executed": false
+  },
+  "capability": {
+    "symbol": "target_init_dev_config_property_writes",
+    "board_variable": "BOARD_SEPOLICY_M4DEFS",
+    "proposed_definition": "target_init_dev_config_property_writes=false",
+    "allowed_explicit_values": [
+      "true",
+      "false"
+    ],
+    "undefined_preserves_upstream_grants": true,
+    "true_preserves_upstream_grants": true,
+    "invalid_value_causes_fatal_m4_error": true,
+    "duplicate_definitions_rejected_by_future_admission": true,
+    "duplicate_admission_guard_implemented": false,
+    "new_board_definition_installed": false,
+    "api_version_inference_used": false
+  },
+  "conditional_effect": {
+    "source_domain": "init_dev_config",
+    "property_types": [
+      "apexd_select_prop",
+      "media_variant_prop"
+    ],
+    "class": "property_service",
+    "permission": "set",
+    "set_grants_removed_when_false": 2,
+    "grants_added": 0,
+    "other_source_prefix_bytes": 208,
+    "other_source_prefix_sha256": "550c973dcaa762003e4abaa0fe4029e14903eb48aa2b957fc212ac214fc728af",
+    "source_domain_types_transitions_prefix_unchanged": true,
+    "property_reads_and_socket_grants_unchanged": true,
+    "existing_init_and_vendor_init_permissions_unchanged": true,
+    "assertions_modified": false,
+    "platform_api_mappings_modified": false,
+    "service_invocation_modified": false
+  },
+  "macro_validation": {
+    "private_receipt": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/macro-verification-v1/receipt.json",
+      "size_bytes": 14635,
+      "sha256": "3b11ed040933efed776c79bf56c9300b827a45df2cc6847deeacbd3fd28e6bf6"
+    },
+    "completed_at": "2026-08-28T01:52:28.257441+00:00",
+    "host_tool": {
+      "path": "/usr/bin/m4",
+      "sha256": "1685f2c90307faa05ef5ae8f707d3a18a519c9dad75882768f66abb475f1b3d7",
+      "version": "GNU M4 1.4.6",
+      "is_android_build_m4": false
+    },
+    "four_cases_passed": true,
+    "cases": [
+      {
+        "name": "original",
+        "explicit_value": null,
+        "exit_code": 0,
+        "grant_occurrences": 8,
+        "property_service_set_occurrences": 2,
+        "property_file_read_occurrences": 2,
+        "socket_write_occurrences": 2,
+        "socket_connect_occurrences": 2,
+        "expanded_text_sha256": "fbcbc9226fc0172efed360fea17ba75b2da6cb3e9c665efd4af0892d538fff8a",
+        "expanded_text_size_bytes": 512
+      },
+      {
+        "name": "undefined",
+        "explicit_value": null,
+        "exit_code": 0,
+        "grant_occurrences": 8,
+        "property_service_set_occurrences": 2,
+        "property_file_read_occurrences": 2,
+        "socket_write_occurrences": 2,
+        "socket_connect_occurrences": 2,
+        "expanded_text_sha256": "0cac3439833a99e64ac338a925f61ddeaaae3f25acad0c0cc1269cca747e27c7",
+        "expanded_text_size_bytes": 665
+      },
+      {
+        "name": "enabled",
+        "explicit_value": "true",
+        "exit_code": 0,
+        "grant_occurrences": 8,
+        "property_service_set_occurrences": 2,
+        "property_file_read_occurrences": 2,
+        "socket_write_occurrences": 2,
+        "socket_connect_occurrences": 2,
+        "expanded_text_sha256": "38f8cca6160bc2979f107466d6852abfda2f7e5fa72ef59b61d0b7e41f4ab18d",
+        "expanded_text_size_bytes": 667
+      },
+      {
+        "name": "disabled",
+        "explicit_value": "false",
+        "exit_code": 0,
+        "grant_occurrences": 6,
+        "property_service_set_occurrences": 0,
+        "property_file_read_occurrences": 2,
+        "socket_write_occurrences": 2,
+        "socket_connect_occurrences": 2,
+        "expanded_text_sha256": "efb3a69667ca8a528e285cbe5c5f2b325dd1ab141494898a99f67e4d35a53c5d",
+        "expanded_text_size_bytes": 538
+      }
+    ],
+    "invalid_values": [
+      {
+        "value": "",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "0",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "1",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "True",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "FALSE",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": " true",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "false ",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "yes",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "auto",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "false,true",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      },
+      {
+        "value": "m4exit(0)",
+        "exit_code": 1,
+        "permission_grants_emitted": false
+      }
+    ],
+    "ordered_grants_and_duplicate_counts_checked": true,
+    "independent_permission_tuple_model_checked": true,
+    "unchanged_prefix_expanded_in_macro_fixture": false,
+    "android_build_m4_executed": false,
+    "full_policy_compiler_executed": false,
+    "synthetic_tests_passed": 35,
+    "synthetic_process_calls_mocked": true
+  },
+  "source_wiring": {
+    "statically_verified": true,
+    "steps": [
+      {
+        "path": "build/make/core/soong_config.mk",
+        "line": 217,
+        "relationship": "BOARD_SEPOLICY_M4DEFS to BoardSepolicyM4Defs JSON list"
+      },
+      {
+        "path": "build/soong/android/variable.go",
+        "line": 397,
+        "relationship": "BoardSepolicyM4Defs product variable"
+      },
+      {
+        "path": "build/soong/android/config.go",
+        "line": 2036,
+        "relationship": "SepolicyM4Defs accessor"
+      },
+      {
+        "path": "system/sepolicy/build/soong/policy.go",
+        "line": 256,
+        "relationship": "M4 fatal warnings and -D definitions"
+      }
+    ],
+    "new_value_observed_in_actual_build": false
+  },
+  "source_capture_bindings": [
+    {
+      "path": "artifacts/source-contracts/nezha-policy-variant-v2/receipt.json",
+      "size_bytes": 3552,
+      "sha256": "de232d89435f9f1bc263359ea32e53736259a9de1e8d3c814cd84a64e82e6cf4"
+    },
+    {
+      "path": "artifacts/source-contracts/nezha-treble-labeling-v1/receipt.json",
+      "size_bytes": 4228,
+      "sha256": "7f4bdfa6bc3959584d690dfde8672ed8b8a4d425a9d67fc0aaf9842cd443b984"
+    },
+    {
+      "path": "artifacts/source-contracts/nezha-su-permissive-source-v1/receipt.json",
+      "size_bytes": 3706,
+      "sha256": "0d22a0000d53b52bf6158bc1672dada1fadf31641fefcc8c70fd6560c7368c2e"
+    },
+    {
+      "name": "helper",
+      "path": "artifacts/source-contracts/nezha-policy-variant-v2/files/private/init_dev_config.te",
+      "project": "system/sepolicy",
+      "source_path": "private/init_dev_config.te",
+      "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+      "size_bytes": 299,
+      "sha256": "48ccb169eb04e90e87ce9ee68ed037ee9aecadf82fb8600f64cec110d68e114f",
+      "git_blob_sha1": "fdddc1928841d6217fac11fe6f057785c341f3cb"
+    },
+    {
+      "name": "macros",
+      "path": "artifacts/source-contracts/nezha-policy-variant-v2/files/public/te_macros",
+      "project": "system/sepolicy",
+      "source_path": "public/te_macros",
+      "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+      "size_bytes": 42239,
+      "sha256": "b749c90e4ad0b7873eaa03192309846fddc7a33b06284e1925ad849c2d5111cd",
+      "git_blob_sha1": "849c8fd30faf1b6e25fac43709b07bf77ab586d3"
+    },
+    {
+      "name": "make_export",
+      "path": "artifacts/source-contracts/nezha-treble-labeling-v1/files/build/make/core/soong_config.mk",
+      "project": "build/make",
+      "source_path": "core/soong_config.mk",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "size_bytes": 49437,
+      "sha256": "7d333ed88412e94d77ab367d4f2eb883fd2795b3bec841a88f4bba476987580b",
+      "git_blob_sha1": "d5771f1552529227b14355c14e6277e64ecee65f"
+    },
+    {
+      "name": "soong_variable",
+      "path": "artifacts/source-contracts/nezha-treble-labeling-v1/files/build/soong/android/variable.go",
+      "project": "build/soong",
+      "source_path": "android/variable.go",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "size_bytes": 44532,
+      "sha256": "2a495d801945cac5b799d66593cb879179c1ac1b3efe4d710a3636d58c32ea26",
+      "git_blob_sha1": "9ce91ad94080bde5023702cfa91c30c450bd90a5"
+    },
+    {
+      "name": "soong_accessor",
+      "path": "artifacts/source-contracts/nezha-treble-labeling-v1/files/build/soong/android/config.go",
+      "project": "build/soong",
+      "source_path": "android/config.go",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "size_bytes": 86467,
+      "sha256": "07d5779f92c93858e6996e9609ce49e8b8f882a66c195d82698066fe0198b011",
+      "git_blob_sha1": "91c139fe98aed64c52c11d0abb9c08e60fda519e"
+    },
+    {
+      "name": "policy_builder",
+      "path": "artifacts/source-contracts/nezha-su-permissive-source-v1/files/system/sepolicy/build/soong/policy.go",
+      "project": "system/sepolicy",
+      "source_path": "build/soong/policy.go",
+      "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+      "size_bytes": 19164,
+      "sha256": "06a99dde2e42d0d8a3aed07990d4d6ebe79f8f153f59e498369c32504ccf9971",
+      "git_blob_sha1": "23ff2552c7d44fcfa6a6ea0f145c23a6673470c3"
+    }
+  ],
+  "receipts": {
+    "prototype_plan": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/plan.json",
+      "size_bytes": 12595,
+      "sha256": "dcad1034990f46f44337b5e3fcf6e2dd8970b054339bfacf2e3e3b3de5fe611a"
+    },
+    "macro_verification": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/macro-verification-v1/receipt.json",
+      "size_bytes": 14635,
+      "sha256": "3b11ed040933efed776c79bf56c9300b827a45df2cc6847deeacbd3fd28e6bf6"
+    },
+    "final_readback": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/final-readback-v1.json",
+      "size_bytes": 4348,
+      "sha256": "b156a1ca59216079c9bb8fb6870f281b01d94da2df85ed1303216976e22534a6"
+    },
+    "static_input_addendum": {
+      "path": "artifacts/source-contracts/nezha-init-helper-capability-v1/static-input-addendum.json",
+      "size_bytes": 5092,
+      "sha256": "3e4829a0b8153ed973ae7070e73cfa208671e2afd64caff9a1e3acae715323fe"
+    },
+    "vendor_odm_static_scan": {
+      "path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/receipt.json",
+      "size_bytes": 87036,
+      "sha256": "2c5485df2264463c4485ead834b3fa57de473c238cf043b1a7e8ad4c05abb6e2"
+    },
+    "existing_media_setters": {
+      "path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/media-selector-observation.json",
+      "size_bytes": 3141,
+      "sha256": "06595f347d16a80da6a5fe737ee1cdefd229bc8ea599e13a2707008782321330"
+    }
+  },
+  "static_vendor_evidence": {
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "source_url": null,
+    "origin_authenticated": false,
+    "capture": {
+      "vendor_files": 178,
+      "odm_files": 75,
+      "total_files": 253,
+      "total_bytes": 716487,
+      "helper_literal_hits": 0,
+      "media_setter_source_statements": 4,
+      "vendor_selected_symlinks_not_followed": 2,
+      "odm_selected_symlinks_not_followed": 0
+    },
+    "media_selector_names": [
+      "ro.media.xml_variant.codecs",
+      "ro.media.xml_variant.codecs_performance"
+    ],
+    "media_selector_source_property": "vendor.media.target_variant",
+    "existing_action_triggers": [
+      "property:vendor.media.target_variant=*",
+      "post-fs-data"
+    ],
+    "existing_vendor_init_media_set_grant_observed": true,
+    "selector_value_or_producer_verified": false,
+    "runtime_imports_or_triggers_evaluated": false,
+    "complete_provider_or_import_closure_verified": false,
+    "runtime_helper_absence_proven": false
+  },
+  "adoption_requirements": [
+    "Explicit Nezha capability contract bound to exact source and factory inputs; reject invalid or duplicate definitions.",
+    "Review merged/generated properties and all relevant imports, service overrides, invocations and executable labels; reject uncontracted providers or unresolved selectors.",
+    "Verify selected init hooks against final link evidence; a default weak-hook selection is not independent binary linkage proof.",
+    "Track alternate boot scripts and runtime boot inputs as unresolved until measured; preserve visible failures for unexpected providers.",
+    "Check Android M4 output and full policy composition with all assertions and unfiltered permissive-domain analysis; retain old init/vendor_init authority.",
+    "A provider contract must bind path/hash, label, bootstrap dependencies, required property names and timing, and cannot waive vendor assertions.",
+    "Validate APEX/media selection, codecs and native camera behavior through separately authorized device tests."
+  ],
+  "limits": {
+    "active_source_patch_applied": false,
+    "device_generator_option_implemented": false,
+    "full_cil_compilation_verified": false,
+    "factory_policy_compatibility_verified": false,
+    "runtime_harmlessness_verified": false,
+    "native_feature_retention_verified": false,
+    "phone_accessed": false,
+    "guest_accessed_by_this_prototype": false,
+    "source_or_out_modified": false,
+    "firmware_executed": false,
+    "checks_disabled": []
+  }
+}

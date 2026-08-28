@@ -1,0 +1,23 @@
+--- a/private/init_dev_config.te
++++ b/private/init_dev_config.te
+@@ -6,5 +6,20 @@
+ init_daemon_domain(init_dev_config)
+ use_bootstrap_libs(init_dev_config)
+ 
++# Optional property-write capability. Unset retains upstream behavior.
++# This does not change the domain, mappings, assertions or other init domains.
++ifdef(`target_init_dev_config_property_writes', `
++ifelse(defn(`target_init_dev_config_property_writes'), `true', `',
++       defn(`target_init_dev_config_property_writes'), `false', `',
++       `errprint(`target_init_dev_config_property_writes must be true or false
++')m4exit(1)')
++')
++ifelse(defn(`target_init_dev_config_property_writes'), `false', `
++unix_socket_connect(init_dev_config, property, init)
++get_prop(init_dev_config, apexd_select_prop)
++unix_socket_connect(init_dev_config, property, init)
++get_prop(init_dev_config, media_variant_prop)
++', `
+ set_prop(init_dev_config, apexd_select_prop)
+ set_prop(init_dev_config, media_variant_prop)
++')
