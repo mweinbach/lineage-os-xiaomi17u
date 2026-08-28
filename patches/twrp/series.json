@@ -910,6 +910,47 @@
       "project": "frameworks/base",
       "reason": "Add recovery availability to the genuine OMAPI AIDL interface so the existing recovery se_omapi service can resolve its native interface dependency; preserve the service, target feature flags, original backends, and strict checks.",
       "repository": "https://android.googlesource.com/platform/frameworks/base"
+    },
+    {
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "files": [
+        {
+          "after_git_blob": "87c1a57f513bdc1e1fcc7bca980886739c4ca047",
+          "after_sha256": "1049726f463a715bd9e3d4714599de9e2be7185dbec1ceb19d1bbf99d8bd2cbf",
+          "after_size_bytes": 20703,
+          "before_git_blob": "d7c56cc80e5aab8a5d9cd261bd82041d720a97a7",
+          "before_sha256": "194b733dd7e16246688d6b94f4d559e890a3110b2ce8ef77c9e30f3327ee55d4",
+          "before_size_bytes": 20733,
+          "mode": "100644",
+          "path": "Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/Android.bp",
+          "uncommented_modules": [
+            {
+              "after_module_sha256": "30fb4bfd79ddc99c5d3c6463730cb80e91a1b9bffff7f927605f0ecc552cc216",
+              "before_comment_prefix": "// ",
+              "before_module_sha256": "986f508fcf9d37773f28a99f9e0e69b92f9a6f83a1d0252091be20c55204e0d9",
+              "constructor_line": 314,
+              "end_line": 323,
+              "name": "recovery-resources-common-mdpi",
+              "name_line": 315,
+              "source_glob": "res-mdpi/images/*.png",
+              "type": "prebuilt_res",
+              "uncommented_lines": 10,
+              "upstream_commit": "80fbea7e9af1dd883f2046e9b299d6fe45a0f693",
+              "upstream_constructor_line": 314,
+              "upstream_module_sha256": "30fb4bfd79ddc99c5d3c6463730cb80e91a1b9bffff7f927605f0ecc552cc216",
+              "upstream_path": "Android.bp",
+              "upstream_repository": "https://android.googlesource.com/platform/bootable/recovery"
+            }
+          ]
+        }
+      ],
+      "id": "0020-restore-common-mdpi-recovery-resources",
+      "patch": "patches/twrp/0020-restore-common-mdpi-recovery-resources.patch",
+      "patch_sha256": "115176b88854cbdf85b7d0770d7a5aae00ccc43b84606a18b0dc448eb55fa96b",
+      "project": "bootable/recovery",
+      "reason": "Restore the original common MDPI recovery resource provider and its unchanged PNG inputs required by Soong filesystem generation; preserve all resource properties, other density definitions, TWRP theme behavior, and filesystem checks.",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery"
     }
   ],
   "application_requirements": [

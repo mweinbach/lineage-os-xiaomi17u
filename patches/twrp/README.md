@@ -193,6 +193,20 @@ and service requirement remain unselected. Availability does not enable the
 feature or establish secure-element or decryption support. The next strict
 graph and compilation must validate the new native variants.
 
+Patch 20 restores the original `recovery-resources-common-mdpi` module in the
+recovery Blueprint. Graph 39 reached Android's generated recovery-image
+dependency on that module, which the TWRP fork had commented out. Removing
+only the ten comment prefixes makes its declaration identical to the pinned
+AOSP Android 16 r1 module. All 102 PNG inputs already exist and match the
+official tree's file names, Git blobs and modes; the unrelated `dummyfile`
+does not match the preserved PNG glob.
+
+The recovery/root placement, `images` relative path and `no_full_install`
+property are unchanged. The other four density modules remain commented out.
+No density variable, generated-image dependency check, product package or
+TWRP theme generation changes. This restores the real resource provider;
+actual resource installation and final ramdisk contents still require a build.
+
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source
 policy's allow rules and historical policy snapshots remain intact. Keep the
