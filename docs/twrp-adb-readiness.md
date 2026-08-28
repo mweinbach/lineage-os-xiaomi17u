@@ -29,6 +29,39 @@ stock `/data` authorization cannot be assumed available. The patched init
 automatically requests ADB only for `ro.debuggable=1`; the default user target
 still needs an explicitly reviewed startup path.
 
+The subsequent startup review confirms that the existing recovery init script
+is reached through `init_second_stage.recovery` and `init_recovery.rc`, at
+`/system/etc/init/hw/init.rc`. It does not need a new package request. Ordinary
+adbd remains a disabled service until requested; the excluded MTP startup path
+does not supply that request, and the GUI's explicit ADB action is not an
+authentication dialog. Logd already receives an explicit `on init` start.
+
+The source packaging review identifies three original providers that need an
+explicit installation decision: `adbd.recovery`, `cgroups.recovery.json`, and
+`task_profiles.json.recovery`. They are absent from the inspected product's
+explicit package requests. The ADB API phony supplies libraries rather than
+the daemon, and the current task-profile request is inside the disabled crypto
+branch. This is not a finding from a completed installation graph or ramdisk.
+No package has been added by this review; final packaging must verify these
+inputs without enabling crypto or inheriting the broad vendor product.
+
+Automatic startup also needs a separate transport restriction. The pinned
+`daemon/main.cpp` falls back to TCP/VSOCK listeners on port 5555 if the FunctionFS
+endpoint `/dev/usb-ffs/adb/ep0` is absent. Explicit listener properties can
+select networking as well. `TW_NO_NETWORK` controls TWRP feature selection;
+it does not remove those adbd paths. A guarded init-event prototype still
+requests the daemon after a failed FunctionFS mount, so that prototype is not
+admitted on its own. Prevent the networking fallback before describing future
+startup as USB-only; retain host authentication and the existing privilege drop.
+
+The ignored source receipt `reports/twrp-user-adbd-startup44/handoff.json`,
+SHA256 `953b6c4fb2fe1eaad882df40341950d4aea7d8f98818e8a99d8a830e7e3e7412`,
+binds 25 startup and 19 independent packaging checks. Those checks validate
+source contracts and controlled init-event expectations, not device behavior.
+The [community comparison](twrp-community-references.md) corroborates the stock
+USB controller paths but supplies no authenticated startup or log-access test
+for this profile.
+
 Setting `PRODUCT_ADB_KEYS` alone is insufficient. In
 `build/soong@91bdc79cffb29d35b2d46a33204c061c3e7ed4f7`,
 `etc/adb_keys.go:50` skips installation unless the product is debuggable and

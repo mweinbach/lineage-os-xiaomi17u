@@ -46,6 +46,12 @@ outcomes and the exact source, control bundle and log hashes for each attempt.
 Earlier failures remain in that record after a target revision. Generated
 theme resources alone do not establish that a recovery image was built.
 
+The [community reference review](twrp-community-references.md) records the two
+Nezha trees supplied during bring-up at exact commits. Their USB and touch
+details are useful comparison inputs, but their reported hardware results are
+not tests of this stock package. Neither tree is imported wholesale or used to
+replace the pinned platform, stock layout, authentication or validation checks.
+
 The existing Apple Container VM remains the sole writer of the ext4 volume.
 TWRP source is separate at `/work/twrp-nezha`; its output belongs below
 `/work/out/twrp-nezha`, with reports under `/work/validation/twrp-nezha`.
