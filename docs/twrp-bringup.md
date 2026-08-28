@@ -25,6 +25,14 @@ The [source verification record](../research/twrp-source-sync.json) contains
 the host, tool-version probes and receipt hashes. Source-sync success is
 separate from recovery compilation and device testing.
 
+The [supplementary source configuration](../config/twrp-dependencies.json)
+separately pins AOSP `system/bpf` at
+`4447acd742bf443f9088c300bd69f96ede8eaeb1` from `android-16.0.0_r1`, providing
+the BPF defaults required by the selected Connectivity headers. Its
+[helper](../scripts/twrp_dependencies.py) preserves the immutable 391-project
+Repo snapshot; this addition is not a replacement lock or proof of a complete
+recovery dependency graph.
+
 The existing Apple Container VM remains the sole writer of the ext4 volume.
 TWRP source is separate at `/work/twrp-nezha`; its output belongs below
 `/work/out/twrp-nezha`, with reports under `/work/validation/twrp-nezha`.
@@ -46,6 +54,7 @@ starting a source operation:
 
 ```sh
 make twrp-plan
+python3 scripts/twrp_dependencies.py plan
 make recovery-logs-plan
 make test
 ```
@@ -56,6 +65,7 @@ Linux x86-64 host). The guest-side commands are:
 
 ```sh
 python3 scripts/twrp_workspace.py freeze --host-mode apple-rosetta
+python3 scripts/twrp_dependencies.py fetch --host-mode apple-rosetta
 python3 scripts/twrp_build.py prepare --host-mode apple-rosetta
 python3 scripts/twrp_build.py graph --host-mode apple-rosetta --variant user --jobs 16
 python3 scripts/twrp_build.py build --host-mode apple-rosetta --variant user --jobs 16
@@ -68,6 +78,26 @@ stages the authored target and exact reviewed patches, and refuses unrelated
 changes. The build uses `out-twrp` as a source-relative alias to the isolated
 output directory; source, output and caches remain in ext4. No phone command
 or automatic flashing step is part of these tools.
+
+For an already prepared checkout, run the following from the **new versioned
+control bundle** instead of repeating `prepare`. Set `TWRP_PREVIOUS_CONTROL_ROOT`
+to the absolute path of the exact previous bundle matching the prepared receipt;
+an arbitrary older bundle or a mutable `latest` alias is not interchangeable.
+
+```sh
+python3 scripts/twrp_dependencies.py fetch --host-mode apple-rosetta
+python3 scripts/twrp_build.py revise --host-mode apple-rosetta \
+  --previous-control-root "${TWRP_PREVIOUS_CONTROL_ROOT:?set the exact previous control bundle path}"
+```
+
+`revise` verifies the existing target and patch queue before accepting reviewed
+target changes and supplementary additions. It archives the previous receipt
+and changed target files under the report directory's `build-revisions`, while
+preserving the base snapshot, output and caches. Existing outputs retain their
+earlier provenance; the new receipt marks the revision as not yet built or
+validated. Then run the separate `graph` and `build` commands above. Changing
+the patch queue, source configuration or target file set requires separate
+review; unrelated local edits are not adopted.
 
 The default build variant is `user`, which retains init's compile-time
 enforcement behavior. Explicit `userdebug` builds remain diagnostic experiments;
