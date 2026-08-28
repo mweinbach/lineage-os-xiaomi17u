@@ -132,6 +132,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "b66a26acd8b784dae18e99df575862e314d13ac8fe2220045a8ba461383e247b")
 
+    def test_first_eighty_one_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:81]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "ac29d47f3b4645dd4083ea85f06bfa1ee7ad00fe2b84115dd20476c3df3f5dfb")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -367,14 +373,30 @@ class ConfigurationTests(Fixture):
             ("external/vulkan-headers", "7e80b474147eb0c6a9464c2e867ae6ba277a3102"),
             ("external/OpenCSD", "98045c29085b5e10460f0c920d919597fbc91eeb"),
         ]
-        self.assertEqual(len(projects), 81)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[77:]], expected)
-        for project in projects[77:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[77:81]], expected)
+        for project in projects[77:81]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
                 self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 13 error:"))
                 self.assertIn("Android.bp", project["reason"])
+
+    def test_graph_fifteen_arm_headers_and_gsm_projection_are_pinned(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/arm-trusted-firmware", "54fd6939e177f8ff529b10183254802c76df6d08"),
+            ("external/libgsm", "8ec969cea971fe25ff2d3933a5a9f8504f8e86c9"),
+        ]
+        self.assertEqual(len(projects), 83)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[81:]], expected)
+        for project in projects[81:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+        self.assertIn("arm_dt_bindings_headers", projects[81]["reason"])
+        self.assertIn("graph 15 error", projects[81]["reason"])
+        self.assertTrue(projects[82]["reason"].startswith("Source audit projection, not a graph 15 error:"))
+        self.assertIn("libcodec2_soft_gsmdec", projects[82]["reason"])
 
     def test_supplementary_projects_are_outside_the_frozen_repo_project_paths(self):
         config = dependencies.load_config()

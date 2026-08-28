@@ -575,6 +575,20 @@
       "commit": "98045c29085b5e10460f0c920d919597fbc91eeb",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 13 error: real AOSP libopencsd_decoder provider required by retained system/extras/simpleperf/Android.bp modules."
+    },
+    {
+      "path": "external/arm-trusted-firmware",
+      "url": "https://android.googlesource.com/platform/external/arm-trusted-firmware",
+      "commit": "54fd6939e177f8ff529b10183254802c76df6d08",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP arm_dt_bindings_headers provider required by pvmfw_platform.dts.preprocessed in the graph 15 error, providing headers for retained AVF device tree preprocessing."
+    },
+    {
+      "path": "external/libgsm",
+      "url": "https://android.googlesource.com/platform/external/libgsm",
+      "commit": "8ec969cea971fe25ff2d3933a5a9f8504f8e86c9",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 15 error: real AOSP libgsm provider required by retained libcodec2_soft_gsmdec in frameworks/av/media/codec2/components/gsm/Android.bp."
     }
   ]
 }
