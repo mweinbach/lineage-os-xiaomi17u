@@ -87,6 +87,16 @@ marks that parameter intentionally unused without adding an I/O operation or
 changing the deferred flush behavior. This fix still requires a new build;
 build 56 produced no image and passed the subsequent source and cleanup checks.
 
+Graph 57 passed, and diagnostic build 58 compiled `tarWrite.c` and linked both
+the recovery executable and recovery ADB. It completed the runnable work at
+step 1,444 of 1,450, stopping only because the compiled recovery policy declared
+seven permissive domains: `adbd`, `fastbootd`, `init`, `logd`, `postinstall`,
+`recovery` and `ueventd`. The existing user-build SELinux validator rejected
+that policy. No recovery image was produced; the failed policy, unfiltered
+domain list and exact input hashes are retained in the build ledger. The next
+source change must correct those declarations, not disable the validator or
+assume the resulting policy works on the phone.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are
