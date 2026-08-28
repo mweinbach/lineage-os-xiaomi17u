@@ -309,6 +309,69 @@
       "commit": "68f58239bba93c71a39e4cd872bcbf5f69d971ec",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libgoogle-benchmark providers and defaults required by the selected AAC benchmark modules."
+    },
+    {
+      "path": "external/testng",
+      "url": "https://android.googlesource.com/platform/external/testng",
+      "commit": "8779cc45e4579acbc3a4ad19e8e99c79e96f793c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP TestNG provider required by retained Java test modules."
+    },
+    {
+      "path": "external/junit-params",
+      "url": "https://android.googlesource.com/platform/external/junit-params",
+      "commit": "6c63c83301825c8b94560b1ff8f8381c2deedc52",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP JUnit parameterized test provider required by retained Java test modules."
+    },
+    {
+      "path": "external/snakeyaml",
+      "url": "https://android.googlesource.com/platform/external/snakeyaml",
+      "commit": "d60b842e114fc22db76c6d84f9aa7950e5e4c2ea",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP SnakeYAML provider required by TestNG."
+    },
+    {
+      "path": "external/guice",
+      "url": "https://android.googlesource.com/platform/external/guice",
+      "commit": "f37a7d76021c22a64143224a14517c3f53b8b137",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Guice dependency injection provider required by TestNG."
+    },
+    {
+      "path": "external/jspecify",
+      "url": "https://android.googlesource.com/platform/external/jspecify",
+      "commit": "35b27b915ed9f1a58b71b29ada4d5ce0b41458ef",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP JSpecify annotation provider required by retained Java modules."
+    },
+    {
+      "path": "external/mockito",
+      "url": "https://android.googlesource.com/platform/external/mockito",
+      "commit": "770ab8835bf0830a64aa833275c513281c47325c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Mockito libraries required by retained Java test modules and Dexmaker wrappers."
+    },
+    {
+      "path": "external/dexmaker",
+      "url": "https://android.googlesource.com/platform/external/dexmaker",
+      "commit": "73e46f3a1e0771fd9cd76e1b50f98b764df565dc",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP mockito-target-minus-junit4 and mockito-target-extended-minus-junit4 providers required by retained Java tests."
+    },
+    {
+      "path": "external/objenesis",
+      "url": "https://android.googlesource.com/platform/external/objenesis",
+      "commit": "ae9bf081469e4beaa2ea02549c417a13baf0c3c8",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Objenesis provider required by Mockito and Dexmaker wrappers."
+    },
+    {
+      "path": "tools/dexter",
+      "url": "https://android.googlesource.com/platform/tools/dexter",
+      "commit": "4ce3b1286e402f28c53e0729925e1cde691fe968",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP slicer_ndk provider required by Dexmaker native agent defaults."
     }
   ]
 }
