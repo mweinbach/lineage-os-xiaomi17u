@@ -157,6 +157,14 @@ graph; none is stubbed or silently ignored. These source
 restorations do not add recovery packages, enable TWRP decryption, or establish
 a working virtual machine or encrypted-data path on the phone.
 
+Graph 7 exposed an upstream configuration type mismatch: the vendor exporter
+registers `include_se_omapi` unconditionally but marks it as a boolean only
+when crypto is enabled. With crypto off, recovery's boolean `select` branches
+receive an untyped string. This target calls the original
+`soong_config_set_bool` helper with `false` after the vendor exporter, keeping
+OMAPI disabled while supplying the required boolean type. No source branch
+or type check is removed, and no crypto feature is enabled to avoid the error.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.

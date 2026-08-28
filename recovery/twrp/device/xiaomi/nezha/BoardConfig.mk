@@ -88,6 +88,11 @@ BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false
 # needed for a target that intentionally builds no kernel.
 include vendor/twrp/config/BoardConfigSoong.mk
 
+# Upstream registers OMAPI even with crypto off, but types it only in the
+# crypto-enabled branch. Declare this target's disabled value through the
+# supported helper so recovery's boolean selects retain their type checks.
+$(call soong_config_set_bool, twrpGlobalVars, include_se_omapi, false)
+
 ifneq ($(filter $(TARGET_BUILD_VARIANT),user userdebug),$(TARGET_BUILD_VARIANT))
 $(error Nezha TWRP accepts only user or userdebug builds)
 endif

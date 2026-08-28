@@ -30,7 +30,13 @@ separately pins AOSP `system/bpf` at
 `4447acd742bf443f9088c300bd69f96ede8eaeb1` from `android-16.0.0_r1`, providing
 the BPF defaults required by the selected Connectivity headers. It also pins
 the matching NetworkStack, APF and libpcap projects so the retained Connectivity
-definitions use their real JNI dependencies. The
+definitions use their real JNI dependencies. The current set contains 15
+additional projects, including native bridge support, selected platform test
+helpers, Skia and its missing codec/font providers. NFC, Wi-Fi and AVF source
+provides the real modules required by the global SELinux service-fuzzer
+registry. Registering those modules does not install their services in recovery
+or establish support for the phone's NFC, Wi-Fi, virtualization or decryption.
+The SELinux binding validator remains enabled and its registry is unchanged. The
 [helper](../scripts/twrp_dependencies.py) preserves the immutable 391-project
 Repo snapshot; these additions are not a replacement lock or proof of a complete
 recovery dependency graph.

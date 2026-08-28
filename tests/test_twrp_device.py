@@ -209,6 +209,21 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertNotEqual((self.board | self.device).get(setting), "true", setting)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
 
+    def test_disabled_omapi_is_exported_as_boolean_after_vendor_configuration(self):
+        lines = list(logical_lines(self.board_text))
+        vendor_include = "include vendor/twrp/config/BoardConfigSoong.mk"
+        typed_disable = "$(call soong_config_set_bool, twrpGlobalVars, include_se_omapi, false)"
+        self.assertEqual(lines.count(vendor_include), 1)
+        self.assertEqual(lines.count(typed_disable), 1)
+        self.assertLess(lines.index(vendor_include), lines.index(typed_disable))
+        # The real make helper supplies VendorVarTypes=bool; a plain string
+        # assignment, even "false", cannot satisfy the upstream boolean select.
+        omapi_lines = [line for line in lines if "include_se_omapi" in line]
+        self.assertEqual(omapi_lines, [typed_disable])
+        for setting in ("TW_INCLUDE_CRYPTO", "TW_INCLUDE_CRYPTO_FBE", "TW_INCLUDE_LIBRESETPROP"):
+            self.assertEqual(self.board[setting], "false", setting)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
     def test_theme_output_is_not_faked_in_device_configuration(self):
         # The upstream theme hook reads the runner's OUT environment variable,
         # normally populated by lunch from absolute PRODUCT_OUT. Device config
