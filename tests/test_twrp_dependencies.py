@@ -1963,22 +1963,52 @@ class ProjectTests(Fixture):
         self.assertEqual((self.paths["report_dir"] / twrp_workspace.SNAPSHOT).read_bytes(), snapshot)
 
     def test_valid_bpf_does_not_hide_any_wrong_supplementary_commit(self):
-        self.config["projects"] = dependencies.load_config()["projects"]
-        self.save_config()
-        projects = {self.source / project["path"]: project for project in self.config["projects"]}
-        for project in self.config["projects"][1:]:
+        all_projects = dependencies.load_config()["projects"]
+        projects = {self.source / project["path"]: project for project in all_projects}
+        for project in all_projects[1:]:
             (self.source / project["path"] / ".git").mkdir(parents=True)
-        for changed in self.config["projects"][1:]:
-            def wrong_project(target, *args):
+
+        def assert_wrong_head(changed, selected_projects, scope):
+            # Each case still reads real fixture JSON and runs all configuration,
+            # base, patch-owner and checkout validation through verify().
+            self.config["projects"] = selected_projects
+            self.save_config()
+            target = self.source / changed["path"]
+            wrong_head = "f" * 40
+            calls = []
+
+            def wrong_project(path, *args):
+                calls.append((path, args))
                 if args == ("rev-parse", "HEAD"):
-                    return "f" * 40 if target == self.source / changed["path"] else projects[target]["commit"]
+                    return wrong_head if path == target else projects[path]["commit"]
                 if args == ("remote", "get-url", "origin"):
-                    return projects[target]["url"]
-                return self.git(target, *args)
-            with self.subTest(path=changed["path"]), self.base_mocks(), \
-                 patch.object(dependencies, "git_value", side_effect=wrong_project), \
-                 self.assertRaisesRegex(ValueError, changed["path"]):
-                dependencies.verify(self.control, self.source)
+                    return projects[path]["url"]
+                return self.git(path, *args)
+
+            with self.subTest(path=changed["path"], scope=scope):
+                self.assertNotEqual(wrong_head, changed["commit"])
+                with patch.object(dependencies, "git_value", new=wrong_project), self.assertRaises(ValueError) as raised:
+                    dependencies.verify(self.control, self.source)
+                self.assertEqual(str(raised.exception),
+                                 "Supplementary HEAD or origin differs from its reviewed pin: " + changed["path"])
+                self.assertIn((target, ("rev-parse", "HEAD")), calls)
+                self.assertIn((target, ("remote", "get-url", "origin")), calls)
+                if target != self.target:
+                    self.assertIn((self.target, ("status", "--porcelain=v1", "-z",
+                                                 "--untracked-files=all", "--ignored=matching")), calls)
+
+        with self.base_mocks(), patch.object(twrp_workspace, "run", side_effect=AssertionError("No process")):
+            # Test every pin with valid BPF preceding the bad source. BPF itself
+            # uses a singleton fixture so its wrong HEAD is also rejected here.
+            for changed in all_projects:
+                selected = [self.project] if changed["path"] == self.project["path"] else [self.project, changed]
+                assert_wrong_head(changed, selected, "per-source")
+
+            # Retain complete-list failures at three positions. The adjacent
+            # all-valid test checks every project in the full configuration;
+            # this avoids repeating its quadratic path checks for every pin.
+            for index in sorted({0, len(all_projects) // 2, len(all_projects) - 1}):
+                assert_wrong_head(all_projects[index], all_projects, "full-list")
 
 
 class FetchTests(Fixture):
