@@ -240,6 +240,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "765dbe53ef58422a6e24d4910c466b8dd448030ce1a1389555db932d19b76652")
 
+    def test_first_200_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:200]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "ae49a52b7e32d4338010e164fb2341a263f9d4d0f562a6e5d3163335d1fff1ca")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -968,13 +974,24 @@ class ConfigurationTests(Fixture):
 
     def test_graph_twenty_seven_exoplayer_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 200)
+        self.assertGreaterEqual(len(projects), 200)
         self.assertEqual(projects[199], {
             "path": "external/exoplayer",
             "url": "https://android.googlesource.com/platform/external/exoplayer",
             "commit": "562c956cd875e623d041e0819f39125f903722c5",
             "tag": "android-16.0.0_r1",
             "reason": "Real AOSP exoplayer-media_apex provider required by framework-media.impl in the graph 27 errors. Original source modules and API settings are preserved; this source pin does not establish recovery media support."
+        })
+
+    def test_reviewed_exoplayer_jarjar_tool_projection_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 201)
+        self.assertEqual(projects[200], {
+            "path": "external/jarjar",
+            "url": "https://android.googlesource.com/platform/external/jarjar",
+            "commit": "96b8d0a67118121374f3ed1962e876e533e8908b",
+            "tag": "android-16.0.0_r1",
+            "reason": "Source audit projection, not a graph 27 error: real AOSP jarjar host Java library supplies jarjar.jar for the original Soong relocation rule used by ExoPlayer jarjar_rules. Original tool, bundled Maven and Ant imports, and tests are preserved."
         })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
