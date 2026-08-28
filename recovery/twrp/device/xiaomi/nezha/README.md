@@ -567,10 +567,39 @@ direct and implicit providers are already selected; no factory or test settings
 are changed. This is not a Graph 33 diagnostic, and the platform_testing root
 aggregate and sibling apps remain excluded.
 
-The current selection has 160 source rules. These three restorations add no
+The Graph 33 cohort produced 160 source rules. These three restorations add no
 package to `PRODUCT_PACKAGES` or test certificate to recovery trusted keys.
 These are source checks, not cryptographic validation, and do not establish
 that the next graph or any device test passes.
+
+Graph 34 reports missing `libwifi-system` in the retained hostapd and supplicant
+VTS helpers. One exact positive rule restores
+`frameworks/opt/net/wifi/libwifi_system/Android.bp` from the existing owner at
+`1cab31f96d1f903e190708c1ce665520a4a89d10`. Its three original declarations retain
+`libwifi-system`, `libwifi-system-defaults` and `libwifi-system-test` together.
+The four genuine external providers, global Apache license and all eight raw
+files are present. The rule selects only this build file; sibling build files
+remain excluded. The Wi-Fi restoration produced 161 source rules, with networking
+still disabled and `PRODUCT_PACKAGES` still limited to recovery.
+
+The original exported `mock_hal_tool.h` retains its stale
+`wifi_system/hal_tool.h` include. A bounded scan of 185 C/C++ source and header
+files in the Wi-Fi owner and Wi-Fi VTS tree found no source including that mock
+header. This caveat is preserved, not patched around; the audit does not prove
+complete C++ header compatibility, compilation or working Wi-Fi on Nezha.
+
+A separate CTS source projection found that the retained `CtsSettingsTestCases`
+needs `com_android_car_settings_flags_lib`. The original Car Settings project at
+`64634c7bfc79be369f0cd251d6c61df995cdf8b1` supplies it through the complete
+`packages/apps/Car/Settings/aconfig/Android.bp`. A negative project prefix and
+that one exact positive file retain both `com_android_car_settings_flags` and
+its Java flags library, including their original flag input and Apache metadata.
+The other eleven app, test and generator declarations have no retained incoming
+consumer in the bounded audit and stay excluded. `CtsSettingsTestCases` remains
+selected; no substitute flags, factory changes or new test gates are introduced.
+This is a source projection, not an actual Graph 34 diagnostic. The current
+selection has 163 source rules and does not install Car Settings or change
+Nezha's identity. Compilation and device behavior remain unverified.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

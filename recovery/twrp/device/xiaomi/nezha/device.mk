@@ -153,6 +153,12 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     packages/services/Car/libs/car-internal-dep-lib/Android.bp \
     packages/services/Car/prebuilts/Android.bp
 
+# CTS source projection needs the original Car Settings flags, not its app.
+# Select the complete independent flags file and keep the CTS consumer enabled.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -packages/apps/Car/Settings/ \
+    packages/apps/Car/Settings/aconfig/Android.bp
+
 # The second graph exposed these specific CTS/VTS and automotive consumers.
 # Preserve the rest of CTS and the security HAL interfaces. The original CHRE
 # exclusion is removed: graph 22 requires its shared flag declarations, and
@@ -229,6 +235,11 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     -frameworks/opt/net/wifi/ \
     frameworks/opt/net/wifi/libwifi_system_iface/
+
+# Graph 34 VTS hostapd/supplicant helpers need the original Wi-Fi system library.
+# Keep its complete build file, including the shared defaults and test helper.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    frameworks/opt/net/wifi/libwifi_system/Android.bp
 
 # The native source audit found retained Wi-Fi service consumers of this
 # original HAL leaf. Do not choose a chipset or enable recovery networking;

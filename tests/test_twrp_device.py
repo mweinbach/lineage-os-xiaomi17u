@@ -34,6 +34,8 @@ STS_PROVIDER_BLUEPRINTS = (
 )
 WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp"
 CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
+CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
+CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
 CAR_API_BLUEPRINTS = (
     "packages/services/Car/car-lib/Android.bp",
     "packages/services/Car/aconfig/Android.bp",
@@ -81,6 +83,7 @@ FRAMEWORK_PROVIDER_EXCLUSIONS = (
     "-packages/apps/Traceur/",
 )
 WIFI_TRACKER_BLUEPRINT = "frameworks/opt/net/wifi/libs/WifiTrackerLib/Android.bp"
+WIFI_SYSTEM_BLUEPRINT = "frameworks/opt/net/wifi/libwifi_system/Android.bp"
 SHARED_HELPER_BLUEPRINTS = (
     "platform_testing/libraries/app-helpers/core/Android.bp",
     "platform_testing/libraries/app-helpers/handheld/Android.bp",
@@ -161,12 +164,14 @@ SOURCE_FILE_REINCLUSIONS = {
     MAINLINE_DETECTOR_BLUEPRINT,
     *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
-    *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
+    *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
-    CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, *ADSERVICES_API_BLUEPRINTS,
+    CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS, CAR_SETTINGS_FLAGS_BLUEPRINT,
+    *ADSERVICES_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + CAR_SETTINGS_PARENT,
     "-" + TV_SETTINGS_PARENT,
     "-" + TRACING_ROBO_BLUEPRINT,
     *FRAMEWORK_PROVIDER_EXCLUSIONS,
@@ -207,12 +212,13 @@ SOURCE_REINCLUSIONS = [
     MAINLINE_DETECTOR_BLUEPRINT,
     *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
-    *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
+    *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT, WIFI_SYSTEM_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
     *STS_PROVIDER_BLUEPRINTS,
     WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT,
     *CAR_API_BLUEPRINTS,
+    CAR_SETTINGS_FLAGS_BLUEPRINT,
     *ADSERVICES_API_BLUEPRINTS,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
@@ -592,7 +598,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
         self.assertTrue(source_path_allowed(provider + "testlib/Android.bp", scopes))
         for source in ("frameworks/opt/net/wifi/Android.bp",
-                       "frameworks/opt/net/wifi/libwifi_system/Android.bp",
+                       "frameworks/opt/net/wifi/libwifi_system/other.bp",
                        "frameworks/opt/net/wifi/libwifi_system_iface_sibling/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for source in ("system/connectivity/wificond/Android.bp",
@@ -949,7 +955,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 160)
+        self.assertEqual(len(scopes), 163)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -1069,6 +1075,59 @@ class TwrpDeviceTests(unittest.TestCase):
         for fact in ("separate CTS lookahead", "CtsSecurityBulletinHostTestCases",
                      "MainlineModuleDetector", "no factory or test settings are changed",
                      "not a Graph 33 diagnostic", "sibling apps remain excluded"):
+            self.assertIn(fact, readme)
+
+    def test_graph_thirty_four_restores_only_original_wifi_system_file(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = str(Path(WIFI_SYSTEM_BLUEPRINT).parent) + "/"
+        self.assertIn("-frameworks/opt/net/wifi/", scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         {WIFI_SYSTEM_BLUEPRINT})
+        self.assertTrue(source_path_allowed(WIFI_SYSTEM_BLUEPRINT, scopes))
+        for source in (parent + "other.bp", parent + "child/Android.bp",
+                       parent + "testlib/Android.bp", parent.rstrip("/") + "_sibling/Android.bp",
+                       "frameworks/opt/net/wifi/Android.bp",
+                       "frameworks/opt/net/wifi/libs/WifiTrackerLib/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("frameworks/opt/net/wifi/libwifi_system_iface/Android.bp",
+                       "frameworks/opt/net/wifi/libwifi_hal/Android.bp", WIFI_TRACKER_BLUEPRINT,
+                       "hardware/interfaces/wifi/hostapd/1.0/vts/functional/Android.bp",
+                       "hardware/interfaces/wifi/supplicant/1.0/vts/functional/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        self.assertEqual(self.board["TW_INCLUDE_CRYPTO"], "false")
+
+    def test_graph_thirty_four_wifi_limits_include_original_unused_mock_caveat(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 34 reports", "libwifi-system-defaults", "libwifi-system-test",
+                     "1cab31f96d1f903e190708c1ce665520a4a89d10", "161 source rules",
+                     "mock_hal_tool.h", "wifi_system/hal_tool.h", "bounded scan of 185",
+                     "no source including that mock header", "not patched around",
+                     "does not prove complete C++ header compatibility"):
+            self.assertIn(fact, readme)
+
+    def test_projected_car_settings_flags_preserve_cts_without_the_car_app(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertIn("-" + CAR_SETTINGS_PARENT, scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(CAR_SETTINGS_PARENT)},
+                         {CAR_SETTINGS_FLAGS_BLUEPRINT})
+        self.assertTrue(source_path_allowed(CAR_SETTINGS_FLAGS_BLUEPRINT, scopes))
+        for leaf in ("Android.bp", "aconfig/other.bp", "aconfig/child/Android.bp",
+                     "tests/deviceless/Android.bp", "tests/multivalent/Android.bp"):
+            self.assertFalse(source_path_allowed(CAR_SETTINGS_PARENT + leaf, scopes), leaf)
+        for source in ("packages/apps/Car/Settings_sibling/Android.bp",
+                       "packages/apps/Settings/Android.bp", "cts/tests/tests/settings/Android.bp",
+                       "build/soong/aconfig/aconfig_declarations.go",
+                       "build/soong/aconfig/codegen/java_aconfig_library.go"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("CTS source projection", "CtsSettingsTestCases",
+                     "com_android_car_settings_flags_lib", "com_android_car_settings_flags",
+                     "64634c7bfc79be369f0cd251d6c61df995cdf8b1", "other eleven",
+                     "not an actual Graph 34 diagnostic", "163 source rules",
+                     "does not install Car Settings"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
