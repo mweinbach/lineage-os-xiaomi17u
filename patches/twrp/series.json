@@ -951,6 +951,44 @@
       "project": "bootable/recovery",
       "reason": "Restore the original common MDPI recovery resource provider and its unchanged PNG inputs required by Soong filesystem generation; preserve all resource properties, other density definitions, TWRP theme behavior, and filesystem checks.",
       "repository": "https://github.com/TWRP-Test/android_bootable_recovery"
+    },
+    {
+      "base_commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121",
+      "files": [
+        {
+          "after_git_blob": "11e195762e1b16bf718b827e74da14e99584bb15",
+          "after_sha256": "9a960fd5edd4fabe96fbc0a12bc5a27092f58db10ad854481bd1cf551118579c",
+          "after_size_bytes": 37546,
+          "before_git_blob": "0a32a55b6be95915ad3c2011344e5f19a0ab6056",
+          "before_sha256": "bcee7ae67c73aa8e0923766688589d0dc2eabd082b2b57d5acbdf661348a8f27",
+          "before_size_bytes": 37411,
+          "mode": "100644",
+          "path": "target/product/generic/Android.bp",
+          "profile_image_modules": [
+            {
+              "after_module_sha256": "db1a0d27db76cec32842cdabee46a9796519f21b84835369dbdd6abe84bff04b",
+              "before_module_sha256": "0fba6db5af04cb9b1437ea91e407f458f02cf1c8337fdb50314c52c7d1dcda08",
+              "constructor_line": 1054,
+              "enabled_otherwise": true,
+              "enabled_property_present_before": false,
+              "enabled_when_true": false,
+              "name": "aosp_shared_system_image",
+              "name_line": 1055,
+              "selector_namespace": "nezha_twrp",
+              "selector_type": "bool",
+              "selector_variable": "native_recovery_only",
+              "type": "android_system_image"
+            }
+          ],
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_build/3b5b2b43b8e2200ef92b7b814a84c8dde8b74121/target/product/generic/Android.bp"
+        }
+      ],
+      "id": "0021-native-recovery-generic-system-image",
+      "patch": "patches/twrp/0021-native-recovery-generic-system-image.patch",
+      "patch_sha256": "1c793575de0629073c908431b01d9336fd4aa06016eaaec8bd9286e1424eae3d",
+      "project": "build/make",
+      "reason": "Disable only the unrelated handwritten generic system image when the typed Nezha native recovery profile is selected; retain every shared default, GSI/VNDK provider, image property, other-product default, and validation implementation.",
+      "repository": "https://github.com/TWRP-Test/android_build"
     }
   ],
   "application_requirements": [
