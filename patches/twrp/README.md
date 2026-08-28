@@ -147,6 +147,24 @@ names, escaping links or copy errors. It is not a transaction across all files:
 a later failure can leave earlier staging copies, but cannot report a successful
 build. The normal graph, image, signature, SELinux and ELF checks remain required.
 
+Patch 27 scopes the four continuous instrumentation/native CI archive tasks to
+normal Android builds. Graph 50 reported an absent `MtpServicePerfTests` export
+while Make evaluated the instrumentation metrics archive. The three sibling
+archives were reviewed together as related CI scope; their failures were not
+observed in that attempt. Only the existing registered
+`nezha_twrp.native_recovery_only` setting with Boolean type and exact true value
+skips the complete task bodies. Every original body remains unchanged otherwise.
+
+This removes the archive goals from the native recovery profile rather than
+providing empty phony successes. The instrumentation archive's test-APK coverage
+report is inside the same guard; platform API compatibility checks are untouched.
+The original test lists, optional vendor extensions, module providers and shared
+strict packaging validator remain intact. The default, false, untyped, malformed
+and other nonmatching settings retain the original Make traces and errors. No
+source selection, recovery package, device identity, signature or enforcement
+setting changes. These are source and fixture checks, not a CI archive run or a
+compiled recovery result.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init
