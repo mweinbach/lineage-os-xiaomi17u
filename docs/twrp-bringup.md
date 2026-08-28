@@ -135,6 +135,15 @@ The [log collector](recovery-logs.md) and
 also passed a read-only check against the hash-verified factory recovery image;
 its structural result does not authenticate that input or validate TWRP.
 
+For a compiled `ramdisk-recovery.cpio`, the separate
+[ramdisk inspector](../scripts/inspect_twrp_ramdisk.py) validates a single bounded
+newc archive without extracting or executing it. It checks the packaged secure
+property literals, critical file permissions and ARM64 init/adbd ELF headers,
+and records the policy and executable hashes. It does not establish effective
+runtime properties or resolve the complete ELF library graph. Bind that CPIO to
+the compressed ramdisk in the inspected image, run the real policy analyzer,
+and inspect every packaged ELF dependency before accepting a build candidate.
+
 ## First target and limits
 
 The factory contract requires a dedicated A/B recovery image: Android boot
