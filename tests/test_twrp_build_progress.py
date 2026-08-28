@@ -102,6 +102,18 @@ class TwrpBuildProgressTests(unittest.TestCase):
             self.assertRegex(artifact["sha256"], r"^[0-9a-f]{64}$")
             self.assertIs(artifact["flash_admitted"], False)
 
+    def test_current_graph_exports_disabled_crypto_and_omapi_as_booleans(self):
+        config = self.record["generated_configuration_observed"]
+        self.assertGreaterEqual(config["attempt"], 38)
+        self.assertLessEqual(config["attempt"], len(self.record["attempts"]))
+        values = config["VendorVars"]["twrpGlobalVars"]
+        types = config["VendorVarTypes"]["twrpGlobalVars"]
+        for name in ("include_se_omapi", "include_crypto", "include_crypto_fbe"):
+            with self.subTest(variable=name):
+                # soong_config_set_bool serializes false as an empty value.
+                self.assertEqual(values[name], "")
+                self.assertEqual(types[name], "bool")
+
 
 if __name__ == "__main__":
     unittest.main()

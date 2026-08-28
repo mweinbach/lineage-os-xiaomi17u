@@ -35057,26 +35057,36 @@
     "recovery_image_exists": false
   },
   "generated_configuration_observed": {
-    "attempt": 17,
+    "attempt": 38,
     "Allow_missing_dependencies": false,
     "SelinuxIgnoreNeverallows": false,
     "Enforce_vintf_manifest": true,
     "BoardAvbEnable": true,
     "Debuggable": false,
+    "source": {
+      "path": "/work/out/twrp-nezha/soong/soong.twrp_nezha.variables",
+      "sha256": "2f92f5676557f4b705333386225a95829c12162b0d8c36ba0c10118bfca61c0a",
+      "size_bytes": 93398
+    },
     "VendorVars": {
       "nezha_twrp": {
         "native_recovery_only": "true"
+      },
+      "twrpGlobalVars": {
+        "include_se_omapi": "",
+        "include_crypto": "",
+        "include_crypto_fbe": ""
       }
     },
     "VendorVarTypes": {
       "nezha_twrp": {
         "native_recovery_only": "bool"
+      },
+      "twrpGlobalVars": {
+        "include_se_omapi": "bool",
+        "include_crypto": "bool",
+        "include_crypto_fbe": "bool"
       }
-    },
-    "source": {
-      "path": "/work/out/twrp-nezha/soong/soong.twrp_nezha.variables",
-      "sha256": "2b1e255d20016a064e8726a986ee77a749dc99b737bd452245fb332d8d1ce77e",
-      "size_bytes": 86614
     }
   },
   "limitations": [
