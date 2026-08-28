@@ -252,6 +252,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "75d3f2f09dccc42d2b97639265929b2b6226f27d9f6e155ad0f6c409604c4aba")
 
+    def test_first_202_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:202]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "7ba053d5a12e4202d42704c21d294a79123e5394212a93fa4e22a0f7ef95dd1a")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1002,7 +1008,7 @@ class ConfigurationTests(Fixture):
 
     def test_reviewed_framework_docs_switcher_tool_projection_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 202)
+        self.assertGreaterEqual(len(projects), 202)
         self.assertEqual(projects[201], {
             "path": "tools/doc_generation",
             "url": "https://android.googlesource.com/platform/tools/doc_generation",
@@ -1010,6 +1016,38 @@ class ConfigurationTests(Fixture):
             "tag": "android-16.0.0_r1",
             "reason": "Source audit projection, not a graph 27 error: real AOSP switcher4 host Python tool required by the retained ds-docs-switched generator in frameworks/base/api/ApiDocs.bp. Original documentation consumers and tool definitions remain selected."
         })
+
+    def test_graph_twenty_eight_python_and_java_provider_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/mpdecimal", "ed7ca08a5e74aab5f0c5a15cbc08f2364dbe69a3",
+             "libmpdec", ("py3-c-modules",)),
+            ("external/moshi", "57cf8f201e673c82d1640738c5928ed758a4ff75",
+             "moshi", ("androidx.benchmark_benchmark-common",)),
+            ("external/mockftpserver", "59892565b6b7f8e60db9299b4bb7ace4a16dff7a",
+             "mockftpserver", ("core-tests",)),
+            ("external/javasqlite", "0bdef7b65a85435705cf37408cb3e438d2c2f64e",
+             "sqlite-jdbc", ("core-tests",)),
+            ("external/mockwebserver", "a94bb9bc1f426fc1ae3e892ff08f0efeb763a809",
+             "mockwebserver", ("core-tests", "core-ojtests", "core-ojtests-public")),
+            ("external/nist-pkits", "ee62ccc6b7665d12a4328db024f449f7ca5320fb",
+             "nist-pkix-tests", ("core-tests",)),
+        ]
+        self.assertEqual(len(projects), 208)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[202:208]],
+                         [(path, commit) for path, commit, _, _ in expected])
+        for project, (_, _, module, consumers) in zip(projects[202:208], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 28 errors", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertNotIn("projection", project["reason"].lower())
+                for consumer in consumers:
+                    self.assertIn(consumer, project["reason"])
+        self.assertIn("retained Android", projects[202]["reason"])
+        self.assertIn("generated header and visibility rules are preserved", projects[202]["reason"])
+        self.assertIn("license metadata are preserved", projects[205]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

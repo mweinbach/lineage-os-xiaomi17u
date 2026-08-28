@@ -1422,6 +1422,48 @@
       "commit": "8fb605eb38e53e74c1408ea01d4b7dd6be8ce467",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 27 error: real AOSP switcher4 host Python tool required by the retained ds-docs-switched generator in frameworks/base/api/ApiDocs.bp. Original documentation consumers and tool definitions remain selected."
+    },
+    {
+      "path": "external/mpdecimal",
+      "url": "https://android.googlesource.com/platform/external/mpdecimal",
+      "commit": "ed7ca08a5e74aab5f0c5a15cbc08f2364dbe69a3",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libmpdec provider required by the retained Android py3-c-modules source variant in the graph 28 errors. Original native library, generated header and visibility rules are preserved."
+    },
+    {
+      "path": "external/moshi",
+      "url": "https://android.googlesource.com/platform/external/moshi",
+      "commit": "57cf8f201e673c82d1640738c5928ed758a4ff75",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP moshi provider required by androidx.benchmark_benchmark-common in the graph 28 errors. Original Java and Kotlin sources, dependencies and SDK settings are preserved."
+    },
+    {
+      "path": "external/mockftpserver",
+      "url": "https://android.googlesource.com/platform/external/mockftpserver",
+      "commit": "59892565b6b7f8e60db9299b4bb7ace4a16dff7a",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP mockftpserver provider required by core-tests in the graph 28 errors. Original library, resources and API settings are preserved."
+    },
+    {
+      "path": "external/javasqlite",
+      "url": "https://android.googlesource.com/platform/external/javasqlite",
+      "commit": "0bdef7b65a85435705cf37408cb3e438d2c2f64e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP sqlite-jdbc provider required by core-tests in the graph 28 errors. Original Java and JNI definitions and license metadata are preserved."
+    },
+    {
+      "path": "external/mockwebserver",
+      "url": "https://android.googlesource.com/platform/external/mockwebserver",
+      "commit": "a94bb9bc1f426fc1ae3e892ff08f0efeb763a809",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP mockwebserver provider required by core-tests, core-ojtests and core-ojtests-public in the graph 28 errors. Original library and test consumers remain selected."
+    },
+    {
+      "path": "external/nist-pkits",
+      "url": "https://android.googlesource.com/platform/external/nist-pkits",
+      "commit": "ee62ccc6b7665d12a4328db024f449f7ca5320fb",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP nist-pkix-tests provider required by core-tests in the graph 28 errors. Original PKITS tests and test resources are preserved."
     }
   ]
 }
