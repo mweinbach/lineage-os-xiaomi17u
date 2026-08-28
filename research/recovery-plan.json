@@ -32,6 +32,33 @@
     "stock_header_logs_rehashed_against_receipt": true,
     "firmware_reextracted_for_this_review": false
   },
+  "followup_module_stage_audit": {
+    "record": "research/module-stage-closure.json",
+    "sha256": "46ce4c6ca18b12c7d449d6ee78929722e764dee9a14d3f514fc33aeb0e217d40",
+    "scope": "captured modules and pinned loader semantics; not a TWRP build or runtime loading result",
+    "stage": "recovery_first_stage",
+    "request_rows": 435,
+    "unique_requested_modules": 424,
+    "hard_dependency_closure_modules": 426,
+    "hard_added_names": [
+      "hdcp_qseecom_dlkm",
+      "smmu_proxy_dlkm"
+    ],
+    "crc_expectations": 20345,
+    "kernel_crc_matches": 17457,
+    "local_predecessor_crc_matches": 2888,
+    "missing_hard_paths": 0,
+    "hard_or_pre_cycles": 0,
+    "local_matching_provider_ambiguities": 0,
+    "missing_soft_edges": 1,
+    "missing_soft_target": "phy-msm-snps-hs",
+    "missing_soft_target_proves_required_import_failure": false,
+    "substitute_modules_added": false,
+    "stock_loader_source_identity_verified": false,
+    "actual_module_loading_verified": false,
+    "signature_trust_verified": false,
+    "recovery_image_built_or_booted": false
+  },
   "stock": {
     "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
     "package_kind": "user-provided China fastboot TGZ, separately preserved from modified Xiaomi.eu ZIP",

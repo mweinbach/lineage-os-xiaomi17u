@@ -1,5 +1,6 @@
 """Offline checks for a recovery plan, not evidence that recovery works."""
 
+import hashlib
 import json
 from pathlib import Path
 import unittest
@@ -94,6 +95,46 @@ class RecoveryPlanTests(unittest.TestCase):
         self.assertTrue(recovery["embedded_signature_valid"])
         self.assertEqual(stock["vbmeta_system_chain"]["rollback_index_location"], 2)
         self.assertEqual(stock["vbmeta_system_chain"]["rollback_index"], 1769904000)
+
+    def test_recovery_module_followup_matches_the_independent_stage_record(self):
+        proof = self.record["followup_module_stage_audit"]
+        raw = (ROOT / proof["record"]).read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), proof["sha256"])
+        audit = json.loads(raw)
+        self.assertEqual(proof["stage"], "recovery_first_stage")
+        stage = audit["stages"][proof["stage"]]
+        mapping = {
+            "request_rows": "requests", "unique_requested_modules": "unique_requests",
+            "hard_dependency_closure_modules": "hard_closure_modules",
+            "crc_expectations": "expectations", "kernel_crc_matches": "kernel_crc_matches",
+            "local_predecessor_crc_matches": "local_hard_predecessor_crc_matches",
+            "missing_hard_paths": "missing_hard_paths", "hard_or_pre_cycles": "hard_or_pre_cycles",
+            "local_matching_provider_ambiguities": "local_crc_matching_provider_ambiguities",
+        }
+        for target, source in mapping.items():
+            self.assertEqual(proof[target], stage[source], target)
+        self.assertEqual(proof["hard_added_names"], audit["selection"][proof["stage"]]["hard_added_names"])
+        self.assertEqual(proof["hard_dependency_closure_modules"],
+                         proof["unique_requested_modules"] + len(proof["hard_added_names"]))
+        self.assertEqual(proof["crc_expectations"],
+                         proof["kernel_crc_matches"] + proof["local_predecessor_crc_matches"])
+        self.assertEqual((proof["request_rows"], proof["unique_requested_modules"],
+                          proof["hard_dependency_closure_modules"]), (435, 424, 426))
+        self.assertIn("module-stage-closure.md", self.doc)
+
+    def test_static_recovery_closure_keeps_soft_dependency_and_runtime_limits(self):
+        proof = self.record["followup_module_stage_audit"]
+        audit = json.loads((ROOT / proof["record"]).read_text())
+        soft = audit["missing_soft_dependencies"]
+        self.assertEqual(proof["missing_soft_edges"], soft["recovery_first_stage_edges"])
+        self.assertEqual(proof["missing_soft_target"], soft["recovery_target"])
+        self.assertEqual((proof["missing_soft_edges"], proof["missing_soft_target"]), (1, "phy-msm-snps-hs"))
+        for key in ("missing_soft_target_proves_required_import_failure", "substitute_modules_added",
+                    "stock_loader_source_identity_verified", "actual_module_loading_verified",
+                    "signature_trust_verified", "recovery_image_built_or_booted"):
+            self.assertIs(proof[key], False, key)
+        self.assertFalse(audit["limits"]["actual_module_load_verified"])
+        self.assertFalse(audit["limits"]["recovery_or_twrp_verified"])
 
     def test_package_gpt_bounds_are_not_live_geometry_or_flash_admission(self):
         gpt = self.record["stock"]["package_gpt_contract"]

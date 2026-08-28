@@ -52,8 +52,16 @@ two recovery fstabs still contain ext4 and legacy ICE/wrapped-key settings
 that differ from the normal EROFS/FBE layout; they are evidence to reconcile,
 not a ready-to-use TWRP decryption configuration. The
 [module-provider audit](module-provider-audit.md) supplies matching captured
-CRC candidates, but recovery-specific dependency availability, loading and
-signature admission remain separate checks.
+CRC candidates. The later [boot-stage audit](module-stage-closure.md) accounts
+for the recovery list's 435 rows and 424 unique requested modules. Its hard
+dependency closure contains 426 modules, adding `hdcp_qseecom_dlkm` and
+`smmu_proxy_dlkm`; all 20,345 recorded CRC expectations have matching kernel
+or local predecessor candidates, with no missing hard path or dependency
+cycle. One soft dependency names the absent `phy-msm-snps-hs`; that alone does
+not establish a required-import failure, and no substitute was invented.
+This uses the captured inputs and pinned loader semantics. The stock loader's
+source identity, successful loading, signature admission and TWRP behavior
+remain unverified.
 
 The recovery build should retain the separate A/B recovery arrangement,
 header v4, LZ4 ramdisk format and exclusion of the kernel from recovery.
