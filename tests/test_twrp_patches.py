@@ -22,6 +22,7 @@ SUPPLEMENT_PROFILE_IDS = [
 ]
 INITIAL_PROFILE_SHA256 = "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34c8adc9de59"
 MINADBD_GATE_ID = "0014-native-recovery-disable-minadbd"
+ACONFIG_VARIANT_ID = "0017-restore-aconfig-storage-core-images"
 MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
 RECOVERY_REVISION = "b70f8e998b302381ecefc6e7f46df1614bd61afc"
 MINADBD_PREIMAGES = {
@@ -280,8 +281,8 @@ class TwrpPatchTests(unittest.TestCase):
                 "packages/modules/adb", "ce023afef190b0cea7f8939e9dd5ee3ee79b137b", "daemon/main.cpp"),
         }
         self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS)
-                         + [MINADBD_GATE_ID] + SUPPLEMENT_PROFILE_IDS)
-        self.assertEqual(len(self.patches), 16)
+                         + [MINADBD_GATE_ID] + SUPPLEMENT_PROFILE_IDS + [ACONFIG_VARIANT_ID])
+        self.assertEqual(len(self.patches), 17)
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]

@@ -805,6 +805,41 @@
           "sha256": "d561eb659d83b1daeb51f87ccd0cba1333eea8ed68a17ac35a00b061f40ca7f3"
         }
       ]
+    },
+    {
+      "base_commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121",
+      "files": [
+        {
+          "after_git_blob": "16341b92735823ef624892dbfa6c94864f9bcfef",
+          "after_sha256": "9de30e8e3732b4855b4cedb16531c570291e14bff15b72f7a7420ed2314c6299",
+          "after_size_bytes": 4341,
+          "before_git_blob": "27300b66b1af8c44882d9e6c19dd16048edf4a0d",
+          "before_sha256": "3319305b8b1b5f70e045b3d6e81f4dbd1195a067906695ad6b2bdab3fe22c66a",
+          "before_size_bytes": 4371,
+          "mode": "100644",
+          "path": "tools/aconfig/aconfig_storage_read_api/Android.bp",
+          "restored_modules": [
+            {
+              "after_module_sha256": "12c2109b7c9b901c7a9d0a85ead3ebf360db026b03be08ce1a249d1c97be34b4",
+              "before_module_sha256": "86575f1f61a88bc8e2a6228df598a64766dc4115885604678e3c30fc7bcb33a1",
+              "constructor_line": 80,
+              "name": "libaconfig_storage_read_api_cc",
+              "name_line": 81,
+              "recovery_available_property_after": false,
+              "recovery_available_property_before": true,
+              "removed_property_line": 95,
+              "type": "cc_library"
+            }
+          ],
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_build/3b5b2b43b8e2200ef92b7b814a84c8dde8b74121/tools/aconfig/aconfig_storage_read_api/Android.bp"
+        }
+      ],
+      "id": "0017-restore-aconfig-storage-core-images",
+      "patch": "patches/twrp/0017-restore-aconfig-storage-core-images.patch",
+      "patch_sha256": "6ad92da04f41474793921fed371a958043bef605fa3857367438e939db510523",
+      "project": "build/make",
+      "reason": "Restore the original Android 16 r1 image availability of the aconfig storage C++ wrapper by removing only TWRP's added recovery_available property; preserve all source and existing core/vendor/product behavior.",
+      "repository": "https://github.com/TWRP-Test/android_build"
     }
   ],
   "application_requirements": [

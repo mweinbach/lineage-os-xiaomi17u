@@ -147,6 +147,25 @@ diagnostic boot, verify both selected compiler flags and the compiled early
 returns, then test ordinary authenticated adbd separately. The source patch
 and offline checks do not establish successful compilation or runtime safety.
 
+Patch 17 restores the original Android 16 r1 image availability of
+`libaconfig_storage_read_api_cc`. Graph 36 failed because TWRP added
+`recovery_available: true` to this C++ wrapper without matching Rust recovery
+variants. The source audit found no selected recovery consumer of the wrapper:
+the relevant libraries, recursive defaults, generated factories and custom
+configuration properties do not request that image variant. The sole Make
+reference across the 640 configured projects copies the core shared library
+and is inside the crypto/FBE branch, which this target leaves disabled.
+
+Removing that one property makes the whole Blueprint byte-identical to the
+[pinned AOSP Android 16 r1 file](https://android.googlesource.com/platform/build/+/874fa586c48ae230ebfcff0df1b9c1b004fa8f7c/tools/aconfig/aconfig_storage_read_api/Android.bp).
+Host, core, vendor and product variants, the genuine Rust FFI bridge, generated
+sources, release flags and runtime code remain unchanged. The remaining vendor
+and product availability prevents an actual recovery request from silently
+falling back to a sole core variant. A missed recovery consumer must still fail
+the next strict graph; this source audit is not a graph or build success claim.
+The alternative addition of 24 Rust/C++ recovery availability declarations was
+reviewed but not applied. All sixteen earlier patch records remain unchanged.
+
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source
 policy's allow rules and historical policy snapshots remain intact. Keep the

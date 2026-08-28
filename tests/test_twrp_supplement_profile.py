@@ -524,8 +524,8 @@ class SupplementProfileRecordTests(unittest.TestCase):
         self.entries = {entry["id"]: entry for entry in self.record["patches"]}
 
     def test_original_fourteen_patch_records_and_all_historical_metadata_are_unchanged(self):
-        self.assertEqual(len(self.record["patches"]), 16)
-        self.assertEqual([entry["id"] for entry in self.record["patches"][-2:]], list(PATCH_IDS))
+        self.assertGreaterEqual(len(self.record["patches"]), 16)
+        self.assertEqual([entry["id"] for entry in self.record["patches"][14:16]], list(PATCH_IDS))
         self.assertEqual(canonical_sha256(self.record["patches"][:14]), PREVIOUS_FOURTEEN_SHA256)
         historical = {key: value for key, value in self.record.items()
                       if key not in ("patches", SUPPLEMENT_PROFILE_KEY)}
