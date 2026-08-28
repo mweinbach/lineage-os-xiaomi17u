@@ -14,7 +14,52 @@ SOURCE_SNAPSHOT = ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml
 SOURCE_SNAPSHOT_SHA256 = "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051"
 ORIGINAL_PREFIX_SHA256 = "2ec5f5d4c7574391b4f2a2be94081bcddc99af5a4b0b01f665c5ffffd57e8895"
 PREVIOUS_ELEVEN_SHA256 = "5a55847341ce6f0a3b84b7108a3dd142405c3e2e2d48f89c7be3343db510d8a9"
+PREVIOUS_THIRTEEN_SHA256 = "e1025aba5aeeffa043b1c4b584f8cafcd986ad1fa4a02d97fc910d456424937c"
 INITIAL_PROFILE_SHA256 = "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34c8adc9de59"
+MINADBD_GATE_ID = "0014-native-recovery-disable-minadbd"
+MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
+RECOVERY_REVISION = "b70f8e998b302381ecefc6e7f46df1614bd61afc"
+MINADBD_PREIMAGES = {
+    "minadbd/Android.bp": (
+        "11f64ef3e3361b26e4d659db454c098f830d5da9f529f88973dc13d7cfb933af", 3342, 86),
+    "minadbd/minadbd.cpp": (
+        "e0e4c332a30cfd80692e85196fb6ff415742040332030a56aa9cd67a7a149665", 2063, 33),
+    "twrpinstall/Android.bp": (
+        "c1a67f61e6257c9a009f7ef41390f5931e582fd602f2d66673929ac4f402dc94", 1978, 57),
+    "twrpinstall/adb_install.cpp": (
+        "6d083eedf0b3c803ee650b85d5c8d34f6d53a6143b44da5016fc52636b080977", 14214, 335),
+}
+MINADBD_SELECT = (
+    'select(soong_config_variable("nezha_twrp", "native_recovery_only"), {\n'
+    '        true: ["-DNEZHA_TWRP_DISABLE_MINADBD=1"],\n'
+    '        default: unset,\n'
+    '    })'
+)
+MINADBD_BINARY_ANCHOR = 'cc_binary {\n    name: "minadbd",\n    recovery: true,\n\n'
+MINADBD_BINARY_FLAGS = (
+    '    // Keep the binary dependency, but deny its unauthenticated transport in this profile.\n'
+    '    cflags: ' + MINADBD_SELECT + ',\n\n'
+)
+MINADBD_INSTALLER_FLAGS = '    cflags: [\n        "-DAB_OTA_UPDATER=1"\n    ],\n'
+MINADBD_INSTALLER_GATED_FLAGS = (
+    '    cflags: [\n        "-DAB_OTA_UPDATER=1"\n    ] + ' + MINADBD_SELECT + ',\n'
+)
+MINADBD_DAEMON_ANCHOR = '  android::base::InitLogging(argv, &android::base::StderrLogger);\n'
+MINADBD_DAEMON_GUARD = (
+    '#if defined(NEZHA_TWRP_DISABLE_MINADBD)\n'
+    '  LOG(ERROR) << "minadbd sideload and rescue are disabled by the Nezha native recovery profile";\n'
+    '  return kMinadbdUnsupportedCommandError;\n'
+    '#endif\n\n'
+)
+MINADBD_CALLER_ANCHOR = (
+    '  int twrp_sideload(const char* install_file, Device::BuiltinAction* reboot_action) {\n\n'
+)
+MINADBD_CALLER_GUARD = (
+    '#if defined(NEZHA_TWRP_DISABLE_MINADBD)\n'
+    '  LOG(ERROR) << "ADB sideload is disabled by the Nezha native recovery profile";\n'
+    '  return INSTALL_ERROR;\n'
+    '#endif\n\n'
+)
 PROFILE_BLOCK = (
     '    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {\n'
     '        true: false,\n'
@@ -136,6 +181,41 @@ def validate_profile_insertions(section, expected_names):
     return found
 
 
+def validate_minadbd_gate(section, path):
+    """Check the exact four reviewed edits using only tracked patch hunks.
+
+    This checks source changes, not a C++ or Soong execution model. Full-file
+    preimage identities bind context outside these hunks to the reviewed pin.
+    """
+    contracts = {
+        "minadbd/Android.bp": (MINADBD_BINARY_ANCHOR,
+                               MINADBD_BINARY_ANCHOR + MINADBD_BINARY_FLAGS),
+        "minadbd/minadbd.cpp": (MINADBD_DAEMON_ANCHOR,
+                                MINADBD_DAEMON_ANCHOR + MINADBD_DAEMON_GUARD),
+        "twrpinstall/Android.bp": (MINADBD_INSTALLER_FLAGS, MINADBD_INSTALLER_GATED_FLAGS),
+        "twrpinstall/adb_install.cpp": (MINADBD_CALLER_ANCHOR,
+                                       MINADBD_CALLER_ANCHOR + MINADBD_CALLER_GUARD),
+    }
+    if path not in contracts:
+        raise ValueError("Unapproved minadbd gate path")
+    parsed = list(hunks(section))
+    if len(parsed) != 1:
+        raise ValueError("The minadbd gate requires exactly one reviewed hunk per file")
+    old_start, old_count, new_start, new_count, lines = parsed[0]
+    if old_start != MINADBD_PREIMAGES[path][2] or new_start != old_start:
+        raise ValueError("The minadbd hunk moved from its reviewed source position")
+    if (any(line[:1] not in (" ", "+", "-") for line in lines)
+            or sum(line.startswith((" ", "-")) for line in lines) != old_count
+            or sum(line.startswith((" ", "+")) for line in lines) != new_count):
+        raise ValueError("Invalid minadbd hunk body or counts")
+    before = "".join(line[1:] for line in lines if line.startswith((" ", "-")))
+    after = "".join(line[1:] for line in lines if line.startswith((" ", "+")))
+    anchor, replacement = contracts[path]
+    if before.count(anchor) != 1 or after != before.replace(anchor, replacement, 1):
+        raise ValueError("The minadbd gate is missing, misplaced or contains additional source changes")
+    return before, after
+
+
 def select_android_variant(lines, recovery):
     """Select the simple exact CPP guards present in the reviewed auth hunks."""
     active = [True]
@@ -194,7 +274,7 @@ class TwrpPatchTests(unittest.TestCase):
             "0004-require-recovery-adb-auth": (
                 "packages/modules/adb", "ce023afef190b0cea7f8939e9dd5ee3ee79b137b", "daemon/main.cpp"),
         }
-        self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS))
+        self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS) + [MINADBD_GATE_ID])
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -219,6 +299,13 @@ class TwrpPatchTests(unittest.TestCase):
         initial = json.dumps(self.record["native_recovery_profile"], sort_keys=True,
                              separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(initial).hexdigest(), INITIAL_PROFILE_SHA256)
+
+    def test_previous_thirteen_patch_records_and_payloads_are_unchanged(self):
+        prefix = self.record["patches"][:13]
+        canonical = json.dumps(prefix, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(canonical).hexdigest(), PREVIOUS_THIRTEEN_SHA256)
+        for row in prefix:
+            self.assertEqual(hashlib.sha256(self.raw[row["id"]]).hexdigest(), row["patch_sha256"])
 
     def test_native_profile_projects_and_files_are_bound_to_the_frozen_base(self):
         snapshot = SOURCE_SNAPSHOT.read_bytes()
@@ -388,6 +475,196 @@ class TwrpPatchTests(unittest.TestCase):
         self.assertIn("do not prove", profile["validation_boundary"])
         self.assertIn("VendorVarTypes", profile["validation_boundary"])
 
+    def minadbd_sections(self):
+        row = self.patches[MINADBD_GATE_ID]
+        sections = self.text[MINADBD_GATE_ID].split("diff --git ")[1:]
+        self.assertEqual(len(sections), len(row["files"]))
+        return {source["path"]: section for source, section in zip(row["files"], sections)}
+
+    def test_minadbd_gate_touches_exactly_four_fresh_pinned_recovery_files(self):
+        row = self.patches[MINADBD_GATE_ID]
+        self.assertEqual(row["project"], "bootable/recovery")
+        self.assertEqual(row["repository"], "https://github.com/TWRP-Test/android_bootable_recovery")
+        self.assertEqual(row["base_commit"], RECOVERY_REVISION)
+        self.assertEqual(row["patch_sha256"], MINADBD_GATE_SHA256)
+        self.assertEqual(row["source_snapshot_sha256"], SOURCE_SNAPSHOT_SHA256)
+        self.assertEqual([source["path"] for source in row["files"]], list(MINADBD_PREIMAGES))
+        frozen = {item.get("path", item.get("name")): item.attrib
+                  for item in ET.fromstring(SOURCE_SNAPSHOT.read_bytes()).findall("project")}
+        self.assertEqual(frozen["bootable/recovery"]["revision"], RECOVERY_REVISION)
+        prior = {(patch["project"], source["path"])
+                 for patch in self.record["patches"][:13] for source in patch["files"]}
+        for source in row["files"]:
+            with self.subTest(path=source["path"]):
+                expected_hash, expected_size, _ = MINADBD_PREIMAGES[source["path"]]
+                self.assertEqual(source["before_sha256"], expected_hash)
+                self.assertEqual(source["before_size_bytes"], expected_size)
+                self.assertEqual(source["mode"], "100644")
+                self.assertNotIn((row["project"], source["path"]), prior)
+                self.assertIn(RECOVERY_REVISION + "/" + source["path"], source["source_url"])
+
+    def test_minadbd_flags_are_typed_and_confined_to_the_two_reviewed_modules(self):
+        sections = self.minadbd_sections()
+        for path in ("minadbd/Android.bp", "twrpinstall/Android.bp"):
+            with self.subTest(path=path):
+                before, after = validate_minadbd_gate(sections[path], path)
+                self.assertEqual(after.count(MINADBD_SELECT), 1)
+                self.assertEqual(after.count("cflags:"), 1)
+                self.assertNotIn("NEZHA_TWRP_DISABLE_MINADBD", before)
+        before, _ = validate_minadbd_gate(sections["minadbd/Android.bp"], "minadbd/Android.bp")
+        self.assertIn('cc_binary {\n    name: "minadbd",', before)
+        # The audited full-file preimage pins the libtwrpinstall declaration
+        # at lines 52-53; this hunk starts at its defaults at line 57.
+        self.assertIn('         "libtwrpinstall_defaults",\n', sections["twrpinstall/Android.bp"])
+        board = (ROOT / "recovery/twrp/device/xiaomi/nezha/BoardConfig.mk").read_text()
+        self.assertIn("$(call soong_config_set_bool, nezha_twrp, native_recovery_only, true)", board)
+
+    def test_minadbd_false_or_unset_profile_preserves_existing_flags(self):
+        sections = self.minadbd_sections()
+        before, after = validate_minadbd_gate(sections["minadbd/Android.bp"], "minadbd/Android.bp")
+        self.assertEqual(after.replace(MINADBD_BINARY_FLAGS, "", 1), before)
+        before, after = validate_minadbd_gate(sections["twrpinstall/Android.bp"], "twrpinstall/Android.bp")
+        self.assertEqual(after.replace("] + " + MINADBD_SELECT, "]", 1), before)
+        self.assertEqual(before.count('"-DAB_OTA_UPDATER=1"'), 1)
+        self.assertEqual(after.count('"-DAB_OTA_UPDATER=1"'), 1)
+        # The exact selector has only literal Boolean true and default unset;
+        # false and unset therefore leave these old lists unmodified. This
+        # is a source contract assertion, not an evaluated Soong graph.
+        self.assertIn('true: ["-DNEZHA_TWRP_DISABLE_MINADBD=1"]', MINADBD_SELECT)
+        self.assertIn("default: unset", MINADBD_SELECT)
+
+    def test_minadbd_daemon_returns_after_logging_before_argument_handling(self):
+        path = "minadbd/minadbd.cpp"
+        before, after = validate_minadbd_gate(self.minadbd_sections()[path], path)
+        prefix, suffix = after.split(MINADBD_DAEMON_GUARD)
+        main_prefix = prefix.split("int main(int argc, char** argv) {\n", 1)[1]
+        self.assertEqual(main_prefix, MINADBD_DAEMON_ANCHOR)
+        self.assertIn('if ((argc != 3 && argc != 4) || argv[1] != "--socket_fd"s', suffix)
+        self.assertIn('argv[3] != "--rescue"s', suffix)
+        self.assertEqual(after.replace(MINADBD_DAEMON_GUARD, "", 1), before)
+        self.assertIn("return kMinadbdUnsupportedCommandError;", MINADBD_DAEMON_GUARD)
+        self.assertNotIn("argc", MINADBD_DAEMON_GUARD)
+        self.assertNotIn("argv", MINADBD_DAEMON_GUARD)
+
+    def test_twrp_sideload_returns_before_first_usb_property_or_state_change(self):
+        path = "twrpinstall/adb_install.cpp"
+        before, after = validate_minadbd_gate(self.minadbd_sections()[path], path)
+        caller = after.split(MINADBD_CALLER_ANCHOR, 1)[1]
+        self.assertTrue(caller.startswith(MINADBD_CALLER_GUARD))
+        for operation in ('GetProperty("sys.usb.state", "none")', 'SetUsbConfig("none")'):
+            self.assertGreater(caller.index(operation), len(MINADBD_CALLER_GUARD))
+        self.assertIn("return INSTALL_ERROR;", MINADBD_CALLER_GUARD)
+        self.assertEqual(after.replace(MINADBD_CALLER_GUARD, "", 1), before)
+
+    def test_minadbd_guards_have_only_logging_and_failure_returns(self):
+        sections = self.minadbd_sections()
+        for path, guard in (("minadbd/minadbd.cpp", MINADBD_DAEMON_GUARD),
+                            ("twrpinstall/adb_install.cpp", MINADBD_CALLER_GUARD)):
+            with self.subTest(path=path):
+                validate_minadbd_gate(sections[path], path)
+                additions = "\n".join(changed_lines(sections[path], "+")) + "\n"
+                self.assertEqual(additions, guard)
+                self.assertEqual(additions.count("LOG(ERROR)"), 1)
+                self.assertEqual(additions.count("return "), 1)
+                for forbidden in ("#else", "auth_required", "adbd_auth_init", "usb_init",
+                                  "GetProperty", "SetProperty", "SetUsbConfig", "fork(", "exec",
+                                  "socket", "SetMinadbd", "reboot_action", "return 0;"):
+                    self.assertNotIn(forbidden, additions)
+
+    def test_minadbd_gate_keeps_dependencies_security_and_robolectric_counts(self):
+        patch = self.text[MINADBD_GATE_ID]
+        self.assertEqual(changed_lines(patch, "-"), ["    ],"])
+        for path, section in self.minadbd_sections().items():
+            validate_minadbd_gate(section, path)
+        changed = "\n".join(changed_lines(patch, "+") + changed_lines(patch, "-"))
+        for forbidden in ("auth_required", "ro.adb.secure", "ro.secure", "service.adb.root",
+                          "SELINUX", "permissive", "neverallow", "BOARD_AVB", "ROLLBACK",
+                          "ALLOW_MISSING_DEPENDENCIES", "BUILD_BROKEN", "check_elf_files",
+                          "required:", "shared_libs:", "static_libs:", "defaults:", "srcs:", "enabled:"):
+            self.assertNotIn(forbidden, changed)
+        self.assertEqual(sum(len(names) for _, _, paths in ALL_PROFILE_PROJECTS.values()
+                             for names in paths.values()), 22)
+        self.assertEqual(sum(len(paths) for _, _, paths in ALL_PROFILE_PROJECTS.values()), 20)
+
+    def test_minadbd_gate_has_pinned_source_evidence_and_explicit_runtime_limits(self):
+        row = self.patches[MINADBD_GATE_ID]
+        self.assertEqual(row["profile"], {
+            "namespace": "nezha_twrp", "boolean_variable": "native_recovery_only",
+            "true_cflag": "-DNEZHA_TWRP_DISABLE_MINADBD=1", "default": "unset",
+            "modules": ["minadbd", "libtwrpinstall"],
+            "declaration_in_existing_target":
+                "$(call soong_config_set_bool, nezha_twrp, native_recovery_only, true)",
+        })
+        # The error declarations and installer factory are outside the diff
+        # context. Keep their reviewed source identities explicit; do not
+        # pretend a hunk reconstructs the rest of either complete source file.
+        evidence = row["source_evidence"]
+        self.assertEqual(evidence["minadbd_error"], {
+            "path": "minadbd/include/minadbd/types.h", "line": 35,
+            "sha256": "3dd5a3de6e60d130b5c6c30df291abf812f0ee97cb15f92b7b7356fe85b886d6",
+            "name": "kMinadbdUnsupportedCommandError", "value": 7,
+        })
+        self.assertEqual(evidence["installer_error"], {
+            "path": "twrpinstall/include/twinstall/install.h", "line": 31,
+            "sha256": "76cf95bb937d4200d3f538a9dc155dbdc913782f4a5f0b312d0a6f3f274a2d8b",
+            "name": "INSTALL_ERROR", "value": 1,
+        })
+        self.assertEqual(evidence["installer_module"], {
+            "path": "twrpinstall/Android.bp", "line": 52,
+            "sha256": MINADBD_PREIMAGES["twrpinstall/Android.bp"][0],
+            "type": "cc_library_static", "name": "libtwrpinstall",
+        })
+        self.assertIn("kMinadbdUnsupportedCommandError (7)", row["gate_contract"]["minadbd"])
+        self.assertIn("Before GetProperty, SetUsbConfig, fork", row["gate_contract"]["twrp_sideload"])
+        self.assertIn("INSTALL_ERROR (1)", row["gate_contract"]["twrp_sideload"])
+        limits = " ".join(row["limits"])
+        for statement in ("No Android compile", "No host keys", "No recovery image is authorized",
+                          "not a general read-only recovery lock", "separate rescue launcher",
+                          "verified as typed true", "not a runtime property toggle"):
+            self.assertIn(statement, limits)
+
+    def test_minadbd_flags_reject_wrong_types_defaults_namespaces_and_extra_edits(self):
+        for path, section in self.minadbd_sections().items():
+            if not path.endswith("Android.bp"):
+                continue
+            mutations = {
+                "string Boolean": section.replace("+        true:", '+        "true":'),
+                "other namespace": section.replace('"nezha_twrp"', '"other_product"'),
+                "default enable": section.replace("+        default: unset,", '+        default: ["-DNEZHA_TWRP_DISABLE_MINADBD=1"],'),
+                "inherited flags replaced": section.replace("+        default: unset,", "+        default: [],"),
+                "wrong macro value": section.replace("DISABLE_MINADBD=1", "DISABLE_MINADBD=0"),
+                "extra property": section.replace("+    }),\n", "+    }),\n+    required: [],\n"),
+            }
+            if path == "minadbd/Android.bp":
+                mutations["different module"] = section.replace('name: "minadbd"', 'name: "minadbd_test"')
+            else:
+                mutations["remove AB OTA flag"] = section.replace('         "-DAB_OTA_UPDATER=1"\n', "")
+            for label, mutated in mutations.items():
+                with self.subTest(path=path, case=label), self.assertRaises(ValueError):
+                    validate_minadbd_gate(mutated, path)
+
+    def test_minadbd_guards_reject_delayed_successful_or_duplicate_returns(self):
+        for path, guard, late_anchor, result in (
+                ("minadbd/minadbd.cpp", MINADBD_DAEMON_GUARD,
+                 "     exit(kMinadbdArgumentsParsingError);\n", "kMinadbdUnsupportedCommandError"),
+                ("twrpinstall/adb_install.cpp", MINADBD_CALLER_GUARD,
+                 '   std::string usb_state = android::base::GetProperty("sys.usb.state", "none");\n',
+                 "INSTALL_ERROR")):
+            section = self.minadbd_sections()[path]
+            added_guard = "".join("+" + line for line in guard.splitlines(keepends=True))
+            self.assertIn(late_anchor, section)
+            mutations = {
+                "successful return": section.replace("return " + result + ";", "return 0;"),
+                "late gate": section.replace(added_guard, "", 1).replace(
+                    late_anchor, late_anchor + added_guard, 1),
+                "duplicate gate": section.replace(added_guard, added_guard * 2, 1),
+                "wrapped old body": section.replace("+#endif\n", "+#else\n"),
+                "USB mutation before return": section.replace("+  return ", '+  SetUsbConfig("none");\n+  return '),
+            }
+            for label, mutated in mutations.items():
+                with self.subTest(path=path, case=label), self.assertRaises(ValueError):
+                    validate_minadbd_gate(mutated, path)
+
     def test_patch_bytes_and_source_versions_are_hash_bound(self):
         seen = set()
         for key, row in self.patches.items():
@@ -537,7 +814,12 @@ class TwrpPatchTests(unittest.TestCase):
         for fact in ("already selected for building and packaging", "preserves that dependency",
                      "`auth_required = false` before `usb_init()`", "GUI's sideload action",
                      "OpenRecoveryScript's `sideload`", "not admitted for runtime use",
-                     "Before any diagnostic boot", "reviewed fail-closed gate"):
+                     "Patch 14 adds a reviewed fail-closed gate", "`-DNEZHA_TWRP_DISABLE_MINADBD=1`",
+                     "`kMinadbdUnsupportedCommandError` (7)",
+                     "`INSTALL_ERROR` before its first property read, USB change or fork",
+                     "The `default: unset` branches preserve other products' flags",
+                     "does not implement authenticated minadbd or add a host key",
+                     "Before any diagnostic boot, verify both selected compiler flags and the compiled early returns"):
             self.assertIn(fact, minadbd_section)
         requirements = " ".join(self.record["application_requirements"])
         self.assertIn("never /work/evolution", requirements)

@@ -24,6 +24,7 @@ The initial changes are deliberately small:
 | `0011-native-recovery-robolectric-runtimes` | Select out the Robolectric runtime helper together with its eighteen implicit test consumers. |
 | `0012-native-recovery-settings-ipc-testutils` | Select out only `SettingsLibIpc-testutils`, preserving the production IPC library and source group in the same file. |
 | `0013-native-recovery-car-ui-test-support` | Select out the automotive Robolectric testing wrapper and its prebuilt source helper, preserving all production automotive SDK modules in the same file. |
+| `0014-native-recovery-disable-minadbd` | Reject the standalone unauthenticated sideload/rescue transport and its TWRP caller before USB changes, only for the typed Nezha native recovery profile. |
 
 Patches 5 through 11 add only an `enabled` property to the nineteen named
 modules recorded in `series.json`. They apply only when the typed Soong Boolean
@@ -117,19 +118,34 @@ compiled sources and then test trusted, absent and unknown host keys.
 The separate `minadbd` executable is already selected for building and packaging
 by the pinned recovery. The packaging candidate preserves that dependency; it
 does not add it. This executable does not enter the patched `adbd_main()`:
-`minadbd/minadbd.cpp` sets `auth_required = false` before `usb_init()`, and
-neither `ro.adb.secure=1` nor the normal adbd patch changes that behavior. The
+its original `minadbd/minadbd.cpp` sets `auth_required = false` before `usb_init()`,
+and neither `ro.adb.secure=1` nor the normal adbd patch changes that behavior. The
 GUI's sideload action and OpenRecoveryScript's `sideload` command call
-`twrp_sideload()`, which launches `/system/bin/minadbd` and selects the USB
-sideload configuration. These entrypoints remain present; this is not a
-build-time exclusion.
+`twrp_sideload()`, which would otherwise launch `/system/bin/minadbd` and select
+the USB sideload configuration.
 
-That sideload transport is not admitted for runtime use. This compile-only
-experiment authorizes no boot or device command, and no authentication or
-safety claim extends to minadbd. Before any diagnostic boot, separately disable
-these entrypoints with a reviewed fail-closed gate or implement and verify
-minadbd host authentication. Changing a packaging list or an ADB property alone
-is insufficient.
+Patch 14 adds a reviewed fail-closed gate to both entrypoints. When
+`nezha_twrp.native_recovery_only` is typed true, only `minadbd` and
+`libtwrpinstall` receive `-DNEZHA_TWRP_DISABLE_MINADBD=1`. The daemon returns
+`kMinadbdUnsupportedCommandError` (7) immediately after logging initialization,
+before argument handling or transport startup. `twrp_sideload()` returns
+`INSTALL_ERROR` before its first property read, USB change or fork. Gating
+only the daemon would leave its caller waiting indefinitely for USB readiness;
+the caller guard avoids stopping ordinary adbd in the first place. The normal
+GUI path's MTP toggle is a compiled no-op under this target's existing
+`TW_EXCLUDE_MTP=true`; the reviewed ORS sideload path does not stop adbd before
+entering the guarded function. Other ORS commands and startup scripts remain
+outside this gate.
+
+The `default: unset` branches preserve other products' flags, including the
+installer's existing `-DAB_OTA_UPDATER=1` and inherited defaults. Both real
+modules, their libraries, tests and required packaging dependencies remain.
+The previous thirteen patches are unchanged, and these four files were not
+previously patched. This does not implement authenticated minadbd or add a host
+key. That sideload transport is not admitted for runtime use. Before any
+diagnostic boot, verify both selected compiler flags and the compiled early
+returns, then test ordinary authenticated adbd separately. The source patch
+and offline checks do not establish successful compilation or runtime safety.
 
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source
@@ -150,8 +166,9 @@ The selected recovery source still has automatic persistent-state behavior:
   OpenRecoveryScript commands. It can run pending scripts and shell startup
   hooks before the user reaches the main UI.
 - Startup/settings/logging and `Disable_Stock_Recovery_Replace` contain
-  persistent writes. The image also retains manual formatting, install,
-  sideload, shell, restore and other write-capable operations.
+  persistent writes. The source also retains manual formatting, install,
+  shell, restore and other write-capable operations. The separate sideload
+  gate does not make those paths read-only.
 - `TW_SKIP_ADDITIONAL_FSTAB=true` prevents the additional vendor fstab import;
   excluding crypto, APEX and userdata entries narrows the first experiment.
   None of those options is a write lock or proof of a safe boot.

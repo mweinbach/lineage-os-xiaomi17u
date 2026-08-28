@@ -130,6 +130,14 @@ debuggable devices. The ordinary Android adbd behavior is unchanged. A trusted
 host key and its recovery handling must still be provided and validated; no
 host private key or stock key is bundled.
 
+The queue also disables the separate unauthenticated minadbd transport for
+this profile. Both its standalone entrypoint and TWRP's sideload caller return
+an error before starting the transport or changing USB state. The caller guard
+prevents a disabled daemon from stranding ordinary adbd behind an indefinite
+USB-readiness wait. This is a compile-time restriction, not authenticated
+sideload support; the selected flags and compiled behavior still need checking.
+Other startup, installer and persistent-write paths remain outside this gate.
+
 The [log collector](recovery-logs.md) and
 [image inspector](../scripts/inspect_twrp_image.py) run separately. The inspector
 also passed a read-only check against the hash-verified factory recovery image;

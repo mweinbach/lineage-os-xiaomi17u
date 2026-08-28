@@ -571,6 +571,126 @@
           ]
         }
       ]
+    },
+    {
+      "id": "0014-native-recovery-disable-minadbd",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch_sha256": "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705",
+      "reason": "Deny standalone unauthenticated minadbd before USB startup, and reject TWRP sideload before stopping normal adbd, only in the typed Nezha native recovery profile.",
+      "files": [
+        {
+          "path": "minadbd/Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/minadbd/Android.bp",
+          "before_sha256": "11f64ef3e3361b26e4d659db454c098f830d5da9f529f88973dc13d7cfb933af",
+          "after_sha256": "9819f78179f9d2f2ac8fe6e20d44c5b925edbc12846b7851cfb3785cee236ed4",
+          "before_git_blob": "9185b1d7c21afec31913cd91d432411c83d90452",
+          "after_git_blob": "4dce917fe63920d6f6f488e4d9cea7f88e2d9b2d",
+          "before_size_bytes": 3342,
+          "after_size_bytes": 3598,
+          "mode": "100644"
+        },
+        {
+          "path": "minadbd/minadbd.cpp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/minadbd/minadbd.cpp",
+          "before_sha256": "e0e4c332a30cfd80692e85196fb6ff415742040332030a56aa9cd67a7a149665",
+          "after_sha256": "424c43278fd615ef6daf026e71b4258d3908564df1100a4b84faf06be7ccab53",
+          "before_git_blob": "4fab0f42990fd5d8f3db676294522d50ec79f579",
+          "after_git_blob": "e5b9bcc43442c97f834802ca0dda9f0d380e5a49",
+          "before_size_bytes": 2063,
+          "after_size_bytes": 2250,
+          "mode": "100644"
+        },
+        {
+          "path": "twrpinstall/Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrpinstall/Android.bp",
+          "before_sha256": "c1a67f61e6257c9a009f7ef41390f5931e582fd602f2d66673929ac4f402dc94",
+          "after_sha256": "198ec274a33a2479f9e131eb65a6090f7ca160769225535dabd1cda24727b8cd",
+          "before_git_blob": "5d0c7ec1102e393192e88bb32c64e423f07738b4",
+          "after_git_blob": "e5ad378f68413083c65f8c56da6550c49346261b",
+          "before_size_bytes": 1978,
+          "after_size_bytes": 2131,
+          "mode": "100644"
+        },
+        {
+          "path": "twrpinstall/adb_install.cpp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrpinstall/adb_install.cpp",
+          "before_sha256": "6d083eedf0b3c803ee650b85d5c8d34f6d53a6143b44da5016fc52636b080977",
+          "after_sha256": "65ef9b3496a1f012ab1d7ead334051bbb25a6f6434618a7d05146447b5833878",
+          "before_git_blob": "5486b7e3f92e34e5a3fea096e33f40ae8535c81f",
+          "after_git_blob": "40871ed94ecd6d09ab45b70ca43dca2700510338",
+          "before_size_bytes": 14214,
+          "after_size_bytes": 14367,
+          "mode": "100644"
+        }
+      ],
+      "profile": {
+        "namespace": "nezha_twrp",
+        "boolean_variable": "native_recovery_only",
+        "true_cflag": "-DNEZHA_TWRP_DISABLE_MINADBD=1",
+        "default": "unset",
+        "modules": [
+          "minadbd",
+          "libtwrpinstall"
+        ],
+        "declaration_in_existing_target": "$(call soong_config_set_bool, nezha_twrp, native_recovery_only, true)"
+      },
+      "gate_contract": {
+        "minadbd": "After InitLogging and before argument parsing, socket/rescue state, auth assignment, usb_init and fdevent_loop: LOG(ERROR), return kMinadbdUnsupportedCommandError (7).",
+        "twrp_sideload": "Before GetProperty, SetUsbConfig, fork, IPC/listener/installer handling: LOG(ERROR), return INSTALL_ERROR (1).",
+        "direct_or_rescue_launch": "Both enter the same guarded minadbd main; valid, invalid, missing and --rescue arguments cannot reach daemon startup in this profile.",
+        "normal_adbd": "Unchanged source and dependencies. The caller gate leaves existing USB/adbd state untouched; it does not authenticate minadbd or rely on post-failure restoration.",
+        "other_profiles": "False or unset selector contributes no cflag. Original C++ bodies remain present below the guards.",
+        "compiled_dependency": "The real minadbd module, source list, static/shared libraries, required adbd dependency and recovery packaging selection are retained."
+      },
+      "limits": [
+        "No Android compile, daemon execution or hardware test has been performed for this candidate.",
+        "No host keys are added and no authenticated minadbd transport is implemented.",
+        "No recovery image is authorized to boot or flash by this source candidate.",
+        "The GUI and ORS retain their other behavior, including existing write-capable actions; this is not a general read-only recovery lock.",
+        "AOSP libinstall's separate rescue launcher is not modified. If a later product selects it, review its own USB wait/cleanup before runtime use.",
+        "The native recovery profile must be verified as typed true in the actual selected build; this gate is not a runtime property toggle."
+      ],
+      "patch": "patches/twrp/0014-native-recovery-disable-minadbd.patch",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "source_evidence": {
+        "minadbd_error": {
+          "path": "minadbd/include/minadbd/types.h",
+          "line": 35,
+          "sha256": "3dd5a3de6e60d130b5c6c30df291abf812f0ee97cb15f92b7b7356fe85b886d6",
+          "name": "kMinadbdUnsupportedCommandError",
+          "value": 7
+        },
+        "installer_error": {
+          "path": "twrpinstall/include/twinstall/install.h",
+          "line": 31,
+          "sha256": "76cf95bb937d4200d3f538a9dc155dbdc913782f4a5f0b312d0a6f3f274a2d8b",
+          "name": "INSTALL_ERROR",
+          "value": 1
+        },
+        "installer_module": {
+          "path": "twrpinstall/Android.bp",
+          "line": 52,
+          "sha256": "c1a67f61e6257c9a009f7ef41390f5931e582fd602f2d66673929ac4f402dc94",
+          "type": "cc_library_static",
+          "name": "libtwrpinstall"
+        },
+        "select_semantics": [
+          "build/soong/docs/selects.md:64-66",
+          "build/soong/docs/selects.md:100",
+          "build/blueprint/proptools/configurable.go:879-903",
+          "build/blueprint/proptools/configurable.go:1237"
+        ],
+        "source_audit": {
+          "path": "reports/twrp-minadbd-gate-candidate/source-review.json",
+          "sha256": "6304e90b3b9010d6000dff1375390af102c701788e377fc948e241095729b8a0"
+        },
+        "independent_apply_check": {
+          "path": "reports/twrp-minadbd-gate-candidate/root-git-integration.json",
+          "sha256": "ed2ec052b21a51e71161bc8501cab6434878848f49f0a7662e055ab46a1dc01d"
+        }
+      }
     }
   ],
   "application_requirements": [
