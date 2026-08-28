@@ -275,6 +275,17 @@ def validate_source_edit(relative, before, after):
         raise ValueError("Source differs from the reviewed USB-only edit")
 
 
+def usb_file(records, relative):
+    """Target the reviewed USB file even when unrelated patches follow it."""
+    entries = [entry for entry in records if entry["id"] == PATCH_ID]
+    if len(entries) != 1:
+        raise ValueError("Expected exactly one reviewed USB patch")
+    files = [item for item in entries[0]["files"] if item["path"] == relative]
+    if len(files) != 1:
+        raise ValueError("Expected exactly one reviewed USB source file")
+    return files[0]
+
+
 class TwrpUsbTransportTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -311,8 +322,8 @@ class TwrpUsbTransportTests(unittest.TestCase):
             self.assertEqual(item["source_url"], REPOSITORY + "/+/" + REVISION + "/" + item["path"] + "?format=TEXT")
 
     def test_old_twenty_three_records_payloads_and_nonpatch_metadata_are_unchanged(self):
-        self.assertEqual(len(self.record["patches"]), 24)
-        self.assertEqual(self.record["patches"][-1]["id"], PATCH_ID)
+        self.assertGreaterEqual(len(self.record["patches"]), 24)
+        self.assertEqual(self.record["patches"][23]["id"], PATCH_ID)
         self.assertEqual(canonical(self.record["patches"][:23]), OLD_PREFIX_SHA256)
         self.assertEqual(canonical({key: value for key, value in self.record.items() if key != "patches"}), NONPATCH_SHA256)
         for entry in self.record["patches"][:23]:
@@ -542,14 +553,18 @@ class TwrpUsbTransportTests(unittest.TestCase):
             reviewed = state.patch_inventory({"manifest": self.record["manifest"]}, ROOT)
             previous = {"series_sha256": OLD_SERIES_SHA256, "patches": self.record["patches"][:23]}
             extension = state.validate_patch_extension(previous, reviewed)
-            self.assertEqual(extension["patches"], [self.entry])
+            self.assertEqual(reviewed["patches"], self.record["patches"])
+            self.assertEqual(extension["patches"], self.record["patches"][23:])
+            self.assertEqual(extension["patches"][0], self.entry)
             self.assertEqual(extension["complete_patches"], self.record["patches"])
             self.assertEqual(extension["previous_patch_count"], 23)
             run.assert_not_called()
             popen.assert_not_called()
 
     def test_actual_plan_contains_only_one_explicit_chain_and_one_fresh_wifi_file(self):
-        plan = state.patch_plan(self.record)
+        # These exact counts describe the historical USB admission cohort.
+        cohort = {"patches": self.record["patches"][:24]}
+        plan = state.patch_plan(cohort)
         chains = [(owner, path, item) for owner, project in plan["projects"].items()
                   for path, item in project["files"].items() if len(item["steps"]) > 1]
         self.assertTrue(plan["has_chains"])
@@ -563,38 +578,82 @@ class TwrpUsbTransportTests(unittest.TestCase):
         self.assertEqual([step["patch_id"] for step in wifi["steps"]], [PATCH_ID])
         self.assertNotIn("predecessor_patch_id", wifi["root"])
         self.assertEqual(sum(len(project["files"]) for project in plan["projects"].values()), 39)
-        self.assertEqual(sum(len(entry["files"]) for entry in self.record["patches"]), 40)
+        self.assertEqual(sum(len(entry["files"]) for entry in cohort["patches"]), 40)
+
+        # Still validate the entire current queue and every declared path/touch.
+        full = state.patch_plan(self.record)
+        self.assertEqual(full["patch_count"], len(self.record["patches"]))
+        expected_paths = {(entry["project"], item["path"])
+                          for entry in self.record["patches"] for item in entry["files"]}
+        actual_files = {(owner, path): chain for owner, project in full["projects"].items()
+                        for path, chain in project["files"].items()}
+        self.assertEqual(set(actual_files), expected_paths)
+        self.assertEqual(sum(len(chain["steps"]) for chain in actual_files.values()),
+                         sum(len(entry["files"]) for entry in self.record["patches"]))
+        for owner, project in plan["projects"].items():
+            for path, chain in project["files"].items():
+                actual = actual_files[(owner, path)]
+                self.assertEqual(actual["root"], chain["root"])
+                self.assertEqual(actual["steps"][:len(chain["steps"])], chain["steps"])
 
     def test_successor_alone_or_implicit_overlap_is_not_an_authorized_queue(self):
         with self.assertRaisesRegex(ValueError, "First patch touch"):
             state.patch_plan({"patches": [self.entry]})
         for value in (None, "", "missing", PATCH_ID, "0002-do-not-force-adb-root"):
             records = copy.deepcopy(self.record["patches"])
-            records[-1]["files"][0]["predecessor_patch_id"] = value
+            usb_file(records, PATHS[0])["predecessor_patch_id"] = value
             with self.subTest(predecessor=value), self.assertRaisesRegex(ValueError, "immediate predecessor"):
                 state.patch_plan({"patches": records})
         records = copy.deepcopy(self.record["patches"])
-        del records[-1]["files"][0]["predecessor_patch_id"]
+        del usb_file(records, PATHS[0])["predecessor_patch_id"]
         with self.assertRaisesRegex(ValueError, "immediate predecessor"):
             state.patch_plan({"patches": records})
 
     def test_chain_identity_discontinuities_and_fresh_file_predecessor_are_rejected(self):
         for field, value in (("before_sha256", "0" * 64), ("before_git_blob", "0" * 40), ("before_size_bytes", 1)):
             records = copy.deepcopy(self.record["patches"])
-            records[-1]["files"][0][field] = value
+            usb_file(records, PATHS[0])[field] = value
             with self.subTest(field=field), self.assertRaisesRegex(ValueError, "discontinuous"):
                 state.patch_plan({"patches": records})
         records = copy.deepcopy(self.record["patches"])
-        records[-1]["files"][1]["predecessor_patch_id"] = AUTH_ID
+        usb_file(records, PATHS[1])["predecessor_patch_id"] = AUTH_ID
         with self.assertRaisesRegex(ValueError, "First patch touch"):
             state.patch_plan({"patches": records})
 
     def test_extension_cannot_rewrite_authentication_predecessor(self):
         previous = {"patches": self.record["patches"][:23], "series_sha256": OLD_SERIES_SHA256}
         changed = copy.deepcopy(self.record)
-        changed["patches"][3]["reason"] += " changed"
+        next(entry for entry in changed["patches"] if entry["id"] == AUTH_ID)["reason"] += " changed"
         with self.assertRaisesRegex(ValueError, "exact unchanged prefix"):
             state.validate_patch_extension(previous, changed)
+
+    def test_future_unrelated_append_preserves_usb_checks_and_full_queue_validation(self):
+        # A fresh synthetic metadata record needs no payload or source checkout.
+        extra = {"id": "fixture-unrelated-after-usb", "project": "fixtures/unrelated",
+                 "base_commit": "e" * 40, "files": [{"path": "source.cpp",
+                 "before_sha256": "a" * 64, "after_sha256": "b" * 64,
+                 "before_size_bytes": 1, "after_size_bytes": 2}]}
+        record = copy.deepcopy(self.record)
+        record["patches"].append(extra)
+        unchanged = copy.deepcopy(record)
+        probe = type(self)("test_actual_plan_contains_only_one_explicit_chain_and_one_fresh_wifi_file")
+        probe.record = record
+        probe.test_old_twenty_three_records_payloads_and_nonpatch_metadata_are_unchanged()
+        probe.test_actual_plan_contains_only_one_explicit_chain_and_one_fresh_wifi_file()
+        probe.test_successor_alone_or_implicit_overlap_is_not_an_authorized_queue()
+        probe.test_chain_identity_discontinuities_and_fresh_file_predecessor_are_rejected()
+        self.assertEqual(record, unchanged)
+        previous = {"series_sha256": OLD_SERIES_SHA256, "patches": record["patches"][:23]}
+        extension = state.validate_patch_extension(previous, record)
+        self.assertEqual(extension["patches"], record["patches"][23:])
+        self.assertEqual(extension["complete_patches"], record["patches"])
+        self.assertEqual(extension["previous_patch_count"], 23)
+        # A malformed unrelated append must still reach the full-queue planner.
+        invalid = copy.deepcopy(extra)
+        invalid["base_commit"] = "invalid"
+        probe.record = {**self.record, "patches": self.record["patches"] + [invalid]}
+        with self.assertRaisesRegex(ValueError, "full pinned base revision"):
+            probe.test_actual_plan_contains_only_one_explicit_chain_and_one_fresh_wifi_file()
 
     def test_chain_uses_full_matching_indexes_in_both_old_and_new_payloads(self):
         predecessor = self.entries[AUTH_ID]["files"][0]
