@@ -56,6 +56,33 @@ invalid whitespace from the original source may therefore be rejected when
 reverse rehearsal tries to restore it. This is intentional failure behavior;
 the tooling does not relax Git checks or edit the original baseline.
 
+Git version behavior is part of this rehearsal contract. In the Ubuntu guest,
+Git 2.43.0 reverses the unchanged legacy `0014` patch with correct original
+bytes but changes three canonical `0755` files to `0644`. Its reverse parser
+mistakes the historical `100644` index hint for an explicit output mode.
+The mode check correctly rejects this before the revision archive or live
+suffix application. Populating the scratch index does not fix it; disabling
+`core.fileMode` also changes modes during forward application. Upstream fixed
+the parser in [commit `01aff0ae85af100c4d88df753078158b82774ea0`](https://github.com/git/git/commit/01aff0ae85af100c4d88df753078158b82774ea0).
+
+The selected replacement source is upstream Git `v2.54.0`, pinned to commit
+`94f057755b7941b321fd11fec1b2e3ca5313a4e0`. Provision it separately under
+`/work/tools` and expose the verified executable at `/usr/local/bin/git`,
+which is already first in the rehearsal's sanitized PATH; preserve the
+system `/usr/bin/git`. Record the source archive hash, build provenance,
+executable hash and version. Do not rewrite approved payloads, add a chmod
+repair, or weaken canonical-mode and full chain-header checks.
+
+Before using the replacement for a live revision, run the exact legacy-patch
+forward/reverse probe and the complete actual queue rehearsal with that
+executable. Require all boundary bytes, sizes, Git blobs and canonical modes,
+not merely successful Git exit codes or a version string. Keep strict
+whitespace checks and confirm the old live source and receipt remain unchanged.
+The offline regression model must simulate a reverse operation recreating an
+executable file as `0644`, since an in-place mock write preserves its old mode.
+This verifies build-environment compatibility; it does not prove a recovery
+image, ADB transport, or device behavior.
+
 Only after the complete rehearsal passes may the live suffix run. Each step
 checks both control bundles, the still-active old receipt, archived evidence,
 the complete expected source prefix and canonical modes. It writes a separate

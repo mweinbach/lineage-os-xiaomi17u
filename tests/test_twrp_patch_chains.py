@@ -398,6 +398,78 @@ class ChainRehearsalTests(ChainFixture):
         self.assertFalse((self.paths["report_dir"] / build.STATE).exists())
         self.assertFalse(any(event[1] for event in self.apply_events))
 
+    def assert_legacy_reverse_mode_failure(self, *, revise):
+        before, after = b"legacy before\n", b"legacy after\n"
+        legacy = self.append([("legacy.sh", before, after, 0o755, None)])
+        payload = self.control / legacy["patch"]
+        previous_hash = legacy["patch_sha256"]
+        # Historical single-touch hints can disagree with the pinned mode;
+        # full chain-header validation still applies to the separate init chain.
+        payload.write_bytes(payload.read_bytes().replace(b" 100755\n", b" 100644\n"))
+        legacy["files"][0]["mode"] = "100644"
+        legacy["patch_sha256"] = state.sha256(payload.read_bytes())
+        self.transitions[legacy["patch_sha256"]] = self.transitions.pop(previous_hash)
+        self.write_series()
+        if revise:
+            self.prepare_previous()
+            (self.control / build.TARGET_SOURCE / "device.mk").write_text("# proposed revision\n")
+        self.append([("init.rc", self.after, self.after + b"next\n", 0o644,
+                      self.series["patches"][0]["id"])])
+        files = state.patch_plan(self.inventory())["projects"][self.project]["files"]
+        self.assertEqual(len(files["legacy.sh"]["steps"]), 1)
+        self.assertEqual(len(files["init.rc"]["steps"]), 2)
+
+        def snapshot():
+            result = {}
+            for path in self.root.rglob("*"):
+                name = path.relative_to(self.root).as_posix()
+                if path.is_symlink():
+                    result[name] = ("symlink", str(path.readlink()))
+                elif path.is_file():
+                    result[name] = (path.stat().st_mode & 0o777, path.read_bytes())
+                else:
+                    result[name] = ("directory", path.stat().st_mode & 0o777)
+            return result
+
+        unchanged = snapshot()
+        recreated = []
+        original = self.fake_process
+        def reverse_mode_bug(args, **kwargs):
+            result = original(args, **kwargs)
+            if ("apply" in args and "--reverse" in args and "--check" not in args
+                    and state.sha256(Path(args[-1]).read_bytes()) == legacy["patch_sha256"]):
+                directory = Path(args[args.index("-C") + 1])
+                self.assertFalse(directory.is_relative_to(self.source))
+                path = directory / "legacy.sh"
+                self.assertEqual(path.read_bytes(), before)
+                self.assertEqual(path.stat().st_mode & 0o777, 0o755)
+                # Git 2.43 can return success after recreating correct bytes at
+                # the wrong mode. An in-place write alone cannot model this.
+                path.unlink()
+                path.write_bytes(before)
+                path.chmod(0o644)
+                self.assertEqual(result.returncode, 0)
+                recreated.append((path.read_bytes(), path.stat().st_mode & 0o777))
+            return result
+        self.process_mock.side_effect = reverse_mode_bug
+        with self.assertRaisesRegex(ValueError, r"File changed.*legacy\.sh"):
+            self.revise() if revise else self.prepare()
+        self.assertEqual(recreated, [(before, 0o644)])
+        self.assertFalse(any(event[1] for event in self.apply_events))
+        # Includes target, output alias, receipt, and preparation/revision
+        # archive paths: nothing outside the discarded scratch tree changes.
+        self.assertEqual(snapshot(), unchanged)
+        if revise:
+            self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.state_before)
+        else:
+            self.assertFalse((self.paths["report_dir"] / build.STATE).exists())
+
+    def test_zero_exit_reverse_mode_change_blocks_preparation(self):
+        self.assert_legacy_reverse_mode_failure(revise=False)
+
+    def test_zero_exit_reverse_mode_change_blocks_revision(self):
+        self.assert_legacy_reverse_mode_failure(revise=True)
+
     def test_hostile_git_environment_is_not_inherited(self):
         self.append()
         with patch.dict(os.environ, {"GIT_INDEX_FILE": "/unsafe", "GIT_CONFIG_COUNT": "1", "GIT_DIR": "/unsafe",
