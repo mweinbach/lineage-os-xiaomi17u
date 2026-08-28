@@ -30,6 +30,13 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -packages/modules/AdServices/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
+# Graph 23 requires the original exported SDK sandbox flags in the framework.
+# Keep their parent package metadata/defaults and the complete flags leaf;
+# other AdServices runtime and test build files remain outside this profile.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/modules/AdServices/sdksandbox/Android.bp \
+    packages/modules/AdServices/sdksandbox/flags/
+
 # The second graph exposed these specific CTS/VTS and automotive consumers.
 # Preserve the rest of CTS and the security HAL interfaces. The original CHRE
 # exclusion is removed: graph 22 requires its shared flag declarations, and

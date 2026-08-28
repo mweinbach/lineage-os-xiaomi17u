@@ -19,6 +19,7 @@ GRAPH14_TEST_BLUEPRINTS = (
     "frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp",
 )
 SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS}
+SOURCE_FILE_REINCLUSIONS = {"packages/modules/AdServices/sdksandbox/Android.bp"}
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
@@ -51,6 +52,8 @@ SOURCE_EXCLUSIONS = [
     "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
+    "packages/modules/AdServices/sdksandbox/Android.bp",
+    "packages/modules/AdServices/sdksandbox/flags/",
     "platform_testing/libraries/tradefed-error-prone/",
     "frameworks/opt/net/wifi/libwifi_system_iface/",
     "frameworks/opt/net/wifi/libwifi_hal/",
@@ -289,7 +292,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual(len(scopes), len(set(scopes)))
         for scope in scopes:
             if not scope.endswith("/"):
-                self.assertIn(scope, {"-" + path for path in SOURCE_FILE_EXCLUSIONS})
+                self.assertIn(scope, {"-" + path for path in SOURCE_FILE_EXCLUSIONS} | SOURCE_FILE_REINCLUSIONS)
             path = scope[1:] if scope.startswith("-") else scope
             self.assertNotIn("..", Path(path).parts)
             self.assertFalse(Path(path).is_absolute())
@@ -518,6 +521,29 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 9", readme)
         self.assertIn("development/build/", readme)
         self.assertIn("SDK distribution", readme)
+
+    def test_graph_twenty_three_sdk_sandbox_flags_keep_original_metadata(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "packages/modules/AdServices/sdksandbox/"
+        self.assertIn(parent + "Android.bp", scopes)
+        self.assertIn(parent + "flags/", scopes)
+        for source in (parent + "Android.bp", parent + "flags/Android.bp",
+                       "frameworks/base/AconfigFlags.bp", "build/make/teams/Android.bp",
+                       "build/soong/licenses/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in ("packages/modules/AdServices/Android.bp",
+                       "packages/modules/AdServices/adservices/Android.bp",
+                       "packages/modules/AdServices/apex/Android.bp",
+                       parent + "service/Android.bp", parent + "tests/Android.bp",
+                       parent + "flags_sibling/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 23", "sdk_sandbox_exported_flags_lib", "10 original flags",
+                     "sdksandbox-java-defaults", "trendy_team_rubidium_sdk_runtime",
+                     "a6ee8245f54f1719a899809cc8727f7fcce9ca35"):
+            self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

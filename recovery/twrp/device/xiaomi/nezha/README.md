@@ -266,6 +266,18 @@ matches are not used as substitutes. This restores a shared build dependency,
 not Context Hub support or an installed recovery service. Compilation and
 generated-output checks remain for the next actual build.
 
+Graph 23 identified the retained framework dependency on
+`sdk_sandbox_exported_flags_lib`. Two narrow positive source prefixes restore
+`packages/modules/AdServices/sdksandbox/Android.bp` and its `flags/` leaf from
+the original project at `a6ee8245f54f1719a899809cc8727f7fcce9ca35`. The parent
+file keeps the original package metadata, global Apache license,
+`trendy_team_rubidium_sdk_runtime` team and `sdksandbox-java-defaults`; the
+leaf keeps the flag declaration and both Java flag libraries. Its 10 original
+flags, exported mode, visibility, API settings and container are unchanged.
+Other AdServices runtime and test source files remain excluded. This changes
+source selection only, without adding an SDK sandbox service to recovery or
+replacing original declarations with device-local copies.
+
 The native source projection also found three retained Wi-Fi service modules
 and one test consuming `libwifi-hal`. The positive
 `frameworks/opt/net/wifi/libwifi_hal/` prefix restores one original Blueprint
