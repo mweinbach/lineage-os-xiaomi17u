@@ -5,12 +5,13 @@ import copy
 import io
 import json
 from pathlib import Path
+import shutil
 import struct
 import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from scripts import twrp_build as build
 
@@ -137,6 +138,8 @@ class ControlTests(BuildFixture):
         for key in unsafe.keys() - {"TARGET_PRODUCT", "OUT_DIR"}:
             self.assertNotIn(key, env)
         self.assertEqual(env["OUT_DIR"], "out-twrp")
+        self.assertEqual(env["OUT"], str(self.paths["out_dir"] / "target/product/nezha"))
+        self.assertEqual(env["ANDROID_PRODUCT_OUT"], env["OUT"])
         self.assertEqual(env["TARGET_PRODUCT"], "twrp_nezha")
         self.assertEqual(env["TARGET_RELEASE"], "bp2a")
         self.assertEqual(env["TARGET_BUILD_VARIANT"], "user")
@@ -339,6 +342,14 @@ class PreparationTests(BuildFixture):
         with self.assertRaisesRegex(ValueError, "output alias differs"):
             self.check()
 
+    def test_product_output_symlink_cannot_escape_isolated_output(self):
+        self.prepare()
+        product = self.paths["out_dir"] / "target/product"
+        product.mkdir(parents=True)
+        (product / "nezha").symlink_to(self.root / "elsewhere")
+        with self.assertRaisesRegex(ValueError, "Symlink"):
+            self.check()
+
     def test_host_preflight_failure_blocks_every_mutation(self):
         self.host_mock.side_effect = ValueError("unsupported host")
         with self.assertRaisesRegex(ValueError, "unsupported host"):
@@ -425,6 +436,24 @@ class ExecutionTests(BuildFixture):
             build.run_build(self.config, self.paths, "graph", "native", 4, "userdebug", self.control)
         self.assertEqual(self.source_file.read_text(), "source changed by hook\n")
 
+    def test_build_cannot_report_a_different_prepared_revision(self):
+        self.prepare()
+        real_check = build.check
+        checks = 0
+        def changed_revision(*args, **kwargs):
+            nonlocal checks
+            report = real_check(*args, **kwargs)
+            checks += 1
+            if checks > 1:
+                report["build_state_sha256"] = "0" * 64
+            return report
+        self.process_mock.side_effect = None
+        self.process_mock.return_value = SimpleNamespace(returncode=0)
+        with patch.object(build, "check", side_effect=changed_revision), redirect_stdout(io.StringIO()), \
+                self.assertRaisesRegex(ValueError, "revision changed during compilation"):
+            build.run_build(self.config, self.paths, "graph", "native", 4, "user", self.control)
+        self.assertFalse((self.paths["report_dir"] / "build-operation.lock").exists())
+
     def test_image_header_kernel_and_avb_bounds_are_checked(self):
         image = self.write_artifact()
         self.assertEqual(build.inspect_artifact(self.paths)["kernel_size"], 0)
@@ -463,6 +492,264 @@ class ExecutionTests(BuildFixture):
             build.inspect_artifact(self.paths)
 
 
+class RevisionTests(BuildFixture):
+    def setUp(self):
+        super().setUp()
+        (self.control / build.TARGET_SOURCE / "notes.txt").write_text("old notes\n")
+        self.previous = self.root / "previous-control"
+        shutil.copytree(self.control, self.previous)
+        (self.previous / "config").mkdir()
+        (self.previous / "config/twrp.json").write_text(json.dumps(self.config))
+        self.prepare()
+        self.before_state = (self.paths["report_dir"] / build.STATE).read_bytes()
+        self.stack.enter_context(patch.object(build.twrp_workspace, "load_config",
+                                             side_effect=lambda path: json.loads(path.read_text())))
+        self.run_mock.reset_mock()
+
+    def change_target(self, relative="device.mk", text="# reviewed revision\n"):
+        (self.control / build.TARGET_SOURCE / relative).write_text(text)
+
+    def revise(self):
+        return build.revise(self.config, self.paths, "native", self.previous, self.control)
+
+    def supplementary_fixture(self):
+        descriptor = {"configuration_sha256": "d" * 64,
+                      "base": {"project_count": 1, "source_dir": str(self.source),
+                               "frozen_manifest_sha256": build.sha256(
+                                   (self.paths["report_dir"] / build.twrp_workspace.SNAPSHOT).read_bytes())},
+                      "projects": [{"path": "system/bpf", "url": "https://example.org/system/bpf",
+                                    "commit": "e" * 40, "tag": "android-16.0.0_r1", "reason": "reviewed provider"}]}
+        self.stack.enter_context(patch.object(build, "supplementary_descriptor",
+                                             side_effect=lambda root: descriptor if root == self.control else None))
+        module = SimpleNamespace(verify=Mock(return_value={"configuration_sha256": descriptor["configuration_sha256"],
+                                                           "base": descriptor["base"], "projects": [], "verified": True}))
+        self.stack.enter_context(patch.object(build, "dependency_module", return_value=module))
+        return descriptor, module
+
+    def test_revision_archives_exact_prior_state_and_changed_files(self):
+        self.change_target()
+        retained = self.paths["out_dir"] / "cache/go/keep"
+        retained.write_text("retained cache\n")
+        report = self.revise()
+        archive = Path(report["revision_archive"])
+        self.assertEqual((archive / "build-state.before.json").read_bytes(), self.before_state)
+        self.assertEqual((archive / "target-before/device.mk").read_text(), "# source-only fixture\n")
+        self.assertEqual((archive / "target-after/device.mk").read_text(), "# reviewed revision\n")
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# reviewed revision\n")
+        self.assertEqual(retained.read_text(), "retained cache\n")
+        self.assertEqual(self.source_file.read_bytes(), self.after)
+        self.assertEqual(report["changed_target_files"], ["device.mk"])
+        self.assertTrue(report["outputs_preserved"])
+        self.assertFalse(report["build_for_this_revision_verified"])
+        self.assertFalse(report["flash_admitted"])
+        state = json.loads((self.paths["report_dir"] / build.STATE).read_text())
+        self.assertEqual(state["previous_build_state_sha256"], build.sha256(self.before_state))
+        self.assertEqual(report["build_state_sha256"], self.check()["build_state_sha256"])
+        self.assertFalse(any("apply" in call.args[0] for call in self.run_mock.call_args_list))
+        self.process_mock.assert_not_called()
+
+    def test_unchanged_revision_is_a_verified_noop(self):
+        report = self.revise()
+        self.assertTrue(report["already_current"])
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+
+    def test_repeating_a_completed_transition_is_idempotent(self):
+        self.change_target()
+        first = self.revise()
+        state = (self.paths["report_dir"] / build.STATE).read_bytes()
+        second = self.revise()
+        self.assertTrue(second["already_current"])
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), state)
+        self.assertEqual(len(list((self.paths["report_dir"] / "build-revisions").iterdir())), 1)
+        self.assertEqual(second["build_state_sha256"], first["build_state_sha256"])
+
+    def test_completion_history_failure_does_not_misreport_committed_revision(self):
+        self.change_target()
+        record = build.twrp_workspace.record_action
+        def fail_completion(config, paths, action, report):
+            if action == "revise-complete":
+                raise OSError("fixture completion-history failure")
+            return record(config, paths, action, report)
+        with patch.object(build.twrp_workspace, "record_action", side_effect=fail_completion):
+            report = self.revise()
+        self.assertTrue(report["revision_committed"])
+        self.assertFalse(report["completion_report_written"])
+        self.assertIn("Revision committed", report["warning"])
+        self.assertEqual(report["build_state_sha256"], self.check()["build_state_sha256"])
+        self.assertTrue(self.revise()["already_current"])
+
+    def test_wrong_previous_bundle_cannot_authorize_replacement(self):
+        self.change_target()
+        (self.previous / build.TARGET_SOURCE / "device.mk").write_text("unrecorded previous content\n")
+        with self.assertRaisesRegex(ValueError, "identity or controlled sources changed"):
+            self.revise()
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+
+    def test_unknown_live_edits_are_never_overwritten(self):
+        self.change_target()
+        path = self.source / build.TARGET / "device.mk"
+        path.write_text("someone else's work\n")
+        with self.assertRaisesRegex(ValueError, "Staged Nezha files differ"):
+            self.revise()
+        self.assertEqual(path.read_text(), "someone else's work\n")
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+
+    def test_unknown_source_patch_edits_block_target_revision(self):
+        self.change_target()
+        self.source_file.write_text("unreviewed source change\n")
+        with self.assertRaisesRegex(ValueError, "afterimage differs"):
+            self.revise()
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+
+    def test_configuration_and_patch_transitions_are_not_admitted(self):
+        self.change_target()
+        self.config["note"] = "changed config"
+        with self.assertRaisesRegex(ValueError, "unchanged source configuration"):
+            self.revise()
+        del self.config["note"]
+        self.series["scope"] = "changed patch queue"
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "exact existing patch queue"):
+            self.revise()
+
+    def test_target_file_additions_and_removals_require_separate_review(self):
+        path = self.control / build.TARGET_SOURCE / "new.mk"
+        path.write_text("new file\n")
+        with self.assertRaisesRegex(ValueError, "same file set"):
+            self.revise()
+        path.unlink()
+        (self.control / build.TARGET_SOURCE / "notes.txt").unlink()
+        with self.assertRaisesRegex(ValueError, "same file set"):
+            self.revise()
+
+    def test_partial_revision_preserves_receipt_backups_and_failure_history(self):
+        self.change_target("BoardConfig.mk", "# board revision\n")
+        self.change_target()
+        replace = build.replace_target_file
+        calls = 0
+        def fail_second(*args):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("fixture write failure")
+            return replace(*args)
+        with patch.object(build, "replace_target_file", side_effect=fail_second), \
+                self.assertRaisesRegex(OSError, "fixture write failure"):
+            self.revise()
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        failure = json.loads(next(self.paths["report_dir"].glob("revise-failed-*.json")).read_text())
+        archive = Path(failure["revision_archive"])
+        self.assertEqual((archive / "target-before/BoardConfig.mk").read_text(), "# source-only fixture\n")
+        self.assertEqual((archive / "target-before/device.mk").read_text(), "# source-only fixture\n")
+        self.assertEqual((self.source / build.TARGET / "BoardConfig.mk").read_text(), "# board revision\n")
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+        with self.assertRaisesRegex(ValueError, "Staged Nezha files differ"):
+            self.revise()
+
+    def test_file_changed_during_revision_is_preserved(self):
+        self.change_target()
+        replace = build.replace_target_file
+        path = self.source / build.TARGET / "device.mk"
+        def concurrent_change(*args):
+            path.write_text("concurrent writer\n")
+            return replace(*args)
+        with patch.object(build, "replace_target_file", side_effect=concurrent_change), \
+                self.assertRaisesRegex(ValueError, "File changed during target revision"):
+            self.revise()
+        self.assertEqual(path.read_text(), "concurrent writer\n")
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+
+    def test_receipt_changed_during_revision_is_not_replaced(self):
+        self.change_target()
+        replace = build.replace_target_file
+        receipt = self.paths["report_dir"] / build.STATE
+        def concurrent_receipt(*args):
+            result = replace(*args)
+            receipt.write_text("concurrent receipt owner\n")
+            return result
+        with patch.object(build, "replace_target_file", side_effect=concurrent_receipt), \
+                self.assertRaisesRegex(ValueError, "replacement refused"):
+            self.revise()
+        self.assertEqual(receipt.read_text(), "concurrent receipt owner\n")
+        archive = next((self.paths["report_dir"] / "build-revisions").iterdir())
+        self.assertEqual((archive / "build-state.before.json").read_bytes(), self.before_state)
+
+    def test_previous_control_symlinks_and_source_overlap_are_rejected(self):
+        linked = self.root / "linked-control"
+        linked.symlink_to(self.previous)
+        with self.assertRaisesRegex(ValueError, "Symlink"):
+            build.revise(self.config, self.paths, "native", linked, self.control)
+        with self.assertRaisesRegex(ValueError, "separate from source"):
+            build.revise(self.config, self.paths, "native", self.source, self.control)
+
+    def test_supplementary_addition_preserves_immutable_base_and_old_receipt_shape(self):
+        descriptor, module = self.supplementary_fixture()
+        report = self.revise()
+        state = json.loads((self.paths["report_dir"] / build.STATE).read_text())
+        self.assertEqual(state["controls"]["supplementary_projects"], descriptor)
+        self.assertNotIn("supplementary_projects", json.loads(self.before_state)["controls"])
+        self.assertEqual(state["source"], json.loads(self.before_state)["source"])
+        self.assertEqual(report["changed_target_files"], [])
+        self.assertEqual(module.verify.call_args.kwargs["paths"], self.paths)
+        self.assertGreaterEqual(module.verify.call_count, 2)
+        self.assertTrue(self.revise()["already_current"])
+        self.process_mock.assert_not_called()
+
+    def test_unverified_supplementary_addition_cannot_modify_the_target(self):
+        self.change_target()
+        _, module = self.supplementary_fixture()
+        module.verify.side_effect = ValueError("supplementary checkout is dirty")
+        with self.assertRaisesRegex(ValueError, "checkout is dirty"):
+            self.revise()
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+
+    def test_supplementary_source_must_match_exact_base_snapshot(self):
+        _, module = self.supplementary_fixture()
+        module.verify.return_value = {**module.verify.return_value,
+                                      "base": {"project_count": 1, "frozen_manifest_sha256": "0" * 64}}
+        with self.assertRaisesRegex(ValueError, "do not match the prepared base"):
+            self.revise()
+
+    def test_existing_supplementary_projects_cannot_be_changed_or_removed(self):
+        descriptor, _ = self.supplementary_fixture()
+        previous = {"supplementary_projects": descriptor}
+        with self.assertRaisesRegex(ValueError, "cannot remove"):
+            build.validate_supplementary_extension(previous, {})
+        changed = copy.deepcopy(descriptor)
+        changed["projects"][0]["commit"] = "f" * 40
+        with self.assertRaisesRegex(ValueError, "must remain unchanged"):
+            build.validate_supplementary_extension(previous, {"supplementary_projects": changed})
+        extended = copy.deepcopy(descriptor)
+        extended["projects"].append({"path": "system/other", "url": "https://example.org/system/other",
+                                      "commit": "f" * 40, "tag": "android-16.0.0_r1", "reason": "another provider"})
+        build.validate_supplementary_extension(previous, {"supplementary_projects": extended})
+
+    def test_build_operation_lock_prevents_concurrent_revision(self):
+        self.change_target()
+        def process(*args, **kwargs):
+            with self.assertRaisesRegex(ValueError, "owns the lock"):
+                self.revise()
+            return SimpleNamespace(returncode=0)
+        self.process_mock.side_effect = process
+        with redirect_stdout(io.StringIO()):
+            result = build.run_build(self.config, self.paths, "graph", "native", 4, "user", self.previous)
+        self.assertEqual(result["command_exit_code"], 0)
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+        self.assertFalse((self.paths["report_dir"] / "build-operation.lock").exists())
+
+    def test_existing_operation_lock_is_never_automatically_removed(self):
+        lock = self.paths["report_dir"] / "build-operation.lock"
+        lock.write_text("another or interrupted owner\n")
+        with self.assertRaisesRegex(ValueError, "owns the lock"):
+            self.revise()
+        self.assertEqual(lock.read_text(), "another or interrupted owner\n")
+
+
 class RealControlTests(unittest.TestCase):
     def test_checked_in_controls_are_valid_and_source_only(self):
         config = build.twrp_workspace.load_config()
@@ -480,6 +767,13 @@ class RealControlTests(unittest.TestCase):
         self.assertEqual(result, 0)
         self.assertEqual(json.loads(stdout.getvalue())["action"], "plan")
         self.assertEqual(json.loads(stdout.getvalue())["build_environment"]["TARGET_BUILD_VARIANT"], "user")
+
+    def test_revise_requires_explicit_previous_control_bundle(self):
+        with redirect_stderr(io.StringIO()) as stderr, \
+                patch.object(build.twrp_workspace, "require_host", side_effect=AssertionError("host probe")):
+            result = build.main(["revise"])
+        self.assertEqual(result, 2)
+        self.assertIn("requires --previous-control-root", stderr.getvalue())
 
 
 if __name__ == "__main__":
