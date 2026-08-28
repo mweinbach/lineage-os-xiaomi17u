@@ -46,6 +46,17 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     packages/modules/AdServices/sdksandbox/Android.bp \
     packages/modules/AdServices/sdksandbox/flags/
 
+# Graph 24 needs the original shared STS host utilities. Keep both complete
+# provider files and their metadata without selecting sibling test products.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/sts-common-util/host-side/Android.bp \
+    platform_testing/libraries/sts-common-util/util/Android.bp
+
+# Preserve the retained remote-access test servers' real generated protocol
+# library. The surrounding default automotive HAL implementation stays excluded.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp
+
 # The second graph exposed these specific CTS/VTS and automotive consumers.
 # Preserve the rest of CTS and the security HAL interfaces. The original CHRE
 # exclusion is removed: graph 22 requires its shared flag declarations, and

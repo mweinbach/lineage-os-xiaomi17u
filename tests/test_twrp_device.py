@@ -25,7 +25,15 @@ AEMU_PROVIDER_BLUEPRINTS = (
     "hardware/google/aemu/host-common/Android.bp",
     "hardware/google/aemu/snapshot/Android.bp",
 )
-SOURCE_FILE_REINCLUSIONS = {"packages/modules/AdServices/sdksandbox/Android.bp", *AEMU_PROVIDER_BLUEPRINTS}
+STS_PROVIDER_BLUEPRINTS = (
+    "platform_testing/libraries/sts-common-util/host-side/Android.bp",
+    "platform_testing/libraries/sts-common-util/util/Android.bp",
+)
+WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp"
+SOURCE_FILE_REINCLUSIONS = {
+    "packages/modules/AdServices/sdksandbox/Android.bp",
+    *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
+}
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
@@ -59,6 +67,8 @@ SOURCE_EXCLUSIONS = [
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
     *AEMU_PROVIDER_BLUEPRINTS,
+    *STS_PROVIDER_BLUEPRINTS,
+    WAKEUP_PROTO_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
     "platform_testing/libraries/tradefed-error-prone/",
@@ -555,6 +565,48 @@ class TwrpDeviceTests(unittest.TestCase):
                      "caad0d2be91bde934e4ff299f9e1a78d8ca0ead2", "eight named modules",
                      "61 source-file references", "seven include-directory references",
                      "no validation exception is added", "Compilation, linking and device behavior remain unverified"):
+            self.assertIn(fact, readme)
+
+    def test_graph_twenty_four_restores_original_sts_helpers_without_hiding_security_tests(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "platform_testing/libraries/sts-common-util/"
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         set(STS_PROVIDER_BLUEPRINTS))
+        for source in STS_PROVIDER_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in (parent + "Android.bp", parent + "host-side/tests/Android.bp",
+                       parent + "host-side/rootcanal/Android.bp", parent + "host-side/other.bp",
+                       parent + "util/tests/Android.bp", parent + "device-side/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("cts/hostsidetests/appsecurity/Android.bp", "cts/Android.bp",
+                       "system/core/debuggerd/proto/Android.bp", "external/protobuf/Android.bp",
+                       "build/soong/licenses/Android.bp", "external/auto/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 24", "sts-host-util", "CtsAppSecurityUtils",
+                     "seven named declarations", "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+                     "does not disable the CTS app-security consumers"):
+            self.assertIn(fact, readme)
+
+    def test_graph_twenty_four_restores_wakeup_protocol_without_hiding_its_tests(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "hardware/interfaces/automotive/remoteaccess/"
+        self.assertIn(WAKEUP_PROTO_BLUEPRINT, scopes)
+        self.assertIn("-" + parent + "hal/default/", scopes)
+        for source in (WAKEUP_PROTO_BLUEPRINT, parent + "test_grpc_server/impl/Android.bp",
+                       parent + "test_grpc_server/lib/Android.bp", parent + "Android.bp",
+                       parent + "vts/Android.bp", "external/grpc-grpc/Android.bp",
+                       "external/protobuf/Android.bp", "hardware/interfaces/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in (parent + "hal/default/Android.bp", parent + "hal/default/test/Android.bp",
+                       parent + "hal/default/proto/other.bp", parent + "hal/default/proto/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("wakeup_client_protos", "original two genrules", "wakeup_client.proto",
+                     "3e2bcbf17426a5783f034c8b0bb0d26743b39892", "All three test servers",
+                     "separate Car team metadata dependency"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_three_sdk_sandbox_flags_keep_original_metadata(self):

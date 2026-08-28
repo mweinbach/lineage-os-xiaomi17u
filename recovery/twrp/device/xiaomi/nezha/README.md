@@ -300,6 +300,31 @@ Other AdServices runtime and test source files remain excluded. This changes
 source selection only, without adding an SDK sandbox service to recovery or
 replacing original declarations with device-local copies.
 
+Graph 24 requires `sts-host-util` from the retained `CtsAppSecurityUtils`.
+Two exact positive prefixes restore the original
+`platform_testing/libraries/sts-common-util/host-side/Android.bp` and
+`platform_testing/libraries/sts-common-util/util/Android.bp` at
+`7b48625b052b94b1ef24573ef5e8ffa5e2ea9783`. The seven named declarations
+keep the STS host library, Java resources, tombstone protobuf wrapper, docs,
+native test defaults and shared utility providers together. Both files retain
+their original global Apache package metadata. Their existing annotation
+processors, protobuf generators, documentation template and compiler checks
+are unchanged. The sibling host/device tests and rootcanal test product remain
+outside the selected source scope. This restores the shared security-test
+helper; it does not disable the CTS app-security consumers or certify a device.
+
+Graph 24 also exposes `wakeup_client_protos` as a shared dependency of the
+retained remote-access test servers. The exact positive prefix
+`hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp`
+restores the original two genrules and static protocol library from
+`hardware/interfaces` at `3e2bcbf17426a5783f034c8b0bb0d26743b39892`.
+The original `wakeup_client.proto`, protobuf include root, `aprotoc`, gRPC
+generator and both linked libraries are present. The surrounding default HAL
+implementation stays excluded. All three test servers and the remote-access
+AIDL and VTS files remain selected. Their separate Car team metadata dependency
+still requires its original provider; restoring this protocol file alone does
+not resolve that dependency or establish a working automotive service.
+
 The native source projection also found three retained Wi-Fi service modules
 and one test consuming `libwifi-hal`. The positive
 `frameworks/opt/net/wifi/libwifi_hal/` prefix restores one original Blueprint
