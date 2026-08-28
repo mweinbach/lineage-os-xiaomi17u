@@ -960,6 +960,34 @@
       "commit": "0abfc7ad91e9914459b11e65a572de9f8a546365",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP PlatformProperties sysprop sources generating libplatformproperties_rust for libhypervisor_props in the graph 19 error. Existing generators and API/type checks remain unchanged."
+    },
+    {
+      "path": "external/webrtc",
+      "url": "https://android.googlesource.com/platform/external/webrtc",
+      "commit": "57ee4f162c0f4b3ab68faf26596437033f0fa2ba",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP webrtc_audio_processing provider required by libaudiopreprocessing in the graph 20 error."
+    },
+    {
+      "path": "external/libsrtp2",
+      "url": "https://android.googlesource.com/platform/external/libsrtp2",
+      "commit": "3a2bd469a7219556aa17ea771c4887ad94160f7c",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libsrtp2 provider required by the WebRTC dependency in graph 20, preserving the original SRTP fuzzer and metadata."
+    },
+    {
+      "path": "external/pffft",
+      "url": "https://android.googlesource.com/platform/external/pffft",
+      "commit": "efa0bc5d226e063f65b21afd35390cce22e8e09d",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libpffft provider required by the WebRTC dependency in graph 20."
+    },
+    {
+      "path": "external/rnnoise",
+      "url": "https://android.googlesource.com/platform/external/rnnoise",
+      "commit": "1295d6828459cc82c3c29cc5d7d297215250a74b",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP rnnoise_rnn_vad provider required by the WebRTC dependency in graph 20."
     }
   ]
 }

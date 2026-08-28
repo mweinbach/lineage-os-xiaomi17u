@@ -168,6 +168,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "9506dc42bd91a45929657bc4350fb21926530ac74a82969a3a701675e9841583")
 
+    def test_first_136_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:136]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "59f36d6c49d093927ea29a065e07f3ddd02b67baa147d8c00b5c39aab1269422")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -582,7 +588,6 @@ class ConfigurationTests(Fixture):
 
     def test_graph_nineteen_platform_properties_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 136)
         self.assertEqual(projects[135], {
             "path": "system/libsysprop",
             "url": "https://android.googlesource.com/platform/system/libsysprop",
@@ -590,6 +595,26 @@ class ConfigurationTests(Fixture):
             "tag": "android-16.0.0_r1",
             "reason": "Real AOSP PlatformProperties sysprop sources generating libplatformproperties_rust for libhypervisor_props in the graph 19 error. Existing generators and API/type checks remain unchanged."
         })
+
+    def test_graph_twenty_webrtc_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/webrtc", "57ee4f162c0f4b3ab68faf26596437033f0fa2ba"),
+            ("external/libsrtp2", "3a2bd469a7219556aa17ea771c4887ad94160f7c"),
+            ("external/pffft", "efa0bc5d226e063f65b21afd35390cce22e8e09d"),
+            ("external/rnnoise", "1295d6828459cc82c3c29cc5d7d297215250a74b"),
+        ]
+        self.assertEqual(len(projects), 140)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[136:]], expected)
+        for project in projects[136:]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 20", project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+        self.assertIn("webrtc_audio_processing", projects[136]["reason"])
+        self.assertIn("libaudiopreprocessing", projects[136]["reason"])
+        self.assertIn("preserving the original SRTP fuzzer", projects[137]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
