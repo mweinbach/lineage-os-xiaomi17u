@@ -46,6 +46,13 @@ outcomes and the exact source, control bundle and log hashes for each attempt.
 Earlier failures remain in that record after a target revision. Generated
 theme resources alone do not establish that a recovery image was built.
 
+Graph 49 completed Blueprint generation and entered legacy Make processing,
+which rejected missing required modules. That is a partial milestone, not a
+successful full graph or compiled image. Its first Kati pass also created
+`clean_steps.mk`; subsequent runs must preserve and verify that recorded state
+and review newly introduced CleanSpec commands before allowing Kati to run.
+Deleting the state to suppress clean steps is not part of this workflow.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are

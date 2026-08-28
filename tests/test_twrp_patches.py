@@ -31,6 +31,7 @@ TRUSTY_AVB_TEST_ID = "0022-native-recovery-trusty-avb-test"
 TRUSTY_VINTF_TEST_ID = "0023-native-recovery-trusty-vintf-test"
 USB_TRANSPORT_ID = "0024-recovery-usb-only-adb"
 VOLD_HOST_LIBRARIES_ID = "0025-vold-bionic-system-libraries"
+PACKAGING_CONTRACT_ID = "0026-repair-recovery-packaging-contracts"
 MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
 RECOVERY_REVISION = "b70f8e998b302381ecefc6e7f46df1614bd61afc"
 MINADBD_PREIMAGES = {
@@ -316,8 +317,8 @@ class TwrpPatchTests(unittest.TestCase):
                          + [ACONFIG_VARIANT_ID, AIDL_ANALYZER_VARIANT_ID, OMAPI_VARIANT_ID,
                             RECOVERY_RESOURCES_ID, GENERIC_SYSTEM_IMAGE_ID,
                             TRUSTY_AVB_TEST_ID, TRUSTY_VINTF_TEST_ID, USB_TRANSPORT_ID,
-                            VOLD_HOST_LIBRARIES_ID])
-        self.assertEqual(len(self.patches), 25)
+                            VOLD_HOST_LIBRARIES_ID, PACKAGING_CONTRACT_ID])
+        self.assertEqual(len(self.patches), 26)
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -326,7 +327,7 @@ class TwrpPatchTests(unittest.TestCase):
                 self.assertEqual([item["path"] for item in row["files"]], [path])
                 self.assertIn(commit, row["files"][0]["source_url"])
 
-    def test_usb_transport_is_the_only_explicit_successor_after_unchanged_twenty_three(self):
+    def test_explicit_successors_preserve_usb_and_mdpi_predecessors(self):
         prefix = self.record["patches"][:23]
         canonical = json.dumps(prefix, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(canonical).hexdigest(),
@@ -341,12 +342,15 @@ class TwrpPatchTests(unittest.TestCase):
         successors = [(entry["id"], item["path"], item["predecessor_patch_id"])
                       for entry in self.record["patches"] for item in entry["files"]
                       if "predecessor_patch_id" in item]
-        self.assertEqual(successors, [(USB_TRANSPORT_ID, "daemon/main.cpp", predecessor["id"])])
+        self.assertEqual(successors, [
+            (USB_TRANSPORT_ID, "daemon/main.cpp", predecessor["id"]),
+            (PACKAGING_CONTRACT_ID, "Android.bp", RECOVERY_RESOURCES_ID),
+        ])
         for field in ("sha256", "git_blob", "size_bytes"):
             self.assertEqual(row["files"][0]["before_" + field], predecessor["files"][0]["after_" + field])
         paths = [(entry["project"], item["path"])
                  for entry in self.record["patches"] for item in entry["files"]]
-        self.assertEqual((len(paths), len(set(paths))), (41, 40))
+        self.assertEqual((len(paths), len(set(paths))), (44, 42))
         self.assertEqual(paths.count((row["project"], "daemon/main.cpp")), 2)
         self.assertEqual(paths.count((row["project"], "daemon/adb_wifi.cpp")), 1)
         self.assertEqual(row["patch_sha256"],

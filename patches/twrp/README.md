@@ -126,6 +126,27 @@ so strict forward and reverse application can preserve the original bytes.
 This changes no crypto code, decryption flag, source scope or package request.
 Source-contract tests do not establish a successful host or recovery build.
 
+Patch 26 repairs the recovery packaging errors reported by Kati after Graph 49
+completed Blueprint generation. The root recovery declaration keeps the MDPI
+resources restored by patch 20 and explicitly names that patch as its immediate
+predecessor. The separate patch 4 to 24 authentication and USB chain is unchanged.
+
+The packaging Makefile now records provider modules separately from their exact
+installed filenames. `orscmd` provides `twrp`; `ziptool.recovery` and
+`init_second_stage.recovery` provide the `unzip` and `ueventd` symlinks. The
+existing recovery health 2.1 provider remains selected. A real ETC prebuilt copies
+core Make's generated event tags into recovery. The current generated rules bind
+all 107 active inputs to providers and installation rules: 87 native recovery
+paths and 20 explicit platform fallbacks. This mapping is evidence for the
+selected profile, not proof that those files have compiled or that their final
+ELF dependencies are complete.
+
+The relinker requires every registered input, preserves native recovery files,
+resolves device symlinks within recovery, and fails on missing files, conflicting
+names, escaping links or copy errors. It is not a transaction across all files:
+a later failure can leave earlier staging copies, but cannot report a successful
+build. The normal graph, image, signature, SELinux and ELF checks remain required.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init
@@ -144,10 +165,10 @@ on an unlocked or debuggable device, irrespective of `ro.adb.secure`. Patch 4
 replaces that recovery-only branch with an unconditional authentication
 requirement and prevents the later trade-in path from undoing it. The
 non-recovery property-based selection and privilege-dropping behavior remain
-unchanged. Confirm that `adbd_system_api_recovery` actually selects these
-compiled sources and then test trusted, absent and unknown host keys.
+unchanged. Confirm the actual `adbd.recovery` and recovery `libadbd_core`
+compiler commands and objects, then test trusted, absent and unknown host keys.
 The separate `minadbd` executable is already selected for building and packaging
-by the pinned recovery. The packaging candidate preserves that dependency; it
+by the pinned recovery. Patch 26 preserves that dependency; it
 does not add it. This executable does not enter the patched `adbd_main()`:
 its original `minadbd/minadbd.cpp` sets `auth_required = false` before `usb_init()`,
 and neither `ro.adb.secure=1` nor the normal adbd patch changes that behavior. The

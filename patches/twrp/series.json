@@ -1233,6 +1233,52 @@
         "Offline source and patch checks do not execute Soong or establish a successful host, recovery or image build.",
         "No crypto source edit, FBE enablement, missing-dependency waiver, provider change, host disablement or phone operation is included."
       ]
+    },
+    {
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "files": [
+        {
+          "after_git_blob": "8bf22f8d021465d425558be0b8e51f4a41cbb624",
+          "after_sha256": "5738f3924cd2e2cf023069892c61031ab749830e49a8f5f36005be3fa22a2dd2",
+          "after_size_bytes": 20673,
+          "before_git_blob": "87c1a57f513bdc1e1fcc7bca980886739c4ca047",
+          "before_sha256": "1049726f463a715bd9e3d4714599de9e2be7185dbec1ceb19d1bbf99d8bd2cbf",
+          "before_size_bytes": 20703,
+          "mode": "100644",
+          "path": "Android.bp",
+          "predecessor_patch_id": "0020-restore-common-mdpi-recovery-resources",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/Android.bp"
+        },
+        {
+          "after_git_blob": "15995f7ad81edb39e5087eb3f5960435dfd961e4",
+          "after_sha256": "b36ce58dd712793c67985136a3d07fafc517d7525b06234e4128d87718c3874e",
+          "after_size_bytes": 38823,
+          "before_git_blob": "8a07a5f1ff3c5811e267ad04d6e7cdc7f2d53e89",
+          "before_sha256": "683d6256f3b5d17b6c03087b0ea27cd710911ebb1a91d1b357ada24e3bfd1cc7",
+          "before_size_bytes": 29919,
+          "mode": "100644",
+          "path": "prebuilt/Android.mk",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/prebuilt/Android.mk"
+        },
+        {
+          "after_git_blob": "91b876b692a3fa07756391b0eecb814beae4b987",
+          "after_sha256": "36b93ad83ae03432e2115f2120f1ca66378b079c5892c2ea9c4eb3f98bf2ae3b",
+          "after_size_bytes": 4612,
+          "before_git_blob": "59171146f8db58c09aadf54d541e8be8df2bdb04",
+          "before_sha256": "21cdc935ff21e7047fb6c9e2e5ba0dd6c6d882c31302fb5ccdcdab21ad767010",
+          "before_size_bytes": 332,
+          "mode": "100755",
+          "path": "prebuilt/relink.sh",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/prebuilt/relink.sh"
+        }
+      ],
+      "id": "0026-repair-recovery-packaging-contracts",
+      "patch": "patches/twrp/0026-repair-recovery-packaging-contracts.patch",
+      "patch_sha256": "3ad173dccf01b9b45e6c6b8d8af02dfe360441fd12b5b2b0e77a6a3ac07b220c",
+      "project": "bootable/recovery",
+      "reason": "Repair the 17 legacy required-module names observed in graph49 Kati, separate genuine provider modules from their installed stems and symlinks, retain explicit required input paths and fatal copy checks, and preserve the common MDPI resource predecessor and all safety patches.",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051"
     }
   ],
   "application_requirements": [
