@@ -34,6 +34,7 @@ class TemporaryWorkspace(unittest.TestCase):
         self.root = Path(self.temporary.name).resolve()
         self.config = twrp.load_config()
         self.config["expected_project_count"] = 2
+        self.config["project_selection"]["expanded_project_count"] = 3
         self.config["pinned_projects"] = {"bootable/recovery": {
             "name": "android_bootable_recovery", "remote": "twrp",
             "url": "https://github.com/TWRP-Test/android_bootable_recovery",
@@ -84,7 +85,8 @@ class ConfigurationTests(TemporaryWorkspace):
         config = twrp.load_config()
         upstream = json.loads((twrp.ROOT / "research/twrp-upstream.json").read_text())
         self.assertEqual(len(config["pinned_projects"]), 36)
-        self.assertEqual(config["expected_project_count"], 392)
+        self.assertEqual(config["expected_project_count"], 391)
+        self.assertEqual(config["project_selection"]["expanded_project_count"], 392)
         for pin in upstream["pinned_projects"]:
             self.assertEqual(config["pinned_projects"][pin["path"]]["commit"], pin["commit"])
             self.assertEqual(config["pinned_projects"][pin["path"]]["url"], pin["repository"])
@@ -96,6 +98,8 @@ class ConfigurationTests(TemporaryWorkspace):
         self.assertEqual(command[command.index("--manifest-branch") + 1], self.config["manifest"]["commit"])
         self.assertEqual(command[command.index("--repo-rev") + 1], self.config["repo_tool"]["commit"])
         self.assertNotIn("--no-repo-verify", command)
+        self.assertIn("--groups=default,platform-linux", command)
+        self.assertIn("--platform=none", command)
 
     def test_sync_has_no_overwrite_or_manifest_drift_flags(self):
         command = twrp.sync_command(self.config, self.launcher, 8)
@@ -123,7 +127,10 @@ class ConfigurationTests(TemporaryWorkspace):
         mutations = [("manifest", "commit", "main"), ("repo_tool", "url", "https://user:secret@example.com/repo"),
                      ("manifest", "url", "file:///tmp/repo"), ("manifest", "name", "other.xml"),
                      ("host_requirements", "min_free_disk_gib", 149),
-                     ("host_requirements", "min_ram_gib", 15), ("host_requirements", "filesystem", "apfs")]
+                     ("host_requirements", "min_ram_gib", 15), ("host_requirements", "filesystem", "apfs"),
+                     ("project_selection", "host_os", "Darwin"),
+                     ("project_selection", "groups", ["all"]),
+                     ("project_selection", "expanded_project_count", 4)]
         path = self.root / "invalid.json"
         for section, field, value in mutations:
             config = copy.deepcopy(self.config)
@@ -295,6 +302,41 @@ class ManifestTests(unittest.TestCase):
 
 
 class ReviewedPinsTests(TemporaryWorkspace):
+    def test_linux_selection_excludes_only_the_reviewed_darwin_bazel_path(self):
+        selection = twrp.load_config()["project_selection"]
+        self.assertEqual(selection["host_os"], "Linux")
+        self.assertEqual(selection["groups"], ["default", "platform-linux"])
+        self.assertEqual(len(selection["excluded_projects"]), 1)
+        excluded = selection["excluded_projects"][0]
+        self.assertEqual(excluded["path"], "prebuilts/bazel/darwin-x86_64")
+        self.assertEqual(excluded["name"], "platform/prebuilts/bazel/darwin-x86_64")
+        self.assertEqual(excluded["groups"], ["notdefault", "platform-darwin", "darwin", "pdk"])
+        self.assertEqual(excluded["clone_depth"], 1)
+
+    def test_an_equal_count_with_a_different_omitted_project_is_rejected(self):
+        projects = twrp.parse_manifest(MANIFEST, resolved=True)
+        del projects["build/make"]
+        projects["prebuilts/bazel/darwin-x86_64"] = {
+            "name": "platform/prebuilts/bazel/darwin-x86_64", "path": "prebuilts/bazel/darwin-x86_64",
+            "remote": "aosp", "url": "https://android.googlesource.com/platform/prebuilts/bazel/darwin-x86_64",
+            "revision": PROJECT_SHA}
+        with self.assertRaisesRegex(ValueError, "excluded Darwin"):
+            twrp.validate_project_pins(self.config, projects, resolved=True)
+
+    def test_any_additional_missing_project_still_fails_completeness(self):
+        projects = twrp.parse_manifest(MANIFEST, resolved=True)
+        del projects["build/make"]
+        with self.assertRaisesRegex(ValueError, "project count"):
+            twrp.validate_project_pins(self.config, projects, resolved=True)
+
+    def test_a_missing_reviewed_fork_cannot_be_replaced_by_an_aosp_project(self):
+        projects = twrp.parse_manifest(MANIFEST, resolved=True)
+        del projects["bootable/recovery"]
+        projects["other/project"] = {"name": "platform/other", "path": "other/project", "remote": "aosp",
+                                     "url": "https://android.googlesource.com/platform/other", "revision": OTHER_SHA}
+        with self.assertRaisesRegex(ValueError, "overrides"):
+            twrp.validate_project_pins(self.config, projects, resolved=True)
+
     def test_missing_or_moved_reviewed_github_projects_are_rejected(self):
         projects = twrp.parse_manifest(MANIFEST, resolved=True)
         twrp.validate_project_pins(self.config, projects, resolved=True)

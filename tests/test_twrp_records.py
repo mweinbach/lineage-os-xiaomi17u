@@ -26,6 +26,12 @@ class TwrpRecordTests(unittest.TestCase):
                          + counts["overlay_added"] - counts["minimal_removals"], counts["final"])
         self.assertEqual(counts["aosp"] + counts["github"], counts["final"])
         self.assertEqual(counts["final"], 392)
+        followup = manifest["linux_selection_followup"]
+        self.assertEqual(counts["selected_linux"], 391)
+        self.assertEqual(followup["selected_linux_count"], counts["final"] - 1)
+        self.assertEqual(followup["excluded_project"]["path"], "prebuilts/bazel/darwin-x86_64")
+        self.assertTrue(followup["all_other_expanded_project_paths_present"])
+        self.assertFalse(followup["count_difference_is_incomplete_download"])
 
     def test_moving_project_references_are_explicit_full_pins(self):
         projects = self.upstream["pinned_projects"]

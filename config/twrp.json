@@ -21,7 +21,22 @@
     "min_ram_gib": 16,
     "filesystem": "ext4"
   },
-  "expected_project_count": 392,
+  "expected_project_count": 391,
+  "project_selection": {
+    "host_os": "Linux",
+    "groups": ["default", "platform-linux"],
+    "expanded_project_count": 392,
+    "excluded_projects": [
+      {
+        "path": "prebuilts/bazel/darwin-x86_64",
+        "name": "platform/prebuilts/bazel/darwin-x86_64",
+        "groups": ["notdefault", "platform-darwin", "darwin", "pdk"],
+        "clone_depth": 1,
+        "reason": "The default Linux Repo groups exclude this Darwin-only Bazel prebuilt. Every other expanded manifest path is selected."
+      }
+    ],
+    "evidence": "Live pinned Repo manifest export and .repo/project.list both contain 391 paths after the completed Linux sync. Comparing them with the recursive pinned XML expansion identifies only the recorded Darwin path as omitted."
+  },
   "pinned_projects": {
     "bootable/recovery": {
       "name": "android_bootable_recovery",

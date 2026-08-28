@@ -142,11 +142,26 @@
       "minimal_removals": 608,
       "final": 392,
       "aosp": 356,
-      "github": 36
+      "github": 36,
+      "selected_linux": 391
     },
     "minimal_removal_selector": "path",
     "full_transitive_commit_lock_resolved_by_this_review": false,
-    "lock_limit": "All 36 GitHub override branch heads below are pinned. The 356 retained AOSP projects still use the manifest tag here; a complete source receipt must bind each checked-out HEAD and origin before building."
+    "lock_limit": "All 36 GitHub override branch heads below are pinned. The 356 retained AOSP projects still use the manifest tag here; a complete source receipt must bind each checked-out HEAD and origin before building.",
+    "linux_selection_followup": {
+      "observed_via": "Pinned Repo manifest export and .repo/project.list after successful Linux sync",
+      "raw_expansion_count": 392,
+      "selected_linux_count": 391,
+      "excluded_project": {
+        "path": "prebuilts/bazel/darwin-x86_64",
+        "name": "platform/prebuilts/bazel/darwin-x86_64",
+        "groups": "notdefault,platform-darwin,darwin,pdk",
+        "clone_depth": 1
+      },
+      "all_other_expanded_project_paths_present": true,
+      "count_difference_is_incomplete_download": false,
+      "complete_revision_verification_record": null
+    }
   },
   "pinned_projects": [
     {
@@ -518,7 +533,10 @@
     {
       "id": "recovery-adb-auth-bypass",
       "source": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/main.cpp",
-      "source_lines": [220, 234],
+      "source_lines": [
+        220,
+        234
+      ],
       "observation": "The recovery build sets auth_required=false when verified boot state is orange or the build is debuggable, regardless of ro.adb.secure. A user build still bypasses authentication on an unlocked phone.",
       "required_action": "A reviewed source patch must require host authentication in recovery. Also account for trade-in-mode paths that can disable authentication; properties alone are insufficient."
     },

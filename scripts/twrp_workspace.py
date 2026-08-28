@@ -54,6 +54,19 @@ def load_config(path=CONFIG):
         raise ValueError("TWRP configuration must retain the reviewed manifest, depth and host gates")
     if not isinstance(config["expected_project_count"], int) or config["expected_project_count"] < 1:
         raise ValueError("Expected source project count must be a positive integer")
+    selection = config["project_selection"]
+    if (selection["host_os"] != "Linux" or selection["groups"] != ["default", "platform-linux"]
+            or selection["expanded_project_count"] != config["expected_project_count"] + len(selection["excluded_projects"])):
+        raise ValueError("Source selection must retain the reviewed Linux group counts")
+    exclusions = set()
+    for project in selection["excluded_projects"]:
+        relative_path(project["path"])
+        relative_path(project["name"])
+        if (project["path"] in exclusions or project["path"] in config["pinned_projects"]
+                or "notdefault" not in project["groups"] or "platform-darwin" not in project["groups"]
+                or "platform-linux" in project["groups"]):
+            raise ValueError("Source exclusions must be distinct reviewed Darwin-only projects")
+        exclusions.add(project["path"])
     if not config["pinned_projects"]:
         raise ValueError("Reviewed GitHub project pins are required")
     for path, pin in config["pinned_projects"].items():
@@ -203,6 +216,7 @@ def init_command(config, launcher):
     return [sys.executable, str(launcher), "init", "--manifest-url", manifest["url"],
             "--manifest-branch", manifest["commit"], "--manifest-name", manifest["name"],
             "--depth=1", "--git-lfs", "--current-branch", "--no-clone-bundle",
+            "--groups=" + ",".join(config["project_selection"]["groups"]), "--platform=none",
             "--repo-url", repo["url"], "--repo-rev", repo["commit"]]
 
 
@@ -218,6 +232,8 @@ def plan(config, paths, launcher, host_mode, jobs):
             **{name: str(path) for name, path in paths.items()},
             "manifest": config["manifest"], "repo_tool": config["repo_tool"],
             "reviewed_project_pins": len(config["pinned_projects"]),
+            "expected_project_count": config["expected_project_count"],
+            "project_selection": config["project_selection"],
             "host_requirements": config["host_requirements"],
             "commands": {"init": init_command(config, launcher),
                          "sync": sync_command(config, launcher, jobs)},
@@ -314,7 +330,13 @@ def project_report(source, projects, allow_missing=False):
 
 def validate_project_pins(config, projects, resolved=False):
     if len(projects) != config["expected_project_count"]:
-        raise ValueError("Source project count differs from the reviewed TWRP manifest")
+        raise ValueError("Source project count differs from the reviewed Linux TWRP selection")
+    # The exact pinned, clean manifest and selector were checked before Repo
+    # generated this subset. Requiring its full Linux count and rejecting the
+    # one reviewed Darwin exclusion prevents accepting a different omission.
+    for excluded in config["project_selection"]["excluded_projects"]:
+        if excluded["path"] in projects:
+            raise ValueError("Source selection includes the excluded Darwin project: " + excluded["path"])
     github = {path for path, project in projects.items() if urlparse(project["url"]).hostname == "github.com"}
     if github != set(config["pinned_projects"]):
         raise ValueError("GitHub overrides differ from the reviewed project selection")
@@ -361,6 +383,7 @@ def checked_report(path):
 
 def identity(config, paths):
     return {"schema_version": 1, "manifest": config["manifest"],
+            "project_selection": config["project_selection"],
             "repo_tool": {key: config["repo_tool"][key] for key in ("url", "commit")},
             "reviewed_project_pins_sha256": hashlib.sha256(
                 json.dumps(config["pinned_projects"], sort_keys=True).encode()).hexdigest(),

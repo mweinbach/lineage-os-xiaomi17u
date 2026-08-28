@@ -28,6 +28,11 @@ checked with `git ls-remote`. The experimental manifest defaults to AOSP
 `android-16.0.0_r1`, includes `twrp-default.xml`, then includes
 `remove-minimal.xml`. Its 990 baseline projects become 392 after removing 26
 baseline entries, adding 36 fork/support entries, and removing 608 unused entries.
+The completed Linux sync selects **391** of those projects: Repo omits only
+`prebuilts/bazel/darwin-x86_64`, whose groups are
+`notdefault,platform-darwin,darwin,pdk`. Every other expanded project path is
+present. The source configuration records that exact exclusion; the count is
+not relaxed to accept arbitrary missing projects.
 The final removals select projects by **path**, not by
 name. There are no nested project elements or relative remote fetch URLs in
 the reviewed manifests. File hashes and Git blob identifiers are recorded.
