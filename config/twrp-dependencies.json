@@ -1737,6 +1737,20 @@
       "commit": "dd93a0db2d7458fceea325612623b9996feba378",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP oboe cc_library_static required by libaudioloopback_jni in the graph 35 error. Original source, oboe_headers, SDK settings and Apache-2.0/GPL-2.0/MIT license metadata are preserved. This source pin does not establish a built APK or audio-loopback functionality."
+    },
+    {
+      "path": "external/seccomp-tests",
+      "url": "https://android.googlesource.com/platform/external/seccomp-tests",
+      "commit": "e175d3ba7741fe01a89e54ad5989aeb3293b0e3f",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 36 error: real AOSP external_seccomp_tests cc_library_static required by retained libctsos_jni. The whole original project and Android Blueprint are preserved, including mixed Apache/GPL/LGPL license kinds and RESTRICTED metadata. Its ancillary Linux Makefile is not invoked by Android.bp; no standalone Make support or licensing clearance is claimed."
+    },
+    {
+      "path": "packages/services/DeviceAsWebcam",
+      "url": "https://android.googlesource.com/platform/packages/services/DeviceAsWebcam",
+      "commit": "86c6b7e9b7217310836f7b8f75d0c764c148b6e5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 36 error: real AOSP camera-webcam-test genrule required by the retained android-cts-verifier genrule. All four original Blueprints, including app, library and JNI definitions, remain intact. No product package, app installation, signing-key access or webcam functionality is implied."
     }
   ]
 }

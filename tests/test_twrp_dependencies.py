@@ -318,6 +318,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "f62d0744f3bbfda4b7224e45617de4d392fa74a64f69819a3ab92fe9eb1315f7")
 
+    def test_first_247_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:247]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "968909aac626762c59dbfd098ceb8523f2950d793a68c3dd9d56155f40a43c5a")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1458,7 +1464,7 @@ class ConfigurationTests(Fixture):
 
     def test_graph_thirty_five_oboe_source_pin_and_reason(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 247)
+        self.assertGreaterEqual(len(projects), 247)
         project = projects[246]
         self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
             "path": "external/oboe",
@@ -1473,6 +1479,33 @@ class ConfigurationTests(Fixture):
                      "SDK settings", "Apache-2.0/GPL-2.0/MIT license metadata are preserved",
                      "does not establish a built APK or audio-loopback functionality"):
             self.assertIn(text, reason)
+
+    def test_reviewed_native_cts_projection_source_pins_and_reasons(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/seccomp-tests", "e175d3ba7741fe01a89e54ad5989aeb3293b0e3f",
+             "external_seccomp_tests cc_library_static", "libctsos_jni"),
+            ("packages/services/DeviceAsWebcam", "86c6b7e9b7217310836f7b8f75d0c764c148b6e5",
+             "camera-webcam-test genrule", "android-cts-verifier genrule"),
+        ]
+        self.assertEqual(len(projects), 249)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[247:249]],
+                         [(path, commit) for path, commit, _, _ in expected])
+        for project, (_, _, provider, consumer) in zip(projects[247:249], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 36 error:"))
+                self.assertNotIn("graph 36 errors", project["reason"])
+                self.assertIn(provider, project["reason"])
+                self.assertIn(consumer, project["reason"])
+        for text in ("whole original project and Android Blueprint", "mixed Apache/GPL/LGPL license kinds",
+                     "RESTRICTED metadata", "ancillary Linux Makefile is not invoked by Android.bp",
+                     "no standalone Make support or licensing clearance is claimed"):
+            self.assertIn(text, projects[247]["reason"])
+        for text in ("All four original Blueprints", "app, library and JNI definitions, remain intact",
+                     "No product package, app installation, signing-key access or webcam functionality is implied"):
+            self.assertIn(text, projects[248]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
