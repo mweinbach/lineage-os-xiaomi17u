@@ -88,8 +88,22 @@ requirement and prevents the later trade-in path from undoing it. The
 non-recovery property-based selection and privilege-dropping behavior remain
 unchanged. Confirm that `adbd_system_api_recovery` actually selects these
 compiled sources and then test trusted, absent and unknown host keys.
-The separate `minadbd`/sideload implementation is not covered by this daemon
-patch and is not admitted for use in the first compile experiment.
+The separate `minadbd` executable is already selected for building and packaging
+by the pinned recovery. The packaging candidate preserves that dependency; it
+does not add it. This executable does not enter the patched `adbd_main()`:
+`minadbd/minadbd.cpp` sets `auth_required = false` before `usb_init()`, and
+neither `ro.adb.secure=1` nor the normal adbd patch changes that behavior. The
+GUI's sideload action and OpenRecoveryScript's `sideload` command call
+`twrp_sideload()`, which launches `/system/bin/minadbd` and selects the USB
+sideload configuration. These entrypoints remain present; this is not a
+build-time exclusion.
+
+That sideload transport is not admitted for runtime use. This compile-only
+experiment authorizes no boot or device command, and no authentication or
+safety claim extends to minadbd. Before any diagnostic boot, separately disable
+these entrypoints with a reviewed fail-closed gate or implement and verify
+minadbd host authentication. Changing a packaging list or an ADB property alone
+is insufficient.
 
 The queue does not change signature verification, AVB/rollback checks, ELF or
 artifact-path checks, dependency checks or SELinux assertions. The source

@@ -413,6 +413,15 @@ class TwrpPatchTests(unittest.TestCase):
         self.assertIn("not create a write lock", limits)
         self.assertIn("No phone access or change", limits)
         self.assertNotIn("device_tested", self.record)
+        readme = (ROOT / "patches/twrp/README.md").read_text()
+        minadbd_section = readme.split("The separate `minadbd` executable", 1)[1].split(
+            "\n\nThe queue does not change", 1)[0]
+        minadbd_section = " ".join(minadbd_section.split())
+        for fact in ("already selected for building and packaging", "preserves that dependency",
+                     "`auth_required = false` before `usb_init()`", "GUI's sideload action",
+                     "OpenRecoveryScript's `sideload`", "not admitted for runtime use",
+                     "Before any diagnostic boot", "reviewed fail-closed gate"):
+            self.assertIn(fact, minadbd_section)
         requirements = " ".join(self.record["application_requirements"])
         self.assertIn("never /work/evolution", requirements)
         self.assertIn("every preimage SHA256", requirements)
