@@ -449,6 +449,41 @@
       "commit": "ed236bb2d9a3a65a78ea4abca94a2c7c5dbec1b8",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP image I/O providers required by retained native modules."
+    },
+    {
+      "path": "external/dagger2",
+      "url": "https://android.googlesource.com/platform/external/dagger2",
+      "commit": "eb622db751720f39a1ad974096dd371c75e34482",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP Dagger, Hilt and annotation processor providers required by retained Java modules."
+    },
+    {
+      "path": "external/jakarta.inject",
+      "url": "https://android.googlesource.com/platform/external/jakarta.inject",
+      "commit": "6deaa544ee90038fbc099429f3ee47c04c2cce04",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP jakarta.inject provider required by Dagger."
+    },
+    {
+      "path": "external/ksp",
+      "url": "https://android.googlesource.com/platform/external/ksp",
+      "commit": "88db449f6444fd8a8a45e51a1e1a36ab88d820b0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP kotlin_symbol_processing_api provider required by Dagger processors."
+    },
+    {
+      "path": "external/TestParameterInjector",
+      "url": "https://android.googlesource.com/platform/external/TestParameterInjector",
+      "commit": "3ece4c78c4ff10f1e0e8c78f7390561846f08fd0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP TestParameterInjector provider required by retained Java test modules."
+    },
+    {
+      "path": "external/cbor-java",
+      "url": "https://android.googlesource.com/platform/external/cbor-java",
+      "commit": "2abec0b574627877ddc8a2dff7315ca2fe489e56",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP cbor-java provider required by retained Java modules."
     }
   ]
 }
