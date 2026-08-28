@@ -1,0 +1,593 @@
+{
+  "schema_version": 1,
+  "scope": "Relevant public history; compiler-builder or prebuilt-update tests are not proof of complete Android platform builds. See report for interpretation and changes already present in Android16.",
+  "commits": [
+    {
+      "repository": "platform/build/soong",
+      "commit": "92ac46d1fe04a94d94025554bcecc5f8cb2416ae",
+      "author_time": "Wed Feb 26 19:25:23 2025 -0800",
+      "committer_time": "Thu Feb 27 11:58:35 2025 -0800",
+      "subject": "Build Go tools for arm",
+      "url": "https://android.googlesource.com/platform/build/soong/+/92ac46d1fe04a94d94025554bcecc5f8cb2416ae",
+      "changed_paths": [
+        "android/arch.go",
+        "android/config.go",
+        "android/paths.go",
+        "scripts/microfactory.bash",
+        "ui/build/config.go",
+        "ui/build/path.go"
+      ],
+      "changed_path_count": 6,
+      "reported_tests": [
+        "prebuilts/build-tools/build-prebuilts.sh"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "433dcb4e7f8a93c93dd20361c55056a24e4f786e",
+      "author_time": "Thu Feb 27 14:17:53 2025 -0800",
+      "committer_time": "Thu Feb 27 14:17:53 2025 -0800",
+      "subject": "Merge \"Build Go tools for arm\" into main",
+      "url": "https://android.googlesource.com/platform/build/soong/+/433dcb4e7f8a93c93dd20361c55056a24e4f786e",
+      "changed_paths": [],
+      "changed_path_count": 0,
+      "reported_tests": []
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "a9b2aacf07697e9fa00daf2c6fc76a73392563b7",
+      "author_time": "Wed Jun 15 17:25:51 2022 -0700",
+      "committer_time": "Fri Jun 24 13:46:36 2022 -0700",
+      "subject": "Add linux_musl arm+arm64",
+      "url": "https://android.googlesource.com/platform/build/soong/+/a9b2aacf07697e9fa00daf2c6fc76a73392563b7",
+      "changed_paths": [
+        "android/arch.go",
+        "android/paths.go",
+        "bazel/configurability.go",
+        "bp2build/cc_object_conversion_test.go",
+        "cc/config/Android.bp",
+        "cc/config/arm64_linux_host.go",
+        "cc/config/arm_linux_host.go",
+        "cc/sanitize.go"
+      ],
+      "changed_path_count": 8,
+      "reported_tests": [
+        "build arm and arm64 musl sysroots"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "1faf82305a5dae78c00cf71156284f39e5bd53a6",
+      "author_time": "Fri Jun 24 18:42:32 2022 -0700",
+      "committer_time": "Tue Jun 28 15:16:15 2022 -0700",
+      "subject": "Add rust musl arm and arm64 toolchains",
+      "url": "https://android.googlesource.com/platform/build/soong/+/1faf82305a5dae78c00cf71156284f39e5bd53a6",
+      "changed_paths": [
+        "rust/config/Android.bp",
+        "rust/config/arm_linux_host.go",
+        "rust/sanitize.go"
+      ],
+      "changed_path_count": 3,
+      "reported_tests": [
+        "builds with linux musl arm64 host cross configured"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "9a027be6bc304f5fdfaea3fe46f4c2315e031b8b",
+      "author_time": "Fri Jun 24 18:45:58 2022 -0700",
+      "committer_time": "Tue Jun 28 15:16:15 2022 -0700",
+      "subject": "Don't pass host cross linux musl modules to Make",
+      "url": "https://android.googlesource.com/platform/build/soong/+/9a027be6bc304f5fdfaea3fe46f4c2315e031b8b",
+      "changed_paths": [
+        "android/androidmk.go"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "builds with linux musl arm64 host cross configured"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "567d342ed830d043602bd0ce7805a6adc69e4612",
+      "author_time": "Thu Apr 28 15:30:09 2022 -0700",
+      "committer_time": "Fri Jul 01 02:58:14 2022 +0000",
+      "subject": "Use musl rust prebuilts for USE_HOST_MUSL=true",
+      "url": "https://android.googlesource.com/platform/build/soong/+/567d342ed830d043602bd0ce7805a6adc69e4612",
+      "changed_paths": [
+        "rust/bindgen.go",
+        "rust/compiler.go",
+        "rust/config/global.go"
+      ],
+      "changed_path_count": 3,
+      "reported_tests": [
+        "m USE_HOST_MUSL=true host-native"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "c0f0eb86db82f399618569322cdd36af45472abf",
+      "author_time": "Tue Jul 19 14:41:11 2022 -0700",
+      "committer_time": "Mon Aug 22 14:36:13 2022 -0700",
+      "subject": "Make FirstTarget treat HostCross separately from Host",
+      "url": "https://android.googlesource.com/platform/build/soong/+/c0f0eb86db82f399618569322cdd36af45472abf",
+      "changed_paths": [
+        "android/arch.go",
+        "android/arch_test.go",
+        "android/test_config.go"
+      ],
+      "changed_path_count": 3,
+      "reported_tests": [
+        "TestArchMutator"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "390fc746d0eab743c18033d9e851f5b4ec435a3d",
+      "author_time": "Tue May 02 13:02:51 2023 -0700",
+      "committer_time": "Wed May 17 21:59:32 2023 +0000",
+      "subject": "Disable sanitizers that use runtimes for linux_musl arm64",
+      "url": "https://android.googlesource.com/platform/build/soong/+/390fc746d0eab743c18033d9e851f5b4ec435a3d",
+      "changed_paths": [
+        "cc/sanitize.go"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "builds"
+      ]
+    },
+    {
+      "repository": "platform/build/soong",
+      "commit": "f7a1f6418ce3fa6b5685ab97cf76d5f9c94e5c14",
+      "author_time": "Mon Oct 28 10:38:46 2024 -0700",
+      "committer_time": "Mon Oct 28 10:38:46 2024 -0700",
+      "subject": "Support host-cross variant on golang modules",
+      "url": "https://android.googlesource.com/platform/build/soong/+/f7a1f6418ce3fa6b5685ab97cf76d5f9c94e5c14",
+      "changed_paths": [
+        "golang/golang.go"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "m nothing on aosp_cf_arm64_only_phone with aosp/3318965"
+      ]
+    },
+    {
+      "repository": "platform/external/musl",
+      "commit": "a7a2ff059d43b2571a5153c312070ab059886231",
+      "author_time": "Tue Jun 14 16:47:19 2022 -0700",
+      "committer_time": "Fri Jun 24 15:51:44 2022 -0700",
+      "subject": "Support building musl for arm and arm64",
+      "url": "https://android.googlesource.com/platform/external/musl/+/a7a2ff059d43b2571a5153c312070ab059886231",
+      "changed_paths": [
+        "Android.bp"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "musl sysroots build for arm and arm64"
+      ]
+    },
+    {
+      "repository": "platform/external/musl",
+      "commit": "ad6291667ccf603d9629378bbdadf0a58711b211",
+      "author_time": "Thu Aug 11 14:19:24 2022 -0700",
+      "committer_time": "Thu Aug 25 17:48:32 2022 -0700",
+      "subject": "Support building relinterp for arm, arm64 and x86",
+      "url": "https://android.googlesource.com/platform/external/musl/+/ad6291667ccf603d9629378bbdadf0a58711b211",
+      "changed_paths": [
+        "android/relinterp.c"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "builds for arm, arm64, x86 and x86_64",
+        "arm64 binaries run"
+      ]
+    },
+    {
+      "repository": "toolchain/llvm_android",
+      "commit": "ead88453249a95fb3f8a4edb49abe06267a4a43c",
+      "author_time": "Fri Jul 28 19:35:59 2023 -0700",
+      "committer_time": "Wed Aug 02 20:57:09 2023 -0700",
+      "subject": "Support building the toolchain on and for non-x86 architectures.",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/ead88453249a95fb3f8a4edb49abe06267a4a43c",
+      "changed_paths": [
+        "base_builders.py",
+        "builders.py",
+        "configs.py",
+        "constants.py",
+        "do_build.py",
+        "hosts.py",
+        "py3_utils.py",
+        "toolchains.py"
+      ],
+      "changed_path_count": 8,
+      "reported_tests": []
+    },
+    {
+      "repository": "toolchain/llvm_android",
+      "commit": "52000803d21413dbfa8332b9462c3bb0f945a0d7",
+      "author_time": "Thu Aug 10 07:20:42 2023 +0000",
+      "committer_time": "Thu Aug 10 07:20:42 2023 +0000",
+      "subject": "Revert \"Support building the toolchain on and for non-x86 architectures.\"",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/52000803d21413dbfa8332b9462c3bb0f945a0d7",
+      "changed_paths": [
+        "base_builders.py",
+        "builders.py",
+        "configs.py",
+        "constants.py",
+        "do_build.py",
+        "hosts.py",
+        "py3_utils.py",
+        "toolchains.py"
+      ],
+      "changed_path_count": 8,
+      "reported_tests": []
+    },
+    {
+      "repository": "toolchain/llvm_android",
+      "commit": "3a4d8082d113b80076d2f3ca8fcdcde1d166b015",
+      "author_time": "Thu Jan 08 04:15:33 2026 +0000",
+      "committer_time": "Mon Jan 12 15:59:20 2026 -0800",
+      "subject": "Add initial support for building a linux arm64 clang that uses musl",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/3a4d8082d113b80076d2f3ca8fcdcde1d166b015",
+      "changed_paths": [
+        "do_build.py",
+        "do_kythe_xref.py",
+        "do_test_compiler.py",
+        "py3_utils.py",
+        "src/llvm_android/base_builders.py",
+        "src/llvm_android/configs.py",
+        "src/llvm_android/hosts.py",
+        "src/llvm_android/paths.py",
+        "src/llvm_android/toolchains.py"
+      ],
+      "changed_path_count": 9,
+      "reported_tests": [
+        "python3 toolchain/llvm_android/build.py  --musl --no-build=windows,lldb --skip-tests --create-tar"
+      ]
+    },
+    {
+      "repository": "toolchain/llvm_android",
+      "commit": "63b7ae2df512c3a09370718fa7c7f6c4820fa62e",
+      "author_time": "Thu Jan 15 14:05:19 2026 -0800",
+      "committer_time": "Thu Jan 15 14:06:11 2026 -0800",
+      "subject": "Add llvm_linux_arm64 to target_definitions.py",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/63b7ae2df512c3a09370718fa7c7f6c4820fa62e",
+      "changed_paths": [
+        "src/llvm_android/target_definitions.py"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": []
+    },
+    {
+      "repository": "toolchain/llvm_android",
+      "commit": "39d0e3ef225b914f11a46e7906c0de8ba234c563",
+      "author_time": "Tue Feb 17 10:38:16 2026 -0800",
+      "committer_time": "Tue Feb 17 10:38:16 2026 -0800",
+      "subject": "Add linux-arm64 to update-prebuilts.py",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/39d0e3ef225b914f11a46e7906c0de8ba234c563",
+      "changed_paths": [
+        "update-prebuilts.py"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "manual"
+      ]
+    },
+    {
+      "repository": "toolchain/llvm_android",
+      "commit": "af9e9f01630d3db6dbd933ea5b11c937fb0c5d11",
+      "author_time": "Fri May 08 14:21:52 2026 -0700",
+      "committer_time": "Thu Jul 09 14:48:03 2026 -0700",
+      "subject": "Add --pgo and --bolt to llvm_linux_arm64 and llvm_linux_musl builds",
+      "url": "https://android.googlesource.com/toolchain/llvm_android/+/af9e9f01630d3db6dbd933ea5b11c937fb0c5d11",
+      "changed_paths": [
+        "do_build.py",
+        "src/llvm_android/target_definitions.py"
+      ],
+      "changed_path_count": 2,
+      "reported_tests": [
+        "ABTD"
+      ]
+    },
+    {
+      "repository": "toolchain/android_rust",
+      "commit": "aec25ae692eef715842a81c438fa36c1ae648c53",
+      "author_time": "Fri Feb 13 20:14:15 2026 +0000",
+      "committer_time": "Fri Feb 13 22:22:01 2026 +0000",
+      "subject": "Initial linux-arm64 support",
+      "url": "https://android.googlesource.com/toolchain/android_rust/+/aec25ae692eef715842a81c438fa36c1ae648c53",
+      "changed_paths": [
+        "src/android_rust/build_platform.py",
+        "src/android_rust/config.py",
+        "src/android_rust/paths.py",
+        "src/android_rust/target_definitions.py",
+        "src/android_rust/toolchains.py",
+        "tools/build.py"
+      ],
+      "changed_path_count": 6,
+      "reported_tests": [
+        "manual"
+      ]
+    },
+    {
+      "repository": "toolchain/android_rust",
+      "commit": "d2909511721d4ff2a75567f897d482e8b0873ba5",
+      "author_time": "Fri Feb 27 11:43:52 2026 -0800",
+      "committer_time": "Fri Feb 27 12:11:39 2026 -0800",
+      "subject": "Fetch linux-arm64 prebuilts",
+      "url": "https://android.googlesource.com/toolchain/android_rust/+/d2909511721d4ff2a75567f897d482e8b0873ba5",
+      "changed_paths": [
+        "tools/update_prebuilts.py"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "manual"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/build-tools",
+      "commit": "762a7b15cdb657ab2f8d1106ed3f72c73ef12986",
+      "author_time": "Thu Feb 27 10:12:00 2025 -0800",
+      "committer_time": "Thu Feb 27 14:40:32 2025 -0800",
+      "subject": "Build Go tools for arm",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/762a7b15cdb657ab2f8d1106ed3f72c73ef12986",
+      "changed_paths": [
+        "build-prebuilts.sh"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "prebuilts/build-tools/build-prebuilts.sh"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/build-tools",
+      "commit": "a5112403ac2eb2b56d00581167411e49af2f8390",
+      "author_time": "Wed Feb 26 19:30:47 2025 -0800",
+      "committer_time": "Thu Feb 27 14:38:35 2025 -0800",
+      "subject": "Add path symlinks for linux-arm64",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/a5112403ac2eb2b56d00581167411e49af2f8390",
+      "changed_paths": [
+        "path/linux-arm64/awk",
+        "path/linux-arm64/basename",
+        "path/linux-arm64/bc",
+        "path/linux-arm64/bzcat",
+        "path/linux-arm64/bzip2",
+        "path/linux-arm64/cat",
+        "path/linux-arm64/chmod",
+        "path/linux-arm64/cmp",
+        "path/linux-arm64/comm",
+        "path/linux-arm64/cp",
+        "path/linux-arm64/cpio",
+        "path/linux-arm64/cut",
+        "path/linux-arm64/date",
+        "path/linux-arm64/dd",
+        "path/linux-arm64/dirname",
+        "path/linux-arm64/du",
+        "path/linux-arm64/echo",
+        "path/linux-arm64/egrep",
+        "path/linux-arm64/env",
+        "path/linux-arm64/file",
+        "path/linux-arm64/find",
+        "path/linux-arm64/getconf",
+        "path/linux-arm64/getopt",
+        "path/linux-arm64/grep",
+        "path/linux-arm64/gzip",
+        "path/linux-arm64/head",
+        "path/linux-arm64/hostname",
+        "path/linux-arm64/id",
+        "path/linux-arm64/install",
+        "path/linux-arm64/ln"
+      ],
+      "changed_path_count": 79,
+      "reported_tests": [
+        "prebuilts/build-tools/build-prebuilts.sh"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/build-tools",
+      "commit": "14fe58ad6208eb5f863057b99aa45d907e6c8f52",
+      "author_time": "Thu Feb 27 10:39:43 2025 -0800",
+      "committer_time": "Thu Feb 27 14:38:34 2025 -0800",
+      "subject": "Rename linux_musl-arm64 to linux-arm64",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/14fe58ad6208eb5f863057b99aa45d907e6c8f52",
+      "changed_paths": [
+        "Android.bp",
+        "linux-arm64/bin/aconfig",
+        "linux-arm64/bin/acp",
+        "linux-arm64/bin/aidl",
+        "linux-arm64/bin/bison",
+        "linux-arm64/bin/bloaty",
+        "linux-arm64/bin/brotli",
+        "linux-arm64/bin/bzip2",
+        "linux-arm64/bin/ckati",
+        "linux-arm64/bin/create_minidebuginfo",
+        "linux-arm64/bin/edit_monitor",
+        "linux-arm64/bin/flex",
+        "linux-arm64/bin/gavinhoward-bc",
+        "linux-arm64/bin/hidl-gen",
+        "linux-arm64/bin/hidl-lint",
+        "linux-arm64/bin/m4",
+        "linux-arm64/bin/make",
+        "linux-arm64/bin/n2",
+        "linux-arm64/bin/ninja",
+        "linux-arm64/bin/nsjail",
+        "linux-arm64/bin/one-true-awk",
+        "linux-arm64/bin/openssl",
+        "linux-arm64/bin/py3-cmd",
+        "linux-arm64/bin/py3-launcher-autorun-static64",
+        "linux-arm64/bin/py3-launcher-autorun64",
+        "linux-arm64/bin/py3-launcher-static64",
+        "linux-arm64/bin/py3-launcher64",
+        "linux-arm64/bin/tool_event_logger",
+        "linux-arm64/bin/toybox",
+        "linux-arm64/bin/xz"
+      ],
+      "changed_path_count": 45,
+      "reported_tests": [
+        "prebuilts/build-tools/build-prebuilts.sh"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/build-tools",
+      "commit": "aba3dea311239df3acc191434d965ca1f93eed0f",
+      "author_time": "Wed Mar 12 19:26:23 2025 -0700",
+      "committer_time": "Wed Mar 12 19:26:23 2025 -0700",
+      "subject": "Copy python headers into prebuilts",
+      "url": "https://android.googlesource.com/platform/prebuilts/build-tools/+/aba3dea311239df3acc191434d965ca1f93eed0f",
+      "changed_paths": [
+        "build-prebuilts.sh"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "treehugger"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/clang/host/linux-x86",
+      "commit": "cd16b93a2ae9bec89a83d63f72d49edd751a8381",
+      "author_time": "Mon Jun 22 14:45:42 2026 -0700",
+      "committer_time": "Mon Jun 22 19:08:45 2026 -0700",
+      "subject": "Add linux-arm64 versions of prebuilt llvm build tools",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/cd16b93a2ae9bec89a83d63f72d49edd751a8381",
+      "changed_paths": [
+        "soong/clangprebuilts.go"
+      ],
+      "changed_path_count": 1,
+      "reported_tests": [
+        "ABTD"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/clang/host/linux-arm64",
+      "commit": "198cef08637a6133e98b4a80e36f0ca35775fa9a",
+      "author_time": "Tue Jan 13 11:28:27 2026 -0800",
+      "committer_time": "Tue Jan 20 10:18:11 2026 -0800",
+      "subject": "Add bootstrap clang linux-arm64 prebuilts",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-arm64/+/198cef08637a6133e98b4a80e36f0ca35775fa9a",
+      "changed_paths": [
+        "clang-r584948b/AndroidVersion.txt",
+        "clang-r584948b/BUILD.bazel",
+        "clang-r584948b/MODULE_LICENSE_APACHE2",
+        "clang-r584948b/MODULE_LICENSE_BSD_LIKE",
+        "clang-r584948b/MODULE_LICENSE_MIT",
+        "clang-r584948b/NOTICE",
+        "clang-r584948b/android_libc++/ndk/aarch64/include/c++/v1/__config_site",
+        "clang-r584948b/android_libc++/ndk/aarch64/lib/libc++_shared.so",
+        "clang-r584948b/android_libc++/ndk/aarch64/lib/libc++_static.a",
+        "clang-r584948b/android_libc++/ndk/aarch64/lib/libc++abi.a",
+        "clang-r584948b/android_libc++/ndk/aarch64/lib/libc++experimental.a",
+        "clang-r584948b/android_libc++/ndk/arm/include/c++/v1/__config_site",
+        "clang-r584948b/android_libc++/ndk/arm/lib/libc++_shared.so",
+        "clang-r584948b/android_libc++/ndk/arm/lib/libc++_static.a",
+        "clang-r584948b/android_libc++/ndk/arm/lib/libc++abi.a",
+        "clang-r584948b/android_libc++/ndk/arm/lib/libc++experimental.a",
+        "clang-r584948b/android_libc++/ndk/i386/include/c++/v1/__config_site",
+        "clang-r584948b/android_libc++/ndk/i386/lib/libc++_shared.so",
+        "clang-r584948b/android_libc++/ndk/i386/lib/libc++_static.a",
+        "clang-r584948b/android_libc++/ndk/i386/lib/libc++abi.a",
+        "clang-r584948b/android_libc++/ndk/i386/lib/libc++experimental.a",
+        "clang-r584948b/android_libc++/ndk/riscv64/include/c++/v1/__config_site",
+        "clang-r584948b/android_libc++/ndk/riscv64/lib/libc++_shared.so",
+        "clang-r584948b/android_libc++/ndk/riscv64/lib/libc++_static.a",
+        "clang-r584948b/android_libc++/ndk/riscv64/lib/libc++abi.a",
+        "clang-r584948b/android_libc++/ndk/riscv64/lib/libc++experimental.a",
+        "clang-r584948b/android_libc++/ndk/x86_64/include/c++/v1/__config_site",
+        "clang-r584948b/android_libc++/ndk/x86_64/lib/libc++_shared.so",
+        "clang-r584948b/android_libc++/ndk/x86_64/lib/libc++_static.a",
+        "clang-r584948b/android_libc++/ndk/x86_64/lib/libc++abi.a"
+      ],
+      "changed_path_count": 8984,
+      "reported_tests": [
+        "manual"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/clang/host/linux-arm64",
+      "commit": "a70cecf3ce95d669302703e43c38c823af3f8513",
+      "author_time": "Wed Apr 15 14:10:31 2026 -0700",
+      "committer_time": "Wed Apr 15 14:10:31 2026 -0700",
+      "subject": "Add clang r596125 prebuilt for linux-arm64",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-arm64/+/a70cecf3ce95d669302703e43c38c823af3f8513",
+      "changed_paths": [
+        "clang-r596125/AndroidVersion.txt",
+        "clang-r596125/BUILD.bazel",
+        "clang-r596125/MODULE_LICENSE_APACHE2",
+        "clang-r596125/MODULE_LICENSE_BSD_LIKE",
+        "clang-r596125/MODULE_LICENSE_MIT",
+        "clang-r596125/NOTICE",
+        "clang-r596125/android_libc++/ndk/aarch64/include/c++/v1/__config_site",
+        "clang-r596125/android_libc++/ndk/aarch64/lib/libc++_shared.so",
+        "clang-r596125/android_libc++/ndk/aarch64/lib/libc++_static.a",
+        "clang-r596125/android_libc++/ndk/aarch64/lib/libc++abi.a",
+        "clang-r596125/android_libc++/ndk/aarch64/lib/libc++experimental.a",
+        "clang-r596125/android_libc++/ndk/arm/include/c++/v1/__config_site",
+        "clang-r596125/android_libc++/ndk/arm/lib/libc++_shared.so",
+        "clang-r596125/android_libc++/ndk/arm/lib/libc++_static.a",
+        "clang-r596125/android_libc++/ndk/arm/lib/libc++abi.a",
+        "clang-r596125/android_libc++/ndk/arm/lib/libc++experimental.a",
+        "clang-r596125/android_libc++/ndk/i386/include/c++/v1/__config_site",
+        "clang-r596125/android_libc++/ndk/i386/lib/libc++_shared.so",
+        "clang-r596125/android_libc++/ndk/i386/lib/libc++_static.a",
+        "clang-r596125/android_libc++/ndk/i386/lib/libc++abi.a",
+        "clang-r596125/android_libc++/ndk/i386/lib/libc++experimental.a",
+        "clang-r596125/android_libc++/ndk/riscv64/include/c++/v1/__config_site",
+        "clang-r596125/android_libc++/ndk/riscv64/lib/libc++_shared.so",
+        "clang-r596125/android_libc++/ndk/riscv64/lib/libc++_static.a",
+        "clang-r596125/android_libc++/ndk/riscv64/lib/libc++abi.a",
+        "clang-r596125/android_libc++/ndk/riscv64/lib/libc++experimental.a",
+        "clang-r596125/android_libc++/ndk/x86_64/include/c++/v1/__config_site",
+        "clang-r596125/android_libc++/ndk/x86_64/lib/libc++_shared.so",
+        "clang-r596125/android_libc++/ndk/x86_64/lib/libc++_static.a",
+        "clang-r596125/android_libc++/ndk/x86_64/lib/libc++abi.a"
+      ],
+      "changed_path_count": 9101,
+      "reported_tests": [
+        "manual"
+      ]
+    },
+    {
+      "repository": "platform/prebuilts/clang/host/linux-arm64",
+      "commit": "3d378df8ab6cfad44289f8af137a30c6eba684b8",
+      "author_time": "Tue Aug 25 16:35:00 2026 +0000",
+      "committer_time": "Tue Aug 25 16:35:00 2026 +0000",
+      "subject": "Update prebuilt Clang to r614150 (23.0.1).",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-arm64/+/3d378df8ab6cfad44289f8af137a30c6eba684b8",
+      "changed_paths": [
+        "clang-r614150/AndroidVersion.txt",
+        "clang-r614150/BUILD.bazel",
+        "clang-r614150/BUILD_INFO",
+        "clang-r614150/MODULE_LICENSE_APACHE2",
+        "clang-r614150/MODULE_LICENSE_BSD_LIKE",
+        "clang-r614150/MODULE_LICENSE_MIT",
+        "clang-r614150/NOTICE",
+        "clang-r614150/android_libc++/ndk/aarch64/include/c++/v1/__config_site",
+        "clang-r614150/android_libc++/ndk/aarch64/lib/libc++_shared.so",
+        "clang-r614150/android_libc++/ndk/aarch64/lib/libc++_static.a",
+        "clang-r614150/android_libc++/ndk/aarch64/lib/libc++abi.a",
+        "clang-r614150/android_libc++/ndk/aarch64/lib/libc++experimental.a",
+        "clang-r614150/android_libc++/ndk/arm/include/c++/v1/__config_site",
+        "clang-r614150/android_libc++/ndk/arm/lib/libc++_shared.so",
+        "clang-r614150/android_libc++/ndk/arm/lib/libc++_static.a",
+        "clang-r614150/android_libc++/ndk/arm/lib/libc++abi.a",
+        "clang-r614150/android_libc++/ndk/arm/lib/libc++experimental.a",
+        "clang-r614150/android_libc++/ndk/i386/include/c++/v1/__config_site",
+        "clang-r614150/android_libc++/ndk/i386/lib/libc++_shared.so",
+        "clang-r614150/android_libc++/ndk/i386/lib/libc++_static.a",
+        "clang-r614150/android_libc++/ndk/i386/lib/libc++abi.a",
+        "clang-r614150/android_libc++/ndk/i386/lib/libc++experimental.a",
+        "clang-r614150/android_libc++/ndk/riscv64/include/c++/v1/__config_site",
+        "clang-r614150/android_libc++/ndk/riscv64/lib/libc++_shared.so",
+        "clang-r614150/android_libc++/ndk/riscv64/lib/libc++_static.a",
+        "clang-r614150/android_libc++/ndk/riscv64/lib/libc++abi.a",
+        "clang-r614150/android_libc++/ndk/riscv64/lib/libc++experimental.a",
+        "clang-r614150/android_libc++/ndk/x86_64/include/c++/v1/__config_site",
+        "clang-r614150/android_libc++/ndk/x86_64/lib/libc++_shared.so",
+        "clang-r614150/android_libc++/ndk/x86_64/lib/libc++_static.a"
+      ],
+      "changed_path_count": 9298,
+      "reported_tests": [
+        "N/A"
+      ]
+    }
+  ]
+}
