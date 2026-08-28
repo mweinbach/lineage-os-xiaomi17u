@@ -28,10 +28,17 @@ separate from recovery compilation and device testing.
 The [supplementary source configuration](../config/twrp-dependencies.json)
 separately pins AOSP `system/bpf` at
 `4447acd742bf443f9088c300bd69f96ede8eaeb1` from `android-16.0.0_r1`, providing
-the BPF defaults required by the selected Connectivity headers. Its
+the BPF defaults required by the selected Connectivity headers. It also pins
+the matching NetworkStack, APF and libpcap projects so the retained Connectivity
+definitions use their real JNI dependencies. The
 [helper](../scripts/twrp_dependencies.py) preserves the immutable 391-project
-Repo snapshot; this addition is not a replacement lock or proof of a complete
+Repo snapshot; these additions are not a replacement lock or proof of a complete
 recovery dependency graph.
+
+The [build-attempt ledger](../research/twrp-build-progress.json) records actual
+outcomes and the exact source, control bundle and log hashes for each attempt.
+Earlier failures remain in that record after a target revision. Generated
+theme resources alone do not establish that a recovery image was built.
 
 The existing Apple Container VM remains the sole writer of the ext4 volume.
 TWRP source is separate at `/work/twrp-nezha`; its output belongs below
