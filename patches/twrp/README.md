@@ -24,6 +24,14 @@ missing dependency or failed check is a diagnostic result, not permission to
 force an application, discard changes or weaken validation. Keep the original
 resolved manifest and record the applied patches separately.
 
+For an already prepared source tree, `twrp_build.py revise` accepts an appended
+patch only when every old queue entry remains unchanged and the new file was
+not previously patched. It verifies the exact frozen preimage and mode,
+checks all patch contexts, and archives the previous receipt, source bytes and
+patch payload before applying anything. It verifies the complete resulting
+source state before advancing the receipt. A partial failure is preserved for
+inspection; the tool does not reset sources or automatically adopt that state.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init

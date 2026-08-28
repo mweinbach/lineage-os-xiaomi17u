@@ -492,7 +492,7 @@ class ExecutionTests(BuildFixture):
             build.inspect_artifact(self.paths)
 
 
-class RevisionTests(BuildFixture):
+class RevisionFixture(BuildFixture):
     def setUp(self):
         super().setUp()
         (self.control / build.TARGET_SOURCE / "notes.txt").write_text("old notes\n")
@@ -526,6 +526,8 @@ class RevisionTests(BuildFixture):
         self.stack.enter_context(patch.object(build, "dependency_module", return_value=module))
         return descriptor, module
 
+
+class RevisionTests(RevisionFixture):
     def test_revision_archives_exact_prior_state_and_changed_files(self):
         self.change_target()
         retained = self.paths["out_dir"] / "cache/go/keep"
@@ -748,6 +750,278 @@ class RevisionTests(BuildFixture):
         with self.assertRaisesRegex(ValueError, "owns the lock"):
             self.revise()
         self.assertEqual(lock.read_text(), "another or interrupted owner\n")
+
+
+class PatchRevisionTests(RevisionFixture):
+    def setUp(self):
+        super().setUp()
+        self.new_inputs = {}
+        self.prechecked = []
+        self.extra_status = []
+        self.suppress_new_status = False
+
+    def append_patch(self, relative="Android.bp", mode=0o644):
+        index = len(self.new_inputs) + 2
+        before, after = b"old source\n", b"reviewed source\n"
+        source_file = self.source / self.project / relative
+        source_file.parent.mkdir(parents=True, exist_ok=True)
+        source_file.write_bytes(before)
+        source_file.chmod(mode)
+        payload_relative = f"patches/twrp/{index:04d}-fixture.patch"
+        payload = self.control / payload_relative
+        git_mode = "100755" if mode == 0o755 else "100644"
+        payload.write_text(f"diff --git a/{relative} b/{relative}\n"
+                           f"index {build.git_blob_sha1(before)}..{build.git_blob_sha1(after)} {git_mode}\n"
+                           f"--- a/{relative}\n+++ b/{relative}\n@@ -1 +1 @@\n-old source\n+reviewed source\n")
+        entry = {"id": f"{index:04d}-fixture", "project": self.project, "base_commit": self.base,
+                 "repository": self.frozen[self.project]["url"], "patch": payload_relative,
+                 "patch_sha256": build.sha256(payload.read_bytes()), "files": [{
+                     "path": relative, "before_sha256": build.sha256(before), "after_sha256": build.sha256(after),
+                     "before_git_blob": build.git_blob_sha1(before), "after_git_blob": build.git_blob_sha1(after),
+                     "before_size_bytes": len(before), "after_size_bytes": len(after)}]}
+        self.new_inputs[relative] = {"entry": entry, "before": before, "after": after, "git_mode": git_mode}
+        self.series["patches"].append(entry)
+        self.write_series()
+        return entry
+
+    def fake_git(self, args, **kwargs):
+        if not getattr(self, "new_inputs", None):
+            return super().fake_git(args, **kwargs)
+        if "ls-tree" in args and args[-1] in self.new_inputs:
+            item = self.new_inputs[args[-1]]
+            return SimpleNamespace(stdout=f"{item['git_mode']} blob {build.git_blob_sha1(item['before'])}\t{args[-1]}\0")
+        if "status" in args:
+            changes = [" M init.rc"] if self.source_file.read_bytes() != self.before else []
+            if not self.suppress_new_status:
+                changes += [" M " + relative for relative, item in self.new_inputs.items()
+                            if (self.source / self.project / relative).read_bytes() != item["before"]]
+            changes += self.extra_status
+            return SimpleNamespace(stdout="".join(entry + "\0" for entry in sorted(changes)))
+        if "apply" in args:
+            digest = build.sha256(Path(args[-1]).read_bytes())
+            matches = [(relative, item) for relative, item in self.new_inputs.items()
+                       if item["entry"]["patch_sha256"] == digest]
+            self.assertEqual(len(matches), 1, "Only an appended patch may be applied")
+            relative, item = matches[0]
+            if "--check" in args:
+                self.assertEqual(self.source_file.read_bytes(), self.after)
+                for name, source in self.new_inputs.items():
+                    self.assertEqual((self.source / self.project / name).read_bytes(), source["before"])
+                self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+                self.prechecked.append(item["entry"]["id"])
+            else:
+                self.assertEqual(set(self.prechecked), {source["entry"]["id"] for source in self.new_inputs.values()})
+                self.assertTrue(Path(args[-1]).is_relative_to(self.paths["report_dir"] / "build-revisions"))
+                (self.source / self.project / relative).write_bytes(item["after"])
+            return SimpleNamespace(stdout="", returncode=0)
+        return super().fake_git(args, **kwargs)
+
+    def test_appended_patch_is_archived_and_combined_closure_is_verified(self):
+        entry = self.append_patch()
+        report = self.revise()
+        archive = Path(report["revision_archive"])
+        self.assertEqual(report["added_patch_ids"], [entry["id"]])
+        self.assertEqual(report["attempted_patch_ids"], [entry["id"]])
+        self.assertEqual(report["applied_patch_ids"], [entry["id"]])
+        self.assertEqual((archive / "build-state.before.json").read_bytes(), self.before_state)
+        self.assertEqual((archive / "source-before/bootable/recovery/Android.bp").read_bytes(), b"old source\n")
+        self.assertEqual((archive / "source-after/bootable/recovery/Android.bp").read_bytes(), b"reviewed source\n")
+        self.assertEqual(build.sha256((archive / "patches/0000.patch").read_bytes()), entry["patch_sha256"])
+        self.assertEqual(report["source_preimages"]["bootable/recovery/Android.bp"]["mode"], "0644")
+        self.assertEqual(self.source_file.read_bytes(), self.after)
+        self.assertEqual(report["build_state_sha256"], self.check()["build_state_sha256"])
+        self.assertFalse(report["flash_admitted"])
+        self.process_mock.assert_not_called()
+
+    def test_all_patch_contexts_are_checked_before_any_source_or_target_change(self):
+        first = self.append_patch()
+        second = self.append_patch("other.cpp")
+        self.change_target()
+        report = self.revise()
+        self.assertEqual(self.prechecked, [first["id"], second["id"]])
+        self.assertEqual(report["applied_patch_ids"], self.prechecked)
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# reviewed revision\n")
+
+    def test_completed_patch_transition_retry_never_reapplies_patches(self):
+        self.append_patch()
+        first = self.revise()
+        self.run_mock.reset_mock()
+        second = self.revise()
+        self.assertTrue(second["already_current"])
+        self.assertEqual(second["added_patch_ids"], [])
+        self.assertEqual(second["build_state_sha256"], first["build_state_sha256"])
+        self.assertFalse(any("apply" in call.args[0] for call in self.run_mock.call_args_list))
+        self.assertEqual(len(list((self.paths["report_dir"] / "build-revisions").iterdir())), 1)
+
+    def test_existing_patch_entries_must_be_exact_and_keep_their_order(self):
+        self.append_patch()
+        self.series["patches"][0]["reason"] = "changed old entry"
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "exact unchanged prefix"):
+            self.revise()
+        del self.series["patches"][0]["reason"]
+        self.series["patches"].reverse()
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "exact unchanged prefix"):
+            self.revise()
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+
+    def test_removing_an_old_patch_is_refused_before_any_mutation(self):
+        entry = self.append_patch()
+        self.series["patches"] = [entry]
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "exact unchanged prefix"):
+            self.revise()
+        self.assertEqual(self.prechecked, [])
+        self.assertEqual(self.source_file.read_bytes(), self.after)
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+
+    def test_overlapping_patch_chains_are_not_admitted(self):
+        entry = self.append_patch()
+        duplicate = copy.deepcopy(self.series["patches"][0])
+        duplicate["id"] = "0003-overlap"
+        self.series["patches"].append(duplicate)
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "Overlapping patch files"):
+            self.revise()
+        self.assertEqual(self.source_file.read_bytes(), self.after)
+        self.assertEqual((self.source / self.project / entry["files"][0]["path"]).read_bytes(), b"old source\n")
+
+    def test_appended_patch_project_must_belong_to_the_frozen_base(self):
+        entry = self.append_patch()
+        entry["project"] = "unreviewed/project"
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "frozen base revision"):
+            self.revise()
+        self.assertEqual(self.prechecked, [])
+
+    def test_new_preimage_must_be_the_head_blob_even_if_status_hides_a_change(self):
+        entry = self.append_patch()
+        different = b"unreviewed source\n"
+        (self.source / self.project / "Android.bp").write_bytes(different)
+        entry["files"][0]["before_sha256"] = build.sha256(different)
+        entry["files"][0]["before_size_bytes"] = len(different)
+        self.write_series()
+        self.suppress_new_status = True
+        with self.assertRaisesRegex(ValueError, "not the frozen Git blob"):
+            self.revise()
+        self.assertEqual(self.prechecked, [])
+        self.assertEqual((self.source / self.project / "Android.bp").read_bytes(), different)
+
+    def test_new_patch_requires_canonical_frozen_file_mode(self):
+        self.append_patch()
+        (self.source / self.project / "Android.bp").chmod(0o664)
+        with self.assertRaisesRegex(ValueError, "not the frozen Git blob"):
+            self.revise()
+        self.assertEqual(self.prechecked, [])
+
+    def test_executable_source_mode_is_preserved(self):
+        self.append_patch("generator.sh", mode=0o755)
+        report = self.revise()
+        self.assertEqual(report["source_preimages"]["bootable/recovery/generator.sh"]["mode"], "0755")
+        self.assertEqual((self.source / self.project / "generator.sh").stat().st_mode & 0o777, 0o755)
+
+    def test_blob_queries_use_the_pinned_revision_not_head(self):
+        self.append_patch()
+        self.revise()
+        queries = [call.args[0] for call in self.run_mock.call_args_list if "ls-tree" in call.args[0]]
+        self.assertTrue(queries)
+        self.assertTrue(all(args[args.index("ls-tree") + 2] == self.base for args in queries))
+
+    def test_declared_postimage_git_blob_must_match_actual_bytes(self):
+        entry = self.append_patch()
+        entry["files"][0]["after_git_blob"] = "0" * 40
+        self.write_series()
+        with self.assertRaisesRegex(ValueError, "Patch Git afterimage identity differs"):
+            self.revise()
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        self.assertEqual((self.source / self.project / "Android.bp").read_bytes(), b"reviewed source\n")
+
+    def test_context_failure_leaves_all_sources_and_receipt_untouched(self):
+        self.append_patch()
+        self.append_patch("other.cpp")
+        self.change_target()
+        def fail_second_check(args, **kwargs):
+            if "apply" in args and "--check" in args and len(self.prechecked) == 1:
+                raise subprocess.CalledProcessError(1, args)
+            return self.fake_git(args, **kwargs)
+        self.run_mock.side_effect = fail_second_check
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.revise()
+        for relative, item in self.new_inputs.items():
+            self.assertEqual((self.source / self.project / relative).read_bytes(), item["before"])
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        self.assertFalse((self.paths["report_dir"] / "build-revisions").exists())
+
+    def test_partial_apply_preserves_backup_and_refuses_automatic_retry(self):
+        first = self.append_patch()
+        second = self.append_patch("other.cpp")
+        self.change_target()
+        def fail_second_apply(args, **kwargs):
+            if "apply" in args and "--check" not in args and Path(args[-1]).name == "0001.patch":
+                raise subprocess.CalledProcessError(1, args)
+            return self.fake_git(args, **kwargs)
+        self.run_mock.side_effect = fail_second_apply
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.revise()
+        failure = json.loads(next(self.paths["report_dir"].glob("revise-failed-*.json")).read_text())
+        self.assertEqual(failure["attempted_patch_ids"], [first["id"], second["id"]])
+        self.assertEqual(failure["applied_patch_ids"], [first["id"]])
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        self.assertEqual((self.source / self.project / "Android.bp").read_bytes(), b"reviewed source\n")
+        self.assertEqual((self.source / self.project / "other.cpp").read_bytes(), b"old source\n")
+        self.assertEqual((self.source / build.TARGET / "device.mk").read_text(), "# source-only fixture\n")
+        archive = Path(failure["revision_archive"])
+        self.assertEqual((archive / "source-before/bootable/recovery/Android.bp").read_bytes(), b"old source\n")
+        self.assertEqual((archive / "source-before/bootable/recovery/other.cpp").read_bytes(), b"old source\n")
+        with self.assertRaisesRegex(ValueError, "exact unstaged patch closure"):
+            self.revise()
+
+    def test_tampered_payload_or_backup_stops_before_applying_any_patch(self):
+        self.append_patch()
+        self.append_patch("other.cpp")
+        record = build.twrp_workspace.record_action
+        for archive_relative in ("patches/0001.patch", "source-before/bootable/recovery/Android.bp",
+                                 "build-state.before.json"):
+            with self.subTest(archive_relative=archive_relative):
+                self.prechecked.clear()
+                def tamper_after_journal(config, paths, action, report):
+                    result = record(config, paths, action, report)
+                    if action == "revise-start":
+                        (Path(report["revision_archive"]) / archive_relative).write_bytes(b"tampered\n")
+                    return result
+                with patch.object(build.twrp_workspace, "record_action", side_effect=tamper_after_journal), \
+                        self.assertRaisesRegex(ValueError, "File changed during target revision"):
+                    self.revise()
+                self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+                for relative, item in self.new_inputs.items():
+                    self.assertEqual((self.source / self.project / relative).read_bytes(), item["before"])
+                self.assertEqual(self.source_file.read_bytes(), self.after)
+
+    def test_wrong_postimage_never_advances_the_receipt(self):
+        self.append_patch()
+        def bad_postimage(args, **kwargs):
+            result = self.fake_git(args, **kwargs)
+            if "apply" in args and "--check" not in args:
+                (self.source / self.project / "Android.bp").write_bytes(b"wrong output\n")
+            return result
+        self.run_mock.side_effect = bad_postimage
+        with self.assertRaisesRegex(ValueError, "afterimage differs"):
+            self.revise()
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
+        self.assertEqual((self.source / self.project / "Android.bp").read_bytes(), b"wrong output\n")
+
+    def test_other_dirty_files_are_not_hidden_by_the_combined_patch_exception(self):
+        self.append_patch()
+        def extra_change(args, **kwargs):
+            result = self.fake_git(args, **kwargs)
+            if "apply" in args and "--check" not in args:
+                self.extra_status = ["?? unrelated.bp"]
+            return result
+        self.run_mock.side_effect = extra_change
+        with self.assertRaisesRegex(ValueError, "exact unstaged patch closure"):
+            self.revise()
+        self.assertEqual((self.paths["report_dir"] / build.STATE).read_bytes(), self.before_state)
 
 
 class RealControlTests(unittest.TestCase):

@@ -30,9 +30,9 @@ separately pins AOSP `system/bpf` at
 `4447acd742bf443f9088c300bd69f96ede8eaeb1` from `android-16.0.0_r1`, providing
 the BPF defaults required by the selected Connectivity headers. It also pins
 the matching NetworkStack, APF and libpcap projects so the retained Connectivity
-definitions use their real JNI dependencies. The current set contains 15
-additional projects, including native bridge support, selected platform test
-helpers, Skia and its missing codec/font providers. NFC, Wi-Fi and AVF source
+definitions use their real JNI dependencies. Additional projects provide native
+bridge support, selected platform test helpers, Skia and its missing codec/font
+providers, Java signing tools and shared audio libraries. NFC, Wi-Fi and AVF source
 provides the real modules required by the global SELinux service-fuzzer
 registry. Registering those modules does not install their services in recovery
 or establish support for the phone's NFC, Wi-Fi, virtualization or decryption.
@@ -104,13 +104,19 @@ python3 scripts/twrp_build.py revise --host-mode apple-rosetta \
 ```
 
 `revise` verifies the existing target and patch queue before accepting reviewed
-target changes and supplementary additions. It archives the previous receipt
-and changed target files under the report directory's `build-revisions`, while
-preserving the base snapshot, output and caches. Existing outputs retain their
+target changes, supplementary additions and appended source patches. Existing
+patch entries must remain an exact unchanged prefix; a new patch can edit only
+previously unpatched files whose contents and modes match the frozen Git base.
+All patch contexts are checked before any source or target change. The tool
+archives the previous receipt, patch payloads, source preimages and changed
+target files under the report directory's `build-revisions`, while preserving
+the base snapshot, output and caches. A partial application retains its backups
+and old receipt and blocks automatic retry. Existing outputs retain their
 earlier provenance; the new receipt marks the revision as not yet built or
-validated. Then run the separate `graph` and `build` commands above. Changing
-the patch queue, source configuration or target file set requires separate
-review; unrelated local edits are not adopted.
+validated. Then run the separate `graph` and `build` commands above. Chaining
+edits onto an already patched file, changing the source configuration or changing
+the target file set requires separate support; unrelated local edits are not
+adopted.
 
 The default build variant is `user`, which retains init's compile-time
 enforcement behavior. Explicit `userdebug` builds remain diagnostic experiments;

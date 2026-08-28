@@ -285,12 +285,40 @@ def patched_projects(reviewed):
     return result
 
 
-def verify_patch_files(source, reviewed, phase):
+def validate_patch_extension(previous, reviewed):
+    old, new = previous["patches"], reviewed["patches"]
+    if len(new) < len(old) or new[:len(old)] != old:
+        raise ValueError("The existing patch queue must remain an exact unchanged prefix")
+    appended = new[len(old):]
+    if not appended and previous["series_sha256"] != reviewed["series_sha256"]:
+        raise ValueError("Without appended patches, revision requires the exact existing patch queue")
+    # patch_inventory already rejects repeated project/file pairs across the
+    # complete queue, including attempted chains onto an old patch postimage.
+    return {"patches": appended}
+
+
+def validate_patch_bases(frozen, reviewed):
+    for relative, entry in patched_projects(reviewed).items():
+        if relative not in frozen or frozen[relative]["revision"] != entry["base_commit"]:
+            raise ValueError(f"Patch project does not match the frozen base revision: {relative}")
+    for patch in reviewed["patches"]:
+        if "repository" in patch and patch["repository"] != frozen[patch["project"]]["url"]:
+            raise ValueError("Patch repository differs from the frozen source origin")
+
+
+def git_blob_sha1(data):
+    return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + b"\0" + data).hexdigest()
+
+
+def verify_patch_files(source, reviewed, phase, require_head_preimage=False):
+    if require_head_preimage and phase != "before":
+        raise ValueError("A frozen Git preimage can only be checked before applying a patch")
+    identities = {}
     for project, patch in patched_projects(reviewed).items():
         directory = twrp_workspace.absolute_path(source / project)
         for relative, item in patch["files"].items():
             path = regular_file(directory, relative)
-            tree = twrp_workspace.run(["git", "-C", directory, "ls-tree", "-z", "HEAD", "--", relative],
+            tree = twrp_workspace.run(["git", "-C", directory, "ls-tree", "-z", patch["base_commit"], "--", relative],
                                       capture=True).stdout
             header, separator, name = tree.partition("\t")
             fields = header.split()
@@ -301,8 +329,18 @@ def verify_patch_files(source, reviewed, phase):
                 raise ValueError(f"Patch Git preimage identity differs: {project}/{relative}")
             if path.stat().st_mode & 0o111 != (0o111 if fields[0] == "100755" else 0):
                 raise ValueError(f"Patched file executable mode differs from the pinned source: {project}/{relative}")
-            if path.stat().st_size != item[phase + "_size_bytes"] or sha256(path.read_bytes()) != item[phase + "_sha256"]:
+            if path.stat().st_size != item[phase + "_size_bytes"]:
                 raise ValueError(f"Patch {phase}image differs; preserve changes: {project}/{relative}")
+            data = path.read_bytes()
+            if sha256(data) != item[phase + "_sha256"]:
+                raise ValueError(f"Patch {phase}image differs; preserve changes: {project}/{relative}")
+            mode = stat.S_IMODE(path.stat().st_mode)
+            if require_head_preimage and (git_blob_sha1(data) != fields[2] or mode != (int(fields[0], 8) & 0o777)):
+                raise ValueError(f"New patch preimage or mode is not the frozen Git blob: {project}/{relative}")
+            if phase + "_git_blob" in item and git_blob_sha1(data) != item[phase + "_git_blob"]:
+                raise ValueError(f"Patch Git {phase}image identity differs: {project}/{relative}")
+            identities[f"{project}/{relative}"] = {"sha256": sha256(data), "size_bytes": len(data), "mode": f"{mode:04o}"}
+    return identities
 
 
 def verify_sources(config, paths, reviewed, prepared):
@@ -319,12 +357,7 @@ def verify_sources(config, paths, reviewed, prepared):
         if target == project or target.is_relative_to(project) or project.is_relative_to(target):
             raise ValueError("Controlled Nezha target overlaps a manifest-owned project")
     patched = patched_projects(reviewed)
-    for relative, entry in patched.items():
-        if relative not in frozen or frozen[relative]["revision"] != entry["base_commit"]:
-            raise ValueError(f"Patch project does not match the frozen base revision: {relative}")
-    for patch in reviewed["patches"]:
-        if "repository" in patch and patch["repository"] != frozen[patch["project"]]["url"]:
-            raise ValueError("Patch repository differs from the frozen source origin")
+    validate_patch_bases(frozen, reviewed)
     report = twrp_workspace.project_report(source, frozen)
     failures = []
     if report["project_count"] != len(frozen) or not report["all_present"]:
@@ -498,7 +531,7 @@ def replace_target_file(target, relative, expected, data, revision):
 
 
 def revise(config, paths, host_mode, previous_root, root=ROOT):
-    """Advance reviewed target/dependency controls, preserving base and patches."""
+    """Advance reviewed controls while preserving the base and existing patches."""
     host = twrp_workspace.require_host(config, paths, host_mode)
     with operation_lock(paths, "revise"):
         return revise_locked(config, paths, host_mode, previous_root, root, host)
@@ -514,9 +547,7 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         raise ValueError("Target revision requires unchanged source configuration; source extensions need separate review")
     previous = controls(previous_config, previous_root)
     reviewed = controls(config, root)
-    if (previous["patches"] != reviewed["patches"]
-            or previous["series_sha256"] != reviewed["series_sha256"]):
-        raise ValueError("Target revision requires the exact existing patch queue; patch transitions are not admitted")
+    appended = validate_patch_extension(previous, reviewed)
     if set(previous["target_files"]) != set(reviewed["target_files"]):
         raise ValueError("Target revision requires the same file set; additions and removals need separate review")
     validate_supplementary_extension(previous, reviewed)
@@ -526,9 +557,19 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     if current_state.get("controls") == reviewed:
         current = check(config, paths, host_mode, root, host=host, record=False)
         return twrp_workspace.record_action(config, paths, "revise", {
-            **current, "already_current": True, "changed_target_files": [], "outputs_preserved": True})
+            **current, "already_current": True, "changed_target_files": [], "added_patch_ids": [], "outputs_preserved": True})
     checked = check(config, paths, host_mode, previous_root, host=host, record=False)
     supplementary = verify_supplementary(root, paths, reviewed, checked["source"])
+    validate_patch_bases(twrp_workspace.load_snapshot(config, paths), appended)
+    preimages = verify_patch_files(paths["source_dir"], appended, "before", require_head_preimage=True)
+    payloads = []
+    for index, patch in enumerate(appended["patches"]):
+        data = text_file(root, patch["patch"])
+        if sha256(data) != patch["patch_sha256"]:
+            raise ValueError("Controlled patch changed during revision planning")
+        twrp_workspace.run(["git", "-C", paths["source_dir"] / patch["project"], "apply", "--check",
+                            "--whitespace=error-all", "--", root / patch["patch"]])
+        payloads.append((patch, data, f"patches/{index:04d}.patch"))
     state_path = twrp_workspace.checked_report(paths["report_dir"] / STATE)
     state_before = state_path.read_bytes()
     if sha256(state_before) != checked["build_state_sha256"]:
@@ -550,10 +591,17 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     for relative in changed:
         write_new_file(archive, "target-before/" + relative, before[relative])
         write_new_file(archive, "target-after/" + relative, after[relative])
+    for relative, identity in preimages.items():
+        data = require_file_identity(paths["source_dir"], relative, identity).read_bytes()
+        write_new_file(archive, "source-before/" + relative, data)
+    for patch, data, relative in payloads:
+        write_new_file(archive, relative, data)
     report = {"compile_only": True, "flash_admitted": False, "already_current": False,
               "previous_control_root": str(previous_root), "revision_archive": str(archive),
               "previous_build_state_sha256": sha256(state_before), "changed_target_files": changed,
               "source": checked["source"], "outputs_preserved": True,
+              "added_patch_ids": [patch["id"] for patch in appended["patches"]],
+              "attempted_patch_ids": [], "applied_patch_ids": [], "source_preimages": preimages,
               "build_for_this_revision_verified": False, "note": LIMITATION}
     if supplementary is not None:
         report["supplementary_projects"] = supplementary
@@ -562,9 +610,38 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     try:
         # The prior bundle authorizes only the exact prepared files. Never
         # reset projects, remove output/cache, or adopt partial local edits.
+        require_file_identity(archive, "build-state.before.json", {
+            "sha256": sha256(state_before), "size_bytes": len(state_before), "mode": "0644"})
+        for relative in changed:
+            require_file_identity(archive, "target-before/" + relative, previous["target_files"][relative])
+            require_file_identity(archive, "target-after/" + relative, reviewed["target_files"][relative])
+        for relative, identity in preimages.items():
+            # Archives stay nonexecutable; the original source mode is kept
+            # separately in the transition receipt and verified after apply.
+            require_file_identity(archive, "source-before/" + relative, {**identity, "mode": "0644"})
+        for patch, data, relative in payloads:
+            require_file_identity(archive, relative, {
+                "sha256": patch["patch_sha256"], "size_bytes": len(data), "mode": "0644"})
         verify_target(paths["source_dir"], previous["target_files"])
         if controls(config, root) != reviewed or controls(previous_config, previous_root) != previous:
             raise ValueError("A control bundle changed during target revision")
+        for patch, _, relative in payloads:
+            single = {"patches": [patch]}
+            verify_patch_files(paths["source_dir"], single, "before", require_head_preimage=True)
+            payload = regular_file(archive, relative)
+            if sha256(payload.read_bytes()) != patch["patch_sha256"]:
+                raise ValueError("Archived patch payload changed; source application refused")
+            report["attempted_patch_ids"].append(patch["id"])
+            twrp_workspace.run(["git", "-C", paths["source_dir"] / patch["project"], "apply",
+                                "--whitespace=error-all", "--", payload])
+            verify_patch_files(paths["source_dir"], single, "after")
+            for item in patch["files"]:
+                source_relative = f"{patch['project']}/{item['path']}"
+                expected = {"sha256": item["after_sha256"], "size_bytes": item["after_size_bytes"],
+                            "mode": preimages[source_relative]["mode"]}
+                postimage = require_file_identity(paths["source_dir"], source_relative, expected).read_bytes()
+                write_new_file(archive, "source-after/" + source_relative, postimage)
+            report["applied_patch_ids"].append(patch["id"])
         for relative in changed:
             replace_target_file(target, relative, previous["target_files"][relative], after[relative], revision)
         source = verify_sources(config, paths, reviewed, prepared=True)
@@ -585,7 +662,7 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         os.replace(temporary, state_path)
         report["build_state_sha256"] = sha256(state_bytes)
         report["revision_committed"] = True
-        report["status"] = "target-revised; graph and artifact validation required"
+        report["status"] = "reviewed-inputs-revised; graph and artifact validation required"
     except (ValueError, OSError, subprocess.SubprocessError) as error:
         # Preserve both the old receipt and all backups on failure; partial
         # target changes require inspection, not an automatic reset/retry.
