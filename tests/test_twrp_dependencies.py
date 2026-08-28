@@ -234,6 +234,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "47dfb57da3384758dd1917e6345b7bc434c689fdd98605a1e57702e093f5f26c")
 
+    def test_first_199_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:199]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "765dbe53ef58422a6e24d4910c466b8dd448030ce1a1389555db932d19b76652")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -946,10 +952,10 @@ class ConfigurationTests(Fixture):
             ("packages/modules/Nfc", "bdd94b3be31253e756355e6e22f2fe8983da6b1e",
              ("libnfc-nci", "libnfc_nci_jni")),
         ]
-        self.assertEqual(len(projects), 199)
-        self.assertEqual([(p["path"], p["commit"]) for p in projects[197:]],
+        self.assertGreaterEqual(len(projects), 199)
+        self.assertEqual([(p["path"], p["commit"]) for p in projects[197:199]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, modules) in zip(projects[197:], expected):
+        for project, (_, _, modules) in zip(projects[197:199], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -959,6 +965,17 @@ class ConfigurationTests(Fixture):
                     self.assertIn(module, project["reason"])
         for fact in ("CVE-2019-2180", "CVE-2019-2228", "legacy_by_exception_only"):
             self.assertIn(fact, projects[197]["reason"])
+
+    def test_graph_twenty_seven_exoplayer_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 200)
+        self.assertEqual(projects[199], {
+            "path": "external/exoplayer",
+            "url": "https://android.googlesource.com/platform/external/exoplayer",
+            "commit": "562c956cd875e623d041e0819f39125f903722c5",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP exoplayer-media_apex provider required by framework-media.impl in the graph 27 errors. Original source modules and API settings are preserved; this source pin does not establish recovery media support."
+        })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
