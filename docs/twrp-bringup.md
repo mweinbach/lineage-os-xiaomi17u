@@ -53,6 +53,19 @@ successful full graph or compiled image. Its first Kati pass also created
 and review newly introduced CleanSpec commands before allowing Kati to run.
 Deleting the state to suppress clean steps is not part of this workflow.
 
+Graph 51 is the first successful full graph: Soong, legacy Make, packaging-rule
+generation and Ninja's `nothing` target completed with exit zero. The source
+and prepared revision remained verified afterward, and no sandbox fallback was
+reported. The exact combined, Soong, Make and packaging Ninja files are recorded
+in the ledger. All 50 earlier failures remain recorded. This checkpoint does
+not contain a compiled recovery image or establish any phone behavior.
+
+The native recovery profile now omits four unrelated continuous CI archive
+tasks, preserving their original bodies for other profiles and retaining the
+strict missing-module checks. It does not claim those tests passed. The
+post-graph cleanup check preserved all 1,248 existing clean-step IDs; all 325
+preflight and 325 postflight checks passed without resetting the saved state.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are

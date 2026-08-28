@@ -54,6 +54,35 @@ class TwrpBuildProgressTests(unittest.TestCase):
                         # An output/provenance check may fail after the build
                         # command returns zero. Do not invent a command error.
                         self.assertTrue(entry["validation_error"])
+                else:
+                    self.assertEqual(entry["command_exit_code"], 0)
+                    self.assertIs(entry["sandbox_fallback_detected"], False)
+
+    def test_first_complete_graph_has_real_ninja_outputs_and_keeps_prior_failures(self):
+        completed = [entry for entry in self.record["attempts"]
+                     if entry["action"] == "graph" and entry["status"] == "completed"]
+        self.assertTrue(completed)
+        first = completed[0]
+        self.assertEqual(first["number"], 51)
+        self.assertTrue(all(entry["status"] == "failed"
+                            for entry in self.record["attempts"][:50]))
+        observed = first["full_graph_generation_observed"]
+        self.assertIs(observed["image_exists"], False)
+        self.assertEqual({Path(item["path"]).name for item in observed["files"]}, {
+            "combined-twrp_nezha.ninja", "build-twrp_nezha.ninja",
+            "build-twrp_nezha-package.ninja", "build.twrp_nezha.ninja",
+        })
+        for item in observed["files"]:
+            self.assertTrue(item["path"].startswith("/work/out/twrp-nezha/"))
+            self.assertGreater(item["size_bytes"], 0)
+            self.assertRegex(item["sha256"], r"^[0-9a-f]{64}$")
+        self.assertEqual(observed["completion_receipt"]["sha256"],
+                         first["receipt"]["sha256"])
+        cleanup = first["clean_state_validation"]
+        self.assertTrue(cleanup["preflight_passed"])
+        self.assertTrue(cleanup["postflight_passed"])
+        self.assertEqual(cleanup["checks_each"], 325)
+        self.assertIs(cleanup["existing_state_preserved"], True)
 
     def test_initial_failures_are_not_rewritten_as_successes(self):
         first, second = self.record["attempts"][:2]
