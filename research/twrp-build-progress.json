@@ -278,6 +278,122 @@
       ],
       "resource_generation_verified": true,
       "failed_command_exit_code": 1
+    },
+    {
+      "number": 5,
+      "action": "graph",
+      "status": "failed",
+      "recorded_at_utc": "2026-08-28T04:48:57.434479+00:00",
+      "workspace_commit": "fa3cdffc203d18bba7f5a15f292e1307ec86e3e9",
+      "control_archive": {
+        "path": "reports/twrp-build-control-v5.tar",
+        "sha256": "1e82e123c2cbff01a190cd2f61e79c01b13d4a76115b32897eaf5a5e5f34341c",
+        "size_bytes": 215040
+      },
+      "build_state_sha256": "18ee86b7233ea41f0bbeb70c8eb4776a8dc1e6cf921e38a0d77ac8c0c33fc955",
+      "command": [
+        "bash",
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j16",
+        "nothing"
+      ],
+      "target_product": "twrp_nezha",
+      "target_build_variant": "user",
+      "log": {
+        "path": "reports/twrp-graph-5.log",
+        "sha256": "61974589a877d9ed21ba749245929ef1e911f0e5055d2966a3e6d133d131d893",
+        "size_bytes": 4574
+      },
+      "receipt": {
+        "path": "reports/twrp-graph-5-result.json",
+        "sha256": "c39f27cb97d7efa4104948f55f383c26f55ac8e6994e29dcd269969492ea70e0",
+        "size_bytes": 4936
+      },
+      "supplementary_projects": [
+        {
+          "path": "system/bpf",
+          "url": "https://android.googlesource.com/platform/system/bpf",
+          "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+        },
+        {
+          "path": "packages/modules/NetworkStack",
+          "url": "https://android.googlesource.com/platform/packages/modules/NetworkStack",
+          "commit": "f9da1fc7154ea007aa835f88e8070c6ac46d54e9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of libnetworkstackutilsjni_deps in tests/unit/Android.bp required by retained Connectivity tests/common defaults. Supplements the immutable 391-project baseline without bypassing dependency validation."
+        },
+        {
+          "path": "hardware/google/apf",
+          "url": "https://android.googlesource.com/platform/hardware/google/apf",
+          "commit": "40d36d317d9367641e685e88e46343f25b192fc4",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP APF libraries required by NetworkStack JNI test defaults."
+        },
+        {
+          "path": "external/libpcap",
+          "url": "https://android.googlesource.com/platform/external/libpcap",
+          "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."
+        },
+        {
+          "path": "platform_testing",
+          "url": "https://android.googlesource.com/platform/platform_testing",
+          "commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Tradefed defaults required by retained shared test infrastructure."
+        },
+        {
+          "path": "frameworks/libs/native_bridge_support",
+          "url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support",
+          "commit": "b527289974e3883460370012325ab3736d59268a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP native_bridge_proxy_libc_defaults required by the retained binary translation libc proxy."
+        },
+        {
+          "path": "external/skia",
+          "url": "https://android.googlesource.com/platform/external/skia",
+          "commit": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."
+        },
+        {
+          "path": "external/harfbuzz_ng",
+          "url": "https://android.googlesource.com/platform/external/harfbuzz_ng",
+          "commit": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libharfbuzz_subset provider required by Skia font subsetting."
+        },
+        {
+          "path": "external/webp",
+          "url": "https://android.googlesource.com/platform/external/webp",
+          "commit": "7698c1d3a5cbecdf336510eeb3366d1de752454a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libwebp-decode and libwebp-encode providers required by Skia image codecs."
+        },
+        {
+          "path": "external/rust/crabbyavif",
+          "url": "https://android.googlesource.com/platform/external/rust/crabbyavif",
+          "commit": "9f3e32a2ffc45466eaed69ad522080cbf67f827b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcrabbyavif_ffi provider required by Skia AVIF support."
+        },
+        {
+          "path": "external/libjpeg-turbo",
+          "url": "https://android.googlesource.com/platform/external/libjpeg-turbo",
+          "commit": "6cedbd6ff13946bef76a015693d02723b0d3226e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."
+        }
+      ],
+      "errors": [
+        "error: hardware/interfaces/automotive/vehicle/aidl/aidl_test/Android.bp:22:1: \"VehicleHalAidlHidlCompatibilityTest\" depends on undefined module \"VehicleHalDefaults\"."
+      ],
+      "resource_generation_verified": true,
+      "failed_command_exit_code": 1
     }
   ],
   "resource_generation": {
