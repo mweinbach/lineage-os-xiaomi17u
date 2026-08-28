@@ -8,6 +8,15 @@ user target and removes recovery's network transport fallback. These changes
 have source-contract tests, but no compiled artifact or device validation.
 Public-key provisioning remains a proposal.
 
+The optional [public-key validator](../scripts/twrp_adb_public_key.py) is now
+implemented separately from the build. It reads only one explicitly authorized
+absolute public-key path, rejects symlinks and nonregular files, validates the
+Android RSA2048 encoding and this profile's exponent-65537 policy, and removes
+identifying comments. Its CLI reports only the canonical key digest. Synthetic
+tests cover the parser and file checks; no real key has been read or provisioned.
+The validator does not stage a key, change build inputs, package an image or
+establish host authorization. No automatic key discovery is provided.
+
 The pinned authentication path is:
 
 - `packages/modules/adb@ce023afef190b0cea7f8939e9dd5ee3ee79b137b`,
@@ -112,6 +121,11 @@ verify its exact bytes and effective SELinux label before starting adbd.
 `system/sepolicy@f0270686ee017f4de42e1032aca7527031bcc484`,
 `private/file_contexts:27`, labels this path `system_file`; `private/adbd.te`
 permits reading that type. Actual labeling and policy still require validation.
+The newc ramdisk does not encode SELinux extended attributes. The selected TWRP
+early-init lacks ordinary Android init's `restorecon /adb_keys`, so the path's
+file-context mapping alone does not establish the runtime label. A personal
+image needs reviewed labeling before adbd starts and a device check of the
+result; init continuing after a failed command cannot be treated as success.
 Keep `user`, `ro.secure=1`, `ro.adb.secure=1`, enforcing SELinux, patch `0004`,
 and `patches/twrp/0014-native-recovery-disable-minadbd.patch`. Do not enable
 root or sideload to avoid authentication.
