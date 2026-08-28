@@ -97,6 +97,14 @@ domain list and exact input hashes are retained in the build ledger. The next
 source change must correct those declarations, not disable the validator or
 assume the resulting policy works on the phone.
 
+Patch 32 passed graph 59. Normal build 60 then regenerated and installed a
+recovery policy with no permissive declarations, passing the unchanged native
+user-build check. Packaging stopped later because its recipe touched
+`linkerconfig/ld.config.txt` without first creating the parent directory. This
+attempt produced no recovery image. The recipe needs to handle a clean output
+tree; manually creating a directory in this build's output would not fix that
+requirement. The source and all 325 cleanup-state checks passed afterward.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are
