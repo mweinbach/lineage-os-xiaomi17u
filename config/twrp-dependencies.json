@@ -897,6 +897,69 @@
       "commit": "1257b81718eeb7970057853201a6820a336bc5f5",
       "tag": "android-16.0.0_r1",
       "reason": "Real libprotobuf-mutator for the NNAPI android_fuzzing harness; preserve all upstream mutator properties and fuzzer validation."
+    },
+    {
+      "path": "external/openscreen",
+      "url": "https://android.googlesource.com/platform/external/openscreen",
+      "commit": "3f982cf4871df8771c9d4abe6e9a6f8d829b2736",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libopenscreen-discovery and libopenscreen-platform-impl providers required by libadb_host in the graph 19 errors."
+    },
+    {
+      "path": "external/python/parse_type",
+      "url": "https://android.googlesource.com/platform/external/python/parse_type",
+      "commit": "05a141a9980f2357419aa004bcffac985baa0b56",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-parse_type provider required by vts_kernel_proc_file_api_test in the graph 19 errors."
+    },
+    {
+      "path": "external/ply",
+      "url": "https://android.googlesource.com/platform/external/ply",
+      "commit": "137b3d2f79f24c330e1a34782ed49e1516eb65e1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP py-ply provider required by vts_kernel_proc_file_api_test in the graph 19 errors."
+    },
+    {
+      "path": "external/jline",
+      "url": "https://android.googlesource.com/platform/external/jline",
+      "commit": "17e6dd618a45cad3178698c9d02d31ca30254bb2",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP jline host provider required by tradefed-lib-core in the graph 19 errors; uses the unchanged upstream JARs."
+    },
+    {
+      "path": "external/sonic",
+      "url": "https://android.googlesource.com/platform/external/sonic",
+      "commit": "ecc59065227009230b8f52701948de495ec22a58",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 19 error: real AOSP libsonic provider required by retained libaudioprocessing in frameworks/av/media/libaudioprocessing/Android.bp."
+    },
+    {
+      "path": "external/libavc",
+      "url": "https://android.googlesource.com/platform/external/libavc",
+      "commit": "82092580f1dafe88defd88f873016b585bbd9e52",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 19 error: real AOSP libavcdec and libavcenc providers required by retained Codec2 AVC decoder and encoder libraries."
+    },
+    {
+      "path": "external/libhevc",
+      "url": "https://android.googlesource.com/platform/external/libhevc",
+      "commit": "c83a76b084498d55f252f48b2e3786804cdf24b7",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 19 error: real AOSP libhevcdec and libhevcenc providers required by retained Codec2 HEVC decoder and encoder libraries."
+    },
+    {
+      "path": "external/libmpeg2",
+      "url": "https://android.googlesource.com/platform/external/libmpeg2",
+      "commit": "a97c2a1f0a796dc32bed80d3353c69c5fc07c750",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 19 error: real AOSP libmpeg2dec provider required by the retained Codec2 MPEG2 decoder library."
+    },
+    {
+      "path": "system/libsysprop",
+      "url": "https://android.googlesource.com/platform/system/libsysprop",
+      "commit": "0abfc7ad91e9914459b11e65a572de9f8a546365",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP PlatformProperties sysprop sources generating libplatformproperties_rust for libhypervisor_props in the graph 19 error. Existing generators and API/type checks remain unchanged."
     }
   ]
 }

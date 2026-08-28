@@ -162,6 +162,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "d7e1114d3e27da568c2ea9691a7daefecfb5f6b27ef1686dd734213811f68094")
 
+    def test_first_127_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:127]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "9506dc42bd91a45929657bc4350fb21926530ac74a82969a3a701675e9841583")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -532,9 +538,8 @@ class ConfigurationTests(Fixture):
             ("external/cpuinfo", "2dcdba348d94895452dce0c8da27ea6dcbbc507e"),
             ("external/libprotobuf-mutator", "1257b81718eeb7970057853201a6820a336bc5f5"),
         ]
-        self.assertEqual(len(projects), 127)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[108:]], expected)
-        for project in projects[108:]:
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[108:127]], expected)
+        for project in projects[108:127]:
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -543,6 +548,48 @@ class ConfigurationTests(Fixture):
         self.assertIn("zero upstream Blueprint modules", projects[120]["reason"])
         self.assertIn("without selecting runtime packages for recovery", projects[121]["reason"])
         self.assertIn("preserve all upstream mutator properties", projects[126]["reason"])
+
+    def test_graph_nineteen_host_provider_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/openscreen", "3f982cf4871df8771c9d4abe6e9a6f8d829b2736"),
+            ("external/python/parse_type", "05a141a9980f2357419aa004bcffac985baa0b56"),
+            ("external/ply", "137b3d2f79f24c330e1a34782ed49e1516eb65e1"),
+            ("external/jline", "17e6dd618a45cad3178698c9d02d31ca30254bb2"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[127:131]], expected)
+        for project in projects[127:131]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 19 errors", project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+
+    def test_reviewed_graph_nineteen_native_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/sonic", "ecc59065227009230b8f52701948de495ec22a58"),
+            ("external/libavc", "82092580f1dafe88defd88f873016b585bbd9e52"),
+            ("external/libhevc", "c83a76b084498d55f252f48b2e3786804cdf24b7"),
+            ("external/libmpeg2", "a97c2a1f0a796dc32bed80d3353c69c5fc07c750"),
+        ]
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[131:135]], expected)
+        for project in projects[131:135]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 19 error:"))
+
+    def test_graph_nineteen_platform_properties_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 136)
+        self.assertEqual(projects[135], {
+            "path": "system/libsysprop",
+            "url": "https://android.googlesource.com/platform/system/libsysprop",
+            "commit": "0abfc7ad91e9914459b11e65a572de9f8a546365",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP PlatformProperties sysprop sources generating libplatformproperties_rust for libhypervisor_props in the graph 19 error. Existing generators and API/type checks remain unchanged."
+        })
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
