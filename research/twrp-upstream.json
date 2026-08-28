@@ -160,7 +160,7 @@
       },
       "all_other_expanded_project_paths_present": true,
       "count_difference_is_incomplete_download": false,
-      "complete_revision_verification_record": null
+      "complete_revision_verification_record": "research/twrp-source-sync.json"
     }
   },
   "pinned_projects": [

@@ -15,6 +15,16 @@ official TeamWin Nezha release. The manifest's default AOSP revision is
 Every fetched project must be recorded at its resolved commit before building.
 Do not substitute a current branch tip for that recorded snapshot.
 
+The initial sync has completed. All **391 Linux-selected projects** passed
+HEAD, origin and clean-worktree checks, including the 36 independently pinned
+GitHub overrides and 355 locally verified AOSP tag commits. The only excluded
+project from the 392-project raw manifest is its Darwin-only Bazel prebuilt.
+The [resolved source lock](../research/source-snapshots/twrp-16.0-linux-20260828.xml)
+has SHA256 `e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051`.
+The [source verification record](../research/twrp-source-sync.json) contains
+the host, tool-version probes and receipt hashes. Source-sync success is
+separate from recovery compilation and device testing.
+
 The existing Apple Container VM remains the sole writer of the ext4 volume.
 TWRP source is separate at `/work/twrp-nezha`; its output belongs below
 `/work/out/twrp-nezha`, with reports under `/work/validation/twrp-nezha`.
@@ -28,6 +38,53 @@ execution probe. The host had about 1.1 TiB available. Repo was verified at
 `b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77`, and initialization preserved its
 signature checks. These are observations from this attempt, not permanent
 capacity guarantees or proof that all TWRP host tools execute correctly.
+
+## Local workflow
+
+Preview the workflow from this repository without contacting the phone or
+starting a source operation:
+
+```sh
+make twrp-plan
+make recovery-logs-plan
+make test
+```
+
+Run real source/build operations only from a generated, versioned control
+bundle in the existing verified Linux VM (or an independently verified native
+Linux x86-64 host). The guest-side commands are:
+
+```sh
+python3 scripts/twrp_workspace.py freeze --host-mode apple-rosetta
+python3 scripts/twrp_build.py prepare --host-mode apple-rosetta
+python3 scripts/twrp_build.py graph --host-mode apple-rosetta --variant user --jobs 16
+python3 scripts/twrp_build.py build --host-mode apple-rosetta --variant user --jobs 16
+```
+
+`freeze` records an already completed sync; it does not fetch sources. `init`
+and `sync` are for a new isolated checkout. After a snapshot exists, repeat
+source operations verify it instead of following moving branches. `prepare`
+stages the authored target and exact reviewed patches, and refuses unrelated
+changes. The build uses `out-twrp` as a source-relative alias to the isolated
+output directory; source, output and caches remain in ext4. No phone command
+or automatic flashing step is part of these tools.
+
+The default build variant is `user`, which retains init's compile-time
+enforcement behavior. Explicit `userdebug` builds remain diagnostic experiments;
+their init can accept a permissive bootconfig. Neither build variant should
+be described as enforcing on the phone before a device test.
+
+The [patch queue](../patches/twrp/README.md) removes permissive debug `su`,
+automatic root ADB and a source-file truncation during environment setup. It
+also requires host authentication in recovery adbd, including on unlocked or
+debuggable devices. The ordinary Android adbd behavior is unchanged. A trusted
+host key and its recovery handling must still be provided and validated; no
+host private key or stock key is bundled.
+
+The [log collector](recovery-logs.md) and
+[image inspector](../scripts/inspect_twrp_image.py) run separately. The inspector
+also passed a read-only check against the hash-verified factory recovery image;
+its structural result does not authenticate that input or validate TWRP.
 
 ## First target and limits
 
