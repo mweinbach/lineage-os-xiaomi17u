@@ -1016,6 +1016,27 @@
       "commit": "10d2dbeec1d248e7a040ecab225a075caa34b2bf",
       "tag": "android-16.0.0_r1",
       "reason": "Real AOSP libgbm_sys bindings and libgbm provider required by libgbm_rust in the graph 20 error. Upstream build properties remain unchanged."
+    },
+    {
+      "path": "external/python/watchdog",
+      "url": "https://android.googlesource.com/platform/external/python/watchdog",
+      "commit": "228887b8167a3cd9f43e04b305f7f9af32ced0d5",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP watchdog provider required by edit_monitor_lib in the graph 21 error."
+    },
+    {
+      "path": "external/curl",
+      "url": "https://android.googlesource.com/platform/external/curl",
+      "commit": "80fe7404cfd198a477ffe3d5865c630e33e94adf",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libcurl provider required by libbrillo-http in the graph 21 error."
+    },
+    {
+      "path": "external/libldac",
+      "url": "https://android.googlesource.com/platform/external/libldac",
+      "commit": "ba0389d2de9727375b779fb5890747a8d7dfe3a0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP libldacBT_abr and libldacBT_enc providers required by libbt-stack and net_test_stack_a2dp_codecs_native in the graph 21 errors; preserves the upstream fuzzer."
     }
   ]
 }

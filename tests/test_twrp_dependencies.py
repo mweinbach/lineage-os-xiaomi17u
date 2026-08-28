@@ -180,6 +180,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "5d10833601cb9dced9c9a00a28e1d66ffd17a65b64439a3ed769f552d8dfc4b5")
 
+    def test_first_144_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:144]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "a5bdfd0dfc60d81b244e2fd7108324b8c95ee2ac587256fa490917801b4567ff")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -640,7 +646,6 @@ class ConfigurationTests(Fixture):
 
     def test_graph_twenty_minigbm_source_pin(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 144)
         self.assertEqual(projects[143], {
             "path": "external/minigbm",
             "url": "https://android.googlesource.com/platform/external/minigbm",
@@ -648,6 +653,34 @@ class ConfigurationTests(Fixture):
             "tag": "android-16.0.0_r1",
             "reason": "Real AOSP libgbm_sys bindings and libgbm provider required by libgbm_rust in the graph 20 error. Upstream build properties remain unchanged."
         })
+
+    def test_graph_twenty_one_watchdog_source_pin(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(projects[144], {
+            "path": "external/python/watchdog",
+            "url": "https://android.googlesource.com/platform/external/python/watchdog",
+            "commit": "228887b8167a3cd9f43e04b305f7f9af32ced0d5",
+            "tag": "android-16.0.0_r1",
+            "reason": "Real AOSP watchdog provider required by edit_monitor_lib in the graph 21 error."
+        })
+
+    def test_graph_twenty_one_native_provider_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/curl", "80fe7404cfd198a477ffe3d5865c630e33e94adf", "libcurl"),
+            ("external/libldac", "ba0389d2de9727375b779fb5890747a8d7dfe3a0", "libldacBT_abr and libldacBT_enc"),
+        ]
+        self.assertEqual(len(projects), 147)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[145:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[145:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn("graph 21", project["reason"])
+                self.assertIn(module, project["reason"])
+                self.assertFalse(project["reason"].startswith("Source audit projection"))
+        self.assertIn("preserves the upstream fuzzer", projects[146]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
