@@ -25,7 +25,6 @@ are omitted by the minimal manifest. This recovery product uses the supported
 
 | Excluded scope | Why it is outside this initial product |
 | --- | --- |
-| `tools/loganalysis/`, `tools/tradefederation/contrib/`, `test/suite_harness/` | Host test and log-analysis tooling without the omitted Tradefed definitions |
 | `hardware/google/aemu/` | Emulator graphics host tooling without its gfxstream defaults |
 | `packages/modules/AdServices/` | Advertising services and their test collectors |
 | `system/secretkeeper/` | Secretkeeper consumers; this recovery does not enable decryption |
@@ -49,8 +48,8 @@ Graph 2 also excluded `packages/modules/Connectivity/tests/common/` because
 its coverage test required the absent `libnetworkstackutilsjni_deps` provider.
 Graph 3 reported 19 missing-default errors because this same `Android.bp`
 defines shared defaults used by retained consumers, including BPF tests.
-That exclusion is now removed,
-leaving 20 source scopes excluded. File-prefix selection cannot remove only
+That exclusion was removed, leaving 20 source scopes at that stage.
+File-prefix selection cannot remove only
 the coverage test while preserving defaults in the same file.
 
 The corresponding source restoration uses the genuine Android 16 r1
@@ -60,6 +59,58 @@ uses no substitute defaults, copied module stubs, or missing-dependency
 allowlists. Source-sync and subsequent graph receipts must establish the
 restoration and its dependencies; these target changes alone are not proof
 of a successful graph or image. Runtime networking remains disabled.
+
+Graph 4 adds five bounded exclusions for further consumers outside recovery:
+
+| Additional excluded scope | Scope limit |
+| --- | --- |
+| `hardware/interfaces/automotive/vehicle/vts/` | Automotive vehicle VTS tests requiring the omitted vehicle-HAL client. |
+| `hardware/interfaces/automotive/audiocontrol/aidl/default/` | The automotive audio-control example service and helpers requiring car power-policy support. |
+| `hardware/interfaces/automotive/vehicle/aidl/impl/3/`, `hardware/interfaces/automotive/vehicle/aidl/impl/current/` | Vehicle HAL implementations requiring automotive large-parcelable defaults; the production AIDL interfaces remain included. |
+| `hardware/interfaces/security/secretkeeper/aidl/vts/` | Secretkeeper VTS tests, test support and diagnostic CLI requiring omitted Rust test defaults; the production Secretkeeper AIDL interface remains included. |
+
+No declared module from these five scopes was directly referenced in the
+bounded recovery/core/ADB/vold and protected validation source scan. This
+does not establish transitive closure; a dependency that the next graph finds
+must still be restored.
+
+The neural-network review found that restoring only the genuine project's
+root and `common/types` files cannot supply a coherent provider set.
+`neuralnetworks_types_cl` needs defaults in `common/Android.bp`, which also
+introduces runtime, shim and external ML dependencies absent from this source
+selection. No reduced or empty copy of those defaults is substituted.
+This recovery does not integrate NNAPI execution, so the product excludes
+the five implementation utility scopes
+`hardware/interfaces/neuralnetworks/{1.0,1.1,1.2,1.3,aidl}/utils/` and the
+single retained consumer
+`hardware/interfaces/neuralnetworks/aidl/vts/functional/`. These utilities
+contain runtime libraries as well as tests. The HIDL and AIDL interface
+definitions remain included. No direct recovery or protected validation
+consumer was found; the AIDL VTS test was the only remaining consumer outside
+the already-excluded canonical utilities, and has no external module references
+in the bounded scan.
+
+Tradefed takes the provider-restoration path. Its first-graph exclusions for
+`tools/loganalysis/`, `tools/tradefederation/contrib/` and `test/suite_harness/`
+are removed. The original `platform_testing/libraries/tradefed-error-prone/`
+subtree supplies both required quality-check defaults. A negative
+`platform_testing/` prefix and the longer positive provider prefix retain
+that subtree while excluding the unrelated platform-test aggregate in the
+root `Android.bp`. The provider has its own package declaration using the
+global Apache license; no copied defaults or source edits are needed.
+Native-bridge support remains included as a complete original source project
+because the retained binary-translation modules consume its defaults and
+filegroups. Its bytes and revision remain the source runner's responsibility.
+
+The subsequent defaults scan found one unrelated scene-transition test needing
+`MotionTestDefaults`. The file-prefix exclusion
+`-frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp` omits only
+the file declaring `PlatformComposeSceneTransitionLayoutTests`, which has no
+external module references in the bounded scan. The directory is not excluded:
+`tests/utils/Android.bp` supplies a helper consumed by retained SystemUI,
+SettingsLib and screenshot tests. Those consumers and their dependency checks
+remain included. The actual Skia, HWUI and RenderEngine sources are not cut to
+work around missing graphics providers.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
@@ -73,7 +124,11 @@ platform and test modules are excluded; the table identifies the test scopes.
 Blueprint
 `dcb14f2e146f40cf1f212efb220e9aa1f3cfc280` applies literal prefix matching,
 with the longest matching prefix first and unmatched paths allowed. Each
-negative path ends in `/` so it does not hide similarly named siblings.
+directory exclusion ends in `/` so it does not hide similarly named siblings.
+The single scene-test file prefix names its `Android.bp` instead, preserving
+the separately declared helper in the `utils` child directory. The
+single positive Tradefed-provider prefix is an explicit exception inside an
+otherwise excluded project, evaluated by the same longest-prefix rule.
 Dependencies on skipped modules still fail; if recovery requires one of these
 modules, restore its reviewed parent sources and revise the scope rather than
 suppressing the error. Recovery, fs_mgr, SELinux policy and tests, AVB, storage,

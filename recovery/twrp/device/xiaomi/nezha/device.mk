@@ -26,9 +26,6 @@ PRODUCT_PACKAGES += recovery
 # on an excluded module remain errors and require a reviewed source restoration.
 # Keep recovery, fs_mgr, SELinux, AVB, storage and device assertions in the graph.
 PRODUCT_SOURCE_ROOT_DIRS += \
-    -tools/loganalysis/ \
-    -tools/tradefederation/contrib/ \
-    -test/suite_harness/ \
     -hardware/google/aemu/ \
     -packages/modules/AdServices/ \
     -system/secretkeeper/ \
@@ -57,6 +54,42 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 # retained modules. Keep it included and restore the genuine Android 16 r1
 # NetworkStack provider instead of excluding its dependent tests or inventing
 # libnetworkstackutilsjni_deps.
+
+# Graph 4 adds only these automotive implementations/tests and Secretkeeper
+# VTS support tools. Production security and automotive AIDL definitions stay
+# included. None of their defined module names is directly referenced by the
+# reviewed recovery/core/ADB/vold or protected validation roots.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/interfaces/automotive/vehicle/vts/ \
+    -hardware/interfaces/automotive/audiocontrol/aidl/default/ \
+    -hardware/interfaces/automotive/vehicle/aidl/impl/3/ \
+    -hardware/interfaces/automotive/vehicle/aidl/impl/current/ \
+    -hardware/interfaces/security/secretkeeper/aidl/vts/
+
+# Keep NNAPI's HIDL/AIDL interface definitions. These implementation utilities
+# and their AIDL VTS consumer depend on the absent NeuralNetworks runtime and
+# its external ML libraries; none is part of the initial recovery product.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -hardware/interfaces/neuralnetworks/1.0/utils/ \
+    -hardware/interfaces/neuralnetworks/1.1/utils/ \
+    -hardware/interfaces/neuralnetworks/1.2/utils/ \
+    -hardware/interfaces/neuralnetworks/1.3/utils/ \
+    -hardware/interfaces/neuralnetworks/aidl/utils/ \
+    -hardware/interfaces/neuralnetworks/aidl/vts/functional/
+
+# Omit only the unrelated scene-transition test module. A directory exclusion
+# would also hide tests/utils/Android.bp, whose helper has retained consumers.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp
+
+# Restore the actual Tradefed defaults without importing platform_testing's
+# unrelated test aggregate. Blueprint's more specific positive prefix admits
+# only this original provider subtree; its own package uses the global license.
+# tools/loganalysis, tools/tradefederation/contrib and test/suite_harness stay
+# included. Source synchronization supplies the complete pinned project bytes.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -platform_testing/ \
+    platform_testing/libraries/tradefed-error-prone/
 
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.

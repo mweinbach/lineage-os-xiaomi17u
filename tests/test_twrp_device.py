@@ -8,10 +8,8 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
+MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp"
 SOURCE_EXCLUSIONS = [
-    "-tools/loganalysis/",
-    "-tools/tradefederation/contrib/",
-    "-test/suite_harness/",
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
     "-system/secretkeeper/",
@@ -29,7 +27,21 @@ SOURCE_EXCLUSIONS = [
     "-hardware/interfaces/automotive/remoteaccess/hal/default/",
     "-hardware/interfaces/security/see/hwcrypto/aidl/vts/functional/",
     "-system/chre/",
+    "-hardware/interfaces/automotive/vehicle/vts/",
+    "-hardware/interfaces/automotive/audiocontrol/aidl/default/",
+    "-hardware/interfaces/automotive/vehicle/aidl/impl/3/",
+    "-hardware/interfaces/automotive/vehicle/aidl/impl/current/",
+    "-hardware/interfaces/security/secretkeeper/aidl/vts/",
+    "-hardware/interfaces/neuralnetworks/1.0/utils/",
+    "-hardware/interfaces/neuralnetworks/1.1/utils/",
+    "-hardware/interfaces/neuralnetworks/1.2/utils/",
+    "-hardware/interfaces/neuralnetworks/1.3/utils/",
+    "-hardware/interfaces/neuralnetworks/aidl/utils/",
+    "-hardware/interfaces/neuralnetworks/aidl/vts/functional/",
+    "-" + MOTION_TEST_BLUEPRINT,
+    "-platform_testing/",
 ]
+SOURCE_REINCLUSIONS = ["platform_testing/libraries/tradefed-error-prone/"]
 
 
 def logical_lines(text):
@@ -204,20 +216,27 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_source_graph_exclusions_match_the_reviewed_bounded_scopes(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(scopes, SOURCE_EXCLUSIONS)
+        self.assertEqual(scopes, SOURCE_EXCLUSIONS + SOURCE_REINCLUSIONS)
         self.assertEqual(len(scopes), len(set(scopes)))
         for scope in scopes:
-            self.assertTrue(scope.startswith("-"))
-            self.assertTrue(scope.endswith("/"))
-            self.assertNotIn("..", Path(scope[1:]).parts)
-            self.assertFalse(Path(scope[1:]).is_absolute())
+            if not scope.endswith("/"):
+                self.assertEqual(scope, "-" + MOTION_TEST_BLUEPRINT)
+            path = scope[1:] if scope.startswith("-") else scope
+            self.assertNotIn("..", Path(path).parts)
+            self.assertFalse(Path(path).is_absolute())
         self.assertNotIn("-", scopes)
 
     def test_source_graph_negative_prefixes_preserve_parents_and_siblings(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        for scope in scopes:
+        for scope in (rule for rule in scopes if rule.startswith("-")):
             prefix = scope[1:]
             with self.subTest(scope=scope):
+                if not prefix.endswith("/"):
+                    self.assertEqual(prefix, MOTION_TEST_BLUEPRINT)
+                    self.assertFalse(source_path_allowed(prefix, scopes))
+                    self.assertTrue(source_path_allowed(str(Path(prefix).parent / "utils/Android.bp"), scopes))
+                    self.assertTrue(source_path_allowed(str(Path(prefix).parent / "other.bp"), scopes))
+                    continue
                 self.assertFalse(source_path_allowed(prefix + "Android.bp", scopes))
                 self.assertFalse(source_path_allowed(prefix + "nested/Android.bp", scopes))
                 self.assertTrue(source_path_allowed(prefix.rstrip("/") + "_sibling/Android.bp", scopes))
@@ -232,8 +251,11 @@ class TwrpDeviceTests(unittest.TestCase):
                 "external/f2fs-tools/Android.bp", "system/vold/Android.bp",
                 "hardware/interfaces/boot/Android.bp", "hardware/interfaces/security/keymint/Android.bp",
                 "hardware/interfaces/security/see/hwcrypto/aidl/Android.bp",
+                "hardware/interfaces/security/secretkeeper/aidl/Android.bp",
                 "hardware/interfaces/security/secureclock/aidl/vts/functional/Android.bp",
                 "system/libvintf/Android.bp", "build/soong/Android.bp",
+                "external/skia/Android.bp", "frameworks/base/libs/hwui/Android.bp",
+                "frameworks/native/libs/renderengine/Android.bp",
                 "packages/modules/Connectivity/bpf/headers/Android.bp", "system/bpf/Android.bp",
                 "packages/modules/Connectivity/tests/common/Android.bp",
                 "device/xiaomi/nezha/Android.bp"):
@@ -247,7 +269,6 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_third_graph_keeps_shared_connectivity_defaults_and_real_provider(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 20)
         self.assertNotIn("-packages/modules/Connectivity/tests/common/", scopes)
         for source in ("packages/modules/Connectivity/tests/common/Android.bp",
                        "packages/modules/Connectivity/thread/tests/integration/Android.bp",
@@ -262,6 +283,58 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 3", readme)
         self.assertIn("f9da1fc7154ea007aa835f88e8070c6ac46d54e9", readme)
         self.assertIn("no substitute defaults", readme)
+
+    def test_fourth_graph_scope_keeps_production_security_and_automotive_interfaces(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for prefix in ("-hardware/interfaces/automotive/", "-hardware/interfaces/automotive/vehicle/",
+                       "-hardware/interfaces/automotive/vehicle/aidl/",
+                       "-hardware/interfaces/automotive/vehicle/aidl/impl/",
+                       "-hardware/interfaces/security/secretkeeper/aidl/"):
+            self.assertNotIn(prefix, scopes)
+        for source in ("hardware/interfaces/automotive/vehicle/aidl/Android.bp",
+                       "hardware/interfaces/automotive/vehicle/aidl/impl/2/Android.bp",
+                       "hardware/interfaces/automotive/audiocontrol/aidl/Android.bp",
+                       "hardware/interfaces/security/secretkeeper/aidl/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_fourth_graph_keeps_nnapi_interfaces_outside_unselected_utilities(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertNotIn("-hardware/interfaces/neuralnetworks/", scopes)
+        for version in ("1.0", "1.1", "1.2", "1.3", "aidl"):
+            interface = f"hardware/interfaces/neuralnetworks/{version}/"
+            self.assertTrue(source_path_allowed(interface + "Android.bp", scopes))
+            self.assertFalse(source_path_allowed(interface + "utils/Android.bp", scopes))
+        self.assertTrue(source_path_allowed("hardware/interfaces/neuralnetworks/aidl/aidl_api/Android.bp", scopes))
+        self.assertFalse(source_path_allowed("hardware/interfaces/neuralnetworks/aidl/vts/functional/Android.bp", scopes))
+
+    def test_original_tradefed_provider_is_reincluded_without_platform_test_aggregate(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        provider = "platform_testing/libraries/tradefed-error-prone/"
+        self.assertTrue(source_path_allowed(provider + "Android.bp", scopes))
+        self.assertTrue(source_path_allowed(provider + "nested/Android.bp", scopes))
+        for source in ("platform_testing/Android.bp", "platform_testing/build/Android.bp",
+                       "platform_testing/tests/Android.bp", "platform_testing/libraries/other/Android.bp",
+                       "platform_testing/libraries/tradefed-error-prone_sibling/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("tools/tradefederation/core/Android.bp", "tools/tradefederation/contrib/Android.bp",
+                       "tools/loganalysis/Android.bp", "test/suite_harness/common/host-side/tradefed/Android.bp",
+                       "frameworks/libs/native_bridge_support/Android.bp",
+                       "frameworks/libs/native_bridge_support/android_api/libc/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_motion_exclusion_preserves_consumed_test_helper_and_graphics(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertFalse(source_path_allowed(MOTION_TEST_BLUEPRINT, scopes))
+        self.assertNotIn("-" + str(Path(MOTION_TEST_BLUEPRINT).parent) + "/", scopes)
+        for source in (
+                "frameworks/base/packages/SystemUI/compose/scene/Android.bp",
+                "frameworks/base/packages/SystemUI/compose/scene/tests/utils/Android.bp",
+                "frameworks/base/packages/SystemUI/Android.bp",
+                "frameworks/base/packages/SettingsLib/Spa/screenshot/robotests/Android.bp",
+                "frameworks/base/tests/InputScreenshotTest/robotests/Android.bp",
+                "external/skia/Android.bp", "frameworks/base/libs/hwui/Android.bp",
+                "frameworks/native/libs/renderengine/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
 
     def test_second_graph_scope_does_not_hide_entire_cts_or_hardware_interfaces(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
