@@ -146,6 +146,11 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     platform_testing/libraries/flag-helpers/junit/ \
     platform_testing/libraries/flag-helpers/libflagtest/
 
+# Graph 22 requires the original host test-composer library for Tradefed.
+# Keep its own tests and metadata, without selecting the health-test aggregate.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/health/composers/host/
+
 # Graph 14 failed in the two Robolectric extension files. The follow-up
 # projection closed the Onboarding/SettingsLib support files with those tests;
 # their metadata and helpers have no retained external consumers. Exclude

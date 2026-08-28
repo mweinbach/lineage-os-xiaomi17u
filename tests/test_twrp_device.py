@@ -59,6 +59,7 @@ SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/annotations/",
     "platform_testing/libraries/flag-helpers/junit/",
     "platform_testing/libraries/flag-helpers/libflagtest/",
+    "platform_testing/libraries/health/composers/host/",
     "tools/security/remote_provisioning/hwtrust/",
 ]
 
@@ -518,6 +519,30 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 9", readme)
         self.assertIn("development/build/", readme)
         self.assertIn("SDK distribution", readme)
+
+    def test_graph_twenty_two_host_composers_keep_their_original_tests(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        provider = "platform_testing/libraries/health/composers/host/"
+        self.assertIn(provider, scopes)
+        for source in (provider + "Android.bp", provider + "tests/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in ("platform_testing/Android.bp",
+                       "platform_testing/libraries/health/Android.bp",
+                       "platform_testing/libraries/health/composers/Android.bp",
+                       "platform_testing/libraries/health/composers/device/Android.bp",
+                       provider.rstrip("/") + "_sibling/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("external/junit/Android.bp", "external/guava/Android.bp",
+                       "external/truth/Android.bp", "external/mockito/Android.bp",
+                       "external/dexmaker/Android.bp", "external/objenesis/Android.bp",
+                       "build/make/teams/Android.bp", "build/soong/licenses/Android.bp",
+                       "tools/tradefederation/core/test_framework/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        for fact in ("Graph 22", provider, "test-composers", "HostTestComposersTests",
+                     "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783"):
+            self.assertIn(fact, readme)
 
     def test_projected_flag_helpers_keep_tests_and_existing_dependency_providers(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

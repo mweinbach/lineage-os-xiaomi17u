@@ -240,6 +240,17 @@ including the genuine SDK generator for
 for these leaves. Platform runner, collector and rule subtrees remain excluded.
 The next real build must still validate variants and generated artifacts.
 
+Graph 22 found that the retained `tradefed-test-framework` needs the original
+`test-composers` library. The positive
+`platform_testing/libraries/health/composers/host/` prefix restores its two
+Blueprint files from pinned project `7b48625b052b94b1ef24573ef5e8ffa5e2ea9783`.
+All three original modules remain: `test-composers`, `test-composers-tests`
+and `HostTestComposersTests`, together with their source, license and team
+metadata. Their immediate providers already exist in the selected sources.
+The parent health-test aggregate and the device-composer sibling remain
+excluded. This restores build declarations; it does not claim those tests ran
+or that a recovery image compiled.
+
 Graph 14 reported seven missing dependencies in the two
 `test/robolectric-extensions` Blueprint files. The follow-up projection found
 four more files containing only related test support: Onboarding's
