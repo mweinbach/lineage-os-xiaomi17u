@@ -512,6 +512,150 @@
       "resource_generation_verified": true,
       "failed_command_exit_code": 1,
       "stage": "SELinux fuzzer binding validation after default resolution"
+    },
+    {
+      "number": 7,
+      "action": "graph",
+      "status": "failed",
+      "recorded_at_utc": "2026-08-28T05:10:28.688579+00:00",
+      "workspace_commit": "a2e6eb181452282cce70fbecc6aa65d1c7578238",
+      "control_archive": {
+        "path": "reports/twrp-build-control-v7.tar",
+        "sha256": "90a9a220213e399d9ee5607a1cc986ef77a6df5807cf7d4c8d46ca3db7977a96",
+        "size_bytes": 225280
+      },
+      "build_state_sha256": "0ba261eadf72b75c3f48df9f1e01ef03c8c01bb673cf4589fc253b1d95ccc571",
+      "command": [
+        "bash",
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j16",
+        "nothing"
+      ],
+      "target_product": "twrp_nezha",
+      "target_build_variant": "user",
+      "log": {
+        "path": "reports/twrp-graph-7.log",
+        "sha256": "b065730296792722332a21f3c747820b76e9710390780d9c9427aa5fa187b7dc",
+        "size_bytes": 4238
+      },
+      "receipt": {
+        "path": "reports/twrp-graph-7-result.json",
+        "sha256": "9e954c93a198a8a6bf8ebad5f8b954d0af1852f95b76ac56cc63e235f916c864",
+        "size_bytes": 4936
+      },
+      "supplementary_projects": [
+        {
+          "path": "system/bpf",
+          "url": "https://android.googlesource.com/platform/system/bpf",
+          "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of bpf_cc_defaults required by the selected Connectivity BPF headers. This addition supplements, and does not rewrite, the frozen 391-project Repo baseline."
+        },
+        {
+          "path": "packages/modules/NetworkStack",
+          "url": "https://android.googlesource.com/platform/packages/modules/NetworkStack",
+          "commit": "f9da1fc7154ea007aa835f88e8070c6ac46d54e9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Official AOSP provider of libnetworkstackutilsjni_deps in tests/unit/Android.bp required by retained Connectivity tests/common defaults. Supplements the immutable 391-project baseline without bypassing dependency validation."
+        },
+        {
+          "path": "hardware/google/apf",
+          "url": "https://android.googlesource.com/platform/hardware/google/apf",
+          "commit": "40d36d317d9367641e685e88e46343f25b192fc4",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP APF libraries required by NetworkStack JNI test defaults."
+        },
+        {
+          "path": "external/libpcap",
+          "url": "https://android.googlesource.com/platform/external/libpcap",
+          "commit": "2e9a50d7694425ead7595bf98d3a9c0ab790e4f9",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libpcap provider required by NetworkStack JNI test defaults."
+        },
+        {
+          "path": "platform_testing",
+          "url": "https://android.googlesource.com/platform/platform_testing",
+          "commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP Tradefed defaults required by retained shared test infrastructure."
+        },
+        {
+          "path": "frameworks/libs/native_bridge_support",
+          "url": "https://android.googlesource.com/platform/frameworks/libs/native_bridge_support",
+          "commit": "b527289974e3883460370012325ab3736d59268a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP native_bridge_proxy_libc_defaults required by the retained binary translation libc proxy."
+        },
+        {
+          "path": "external/skia",
+          "url": "https://android.googlesource.com/platform/external/skia",
+          "commit": "bcb0f77c44783b1800ba37641ba7ecab04f05e07",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP skia_deps and skia_renderengine_deps required by retained HWUI and RenderEngine framework code."
+        },
+        {
+          "path": "external/harfbuzz_ng",
+          "url": "https://android.googlesource.com/platform/external/harfbuzz_ng",
+          "commit": "e489c416b6f8d2a9a2e0e85b781d1e4a0c431401",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libharfbuzz_subset provider required by Skia font subsetting."
+        },
+        {
+          "path": "external/webp",
+          "url": "https://android.googlesource.com/platform/external/webp",
+          "commit": "7698c1d3a5cbecdf336510eeb3366d1de752454a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libwebp-decode and libwebp-encode providers required by Skia image codecs."
+        },
+        {
+          "path": "external/rust/crabbyavif",
+          "url": "https://android.googlesource.com/platform/external/rust/crabbyavif",
+          "commit": "9f3e32a2ffc45466eaed69ad522080cbf67f827b",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libcrabbyavif_ffi provider required by Skia AVIF support."
+        },
+        {
+          "path": "external/libjpeg-turbo",
+          "url": "https://android.googlesource.com/platform/external/libjpeg-turbo",
+          "commit": "6cedbd6ff13946bef76a015693d02723b0d3226e",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real current AOSP libjpeg provider required by Skia image codecs; profile metadata and legacy VNDK prebuilts are not substitutes."
+        },
+        {
+          "path": "hardware/st/nfc",
+          "url": "https://android.googlesource.com/platform/hardware/st/nfc",
+          "commit": "ffc570734ef14c1d153b0dcc13ce63a733d6540a",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP nfc_service_fuzzer provider required by the SELinux service-fuzzer binding validator. Generic ST source for validation only; not the selected phone NFC HAL."
+        },
+        {
+          "path": "system/connectivity/wificond",
+          "url": "https://android.googlesource.com/platform/system/connectivity/wificond",
+          "commit": "65a446e53318aa491314d4a858c383676a4499cf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP wificond_service_fuzzer provider required by the SELinux service-fuzzer binding validator."
+        },
+        {
+          "path": "packages/modules/Virtualization",
+          "url": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+          "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP virtualizationmanager_fuzzer provider required by the SELinux service-fuzzer binding validator."
+        },
+        {
+          "path": "frameworks/opt/net/wifi",
+          "url": "https://android.googlesource.com/platform/frameworks/opt/net/wifi",
+          "commit": "1cab31f96d1f903e190708c1ce665520a4a89d10",
+          "tag": "android-16.0.0_r1",
+          "reason": "Real AOSP libwifi-system-iface and libwifi-system-iface-test providers required by the wificond service fuzzer source."
+        }
+      ],
+      "errors": [
+        "error: bootable/recovery/Android.bp:604:13: module \"recovery\" variant \"android_recovery_arm64_armv8-a\": required: Expected all branches of a select on condition soong_config_variable(\"twrpGlobalVars\", \"include_se_omapi\") to have type string, found bool"
+      ],
+      "resource_generation_verified": true,
+      "failed_command_exit_code": 1
     }
   ],
   "resource_generation": {
