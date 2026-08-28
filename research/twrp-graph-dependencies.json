@@ -1,0 +1,431 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "review_date": "2026-08-28",
+  "status": "bounded investigation of the initial strict Soong graph failure; provider pins are fallbacks, not an instruction to restore all projects",
+  "scope": {
+    "source_read_only": true,
+    "source_synced_by_this_review": false,
+    "source_modified_by_this_review": false,
+    "build_started_by_this_review": false,
+    "phone_accessed": false,
+    "checks_disabled": false,
+    "empty_defaults_stubs_created": false,
+    "evolution_source_used_as_twrp_build_input": false
+  },
+  "initial_failure": {
+    "log_basename": "graph-20260828T035859370639Z.log",
+    "log_sha256": "50e1408ddfdb3e24ba5802822942b7d9d3a1e717ea2c34847a41126ab5da6358",
+    "log_size_bytes": 24604,
+    "target": "twrp_nezha",
+    "variant": "user",
+    "release_config": "bp2a",
+    "soong_bootstrap_steps_completed": 132,
+    "graph_generated": false,
+    "recovery_image_built": false,
+    "missing_default_errors": 21,
+    "distinct_missing_defaults": 7,
+    "distinct_removed_provider_projects": 5,
+    "source_snapshot": {
+      "path": "research/source-snapshots/twrp-16.0-linux-20260828.xml",
+      "sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "bytes": 89628
+    },
+    "separate_failure": "The missing splash.xml message is owned by the target/build audit and is not a provider-default error."
+  },
+  "manifest": {
+    "repository": "https://github.com/TWRP-Test/platform_manifest_twrp_aosp",
+    "commit": "d2188a9345857fb078c391e8cb3e259a21e941e5",
+    "removal_file": "remove-minimal.xml",
+    "all_five_provider_projects_explicitly_removed": true
+  },
+  "provider_projects": [
+    {
+      "path": "system/bpf",
+      "repository": "https://android.googlesource.com/platform/system/bpf",
+      "tag": "android-16.0.0_r1",
+      "tag_object": "a0ea7cbe558e6892c72e0f25193a0bf084ca8b69",
+      "commit": "4447acd742bf443f9088c300bd69f96ede8eaeb1",
+      "verified_by": "git ls-remote, annotated tag peeled to commit",
+      "removed_by_manifest": true,
+      "reference_size": {
+        "reference_commit": "be087fd7bc1baf6553abf12917a4de5944adfe87",
+        "tracked_blob_count": 21,
+        "tracked_blob_bytes": 133925,
+        "android_bp_count": 4,
+        "disk_kib": 216,
+        "r1_tree_available_locally": false,
+        "is_r1_size": false,
+        "is_download_estimate": false,
+        "scope": "Current Evolution reference checkout, measured read-only only to estimate project scale; no source copied or dependency adopted from this revision."
+      }
+    },
+    {
+      "path": "hardware/google/gfxstream",
+      "repository": "https://android.googlesource.com/platform/hardware/google/gfxstream",
+      "tag": "android-16.0.0_r1",
+      "tag_object": "e52ae59747915bb6a13d67407fc4e2afec375c79",
+      "commit": "fc0dca02291e1d5ba1d2dad1d0b58b4f2ef255d0",
+      "verified_by": "git ls-remote, annotated tag peeled to commit",
+      "removed_by_manifest": true,
+      "reference_size": {
+        "reference_commit": "7e9d595b097b23f5fa5c114088245c819e29a9af",
+        "tracked_blob_count": 1914,
+        "tracked_blob_bytes": 61824168,
+        "android_bp_count": 62,
+        "disk_kib": 65768,
+        "r1_tree_available_locally": false,
+        "is_r1_size": false,
+        "is_download_estimate": false,
+        "scope": "Current Evolution reference checkout, measured read-only only to estimate project scale; no source copied or dependency adopted from this revision."
+      }
+    },
+    {
+      "path": "packages/modules/NeuralNetworks",
+      "repository": "https://android.googlesource.com/platform/packages/modules/NeuralNetworks",
+      "tag": "android-16.0.0_r1",
+      "tag_object": "9239c15f016f3cd8a8ce8bac83b324ba4e5f3e79",
+      "commit": "6cd97dca5e3ce0bd539d84d78f777a3576e673e3",
+      "verified_by": "git ls-remote, annotated tag peeled to commit",
+      "removed_by_manifest": true,
+      "reference_size": {
+        "reference_commit": "a6875e5d6e976da6cda958b57ed6f5ed69360d6b",
+        "tracked_blob_count": 2450,
+        "tracked_blob_bytes": 377754323,
+        "android_bp_count": 26,
+        "disk_kib": 374756,
+        "r1_tree_available_locally": false,
+        "is_r1_size": false,
+        "is_download_estimate": false,
+        "scope": "Current Evolution reference checkout, measured read-only only to estimate project scale; no source copied or dependency adopted from this revision."
+      }
+    },
+    {
+      "path": "packages/modules/Virtualization",
+      "repository": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+      "tag": "android-16.0.0_r1",
+      "tag_object": "dd953f048a5a7ecf22cda1b7198993c2b310176e",
+      "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+      "verified_by": "git ls-remote, annotated tag peeled to commit",
+      "removed_by_manifest": true,
+      "reference_size": {
+        "reference_commit": "b00eb1080e007ac84f695edaca6a02ac8dc92040",
+        "tracked_blob_count": 1440,
+        "tracked_blob_bytes": 1182948516,
+        "android_bp_count": 152,
+        "disk_kib": 1145416,
+        "r1_tree_available_locally": false,
+        "is_r1_size": false,
+        "is_download_estimate": false,
+        "scope": "Current Evolution reference checkout, measured read-only only to estimate project scale; no source copied or dependency adopted from this revision."
+      }
+    },
+    {
+      "path": "platform_testing",
+      "repository": "https://android.googlesource.com/platform/platform_testing",
+      "tag": "android-16.0.0_r1",
+      "tag_object": "227feb216bb23daa476c390cd6d20ef0e24fc55c",
+      "commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+      "verified_by": "git ls-remote, annotated tag peeled to commit",
+      "removed_by_manifest": true,
+      "reference_size": {
+        "reference_commit": "8037f13cdf3d529fe396f5013f8f944050229861",
+        "tracked_blob_count": 3490,
+        "tracked_blob_bytes": 183487783,
+        "android_bp_count": 262,
+        "disk_kib": 194644,
+        "r1_tree_available_locally": false,
+        "is_r1_size": false,
+        "is_download_estimate": false,
+        "scope": "Current Evolution reference checkout, measured read-only only to estimate project scale; no source copied or dependency adopted from this revision."
+      }
+    }
+  ],
+  "definitions": [
+    {
+      "module": "bpf_cc_defaults",
+      "project": "system/bpf",
+      "file": "Android.bp",
+      "kind": "cc_defaults",
+      "file_size_bytes": 2103,
+      "file_sha256": "fc0f0d48f4d9eb0fca46a7e8d0164afd7df1ea68fecd2cf7608c7516902e9943",
+      "defaults": [],
+      "module_dependencies": [],
+      "behavior": "Compiler warning and clang-tidy policy; includes -Werror and tidy checks as errors.",
+      "fallback_scope": "Root Android.bp plus project license/header resources; the small complete project is the first fallback if a retained BPF consumer is required.",
+      "source_url": "https://android.googlesource.com/platform/system/bpf/+/4447acd742bf443f9088c300bd69f96ede8eaeb1/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "packages/modules/Connectivity/bpf/headers/Android.bp",
+          "line": 44,
+          "module": "libbpf_android_test",
+          "missing_default": "bpf_cc_defaults"
+        },
+        {
+          "file": "packages/modules/Connectivity/bpf/loader/Android.bp",
+          "line": 33,
+          "module": "netbpfload",
+          "missing_default": "bpf_cc_defaults"
+        }
+      ]
+    },
+    {
+      "module": "tradefed_errorprone_defaults",
+      "project": "platform_testing",
+      "file": "libraries/tradefed-error-prone/Android.bp",
+      "kind": "java_defaults",
+      "file_size_bytes": 2506,
+      "file_sha256": "3a6e37e58348c74503629e20d65b1a9c5c3fb28133a4d96d45d5302537405975",
+      "defaults": [],
+      "module_dependencies": [],
+      "behavior": "Java Error Prone quality checks; not a runtime library.",
+      "fallback_scope": "libraries/tradefed-error-prone and required package/license metadata; do not add all platform test roots just to recover these two defaults.",
+      "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/libraries/tradefed-error-prone/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "tools/tradefederation/contrib/Android.bp",
+          "line": 19,
+          "module": "tradefed-contrib",
+          "missing_default": "tradefed_errorprone_defaults"
+        },
+        {
+          "file": "packages/modules/AdServices/adservices/libraries/collectors-helper/adservices/Android.bp",
+          "line": 5,
+          "module": "adservices-collectors-helper",
+          "missing_default": "tradefed_errorprone_defaults"
+        },
+        {
+          "file": "test/suite_harness/common/host-side/tradefed/Android.bp",
+          "line": 19,
+          "module": "compatibility-tradefed",
+          "missing_default": "tradefed_errorprone_defaults"
+        },
+        {
+          "file": "packages/modules/AdServices/adservices/libraries/collectors-helper/adservices/test/Android.bp",
+          "line": 19,
+          "module": "adservices-collectors-helper-test",
+          "missing_default": "tradefed_errorprone_defaults"
+        },
+        {
+          "file": "test/suite_harness/common/host-side/tradefed/tests/Android.bp",
+          "line": 20,
+          "module": "compatibility-tradefed-tests",
+          "missing_default": "tradefed_errorprone_defaults"
+        },
+        {
+          "file": "packages/modules/AdServices/adservices/libraries/collectors-helper/tests/Android.bp",
+          "line": 20,
+          "module": "AdservicesCollectorsHelperTest",
+          "missing_default": "tradefed_errorprone_defaults"
+        },
+        {
+          "file": "packages/modules/AdServices/adservices/libraries/device-collectors/Android.bp",
+          "line": 5,
+          "module": "adservices-device-collectors-lib",
+          "missing_default": "tradefed_errorprone_defaults"
+        }
+      ]
+    },
+    {
+      "module": "tradefed_defaults",
+      "project": "platform_testing",
+      "file": "libraries/tradefed-error-prone/Android.bp",
+      "kind": "java_defaults",
+      "file_size_bytes": 2506,
+      "file_sha256": "3a6e37e58348c74503629e20d65b1a9c5c3fb28133a4d96d45d5302537405975",
+      "defaults": [
+        "tradefed_errorprone_defaults"
+      ],
+      "module_dependencies": [],
+      "behavior": "Inherits Error Prone policy and adds -g/-Xlint.",
+      "fallback_scope": "Same source file as tradefed_errorprone_defaults; restoring tools/tradefederation/core alone does not provide either default.",
+      "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/libraries/tradefed-error-prone/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "tools/loganalysis/Android.bp",
+          "line": 19,
+          "module": "loganalysis",
+          "missing_default": "tradefed_defaults"
+        },
+        {
+          "file": "tools/loganalysis/javatests/Android.bp",
+          "line": 20,
+          "module": "loganalysis-tests",
+          "missing_default": "tradefed_defaults"
+        }
+      ]
+    },
+    {
+      "module": "gfxstream_defaults",
+      "project": "hardware/google/gfxstream",
+      "file": "Android.bp",
+      "kind": "cc_defaults",
+      "file_size_bytes": 5601,
+      "file_sha256": "1a272610c9f03a512d9af930be455af73b1ff8ccaa0d429bc53a4554bd3d35de",
+      "defaults": [],
+      "module_dependencies": [
+        "gfxstream_headers",
+        "gfxstream_x11_headers",
+        "libnativewindow (Android variant)"
+      ],
+      "behavior": "Graphics compiler policy plus real header dependencies and target-specific build behavior.",
+      "fallback_scope": "Needs the actual gfxstream headers and their aemu/magma/Vulkan dependencies. The root defaults alone are not a complete repair; prefer excluding unneeded emulator consumers for this target.",
+      "source_url": "https://android.googlesource.com/platform/hardware/google/gfxstream/+/fc0dca02291e1d5ba1d2dad1d0b58b4f2ef255d0/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "hardware/google/aemu/snapshot/Android.bp",
+          "line": 10,
+          "module": "gfxstream_snapshot",
+          "missing_default": "gfxstream_defaults"
+        },
+        {
+          "file": "hardware/google/aemu/host-common/Android.bp",
+          "line": 12,
+          "module": "gfxstream_host_common",
+          "missing_default": "gfxstream_defaults"
+        },
+        {
+          "file": "hardware/google/aemu/host-common/Android.bp",
+          "line": 56,
+          "module": "gfxstream_host_common_test_support",
+          "missing_default": "gfxstream_defaults"
+        },
+        {
+          "file": "hardware/google/aemu/base/Android.bp",
+          "line": 78,
+          "module": "gfxstream_base_test_support",
+          "missing_default": "gfxstream_defaults"
+        },
+        {
+          "file": "hardware/google/aemu/base/Android.bp",
+          "line": 61,
+          "module": "gfxstream_base_tests",
+          "missing_default": "gfxstream_defaults"
+        }
+      ]
+    },
+    {
+      "module": "avf_build_flags_rust",
+      "project": "packages/modules/Virtualization",
+      "file": "build/Android.bp",
+      "kind": "rust_defaults",
+      "file_size_bytes": 3299,
+      "file_sha256": "3f1b710c33129e49e9f03e72a1ba1bae39a5ff0fa6561c4eede4d1d52841e042",
+      "defaults": [],
+      "module_dependencies": [],
+      "behavior": "Maps eleven RELEASE_AVF_* build flags to Rust cfgs; the containing file also declares a dtc genrule default and aconfig/Java modules.",
+      "fallback_scope": "The build subtree with avf_flags.aconfig and applicable package/team metadata, not all virtual-machine/guest/test roots. Validate its release flags in the selected bp2a configuration.",
+      "source_url": "https://android.googlesource.com/platform/packages/modules/Virtualization/+/c984fc337c11ca5edc03ccf02037b2455dd8fcaf/build/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "system/secretkeeper/comm/Android.bp",
+          "line": 21,
+          "module": "libsecretkeeper_comm.defaults",
+          "missing_default": "avf_build_flags_rust"
+        },
+        {
+          "file": "system/secretkeeper/dice_policy/Android.bp",
+          "line": 5,
+          "module": "libdice_policy.defaults",
+          "missing_default": "avf_build_flags_rust"
+        }
+      ]
+    },
+    {
+      "module": "neuralnetworks_utils_defaults",
+      "project": "packages/modules/NeuralNetworks",
+      "file": "common/types/Android.bp",
+      "kind": "cc_defaults",
+      "file_size_bytes": 3279,
+      "file_sha256": "f3a14a68f3d0c918f44099b318fc22c8ff0067b4ddbc55b6c8e29177dff6487d",
+      "defaults": [
+        "neuralnetworks_defaults"
+      ],
+      "module_dependencies": [],
+      "behavior": "Adds host/vendor/apex availability, minimum SDK and host API definition to project-wide NN compiler defaults.",
+      "fallback_scope": "Requires the project-root neuralnetworks_defaults and license. Its containing file defines other libraries and neuralnetworks_cl_defaults consumers, so selecting common/types alone is not guaranteed to close the graph.",
+      "source_url": "https://android.googlesource.com/platform/packages/modules/NeuralNetworks/+/6cd97dca5e3ce0bd539d84d78f777a3576e673e3/common/types/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "hardware/interfaces/neuralnetworks/utils/adapter/hidl/Android.bp",
+          "line": 26,
+          "module": "neuralnetworks_utils_hal_adapter",
+          "missing_default": "neuralnetworks_utils_defaults"
+        },
+        {
+          "file": "hardware/interfaces/neuralnetworks/utils/common/Android.bp",
+          "line": 26,
+          "module": "neuralnetworks_utils_hal_common",
+          "missing_default": "neuralnetworks_utils_defaults"
+        }
+      ]
+    },
+    {
+      "module": "rdroidtest.defaults",
+      "project": "platform_testing",
+      "file": "libraries/rdroidtest/Android.bp",
+      "kind": "rust_defaults",
+      "file_size_bytes": 1419,
+      "file_sha256": "38b2fa0249e0a94e3b32a41172859166a16e2027896b97c3f07c5b0393dcccb5",
+      "defaults": [],
+      "module_dependencies": [
+        "librdroidtest_macro",
+        "librdroidtest",
+        "liblinkme"
+      ],
+      "behavior": "Configures the custom Rust test harness, proc macro, libraries and linker flags; it is not an empty marker.",
+      "fallback_scope": "The rdroidtest sources/macros plus existing Rust providers. Its libraries further require liblibtest_mimic, liblog_rust, liblogger, libpaste, libproc_macro2, libquote and libsyn.",
+      "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/libraries/rdroidtest/Android.bp",
+      "observed_consumers": [
+        {
+          "file": "hardware/interfaces/virtualization/capabilities_service/vts/Android.bp",
+          "line": 22,
+          "module": "VtsVmCapabilitiesServiceTest",
+          "missing_default": "rdroidtest.defaults"
+        }
+      ]
+    }
+  ],
+  "supplemental_sources": [
+    {
+      "repository": "https://android.googlesource.com/platform/packages/modules/NeuralNetworks",
+      "commit": "6cd97dca5e3ce0bd539d84d78f777a3576e673e3",
+      "path": "Android.bp",
+      "size_bytes": 1726,
+      "sha256": "f408846ebf2fcbf1fc3075a312b2c388888bedd5bd7be96efb07301a9085ad08",
+      "source_url": "https://android.googlesource.com/platform/packages/modules/NeuralNetworks/+/6cd97dca5e3ce0bd539d84d78f777a3576e673e3/Android.bp"
+    },
+    {
+      "repository": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+      "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+      "path": "Android.bp",
+      "size_bytes": 57,
+      "sha256": "185a4e9f5fec8eb9855d762384c9e7eb2060dca81f900cc0e8e3405edd1ec50a",
+      "source_url": "https://android.googlesource.com/platform/packages/modules/Virtualization/+/c984fc337c11ca5edc03ccf02037b2455dd8fcaf/Android.bp"
+    },
+    {
+      "repository": "https://android.googlesource.com/platform/packages/modules/Virtualization",
+      "commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+      "path": "build/avf_flags.aconfig",
+      "size_bytes": 661,
+      "sha256": "6c1839fb5749965e85618515936fa3bf3173f453d6dc35af02329771b3660384",
+      "source_url": "https://android.googlesource.com/platform/packages/modules/Virtualization/+/c984fc337c11ca5edc03ccf02037b2455dd8fcaf/build/avf_flags.aconfig"
+    }
+  ],
+  "graph_implications": [
+    "The initial error list contains both test/emulator modules and non-test consumers such as netbpfload and secretkeeper defaults; this review does not assume that every failing consumer is a test.",
+    "Soong parses a source graph larger than the final recovery image. Missing shared defaults in otherwise unneeded roots can stop graph generation before link/install reachability is established.",
+    "Supported PRODUCT_SOURCE_ROOT_DIRS selection is preferable for the initial no-network/no-crypto target only when its implementation still rejects missing dependencies consumed by retained modules. The separate build audit owns verification of that behavior.",
+    "If a retained module requires one of these defaults, restore the correct r1 provider with its true flags/dependencies and applicable metadata. Do not invent empty defaults, disable missing-dependency checks, or copy definitions from Evolution bka.",
+    "Restoring all five full source roots adds substantial unrelated test, emulator, VM and NN graph surface. The reference checkouts contain 506 Android.bp files and are not a measured r1 graph or download-size estimate.",
+    "Selecting just one Android.bp is not necessarily sufficient: it can contain additional modules, inherit parent licenses/defaults, or refer to headers, aconfig inputs and Rust proc macros.",
+    "No speculative full AOSP restoration is recommended. A complete strict recovery graph remains the required validation."
+  ],
+  "validation": {
+    "provider_sources_fetched_at_pinned_r1_commits": true,
+    "reference_checkout_sizes_labeled_separately": true,
+    "offline_record_checks": "8 standard-library record, source-pin, consumer, link and whitespace checks passed",
+    "workspace_tests": "python3 -m unittest discover -s tests -v: 1485 tests passed in 8.410 seconds",
+    "strict_graph_retry_performed_by_this_review": false
+  }
+}
