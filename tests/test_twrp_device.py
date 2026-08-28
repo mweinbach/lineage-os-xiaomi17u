@@ -31,10 +31,17 @@ STS_PROVIDER_BLUEPRINTS = (
 )
 WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/default/proto/Android.bp"
 CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
+CAR_API_BLUEPRINTS = (
+    "packages/services/Car/car-lib/Android.bp",
+    "packages/services/Car/aconfig/Android.bp",
+    "packages/services/Car/car-builtin-lib/Android.bp",
+    "packages/services/Car/libs/car-internal-dep-lib/Android.bp",
+    "packages/services/Car/prebuilts/Android.bp",
+)
 SOURCE_FILE_REINCLUSIONS = {
     "packages/modules/AdServices/sdksandbox/Android.bp",
     *AEMU_PROVIDER_BLUEPRINTS, *STS_PROVIDER_BLUEPRINTS, WAKEUP_PROTO_BLUEPRINT,
-    CAR_TEAMS_BLUEPRINT,
+    CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
@@ -74,6 +81,7 @@ SOURCE_REINCLUSIONS = [
     *STS_PROVIDER_BLUEPRINTS,
     WAKEUP_PROTO_BLUEPRINT,
     CAR_TEAMS_BLUEPRINT,
+    *CAR_API_BLUEPRINTS,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
     "platform_testing/libraries/tradefed-error-prone/",
@@ -614,14 +622,14 @@ class TwrpDeviceTests(unittest.TestCase):
                      "separate Car team metadata dependency"):
             self.assertIn(fact, readme)
 
-    def test_graph_twenty_four_car_team_metadata_does_not_select_a_car_runtime(self):
+    def test_car_team_and_api_providers_keep_the_car_service_outside_the_profile(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
         parent = "packages/services/Car/"
         self.assertIn("-" + parent, scopes)
-        self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, {CAR_TEAMS_BLUEPRINT})
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         {CAR_TEAMS_BLUEPRINT, *CAR_API_BLUEPRINTS})
         self.assertTrue(source_path_allowed(CAR_TEAMS_BLUEPRINT, scopes))
-        for source in (parent + "Android.bp", parent + "car-lib/Android.bp",
-                       parent + "service/Android.bp", parent + "tests/Android.bp",
+        for source in (parent + "Android.bp", parent + "service/Android.bp", parent + "tests/Android.bp",
                        parent + "teams/other.bp", parent + "teams/tests/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         for source in ("packages/services/Car_sibling/Android.bp",
@@ -632,8 +640,29 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
         readme = " ".join((DEVICE / "README.md").read_text().split())
         for fact in ("trendy_team_aaos_power_triage", "nine original team declarations",
-                     "61256ae811853028effed5c2c7227aebc347dc5e", "No Car runtime or flag library",
+                     "61256ae811853028effed5c2c7227aebc347dc5e", "historical admission reason unchanged",
                      "normal build-output cleanup", "without inventing team aliases"):
+            self.assertIn(fact, readme)
+
+    def test_car_api_source_projection_preserves_original_generators_and_retained_consumers(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in CAR_API_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+            parent = str(Path(source).parent) + "/"
+            for sibling in (parent + "other.bp", parent + "tests/Android.bp"):
+                self.assertFalse(source_path_allowed(sibling, scopes), sibling)
+        for source in ("cts/hostsidetests/car_builtin/Android.bp",
+                       "cts/hostsidetests/car_builtin/apps/pm_helper_app/Android.bp",
+                       "cts/hostsidetests/appsecurity/Android.bp", "prebuilts/sdk/Android.bp",
+                       "tools/metalava/metalava/Android.bp", "build/soong/java/Android.bp",
+                       "build/soong/licenses/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("android.car-test-stubs", "41 named declarations", "car_sdk",
+                     "metalava-manual", "visibility checks remain unchanged",
+                     "source-audit projection, not a graph 25 failure",
+                     "actual graph and compilation are still required"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_four_car_cts_scope_keeps_siblings_and_shared_security_consumers(self):

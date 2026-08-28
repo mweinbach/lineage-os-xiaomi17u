@@ -337,15 +337,35 @@ with local stubs or imported for this excluded automotive suite.
 
 The separately retained remote-access tests need `trendy_team_aaos_power_triage`.
 The original Android 16 r1 Car project is pinned at
-`61256ae811853028effed5c2c7227aebc347dc5e`, with a negative
+`61256ae811853028effed5c2c7227aebc347dc5e`. Its initial admission used a negative
 `packages/services/Car/` prefix and the sole exact positive
 `packages/services/Car/teams/Android.bp`. That complete file preserves nine
-original team declarations and the global Apache package license. No Car
-runtime or flag library is selected. The complete pinned tree has no
+original team declarations and the global Apache package license. The source
+manifest keeps this historical admission reason unchanged. The current scope
+also includes the shared API providers described below. The complete pinned tree has no
 `Android.mk`, `AndroidProducts.mk` or `Makefile` module entrypoints; its original
 root `CleanSpec.mk` still participates in normal build-output cleanup. This
 metadata admission preserves the VTS consumers without inventing team aliases
 or weakening dependency validation. It is not a successful graph or device test.
+
+The subsequent source audit found retained consumers of `android.car-test-stubs`,
+including the Car builtin helper and CTS media tests. This is an original Car
+provider, not a generic SDK alias. Five exact positive Blueprint prefixes now
+restore `car-lib/Android.bp`, `aconfig/Android.bp`, `car-builtin-lib/Android.bp`,
+`libs/car-internal-dep-lib/Android.bp` and `prebuilts/Android.bp` beneath
+`packages/services/Car/`. Their 41 named declarations preserve the original
+API library, builtin/internal libraries, flags, API checks and documentation
+generators. The original `car_sdk` prebuilt-API owner supplies the combined
+latest API text modules. `metalava-manual` is an existing exported-directory
+module, not a missing source folder. Original genrule tool resolution and
+visibility checks remain unchanged.
+
+All other Car Blueprint files, including `service/Android.bp` and the Car tests,
+remain excluded. The earlier closed host CTS subtree stays excluded, while its
+`car_builtin/` sibling and the other retained consumers remain selected. This
+restoration is a source-audit projection, not a graph 25 failure or a working
+Car feature. The original source records, flags, generator commands and API
+validation remain intact; actual graph and compilation are still required.
 
 The native source projection also found three retained Wi-Fi service modules
 and one test consuming `libwifi-hal`. The positive
