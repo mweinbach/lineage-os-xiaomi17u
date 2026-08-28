@@ -1374,6 +1374,344 @@
         "The existing GUI action starts operation bookkeeping before the check and performs queue/system-details cleanup afterward; this is not a global no-side-effects or storage write lock.",
         "Offline source projection and strict Git rehearsal do not replace the actual Android compile or any hardware validation."
       ]
+    },
+    {
+      "id": "0029-explicit-unused-recovery-parameters",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0029-explicit-unused-recovery-parameters.patch",
+      "patch_sha256": "b5d127b1d70231dc4edd1f5fbb5c5ce065abd2d022e5a58785ce1d0078f70f38",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Make exactly the21 unused parameters reported by recovery build54 explicit through side-effect-free void casts. Six parameters unused in all configurations are consumed at function entry; fifteen feature-dependent parameters are consumed only in their existing disabled branches, adding an else where needed. Preserve original signatures, enabled branch text, operations, returns, feature choices and compiler warning checks. The separate version-macro syntax error is not changed.",
+      "files": [
+        {
+          "path": "twrpTar.cpp",
+          "mode": "100755",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrpTar.cpp",
+          "before_size_bytes": 48284,
+          "after_size_bytes": 48299,
+          "before_sha256": "7749d979cc9511d69aa62aded025c6499c39ee3b50defe3c8453bcb733931466",
+          "after_sha256": "546bb1226d2330da1455486e24d5f58d48fec4e93850142863d9b7633924769b",
+          "before_git_blob": "6794edc7d5758379effdf663860b461a7b309661",
+          "after_git_blob": "b1cc7990f475568a1240d55fce39c22b04ed73ab",
+          "before_lines": 1559,
+          "after_lines": 1560,
+          "unused_parameter_functions": [
+            {
+              "source_line": 113,
+              "signature": "void twrpTar::Signal_Kill(int signum) {",
+              "parameters": [
+                "signum"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "8a837ce3945f84c2bf4d18d340155126946bf71e7e29357d15349d66802b8ed9",
+              "after_function_sha256": "2db74c614ceabe632ccb9b9daf93749d0d9fe8a88eee5b9efc98aae68f7ac450"
+            }
+          ]
+        },
+        {
+          "path": "twrp.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrp.cpp",
+          "before_size_bytes": 16158,
+          "after_size_bytes": 16173,
+          "before_sha256": "c6f522167f616155913d3e580380474bcf9b6655abecccc8073bcb9f4102232e",
+          "after_sha256": "9fa6045c34bd73d3b0523d172c42807fa95d758a076cb386c22d9df37e4d8f1a",
+          "before_git_blob": "456c774ccb0e488500b8af9aa7e80de114e37a21",
+          "after_git_blob": "2f3bec56a3ad939f88c53c02a33deecd11c484d9",
+          "before_lines": 493,
+          "after_lines": 494,
+          "unused_parameter_functions": [
+            {
+              "source_line": 80,
+              "signature": "static void Print_Prop(const char *key, const char *name, void *cookie) {",
+              "parameters": [
+                "cookie"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "c63d506fa6c85549d27348484a20815dc453b0bc6828ea1158ac790a62963259",
+              "after_function_sha256": "4ad3bac191a7b63c58f3285b456c8d0250d82bec652421c0fc0fe40184d9fbc0"
+            }
+          ]
+        },
+        {
+          "path": "data.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/data.cpp",
+          "before_size_bytes": 29478,
+          "after_size_bytes": 29500,
+          "before_sha256": "40892d3b543ef1178404e929da07a5b046f8ded49e31cd305321a1134c3613d7",
+          "after_sha256": "a4b6b7e95dc5fa2f52dd5aa391d9a848e50593478a4a28a62634c5a41889fdca",
+          "before_git_blob": "c69574a6b180c9f6abe3649ffec3891027d11bb7",
+          "after_git_blob": "3c2395442cad7a56b47999ddebf414850877dc3a",
+          "before_lines": 998,
+          "after_lines": 1000,
+          "unused_parameter_functions": [
+            {
+              "source_line": 982,
+              "signature": "void DataManager::Vibrate(const string& varName)",
+              "parameters": [
+                "varName"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifndef TW_NO_HAPTICS",
+              "adds_else": true,
+              "before_function_sha256": "1179aa64fe1f68daa3ea24894561fe6824b30fdd4cd81a48a606ecd22cbd042b",
+              "after_function_sha256": "7da55a4c8ac476f8601772203dc542682becafd8a5a031013caacdad60819e9c"
+            }
+          ]
+        },
+        {
+          "path": "partition.cpp",
+          "mode": "100755",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/partition.cpp",
+          "before_size_bytes": 114338,
+          "after_size_bytes": 114426,
+          "before_sha256": "a7c8c9bdf2a4f845a4555721072934ca183bca86e97b0f4c0c45f22ff6a4825d",
+          "after_sha256": "4eca74029d5a289388b71634d1930245c4c1f93d7e10131eddf728d0e6ee400b",
+          "before_git_blob": "2531496b293c21c8e908afb3583e2713f3f3eafc",
+          "after_git_blob": "c3fa3df2e245afe1e9d2b76c3f5da5bca618317e",
+          "before_lines": 3656,
+          "after_lines": 3660,
+          "unused_parameter_functions": [
+            {
+              "source_line": 674,
+              "signature": "void TWPartition::Setup_Data_Partition(bool Display_Error) {",
+              "parameters": [
+                "Display_Error"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "712dc94ed92197bcd25cdfc3430eb60038054099997833c4f00fda104c47def7",
+              "after_function_sha256": "8b7e4834591dd840eb7ff1ffc0f02a6ad2e5e4a6265948e7361c428fd2b0a7eb"
+            },
+            {
+              "source_line": 1327,
+              "signature": "void TWPartition::Find_Real_Block_Device(string& Block, bool Display_Error) {",
+              "parameters": [
+                "Display_Error"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "1a9c9c439f9ea468c58915ff8f08c5aaea09fc599bf1b22ca6ec6396e8bc462e",
+              "after_function_sha256": "c6977ad85acfba1da26e6b63c595e36367e945f23204ef8477b7f9125ba37bce"
+            },
+            {
+              "source_line": 1614,
+              "signature": "bool TWPartition::Bind_Mount(bool Display_Error) {",
+              "parameters": [
+                "Display_Error"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "8f37015fb767c1ebbcf8f46f7a4091b6469aed57e41bc2dfdacb04eaf66a0325",
+              "after_function_sha256": "83abd689193932c62cb2fa0da453cc78ca6606e220dee201dae69e34754c4e23"
+            },
+            {
+              "source_line": 2038,
+              "signature": "string TWPartition::Get_Restore_File_System(PartitionSettings *part_settings) {",
+              "parameters": [
+                "part_settings"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "8595bd2d4ce65686aed6673cdc16d3fbcb1c39beb9bba7f0ffa59b62cb1bd6b0",
+              "after_function_sha256": "e7dc471cae2283509e67dda238871f33779ba0b3add670d4313fbdc2eaa04297"
+            }
+          ]
+        },
+        {
+          "path": "twrp-functions.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrp-functions.cpp",
+          "before_size_bytes": 43762,
+          "after_size_bytes": 43866,
+          "before_sha256": "ac1440e4e4ca9971d6c63b5fbf3bc6b5be2dcef9f65a7be57c9fd15441c30b20",
+          "after_sha256": "feb1dd540e7ebf8db1ed1dc85844c26e6afaba80c3b6eea0ac304ebc1761e203",
+          "before_git_blob": "c310f425afff3dbbf8303931052816d1350a53a6",
+          "after_git_blob": "7f0a864433e14b89057ca7471bd0029dc3efd43b",
+          "before_lines": 1516,
+          "after_lines": 1522,
+          "unused_parameter_functions": [
+            {
+              "source_line": 889,
+              "signature": "void TWFunc::Fixup_Time_On_Boot(const string& time_paths /* = \"\" */)",
+              "parameters": [
+                "time_paths"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef QCOM_RTC_FIX",
+              "adds_else": true,
+              "before_function_sha256": "dbaf6d480cb88da9c7707ccfa3a67a89eb95f51e7af5ea8ded8461f6e51b5d32",
+              "after_function_sha256": "5b2f470453817ef16971079594aaf99b699fde2063426486b46126ae78ea368d"
+            },
+            {
+              "source_line": 1088,
+              "signature": "bool TWFunc::Toggle_MTP(bool enable) {",
+              "parameters": [
+                "enable"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": false,
+              "before_function_sha256": "19ebbadc7b27fb17f8ceec687fa024c8affa7b557adeabe2035525a40c2fbd24",
+              "after_function_sha256": "6c29f959b7250e06821fe9d62e893870ed043b2bb954f24e0d1d4c68aa1935db"
+            },
+            {
+              "source_line": 1250,
+              "signature": "int TWFunc::Property_Override(string Prop_Name, string Prop_Value) {",
+              "parameters": [
+                "Prop_Name",
+                "Prop_Value"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_LIBRESETPROP",
+              "adds_else": false,
+              "before_function_sha256": "84f31e96837c49e1bb34e441f6cb213bc6d2405214ac48aa649de184f08c5f15",
+              "after_function_sha256": "7723bd32534cc08bf9a72036a5b3b1e5f7500dc747388832d8f3b7b809dd2c8b"
+            },
+            {
+              "source_line": 1258,
+              "signature": "int TWFunc::Delete_Property(string Prop_Name) {",
+              "parameters": [
+                "Prop_Name"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_LIBRESETPROP",
+              "adds_else": false,
+              "before_function_sha256": "783b45feaee9d21646439e4f6382eacb88d25d08a3cbd45306a2ddaf8d0cbbfc",
+              "after_function_sha256": "aec47b03f720fea1a06994f3373e8bfc21772368529f52af9664c20cb50ab17a"
+            }
+          ]
+        },
+        {
+          "path": "partitionmanager.cpp",
+          "mode": "100755",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/partitionmanager.cpp",
+          "before_size_bytes": 130688,
+          "after_size_bytes": 130878,
+          "before_sha256": "9a7ee5bc9eef5d27112a36425fe5dd0bf37bd1bb627d355bd8989b8031a01ffb",
+          "after_sha256": "073cbd2c2af845ec958ba62add709bb7b1fa2f77a8aadc013cad2176e389371a",
+          "before_git_blob": "42b848df32ad29d7c7942da4d3d9bd53abbe63a6",
+          "after_git_blob": "dfe12c5a9fea010590dc4440ca60d1510e304cfe",
+          "before_lines": 3905,
+          "after_lines": 3919,
+          "unused_parameter_functions": [
+            {
+              "source_line": 2140,
+              "signature": "void TWPartitionManager::Mark_User_Decrypted(int userID) {",
+              "parameters": [
+                "userID"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_FBE",
+              "adds_else": true,
+              "before_function_sha256": "adebd4cb2decbf4d02a57a5ff5d0c4410de269a8e835805b4ce32855f34d4210",
+              "after_function_sha256": "44c1949e971e870e8c1a684649e2d45d251e740e6f7771ee1e12511d3c7b559b"
+            },
+            {
+              "source_line": 2205,
+              "signature": "int TWPartitionManager::Decrypt_Device(string Password, int user_id) {",
+              "parameters": [
+                "Password",
+                "user_id"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_CRYPTO",
+              "adds_else": false,
+              "before_function_sha256": "cfbd852f7df207ebe1128315c03113f6c2dfe48b9d41fc13402932b4df1e8e1c",
+              "after_function_sha256": "87587e2daa07e32139a3db6ddb3ec0760fcdbdb3f02a13f4032d59abd6ed9ba7"
+            },
+            {
+              "source_line": 2973,
+              "signature": "bool TWPartitionManager::Add_Remove_MTP_Storage(TWPartition* Part, int message_type) {",
+              "parameters": [
+                "Part",
+                "message_type"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": false,
+              "before_function_sha256": "b5a0a7dad42e4c4da3d8a3d17e7ad49aa8519bdcfacb1f427b9bcffa785c8dd5",
+              "after_function_sha256": "4ff191a63a83c330c8e78e547282eb2f0fca1a275ca9c08a5067b95c9353d87b"
+            },
+            {
+              "source_line": 3037,
+              "signature": "bool TWPartitionManager::Add_MTP_Storage(string Mount_Point) {",
+              "parameters": [
+                "Mount_Point"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "c08202ee74f91654e2bc9901187a132f12e9f85d7dc6b454e75a14a46c3fb736",
+              "after_function_sha256": "cfa5eb1b03c10540c3da74af60ba10e2e251b5ee2c4c1a7e099c4e5a39396fbe"
+            },
+            {
+              "source_line": 3049,
+              "signature": "bool TWPartitionManager::Add_MTP_Storage(unsigned int Storage_ID) {",
+              "parameters": [
+                "Storage_ID"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "46af8b7d2a27bdc712d8e95fcf00bd4e1b4a965f003e113e28ed16775aca27ed",
+              "after_function_sha256": "38aa7667b630dff17f294ac8c24e17c1da42958fe663f70d1d9f65f1919ccd57"
+            },
+            {
+              "source_line": 3061,
+              "signature": "bool TWPartitionManager::Remove_MTP_Storage(string Mount_Point) {",
+              "parameters": [
+                "Mount_Point"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "1d4036d5150fb199754271bd25a00531f1ec0edcd9c78e06738e48cc9d786df8",
+              "after_function_sha256": "fff37a40ec4adb5bc6b5aaf17db910f7261f2964077671ae19342d6b8abfb0b8"
+            },
+            {
+              "source_line": 3073,
+              "signature": "bool TWPartitionManager::Remove_MTP_Storage(unsigned int Storage_ID) {",
+              "parameters": [
+                "Storage_ID"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "275b01df084e21ecdf0e056a982157ffe77a524f1818a367d9c66f5dc7d6b958",
+              "after_function_sha256": "7c1c17900b73112a23966134063b38e815a1fa9029f14e2fd6190592c8f37f23"
+            }
+          ]
+        }
+      ],
+      "scope": {
+        "observed_unused_parameters": 21,
+        "functions": 18,
+        "files": 6,
+        "always_unused_parameters": 6,
+        "disabled_branch_parameters": 15,
+        "new_else_branches": 7,
+        "warning_policy_changed": false,
+        "features_enabled": false,
+        "function_signatures_changed": false,
+        "version_macro_changed": false
+      },
+      "limits": [
+        "Offline source projection and Git rehearsal are not an Android compilation result.",
+        "The crypto-enabled/FBE-disabled Decrypt_Device user_id warning remains a separate preexisting configuration issue; this patch changes only the observed no-crypto branch.",
+        "No crypto, MTP, haptics, clock or property-reset capability is enabled; existing return values and side effects are unchanged."
+      ]
     }
   ],
   "application_requirements": [

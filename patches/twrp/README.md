@@ -181,6 +181,16 @@ This is not a storage write lock. The complete source identities, missing-key
 branch, caller status and unchanged ZIP path have offline regression tests;
 the normal Android compile and artifact checks are still required.
 
+Patch 29 addresses the 21 unused parameters reported by build 54 across six
+recovery source files. Six parameters unused in every configuration receive
+explicit `(void)` uses at function entry. Fifteen parameters used by optional
+features receive those uses only in the corresponding disabled branches.
+Existing signatures, statements, return values and enabled branch text remain
+unchanged, including the original executable file modes. Warning checks stay
+enabled; crypto, MTP, haptics, RTC adjustment and property override support are
+not enabled to hide the diagnostics. This covers the observed disabled profile,
+not compilation or runtime validation of every optional feature combination.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init
