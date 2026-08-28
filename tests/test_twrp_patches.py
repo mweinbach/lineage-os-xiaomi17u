@@ -30,6 +30,7 @@ GENERIC_SYSTEM_IMAGE_ID = "0021-native-recovery-generic-system-image"
 TRUSTY_AVB_TEST_ID = "0022-native-recovery-trusty-avb-test"
 TRUSTY_VINTF_TEST_ID = "0023-native-recovery-trusty-vintf-test"
 USB_TRANSPORT_ID = "0024-recovery-usb-only-adb"
+VOLD_HOST_LIBRARIES_ID = "0025-vold-bionic-system-libraries"
 MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
 RECOVERY_REVISION = "b70f8e998b302381ecefc6e7f46df1614bd61afc"
 MINADBD_PREIMAGES = {
@@ -149,9 +150,32 @@ def hunks(section):
     """Return strict unified diff hunks without invoking a patch process."""
     pattern = r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@[^\n]*\n"
     matches = list(re.finditer(pattern, section, re.M))
+    prefix = section[:matches[0].start()] if matches else section
+    if any(line.startswith("\\") for line in prefix.splitlines()):
+        raise ValueError("A source EOF marker must belong to a hunk line")
+    closed_sides = set()
     for index, match in enumerate(matches):
+        if closed_sides:
+            raise ValueError("A source EOF marker cannot precede a later hunk")
         end = matches[index + 1].start() if index + 1 < len(matches) else len(section)
-        body = section[match.end():end].splitlines(keepends=True)
+        body = []
+        for line in section[match.end():end].splitlines(keepends=True):
+            if line.startswith("\\"):
+                if (line != "\\ No newline at end of file\n" or not body
+                        or body[-1][:1] not in (" ", "+", "-")
+                        or not body[-1].endswith("\n")):
+                    raise ValueError("Malformed, orphaned or duplicate source EOF marker")
+                prefix = body[-1][0]
+                closed_sides.update({"old", "new"} if prefix == " " else
+                                    {"old"} if prefix == "-" else {"new"})
+                body[-1] = body[-1][:-1]
+            else:
+                sides = ({"old", "new"} if line.startswith(" ") else
+                         {"old"} if line.startswith("-") else
+                         {"new"} if line.startswith("+") else set())
+                if sides & closed_sides:
+                    raise ValueError("A hunk cannot continue a source after its EOF marker")
+                body.append(line)
         yield (int(match[1]), int(match[2] or 1), int(match[3]),
                int(match[4] or 1), body)
 
@@ -291,8 +315,9 @@ class TwrpPatchTests(unittest.TestCase):
                          + [MINADBD_GATE_ID] + SUPPLEMENT_PROFILE_IDS
                          + [ACONFIG_VARIANT_ID, AIDL_ANALYZER_VARIANT_ID, OMAPI_VARIANT_ID,
                             RECOVERY_RESOURCES_ID, GENERIC_SYSTEM_IMAGE_ID,
-                            TRUSTY_AVB_TEST_ID, TRUSTY_VINTF_TEST_ID, USB_TRANSPORT_ID])
-        self.assertEqual(len(self.patches), 24)
+                            TRUSTY_AVB_TEST_ID, TRUSTY_VINTF_TEST_ID, USB_TRANSPORT_ID,
+                            VOLD_HOST_LIBRARIES_ID])
+        self.assertEqual(len(self.patches), 25)
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -321,7 +346,7 @@ class TwrpPatchTests(unittest.TestCase):
             self.assertEqual(row["files"][0]["before_" + field], predecessor["files"][0]["after_" + field])
         paths = [(entry["project"], item["path"])
                  for entry in self.record["patches"] for item in entry["files"]]
-        self.assertEqual((len(paths), len(set(paths))), (40, 39))
+        self.assertEqual((len(paths), len(set(paths))), (41, 40))
         self.assertEqual(paths.count((row["project"], "daemon/main.cpp")), 2)
         self.assertEqual(paths.count((row["project"], "daemon/adb_wifi.cpp")), 1)
         self.assertEqual(row["patch_sha256"],

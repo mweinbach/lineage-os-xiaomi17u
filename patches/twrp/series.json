@@ -1118,6 +1118,121 @@
           "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/adb_wifi.cpp?format=TEXT"
         }
       ]
+    },
+    {
+      "id": "0025-vold-bionic-system-libraries",
+      "project": "system/vold",
+      "repository": "https://github.com/TWRP-Test/android_system_vold",
+      "base_commit": "4c83041ec61f9b482085685f1e6aed5a62f103aa",
+      "patch": "patches/twrp/0025-vold-bionic-system-libraries.patch",
+      "patch_sha256": "39669d2658f4f7b079acb4ba367cd70ed9747d53757b63ac1555f460eb60473a",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Scope libkeystoreinfo's explicit libc/libdl system libraries to Bionic targets. Preserve host support, recovery availability, source and library lists, and the exact ordered pair on Android and LinuxBionic; leave other host toolchain defaults unset and inherited.",
+      "files": [
+        {
+          "before_sha256": "bb073d5ee838770abbf2f6a4af96012b5580d77bfc552c4d7995ef935725bcb2",
+          "before_git_blob": "c06743bf3ea3ce163c3f4dac7a46c78b6ec93def",
+          "before_size_bytes": 8544,
+          "after_sha256": "ab54aef2e2179b038947299a8ff22a0fdaeb992c5f6492e47c979c32d742a4b8",
+          "after_git_blob": "62a10ec5d86663aa5f879adf3860113092af2d27",
+          "after_size_bytes": 8594,
+          "path": "Android.bp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_system_vold/blob/4c83041ec61f9b482085685f1e6aed5a62f103aa/Android.bp",
+          "system_library_modules": [
+            {
+              "type": "cc_library",
+              "name": "libkeystoreinfo",
+              "constructor_line": 318,
+              "before_module_sha256": "1cef5e4d583c8aaa01755d5720e54a7dbe5cf9d1770649cd20f867f512489a38",
+              "after_module_sha256": "564d6d8da4fa82751c848aeb365c4ceb3b3dd517015607ef7f396c899ee47aad",
+              "host_supported": true,
+              "recovery_available": true,
+              "property_before": "system_shared_libs",
+              "property_after": "target.bionic.system_shared_libs",
+              "libraries": [
+                "libc",
+                "libdl"
+              ]
+            }
+          ]
+        }
+      ],
+      "target_contract": {
+        "selector": "target.bionic",
+        "explicit_library_targets": [
+          "android",
+          "linux_bionic"
+        ],
+        "explicit_system_shared_libs": [
+          "libc",
+          "libdl"
+        ],
+        "inherited_default_targets": [
+          "linux_glibc",
+          "linux_musl",
+          "darwin",
+          "windows"
+        ],
+        "non_bionic_property_unset": true,
+        "non_bionic_property_empty_list": false,
+        "host_supported_unchanged": true,
+        "recovery_available_unchanged": true,
+        "static_and_shared_variants_preserved": true
+      },
+      "source_evidence": {
+        "soong_project": "build/soong",
+        "soong_revision": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7",
+        "files": [
+          {
+            "path": "android/arch.go",
+            "sha256": "e2ccc72ad54ccc36b4ed56baf6f8dabde7c9e9a275b712e916dc475244f837ac",
+            "line_references": [
+              258,
+              262,
+              1241,
+              1246
+            ],
+            "source_url": "https://github.com/TWRP-Test/android_build_soong/blob/91bdc79cffb29d35b2d46a33204c061c3e7ed4f7/android/arch.go"
+          },
+          {
+            "path": "cc/linker.go",
+            "sha256": "bc8e51019cc75a58032077403bbe6c47382edede9c2d8db3a76d965e326300f6",
+            "line_references": [
+              54,
+              57,
+              401,
+              406,
+              509,
+              516
+            ],
+            "source_url": "https://github.com/TWRP-Test/android_build_soong/blob/91bdc79cffb29d35b2d46a33204c061c3e7ed4f7/cc/linker.go"
+          },
+          {
+            "path": "cc/library.go",
+            "sha256": "c211be0ef9e41e69e044fbfca2c94de4014942e36f3a2e0d0fc4208db61c2915",
+            "line_references": [
+              939,
+              947
+            ],
+            "source_url": "https://github.com/TWRP-Test/android_build_soong/blob/91bdc79cffb29d35b2d46a33204c061c3e7ed4f7/cc/library.go"
+          }
+        ],
+        "aosp_vold_comparison": {
+          "repository": "https://android.googlesource.com/platform/system/vold",
+          "revision": "11760521a2e86389c56620ec50e780e8b17e40ca",
+          "tag": "android-16.0.0_r1",
+          "path": "Android.bp",
+          "sha256": "d15f2084f9eed4e64ae57432f11cdc3acf6c4ac0999c27906387faa533ffa953",
+          "libkeystoreinfo_present": false,
+          "source_url": "https://android.googlesource.com/platform/system/vold/+/11760521a2e86389c56620ec50e780e8b17e40ca/Android.bp"
+        }
+      },
+      "byte_preservation": "Add only the target and bionic braces around the original list. Preserve its existing indentation and trailing space as context for strict forward/reverse application; retain the original file without a final newline.",
+      "limits": [
+        "Offline source and patch checks do not execute Soong or establish a successful host, recovery or image build.",
+        "No crypto source edit, FBE enablement, missing-dependency waiver, provider change, host disablement or phone operation is included."
+      ]
     }
   ],
   "application_requirements": [
