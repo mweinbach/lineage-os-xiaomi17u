@@ -36,6 +36,7 @@ WAKEUP_PROTO_BLUEPRINT = "hardware/interfaces/automotive/remoteaccess/hal/defaul
 CAR_TEAMS_BLUEPRINT = "packages/services/Car/teams/Android.bp"
 CAR_SETTINGS_PARENT = "packages/apps/Car/Settings/"
 CAR_SETTINGS_FLAGS_BLUEPRINT = CAR_SETTINGS_PARENT + "aconfig/Android.bp"
+CAR_BUILTIN_DEVICE_CTS_PREFIX = "cts/tests/tests/car_builtin/"
 CAR_API_BLUEPRINTS = (
     "packages/services/Car/car-lib/Android.bp",
     "packages/services/Car/aconfig/Android.bp",
@@ -171,6 +172,7 @@ SOURCE_FILE_REINCLUSIONS = {
     *ADSERVICES_API_BLUEPRINTS,
 }
 SOURCE_EXCLUSIONS = [
+    "-" + CAR_BUILTIN_DEVICE_CTS_PREFIX,
     "-" + CAR_SETTINGS_PARENT,
     "-" + TV_SETTINGS_PARENT,
     "-" + TRACING_ROBO_BLUEPRINT,
@@ -955,7 +957,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 163)
+        self.assertEqual(len(scopes), 164)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -1128,6 +1130,38 @@ class TwrpDeviceTests(unittest.TestCase):
                      "64634c7bfc79be369f0cd251d6c61df995cdf8b1", "other eleven",
                      "not an actual Graph 34 diagnostic", "163 source rules",
                      "does not install Car Settings"):
+            self.assertIn(fact, readme)
+
+    def test_graph_thirty_four_car_builtin_excludes_complete_device_component(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        prefix = CAR_BUILTIN_DEVICE_CTS_PREFIX
+        self.assertTrue(prefix.endswith("/"))
+        self.assertEqual({rule for rule in scopes if rule.lstrip("-").startswith(prefix)},
+                         {"-" + prefix})
+        self.assertNotIn("-" + prefix + "Android.bp", scopes)
+        for leaf in ("Android.bp", "apps/SimpleApp/Android.bp",
+                     "apps/SimpleApp/child/Android.bp"):
+            self.assertFalse(source_path_allowed(prefix + leaf, scopes), leaf)
+        for source in ("cts/tests/tests/Android.bp",
+                       "cts/tests/tests/car_builtin_sibling/Android.bp",
+                       "cts/tests/tests/settings/Android.bp",
+                       "cts/hostsidetests/car_builtin/Android.bp",
+                       "cts/hostsidetests/car_builtin/apps/pm_helper_app/Android.bp",
+                       "cts/Android.bp", "cts/common/device-side/util-axt/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "external/avb/Android.bp",
+                       CAR_SETTINGS_FLAGS_BLUEPRINT, CAR_TEAMS_BLUEPRINT,
+                       *CAR_API_BLUEPRINTS):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_graph_thirty_four_car_builtin_documents_metadata_and_coverage_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 34 also reports", "CtsCarBuiltinApiTestCases",
+                     "android.car.test.utils", "two Blueprint files", "50 source blobs",
+                     "CtsCarBuiltinSimpleApp", "root build file alone was rejected",
+                     "inherited team", "trendy_team_aaos_framework",
+                     "CTS suite membership is collected from selected modules",
+                     "164 source rules", "does not claim complete CTS coverage"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):

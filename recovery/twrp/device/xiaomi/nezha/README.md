@@ -355,7 +355,7 @@ The remaining graph 24 Car host CTS error belongs to the closed
 `cts/hostsidetests/car/` subtree: four Blueprint files define eight automotive
 test, helper and defaults modules, with no outside named-module, source-path,
 Make or Go consumers found in the reviewed source set. The negative prefix
-excludes only that subtree. Its `car_builtin/` sibling, CTS security helpers and
+excludes only that subtree. Its `cts/hostsidetests/car_builtin/` sibling, CTS security helpers and
 remote-access AIDL/VTS files remain selected. The missing Car flag and two
 protobuf providers reside in mixed runtime build files; they are not replaced
 with local stubs or imported for this excluded automotive suite.
@@ -374,7 +374,7 @@ metadata admission preserves the VTS consumers without inventing team aliases
 or weakening dependency validation. It is not a successful graph or device test.
 
 The subsequent source audit found retained consumers of `android.car-test-stubs`,
-including the Car builtin helper and CTS media tests. This is an original Car
+including the Car builtin helper at that stage and CTS media tests. This is an original Car
 provider, not a generic SDK alias. Five exact positive Blueprint prefixes now
 restore `car-lib/Android.bp`, `aconfig/Android.bp`, `car-builtin-lib/Android.bp`,
 `libs/car-internal-dep-lib/Android.bp` and `prebuilts/Android.bp` beneath
@@ -387,7 +387,7 @@ visibility checks remain unchanged.
 
 All other Car Blueprint files, including `service/Android.bp` and the Car tests,
 remain excluded. The earlier closed host CTS subtree stays excluded, while its
-`car_builtin/` sibling and the other retained consumers remain selected. This
+`cts/hostsidetests/car_builtin/` sibling and the other retained consumers remain selected. This
 restoration is a source-audit projection, not a graph 25 failure or a working
 Car feature. The original source records, flags, generator commands and API
 validation remain intact; actual graph and compilation are still required.
@@ -597,9 +597,28 @@ its Java flags library, including their original flag input and Apache metadata.
 The other eleven app, test and generator declarations have no retained incoming
 consumer in the bounded audit and stay excluded. `CtsSettingsTestCases` remains
 selected; no substitute flags, factory changes or new test gates are introduced.
-This is a source projection, not an actual Graph 34 diagnostic. The current
-selection has 163 source rules and does not install Car Settings or change
+This is a source projection, not an actual Graph 34 diagnostic. That selection
+had 163 source rules and does not install Car Settings or change
 Nezha's identity. Compilation and device behavior remain unverified.
+
+Graph 34 also reports `CtsCarBuiltinApiTestCases` requiring
+`android.car.test.utils`. The complete `cts/tests/tests/car_builtin/` component
+is excluded after review of its two Blueprint files, two named test modules
+and 50 source blobs. This includes both the root test and
+`apps/SimpleApp/Android.bp`, which defines `CtsCarBuiltinSimpleApp`.
+Excluding the root build file alone was rejected because the retained child
+would lose its inherited team, `trendy_team_aaos_framework`. Excluding the
+complete component leaves no selected descendant without that metadata.
+
+The bounded Blueprint, Make, Go and product review found no outside active
+incoming consumer of this component. CTS suite membership is collected from
+selected modules and does not impose a fixed dependency on these two tests.
+The separate `cts/hostsidetests/car_builtin/` suite and its PM helper remain
+selected, along with Settings CTS and the existing Car SDK, flags and team
+providers. The current selection has 164 source rules. This changes test
+availability in the native recovery profile; it does not claim complete CTS
+coverage, a successful graph or a working recovery. No source definitions,
+test gates or validators are changed.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
