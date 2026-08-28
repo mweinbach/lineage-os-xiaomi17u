@@ -74,6 +74,13 @@ Patch 28 guards that unavailable feature and propagates failure through the
 existing GUI status without changing ordinary ZIP installation or supplying a
 key. A resumed compile must establish whether further failures remain.
 
+Graph 53 passed after that fix, and build 54 reused the previous outputs with
+1,880 remaining steps. It stopped at step 438 on 21 unused-parameter errors
+across six recovery source files and one malformed default version macro.
+Patches 29 and 30 address those two causes without disabling warning checks,
+enabling optional features or changing existing recovery operations. No image
+was produced by that attempt; the source and cleanup-state checks still passed.
+
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
 details are useful comparison inputs, but their reported hardware results are

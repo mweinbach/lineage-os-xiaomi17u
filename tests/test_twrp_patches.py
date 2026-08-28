@@ -35,6 +35,7 @@ PACKAGING_CONTRACT_ID = "0026-repair-recovery-packaging-contracts"
 CI_ARCHIVES_ID = "0027-native-recovery-ci-test-archives"
 OZIP_GUARD_ID = "0028-guard-unconfigured-ozip-decryption"
 UNUSED_PARAMETERS_ID = "0029-explicit-unused-recovery-parameters"
+DEVICE_VERSION_ID = "0030-correct-default-device-version"
 MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
 RECOVERY_REVISION = "b70f8e998b302381ecefc6e7f46df1614bd61afc"
 MINADBD_PREIMAGES = {
@@ -321,8 +322,8 @@ class TwrpPatchTests(unittest.TestCase):
                             RECOVERY_RESOURCES_ID, GENERIC_SYSTEM_IMAGE_ID,
                             TRUSTY_AVB_TEST_ID, TRUSTY_VINTF_TEST_ID, USB_TRANSPORT_ID,
                             VOLD_HOST_LIBRARIES_ID, PACKAGING_CONTRACT_ID, CI_ARCHIVES_ID,
-                            OZIP_GUARD_ID, UNUSED_PARAMETERS_ID])
-        self.assertEqual(len(self.patches), 29)
+                            OZIP_GUARD_ID, UNUSED_PARAMETERS_ID, DEVICE_VERSION_ID])
+        self.assertEqual(len(self.patches), 30)
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -354,7 +355,7 @@ class TwrpPatchTests(unittest.TestCase):
             self.assertEqual(row["files"][0]["before_" + field], predecessor["files"][0]["after_" + field])
         paths = [(entry["project"], item["path"])
                  for entry in self.record["patches"] for item in entry["files"]]
-        self.assertEqual((len(paths), len(set(paths))), (55, 53))
+        self.assertEqual((len(paths), len(set(paths))), (56, 54))
         self.assertEqual(paths.count((row["project"], "daemon/main.cpp")), 2)
         self.assertEqual(paths.count((row["project"], "daemon/adb_wifi.cpp")), 1)
         self.assertEqual(row["patch_sha256"],

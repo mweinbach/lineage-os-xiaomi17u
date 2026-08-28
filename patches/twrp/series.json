@@ -1712,6 +1712,45 @@
         "The crypto-enabled/FBE-disabled Decrypt_Device user_id warning remains a separate preexisting configuration issue; this patch changes only the observed no-crypto branch.",
         "No crypto, MTP, haptics, clock or property-reset capability is enabled; existing return values and side effects are unchanged."
       ]
+    },
+    {
+      "id": "0030-correct-default-device-version",
+      "project": "vendor/twrp",
+      "repository": "https://github.com/TWRP-Test/android_vendor_twrp",
+      "base_commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1",
+      "patch": "patches/twrp/0030-correct-default-device-version.patch",
+      "patch_sha256": "30949471c74952e11412626b265ae487079ab01ce24a16699d30f1cca3b44d24",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Supply the raw default device-version value expected by the existing Soong cflag template. The previous Make default included its own quotes and hyphen, so Soong emitted the invalid C++ replacement text \"-\"-0\"\". Use unquoted 0 only when TW_DEVICE_VERSION is undefined; preserve explicit values, consumer template, source version and device identity.",
+      "files": [
+        {
+          "path": "config/BoardConfigSoong.mk",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_vendor_twrp/blob/b53296dfc420ce65fffe712de380d5abf6c4c2f1/config/BoardConfigSoong.mk",
+          "before_size_bytes": 15760,
+          "before_sha256": "0b858d8e1457701ca054edc89eb01aec514ae83170f1b83ef31be93c25e5dcd6",
+          "before_git_blob": "79b2361eed30162a8e55f992c05fded9a66fb43d",
+          "after_size_bytes": 15757,
+          "after_sha256": "123be11a3240ca63ff1011a67d7d05b7f27bab0c16618af980b5d524ba0e6267",
+          "after_git_blob": "5dd951ad87a2b2073fde014db8b629a2e33a3b7a"
+        }
+      ],
+      "version_contract": {
+        "make_assignment": "TW_DEVICE_VERSION ?= 0",
+        "raw_default": "0",
+        "default_cpp_replacement": "\"-0\"",
+        "explicit_make_values_unchanged": true,
+        "consumer": {
+          "path": "build/soong/Android.bp",
+          "commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1",
+          "sha256": "7ee79252369daf5dedcb30e4d106827a219378249cbe447ceeba3ac296ee38ec",
+          "cflag_template": "-DTW_DEVICE_VERSION=\"-%s\""
+        }
+      },
+      "limits": [
+        "This corrects only the undefined Make default. It does not validate or sanitize explicitly configured values, including an explicit empty value.",
+        "No warning or security option, feature selection, source revision, official release claim or device identity is changed. The actual Android compile remains required."
+      ]
     }
   ],
   "application_requirements": [

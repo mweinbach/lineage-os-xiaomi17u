@@ -191,6 +191,15 @@ enabled; crypto, MTP, haptics, RTC adjustment and property override support are
 not enabled to hide the diagnostics. This covers the observed disabled profile,
 not compilation or runtime validation of every optional feature combination.
 
+Patch 30 corrects the other build 54 compiler error. The vendor Make default
+set `TW_DEVICE_VERSION` to a value that already included quotes and a hyphen.
+The unchanged Soong template added its own quotes and hyphen, producing the
+invalid C++ replacement text `"-"-0""`. The default now supplies raw `0`, which
+the existing template renders as `"-0"`. Conditional `?=` assignment and all
+explicit overrides remain unchanged, including an explicit empty value. This
+does not sanitize malformed overrides, change the main version or device
+identity, or declare an official release. The actual compile must still pass.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init
