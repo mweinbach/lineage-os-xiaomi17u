@@ -3,6 +3,9 @@
 This repository is the bring-up workspace, not a flashable ROM or a completed
 device tree. Keep verified facts separate from assumptions and unresolved work.
 
+You have access to practically as many subagents as you want to parrallelize work. Feel free to use as many as you want, more than three and up to 92. It may not seem like it's worth it, but if it can help even 1%, use a bunch. 
+
+
 ## Working rules
 
 - Make small, descriptive commits as useful work is completed. Run tests before
