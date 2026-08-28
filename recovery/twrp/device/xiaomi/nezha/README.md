@@ -525,8 +525,8 @@ providers with original metadata. The upstream path is spelled `textexecutor`.
 All direct references and six SDK-generated library providers were resolved
 against the selected sources. These files add no Robolectric constructors and
 need no additional Robolectric gate. The root test aggregates, unrelated
-sibling files and SDK-sandbox test runner remain outside this selection; any
-later consumed helper must be separately restored, not silently substituted.
+sibling files and SDK-sandbox test runner remained outside that Graph 32
+selection; the runner is restored separately after the Graph 33 failure below.
 
 `TvSettingsAPI` comes from the original TvSettings project at
 `139dd3c1a8f626a57271baf4926180f8d1f3bade`. A negative project prefix and exactly two
@@ -537,9 +537,40 @@ file. Their 47 direct references and one inherited library dependency resolve;
 the original TV app, unbundled product and Robolectric tests stay excluded.
 This does not install a TV product or change Nezha's device identity.
 
-The combined selection has 157 source rules. These additions preserve security,
+That Graph 32 selection had 157 source rules. These additions preserve security,
 API, signature, variant and dependency validation. They describe source closure,
 not successful CTS execution, Android compilation or recovery hardware support.
+
+Graph 33 failed because the retained `WebViewSandboxTestSdk` requires
+`CtsSdkSandboxTestRunner`. One exact positive rule now restores the original
+`sdksandbox/tests/testutils/testscenario/testrunner/Android.bp` from the same
+pinned AdServices project. Its single `java_library` keeps the original Java
+source, Apache license, team and CTS visibility. The genuine `truth`,
+`CtsSdkSandboxTestExecutor` and `compatibility-device-util-axt` dependencies
+are already selected. Sibling test files remain excluded.
+
+A separate source projection of that helper's `:sdksandbox-test` certificate
+reference restores the original `sdksandbox/tests/keys/Android.bp`; this was
+not the error reported by Graph 33. Its unchanged `android_app_certificate`
+declaration keeps the original basename, license, team and inherited visibility.
+In the pinned Soong source, this source-app certificate dependency is added
+after the existing visibility pass; no exemption, visibility override or
+validator change is introduced. No key or certificate contents were read,
+copied or changed, and product signing configuration is unchanged.
+
+A separate CTS lookahead found that `CtsSecurityBulletinHostTestCases` needs
+the `MainlineModuleDetector` test artifact. One exact positive rule restores
+`platform_testing/libraries/sts-common-util/apps/MainlineModuleDetector/Android.bp`
+from `7b48625b052b94b1ef24573ef5e8ffa5e2ea9783`. Its original `android_test`,
+`cts_defaults`, sources, manifest and test settings remain intact. The reviewed
+direct and implicit providers are already selected; no factory or test settings
+are changed. This is not a Graph 33 diagnostic, and the platform_testing root
+aggregate and sibling apps remain excluded.
+
+The current selection has 160 source rules. These three restorations add no
+package to `PRODUCT_PACKAGES` or test certificate to recovery trusted keys.
+These are source checks, not cryptographic validation, and do not establish
+that the next graph or any device test passes.
 
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer

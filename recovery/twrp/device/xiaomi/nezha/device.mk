@@ -103,6 +103,21 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     packages/modules/AdServices/shared/testing-libraries/host-side/Android.bp \
     packages/modules/AdServices/shared/testing-libraries/side-less/Android.bp
 
+# Graph 33 requires the original runner through a retained CTS WebView SDK.
+# Restore only its complete library file, not sibling test files.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/testrunner/Android.bp
+
+# A separate source audit finds the same helper's original certificate module.
+# Preserve its basename, metadata and visibility; do not change product signing.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    packages/modules/AdServices/sdksandbox/tests/keys/Android.bp
+
+# CTS source lookahead requires this original Mainline detector test artifact.
+# Keep its whole file and existing test settings, without selecting sibling apps.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    platform_testing/libraries/sts-common-util/apps/MainlineModuleDetector/Android.bp
+
 # The retained TV Settings API test needs only these two original library files.
 # Keep the TV app, unbundled product and Robolectric tests outside this profile.
 PRODUCT_SOURCE_ROOT_DIRS += \

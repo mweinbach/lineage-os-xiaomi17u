@@ -144,13 +144,22 @@ SDK_SCENARIO_BLUEPRINTS = (
     "packages/modules/AdServices/shared/testing-libraries/host-side/Android.bp",
     "packages/modules/AdServices/shared/testing-libraries/side-less/Android.bp",
 )
+SDK_RUNNER_BLUEPRINT = (
+    "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/testrunner/Android.bp"
+)
+SDK_CERTIFICATE_BLUEPRINT = "packages/modules/AdServices/sdksandbox/tests/keys/Android.bp"
+MAINLINE_DETECTOR_BLUEPRINT = (
+    "platform_testing/libraries/sts-common-util/apps/MainlineModuleDetector/Android.bp"
+)
 TV_SETTINGS_PARENT = "packages/apps/TvSettings/"
 TV_SETTINGS_API_BLUEPRINTS = (
     "packages/apps/TvSettings/SettingsAPI/Android.bp",
     "packages/apps/TvSettings/TwoPanelSettingsLib/Android.bp",
 )
 SOURCE_FILE_REINCLUSIONS = {
-    *SDK_SCENARIO_BLUEPRINTS, *TV_SETTINGS_API_BLUEPRINTS,
+    *SDK_SCENARIO_BLUEPRINTS, SDK_RUNNER_BLUEPRINT, SDK_CERTIFICATE_BLUEPRINT,
+    MAINLINE_DETECTOR_BLUEPRINT,
+    *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     "packages/modules/AdServices/sdksandbox/Android.bp",
@@ -194,7 +203,9 @@ SOURCE_EXCLUSIONS = [
     "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
-    *SDK_SCENARIO_BLUEPRINTS, *TV_SETTINGS_API_BLUEPRINTS,
+    *SDK_SCENARIO_BLUEPRINTS, SDK_RUNNER_BLUEPRINT, SDK_CERTIFICATE_BLUEPRINT,
+    MAINLINE_DETECTOR_BLUEPRINT,
+    *TV_SETTINGS_API_BLUEPRINTS,
     *SHARED_HELPER_BLUEPRINTS, JUNIT_XML_BLUEPRINT,
     *FRAMEWORK_PROVIDER_BLUEPRINTS, WIFI_TRACKER_BLUEPRINT,
     *AEMU_PROVIDER_BLUEPRINTS,
@@ -704,7 +715,8 @@ class TwrpDeviceTests(unittest.TestCase):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
         parent = "platform_testing/libraries/sts-common-util/"
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
-                         {*STS_PROVIDER_BLUEPRINTS, parent + "device-side/Android.bp"})
+                         {*STS_PROVIDER_BLUEPRINTS, parent + "device-side/Android.bp",
+                          MAINLINE_DETECTOR_BLUEPRINT})
         for source in STS_PROVIDER_BLUEPRINTS:
             self.assertTrue(source_path_allowed(source, scopes), source)
         for source in (parent + "Android.bp", parent + "host-side/tests/Android.bp",
@@ -831,6 +843,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual({rule for rule in scopes if rule.startswith(parent)}, {
             parent + "sdksandbox/Android.bp", parent + "sdksandbox/flags/",
             *ADSERVICES_API_BLUEPRINTS, *SDK_SCENARIO_BLUEPRINTS,
+            SDK_RUNNER_BLUEPRINT, SDK_CERTIFICATE_BLUEPRINT,
         })
         for source in ADSERVICES_API_BLUEPRINTS:
             self.assertTrue(source_path_allowed(source, scopes), source)
@@ -936,7 +949,7 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_shared_helper_profile_keeps_security_and_runtime_limits(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
-        self.assertEqual(len(scopes), 157)
+        self.assertEqual(len(scopes), 160)
         self.assertEqual(len(scopes), len(set(scopes)))
         for source in ("system/sepolicy/tests/Android.bp", "system/libvintf/Android.bp",
                        "external/avb/Android.bp", "bootable/recovery/Android.bp",
@@ -963,7 +976,7 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertFalse(source_path_allowed(parent + "unrelated/Android.bp", scopes))
         for source in ("packages/modules/AdServices/adservices/tests/Android.bp",
                        "packages/modules/AdServices/sdksandbox/tests/Android.bp",
-                       "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/testrunner/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/Android.bp",
                        "packages/modules/AdServices/apex/Android.bp"):
             self.assertFalse(source_path_allowed(source, scopes), source)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
@@ -989,6 +1002,73 @@ class TwrpDeviceTests(unittest.TestCase):
                      "CtsSdkSandboxTestScenario", "textexecutor", "TvSettingsAPI", "TvSliceLib",
                      "139dd3c1a8f626a57271baf4926180f8d1f3bade", "157 source rules",
                      "does not install a TV product", "no additional Robolectric gate"):
+            self.assertIn(fact, readme)
+
+    def test_graph_thirty_three_runner_restores_only_its_original_file(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = str(Path(SDK_RUNNER_BLUEPRINT).parent) + "/"
+        self.assertIn("-packages/modules/AdServices/", scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         {SDK_RUNNER_BLUEPRINT})
+        self.assertTrue(source_path_allowed(SDK_RUNNER_BLUEPRINT, scopes))
+        for source in (parent + "other.bp", parent + "child/Android.bp",
+                       parent.rstrip("/") + "_sibling/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/example/sdk/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("cts/tests/tests/sdksandbox/webkit/sdk/Android.bp",
+                       "external/truth/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/testutils/testscenario/textexecutor/Android.bp",
+                       "cts/common/device-side/util-axt/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_sdk_test_certificate_restores_only_original_provider_blueprint(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = str(Path(SDK_CERTIFICATE_BLUEPRINT).parent) + "/"
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         {SDK_CERTIFICATE_BLUEPRINT})
+        self.assertTrue(source_path_allowed(SDK_CERTIFICATE_BLUEPRINT, scopes))
+        for source in (parent + "other.bp", parent + "child/Android.bp",
+                       parent.rstrip("/") + "_sibling/Android.bp",
+                       "packages/modules/AdServices/sdksandbox/tests/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for prop in ("PRODUCT_EXTRA_RECOVERY_KEYS", "PRODUCT_DEFAULT_DEV_CERTIFICATE"):
+            self.assertNotIn(prop, self.device)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+
+    def test_graph_thirty_three_runner_documents_observed_failure_and_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("Graph 33 failed", "WebViewSandboxTestSdk", "CtsSdkSandboxTestRunner",
+                     "CtsSdkSandboxTestExecutor", "compatibility-device-util-axt",
+                     "160 source rules", "separate source projection", "inherited visibility",
+                     "not the error reported by Graph 33", "no exemption, visibility override",
+                     "No key or certificate contents were read", "product signing configuration is unchanged",
+                     "not cryptographic validation", "the next graph or any device test passes"):
+            self.assertIn(fact, readme)
+
+    def test_cts_lookahead_restores_only_original_mainline_detector_test(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = str(Path(MAINLINE_DETECTOR_BLUEPRINT).parent) + "/"
+        self.assertIn("-platform_testing/", scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         {MAINLINE_DETECTOR_BLUEPRINT})
+        self.assertTrue(source_path_allowed(MAINLINE_DETECTOR_BLUEPRINT, scopes))
+        for source in (parent + "other.bp", parent + "child/Android.bp",
+                       parent.rstrip("/") + "_sibling/Android.bp",
+                       "platform_testing/libraries/sts-common-util/apps/Android.bp",
+                       "platform_testing/libraries/sts-common-util/apps/Other/Android.bp",
+                       "platform_testing/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("cts/hostsidetests/securitybulletin/Android.bp", "cts/Android.bp",
+                       "cts/common/device-side/util-axt/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("separate CTS lookahead", "CtsSecurityBulletinHostTestCases",
+                     "MainlineModuleDetector", "no factory or test settings are changed",
+                     "not a Graph 33 diagnostic", "sibling apps remain excluded"):
             self.assertIn(fact, readme)
 
     def test_graph_twenty_two_restores_original_chre_flags_and_provider_sources(self):
