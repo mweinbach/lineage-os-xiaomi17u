@@ -1303,6 +1303,76 @@
       "commit": "166c03c471039f3efc935a68d89b52521870ffd9",
       "tag": "android-16.0.0_r1",
       "reason": "Dependency of the dEQP restoration for the graph 23 CtsDeqpRunnerTests error: real AOSP deqp_amber library and local generators required by the approved dEQP sources."
+    },
+    {
+      "path": "external/crosvm",
+      "url": "https://android.googlesource.com/platform/external/crosvm",
+      "commit": "8a4abfbaea5567de24e49cc43874c820098987d0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libfuse_rust, libdisk and libcrosvm_control_static providers required by retained AVF sources, with the whole Crosvm project preserved."
+    },
+    {
+      "path": "external/virtio-media",
+      "url": "https://android.googlesource.com/platform/external/virtio-media",
+      "commit": "fef1c2fb80d79b5c526e0c7e40b6bb8838f17786",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libvirtio_media provider required by the approved Crosvm sources."
+    },
+    {
+      "path": "external/wayland",
+      "url": "https://android.googlesource.com/platform/external/wayland",
+      "commit": "91dc38d8c70bd5fc6eaca346c52f5eef1c02a1fb",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libwayland_client_static and libwayland_server providers required by the approved Crosvm graphics sources."
+    },
+    {
+      "path": "external/wayland-protocols",
+      "url": "https://android.googlesource.com/platform/external/wayland-protocols",
+      "commit": "91460fd294110884e6fa5d96ac7ce9c8c67f6339",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libwayland_extension_client_protocols and libwayland_extension_server_protocols providers required by the approved Crosvm graphics sources."
+    },
+    {
+      "path": "external/libepoxy",
+      "url": "https://android.googlesource.com/platform/external/libepoxy",
+      "commit": "220661d543ca0cd3cd73b0e87868064ad4d1e834",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libepoxy provider required by the approved Crosvm graphics sources."
+    },
+    {
+      "path": "external/virglrenderer",
+      "url": "https://android.googlesource.com/platform/external/virglrenderer",
+      "commit": "34d8dbfc7ba18adf8d012a469c26fe00cd0f796e",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libvirglrenderer and virgl_headers providers required by the approved Crosvm graphics sources."
+    },
+    {
+      "path": "hardware/google/gfxstream",
+      "url": "https://android.googlesource.com/platform/hardware/google/gfxstream",
+      "commit": "fc0dca02291e1d5ba1d2dad1d0b58b4f2ef255d0",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libgfxstream_backend and related providers required by the approved Crosvm graphics sources. Upstream plugin registration and validation are preserved."
+    },
+    {
+      "path": "external/rust/crates/v4l2r",
+      "url": "https://android.googlesource.com/platform/external/rust/crates/v4l2r",
+      "commit": "6397d7473aa4dda5edc7ec4f9e58c7d0962f08e7",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libv4l2r_ffi_static and libv4l2r providers required by the approved Crosvm sources."
+    },
+    {
+      "path": "external/mesa3d",
+      "url": "https://android.googlesource.com/platform/external/mesa3d",
+      "commit": "1ab807486dbc8cd2a1bb6c10d2ebebc5e545faca",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP mesa_gfxstream_connection_manager and related Mesa3D providers required by the approved graphics sources. Upstream LLVM and vendor properties remain unchanged."
+    },
+    {
+      "path": "external/swiftshader",
+      "url": "https://android.googlesource.com/platform/external/swiftshader",
+      "commit": "a4305fb793e7a96b3e1baf248b9717f68eedd238",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 24 error: real AOSP libLLVM16_swiftshader and original defaults required by the approved Mesa3D source. Upstream features and vendor declarations are preserved."
     }
   ]
 }

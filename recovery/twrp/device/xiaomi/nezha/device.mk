@@ -30,6 +30,15 @@ PRODUCT_SOURCE_ROOT_DIRS += \
     -packages/modules/AdServices/ \
     -hardware/interfaces/virtualization/capabilities_service/vts/
 
+# The reviewed Crosvm source closure needs these original AEMU providers.
+# Restore only the four audited build files, including their shared metadata;
+# the remaining AEMU build files stay outside this recovery profile.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    hardware/google/aemu/Android.bp \
+    hardware/google/aemu/base/Android.bp \
+    hardware/google/aemu/host-common/Android.bp \
+    hardware/google/aemu/snapshot/Android.bp
+
 # Graph 23 requires the original exported SDK sandbox flags in the framework.
 # Keep their parent package metadata/defaults and the complete flags leaf;
 # other AdServices runtime and test build files remain outside this profile.

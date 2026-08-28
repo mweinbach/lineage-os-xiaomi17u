@@ -210,6 +210,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "8cbd0097005d05d90f041c32f9052db47fb5a2d9745be3a086cfbce7d9a858b9")
 
+    def test_first_185_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:185]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "4bcb97a095b2d547280b772f53e1e73996aabf2846cd73f34210c6a664ddd2c0")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -854,10 +860,9 @@ class ConfigurationTests(Fixture):
             ("external/deqp-deps/glslang", "0733c837682fd25e3363b598947126ff1838908c", "glslang libraries"),
             ("external/deqp-deps/amber", "166c03c471039f3efc935a68d89b52521870ffd9", "deqp_amber"),
         ]
-        self.assertEqual(len(projects), 185)
-        self.assertEqual([(project["path"], project["commit"]) for project in projects[181:]],
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[181:185]],
                          [(path, commit) for path, commit, _ in expected])
-        for project, (_, _, module) in zip(projects[181:], expected):
+        for project, (_, _, module) in zip(projects[181:185], expected):
             with self.subTest(path=project["path"]):
                 self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
                 self.assertEqual(project["tag"], "android-16.0.0_r1")
@@ -867,6 +872,35 @@ class ConfigurationTests(Fixture):
         for caveat in ("deqp_glslang_ResourceLimits_headers", "glslang/Public/ResourceLimits.h",
                        "a header file, as an include directory", "original property is retained"):
             self.assertIn(caveat, projects[183]["reason"])
+
+    def test_reviewed_graph_twenty_four_crosvm_projection_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/crosvm", "8a4abfbaea5567de24e49cc43874c820098987d0", "libfuse_rust"),
+            ("external/virtio-media", "fef1c2fb80d79b5c526e0c7e40b6bb8838f17786", "libvirtio_media"),
+            ("external/wayland", "91dc38d8c70bd5fc6eaca346c52f5eef1c02a1fb", "libwayland_client_static"),
+            ("external/wayland-protocols", "91460fd294110884e6fa5d96ac7ce9c8c67f6339", "libwayland_extension_client_protocols"),
+            ("external/libepoxy", "220661d543ca0cd3cd73b0e87868064ad4d1e834", "libepoxy"),
+            ("external/virglrenderer", "34d8dbfc7ba18adf8d012a469c26fe00cd0f796e", "libvirglrenderer"),
+            ("hardware/google/gfxstream", "fc0dca02291e1d5ba1d2dad1d0b58b4f2ef255d0", "libgfxstream_backend"),
+            ("external/rust/crates/v4l2r", "6397d7473aa4dda5edc7ec4f9e58c7d0962f08e7", "libv4l2r_ffi_static"),
+            ("external/mesa3d", "1ab807486dbc8cd2a1bb6c10d2ebebc5e545faca", "mesa_gfxstream_connection_manager"),
+            ("external/swiftshader", "a4305fb793e7a96b3e1baf248b9717f68eedd238", "libLLVM16_swiftshader"),
+        ]
+        self.assertEqual(len(projects), 195)
+        self.assertEqual([(project["path"], project["commit"]) for project in projects[185:]],
+                         [(path, commit) for path, commit, _ in expected])
+        for project, (_, _, module) in zip(projects[185:], expected):
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["url"], "https://android.googlesource.com/platform/" + project["path"])
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+                self.assertIn(module, project["reason"])
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 24 error:"))
+        for seed in ("libfuse_rust", "libdisk", "libcrosvm_control_static", "retained AVF"):
+            self.assertIn(seed, projects[185]["reason"])
+        self.assertIn("plugin registration and validation are preserved", projects[191]["reason"])
+        self.assertIn("LLVM and vendor properties remain unchanged", projects[193]["reason"])
+        self.assertIn("features and vendor declarations are preserved", projects[194]["reason"])
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):

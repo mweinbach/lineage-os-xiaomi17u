@@ -19,7 +19,13 @@ GRAPH14_TEST_BLUEPRINTS = (
     "frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp",
 )
 SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT, *GRAPH14_TEST_BLUEPRINTS}
-SOURCE_FILE_REINCLUSIONS = {"packages/modules/AdServices/sdksandbox/Android.bp"}
+AEMU_PROVIDER_BLUEPRINTS = (
+    "hardware/google/aemu/Android.bp",
+    "hardware/google/aemu/base/Android.bp",
+    "hardware/google/aemu/host-common/Android.bp",
+    "hardware/google/aemu/snapshot/Android.bp",
+)
+SOURCE_FILE_REINCLUSIONS = {"packages/modules/AdServices/sdksandbox/Android.bp", *AEMU_PROVIDER_BLUEPRINTS}
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
@@ -52,6 +58,7 @@ SOURCE_EXCLUSIONS = [
     "-tools/security/",
 ] + ["-" + path for path in GRAPH14_TEST_BLUEPRINTS]
 SOURCE_REINCLUSIONS = [
+    *AEMU_PROVIDER_BLUEPRINTS,
     "packages/modules/AdServices/sdksandbox/Android.bp",
     "packages/modules/AdServices/sdksandbox/flags/",
     "platform_testing/libraries/tradefed-error-prone/",
@@ -309,7 +316,9 @@ class TwrpDeviceTests(unittest.TestCase):
                     self.assertTrue(source_path_allowed(str(Path(prefix).parent / "utils/Android.bp"), scopes))
                     self.assertTrue(source_path_allowed(str(Path(prefix).parent / "other.bp"), scopes))
                     continue
-                self.assertFalse(source_path_allowed(prefix + "Android.bp", scopes))
+                root_blueprint = prefix + "Android.bp"
+                self.assertEqual(source_path_allowed(root_blueprint, scopes),
+                                 root_blueprint in SOURCE_FILE_REINCLUSIONS)
                 self.assertFalse(source_path_allowed(prefix + "nested/Android.bp", scopes))
                 self.assertTrue(source_path_allowed(prefix.rstrip("/") + "_sibling/Android.bp", scopes))
                 self.assertTrue(source_path_allowed(str(Path(prefix).parent / "Android.bp"), scopes))
@@ -521,6 +530,32 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn("Graph 9", readme)
         self.assertIn("development/build/", readme)
         self.assertIn("SDK distribution", readme)
+
+    def test_crosvm_source_closure_restores_only_four_original_aemu_build_files(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        parent = "hardware/google/aemu/"
+        self.assertIn("-" + parent, scopes)
+        self.assertEqual({rule for rule in scopes if rule.startswith(parent)},
+                         set(AEMU_PROVIDER_BLUEPRINTS))
+        for source in AEMU_PROVIDER_BLUEPRINTS:
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        for source in (parent + "other.bp", parent + "base/other.bp",
+                       parent + "base/tests/Android.bp", parent + "host-common/tests/Android.bp",
+                       parent + "snapshot/tests/Android.bp", parent + "third-party/Android.bp"):
+            self.assertFalse(source_path_allowed(source, scopes), source)
+        for source in ("hardware/google/aemu_sibling/Android.bp",
+                       "hardware/google/gfxstream/Android.bp", "external/crosvm/Android.bp",
+                       "external/mesa3d/Android.bp", "external/swiftshader/Android.bp",
+                       "external/wayland-protocols/Android.bp", "build/soong/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["TW_NO_NETWORK"], "true")
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("libfuse_rust", "libdisk", "libcrosvm_control_static",
+                     "caad0d2be91bde934e4ff299f9e1a78d8ca0ead2", "eight named modules",
+                     "61 source-file references", "seven include-directory references",
+                     "no validation exception is added", "Compilation, linking and device behavior remain unverified"):
+            self.assertIn(fact, readme)
 
     def test_graph_twenty_three_sdk_sandbox_flags_keep_original_metadata(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

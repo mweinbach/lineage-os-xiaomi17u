@@ -25,13 +25,35 @@ are omitted by the minimal manifest. This recovery product uses the supported
 
 | Excluded scope | Why it is outside this initial product |
 | --- | --- |
-| `hardware/google/aemu/` | Emulator graphics host tooling without its gfxstream defaults |
+| `hardware/google/aemu/` | Original emulator exclusion; four shared provider files are restored below for the reviewed Crosvm closure |
 | `packages/modules/AdServices/` | Advertising services and their test collectors |
 | `hardware/interfaces/virtualization/capabilities_service/vts/` | Virtualization capability VTS tests |
 
 The initial `system/secretkeeper/` exclusion was later removed when restored
 virtualization sources introduced real consumers, as described under Graph 6
 below. Disabling recovery decryption does not make a consumed provider optional.
+
+The source audit of retained Android Virtualization Framework consumers found
+the original Crosvm providers `libfuse_rust`, `libdisk` and
+`libcrosvm_control_static`. Their reviewed dependency closure also needs
+gfxstream's existing AEMU libraries. Four exact positive source prefixes restore
+`hardware/google/aemu/Android.bp`, `base/Android.bp`, `host-common/Android.bp`
+and `snapshot/Android.bp` from the original AEMU checkout at
+`caad0d2be91bde934e4ff299f9e1a78d8ca0ead2`. These files retain eight named
+modules and four package declarations, including `aemu_common_headers`,
+`gfxstream_base`, `gfxstream_host_common`, `gfxstream_snapshot`, their test
+support and original license metadata. All 61 source-file references and seven
+include-directory references exist. The remaining AEMU build files stay
+excluded; raw include paths remain available independently of Blueprint
+selection.
+
+The ten original Android 16 r1 provider projects are pinned separately in
+`config/twrp-dependencies.json`. They preserve Crosvm's GPU features, Mesa's
+SwiftShader LLVM dependency and the genuine Wayland generator. The selected
+Soong already permits that generator plugin; no validation exception is added.
+This is a source dependency restoration, not an observed graph 24 failure or a
+working virtualization or graphics feature. `PRODUCT_PACKAGES` still contains
+only `recovery`. Compilation, linking and device behavior remain unverified.
 
 The second graph reached a further set of absent defaults. Its additional
 exclusions are limited to the following consumers, after checking their
