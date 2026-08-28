@@ -165,6 +165,17 @@ receive an untyped string. This target calls the original
 OMAPI disabled while supplying the required boolean type. No source branch
 or type check is removed, and no crypto feature is enabled to avoid the error.
 
+Graph 9 reached `prebuilt_core-lambda-stubs` through SDK distribution packaging
+in `development/build/Android.bp`. The only Blueprint file in that directory
+defines five SDK archive/helper modules: `build-tools`, `platform-tools`,
+`build-tools_renderscript_includes`, `build-tools_core-lambda-stubs-device` and
+`build-tools_core-lambda-stubs`. An independent scan of 10,657 discovered
+Blueprint files found no external references to those five modules. This
+recovery-only profile excludes `development/build/`; it does not package SDK
+distributions. The actual ADB, fastboot, mkbootimg and apksigner providers remain
+included, along with AVB, SELinux, fuzzer-binding and VINTF validation. Missing
+libraries consumed by retained tools still require their genuine providers.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.

@@ -42,6 +42,7 @@ SOURCE_EXCLUSIONS = [
     "-hardware/interfaces/broadcastradio/aidl/default/test/",
     "-platform_testing/",
     "-frameworks/opt/net/wifi/",
+    "-development/build/",
 ]
 SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/tradefed-error-prone/",
@@ -403,6 +404,25 @@ class TwrpDeviceTests(unittest.TestCase):
         readme = (DEVICE / "README.md").read_text()
         self.assertIn("platform_testing/libraries/rdroidtest/", readme)
         self.assertIn("rdroidtest.defaults", readme)
+
+    def test_sdk_distribution_scope_preserves_actual_tools_and_validators(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertFalse(source_path_allowed("development/build/Android.bp", scopes))
+        self.assertNotIn("-development/", scopes)
+        for source in ("development/Android.bp", "development/build_sibling/Android.bp",
+                       "development/tools/Android.bp", "packages/modules/adb/Android.bp",
+                       "system/core/fastboot/Android.bp", "system/tools/mkbootimg/Android.bp",
+                       "tools/apksig/Android.bp", "external/avb/Android.bp",
+                       "system/sepolicy/contexts/Android.bp", "system/sepolicy/tests/Android.bp",
+                       "system/libvintf/Android.bp", "build/make/tools/apicheck/Android.bp",
+                       "prebuilts/build-tools/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
+        readme = (DEVICE / "README.md").read_text()
+        self.assertIn("Graph 9", readme)
+        self.assertIn("development/build/", readme)
+        self.assertIn("SDK distribution", readme)
 
     def test_motion_exclusion_preserves_consumed_test_helper_and_graphics(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

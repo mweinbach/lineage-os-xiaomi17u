@@ -116,6 +116,13 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     platform_testing/libraries/rdroidtest/
 
+# Graph 9 reached an SDK-distribution-only lambda-stub consumer. This scope
+# contains just five SDK archive/helper modules, with no external module
+# consumers in the bounded scan. Actual ADB, fastboot, image and signing tools
+# remain selected from their original provider directories.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -development/build/
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
