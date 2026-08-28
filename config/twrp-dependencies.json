@@ -1681,6 +1681,55 @@
       "commit": "ddc4040688dca1b980b8744a012d6cf6a62f792c",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 33 error: real AOSP com.android.libraries.tv.tvsystem java_sdk_library provides .public.api.txt and .system.api.txt to retained CtsSharedLibsApiSignatureTestCases_cts-shared-libs-all-current.api. The original unsafe_ignore_missing_latest_api:true setting suppresses released API tracking; current API checks remain, and no new waiver is added. No recovery product package or TV functionality is implied."
+    },
+    {
+      "path": "external/jetpack-camera-app",
+      "url": "https://android.googlesource.com/platform/external/jetpack-camera-app",
+      "commit": "bff117dd925374b0023b6ca6e5a237fb5944e581",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP jetpack-camera-app android_app required by other_required_apps in cts/apps/CtsVerifier. Original app, library and instrumentation definitions, including the inert legacy subdirs assignment, are preserved. No APK, installation or camera functionality is claimed."
+    },
+    {
+      "path": "external/accompanist",
+      "url": "https://android.googlesource.com/platform/external/accompanist",
+      "commit": "f083e7c9735aa7806e6fa902923aa021881aee78",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP accompanist-permissions android_library required by jetpack-camera-app, jetpack-camera-app-tests-helper, jetpack-camera-app_feature_permissions and jetpack-camera-app_feature_settings. Original visibility, source, resources and SDK/minSDK checks are preserved; no camera permission behavior or runtime compatibility is claimed."
+    },
+    {
+      "path": "kernel/prebuilts/6.6/arm64",
+      "url": "https://android.googlesource.com/kernel/prebuilts/6.6/arm64",
+      "commit": "810308806a7a4677f8e4a0d37daa707a0832bbea",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android15-6.6-arm64 filesystem definition required by the retained microdroid_gki-android15-6.6_initrd_gen_arm64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+    },
+    {
+      "path": "kernel/prebuilts/6.6/x86_64",
+      "url": "https://android.googlesource.com/kernel/prebuilts/6.6/x86-64",
+      "commit": "88d6379eab0da6425d570d22531c210e40f5abd6",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android15-6.6-x86_64 filesystem definition required by the retained microdroid_gki-android15-6.6_initrd_gen_x86_64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+    },
+    {
+      "path": "kernel/prebuilts/6.12/arm64",
+      "url": "https://android.googlesource.com/kernel/prebuilts/6.12/arm64",
+      "commit": "0af99653adede9524c7dbb36ba901d22e6266404",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android16-6.12-arm64 filesystem definition required by the retained microdroid_gki-android16-6.12_initrd_gen_arm64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+    },
+    {
+      "path": "kernel/prebuilts/6.12/x86_64",
+      "url": "https://android.googlesource.com/kernel/prebuilts/6.12/x86-64",
+      "commit": "0cbffc1bfc41e1e6d399a23d1ffe45875213b67f",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP microdroid_gki_modules-android16-6.12-x86_64 filesystem definition required by the retained microdroid_gki-android16-6.12_initrd_gen_x86_64 generator. Generic AVF guest inputs only; not Nezha recovery kernel, DTB, firmware or kernel-module inputs. Payload integrity and checkout size remain unverified; no built artifact or runtime support is claimed."
+    },
+    {
+      "path": "packages/apps/Car/Settings",
+      "url": "https://android.googlesource.com/platform/packages/apps/Car/Settings",
+      "commit": "64634c7bfc79be369f0cd251d6c61df995cdf8b1",
+      "tag": "android-16.0.0_r1",
+      "reason": "Source audit projection, not a graph 34 error: real AOSP com_android_car_settings_flags_lib required by retained CtsSettingsTestCases. The whole original project is pinned, while source selection admits only aconfig/Android.bp with com_android_car_settings_flags and its Java flag library. No Car Settings app, APK installation or new test gate is added."
     }
   ]
 }

@@ -300,6 +300,18 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "f8212ed54b180abdfc3c6fe398212e9c62d9b264fc2ca40f606a973557f6c408")
 
+    def test_first_239_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:239]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "846f25983f934dbf409e7f3b0e933d93cdfed3acac8ca0678e14a12d055a37dc")
+
+    def test_first_245_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:245]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "3636b49022d3596f865ead2fd1b9e0c0b177abca317f3b3312854ab6f0091376")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1340,7 +1352,7 @@ class ConfigurationTests(Fixture):
             ("external/replicaisland", "f32cc0546b83dd918c94c37850109d311ebabcaf"),
             ("frameworks/opt/tv/tvsystem", "ddc4040688dca1b980b8744a012d6cf6a62f792c"),
         ]
-        self.assertEqual(len(projects), 239)
+        self.assertGreaterEqual(len(projects), 239)
         self.assertEqual([(p["path"], p["commit"]) for p in projects[236:239]], expected)
         for project in projects[236:239]:
             with self.subTest(path=project["path"]):
@@ -1371,6 +1383,72 @@ class ConfigurationTests(Fixture):
                      "suppresses released API tracking", "current API checks remain",
                      "no new waiver is added", "No recovery product package or TV functionality is implied"):
             self.assertIn(text, projects[238]["reason"])
+
+    def test_reviewed_camera_and_microdroid_projection_source_pins(self):
+        projects = dependencies.load_config()["projects"]
+        expected = [
+            ("external/jetpack-camera-app", "https://android.googlesource.com/platform/external/jetpack-camera-app",
+             "bff117dd925374b0023b6ca6e5a237fb5944e581"),
+            ("external/accompanist", "https://android.googlesource.com/platform/external/accompanist",
+             "f083e7c9735aa7806e6fa902923aa021881aee78"),
+            ("kernel/prebuilts/6.6/arm64", "https://android.googlesource.com/kernel/prebuilts/6.6/arm64",
+             "810308806a7a4677f8e4a0d37daa707a0832bbea"),
+            ("kernel/prebuilts/6.6/x86_64", "https://android.googlesource.com/kernel/prebuilts/6.6/x86-64",
+             "88d6379eab0da6425d570d22531c210e40f5abd6"),
+            ("kernel/prebuilts/6.12/arm64", "https://android.googlesource.com/kernel/prebuilts/6.12/arm64",
+             "0af99653adede9524c7dbb36ba901d22e6266404"),
+            ("kernel/prebuilts/6.12/x86_64", "https://android.googlesource.com/kernel/prebuilts/6.12/x86-64",
+             "0cbffc1bfc41e1e6d399a23d1ffe45875213b67f"),
+        ]
+        self.assertGreaterEqual(len(projects), 245)
+        self.assertEqual([(p["path"], p["url"], p["commit"]) for p in projects[239:245]], expected)
+        for project in projects[239:245]:
+            with self.subTest(path=project["path"]):
+                self.assertEqual(project["tag"], "android-16.0.0_r1")
+
+    def test_camera_and_microdroid_reasons_preserve_guest_and_runtime_boundaries(self):
+        projects = dependencies.load_config()["projects"]
+        for project in projects[239:245]:
+            with self.subTest(path=project["path"]):
+                self.assertTrue(project["reason"].startswith("Source audit projection, not a graph 34 error:"))
+                self.assertNotIn("graph 34 errors", project["reason"])
+        for text in ("jetpack-camera-app android_app", "other_required_apps in cts/apps/CtsVerifier",
+                     "inert legacy subdirs assignment", "No APK, installation or camera functionality is claimed"):
+            self.assertIn(text, projects[239]["reason"])
+        for text in ("accompanist-permissions android_library", "jetpack-camera-app-tests-helper",
+                     "jetpack-camera-app_feature_permissions", "jetpack-camera-app_feature_settings",
+                     "SDK/minSDK checks are preserved", "no camera permission behavior or runtime compatibility"):
+            self.assertIn(text, projects[240]["reason"])
+        versions = [("android15", "6.6", "arm64"), ("android15", "6.6", "x86_64"),
+                    ("android16", "6.12", "arm64"), ("android16", "6.12", "x86_64")]
+        for project, (android, version, arch) in zip(projects[241:245], versions):
+            with self.subTest(path=project["path"]):
+                reason = project["reason"]
+                self.assertIn(f"microdroid_gki_modules-{android}-{version}-{arch}", reason)
+                self.assertIn(f"microdroid_gki-{android}-{version}_initrd_gen_{arch}", reason)
+                for text in ("Generic AVF guest inputs only", "not Nezha recovery kernel, DTB, firmware or kernel-module inputs",
+                             "Payload integrity and checkout size remain unverified",
+                             "no built artifact or runtime support is claimed"):
+                    self.assertIn(text, reason)
+
+    def test_reviewed_car_settings_flags_projection_source_pin_and_scope(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 246)
+        project = projects[245]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "packages/apps/Car/Settings",
+            "url": "https://android.googlesource.com/platform/packages/apps/Car/Settings",
+            "commit": "64634c7bfc79be369f0cd251d6c61df995cdf8b1",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertTrue(reason.startswith("Source audit projection, not a graph 34 error:"))
+        self.assertNotIn("graph 34 errors", reason)
+        for text in ("com_android_car_settings_flags_lib", "CtsSettingsTestCases",
+                     "whole original project is pinned", "selection admits only aconfig/Android.bp",
+                     "com_android_car_settings_flags", "Java flag library",
+                     "No Car Settings app, APK installation or new test gate is added"):
+            self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
         for count in (122, 127):
