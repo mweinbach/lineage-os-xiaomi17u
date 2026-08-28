@@ -65,6 +65,7 @@ class Fixture(unittest.TestCase):
                 ("rev-parse", "--absolute-git-dir"): str(target / ".git"),
                 ("rev-parse", "HEAD"): self.project["commit"],
                 ("remote", "get-url", "origin"): self.project["url"],
+                ("ls-files", "-v", "-z"): "H Android.bp\0H include/bpf.h\0",
                 ("status", "--porcelain=v1", "-z", "--untracked-files=all", "--ignored=matching"): "",
                 ("rev-parse", "--verify", "FETCH_HEAD^{commit}"): self.project["commit"]}[args]
 
@@ -218,7 +219,36 @@ class ProjectTests(Fixture):
     def test_git_process_forces_executable_mode_checks(self):
         with patch.object(twrp_workspace, "run", return_value=SimpleNamespace(stdout="")) as run:
             dependencies.git_value(self.target, "status")
-        self.assertEqual(run.call_args.args[0][:4], ["git", "-c", "core.fileMode=true", "-C"])
+        self.assertEqual(run.call_args.args[0], ["git", "-c", "core.fileMode=true",
+                         "-c", "core.fsmonitor=false", "-c", "core.ignoreStat=false", "-C", self.target, "status"])
+
+    def test_assume_unchanged_cannot_hide_modified_tracked_bytes(self):
+        def hidden(target, *args):
+            if args == ("ls-files", "-v", "-z"):
+                return "h Android.bp\0H include/bpf.h\0"
+            return self.git(target, *args)
+        (self.target / "Android.bp").write_text("modified bytes hidden from ordinary git status")
+        with patch.object(dependencies, "git_value", side_effect=hidden), self.assertRaisesRegex(ValueError, "hidden or unexpected"):
+            dependencies.verify_project(self.project, self.target)
+        self.assertEqual((self.target / "Android.bp").read_text(), "modified bytes hidden from ordinary git status")
+
+    def test_skip_worktree_cannot_hide_modified_tracked_bytes(self):
+        for flag in ("S", "s"):
+            def hidden(target, *args):
+                if args == ("ls-files", "-v", "-z"):
+                    return f"{flag} Android.bp\0H include/bpf.h\0"
+                return self.git(target, *args)
+            with self.subTest(flag=flag), patch.object(dependencies, "git_value", side_effect=hidden), \
+                 self.assertRaisesRegex(ValueError, "hidden or unexpected"):
+                dependencies.verify_project(self.project, self.target)
+
+    def test_empty_malformed_or_unmerged_index_records_are_rejected(self):
+        for flags in ("", "H Android.bp", "H \0", "M conflict\0", "H Android.bp\0\0"):
+            def fake(target, *args):
+                return flags if args == ("ls-files", "-v", "-z") else self.git(target, *args)
+            with self.subTest(flags=flags), patch.object(dependencies, "git_value", side_effect=fake), \
+                 self.assertRaisesRegex(ValueError, "hidden or unexpected"):
+                dependencies.verify_project(self.project, self.target)
 
     def test_verify_report_does_not_claim_it_validated_base_patch_contents(self):
         with self.base_mocks(), patch.object(dependencies, "git_value", side_effect=self.git):

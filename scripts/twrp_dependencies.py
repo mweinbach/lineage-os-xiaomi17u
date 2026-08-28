@@ -115,8 +115,10 @@ def base_context(control_root, source_dir, paths=None):
 
 
 def git_value(target, *args):
-    # A local core.fileMode=false setting must not hide executable-bit changes.
-    return twrp_workspace.run(["git", "-c", "core.fileMode=true", "-C", target, *args], capture=True).stdout.strip()
+    # Do not trust local settings that suppress worktree or executable checks,
+    # or invoke a filesystem-monitor hook while verifying source identity.
+    return twrp_workspace.run(["git", "-c", "core.fileMode=true", "-c", "core.fsmonitor=false",
+                               "-c", "core.ignoreStat=false", "-C", target, *args], capture=True).stdout.strip()
 
 
 def verify_project(project, target):
@@ -128,11 +130,17 @@ def verify_project(project, target):
     git_dir = Path(git_value(target, "rev-parse", "--absolute-git-dir")).resolve()
     head = git_value(target, "rev-parse", "HEAD")
     origin = git_value(target, "remote", "get-url", "origin")
-    status = git_value(target, "status", "--porcelain=v1", "-z", "--untracked-files=all", "--ignored=matching")
     if root != target or git_dir != metadata:
         raise ValueError(f"Supplementary Git root or metadata differs: {project['path']}")
     if head != project["commit"] or origin != project["url"]:
         raise ValueError(f"Supplementary HEAD or origin differs from its reviewed pin: {project['path']}")
+    entries = git_value(target, "ls-files", "-v", "-z").split("\0")
+    # Lowercase tags mark assume-unchanged entries; S marks skip-worktree.
+    # Neither can be accepted merely because `git status` then looks clean.
+    # Normal tracked entries have exactly the uppercase H prefix.
+    if len(entries) < 2 or entries[-1] or any(not entry.startswith("H ") or len(entry) < 3 for entry in entries[:-1]):
+        raise ValueError(f"Supplementary index has hidden or unexpected tracked-file flags; preserved: {project['path']}")
+    status = git_value(target, "status", "--porcelain=v1", "-z", "--untracked-files=all", "--ignored=matching")
     if status:
         raise ValueError(f"Supplementary source has local, ignored or mode changes; preserved: {project['path']}")
     return {**project, "actual_head": head, "actual_origin": origin, "root": str(root),
