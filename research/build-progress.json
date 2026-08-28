@@ -1204,7 +1204,7 @@
     }
   ],
   "factory_candidate": {
-    "state": "installed_not_built",
+    "state": "installed_and_user_component_build_passed",
     "input_reuse_record": "research/factory-input-reuse.json",
     "admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
     "kernel_provenance_relabelled": false,
@@ -1245,5 +1245,19 @@
       "source_or_out_written": false,
       "factory_origin_verified": false
     }
+  },
+  "factory_user_security_build": {
+    "record": "research/user-security-build.json",
+    "build_receipt_sha256": "869ea7bd4fbb1dd914d5d159ba591efc0a392a44ab63e9a6954281f5755986d6",
+    "policy_check_receipt_sha256": "860ba46668d8dc9f83434a0f3ca6bf7ac1a75e91d07777610f90a744fbf05077",
+    "source_audit_receipt_sha256": "2efe30e4d824454af5b595103de15bb8fcc29209b19aaa1bf3cd9696590eccd3",
+    "build_passed": true,
+    "source_policy_zero_permissive_domains": true,
+    "combined_factory_policy_passed": false,
+    "remaining_factory_assertion_sites": 5,
+    "source_project_heads_and_remotes_verified": 1179,
+    "expected_modified_source_projects": 3,
+    "full_rom_verified": false,
+    "phone_accessed": false
   }
 }

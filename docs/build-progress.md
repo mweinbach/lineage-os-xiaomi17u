@@ -228,8 +228,15 @@ the original file preserved and all other policy statements unchanged.
 The [patch](../patches/evolution/selinux-enforcement.json) binds both source
 hashes. Its installation receipt SHA256 is
 `f776922d1e1167fa53998d0bbf8983fea0f11a9a756b160f75b4e4405918542b`.
-No build or zero-permissive-domain result for these new inputs is claimed
-yet; the earlier user v7 result remains a different policy snapshot.
+Those installation receipts precede compilation; the earlier user v7 result
+remains a different policy snapshot. The later
+[hardened user v8 build](user-security-build.md) passed at `00:17:18 UTC` on
+August 28 after 6,551 Ninja actions, including init, init_boot, vendor_boot,
+DTBO and source-policy targets. Both generated source-policy binaries then
+passed an independent, unfiltered check with zero permissive domains.
+The ten-file combination with exact factory vendor/ODM CIL still fails five
+assertions and produces no binary. The generated precompiled policy is staged
+under ODM; it has not replaced the policy inside the retained factory image.
 
 The pinned init source was hardened at `23:49:25 UTC`. Both init-stage
 defaults now use `SPOOF_SAFETYNET=0`; the previously unconditional release,
@@ -242,6 +249,10 @@ preserved. Installation receipt SHA256:
 `e8893a3c2e26cd19ba5ad0b6c521d19a214de6f5ae295c3316701dd2736f02c3`.
 This is source hardening, not a runtime property or bootloader-state result;
 libinit hooks and initial property sources still need separate verification.
+The subsequent complete source audit matched all 1,179 project HEADs and
+remotes, with exactly three expected patched projects and 1,176 clean ones.
+The audit and successful v8 build have separate receipts; the original source
+installation receipt's compilation fields remain historical observations.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from

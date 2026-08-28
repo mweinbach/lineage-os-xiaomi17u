@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "snapshot": "hardened-user-v8-source-build",
+  "receipts": {
+    "build": {
+      "path": "reports/nezha-factory-boot-v8-1-receipt.json",
+      "sha256": "869ea7bd4fbb1dd914d5d159ba591efc0a392a44ab63e9a6954281f5755986d6",
+      "size_bytes": 71231
+    },
+    "build_sandbox": {
+      "path": "reports/nezha-factory-boot-v8-1-sandbox.json",
+      "sha256": "47f7b76ddcb5f112c38633c1461a144b2628e374740bfcec166c164a76b122a4",
+      "size_bytes": 4280
+    },
+    "policy_check": {
+      "path": "artifacts/build-validation/nezha-factory-policy-v8-1/receipt.json",
+      "sha256": "860ba46668d8dc9f83434a0f3ca6bf7ac1a75e91d07777610f90a744fbf05077",
+      "size_bytes": 17801
+    },
+    "cil_delta": {
+      "path": "artifacts/build-validation/nezha-factory-policy-v8-1/cil-delta.json",
+      "sha256": "f262cf6c4694371a96e53fbe9357748a3289b6621b5715884e19cbc0887d81e7",
+      "size_bytes": 502
+    },
+    "policy_transfer": {
+      "path": "artifacts/build-validation/nezha-factory-policy-v8-1/transfer.json",
+      "sha256": "c3a7d9a56595d3490b6f26a666a90967e36fa5d413411fbbe06b645332b7cb5a",
+      "size_bytes": 6553
+    },
+    "source_audit": {
+      "path": "reports/source-audit-after-v8-1-receipt.json",
+      "sha256": "2efe30e4d824454af5b595103de15bb8fcc29209b19aaa1bf3cd9696590eccd3",
+      "size_bytes": 791005
+    }
+  },
+  "build": {
+    "target_product": "lineage_nezha",
+    "target_release": "bp4a",
+    "target_variant": "user",
+    "started_at": "2026-08-27T23:53:38.109989+00:00",
+    "completed_at": "2026-08-28T00:17:18.209127+00:00",
+    "physical_out_dir": "/work/out/nezha-user-policy-20260827T2220Z",
+    "input_admission_sha256": "d5f390860ad90f35351502887efd43b140c9c5771173ec17ba4e276e2b9afd1a",
+    "installation_sha256": "9775be640f7e37d722113e5c86d1774daa1da6ecafa8468637018ea62a6ea7dc",
+    "exit_code": 0,
+    "passed": true,
+    "timed_out": false,
+    "source_inputs_unchanged_after_build": true,
+    "all_eleven_old_userdebug_artifacts_unchanged": true,
+    "prior_user_policy_tools_and_config_preserved": true,
+    "preserved_user_files": 17,
+    "preservation_manifest_sha256": "43a54f9e488ccd909589cd8069b7604e555016d5ab0f973f0720c9699adf4406",
+    "incremental_user_output_reused": true,
+    "old_output_reset_or_installclean_requested": false,
+    "source_sync_repeated": false,
+    "checks_disabled_by_this_probe": [],
+    "full_rom_build_verified": false,
+    "name": "nezha-factory-boot-v8-1",
+    "receipt": "build",
+    "targets": [
+      "initbootimage",
+      "vendorbootimage",
+      "dtboimage",
+      "init",
+      "precompiled_sepolicy",
+      "secilc",
+      "sepolicy-analyze",
+      "checkfc",
+      "checkseapp",
+      "property_info_checker",
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "plat_sepolicy_genfs_202504.cil",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file",
+      "sepolicy_neverallows",
+      "sepolicy_test",
+      "sepolicy_dev_type_test"
+    ],
+    "ninja_actions_completed": 6551,
+    "policy_targets_include_captured_factory_vendor_cil": false,
+    "second_stage_init_packaged_into_system_image_verified": false
+  },
+  "provenance": {
+    "source_snapshot": "research/source-snapshots/evolution-bka-20260827.xml",
+    "source_snapshot_sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "factory_source_kind": "user-provided factory-named archive",
+    "factory_source_url": null,
+    "factory_origin_authenticated": false,
+    "historical_v7_record": "research/selinux-user-integration.json",
+    "historical_receipts_rewritten": false
+  },
+  "source_patches": [
+    {
+      "project": "vendor/lineage",
+      "base_commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "patch": "patches/evolution/0001-allow-device-to-enforce-security-properties.patch",
+      "patch_sha256": "84aee914e14fb6f7e82351a3163998fe793c5e2a3d8dfac32d3a123b27d0729f",
+      "files": [
+        {
+          "path": "config/common.mk",
+          "before_sha256": "a0b49c75c1055d73e7984c7cab73dc608a9b1b298d7ba710372dd1a1360edf35",
+          "after_sha256": "2747b367f0a0bc4f758b31ee88833cbb829a24be8a74e3ff9b11bbbae75a36ca"
+        }
+      ]
+    },
+    {
+      "project": "system/sepolicy",
+      "base_commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+      "patch": "patches/evolution/0002-remove-permissive-su.patch",
+      "patch_sha256": "7ff91ebdf07d3ec5f2b3849fcb2cb41dfe1337c53b16855385b07c4ee13e3f4b",
+      "files": [
+        {
+          "path": "private/su.te",
+          "before_sha256": "aa90a463c2e7a98f749c474f08c864be65467bca8118481de0388e8ce85e924f",
+          "before_size_bytes": 5255,
+          "after_sha256": "111c6d9384480ef07d0e47cabdc69cc990112831b783a6e14db619b26ca2dc01",
+          "after_size_bytes": 5193,
+          "before_git_blob": "690f305ff32fb59b3c37b9a45ecc7f25e968fe93",
+          "after_git_blob": "dfd18a91357f9b20eb1d59d3c49ad211b8865aba"
+        }
+      ]
+    },
+    {
+      "project": "system/core",
+      "base_commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+      "patch": "patches/evolution/0003-preserve-boot-properties.patch",
+      "patch_sha256": "c7072d03ca42de08837513b863ee90b2896f2adaabf02ab88c3dd155c9cc3f47",
+      "files": [
+        {
+          "path": "init/Android.bp",
+          "before_sha256": "da1f40d38866a9d2210beb614e25be55a38537901bee50da999bb5becb04b605",
+          "before_size_bytes": 18797,
+          "after_sha256": "753e21f935e0a138544b65baf57ad4431adadfedf2c6b9526931ba821e1e22fa",
+          "after_size_bytes": 18797,
+          "before_git_blob": "068773db4521285df8c6ca00465403be05d3ccf1",
+          "after_git_blob": "39294f9c75f912e8c1795f7363cf0eda04e8c188"
+        },
+        {
+          "path": "init/property_service.cpp",
+          "before_sha256": "3c569b56b36cf052e07aaeb2fed2644c6ef88519d5de5a7c808f0b543266891b",
+          "before_size_bytes": 67548,
+          "after_sha256": "d82faacbbeb80256a416ca81cb9c877def16c3140aa57f4126db41889a67a887",
+          "after_size_bytes": 67643,
+          "before_git_blob": "67c6de19f0968ed818efe37fa3a9624c71ab3cae",
+          "after_git_blob": "5f9027ee6fcff7fb487a19f5150026acb1e4f779"
+        }
+      ]
+    }
+  ],
+  "source_audit": {
+    "receipt": "source_audit",
+    "completed_at": "2026-08-28T00:27:16.379763+00:00",
+    "summary": {
+      "project_count": 1179,
+      "head_match_count": 1179,
+      "remote_match_count": 1179,
+      "clean_project_count": 1176,
+      "intentional_modified_project_count": 3,
+      "accepted_worktree_count": 1179,
+      "unexpected_projects": []
+    },
+    "manifest": {
+      "head": "cc4ebb8db9750afba6049825127304b09327f7c1",
+      "url": "https://github.com/Evolution-X/manifest.git",
+      "clean": true,
+      "passed": true
+    },
+    "repo": {
+      "head": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77",
+      "url": "https://gerrit.googlesource.com/git-repo",
+      "clean": true,
+      "passed": true
+    },
+    "manifest_selector_sha256": "33d794c99c197c2eb0726ff2cc8c4bcd532e0f3fcd75eaea3fbd10bd53675d25",
+    "project_list_matches": true,
+    "local_manifest_files": [],
+    "source_writes_performed": false,
+    "lfs_payloads_independently_rehashed": false,
+    "ignored_files_audited": false,
+    "authored_non_repo_directories_audited": false
+  },
+  "observed_configuration": {
+    "readback": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/soong/soong.lineage_nezha.variables",
+      "sha256": "e90310577cb87cc837744df33944f7586c3600f363b1b2f4a489fb5521d01b37",
+      "size_bytes": 339022
+    },
+    "values": {
+      "Debuggable": false,
+      "Eng": false,
+      "SelinuxIgnoreNeverallows": false,
+      "EnforceSELinuxTrebleLabeling": true,
+      "SELinuxTrebleLabelingTrackingListFile": "",
+      "DeviceName": "nezha",
+      "DeviceProduct": "lineage_nezha",
+      "Platform_sdk_version": 36,
+      "PlatformSepolicyVersion": "202504",
+      "BoardSepolicyVers": "202504"
+    },
+    "actual_treble_labeling_test_pass_verified": false
+  },
+  "source_policy_analysis": {
+    "receipt": "policy_check",
+    "completed_at": "2026-08-28T00:21:18.250675+00:00",
+    "binaries": [
+      {
+        "name": "source-precompiled",
+        "input": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/odm/etc/selinux/precompiled_sepolicy",
+          "sha256": "8ba4d0fa829bf2f4fe8a759953b2afcf886a0ac76933bda6c2e2a28771c8563a",
+          "size_bytes": 721536
+        },
+        "analysis_argv_tail": [
+          "/work/validation/nezha-factory-policy-v8-1/bin/sepolicy-analyze",
+          "/work/validation/nezha-factory-policy-v8-1/inputs/binaries/source-precompiled.policy",
+          "permissive"
+        ],
+        "exit_code": 0,
+        "reported_domains": [],
+        "zero_permissive_domains": true,
+        "stdout": {
+          "path": "/work/validation/nezha-factory-policy-v8-1/results/source-precompiled-permissive.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stderr": {
+          "path": "/work/validation/nezha-factory-policy-v8-1/results/source-precompiled-permissive.stderr",
+          "sha256": "cd7fccf094ad887df3bdd62f9f376633a317e8e794b7419614fd9f80265067cd",
+          "size_bytes": 315
+        },
+        "stderr_scope": "Only the two nsjail warnings about global root UID/GID mapping; no analyzer diagnostics."
+      },
+      {
+        "name": "source-neverallows",
+        "input": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/sepolicy_neverallows/android_common/policy",
+          "sha256": "06dd74fe21f27629cd6275cbe88244fa6c0221eecaf147ae34f5a1278b0f09b6",
+          "size_bytes": 775106
+        },
+        "analysis_argv_tail": [
+          "/work/validation/nezha-factory-policy-v8-1/bin/sepolicy-analyze",
+          "/work/validation/nezha-factory-policy-v8-1/inputs/binaries/source-neverallows.policy",
+          "permissive"
+        ],
+        "exit_code": 0,
+        "reported_domains": [],
+        "zero_permissive_domains": true,
+        "stdout": {
+          "path": "/work/validation/nezha-factory-policy-v8-1/results/source-neverallows-permissive.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stderr": {
+          "path": "/work/validation/nezha-factory-policy-v8-1/results/source-neverallows-permissive.stderr",
+          "sha256": "656316752fcd13c93dd8476879fa8e7f92c1537ee1539cf63b2626bd09bcb46a",
+          "size_bytes": 315
+        },
+        "stderr_scope": "Only the two nsjail warnings about global root UID/GID mapping; no analyzer diagnostics."
+      }
+    ],
+    "tool": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/sepolicy-analyze",
+      "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669",
+      "size_bytes": 543160
+    },
+    "unfiltered": true,
+    "permissive_allowlists_applied": false,
+    "all_inputs_and_sources_unchanged": true,
+    "factory_odm_prebuilt_policy_replaced": false,
+    "runtime_enforcement_verified": false
+  },
+  "strict_factory_check": {
+    "receipt": "policy_check",
+    "passed": false,
+    "exit_code": 255,
+    "compiler": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/secilc",
+      "sha256": "1481d17c86dfc4b0ac47bd150f604425e718386379b690d06f60e417376b9a34",
+      "size_bytes": 1368080
+    },
+    "compiler_flags": [
+      "-m",
+      "-M",
+      "true",
+      "-G",
+      "-c",
+      "30"
+    ],
+    "input_order": [
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "b8353ba3f5336ff28b17508808c4617d47e289be6fe7ca6b37cf4da2a9708130",
+        "size_bytes": 3012604
+      },
+      {
+        "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+        "size_bytes": 229237
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+        "origin": "preserved factory input",
+        "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+        "size_bytes": 396303
+      },
+      {
+        "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+        "origin": "preserved factory input",
+        "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+        "size_bytes": 1708593
+      },
+      {
+        "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+        "origin": "preserved factory input",
+        "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+        "size_bytes": 14292
+      },
+      {
+        "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "origin": "new user v8 framework output",
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "size_bytes": 142
+      }
+    ],
+    "input_count": 10,
+    "input_bytes": 5361175,
+    "framework_input_count": 7,
+    "unchanged_factory_input_count": 3,
+    "neverallow_assertion_sites": 5,
+    "displayed_allow_locations": 11,
+    "remaining_groups": [
+      {
+        "group": "missing isolated-compute DSP client membership",
+        "assertion_file": "/vendor/etc/selinux/vendor_sepolicy.cil",
+        "lines": [
+          6044
+        ]
+      },
+      {
+        "group": "init helper property setters",
+        "assertion_file": "/vendor/etc/selinux/plat_pub_versioned.cil",
+        "lines": [
+          5931,
+          5746
+        ]
+      },
+      {
+        "group": "Binder service-object labels used as process domains",
+        "assertion_file": "/system/etc/selinux/plat_sepolicy.cil",
+        "lines": [
+          24641,
+          24636
+        ]
+      }
+    ],
+    "policy_binary_produced": false,
+    "file_contexts_produced": false,
+    "assertions_or_diagnostics_filtered": false,
+    "permissive_analysis_possible_for_failed_combined_binary": false,
+    "stderr": {
+      "path": "/work/validation/nezha-factory-policy-v8-1/results/combined-factory-strict.stderr",
+      "sha256": "1f2e3b3cf34f4919d6aabf3d14fa0d08beb76f26dbb2702e9c3e04da7b2d97e4",
+      "size_bytes": 4236
+    }
+  },
+  "platform_cil_delta": {
+    "schema_version": 1,
+    "completed_at": "2026-08-28T00:23:35.718827+00:00",
+    "old_sha256": "ab01b223e9004c41964330b1b7ebe9b0a7a3250bda622eeecc988bc1bce21961",
+    "new_sha256": "b8353ba3f5336ff28b17508808c4617d47e289be6fe7ca6b37cf4da2a9708130",
+    "old_bytes": 3012624,
+    "new_bytes": 3012604,
+    "removed_statement": "(typepermissive su)",
+    "exact_single_statement_difference": true,
+    "all_other_cil_bytes_unchanged": true,
+    "input_files_modified": false,
+    "runtime_enforcement_verified": false
+  },
+  "sandbox": {
+    "build_receipt": "build_sandbox",
+    "build_observed_at": "2026-08-28T00:05:13.164439+00:00",
+    "build_namespace_separation": {
+      "mnt": true,
+      "net": true,
+      "pid": true,
+      "user": true
+    },
+    "build_source_read_only": true,
+    "build_out_read_write": true,
+    "build_sandbox_fallback_observed": false,
+    "policy_checks_source_and_both_outs_read_only": true,
+    "policy_checks_inputs_tools_and_provenance_read_only": true,
+    "policy_checks_writable_backing_directory": "/work/validation/nezha-factory-policy-v8-1",
+    "namespace_tmp_backed_inside_validation": true,
+    "policy_check_count": 3,
+    "policy_check_input_tool_and_provenance_count": 22,
+    "all_policy_inputs_and_sources_unchanged": true
+  },
+  "limits": {
+    "source_policy_is_complete_factory_policy": false,
+    "generated_precompiled_policy_is_installed_in_factory_odm_image": false,
+    "init_runtime_behavior_verified": false,
+    "live_bootloader_state_verified": false,
+    "complete_rom_verified": false,
+    "device_boot_verified": false,
+    "native_features_verified": false,
+    "phone_accessed": false,
+    "checks_disabled": []
+  }
+}

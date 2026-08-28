@@ -168,6 +168,7 @@ properties do not independently establish physical variant or bootloader state.
 | [Vendor APEX dependencies](docs/apex-dependencies.md) | Guarded CAS, Widevine and Wi-Fi payload inspection and matching active-package evidence |
 | [SELinux contract](docs/selinux-contract.md) | Exact stock policy inputs and seven strict neverallow failures; no policy or device pass claimed |
 | [User policy integration](docs/selinux-user-integration.md) | Five remaining combined-policy assertion sites, source ownership and enforcing-policy requirements |
+| [Hardened user build](docs/user-security-build.md) | Actual v8 component build, two unfiltered zero-permissive source binaries and separate factory-policy failure |
 | [Build progress](docs/build-progress.md) | Authored Nezha product, actual Kati result, module compilation and private input receipts |
 | [Boot/DLKM build](docs/boot-dlkm-build.md) | Four built engineering images, exact kernel/overlay and 484 preserved module payloads |
 | [Nezha integration plan](docs/nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
