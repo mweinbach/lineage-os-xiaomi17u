@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Authored minimal configfs glue. The matching vendor_boot bootconfig supplies
+# the actual USB controller. No device address, stock ADB key, or module load
+# list is substituted. USB mode switching and runtime policy remain untested.
+
+on init
+    setprop sys.usb.configfs 1
+
+on property:ro.boot.usbcontroller=*
+    setprop sys.usb.controller ${ro.boot.usbcontroller}
