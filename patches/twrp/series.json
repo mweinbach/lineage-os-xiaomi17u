@@ -691,6 +691,120 @@
           "sha256": "ed2ec052b21a51e71161bc8501cab6434878848f49f0a7662e055ab46a1dc01d"
         }
       }
+    },
+    {
+      "id": "0015-native-recovery-systemui-robolectric",
+      "project": "frameworks/libs/systemui",
+      "repository": "https://android.googlesource.com/platform/frameworks/libs/systemui",
+      "base_commit": "9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62",
+      "source_owner": "supplementary",
+      "patch": "patches/twrp/0015-native-recovery-systemui-robolectric.patch",
+      "patch_sha256": "2942d41d013026ead5c5b0fc8582d003a181e60ae5654db9f7f55e7164ebf046",
+      "reason": "Replace only animationlib_robo_tests enabled:true with the typed Nezha native recovery select; preserve production animationlib, every other definition and this exact Android module's inactive-profile behavior.",
+      "files": [
+        {
+          "path": "animationlib/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/libs/systemui/+/9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62/animationlib/Android.bp?format=TEXT",
+          "before_sha256": "dc733d6e36da7988bdb420480f13536f824260c60da40176f1812ff62416b4d3",
+          "after_sha256": "a711576194c05d1a9f64ab7bff60155e0f6fb962fc978f900412cd7f8c962210",
+          "before_git_blob": "9f496a9e8bb870a3644cd800dd2d3c555dc2e19c",
+          "after_git_blob": "c738b9a63cc5580d499e67a78b38f9cbfcfaf04c",
+          "before_size_bytes": 2196,
+          "after_size_bytes": 2313,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "animationlib_robo_tests",
+              "before_line": 62,
+              "before_module_sha256": "665e6d33b55ff8da531e58a91a0244c8252cbea081e62648dd03028fa3d89510",
+              "after_module_sha256": "c8d53a03c3d9da53226fedca1b6edfbed131265703c86649da7007016ddc90e7",
+              "enabled_property_before": true,
+              "enabled_value_before": true,
+              "defaults_before": [],
+              "enabled_property_operation": "replace_existing_literal_true",
+              "selected_branch": false,
+              "default_branch": "unset",
+              "default_behavior_proof": "default-enabled-source-proof.json and independent twrp-systemui-animation-robo-gate-review.json",
+              "original_enabled_value": true,
+              "module_hash_convention": "Constructor keyword through its closing brace and following LF."
+            }
+          ]
+        }
+      ],
+      "audit_evidence": [
+        {
+          "path": "reports/twrp-systemui-companion-candidate/sealed-receipt.json",
+          "sha256": "bf6c388ca9f734b3bd9b733ba30ccf13e432e5f8dda603eccaec077e8c6950f6"
+        },
+        {
+          "path": "reports/twrp-systemui-animation-robo-gate-review.json",
+          "sha256": "1bffca8f85a32746fe595ab98b884881f8f5e5966fe196568274b5a5d7b11f2d"
+        }
+      ]
+    },
+    {
+      "id": "0016-native-recovery-robolectric-integration-tests",
+      "project": "external/robolectric",
+      "repository": "https://android.googlesource.com/platform/external/robolectric",
+      "base_commit": "559c38b2cb0fbd87f2118bdcb8bea6f536164d70",
+      "source_owner": "supplementary",
+      "patch": "patches/twrp/0016-native-recovery-robolectric-integration-tests.patch",
+      "patch_sha256": "f98c8119f416ddf9deff180abddced58417646ce9e890c2ea18e76c233beadf2",
+      "reason": "Disable only CtesqueRoboTests and NativeGraphicsTests when the typed Nezha native recovery profile is selected; preserve every other definition and unset-profile behavior.",
+      "files": [
+        {
+          "after_git_blob": "b97279719aa080323a4ce64a871fd5261ddde1a2",
+          "after_sha256": "9e596c67a900be28d370ef01179c324c6d43b99c70846aa7fdad6763d30c3afc",
+          "after_size_bytes": 1196,
+          "before_git_blob": "8c024ea545661343fcf031af5c93773461e348a8",
+          "before_sha256": "29347573462c634e560875193149344b3d94619fda1f2776ec0f4dd54bb2ccb5",
+          "before_size_bytes": 1060,
+          "mode": "100644",
+          "path": "integration_tests/ctesque/Android.bp",
+          "profile_modules": [
+            {
+              "before_module_sha256": "a38545c294f7c376ef83faac515e927d9ef7edee2a333aa480d8730d3f008917",
+              "constructor_line": 5,
+              "enabled_property_before": false,
+              "name": "CtesqueRoboTests",
+              "name_line": 6,
+              "type": "android_robolectric_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/external/robolectric/+/559c38b2cb0fbd87f2118bdcb8bea6f536164d70/integration_tests/ctesque/Android.bp?format=TEXT"
+        },
+        {
+          "after_git_blob": "1a2061a679b4a8dcba18e4097831d95716c70f6c",
+          "after_sha256": "c434b11f8d5b7b0ea74d69f199cb561490dd236f3e2bf4aee6afaadf156ea57d",
+          "after_size_bytes": 1763,
+          "before_git_blob": "13de38cbc5739ca285ebc119671e6c7099787b9b",
+          "before_sha256": "1ad4b2aeb681b39fbfdb53bccbcbf004f76688396998a73435f15b2df455d9fb",
+          "before_size_bytes": 1627,
+          "mode": "100644",
+          "path": "integration_tests/nativegraphics/Android.bp",
+          "profile_modules": [
+            {
+              "before_module_sha256": "995d30137b72290f1c79a015b8f9995c2aae99d47a8157b0cb403508cac2b692",
+              "constructor_line": 48,
+              "enabled_property_before": false,
+              "name": "NativeGraphicsTests",
+              "name_line": 49,
+              "type": "android_robolectric_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/external/robolectric/+/559c38b2cb0fbd87f2118bdcb8bea6f536164d70/integration_tests/nativegraphics/Android.bp?format=TEXT"
+        }
+      ],
+      "audit_evidence": [
+        {
+          "path": "reports/twrp-ctesque-native-recovery-candidate/seal.json",
+          "sha256": "5351176f25a51c307f33bd64d63107f4e54a5872e5c59a9ec3d002b8509613e0"
+        },
+        {
+          "path": "reports/twrp-robolectric-integration-incoming-references.json",
+          "sha256": "d561eb659d83b1daeb51f87ccd0cba1333eea8ed68a17ac35a00b061f40ca7f3"
+        }
+      ]
     }
   ],
   "application_requirements": [
@@ -824,5 +938,82 @@
     ],
     "preserved_behavior": "Only enabled fields are added to the three exact helpers. SettingsLibIpc and the automotive SDK production modules, all dependencies, source lists, defaults and licenses remain byte-for-byte unchanged. This profile intentionally excludes these test helpers and does not claim to run their tests.",
     "validation_boundary": "The literal Blueprint and Make/Go reference audit is not a complete evaluated Soong graph. Captured preimage checks, syntax checks and offline tests do not prove a recovery build or runtime behavior. The next strict graph must verify the three gates together with all six companion source exclusions; no missing-dependency or security validation is waived."
+  },
+  "native_recovery_supplement_profile": {
+    "namespace": "nezha_twrp",
+    "boolean_variable": "native_recovery_only",
+    "selected_value": true,
+    "enabled_when_selected": false,
+    "otherwise": "unset",
+    "patch_ids": [
+      "0015-native-recovery-systemui-robolectric",
+      "0016-native-recovery-robolectric-integration-tests"
+    ],
+    "test_module_type": "android_robolectric_test",
+    "test_module_count": 3,
+    "affected_file_count": 3,
+    "affected_supplementary_project_count": 2,
+    "supplemental_projects_modified": true,
+    "previous_fourteen_patch_records_sha256": "d92b7a0e4b47b036a16046af964b895d16d7cdd300f47594746b7864c93b340d",
+    "previous_metadata_sha256": "61b0ecdb6721facb6f131c009345d8b424f34f0ccdd321f01d33fba222f0f637",
+    "tooling_contract_commit": "8b4ad6edc0fb090df2cca4b73ec456357790fe06",
+    "operations": {
+      "animationlib_robo_tests": "replace_existing_literal_true",
+      "CtesqueRoboTests": "insert_new_property",
+      "NativeGraphicsTests": "insert_new_property"
+    },
+    "provenance": "Source-projection closure for the separately pinned SystemUI and Robolectric providers. These three constructors are reviewed incoming-source dependencies, not three additional observed graph failures.",
+    "historical_boundary": "All fourteen previous patch entries, payloads and metadata remain unchanged. The initial nineteen-module and three-helper records describe their historical audits; the six Graph 14 source exclusions are not asserted to be the current device source selection.",
+    "default_enabled_source_proof": {
+      "soong_commit": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7",
+      "blueprint_commit": "dcb14f2e146f40cf1f212efb220e9aa1f3cfc280",
+      "report": {
+        "path": "reports/twrp-systemui-animation-robo-gate-review.json",
+        "sha256": "1bffca8f85a32746fe595ab98b884881f8f5e5966fe196568274b5a5d7b11f2d"
+      },
+      "files": {
+        "build/soong/android/module.go": "0220bdc66ff68ee95ff0f1d00433ce13ef3a46b599059ccd1e3befbef74b5c05",
+        "build/soong/android/arch.go": "e2ccc72ad54ccc36b4ed56baf6f8dabde7c9e9a275b712e916dc475244f837ac",
+        "build/soong/java/robolectric.go": "b2ddae1c9b310d894298f8b35beecb2774ecd3d36ee1f71ebd60dbe4f440210f",
+        "build/soong/java/base.go": "b2fb9345a48c5e050252ec8529d79f81e35e990c5e6a241a884527fbafcf7c65",
+        "build/blueprint/proptools/configurable.go": "272a7b80f9504332e4f7520aff51c8f3e1873c9efa0f79d14b1f31869853fe50"
+      },
+      "replacement_module": "animationlib_robo_tests",
+      "android_os_default_disabled": false,
+      "explicit_defaults": [],
+      "enable_overrides": [],
+      "forced_disabled_preserved": true,
+      "typed_false_or_absent_effective_enabled": true,
+      "present_wrong_type": "error",
+      "scope": "Exact reviewed DeviceSupported Android module; not a general unset/true equivalence.",
+      "source_chain": [
+        "build/soong/java/robolectric.go:332-347 selects DeviceSupported.",
+        "build/soong/android/arch.go:278,328 registers Android with DefaultDisabled=false.",
+        "build/soong/android/module.go:1439-1443 honors ForcedDisabled before Enabled.GetOrDefault(..., !Os.DefaultDisabled).",
+        "build/blueprint/proptools/configurable.go:1237-1238 represents unset as nil; 647-654 returns the fallback.",
+        "build/soong/android/module.go:2709-2736 and build/blueprint/proptools/configurable.go:829-831 distinguish typed Boolean, missing and incorrectly typed conditions."
+      ]
+    },
+    "dependency_dispatch": {
+      "soong_commit": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7",
+      "source": "build/soong/android/mutator.go:478-482",
+      "disabled_skips": [
+        "baseDepsMutator",
+        "robolectricTest.DepsMutator"
+      ],
+      "boundary": "Disabling these modules skips their normal dependency-mutator dispatch, not Blueprint parsing or all Soong validation."
+    },
+    "candidate_validation": {
+      "systemui_candidate_checks": 14,
+      "systemui_semantics_checks": 25,
+      "robolectric_candidate_checks": 18,
+      "robolectric_incoming_checks": 20,
+      "android_graph_verified": false,
+      "recovery_compile_verified": false,
+      "device_behavior_verified": false
+    },
+    "preserved_behavior": "Only the three named enabled properties change. The production animationlib module is unchanged. NativeGraphicsTestsAssetsLib, NativeGraphicsPseudoApp, all other definitions, dependencies, defaults, licenses and source lists are also unchanged. The original Robolectric runtime helper gate and compiler build-property producer are not modified.",
+    "source_selection_boundary": "Companion source scopes and newly admitted project rows are separate reviewed device/config changes. Restoring original Robolectric plugin and Clearcut providers does not rewrite the historical Graph 14 exclusion record or ungate the runtime helper.",
+    "validation_boundary": "The native recovery profile intentionally excludes these JVM tests and does not claim full Android test coverage. Sealed source checks and offline regressions do not prove an Android graph, recovery compile, boot or runtime behavior. No missing-dependency, SELinux, signature, AVB, VINTF, ELF or other security validation is waived."
   }
 }

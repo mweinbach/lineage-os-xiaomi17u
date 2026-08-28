@@ -15,6 +15,11 @@ SOURCE_SNAPSHOT_SHA256 = "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5
 ORIGINAL_PREFIX_SHA256 = "2ec5f5d4c7574391b4f2a2be94081bcddc99af5a4b0b01f665c5ffffd57e8895"
 PREVIOUS_ELEVEN_SHA256 = "5a55847341ce6f0a3b84b7108a3dd142405c3e2e2d48f89c7be3343db510d8a9"
 PREVIOUS_THIRTEEN_SHA256 = "e1025aba5aeeffa043b1c4b584f8cafcd986ad1fa4a02d97fc910d456424937c"
+PREVIOUS_FOURTEEN_SHA256 = "d92b7a0e4b47b036a16046af964b895d16d7cdd300f47594746b7864c93b340d"
+SUPPLEMENT_PROFILE_IDS = [
+    "0015-native-recovery-systemui-robolectric",
+    "0016-native-recovery-robolectric-integration-tests",
+]
 INITIAL_PROFILE_SHA256 = "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34c8adc9de59"
 MINADBD_GATE_ID = "0014-native-recovery-disable-minadbd"
 MINADBD_GATE_SHA256 = "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705"
@@ -274,7 +279,9 @@ class TwrpPatchTests(unittest.TestCase):
             "0004-require-recovery-adb-auth": (
                 "packages/modules/adb", "ce023afef190b0cea7f8939e9dd5ee3ee79b137b", "daemon/main.cpp"),
         }
-        self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS) + [MINADBD_GATE_ID])
+        self.assertEqual(list(self.patches), list(expected) + list(ALL_PROFILE_PROJECTS)
+                         + [MINADBD_GATE_ID] + SUPPLEMENT_PROFILE_IDS)
+        self.assertEqual(len(self.patches), 16)
         for key, (project, commit, path) in expected.items():
             with self.subTest(patch=key):
                 row = self.patches[key]
@@ -304,6 +311,13 @@ class TwrpPatchTests(unittest.TestCase):
         prefix = self.record["patches"][:13]
         canonical = json.dumps(prefix, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(canonical).hexdigest(), PREVIOUS_THIRTEEN_SHA256)
+        for row in prefix:
+            self.assertEqual(hashlib.sha256(self.raw[row["id"]]).hexdigest(), row["patch_sha256"])
+
+    def test_previous_fourteen_patch_records_and_payloads_are_unchanged(self):
+        prefix = self.record["patches"][:14]
+        canonical = json.dumps(prefix, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(canonical).hexdigest(), PREVIOUS_FOURTEEN_SHA256)
         for row in prefix:
             self.assertEqual(hashlib.sha256(self.raw[row["id"]]).hexdigest(), row["patch_sha256"])
 

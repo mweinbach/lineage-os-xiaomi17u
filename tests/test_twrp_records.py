@@ -59,9 +59,27 @@ class TwrpRecordTests(unittest.TestCase):
                 self.assertEqual(frozen[path], commit)
         series = json.loads((ROOT / "patches/twrp/series.json").read_text())
         self.assertEqual(series["manifest"]["commit"], self.upstream["manifest"]["commit"])
+        supplements = json.loads((ROOT / "config/twrp-dependencies.json").read_text())
+        self.assertEqual(supplements["base"]["manifest_commit"], self.upstream["manifest"]["commit"])
+        self.assertEqual(supplements["base"]["project_count"], 391)
+        supplementary = {row["path"]: row for row in supplements["projects"]}
+        self.assertEqual(len(supplementary), len(supplements["projects"]))
+        self.assertTrue(set(frozen).isdisjoint(supplementary))
+        # The original queue still belongs to the unchanged Repo snapshot.
+        # Additional standalone owners never overwrite a baseline identity.
+        for patch in series["patches"][:14]:
+            self.assertIn(patch["project"], frozen)
         for patch in series["patches"]:
             with self.subTest(patch=patch["id"]):
-                self.assertEqual(patch["base_commit"], frozen[patch["project"]])
+                if patch["project"] in frozen:
+                    self.assertEqual(patch["base_commit"], frozen[patch["project"]])
+                else:
+                    self.assertTrue(patch["project"] in supplementary,
+                                    "Missing pinned supplementary owner: " + patch["project"])
+                    owner = supplementary[patch["project"]]
+                    self.assertEqual(patch["source_owner"], "supplementary")
+                    self.assertEqual(patch["base_commit"], owner["commit"])
+                    self.assertEqual(patch["repository"], owner["url"])
 
     def test_source_review_does_not_claim_device_or_build_success(self):
         self.assertTrue(all(value is False for value in self.upstream["scope"].values()))

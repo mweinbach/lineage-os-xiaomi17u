@@ -1,0 +1,38 @@
+diff --git a/integration_tests/ctesque/Android.bp b/integration_tests/ctesque/Android.bp
+index 8c024ea545661343fcf031af5c93773461e348a8..b97279719aa080323a4ce64a871fd5261ddde1a2 100644
+--- a/integration_tests/ctesque/Android.bp
++++ b/integration_tests/ctesque/Android.bp
+@@ -2,10 +2,14 @@
+     default_applicable_licenses: ["Android-Apache-2.0"],
+ }
+ 
+ android_robolectric_test {
+     name: "CtesqueRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "src/sharedTest/**/*.java",
+         "src/sharedTest/**/*.kt",
+     ],
+     exclude_srcs: [
+diff --git a/integration_tests/nativegraphics/Android.bp b/integration_tests/nativegraphics/Android.bp
+index 13de38cbc5739ca285ebc119671e6c7099787b9b..1a2061a679b4a8dcba18e4097831d95716c70f6c 100644
+--- a/integration_tests/nativegraphics/Android.bp
++++ b/integration_tests/nativegraphics/Android.bp
+@@ -45,10 +45,14 @@
+     },
+ }
+ 
+ android_robolectric_test {
+     name: "NativeGraphicsTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "src/**/*.kt",
+         "src/**/*.java",
+     ],
+     static_libs: [
