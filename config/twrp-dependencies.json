@@ -1730,6 +1730,13 @@
       "commit": "64634c7bfc79be369f0cd251d6c61df995cdf8b1",
       "tag": "android-16.0.0_r1",
       "reason": "Source audit projection, not a graph 34 error: real AOSP com_android_car_settings_flags_lib required by retained CtsSettingsTestCases. The whole original project is pinned, while source selection admits only aconfig/Android.bp with com_android_car_settings_flags and its Java flag library. No Car Settings app, APK installation or new test gate is added."
+    },
+    {
+      "path": "external/oboe",
+      "url": "https://android.googlesource.com/platform/external/oboe",
+      "commit": "dd93a0db2d7458fceea325612623b9996feba378",
+      "tag": "android-16.0.0_r1",
+      "reason": "Real AOSP oboe cc_library_static required by libaudioloopback_jni in the graph 35 error. Original source, oboe_headers, SDK settings and Apache-2.0/GPL-2.0/MIT license metadata are preserved. This source pin does not establish a built APK or audio-loopback functionality."
     }
   ]
 }

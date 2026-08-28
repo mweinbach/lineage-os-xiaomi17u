@@ -312,6 +312,12 @@ class ConfigurationTests(Fixture):
         self.assertEqual(hashlib.sha256(encoded).hexdigest(),
                          "3636b49022d3596f865ead2fd1b9e0c0b177abca317f3b3312854ab6f0091376")
 
+    def test_first_246_supplementary_entries_remain_exact(self):
+        original = dependencies.load_config()["projects"][:246]
+        encoded = json.dumps(original, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "f62d0744f3bbfda4b7224e45617de4d392fa74a64f69819a3ab92fe9eb1315f7")
+
     def test_initial_java_supplements_and_original_391_project_snapshot_are_pinned(self):
         config = dependencies.load_config()
         self.assertEqual(config["base"]["project_count"], 391)
@@ -1433,7 +1439,7 @@ class ConfigurationTests(Fixture):
 
     def test_reviewed_car_settings_flags_projection_source_pin_and_scope(self):
         projects = dependencies.load_config()["projects"]
-        self.assertEqual(len(projects), 246)
+        self.assertGreaterEqual(len(projects), 246)
         project = projects[245]
         self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
             "path": "packages/apps/Car/Settings",
@@ -1448,6 +1454,24 @@ class ConfigurationTests(Fixture):
                      "whole original project is pinned", "selection admits only aconfig/Android.bp",
                      "com_android_car_settings_flags", "Java flag library",
                      "No Car Settings app, APK installation or new test gate is added"):
+            self.assertIn(text, reason)
+
+    def test_graph_thirty_five_oboe_source_pin_and_reason(self):
+        projects = dependencies.load_config()["projects"]
+        self.assertEqual(len(projects), 247)
+        project = projects[246]
+        self.assertEqual({key: project[key] for key in ("path", "url", "commit", "tag")}, {
+            "path": "external/oboe",
+            "url": "https://android.googlesource.com/platform/external/oboe",
+            "commit": "dd93a0db2d7458fceea325612623b9996feba378",
+            "tag": "android-16.0.0_r1",
+        })
+        reason = project["reason"]
+        self.assertIn("graph 35 error", reason)
+        self.assertNotIn("projection", reason.lower())
+        for text in ("oboe cc_library_static", "libaudioloopback_jni", "oboe_headers",
+                     "SDK settings", "Apache-2.0/GPL-2.0/MIT license metadata are preserved",
+                     "does not establish a built APK or audio-loopback functionality"):
             self.assertIn(text, reason)
 
     def test_large_synthetic_source_sets_fit_existing_configuration_limits(self):
