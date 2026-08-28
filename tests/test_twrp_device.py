@@ -9,6 +9,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
 MOTION_TEST_BLUEPRINT = "frameworks/base/packages/SystemUI/compose/scene/tests/Android.bp"
+AUDIO_TEST_BLUEPRINT = "system/media/audio_utils/tests/Android.bp"
+SOURCE_FILE_EXCLUSIONS = {MOTION_TEST_BLUEPRINT, AUDIO_TEST_BLUEPRINT}
 SOURCE_EXCLUSIONS = [
     "-hardware/google/aemu/",
     "-packages/modules/AdServices/",
@@ -43,6 +45,7 @@ SOURCE_EXCLUSIONS = [
     "-platform_testing/",
     "-frameworks/opt/net/wifi/",
     "-development/build/",
+    "-" + AUDIO_TEST_BLUEPRINT,
 ]
 SOURCE_REINCLUSIONS = [
     "platform_testing/libraries/tradefed-error-prone/",
@@ -244,7 +247,7 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertEqual(len(scopes), len(set(scopes)))
         for scope in scopes:
             if not scope.endswith("/"):
-                self.assertEqual(scope, "-" + MOTION_TEST_BLUEPRINT)
+                self.assertIn(scope, {"-" + path for path in SOURCE_FILE_EXCLUSIONS})
             path = scope[1:] if scope.startswith("-") else scope
             self.assertNotIn("..", Path(path).parts)
             self.assertFalse(Path(path).is_absolute())
@@ -256,7 +259,7 @@ class TwrpDeviceTests(unittest.TestCase):
             prefix = scope[1:]
             with self.subTest(scope=scope):
                 if not prefix.endswith("/"):
-                    self.assertEqual(prefix, MOTION_TEST_BLUEPRINT)
+                    self.assertIn(prefix, SOURCE_FILE_EXCLUSIONS)
                     self.assertFalse(source_path_allowed(prefix, scopes))
                     self.assertTrue(source_path_allowed(str(Path(prefix).parent / "utils/Android.bp"), scopes))
                     self.assertTrue(source_path_allowed(str(Path(prefix).parent / "other.bp"), scopes))
@@ -437,6 +440,30 @@ class TwrpDeviceTests(unittest.TestCase):
                 "external/skia/Android.bp", "frameworks/base/libs/hwui/Android.bp",
                 "frameworks/native/libs/renderengine/Android.bp"):
             self.assertTrue(source_path_allowed(source, scopes), source)
+
+    def test_audio_test_file_scope_preserves_production_fuzzers_and_other_tests(self):
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        self.assertFalse(source_path_allowed(AUDIO_TEST_BLUEPRINT, scopes))
+        for prefix in ("-system/media/", "-system/media/audio_utils/",
+                       "-system/media/audio_utils/tests/"):
+            self.assertNotIn(prefix, scopes)
+        for source in ("system/media/Android.bp", "system/media/audio/Android.bp",
+                       "system/media/alsa_utils/Android.bp", "system/media/audio_effects/Android.bp",
+                       "system/media/audio_route/Android.bp", "system/media/audio_utils/Android.bp",
+                       "system/media/audio_utils/benchmarks/Android.bp",
+                       "system/media/audio_utils/fuzz/Android.bp",
+                       "system/media/audio_utils/fuzz/format_fuzzer/Android.bp",
+                       "system/media/audio_utils/tests/child/Android.bp",
+                       "system/media/camera/tests/Android.bp", "system/media/tests/Android.bp",
+                       "hardware/interfaces/vibrator/aidl/default/Android.bp",
+                       "external/tinyalsa/Android.bp", "external/tinyalsa_new/Android.bp",
+                       "external/speex/Android.bp", "system/sepolicy/contexts/Android.bp",
+                       "system/sepolicy/tests/Android.bp", "external/avb/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertEqual(self.device["PRODUCT_PACKAGES"], "recovery")
+        readme = (DEVICE / "README.md").read_text()
+        self.assertIn(AUDIO_TEST_BLUEPRINT, readme)
+        self.assertIn("f01e84b958fb6a887dc0e74e4b5ebd159f03860a", readme)
 
     def test_vehicle_compatibility_test_scope_keeps_production_aidl(self):
         scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()

@@ -176,6 +176,17 @@ distributions. The actual ADB, fastboot, mkbootimg and apksigner providers remai
 included, along with AVB, SELinux, fuzzer-binding and VINTF validation. Missing
 libraries consumed by retained tools still require their genuine providers.
 
+The source batch prepared for Graph 10 restores `system/media` at the genuine
+Android 16 r1 commit `f01e84b958fb6a887dc0e74e4b5ebd159f03860a`. Its
+`system/media/audio_utils/tests/Android.bp` adds audio tests requiring the
+absent TensorFlow and NNAPI runtimes. That single file declares 39 tests,
+one local test default and six test tools, with no shared-library providers.
+The bounded scan found no references to those 46 module names from 10,657
+existing Blueprint files or the other 21 media Blueprint files. Only this
+test file is excluded; production audio and vibrator code, benchmarks,
+fuzzers, other test files and security validators remain included. Required
+production dependencies still need genuine providers, not substitutes.
+
 These are build-graph scope checks, not executions or passing results for the
 excluded tests. The bounded reference scan found no direct recovery consumer
 of the excluded module names; it is not proof of complete transitive closure.
@@ -189,8 +200,9 @@ Blueprint
 `dcb14f2e146f40cf1f212efb220e9aa1f3cfc280` applies literal prefix matching,
 with the longest matching prefix first and unmatched paths allowed. Each
 directory exclusion ends in `/` so it does not hide similarly named siblings.
-The single scene-test file prefix names its `Android.bp` instead, preserving
-the separately declared helper in the `utils` child directory. The
+The scene and audio test exclusions name individual `Android.bp` files,
+preserving other files and child directories, including the consumed scene
+test helper in `utils`. The
 positive Tradefed, rdroidtest and Wi-Fi provider prefixes are explicit exceptions
 inside otherwise excluded projects, evaluated by the same longest-prefix rule.
 Dependencies on skipped modules still fail; if recovery requires one of these

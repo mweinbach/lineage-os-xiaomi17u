@@ -123,6 +123,13 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 PRODUCT_SOURCE_ROOT_DIRS += \
     -development/build/
 
+# The pinned media source adds audio NNAPI/TensorFlow tests unrelated to this
+# recovery. This one file declares 39 tests, one local test default and six
+# test tools, with no external module consumers in the bounded scan. Preserve
+# production audio, benchmarks, fuzzers and all other test Blueprint files.
+PRODUCT_SOURCE_ROOT_DIRS += \
+    -system/media/audio_utils/tests/Android.bp
+
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
