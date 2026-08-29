@@ -103,6 +103,49 @@ OEM_POLICY_LIMITS = frozenset({
     "oem_framework_imported_wholesale", "original_neverallows_removed",
     "phone_mutations_authorized", "service_objects_promoted_to_process_domains",
 })
+OEM_PROPERTY_RECORD = PurePosixPath("config/nezha-oem-properties.json")
+OEM_PROPERTY_CONTRACT_ID = "nezha-oem-properties-v1"
+OEM_PROPERTY_CONTRACT_SHA256 = "f5796d6df4b7232d32ffdece83bc2d5726669fbb6f34f0ba2ef86be6cbc1d711"
+OEM_PROPERTY_FILES = (
+    "sepolicy/system_ext/oem_properties/public/property.te",
+    "sepolicy/system_ext/oem_properties/private/mediaextractor.te",
+    "sepolicy/system_ext/oem_properties/private/mediaserver.te",
+    "sepolicy/system_ext/oem_properties/private/property_contexts",
+)
+OEM_PROPERTY_WIRING = {
+    "SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/public",
+    "SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private",
+}
+OEM_PROPERTY_TYPES = {
+    name: {"scope": "system_ext_public", "role": "object_r", "source_macro": "system_public_prop",
+           "attributes": ["property_type", "system_property_type", "system_public_property_type"],
+           "versioned_attribute": name + "_202504", "mapping_members": [name]}
+    for name in ("vendor_mm_parser_prop", "vendor_persist_dpm_prop", "vendor_sys_video_prop", "vendor_wlc_public_prop")
+}
+OEM_PROPERTY_CONTEXTS = {
+    "persist.vendor.dpm.": "vendor_persist_dpm_prop",
+    "vendor.mm.enable.qcom_parser": "vendor_mm_parser_prop",
+    "vendor.qcom_parser.": "vendor_mm_parser_prop",
+    "vendor.mpctl.init.complete": "vendor_wlc_public_prop",
+    "vendor.sys.media.target.version": "vendor_sys_video_prop",
+    "vendor.sys.video.disable.ubwc": "vendor_sys_video_prop",
+    "vendor.sys.media.target.qssi": "vendor_sys_video_prop",
+    "persist.dpm.feature": "vendor_persist_dpm_prop",
+}
+OEM_PROPERTY_ALLOW_BUDGET = {
+    "vendor_mm_parser_prop": {"count": 26, "sha256_sorted_compact_json_rows": "a701124306a8f89e4867d314f8c72a17dc278f77bbba4d98d6ad7b8ec614ebb9"},
+    "vendor_persist_dpm_prop": {"count": 27, "sha256_sorted_compact_json_rows": "984920c434a04ea145b30502dd29ec7c4064a89c1dd956827f037b42710b7afb"},
+    "vendor_sys_video_prop": {"count": 26, "sha256_sorted_compact_json_rows": "dae03ee5d6afe516b40a948b947293767a5062d82cb851658d7664a470ae32d5"},
+    "vendor_wlc_public_prop": {"count": 26, "sha256_sorted_compact_json_rows": "30596a656bd7c88503d5e48ac52734733ce745b426b5e80cd6f9a0248870f2da"},
+}
+OEM_PROPERTY_LIMITS = frozenset({
+    "complete_rom_admitted", "context_or_treble_tests_proven", "default_profile_changed",
+    "denial_logging_unchanged", "device_runtime_support_proven", "factory_policy_files_modified",
+    "framework_vendor_dpmd_provider_restored", "native_policy_compilation_proven", "original_neverallows_removed",
+    "phone_mutations_authorized", "source_set_prop_rules_added", "vendor_wlc_private_property_or_app_restored",
+    "wireless_charging_support_inferred",
+})
+OEM_PROPERTY_EVIDENCE = ("finite_impact_audit", "finite_impact_readback", "independent_finite_impact_review")
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
@@ -1119,6 +1162,162 @@ def _oem_policy_wiring_lines():
             *(f"{name} += {path}" for name, path in OEM_POLICY_WIRING.items())]
 
 
+def _oem_property_contract(path):
+    contract, identity = _read_json(path)
+    _require(identity["sha256"] == OEM_PROPERTY_CONTRACT_SHA256, "unknown or changed OEM property contract")
+    _require(contract["contract_id"] == OEM_PROPERTY_CONTRACT_ID and
+             contract["device"] == {"codename": "nezha", "hardware_region": "CN"} and
+             contract["profile"] == "framework-checks" and
+             contract["platform"] == {"branch": "bka", "release": "bp4a", "board_api": "202504"} and
+             contract["wiring"] == OEM_PROPERTY_WIRING,
+             "OEM property platform or source ownership differs from the reviewed contract")
+    _require(contract["factory_origin_verified"] is False and contract["types"] == OEM_PROPERTY_TYPES and
+             set(contract["limits"]) == OEM_PROPERTY_LIMITS and all(value is False for value in contract["limits"].values()) and
+             contract["native_effective_ordinary_allow_edges"] == OEM_PROPERTY_ALLOW_BUDGET,
+             "OEM property types, membership budget or scope changed")
+    sources = contract["source_files"]
+    expected = {(DEVICE_PATH / name).as_posix(): ("system_ext_public", "system_public_prop") if "/public/" in name else
+                ("system_ext_private", "property_contexts" if name.endswith("property_contexts") else "get_prop")
+                for name in OEM_PROPERTY_FILES}
+    _require(type(sources) is list and len(sources) == 4 and {row["path"] for row in sources} == set(expected),
+             "OEM property contract requires exactly the four reviewed source files")
+    for row in sources:
+        _require((row["scope"], row["kind"]) == expected[row["path"]], "OEM property source scope or kind changed")
+        _digest(row["sha256"], "OEM property source")
+        _integer(row["size_bytes"], "OEM property source length", MAX_TEXT_BYTES)
+    reads = contract["read_clauses"]
+    _require(type(reads) is list and len(reads) == 2 and
+             {(row["source_type"], row["target_type"]) for row in reads} == {
+                 ("mediaextractor", "vendor_mm_parser_prop"), ("mediaserver", "vendor_sys_video_prop")} and
+             all(row["source_macro"] == "get_prop" and row["class"] == "file" and
+                 row["permissions"] == ["getattr", "map", "open", "read"] for row in reads),
+             "OEM property source grants differ from the two reviewed read clauses")
+    contexts = contract["property_contexts"]
+    _require(type(contexts) is list and len(contexts) == 8 and
+             {row["property_pattern"]: row["type"] for row in contexts} == OEM_PROPERTY_CONTEXTS and
+             all(row["match"] == "prefix" and row["value_type"] is None and row["legacy_implicit_prefix"] is True and
+                 row["context"] == "u:object_r:" + row["type"] + ":s0" for row in contexts),
+             "OEM property prefixes, labels or matching semantics changed")
+    assertions = contract["finite_impact"]["assertions"]
+    _require(assertions["exact_statement_multisets_unchanged"] is True and assertions["total_statements_retained"] == 6366 and
+             assertions["new_ordinary_conflict_edges"] == 0 and assertions["ordinary_semantic_restriction_edges_removed"] == 0,
+             "OEM property assertion preservation evidence changed")
+    for key in OEM_PROPERTY_EVIDENCE:
+        row = contract["evidence"][key]
+        _relative(row["path"])
+        _digest(row["sha256"], "OEM property evidence")
+        _integer(row["size_bytes"], "OEM property evidence length", MAX_JSON_BYTES)
+    return contract, identity
+
+
+def _oem_property_binding(plan, contract, base):
+    _require("oem_policy" in plan and "init_helper_capability" in plan and "dsp_policy" in plan and "factory_profile" in plan,
+             "OEM properties require the explicit OEM, helper, DSP and factory capabilities")
+    _require(contract["base_oem_contract"] == plan["oem_policy"]["contract_record"] and
+             contract["factory_package_sha256"] == plan["source_packages"]["vendor"] == base["factory_package_sha256"] and
+             contract["required_capability_contract"] == base["required_capability_contract"] and
+             contract["unchanged_factory_inputs"] == base["unchanged_factory_inputs"] and
+             contract["existing_vendor_derivation"] == base["existing_vendor_derivation"],
+             "OEM properties must retain the exact OEM base, helper, factory inputs and Binder derivation")
+    revisions = {**plan["init_helper_capability"]["required_source_revisions"], **plan["dsp_policy"]["required_source_revisions"]}
+    _require(set(contract["required_source_revisions"]) == {"build/soong", "external/selinux", "system/core", "system/sepolicy"} and
+             all(revisions[project] == revision for project, revision in contract["required_source_revisions"].items()) and
+             str(plan["board_shipping_api_level"]) == contract["platform"]["board_api"],
+             "OEM property source revisions or mapping API differ from the reviewed inputs")
+    original = {row["runtime_path"]: {key: row[key] for key in ("sha256", "size_bytes")}
+                for row in base["evidence"]["source_rows"]}
+    for key in ("factory_system_ext_cil", "factory_system_ext_mapping"):
+        row = contract["evidence"][key]
+        _require(original.get(row["runtime_path"]) == {field: row[field] for field in ("sha256", "size_bytes")},
+                 "OEM property ownership evidence differs from the admitted OEM base")
+
+
+def _oem_property_admission(contract, identity):
+    return {
+        "contract_id": OEM_PROPERTY_CONTRACT_ID,
+        "contract_record": {"path": OEM_PROPERTY_RECORD.as_posix(), **identity},
+        **{key: contract[key] for key in ("base_oem_contract", "factory_package_sha256", "required_source_revisions",
+                                        "required_capability_contract", "unchanged_factory_inputs", "existing_vendor_derivation",
+                                        "source_files", "types", "read_clauses", "property_contexts", "limits")},
+        "wiring": dict(OEM_PROPERTY_WIRING),
+        "expected_native_effective_ordinary_allow_edges": contract["native_effective_ordinary_allow_edges"],
+        "inherited_denial_logging_effects": contract["finite_impact"]["denial_logging"],
+        "evidence_receipts": {key: contract["evidence"][key] for key in OEM_PROPERTY_EVIDENCE},
+        "factory_property_contexts": contract["evidence"]["factory_system_ext_property_contexts"],
+        "api_mapping": "generated-by-pinned-source-pipeline-at-202504",
+        "source_checkout_inspected": False,
+        "fresh_soong_or_m4_build_performed": False,
+        "native_effective_allow_budget_verified": False,
+        "strict_full_policy_compiled": False,
+        "complete_context_or_treble_checks_passed": False,
+        "image_integration_verified": False,
+        "hardware_tested": False,
+    }
+
+
+def _verify_oem_property_sources(contents, contract):
+    if __package__:
+        from . import oem_policy
+    else:
+        import oem_policy
+    try:
+        oem_policy.verify_property_source_contents(contents, contract)
+    except oem_policy.OemPolicyError as exc:
+        raise CandidateError(f"OEM property sources refused: {exc}") from exc
+
+
+def _bind_oem_properties(plan, path, workspace_root, template_root, payloads):
+    contract, identity = _oem_property_contract(path)
+    base = json.loads(payloads[OEM_POLICY_RECORD.as_posix()], object_pairs_hook=_unique_object)
+    _oem_property_binding(plan, contract, base)
+    dsp = json.loads(payloads[DSP_POLICY_RECORD.as_posix()], object_pairs_hook=_unique_object)["generator_contract"]
+    capture = _bound_reference(dsp["policy_capture_receipt"], workspace_root)
+    row = contract["evidence"]["factory_system_ext_property_contexts"]
+    matches = [item for item in capture["files"] if item["runtime_path"] == row["runtime_path"]]
+    _require(len(matches) == 1 and all(matches[0][key] == row[key] for key in ("sha256", "size_bytes")),
+             "OEM property contexts differ from the admitted factory capture")
+    actual, _ = _read_file(Path(workspace_root) / _relative(matches[0]["path"]), limit=MAX_JSON_BYTES)
+    _require(actual == {key: row[key] for key in ("sha256", "size_bytes")}, "OEM factory property contexts changed")
+    audit, readback, review = [_bound_reference(contract["evidence"][key], workspace_root) for key in OEM_PROPERTY_EVIDENCE]
+    _require(audit["all_inputs_rehashed_unchanged"] is True and audit["assertions"] == contract["finite_impact"]["assertions"] and
+             all(audit[key] is False for key in ("native_compiler_invoked", "native_m4_invoked", "source_or_input_files_modified",
+                                                 "guest_accessed", "phone_accessed")) and audit["permissive_declarations_in_model"] == 0,
+             "OEM property finite audit is not the reviewed enforcing static projection")
+    for name, budget in contract["native_effective_ordinary_allow_edges"].items():
+        actual = audit["per_property"][name]["effective_all_ordinary_allow_edges_after"]
+        _require({key: actual[key] for key in budget} == budget, "OEM property native member budget differs from the finite audit")
+    report = contract["evidence"]["finite_impact_audit"]
+    _require(readback["report"] == report and readback["all_direct_inputs_unchanged"] is True and
+             readback["all_ordinary_delta_group_encodings_and_digests_verified"] is True and
+             readback["per_property_full_allow_sets_reproduced_from_global_additions"] is True and
+             review["reviewed_report"] == report and review["current_correctness_findings"] == [] and
+             all(record[key] is False for record, keys in (
+                 (readback, ("guest_accessed", "native_compiler_invoked", "phone_accessed")),
+                 (review, ("compiler_executed", "guest_accessed", "phone_accessed", "parent_files_modified", "tracked_files_modified")))
+                 for key in keys), "OEM property readback or independent review does not bind the static projection")
+    contents = {}
+    source_paths = {Path(template_root) / _relative(row["path"]).relative_to(DEVICE_PATH) for row in contract["source_files"]}
+    for parent in {source.parent for source in source_paths}:
+        _no_symlinks(parent)
+        _require(set(parent.iterdir()) == {source for source in source_paths if source.parent == parent},
+                 "unreviewed file or directory in an OEM property source directory")
+    for row in contract["source_files"]:
+        actual, raw = _read_file(Path(template_root) / _relative(row["path"]).relative_to(DEVICE_PATH), limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")}, "OEM property source hash/size mismatch")
+        contents[row["path"]] = raw
+    _verify_oem_property_sources(contents, contract)
+    payloads.update(contents)
+    actual, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == identity, "OEM property contract changed before publication")
+    payloads[OEM_PROPERTY_RECORD.as_posix()] = raw
+    plan["oem_properties"] = _oem_property_admission(contract, identity)
+
+
+def _oem_property_wiring_lines():
+    return ["# Explicit four-property OEM source profile; native and hardware checks remain separate.",
+            *(f"{name} += {path}" for name, path in OEM_PROPERTY_WIRING.items())]
+
+
 def _verify_policy_input_bundle(receipt):
     if __package__:
         from . import policy_inputs
@@ -1144,6 +1343,10 @@ def _policy_inputs_binding(plan, verification):
     expected_oem = plan.get("oem_policy", {}).get("contract_record")
     _require(verification.get("oem_policy_contract") == expected_oem,
              "native policy bundle and OEM source capability must use the same reviewed contract")
+    _require(verification.get("oem_property_contract") == plan.get("oem_properties", {}).get("contract_record"),
+             "native policy bundle and OEM property source capability must use the same reviewed contract")
+    _require(verification.get("framework_provider_policy_contract") is None and verification.get("framework_provider_inputs") is None,
+             "framework provider inputs require a separately supported source capability")
     receipt = verification["receipt"]
     _require(receipt["path"] == POLICY_INPUTS_RECEIPT, "unexpected native policy receipt name")
     _digest(receipt["sha256"], "native policy receipt")
@@ -1430,6 +1633,8 @@ def _render_board(plan):
         lines.extend(_init_helper_wiring_lines())
     if "oem_policy" in plan:
         lines.extend(_oem_policy_wiring_lines())
+    if "oem_properties" in plan:
+        lines.extend(_oem_property_wiring_lines())
     if "dsp_policy" in plan:
         lines.extend(_dsp_wiring_lines())
     return "\n".join(lines) + "\n"
@@ -1465,7 +1670,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              variant="userdebug", workspace_root=ROOT, template_root=ROOT / DEVICE_PATH,
              patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None,
              dsp_policy_contract=None, init_helper_capability_contract=None,
-             policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None):
+             policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None,
+             oem_property_contract=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -1485,6 +1691,9 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                  "OEM policy requires explicit factory, DSP, helper and native policy inputs")
     if mi_ext_inputs_receipt is not None:
         _require(factory_selected, "mi_ext inputs require the explicit factory profile")
+    if oem_property_contract is not None:
+        _require(oem_policy_contract is not None and policy_inputs_receipt is not None,
+                 "OEM properties require an explicit OEM source contract and matching native policy inputs")
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
@@ -1510,6 +1719,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                                     workspace_root, patch_source_root, vendor_receipt, payloads)
     if oem_policy_contract is not None:
         _bind_oem_policy(plan, oem_policy_contract, workspace_root, template_root, payloads)
+    if oem_property_contract is not None:
+        _bind_oem_properties(plan, oem_property_contract, workspace_root, template_root, payloads)
     if policy_inputs_receipt is not None:
         _bind_policy_inputs(plan, policy_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
@@ -1602,6 +1813,21 @@ def validate(output, *, purpose="configuration"):
             expected.add(row["path"])
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
                      "OEM policy source file differs from the reviewed contract")
+    if "oem_properties" in plan:
+        property_contract, property_identity = _oem_property_contract(Path(output) / OEM_PROPERTY_RECORD)
+        _require(plan["oem_properties"] == _oem_property_admission(property_contract, property_identity),
+                 "OEM property admission differs from the reviewed source contract")
+        property_base, _ = _oem_policy_contract(Path(output) / OEM_POLICY_RECORD)
+        _oem_property_binding(plan, property_contract, property_base)
+        _require("policy_inputs" in plan, "OEM properties require their verified native policy input bundle")
+        expected.add(OEM_PROPERTY_RECORD.as_posix())
+        property_contents = {}
+        for row in property_contract["source_files"]:
+            expected.add(row["path"])
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "OEM property source file differs from the reviewed contract")
+            _, property_contents[row["path"]] = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
+        _verify_oem_property_sources(property_contents, property_contract)
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -1658,6 +1884,9 @@ def validate(output, *, purpose="configuration"):
                      "A/B partition selection may only use the reviewed generated product")
             _require(name == board_name or not re.search(rb"\b" + re.escape(group_variable) + rb"\b", raw),
                      "dynamic group partition selection may only use the reviewed generated board")
+            _require(name == board_name or (not re.search(rb"\bSYSTEM_EXT_(?:PUBLIC|PRIVATE)_SEPOLICY_DIRS\b", raw) and
+                                           not any(path.encode("ascii") in raw for path in OEM_PROPERTY_WIRING.values())),
+                     "OEM property source selection may only use the reviewed generated board")
     if "init_helper_capability" in plan:
         wiring = "\n" + "\n".join(_init_helper_wiring_lines()) + "\n"
         _require(board_bytes == _render_board(plan).encode("ascii") and board.count(wiring) == 1 and
@@ -1676,7 +1905,8 @@ def validate(output, *, purpose="configuration"):
         wiring = ("\n" + "\n".join(_dsp_wiring_lines()) + "\n").encode("ascii")
         _require(board_bytes.endswith(wiring) and
                  all(board_bytes.count(name.encode("ascii")) ==
-                     (2 if "oem_policy" in plan and name in OEM_POLICY_WIRING else 1)
+                     (1 + int("oem_policy" in plan and name in OEM_POLICY_WIRING) +
+                      int("oem_properties" in plan and name in OEM_PROPERTY_WIRING))
                      for name in DSP_POLICY_WIRING),
                  "generated DSP board wiring changed")
     else:
@@ -1684,12 +1914,19 @@ def validate(output, *, purpose="configuration"):
                  "DSP policy wiring requires an explicit reviewed contract")
     if "oem_policy" in plan:
         wiring = "\n" + "\n".join(_oem_policy_wiring_lines()) + "\n"
-        _require(board.count(wiring) == 1 and board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS") == 1,
+        _require(board.count(wiring) == 1 and board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS") == 1 + int("oem_properties" in plan),
                  "generated OEM policy wiring changed")
     else:
         _require(not any(path in board for path in OEM_POLICY_WIRING.values()) and
                  "SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS" not in board,
                  "OEM policy wiring requires an explicit reviewed contract")
+    if "oem_properties" in plan:
+        wiring = "\n" + "\n".join(_oem_property_wiring_lines()) + "\n"
+        _require(board.count(wiring) == 1 and board_bytes == _render_board(plan).encode("ascii"),
+                 "generated OEM property wiring changed")
+    else:
+        _require(not any(path in board for path in OEM_PROPERTY_WIRING.values()),
+                 "OEM property wiring requires an explicit reviewed contract")
     _require(purpose == "configuration", f"{purpose} admission refused: framework-checks is not a complete signed partition set")
     return plan
 
@@ -1721,6 +1958,8 @@ def main(argv=None):
                              help="reviewed OEM system_ext source restoration; requires matching native policy inputs")
             sub.add_argument("--mi-ext-inputs-receipt", type=Path,
                              help="verified exact factory mi_ext prebuilt; requires factory profile, never complete packaging admission")
+            sub.add_argument("--oem-property-contract", type=Path,
+                             help="explicit four-property system_ext source contract; requires matching OEM base and native policy inputs")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -1742,7 +1981,8 @@ def main(argv=None):
                                   init_helper_capability_contract=args.init_helper_capability_contract,
                                   policy_inputs_receipt=args.policy_inputs_receipt,
                                   oem_policy_contract=args.oem_policy_contract,
-                                  mi_ext_inputs_receipt=args.mi_ext_inputs_receipt)
+                                  mi_ext_inputs_receipt=args.mi_ext_inputs_receipt,
+                                  oem_property_contract=args.oem_property_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

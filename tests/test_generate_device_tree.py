@@ -1590,6 +1590,307 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         self.assertEqual(contract["types"]["offlinelog_file"]["mapping_members"], [])
         self.assertIsNone(contract["types"]["offlinelog_file"]["versioned_attribute"])
 
+    def trust_synthetic_property_contract(self, inputs, contract, verification=None):
+        raw = (json.dumps(contract, sort_keys=True) + "\n").encode()
+        inputs["oem_property_contract"].write_bytes(raw)
+        digest = hashlib.sha256(raw).hexdigest()
+        self.enterContext(mock.patch.object(generator, "OEM_PROPERTY_CONTRACT_SHA256", digest))
+        if verification is not None:
+            verification["oem_property_contract"] = {
+                "path": generator.OEM_PROPERTY_RECORD.as_posix(), "sha256": digest, "size_bytes": len(raw),
+            }
+
+    def property_inputs(self):
+        """Inert evidence receipts; real authored property source bytes and grammar."""
+        inputs, verification = self.oem_inputs()
+        base = json.loads(inputs["oem_policy_contract"].read_text())
+        contract = json.loads((ROOT / generator.OEM_PROPERTY_RECORD).read_text())
+        contract["base_oem_contract"] = copy.deepcopy(verification["oem_policy_contract"])
+        for key in ("factory_package_sha256", "required_capability_contract", "unchanged_factory_inputs"):
+            contract[key] = copy.deepcopy(base[key])
+        for key in ("factory_system_ext_cil", "factory_system_ext_mapping"):
+            row = next(row for row in base["evidence"]["source_rows"]
+                       if row["runtime_path"] == contract["evidence"][key]["runtime_path"])
+            contract["evidence"][key] = copy.deepcopy(row)
+        dsp_record = json.loads(inputs["dsp_policy_contract"].read_text())
+        capture_path = self.root / dsp_record["generator_contract"]["policy_capture_receipt"]["path"]
+        capture = json.loads(capture_path.read_text())
+        contexts = self.root / "artifacts/property-fixture/factory-property-contexts"
+        contexts.parent.mkdir(parents=True)
+        raw = b"# Synthetic original factory property-context evidence\n"
+        contexts.write_bytes(raw)
+        contract["evidence"]["factory_system_ext_property_contexts"].update(
+            sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        capture.setdefault("files", []).append({
+            "path": contexts.relative_to(self.root).as_posix(),
+            **contract["evidence"]["factory_system_ext_property_contexts"],
+        })
+        raw = (json.dumps(capture) + "\n").encode()
+        capture_path.write_bytes(raw)
+        dsp_record["generator_contract"]["policy_capture_receipt"].update(
+            sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        self.trust_synthetic_dsp_contract(inputs, dsp_record)
+
+        def evidence(key, record):
+            row = contract["evidence"][key]
+            path = self.root / row["path"]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            raw = (json.dumps({"schema_version": 1, **record}) + "\n").encode()
+            path.write_bytes(raw)
+            row.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+
+        evidence("finite_impact_audit", {
+            "all_inputs_rehashed_unchanged": True, "assertions": contract["finite_impact"]["assertions"],
+            "native_compiler_invoked": False, "native_m4_invoked": False, "source_or_input_files_modified": False,
+            "guest_accessed": False, "phone_accessed": False, "permissive_declarations_in_model": 0,
+            "per_property": {name: {"effective_all_ordinary_allow_edges_after": budget}
+                             for name, budget in contract["native_effective_ordinary_allow_edges"].items()},
+        })
+        evidence("finite_impact_readback", {
+            "report": contract["evidence"]["finite_impact_audit"], "all_direct_inputs_unchanged": True,
+            "all_ordinary_delta_group_encodings_and_digests_verified": True,
+            "per_property_full_allow_sets_reproduced_from_global_additions": True,
+            "guest_accessed": False, "native_compiler_invoked": False, "phone_accessed": False,
+        })
+        evidence("independent_finite_impact_review", {
+            "reviewed_report": contract["evidence"]["finite_impact_audit"], "current_correctness_findings": [],
+            "compiler_executed": False, "guest_accessed": False, "phone_accessed": False,
+            "parent_files_modified": False, "tracked_files_modified": False,
+        })
+        for name in generator.OEM_PROPERTY_FILES:
+            path = inputs["template_root"] / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT / generator.DEVICE_PATH / name).read_bytes())
+        inputs["oem_property_contract"] = self.root / "property-contract.json"
+        self.trust_synthetic_property_contract(inputs, contract, verification)
+        return inputs, verification
+
+    def test_property_public_contract_pins_four_sources_types_contexts_and_allow_budget(self):
+        contract, identity = generator._oem_property_contract(ROOT / generator.OEM_PROPERTY_RECORD)
+        self.assertEqual(identity["sha256"], generator.OEM_PROPERTY_CONTRACT_SHA256)
+        self.assertEqual(contract["types"], generator.OEM_PROPERTY_TYPES)
+        self.assertEqual(contract["native_effective_ordinary_allow_edges"], generator.OEM_PROPERTY_ALLOW_BUDGET)
+        contents = {row["path"]: (ROOT / row["path"]).read_bytes() for row in contract["source_files"]}
+        generator._verify_oem_property_sources(contents, contract)
+        self.assertEqual(len(contents), 4)
+        self.assertEqual(len(contract["property_contexts"]), 8)
+        self.assertEqual(len(contract["read_clauses"]), 2)
+        self.assertFalse(contract["limits"]["denial_logging_unchanged"])
+
+    def test_property_contract_requires_explicit_oem_source_and_native_inputs_before_record_reads(self):
+        with mock.patch.object(generator, "_load_records") as load, self.assertRaisesRegex(generator.CandidateError, "OEM properties require"):
+            generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none", vendor_receipt="none",
+                               oem_property_contract="none")
+        load.assert_not_called()
+
+    def test_property_sources_and_private_evidence_are_not_read_by_default(self):
+        inputs, verification = self.oem_inputs()
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification), \
+                mock.patch.object(generator, "_oem_property_contract", side_effect=AssertionError("implicit property read")):
+            first = generator.generate(self.root / "artifacts/no-properties", **inputs)
+            second = generator.generate(self.root / "artifacts/properties-none", oem_property_contract=None, **inputs)
+        self.assertEqual(first, second)
+        self.assertNotIn("oem_properties", first)
+        self.assertTrue(all("oem_properties" not in row["path"] for row in first["files"]))
+
+    def test_property_bundle_is_rejected_without_matching_explicit_source_capability(self):
+        inputs, verification = self.oem_inputs()
+        verification["oem_property_contract"] = {"path": generator.OEM_PROPERTY_RECORD.as_posix(),
+                                                  "sha256": generator.OEM_PROPERTY_CONTRACT_SHA256, "size_bytes": 65716}
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification), \
+                self.assertRaisesRegex(generator.CandidateError, "OEM property source capability"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_property_generation_is_deterministic_and_preserves_v11_device_sources_and_readiness(self):
+        inputs, verification = self.property_inputs()
+        first, second = self.root / "artifacts/property-first", self.root / "artifacts/property-repeat"
+        for variant in generator.BUILD_VARIANTS:
+            first_variant, second_variant = first / variant, second / variant
+            with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+                plan = generator.generate(first_variant, variant=variant, **inputs)
+                self.assertEqual(generator.generate(second_variant, variant=variant, **inputs), plan)
+            self.assertEqual(generator.validate(first_variant), plan)
+            self.assertEqual(len(plan["files"]), len(generator.TEMPLATE_FILES) + 20)
+            self.assertEqual(plan["oem_properties"]["expected_native_effective_ordinary_allow_edges"], generator.OEM_PROPERTY_ALLOW_BUDGET)
+            for key in ("source_checkout_inspected", "fresh_soong_or_m4_build_performed", "native_effective_allow_budget_verified",
+                        "strict_full_policy_compiled", "complete_context_or_treble_checks_passed", "image_integration_verified", "hardware_tested"):
+                self.assertIs(plan["oem_properties"][key], False, key)
+            self.assertTrue(plan["oem_properties"]["inherited_denial_logging_effects"]["existing_dontaudit_semantics_do_change_for_restored_types"])
+            board = (first_variant / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+            self.assertEqual(board.count("SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS"), 3)
+            self.assertEqual(board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS"), 2)
+            self.assertTrue(board.endswith("\n" + "\n".join(generator._dsp_wiring_lines()) + "\n"))
+            for key, path in generator.OEM_PROPERTY_WIRING.items():
+                self.assertEqual(board.count(f"{key} += {path}\n"), 1)
+            for name in ("BoardConfig.mk", "init-helper-capability.mk", *generator.DSP_POLICY_FILES, *generator.OEM_POLICY_FILES):
+                self.assertEqual((first_variant / generator.DEVICE_PATH / name).read_bytes(), (ROOT / generator.DEVICE_PATH / name).read_bytes())
+            for purpose in ("target-files", "flash"):
+                with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                    generator.validate(first_variant, purpose=purpose)
+
+    def test_property_profile_combines_with_mi_ext_without_changing_its_binding(self):
+        inputs, verification = self.property_inputs()
+        inputs, mi_ext = self.mi_ext_inputs(inputs)
+        output = self.root / "artifacts/property-mi-ext"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification), \
+                mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=mi_ext):
+            plan = generator.generate(output, variant="user", **inputs)
+        self.assertEqual(plan["mi_ext_inputs"], mi_ext)
+        self.assertEqual(plan["required_unpacked_partitions"], [])
+        self.assertEqual(generator.validate(output), plan)
+        self.assertFalse(plan["admission"]["complete_target_files_allowed"])
+
+    def test_property_contract_rejects_unknown_hash_or_symlink(self):
+        inputs, verification = self.property_inputs()
+        path = inputs["oem_property_contract"]
+        original = path.read_bytes()
+        path.write_bytes(original + b"\n")
+        with self.assertRaisesRegex(generator.CandidateError, "unknown or changed OEM property"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        path.write_bytes(original)
+        link = self.root / "property-link.json"
+        link.symlink_to(path.name)
+        with self.assertRaisesRegex(generator.CandidateError, "symlink"):
+            generator.generate(self.root / "artifacts/refused", **dict(inputs, oem_property_contract=link))
+
+    def test_property_contract_rejects_membership_reader_prefix_and_scope_widening(self):
+        inputs, verification = self.property_inputs()
+        original = json.loads(inputs["oem_property_contract"].read_text())
+        changes = [lambda c: c["types"]["vendor_mm_parser_prop"]["attributes"].append("coredomain"),
+                   lambda c: c["types"]["vendor_mm_parser_prop"]["mapping_members"].append("unreviewed_prop"),
+                   lambda c: c["read_clauses"][0]["permissions"].append("write"),
+                   lambda c: c["property_contexts"][0].update(match="exact"),
+                   lambda c: c["property_contexts"][0].update(property_pattern="persist.vendor."),
+                   lambda c: c["native_effective_ordinary_allow_edges"]["vendor_wlc_public_prop"].update(count=27),
+                   lambda c: c["source_files"][0].update(scope="vendor"),
+                   lambda c: c["limits"].update(denial_logging_unchanged=True),
+                   lambda c: c["finite_impact"]["assertions"].update(ordinary_semantic_restriction_edges_removed=1)]
+        for change in changes:
+            contract = copy.deepcopy(original)
+            change(contract)
+            self.trust_synthetic_property_contract(inputs, contract, verification)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_property_binding_rejects_other_base_helper_factory_input_or_source_revision(self):
+        inputs, verification = self.property_inputs()
+        original = json.loads(inputs["oem_property_contract"].read_text())
+        changes = [lambda c: c["base_oem_contract"].update(sha256="0" * 64),
+                   lambda c: c["required_capability_contract"].update(value="true"),
+                   lambda c: c["unchanged_factory_inputs"][0].update(sha256="0" * 64),
+                   lambda c: c["existing_vendor_derivation"].update(sha256="0" * 64),
+                   lambda c: c["required_source_revisions"].update(**{"system/core": "0" * 40}),
+                   lambda c: c["evidence"]["factory_system_ext_mapping"].update(sha256="0" * 64)]
+        for change in changes:
+            contract = copy.deepcopy(original)
+            change(contract)
+            self.trust_synthetic_property_contract(inputs, contract, verification)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_property_source_requires_matching_native_bundle_contract_both_ways(self):
+        inputs, verification = self.property_inputs()
+        original = copy.deepcopy(verification)
+        for value in (None, {**original["oem_property_contract"], "sha256": "0" * 64},
+                      {**original["oem_property_contract"], "size_bytes": 1}):
+            verification = copy.deepcopy(original)
+            verification["oem_property_contract"] = value
+            with self.subTest(value=value), mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification), \
+                    self.assertRaisesRegex(generator.CandidateError, "OEM property source capability"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_property_generation_refuses_modified_evidence_and_unlisted_source_files(self):
+        inputs, verification = self.property_inputs()
+        contract = json.loads(inputs["oem_property_contract"].read_text())
+        for key in generator.OEM_PROPERTY_EVIDENCE:
+            path = self.root / contract["evidence"][key]["path"]
+            original = path.read_bytes()
+            path.write_bytes(original + b" ")
+            with self.subTest(key=key), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+        extra = inputs["template_root"] / "sepolicy/system_ext/oem_properties/private/unreviewed.te"
+        extra.write_text("allow mediaextractor vendor_mm_parser_prop:file write;\n")
+        with self.assertRaisesRegex(generator.CandidateError, "unreviewed file or directory"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_property_source_grammar_rejects_duplicate_macros_after_source_and_contract_reseal(self):
+        inputs, verification = self.property_inputs()
+        contract = json.loads(inputs["oem_property_contract"].read_text())
+        row = contract["source_files"][0]
+        path = inputs["template_root"] / Path(row["path"]).relative_to(generator.DEVICE_PATH)
+        raw = path.read_bytes() + b"system_public_prop(vendor_mm_parser_prop)\n"
+        path.write_bytes(raw)
+        row.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        self.trust_synthetic_property_contract(inputs, contract, verification)
+        with self.assertRaisesRegex(generator.CandidateError, "missing, duplicated, or unreviewed"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_property_validation_rejects_resealed_sources_wiring_and_permission_budget(self):
+        inputs, verification = self.property_inputs()
+        output = self.root / "artifacts/property-reseal"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        for relative, addition in ((generator.OEM_PROPERTY_FILES[1], b"get_prop(mediaextractor, vendor_wlc_public_prop)\n"),
+                                   ("generated/BoardConfigCandidate.mk", b"SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/xiaomi/nezha/sepolicy/system_ext/oem_properties/public\n"),
+                                   ("device.mk", b"SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private\n")):
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, original + addition)
+            with self.subTest(relative=relative), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+        for change in (lambda p: p["oem_properties"].update(native_effective_allow_budget_verified=True),
+                       lambda p: p["oem_properties"]["expected_native_effective_ordinary_allow_edges"]["vendor_sys_video_prop"].update(count=27),
+                       lambda p: p["policy_inputs"].pop("oem_property_contract")):
+            changed = copy.deepcopy(plan)
+            change(changed)
+            (output / "admission.json").write_text(json.dumps(changed))
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_property_validation_cannot_enable_sources_without_explicit_contract(self):
+        inputs, verification = self.oem_inputs()
+        output = self.root / "artifacts/property-unselected"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "device.mk").as_posix()
+        original = (output / name).read_bytes()
+        for addition in (b"SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private\n",
+                         b"SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(NEZHA_DEVICE_PATH)/sepolicy/system_ext/oem_properties/private\n",
+                         b"SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(NEZHA_DEVICE_PATH)/sepolicy/system_ext/oem_properties/public\n"):
+            self.reseal_candidate_file(output, plan, name, original + addition)
+            with self.subTest(addition=addition), self.assertRaisesRegex(generator.CandidateError, "property source selection may only"):
+                generator.validate(output)
+
+    def test_property_validation_never_reopens_private_evidence_or_claims_a_native_build(self):
+        inputs, verification = self.property_inputs()
+        output = self.root / "artifacts/property-offline"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        with mock.patch.object(generator, "_bound_reference", side_effect=AssertionError("private evidence read")), \
+                mock.patch.object(generator, "_verify_policy_input_bundle", side_effect=AssertionError("private policy bundle read")), \
+                mock.patch("subprocess.Popen", side_effect=AssertionError("native process")):
+            self.assertEqual(generator.validate(output), plan)
+        self.assertFalse(plan["oem_properties"]["native_effective_allow_budget_verified"])
+
+    def test_property_slice_refuses_provider_bundles_until_separate_source_capability_exists(self):
+        inputs, verification = self.property_inputs()
+        for key in ("framework_provider_policy_contract", "framework_provider_inputs"):
+            changed = copy.deepcopy(verification)
+            changed[key] = {"unselected": True}
+            with self.subTest(key=key), mock.patch.object(generator, "_verify_policy_input_bundle", return_value=changed), \
+                    self.assertRaisesRegex(generator.CandidateError, "separately supported source capability"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_cli_passes_optional_property_contract_without_enabling_it_by_default(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--oem-property-contract", "property.json"], Path("property.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["oem_property_contract"], expected)
+
     def test_oem_source_generation_is_explicit_deterministic_and_keeps_all_existing_guards(self):
         inputs, verification = self.oem_inputs()
         for variant in generator.BUILD_VARIANTS:
