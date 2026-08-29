@@ -65,6 +65,9 @@ INIT_HELPER_LIMITS = {
 }
 POLICY_INPUTS_PATH = "vendor/xiaomi/nezha-policy"
 POLICY_INPUTS_RECEIPT = "policy-inputs.json"
+MI_EXT_INPUTS_PATH = "vendor/xiaomi/nezha-mi-ext"
+MI_EXT_INPUTS_RECEIPT = "mi-ext-inputs.json"
+MI_EXT_BOARD_INCLUDE = DEVICE_PATH / "generated/mi-ext-prebuilt.mk"
 OEM_POLICY_RECORD = PurePosixPath("config/nezha-oem-policy.json")
 OEM_POLICY_CONTRACT_ID = "nezha-oem-system-ext-policy-v1"
 OEM_POLICY_CONTRACT_SHA256 = "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7"
@@ -1173,6 +1176,122 @@ def _bind_policy_inputs(plan, path):
     plan["policy_inputs"] = verification
 
 
+def _verify_mi_ext_inputs(path, *, expected_package_sha256):
+    if __package__:
+        from . import mi_ext_inputs
+    else:
+        import mi_ext_inputs
+    try:
+        return mi_ext_inputs.validate_admission(path, expected_package_sha256=expected_package_sha256)
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"mi_ext inputs refused: {exc}") from exc
+
+
+def _render_mi_ext_include(binding):
+    if __package__:
+        from . import mi_ext_inputs
+    else:
+        import mi_ext_inputs
+    try:
+        return mi_ext_inputs.render_board_include(binding)
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"mi_ext native source binding refused: {exc}") from exc
+
+
+def _mi_ext_binding(plan, binding):
+    """Bind the external factory prebuilt to this candidate's selected layout."""
+    _require(type(binding) is dict and set(binding) == {
+        "bundle", "factory_package_sha256", "image", "receipt", "native_source", "dynamic_layout", "scope",
+    }, "invalid mi_ext input binding")
+    _require(binding["bundle"] == MI_EXT_INPUTS_PATH and "factory_profile" in plan and
+             binding["factory_package_sha256"] == plan["source_packages"]["vendor"] ==
+             plan["factory_profile"]["package_sha256"],
+             "mi_ext requires the same explicitly admitted factory vendor package")
+    layout = binding["dynamic_layout"]
+    _require(type(layout) is dict and
+             layout["logical_partition_names"] == [*FRAMEWORK_PARTITIONS, "mi_ext"] and
+             set(plan["logical_filesystems"]) == set(layout["logical_partition_names"]) and
+             plan["super"]["bytes"] == layout["super_size_bytes"] and
+             plan["super"]["group_bytes"] == layout["group_maximum_bytes"] and
+             plan["super"]["group_name"] == layout["group_name"] and
+             plan["logical_filesystems"]["mi_ext"] == "erofs" and
+             plan["avb_descriptor_owners"]["mi_ext"] == layout["fstab_avb_owner"] == "vbmeta" and
+             "mi_ext" not in plan["avb_chains"],
+             "mi_ext differs from the reviewed dynamic layout or direct root-vbmeta ownership")
+    fstab = plan["fstab"]
+    _require(fstab.get("source") == "factory vendor ramdisk" and
+             fstab.get("factory_logical_flags_preserved") is True and
+             fstab.get("logical_avb_enabled") is True and
+             fstab.get("stock_overlay_mounts_adopted") is False and
+             fstab.get("vendor_image_replacement_applied") is False and
+             fstab["logical_mounts"].count("mi_ext") == 1,
+             "mi_ext requires the preserved factory logical mount without framework overlays")
+    _require(plan["profile"] == "framework-checks" and plan["release_config"] == "bp4a" and
+             plan["admission"]["configuration_allowed"] is True and
+             all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
+             "mi_ext input binding cannot promote build, packaging or hardware readiness")
+    # The renderer checks the exact current source, image, receipt and scope
+    # contracts. This cannot rehash an unmounted private bundle or guest source.
+    return _render_mi_ext_include(binding)
+
+
+def _logical_partition_selection(plan):
+    expected = [*FRAMEWORK_PARTITIONS, *(["mi_ext"] if "mi_ext_inputs" in plan else [])]
+    _require(plan["packaged_logical_partitions"] == expected and
+             plan["required_unpacked_partitions"] == sorted(set(plan["logical_filesystems"]) - set(expected)),
+             "logical partition selection requires the matching explicit input capability")
+    return expected
+
+
+def _validate_mi_ext_fstab(binding, text):
+    rows = [line.split("#", 1)[0].split() for line in text.splitlines()]
+    rows = [row for row in rows if row]
+    mount = binding["dynamic_layout"]["first_stage_mount_point"]
+    matches = [row for row in rows if row[0] == "mi_ext" or len(row) > 1 and row[1] == mount]
+    _require(len(matches) == 1 and len(matches[0]) == 5,
+             "mi_ext requires exactly one selected factory mount")
+    row = matches[0]
+    # The selected factory row retains nofail as well as every verified-boot
+    # flag. Additional key paths or alternate sources are separate integrations.
+    _require(row == ["mi_ext", mount, "erofs", "ro",
+                     "wait,slotselect,avb=vbmeta,logical,first_stage_mount,nofail"] and
+             all(len(fields) == 5 and fields[2] != "overlay" and
+                 not {"bind", "rbind"}.intersection(fields[3].split(",")) for fields in rows),
+             "mi_ext mount, AVB flags or framework-overlay exclusion changed")
+
+
+def _bind_mi_ext_inputs(plan, records, path, payloads, fstab):
+    path = _no_symlinks(path)
+    _require(path.name == MI_EXT_INPUTS_RECEIPT, "mi_ext receipt must be named mi-ext-inputs.json")
+    identity, _ = _read_file(path, limit=MAX_JSON_BYTES)
+    binding = _verify_mi_ext_inputs(path, expected_package_sha256=plan["source_packages"]["vendor"])
+    include = _mi_ext_binding(plan, binding)
+    _require(identity == {key: binding["receipt"][key] for key in ("sha256", "size_bytes")},
+             "mi_ext input receipt changed during verification")
+    rows = records["firmware-layout"]["partitions"]
+    a = [row for row in rows if row["name"] == "mi_ext_a"]
+    b = [row for row in rows if row["name"] == "mi_ext_b"]
+    _require(len(a) == len(b) == 1 and
+             a[0]["size_bytes"] == binding["image"]["size_bytes"] and
+             a[0]["extraction"]["sha256"] == binding["image"]["sha256"] and
+             a[0]["extraction"].get("readback_verified") is True and
+             a[0]["filesystem"]["format"].lower() == "erofs" and
+             type(b[0]["size_bytes"]) is int and
+             b[0]["size_bytes"] == binding["dynamic_layout"]["source_b_slot_size_bytes"] == 0 and
+             b[0]["extents"] == [],
+             "mi_ext input is not the selected factory logical image and empty B slot")
+    _validate_mi_ext_fstab(binding, fstab)
+    plan["mi_ext_inputs"] = binding
+    plan["packaged_logical_partitions"] = [*FRAMEWORK_PARTITIONS, "mi_ext"]
+    plan["required_unpacked_partitions"] = sorted(set(plan["logical_filesystems"]) - set(plan["packaged_logical_partitions"]))
+    plan["limitations"] = [
+        "The factory mi_ext input is selected; native packaging, the complete AVB chain and hardware remain unverified."
+        if note == "Required unpackaged logical mounts are retained and block complete packaging." else note
+        for note in plan["limitations"]
+    ]
+    payloads[MI_EXT_BOARD_INCLUDE.as_posix()] = include.encode("ascii")
+
+
 def render_factory_fstab(plan, contract, source):
     """Select observed filesystems without removing factory AVB or crypto flags."""
     identity, raw = _read_file(source, limit=MAX_TEXT_BYTES, collect=True)
@@ -1251,6 +1370,7 @@ def render_factory_fstab(plan, contract, source):
 
 
 def _render_board(plan):
+    partitions = _logical_partition_selection(plan)
     budget_note = ("# Factory GPT extents and LP declarations are not live partition measurements."
                    if "factory_profile" in plan else
                    "# Image lengths and LP sizes are candidate budgets, not physical measurements.")
@@ -1280,7 +1400,7 @@ def _render_board(plan):
     lines += [f"BOARD_SUPER_PARTITION_SIZE := {plan['super']['bytes']}",
               f"BOARD_SUPER_PARTITION_GROUPS := {group}",
               f"BOARD_{group.upper()}_SIZE := {plan['super']['group_bytes']}",
-              f"BOARD_{group.upper()}_PARTITION_LIST := {' '.join(FRAMEWORK_PARTITIONS)}"]
+              f"BOARD_{group.upper()}_PARTITION_LIST := {' '.join(partitions)}"]
     for name in FRAMEWORK_PARTITIONS:
         lines += [f"TARGET_COPY_OUT_{name.upper()} := {name}",
                   f"BOARD_{name.upper()}IMAGE_FILE_SYSTEM_TYPE := {plan['logical_filesystems'][name]}"]
@@ -1303,6 +1423,9 @@ def _render_board(plan):
     lines.append("BOARD_AVB_VBMETA_SYSTEM := " + " ".join(chained))
     for key, value in sorted(plan["bootconfig"].items()):
         lines.append(f"BOARD_BOOTCONFIG += {key}={value}")
+    if "mi_ext_inputs" in plan:
+        lines += ["# Exact factory mi_ext custom image; the native consumer rechecks source and image bytes.",
+                  "include $(NEZHA_DEVICE_PATH)/generated/mi-ext-prebuilt.mk"]
     if "init_helper_capability" in plan:
         lines.extend(_init_helper_wiring_lines())
     if "oem_policy" in plan:
@@ -1314,7 +1437,7 @@ def _render_board(plan):
 
 def _render_product(plan):
     partitions = ["boot", "dtbo", "init_boot", "recovery", "vendor_boot", "vbmeta", "vbmeta_system",
-                  *FRAMEWORK_PARTITIONS]
+                  *_logical_partition_selection(plan)]
     lines = [
         "# Generated framework-checks configuration. Complete packaging is not admitted.",
         f"PRODUCT_SHIPPING_API_LEVEL := {plan['shipping_api_level']}",
@@ -1342,7 +1465,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              variant="userdebug", workspace_root=ROOT, template_root=ROOT / DEVICE_PATH,
              patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None,
              dsp_policy_contract=None, init_helper_capability_contract=None,
-             policy_inputs_receipt=None, oem_policy_contract=None):
+             policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -1360,6 +1483,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _require(policy_inputs_receipt is not None and init_helper_capability_contract is not None and
                  dsp_policy_contract is not None,
                  "OEM policy requires explicit factory, DSP, helper and native policy inputs")
+    if mi_ext_inputs_receipt is not None:
+        _require(factory_selected, "mi_ext inputs require the explicit factory profile")
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
@@ -1387,6 +1512,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _bind_oem_policy(plan, oem_policy_contract, workspace_root, template_root, payloads)
     if policy_inputs_receipt is not None:
         _bind_policy_inputs(plan, policy_inputs_receipt)
+    if mi_ext_inputs_receipt is not None:
+        _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab)
     generated = DEVICE_PATH / "generated"
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
@@ -1427,11 +1554,20 @@ def validate(output, *, purpose="configuration"):
              "candidate receipt cannot promote itself to flash/complete packaging")
     _require(plan["avb_policy"]["enabled"] is True and not plan["avb_policy"]["disabled_flags"],
              "AVB policy was weakened")
+    _logical_partition_selection(plan)
     files = _file_entries(Path(output), plan["files"])
     expected = {(DEVICE_PATH / name).as_posix() for name in TEMPLATE_FILES}
     expected |= {(DEVICE_PATH / "generated" / name).as_posix()
                  for name in ("BoardConfigCandidate.mk", "device-candidate.mk", "fstab.qcom")}
     expected |= {SECURITY_PATCH.as_posix(), SECURITY_RECORD.as_posix()}
+    if "mi_ext_inputs" in plan:
+        mi_ext_include = _mi_ext_binding(plan, plan["mi_ext_inputs"])
+        expected.add(MI_EXT_BOARD_INCLUDE.as_posix())
+        identity, raw = _read_file(Path(output) / MI_EXT_BOARD_INCLUDE, limit=MAX_TEXT_BYTES, collect=True)
+        _require(identity == files.get(MI_EXT_BOARD_INCLUDE.as_posix()) and raw == mi_ext_include.encode("ascii"),
+                 "generated mi_ext native input guard differs from its reviewed binding")
+        _, raw = _read_file(Path(output) / DEVICE_PATH / "generated/fstab.qcom", limit=MAX_TEXT_BYTES, collect=True)
+        _validate_mi_ext_fstab(plan["mi_ext_inputs"], raw.decode("utf-8"))
     if "dsp_policy" in plan:
         _require(isinstance(plan["dsp_policy"], dict), "invalid DSP policy admission")
         contract, identity = _dsp_contract(Path(output) / DSP_POLICY_RECORD)
@@ -1489,6 +1625,10 @@ def validate(output, *, purpose="configuration"):
     else:
         _require(POLICY_INPUTS_PATH.encode("ascii") not in product_bytes,
                  "native policy namespace requires an explicit verified bundle")
+    if "mi_ext_inputs" in plan:
+        _require(product_bytes == _render_product(plan).encode("ascii"), "generated mi_ext A/B partition wiring changed")
+    else:
+        _require(not re.search(rb"\bmi_ext\b", product_bytes), "mi_ext A/B wiring requires an explicit verified bundle")
     for name in files:
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk") and name != product_name:
             _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
@@ -1501,6 +1641,23 @@ def validate(output, *, purpose="configuration"):
     _require("BOARD_AVB_ENABLE := true" in board, "generated AVB setting absent")
     _require(not re.search(r"--flags\s+[123]|--set_hashtree_disabled_flag|androidboot.selinux=permissive", board),
              "unsafe generated boot policy")
+    if "mi_ext_inputs" in plan:
+        _require(board_bytes == _render_board(plan).encode("ascii"), "generated mi_ext board wiring changed")
+    else:
+        _require("mi-ext-prebuilt.mk" not in board and not re.search(r"\bmi_ext\b|\b(?:BOARD|TARGET_COPY_OUT)_MI_EXT", board),
+                 "mi_ext board wiring requires an explicit verified bundle")
+    group_variable = f"BOARD_{plan['super']['group_name'].upper()}_PARTITION_LIST".encode("ascii")
+    for name in files:
+        if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk"):
+            _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+            if name not in {board_name, MI_EXT_BOARD_INCLUDE.as_posix()}:
+                _require(not re.search(rb"\b(?:BOARD_(?:AVB_)?MI_EXT|BOARD_(?:AVB_)?CUSTOMIMAGES_(?:DIRECT_)?PARTITION_LIST|TARGET_COPY_OUT_MI_EXT)", raw)
+                         and b"mi-ext-prebuilt.mk" not in raw and MI_EXT_INPUTS_PATH.encode("ascii") not in raw,
+                         "mi_ext native input selection may only use the reviewed generated include")
+            _require(name == product_name or not re.search(rb"\bAB_OTA_PARTITIONS\b", raw),
+                     "A/B partition selection may only use the reviewed generated product")
+            _require(name == board_name or not re.search(rb"\b" + re.escape(group_variable) + rb"\b", raw),
+                     "dynamic group partition selection may only use the reviewed generated board")
     if "init_helper_capability" in plan:
         wiring = "\n" + "\n".join(_init_helper_wiring_lines()) + "\n"
         _require(board_bytes == _render_board(plan).encode("ascii") and board.count(wiring) == 1 and
@@ -1562,6 +1719,8 @@ def main(argv=None):
                              help="verified separate native policy bundle; requires explicit helper and DSP capabilities")
             sub.add_argument("--oem-policy-contract", type=Path,
                              help="reviewed OEM system_ext source restoration; requires matching native policy inputs")
+            sub.add_argument("--mi-ext-inputs-receipt", type=Path,
+                             help="verified exact factory mi_ext prebuilt; requires factory profile, never complete packaging admission")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -1582,7 +1741,8 @@ def main(argv=None):
                                   dsp_policy_contract=args.dsp_policy_contract,
                                   init_helper_capability_contract=args.init_helper_capability_contract,
                                   policy_inputs_receipt=args.policy_inputs_receipt,
-                                  oem_policy_contract=args.oem_policy_contract)
+                                  oem_policy_contract=args.oem_policy_contract,
+                                  mi_ext_inputs_receipt=args.mi_ext_inputs_receipt)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

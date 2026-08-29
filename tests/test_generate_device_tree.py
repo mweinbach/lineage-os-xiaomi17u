@@ -331,6 +331,8 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         for name, filesystem in plan["logical_filesystems"].items():
             mount = "/mnt/vendor/mi_ext" if name == "mi_ext" else "/" + name
             flags = "wait,slotselect,avb=" + plan["avb_descriptor_owners"][name] + ",logical,first_stage_mount"
+            if name == "mi_ext":
+                flags += ",nofail"
             if name == "system":
                 flags += ",avb_keys=/avb/test-only-fixture.avbpubkey"
             rows.append(f"{name} {mount} {filesystem} ro {flags}")
@@ -419,6 +421,299 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         factory_path.write_text(json.dumps(factory))
         partition_path.write_text(json.dumps(partitions))
         return dict(inputs, factory_boot_contract=factory_path, partition_metadata=partition_path, fstab_source=fstab)
+
+    def mi_ext_inputs(self, inputs=None):
+        """Mock private-bundle verification; retain the real native Make renderer."""
+        from scripts import mi_ext_inputs as mi
+        inputs = inputs or self.factory_inputs()
+        config = json.loads((ROOT / mi.CONTRACT_PATH).read_bytes())
+        source = json.loads((ROOT / mi.SOURCE_CONTRACT_PATH).read_bytes())
+        self.enterContext(mock.patch.object(mi, "EXPECTED_PACKAGE", "3" * 64))
+        self.enterContext(mock.patch.object(mi, "_controls", return_value=(config, source, {})))
+        path = inputs["record_paths"]["firmware-layout"]
+        layout = json.loads(path.read_text())
+        row = next(row for row in layout["partitions"] if row["name"] == "mi_ext_a")
+        row["size_bytes"] = mi.EXPECTED_IMAGE["size_bytes"]
+        row["extraction"]["sha256"] = mi.EXPECTED_IMAGE["sha256"]
+        self.save_mi_ext_layout(inputs, layout)
+        receipt = self.root / "mi-ext-bundle" / mi.RECEIPT_NAME
+        receipt.parent.mkdir()
+        raw = b'{"schema_version":1,"synthetic_private_receipt":true}\n'
+        receipt.write_bytes(raw)
+        inputs["mi_ext_inputs_receipt"] = receipt
+        binding = {
+            "bundle": mi.BUNDLE_PATH, "factory_package_sha256": "3" * 64,
+            "image": copy.deepcopy(mi.EXPECTED_IMAGE),
+            "receipt": {"path": receipt.name, "sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)},
+            "native_source": {"project_commit": mi.BUILD_COMMIT, "files": mi._source_files(source)},
+            "dynamic_layout": copy.deepcopy(config["dynamic_layout"]), "scope": copy.deepcopy(mi.SCOPE),
+        }
+        return inputs, binding
+
+    def save_mi_ext_layout(self, inputs, layout):
+        path = inputs["record_paths"]["firmware-layout"]
+        path.write_text(json.dumps(layout))
+        vendor = json.loads(inputs["vendor_receipt"].read_text())
+        vendor["source"]["source_record_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        inputs["vendor_receipt"].write_text(json.dumps(vendor))
+
+    def test_mi_ext_requires_explicit_factory_profile_before_reading_inputs(self):
+        with mock.patch.object(generator, "_load_records") as load, \
+                self.assertRaisesRegex(generator.CandidateError, "mi_ext inputs require the explicit factory"):
+            generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none",
+                               vendor_receipt="none", mi_ext_inputs_receipt="none")
+        load.assert_not_called()
+
+    def test_mi_ext_is_not_enabled_or_inspected_by_default(self):
+        inputs = self.factory_inputs()
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", side_effect=AssertionError("implicit bundle read")), \
+                mock.patch.object(generator, "_render_mi_ext_include", side_effect=AssertionError("implicit native binding")):
+            first = generator.generate(self.root / "artifacts/default-mi-ext", **inputs)
+            second = generator.generate(self.root / "artifacts/explicit-none-mi-ext", mi_ext_inputs_receipt=None, **inputs)
+        self.assertEqual(first, second)
+        self.assertNotIn("mi_ext_inputs", first)
+        self.assertEqual(first["required_unpacked_partitions"], ["mi_ext"])
+        self.assertNotIn(generator.MI_EXT_BOARD_INCLUDE.as_posix(), {row["path"] for row in first["files"]})
+
+    def test_mi_ext_generation_is_deterministic_preserves_root_avb_and_refuses_packaging(self):
+        inputs, binding = self.mi_ext_inputs()
+        first = self.root / "artifacts/mi-ext-first"
+        second = self.root / "artifacts/mi-ext-second"
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding) as verify:
+            plan = generator.generate(first, variant="user", **inputs)
+            self.assertEqual(generator.generate(second, variant="user", **inputs), plan)
+        self.assertEqual(verify.call_args_list, [mock.call(inputs["mi_ext_inputs_receipt"], expected_package_sha256="3" * 64)] * 2)
+        self.assertEqual(generator.validate(first), plan)
+        self.assertEqual(plan["mi_ext_inputs"], binding)
+        self.assertEqual(plan["packaged_logical_partitions"], [*generator.FRAMEWORK_PARTITIONS, "mi_ext"])
+        self.assertEqual(plan["required_unpacked_partitions"], [])
+        self.assertTrue(any(note.startswith("The factory mi_ext input is selected;") for note in plan["limitations"]))
+        self.assertEqual(plan["avb_descriptor_owners"]["mi_ext"], "vbmeta")
+        self.assertEqual(set(plan["avb_chains"]), {"boot", "recovery", "vbmeta_system"})
+        board = (first / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        product = (first / generator.DEVICE_PATH / "generated/device-candidate.mk").read_text()
+        include = (first / generator.MI_EXT_BOARD_INCLUDE).read_text()
+        group_line = next(line for line in board.splitlines() if line.startswith("BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST :="))
+        ab_line = next(line for line in product.splitlines() if line.startswith("AB_OTA_PARTITIONS +="))
+        self.assertEqual(group_line.split()[2:], [*generator.FRAMEWORK_PARTITIONS, "mi_ext"])
+        self.assertEqual(ab_line.split().count("mi_ext"), 1)
+        self.assertIn("BOARD_AVB_VBMETA_SYSTEM := system system_ext product\n", board)
+        self.assertEqual(board.count("include $(NEZHA_DEVICE_PATH)/generated/mi-ext-prebuilt.mk\n"), 1)
+        self.assertIn("BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST := mi_ext\n", include)
+        self.assertIn("BOARD_MI_EXT_IMAGE_LIST := vendor/xiaomi/nezha-mi-ext/mi_ext.img\n", include)
+        self.assertIn(binding["image"]["sha256"], include)
+        self.assertIn(binding["receipt"]["sha256"], include)
+        for row in binding["native_source"]["files"]:
+            self.assertIn(row["sha256"], include)
+        self.assertFalse(plan["fstab"]["stock_overlay_mounts_adopted"])
+        self.assertFalse(any(row["path"].startswith("vendor/") or row["path"].endswith(".img") for row in plan["files"]))
+        for key, value in plan["admission"].items():
+            self.assertIs(value, key == "configuration_allowed", key)
+        for purpose in ("target-files", "flash"):
+            with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(first, purpose=purpose)
+
+    def test_mi_ext_coexists_with_oem_helper_and_dsp_without_changing_their_admissions(self):
+        inputs, policy = self.oem_inputs()
+        inputs, binding = self.mi_ext_inputs(inputs)
+        base_inputs = {key: value for key, value in inputs.items() if key != "mi_ext_inputs_receipt"}
+        before, after = self.root / "artifacts/oem-before-mi-ext", self.root / "artifacts/oem-with-mi-ext"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy), \
+                mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding):
+            baseline = generator.generate(before, **base_inputs)
+            plan = generator.generate(after, **inputs)
+        for key in ("init_helper_capability", "dsp_policy", "oem_policy", "policy_inputs", "admission", "avb_policy", "avb_chains"):
+            self.assertEqual(plan[key], baseline[key], key)
+        board = (after / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        self.assertTrue(board.endswith("\n" + "\n".join(generator._dsp_wiring_lines()) + "\n"))
+        self.assertIn("\n" + "\n".join(generator._init_helper_wiring_lines()) + "\n", board)
+        for name in ("BoardConfig.mk", "init-helper-capability.mk", *generator.DSP_POLICY_FILES, *generator.OEM_POLICY_FILES):
+            self.assertEqual((before / generator.DEVICE_PATH / name).read_bytes(),
+                             (after / generator.DEVICE_PATH / name).read_bytes(), name)
+        self.assertEqual(generator.validate(after), plan)
+
+    def test_mi_ext_selected_image_hash_length_and_b_slot_must_match_the_bundle(self):
+        inputs, binding = self.mi_ext_inputs()
+        baseline = json.loads(inputs["record_paths"]["firmware-layout"].read_text())
+        mutations = [lambda a, b: a["extraction"].update(sha256="0" * 64),
+                     lambda a, b: a.update(size_bytes=a["size_bytes"] - 4096),
+                     lambda a, b: a["extraction"].update(readback_verified=False),
+                     lambda a, b: b.update(size_bytes=False),
+                     lambda a, b: b.update(extents=False),
+                     lambda a, b: b.update(extents=[{"unreviewed": True}])]
+        for mutate in mutations:
+            changed = copy.deepcopy(baseline)
+            a = next(row for row in changed["partitions"] if row["name"] == "mi_ext_a")
+            b = next(row for row in changed["partitions"] if row["name"] == "mi_ext_b")
+            mutate(a, b)
+            self.save_mi_ext_layout(inputs, changed)
+            with self.subTest(mutate=mutate), mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding), \
+                    self.assertRaisesRegex(generator.CandidateError, "selected factory logical image"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_mi_ext_receipt_replacement_noncanonical_name_and_symlink_are_refused(self):
+        inputs, binding = self.mi_ext_inputs()
+        path = inputs["mi_ext_inputs_receipt"]
+        wrong = path.parent / "other.json"
+        wrong.write_bytes(path.read_bytes())
+        link = path.parent / "linked.json"
+        link.symlink_to(path.name)
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding) as verify:
+            for candidate in (wrong, link):
+                with self.subTest(candidate=candidate), self.assertRaises(generator.CandidateError):
+                    generator.generate(self.root / "artifacts/refused", **dict(inputs, mi_ext_inputs_receipt=candidate))
+            verify.assert_not_called()
+            path.write_bytes(path.read_bytes() + b" ")
+            with self.assertRaisesRegex(generator.CandidateError, "receipt changed"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_mi_ext_bundle_failure_does_not_publish_or_fall_back(self):
+        inputs = self.factory_inputs()
+        path = self.root / generator.MI_EXT_INPUTS_RECEIPT
+        path.write_text("{}")
+        from scripts import mi_ext_inputs as mi
+        with mock.patch.object(mi, "validate_admission", side_effect=mi.MiExtInputsError("changed private image")), \
+                self.assertRaisesRegex(generator.CandidateError, "changed private image"):
+            generator.generate(self.root / "artifacts/refused", mi_ext_inputs_receipt=path, **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_mi_ext_validation_rejects_layout_source_and_scope_promotion(self):
+        inputs, binding = self.mi_ext_inputs()
+        output = self.root / "artifacts/mi-ext-binding"
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding):
+            original = generator.generate(output, **inputs)
+        changes = [lambda p: p["mi_ext_inputs"].update(factory_package_sha256="0" * 64),
+                   lambda p: p["mi_ext_inputs"]["native_source"].update(project_commit="0" * 40),
+                   lambda p: p["mi_ext_inputs"]["native_source"]["files"][0].update(sha256="0" * 64),
+                   lambda p: p["mi_ext_inputs"]["scope"].update(complete_rom_admitted=True),
+                   lambda p: p["mi_ext_inputs"]["scope"].update(factory_overlays_activated=True),
+                   lambda p: p["mi_ext_inputs"]["scope"].update(hardware_tested=True),
+                   lambda p: p["mi_ext_inputs"]["dynamic_layout"].update(group_name="other"),
+                   lambda p: p["super"].update(group_bytes=p["super"]["group_bytes"] - 4096),
+                   lambda p: p["logical_filesystems"].update(mi_ext="ext4"),
+                   lambda p: p["avb_descriptor_owners"].update(mi_ext="vbmeta_system"),
+                   lambda p: p["avb_chains"].update(mi_ext={"location": 7, "rollback_index": 1}),
+                   lambda p: p["required_unpacked_partitions"].append("mi_ext"),
+                   lambda p: p["packaged_logical_partitions"].append("mi_ext"),
+                   lambda p: p["admission"].update(physical_partition_fit_verified=True)]
+        for change in changes:
+            plan = copy.deepcopy(original)
+            change(plan)
+            (output / "admission.json").write_text(json.dumps(plan))
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_mi_ext_validation_rejects_resealed_board_product_guard_and_fstab_changes(self):
+        inputs, binding = self.mi_ext_inputs()
+        output = self.root / "artifacts/mi-ext-wiring"
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding):
+            plan = generator.generate(output, **inputs)
+        mutations = {
+            "generated/BoardConfigCandidate.mk": lambda raw: raw.replace(b" system_dlkm mi_ext\n", b" system_dlkm\n"),
+            "generated/device-candidate.mk": lambda raw: raw.replace(b" system_dlkm mi_ext\n", b" system_dlkm\n"),
+            "generated/mi-ext-prebuilt.mk": lambda raw: raw.replace(b"BOARD_MI_EXT_IMAGE_LIST :=", b"BOARD_MI_EXT_IMAGE_LIST ?="),
+            "generated/fstab.qcom": lambda raw: raw.replace(b"mi_ext /mnt/vendor/mi_ext erofs ro wait,slotselect,avb=vbmeta,",
+                                                              b"mi_ext /mi_ext erofs ro wait,slotselect,avb=vbmeta_system,"),
+        }
+        for relative, mutate in mutations.items():
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            raw = mutate(original)
+            self.assertNotEqual(raw, original, name)
+            self.reseal_candidate_file(output, plan, name, raw)
+            with self.subTest(name=name), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_mi_ext_validation_refuses_other_makefile_assignment_even_after_inventory_reseal(self):
+        inputs, binding = self.mi_ext_inputs()
+        output = self.root / "artifacts/mi-ext-extra-wiring"
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding):
+            plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "device.mk").as_posix()
+        raw = (output / name).read_bytes() + b"\nBOARD_AVB_MI_EXT_KEY_PATH := unreviewed.pem\n"
+        self.reseal_candidate_file(output, plan, name, raw)
+        with self.assertRaisesRegex(generator.CandidateError, "may only use the reviewed generated include"):
+            generator.validate(output)
+
+    def test_mi_ext_validation_preserves_exact_factory_mount_flags_and_rejects_alternate_sources(self):
+        inputs, binding = self.mi_ext_inputs()
+        output = self.root / "artifacts/mi-ext-fstab"
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding):
+            plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "generated/fstab.qcom").as_posix()
+        original = (output / name).read_bytes()
+        row = b"mi_ext /mnt/vendor/mi_ext erofs ro wait,slotselect,avb=vbmeta,logical,first_stage_mount,nofail"
+        changes = [original + row.replace(b"mi_ext /", b"other /") + b"\n",
+                   original.replace(row, row.replace(b"mi_ext /", b"other /")),
+                   original.replace(row, row.replace(b",nofail", b"")),
+                   original.replace(row, row + b",avb_keys=/unreviewed.avbpubkey"),
+                   original.replace(row, row + b",formattable"),
+                   original.replace(row, row + b",logical"),
+                   original + b"overlay /system/framework overlay ro,lowerdir=/mi_ext/framework:/system/framework check,nofail\n"]
+        for raw in changes:
+            self.assertNotEqual(raw, original)
+            self.reseal_candidate_file(output, plan, name, raw)
+            with self.subTest(raw=hashlib.sha256(raw).hexdigest()), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_mi_ext_partition_selection_cannot_move_to_other_makefiles_without_capability(self):
+        inputs = self.factory_inputs()
+        output = self.root / "artifacts/mi-ext-alternate-lists"
+        plan = generator.generate(output, **inputs)
+        for relative, assignment in (("device.mk", b"AB_OTA_PARTITIONS += mi_ext\n"),
+                                     ("BoardConfig.mk", b"AB_OTA_PARTITIONS += mi_ext\n"),
+                                     ("device.mk", b"BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST += mi_ext\n"),
+                                     ("BoardConfig.mk", b"BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST += mi_ext\n"),
+                                     ("generated/device-candidate.mk", b"BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST += mi_ext\n")):
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, original + assignment)
+            with self.subTest(relative=relative, assignment=assignment), self.assertRaisesRegex(generator.CandidateError, "selection may only use|explicit verified bundle"):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+
+    def test_mi_ext_validation_cannot_add_partition_or_wiring_without_capability(self):
+        inputs = self.factory_inputs()
+        output = self.root / "artifacts/no-mi-ext"
+        plan = generator.generate(output, **inputs)
+        for relative, content in (("generated/BoardConfigCandidate.mk", b"include $(NEZHA_DEVICE_PATH)/generated/mi-ext-prebuilt.mk\n"),
+                                  ("generated/device-candidate.mk", b"AB_OTA_PARTITIONS += mi_ext\n")):
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, original + content)
+            with self.subTest(relative=relative), self.assertRaisesRegex(generator.CandidateError, "explicit verified bundle"):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+        forged = copy.deepcopy(plan)
+        forged["packaged_logical_partitions"].append("mi_ext")
+        forged["required_unpacked_partitions"] = []
+        (output / "admission.json").write_text(json.dumps(forged))
+        with self.assertRaisesRegex(generator.CandidateError, "matching explicit input capability"):
+            generator.validate(output)
+
+    def test_mi_ext_validation_never_reopens_private_bundle_or_guest_source(self):
+        inputs, binding = self.mi_ext_inputs()
+        output = self.root / "artifacts/mi-ext-offline"
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding):
+            plan = generator.generate(output, **inputs)
+        inputs["mi_ext_inputs_receipt"].unlink()
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", side_effect=AssertionError("private bundle read")), \
+                mock.patch("subprocess.Popen", side_effect=AssertionError("native process started")):
+            self.assertEqual(generator.validate(output), plan)
+        self.assertFalse(plan["mi_ext_inputs"]["scope"]["complete_avb_chain_verified"])
+
+    def test_cli_passes_optional_mi_ext_receipt_without_enabling_it_by_default(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--mi-ext-inputs-receipt", "mi-ext-inputs.json"], Path("mi-ext-inputs.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["mi_ext_inputs_receipt"], expected)
 
     def test_factory_generation_binds_geometry_and_preserves_flags_and_provenance(self):
         inputs = self.factory_inputs()
