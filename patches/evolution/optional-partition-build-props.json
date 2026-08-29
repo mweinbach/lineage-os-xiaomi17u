@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-optional-partition-build-props-v1",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0008-optional-partition-build-props.patch",
+    "sha256": "85a554f8a1e93068f0eaabc903c34c06b9f5a75bc8c689d4cb3b556297c7967e",
+    "size_bytes": 4292
+  },
+  "source_files": [
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "before": {
+        "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+        "size_bytes": 156263
+      },
+      "after": {
+        "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+        "size_bytes": 157203
+      }
+    }
+  ],
+  "source_anchors": [
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "version": "before",
+      "line": 975,
+      "purpose": "LoadInfoDict iterates all property-capable partition names, including optional partitions."
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "version": "before",
+      "line": 1101,
+      "purpose": "Read properties with existing etc/build.prop priority and root-level fallback; an absent partition now returns empty with a warning."
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "version": "before",
+      "line": 1366,
+      "purpose": "Keep the ordered canonical and nested paths while supporting extracted directories, ZIP paths and open ZipFile objects."
+    }
+  ],
+  "semantics": {
+    "optional_absence_returns_empty_with_warning": true,
+    "documented_directory_and_zip_inputs_supported": true,
+    "canonical_and_nested_partition_priority_preserved": true,
+    "etc_build_prop_priority_preserved": true,
+    "unresolved_import_bytes_preserved": true,
+    "property_parser_or_import_semantics_changed": false,
+    "images_extracted_or_changed": false,
+    "missing_partitions_or_properties_fabricated": false,
+    "signature_or_avb_rules_changed": false,
+    "readiness_flags_changed": false
+  },
+  "validation_scope": {
+    "python_partition_property_reader_only": true,
+    "full_target_files_verified": false,
+    "metadata_projection_verified": false,
+    "vintf_verified": false,
+    "ota_verified": false,
+    "source_modified": false,
+    "phone_operations": []
+  },
+  "limitations": [
+    "This separate patch is not admitted by the current recovery and mi_ext composed-source contracts. Their unchanged common.py identity remains required until a new explicit reviewed composition is selected.",
+    "The behavioral probe reads the full hash-bound common.py but executes only its property reader, partition mapper and original standard-library byte-reading helpers against synthetic inputs.",
+    "An absent optional property is still absent. Required vendor and ODM metadata, VINTF inputs and actual shipping API remain independent admission checks.",
+    "Opaque vendor and ODM images require a native, image-bound metadata projection before target-files packaging; this patch neither supplies that projection nor certifies it.",
+    "Nezha has a real vendor/odm_dlkm/etc/build.prop inside vendor despite no separate odm_dlkm partition. Preserve its nested path rather than inventing ODM_DLKM.",
+    "Property import parsing is unchanged, including its existing nested-partition import limitation. No regional, SKU or hardware-version property value is inferred.",
+    "A successful Python branch probe is not a full target-files, VINTF, AVB, OTA or hardware result."
+  ]
+}
