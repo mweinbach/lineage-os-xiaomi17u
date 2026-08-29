@@ -1,0 +1,105 @@
+{
+  "branch": "bka",
+  "bundle": "vendor/xiaomi/nezha-target-files-metadata",
+  "contract_id": "nezha-factory-target-files-metadata-v1",
+  "device": "nezha",
+  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "limitations": [
+    "A content-only target-files projection, not a complete filesystem, image reconstruction or APK inventory.",
+    "Capture receipts and complete path inventories bind original metadata; they do not authenticate the factory archive or establish native VINTF compatibility.",
+    "Both original vendor/ODM images are required. Policy-derived replacement images need a separate explicit provenance and content-equivalence contract before selection.",
+    "Shipping API36 remains in authentic ODM properties; no vendor property is fabricated. The pinned VINTF wrapper still needs a reviewed argument path to consume this evidence.",
+    "No image-building, signing, recovery, readiness or phone authorization is changed."
+  ],
+  "partitions": {
+    "odm": {
+      "captures": [
+        {
+          "path": "artifacts/source-contracts/nezha-init-helper-imports-v1/factory-odm-properties/receipt.json",
+          "sha256": "6273703ea0d5b07cf77cc9f52c826cd193018680cc5b8b0993216d0ec18839ca",
+          "size_bytes": 8311
+        },
+        {
+          "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+          "sha256": "cbc1a4343584a2040a88890a7e9ebbec9b9e3a31b9aef40e81b13a47cd35bc23",
+          "size_bytes": 20230
+        }
+      ],
+      "counts": {
+        "apex": 0,
+        "properties": 22,
+        "vintf": 37
+      },
+      "entry_count": 3059,
+      "image": {
+        "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+        "size_bytes": 4767621120
+      },
+      "inventory": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/inventory.json",
+        "sha256": "3c23471a08548cf30bf8f39f383a3a5acf2afc4b279b62f082587494ef41dd23",
+        "size_bytes": 358469
+      },
+      "inventory_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/receipt.json",
+        "sha256": "1d413e0fa4ad0ab3b40fe06d5cefdc9558980ffa430eb9f2502fa9edf15e8a66",
+        "size_bytes": 985
+      }
+    },
+    "vendor": {
+      "captures": [
+        {
+          "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/build-property-comparison-v1/capture/vendor/receipt.json",
+          "sha256": "6a714383bd798dbfdc460b1dea17c0f7dd67b148e7aefef6f01a4666bf8605fe",
+          "size_bytes": 1742
+        },
+        {
+          "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+          "sha256": "01961cce16142d8d9d0bfdac395965776de55571ec36ca8a57cabf52068e18a7",
+          "size_bytes": 78389
+        },
+        {
+          "path": "artifacts/vintf-compatibility-20260829/factory-vendor-apex/receipt.json",
+          "sha256": "861bfb198ff8b344c622deff9e0daf30a92ba2fabca920bb780e2464a3809854",
+          "size_bytes": 2106
+        }
+      ],
+      "counts": {
+        "apex": 3,
+        "properties": 2,
+        "vintf": 141
+      },
+      "entry_count": 3910,
+      "image": {
+        "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+        "size_bytes": 959709184
+      },
+      "inventory": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/vendor/inventory.json",
+        "sha256": "2677ca8c215b3c2d3f4e4a4d6b9261782f65d52a4f7ea8897cd67257556a9768",
+        "size_bytes": 435142
+      },
+      "inventory_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/vendor/receipt.json",
+        "sha256": "6c7fe9ee4631f5ac43aa62d49b4241b64fa4e7b8dc761ee7dc259668946bff71",
+        "size_bytes": 987
+      }
+    }
+  },
+  "release": "bp4a",
+  "schema_version": 1,
+  "scope": {
+    "apk_inventory_complete": false,
+    "complete_filesystem_projection": false,
+    "complete_rom_admitted": false,
+    "filesystem_metadata_reproduced": false,
+    "hardware_tested": false,
+    "metadata_only": true,
+    "oem_authentication_verified": false,
+    "original_images_preserved": true,
+    "ota_verified": false,
+    "phone_operations": [],
+    "target_files_verified": false,
+    "vintf_verified": false
+  }
+}

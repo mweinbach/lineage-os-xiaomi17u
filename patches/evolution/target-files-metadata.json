@@ -1,0 +1,96 @@
+{
+  "contract_id": "nezha-prebuilt-target-files-metadata-v1",
+  "limitations": [
+    "The external reviewed receipt digest is part of device admission; it is not inferred from the bundle being checked.",
+    "Old0005/6/7 recovery and mi_ext consumers remain unchanged. Select this new composition and regenerate their receipts before native adoption.",
+    "The original factory image pair is admitted only; derived policy images require separate reviewed image/content-equivalence evidence.",
+    "Complete framework/APEX/native VINTF, full APK labels, signing, target-files, super and OTA remain separate gates."
+  ],
+  "patch": {
+    "path": "patches/evolution/0009-prebuilt-target-files-metadata.patch",
+    "sha256": "889ae23b909f46621c5c223bf9b637baadf039d7cc67057d12d14495597ad721",
+    "size_bytes": 4057
+  },
+  "project": {
+    "branch": "bka",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "path": "build/make",
+    "repository": "https://github.com/Evolution-X/build"
+  },
+  "required_predecessor_contracts": [
+    {
+      "path": "patches/evolution/prebuilt-recovery.json",
+      "sha256": "4d4b49050e5808f72d74fe023b80c2e83b646a542856182361ee594f48a9656b",
+      "size_bytes": 4741
+    },
+    {
+      "path": "patches/evolution/ab-only-recovery-packaging.json",
+      "sha256": "8dc262578a254ca6e2f4a6a342c8d0e0a1b82d38585b2f1c059d848929938a2b",
+      "size_bytes": 5058
+    },
+    {
+      "path": "patches/evolution/direct-avb-custom-images.json",
+      "sha256": "47008985f4972699e9c25fb91de7780abd433d7748dc5028e1fb21098d9113fc",
+      "size_bytes": 3189
+    },
+    {
+      "path": "patches/evolution/optional-partition-build-props.json",
+      "sha256": "ffe4dba8ffcdf202d57d263bf8ebbf40dfba1ed484f1f96122322b6901914e23",
+      "size_bytes": 3641
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "apk_inventory_complete": false,
+    "complete_filesystem_projection": false,
+    "complete_rom_admitted": false,
+    "filesystem_metadata_reproduced": false,
+    "hardware_tested": false,
+    "metadata_only": true,
+    "oem_authentication_verified": false,
+    "original_images_preserved": true,
+    "ota_verified": false,
+    "phone_operations": [],
+    "target_files_verified": false,
+    "vintf_verified": false
+  },
+  "semantic_files": [
+    {
+      "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+      "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+      "size_bytes": 11705
+    },
+    {
+      "path": "build/make/tools/releasetools/apex_utils.py",
+      "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+      "size_bytes": 23271
+    }
+  ],
+  "semantics": {
+    "bundle": "vendor/xiaomi/nezha-target-files-metadata",
+    "expected_receipt_variable": "BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256",
+    "metadata_projection_only": true,
+    "native_VINTF_result_claimed": false,
+    "normal_target_files_dependencies": true,
+    "original_images_modified": false,
+    "original_property_imports_preserved": true,
+    "readiness_flags_changed": false,
+    "recipe_hook": "before ADD_IMG_TO_TARGET_FILES after prebuilt images and kernel metadata",
+    "selection_variable": "BOARD_NEZHA_PREBUILT_METADATA",
+    "vendor_odm_image_building_enabled": false,
+    "writes_TARGET_OUT_vendor_odm": false
+  },
+  "source_files": [
+    {
+      "after": {
+        "sha256": "af8af76a36d6d2303dba471545bc2e36e15347211d9c96a4145a1ea3c6351d8b",
+        "size_bytes": 392075
+      },
+      "before": {
+        "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+        "size_bytes": 388709
+      },
+      "path": "build/make/core/Makefile"
+    }
+  ]
+}

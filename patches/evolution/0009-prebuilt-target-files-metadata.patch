@@ -1,0 +1,74 @@
+diff --git a/core/Makefile b/core/Makefile
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -6767,6 +6767,51 @@
+   $(BUILT_TARGET_FILES_DIR): $(DESKTOP_SIGNED_FW_ZIP)
+ endif
+ 
++# Explicit content-only metadata for Nezha's opaque factory vendor/ODM images.
++# The checked projection belongs only in target-files, never TARGET_OUT_*.
++# Freeze expanded selection before testing it; a later alias change must not
++# enable the recipe without its input checks and dependencies.
++override BOARD_NEZHA_PREBUILT_METADATA := $(BOARD_NEZHA_PREBUILT_METADATA)
++override BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 := $(BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256)
++override BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256 := $(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256)
++.KATI_READONLY := BOARD_NEZHA_PREBUILT_METADATA BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256
++ifneq ($(strip $(BOARD_NEZHA_PREBUILT_METADATA)$(BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256)$(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256)),)
++ifneq ($(BOARD_NEZHA_PREBUILT_METADATA),true)
++$(error Nezha target-files metadata requires explicit true selection)
++endif
++ifneq ($(TARGET_DEVICE),nezha)
++$(error Nezha target-files metadata cannot be selected for another device)
++endif
++ifeq ($(strip $(BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256)),)
++$(error Nezha target-files metadata requires its reviewed receipt SHA256)
++endif
++ifeq ($(strip $(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256)),)
++$(error Nezha target-files metadata requires its reviewed verifier SHA256)
++endif
++ifeq ($(strip $(BOARD_PREBUILT_VENDORIMAGE)),)
++$(error Nezha target-files metadata requires a prebuilt vendor image)
++endif
++ifeq ($(strip $(BOARD_PREBUILT_ODMIMAGE)),)
++$(error Nezha target-files metadata requires a prebuilt ODM image)
++endif
++ifneq ($(strip $(BUILDING_VENDOR_IMAGE)$(BUILDING_ODM_IMAGE)),)
++$(error Nezha metadata projection must not rebuild vendor or ODM)
++endif
++ifneq ($(AB_OTA_UPDATER),true)
++$(error Nezha metadata projection requires the dedicated A/B layout)
++endif
++ifeq ($(TARGET_OTA_ALLOW_NON_AB),true)
++$(error Nezha metadata projection cannot admit a hybrid non-A/B layout)
++endif
++override NEZHA_PREBUILT_METADATA_ROOT := vendor/xiaomi/nezha-target-files-metadata
++ifeq ($(wildcard $(NEZHA_PREBUILT_METADATA_ROOT)/target-files-metadata.json),)
++$(error Missing reviewed Nezha target-files metadata bundle)
++endif
++override NEZHA_PREBUILT_METADATA_FILES := $(sort $(shell find $(NEZHA_PREBUILT_METADATA_ROOT) -type f))
++.KATI_READONLY := NEZHA_PREBUILT_METADATA_ROOT NEZHA_PREBUILT_METADATA_FILES
++$(BUILT_TARGET_FILES_DIR): $(NEZHA_PREBUILT_METADATA_FILES) $(INSTALLED_VENDORIMAGE_TARGET) $(INSTALLED_ODMIMAGE_TARGET)
++endif
++
+ # Depending on the various images guarantees that the underlying
+ # directories are up-to-date.
+ $(BUILT_TARGET_FILES_DIR): \
+@@ -7295,6 +7340,18 @@
+ ifeq (true,$(PRODUCT_USE_DYNAMIC_PARTITIONS))
+ 	$(call dump-dynamic-partitions-info, $(zip_root)/META/dynamic_partitions_info.txt)
+ endif
++ifeq ($(BOARD_NEZHA_PREBUILT_METADATA),true)
++	@# Verify the images actually copied above, the complete metadata input
++	@# closure and pinned source composition before any property consumer runs.
++	$(hide) printf '%s  %s\n' '$(subst ','"'"',$(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256))' \
++	    '$(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py' | sha256sum --strict -c -
++	@# OUT_DIR may be a reviewed alias; resolve only this existing output root.
++	$(hide) nezha_target_files_root="$$(realpath -e -- '$(subst ','"'"',$(zip_root))')" && \
++	    python3 -I -S -B $(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py install \
++	    --bundle $(NEZHA_PREBUILT_METADATA_ROOT) --source-tree . \
++	    --expected-receipt '$(subst ','"'"',$(BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256))' \
++	    --target-files "$$nezha_target_files_root"
++endif
+ 	PATH=$(INTERNAL_USERIMAGES_BINARY_PATHS):$$PATH MKBOOTIMG=$(MKBOOTIMG) \
+ 	    $(ADD_IMG_TO_TARGET_FILES) -a -v -p $(HOST_OUT) $(zip_root)
+ ifeq ($(BUILD_QEMU_IMAGES),true)
