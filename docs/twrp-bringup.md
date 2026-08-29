@@ -5,12 +5,15 @@ TWRP is an active, separate bring-up target for the China Xiaomi 17 Ultra
 without requiring a complete Evolution X ROM first. A compiled recovery is
 not yet a tested rescue environment, and this work authorizes no phone change.
 
-**Normal build 62 produced the first engineering-key-signed recovery image.**
+**Normal build 64 produced a rebuilt engineering-key-signed recovery image.**
 Its 100 MiB size and kernel-free v4 layout passed structural inspection, and
-the build verified its AOSP test-key AVB signature. Static artifact checks are
-not complete: the image has duplicate secure property assignments and omits
-the dynamic loaders referenced by its executables. This candidate must not be
-treated as boot-ready or as a working logging environment.
+the build verified its AOSP test-key AVB signature. The rebuilt archive has
+unique secure properties, resolves all 44 executable interpreter paths, and
+contains the generated loader configuration. Detailed artifact verification
+is still incomplete: the inventory checker needs to distinguish Android's
+intentional linker/ABI-stub SONAME pair from an ambiguous library collision.
+No image has been booted or flashed, and no working logging environment is
+claimed.
 
 ## Source and build isolation
 
@@ -130,6 +133,29 @@ lacks `/system/etc/ld.config.txt`; its `/linkerconfig/ld.config.txt` is only
 the empty placeholder created by the recipe. These are incomplete packaging
 results, not runtime success. The property and ELF checks remain unchanged;
 source fixes and a new normal build must precede another full artifact check.
+
+The target now uses the generated user-build secure properties, explicitly
+packages `linker.recovery` and `ld.config.recovery.txt`, and installs the
+bootstrap alias through a device `install_symlink` module. Graph 63 verified
+the actual generated module and installation rules. Normal build 64 then
+completed with image SHA256
+`8b5a4dcead011b54c25c89f8f7e5c1b5f1b8c083606f91c9a69383c2a8d84aef`.
+It is still 104,857,600 bytes. The source revision and all 325 cleanup-state
+checks passed, and the earlier failed image and reports remain preserved.
+
+The build-64 artifact run passed bounded decompression, CPIO structure and
+secure-property checks. Its inventory parsed 160 ARM64 ELF files and 1,074
+unique dependency candidates, with no missing dependency candidates and all
+44 interpreter targets resolved. It stopped on one global SONAME collision
+between `system/bin/linker64` and `system/lib64/ld-android.so`. Pinned bionic
+`99926c766ef7f121950611f047dba4769a25226c` deliberately gives the linker this
+SONAME, defines the separate link-time ABI stub, and registers the running
+linker before resolving unqualified dependency names. Both files must remain.
+This is a limitation of the inventory classification; it does not prove
+runtime symbol compatibility. The original failed run is retained, and a
+reviewed inspector correction plus another complete artifact run are still
+required. The policy analyzer and compiled ADB checks were not reached by
+this run.
 
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
