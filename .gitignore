@@ -11,6 +11,8 @@
 /out/
 /vendor/xiaomi/nezha-recovery/
 /vendor/xiaomi/nezha-policy/
+/vendor/xiaomi/nezha-mi-ext/
+/vendor/xiaomi/nezha-framework-providers/
 *.sparseimage
 *.sparsebundle/
 *.dmg

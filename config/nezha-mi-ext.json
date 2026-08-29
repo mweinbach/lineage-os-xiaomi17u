@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-mi-ext-factory-v1",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "platform": {
+    "branch": "bka",
+    "release": "bp4a"
+  },
+  "bundle": "vendor/xiaomi/nezha-mi-ext",
+  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "factory_record": {
+    "path": "research/factory-firmware-validation.json",
+    "sha256": "36e3750d1adef83d645f4620a4b520d91e5d1f0c239faa34e724d3c70612acb2",
+    "size_bytes": 46183
+  },
+  "logical_receipt": {
+    "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/receipt.json",
+    "sha256": "a7c2fc5ab8f23f6a5dc723736b006e8293f4c07c0dd92a5f28cc1eca46e2fc95",
+    "size_bytes": 3601
+  },
+  "image": {
+    "filename": "mi_ext_a.img",
+    "parent_image_sha256": "ce1c84662c00818ffc39217b61670cea5aadfd5952e4eafaacb9f2d64b9b7c09",
+    "partition": "mi_ext_a",
+    "readback_verified": true,
+    "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+    "size_bytes": 111198208
+  },
+  "source_super": {
+    "sha256": "ce1c84662c00818ffc39217b61670cea5aadfd5952e4eafaacb9f2d64b9b7c09",
+    "size_bytes": 15300820992
+  },
+  "avb": {
+    "source": "vbmeta",
+    "partition": "mi_ext",
+    "file_size_bytes": 111198208,
+    "data_size_bytes": 109445120,
+    "tree_offset": 109445120,
+    "tree_size": 868352,
+    "fec_offset": 110313472,
+    "fec_size": 876544,
+    "hash_algorithm": "sha256",
+    "bounds": {
+      "data_fits": true,
+      "tree_fits": true,
+      "fec_fits": true
+    },
+    "fec_cryptographic_verification_performed": false
+  },
+  "filesystem": "erofs",
+  "source_contract": "patches/evolution/direct-avb-custom-images.json",
+  "dynamic_layout": {
+    "super_size_bytes": 15300820992,
+    "group_name": "qti_dynamic_partitions",
+    "group_maximum_bytes": 15290335232,
+    "partition_name": "mi_ext",
+    "source_slot": "a",
+    "source_b_slot_size_bytes": 0,
+    "first_stage_mount_point": "/mnt/vendor/mi_ext",
+    "fstab_avb_owner": "vbmeta",
+    "logical_partition_names": [
+      "system",
+      "system_ext",
+      "product",
+      "vendor",
+      "odm",
+      "vendor_dlkm",
+      "system_dlkm",
+      "mi_ext"
+    ]
+  },
+  "scope": {
+    "prebuilt_preserved": true,
+    "factory_overlays_activated": false,
+    "complete_rom_admitted": false,
+    "target_files_verified": false,
+    "super_verified": false,
+    "complete_avb_chain_verified": false,
+    "hardware_tested": false,
+    "phone_operations": []
+  },
+  "limitations": [
+    "Exact factory bytes and prior internal AVB verification do not authenticate the firmware archive or establish OEM trust.",
+    "Adding the opaque partition does not activate Xiaomi framework overlays or prove camera/accessory compatibility.",
+    "Root vbmeta must include this partition descriptor directly; no mi_ext child key or rollback location is authorized.",
+    "Physical fit, complete VINTF/SELinux, packaging, signing, OTA and an explicitly authorized device boot remain separate gates."
+  ]
+}

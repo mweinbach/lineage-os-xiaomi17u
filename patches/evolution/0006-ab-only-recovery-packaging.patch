@@ -1,0 +1,49 @@
+diff --git a/tools/releasetools/add_img_to_target_files.py b/tools/releasetools/add_img_to_target_files.py
+index 915a0cc3670297bf6d1d3b71da4fd9584b0c19f6..278b7d9ed08555083bd28bf2a5362e1295d1c77f 100644
+--- a/tools/releasetools/add_img_to_target_files.py
++++ b/tools/releasetools/add_img_to_target_files.py
+@@ -1023,28 +1023,32 @@
+     assert recovery_image, "Failed to create recovery.img."
+     partitions['recovery'] = os.path.join(
+         OPTIONS.input_tmp, "IMAGES", "recovery.img")
+     if not os.path.exists(partitions['recovery']):
+       recovery_image.WriteToDir(OPTIONS.input_tmp)
+       if output_zip:
+         recovery_image.AddToZip(output_zip)
+ 
+-      banner("recovery (two-step image)")
+-      # The special recovery.img for two-step package use.
+-      recovery_two_step_image = common.GetBootableImage(
+-          "OTA/recovery-two-step.img", "recovery-two-step.img",
+-          OPTIONS.input_tmp, "RECOVERY", two_step_image=True)
+-      assert recovery_two_step_image, "Failed to create recovery-two-step.img."
+-      recovery_two_step_image_path = os.path.join(
+-          OPTIONS.input_tmp, "OTA", "recovery-two-step.img")
+-      if not os.path.exists(recovery_two_step_image_path):
+-        recovery_two_step_image.WriteToDir(OPTIONS.input_tmp)
+-        if output_zip:
+-          recovery_two_step_image.AddToZip(output_zip)
++      # Non-A/B two-step updates boot this image from /boot. A/B-only
++      # devices install recovery through their payload and never use it.
++      if (OPTIONS.info_dict.get("ab_update") != "true" or
++          OPTIONS.info_dict.get("allow_non_ab") == "true"):
++        banner("recovery (two-step image)")
++        # The special recovery.img for two-step package use.
++        recovery_two_step_image = common.GetBootableImage(
++            "OTA/recovery-two-step.img", "recovery-two-step.img",
++            OPTIONS.input_tmp, "RECOVERY", two_step_image=True)
++        assert recovery_two_step_image, "Failed to create recovery-two-step.img."
++        recovery_two_step_image_path = os.path.join(
++            OPTIONS.input_tmp, "OTA", "recovery-two-step.img")
++        if not os.path.exists(recovery_two_step_image_path):
++          recovery_two_step_image.WriteToDir(OPTIONS.input_tmp)
++          if output_zip:
++            recovery_two_step_image.AddToZip(output_zip)
+ 
+   def add_partition(partition, has_partition, add_func, add_args):
+     if has_partition:
+       banner(partition)
+       partitions[partition] = add_func(output_zip, *add_args)
+ 
+   add_partition_calls = (
+       ("system", has_system, AddSystem, [recovery_image, boot_image]),

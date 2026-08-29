@@ -15,6 +15,7 @@ import unittest
 from unittest import mock
 
 from scripts import recovery_inputs as recovery
+from scripts import recovery_source_contracts as composition
 
 
 class RecoveryInputsTests(unittest.TestCase):
@@ -41,10 +42,11 @@ class RecoveryInputsTests(unittest.TestCase):
         self.enterContext(mock.patch("socket.socket", side_effect=AssertionError("no network")))
         self.profile = {"schema_version": 1, "profile_id": recovery.PROFILE_ID,
                         "output": {"image": self.expected.copy()}}
-        core, common, patch = b"reviewed patched core fixture\n", b"pinned releasetools fixture\n", b"fixture patch\n"
+        core, common = b"reviewed patched core fixture\n", b"pinned releasetools fixture\n"
+        patch = b"diff --git a/core/Makefile b/core/Makefile\nsynthetic patch fixture\n"
         self.source = {
             "schema_version": 1,
-            "project": {"path": "build/make", "commit": recovery.BUILD_COMMIT},
+            "project": copy.deepcopy(composition.PROJECT),
             "patch": {"path": recovery.PATCH_PATH, **recovery._identity(patch)},
             "source_files": [{"path": recovery.CORE_PATH,
                               "before": recovery._identity(b"old core fixture\n"), "after": recovery._identity(core)}],
@@ -82,6 +84,58 @@ class RecoveryInputsTests(unittest.TestCase):
 
     def save_source(self):
         (self.root / recovery.SOURCE_CONTRACT_PATH).write_bytes(recovery._canonical(self.source))
+
+    def enable_composition(self):
+        """Bind inert source bytes to the actual composition record schema."""
+        original_core = (self.checkout / recovery.CORE_PATH).read_bytes()
+        final_core = b"synthetic recovery and direct-custom-image core\n"
+        consumer = b"synthetic A/B-only recovery packaging consumer\n"
+        packaging_patch = b"diff --git a/tools/releasetools/add_img_to_target_files.py b/tools/releasetools/add_img_to_target_files.py\nfixture\n"
+        custom_patch = b"diff --git a/core/Makefile b/core/Makefile\nfixture\n"
+        data = {recovery.COMMON_PATH: (self.checkout / recovery.COMMON_PATH).read_bytes(),
+                recovery.CORE_PATH: original_core, composition.ADD_IMG_PATH: consumer}
+        for paths in composition.SEMANTIC_PATHS.values():
+            for path in paths:
+                data.setdefault(path, ("synthetic " + path + "\n").encode())
+        packaging_record = {
+            "schema_version": 1, "contract_id": "nezha-ab-only-recovery-packaging-v1",
+            "project": copy.deepcopy(composition.PROJECT), "requires_patch": recovery.PATCH_PATH,
+            "patch": {"path": composition.PACKAGING_PATCH, **recovery._identity(packaging_patch)},
+            "source_files": [{"path": composition.ADD_IMG_PATH,
+                              "before": recovery._identity(b"synthetic original consumer\n"),
+                              "after": recovery._identity(consumer)}],
+            "semantic_files": [{"path": path, **recovery._identity(data[path])}
+                               for path in composition.SEMANTIC_PATHS[composition.PACKAGING_PATH]],
+            "validation_scope": {"python_recovery_branch_only": True, "full_target_files_verified": False,
+                                 "ota_verified": False, "super_verified": False,
+                                 "signed_rom_chain_verified": False, "phone_operations": []},
+        }
+        custom_record = {
+            "schema_version": 1, "contract_id": "nezha-direct-avb-custom-images-v1",
+            "project": copy.deepcopy(composition.PROJECT), "requires_patch": recovery.PATCH_PATH,
+            "patch": {"path": composition.COMPOSED_PATCH, **recovery._identity(custom_patch)},
+            "source_files": [{"path": recovery.CORE_PATH, "before": recovery._identity(original_core),
+                              "after": recovery._identity(final_core)}],
+            "semantic_files": [{"path": path, **recovery._identity(data[path])}
+                               for path in composition.SEMANTIC_PATHS[composition.COMPOSED_PATH]],
+            "composed_semantic_files": [{"path": composition.ADD_IMG_PATH,
+                                          "requires_patch": composition.PACKAGING_PATCH,
+                                          **recovery._identity(consumer)}],
+        }
+        for relative, raw in ((composition.PACKAGING_PATCH, packaging_patch),
+                              (composition.COMPOSED_PATCH, custom_patch),
+                              (composition.PACKAGING_PATH, recovery._canonical(packaging_record)),
+                              (composition.COMPOSED_PATH, recovery._canonical(custom_record))):
+            path = self.root / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+        data[recovery.CORE_PATH] = final_core
+        for relative, raw in data.items():
+            path = self.checkout / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+        self.options["composed_source_contract"] = self.root / composition.COMPOSED_PATH
+        return packaging_record, custom_record, original_core
 
     def stage(self, bundle=None):
         return recovery.stage_inputs(self.image, bundle or self.bundle, **self.options)
@@ -155,6 +209,125 @@ class RecoveryInputsTests(unittest.TestCase):
         staged = self.stage()
         staged["scope"]["ota_allowed"] = True
         self.assertFalse(self.verify()["scope"]["ota_allowed"])
+
+    def test_explicit_composed_source_binds_ordered_patches_and_all_final_files(self):
+        self.enable_composition()
+        staged = self.stage()
+        self.assertEqual(staged["status"], "staged")
+        self.assertEqual((self.bundle / "recovery.img").read_bytes(), self.image_bytes)
+        self.assertEqual((self.bundle / recovery.PUBLIC_KEY_MEMBER).read_bytes(), self.public_key_bytes)
+        receipt = json.loads((self.bundle / "receipt.json").read_bytes())
+        source = receipt["build_source"]
+        chain = source["composition"]
+        self.assertEqual(chain["project"], composition.PROJECT)
+        self.assertEqual([item["path"] for item in chain["ordered_patches"]],
+                         [recovery.PATCH_PATH, composition.PACKAGING_PATCH, composition.COMPOSED_PATCH])
+        self.assertEqual(chain["core_transitions"][0]["after"], chain["core_transitions"][1]["before"])
+        self.assertEqual(len(source["files"]), 7)
+        for row in source["files"]:
+            self.assertEqual({key: row[key] for key in ("sha256", "size_bytes")},
+                             recovery._identity((self.checkout / row["path"]).read_bytes()))
+        self.assertFalse(chain["patches_applied_by_this_tool"])
+        self.assertFalse(chain["whole_source_tree_verified"])
+        include = (self.bundle / "recovery-inputs.mk").read_text()
+        self.assertIn("NEZHA_RECOVERY_CORE_COMPOSITION_SHA256 := " + source["contract"]["sha256"], include)
+        self.assertEqual(receipt["scope"], recovery.SCOPE)
+        self.assertEqual(self.verify()["status"], "verified")
+        self.assertEqual(self.native.call_args.kwargs["public_key"], self.bundle / recovery.PUBLIC_KEY_MEMBER)
+        plan = recovery.plan(composed_source_contract=self.options["composed_source_contract"])
+        self.assertEqual(plan["source_composition"], chain)
+        self.assertFalse(plan["image_verified"])
+
+    def test_composed_core_is_not_selected_implicitly(self):
+        self.enable_composition()
+        options = {key: value for key, value in self.options.items() if key != "composed_source_contract"}
+        with self.assertRaisesRegex(recovery.RecoveryInputsError, "required prebuilt-recovery patch"):
+            recovery.stage_inputs(self.image, self.bundle, **options)
+        self.native.assert_not_called()
+        self.assertFalse(self.bundle.exists())
+
+    def test_legacy_bundle_and_contract_remain_unchanged_during_separate_composed_stage(self):
+        self.stage()
+        original_bundle = {path.name: path.read_bytes() for path in self.bundle.iterdir()}
+        original_contract = (self.root / recovery.SOURCE_CONTRACT_PATH).read_bytes()
+        _, _, original_core = self.enable_composition()
+        composed_bundle = self.root / "composed" / recovery.BUNDLE_PATH
+        self.stage(composed_bundle)
+        self.assertEqual(original_bundle, {path.name: path.read_bytes() for path in self.bundle.iterdir()})
+        self.assertEqual(original_contract, (self.root / recovery.SOURCE_CONTRACT_PATH).read_bytes())
+        with self.assertRaisesRegex(recovery.RecoveryInputsError, "receipt identity"):
+            self.verify()
+        (self.checkout / recovery.CORE_PATH).write_bytes(original_core)
+        self.options.pop("composed_source_contract")
+        self.assertEqual(self.verify()["status"], "verified")
+        self.assertNotIn(b"CORE_COMPOSITION", original_bundle["recovery-inputs.mk"])
+
+    def test_composition_rejects_wrong_base_consumer_semantics_and_patch_order(self):
+        packaging_record, custom, _ = self.enable_composition()
+        cases = [
+            (composition.COMPOSED_PATH, custom, lambda row: row["project"].update(commit="0" * 40)),
+            (composition.COMPOSED_PATH, custom, lambda row: row.update(requires_patch=composition.PACKAGING_PATCH)),
+            (composition.COMPOSED_PATH, custom, lambda row: row["source_files"][0]["before"].update(sha256="0" * 64)),
+            (composition.COMPOSED_PATH, custom, lambda row: row["composed_semantic_files"][0].update(sha256="0" * 64)),
+            (composition.COMPOSED_PATH, custom, lambda row: row["semantic_files"][0].update(sha256="0" * 64)),
+            (composition.COMPOSED_PATH, custom, lambda row: row["semantic_files"].append(copy.deepcopy(row["semantic_files"][0]))),
+            (composition.PACKAGING_PATH, packaging_record, lambda row: row["semantic_files"][0].update(sha256="0" * 64)),
+        ]
+        for relative, original, mutate in cases:
+            with self.subTest(relative=relative, mutation=mutate):
+                changed = copy.deepcopy(original)
+                mutate(changed)
+                path = self.root / relative
+                path.write_bytes(recovery._canonical(changed))
+                self.assert_refused(self.stage)
+                self.assertFalse(self.bundle.exists())
+                path.write_bytes(recovery._canonical(original))
+        self.native.assert_not_called()
+
+    def test_composition_rejects_unreviewed_control_copy_or_extra_patch_target(self):
+        self.enable_composition()
+        selected = self.root / "unreviewed.json"
+        selected.write_bytes((self.root / composition.COMPOSED_PATH).read_bytes() + b" ")
+        self.options["composed_source_contract"] = selected
+        with self.assertRaisesRegex(ValueError, "explicit composition differs"):
+            self.stage()
+        self.options["composed_source_contract"] = self.root / composition.COMPOSED_PATH
+        patch = self.root / composition.COMPOSED_PATCH
+        raw = patch.read_bytes() + b"diff --git a/unrelated b/unrelated\n"
+        patch.write_bytes(raw)
+        record = json.loads((self.root / composition.COMPOSED_PATH).read_bytes())
+        record["patch"].update(recovery._identity(raw))
+        (self.root / composition.COMPOSED_PATH).write_bytes(recovery._canonical(record))
+        with self.assertRaisesRegex(ValueError, "only its declared source file"):
+            self.stage()
+        self.native.assert_not_called()
+
+    def test_composed_stage_rejects_changed_semantic_source_and_public_patch(self):
+        self.enable_composition()
+        path = self.checkout / "build/make/tools/releasetools/build_super_image.py"
+        original = path.read_bytes()
+        path.write_bytes(original + b"changed\n")
+        self.assert_refused(self.stage)
+        path.write_bytes(original)
+        self.stage()
+        patch = self.root / composition.COMPOSED_PATCH
+        patch.write_bytes(patch.read_bytes() + b"changed\n")
+        self.assert_refused(self.verify)
+
+    def test_composed_control_change_during_native_verification_fails_before_publication(self):
+        self.enable_composition()
+
+        def changed(*args, **kwargs):
+            path = self.root / composition.COMPOSED_PATH
+            record = json.loads(path.read_bytes())
+            record["review_note"] = "changed during native verification"
+            path.write_bytes(recovery._canonical(record))
+            return copy.deepcopy(self.report)
+
+        self.native.side_effect = changed
+        with self.assertRaisesRegex(recovery.RecoveryInputsError, "control contracts changed"):
+            self.stage()
+        self.assertFalse(self.bundle.exists())
 
     def test_wrong_image_hash_or_size_fails_before_native_or_output(self):
         for data in (b"wrong" + self.image_bytes[5:], self.image_bytes[:-1], self.image_bytes + b"x"):
@@ -463,6 +636,18 @@ class RecoveryInputsTests(unittest.TestCase):
 
 
 class PublicRecoveryHookTests(unittest.TestCase):
+    def test_composed_make_guard_binds_the_ordered_current_public_contracts(self):
+        root = Path(__file__).resolve().parents[1]
+        text = (root / "device/xiaomi/nezha/recovery-prebuilt.mk").read_text()
+        source, identity = composition.compose(root, root / composition.COMPOSED_PATH)
+        self.assertIn("ifneq ($(value NEZHA_RECOVERY_CORE_COMPOSITION_SHA256)," + identity["sha256"] + ")", text)
+        self.assertIn("ifneq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),file)", text)
+        self.assertIn("ifneq ($(NEZHA_RECOVERY_CORE_SHA256)," + source["source_files"][0]["after"]["sha256"] + ")", text)
+        self.assertIn("ifneq ($(shell sha256sum < build/make/core/Makefile 2>/dev/null | cut -d ' ' -f 1),$(NEZHA_RECOVERY_CORE_SHA256))", text)
+        baseline = json.loads((root / recovery.SOURCE_CONTRACT_PATH).read_bytes())
+        self.assertNotEqual(baseline["source_files"][0]["after"], source["source_files"][0]["after"])
+        self.assertIn(baseline["source_files"][0]["after"]["sha256"], text)
+
     def test_public_make_guard_matches_reviewed_profile_patch_and_image(self):
         root = Path(__file__).resolve().parents[1]
         text = (root / "device/xiaomi/nezha/recovery-prebuilt.mk").read_text()

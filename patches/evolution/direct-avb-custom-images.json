@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-direct-avb-custom-images-v1",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0007-direct-avb-custom-images.patch",
+    "sha256": "80e0081c5fbb9cc42dac058bd2dc153396a565732b9daea04b65214e0e90b9cf",
+    "size_bytes": 10414
+  },
+  "requires_patch": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+  "source_files": [
+    {
+      "path": "build/make/core/Makefile",
+      "before": {
+        "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+        "size_bytes": 382008
+      },
+      "after": {
+        "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+        "size_bytes": 388709
+      }
+    }
+  ],
+  "semantic_files": [
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+      "size_bytes": 156263
+    },
+    {
+      "path": "build/make/tools/releasetools/build_super_image.py",
+      "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+      "size_bytes": 7212
+    },
+    {
+      "path": "build/make/tools/releasetools/validate_target_files.py",
+      "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+      "size_bytes": 22638
+    }
+  ],
+  "composed_semantic_files": [
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "requires_patch": "patches/evolution/0006-ab-only-recovery-packaging.patch",
+      "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+      "size_bytes": 48289
+    }
+  ],
+  "semantics": {
+    "selection_variable": "BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST",
+    "requires_explicit_custom_image_registration": true,
+    "requires_one_canonical_prebuilt_per_partition": true,
+    "requires_expected_image_sha256": true,
+    "verifies_image_with_native_avbtool": true,
+    "preserves_prebuilt_bytes": true,
+    "direct_descriptor_owner": "vbmeta",
+    "new_child_key_or_rollback_location": false,
+    "native_installed_image_binding": true,
+    "early_dynamic_flash_suppressed": true,
+    "dynamic_flash_after_update_super_retained": true,
+    "update_image_zip_entry_retained": true,
+    "existing_signed_custom_image_behavior_changed": false,
+    "readiness_flags_changed": false
+  },
+  "validation_scope": {
+    "native_build_verified": false,
+    "target_files_verified": false,
+    "super_verified": false,
+    "signed_rom_chain_verified": false,
+    "phone_operations": []
+  },
+  "limitations": [
+    "An exact known input digest is not OEM authentication.",
+    "The image remains an opaque factory prebuilt; Xiaomi framework overlay activation is a separate decision.",
+    "Native component, target-files, super metadata and complete AVB chain checks remain required.",
+    "This patch follows the recovery consumer on core/Makefile and composes with the separate A/B-only packaging patch; original recovery/image contracts remain preserved."
+  ]
+}

@@ -24,8 +24,20 @@ endif
 ifneq ($(NEZHA_RECOVERY_PROFILE_SHA256),caeb78aaff981fc250a9fd0c94ac8d8270d3fa3ded2db75538daffb692ee60d1)
 $(error Recovery input was not verified against the current working76 profile)
 endif
+ifeq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),undefined)
 ifneq ($(NEZHA_RECOVERY_CORE_SHA256),61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31)
-$(error Recovery input requires the reviewed Evolution prebuilt-recovery consumer)
+$(error Recovery input requires the reviewed standalone 0005 build-core consumer)
+endif
+else
+ifneq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),file)
+$(error Recovery source composition must come from the verified bundle include)
+endif
+ifneq ($(value NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),fe4ac5f9c0db04df0d8af9e5867edf2090310b34f03d96f7856d105aa35c5abe)
+$(error Recovery source composition differs from reviewed 0005/0006/0007 inputs)
+endif
+ifneq ($(NEZHA_RECOVERY_CORE_SHA256),3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e)
+$(error Recovery input requires the exact composed 0005 and 0007 build core)
+endif
 endif
 ifneq ($(NEZHA_RECOVERY_PUBLIC_KEY_SHA256),50784f7b5ccd4cfde172f5cbce06f54e33547d1081c7d28b55e494aa37ab0967)
 $(error Recovery input must include the exact verified working76 public PEM)
@@ -36,8 +48,8 @@ endif
 
 # The upstream tree has no prebuilt-recovery selector. Check the actual patched
 # consumer and the releasetools branch that preserves BOOTABLE_IMAGES bytes.
-ifneq ($(shell sha256sum < build/make/core/Makefile 2>/dev/null | cut -d ' ' -f 1),61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31)
-$(error Apply the exact reviewed 0005 prebuilt-recovery patch before building Nezha)
+ifneq ($(shell sha256sum < build/make/core/Makefile 2>/dev/null | cut -d ' ' -f 1),$(NEZHA_RECOVERY_CORE_SHA256))
+$(error Apply the exact reviewed recovery build-core patch selection before building Nezha)
 endif
 ifneq ($(shell sha256sum < build/make/tools/releasetools/common.py 2>/dev/null | cut -d ' ' -f 1),78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2)
 $(error Recovery requires the pinned Evolution releasetools semantics)
@@ -104,6 +116,36 @@ $(error Nezha recovery must retain rollback index 1)
 endif
 ifneq ($(BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION),1)
 $(error Nezha recovery must retain rollback location 1)
+endif
+
+# working76 is only a dedicated recovery payload on an A/B product. A non-A/B
+# two-step updater writes recovery to /boot; this kernel-free 100 MiB image
+# cannot replace Nezha's 96 MiB boot image. Freeze the selected update mode.
+ifneq ($(value AB_OTA_UPDATER),true)
+$(error Nezha working76 recovery requires the literal A/B updater value true)
+endif
+ifneq ($(strip $(value PRODUCT_OTA_FORCE_NON_AB_PACKAGE)),)
+ifneq ($(value PRODUCT_OTA_FORCE_NON_AB_PACKAGE),false)
+$(error Nezha working76 recovery cannot be packaged as a non-A/B OTA)
+endif
+endif
+# Product variables are already read-only before BoardConfig; do not reassign.
+.KATI_READONLY := AB_OTA_UPDATER
+# Upstream computes TARGET_OTA_ALLOW_NON_AB later. Reject an incoming override
+# without assigning or freezing the variable before that computation.
+ifneq ($(origin TARGET_OTA_ALLOW_NON_AB),undefined)
+ifneq ($(value TARGET_OTA_ALLOW_NON_AB),false)
+$(error Nezha working76 recovery does not permit a non-A/B updater override)
+endif
+endif
+
+# The follow-up keeps two-step construction mandatory for non-A/B/hybrid
+# products, while A/B-only target-files retain the exact ordinary recovery.
+ifneq ($(shell test -f build/make/tools/releasetools/add_img_to_target_files.py && test ! -L build/make/tools/releasetools/add_img_to_target_files.py && echo regular),regular)
+$(error Recovery packaging requires a regular reviewed add_img_to_target_files.py)
+endif
+ifneq ($(shell sha256sum < build/make/tools/releasetools/add_img_to_target_files.py 2>/dev/null | cut -d ' ' -f 1),ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51)
+$(error Apply the reviewed 0006 A/B-only recovery packaging patch before building Nezha)
 endif
 
 # This does not admit target-files/OTA/super packaging or establish compatibility

@@ -6,6 +6,8 @@ RECOVERY_LOCAL_CONFIG ?= $(CURDIR)/.tools/recovery-local.json
 RECOVERY_OUTPUT ?= $(CURDIR)/artifacts/twrp/nezha/builds/$(shell date -u +%Y%m%dT%H%M%SZ)
 RECOVERY_IMAGE ?=
 RECOVERY_BUNDLE ?= $(SOURCE_DIR)/vendor/xiaomi/nezha-recovery
+RECOVERY_COMPOSED_SOURCE_CONTRACT ?=
+RECOVERY_COMPOSED_SOURCE_ARGS = $(if $(strip $(RECOVERY_COMPOSED_SOURCE_CONTRACT)),--composed-source-contract "$(RECOVERY_COMPOSED_SOURCE_CONTRACT)")
 SOURCE_LOCK_ARGS = $(if $(strip $(SOURCE_LOCK)),--source-lock "$(SOURCE_LOCK)")
 
 .DEFAULT_GOAL := help
@@ -80,7 +82,7 @@ twrp-source-plan:
 
 recovery-plan:
 	$(PYTHON) scripts/twrp_working.py plan
-	$(PYTHON) scripts/recovery_inputs.py plan
+	$(PYTHON) scripts/recovery_inputs.py plan $(RECOVERY_COMPOSED_SOURCE_ARGS)
 
 recovery-build:
 	$(PYTHON) scripts/twrp_working.py build --local-config "$(RECOVERY_LOCAL_CONFIG)" --output-dir "$(RECOVERY_OUTPUT)"
@@ -91,10 +93,10 @@ recovery-verify:
 
 recovery-stage:
 	$(if $(strip $(RECOVERY_IMAGE)),,$(error Set RECOVERY_IMAGE to the verified image to stage))
-	$(PYTHON) scripts/recovery_inputs.py stage --local-config "$(RECOVERY_LOCAL_CONFIG)" --source-tree "$(SOURCE_DIR)" --image "$(RECOVERY_IMAGE)" --output-dir "$(RECOVERY_BUNDLE)"
+	$(PYTHON) scripts/recovery_inputs.py stage --local-config "$(RECOVERY_LOCAL_CONFIG)" --source-tree "$(SOURCE_DIR)" --image "$(RECOVERY_IMAGE)" --output-dir "$(RECOVERY_BUNDLE)" $(RECOVERY_COMPOSED_SOURCE_ARGS)
 
 recovery-inputs-verify:
-	$(PYTHON) scripts/recovery_inputs.py verify --local-config "$(RECOVERY_LOCAL_CONFIG)" --source-tree "$(SOURCE_DIR)" --bundle "$(RECOVERY_BUNDLE)"
+	$(PYTHON) scripts/recovery_inputs.py verify --local-config "$(RECOVERY_LOCAL_CONFIG)" --source-tree "$(SOURCE_DIR)" --bundle "$(RECOVERY_BUNDLE)" $(RECOVERY_COMPOSED_SOURCE_ARGS)
 
 recovery-logs-plan:
 	$(PYTHON) scripts/collect_recovery.py

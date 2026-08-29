@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-ab-only-recovery-packaging-v1",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0006-ab-only-recovery-packaging.patch",
+    "sha256": "29b8ed6a208d4ad6356d72c995c84b72204494acb9672aaf3fceb49a21f58a8c",
+    "size_bytes": 2608
+  },
+  "source_files": [
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "before": {
+        "sha256": "9ace653e00cc3635ae476d15e03b44b7bf6c70898497c343bf41f6ce521dbd98",
+        "size_bytes": 48004
+      },
+      "after": {
+        "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+        "size_bytes": 48289
+      }
+    }
+  ],
+  "semantic_files": [
+    {
+      "path": "build/make/core/Makefile",
+      "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+      "size_bytes": 382008
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+      "size_bytes": 156263
+    },
+    {
+      "path": "build/make/tools/releasetools/non_ab_ota.py",
+      "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+      "size_bytes": 28122
+    },
+    {
+      "path": "build/make/tools/releasetools/ota_from_target_files.py",
+      "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+      "size_bytes": 66479
+    }
+  ],
+  "requires_patch": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+  "semantics": {
+    "ab_only_predicate": {
+      "ab_update": "true",
+      "allow_non_ab_not": "true"
+    },
+    "two_step_consumer": "non_ab_ota._WriteRecoveryImageToBoot",
+    "two_step_destination": "/boot",
+    "ordinary_recovery_destination": "IMAGES/recovery.img",
+    "ordinary_recovery_source": "BOOTABLE_IMAGES/recovery.img",
+    "ordinary_recovery_bytes_changed": false,
+    "two_step_image_fabricated": false,
+    "recovery_source_metadata_fabricated": false,
+    "non_ab_and_hybrid_two_step_assertion_preserved": true,
+    "ota_force_non_ab_guard_preserved": true,
+    "signature_or_avb_rules_changed": false,
+    "readiness_flags_changed": false
+  },
+  "source_anchors": [
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "version": "before",
+      "line": 1018,
+      "purpose": "Real recovery image is still required and copied before the optional non-A/B artifact."
+    },
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "version": "before",
+      "line": 1031,
+      "purpose": "Previously attempted non-A/B two-step construction for every new recovery image."
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "line": 1261,
+      "purpose": "The pinned recovery-fstab loader already excludes the same A/B-only mode."
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "line": 1961,
+      "purpose": "BOOTABLE_IMAGES returns the exact prebuilt without AVB re-signing."
+    },
+    {
+      "path": "build/make/tools/releasetools/non_ab_ota.py",
+      "line": 680,
+      "purpose": "Two-step recovery is written to boot, not the dedicated recovery partition."
+    },
+    {
+      "path": "build/make/tools/releasetools/ota_from_target_files.py",
+      "line": 1446,
+      "purpose": "Non-A/B on an A/B device requires explicit allow_non_ab metadata."
+    }
+  ],
+  "validation_scope": {
+    "python_recovery_branch_only": true,
+    "full_target_files_verified": false,
+    "ota_verified": false,
+    "super_verified": false,
+    "signed_rom_chain_verified": false,
+    "phone_operations": []
+  },
+  "limitations": [
+    "This is a follow-up to the reviewed prebuilt recovery consumer, not a replacement for it.",
+    "An A/B-only target has no recovery-two-step.img consumer. The preserved recovery.img belongs in its recovery payload partition.",
+    "The 100 MiB kernel-free working76 image does not fit the 96 MiB Nezha boot partition and is not a two-step boot image. No such artifact is created.",
+    "Non-A/B and hybrid A/B/non-A/B products retain upstream two-step construction and its missing-image assertion; no error is suppressed for those modes.",
+    "The unchanged pinned OTA tool rejects force_non_ab when allow_non_ab is not true. Nezha must remain A/B-only.",
+    "The first-stage recovery branch can be verified with synthetic bytes, but that is not a full target-files build, AVB validation, payload signing, OTA installation or runtime test.",
+    "A complete target-files build still requires all image inputs, mi_ext integration, signed AVB descriptors, partition-fit checks, full VINTF and labeling compatibility, and reviewed OTA trust.",
+    "Upstream target-files validators do not establish all of those properties: raw non-sparse image consistency and OTA key reconciliation require independent checks."
+  ]
+}

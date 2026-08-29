@@ -1,0 +1,150 @@
+diff --git a/core/Makefile b/core/Makefile
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -4719,6 +4719,27 @@
+ # custom images
+ INSTALLED_CUSTOMIMAGES_TARGET :=
+ 
++# Opt-in prebuilt AVB custom images whose existing descriptors belong directly
++# to root vbmeta. These images must be copied unchanged, not given a new child
++# key or rollback location. Keep signed custom-image behavior unchanged.
++ifneq ($(strip $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),)
++ifneq ($(BOARD_AVB_ENABLE),true)
++$(error Direct AVB custom images require BOARD_AVB_ENABLE=true)
++endif
++ifneq ($(filter-out $(BOARD_CUSTOMIMAGES_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),)
++$(error Direct AVB custom images must be listed in BOARD_CUSTOMIMAGES_PARTITION_LIST)
++endif
++ifneq ($(words $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),$(words $(sort $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST))))
++$(error Direct AVB custom images cannot contain duplicate partitions)
++endif
++ifneq ($(words $(BOARD_CUSTOMIMAGES_PARTITION_LIST)),$(words $(sort $(BOARD_CUSTOMIMAGES_PARTITION_LIST))))
++$(error Custom image registration cannot contain duplicates when direct AVB images are selected)
++endif
++ifneq ($(origin BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST),undefined)
++$(error Direct AVB custom registration is computed by the build and cannot be overridden)
++endif
++endif
++
+ ifneq ($(strip $(BOARD_CUSTOMIMAGES_PARTITION_LIST)),)
+ INTERNAL_AVB_CUSTOMIMAGES_SIGNING_ARGS :=
+ BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST :=
+@@ -4728,6 +4749,32 @@
+ 	$(if $(BOARD_AVB_$(call to-upper,$(partition))_KEY_PATH), \
+ 	$(eval BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST += $(partition)) \
+ 	$(eval BOARD_$(call to-upper,$(partition))_IMAGE_LIST := $(BOARD_AVB_$(call to-upper,$(partition))_IMAGE_LIST))))
++
++# A direct descriptor has exactly one canonical prebuilt and a reviewed digest.
++# Reject conflicting selectors instead of silently choosing signed or chained
++# behavior. INSTALLED_<PART>IMAGE_TARGET is also required by the super builder.
++define check-direct-custom-image
++$(eval _avb_direct_name := $(1))
++$(foreach char,_ a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9,$(eval _avb_direct_name := $(subst $(char),,$(_avb_direct_name))))
++$(if $(_avb_direct_name),$(error Invalid direct AVB custom partition name $(1)))
++$(if $(filter $(1),boot init_boot vendor_boot vendor_kernel_boot recovery system system_other system_ext product vendor odm vendor_dlkm odm_dlkm system_dlkm dtbo pvmfw vbmeta vbmeta_system vbmeta_vendor super userdata metadata cache),$(error Direct AVB custom partition $(1) reuses a standard partition name))
++$(if $(filter 1,$(words $(BOARD_$(call to-upper,$(1))_IMAGE_LIST))),,$(error Direct AVB custom image $(1) requires exactly one prebuilt))
++$(if $(filter $(1).img,$(notdir $(BOARD_$(call to-upper,$(1))_IMAGE_LIST))),,$(error Direct AVB custom image $(1) must use basename $(1).img))
++$(if $(strip $(BOARD_$(call to-upper,$(1))_IMAGE_SHA256)),,$(error Direct AVB custom image $(1) requires its expected SHA256))
++$(foreach setting,KEY_PATH ALGORITHM ROLLBACK_INDEX ROLLBACK_INDEX_LOCATION ADD_HASHTREE_FOOTER_ARGS PARTITION_SIZE IMAGE_LIST,$(if $(filter undefined,$(origin BOARD_AVB_$(call to-upper,$(1))_$(setting))),,$(error Direct AVB custom image $(1) cannot override derived or signing setting $(setting))))
++$(if $(strip $(BOARD_AVB_$(call to-upper,$(1))_KEY_PATH) $(BOARD_AVB_$(call to-upper,$(1))_ALGORITHM) $(BOARD_AVB_$(call to-upper,$(1))_ROLLBACK_INDEX) $(BOARD_AVB_$(call to-upper,$(1))_ROLLBACK_INDEX_LOCATION) $(BOARD_AVB_$(call to-upper,$(1))_ADD_HASHTREE_FOOTER_ARGS) $(BOARD_AVB_$(call to-upper,$(1))_PARTITION_SIZE) $(BOARD_AVB_$(call to-upper,$(1))_IMAGE_LIST)), $(error Direct AVB custom image $(1) cannot have signing, chain, or alternate image settings))
++$(if $(filter undefined,$(origin BOARD_$(call to-upper,$(1))_IMAGE_NO_FLASHALL)),,$(error Direct AVB custom image $(1) cannot override update image inclusion))
++$(if $(INSTALLED_$(call to-upper,$(1))IMAGE_TARGET),$(error Direct AVB custom image $(1) collides with an installed partition))
++$(eval BOARD_AVB_$(call to-upper,$(1))_IMAGE_LIST := $(BOARD_$(call to-upper,$(1))_IMAGE_LIST))
++endef
++$(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),$(eval $(call check-direct-custom-image,$(partition))))
++BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST += $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)
++ifneq ($(strip $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),)
++ifneq ($(filter-out $(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),)
++$(error Direct AVB custom registration was overridden or omitted)
++endif
++.KATI_READONLY := BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST $(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),BOARD_$(call to-upper,$(partition))_IMAGE_NO_FLASHALL $(foreach setting,KEY_PATH ALGORITHM ROLLBACK_INDEX ROLLBACK_INDEX_LOCATION ADD_HASHTREE_FOOTER_ARGS PARTITION_SIZE IMAGE_LIST,BOARD_AVB_$(call to-upper,$(partition))_$(setting)))
++endif
+ 
+ # Sign custom image.
+ # $(1): the prebuilt custom image.
+@@ -4763,8 +4810,27 @@
+ INSTALLED_CUSTOMIMAGES_TARGET += $(2)
+ endef
+ 
++# Copy and verify prebuilt direct-descriptor images without changing their AVB
++# footer, tree, FEC, filesystem, or embedded key. Root vbmeta signs the descriptor.
++# $(1): prebuilt. $(2): partition. $(3): installed image.
++define copy_direct_custom_image
++$(3): $(1) $(AVBTOOL) $(INTERNAL_USERIMAGES_DEPS)
++	@echo Target direct AVB custom image: $(3)
++	@test "$$$$(sha256sum < $(1) | cut -d ' ' -f 1)" = "$(BOARD_$(call to-upper,$(2))_IMAGE_SHA256)"
++	mkdir -p $(dir $(3))
++	cp $(1) $(3)
++	@test "$$$$(sha256sum < $(3) | cut -d ' ' -f 1)" = "$(BOARD_$(call to-upper,$(2))_IMAGE_SHA256)"
++	PATH=$(INTERNAL_USERIMAGES_BINARY_PATHS):$$$$PATH $(AVBTOOL) verify_image --image $(3)
++INSTALLED_CUSTOMIMAGES_TARGET += $(3)
++INSTALLED_$(call to-upper,$(2))IMAGE_TARGET := $(3)
++.PHONY: $(2)image
++$(2)image: $(3)
++endef
++$(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST), \
++  $(eval $(call copy_direct_custom_image,$(BOARD_$(call to-upper,$(partition))_IMAGE_LIST),$(partition),$(PRODUCT_OUT)/$(partition).img)))
++
+ # Add AVB custom image to droid target
+-$(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST), \
++$(foreach partition,$(filter-out $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)), \
+   $(foreach image,$(BOARD_AVB_$(call to-upper,$(partition))_IMAGE_LIST), \
+      $(eval $(call sign_custom_image,$(image),$(partition),$(PRODUCT_OUT)/$(notdir $(image))))))
+ 
+@@ -5145,8 +5211,16 @@
+ endif
+ 
+ ifneq ($(strip $(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)),)
+-$(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST), \
++$(foreach partition,$(filter-out $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)), \
+     $(eval $(call check-and-set-custom-avb-chain-args,$(partition))))
++endif
++
++ifneq ($(strip $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),)
++ifneq ($(filter $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),$(INTERNAL_AVB_PARTITIONS_IN_CHAINED_VBMETA_IMAGES)),)
++$(error Direct AVB custom images must belong to root vbmeta, not a chained vbmeta)
++endif
++$(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST), \
++    $(eval $(call check-and-set-avb-args,$(partition))))
+ endif
+ 
+ BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --padding_size 4096
+@@ -5233,7 +5307,7 @@
+     $(hide) $(AVBTOOL) extract_public_key --key $(BOARD_AVB_VBMETA_VENDOR_KEY_PATH) \
+         --output $(1)/vbmeta_vendor.avbpubkey)
+   $(if $(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST),\
+-    $(hide) $(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST), \
++    $(hide) $(foreach partition,$(filter-out $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)), \
+         $(AVBTOOL) extract_public_key --key $(BOARD_AVB_$(call to-upper,$(partition))_KEY_PATH) \
+             --output $(1)/$(partition).avbpubkey;))
+   $(if $(BOARD_AVB_VBMETA_CUSTOM_PARTITIONS),\
+@@ -6043,7 +6117,9 @@
+ endif
+ endif # BOARD_AVB_ENABLE
+ ifneq (,$(strip $(BOARD_CUSTOMIMAGES_PARTITION_LIST)))
+-	$(hide) $(foreach partition,$(BOARD_CUSTOMIMAGES_PARTITION_LIST), \
++	@# Dynamic direct-descriptor images are flashed exactly once after update-super.
++	@# IMAGE_NO_FLASHALL is unsuitable: it would also remove the required ZIP entry.
++	$(hide) $(foreach partition,$(filter-out $(filter $(BOARD_SUPER_PARTITION_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),$(BOARD_CUSTOMIMAGES_PARTITION_LIST)), \
+ 		$(if $(BOARD_$(call to-upper,$(partition))_IMAGE_NO_FLASHALL),, \
+ 	      echo "flash $(partition)" >> $@; \
+ 		) \
+@@ -6215,12 +6291,16 @@
+ endif # BOARD_CUSTOMIMAGES_PARTITION_LIST
+ ifneq (,$(strip $(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)))
+ 	$(hide) echo "avb_custom_images_partition_list=$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)" >> $@
+-	$(hide) $(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST), \
++	$(hide) echo "avb_custom_images_direct_partition_list=$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)" >> $@
++	@# Omit key/algorithm/rollback entries completely for direct descriptors.
++	@# An empty key entry would incorrectly select signing in AddCustomImages.
++	$(hide) $(foreach partition,$(filter-out $(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST)), \
+ 	    echo "avb_$(partition)_key_path=$(BOARD_AVB_$(call to-upper,$(partition))_KEY_PATH)"  >> $@; \
+ 	    echo "avb_$(partition)_algorithm=$(BOARD_AVB_$(call to-upper,$(partition))_ALGORITHM)"  >> $@; \
+ 	    echo "avb_$(partition)_add_hashtree_footer_args=$(BOARD_AVB_$(call to-upper,$(partition))_ADD_HASHTREE_FOOTER_ARGS)"  >> $@; \
+ 	    echo "avb_$(partition)_rollback_index_location=$(BOARD_AVB_$(call to-upper,$(partition))_ROLLBACK_INDEX_LOCATION)"  >> $@; \
+-	    echo "avb_$(partition)_partition_size=$(BOARD_AVB_$(call to-upper,$(partition))_PARTITION_SIZE)"  >> $@; \
++	    echo "avb_$(partition)_partition_size=$(BOARD_AVB_$(call to-upper,$(partition))_PARTITION_SIZE)"  >> $@;)
++	$(hide) $(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST), \
+ 	    echo "avb_$(partition)_image_list=$(foreach image,$(BOARD_AVB_$(call to-upper,$(partition))_IMAGE_LIST),$(notdir $(image)))" >> $@;)
+ endif # BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST
+ ifneq (,$(strip $(BOARD_AVB_VBMETA_SYSTEM)))
