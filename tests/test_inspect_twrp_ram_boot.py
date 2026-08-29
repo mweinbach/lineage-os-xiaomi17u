@@ -28,7 +28,7 @@ def _property(key, value):
 
 
 def _fixture(*, salt=b"s" * 32, properties=None, header_version=4, command_line=None,
-             directory_scaffold=False, prefix=None, suffix=None):
+             directory_scaffold=False, prefix=None, suffix=None, init_logging=False):
     kernel = b"SYNTHETIC KERNEL" * 277  # Crosses one page; not executable code.
     block = b"\x50hello"
     if suffix is None:
@@ -42,6 +42,8 @@ def _fixture(*, salt=b"s" * 32, properties=None, header_version=4, command_line=
     header_size = 1580 if header_version == 3 else 1584
     if command_line is None:
         command_line = inspector.V3_COMMAND_LINE if header_version == 3 else ""
+        if init_logging:
+            command_line += inspector.INIT_LOGGING_SUFFIX
     struct.pack_into("<8s9I", header, 0, b"ANDROID!", len(kernel), len(ramdisk), 0, header_size, 0, 0, 0, 0, header_version)
     header[44:44 + len(command_line)] = command_line.encode("ascii")
     unsigned = bytes(header) + _pad(kernel) + _pad(ramdisk)
@@ -69,7 +71,7 @@ def _fixture(*, salt=b"s" * 32, properties=None, header_version=4, command_line=
     contract = inspector.RamBootContract(image_size, len(kernel), hashlib.sha256(kernel).hexdigest(),
                                          len(ramdisk), hashlib.sha256(ramdisk).hexdigest(), header_version, command_line,
                                          directory_scaffold, len(suffix) if directory_scaffold else None,
-                                         hashlib.sha256(suffix).hexdigest() if directory_scaffold else None)
+                                         hashlib.sha256(suffix).hexdigest() if directory_scaffold else None, init_logging)
     offsets = {"vbmeta": len(unsigned), "auth": len(unsigned) + 256, "aux": len(unsigned) + 832,
                "hash_size": hash_size, "desc_size": len(descriptors), "vbmeta_size": len(vbmeta),
                "kernel_end": 4096 + len(kernel), "ramdisk": 4096 + len(_pad(kernel)),
@@ -417,6 +419,87 @@ class RamBootScaffoldTests(unittest.TestCase):
             self.assertEqual(inspector.main([str(path), "--header-version", "3", "--scaffold"]), 0)
             read.assert_called_once_with(path, contract=inspector.V3_SCAFFOLD_EXPECTED_CONTRACT)
         for args in ([str(path), "--scaffold"], [str(path), "--header-version", "4", "--scaffold"]):
+            with self.subTest(args=args), mock.patch.object(inspector, "inspect_image") as read, redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
+                inspector.main(args)
+            self.assertEqual(caught.exception.code, 2)
+            read.assert_not_called()
+
+
+class RamBootInitLoggingTests(unittest.TestCase):
+    def setUp(self):
+        self.image, self.contract, self.offsets = _fixture(header_version=3, directory_scaffold=True, init_logging=True)
+
+    def test_logging_variant_reports_only_exact_command_line_selection(self):
+        with ExitStack() as stack:
+            for target in ("builtins.open", "io.open", "os.open", "os.system", "subprocess.run", "subprocess.Popen", "socket.socket", "time.time"):
+                stack.enter_context(mock.patch(target, side_effect=AssertionError("side effect")))
+            report = inspector.inspect_bytes(self.image, contract=self.contract)
+        line = inspector.V3_COMMAND_LINE + " printk.devkmsg=on"
+        self.assertTrue(report["contract"]["init_logging"])
+        self.assertTrue(report["header"]["init_logging_selected"])
+        self.assertEqual(report["header"]["command_line"], line)
+        self.assertEqual(report["header"]["command_line_size_bytes"], len(line.encode("ascii")))
+        self.assertEqual(report["header"]["command_line_sha256"], hashlib.sha256(line.encode("ascii")).hexdigest())
+        self.assertTrue(report["validation"]["directory_scaffold_verified"])
+        self.assertTrue(report["avb"]["hash_descriptor"]["digest_verified"])
+        self.assertNotIn("boot_signature_size_bytes", report["header"])
+        for key in ("kernel_devkmsg_ratelimit_behavior_verified", "runtime_verified", "boot_tested", "authenticated_adb_verified",
+                    "signature_verified", "trusted_key_verified", "avb_trusted", "flash_admitted"):
+            self.assertIs(report["validation"][key], False)
+
+    def test_production_contract_changes_only_logging_selection_and_literal_suffix(self):
+        logged = inspector.V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT
+        base = inspector.V3_SCAFFOLD_EXPECTED_CONTRACT
+        self.assertTrue(logged.init_logging)
+        self.assertEqual(logged.command_line, base.command_line + " printk.devkmsg=on")
+        self.assertEqual(replace(logged, init_logging=False, command_line=base.command_line), base)
+        for contract in (inspector.EXPECTED_CONTRACT, inspector.V3_EXPECTED_CONTRACT, base):
+            self.assertIs(contract.init_logging, False)
+
+    def test_wrong_values_extra_security_flags_duplicates_and_whitespace_are_rejected(self):
+        line = self.contract.command_line
+        changes = (inspector.V3_COMMAND_LINE, line.replace("devkmsg=on", "devkmsg=off"),
+                   line.replace("devkmsg=on", "devkmsg=ratelimit"), line.replace("devkmsg=on", "devkmsg=true"),
+                   line.replace("devkmsg=on", "devkmsg=ON"), line + " printk.devkmsg=on",
+                   line + " androidboot.selinux=permissive", line + " androidboot.verifiedbootstate=orange",
+                   line + " ", line + "\0hidden")
+        for changed_line in changes:
+            changed = _mutate(self.image, 44, changed_line.encode("ascii").ljust(1536, b"\0"))
+            with self.subTest(command_line=changed_line), self.assertRaisesRegex(inspector.RamBootInspectionError, "command line"):
+                inspector.inspect_bytes(changed, contract=self.contract)
+
+    def test_expected_contract_cannot_enable_logging_without_v3_scaffold_or_add_flags(self):
+        for contract in (replace(self.contract, init_logging=1), replace(self.contract, init_logging="true"),
+                         replace(self.contract, init_logging=False), replace(self.contract, header_version=4),
+                         replace(self.contract, scaffold=False, ramdisk_suffix_size_bytes=None, ramdisk_suffix_sha256=None),
+                         replace(self.contract, command_line=self.contract.command_line + " androidboot.selinux=permissive")):
+            with self.subTest(contract=contract), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(self.image, contract=contract)
+
+    def test_logging_is_not_autodetected_and_plain_scaffold_is_still_strict(self):
+        image, contract, _ = _fixture(header_version=3, directory_scaffold=True)
+        for data, expected in ((self.image, contract), (image, self.contract)):
+            with self.subTest(logging=expected.init_logging), self.assertRaisesRegex(inspector.RamBootInspectionError, "command line"):
+                inspector.inspect_bytes(data, contract=expected)
+        report = inspector.inspect_bytes(image, contract=contract)
+        self.assertFalse(report["header"]["init_logging_selected"])
+        self.assertFalse(report["validation"]["kernel_devkmsg_ratelimit_behavior_verified"])
+
+    def test_logging_does_not_relax_header_payload_scaffold_or_avb_checks(self):
+        for changed in (_mutate(self.image, 20, 1584, "<I"), _mutate(self.image, 4096, b"X"),
+                        _mutate(self.image, self.offsets["ramdisk"] + 13, b"X"),
+                        _rehash_auth(_mutate(self.image, self.offsets["vbmeta"] + 120, 1, ">I"), self.offsets)):
+            with self.subTest(), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(changed, contract=self.contract)
+
+    def test_cli_init_logging_requires_explicit_v3_and_scaffold_before_read(self):
+        path = Path("synthetic-only.img")
+        report = inspector.inspect_bytes(self.image, contract=self.contract)
+        with mock.patch.object(inspector, "inspect_image", return_value=report) as read, redirect_stdout(io.StringIO()):
+            self.assertEqual(inspector.main([str(path), "--header-version", "3", "--scaffold", "--init-logging"]), 0)
+            read.assert_called_once_with(path, contract=inspector.V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT)
+        for args in ([str(path), "--init-logging"], [str(path), "--header-version", "3", "--init-logging"],
+                     [str(path), "--header-version", "4", "--scaffold", "--init-logging"]):
             with self.subTest(args=args), mock.patch.object(inspector, "inspect_image") as read, redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
                 inspector.main(args)
             self.assertEqual(caught.exception.code, 2)

@@ -49,6 +49,7 @@ V3_COMMAND_LINE = (
     "androidboot.hypervisor.protected_vm.supported=true androidboot.hypervisor.version=gunyah "
     "androidboot.vendor.qspa=true androidboot.serialconsole=0"
 )
+INIT_LOGGING_SUFFIX = " printk.devkmsg=on"
 
 
 @dataclass(frozen=True)
@@ -65,6 +66,7 @@ class RamBootContract:
     scaffold: bool = False
     ramdisk_suffix_size_bytes: int | None = None
     ramdisk_suffix_sha256: str | None = None
+    init_logging: bool = False
 
 
 EXPECTED_CONTRACT = RamBootContract(
@@ -81,6 +83,10 @@ V3_SCAFFOLD_EXPECTED_CONTRACT = replace(
     ramdisk_suffix_size_bytes=EXPECTED_CONTRACT.ramdisk_size_bytes,
     ramdisk_suffix_sha256=EXPECTED_CONTRACT.ramdisk_sha256,
 )
+V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT = replace(
+    V3_SCAFFOLD_EXPECTED_CONTRACT, init_logging=True,
+    command_line=V3_COMMAND_LINE + INIT_LOGGING_SUFFIX,
+)
 
 
 class RamBootInspectionError(ValueError):
@@ -96,7 +102,13 @@ def _contract(contract):
     _require(type(contract) is RamBootContract, "expected an explicit RamBootContract")
     _require(type(contract.header_version) is int and contract.header_version in (3, 4),
              "expected header version must be 3 or 4")
+    _require(type(contract.init_logging) is bool, "init logging selection must be boolean")
+    if contract.init_logging:
+        _require(contract.header_version == 3 and contract.scaffold is True,
+                 "init logging requires the explicit v3 scaffold contract")
     expected_command_line = V3_COMMAND_LINE if contract.header_version == 3 else ""
+    if contract.init_logging:
+        expected_command_line += INIT_LOGGING_SUFFIX
     _require(type(contract.command_line) is str and contract.command_line == expected_command_line,
              "expected contract has an unreviewed command line")
     for size in (contract.image_size_bytes, contract.kernel_size_bytes, contract.ramdisk_size_bytes):
@@ -291,11 +303,13 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
         avb = _boot_avb(view, payload_end)
     except (envelope.ImageInspectionError, scaffold.ScaffoldError) as exc:
         raise RamBootInspectionError(str(exc)) from exc
-    pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT, V3_SCAFFOLD_EXPECTED_CONTRACT)
+    pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT, V3_SCAFFOLD_EXPECTED_CONTRACT,
+                                   V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT)
     header = {"version": version, "size_bytes": header_size, "page_size_bytes": PAGE_SIZE,
               "kernel_size_bytes": kernel_size, "ramdisk_size_bytes": ramdisk_size, "os_version_raw": 0,
               "command_line_empty": not command_line, "command_line": contract.command_line,
               "command_line_size_bytes": len(command_line), "command_line_sha256": _sha(command_line),
+              "init_logging_selected": contract.init_logging,
               "padded_payload_size_bytes": payload_end, "reserved_and_padding_zero": True}
     if version == 4:
         header["boot_signature_size_bytes"] = signature_size
@@ -312,6 +326,7 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
             "boot_hash_descriptor_verified": True, "reserved_and_padding_zero": True,
             "stock_kernel_build66_payloads_verified": pinned_contract,
             "directory_scaffold_verified": contract.scaffold, "full_kernel_decompression_verified": False,
+            "kernel_devkmsg_ratelimit_behavior_verified": False,
             "signature_verified": False, "trusted_key_verified": False, "avb_trusted": False,
             "ramdisk_decompressed": False, "twrp_contents_verified": False,
             "compiled_selinux_policy_verified": False, "boot_tested": False,
@@ -355,12 +370,17 @@ def main(argv=None):
     parser.add_argument("--header-version", type=int, choices=(3, 4), default=4,
                         help="explicit wrapper contract; defaults to v4")
     parser.add_argument("--scaffold", action="store_true", help="verify the exact directory-only prefix; requires --header-version 3")
+    parser.add_argument("--init-logging", action="store_true",
+                        help="require only the reviewed printk.devkmsg=on addition; requires --header-version 3 --scaffold")
     parser.add_argument("--output", type=Path, help="new metadata .json report; existing paths are never replaced")
     args = parser.parse_args(argv)
+    if args.init_logging and (args.header_version != 3 or not args.scaffold):
+        parser.error("--init-logging requires --header-version 3 --scaffold")
     if args.scaffold and args.header_version != 3:
         parser.error("--scaffold requires --header-version 3")
     try:
-        contract = (V3_SCAFFOLD_EXPECTED_CONTRACT if args.scaffold else
+        contract = (V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.init_logging else
+                    V3_SCAFFOLD_EXPECTED_CONTRACT if args.scaffold else
                     V3_EXPECTED_CONTRACT if args.header_version == 3 else EXPECTED_CONTRACT)
         report = inspect_image(args.image, contract=contract)
         if args.output is not None:
