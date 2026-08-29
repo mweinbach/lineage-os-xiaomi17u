@@ -1,0 +1,799 @@
+{
+  "declared_framework_expectations": {
+    "aidl_names": [
+      "android.frameworks.sensorservice",
+      "vendor.qti.hardware.sigma_miracast_aidl",
+      "vendor.qti.qccsyshal_aidl"
+    ],
+    "baseline_missing_framework_provider_names": [
+      "vendor.qti.hardware.sigma_miracast_aidl",
+      "vendor.qti.qccsyshal_aidl"
+    ],
+    "captured_factory_provider_candidates": [
+      "/system_ext/bin/sigma_miracasthalservice_aidl",
+      "/system_ext/bin/qccsyshal_aidl-service"
+    ],
+    "device_matrix_capture": {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "sha256": "01961cce16142d8d9d0bfdac395965776de55571ec36ca8a57cabf52068e18a7",
+      "size_bytes": 78389
+    },
+    "device_matrix_capture_member": "files/0074",
+    "device_matrix_runtime_path": "/vendor/etc/vintf/compatibility_matrix.xml",
+    "device_matrix_sha256": "c20215ca383a5a205da20d8c9947e68826cc16ac95a384a8fef02832d2649f9f",
+    "scope": "The factory device matrix declares these framework HAL names. At the pinned libvintf revision, HalManifest::checkCompatibility does not compare HAL presence; no provider incompatibility failure is inferred from matrix declarations alone. Runtime clients and functionality require separate review of the real provider candidates.",
+    "system_sdk_versions": [
+      36
+    ]
+  },
+  "device": {
+    "board": "canoe",
+    "codename": "nezha",
+    "soc": "SM8850"
+  },
+  "factory_vendor_apex": {
+    "capture": {
+      "path": "artifacts/vintf-compatibility-20260829/factory-vendor-apex/receipt.json",
+      "sha256": "861bfb198ff8b344c622deff9e0daf30a92ba2fabca920bb780e2464a3809854",
+      "size_bytes": 2106
+    },
+    "captured_package_bytes": 6348800,
+    "comparison": {
+      "path": "reports/vintf-compatibility-20260829/factory-apex-comparison.json",
+      "sha256": "2bcc49609bba704257622ab660b7d197c61a97179dd797f7691cc1e51e86fdf8",
+      "size_bytes": 9430
+    },
+    "complete_factory_odm_apex_package_count": 0,
+    "complete_factory_vendor_apex_package_count": 3,
+    "container_signatures_verified": false,
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "factory_vendor_image_sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+    "firmware_executed": false,
+    "modules": [
+      {
+        "factory_sha256": "7d0ddec71e4b6a84a55e76faf147332a1908a89a0706836a72e85877f2569210",
+        "historical_xiaomi_eu_sha256": "7d0ddec71e4b6a84a55e76faf147332a1908a89a0706836a72e85877f2569210",
+        "inspection": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/cas-v4/receipt.json",
+          "sha256": "5168577588ea015ec3b681fe2f151fd3986ffa0fcaaf083450f7dd1662438a57",
+          "size_bytes": 22563
+        },
+        "inspection_reused_by_exact_package_hash": true,
+        "module_name": "com.android.hardware.cas",
+        "package_identical_to_historical": true,
+        "payload_inventory_entries": 9,
+        "payload_regular_files": 4,
+        "payload_regular_files_byte_identical_to_historical": true,
+        "runtime_package_path": "/vendor/apex/com.android.hardware.cas.apex",
+        "size_bytes": 380928,
+        "vintf_fragment_count": 1,
+        "zip_member_differences": []
+      },
+      {
+        "factory_sha256": "4a680a496773eb72bcf4beba906b8ba8ac660bd8a5f116a2ad4f169d7dd820a8",
+        "historical_xiaomi_eu_sha256": "4a680a496773eb72bcf4beba906b8ba8ac660bd8a5f116a2ad4f169d7dd820a8",
+        "inspection": {
+          "path": "artifacts/firmware-analysis/b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69/apex-analysis/widevine-v2/receipt.json",
+          "sha256": "16ecc4250c3509f0a54115e854e7bd390955927937488d74c388ad169bd0c976",
+          "size_bytes": 41381
+        },
+        "inspection_reused_by_exact_package_hash": true,
+        "module_name": "com.google.android.widevine",
+        "package_identical_to_historical": true,
+        "payload_inventory_entries": 16,
+        "payload_regular_files": 10,
+        "payload_regular_files_byte_identical_to_historical": true,
+        "runtime_package_path": "/vendor/apex/com.google.android.widevine.nonupdatable.apex",
+        "size_bytes": 5619712,
+        "vintf_fragment_count": 1,
+        "zip_member_differences": []
+      },
+      {
+        "factory_sha256": "b76fe0135990383d5e635d4d53ac19ea172e0024ff5e72b0b70ba990a5ecbc2d",
+        "historical_xiaomi_eu_sha256": "d7dfac2c2d52773409b59f89a78daf9cdc487c6ec3fa30493a9b63c7900f66dc",
+        "inspection": {
+          "path": "artifacts/vintf-compatibility-20260829/factory-wifi-inspection-v2/receipt.json",
+          "sha256": "7a9b63b461dfc23c06a0a894aac77bb011057edc7d7051b570bd788f89746c7c",
+          "size_bytes": 12877
+        },
+        "inspection_reused_by_exact_package_hash": false,
+        "module_name": "com.xiaomi.wifi",
+        "package_identical_to_historical": false,
+        "payload_inventory_entries": 4,
+        "payload_regular_files": 2,
+        "payload_regular_files_byte_identical_to_historical": true,
+        "runtime_package_path": "/vendor/apex/com.xiaomi.wifi.apex",
+        "size_bytes": 348160,
+        "vintf_fragment_count": 0,
+        "zip_member_differences": [
+          {
+            "factory_sha256": "c0b0f37075fdd221bd89bcb0a93332e02748a11108fc80cd9fa08ce04efa81b0",
+            "historical_sha256": "b93e80a37d01fefca7dd89eee25e8f6be0f6382b1ba93e8f8a5c8bb8f7e04adf",
+            "member": "META-INF/CERT.RSA"
+          },
+          {
+            "factory_sha256": "cf422ef61ad8d9b0c038c22efd2a6b44aac7cd81eb444388e3dde290d64f21cf",
+            "historical_sha256": "496c4eef3436bd0df63b3145340e7d5123afb7de79b9ff0932a199c4a493bbbc",
+            "member": "META-INF/CERT.SF"
+          },
+          {
+            "factory_sha256": "39ed1274dd0f088c9c2958a4306729ba213faeb41e6c6c0e4d9724d4c3f26416",
+            "historical_sha256": "c0ebeab78cfe671ee770d658015cfd6a04f9a9a701aa749b7fb4d7be1b54b666",
+            "member": "META-INF/MANIFEST.MF"
+          },
+          {
+            "factory_sha256": "46d5b7437d691c6cd074a43ee812406674ff42144e84424cf6c265791011ee06",
+            "historical_sha256": "6923e5a139c44777967d8b1244b41f6f85fdc28034b03c964ef004ae07553456",
+            "member": "apex_payload.img"
+          },
+          {
+            "factory_sha256": "6217b7ec35d3e09e31581be2e34a1204d7d43a6080750648d0a0752d66f1eca7",
+            "historical_sha256": "abbf07925be20b60354ce634158940195d4964bcca7be4920e80b4d9dca89107",
+            "member": "apex_pubkey"
+          },
+          {
+            "factory_sha256": "c563038a22f78e94f9213aeaa5691855d49707779f26896e7931c60b34ec451b",
+            "historical_sha256": null,
+            "member": "compat.json"
+          }
+        ]
+      }
+    ],
+    "oem_origin_authenticated": false,
+    "package_activated": false,
+    "payload_avb_verified": false,
+    "preserved_inspection_preflight_failure": {
+      "checks_relaxed": false,
+      "output_name": "factory-wifi-inspection",
+      "package_inspection_executed": false,
+      "reason": "The first command supplied an incorrect expected capture-receipt hash and stopped before package inspection. The subsequent run used the measured capture-receipt hash in a fresh directory.",
+      "source_changed": false,
+      "validator_executed": false
+    },
+    "stock_active_list_is_current_evolution_activation_evidence": false
+  },
+  "graph_audit": {
+    "all_target_dependencies": [
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/check_vintf_system.log",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/vintffm.log"
+    ],
+    "artifact_inventory_is_a_compatibility_pass": false,
+    "artifact_states": {
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.adbd.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.adservices.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.apex.cts.shim.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.appsearch.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.art.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.bt.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.cellbroadcast.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.configinfrastructure.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.conscrypt.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.crashrecovery.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.devicelock.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.extservices.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.healthfitness.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.i18n.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.ipsec.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.media.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.media.swcodec.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.mediaprovider.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.neuralnetworks.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.nfcservices.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.ondevicepersonalization.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.os.statsd.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.permission.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.profiling.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.resolv.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.rkpd.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.runtime.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.scheduling.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.sdkext.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.telephonycore.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.tethering.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.tzdata.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.uprobestats.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.uwb.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.virt.apex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/apex/com.android.wifi.capex": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.202404.xml": {
+        "sha256": "0e30ef736d449fc49a7e7dfac06a3c4c6fd614bdbc63faef7cbf3120c310249e",
+        "size_bytes": 98826,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.202504.xml": {
+        "sha256": "397a569508156123ee1800d1ee6c7c58e4de3b9cef7a692cd6d7655b0b1b18b0",
+        "size_bytes": 60888,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.5.xml": {
+        "sha256": "d70f39dda537bc516f9254c5d344b887e683443604899180766a9d2ff6703a48",
+        "size_bytes": 92724,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.6.xml": {
+        "sha256": "b318169e0ffd2d1c9cbb97544883eda7bb6c8114668987ad193a11715a9e04c7",
+        "size_bytes": 168444,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.7.xml": {
+        "sha256": "060c58eb27d1e87b7f74e3935f09b023eaca682333676bf5153fdacb96ba9ac1",
+        "size_bytes": 223677,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.8.xml": {
+        "sha256": "c1782b452fa108a9ce529f067a19d9833518dafdcddc41e061f8e8ca8eb4f146",
+        "size_bytes": 100225,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/compatibility_matrix.device.xml": {
+        "sha256": "433c146ed25435ca49c21e7f9a8778c994446b8198537bef37fc4a6cd1d2d7a7",
+        "size_bytes": 743,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest.xml": {
+        "sha256": "cd5ae373388bd38d3d481a0b4a0b71f475d55f9a5221bbdf91c5b4da474560d3",
+        "size_bytes": 1803,
+        "state": "present"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/android.frameworks.stats-service.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/android.system.keystore2-service.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/android.system.net.netd-service.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/android.system.suspend-service.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/android.system.vold-service.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/manifest_android.frameworks.cameraservice.service.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/manifest_media_c2_software.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/manifest_services_android.frameworks.devicestate.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/manifest_services_android.frameworks.location.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/vintf/manifest/manifest_services_android.frameworks.vibrator.xml": {
+        "state": "missing"
+      },
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system_ext/etc/vintf/manifest.xml": {
+        "sha256": "f220a35e7874cd2d2103cc0b30fc12e56ecbd33e5b4708f576341e75d6b6dad6",
+        "size_bytes": 560,
+        "state": "present"
+      }
+    },
+    "execution": {
+      "path": "reports/vintf-compatibility-20260829/native-graph-audit-v1-execution.json",
+      "sha256": "54e554decf05c58ad86b3c5d6df7bffa1df9baa5ffa4489d078bd22d13a6bcbe",
+      "size_bytes": 775
+    },
+    "generated_kati_graph": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/build-lineage_nezha.ninja",
+      "sha256": "58e94c1b4a85fd89c85c841170958e648b01e473ab1d3113d6266ec0315502fa",
+      "size_bytes": 1343190940
+    },
+    "issues": [
+      "native-all-target-does-not-include-full-compatibility"
+    ],
+    "missing_framework_apex_count": 36,
+    "missing_partition_xml_count": 10,
+    "missing_total": 46,
+    "modules": {
+      "apexd_host": true,
+      "checkvintf": true,
+      "product_compatibility_matrix.xml": true,
+      "product_manifest.xml": false,
+      "system_compatibility_matrix.xml": true,
+      "system_ext_manifest.xml": true,
+      "system_manifest.xml": true
+    },
+    "native_check_targets": {
+      "apex/apex-info-list.xml": true,
+      "check_vintf_compatible.log": false,
+      "check_vintf_system.log": true,
+      "check_vintf_vendor.log": false,
+      "kernel_configs.txt": true,
+      "kernel_version.txt": true,
+      "vintffm.log": true
+    },
+    "native_full_check_defined": false,
+    "native_full_check_in_all_target": false,
+    "present_partition_xml_count": 9,
+    "result": {
+      "path": "reports/vintf-compatibility-20260829/native-graph-audit-v1.stdout",
+      "sha256": "dd782d20c90d3de03ad8712e25280504d741c98e0400350a2656c7a846bc861b",
+      "size_bytes": 29964
+    },
+    "selected_framework_apex_count": 36,
+    "selected_input_scope": "Only inputs of the recorded native checks; absent checks may omit partitions.",
+    "selected_partition_xml_count": 19,
+    "tool": {
+      "path": "scripts/vintf_compatibility.py",
+      "sha256": "f32284e2ae302367fe718ca0c9dfd1e43ddb79c44ab95d9ba7e7eb2246e02d7f",
+      "size_bytes": 15227
+    }
+  },
+  "graph_checkpoint_completed_at_utc": "2026-08-29T20:00:09.605892+00:00",
+  "kernel": {
+    "configuration_byte_identical_to_captured_stock_ikconfig": true,
+    "exact_factory_kernel_equality_record": "research/factory-boot-contract.json",
+    "kernel_requirements_compared_by_checkvintf": false,
+    "kernel_selinux_runtime_capability_measured": false,
+    "native_config_file": {
+      "path": "target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_configs.txt",
+      "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+      "size_bytes": 220352
+    },
+    "native_release_file": {
+      "path": "target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_version.txt",
+      "sha256": "9e54a919870005ef441be94ffd035875a2d00c4af46cec302516d1c598eb5288",
+      "size_bytes": 52
+    },
+    "release": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+    "selected_fcm_kernel_module": "kernel_config_b_6.12"
+  },
+  "native_build": {
+    "build_log": {
+      "path": "/work/validation/nezha-oem-policy-integration-20260829/vintf-baseline-v10-2/build.log",
+      "sha256": "2c30827f39bb1b9369b4205900b162a5baad4ef565b421bab1df8d82fc077496",
+      "size_bytes": 987715
+    },
+    "completed_at": "2026-08-29T19:53:56.667198+00:00",
+    "exit_code": 0,
+    "full_compatibility_executed": false,
+    "goals": [
+      "system_manifest.xml",
+      "system_ext_manifest.xml",
+      "system_compatibility_matrix.xml",
+      "product_compatibility_matrix.xml",
+      "checkvintf",
+      "apexd_host",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_version.txt",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_configs.txt"
+    ],
+    "images_requested": false,
+    "namespace_separation": {
+      "mnt": true,
+      "net": true,
+      "pid": true,
+      "user": true
+    },
+    "native_ninja_readonly_source_writable_output_verified": true,
+    "ninja_actions": 2475,
+    "phase": "vintf-baseline-v10-2",
+    "result_capture": {
+      "path": "reports/oem-policy-integration-20260829/vintf-baseline-v10-2.stdout.json",
+      "sha256": "a7c985a81f2698182350a85540f8962fcaa8e04708a3d04c4280155c90e4bf32",
+      "size_bytes": 13427
+    },
+    "sandbox_fallback": false,
+    "source_guard": {
+      "path": "/work/validation/nezha-oem-policy-integration-20260829/vintf-baseline-v10-2/source-inputs.json",
+      "sha256": "a1010fbbec16dd8063dabe30e2ddca7600b453dcb69b09f5dbd33602398bf5ea",
+      "size_bytes": 10973
+    },
+    "source_inputs_unchanged": true,
+    "started_at": "2026-08-29T19:49:23.390498+00:00"
+  },
+  "native_outputs": {
+    "additional_pinned_source_files": [
+      {
+        "path": "hardware/interfaces/compatibility_matrices/build/vintf_compatibility_matrix.go",
+        "sha256": "cae3efa789fd6d5506de28d0e29dd32dc765d7d5d80ad367e765e17b73dab596",
+        "size_bytes": 11588
+      },
+      {
+        "path": "system/apex/tools/apexd_host.py",
+        "sha256": "8ec8824c54f0d9dcd4b35ad4466344f7c7bf3f4ad00857d0893c73d5397189e6",
+        "size_bytes": 6512
+      }
+    ],
+    "capture": {
+      "path": "reports/vintf-compatibility-20260829/native-output-capture-v1/receipt.json",
+      "sha256": "79bf7ef1d9b53ae99b644f7eac080f653360c19df86a09656021a12bb1f3938a",
+      "size_bytes": 4518
+    },
+    "device_fcm_installed": true,
+    "files": [
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.202404.xml",
+        "sha256": "0e30ef736d449fc49a7e7dfac06a3c4c6fd614bdbc63faef7cbf3120c310249e",
+        "size_bytes": 98826
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.202504.xml",
+        "sha256": "397a569508156123ee1800d1ee6c7c58e4de3b9cef7a692cd6d7655b0b1b18b0",
+        "size_bytes": 60888
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.5.xml",
+        "sha256": "d70f39dda537bc516f9254c5d344b887e683443604899180766a9d2ff6703a48",
+        "size_bytes": 92724
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.6.xml",
+        "sha256": "b318169e0ffd2d1c9cbb97544883eda7bb6c8114668987ad193a11715a9e04c7",
+        "size_bytes": 168444
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.7.xml",
+        "sha256": "060c58eb27d1e87b7f74e3935f09b023eaca682333676bf5153fdacb96ba9ac1",
+        "size_bytes": 223677
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.8.xml",
+        "sha256": "c1782b452fa108a9ce529f067a19d9833518dafdcddc41e061f8e8ca8eb4f146",
+        "size_bytes": 100225
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/compatibility_matrix.device.xml",
+        "sha256": "433c146ed25435ca49c21e7f9a8778c994446b8198537bef37fc4a6cd1d2d7a7",
+        "size_bytes": 743
+      },
+      {
+        "path": "target/product/nezha/system/etc/vintf/manifest.xml",
+        "sha256": "cd5ae373388bd38d3d481a0b4a0b71f475d55f9a5221bbdf91c5b4da474560d3",
+        "size_bytes": 1803
+      },
+      {
+        "path": "target/product/nezha/system_ext/etc/vintf/manifest.xml",
+        "sha256": "f220a35e7874cd2d2103cc0b30fc12e56ecbd33e5b4708f576341e75d6b6dad6",
+        "size_bytes": 560
+      },
+      {
+        "path": "target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_version.txt",
+        "sha256": "9e54a919870005ef441be94ffd035875a2d00c4af46cec302516d1c598eb5288",
+        "size_bytes": 52
+      },
+      {
+        "path": "target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_configs.txt",
+        "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+        "size_bytes": 220352
+      }
+    ],
+    "new_framework_qualcomm_providers_present": false,
+    "product_manifest_absent_by_empty_input_list": true,
+    "product_matrix_phony_without_output_by_empty_input_list": true,
+    "selected_system_fcm_levels": [
+      5,
+      6,
+      7,
+      8,
+      202404,
+      202504
+    ],
+    "soong_variables": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/soong/soong.lineage_nezha.variables",
+      "selected_values": {
+        "BoardKernelBinaries": [],
+        "BoardKernelModuleInterfaceVersions": [],
+        "BoardKernelVersion": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+        "DeviceFrameworkCompatibilityMatrixFile": [],
+        "DeviceKernelHeaders": [],
+        "DeviceManifestFiles": [],
+        "DeviceManifestSkus": [],
+        "DeviceMatrixFile": [],
+        "DeviceProductCompatibilityMatrixFile": [],
+        "Enforce_vintf_manifest": true,
+        "ManifestPackageNameOverrides": [],
+        "OdmManifestFiles": [],
+        "OdmManifestSkus": [],
+        "ProductManifestFiles": [],
+        "SystemExtManifestFiles": [
+          "system/hwservicemanager/hwservicemanager.xml"
+        ],
+        "SystemManifestFile": []
+      },
+      "sha256": "cc4fff9e17869af7365e22248e2d0ae0086f6e853279e05eca787e3c657762a1",
+      "size_bytes": 339191
+    },
+    "system_ext_manifest_inputs": [
+      "system/libhidl/vintfdata/system_ext_manifest.default.xml",
+      "system/hwservicemanager/hwservicemanager.xml"
+    ],
+    "tools": [
+      {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/checkvintf",
+        "sha256": "bc05ff595a3aca13384ba71fbb4a250b68db880ee5c8028799c4fc4edfd5dca3",
+        "size_bytes": 6179616
+      },
+      {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/apexd_host",
+        "sha256": "4feadd125825cdb2196780edffaf4793691df1e4dd6e8d67c1e9a6f6a37f02b2",
+        "size_bytes": 19772700
+      },
+      {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/assemble_vintf",
+        "sha256": "1bab873f338fd4831df002b737d5c7cd13c8a7b951f1fb92ff63d2fd4d54d0e1",
+        "size_bytes": 1067424
+      }
+    ]
+  },
+  "observed_on": "2026-08-29",
+  "platform": {
+    "branch": "bka",
+    "product": "lineage_nezha",
+    "project_revisions": {
+      "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "hardware/interfaces": "60a7ef5031b21d9e2f18b17ba9beea690d0fdc72",
+      "kernel/configs": "a9918faf6169b1e9ecca88e46fb857727ba10167",
+      "system/apex": "97548ed51112062a4d1762a7dffa0cadcc09bda9",
+      "system/libhidl": "d063c3a2bf981d8dab2ca60ea471f940d71167a6",
+      "system/libvintf": "69c456ea4aa2f503a2904cfbc11f279a3b2efb09"
+    },
+    "release_config": "bp4a",
+    "source_capture": {
+      "path": "reports/vintf-compatibility-20260829/source/receipt.json",
+      "sha256": "12fa769a4c5a6c2b89ff173bafeb149a84e19729e38e97c0a5efdf17b39a1d28",
+      "size_bytes": 4081
+    },
+    "source_files": [
+      {
+        "path": "build/make/core/Makefile",
+        "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+        "size_bytes": 382008
+      },
+      {
+        "path": "build/soong/android/vintf_data.go",
+        "sha256": "dda901f8dfad13dff3f7da44f6b1dd304844312c85f33a89f4dbd427e782772a",
+        "size_bytes": 6151
+      },
+      {
+        "path": "hardware/interfaces/compatibility_matrices/Android.bp",
+        "sha256": "bcce05de7b203d0b575d9db4996c10e219776ad9497fa1009c762ab0047c3733",
+        "size_bytes": 5734
+      },
+      {
+        "path": "hardware/interfaces/compatibility_matrices/compatibility_matrix.202504.xml",
+        "sha256": "669d121b27999f9afee265f4b347361e84c57d451a30f36e5bce9f36b6ce4669",
+        "size_bytes": 22759
+      },
+      {
+        "path": "system/libhidl/vintfdata/Android.bp",
+        "sha256": "fa9e0b07f4e9588b9fc1221f95b4017ccdc07677a4f6ff3d089eb464f7d01f66",
+        "size_bytes": 1510
+      },
+      {
+        "path": "system/libhidl/vintfdata/manifest.xml",
+        "sha256": "7ad336a098908fb0ab078d6d2cd328b15f1ce3d4146d7352b12e18d9a8314a56",
+        "size_bytes": 2802
+      },
+      {
+        "path": "system/libhidl/vintfdata/system_ext_manifest.default.xml",
+        "sha256": "eedc1ca814f5b9f6121066d1897b7a9706a17f90252d377642f953f123ff760e",
+        "size_bytes": 54
+      },
+      {
+        "path": "system/libvintf/check_vintf.cpp",
+        "sha256": "294fad7f990bae008cafc66e394bbe3dfe63ad69a90e471fee90bd7c366127dd",
+        "size_bytes": 22927
+      },
+      {
+        "path": "system/libvintf/Apex.cpp",
+        "sha256": "a0663e0907e6017c7430a4900075f3b092916bb3585f7d10ccfcd9142c4f772d",
+        "size_bytes": 5122
+      },
+      {
+        "path": "system/libvintf/VintfObject.cpp",
+        "sha256": "400516d6679d96f102915dd7c0a14ddb0e45098b189ece42cb15136e220d04cb",
+        "size_bytes": 58877
+      },
+      {
+        "path": "system/libvintf/include/vintf/CheckFlags.h",
+        "sha256": "36b7f1f705c25cf6d58882627d6e29c6ba376c6d11ff1042ed27d4d760366bf9",
+        "size_bytes": 2385
+      },
+      {
+        "path": "kernel/configs/Android.bp",
+        "sha256": "d93805f6f89123e673df199981e6c159672ad3c591b2742882c65e17a8036899",
+        "size_bytes": 1048
+      },
+      {
+        "path": "kernel/configs/b/android-6.12/Android.bp",
+        "sha256": "8371811e40f978efca206d67e94ad7a3e2423604dea607993a0416847adff5ed",
+        "size_bytes": 1509
+      },
+      {
+        "path": "kernel/configs/b/android-6.12/android-base-conditional.xml",
+        "sha256": "6a35967ebb67b8b7e3e142a0fc6cfcf9ccd28e7c4bb7d6f9abd8041adc98418d",
+        "size_bytes": 4513
+      },
+      {
+        "path": "kernel/configs/b/android-6.12/android-base.config",
+        "sha256": "36df37f260bc880ae66a45eeb899236f8979fe52cf9d0e635f00b5efd12ca3b3",
+        "size_bytes": 6322
+      },
+      {
+        "path": "kernel/configs/b/android-6.12/android-tv-base-conditional.xml",
+        "sha256": "acbb565bdce3abf745beb7769b9a737d1aa3c82749360a89e35f99161405b1a1",
+        "size_bytes": 4686
+      },
+      {
+        "path": "kernel/configs/b/android-6.12/android-tv-base.config",
+        "sha256": "aa8c1cf946fab600fe3608478429489cc34941d030bdbf6dc4043431256b50d2",
+        "size_bytes": 6301
+      }
+    ],
+    "source_lock": {
+      "path": "config/evolution-source-lock.json",
+      "sha256": "9b3a825a359fc618ff85234383e06c736c662b5427591d0d68252cdece6aace5",
+      "size_bytes": 857
+    },
+    "source_snapshot": {
+      "path": "research/source-snapshots/evolution-bka-20260827.xml",
+      "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+      "size_bytes": 287546
+    },
+    "variant": "user"
+  },
+  "preserved_initial_failure": {
+    "corrected_by": "Use existing generated target list; keep optional product manifest absence explicit.",
+    "exit_code": 1,
+    "phase": "vintf-baseline-v10",
+    "reason": "product_manifest.xml is an absent noAction module when PRODUCT_MANIFEST_FILES is empty; Ninja rejected the requested goal before VINTF actions.",
+    "replacement_manifest_fabricated": false,
+    "result_capture": {
+      "path": "reports/oem-policy-integration-20260829/vintf-baseline-v10.stdout.json",
+      "sha256": "aa74aa1f3d5382dace4d498ffa591173a4b6fb4a658ec895d9168c0344825a46",
+      "size_bytes": 4617
+    }
+  },
+  "remaining_work": [
+    "Build the ten selected framework XML fragments and all 36 selected framework APEX packages, or re-audit the actual changed product graph to obtain its exact selected closure.",
+    "Materialize complete selected framework and factory vendor/ODM APEX inputs with native apexd_host into a new isolated directory; validate package/module identities and do not reuse a stock active list as Evolution membership.",
+    "Resolve the two Qualcomm factory framework provider candidates using captured clients and functionality requirements. Any imported provider must carry its complete strict native dependencies, original init and VINTF fragments, and narrow source policy; matrix declarations alone are not an observed checker failure.",
+    "Run --check-one for fully assembled framework/device metadata and separate --check-compat with all five partition maps, the generated APEX map, observed SKU/API values and exact full kernel release/config. Preserve all missing HAL, version, deprecation, unused HAL and kernel failures.",
+    "The native check-vintf-all alias does not include the full check for the current opaque vendor/ODM configuration. Add explicit validation integration after full input closure; do not change readiness flags to make a partial target appear complete.",
+    "Keep APEX signatures/activation, AVB/rollback chain, image adoption and authorized physical boot/hardware tests as distinct evidence."
+  ],
+  "schema_version": 1,
+  "status": "Native framework/kernel prerequisites built; exact generated graph exposes incomplete framework install closure and absent full compatibility target.",
+  "validation": {
+    "complete_rom_admitted": false,
+    "device_operations": [],
+    "framework_apex_closure_complete": false,
+    "full_evolution_framework_vendor_compatibility_verified": false,
+    "image_adoption_verified": false,
+    "independent_parser_review": "Native Ninja read-only query probes agreed on secondary outputs, duplicate detection and adjacent separators; symlink and race regressions passed.",
+    "kernel_compatibility_verified": false,
+    "normal_android_selinux_relaxed": false,
+    "offline_test_command": "python3 -m unittest tests.test_vintf_compatibility -v",
+    "offline_test_log": {
+      "path": "reports/vintf-compatibility-20260829/auditor-tests-v2.log",
+      "sha256": "13b75571effeb7d93f1737b0073b24d9369ac3ed586b91f2497254fa26cef868",
+      "size_bytes": 5072
+    },
+    "offline_tests_passed": 32,
+    "phone_accessed": false,
+    "phone_modified": false,
+    "related_targeted_test_log": {
+      "path": "reports/vintf-compatibility-20260829/targeted-tests-final.log",
+      "sha256": "258a6061dcdb5096aeb5349bb46888570c89e768f44a9d03e05cc9a627a8645f",
+      "size_bytes": 17189
+    },
+    "related_targeted_tests_passed": 94
+  },
+  "validator_scope": {
+    "absence_of_declared_framework_provider_is_not_an_observed_validator_failure": true,
+    "check_all_files_additional_operations": [
+      "HAL deprecation check",
+      "unused device HAL check for applicable FCM levels"
+    ],
+    "check_compat_without_kernel_disables_runtime_info": true,
+    "check_one_ignores_kernel_argument": true,
+    "complete_service_provider_implementation_validated": false,
+    "default_avb_version_comparison_enabled": false,
+    "device_manifest_framework_matrix_comparison": [
+      "sepolicy version",
+      "kernel requirements when enabled and present"
+    ],
+    "framework_manifest_device_matrix_comparison": [
+      "vendor-NDK declarations",
+      "system-SDK declarations"
+    ],
+    "hal_manifest_check_compatibility_lines": [
+      474,
+      521
+    ],
+    "hal_manifest_source": {
+      "path": "reports/vintf-compatibility-20260829/source-semantics/HalManifest.cpp",
+      "sha256": "09bb9b81ca3c2dfe1e91aa369438f5606f3eab30b615488de4d3df97193d429f",
+      "size_bytes": 32836
+    },
+    "hal_manifest_source_matches_git_head": true,
+    "hal_manifest_source_receipt": {
+      "path": "reports/vintf-compatibility-20260829/source-semantics/receipt.json",
+      "sha256": "236f7d53896c1edc6f638ef02ffb29948ef0e6f8c7d6752ee2e200a9f25f29ec",
+      "size_bytes": 290
+    },
+    "hal_presence_compared_by_HalManifest_checkCompatibility": false,
+    "independent_call_graph_review_confirmed": true,
+    "libvintf_commit": "69c456ea4aa2f503a2904cfbc11f279a3b2efb09",
+    "missing_apex_info_list_is_accepted_by_upstream_loader": true,
+    "missing_framework_provider_presence_checked_by_full_command": false,
+    "runtime_kernel_sepolicy_version_measured": false,
+    "static_runtime_kernel_sepolicy_version": "SIZE_MAX"
+  }
+}
