@@ -15,8 +15,10 @@ and a policy with no permissive domains. All 44 executable interpreter paths,
 their checks. Both ramdisk inventories agree with the packaged contents.
 
 The local candidate is `artifacts/twrp/nezha/build66/recovery.img`; that ignored
-directory also contains its hashes and verification notes. This is a static
-artifact milestone, not a tested rescue environment. No image has been booted
+directory also contains its hashes and verification notes. The committed
+[artifact verification record](../research/twrp-artifact-milestone.json) binds
+the build, native inspection, compiler evidence and separate inventory reports.
+This is a static artifact milestone, not a tested rescue environment. No image has been booted
 or flashed. Display, touch, boot-chain compatibility, authenticated ADB and
 usable recovery-log access remain unverified. No host key has been read or
 provisioned, and no phone operation is authorized by this result.
