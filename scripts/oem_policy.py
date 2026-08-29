@@ -3,7 +3,9 @@
 
 The default source check admits only three reviewed type declarations. An
 explicit additional property contract admits four public properties, eight
-original prefix contexts, and two exact framework read clauses. The native check
+original prefix contexts, and two exact framework read clauses. A separate
+explicit provider contract admits its independently checked private type,
+permission, transition, registration assertion, and context budgets. The native check
 reads freshly produced framework CIL and the unchanged, pinned factory inputs;
 it verifies ownership, roles, public mappings, and the existing disabled-helper
 capability. Neither command edits source, derives CIL, invokes a compiler, or
@@ -77,6 +79,30 @@ def load_property_contract(path, reader=None):
     require(path is not None, "the property contract must be selected explicitly")
     reader = reader or vp.Reader()
     return json.loads(reader.read(path, PROPERTY_CONTRACT_SHA256))
+
+
+def _provider_module():
+    # Legacy native bundles do not contain this optional checker. Import it
+    # only when the caller explicitly selects the provider contract.
+    if __package__:
+        from . import framework_provider_policy
+    else:
+        import framework_provider_policy
+    return framework_provider_policy
+
+
+def _check_provider_binding(base, provider):
+    required = provider["required_contracts"]
+    require(required["oem_policy"] == {"path": CONTRACT_PATH, "sha256": CONTRACT_SHA256}
+            and required["init_helper"] == {key: base["required_capability_contract"][key]
+                                            for key in ("path", "sha256")},
+            "provider profile does not bind the selected OEM and helper contracts")
+    require(provider["device"] == base["device"]["codename"]
+            and provider["platform"] == base["platform"]
+            and provider["factory_package_sha256"] == base["factory_package_sha256"],
+            "provider profile uses a different device, platform, or factory")
+    require(not set(provider["types"]) & set(base["types"]),
+            "provider profile duplicates an OEM or property source owner")
 
 
 def _compose_contract(base, properties):
@@ -202,7 +228,8 @@ def verify_source_contents(contents, contract):
     return observed
 
 
-def verify_sources(source_root, contract_path=None, capability_path=None, property_contract_path=None):
+def verify_sources(source_root, contract_path=None, capability_path=None, property_contract_path=None,
+                   provider_contract_path=None):
     """Verify an explicit repository or generated candidate root without writes."""
     source_root = vp.real_directory(source_root)
     reader = vp.Reader()
@@ -229,6 +256,22 @@ def verify_sources(source_root, contract_path=None, capability_path=None, proper
         property_contents = {row["path"]: reader.read(source_root / row["path"], row["sha256"], row["size_bytes"])
                              for row in properties["source_files"]}
         property_result = verify_property_source_contents(property_contents, properties)
+    provider_result = None
+    if provider_contract_path is not None:
+        fp = _provider_module()
+        provider = fp.load_contract(provider_contract_path, reader)
+        _check_provider_binding(_compose_contract(contract, properties) if property_result is not None else contract,
+                                provider)
+        provider_input_contract = provider["required_contracts"]["provider_inputs"]
+        reader.read(source_root / provider_input_contract["path"], provider_input_contract["sha256"])
+        provider_files = {source_root / row["path"] for row in provider["source_files"]}
+        for parent in {path.parent for path in provider_files}:
+            vp.real_directory(parent)
+            require(set(parent.iterdir()) == {path for path in provider_files if path.parent == parent},
+                    "unreviewed file or directory in a provider source directory")
+        provider_contents = {row["path"]: reader.read(source_root / row["path"], row["sha256"], row["size_bytes"])
+                             for row in provider["source_files"]}
+        provider_result = fp.verify_source_contents(provider_contents, provider)
     reader.recheck()
     result = {"schema_version": 1, "operation": "verify-nezha-oem-policy-sources", "status": "verified",
             "contract_id": contract["contract_id"], "contract_sha256": CONTRACT_SHA256,
@@ -241,6 +284,12 @@ def verify_sources(source_root, contract_path=None, capability_path=None, proper
         result["property_contract_sha256"] = PROPERTY_CONTRACT_SHA256
         result["property_source_files"] = properties["source_files"]
         result["property_source_verification"] = property_result
+    if provider_result is not None:
+        result["provider_contract_id"] = provider["contract_id"]
+        result["provider_contract_sha256"] = fp.CONTRACT_SHA256
+        result["provider_source_files"] = provider["source_files"]
+        result["provider_source_verification"] = provider_result
+        result["provider_artifact_bundle_verified"] = False
     return result
 
 
@@ -307,31 +356,106 @@ def _property_effective_allow_budget(policy, properties):
     return actual
 
 
-def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platform_forms):
+def _provider_anonymous_ownership(parsed, policy, membership_budget):
+    """A new private registration expression cannot alter an inherited rule.
+
+    Generated names are not a grant exemption. Compare inherited attributes to
+    an auxiliary symbol table using the independently admitted named membership
+    budget and new types, without source-owned assignments to inherited
+    anonymous names. Legitimate closure growth from new domains is preserved.
+    The original complete inputs remain untouched for every other guard.
+    """
+    outside_references, outside_declarations = set(), set()
+    outside_expansions = set()
+    for runtime, forms in parsed.items():
+        if runtime == INPUT_FLAGS["system_ext_cil"]:
+            continue
+        for form in forms:
+            expr = form.expr
+            pending = [expr]
+            while pending:
+                item = pending.pop()
+                if isinstance(item, str):
+                    if item.startswith("base_typeattr_"):
+                        outside_references.add(item)
+                else:
+                    pending.extend(item)
+            if expr[0] == "typeattribute":
+                outside_declarations.add(expr[1])
+            elif expr[0] == "expandtypeattribute":
+                outside_expansions.add(expr)
+    changed_assignments = set()
+    for form in parsed[INPUT_FLAGS["system_ext_cil"]]:
+        expr = form.expr
+        if expr[0] in {"typeattribute", "typeattributeset"} and expr[1] in outside_references:
+            require(expr[1] in outside_declarations,
+                    "provider source cannot redefine an inherited anonymous attribute")
+            if expr[0] == "typeattributeset":
+                changed_assignments.add(expr[1])
+        elif expr[0] == "expandtypeattribute":
+            require(len(expr) == 3 and isinstance(expr[1], tuple), "unsupported source attribute expansion")
+            if outside_references & set(expr[1]):
+                require(expr in outside_expansions,
+                        "provider source cannot change inherited anonymous attribute expansion")
+    if not changed_assignments:
+        return
+    reference_forms = []
+    for runtime, forms in parsed.items():
+        for form in forms:
+            if runtime == INPUT_FLAGS["system_ext_cil"] and form.expr[0] == "typeattributeset":
+                name = form.expr[1]
+                if name in membership_budget or name in outside_references:
+                    continue
+            reference_forms.append(form)
+    # Use literal members computed from the isolated platform and explicit
+    # contracts, never the actual system_ext expressions as their own budget.
+    modeled = "\n".join(vp.render(("typeattributeset", attr, tuple(sorted(members))))
+                         for attr, members in sorted(membership_budget.items()))
+    reference_forms.extend(vp.parse(modeled.encode(), INPUT_FLAGS["system_ext_cil"]))
+    reference = vp.Policy(reference_forms)
+    for name in sorted(changed_assignments):
+        require(policy.resolve(name) == reference.resolve(name),
+                "provider source changes an inherited anonymous attribute beyond admitted type memberships")
+
+
+def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platform_forms, provider_contract=None):
     """Keep the three-type default and explicit property read budget separate.
 
     Native filtering can retain generated negative assertions and base-type
     expressions. The explicit property profile adds only its two literal read
-    clauses; no profile permits other permissions, transitions, unrelated named
-    memberships, roles, or public mappings from this source slice.
+    clauses. The optional provider profile contributes its independently bounded
+    forms and private declarations. No profile admits other permissions,
+    transitions, named memberships, roles, or public mappings from this slice.
     """
     allowed = {"type", "typeattribute", "typeattributeset", "roletype",
                "expandtypeattribute", "neverallow", "neverallowx"}
     expected_reads = contract.get("native_read_clauses", [])
+    source_types = dict(contract["types"])
+    provider_budget = Counter()
+    if provider_contract is not None:
+        fp = _provider_module()
+        provider_budget = fp.expected_native_forms(provider_contract)
+        source_types.update(provider_contract["types"])
+        allowed.update(expr[0] for expr in provider_budget)
     if expected_reads:
         allowed.add("allow")
     require(all(form.expr[0] in allowed for form in ext_forms),
             "declaration-only system_ext output contains a permission, transition, or unsupported form")
-    source_grants = []
+    source_grants = Counter()
     for form in ext_forms:
-        if form.expr[0] == "allow":
+        if provider_contract is not None and form.expr[0] in {"allow", "dontaudit", "typetransition"}:
+            source_grants[fp.normalized_form(form.expr)] += 1
+        elif form.expr[0] == "allow":
             cls, permissions = _classes(form)
-            source_grants.append((form.expr[1], form.expr[2], cls, tuple(sorted(permissions))))
-    require(Counter(source_grants) == Counter((row["source_type"], row["target_type"], row["class"],
-                                               tuple(row["permissions"])) for row in expected_reads),
-            "source permissions differ from the explicitly reviewed property read clauses")
+            source_grants[("allow", form.expr[1], form.expr[2], (cls, tuple(sorted(permissions))))] += 1
+    expected_source = Counter(("allow", row["source_type"], row["target_type"],
+                               (row["class"], tuple(row["permissions"]))) for row in expected_reads)
+    expected_source.update(provider_budget)
+    require(source_grants == expected_source,
+            "source permissions differ from the explicit provider and property budgets" if provider_contract is not None
+            else "source permissions differ from the explicitly reviewed property read clauses")
     expected_members = {}
-    for name, spec in contract["types"].items():
+    for name, spec in source_types.items():
         for attr in spec["attributes"]:
             expected_members.setdefault(attr, set()).add(name)
     # checkpolicy emits a full membership list for each changed named attribute.
@@ -354,7 +478,7 @@ def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platfo
                     "unreviewed source-owned named attribute membership")
             named_assignments[expr[1]] += 1
         elif expr[0] == "roletype":
-            require(len(expr) == 3 and expr[1] == "object_r" and expr[2] in contract["types"],
+            require(len(expr) == 3 and expr[1] == "object_r" and expr[2] in source_types,
                     "unreviewed source role binding")
     require(named_assignments == Counter({attr: 1 for attr in expected_members}),
             "source-owned named memberships must occur once per changed attribute")
@@ -369,9 +493,11 @@ def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platfo
                     and expr[2] in {"true", "false"}, "unreviewed public mapping expansion")
         else:
             raise OemPolicyError("declaration-only public mapping contains an unsupported form")
+    return membership_budget
 
 
-def check_native_contents(corpus, original_vendor, contract, capability, property_contract=None, property_contexts=None):
+def check_native_contents(corpus, original_vendor, contract, capability, property_contract=None, property_contexts=None,
+                          provider_contract=None, provider_file_contexts=None, provider_service_contexts=None):
     """Static checks of actual compiler inputs, not a substitute for compilation."""
     require(list(corpus) == list(INPUT_FLAGS.values()), "native CIL input order or set differs")
     if property_contract is not None:
@@ -385,6 +511,17 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
                 "native property context output differs from the eight reviewed prefixes")
     else:
         require(property_contexts is None, "property contexts cannot silently enable the property profile")
+    provider_context_result = None
+    if provider_contract is not None:
+        _check_provider_binding(contract, provider_contract)
+        require(provider_file_contexts is not None and provider_service_contexts is not None,
+                "the provider profile requires both current native context outputs")
+        fp = _provider_module()
+        provider_context_result = fp.verify_native_contexts(provider_file_contexts, provider_service_contexts,
+                                                            provider_contract)
+    else:
+        require(provider_file_contexts is None and provider_service_contexts is None,
+                "provider contexts cannot silently enable the provider profile")
     verify_capability(capability, contract)
     vendor_runtime = INPUT_FLAGS["derived_vendor"]
     for row in contract["unchanged_factory_inputs"]:
@@ -407,11 +544,15 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
     system_ext_runtime = INPUT_FLAGS["system_ext_cil"]
     mapping_runtime = INPUT_FLAGS["system_ext_mapping"]
     ext_forms, mapping_forms = parsed[system_ext_runtime], parsed[mapping_runtime]
-    _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, parsed[INPUT_FLAGS["platform_cil"]])
+    membership_budget = _declaration_only_outputs(ext_forms, mapping_forms, policy, contract,
+                                                   parsed[INPUT_FLAGS["platform_cil"]], provider_contract)
     expected_types = set(contract["types"])
+    all_source_types = expected_types | (set(provider_contract["types"]) if provider_contract is not None else set())
     source_types = Counter(form.expr[1] for form in ext_forms if form.expr[0] == "type")
-    require(source_types == Counter({name: 1 for name in expected_types}),
+    require(source_types == Counter({name: 1 for name in all_source_types}),
             "system_ext must own exactly the explicitly reviewed OEM type declarations")
+    if provider_contract is not None:
+        _provider_anonymous_ownership(parsed, policy, membership_budget)
     original_factory = {runtime: parsed[runtime] for runtime in (INPUT_FLAGS["factory_pub"], INPUT_FLAGS["factory_odm"])}
     original_factory[vendor_runtime] = vp.parse(original_vendor, vendor_runtime)
     for runtime, names in contract["duplicate_declarations"]["expected_factory_type_declarations"].items():
@@ -486,25 +627,43 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
         result["explicit_source_read_clauses"] = property_contract["read_clauses"]
         result["property_read_sources"] = read_sources
         result["property_effective_ordinary_allow_edges"] = _property_effective_allow_budget(policy, property_contract)
+    if provider_contract is not None:
+        # Validate the original full corpus. Nothing is removed to make the
+        # older OEM or property checks pass; their own budgets remain enforced.
+        result["provider_policy_verification"] = fp.check_native_extension(policy, parsed, provider_contract)
+        result["provider_context_verification"] = provider_context_result
+        result["provider_contract_id"] = provider_contract["contract_id"]
+        result["provider_contract_sha256"] = fp.CONTRACT_SHA256
     return result
 
 
 def check_native(inputs, original_vendor, capability_path, *, contract_path=None, tool_source=None,
-                 property_contract_path=None, property_contexts_path=None):
+                 property_contract_path=None, property_contexts_path=None, provider_contract_path=None,
+                 provider_file_contexts_path=None, provider_service_contexts_path=None):
     reader = vp.Reader()
     contract = load_contract(contract_path, reader)
     require((property_contract_path is None) == (property_contexts_path is None),
             "property contract and native property contexts must be selected together")
     properties = load_property_contract(property_contract_path, reader) if property_contract_path is not None else None
     property_contexts = reader.read(property_contexts_path) if property_contexts_path is not None else None
+    provider_selected = provider_contract_path is not None
+    require(provider_selected == (provider_file_contexts_path is not None)
+            and provider_selected == (provider_service_contexts_path is not None),
+            "provider contract and both native contexts must be selected together")
+    provider = _provider_module().load_contract(provider_contract_path, reader) if provider_selected else None
+    provider_files = reader.read(provider_file_contexts_path) if provider_selected else None
+    provider_services = reader.read(provider_service_contexts_path) if provider_selected else None
     require(set(inputs) == set(INPUT_FLAGS), "native input flags differ")
     corpus = {runtime: reader.read(inputs[flag]) for flag, runtime in INPUT_FLAGS.items()}
     original = reader.read(original_vendor)
     capability = reader.read(capability_path)
     source = Path(tool_source) if tool_source is not None else Path(__file__)
-    tools = {name: vp.sha(reader.read(source.with_name(name)))
-             for name in ("oem_policy.py", "vendor_policy.py", "artifact_files.py")}
-    result = check_native_contents(corpus, original, contract, capability, properties, property_contexts)
+    tool_names = ["oem_policy.py", "vendor_policy.py", "artifact_files.py"]
+    if provider_selected:
+        tool_names.append("framework_provider_policy.py")
+    tools = {name: vp.sha(reader.read(source.with_name(name))) for name in tool_names}
+    result = check_native_contents(corpus, original, contract, capability, properties, property_contexts,
+                                   provider, provider_files, provider_services)
     reader.recheck()
     result["input_bindings"] = list(reader.bindings.values())
     result["tool_sources_sha256"] = tools
@@ -535,6 +694,7 @@ def main(argv=None):
     source.add_argument("--contract", type=Path)
     source.add_argument("--capability-contract", type=Path)
     source.add_argument("--property-contract", type=Path)
+    source.add_argument("--provider-contract", type=Path)
     source.add_argument("--output", type=Path)
     native = commands.add_parser("check-native")
     native.add_argument("--contract", required=True, type=Path)
@@ -543,18 +703,25 @@ def main(argv=None):
     native.add_argument("--tool-source", type=Path)
     native.add_argument("--property-contract", type=Path)
     native.add_argument("--system-ext-property-contexts", type=Path)
+    native.add_argument("--provider-contract", type=Path)
+    native.add_argument("--system-ext-file-contexts", type=Path)
+    native.add_argument("--system-ext-service-contexts", type=Path)
     native.add_argument("--output", type=Path)
     for flag in INPUT_FLAGS:
         native.add_argument("--" + flag.replace("_", "-"), required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         if args.command == "verify-sources":
-            result = verify_sources(args.source_root, args.contract, args.capability_contract, args.property_contract)
+            result = verify_sources(args.source_root, args.contract, args.capability_contract, args.property_contract,
+                                     args.provider_contract)
         else:
             result = check_native({flag: getattr(args, flag) for flag in INPUT_FLAGS}, args.factory_vendor,
                                   args.capability_contract, contract_path=args.contract, tool_source=args.tool_source,
                                   property_contract_path=args.property_contract,
-                                  property_contexts_path=args.system_ext_property_contexts)
+                                  property_contexts_path=args.system_ext_property_contexts,
+                                  provider_contract_path=args.provider_contract,
+                                  provider_file_contexts_path=args.system_ext_file_contexts,
+                                  provider_service_contexts_path=args.system_ext_service_contexts)
         _write_result(result, args.output)
     except (OSError, ValueError) as exc:
         print(f"oem-policy: {exc}", file=sys.stderr)
