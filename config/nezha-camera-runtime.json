@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "purpose": "camera-runtime-dependency-inputs",
+  "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "base_selection": {
+    "path": "artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1-selection.json",
+    "sha256": "c82cf07f512342d7e20cc155a6425bf89d272c6c1fb3fc258e89e50473f7a8d2",
+    "size_bytes": 3866
+  },
+  "factory_record": {
+    "path": "research/factory-input-reuse.json",
+    "sha256": "0c54c6f1753cce408ebd0a8e478a12a7d870dfa2fbdf79d8c722ee5b7ed93c1c",
+    "size_bytes": 31459
+  },
+  "provider_record": {
+    "path": "research/dex-import-uses-library.json",
+    "sha256": "c9a8d1aaa8064b8def1b1c2592259efeb259b9055e21a4d7f3c2851542a8766c",
+    "size_bytes": 18954
+  },
+  "source_patch": {
+    "path": "patches/evolution/dex-import-uses-library.patch",
+    "sha256": "30358a2e304f6a1ad536c4b2ad0a4ad114ab7ddbc649266dd42b89944eb7e708",
+    "size_bytes": 13049
+  },
+  "source": {
+    "project": "build/soong",
+    "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "files": [
+      {
+        "path": "java/java.go",
+        "before_sha256": "c87d46743c32e4f9381dd7d828ff8e4f7c88387c382a8a5f3a927a01962b8e0b",
+        "after_sha256": "3a734817ece2c86529a24b989ce1de2f07114ec40c2cafc73c630a856f9ae844",
+        "added_file": false
+      },
+      {
+        "path": "java/Android.bp",
+        "before_sha256": "7686886416e7a9904896615c53b9d7378b1115997fb11058a783c53c154c66ec",
+        "after_sha256": "45d2dec7100165c18545906c5e4876f3b94028835d052aabd62739c3120f66c3",
+        "added_file": false
+      },
+      {
+        "path": "java/dex_import_test.go",
+        "before_sha256": null,
+        "after_sha256": "9fdae6601f597dc6e34be4d49c9d8eedb77d7958f227b6ddf468c9b816d63d25",
+        "added_file": true
+      }
+    ]
+  },
+  "libraries": [
+    {
+      "runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+      "name": "camerax-vendor-extensions.jar",
+      "registration": "/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+      "uses_libs": []
+    },
+    {
+      "runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+      "name": "com.xiaomi.hardware.camera.companion-V1",
+      "registration": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+      "uses_libs": []
+    },
+    {
+      "runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+      "name": "miui-cameraopt",
+      "registration": "/system_ext/etc/permissions/miui-cameraopt.xml",
+      "uses_libs": []
+    },
+    {
+      "runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+      "name": "vendor.xiaomi.hardware.postprocservice-V1-java",
+      "registration": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+      "uses_libs": []
+    }
+  ],
+  "scope": {
+    "camera_apk_included": false,
+    "permission_grants_added": false,
+    "signature_changed": false,
+    "uses_library_checks_relaxed": false,
+    "guest_patch_verified_by_preparation": false,
+    "native_build_verified_by_preparation": false,
+    "runtime_camera_verified": false
+  }
+}

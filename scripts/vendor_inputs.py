@@ -9,6 +9,9 @@ Each module requires runtime_path, sha256, size_bytes, and type (shared_library,
 dex_jar, or xml); shared_library additionally requires explicit shared_libs.
 XML may carry a library-registration-v1 derivation: extract one verified stock
 library registration and map it to an explicitly selected system_ext DEX JAR.
+DEX JARs may explicitly bind runtime_library names, registration XML and ordered
+required dependencies. These need the reviewed dex_import provider patch; the
+old, unnamed dependency-only selections are unchanged.
 Soong properties were reviewed at Evolution-X/build_soong
 cbcbea9e65503ca15b363a0b06dda88fdbcb0154 and extract-utils
 19a1e68e47bbe9ba446e167b2d402953bd7e0c87. Their build checks remain enabled.
@@ -201,6 +204,8 @@ def _selection(path, expected_package, metadata):
         allowed = {"runtime_path", "sha256", "size_bytes", "type"}
         if kind == "shared_library":
             allowed.add("shared_libs")
+        elif kind == "dex_jar" and "runtime_library" in module:
+            allowed.add("runtime_library")
         elif kind == "xml" and "derivation" in module:
             allowed.add("derivation")
         if kind not in {"shared_library", "dex_jar", "xml"} or set(module) != allowed:
@@ -217,6 +222,23 @@ def _selection(path, expected_package, metadata):
         if kind == "xml" and (len(parts) < 4 or parts[2] != "etc" or not runtime.endswith(".xml")):
             raise VendorInputError("XML selection must preserve its system_ext/etc path")
         name = "nezha_" + re.sub(r"[^A-Za-z0-9_]", "_", runtime[1:])
+        if "runtime_library" in module:
+            library = _object(module["runtime_library"])
+            if set(library) != {"name", "registration", "uses_libs"}:
+                raise VendorInputError("runtime library must bind name, registration and required dependencies")
+            name = library["name"]
+            if (not isinstance(name, str) or len(name) > 255 or not MODULE_NAME.fullmatch(name)
+                    or name.startswith("prebuilt_")):
+                raise VendorInputError("runtime library needs an exact unqualified module name")
+            registration = PurePosixPath(_runtime_path(library["registration"]))
+            if registration.parent != PurePosixPath("/system_ext/etc/permissions") or registration.suffix != ".xml":
+                raise VendorInputError("runtime library registration must be a system_ext permission XML")
+            dependencies = library["uses_libs"]
+            if (not isinstance(dependencies, list) or len(dependencies) > 256
+                    or any(not isinstance(d, str) or len(d) > 255 or not MODULE_NAME.fullmatch(d)
+                           or d.startswith("prebuilt_") for d in dependencies)
+                    or len({d.casefold() for d in dependencies}) != len(dependencies)):
+                raise VendorInputError("runtime uses_libs must be ordered unique exact names")
         if runtime.casefold() in seen_paths or name.casefold() in seen_modules:
             raise VendorInputError("selected files have duplicate or case-colliding paths/module names")
         seen_paths.add(runtime.casefold())
@@ -245,7 +267,83 @@ def _selection(path, expected_package, metadata):
         if recipe["library_name"] in registrations:
             raise VendorInputError("duplicate derived library registration name")
         registrations.add(recipe["library_name"])
+    _runtime_graph(result)
     return sorted(result, key=lambda entry: entry["runtime_path"]), digest
+
+
+def _runtime_graph(modules):
+    """Require one selected registration per library and a closed acyclic graph."""
+    libraries = {entry["module_name"]: entry for entry in modules if "runtime_library" in entry}
+    xmls = {entry["runtime_path"] for entry in modules if entry["type"] == "xml"}
+    registrations = set()
+    for name, entry in libraries.items():
+        runtime = entry["runtime_library"]
+        registration = runtime["registration"]
+        if registration not in xmls or registration in registrations:
+            raise VendorInputError("runtime registration must identify one separately selected XML")
+        registrations.add(registration)
+        if any(dependency not in libraries for dependency in runtime["uses_libs"]):
+            raise VendorInputError("runtime dependency must be another explicitly registered DEX JAR")
+    # Iterative topological traversal also handles maliciously deep graphs.
+    pending = {name: len(entry["runtime_library"]["uses_libs"]) for name, entry in libraries.items()}
+    dependents = {name: [] for name in libraries}
+    for name, entry in libraries.items():
+        for dependency in entry["runtime_library"]["uses_libs"]:
+            dependents[dependency].append(name)
+    ready = [name for name, count in pending.items() if count == 0]
+    visited = 0
+    while ready:
+        visited += 1
+        for parent in dependents[ready.pop()]:
+            pending[parent] -= 1
+            if pending[parent] == 0:
+                ready.append(parent)
+    if visited != len(libraries):
+        raise VendorInputError("runtime uses-library dependencies contain a cycle")
+    return libraries
+
+
+def _validate_runtime_registrations(staging, modules):
+    """Match runtime metadata to the actual copied XML, not caller assertions."""
+    libraries = _runtime_graph(modules)
+    if not libraries:
+        return
+    registrations = {}
+    paths = {entry["runtime_path"]: name for name, entry in libraries.items()}
+    for entry in modules:
+        if entry["type"] != "xml":
+            continue
+        path = staging / entry["path"]
+        _verify_output(path, entry)
+        with _open_regular(path) as stream:
+            raw = stream.read(MAX_XML_BYTES + 1)
+        if len(raw) != entry["size_bytes"] or hashlib.sha256(raw).hexdigest() != entry["sha256"]:
+            raise VendorInputError("runtime registration changed during validation")
+        try:
+            text = raw.decode("utf-8-sig")
+            if len(raw) > MAX_XML_BYTES or "\x00" in text or "<!DOCTYPE" in text.upper() or "<!ENTITY" in text.upper():
+                raise VendorInputError("runtime registrations reject DTDs, entities and non-UTF-8 XML")
+            root = ET.fromstring(text)
+        except (UnicodeError, ET.ParseError) as exc:
+            raise VendorInputError("runtime registration XML is invalid") from exc
+        for node in root.iter():
+            name, jar = node.get("name"), node.get("file")
+            if name not in libraries and jar not in paths:
+                continue
+            if name not in libraries or paths.get(jar) != name:
+                raise VendorInputError("runtime registration aliases or remaps a selected JAR")
+            library = libraries[name]["runtime_library"]
+            attributes = {"name": name, "file": libraries[name]["runtime_path"]}
+            if library["uses_libs"]:
+                attributes["dependency"] = ":".join(library["uses_libs"])
+            if (name in registrations or entry["runtime_path"] != library["registration"]
+                    or root.tag != "permissions" or root.attrib or (root.text or "").strip()
+                    or list(root) != [node] or node.tag != "library" or node.attrib != attributes
+                    or len(node) or (node.text or "").strip() or (node.tail or "").strip()):
+                raise VendorInputError("runtime XML name, path, dependency order or single-registration scope differs")
+            registrations[name] = entry["runtime_path"]
+    if set(registrations) != set(libraries):
+        raise VendorInputError("selected runtime library has no matching XML registration")
 
 
 def _capture_sources(analysis, outputs, modules, paths, metadata):
@@ -564,6 +662,10 @@ def _module_text(entry):
     elif kind == "dex_jar":
         module_type = "dex_import"
         properties.update(stem=runtime.name[:-4], jars=[entry["path"]])
+        if "runtime_library" in entry:
+            # Emit even an empty list: unpatched dex_import must reject this
+            # profile instead of silently producing a provider-less import.
+            properties["uses_libs"] = entry["runtime_library"]["uses_libs"]
     else:
         module_type = "prebuilt_etc_xml"
         properties.update(src=entry["path"], filename=runtime.name)
@@ -662,6 +764,12 @@ def stage_inputs(analysis, source_record, output_dir, *, expected_package_sha256
             else:
                 _copy_blob(source, target)
                 _validate_format(target, source["record"], source["kind"])
+        _validate_runtime_registrations(staging, receipt["extras"])
+        if any("runtime_library" in entry for entry in receipt["extras"]):
+            receipt["verification"]["runtime_registration_graph_checked"] = True
+            receipt["limits"].append(
+                "Runtime DEX names, selected registration XML and ordered required dependencies agree; "
+                "the reviewed Soong provider patch, real class-loader contexts and runtime still need validation.")
         receipt["operation"] = "vendor-inputs-stage"
         receipt["verification"]["input_blob_hashes_checked"] = True
         for name, content in sorted(_generated_text(receipt).items()):

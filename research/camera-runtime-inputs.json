@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-08-29T19:59:52.748300+00:00",
+  "device": "nezha",
+  "scope": "Reviewed exact-name Camera runtime dependency selection and actual host staging/readback; native patch installation, actual Soong build and APK/runtime behavior remain separate.",
+  "package": {
+    "sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "source_kind": "user-provided",
+    "origin_verified": false
+  },
+  "contract": {
+    "path": "config/nezha-camera-runtime.json",
+    "sha256": "00c776c3bcd28fa2abbaf5eb48865ccd27d37723661c3abe117b90e5553fb8fb",
+    "size_bytes": 3191
+  },
+  "implementation": {
+    "scripts/camera_runtime_inputs.py": {
+      "path": "scripts/camera_runtime_inputs.py",
+      "sha256": "ba3531dd81f5f4bc9a8fa5ca4251b0197ad846c05467c4e46227c902709b24e4",
+      "size_bytes": 12607
+    },
+    "scripts/vendor_inputs.py": {
+      "path": "scripts/vendor_inputs.py",
+      "sha256": "ef575bb36b387c10a559849d9985e8a9fabd9f8c72066ccb73f72809d90d3ead",
+      "size_bytes": 46199
+    },
+    "tests/test_camera_runtime_inputs.py": {
+      "path": "tests/test_camera_runtime_inputs.py",
+      "sha256": "649dcf396b265ee0a034ba523900160821054d9db0fd812949a36eab1ce4dbf6",
+      "size_bytes": 20172
+    }
+  },
+  "provider": {
+    "record": {
+      "path": "research/dex-import-uses-library.json",
+      "sha256": "c9a8d1aaa8064b8def1b1c2592259efeb259b9055e21a4d7f3c2851542a8766c",
+      "size_bytes": 18954
+    },
+    "patch": {
+      "path": "patches/evolution/dex-import-uses-library.patch",
+      "sha256": "30358a2e304f6a1ad536c4b2ad0a4ad114ab7ddbc649266dd42b89944eb7e708",
+      "size_bytes": 13049
+    },
+    "source": {
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "files": [
+        {
+          "path": "java/java.go",
+          "before_sha256": "c87d46743c32e4f9381dd7d828ff8e4f7c88387c382a8a5f3a927a01962b8e0b",
+          "after_sha256": "3a734817ece2c86529a24b989ce1de2f07114ec40c2cafc73c630a856f9ae844",
+          "added_file": false
+        },
+        {
+          "path": "java/Android.bp",
+          "before_sha256": "7686886416e7a9904896615c53b9d7378b1115997fb11058a783c53c154c66ec",
+          "after_sha256": "45d2dec7100165c18545906c5e4876f3b94028835d052aabd62739c3120f66c3",
+          "added_file": false
+        },
+        {
+          "path": "java/dex_import_test.go",
+          "before_sha256": null,
+          "after_sha256": "9fdae6601f597dc6e34be4d49c9d8eedb77d7958f227b6ddf468c9b816d63d25",
+          "added_file": true
+        }
+      ]
+    },
+    "scope": "Existing provider patch unchanged by this host integration slice; preimage/postimage check available separately."
+  },
+  "host_inputs": {
+    "base_selection": {
+      "path": "artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1-selection.json",
+      "sha256": "c82cf07f512342d7e20cc155a6425bf89d272c6c1fb3fc258e89e50473f7a8d2",
+      "size_bytes": 3866
+    },
+    "original_vendor_bundle": {
+      "path": "artifacts/vendor-inputs/nezha-factory-d2cf57fd-camera-v1/vendor-inputs.json",
+      "sha256": "811f7904adbec2fa99d933179b1247d0c2e30f80a2ba7e0b54c8a2e713917360",
+      "size_bytes": 11837
+    },
+    "preparation": {
+      "path": "artifacts/vendor-inputs/nezha-camera-runtime-preparation-20260829-v2/camera-runtime-admission.json",
+      "sha256": "a05ac89818d9790e3221d84e5302ecd96a702a27baf88b99255868a138e27401",
+      "size_bytes": 2232
+    },
+    "runtime_selection": {
+      "path": "artifacts/vendor-inputs/nezha-camera-runtime-preparation-20260829-v2/camera-runtime-selection.json",
+      "sha256": "ac711b34240b1647a86416cb2d9b9ae12456008b2eaff55851793290ba6e6111",
+      "size_bytes": 4686
+    },
+    "v1_v2_prepared_selection_and_admission_bytes_identical": true,
+    "vendor_bundle": {
+      "path": "artifacts/vendor-inputs/nezha-factory-camera-runtime-20260829-v1/vendor-inputs.json",
+      "sha256": "061cf33a7f062cda6de73a64ebd3d494c04093308b511b4eb42cd4de8f3c865d",
+      "size_bytes": 12776
+    },
+    "staging": {
+      "path": "reports/camera-runtime-inputs-20260829/host-staging-v1.json",
+      "sha256": "8d6cb3b2b52b5c375df0c5549c2308041beaf2eac758d081eb617f4c0de7fcde",
+      "size_bytes": 810
+    },
+    "independent_readback": {
+      "path": "reports/camera-runtime-inputs-20260829/host-readback-v1.json",
+      "sha256": "053e8005fabf1fda26671d756a9d58079715597f6402f26329c20383d8abc390",
+      "size_bytes": 7633
+    },
+    "image_count": 2,
+    "extra_count": 9,
+    "extra_bytes": 542236,
+    "image_and_extra_bytes": 5727872540,
+    "independently_rehashed_old_and_new_file_count": 32,
+    "all_original_images_and_extra_hashes_preserved": true,
+    "legacy_generated_metadata_reproduced_unchanged": true,
+    "actual_xml_registration_graph_checked": true
+  },
+  "runtime_libraries": [
+    {
+      "runtime_path": "/system_ext/framework/camerax-vendor-extensions.jar",
+      "name": "camerax-vendor-extensions.jar",
+      "registration": "/system_ext/etc/permissions/camerax-vendor-extensions.xml",
+      "uses_libs": []
+    },
+    {
+      "runtime_path": "/system_ext/framework/com.xiaomi.hardware.camera.companion-V1.jar",
+      "name": "com.xiaomi.hardware.camera.companion-V1",
+      "registration": "/system_ext/etc/permissions/com.xiaomi.hardware.camera.companion.xml",
+      "uses_libs": []
+    },
+    {
+      "runtime_path": "/system_ext/framework/miui-cameraopt.jar",
+      "name": "miui-cameraopt",
+      "registration": "/system_ext/etc/permissions/miui-cameraopt.xml",
+      "uses_libs": []
+    },
+    {
+      "runtime_path": "/system_ext/framework/vendor.xiaomi.hardware.postprocservice-V1-java.jar",
+      "name": "vendor.xiaomi.hardware.postprocservice-V1-java",
+      "registration": "/system_ext/etc/permissions/vendor.xiaomi.hardware.postprocservice-V1-java-permission.xml",
+      "uses_libs": []
+    }
+  ],
+  "offline_tests": {
+    "receipt": {
+      "path": "reports/camera-runtime-inputs-20260829/focused-tests-final-v2.json",
+      "sha256": "ef5fbb3018f7ffa0f9f7c5105d640c7e232564a458730e9d36a2d4815e80bba0",
+      "size_bytes": 537
+    },
+    "test_count": 97,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "scope": "Camera, vendor-input and DEX patch offline tests; not the whole workspace suite or Android build."
+  },
+  "native_next": {
+    "source_patch_installation_required": true,
+    "new_intentionally_modified_project": "build/soong",
+    "target_variant": "lineage_nezha-bp4a-user",
+    "targets": [
+      "camerax-vendor-extensions.jar",
+      "com.xiaomi.hardware.camera.companion-V1",
+      "miui-cameraopt",
+      "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
+      "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
+      "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
+      "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
+      "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so",
+      "vendor.xiaomi.hardware.postprocservice-V1-java"
+    ],
+    "focused_go_test_pattern": "TestDexImportUsesLibrary",
+    "required_readbacks": [
+      "Actual pinned Soong HEAD plus all three patch postimages",
+      "Exact runtime names in product_packages.txt and generated contexts",
+      "Installed original JAR filenames and registration XML paths",
+      "Real dexpreopt commands and ODEX/VDEX outputs",
+      "Separate future APK manifest-check command without relaxation"
+    ]
+  },
+  "remaining_apk_gates": [
+    "OEM v3 signature must remain unchanged; current input has eight compressed DEX entries and fails privileged preprocessed packaging with uncompression required.",
+    "CONTROL_DEVICE_STATE, CONTROL_DISPLAY_BRIGHTNESS and INJECT_EVENTS are requested signature-only platform permissions; a privileged allowlist alone cannot grant them.",
+    "Real APK direct optional uses-libraries must remain miui-cameraopt, androidx.window.extensions, androidx.window.sidecar in manifest order.",
+    "Full JNI/linker/service dependency closure, actual permission grants and Camera/Leica/accessory runtime behavior remain unverified."
+  ],
+  "verification_boundaries": {
+    "guest_accessed_by_this_host_slice": false,
+    "guest_source_modified_by_this_host_slice": false,
+    "native_build_executed_by_this_host_slice": false,
+    "apk_included": false,
+    "apk_read_by_this_host_slice": false,
+    "apk_signed_or_rewritten": false,
+    "permission_grants_added": false,
+    "uses_library_or_dexpreopt_checks_disabled": false,
+    "runtime_camera_verified": false,
+    "phone_accessed": false,
+    "images_adopted_into_rom": false
+  }
+}
