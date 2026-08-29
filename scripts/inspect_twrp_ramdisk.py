@@ -112,8 +112,10 @@ def _archive(data):
         content_end = _span(content_start, size, len(data), "newc member payload")
         position = _padding(data, content_end)
         if raw_name == b"TRAILER!!!\0":
-            _require(mode == uid == gid == size == rdevmajor == rdevminor == 0 and links in (0, 1),
-                     "invalid newc trailer fields")
+            # Android mkbootfs applies directory fs_config permissions to its
+            # zeroed trailer stat, producing 0755 without a file-type bit.
+            _require(mode in (0, 0o755) and uid == gid == size == rdevmajor == rdevminor == 0
+                     and links in (0, 1), "invalid newc trailer fields")
             padding = len(data) - position
             _require(padding <= MAX_TRAILER_PADDING and not any(data[position:]),
                      "extra archive, nonzero data or excessive padding after newc trailer")

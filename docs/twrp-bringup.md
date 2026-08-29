@@ -233,6 +233,15 @@ runtime properties or resolve the complete ELF library graph. Bind that CPIO to
 the compressed ramdisk in the inspected image, run the real policy analyzer,
 and inspect every packaged ELF dependency before accepting a build candidate.
 
+The archive inspector accepts the empty trailer with mode `0` or permission
+bits `0755`. The pinned Android `mkbootfs` applies directory `fs_config` to its
+zeroed trailer stat, producing the latter without file-type bits. This narrow
+format correction retains the canonical trailer name, empty payload, ownership,
+link, device, checksum, alignment and bounded trailing-zero checks. It does not
+allow arbitrary trailer modes or concatenated archives. The
+[Linux initramfs format](https://docs.kernel.org/driver-api/early-userspace/buffer-format.html)
+requires an empty trailer payload but does not require its mode to be zero.
+
 ## First target and limits
 
 The factory contract requires a dedicated A/B recovery image: Android boot

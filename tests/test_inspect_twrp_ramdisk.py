@@ -210,6 +210,82 @@ class CpioStructureTests(unittest.TestCase):
         self.reject(_cpio(trailer=_entry("./TRAILER!!!", mode=0)), "noncanonical newc trailer")
         self.assertEqual(inspector.inspect_cpio(_cpio(trailer=_field(valid, 4, 0)))["archive"]["archive_count"], 1)
 
+    def test_accepts_android_mkbootfs_trailer_permissions(self):
+        # Pinned mkbootfs zeroes the trailer stat, then applies directory
+        # fs_config: permission bits 0755, with no file-type bits or payload.
+        for mode in (0, 0o755):
+            for links in (0, 1):
+                with self.subTest(mode=oct(mode), links=links):
+                    trailer = _entry("TRAILER!!!", mode=mode, nlink=links, inode=300770)
+                    data = _cpio(trailer=trailer, padding=248)
+                    report = inspector.inspect_cpio(data)
+                    self.assertEqual(report["archive"]["entry_count"], 7)
+                    self.assertEqual(report["archive"]["archive_count"], 1)
+                    self.assertEqual(report["archive"]["trailing_zero_padding_bytes"], 248)
+                    self.assertEqual(report["archive"]["sha256"], hashlib.sha256(data).hexdigest())
+
+    def test_android_trailer_does_not_admit_other_modes_or_regular_members(self):
+        for mode in (1, 0o644, 0o700, 0o777, 0o1755, 0o2755, 0o4755,
+                     EXECUTABLE, DIRECTORY, SYMLINK, stat.S_IFCHR, 0xFFFFFFFF):
+            with self.subTest(mode=oct(mode)):
+                self.reject(_cpio(trailer=_entry("TRAILER!!!", mode=mode)), "trailer fields")
+        self.reject(_cpio(extra=(_entry("not-a-trailer", mode=0o755),)), "file type")
+
+    def test_android_trailer_still_checks_ownership_links_devices_and_payload(self):
+        trailer = _entry("TRAILER!!!", mode=0o755)
+        for index, value in ((2, 1), (3, 1), (4, 2), (4, 0xFFFFFFFF), (9, 1), (10, 1)):
+            with self.subTest(field=index, value=value):
+                self.reject(_cpio(trailer=_field(trailer, index, value)), "trailer fields")
+        self.reject(_cpio(trailer=_entry("TRAILER!!!", b"x", mode=0o755)), "trailer fields")
+        self.reject(_cpio(trailer=_field(trailer, 12, 1)), "check field")
+
+    def test_android_trailer_still_checks_name_alignment_and_bounds(self):
+        for name, pattern in (("./TRAILER!!!", "noncanonical newc trailer"),
+                              ("/TRAILER!!!", "unsafe")):
+            self.reject(_cpio(trailer=_entry(name, mode=0o755)), pattern)
+        self.reject(_cpio(trailer=_entry("TRAILER!!!", mode=0o755,
+                                        raw_name=b"TRAILER!!!\0\0")), "termination")
+        trailer = bytearray(_entry("TRAILER!!!", mode=0o755))
+        trailer[-1] = 1
+        self.reject(_cpio(trailer=bytes(trailer)), "alignment padding")
+        self.reject(_cpio(trailer=_field(_entry("TRAILER!!!", mode=0o755), 6, 0xFFFFFFFF)),
+                    "payload")
+
+    def test_android_trailer_does_not_allow_another_archive_or_trailing_garbage(self):
+        data = _cpio(trailer=_entry("TRAILER!!!", mode=0o755))
+        self.assertEqual(inspector.inspect_cpio(data + bytes(508))["archive"]
+                         ["trailing_zero_padding_bytes"], 508)
+        for after in (bytes(512), b"junk", data):
+            with self.subTest(size=len(after)):
+                self.reject(data + after, "after newc trailer")
+        self.reject(data[:-4], "truncated|bounds")
+
+    def test_android_trailer_does_not_bypass_member_path_or_count_checks(self):
+        trailer = _entry("TRAILER!!!", mode=0o755)
+        self.reject(_cpio(extra=(_entry("./prop.default", b"x"),), trailer=trailer), "duplicate")
+        self.reject(_cpio(extra=(_entry("../escape", b"x"),), trailer=trailer), "traversing")
+        extra = (_entry("link", b"system", mode=SYMLINK), _entry("link/child", b"x"))
+        self.reject(_cpio(extra=extra, trailer=trailer), "descends through")
+        data = _cpio(trailer=trailer)
+        with mock.patch.object(inspector, "MAX_ENTRIES", 6):
+            self.reject(data, "too many")
+        with mock.patch.object(inspector, "MAX_ARCHIVE_BYTES", len(data) - 4):
+            self.reject(data, "bounds")
+
+    def test_android_trailer_does_not_cause_extraction_execution_or_mutation(self):
+        data = bytearray(_cpio(trailer=_entry("TRAILER!!!", mode=0o755)))
+        before = bytes(data)
+        with mock.patch("builtins.open", side_effect=AssertionError("unexpected file open")), \
+                mock.patch.object(os, "open", side_effect=AssertionError("unexpected os.open")), \
+                mock.patch.object(os, "mkdir", side_effect=AssertionError("unexpected extraction")), \
+                mock.patch("subprocess.run", side_effect=AssertionError("unexpected process")), \
+                mock.patch("subprocess.Popen", side_effect=AssertionError("unexpected process")):
+            report = inspector.inspect_cpio(data)
+        self.assertEqual(bytes(data), before)
+        for flag in ("ramdisk_extracted", "firmware_executed", "phone_accessed", "archive_mutated",
+                     "boot_tested", "flash_admitted"):
+            self.assertIs(report["validation"][flag], False)
+
     def test_normalizes_single_dot_prefix_and_rejects_duplicate_paths(self):
         overrides = {
             "prop.default": _entry("./prop.default", PROPERTIES),
