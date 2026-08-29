@@ -29,14 +29,19 @@ ROOT = Path(__file__).resolve().parents[1]
 MAX_SESSION_BYTES = 32 * 1024 * 1024
 MAX_PSTORE_FILES = 8
 PSTORE_NAME = re.compile(r"(?:console-ramoops(?:-[0-9]+)?|dmesg-ramoops-[0-9]+)\Z")
+TWRP_VERSION = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+(?:[._+-][A-Za-z0-9][A-Za-z0-9._+-]*)?\Z")
 IDENTITY_PROPERTIES = (
     "ro.product.manufacturer", "ro.product.device", "ro.kernel.qemu",
 )
+ANDROID_FRAMEWORK_PROPERTIES = (
+    "init.svc.zygote", "init.svc.zygote_secondary", "init.svc.surfaceflinger",
+)
 MODE_PROPERTIES = (
     "ro.bootmode", "ro.boot.mode", "init.svc.recovery", "sys.boot_completed",
+    "ro.twrp.version", *ANDROID_FRAMEWORK_PROPERTIES,
 )
 PROPERTIES = (
-    "ro.twrp.version", "ro.build.fingerprint", "ro.build.version.release",
+    "ro.build.fingerprint", "ro.build.version.release",
     "ro.build.version.sdk", "ro.build.version.security_patch",
     "ro.vendor.build.security_patch", "ro.bootimage.build.version.security_patch",
     "ro.boot.hardware", "ro.board.platform", "ro.boot.slot_suffix",
@@ -377,8 +382,16 @@ class Collector:
             raise CollectionError("The selected device has no recovery boot-mode marker; normal Android is refused.")
         if any(mode not in {"", "recovery"} for mode in modes):
             raise CollectionError("Conflicting boot-mode properties prevent recovery verification.")
-        if properties["sys.boot_completed"]["value"] not in {"", "0"}:
-            raise CollectionError("A completed normal Android boot was reported; recovery diagnostics were not read.")
+        boot_completed = properties["sys.boot_completed"]["value"]
+        if boot_completed not in {"", "0", "1"}:
+            raise CollectionError("An unexpected boot-completion marker prevents recovery verification.")
+        if boot_completed == "1":
+            # TWRP uses this marker for its own startup. It is not recovery
+            # evidence by itself: retain every mode, service and process gate.
+            if not TWRP_VERSION.fullmatch(properties["ro.twrp.version"]["value"]):
+                raise CollectionError("A completed boot requires a TWRP version and verified recovery; normal Android is refused.")
+            if any(properties[name]["value"] not in {"", "stopped"} for name in ANDROID_FRAMEWORK_PROPERTIES):
+                raise CollectionError("Android framework service markers conflict with completed TWRP startup; diagnostics were not read.")
         if properties["init.svc.recovery"]["value"] != "running":
             raise CollectionError("The recovery init service is not running; collection stopped.")
         record, pid = self.shell("recovery-process", ("pidof", "recovery"), limit=256)

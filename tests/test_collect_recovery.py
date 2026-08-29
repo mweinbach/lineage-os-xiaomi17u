@@ -16,6 +16,9 @@ from unittest import mock
 from scripts import collect_recovery as recovery
 
 
+WORKING76_TWRP_VERSION = "3.7.1_16-Xiaomi_17_Ultra"
+
+
 def command_result(stdout=b"", *, stderr=b"", status="ok", exit_code=0, truncated=()):
     return {
         "stdout": stdout, "stderr": stderr, "status": status, "exit_code": exit_code,
@@ -249,6 +252,115 @@ class RecoveryCollectorTests(unittest.TestCase):
                     result, _, _, process = self.invoke()
                 self.assertEqual(result, 2)
                 self.assertEqual(self.manifest()["status"], "preflight_failed")
+                self.assertFalse(self.diagnostic_commands(process))
+
+    def test_working76_completed_boot_is_accepted_with_recovery_identity(self):
+        self.state = "device"
+        self.properties.update({
+            "sys.boot_completed": "1", "ro.twrp.version": WORKING76_TWRP_VERSION,
+            "init.svc.zygote": "stopped", "init.svc.surfaceflinger": "stopped",
+        })
+        result, stdout, stderr, process = self.invoke()
+        self.assertEqual(result, 0, stderr)
+        manifest = self.manifest()
+        self.assertTrue(manifest["recovery_preflight_passed"])
+        self.assertEqual(manifest["properties"]["sys.boot_completed"]["value"], "1")
+        self.assertEqual(manifest["properties"]["ro.twrp.version"]["value"], WORKING76_TWRP_VERSION)
+        self.assertEqual(manifest["device"]["recovery_executable"], "/system/bin/recovery")
+        self.assertTrue(self.diagnostic_commands(process))
+        self.assertNotIn(self.serial, stdout + stderr)
+
+    def test_legacy_recovery_does_not_require_a_twrp_version(self):
+        for index, completed in enumerate(("", "0")):
+            with self.subTest(completed=completed):
+                self.output = self.root / "evidence" / f"legacy-recovery-{index}"
+                self.arguments[-1] = str(self.output)
+                self.properties.update({"sys.boot_completed": completed, "ro.twrp.version": ""})
+                result, _, stderr, _ = self.invoke()
+                self.assertEqual(result, 0, stderr)
+                self.assertTrue(self.manifest()["recovery_preflight_passed"])
+
+    def test_completed_boot_requires_valid_twrp_version_before_logs(self):
+        self.properties["sys.boot_completed"] = "1"
+        for index, version in enumerate(("", "0", "fixture", "3.7", "3.7.1\nnormal", "3.7.1;id")):
+            with self.subTest(version=version):
+                self.output = self.root / "evidence" / f"completed-version-{index}"
+                self.arguments[-1] = str(self.output)
+                self.properties["ro.twrp.version"] = version
+                result, _, _, process = self.invoke()
+                self.assertEqual(result, 2)
+                self.assertEqual(self.manifest()["status"], "preflight_failed")
+                self.assertFalse(self.diagnostic_commands(process))
+
+    def test_completed_twrp_marker_does_not_override_normal_or_missing_recovery_markers(self):
+        self.state = "device"
+        self.properties.update({"sys.boot_completed": "1", "ro.twrp.version": WORKING76_TWRP_VERSION})
+        for index, override in enumerate((
+            {"ro.bootmode": "normal"}, {"ro.boot.mode": "normal"},
+            {"ro.bootmode": ""}, {"init.svc.recovery": "stopped"},
+            {"init.svc.recovery": ""}, {"ro.product.device": "other-device"},
+        )):
+            with self.subTest(override=override):
+                self.output = self.root / "evidence" / f"mixed-recovery-{index}"
+                self.arguments[-1] = str(self.output)
+                with mock.patch.dict(self.properties, override):
+                    result, _, _, process = self.invoke()
+                self.assertEqual(result, 2)
+                self.assertFalse(self.diagnostic_commands(process))
+
+    def test_completed_twrp_rejects_active_or_unknown_android_framework_services(self):
+        self.properties.update({"sys.boot_completed": "1", "ro.twrp.version": WORKING76_TWRP_VERSION})
+        for name in recovery.ANDROID_FRAMEWORK_PROPERTIES:
+            for state in ("running", "restarting", "stopping", "unknown"):
+                with self.subTest(name=name, state=state):
+                    self.output = self.root / "evidence" / f"mixed-{name}-{state}"
+                    self.arguments[-1] = str(self.output)
+                    with mock.patch.dict(self.properties, {name: state}):
+                        result, _, _, process = self.invoke()
+                    self.assertEqual(result, 2)
+                    self.assertFalse(self.diagnostic_commands(process))
+
+    def test_completed_twrp_still_requires_live_recovery_process_and_executable(self):
+        self.properties.update({"sys.boot_completed": "1", "ro.twrp.version": WORKING76_TWRP_VERSION})
+        for index, (target, output) in enumerate((
+            ("pidof recovery", b""), ("pidof recovery", b"321 456"),
+            ("readlink /proc/321/exe", b"/data/local/tmp/recovery"),
+        )):
+            with self.subTest(target=target, output=output):
+                self.output = self.root / "evidence" / f"completed-process-{index}"
+                self.arguments[-1] = str(self.output)
+                def effect(command, **kwargs):
+                    if command[-1] == target:
+                        return command_result(output)
+                    return self.fake_adb(command, **kwargs)
+                result, _, _, process = self.invoke(effect=effect)
+                self.assertEqual(result, 2)
+                self.assertFalse(self.diagnostic_commands(process))
+
+    def test_failed_or_truncated_twrp_startup_checks_never_read_logs(self):
+        self.properties.update({"sys.boot_completed": "1", "ro.twrp.version": WORKING76_TWRP_VERSION})
+        for name in ("ro.twrp.version", *recovery.ANDROID_FRAMEWORK_PROPERTIES):
+            for status in ("permission_denied", "byte_limit"):
+                with self.subTest(name=name, status=status):
+                    self.output = self.root / "evidence" / f"failed-{name}-{status}"
+                    self.arguments[-1] = str(self.output)
+                    def effect(command, **kwargs):
+                        if command[-1] == f"getprop {name}":
+                            return command_result(b"stopped", status=status, exit_code=1)
+                        return self.fake_adb(command, **kwargs)
+                    result, _, _, process = self.invoke(effect=effect)
+                    self.assertEqual(result, 2)
+                    self.assertFalse(self.diagnostic_commands(process))
+
+    def test_unexpected_boot_completed_values_are_rejected_even_with_twrp(self):
+        self.properties["ro.twrp.version"] = WORKING76_TWRP_VERSION
+        for index, completed in enumerate(("2", "true", "1\n0")):
+            with self.subTest(completed=completed):
+                self.output = self.root / "evidence" / f"invalid-completed-{index}"
+                self.arguments[-1] = str(self.output)
+                self.properties["sys.boot_completed"] = completed
+                result, _, _, process = self.invoke()
+                self.assertEqual(result, 2)
                 self.assertFalse(self.diagnostic_commands(process))
 
     def test_device_adb_state_is_accepted_only_with_recovery_boot_marker(self):
