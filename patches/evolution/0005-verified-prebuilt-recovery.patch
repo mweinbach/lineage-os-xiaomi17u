@@ -1,0 +1,167 @@
+diff --git a/core/Makefile b/core/Makefile
+index aecbdf5ba80ff117812b8a009b6be0e10c19d9ab..9b633e4a008cc6c84b059f11a7c0efd7fe17b060 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -2421,6 +2421,31 @@
+ # -----------------------------------------------------------------
+ # Recovery image
+ 
++ifdef TARGET_PREBUILT_RECOVERY
++# A signed, fully padded recovery image is only valid for a dedicated partition.
++ifneq ($(BUILDING_RECOVERY_IMAGE),true)
++$(error TARGET_PREBUILT_RECOVERY requires BUILDING_RECOVERY_IMAGE=true)
++endif
++ifneq (,$(filter true,$(BOARD_USES_RECOVERY_AS_BOOT) $(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT) $(BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT)))
++$(error TARGET_PREBUILT_RECOVERY requires a dedicated recovery partition)
++endif
++ifneq (,$(strip $(BOARD_CUSTOM_BOOTIMG_MK) $(BOARD_CUSTOM_BOOTIMG)))
++$(error TARGET_PREBUILT_RECOVERY cannot use custom boot image rules)
++endif
++ifeq (,$(strip $(INSTALLED_RECOVERYIMAGE_TARGET)))
++$(error TARGET_PREBUILT_RECOVERY requires INSTALLED_RECOVERYIMAGE_TARGET)
++endif
++ifneq ($(BOARD_AVB_ENABLE),true)
++$(error TARGET_PREBUILT_RECOVERY requires BOARD_AVB_ENABLE=true)
++endif
++ifeq (,$(strip $(TARGET_PREBUILT_RECOVERY_SHA256)))
++$(error TARGET_PREBUILT_RECOVERY requires TARGET_PREBUILT_RECOVERY_SHA256)
++endif
++ifeq (,$(strip $(BOARD_RECOVERYIMAGE_PARTITION_SIZE)))
++$(error TARGET_PREBUILT_RECOVERY requires BOARD_RECOVERYIMAGE_PARTITION_SIZE)
++endif
++endif # TARGET_PREBUILT_RECOVERY
++
+ # Recovery image exists if we are building recovery, or building recovery as boot.
+ INSTALLED_FILES_OUTSIDE_IMAGES := $(filter-out $(TARGET_RECOVERY_OUT)/%, $(INSTALLED_FILES_OUTSIDE_IMAGES))
+ ifdef BUILDING_RECOVERY_IMAGE
+@@ -2645,6 +2670,9 @@
+ #      install
+ #      (BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT = true).
+ 
++ifdef TARGET_PREBUILT_RECOVERY
++RECOVERY_RESOURCE_ZIP :=
++else
+ ifeq (,$(filter true, $(BOARD_USES_FULL_RECOVERY_IMAGE) $(BOARD_USES_RECOVERY_AS_BOOT) \
+   $(BOARD_INCLUDE_RECOVERY_DTBO) $(BOARD_INCLUDE_RECOVERY_ACPIO) \
+   $(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT) $(BOARD_RAMDISK_USE_LZ4) $(BOARD_RAMDISK_USE_XZ)))
+@@ -2654,6 +2682,7 @@
+ else
+ RECOVERY_RESOURCE_ZIP :=
+ endif
++endif # TARGET_PREBUILT_RECOVERY
+ 
+ INSTALLED_RECOVERY_BUILD_PROP_TARGET := $(TARGET_RECOVERY_ROOT_OUT)/prop.default
+ 
+@@ -2852,6 +2881,38 @@
+ UNMOUNTED_NOTICE_VENDOR_DEPS+= $(INSTALLED_BOOTIMAGE_TARGET)
+ endif # BOARD_USES_RECOVERY_AS_BOOT
+ 
++ifdef TARGET_PREBUILT_RECOVERY
++# Never rebuild, re-sign or add a footer to the externally verified image.
++# $(1): input image; $(2): installed image or target-files BOOTABLE_IMAGES image.
++define copy-verified-prebuilt-recovery
++  $(hide) set -eu; \
++    recovery_src="$(1)"; recovery_dst="$(2)"; \
++    recovery_sha="$(TARGET_PREBUILT_RECOVERY_SHA256)"; \
++    recovery_size="$(BOARD_RECOVERYIMAGE_PARTITION_SIZE)"; \
++    test "$${#recovery_sha}" -eq 64; \
++    case "$$recovery_sha" in *[!0-9a-f]*) exit 1;; esac; \
++    case "$$recovery_size" in ''|*[!0-9]*) exit 1;; esac; \
++    test "$$recovery_size" -gt 0; \
++    test -f "$$recovery_src"; test ! -L "$$recovery_src"; \
++    test ! -L "$$recovery_dst"; test ! -d "$$recovery_dst"; \
++    test "$$(wc -c < "$$recovery_src")" -eq "$$recovery_size"; \
++    test "$$(sha256sum < "$$recovery_src" | cut -d ' ' -f 1)" = "$$recovery_sha"; \
++    mkdir -p "$$(dirname "$$recovery_dst")"; \
++    recovery_tmp="$$(mktemp "$$recovery_dst.tmp.XXXXXX")"; \
++    trap 'rm -f "$$recovery_tmp"' EXIT; \
++    cp -f "$$recovery_src" "$$recovery_tmp"; \
++    test "$$(wc -c < "$$recovery_tmp")" -eq "$$recovery_size"; \
++    test "$$(sha256sum < "$$recovery_tmp" | cut -d ' ' -f 1)" = "$$recovery_sha"; \
++    mv -f "$$recovery_tmp" "$$recovery_dst"; \
++    test "$$(wc -c < "$$recovery_dst")" -eq "$$recovery_size"; \
++    test "$$(sha256sum < "$$recovery_dst" | cut -d ' ' -f 1)" = "$$recovery_sha"
++endef
++
++recoveryimage-deps := $(TARGET_PREBUILT_RECOVERY)
++# Keep the real image free of phony prerequisites for Kati.
++$(INSTALLED_RECOVERYIMAGE_TARGET): $(recoveryimage-deps)
++	$(call copy-verified-prebuilt-recovery,$(TARGET_PREBUILT_RECOVERY),$@)
++else
+ ifndef BOARD_CUSTOM_BOOTIMG_MK
+ $(INSTALLED_RECOVERYIMAGE_TARGET): $(recoveryimage-deps)
+ 	$(call build-recoveryimage-target, $@, \
+@@ -2859,6 +2920,7 @@
+ else
+ INTERNAL_RECOVERYIMAGE_ARGS += --kernel $(recovery_kernel)
+ endif # BOARD_CUSTOM_BOOTIMG_MK
++endif # TARGET_PREBUILT_RECOVERY
+ 
+ ifdef RECOVERY_RESOURCE_ZIP
+ $(RECOVERY_RESOURCE_ZIP): $(INSTALLED_RECOVERYIMAGE_TARGET) | $(ZIPTIME)
+@@ -2875,9 +2937,13 @@
+ 
+ .PHONY: recoveryimage-nodeps
+ recoveryimage-nodeps:
++ifdef TARGET_PREBUILT_RECOVERY
++	$(call copy-verified-prebuilt-recovery,$(TARGET_PREBUILT_RECOVERY),$(INSTALLED_RECOVERYIMAGE_TARGET))
++else
+ 	@echo "make $@: ignoring dependencies"
+ 	$(call build-recoveryimage-target, $(INSTALLED_RECOVERYIMAGE_TARGET), \
+ 	  $(if $(filter true, $(BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE)),, $(recovery_kernel)))
++endif # TARGET_PREBUILT_RECOVERY
+ 
+ else # BUILDING_RECOVERY_IMAGE
+ RECOVERY_RESOURCE_ZIP :=
+@@ -2885,6 +2951,10 @@
+ 
+ .PHONY: recoveryimage
+ recoveryimage: $(INSTALLED_RECOVERYIMAGE_TARGET) $(RECOVERY_RESOURCE_ZIP)
++ifdef TARGET_PREBUILT_RECOVERY
++	@# Revalidate even when the real image has a newer timestamp than its input.
++	$(call copy-verified-prebuilt-recovery,$(TARGET_PREBUILT_RECOVERY),$(INSTALLED_RECOVERYIMAGE_TARGET))
++endif # TARGET_PREBUILT_RECOVERY
+ 
+ ifneq ($(BOARD_NAND_PAGE_SIZE),)
+ $(error MTD device is no longer supported and thus BOARD_NAND_PAGE_SIZE is deprecated.)
+@@ -6519,7 +6589,9 @@
+   else
+     $(BUILT_TARGET_FILES_DIR): $(INSTALLED_RECOVERYIMAGE_TARGET)
+   endif
++  ifndef TARGET_PREBUILT_RECOVERY
+   $(BUILT_TARGET_FILES_DIR): $(INTERNAL_RECOVERYIMAGE_FILES)
++  endif
+ endif
+ 
+ # Conditionally depend on the image files if the image is being built so the
+@@ -6665,6 +6737,10 @@
+ 	@echo "Building target files: $@"
+ 	$(hide) rm -rf $@ $@.list $(zip_root)
+ 	$(hide) mkdir -p $(dir $@) $(zip_root)
++ifdef TARGET_PREBUILT_RECOVERY
++	@# common.GetBootableImage copies BOOTABLE_IMAGES without re-signing.
++	$(call copy-verified-prebuilt-recovery,$(INSTALLED_RECOVERYIMAGE_TARGET),$(zip_root)/BOOTABLE_IMAGES/recovery.img)
++else
+ ifneq (,$(INSTALLED_RECOVERYIMAGE_TARGET)$(filter true,$(BOARD_USES_RECOVERY_AS_BOOT))$(filter true,$(BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT)))
+ 	@# Components of the recovery image
+ 	$(hide) mkdir -p $(zip_root)/$(PRIVATE_RECOVERY_OUT)
+@@ -6714,6 +6790,7 @@
+ endif
+ endif # not (BUILDING_VENDOR_BOOT_IMAGE and BOARD_USES_RECOVERY_AS_BOOT)
+ endif # INSTALLED_RECOVERYIMAGE_TARGET defined or BOARD_USES_RECOVERY_AS_BOOT is true
++endif # TARGET_PREBUILT_RECOVERY
+ 	@# Components of the boot image
+ 	$(hide) mkdir -p $(zip_root)/BOOT
+ 	@# If we are using recovery as boot, this is already done when processing recovery.
+@@ -7118,9 +7195,11 @@
+ ifneq ($(INSTALLED_VENDOR_BOOTIMAGE_TARGET),)
+ 	$(call fs_config,$(zip_root)/VENDOR_BOOT/RAMDISK,) > $(zip_root)/META/vendor_boot_filesystem_config.txt
+ endif
++ifndef TARGET_PREBUILT_RECOVERY
+ ifneq ($(INSTALLED_RECOVERYIMAGE_TARGET),)
+ 	$(hide) $(call fs_config,$(zip_root)/RECOVERY/RAMDISK,) > $(zip_root)/META/recovery_filesystem_config.txt
+ endif
++endif # TARGET_PREBUILT_RECOVERY
+ ifdef BUILDING_SYSTEM_OTHER_IMAGE
+ 	$(hide) $(call copy-image-and-generate-map,$(BUILT_SYSTEMOTHERIMAGE_TARGET),$(zip_root)/IMAGES)
+ 	$(hide) $(call fs_config,$(zip_root)/SYSTEM_OTHER,system/) > $(zip_root)/META/system_other_filesystem_config.txt

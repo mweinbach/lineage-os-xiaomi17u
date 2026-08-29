@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+    "sha256": "622bd7df162ba92631cddcf6e853823715c0b1795ee255ebf41364e4a7c4407e",
+    "size_bytes": 7477
+  },
+  "source_files": [
+    {
+      "path": "build/make/core/Makefile",
+      "before": {
+        "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e",
+        "size_bytes": 378285
+      },
+      "after": {
+        "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+        "size_bytes": 382008
+      }
+    }
+  ],
+  "semantic_files": [
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+      "size_bytes": 156263
+    }
+  ],
+  "semantics": {
+    "selector": "TARGET_PREBUILT_RECOVERY",
+    "sha256_variable": "TARGET_PREBUILT_RECOVERY_SHA256",
+    "partition_size_variable": "BOARD_RECOVERYIMAGE_PARTITION_SIZE",
+    "partition_size_rule": "exact",
+    "dedicated_recovery_only": true,
+    "requires_avb_enabled": true,
+    "selected_target_always_rechecks_bytes": false,
+    "recoveryimage_nodeps_uses_verified_copy": true,
+    "input_and_output_sha256_verified": true,
+    "prebuilt_recovery_resigned": false,
+    "target_files_location": "BOOTABLE_IMAGES/recovery.img",
+    "generated_recovery_ramdisk_metadata_used": false,
+    "normal_boot_rules_changed": false,
+    "normal_init_boot_rules_changed": false,
+    "normal_vendor_boot_rules_changed": false,
+    "normal_avb_rules_changed": false,
+    "recoveryimage_always_uses_verified_copy": true,
+    "real_output_has_phony_prerequisites": false
+  },
+  "source_anchors": [
+    {
+      "path": "build/make/core/Makefile",
+      "version": "before",
+      "line": 2855,
+      "purpose": "Normal dedicated recovery image construction is preserved in the unselected branch."
+    },
+    {
+      "path": "build/make/core/Makefile",
+      "version": "after",
+      "line": 2887,
+      "purpose": "Copy the exact signed input with size and SHA256 checks before and after installation."
+    },
+    {
+      "path": "build/make/core/Makefile",
+      "version": "after",
+      "line": 6741,
+      "purpose": "Keep the exact recovery bytes and omit generated RECOVERY source metadata."
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "line": 1961,
+      "purpose": "BOOTABLE_IMAGES is returned unchanged before other image sources."
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "line": 1972,
+      "purpose": "PREBUILT_IMAGES calls _SignBootableImage and must not carry the selected recovery."
+    }
+  ],
+  "validation_scope": {
+    "offline_source_contract_tests_only": true,
+    "full_android_build_verified": false,
+    "target_files_or_ota_verified": false,
+    "companion_images_compatible": false,
+    "runtime_behavior_verified_by_this_patch": false
+  },
+  "limitations": [
+    "The project commit identifies the reviewed upstream base; matching these files does not attest the entire current source checkout.",
+    "The selector requires an independently validated image and expected SHA256. The copy rule preserves signed bytes; it is not an AVB signature or key trust verifier.",
+    "Only the selected dedicated recovery image uses this copy path. Normal boot, init_boot, vendor_boot, AVB and rollback rules are unchanged.",
+    "The selected target-files branch omits generated RECOVERY files, recovery filesystem metadata and the recovery resource ZIP; it does not validate generated misc_info as TWRP metadata.",
+    "Full target-files, OTA and super build goals remain denied by the device integration. Companion image compatibility and future OTA or target-files workflows are not validated by this patch.",
+    "Fresh target-files generation also requires recovery-two-step.img in the pinned add_img_to_target_files.py at lines 1033-1036. This patch supplies neither that separately validated image nor a RECOVERY source tree; the complete target-files workflow is unsupported and remains denied.",
+    "The real recovery.img target uses normal timestamp dependencies, without a phony prerequisite forbidden by Kati. The recoveryimage and recoveryimage-nodeps entrypoints always run the checked copy; target-files independently verifies the installed image bytes before copying. Direct raw file targets alone do not promise unconditional revalidation."
+  ]
+}

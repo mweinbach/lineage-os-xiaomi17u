@@ -45,9 +45,21 @@ endif
 ifneq ($(filter true,$(SELINUX_IGNORE_NEVERALLOWS) $(BUILD_BROKEN_DUP_SYSPROP)),)
 $(error Nezha candidate does not permit SELinux or duplicate-property check bypasses)
 endif
-ifneq ($(strip $(filter target-files-package otapackage updatepackage bacon superimage super_empty,$(MAKECMDGOALS))),)
+# Pinned bka aliases reach complete images, target-files or OTA packaging.
+ifneq ($(strip $(filter evolution droid droid_targets droidcore droidcore-unbundled dist_files checkbuild target-files-package target-files-dir otapackage otardppackage partialotapackage updatepackage bacon superimage superimage_dist superimage-nodeps supernod superimage_empty super_empty,$(MAKECMDGOALS))),)
 $(error Nezha framework-checks profile does not admit complete target-files, OTA or super packaging; see generated admission.json)
 endif
+# Initial build configuration sets this flag; ordinary lunch/dumpvars does not.
+# Soong consumes dist and Make filters all before choosing the default droid.
+# Empty-goal config/docs modes are also refused: name an admitted target such as
+# nothing, recoveryimage, bootimage or the module being checked explicitly.
+ifeq ($(WRITE_SOONG_VARIABLES),true)
+ifeq ($(strip $(filter-out all,$(MAKECMDGOALS))),)
+$(error Nezha framework-checks requires an explicit admitted build target; default droid packaging is not admitted)
+endif
+endif
+
+include $(NEZHA_DEVICE_PATH)/recovery-prebuilt.mk
 
 # The full hook also exports kernel variables to Lineage's Soong generators.
 # Include it after the explicit prebuilt selector and all local board values.

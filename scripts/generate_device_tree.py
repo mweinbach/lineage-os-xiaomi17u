@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
-    "lineage_nezha.mk", "README.md", "recovery/root/init.recovery.qcom.rc",
+    "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "recovery/root/init.recovery.qcom.rc",
 )
 DSP_POLICY_RECORD = PurePosixPath("research/dsp-policy-integration.json")
 DSP_POLICY_CONTRACT_ID = "nezha-dsp-membership-v1"

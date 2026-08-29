@@ -9,6 +9,7 @@
 /.venv/
 /.repo/
 /out/
+/vendor/xiaomi/nezha-recovery/
 *.sparseimage
 *.sparsebundle/
 *.dmg

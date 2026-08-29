@@ -2,12 +2,16 @@ PYTHON ?= python3
 SOURCE_DIR ?= $(CURDIR)/sources/evolution
 SOURCE_LOCK ?= config/evolution-source-lock.json
 JOBS ?= 8
+RECOVERY_LOCAL_CONFIG ?= $(CURDIR)/.tools/recovery-local.json
+RECOVERY_OUTPUT ?= $(CURDIR)/artifacts/twrp/nezha/builds/$(shell date -u +%Y%m%dT%H%M%SZ)
+RECOVERY_IMAGE ?=
+RECOVERY_BUNDLE ?= $(SOURCE_DIR)/vendor/xiaomi/nezha-recovery
 SOURCE_LOCK_ARGS = $(if $(strip $(SOURCE_LOCK)),--source-lock "$(SOURCE_LOCK)")
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
-.PHONY: twrp-plan recovery-logs-plan
+.PHONY: twrp-plan twrp-source-plan recovery-plan recovery-build recovery-verify recovery-stage recovery-inputs-verify recovery-logs-plan
 
 help:
 	@printf '%s\n' \
@@ -26,7 +30,13 @@ help:
 	  'make init            Initialize full platform (Linux x86-64 only)' \
 	  'make sync JOBS=8     Sync full platform and save resolved manifest' \
 	  'make stock-plan      Preview read-only Xiaomi evidence commands' \
-	  'make twrp-plan       Preview isolated TWRP source and build commands' \
+	  'make recovery-plan   Preview the working TWRP build and ROM input contract' \
+	  'make recovery-build  Reproduce working76 using ignored local input/tool/key paths' \
+	  'make recovery-verify RECOVERY_IMAGE=... Verify the exact image and AVB signature' \
+	  'make recovery-stage SOURCE_DIR=... RECOVERY_IMAGE=... Stage the private ROM recovery bundle' \
+	  'make recovery-inputs-verify SOURCE_DIR=... Verify the staged ROM recovery bundle' \
+	  'make twrp-plan       Alias for the current recovery plan' \
+	  'make twrp-source-plan Preview the preserved TWRP source experiment' \
 	  'make recovery-logs-plan Preview bounded recovery diagnostics; no phone access'
 
 doctor:
@@ -62,9 +72,29 @@ sync:
 stock-plan:
 	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --dry-run
 
-twrp-plan:
+twrp-plan: recovery-plan
+
+twrp-source-plan:
 	$(PYTHON) scripts/twrp_workspace.py plan
 	$(PYTHON) scripts/twrp_build.py plan
+
+recovery-plan:
+	$(PYTHON) scripts/twrp_working.py plan
+	$(PYTHON) scripts/recovery_inputs.py plan
+
+recovery-build:
+	$(PYTHON) scripts/twrp_working.py build --local-config "$(RECOVERY_LOCAL_CONFIG)" --output-dir "$(RECOVERY_OUTPUT)"
+
+recovery-verify:
+	$(if $(strip $(RECOVERY_IMAGE)),,$(error Set RECOVERY_IMAGE to the image to verify))
+	$(PYTHON) scripts/twrp_working.py verify --local-config "$(RECOVERY_LOCAL_CONFIG)" --image "$(RECOVERY_IMAGE)"
+
+recovery-stage:
+	$(if $(strip $(RECOVERY_IMAGE)),,$(error Set RECOVERY_IMAGE to the verified image to stage))
+	$(PYTHON) scripts/recovery_inputs.py stage --local-config "$(RECOVERY_LOCAL_CONFIG)" --source-tree "$(SOURCE_DIR)" --image "$(RECOVERY_IMAGE)" --output-dir "$(RECOVERY_BUNDLE)"
+
+recovery-inputs-verify:
+	$(PYTHON) scripts/recovery_inputs.py verify --local-config "$(RECOVERY_LOCAL_CONFIG)" --source-tree "$(SOURCE_DIR)" --bundle "$(RECOVERY_BUNDLE)"
 
 recovery-logs-plan:
 	$(PYTHON) scripts/collect_recovery.py

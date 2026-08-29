@@ -30,6 +30,13 @@ INVALID_VARIANTS = (
     "userdebug userdebug", "user\tuserdebug", "user\neng", " user", "user ",
     None, True, 1, ["user"],
 )
+DENIED_FRAMEWORK_GOALS = (
+    "evolution", "droid", "droid_targets", "droidcore", "droidcore-unbundled",
+    "dist_files", "checkbuild", "target-files-package", "target-files-dir",
+    "otapackage", "otardppackage", "partialotapackage", "updatepackage", "bacon",
+    "superimage", "superimage_dist", "superimage-nodeps", "supernod",
+    "superimage_empty", "super_empty",
+)
 
 
 class GenerateDeviceTreeTests(unittest.TestCase):
@@ -181,6 +188,105 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         vendor_path.write_text(json.dumps(vendor))
         return {"record_paths": record_paths, "kernel_receipt": kernel_path,
                 "vendor_receipt": vendor_path, "workspace_root": self.root}
+
+    def recovery_template_inputs(self):
+        inputs = self.generation_inputs()
+        templates = self.root / "recovery-templates"
+        for name in generator.TEMPLATE_FILES:
+            path = templates / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            data = f"# Synthetic public template: {name}\n"
+            if name == "BoardConfig.mk":
+                data += "include $(NEZHA_DEVICE_PATH)/recovery-prebuilt.mk\n"
+            path.write_text(data)
+        return {**inputs, "template_root": templates}
+
+    def test_recovery_template_is_copied_and_hashed_without_promoting_admission(self):
+        inputs = self.recovery_template_inputs()
+        relative = (generator.DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
+        expected = (inputs["template_root"] / "recovery-prebuilt.mk").read_bytes()
+        self.assertEqual(generator.TEMPLATE_FILES.count("recovery-prebuilt.mk"), 1)
+        for variant in generator.BUILD_VARIANTS:
+            with self.subTest(variant=variant):
+                output = self.root / "artifacts" / variant
+                plan = generator.generate(output, variant=variant, **inputs)
+                self.assertEqual((output / relative).read_bytes(), expected)
+                entry = next(row for row in plan["files"] if row["path"] == relative)
+                self.assertEqual(entry, {"path": relative, "size_bytes": len(expected),
+                                         "sha256": hashlib.sha256(expected).hexdigest()})
+                self.assertEqual(plan["admission"], self.plan(variant=variant)["admission"])
+                self.assertEqual(plan["profile"], "framework-checks")
+                self.assertEqual(generator.validate(output), plan)
+                for purpose in ("target-files", "flash"):
+                    with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                        generator.validate(output, purpose=purpose)
+
+    def test_generation_requires_the_public_recovery_template(self):
+        inputs = self.recovery_template_inputs()
+        (inputs["template_root"] / "recovery-prebuilt.mk").unlink()
+        output = self.root / "artifacts/missing-recovery-template"
+        with self.assertRaisesRegex(generator.CandidateError, "input does not exist"):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+    def test_validation_rejects_missing_or_changed_recovery_template(self):
+        self.candidate()
+        template = self.root / generator.DEVICE_PATH / "recovery-prebuilt.mk"
+        original = template.read_bytes()
+        for mutation in ("changed", "missing"):
+            with self.subTest(mutation=mutation):
+                if mutation == "changed":
+                    template.write_bytes(original + b"# unexpected change\n")
+                else:
+                    template.unlink()
+                with self.assertRaises(generator.CandidateError):
+                    generator.validate(self.root)
+                template.write_bytes(original)
+
+    def test_generation_never_reads_or_copies_private_recovery_stage_files(self):
+        inputs = self.recovery_template_inputs()
+        stage = self.root / "vendor/xiaomi/nezha-recovery"
+        stage.mkdir(parents=True)
+        private_files = []
+        for directory in (stage, inputs["template_root"]):
+            for name in ("recovery.img", "receipt.json", "recovery-inputs.mk"):
+                path = directory / name
+                path.write_bytes(b"synthetic private recovery input\n")
+                private_files.append(path)
+        read_file = generator._read_file
+
+        def public_or_existing_bundle_read(path, **options):
+            self.assertNotIn(Path(path), private_files)
+            return read_file(path, **options)
+
+        output = self.root / "artifacts/public-recovery-template"
+        with mock.patch.object(generator, "_read_file", side_effect=public_or_existing_bundle_read):
+            plan = generator.generate(output, **inputs)
+            self.assertEqual(generator.validate(output), plan)
+        names = {row["path"] for row in plan["files"]}
+        self.assertFalse(any(name.startswith("vendor/") for name in names))
+        self.assertFalse(any(Path(name).name in {"recovery.img", "receipt.json", "recovery-inputs.mk"}
+                             for name in names))
+        self.assertFalse((output / "vendor").exists())
+
+    def test_validation_refuses_private_recovery_files_even_when_listed(self):
+        plan = self.candidate()
+        for name in ("recovery.img", "receipt.json", "recovery-inputs.mk"):
+            with self.subTest(name=name):
+                relative = "vendor/xiaomi/nezha-recovery/" + name
+                path = self.root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                data = b"synthetic private recovery input\n"
+                path.write_bytes(data)
+                plan["files"].append({"path": relative, "size_bytes": len(data),
+                                      "sha256": hashlib.sha256(data).hexdigest()})
+                self.save_admission(plan)
+                with self.assertRaisesRegex(generator.CandidateError, "generated file set"):
+                    generator.validate(self.root)
+                plan["files"].pop()
+                path.unlink()
+        self.save_admission(plan)
+        self.assertEqual(generator.validate(self.root), plan)
 
     def test_generation_is_deterministic_with_synthetic_bundles(self):
         inputs = self.generation_inputs()
@@ -1196,6 +1302,20 @@ class GenerateDeviceTreeTests(unittest.TestCase):
 
 
 class NezhaBoardHookTests(unittest.TestCase):
+    def test_recovery_prebuilt_hook_is_public_and_precedes_lineage_without_relocating_recovery(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        recovery = (generator.ROOT / "device/xiaomi/nezha/recovery-prebuilt.mk").read_text()
+        hook = "include $(NEZHA_DEVICE_PATH)/recovery-prebuilt.mk"
+        self.assertIn("recovery-prebuilt.mk", generator.TEMPLATE_FILES)
+        self.assertEqual(board.count(hook), 1)
+        self.assertGreater(board.index(hook), board.index("BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true"))
+        self.assertLess(board.index(hook), board.index("include vendor/lineage/config/BoardConfigLineage.mk"))
+        self.assertIn("TARGET_PREBUILT_RECOVERY :=", recovery)
+        for forbidden in ("BOARD_USES_RECOVERY_AS_BOOT := true",
+                          "BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true",
+                          "BOARD_AVB_ENABLE := false", "androidboot.selinux=permissive"):
+            self.assertNotIn(forbidden, board + recovery)
+
     def test_treble_labeling_is_strict_without_waivers_or_an_execution_claim(self):
         product = (generator.ROOT / "device/xiaomi/nezha/device.mk").read_text()
         board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
@@ -1225,13 +1345,61 @@ class NezhaBoardHookTests(unittest.TestCase):
             "BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false",
             "ifneq ($(filter true,$(SELINUX_IGNORE_NEVERALLOWS) $(BUILD_BROKEN_DUP_SYSPROP)),)",
             "$(error Nezha candidate does not permit SELinux or duplicate-property check bypasses)",
-            "ifneq ($(strip $(filter target-files-package otapackage updatepackage bacon superimage super_empty,$(MAKECMDGOALS))),)",
+            "ifneq ($(strip $(filter " + " ".join(DENIED_FRAMEWORK_GOALS) + ",$(MAKECMDGOALS))),)",
             "$(error Nezha framework-checks profile does not admit complete target-files, OTA or super packaging; see generated admission.json)",
             "RELAX_USES_LIBRARY_CHECK := false",
             "ifneq ($(RELAX_USES_LIBRARY_CHECK),false)",
         ):
             self.assertIn(required, board)
         self.assertLess(board.index(guard), board.index("include vendor/lineage/config/BoardConfigLineage.mk"))
+
+    def test_packaging_alias_guard_leaves_named_partial_targets_available(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        prefix, suffix = "ifneq ($(strip $(filter ", ",$(MAKECMDGOALS))),)"
+        selectors = [line[len(prefix):-len(suffix)] for line in board.splitlines()
+                     if line.startswith(prefix) and line.endswith(suffix)]
+        self.assertEqual(selectors, [" ".join(DENIED_FRAMEWORK_GOALS)])
+        denied = set(selectors[0].split())
+        for alias in DENIED_FRAMEWORK_GOALS:
+            with self.subTest(alias=alias):
+                self.assertTrue(denied.intersection(("recoveryimage", alias)))
+        for goals in (("recoveryimage",), ("bootimage",), ("recoveryimage", "bootimage"),
+                      ("libc",), ("nothing",), ("all", "recoveryimage")):
+            with self.subTest(goals=goals):
+                self.assertFalse(denied.intersection(goals))
+
+    def test_default_build_guard_blocks_empty_or_all_goals_only_during_build_configuration(self):
+        board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
+        guard = (
+            "ifeq ($(WRITE_SOONG_VARIABLES),true)\n"
+            "ifeq ($(strip $(filter-out all,$(MAKECMDGOALS))),)\n"
+            "$(error Nezha framework-checks requires an explicit admitted build target; default droid packaging is not admitted)\n"
+            "endif\n"
+            "endif"
+        )
+        self.assertEqual(board.count(guard), 1)
+        self.assertLess(board.index(guard), board.index("include $(NEZHA_DEVICE_PATH)/recovery-prebuilt.mk"))
+
+        def default_is_denied(requested_goals, write_soong_variables):
+            # Model these literal conditions, not a Make/Soong execution. The
+            # pinned Soong path consumes dist before supplying MAKECMDGOALS.
+            make_goals = [goal for goal in requested_goals.split() if goal != "dist"]
+            return write_soong_variables == "true" and not any(goal != "all" for goal in make_goals)
+
+        cases = (
+            ("", "true", True), ("all", "true", True), ("dist", "true", True),
+            ("all dist", "true", True), (" all all dist ", "true", True),
+            ("", None, False), ("dumpvars", None, False), ("", "false", False),
+            ("recoveryimage", "true", False), ("bootimage", "true", False),
+            ("libc", "true", False), ("nothing", "true", False),
+            ("all recoveryimage dist", "true", False),
+        )
+        for goals, write_soong_variables, expected in cases:
+            with self.subTest(goals=goals, write_soong_variables=write_soong_variables):
+                self.assertIs(default_is_denied(goals, write_soong_variables), expected)
+        # Config-only/docs modes with WRITE_SOONG_VARIABLES=true and no named
+        # goals are conservatively denied by the same empty-goal condition.
+        self.assertTrue(default_is_denied("", "true"))
 
     def test_lunch_choices_include_user_and_userdebug_but_never_eng(self):
         products = (generator.ROOT / "device/xiaomi/nezha/AndroidProducts.mk").read_text()
