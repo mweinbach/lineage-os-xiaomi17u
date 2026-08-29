@@ -53,7 +53,7 @@ def _parse_newc(archive):
         rows.append(row)
 
 
-def _archive(entries):
+def _archive(entries, archive_size=None):
     """Independent negative fixture builder; every tuple is (name, mode, data)."""
     data = bytearray()
     rows = [(i, name, mode, body, 2 if mode & 0o170000 == 0o40000 else 1)
@@ -65,7 +65,12 @@ def _archive(entries):
         data += bytes((-len(data)) % 4)
         data += body
         data += bytes((-len(data)) % 4)
-    data += bytes((-len(data)) % 1024)
+    if archive_size is None:
+        data += bytes((-len(data)) % 1024)
+    else:
+        if len(data) > archive_size:
+            raise AssertionError("synthetic archive exceeds selected size")
+        data += bytes(archive_size - len(data))
     return bytes(data)
 
 
@@ -151,6 +156,74 @@ class ScaffoldTests(unittest.TestCase):
         for entries in cases:
             with self.subTest(first=entries[0]), self.assertRaises(scaffold.ScaffoldError):
                 scaffold.inspect_scaffold_prefix(_literal_prefix(_archive(entries)))
+
+
+class ApexScaffoldTests(unittest.TestCase):
+    def test_independent_eight_directory_goldens_preserve_seven_directory_defaults(self):
+        old_cpio, old_prefix = scaffold.build_scaffold_cpio(), scaffold.build_scaffold_prefix()
+        cpio = scaffold.build_scaffold_cpio(include_apex=True)
+        prefix = scaffold.build_scaffold_prefix(include_apex=True)
+        self.assertEqual(len(cpio), 1536)
+        self.assertEqual(hashlib.sha256(cpio).hexdigest(), "4ea8b5645cc9d2bc0533df35431f45c604b0a76e1dc48efd7ac6f56fe4d18c14")
+        self.assertEqual(len(prefix), 1551)
+        self.assertEqual(hashlib.sha256(prefix).hexdigest(), "001605f7ab8e588eece60c6fa715e63ad6e9caf4a2da33cd6c90cbfeb9b10d66")
+        self.assertEqual(cpio, _archive([(name, 0o40755, b"") for name in ("apex",) + NAMES], 1536))
+        self.assertEqual(prefix, _literal_prefix(cpio))
+        self.assertEqual(struct.unpack_from("<I", prefix, 4)[0], 1543)
+        self.assertEqual(prefix[8:15], b"\xf0" + b"\xff" * 5 + b"\xf6")
+        self.assertEqual(prefix[15:], cpio)
+        self.assertEqual(old_cpio, scaffold.build_scaffold_cpio())
+        self.assertEqual(old_prefix, scaffold.build_scaffold_prefix())
+        self.assertEqual(hashlib.sha256(old_prefix).hexdigest(), "b06e73b4444e3d31f6ea48e9a65c2a673cf3a58ee70a72f23a3665249d29f40d")
+
+    def test_all_eight_directory_fields_and_1536_padding_are_exact(self):
+        rows, trailer, padding = _parse_newc(scaffold.build_scaffold_cpio(include_apex=True))
+        self.assertEqual([row["name"] for row in rows], ["apex", *NAMES])
+        for inode, row in enumerate(rows, 1):
+            self.assertEqual(row["fields"], (inode, 0o40755, 0, 0, 2, 0, 0, 0, 0, 0, 0, len(row["name"]) + 1, 0))
+            self.assertEqual(row["data"], b"")
+        self.assertEqual(trailer["offset"], 960)
+        self.assertEqual(trailer["fields"], (0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 11, 0))
+        self.assertEqual(padding, bytes(452))
+
+    def test_exact_variant_is_explicit_and_reports_no_apex_package_or_runtime_claim(self):
+        with ExitStack() as stack:
+            for target in ("builtins.open", "io.open", "os.open", "os.system", "subprocess.run", "subprocess.Popen", "socket.socket", "time.time"):
+                stack.enter_context(mock.patch(target, side_effect=AssertionError("side effect")))
+            prefix = scaffold.build_scaffold_prefix(include_apex=True)
+            report = scaffold.inspect_scaffold_prefix(prefix, include_apex=True)
+        self.assertTrue(report["include_apex"])
+        self.assertTrue(report["empty_apex_directory_verified"])
+        self.assertFalse(report["apex_packages_verified"])
+        self.assertFalse(report["apex_runtime_verified"])
+        self.assertFalse(report["runtime_mounts_verified"])
+        self.assertFalse(report["full_kernel_decompression_verified"])
+        with self.assertRaises(scaffold.ScaffoldError): scaffold.inspect_scaffold_prefix(prefix)
+        with self.assertRaises(scaffold.ScaffoldError):
+            scaffold.inspect_scaffold_prefix(scaffold.build_scaffold_prefix(), include_apex=True)
+        for value in (1, None, "true"):
+            with self.subTest(value=value), self.assertRaises(scaffold.ScaffoldError):
+                scaffold.build_scaffold_prefix(include_apex=value)
+
+    def test_missing_extra_content_file_or_symlink_apex_is_rejected(self):
+        original = [(name, 0o40755, b"") for name in ("apex",) + NAMES]
+        for entries in (original[1:], original + [("extra", 0o40755, b"")],
+                        [("apex", 0o100755, b"inert contents")] + original[1:],
+                        [("apex", 0o120777, b"elsewhere")] + original[1:],
+                        [("apex", 0o40777, b"")] + original[1:]):
+            prefix = _literal_prefix(_archive(entries, 1536))
+            with self.subTest(entries=entries[:1]), self.assertRaises(scaffold.ScaffoldError):
+                scaffold.inspect_scaffold_prefix(prefix, include_apex=True)
+
+    def test_apex_owner_mode_and_tail_padding_mutations_are_rejected(self):
+        cpio = scaffold.build_scaffold_cpio(include_apex=True)
+        for field, value in ((1, 0o44755), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1)):
+            changed = bytearray(cpio)
+            changed[6 + field * 8:14 + field * 8] = f"{value:08x}".encode()
+            with self.subTest(field=field), self.assertRaises(scaffold.ScaffoldError):
+                scaffold.inspect_scaffold_prefix(_literal_prefix(bytes(changed)), include_apex=True)
+        with self.assertRaises(scaffold.ScaffoldError):
+            scaffold.inspect_scaffold_prefix(_literal_prefix(cpio[:-1] + b"x"), include_apex=True)
 
 
 if __name__ == "__main__":

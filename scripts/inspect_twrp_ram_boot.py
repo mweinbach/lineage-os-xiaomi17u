@@ -67,6 +67,7 @@ class RamBootContract:
     ramdisk_suffix_size_bytes: int | None = None
     ramdisk_suffix_sha256: str | None = None
     init_logging: bool = False
+    apex_scaffold: bool = False
 
 
 EXPECTED_CONTRACT = RamBootContract(
@@ -87,6 +88,11 @@ V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT = replace(
     V3_SCAFFOLD_EXPECTED_CONTRACT, init_logging=True,
     command_line=V3_COMMAND_LINE + INIT_LOGGING_SUFFIX,
 )
+V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT = replace(
+    V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, apex_scaffold=True,
+    ramdisk_size_bytes=25193784,
+    ramdisk_sha256="56c155fe7beed5a836faee93b48e51fe545f58cce112d136d89ba7ef15476dc2",
+)
 
 
 class RamBootInspectionError(ValueError):
@@ -106,6 +112,10 @@ def _contract(contract):
     if contract.init_logging:
         _require(contract.header_version == 3 and contract.scaffold is True,
                  "init logging requires the explicit v3 scaffold contract")
+    _require(type(contract.apex_scaffold) is bool, "apex scaffold selection must be boolean")
+    if contract.apex_scaffold:
+        _require(contract.header_version == 3 and contract.scaffold is True and contract.init_logging is True,
+                 "apex scaffold requires explicit v3 scaffold and init logging")
     expected_command_line = V3_COMMAND_LINE if contract.header_version == 3 else ""
     if contract.init_logging:
         expected_command_line += INIT_LOGGING_SUFFIX
@@ -119,8 +129,9 @@ def _contract(contract):
     _require(type(contract.scaffold) is bool, "scaffold selection must be boolean")
     if contract.scaffold:
         _require(contract.header_version == 3, "directory scaffold requires the explicit v3 contract")
+        prefix_size = scaffold.APEX_PREFIX_SIZE if contract.apex_scaffold else scaffold.PREFIX_SIZE
         _require(type(contract.ramdisk_suffix_size_bytes) is int and 0 < contract.ramdisk_suffix_size_bytes <= MAX_IMAGE_BYTES
-                 and contract.ramdisk_size_bytes == scaffold.PREFIX_SIZE + contract.ramdisk_suffix_size_bytes,
+                 and contract.ramdisk_size_bytes == prefix_size + contract.ramdisk_suffix_size_bytes,
                  "scaffold/suffix sizes differ from the expected ramdisk size")
         _require(type(contract.ramdisk_suffix_sha256) is str and re.fullmatch(r"[0-9a-f]{64}", contract.ramdisk_suffix_sha256),
                  "invalid expected ramdisk suffix SHA256")
@@ -147,8 +158,9 @@ def _payload(data, start, size, expected_sha, label):
 
 
 def _scaffold_ramdisk(data, contract, image_offset):
-    prefix = scaffold.inspect_scaffold_prefix(bytes(data[:scaffold.PREFIX_SIZE]))
-    suffix = data[scaffold.PREFIX_SIZE:]
+    prefix_size = scaffold.APEX_PREFIX_SIZE if contract.apex_scaffold else scaffold.PREFIX_SIZE
+    prefix = scaffold.inspect_scaffold_prefix(bytes(data[:prefix_size]), include_apex=contract.apex_scaffold)
+    suffix = data[prefix_size:]
     _require(len(suffix) == contract.ramdisk_suffix_size_bytes
              and _sha(suffix) == contract.ramdisk_suffix_sha256,
              "ramdisk suffix differs from the unchanged expected bytes")
@@ -159,8 +171,8 @@ def _scaffold_ramdisk(data, contract, image_offset):
                         "envelope_valid": True, "compressed_blocks_decoded": False,
                         "checksums_verified": False, "full_kernel_decompression_verified": False},
         "scaffold": prefix,
-        "canonical_suffix": {"ramdisk_offset_bytes": scaffold.PREFIX_SIZE,
-                             "image_offset_bytes": image_offset + scaffold.PREFIX_SIZE,
+        "canonical_suffix": {"ramdisk_offset_bytes": prefix_size,
+                             "image_offset_bytes": image_offset + prefix_size,
                              "size_bytes": len(suffix), "sha256": contract.ramdisk_suffix_sha256,
                              "compression": suffix_envelope,
                              "build66_bytes_verified": len(suffix) == EXPECTED_CONTRACT.ramdisk_size_bytes
@@ -304,7 +316,7 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
     except (envelope.ImageInspectionError, scaffold.ScaffoldError) as exc:
         raise RamBootInspectionError(str(exc)) from exc
     pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT, V3_SCAFFOLD_EXPECTED_CONTRACT,
-                                   V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT)
+                                   V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT)
     header = {"version": version, "size_bytes": header_size, "page_size_bytes": PAGE_SIZE,
               "kernel_size_bytes": kernel_size, "ramdisk_size_bytes": ramdisk_size, "os_version_raw": 0,
               "command_line_empty": not command_line, "command_line": contract.command_line,
@@ -326,6 +338,8 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
             "boot_hash_descriptor_verified": True, "reserved_and_padding_zero": True,
             "stock_kernel_build66_payloads_verified": pinned_contract,
             "directory_scaffold_verified": contract.scaffold, "full_kernel_decompression_verified": False,
+            "empty_apex_directory_verified": contract.apex_scaffold,
+            "apex_packages_verified": False, "apex_runtime_verified": False,
             "kernel_devkmsg_ratelimit_behavior_verified": False,
             "signature_verified": False, "trusted_key_verified": False, "avb_trusted": False,
             "ramdisk_decompressed": False, "twrp_contents_verified": False,
@@ -372,14 +386,19 @@ def main(argv=None):
     parser.add_argument("--scaffold", action="store_true", help="verify the exact directory-only prefix; requires --header-version 3")
     parser.add_argument("--init-logging", action="store_true",
                         help="require only the reviewed printk.devkmsg=on addition; requires --header-version 3 --scaffold")
+    parser.add_argument("--apex", action="store_true",
+                        help="require the eight-directory prefix with empty /apex; requires v3, scaffold and init logging")
     parser.add_argument("--output", type=Path, help="new metadata .json report; existing paths are never replaced")
     args = parser.parse_args(argv)
+    if args.apex and (args.header_version != 3 or not args.scaffold or not args.init_logging):
+        parser.error("--apex requires --header-version 3 --scaffold --init-logging")
     if args.init_logging and (args.header_version != 3 or not args.scaffold):
         parser.error("--init-logging requires --header-version 3 --scaffold")
     if args.scaffold and args.header_version != 3:
         parser.error("--scaffold requires --header-version 3")
     try:
-        contract = (V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.init_logging else
+        contract = (V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.apex else
+                    V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.init_logging else
                     V3_SCAFFOLD_EXPECTED_CONTRACT if args.scaffold else
                     V3_EXPECTED_CONTRACT if args.header_version == 3 else EXPECTED_CONTRACT)
         report = inspect_image(args.image, contract=contract)
