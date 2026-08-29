@@ -72,6 +72,8 @@ TARGET_FILES_METADATA_PATH = "vendor/xiaomi/nezha-target-files-metadata"
 TARGET_FILES_METADATA_RECEIPT = "target-files-metadata.json"
 TARGET_FILES_METADATA_CONTRACT = "patches/evolution/target-files-metadata.json"
 TARGET_FILES_METADATA_INCLUDE = DEVICE_PATH / "generated/target-files-metadata.mk"
+TARGET_FILES_SOURCE_CONTRACT = "patches/evolution/target-files-source-composition.json"
+TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
 DIRECT_AVB_READONLY_CONTRACT = "patches/evolution/direct-avb-readonly.json"
 DIRECT_AVB_READONLY_CONTRACT_ID = "nezha-direct-avb-readonly-v1"
 DIRECT_AVB_READONLY_SCOPE = {
@@ -1734,7 +1736,8 @@ def _mi_ext_binding(plan, binding, *, composed_source_contract=None):
     # The renderer checks the exact current source, image, receipt and scope
     # contracts. This cannot rehash an unmounted private bundle or guest source.
     if composed_source_contract is None and "target_files_metadata" in plan:
-        composed_source_contract = ROOT / TARGET_FILES_METADATA_CONTRACT
+        composed_source_contract = (_metadata_source_selection(plan["target_files_metadata"])
+                                    or ROOT / TARGET_FILES_METADATA_CONTRACT)
     if composed_source_contract is None and "direct_avb_readonly" in plan:
         composed_source_contract = ROOT / DIRECT_AVB_READONLY_CONTRACT
     if composed_source_contract is not None:
@@ -1800,7 +1803,13 @@ def _bind_mi_ext_inputs(plan, records, path, payloads, fstab, *, composed_source
     payloads[MI_EXT_BOARD_INCLUDE.as_posix()] = include.encode("ascii")
 
 
-def _metadata_module():
+def _metadata_module(*, source_contract=None):
+    if source_contract is not None:
+        if __package__:
+            from . import target_files_metadata_combined
+        else:
+            import target_files_metadata_combined
+        return target_files_metadata_combined
     if __package__:
         from . import target_files_metadata
     else:
@@ -1808,18 +1817,70 @@ def _metadata_module():
     return target_files_metadata
 
 
-def _metadata_public_binding():
+def _target_files_source_reference(selected_contract):
+    """Check a new source selector independently of every supplied private receipt."""
+    if __package__:
+        from . import mi_ext_inputs
+    else:
+        import mi_ext_inputs
+    reader = mi_ext_inputs.Reader()
+    canonical = ROOT / TARGET_FILES_SOURCE_CONTRACT
+    try:
+        raw = reader.read(canonical, maximum=MAX_JSON_BYTES)
+        selected = reader.read(_no_symlinks(selected_contract), maximum=MAX_JSON_BYTES)
+        contract = json.loads(raw, object_pairs_hook=_unique_object)
+        _require(type(contract) is dict and type(contract.get("schema_version")) is int and
+                 contract["schema_version"] == 1 and selected == raw and
+                 contract.get("contract_id") == TARGET_FILES_SOURCE_CONTRACT_ID,
+                 "target-files source selection differs from the current reviewed contract")
+        reader.recheck()
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"target-files source contract input refused: {exc}") from exc
+    return {"contract_id": TARGET_FILES_SOURCE_CONTRACT_ID, "path": TARGET_FILES_SOURCE_CONTRACT,
+            **mi_ext_inputs.identity(raw)}
+
+
+def _metadata_source_selection(binding):
+    _require(type(binding) is dict, "invalid target-files metadata capability")
+    if "source_contract" not in binding:
+        return None
+    expected = _target_files_source_reference(ROOT / TARGET_FILES_SOURCE_CONTRACT)
+    _require(type(binding["source_contract"]) is dict and
+             json.dumps(binding["source_contract"], sort_keys=True) == json.dumps(expected, sort_keys=True),
+             "target-files metadata source selector differs from current public controls")
+    return ROOT / TARGET_FILES_SOURCE_CONTRACT
+
+
+def _metadata_public_binding(*, source_contract=None):
     """Use the executing public control tree, never the private bundle's copy."""
-    metadata = _metadata_module()
+    options = {} if source_contract is None else {"source_contract": source_contract}
+    metadata = _metadata_module(**options)
+    selection = {} if source_contract is None else {"source_contract": _target_files_source_reference(source_contract)}
     try:
         reader = metadata.Reader()
-        profile, composition, controls = metadata._controls(ROOT, reader)
+        profile, composition, controls = metadata._controls(ROOT, reader, **options)
         reader.recheck()
         control_files = [{"path": "controls/" + path, **metadata.identity(raw)}
                          for path, raw in sorted(controls.items())]
-        control_files.extend({"path": "tools/" + Path(path).name, **metadata.identity(controls[path])}
-                             for path in metadata.CONTROL_TOOLS)
+        if source_contract is None:
+            control_files.extend({"path": "tools/" + Path(path).name, **metadata.identity(controls[path])}
+                                 for path in metadata.CONTROL_TOOLS)
+        else:
+            runtime = metadata.runtime_tool_payloads(controls)
+            _require(type(runtime) is dict and set(runtime) == {"tools/target_files_metadata.py"} and
+                     all(type(raw) is bytes for raw in runtime.values()),
+                     "combined target-files metadata requires its single standalone runtime tool")
+            control_files.extend({"path": path, **metadata.identity(raw)} for path, raw in sorted(runtime.items()))
+            _require(_target_files_source_reference(source_contract) == selection["source_contract"],
+                     "target-files source contract changed during public control verification")
+            reference = {key: selection["source_contract"][key] for key in ("path", "sha256", "size_bytes")}
+            _require(len(composition["ordered_patches"]) == 7 and len(composition["contracts"]) == 8 and
+                     composition["contracts"][-1] == reference and len(composition["final_source_files"]) == 10 and
+                     composition["patches_applied_by_this_tool"] is False and
+                     composition["whole_source_tree_verified"] is False,
+                     "combined target-files metadata requires the exact seven-patch ten-file source composition")
         return {
+            **selection,
             "bundle": TARGET_FILES_METADATA_PATH,
             "factory_package_sha256": profile["factory_package_sha256"],
             "profile": {"path": metadata.PROFILE, **metadata.identity(controls[metadata.PROFILE])},
@@ -1835,9 +1896,10 @@ def _metadata_public_binding():
         raise CandidateError(f"target-files metadata public controls refused: {exc}") from exc
 
 
-def _verify_target_files_metadata(path, *, expected_receipt_sha256):
+def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contract=None):
     """Recompute private metadata and bind every copied control to public bytes."""
-    metadata = _metadata_module()
+    options = {} if source_contract is None else {"source_contract": source_contract}
+    metadata = _metadata_module(**options)
     expected = _digest(expected_receipt_sha256, "external target-files metadata receipt")
     path = _no_symlinks(path)
     _require(path.name == TARGET_FILES_METADATA_RECEIPT,
@@ -1848,9 +1910,9 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256):
     except metadata.TargetFilesMetadataError as exc:
         raise CandidateError(f"target-files metadata receipt refused: {exc}") from exc
     _require(identity["sha256"] == expected, "target-files metadata receipt differs from external digest")
-    public = _metadata_public_binding()
+    public = _metadata_public_binding(**options)
     try:
-        receipt, files, reader = metadata.verify_bundle(path.parent, expected_receipt=expected)
+        receipt, files, reader = metadata.verify_bundle(path.parent, expected_receipt=expected, **options)
         _require(metadata.encoded(receipt["profile"]) == metadata.encoded(public["profile"]) and
                  metadata.encoded(receipt["source_composition"]) == metadata.encoded(public["native_source"]) and
                  metadata.encoded(receipt["images"]) == metadata.encoded(public["images"]) and
@@ -1864,7 +1926,7 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256):
                  "target-files metadata copied controls differ from current public inputs")
         reader.recheck()
         receipt_reader.recheck()
-        _require(metadata.encoded(public) == metadata.encoded(_metadata_public_binding()),
+        _require(metadata.encoded(public) == metadata.encoded(_metadata_public_binding(**options)),
                  "target-files metadata public controls changed during verification")
         _require(metadata._files(path.parent) == set(copied) | {TARGET_FILES_METADATA_RECEIPT},
                  "target-files metadata inventory changed during final verification")
@@ -1873,12 +1935,15 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256):
     return {**public, "receipt": {"path": path.name, **identity}}
 
 
-def _metadata_recovery_include(template_bytes):
+def _metadata_recovery_include(template_bytes, *, source_contract=None):
     if __package__:
         from . import recovery_source_contracts
     else:
         import recovery_source_contracts
     try:
+        if source_contract is not None:
+            return recovery_source_contracts.render_target_files_recovery_include(
+                template_bytes, root=ROOT, selected_contract=source_contract)
         return recovery_source_contracts.render_metadata_recovery_include(
             template_bytes, root=ROOT, selected_contract=ROOT / TARGET_FILES_METADATA_CONTRACT)
     except recovery_source_contracts.RecoverySourceError as exc:
@@ -1898,8 +1963,12 @@ def _render_metadata_include(binding):
 
 
 def _target_files_metadata_binding(plan, binding):
-    metadata = _metadata_module()
-    public = _metadata_public_binding()
+    selection = _metadata_source_selection(binding)
+    options = {} if selection is None else {"source_contract": selection}
+    metadata = _metadata_module(**options)
+    public = _metadata_public_binding(**options)
+    _require("direct_avb_readonly" not in plan,
+             "target-files metadata cannot inherit the standalone direct AVB read-only capability")
     _require(type(binding) is dict and set(binding) == set(public) | {"receipt", "vendor_bundle"},
              "invalid target-files metadata capability")
     _require(metadata.encoded({key: binding[key] for key in public}) == metadata.encoded(public),
@@ -1927,7 +1996,7 @@ def _target_files_metadata_binding(plan, binding):
                        "composition": public["native_source"],
                        "composition_identity": public["composition_identity"]}
     _require(metadata.encoded(source) == metadata.encoded(expected_source),
-             "target-files metadata and mi_ext require the same explicit 0005-0009 source composition")
+             "target-files metadata and mi_ext require the same explicit source composition")
     _require(plan["profile"] == "framework-checks" and plan["release_config"] == "bp4a" and
              plan["admission"]["configuration_allowed"] is True and
              all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
@@ -1945,12 +2014,13 @@ def _metadata_vendor_binding(plan, binding, vendor_receipt):
     return vendor_identity
 
 
-def _bind_target_files_metadata(plan, path, expected_sha256, vendor_receipt, payloads):
-    binding = _verify_target_files_metadata(path, expected_receipt_sha256=expected_sha256)
+def _bind_target_files_metadata(plan, path, expected_sha256, vendor_receipt, payloads, *, source_contract=None):
+    options = {} if source_contract is None else {"source_contract": source_contract}
+    binding = _verify_target_files_metadata(path, expected_receipt_sha256=expected_sha256, **options)
     binding["vendor_bundle"] = _metadata_vendor_binding(plan, binding, vendor_receipt)
     include = _target_files_metadata_binding(plan, binding)
     recovery_name = (DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
-    payloads[recovery_name] = _metadata_recovery_include(payloads[recovery_name])
+    payloads[recovery_name] = _metadata_recovery_include(payloads[recovery_name], **options)
     payloads[TARGET_FILES_METADATA_INCLUDE.as_posix()] = include.encode("ascii")
     plan["target_files_metadata"] = binding
 
@@ -2235,7 +2305,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None,
              oem_property_contract=None, framework_provider_policy_contract=None,
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
-             target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None):
+             target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
+             target_files_source_contract=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -2256,6 +2327,9 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if mi_ext_inputs_receipt is not None:
         _require(factory_selected, "mi_ext inputs require the explicit factory profile")
     metadata_selected = target_files_metadata_receipt is not None or target_files_metadata_receipt_sha256 is not None
+    if target_files_source_contract is not None:
+        _require(target_files_metadata_receipt is not None and target_files_metadata_receipt_sha256 is not None,
+                 "target-files source composition requires an explicit metadata receipt and its external SHA256")
     if direct_avb_readonly_contract is not None:
         _require(factory_selected and mi_ext_inputs_receipt is not None,
                  "direct AVB read-only requires explicit factory and mi_ext inputs")
@@ -2309,6 +2383,9 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _bind_policy_inputs(plan, policy_inputs_receipt, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
         options = {"composed_source_contract": ROOT / TARGET_FILES_METADATA_CONTRACT} if metadata_selected else {}
+        if target_files_source_contract is not None:
+            _target_files_source_reference(target_files_source_contract)
+            options = {"composed_source_contract": ROOT / TARGET_FILES_SOURCE_CONTRACT}
         if direct_avb_readonly_contract is not None:
             # Validate the explicit selection before asking the bundle verifier
             # to use the new branch. A receipt never chooses the source path.
@@ -2316,8 +2393,9 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             options = {"composed_source_contract": ROOT / DIRECT_AVB_READONLY_CONTRACT}
         _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab, **options)
     if metadata_selected:
+        options = {} if target_files_source_contract is None else {"source_contract": target_files_source_contract}
         _bind_target_files_metadata(plan, target_files_metadata_receipt, target_files_metadata_receipt_sha256,
-                                    vendor_receipt, payloads)
+                                    vendor_receipt, payloads, **options)
     if direct_avb_readonly_contract is not None:
         _bind_direct_avb_readonly(plan, direct_avb_readonly_contract, payloads)
     generated = DEVICE_PATH / "generated"
@@ -2342,11 +2420,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _require(not output.is_relative_to(protected) and not any(
             parent.exists() and parent.samefile(protected) for parent in output.parents),
             "candidate output must not be nested inside a target-files metadata bundle")
-    if direct_avb_readonly_contract is not None:
+    if direct_avb_readonly_contract is not None or target_files_source_contract is not None:
         protected = _no_symlinks(Path(mi_ext_inputs_receipt).parent)
         _require(not output.is_relative_to(protected) and not any(
             parent.exists() and parent.samefile(protected) for parent in output.parents),
-            "direct AVB read-only candidate output must not be nested inside its mi_ext bundle")
+            "explicit source-composition candidate output must not be nested inside its mi_ext bundle")
     output.parent.mkdir(parents=True, exist_ok=True)
     _no_symlinks(output.parent)
     staging = Path(tempfile.mkdtemp(prefix=".nezha-device-", dir=output.parent))
@@ -2369,11 +2447,21 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         if metadata_selected:
             # Verify the entire external tree again, including its no-extra-file
             # inventory, before publishing the small portable candidate.
+            options = {} if target_files_source_contract is None else {"source_contract": target_files_source_contract}
             current = _verify_target_files_metadata(target_files_metadata_receipt,
-                                                   expected_receipt_sha256=target_files_metadata_receipt_sha256)
+                                                   expected_receipt_sha256=target_files_metadata_receipt_sha256, **options)
             current["vendor_bundle"] = _metadata_vendor_binding(plan, current, vendor_receipt)
             _require(current == plan["target_files_metadata"],
                      "target-files metadata bundle changed before candidate publication")
+            if target_files_source_contract is not None:
+                _require(_target_files_source_reference(target_files_source_contract) == current["source_contract"],
+                         "combined target-files source contract changed before candidate publication")
+                mi_current = _verify_mi_ext_inputs(mi_ext_inputs_receipt,
+                    expected_package_sha256=plan["source_packages"]["vendor"],
+                    composed_source_contract=ROOT / TARGET_FILES_SOURCE_CONTRACT)
+                _require(json.dumps(mi_current, sort_keys=True) == json.dumps(plan["mi_ext_inputs"], sort_keys=True),
+                         "combined target-files mi_ext inputs changed before candidate publication")
+                _readonly_mi_ext_inventory(mi_ext_inputs_receipt)
         if direct_avb_readonly_contract is not None:
             _require(_direct_avb_readonly_public(direct_avb_readonly_contract) == plan["direct_avb_readonly"],
                      "direct AVB read-only source contract changed before candidate publication")
@@ -2426,7 +2514,9 @@ def validate(output, *, purpose="configuration"):
                  "generated target-files metadata selectors differ from their reviewed binding")
         _, legacy_recovery = _read_file(ROOT / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
         _, actual_recovery = _read_file(Path(output) / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
-        _require(actual_recovery == _metadata_recovery_include(legacy_recovery),
+        selection = _metadata_source_selection(plan["target_files_metadata"])
+        options = {} if selection is None else {"source_contract": selection}
+        _require(actual_recovery == _metadata_recovery_include(legacy_recovery, **options),
                  "target-files metadata requires the exact matching recovery source guard")
     if "direct_avb_readonly" in plan:
         _direct_avb_readonly_binding(plan, plan["direct_avb_readonly"])
@@ -2677,6 +2767,8 @@ def main(argv=None):
                              help="exact content-only factory metadata bundle; requires its external SHA256, factory and mi_ext inputs")
             sub.add_argument("--target-files-metadata-receipt-sha256",
                              help="independently reviewed metadata receipt digest; never inferred from the supplied bundle")
+            sub.add_argument("--target-files-source-contract", type=Path,
+                             help="explicit combined metadata/0010/0011 source composition; requires paired metadata inputs")
             sub.add_argument("--oem-property-contract", type=Path,
                              help="explicit four-property system_ext source contract; requires matching OEM base and native policy inputs")
             sub.add_argument("--framework-provider-policy-contract", type=Path,
@@ -2710,7 +2802,8 @@ def main(argv=None):
                                   framework_provider_inputs_receipt=args.framework_provider_inputs_receipt,
                                   target_files_metadata_receipt=args.target_files_metadata_receipt,
                                   target_files_metadata_receipt_sha256=args.target_files_metadata_receipt_sha256,
-                                  direct_avb_readonly_contract=args.direct_avb_readonly_contract)
+                                  direct_avb_readonly_contract=args.direct_avb_readonly_contract,
+                                  target_files_source_contract=args.target_files_source_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

@@ -716,24 +716,38 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                 self.assertEqual(generator.main(base + args), 0)
             self.assertEqual(generate.call_args.kwargs["mi_ext_inputs_receipt"], expected)
 
-    def metadata_inputs(self):
+    def metadata_inputs(self, *, source_contract=None, inputs=None):
         """Tiny private metadata fixture; use real public controls and Make renderers."""
         from scripts import mi_ext_inputs as mi
-        from scripts import target_files_metadata as metadata
-        inputs, mi_binding = self.mi_ext_inputs()
-        public = generator._metadata_public_binding()
-        public["factory_package_sha256"] = "3" * 64
+        metadata = generator._metadata_module(source_contract=source_contract)
+        inputs, mi_binding = self.mi_ext_inputs(inputs)
+        legacy_public = generator._metadata_public_binding()
+        public = legacy_public if source_contract is None else generator._metadata_public_binding(source_contract=source_contract)
         vendor = json.loads(inputs["vendor_receipt"].read_bytes())
-        public["images"] = {name: {key: row[key] for key in ("sha256", "size_bytes")}
-                            for name, row in vendor["images"].items()}
+        for record in (legacy_public, public):
+            record["factory_package_sha256"] = "3" * 64
+            record["images"] = {name: {key: row[key] for key in ("sha256", "size_bytes")}
+                                for name, row in vendor["images"].items()}
         config, legacy, controls = mi._controls.return_value
         composed = copy.deepcopy(legacy)
         composed.update(composition=public["native_source"], composition_identity=public["composition_identity"])
-        mi._controls.side_effect = lambda reader, composed_source_contract=None: (
-            config, legacy if composed_source_contract is None else composed, controls)
+        old_metadata = copy.deepcopy(legacy)
+        old_metadata.update(composition=legacy_public["native_source"], composition_identity=legacy_public["composition_identity"])
+        def mi_controls(reader, composed_source_contract=None):
+            source = legacy if composed_source_contract is None else composed
+            if source_contract is not None and composed_source_contract == ROOT / generator.TARGET_FILES_METADATA_CONTRACT:
+                source = old_metadata
+            return config, source, controls
+        mi._controls.side_effect = mi_controls
         mi_binding["native_source"] = mi._native_source(composed)
         self.enterContext(mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=mi_binding))
-        self.enterContext(mock.patch.object(generator, "_metadata_public_binding", side_effect=lambda: copy.deepcopy(public)))
+        def public_binding(**options):
+            if options:
+                self.assertEqual(set(options), {"source_contract"})
+                self.assertIsNotNone(options["source_contract"])
+                return copy.deepcopy(public)
+            return copy.deepcopy(legacy_public)
+        self.enterContext(mock.patch.object(generator, "_metadata_public_binding", side_effect=public_binding))
         rows = [{"target_path": f"VENDOR/etc/vintf/fixture-{index}.xml"}
                 for index in range(public["metadata_file_count"])]
         receipt = {"schema_version": 1, "profile": public["profile"], "images": public["images"],
@@ -741,15 +755,28 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                    "files": rows, "bundle_files": copy.deepcopy(public["control_files"])}
         path = self.root / "artifacts/metadata-inputs" / generator.TARGET_FILES_METADATA_RECEIPT
         path.parent.mkdir(parents=True)
+        runtime = {"tools/target_files_metadata.py": (ROOT / "scripts/target_files_metadata.py").read_bytes()}
+        if source_contract is not None:
+            _, _, selected_controls = metadata._controls(ROOT, metadata.Reader(), source_contract=source_contract)
+            runtime = metadata.runtime_tool_payloads(selected_controls)
         for row in receipt["bundle_files"]:
             relative = row["path"]
-            source = relative.removeprefix("controls/") if relative.startswith("controls/") else "scripts/target_files_metadata.py"
             target = path.parent / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes((ROOT / source).read_bytes())
+            target.write_bytes((ROOT / relative.removeprefix("controls/")).read_bytes()
+                               if relative.startswith("controls/") else runtime[relative])
         path.write_bytes(metadata.encoded(receipt))
         inputs.update(target_files_metadata_receipt=path,
                       target_files_metadata_receipt_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+        if source_contract is not None:
+            inputs["target_files_source_contract"] = source_contract
+            mi_receipt = inputs["mi_ext_inputs_receipt"]
+            mi_receipt.parent.chmod(0o700)
+            mi_receipt.chmod(0o600)
+            for member in (mi.IMAGE_MEMBER, mi.LOGICAL_RECEIPT_MEMBER):
+                target = mi_receipt.parent / member
+                target.write_bytes(b"synthetic mi_ext input")
+                target.chmod(0o600)
         files = {row["target_path"]: (row, b"synthetic content") for row in rows}
         verifier = self.enterContext(mock.patch.object(metadata, "verify_bundle", return_value=(receipt, files, mock.Mock())))
         return inputs, public, receipt, verifier
@@ -1323,6 +1350,231 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                     redirect_stdout(io.StringIO()):
                 self.assertEqual(generator.main(base + args), 0)
             self.assertEqual(generate.call_args.kwargs["direct_avb_readonly_contract"], expected)
+
+    def test_combined_source_requires_paired_metadata_and_rejects_standalone_readonly(self):
+        base = {"record_paths": {}, "kernel_receipt": "none", "vendor_receipt": "none",
+                "target_files_source_contract": "none"}
+        factory = {"factory_boot_contract": "none", "partition_metadata": "none", "fstab_source": "none"}
+        metadata = {"target_files_metadata_receipt": "none", "target_files_metadata_receipt_sha256": "1" * 64}
+        cases = [{}, {"target_files_metadata_receipt": "none"},
+                 {"target_files_metadata_receipt_sha256": "1" * 64}, metadata, {**metadata, **factory},
+                 {**metadata, **factory, "mi_ext_inputs_receipt": "none", "direct_avb_readonly_contract": "none"}]
+        for options in cases:
+            with self.subTest(options=options), mock.patch.object(generator, "_load_records") as load, \
+                    self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused-combined", **base, **options)
+            load.assert_not_called()
+
+    def test_combined_source_is_not_selected_by_original_metadata_or_default(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        with mock.patch.object(generator, "_target_files_source_reference", side_effect=AssertionError("implicit combined selection")):
+            first = generator.generate(self.root / "artifacts/old-metadata-no-combined", **inputs)
+            second = generator.generate(self.root / "artifacts/old-metadata-explicit-none", target_files_source_contract=None, **inputs)
+        self.assertEqual(first, second)
+        self.assertNotIn("source_contract", first["target_files_metadata"])
+        self.assertEqual(first["target_files_metadata"]["composition_identity"]["sha256"],
+                         "6cc3a2bc48603a8eb8b15082252350dc550c0dfc669af24d96e6b4e1a317ad0f")
+
+    def test_combined_source_generation_binds_ten_sources_and_standalone_runtime(self):
+        selected = ROOT / generator.TARGET_FILES_SOURCE_CONTRACT
+        inputs, public, _, verifier = self.metadata_inputs(source_contract=selected)
+        first, second = self.root / "artifacts/combined-first", self.root / "artifacts/combined-repeat"
+        plan = generator.generate(first, **inputs)
+        self.assertEqual(generator.generate(second, **inputs), plan)
+        self.assertEqual(verifier.call_count, 4)
+        for call in verifier.call_args_list:
+            self.assertEqual(call, mock.call(inputs["target_files_metadata_receipt"].parent,
+                                            expected_receipt=inputs["target_files_metadata_receipt_sha256"],
+                                            source_contract=selected))
+        self.assertEqual(generator._verify_mi_ext_inputs.call_count, 4)
+        for call in generator._verify_mi_ext_inputs.call_args_list:
+            self.assertEqual(call.kwargs["composed_source_contract"], selected)
+        binding = plan["target_files_metadata"]
+        self.assertEqual(binding["source_contract"], generator._target_files_source_reference(selected))
+        self.assertEqual(binding["native_source"], public["native_source"])
+        self.assertEqual(len(binding["native_source"]["ordered_patches"]), 7)
+        self.assertEqual(len(binding["native_source"]["contracts"]), 8)
+        self.assertEqual(len(binding["native_source"]["final_source_files"]), 10)
+        sources = {row["path"]: row for row in binding["native_source"]["final_source_files"]}
+        self.assertEqual(sources["build/make/core/Makefile"]["sha256"],
+                         "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7")
+        self.assertEqual(sources["build/make/tools/releasetools/check_target_files_vintf.py"]["sha256"],
+                         "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93")
+        self.assertIn("build/make/core/product.mk", sources)
+        self.assertEqual(binding["metadata_file_count"], 205)
+        self.assertNotIn("direct_avb_readonly", plan)
+        self.assertTrue(all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"))
+        runtime = next(row for row in binding["control_files"] if row["path"] == "tools/target_files_metadata.py")
+        self.assertNotEqual(runtime["sha256"], hashlib.sha256((ROOT / "scripts/target_files_metadata.py").read_bytes()).hexdigest())
+        self.assertEqual([row["path"] for row in binding["control_files"] if row["path"].startswith("tools/")],
+                         ["tools/target_files_metadata.py"])
+        include = (first / generator.TARGET_FILES_METADATA_INCLUDE).read_bytes()
+        self.assertIn(runtime["sha256"].encode(), include)
+        recovery = (first / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        legacy = (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        self.assertEqual(recovery, generator._metadata_recovery_include(legacy, source_contract=selected))
+        for row in sources.values():
+            self.assertIn(row["sha256"].encode(), recovery)
+            self.assertIn(row["sha256"].encode(), (first / generator.MI_EXT_BOARD_INCLUDE).read_bytes())
+        self.assertEqual(generator.validate(first), plan)
+        for purpose in ("target-files", "flash"):
+            with self.subTest(purpose=purpose), self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(first, purpose=purpose)
+
+    def test_combined_source_coexists_with_property_only_profile(self):
+        inputs, policy = self.property_inputs()
+        inputs, _, _, _ = self.metadata_inputs(inputs=inputs, source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy):
+            plan = generator.generate(self.root / "artifacts/combined-properties", **inputs)
+        self.assertIn("oem_properties", plan)
+        self.assertIn("init_helper_capability", plan)
+        self.assertIn("source_contract", plan["target_files_metadata"])
+        self.assertNotIn("framework_providers", plan)
+        self.assertNotIn("direct_avb_readonly", plan)
+
+    def test_combined_source_reference_rejects_forged_special_and_linked_inputs(self):
+        canonical = ROOT / generator.TARGET_FILES_SOURCE_CONTRACT
+        selected = self.root / "source-selection.json"
+        for raw in (canonical.read_bytes() + b"\n", (ROOT / generator.DIRECT_AVB_READONLY_CONTRACT).read_bytes(),
+                    (ROOT / generator.TARGET_FILES_METADATA_CONTRACT).read_bytes()):
+            selected.write_bytes(raw)
+            with self.subTest(raw=hashlib.sha256(raw).hexdigest()), self.assertRaises(generator.CandidateError):
+                generator._target_files_source_reference(selected)
+        selected.unlink()
+        original = self.root / "source-original.json"
+        original.write_bytes(canonical.read_bytes())
+        for kind in ("directory", "fifo", "hardlink", "symlink"):
+            if kind == "directory":
+                selected.mkdir()
+            elif kind == "fifo":
+                os.mkfifo(selected)
+            elif kind == "hardlink":
+                selected.hardlink_to(original)
+            else:
+                selected.symlink_to(original)
+            with self.subTest(kind=kind), self.assertRaises(generator.CandidateError):
+                generator._target_files_source_reference(selected)
+            selected.rmdir() if kind == "directory" else selected.unlink()
+
+    def test_combined_source_validation_rejects_removed_forged_or_mixed_selection(self):
+        inputs, _, _, _ = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        output = self.root / "artifacts/combined-provenance"
+        original = generator.generate(output, **inputs)
+        changes = [
+            lambda p: p["target_files_metadata"].pop("source_contract"),
+            lambda p: p["target_files_metadata"]["source_contract"].update(contract_id="other"),
+            lambda p: p["target_files_metadata"]["source_contract"].update(path=generator.DIRECT_AVB_READONLY_CONTRACT),
+            lambda p: p["target_files_metadata"]["source_contract"].update(sha256="0" * 64),
+            lambda p: p["target_files_metadata"]["source_contract"].update(size_bytes=True),
+            lambda p: p["target_files_metadata"]["native_source"]["final_source_files"].pop(),
+            lambda p: p["target_files_metadata"]["native_source"]["contracts"].pop(),
+            lambda p: p["target_files_metadata"]["native_source"].update(whole_source_tree_verified=0),
+            lambda p: p["target_files_metadata"]["scope"].update(target_files_verified=True),
+            lambda p: p["mi_ext_inputs"]["native_source"]["composition"].update(schema_version=True),
+            lambda p: p.update(direct_avb_readonly={}),
+            lambda p: p["factory_profile"].update(origin_verified=True),
+        ]
+        for change in changes:
+            plan = copy.deepcopy(original)
+            change(plan)
+            (output / "admission.json").write_text(json.dumps(plan))
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_combined_source_validation_rejects_older_recovery_variants(self):
+        inputs, _, _, _ = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        output = self.root / "artifacts/combined-recovery"
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
+        original = (output / name).read_bytes()
+        legacy = (ROOT / name).read_bytes()
+        for raw in (legacy, generator._metadata_recovery_include(legacy), generator._readonly_recovery_include(legacy)):
+            self.reseal_candidate_file(output, plan, name, raw)
+            with self.subTest(raw=hashlib.sha256(raw).hexdigest()), self.assertRaisesRegex(generator.CandidateError, "matching recovery source guard"):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_combined_source_rejects_noncurrent_adapter_runtime_and_control_copies(self):
+        inputs, _, receipt, verifier = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        targets = [row["path"] for row in receipt["bundle_files"] if row["path"].startswith(("tools/", "controls/scripts/"))]
+        for path in targets:
+            changed = copy.deepcopy(receipt)
+            next(row for row in changed["bundle_files"] if row["path"] == path)["sha256"] = "0" * 64
+            verifier.return_value = changed, verifier.return_value[1], verifier.return_value[2]
+            with self.subTest(path=path), self.assertRaisesRegex(generator.CandidateError, "current public inputs"):
+                generator.generate(self.root / "artifacts/refused-combined", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-combined").exists())
+
+    def test_combined_source_rechecks_selected_contract_and_both_bundle_inventories(self):
+        inputs, _, _, verifier = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        selected = self.root / "selected-source.json"
+        raw = (ROOT / generator.TARGET_FILES_SOURCE_CONTRACT).read_bytes()
+        selected.write_bytes(raw)
+        inputs["target_files_source_contract"] = selected
+        validate = generator.validate
+        def change_selected(*args, **kwargs):
+            result = validate(*args, **kwargs)
+            selected.write_bytes(raw + b"\n")
+            return result
+        with mock.patch.object(generator, "validate", side_effect=change_selected), self.assertRaises(generator.CandidateError):
+            generator.generate(self.root / "artifacts/refused-combined", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-combined").exists())
+        selected.write_bytes(raw)
+        reader = verifier.return_value[2]
+        reader.recheck.reset_mock()
+        late_metadata = inputs["target_files_metadata_receipt"].parent / "unexpected-file"
+        def add_metadata():
+            if reader.recheck.call_count == 2:
+                late_metadata.write_bytes(b"unlisted")
+        reader.recheck.side_effect = add_metadata
+        with self.assertRaises(generator.CandidateError):
+            generator.generate(self.root / "artifacts/refused-combined", **inputs)
+        late_metadata.unlink()
+        reader.recheck.side_effect = None
+        mi_verifier = generator._verify_mi_ext_inputs
+        mi_verifier.reset_mock()
+        binding = mi_verifier.return_value
+        def add_mi(*args, **kwargs):
+            if mi_verifier.call_count == 2:
+                (inputs["mi_ext_inputs_receipt"].parent / "unexpected-directory").mkdir()
+            return binding
+        mi_verifier.side_effect = add_mi
+        with self.assertRaisesRegex(generator.CandidateError, "mi_ext inventory refused"):
+            generator.generate(self.root / "artifacts/refused-combined", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-combined").exists())
+
+    def test_combined_source_candidate_cannot_be_nested_in_either_private_bundle(self):
+        inputs, _, _, _ = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        for key in ("target_files_metadata_receipt", "mi_ext_inputs_receipt"):
+            path = inputs[key]
+            if not path.is_relative_to(self.root / "artifacts"):
+                new = self.root / "artifacts/combined-mi-ext"
+                path.parent.rename(new)
+                inputs[key] = new / path.name
+            output = inputs[key].parent / "nested-candidate"
+            with self.subTest(bundle=key), self.assertRaisesRegex(generator.CandidateError, "nested inside"):
+                generator.generate(output, **inputs)
+            self.assertFalse(output.exists())
+
+    def test_combined_source_portable_validation_does_not_reopen_private_bundles(self):
+        inputs, _, _, _ = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
+        output = self.root / "artifacts/portable-combined"
+        plan = generator.generate(output, **inputs)
+        inputs["target_files_metadata_receipt"].unlink()
+        inputs["mi_ext_inputs_receipt"].unlink()
+        with mock.patch.object(generator, "_verify_target_files_metadata", side_effect=AssertionError("private metadata read")), \
+                mock.patch.object(generator, "_verify_mi_ext_inputs", side_effect=AssertionError("private image read")):
+            self.assertEqual(generator.validate(output), plan)
+
+    def test_combined_source_cli_argument_is_optional_and_explicit(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--target-files-source-contract", "source.json"], Path("source.json"))):
+            with self.subTest(args=args), mock.patch.object(generator, "generate", return_value={}) as generate, \
+                    redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["target_files_source_contract"], expected)
 
     def test_factory_generation_binds_geometry_and_preserves_flags_and_provenance(self):
         inputs = self.factory_inputs()

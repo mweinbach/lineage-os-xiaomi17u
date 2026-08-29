@@ -2,8 +2,10 @@
 
 The original recovery contract remains the 0005-only contract. The optional
 paths bind 0005/0006/0007, its explicit 0010 readonly follow-up, or the separate
-0005/0006/0007/0008/0009 metadata composition and their complete final source
-bytes. They do not apply patches or admit a ROM build.
+0005/0006/0007/0008/0009 metadata composition. A separate combined selection
+adds the reviewed 0010 initialization and 0011 VINTF shipping-API follow-ups.
+Each route binds its complete final source bytes without applying patches or
+admitting a ROM build.
 """
 
 from __future__ import annotations
@@ -28,6 +30,8 @@ COMPOSED_PATH = "patches/evolution/direct-avb-custom-images.json"
 COMPOSED_PATCH = "patches/evolution/0007-direct-avb-custom-images.patch"
 METADATA_PATH = "patches/evolution/target-files-metadata.json"
 METADATA_ID = "nezha-prebuilt-target-files-metadata-v1"
+TARGET_FILES_PATH = "patches/evolution/target-files-source-composition.json"
+TARGET_FILES_ID = "nezha-target-files-source-composition-v1"
 READONLY_PATH = "patches/evolution/direct-avb-readonly.json"
 READONLY_PATCH = "patches/evolution/0010-initialize-direct-avb-readonly.patch"
 READONLY_ID = "nezha-direct-avb-readonly-v1"
@@ -234,6 +238,9 @@ def compose(root, selected_contract, *, expected_base=None, expected_base_identi
     if record.get("contract_id") == READONLY_ID:
         return _compose_readonly(root, selected, expected_base=expected_base,
                                  expected_base_identity=expected_base_identity)
+    if record.get("contract_id") == TARGET_FILES_ID:
+        return _compose_target_files(root, selected, expected_base=expected_base,
+                                     expected_base_identity=expected_base_identity)
     if record.get("contract_id") != METADATA_ID:
         # This keeps the original validation and serialized result unchanged.
         return _compose_legacy(root, selected_contract, expected_base=expected_base,
@@ -267,6 +274,38 @@ def compose(root, selected_contract, *, expected_base=None, expected_base_identi
     return result, identity
 
 
+def _compose_target_files(root, selected, *, expected_base=None, expected_base_identity=None):
+    """Admit only the separately reviewed seven-patch source composition."""
+    _require(selected == _read(root / TARGET_FILES_PATH, limit=MAX_BYTES),
+             "explicit target-files composition differs from the current reviewed contract")
+    legacy, _ = _compose_legacy(root, root / COMPOSED_PATH,
+                               expected_base=expected_base,
+                               expected_base_identity=expected_base_identity)
+    if __package__:
+        from . import target_files_source_composition
+    else:
+        import target_files_source_composition
+    try:
+        composition = target_files_source_composition.compose_sources(root)
+    except target_files_source_composition.TargetFilesSourceCompositionError as exc:
+        raise RecoverySourceError("target-files source composition refused: " + str(exc)) from exc
+    _require(composition["contracts"][:3] == legacy["composition"]["contracts"]
+             and composition["ordered_patches"][:3] == legacy["composition"]["ordered_patches"]
+             and composition["contracts"][-1] == {"path": TARGET_FILES_PATH, **_identity(selected)},
+             "target-files composition must preserve the reviewed recovery predecessors and selector")
+    rows = composition["final_source_files"]
+    core = next(row for row in rows if row["path"] == CORE_PATH)
+    result = copy.deepcopy(legacy)
+    result["source_files"][0]["after"] = {key: core[key] for key in ("sha256", "size_bytes")}
+    result["semantic_files"] = [row for row in rows if row["path"] != CORE_PATH]
+    result["composition"] = composition
+    identity = _identity(_canonical(composition))
+    result["composition_identity"] = identity
+    _require(selected == _read(root / TARGET_FILES_PATH, limit=MAX_BYTES),
+             "target-files composition contract changed during selection")
+    return result, identity
+
+
 def render_metadata_recovery_include(template, *, root, selected_contract):
     """Render only the explicit metadata recovery variant from the legacy file.
 
@@ -284,12 +323,23 @@ def render_readonly_recovery_include(template, *, root, selected_contract):
                                     metadata=False)
 
 
-def _render_recovery_include(template, *, root, selected_contract, metadata):
+def render_target_files_recovery_include(template, *, root, selected_contract):
+    """Select the combined metadata, readonly and VINTF source guard explicitly."""
+    return _render_recovery_include(template, root=root, selected_contract=selected_contract,
+                                    metadata=True, target_files=True)
+
+
+def _render_recovery_include(template, *, root, selected_contract, metadata, target_files=False):
     root = Path(root)
     label = "metadata" if metadata else "readonly initialization"
     ordered = "0005/0006/0007/0008/0009" if metadata else "0005/0006/0007/0010"
     last_patch = "0009" if metadata else "0010"
     expected_path = METADATA_PATH if metadata else READONLY_PATH
+    if target_files:
+        label = "target-files source"
+        ordered = "0005/0006/0007/0008/0009/0010/0011"
+        last_patch = "0009/0010"
+        expected_path = TARGET_FILES_PATH
     _require(type(template) is bytes and template == _read(root / RECOVERY_TEMPLATE, limit=MAX_BYTES),
              f"{label} recovery rendering requires the unchanged authored template")
     source, identity = compose(root, selected_contract)

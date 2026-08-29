@@ -837,6 +837,80 @@ class RecoveryInputsTests(unittest.TestCase):
 
 
 class PublicRecoveryHookTests(unittest.TestCase):
+    def test_combined_recovery_guard_keeps_payload_mode_and_all_ten_source_checks(self):
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        source, identity = composition.compose(root, root / composition.TARGET_FILES_PATH)
+        rendered = composition.render_target_files_recovery_include(
+            template, root=root, selected_contract=root / composition.TARGET_FILES_PATH)
+        chain = source["composition"]
+        self.assertEqual(len(chain["ordered_patches"]), 7)
+        self.assertEqual(len(chain["final_source_files"]), 10)
+        self.assertEqual(chain["contracts"][-1]["path"], composition.TARGET_FILES_PATH)
+        self.assertIn(identity["sha256"].encode(), rendered)
+        for row in chain["final_source_files"]:
+            path, digest, size = row["path"], row["sha256"], row["size_bytes"]
+            self.assertIn(f"test -f {path} && test ! -L {path}".encode(), rendered)
+            self.assertIn(f"wc -c < {path} 2>/dev/null)),{size})".encode(), rendered)
+            self.assertIn(f"sha256sum < {path} 2>/dev/null | cut -d ' ' -f 1),{digest})".encode(), rendered)
+        rows = {row["path"]: row for row in chain["final_source_files"]}
+        self.assertEqual(rows[composition.CORE_PATH]["sha256"],
+                         "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7")
+        self.assertEqual(rows["build/make/tools/releasetools/check_target_files_vintf.py"]["sha256"],
+                         "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93")
+        self.assertEqual(rows[composition.PRODUCT_PATH]["sha256"],
+                         "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f")
+        boundary = b"ifneq ($(shell test -f vendor/xiaomi/nezha-recovery/recovery.img"
+        self.assertEqual(rendered.split(boundary, 1)[1], template.split(boundary, 1)[1])
+        prefix = b"ifeq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),undefined)\n"
+        self.assertTrue(rendered.startswith(template.split(prefix, 1)[0]))
+        self.assertEqual((root / composition.RECOVERY_TEMPLATE).read_bytes(), template)
+        self.assertNotIn(b".KATI_READONLY := BOARD_MI_EXT_IMAGE_NO_FLASHALL", rendered)
+
+    def test_combined_recovery_rendering_is_not_selected_by_historical_contracts(self):
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        for path in (composition.COMPOSED_PATH, composition.METADATA_PATH, composition.READONLY_PATH):
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, "requires explicit target-files source"):
+                composition.render_target_files_recovery_include(template, root=root, selected_contract=root / path)
+        for render in (composition.render_metadata_recovery_include, composition.render_readonly_recovery_include):
+            with self.subTest(renderer=render.__name__), self.assertRaisesRegex(ValueError, "requires explicit"):
+                render(template, root=root, selected_contract=root / composition.TARGET_FILES_PATH)
+        with self.assertRaisesRegex(ValueError, "unchanged authored template"):
+            composition.render_target_files_recovery_include(
+                template + b"# changed\n", root=root, selected_contract=root / composition.TARGET_FILES_PATH)
+
+    def test_combined_recovery_selection_rejects_a_changed_descriptor_copy(self):
+        root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temp:
+            selected = Path(temp).resolve() / "selected.json"
+            selected.write_bytes((root / composition.TARGET_FILES_PATH).read_bytes() + b"\n")
+            with self.assertRaisesRegex(ValueError, "explicit target-files composition differs"):
+                composition.compose(root, selected)
+
+    def test_historical_recovery_compositions_and_renderings_remain_byte_identical(self):
+        root = Path(__file__).resolve().parents[1]
+        expected = {
+            composition.COMPOSED_PATH: ("fe4ac5f9c0db04df0d8af9e5867edf2090310b34f03d96f7856d105aa35c5abe", 3516),
+            composition.METADATA_PATH: ("6cc3a2bc48603a8eb8b15082252350dc550c0dfc669af24d96e6b4e1a317ad0f", 3971),
+            composition.READONLY_PATH: ("ee4946fd7c2da9814c1115b95108768844b53c5d293761493ab1f50ed67e5b9c", 4401),
+        }
+        for path, (digest, size) in expected.items():
+            with self.subTest(path=path):
+                self.assertEqual(composition.compose(root, root / path)[1], {"sha256": digest, "size_bytes": size})
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        self.assertEqual(recovery._identity(template), {
+            "sha256": "5c4e52df48903f02ba99a8671584374f6078da15b7b7f0b3aa0707224bffb744", "size_bytes": 8607})
+        for render, path, digest, size in (
+            (composition.render_metadata_recovery_include, composition.METADATA_PATH,
+             "09241772ac54621a68fb7ed742d5f86d15ad975831d8ee9d97b122202706162f", 14615),
+            (composition.render_readonly_recovery_include, composition.READONLY_PATH,
+             "8fa2720967fe18aec6c1bad0abadb23abbcb169b62bf5995119bf1658df7219e", 14089),
+        ):
+            with self.subTest(renderer=render.__name__):
+                self.assertEqual(recovery._identity(render(template, root=root, selected_contract=root / path)),
+                                 {"sha256": digest, "size_bytes": size})
+
     def test_readonly_recovery_variant_binds_product_macro_and_preserves_payload_guards(self):
         root = Path(__file__).resolve().parents[1]
         template = (root / composition.RECOVERY_TEMPLATE).read_bytes()

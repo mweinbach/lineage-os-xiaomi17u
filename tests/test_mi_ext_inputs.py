@@ -223,6 +223,41 @@ class MiExtInputsTests(unittest.TestCase):
                                      expected_package_sha256=mi.EXPECTED_PACKAGE,
                                      composed_source_contract=self.readonly_selected)
 
+    def target_files_controls(self):
+        """Validate real public controls, then mock only native fixture identities.
+
+        The combined composer still checks the actual contract/patch graph on
+        every invocation. Its returned native-file identities are substituted
+        only to exercise mi_ext's source reader using inert files. These fixture
+        files are not patch outputs or evidence of a native Android build.
+        """
+        from scripts import target_files_source_composition as combined
+        real_compose = combined.compose_sources
+        public = real_compose(WORKSPACE)
+        self.target_files_module = combined
+        self.target_files_selected = self.controls / mi.TARGET_FILES_SOURCE_CONTRACT_PATH
+        paths = {row["path"] for row in [*public["contracts"], *public["ordered_patches"]]}
+        paths.update(mi.TARGET_FILES_COMPOSER_CONTROLS)
+        paths.add(mi.TARGET_FILES_METADATA_PROFILE_PATH)
+        for relative in paths:
+            self.write(self.controls / relative, (WORKSPACE / relative).read_bytes())
+        native = []
+        for row in public["final_source_files"]:
+            raw = ("Inert combined native source fixture " + row["path"] + "\n").encode()
+            self.write(self.source / row["path"], raw)
+            native.append({"path": row["path"], **mi.identity(raw)})
+        def fixture_compose(root=WORKSPACE):
+            composition = real_compose(root)
+            composition["final_source_files"] = copy.deepcopy(native)
+            return composition
+        self.target_files_composition = fixture_compose(self.controls)
+        self.enterContext(mock.patch.object(combined, "compose_sources", side_effect=fixture_compose))
+
+    def target_files_binding(self):
+        return mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                     expected_package_sha256=mi.EXPECTED_PACKAGE,
+                                     composed_source_contract=self.target_files_selected)
+
     def packaging(self):
         self.metadata = self.root / "metadata"
         self.metadata.mkdir()
@@ -954,6 +989,179 @@ class MiExtInputsTests(unittest.TestCase):
         self.refused(lambda: mi.render_board_include(readonly_binding, composed_source_contract=self.selected))
         self.refused(lambda: mi.render_board_include(metadata_binding,
                                                      composed_source_contract=self.readonly_selected))
+
+    def test_target_files_composition_binds_seven_patches_ten_sources_and_all_controls(self):
+        self.target_files_controls()
+        self.stage(composed_source_contract=self.target_files_selected)
+        binding = self.target_files_binding()
+        native = binding["native_source"]
+        self.assertEqual(native["composition"], self.target_files_composition)
+        self.assertEqual(native["composition_identity"], mi.identity(mi.encoded(self.target_files_composition)))
+        self.assertEqual(len(native["files"]), 10)
+        self.assertEqual(len(native["composition"]["contracts"]), 8)
+        self.assertEqual(len(native["composition"]["ordered_patches"]), 7)
+        self.assertEqual(native["composition"]["contracts"][-1],
+                         {"path": mi.TARGET_FILES_SOURCE_CONTRACT_PATH,
+                          **mi.identity(self.target_files_selected.read_bytes())})
+        receipt = json.loads((self.bundle / mi.RECEIPT_NAME).read_bytes())
+        self.assertEqual(receipt["required_native_source"], native)
+        controls = {row["path"] for row in receipt["controls"]}
+        self.assertEqual(controls, {mi.CONTRACT_PATH, mi.FACTORY_RECORD_PATH,
+                                   "scripts/mi_ext_inputs.py", "scripts/artifact_files.py",
+                                   mi.TARGET_FILES_METADATA_PROFILE_PATH,
+                                   *mi.TARGET_FILES_COMPOSER_CONTROLS,
+                                   *(row["path"] for row in native["composition"]["contracts"]),
+                                   *(row["path"] for row in native["composition"]["ordered_patches"])})
+        self.assertEqual(len(controls), 23)
+        self.assertTrue(set(mi.READONLY_COMPOSER_CONTROLS).isdisjoint(controls))
+        self.assertEqual(binding["scope"], mi.SCOPE)
+        self.assertNotIn(str(self.root), mi.encoded(receipt).decode())
+
+    def test_target_files_composition_checks_every_native_file_and_emits_ten_guards(self):
+        self.target_files_controls()
+        self.stage(composed_source_contract=self.target_files_selected)
+        result = self.verify(source_tree=self.source, composed_source_contract=self.target_files_selected)
+        self.assertTrue(result["actual_native_source_bytes_checked"])
+        self.assertFalse(result["native_avb_run"])
+        generated = mi.render_board_include(self.target_files_binding(),
+                                           composed_source_contract=self.target_files_selected)
+        for row in self.target_files_composition["final_source_files"]:
+            with self.subTest(path=row["path"]):
+                self.assertIn(f"sha256sum < {row['path']} 2>/dev/null | cut -d ' ' -f 1),{row['sha256']}", generated)
+                path = self.source / row["path"]
+                original = path.read_bytes()
+                path.write_bytes(b"unreviewed\n")
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.target_files_selected))
+                path.unlink()
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.target_files_selected))
+                path.write_bytes(original)
+        self.assertNotIn("BOARD_NEZHA_PREBUILT_METADATA :=", generated)
+        self.assertNotIn("BOARD_MI_EXT_IMAGE_NO_FLASHALL :=", generated)
+
+    def test_target_files_mode_and_each_historical_mode_reject_cross_selection(self):
+        self.target_files_controls()
+        # These are controls used by the separately selected readonly route,
+        # never implicit dependencies of the new direct composer.
+        for path in mi.READONLY_COMPOSER_CONTROLS:
+            self.write(self.controls / path, (WORKSPACE / path).read_bytes())
+        selectors = {"default": None, "metadata": self.controls / mi.METADATA_SOURCE_CONTRACT_PATH,
+                     "readonly": self.controls / mi.READONLY_SOURCE_CONTRACT_PATH,
+                     "combined": self.target_files_selected}
+        bundles, bindings = {}, {}
+        for name, selector in selectors.items():
+            bundle = self.output_parent / ("mode-" + name)
+            self.stage(bundle, composed_source_contract=selector)
+            bindings[name] = mi.validate_admission(bundle / mi.RECEIPT_NAME,
+                                expected_package_sha256=mi.EXPECTED_PACKAGE, composed_source_contract=selector)
+            bundles[name] = bundle
+        for name, selector in selectors.items():
+            self.assertEqual(mi.verify_bundle(bundles[name], composed_source_contract=selector)["status"], "verified")
+            mi.render_board_include(bindings[name], composed_source_contract=selector)
+            for other, wrong_selector in selectors.items():
+                if name == other:
+                    continue
+                with self.subTest(selected=name, other=other):
+                    self.refused(lambda: mi.verify_bundle(bundles[name], composed_source_contract=wrong_selector))
+                    self.refused(lambda: mi.render_board_include(bindings[name], composed_source_contract=wrong_selector))
+
+    def test_target_files_explicit_selector_and_metadata_profile_cannot_change(self):
+        self.target_files_controls()
+        selected = self.inputs / "combined.json"
+        original = self.target_files_selected.read_bytes()
+        selected.write_bytes(original)
+        self.stage(composed_source_contract=selected)
+        self.assertEqual(self.verify(composed_source_contract=selected)["status"], "verified")
+        changed = json.loads(original)
+        changed["final_source_files"][0]["sha256"] = "0" * 64
+        for raw in (b"{}", b"", original + b" ", mi.encoded(changed)):
+            selected.write_bytes(raw)
+            self.refused(lambda: self.verify(composed_source_contract=selected))
+        profile = self.controls / mi.TARGET_FILES_METADATA_PROFILE_PATH
+        profile.write_bytes(profile.read_bytes() + b" ")
+        self.refused(lambda: self.verify(composed_source_contract=self.target_files_selected))
+
+    def test_target_files_declared_control_closure_and_selector_reference_are_required(self):
+        self.target_files_controls()
+        module = self.target_files_module
+        with mock.patch.object(module, "HOST_CONTROL_TOOLS", (*mi.TARGET_FILES_COMPOSER_CONTROLS, "scripts/extra.py")):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "composer dependencies differ"):
+                self.stage(composed_source_contract=self.target_files_selected)
+        compose = module.compose_sources
+        def missing_selector(root):
+            result = compose(root)
+            result["contracts"] = result["contracts"][:-1]
+            return result
+        with mock.patch.object(module, "compose_sources", side_effect=missing_selector):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "omits its explicit selector"):
+                self.stage(composed_source_contract=self.target_files_selected)
+        self.assertFalse(self.bundle.exists())
+
+    def test_target_files_runtime_tools_are_bound_before_composition(self):
+        self.target_files_controls()
+        compose = self.target_files_module.compose_sources
+        for relative in mi.TARGET_FILES_COMPOSER_CONTROLS:
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                original = path.read_bytes()
+                def change(root):
+                    result = compose(root)
+                    path.write_bytes(original + b"\n# changed during composition\n")
+                    return result
+                with mock.patch.object(self.target_files_module, "compose_sources", side_effect=change):
+                    self.refused(lambda: self.stage(composed_source_contract=self.target_files_selected))
+                self.assertFalse(self.bundle.exists())
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(original)
+
+    def test_target_files_all_controls_are_rechecked_before_publication(self):
+        self.target_files_controls()
+        paths = [mi.TARGET_FILES_METADATA_PROFILE_PATH, *mi.TARGET_FILES_COMPOSER_CONTROLS,
+                 *(row["path"] for row in self.target_files_composition["contracts"]),
+                 *(row["path"] for row in self.target_files_composition["ordered_patches"])]
+        recheck = mi.Reader.recheck
+        for relative in paths:
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                original = path.read_bytes()
+                def change(reader):
+                    path.write_bytes(original + b"\nchanged before publication\n")
+                    recheck(reader)
+                with mock.patch.object(mi.Reader, "recheck", change):
+                    self.refused(lambda: self.stage(composed_source_contract=self.target_files_selected))
+                self.assertFalse(self.bundle.exists())
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(original)
+
+    def test_target_files_composer_errors_keep_the_mi_ext_error_contract(self):
+        self.target_files_controls()
+        module = self.target_files_module
+        cause = module.TargetFilesSourceCompositionError("inert invalid combined source")
+        with mock.patch.object(module, "compose_sources", side_effect=cause):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "target-files source composition refused") as raised:
+                self.stage(composed_source_contract=self.target_files_selected)
+        self.assertIs(raised.exception.__cause__, cause)
+        self.assertFalse(self.bundle.exists())
+
+    def test_public_composed_source_selection_preserves_historical_identities(self):
+        from scripts import target_files_source_composition as combined
+        original_image = mi.expected(json.loads((WORKSPACE / mi.CONTRACT_PATH).read_bytes())["image"], mi.MAX_IMAGE_BYTES)
+        modes = ((None, 5, None),
+                 (mi.METADATA_SOURCE_CONTRACT_PATH, 9, "6cc3a2bc48603a8eb8b15082252350dc550c0dfc669af24d96e6b4e1a317ad0f"),
+                 (mi.READONLY_SOURCE_CONTRACT_PATH, 8, "ee4946fd7c2da9814c1115b95108768844b53c5d293761493ab1f50ed67e5b9c"),
+                 (mi.TARGET_FILES_SOURCE_CONTRACT_PATH, 10, None))
+        with mock.patch.object(mi, "ROOT", WORKSPACE), mock.patch.object(mi, "EXPECTED_IMAGE", original_image):
+            for selector, count, digest in modes:
+                with self.subTest(selector=selector):
+                    reader = mi.Reader()
+                    _, source, _ = mi._controls(reader, WORKSPACE / selector if selector else None)
+                    reader.recheck()
+                    self.assertEqual(len(mi._source_files(source)), count)
+                    if digest:
+                        self.assertEqual(source["composition_identity"]["sha256"], digest)
+                    if selector == mi.TARGET_FILES_SOURCE_CONTRACT_PATH:
+                        self.assertEqual(source["composition"], combined.compose_sources(WORKSPACE))
 
 
 if __name__ == "__main__":

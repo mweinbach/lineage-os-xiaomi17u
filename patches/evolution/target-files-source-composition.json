@@ -1,0 +1,520 @@
+{
+  "contract_id": "nezha-target-files-source-composition-v1",
+  "final_source_files": [
+    {
+      "path": "build/make/core/Makefile",
+      "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+      "size_bytes": 392084
+    },
+    {
+      "path": "build/make/core/product.mk",
+      "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+      "size_bytes": 31527
+    },
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+      "size_bytes": 48289
+    },
+    {
+      "path": "build/make/tools/releasetools/apex_utils.py",
+      "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+      "size_bytes": 23271
+    },
+    {
+      "path": "build/make/tools/releasetools/build_super_image.py",
+      "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+      "size_bytes": 7212
+    },
+    {
+      "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+      "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+      "size_bytes": 12713
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+      "size_bytes": 157203
+    },
+    {
+      "path": "build/make/tools/releasetools/non_ab_ota.py",
+      "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+      "size_bytes": 28122
+    },
+    {
+      "path": "build/make/tools/releasetools/ota_from_target_files.py",
+      "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+      "size_bytes": 66479
+    },
+    {
+      "path": "build/make/tools/releasetools/validate_target_files.py",
+      "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+      "size_bytes": 22638
+    }
+  ],
+  "initial_source_files": [
+    {
+      "path": "build/make/core/Makefile",
+      "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e",
+      "size_bytes": 378285
+    },
+    {
+      "path": "build/make/core/product.mk",
+      "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+      "size_bytes": 31527
+    },
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "sha256": "9ace653e00cc3635ae476d15e03b44b7bf6c70898497c343bf41f6ce521dbd98",
+      "size_bytes": 48004
+    },
+    {
+      "path": "build/make/tools/releasetools/apex_utils.py",
+      "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+      "size_bytes": 23271
+    },
+    {
+      "path": "build/make/tools/releasetools/build_super_image.py",
+      "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+      "size_bytes": 7212
+    },
+    {
+      "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+      "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+      "size_bytes": 11705
+    },
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+      "size_bytes": 156263
+    },
+    {
+      "path": "build/make/tools/releasetools/non_ab_ota.py",
+      "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+      "size_bytes": 28122
+    },
+    {
+      "path": "build/make/tools/releasetools/ota_from_target_files.py",
+      "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+      "size_bytes": 66479
+    },
+    {
+      "path": "build/make/tools/releasetools/validate_target_files.py",
+      "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+      "size_bytes": 22638
+    }
+  ],
+  "limitations": [
+    "This new selector does not change the historical 0005/6/7, 0005..0009, or 0005/6/7/0010 contracts or serialized compositions.",
+    "0010 is explicitly replayed after metadata for the canonical chain; the frozen 0010 legacy transition remains separate evidence.",
+    "The existing readonly source upgrades with only 0008, 0009 and 0011, after complete exact preimage verification; no source reset is needed.",
+    "The original factory vendor/ODM image pair and all 205 captured metadata payloads remain required. Policy-bearing image derivatives are not admitted.",
+    "A source composition or successful patch replay is not native compatibility, target-files, AVB, OTA, image adoption or hardware evidence."
+  ],
+  "metadata_predecessor_composition": {
+    "sha256": "6cc3a2bc48603a8eb8b15082252350dc550c0dfc669af24d96e6b4e1a317ad0f",
+    "size_bytes": 3971
+  },
+  "metadata_profile": {
+    "path": "config/nezha-target-files-metadata.json",
+    "sha256": "139682bc8d8d2644771b9d62656763a837da558c629c5b1a8765a933ad8e0b49",
+    "size_bytes": 4734
+  },
+  "project": {
+    "branch": "bka",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "path": "build/make",
+    "repository": "https://github.com/Evolution-X/build"
+  },
+  "readonly_legacy_predecessor_composition": {
+    "sha256": "fe4ac5f9c0db04df0d8af9e5867edf2090310b34f03d96f7856d105aa35c5abe",
+    "size_bytes": 3516
+  },
+  "readonly_macro": {
+    "body_sha256": "1169e184965a0352a1b2f3b13d5aad83fca34edac18c67f488dd41c74b425bdb",
+    "name": "readonly-variables",
+    "source": "build/make/core/product.mk"
+  },
+  "readonly_upgrade": {
+    "final_source_files": [
+      {
+        "path": "build/make/core/Makefile",
+        "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+        "size_bytes": 392084
+      },
+      {
+        "path": "build/make/core/product.mk",
+        "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+        "size_bytes": 31527
+      },
+      {
+        "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+        "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+        "size_bytes": 48289
+      },
+      {
+        "path": "build/make/tools/releasetools/apex_utils.py",
+        "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+        "size_bytes": 23271
+      },
+      {
+        "path": "build/make/tools/releasetools/build_super_image.py",
+        "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+        "size_bytes": 7212
+      },
+      {
+        "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+        "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+        "size_bytes": 12713
+      },
+      {
+        "path": "build/make/tools/releasetools/common.py",
+        "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+        "size_bytes": 157203
+      },
+      {
+        "path": "build/make/tools/releasetools/non_ab_ota.py",
+        "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+        "size_bytes": 28122
+      },
+      {
+        "path": "build/make/tools/releasetools/ota_from_target_files.py",
+        "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+        "size_bytes": 66479
+      },
+      {
+        "path": "build/make/tools/releasetools/validate_target_files.py",
+        "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+        "size_bytes": 22638
+      }
+    ],
+    "initial_source_files": [
+      {
+        "path": "build/make/core/Makefile",
+        "sha256": "77e4a7aa8f2094d116de233b2c46b21103694df66bc8d426ce1f6e4b1043329b",
+        "size_bytes": 388718
+      },
+      {
+        "path": "build/make/core/product.mk",
+        "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+        "size_bytes": 31527
+      },
+      {
+        "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+        "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+        "size_bytes": 48289
+      },
+      {
+        "path": "build/make/tools/releasetools/apex_utils.py",
+        "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+        "size_bytes": 23271
+      },
+      {
+        "path": "build/make/tools/releasetools/build_super_image.py",
+        "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+        "size_bytes": 7212
+      },
+      {
+        "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+        "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+        "size_bytes": 11705
+      },
+      {
+        "path": "build/make/tools/releasetools/common.py",
+        "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+        "size_bytes": 156263
+      },
+      {
+        "path": "build/make/tools/releasetools/non_ab_ota.py",
+        "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+        "size_bytes": 28122
+      },
+      {
+        "path": "build/make/tools/releasetools/ota_from_target_files.py",
+        "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+        "size_bytes": 66479
+      },
+      {
+        "path": "build/make/tools/releasetools/validate_target_files.py",
+        "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+        "size_bytes": 22638
+      }
+    ],
+    "ordered_patches": [
+      {
+        "path": "patches/evolution/0008-optional-partition-build-props.patch",
+        "sha256": "85a554f8a1e93068f0eaabc903c34c06b9f5a75bc8c689d4cb3b556297c7967e",
+        "size_bytes": 4292
+      },
+      {
+        "path": "patches/evolution/0009-prebuilt-target-files-metadata.patch",
+        "sha256": "889ae23b909f46621c5c223bf9b637baadf039d7cc67057d12d14495597ad721",
+        "size_bytes": 4057
+      },
+      {
+        "path": "patches/evolution/0011-vintf-shipping-api-from-odm.patch",
+        "sha256": "0fa33fca9d2e7a7d6ff99d00f968f36dfa8027abc0b2adcf31a3df0ad957361b",
+        "size_bytes": 1928
+      }
+    ],
+    "predecessor_composition": {
+      "sha256": "ee4946fd7c2da9814c1115b95108768844b53c5d293761493ab1f50ed67e5b9c",
+      "size_bytes": 4401
+    },
+    "predecessor_contract": {
+      "path": "patches/evolution/direct-avb-readonly.json",
+      "sha256": "81fc394ebd031317a93ec374846f927209c0b03572463deb74bfc401a51cdcb1",
+      "size_bytes": 3275
+    },
+    "source_transitions": [
+      {
+        "after": {
+          "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+          "size_bytes": 157203
+        },
+        "before": {
+          "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+          "size_bytes": 156263
+        },
+        "patch": {
+          "path": "patches/evolution/0008-optional-partition-build-props.patch",
+          "sha256": "85a554f8a1e93068f0eaabc903c34c06b9f5a75bc8c689d4cb3b556297c7967e",
+          "size_bytes": 4292
+        },
+        "path": "build/make/tools/releasetools/common.py"
+      },
+      {
+        "after": {
+          "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+          "size_bytes": 392084
+        },
+        "before": {
+          "sha256": "77e4a7aa8f2094d116de233b2c46b21103694df66bc8d426ce1f6e4b1043329b",
+          "size_bytes": 388718
+        },
+        "patch": {
+          "path": "patches/evolution/0009-prebuilt-target-files-metadata.patch",
+          "sha256": "889ae23b909f46621c5c223bf9b637baadf039d7cc67057d12d14495597ad721",
+          "size_bytes": 4057
+        },
+        "path": "build/make/core/Makefile"
+      },
+      {
+        "after": {
+          "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+          "size_bytes": 12713
+        },
+        "before": {
+          "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+          "size_bytes": 11705
+        },
+        "patch": {
+          "path": "patches/evolution/0011-vintf-shipping-api-from-odm.patch",
+          "sha256": "0fa33fca9d2e7a7d6ff99d00f968f36dfa8027abc0b2adcf31a3df0ad957361b",
+          "size_bytes": 1928
+        },
+        "path": "build/make/tools/releasetools/check_target_files_vintf.py"
+      }
+    ]
+  },
+  "rebased_readonly_transition": {
+    "after": {
+      "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+      "size_bytes": 392084
+    },
+    "before": {
+      "sha256": "af8af76a36d6d2303dba471545bc2e36e15347211d9c96a4145a1ea3c6351d8b",
+      "size_bytes": 392075
+    },
+    "historical_transition": {
+      "after": {
+        "sha256": "77e4a7aa8f2094d116de233b2c46b21103694df66bc8d426ce1f6e4b1043329b",
+        "size_bytes": 388718
+      },
+      "before": {
+        "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+        "size_bytes": 388709
+      },
+      "path": "build/make/core/Makefile"
+    },
+    "path": "build/make/core/Makefile"
+  },
+  "required_contracts": [
+    {
+      "path": "patches/evolution/prebuilt-recovery.json",
+      "sha256": "4d4b49050e5808f72d74fe023b80c2e83b646a542856182361ee594f48a9656b",
+      "size_bytes": 4741
+    },
+    {
+      "path": "patches/evolution/ab-only-recovery-packaging.json",
+      "sha256": "8dc262578a254ca6e2f4a6a342c8d0e0a1b82d38585b2f1c059d848929938a2b",
+      "size_bytes": 5058
+    },
+    {
+      "path": "patches/evolution/direct-avb-custom-images.json",
+      "sha256": "47008985f4972699e9c25fb91de7780abd433d7748dc5028e1fb21098d9113fc",
+      "size_bytes": 3189
+    },
+    {
+      "path": "patches/evolution/optional-partition-build-props.json",
+      "sha256": "ffe4dba8ffcdf202d57d263bf8ebbf40dfba1ed484f1f96122322b6901914e23",
+      "size_bytes": 3641
+    },
+    {
+      "path": "patches/evolution/target-files-metadata.json",
+      "sha256": "595382e29c0d03a203bf40e08649f42280c88d982e04eef2826813262b4b01b9",
+      "size_bytes": 3680
+    },
+    {
+      "path": "patches/evolution/direct-avb-readonly.json",
+      "sha256": "81fc394ebd031317a93ec374846f927209c0b03572463deb74bfc401a51cdcb1",
+      "size_bytes": 3275
+    },
+    {
+      "path": "patches/evolution/vintf-shipping-api.json",
+      "sha256": "c0a555d4b0aa6cddad58e788e9cf45026b7578c98a2a3cd1e7e66e4ef2c8fcf1",
+      "size_bytes": 4789
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "complete_rom_admitted": false,
+    "hardware_tested": false,
+    "metadata_only": true,
+    "native_kati_verified": false,
+    "native_vintf_verified": false,
+    "original_images_preserved": true,
+    "ota_verified": false,
+    "phone_operations": [],
+    "readiness_flags_changed": false,
+    "source_composition_only": true,
+    "source_modified": false,
+    "target_files_verified": false
+  },
+  "semantics": {
+    "fresh_metadata_receipt_required": true,
+    "native_entrypoint_self_contained": true,
+    "old_selectors_and_contracts_preserved": true,
+    "original_metadata_payloads_required": true,
+    "original_metadata_profile_preserved": true,
+    "patch_order_explicit": true,
+    "readonly_macro_source_bound": true,
+    "shipping_api_from_original_vendor_or_odm": true,
+    "source_checks_preserved": true,
+    "source_hash_fallback_allowed": false
+  },
+  "source_transitions": [
+    {
+      "after": {
+        "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+        "size_bytes": 382008
+      },
+      "before": {
+        "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e",
+        "size_bytes": 378285
+      },
+      "patch": {
+        "path": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+        "sha256": "622bd7df162ba92631cddcf6e853823715c0b1795ee255ebf41364e4a7c4407e",
+        "size_bytes": 7477
+      },
+      "path": "build/make/core/Makefile"
+    },
+    {
+      "after": {
+        "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+        "size_bytes": 48289
+      },
+      "before": {
+        "sha256": "9ace653e00cc3635ae476d15e03b44b7bf6c70898497c343bf41f6ce521dbd98",
+        "size_bytes": 48004
+      },
+      "patch": {
+        "path": "patches/evolution/0006-ab-only-recovery-packaging.patch",
+        "sha256": "29b8ed6a208d4ad6356d72c995c84b72204494acb9672aaf3fceb49a21f58a8c",
+        "size_bytes": 2608
+      },
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py"
+    },
+    {
+      "after": {
+        "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+        "size_bytes": 388709
+      },
+      "before": {
+        "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+        "size_bytes": 382008
+      },
+      "patch": {
+        "path": "patches/evolution/0007-direct-avb-custom-images.patch",
+        "sha256": "80e0081c5fbb9cc42dac058bd2dc153396a565732b9daea04b65214e0e90b9cf",
+        "size_bytes": 10414
+      },
+      "path": "build/make/core/Makefile"
+    },
+    {
+      "after": {
+        "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+        "size_bytes": 157203
+      },
+      "before": {
+        "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+        "size_bytes": 156263
+      },
+      "patch": {
+        "path": "patches/evolution/0008-optional-partition-build-props.patch",
+        "sha256": "85a554f8a1e93068f0eaabc903c34c06b9f5a75bc8c689d4cb3b556297c7967e",
+        "size_bytes": 4292
+      },
+      "path": "build/make/tools/releasetools/common.py"
+    },
+    {
+      "after": {
+        "sha256": "af8af76a36d6d2303dba471545bc2e36e15347211d9c96a4145a1ea3c6351d8b",
+        "size_bytes": 392075
+      },
+      "before": {
+        "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+        "size_bytes": 388709
+      },
+      "patch": {
+        "path": "patches/evolution/0009-prebuilt-target-files-metadata.patch",
+        "sha256": "889ae23b909f46621c5c223bf9b637baadf039d7cc67057d12d14495597ad721",
+        "size_bytes": 4057
+      },
+      "path": "build/make/core/Makefile"
+    },
+    {
+      "after": {
+        "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+        "size_bytes": 392084
+      },
+      "before": {
+        "sha256": "af8af76a36d6d2303dba471545bc2e36e15347211d9c96a4145a1ea3c6351d8b",
+        "size_bytes": 392075
+      },
+      "patch": {
+        "path": "patches/evolution/0010-initialize-direct-avb-readonly.patch",
+        "sha256": "0c045c4e377eaf44e41b1603250160cc4630c1fd21f97c30facb5c838bfcf33a",
+        "size_bytes": 1050
+      },
+      "path": "build/make/core/Makefile"
+    },
+    {
+      "after": {
+        "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+        "size_bytes": 12713
+      },
+      "before": {
+        "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+        "size_bytes": 11705
+      },
+      "patch": {
+        "path": "patches/evolution/0011-vintf-shipping-api-from-odm.patch",
+        "sha256": "0fa33fca9d2e7a7d6ff99d00f968f36dfa8027abc0b2adcf31a3df0ad957361b",
+        "size_bytes": 1928
+      },
+      "path": "build/make/tools/releasetools/check_target_files_vintf.py"
+    }
+  ]
+}

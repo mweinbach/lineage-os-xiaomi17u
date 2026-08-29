@@ -74,6 +74,22 @@ def fixture_source():
 
 
 class RecoveryPackagingContractTests(unittest.TestCase):
+    def test_combined_source_selection_keeps_the_recovery_branch_and_binds_both_followups(self):
+        from scripts import recovery_source_contracts
+        baseline = packaging._contract()
+        selected, identity = packaging._selected_contract(ROOT / recovery_source_contracts.TARGET_FILES_PATH)
+        self.assertEqual(selected["source_files"], baseline[0]["source_files"])
+        self.assertEqual(len(selected["semantic_files"]), 9)
+        self.assertEqual(identity, packaging._identity(recovery_source_contracts._canonical(selected["composition"])))
+        rows = {row["path"]: row for row in selected["semantic_files"]}
+        self.assertEqual(rows[recovery_source_contracts.CORE_PATH]["sha256"],
+                         "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7")
+        self.assertEqual(rows["build/make/tools/releasetools/check_target_files_vintf.py"]["sha256"],
+                         "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93")
+        self.assertIn(recovery_source_contracts.PRODUCT_PATH, rows)
+        self.assertEqual(selected["validation_scope"], packaging.SCOPE)
+        self.assertEqual(packaging._contract(), baseline)
+
     def test_readonly_composition_keeps_recovery_consumer_and_binds_macro_source(self):
         from scripts import recovery_source_contracts
         baseline = packaging._contract()

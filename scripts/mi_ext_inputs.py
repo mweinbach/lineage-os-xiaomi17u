@@ -36,6 +36,11 @@ READONLY_COMPOSER_CONTROLS = ("scripts/recovery_source_contracts.py", "scripts/k
                             "scripts/firmware.py")
 METADATA_SOURCE_CONTRACT_PATH = "patches/evolution/target-files-metadata.json"
 METADATA_COMPOSER_PATH = "scripts/target_files_metadata.py"
+TARGET_FILES_SOURCE_CONTRACT_PATH = "patches/evolution/target-files-source-composition.json"
+TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
+TARGET_FILES_COMPOSER_CONTROLS = ("scripts/target_files_source_composition.py",
+                                "scripts/target_files_metadata_combined.py", METADATA_COMPOSER_PATH)
+TARGET_FILES_METADATA_PROFILE_PATH = "config/nezha-target-files-metadata.json"
 PATCH_PATH = "patches/evolution/0007-direct-avb-custom-images.patch"
 FACTORY_RECORD_PATH = "research/factory-firmware-validation.json"
 CORE_PATH = "build/make/core/Makefile"
@@ -257,8 +262,11 @@ def _controls(reader, composed_source_contract=None):
         # Selecting the existing contract is equivalent to the unchanged default.
         # A receipt never selects a newer native consumer on the caller's behalf.
         if selected != controls[SOURCE_CONTRACT_PATH]:
-            readonly = _json(selected).get("contract_id") == READONLY_SOURCE_CONTRACT_ID
-            selected_path = READONLY_SOURCE_CONTRACT_PATH if readonly else METADATA_SOURCE_CONTRACT_PATH
+            selected_id = _json(selected).get("contract_id")
+            readonly = selected_id == READONLY_SOURCE_CONTRACT_ID
+            target_files = selected_id == TARGET_FILES_SOURCE_CONTRACT_ID
+            selected_path = (READONLY_SOURCE_CONTRACT_PATH if readonly else
+                             TARGET_FILES_SOURCE_CONTRACT_PATH if target_files else METADATA_SOURCE_CONTRACT_PATH)
             canonical = reader.read(ROOT / selected_path)
             require(selected == canonical,
                     "explicit mi_ext composition differs from a reviewed source contract")
@@ -280,6 +288,27 @@ def _controls(reader, composed_source_contract=None):
                 composition = composed_source["composition"]
                 require(composed_identity == identity(encoded(composition)),
                         "mi_ext readonly source composition identity differs")
+            elif target_files:
+                controls[selected_path] = canonical
+                profile = _json(canonical).get("metadata_profile")
+                require(type(profile) is dict and profile.get("path") == TARGET_FILES_METADATA_PROFILE_PATH,
+                        "mi_ext target-files metadata profile differs")
+                controls[TARGET_FILES_METADATA_PROFILE_PATH] = reader.read(
+                    ROOT / TARGET_FILES_METADATA_PROFILE_PATH, profile)
+                for path in TARGET_FILES_COMPOSER_CONTROLS:
+                    controls[path] = reader.read(ROOT / path)
+                if __package__:
+                    from . import target_files_source_composition
+                else:
+                    import target_files_source_composition
+                require(target_files_source_composition.HOST_CONTROL_TOOLS == TARGET_FILES_COMPOSER_CONTROLS,
+                        "mi_ext target-files composer dependencies differ")
+                try:
+                    composition = target_files_source_composition.compose_sources(ROOT)
+                except target_files_source_composition.TargetFilesSourceCompositionError as exc:
+                    raise MiExtInputsError(f"mi_ext target-files source composition refused: {exc}") from exc
+                require(composition["contracts"][-1] == {"path": selected_path, **identity(canonical)},
+                        "mi_ext target-files composition omits its explicit selector")
             else:
                 controls[METADATA_COMPOSER_PATH] = reader.read(ROOT / METADATA_COMPOSER_PATH)
                 if __package__:
