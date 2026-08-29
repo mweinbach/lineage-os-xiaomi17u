@@ -39,6 +39,13 @@ MODULE_BLUEPRINT = "framework-providers.Android.bp"
 RECEIPT = "framework-provider-inputs.json"
 CHECK = "nezha_framework_provider_inputs_check"
 TOOL = "nezha_framework_provider_inputs_verifier"
+NATIVE_OUTPUT_RECIPE = {
+    "producer": CHECK,
+    "receipt_output": "framework-provider-inputs-checked.json",
+    "payload_output_prefix": "verified",
+    "consumer_inputs": "verified_producer_outputs",
+    "all_inputs_checked_before_outputs": True,
+}
 MAX_BUNDLE_BYTES = 64 * 1024 * 1024
 SAFE_NAME = re.compile(r"[A-Za-z0-9_+.@-]+")
 SCOPE = {
@@ -137,13 +144,16 @@ def load_contract(reader=None, contract_path=None):
     require(set(contract) == {"schema_version", "device", "platform", "bundle", "module_package", "factory_package_sha256",
                               "factory_image", "source_lock", "captures", "files", "providers",
                               "source_dependencies", "source_replacements", "required_source_patches",
-                              "runtime_requirements", "scope"}, "unexpected provider contract fields")
+                              "runtime_requirements", "native_output_recipe", "scope"}, "unexpected provider contract fields")
     require(type(contract["schema_version"]) is int and contract["schema_version"] == 1
             and contract["device"] == "nezha" and contract["bundle"] == BUNDLE
             and contract["module_package"] == MODULE_PACKAGE
             and contract["platform"] == {"branch": "bka", "release": "bp4a", "board_api": "202504"},
             "provider inputs must retain the selected Nezha platform")
     require(contract["scope"] == SCOPE, "staging cannot claim a build, policy or hardware result")
+    require(contract["native_output_recipe"] == NATIVE_OUTPUT_RECIPE
+            and type(contract["native_output_recipe"]["all_inputs_checked_before_outputs"]) is bool,
+            "native consumers must use the strict verified output producer")
     require(type(contract["factory_package_sha256"]) is str
             and re.fullmatch(r"[a-f0-9]{64}", contract["factory_package_sha256"]), "invalid factory package")
     image = contract["factory_image"]
@@ -298,27 +308,36 @@ def validate_inputs(contract, payload):
                 "VINTF declaration differs from its actual reviewed provider")
 
 
-def _native_checker(identities):
+def _native_outputs(contract):
+    return {"verified" + row["runtime_path"]: "proprietary" + row["runtime_path"]
+            for row in contract["files"]}
+
+
+def _native_checker(identities, payloads):
     """A small standalone native build tool; exact data is generated from the contract."""
     return ('''#!/usr/bin/env python3
-"""Verify the exact reviewed provider inputs inside the native Android build."""
+"""Produce only verified provider files for native Android consumers."""
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import shutil
 import stat
 import sys
+import tempfile
 
 EXPECTED = ''' + repr(identities) + '''
+PAYLOADS = ''' + repr(payloads) + '''
+RECEIPT = "framework-provider-inputs-checked.json"
 
 def signature(info):
     return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
             info.st_mtime_ns, info.st_ctime_ns)
 
-def main(arguments):
+def verify_inputs(arguments):
     if len(arguments) != len(EXPECTED):
         raise ValueError("unexpected native provider input count")
-    seen = set()
+    seen, contents, states = set(), {}, []
     for argument in arguments:
         path = Path(argument)
         names = [name for name in EXPECTED if argument == name or argument.endswith("/" + name)]
@@ -339,7 +358,94 @@ def main(arguments):
                 raise ValueError("native provider input changed during verification")
         if len(raw) != before.st_size or hashlib.sha256(raw).hexdigest() != EXPECTED[name]["sha256"]:
             raise ValueError("native provider input failed SHA256 verification")
-    print(json.dumps({"verified": True, "input_count": len(seen), "firmware_executed": False}, sort_keys=True))
+        contents[name] = raw
+        states.append((path, signature(before)))
+    return contents, states
+
+def unchanged(states):
+    for path, original in states:
+        if signature(path.lstat()) != original:
+            raise ValueError("native provider input changed before output publication")
+
+def checked_directory(path):
+    for parent in [*reversed(path.parents), path]:
+        if not stat.S_ISDIR(parent.lstat().st_mode):
+            raise ValueError("native output directory or ancestor is not a real directory")
+
+def output_root(value):
+    root = Path(os.path.abspath(value))
+    checked_directory(root.parent)
+    if not os.path.lexists(root):
+        root.mkdir(mode=0o700)
+    checked_directory(root)
+    allowed = {str(parent) for name in PAYLOADS for parent in PurePosixPath(name).parents
+               if str(parent) != "."}
+    # sbox creates the declared output parent directories before invoking us.
+    # Accept only those empty directory trees; never replace existing files.
+    for path in root.rglob("*"):
+        if not stat.S_ISDIR(path.lstat().st_mode) or str(path.relative_to(root)) not in allowed:
+            raise ValueError("native output directory contains existing or unexpected entries")
+    return root
+
+def write_checked(root, name, raw):
+    path = root / name
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    with path.open("xb") as stream:
+        os.chmod(path, 0o600)
+        stream.write(raw)
+        stream.flush()
+        os.fsync(stream.fileno())
+    if path.read_bytes() != raw:
+        raise ValueError("native provider output failed exact-byte readback")
+
+def main(arguments):
+    if len(arguments) < 2 or arguments[0] != "--output-dir":
+        raise ValueError("an explicit native output directory is required")
+    # Hold the actual verified bytes. Do not reopen the source files for copies.
+    # Every control and payload input must pass before any payload is written.
+    contents, states = verify_inputs(arguments[2:])
+    unchanged(states)
+    root = output_root(arguments[1])
+    receipt = {"verified": True, "input_count": len(contents), "payload_count": len(PAYLOADS),
+               "firmware_executed": False,
+               "contract": EXPECTED["provenance/nezha-framework-providers.json"],
+               "outputs": [{"path": name, **EXPECTED[source]} for name, source in PAYLOADS.items()]}
+    receipt_bytes = (json.dumps(receipt, sort_keys=True, indent=2) + "\\n").encode()
+    staging = Path(tempfile.mkdtemp(prefix=".provider-verified-", dir=root))
+    published = []
+    try:
+        for name, source in PAYLOADS.items():
+            write_checked(staging, name, contents[source])
+        write_checked(staging, RECEIPT, receipt_bytes)
+        unchanged(states)
+        # Hard-link newly created staging files, never original inputs. This
+        # publishes each complete file exclusively without replacing a path.
+        # sbox may expose outputs from a failed command, so publish the success
+        # receipt last and remove our published files if any operation fails.
+        for name in [*PAYLOADS, RECEIPT]:
+            target = root / name
+            target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            checked_directory(target.parent)
+            info = (staging / name).lstat()
+            published.append((target, info.st_dev, info.st_ino))
+            os.link(staging / name, target, follow_symlinks=False)
+        unchanged(states)
+        shutil.rmtree(staging)
+        staging = None
+    except BaseException:
+        for path, device, inode in reversed(published):
+            try:
+                info = path.lstat()
+                if (info.st_dev, info.st_ino) == (device, inode):
+                    path.unlink()
+            except FileNotFoundError:
+                pass
+        raise
+    finally:
+        if staging is not None:
+            shutil.rmtree(staging)
+    print(json.dumps({"verified": True, "input_count": len(contents),
+                      "payload_count": len(PAYLOADS), "firmware_executed": False}, sort_keys=True))
 
 if __name__ == "__main__":
     try:
@@ -360,16 +466,20 @@ def _bp(contract, native_files):
     output = ['// Generated by framework_provider_inputs.py; original firmware bytes remain private.',
               'soong_namespace {}', '',
               'python_binary_host {', '    name: "' + TOOL + '",',
+              '    visibility: [":__pkg__"],',
               '    main: "tools/verify_framework_provider_inputs.py",',
               '    srcs: ["tools/verify_framework_provider_inputs.py"],', '}', '',
               'genrule {', '    name: "' + CHECK + '",',
+              '    visibility: [":__pkg__", "//' + MODULE_PACKAGE + ':__pkg__",',
+              '                 "//vendor/xiaomi/nezha-policy:__pkg__"],',
               '    tools: ["' + TOOL + '"],', '    srcs: [']
     output += ['        ' + json.dumps(name) + ',' for name in sorted(native_files)]
-    output += ['    ],', '    out: ["framework-provider-inputs-checked.json"],',
-               '    cmd: "$(location ' + TOOL + ') $(in) > $(out)",', '}', '']
+    output += ['    ],', '    out: ["framework-provider-inputs-checked.json",']
+    output += ['        ' + json.dumps(name) + ',' for name in _native_outputs(contract)]
+    output += ['    ],', '    cmd: "$(location ' + TOOL + ') --output-dir $(genDir) $(in)",', '}', '']
     for runtime, name in _input_groups(contract).items():
         output += ['filegroup {', '    name: ' + json.dumps(name) + ',',
-                   '    srcs: [' + json.dumps("proprietary" + runtime) + '],',
+                   '    srcs: [' + json.dumps(":" + CHECK + "{verified" + runtime + "}") + '],',
                    '    visibility: ["//' + MODULE_PACKAGE + ':__pkg__"],', '}', '']
     return ("\n".join(output) + "\n").encode()
 
@@ -420,7 +530,8 @@ def _generated(contract, raw, capture_bytes):
     result[MODULE_BLUEPRINT] = _module_bp(contract)
     native_files = {"proprietary" + row["runtime_path"]: _expected(row) for row in contract["files"]}
     native_files.update({name: identity(data) for name, data in result.items()})
-    result["tools/verify_framework_provider_inputs.py"] = _native_checker(dict(sorted(native_files.items())))
+    result["tools/verify_framework_provider_inputs.py"] = _native_checker(dict(sorted(native_files.items())),
+                                                                        _native_outputs(contract))
     result["Android.bp"] = _bp(contract, native_files)
     packages = [row["module"] for row in contract["files"] if "module" in row]
     product = ["# Explicitly admitted private Nezha provider bundle.",
@@ -475,6 +586,7 @@ def _manifest(contract, raw, files):
             "factory_image": contract["factory_image"], "source_lock": contract["source_lock"],
             "files": [{"path": name, **identity(data)} for name, data in sorted(files.items())],
             "native_check_target": CHECK,
+            "native_output_recipe": contract["native_output_recipe"],
             "packages": [row["module"] for row in contract["files"] if "module" in row],
             "providers": contract["providers"], "scope": SCOPE, "readback_verified": True}
 

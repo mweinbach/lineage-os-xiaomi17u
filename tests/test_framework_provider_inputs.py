@@ -74,6 +74,7 @@ class FrameworkProviderInputsTests(unittest.TestCase):
             "captures": {}, "files": [], "providers": [],
             "source_dependencies": {"libc.so": "libc"}, "source_replacements": [],
             "required_source_patches": [], "runtime_requirements": ["Runtime is not tested."],
+            "native_output_recipe": copy.deepcopy(provider.NATIVE_OUTPUT_RECIPE),
             "scope": copy.deepcopy(provider.SCOPE),
         }
         (self.workspace / "config/source-lock.json").write_bytes(b"synthetic source lock\n")
@@ -157,7 +158,8 @@ class FrameworkProviderInputsTests(unittest.TestCase):
         namespace = {"__name__": "offline_test"}
         raw = (root / "tools/verify_framework_provider_inputs.py").read_bytes()
         exec(compile(raw, "generated_provider_checker", "exec"), namespace)
-        arguments = [str(root / name) for name in namespace["EXPECTED"]]
+        arguments = ["--output-dir", str(self.root / "native-output"),
+                     *[str(root / name) for name in namespace["EXPECTED"]]]
         return namespace["main"], arguments
 
     def test_stage_verifies_originals_private_modes_and_native_definitions(self):
@@ -218,6 +220,25 @@ class FrameworkProviderInputsTests(unittest.TestCase):
         self.assertNotIn("//vendor:__subpackages__", private_bp)
         self.assertNotIn('srcs: ["proprietary', device_bp)
         self.assertIn('soong_namespace { imports: ["' + provider.BUNDLE + '"] }', device_bp)
+
+    def test_native_filegroups_require_tagged_verified_payload_outputs(self):
+        self.stage()
+        blueprint = (self.output / "Android.bp").read_text()
+        for row in self.contract["files"]:
+            source = ":" + provider.CHECK + "{verified" + row["runtime_path"] + "}"
+            self.assertIn('srcs: [' + json.dumps(source) + ']', blueprint)
+        self.assertEqual(blueprint.count('srcs: [":' + provider.CHECK + "{verified/"), 9)
+        self.assertNotIn('srcs: ["proprietary', blueprint)
+        self.assertNotIn('srcs: [":' + provider.CHECK + '"]', blueprint)
+        self.assertIn("--output-dir $(genDir) $(in)", blueprint)
+        self.assertNotIn("> $(out)", blueprint)
+        self.assertIn('visibility: [":__pkg__", "//' + provider.MODULE_PACKAGE + ':__pkg__",', blueprint)
+        self.assertIn('"//vendor/xiaomi/nezha-policy:__pkg__"],', blueprint)
+
+    def test_raw_consumer_recipe_is_rejected(self):
+        self.contract["native_output_recipe"]["consumer_inputs"] = "raw_private_inputs"
+        self.write_contract()
+        self.reject()
 
     def test_fresh_relocated_capture_is_accepted_without_rewriting_metadata(self):
         relocated = self.root / "relocated"
@@ -431,12 +452,23 @@ class FrameworkProviderInputsTests(unittest.TestCase):
         with contextlib.redirect_stdout(output):
             checker(arguments)
         result = json.loads(output.getvalue())
-        self.assertEqual(result, {"verified": True, "input_count": 12, "firmware_executed": False})
+        self.assertEqual(result, {"verified": True, "input_count": 12, "payload_count": 9,
+                                  "firmware_executed": False})
+        output_root = self.root / "native-output"
+        result = json.loads((output_root / "framework-provider-inputs-checked.json").read_text())
+        self.assertEqual(result["payload_count"], 9)
+        self.assertEqual(result["input_count"], 12)
+        self.assertEqual(len(result["outputs"]), 9)
+        for row in self.contract["files"]:
+            path = output_root / ("verified" + row["runtime_path"])
+            self.assertEqual(provider.identity(path.read_bytes()), provider._expected(row))
+            self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o600)
+        self.assertEqual(len([path for path in output_root.rglob("*") if path.is_file()]), 10)
 
     def test_native_checker_rejects_missing_duplicate_and_unknown_inputs(self):
         self.stage()
         checker, arguments = self.native_checker()
-        cases = [arguments[:-1], arguments[:-1] + [arguments[0]],
+        cases = [arguments[:-1], arguments[:-1] + [arguments[2]],
                  arguments[:-1] + [str(self.root / "unknown")]]
         for case in cases:
             with self.subTest(arguments=case):
@@ -449,6 +481,7 @@ class FrameworkProviderInputsTests(unittest.TestCase):
         raw = path.read_bytes()
         path.write_bytes(raw[:-1] + b"X")
         self.reject(lambda: checker(arguments))
+        self.assertFalse((self.root / "native-output").exists())
 
     def test_native_checker_rejects_matching_symlink(self):
         self.stage()
@@ -458,6 +491,115 @@ class FrameworkProviderInputsTests(unittest.TestCase):
         path.rename(target)
         path.symlink_to(target)
         self.reject(lambda: checker(arguments))
+
+    def test_native_producer_checks_final_control_before_any_payload_write(self):
+        self.stage()
+        checker, arguments = self.native_checker()
+        path = Path(arguments[-1])
+        raw = path.read_bytes()
+        path.write_bytes(raw[:-1] + b"X")
+        self.reject(lambda: checker(arguments))
+        self.assertFalse((self.root / "native-output").exists())
+
+    def test_native_producer_accepts_sbox_precreated_empty_output_directories(self):
+        self.stage()
+        output = self.root / "native-output"
+        for row in self.contract["files"]:
+            (output / ("verified" + row["runtime_path"])).parent.mkdir(parents=True, exist_ok=True)
+        checker, arguments = self.native_checker()
+        with contextlib.redirect_stdout(io.StringIO()):
+            checker(arguments)
+        self.assertTrue((output / "framework-provider-inputs-checked.json").is_file())
+
+    def test_native_producer_refuses_preexisting_output_files(self):
+        self.stage()
+        output = self.root / "native-output"
+        existing = output / "verified/system_ext/bin/alpha"
+        existing.parent.mkdir(parents=True)
+        existing.write_bytes(b"preserve this existing output")
+        checker, arguments = self.native_checker()
+        self.reject(lambda: checker(arguments))
+        self.assertEqual(existing.read_bytes(), b"preserve this existing output")
+        self.assertFalse((output / "framework-provider-inputs-checked.json").exists())
+
+    def test_native_producer_refuses_unknown_directory(self):
+        self.stage()
+        output = self.root / "native-output"
+        (output / "unreviewed").mkdir(parents=True)
+        checker, arguments = self.native_checker()
+        self.reject(lambda: checker(arguments))
+
+    def test_native_producer_refuses_symlink_output_directory(self):
+        self.stage()
+        output = self.root / "native-output"
+        output.mkdir()
+        (output / "verified").symlink_to(self.root, target_is_directory=True)
+        checker, arguments = self.native_checker()
+        self.reject(lambda: checker(arguments))
+        self.assertFalse((self.root / "system_ext").exists())
+
+    def test_native_producer_cleans_partial_publication_on_write_error(self):
+        self.stage()
+        checker, arguments = self.native_checker()
+        original_link = os.link
+        count = 0
+
+        def fail_third_link(*args, **kwargs):
+            nonlocal count
+            count += 1
+            if count == 3:
+                raise OSError("simulated full filesystem")
+            return original_link(*args, **kwargs)
+
+        with mock.patch("os.link", side_effect=fail_third_link):
+            self.reject(lambda: checker(arguments))
+        self.assertEqual([path for path in (self.root / "native-output").rglob("*") if path.is_file()], [])
+
+    def test_native_producer_rechecks_sources_before_publishing_success(self):
+        self.stage()
+        checker, arguments = self.native_checker()
+        original_link = os.link
+        changed = False
+        source = Path(arguments[-1])
+
+        def mutate_after_verified_copy(*args, **kwargs):
+            nonlocal changed
+            result = original_link(*args, **kwargs)
+            if not changed:
+                raw = source.read_bytes()
+                source.write_bytes(raw[:-1] + b"X")
+                changed = True
+            return result
+
+        with mock.patch("os.link", side_effect=mutate_after_verified_copy):
+            self.reject(lambda: checker(arguments))
+        self.assertEqual([path for path in (self.root / "native-output").rglob("*") if path.is_file()], [])
+
+    def test_native_cleanup_failure_rolls_back_all_declared_outputs(self):
+        self.stage()
+        checker, arguments = self.native_checker()
+        with mock.patch("shutil.rmtree", side_effect=OSError("simulated staging cleanup failure")):
+            self.reject(lambda: checker(arguments))
+        output = self.root / "native-output"
+        for row in self.contract["files"]:
+            self.assertFalse((output / ("verified" + row["runtime_path"])).exists())
+        self.assertFalse((output / "framework-provider-inputs-checked.json").exists())
+
+    def test_native_publication_does_not_need_a_fallible_post_link_lstat(self):
+        self.stage()
+        checker, arguments = self.native_checker()
+        target = self.root / "native-output/verified/system_ext/bin/alpha"
+        original_lstat = Path.lstat
+
+        def refuse_post_link_lstat(path, *args, **kwargs):
+            if path == target and path.exists():
+                raise OSError("simulated target lstat failure after link")
+            return original_lstat(path, *args, **kwargs)
+
+        with mock.patch.object(Path, "lstat", new=refuse_post_link_lstat):
+            with contextlib.redirect_stdout(io.StringIO()):
+                checker(arguments)
+        self.assertTrue((self.root / "native-output/framework-provider-inputs-checked.json").is_file())
 
     def test_repository_contract_validates_without_private_inputs(self):
         with mock.patch.object(provider, "ROOT", WORKSPACE):

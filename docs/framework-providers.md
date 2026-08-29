@@ -53,7 +53,8 @@ Staging generates private `vendor/xiaomi/nezha-framework-providers` content and
 a separate `framework-providers.Android.bp`. Explicit device admission copies
 only that verified generated Blueprint to
 `device/xiaomi/nezha/framework-providers/Android.bp`. The proprietary bytes stay
-in the vendor bundle; filegroups expose them only to that exact device package.
+in the vendor bundle. Filegroups expose only the verification producer's
+generated payloads to that exact device package; they do not expose raw inputs.
 The generated device namespace imports the private input namespace. Original
 installation names remain unchanged through `stem`/`filename` and
 `system_ext_specific` properties. The native definitions use:
@@ -65,8 +66,31 @@ installation names remain unchanged through `stem`/`filename` and
   declaration or generic ELF/VINTF `PRODUCT_COPY_FILES` entry is introduced.
 - `prebuilt_etc` for the original `wfdconfigsink.xml`.
 - `nezha_framework_provider_inputs_check`, required by every installed module.
-  This native genrule verifies exact hashes and sizes for all selected firmware,
-  the contract and capture receipts using a generated standalone Python tool.
+  This native genrule verifies exact hashes and sizes for all 42 selected
+  firmware/control inputs using a generated standalone Python tool, then emits
+  31 payloads under `verified/system_ext/` plus its checked receipt. Every ELF,
+  init, VINTF and configuration consumer reads a specifically tagged payload
+  output. The direct data dependency remains even for image targets that do not
+  traverse a non-installable `required` check module.
+
+The producer holds the verified bytes, prepares and reads back all outputs,
+then publishes complete files exclusively and writes the success receipt last.
+It accepts only the expected empty output directories precreated by Soong's
+`sbox`; it refuses existing files, symlinks and unrelated entries. It removes
+its published files on caught errors. This matters because the pinned `sbox`
+can copy declared output files even after a command fails. An interrupted or
+failed native action is never counted as successful, regardless of leftover
+files. Original inputs are never hard-linked to output files or modified.
+
+The dependency chain is `raw inputs → verified-output genrule → tagged
+filegroups → native consumers`. The literal generated device Blueprint is a
+verification input, not a dependency on the consumer modules; the chain has no
+cycle. An actual generated Ninja graph still must confirm these producer and
+consumer edges after source admission. The contract's `native_output_recipe`
+rejects the earlier raw-input design.
+The producer is visible only inside its own package, to the exact device
+consumer package, and to the policy-input package that depends on its checked
+receipt. The Python verifier is private to its package.
 
 The [mDNS visibility patch](../patches/evolution/framework-provider-mdnssd-visibility.patch)
 adds only `//device/xiaomi/nezha/framework-providers:__pkg__` to `libmdnssd`'s

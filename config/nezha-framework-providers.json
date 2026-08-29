@@ -748,6 +748,13 @@
     }
   ],
   "module_package": "device/xiaomi/nezha/framework-providers",
+  "native_output_recipe": {
+    "all_inputs_checked_before_outputs": true,
+    "consumer_inputs": "verified_producer_outputs",
+    "payload_output_prefix": "verified",
+    "producer": "nezha_framework_provider_inputs_check",
+    "receipt_output": "framework-provider-inputs-checked.json"
+  },
   "platform": {
     "board_api": "202504",
     "branch": "bka",

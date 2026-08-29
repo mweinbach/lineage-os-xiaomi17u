@@ -271,6 +271,32 @@ class NativeGuardTests(unittest.TestCase):
         self.assertTrue(fp.native_form_allowed(forms[0], contract))
         self.assertFalse(fp.native_form_allowed(vp.parse(f"(allow {SIGMA} su (binder (call)))".encode())[0], contract))
 
+    def test_nonprovider_literals_must_remain_concrete_types_not_aliases_or_attributes(self):
+        for name in ("init", "servicemanager", "audioserver", "surfaceflinger",
+                     "audioserver_service", "surfaceflinger_service"):
+            for replacement in (f"(typealias {name})(typealiasactual {name} su)",
+                                f"(typeattribute {name})(typeattributeset {name} (su))"):
+                corpus, contract = native_fixture()
+                key = "/system/etc/selinux/plat_sepolicy.cil"
+                corpus[key] = corpus[key].replace(f"(type {name})".encode(), replacement.encode())
+                with self.subTest(name=name, replacement=replacement), self.assertRaisesRegex(
+                        fp.FrameworkProviderPolicyError, "concrete singleton"):
+                    native_check(corpus, contract)
+
+    def test_a_concrete_process_endpoint_cannot_lose_its_domain_membership(self):
+        corpus, contract = native_fixture()
+        key = "/system/etc/selinux/plat_sepolicy.cil"
+        corpus[key] = corpus[key].replace(b"(typeattributeset domain (init ", b"(typeattributeset domain (")
+        with self.assertRaisesRegex(fp.FrameworkProviderPolicyError, "process endpoint"):
+            native_check(corpus, contract)
+
+    def test_native_receipt_identifies_all_reviewed_literal_endpoints(self):
+        result = native_check(*native_fixture())
+        identity = result["literal_endpoint_identity"]
+        self.assertEqual(identity["process_domains"],
+                         ["audioserver", "init", "servicemanager", "surfaceflinger", QCC, SIGMA])
+        self.assertEqual(len(identity["concrete_singleton_types"]), 14)
+
 
 class ContextGuardTests(unittest.TestCase):
     def contexts(self):

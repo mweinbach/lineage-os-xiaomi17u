@@ -721,7 +721,7 @@
     },
     "provider_inputs": {
       "path": "config/nezha-framework-providers.json",
-      "sha256": "8a1ff42abbdf26135b1ac9a93568e08d0b1991d5a0afac45039e4c89f8fa514e"
+      "sha256": "467667d20399469d0b5621a4a7891e896ce6c3f785830ee0ad0dd17a06b8c45f"
     }
   },
   "runtime_limits": [

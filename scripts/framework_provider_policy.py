@@ -23,7 +23,7 @@ else:
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = "config/nezha-framework-provider-policy.json"
-CONTRACT_SHA256 = "0029d43cd833f154b024cc0a874964b13aa1b46c2d984a9086c3066d8b60bf42"
+CONTRACT_SHA256 = "6515395854a7cdc08f2d9c9ed5f7119164a9c0376ca8710a152ffb1999dc52f8"
 EXT_RUNTIME = "/system_ext/etc/selinux/system_ext_sepolicy.cil"
 EXT_MAPPING = "/system_ext/etc/selinux/mapping/202504.cil"
 CONTROLLED_HEADS = frozenset({"allow", "auditallow", "dontaudit", "allowx", "typetransition"})
@@ -158,6 +158,28 @@ def native_form_allowed(form, contract):
     return normalized_form(form.expr) in expected_native_forms(contract)
 
 
+def _literal_endpoint_identity(policy, expected_forms):
+    """The reviewed names must denote their concrete types, not retargetable sets."""
+    names, processes = set(), set()
+    for expr in expected_forms:
+        if expr[0] == "typetransition":
+            names.update((expr[1], expr[2], expr[4]))
+            processes.update((expr[1], expr[4]))
+        else:
+            names.update((expr[1], expr[2]))
+            processes.add(expr[1])
+            if expr[3][0] in {"binder", "fd", "process"}:
+                processes.add(expr[2])
+    for name in names:
+        require(isinstance(name, str) and name in policy.types
+                and name not in policy.aliases and name not in policy.attrs
+                and policy.resolve(name) == {name},
+                "provider literal endpoint is not its concrete singleton type")
+    require(processes <= policy.resolve("domain"),
+            "provider process endpoint is not a concrete process domain")
+    return {"concrete_singleton_types": sorted(names), "process_domains": sorted(processes)}
+
+
 def _endpoint(policy, expr, source=None):
     if expr == "self":
         require(source is not None, "self cannot be a provider source endpoint")
@@ -226,6 +248,8 @@ def check_native_extension(policy, parsed, contract):
                     "private provider symbol is referenced outside its system_ext source owner")
     require(not any(policy.resolve(alias) & provider_types for alias in policy.aliases),
             "private provider type acquired an unreviewed alias")
+    expected = expected_native_forms(contract)
+    endpoint_identity = _literal_endpoint_identity(policy, expected)
     roles = policy.role_bindings()
     domains, core_domains = policy.resolve("domain"), policy.resolve("coredomain")
     observed = {}
@@ -256,12 +280,12 @@ def check_native_extension(policy, parsed, contract):
     forms = [form for form in ext_forms if form.expr[0] in CONTROLLED_HEADS
              and _references_provider(form, policy, provider_types)]
     actual = Counter(normalized_form(form.expr) for form in forms)
-    expected = expected_native_forms(contract)
     require(actual == expected, "native provider permission/transition budget differs")
     assertions = _registration_assertions(policy, ext_forms, contract)
     return {"schema_version": 1, "operation": "check-nezha-framework-provider-policy-extension",
             "status": "verified", "contract_id": contract["contract_id"],
             "contract_sha256": CONTRACT_SHA256, "type_ownership": observed,
+            "literal_endpoint_identity": endpoint_identity,
             "source_allow_clauses": len(contract["native_policy_budget"]["allows"]),
             "source_dontaudit_clauses": len(contract["native_policy_budget"]["dontaudits"]),
             "source_type_transitions": len(contract["native_policy_budget"]["type_transitions"]),
