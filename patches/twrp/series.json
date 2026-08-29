@@ -1891,6 +1891,57 @@
         "Existing debug/eng recovery declarations are intentionally retained; this does not establish a secure or working device runtime.",
         "No global SELinux enforcement switch, allow or neverallow rule, permissive-domain allowlist, validator, signing rule or target identity is changed."
       ]
+    },
+    {
+      "id": "0033-create-recovery-linkerconfig-directory",
+      "project": "build/make",
+      "repository": "https://github.com/TWRP-Test/android_build",
+      "base_commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121",
+      "patch": "patches/twrp/0033-create-recovery-linkerconfig-directory.patch",
+      "patch_sha256": "85939f746a65497e152b79d59fe24bf28a28f2b0207a87f446404f4746a44986",
+      "reason": "Normal build60 failed ramdisk_files-timestamp because the original recovery recipe touched linkerconfig/ld.config.txt when its parent directory did not exist. Add mkdir -p for that parent immediately before the existing touch. Preserve the original first_stage_console placeholder purpose, existing config bytes and touch semantics, runtime init copy/chmod commands, recipe sequencing and all artifact, SELinux, signing and source checks. This creates no new config contents or provider and does not claim a working runtime linker namespace.",
+      "files": [
+        {
+          "path": "core/Makefile",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_build/blob/3b5b2b43b8e2200ef92b7b814a84c8dde8b74121/core/Makefile",
+          "before_sha256": "619ebc4a0abc3190e84565fea9721b6c4864cafdbee43cc1761d826a5a5a2297",
+          "after_sha256": "b7ce1d382209101e2951193e60f456d281bcd485cfd69a0048296f4f292b3dc7",
+          "before_git_blob": "a997efabf54e268c956585924d4c0588d67dc1e2",
+          "after_git_blob": "e09041ca031c437f03d2fb7dea753869218288a6",
+          "before_size_bytes": 377838,
+          "after_size_bytes": 377889
+        }
+      ],
+      "placeholder_contract": {
+        "target": "INTERNAL_RECOVERY_RAMDISK_FILES_TIMESTAMP",
+        "parent": "$(TARGET_RECOVERY_ROOT_OUT)/linkerconfig",
+        "placeholder": "$(TARGET_RECOVERY_ROOT_OUT)/linkerconfig/ld.config.txt",
+        "added_recipe_line": "\tmkdir -p $(TARGET_RECOVERY_ROOT_OUT)/linkerconfig\n",
+        "unchanged_touch_line": "\ttouch $(TARGET_RECOVERY_ROOT_OUT)/linkerconfig/ld.config.txt\n",
+        "unchanged_upstream_comment": "\t# Silence warnings in first_stage_console.\n",
+        "existing_file_contents_preserved": true,
+        "existing_file_and_directory_modes_preserved": true,
+        "explicit_chmod_or_chown_added": false,
+        "new_config_contents_or_provider": false,
+        "runtime_init": {
+          "project": "bootable/recovery",
+          "commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+          "path": "etc/init.rc",
+          "before_sha256": "29d50cc909060f5a3bd1b649eb95cff98997ddda14c7cc814bd7131791a5d274",
+          "current_after_existing_patch0002_sha256": "76f57d9baa75bfaea68f4676467958dd3682ad2c7f2e0ee1810c42b98a639a6f",
+          "unchanged_commands": [
+            "    copy /system/etc/ld.config.txt /linkerconfig/ld.config.txt",
+            "    chmod 444 /linkerconfig/ld.config.txt"
+          ]
+        }
+      },
+      "limits": [
+        "Offline temporary-directory fixtures model mkdir and touch semantics; they do not run Make, Ninja, a native compiler or the device.",
+        "Only the missing output parent is created by the source recipe. The existing touch still creates an empty placeholder only when absent and does not truncate an existing config.",
+        "No explicit permission change, config generation, provider substitution, linker-namespace claim, validator waiver, signing change or target identity change is introduced.",
+        "The next normal recovery build and the unchanged image, ramdisk, SELinux and signature validations remain required; no image or runtime success is claimed."
+      ]
     }
   ],
   "application_requirements": [

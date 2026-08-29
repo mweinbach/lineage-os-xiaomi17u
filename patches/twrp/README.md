@@ -217,6 +217,15 @@ unchanged. No broad permissions or permissive-domain exceptions are added.
 The next actual user build must produce an empty permissive-domain list;
 source-level tests do not establish a bootable or working recovery.
 
+Patch 33 fixes the ramdisk recipe failure observed in normal build 60. It adds
+one `mkdir -p` for the recovery `linkerconfig` directory immediately before the
+existing `touch` of `ld.config.txt`. A clean output tree can then create the
+original placeholder; an existing file retains its contents and permissions.
+The runtime init commands that copy the real linker configuration and set its
+permissions are unchanged. This does not generate a replacement configuration
+or establish that the runtime linker namespace works. The actual packaging,
+image and signature checks still have to pass.
+
 The normal AOSP init enforcement selection is retained. At the selected source
 revision it permits a permissive boot property only for a debuggable build;
 there is no unconditional TWRP `security_setenforce(0)` in the inspected init
