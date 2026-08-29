@@ -12,6 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
+| [Native ROM integration](native-rom-integration.md) | Verified v12e source/input installation, failed first native build, current mi_ext blocker and separate provider, metadata, EROFS and signing milestones |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
@@ -21,6 +22,8 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
 | [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |
 | [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
+| [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
+| [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 
@@ -60,9 +63,10 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Nezha integration plan](nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
-| [DEX runtime provider](dex-import-uses-library.md) | Tested strict Soong patch for DEX shared libraries; guest integration still pending |
+| [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch for DEX shared libraries; v12e installation and pending native rebuild tracked in current status |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
+| [Framework-provider source admission](framework-provider-source-admission.md) | Reproducible host v13 candidate, private policy and verified payload consumers; not installed in the v12e checkpoint |
 | [OEM property contract](../config/nezha-oem-properties.json) | Optional four-property source and permission budget; native validation separate from v11b |
 | [Framework-provider policy contract](../config/nezha-framework-provider-policy.json) | Bounded enforcing source for the two selected providers; no implied native or hardware pass |
 | [EROFS metadata inventory](../tools/erofs-metadata/README.md) | Read-only complete metadata evidence required before a policy-image derivation |
