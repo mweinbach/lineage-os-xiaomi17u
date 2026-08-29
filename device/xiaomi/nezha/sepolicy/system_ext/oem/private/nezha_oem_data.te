@@ -1,0 +1,5 @@
+# The factory system_ext policy owns this concrete /data/local/log label;
+# factory product policy also contributed its core_data_file_type membership.
+# Keep the existing vendor label and restore its framework-data classification.
+# This private type intentionally has no new public versioned mapping.
+type offlinelog_file, file_type, data_file_type, core_data_file_type;

@@ -1,0 +1,7 @@
+# Restore only the two factory system_ext public service-object identities
+# still named by the retained vendor context files. The normal Android public
+# policy producer supplies their 202504 mappings and object_r role bindings.
+# coredomain_hwservice describes this service object, not a coredomain process.
+# Provider registration and runtime support remain separate integration work.
+type vendor_hal_atfwd_hwservice, hwservice_manager_type, protected_hwservice, coredomain_hwservice;
+type vendor_hal_systemhelper_aidl_service, service_manager_type, protected_service, hal_service_type;
