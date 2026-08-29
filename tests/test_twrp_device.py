@@ -15,6 +15,7 @@ USERDEBUG_ADB_PROPERTY_BLOCK = (
 )
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
 RECOVERY_PACKAGES = "recovery adbd.recovery cgroups.recovery.json task_profiles.json.recovery"
+RECOVERY_PACKAGES += " linker.recovery ld.config.recovery.txt nezha_recovery_bootstrap_linker64"
 RECOVERY_SOURCE_RULES_SHA256 = "dd1778493980e7a93a254483395d1e1059070ed60685932ab2ac74d5b3cea61e"
 GRAPH47_NON_SOURCE_ASSIGNMENTS_SHA256 = "204fa965fd8b30c3984094399eb1c4d9002e08908f848f4bc44644f326cf59e0"
 GRAPH47_CELLBROADCAST_RULES_SHA256 = "1eebbd89b0b17e2ce7066337d1669c375aaa3c022178d578b7b6b5eeb1461c8e"
@@ -433,8 +434,10 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_recovery_packages_add_only_original_adbd_and_scheduling_inputs(self):
         packages = self.device["PRODUCT_PACKAGES"].split()
-        self.assertEqual(packages, ["recovery", "adbd.recovery", "cgroups.recovery.json",
-                                    "task_profiles.json.recovery"])
+        # Preserve the original daemon/scheduling prefix after adding loaders.
+        self.assertEqual(packages[:4], ["recovery", "adbd.recovery", "cgroups.recovery.json",
+                                       "task_profiles.json.recovery"])
+        self.assertEqual(packages, RECOVERY_PACKAGES.split())
         self.assertEqual(len(packages), len(set(packages)))
         for invalid in ("adbd", "adbd.recovery.recovery", "cgroups.json",
                         "cgroups.recovery.json.recovery", "task_profiles.json",
@@ -532,6 +535,53 @@ class TwrpDeviceTests(unittest.TestCase):
                         "TW_OVERRIDE_SYSTEM_PROPS", "TW_PREPARE_DATA_MEDIA_EARLY"):
             self.assertNotEqual((self.board | self.device).get(setting), "true", setting)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
+
+    def test_recovery_loader_packages_select_original_recovery_providers(self):
+        self.assertEqual(self.device["PRODUCT_PACKAGES"].split()[4:], [
+            "linker.recovery", "ld.config.recovery.txt", "nezha_recovery_bootstrap_linker64"])
+        for unwanted in ("linker", "linkerconfig", "linkerconfig.recovery", "ld.config.txt",
+                         "linker.recovery.recovery", "init.environ.rc"):
+            self.assertNotIn(unwanted, self.device["PRODUCT_PACKAGES"].split())
+        scopes = self.device["PRODUCT_SOURCE_ROOT_DIRS"].split()
+        for source in ("bionic/linker/Android.bp", "system/linkerconfig/Android.bp",
+                       "device/xiaomi/nezha/Android.bp"):
+            self.assertTrue(source_path_allowed(source, scopes), source)
+        self.assertNotIn("BOARD_ROOT_EXTRA_SYMLINKS", self.board)
+        self.assertNotIn("BOARD_ROOT_EXTRA_FOLDERS", self.board)
+
+    def test_recovery_bootstrap_alias_is_a_real_recovery_install_with_required_loader(self):
+        expected = '''package {
+            default_applicable_licenses: ["Android-Apache-2.0"],
+        }
+        install_symlink {
+            name: "nezha_recovery_bootstrap_linker64",
+            recovery: true,
+            installed_location: "bin/bootstrap/linker64",
+            symlink_target: "/system/bin/linker64",
+            required: ["linker.recovery"],
+        }'''
+        source = re.sub(r"(?m)//.*$", "", (DEVICE / "Android.bp").read_text())
+        self.assertEqual(" ".join(source.split()), " ".join(expected.split()))
+        self.assertFalse((DEVICE / "Android.mk").exists())
+
+    def test_recovery_loader_selection_does_not_add_manual_copy_or_guard_exceptions(self):
+        active = "\n".join(logical_lines(self.board_text + self.device_text))
+        copies = self.device.get("PRODUCT_COPY_FILES", "")
+        for marker in ("linker64", "ld.config", "bootstrap"):
+            self.assertNotIn(marker, copies)
+        for marker in ("LD_CONFIG_FILE", "LOCAL_POST_INSTALL_CMD", "BUILD_BROKEN_PREBUILT_ELF_FILES",
+                       "PRODUCT_ENFORCE_PACKAGES_EXIST_ALLOW_LIST"):
+            self.assertNotIn(marker, active)
+        self.assertEqual(self.board["TARGET_ARCH"], "arm64")
+        self.assertEqual(self.board["TW_EXCLUDE_APEX"], "true")
+
+    def test_recovery_loader_documentation_preserves_validation_limits(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("44 unresolved ELF interpreters", "`linker.recovery`", "`ld.config.recovery.txt`",
+                     "`generate_recovery_linker_config`", "`install_symlink`", "`recovery: true`",
+                     "`EEXIST`", "continues to the next command", "does not retry the system config",
+                     "nonempty generated config", "This change authorizes no device operation"):
+            self.assertIn(fact, readme)
 
     def test_disabled_omapi_is_exported_as_boolean_after_vendor_configuration(self):
         lines = list(logical_lines(self.board_text))
@@ -1637,6 +1687,9 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertIn(USERDEBUG_ADB_PROPERTY_BLOCK, self.device_text)
         self.assertEqual(unchanged["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"], "ro.adb.secure=1")
         unchanged["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"] = "ro.secure=1 ro.adb.secure=1"
+        # Check the reviewed loader delta before projecting the historical hash.
+        self.assertEqual(unchanged["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
+        unchanged["PRODUCT_PACKAGES"] = "recovery adbd.recovery cgroups.recovery.json task_profiles.json.recovery"
         raw = json.dumps(unchanged, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), GRAPH47_NON_SOURCE_ASSIGNMENTS_SHA256)
 

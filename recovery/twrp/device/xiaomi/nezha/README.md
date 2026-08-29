@@ -1086,3 +1086,44 @@ The workspace's standard-library tests inspect the actual target files and
 their separation, image layout, policy, authentication and storage invariants.
 They do not run Android make/Soong, compile SELinux, load a module, or substitute
 for the separate recovery build and authorized hardware tests.
+
+
+The build62 artifact scan found 44 unresolved ELF interpreters: 42 binaries
+request `/system/bin/linker64`, while `e2fsck` and `hwservicemanager` request
+`/system/bin/bootstrap/linker64`. All 1,074 recorded library dependencies had
+unique archive providers, but that did not establish interpreter availability,
+namespace compatibility or runtime startup. Neither linker path was packaged.
+
+The target now explicitly selects the original `linker.recovery` and
+`ld.config.recovery.txt` modules that pinned `base_vendor.mk` normally selects.
+At bionic `99926c766ef7f121950611f047dba4769a25226c`, a separate recovery linker
+linked against static libraries is installed as `/system/bin/linker64`; the
+ordinary core linker and its APEX redirects are not selected. At linkerconfig
+`e6e748db0343684959fc49356f07e1793f96db85`, `generate_recovery_linker_config`
+runs the original host `linkerconfig --recovery` generator and installs its
+output as `/system/etc/ld.config.txt`. This uses the generated recovery section
+and `/system/${LIB}` search path, not a hand-written or empty substitute.
+The current generated Make declarations prove both module names and recovery
+install paths; they do not prove the revised outputs have been built.
+
+The target's `nezha_recovery_bootstrap_linker64` uses the standard Soong
+`install_symlink` module with `recovery: true` and an explicit dependency on
+`linker.recovery`. It packages `/system/bin/bootstrap/linker64` as an absolute
+symlink to `/system/bin/linker64`, matching the existing upstream recovery
+init command. It adds no second linker implementation, 32-bit alias, copied
+prebuilt, runtime APEX or post-build file mutation. The original init command
+remains unchanged: it will report `EEXIST` for the already present alias;
+pinned init logs that command failure and continues to the next command.
+This is not silent idempotence or evidence that init ran on the phone.
+
+The original early `/linkerconfig/ld.config.txt` placeholder also remains
+unchanged. Pinned bionic selects that existing empty file, fails to parse a
+configuration, and uses its native default namespace until init copies the
+newly packaged real `/system/etc/ld.config.txt` over the placeholder. It does
+not retry the system config after that parse failure. This describes source
+behavior, not runtime validation. The 202 source rules, existing 33 patches,
+ADB authentication, SELinux enforcement, AVB, ELF checks, and disabled storage,
+crypto and network features remain unchanged. A new normal build and archive
+inspection must prove the linker, nonempty generated config and alias are
+actually present; namespace, relocation and device startup tests remain
+separate gates. This change authorizes no device operation.

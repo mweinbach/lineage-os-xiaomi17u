@@ -26,6 +26,14 @@ PRODUCT_PACKAGES += \
     cgroups.recovery.json \
     task_profiles.json.recovery
 
+# The minimal product does not inherit base_vendor's recovery loader packages.
+# Use its original linker and generated recovery config, plus the bootstrap
+# alias needed by the two retained core binaries' existing PT_INTERP paths.
+PRODUCT_PACKAGES += \
+    linker.recovery \
+    ld.config.recovery.txt \
+    nezha_recovery_bootstrap_linker64
+
 # The minimal manifest retains these consumers without their parent defaults.
 # Exclude only subsystems outside this no-network/no-crypto recovery product.
 # Blueprint matches literal prefixes: the terminal slash prevents a similarly
