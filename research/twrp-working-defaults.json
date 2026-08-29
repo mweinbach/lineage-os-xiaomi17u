@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "operation": "working_recovery_defaults_derivative",
+  "scope": "Two text-file changes to the user-provided recovery that booted successfully; not a newly compiled runtime or a rewrite of earlier trial records.",
+  "baseline": {
+    "name": "provided75",
+    "image": {
+      "sha256": "56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323",
+      "size_bytes": 104857600
+    }
+  },
+  "derivative": {
+    "name": "working76",
+    "image": {
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600
+    },
+    "header_version": 4,
+    "kernel_size_bytes": 0,
+    "header_unchanged_except_ramdisk_size": true,
+    "compressed_ramdisk": {
+      "sha256": "7ab74eb99db06262376fd577b1fbb28a125f28828e925fba47af5eebfc885a35",
+      "size_bytes": 75416293
+    },
+    "cpio": {
+      "sha256": "fe554c9d531d0aac9a93467ec638a503bf1efd05666a8d89621a411cd57dba60",
+      "size_bytes": 174871000
+    },
+    "runtime_newly_compiled": false
+  },
+  "archive_changes": {
+    "entry_count": 4210,
+    "changed_text_files": {
+      "system/etc/init/hw/init.rc": {
+        "before_sha256": "5adbb3437d4966449b07ea314d537317dbda1f6c5fbc818f419a8029079bc3ae",
+        "after_sha256": "d10f0cecaaa83f9e7d44b98d0cbd6ed0e27f200142b85408ef69485d038f48fa"
+      },
+      "twres/ui.xml": {
+        "before_sha256": "58bb20b65214bf8313409bf34850a4103595d84f3cee9951d80ba9d013e0066d",
+        "after_sha256": "4579ec254db670483fb34889255a61ba6765d1d42ab75f6ef5532ba38d2c296a"
+      }
+    },
+    "unchanged_member_count": 4208,
+    "all_other_member_payloads_and_metadata_unchanged": true,
+    "runtime_binaries_drivers_firmware_policy_unchanged": true,
+    "patch_sha256": "ed70aa4b93404a298aad867b1ed96fecdd9be598ef3f906ed70f1753043b7939"
+  },
+  "avb": {
+    "algorithm": "SHA256_RSA4096",
+    "explicit_key_verification_passed": true,
+    "flags": 0,
+    "oem_trust_established": false,
+    "partition_name": "recovery",
+    "rollback_index": 1,
+    "rollback_index_location": 1
+  },
+  "static_validation": {
+    "constructed_at_utc": "2026-08-29T15:40:09.778701+00:00",
+    "construction_verified": true,
+    "construction_status_at_receipt": "built_and_verified_pending_hardware_test",
+    "construction_receipt": {
+      "size_bytes": 1871,
+      "sha256": "ce6cf315df03e9fb379d6b480e78384aeb566de9296e20fe39aeb7fdd4ce730f"
+    },
+    "construction_device_operations": [],
+    "previous_workspace_suite": {
+      "tests_passed": 2468,
+      "passed": true,
+      "scope": "offline_workspace_suite_before_this_record_and_hardware_trial",
+      "hardware_validation": false
+    },
+    "hardware_success_implied": false
+  },
+  "hardware_observation": {
+    "status": "installation_and_startup_defaults_verified_visual_touch_confirmation_pending",
+    "observed_at_utc": "2026-08-29T15:48:32.556344+00:00",
+    "recovery_a_flash_and_reboot_user_authorized": true,
+    "partition_written": "recovery_a",
+    "installation_verified": true,
+    "flash_returncode": 0,
+    "flash_timed_out": false,
+    "fastboot_reported_sending_seconds": 2.589,
+    "fastboot_reported_writing_seconds": 0.081,
+    "fastboot_reported_total_seconds": 2.695,
+    "reboot_target": "recovery",
+    "reboot_returncode": 0,
+    "reboot_timed_out": false,
+    "device": "nezha",
+    "slot_suffix": "_a",
+    "adb_uid": 0,
+    "twrp_version": "3.7.1_16-Xiaomi_17_Ultra",
+    "recovery_service": "running",
+    "sys_boot_completed": "1",
+    "recovery_adb_verified": true,
+    "global_getenforce": "Permissive",
+    "selinux_enforce_value": "0",
+    "vibration_values": {
+      "tw_action_vibrate": 0,
+      "tw_button_vibrate": 0,
+      "tw_keyboard_vibrate": 0
+    },
+    "installed_recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "installed_readback_matches_derivative": true,
+    "post_boot_mutating_commands_sent": [],
+    "startup_defaults_verified_without_post_boot_mutations": true,
+    "additional_reboot_persistence_tested": false,
+    "recovery_ui_verified": false,
+    "new_image_visual_confirmation": "pending",
+    "touch_latency_improvement_verified_on_derivative": false,
+    "new_image_touch_confirmation": "pending",
+    "data_decryption_tested": false,
+    "magisk_install_performed": false,
+    "other_partition_flash_command_sent": false,
+    "slot_change_command_sent": false,
+    "wipe_command_sent": false
+  },
+  "limitations": [
+    "This is a repack of provided75 with exactly two text-file changes. The unchanged prebuilt executables, drivers, firmware and policy do not constitute a new source build or verified source provenance.",
+    "The boot header is unchanged except for the ramdisk-size field. Development-key AVB verification passes with recovery rollback index 1, location 1 and flags 0; this is not an OEM signature or trust claim.",
+    "The first boot after flashing working76 verified root ADB, running recovery, the matching recovery_a readback, global Permissive and zero vibration defaults without post-boot mutations. Another persistence reboot and new-image visual/touch confirmation have not been completed.",
+    "The previous user report of much faster touch followed runtime tuning of provided75, not this working76 boot. Ordinary theme defaults can be overridden by saved settings. This record does not claim a driver change, kernel-level SELinux disable, normal Android modification, data decryption, Magisk installation or OEM trust."
+  ],
+  "defaults_changed": {
+    "system/etc/init/hw/init.rc": {
+      "action": "existing_early_init",
+      "write_target": "/sys/fs/selinux/enforce",
+      "write_value": "0",
+      "scope": "recovery_only"
+    },
+    "twres/ui.xml": {
+      "ordinary_theme_default_variables": {
+        "tw_action_vibrate": 0,
+        "tw_button_vibrate": 0,
+        "tw_keyboard_vibrate": 0
+      },
+      "saved_settings_may_override_defaults": true
+    },
+    "selinux_disabled_in_kernel": false,
+    "normal_android_changed": false
+  },
+  "hardware_evidence": {
+    "runtime_verification": {
+      "size_bytes": 2810,
+      "sha256": "1c2f3918cebe9adbc94cd3a98b27bf6855d713334d1f1375c906025925211054"
+    },
+    "flash_result": {
+      "size_bytes": 281,
+      "sha256": "41893a9e83ebbc38e136a8f9040e11d4b607a00c52d11f8be51dbc9ac2029330"
+    },
+    "recovery_reboot_result": {
+      "size_bytes": 216,
+      "sha256": "cf978eb1816958f507c78d5d4d20fe7e679561c39f0b9200159b1b3aacad58d4"
+    }
+  },
+  "prior_runtime_tuning_user_feedback": {
+    "image": "provided75",
+    "report": "oh yea way faster",
+    "confirms_working76_visual_or_touch_behavior": false
+  }
+}

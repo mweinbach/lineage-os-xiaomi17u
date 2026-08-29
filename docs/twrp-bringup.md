@@ -6,31 +6,44 @@ without requiring a complete Evolution X ROM first. A compiled recovery is
 not yet a tested rescue environment. Device actions require separate, explicit
 user authorization.
 
-**The user-supplied `fix22ZJ-touchfix18` image now boots on the phone.** It was
-installed unchanged to `recovery_a` after explicit authorization, and a readback
-of that partition matches SHA256
-`56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323`.
-The user confirmed the visible UI. Root ADB reports
-`3.7.1_16-Xiaomi_17_Ultra`, a running recovery service, and slot `a`; recovery
-and kernel logs were collected successfully. No other partition was flashed.
-The supplied image has an unsigned AVB footer with a mismatched descriptor
-hash; this was disclosed before the user approved installing that exact file.
+**The working-image derivative now boots from `recovery_a` with its tested
+defaults applied automatically.** The installed 100 MiB `working76/recovery.img`
+has SHA256 `a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e`;
+a readback of `recovery_a` matches. After reboot, without any runtime setting
+commands, root ADB reports `3.7.1_16-Xiaomi_17_Ultra`, a running recovery service,
+slot `a`, global `Permissive` SELinux, and zero for all three TWRP vibration
+settings. Fresh recovery and kernel logs were collected successfully. The new
+image's visible UI and touch responsiveness still await user confirmation.
 
-Initial touch responses took 5–10 seconds. Switching this recovery session to
-global permissive mode brought partial improvement. Disabling TWRP's action,
-button and keyboard vibration then made it much faster, as confirmed by the
-user. The input driver and working executables were not changed. These were
-runtime settings at this checkpoint; a separate configuration patch is being
-prepared to make them the defaults. The initial policy reported global
-`Enforcing` but had eight permissive domains, confirmed from the loaded policy.
-Data decryption and Magisk remain unverified/not performed. The separate
-[installation record](../research/twrp-installed-recovery.json) preserves the
-install, readback, runtime checks and both latency tests.
+The [configuration patch](../recovery/twrp-working/README.md) changes only
+`system/etc/init/hw/init.rc` and `twres/ui.xml`. All 4,208 remaining CPIO members
+retain their payload and metadata, including the working executables,
+libraries, touch setup, firmware and SELinux policy file. The kernel-free v4
+header is unchanged except for the ramdisk size. A fresh local development-key
+AVB footer passed signature and descriptor verification with flags zero,
+recovery rollback index 1 and location 1; this does not establish OEM trust.
+The [derived-image record](../research/twrp-working-defaults.json) separates
+assembly checks from the successful device test. No other partition was
+flashed, and no wipe or slot-change command was sent. Data decryption remains
+unverified; Magisk has not been installed.
 
-This working image is now the baseline for our recovery. Keep its init,
-libraries, touch setup and firmware, and carry only tested changes forward.
-This is an adaptation of supplied recovery binaries, not a claim of a fresh
-source build or verified source provenance for those binaries.
+The baseline is the user-supplied `fix22ZJ-touchfix18` image, SHA256
+`56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323`, preserved
+unchanged alongside the derivative. It first booted after an authorized flash
+to `recovery_a`, and the user confirmed its visible UI. Initial touch responses
+took 5–10 seconds. Global permissive mode brought partial improvement;
+disabling TWRP's action, button and keyboard vibration then made it much faster,
+as confirmed by the user. Those two tested changes are now the recovery
+defaults. Saved TWRP settings can override the vibration defaults; no saved
+settings file existed before this test.
+
+The supplied baseline had an unsigned AVB footer with a mismatched descriptor
+hash, disclosed before its installation. Its initial policy reported global
+`Enforcing` but contained eight permissive domains. The earlier
+[installation record](../research/twrp-installed-recovery.json) preserves those
+observations and both latency tests. This is an adaptation of supplied recovery
+binaries, not a claim of a fresh source build or verified source provenance for
+those binaries. Future changes should retain this device-tested baseline.
 
 The preceding attempt used the complete Nezha tree from
 [`antocorvo3000/twrp-xiaomi-17-series`](https://github.com/antocorvo3000/twrp-xiaomi-17-series/tree/4a35185d43782b4dd460a7f456d674c0976c0859/twrp_device_xiaomi_nezha),
@@ -49,8 +62,8 @@ mode. The upstream policy's permissive domains are therefore an intentional
 bring-up choice, not evidence of an enforcing recovery. Magisk is a possible
 later step; it has not been installed or used to patch the phone. Existing
 verified-boot, rollback, no-wipe and device-action authorization boundaries
-still apply. The historical checks below describe the earlier image, not this
-new upstream-based candidate.
+still apply. The historical checks below describe earlier experiments, not the
+installed working recovery.
 
 **Normal build 66 produced a recovery image that passed the complete static
 artifact sequence and the separate inventory check.** The 100 MiB image has
