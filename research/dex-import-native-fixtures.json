@@ -1,0 +1,249 @@
+{
+  "first_compilation": {
+    "build_actions": 9,
+    "cause": "Freshness harness inspected stdout only; pinned Ninja emitted the exact no-work message to stderr.",
+    "compiler_log": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-build-v1/build-test-binary.stdout",
+      "sha256": "686cda8f2d7ee9401d0794e211724f2e55abb5a97cc358e50c139e461d79912c",
+      "size_bytes": 21702
+    },
+    "completed_utc": "2026-08-29T22:54:45.316575+00:00",
+    "error": "ValueError: test binary still has scheduled build work",
+    "fixtures_executed": false,
+    "freshness_stderr": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-build-v1/binary-freshness.stderr",
+      "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794",
+      "size_bytes": 22
+    },
+    "harness_passed": false,
+    "normal_ninja_target_exit_code": 0,
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-build-v1/receipt.json",
+      "sha256": "1a37d9dae32ddc974d5d6e1436ec679868b1a78e9f5596b1c788ebb645c163b5",
+      "size_bytes": 9908
+    },
+    "started_utc": "2026-08-29T22:54:35.533798+00:00"
+  },
+  "historical_host_record": {
+    "path": "research/dex-import-uses-library.json",
+    "sha256": "c9a8d1aaa8064b8def1b1c2592259efeb259b9055e21a4d7f3c2851542a8766c",
+    "size_bytes": 18954
+  },
+  "native_binary": {
+    "bootstrap_ninja": {
+      "sha256": "d0fb981693e70e577d8979ff7a5ee6cb8f563463dd8d785fa08092bf5192a6e8",
+      "size_bytes": 3197517
+    },
+    "generated_test_main": {
+      "sha256": "00ab9b72e91461d4e4fb5faa07feb69290eedfba98cdec2597bc604301f4a3e6",
+      "size_bytes": 26393
+    },
+    "sha256": "637cb8a350be37a91f890ef3d5cad41d217700a03d768d39835b84179f17549b",
+    "size_bytes": 40984727,
+    "target": "out-nezha-user-policy-20260827T2220Z/host/linux-x86/bin/go/soong-java/test/test"
+  },
+  "native_fixture_execution": {
+    "completed_utc": "2026-08-29T22:57:13.184580+00:00",
+    "failed_events": 0,
+    "full_java_suite_run": false,
+    "full_suite_stamp_before": null,
+    "full_suite_stamp_written": false,
+    "json_event_log": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-run-v2/fixtures.stdout",
+      "sha256": "b0a0c41e5009664d45650c0f0455edb75c3bbcef939bee7f0abd6bc8c47d34b7",
+      "size_bytes": 15960
+    },
+    "nested_generated_class_loader_context_verified": true,
+    "passed": true,
+    "passing_test_and_subtest_events": 16,
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-run-v2/receipt.json",
+      "sha256": "a618a397fee3fb0fc723f72f5bebdd96bf886613ccfd6f1b6739ce66038a7fe6",
+      "size_bytes": 13286
+    },
+    "short_mode_used": false,
+    "skipped_events": 0,
+    "started_utc": "2026-08-29T22:57:08.394543+00:00",
+    "strict_generated_manifest_rule_verified": true,
+    "subtests": 11,
+    "test_count": 1,
+    "test_filter": "^TestDexImportUsesLibrary",
+    "test_list": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-run-v2/test-list.stdout",
+      "sha256": "7ab5eb0e9972ac937a3804cb8f6059388cbc6766f2351b53f4d39e8faa62e31b",
+      "size_bytes": 212
+    },
+    "test_names": [
+      "TestDexImportUsesLibraryDependencyCycle",
+      "TestDexImportUsesLibraryInvalidDependency",
+      "TestDexImportUsesLibraryInvalidDependency/class_only",
+      "TestDexImportUsesLibraryInvalidDependency/missing_required",
+      "TestDexImportUsesLibraryInvalidDependency/not_java",
+      "TestDexImportUsesLibraryInvalidDependency/sdk_stubs_only",
+      "TestDexImportUsesLibraryNamespaceAndNestedContexts",
+      "TestDexImportUsesLibraryProvider",
+      "TestDexImportUsesLibraryProvider/default",
+      "TestDexImportUsesLibraryProvider/stem",
+      "TestDexImportUsesLibraryProvider/system_ext",
+      "TestDexImportUsesLibraryUnsupportedProperties",
+      "TestDexImportUsesLibraryUnsupportedProperties/enforce_uses_libs",
+      "TestDexImportUsesLibraryUnsupportedProperties/exclude_uses_libs",
+      "TestDexImportUsesLibraryUnsupportedProperties/optional_uses_libs",
+      "TestDexImportUsesLibraryUnsupportedProperties/provides_uses_lib"
+    ],
+    "top_level_tests": 5
+  },
+  "observed_utc": "2026-08-29T22:57:13.184580+00:00",
+  "orchestration": {
+    "path": "artifacts/build-validation/nezha-dex-fixtures-controls-v2/orchestration.json",
+    "sha256": "73e427765804b1c46cc734f89095fcbf0432358c1fab544766b17ca8b83760dd",
+    "size_bytes": 4546
+  },
+  "private_capture_manifests": [
+    {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-run-v2/capture.json",
+      "sha256": "52c2fcea4cd304e0af936ff2564ceccdabd641d6d8f4a4ac834de69bc0c98daf",
+      "size_bytes": 1216
+    },
+    {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-controls-v2/capture.json",
+      "sha256": "6ba6eb32268a701abfd1cc20d4cafdaaa745d1994d2424db2ba49f8473966190",
+      "size_bytes": 1211
+    },
+    {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-build-v1/capture.json",
+      "sha256": "cfb0fc2f69af41edec6a30d305052fe76fbbec6cdb61727ae088eac610becb7f",
+      "size_bytes": 1888
+    }
+  ],
+  "purpose": "Record actual pinned Linux compilation and execution of the synthetic DEX uses-library Soong fixtures, separately from Camera artifacts and hardware.",
+  "runner": {
+    "path": "artifacts/build-validation/nezha-dex-fixtures-controls-v2/native.py",
+    "sha256": "d197835d952a099a90956a6ad38e972b45c2dad211708d74c9f2d07f1030c9c3",
+    "size_bytes": 14445
+  },
+  "runner_source_pins": {
+    "path": "artifacts/build-validation/nezha-dex-fixtures-controls-v2/source-pins.json",
+    "sha256": "9c76ceed0b01beae101a51a5b79ecd857c2c9e276e54e6d81bd45d01d15b42c7",
+    "size_bytes": 3267
+  },
+  "sandbox": {
+    "all_capability_masks_zero": true,
+    "build_existing_output_writable": true,
+    "build_mountinfo_sha256": "bdaf6d72444d72554eb4317aa8404c98c25b36ede92af161fb24532d9ac9a681",
+    "build_source_readonly": true,
+    "full_mountinfo_preserved": true,
+    "namespace_ids_and_uid_gid_maps_recorded": true,
+    "run_mountinfo_sha256": "331008b33621a987c7561b941ab10b95fa9e5c69dc570552b80327bf1cffbbdd",
+    "run_output_readonly": true,
+    "run_source_readonly": true
+  },
+  "schema_version": 1,
+  "scope": {
+    "apk_rewritten_or_signed": false,
+    "camera_apk_imported": false,
+    "camera_or_leica_runtime_verified": false,
+    "current_camera_jar_jni_xml_rebuild_verified": false,
+    "dex2oat_executed_by_fixtures": false,
+    "full_java_suite_passed": false,
+    "full_rom_boot_verified": false,
+    "generated_android_build_rules_executed_by_fixtures": false,
+    "kati_failure_waived": false,
+    "phone_accessed": false,
+    "proprietary_jars_or_apks_executed_by_fixtures": false,
+    "signature_or_privilege_policy_changed": false
+  },
+  "source": {
+    "branch": "bka",
+    "installed_patch_files": {
+      "build/soong/java/Android.bp": {
+        "sha256": "45d2dec7100165c18545906c5e4876f3b94028835d052aabd62739c3120f66c3",
+        "size_bytes": 3707
+      },
+      "build/soong/java/dex_import_test.go": {
+        "sha256": "9fdae6601f597dc6e34be4d49c9d8eedb77d7958f227b6ddf468c9b816d63d25",
+        "size_bytes": 9346
+      },
+      "build/soong/java/java.go": {
+        "sha256": "3a734817ece2c86529a24b989ce1de2f07114ec40c2cafc73c630a856f9ae844",
+        "size_bytes": 156629
+      }
+    },
+    "patch": {
+      "path": "patches/evolution/dex-import-uses-library.patch",
+      "sha256": "30358a2e304f6a1ad536c4b2ad0a4ad114ab7ddbc649266dd42b89944eb7e708",
+      "size_bytes": 13049
+    },
+    "project": "build/soong",
+    "projects_rechecked": {
+      "build/blueprint": {
+        "head": "c39c8a4c103f1393f015a5befa7726f0c14c9bc2",
+        "status_porcelain": ""
+      },
+      "build/soong": {
+        "head": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+        "status_porcelain": " M java/Android.bp\n M java/java.go\n?? java/dex_import_test.go\n"
+      },
+      "prebuilts/build-tools": {
+        "head": "412724a805835d89234d67c363f7ada7f5f8a67f",
+        "status_porcelain": ""
+      },
+      "prebuilts/go/linux-x86": {
+        "head": "71c50d4d0da8b3dee5c70ee45789d001674ca5f6",
+        "status_porcelain": ""
+      }
+    },
+    "release_configuration": "bp4a",
+    "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "source_inputs_unchanged": true
+  },
+  "toolchain": {
+    "GOENV": "off",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTOOLCHAIN": "local",
+    "go_version": "go version go1.24.1 linux/amd64",
+    "network_dependency_downloads_enabled": false,
+    "tools": {
+      "compile": {
+        "sha256": "a00ef33aebc7b6ff0fe84295669c3df29e9f52186bdda58ac7ae8c0237f03194",
+        "size_bytes": 20897360,
+        "source_path": "prebuilts/go/linux-x86/pkg/tool/linux_amd64/compile"
+      },
+      "go": {
+        "sha256": "467614dc12ce73e28cc9aa8d28bdef259ada3bcc4392f205aaaed6fff44d8cab",
+        "size_bytes": 14314606,
+        "source_path": "prebuilts/go/linux-x86/bin/go"
+      },
+      "link": {
+        "sha256": "92bb04d577c279b4e21dc00a03dc5ea3d8344ce9e80978187d2ae062c39a55ce",
+        "size_bytes": 6230678,
+        "source_path": "prebuilts/go/linux-x86/pkg/tool/linux_amd64/link"
+      },
+      "ninja": {
+        "sha256": "b3c53a693d6496f3214464fac05fe53ba155489cc071861d9414e2128913c1a2",
+        "size_bytes": 434712,
+        "source_path": "prebuilts/build-tools/linux-x86/bin/ninja"
+      },
+      "test2json": {
+        "sha256": "19b2cce163828e8a15e022cabd0ea250126a9590598b18b6da1a88e6038256b0",
+        "size_bytes": 2393444,
+        "source_path": "prebuilts/go/linux-x86/pkg/tool/linux_amd64/test2json"
+      }
+    }
+  },
+  "v2_freshness_verification": {
+    "capture_is_byte_identical_to_build_receipt": true,
+    "change": "Only the harness accepts the exact idle message across separately preserved stdout and stderr; actions and additional diagnostics still fail.",
+    "completed_utc": "2026-08-29T22:57:05.022379+00:00",
+    "normal_ninja_target_exit_code": 0,
+    "passed": true,
+    "receipt_capture": {
+      "path": "artifacts/build-validation/nezha-dex-fixtures-controls-v2/build.stdout",
+      "sha256": "0831bd3f0398301918937e208c2e6c0ee8cc46b2b249d09aed4a9086df320d23",
+      "size_bytes": 10106
+    },
+    "recompilation_required": false,
+    "started_utc": "2026-08-29T22:57:00.746328+00:00"
+  }
+}

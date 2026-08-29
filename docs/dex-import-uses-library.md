@@ -1,20 +1,62 @@
 # DEX imports as runtime shared libraries
 
-The [proposed Soong patch](../patches/evolution/dex-import-uses-library.patch)
+The [reviewed Soong patch](../patches/evolution/dex-import-uses-library.patch)
 adds the missing runtime dependency provider to `dex_import`. It preserves the
 actual DEX build path, installed filename and partition, and carries ordered,
-nested required dependencies into an app's class-loader context. It has passed
-isolated graph tests and strict checker experiments. **This work has not applied
-the patch to the Linux guest, imported the Camera APK or changed the phone.**
-This is the snapshot at `2026-08-27 21:29 UTC`; later guest integration needs a
-separate build receipt.
+nested required dependencies into an app's class-loader context. The patch is
+now installed in the pinned Linux guest source. On **August 29, 2026 at
+22:57:13 UTC**, its native test binary passed all five added fixture tests and
+eleven subtests, with **zero failures or skips**. This verifies synthetic Soong
+graph behavior; it does not establish a current Camera JAR rebuild, APK
+integration, or physical Camera/Leica support.
 
 The patch is limited to `java/java.go`, its test registration in
 `java/Android.bp`, and a new `java/dex_import_test.go`. Its base is
 `build/soong` revision `cbcbea9e65503ca15b363a0b06dda88fdbcb0154`, already bound
 by the [resolved platform manifest](../research/source-snapshots/evolution-bka-20260827.xml).
 The [sanitized record](../research/dex-import-uses-library.json) binds the source
-exports, before/after hashes, patch, test results and private receipts.
+exports, before/after hashes, patch, and the historical August 27 host results.
+That record remains unchanged because the camera input contract pins it. The
+separate [native fixture record](../research/dex-import-native-fixtures.json)
+binds the August 29 compilation, execution, sandbox and retained failed attempt.
+
+## August 29 native fixture checkpoint
+
+The existing `bka` / `bp4a` source and user output were reused. The normal
+`soong/bootstrap.ninja` dependency target built
+`host/linux-x86/bin/go/soong-java/test/test` using the pinned Go **1.24.1
+linux/amd64** toolchain. The first build completed nine actions with exit zero,
+including compilation of the patched Java package and generated test main,
+then linking the test binary. Its harness subsequently failed because it
+expected Ninja's idle message on stdout; this pinned Ninja wrote it to stderr.
+That attempt remains a failed harness result, with no fixture execution.
+
+The v2 harness changed only that stream handling. It requires the exact idle
+message across the separately retained streams, rejects scheduled work and
+extra diagnostics, and verifies the existing binary through the unchanged
+normal dependency target. It then ran exactly `TestDexImportUsesLibrary*`
+with `-test.count=1`, **without short mode**, and checked all 16 run/pass events.
+The full Java suite was not run and its `test.passed` stamp remained absent.
+This targeted host component does not invoke Kati or waive a product failure.
+
+Compilation kept Android source read-only and the existing output writable.
+Fixture execution kept both source and output read-only, with only new results
+and temporary files writable within `/work`. Both phases recorded zero capability masks,
+namespace identifiers, UID/GID maps and mount evidence. Source/tool hashes and
+the bootstrap graph remained unchanged. The test binary is 40,984,727 bytes,
+SHA256 `637cb8a350be37a91f890ef3d5cad41d217700a03d768d39835b84179f17549b`.
+
+| Native evidence | SHA256 |
+| --- | --- |
+| Failed v1 harness receipt, after successful compilation | `1a37d9dae32ddc974d5d6e1436ec679868b1a78e9f5596b1c788ebb645c163b5` |
+| Successful v2 dependency/freshness receipt | `0831bd3f0398301918937e208c2e6c0ee8cc46b2b249d09aed4a9086df320d23` |
+| Successful v2 fixture execution receipt | `a618a397fee3fb0fc723f72f5bebdd96bf886613ccfd6f1b6739ce66038a7fe6` |
+
+Raw evidence remains under ignored `artifacts/build-validation/nezha-dex-fixtures-*`.
+The fixtures inspect generated strict manifest-check and dexpreopt rules; they
+do not execute those rules, process proprietary JARs/APKs, or run dex2oat.
+Actual installed library names, package membership, ODEX/VDEX and Camera APK
+checks remain separate from this result.
 
 ## Names and dependency behavior
 
@@ -50,12 +92,12 @@ an alias API would need additional product-package mapping work.
 The patch does not generate or validate library-registration XML. It also does
 not establish that every declared dependency is installed. Product selection,
 exact XML names and paths, required dependencies and the generated package list
-must be checked together when making the next vendor bundle. The current
-prefixed Camera module names are not silently renamed by this patch. The tested
+must be checked together in the separate [Camera runtime input bundle](camera-runtime-inputs.md).
+The earlier prefixed Camera module names are not silently renamed by this patch. The tested
 consumer is Soong's `android_app_import`; Make-defined app consumers and DEX
 config export to Make are outside this patch's verified scope.
 
-## Verification and its limits
+## Historical August 27 host verification and its limits
 
 Seven existing source exports were rehashed against their recorded archives.
 No source sync, clone, guest source edit or Android output edit was needed.
@@ -128,11 +170,11 @@ python3 -m unittest discover -s tests -p 'test_dex_import_patch.py' -v
 
 ## Integration still to perform
 
-The next step is review and an idle-guest application to the exact pinned
-source, followed by a real Soong rebuild. A new, separately admitted vendor
-selection must use exact runtime names, bind its XML and JAR inputs, and verify
-the actual product package list and class-loader contexts. The current Camera
-dependency bundle and earlier source receipts remain historical inputs.
+The patch's guest installation, native test compilation and added fixture run
+have now passed. The separately admitted exact-name Camera runtime bundle still
+needs its current native JAR/JNI/XML rebuild and inspection of installed paths,
+product package membership, generated class-loader contexts and ODEX/VDEX.
+Earlier component builds and host fixtures do not substitute for that result.
 
 The [Camera APK prerequisites](camera-apk-integration.md) remain separate:
 signing identity, signature-only permissions, the privileged-app DEX packaging
