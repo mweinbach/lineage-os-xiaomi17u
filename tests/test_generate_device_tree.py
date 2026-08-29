@@ -1875,7 +1875,7 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             self.assertEqual(generator.validate(output), plan)
         self.assertFalse(plan["oem_properties"]["native_effective_allow_budget_verified"])
 
-    def test_property_slice_refuses_provider_bundles_until_separate_source_capability_exists(self):
+    def test_property_slice_refuses_provider_bundles_without_separate_source_capability(self):
         inputs, verification = self.property_inputs()
         for key in ("framework_provider_policy_contract", "framework_provider_inputs"):
             changed = copy.deepcopy(verification)
@@ -1883,6 +1883,314 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             with self.subTest(key=key), mock.patch.object(generator, "_verify_policy_input_bundle", return_value=changed), \
                     self.assertRaisesRegex(generator.CandidateError, "separately supported source capability"):
                 generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def provider_inputs(self, *, properties=False):
+        """Real public sources/renderer, mocked private bundle verification boundary."""
+        from scripts import framework_provider_inputs as provider_inputs
+        inputs, policy_verification = self.property_inputs() if properties else self.oem_inputs()
+        profile = json.loads((ROOT / generator.FRAMEWORK_PROVIDER_INPUT_RECORD).read_text())
+        profile["factory_package_sha256"] = "3" * 64
+        profile_path = self.root / generator.FRAMEWORK_PROVIDER_INPUT_RECORD
+        profile_path.parent.mkdir(parents=True, exist_ok=True)
+        profile_raw = (json.dumps(profile, sort_keys=True) + "\n").encode()
+        profile_path.write_bytes(profile_raw)
+        profile_identity = {"sha256": hashlib.sha256(profile_raw).hexdigest(), "size_bytes": len(profile_raw)}
+        patcher = mock.patch.object(generator, "FRAMEWORK_PROVIDER_INPUT_SHA256", profile_identity["sha256"])
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        contract = json.loads((ROOT / generator.FRAMEWORK_PROVIDER_RECORD).read_text())
+        contract["factory_package_sha256"] = "3" * 64
+        contract["required_contracts"] = {
+            "oem_policy": {key: policy_verification["oem_policy_contract"][key] for key in ("path", "sha256")},
+            "init_helper": {"path": generator.INIT_HELPER_RECORD.as_posix(),
+                            "sha256": hashlib.sha256(inputs["init_helper_capability_contract"].read_bytes()).hexdigest()},
+            "provider_inputs": {"path": generator.FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix(),
+                                "sha256": profile_identity["sha256"]},
+        }
+        contract_path = self.root / generator.FRAMEWORK_PROVIDER_RECORD
+        contract_raw = (json.dumps(contract, sort_keys=True) + "\n").encode()
+        contract_path.write_bytes(contract_raw)
+        patcher = mock.patch.object(generator, "FRAMEWORK_PROVIDER_CONTRACT_SHA256", hashlib.sha256(contract_raw).hexdigest())
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        for name in generator.FRAMEWORK_PROVIDER_FILES:
+            path = inputs["template_root"] / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT / generator.DEVICE_PATH / name).read_bytes())
+        for row, destination in [(profile["source_lock"], self.root),
+                                 *((row, inputs.get("patch_source_root", ROOT)) for row in profile["required_source_patches"])]:
+            path = destination / row["path"]
+            if destination != ROOT:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((ROOT / row["path"]).read_bytes())
+        bundle = self.root / "providers"
+        bundle.mkdir()
+        blueprint = provider_inputs._module_bp(profile)
+        product = generator._framework_provider_product(profile)
+        files = {"proprietary" + row["runtime_path"]: {key: row[key] for key in ("sha256", "size_bytes")}
+                 for row in profile["files"]}
+        files.update({"provenance/captures/" + name + ".json": {key: row[key] for key in ("sha256", "size_bytes")}
+                      for name, row in profile["captures"].items()})
+        files["provenance/nezha-framework-providers.json"] = profile_identity
+        files["framework-providers.Android.bp"] = {"sha256": hashlib.sha256(blueprint).hexdigest(), "size_bytes": len(blueprint)}
+        controls = generator._framework_provider_native_controls(profile, files)
+        files.update({name: {"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)} for name, raw in controls.items()})
+        files["framework-providers.mk"] = {"sha256": hashlib.sha256(product).hexdigest(), "size_bytes": len(product)}
+        for name in files:
+            path = bundle / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(blueprint if name == "framework-providers.Android.bp" else b"inert private-input placeholder\n")
+        receipt = bundle / generator.FRAMEWORK_PROVIDER_INPUTS_RECEIPT
+        receipt.write_bytes(b'{"schema_version":1,"synthetic":true}\n')
+        verification = {
+            "schema_version": 1, "operation": "stage-framework-provider-inputs", "status": "verified", "device": "nezha",
+            "bundle": generator.FRAMEWORK_PROVIDER_INPUTS_PATH, "module_package": generator.FRAMEWORK_PROVIDER_MODULE_PACKAGE,
+            "contract": profile_identity, "factory_package_sha256": "3" * 64,
+            "factory_image": profile["factory_image"], "source_lock": profile["source_lock"],
+            "native_check_target": provider_inputs.CHECK, "native_output_recipe": profile["native_output_recipe"],
+            "packages": [row["module"] for row in profile["files"] if "module" in row], "providers": profile["providers"],
+            "scope": profile["scope"], "readback_verified": True,
+            "module_blueprint": {"path": "framework-providers.Android.bp", **files["framework-providers.Android.bp"]},
+            "receipt": {"path": receipt.name, "sha256": hashlib.sha256(receipt.read_bytes()).hexdigest(), "size_bytes": receipt.stat().st_size},
+            "files": [{"path": name, **value} for name, value in sorted(files.items())],
+        }
+        receipt.write_bytes(provider_inputs.encoded({key: value for key, value in verification.items() if key not in ("status", "receipt")}))
+        verification["receipt"].update(sha256=hashlib.sha256(receipt.read_bytes()).hexdigest(), size_bytes=receipt.stat().st_size)
+        policy_verification["framework_provider_policy_contract"] = {
+            "path": generator.FRAMEWORK_PROVIDER_RECORD.as_posix(), "sha256": hashlib.sha256(contract_raw).hexdigest(),
+            "size_bytes": len(contract_raw),
+        }
+        policy_verification["framework_provider_inputs"] = copy.deepcopy(verification)
+        inputs.update(framework_provider_policy_contract=contract_path, framework_provider_inputs_receipt=receipt)
+        return inputs, verification, policy_verification
+
+    def generate_provider(self, output, inputs, verification, policy_verification):
+        with mock.patch.object(generator, "_verify_framework_provider_bundle", return_value=verification), \
+                mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy_verification):
+            return generator.generate(output, **inputs)
+
+    def test_provider_public_contracts_and_source_statements_are_pinned(self):
+        contract, identity = generator._framework_provider_contract(ROOT / generator.FRAMEWORK_PROVIDER_RECORD)
+        profile, profile_identity = generator._framework_provider_input_contract(ROOT / generator.FRAMEWORK_PROVIDER_INPUT_RECORD)
+        self.assertEqual(identity["sha256"], generator.FRAMEWORK_PROVIDER_CONTRACT_SHA256)
+        self.assertEqual(profile_identity["sha256"], contract["required_contracts"]["provider_inputs"]["sha256"])
+        generator._verify_framework_provider_sources({row["path"]: (ROOT / row["path"]).read_bytes()
+                                                    for row in contract["source_files"]}, contract)
+        blueprint = generator._framework_provider_blueprint(profile).decode()
+        self.assertEqual(blueprint.count("check_elf_files: true"), 26)
+        self.assertEqual(blueprint.count("allow_undefined_symbols: false"), 26)
+        self.assertNotIn("proprietary/", blueprint)
+
+    def test_provider_requires_explicit_source_inputs_oem_and_native_policy_before_reads(self):
+        for values in ({"framework_provider_policy_contract": "none"},
+                       {"framework_provider_inputs_receipt": "none"},
+                       {"framework_provider_policy_contract": "none", "framework_provider_inputs_receipt": "none"}):
+            with self.subTest(values=values), mock.patch.object(generator, "_load_records") as records, \
+                    self.assertRaisesRegex(generator.CandidateError, "explicit paired provider"):
+                generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none", vendor_receipt="none", **values)
+            records.assert_not_called()
+
+    def test_provider_only_generation_preserves_native_dependencies_and_readiness(self):
+        inputs, verification, policy = self.provider_inputs()
+        first, second = self.root / "artifacts/providers", self.root / "artifacts/providers-repeat"
+        with mock.patch.object(generator, "_verify_framework_provider_bundle", return_value=verification) as verify, \
+                mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy) as native:
+            plan = generator.generate(first, **inputs)
+            self.assertEqual(verify.call_count, 2)
+            native.assert_called_once_with(inputs["policy_inputs_receipt"],
+                                           framework_provider_inputs_receipt=inputs["framework_provider_inputs_receipt"])
+        self.assertEqual(self.generate_provider(second, inputs, verification, policy), plan)
+        self.assertNotIn("oem_properties", plan)
+        self.assertEqual(plan["framework_providers"]["inputs"], policy["framework_provider_inputs"])
+        self.assertEqual((first / generator.FRAMEWORK_PROVIDER_BLUEPRINT).read_bytes(),
+                         (inputs["framework_provider_inputs_receipt"].parent / "framework-providers.Android.bp").read_bytes())
+        product = (first / generator.DEVICE_PATH / "generated/device-candidate.mk").read_text()
+        self.assertEqual(product.count("$(call inherit-product, vendor/xiaomi/nezha-framework-providers/framework-providers.mk)"), 1)
+        self.assertNotIn("PRODUCT_PACKAGES", product)
+        board = (first / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        self.assertEqual(board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS"), 2)
+        self.assertEqual(board.count(next(iter(generator.FRAMEWORK_PROVIDER_WIRING.values()))), 1)
+        for key in ("source_checkout_inspected", "source_patches_applied", "fresh_soong_or_m4_build_performed",
+                    "strict_native_elf_checks_passed", "strict_full_policy_compiled", "complete_context_or_treble_checks_passed",
+                    "image_integration_verified", "hardware_tested"):
+            self.assertIs(plan["framework_providers"][key], False)
+        for purpose in ("target-files", "flash"):
+            with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(first, purpose=purpose)
+
+    def test_provider_and_property_profiles_compose_without_public_provider_mappings(self):
+        inputs, verification, policy = self.provider_inputs(properties=True)
+        output = self.root / "artifacts/providers-properties"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        self.assertIn("oem_properties", plan)
+        self.assertEqual(plan["oem_properties"]["expected_native_effective_ordinary_allow_edges"], generator.OEM_PROPERTY_ALLOW_BUDGET)
+        board = (output / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        self.assertEqual(board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS"), 3)
+        self.assertEqual(board.count("SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS"), 3)
+        self.assertTrue(all(row["scope"] == "system_ext_private" and row["versioned_attribute"] is None
+                            for row in plan["framework_providers"]["types"].values()))
+
+    def test_provider_off_profile_never_reads_external_bundle_or_sources(self):
+        inputs, policy = self.oem_inputs()
+        with mock.patch.object(generator, "_verify_framework_provider_bundle", side_effect=AssertionError("implicit external input")), \
+                mock.patch.object(generator, "_framework_provider_contract", side_effect=AssertionError("implicit source")), \
+                mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy):
+            plan = generator.generate(self.root / "artifacts/no-providers", **inputs)
+        self.assertNotIn("framework_providers", plan)
+        self.assertTrue(all("framework_providers" not in row["path"] and "framework-providers" not in row["path"] for row in plan["files"]))
+
+    def test_provider_native_policy_requires_identical_full_bundle_and_source_binding(self):
+        inputs, verification, original = self.provider_inputs()
+        for change in (lambda p: p.pop("framework_provider_inputs"), lambda p: p.pop("framework_provider_policy_contract"),
+                       lambda p: p["framework_provider_inputs"]["files"][0].update(sha256="f" * 64),
+                       lambda p: p["framework_provider_policy_contract"].update(size_bytes=1)):
+            policy = copy.deepcopy(original)
+            change(policy)
+            with self.subTest(change=change), self.assertRaisesRegex(generator.CandidateError, "same separately supported source"):
+                self.generate_provider(self.root / "artifacts/refused", inputs, verification, policy)
+
+    def test_provider_rejects_input_namespace_recipe_scope_and_package_tampering(self):
+        inputs, original, policy = self.provider_inputs()
+        for change in (lambda p: p.update(bundle="vendor/other"), lambda p: p.update(module_package="vendor/other"),
+                       lambda p: p["native_output_recipe"].update(consumer_inputs="raw_inputs"),
+                       lambda p: p["scope"].update(elf_checks_disabled=True), lambda p: p["packages"].pop(),
+                       lambda p: p["module_blueprint"].update(sha256="f" * 64), lambda p: p["receipt"].update(sha256="f" * 64),
+                       lambda p: p["files"].append(copy.deepcopy(p["files"][0])),
+                       lambda p: p["files"].__setitem__(0, {**p["files"][0], "path": "../../bad"})):
+            verification = copy.deepcopy(original)
+            change(verification)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                self.generate_provider(self.root / "artifacts/refused", inputs, verification, policy)
+
+    def test_provider_rejects_changed_contracts_sources_blueprint_and_source_patch(self):
+        inputs, verification, policy = self.provider_inputs()
+        paths = [inputs["framework_provider_policy_contract"], self.root / generator.FRAMEWORK_PROVIDER_INPUT_RECORD,
+                 inputs["template_root"] / generator.FRAMEWORK_PROVIDER_FILES[2],
+                 inputs["framework_provider_inputs_receipt"].parent / "framework-providers.Android.bp",
+                 self.root / "config/evolution-source-lock.json"]
+        for path in paths:
+            original = path.read_bytes()
+            path.write_bytes(original + b"\n")
+            with self.subTest(path=path), self.assertRaises(generator.CandidateError):
+                self.generate_provider(self.root / "artifacts/refused", inputs, verification, policy)
+            path.write_bytes(original)
+
+    def test_provider_rejects_symlinked_and_extra_source_and_bundle_entries(self):
+        inputs, verification, policy = self.provider_inputs()
+        for directory in (inputs["template_root"] / Path(generator.FRAMEWORK_PROVIDER_FILES[0]).parent,
+                          inputs["framework_provider_inputs_receipt"].parent):
+            for kind in ("file", "directory", "symlink"):
+                extra = directory / "unreviewed"
+                if kind == "file": extra.write_bytes(b"unreviewed")
+                elif kind == "directory": extra.mkdir()
+                else: extra.symlink_to(inputs["framework_provider_policy_contract"])
+                with self.subTest(directory=directory, kind=kind), self.assertRaises(generator.CandidateError):
+                    self.generate_provider(self.root / "artifacts/refused", inputs, verification, policy)
+                if kind == "directory": extra.rmdir()
+                else: extra.unlink()
+
+    def test_provider_rechecks_external_inventory_after_final_verifier(self):
+        inputs, verification, policy = self.provider_inputs()
+        calls = 0
+        def mutate_after_verification(*args):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                (inputs["framework_provider_inputs_receipt"].parent / "late-directory").mkdir()
+            return verification
+        with mock.patch.object(generator, "_verify_framework_provider_bundle", side_effect=mutate_after_verification), \
+                mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy), \
+                self.assertRaisesRegex(generator.CandidateError, "unexpected directory"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_provider_rejects_output_inside_preserved_inputs_before_creating_directories(self):
+        inputs, verification, policy = self.provider_inputs()
+        for key in ("framework_provider_inputs_receipt", "policy_inputs_receipt"):
+            old = inputs[key]
+            bundle = self.root / "artifacts" / ("protected-" + key)
+            old.parent.rename(bundle)
+            inputs[key] = bundle / old.name
+        for key in ("framework_provider_inputs_receipt", "policy_inputs_receipt"):
+            output = inputs[key].parent / "unreviewed-parent/candidate"
+            with self.subTest(key=key), self.assertRaisesRegex(generator.CandidateError, "must not be nested"):
+                self.generate_provider(output, inputs, verification, policy)
+            self.assertFalse(output.parent.exists())
+
+    def test_provider_validation_rejects_resealed_blueprint_sources_and_duplicate_wiring(self):
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-resealed"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        cases = [(generator.FRAMEWORK_PROVIDER_BLUEPRINT, b"cc_prebuilt_binary { name: \"unreviewed\" }\n"),
+                 ((generator.DEVICE_PATH / generator.FRAMEWORK_PROVIDER_FILES[2]).as_posix(), b"permissive vendor_qccsyshal_qti;\n"),
+                 ((generator.DEVICE_PATH / "generated/device-candidate.mk").as_posix(),
+                  b"$(call inherit-product, vendor/xiaomi/nezha-framework-providers/framework-providers.mk)\n"),
+                 ((generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix(),
+                  b"SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private\n"),
+                 ((generator.DEVICE_PATH / "device.mk").as_posix(), b"PRODUCT_PACKAGES += nezha_framework_qccsyshal_aidl_service\n"),
+                 ((generator.DEVICE_PATH / "Android.bp").as_posix(), b"soong_namespace { imports: [\"vendor/xiaomi/nezha-framework-providers\"] }\n")]
+        for name, extra in cases:
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, original + extra)
+            with self.subTest(name=name), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+
+    def test_provider_validation_rejects_receipt_promotion_and_missing_policy_binding(self):
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-limits"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        for change in (lambda p: p["framework_providers"].update(strict_native_elf_checks_passed=True),
+                       lambda p: p["framework_providers"].update(image_integration_verified=True),
+                       lambda p: p["framework_providers"]["inputs"]["native_output_recipe"].update(consumer_inputs="raw_inputs"),
+                       lambda p: p["policy_inputs"].pop("framework_provider_inputs"), lambda p: p.pop("framework_providers")):
+            changed = copy.deepcopy(plan)
+            change(changed)
+            (output / "admission.json").write_text(json.dumps(changed))
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_provider_validation_is_portable_and_does_not_reopen_private_evidence(self):
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-portable"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        with mock.patch.object(generator, "_bound_reference", side_effect=AssertionError("private evidence read")), \
+                mock.patch.object(generator, "_verify_policy_input_bundle", side_effect=AssertionError("private policy read")), \
+                mock.patch.object(generator, "_verify_framework_provider_bundle", side_effect=AssertionError("private provider read")), \
+                mock.patch("subprocess.Popen", side_effect=AssertionError("native process")):
+            self.assertEqual(generator.validate(output), plan)
+
+    def test_provider_validation_rejects_jointly_resealed_native_control_identities(self):
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-controls"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        for path in ("Android.bp", "tools/verify_framework_provider_inputs.py", "framework-providers.mk"):
+            changed = copy.deepcopy(plan)
+            for record in (changed["framework_providers"]["inputs"], changed["policy_inputs"]["framework_provider_inputs"]):
+                next(row for row in record["files"] if row["path"] == path)["sha256"] = "f" * 64
+            (output / "admission.json").write_text(json.dumps(changed))
+            with self.subTest(path=path), self.assertRaisesRegex(generator.CandidateError, "input inventory differs"):
+                generator.validate(output)
+
+    def test_provider_validation_rejects_jointly_resealed_receipt_identity(self):
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-receipt"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        for field, value in (("sha256", "f" * 64), ("size_bytes", 1)):
+            changed = copy.deepcopy(plan)
+            for record in (changed["framework_providers"]["inputs"], changed["policy_inputs"]["framework_provider_inputs"]):
+                record["receipt"][field] = value
+            (output / "admission.json").write_text(json.dumps(changed))
+            with self.subTest(field=field), self.assertRaisesRegex(generator.CandidateError, "exact canonical manifest"):
+                generator.validate(output)
+
+    def test_provider_cli_arguments_are_explicit_and_default_to_none(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", "--output", "artifacts/out"]
+        for option in ("framework-provider-policy-contract", "framework-provider-inputs-receipt"):
+            for arguments, expected in (([], None), (["--" + option, "provider.json"], Path("provider.json"))):
+                with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                    self.assertEqual(generator.main(base + arguments), 0)
+                self.assertEqual(generate.call_args.kwargs[option.replace("-", "_")], expected)
 
     def test_cli_passes_optional_property_contract_without_enabling_it_by_default(self):
         base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", "--output", "artifacts/out"]

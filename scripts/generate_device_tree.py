@@ -146,6 +146,23 @@ OEM_PROPERTY_LIMITS = frozenset({
     "wireless_charging_support_inferred",
 })
 OEM_PROPERTY_EVIDENCE = ("finite_impact_audit", "finite_impact_readback", "independent_finite_impact_review")
+FRAMEWORK_PROVIDER_RECORD = PurePosixPath("config/nezha-framework-provider-policy.json")
+FRAMEWORK_PROVIDER_CONTRACT_SHA256 = "6515395854a7cdc08f2d9c9ed5f7119164a9c0376ca8710a152ffb1999dc52f8"
+FRAMEWORK_PROVIDER_INPUT_RECORD = PurePosixPath("config/nezha-framework-providers.json")
+FRAMEWORK_PROVIDER_INPUT_SHA256 = "467667d20399469d0b5621a4a7891e896ce6c3f785830ee0ad0dd17a06b8c45f"
+FRAMEWORK_PROVIDER_INPUTS_PATH = "vendor/xiaomi/nezha-framework-providers"
+FRAMEWORK_PROVIDER_INPUTS_RECEIPT = "framework-provider-inputs.json"
+FRAMEWORK_PROVIDER_MODULE_PACKAGE = "device/xiaomi/nezha/framework-providers"
+FRAMEWORK_PROVIDER_BLUEPRINT = FRAMEWORK_PROVIDER_MODULE_PACKAGE + "/Android.bp"
+FRAMEWORK_PROVIDER_FILES = (
+    "sepolicy/system_ext/framework_providers/private/file_contexts",
+    "sepolicy/system_ext/framework_providers/private/service_contexts",
+    "sepolicy/system_ext/framework_providers/private/vendor_qccsyshal_qti.te",
+    "sepolicy/system_ext/framework_providers/private/vendor_sigmahal_qti.te",
+)
+FRAMEWORK_PROVIDER_WIRING = {
+    "SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private",
+}
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
@@ -1318,12 +1335,276 @@ def _oem_property_wiring_lines():
             *(f"{name} += {path}" for name, path in OEM_PROPERTY_WIRING.items())]
 
 
-def _verify_policy_input_bundle(receipt):
+def _framework_provider_contract(path):
+    if __package__:
+        from . import framework_provider_policy as provider_policy
+    else:
+        import framework_provider_policy as provider_policy
+    contract, identity = _read_json(path)
+    _require(identity["sha256"] == FRAMEWORK_PROVIDER_CONTRACT_SHA256,
+             "unknown or changed framework provider policy contract")
+    _require(contract["schema_version"] == 1 and contract["device"] == "nezha" and
+             contract["contract_id"] == "nezha-private-framework-aidl-provider-policy-v1" and
+             contract["platform"] == {"branch": "bka", "release": "bp4a", "board_api": "202504"} and
+             contract["scope"] == provider_policy.SCOPE,
+             "framework provider policy platform or scope changed")
+    sources = contract["source_files"]
+    _require(type(sources) is list and len(sources) == 4 and
+             {row["path"] for row in sources} == {(DEVICE_PATH / name).as_posix() for name in FRAMEWORK_PROVIDER_FILES},
+             "framework providers require exactly four reviewed private policy sources")
+    _require(len(contract["types"]) == 8 and all(row["scope"] == "system_ext_private" and
+             row["versioned_attribute"] is None for row in contract["types"].values()),
+             "framework provider types must remain private without public mappings")
+    for row in sources:
+        _require(row["kind"] == ("source" if row["path"].endswith(".te") else "contexts"),
+                 "framework provider policy source kind changed")
+        _digest(row["sha256"], "framework provider source")
+        _integer(row["size_bytes"], "framework provider source length", MAX_TEXT_BYTES)
+    return contract, identity
+
+
+def _framework_provider_input_contract(path):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    contract, identity = _read_json(path)
+    _require(identity["sha256"] == FRAMEWORK_PROVIDER_INPUT_SHA256,
+             "unknown or changed framework provider input contract")
+    _require(contract["schema_version"] == 1 and contract["device"] == "nezha" and
+             contract["platform"] == {"branch": "bka", "release": "bp4a", "board_api": "202504"} and
+             contract["bundle"] == FRAMEWORK_PROVIDER_INPUTS_PATH and
+             contract["module_package"] == FRAMEWORK_PROVIDER_MODULE_PACKAGE and
+             contract["scope"] == provider_inputs.SCOPE and
+             contract["native_output_recipe"] == provider_inputs.NATIVE_OUTPUT_RECIPE,
+             "framework provider input namespace, verified producer or scope changed")
+    return contract, identity
+
+
+def _framework_provider_blueprint(contract):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    return provider_inputs._module_bp(contract)
+
+
+def _framework_provider_product(contract):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    # This renderer's product selection does not use the private capture data.
+    return provider_inputs._generated(contract, b"", {})["framework-providers.mk"]
+
+
+def _framework_provider_native_controls(contract, native_files):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    return {
+        "Android.bp": provider_inputs._bp(contract, native_files),
+        "tools/verify_framework_provider_inputs.py": provider_inputs._native_checker(
+            dict(sorted(native_files.items())), provider_inputs._native_outputs(contract)),
+    }
+
+
+def _framework_provider_receipt_identity(verification):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    raw = provider_inputs.encoded({key: value for key, value in verification.items() if key not in ("status", "receipt")})
+    return {"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+
+
+def _verify_framework_provider_bundle(receipt, contract_path):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    try:
+        return provider_inputs.verify_bundle(receipt.parent, contract_path=contract_path)
+    except provider_inputs.FrameworkProviderError as exc:
+        raise CandidateError(f"framework provider inputs refused: {exc}") from exc
+
+
+def _framework_provider_external_inventory(receipt, verification):
+    root = _no_symlinks(receipt.parent)
+    expected = {row["path"] for row in verification["files"]} | {FRAMEWORK_PROVIDER_INPUTS_RECEIPT}
+    directories = {parent.as_posix() for name in expected for parent in PurePosixPath(name).parents if parent.as_posix() != "."}
+    seen = set()
+    for directory, subdirectories, filenames in os.walk(root, followlinks=False):
+        for name in subdirectories:
+            path = Path(directory) / name
+            _require(stat.S_ISDIR(path.lstat().st_mode) and path.relative_to(root).as_posix() in directories,
+                     "unexpected directory or symlink in framework provider bundle")
+        for name in filenames:
+            path = Path(directory) / name
+            relative = path.relative_to(root).as_posix()
+            _require(stat.S_ISREG(path.lstat().st_mode) and relative in expected,
+                     "unexpected file or symlink in framework provider bundle")
+            seen.add(relative)
+    _require(seen == expected, "framework provider bundle has missing files")
+
+
+def _framework_provider_binding(plan, contract, input_contract, input_identity, verification):
+    _require(all(key in plan for key in ("oem_policy", "init_helper_capability", "dsp_policy", "factory_profile")),
+             "framework providers require the explicit OEM, helper, DSP and factory capabilities")
+    expected_contracts = {
+        "oem_policy": {key: plan["oem_policy"]["contract_record"][key] for key in ("path", "sha256")},
+        "init_helper": {key: plan["init_helper_capability"]["contract_record"][key] for key in ("path", "sha256")},
+        "provider_inputs": {"path": FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix(), "sha256": input_identity["sha256"]},
+    }
+    _require(contract["required_contracts"] == expected_contracts and
+             contract["factory_package_sha256"] == input_contract["factory_package_sha256"] == plan["source_packages"]["vendor"] and
+             contract["platform"] == input_contract["platform"] and
+             str(plan["board_shipping_api_level"]) == contract["platform"]["board_api"],
+             "framework provider source, helper, OEM and factory bindings differ")
+    project = contract["pinned_android_source_project"]
+    _require(project["path"] == "system/sepolicy" and
+             project["head"] == plan["oem_policy"]["required_source_revisions"]["system/sepolicy"],
+             "framework provider policy source revision differs")
+    selected = {row["runtime_path"].removeprefix("/system_ext"): {key: row[key] for key in ("sha256", "size_bytes")}
+                for row in input_contract["files"] if row["kind"] in ("binary", "init_rc", "vintf_fragment")}
+    _require(len(contract["selected_provider_artifacts"]) == 6 and selected == {
+        row["path"]: {key: row[key] for key in ("sha256", "size_bytes")} for row in contract["selected_provider_artifacts"]},
+        "framework provider policy does not describe the selected executables, init rules and VINTF fragments")
+    packages = [row["module"] for row in input_contract["files"] if "module" in row]
+    expected_fields = {
+        "schema_version": 1, "operation": "stage-framework-provider-inputs", "status": "verified",
+        "device": "nezha", "bundle": FRAMEWORK_PROVIDER_INPUTS_PATH,
+        "module_package": FRAMEWORK_PROVIDER_MODULE_PACKAGE, "contract": input_identity,
+        "factory_package_sha256": input_contract["factory_package_sha256"],
+        "factory_image": input_contract["factory_image"], "source_lock": input_contract["source_lock"],
+        "native_check_target": "nezha_framework_provider_inputs_check",
+        "native_output_recipe": input_contract["native_output_recipe"], "packages": packages,
+        "providers": input_contract["providers"], "scope": input_contract["scope"], "readback_verified": True,
+    }
+    _require(type(verification) is dict and set(verification) == set(expected_fields) | {"files", "receipt", "module_blueprint"} and
+             all(verification.get(key) == value for key, value in expected_fields.items()),
+             "framework provider bundle differs from its reviewed source admission")
+    _require(verification["readback_verified"] is True, "framework provider readback was not verified")
+    blueprint = _framework_provider_blueprint(input_contract)
+    _require(verification["module_blueprint"] == {
+        "path": "framework-providers.Android.bp", "sha256": hashlib.sha256(blueprint).hexdigest(), "size_bytes": len(blueprint)},
+        "framework provider Blueprint differs from the strict verified-output renderer")
+    receipt = verification["receipt"]
+    _require(set(receipt) == {"path", "sha256", "size_bytes"} and receipt["path"] == FRAMEWORK_PROVIDER_INPUTS_RECEIPT,
+             "unexpected framework provider receipt")
+    _digest(receipt["sha256"], "framework provider receipt")
+    _integer(receipt["size_bytes"], "framework provider receipt length", MAX_JSON_BYTES)
+    known_files = {"proprietary" + row["runtime_path"]: {key: row[key] for key in ("sha256", "size_bytes")}
+                   for row in input_contract["files"]}
+    known_files.update({"provenance/captures/" + name + ".json": {key: row[key] for key in ("sha256", "size_bytes")}
+                        for name, row in input_contract["captures"].items()})
+    known_files["provenance/nezha-framework-providers.json"] = input_identity
+    known_files["framework-providers.Android.bp"] = {key: verification["module_blueprint"][key] for key in ("sha256", "size_bytes")}
+    controls = _framework_provider_native_controls(input_contract, known_files)
+    known_files.update({name: {"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+                        for name, raw in controls.items()})
+    product = _framework_provider_product(input_contract)
+    known_files["framework-providers.mk"] = {"sha256": hashlib.sha256(product).hexdigest(), "size_bytes": len(product)}
+    files = verification["files"]
+    _require(type(files) is list and len(files) == len(known_files),
+             "framework provider bundle file inventory changed")
+    identities = {}
+    for row in files:
+        name = _relative(row["path"]).as_posix()
+        _require(set(row) == {"path", "sha256", "size_bytes"} and name not in identities,
+                 "duplicate or malformed framework provider input")
+        _digest(row["sha256"], "framework provider input")
+        _integer(row["size_bytes"], "framework provider input length", MAX_FILE_BYTES)
+        identities[name] = {key: row[key] for key in ("sha256", "size_bytes")}
+    _require(set(identities) == set(known_files) and
+             all(identities[name] == value for name, value in known_files.items()),
+             "framework provider input inventory differs from the reviewed files")
+    _require({key: receipt[key] for key in ("sha256", "size_bytes")} == _framework_provider_receipt_identity(verification),
+             "framework provider receipt identity differs from its exact canonical manifest")
+
+
+def _framework_provider_admission(contract, identity, input_contract, input_identity, verification):
+    return {
+        "contract_id": contract["contract_id"],
+        "contract_record": {"path": FRAMEWORK_PROVIDER_RECORD.as_posix(), **identity},
+        "inputs_contract_record": {"path": FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix(), **input_identity},
+        "inputs": verification, "source_files": contract["source_files"], "types": contract["types"],
+        "wiring": dict(FRAMEWORK_PROVIDER_WIRING),
+        "module_blueprint": {**verification["module_blueprint"], "path": FRAMEWORK_PROVIDER_BLUEPRINT},
+        "required_source_patches": input_contract["required_source_patches"], "source_lock": input_contract["source_lock"],
+        "required_contracts": contract["required_contracts"], "pinned_android_source_project": contract["pinned_android_source_project"],
+        "pinned_android_sources": contract["pinned_android_sources"],
+        "source_checkout_inspected": False, "source_patches_applied": False,
+        "fresh_soong_or_m4_build_performed": False, "strict_native_elf_checks_passed": False,
+        "strict_full_policy_compiled": False, "complete_context_or_treble_checks_passed": False,
+        "image_integration_verified": False, "hardware_tested": False,
+    }
+
+
+def _verify_framework_provider_sources(contents, contract):
+    if __package__:
+        from . import framework_provider_policy as provider_policy
+    else:
+        import framework_provider_policy as provider_policy
+    try:
+        provider_policy.verify_source_contents(contents, contract)
+    except provider_policy.FrameworkProviderPolicyError as exc:
+        raise CandidateError(f"framework provider sources refused: {exc}") from exc
+
+
+def _bind_framework_providers(plan, path, receipt, workspace_root, template_root, patch_source_root, payloads):
+    contract, identity = _framework_provider_contract(path)
+    input_path = Path(workspace_root) / FRAMEWORK_PROVIDER_INPUT_RECORD
+    input_contract, input_identity = _framework_provider_input_contract(input_path)
+    receipt = _no_symlinks(receipt)
+    _require(receipt.name == FRAMEWORK_PROVIDER_INPUTS_RECEIPT, "framework provider receipt must use its reviewed name")
+    receipt_identity, _ = _read_file(receipt, limit=MAX_JSON_BYTES)
+    verification = _verify_framework_provider_bundle(receipt, input_path)
+    _framework_provider_binding(plan, contract, input_contract, input_identity, verification)
+    _framework_provider_external_inventory(receipt, verification)
+    _require(receipt_identity == {key: verification["receipt"][key] for key in ("sha256", "size_bytes")},
+             "framework provider receipt changed during verification")
+    paths = {Path(template_root) / _relative(row["path"]).relative_to(DEVICE_PATH) for row in contract["source_files"]}
+    for directory in {source.parent for source in paths}:
+        _no_symlinks(directory)
+        _require(set(directory.iterdir()) == {source for source in paths if source.parent == directory},
+                 "unreviewed file or directory in framework provider policy sources")
+    contents = {row["path"]: _read_file(Path(template_root) / _relative(row["path"]).relative_to(DEVICE_PATH),
+                                      limit=MAX_TEXT_BYTES, collect=True)[1] for row in contract["source_files"]}
+    _verify_framework_provider_sources(contents, contract)
+    payloads.update(contents)
+    blueprint_identity, blueprint = _read_file(receipt.parent / "framework-providers.Android.bp", limit=MAX_TEXT_BYTES, collect=True)
+    _require(blueprint_identity == {key: verification["module_blueprint"][key] for key in ("sha256", "size_bytes")} and
+             blueprint == _framework_provider_blueprint(input_contract), "framework provider Blueprint changed after verification")
+    payloads[FRAMEWORK_PROVIDER_BLUEPRINT] = blueprint
+    for row, root in [(input_contract["source_lock"], workspace_root),
+                      *((row, patch_source_root) for row in input_contract["required_source_patches"])]:
+        actual, raw = _read_file(Path(root) / _relative(row["path"]), limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")},
+                 "framework provider source lock or required patch changed")
+        payloads[row["path"]] = raw
+    for source, destination, expected in ((path, FRAMEWORK_PROVIDER_RECORD, identity),
+                                          (input_path, FRAMEWORK_PROVIDER_INPUT_RECORD, input_identity)):
+        actual, raw = _read_file(source, limit=MAX_JSON_BYTES, collect=True)
+        _require(actual == expected, "framework provider contract changed before publication")
+        payloads[destination.as_posix()] = raw
+    plan["framework_providers"] = _framework_provider_admission(contract, identity, input_contract, input_identity, verification)
+
+
+def _framework_provider_wiring_lines():
+    return ["# Explicit enforcing framework-provider source profile; runtime support remains unverified.",
+            *(f"{name} += {path}" for name, path in FRAMEWORK_PROVIDER_WIRING.items())]
+
+
+def _verify_policy_input_bundle(receipt, *, framework_provider_inputs_receipt=None):
     if __package__:
         from . import policy_inputs
     else:
         import policy_inputs
-    return policy_inputs.verify_bundle(receipt.parent)
+    if framework_provider_inputs_receipt is None:
+        return policy_inputs.verify_bundle(receipt.parent)
+    return policy_inputs.verify_bundle(receipt.parent, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
 
 
 def _policy_inputs_binding(plan, verification):
@@ -1345,8 +1626,10 @@ def _policy_inputs_binding(plan, verification):
              "native policy bundle and OEM source capability must use the same reviewed contract")
     _require(verification.get("oem_property_contract") == plan.get("oem_properties", {}).get("contract_record"),
              "native policy bundle and OEM property source capability must use the same reviewed contract")
-    _require(verification.get("framework_provider_policy_contract") is None and verification.get("framework_provider_inputs") is None,
-             "framework provider inputs require a separately supported source capability")
+    providers = plan.get("framework_providers", {})
+    _require(verification.get("framework_provider_policy_contract") == providers.get("contract_record") and
+             verification.get("framework_provider_inputs") == providers.get("inputs"),
+             "framework provider inputs require the same separately supported source capability and complete bundle")
     receipt = verification["receipt"]
     _require(receipt["path"] == POLICY_INPUTS_RECEIPT, "unexpected native policy receipt name")
     _digest(receipt["sha256"], "native policy receipt")
@@ -1366,11 +1649,12 @@ def _policy_inputs_binding(plan, verification):
     _require("android.bp" in names, "native policy namespace has no reviewed Android.bp")
 
 
-def _bind_policy_inputs(plan, path):
+def _bind_policy_inputs(plan, path, *, framework_provider_inputs_receipt=None):
     path = _no_symlinks(path)
     _require(path.name == POLICY_INPUTS_RECEIPT, "native policy receipt must be named policy-inputs.json")
     identity, _ = _read_file(path, limit=MAX_JSON_BYTES)
-    verification = _verify_policy_input_bundle(path)
+    verification = (_verify_policy_input_bundle(path) if framework_provider_inputs_receipt is None else
+                    _verify_policy_input_bundle(path, framework_provider_inputs_receipt=framework_provider_inputs_receipt))
     _policy_inputs_binding(plan, verification)
     _require(identity == {key: verification["receipt"][key] for key in ("sha256", "size_bytes")},
              "native policy input receipt changed during verification")
@@ -1635,6 +1919,8 @@ def _render_board(plan):
         lines.extend(_oem_policy_wiring_lines())
     if "oem_properties" in plan:
         lines.extend(_oem_property_wiring_lines())
+    if "framework_providers" in plan:
+        lines.extend(_framework_provider_wiring_lines())
     if "dsp_policy" in plan:
         lines.extend(_dsp_wiring_lines())
     return "\n".join(lines) + "\n"
@@ -1656,6 +1942,9 @@ def _render_product(plan):
     if "policy_inputs" in plan:
         lines += ["# Explicit private policy bundle; native component checks only.",
                   f"PRODUCT_SOONG_NAMESPACES += {POLICY_INPUTS_PATH}"]
+    if "framework_providers" in plan:
+        lines += ["# Exact verified provider bundle owns its two namespaces and native package list.",
+                  f"$(call inherit-product, {FRAMEWORK_PROVIDER_INPUTS_PATH}/framework-providers.mk)"]
     return "\n".join([*lines, ""])
 
 
@@ -1671,7 +1960,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None,
              dsp_policy_contract=None, init_helper_capability_contract=None,
              policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None,
-             oem_property_contract=None):
+             oem_property_contract=None, framework_provider_policy_contract=None,
+             framework_provider_inputs_receipt=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -1694,6 +1984,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if oem_property_contract is not None:
         _require(oem_policy_contract is not None and policy_inputs_receipt is not None,
                  "OEM properties require an explicit OEM source contract and matching native policy inputs")
+    providers_selected = framework_provider_policy_contract is not None or framework_provider_inputs_receipt is not None
+    if providers_selected:
+        _require(framework_provider_policy_contract is not None and framework_provider_inputs_receipt is not None and
+                 oem_policy_contract is not None and policy_inputs_receipt is not None,
+                 "framework providers require explicit paired provider source and input receipts, OEM sources and native policy inputs")
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
@@ -1721,8 +2016,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _bind_oem_policy(plan, oem_policy_contract, workspace_root, template_root, payloads)
     if oem_property_contract is not None:
         _bind_oem_properties(plan, oem_property_contract, workspace_root, template_root, payloads)
+    if providers_selected:
+        _bind_framework_providers(plan, framework_provider_policy_contract, framework_provider_inputs_receipt,
+                                  workspace_root, template_root, patch_source_root, payloads)
     if policy_inputs_receipt is not None:
-        _bind_policy_inputs(plan, policy_inputs_receipt)
+        _bind_policy_inputs(plan, policy_inputs_receipt, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
         _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab)
     generated = DEVICE_PATH / "generated"
@@ -1736,6 +2034,12 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     artifacts = _no_symlinks(Path(workspace_root) / "artifacts", existing=False)
     _require(output != artifacts and output.is_relative_to(artifacts), "output must be a new artifacts subdirectory")
     _require(not output.exists() and not output.is_symlink(), "output already exists")
+    if providers_selected:
+        for receipt in (framework_provider_inputs_receipt, policy_inputs_receipt):
+            protected = _no_symlinks(Path(receipt).parent)
+            _require(not output.is_relative_to(protected) and not any(
+                parent.exists() and parent.samefile(protected) for parent in output.parents),
+                "candidate output must not be nested inside a provider or policy input bundle")
     output.parent.mkdir(parents=True, exist_ok=True)
     _no_symlinks(output.parent)
     staging = Path(tempfile.mkdtemp(prefix=".nezha-device-", dir=output.parent))
@@ -1747,6 +2051,14 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                 stream.write(data)
         (staging / "admission.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")
         validate(staging, purpose="configuration")
+        if providers_selected:
+            # The policy verifier also reopens this external bundle. Check it again
+            # after candidate validation so late file/directory additions cannot
+            # be hidden by a portable receipt or the earlier source-file readback.
+            _require(_verify_framework_provider_bundle(_no_symlinks(framework_provider_inputs_receipt),
+                     Path(workspace_root) / FRAMEWORK_PROVIDER_INPUT_RECORD) == plan["framework_providers"]["inputs"],
+                     "framework provider bundle changed before candidate publication")
+            _framework_provider_external_inventory(Path(framework_provider_inputs_receipt), plan["framework_providers"]["inputs"])
         _no_symlinks(output.parent)
         publish_new_directory(staging, output)
     finally:
@@ -1828,6 +2140,30 @@ def validate(output, *, purpose="configuration"):
                      "OEM property source file differs from the reviewed contract")
             _, property_contents[row["path"]] = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
         _verify_oem_property_sources(property_contents, property_contract)
+    if "framework_providers" in plan:
+        provider_contract, provider_identity = _framework_provider_contract(Path(output) / FRAMEWORK_PROVIDER_RECORD)
+        provider_inputs, provider_input_identity = _framework_provider_input_contract(Path(output) / FRAMEWORK_PROVIDER_INPUT_RECORD)
+        providers = plan["framework_providers"]
+        _framework_provider_binding(plan, provider_contract, provider_inputs, provider_input_identity, providers["inputs"])
+        _require(providers == _framework_provider_admission(provider_contract, provider_identity, provider_inputs,
+                                                          provider_input_identity, providers["inputs"]),
+                 "framework provider admission differs from its reviewed source contract")
+        _require("policy_inputs" in plan, "framework providers require their verified native policy input bundle")
+        expected |= {FRAMEWORK_PROVIDER_RECORD.as_posix(), FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix(),
+                     FRAMEWORK_PROVIDER_BLUEPRINT}
+        provider_contents = {}
+        for row in provider_contract["source_files"]:
+            expected.add(row["path"])
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "framework provider policy source differs from its reviewed contract")
+            _, provider_contents[row["path"]] = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
+        _verify_framework_provider_sources(provider_contents, provider_contract)
+        for row in [provider_inputs["source_lock"], *provider_inputs["required_source_patches"]]:
+            expected.add(row["path"])
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "framework provider source lock or required patch changed")
+        _, blueprint = _read_file(Path(output) / FRAMEWORK_PROVIDER_BLUEPRINT, limit=MAX_TEXT_BYTES, collect=True)
+        _require(blueprint == _framework_provider_blueprint(provider_inputs), "generated framework provider Blueprint changed")
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -1855,11 +2191,20 @@ def validate(output, *, purpose="configuration"):
         _require(product_bytes == _render_product(plan).encode("ascii"), "generated mi_ext A/B partition wiring changed")
     else:
         _require(not re.search(rb"\bmi_ext\b", product_bytes), "mi_ext A/B wiring requires an explicit verified bundle")
+    if "framework_providers" in plan:
+        _require(product_bytes == _render_product(plan).encode("ascii"), "framework provider product selection changed")
+    else:
+        _require(b"framework-providers" not in product_bytes and b"nezha_framework_" not in product_bytes,
+                 "framework provider product selection requires an explicit source capability")
     for name in files:
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk") and name != product_name:
             _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
             _require(POLICY_INPUTS_PATH.encode("ascii") not in raw,
                      "native policy namespace may only be exported by the reviewed generator")
+        if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith((".mk", ".bp")) and name not in {product_name, FRAMEWORK_PROVIDER_BLUEPRINT}:
+            _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+            _require(b"framework-providers" not in raw and b"nezha_framework_" not in raw,
+                     "framework provider modules and namespaces may only use the reviewed generated product and Blueprint")
     board_name = (DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
     board_identity, board_bytes = _read_file(Path(output) / board_name, limit=MAX_TEXT_BYTES, collect=True)
     _require(board_identity == files[board_name], "generated board changed during validation")
@@ -1914,7 +2259,8 @@ def validate(output, *, purpose="configuration"):
                  "DSP policy wiring requires an explicit reviewed contract")
     if "oem_policy" in plan:
         wiring = "\n" + "\n".join(_oem_policy_wiring_lines()) + "\n"
-        _require(board.count(wiring) == 1 and board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS") == 1 + int("oem_properties" in plan),
+        _require(board.count(wiring) == 1 and board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS") ==
+                 1 + int("oem_properties" in plan) + int("framework_providers" in plan),
                  "generated OEM policy wiring changed")
     else:
         _require(not any(path in board for path in OEM_POLICY_WIRING.values()) and
@@ -1927,6 +2273,13 @@ def validate(output, *, purpose="configuration"):
     else:
         _require(not any(path in board for path in OEM_PROPERTY_WIRING.values()),
                  "OEM property wiring requires an explicit reviewed contract")
+    if "framework_providers" in plan:
+        wiring = "\n" + "\n".join(_framework_provider_wiring_lines()) + "\n"
+        _require(board.count(wiring) == 1 and board_bytes == _render_board(plan).encode("ascii"),
+                 "generated framework provider private policy wiring changed")
+    else:
+        _require(not any(path in board for path in FRAMEWORK_PROVIDER_WIRING.values()),
+                 "framework provider policy wiring requires an explicit reviewed contract")
     _require(purpose == "configuration", f"{purpose} admission refused: framework-checks is not a complete signed partition set")
     return plan
 
@@ -1960,6 +2313,10 @@ def main(argv=None):
                              help="verified exact factory mi_ext prebuilt; requires factory profile, never complete packaging admission")
             sub.add_argument("--oem-property-contract", type=Path,
                              help="explicit four-property system_ext source contract; requires matching OEM base and native policy inputs")
+            sub.add_argument("--framework-provider-policy-contract", type=Path,
+                             help="explicit private Sigma/QCC source policy; requires paired provider inputs and matching native policy bundle")
+            sub.add_argument("--framework-provider-inputs-receipt", type=Path,
+                             help="exact external provider bundle; requires paired source policy and does not establish runtime support")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -1982,7 +2339,9 @@ def main(argv=None):
                                   policy_inputs_receipt=args.policy_inputs_receipt,
                                   oem_policy_contract=args.oem_policy_contract,
                                   mi_ext_inputs_receipt=args.mi_ext_inputs_receipt,
-                                  oem_property_contract=args.oem_property_contract)
+                                  oem_property_contract=args.oem_property_contract,
+                                  framework_provider_policy_contract=args.framework_provider_policy_contract,
+                                  framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
