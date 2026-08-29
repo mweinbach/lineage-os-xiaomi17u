@@ -15,8 +15,9 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
+| [Native policy integration](policy-source-integration.md) | Guarded helper admission, reproducible factory derivation, actual Android targets and current validation limits |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
-| [Helper policy projection](helper-policy-projection.md) | Passing combined CIL prototype and remaining source/image integration |
+| [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 
 | Guide | Purpose |
 | --- | --- |

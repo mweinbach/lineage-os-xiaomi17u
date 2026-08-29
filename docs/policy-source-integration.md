@@ -5,6 +5,45 @@ target-files, changes the retained vendor/ODM images, or establishes an
 Evolution boot. See [current workspace status](workspace-status.md) for measured
 build results and remaining gates.
 
+The [v10c result record](../research/policy-source-integration.json) now records
+a successful native user build at **2026-08-29 18:43:51 UTC**: 255 Ninja actions,
+the real helper M4 expansion, in-build vendor derivation, strict combined CIL
+compilation and its user permissive-domain guard. Native source neverallow,
+structural, device-type and public-policy freeze checks also executed. The
+independent analysis subsequently confirmed all 6,366 assertion statements,
+only the intended 69 allow removals and zero permissive domains in three
+binaries. The 1,515,046-byte combined binary exactly matches the earlier
+prototype, SHA256
+`a827e265ee5bd3112eb657b36cf0e20db37328d948b629f97d631d68d8104bf8`.
+
+The nine factory checks actually ran; **six passed and three failed**:
+
+| Check | Native result |
+| --- | --- |
+| File, property and vndservice contexts | Pass |
+| Vendor/ODM and platform seapp contexts | Both pass, with their different vendor-only restrictions preserved |
+| Explicit device-type test | Pass |
+| Hardware-service contexts | Fails: `vendor_hal_atfwd_hwservice` lacks `hwservice_manager_type` |
+| Service contexts | Fails: `vendor_hal_systemhelper_aidl_service` lacks `service_manager_type` |
+| Structural suite | Fails: `offlinelog_file` at `/data/local/log(/.*)?` lacks `core_data_file_type` |
+
+These are policy ownership gaps, not aggregation defects. Original factory
+system_ext supplied both service declarations, their object roles and 202504
+mappings; the current Evolution mapping leaves those versioned attributes
+empty. System_ext and product also supplied the offlinelog classification.
+The next source slice must restore those evidenced relationships, audit the
+effective permission changes and rerun the unchanged checks. Do not copy all
+factory framework policy or merely add manager attributes to vendor CIL.
+The private audit also distinguishes unused stock framework contexts from
+the actual native inputs. Assertion-statement preservation alone does not
+establish complete mapping compatibility.
+
+An interrupted analyzer attempt and a temporary Container transport stall are
+preserved separately in the record. The successful retry used the same sealed
+inputs and original VM. Neither the VM nor the shared service was restarted.
+The final audit rechecked all source pins, both opaque factory images and the
+working76 recovery; image adoption and complete Treble labeling remain open.
+
 The integration separates three maintained inputs:
 
 | Layer | Reviewed input and responsibility |

@@ -1,3 +1,11 @@
+**Historical checkpoint — August 28, 2026.** The strict copied-CIL comparison
+below predates source integration. The later native user build passed through
+patched source/M4, vendor derivation and strict combined compilation; see the
+[current policy integration](policy-source-integration.md) and its
+[result record](../research/policy-source-integration.json). That source-build
+pass does not establish complete context/Treble validation, image adoption or
+hardware support. The original prototype evidence remains unchanged below.
+
 The private helper-policy prototype now **compiles with every assertion
 retained and has zero permissive domains** under the unfiltered analyzer.
 Its baseline still fails at two assertion sites. This is a successful strict

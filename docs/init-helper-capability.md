@@ -1,3 +1,11 @@
+**Historical checkpoint — August 28, 2026.** The source-patch and host-M4
+observations below predate adoption. For the later passing native user build
+through patched source/M4, vendor derivation and strict combined compilation,
+see the [current policy integration](policy-source-integration.md) and its
+[result record](../research/policy-source-integration.json). That build pass
+does not establish complete context/Treble validation, image adoption or
+hardware support. The original checkpoint remains unchanged below.
+
 The optional init-helper property capability now has a tested source patch.
 It is **not installed in the Android source checkout or enabled by the device
 generator**. The patch gives a product an explicit way to omit two permissions

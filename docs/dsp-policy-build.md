@@ -1,3 +1,11 @@
+**Historical checkpoint — August 28, 2026.** This page records the v9 DSP
+source build and its four remaining assertion failures with unchanged factory
+policy. The later native user source/M4/vendor-policy build passed; see the
+[current policy integration](policy-source-integration.md) and its
+[result record](../research/policy-source-integration.json). That later pass
+does not establish complete context/Treble validation, image adoption or
+hardware support. The original v9 results remain unchanged below.
+
 The Nezha **user v9 policy build passed**, and the complete factory-policy
 check now fails **four assertions instead of five**. The missing DSP client
 membership is resolved through actual Soong source integration. Both generated

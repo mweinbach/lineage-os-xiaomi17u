@@ -121,12 +121,19 @@ change with tests, not a way to silence missing-product errors.
 5. Preserve verified boot, rollback constraints, encrypted storage and enforcing
    SELinux for normal Android. Recovery-only permissive mode is the explicitly
    authorized bring-up exception, with enforcement a later recovery milestone.
-   The [v9 source policy build](dsp-policy-build.md) produces two binaries with
-   zero permissive domains, but composition with unchanged factory CIL still
-   fails four assertion sites. The [Binder/helper prototype](helper-policy-projection.md)
-   strictly compiles with zero permissive domains and all assertions retained;
-   it is not integrated into the active Android source or a vendor image.
-   Complete source, context and Treble-labeling validation remain required.
+   The [native v10 policy integration](policy-source-integration.md) now applies
+   the helper correction through Android M4 and derives the vendor Binder
+   correction in the actual build graph. Strict combined compilation and
+   independent analysis pass; all 6,366 assertion statements remain and three
+   binaries have zero permissive domains. Six of nine factory checks pass.
+   Restore the two evidenced Xiaomi system_ext service declarations, roles and
+   generated 202504 mappings, and the framework-owned offlinelog classification
+   before repeating the three failed checks. Audit their effective permissions;
+   retaining assertion text is not complete mapping compatibility. Complete
+   Treble labeling remains unverified. The derived policy is still a
+   non-installable validation target; original vendor/ODM images are intact.
+   Keep their eventual image derivation separate from the preserved
+   [earlier copied-CIL prototype](helper-policy-projection.md).
 
 No opaque installer or binary from the firmware is an extraction dependency.
 Raw proprietary inputs, public-key inspection artifacts, private logs and

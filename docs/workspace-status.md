@@ -47,7 +47,10 @@ Those local changes are part of the build inputs: the
 [SELinux enforcement patch](../patches/evolution/selinux-enforcement.json), and
 [init property patch](../patches/evolution/init-boot-properties.json), together
 with the [prebuilt-recovery consumer](../patches/evolution/prebuilt-recovery.json),
-authored device/kernel sources and hash-bound private vendor bundles. The
+the [scoped helper capability](policy-source-integration.md), authored
+device/kernel sources and hash-bound private vendor bundles. The helper patch
+is now applied in the existing `system/sepolicy` project; it does not add a
+fifth modified upstream project. The
 snapshot alone does not include these changes. Factory archive origin and OEM
 trust remain unauthenticated; passing internal AVB checks does not authenticate
 the archive. Matching factory bytes do not relabel the older kernel bundle.
@@ -69,6 +72,8 @@ from a full build and require destination hash verification after transfers.
 | Native component builds and inspection | Boot, DTBO and both DLKM images in the recorded userdebug snapshot; factory-based user v8 init_boot, vendor_boot and DTBO preserve admitted DT/module/fstab inputs | [Boot/DLKM](../research/boot-dlkm-build.json), [factory boot](../research/factory-boot-build.json) |
 | Native user v9 source policy | DSP membership integrated through Soong; both source-policy binaries have zero permissive domains | [DSP source build](../research/dsp-policy-build.json) |
 | Strict policy prototype | Derived Binder correction plus two helper-permission removals compile as combined CIL with zero permissive domains; all 6,366 assertions retained | [Helper projection](../research/helper-policy-projection.json) |
+| Native user v10 source and factory policy | The reviewed helper patch now runs through Android M4; a native genrule reproduces the Binder correction and the strict combined policy target builds successfully, including its user permissive-domain guard | [Source integration](../research/policy-source-integration.json) |
+| Independent v10 analysis | Native combined binary matches the earlier prototype exactly; all 6,366 assertion statements remain, with only the intended 69 allow removals; three binaries have zero permissive domains | [Source integration](../research/policy-source-integration.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
 | Recovery device test | `working76` installed to recovery_a; matching readback; visible UI and fast touch confirmed by the user; root ADB, logs and automatic defaults verified | [Working recovery](../research/twrp-working-defaults.json) |
 | Recovery reproduction and ROM build target | Two fresh Mac rebuilds match working76 byte for byte; Linux public-key staging/verification and two actual `recoveryimage` target runs pass with unchanged output bytes | [Workspace integration](../research/workspace-integration.json) |
@@ -84,10 +89,20 @@ override theme defaults. No Magisk integration is included.
 
 ## Gates before a complete ROM
 
-- **Policy:** the installed v9 source combined with unchanged factory CIL still
-  fails four assertion sites. The passing copied-CIL prototype must become
-  reviewed source/vendor inputs, pass the actual Android policy pipeline,
-  context checks and a Treble labeling test that runs without skips or waivers.
+- **Policy:** the v10 source/vendor-input path now passes the actual Android
+  combined-policy build and independent analysis. Six of nine factory context
+  and structural checks pass. The remaining failures are the missing manager
+  classifications for `vendor_hal_atfwd_hwservice` and
+  `vendor_hal_systemhelper_aidl_service`, plus missing `core_data_file_type`
+  membership for `offlinelog_file` at `/data/local/log`. Restore the evidenced
+  Xiaomi system_ext public declarations, roles and generated API mappings,
+  together with the framework-owned offlinelog classification; review the
+  effective permission changes before adopting them. Preserve the original
+  system_ext/product ownership evidence instead of adding broad attributes.
+  Full labeling needs the actual complete Evolution APK inventory; a missing
+  artifact skip or API-202504 touch-only target is not a pass. The corrected
+  policy is a non-installable validation output: retained vendor/ODM images
+  still contain their original policy and need a reviewed image derivation.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
   and measured Nezha budgets. `mi_ext` is not yet packaged. Target-files, OTA,
@@ -130,7 +145,7 @@ source work; [recovery handling](recovery-plan.md) records recovery boundaries.
 | --- | --- |
 | This status page and [Nezha integration](nezha-integration.md) | Detailed dated checkpoints in `docs/build-progress.md` and the individual component-build records |
 | [Working TWRP instructions](../recovery/twrp-working/README.md) and [current recovery guide](twrp-bringup.md) | [Recovery history](twrp-bringup-history.md): earlier minimal builds, RAM-boot attempts and `provided75` before persistent defaults |
-| [v9 source-policy record](../research/dsp-policy-build.json) plus the separately labeled [passing prototype](../research/helper-policy-projection.json) | v7/v8 and earlier assertion counts; a later prototype does not rewrite their results |
+| [Native source-policy integration](policy-source-integration.md) and its [current record](../research/policy-source-integration.json) | v7/v8/v9 policy builds and the copied-CIL prototypes remain dated evidence; their original results are preserved |
 | Current factory vendor/ODM input receipts | Modified Xiaomi.eu package, earlier candidates, outputs and failed AVB results with their original provenance |
 
 Run `make test` before completing workspace changes. Generate into new ignored
@@ -140,3 +155,12 @@ patches, input receipts, tool hashes and artifact hashes. Offline tests neither
 compile Android nor test a phone. Cleanup and local builds do not authorize
 device changes; any future flash, reboot or restore needs its own explicit
 user instruction and selected-device preflight.
+
+The v10 native build completed at **2026-08-29 18:43:51 UTC**, with 255 Ninja
+actions and observed read-only source / writable user output mounts. Independent
+analysis completed at 19:02:14 UTC; the context phase completed at 19:04:29 UTC
+with its three failures retained. The final audit again matched all 1,179
+project revisions/origins, the same four intentionally patched projects, both
+original factory images and working76 recovery. A temporary Container transport
+stall was resolved without restarting the Nezha VM or shared service. No new
+source sync, image adoption or device operation occurred.
