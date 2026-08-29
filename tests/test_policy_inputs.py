@@ -407,6 +407,19 @@ class NativePolicyTemplateTests(unittest.TestCase):
         self.assertNotIn("--output $$(readlink -f $(genDir))/derived", block)
         self.assertNotIn(" -N ", text)
 
+    def test_context_aggregators_preserve_android_common_variant_dependencies(self):
+        bp = (WORKSPACE / "policy/nezha/Android.bp").read_text()
+        # Generated Android contexts have os:android,arch:common variants.
+        # Match the pinned upstream sepolicy_test module type; a plain genrule
+        # requests an empty dependency variant and fails graph construction.
+        for kind in ("file", "hwservice", "service"):
+            declaration = 'java_genrule {\n    name: "nezha_factory_all_' + kind + '_contexts",'
+            self.assertIn(declaration, bp)
+        # The derivation takes regular files and a host tool; it has no device
+        # context dependency and must retain its existing generic genrule.
+        self.assertIn('genrule {\n    name: "nezha_factory_vendor_policy",', bp)
+        self.assertNotIn('java_genrule {\n    name: "nezha_factory_vendor_policy",', bp)
+
     def test_context_targets_use_real_factory_captures_and_no_full_labeling_claim(self):
         config = json.loads((WORKSPACE / policy.CONTRACT_PATH).read_text())
         bp = (WORKSPACE / "policy/nezha/Android.bp").read_text()

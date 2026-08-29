@@ -63,7 +63,7 @@ se_policy_binary {
 
 // Aggregate all five partitions, including the authentic empty ODM captures.
 // No fabricated entries, empty-input shortcut, or context singleton skip is used.
-genrule {
+java_genrule {
     name: "nezha_factory_all_file_contexts",
     srcs: [
         ":plat_file_contexts",
@@ -82,7 +82,7 @@ file_contexts_test {
     sepolicy: ":nezha_factory_precompiled_sepolicy",
 }
 
-genrule {
+java_genrule {
     name: "nezha_factory_all_hwservice_contexts",
     srcs: [
         ":plat_hwservice_contexts",
@@ -101,7 +101,7 @@ hwservice_contexts_test {
     sepolicy: ":nezha_factory_precompiled_sepolicy",
 }
 
-genrule {
+java_genrule {
     name: "nezha_factory_all_service_contexts",
     srcs: [
         ":plat_service_contexts",
