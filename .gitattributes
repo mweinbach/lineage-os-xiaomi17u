@@ -3,5 +3,6 @@
 # apply to patch text, not source files.
 # Validate added source lines with git apply --check --whitespace=error instead.
 patches/**/*.patch whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab
+recovery/**/*.patch whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab
 # Preserve Repo-exported manifests byte-for-byte for their recorded hashes.
 research/source-snapshots/*.xml whitespace=-blank-at-eol

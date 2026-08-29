@@ -1,0 +1,29 @@
+diff --git a/system/etc/init/hw/init.rc b/system/etc/init/hw/init.rc
+index 49d6904a5a208fe0a42b59541099afb1ca8356b9..841ff20d4a5117aacc8dd26e885c7d0d2b2daaf9
+--- a/system/etc/init/hw/init.rc
++++ b/system/etc/init/hw/init.rc
+@@ -6,6 +6,9 @@
+ import /init.recovery.${ro.hardware}.rc
+ 
+ on early-init
++    # Recovery bring-up uses permissive SELinux; keep policy and denial logging.
++    write /sys/fs/selinux/enforce 0
++
+     # Set the security context of /postinstall if present.
+     restorecon /postinstall
+ 
+diff --git a/twres/ui.xml b/twres/ui.xml
+index a2a150f7b06344cc8c1450026cfa79d9b022de88..d5cbbb4d34df0e2f1c578840227e229be9149a5e
+--- a/twres/ui.xml
++++ b/twres/ui.xml
+@@ -71,6 +71,10 @@
+ 	</resources>
+ 
+ 	<variables>
++		<variable name="tw_action_vibrate" value="0"/>
++		<variable name="tw_button_vibrate" value="0"/>
++		<variable name="tw_keyboard_vibrate" value="0"/>
++
+ 		<variable name="tw_samsung_navbar" value="0" persist="1"/>
+ 
+ 		<variable name="tw_hide_kb" value="0"/>
