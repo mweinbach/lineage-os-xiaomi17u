@@ -208,13 +208,15 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertFalse(trial['twrp_runtime_verified'])
         self.assertTrue(trial['boot_command_succeeded'])
 
-    def test_prepared_usb_mount_point_candidate_is_separate_from_hardware_attempts(self):
-        candidate = self.record['next_candidate']
+    def test_prepared_usb_mount_point_checkpoint_stays_historical_after_boot(self):
+        candidate = self.record['prepared_candidate_checkpoints'][0]
         previous = self.record['attempts'][5]
+        self.assertEqual(candidate['scope'], 'historical_preparation_before_attempt_7')
         self.assertEqual(candidate['status'], 'constructed_verified_not_booted')
         self.assertEqual(candidate['image_sha256'],
                          '8cbc355d68750c32f1b3ba4dec1953732bd32a3924731553b16204a699ee730f')
-        self.assertNotIn(candidate['image_sha256'], [trial['image_sha256'] for trial in self.record['attempts']])
+        self.assertNotIn(candidate['image_sha256'], [trial['image_sha256'] for trial in self.record['attempts'][:6]])
+        self.assertEqual(candidate['image_sha256'], self.record['attempts'][6]['image_sha256'])
         self.assertEqual(candidate['ramdisk_sha256'],
                          'dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db')
         for key in ('kernel_sha256', 'command_line_sha256', 'command_line_size_bytes',
@@ -245,6 +247,39 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertFalse(trial['runtime_observations']['current_runtime_identified'])
         self.assertFalse(trial['twrp_runtime_verified'])
         self.assertIn('later_user_screen_and_host_presence', trial['evidence'])
+
+    def test_stock_return_preserves_missing_log_evidence_without_inventing_a_diagnosis(self):
+        trial = self.record['attempts'][5]
+        observed = trial['later_stock_return']
+        self.assertEqual(observed['source'], 'user_report_and_selected_authorized_adb')
+        self.assertEqual((observed['stock_build'], observed['slot']), ('OS3.0.309.0.WPACNXM', 'a'))
+        self.assertTrue(observed['stock_boot_completed'])
+        self.assertEqual(observed['dropbox_entries'], 0)
+        self.assertTrue(observed['bootreceiver_logcat_wall_time_differs_from_current_phone_clock'])
+        for key in ('recovery_ui_reported_ever_visible', 'saved_previous_kernel_log_available',
+                    'stale_log_used_for_diagnosis', 'black_screen_cause_identified',
+                    'phone_mutating_commands_during_log_collection', 'cause_of_missing_log_established'):
+            self.assertFalse(observed[key])
+        self.assertIn('later_log_collection_summary', trial['evidence'])
+
+    def test_config_trial_does_not_claim_usb_or_runtime_progress_from_boot_acceptance(self):
+        trial = self.record['attempts'][6]
+        prepared = self.record['prepared_candidate_checkpoints'][0]
+        self.assertEqual(trial['number'], 7)
+        for key in ('image_sha256', 'image_size_bytes', 'kernel_sha256', 'ramdisk_sha256',
+                    'directory_scaffold', 'canonical_ramdisk_suffix', 'command_line_sha256', 'avb'):
+            self.assertEqual(trial[key], prepared[key])
+        self.assertTrue(trial['boot_command_succeeded'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        self.assertEqual(trial['status'], 'boot_command_accepted_no_adb_or_fastboot_observed')
+        observed = trial['runtime_observations']
+        self.assertEqual(observed['usb_presence_poll_count'], 20)
+        self.assertGreater(observed['usb_presence_poll_span_seconds'], 57)
+        self.assertTrue(observed['source_directory_fix_is_not_runtime_proof'])
+        for key in ('adb_seen_during_observation', 'fastboot_seen_during_observation',
+                    'current_runtime_identified', 'recovery_ui_verified', 'recovery_adb_verified',
+                    'configfs_mount_success_verified'):
+            self.assertFalse(observed[key])
 
 
 if __name__ == '__main__':

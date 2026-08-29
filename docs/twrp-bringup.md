@@ -155,6 +155,14 @@ holding Power for more than ten seconds to force an unresponsive phone to
 restart in its [support instructions](https://www.mi.com/uk/support/faq/details/KA-550626/).
 Preserve any fresh saved kernel log before sending the next temporary image.
 
+The user then returned the phone to Android and confirmed that no recovery UI
+had appeared at any point. Authorized ADB verified the same stock build and
+slot `a`, with `sys.boot_completed=1`. DropBox contained zero entries throughout
+the bounded collection, so no previous-kernel log was available through that
+route. BootReceiver logcat entries had a different wall-clock date from the
+current phone clock; the cause of the missing capture was not established.
+The raw observations were preserved without reusing an older trial's log.
+
 The subsequent source audit identified another missing root mount point:
 the packaged recovery RC mounts configfs on `/config` without creating the
 directory. Neither the canonical archive nor the sixth trial's prefix contains
@@ -172,9 +180,18 @@ locally at `artifacts/twrp/nezha/ramboot72-config/boot.img`, SHA256
 Its native decompression, independent inspection and explicit-key AVB
 verification passed. The inspector requires `--header-version 3 --scaffold
 --init-logging --apex --usb-config`; all earlier variants remain separate and
-unchanged. This candidate has **not been uploaded or booted**. The source
-defect is a reason to test it once the current phone state is resolved, not
-proof that it is the only runtime problem or that its USB setup works.
+unchanged. The original **unbooted preparation checkpoint** remains a separate
+historical record. It does not establish that this is the only runtime problem
+or that the image's USB setup works.
+
+The seventh trial subsequently uploaded and temporarily booted that image.
+Fastboot accepted it, but twenty presence checks spanning about 58 seconds
+again found neither ADB nor fastboot, and the USB descriptor scan found no
+Android or Qualcomm device. Adding `/config` alone has not produced an
+observable USB transport. TWRP UI, configfs mounting, authenticated recovery
+ADB and the runtime cause remain unverified. The user was asked to return to
+fastboot promptly if the screen remained black so another saved-log collection
+could be attempted.
 
 ## Source and build isolation
 
