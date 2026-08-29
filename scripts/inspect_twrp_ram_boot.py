@@ -25,9 +25,11 @@ import sys
 if __package__:
     from . import inspect_twrp_image as envelope
     from . import twrp_ram_boot_scaffold as scaffold
+    from . import twrp_ram_boot_diagnostic as diagnostic
 else:
     import inspect_twrp_image as envelope
     import twrp_ram_boot_scaffold as scaffold
+    import twrp_ram_boot_diagnostic as diagnostic
 
 
 PAGE_SIZE = 4096
@@ -69,6 +71,7 @@ class RamBootContract:
     init_logging: bool = False
     apex_scaffold: bool = False
     config_scaffold: bool = False
+    timed_diagnostic: bool = False
 
 
 EXPECTED_CONTRACT = RamBootContract(
@@ -98,6 +101,11 @@ V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT = replace(
     V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, config_scaffold=True,
     ramdisk_sha256="dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db",
 )
+V3_TIMED_DIAGNOSTIC_EXPECTED_CONTRACT = replace(
+    V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, timed_diagnostic=True,
+    ramdisk_size_bytes=25194298,
+    ramdisk_sha256="6b1657fe6bc8b2a08eb61c02122f1b249dab1f5b9445da11d6a747584e45df44",
+)
 
 
 class RamBootInspectionError(ValueError):
@@ -126,6 +134,11 @@ def _contract(contract):
         _require(contract.header_version == 3 and contract.scaffold is True and contract.init_logging is True
                  and contract.apex_scaffold is True,
                  "config scaffold requires explicit v3 scaffold, init logging and apex")
+    _require(type(contract.timed_diagnostic) is bool, "timed diagnostic selection must be boolean")
+    if contract.timed_diagnostic:
+        _require(contract.header_version == 3 and contract.scaffold is True and contract.init_logging is True
+                 and contract.apex_scaffold is True and contract.config_scaffold is True,
+                 "timed diagnostic requires explicit v3 scaffold, init logging, apex and config")
     expected_command_line = V3_COMMAND_LINE if contract.header_version == 3 else ""
     if contract.init_logging:
         expected_command_line += INIT_LOGGING_SUFFIX
@@ -139,7 +152,8 @@ def _contract(contract):
     _require(type(contract.scaffold) is bool, "scaffold selection must be boolean")
     if contract.scaffold:
         _require(contract.header_version == 3, "directory scaffold requires the explicit v3 contract")
-        prefix_size = (scaffold.CONFIG_PREFIX_SIZE if contract.config_scaffold else
+        prefix_size = (diagnostic.PREFIX_SIZE if contract.timed_diagnostic else
+                       scaffold.CONFIG_PREFIX_SIZE if contract.config_scaffold else
                        scaffold.APEX_PREFIX_SIZE if contract.apex_scaffold else scaffold.PREFIX_SIZE)
         _require(type(contract.ramdisk_suffix_size_bytes) is int and 0 < contract.ramdisk_suffix_size_bytes <= MAX_IMAGE_BYTES
                  and contract.ramdisk_size_bytes == prefix_size + contract.ramdisk_suffix_size_bytes,
@@ -169,10 +183,14 @@ def _payload(data, start, size, expected_sha, label):
 
 
 def _scaffold_ramdisk(data, contract, image_offset):
-    prefix_size = (scaffold.CONFIG_PREFIX_SIZE if contract.config_scaffold else
+    prefix_size = (diagnostic.PREFIX_SIZE if contract.timed_diagnostic else
+                   scaffold.CONFIG_PREFIX_SIZE if contract.config_scaffold else
                    scaffold.APEX_PREFIX_SIZE if contract.apex_scaffold else scaffold.PREFIX_SIZE)
-    prefix = scaffold.inspect_scaffold_prefix(bytes(data[:prefix_size]), include_apex=contract.apex_scaffold,
-                                              include_config=contract.config_scaffold)
+    if contract.timed_diagnostic:
+        prefix = diagnostic.inspect_diagnostic_prefix(bytes(data[:prefix_size]))
+    else:
+        prefix = scaffold.inspect_scaffold_prefix(bytes(data[:prefix_size]), include_apex=contract.apex_scaffold,
+                                                  include_config=contract.config_scaffold)
     suffix = data[prefix_size:]
     _require(len(suffix) == contract.ramdisk_suffix_size_bytes
              and _sha(suffix) == contract.ramdisk_suffix_sha256,
@@ -183,7 +201,7 @@ def _scaffold_ramdisk(data, contract, image_offset):
         "compression": {"format": "concatenated-lz4-legacy-archives", "archive_count": 2,
                         "envelope_valid": True, "compressed_blocks_decoded": False,
                         "checksums_verified": False, "full_kernel_decompression_verified": False},
-        "scaffold": prefix,
+        "diagnostic_prefix" if contract.timed_diagnostic else "scaffold": prefix,
         "canonical_suffix": {"ramdisk_offset_bytes": prefix_size,
                              "image_offset_bytes": image_offset + prefix_size,
                              "size_bytes": len(suffix), "sha256": contract.ramdisk_suffix_sha256,
@@ -326,11 +344,11 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
             ramdisk["compression"] = envelope._lz4_envelope(ramdisk_bytes)
         payload_end = ramdisk["padded_end_offset_bytes"]
         avb = _boot_avb(view, payload_end)
-    except (envelope.ImageInspectionError, scaffold.ScaffoldError) as exc:
+    except (envelope.ImageInspectionError, scaffold.ScaffoldError, diagnostic.DiagnosticError) as exc:
         raise RamBootInspectionError(str(exc)) from exc
     pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT, V3_SCAFFOLD_EXPECTED_CONTRACT,
                                    V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT,
-                                   V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT)
+                                   V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, V3_TIMED_DIAGNOSTIC_EXPECTED_CONTRACT)
     header = {"version": version, "size_bytes": header_size, "page_size_bytes": PAGE_SIZE,
               "kernel_size_bytes": kernel_size, "ramdisk_size_bytes": ramdisk_size, "os_version_raw": 0,
               "command_line_empty": not command_line, "command_line": contract.command_line,
@@ -356,6 +374,11 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
             "apex_packages_verified": False, "apex_runtime_verified": False,
             "empty_config_directory_verified": contract.config_scaffold,
             "configfs_mount_verified": False, "usb_runtime_verified": False,
+            "timed_diagnostic_prefix_verified": contract.timed_diagnostic,
+            "diagnostic_rc_bytes_and_metadata_verified": contract.timed_diagnostic,
+            "diagnostic_runtime_timer_armed_verified": False, "diagnostic_runtime_logging_verified": False,
+            "diagnostic_runtime_reboot_verified": False, "diagnostic_runtime_ui_verified": False,
+            "diagnostic_security_grants_verified": False, "global_write_free_verified": False,
             "kernel_devkmsg_ratelimit_behavior_verified": False,
             "signature_verified": False, "trusted_key_verified": False, "avb_trusted": False,
             "ramdisk_decompressed": False, "twrp_contents_verified": False,
@@ -399,15 +422,20 @@ def main(argv=None):
     parser.add_argument("image", type=Path, help="regular RAM-boot wrapper to inspect read-only")
     parser.add_argument("--header-version", type=int, choices=(3, 4), default=4,
                         help="explicit wrapper contract; defaults to v4")
-    parser.add_argument("--scaffold", action="store_true", help="verify the exact directory-only prefix; requires --header-version 3")
+    parser.add_argument("--scaffold", action="store_true", help="verify the exact prefix variant; requires --header-version 3")
     parser.add_argument("--init-logging", action="store_true",
                         help="require only the reviewed printk.devkmsg=on addition; requires --header-version 3 --scaffold")
     parser.add_argument("--apex", action="store_true",
                         help="require the eight-directory prefix with empty /apex; requires v3, scaffold and init logging")
     parser.add_argument("--usb-config", action="store_true",
                         help="require the nine-directory prefix with empty /config; requires v3, scaffold, init logging and apex")
+    parser.add_argument("--timed-diagnostic", action="store_true",
+                        help="require nine directories plus the exact diagnostic RC; requires v3, scaffold, init logging, apex and usb-config")
     parser.add_argument("--output", type=Path, help="new metadata .json report; existing paths are never replaced")
     args = parser.parse_args(argv)
+    if args.timed_diagnostic and (args.header_version != 3 or not args.scaffold or not args.init_logging
+                                  or not args.apex or not args.usb_config):
+        parser.error("--timed-diagnostic requires --header-version 3 --scaffold --init-logging --apex --usb-config")
     if args.usb_config and (args.header_version != 3 or not args.scaffold or not args.init_logging or not args.apex):
         parser.error("--usb-config requires --header-version 3 --scaffold --init-logging --apex")
     if args.apex and (args.header_version != 3 or not args.scaffold or not args.init_logging):
@@ -417,7 +445,8 @@ def main(argv=None):
     if args.scaffold and args.header_version != 3:
         parser.error("--scaffold requires --header-version 3")
     try:
-        contract = (V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.usb_config else
+        contract = (V3_TIMED_DIAGNOSTIC_EXPECTED_CONTRACT if args.timed_diagnostic else
+                    V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.usb_config else
                     V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.apex else
                     V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT if args.init_logging else
                     V3_SCAFFOLD_EXPECTED_CONTRACT if args.scaffold else
