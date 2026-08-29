@@ -673,6 +673,10 @@
         "host_usb_descriptors": {
           "sha256": "81ecb3270059244cd27eafb6a4e30c0a84c1eee6c1cadd28ee4a90ed679afc3e",
           "size_bytes": 144
+        },
+        "later_user_screen_and_host_presence": {
+          "sha256": "a0d135b0517f5121e71e91a1149493b5e49b454938afe4b335183d8158727cd8",
+          "size_bytes": 512
         }
       },
       "change_from_prior_trial": "Add only an empty root-owned /apex directory to the prefix; preserve the exact stock kernel, original build66 compressed suffix and 287-byte diagnostic command line.",
@@ -689,7 +693,20 @@
         "source_directory_fix_is_not_runtime_proof": true,
         "screen_observation_requested": true,
         "no_reboot_sent_after_this_trial": true
-      }
+      },
+      "later_user_observations": [
+        {
+          "recorded_at_utc": "2026-08-29T11:52:05.977981+00:00",
+          "source": "user_report",
+          "screen": "black",
+          "visible_recovery_ui_reported": false,
+          "host_adb_present": false,
+          "host_fastboot_present": false,
+          "runtime_failure_cause_identified": false,
+          "stock_boot_failure_proven": false,
+          "physical_restart_requested": true
+        }
+      ]
     }
   ],
   "last_confirmed_mode": "bootloader_before_attempt_6",

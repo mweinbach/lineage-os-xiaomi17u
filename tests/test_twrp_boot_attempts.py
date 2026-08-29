@@ -234,6 +234,18 @@ class TwrpBootAttemptsTests(unittest.TestCase):
             self.assertRegex(receipt['sha256'], r'^[a-f0-9]{64}$')
             self.assertGreater(receipt['size_bytes'], 0)
 
+    def test_later_black_screen_report_does_not_infer_a_runtime_failure_cause(self):
+        trial = self.record['attempts'][5]
+        observed = trial['later_user_observations'][0]
+        self.assertEqual((observed['source'], observed['screen']), ('user_report', 'black'))
+        for key in ('visible_recovery_ui_reported', 'host_adb_present', 'host_fastboot_present',
+                    'runtime_failure_cause_identified', 'stock_boot_failure_proven'):
+            self.assertFalse(observed[key])
+        self.assertTrue(observed['physical_restart_requested'])
+        self.assertFalse(trial['runtime_observations']['current_runtime_identified'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        self.assertIn('later_user_screen_and_host_presence', trial['evidence'])
+
 
 if __name__ == '__main__':
     unittest.main()

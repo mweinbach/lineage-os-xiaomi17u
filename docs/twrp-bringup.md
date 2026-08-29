@@ -145,6 +145,16 @@ that it crashed. No further reboot was sent; the phone's screen state was
 requested before deciding the next device action. The recorded current
 runtime, display, touch and authenticated recovery ADB remain unresolved.
 
+The user subsequently reported a black screen. Fresh checks still found
+neither the selected ADB/fastboot transport nor a matching Android USB device.
+This rules out a user-observed working UI at that time, but it does not identify
+a kernel, coldboot, recovery-service or graphics failure, or prove that stock
+Android cannot boot. With no USB transport, the next device action requires a
+physical restart. Xiaomi documents Power + Volume Down for fastboot and
+holding Power for more than ten seconds to force an unresponsive phone to
+restart in its [support instructions](https://www.mi.com/uk/support/faq/details/KA-550626/).
+Preserve any fresh saved kernel log before sending the next temporary image.
+
 The subsequent source audit identified another missing root mount point:
 the packaged recovery RC mounts configfs on `/config` without creating the
 directory. Neither the canonical archive nor the sixth trial's prefix contains
