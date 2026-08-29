@@ -100,6 +100,15 @@
     "size_bytes": 74014
   },
   "full_treble_labeling_provided": false,
+  "framework_provider_policy": {
+    "contract_id": "nezha-private-framework-aidl-provider-policy-v1",
+    "contract_path": "config/nezha-framework-provider-policy.json",
+    "default_enabled": false,
+    "factory_inputs_rewritten": false,
+    "native_target": "nezha_factory_oem_policy_check",
+    "provider_inputs_check": "//vendor/xiaomi/nezha-framework-providers:nezha_framework_provider_inputs_check{framework-provider-inputs-checked.json}",
+    "provider_inputs_contract_path": "config/nezha-framework-providers.json"
+  },
   "image_integration_provided": false,
   "native_targets": [
     "nezha_factory_precompiled_sepolicy",

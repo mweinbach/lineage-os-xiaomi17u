@@ -64,6 +64,33 @@ OEM_PROPERTY_SOURCE_PATHS = {
     "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaserver.te",
     "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/property_contexts",
 }
+PROVIDER_POLICY_CONTRACT_PATH = "config/nezha-framework-provider-policy.json"
+PROVIDER_INPUTS_CONTRACT_PATH = "config/nezha-framework-providers.json"
+PROVIDER_INPUTS_RECEIPT_NAME = "framework-provider-inputs.json"
+PROVIDER_INPUTS_RECEIPT_MEMBER = "provenance/framework-provider-inputs.json"
+PROVIDER_INPUTS_CHECK = (
+    "//vendor/xiaomi/nezha-framework-providers:nezha_framework_provider_inputs_check"
+    "{framework-provider-inputs-checked.json}"
+)
+PROVIDER_NATIVE_OUTPUT_RECIPE = {
+    "producer": "nezha_framework_provider_inputs_check",
+    "receipt_output": "framework-provider-inputs-checked.json",
+    "payload_output_prefix": "verified",
+    "consumer_inputs": "verified_producer_outputs",
+    "all_inputs_checked_before_outputs": True,
+}
+PROVIDER_BLOCKS = (
+    ("        // BEGIN OPTIONAL NEZHA FRAMEWORK PROVIDER INPUTS\n",
+     "        // END OPTIONAL NEZHA FRAMEWORK PROVIDER INPUTS\n"),
+    ("         // BEGIN OPTIONAL NEZHA FRAMEWORK PROVIDER ARGUMENTS\n",
+     "         // END OPTIONAL NEZHA FRAMEWORK PROVIDER ARGUMENTS\n"),
+)
+PROVIDER_SOURCE_PATHS = {
+    "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/file_contexts",
+    "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/service_contexts",
+    "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_qccsyshal_qti.te",
+    "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_sigmahal_qti.te",
+}
 FACTORY_RECEIPT_MEMBER = "provenance/factory-policy-capture.json"
 MAX_BUNDLE_BYTES = 32 * 1024 * 1024
 SCOPE = {
@@ -141,16 +168,22 @@ def _read_exact(reader, path, expected):
     return reader.read(path, expected["sha256"], expected["size_bytes"])
 
 
-def _render_blueprint(raw, oem_enabled, properties_enabled=False):
+def _render_blueprint(raw, oem_enabled, properties_enabled=False, providers_enabled=False):
     """Select the explicit OEM check without changing any compiled CIL input."""
     require(not properties_enabled or oem_enabled, "OEM properties require the original OEM source profile")
+    require(not providers_enabled or oem_enabled, "framework providers require the original OEM source profile")
     text = raw.decode("utf-8")
-    for begin, end in OEM_PROPERTY_BLOCKS:
-        require(text.count(begin) == 1 and text.count(end) == 1,
-                "native policy template must contain each reviewed optional property block once")
-        before, rest = text.split(begin)
-        optional, after = rest.split(end)
-        text = before + (optional if properties_enabled else "") + after
+    for blocks, enabled in ((OEM_PROPERTY_BLOCKS, properties_enabled), (PROVIDER_BLOCKS, providers_enabled)):
+        for begin, end in blocks:
+            require(text.count(begin) == 1 and text.count(end) == 1,
+                    "native policy template must contain each reviewed optional profile block once")
+            before, rest = text.split(begin)
+            optional, after = rest.split(end)
+            text = before + (optional if enabled else "") + after
+    tool_sources = '    srcs: ["tools/oem_policy.py", "tools/vendor_policy.py", "tools/artifact_files.py"],'
+    require(text.count(tool_sources) == 1, "native OEM check tool source list differs")
+    if providers_enabled:
+        text = text.replace(tool_sources, tool_sources[:-2] + ', "tools/framework_provider_policy.py"],')
     require(text.count(OEM_BEGIN) == 1 and text.count(OEM_END) == 1,
             "native policy template must contain one reviewed optional OEM block")
     before, rest = text.split(OEM_BEGIN)
@@ -325,6 +358,144 @@ def _oem_property_controls(reader, path, contract, controls, oem_binding):
     return {"path": OEM_PROPERTY_CONTRACT_PATH, **identity(raw)}
 
 
+def _provider_controls(reader, path, contract, controls, oem_binding, properties_enabled=False):
+    if __package__:
+        from . import framework_provider_policy as provider_policy
+    else:
+        import framework_provider_policy as provider_policy
+    require(oem_binding is not None, "provider policy requires an explicitly admitted OEM base")
+    provider = provider_policy.load_contract(path, reader)
+    raw = reader.read(path)
+    _read_exact(reader, ROOT / PROVIDER_POLICY_CONTRACT_PATH, identity(raw))
+    selection = contract.get("framework_provider_policy")
+    require(type(selection) is dict
+            and selection.get("contract_path") == PROVIDER_POLICY_CONTRACT_PATH
+            and selection.get("contract_id") == provider.get("contract_id")
+            and selection.get("provider_inputs_contract_path") == PROVIDER_INPUTS_CONTRACT_PATH
+            and selection.get("provider_inputs_check") == PROVIDER_INPUTS_CHECK
+            and selection.get("native_target") == OEM_CHECK_TARGET
+            and selection.get("default_enabled") is False
+            and selection.get("factory_inputs_rewritten") is False,
+            "provider policy is not selected by the reviewed bundle contract")
+    require(type(provider.get("schema_version")) is int and provider["schema_version"] == 1
+            and provider.get("device") == contract["device"]
+            and provider.get("factory_package_sha256") == contract["package_sha256"]
+            and provider.get("platform") == contract["platform"]
+            and provider.get("scope") == provider_policy.SCOPE,
+            "provider policy must retain the selected device, factory, platform and limited scope")
+    required = provider.get("required_contracts")
+    require(type(required) is dict and set(required) == {"oem_policy", "init_helper", "provider_inputs"},
+            "provider policy requires exact OEM, helper and provider input contracts")
+    require(required["oem_policy"] == {"path": OEM_CONTRACT_PATH, "sha256": oem_binding["sha256"]}
+            and required["init_helper"] == {
+                "path": OEM_CAPABILITY_PATH,
+                "sha256": identity(controls["tools/nezha-init-helper-capability.json"])["sha256"]},
+            "provider policy differs from the admitted OEM base or helper restriction")
+    profile_ref = required["provider_inputs"]
+    require(type(profile_ref) is dict and set(profile_ref) == {"path", "sha256"}
+            and profile_ref["path"] == PROVIDER_INPUTS_CONTRACT_PATH,
+            "provider input profile must be explicit and hash-bound")
+    profile_raw = reader.read(ROOT / PROVIDER_INPUTS_CONTRACT_PATH, profile_ref["sha256"])
+    profile = _json(profile_raw)
+    require(profile.get("factory_package_sha256") == contract["package_sha256"]
+            and profile.get("platform") == contract["platform"]
+            and profile.get("device") == contract["device"],
+            "provider payloads must use the same factory, platform and device")
+    require(profile.get("native_output_recipe") == PROVIDER_NATIVE_OUTPUT_RECIPE
+            and profile["native_output_recipe"].get("all_inputs_checked_before_outputs") is True,
+            "provider image consumers must use verified producer outputs")
+    selected = provider.get("selected_provider_artifacts")
+    payloads = {row["runtime_path"]: row for row in profile["files"]}
+    provider_paths = {row[key] for row in profile["providers"] for key in ("binary", "init_rc", "vintf_fragment")}
+    require(type(selected) is list and len(selected) == len(provider_paths)
+            and {"/system_ext" + row.get("path", "") for row in selected} == provider_paths,
+            "source policy must bind the exact provider binaries and their init/VINTF files")
+    for row in selected:
+        require(_expected(row) == _expected(payloads["/system_ext" + row["path"]]),
+                "source policy provider artifact differs from the input profile")
+    sources = provider.get("source_files")
+    require(type(sources) is list and len(sources) == 4
+            and {row.get("path") for row in sources} == PROVIDER_SOURCE_PATHS,
+            "provider policy must retain its four reviewed private source files")
+    paths = {ROOT / row["path"] for row in sources}
+    for directory in {path.parent for path in paths}:
+        vendor_policy.real_directory(directory)
+        require(set(directory.iterdir()) == {path for path in paths if path.parent == directory},
+                "unreviewed file or directory in provider policy source")
+    contents = {row["path"]: _read_exact(reader, ROOT / row["path"], row) for row in sources}
+    provider_policy.verify_source_contents(contents, provider)
+    controls.update({
+        "tools/framework_provider_policy.py": reader.read(ROOT / "scripts/framework_provider_policy.py"),
+        "tools/nezha-framework-provider-policy.json": raw,
+        "provenance/nezha-framework-providers.json": profile_raw,
+        "provenance/tools/framework_provider_inputs.py": reader.read(ROOT / "scripts/framework_provider_inputs.py"),
+    })
+    controls.update({"provenance/source/" + path: data for path, data in contents.items()})
+    controls["Android.bp"] = _render_blueprint(controls["provenance/Android.bp.template"],
+                                              True, properties_enabled, True)
+    return {"path": PROVIDER_POLICY_CONTRACT_PATH, **identity(raw)}
+
+
+def _provider_inputs(reader, receipt_path, contract, controls, *, output=None):
+    if __package__:
+        from . import framework_provider_inputs as provider_inputs
+    else:
+        import framework_provider_inputs as provider_inputs
+    require(receipt_path is not None, "provider policy requires a fresh external provider bundle verification")
+    receipt_path = Path(os.path.abspath(receipt_path))
+    require(receipt_path.name == PROVIDER_INPUTS_RECEIPT_NAME, "unexpected external provider receipt name")
+    provider_root = vendor_policy.real_directory(receipt_path.parent)
+    require(output is None or not output.is_relative_to(provider_root),
+            "policy staging must not add descendants to the preserved provider bundle")
+    verification = provider_inputs.verify_bundle(provider_root, contract_path=ROOT / PROVIDER_INPUTS_CONTRACT_PATH)
+    require(verification.get("status") == "verified"
+            and verification.get("operation") == "stage-framework-provider-inputs"
+            and verification.get("device") == contract["device"]
+            and verification.get("factory_package_sha256") == contract["package_sha256"]
+            and verification.get("bundle") == provider_inputs.BUNDLE
+            and verification.get("module_package") == provider_inputs.MODULE_PACKAGE
+            and verification.get("native_check_target") == PROVIDER_NATIVE_OUTPUT_RECIPE["producer"]
+            and verification.get("native_output_recipe") == PROVIDER_NATIVE_OUTPUT_RECIPE
+            and verification["native_output_recipe"].get("all_inputs_checked_before_outputs") is True
+            and verification.get("scope") == provider_inputs.SCOPE
+            and verification.get("contract") == identity(controls["provenance/nezha-framework-providers.json"]),
+            "external provider verification differs from the admitted source capability")
+    require(verification.get("receipt", {}).get("path") == PROVIDER_INPUTS_RECEIPT_NAME,
+            "provider verification must bind its exact external receipt")
+    controls[PROVIDER_INPUTS_RECEIPT_MEMBER] = _read_exact(reader, receipt_path, verification["receipt"])
+    files = verification.get("files")
+    require(type(files) is list and files
+            and len({row.get("path") for row in files}) == len(files),
+            "provider verification must bind every unique private input")
+    # The provider verifier has its own final recheck. Bind its exact members to
+    # this operation too, so no provider file can change before policy publish.
+    for row in files:
+        _read_exact(reader, provider_root / _relative(row["path"]), row)
+    _provider_inventory(receipt_path, verification)
+    return copy.deepcopy(verification)
+
+
+def _provider_inventory(receipt_path, verification):
+    """Recheck the external namespace as well as its already bound files."""
+    root = vendor_policy.real_directory(Path(os.path.abspath(receipt_path)).parent)
+    expected_files = {_relative(row["path"]) for row in verification["files"]} | {PROVIDER_INPUTS_RECEIPT_NAME}
+    expected_directories = {parent.as_posix() for name in expected_files
+                            for parent in PurePosixPath(name).parents if parent != PurePosixPath(".")}
+    seen_files, seen_directories = set(), set()
+    for parent, directories, files in os.walk(root, followlinks=False):
+        for name in [*directories, *files]:
+            path = Path(parent) / name
+            mode = path.lstat().st_mode
+            relative = path.relative_to(root).as_posix()
+            if stat.S_ISDIR(mode):
+                seen_directories.add(relative)
+            else:
+                require(stat.S_ISREG(mode), "external provider bundle contains a symlink or special file")
+                seen_files.add(relative)
+    require(seen_files == expected_files and seen_directories == expected_directories,
+            "external provider bundle inventory changed during policy verification")
+
+
 def _capture(reader, receipt_path, contract):
     raw = _read_exact(reader, receipt_path, contract["factory_policy_capture"])
     capture = _json(raw)
@@ -354,7 +525,8 @@ def _capture(reader, receipt_path, contract):
     return raw
 
 
-def _manifest(contract, correction, files, stage_tool, oem_binding=None, property_binding=None):
+def _manifest(contract, correction, files, stage_tool, oem_binding=None, property_binding=None,
+              provider_binding=None, provider_inputs=None):
     result = {
         "schema_version": 1, "operation": "stage-nezha-policy-inputs", "status": "staged",
         "device": "nezha", "bundle": BUNDLE_PATH,
@@ -374,6 +546,13 @@ def _manifest(contract, correction, files, stage_tool, oem_binding=None, propert
     if property_binding is not None:
         require(oem_binding is not None, "property receipt requires the explicit OEM base")
         result["oem_property_contract"] = copy.deepcopy(property_binding)
+    require((provider_binding is None) == (provider_inputs is None),
+            "provider source and verified input receipt must be recorded together")
+    if provider_binding is not None:
+        require(oem_binding is not None, "provider receipt requires the explicit OEM base")
+        result["framework_provider_policy_contract"] = copy.deepcopy(provider_binding)
+        result["framework_provider_inputs"] = copy.deepcopy(provider_inputs)
+        result["native_targets"].append(PROVIDER_NATIVE_OUTPUT_RECIPE["producer"])
     return result
 
 
@@ -389,11 +568,13 @@ def _members(bundle):
     return paths
 
 
-def verify_bundle(bundle):
+def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
     """Verify a relocated bundle against current reviewed workspace controls.
 
     The caller must supply a trusted copy of this workspace's control files;
     a self-reported bundle receipt is never the authority for input hashes.
+    Provider profiles additionally require the actual external provider receipt
+    so its private bytes and namespace can be verified again after transfer.
     """
     bundle = vendor_policy.real_directory(bundle)
     reader = vendor_policy.Reader()
@@ -416,6 +597,21 @@ def verify_bundle(bundle):
                                                  contract, controls, oem_binding)
         require(receipt["oem_property_contract"] == property_binding,
                 "OEM property receipt differs from trusted controls")
+    provider_binding, provider_inputs = None, None
+    has_providers = "framework_provider_policy_contract" in receipt
+    require(has_providers == ("framework_provider_inputs" in receipt)
+            and has_providers == (framework_provider_inputs_receipt is not None),
+            "provider policy verification requires its explicit external input receipt")
+    if has_providers:
+        require(type(receipt["framework_provider_policy_contract"]) is dict
+                and receipt["framework_provider_policy_contract"].get("path") == PROVIDER_POLICY_CONTRACT_PATH,
+                "unexpected provider policy receipt binding")
+        provider_binding = _provider_controls(reader, ROOT / PROVIDER_POLICY_CONTRACT_PATH, contract,
+                                               controls, oem_binding, property_binding is not None)
+        provider_inputs = _provider_inputs(reader, framework_provider_inputs_receipt, contract, controls)
+        require(receipt["framework_provider_policy_contract"] == provider_binding
+                and receipt["framework_provider_inputs"] == provider_inputs,
+                "provider receipt differs from the source capability or reverified external inputs")
     expected = dict(controls)
     expected[FACTORY_RECEIPT_MEMBER] = _capture(reader, bundle / FACTORY_RECEIPT_MEMBER, contract)
     for row in correction["inputs"]:
@@ -426,9 +622,12 @@ def verify_bundle(bundle):
     for member, data in controls.items():
         _read_exact(reader, bundle / member, identity(data))
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
-    require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding, property_binding),
+    require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding, property_binding,
+                                provider_binding, provider_inputs),
             "policy-input receipt differs from the reviewed files or scope")
     require(_members(bundle) == set(expected) | {RECEIPT_NAME}, "bundle has missing or unexpected files")
+    if provider_inputs is not None:
+        _provider_inventory(framework_provider_inputs_receipt, provider_inputs)
     reader.recheck()
     return {
         "schema_version": 1, "operation": "verify-nezha-policy-inputs", "status": "verified",
@@ -438,6 +637,8 @@ def verify_bundle(bundle):
         "receipt": {"path": RECEIPT_NAME, **identity(raw)},
         "oem_policy_contract": copy.deepcopy(oem_binding),
         "oem_property_contract": copy.deepcopy(property_binding),
+        "framework_provider_policy_contract": copy.deepcopy(provider_binding),
+        "framework_provider_inputs": copy.deepcopy(provider_inputs),
         "scope": copy.deepcopy(SCOPE),
     }
 
@@ -455,12 +656,17 @@ def _output_path(output):
 
 
 def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_policy_receipt=None,
-                 oem_policy_contract=None, oem_property_contract=None):
+                 oem_policy_contract=None, oem_property_contract=None,
+                 framework_provider_policy_contract=None, framework_provider_inputs_receipt=None):
     """Publish a fresh private bundle atomically; originals remain untouched."""
     require((factory_capture_root is None) != (factory_policy_receipt is None),
             "choose exactly one factory capture root or receipt")
     require(oem_property_contract is None or oem_policy_contract is not None,
             "the property profile requires an explicit OEM base contract")
+    require((framework_provider_policy_contract is None) == (framework_provider_inputs_receipt is None),
+            "select provider policy and the verified external provider input receipt together")
+    require(framework_provider_policy_contract is None or oem_policy_contract is not None,
+            "provider policy requires an explicit OEM base contract")
     output, parent = _output_path(output)
     corpus_root = vendor_policy.real_directory(corpus_root)
     if factory_capture_root is not None:
@@ -479,6 +685,12 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     property_binding = None
     if oem_property_contract is not None:
         property_binding = _oem_property_controls(reader, oem_property_contract, contract, controls, oem_binding)
+    provider_binding, provider_inputs = None, None
+    if framework_provider_policy_contract is not None:
+        provider_binding = _provider_controls(reader, framework_provider_policy_contract, contract,
+                                               controls, oem_binding, property_binding is not None)
+        provider_inputs = _provider_inputs(reader, framework_provider_inputs_receipt, contract, controls,
+                                            output=output)
     files = dict(controls)
     files[FACTORY_RECEIPT_MEMBER] = _capture(reader, receipt_path, contract)
     for row in correction["inputs"]:
@@ -488,7 +700,8 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
         files[row["path"]] = _read_exact(reader, capture_root / row["capture_path"], row)
     require(sum(len(data) for data in files.values()) <= MAX_BUNDLE_BYTES, "policy bundle exceeds its byte limit")
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
-    receipt = _manifest(contract, correction, files, stage_tool, oem_binding, property_binding)
+    receipt = _manifest(contract, correction, files, stage_tool, oem_binding, property_binding,
+                        provider_binding, provider_inputs)
     files[RECEIPT_NAME] = encoded(receipt)
     required_bytes = sum(len(data) for data in files.values())
     require(shutil.disk_usage(parent).free >= required_bytes + 16 * 1024 * 1024,
@@ -510,7 +723,12 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
                 stream.flush()
                 os.fsync(stream.fileno())
         # Readback checks use exact controls and bytes, before exclusive publish.
-        verify_bundle(staging)
+        if framework_provider_inputs_receipt is None:
+            verify_bundle(staging)
+        else:
+            verify_bundle(staging, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
+        if provider_inputs is not None:
+            _provider_inventory(framework_provider_inputs_receipt, provider_inputs)
         reader.recheck()
         require(vendor_policy.real_directory(parent) == parent, "output parent changed during staging")
         publish_new_directory(staging, output)
@@ -534,17 +752,26 @@ def main(argv=None):
                        help="explicit reviewed OEM source restoration and native output checks")
     stage.add_argument("--oem-property-contract", type=Path,
                        help="explicit four-property source profile; requires the OEM base contract")
+    stage.add_argument("--framework-provider-policy-contract", type=Path,
+                       help="explicit private provider source policy; requires OEM and external provider inputs")
+    stage.add_argument("--framework-provider-inputs-receipt", type=Path,
+                       help="separate provider bundle receipt, reverified before policy publication")
     verify = commands.add_parser("verify", help="verify every transferred file against reviewed workspace controls")
     verify.add_argument("--bundle", required=True, type=Path)
+    verify.add_argument("--framework-provider-inputs-receipt", type=Path,
+                        help="required for provider profiles; reverify the actual external provider bundle")
     args = parser.parse_args(argv)
     try:
         if args.command == "stage":
             result = stage_inputs(args.corpus_root, args.output, factory_capture_root=args.factory_capture_root,
                                   factory_policy_receipt=args.factory_policy_receipt,
                                   oem_policy_contract=args.oem_policy_contract,
-                                  oem_property_contract=args.oem_property_contract)
+                                  oem_property_contract=args.oem_property_contract,
+                                  framework_provider_policy_contract=args.framework_provider_policy_contract,
+                                  framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)
         else:
-            result = verify_bundle(args.bundle)
+            result = verify_bundle(args.bundle,
+                                   framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)
     except (ValueError, OSError) as exc:
         print(json.dumps({"status": "failed", "error": str(exc)}), file=sys.stderr)
         return 2

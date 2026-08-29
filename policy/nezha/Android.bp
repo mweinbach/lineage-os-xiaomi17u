@@ -252,6 +252,13 @@ java_genrule {
         "tools/nezha-oem-properties.json",
         ":system_ext_property_contexts",
         // END OPTIONAL NEZHA OEM PROPERTY INPUTS
+        // BEGIN OPTIONAL NEZHA FRAMEWORK PROVIDER INPUTS
+        "tools/framework_provider_policy.py",
+        "tools/nezha-framework-provider-policy.json",
+        ":system_ext_file_contexts",
+        ":system_ext_service_contexts",
+        "//vendor/xiaomi/nezha-framework-providers:nezha_framework_provider_inputs_check{framework-provider-inputs-checked.json}",
+        // END OPTIONAL NEZHA FRAMEWORK PROVIDER INPUTS
     ],
     out: ["oem-policy-native-check.json"],
     cmd: "$(location nezha_oem_policy_check_tool) check-native " +
@@ -272,6 +279,11 @@ java_genrule {
          "--property-contract $$(readlink -f $(location tools/nezha-oem-properties.json)) " +
          "--system-ext-property-contexts $$(readlink -f $(location :system_ext_property_contexts)) " +
          // END OPTIONAL NEZHA OEM PROPERTY ARGUMENTS
+         // BEGIN OPTIONAL NEZHA FRAMEWORK PROVIDER ARGUMENTS
+         "--provider-contract $$(readlink -f $(location tools/nezha-framework-provider-policy.json)) " +
+         "--system-ext-file-contexts $$(readlink -f $(location :system_ext_file_contexts)) " +
+         "--system-ext-service-contexts $$(readlink -f $(location :system_ext_service_contexts)) " +
+         // END OPTIONAL NEZHA FRAMEWORK PROVIDER ARGUMENTS
          "--tool-source $$(readlink -f $(location tools/oem_policy.py)) " +
          "--output $$(readlink -f $(genDir))/oem-policy-native-check.json",
 }

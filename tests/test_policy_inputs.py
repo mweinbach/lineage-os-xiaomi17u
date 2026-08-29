@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import shutil
 import stat
+import struct
 import tempfile
 import unittest
 from unittest import mock
@@ -26,6 +27,24 @@ CORPUS_PATHS = [
     "/vendor/etc/selinux/plat_pub_versioned.cil", "/vendor/etc/selinux/vendor_sepolicy.cil",
     "/odm/etc/selinux/odm_sepolicy.cil", "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
 ]
+
+
+def provider_elf():
+    """A synthetic ARM64 PIE with one DT_NEEDED entry; never executed."""
+    raw = bytearray(0x800)
+    raw[:16] = b"\x7fELF\x02\x01\x01" + b"\0" * 9
+    strings = b"\0libc.so\0"
+    dynamic = [(1, 1), (5, 0x500), (10, len(strings)), (0, 0)]
+    interpreter = b"/system/bin/linker64\0"
+    struct.pack_into("<HHIQQQIHHHHHH", raw, 16, 3, 183, 1, 0x400, 64, 0, 0, 64, 56, 3, 0, 0, 0)
+    struct.pack_into("<IIQQQQQQ", raw, 64, 1, 5, 0, 0, 0, len(raw), len(raw), 4096)
+    struct.pack_into("<IIQQQQQQ", raw, 120, 2, 6, 0x200, 0x200, 0, len(dynamic) * 16, len(dynamic) * 16, 8)
+    struct.pack_into("<IIQQQQQQ", raw, 176, 3, 4, 0x400, 0x400, 0, len(interpreter), len(interpreter), 1)
+    for index, pair in enumerate(dynamic):
+        struct.pack_into("<qQ", raw, 0x200 + index * 16, *pair)
+    raw[0x400:0x400 + len(interpreter)] = interpreter
+    raw[0x500:0x500 + len(strings)] = strings
+    return bytes(raw)
 
 
 class PolicyInputsTests(unittest.TestCase):
@@ -132,6 +151,8 @@ class PolicyInputsTests(unittest.TestCase):
         self.assertIsNone(verified["oem_policy_contract"])
         self.assertNotIn("oem_property_contract", result)
         self.assertIsNone(verified["oem_property_contract"])
+        self.assertIsNone(verified["framework_provider_policy_contract"])
+        self.assertIsNone(verified["framework_provider_inputs"])
         self.assertTrue(result["readback_verified"])
         self.assertFalse(result["scope"]["policy_compiled"])
         self.assertFalse(result["scope"]["contexts_validated"])
@@ -523,7 +544,7 @@ class PolicyInputsTests(unittest.TestCase):
         invalid = [original.replace(policy.OEM_BEGIN.encode(), b""),
                    original + policy.OEM_BEGIN.encode(),
                    original.replace(b'required: ["sepolicy_neverallows"]', b'required: []')]
-        for pair in policy.OEM_PROPERTY_BLOCKS:
+        for pair in (*policy.OEM_PROPERTY_BLOCKS, *policy.PROVIDER_BLOCKS):
             for marker in pair:
                 invalid.extend([original.replace(marker.encode(), b""), original + marker.encode()])
         for raw in invalid:
@@ -709,6 +730,377 @@ class PolicyInputsTests(unittest.TestCase):
         self.assertEqual(result["oem_property_contract"]["path"], policy.OEM_PROPERTY_CONTRACT_PATH)
         self.assertEqual(result["scope"], policy.SCOPE)
 
+    def install_provider_fixture(self, *, properties=False):
+        from scripts import framework_provider_inputs as inputs
+        from scripts import framework_provider_policy as source
+        self.install_property_fixture() if properties else self.install_oem_fixture()
+        self.with_provider_properties = properties
+        self.provider_source = copy.deepcopy(json.loads((WORKSPACE / policy.PROVIDER_POLICY_CONTRACT_PATH).read_bytes()))
+        actual_profile = json.loads((WORKSPACE / policy.PROVIDER_INPUTS_CONTRACT_PATH).read_bytes())
+        self.provider_profile = {
+            "schema_version": 1, "device": "nezha", "bundle": inputs.BUNDLE,
+            "module_package": inputs.MODULE_PACKAGE, "platform": copy.deepcopy(self.config["platform"]),
+            "factory_package_sha256": self.package,
+            "factory_image": {"partition": "system_ext", "sha256": "b" * 64, "size_bytes": 1234567},
+            "source_lock": {"path": "config/provider-source-lock.json", **policy.identity(b"provider fixture lock\n")},
+            "captures": {}, "files": [], "providers": copy.deepcopy(actual_profile["providers"]),
+            "source_dependencies": {"libc.so": "libc"}, "source_replacements": [],
+            "required_source_patches": [], "runtime_requirements": ["Synthetic inputs; runtime not tested."],
+            "native_output_recipe": copy.deepcopy(inputs.NATIVE_OUTPUT_RECIPE), "scope": copy.deepcopy(inputs.SCOPE),
+        }
+        (self.workspace / "config/provider-source-lock.json").write_bytes(b"provider fixture lock\n")
+        capture = self.root / "provider-capture"
+        capture.mkdir()
+        receipt = {"schema_version": 1, "operation": "erofs-capture",
+                   "image": {"sha256": "b" * 64, "size_bytes": 1234567},
+                   "image_mounted": False, "firmware_executed": False, "symlinks_followed": False, "files": []}
+        self.provider_source["selected_provider_artifacts"] = []
+        for index, provider in enumerate(self.provider_profile["providers"]):
+            payloads = {
+                "binary": provider_elf(),
+                "init_rc": ("service " + provider["init_service"] + " " + provider["binary"]
+                            + "\n    class hal\n    user system\n").encode(),
+                "vintf_fragment": ('<manifest version="9.0" type="framework"><hal format="aidl"><name>'
+                                   + provider["hal"] + '</name><fqname>' + provider["interface"] + '/'
+                                   + provider["instance"] + '</fqname></hal></manifest>\n').encode(),
+            }
+            for kind, data in payloads.items():
+                runtime = provider[kind]
+                relative = str(index) + "-" + kind
+                (capture / relative).write_bytes(data)
+                mode = "0755" if kind == "binary" else "0644"
+                row = {"runtime_path": runtime, "kind": kind, "capture": "fixture", "capture_path": relative,
+                       "mode": mode, **policy.identity(data)}
+                if kind == "binary":
+                    row.update(module="nezha_framework_fixture_" + str(index), needed=["libc.so"], soname=None)
+                self.provider_profile["files"].append(row)
+                receipt["files"].append({"path": runtime.removeprefix("/system_ext"), "output_path": relative,
+                                          "type": "regular", "mode": mode, "readback_verified": True,
+                                          **policy.identity(data)})
+                self.provider_source["selected_provider_artifacts"].append({
+                    "path": runtime.removeprefix("/system_ext"), **policy.identity(data)})
+        capture_raw = policy.encoded(receipt)
+        (capture / "capture.json").write_bytes(capture_raw)
+        self.provider_profile["captures"]["fixture"] = {"path": "capture.json", **policy.identity(capture_raw)}
+        self.provider_source["factory_package_sha256"] = self.package
+        self.provider_source["required_contracts"]["oem_policy"]["sha256"] = policy.identity(self.oem_path.read_bytes())["sha256"]
+        self.provider_source["required_contracts"]["init_helper"]["sha256"] = policy.identity(
+            (self.workspace / policy.OEM_CAPABILITY_PATH).read_bytes())["sha256"]
+        self.config["framework_provider_policy"] = {
+            "contract_id": self.provider_source["contract_id"], "contract_path": policy.PROVIDER_POLICY_CONTRACT_PATH,
+            "provider_inputs_contract_path": policy.PROVIDER_INPUTS_CONTRACT_PATH,
+            "provider_inputs_check": policy.PROVIDER_INPUTS_CHECK, "native_target": policy.OEM_CHECK_TARGET,
+            "default_enabled": False, "factory_inputs_rewritten": False,
+        }
+        for row in self.provider_source["source_files"]:
+            path = self.workspace / row["path"]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((WORKSPACE / row["path"]).read_bytes())
+        for name in ("framework_provider_policy", "framework_provider_inputs"):
+            (self.workspace / ("scripts/" + name + ".py")).write_bytes(b"synthetic provider control source\n")
+        self.provider_source_path = self.workspace / policy.PROVIDER_POLICY_CONTRACT_PATH
+        self.write_provider_contracts()
+        self.enterContext(mock.patch.object(inputs, "ROOT", self.workspace))
+        self.provider_bundle = self.workspace / "artifacts/provider-bundle"
+        self.provider_bundle.parent.mkdir(exist_ok=True)
+        # Use the real external stager/verifier over synthetic ELF, XML and
+        # capture files. No mocked admission result or firmware process is used.
+        inputs.stage_inputs(capture, self.provider_bundle)
+        self.provider_receipt = self.provider_bundle / inputs.RECEIPT
+        self.original_provider_files = {path.relative_to(self.provider_bundle): path.read_bytes()
+                                       for path in self.provider_bundle.rglob("*") if path.is_file()}
+        return inputs, source
+
+    def write_provider_contracts(self):
+        from scripts import framework_provider_policy as source
+        self.write_contracts()
+        profile_raw = policy.encoded(self.provider_profile)
+        (self.workspace / policy.PROVIDER_INPUTS_CONTRACT_PATH).write_bytes(profile_raw)
+        self.provider_source["required_contracts"]["provider_inputs"]["sha256"] = policy.identity(profile_raw)["sha256"]
+        source_raw = policy.encoded(self.provider_source)
+        self.provider_source_path.write_bytes(source_raw)
+        self.enterContext(mock.patch.object(source, "CONTRACT_SHA256", policy.identity(source_raw)["sha256"]))
+
+    def stage_providers(self, output=None):
+        return policy.stage_inputs(
+            self.corpus, output or self.output, factory_policy_receipt=self.receipt_path,
+            oem_policy_contract=self.oem_path,
+            oem_property_contract=self.property_path if self.with_provider_properties else None,
+            framework_provider_policy_contract=self.provider_source_path,
+            framework_provider_inputs_receipt=self.provider_receipt)
+
+    def verify_providers(self, output=None, receipt=None):
+        return policy.verify_bundle(output or self.output,
+                                    framework_provider_inputs_receipt=receipt or self.provider_receipt)
+
+    def test_provider_profile_reverifies_real_synthetic_bundle_and_preserves_both_input_sets(self):
+        inputs, _ = self.install_provider_fixture()
+        result = self.stage_providers()
+        verified = self.verify_providers()
+        provider = inputs.verify_bundle(self.provider_bundle)
+        self.assertEqual(result["framework_provider_inputs"], provider)
+        self.assertEqual(verified["framework_provider_inputs"], provider)
+        self.assertEqual(result["framework_provider_policy_contract"], {
+            "path": policy.PROVIDER_POLICY_CONTRACT_PATH, **policy.identity(self.provider_source_path.read_bytes())})
+        self.assertEqual(len(result["files"]), 45)
+        self.assertEqual(result["native_targets"].count(inputs.CHECK), 1)
+        self.assertNotIn("oem_property_contract", result)
+        self.assertEqual(verified["scope"], policy.SCOPE)
+        for relative, data in self.original_provider_files.items():
+            self.assertEqual((self.provider_bundle / relative).read_bytes(), data)
+        for path, data in self.originals.items():
+            self.assertEqual(path.read_bytes(), data)
+        self.assertFalse(any(row["path"].startswith("proprietary/") for row in result["files"]))
+
+    def test_provider_profile_composes_with_explicit_properties_without_enabling_them_implicitly(self):
+        self.install_provider_fixture(properties=True)
+        result = self.stage_providers()
+        verified = self.verify_providers()
+        self.assertEqual(len(result["files"]), 50)
+        self.assertEqual(verified["oem_property_contract"]["path"], policy.OEM_PROPERTY_CONTRACT_PATH)
+        self.assertEqual(verified["framework_provider_policy_contract"]["path"], policy.PROVIDER_POLICY_CONTRACT_PATH)
+        text = (self.output / "Android.bp").read_text()
+        self.assertIn("--property-contract", text)
+        self.assertIn("--provider-contract", text)
+        self.assertEqual(result["scope"], policy.SCOPE)
+
+    def test_provider_opt_in_requires_base_source_and_external_receipt_together(self):
+        self.install_provider_fixture()
+        options = {"factory_policy_receipt": self.receipt_path, "oem_policy_contract": self.oem_path,
+                   "framework_provider_policy_contract": self.provider_source_path,
+                   "framework_provider_inputs_receipt": self.provider_receipt}
+        for key in ("oem_policy_contract", "framework_provider_policy_contract", "framework_provider_inputs_receipt"):
+            selected = {**options, key: None}
+            self.assert_rejected(lambda: policy.stage_inputs(self.corpus, self.output, **selected))
+            self.assertFalse(self.output.exists())
+
+    def test_legacy_oem_and_property_profiles_never_admit_or_read_provider_inputs(self):
+        inputs, _ = self.install_provider_fixture(properties=True)
+        with mock.patch.object(inputs, "verify_bundle", side_effect=AssertionError("unexpected provider admission")):
+            for name, stage, count in (("legacy", self.stage, 31), ("oem", self.stage_oem, 36),
+                                       ("properties", self.stage_properties, 41)):
+                output = self.root / name
+                result = stage(output)
+                verified = policy.verify_bundle(output)
+                self.assertEqual(len(result["files"]), count)
+                self.assertNotIn("framework_provider_policy_contract", result)
+                self.assertNotIn("framework_provider_inputs", result)
+                self.assertIsNone(verified["framework_provider_policy_contract"])
+                self.assertIsNone(verified["framework_provider_inputs"])
+                self.assertFalse((output / "tools/framework_provider_policy.py").exists())
+                self.assertNotIn("--provider-contract", (output / "Android.bp").read_text())
+
+    def test_provider_verification_requires_the_actual_external_bundle_every_time(self):
+        self.install_provider_fixture()
+        self.stage_providers()
+        self.assert_rejected(lambda: policy.verify_bundle(self.output))
+        self.assert_rejected(lambda: self.verify_providers(receipt=self.root / policy.PROVIDER_INPUTS_RECEIPT_NAME))
+        self.assert_rejected(lambda: self.verify_providers(receipt=self.provider_bundle / "wrong-name.json"))
+        self.assertEqual(self.verify_providers()["status"], "verified")
+        legacy = self.root / "legacy"
+        self.stage(legacy)
+        self.assert_rejected(lambda: policy.verify_bundle(legacy, framework_provider_inputs_receipt=self.provider_receipt))
+
+    def test_old_or_loose_provider_output_recipe_is_not_an_admitted_image_dependency(self):
+        self.install_provider_fixture()
+        original = copy.deepcopy(self.provider_profile["native_output_recipe"])
+        for recipe in (None, {**original, "consumer_inputs": "raw_filegroups"},
+                       {**original, "all_inputs_checked_before_outputs": False},
+                       {**original, "all_inputs_checked_before_outputs": 1},
+                       {**original, "producer": "unreviewed"}):
+            if recipe is None:
+                self.provider_profile.pop("native_output_recipe")
+            else:
+                self.provider_profile["native_output_recipe"] = recipe
+            self.write_provider_contracts()
+            self.assert_rejected(self.stage_providers)
+            self.assertFalse(self.output.exists())
+
+    def test_provider_source_contract_cannot_change_factory_platform_base_helper_or_scope(self):
+        self.install_provider_fixture()
+        original = copy.deepcopy(self.provider_source)
+        mutations = [lambda c: c.update(factory_package_sha256="b" * 64),
+                     lambda c: c.update(device="other"),
+                     lambda c: c["platform"].update(branch="newer"),
+                     lambda c: c["required_contracts"]["oem_policy"].update(sha256="b" * 64),
+                     lambda c: c["required_contracts"]["init_helper"].update(sha256="b" * 64),
+                     lambda c: c["scope"].update(complete_rom_admitted=True)]
+        for mutate in mutations:
+            self.provider_source = copy.deepcopy(original)
+            mutate(self.provider_source)
+            self.write_provider_contracts()
+            self.assert_rejected(self.stage_providers)
+            self.assertFalse(self.output.exists())
+
+    def test_provider_source_artifacts_must_match_actual_selected_inputs(self):
+        self.install_provider_fixture()
+        original = copy.deepcopy(self.provider_source["selected_provider_artifacts"])
+        for selected in (original[:-1], [*original, original[0]],
+                         [{**original[0], "sha256": "b" * 64}, *original[1:]]):
+            self.provider_source["selected_provider_artifacts"] = selected
+            self.write_provider_contracts()
+            self.assert_rejected(self.stage_providers)
+            self.assertFalse(self.output.exists())
+
+    def test_provider_source_statement_budget_survives_repinned_bytes_and_extra_files(self):
+        self.install_provider_fixture()
+        row = next(row for row in self.provider_source["source_files"] if row["path"].endswith("vendor_sigmahal_qti.te"))
+        source = self.workspace / row["path"]
+        original = source.read_bytes()
+        source.write_bytes(original + b"allow vendor_sigmahal_qti self:capability sys_admin;\n")
+        row.update(policy.identity(source.read_bytes()))
+        self.write_provider_contracts()
+        self.assert_rejected(self.stage_providers)
+        self.assertFalse(self.output.exists())
+        source.write_bytes(original)
+        row.update(policy.identity(original))
+        self.write_provider_contracts()
+        source.with_name("unreviewed.te").write_bytes(b"type unreviewed_provider, domain;\n")
+        self.assert_rejected(self.stage_providers)
+        self.assertFalse(self.output.exists())
+
+    def test_provider_native_selection_cannot_drop_the_tagged_byte_guard(self):
+        self.install_provider_fixture()
+        selection = self.config["framework_provider_policy"]
+        selection["provider_inputs_check"] = policy.PROVIDER_INPUTS_CHECK.split("{", 1)[0]
+        self.write_provider_contracts()
+        self.assert_rejected(self.stage_providers)
+        self.assertFalse(self.output.exists())
+
+    def test_provider_receipt_binding_cannot_be_removed_or_forged(self):
+        self.install_provider_fixture()
+        self.stage_providers()
+        path = self.output / policy.RECEIPT_NAME
+        original = json.loads(path.read_bytes())
+        for field in ("framework_provider_policy_contract", "framework_provider_inputs"):
+            receipt = copy.deepcopy(original)
+            del receipt[field]
+            path.write_bytes(policy.encoded(receipt))
+            self.assert_rejected(self.verify_providers)
+        receipt = copy.deepcopy(original)
+        receipt["framework_provider_inputs"]["receipt"]["sha256"] = "b" * 64
+        path.write_bytes(policy.encoded(receipt))
+        self.assert_rejected(self.verify_providers)
+        receipt = copy.deepcopy(original)
+        receipt["framework_provider_policy_contract"]["sha256"] = "b" * 64
+        path.write_bytes(policy.encoded(receipt))
+        self.assert_rejected(self.verify_providers)
+        receipt = copy.deepcopy(original)
+        del receipt["framework_provider_policy_contract"]
+        del receipt["framework_provider_inputs"]
+        path.write_bytes(policy.encoded(receipt))
+        self.assert_rejected(lambda: policy.verify_bundle(self.output))
+
+    def test_provider_payload_mutation_is_not_hidden_by_its_copied_receipt(self):
+        self.install_provider_fixture()
+        self.stage_providers()
+        row = self.provider_profile["files"][0]
+        path = self.provider_bundle / ("proprietary" + row["runtime_path"])
+        path.write_bytes(path.read_bytes() + b"unreviewed")
+        self.assert_rejected(self.verify_providers)
+
+    def test_provider_inputs_changed_after_readback_prevent_policy_publication(self):
+        self.install_provider_fixture()
+        verify = policy.verify_bundle
+
+        def change_after_readback(*args, **kwargs):
+            result = verify(*args, **kwargs)
+            path = self.provider_bundle / ("proprietary" + self.provider_profile["files"][0]["runtime_path"])
+            path.write_bytes(b"changed after provider and policy readback")
+            return result
+
+        with mock.patch.object(policy, "verify_bundle", side_effect=change_after_readback):
+            self.assert_rejected(self.stage_providers)
+        self.assertFalse(self.output.exists())
+        self.assertEqual(list(self.root.glob(".nezha-policy-inputs-*")), [])
+
+    def test_late_provider_file_or_empty_directory_prevents_policy_publication(self):
+        self.install_provider_fixture()
+        verify = policy.verify_bundle
+        extra = self.provider_bundle / "unreviewed"
+        for directory in (False, True):
+            with self.subTest(directory=directory):
+                def change_after_readback(*args, **kwargs):
+                    result = verify(*args, **kwargs)
+                    if directory:
+                        extra.mkdir()
+                    else:
+                        extra.write_bytes(b"unreviewed provider bundle member\n")
+                    return result
+
+                with mock.patch.object(policy, "verify_bundle", side_effect=change_after_readback):
+                    self.assert_rejected(self.stage_providers)
+                self.assertFalse(self.output.exists())
+                self.assertEqual(list(self.root.glob(".nezha-policy-inputs-*")), [])
+                extra.rmdir() if directory else extra.unlink()
+                for relative, original in self.original_provider_files.items():
+                    self.assertEqual((self.provider_bundle / relative).read_bytes(), original)
+
+    def test_late_provider_inventory_change_is_rejected_by_standalone_verification(self):
+        self.install_provider_fixture()
+        self.stage_providers()
+        members = policy._members
+
+        def add_after_policy_inventory(*args):
+            result = members(*args)
+            (self.provider_bundle / "unreviewed").mkdir()
+            return result
+
+        with mock.patch.object(policy, "_members", side_effect=add_after_policy_inventory):
+            self.assert_rejected(self.verify_providers)
+
+    def test_policy_output_cannot_change_the_provider_bundle_inventory(self):
+        self.install_provider_fixture()
+        destination = self.provider_bundle / "nested-policy"
+        self.assert_rejected(lambda: self.stage_providers(destination))
+        self.assertFalse(destination.exists())
+
+    def test_both_bundles_can_move_and_still_verify_without_host_paths(self):
+        self.install_provider_fixture()
+        self.stage_providers()
+        original = self.verify_providers()
+        relocated_policy, relocated_inputs = self.root / "relocated-policy", self.root / "relocated-inputs"
+        shutil.copytree(self.output, relocated_policy)
+        shutil.copytree(self.provider_bundle, relocated_inputs)
+        relocated = self.verify_providers(relocated_policy, relocated_inputs / policy.PROVIDER_INPUTS_RECEIPT_NAME)
+        self.assertEqual(original, relocated)
+        self.assertNotIn(str(self.root), json.dumps(relocated))
+
+    def test_transferred_provider_sources_controls_and_receipt_are_rehashed(self):
+        self.install_provider_fixture()
+        self.stage_providers()
+        members = ["tools/framework_provider_policy.py", "tools/nezha-framework-provider-policy.json",
+                   "provenance/nezha-framework-providers.json", "provenance/tools/framework_provider_inputs.py",
+                   policy.PROVIDER_INPUTS_RECEIPT_MEMBER,
+                   *["provenance/source/" + row["path"] for row in self.provider_source["source_files"]]]
+        for member in members:
+            path = self.output / member
+            original = path.read_bytes()
+            with self.subTest(member=member):
+                path.write_bytes(original + b"changed")
+                self.assert_rejected(self.verify_providers)
+                path.write_bytes(original)
+
+    def test_provider_cli_requires_external_reverification_and_keeps_build_claims_false(self):
+        self.install_provider_fixture()
+        stdout = io.StringIO()
+        with mock.patch("sys.stdout", stdout):
+            code = policy.main(["stage", "--corpus-root", str(self.corpus), "--factory-policy-receipt",
+                                str(self.receipt_path), "--output", str(self.output),
+                                "--oem-policy-contract", str(self.oem_path),
+                                "--framework-provider-policy-contract", str(self.provider_source_path),
+                                "--framework-provider-inputs-receipt", str(self.provider_receipt)])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(stdout.getvalue())["scope"], policy.SCOPE)
+        stdout = io.StringIO()
+        with mock.patch("sys.stdout", stdout):
+            code = policy.main(["verify", "--bundle", str(self.output),
+                                "--framework-provider-inputs-receipt", str(self.provider_receipt)])
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(stdout.getvalue())["scope"], policy.SCOPE)
+        with mock.patch("sys.stderr", io.StringIO()):
+            self.assertEqual(policy.main(["verify", "--bundle", str(self.output)]), 2)
+
 
 class NativePolicyTemplateTests(unittest.TestCase):
     def test_current_public_controls_load_without_private_inputs(self):
@@ -751,6 +1143,22 @@ class NativePolicyTemplateTests(unittest.TestCase):
                              for path in reader.bindings))
         reader.recheck()
 
+    def test_current_public_provider_controls_bind_source_and_verified_output_recipe_without_private_inputs(self):
+        reader = policy.vendor_policy.Reader()
+        contract, correction, controls = policy._contracts(reader)
+        base = policy._oem_controls(reader, WORKSPACE / policy.OEM_CONTRACT_PATH, contract, correction, controls)
+        binding = policy._provider_controls(reader, WORKSPACE / policy.PROVIDER_POLICY_CONTRACT_PATH,
+                                             contract, controls, base)
+        self.assertEqual(binding, {"path": policy.PROVIDER_POLICY_CONTRACT_PATH,
+                                   **policy.identity((WORKSPACE / policy.PROVIDER_POLICY_CONTRACT_PATH).read_bytes())})
+        self.assertIn("tools/framework_provider_policy.py", controls)
+        self.assertIn(policy.PROVIDER_INPUTS_CHECK, controls["Android.bp"].decode())
+        profile = json.loads(controls["provenance/nezha-framework-providers.json"])
+        self.assertEqual(profile["native_output_recipe"], policy.PROVIDER_NATIVE_OUTPUT_RECIPE)
+        self.assertFalse(any(path.relative_to(WORKSPACE).parts[0] in {"artifacts", "evidence", "reports"}
+                             for path in reader.bindings))
+        reader.recheck()
+
     def test_optional_native_guard_uses_all_current_inputs_without_binary_dependency_cycle(self):
         from scripts import oem_policy
         bp = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
@@ -789,6 +1197,45 @@ class NativePolicyTemplateTests(unittest.TestCase):
             self.assertIn('required: ["sepolicy_neverallows", "' + policy.OEM_CHECK_TARGET + '"]', binary)
         with self.assertRaises(ValueError):
             policy._render_blueprint(bp, False, True)
+
+    def test_provider_profile_uses_tagged_byte_producer_and_both_native_contexts(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        # Pinned Soong recognizes qualified //namespace:name references.
+        # A leading colon is for unqualified names and rejects a slash.
+        self.assertTrue(policy.PROVIDER_INPUTS_CHECK.startswith("//"))
+        base = policy._render_blueprint(raw, True).decode()
+        base_inputs = base.split("se_policy_binary {", 1)[1].split("srcs: [", 1)[1].split("]", 1)[0]
+        for properties in (False, True):
+            rendered = policy._render_blueprint(raw, True, properties, True).decode()
+            binary = rendered.split("se_policy_binary {", 1)[1].split("\n}", 1)[0]
+            self.assertEqual(binary.split("srcs: [", 1)[1].split("]", 1)[0], base_inputs)
+            block = rendered.split('name: "' + policy.OEM_CHECK_TARGET + '"', 1)[1].split("\n}", 1)[0]
+            for module in ("system_ext_file_contexts", "system_ext_service_contexts"):
+                self.assertIn('\":' + module + '\"', block)
+                self.assertIn("$(location :" + module + ")", block)
+            for flag in ("--provider-contract", "--system-ext-file-contexts", "--system-ext-service-contexts"):
+                self.assertIn(flag, block)
+            self.assertIn('"' + policy.PROVIDER_INPUTS_CHECK + '"', block)
+            self.assertNotIn('\"://', block)
+            self.assertNotIn('"' + policy.PROVIDER_INPUTS_CHECK.split("{", 1)[0] + '"', block)
+            self.assertNotIn(":nezha_factory_precompiled_sepolicy", block)
+            tool = rendered.split('name: "nezha_oem_policy_check_tool"', 1)[1].split("\n}", 1)[0]
+            self.assertIn('"tools/framework_provider_policy.py"', tool)
+            self.assertIn('"tools/framework_provider_policy.py"', block)
+            self.assertIn('"tools/nezha-framework-provider-policy.json"', block)
+        self.assertNotIn("framework_provider_policy.py", base)
+        with self.assertRaises(ValueError):
+            policy._render_blueprint(raw, False, False, True)
+
+    def test_provider_opt_in_preserves_all_previous_rendered_profiles_exactly(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        expected = [((False,), "4b2121879fde74d5d27961f49fe5609bb2441317d9695400b6f30ce332f38072", 8599),
+                    ((True,), "1a873a7da7d07177b08635d5fd67785111538c60ce83ea0797027f6e4fe9243b", 11205),
+                    ((True, True), "c22e6889c11d09911b9748fae2f914765f2d10b07ba2020a6a2849e92869136c", 11486)]
+        for flags, digest, size in expected:
+            with self.subTest(flags=flags):
+                self.assertEqual(policy.identity(policy._render_blueprint(raw, *flags)),
+                                 {"sha256": digest, "size_bytes": size})
 
     def test_combined_binary_uses_current_framework_outputs_and_strict_guards(self):
         text = (WORKSPACE / "policy/nezha/Android.bp").read_text()
