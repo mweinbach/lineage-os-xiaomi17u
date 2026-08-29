@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "profile_id": "nezha-avb-image-set-v1",
+  "device": "nezha",
+  "platform": {
+    "branch": "bka",
+    "release_config": "bp4a"
+  },
+  "evidence": [
+    {
+      "path": "research/factory-firmware-validation.json",
+      "sha256": "36e3750d1adef83d645f4620a4b520d91e5d1f0c239faa34e724d3c70612acb2",
+      "size_bytes": 46183
+    },
+    {
+      "path": "research/partition-metadata.json",
+      "sha256": "f2e7a6d88c17479473f9ae82c4cf378ad0bb79cd511a2120d6fd6354d2ef6ad0",
+      "size_bytes": 91007
+    },
+    {
+      "path": "config/twrp-working.json",
+      "sha256": "caeb78aaff981fc250a9fd0c94ac8d8270d3fa3ded2db75538daffb692ee60d1",
+      "size_bytes": 4090
+    }
+  ],
+  "tools": {
+    "avbtool": {
+      "path": "upstream/aosp-avb/avbtool.py",
+      "sha256": "14dc8d6ec533f551ec05ffd9a986ced0fd1290a201f62c91dad329dd51dfe3ed",
+      "size_bytes": 226002,
+      "project": "platform/external/avb",
+      "revision": "c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb"
+    },
+    "openssl": {
+      "binaries": [
+        {
+          "platform": "darwin-arm64",
+          "version": "3.6.3",
+          "sha256": "103fc7706cf6646f226d96f29242d81890363499afc730e7ef1fadd64b3a123c",
+          "size_bytes": 880512,
+          "build_allowed": true
+        },
+        {
+          "platform": "linux-aarch64",
+          "version": "3.0.13",
+          "sha256": "77268ab5d3ec14a6e479c526d431bb193354b8ee3d9006ca03d40029b142d5e5",
+          "size_bytes": 1017208,
+          "build_allowed": false
+        }
+      ]
+    }
+  },
+  "image_budgets": {
+    "boot": 100663296,
+    "countrycode": 1048576,
+    "dtbo": 33554432,
+    "init_boot": 8388608,
+    "mi_ext": 111198208,
+    "odm": 4767621120,
+    "product": 4942934016,
+    "pvmfw": 1048576,
+    "recovery": 104857600,
+    "system": 912273408,
+    "system_dlkm": 16912384,
+    "system_ext": 713158656,
+    "vbmeta": 131072,
+    "vbmeta_system": 131072,
+    "vendor": 959709184,
+    "vendor_boot": 100663296,
+    "vendor_dlkm": 54132736
+  },
+  "logical_partitions": [
+    "mi_ext",
+    "odm",
+    "product",
+    "system",
+    "system_dlkm",
+    "system_ext",
+    "vendor",
+    "vendor_dlkm"
+  ],
+  "logical_group_budget": 15290335232,
+  "descriptor_owners": {
+    "boot": "boot",
+    "countrycode": "vbmeta",
+    "dtbo": "vbmeta",
+    "init_boot": "vbmeta",
+    "mi_ext": "vbmeta",
+    "odm": "vbmeta",
+    "product": "vbmeta_system",
+    "pvmfw": "vbmeta",
+    "recovery": "recovery",
+    "system": "vbmeta_system",
+    "system_dlkm": "vbmeta",
+    "system_ext": "vbmeta_system",
+    "vendor": "vbmeta",
+    "vendor_boot": "vbmeta",
+    "vendor_dlkm": "vbmeta"
+  },
+  "hashtree_partitions": [
+    "mi_ext",
+    "odm",
+    "product",
+    "system",
+    "system_dlkm",
+    "system_ext",
+    "vendor",
+    "vendor_dlkm"
+  ],
+  "raw_leaf_partitions": [
+    "countrycode",
+    "pvmfw"
+  ],
+  "signed_images": {
+    "vbmeta": {
+      "rollback_index": 0,
+      "header_rollback_index_location": 0
+    },
+    "boot": {
+      "rollback_index": 1769904000,
+      "header_rollback_index_location": 0
+    },
+    "recovery": {
+      "rollback_index": 1,
+      "header_rollback_index_location": 1
+    },
+    "vbmeta_system": {
+      "rollback_index": 1769904000,
+      "header_rollback_index_location": 0
+    }
+  },
+  "chain_locations": {
+    "boot": 3,
+    "recovery": 1,
+    "vbmeta_system": 2
+  },
+  "maximum_required_libavb_version": [
+    1,
+    2
+  ],
+  "required_flags": 0,
+  "required_algorithm": "SHA256_RSA4096",
+  "working76": {
+    "image": {
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600
+    },
+    "public_pem": {
+      "sha256": "50784f7b5ccd4cfde172f5cbce06f54e33547d1081c7d28b55e494aa37ab0967",
+      "size_bytes": 800
+    },
+    "avb_public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03"
+  },
+  "forbidden_public_key_sha256": [
+    "7728e30f50bfa5cea165f473175a08803f6a8346642b5aa10913e9d9e6defef6"
+  ],
+  "limits": {
+    "physical_capacity_verified": false,
+    "device_rollback_counters_known": false,
+    "oem_trust_established": false,
+    "full_rom_ready": false,
+    "fec_payload_verification_in_scope": false,
+    "scope": "Local Android root AVB closure only; firmware such as qtvm_dtbo is outside this chain. Package GPT/LP fit is not live phone capacity."
+  }
+}
