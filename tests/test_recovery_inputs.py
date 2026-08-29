@@ -141,6 +141,25 @@ class RecoveryInputsTests(unittest.TestCase):
     def stage(self, bundle=None):
         return recovery.stage_inputs(self.image, bundle or self.bundle, **self.options)
 
+    def enable_readonly_composition(self):
+        self.enable_composition()
+        previous, identity = composition.compose(self.root, self.root / composition.COMPOSED_PATH)
+        record = json.loads((Path(__file__).resolve().parents[1] / composition.READONLY_PATH).read_bytes())
+        original = (self.checkout / recovery.CORE_PATH).read_bytes()
+        final = b"synthetic readonly initialization core\n"
+        patch = b"diff --git a/core/Makefile b/core/Makefile\n--- a/core/Makefile\n+++ b/core/Makefile\nfixture\n"
+        record["predecessor_composition"] = identity
+        record["required_predecessor_contracts"] = previous["composition"]["contracts"]
+        record["patch"].update(recovery._identity(patch))
+        record["source_files"][0].update(before=recovery._identity(original), after=recovery._identity(final))
+        record["semantic_files"] = [{"path": composition.PRODUCT_PATH,
+                                     **recovery._identity((self.checkout / composition.PRODUCT_PATH).read_bytes())}]
+        (self.root / composition.READONLY_PATCH).write_bytes(patch)
+        (self.root / composition.READONLY_PATH).write_bytes(recovery._canonical(record))
+        (self.checkout / recovery.CORE_PATH).write_bytes(final)
+        self.options["composed_source_contract"] = self.root / composition.READONLY_PATH
+        return record
+
     def enable_metadata_composition(self):
         """Extend inert source fixtures through the separate metadata contract."""
         self.enable_composition()
@@ -308,6 +327,64 @@ class RecoveryInputsTests(unittest.TestCase):
         self.assertEqual((self.bundle / "recovery.img").read_bytes(), self.image_bytes)
         self.assertEqual((self.bundle / recovery.PUBLIC_KEY_MEMBER).read_bytes(), self.public_key_bytes)
         self.assertEqual(self.verify()["status"], "verified")
+
+    def test_readonly_followup_stages_four_patch_eight_source_bundle(self):
+        self.enable_readonly_composition()
+        self.stage()
+        receipt = json.loads((self.bundle / "receipt.json").read_bytes())
+        source = receipt["build_source"]
+        self.assertEqual(len(source["files"]), 8)
+        chain = source["composition"]
+        self.assertEqual([row["path"] for row in chain["contracts"]],
+                         [composition.BASE_PATH, composition.PACKAGING_PATH,
+                          composition.COMPOSED_PATH, composition.READONLY_PATH])
+        self.assertEqual(chain["core_transitions"][-2]["after"], chain["core_transitions"][-1]["before"])
+        self.assertEqual(receipt["scope"], recovery.SCOPE)
+        self.assertEqual((self.bundle / "recovery.img").read_bytes(), self.image_bytes)
+        self.assertEqual(self.verify()["status"], "verified")
+
+    def test_readonly_followup_requires_explicit_selection_and_product_source(self):
+        self.enable_readonly_composition()
+        with self.assertRaisesRegex(ValueError, "required prebuilt-recovery patch"):
+            recovery.stage_inputs(self.image, self.bundle,
+                                  **{**self.options, "composed_source_contract": self.root / composition.COMPOSED_PATH})
+        product = self.checkout / composition.PRODUCT_PATH
+        product.write_bytes(product.read_bytes() + b"changed macro\n")
+        with self.assertRaisesRegex(ValueError, "required prebuilt-recovery patch"):
+            self.stage()
+        self.native.assert_not_called()
+        self.assertFalse(self.bundle.exists())
+
+    def test_readonly_followup_rejects_chain_gaps_macro_drift_and_relaxed_scope(self):
+        original = self.enable_readonly_composition()
+        changes = [
+            lambda d: d["predecessor_composition"].update(sha256="0" * 64),
+            lambda d: d["required_predecessor_contracts"].reverse(),
+            lambda d: d["source_files"][0]["before"].update(sha256="0" * 64),
+            lambda d: d["readonly_macro"].update(body_sha256="0" * 64),
+            lambda d: d["semantic_files"].append(copy.deepcopy(d["semantic_files"][0])),
+            lambda d: d["semantics"].update(no_flashall_default="false"),
+            lambda d: d["semantics"].update(all_selected_settings_frozen=1),
+            lambda d: d["scope"].update(incoming_override_guard_relaxed=True),
+        ]
+        for change in changes:
+            with self.subTest(change=change):
+                record = copy.deepcopy(original)
+                change(record)
+                (self.root / composition.READONLY_PATH).write_bytes(recovery._canonical(record))
+                with self.assertRaises(ValueError):
+                    self.stage()
+                self.assertFalse(self.bundle.exists())
+        self.native.assert_not_called()
+
+    def test_readonly_followup_rejects_unreviewed_copy_before_publication(self):
+        self.enable_readonly_composition()
+        altered = self.root / "changed-readonly-contract.json"
+        altered.write_bytes((self.root / composition.READONLY_PATH).read_bytes() + b" ")
+        self.options["composed_source_contract"] = altered
+        with self.assertRaisesRegex(ValueError, "explicit readonly composition differs"):
+            self.stage()
+        self.assertFalse(self.bundle.exists())
 
     def test_metadata_source_is_not_admitted_by_either_legacy_selection(self):
         self.enable_metadata_composition()
@@ -760,6 +837,33 @@ class RecoveryInputsTests(unittest.TestCase):
 
 
 class PublicRecoveryHookTests(unittest.TestCase):
+    def test_readonly_recovery_variant_binds_product_macro_and_preserves_payload_guards(self):
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        source, identity = composition.compose(root, root / composition.READONLY_PATH)
+        rendered = composition.render_readonly_recovery_include(
+            template, root=root, selected_contract=root / composition.READONLY_PATH)
+        self.assertEqual(len(source["composition"]["final_source_files"]), 8)
+        self.assertIn(identity["sha256"].encode(), rendered)
+        product = next(row for row in source["semantic_files"] if row["path"] == composition.PRODUCT_PATH)
+        self.assertIn(product["sha256"].encode(), rendered)
+        boundary = b"ifneq ($(shell test -f vendor/xiaomi/nezha-recovery/recovery.img"
+        self.assertEqual(rendered.split(boundary, 1)[1], template.split(boundary, 1)[1])
+        self.assertEqual((root / composition.RECOVERY_TEMPLATE).read_bytes(), template)
+        with self.assertRaisesRegex(ValueError, "requires explicit readonly initialization"):
+            composition.render_readonly_recovery_include(
+                template, root=root, selected_contract=root / composition.METADATA_PATH)
+
+    def test_readonly_patch_changes_only_the_initialization_aware_freeze(self):
+        root = Path(__file__).resolve().parents[1]
+        patch = (root / composition.READONLY_PATCH).read_text().splitlines()
+        removed = [line[1:] for line in patch if line.startswith("-") and not line.startswith("---")]
+        added = [line[1:] for line in patch if line.startswith("+") and not line.startswith("+++")]
+        self.assertEqual(len(removed), 1)
+        self.assertEqual(added, ["$(call readonly-variables," + removed[0].removeprefix(".KATI_READONLY := ") + ")"])
+        self.assertTrue(removed[0].startswith(".KATI_READONLY := BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST "))
+        self.assertNotIn("false", added[0])
+
     def test_metadata_renderer_preserves_legacy_template_and_mode_guards(self):
         root = Path(__file__).resolve().parents[1]
         template = (root / composition.RECOVERY_TEMPLATE).read_bytes()

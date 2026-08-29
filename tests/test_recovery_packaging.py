@@ -74,6 +74,17 @@ def fixture_source():
 
 
 class RecoveryPackagingContractTests(unittest.TestCase):
+    def test_readonly_composition_keeps_recovery_consumer_and_binds_macro_source(self):
+        from scripts import recovery_source_contracts
+        baseline = packaging._contract()
+        selected, identity = packaging._selected_contract(ROOT / recovery_source_contracts.READONLY_PATH)
+        self.assertEqual(selected["source_files"], baseline[0]["source_files"])
+        self.assertEqual(len(selected["semantic_files"]), 7)
+        self.assertEqual(identity, packaging._identity(recovery_source_contracts._canonical(selected["composition"])))
+        self.assertIn(recovery_source_contracts.PRODUCT_PATH, [row["path"] for row in selected["semantic_files"]])
+        self.assertEqual(selected["validation_scope"], packaging.SCOPE)
+        self.assertEqual(packaging._contract(), baseline)
+
     def test_explicit_metadata_composition_binds_new_common_and_all_nine_sources(self):
         from scripts import target_files_metadata
         baseline = packaging._contract()

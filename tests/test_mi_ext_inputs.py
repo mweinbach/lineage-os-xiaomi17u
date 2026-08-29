@@ -16,6 +16,7 @@ import unittest
 from unittest import mock
 
 from scripts import mi_ext_inputs as mi
+from scripts import recovery_source_contracts as recovery_sources
 from scripts import target_files_metadata as metadata
 
 
@@ -172,6 +173,55 @@ class MiExtInputsTests(unittest.TestCase):
         return mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
                                      expected_package_sha256=mi.EXPECTED_PACKAGE,
                                      composed_source_contract=self.selected)
+
+    def readonly_controls(self):
+        """Exercise the actual four-patch composer with inert native bytes."""
+        contracts = (recovery_sources.BASE_PATH, recovery_sources.PACKAGING_PATH,
+                     recovery_sources.COMPOSED_PATH, mi.READONLY_SOURCE_CONTRACT_PATH)
+        records = [json.loads((WORKSPACE / path).read_bytes()) for path in contracts]
+        old_core = self.source_contract["source_files"][0]["after"]
+        old_add_img = mi.identity((self.source / recovery_sources.ADD_IMG_PATH).read_bytes())
+        records[0]["source_files"][0]["after"] = copy.deepcopy(mi.EXPECTED_CORE_BEFORE)
+        records[1]["source_files"][0]["after"] = old_add_img
+        records[2]["source_files"][0].update(before=copy.deepcopy(mi.EXPECTED_CORE_BEFORE), after=old_core)
+        records[2]["composed_semantic_files"] = [
+            {"path": recovery_sources.ADD_IMG_PATH,
+             "requires_patch": recovery_sources.PACKAGING_PATCH, **old_add_img}]
+        for record in records:
+            for row in record["semantic_files"]:
+                if row["path"] == mi.CORE_PATH:
+                    row.update(mi.EXPECTED_CORE_BEFORE)
+                else:
+                    path = self.source / row["path"]
+                    if not path.exists():
+                        self.write(path, ("Inert readonly source fixture " + row["path"] + "\n").encode())
+                    row.update(mi.identity(path.read_bytes()))
+        new_core = b"Inert Kati readonly initialization native core fixture\n"
+        self.write(self.source / mi.CORE_PATH, new_core)
+        records[-1]["source_files"][0].update(before=old_core, after=mi.identity(new_core))
+        refs = []
+        for relative, record in zip(contracts, records):
+            if relative == mi.READONLY_SOURCE_CONTRACT_PATH:
+                record["required_predecessor_contracts"] = copy.deepcopy(refs)
+                _, predecessor = recovery_sources.compose(self.controls,
+                                                          self.controls / recovery_sources.COMPOSED_PATH)
+                record["predecessor_composition"] = predecessor
+            raw = mi.encoded(record)
+            self.write(self.controls / relative, raw)
+            refs.append({"path": relative, **mi.identity(raw)})
+            patch = record["patch"]["path"]
+            self.write(self.controls / patch, (WORKSPACE / patch).read_bytes())
+        for relative in mi.READONLY_COMPOSER_CONTROLS:
+            self.write(self.controls / relative, (WORKSPACE / relative).read_bytes())
+        self.readonly_selected = self.controls / mi.READONLY_SOURCE_CONTRACT_PATH
+        source, self.readonly_identity = recovery_sources.compose(self.controls, self.readonly_selected)
+        self.readonly_composition = source["composition"]
+        self.source_contract = records[2]
+
+    def readonly_binding(self):
+        return mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                     expected_package_sha256=mi.EXPECTED_PACKAGE,
+                                     composed_source_contract=self.readonly_selected)
 
     def packaging(self):
         self.metadata = self.root / "metadata"
@@ -705,6 +755,205 @@ class MiExtInputsTests(unittest.TestCase):
             with mock.patch("sys.stdout", new_callable=io.StringIO):
                 self.assertEqual(mi.main(["verify", "--bundle", "bundle"]), 0)
             self.assertIsNone(verify.call_args.kwargs["composed_source_contract"])
+
+    def test_readonly_composition_binds_four_patches_eight_sources_and_runtime_controls(self):
+        self.readonly_controls()
+        staged = self.stage(composed_source_contract=self.readonly_selected)
+        binding = self.readonly_binding()
+        native = binding["native_source"]
+        self.assertEqual(native["composition"], self.readonly_composition)
+        self.assertEqual(native["composition_identity"], self.readonly_identity)
+        self.assertEqual(native["composition_identity"], mi.identity(mi.encoded(self.readonly_composition)))
+        self.assertEqual(native["files"], self.readonly_composition["final_source_files"])
+        self.assertEqual(len(native["files"]), 8)
+        self.assertIn("build/make/core/product.mk", [row["path"] for row in native["files"]])
+        self.assertEqual(len(native["composition"]["ordered_patches"]), 4)
+        self.assertEqual(len(native["composition"]["core_transitions"]), 3)
+        receipt = json.loads((self.bundle / mi.RECEIPT_NAME).read_bytes())
+        self.assertEqual(receipt["required_native_source"], native)
+        self.assertEqual(staged["receipt"], binding["receipt"])
+        paths = {row["path"] for row in receipt["controls"]}
+        self.assertEqual(paths, {mi.CONTRACT_PATH, mi.FACTORY_RECORD_PATH,
+                                "scripts/mi_ext_inputs.py", "scripts/artifact_files.py",
+                                *mi.READONLY_COMPOSER_CONTROLS,
+                                *(row["path"] for row in self.readonly_composition["contracts"]),
+                                *(row["path"] for row in self.readonly_composition["ordered_patches"])})
+        self.assertEqual(len(paths), 15)
+        self.assertNotIn(mi.METADATA_SOURCE_CONTRACT_PATH, paths)
+        self.assertNotIn(mi.METADATA_COMPOSER_PATH, paths)
+        self.assertEqual(binding["scope"], mi.SCOPE)
+        self.assertNotIn(str(self.root), (self.bundle / mi.RECEIPT_NAME).read_text())
+
+    def test_readonly_composition_does_not_require_metadata_files_or_composer(self):
+        self.readonly_controls()
+        self.assertFalse((self.controls / mi.METADATA_SOURCE_CONTRACT_PATH).exists())
+        self.assertFalse((self.controls / mi.METADATA_COMPOSER_PATH).exists())
+        with mock.patch.object(metadata, "compose_sources", side_effect=AssertionError("metadata must not run")):
+            self.stage(composed_source_contract=self.readonly_selected)
+            self.assertEqual(self.verify(composed_source_contract=self.readonly_selected)["status"], "verified")
+            binding = self.readonly_binding()
+            mi.render_board_include(binding, composed_source_contract=self.readonly_selected)
+
+    def test_readonly_composition_checks_every_actual_source_and_emits_matching_guards(self):
+        self.readonly_controls()
+        self.stage(composed_source_contract=self.readonly_selected)
+        result = self.verify(source_tree=self.source, composed_source_contract=self.readonly_selected)
+        self.assertTrue(result["actual_native_source_bytes_checked"])
+        self.assertFalse(result["native_avb_run"])
+        generated = mi.render_board_include(self.readonly_binding(),
+                                           composed_source_contract=self.readonly_selected)
+        for row in self.readonly_composition["final_source_files"]:
+            with self.subTest(path=row["path"]):
+                self.assertIn(f"sha256sum < {row['path']} 2>/dev/null | cut -d ' ' -f 1),{row['sha256']}", generated)
+                path = self.source / row["path"]
+                raw = path.read_bytes()
+                path.write_bytes(b"unreviewed native source\n")
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.readonly_selected))
+                path.unlink()
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.readonly_selected))
+                path.write_bytes(raw)
+        self.assertNotIn("BOARD_MI_EXT_IMAGE_NO_FLASHALL :=", generated)
+        self.assertNotIn("BOARD_NEZHA_PREBUILT_METADATA :=", generated)
+
+    def test_readonly_receipt_and_binding_never_select_the_new_mode_implicitly(self):
+        self.readonly_controls()
+        self.stage(composed_source_contract=self.readonly_selected)
+        self.refused(self.verify)
+        self.refused(lambda: mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                                  expected_package_sha256=mi.EXPECTED_PACKAGE))
+        binding = self.readonly_binding()
+        self.refused(lambda: mi.render_board_include(binding))
+        self.refused(lambda: mi.render_board_include(binding,
+                      composed_source_contract=self.controls / mi.SOURCE_CONTRACT_PATH))
+
+    def test_old_receipt_and_binding_cannot_upgrade_to_readonly_composition(self):
+        self.readonly_controls()
+        self.stage()
+        self.refused(lambda: self.verify(composed_source_contract=self.readonly_selected))
+        self.refused(self.readonly_binding)
+        binding = mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                       expected_package_sha256=mi.EXPECTED_PACKAGE)
+        self.refused(lambda: mi.render_board_include(binding,
+                                                     composed_source_contract=self.readonly_selected))
+        self.assertEqual(len(binding["native_source"]["files"]), 5)
+
+    def test_readonly_selection_rejects_altered_contract_and_relocated_exact_copy_works(self):
+        self.readonly_controls()
+        selection = self.inputs / "readonly.json"
+        original = self.readonly_selected.read_bytes()
+        selection.write_bytes(original)
+        self.stage(composed_source_contract=selection)
+        self.assertEqual(self.verify(composed_source_contract=selection),
+                         self.verify(composed_source_contract=self.readonly_selected))
+        mutated = json.loads(original)
+        mutated["source_files"][0]["after"]["sha256"] = "0" * 64
+        for raw in (original + b" ", mi.encoded(mutated), b"{}"):
+            selection.write_bytes(raw)
+            self.refused(lambda: self.verify(composed_source_contract=selection))
+
+    def test_readonly_composition_identity_and_source_bindings_cannot_be_resealed(self):
+        self.readonly_controls()
+        self.stage(composed_source_contract=self.readonly_selected)
+        original = self.readonly_binding()
+        for mutation in (
+                lambda value: value["native_source"]["composition_identity"].update(sha256="0" * 64),
+                lambda value: value["native_source"]["composition"]["core_transitions"].pop(),
+                lambda value: value["native_source"]["composition"].update(whole_source_tree_verified=True),
+                lambda value: value["native_source"]["files"].pop(),
+                lambda value: value["scope"].update(complete_rom_admitted=True)):
+            with self.subTest(mutation=mutation):
+                binding = copy.deepcopy(original)
+                mutation(binding)
+                self.refused(lambda: mi.render_board_include(binding,
+                                                             composed_source_contract=self.readonly_selected))
+
+    def test_readonly_composer_result_requires_its_matching_canonical_identity(self):
+        self.readonly_controls()
+        compose = recovery_sources.compose
+        def wrong_identity(*args, **kwargs):
+            source, digest = compose(*args, **kwargs)
+            digest = {**digest, "sha256": "0" * 64}
+            return source, digest
+        with mock.patch.object(recovery_sources, "compose", side_effect=wrong_identity):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "composition identity differs"):
+                self.stage(composed_source_contract=self.readonly_selected)
+        self.assertFalse(self.bundle.exists())
+
+    def test_readonly_mode_rechecks_every_composer_dependency_before_publication(self):
+        self.readonly_controls()
+        recheck = mi.Reader.recheck
+        paths = [*mi.READONLY_COMPOSER_CONTROLS,
+                 *(row["path"] for row in self.readonly_composition["contracts"]),
+                 *(row["path"] for row in self.readonly_composition["ordered_patches"])]
+        for relative in paths:
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                original = path.read_bytes()
+                def change(reader):
+                    path.write_bytes(original + b"\nchanged during staging\n")
+                    recheck(reader)
+                with mock.patch.object(mi.Reader, "recheck", change):
+                    self.refused(lambda: self.stage(composed_source_contract=self.readonly_selected))
+                self.assertFalse(self.bundle.exists())
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(original)
+
+    def test_readonly_composer_runtime_dependencies_are_bound_before_invocation(self):
+        self.readonly_controls()
+        compose = recovery_sources.compose
+        for relative in mi.READONLY_COMPOSER_CONTROLS:
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                original = path.read_bytes()
+                def change(*args, **kwargs):
+                    result = compose(*args, **kwargs)
+                    path.write_bytes(original + b"\n# changed during composition\n")
+                    return result
+                with mock.patch.object(recovery_sources, "compose", side_effect=change):
+                    self.refused(lambda: self.stage(composed_source_contract=self.readonly_selected))
+                self.assertFalse(self.bundle.exists())
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(original)
+
+    def test_readonly_composer_declared_errors_preserve_mi_ext_admission_contract(self):
+        self.readonly_controls()
+        from scripts.firmware import IntakeError
+        from scripts.kernel_inputs import KernelInputsError
+        for error in (recovery_sources.RecoverySourceError, KernelInputsError, IntakeError):
+            with self.subTest(error=error.__name__):
+                cause = error("inert malformed dependency")
+                with mock.patch.object(recovery_sources, "compose", side_effect=cause):
+                    with self.assertRaisesRegex(mi.MiExtInputsError, "readonly source composition refused") as raised:
+                        self.stage(composed_source_contract=self.readonly_selected)
+                self.assertIs(raised.exception.__cause__, cause)
+                self.assertFalse(self.bundle.exists())
+
+    def test_metadata_and_readonly_receipts_and_bindings_are_not_interchangeable(self):
+        # Keep both reviewed compositions available at once. Only the explicitly
+        # selected path may influence the receipt, native source set or rendering.
+        self.readonly_controls()
+        readonly_files = {path: path.read_bytes() for path in self.controls.rglob("*") if path.is_file()}
+        self.stage(composed_source_contract=self.readonly_selected)
+        readonly_binding = self.readonly_binding()
+        readonly_bundle = self.bundle
+        # Metadata fixture generation consumes the original fixture native core.
+        old_core = b"Inert composed native core fixture\n"
+        self.write(self.source / mi.CORE_PATH, old_core)
+        self.metadata_controls()
+        # Preserve the exact legacy predecessor controls of the readonly receipt.
+        for path, raw in readonly_files.items():
+            if path not in {self.controls / row["path"] for row in self.readonly_composition["contracts"][:3]}:
+                self.write(path, raw)
+        self.bundle = self.output_parent / "metadata"
+        self.stage(composed_source_contract=self.selected)
+        metadata_binding = self.metadata_binding()
+        self.refused(lambda: mi.verify_bundle(readonly_bundle, composed_source_contract=self.selected))
+        self.refused(lambda: mi.verify_bundle(self.bundle, composed_source_contract=self.readonly_selected))
+        self.refused(lambda: mi.render_board_include(readonly_binding, composed_source_contract=self.selected))
+        self.refused(lambda: mi.render_board_include(metadata_binding,
+                                                     composed_source_contract=self.readonly_selected))
 
 
 if __name__ == "__main__":

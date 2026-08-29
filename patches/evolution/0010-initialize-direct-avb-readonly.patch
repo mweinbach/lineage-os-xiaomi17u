@@ -1,0 +1,12 @@
+diff --git a/core/Makefile b/core/Makefile
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -4773,7 +4773,7 @@
+ ifneq ($(filter-out $(BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST),$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST)),)
+ $(error Direct AVB custom registration was overridden or omitted)
+ endif
+-.KATI_READONLY := BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST $(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),BOARD_$(call to-upper,$(partition))_IMAGE_NO_FLASHALL $(foreach setting,KEY_PATH ALGORITHM ROLLBACK_INDEX ROLLBACK_INDEX_LOCATION ADD_HASHTREE_FOOTER_ARGS PARTITION_SIZE IMAGE_LIST,BOARD_AVB_$(call to-upper,$(partition))_$(setting)))
++$(call readonly-variables,BOARD_AVB_CUSTOMIMAGES_PARTITION_LIST $(foreach partition,$(BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST),BOARD_$(call to-upper,$(partition))_IMAGE_NO_FLASHALL $(foreach setting,KEY_PATH ALGORITHM ROLLBACK_INDEX ROLLBACK_INDEX_LOCATION ADD_HASHTREE_FOOTER_ARGS PARTITION_SIZE IMAGE_LIST,BOARD_AVB_$(call to-upper,$(partition))_$(setting))))
+ endif
+ 
+ # Sign custom image.

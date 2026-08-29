@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-direct-avb-readonly-v1",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0010-initialize-direct-avb-readonly.patch",
+    "sha256": "0c045c4e377eaf44e41b1603250160cc4630c1fd21f97c30facb5c838bfcf33a",
+    "size_bytes": 1050
+  },
+  "predecessor_composition": {
+    "sha256": "fe4ac5f9c0db04df0d8af9e5867edf2090310b34f03d96f7856d105aa35c5abe",
+    "size_bytes": 3516
+  },
+  "required_predecessor_contracts": [
+    {
+      "path": "patches/evolution/prebuilt-recovery.json",
+      "sha256": "4d4b49050e5808f72d74fe023b80c2e83b646a542856182361ee594f48a9656b",
+      "size_bytes": 4741
+    },
+    {
+      "path": "patches/evolution/ab-only-recovery-packaging.json",
+      "sha256": "8dc262578a254ca6e2f4a6a342c8d0e0a1b82d38585b2f1c059d848929938a2b",
+      "size_bytes": 5058
+    },
+    {
+      "path": "patches/evolution/direct-avb-custom-images.json",
+      "sha256": "47008985f4972699e9c25fb91de7780abd433d7748dc5028e1fb21098d9113fc",
+      "size_bytes": 3189
+    }
+  ],
+  "source_files": [
+    {
+      "path": "build/make/core/Makefile",
+      "before": {
+        "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+        "size_bytes": 388709
+      },
+      "after": {
+        "sha256": "77e4a7aa8f2094d116de233b2c46b21103694df66bc8d426ce1f6e4b1043329b",
+        "size_bytes": 388718
+      }
+    }
+  ],
+  "semantic_files": [
+    {
+      "path": "build/make/core/product.mk",
+      "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+      "size_bytes": 31527
+    }
+  ],
+  "readonly_macro": {
+    "name": "readonly-variables",
+    "source": "build/make/core/product.mk",
+    "body_sha256": "1169e184965a0352a1b2f3b13d5aad83fca34edac18c67f488dd41c74b425bdb"
+  },
+  "semantics": {
+    "incoming_definitions_rejected_before_initialization": true,
+    "undefined_settings_initialized_to_empty": true,
+    "existing_derived_values_preserved": true,
+    "all_selected_settings_frozen": true,
+    "no_flashall_default": "",
+    "empty_signing_fields_emitted_to_misc_info": false,
+    "direct_vbmeta_descriptor_preserved": true,
+    "readiness_flags_changed": false
+  },
+  "scope": {
+    "source_patch_applied": false,
+    "native_kati_verified": false,
+    "native_image_copy_verified": false,
+    "target_files_verified": false,
+    "complete_rom_admitted": false,
+    "original_prebuilt_bytes_changed": false,
+    "incoming_override_guard_relaxed": false,
+    "phone_operations": []
+  },
+  "limitations": [
+    "This supersedes the base 0005/0006/0007 source composition without modifying its historical contracts or inputs.",
+    "The pre-initialization origin guards remain mandatory, including rejection of explicitly empty incoming settings.",
+    "NO_FLASHALL must become an empty value, not the nonempty string false, to retain the update ZIP image.",
+    "The metadata 0005/0006/0007/0008/0009 composition is not admitted by this base follow-up; its separate extension remains pending.",
+    "Native Kati, image copy, complete packaging, AVB and hardware results require separate evidence."
+  ]
+}

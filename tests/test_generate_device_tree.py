@@ -1080,6 +1080,250 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             self.assertEqual(generate.call_args.kwargs["target_files_metadata_receipt"], path)
             self.assertEqual(generate.call_args.kwargs["target_files_metadata_receipt_sha256"], digest)
 
+    def readonly_inputs(self, inputs=None):
+        """Mock only private image verification; retain the real source composers."""
+        from scripts import mi_ext_inputs as mi
+        inputs, binding = self.mi_ext_inputs(inputs)
+        selected = ROOT / generator.DIRECT_AVB_READONLY_CONTRACT
+        public = generator._direct_avb_readonly_public(selected)
+        config, legacy, controls = mi._controls.return_value
+        source = copy.deepcopy(legacy)
+        source.update(composition=public["native_source"], composition_identity=public["composition_identity"])
+        mi._controls.side_effect = lambda reader, composed_source_contract=None: (
+            config, legacy if composed_source_contract is None else source, controls)
+        binding["native_source"] = mi._native_source(source)
+        receipt = inputs["mi_ext_inputs_receipt"]
+        receipt.parent.chmod(0o700)
+        receipt.chmod(0o600)
+        for member in (mi.IMAGE_MEMBER, mi.LOGICAL_RECEIPT_MEMBER):
+            path = receipt.parent / member
+            path.write_bytes(b"synthetic private input")
+            path.chmod(0o600)
+        inputs["direct_avb_readonly_contract"] = selected
+        verifier = self.enterContext(mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=binding))
+        return inputs, public, binding, verifier
+
+    def test_readonly_is_not_selected_or_read_by_default_or_metadata(self):
+        inputs = self.generation_inputs()
+        with mock.patch.object(generator, "_direct_avb_readonly_public", side_effect=AssertionError("implicit 0010 selection")), \
+                mock.patch.object(generator, "_readonly_recovery_include", side_effect=AssertionError("implicit recovery selection")):
+            first = generator.generate(self.root / "artifacts/readonly-default", **inputs)
+            second = generator.generate(self.root / "artifacts/readonly-explicit-none", direct_avb_readonly_contract=None, **inputs)
+        self.assertEqual(first, second)
+        self.assertNotIn("direct_avb_readonly", first)
+        original = (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        self.assertEqual((self.root / "artifacts/readonly-default" / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes(), original)
+
+    def test_readonly_does_not_change_the_existing_metadata_rendering(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        with mock.patch.object(generator, "_direct_avb_readonly_public", side_effect=AssertionError("implicit 0010 selection")):
+            first = generator.generate(self.root / "artifacts/metadata-before-readonly", **inputs)
+            second = generator.generate(self.root / "artifacts/metadata-explicit-no-readonly", direct_avb_readonly_contract=None, **inputs)
+        self.assertEqual(first, second)
+        self.assertNotIn("direct_avb_readonly", first)
+        recovery = (self.root / "artifacts/metadata-before-readonly" / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        self.assertEqual(hashlib.sha256(recovery).hexdigest(), "09241772ac54621a68fb7ed742d5f86d15ad975831d8ee9d97b122202706162f")
+
+    def test_readonly_requires_factory_and_mi_ext_and_rejects_metadata_before_reads(self):
+        base = {"record_paths": {}, "kernel_receipt": "none", "vendor_receipt": "none",
+                "direct_avb_readonly_contract": "none"}
+        factory = {"factory_boot_contract": "none", "partition_metadata": "none", "fstab_source": "none"}
+        options = [{}, factory, {**factory, "mi_ext_inputs_receipt": "none", "target_files_metadata_receipt": "none"},
+                   {**factory, "mi_ext_inputs_receipt": "none", "target_files_metadata_receipt_sha256": "1" * 64},
+                   {**factory, "mi_ext_inputs_receipt": "none", "target_files_metadata_receipt": "none",
+                    "target_files_metadata_receipt_sha256": "1" * 64}]
+        for extra in options:
+            with self.subTest(options=extra), mock.patch.object(generator, "_load_records") as load, \
+                    self.assertRaisesRegex(generator.CandidateError, "direct AVB read-only"):
+                generator.generate(self.root / "artifacts/refused-readonly", **base, **extra)
+            load.assert_not_called()
+
+    def test_readonly_generation_binds_eight_source_files_and_retains_readiness(self):
+        inputs, public, binding, verifier = self.readonly_inputs()
+        first, second = self.root / "artifacts/readonly-first", self.root / "artifacts/readonly-repeat"
+        plan = generator.generate(first, **inputs)
+        self.assertEqual(generator.generate(second, **inputs), plan)
+        self.assertEqual(verifier.call_count, 4)
+        for call in verifier.call_args_list:
+            self.assertEqual(call, mock.call(inputs["mi_ext_inputs_receipt"], expected_package_sha256="3" * 64,
+                                            composed_source_contract=ROOT / generator.DIRECT_AVB_READONLY_CONTRACT))
+        self.assertEqual(plan["direct_avb_readonly"], public)
+        self.assertEqual(plan["mi_ext_inputs"], binding)
+        self.assertNotIn("target_files_metadata", plan)
+        composition = public["native_source"]
+        self.assertEqual(len(composition["contracts"]), 4)
+        self.assertEqual(len(composition["ordered_patches"]), 4)
+        self.assertEqual(len(composition["core_transitions"]), 3)
+        self.assertEqual(len(composition["final_source_files"]), 8)
+        self.assertIn("build/make/core/product.mk", {row["path"] for row in composition["final_source_files"]})
+        self.assertEqual(composition["contracts"][-1]["path"], generator.DIRECT_AVB_READONLY_CONTRACT)
+        self.assertEqual(public["scope"], generator.DIRECT_AVB_READONLY_SCOPE)
+        self.assertTrue(plan["admission"]["configuration_allowed"])
+        self.assertTrue(all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"))
+        recovery = (first / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        legacy = (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        self.assertEqual(recovery, generator._readonly_recovery_include(legacy))
+        self.assertNotEqual(recovery, legacy)
+        mi_include = (first / generator.MI_EXT_BOARD_INCLUDE).read_bytes()
+        for row in composition["final_source_files"]:
+            self.assertIn(row["sha256"].encode(), recovery)
+            self.assertIn(row["sha256"].encode(), mi_include)
+        self.assertNotIn(b"BOARD_NEZHA_PREBUILT_METADATA", (first / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_bytes())
+        self.assertEqual(generator.validate(first), plan)
+        for purpose in ("target-files", "flash"):
+            with self.subTest(purpose=purpose), self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(first, purpose=purpose)
+
+    def test_readonly_coexists_with_property_sources_without_selecting_providers(self):
+        inputs, policy = self.property_inputs()
+        inputs, public, _, _ = self.readonly_inputs(inputs)
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy):
+            plan = generator.generate(self.root / "artifacts/readonly-properties", **inputs)
+        self.assertEqual(plan["direct_avb_readonly"], public)
+        self.assertIn("oem_properties", plan)
+        self.assertIn("oem_policy", plan)
+        self.assertIn("init_helper_capability", plan)
+        self.assertNotIn("framework_providers", plan)
+        self.assertNotIn("target_files_metadata", plan)
+
+    def test_readonly_rejects_unreviewed_contract_before_verifying_private_mi_ext(self):
+        inputs, _, _, verifier = self.readonly_inputs()
+        selected = self.root / "selected-readonly.json"
+        original = (ROOT / generator.DIRECT_AVB_READONLY_CONTRACT).read_bytes()
+        for raw in (original + b"\n", (ROOT / generator.TARGET_FILES_METADATA_CONTRACT).read_bytes(),
+                    original.replace(generator.DIRECT_AVB_READONLY_CONTRACT_ID.encode(), b"unknown-contract")):
+            selected.write_bytes(raw)
+            with self.subTest(raw=hashlib.sha256(raw).hexdigest()), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused-readonly", **dict(inputs, direct_avb_readonly_contract=selected))
+        verifier.assert_not_called()
+        selected.unlink()
+        selected.symlink_to(ROOT / generator.DIRECT_AVB_READONLY_CONTRACT)
+        with self.assertRaisesRegex(generator.CandidateError, "symlink refused"):
+            generator.generate(self.root / "artifacts/refused-readonly", **dict(inputs, direct_avb_readonly_contract=selected))
+        verifier.assert_not_called()
+
+    def test_readonly_selected_contract_rejects_special_files_and_hardlinks(self):
+        selected = self.root / "readonly.json"
+        original = self.root / "original-readonly.json"
+        original.write_bytes((ROOT / generator.DIRECT_AVB_READONLY_CONTRACT).read_bytes())
+        for kind in ("directory", "fifo", "hardlink"):
+            if kind == "directory":
+                selected.mkdir()
+            elif kind == "fifo":
+                os.mkfifo(selected)
+            else:
+                selected.hardlink_to(original)
+            with self.subTest(kind=kind), self.assertRaisesRegex(generator.CandidateError, "contract input refused"):
+                generator._direct_avb_readonly_public(selected)
+            selected.rmdir() if kind == "directory" else selected.unlink()
+
+    def test_readonly_validation_rejects_resealed_composition_scope_and_readiness(self):
+        inputs, _, _, _ = self.readonly_inputs()
+        output = self.root / "artifacts/readonly-provenance"
+        original = generator.generate(output, **inputs)
+        mutations = [
+            lambda p: p["direct_avb_readonly"].update(contract_id="other"),
+            lambda p: p["direct_avb_readonly"]["contract_record"].update(sha256="0" * 64),
+            lambda p: p["direct_avb_readonly"]["scope"].update(native_kati_verified=True),
+            lambda p: p["direct_avb_readonly"]["scope"].update(source_patch_applied=0),
+            lambda p: p["direct_avb_readonly"]["composition_identity"].update(sha256="0" * 64),
+            lambda p: p["direct_avb_readonly"]["native_source"]["core_transitions"].pop(),
+            lambda p: p["direct_avb_readonly"]["native_source"]["final_source_files"][0].update(sha256="0" * 64),
+            lambda p: p["direct_avb_readonly"]["native_source"].update(schema_version=True),
+            lambda p: p["mi_ext_inputs"]["native_source"]["composition"].update(whole_source_tree_verified=0),
+            lambda p: p["mi_ext_inputs"]["native_source"].pop("composition_identity"),
+            lambda p: p.update(target_files_metadata={}),
+            lambda p: p.pop("direct_avb_readonly"),
+            lambda p: p.update(release_config="other"),
+            lambda p: p["factory_profile"].update(origin_verified=True),
+            lambda p: p["admission"].update(full_rom_build_allowed=True),
+        ]
+        for mutate in mutations:
+            plan = copy.deepcopy(original)
+            mutate(plan)
+            (output / "admission.json").write_text(json.dumps(plan))
+            with self.subTest(mutate=mutate), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_readonly_validation_rejects_legacy_and_metadata_recovery_guards(self):
+        inputs, _, _, _ = self.readonly_inputs()
+        output = self.root / "artifacts/readonly-recovery-mismatch"
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
+        original = (output / name).read_bytes()
+        legacy = (ROOT / name).read_bytes()
+        for raw in (legacy, generator._metadata_recovery_include(legacy), original + b"# changed guard\n"):
+            self.reseal_candidate_file(output, plan, name, raw)
+            with self.subTest(raw=hashlib.sha256(raw).hexdigest()), self.assertRaisesRegex(generator.CandidateError, "matching recovery source guard"):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_readonly_rechecks_selected_contract_before_publication(self):
+        inputs, _, _, _ = self.readonly_inputs()
+        selected = self.root / "readonly-selection.json"
+        selected.write_bytes((ROOT / generator.DIRECT_AVB_READONLY_CONTRACT).read_bytes())
+        inputs["direct_avb_readonly_contract"] = selected
+        validate = generator.validate
+        def change_selected(*args, **kwargs):
+            result = validate(*args, **kwargs)
+            selected.write_bytes(selected.read_bytes() + b"\n")
+            return result
+        with mock.patch.object(generator, "validate", side_effect=change_selected), self.assertRaises(generator.CandidateError):
+            generator.generate(self.root / "artifacts/refused-readonly", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-readonly").exists())
+
+    def test_readonly_rechecks_mi_ext_inputs_and_inventory_before_publication(self):
+        inputs, _, binding, verifier = self.readonly_inputs()
+        changed = copy.deepcopy(binding)
+        changed["receipt"]["sha256"] = "0" * 64
+        verifier.side_effect = [binding, changed]
+        with self.assertRaisesRegex(generator.CandidateError, "mi_ext inputs changed before"):
+            generator.generate(self.root / "artifacts/refused-readonly", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-readonly").exists())
+        bundle = inputs["mi_ext_inputs_receipt"].parent
+        verifier.side_effect = None
+        verifier.reset_mock()
+        def add_after_final_verifier(*args, **kwargs):
+            if verifier.call_count == 2:
+                (bundle / "unexpected-directory").mkdir()
+            return binding
+        verifier.side_effect = add_after_final_verifier
+        with self.assertRaisesRegex(generator.CandidateError, "mi_ext inventory refused"):
+            generator.generate(self.root / "artifacts/refused-readonly", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-readonly").exists())
+
+    def test_readonly_candidate_cannot_be_nested_inside_its_mi_ext_bundle(self):
+        inputs, _, _, _ = self.readonly_inputs()
+        # Place the existing synthetic bundle under artifacts so this exercises
+        # the specific preserved-input check rather than the output-root guard.
+        old = inputs["mi_ext_inputs_receipt"].parent
+        new = self.root / "artifacts/readonly-mi-ext"
+        new.parent.mkdir(parents=True, exist_ok=True)
+        old.rename(new)
+        inputs["mi_ext_inputs_receipt"] = new / inputs["mi_ext_inputs_receipt"].name
+        output = new / "new-candidate"
+        with self.assertRaisesRegex(generator.CandidateError, "nested inside its mi_ext bundle"):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+    def test_readonly_candidate_validation_never_reopens_private_mi_ext_bundle(self):
+        inputs, _, _, _ = self.readonly_inputs()
+        output = self.root / "artifacts/portable-readonly"
+        plan = generator.generate(output, **inputs)
+        inputs["mi_ext_inputs_receipt"].unlink()
+        with mock.patch.object(generator, "_verify_mi_ext_inputs", side_effect=AssertionError("private bundle reopened")):
+            self.assertEqual(generator.validate(output), plan)
+
+    def test_readonly_cli_argument_is_optional_and_explicit(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--direct-avb-readonly-contract", "readonly.json"], Path("readonly.json"))):
+            with self.subTest(args=args), mock.patch.object(generator, "generate", return_value={}) as generate, \
+                    redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["direct_avb_readonly_contract"], expected)
+
     def test_factory_generation_binds_geometry_and_preserves_flags_and_provenance(self):
         inputs = self.factory_inputs()
         output = self.root / "artifacts/factory-candidate"

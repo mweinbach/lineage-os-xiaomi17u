@@ -1,9 +1,9 @@
 """Explicit composition of reviewed recovery and custom-image source patches.
 
 The original recovery contract remains the 0005-only contract. The optional
-paths bind either 0005/0006/0007 or the explicit 0005/0006/0007/0008/0009
-metadata composition and their complete final source bytes. They do not apply
-patches or admit a ROM build.
+paths bind 0005/0006/0007, its explicit 0010 readonly follow-up, or the separate
+0005/0006/0007/0008/0009 metadata composition and their complete final source
+bytes. They do not apply patches or admit a ROM build.
 """
 
 from __future__ import annotations
@@ -28,6 +28,10 @@ COMPOSED_PATH = "patches/evolution/direct-avb-custom-images.json"
 COMPOSED_PATCH = "patches/evolution/0007-direct-avb-custom-images.patch"
 METADATA_PATH = "patches/evolution/target-files-metadata.json"
 METADATA_ID = "nezha-prebuilt-target-files-metadata-v1"
+READONLY_PATH = "patches/evolution/direct-avb-readonly.json"
+READONLY_PATCH = "patches/evolution/0010-initialize-direct-avb-readonly.patch"
+READONLY_ID = "nezha-direct-avb-readonly-v1"
+PRODUCT_PATH = "build/make/core/product.mk"
 RECOVERY_TEMPLATE = "device/xiaomi/nezha/recovery-prebuilt.mk"
 CORE_PATH = "build/make/core/Makefile"
 ADD_IMG_PATH = "build/make/tools/releasetools/add_img_to_target_files.py"
@@ -41,6 +45,13 @@ SEMANTIC_PATHS = {
                      "build/make/tools/releasetools/ota_from_target_files.py"),
     COMPOSED_PATH: (COMMON_PATH, "build/make/tools/releasetools/build_super_image.py",
                     "build/make/tools/releasetools/validate_target_files.py"),
+    READONLY_PATH: (PRODUCT_PATH,),
+}
+READONLY_SCOPE = {
+    "source_patch_applied": False, "native_kati_verified": False,
+    "native_image_copy_verified": False, "target_files_verified": False,
+    "complete_rom_admitted": False, "original_prebuilt_bytes_changed": False,
+    "incoming_override_guard_relaxed": False, "phone_operations": [],
 }
 MAX_BYTES = 4 * 1024 * 1024
 
@@ -166,11 +177,63 @@ def _compose_legacy(root, selected_contract, *, expected_base=None, expected_bas
     return result, identity
 
 
+def _compose_readonly(root, selected, *, expected_base=None, expected_base_identity=None):
+    _require(selected == _read(root / READONLY_PATH, limit=MAX_BYTES),
+             "explicit readonly composition differs from the current reviewed contract")
+    legacy, legacy_identity = _compose_legacy(root, root / COMPOSED_PATH,
+                                             expected_base=expected_base,
+                                             expected_base_identity=expected_base_identity)
+    extension, reference = _load(root, READONLY_PATH, READONLY_PATCH, CORE_PATH, READONLY_ID)
+    previous = legacy["composition"]
+    _require(extension.get("predecessor_composition") == legacy_identity
+             and extension.get("required_predecessor_contracts") == previous["contracts"],
+             "readonly initialization requires the exact base 0005/0006/0007 composition")
+    transition = extension["source_files"][0]
+    _require(transition["before"] == legacy["source_files"][0]["after"],
+             "readonly initialization must follow the exact 0007 core output")
+    _require(extension.get("readonly_macro") == {
+        "name": "readonly-variables", "source": PRODUCT_PATH,
+        "body_sha256": "1169e184965a0352a1b2f3b13d5aad83fca34edac18c67f488dd41c74b425bdb",
+    }, "readonly initialization must use the reviewed product macro")
+    _require(_canonical(extension.get("semantics")) == _canonical({
+        "incoming_definitions_rejected_before_initialization": True,
+        "undefined_settings_initialized_to_empty": True, "existing_derived_values_preserved": True,
+        "all_selected_settings_frozen": True, "no_flashall_default": "",
+        "empty_signing_fields_emitted_to_misc_info": False,
+        "direct_vbmeta_descriptor_preserved": True, "readiness_flags_changed": False,
+    }) and _canonical(extension.get("scope")) == _canonical(READONLY_SCOPE),
+             "readonly initialization changes its reviewed semantics or admission scope")
+    rows = {row["path"]: copy.deepcopy(row) for row in previous["final_source_files"]}
+    rows[CORE_PATH] = {"path": CORE_PATH, **transition["after"]}
+    for row in extension["semantic_files"]:
+        normalized = _row(row)
+        _require(row["path"] not in rows or rows[row["path"]] == normalized,
+                 "readonly macro source conflicts with the predecessor composition")
+        rows[row["path"]] = normalized
+    composition = copy.deepcopy(previous)
+    composition["contracts"].append(reference)
+    composition["ordered_patches"].append(copy.deepcopy(extension["patch"]))
+    composition["core_transitions"].append(copy.deepcopy(transition))
+    composition["final_source_files"] = [rows[path] for path in sorted(rows)]
+    result = copy.deepcopy(legacy)
+    result["source_files"][0]["after"] = copy.deepcopy(transition["after"])
+    result["semantic_files"] = [rows[path] for path in sorted(rows) if path != CORE_PATH]
+    result["composition"] = composition
+    identity = _identity(_canonical(composition))
+    result["composition_identity"] = identity
+    _require(selected == _read(root / READONLY_PATH, limit=MAX_BYTES),
+             "readonly source contract changed during selection")
+    return result, identity
+
+
 def compose(root, selected_contract, *, expected_base=None, expected_base_identity=None):
     """Select one exact reviewed composition; never infer it from source hashes."""
     root = Path(root)
     selected = _read(Path(selected_contract), limit=MAX_BYTES)
     record = _json(selected)
+    if record.get("contract_id") == READONLY_ID:
+        return _compose_readonly(root, selected, expected_base=expected_base,
+                                 expected_base_identity=expected_base_identity)
     if record.get("contract_id") != METADATA_ID:
         # This keeps the original validation and serialized result unchanged.
         return _compose_legacy(root, selected_contract, expected_base=expected_base,
@@ -211,12 +274,27 @@ def render_metadata_recovery_include(template, *, root, selected_contract):
     unchanged. The selected variant retains every recovery/AVB/A-B mode guard
     and replaces only the source-composition and source-file checks.
     """
+    return _render_recovery_include(template, root=root, selected_contract=selected_contract,
+                                    metadata=True)
+
+
+def render_readonly_recovery_include(template, *, root, selected_contract):
+    """Select the base 0005/0006/0007/0010 variant without adopting metadata."""
+    return _render_recovery_include(template, root=root, selected_contract=selected_contract,
+                                    metadata=False)
+
+
+def _render_recovery_include(template, *, root, selected_contract, metadata):
     root = Path(root)
+    label = "metadata" if metadata else "readonly initialization"
+    ordered = "0005/0006/0007/0008/0009" if metadata else "0005/0006/0007/0010"
+    last_patch = "0009" if metadata else "0010"
+    expected_path = METADATA_PATH if metadata else READONLY_PATH
     _require(type(template) is bytes and template == _read(root / RECOVERY_TEMPLATE, limit=MAX_BYTES),
-             "metadata recovery rendering requires the unchanged authored template")
+             f"{label} recovery rendering requires the unchanged authored template")
     source, identity = compose(root, selected_contract)
-    _require(source["composition"]["contracts"][-1]["path"] == METADATA_PATH,
-             "metadata recovery rendering requires explicit metadata composition")
+    _require(source["composition"]["contracts"][-1]["path"] == expected_path,
+             f"{label} recovery rendering requires explicit {label} composition")
     core = source["source_files"][0]["after"]
     text = template.decode("ascii")
 
@@ -229,26 +307,26 @@ def render_metadata_recovery_include(template, *, root, selected_contract):
         text = text[:first] + replacement + text[last:]
 
     selection = (
-        "# Explicit metadata composition; legacy bundles cannot select this variant.\n"
+        f"# Explicit {label} composition; legacy bundles cannot select this variant.\n"
         "ifneq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),file)\n"
-        "$(error Recovery metadata composition must come from the verified bundle include)\nendif\n"
+        f"$(error Recovery {label} composition must come from the verified bundle include)\nendif\n"
         f"ifneq ($(value NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),{identity['sha256']})\n"
-        "$(error Recovery metadata composition differs from reviewed 0005/0006/0007/0008/0009 inputs)\nendif\n"
+        f"$(error Recovery {label} composition differs from reviewed {ordered} inputs)\nendif\n"
         f"ifneq ($(NEZHA_RECOVERY_CORE_SHA256),{core['sha256']})\n"
-        "$(error Recovery metadata input requires the exact reviewed 0009 build core)\nendif\n"
+        f"$(error Recovery {label} input requires the exact reviewed {last_patch} build core)\nendif\n"
     )
     replace_between("ifeq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),undefined)\n",
                     "ifneq ($(NEZHA_RECOVERY_PUBLIC_KEY_SHA256),", selection)
-    checks = "# Exact final source bytes for the explicitly selected 0005/0006/0007/0008/0009 composition.\n"
+    checks = f"# Exact final source bytes for the explicitly selected {ordered} composition.\n"
     for row in source["composition"]["final_source_files"]:
         path = row["path"]
         checks += (
             f"ifneq ($(shell test -f {path} && test ! -L {path} && echo regular),regular)\n"
-            f"$(error Recovery metadata composition requires a regular {path})\nendif\n"
+            f"$(error Recovery {label} composition requires a regular {path})\nendif\n"
             f"ifneq ($(strip $(shell wc -c < {path} 2>/dev/null)),{row['size_bytes']})\n"
-            f"$(error Recovery metadata source size changed: {path})\nendif\n"
+            f"$(error Recovery {label} source size changed: {path})\nendif\n"
             f"ifneq ($(shell sha256sum < {path} 2>/dev/null | cut -d ' ' -f 1),{row['sha256']})\n"
-            f"$(error Recovery metadata source bytes changed: {path})\nendif\n"
+            f"$(error Recovery {label} source bytes changed: {path})\nendif\n"
         )
     replace_between("# The upstream tree has no prebuilt-recovery selector.",
                     "ifneq ($(shell test -f vendor/xiaomi/nezha-recovery/recovery.img", checks)

@@ -72,6 +72,14 @@ TARGET_FILES_METADATA_PATH = "vendor/xiaomi/nezha-target-files-metadata"
 TARGET_FILES_METADATA_RECEIPT = "target-files-metadata.json"
 TARGET_FILES_METADATA_CONTRACT = "patches/evolution/target-files-metadata.json"
 TARGET_FILES_METADATA_INCLUDE = DEVICE_PATH / "generated/target-files-metadata.mk"
+DIRECT_AVB_READONLY_CONTRACT = "patches/evolution/direct-avb-readonly.json"
+DIRECT_AVB_READONLY_CONTRACT_ID = "nezha-direct-avb-readonly-v1"
+DIRECT_AVB_READONLY_SCOPE = {
+    "source_patch_applied": False, "native_kati_verified": False,
+    "native_image_copy_verified": False, "target_files_verified": False,
+    "complete_rom_admitted": False, "original_prebuilt_bytes_changed": False,
+    "incoming_override_guard_relaxed": False, "phone_operations": [],
+}
 OEM_POLICY_RECORD = PurePosixPath("config/nezha-oem-policy.json")
 OEM_POLICY_CONTRACT_ID = "nezha-oem-system-ext-policy-v1"
 OEM_POLICY_CONTRACT_SHA256 = "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7"
@@ -1727,6 +1735,8 @@ def _mi_ext_binding(plan, binding, *, composed_source_contract=None):
     # contracts. This cannot rehash an unmounted private bundle or guest source.
     if composed_source_contract is None and "target_files_metadata" in plan:
         composed_source_contract = ROOT / TARGET_FILES_METADATA_CONTRACT
+    if composed_source_contract is None and "direct_avb_readonly" in plan:
+        composed_source_contract = ROOT / DIRECT_AVB_READONLY_CONTRACT
     if composed_source_contract is not None:
         return _render_mi_ext_include(binding, composed_source_contract=composed_source_contract)
     return _render_mi_ext_include(binding)
@@ -1945,6 +1955,100 @@ def _bind_target_files_metadata(plan, path, expected_sha256, vendor_receipt, pay
     plan["target_files_metadata"] = binding
 
 
+def _direct_avb_readonly_public(selected_contract=None):
+    """Bind the explicit 0010 branch to current public sources, never receipt inference."""
+    if __package__:
+        from . import recovery_source_contracts as sources
+        from . import mi_ext_inputs
+    else:
+        import recovery_source_contracts as sources
+        import mi_ext_inputs
+    canonical = ROOT / DIRECT_AVB_READONLY_CONTRACT
+    selected = canonical if selected_contract is None else selected_contract
+    reader = mi_ext_inputs.Reader()
+    try:
+        raw = reader.read(canonical, maximum=MAX_JSON_BYTES)
+        selected_raw = reader.read(_no_symlinks(selected), maximum=MAX_JSON_BYTES)
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"direct AVB read-only contract input refused: {exc}") from exc
+    contract, identity = json.loads(raw, object_pairs_hook=_unique_object), mi_ext_inputs.identity(raw)
+    _require(type(contract) is dict and type(contract.get("schema_version")) is int and
+             contract["schema_version"] == 1 and selected_raw == raw and
+             contract.get("contract_id") == DIRECT_AVB_READONLY_CONTRACT_ID,
+             "direct AVB read-only selection differs from the current reviewed contract")
+    _require(json.dumps(contract.get("scope"), sort_keys=True) == json.dumps(DIRECT_AVB_READONLY_SCOPE, sort_keys=True),
+             "direct AVB read-only source contract changes admission scope")
+    try:
+        source, composition_identity = sources.compose(ROOT, canonical)
+    except sources.RecoverySourceError as exc:
+        raise CandidateError(f"direct AVB read-only source composition refused: {exc}") from exc
+    composition = source["composition"]
+    _require(composition["contracts"][-1] == {"path": DIRECT_AVB_READONLY_CONTRACT, **identity} and
+             len(composition["contracts"]) == len(composition["ordered_patches"]) == 4 and
+             len(composition["core_transitions"]) == 3 and len(composition["final_source_files"]) == 8 and
+             composition["patches_applied_by_this_tool"] is False and
+             composition["whole_source_tree_verified"] is False,
+             "direct AVB read-only requires the exact 0005/0006/0007/0010 source branch")
+    try:
+        reader.recheck()
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"direct AVB read-only contract changed during source verification: {exc}") from exc
+    return {"contract_id": DIRECT_AVB_READONLY_CONTRACT_ID,
+            "contract_record": {"path": DIRECT_AVB_READONLY_CONTRACT, **identity},
+            "native_source": composition, "composition_identity": composition_identity,
+            "scope": contract["scope"]}
+
+
+def _direct_avb_readonly_binding(plan, binding):
+    expected = _direct_avb_readonly_public()
+    _require(type(binding) is dict and json.dumps(binding, sort_keys=True) == json.dumps(expected, sort_keys=True),
+             "direct AVB read-only capability differs from current public controls")
+    _require("target_files_metadata" not in plan and "factory_profile" in plan and "mi_ext_inputs" in plan,
+             "direct AVB read-only requires factory and mi_ext inputs without metadata composition")
+    _require(plan["factory_profile"]["origin_verified"] is False,
+             "direct AVB read-only cannot promote factory origin verification")
+    native = {"project_commit": expected["native_source"]["project"]["commit"],
+              "files": expected["native_source"]["final_source_files"],
+              "composition": expected["native_source"], "composition_identity": expected["composition_identity"]}
+    _require(json.dumps(plan["mi_ext_inputs"].get("native_source"), sort_keys=True) == json.dumps(native, sort_keys=True),
+             "direct AVB read-only and mi_ext require the same explicit source composition")
+    _require(plan["profile"] == "framework-checks" and plan["release_config"] == "bp4a" and
+             plan["admission"]["configuration_allowed"] is True and
+             all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
+             "direct AVB read-only cannot promote build, packaging or hardware readiness")
+
+
+def _readonly_recovery_include(template_bytes):
+    if __package__:
+        from . import recovery_source_contracts as sources
+    else:
+        import recovery_source_contracts as sources
+    try:
+        return sources.render_readonly_recovery_include(
+            template_bytes, root=ROOT, selected_contract=ROOT / DIRECT_AVB_READONLY_CONTRACT)
+    except sources.RecoverySourceError as exc:
+        raise CandidateError(f"direct AVB read-only recovery source binding refused: {exc}") from exc
+
+
+def _bind_direct_avb_readonly(plan, selected_contract, payloads):
+    binding = _direct_avb_readonly_public(selected_contract)
+    _direct_avb_readonly_binding(plan, binding)
+    name = (DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
+    payloads[name] = _readonly_recovery_include(payloads[name])
+    plan["direct_avb_readonly"] = binding
+
+
+def _readonly_mi_ext_inventory(receipt):
+    if __package__:
+        from . import mi_ext_inputs
+    else:
+        import mi_ext_inputs
+    try:
+        mi_ext_inputs._members(mi_ext_inputs.real_directory(Path(receipt).parent))
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"direct AVB read-only mi_ext inventory refused: {exc}") from exc
+
+
 def render_factory_fstab(plan, contract, source):
     """Select observed filesystems without removing factory AVB or crypto flags."""
     identity, raw = _read_file(source, limit=MAX_TEXT_BYTES, collect=True)
@@ -2131,7 +2235,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None,
              oem_property_contract=None, framework_provider_policy_contract=None,
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
-             target_files_metadata_receipt_sha256=None):
+             target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -2152,6 +2256,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if mi_ext_inputs_receipt is not None:
         _require(factory_selected, "mi_ext inputs require the explicit factory profile")
     metadata_selected = target_files_metadata_receipt is not None or target_files_metadata_receipt_sha256 is not None
+    if direct_avb_readonly_contract is not None:
+        _require(factory_selected and mi_ext_inputs_receipt is not None,
+                 "direct AVB read-only requires explicit factory and mi_ext inputs")
+        _require(not metadata_selected,
+                 "direct AVB read-only cannot be combined with target-files metadata until their composition is reviewed")
     if metadata_selected:
         _require(target_files_metadata_receipt is not None and target_files_metadata_receipt_sha256 is not None,
                  "target-files metadata requires both a receipt and its external reviewed SHA256")
@@ -2200,10 +2309,17 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _bind_policy_inputs(plan, policy_inputs_receipt, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
         options = {"composed_source_contract": ROOT / TARGET_FILES_METADATA_CONTRACT} if metadata_selected else {}
+        if direct_avb_readonly_contract is not None:
+            # Validate the explicit selection before asking the bundle verifier
+            # to use the new branch. A receipt never chooses the source path.
+            _direct_avb_readonly_public(direct_avb_readonly_contract)
+            options = {"composed_source_contract": ROOT / DIRECT_AVB_READONLY_CONTRACT}
         _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab, **options)
     if metadata_selected:
         _bind_target_files_metadata(plan, target_files_metadata_receipt, target_files_metadata_receipt_sha256,
                                     vendor_receipt, payloads)
+    if direct_avb_readonly_contract is not None:
+        _bind_direct_avb_readonly(plan, direct_avb_readonly_contract, payloads)
     generated = DEVICE_PATH / "generated"
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
@@ -2226,6 +2342,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _require(not output.is_relative_to(protected) and not any(
             parent.exists() and parent.samefile(protected) for parent in output.parents),
             "candidate output must not be nested inside a target-files metadata bundle")
+    if direct_avb_readonly_contract is not None:
+        protected = _no_symlinks(Path(mi_ext_inputs_receipt).parent)
+        _require(not output.is_relative_to(protected) and not any(
+            parent.exists() and parent.samefile(protected) for parent in output.parents),
+            "direct AVB read-only candidate output must not be nested inside its mi_ext bundle")
     output.parent.mkdir(parents=True, exist_ok=True)
     _no_symlinks(output.parent)
     staging = Path(tempfile.mkdtemp(prefix=".nezha-device-", dir=output.parent))
@@ -2253,6 +2374,15 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             current["vendor_bundle"] = _metadata_vendor_binding(plan, current, vendor_receipt)
             _require(current == plan["target_files_metadata"],
                      "target-files metadata bundle changed before candidate publication")
+        if direct_avb_readonly_contract is not None:
+            _require(_direct_avb_readonly_public(direct_avb_readonly_contract) == plan["direct_avb_readonly"],
+                     "direct AVB read-only source contract changed before candidate publication")
+            current = _verify_mi_ext_inputs(mi_ext_inputs_receipt,
+                expected_package_sha256=plan["source_packages"]["vendor"],
+                composed_source_contract=ROOT / DIRECT_AVB_READONLY_CONTRACT)
+            _require(json.dumps(current, sort_keys=True) == json.dumps(plan["mi_ext_inputs"], sort_keys=True),
+                     "direct AVB read-only mi_ext inputs changed before candidate publication")
+            _readonly_mi_ext_inventory(mi_ext_inputs_receipt)
         _no_symlinks(output.parent)
         publish_new_directory(staging, output)
     finally:
@@ -2265,6 +2395,8 @@ def validate(output, *, purpose="configuration"):
     _require(purpose in ("configuration", "target-files", "flash"), "unsupported admission purpose")
     plan, _ = _read_json(Path(output) / "admission.json")
     _require(plan.get("profile") == "framework-checks" and _codename(plan) == "nezha", "wrong candidate profile")
+    _require(not {"direct_avb_readonly", "target_files_metadata"}.issubset(plan),
+             "direct AVB read-only and target-files metadata source compositions cannot be combined")
     _build_variant(plan.get("variant"))
     admission = plan["admission"]
     _require(admission["flash_allowed"] is False and admission["complete_target_files_allowed"] is False,
@@ -2296,6 +2428,12 @@ def validate(output, *, purpose="configuration"):
         _, actual_recovery = _read_file(Path(output) / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
         _require(actual_recovery == _metadata_recovery_include(legacy_recovery),
                  "target-files metadata requires the exact matching recovery source guard")
+    if "direct_avb_readonly" in plan:
+        _direct_avb_readonly_binding(plan, plan["direct_avb_readonly"])
+        _, legacy_recovery = _read_file(ROOT / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
+        _, actual_recovery = _read_file(Path(output) / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual_recovery == _readonly_recovery_include(legacy_recovery),
+                 "direct AVB read-only requires the exact matching recovery source guard")
     if "dsp_policy" in plan:
         _require(isinstance(plan["dsp_policy"], dict), "invalid DSP policy admission")
         contract, identity = _dsp_contract(Path(output) / DSP_POLICY_RECORD)
@@ -2533,6 +2671,8 @@ def main(argv=None):
                              help="reviewed OEM system_ext source restoration; requires matching native policy inputs")
             sub.add_argument("--mi-ext-inputs-receipt", type=Path,
                              help="verified exact factory mi_ext prebuilt; requires factory profile, never complete packaging admission")
+            sub.add_argument("--direct-avb-readonly-contract", type=Path,
+                             help="explicit 0005/0006/0007/0010 source branch; requires factory and mi_ext, incompatible with metadata")
             sub.add_argument("--target-files-metadata-receipt", type=Path,
                              help="exact content-only factory metadata bundle; requires its external SHA256, factory and mi_ext inputs")
             sub.add_argument("--target-files-metadata-receipt-sha256",
@@ -2569,7 +2709,8 @@ def main(argv=None):
                                   framework_provider_policy_contract=args.framework_provider_policy_contract,
                                   framework_provider_inputs_receipt=args.framework_provider_inputs_receipt,
                                   target_files_metadata_receipt=args.target_files_metadata_receipt,
-                                  target_files_metadata_receipt_sha256=args.target_files_metadata_receipt_sha256)
+                                  target_files_metadata_receipt_sha256=args.target_files_metadata_receipt_sha256,
+                                  direct_avb_readonly_contract=args.direct_avb_readonly_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

@@ -30,6 +30,10 @@ else:
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = "config/nezha-mi-ext.json"
 SOURCE_CONTRACT_PATH = "patches/evolution/direct-avb-custom-images.json"
+READONLY_SOURCE_CONTRACT_PATH = "patches/evolution/direct-avb-readonly.json"
+READONLY_SOURCE_CONTRACT_ID = "nezha-direct-avb-readonly-v1"
+READONLY_COMPOSER_CONTROLS = ("scripts/recovery_source_contracts.py", "scripts/kernel_inputs.py",
+                            "scripts/firmware.py")
 METADATA_SOURCE_CONTRACT_PATH = "patches/evolution/target-files-metadata.json"
 METADATA_COMPOSER_PATH = "scripts/target_files_metadata.py"
 PATCH_PATH = "patches/evolution/0007-direct-avb-custom-images.patch"
@@ -253,25 +257,46 @@ def _controls(reader, composed_source_contract=None):
         # Selecting the existing contract is equivalent to the unchanged default.
         # A receipt never selects a newer native consumer on the caller's behalf.
         if selected != controls[SOURCE_CONTRACT_PATH]:
-            canonical = reader.read(ROOT / METADATA_SOURCE_CONTRACT_PATH)
+            readonly = _json(selected).get("contract_id") == READONLY_SOURCE_CONTRACT_ID
+            selected_path = READONLY_SOURCE_CONTRACT_PATH if readonly else METADATA_SOURCE_CONTRACT_PATH
+            canonical = reader.read(ROOT / selected_path)
             require(selected == canonical,
                     "explicit mi_ext composition differs from a reviewed source contract")
-            controls[METADATA_COMPOSER_PATH] = reader.read(ROOT / METADATA_COMPOSER_PATH)
-            if __package__:
-                from .target_files_metadata import TargetFilesMetadataError, compose_sources
+            if readonly:
+                for path in READONLY_COMPOSER_CONTROLS:
+                    controls[path] = reader.read(ROOT / path)
+                if __package__:
+                    from .firmware import IntakeError
+                    from .kernel_inputs import KernelInputsError
+                    from .recovery_source_contracts import RecoverySourceError, compose
+                else:
+                    from firmware import IntakeError
+                    from kernel_inputs import KernelInputsError
+                    from recovery_source_contracts import RecoverySourceError, compose
+                try:
+                    composed_source, composed_identity = compose(ROOT, composed_source_contract)
+                except (RecoverySourceError, KernelInputsError, IntakeError) as exc:
+                    raise MiExtInputsError(f"mi_ext readonly source composition refused: {exc}") from exc
+                composition = composed_source["composition"]
+                require(composed_identity == identity(encoded(composition)),
+                        "mi_ext readonly source composition identity differs")
             else:
-                from target_files_metadata import TargetFilesMetadataError, compose_sources
-            try:
-                composition = compose_sources(ROOT)
-            except TargetFilesMetadataError as exc:
-                raise MiExtInputsError(f"mi_ext metadata source composition refused: {exc}") from exc
+                controls[METADATA_COMPOSER_PATH] = reader.read(ROOT / METADATA_COMPOSER_PATH)
+                if __package__:
+                    from .target_files_metadata import TargetFilesMetadataError, compose_sources
+                else:
+                    from target_files_metadata import TargetFilesMetadataError, compose_sources
+                try:
+                    composition = compose_sources(ROOT)
+                except TargetFilesMetadataError as exc:
+                    raise MiExtInputsError(f"mi_ext metadata source composition refused: {exc}") from exc
             for row in [*composition["contracts"], *composition["ordered_patches"]]:
                 data = reader.read(ROOT / row["path"], row)
                 require(row["path"] not in controls or controls[row["path"]] == data,
                         "mi_ext source dependency changed during composition")
                 controls[row["path"]] = data
-            require(controls[METADATA_SOURCE_CONTRACT_PATH] == canonical,
-                    "selected metadata source changed during composition")
+            require(controls[selected_path] == canonical,
+                    "selected mi_ext source changed during composition")
             source = copy.deepcopy(source)
             source["composition"] = composition
             source["composition_identity"] = identity(encoded(composition))
