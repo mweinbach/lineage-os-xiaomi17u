@@ -5,6 +5,13 @@ TWRP is an active, separate bring-up target for the China Xiaomi 17 Ultra
 without requiring a complete Evolution X ROM first. A compiled recovery is
 not yet a tested rescue environment, and this work authorizes no phone change.
 
+**Normal build 62 produced the first engineering-key-signed recovery image.**
+Its 100 MiB size and kernel-free v4 layout passed structural inspection, and
+the build verified its AOSP test-key AVB signature. Static artifact checks are
+not complete: the image has duplicate secure property assignments and omits
+the dynamic loaders referenced by its executables. This candidate must not be
+treated as boot-ready or as a working logging environment.
+
 ## Source and build isolation
 
 The selected experimental source is
@@ -104,6 +111,25 @@ user-build check. Packaging stopped later because its recipe touched
 attempt produced no recovery image. The recipe needs to handle a clean output
 tree; manually creating a directory in this build's output would not fix that
 requirement. The source and all 325 cleanup-state checks passed afterward.
+
+Patch 33 creates that directory in the packaging recipe. Graph 61 and normal
+build 62 then passed, producing `recovery.img` with SHA256
+`65141f46297f7aeee41edd877ccc1ba4df4896b206fae69bd8719699cce346d3`.
+The image is 104,857,600 bytes; its embedded compressed ramdisk matches the
+separate build output. The first artifact run rejected Android's empty CPIO
+trailer mode `0755`; the narrow inspector correction below preserves that
+failed run and does not modify the image.
+
+Inspection of the same decompressed archive then found two equal duplicate
+assignments (`ro.secure=1` and `ro.adb.secure=1`). A separate ELF inventory
+parsed 159 ELF files and 1,074 library dependency edges without missing or
+ambiguous library candidates, but found 44 unresolved interpreter paths:
+42 refer to `/system/bin/linker64` and two to
+`/system/bin/bootstrap/linker64`. Neither loader is packaged. The archive also
+lacks `/system/etc/ld.config.txt`; its `/linkerconfig/ld.config.txt` is only
+the empty placeholder created by the recipe. These are incomplete packaging
+results, not runtime success. The property and ELF checks remain unchanged;
+source fixes and a new normal build must precede another full artifact check.
 
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch
