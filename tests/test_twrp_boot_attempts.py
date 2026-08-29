@@ -108,6 +108,24 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertFalse(runtime['proc_cmdline_read_permitted'])
         self.assertFalse(runtime['proc_bootconfig_read_permitted'])
 
+    def test_v3_trial_preserves_measured_first_stage_abort(self):
+        trial = self.record['attempts'][2]
+        self.assertEqual(trial['image_sha256'],
+                         'f8c2a3696036faea4401dacfabcde5ad092bb9b56adeffb9444f5d4adae52118')
+        self.assertEqual((trial['header_version'], trial['header_size_bytes']), (3, 1580))
+        self.assertEqual(trial['ramdisk_sha256'], self.milestone['artifact']['compressed_ramdisk_sha256'])
+        self.assertTrue(trial['boot_command_succeeded'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        self.assertEqual(trial['status'], 'boot_command_accepted_first_stage_abort_then_stock_android')
+        observed = trial['runtime_observations']
+        self.assertTrue(observed['stock_android_boot_completed'])
+        self.assertTrue(observed['saved_log_first_stage_abort_observed'])
+        self.assertTrue(observed['last_kernel_log_available_via_android_dropbox'])
+        self.assertTrue(observed['saved_log_contains_some_corrupted_characters'])
+        self.assertFalse(observed['direct_pstore_read_permitted'])
+        self.assertLess(observed['saved_log_init_started_seconds'], observed['saved_log_abort_seconds'])
+        self.assertLess(observed['saved_log_abort_seconds'], observed['saved_log_reboot_seconds'])
+
 
 if __name__ == '__main__':
     unittest.main()

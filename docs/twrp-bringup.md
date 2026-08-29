@@ -64,6 +64,35 @@ bytes and AVB digest offline but deliberately does not claim signature trust,
 boot compatibility or runtime success. No flash command was sent; this does
 not establish that the bootloader leaves all internal boot metadata unchanged.
 
+The third trial used an explicitly inspected v3 wrapper, SHA256
+`f8c2a3696036faea4401dacfabcde5ad092bb9b56adeffb9444f5d4adae52118`.
+Public Qualcomm source at
+[`9a7cebb3d43c569aeb70c86af5f1e91251923305`](https://github.com/CodeLinaro-mirror/la_abl_tianocore_edk2/blob/9a7cebb3d43c569aeb70c86af5f1e91251923305/QcomModulePkg/Library/BootLib/BootLinux.c#L1231-L1284)
+supports selecting the downloaded ramdisk on that path while retaining the
+installed vendor ramdisk and DTB. This is source evidence, not identification
+of the proprietary Nezha loader. V3 omits the separate vendor bootconfig, so
+the wrapper carries its eight exact stock declarations as a 269-byte command
+line. Pinned init imports those `androidboot.*` parameters normally, but its
+early parallel-module switch reads only bootconfig and can fall back to serial
+loading. No security override or force-normal-boot marker was added.
+
+The bootloader accepted v3, but Android returned afterward. Unlike the earlier
+result, the latest `SYSTEM_LAST_KMSG` entry provides a concrete startup error:
+first-stage init could not mount `/proc`, `/sys`, `/mnt`, `/debug_ramdisk` and
+`/second_stage_resources` because the mount-point directories were absent. It
+aborted at about 0.256 seconds and requested a bootloader reboot. The saved log
+has some corrupted characters; its raw bytes remain private and hash-bound in
+the attempt record. Direct pstore access was denied to the stock shell, but
+the bounded Android DropBox read succeeded. This is access to a previous
+kernel log, not proof of TWRP's own logging or authenticated recovery ADB.
+
+The dedicated recovery archive omits generic initramfs directories normally
+supplied by the companion `init_boot` ramdisk. The next RAM-only wrapper can
+provide the canonical seven empty root directories: `debug_ramdisk`, `dev`,
+`metadata`, `mnt`, `proc`, `second_stage_resources` and `sys`. Init creates
+the mounted children itself. No stock executable, debug marker, policy,
+property file or extra init script is needed for this measured failure.
+
 ## Source and build isolation
 
 The selected experimental source is

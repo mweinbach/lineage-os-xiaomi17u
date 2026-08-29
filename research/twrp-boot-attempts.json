@@ -156,6 +156,107 @@
           "size_bytes": 1844
         }
       }
+    },
+    {
+      "number": 3,
+      "started_at_utc": "2026-08-29T03:52:28.150505+00:00",
+      "operation": "fastboot boot",
+      "image_role": "stock_kernel_build66_ramdisk_v3_wrapper",
+      "image_sha256": "f8c2a3696036faea4401dacfabcde5ad092bb9b56adeffb9444f5d4adae52118",
+      "image_size_bytes": 100663296,
+      "header_version": 3,
+      "header_size_bytes": 1580,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "ramdisk_size_bytes": 25192233,
+      "ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "command_line_sha256": "d4171d7aa65f0c4e2c0f9c1c776dda26693f7021f8443c274dcfd9121a4d8d2f",
+      "command_line_source": "eight exact stock vendor bootconfig declarations joined with spaces",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "boot_command_accepted_first_stage_abort_then_stock_android",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "runtime_observations": {
+        "stock_android_boot_completed": true,
+        "recovery_service_present": false,
+        "twrp_version_property_present": false,
+        "boot_reason": "bootloader",
+        "last_kernel_log_available_via_android_dropbox": true,
+        "direct_pstore_read_permitted": false,
+        "saved_log_first_stage_abort_observed": true,
+        "saved_log_failure_summary": "First-stage init could not mount proc, sysfs, mnt, debug_ramdisk and second_stage_resources because root mount-point directories were absent; it aborted and requested reboot to bootloader.",
+        "saved_log_init_started_seconds": 0.254202,
+        "saved_log_abort_seconds": 0.25637,
+        "saved_log_reboot_seconds": 0.25781,
+        "saved_log_kernel_version": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+        "saved_log_contains_some_corrupted_characters": true
+      },
+      "evidence": {
+        "start": {
+          "sha256": "be3ef0cc0db54bb76f515a938b7859ca3b3e6add8d5884b623e4a93049c20331",
+          "size_bytes": 646
+        },
+        "result": {
+          "sha256": "9737e714aaf9060b54d1759a54bfc3a87a4f2982ad60735e237dc1ac35b7c00b",
+          "size_bytes": 283
+        },
+        "bootloader_variables": {
+          "sha256": "6525dba22915196faae22ca6b1959e5c7a0eb3348b85d34bcb2ae62e6625d4ff",
+          "size_bytes": 1637
+        },
+        "construction": {
+          "sha256": "30e6b5b81e909711488d9120a45c56e2fb1bb9416fa18f50c6c914509cfd2f60",
+          "size_bytes": 4568
+        },
+        "independent_image_inspection": {
+          "sha256": "1253129de8c8c5f52846d6de9e89f8f3607aef47ca766e928ec6539a12ed148b",
+          "size_bytes": 5562
+        },
+        "independent_inspector_execution": {
+          "sha256": "4a234d44a20d34609a6b0270e8dedaed10ddf4947e1f6a7ffb7045113953be56",
+          "size_bytes": 680
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "7c02b9ae8fb35fc43e3244a7d498b1097d08f6367507e050c8074ab1427dc62c",
+          "size_bytes": 1185
+        },
+        "runtime_diagnostics": {
+          "sha256": "55edfb82b4f38555e9abff81d2d27d73929ac760c20032671726a59f9fc8bf8d",
+          "size_bytes": 136901
+        },
+        "last_kernel_log": {
+          "sha256": "55f259906c8dc1375c75b8b01c2b545c062325dfcd9703a3a115bd7367e24d31",
+          "size_bytes": 68037
+        },
+        "metadata_peer_review": {
+          "sha256": "41f74ac7120110d06f5e668701d18dc8cd4f71e3b2df901fabc364932a120cd0",
+          "size_bytes": 2324
+        },
+        "public_loader_source_findings": {
+          "sha256": "300fa1242027e57c9cf7c023dc0f19ac819b40174bddd2e73fd5913c94341a62",
+          "size_bytes": 10869
+        }
+      }
     }
   ],
   "last_confirmed_mode": "stock_android",
@@ -170,12 +271,17 @@
     "Fastboot lock state differs from Android properties; the positively parsed bootloader unlocked result was used for the authorized trial.",
     "The compiled static artifact milestone remains a historical record, not a claim that hardware testing succeeded.",
     "The v4 wrapper was accepted but reached stock Android. Public Qualcomm loader code suggests init_boot ramdisk preference; the proprietary Nezha loader implementation has not been established.",
-    "No partition-write, wipe, unlock/relock, or slot-change command was sent. Temporary boot does not guarantee that a bootloader leaves all of its internal boot metadata unchanged."
+    "No partition-write, wipe, unlock/relock, or slot-change command was sent. Temporary boot does not guarantee that a bootloader leaves all of its internal boot metadata unchanged.",
+    "The v3 trial has saved first-stage initialization failure evidence. TWRP UI, recovery ADB and recovery logs remain unverified; saved previous-kernel logs are distinct from a working recovery logger."
   ],
   "evidence": {
     "adb_reboot_to_bootloader": {
       "sha256": "6379c17d798191f995d43b0950ea7787779fe29c9af7354b25de37a514ff207d",
       "size_bytes": 54
+    },
+    "v4_previous_kernel_log": {
+      "sha256": "284e6ecf4ce9425e83b41f5594c25797b6e50f2d09c44d44cb3ff1c438c6ac40",
+      "size_bytes": 67403
     }
   }
 }
