@@ -1,0 +1,21 @@
+# The selected factory AIDL executable is a system_ext process. Legacy HIDL
+# services and the separate WFD application are not admitted by this policy.
+type vendor_sigmahal_qti, domain, coredomain, halserverdomain;
+type vendor_sigmahal_qti_exec, exec_type, file_type, system_file_type;
+type vendor_hal_sigma_miracast_service, service_manager_type, hal_service_type, protected_service;
+
+init_daemon_domain(vendor_sigmahal_qti)
+binder_use(vendor_sigmahal_qti)
+
+# Spell out the normal-user registration contract: add_service also grants
+# Binder-over-TCP access to su on debug builds, which this profile does not need.
+allow vendor_sigmahal_qti vendor_hal_sigma_miracast_service:service_manager { add find };
+neverallow { domain -vendor_sigmahal_qti } vendor_hal_sigma_miracast_service:service_manager add;
+neverallow { domain -vendor_sigmahal_qti -atrace -shell -system_app -traceur_app } vendor_hal_sigma_miracast_service:service_manager find;
+
+# These platform peers are present in the factory provider's policy. Do not
+# grant access to unselected WFD applications or invent their service domains.
+allow vendor_sigmahal_qti audioserver_service:service_manager find;
+allow vendor_sigmahal_qti surfaceflinger_service:service_manager find;
+binder_call(vendor_sigmahal_qti, audioserver)
+binder_call(vendor_sigmahal_qti, surfaceflinger)

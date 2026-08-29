@@ -1,0 +1,2 @@
+vendor.qti.hardware.sigma_miracast_aidl.ISigma_miracast/default u:object_r:vendor_hal_sigma_miracast_service:s0
+vendor.qti.qccsyshal_aidl.IQccsyshal/default u:object_r:vendor_qccsyshal_service:s0

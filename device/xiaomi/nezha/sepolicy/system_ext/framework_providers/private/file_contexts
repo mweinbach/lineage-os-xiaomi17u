@@ -1,0 +1,7 @@
+# Exact selected AIDL executables; legacy HIDL binaries are outside this profile.
+/(system_ext|system/system_ext)/bin/sigma_miracasthalservice_aidl u:object_r:vendor_sigmahal_qti_exec:s0
+/(system_ext|system/system_ext)/bin/qccsyshal_aidl-service u:object_r:vendor_qccsyshal_qti_exec:s0
+
+# Only the QCC directories created by the preserved AIDL init declaration.
+/data/misc/qcc(/.*)? u:object_r:vendor_qcc_data_file:s0
+/dev/socket/qcc_app(/.*)? u:object_r:vendor_qcc_app_socket:s0

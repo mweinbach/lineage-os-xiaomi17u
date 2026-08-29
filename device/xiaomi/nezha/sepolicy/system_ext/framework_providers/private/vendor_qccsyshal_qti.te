@@ -1,0 +1,22 @@
+# These private labels belong to the selected system_ext AIDL provider and its
+# init-created directories. No QCC application, legacy HIDL service, or QDMA
+# provider is selected. Cross-MLS exceptions require separate client evidence.
+type vendor_qccsyshal_qti, domain, coredomain, halserverdomain;
+type vendor_qccsyshal_qti_exec, exec_type, file_type, system_file_type;
+type vendor_qccsyshal_service, service_manager_type, hal_service_type, protected_service;
+type vendor_qcc_data_file, file_type, data_file_type, core_data_file_type;
+type vendor_qcc_app_socket, file_type, coredomain_socket;
+
+init_daemon_domain(vendor_qccsyshal_qti)
+binder_use(vendor_qccsyshal_qti)
+
+allow vendor_qccsyshal_qti vendor_qccsyshal_service:service_manager { add find };
+neverallow { domain -vendor_qccsyshal_qti } vendor_qccsyshal_service:service_manager add;
+neverallow { domain -vendor_qccsyshal_qti -atrace -shell -system_app -traceur_app } vendor_qccsyshal_service:service_manager find;
+
+# Preserve the original provider's access to its own named storage. The socket
+# path is labeled, but no connectto grant to an unselected app is introduced.
+allow vendor_qccsyshal_qti vendor_qcc_data_file:dir create_dir_perms;
+allow vendor_qccsyshal_qti vendor_qcc_data_file:file create_file_perms;
+allow vendor_qccsyshal_qti vendor_qcc_app_socket:dir r_dir_perms;
+allow vendor_qccsyshal_qti vendor_qcc_app_socket:sock_file rw_file_perms;

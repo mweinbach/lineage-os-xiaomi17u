@@ -1,0 +1,1100 @@
+{
+  "context_entries": {
+    "file_contexts": [
+      [
+        "/(system_ext|system/system_ext)/bin/sigma_miracasthalservice_aidl",
+        "u:object_r:vendor_sigmahal_qti_exec:s0"
+      ],
+      [
+        "/(system_ext|system/system_ext)/bin/qccsyshal_aidl-service",
+        "u:object_r:vendor_qccsyshal_qti_exec:s0"
+      ],
+      [
+        "/data/misc/qcc(/.*)?",
+        "u:object_r:vendor_qcc_data_file:s0"
+      ],
+      [
+        "/dev/socket/qcc_app(/.*)?",
+        "u:object_r:vendor_qcc_app_socket:s0"
+      ]
+    ],
+    "service_contexts": [
+      [
+        "vendor.qti.hardware.sigma_miracast_aidl.ISigma_miracast/default",
+        "u:object_r:vendor_hal_sigma_miracast_service:s0"
+      ],
+      [
+        "vendor.qti.qccsyshal_aidl.IQccsyshal/default",
+        "u:object_r:vendor_qccsyshal_service:s0"
+      ]
+    ]
+  },
+  "contract_id": "nezha-private-framework-aidl-provider-policy-v1",
+  "device": "nezha",
+  "evidence_scope": {
+    "basis": "captured generated factory CIL, labels, and exact init/VINTF/executable inputs",
+    "explicit_allow_budget_is_subset_of_factory_effective_grants": true,
+    "inherited_current_platform_permissions_require_native_review": true,
+    "original_oem_te_recovered": false,
+    "private_provider_types_have_no_factory_public_mapping": true
+  },
+  "factory_cil_inputs": [
+    {
+      "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+      "sha256": "39c824e94b042866c8935ca505c7e15e41c04c3ee2a233b8ef77bb66afbe5178",
+      "size_bytes": 2338664
+    },
+    {
+      "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+      "sha256": "4a8e7712c941ee0fff52a13bf2187284d93a7966cec979f2d324f7ed841ceb3e",
+      "size_bytes": 229372
+    },
+    {
+      "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+      "sha256": "953e8942992e62c0416f4c203ee8570c8d22b6201cb487231533590288ba4211",
+      "size_bytes": 604510
+    },
+    {
+      "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+      "sha256": "eb47c59eef303d8cd03c25ed20110fc4ac71e4749b2dc8e94987b796485b80eb",
+      "size_bytes": 41501
+    },
+    {
+      "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+      "sha256": "04b1ab23e431a3fbd7fcf752af433035a1c754932c2437d3c0bec43afd570d9d",
+      "size_bytes": 74801
+    },
+    {
+      "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+      "sha256": "934bb77bba43f8dfe26c7eabb1498adb5a5656992d1c35fba815b62128a0b263",
+      "size_bytes": 542
+    },
+    {
+      "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+      "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+      "size_bytes": 396303
+    },
+    {
+      "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+      "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+      "size_bytes": 1708593
+    },
+    {
+      "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+      "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+      "size_bytes": 14292
+    },
+    {
+      "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+      "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+      "size_bytes": 142
+    }
+  ],
+  "factory_context_evidence": [
+    {
+      "line_sha256": {
+        "170": "1982cf7de9e3123e89d335631fd31b6ae295ae9c74ebfe78450140e1e533f1ff",
+        "183": "26e01293afb7ea123511b44d788151ee6f95a8eac23e7c88bdb1d48e474d48e8",
+        "184": "bbd146eaf671d0e5339622477864e7337192f5d759271aec2918dc4e3806cc8c",
+        "197": "953ea609deba940d0a88324f7f04ccb20f4405dd337a8c6b1fc20eb550bbe9ef"
+      },
+      "runtime_path": "/system_ext/etc/selinux/system_ext_file_contexts",
+      "sha256": "9f14cbcc8d5e0d35f0e16ade4f0d0f0469d82797e82f72bb577bb7f5a35aadae",
+      "size_bytes": 16046,
+      "source_lines": [
+        170,
+        183,
+        184,
+        197
+      ]
+    },
+    {
+      "line_sha256": {
+        "139": "8eedad03635684a0cb27569fceaf0f164a171696ab374bb6a9b86035e709d819",
+        "148": "43939008f9b1f4c89ccae4c07ddc1031c63001e403f2cc707cd6dbc2ea759b30"
+      },
+      "runtime_path": "/system_ext/etc/selinux/system_ext_service_contexts",
+      "sha256": "3b76884388e19cc94d570c2926c11cd3f13b0584e3e307a314bd49c506ebc02b",
+      "size_bytes": 11127,
+      "source_lines": [
+        139,
+        148
+      ]
+    }
+  ],
+  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "intentional_narrowing": [
+    "Only two selected system_ext AIDL executable paths are labeled; legacy HIDL providers are not imported.",
+    "Only qcc data/socket paths are labeled; the factory qdma alternatives are excluded.",
+    "The QCC domain does not gain mlstrustedsubject, and its data/socket labels do not gain mlstrustedobject.",
+    "Private OEM HAL attributes and unselected WFD/QCC application domains are not declared or mapped.",
+    "Service registration includes normal-user permissions and explicit neverallows without add_service debug TCP grants."
+  ],
+  "native_policy_budget": {
+    "allows": [
+      {
+        "class": "file",
+        "factory_evidence": [
+          {
+            "line": 5541,
+            "normalized_form_sha256": "d3e0aada3c497b7845a979fba0776fc89fdd9a3be659b4add34a7741b09292ec",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "execute",
+          "getattr",
+          "map",
+          "open",
+          "read"
+        ],
+        "source": "init",
+        "target": "vendor_sigmahal_qti_exec"
+      },
+      {
+        "class": "process",
+        "factory_evidence": [
+          {
+            "line": 5542,
+            "normalized_form_sha256": "1f0c8694ebe7f4c136fc9969c072d229de86cb27b4a9a494fedc0dcabd446269",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "transition"
+        ],
+        "source": "init",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "class": "file",
+        "factory_evidence": [
+          {
+            "line": 5543,
+            "normalized_form_sha256": "e91c26435fd3f41504d3ad0064853e4c407f441fa50a2713187b3b1c1bd17b20",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "entrypoint",
+          "execute",
+          "getattr",
+          "map",
+          "open",
+          "read"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "vendor_sigmahal_qti_exec"
+      },
+      {
+        "class": "process",
+        "factory_evidence": [
+          {
+            "line": 5545,
+            "normalized_form_sha256": "b494ca0fa4a82a23f14bb8b4afa137ab532d531f00717c4888078bfe88d6b03a",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "rlimitinh",
+          "siginh"
+        ],
+        "source": "init",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5547,
+            "normalized_form_sha256": "1d05cab4d331222598c18977d62b85c4af7cc5dc7a605c719c79e533719bf81c",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "call",
+          "transfer"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "servicemanager"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5548,
+            "normalized_form_sha256": "3439371a8d86a0f84ce2a718abd3b067eaa25216fae4f2bc1b732c03a5857c89",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "call",
+          "transfer"
+        ],
+        "source": "servicemanager",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "class": "service_manager",
+        "factory_evidence": [
+          {
+            "line": 5534,
+            "normalized_form_sha256": "c12e6a7b70272d5f109584d58549ef5ee0d399671c21d9a64842dfeb4f8f0c57",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "add",
+          "find"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "vendor_hal_sigma_miracast_service"
+      },
+      {
+        "class": "file",
+        "factory_evidence": [
+          {
+            "line": 5018,
+            "normalized_form_sha256": "09dba9ee377b1ae6c811e88b1bb1b009fbcba674982efd92c731ba51ce39acba",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "execute",
+          "getattr",
+          "map",
+          "open",
+          "read"
+        ],
+        "source": "init",
+        "target": "vendor_qccsyshal_qti_exec"
+      },
+      {
+        "class": "process",
+        "factory_evidence": [
+          {
+            "line": 5019,
+            "normalized_form_sha256": "762dafe2b6c5eb398613fe43c04450093af7aae4761febf52012657266dd9f7a",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "transition"
+        ],
+        "source": "init",
+        "target": "vendor_qccsyshal_qti"
+      },
+      {
+        "class": "file",
+        "factory_evidence": [
+          {
+            "line": 5020,
+            "normalized_form_sha256": "93ca2d6f1ecce0180ddd6366d0f7900f65bd5acf9e60eaa837454483644aee24",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "entrypoint",
+          "execute",
+          "getattr",
+          "map",
+          "open",
+          "read"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "vendor_qccsyshal_qti_exec"
+      },
+      {
+        "class": "process",
+        "factory_evidence": [
+          {
+            "line": 5022,
+            "normalized_form_sha256": "e1d529655ed0e217e1c6ff901766a678bd4f015db62ebaadc8b0cf614128fbb1",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "rlimitinh",
+          "siginh"
+        ],
+        "source": "init",
+        "target": "vendor_qccsyshal_qti"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5024,
+            "normalized_form_sha256": "f234a98fb149f2093174c532ddc002f8fd5a42767ea0361d6832dc73e8737516",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "call",
+          "transfer"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "servicemanager"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5025,
+            "normalized_form_sha256": "4d42756e90d46f9ff8422583a2beec47f9bac3b4f1a13adcd3bca1f95cc54ed6",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "call",
+          "transfer"
+        ],
+        "source": "servicemanager",
+        "target": "vendor_qccsyshal_qti"
+      },
+      {
+        "class": "service_manager",
+        "factory_evidence": [
+          {
+            "line": 5041,
+            "normalized_form_sha256": "e004c56c636e837d15ba85125fb57371d13f57cc7d2d7dc6263ab043e32beeb1",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "add",
+          "find"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "vendor_qccsyshal_service"
+      },
+      {
+        "class": "service_manager",
+        "factory_evidence": [
+          {
+            "line": 5552,
+            "normalized_form_sha256": "476f795134309fb2c3bf8fe14987f81a6f6e2a099c2a9eb706f87c3d6f65c56e",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "find"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "audioserver_service"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5555,
+            "normalized_form_sha256": "47d89d98af0f7752a40505f51b91d6c6e26e508f10d4d021bfcb0ea7dd4fa2f8",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "call",
+          "transfer"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "audioserver"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5556,
+            "normalized_form_sha256": "eb3e2ba8caee72439703b6a01477f076328ed07d2a32b0f8de26470c2c4c7897",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "transfer"
+        ],
+        "source": "audioserver",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "class": "fd",
+        "factory_evidence": [
+          {
+            "line": 13949,
+            "normalized_form_sha256": "5073d8d96fee8aa29a1a40aa61e87d04b5182c0b1f9886c728c3831966e562af",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil"
+          },
+          {
+            "line": 5557,
+            "normalized_form_sha256": "2a94e269eac7fe4b0a712cec609edfd79fc0b1d445ca9738bdd52a94b678a21e",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "use"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "audioserver"
+      },
+      {
+        "class": "service_manager",
+        "factory_evidence": [
+          {
+            "line": 5553,
+            "normalized_form_sha256": "f1bc9abe09167dabdb059003da49cbab183fba1785fe29d309d858908c10d368",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "find"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "surfaceflinger_service"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5558,
+            "normalized_form_sha256": "10e434dbb7e2266fbc81c9d836fa88104d748d006474c1f438f8462af4f1f8c3",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "call",
+          "transfer"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "surfaceflinger"
+      },
+      {
+        "class": "binder",
+        "factory_evidence": [
+          {
+            "line": 5559,
+            "normalized_form_sha256": "6dd99cd4e71dca0f214707d0eb4684a33b8d6029068d8ddfdabffb51263f5050",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "transfer"
+        ],
+        "source": "surfaceflinger",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "class": "fd",
+        "factory_evidence": [
+          {
+            "line": 13949,
+            "normalized_form_sha256": "5073d8d96fee8aa29a1a40aa61e87d04b5182c0b1f9886c728c3831966e562af",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil"
+          },
+          {
+            "line": 5560,
+            "normalized_form_sha256": "a402ecba0520a0348b157380db3e97cdbc7834d541c581943d8c2fc24310967c",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "use"
+        ],
+        "source": "vendor_sigmahal_qti",
+        "target": "surfaceflinger"
+      },
+      {
+        "class": "dir",
+        "factory_evidence": [
+          {
+            "line": 5033,
+            "normalized_form_sha256": "fcaaf92834cbc614c0a2f33f8f5c109b0b516db6bfb1b2389ef84ff585058ad2",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "add_name",
+          "create",
+          "getattr",
+          "ioctl",
+          "lock",
+          "open",
+          "read",
+          "remove_name",
+          "rename",
+          "reparent",
+          "rmdir",
+          "search",
+          "setattr",
+          "watch",
+          "watch_reads",
+          "write"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "vendor_qcc_data_file"
+      },
+      {
+        "class": "file",
+        "factory_evidence": [
+          {
+            "line": 5034,
+            "normalized_form_sha256": "b47517442cbaa40502ef83977aefe7ce80033d93739a0662f9265fc4f9a93b83",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "append",
+          "create",
+          "getattr",
+          "ioctl",
+          "lock",
+          "map",
+          "open",
+          "read",
+          "rename",
+          "setattr",
+          "unlink",
+          "watch",
+          "watch_reads",
+          "write"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "vendor_qcc_data_file"
+      },
+      {
+        "class": "dir",
+        "factory_evidence": [
+          {
+            "line": 5037,
+            "normalized_form_sha256": "894122b57b8d400c3fb5eea542d135d61eb9d363b6893294525d9569c7ec2941",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "getattr",
+          "ioctl",
+          "lock",
+          "open",
+          "read",
+          "search",
+          "watch",
+          "watch_reads"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "vendor_qcc_app_socket"
+      },
+      {
+        "class": "sock_file",
+        "factory_evidence": [
+          {
+            "line": 5038,
+            "normalized_form_sha256": "f9c6d1b276b9f0240d69531c11bdba476dd31eb76904e8fc8ad4514a9d227faf",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+          }
+        ],
+        "permissions": [
+          "append",
+          "getattr",
+          "ioctl",
+          "lock",
+          "map",
+          "open",
+          "read",
+          "watch",
+          "watch_reads",
+          "write"
+        ],
+        "source": "vendor_qccsyshal_qti",
+        "target": "vendor_qcc_app_socket"
+      }
+    ],
+    "dontaudits": [
+      {
+        "class": "process",
+        "permissions": [
+          "noatsecure"
+        ],
+        "source": "init",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "class": "process",
+        "permissions": [
+          "noatsecure"
+        ],
+        "source": "init",
+        "target": "vendor_qccsyshal_qti"
+      }
+    ],
+    "registration_assertions": [
+      {
+        "exclude_domains": [
+          "vendor_sigmahal_qti"
+        ],
+        "permission": "add",
+        "service": "vendor_hal_sigma_miracast_service"
+      },
+      {
+        "exclude_domains": [
+          "atrace",
+          "shell",
+          "system_app",
+          "traceur_app",
+          "vendor_sigmahal_qti"
+        ],
+        "permission": "find",
+        "service": "vendor_hal_sigma_miracast_service"
+      },
+      {
+        "exclude_domains": [
+          "vendor_qccsyshal_qti"
+        ],
+        "permission": "add",
+        "service": "vendor_qccsyshal_service"
+      },
+      {
+        "exclude_domains": [
+          "atrace",
+          "shell",
+          "system_app",
+          "traceur_app",
+          "vendor_qccsyshal_qti"
+        ],
+        "permission": "find",
+        "service": "vendor_qccsyshal_service"
+      }
+    ],
+    "type_transitions": [
+      {
+        "executable": "vendor_sigmahal_qti_exec",
+        "source": "init",
+        "target": "vendor_sigmahal_qti"
+      },
+      {
+        "executable": "vendor_qccsyshal_qti_exec",
+        "source": "init",
+        "target": "vendor_qccsyshal_qti"
+      }
+    ]
+  },
+  "pinned_android_source_project": {
+    "head": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+    "path": "system/sepolicy"
+  },
+  "pinned_android_sources": [
+    {
+      "path": "system/sepolicy/private/roles_decl",
+      "sha256": "4241eb694ec396a73e9a0d6bfc9973400dcef8ac820a7e0cfe0f9cbf3673e6dd",
+      "size_bytes": 8
+    },
+    {
+      "path": "system/sepolicy/public/attributes",
+      "sha256": "0fc07e9b72900316ccd27c26c146cebb310fd7a286aa5e53cc966021c2bd30f3",
+      "size_bytes": 16103
+    },
+    {
+      "path": "system/sepolicy/public/global_macros",
+      "sha256": "7cfdf2ed290c1a867e6ccac6dfcecb840c475e73de4ee49c9c6da71218666c46",
+      "size_bytes": 3664
+    },
+    {
+      "path": "system/sepolicy/public/roles",
+      "sha256": "362775cb1b2a62fe2fa304ed6922e4d2b1563ad9cc850fbe35af1b60d113ae2c",
+      "size_bytes": 21
+    },
+    {
+      "path": "system/sepolicy/public/te_macros",
+      "sha256": "b749c90e4ad0b7873eaa03192309846fddc7a33b06284e1925ad849c2d5111cd",
+      "size_bytes": 42239
+    }
+  ],
+  "platform": {
+    "board_api": "202504",
+    "branch": "bka",
+    "release": "bp4a"
+  },
+  "required_contracts": {
+    "init_helper": {
+      "path": "config/nezha-init-helper-capability.json",
+      "sha256": "9a4728a13efac5a974507557c8130591c1cf1f29cfdeb749872d3e42c28e96d7"
+    },
+    "oem_policy": {
+      "path": "config/nezha-oem-policy.json",
+      "sha256": "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7"
+    },
+    "provider_inputs": {
+      "path": "config/nezha-framework-providers.json",
+      "sha256": "8a1ff42abbdf26135b1ac9a93568e08d0b1991d5a0afac45039e4c89f8fa514e"
+    }
+  },
+  "runtime_limits": [
+    "Sigma init service remains disabled and oneshot; no caller/start trigger is invented.",
+    "QCC retains the factory stop on hwservicemanager.ready=true; continuous availability is not established.",
+    "The original QCC init interface declaration omits the full IQccsyshal/default instance; lazy restart mapping requires a separate reviewed init derivation.",
+    "OEM WFD/QCC app providers, callback contracts, cross-MLS behavior and dynamic runtime dependencies require separate integration.",
+    "Device-matrix HAL declarations motivate provider integration but are not claimed as an observed pinned checkvintf failure.",
+    "Host macro expansion, source validation, native policy compilation, image adoption and device behavior are separate evidence."
+  ],
+  "schema_version": 1,
+  "scope": {
+    "binary_permissive_analysis_run": false,
+    "cil_generated_or_modified": false,
+    "client_feature_closure_proven": false,
+    "complete_rom_admitted": false,
+    "factory_inputs_modified": false,
+    "image_adoption_proven": false,
+    "native_context_tests_run": false,
+    "policy_compiler_invoked": false,
+    "runtime_service_availability_proven": false,
+    "source_files_modified": false
+  },
+  "selected_provider_artifacts": [
+    {
+      "path": "/bin/sigma_miracasthalservice_aidl",
+      "sha256": "aab0364134cc04e33d3662f8b50b70e37ee77194f874c396af2262b83b411381",
+      "size_bytes": 27560
+    },
+    {
+      "path": "/bin/qccsyshal_aidl-service",
+      "sha256": "b35a1fca0ce90bfba8bef2bbdc7237482dbce39c793ff07dedd9d59c557ee86b",
+      "size_bytes": 27640
+    },
+    {
+      "path": "/etc/init/com.qualcomm.qti.sigma_miracast_aidl-service.rc",
+      "sha256": "9041e9381a632286aaf553108acb66e166f7916e4ba4c8a7caad12c84b33ca86",
+      "size_bytes": 130
+    },
+    {
+      "path": "/etc/init/vendor.qti.qccsyshal_aidl-service.rc",
+      "sha256": "9347a3dedc604e7e8bbcd7579e0a19fc37cdd13ef009575da1106c6f84e49663",
+      "size_bytes": 1839
+    },
+    {
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.sigma_miracast_aidl.xml",
+      "sha256": "2753999b5d500f0362544ee07021cb7ac2b44901a9528cf71507dd9bbfe07873",
+      "size_bytes": 347
+    },
+    {
+      "path": "/etc/vintf/manifest/vendor.qti.qccsyshal_aidl-service.xml",
+      "sha256": "05251536915bb7727df26541eda2a75b6a5c3e147c373afad622e1b3024a81de",
+      "size_bytes": 308
+    }
+  ],
+  "source_files": [
+    {
+      "kind": "contexts",
+      "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/file_contexts",
+      "sha256": "2fc17eac70bb7fbfbd27ff2ff77e4f2947a7e722feb1e68a9320c6bad76254a3",
+      "size_bytes": 480,
+      "statements": [
+        "/(system_ext|system/system_ext)/bin/sigma_miracasthalservice_aidl u:object_r:vendor_sigmahal_qti_exec:s0",
+        "/(system_ext|system/system_ext)/bin/qccsyshal_aidl-service u:object_r:vendor_qccsyshal_qti_exec:s0",
+        "/data/misc/qcc(/.*)? u:object_r:vendor_qcc_data_file:s0",
+        "/dev/socket/qcc_app(/.*)? u:object_r:vendor_qcc_app_socket:s0"
+      ]
+    },
+    {
+      "kind": "contexts",
+      "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/service_contexts",
+      "sha256": "0a6c2a4280b0b1d028d3a924fdb996084326273e3574bfff2e723a025f61c2e8",
+      "size_bytes": 196,
+      "statements": [
+        "vendor.qti.hardware.sigma_miracast_aidl.ISigma_miracast/default u:object_r:vendor_hal_sigma_miracast_service:s0",
+        "vendor.qti.qccsyshal_aidl.IQccsyshal/default u:object_r:vendor_qccsyshal_service:s0"
+      ]
+    },
+    {
+      "kind": "source",
+      "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_qccsyshal_qti.te",
+      "sha256": "81908dc46e2fde565a4dcd71f9849545695cc0d8f1ca417644e360a8cbd01684",
+      "size_bytes": 1413,
+      "statements": [
+        "type vendor_qccsyshal_qti, domain, coredomain, halserverdomain;",
+        "type vendor_qccsyshal_qti_exec, exec_type, file_type, system_file_type;",
+        "type vendor_qccsyshal_service, service_manager_type, hal_service_type, protected_service;",
+        "type vendor_qcc_data_file, file_type, data_file_type, core_data_file_type;",
+        "type vendor_qcc_app_socket, file_type, coredomain_socket;",
+        "init_daemon_domain(vendor_qccsyshal_qti)",
+        "binder_use(vendor_qccsyshal_qti)",
+        "allow vendor_qccsyshal_qti vendor_qccsyshal_service:service_manager { add find };",
+        "neverallow { domain -vendor_qccsyshal_qti } vendor_qccsyshal_service:service_manager add;",
+        "neverallow { domain -vendor_qccsyshal_qti -atrace -shell -system_app -traceur_app } vendor_qccsyshal_service:service_manager find;",
+        "allow vendor_qccsyshal_qti vendor_qcc_data_file:dir create_dir_perms;",
+        "allow vendor_qccsyshal_qti vendor_qcc_data_file:file create_file_perms;",
+        "allow vendor_qccsyshal_qti vendor_qcc_app_socket:dir r_dir_perms;",
+        "allow vendor_qccsyshal_qti vendor_qcc_app_socket:sock_file rw_file_perms;"
+      ]
+    },
+    {
+      "kind": "source",
+      "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_sigmahal_qti.te",
+      "sha256": "020c953c68bbe032277f48ac768c1b46a960e39103d547f401ace07d6622f470",
+      "size_bytes": 1334,
+      "statements": [
+        "type vendor_sigmahal_qti, domain, coredomain, halserverdomain;",
+        "type vendor_sigmahal_qti_exec, exec_type, file_type, system_file_type;",
+        "type vendor_hal_sigma_miracast_service, service_manager_type, hal_service_type, protected_service;",
+        "init_daemon_domain(vendor_sigmahal_qti)",
+        "binder_use(vendor_sigmahal_qti)",
+        "allow vendor_sigmahal_qti vendor_hal_sigma_miracast_service:service_manager { add find };",
+        "neverallow { domain -vendor_sigmahal_qti } vendor_hal_sigma_miracast_service:service_manager add;",
+        "neverallow { domain -vendor_sigmahal_qti -atrace -shell -system_app -traceur_app } vendor_hal_sigma_miracast_service:service_manager find;",
+        "allow vendor_sigmahal_qti audioserver_service:service_manager find;",
+        "allow vendor_sigmahal_qti surfaceflinger_service:service_manager find;",
+        "binder_call(vendor_sigmahal_qti, audioserver)",
+        "binder_call(vendor_sigmahal_qti, surfaceflinger)"
+      ]
+    }
+  ],
+  "types": {
+    "vendor_hal_sigma_miracast_service": {
+      "attributes": [
+        "hal_service_type",
+        "protected_service",
+        "service_manager_type"
+      ],
+      "domain": false,
+      "factory_evidence": {
+        "attributes": [
+          "hal_service_type",
+          "protected_service",
+          "service_manager_type"
+        ],
+        "declaration": {
+          "line": 1375,
+          "normalized_form_sha256": "f1b6fb3c4f6b292b5efd6744515f05f13975bb0c00d68d1a1cf9f3df40c878e9",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [],
+        "roles": [
+          "object_r"
+        ]
+      },
+      "roles": [
+        "object_r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_qcc_app_socket": {
+      "attributes": [
+        "coredomain_socket",
+        "file_type"
+      ],
+      "domain": false,
+      "factory_evidence": {
+        "attributes": [
+          "coredomain_socket",
+          "file_type",
+          "mlstrustedobject"
+        ],
+        "declaration": {
+          "line": 1249,
+          "normalized_form_sha256": "bae551b734d5240e22243de4a74fbb3b212f37524dd3fc0164613d599d56c80d",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [
+          "mlstrustedobject"
+        ],
+        "roles": [
+          "object_r"
+        ]
+      },
+      "roles": [
+        "object_r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_qcc_data_file": {
+      "attributes": [
+        "core_data_file_type",
+        "data_file_type",
+        "file_type"
+      ],
+      "domain": false,
+      "factory_evidence": {
+        "attributes": [
+          "core_data_file_type",
+          "data_file_type",
+          "file_type",
+          "mlstrustedobject"
+        ],
+        "declaration": {
+          "line": 1247,
+          "normalized_form_sha256": "fabf0bec4c86091a2345a2fdca87be9390cd12346779c3917dcea20ddef49d5a",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [
+          "mlstrustedobject"
+        ],
+        "roles": [
+          "object_r"
+        ]
+      },
+      "roles": [
+        "object_r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_qccsyshal_qti": {
+      "attributes": [
+        "coredomain",
+        "domain",
+        "halserverdomain"
+      ],
+      "domain": true,
+      "factory_evidence": {
+        "attributes": [
+          "coredomain",
+          "domain",
+          "halserverdomain",
+          "mlstrustedsubject",
+          "vendor_qccsyshal",
+          "vendor_qccsyshal_server"
+        ],
+        "declaration": {
+          "line": 1261,
+          "normalized_form_sha256": "899f023f2166180b4d9b032dbcf973504368a288f907a415cbe01d9afd1b357e",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [
+          "mlstrustedsubject",
+          "vendor_qccsyshal",
+          "vendor_qccsyshal_server"
+        ],
+        "roles": [
+          "object_r",
+          "r"
+        ]
+      },
+      "roles": [
+        "object_r",
+        "r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_qccsyshal_qti_exec": {
+      "attributes": [
+        "exec_type",
+        "file_type",
+        "system_file_type"
+      ],
+      "domain": false,
+      "factory_evidence": {
+        "attributes": [
+          "exec_type",
+          "file_type",
+          "system_file_type"
+        ],
+        "declaration": {
+          "line": 1263,
+          "normalized_form_sha256": "407ce0159e1673ae3959a14781229d87ab1a832597c170394522754c254bc919",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [],
+        "roles": [
+          "object_r"
+        ]
+      },
+      "roles": [
+        "object_r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_qccsyshal_service": {
+      "attributes": [
+        "hal_service_type",
+        "protected_service",
+        "service_manager_type"
+      ],
+      "domain": false,
+      "factory_evidence": {
+        "attributes": [
+          "hal_service_type",
+          "protected_service",
+          "service_manager_type"
+        ],
+        "declaration": {
+          "line": 1377,
+          "normalized_form_sha256": "c674f803fc735680724835ec778eff8cd1270bd8c9b8d143c23b93d47e7557c6",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [],
+        "roles": [
+          "object_r"
+        ]
+      },
+      "roles": [
+        "object_r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_sigmahal_qti": {
+      "attributes": [
+        "coredomain",
+        "domain",
+        "halserverdomain"
+      ],
+      "domain": true,
+      "factory_evidence": {
+        "attributes": [
+          "coredomain",
+          "domain",
+          "halserverdomain",
+          "vendor_sigmahal",
+          "vendor_sigmahal_server"
+        ],
+        "declaration": {
+          "line": 1381,
+          "normalized_form_sha256": "e242702cbea630eea2c009219632eb8745ea96e0d2d9fb0c18b3e0d0d5c30df3",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [
+          "vendor_sigmahal",
+          "vendor_sigmahal_server"
+        ],
+        "roles": [
+          "object_r",
+          "r"
+        ]
+      },
+      "roles": [
+        "object_r",
+        "r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    },
+    "vendor_sigmahal_qti_exec": {
+      "attributes": [
+        "exec_type",
+        "file_type",
+        "system_file_type"
+      ],
+      "domain": false,
+      "factory_evidence": {
+        "attributes": [
+          "exec_type",
+          "file_type",
+          "system_file_type"
+        ],
+        "declaration": {
+          "line": 1383,
+          "normalized_form_sha256": "8edcdba950b6e0bebafd982a4d55a500278bf780aec1f378b0c7052aed99c575",
+          "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+        },
+        "omitted_attributes": [],
+        "roles": [
+          "object_r"
+        ]
+      },
+      "roles": [
+        "object_r"
+      ],
+      "scope": "system_ext_private",
+      "versioned_attribute": null
+    }
+  }
+}
