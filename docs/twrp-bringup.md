@@ -145,6 +145,27 @@ that it crashed. No further reboot was sent; the phone's screen state was
 requested before deciding the next device action. The recorded current
 runtime, display, touch and authenticated recovery ADB remain unresolved.
 
+The subsequent source audit identified another missing root mount point:
+the packaged recovery RC mounts configfs on `/config` without creating the
+directory. Neither the canonical archive nor the sixth trial's prefix contains
+it. The audit covered all eight mount commands and their directory dependencies
+in the main recovery RC and its present direct imports. Other mount points
+have an existing archive entry or an earlier creator; for example, cgroup
+setup creates `/acct`. Init can suppress the missing-directory error from an
+RC mount command, so absence of a normal-severity error would not clear this
+defect. ADB host authentication happens after USB enumeration and cannot by
+itself explain the absence of a USB device.
+
+A separate candidate adds only the empty `/config` directory. It is stored
+locally at `artifacts/twrp/nezha/ramboot72-config/boot.img`, SHA256
+`8cbc355d68750c32f1b3ba4dec1953732bd32a3924731553b16204a699ee730f`.
+Its native decompression, independent inspection and explicit-key AVB
+verification passed. The inspector requires `--header-version 3 --scaffold
+--init-logging --apex --usb-config`; all earlier variants remain separate and
+unchanged. This candidate has **not been uploaded or booted**. The source
+defect is a reason to test it once the current phone state is resolved, not
+proof that it is the only runtime problem or that its USB setup works.
+
 ## Source and build isolation
 
 The selected experimental source is

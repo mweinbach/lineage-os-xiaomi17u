@@ -226,5 +226,70 @@ class ApexScaffoldTests(unittest.TestCase):
             scaffold.inspect_scaffold_prefix(_literal_prefix(cpio[:-1] + b"x"), include_apex=True)
 
 
+class ConfigScaffoldTests(unittest.TestCase):
+    def test_nine_directory_goldens_preserve_both_older_variants(self):
+        older = {value: scaffold.build_scaffold_prefix(include_apex=value) for value in (False, True)}
+        cpio = scaffold.build_scaffold_cpio(include_apex=True, include_config=True)
+        prefix = scaffold.build_scaffold_prefix(include_apex=True, include_config=True)
+        self.assertEqual(len(cpio), 1536)
+        self.assertEqual(hashlib.sha256(cpio).hexdigest(), "21053c223bbd43731b7ba898bbe75eb5816e9b254a8a53913e145a78a6f6a5e4")
+        self.assertEqual(len(prefix), 1551)
+        self.assertEqual(hashlib.sha256(prefix).hexdigest(), "602e50e43fc8b77e5550d7e01c4461339d5b02541065407a013a39d054324d9f")
+        self.assertEqual(cpio, _archive([(name, 0o40755, b"") for name in ("apex", "config") + NAMES], 1536))
+        self.assertEqual(prefix, _literal_prefix(cpio))
+        self.assertEqual(struct.unpack_from("<I", prefix, 4)[0], 1543)
+        self.assertEqual(prefix[8:15], b"\xf0" + b"\xff" * 5 + b"\xf6")
+        for value, expected in older.items():
+            self.assertEqual(expected, scaffold.build_scaffold_prefix(include_apex=value))
+
+    def test_all_nine_directory_fields_and_padding_are_exact(self):
+        rows, trailer, padding = _parse_newc(scaffold.build_scaffold_cpio(include_apex=True, include_config=True))
+        self.assertEqual([row["name"] for row in rows], ["apex", "config", *NAMES])
+        for inode, row in enumerate(rows, 1):
+            self.assertEqual(row["fields"], (inode, 0o40755, 0, 0, 2, 0, 0, 0, 0, 0, 0, len(row["name"]) + 1, 0))
+            self.assertEqual(row["data"], b"")
+        self.assertEqual(trailer["offset"], 1080)
+        self.assertEqual(trailer["fields"], (0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 11, 0))
+        self.assertEqual(padding, bytes(332))
+
+    def test_config_requires_explicit_apex_and_reports_no_mount_or_usb_success(self):
+        with ExitStack() as stack:
+            for target in ("builtins.open", "io.open", "os.open", "os.system", "subprocess.run", "subprocess.Popen", "socket.socket", "time.time"):
+                stack.enter_context(mock.patch(target, side_effect=AssertionError("side effect")))
+            prefix = scaffold.build_scaffold_prefix(include_apex=True, include_config=True)
+            report = scaffold.inspect_scaffold_prefix(prefix, include_apex=True, include_config=True)
+        self.assertTrue(report["empty_config_directory_verified"])
+        for key in ("configfs_mount_verified", "usb_runtime_verified", "runtime_mounts_verified", "full_kernel_decompression_verified"):
+            self.assertIs(report[key], False)
+        with self.assertRaises(scaffold.ScaffoldError): scaffold.build_scaffold_prefix(include_config=True)
+        with self.assertRaises(scaffold.ScaffoldError): scaffold.inspect_scaffold_prefix(prefix, include_apex=True)
+        with self.assertRaises(scaffold.ScaffoldError):
+            scaffold.inspect_scaffold_prefix(scaffold.build_scaffold_prefix(include_apex=True), include_apex=True, include_config=True)
+        for value in (1, None, "true"):
+            with self.subTest(value=value), self.assertRaises(scaffold.ScaffoldError):
+                scaffold.build_scaffold_prefix(include_apex=True, include_config=value)
+
+    def test_missing_extra_file_content_or_symlink_config_is_rejected(self):
+        original = [(name, 0o40755, b"") for name in ("apex", "config") + NAMES]
+        for entries in (original[:1] + original[2:], original + [("config/usb_gadget", 0o40755, b"")],
+                        original[:1] + [("config", 0o100755, b"inert contents")] + original[2:],
+                        original[:1] + [("config", 0o120777, b"elsewhere")] + original[2:]):
+            prefix = _literal_prefix(_archive(entries, 1536))
+            with self.subTest(entries=entries[:2]), self.assertRaises(scaffold.ScaffoldError):
+                scaffold.inspect_scaffold_prefix(prefix, include_apex=True, include_config=True)
+
+    def test_config_owner_mode_and_padding_mutations_are_rejected(self):
+        cpio = scaffold.build_scaffold_cpio(include_apex=True, include_config=True)
+        config_offset = _parse_newc(cpio)[0][1]["offset"]
+        for field, value in ((1, 0o40777), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1)):
+            changed = bytearray(cpio)
+            start = config_offset + 6 + field * 8
+            changed[start:start + 8] = f"{value:08x}".encode()
+            with self.subTest(field=field), self.assertRaises(scaffold.ScaffoldError):
+                scaffold.inspect_scaffold_prefix(_literal_prefix(bytes(changed)), include_apex=True, include_config=True)
+        with self.assertRaises(scaffold.ScaffoldError):
+            scaffold.inspect_scaffold_prefix(_literal_prefix(cpio[:-1] + b"x"), include_apex=True, include_config=True)
+
+
 if __name__ == "__main__":
     unittest.main()

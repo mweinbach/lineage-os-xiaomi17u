@@ -28,13 +28,13 @@ def _property(key, value):
 
 
 def _fixture(*, salt=b"s" * 32, properties=None, header_version=4, command_line=None,
-             directory_scaffold=False, prefix=None, suffix=None, init_logging=False, apex_scaffold=False):
+             directory_scaffold=False, prefix=None, suffix=None, init_logging=False, apex_scaffold=False, config_scaffold=False):
     kernel = b"SYNTHETIC KERNEL" * 277  # Crosses one page; not executable code.
     block = b"\x50hello"
     if suffix is None:
         suffix = b"\x02\x21\x4c\x18" + struct.pack("<I", len(block)) + block
     if directory_scaffold:
-        prefix = inspector.scaffold.build_scaffold_prefix(include_apex=apex_scaffold) if prefix is None else prefix
+        prefix = inspector.scaffold.build_scaffold_prefix(include_apex=apex_scaffold, include_config=config_scaffold) if prefix is None else prefix
         ramdisk = prefix + suffix
     else:
         ramdisk = suffix
@@ -71,7 +71,7 @@ def _fixture(*, salt=b"s" * 32, properties=None, header_version=4, command_line=
     contract = inspector.RamBootContract(image_size, len(kernel), hashlib.sha256(kernel).hexdigest(),
                                          len(ramdisk), hashlib.sha256(ramdisk).hexdigest(), header_version, command_line,
                                          directory_scaffold, len(suffix) if directory_scaffold else None,
-                                         hashlib.sha256(suffix).hexdigest() if directory_scaffold else None, init_logging, apex_scaffold)
+                                         hashlib.sha256(suffix).hexdigest() if directory_scaffold else None, init_logging, apex_scaffold, config_scaffold)
     offsets = {"vbmeta": len(unsigned), "auth": len(unsigned) + 256, "aux": len(unsigned) + 832,
                "hash_size": hash_size, "desc_size": len(descriptors), "vbmeta_size": len(vbmeta),
                "kernel_end": 4096 + len(kernel), "ramdisk": 4096 + len(_pad(kernel)),
@@ -598,6 +598,102 @@ class RamBootApexScaffoldTests(unittest.TestCase):
         for args in ([str(path), "--apex"], [str(path), "--header-version", "3", "--scaffold", "--apex"],
                      [str(path), "--header-version", "3", "--init-logging", "--apex"],
                      [str(path), "--header-version", "4", "--scaffold", "--init-logging", "--apex"]):
+            with self.subTest(args=args), mock.patch.object(inspector, "inspect_image") as read, redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
+                inspector.main(args)
+            self.assertEqual(caught.exception.code, 2)
+            read.assert_not_called()
+
+
+class RamBootConfigScaffoldTests(unittest.TestCase):
+    def setUp(self):
+        self.image, self.contract, self.offsets = _fixture(header_version=3, directory_scaffold=True,
+                                                        init_logging=True, apex_scaffold=True, config_scaffold=True)
+
+    def test_config_variant_reports_only_empty_directory_and_exact_suffix(self):
+        with ExitStack() as stack:
+            for target in ("builtins.open", "io.open", "os.open", "os.system", "subprocess.run", "subprocess.Popen", "socket.socket", "time.time"):
+                stack.enter_context(mock.patch(target, side_effect=AssertionError("side effect")))
+            report = inspector.inspect_bytes(self.image, contract=self.contract)
+        prefix = report["ramdisk"]["scaffold"]
+        self.assertTrue(report["contract"]["config_scaffold"])
+        self.assertTrue(report["validation"]["empty_config_directory_verified"])
+        self.assertEqual(prefix["prefix_sha256"], "602e50e43fc8b77e5550d7e01c4461339d5b02541065407a013a39d054324d9f")
+        self.assertEqual([d["name"] for d in prefix["directories"]], ["apex", "config", *inspector.scaffold.DIRECTORIES])
+        self.assertEqual(prefix["directories"][1], {"name": "config", "inode": 2, "mode": "040755", "uid": 0,
+                                                    "gid": 0, "nlink": 2, "mtime": 0, "size_bytes": 0})
+        suffix = report["ramdisk"]["canonical_suffix"]
+        self.assertEqual(suffix["ramdisk_offset_bytes"], 1551)
+        self.assertEqual(suffix["image_offset_bytes"], self.offsets["ramdisk"] + 1551)
+        self.assertEqual(suffix["sha256"], self.contract.ramdisk_suffix_sha256)
+        self.assertEqual(report["header"]["command_line_size_bytes"], 287)
+        self.assertNotIn("boot_signature_size_bytes", report["header"])
+        self.assertTrue(report["avb"]["hash_descriptor"]["digest_verified"])
+        for key in ("configfs_mount_verified", "usb_runtime_verified", "runtime_verified", "boot_tested", "flash_admitted",
+                    "apex_packages_verified", "apex_runtime_verified", "full_kernel_decompression_verified"):
+            self.assertIs(report["validation"][key], False)
+
+    def test_production_contract_changes_only_config_selection_and_composite_hash(self):
+        current = inspector.V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT
+        previous = inspector.V3_APEX_SCAFFOLD_INITLOG_EXPECTED_CONTRACT
+        self.assertEqual(current.ramdisk_size_bytes, 25193784)
+        self.assertEqual(current.ramdisk_sha256, "dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db")
+        self.assertEqual(current.ramdisk_suffix_size_bytes, 25192233)
+        self.assertEqual(current.ramdisk_suffix_sha256, "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333")
+        self.assertEqual(replace(current, config_scaffold=False, ramdisk_sha256=previous.ramdisk_sha256), previous)
+        self.assertEqual(hashlib.sha256(current.command_line.encode("ascii")).hexdigest(),
+                         "b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077")
+        for contract in (inspector.EXPECTED_CONTRACT, inspector.V3_EXPECTED_CONTRACT,
+                         inspector.V3_SCAFFOLD_EXPECTED_CONTRACT, inspector.V3_SCAFFOLD_INITLOG_EXPECTED_CONTRACT, previous):
+            self.assertIs(contract.config_scaffold, False)
+
+    def test_eight_and_nine_directory_variants_are_not_substituted_or_autodetected(self):
+        old_image, old_contract, _ = _fixture(header_version=3, directory_scaffold=True, init_logging=True, apex_scaffold=True)
+        cases = ((self.image, replace(old_contract, ramdisk_sha256=self.contract.ramdisk_sha256)),
+                 (old_image, replace(self.contract, ramdisk_sha256=old_contract.ramdisk_sha256)))
+        for data, expected in cases:
+            with self.subTest(config=expected.config_scaffold), self.assertRaisesRegex(inspector.RamBootInspectionError, "scaffold prefix"):
+                inspector.inspect_bytes(data, contract=expected)
+
+    def test_config_prefix_mutation_fails_even_with_updated_composite_hash(self):
+        original = inspector.scaffold.build_scaffold_prefix(include_apex=True, include_config=True)
+        for offset in (0, 15 + 116 + 14, 15 + 116 + 22, 15 + 116 + 30, 15 + 116 + 110, 1550):
+            prefix = _mutate(original, offset, bytes([original[offset] ^ 1]))
+            image, contract, _ = _fixture(header_version=3, directory_scaffold=True, init_logging=True,
+                                          apex_scaffold=True, config_scaffold=True, prefix=prefix)
+            with self.subTest(offset=offset), self.assertRaisesRegex(inspector.RamBootInspectionError, "scaffold prefix"):
+                inspector.inspect_bytes(image, contract=contract)
+
+    def test_config_does_not_relax_suffix_header_commandline_or_avb_checks(self):
+        for changed in (_mutate(self.image, 44, b"X"), _mutate(self.image, 4096, b"X"),
+                        _rehash_auth(_mutate(self.image, self.offsets["vbmeta"] + 120, 1, ">I"), self.offsets)):
+            with self.subTest(), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(changed, contract=self.contract)
+        changed = _mutate(self.image, self.offsets["ramdisk"] + 1551 + 9, b"X")
+        ramdisk = changed[self.offsets["ramdisk"]:self.offsets["ramdisk_end"]]
+        contract = replace(self.contract, ramdisk_sha256=hashlib.sha256(ramdisk).hexdigest())
+        with self.assertRaisesRegex(inspector.RamBootInspectionError, "suffix differs"):
+            inspector.inspect_bytes(changed, contract=contract)
+
+    def test_config_requires_boolean_and_all_previous_variant_requirements(self):
+        for contract in (replace(self.contract, config_scaffold=1), replace(self.contract, config_scaffold="true"),
+                         replace(self.contract, apex_scaffold=False),
+                         replace(self.contract, init_logging=False, command_line=inspector.V3_COMMAND_LINE),
+                         replace(self.contract, scaffold=False), replace(self.contract, header_version=4)):
+            with self.subTest(contract=contract), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(self.image, contract=contract)
+
+    def test_cli_usb_config_requires_all_existing_variant_flags_before_read(self):
+        path = Path("synthetic-only.img")
+        report = inspector.inspect_bytes(self.image, contract=self.contract)
+        args = [str(path), "--header-version", "3", "--scaffold", "--init-logging", "--apex", "--usb-config"]
+        with mock.patch.object(inspector, "inspect_image", return_value=report) as read, redirect_stdout(io.StringIO()):
+            self.assertEqual(inspector.main(args), 0)
+            read.assert_called_once_with(path, contract=inspector.V3_CONFIG_SCAFFOLD_INITLOG_EXPECTED_CONTRACT)
+        for args in ([str(path), "--usb-config"],
+                     [str(path), "--header-version", "3", "--scaffold", "--init-logging", "--usb-config"],
+                     [str(path), "--header-version", "3", "--scaffold", "--apex", "--usb-config"],
+                     [str(path), "--header-version", "3", "--init-logging", "--apex", "--usb-config"],
+                     [str(path), "--header-version", "4", "--scaffold", "--init-logging", "--apex", "--usb-config"]):
             with self.subTest(args=args), mock.patch.object(inspector, "inspect_image") as read, redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
                 inspector.main(args)
             self.assertEqual(caught.exception.code, 2)

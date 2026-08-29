@@ -208,6 +208,32 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertFalse(trial['twrp_runtime_verified'])
         self.assertTrue(trial['boot_command_succeeded'])
 
+    def test_prepared_usb_mount_point_candidate_is_separate_from_hardware_attempts(self):
+        candidate = self.record['next_candidate']
+        previous = self.record['attempts'][5]
+        self.assertEqual(candidate['status'], 'constructed_verified_not_booted')
+        self.assertEqual(candidate['image_sha256'],
+                         '8cbc355d68750c32f1b3ba4dec1953732bd32a3924731553b16204a699ee730f')
+        self.assertNotIn(candidate['image_sha256'], [trial['image_sha256'] for trial in self.record['attempts']])
+        self.assertEqual(candidate['ramdisk_sha256'],
+                         'dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db')
+        for key in ('kernel_sha256', 'command_line_sha256', 'command_line_size_bytes',
+                    'canonical_ramdisk_suffix', 'avb'):
+            self.assertEqual(candidate[key], previous[key])
+        self.assertEqual(candidate['directory_scaffold']['directories'],
+                         ['apex', 'config', 'debug_ramdisk', 'dev', 'metadata', 'mnt',
+                          'proc', 'second_stage_resources', 'sys'])
+        self.assertFalse(candidate['directory_scaffold']['contains_files_or_symlinks'])
+        for key in ('runtime_cause_of_missing_usb_verified', 'configfs_mount_verified',
+                    'usb_runtime_verified', 'boot_command_sent', 'boot_tested',
+                    'partition_write_command_sent'):
+            self.assertFalse(candidate[key])
+        self.assertTrue(candidate['requires_current_phone_state_resolution'])
+        for receipt in candidate['evidence'].values():
+            self.assertEqual(set(receipt), {'sha256', 'size_bytes'})
+            self.assertRegex(receipt['sha256'], r'^[a-f0-9]{64}$')
+            self.assertGreater(receipt['size_bytes'], 0)
+
 
 if __name__ == '__main__':
     unittest.main()

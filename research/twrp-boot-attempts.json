@@ -708,7 +708,8 @@
     "The v3 trial has saved first-stage initialization failure evidence. TWRP UI, recovery ADB and recovery logs remain unverified; saved previous-kernel logs are distinct from a working recovery logger.",
     "The directory-scaffold trial reached second-stage recovery init with SELinux enforcing. Init then rebooted; its fatal cause was not visible amid kernel write-rate-limit suppression. This is not a completed TWRP UI/ADB startup.",
     "Attempt 5 identifies the missing /apex mount point from a fresh saved kernel log. Its earlier stale DropBox capture is retained but excluded as evidence of that trial; BootReceiver can publish after sys.boot_completed.",
-    "Attempt 6 adds the empty /apex directory, but an accepted boot command and absent USB do not prove TWRP started or the phone crashed. Screen state and the current runtime remain unresolved."
+    "Attempt 6 adds the empty /apex directory, but an accepted boot command and absent USB do not prove TWRP started or the phone crashed. Screen state and the current runtime remain unresolved.",
+    "The prepared config-directory candidate has not been uploaded or booted. Static absence of /config is a USB setup defect, not proof that it is the only runtime problem in attempt 6."
   ],
   "evidence": {
     "adb_reboot_to_bootloader": {
@@ -718,7 +719,103 @@
     "v4_previous_kernel_log": {
       "sha256": "284e6ecf4ce9425e83b41f5594c25797b6e50f2d09c44d44cb3ff1c438c6ac40",
       "size_bytes": 67403
+    },
+    "delayed_presence_after_attempt_6": {
+      "sha256": "d774f805428776117058bea32b89dd4d8860458eccdfd888eb36608f26997125",
+      "size_bytes": 474
     }
   },
-  "latest_observed_transport_state": "no_adb_or_fastboot_after_attempt_6"
+  "latest_observed_transport_state": "no_adb_or_fastboot_after_attempt_6",
+  "next_candidate": {
+    "status": "constructed_verified_not_booted",
+    "image_role": "stock_kernel_build66_ramdisk_v3_config_scaffold_init_logging",
+    "image_sha256": "8cbc355d68750c32f1b3ba4dec1953732bd32a3924731553b16204a699ee730f",
+    "image_size_bytes": 100663296,
+    "header_version": 3,
+    "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+    "kernel_size_bytes": 39963136,
+    "ramdisk_sha256": "dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db",
+    "ramdisk_size_bytes": 25193784,
+    "canonical_ramdisk_suffix": {
+      "offset_within_ramdisk_bytes": 1551,
+      "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "size_bytes": 25192233,
+      "unchanged": true
+    },
+    "directory_scaffold": {
+      "compressed_prefix": {
+        "sha256": "602e50e43fc8b77e5550d7e01c4461339d5b02541065407a013a39d054324d9f",
+        "size_bytes": 1551
+      },
+      "contains_files_or_symlinks": false,
+      "directories": [
+        "apex",
+        "config",
+        "debug_ramdisk",
+        "dev",
+        "metadata",
+        "mnt",
+        "proc",
+        "second_stage_resources",
+        "sys"
+      ],
+      "gid": 0,
+      "mode": "0755",
+      "newc": {
+        "sha256": "21053c223bbd43731b7ba898bbe75eb5816e9b254a8a53913e145a78a6f6a5e4",
+        "size_bytes": 1536
+      },
+      "uid": 0
+    },
+    "command_line_sha256": "b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077",
+    "command_line_size_bytes": 287,
+    "avb": {
+      "partition_name": "boot",
+      "algorithm": "SHA256_RSA4096",
+      "flags": 0,
+      "rollback_index": 1769904000,
+      "rollback_index_location": 0,
+      "local_development_signature_verified": true,
+      "oem_signature": false,
+      "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+      "properties": {
+        "com.android.build.boot.os_version": "16",
+        "com.android.build.boot.security_patch": "2026-02-01"
+      }
+    },
+    "change_from_attempt_6": "Add only an empty /config directory to the prefix. Main recovery RC mounts configfs there without a prior mkdir; the directory is absent from the canonical archive and attempt 6 prefix.",
+    "runtime_cause_of_missing_usb_verified": false,
+    "configfs_mount_verified": false,
+    "usb_runtime_verified": false,
+    "boot_command_sent": false,
+    "boot_tested": false,
+    "partition_write_command_sent": false,
+    "requires_current_phone_state_resolution": true,
+    "evidence": {
+      "construction": {
+        "sha256": "bd830d79d1b92a7d59c1770b69222f68527c50e07b59960946ac50c5ce8b8c19",
+        "size_bytes": 4996
+      },
+      "independent_image_inspection": {
+        "sha256": "2883f27f68d239a830267b401d96b22efcd71fbd437eb5d68100e5d1bd090fc5",
+        "size_bytes": 9855
+      },
+      "independent_inspector_execution": {
+        "sha256": "b48684750e3d7cffda64ce08ba535e432e7931505bac80a5d81caae0100721f9",
+        "size_bytes": 957
+      },
+      "explicit_key_avb_verification": {
+        "sha256": "61e3d5c71db2ddd0303903e99783e7dd51f5d0bc36b37a9ed48aa3715ffb73f1",
+        "size_bytes": 1202
+      },
+      "native_composite_decompression": {
+        "sha256": "4324de872521f5b3ad5140a09a861a07eeeb14b965effac10e7c616dc5d9482c",
+        "size_bytes": 828
+      },
+      "usb_mount_source_audit": {
+        "sha256": "3762a093373ecade2cf96cd5f4ca1bf4c72967945609dab70f3b0070e7e848f6",
+        "size_bytes": 19802
+      }
+    }
+  }
 }
