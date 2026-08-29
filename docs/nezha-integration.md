@@ -1,14 +1,28 @@
 # Nezha integration plan and activation gates
 
-This plan applies to the user's **China-hardware Xiaomi 17 Ultra (`nezha`,
-SM8850 / `canoe`)** and Evolution X **Android 16 QPR2 `bka`**. An authored
-`framework-checks` product is now registered in both `user` and `userdebug`
+This plan applies to the user's **Xiaomi 17 Ultra (`nezha`, SM8850 / `canoe`)**
+and Evolution X **Android 16 QPR2 `bka`**. CN hardware-country information is
+recorded, but the physical sales region is not independently established.
+The [workspace status](workspace-status.md) is the current cross-project entry
+point; dated build and device records remain evidence of their own checkpoints.
+An authored `framework-checks` product is now registered in both `user` and `userdebug`
 variants. Recorded builds include ARM64 `libbase.so`, all nine selected Camera
 dependencies, host validation tools, boot/DTBO and both DLKM images. It is
 recorded under `device.development_target` in `config/sources.json`; the
 complete-ROM fields remain `build_ready=false` and `lunch_target=null`.
 See [current build progress](build-progress.md). Missing hardware/flash
 prerequisites do not prevent safe local source generation and module checks.
+
+**TWRP `working76` is the selected default recovery.** Its installed image,
+visible UI, responsive touch, root ADB and automatic recovery-only permissive
+and zero-vibration defaults are verified in the
+[working recovery record](../research/twrp-working-defaults.json). Follow the
+[working-image build contract](../recovery/twrp-working/README.md) and
+[recovery guide](twrp-bringup.md). This is a prebuilt-derived runtime; no new
+TWRP runtime source compilation or complete ROM/OTA integration is implied.
+The device test used the installed stock companion boot, kernel and vendor
+stack, not newly built Evolution components. Normal Android keeps enforcing
+SELinux and all existing admission gates.
 
 The supplied Xiaomi.eu package is useful for identifying the actual hardware
 and software dependencies. It is **not a valid signed image set**: the retained
@@ -36,10 +50,10 @@ without pretending those literal comparisons resolve the complete kernel build.
 
 | Input | Verified observation | Remaining gate |
 | --- | --- | --- |
-| Live modified installation | Xiaomi/Nezha identity and CN hardware-country readback; Android 16; enforcing SELinux; 4 KiB pages | Physical variant details must not be inferred from the global-looking modified model string. Actual bootloader state remains unresolved. |
+| Live modified installation | Xiaomi/Nezha identity and CN hardware-country readback; Android 16; enforcing SELinux in normal Android; 4 KiB pages | Physical variant details must not be inferred from the global-looking modified model string. August 29 bootloader checks positively reported unlocked and secure; recheck before a future authorized device operation. |
 | Reconstructed package | Independent sparse implementations produce the same 15,300,820,992-byte super; all metadata copies agree; independent LP extraction hashes agree; all eight EROFS checks pass | These are local integrity and format results, not OEM authentication or a flash-safety result. |
 | Dynamic layout | Eight logical partitions per slot, including mi_ext and both DLKM partitions; only A partitions have data in this package | Retain this exact evidence; do not adopt another phone's partition groups or use empty B records to remove A/B support. |
-| Physical boot chain | Current by-name links include A/B boot, init_boot, vendor_boot, recovery, DTBO, vbmeta and vbmeta_system | All 30 follow-up sysfs size/start reads were denied. Image file sizes are not proof of physical partition capacity or offsets. |
+| Physical boot chain | Captured by-name links include A/B boot, init_boot, vendor_boot, recovery, DTBO, vbmeta and vbmeta_system. Later fastboot checks report 100 MiB recovery slots and a 96 MiB boot slot budget. | The earlier 30 Android sysfs reads were denied. Later measurements do not establish every partition's capacity or offset; image lengths and package GPT extents are not substitutes for live fit checks. |
 | Kernel | Extracted boot kernel release matches the running 6.12.23 Android 16 GKI release; all 36,963 recorded distinct-module CRC expectations have matching captured providers | The global provider pool does not prove availability at each loading stage, provider selection, signatures, full ABI compatibility or source/licensing compliance. |
 | Camera APK | Package copy is byte-for-byte identical to the earlier live Camera APK | No Camera or Leica feature has been tested on Evolution X. |
 | Vendor compatibility | Target-level and board API are `202504`; ODM first API is `36`. The built validator loads/merges vendor/ODM plus the observed active vendor APEX fragments successfully. | Full compatibility with the assembled Evolution framework, kernel and policy remains unverified. Static acceptance does not prove working services. |
@@ -83,10 +97,13 @@ change with tests, not a way to silence missing-product errors.
    while resolving source authentication separately. Embedded-key signature
    checks alone do not establish an OEM trust root. Keep the modified package
    and its failed checks for comparison.
-2. Establish physical partition capacities and the recovery/boot arrangement
-   without inferring them from image lengths. The existing Android read-only
-   interfaces denied the needed reads. Do not escalate privileges or reboot
-   merely to fill this gap without a separate user instruction.
+2. Use the [later bootloader observations](../research/twrp-boot-attempts.json)
+   and working recovery test for the verified recovery/boot arrangement.
+   Revalidate the selected phone and relevant partition capacities before any
+   future authorized flash; do not infer missing capacities or offsets from
+   image lengths. The earlier Android sysfs denials remain historical evidence,
+   not a reason to discard the successful fastboot measurements. Do not reboot
+   or escalate privileges merely to fill remaining gaps without instruction.
 3. Validate built boot/init_boot/vendor_boot components against the captured
    headers, DT selection, rollback locations and package GPT extents. The
    Xiaomi.eu ramdisk fstab lacks verification flags; the current generated
@@ -102,11 +119,14 @@ change with tests, not a way to silence missing-product errors.
    CRC candidates, but stage availability and actual loading remain unresolved.
    Do not turn off module/signature checks to fit inputs.
 5. Preserve verified boot, rollback constraints, encrypted storage and enforcing
-   SELinux in the new design. Vendor security policy and framework policy need
-   compatible mappings. The [user policy integration check](selinux-user-integration.md)
-   still fails at five assertion sites. Inherited permissive-su and property
-   masking behavior now have narrow, pinned source fixes; new binary and
-   runtime proofs must not be inferred from those edits.
+   SELinux for normal Android. Recovery-only permissive mode is the explicitly
+   authorized bring-up exception, with enforcement a later recovery milestone.
+   The [v9 source policy build](dsp-policy-build.md) produces two binaries with
+   zero permissive domains, but composition with unchanged factory CIL still
+   fails four assertion sites. The [Binder/helper prototype](helper-policy-projection.md)
+   strictly compiles with zero permissive domains and all assertions retained;
+   it is not integrated into the active Android source or a vendor image.
+   Complete source, context and Treble-labeling validation remain required.
 
 No opaque installer or binary from the firmware is an extraction dependency.
 Raw proprietary inputs, public-key inspection artifacts, private logs and
@@ -152,14 +172,24 @@ preservation plan; completing this repository's tooling does not authorize it.
 
 ## Progressive validation
 
-The platform checkpoint now has a successful Repo result, unchanged manifest/
+The recorded platform checkpoint has a successful Repo result, unchanged manifest/
 Repo pins, 1,179 verified clean project checkouts, a resolved manifest with full
 commit IDs, and verified content hashes for all 99 LFS files. The
 [source record](../research/source-sync.json) documents that checkpoint.
 Rosetta's standalone host-tool proofs, Nezha product configuration and the
 successful first Android module build each have separate receipts. A source
 kernel and complete ROM have not yet been built. [Build progress](build-progress.md)
-records the current Camera compilation and actual read-only Ninja sandbox.
+records the completed Camera dependency compilation and actual read-only Ninja
+sandbox. Its later source audit binds all 1,179 project revisions while allowing
+only the three recorded source-patch projects; it does not reclassify historical
+checkouts as unmodified or establish current VM state.
+
+The [August 29 workspace integration](../research/workspace-integration.json)
+adds the fourth reviewed patch project, `build/make`, for TWRP. All 1,179 base
+revisions and remotes still match. The selected recovery bundle carries the
+matching public chain key, while its private signing key remains outside the
+VM. These changes do not admit a full target-files/OTA build or alter the
+earlier component-build and policy results.
 
 Continue checking product inheritance, artifact paths, VINTF, ELF dependencies,
 kernel modules, SELinux and AVB as the partial image builds expand. Record the

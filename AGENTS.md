@@ -11,12 +11,28 @@ You have access to practically as many subagents as you want to parrallelize wor
 - Make small, descriptive commits as useful work is completed. Run tests before
   completing a change. Use `python3 -m unittest discover -s tests -v`.
 - Check upstream branches and record commit IDs before depending on them.
+- Read `docs/workspace-status.md` for current decisions and gates; use
+  `docs/README.md` to find the dated evidence behind them. Preserve historical
+  experiments instead of treating old checkpoints as the current build path.
 - For TWRP, use the tested `working76` derivative recorded in
   `research/twrp-working-defaults.json` as the current baseline. It preserves
   the `fix22ZJ-touchfix18` runtime from `research/twrp-installed-recovery.json`
   with the tested permissive SELinux and zero-vibration defaults. Preserve its
   hardware setup while applying measured changes. Earlier minimal recovery
   builds remain historical experiments, not the current functional baseline.
+- `make recovery-build` is the selected recovery workflow. It reproduces the
+  verified prebuilt derivative using pinned inputs, tools and the existing
+  development key; it is not a new source compilation of the TWRP runtime.
+  Keep private paths in ignored local configuration and private keys out of
+  the Linux VM. Guest verification uses the public key only.
+- TWRP is the default Evolution X recovery through the reviewed build-core
+  patch and verified private recovery-input bundle. Missing or mismatched
+  inputs must fail, never select another recovery silently. Recovery success
+  with stock companions does not verify the new ROM boot chain or OTA path.
+- For fresh Evolution source setup, use the reviewed source lock in addition
+  to the manifest and Repo pins. Audit existing sources without resetting
+  local changes or converting their selectors. Record local patches and
+  generated/private inputs separately; a source lock alone is not a ROM build.
 - Do not copy a different phone's partition layout, kernel, firmware, or device
   identity into a Xiaomi 17 Ultra build. Verify the exact variant from stock.
 - Never unlock, relock, wipe, reboot, flash, or change the connected phone unless

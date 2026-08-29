@@ -1,8 +1,20 @@
 # Private recovery diagnostics
 
-`scripts/collect_recovery.py` collects bounded observations from an explicitly
-selected Xiaomi 17 Ultra (`nezha`) already running recovery. It does not start,
-install, boot or test TWRP. No phone access is needed to inspect the plan:
+The [working76 baseline](twrp-bringup.md) has verified root USB ADB and private
+recovery/kernel log captures. Root access does not prove host authentication,
+firmware authenticity or an enforcing recovery. Use only the explicitly
+authorized physical phone and a trusted host; do not publish its serial or logs.
+
+[`collect_recovery.py`](../scripts/collect_recovery.py) collects bounded
+observations from a selected Xiaomi 17 Ultra (`nezha`) already running recovery.
+It does not install, boot, flash or change settings. Its working76-compatible
+identity gate has offline tests; that alone is not another hardware collection.
+A positive device run of the updated collector remains pending. Do not assume
+the phone is still in recovery; fresh mode checks must pass before any logs are
+read. On August 29 the updated collector was tested against the selected phone
+in Android: it refused at recovery preflight before reading diagnostics. No
+reboot or other phone change was made for that test. No phone access is needed
+to inspect the plan:
 
 ```sh
 python3 scripts/collect_recovery.py
@@ -10,20 +22,20 @@ python3 scripts/collect_recovery.py --dry-run --include-pstore
 ```
 
 Both commands run no ADB commands and create no files. Passing a serial without
-`--collect` also leaves the tool in plan mode. A future, authorized collection
-uses this interface, after recovery has been entered through a separately
-reviewed and authorized procedure:
+`--collect` also leaves the tool in plan mode. A specifically authorized
+collection uses this interface after recovery has been entered through a
+separately reviewed and authorized procedure:
 
 ```sh
 python3 scripts/collect_recovery.py --collect \
   --serial '<explicit-authorized-device>' --expected-device nezha
 ```
 
-The current experimental user-build target does not yet provide a verified
-non-root collection path. Its executable-link preflight and several log reads
-have unresolved permission constraints; see the [ADB and log-access readiness
-record](twrp-adb-readiness.md). The commands above describe the collector's
-interface, not successful access on a compiled or booted Nezha recovery.
+During the verified working76 session, USB ADB ran as UID 0; this collector does
+not request root or change that security posture. The earlier source-built user target's
+[non-root readiness record](twrp-adb-readiness.md) is a separate historical
+experiment, not the current recovery. Successful private captures establish log
+access, not complete coverage or trust in every command exposed by root ADB.
 
 The placeholder is not a device selector. Use the exact independently verified
 physical device serial, and do not publish it in shared logs or issue reports.
@@ -39,15 +51,20 @@ platform-tools with transport IDs are required. The selected transport must
 advertise `shell_v2` in `adb features`; without that negotiated support, a legacy
 ADB shell can conceal a failed remote command behind a successful client exit.
 
-Preflight requires an authorized online ADB state (`device` or `recovery`),
-matching Xiaomi manufacturer and exact `nezha` device properties, no emulator
-marker, a recovery boot-mode or transport-state marker, and a running recovery
-init service. It also requires one live `recovery` PID whose executable resolves
-to `/system/bin/recovery` or `/sbin/recovery`. A completed normal Android boot,
-conflicting mode properties, missing identity or process evidence, and failed
-preflight reads stop collection before diagnostic logs are read. These are
-consistency checks against a device that the operator already trusts; they do
-not authenticate firmware or prove the bootloader or recovery is secure.
+Preflight requires an online ADB state (`device` or `recovery`) on the explicitly
+authorized phone, matching Xiaomi manufacturer and exact `nezha` properties,
+no emulator marker, a recovery boot-mode or transport-state marker, and a
+running recovery init service. One live `recovery` PID must resolve to
+`/system/bin/recovery` or `/sbin/recovery`.
+
+Working76 reports `sys.boot_completed=1`. That value is accepted only with a
+numeric TWRP version and permitted suffix, plus absent/empty or stopped
+`zygote`, `zygote_secondary` and `surfaceflinger` services. All preflight reads
+must succeed. Blank/zero completion remains supported for earlier recoveries;
+other completion values, running Android framework services, conflicting mode
+properties or missing identity/process evidence stop collection before logs.
+These are consistency checks for a phone the operator already trusts, not
+firmware or host-authentication proof.
 
 The default read scope is deliberately small:
 
@@ -126,8 +143,9 @@ python3 -m unittest discover -s tests -v
 ```
 
 Before a separately authorized phone test, retain the exact recovery image hash,
-source/build receipt and compatible stock boot-chain hashes beside this private
-collection. A successful read, a recovery log, or a readable partition inventory
+assembly/install receipts for the selected prebuilt adaptation, source/build
+receipts where applicable, and compatible stock boot-chain hashes beside this
+private collection. A successful read, a recovery log, or a readable partition inventory
 does not prove display/touch support, decryption, backup coverage, restore safety
 or correct slot/OTA behavior. See [the recovery plan](recovery-plan.md) for those
 distinct test gates.

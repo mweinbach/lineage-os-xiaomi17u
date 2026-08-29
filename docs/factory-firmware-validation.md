@@ -138,16 +138,20 @@ magic-number literal was wrong. That failed attempt is preserved. The second
 driver compares the actual little-endian EROFS magic `0xe0f5e1e2`; it changes
 no image or verification setting. Its eight checks passed at **21:13:46 UTC**.
 
-The installed v6 build still uses the explicitly recorded Xiaomi.eu bundles.
-The factory images must receive a new vendor/kernel admission after their
-fstab, module ordering, VINTF, policy and proprietary dependencies are reconciled.
-No image was silently substituted into the running build. The [build record](build-progress.md)
-keeps that input boundary explicit.
+At this intake checkpoint, the installed v6 build still used the explicitly
+recorded Xiaomi.eu bundles. A new admission had to bind the factory images'
+fstab, module ordering, VINTF, policy and proprietary dependencies before reuse.
+No image was silently substituted into that running build. The later factory
+admissions in the [build record](build-progress.md) keep that input boundary
+explicit without rewriting this intake result.
 
-The [recovery plan](recovery-plan.md) follows core ROM integration. A recovery
-can help repair Android only while its required boot chain still works; it
-does not prevent bootloader corruption. Full ROM builds, authorized device
-tests and native-feature verification remain separate work.
+The later [TWRP track](twrp-bringup.md) established `working76` as the selected
+default recovery before completion of the ROM. Its device test used the
+installed stock companion boot, kernel and vendor stack, not newly built
+Evolution components. A recovery can help repair Android only while its
+required boot chain still works; it does not prevent bootloader corruption.
+Full ROM/OTA integration and Evolution native-feature tests remain separate
+work; see [current workspace status](workspace-status.md).
 
 | Operation receipt | SHA256 |
 | --- | --- |

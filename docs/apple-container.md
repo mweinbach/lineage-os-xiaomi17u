@@ -9,8 +9,11 @@ between a usable local environment and a verified complete Android 16 ROM build.
 At the **2026-08-29 cleanup checkpoint**, the sole active source-volume VM was
 `twrp-nezha-upstream74-20260829`, using the same image and `evolution-nezha-work`
 volume recorded below. `/work/evolution` remains present; the manifest, Repo
-and `build/make` pins were checked, and the existing `vendor/lineage` patch was
-preserved. This is not a new full-source or ROM-build validation. The host's
+and all 1,179 project revisions/remotes were checked. The existing three
+patched projects were preserved, and `build/make` now also carries the reviewed
+prebuilt-recovery consumer. The [integration record](../research/workspace-integration.json)
+binds this audit to the recovery changes. This is not a new source sync or a
+complete ROM build. The host's
 `last-task.json` still names an older removed shell, so use the live
 `active_volume_users` field from `status` to find the attached VM. The wrapper
 does not replace that historical receipt or adopt the active VM. The private

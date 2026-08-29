@@ -1,0 +1,453 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "observed_on": "2026-08-29",
+  "record_status": "verified-recovery-workflow-and-source-audit-not-a-complete-ROM",
+  "scope": {
+    "purpose": "Consolidate the Evolution X workspace and reproduce the verified TWRP default recovery.",
+    "twrp_runtime_source_compiled": false,
+    "complete_rom_built": false,
+    "ota_validated": false,
+    "new_evolution_boot_chain_device_tested": false,
+    "phone_modified": false,
+    "private_signing_key_copied_to_vm": false,
+    "source_sync_started": false,
+    "new_source_vm_created": false
+  },
+  "workspace_code": {
+    "integration_merge": "1e4a920f1e6e195658da8ff267c9979acdc1b26e",
+    "recovery_builder_commit": "a768303b5b6e40f964bca748c983cb00e04b290c",
+    "recovery_integration_commit": "024c62bba4cf7099815fa77e6537d21e48773bac",
+    "profile": {
+      "path": "config/twrp-working.json",
+      "size_bytes": 4090,
+      "sha256": "caeb78aaff981fc250a9fd0c94ac8d8270d3fa3ded2db75538daffb692ee60d1"
+    },
+    "builder": {
+      "path": "scripts/twrp_working.py",
+      "size_bytes": 36015,
+      "sha256": "902fd97f96369593aaa103e008ac62ae6c0a9da866283a6a535701a0603d2a4b"
+    },
+    "stager": {
+      "path": "scripts/recovery_inputs.py",
+      "size_bytes": 20651,
+      "sha256": "5765ed4a2d59cca52ae9dd1ca907d074f358d1bfc177f74fca3db14c9329bec9"
+    }
+  },
+  "source_audit": {
+    "checked_at": "2026-08-29T17:19:03.904037+00:00",
+    "exit_code": 2,
+    "exit_code_reason": "Expected local patches are reported as changes, never reset or hidden.",
+    "project_count": 1179,
+    "matching_heads": 1179,
+    "matching_origins": 1179,
+    "clean_projects": 1175,
+    "project_list_matches": true,
+    "active_selector": "default.xml",
+    "selector_changed": false,
+    "source_lock": {
+      "descriptor": "config/evolution-source-lock.json",
+      "path": "research/source-snapshots/evolution-bka-20260827.xml",
+      "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+      "bytes": 287546,
+      "project_count": 1179,
+      "manifest_commit": "cc4ebb8db9750afba6049825127304b09327f7c1",
+      "repo_commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77"
+    },
+    "patched_projects": [
+      {
+        "path": "build/make",
+        "status": "M core/Makefile"
+      },
+      {
+        "path": "system/core",
+        "status": "M init/Android.bp\n M init/property_service.cpp"
+      },
+      {
+        "path": "system/sepolicy",
+        "status": "M private/su.te"
+      },
+      {
+        "path": "vendor/lineage",
+        "status": "M config/common.mk"
+      }
+    ],
+    "excluded_inputs": [
+      "ignored files and out-of-manifest device/vendor trees",
+      "patch contents and replay",
+      "materialized Git LFS payloads",
+      "private firmware and signing inputs",
+      "generated inputs and build environment"
+    ],
+    "receipt": {
+      "path": "reports/workspace-integration/source-audit-final.stdout.json",
+      "size_bytes": 1643,
+      "sha256": "58ddacf6d62beca80febe2a140a05ff9154b1945d301b5c773df898a044912d3"
+    }
+  },
+  "build_host": {
+    "checked_at": "2026-08-29T16:15:36.467409+00:00",
+    "route": "Apple Container ARM64 plus Rosetta",
+    "guest_os": "Linux",
+    "guest_architecture": "aarch64",
+    "case_sensitive_source_path": true,
+    "filesystem": "ext4",
+    "free_gib_at_preflight": 439.46,
+    "source_volume": "evolution-nezha-work",
+    "single_active_volume_owner_at_preflight": true,
+    "source_path": "/work/evolution",
+    "historical_wrapper_state_preserved": true,
+    "control_files_and_public_key_only_transferred": true,
+    "receipt": {
+      "path": "reports/workspace-integration/host-source-preflight.json",
+      "size_bytes": 1234,
+      "sha256": "56269a28ff9b69fd919d485703c822d027d53eb19236bbaeafad8df64fc04353"
+    }
+  },
+  "recovery_reproduction": {
+    "kind": "Exact repack of the supplied prebuilt runtime, not a newly compiled TWRP executable.",
+    "baseline_image": {
+      "size_bytes": 104857600,
+      "sha256": "56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323"
+    },
+    "result_image": {
+      "size_bytes": 104857600,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e"
+    },
+    "fresh_build_count": 2,
+    "byte_identical": true,
+    "matches_device_tested_working76": true,
+    "build_seconds": [
+      3.055,
+      3.033
+    ],
+    "native_avb_verified_on": [
+      "Darwin ARM64",
+      "Linux AArch64"
+    ],
+    "profile": {
+      "path": "config/twrp-working.json",
+      "size_bytes": 4090,
+      "sha256": "caeb78aaff981fc250a9fd0c94ac8d8270d3fa3ded2db75538daffb692ee60d1"
+    },
+    "build_report": {
+      "size_bytes": 6752,
+      "sha256": "1b22cf6aec4ac42df9a5cf9bc39489102863e468c960aea7bc379a1df8aaba44"
+    },
+    "verification_report": {
+      "size_bytes": 2437,
+      "sha256": "7bd18f26c69144c4d64a34130d450fc84890d26bbb09161533d9f16a2ffd9f58"
+    },
+    "device_evidence": "research/twrp-working-defaults.json",
+    "device_evidence_scope": "Prior authorized working76 test used the installed stock companion boot/kernel/vendor stack. No new phone operation in this cleanup."
+  },
+  "rom_recovery_integration": {
+    "default": "working76",
+    "layout": "Dedicated 100 MiB recovery partition, Android boot header v4, no kernel in recovery.",
+    "build_project": {
+      "path": "build/make",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "repository": "https://github.com/Evolution-X/build",
+      "branch": "bka"
+    },
+    "source_patch": {
+      "path": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+      "size_bytes": 7477,
+      "sha256": "622bd7df162ba92631cddcf6e853823715c0b1795ee255ebf41364e4a7c4407e"
+    },
+    "patch_contract": {
+      "path": "patches/evolution/prebuilt-recovery.json",
+      "size_bytes": 4741,
+      "sha256": "4d4b49050e5808f72d74fe023b80c2e83b646a542856182361ee594f48a9656b"
+    },
+    "core_after": {
+      "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+      "size_bytes": 382008
+    },
+    "board": {
+      "path": "device/xiaomi/nezha/BoardConfig.mk",
+      "size_bytes": 3748,
+      "sha256": "8bab471a6a909fd69e9d1536bbd6011859d0c458c0b62bd074d87ceb176c8f3a"
+    },
+    "device_include": {
+      "path": "device/xiaomi/nezha/recovery-prebuilt.mk",
+      "size_bytes": 6326,
+      "sha256": "bc0d4fc50c5fd074ce04e6ac3ba8f2e9aeeca21385d8751b002684b34f2ea52f"
+    },
+    "bundle_schema": 2,
+    "bundle_path": "vendor/xiaomi/nezha-recovery",
+    "bundle_files": {
+      "image": {
+        "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+        "size_bytes": 104857600
+      },
+      "make_include": {
+        "sha256": "b9c596251c98f2cd9da3968320a97bc75910f93d7f3c5a3e6ca3fd3e28224a38",
+        "size_bytes": 737
+      },
+      "public_key": {
+        "path": "recovery-public.pem",
+        "sha256": "50784f7b5ccd4cfde172f5cbce06f54e33547d1081c7d28b55e494aa37ab0967",
+        "size_bytes": 800
+      },
+      "receipt": {
+        "sha256": "81849e2e4b6563d51c7888022dc9afd4034f4cc18111975bfa06e4535c1e1c29",
+        "size_bytes": 4156
+      }
+    },
+    "staging_and_native_signature_verification_passed": true,
+    "recovery_chain_key_source": "vendor/xiaomi/nezha-recovery/recovery-public.pem",
+    "recovery_chain_avb_public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+    "recovery_avb": {
+      "algorithm": "SHA256_RSA4096",
+      "descriptor_verified": true,
+      "flags": 0,
+      "oem_trust_established": false,
+      "partition_name": "recovery",
+      "rollback_index": 1,
+      "rollback_index_location": 1,
+      "signature_verified": true
+    },
+    "whole_vbmeta_chain_verified": false,
+    "native_product_target": {
+      "status": "passed",
+      "started_at": "2026-08-29T17:17:57.105106+00:00",
+      "completed_at": "2026-08-29T17:29:19.321688+00:00",
+      "product": "lineage_nezha",
+      "release": "bp4a",
+      "variant": "user",
+      "goal": "recoveryimage",
+      "incremental": true,
+      "out_dir": "out-nezha-user-policy-20260827T2220Z",
+      "physical_out_dir": "/work/out/nezha-user-policy-20260827T2220Z",
+      "steps": [
+        {
+          "name": "dumpvars",
+          "argv": [
+            "build/soong/soong_ui.bash",
+            "--dumpvars-mode",
+            "--vars=TARGET_PRODUCT TARGET_DEVICE TARGET_BUILD_VARIANT TARGET_PREBUILT_RECOVERY TARGET_PREBUILT_RECOVERY_SHA256 BOARD_RECOVERYIMAGE_PARTITION_SIZE BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE BOARD_AVB_ENABLE BOARD_AVB_RECOVERY_KEY_PATH BOARD_AVB_RECOVERY_ALGORITHM BOARD_AVB_RECOVERY_ROLLBACK_INDEX BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION BUILD_BROKEN_SRC_DIR_IS_WRITABLE SELINUX_IGNORE_NEVERALLOWS PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING RELAX_USES_LIBRARY_CHECK"
+          ],
+          "exit_code": 0,
+          "seconds": 15.178,
+          "log": {
+            "path": "reports/workspace-integration/android-recovery-consumer/dumpvars.log",
+            "size_bytes": 1101,
+            "sha256": "4c33983a28b0da44f086e4b45eb9398f4630ab50a541942e346ee34a8dfd3189"
+          }
+        },
+        {
+          "name": "recoveryimage",
+          "argv": [
+            "build/soong/soong_ui.bash",
+            "--make-mode",
+            "-j8",
+            "recoveryimage"
+          ],
+          "exit_code": 0,
+          "seconds": 641.289,
+          "log": {
+            "path": "reports/workspace-integration/android-recovery-consumer/recoveryimage.log",
+            "size_bytes": 18062,
+            "sha256": "3d6dbbd4745c91084607c15605cbed1c97f9d57c44df7be41c65f6bfea316f07"
+          },
+          "output": {
+            "size_bytes": 104857600,
+            "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e"
+          }
+        },
+        {
+          "name": "recoveryimage-repeat",
+          "argv": [
+            "build/soong/soong_ui.bash",
+            "--make-mode",
+            "-j8",
+            "recoveryimage"
+          ],
+          "exit_code": 0,
+          "seconds": 25.43,
+          "log": {
+            "path": "reports/workspace-integration/android-recovery-consumer/recoveryimage-repeat.log",
+            "size_bytes": 1564,
+            "sha256": "2cb1f553fb8ae62eec40f8e6038ed9727b1c611fd847eef8639eccf3acb71bf6"
+          },
+          "output": {
+            "size_bytes": 104857600,
+            "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e"
+          }
+        }
+      ],
+      "both_image_outputs_match_working76": true,
+      "repeat_replaced_output": true,
+      "other_image_outputs_unchanged": true,
+      "other_image_outputs": {
+        "boot.img": null,
+        "init_boot.img": {
+          "size_bytes": 8388608,
+          "sha256": "eae81b09a6b6f5ee7c1901fef654e407b8d3776a5ec7682a3291f86c76475e0f"
+        },
+        "vendor_boot.img": {
+          "size_bytes": 100663296,
+          "sha256": "b10bdb2e9f4e12b126982924e2b754717e37da739da2ad4d6f4192742471db86"
+        },
+        "dtbo.img": {
+          "size_bytes": 33554432,
+          "sha256": "b166ce78ee67b970feb71e10b6123204c30f225b6b867023b75582eedf82fa35"
+        },
+        "vendor_dlkm.img": null,
+        "system_dlkm.img": null
+      },
+      "final_output_signature_verified": true,
+      "verification_receipt": {
+        "path": "reports/workspace-integration/android-recovery-output-verification.json",
+        "size_bytes": 2438,
+        "sha256": "5ddfcd64d7d58b56d5d4867ce59373e17762cc0b311c5b5a0b82e8120a067eb1"
+      },
+      "receipt": {
+        "path": "reports/workspace-integration/android-recovery-consumer/result.json",
+        "size_bytes": 4507,
+        "sha256": "b77fd7b74ed11eb55872a7b63d3ac477d5daf6001b3631e892f0ff005f263879"
+      },
+      "normal_build_checks_disabled": [],
+      "live_sandbox_namespace_observation_captured": false
+    },
+    "full_rom_and_default_build_gates_retained": true,
+    "two_step_recovery_provided": false
+  },
+  "native_kati_regression": {
+    "scope": "Exact production helper and target fragments in isolated Kati/Ninja fixture; not the full Android graph",
+    "source_core_sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+    "fixture_sha256": "7816fb2fcd39b287461fd237579f889a33ba84b3fabc2ddd608ab0ecc3f9accf",
+    "ckati_sha256": "a93383d2387d1344ba4a8a538501a1248ff080813324a8877a2c01d817b25434",
+    "ninja_sha256": "b3c53a693d6496f3214464fac05fe53ba155489cc071861d9414e2128913c1a2",
+    "steps": [
+      {
+        "name": "kati",
+        "exit_code": 0,
+        "seconds": 0.046,
+        "log_bytes": 0,
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "first-copy",
+        "exit_code": 0,
+        "seconds": 0.419,
+        "log_bytes": 55,
+        "log_sha256": "f673a9435f0c265664072e21f2b4e5900c8506bfb22c8b52cdcb339de13470b7"
+      },
+      {
+        "name": "newer-corrupt-output-repair",
+        "exit_code": 0,
+        "seconds": 0.286,
+        "log_bytes": 26,
+        "log_sha256": "e8b004e65146458ed8843939b2df85c3cbafbb9177bcaab20a45df05720789ef"
+      },
+      {
+        "name": "nodeps-copy",
+        "exit_code": 0,
+        "seconds": 0.242,
+        "log_bytes": 33,
+        "log_sha256": "ad6b197efc16462378ef4d7db5ee011bcd4612ae870b0fd02d403b1a30972f4b"
+      }
+    ],
+    "newer_corrupt_scratch_output_repaired": true,
+    "staged_source_unchanged": true,
+    "output": {
+      "bytes": 104857600,
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e"
+    },
+    "kati_error_checks_relaxed": false,
+    "receipt": {
+      "path": "reports/workspace-integration/native-recovery-kati-probe.stdout.json",
+      "size_bytes": 2061,
+      "sha256": "b93b7b363d15b7cace54ca7a5290c4bb4b278decc8d4c6497925107f354a2be2"
+    }
+  },
+  "recovery_collector": {
+    "read_only_android_refusal_tested": true,
+    "exit_code": 2,
+    "manifest_status": "preflight_failed",
+    "positive_updated_collector_test_in_TWRP": false,
+    "device_mutation_commands": [],
+    "receipt": {
+      "path": "reports/workspace-integration/collector-android-refusal.json",
+      "size_bytes": 434,
+      "sha256": "6d37b63877a0111c76d3ec4e486811e4dfd7b7008a556792f200c89b246bf980"
+    }
+  },
+  "offline_validation": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "tests": 2645,
+    "seconds": 122.168,
+    "exit_code": 0,
+    "child_umask": "022",
+    "log": {
+      "path": "reports/workspace-integration/full-tests-final.log",
+      "size_bytes": 450767,
+      "sha256": "35857b4afe2a2b5581842e9daeb6b9feafefa4a98d70e728c5d8434b1141503b"
+    },
+    "shell_syntax_passed": true,
+    "plan_goals": [
+      "help",
+      "recovery-plan",
+      "twrp-plan",
+      "twrp-source-plan",
+      "recovery-logs-plan",
+      "source-plan",
+      "apple-plan"
+    ],
+    "documentation": {
+      "local_links_checked": 209,
+      "shell_fences_checked": 19,
+      "guard_cases_passed": [
+        "wrong-revision",
+        "dirty-tree",
+        "status-command-error",
+        "clean-pinned-tree",
+        "failed-cd-prevents-build"
+      ],
+      "errors": [],
+      "receipt": {
+        "path": "reports/workspace-integration/documentation-final.json",
+        "size_bytes": 2257,
+        "sha256": "8eedc47878a9a3aa2176ddf4301cf2e4949eaf23924cd294e5963030c646424e"
+      }
+    }
+  },
+  "preservation": {
+    "original_supplied_recovery_and_working76_retained": true,
+    "earlier_source_experiments_retained": true,
+    "schema1_guest_bundle_and_source_preimages_retained": true,
+    "existing_stock_inputs_kernel_vendor_and_policy_patches_retained": true,
+    "volumes_pruned": false,
+    "source_checkouts_deleted": false,
+    "ignored_artifacts_and_keys_added_to_git": false
+  },
+  "remaining_gates": [
+    "Integrate the passing copied-CIL prototype into reviewed source/vendor policy and the full Android validation pipeline.",
+    "Complete mi_ext, target-files, recovery-two-step, A/B/snapshot and OTA packaging.",
+    "Validate a complete signed vbmeta chain, rollback roles, image fit and compatibility with new Evolution companion images.",
+    "Validate complete framework/vendor VINTF and native hardware features on Evolution.",
+    "Test recovery decryption, backup/restore, additional controlled Android/recovery round trips, ADB host authentication and restored recovery enforcement."
+  ],
+  "resolved_validation_findings": [
+    {
+      "finding": "The supplied baseline has a present unsigned and stale AVB footer, not an absent footer.",
+      "resolution": "Match the exact supplied image and footer presence without trusting that old signature metadata; require full signature and exact-image verification for the finished derivative."
+    },
+    {
+      "finding": "Pinned Kati refuses a real recovery image dependency on PHONY FORCE.",
+      "resolution": "Keep ordinary real-file prerequisites and put unconditional verified copying on the phony recoveryimage entrypoint; preserve every Kati error check.",
+      "failed_native_attempt": {
+        "path": "reports/workspace-integration/native-consumer-first-failure-preservation.json",
+        "size_bytes": 798,
+        "sha256": "cf8a6851aec44ca43f12b8573868e596d949d61acda608eae0069ff0c53e2194"
+      },
+      "corrected_native_target_passed": true
+    },
+    {
+      "finding": "The original generated recovery chain key selected the generic engineering test key, which differs from working76.",
+      "resolution": "Schema 2 stages the exact verified public PEM and selects it for recovery chain metadata; no private signing key is transferred. A complete vbmeta chain is still not verified."
+    }
+  ]
+}

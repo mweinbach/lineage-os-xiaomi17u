@@ -5,6 +5,19 @@ This is authored Android device source for `lineage_nezha-bp4a-userdebug` and
 and the exact stock-prebuilt kernel strategy. It does not inherit another
 phone's common BoardConfig.
 
+The [workspace status](../../../docs/workspace-status.md) distinguishes the
+current ROM component-build baseline from historical experiments. **TWRP
+`working76` is the selected default recovery**, using the
+[working-image contract](../../../recovery/twrp-working/README.md) and
+[device validation record](../../../research/twrp-working-defaults.json).
+Its UI, responsive touch, root ADB and startup defaults are verified on this
+Nezha with the installed stock companion boot, kernel and vendor stack, not
+newly built Evolution components. Its executable runtime remains prebuilt;
+recovery-only permissive mode and disabled vibration do not change normal
+Android's enforcement requirements or make this framework profile a complete
+ROM. Recovery packaging and A/B OTA
+behavior must be verified separately from that successful device boot.
+
 Generate the complete device directory into a new ignored staging root:
 
 ```sh
@@ -61,15 +74,27 @@ activate workspace metadata. A separate staging step must supply:
 
 - `kernel/xiaomi/nezha/stock-prebuilt.mk` from this workspace;
 - the complete kernel bundle at `vendor/xiaomi/nezha-kernel`;
-- the complete private vendor tree at `vendor/xiaomi/nezha`.
+- the complete private vendor tree at `vendor/xiaomi/nezha`;
+- the [reviewed prebuilt-recovery build patch](../../../patches/evolution/prebuilt-recovery.json)
+  in `build/make` and the verified schema-2 recovery bundle at
+  `vendor/xiaomi/nezha-recovery`, including its matching public PEM key.
+
+The recovery input is required for product configuration, including isolated
+framework module builds. Follow the [recovery staging workflow](../../../docs/twrp-bringup.md#stage-the-evolution-x-recovery-input)
+before lunch or Make configuration. Missing or modified inputs fail instead
+of selecting a generated recovery. Do not put the private signing key in the
+source tree or build VM.
 
 The initial **framework-checks** profile permits product/Kati and selected
 module/image compilation. All recorded logical mounts, including `mi_ext`,
 remain in the fstab with AVB enabled. `mi_ext` is not yet packaged by this
 profile; complete target-files, OTA and super-image goals are blocked. No
 result from this profile is admitted for flashing, including when compilation
-succeeds. Unknown physical capacities or bootloader state do not prevent
-configuration generation; they remain separate flash-promotion gates.
+succeeds. Later [fastboot observations](../../../research/twrp-boot-attempts.json)
+establish an unlocked bootloader and 100 MiB recovery slots on the selected
+phone. They do not establish every partition's fit, rollback acceptance or
+complete ROM admission. Local configuration generation remains separate from
+the device-state revalidation required before a future authorized flash.
 
 The product explicitly makes the source tree read-only inside Ninja's sandbox
 with `BUILD_BROKEN_SRC_DIR_IS_WRITABLE := false`. The pinned `bka` release's

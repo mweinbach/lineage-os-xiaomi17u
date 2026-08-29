@@ -347,11 +347,14 @@ The next local milestones before a complete device build are:
 - Resolve the Camera APK's signing, framework and native-library dependencies;
   the nine successfully built dependencies do not establish app compatibility.
 
-Bootloader authorization, live partition and rollback state, a return plan
-and specific user authorization remain separate requirements for phone tests.
-The [TWRP plan](recovery-plan.md) follows core ROM integration and now includes
-the measured recovery module closure. It does not provide bootloader-corruption
-protection or verified data decryption.
+The later [TWRP device tests](twrp-bringup.md) positively verified an unlocked
+bootloader and booted `working76`, now the selected default recovery. That
+recovery test used the installed stock companion boot, kernel and vendor stack;
+it is not an Evolution boot or a complete ROM/OTA integration result. Future
+phone tests still require selected-device/partition/rollback revalidation, a
+return plan and specific user authorization. The [recovery plan](recovery-plan.md)
+does not provide bootloader-corruption protection or verified data decryption.
+See [current workspace status](workspace-status.md) for the consolidated gates.
 
 The separate [SELinux contract](selinux-contract.md) captures the exact stock
 policy inputs and reports seven neverallow failures using native tools from
