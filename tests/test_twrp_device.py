@@ -536,6 +536,50 @@ class TwrpDeviceTests(unittest.TestCase):
             self.assertNotEqual((self.board | self.device).get(setting), "true", setting)
         self.assertEqual(self.device["PRODUCT_PACKAGES"], RECOVERY_PACKAGES)
 
+    def test_initial_etc_alias_uses_exact_reviewed_recovery_prepare_hook(self):
+        start = self.board_text.index("# Recovery's cgroup setup reads /etc before init actions create their links.")
+        end = self.board_text.index("# Build actions must write under OUT_DIR", start)
+        hook = self.board_text[start:end]
+        self.assertEqual(hashlib.sha256(hook.encode()).hexdigest(), "34dc66b6daab6d9dcea4e7920a33cffc3cb6b92c380f7da398359d326a57a424")
+        self.assertEqual(hook.count("define BOARD_RECOVERY_IMAGE_PREPARE\n"), 1)
+        self.assertEqual(hook.count("\nendef\n"), 1)
+        self.assertIn("ln -sT -- /system/etc", hook)
+        self.assertNotIn("ln -sf", hook)
+        self.assertNotIn("chmod", hook)
+        # No unrelated BoardConfig or existing validation guard is changed.
+        original = self.board_text[:start] + self.board_text[end:]
+        self.assertEqual(hashlib.sha256(original.encode()).hexdigest(),
+                         "4e39c9171c072311283f668aadf781a10cdcd1e567bb8c6290ab737b40033374")
+
+    def test_etc_prepare_refreshes_both_original_inventory_commands(self):
+        raw = (ROOT / "patches/twrp/0033-create-recovery-linkerconfig-directory.patch").read_text()
+        after = []
+        in_hunk = False
+        for line in raw.splitlines():
+            if line.startswith("@@"):
+                in_hunk = True
+            elif in_hunk and line.startswith((" ", "+")):
+                after.append(line[1:])
+        commands = [line.strip().split(" && ", 1)[1] for line in after
+                    if line.startswith("\tcd $(TARGET_RECOVERY_ROOT_OUT) && ")]
+        self.assertEqual(len(commands), 2)
+        for command in commands:
+            self.assertEqual(self.board_text.count(command), 1)
+        self.assertLess(self.board_text.index("ln -sT -- /system/etc"), self.board_text.index(commands[0]))
+        self.assertLess(self.board_text.index(commands[0]), self.board_text.index(commands[1]))
+        hook_at = after.index("\t$(BOARD_RECOVERY_IMAGE_PREPARE)")
+        mkbootfs_at = next(i for i, line in enumerate(after)
+                          if "$(MKBOOTFS) -d $(TARGET_OUT) $(TARGET_RECOVERY_ROOT_OUT)" in line)
+        self.assertLess(hook_at, mkbootfs_at)
+
+    def test_initial_etc_alias_documentation_preserves_scope_and_failure_rules(self):
+        readme = " ".join((DEVICE / "README.md").read_text().split())
+        for fact in ("`SetupCgroupsAction` before `early-init`", "`BOARD_RECOVERY_IMAGE_PREPARE`",
+                     "`/etc -> /system/etc`", "`ln -sT`", "no force overwrite", "hashes the name list itself",
+                     "No checksum exception", "nine-file target layout", "does not chmod staging",
+                     "permission to boot or flash"):
+            self.assertIn(fact, readme)
+
     def test_recovery_loader_packages_select_original_recovery_providers(self):
         self.assertEqual(self.device["PRODUCT_PACKAGES"].split()[4:], [
             "linker.recovery", "ld.config.recovery.txt", "nezha_recovery_bootstrap_linker64"])

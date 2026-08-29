@@ -1127,3 +1127,38 @@ crypto and network features remain unchanged. A new normal build and archive
 inspection must prove the linker, nonempty generated config and alias are
 actually present; namespace, relocation and device startup tests remain
 separate gates. This change authorizes no device operation.
+
+
+The build64 ramdisk and staging tree lacked `/etc`. This is a packaging defect:
+pinned `system/core/init/init.cpp` queues `SetupCgroupsAction` before `early-init`,
+and `libprocessgroup/setup/cgroup_map_write.cpp` reads `/etc/cgroups.json`.
+Recovery's later `init.rc` command cannot supply that initial lookup path.
+
+Nezha uses the existing `BOARD_RECOVERY_IMAGE_PREPARE` hook to create
+`/etc -> /system/etc` during the normal recovery build, before `mkbootfs`,
+compression and AVB signing. The hook requires real staging, `system` and
+`system/etc` directories. It accepts an existing exact alias, rejects every
+other `/etc` file, directory or link, and creates a missing alias exclusively.
+GNU `ln -sT` refuses to treat a conflicting directory as a link destination;
+there is no force overwrite, manual output repair or activation of the wider
+`init.environ.rc` root setup. The installed recovery modules remain normal
+dependencies of the original ramdisk staging target.
+
+The pinned Makefile invokes this hook after producing `ramdisk-files.txt` and
+`ramdisk-files.sha256sum`. Therefore the hook reruns both original inventory
+commands after establishing the alias. The name list includes `etc`; the
+digest list does not follow symlinks, but it hashes the name list itself, so
+refreshing only the names would leave a stale checksum. The original filters
+remain unchanged. Bash error and pipeline failure handling stops packaging if
+any guard or regeneration fails. No checksum exception or unvalidated name
+append is used. The original repacker consumes these inventories, although
+Nezha's repacking feature remains disabled.
+
+This target change preserves the nine-file target layout, all 33 source
+patches, seven selected packages, source rules, modes, authentication, SELinux,
+AVB and disabled features. It does not chmod staging to match archive metadata:
+the separately reviewed `mkbootfs` mode normalization remains intact. A new
+normal build must establish the alias and coherent inventories in the actual
+archive before the existing initial-profile lookup gate can pass. Source
+review and offline fixtures do not establish cgroup mounts, daemon startup,
+ADB access or permission to boot or flash a device.

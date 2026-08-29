@@ -79,6 +79,37 @@ TWRP_INCLUDE_LOGCAT := true
 
 BOARD_SEPOLICY_DIRS += $(NEZHA_TWRP_DEVICE_PATH)/sepolicy
 
+# Recovery's cgroup setup reads /etc before init actions create their links.
+# This original build hook runs after staging and before mkbootfs/signing.
+# Refresh both original inventories: the digest list also hashes the name list.
+define BOARD_RECOVERY_IMAGE_PREPARE
+/bin/bash -eu -o pipefail -c ' \
+  nezha_recovery_root="$$1"; \
+  for nezha_required_dir in "$$nezha_recovery_root" "$$nezha_recovery_root/system" "$$nezha_recovery_root/system/etc"; do \
+    if [ ! -d "$$nezha_required_dir" ] || [ -L "$$nezha_required_dir" ]; then \
+      echo "Nezha recovery requires a real directory: $$nezha_required_dir" >&2; exit 1; \
+    fi; \
+  done; \
+  for nezha_inventory in ramdisk-files.txt ramdisk-files.sha256sum; do \
+    if [ -L "$$nezha_recovery_root/$$nezha_inventory" ] || { [ -e "$$nezha_recovery_root/$$nezha_inventory" ] && [ ! -f "$$nezha_recovery_root/$$nezha_inventory" ]; }; then \
+      echo "Nezha recovery inventory must be a regular file: $$nezha_inventory" >&2; exit 1; \
+    fi; \
+  done; \
+  if [ -L "$$nezha_recovery_root/etc" ]; then \
+    if [ "$$(readlink "$$nezha_recovery_root/etc")" != /system/etc ]; then \
+      echo "Nezha recovery has a conflicting /etc link" >&2; exit 1; \
+    fi; \
+  elif [ -e "$$nezha_recovery_root/etc" ]; then \
+    echo "Nezha recovery /etc must not replace an existing file or directory" >&2; exit 1; \
+  else \
+    ln -sT -- /system/etc "$$nezha_recovery_root/etc"; \
+  fi; \
+  cd "$$nezha_recovery_root"; \
+  touch ramdisk-files.txt && touch ramdisk-files.sha256sum && find . | sed "s/.\///" | sed "/lib\/modules\//d" > ramdisk-files.txt || exit 1; \
+  find -type f | sed "s/.\/ramdisk-files.sha256sum//" | sed "/lib\/modules/d" | sed "/prop.default/d" | sed "/ld\.config\.txt/d" | xargs sha256sum > ramdisk-files.sha256sum || exit 1 \
+' -- "$(TARGET_RECOVERY_ROOT_OUT)"
+endef
+
 # Build actions must write under OUT_DIR, never into the checked source tree.
 # A conflicting command-line assignment survives this assignment in make, so
 # the guard below must reject it rather than silently weakening the sandbox.
