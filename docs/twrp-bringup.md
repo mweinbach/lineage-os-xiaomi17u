@@ -6,14 +6,40 @@ without requiring a complete Evolution X ROM first. A compiled recovery is
 not yet a tested rescue environment. Device actions require separate, explicit
 user authorization.
 
-The current route uses the complete Nezha tree from
+**The user-supplied `fix22ZJ-touchfix18` image now boots on the phone.** It was
+installed unchanged to `recovery_a` after explicit authorization, and a readback
+of that partition matches SHA256
+`56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323`.
+The user confirmed the visible UI. Root ADB reports
+`3.7.1_16-Xiaomi_17_Ultra`, a running recovery service, and slot `a`; recovery
+and kernel logs were collected successfully. No other partition was flashed.
+The supplied image has an unsigned AVB footer with a mismatched descriptor
+hash; this was disclosed before the user approved installing that exact file.
+
+Initial touch responses took 5–10 seconds. Switching this recovery session to
+global permissive mode brought partial improvement. Disabling TWRP's action,
+button and keyboard vibration then made it much faster, as confirmed by the
+user. The input driver and working executables were not changed. These were
+runtime settings at this checkpoint; a separate configuration patch is being
+prepared to make them the defaults. The initial policy reported global
+`Enforcing` but had eight permissive domains, confirmed from the loaded policy.
+Data decryption and Magisk remain unverified/not performed. The separate
+[installation record](../research/twrp-installed-recovery.json) preserves the
+install, readback, runtime checks and both latency tests.
+
+This working image is now the baseline for our recovery. Keep its init,
+libraries, touch setup and firmware, and carry only tested changes forward.
+This is an adaptation of supplied recovery binaries, not a claim of a fresh
+source build or verified source provenance for those binaries.
+
+The preceding attempt used the complete Nezha tree from
 [`antocorvo3000/twrp-xiaomi-17-series`](https://github.com/antocorvo3000/twrp-xiaomi-17-series/tree/4a35185d43782b4dd460a7f456d674c0976c0859/twrp_device_xiaomi_nezha),
 pinned at `4a35185d43782b4dd460a7f456d674c0976c0859`. Its supplied kernel
-matches the recorded stock kernel byte for byte. Keep its recovery hardware
-initialization and product integration; adjust device identity and image
-layout only to verified Nezha stock facts, plus concrete build compatibility
-fixes. The earlier minimal recovery and its unbooted timed diagnostic remain
-separate, preserved experiments, not the selected baseline.
+matches the recorded stock kernel byte for byte, but temporarily booting its
+assembled prebuilt root still produced a black screen with no selected USB
+transport. That [trial](../research/twrp-upstream-bringup.json), the earlier
+minimal recovery, and its unbooted timed diagnostic remain separate,
+preserved experiments, not the selected baseline.
 
 The user explicitly authorized **permissive SELinux for initial recovery
 bring-up** on 2026-08-29. This keeps denial logging available while establishing

@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "operation": "authorized_user_provided_recovery_installation",
+  "scope": "Successful installation and first observed runtime of the exact user-supplied image; earlier temporary trials remain separate historical records.",
+  "image": {
+    "origin": "user_provided_prebuilt_image",
+    "source_basename": "twrp-3.7.1_16-nezha-antocorvo3000-fix22ZJ-touchfix18.img",
+    "local_ignored_copy": "artifacts/twrp/nezha/provided75/recovery.img",
+    "copy_bit_for_bit_verified": true,
+    "size_bytes": 104857600,
+    "sha256": "56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323",
+    "header_version": 4,
+    "kernel_size_bytes": 0,
+    "compressed_ramdisk_size_bytes": 75416321,
+    "compressed_ramdisk_sha256": "7e444cec10294c43097ca5e96bbba5300fb83412a6ce21aa838cb9ee32aaa3db",
+    "upstream_source_commit_verified": false,
+    "avb": {
+      "algorithm": "NONE",
+      "embedded_hash_verification_passed": false,
+      "oem_trust_established": false,
+      "verification_failure_disclosed_before_flash": true,
+      "bypass_flags_used": false
+    }
+  },
+  "authorization": {
+    "explicit_user_confirmation_received": true,
+    "exact_image_to_recovery_a_and_reboot_authorized": true,
+    "confirmation_after_avb_disclosure": true
+  },
+  "installation": {
+    "partition": "recovery_a",
+    "flash_succeeded": true,
+    "sending_seconds": 2.584,
+    "writing_seconds": 0.079,
+    "total_flash_seconds": 2.687,
+    "reboot_target": "recovery",
+    "reboot_succeeded": true,
+    "reboot_seconds": 0.002,
+    "live_partition_readback": {
+      "method": "sha256sum_of_recovery_a_from_running_recovery",
+      "sha256": "56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323",
+      "matches_exact_user_supplied_image": true
+    }
+  },
+  "runtime": {
+    "device": "nezha",
+    "slot_suffix": "_a",
+    "adb_uid": 0,
+    "twrp_version": "3.7.1_16-Xiaomi_17_Ultra",
+    "recovery_service": "running",
+    "sys_boot_completed": "1",
+    "ui_visible": true,
+    "ui_evidence": "user_confirmation",
+    "usb_state": "adb",
+    "tcp_adb_property": "",
+    "adb_authentication_verified": false,
+    "drm_atomic_commits_succeeded_in_recovery_log": true,
+    "data_mounted": false,
+    "decryption_verified": false,
+    "initial_touch_observation": {
+      "source": "user_report",
+      "responsive": true,
+      "reported_latency_seconds": [
+        5,
+        10
+      ],
+      "severe_latency_reported": true,
+      "normal_latency_verified": false,
+      "fully_working_input_verified": false
+    },
+    "touch": {
+      "source": "user_report",
+      "responsive": true,
+      "latest_user_report": "oh yea way faster",
+      "latest_report_context": "after_runtime_vibration_durations_set_to_zero",
+      "latency_greatly_improved_reported": true,
+      "quantitative_latency_benchmark_performed": false,
+      "fully_working_input_verified": false
+    }
+  },
+  "selinux": {
+    "image_policy_permissive_domain_count": 8,
+    "initial_runtime_measurement": {
+      "global_getenforce": "Enforcing",
+      "loaded_policy": {
+        "size_bytes": 725594,
+        "sha256": "1c00fbcddf27a6ac219f851d234d86bfbd242386be851f1849977e773ddb6c18"
+      },
+      "native_analysis_returncode": 0,
+      "permissive_domains": [
+        "adbd",
+        "fastbootd",
+        "init",
+        "logd",
+        "postinstall",
+        "recovery",
+        "su",
+        "ueventd"
+      ],
+      "permissive_domain_count": 8
+    },
+    "all_domains_enforcing_verified": false,
+    "diagnostics": [
+      {
+        "performed_at_utc": "2026-08-29T15:21:01.313339Z",
+        "operation": "setenforce 0",
+        "scope": "running_recovery_only",
+        "user_authorized": true,
+        "returncode": 0,
+        "global_getenforce_after": "Permissive",
+        "installed_image_modified": false,
+        "stock_android_modified": false,
+        "touch_latency_retest": "partial_improvement_still_slow",
+        "touch_latency_user_report": "it is but everything still feels slow"
+      }
+    ]
+  },
+  "collected_private_logs": {
+    "recovery": {
+      "size_bytes": 89760,
+      "sha256": "c9b8838c5b9c85854800733d76c86de774042593a652f20a4c537bb5ecb4a60b"
+    },
+    "dmesg": {
+      "size_bytes": 580465,
+      "sha256": "c970321738d5845f2ef3a93525730dc3b52b6c0d9bf63c4201eafbff71edee68"
+    }
+  },
+  "command_boundaries": {
+    "partition_write_command_sent": true,
+    "other_partition_flash_command_sent": false,
+    "format_command_sent": false,
+    "wipe_command_sent": false,
+    "magisk_install_performed": false,
+    "unlock_or_relock_command_sent": false,
+    "slot_change_command_sent": false,
+    "avb_bypass_flags_used": false
+  },
+  "remaining_validation": {
+    "additional_recovery_reboot_test": "pending",
+    "stock_android_boot_after_installation_verified": false,
+    "touch_test": "responsive_with_user_reported_improvement_not_quantitatively_benchmarked",
+    "data_decryption_test": "pending"
+  },
+  "limitations": [
+    "The provided image has AVB algorithm NONE and a failing embedded hash check. The user explicitly approved flashing that exact file to recovery_a and rebooting after disclosure; no AVB bypass flags were used. Successful boot does not establish an OEM signature or trust.",
+    "Visible UI, running recovery, root ADB, matching live recovery_a readback and saved recovery/kernel logs are verified. The initial user report described touch response with a 5-10 second delay. After runtime vibration durations were set to zero, the user reported much faster response; no quantitative latency benchmark or complete input validation has been performed. Data decryption and an additional persistence reboot are not yet verified.",
+    "The initial global getenforce result was Enforcing, but native analysis of the pulled live policy verified eight permissive domains. A separately recorded user-authorized setenforce 0 changed only the running recovery to global Permissive; the user reported partial improvement but continued slowness. This initial measurement and diagnostic remain separate from the later vibration-settings trial.",
+    "USB ADB works and its TCP property is empty. Root ADB access does not by itself establish host authentication or prove that no TCP listener exists.",
+    "The recovery log reports successful DRM atomic commits. /data is not mounted, and no format, wipe, Magisk installation, unlock/relock, slot-change or other-partition flash command was sent.",
+    "The vibration-settings trial changed action, button and keyboard duration values to zero with readback confirmation; it did not change an input driver or stop vibratorfeature or touch_report. Both services were observed restarting, but their role in the delay is unproven. A persistent configuration variant was being prepared separately and had not been approved or flashed at this checkpoint."
+  ],
+  "status": "installed_runtime_verified_user_reports_faster_touch",
+  "runtime_haptic_diagnostic": {
+    "performed_at_utc": "2026-08-29T15:26:28.275835Z",
+    "method": "TWRP_CLI_runtime_settings",
+    "values_before": {
+      "tw_disable_haptics": 0,
+      "action": 160,
+      "button": 80,
+      "keyboard": 40
+    },
+    "vibration_enabled_before": true,
+    "duration_values_after": {
+      "action": 0,
+      "button": 0,
+      "keyboard": 0
+    },
+    "readback_confirmed": true,
+    "tw_disable_haptics_flag_changed": false,
+    "user_report": "oh yea way faster",
+    "latency_greatly_improved_reported": true,
+    "quantitative_latency_benchmark_performed": false,
+    "input_driver_changed": false,
+    "services_observed_restarting": [
+      "vibratorfeature",
+      "touch_report"
+    ],
+    "service_stop_commands_sent": false,
+    "service_restart_causality_established": false,
+    "image_or_partition_write_commands_during_runtime_tuning": false
+  },
+  "persistent_configuration_candidate_at_this_checkpoint": {
+    "scope": "separate_candidate_only",
+    "status": "preparing_not_yet_approved_or_flashed",
+    "flash_authorized": false,
+    "flashed": false,
+    "original_provided75_image_and_partition_unchanged_by_runtime_tuning": true
+  }
+}

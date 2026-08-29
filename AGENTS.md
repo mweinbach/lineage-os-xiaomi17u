@@ -8,6 +8,10 @@ device tree. Keep verified facts separate from assumptions and unresolved work.
 - Make small, descriptive commits as useful work is completed. Run tests before
   completing a change. Use `python3 -m unittest discover -s tests -v`.
 - Check upstream branches and record commit IDs before depending on them.
+- For TWRP, start from the device-tested `fix22ZJ-touchfix18` recovery recorded
+  in `research/twrp-installed-recovery.json`. Preserve its working runtime and
+  hardware setup while applying measured changes. Earlier minimal recovery
+  builds remain historical experiments, not the current functional baseline.
 - Do not copy a different phone's partition layout, kernel, firmware, or device
   identity into a Xiaomi 17 Ultra build. Verify the exact variant from stock.
 - Never unlock, relock, wipe, reboot, flash, or change the connected phone unless
