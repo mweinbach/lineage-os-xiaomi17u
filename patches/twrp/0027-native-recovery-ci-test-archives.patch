@@ -1,0 +1,80 @@
+diff --git a/build/tasks/continuous_instrumentation_metric_tests.mk b/build/tasks/continuous_instrumentation_metric_tests.mk
+index 0ff0aba51ff1a37058ff1bd6dd5c77f08d7c3b35..e3224fc58cdf26389b632962e3b10b2feaae5368 100644
+--- a/build/tasks/continuous_instrumentation_metric_tests.mk
++++ b/build/tasks/continuous_instrumentation_metric_tests.mk
+@@ -14,6 +14,9 @@
+ 
+ # Rules to generate a tests zip file that included test modules
+ # based on the configuration.
++
++# This native recovery profile does not package framework CI test archives.
++ifneq ($(filter nezha_twrp,$(sort $(SOONG_CONFIG_NAMESPACES))):$(filter native_recovery_only,$(sort $(SOONG_CONFIG_nezha_twrp))):$(SOONG_CONFIG_TYPE_nezha_twrp_native_recovery_only):$(call soong_config_get,nezha_twrp,native_recovery_only):,nezha_twrp:native_recovery_only:bool:true:)
+ 
+ LOCAL_PATH := $(call my-dir)
+ include $(LOCAL_PATH)/tests/instrumentation_metric_test_list.mk
+@@ -34,3 +37,5 @@
+ 
+ # Also build this when you run "make tests".
+ tests: continuous_instrumentation_metric_tests
++
++endif # registered nezha_twrp.native_recovery_only bool:true
+diff --git a/build/tasks/continuous_instrumentation_tests.mk b/build/tasks/continuous_instrumentation_tests.mk
+index f8da9fc06892d1fc8c9fd8f5cc35a9ca1c25f959..977317c804866ef664bb8993971173f5da9b4314 100644
+--- a/build/tasks/continuous_instrumentation_tests.mk
++++ b/build/tasks/continuous_instrumentation_tests.mk
+@@ -14,6 +14,9 @@
+ 
+ # Rules to generate a tests zip file that included test modules
+ # based on the configuration.
++
++# This native recovery profile does not package framework CI test archives.
++ifneq ($(filter nezha_twrp,$(sort $(SOONG_CONFIG_NAMESPACES))):$(filter native_recovery_only,$(sort $(SOONG_CONFIG_nezha_twrp))):$(SOONG_CONFIG_TYPE_nezha_twrp_native_recovery_only):$(call soong_config_get,nezha_twrp,native_recovery_only):,nezha_twrp:native_recovery_only:bool:true:)
+ 
+ LOCAL_PATH := $(call my-dir)
+ include $(LOCAL_PATH)/tests/instrumentation_test_list.mk
+@@ -96,3 +99,5 @@
+ dexdeps_exe :=
+ test_apks :=
+ api_coverage_dep :=
++
++endif # registered nezha_twrp.native_recovery_only bool:true
+diff --git a/build/tasks/continuous_native_metric_tests.mk b/build/tasks/continuous_native_metric_tests.mk
+index 14ae3f69b0881269eb079e66781f2680ee46fdf0..148ae57931898deb0833613fbc2306b473636ec7 100644
+--- a/build/tasks/continuous_native_metric_tests.mk
++++ b/build/tasks/continuous_native_metric_tests.mk
+@@ -14,6 +14,9 @@
+ 
+ # Rules to generate a tests zip file that included test modules
+ # based on the configuration for continuous metric testing.
++
++# This native recovery profile does not package framework CI test archives.
++ifneq ($(filter nezha_twrp,$(sort $(SOONG_CONFIG_NAMESPACES))):$(filter native_recovery_only,$(sort $(SOONG_CONFIG_nezha_twrp))):$(SOONG_CONFIG_TYPE_nezha_twrp_native_recovery_only):$(call soong_config_get,nezha_twrp,native_recovery_only):,nezha_twrp:native_recovery_only:bool:true:)
+ 
+ LOCAL_PATH := $(call my-dir)
+ include $(LOCAL_PATH)/tests/native_metric_test_list.mk
+@@ -34,3 +37,5 @@
+ 
+ # Also build this when you run "make tests".
+ tests: continuous_native_metric_tests
++
++endif # registered nezha_twrp.native_recovery_only bool:true
+diff --git a/build/tasks/continuous_native_tests.mk b/build/tasks/continuous_native_tests.mk
+index ef452f8cbdb5ec8ffb3a46baeac2b648afc7af5c..b0e6163a38a168a3c45109d60b007c8a986f6378 100644
+--- a/build/tasks/continuous_native_tests.mk
++++ b/build/tasks/continuous_native_tests.mk
+@@ -14,6 +14,9 @@
+ 
+ # Rules to generate a tests zip file that included test modules
+ # based on the configuration for continuous testing.
++
++# This native recovery profile does not package framework CI test archives.
++ifneq ($(filter nezha_twrp,$(sort $(SOONG_CONFIG_NAMESPACES))):$(filter native_recovery_only,$(sort $(SOONG_CONFIG_nezha_twrp))):$(SOONG_CONFIG_TYPE_nezha_twrp_native_recovery_only):$(call soong_config_get,nezha_twrp,native_recovery_only):,nezha_twrp:native_recovery_only:bool:true:)
+ 
+ LOCAL_PATH := $(call my-dir)
+ include $(LOCAL_PATH)/tests/native_test_list.mk
+@@ -34,3 +37,5 @@
+ 
+ # Also build this when you run "make tests".
+ tests: continuous_native_tests
++
++endif # registered nezha_twrp.native_recovery_only bool:true

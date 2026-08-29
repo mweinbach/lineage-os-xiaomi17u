@@ -1,0 +1,350 @@
+diff --git a/guest/pvmfw/avb/Android.bp b/guest/pvmfw/avb/Android.bp
+index 0d55d7c48ffda774b4d27e2933ab44bbd5390160..44c04413fe524b45983b871d95d5a05e0245ad9b 100644
+--- a/guest/pvmfw/avb/Android.bp
++++ b/guest/pvmfw/avb/Android.bp
+@@ -1,337 +1,343 @@
+ package {
+     default_applicable_licenses: ["Android-Apache-2.0"],
+ }
+ 
+ rust_library_rlib {
+     name: "libpvmfw_avb_nostd",
+     crate_name: "pvmfw_avb",
+     defaults: ["avf_build_flags_rust"],
+     srcs: ["src/lib.rs"],
+     prefer_rlib: true,
+     rustlibs: [
+         "libavb_rs_nostd",
+         "libtinyvec_nostd",
+     ],
+     whole_static_libs: [
+         "libavb_baremetal",
+     ],
+     no_stdlibs: true,
+     stdlibs: [
+         "libcore.rust_sysroot",
+     ],
+ }
+ 
+ rust_test {
+     name: "libpvmfw_avb.integration_test",
+     crate_name: "pvmfw_avb_test",
+     defaults: ["avf_build_flags_rust"],
+     srcs: ["tests/api_test.rs"],
+     test_suites: ["general-tests"],
+     data: [
+         ":avb_testkey_rsa2048_pub_bin",
+         ":avb_testkey_rsa4096_pub_bin",
+         ":microdroid_kernel_signed",
+         ":microdroid_initrd_normal",
+         ":microdroid_initrd_debuggable",
+         ":trusty_test_vm_signed_bin",
+         ":test_image_with_one_hashdesc",
+         ":test_image_with_non_initrd_hashdesc",
+         ":test_image_with_initrd_and_non_initrd_desc",
+         ":test_image_with_name",
+         ":test_image_with_invalid_page_size",
+         ":test_image_with_negative_page_size",
+         ":test_image_with_overflow_page_size",
+         ":test_image_with_0k_page_size",
+         ":test_image_with_1k_page_size",
+         ":test_image_with_4k_page_size",
+         ":test_image_with_9k_page_size",
+         ":test_image_with_16k_page_size",
+         ":test_image_with_service_vm_prop",
+         ":test_image_with_unknown_vm_type_prop",
+         ":test_image_with_duplicated_capability",
+         ":test_image_with_rollback_index_5",
+         ":test_image_with_multiple_capabilities",
+         ":test_image_with_all_capabilities",
+         ":unsigned_test_image",
+     ],
+     prefer_rlib: true,
+     rustlibs: [
+         "libanyhow",
+         "libavb_bindgen",
+         "libavb_rs_nostd",
+         "libhex",
+         "libpvmfw_avb_nostd",
+         "libopenssl",
+     ],
+     enabled: false,
+     arch: {
+         // Microdroid kernel is only available in these architectures.
+         arm64: {
+-            enabled: true,
++            enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++                true: false,
++                default: true,
++            }),
+         },
+         x86_64: {
+-            enabled: true,
++            enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++                true: false,
++                default: true,
++            }),
+         },
+     },
+ }
+ 
+ // Generates a 16KB unsigned image for testing.
+ genrule {
+     name: "unsigned_test_image",
+     tools: ["avbtool"],
+     out: ["unsigned_test.img"],
+     cmd: "$(location avbtool) generate_test_image --image_size 16384 --output $(out)",
+ }
+ 
+ avb_gen_vbmeta_image {
+     name: "test_non_initrd_hashdesc",
+     src: ":unsigned_test_image",
+     partition_name: "non_initrd11",
+     salt: "2222",
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_non_initrd_hashdesc",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "3322",
+     include_descriptors_from_images: [
+         ":test_non_initrd_hashdesc",
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_initrd_and_non_initrd_desc",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "3241",
+     include_descriptors_from_images: [
+         ":microdroid_initrd_normal_hashdesc",
+         ":test_non_initrd_hashdesc",
+     ],
+     enabled: false,
+     arch: {
+         // microdroid_initrd_normal_hashdesc is only available in these architectures.
+         arm64: {
+             enabled: true,
+         },
+         x86_64: {
+             enabled: true,
+         },
+     },
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_name",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.name",
+             value: "test_vm_name",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_invalid_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "invalid",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_negative_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "-16",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_overflow_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "18014398509481983",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_0k_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "0",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_1k_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "1",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_4k_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "4",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_9k_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "9",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_16k_page_size",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.page_size",
+             value: "16",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_service_vm_prop",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2131",
+     props: [
+         {
+             name: "com.android.virt.cap",
+             value: "remote_attest",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_unknown_vm_type_prop",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2132",
+     props: [
+         {
+             name: "com.android.virt.cap",
+             value: "foo",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_duplicated_capability",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.cap",
+             value: "remote_attest|remote_attest|remote_attest",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_one_hashdesc",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "1111",
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_rollback_index_5",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "1211",
+     rollback_index: 5,
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_multiple_capabilities",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "2134",
+     props: [
+         {
+             name: "com.android.virt.cap",
+             value: "remote_attest|secretkeeper_protection",
+         },
+     ],
+ }
+ 
+ avb_add_hash_footer {
+     name: "test_image_with_all_capabilities",
+     src: ":unsigned_test_image",
+     partition_name: "boot",
+     private_key: ":pvmfw_sign_key",
+     salt: "4231",
+     props: [
+         {
+             name: "com.android.virt.cap",
+             value: "remote_attest|trusty_security_vm|secretkeeper_protection|supports_uefi_boot",
+         },
+     ],
+ }

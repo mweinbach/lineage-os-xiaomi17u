@@ -1,7 +1,11 @@
 # Nezha recovery plan
 
-Build a separate TWRP recovery after the core Evolution X integration is
-established. A tested recovery can help restore an unbootable Android system,
+TWRP is now an independent bring-up track, at the user's request; it does not
+wait for a complete Evolution X ROM. Follow the [active TWRP work](twrp-bringup.md)
+for source, build and test status. The observations and machine-readable record
+below preserve the earlier review checkpoint, before a TWRP target existed.
+
+A tested recovery can help restore an unbootable Android system,
 but **it cannot prevent bootloader corruption or start without a working boot
 chain**. Nezha's recovery is not self-contained: the captured image has no
 kernel. Keeping recovery intact therefore does not protect against damage to
@@ -9,9 +13,9 @@ the bootloader, required boot images, partition tables or hardware-backed
 security state. This follows the [AOSP bootloader responsibilities](https://source.android.com/docs/core/architecture/bootloader)
 and [dedicated A/B recovery design](https://source.android.com/docs/core/architecture/partitions/generic-boot).
 
-This is an engineering plan, not a recovery release. No TWRP target has been
-registered in this workspace, no recovery build or device test has passed,
-and no phone change is authorized. The existing Evolution source and output
+This is an engineering plan, not a recovery release. At the review checkpoint,
+no TWRP target had been registered and no recovery build or device test had
+passed. No phone change is authorized by that review. The existing Evolution source and output
 must stay intact. The [machine-readable record](../research/recovery-plan.json)
 separates source observations, factory-package evidence and future tests.
 
@@ -124,7 +128,7 @@ The work proceeds in these stages:
 
 | Stage | Required result before proceeding |
 | --- | --- |
-| Local recovery integration, after core ROM bring-up | Factory-derived fstab and size constraints; exact boot/module inputs; strict build, ELF, VINTF, SELinux and AVB checks; inspected recovery output |
+| Independent local recovery integration | Factory-derived fstab and size constraints; exact boot/module inputs; strict build, ELF, VINTF, SELinux and AVB checks; inspected recovery output |
 | Separately authorized boot test | Verified boot chain and return plan; display/touch and USB/ADB tests; no automatic data decrypt/format, slot changes or snapshot mutation |
 | Separately authorized encrypted-storage test | Correct secure services, metadata and CE/DE access; credential failure stays a failure; no persistent key upgrade; Android remains able to access its data afterward |
 | Separately authorized rescue validation | Proven backup/restore scope, internal-media coverage, slot/OTA behavior and stock-return procedure |

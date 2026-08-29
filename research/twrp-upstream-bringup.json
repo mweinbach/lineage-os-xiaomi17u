@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "operation": "temporary_upstream_prebuilt_recovery_trial",
+  "scope": "Separate bring-up experiment using supplied community prebuilts, not a newly compiled recovery runtime or a replacement for the earlier build and hardware history.",
+  "upstream": {
+    "repository": "https://github.com/antocorvo3000/twrp-xiaomi-17-series",
+    "commit": "4a35185d43782b4dd460a7f456d674c0976c0859",
+    "device_subtree": "twrp_device_xiaomi_nezha",
+    "device_tree_object": "cb570a1fe74c49f0698890bafa27df1b264e4785",
+    "runtime_origin": "supplied_full_prebuilt_root",
+    "runtime_newly_compiled": false,
+    "normal_source_build_overlays_prebuilt_binaries": true,
+    "equivalent_to_completed_normal_source_build": false
+  },
+  "candidate": {
+    "name": "upstream74",
+    "local_ignored_image": "artifacts/twrp/nezha/upstream74/boot.img",
+    "image": {
+      "size_bytes": 100663296,
+      "sha256": "53cf3a0eb9f295b40151672fb294f364e9ea9dc6c0f5b24698c0afc1bbabdc2d"
+    },
+    "header_version": 3,
+    "kernel": {
+      "origin": "matching_stock",
+      "size_bytes": 39963136,
+      "sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8"
+    },
+    "compressed_ramdisk": {
+      "size_bytes": 59123004,
+      "sha256": "a6ceea850eb41035d32eba6cdc1b73749adb4fe4ae56c92ea50bd5e428b8636f"
+    },
+    "cpio": {
+      "size_bytes": 133846272,
+      "sha256": "0476863f85659c57335a7f6908dac26c87013ea08adf18b53fe08804329ccb87",
+      "entry_count": 3992
+    },
+    "avb": {
+      "partition_name": "boot",
+      "flags": 0,
+      "rollback_index": 1769904000,
+      "rollback_index_location": 0,
+      "signing_key_role": "existing_local_development_key",
+      "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+      "oem_signature": false,
+      "oem_trust_established": false
+    }
+  },
+  "adaptations": {
+    "restored_empty_root_directories": [
+      "apex",
+      "bluetooth",
+      "bootstrap-apex",
+      "config",
+      "data",
+      "data_mirror",
+      "debug_ramdisk",
+      "dev",
+      "dsp",
+      "firmware",
+      "metadata",
+      "mnt",
+      "oem",
+      "persist",
+      "postinstall",
+      "proc",
+      "second_stage_resources",
+      "soccp",
+      "storage",
+      "sys",
+      "system_dlkm",
+      "tmp",
+      "acct",
+      "batinfo"
+    ],
+    "restored_aliases": {
+      "/sdcard": "/storage/self/primary",
+      "/cache": "/data/cache"
+    },
+    "unchanged_source_aliases": {
+      "/init": "/system/bin/init",
+      "/etc": "/system/etc"
+    },
+    "mksh_rc_restored": true,
+    "selected_tree_fstab_copied": true,
+    "prop_default": {
+      "device": "nezha",
+      "board": "canoe",
+      "android_version": "16",
+      "ro.build.version.security_patch": "2026-07-01",
+      "ro.vendor.build.security_patch": "2026-02-01",
+      "security_patch_values_from_selected_stock_phone": true,
+      "synthetic_platform_and_future_patch_values_replaced": true,
+      "prebuilt_security_patch_coverage_verified": false
+    }
+  },
+  "static_validation": {
+    "native_compression_round_trip_passed": true,
+    "development_key_signature_verified": true,
+    "boot_avb_digest_verified": true,
+    "unchanged_critical_payload_checks_passed": 8,
+    "unchanged_critical_payload_checks_expected": 8,
+    "hardware_success_implied": false
+  },
+  "authorization_and_security": {
+    "user_authorized_recovery_only_permissive_trial": true,
+    "recovery_kernel_parameter": "androidboot.selinux=permissive",
+    "source_policy_permissive_domain_count": 8,
+    "stock_selinux_before_trial": "Enforcing",
+    "stock_selinux_after_trial": null,
+    "magisk_install_performed": false,
+    "magisk_work_deferred": true,
+    "partition_write_command_sent": false,
+    "flash_command_sent": false,
+    "wipe_command_sent": false,
+    "unlock_or_relock_command_sent": false,
+    "slot_change_command_sent": false
+  },
+  "hardware_observation": {
+    "operation": "fastboot boot",
+    "download_succeeded": true,
+    "boot_command_succeeded": true,
+    "download_seconds": 2.502,
+    "boot_command_seconds": 0.124,
+    "total_command_seconds": 2.645,
+    "status": "boot_command_accepted_black_screen_no_adb_or_fastboot_observed",
+    "recovery_runtime_verified": false,
+    "recovery_ui_verified": false,
+    "recovery_adb_verified": false,
+    "recovery_selinux_observed": null,
+    "trial_number": 8,
+    "bounded_observation_completed": true,
+    "screen": "black",
+    "screen_source": "user_report",
+    "recovery_ui_reported_visible": false,
+    "selected_transport_poll_count": 27,
+    "selected_transport_poll_span_seconds": 55.73,
+    "adb_seen_during_observation": false,
+    "fastboot_seen_during_observation": false,
+    "qualcomm_usb_device_observed": false,
+    "edl_usb_device_observed": false,
+    "current_phone_mode_verified": false,
+    "stock_android_return_observed": false,
+    "crash_proven": false,
+    "failure_cause_identified": false,
+    "physical_fastboot_return_pending_at_checkpoint": true
+  },
+  "limitations": [
+    "The supplied prebuilt root is being repackaged directly. A normal source build overlays binaries, so this is not evidence that the community source tree builds or that its compiled output would behave identically.",
+    "Matching stock device and patch-level property values replaces synthetic metadata; it does not establish the security patch coverage of supplied prebuilt executables.",
+    "The source policy declares eight permissive domains, and the user authorized the recovery-only permissive kernel parameter for this experiment. Before the trial, normal stock Android reported Enforcing; no post-trial stock enforcement measurement is available yet.",
+    "A verified local development signature and accepted fastboot boot command do not establish OEM trust or successful recovery startup. Trial 8 ended its bounded observation with a user-reported black screen and no selected ADB/fastboot transport; the runtime stage and cause remain unknown, and a crash has not been proven.",
+    "No Magisk installation or flash, wipe, unlock/relock, partition-write or slot-change command was performed by this experiment.",
+    "No stock Android return was observed after trial 8. At this checkpoint the phone remained unreachable over USB and a physical return to fastboot was pending. The later user-supplied claimed-working image is separate and was not tested by trial 8."
+  ],
+  "next_user_supplied_candidate_at_this_checkpoint": {
+    "scope": "separate_followup_not_tested_by_this_trial",
+    "image_basename": "twrp-3.7.1_16-nezha-antocorvo3000-fix22ZJ-touchfix18.img",
+    "source": "user_provided_claimed_working_image",
+    "status": "pending_independent_inspection_and_separate_trial",
+    "working_status_verified": false,
+    "used_for_trial_8": false
+  }
+}

@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-08-28T17:36:10.812Z",
+  "scope": "Pinned community reference review only; not a source admission, successful build or device test.",
+  "method": "Read-only GitHub MCP metadata and exact-commit public text; ignored captures were hashed and reviewed offline.",
+  "stock_baseline": {
+    "record": "research/twrp-stock-contract.json",
+    "sha256": "4f42ecd281359e2e7dd7745088af9026ad583b4c7e8002390ad04f608915fa44",
+    "factory_record": "research/factory-boot-contract.json",
+    "factory_record_sha256": "b3ab3adc8458d4cac38506d800016f2d6f2ab0256e46261684f3441b4e2419b0",
+    "factory_version": "OS3.0.309.0.WPACNXM_16.0",
+    "codename": "nezha",
+    "platform": "canoe",
+    "source_kind": "user-provided stock package",
+    "authoritative_over_community_geometry": true,
+    "physical_phone_capacity_verified": false,
+    "recovery": {
+      "header_version": 4,
+      "kernel_size_bytes": 0,
+      "page_size_bytes": 4096,
+      "image_size_bytes": 104857600,
+      "ramdisk_compression": "lz4-legacy"
+    },
+    "vendor_boot_dtb_size_bytes": 4496880,
+    "brightness": {
+      "path": "/sys/class/backlight/panel0-backlight/brightness",
+      "panel_maximum": 16383,
+      "recovery_initial": 200,
+      "runtime_panel_selection_verified": false
+    }
+  },
+  "references": [
+    {
+      "id": "anto",
+      "repository": "antocorvo3000/twrp-xiaomi-17-series",
+      "commit": "4a35185d43782b4dd460a7f456d674c0976c0859",
+      "tree": "2dc0d043e2c3e19946f6974c192b05337c48c8e0",
+      "device_tree": "cb570a1fe74c49f0698890bafa27df1b264e4785",
+      "device_directory": "twrp_device_xiaomi_nezha",
+      "commit_date": "2026-07-12T17:07:51Z",
+      "credit": [
+        "antocorvo3000"
+      ],
+      "branch_at_observation": "main",
+      "url": "https://github.com/antocorvo3000/twrp-xiaomi-17-series/tree/4a35185d43782b4dd460a7f456d674c0976c0859",
+      "source_base_url": "https://github.com/antocorvo3000/twrp-xiaomi-17-series/blob/4a35185d43782b4dd460a7f456d674c0976c0859/",
+      "pinned_platform_manifest_found": false,
+      "pinned_recovery_source_base_found": false,
+      "stock_309_runtime_verified": false,
+      "nezha_release_asset_observed": false,
+      "adopted": false,
+      "status": {
+        "reported": "Nezha boot, touch and ADB",
+        "decryption": "Explicitly unconfirmed on Nezha hardware",
+        "release_scope": "Returned public release metadata has Pudding, Pandora and Popsicle assets; no Nezha asset. This does not establish the absence of historical or private builds.",
+        "source_paths": [
+          "README.md",
+          "twrp_device_xiaomi_nezha/README.md"
+        ]
+      },
+      "layout": {
+        "platform": "xiaomi_sm8750",
+        "bootloader_board": "sun",
+        "product": "sm8750_thales",
+        "target_no_recovery": true,
+        "recovery_in_vendor_boot": true,
+        "prebuilt_donor_named": "Popsicle",
+        "prebuilt_dtb_size_bytes": 4511274,
+        "prebuilt_payload_identity_verified": false,
+        "compatible_with_stock_recovery_layout": false,
+        "source_paths": [
+          "twrp_device_xiaomi_nezha/BoardConfig.mk",
+          "twrp_device_xiaomi_nezha/twrp_sm8750_thales.mk",
+          "twrp_device_xiaomi_nezha/prebuilt/README.md"
+        ]
+      },
+      "brightness": {
+        "path": "/sys/class/backlight/panel0-backlight/brightness",
+        "maximum": 1024,
+        "default": 820,
+        "values_stock_verified": false
+      },
+      "security": {
+        "ro_adb_secure": "0",
+        "persistent_mount_read_only": false,
+        "missing_dependencies_allowed": true,
+        "source_paths": [
+          "twrp_device_xiaomi_nezha/system.prop",
+          "twrp_device_xiaomi_nezha/recovery/root/prop.default",
+          "twrp_device_xiaomi_nezha/recovery/root/init.recovery.qcom.rc",
+          "twrp_device_xiaomi_nezha/vendorsetup.sh"
+        ]
+      }
+    },
+    {
+      "id": "ekin",
+      "repository": "EkinStrop/twrp_device_xiaomi_nezha",
+      "commit": "7ad14e492e3ca25a63dfdb39b2fa50e0074a0910",
+      "tree": "5448dc3b495ce15c6794b3862acb4abb7f5bf935",
+      "device_tree": "5448dc3b495ce15c6794b3862acb4abb7f5bf935",
+      "device_directory": ".",
+      "commit_date": "2026-07-20T11:06:59Z",
+      "credit": [
+        "EkinStrop",
+        "JohnTheFarm3r"
+      ],
+      "branch_at_observation": "main",
+      "url": "https://github.com/EkinStrop/twrp_device_xiaomi_nezha/tree/7ad14e492e3ca25a63dfdb39b2fa50e0074a0910",
+      "source_base_url": "https://github.com/EkinStrop/twrp_device_xiaomi_nezha/blob/7ad14e492e3ca25a63dfdb39b2fa50e0074a0910/",
+      "pinned_platform_manifest_found": false,
+      "pinned_recovery_source_base_found": false,
+      "stock_309_runtime_verified": false,
+      "nezha_release_asset_observed": false,
+      "adopted": false,
+      "status": {
+        "reported": "Boot, touch, data decryption, ADB, MTP, USB OTG, brightness and vibrator",
+        "maintainer_test_environment": "LineageOS",
+        "user_report_environment": "Xiaomi.eu build 308",
+        "maintainer_hyperos_test_claimed": false,
+        "release_scope": "No releases returned at observation; no community image was downloaded.",
+        "source_paths": [
+          "README.md"
+        ]
+      },
+      "layout": {
+        "boot_header_version": 4,
+        "exclude_kernel_from_recovery": true,
+        "ramdisk_lz4": true,
+        "recovery_partition_size_bytes": 104857600,
+        "corroborates_stock_image_layout": true,
+        "generated_image_verified": false,
+        "source_paths": [
+          "BoardConfig.mk"
+        ]
+      },
+      "brightness": {
+        "path": "/sys/devices/platform/soc/9800000.qcom,mdss_mdp/backlight/panel0-backlight/brightness",
+        "maximum": 8191,
+        "default": 4096,
+        "values_stock_verified": false
+      },
+      "security": {
+        "ro_adb_secure": "0",
+        "adb_tcp_port": 5555,
+        "persistent_mount_read_only": false,
+        "build_variant": "eng",
+        "build_waivers": [
+          "ALLOW_MISSING_DEPENDENCIES",
+          "SKIP_ABI_CHECKS",
+          "BUILD_BROKEN_DUP_RULES",
+          "BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES",
+          "BUILD_BROKEN_PLUGIN_VALIDATION"
+        ],
+        "permissive_kernel_argument_declared": true,
+        "effective_selinux_mode_verified": false,
+        "generic_vbmeta_flags": 3,
+        "recovery_footer_flags_verified": false,
+        "avb_key_kind": "public AOSP test key",
+        "platform_version": "99.87.36",
+        "platform_security_patch": "2099-12-31",
+        "vendor_security_patch": "2099-12-31",
+        "source_paths": [
+          "BoardConfig.mk",
+          "build-recovery.sh",
+          "system.prop",
+          "recovery/root/init.recovery.qcom.rc"
+        ]
+      }
+    }
+  ],
+  "useful_leads": {
+    "usb": {
+      "controller": "a600000.dwc3",
+      "mode_path_template": "/sys/bus/platform/devices/${ro.boot.usb.dwc3_msm:-a600000.ssusb}/mode",
+      "udc_path_template": "/sys/class/udc/${ro.boot.usbcontroller}",
+      "gadget_root": "/config/usb_gadget/g1",
+      "stock_paths_correlated": true,
+      "community_sequence_equal": true,
+      "sequence_summary": "Forward bootconfig controller; wait for mode; request idle; wait for UDC; request peripheral; wait for UDC.",
+      "runtime_sequence_verified": false,
+      "source_paths": {
+        "anto": "twrp_device_xiaomi_nezha/recovery/root/init.recovery.usb.rc",
+        "ekin": "recovery/root/init.recovery.usb.rc"
+      }
+    },
+    "touch": {
+      "stock_driver_names": [
+        "synaptics_tcm2.ko",
+        "xiaomi_touch.ko"
+      ],
+      "stock_declared_dependency_closure_count": 13,
+      "community_blacklist": "hbtp_vm",
+      "blacklist_input_name_verified": false,
+      "community_modules_or_firmware_verified": false,
+      "runtime_verified": false,
+      "adoption_requires": "Exact stock signed modules, dependency order and firmware; separately authorized input-event tests."
+    },
+    "logging": {
+      "anto_logd_matches_pinned_upstream": true,
+      "logd_source_bytes": 307,
+      "logd_source_sha256": "e0444a7b6470b51ab32ba52803ed8d9dba328c6d778a85cb89ba4cb1f24ed476",
+      "new_nonroot_log_access_proven": false
+    }
+  },
+  "source_patch_review": {
+    "reference": "ekin",
+    "recovery_base": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+    "vold_base": "4c83041ec61f9b482085685f1e6aed5a62f103aa",
+    "independent_pristine_checks": 9,
+    "unchanged_applicable_count": 1,
+    "full_historical_chain_tested": false,
+    "current_graph_fix": false,
+    "candidates": [
+      {
+        "id": "0002-recovery-report-super-partition-size",
+        "path": "patches/twrp-16/0002-recovery-report-super-partition-size.patch",
+        "sha256": "89ada4a4370e69edc1d836bd6528f08aa5f846955f7bc0c1a53792fda380976b",
+        "purpose": "Update the synthetic super partition's displayed size.",
+        "applies_to_pinned_source": true,
+        "forward_reverse_identity_verified": true,
+        "admitted": false,
+        "runtime_verified": false
+      },
+      {
+        "id": "0001-vold-fix-synthetic-password-gcm",
+        "path": "patches/twrp-16/0001-vold-fix-synthetic-password-gcm.patch",
+        "sha256": "d6f8df93691b43233f4c8bee953a687788b10f9599f31575f86882522b0da973",
+        "purpose": "Authenticate the inner GCM tag and initialize the empty-credential token tail.",
+        "bug_patterns_present_in_pinned_source": true,
+        "applies_to_pinned_source": false,
+        "rebase_required": true,
+        "cryptographic_vectors_tested": false,
+        "admitted": false,
+        "runtime_verified": false
+      }
+    ],
+    "limits": "The Ekin script stops at the incompatible vold hunk on our baseline. Its battery patch uses the older Make compilation path; WLAN patches require separate adaptation and review. Independent later failures do not invalidate the intended historical chain."
+  },
+  "security_disposition": {
+    "import_community_access_settings": false,
+    "retain_authenticated_usb_adb": true,
+    "retain_enforcing_selinux": true,
+    "retain_signature_elf_artifact_and_dependency_checks": true,
+    "retain_stock_rollback_constraints": true,
+    "oem_key_trust_verified": false,
+    "limits": "A permissive kernel argument may not enter a kernel-free recovery; generic vbmeta flags do not establish recovery-footer flags. Future patch dates, eng builds and ADB success claims do not prove authentication, fixes or OEM trust. Neither tree resolves nonroot recovery-log access."
+  },
+  "attribution_and_payloads": "Credit antocorvo3000 and EkinStrop/JohnTheFarm3r, retaining upstream attribution in any later adaptation. Ekin's README declares Apache 2.0 but its tree contains no LICENSE file. No license claim or public availability establishes provenance or permission to redistribute proprietary payloads.",
+  "review_actions": {
+    "community_artifact_downloaded": false,
+    "binary_or_key_payload_read": false,
+    "upstream_script_executed": false,
+    "community_source_adopted": false,
+    "build_target_changed": false,
+    "guest_written": false,
+    "phone_commands_run": false
+  },
+  "evidence_receipts": [
+    {
+      "path": "reports/twrp-community-reference-pins-20260828T173600Z.json",
+      "sha256": "ee0d0677a971edfba8c9367c91c6efff84966d6ef79fe818ac5f42f5599ee5b6"
+    },
+    {
+      "path": "reports/twrp-reference-anto/review.json",
+      "sha256": "1ff3131d871f4e72cec0b7244bd83eecaf8a221b9b119f8515f6cbd4eb7b5770"
+    },
+    {
+      "path": "reports/twrp-reference-ekin/audit.json",
+      "sha256": "3c71420a737c105878a242027fb9f6339af82c9ac45d8af523ada14c48e37839"
+    },
+    {
+      "path": "reports/twrp-reference-security/audit.json",
+      "sha256": "0254824d713f5899ff7ec49d8cef20b839da8252f355b08418c12920bc71e789"
+    },
+    {
+      "path": "reports/twrp-reference-ekin/patch-applicability.json",
+      "sha256": "99c1ebff0df999b4aac1d8b90aeb6d1ef4507c6b42248306ddb8f12b6f43efd8"
+    }
+  ],
+  "validation_scope": "CI checks only this public record and tracked stock facts; ignored reports, network access, proprietary inputs and a phone are not required."
+}

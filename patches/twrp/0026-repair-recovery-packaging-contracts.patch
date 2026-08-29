@@ -1,0 +1,1769 @@
+diff --git a/Android.bp b/Android.bp
+index 87c1a57f513bdc1e1fcc7bca980886739c4ca047..8bf22f8d021465d425558be0b8e51f4a41cbb624 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -1,790 +1,788 @@
+ // Copyright (C) 2018 The Android Open Source Project
+ //
+ // Licensed under the Apache License, Version 2.0 (the "License");
+ // you may not use this file except in compliance with the License.
+ // You may obtain a copy of the License at
+ //
+ //      http://www.apache.org/licenses/LICENSE-2.0
+ //
+ // Unless required by applicable law or agreed to in writing, software
+ // distributed under the License is distributed on an "AS IS" BASIS,
+ // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
+ // *** THIS PACKAGE HAS SPECIAL LICENSING CONDITIONS.  PLEASE
+ //     CONSULT THE OWNERS AND opensource-licensing@google.com BEFORE
+ //     DEPENDING ON IT IN YOUR PROJECT. ***
+ package {
+     default_applicable_licenses: ["bootable_recovery_license"],
+ }
+ 
+ // Added automatically by a large-scale-change that took the approach of
+ // 'apply every license found to every target'. While this makes sure we respect
+ // every license restriction, it may not be entirely correct.
+ //
+ // e.g. GPL in an MIT project might only apply to the contrib/ directory.
+ //
+ // Please consider splitting the single license below into multiple licenses,
+ // taking care not to lose any license_kind information, and overriding the
+ // default license using the 'licenses: [...]' property on targets as needed.
+ //
+ // For unused files, consider creating a 'fileGroup' with "//visibility:private"
+ // to attach the license to, and including a comment whether the files may be
+ // used in the current project.
+ // See: http://go/android-license-faq
+ license {
+     name: "bootable_recovery_license",
+     visibility: [
+         ":__subpackages__",
+         "//bootable/deprecated-ota:__subpackages__",
+     ],
+     license_kinds: [
+         "SPDX-license-identifier-Apache-2.0",
+         "SPDX-license-identifier-MIT",
+         "SPDX-license-identifier-OFL", // by exception only
+     ],
+     license_text: [
+         "NOTICE",
+     ],
+ }
+ 
+ soong_config_module_type {
+     name: "recovery_cc_defaults",
+     module_type: "cc_defaults",
+     config_namespace: "recovery",
+     value_variables: ["recovery_api_version"],
+     properties: [
+         "cflags",
+     ],
+ }
+ 
+ recovery_cc_defaults {
+     name: "recovery_defaults",
+ 
+     soong_config_variables: {
+         recovery_api_version: {
+             cflags: [
+                 "-D_FILE_OFFSET_BITS=64",
+                 // Must be the same as RECOVERY_API_VERSION.
+                 "-DRECOVERY_API_VERSION=%s",
+                 "-Wall",
+                 "-Werror",
+             ],
+         },
+     },
+ }
+ 
+ cc_library_static {
+     name: "librecovery_fastboot",
+     recovery_available: true,
+     defaults: [
+         "recovery_defaults",
+     ],
+ 
+     srcs: [
+         "fastboot/fastboot.cpp",
+     ],
+ 
+     shared_libs: [
+         "libbase",
+         "libbootloader_message",
+         "libcutils",
+         "liblog",
+         "librecovery_ui",
+     ],
+ 
+     static_libs: [
+         "librecovery_ui_default",
+     ],
+ }
+ 
+ // cc_defaults {
+ //     name: "librecovery_defaults",
+ 
+ //     defaults: [
+ //         "recovery_defaults",
+ //     ],
+ 
+ //     shared_libs: [
+ //         "android.hardware.boot@1.0",
+ //         "android.hardware.boot@1.1",
+ //         "android.hardware.boot-V1-ndk",
+ //         "libboot_control_client",
+ //         "libbase",
+ //         "libbootloader_message",
+ //         "libcrypto",
+ //         "libcutils",
+ //         "libfs_mgr",
+ //         "liblp",
+ //         "liblog",
+ //         "libprotobuf-cpp-lite",
+ //         "libziparchive",
+ //     ],
+ 
+ //     static_libs: [
+ //         "libinstall",
+ //         "librecovery_fastboot",
+ //         "libminui",
+ //         "librecovery_utils",
+ //         "libotautil",
+ //         "libsnapshot_nobinder",
+ //         "libsnapshot_cow",
+ //         "liblz4",
+ //         "libzstd",
+ //         "update_metadata-protos",
+ //     ],
+ // }
+ 
+ // cc_library_static {
+ //     name: "librecovery",
+ //     recovery_available: true,
+ 
+ //     defaults: [
+ //         "librecovery_defaults",
+ //     ],
+ 
+ //     srcs: [
+ //         "recovery.cpp",
+ //     ],
+ 
+ //     shared_libs: [
+ //         "librecovery_ui",
+ //     ],
+ // }
+ 
+ prebuilt_etc {
+     name: "init_recovery.rc",
+     filename: "init.rc",
+     src: "etc/init.rc",
+     sub_dir: "init/hw",
+     recovery: true,
+ }
+ 
+ // cc_binary {
+ //     name: "recovery",
+ //     recovery: true,
+ 
+ //     defaults: [
+ //         "libinstall_defaults",
+ //         "librecovery_defaults",
+ //         "librecovery_utils_defaults",
+ //     ],
+ 
+ //     srcs: [
+ //         "recovery_main.cpp",
+ //     ],
+ 
+ //     shared_libs: [
+ //         "android.hardware.health-V4-ndk", // from librecovery_utils
+ //         "android.hardware.boot-V1-ndk",
+ //         "librecovery_ui",
+ //     ],
+ 
+ //     static_libs: [
+ //         "librecovery",
+ //         "librecovery_ui_default",
+ //     ],
+ 
+ //     required: [
+ //         "e2fsdroid.recovery",
+ //         "init_recovery.rc",
+ //         "librecovery_ui_ext",
+ //         "minadbd",
+ //         "mke2fs.conf.recovery",
+ //         "mke2fs.recovery",
+ //         "recovery_deps",
+ //         "ueventd.rc.recovery",
+ //     ],
+ // }
+ 
+ // The dynamic executable that runs after /data mounts.
+ cc_binary {
+     name: "recovery-persist",
+ 
+     defaults: [
+         "recovery_defaults",
+     ],
+ 
+     srcs: [
+         "recovery-persist.cpp",
+     ],
+ 
+     shared_libs: [
+         "libbase",
+         "liblog",
+     ],
+ 
+     static_libs: [
+         "librecovery_utils",
+     ],
+ 
+     init_rc: [
+         "recovery-persist.rc",
+     ],
+ }
+ 
+ // The dynamic executable that runs at init.
+ cc_binary {
+     name: "recovery-refresh",
+ 
+     defaults: [
+         "recovery_defaults",
+     ],
+ 
+     srcs: [
+         "recovery-refresh.cpp",
+     ],
+ 
+     shared_libs: [
+         "libbase",
+         "liblog",
+     ],
+ 
+     static_libs: [
+         "librecovery_utils",
+     ],
+ 
+     init_rc: [
+         "recovery-refresh.rc",
+     ],
+ }
+ 
+ filegroup {
+     name: "res-testdata",
+ 
+     srcs: [
+         "res-*/images/*_text.png",
+     ],
+ }
+ 
+ // recovery_deps: A phony target that's depended on by `recovery`, which
+ // builds additional modules conditionally based on Makefile variables.
+ phony {
+     name: "recovery_deps",
+     recovery: true,
+     required: [
+         "mkfs.erofs.recovery",
+         "dump.erofs.recovery",
+         "fsck.erofs.recovery",
+         // On A/B devices recovery-persist reads the recovery related file from the persist storage and
+         // copies them into /data/misc/recovery. Then, for both A/B and non-A/B devices, recovery-persist
+         // parses the last_install file and reports the embedded update metrics. Also, the last_install file
+         // will be deteleted after the report.
+         "recovery-persist",
+     ] + select(soong_config_variable("recovery", "target_userimages_use_f2fs"), {
+         true: [
+             "make_f2fs.recovery",
+             "fsck.f2fs.recovery",
+             "sload_f2fs.recovery",
+         ],
+         default: [],
+     }) + select(soong_config_variable("recovery", "has_board_cacheimage_partition_size"), {
+         false: ["recovery-refresh"],
+         default: [],
+     }),
+ }
+ 
+ // cc_library_shared {
+ //     name: "librecovery_ui_ext",
+ //     recovery: true,
+ //     install_in_root: true,
+ //     multilib: {
+ //         lib32: {
+ //             relative_install_path: "system/lib",
+ //         },
+ //         lib64: {
+ //             relative_install_path: "system/lib64",
+ //         },
+ //     },
+ //     shared_libs: [
+ //         "libbase",
+ //         "liblog",
+ //         "librecovery_ui",
+ //     ],
+ //     // TARGET_RECOVERY_UI_LIB should be one of librecovery_ui_{default,wear,vr,ethernet} or a
+ //     // device-specific module that defines make_device() and the exact RecoveryUI class for the
+ //     // target. It defaults to librecovery_ui_default, which uses ScreenRecoveryUI.
+ //     whole_static_libs: select(soong_config_variable("recovery", "target_recovery_ui_lib"), {
+ //         any @ libs: libs,
+ //         default: ["librecovery_ui_default"],
+ //     }),
+ // }
+ 
+ prebuilt_res {
+     name: "recovery-resources-common-mdpi",
+     recovery: true,
+     install_in_root: true,
+     relative_install_path: "images",
+     srcs: [
+         "res-mdpi/images/*.png",
+     ],
+     no_full_install: true,
+ }
+ 
+ // prebuilt_res {
+ //     name: "recovery-resources-common-hdpi",
+ //     recovery: true,
+ //     install_in_root: true,
+ //     relative_install_path: "images",
+ //     srcs: [
+ //         "res-hdpi/images/*.png",
+ //     ],
+ //     no_full_install: true,
+ // }
+ 
+ // prebuilt_res {
+ //     name: "recovery-resources-common-xhdpi",
+ //     recovery: true,
+ //     install_in_root: true,
+ //     relative_install_path: "images",
+ //     srcs: [
+ //         "res-xhdpi/images/*.png",
+ //     ],
+ //     no_full_install: true,
+ // }
+ 
+ // prebuilt_res {
+ //     name: "recovery-resources-common-xxhdpi",
+ //     recovery: true,
+ //     install_in_root: true,
+ //     relative_install_path: "images",
+ //     srcs: [
+ //         "res-xxhdpi/images/*.png",
+ //     ],
+ //     no_full_install: true,
+ // }
+ 
+ // prebuilt_res {
+ //     name: "recovery-resources-common-xxxhdpi",
+ //     recovery: true,
+ //     install_in_root: true,
+ //     relative_install_path: "images",
+ //     srcs: [
+ //         "res-xxxhdpi/images/*.png",
+ //     ],
+ //     no_full_install: true,
+ // }
+ 
+ cc_library_static {
+     name: "libmounts",
+     srcs: ["mounts.cpp"],
+ 
+     static_libs: ["libbase"],
+ }
+ 
+ java_genrule {
+     name: "twrp_recovery_file_contexts",
+     srcs: [":file_contexts.concat.tmp"],
+     out: ["file_contexts"],
+     cmd: "cp -f $(in) $(out)"
+ }
+ 
+ java_genrule {
+     name: "twrp_recovery_file_contexts_bin",
+     srcs: [":file_contexts_bin_gen"],
+     out: ["file_contexts.bin"],
+     cmd: "cp -f $(in) $(out)"
+ }
+ 
+ prebuilt_root {
+     name: "install_recovery_file_contexts",
+     filename: "file_contexts",
+     src: ":twrp_recovery_file_contexts",
+     recovery: true,
+     install_in_root: true
+ }
+ 
+ prebuilt_root {
+     name: "install_recovery_file_contexts_bin",
+     filename: "file_contexts.bin",
+     src: ":twrp_recovery_file_contexts_bin",
+     recovery: true,
+     install_in_root: true
+ }
+ 
+ bootstrap_go_package {
+     name: "soong-twrp_recovery_defaults",
+     pkgPath: "bootable/recovery",
+     deps: [
+         "soong",
+         "soong-android",
+         "soong-cc"
+     ],
+     srcs: [
+         "twrp_recovery_defaults.go",
+         "soong/makevars.go"
+     ],
+     pluginFor: ["soong_build"]
+ }
+ 
+ twrp_recovery_defaults {
+     name: "twrp_recovery_defaults"
+ }
+ 
+ cc_binary {
+     name: "recovery",
+ 
+     defaults: [
+         "recovery_defaults",
+         "twrp_defaults",
+         "twrp_recovery_defaults",
+     ],
+ 
+     cflags: [
+         "-DTW_USE_NEW_MINADBD",
+         "-DTW_WORKAROUND_BACKUP_BUG",
+         "-DHAVE_CAPABILITIES",
+     ],
+ 
+     srcs: [
+         "twrp.cpp",
+         "fixContexts.cpp",
+         "twrpTar.cpp",
+         "exclude.cpp",
+         "find_file.cpp",
+         "infomanager.cpp",
+         "data.cpp",
+         "partition.cpp",
+         "partitionmanager.cpp",
+         "progresstracking.cpp",
+         "startupArgs.cpp",
+         "twrp-functions.cpp",
+         "twrpDigestDriver.cpp",
+         "openrecoveryscript.cpp",
+         "tarWrite.c",
+         "twrpAdbBuFifo.cpp",
+         "twrpRepacker.cpp",
+         "oaes/oaes.cpp",
+         "BasePartition.cpp",
+     ] + select(soong_config_variable("twrpGlobalVars", "exclude_apex"), {
+         false: [
+             "twrpApex.cpp"
+         ],
+         default: []
+     }),
+ 
+     include_dirs: [
+         "system/core/fs_mgr",
+         "system/core/libsparse",
+     ],
+     local_include_dirs: [
+         "gui/include",
+     ],
+ 
+     header_libs: [
+         "libvold_headers"
+     ] + select(soong_config_variable("twrpGlobalVars", "include_libresetprop"), {
+         true: [
+             "resetprop_headers",
+         ],
+         default: [],
+     }),
+ 
+     static_libs: [
+         "libavb_user",
+         "libhealthhalutils",
+         "libhealthshim",
+         "libinit",
+         "libminadbd_services",
+         "librecovery_utils",
+         "libsnapshot",
+         "libsnapshot_cow",
+         "libsnapshot_nobinder",
+         "libtwrpinstall",
+         "libzstd",
+         "update_metadata-protos",
+         "libtwrpgui",
+         "libtwrpperf",
+         "libmounts",
+         "libotautil",
+         "libsparse",
+ 
+         "libpixelflinger_twrp",
+         "libfusesideload",
+         "libgsi",
+         "libvold",
+         "libcrypto_utils"
+     ] + select(soong_config_variable("twrpGlobalVars", "include_crypto_fbe"), {
+         true: [
+             "libscrypt_static",
+             "libasync_safe",
+             "libkeymint_support"
+         ],
+         default: [],
+     }),
+ 
+     shared_libs: [
+         "android.hardware.boot@1.0",
+         "android.hardware.boot@1.1",
+         "android.hardware.boot@1.2",
+         "android.hardware.health@2.0",
+         "android.hardware.health@2.1",
+         "android.hardware.health-V4-ndk",
+         "android.hardware.health-translate-ndk",
+         "libbinder",
+         "libbinder_ndk",
+         "libboot_control_client",
+         "libfs_mgr",
+         "libhardware",
+         "libhidlbase",
+         "liblog",
+         "liblp",
+         "liblz4",
+         "libprotobuf-cpp-lite",
+         "libutils",
+ 
+         "libz",
+         "libc",
+         "libcutils",
+         "libstdc++",
+         "libtar",
+         "libblkid",
+         "libtwrpminui",
+         "libtwrpadbbu",
+         "libbootloader_message",
+         "libtwrpdigest",
+         "libc++",
+         "libcrypto",
+         "libbase",
+         "libziparchive",
+         "libselinux",
+         "libdl_android",
+ 
+         "libext4_utils",
+         "libft2",
+     ] + select(soong_config_variable("twrpGlobalVars", "supports_hw_fde"), {
+         true: [
+             "libcryptfs_hw",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_libresetprop"), {
+         true: [
+             "libresetprop",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "has_mtp"), {
+         true: [
+             "libtwrpmtp-ffs",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_crypto"), {
+         true: [
+             "android.frameworks.stats@1.0",
+             "android.hardware.authsecret@1.0",
+             "android.security.authorization-ndk",
+             "android.hardware.oemlock@1.0",
+             "libf2fs_sparseblock",
+             "libandroidicu",
+             "lib_android_keymaster_keymint_utils",
+             "android.hardware.gatekeeper-V1-ndk",
+             "android.hardware.gatekeeper@1.0",
+             "android.hardware.weaver@1.0",
+             "android.hardware.weaver-V2-ndk",
+             "android.frameworks.stats@1.0",
+             "android.security.maintenance-ndk",
+             "android.system.keystore2-V5-ndk",
+             "libkeyutils",
+             "liblog",
+             "libsqlite",
+             "libsysutils",
+             "libkeystoreinfo",
+             "libgatekeeper_aidl",
+             "libgpt_twrp",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_se_omapi"), {
+         true: [
+             "android.hardware.secure_element-V1-ndk",
+             "android.se.omapi-V1-ndk",
+         ],
+         default: [],
+     }),
+ 
+     required: [
+         "recovery_deps",
+         "hwservicemanager.recovery",
+         "vndservicemanager.recovery",
+         "relink_libraries",
+         "relink_binaries",
+         "relink_vendor_hw_binaries",
+         "bc",
+         "mke2fs.conf",
+         "pigz",
+-        "teamwin",
+-        "twrp",
+         "fsck.fat",
+         "fatlabel",
+         "mkfs.fat",
+         "init.recovery.ldconfig.rc",
+         "awk",
+         "toybox",
+         "toolbox",
+         "mkshrc_twrp",
+         "minadbd",
+         "twrpbu",
+         "android.hardware.health@2.1-service.recovery",
+         "adbd_system_api_recovery",
+         "libsync.recovery",
+         "libandroidicu.recovery",
+         "libadbd.recovery",
+         "libadbd_services.recovery",
+         "servicemanager.recovery",
+         "orscmd",
+         "init_second_stage.recovery",
+         "reboot.recovery",
+         "mkfs.exfat.recovery",
+         "fsck.exfat.recovery",
+         "plat_hwservice_contexts",
+         "vendor_hwservice_contexts",
+         "plat_service_contexts.recovery",
+         "vendor_service_contexts.recovery",
+         "install_recovery_file_contexts",
+         "install_recovery_file_contexts_bin"
+     ] + select(soong_config_variable("twrpGlobalVars", "ab_ota_updater"), {
+         true: [
+             "libhardware",
+             "update_engine_sideload",
+             "android.hardware.boot@1.0-service.recovery",
+             "android.hardware.boot@1.1-service.recovery",
+             "android.hardware.boot@1.2-service.recovery",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_lpdump"), {
+         true: [
+             "lpdump.recovery",
+             "lpdumpd.recovery",
+             "bootctl.recovery"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_lptools"), {
+         true: [
+             "lptools"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "use_dmctl"), {
+         true: [
+             "dmctl.recovery",
+             "dmuserd.recovery"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_crypto"), {
+         true: [
+             "vold_prepare_subdirs",
+             "task_profiles.json.recovery",
+             "fscryptpolicyget.recovery",
+             "keystore_auth",
+             "keystore2.recovery",
+             "plat_keystore2_key_contexts.recovery",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "move_recovery_res_to_vendor_boot"), {
+         true: [
+             "magiskboot",
+         ],
+         default: [],
+     }) + select(soong_config_variable("ANDROID", "BOARD_USES_RECOVERY_AS_BOOT"), {
+         true: [
+             "magiskboot",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_repacktools"), {
+         true: [
+             "magiskboot",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "no_network"), {
+         false: [
+             "index.html",
+             "microhttpd",
+             "microhttpd.rc",
+             "ttyd",
+             "ttyd.rc",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_se_omapi"), {
+         true: [
+             "se_omapi.recovery",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_7za"), {
+         true: [
+             "7za",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_zstd"), {
+         true: [
+             "zstd",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "exclude_tzdata"), {
+         false: [
+             "tzdata_prebuilt.recovery"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "exclude_bash"), {
+         false: [
+             "bash_twrp",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "exclude_nano"), {
+         false: [
+             "nano_recovery",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_resetprop"), {
+         true: [
+             "resetprop",
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "has_no_real_sdcard"), {
+         false: [
+             "sgdisk"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "exclude_default_usb_init"), {
+         false: [
+             "init.recovery.usb.rc"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_logcat"), {
+         true: [
+             "logcat",
+-            "event-log-tags"
++            "twrp_event_log_tags"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "use_logd"), {
+         true: [
+             "logd",
+             "libsysutils",
+             "libnl",
+             "init.recovery.logd.rc"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "recovery_device_modules"), {
+         any @ modules: modules,
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_ntfs_3g"), {
+         true: [
+             "mount.ntfs",
+             "fsck.ntfs",
+             "mkfs.ntfs"
+         ],
+         default: [],
+     }) + select(soong_config_variable("recovery", "target_userimages_use_f2fs"), {
+         true: [
+             "sload_f2fs",
+             "fs_mgr",
+             "liblz4",
+             "libinit"
+         ],
+         default: [],
+     }) + select(soong_config_variable("twrpGlobalVars", "include_python"), {
+         true: [
+             "python3_twrp"
+         ],
+         default: [],
+     }),
+ 
+     recovery: true,
+ }
+diff --git a/prebuilt/Android.mk b/prebuilt/Android.mk
+index 8a07a5f1ff3c5811e267ad04d6e7cdc7f2d53e89..15995f7ad81edb39e5087eb3f5960435dfd961e4 100644
+--- a/prebuilt/Android.mk
++++ b/prebuilt/Android.mk
+@@ -1,486 +1,515 @@
+ LOCAL_PATH := $(call my-dir)
+ 
+ RELINK := $(LOCAL_PATH)/relink.sh
+-
+-#dummy file to trigger required modules
+-include $(CLEAR_VARS)
+-
+-LOCAL_MODULE := teamwin
+-LOCAL_MODULE_TAGS := optional
+-LOCAL_MODULE_CLASS := EXECUTABLES
+-LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/
+-
+-# Manage list
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/bu
+-
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/sh
+-
+-LOCAL_POST_INSTALL_CMD += $(hide) if [ -e "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/egrep" ]; then \
+-							rm $(TARGET_RECOVERY_ROOT_OUT)/system/bin/egrep; fi; ln -s $(TARGET_RECOVERY_ROOT_OUT)/system/bin/grep $(TARGET_RECOVERY_ROOT_OUT)/system/bin/egrep; \
+-							if [ -e "$(TARGET_RECOVERY_ROOT_OUT)/system/bin/fgrep" ]; then \
+-							rm $(TARGET_RECOVERY_ROOT_OUT)/system/bin/fgrep; fi; ln -s $(TARGET_RECOVERY_ROOT_OUT)/system/bin/grep $(TARGET_RECOVERY_ROOT_OUT)/system/bin/fgrep;
++TWRP_RELINK_LIBDIR := $(if $(filter arm64 x86_64,$(TARGET_ARCH)),lib64,lib)
++
++# Module names and installed filenames are separate contracts. In particular,
++# an installed symlink or a stem is not an additional Make module.
++RECOVERY_LIBRARY_REQUIRED_MODULES :=
++RECOVERY_BINARY_REQUIRED_MODULES :=
++RECOVERY_VENDOR_HW_BINARY_REQUIRED_MODULES :=
++TWRP_REGISTERED_LIBRARY_FILES :=
++TWRP_REGISTERED_BINARY_FILES :=
++TWRP_REGISTERED_VENDOR_HW_BINARY_FILES :=
++
++define twrp-register-library
++$(if $(strip $(1)),,$(error TWRP library copy has no provider))
++$(if $(strip $(2)),,$(error TWRP library copy has no installed file))
++RECOVERY_LIBRARY_REQUIRED_MODULES += $(1)
++RECOVERY_LIBRARY_SOURCE_FILES += $(2)
++TWRP_REGISTERED_LIBRARY_FILES += $(2)
++endef
++
++define twrp-register-binary
++$(if $(strip $(1)),,$(error TWRP binary copy has no provider))
++$(if $(strip $(2)),,$(error TWRP binary copy has no installed file))
++RECOVERY_BINARY_REQUIRED_MODULES += $(1)
++RECOVERY_BINARY_SOURCE_FILES += $(2)
++TWRP_REGISTERED_BINARY_FILES += $(2)
++endef
++
++define twrp-register-vendor-hw-binary
++$(if $(strip $(1)),,$(error TWRP vendor copy has no provider))
++$(if $(strip $(2)),,$(error TWRP vendor copy has no installed file))
++RECOVERY_VENDOR_HW_BINARY_REQUIRED_MODULES += $(1)
++RECOVERY_VENDOR_HW_BINARY_FILES += $(2)
++TWRP_REGISTERED_VENDOR_HW_BINARY_FILES += $(2)
++endef
++
++$(eval $(call twrp-register-binary,twrpbu,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/bu))
++
++$(eval $(call twrp-register-binary,sh.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/sh))
+ 
+ ifneq ($(wildcard system/libziparchive/Android.bp),)
+-	RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/unzip
++$(eval $(call twrp-register-binary,ziptool.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/unzip))
+ endif
+ ifneq ($(wildcard external/one-true-awk/Android.bp),)
+-	RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/awk
++$(eval $(call twrp-register-binary,awk,$(TARGET_OUT_EXECUTABLES)/awk))
+ endif
+ 
+ ifneq ($(filter $(PRODUCT_USE_DYNAMIC_PARTITIONS) $(TW_INCLUDE_FASTBOOTD),true),)
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/fastbootd
++$(eval $(call twrp-register-binary,fastbootd,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/fastbootd))
+ endif
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/bc
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/e2fsck
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/e2fsdroid
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/mke2fs
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/tune2fs
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/resize2fs
++$(eval $(call twrp-register-binary,bc,$(TARGET_OUT_EXECUTABLES)/bc))
++$(eval $(call twrp-register-binary,e2fsck,$(TARGET_OUT_EXECUTABLES)/e2fsck))
++$(eval $(call twrp-register-binary,e2fsdroid.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/e2fsdroid))
++$(eval $(call twrp-register-binary,mke2fs.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/mke2fs))
++$(eval $(call twrp-register-binary,tune2fs,$(TARGET_OUT_EXECUTABLES)/tune2fs))
++$(eval $(call twrp-register-binary,resize2fs,$(TARGET_OUT_EXECUTABLES)/resize2fs))
+ 
+ #RELINK_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/twrpmtp
+ ifneq ($(filter $(PRODUCT_USE_DYNAMIC_PARTITIONS) $(TW_INCLUDE_FASTBOOTD),true),)
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/android.hardware.fastboot@1.0.so
+-endif
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/ld-android.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libandroid_runtime_lazy.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libc.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libdl.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libm.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libfs_mgr.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libfscrypt.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libgsi.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libkeyutils.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/liblogwrap.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/liblp.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libprocessgroup.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libprocessgroup_setup.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libcap.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libminijail.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libunwindstack.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libbinderthreadstate.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libmdnssd.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.boot@1.0.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.boot@1.1.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.boot@1.2.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libapexsupport.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libasyncio.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libinit.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/bootstrap/libdl_android.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libprotobuf-cpp-lite.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libbinder.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libbinder_ndk.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libchrome.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libevent.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libperfetto_c.so
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/keystore
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/keystore_auth
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/keystore_cli_v2
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_SYSTEM_EXT_EXECUTABLES)/hwservicemanager
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/servicemanager
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/vold_prepare_subdirs
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_VENDOR_EXECUTABLES)/vndservicemanager
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/toybox
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_VENDOR_EXECUTABLES)/hw/android.hardware.health@2.0-service
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_VENDOR_EXECUTABLES)/hw/android.hardware.health@2.1-service
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/charger
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/ueventd
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/watchdogd
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/minadbd
+-
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcutils.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libusbhost.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libutils.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_com_err.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_e2p.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2fs.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_profile.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_uuid.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_misc.so
++$(eval $(call twrp-register-library,android.hardware.fastboot@1.0,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.fastboot@1.0.so))
++endif
++$(eval $(call twrp-register-library,ld-android.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/ld-android.so))
++$(eval $(call twrp-register-library,libandroid_runtime_lazy.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libandroid_runtime_lazy.so))
++$(eval $(call twrp-register-library,libc.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libc.so))
++$(eval $(call twrp-register-library,libdl.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libdl.so))
++$(eval $(call twrp-register-library,libm.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libm.so))
++$(eval $(call twrp-register-library,libfs_mgr.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libfs_mgr.so))
++$(eval $(call twrp-register-library,libfscrypt.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libfscrypt.so))
++$(eval $(call twrp-register-library,libgsi.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libgsi.so))
++$(eval $(call twrp-register-library,libkeyutils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libkeyutils.so))
++$(eval $(call twrp-register-library,liblogwrap.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/liblogwrap.so))
++$(eval $(call twrp-register-library,liblp.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/liblp.so))
++$(eval $(call twrp-register-library,libprocessgroup.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libprocessgroup.so))
++$(eval $(call twrp-register-library,libprocessgroup_setup.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libprocessgroup_setup.so))
++$(eval $(call twrp-register-library,libcap.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libcap.so))
++$(eval $(call twrp-register-library,libminijail.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libminijail.so))
++$(eval $(call twrp-register-library,libunwindstack.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libunwindstack.so))
++$(eval $(call twrp-register-library,libmdnssd.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libmdnssd.so))
++$(eval $(call twrp-register-library,android.hardware.boot@1.0.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.boot@1.0.so))
++$(eval $(call twrp-register-library,android.hardware.boot@1.1.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.boot@1.1.so))
++$(eval $(call twrp-register-library,android.hardware.boot@1.2.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.boot@1.2.so))
++$(eval $(call twrp-register-library,libapexsupport,$(TARGET_OUT_SHARED_LIBRARIES)/libapexsupport.so))
++$(eval $(call twrp-register-library,libasyncio.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libasyncio.so))
++$(eval $(call twrp-register-library,libdl_android.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libdl_android.so))
++$(eval $(call twrp-register-library,libprotobuf-cpp-lite.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libprotobuf-cpp-lite.so))
++$(eval $(call twrp-register-library,libbinder.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libbinder.so))
++$(eval $(call twrp-register-library,libbinder_ndk.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libbinder_ndk.so))
++$(eval $(call twrp-register-library,libchrome.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libchrome.so))
++$(eval $(call twrp-register-library,libevent.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libevent.so))
++$(eval $(call twrp-register-library,libperfetto_c,$(TARGET_OUT_SHARED_LIBRARIES)/libperfetto_c.so))
++ifeq ($(TW_INCLUDE_CRYPTO),true)
++$(eval $(call twrp-register-binary,keystore_cli_v2,$(TARGET_OUT_EXECUTABLES)/keystore_cli_v2))
++endif
++$(eval $(call twrp-register-binary,hwservicemanager.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/hwservicemanager))
++$(eval $(call twrp-register-binary,servicemanager.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/servicemanager))
++ifeq ($(TW_INCLUDE_CRYPTO),true)
++$(eval $(call twrp-register-binary,vold_prepare_subdirs,$(TARGET_OUT_EXECUTABLES)/vold_prepare_subdirs))
++endif
++$(eval $(call twrp-register-binary,vndservicemanager.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/vndservicemanager))
++$(eval $(call twrp-register-binary,toybox_recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/toybox))
++RECOVERY_BINARY_REQUIRED_MODULES += android.hardware.health@2.1-service.recovery
++$(eval $(call twrp-register-binary,charger.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/charger))
++$(eval $(call twrp-register-binary,init_second_stage.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/ueventd))
++$(eval $(call twrp-register-binary,watchdogd.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/watchdogd))
++$(eval $(call twrp-register-binary,minadbd,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/minadbd))
++
++$(eval $(call twrp-register-library,libcutils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libcutils.so))
++$(eval $(call twrp-register-library,libusbhost.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libusbhost.so))
++$(eval $(call twrp-register-library,libutils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libutils.so))
++$(eval $(call twrp-register-library,libext2_com_err.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_com_err.so))
++$(eval $(call twrp-register-library,libext2_e2p.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_e2p.so))
++$(eval $(call twrp-register-library,libext2fs.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2fs.so))
++$(eval $(call twrp-register-library,libext2_profile,$(TARGET_OUT_SHARED_LIBRARIES)/libext2_profile.so))
++$(eval $(call twrp-register-library,libext2_uuid.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_uuid.so))
++$(eval $(call twrp-register-library,libext2_misc.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_misc.so))
+ ifneq ($(wildcard external/e2fsprogs/lib/quota/Android.mk),)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_quota.so
++$(eval $(call twrp-register-library,libext2_quota.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_quota.so))
+ endif
+ ifneq ($(wildcard external/e2fsprogs/lib/ext2fs/Android.*),)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2fs.so
++$(eval $(call twrp-register-library,libext2fs.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2fs.so))
+ endif
+ ifneq ($(wildcard external/e2fsprogs/lib/blkid/Android.*),)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_blkid.so
+-endif
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libpng.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblog.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libstdc++.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtwrpminui.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libminadbd.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libz.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtar.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtwrpadbbu.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtwrpdigest.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libblkid.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libfusesideload.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libbootloader_message.so
++$(eval $(call twrp-register-library,libext2_blkid.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_blkid.so))
++endif
++$(eval $(call twrp-register-library,libpng.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libpng.so))
++$(eval $(call twrp-register-library,liblog.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/liblog.so))
++$(eval $(call twrp-register-library,libstdc++.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libstdc++.so))
++$(eval $(call twrp-register-library,libtwrpminui,$(TARGET_OUT_SHARED_LIBRARIES)/libtwrpminui.so))
++$(eval $(call twrp-register-library,libz.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libz.so))
++$(eval $(call twrp-register-library,libtar.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libtar.so))
++$(eval $(call twrp-register-library,libtwrpadbbu.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libtwrpadbbu.so))
++$(eval $(call twrp-register-library,libtwrpdigest.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libtwrpdigest.so))
++$(eval $(call twrp-register-library,libblkid,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libblkid.so))
++$(eval $(call twrp-register-library,libfusesideload.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libfusesideload.so))
++$(eval $(call twrp-register-library,libbootloader_message.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libbootloader_message.so))
+ 
+ WITH_CRYPTO_UTILS := $(if $(wildcard system/core/libcrypto_utils/android_pubkey.cpp),true)
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcrypto.so \
+-$(if $(WITH_CRYPTO_UTILS),$(TARGET_OUT_SHARED_LIBRARIES)/libcrypto_utils.so)
++$(eval $(call twrp-register-library,libcrypto.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libcrypto.so))
++ifeq ($(WITH_CRYPTO_UTILS),true)
++$(eval $(call twrp-register-library,libcrypto_utils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libcrypto_utils.so))
++endif
+ 
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/lib64/libbacktrace.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libunwind.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libbase.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libc++.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libnetd_client.so
++$(eval $(call twrp-register-library,libbase.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libbase.so))
++$(eval $(call twrp-register-library,libc++.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libc++.so))
++$(eval $(call twrp-register-library,libnetd_client,$(TARGET_OUT_SHARED_LIBRARIES)/libnetd_client.so))
+ 
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/toolbox
++$(eval $(call twrp-register-binary,toolbox.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/toolbox))
+ 
+ 
+-RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/twrp
++$(eval $(call twrp-register-binary,orscmd,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/twrp))
+ 
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtwrpmtp-ffs.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext4_utils.so
++ifneq ($(TW_EXCLUDE_MTP),true)
++$(eval $(call twrp-register-library,libtwrpmtp-ffs,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libtwrpmtp-ffs.so))
++endif
++$(eval $(call twrp-register-library,libext4_utils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext4_utils.so))
+ ifneq ($(TW_INCLUDE_JPEG),)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libjpeg.so
++$(eval $(call twrp-register-library,libjpeg,$(TARGET_OUT_SHARED_LIBRARIES)/libjpeg.so))
+ endif
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libselinux.so
++$(eval $(call twrp-register-library,libselinux.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libselinux.so))
+ 
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhardware.so
++$(eval $(call twrp-register-library,libhardware.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libhardware.so))
+ ifeq ($(TW_INCLUDE_CRYPTO), true)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcryptfsfde.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libdexfile_support.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libf2fs_sparseblock.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.authsecret@1.0.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.oemlock@1.0.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/libnos_transport.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/libnos_datagram.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@3.0.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libgpt_twrp.so
++$(eval $(call twrp-register-library,libcryptfsfde,$(TARGET_OUT_SHARED_LIBRARIES)/libcryptfsfde.so))
++$(eval $(call twrp-register-library,libdexfile_support,$(TARGET_OUT_SHARED_LIBRARIES)/libdexfile_support.so))
++$(eval $(call twrp-register-library,libf2fs_sparseblock,$(TARGET_OUT_SHARED_LIBRARIES)/libf2fs_sparseblock.so))
++$(eval $(call twrp-register-library,android.hardware.authsecret@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.authsecret@1.0.so))
++$(eval $(call twrp-register-library,android.hardware.oemlock@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.oemlock@1.0.so))
++$(eval $(call twrp-register-library,libnos_transport,$(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/libnos_transport.so))
++$(eval $(call twrp-register-library,libnos_datagram,$(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/libnos_datagram.so))
++$(eval $(call twrp-register-library,android.hardware.keymaster@3.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@3.0.so))
++$(eval $(call twrp-register-library,libgpt_twrp,$(TARGET_OUT_SHARED_LIBRARIES)/libgpt_twrp.so))
+     ifeq ($(TARGET_HW_DISK_ENCRYPTION),true)
+         ifeq ($(TARGET_CRYPTFS_HW_PATH),)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/libcryptfs_hw.so
++$(eval $(call twrp-register-library,libcryptfs_hw,$(TARGET_OUT_VENDOR_SHARED_LIBRARIES)/libcryptfs_hw.so))
+         else
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcryptfs_hw.so
++$(eval $(call twrp-register-library,libcryptfs_hw,$(TARGET_OUT_SHARED_LIBRARIES)/libcryptfs_hw.so))
+         endif
+     endif
+     # FBE files
+     ifeq ($(TW_INCLUDE_CRYPTO_FBE), true)
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtwrpfscrypt.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.security.maintenance-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V3-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V4-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V5-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.security.apc-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.security.authorization-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymint_support.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.confirmationui-V1-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V3-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V4-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.frameworks.stats-V1-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.secureclock-V1-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libgatekeeper.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libgatekeeper_aidl.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_messages.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libbinder.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libprotobuf-cpp-lite.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libsoftkeymasterdevice.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.gatekeeper-V1-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.gatekeeper@1.0.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_aaid.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_apc_compat.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_crypto.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkm_compat_service.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_vintf_cpp.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.security.compat-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkm_compat.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymint.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/lib_android_keymaster_keymint_utils.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcppbor_external.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcppbor.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcppcose_rkp.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.rkp-V3-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.sharedsecret-V1-ndk.so
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/avbctl
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/keystore
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/keystore2
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/keystore_cli
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.system.wifi.keystore@1.0.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libstatslog.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libsoft_attestation_cert.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libdiskconfig.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhardware_legacy.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libaconfig_storage_read_api_cc.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/server_configurable_flags.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libincfs.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health.storage@1.0.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health.storage@1.0.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health.storage-V1-ndk.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhardware_legacy.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.system.suspend@1.0.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.system.suspend-V1-ndk.so
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/fscryptpolicyget
++$(eval $(call twrp-register-library,libtwrpfscrypt,$(TARGET_OUT_SHARED_LIBRARIES)/libtwrpfscrypt.so))
++$(eval $(call twrp-register-library,android.security.maintenance-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.security.maintenance-ndk.so))
++$(eval $(call twrp-register-library,android.system.keystore2-V3-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V3-ndk.so))
++$(eval $(call twrp-register-library,android.system.keystore2-V4-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V4-ndk.so))
++$(eval $(call twrp-register-library,android.system.keystore2-V5-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.system.keystore2-V5-ndk.so))
++$(eval $(call twrp-register-library,android.security.apc-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.security.apc-ndk.so))
++$(eval $(call twrp-register-library,android.security.authorization-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.security.authorization-ndk.so))
++$(eval $(call twrp-register-library,libkeymint_support,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymint_support.so))
++$(eval $(call twrp-register-library,android.hardware.confirmationui-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.confirmationui-V1-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.security.keymint-V3-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V3-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.security.keymint-V4-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.keymint-V4-ndk.so))
++$(eval $(call twrp-register-library,android.frameworks.stats-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.frameworks.stats-V1-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.security.secureclock-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.secureclock-V1-ndk.so))
++$(eval $(call twrp-register-library,libgatekeeper,$(TARGET_OUT_SHARED_LIBRARIES)/libgatekeeper.so))
++$(eval $(call twrp-register-library,libgatekeeper_aidl,$(TARGET_OUT_SHARED_LIBRARIES)/libgatekeeper_aidl.so))
++$(eval $(call twrp-register-library,libkeymaster_messages,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_messages.so))
++$(eval $(call twrp-register-library,libbinder.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libbinder.so))
++$(eval $(call twrp-register-library,libprotobuf-cpp-lite.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libprotobuf-cpp-lite.so))
++$(eval $(call twrp-register-library,libsoftkeymasterdevice,$(TARGET_OUT_SHARED_LIBRARIES)/libsoftkeymasterdevice.so))
++$(eval $(call twrp-register-library,android.hardware.gatekeeper-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.gatekeeper-V1-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.gatekeeper@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.gatekeeper@1.0.so))
++$(eval $(call twrp-register-library,libkeystore2_aaid,$(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_aaid.so))
++$(eval $(call twrp-register-library,libkeystore2_apc_compat,$(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_apc_compat.so))
++$(eval $(call twrp-register-library,libkeystore2_crypto,$(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_crypto.so))
++$(eval $(call twrp-register-library,libkm_compat_service,$(TARGET_OUT_SHARED_LIBRARIES)/libkm_compat_service.so))
++$(eval $(call twrp-register-library,libkeystore2_vintf_cpp,$(TARGET_OUT_SHARED_LIBRARIES)/libkeystore2_vintf_cpp.so))
++$(eval $(call twrp-register-library,android.security.compat-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.security.compat-ndk.so))
++$(eval $(call twrp-register-library,libkm_compat,$(TARGET_OUT_SHARED_LIBRARIES)/libkm_compat.so))
++$(eval $(call twrp-register-library,libkeymint,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymint.so))
++$(eval $(call twrp-register-library,lib_android_keymaster_keymint_utils,$(TARGET_OUT_SHARED_LIBRARIES)/lib_android_keymaster_keymint_utils.so))
++$(eval $(call twrp-register-library,libcppbor_external,$(TARGET_OUT_SHARED_LIBRARIES)/libcppbor_external.so))
++$(eval $(call twrp-register-library,libcppbor,$(TARGET_OUT_SHARED_LIBRARIES)/libcppbor.so))
++$(eval $(call twrp-register-library,libpuresoftkeymasterdevice,$(TARGET_OUT_SHARED_LIBRARIES)/libpuresoftkeymasterdevice.so))
++$(eval $(call twrp-register-library,libcppcose_rkp,$(TARGET_OUT_SHARED_LIBRARIES)/libcppcose_rkp.so))
++$(eval $(call twrp-register-library,android.hardware.security.rkp-V3-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.rkp-V3-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.security.sharedsecret-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.security.sharedsecret-V1-ndk.so))
++$(eval $(call twrp-register-binary,avbctl,$(TARGET_OUT_EXECUTABLES)/avbctl))
++$(eval $(call twrp-register-binary,keystore2,$(TARGET_OUT_EXECUTABLES)/keystore2))
++$(eval $(call twrp-register-binary,keystore_cli,$(TARGET_OUT_EXECUTABLES)/keystore_cli))
++$(eval $(call twrp-register-library,android.system.wifi.keystore@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.system.wifi.keystore@1.0.so))
++$(eval $(call twrp-register-library,libstatslog,$(TARGET_OUT_SHARED_LIBRARIES)/libstatslog.so))
++$(eval $(call twrp-register-library,libsoft_attestation_cert,$(TARGET_OUT_SHARED_LIBRARIES)/libsoft_attestation_cert.so))
++$(eval $(call twrp-register-library,libdiskconfig,$(TARGET_OUT_SHARED_LIBRARIES)/libdiskconfig.so))
++$(eval $(call twrp-register-library,libhardware_legacy,$(TARGET_OUT_SHARED_LIBRARIES)/libhardware_legacy.so))
++$(eval $(call twrp-register-library,libaconfig_storage_read_api_cc,$(TARGET_OUT_SHARED_LIBRARIES)/libaconfig_storage_read_api_cc.so))
++$(eval $(call twrp-register-library,server_configurable_flags,$(TARGET_OUT_SHARED_LIBRARIES)/server_configurable_flags.so))
++$(eval $(call twrp-register-library,libincfs,$(TARGET_OUT_SHARED_LIBRARIES)/libincfs.so))
++$(eval $(call twrp-register-library,android.hardware.health.storage@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health.storage@1.0.so))
++$(eval $(call twrp-register-library,android.hardware.health.storage@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health.storage@1.0.so))
++$(eval $(call twrp-register-library,android.hardware.health.storage-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health.storage-V1-ndk.so))
++$(eval $(call twrp-register-library,libhardware_legacy,$(TARGET_OUT_SHARED_LIBRARIES)/libhardware_legacy.so))
++$(eval $(call twrp-register-library,android.system.suspend@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.system.suspend@1.0.so))
++$(eval $(call twrp-register-library,android.system.suspend-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.system.suspend-V1-ndk.so))
++$(eval $(call twrp-register-binary,fscryptpolicyget,$(TARGET_OUT_EXECUTABLES)/fscryptpolicyget))
+         ifeq ($(TW_INCLUDE_ZSTD), true)
+-            RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/zstd
++$(eval $(call twrp-register-binary,zstd,$(TARGET_OUT_EXECUTABLES)/zstd))
+         endif
+         ifneq ($(TW_EXCLUDE_LIBXML2), true)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libxml2.so
++$(eval $(call twrp-register-library,libxml2,$(TARGET_OUT_SHARED_LIBRARIES)/libxml2.so))
+         endif
+ 
+         ifneq ($(wildcard system/keymaster/keymaster_stl.cpp),)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_portable.so
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_staging.so
++$(eval $(call twrp-register-library,libkeymaster_portable,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_portable.so))
++$(eval $(call twrp-register-library,libkeymaster_staging,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_staging.so))
+         endif
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libwifikeystorehal.so
++$(eval $(call twrp-register-library,libwifikeystorehal,$(TARGET_OUT_SHARED_LIBRARIES)/libwifikeystorehal.so))
+         ifneq ($(wildcard hardware/interfaces/weaver/Android.bp),)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.weaver@1.0.so
++$(eval $(call twrp-register-library,android.hardware.weaver@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.weaver@1.0.so))
+         endif
+         ifneq ($(wildcard hardware/interfaces/weaver/1.0/Android.bp),)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.weaver@1.0.so
++$(eval $(call twrp-register-library,android.hardware.weaver@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.weaver@1.0.so))
+         endif
+         ifneq ($(wildcard hardware/interfaces/weaver/aidl/Android.bp),)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.weaver-V2-ndk.so
++$(eval $(call twrp-register-library,android.hardware.weaver-V2-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.weaver-V2-ndk.so))
+         endif
+         ifneq ($(wildcard hardware/interfaces/confirmationui/1.0/Android.bp),)
+-            RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.confirmationui@1.0.so
++$(eval $(call twrp-register-library,android.hardware.confirmationui@1.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.confirmationui@1.0.so))
+         endif
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libsoftkeymaster.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@4.0.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@4.1.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4support.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4_1support.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libutilscallstack.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libdexfile.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libservices.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_portable.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhwbinder.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.security.aaid_aidl-cpp.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeystore-attestation-application-id.so
++$(eval $(call twrp-register-library,libsoftkeymaster,$(TARGET_OUT_SHARED_LIBRARIES)/libsoftkeymaster.so))
++$(eval $(call twrp-register-library,android.hardware.keymaster@4.0,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@4.0.so))
++$(eval $(call twrp-register-library,android.hardware.keymaster@4.1,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.keymaster@4.1.so))
++$(eval $(call twrp-register-library,libkeymaster4support,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4support.so))
++$(eval $(call twrp-register-library,libkeymaster4_1support,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster4_1support.so))
++$(eval $(call twrp-register-library,libutilscallstack,$(TARGET_OUT_SHARED_LIBRARIES)/libutilscallstack.so))
++$(eval $(call twrp-register-library,libdexfile,$(TARGET_OUT_SHARED_LIBRARIES)/libdexfile.so))
++$(eval $(call twrp-register-library,libservices,$(TARGET_OUT_SHARED_LIBRARIES)/libservices.so))
++$(eval $(call twrp-register-library,libkeymaster_portable,$(TARGET_OUT_SHARED_LIBRARIES)/libkeymaster_portable.so))
++$(eval $(call twrp-register-library,libhwbinder,$(TARGET_OUT_SHARED_LIBRARIES)/libhwbinder.so))
++$(eval $(call twrp-register-library,android.security.aaid_aidl-cpp,$(TARGET_OUT_SHARED_LIBRARIES)/android.security.aaid_aidl-cpp.so))
++$(eval $(call twrp-register-library,libkeystore-attestation-application-id,$(TARGET_OUT_SHARED_LIBRARIES)/libkeystore-attestation-application-id.so))
+          # lshal can be useful for seeing if you have things like the keymaster working properly, but it isn't needed for TWRP to work
+          #RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lshal
+          #RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblshal.so
+          #RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libssl.so
+          #RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhidl-gen-hash.so
+     endif
+ endif
+ ifeq ($(TW_INCLUDE_WIFI), true)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/microhttpd
+-    RECOVERY_BINARY_SOURCE_FILES += $(LOCAL_PATH)/dhcpcd
++$(eval $(call twrp-register-binary,microhttpd,$(TARGET_OUT_EXECUTABLES)/microhttpd))
++$(eval $(call twrp-register-binary,dhcpcd,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/dhcpcd))
+     include $(CLEAR_VARS)
+     LOCAL_MODULE := dhcpcd
+     LOCAL_MODULE_TAGS := optional
+     LOCAL_MODULE_CLASS := EXECUTABLES
+     LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/system/bin
+     LOCAL_SRC_FILES := dhcpcd
+     include $(BUILD_PREBUILT)
+ 
+     include $(CLEAR_VARS)
+     LOCAL_MODULE := ttyd
+     LOCAL_MODULE_TAGS := optional
+     LOCAL_MODULE_CLASS := EXECUTABLES
+     LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/system/bin
+     LOCAL_SRC_FILES := $(LOCAL_MODULE)
+     include $(BUILD_PREBUILT)
+ endif
+ 
+ ifeq ($(PRODUCT_USE_DYNAMIC_PARTITIONS),true)
+     ifeq ($(TW_ENABLE_ALL_PARTITION_TOOLS),true)
+         TW_INCLUDE_LPDUMP := true
+         TW_INCLUDE_LPTOOLS := true
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lpmake
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lpadd
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lpflash
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lpunpack
++$(eval $(call twrp-register-binary,lpmake,$(TARGET_OUT_EXECUTABLES)/lpmake))
++$(eval $(call twrp-register-binary,lpadd,$(TARGET_OUT_EXECUTABLES)/lpadd))
++$(eval $(call twrp-register-binary,lpflash,$(TARGET_OUT_EXECUTABLES)/lpflash))
++$(eval $(call twrp-register-binary,lpunpack,$(TARGET_OUT_EXECUTABLES)/lpunpack))
+     endif
+     ifneq ($(TW_INCLUDE_LPDUMP),)
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/bootctl
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lpdump
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lpdumpd
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblpdump.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblpdump_interface-V1-cpp.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libprotobuf-cpp-full.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblpdump_interface-cpp.so
++$(eval $(call twrp-register-binary,bootctl,$(TARGET_OUT_EXECUTABLES)/bootctl))
++$(eval $(call twrp-register-binary,lpdump,$(TARGET_OUT_EXECUTABLES)/lpdump))
++$(eval $(call twrp-register-binary,lpdumpd,$(TARGET_OUT_EXECUTABLES)/lpdumpd))
++$(eval $(call twrp-register-library,liblpdump,$(TARGET_OUT_SHARED_LIBRARIES)/liblpdump.so))
++$(eval $(call twrp-register-library,liblpdump_interface-V1-cpp,$(TARGET_OUT_SHARED_LIBRARIES)/liblpdump_interface-V1-cpp.so))
++$(eval $(call twrp-register-library,libprotobuf-cpp-full,$(TARGET_OUT_SHARED_LIBRARIES)/libprotobuf-cpp-full.so))
++$(eval $(call twrp-register-library,liblpdump_interface-cpp,$(TARGET_OUT_SHARED_LIBRARIES)/liblpdump_interface-cpp.so))
+     endif
+     ifneq ($(TW_INCLUDE_LPTOOLS),)
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/lptools
++$(eval $(call twrp-register-binary,lptools,$(TARGET_OUT_EXECUTABLES)/lptools))
+     endif
+ endif
+ 
+ ifneq ($(wildcard system/core/reboot/Android.*),)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_RECOVERY_ROOT_OUT)/system/bin/reboot
++$(eval $(call twrp-register-binary,reboot.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/bin/reboot))
+ endif
+ ifneq ($(TW_DISABLE_TTF), true)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libft2.so
+-endif
+-ifneq ($(TW_RECOVERY_ADDITIONAL_RELINK_BINARY_FILES),)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TW_RECOVERY_ADDITIONAL_RELINK_BINARY_FILES)
+-endif
+-ifneq ($(TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES),)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES)
+-endif
+-ifneq ($(TW_RECOVERY_ADDITIONAL_RELINK_VENDOR_HW_BINARY_FILES),)
+-    RECOVERY_VENDOR_HW_BINARY_FILES += $(TW_RECOVERY_ADDITIONAL_RELINK_VENDOR_HW_BINARY_FILES)
++$(eval $(call twrp-register-library,libft2.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libft2.so))
+ endif
+ ifneq ($(wildcard external/pcre/Android.mk),)
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libpcre.so
++$(eval $(call twrp-register-library,libpcre,$(TARGET_OUT_SHARED_LIBRARIES)/libpcre.so))
+ endif
+ ifeq ($(TW_INCLUDE_NTFS_3G),true)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/mount.ntfs
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/fsck.ntfs
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/mkfs.ntfs
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libntfs-3g.so
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libfuse-lite.so
+-else
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/ntfs-3g
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/ntfsfix
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/mkntfs
++$(eval $(call twrp-register-binary,mount.ntfs,$(TARGET_OUT_EXECUTABLES)/mount.ntfs))
++$(eval $(call twrp-register-binary,fsck.ntfs,$(TARGET_OUT_EXECUTABLES)/fsck.ntfs))
++$(eval $(call twrp-register-binary,mkfs.ntfs,$(TARGET_OUT_EXECUTABLES)/mkfs.ntfs))
++$(eval $(call twrp-register-library,libntfs-3g,$(TARGET_OUT_SHARED_LIBRARIES)/libntfs-3g.so))
++$(eval $(call twrp-register-library,libfuse-lite,$(TARGET_OUT_SHARED_LIBRARIES)/libfuse-lite.so))
+ endif
+ ifeq ($(BOARD_HAS_NO_REAL_SDCARD),)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/sgdisk
++$(eval $(call twrp-register-binary,sgdisk,$(TARGET_OUT_EXECUTABLES)/sgdisk))
+ endif
+ ifneq ($(TW_OZIP_DECRYPT_KEY),)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/ozip_decrypt
++$(eval $(call twrp-register-binary,ozip_decrypt,$(TARGET_OUT_EXECUTABLES)/ozip_decrypt))
+ endif
+ ifeq ($(TWRP_INCLUDE_LOGCAT), true)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/logcat
++$(eval $(call twrp-register-binary,logcat,$(TARGET_OUT_EXECUTABLES)/logcat))
+     ifeq ($(TARGET_USES_LOGD), true)
+-        RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_EXECUTABLES)/logd
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libsysutils.so
+-        RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libnl.so
++$(eval $(call twrp-register-binary,logd,$(TARGET_OUT_EXECUTABLES)/logd))
++$(eval $(call twrp-register-library,libsysutils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libsysutils.so))
++$(eval $(call twrp-register-library,libnl.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libnl.so))
+     endif
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libpcrecpp.so
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblogcat.so
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libcap.so
+-endif
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libvndksupport.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhidlbase.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhidltransport.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.frameworks.stats@1.0.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libziparchive.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_blkid.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_quota.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libhidl-gen-utils.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libvintf.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libtinyxml2.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hidl.token@1.0.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator@1.0.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator@1.1.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator@1.2.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V1-ndk.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V1-cpp.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V2-cpp.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V2-ndk.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health-V3-ndk.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.health-translate-ndk.so
++$(eval $(call twrp-register-library,libcap.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libcap.so))
++endif
++$(eval $(call twrp-register-library,libvndksupport.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libvndksupport.so))
++$(eval $(call twrp-register-library,libhidlbase.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libhidlbase.so))
++$(eval $(call twrp-register-library,libhidltransport,$(TARGET_OUT_SHARED_LIBRARIES)/libhidltransport.so))
++$(eval $(call twrp-register-library,android.frameworks.stats@1.0.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.frameworks.stats@1.0.so))
++$(eval $(call twrp-register-library,libziparchive.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libziparchive.so))
++$(eval $(call twrp-register-library,libext2_blkid.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_blkid.so))
++$(eval $(call twrp-register-library,libext2_quota.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_quota.so))
++$(eval $(call twrp-register-library,libhidl-gen-utils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libhidl-gen-utils.so))
++$(eval $(call twrp-register-library,libvintf.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libvintf.so))
++$(eval $(call twrp-register-library,libtinyxml2.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libtinyxml2.so))
++$(eval $(call twrp-register-library,android.hidl.token@1.0.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hidl.token@1.0.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator@1.0.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.vibrator@1.0.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator@1.1.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.vibrator@1.1.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator@1.2.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.vibrator@1.2.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator-V1-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V1-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator-V1-cpp,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V1-cpp.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator-V2-cpp,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V2-cpp.so))
++$(eval $(call twrp-register-library,android.hardware.vibrator-V2-ndk,$(TARGET_OUT_SHARED_LIBRARIES)/android.hardware.vibrator-V2-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.health-V3-ndk.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.health-V3-ndk.so))
++$(eval $(call twrp-register-library,android.hardware.health-translate-ndk.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/android.hardware.health-translate-ndk.so))
+ ifneq ($(wildcard system/core/libkeyutils/Android.bp),)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libkeyutils.so
++$(eval $(call twrp-register-library,libkeyutils.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libkeyutils.so))
+ endif
+ ifeq ($(TARGET_ARCH), arm64)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libclang_rt.ubsan_standalone-aarch64-android.so
++$(eval $(call twrp-register-library,libclang_rt.ubsan_standalone.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libclang_rt.ubsan_standalone-aarch64-android.so))
+ endif
+ ifeq ($(TARGET_ARCH), arm)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libclang_rt.ubsan_standalone-arm-android.so
++$(eval $(call twrp-register-library,libclang_rt.ubsan_standalone.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libclang_rt.ubsan_standalone-arm-android.so))
+ endif
+ ifeq ($(TARGET_ARCH), x86_64)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libclang_rt.ubsan_standalone-x86_64-android.so
++$(eval $(call twrp-register-library,libclang_rt.ubsan_standalone.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libclang_rt.ubsan_standalone-x86_64-android.so))
+ endif
+ ifeq ($(TARGET_ARCH), x86)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libclang_rt.ubsan_standalone-i686-android.so
++$(eval $(call twrp-register-library,libclang_rt.ubsan_standalone.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libclang_rt.ubsan_standalone-i686-android.so))
+ endif
+ ifeq ($(TARGET_ARCH), mips)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libclang_rt.ubsan_standalone-mips-android.so
++$(eval $(call twrp-register-library,libclang_rt.ubsan_standalone.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libclang_rt.ubsan_standalone-mips-android.so))
+ endif
+ ifeq ($(TARGET_ARCH), mips64)
+-	RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libclang_rt.ubsan_standalone-mips64-android.so
++$(eval $(call twrp-register-library,libclang_rt.ubsan_standalone.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libclang_rt.ubsan_standalone-mips64-android.so))
+ endif
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/liblogwrap.so
+-RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SHARED_LIBRARIES)/libext2_misc.so
++$(eval $(call twrp-register-library,liblogwrap.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/liblogwrap.so))
++$(eval $(call twrp-register-library,libext2_misc.recovery,$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)/libext2_misc.so))
+ 
+ ifneq ($(TW_EXCLUDE_BASH), true)
+-    RECOVERY_BINARY_SOURCE_FILES += $(TARGET_OUT_SYSTEM_EXT_EXECUTABLES)/bash
+-    RECOVERY_LIBRARY_SOURCE_FILES += $(TARGET_OUT_SYSTEM_EXT_SHARED_LIBRARIES)/libncurses.so
++$(eval $(call twrp-register-binary,bash,$(TARGET_OUT_SYSTEM_EXT_EXECUTABLES)/bash))
++$(eval $(call twrp-register-library,libncurses,$(TARGET_OUT_SYSTEM_EXT_SHARED_LIBRARIES)/libncurses.so))
+ endif
+ 
++
++# Additional copies must declare the provider and exact installed file.
++ifneq ($(strip $(TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_FILES)),)
++$(error Use TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_PAIRS with explicit module:installed-file entries)
++endif
++$(foreach pair,$(TW_RECOVERY_ADDITIONAL_RELINK_LIBRARY_PAIRS),$(if $(filter 2,$(words $(subst :, ,$(pair)))),$(eval $(call twrp-register-library,$(word 1,$(subst :, ,$(pair))),$(word 2,$(subst :, ,$(pair))))),$(error Invalid TWRP library provider:file pair: $(pair))))
++ifneq ($(strip $(TW_RECOVERY_ADDITIONAL_RELINK_BINARY_FILES)),)
++$(error Use TW_RECOVERY_ADDITIONAL_RELINK_BINARY_PAIRS with explicit module:installed-file entries)
++endif
++$(foreach pair,$(TW_RECOVERY_ADDITIONAL_RELINK_BINARY_PAIRS),$(if $(filter 2,$(words $(subst :, ,$(pair)))),$(eval $(call twrp-register-binary,$(word 1,$(subst :, ,$(pair))),$(word 2,$(subst :, ,$(pair))))),$(error Invalid TWRP binary provider:file pair: $(pair))))
++ifneq ($(strip $(TW_RECOVERY_ADDITIONAL_RELINK_VENDOR_HW_BINARY_FILES)),)
++$(error Use TW_RECOVERY_ADDITIONAL_RELINK_VENDOR_HW_BINARY_PAIRS with explicit module:installed-file entries)
++endif
++$(foreach pair,$(TW_RECOVERY_ADDITIONAL_RELINK_VENDOR_HW_BINARY_PAIRS),$(if $(filter 2,$(words $(subst :, ,$(pair)))),$(eval $(call twrp-register-vendor-hw-binary,$(word 1,$(subst :, ,$(pair))),$(word 2,$(subst :, ,$(pair))))),$(error Invalid TWRP vendor-hw-binary provider:file pair: $(pair))))
++
++ifneq ($(filter-out $(TWRP_REGISTERED_LIBRARY_FILES),$(RECOVERY_LIBRARY_SOURCE_FILES)),)
++$(error TWRP LIBRARY input has no explicit provider registration)
++endif
++RECOVERY_LIBRARY_SOURCE_FILES := $(sort $(RECOVERY_LIBRARY_SOURCE_FILES))
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := relink_libraries
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE_CLASS := EXECUTABLES
+ LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/
+-ifneq ($(TARGET_ARCH), arm64)
+-    ifneq ($(TARGET_ARCH), x86_64)
+-        LOCAL_POST_INSTALL_CMD += $(RELINK) $(TARGET_RECOVERY_ROOT_OUT)/system/lib $(RECOVERY_LIBRARY_SOURCE_FILES)
+-    else
+-        LOCAL_POST_INSTALL_CMD += $(RELINK) $(TARGET_RECOVERY_ROOT_OUT)/system/lib64 $(RECOVERY_LIBRARY_SOURCE_FILES)
+-    endif
+-else
+-LOCAL_POST_INSTALL_CMD += $(RELINK) $(TARGET_RECOVERY_ROOT_OUT)/system/lib64 $(RECOVERY_LIBRARY_SOURCE_FILES)
+-endif
+-TARGET_LIBRARY_RELINK_FILES := $(notdir $(RECOVERY_LIBRARY_SOURCE_FILES))
+-TARGET_BASE_LIBRARY_RELINK_MODULES := $(basename $(TARGET_LIBRARY_RELINK_FILES))
+-TARGET_RELINK_LIBRARY_MODULES :=  $(filter-out libdexfile, $(TARGET_BASE_LIBRARY_RELINK_MODULES))
+-LOCAL_REQUIRED_MODULES += $(TARGET_RELINK_LIBRARY_MODULES)
++LOCAL_REQUIRED_MODULES := $(sort $(RECOVERY_LIBRARY_REQUIRED_MODULES))
++LOCAL_ADDITIONAL_DEPENDENCIES := $(RELINK) $(RECOVERY_LIBRARY_SOURCE_FILES)
++LOCAL_POST_INSTALL_CMD := $(RELINK) --recovery-root "$(TARGET_RECOVERY_ROOT_OUT)" "$(TARGET_RECOVERY_ROOT_OUT)/system/$(TWRP_RELINK_LIBDIR)" $(foreach file,$(RECOVERY_LIBRARY_SOURCE_FILES),"$(file)")
+ include $(BUILD_PHONY_PACKAGE)
+ 
+-
++ifneq ($(filter-out $(TWRP_REGISTERED_BINARY_FILES),$(RECOVERY_BINARY_SOURCE_FILES)),)
++$(error TWRP BINARY input has no explicit provider registration)
++endif
++RECOVERY_BINARY_SOURCE_FILES := $(sort $(RECOVERY_BINARY_SOURCE_FILES))
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := relink_binaries
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE_CLASS := EXECUTABLES
+ LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/
+-LOCAL_POST_INSTALL_CMD += $(RELINK) $(TARGET_RECOVERY_ROOT_OUT)/system/bin $(RECOVERY_BINARY_SOURCE_FILES)
+-TARGET_BINARY_RELINK_FILES := $(filter-out bu, $(notdir $(RECOVERY_BINARY_SOURCE_FILES)))
+-LOCAL_REQUIRED_MODULES += $(TARGET_BINARY_RELINK_FILES)
++LOCAL_REQUIRED_MODULES := $(sort $(RECOVERY_BINARY_REQUIRED_MODULES))
++LOCAL_ADDITIONAL_DEPENDENCIES := $(RELINK) $(RECOVERY_BINARY_SOURCE_FILES)
++LOCAL_POST_INSTALL_CMD := $(RELINK) --recovery-root "$(TARGET_RECOVERY_ROOT_OUT)" "$(TARGET_RECOVERY_ROOT_OUT)/system/bin" $(foreach file,$(RECOVERY_BINARY_SOURCE_FILES),"$(file)")
+ include $(BUILD_PHONY_PACKAGE)
+ 
++ifneq ($(filter-out $(TWRP_REGISTERED_VENDOR_HW_BINARY_FILES),$(RECOVERY_VENDOR_HW_BINARY_FILES)),)
++$(error TWRP VENDOR_HW_BINARY input has no explicit provider registration)
++endif
++RECOVERY_VENDOR_HW_BINARY_FILES := $(sort $(RECOVERY_VENDOR_HW_BINARY_FILES))
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := relink_vendor_hw_binaries
+ LOCAL_MODULE_TAGS := optional
+ LOCAL_MODULE_CLASS := EXECUTABLES
+ LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/
+-LOCAL_POST_INSTALL_CMD += $(RELINK) $(TARGET_RECOVERY_ROOT_OUT)/vendor/bin/hw $(RECOVERY_VENDOR_HW_BINARY_FILES)
+-TARGET_VENDOR_BINARY_RELINK_FILES := $(notdir $(RECOVERY_VENDOR_HW_BINARY_FILES))
+-LOCAL_REQUIRED_MODULES += $(TARGET_VENDOR_BINARY_RELINK_FILES)
+-$(warning vendor_hw: $(LOCAL_POST_INSTALL_CMD))
+-
++LOCAL_REQUIRED_MODULES := $(sort $(RECOVERY_VENDOR_HW_BINARY_REQUIRED_MODULES))
++LOCAL_ADDITIONAL_DEPENDENCIES := $(RELINK) $(RECOVERY_VENDOR_HW_BINARY_FILES)
++LOCAL_POST_INSTALL_CMD := $(RELINK) --recovery-root "$(TARGET_RECOVERY_ROOT_OUT)" "$(TARGET_RECOVERY_ROOT_OUT)/vendor/bin/hw" $(foreach file,$(RECOVERY_VENDOR_HW_BINARY_FILES),"$(file)")
+ include $(BUILD_PHONY_PACKAGE)
+ 
+ ifeq ($(TW_USE_TOOLBOX), true)
+    include $(CLEAR_VARS)
+    LOCAL_MODULE := mkshrc_twrp
+    LOCAL_MODULE_STEM := mkshrc
+    LOCAL_MODULE_TAGS := optional
+    LOCAL_MODULE_CLASS := ETC
+    LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/system/etc
+    LOCAL_SRC_FILES := $(LOCAL_MODULE)
+    include $(BUILD_PREBUILT)
+ endif
+ 
+ ifeq ($(TW_INCLUDE_7ZA), true)
+     include $(CLEAR_VARS)
+     LOCAL_MODULE := 7za
+     LOCAL_MODULE_TAGS := optional
+     LOCAL_MODULE_CLASS := EXECUTABLES
+     LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/system/bin
+     LOCAL_SRC_FILES := $(LOCAL_MODULE)
+     include $(BUILD_PREBUILT)
+ endif
+ 
+ ifneq (,$(filter $(TW_INCLUDE_REPACKTOOLS) $(TW_INCLUDE_RESETPROP) $(TW_INCLUDE_LIBRESETPROP), true))
+     ifeq ($(wildcard external/magisk-prebuilt/prebuilt/Android.bp),)
+         $(warning Magisk prebuilt tools not found!)
+         $(warning Please place https://github.com/TeamWin/external_magisk-prebuilt)
+         $(warning into external/magisk-prebuilt)
+         $(error magiskboot prebuilts not present; exiting)
+     endif
+ endif
+ 
+ ifneq ($(TW_EXCLUDE_BASH), true)
+ 	include $(CLEAR_VARS)
+ 	LOCAL_MODULE := bash_twrp
+ 	LOCAL_MODULE_TAGS := optional
+ 	LOCAL_MODULE_CLASS := ETC
+ 	LOCAL_MODULE_PATH := $(TARGET_ROOT_OUT)/system/bin
+ 	LOCAL_REQUIRED_MODULES := bash
+ 
+ 	LOCAL_POST_INSTALL_CMD += \
+ 		mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/system/etc/bash/; \
+ 		cp -rf external/bash/etc/* $(TARGET_RECOVERY_ROOT_OUT)/system/etc/bash/; \
+         sed -i 's/ro.lineage.device/ro.product.device/' $(TARGET_RECOVERY_ROOT_OUT)/system/etc/bash/bashrc; \
+         sed -i '/export TERM/d' $(TARGET_RECOVERY_ROOT_OUT)/system/etc/bash/bashrc;
+ 	include $(BUILD_PHONY_PACKAGE)
+ endif
++
++# Core Make generates this file later from the collected real .logtags inputs.
++# Use the stable path, not the as-yet undefined event_log_tags_file variable.
++include $(CLEAR_VARS)
++LOCAL_MODULE := twrp_event_log_tags
++LOCAL_MODULE_TAGS := optional
++LOCAL_MODULE_CLASS := ETC
++LOCAL_MODULE_STEM := event-log-tags
++LOCAL_MODULE_PATH := $(TARGET_RECOVERY_ROOT_OUT)/system/etc
++LOCAL_PREBUILT_MODULE_FILE := $(TARGET_OUT)/etc/event-log-tags
++include $(BUILD_PREBUILT)
+diff --git a/prebuilt/relink.sh b/prebuilt/relink.sh
+index 59171146f8db58c09aadf54d541e8be8df2bdb04..91b876b692a3fa07756391b0eecb814beae4b987 100755
+--- a/prebuilt/relink.sh
++++ b/prebuilt/relink.sh
+@@ -1,26 +1,133 @@
+ #!/bin/bash
++# Required packaging inputs must never disappear silently. Runtime absolute
++# symlinks are resolved inside the recovery root, not against the build host.
++set -euo pipefail
+ 
+-process_file()
+-{
+-    dst=$1/$(basename $2)
+-    src=$2
++die() {
++    printf 'relink: %s\n' "$*" >&2
++    exit 1
++}
++
++[[ $# -ge 3 && $1 == --recovery-root ]] || \
++    die 'usage: relink.sh --recovery-root ROOT DEST [REQUIRED_FILE ...]'
++root_arg=${2%/}
++dest_arg=${3%/}
++shift 3
++[[ -n $root_arg && -n $dest_arg ]] || die 'empty recovery root or destination'
++[[ -d $root_arg ]] || die "recovery root does not exist: $root_arg"
++root=$(cd -- "$root_arg" && pwd -P)
++[[ $root != / ]] || die 'the host root cannot be a recovery staging root'
+ 
+-    [[ -e $src ]] || return 0
++case "$dest_arg" in
++    "$root_arg") suffix= ;;
++    "$root_arg"/*) suffix=${dest_arg#"$root_arg"/} ;;
++    "$root") suffix= ;;
++    "$root"/*) suffix=${dest_arg#"$root"/} ;;
++    *) die "destination is outside the recovery root: $dest_arg" ;;
++esac
+ 
+-    if [ $dst == $src ]; then
+-      cp -f -p $src $src.tmp
+-      src=$2.tmp
++# Reject directory symlinks before mkdir/cp can follow one on the host.
++dest=$root
++pending=$suffix
++while [[ -n $pending ]]; do
++    component=${pending%%/*}
++    if [[ $pending == */* ]]; then pending=${pending#*/}; else pending=; fi
++    case "$component" in
++        ''|.) continue ;;
++        ..) die 'destination contains a parent traversal' ;;
++    esac
++    dest=$dest/$component
++    [[ ! -L $dest ]] || die "destination directory is a symlink: $dest"
++    if [[ -e $dest ]]; then
++        [[ -d $dest ]] || die "destination component is not a directory: $dest"
++    else
++        mkdir -- "$dest"
+     fi
++done
+ 
+-    mkdir -p $1
+-    cp $src $dst
+-    if [[ -e $2.tmp ]]; then rm -f $2.tmp; fi
++# Resolve a staged file, including absolute device paths and chains of links.
++# Every link hop is interpreted under ROOT; '..' cannot escape that root.
++verify_staged_file() {
++    local file=$1 pending resolved component next target hops
++    [[ $file == "$root"/* ]] || die "staged file is outside recovery: $file"
++    pending=${file#"$root"/}
++    resolved=
++    hops=0
++    while [[ -n $pending ]]; do
++        component=${pending%%/*}
++        if [[ $pending == */* ]]; then pending=${pending#*/}; else pending=; fi
++        case "$component" in
++            ''|.) continue ;;
++            ..)
++                [[ -n $resolved ]] || die "symlink escapes recovery: $file"
++                if [[ $resolved == */* ]]; then resolved=${resolved%/*}; else resolved=; fi
++                continue
++                ;;
++        esac
++        next=$root${resolved:+/$resolved}/$component
++        if [[ -L $next ]]; then
++            hops=$((hops + 1))
++            [[ $hops -le 40 ]] || die "symlink cycle or excessive chain: $file"
++            target=$(readlink -- "$next")
++            [[ -n $target ]] || die "empty symlink target: $next"
++            if [[ $target == /* ]]; then
++                resolved=
++                target=${target#/}
++            fi
++            pending=$target${pending:+/$pending}
++        else
++            resolved=${resolved:+$resolved/}$component
++            if [[ -n $pending ]]; then
++                [[ -d $next ]] || die "missing symlink parent: $next"
++            fi
++        fi
++    done
++    [[ -f $root/$resolved ]] || die "required staged target is missing or not regular: $file"
+ }
+ 
++# Check every source before making any file copies. A dangling host-visible
++# symlink can still be a valid absolute runtime link; validate it after staging.
++for src in "$@"; do
++    [[ -f $src || -L $src ]] || die "required input is missing or not a file: $src"
++    case "${src##*/}" in ''|.|..) die "invalid input filename: $src" ;; esac
++    for other in "$@"; do
++        [[ ${src##*/} != "${other##*/}" || $src == "$other" ]] || \
++            die "conflicting required inputs for ${src##*/}: $src and $other"
++    done
++done
++
++work_dir=
++cleanup() {
++    local status=$?
++    if [[ -n $work_dir ]]; then
++        rm -f -- "$work_dir/file"
++        rmdir -- "$work_dir"
++    fi
++    exit "$status"
++}
++trap cleanup EXIT
++
++for src in "$@"; do
++    name=${src##*/}
++    dst=$dest/$name
++    # Native recovery providers own these files and their symlinks.
++    if [[ $src == "$dest_arg/$name" || $src == "$dst" ]]; then
++        continue
++    fi
++    # A core fallback must not write through a provider-owned symlink.
++    if [[ -L $dst ]]; then
++        [[ -L $src && $(readlink -- "$src") == $(readlink -- "$dst") ]] || \
++            die "refusing to replace a destination symlink: $dst"
++        continue
++    fi
++    [[ ! -e $dst || -f $dst ]] || die "destination is not a regular file: $dst"
++    work_dir=$(mktemp -d "$dest/.twrp-relink.XXXXXX")
++    cp -pP -- "$src" "$work_dir/file"
++    mv -f -- "$work_dir/file" "$dst"
++    rmdir -- "$work_dir"
++    work_dir=
++done
+ 
+-dest=$1
+-shift 1
+-for ARG in $*
+-do
+-    process_file $dest $ARG
++for src in "$@"; do
++    verify_staged_file "$dest/${src##*/}"
+ done

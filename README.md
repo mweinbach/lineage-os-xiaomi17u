@@ -12,6 +12,11 @@ images also build and pass their recorded content checks. A flashable ROM
 and complete signed boot chain are not present.** No phone
 should be unlocked, wiped, or flashed as part of workspace setup.
 
+**TWRP is now a separate bring-up track**, so recovery work does not wait for
+a complete ROM. Its Nezha target uses the factory's dedicated, kernel-free
+recovery layout and an isolated Android 16 source tree. It is experimental
+and has not passed a device boot test. See [active TWRP work](docs/twrp-bringup.md).
+
 The current DSP-enabled user policy also builds. Both source-policy binaries
 have zero permissive domains under unfiltered checks. The separate combination
 with the unchanged factory policy now fails four assertion sites, down from
@@ -105,6 +110,8 @@ make doctor
 make verify
 make apple-status
 make apple-plan
+make twrp-plan
+make recovery-logs-plan
 ```
 
 `make apple-status` inspects the latest operation without attaching another VM.
@@ -204,7 +211,8 @@ properties do not independently establish physical variant or bootloader state.
 | [Kernel exports](docs/kernel-export-contract.md) | Independently decoded stock kernel exports and selected module CRC matches |
 | [Module providers](docs/module-provider-audit.md) | All 914 captured instances, matching global provider candidates and stage/loading limits |
 | [Module boot stages](docs/module-stage-closure.md) | Exact selected closures, conditional earlier-stage providers and stock-loader limits |
-| [Recovery plan](docs/recovery-plan.md) | TWRP after core ROM bring-up, correct Nezha layout and bootloader-protection limits |
+| [TWRP bring-up](docs/twrp-bringup.md) | Independent recovery source, target, build results and device-test gates |
+| [Recovery review](docs/recovery-plan.md) | Earlier stock/source review, correct Nezha layout and recovery limits |
 | [Build host](docs/build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](docs/apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
 

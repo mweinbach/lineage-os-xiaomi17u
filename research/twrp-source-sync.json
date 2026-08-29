@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "verified_at_utc": "2026-08-28T03:56:51.316889+00:00",
+  "source_role": "experimental Android 16 TWRP, separate from Evolution X",
+  "manifest": {
+    "url": "https://github.com/TWRP-Test/platform_manifest_twrp_aosp",
+    "branch": "twrp-16.0",
+    "commit": "d2188a9345857fb078c391e8cb3e259a21e941e5",
+    "name": "default.xml"
+  },
+  "repo_tool": {
+    "url": "https://gerrit.googlesource.com/git-repo",
+    "commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77"
+  },
+  "project_selection": {
+    "host_os": "Linux",
+    "groups": [
+      "default",
+      "platform-linux"
+    ],
+    "expanded_project_count": 392,
+    "excluded_projects": [
+      {
+        "path": "prebuilts/bazel/darwin-x86_64",
+        "name": "platform/prebuilts/bazel/darwin-x86_64",
+        "groups": [
+          "notdefault",
+          "platform-darwin",
+          "darwin",
+          "pdk"
+        ],
+        "clone_depth": 1,
+        "reason": "The default Linux Repo groups exclude this Darwin-only Bazel prebuilt. Every other expanded manifest path is selected."
+      }
+    ],
+    "evidence": "Live pinned Repo manifest export and .repo/project.list both contain 391 paths after the completed Linux sync. Comparing them with the recursive pinned XML expansion identifies only the recorded Darwin path as omitted."
+  },
+  "reviewed_project_pins_sha256": "898a2660bbb2ec4d6a1b095bdce499606c804216b91a4a39668fb68825927299",
+  "snapshot": {
+    "path": "research/source-snapshots/twrp-16.0-linux-20260828.xml",
+    "sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+    "size_bytes": 89628
+  },
+  "verification": {
+    "selected_projects": 391,
+    "all_present": true,
+    "all_heads_origins_and_clean_worktrees_verified": true,
+    "failures": [],
+    "reviewed_github_heads": 36,
+    "aosp_tag_commits_verified": 355,
+    "repo_signature_checks_disabled": false,
+    "source_build_proven_by_sync": false,
+    "hardware_validation_performed": false
+  },
+  "execution": {
+    "container": "evolution-nezha-shell-20260827180004772575",
+    "volume": "evolution-nezha-work",
+    "source_dir": "/work/twrp-nezha",
+    "out_dir": "/work/out/twrp-nezha",
+    "report_dir": "/work/validation/twrp-nezha",
+    "new_writer_vm_attached": false,
+    "evolution_source_mutation_commands_run": false,
+    "entire_evolution_tree_reverified_this_turn": false,
+    "host_phone_evidence_or_credentials_mounted": false
+  },
+  "host_preflight": {
+    "os": "Linux",
+    "architecture": "aarch64",
+    "host_mode": "apple-rosetta",
+    "host_status": "experimental-rosetta-ready",
+    "native_build_host": false,
+    "experimental_build_host": true,
+    "source_dir": "/work/twrp-nezha",
+    "filesystem_checked_at": "/work/twrp-nezha",
+    "output_dir": "/work/out/twrp-nezha",
+    "output_filesystem_checked_at": "/work/out",
+    "source_output_share_filesystem": true,
+    "ram_gib": 125.7,
+    "free_disk_gib": 472.7,
+    "output_free_disk_gib": 472.7,
+    "minimum_source_free_disk_gib": 150,
+    "storage_note": "Source and output free space are not additive when they share a filesystem. This gate checks initial source capacity, not a completed build's space requirements.",
+    "tools": {
+      "git": "/usr/bin/git",
+      "git-lfs": "/usr/bin/git-lfs",
+      "gpg": "/usr/bin/gpg",
+      "python3": "/usr/bin/python3",
+      "make": "/usr/bin/make",
+      "adb": null,
+      "fastboot": null
+    },
+    "checks": {
+      "linux": true,
+      "case_sensitive": true,
+      "output_case_sensitive": true,
+      "free_disk": true,
+      "ram": true,
+      "source_tools": true,
+      "arm64": true,
+      "trusted_apple_builder": true,
+      "x86_64_runtime": true,
+      "x86_64_execution": true,
+      "source_dir_ext4": true,
+      "out_dir_ext4": true,
+      "report_dir_ext4": true,
+      "output_free_disk": true
+    },
+    "supported_build_host": true,
+    "rosetta": {
+      "marker_path": "/opt/evolution/apple-container-builder",
+      "marker_trusted": true,
+      "probe_path": "/opt/evolution/bin/rosetta-probe",
+      "probe_elf_verified": true,
+      "runtime": {
+        "loader": true,
+        "libc": true,
+        "libstdc++": true,
+        "zlib": true
+      },
+      "probe_attempted": true,
+      "probe_executed": true,
+      "probe_exit_code": 0,
+      "probe_success": true,
+      "errors": [],
+      "probe_stdout": "evolution-x86_64-probe-ok\n",
+      "probe_stderr": ""
+    },
+    "note": "Experimental Apple Container/Rosetta execution was requested; it is not native x86-64 or proof of a successful full Android build. A host preflight is not proof of a complete toolchain or a buildable device tree. This checks source operations only; the host must separately confirm sole ownership of the named volume.",
+    "filesystems": {
+      "source_dir": "ext4",
+      "out_dir": "ext4",
+      "report_dir": "ext4"
+    }
+  },
+  "host_tool_version_smoke": {
+    "clang_selection": "clang-r547379",
+    "checks": [
+      {
+        "command": [
+          "prebuilts/go/linux-x86/bin/go",
+          "version"
+        ],
+        "exit_code": 0,
+        "output": "go version go1.23.4 linux/amd64\n"
+      },
+      {
+        "command": [
+          "prebuilts/jdk/jdk21/linux-x86/bin/java",
+          "-version"
+        ],
+        "exit_code": 0,
+        "output": "openjdk version \"21.0.4\" 2024-07-16\nOpenJDK Runtime Environment Android_PDK (build 21.0.4+-12414455)\nOpenJDK 64-Bit Server VM Android_PDK (build 21.0.4+-12414455, mixed mode, sharing)\n"
+      },
+      {
+        "command": [
+          "prebuilts/build-tools/linux-x86/bin/ninja",
+          "--version"
+        ],
+        "exit_code": 0,
+        "output": "1.9.0.git\n"
+      },
+      {
+        "command": [
+          "prebuilts/build-tools/path/linux-x86/uname",
+          "-m"
+        ],
+        "exit_code": 0,
+        "output": "x86_64\n"
+      },
+      {
+        "command": [
+          "prebuilts/clang/host/linux-x86/clang-r547379/bin/clang",
+          "--version"
+        ],
+        "exit_code": 0,
+        "output": "Android (13290119, +pgo, +bolt, +lto, +mlgo, based on r547379) clang version 20.0.0 (https://android.googlesource.com/toolchain/llvm-project b718bcaf8c198c82f3021447d943401e3ab5bd54)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /work/twrp-nezha/prebuilts/clang/host/linux-x86/clang-r547379/bin\n"
+      }
+    ]
+  },
+  "receipts": [
+    {
+      "path": "reports/twrp-init-live-v2.log",
+      "sha256": "af44be1ccaf3f7b498f3fe5c80500946be3b20659633863256af31f11e542cfa",
+      "size_bytes": 2551
+    },
+    {
+      "path": "reports/twrp-sync-live.log",
+      "sha256": "ce48b2b92a41f7b7795b589d4d8d5f1b17e7fde150f9ee7372b6c5d81d0e6a6e",
+      "size_bytes": 226
+    },
+    {
+      "path": "reports/twrp-source-state.json",
+      "sha256": "882a036c2a09b638f87c4a652e2d60172691a64ee36744cb9f44b4cd8f84c6ce",
+      "size_bytes": 4023
+    },
+    {
+      "path": "reports/twrp-freeze-live-v2.log",
+      "sha256": "f128dfc8715d2a1af31c9070053b62f418ac38921d466f53b8c20b0d0f027c50",
+      "size_bytes": 4017
+    },
+    {
+      "path": "reports/twrp-host-tools-live.json",
+      "sha256": "f422474ba7b2cacd157e477fa55cc7402480046666eb5344fe842d45d08fd585",
+      "size_bytes": 1384
+    }
+  ],
+  "limits": [
+    "Version execution probes do not prove complete host-toolchain compatibility.",
+    "A complete source sync is not a recovery image, decryption result, or device boot.",
+    "The resolved snapshot precedes the separately recorded reviewed source patch queue and authored device target."
+  ]
+}

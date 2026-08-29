@@ -1,0 +1,46 @@
+diff --git a/Android.bp b/Android.bp
+index abffd0c2624fb324092945bda43708bb7249f0bd..56f9a993fb3a9a000c6f65d9849c35c20852c93d 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -1102,40 +1102,41 @@
+         "libbinder_tokio_rs",
+         "libsimple_parcelable_rust",
+         "libtokio",
+     ],
+     proc_macros: ["libasync_trait"],
+     prefer_rlib: true,
+     compile_multilib: "both",
+     multilib: {
+         lib32: {
+             suffix: "32",
+         },
+         lib64: {
+             suffix: "64",
+         },
+     },
+     test_suites: ["general-tests"],
+ }
+ 
+ cc_library_static {
+     name: "aidl-analyzer-main",
++    recovery_available: true,
+     host_supported: true,
+     vendor_available: true,
+     shared_libs: [
+         "libbase",
+         "libbinder",
+     ],
+     srcs: [
+         "analyzer/analyzerMain.cpp",
+         "analyzer/Analyzer.cpp",
+     ],
+     export_include_dirs: ["analyzer/include"],
+ }
+ 
+ cc_binary {
+     name: "record_binder",
+     whole_static_libs: ["aidl-analyzer-main"],
+     shared_libs: [
+         "libbase",
+         "libbinder",
+         "libutils",

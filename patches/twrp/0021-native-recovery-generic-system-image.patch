@@ -1,0 +1,43 @@
+diff --git a/target/product/generic/Android.bp b/target/product/generic/Android.bp
+index 0a32a55b6be95915ad3c2011344e5f19a0ab6056..11e195762e1b16bf718b827e74da14e99584bb15 100644
+--- a/target/product/generic/Android.bp
++++ b/target/product/generic/Android.bp
+@@ -1036,34 +1036,38 @@ system_image_defaults {
+             }) + select(release_flag("RELEASE_UPROBESTATS_MODULE"), {
+                 true: [],
+                 default: [
+                     "libuprobestats_client", // base_system internal
+                 ],
+             }),
+         },
+     },
+     arch: {
+         arm64: {
+             deps: [
+                 "libclang_rt.hwasan",
+                 "libc_hwasan",
+             ],
+         },
+     },
+ }
+ 
+ android_system_image {
+     name: "aosp_shared_system_image",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: true,
++    }),
+     defaults: ["system_image_defaults"],
+     dirs: android_rootdirs,
+     symlinks: android_symlinks,
+     type: "erofs",
+     erofs: {
+         compressor: "lz4hc,9",
+         compress_hints: "erofs_compress_hints.txt",
+     },
+     deps: [
+         // DO NOT update this list. Instead, update the system_image_defaults to
+         // sync with the base_system.mk
+         "logpersist.start", // cf only
+     ],
+ }

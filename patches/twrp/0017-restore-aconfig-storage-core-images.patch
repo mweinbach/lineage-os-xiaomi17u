@@ -1,0 +1,46 @@
+diff --git a/tools/aconfig/aconfig_storage_read_api/Android.bp b/tools/aconfig/aconfig_storage_read_api/Android.bp
+index 27300b66b1af8c44882d9e6c19dd16048edf4a0d..16341b92735823ef624892dbfa6c94864f9bcfef 100644
+--- a/tools/aconfig/aconfig_storage_read_api/Android.bp
++++ b/tools/aconfig/aconfig_storage_read_api/Android.bp
+@@ -75,41 +75,40 @@
+     ],
+     min_sdk_version: "29",
+ }
+ 
+ // flag read api cc interface
+ cc_library {
+     name: "libaconfig_storage_read_api_cc",
+     srcs: ["aconfig_storage_read_api.cpp"],
+     generated_headers: [
+         "cxx-bridge-header",
+         "libcxx_aconfig_storage_read_api_bridge_header",
+     ],
+     generated_sources: ["libcxx_aconfig_storage_read_api_bridge_code"],
+     whole_static_libs: ["libaconfig_storage_read_api_cxx_bridge"],
+     export_include_dirs: ["include"],
+     static_libs: [
+         "libbase",
+     ],
+     host_supported: true,
+     vendor_available: true,
+-    recovery_available: true,
+     product_available: true,
+     apex_available: [
+         "//apex_available:platform",
+         "//apex_available:anyapex",
+     ],
+     min_sdk_version: "29",
+     target: {
+         linux: {
+             version_script: "libaconfig_storage_read_api_cc.map",
+         },
+     },
+     double_loadable: true,
+     afdo: true,
+ }
+ 
+ cc_defaults {
+     name: "aconfig_lib_cc_shared_link.defaults",
+     shared_libs: select(release_flag("RELEASE_READ_FROM_NEW_STORAGE"), {
+         true: ["libaconfig_storage_read_api_cc"],
+         default: [],

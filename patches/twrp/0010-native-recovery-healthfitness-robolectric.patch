@@ -1,0 +1,21 @@
+diff --git a/tests/Android.bp b/tests/Android.bp
+index 9ceaf533f34dedde14276ada60e5bfb5cf73c500..7ee0de38638a8dc86ccab2a7a9ae890a1ca701d8 100644
+--- a/tests/Android.bp
++++ b/tests/Android.bp
+@@ -54,12 +54,16 @@
+ // Robolectric test target for testing health connect library
+ // Ideally this would be in the unittests module, but this generates an AndroidTest.xml
+ // which conflicts with the existing AndroidText.xml used for mainline tests in that module.
+ // So following advice from the android testing team I have moved it up one level.
+ android_robolectric_test {
+     name: "HealthFitnessRoboUnitTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     // This line absolutely has to be here.
+     // If it is not set, then for some classes (eg RecordTypeIdentifier) the system version is
+     // used rather than our framework code. The system version has the parent class
+     // RecordTypeIdentifier, but the @hide has taken effect on RecordType, and you get a symbol
+     // not found.
+     sdk_version: "module_current",

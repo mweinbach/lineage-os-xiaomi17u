@@ -1,0 +1,35 @@
+diff --git a/current/aaos-libs/Android.bp b/current/aaos-libs/Android.bp
+index a6e0052a84b5f1a2db02bd09d01ed974cde79608..0d030729ac4685f7755f38ef62faf93b87bf3726 100644
+--- a/current/aaos-libs/Android.bp
++++ b/current/aaos-libs/Android.bp
+@@ -565,22 +565,30 @@
+         "car-ui-lib-oem-apis-source",
+     ],
+ }
+ 
+ android_library {
+     name: "car-ui-lib-testing-support",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     sdk_version: "31",
+     static_libs: [
+         "car-ui-lib-testing-support-source",
+         "car-ui-lib-source",
+         "Robolectric_all-target",
+     ],
+ }
+ 
+ android_library_import {
+     name: "car-ui-lib-testing-support-source",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     aars: ["car-ui-lib-testing-support.aar"],
+     sdk_version: "31",
+     static_libs: [
+         "car-ui-lib-source",
+         "Robolectric_all-target",
+     ],

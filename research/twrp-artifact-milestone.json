@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "operation": "twrp-static-artifact-milestone",
+  "status": "bounded_static_artifact_sequence_passed",
+  "target_product": "twrp_nezha",
+  "capture_status": "actual_artifact_captured_verification_pending",
+  "artifact": {
+    "image_sha256": "51478e22c6e99f7b604aa0ab1681d90adb84931f60d61b8e978e48a15ed1e791",
+    "image_size_bytes": 104857600,
+    "compressed_ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+    "compressed_ramdisk_size_bytes": 25192233,
+    "cpio_sha256": "26e00b45e58c82abca9c58bed226248645c6ced543469ff4d56be9fee2089a9e",
+    "cpio_size_bytes": 57758208,
+    "build_receipt_sha256": "0ea4917fced23b45d9d73ac5d96d445ec342e62f20f7db2075a282efbf2c7dd0",
+    "build_state_sha256": "0b4ff881f6518f7e19267328a39170f3cabfd3158201579ef4d7736e0b355375",
+    "combined_graph_sha256": "8bfe6ed62f95c2829b3bcf9bb7fc091274a50bb5f16b77685345a3858974f8a7",
+    "engineering_signature_recorded_by_build": true
+  },
+  "evidence": {
+    "run_report": {
+      "sha256": "4c1f9c4dee84e2ca9554f743e543f4f1e1c1b4cbdc0bfbaca02b7217381dcb8e",
+      "size_bytes": 4336
+    },
+    "verification_report": {
+      "sha256": "330de40dce49b9d2261252b9fc1724ef4d8b4fb00d01c0b0757b33b67efed596",
+      "size_bytes": 189777
+    },
+    "capture_report": {
+      "sha256": "4197f46b978e1a816470009f06511285077d5dd0d6443456134d1e165d383cb4",
+      "size_bytes": 85656
+    },
+    "v2_binding": {
+      "sha256": "4ccfbd8b4ee2a142d902e6c06ff2a1bff7c2c8e5bea7d2ab2ce378acf763ce3c",
+      "size_bytes": 11547
+    },
+    "build_receipt": {
+      "sha256": "0ea4917fced23b45d9d73ac5d96d445ec342e62f20f7db2075a282efbf2c7dd0",
+      "size_bytes": 5832
+    },
+    "elf_inventory": {
+      "sha256": "91d0c1053cec8a45feae9c8498d082fb2d3b3781e846989e0a21a58b8cb2febf",
+      "size_bytes": 805561
+    },
+    "staging_receipt": {
+      "sha256": "b8cbc3fe3ee283e11ab17eff31b45b459828f456f2c8c94ef4fd7db00152a1ea",
+      "size_bytes": 7400
+    }
+  },
+  "workflow": {
+    "source_manifest_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+    "helper_manifest_sha256": "cf79f8b274933e2f8b1120dc125b68938ee798ec8cb8363e3a5246efe4045ae3",
+    "runner_sha256": "2a8ae2bb2fd8581b82c6f28a0c79626a4293e8b98d209ad61976b7be40ef1518",
+    "helper_count": 16,
+    "staged_file_count": 18,
+    "capture_sha256": "a5d1688a69d176f72ea5dbe966ab54e7e86b92a52c8a5f0dac399fca2e24e2b9",
+    "base_sha256": "e7066db4ad27e5988b13bc9e7381cbb1d007ac2e7931d34d1eeedf115c970eb9",
+    "wrapper_sha256": "e358a7032d93112ae8bc3b3d15c2cd6b76f6e0032ead053eefedd24e11aa6300",
+    "matching_staged_helper_identities": true,
+    "helper_execution_timing_attested": false
+  },
+  "native_policy": {
+    "returncode": 0,
+    "stdout_size_bytes": 0,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_size_bytes": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "policy_sha256": "a567fb110cad37d9dbae5ec390644b8d36fef8d50bbab042fadc3ab3a800106a",
+    "tool_sha256": "2011b2a2c11acef550acbc4f63ea0ef6352ee6dc83260869f69fcfee17fa9944",
+    "unfiltered_permissive_query_passed": true
+  },
+  "elf_inventory": {
+    "elf_count": 160,
+    "dependency_count": 1074,
+    "interpreter_count": 44,
+    "finding_count": 0,
+    "retained_soname_collision_count": 1
+  },
+  "compile_evidence": [
+    {
+      "role": "init",
+      "source_sha256": "7bab348bce3f7bb8ea226dca37a4f1c2c879dd7f459e61affb2cf499f1e9e61d",
+      "object_sha256": "2bef33fcaf203ad9f1b5ca83272b96dc7bd37fec24d694b38dd328ecc5de2d25",
+      "command_sha256": "56bbc4f219196d2cd41b26e1ece0f1f1eda3b59ca553ff36d464f8622daaddd2",
+      "target_triple": "aarch64-linux-android10000",
+      "object_format": "llvm-bitcode-thinlto",
+      "llvm_module_count": 2,
+      "packaged_elf_sha256": "f6176fd10e6e42ce2a35c546f064325a74a9fa45ce145690bdab28578870db56"
+    },
+    {
+      "role": "minadbd",
+      "source_sha256": "424c43278fd615ef6daf026e71b4258d3908564df1100a4b84faf06be7ccab53",
+      "object_sha256": "6533e0e7b440a8c1792b9334adc04e684daf4435e43562a3d4f7830eae79a91a",
+      "command_sha256": "df0ddb9447b217c9b5f9422159a46c5ea0066c048178f9b65c0e842ec86752c7",
+      "target_triple": "aarch64-linux-android10000",
+      "object_format": "llvm-bitcode-thinlto",
+      "llvm_module_count": 2,
+      "packaged_elf_sha256": "331c5ab8496921c77e0b6b139938a80e8b1e7690cdb51b861010712d9f388b47"
+    },
+    {
+      "role": "libtwrpinstall",
+      "source_sha256": "65ef9b3496a1f012ab1d7ead334051bbb25a6f6434618a7d05146447b5833878",
+      "object_sha256": "aaa0c3e9e96416141612f0f1a46df5d09433fa5bac421a28dbd9360dd77c4e98",
+      "command_sha256": "19d2445edd58cd1843a5a070b1661c02e1cb0ac698095e4ae5e3a48059e35acf",
+      "target_triple": "aarch64-linux-android10000",
+      "object_format": "llvm-bitcode-thinlto",
+      "llvm_module_count": 1,
+      "packaged_elf_sha256": "518d4e79cefdca5ec15a5c0057812938919de3548ac0dac169b55a3e1596a7d2"
+    },
+    {
+      "role": "adbd_main",
+      "source_sha256": "8a9aec32ad19c081349aa3fd908e9c406e78b31c2a34ca7651d728e6b576d2b3",
+      "object_sha256": "a2d8d9baf6d39d8eb8f9881dcf8fb6369133b435298de63c4338c4d30066996c",
+      "command_sha256": "529fe5ab9228acc43789b60821f929c544e2c159a904abf1443a768c293ae488",
+      "target_triple": "aarch64-linux-android30",
+      "object_format": "llvm-bitcode-thinlto",
+      "llvm_module_count": 2,
+      "packaged_elf_sha256": "d60cca71278048614ea17442a2a10cbec836304a1dde1eda3bef2965968a5775"
+    },
+    {
+      "role": "adbd_wifi",
+      "source_sha256": "29d449caab9a0d859f5a8a1d5d308430042494fdcd786425497789c0ac32cd6a",
+      "object_sha256": "3038fc93f9197bfd79af93b8d6ea14dd134adcb6abc37ec5c2eddc35925b6405",
+      "command_sha256": "506f6772d161c00b6c0ce18d32019eea8ff391a4cebba9a6eec2b06c01c8eae4",
+      "target_triple": "aarch64-linux-android30",
+      "object_format": "llvm-bitcode-thinlto",
+      "llvm_module_count": 1,
+      "packaged_elf_sha256": "d60cca71278048614ea17442a2a10cbec836304a1dde1eda3bef2965968a5775"
+    }
+  ],
+  "mode_normalizations": [
+    {
+      "member": "twres/ui.xml",
+      "sha256": "8c1a0586692711c07d78ed0e83b2b00466592eeb2325acf8cd2e85bf13f2b16a",
+      "staging_mode": "0755",
+      "packed_mode": "0644",
+      "hash_and_mode_match": false,
+      "mode_policy": "fs_config_default_0644_for_pinned_theme"
+    },
+    {
+      "member": "init.recovery.qcom.rc",
+      "sha256": "dfeb674fb7ad261769a8421a5c0671daa060b21425747b5fb331f15a2b7d8755",
+      "staging_mode": "0644",
+      "packed_mode": "0750",
+      "hash_and_mode_match": false,
+      "mode_policy": "fs_config_init_prefix_0750_for_pinned_rc"
+    },
+    {
+      "member": "system/bin/logd",
+      "sha256": "41e134458b14d1af7ae66bd5d48730ebd3caacc6b3c2b274eadb0a760b31c3db",
+      "staging_mode": "0755",
+      "packed_mode": "0550",
+      "hash_and_mode_match": false,
+      "mode_policy": "fs_config_system_bin_logd_0550"
+    }
+  ],
+  "equality_flags": {
+    "critical_cpio_staging_hashes_and_modes": false,
+    "committed_startup_rc_cpio_and_staging_match": false,
+    "original_noncompiler_stage2_gates_retained": false
+  },
+  "etc_present_at_unpack": true,
+  "packaged_elf_binding_verified": true,
+  "historical_failures": [
+    {
+      "run": "run63",
+      "run_report_sha256": "0ff3d1e273b09b1d92e1ecb44a4dc42bfc769753d02ad03ec70dfec9ee229d0a",
+      "verification_report_sha256": "132f8de6d395d4ee594c857f1e02ef401ad62310fcbda68b5773ebd8965bc5a4",
+      "status": "verification_failed"
+    },
+    {
+      "run": "run65",
+      "run_report_sha256": "e76143b18fd9be5ccadf4edb9df28dd4cf4a3a308f89d7153fae7cbda2d802f4",
+      "verification_report_sha256": "13d70588596572c37c0b9aff69df729cf521c7d3aa887e8aa8180c5182be0b9e",
+      "status": "verification_failed"
+    }
+  ],
+  "unverified": {
+    "boot_tested": false,
+    "flash_admitted": false,
+    "authenticated_adb_verified": false,
+    "runtime_selinux_enforcement_verified": false,
+    "runtime_elf_dependency_closure_verified": false,
+    "runtime_file_labels_verified": false,
+    "oem_authority_verified": false,
+    "compiler_execution_attested": false,
+    "compiled_transport_behavior_verified": false,
+    "object_code_in_installed_elf_verified": false
+  },
+  "scope": "Consistent trusted root reports only; this reducer does not re-read manifests, artifacts, native outputs or helper files and does not execute any tool.",
+  "build": {
+    "attempt": 66,
+    "source_control_commit": "2ced55ff186e5d361172c8ef22b19fbeb9efbae4",
+    "control_archive": {
+      "path": "reports/twrp-build-control-v65.tar",
+      "sha256": "5136435129cfe04ae185c691eb018a560249c370b239817dcb7fc9a4e3852c1e",
+      "size_bytes": 1689600
+    },
+    "receipt": {
+      "path": "reports/twrp-build-66-result.json",
+      "sha256": "0ea4917fced23b45d9d73ac5d96d445ec342e62f20f7db2075a282efbf2c7dd0",
+      "size_bytes": 5832
+    }
+  },
+  "inventory_verification": {
+    "status": "inventory_checks_passed",
+    "report": {
+      "path": "reports/twrp-build66-inventory-verification.json",
+      "sha256": "f575796ea171d38bce479da9f30b13dbcef649e3b475e9b3974f62ca44240b05",
+      "size_bytes": 77601
+    },
+    "cpio_sha256": "26e00b45e58c82abca9c58bed226248645c6ced543469ff4d56be9fee2089a9e",
+    "archive_entry_count": 777,
+    "file_type_counts": {
+      "directory": 28,
+      "regular": 541,
+      "symlink": 208
+    },
+    "archive_dot_present": false,
+    "staging_census_count": 778,
+    "name_inventory_entries": 778,
+    "checksum_entries": 537,
+    "etc_target": "/system/etc",
+    "inventories": {
+      "ramdisk-files.sha256sum": {
+        "sha256": "33538c89283d5e9124bb36540797dfd8b767abb8425f2aaf8afed2a1450cb381",
+        "size_bytes": 52088
+      },
+      "ramdisk-files.txt": {
+        "sha256": "4f48f9d9b2bf17c73b5a6305005e939e4e314df530865fbb0e81dd7eb0b732c8",
+        "size_bytes": 19702
+      }
+    },
+    "checks": {
+      "all_checksums_match": true,
+      "all_regular_content_hashes_match": true,
+      "all_symlink_texts_match": true,
+      "checksum_census_and_exclusions_match": true,
+      "complete_member_census_match": true,
+      "exact_etc_alias": true,
+      "name_census_and_exclusions_match": true,
+      "name_inventory_checksum_matches": true,
+      "name_parent_order_valid": true,
+      "real_target_directories": true
+    },
+    "runtime_verified": false
+  },
+  "local_export": {
+    "image_path": "artifacts/twrp/nezha/build66/recovery.img",
+    "image_sha256": "51478e22c6e99f7b604aa0ab1681d90adb84931f60d61b8e978e48a15ed1e791",
+    "cpio_sha256": "26e00b45e58c82abca9c58bed226248645c6ced543469ff4d56be9fee2089a9e",
+    "receipt": {
+      "path": "artifacts/twrp/nezha/build66/export-receipt.json",
+      "sha256": "3c7ac5c212c91b37f39d26e9826585615336227e5853b4bec920a88cfc1a883f",
+      "size_bytes": 980
+    }
+  },
+  "record_derivation": {
+    "pure_reducer_sha256": "0978f1e1857ede40c682c28b7a6650a5daefee711b8b58bb5c1e919a418ccca0",
+    "seven_document_projection_sha256": "6e970fb26d82de0ecec7011e8d488ac104dd5255649c3a07ef185d6bd65c7b37",
+    "consistency_checks_only": true,
+    "artifact_verification_reexecuted_by_reducer": false
+  },
+  "personal_key_read_or_provisioned": false,
+  "recovery_log_access_verified": false,
+  "phone_changed": false
+}

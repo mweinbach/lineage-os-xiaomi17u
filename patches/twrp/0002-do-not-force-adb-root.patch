@@ -1,0 +1,17 @@
+diff --git a/etc/init.rc b/etc/init.rc
+index 480b529fe5e755815740e6a87ed6898494b77ecf..58f47166d0921ae9dba16aaedb5bf4142e7c34b0 100644
+--- a/etc/init.rc
++++ b/etc/init.rc
+@@ -136,12 +136,6 @@
+     socket adbd stream 660 system system
+     seclabel u:r:adbd:s0
+     user root
+-
+-# Always start adbd on userdebug and eng builds
+-on property:ro.debuggable=1
+-    #write /sys/class/android_usb/android0/enable 1
+-    #start adbd
+-    setprop service.adb.root 1
+ 
+ # Always start adbd on userdebug and eng builds
+ on fs && property:ro.debuggable=1

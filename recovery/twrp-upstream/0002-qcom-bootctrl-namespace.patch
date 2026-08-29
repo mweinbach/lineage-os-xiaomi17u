@@ -1,0 +1,10 @@
+diff --git a/Android.bp b/Android.bp
+--- a/Android.bp
++++ b/Android.bp
+@@ -1 +1,5 @@
+-soong_namespace {}
++soong_namespace {
++    imports: [
++        "hardware/qcom-caf/bootctrl",
++    ],
++}

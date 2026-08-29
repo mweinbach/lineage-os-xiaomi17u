@@ -1,0 +1,81 @@
+diff --git a/minadbd/Android.bp b/minadbd/Android.bp
+index 9185b1d7c21afec31913cd91d432411c83d90452..4dce917fe63920d6f6f488e4d9cea7f88e2d9b2d 100644
+--- a/minadbd/Android.bp
++++ b/minadbd/Android.bp
+@@ -86,10 +86,16 @@
+ 
+ cc_binary {
+     name: "minadbd",
+     recovery: true,
+ 
++    // Keep the binary dependency, but deny its unauthenticated transport in this profile.
++    cflags: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: ["-DNEZHA_TWRP_DISABLE_MINADBD=1"],
++        default: unset,
++    }),
++
+     defaults: [
+         "minadbd_defaults",
+         "libadbd_binary_dependencies",
+         "librecovery_utils_defaults",
+     ],
+diff --git a/minadbd/minadbd.cpp b/minadbd/minadbd.cpp
+index 4fab0f42990fd5d8f3db676294522d50ec79f579..e5b9bcc43442c97f834802ca0dda9f0d380e5a49 100644
+--- a/minadbd/minadbd.cpp
++++ b/minadbd/minadbd.cpp
+@@ -33,10 +33,15 @@
+ 
+ using namespace std::string_literals;
+ 
+ int main(int argc, char** argv) {
+   android::base::InitLogging(argv, &android::base::StderrLogger);
++#if defined(NEZHA_TWRP_DISABLE_MINADBD)
++  LOG(ERROR) << "minadbd sideload and rescue are disabled by the Nezha native recovery profile";
++  return kMinadbdUnsupportedCommandError;
++#endif
++
+   // TODO(xunchang) implement a command parser
+   if ((argc != 3 && argc != 4) || argv[1] != "--socket_fd"s ||
+       (argc == 4 && argv[3] != "--rescue"s)) {
+     LOG(ERROR) << "minadbd has invalid arguments, argc: " << argc;
+     exit(kMinadbdArgumentsParsingError);
+diff --git a/twrpinstall/Android.bp b/twrpinstall/Android.bp
+index 5d0c7ec1102e393192e88bb32c64e423f07738b4..e5ad378f68413083c65f8c56da6550c49346261b 100644
+--- a/twrpinstall/Android.bp
++++ b/twrpinstall/Android.bp
+@@ -57,11 +57,14 @@
+         "libtwrpinstall_defaults",
+     ],
+ 
+     cflags: [
+         "-DAB_OTA_UPDATER=1"
+-    ],
++    ] + select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: ["-DNEZHA_TWRP_DISABLE_MINADBD=1"],
++        default: unset,
++    }),
+ 
+     include_dirs: [
+         "bootable/recovery",
+         "bootable/recovery/recovery_utils/include",
+     ],
+diff --git a/twrpinstall/adb_install.cpp b/twrpinstall/adb_install.cpp
+index 5486b7e3f92e34e5a3fea096e33f40ae8535c81f..40871ed94ecd6d09ab45b70ca43dca2700510338 100644
+--- a/twrpinstall/adb_install.cpp
++++ b/twrpinstall/adb_install.cpp
+@@ -335,10 +335,15 @@
+   signal(SIGPIPE, SIG_DFL);
+ }
+ 
+   int twrp_sideload(const char* install_file, Device::BuiltinAction* reboot_action) {
+ 
++#if defined(NEZHA_TWRP_DISABLE_MINADBD)
++  LOG(ERROR) << "ADB sideload is disabled by the Nezha native recovery profile";
++  return INSTALL_ERROR;
++#endif
++
+   // Save the usb state to restore after the sideload operation.
+   std::string usb_state = android::base::GetProperty("sys.usb.state", "none");
+   // Clean up state and stop adbd.
+   if (usb_state != "none" && !SetUsbConfig("none")) {
+     LOG(ERROR) << "Failed to clear USB config";

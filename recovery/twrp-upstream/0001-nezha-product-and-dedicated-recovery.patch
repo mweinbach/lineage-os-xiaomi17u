@@ -1,0 +1,262 @@
+diff --git a/Android.mk b/Android.mk
+index 54ebb745c9bcbdebfaf0917ccedf24c7d65285c7..2fbff214c1a079237a1ecd45553d724244dded12
+--- a/Android.mk
++++ b/Android.mk
+@@ -25,7 +25,7 @@
+ 
+ LOCAL_PATH := $(call my-dir)
+ 
+-ifeq ($(TARGET_DEVICE),sm8750_thales)
++ifeq ($(TARGET_DEVICE),nezha)
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := hostfs_tool
+ LOCAL_MODULE_CLASS := EXECUTABLES
+diff --git a/AndroidProducts.mk b/AndroidProducts.mk
+index 6b2a15823c69ae66f60e2c3fed671a468b141c2f..eef3c9bbb33edb0edd06591ae15e68731e86d6fc
+--- a/AndroidProducts.mk
++++ b/AndroidProducts.mk
+@@ -15,7 +15,7 @@
+ #
+ 
+ PRODUCT_MAKEFILES := \
+-    $(LOCAL_DIR)/twrp_sm8750_thales.mk
++    twrp_nezha_upstream:$(LOCAL_DIR)/twrp_sm8750_thales.mk
+ 
+ COMMON_LUNCH_CHOICES := \
+-    twrp_sm8750_thales-ap2a-eng
++    twrp_nezha_upstream-ap2a-eng
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index c462389c98585033dcf32d10f9ca38ef0c10bb11..2d3c5d04bab3427d1dcccfb91ea577fa7f1e721a
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -45,56 +45,26 @@
+ ENABLE_SCHEDBOOST := true
+ 
+ # Bootloader
+-TARGET_BOOTLOADER_BOARD_NAME := sun
++TARGET_BOOTLOADER_BOARD_NAME := canoe
+ TARGET_NO_BOOTLOADER := true
+ TARGET_USES_UEFI := true
+ 
+-# DTB
+-ifndef BOARD_PREBUILT_DTBOIMAGE
+-BOARD_KERNEL_SEPARATED_DTBO := true
+-endif
+-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
+-ifndef TARGET_PREBUILT_DTB
+-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+-else
+-BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
+-endif
+-
+-# Kernel
+-TARGET_NO_KERNEL := false
+-TARGET_KERNEL_ARCH := $(TARGET_ARCH)
+-BOARD_KERNEL_CMDLINE := \
+-    androidboot.hardware=qcom \
+-    androidboot.memcg=1 \
+-    androidboot.usbcontroller=a600000.dwc3 \
+-    cgroup.memory=nokmem,nosocket \
+-    loop.max_part=7 \
+-    lpm_levels.sleep_disabled=1 \
+-    msm_rtb.filter=0x237 \
+-    pcie_ports=compat \
+-    service_locator.enable=1 \
+-    swiotlb=0 \
+-    ip6table_raw.raw_before_defrag=1 \
+-    iptable_raw.raw_before_defrag=1
++# Dedicated recovery uses the matching stock boot/vendor_boot kernel and DTB.
++TARGET_NO_KERNEL := true
+ BOARD_KERNEL_PAGESIZE := 4096
+-BOARD_KERNEL_IMAGE_NAME := Image
+ BOARD_BOOT_HEADER_VERSION := 4
+-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image
+-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
++BOARD_RECOVERY_MKBOOTIMG_ARGS := --header_version 4
++# User-authorized permissive mode for initial recovery bring-up only.
++BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
++BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
++BOARD_INCLUDE_DTB_IN_BOOTIMG := false
+ BOARD_RAMDISK_USE_LZ4 := true
+-ifndef TARGET_PREBUILT_KERNEL
+-TARGET_KERNEL_SOURCE := kernel/xiaomi/sm8750
+-TARGET_KERNEL_CONFIG := vendor/sun_defconfig
+-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := msm_drm.ko
+-BOOT_KERNEL_MODULES := $(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD)
+-else
+-TARGET_FORCE_PREBUILT_KERNEL := true
++
++# Retain the upstream module declaration; vendor_boot image output is disabled.
+ BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(DEVICE_PATH)/prebuilt/dlkm/msm_drm.ko
+-endif
+ 
+ # Platform
+-TARGET_BOARD_PLATFORM := xiaomi_sm8750
+-TARGET_BOARD_PLATFORM_GPU := qcom-adreno830
++TARGET_BOARD_PLATFORM := canoe
+ TARGET_USES_HARDWARE_QCOM_BOOTCTRL := true
+ QCOM_BOARD_PLATFORMS += $(TARGET_BOARD_PLATFORM)
+ 
+@@ -102,18 +72,17 @@
+ BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
+ BOARD_USES_PRODUCTIMAGE := true
+ 
+-BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
+-BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := $(BOARD_BOOTIMAGE_PARTITION_SIZE)
++BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600
+ BOARD_SYSTEMIMAGE_JOURNAL_SIZE := 0
+ BOARD_SYSTEMIMAGE_EXTFS_INODE_COUNT := 4096
+ TARGET_USERIMAGES_USE_EXT4 := true
+ TARGET_USERIMAGES_USE_F2FS := true
+ 
+ # Dynamic/Logical Partitions
+-# TODO: replace with lpdump-derived values when imported.
+-BOARD_SUPER_PARTITION_SIZE := 7516192768
++# Nezha OS3.0.309.0.WPACNXM factory LP metadata; super output is disabled.
++BOARD_SUPER_PARTITION_SIZE := 15300820992
+ BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
+-BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 7511998464 # BOARD_SUPER_PARTITION_SIZE - 4MB
++BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 15290335232
+ BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := \
+     system \
+     system_ext \
+@@ -121,7 +90,8 @@
+     odm \
+     vendor \
+     vendor_dlkm \
+-    system_dlkm
++    system_dlkm \
++    mi_ext
+ 
+ # Workaround for error copying vendor files to recovery ramdisk
+ BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
+@@ -136,18 +106,14 @@
+ TARGET_COPY_OUT_SYSTEM_DLKM := system_dlkm
+ 
+ # Recovery
+-ifeq ($(BOARD_BOOT_HEADER_VERSION),3)
+-BOARD_USES_RECOVERY_AS_BOOT := true
+-endif
+-ifeq ($(BOARD_BOOT_HEADER_VERSION),4)
+-BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+-BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
+-endif
++BOARD_USES_RECOVERY_AS_BOOT := false
++BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := false
++BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := false
+ BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+ BOARD_HAS_LARGE_FILESYSTEM := true
+ BOARD_HAS_NO_SELECT_BUTTON := true
+ BOARD_SUPPRESS_SECURE_ERASE := true
+-TARGET_NO_RECOVERY := true
++TARGET_NO_RECOVERY := false
+ TARGET_RECOVERY_DEVICE_MODULES += \
+     libdmabufheap \
+     hostfs_tool \
+@@ -162,6 +128,11 @@
+ 
+ # AVB
+ BOARD_AVB_ENABLE := true
++# Public development test key: artifact integrity, not OEM trust.
++BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
++BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
++BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
++BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
+ BOARD_AVB_VBMETA_SYSTEM := system
+ BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
+ BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
+@@ -171,8 +142,7 @@
+ # Encryption
+ BOARD_USES_METADATA_PARTITION := true
+ BOARD_USES_QCOM_FBE_DECRYPTION := true
+-PLATFORM_VERSION := 99.87.36
+-PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
++# Use the pinned platform Android version and security patch metadata.
+ 
+ # Extras
+ BOARD_ROOT_EXTRA_FOLDERS := batinfo
+diff --git a/device.mk b/device.mk
+index 8bb62fd0a12f9d8f01787a7e79895a71c5761c91..b41622d8ab6f711c2ed46f6504ac88dadfa67593
+--- a/device.mk
++++ b/device.mk
+@@ -68,7 +68,7 @@
+     POSTINSTALL_OPTIONAL_system=true
+ 
+ # API
+-PRODUCT_SHIPPING_API_LEVEL := 35
++PRODUCT_SHIPPING_API_LEVEL := 36
+ 
+ # tell update_engine to not change dynamic partition table during updates
+ # needed since our qti_dynamic_partitions does not include
+@@ -99,3 +99,21 @@
+ # Soong namespaces
+ PRODUCT_SOONG_NAMESPACES += \
+     $(DEVICE_PATH)
++
++# Keep the complete upstream product; emit only the dedicated recovery image.
++PRODUCT_BUILD_RECOVERY_IMAGE := true
++PRODUCT_BUILD_BOOT_IMAGE := false
++PRODUCT_BUILD_INIT_BOOT_IMAGE := false
++PRODUCT_BUILD_VENDOR_BOOT_IMAGE := false
++PRODUCT_BUILD_SUPER_PARTITION := false
++PRODUCT_BUILD_USERDATA_IMAGE := false
++PRODUCT_BUILD_SYSTEM_IMAGE := false
++PRODUCT_BUILD_SYSTEM_EXT_IMAGE := false
++PRODUCT_BUILD_PRODUCT_IMAGE := false
++PRODUCT_BUILD_VENDOR_IMAGE := false
++PRODUCT_BUILD_ODM_IMAGE := false
++PRODUCT_BUILD_VENDOR_DLKM_IMAGE := false
++PRODUCT_BUILD_ODM_DLKM_IMAGE := false
++PRODUCT_BUILD_SYSTEM_DLKM_IMAGE := false
++PRODUCT_BUILD_CACHE_IMAGE := false
++PRODUCT_BUILD_VBMETA_IMAGE := false
+diff --git a/twrp_sm8750_thales.mk b/twrp_sm8750_thales.mk
+index e24b49f5ee9cf2cb3ea087c5eea3bcaed1d1803e..9b064a3d11fdec7e506f4d11ae9ec798e8becada
+--- a/twrp_sm8750_thales.mk
++++ b/twrp_sm8750_thales.mk
+@@ -1,16 +1,16 @@
+ #
+-# Local reconstructed TWRP product definition for Xiaomi sm8750_thales.
++# TWRP product for Xiaomi 17 Ultra (Nezha).
+ #
+ 
+-PRODUCT_PLATFORM := xiaomi_sm8750
+-DEVICE_PATH := device/xiaomi/sm8750_thales
++PRODUCT_PLATFORM := canoe
++DEVICE_PATH := device/xiaomi/nezha
+ 
+ $(call inherit-product, vendor/twrp/config/common.mk)
+ 
+-PRODUCT_DEVICE := sm8750_thales
+-PRODUCT_NAME := twrp_sm8750_thales
++PRODUCT_DEVICE := nezha
++PRODUCT_NAME := twrp_nezha_upstream
+ PRODUCT_BRAND := Xiaomi
+-PRODUCT_MODEL := 2509FPN0BC
++PRODUCT_MODEL := Xiaomi 17 Ultra
+ PRODUCT_MANUFACTURER := Xiaomi
+ 
+ $(call inherit-product, $(DEVICE_PATH)/device.mk)
+diff --git a/vendor.prop b/vendor.prop
+index a67e7732aa6be8de9fc2fe43626577334aabe7b9..59bd3f5e614fa7094329f87738d7e620f3b7841e
+--- a/vendor.prop
++++ b/vendor.prop
+@@ -14,14 +14,14 @@
+ 
+ # Platform / board
+ ro.boot.dynamic_partitions=true
+-ro.product.first_api_level=35
++ro.product.first_api_level=36
+ ro.product.debugfs_restrictions.enabled=true
+-ro.board.first_api_level=35
++ro.board.first_api_level=202504
+ ro.board.api_level=202504
+ ro.board.api_frozen=true
+ ro.vendor.build.security_patch=2026-02-01
+-ro.product.board=sun
+-ro.board.platform=xiaomi_sm8750
++ro.product.board=canoe
++ro.board.platform=canoe
+ 
+ # A/B / recovery USB
+ ro.build.ab_update=true

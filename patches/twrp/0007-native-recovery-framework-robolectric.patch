@@ -1,0 +1,248 @@
+diff --git a/libs/WindowManager/Shell/multivalentTests/Android.bp b/libs/WindowManager/Shell/multivalentTests/Android.bp
+index 50666911e3136387aa4e59040e702121586d8474..93d1fb4d04cc974637cd5ab020e902398fff5ba3 100644
+--- a/libs/WindowManager/Shell/multivalentTests/Android.bp
++++ b/libs/WindowManager/Shell/multivalentTests/Android.bp
+@@ -31,12 +31,16 @@
+     manifest: "AndroidManifestRobolectric.xml",
+     use_resource_processor: true,
+ }
+ 
+ android_robolectric_test {
+     name: "WMShellRobolectricTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     instrumentation_for: "WindowManagerShellRobolectric",
+     java_resource_dirs: [
+         "robolectric/config",
+     ],
+     srcs: [
+         "src/**/*.kt",
+diff --git a/packages/CredentialManager/tests/robotests/Android.bp b/packages/CredentialManager/tests/robotests/Android.bp
+index 01f403d3719dcc37023808f5929e51cf33ce2652..0b809a647bf024bc35e9931afd3a889d6b820461 100644
+--- a/packages/CredentialManager/tests/robotests/Android.bp
++++ b/packages/CredentialManager/tests/robotests/Android.bp
+@@ -30,12 +30,16 @@
+     use_resource_processor: true,
+ }
+ 
+ // This is a RNG (Robolectric native graphics) test target.
+ android_robolectric_test {
+     name: "CredentialManagerScreenshotTest",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         ":CredentialManagerScreenshotTestFiles",
+     ],
+ 
+     // Do not add any libraries here, instead add them to the ScreenshotTestRobo
+     static_libs: [
+diff --git a/packages/CredentialManager/wear/robotests/Android.bp b/packages/CredentialManager/wear/robotests/Android.bp
+index db3c36355dded01df25e99fc7c1a645458eaef7c..590f2446b6d7eae0d87a58ac94e5e426b8cd21c9 100644
+--- a/packages/CredentialManager/wear/robotests/Android.bp
++++ b/packages/CredentialManager/wear/robotests/Android.bp
+@@ -2,12 +2,16 @@
+     // See: http://go/android-license-faq
+     default_applicable_licenses: ["frameworks_base_license"],
+ }
+ 
+ android_robolectric_test {
+     name: "CredentialSelectorTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "src/**/*.kt",
+     ],
+     // Include test libraries.
+     instrumentation_for: "ClockworkCredentialManager",
+     libs: [
+diff --git a/packages/SettingsLib/DataStore/tests/Android.bp b/packages/SettingsLib/DataStore/tests/Android.bp
+index 6044eaba5f899e4d61d8e449e7710f67911fb876..3305299d57453305b5df9f9cd8085aad470e574e 100644
+--- a/packages/SettingsLib/DataStore/tests/Android.bp
++++ b/packages/SettingsLib/DataStore/tests/Android.bp
+@@ -6,12 +6,16 @@
+     name: "SettingsLibDataStoreShell",
+     platform_apis: true,
+ }
+ 
+ android_robolectric_test {
+     name: "SettingsLibDataStoreTest",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         ":SettingsLibDataStore-srcs", // b/240432457
+         "src/**/*",
+     ],
+     static_libs: [
+         "androidx.collection_collection-ktx",
+diff --git a/packages/SettingsLib/Spa/screenshot/robotests/Android.bp b/packages/SettingsLib/Spa/screenshot/robotests/Android.bp
+index dd6743b8595c8de50a0408ef4f81d8cebb91a749..c60921345651ca824c2733f85b87f4e7cc73a5a1 100644
+--- a/packages/SettingsLib/Spa/screenshot/robotests/Android.bp
++++ b/packages/SettingsLib/Spa/screenshot/robotests/Android.bp
+@@ -45,12 +45,16 @@
+     plugins: ["dagger2-compiler"],
+     use_resource_processor: true,
+ }
+ 
+ android_robolectric_test {
+     name: "SpaRoboRNGTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         ":SpaScreenshotTestRNGFiles",
+         ":flag-junit",
+         ":platform-test-screenshot-rules",
+     ],
+     // Do not add any new libraries here, they should be added to SpaRoboApp above.
+diff --git a/packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp b/packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp
+index e3faf73a69fbd40c908f651bdcd64b0fe3224a91..79d35afa2ad626168615ab1a6f3bf3714beaf581 100644
+--- a/packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp
++++ b/packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp
+@@ -26,12 +26,16 @@
+     certificate: "platform",
+     privileged: true,
+ }
+ 
+ android_robolectric_test {
+     name: "SpaPrivilegedRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         ":SpaPrivilegedLib_srcs",
+         "src/**/*.java",
+         "src/**/*.kt",
+     ],
+ 
+diff --git a/packages/SettingsLib/tests/robotests/Android.bp b/packages/SettingsLib/tests/robotests/Android.bp
+index 54fe40ad14c4a2455237955c79d11d9423651318..5b674b1b2087c56eac4bf433df5d857999d82300 100644
+--- a/packages/SettingsLib/tests/robotests/Android.bp
++++ b/packages/SettingsLib/tests/robotests/Android.bp
+@@ -38,12 +38,16 @@
+ 
+ //###########################################################
+ // SettingsLib Robolectric test target.                     #
+ //###########################################################
+ android_robolectric_test {
+     name: "SettingsLibRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "src/**/*.java",
+         "src/**/*.kt",
+     ],
+     static_libs: [
+         "Robolectric_shadows_androidx_fragment_upstream",
+diff --git a/packages/SystemUI/Android.bp b/packages/SystemUI/Android.bp
+index 2b17ae48132c41668253a774ccb871f68ffbe59a..a4ed96b49b576331560ae407c4224eadc76a9f61 100644
+--- a/packages/SystemUI/Android.bp
++++ b/packages/SystemUI/Android.bp
+@@ -866,12 +866,16 @@
+         "kosmos",
+     ],
+ }
+ 
+ android_robolectric_test {
+     name: "SystemUiRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "tests/robolectric/src/**/*.kt",
+         "tests/robolectric/src/**/*.java",
+         ":SystemUI-tests-utils",
+         ":SystemUI-tests-multivalent",
+     ],
+@@ -896,12 +900,16 @@
+ }
+ 
+ // in-place tests which use Robolectric in the tests directory
+ // instead of multivalentTests
+ android_robolectric_test {
+     name: "SystemUiRoboTestsInplace",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "tests/robolectric/src/**/*.kt",
+         "tests/robolectric/src/**/*.java",
+         ":SystemUI-tests-utils",
+         ":SystemUI-tests-multivalent",
+         ":SystemUI-tests-robofiles",
+diff --git a/services/robotests/Android.bp b/services/robotests/Android.bp
+index 8e0eb6b14432a4bcb140c812768b072f59447d48..7b83a1005828a8f8246e2caa45cde1f00a31f5ea 100644
+--- a/services/robotests/Android.bp
++++ b/services/robotests/Android.bp
+@@ -41,12 +41,16 @@
+ 
+ //##################################################################
+ // FrameworksServicesLib Robolectric test target.                  #
+ //##################################################################
+ android_robolectric_test {
+     name: "FrameworksServicesRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+ 
+     srcs: ["src/**/*.java"],
+ 
+     java_resource_dirs: ["config"],
+ 
+     // Include the testing libraries
+diff --git a/services/robotests/backup/Android.bp b/services/robotests/backup/Android.bp
+index 95b38e56f2760f1763422e2f47dc4942c8f4cd82..eaf02c9237208a26fe5cd90a7be71e03a8200219 100644
+--- a/services/robotests/backup/Android.bp
++++ b/services/robotests/backup/Android.bp
+@@ -44,12 +44,16 @@
+ 
+ //##################################################################
+ // BackupFrameworksServicesLib Robolectric test target.                  #
+ //##################################################################
+ android_robolectric_test {
+     name: "BackupFrameworksServicesRoboTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         "src/**/*.java",
+         ":FrameworksServicesRoboShadows",
+     ],
+ 
+     java_resource_dirs: ["config"],
+diff --git a/tests/InputScreenshotTest/robotests/Android.bp b/tests/InputScreenshotTest/robotests/Android.bp
+index 63a13849ee7f3aebc969aa6a32f79f18db29a2a8..5993e569b750c3b8b499058cbe589914e7a82c09 100644
+--- a/tests/InputScreenshotTest/robotests/Android.bp
++++ b/tests/InputScreenshotTest/robotests/Android.bp
+@@ -43,12 +43,16 @@
+     plugins: ["dagger2-compiler"],
+     use_resource_processor: true,
+ }
+ 
+ android_robolectric_test {
+     name: "InputRoboRNGTests",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     srcs: [
+         ":InputScreenshotTestRNGFiles",
+         ":flag-junit",
+         ":platform-test-screenshot-rules",
+     ],
+     // Do not add any new libraries here, they should be added to SystemUIGoogleRobo above.

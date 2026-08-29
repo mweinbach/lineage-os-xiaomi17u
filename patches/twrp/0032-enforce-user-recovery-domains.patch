@@ -1,0 +1,29 @@
+diff --git a/private/twrp.te b/private/twrp.te
+index be4a1e9637c64aea610c0404b15cc7a2fbf11db1..0179e3ff26123f8bbed6a457adf5716f4762d135 100644
+--- a/private/twrp.te
++++ b/private/twrp.te
+@@ -1,15 +1,17 @@
+ recovery_only(`
+-  permissive recovery;
+-  permissive init;
+-  permissive logd;
+-  permissive adbd;
+-  permissive fastbootd;
+-  permissive postinstall;
+-  permissive ueventd;
++  userdebug_or_eng(`
++    permissive recovery;
++    permissive init;
++    permissive logd;
++    permissive adbd;
++    permissive fastbootd;
++    permissive postinstall;
++    permissive ueventd;
++  ')
+   allow kernel unlabeled:file rw_file_perms;
+   allow kernel tmpfs:file { read };
+   allow kernel recovery:fd { use };
+   allow unlabeled unlabeled:filesystem associate;
+   allow vendor_init rootfs:dir read;
+   allow logd rootfs:file { entrypoint };
+ ')

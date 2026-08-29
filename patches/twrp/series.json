@@ -1,0 +1,2156 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "repository": "https://github.com/TWRP-Test/platform_manifest_twrp_aosp",
+    "branch": "twrp-16.0",
+    "commit": "d2188a9345857fb078c391e8cb3e259a21e941e5"
+  },
+  "status": "source-reviewed; build and device validation are separate gates",
+  "scope": "isolated compile-only recovery experiment",
+  "patches": [
+    {
+      "id": "0001-remove-permissive-su",
+      "project": "system/sepolicy",
+      "repository": "https://github.com/TWRP-Test/android_system_sepolicy",
+      "base_commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+      "patch": "patches/twrp/0001-remove-permissive-su.patch",
+      "patch_sha256": "a4165372f10a512c987b9efcbddd717f904734094e0f3ed97e4f83368feadf5b",
+      "reason": "Remove the active debug su permissive declaration without changing allow or neverallow rules.",
+      "files": [
+        {
+          "path": "private/su.te",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_system_sepolicy/f0270686ee017f4de42e1032aca7527031bcc484/private/su.te",
+          "before_sha256": "3a0ac5bd3c4e8da2a231e0070260a8fe8493208fde5341866ae20ed34188af01",
+          "after_sha256": "6cce0bc2b623683cde6539d6bba90d844979db885c23600a37c5f915de8a8d1f",
+          "before_git_blob": "247fd0b72cfcec9b74b9e9b5dc4e79978b4c567d",
+          "after_git_blob": "98795ee1f37b391a719480d3c510259563df94e5",
+          "before_size_bytes": 5225,
+          "after_size_bytes": 5159
+        }
+      ]
+    },
+    {
+      "id": "0002-do-not-force-adb-root",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0002-do-not-force-adb-root.patch",
+      "patch_sha256": "0fee8a02d1852f38be1d5303a0023f0547305a709d99791a71e74718af31fee6",
+      "reason": "Do not automatically request a root ADB daemon on recovery startup; preserve explicit authenticated debug root support.",
+      "files": [
+        {
+          "path": "etc/init.rc",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/etc/init.rc",
+          "before_sha256": "29d50cc909060f5a3bd1b649eb95cff98997ddda14c7cc814bd7131791a5d274",
+          "after_sha256": "76f57d9baa75bfaea68f4676467958dd3682ad2c7f2e0ee1810c42b98a639a6f",
+          "before_git_blob": "480b529fe5e755815740e6a87ed6898494b77ecf",
+          "after_git_blob": "58f47166d0921ae9dba16aaedb5bf4142e7c34b0",
+          "before_size_bytes": 8395,
+          "after_size_bytes": 8219
+        }
+      ]
+    },
+    {
+      "id": "0003-preserve-source-on-envsetup",
+      "project": "vendor/twrp",
+      "repository": "https://github.com/TWRP-Test/android_vendor_twrp",
+      "base_commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1",
+      "patch": "patches/twrp/0003-preserve-source-on-envsetup.patch",
+      "patch_sha256": "fb4cd519e5cd295a185903b30666f65d4812141a9451c8b0718e9cb12b564ad5",
+      "reason": "Do not truncate the VTS Android.mk when loading the shell environment; retain the source and its dependency checks.",
+      "files": [
+        {
+          "path": "build/envsetup.sh",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_vendor_twrp/b53296dfc420ce65fffe712de380d5abf6c4c2f1/build/envsetup.sh",
+          "before_sha256": "ad04a5ec3af81226a00937bf366f91ca3308d341f841bc637f5217be41b4f8b0",
+          "after_sha256": "5f7167b2c6f4a7b96109e5a44be850a3df6ce86343b8e3430cc23a5fa7ab53f3",
+          "before_git_blob": "de734b706118925f7ce6e9058ed4cd8d75ab073f",
+          "after_git_blob": "d97f1e9f5190d37a3ec49796049f4c51c4542922",
+          "before_size_bytes": 5171,
+          "after_size_bytes": 4994
+        }
+      ]
+    },
+    {
+      "id": "0004-require-recovery-adb-auth",
+      "project": "packages/modules/adb",
+      "repository": "https://android.googlesource.com/platform/packages/modules/adb",
+      "base_commit": "ce023afef190b0cea7f8939e9dd5ee3ee79b137b",
+      "patch": "patches/twrp/0004-require-recovery-adb-auth.patch",
+      "patch_sha256": "48050ccea912eb7caa2cef211f7c0abd92bfd2ece3b8863ff641304ae441c95a",
+      "reason": "Require host authentication for recovery even when unlocked/debuggable; exclude trade-in/evaluation auth bypass from the recovery variant while preserving non-recovery behavior.",
+      "files": [
+        {
+          "path": "daemon/main.cpp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/main.cpp?format=TEXT",
+          "before_sha256": "8b9ea62b9ec742a6f3fe15b3c2612b929dbdc2d57aa86f3609ad54744ddba8ca",
+          "after_sha256": "87934aa1c82e8cb8b728230467b75643fe8462a58a13d60e11f035741e6a157e",
+          "before_git_blob": "931b170211a4aab20069920cdbdc18fc325ee95e",
+          "after_git_blob": "9073e34fdaa81bc3c7a7c72235b8909d3a40359e",
+          "before_size_bytes": 13274,
+          "after_size_bytes": 13123
+        }
+      ]
+    },
+    {
+      "id": "0005-native-recovery-cts-robolectric",
+      "project": "cts",
+      "repository": "https://github.com/TWRP-Test/android_cts",
+      "base_commit": "e70f92f52c9830ee8f93d89d032e2b14765c5941",
+      "patch": "patches/twrp/0005-native-recovery-cts-robolectric.patch",
+      "patch_sha256": "4c8ffb97796c07f39017f48cb31661ec32c08108b927147c80a244dd10eaa728",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "tests/location/Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_cts/e70f92f52c9830ee8f93d89d032e2b14765c5941/tests/location/Android.bp",
+          "before_sha256": "ee5d25cb2bfd9f849647542c21ebc449b57aadb3309e8d55843144209a866474",
+          "after_sha256": "0180ebed33e41c6bd7c2759f8e9cca195cdc84cfe654ac507c09cd11275941ee",
+          "before_git_blob": "d2116c054aee86d73415e9a2a12f12eddb861362",
+          "after_git_blob": "d4a2c2bc0fccd61b655ff35f174ff0ee2f55b303",
+          "before_size_bytes": 1014,
+          "after_size_bytes": 1150,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "CtsLocationTestCasesRobo",
+              "enabled_property_before": false,
+              "before_module_sha256": "8c57173a51bbe98d08e48d342fdeab807bcfee5e088653ebe0622fbb87cc810e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0006-native-recovery-mobile-data-robolectric",
+      "project": "external/mobile-data-download",
+      "repository": "https://android.googlesource.com/platform/external/mobile-data-download",
+      "base_commit": "7cecd5acc893660c66d2e7695bd6723dc0346f5d",
+      "patch": "patches/twrp/0006-native-recovery-mobile-data-robolectric.patch",
+      "patch_sha256": "4f19afde9b676c7eed3879b159a2c45f6024c702812e8b03a6ab0f12d7d2884b",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "javatests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/external/mobile-data-download/+/7cecd5acc893660c66d2e7695bd6723dc0346f5d/javatests/Android.bp?format=TEXT",
+          "before_sha256": "fe38393cf36f5150eb6ad4d48f521b07e36bf5f27ed57132c70b7cfdd87d80f9",
+          "after_sha256": "9b3ed499ca17539e4cc072b8905efcb5f78197bd92a31223fa217ef8729779a0",
+          "before_git_blob": "79581455672286dd2fe2a25627d75fb706716891",
+          "after_git_blob": "72d0347d5d68a9035f14e5cfb87b76bb6af6fca7",
+          "before_size_bytes": 3058,
+          "after_size_bytes": 3194,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "MobileDataDownloadRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "3351fc9f9e87479f0ab691e834cbf52815c140e6d2c1ffe73456d829e85a3dc6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0007-native-recovery-framework-robolectric",
+      "project": "frameworks/base",
+      "repository": "https://android.googlesource.com/platform/frameworks/base",
+      "base_commit": "99b01a65cc4c104933788b3143285ab6bae65827",
+      "patch": "patches/twrp/0007-native-recovery-framework-robolectric.patch",
+      "patch_sha256": "0b09539c8bb60ab4f83d3e4586a54b3a1453e166571f20caaf3a7587f0e17a3e",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "libs/WindowManager/Shell/multivalentTests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/libs/WindowManager/Shell/multivalentTests/Android.bp?format=TEXT",
+          "before_sha256": "f04e3e6a3d66e5e67ed66a0f23fa09530e906e0d295f01c4e80c1cd47c9d4940",
+          "after_sha256": "8aa5fd7c7ce09b5b8e30d287efd47d28334cb8abc74fea6d469e56927d2cfd5f",
+          "before_git_blob": "50666911e3136387aa4e59040e702121586d8474",
+          "after_git_blob": "93d1fb4d04cc974637cd5ab020e902398fff5ba3",
+          "before_size_bytes": 3119,
+          "after_size_bytes": 3255,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "WMShellRobolectricTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "9082e0ebb2d35fd914a91ea484643ad79d403c26adb00e69a6b14ef43cb8db47"
+            }
+          ]
+        },
+        {
+          "path": "packages/CredentialManager/tests/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/CredentialManager/tests/robotests/Android.bp?format=TEXT",
+          "before_sha256": "b559909711fe5634b7e2b9fa56fee7bcf3c15507b5a3d22e7c27c09a30f5667a",
+          "after_sha256": "4d529ebd62b1059deb462e83cb394894ac1eba6036db85b91cb03d5e898e37dd",
+          "before_git_blob": "01f403d3719dcc37023808f5929e51cf33ce2652",
+          "after_git_blob": "0b809a647bf024bc35e9931afd3a889d6b820461",
+          "before_size_bytes": 1838,
+          "after_size_bytes": 1974,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "CredentialManagerScreenshotTest",
+              "enabled_property_before": false,
+              "before_module_sha256": "5df9410e8cb9da1f24cff92644a7516c047558a18b3b8cd5404214de6870ce91"
+            }
+          ]
+        },
+        {
+          "path": "packages/CredentialManager/wear/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/CredentialManager/wear/robotests/Android.bp?format=TEXT",
+          "before_sha256": "08894ae46dced9eca9ffc3a256c95e321844c923afa06ba85358ab2a2dd4d755",
+          "after_sha256": "3e7b8bc1e1fb4536fa62c2291205573c8443c1291362096dffa04eaf38d16660",
+          "before_git_blob": "db3c36355dded01df25e99fc7c1a645458eaef7c",
+          "after_git_blob": "590f2446b6d7eae0d87a58ac94e5e426b8cd21c9",
+          "before_size_bytes": 780,
+          "after_size_bytes": 916,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "CredentialSelectorTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "898566dfba98755e7eabe239d6aa9cbc3c47c77043ffcafcaf3c64ad341051df"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/DataStore/tests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/DataStore/tests/Android.bp?format=TEXT",
+          "before_sha256": "47de4b9f7ed25b1850705eb356f751aba43cbe869ef99424aaf41c7ec2c7bc3a",
+          "after_sha256": "340ab990f35da2f3b0d42365aa87e51901e95b6362afc88f0098f733bbb7c7e1",
+          "before_git_blob": "6044eaba5f899e4d61d8e449e7710f67911fb876",
+          "after_git_blob": "3305299d57453305b5df9f9cd8085aad470e574e",
+          "before_size_bytes": 753,
+          "after_size_bytes": 889,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SettingsLibDataStoreTest",
+              "enabled_property_before": false,
+              "before_module_sha256": "a2226e6bdacffadba45ca461c971d57d0372fcc4d599f88bfaf0ac19ec0676bc"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/Spa/screenshot/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/Spa/screenshot/robotests/Android.bp?format=TEXT",
+          "before_sha256": "bbddac4bc10675788d741b5c481860f3c7e8599490eac631d70086d8b5e43a73",
+          "after_sha256": "005094196198bd3107ec1c5fda2d1e3a4c6dea17a24deb02f3c969ba21da85fd",
+          "before_git_blob": "dd6743b8595c8de50a0408ef4f81d8cebb91a749",
+          "after_git_blob": "c60921345651ca824c2733f85b87f4e7cc73a5a1",
+          "before_size_bytes": 1948,
+          "after_size_bytes": 2084,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SpaRoboRNGTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "d100bcdbd5cfb2bd8af5d612f4c6bf32c66f3342de583bddcf76da32560fb719"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/SpaPrivileged/tests/robotests/Android.bp?format=TEXT",
+          "before_sha256": "240cd9fa9c0bb8a6000c83648273d3952b73e5a9b5696c2dca763ee44f60a9a1",
+          "after_sha256": "ffa0f0f6534bc8dd047f3434b97918bd3a24de4f5d12ab29d78a9d2f9d375611",
+          "before_git_blob": "e3faf73a69fbd40c908f651bdcd64b0fe3224a91",
+          "after_git_blob": "79d35afa2ad626168615ab1a6f3bf3714beaf581",
+          "before_size_bytes": 1418,
+          "after_size_bytes": 1554,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SpaPrivilegedRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "d79d835872fbc10c0f2dc9faf21f3602e5db2f8074e78a4362b8246804309ebf"
+            }
+          ]
+        },
+        {
+          "path": "packages/SettingsLib/tests/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/tests/robotests/Android.bp?format=TEXT",
+          "before_sha256": "55d01f4a2c60c8a3e0fe18bc821827a92ace0bc3b2bf2fdbaa2c5e39ed73f742",
+          "after_sha256": "f6051d05b81d537489b94d7709900dd34783849e4ab167d371dd7c2bde3fd0a8",
+          "before_git_blob": "54fe40ad14c4a2455237955c79d11d9423651318",
+          "after_git_blob": "5b674b1b2087c56eac4bf433df5d857999d82300",
+          "before_size_bytes": 4141,
+          "after_size_bytes": 4277,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SettingsLibRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "29cf871943753b19b723914a67c0be32ff87ed9b16b21266374a521c1576c796"
+            }
+          ]
+        },
+        {
+          "path": "packages/SystemUI/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SystemUI/Android.bp?format=TEXT",
+          "before_sha256": "9bd6abe658580fa06561c8f08ce6db128091dfc7653fb614f2c333a921dac93b",
+          "after_sha256": "c3381697b8c227560e6f0ff62ad833bc594204c28b80c2f5277fc462808cce95",
+          "before_git_blob": "2b17ae48132c41668253a774ccb871f68ffbe59a",
+          "after_git_blob": "a4ed96b49b576331560ae407c4224eadc76a9f61",
+          "before_size_bytes": 46084,
+          "after_size_bytes": 46356,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "SystemUiRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "d05643ecd13610ef54dea6454e578c63f1f88c5e12dfd837589ee9f398acbc6a"
+            },
+            {
+              "type": "android_robolectric_test",
+              "name": "SystemUiRoboTestsInplace",
+              "enabled_property_before": false,
+              "before_module_sha256": "6b75e3e429e73aa44296b2f9a6eb55f610f54ae7bcad7d85245bfbcf3e4e2e1c"
+            }
+          ]
+        },
+        {
+          "path": "services/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/services/robotests/Android.bp?format=TEXT",
+          "before_sha256": "016e7c297e2301928b6c04f3079e8885e4a4b6662bba38f791a3d6e381ddb69b",
+          "after_sha256": "905f3d4cab92d08ed12d8fbc348ab6890c51e4501ee540c6b7bbba195afe828f",
+          "before_git_blob": "8e0eb6b14432a4bcb140c812768b072f59447d48",
+          "after_git_blob": "7b83a1005828a8f8246e2caa45cde1f00a31f5ea",
+          "before_size_bytes": 2204,
+          "after_size_bytes": 2340,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "FrameworksServicesRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "5e62bd62f79b8ed5f2e84adefb078911d72f603b0db7c3a7ac3b108bc9fd1841"
+            }
+          ]
+        },
+        {
+          "path": "services/robotests/backup/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/services/robotests/backup/Android.bp?format=TEXT",
+          "before_sha256": "3de150e8e2365ae2e3d796753f4d0ceb04b3d05ee8016f5d6f7637f57b74793d",
+          "after_sha256": "dd241ff34c1cca06183d3a280a81c498a15c792a4596a39ae744553669234c43",
+          "before_git_blob": "95b38e56f2760f1763422e2f47dc4942c8f4cd82",
+          "after_git_blob": "eaf02c9237208a26fe5cd90a7be71e03a8200219",
+          "before_size_bytes": 2244,
+          "after_size_bytes": 2380,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "BackupFrameworksServicesRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "979d00f54001a294f2ca6435a5029451410e0d9d26add70ec0976f137c3bbd07"
+            }
+          ]
+        },
+        {
+          "path": "tests/InputScreenshotTest/robotests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/tests/InputScreenshotTest/robotests/Android.bp?format=TEXT",
+          "before_sha256": "d079e3a70e75dbaa9bea5312cb8d6c5465abcdbaa038efa4320d981ccbbac5be",
+          "after_sha256": "4dd22c4a1bf848a371eed4ef588c147dd4c4e02762995f866b3ab4e2dfc54779",
+          "before_git_blob": "63a13849ee7f3aebc969aa6a32f79f18db29a2a8",
+          "after_git_blob": "5993e569b750c3b8b499058cbe589914e7a82c09",
+          "before_size_bytes": 1934,
+          "after_size_bytes": 2070,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "InputRoboRNGTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "af0ff31f0b41a51bbe1b6b860a1294a4a2b890ab1101f7c826c589de54b97b5d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0008-native-recovery-bluetooth-robolectric",
+      "project": "packages/modules/Bluetooth",
+      "repository": "https://android.googlesource.com/platform/packages/modules/Bluetooth",
+      "base_commit": "4b73ee6039271ffbf71ebdc8c109fc98eac8e137",
+      "patch": "patches/twrp/0008-native-recovery-bluetooth-robolectric.patch",
+      "patch_sha256": "5135942c00e3239c6af539b1c4c90cc261fdd032ef4dfeb8e775aa5e62185289",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "service/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/Bluetooth/+/4b73ee6039271ffbf71ebdc8c109fc98eac8e137/service/Android.bp?format=TEXT",
+          "before_sha256": "bd23a956f78c2b2c64ab296e300599b66b868ba2ddb0117d2f1e6d35d472c724",
+          "after_sha256": "fec72782e388f7e2efed5f663b6c289e101cbfb9dc6803d4bbb8d615797886b0",
+          "before_git_blob": "4b608dd4b36a5ccbe556b57780de96f414c7e99d",
+          "after_git_blob": "66ee7b70911d3ae89dcd7660f18c97b3c3a8ede8",
+          "before_size_bytes": 5291,
+          "after_size_bytes": 5427,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "ServiceBluetoothRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "01ae6d833467df6c0dda23e38cc9f9226c800aab5ee9f18d10801da5f9d50364"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0009-native-recovery-devicelock-robolectric",
+      "project": "packages/modules/DeviceLock",
+      "repository": "https://android.googlesource.com/platform/packages/modules/DeviceLock",
+      "base_commit": "952de0dacfb9bd720c9ee604affea6bff8132a8a",
+      "patch": "patches/twrp/0009-native-recovery-devicelock-robolectric.patch",
+      "patch_sha256": "4558d2df1d579961149016ef9fc81ca3d64b3830447336462c560a62152f810b",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "DeviceLockController/tests/robolectric/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/DeviceLock/+/952de0dacfb9bd720c9ee604affea6bff8132a8a/DeviceLockController/tests/robolectric/Android.bp?format=TEXT",
+          "before_sha256": "9a824ee1b4dd93325c5b7d95d26fb4215ee2b37750fa9ad379ac5828b58f9153",
+          "after_sha256": "a102e7b3e2d21ab7e23921ca8acea3f5653d99481a130d0b5ea7403d89ce9a4a",
+          "before_git_blob": "73bf4596952486e7955960af27583b3291adc00b",
+          "after_git_blob": "646e4ef52fb4cce360f97f07a415f36188ec836a",
+          "before_size_bytes": 1576,
+          "after_size_bytes": 1712,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "DeviceLockControllerRoboTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "374d1d6206b1c95ce329ad4495a00a76b05cd57f672888d63ef76712524002d9"
+            }
+          ]
+        },
+        {
+          "path": "tests/unittests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/DeviceLock/+/952de0dacfb9bd720c9ee604affea6bff8132a8a/tests/unittests/Android.bp?format=TEXT",
+          "before_sha256": "deaf71cc4ee946e63579a39f5a6bf2123854a72a5418e2c81c026cf01b88f492",
+          "after_sha256": "6a0464647fb350d59cdf6d5a04f6d797385c1b8da074027a8fa6206f840fbd94",
+          "before_git_blob": "4aad12b5b9057cfad816c437b154a3530875e172",
+          "after_git_blob": "121d98a23337b6145c21226a9ad4cd50b40157d4",
+          "before_size_bytes": 1352,
+          "after_size_bytes": 1488,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "DeviceLockUnitTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "b1bc6fcaa1ba9734766d0e2cc925d47840e85e60ff382af1a35ea622648779e7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0010-native-recovery-healthfitness-robolectric",
+      "project": "packages/modules/HealthFitness",
+      "repository": "https://android.googlesource.com/platform/packages/modules/HealthFitness",
+      "base_commit": "c0d64b5a3b88c614e25394499610c39d8926f69d",
+      "patch": "patches/twrp/0010-native-recovery-healthfitness-robolectric.patch",
+      "patch_sha256": "51cefdbd44f755871ee3155fba07b866b66e30882052c7eb25bc60b38d8a1400",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "tests/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/HealthFitness/+/c0d64b5a3b88c614e25394499610c39d8926f69d/tests/Android.bp?format=TEXT",
+          "before_sha256": "6814cd292bbd8030ae10a3f9a97c3b8799371eb7418c67b8174a2cedfd0824c3",
+          "after_sha256": "4f9e08abd0dce617a6ea84186f9fe80fa0fad537d6f7bbc7ee36b05b2a655d45",
+          "before_git_blob": "9ceaf533f34dedde14276ada60e5bfb5cf73c500",
+          "after_git_blob": "7ee0de38638a8dc86ccab2a7a9ae890a1ca701d8",
+          "before_size_bytes": 9135,
+          "after_size_bytes": 9271,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "HealthFitnessRoboUnitTests",
+              "enabled_property_before": false,
+              "before_module_sha256": "a4e7cea84658a8872329bed49c13fe8fef19e89b26fe745665e1ddfcd018a9c5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0011-native-recovery-robolectric-runtimes",
+      "project": "prebuilts/misc",
+      "repository": "https://android.googlesource.com/platform/prebuilts/misc",
+      "base_commit": "6e84ee6ddafe39d475876c511a516dbc9f2f19a6",
+      "patch": "patches/twrp/0011-native-recovery-robolectric-runtimes.patch",
+      "patch_sha256": "188f6922c150f0b9f32e9adb7fa806d09c04114f53d1b31c82bf3cf4cee51035",
+      "reason": "Disable only the declared Robolectric JVM test modules or runtime helper when the Nezha native recovery profile is selected; leave all other modules and unset-profile behavior unchanged.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "common/robolectric/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/prebuilts/misc/+/6e84ee6ddafe39d475876c511a516dbc9f2f19a6/common/robolectric/Android.bp?format=TEXT",
+          "before_sha256": "f19d82e8d05a0f582adff7428f53b0ed3b2bbb6fe9b5e6cbf27a17d231351e2c",
+          "after_sha256": "aad15cad71ce99b91e471dd5918857b3432460babffbca2114cef9494007b726",
+          "before_git_blob": "7ca6747736de6dfe94e1043ba5b9dd0a8cd98137",
+          "after_git_blob": "0ec8bc772f7ad785cba95d3f326320947d34eaef",
+          "before_size_bytes": 474,
+          "after_size_bytes": 610,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_runtimes",
+              "name": "robolectric-android-all-prebuilts",
+              "enabled_property_before": false,
+              "before_module_sha256": "66f8252e27dfccbf9b605c337e32dda3e2f64c9852fc27394eada9ef9a03b2ef"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0012-native-recovery-settings-ipc-testutils",
+      "project": "frameworks/base",
+      "repository": "https://android.googlesource.com/platform/frameworks/base",
+      "base_commit": "99b01a65cc4c104933788b3143285ab6bae65827",
+      "patch": "patches/twrp/0012-native-recovery-settings-ipc-testutils.patch",
+      "patch_sha256": "eccf03f2b06587c10ef957452dbff2d17537770d3e2f97bb2f6b88f5c2689dcf",
+      "reason": "Select out only the audited Robolectric test helpers when the Nezha native recovery profile is selected; preserve all mixed-file production modules and default-unset behavior.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "packages/SettingsLib/Ipc/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/packages/SettingsLib/Ipc/Android.bp?format=TEXT",
+          "before_sha256": "1a5eb0fdf2f24b926ed51cd01935cbafceed9578b5d26ddea945e0e94d251a2d",
+          "after_sha256": "a14eb20289136ed6ccef4cfa3704bf2ef55d70616cac48cada2db4f2b6e18df0",
+          "before_git_blob": "bc5a9364279ddfe8102fca8db655645099d0f99f",
+          "after_git_blob": "c219e156b9b8fee1cff5843e3bd9f2e8b711f060",
+          "before_size_bytes": 721,
+          "after_size_bytes": 857,
+          "profile_modules": [
+            {
+              "type": "android_library",
+              "name": "SettingsLibIpc-testutils",
+              "enabled_property_before": false,
+              "before_module_sha256": "5b91fb9b4036e3edf7f54ba26806098e262a8264652e1c1e80c9acc66fa2ebd6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0013-native-recovery-car-ui-test-support",
+      "project": "prebuilts/sdk",
+      "repository": "https://android.googlesource.com/platform/prebuilts/sdk",
+      "base_commit": "3b7daadc4e54d51439e5ae9b4dbd96cda8b6104e",
+      "patch": "patches/twrp/0013-native-recovery-car-ui-test-support.patch",
+      "patch_sha256": "460e32d5c98bb989ea8bab87c35eba6ce3054356b16a86e824cb09a3b6ace2f3",
+      "reason": "Select out only the audited Robolectric test helpers when the Nezha native recovery profile is selected; preserve all mixed-file production modules and default-unset behavior.",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "files": [
+        {
+          "path": "current/aaos-libs/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/prebuilts/sdk/+/3b7daadc4e54d51439e5ae9b4dbd96cda8b6104e/current/aaos-libs/Android.bp?format=TEXT",
+          "before_sha256": "153d3b207a6e905d899aa1b176fa5eaa30e55d3462792a8c940ed66f61cca0e1",
+          "after_sha256": "724fb9f127f5ceeb56e28beb7e392cbee73a3b87e82e7ef9a1435a51682b6de4",
+          "before_git_blob": "a6e0052a84b5f1a2db02bd09d01ed974cde79608",
+          "after_git_blob": "0d030729ac4685f7755f38ef62faf93b87bf3726",
+          "before_size_bytes": 24289,
+          "after_size_bytes": 24561,
+          "profile_modules": [
+            {
+              "type": "android_library",
+              "name": "car-ui-lib-testing-support",
+              "enabled_property_before": false,
+              "before_module_sha256": "aba241518d4cf577f7d31bd1c00b02d3b773311a617ef1e724a32300e124ee8c"
+            },
+            {
+              "type": "android_library_import",
+              "name": "car-ui-lib-testing-support-source",
+              "enabled_property_before": false,
+              "before_module_sha256": "58f28bd87fe0eb3469b74d4430550a91bead4e7a03f8e9ffa74fe32352979adb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "0014-native-recovery-disable-minadbd",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch_sha256": "4a8f59d1351d9a2d935b628f2c95e8d45d8cde3ea64e0087a99987f16e072705",
+      "reason": "Deny standalone unauthenticated minadbd before USB startup, and reject TWRP sideload before stopping normal adbd, only in the typed Nezha native recovery profile.",
+      "files": [
+        {
+          "path": "minadbd/Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/minadbd/Android.bp",
+          "before_sha256": "11f64ef3e3361b26e4d659db454c098f830d5da9f529f88973dc13d7cfb933af",
+          "after_sha256": "9819f78179f9d2f2ac8fe6e20d44c5b925edbc12846b7851cfb3785cee236ed4",
+          "before_git_blob": "9185b1d7c21afec31913cd91d432411c83d90452",
+          "after_git_blob": "4dce917fe63920d6f6f488e4d9cea7f88e2d9b2d",
+          "before_size_bytes": 3342,
+          "after_size_bytes": 3598,
+          "mode": "100644"
+        },
+        {
+          "path": "minadbd/minadbd.cpp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/minadbd/minadbd.cpp",
+          "before_sha256": "e0e4c332a30cfd80692e85196fb6ff415742040332030a56aa9cd67a7a149665",
+          "after_sha256": "424c43278fd615ef6daf026e71b4258d3908564df1100a4b84faf06be7ccab53",
+          "before_git_blob": "4fab0f42990fd5d8f3db676294522d50ec79f579",
+          "after_git_blob": "e5b9bcc43442c97f834802ca0dda9f0d380e5a49",
+          "before_size_bytes": 2063,
+          "after_size_bytes": 2250,
+          "mode": "100644"
+        },
+        {
+          "path": "twrpinstall/Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrpinstall/Android.bp",
+          "before_sha256": "c1a67f61e6257c9a009f7ef41390f5931e582fd602f2d66673929ac4f402dc94",
+          "after_sha256": "198ec274a33a2479f9e131eb65a6090f7ca160769225535dabd1cda24727b8cd",
+          "before_git_blob": "5d0c7ec1102e393192e88bb32c64e423f07738b4",
+          "after_git_blob": "e5ad378f68413083c65f8c56da6550c49346261b",
+          "before_size_bytes": 1978,
+          "after_size_bytes": 2131,
+          "mode": "100644"
+        },
+        {
+          "path": "twrpinstall/adb_install.cpp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrpinstall/adb_install.cpp",
+          "before_sha256": "6d083eedf0b3c803ee650b85d5c8d34f6d53a6143b44da5016fc52636b080977",
+          "after_sha256": "65ef9b3496a1f012ab1d7ead334051bbb25a6f6434618a7d05146447b5833878",
+          "before_git_blob": "5486b7e3f92e34e5a3fea096e33f40ae8535c81f",
+          "after_git_blob": "40871ed94ecd6d09ab45b70ca43dca2700510338",
+          "before_size_bytes": 14214,
+          "after_size_bytes": 14367,
+          "mode": "100644"
+        }
+      ],
+      "profile": {
+        "namespace": "nezha_twrp",
+        "boolean_variable": "native_recovery_only",
+        "true_cflag": "-DNEZHA_TWRP_DISABLE_MINADBD=1",
+        "default": "unset",
+        "modules": [
+          "minadbd",
+          "libtwrpinstall"
+        ],
+        "declaration_in_existing_target": "$(call soong_config_set_bool, nezha_twrp, native_recovery_only, true)"
+      },
+      "gate_contract": {
+        "minadbd": "After InitLogging and before argument parsing, socket/rescue state, auth assignment, usb_init and fdevent_loop: LOG(ERROR), return kMinadbdUnsupportedCommandError (7).",
+        "twrp_sideload": "Before GetProperty, SetUsbConfig, fork, IPC/listener/installer handling: LOG(ERROR), return INSTALL_ERROR (1).",
+        "direct_or_rescue_launch": "Both enter the same guarded minadbd main; valid, invalid, missing and --rescue arguments cannot reach daemon startup in this profile.",
+        "normal_adbd": "Unchanged source and dependencies. The caller gate leaves existing USB/adbd state untouched; it does not authenticate minadbd or rely on post-failure restoration.",
+        "other_profiles": "False or unset selector contributes no cflag. Original C++ bodies remain present below the guards.",
+        "compiled_dependency": "The real minadbd module, source list, static/shared libraries, required adbd dependency and recovery packaging selection are retained."
+      },
+      "limits": [
+        "No Android compile, daemon execution or hardware test has been performed for this candidate.",
+        "No host keys are added and no authenticated minadbd transport is implemented.",
+        "No recovery image is authorized to boot or flash by this source candidate.",
+        "The GUI and ORS retain their other behavior, including existing write-capable actions; this is not a general read-only recovery lock.",
+        "AOSP libinstall's separate rescue launcher is not modified. If a later product selects it, review its own USB wait/cleanup before runtime use.",
+        "The native recovery profile must be verified as typed true in the actual selected build; this gate is not a runtime property toggle."
+      ],
+      "patch": "patches/twrp/0014-native-recovery-disable-minadbd.patch",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "source_evidence": {
+        "minadbd_error": {
+          "path": "minadbd/include/minadbd/types.h",
+          "line": 35,
+          "sha256": "3dd5a3de6e60d130b5c6c30df291abf812f0ee97cb15f92b7b7356fe85b886d6",
+          "name": "kMinadbdUnsupportedCommandError",
+          "value": 7
+        },
+        "installer_error": {
+          "path": "twrpinstall/include/twinstall/install.h",
+          "line": 31,
+          "sha256": "76cf95bb937d4200d3f538a9dc155dbdc913782f4a5f0b312d0a6f3f274a2d8b",
+          "name": "INSTALL_ERROR",
+          "value": 1
+        },
+        "installer_module": {
+          "path": "twrpinstall/Android.bp",
+          "line": 52,
+          "sha256": "c1a67f61e6257c9a009f7ef41390f5931e582fd602f2d66673929ac4f402dc94",
+          "type": "cc_library_static",
+          "name": "libtwrpinstall"
+        },
+        "select_semantics": [
+          "build/soong/docs/selects.md:64-66",
+          "build/soong/docs/selects.md:100",
+          "build/blueprint/proptools/configurable.go:879-903",
+          "build/blueprint/proptools/configurable.go:1237"
+        ],
+        "source_audit": {
+          "path": "reports/twrp-minadbd-gate-candidate/source-review.json",
+          "sha256": "6304e90b3b9010d6000dff1375390af102c701788e377fc948e241095729b8a0"
+        },
+        "independent_apply_check": {
+          "path": "reports/twrp-minadbd-gate-candidate/root-git-integration.json",
+          "sha256": "ed2ec052b21a51e71161bc8501cab6434878848f49f0a7662e055ab46a1dc01d"
+        }
+      }
+    },
+    {
+      "id": "0015-native-recovery-systemui-robolectric",
+      "project": "frameworks/libs/systemui",
+      "repository": "https://android.googlesource.com/platform/frameworks/libs/systemui",
+      "base_commit": "9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62",
+      "source_owner": "supplementary",
+      "patch": "patches/twrp/0015-native-recovery-systemui-robolectric.patch",
+      "patch_sha256": "2942d41d013026ead5c5b0fc8582d003a181e60ae5654db9f7f55e7164ebf046",
+      "reason": "Replace only animationlib_robo_tests enabled:true with the typed Nezha native recovery select; preserve production animationlib, every other definition and this exact Android module's inactive-profile behavior.",
+      "files": [
+        {
+          "path": "animationlib/Android.bp",
+          "source_url": "https://android.googlesource.com/platform/frameworks/libs/systemui/+/9aacbcb77aa9353e75bc7c4ebc51d20b8b241b62/animationlib/Android.bp?format=TEXT",
+          "before_sha256": "dc733d6e36da7988bdb420480f13536f824260c60da40176f1812ff62416b4d3",
+          "after_sha256": "a711576194c05d1a9f64ab7bff60155e0f6fb962fc978f900412cd7f8c962210",
+          "before_git_blob": "9f496a9e8bb870a3644cd800dd2d3c555dc2e19c",
+          "after_git_blob": "c738b9a63cc5580d499e67a78b38f9cbfcfaf04c",
+          "before_size_bytes": 2196,
+          "after_size_bytes": 2313,
+          "profile_modules": [
+            {
+              "type": "android_robolectric_test",
+              "name": "animationlib_robo_tests",
+              "before_line": 62,
+              "before_module_sha256": "665e6d33b55ff8da531e58a91a0244c8252cbea081e62648dd03028fa3d89510",
+              "after_module_sha256": "c8d53a03c3d9da53226fedca1b6edfbed131265703c86649da7007016ddc90e7",
+              "enabled_property_before": true,
+              "enabled_value_before": true,
+              "defaults_before": [],
+              "enabled_property_operation": "replace_existing_literal_true",
+              "selected_branch": false,
+              "default_branch": "unset",
+              "default_behavior_proof": "default-enabled-source-proof.json and independent twrp-systemui-animation-robo-gate-review.json",
+              "original_enabled_value": true,
+              "module_hash_convention": "Constructor keyword through its closing brace and following LF."
+            }
+          ]
+        }
+      ],
+      "audit_evidence": [
+        {
+          "path": "reports/twrp-systemui-companion-candidate/sealed-receipt.json",
+          "sha256": "bf6c388ca9f734b3bd9b733ba30ccf13e432e5f8dda603eccaec077e8c6950f6"
+        },
+        {
+          "path": "reports/twrp-systemui-animation-robo-gate-review.json",
+          "sha256": "1bffca8f85a32746fe595ab98b884881f8f5e5966fe196568274b5a5d7b11f2d"
+        }
+      ]
+    },
+    {
+      "id": "0016-native-recovery-robolectric-integration-tests",
+      "project": "external/robolectric",
+      "repository": "https://android.googlesource.com/platform/external/robolectric",
+      "base_commit": "559c38b2cb0fbd87f2118bdcb8bea6f536164d70",
+      "source_owner": "supplementary",
+      "patch": "patches/twrp/0016-native-recovery-robolectric-integration-tests.patch",
+      "patch_sha256": "f98c8119f416ddf9deff180abddced58417646ce9e890c2ea18e76c233beadf2",
+      "reason": "Disable only CtesqueRoboTests and NativeGraphicsTests when the typed Nezha native recovery profile is selected; preserve every other definition and unset-profile behavior.",
+      "files": [
+        {
+          "after_git_blob": "b97279719aa080323a4ce64a871fd5261ddde1a2",
+          "after_sha256": "9e596c67a900be28d370ef01179c324c6d43b99c70846aa7fdad6763d30c3afc",
+          "after_size_bytes": 1196,
+          "before_git_blob": "8c024ea545661343fcf031af5c93773461e348a8",
+          "before_sha256": "29347573462c634e560875193149344b3d94619fda1f2776ec0f4dd54bb2ccb5",
+          "before_size_bytes": 1060,
+          "mode": "100644",
+          "path": "integration_tests/ctesque/Android.bp",
+          "profile_modules": [
+            {
+              "before_module_sha256": "a38545c294f7c376ef83faac515e927d9ef7edee2a333aa480d8730d3f008917",
+              "constructor_line": 5,
+              "enabled_property_before": false,
+              "name": "CtesqueRoboTests",
+              "name_line": 6,
+              "type": "android_robolectric_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/external/robolectric/+/559c38b2cb0fbd87f2118bdcb8bea6f536164d70/integration_tests/ctesque/Android.bp?format=TEXT"
+        },
+        {
+          "after_git_blob": "1a2061a679b4a8dcba18e4097831d95716c70f6c",
+          "after_sha256": "c434b11f8d5b7b0ea74d69f199cb561490dd236f3e2bf4aee6afaadf156ea57d",
+          "after_size_bytes": 1763,
+          "before_git_blob": "13de38cbc5739ca285ebc119671e6c7099787b9b",
+          "before_sha256": "1ad4b2aeb681b39fbfdb53bccbcbf004f76688396998a73435f15b2df455d9fb",
+          "before_size_bytes": 1627,
+          "mode": "100644",
+          "path": "integration_tests/nativegraphics/Android.bp",
+          "profile_modules": [
+            {
+              "before_module_sha256": "995d30137b72290f1c79a015b8f9995c2aae99d47a8157b0cb403508cac2b692",
+              "constructor_line": 48,
+              "enabled_property_before": false,
+              "name": "NativeGraphicsTests",
+              "name_line": 49,
+              "type": "android_robolectric_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/external/robolectric/+/559c38b2cb0fbd87f2118bdcb8bea6f536164d70/integration_tests/nativegraphics/Android.bp?format=TEXT"
+        }
+      ],
+      "audit_evidence": [
+        {
+          "path": "reports/twrp-ctesque-native-recovery-candidate/seal.json",
+          "sha256": "5351176f25a51c307f33bd64d63107f4e54a5872e5c59a9ec3d002b8509613e0"
+        },
+        {
+          "path": "reports/twrp-robolectric-integration-incoming-references.json",
+          "sha256": "d561eb659d83b1daeb51f87ccd0cba1333eea8ed68a17ac35a00b061f40ca7f3"
+        }
+      ]
+    },
+    {
+      "base_commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121",
+      "files": [
+        {
+          "after_git_blob": "16341b92735823ef624892dbfa6c94864f9bcfef",
+          "after_sha256": "9de30e8e3732b4855b4cedb16531c570291e14bff15b72f7a7420ed2314c6299",
+          "after_size_bytes": 4341,
+          "before_git_blob": "27300b66b1af8c44882d9e6c19dd16048edf4a0d",
+          "before_sha256": "3319305b8b1b5f70e045b3d6e81f4dbd1195a067906695ad6b2bdab3fe22c66a",
+          "before_size_bytes": 4371,
+          "mode": "100644",
+          "path": "tools/aconfig/aconfig_storage_read_api/Android.bp",
+          "restored_modules": [
+            {
+              "after_module_sha256": "12c2109b7c9b901c7a9d0a85ead3ebf360db026b03be08ce1a249d1c97be34b4",
+              "before_module_sha256": "86575f1f61a88bc8e2a6228df598a64766dc4115885604678e3c30fc7bcb33a1",
+              "constructor_line": 80,
+              "name": "libaconfig_storage_read_api_cc",
+              "name_line": 81,
+              "recovery_available_property_after": false,
+              "recovery_available_property_before": true,
+              "removed_property_line": 95,
+              "type": "cc_library"
+            }
+          ],
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_build/3b5b2b43b8e2200ef92b7b814a84c8dde8b74121/tools/aconfig/aconfig_storage_read_api/Android.bp"
+        }
+      ],
+      "id": "0017-restore-aconfig-storage-core-images",
+      "patch": "patches/twrp/0017-restore-aconfig-storage-core-images.patch",
+      "patch_sha256": "6ad92da04f41474793921fed371a958043bef605fa3857367438e939db510523",
+      "project": "build/make",
+      "reason": "Restore the original Android 16 r1 image availability of the aconfig storage C++ wrapper by removing only TWRP's added recovery_available property; preserve all source and existing core/vendor/product behavior.",
+      "repository": "https://github.com/TWRP-Test/android_build"
+    },
+    {
+      "base_commit": "5bde6fcffe8e3ac6feca449f7bc3502eed5fc0f5",
+      "files": [
+        {
+          "after_git_blob": "56f9a993fb3a9a000c6f65d9849c35c20852c93d",
+          "after_sha256": "0e0c0bcd6120d8f54d04600006c086549b3954e59275820c44829406b8b2b1f2",
+          "after_size_bytes": 30179,
+          "before_git_blob": "abffd0c2624fb324092945bda43708bb7249f0bd",
+          "before_sha256": "cafd0a962883328dbddf607bc3b7a287f48accfc5cf520a49d7ac125228ad40a",
+          "before_size_bytes": 30149,
+          "mode": "100644",
+          "path": "Android.bp",
+          "recovery_available_modules": [
+            {
+              "added_property_line": 1122,
+              "after_module_sha256": "3871462122d46ffc7416ebd33b66ffa2c331d74b6cd8223e91f077f2948b5931",
+              "before_module_sha256": "1c593d63e90ba83108673d7963d2a7dbc6e9ca8592faf124adee0e8684d89b81",
+              "constructor_line": 1120,
+              "name": "aidl-analyzer-main",
+              "name_line": 1121,
+              "recovery_available_property_after": true,
+              "recovery_available_property_before": false,
+              "type": "cc_library_static"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/system/tools/aidl/+/5bde6fcffe8e3ac6feca449f7bc3502eed5fc0f5/Android.bp"
+        }
+      ],
+      "id": "0018-enable-aidl-analyzer-main-recovery",
+      "patch": "patches/twrp/0018-enable-aidl-analyzer-main-recovery.patch",
+      "patch_sha256": "1ecd3993ea99e4dd30bce5d3fa1545df6d047ad92cc91632eebabba401bad24f",
+      "project": "system/tools/aidl",
+      "reason": "Add the recovery static variant of the genuine AIDL analyzer main library required by the generated SecureClock and Weaver analyzers; preserve interface availability, analyzer generation, existing images, and all strict checks.",
+      "repository": "https://android.googlesource.com/platform/system/tools/aidl"
+    },
+    {
+      "base_commit": "99b01a65cc4c104933788b3143285ab6bae65827",
+      "files": [
+        {
+          "after_git_blob": "8f3c54e5b56528f8d70bc8b709bc5157ee117fe5",
+          "after_sha256": "1ed6c797897e61f509e6681c0b34b17cadfdcc394fa81693b53499a36190d4f9",
+          "after_size_bytes": 1301,
+          "before_git_blob": "3916bf3df73d73d3e3d4bb90a349a26b85610bc4",
+          "before_sha256": "5a65dfe1296c13061632d4d4daa26a087c21389751a47068e1ee057788effdd4",
+          "before_size_bytes": 1271,
+          "mode": "100644",
+          "path": "omapi/aidl/Android.bp",
+          "recovery_available_modules": [
+            {
+              "added_property_line": 21,
+              "after_module_sha256": "dab677da4e7cd067b60d265b14da0120596b42932393859093588e25906d85b7",
+              "before_module_sha256": "a1ceeb83bb2cd5f7ae999e6bcf957cefea28968888f0db4907b155448b1ad1f8",
+              "constructor_line": 19,
+              "name": "android.se.omapi",
+              "name_line": 20,
+              "recovery_available_property_after": true,
+              "recovery_available_property_before": false,
+              "type": "aidl_interface"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/frameworks/base/+/99b01a65cc4c104933788b3143285ab6bae65827/omapi/aidl/Android.bp"
+        }
+      ],
+      "id": "0019-enable-omapi-interface-recovery",
+      "patch": "patches/twrp/0019-enable-omapi-interface-recovery.patch",
+      "patch_sha256": "9ae3d4fffa910239f5ef8f2d5bc5581b6708372b91afa8b2155cff2c5401cdfa",
+      "project": "frameworks/base",
+      "reason": "Add recovery availability to the genuine OMAPI AIDL interface so the existing recovery se_omapi service can resolve its native interface dependency; preserve the service, target feature flags, original backends, and strict checks.",
+      "repository": "https://android.googlesource.com/platform/frameworks/base"
+    },
+    {
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "files": [
+        {
+          "after_git_blob": "87c1a57f513bdc1e1fcc7bca980886739c4ca047",
+          "after_sha256": "1049726f463a715bd9e3d4714599de9e2be7185dbec1ceb19d1bbf99d8bd2cbf",
+          "after_size_bytes": 20703,
+          "before_git_blob": "d7c56cc80e5aab8a5d9cd261bd82041d720a97a7",
+          "before_sha256": "194b733dd7e16246688d6b94f4d559e890a3110b2ce8ef77c9e30f3327ee55d4",
+          "before_size_bytes": 20733,
+          "mode": "100644",
+          "path": "Android.bp",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/Android.bp",
+          "uncommented_modules": [
+            {
+              "after_module_sha256": "30fb4bfd79ddc99c5d3c6463730cb80e91a1b9bffff7f927605f0ecc552cc216",
+              "before_comment_prefix": "// ",
+              "before_module_sha256": "986f508fcf9d37773f28a99f9e0e69b92f9a6f83a1d0252091be20c55204e0d9",
+              "constructor_line": 314,
+              "end_line": 323,
+              "name": "recovery-resources-common-mdpi",
+              "name_line": 315,
+              "source_glob": "res-mdpi/images/*.png",
+              "type": "prebuilt_res",
+              "uncommented_lines": 10,
+              "upstream_commit": "80fbea7e9af1dd883f2046e9b299d6fe45a0f693",
+              "upstream_constructor_line": 314,
+              "upstream_module_sha256": "30fb4bfd79ddc99c5d3c6463730cb80e91a1b9bffff7f927605f0ecc552cc216",
+              "upstream_path": "Android.bp",
+              "upstream_repository": "https://android.googlesource.com/platform/bootable/recovery"
+            }
+          ]
+        }
+      ],
+      "id": "0020-restore-common-mdpi-recovery-resources",
+      "patch": "patches/twrp/0020-restore-common-mdpi-recovery-resources.patch",
+      "patch_sha256": "115176b88854cbdf85b7d0770d7a5aae00ccc43b84606a18b0dc448eb55fa96b",
+      "project": "bootable/recovery",
+      "reason": "Restore the original common MDPI recovery resource provider and its unchanged PNG inputs required by Soong filesystem generation; preserve all resource properties, other density definitions, TWRP theme behavior, and filesystem checks.",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery"
+    },
+    {
+      "base_commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121",
+      "files": [
+        {
+          "after_git_blob": "11e195762e1b16bf718b827e74da14e99584bb15",
+          "after_sha256": "9a960fd5edd4fabe96fbc0a12bc5a27092f58db10ad854481bd1cf551118579c",
+          "after_size_bytes": 37546,
+          "before_git_blob": "0a32a55b6be95915ad3c2011344e5f19a0ab6056",
+          "before_sha256": "bcee7ae67c73aa8e0923766688589d0dc2eabd082b2b57d5acbdf661348a8f27",
+          "before_size_bytes": 37411,
+          "mode": "100644",
+          "path": "target/product/generic/Android.bp",
+          "profile_image_modules": [
+            {
+              "after_module_sha256": "db1a0d27db76cec32842cdabee46a9796519f21b84835369dbdd6abe84bff04b",
+              "before_module_sha256": "0fba6db5af04cb9b1437ea91e407f458f02cf1c8337fdb50314c52c7d1dcda08",
+              "constructor_line": 1054,
+              "enabled_otherwise": true,
+              "enabled_property_present_before": false,
+              "enabled_when_true": false,
+              "name": "aosp_shared_system_image",
+              "name_line": 1055,
+              "selector_namespace": "nezha_twrp",
+              "selector_type": "bool",
+              "selector_variable": "native_recovery_only",
+              "type": "android_system_image"
+            }
+          ],
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_build/3b5b2b43b8e2200ef92b7b814a84c8dde8b74121/target/product/generic/Android.bp"
+        }
+      ],
+      "id": "0021-native-recovery-generic-system-image",
+      "patch": "patches/twrp/0021-native-recovery-generic-system-image.patch",
+      "patch_sha256": "1c793575de0629073c908431b01d9336fd4aa06016eaaec8bd9286e1424eae3d",
+      "project": "build/make",
+      "reason": "Disable only the unrelated handwritten generic system image when the typed Nezha native recovery profile is selected; retain every shared default, GSI/VNDK provider, image property, other-product default, and validation implementation.",
+      "repository": "https://github.com/TWRP-Test/android_build"
+    },
+    {
+      "base_commit": "c984fc337c11ca5edc03ccf02037b2455dd8fcaf",
+      "files": [
+        {
+          "after_git_blob": "44c04413fe524b45983b871d95d5a05e0245ad9b",
+          "after_sha256": "41fd6eb66e6ef8f2583f399470f58877891b109fa4c9a24afca3c521145c8fc0",
+          "after_size_bytes": 8389,
+          "before_git_blob": "0d55d7c48ffda774b4d27e2933ab44bbd5390160",
+          "before_sha256": "1dc1eedbe30b6f6e8b8ae69399bcb3c67525a689565627b288b505d471612a77",
+          "before_size_bytes": 8109,
+          "mode": "100644",
+          "path": "guest/pvmfw/avb/Android.bp",
+          "profile_arch_test_modules": [
+            {
+              "after_module_sha256": "93e57c25ceea33d8a6ddffd476d2387b49cf37afd5e463bd65df4104eb4efa60",
+              "architecture_enabled_overrides": [
+                {
+                  "arch": "arm64",
+                  "enabled_before": true,
+                  "enabled_otherwise": true,
+                  "enabled_when_true": false
+                },
+                {
+                  "arch": "x86_64",
+                  "enabled_before": true,
+                  "enabled_otherwise": true,
+                  "enabled_when_true": false
+                }
+              ],
+              "base_enabled_after": false,
+              "base_enabled_before": false,
+              "before_module_sha256": "0ac043b3c28f10473ca9b1a2c02b28402caef954f9d07a7b4d725bcf76e9f0d7",
+              "constructor_line": 24,
+              "name": "libpvmfw_avb.integration_test",
+              "selector_namespace": "nezha_twrp",
+              "selector_type": "bool",
+              "selector_variable": "native_recovery_only",
+              "type": "rust_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/packages/modules/Virtualization/+/c984fc337c11ca5edc03ccf02037b2455dd8fcaf/guest/pvmfw/avb/Android.bp"
+        }
+      ],
+      "id": "0022-native-recovery-trusty-avb-test",
+      "patch": "patches/twrp/0022-native-recovery-trusty-avb-test.patch",
+      "patch_sha256": "409b9000671ce029298dd3f318afd6969758cc511799f80744bd63a9e1eb263c",
+      "project": "packages/modules/Virtualization",
+      "reason": "Exclude only the Trusty-image AVB integration test from the typed Nezha native recovery profile; preserve the production AVB library, all AVB fixtures, signing checks, and original enabled architectures outside that profile.",
+      "repository": "https://android.googlesource.com/platform/packages/modules/Virtualization"
+    },
+    {
+      "base_commit": "9705f94b4d727578335a79e957bf839f273664b6",
+      "files": [
+        {
+          "after_git_blob": "3311dfa09586e35212631d7a5417327c515df6f3",
+          "after_sha256": "15427c057477fd54669beeeade52caa2166dc59e037622b932138890f73ee191",
+          "after_size_bytes": 4310,
+          "before_git_blob": "1453bac3ab42c109dc8fc18f538f214ffa762943",
+          "before_sha256": "e8225a141ca8cf6d8da0037569c24a32c5cace3b0091a6b08714c5172076d989",
+          "before_size_bytes": 4170,
+          "mode": "100644",
+          "path": "treble/vintf/Android.bp",
+          "profile_arch_test_modules": [
+            {
+              "after_module_sha256": "edbd3fe943c22c0dabe413eb4a45351bbc54994dbd9ab8bb77bc674bd1d1a7c3",
+              "architecture_enabled_overrides": [
+                {
+                  "arch": "arm64",
+                  "enabled_before": true,
+                  "enabled_otherwise": true,
+                  "enabled_when_true": false
+                }
+              ],
+              "base_enabled_after": false,
+              "base_enabled_before": false,
+              "before_module_sha256": "e651691bac797115d857dbcfbb8762b7032a03d79cfc34f08efdbd04b02675f8",
+              "constructor_line": 89,
+              "name": "vts_treble_vintf_trusted_hal_test",
+              "selector_namespace": "nezha_twrp",
+              "selector_type": "bool",
+              "selector_variable": "native_recovery_only",
+              "type": "cc_test"
+            }
+          ],
+          "source_url": "https://android.googlesource.com/platform/test/vts-testcase/hal/+/9705f94b4d727578335a79e957bf839f273664b6/treble/vintf/Android.bp"
+        }
+      ],
+      "id": "0023-native-recovery-trusty-vintf-test",
+      "patch": "patches/twrp/0023-native-recovery-trusty-vintf-test.patch",
+      "patch_sha256": "b8344beffe45185ee4d601f4e819f7c2be5d40f2f87c1c87ef92c5e1862406a3",
+      "project": "test/vts-testcase/hal",
+      "reason": "Exclude only the Trusty virtual-machine Trusted HAL test from the typed Nezha native recovery profile; preserve general VINTF tests, shared defaults and AIDL sources, enforcement, and original enabled architectures outside that profile.",
+      "repository": "https://android.googlesource.com/platform/test/vts-testcase/hal"
+    },
+    {
+      "id": "0024-recovery-usb-only-adb",
+      "project": "packages/modules/adb",
+      "repository": "https://android.googlesource.com/platform/packages/modules/adb",
+      "base_commit": "ce023afef190b0cea7f8939e9dd5ee3ee79b137b",
+      "patch": "patches/twrp/0024-recovery-usb-only-adb.patch",
+      "patch_sha256": "e472bfde972d168fdc8dd1190298a2891d165a083ce3e02898dcd88e8882d792",
+      "reason": "Restrict ordinary recovery ADB host transport admission to USB: reject a missing FunctionFS endpoint and exclude explicit/default socket listeners and the Wi-Fi TLS observer at compile time. Preserve authentication, privilege dropping, SELinux, ordinary Android behavior, and authenticated forwarding services.",
+      "reviewed_candidate_sha256": "8ecb76333df2f0a21323ad929204a9cd78bbf1f650c218fe98ce25740fcc8d4d",
+      "files": [
+        {
+          "path": "daemon/main.cpp",
+          "before_sha256": "87934aa1c82e8cb8b728230467b75643fe8462a58a13d60e11f035741e6a157e",
+          "after_sha256": "8a9aec32ad19c081349aa3fd908e9c406e78b31c2a34ca7651d728e6b576d2b3",
+          "before_git_blob": "9073e34fdaa81bc3c7a7c72235b8909d3a40359e",
+          "after_git_blob": "4a5983abe6931cc41ad40ba2ed195eb8697cb092",
+          "before_size_bytes": 13123,
+          "after_size_bytes": 13521,
+          "mode": "100644",
+          "predecessor_patch_id": "0004-require-recovery-adb-auth",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/main.cpp?format=TEXT"
+        },
+        {
+          "path": "daemon/adb_wifi.cpp",
+          "before_sha256": "d77f683e7c4349d7ea4e742d97482d16ccd2f1fec086a124512a43d4bc5105fb",
+          "after_sha256": "29d449caab9a0d859f5a8a1d5d308430042494fdcd786425497789c0ac32cd6a",
+          "before_git_blob": "a62db3a0d7069727e244d7aeadf0e799a65edcf1",
+          "after_git_blob": "1ca53f672ed0b8449bdfc9ceec33e4185e71b8af",
+          "before_size_bytes": 6676,
+          "after_size_bytes": 6832,
+          "mode": "100644",
+          "source_url": "https://android.googlesource.com/platform/packages/modules/adb/+/ce023afef190b0cea7f8939e9dd5ee3ee79b137b/daemon/adb_wifi.cpp?format=TEXT"
+        }
+      ]
+    },
+    {
+      "id": "0025-vold-bionic-system-libraries",
+      "project": "system/vold",
+      "repository": "https://github.com/TWRP-Test/android_system_vold",
+      "base_commit": "4c83041ec61f9b482085685f1e6aed5a62f103aa",
+      "patch": "patches/twrp/0025-vold-bionic-system-libraries.patch",
+      "patch_sha256": "39669d2658f4f7b079acb4ba367cd70ed9747d53757b63ac1555f460eb60473a",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Scope libkeystoreinfo's explicit libc/libdl system libraries to Bionic targets. Preserve host support, recovery availability, source and library lists, and the exact ordered pair on Android and LinuxBionic; leave other host toolchain defaults unset and inherited.",
+      "files": [
+        {
+          "before_sha256": "bb073d5ee838770abbf2f6a4af96012b5580d77bfc552c4d7995ef935725bcb2",
+          "before_git_blob": "c06743bf3ea3ce163c3f4dac7a46c78b6ec93def",
+          "before_size_bytes": 8544,
+          "after_sha256": "ab54aef2e2179b038947299a8ff22a0fdaeb992c5f6492e47c979c32d742a4b8",
+          "after_git_blob": "62a10ec5d86663aa5f879adf3860113092af2d27",
+          "after_size_bytes": 8594,
+          "path": "Android.bp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_system_vold/blob/4c83041ec61f9b482085685f1e6aed5a62f103aa/Android.bp",
+          "system_library_modules": [
+            {
+              "type": "cc_library",
+              "name": "libkeystoreinfo",
+              "constructor_line": 318,
+              "before_module_sha256": "1cef5e4d583c8aaa01755d5720e54a7dbe5cf9d1770649cd20f867f512489a38",
+              "after_module_sha256": "564d6d8da4fa82751c848aeb365c4ceb3b3dd517015607ef7f396c899ee47aad",
+              "host_supported": true,
+              "recovery_available": true,
+              "property_before": "system_shared_libs",
+              "property_after": "target.bionic.system_shared_libs",
+              "libraries": [
+                "libc",
+                "libdl"
+              ]
+            }
+          ]
+        }
+      ],
+      "target_contract": {
+        "selector": "target.bionic",
+        "explicit_library_targets": [
+          "android",
+          "linux_bionic"
+        ],
+        "explicit_system_shared_libs": [
+          "libc",
+          "libdl"
+        ],
+        "inherited_default_targets": [
+          "linux_glibc",
+          "linux_musl",
+          "darwin",
+          "windows"
+        ],
+        "non_bionic_property_unset": true,
+        "non_bionic_property_empty_list": false,
+        "host_supported_unchanged": true,
+        "recovery_available_unchanged": true,
+        "static_and_shared_variants_preserved": true
+      },
+      "source_evidence": {
+        "soong_project": "build/soong",
+        "soong_revision": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7",
+        "files": [
+          {
+            "path": "android/arch.go",
+            "sha256": "e2ccc72ad54ccc36b4ed56baf6f8dabde7c9e9a275b712e916dc475244f837ac",
+            "line_references": [
+              258,
+              262,
+              1241,
+              1246
+            ],
+            "source_url": "https://github.com/TWRP-Test/android_build_soong/blob/91bdc79cffb29d35b2d46a33204c061c3e7ed4f7/android/arch.go"
+          },
+          {
+            "path": "cc/linker.go",
+            "sha256": "bc8e51019cc75a58032077403bbe6c47382edede9c2d8db3a76d965e326300f6",
+            "line_references": [
+              54,
+              57,
+              401,
+              406,
+              509,
+              516
+            ],
+            "source_url": "https://github.com/TWRP-Test/android_build_soong/blob/91bdc79cffb29d35b2d46a33204c061c3e7ed4f7/cc/linker.go"
+          },
+          {
+            "path": "cc/library.go",
+            "sha256": "c211be0ef9e41e69e044fbfca2c94de4014942e36f3a2e0d0fc4208db61c2915",
+            "line_references": [
+              939,
+              947
+            ],
+            "source_url": "https://github.com/TWRP-Test/android_build_soong/blob/91bdc79cffb29d35b2d46a33204c061c3e7ed4f7/cc/library.go"
+          }
+        ],
+        "aosp_vold_comparison": {
+          "repository": "https://android.googlesource.com/platform/system/vold",
+          "revision": "11760521a2e86389c56620ec50e780e8b17e40ca",
+          "tag": "android-16.0.0_r1",
+          "path": "Android.bp",
+          "sha256": "d15f2084f9eed4e64ae57432f11cdc3acf6c4ac0999c27906387faa533ffa953",
+          "libkeystoreinfo_present": false,
+          "source_url": "https://android.googlesource.com/platform/system/vold/+/11760521a2e86389c56620ec50e780e8b17e40ca/Android.bp"
+        }
+      },
+      "byte_preservation": "Add only the target and bionic braces around the original list. Preserve its existing indentation and trailing space as context for strict forward/reverse application; retain the original file without a final newline.",
+      "limits": [
+        "Offline source and patch checks do not execute Soong or establish a successful host, recovery or image build.",
+        "No crypto source edit, FBE enablement, missing-dependency waiver, provider change, host disablement or phone operation is included."
+      ]
+    },
+    {
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "files": [
+        {
+          "after_git_blob": "8bf22f8d021465d425558be0b8e51f4a41cbb624",
+          "after_sha256": "5738f3924cd2e2cf023069892c61031ab749830e49a8f5f36005be3fa22a2dd2",
+          "after_size_bytes": 20673,
+          "before_git_blob": "87c1a57f513bdc1e1fcc7bca980886739c4ca047",
+          "before_sha256": "1049726f463a715bd9e3d4714599de9e2be7185dbec1ceb19d1bbf99d8bd2cbf",
+          "before_size_bytes": 20703,
+          "mode": "100644",
+          "path": "Android.bp",
+          "predecessor_patch_id": "0020-restore-common-mdpi-recovery-resources",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/Android.bp"
+        },
+        {
+          "after_git_blob": "15995f7ad81edb39e5087eb3f5960435dfd961e4",
+          "after_sha256": "b36ce58dd712793c67985136a3d07fafc517d7525b06234e4128d87718c3874e",
+          "after_size_bytes": 38823,
+          "before_git_blob": "8a07a5f1ff3c5811e267ad04d6e7cdc7f2d53e89",
+          "before_sha256": "683d6256f3b5d17b6c03087b0ea27cd710911ebb1a91d1b357ada24e3bfd1cc7",
+          "before_size_bytes": 29919,
+          "mode": "100644",
+          "path": "prebuilt/Android.mk",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/prebuilt/Android.mk"
+        },
+        {
+          "after_git_blob": "91b876b692a3fa07756391b0eecb814beae4b987",
+          "after_sha256": "36b93ad83ae03432e2115f2120f1ca66378b079c5892c2ea9c4eb3f98bf2ae3b",
+          "after_size_bytes": 4612,
+          "before_git_blob": "59171146f8db58c09aadf54d541e8be8df2bdb04",
+          "before_sha256": "21cdc935ff21e7047fb6c9e2e5ba0dd6c6d882c31302fb5ccdcdab21ad767010",
+          "before_size_bytes": 332,
+          "mode": "100755",
+          "path": "prebuilt/relink.sh",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_bootable_recovery/b70f8e998b302381ecefc6e7f46df1614bd61afc/prebuilt/relink.sh"
+        }
+      ],
+      "id": "0026-repair-recovery-packaging-contracts",
+      "patch": "patches/twrp/0026-repair-recovery-packaging-contracts.patch",
+      "patch_sha256": "3ad173dccf01b9b45e6c6b8d8af02dfe360441fd12b5b2b0e77a6a3ac07b220c",
+      "project": "bootable/recovery",
+      "reason": "Repair the 17 legacy required-module names observed in graph49 Kati, separate genuine provider modules from their installed stems and symlinks, retain explicit required input paths and fatal copy checks, and preserve the common MDPI resource predecessor and all safety patches.",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051"
+    },
+    {
+      "id": "0027-native-recovery-ci-test-archives",
+      "project": "platform_testing",
+      "repository": "https://android.googlesource.com/platform/platform_testing",
+      "base_commit": "7b48625b052b94b1ef24573ef5e8ffa5e2ea9783",
+      "patch": "patches/twrp/0027-native-recovery-ci-test-archives.patch",
+      "patch_sha256": "5ae39f0f9b033d1e083b6f32e69e284d35792de46f61341eeb6641a60c3462f3",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Graph50 stopped while parsing the continuous instrumentation metric CI archive because MtpServicePerfTests has no installed provider. Only that missing name is an observed graph50 archive error; the other three archives are a reviewed sibling CI scope projection. Gate the complete bodies of the four original continuous instrumentation/native CI archive tasks only when the existing registered nezha_twrp.native_recovery_only setting has bool type and exact true value. This also excludes the nonmetric instrumentation archive API-coverage report, which converts signatures to JDiff and measures its test APKs; it is not a platform API compatibility check. Preserve every original task-body byte, list and optional vendor include when the selector does not match. Keep the lists, Soong module providers, shared package-modules.mk, strict missing-provider/required-module checks and all recovery image, SELinux, VINTF, AVB, artifact and signing checks unchanged. No empty phony target, fake archive, broad test switch, source scope, product package or device identity change. The current Kati-enabled graph does not generate the separate Soong-only empty CI phonies; their original factory remains unchanged. No archive, recovery image or device success is claimed.",
+      "files": [
+        {
+          "path": "build/tasks/continuous_instrumentation_metric_tests.mk",
+          "mode": "100644",
+          "before_sha256": "9258ae71cc7c8260cb73ea19bd209cc70ca055ee5bde11977320c061564a8811",
+          "after_sha256": "b7ea184b30be1fedd3fa7472278e9c544fbd92c0bd2df9aab6fffdb6a7e0f9ab",
+          "before_size_bytes": 1432,
+          "after_size_bytes": 1855,
+          "before_git_blob": "0ff0aba51ff1a37058ff1bd6dd5c77f08d7c3b35",
+          "after_git_blob": "e3224fc58cdf26389b632962e3b10b2feaae5368",
+          "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_instrumentation_metric_tests.mk"
+        },
+        {
+          "path": "build/tasks/continuous_instrumentation_tests.mk",
+          "mode": "100644",
+          "before_sha256": "b2dc47a69d0bb8f6c098be80eeca76332f0c7c47ce73cba5dc1a1910531e7bba",
+          "after_sha256": "b8300b270a3abd39b1f8ce94ee44694bd0f33eff3d7baddad0b6631a745aab46",
+          "before_size_bytes": 3779,
+          "after_size_bytes": 4202,
+          "before_git_blob": "f8da9fc06892d1fc8c9fd8f5cc35a9ca1c25f959",
+          "after_git_blob": "977317c804866ef664bb8993971173f5da9b4314",
+          "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_instrumentation_tests.mk"
+        },
+        {
+          "path": "build/tasks/continuous_native_metric_tests.mk",
+          "mode": "100644",
+          "before_sha256": "8b4940eb7c208ec63c8670dab332307c47fc6bb30d769cfb30db6149528c76ad",
+          "after_sha256": "659b3c74cb37c26b6175f22661f4b767da62377516b152acf1dcc84dc95aa518",
+          "before_size_bytes": 1381,
+          "after_size_bytes": 1804,
+          "before_git_blob": "14ae3f69b0881269eb079e66781f2680ee46fdf0",
+          "after_git_blob": "148ae57931898deb0833613fbc2306b473636ec7",
+          "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_native_metric_tests.mk"
+        },
+        {
+          "path": "build/tasks/continuous_native_tests.mk",
+          "mode": "100644",
+          "before_sha256": "028aa9d345fe1a2b3742c2167d98362ea23ca69cb6b4a58fd1d1a160b462f03e",
+          "after_sha256": "8f42ff01e745606ab956618cb83cdcc7ada4a6c76c0eab80ed0dfc2bc0ca6a4d",
+          "before_size_bytes": 1311,
+          "after_size_bytes": 1734,
+          "before_git_blob": "ef452f8cbdb5ec8ffb3a46baeac2b648afc7af5c",
+          "after_git_blob": "b0e6163a38a168a3c45109d60b007c8a986f6378",
+          "source_url": "https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_native_tests.mk"
+        }
+      ]
+    },
+    {
+      "id": "0028-guard-unconfigured-ozip-decryption",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0028-guard-unconfigured-ozip-decryption.patch",
+      "patch_sha256": "9a51886ddc1c0f69d1a9884b6ecf79c1cb30f815be820a72e4e6c631e7a70531",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Guard optional OZIP decryption when TW_OZIP_DECRYPT_KEY is not defined, eliminating the actual libtwrpgui compiler error. Report an unavailable feature before tool lookup, decryption execution, converted ZIP filename changes or flash_zip, and propagate helper failure through the existing GUI operation status. Preserve ordinary ZIP handling and the original helper body when the C++ macro is supplied; do not define a key or change compiler validation.",
+      "files": [
+        {
+          "path": "gui/action.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/gui/action.cpp",
+          "before_size_bytes": 80100,
+          "before_sha256": "35f21ddd81d67d8ff299e3e47af76ec4d0e9056a74a9d15d9f34590f80ead290",
+          "before_git_blob": "65e71b085568f94b3fc58a436901bb299d1eaa74",
+          "after_size_bytes": 80276,
+          "after_sha256": "db3eb2a0495b990423cea830c54df9fb3da033846db4ff4840a2e0a6055cc2cb",
+          "after_git_blob": "8252b0643cf2bebf3c1a180dcb0373c69563d6be"
+        }
+      ],
+      "feature_contract": {
+        "macro": "TW_OZIP_DECRYPT_KEY",
+        "absent_macro_helper_return": 1,
+        "absent_macro_error": "ozip_decrypt_no_key=OZIP decryption is not configured in this recovery.",
+        "caller_failure_ret_val": 1,
+        "configured_cpp_branch_byte_identical": true,
+        "ordinary_zip_flow_byte_identical": true,
+        "supplies_key_or_macro": false,
+        "changes_feature_selection": false
+      },
+      "limits": [
+        "The configured helper branch is preserved only when the C++ macro is supplied. A nonempty Make variable reaching libtwrpgui is not established by current source wiring.",
+        "The existing configured helper ignores the subprocess exit status; this narrow compiler repair does not change that behavior.",
+        "The existing GUI action starts operation bookkeeping before the check and performs queue/system-details cleanup afterward; this is not a global no-side-effects or storage write lock.",
+        "Offline source projection and strict Git rehearsal do not replace the actual Android compile or any hardware validation."
+      ]
+    },
+    {
+      "id": "0029-explicit-unused-recovery-parameters",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0029-explicit-unused-recovery-parameters.patch",
+      "patch_sha256": "b5d127b1d70231dc4edd1f5fbb5c5ce065abd2d022e5a58785ce1d0078f70f38",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Make exactly the21 unused parameters reported by recovery build54 explicit through side-effect-free void casts. Six parameters unused in all configurations are consumed at function entry; fifteen feature-dependent parameters are consumed only in their existing disabled branches, adding an else where needed. Preserve original signatures, enabled branch text, operations, returns, feature choices and compiler warning checks. The separate version-macro syntax error is not changed.",
+      "files": [
+        {
+          "path": "twrpTar.cpp",
+          "mode": "100755",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrpTar.cpp",
+          "before_size_bytes": 48284,
+          "after_size_bytes": 48299,
+          "before_sha256": "7749d979cc9511d69aa62aded025c6499c39ee3b50defe3c8453bcb733931466",
+          "after_sha256": "546bb1226d2330da1455486e24d5f58d48fec4e93850142863d9b7633924769b",
+          "before_git_blob": "6794edc7d5758379effdf663860b461a7b309661",
+          "after_git_blob": "b1cc7990f475568a1240d55fce39c22b04ed73ab",
+          "before_lines": 1559,
+          "after_lines": 1560,
+          "unused_parameter_functions": [
+            {
+              "source_line": 113,
+              "signature": "void twrpTar::Signal_Kill(int signum) {",
+              "parameters": [
+                "signum"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "8a837ce3945f84c2bf4d18d340155126946bf71e7e29357d15349d66802b8ed9",
+              "after_function_sha256": "2db74c614ceabe632ccb9b9daf93749d0d9fe8a88eee5b9efc98aae68f7ac450"
+            }
+          ]
+        },
+        {
+          "path": "twrp.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrp.cpp",
+          "before_size_bytes": 16158,
+          "after_size_bytes": 16173,
+          "before_sha256": "c6f522167f616155913d3e580380474bcf9b6655abecccc8073bcb9f4102232e",
+          "after_sha256": "9fa6045c34bd73d3b0523d172c42807fa95d758a076cb386c22d9df37e4d8f1a",
+          "before_git_blob": "456c774ccb0e488500b8af9aa7e80de114e37a21",
+          "after_git_blob": "2f3bec56a3ad939f88c53c02a33deecd11c484d9",
+          "before_lines": 493,
+          "after_lines": 494,
+          "unused_parameter_functions": [
+            {
+              "source_line": 80,
+              "signature": "static void Print_Prop(const char *key, const char *name, void *cookie) {",
+              "parameters": [
+                "cookie"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "c63d506fa6c85549d27348484a20815dc453b0bc6828ea1158ac790a62963259",
+              "after_function_sha256": "4ad3bac191a7b63c58f3285b456c8d0250d82bec652421c0fc0fe40184d9fbc0"
+            }
+          ]
+        },
+        {
+          "path": "data.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/data.cpp",
+          "before_size_bytes": 29478,
+          "after_size_bytes": 29500,
+          "before_sha256": "40892d3b543ef1178404e929da07a5b046f8ded49e31cd305321a1134c3613d7",
+          "after_sha256": "a4b6b7e95dc5fa2f52dd5aa391d9a848e50593478a4a28a62634c5a41889fdca",
+          "before_git_blob": "c69574a6b180c9f6abe3649ffec3891027d11bb7",
+          "after_git_blob": "3c2395442cad7a56b47999ddebf414850877dc3a",
+          "before_lines": 998,
+          "after_lines": 1000,
+          "unused_parameter_functions": [
+            {
+              "source_line": 982,
+              "signature": "void DataManager::Vibrate(const string& varName)",
+              "parameters": [
+                "varName"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifndef TW_NO_HAPTICS",
+              "adds_else": true,
+              "before_function_sha256": "1179aa64fe1f68daa3ea24894561fe6824b30fdd4cd81a48a606ecd22cbd042b",
+              "after_function_sha256": "7da55a4c8ac476f8601772203dc542682becafd8a5a031013caacdad60819e9c"
+            }
+          ]
+        },
+        {
+          "path": "partition.cpp",
+          "mode": "100755",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/partition.cpp",
+          "before_size_bytes": 114338,
+          "after_size_bytes": 114426,
+          "before_sha256": "a7c8c9bdf2a4f845a4555721072934ca183bca86e97b0f4c0c45f22ff6a4825d",
+          "after_sha256": "4eca74029d5a289388b71634d1930245c4c1f93d7e10131eddf728d0e6ee400b",
+          "before_git_blob": "2531496b293c21c8e908afb3583e2713f3f3eafc",
+          "after_git_blob": "c3fa3df2e245afe1e9d2b76c3f5da5bca618317e",
+          "before_lines": 3656,
+          "after_lines": 3660,
+          "unused_parameter_functions": [
+            {
+              "source_line": 674,
+              "signature": "void TWPartition::Setup_Data_Partition(bool Display_Error) {",
+              "parameters": [
+                "Display_Error"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "712dc94ed92197bcd25cdfc3430eb60038054099997833c4f00fda104c47def7",
+              "after_function_sha256": "8b7e4834591dd840eb7ff1ffc0f02a6ad2e5e4a6265948e7361c428fd2b0a7eb"
+            },
+            {
+              "source_line": 1327,
+              "signature": "void TWPartition::Find_Real_Block_Device(string& Block, bool Display_Error) {",
+              "parameters": [
+                "Display_Error"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "1a9c9c439f9ea468c58915ff8f08c5aaea09fc599bf1b22ca6ec6396e8bc462e",
+              "after_function_sha256": "c6977ad85acfba1da26e6b63c595e36367e945f23204ef8477b7f9125ba37bce"
+            },
+            {
+              "source_line": 1614,
+              "signature": "bool TWPartition::Bind_Mount(bool Display_Error) {",
+              "parameters": [
+                "Display_Error"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "8f37015fb767c1ebbcf8f46f7a4091b6469aed57e41bc2dfdacb04eaf66a0325",
+              "after_function_sha256": "83abd689193932c62cb2fa0da453cc78ca6606e220dee201dae69e34754c4e23"
+            },
+            {
+              "source_line": 2038,
+              "signature": "string TWPartition::Get_Restore_File_System(PartitionSettings *part_settings) {",
+              "parameters": [
+                "part_settings"
+              ],
+              "placement": "entry",
+              "outer_conditional": null,
+              "adds_else": false,
+              "before_function_sha256": "8595bd2d4ce65686aed6673cdc16d3fbcb1c39beb9bba7f0ffa59b62cb1bd6b0",
+              "after_function_sha256": "e7dc471cae2283509e67dda238871f33779ba0b3add670d4313fbdc2eaa04297"
+            }
+          ]
+        },
+        {
+          "path": "twrp-functions.cpp",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/twrp-functions.cpp",
+          "before_size_bytes": 43762,
+          "after_size_bytes": 43866,
+          "before_sha256": "ac1440e4e4ca9971d6c63b5fbf3bc6b5be2dcef9f65a7be57c9fd15441c30b20",
+          "after_sha256": "feb1dd540e7ebf8db1ed1dc85844c26e6afaba80c3b6eea0ac304ebc1761e203",
+          "before_git_blob": "c310f425afff3dbbf8303931052816d1350a53a6",
+          "after_git_blob": "7f0a864433e14b89057ca7471bd0029dc3efd43b",
+          "before_lines": 1516,
+          "after_lines": 1522,
+          "unused_parameter_functions": [
+            {
+              "source_line": 889,
+              "signature": "void TWFunc::Fixup_Time_On_Boot(const string& time_paths /* = \"\" */)",
+              "parameters": [
+                "time_paths"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef QCOM_RTC_FIX",
+              "adds_else": true,
+              "before_function_sha256": "dbaf6d480cb88da9c7707ccfa3a67a89eb95f51e7af5ea8ded8461f6e51b5d32",
+              "after_function_sha256": "5b2f470453817ef16971079594aaf99b699fde2063426486b46126ae78ea368d"
+            },
+            {
+              "source_line": 1088,
+              "signature": "bool TWFunc::Toggle_MTP(bool enable) {",
+              "parameters": [
+                "enable"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": false,
+              "before_function_sha256": "19ebbadc7b27fb17f8ceec687fa024c8affa7b557adeabe2035525a40c2fbd24",
+              "after_function_sha256": "6c29f959b7250e06821fe9d62e893870ed043b2bb954f24e0d1d4c68aa1935db"
+            },
+            {
+              "source_line": 1250,
+              "signature": "int TWFunc::Property_Override(string Prop_Name, string Prop_Value) {",
+              "parameters": [
+                "Prop_Name",
+                "Prop_Value"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_LIBRESETPROP",
+              "adds_else": false,
+              "before_function_sha256": "84f31e96837c49e1bb34e441f6cb213bc6d2405214ac48aa649de184f08c5f15",
+              "after_function_sha256": "7723bd32534cc08bf9a72036a5b3b1e5f7500dc747388832d8f3b7b809dd2c8b"
+            },
+            {
+              "source_line": 1258,
+              "signature": "int TWFunc::Delete_Property(string Prop_Name) {",
+              "parameters": [
+                "Prop_Name"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_LIBRESETPROP",
+              "adds_else": false,
+              "before_function_sha256": "783b45feaee9d21646439e4f6382eacb88d25d08a3cbd45306a2ddaf8d0cbbfc",
+              "after_function_sha256": "aec47b03f720fea1a06994f3373e8bfc21772368529f52af9664c20cb50ab17a"
+            }
+          ]
+        },
+        {
+          "path": "partitionmanager.cpp",
+          "mode": "100755",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/partitionmanager.cpp",
+          "before_size_bytes": 130688,
+          "after_size_bytes": 130878,
+          "before_sha256": "9a7ee5bc9eef5d27112a36425fe5dd0bf37bd1bb627d355bd8989b8031a01ffb",
+          "after_sha256": "073cbd2c2af845ec958ba62add709bb7b1fa2f77a8aadc013cad2176e389371a",
+          "before_git_blob": "42b848df32ad29d7c7942da4d3d9bd53abbe63a6",
+          "after_git_blob": "dfe12c5a9fea010590dc4440ca60d1510e304cfe",
+          "before_lines": 3905,
+          "after_lines": 3919,
+          "unused_parameter_functions": [
+            {
+              "source_line": 2140,
+              "signature": "void TWPartitionManager::Mark_User_Decrypted(int userID) {",
+              "parameters": [
+                "userID"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_FBE",
+              "adds_else": true,
+              "before_function_sha256": "adebd4cb2decbf4d02a57a5ff5d0c4410de269a8e835805b4ce32855f34d4210",
+              "after_function_sha256": "44c1949e971e870e8c1a684649e2d45d251e740e6f7771ee1e12511d3c7b559b"
+            },
+            {
+              "source_line": 2205,
+              "signature": "int TWPartitionManager::Decrypt_Device(string Password, int user_id) {",
+              "parameters": [
+                "Password",
+                "user_id"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_INCLUDE_CRYPTO",
+              "adds_else": false,
+              "before_function_sha256": "cfbd852f7df207ebe1128315c03113f6c2dfe48b9d41fc13402932b4df1e8e1c",
+              "after_function_sha256": "87587e2daa07e32139a3db6ddb3ec0760fcdbdb3f02a13f4032d59abd6ed9ba7"
+            },
+            {
+              "source_line": 2973,
+              "signature": "bool TWPartitionManager::Add_Remove_MTP_Storage(TWPartition* Part, int message_type) {",
+              "parameters": [
+                "Part",
+                "message_type"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": false,
+              "before_function_sha256": "b5a0a7dad42e4c4da3d8a3d17e7ad49aa8519bdcfacb1f427b9bcffa785c8dd5",
+              "after_function_sha256": "4ff191a63a83c330c8e78e547282eb2f0fca1a275ca9c08a5067b95c9353d87b"
+            },
+            {
+              "source_line": 3037,
+              "signature": "bool TWPartitionManager::Add_MTP_Storage(string Mount_Point) {",
+              "parameters": [
+                "Mount_Point"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "c08202ee74f91654e2bc9901187a132f12e9f85d7dc6b454e75a14a46c3fb736",
+              "after_function_sha256": "cfa5eb1b03c10540c3da74af60ba10e2e251b5ee2c4c1a7e099c4e5a39396fbe"
+            },
+            {
+              "source_line": 3049,
+              "signature": "bool TWPartitionManager::Add_MTP_Storage(unsigned int Storage_ID) {",
+              "parameters": [
+                "Storage_ID"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "46af8b7d2a27bdc712d8e95fcf00bd4e1b4a965f003e113e28ed16775aca27ed",
+              "after_function_sha256": "38aa7667b630dff17f294ac8c24e17c1da42958fe663f70d1d9f65f1919ccd57"
+            },
+            {
+              "source_line": 3061,
+              "signature": "bool TWPartitionManager::Remove_MTP_Storage(string Mount_Point) {",
+              "parameters": [
+                "Mount_Point"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "1d4036d5150fb199754271bd25a00531f1ec0edcd9c78e06738e48cc9d786df8",
+              "after_function_sha256": "fff37a40ec4adb5bc6b5aaf17db910f7261f2964077671ae19342d6b8abfb0b8"
+            },
+            {
+              "source_line": 3073,
+              "signature": "bool TWPartitionManager::Remove_MTP_Storage(unsigned int Storage_ID) {",
+              "parameters": [
+                "Storage_ID"
+              ],
+              "placement": "disabled_branch",
+              "outer_conditional": "#ifdef TW_HAS_MTP",
+              "adds_else": true,
+              "before_function_sha256": "275b01df084e21ecdf0e056a982157ffe77a524f1818a367d9c66f5dc7d6b958",
+              "after_function_sha256": "7c1c17900b73112a23966134063b38e815a1fa9029f14e2fd6190592c8f37f23"
+            }
+          ]
+        }
+      ],
+      "scope": {
+        "observed_unused_parameters": 21,
+        "functions": 18,
+        "files": 6,
+        "always_unused_parameters": 6,
+        "disabled_branch_parameters": 15,
+        "new_else_branches": 7,
+        "warning_policy_changed": false,
+        "features_enabled": false,
+        "function_signatures_changed": false,
+        "version_macro_changed": false
+      },
+      "limits": [
+        "Offline source projection and Git rehearsal are not an Android compilation result.",
+        "The crypto-enabled/FBE-disabled Decrypt_Device user_id warning remains a separate preexisting configuration issue; this patch changes only the observed no-crypto branch.",
+        "No crypto, MTP, haptics, clock or property-reset capability is enabled; existing return values and side effects are unchanged."
+      ]
+    },
+    {
+      "id": "0030-correct-default-device-version",
+      "project": "vendor/twrp",
+      "repository": "https://github.com/TWRP-Test/android_vendor_twrp",
+      "base_commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1",
+      "patch": "patches/twrp/0030-correct-default-device-version.patch",
+      "patch_sha256": "30949471c74952e11412626b265ae487079ab01ce24a16699d30f1cca3b44d24",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Supply the raw default device-version value expected by the existing Soong cflag template. The previous Make default included its own quotes and hyphen, so Soong emitted the invalid C++ replacement text \"-\"-0\"\". Use unquoted 0 only when TW_DEVICE_VERSION is undefined; preserve explicit values, consumer template, source version and device identity.",
+      "files": [
+        {
+          "path": "config/BoardConfigSoong.mk",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_vendor_twrp/blob/b53296dfc420ce65fffe712de380d5abf6c4c2f1/config/BoardConfigSoong.mk",
+          "before_size_bytes": 15760,
+          "before_sha256": "0b858d8e1457701ca054edc89eb01aec514ae83170f1b83ef31be93c25e5dcd6",
+          "before_git_blob": "79b2361eed30162a8e55f992c05fded9a66fb43d",
+          "after_size_bytes": 15757,
+          "after_sha256": "123be11a3240ca63ff1011a67d7d05b7f27bab0c16618af980b5d524ba0e6267",
+          "after_git_blob": "5dd951ad87a2b2073fde014db8b629a2e33a3b7a"
+        }
+      ],
+      "version_contract": {
+        "make_assignment": "TW_DEVICE_VERSION ?= 0",
+        "raw_default": "0",
+        "default_cpp_replacement": "\"-0\"",
+        "explicit_make_values_unchanged": true,
+        "consumer": {
+          "path": "build/soong/Android.bp",
+          "commit": "b53296dfc420ce65fffe712de380d5abf6c4c2f1",
+          "sha256": "7ee79252369daf5dedcb30e4d106827a219378249cbe447ceeba3ac296ee38ec",
+          "cflag_template": "-DTW_DEVICE_VERSION=\"-%s\""
+        }
+      },
+      "limits": [
+        "This corrects only the undefined Make default. It does not validate or sanitize explicitly configured values, including an explicit empty value.",
+        "No warning or security option, feature selection, source revision, official release claim or device identity is changed. The actual Android compile remains required."
+      ]
+    },
+    {
+      "id": "0031-explicit-unused-tarwrite-parameter",
+      "project": "bootable/recovery",
+      "repository": "https://github.com/TWRP-Test/android_bootable_recovery",
+      "base_commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+      "patch": "patches/twrp/0031-explicit-unused-tarwrite-parameter.patch",
+      "patch_sha256": "af2d8b202bd4953d8d565065bcac08fce14b9c70d6bf4746db94e456140ffe88",
+      "source_snapshot_sha256": "e967ec0392a3438f4706278e9e77b0810c4401a36f0e64c211a1e5c6e5bfb051",
+      "reason": "Mark the unused fd parameter in flush_libtar_buffer explicitly without changing its signature or body operations. The strict recovery arm64 C compilation reports -Werror,-Wunused-parameter at tarWrite.c:98:30. Preserve the existing deferred end-of-tar buffer state changes, all actual writes, and warning policy.",
+      "files": [
+        {
+          "path": "tarWrite.c",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_bootable_recovery/blob/b70f8e998b302381ecefc6e7f46df1614bd61afc/tarWrite.c",
+          "before_size_bytes": 2861,
+          "before_sha256": "9ef2f2afaa18d405ba28d4d0d6d34293eb74799f468db5705e6fff5047040d1c",
+          "before_git_blob": "98461452a42ff0e28d4fa22c3fba065683d59994",
+          "after_size_bytes": 2872,
+          "after_sha256": "d55d8913c19c1d0271b7a98bf9f22fcaaafe12f8cac5de6fafe57be8ea5c73ad",
+          "after_git_blob": "d1b4555716099760e39688b3cdfbbf2003032496"
+        }
+      ],
+      "parameter_contract": {
+        "function": "void flush_libtar_buffer(int fd)",
+        "parameter": "fd",
+        "original_line": 98,
+        "original_column": 30,
+        "diagnostic": "-Werror,-Wunused-parameter",
+        "insertion": "\t(void)fd;\n",
+        "added_source_lines": 1,
+        "removed_source_lines": 0,
+        "deferred_flush_preserved": true
+      },
+      "limits": [
+        "This marks an existing unused descriptor parameter; it does not add I/O, close or sync a descriptor, or change the deferred end-of-tar flush behavior.",
+        "Actual Android recompilation and device validation remain required. Offline source checks do not establish a successful build or runtime behavior."
+      ]
+    },
+    {
+      "id": "0032-enforce-user-recovery-domains",
+      "project": "system/sepolicy",
+      "repository": "https://github.com/TWRP-Test/android_system_sepolicy",
+      "base_commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+      "patch": "patches/twrp/0032-enforce-user-recovery-domains.patch",
+      "patch_sha256": "50df430c25bb2feb3ed0b07fbe39a2d110310d03a14adc8e5e574db44039a323",
+      "reason": "Diagnostic build58 failed the native sepolicy.recovery validator because the pinned recovery_only block marks adbd, fastbootd, init, logd, postinstall, recovery and ueventd permissive even for user builds. Wrap only those seven declarations in the existing userdebug_or_eng macro. Preserve their original debug/eng recovery behavior, all six neighboring allow statements, every neverallow rule, shared macro definitions and the unfiltered user-build permissive-domain check. No new permission, permissive allowlist, validator bypass, build-variant change or device-runtime claim.",
+      "files": [
+        {
+          "path": "private/twrp.te",
+          "mode": "100644",
+          "source_url": "https://raw.githubusercontent.com/TWRP-Test/android_system_sepolicy/f0270686ee017f4de42e1032aca7527031bcc484/private/twrp.te",
+          "before_sha256": "03b63947499c6abbacf35d5a830c1dae03a01dae625bfa27de5fde8df2453833",
+          "after_sha256": "a4d257213731dc8a2560f1674d4045002eef0a145c01c217223921e51378e510",
+          "before_git_blob": "be4a1e9637c64aea610c0404b15cc7a2fbf11db1",
+          "after_git_blob": "0179e3ff26123f8bbed6a457adf5716f4762d135",
+          "before_size_bytes": 416,
+          "after_size_bytes": 456
+        }
+      ],
+      "policy_contract": {
+        "enclosing_macro": "recovery_only",
+        "new_guard": "userdebug_or_eng",
+        "permissive_domains_in_source_order": [
+          "recovery",
+          "init",
+          "logd",
+          "adbd",
+          "fastbootd",
+          "postinstall",
+          "ueventd"
+        ],
+        "unchanged_allow_statements": [
+          "allow kernel unlabeled:file rw_file_perms;",
+          "allow kernel tmpfs:file { read };",
+          "allow kernel recovery:fd { use };",
+          "allow unlabeled unlabeled:filesystem associate;",
+          "allow vendor_init rootfs:dir read;",
+          "allow logd rootfs:file { entrypoint };"
+        ],
+        "macro_source": {
+          "path": "public/te_macros",
+          "commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+          "sha256": "39876a485ea1fe6cf76418268bc058dde7ae50690fd2901051e32125c5678243",
+          "definitions": {
+            "recovery_only": "define(`recovery_only', ifelse(target_recovery, `true', $1, ))\n",
+            "userdebug_or_eng": "define(`userdebug_or_eng', ifelse(target_build_variant, `eng', $1, ifelse(target_build_variant, `userdebug', $1,\n#\n# SUPPRESSED_BY_USERDEBUG_OR_ENG -- this marker is used by CTS -- do not modify\n)))\n"
+          }
+        },
+        "build_variant_source": {
+          "path": "build/soong/policy.go",
+          "commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+          "sha256": "eaae44efdf8b42ec75acfa024b8f86bc48d96227013eeec078bacc9c1be1d57f",
+          "function": "policyConf.buildVariant",
+          "lines": [
+            150,
+            160
+          ]
+        },
+        "recovery_module_source": {
+          "path": "Android.bp",
+          "commit": "f0270686ee017f4de42e1032aca7527031bcc484",
+          "sha256": "28828e32c7a2031195fb7c164ab7389dc210e63668c9f24893c498ab562e8ba4",
+          "conf_module": "recovery_sepolicy.conf",
+          "binary_module": "sepolicy.recovery",
+          "target_recovery": true
+        },
+        "expected_variant_behavior": {
+          "user_recovery_permissive_domains": [],
+          "userdebug_recovery_permissive_domains": [
+            "recovery",
+            "init",
+            "logd",
+            "adbd",
+            "fastbootd",
+            "postinstall",
+            "ueventd"
+          ],
+          "eng_recovery_permissive_domains": [
+            "recovery",
+            "init",
+            "logd",
+            "adbd",
+            "fastbootd",
+            "postinstall",
+            "ueventd"
+          ],
+          "non_recovery_permissive_domains": []
+        },
+        "allow_and_neverallow_rules_unchanged": true,
+        "shared_macros_unchanged": true,
+        "native_validation_unchanged": true,
+        "compiled_policy_revalidation_required": true
+      },
+      "limits": [
+        "Finite offline variant projections are source-level checks, not execution of m4, a policy compiler or sepolicy-analyze.",
+        "The actual user recovery policy must be rebuilt and its unfiltered permissive-domain output must be empty; no current successful policy or image is claimed.",
+        "Existing debug/eng recovery declarations are intentionally retained; this does not establish a secure or working device runtime.",
+        "No global SELinux enforcement switch, allow or neverallow rule, permissive-domain allowlist, validator, signing rule or target identity is changed."
+      ]
+    },
+    {
+      "id": "0033-create-recovery-linkerconfig-directory",
+      "project": "build/make",
+      "repository": "https://github.com/TWRP-Test/android_build",
+      "base_commit": "3b5b2b43b8e2200ef92b7b814a84c8dde8b74121",
+      "patch": "patches/twrp/0033-create-recovery-linkerconfig-directory.patch",
+      "patch_sha256": "85939f746a65497e152b79d59fe24bf28a28f2b0207a87f446404f4746a44986",
+      "reason": "Normal build60 failed ramdisk_files-timestamp because the original recovery recipe touched linkerconfig/ld.config.txt when its parent directory did not exist. Add mkdir -p for that parent immediately before the existing touch. Preserve the original first_stage_console placeholder purpose, existing config bytes and touch semantics, runtime init copy/chmod commands, recipe sequencing and all artifact, SELinux, signing and source checks. This creates no new config contents or provider and does not claim a working runtime linker namespace.",
+      "files": [
+        {
+          "path": "core/Makefile",
+          "mode": "100644",
+          "source_url": "https://github.com/TWRP-Test/android_build/blob/3b5b2b43b8e2200ef92b7b814a84c8dde8b74121/core/Makefile",
+          "before_sha256": "619ebc4a0abc3190e84565fea9721b6c4864cafdbee43cc1761d826a5a5a2297",
+          "after_sha256": "b7ce1d382209101e2951193e60f456d281bcd485cfd69a0048296f4f292b3dc7",
+          "before_git_blob": "a997efabf54e268c956585924d4c0588d67dc1e2",
+          "after_git_blob": "e09041ca031c437f03d2fb7dea753869218288a6",
+          "before_size_bytes": 377838,
+          "after_size_bytes": 377889
+        }
+      ],
+      "placeholder_contract": {
+        "target": "INTERNAL_RECOVERY_RAMDISK_FILES_TIMESTAMP",
+        "parent": "$(TARGET_RECOVERY_ROOT_OUT)/linkerconfig",
+        "placeholder": "$(TARGET_RECOVERY_ROOT_OUT)/linkerconfig/ld.config.txt",
+        "added_recipe_line": "\tmkdir -p $(TARGET_RECOVERY_ROOT_OUT)/linkerconfig\n",
+        "unchanged_touch_line": "\ttouch $(TARGET_RECOVERY_ROOT_OUT)/linkerconfig/ld.config.txt\n",
+        "unchanged_upstream_comment": "\t# Silence warnings in first_stage_console.\n",
+        "existing_file_contents_preserved": true,
+        "existing_file_and_directory_modes_preserved": true,
+        "explicit_chmod_or_chown_added": false,
+        "new_config_contents_or_provider": false,
+        "runtime_init": {
+          "project": "bootable/recovery",
+          "commit": "b70f8e998b302381ecefc6e7f46df1614bd61afc",
+          "path": "etc/init.rc",
+          "before_sha256": "29d50cc909060f5a3bd1b649eb95cff98997ddda14c7cc814bd7131791a5d274",
+          "current_after_existing_patch0002_sha256": "76f57d9baa75bfaea68f4676467958dd3682ad2c7f2e0ee1810c42b98a639a6f",
+          "unchanged_commands": [
+            "    copy /system/etc/ld.config.txt /linkerconfig/ld.config.txt",
+            "    chmod 444 /linkerconfig/ld.config.txt"
+          ]
+        }
+      },
+      "limits": [
+        "Offline temporary-directory fixtures model mkdir and touch semantics; they do not run Make, Ninja, a native compiler or the device.",
+        "Only the missing output parent is created by the source recipe. The existing touch still creates an empty placeholder only when absent and does not truncate an existing config.",
+        "No explicit permission change, config generation, provider substitution, linker-namespace claim, validator waiver, signing change or target identity change is introduced.",
+        "The next normal recovery build and the unchanged image, ramdisk, SELinux and signature validations remain required; no image or runtime success is claimed."
+      ]
+    }
+  ],
+  "application_requirements": [
+    "Apply only inside the separately resolved TWRP source tree, never /work/evolution.",
+    "Verify the full selected manifest, each project HEAD and every preimage SHA256 before applying any patch.",
+    "Reject unexpected dirty files, path escapes, mismatched base commits, failed context checks or incomplete application.",
+    "Verify every postimage SHA256 and preserve a receipt and the source diff; never reset unrelated changes."
+  ],
+  "preserved_checks": {
+    "selinux_neverallows": true,
+    "selinux_allow_rules": true,
+    "signature_and_avb_checks": true,
+    "rollback_constraints": true,
+    "artifact_path_checks": true,
+    "elf_checks": true,
+    "dependency_checks": true
+  },
+  "verification_requirements": [
+    "Build the actual recovery and init variants and inspect the generated property files and compile arguments.",
+    "Run the unfiltered sepolicy-analyze permissive check on the actual recovery policy and require empty output.",
+    "Confirm daemon/main.cpp for adbd_system_api_recovery is compiled with __ANDROID_RECOVERY__ and includes the mandatory recovery authentication branch; inspect all linked authentication inputs.",
+    "Require ro.secure=1 and ro.adb.secure=1; confirm actual recovery adbd requires authentication with no trusted key and rejects an unknown key before any log-access claim.",
+    "Keep SELinux enforcing; the normal AOSP init property selection is not replaced by these patches.",
+    "Review all source changes and inspect the final ramdisk and AVB footer before treating any image as a candidate."
+  ],
+  "runtime_limitations": [
+    "No build, boot, authenticated ADB or enforcing device behavior is established by patch metadata or offline tests.",
+    "TWRP still reads and writes BCB arguments, can run pending OpenRecoveryScript/startup scripts, and exposes destructive UI and command actions.",
+    "The separate minadbd/sideload transport is not covered by the main adbd authentication patch and is not admitted for stage-0 use.",
+    "Omitting crypto or userdata fstab entries does not create a write lock; settings, logging, slot/OTA and stock-recovery mutation paths remain outside this narrow patch set.",
+    "No phone access or change is authorized by applying this source patch queue."
+  ],
+  "native_recovery_profile": {
+    "namespace": "nezha_twrp",
+    "boolean_variable": "native_recovery_only",
+    "selected_value": true,
+    "enabled_when_selected": false,
+    "otherwise": "unset",
+    "test_module_type": "android_robolectric_test",
+    "test_module_count": 18,
+    "runtime_module_type": "android_robolectric_runtimes",
+    "runtime_module_name": "robolectric-android-all-prebuilts",
+    "affected_file_count": 18,
+    "affected_base_project_count": 7,
+    "supplemental_projects_modified": false,
+    "audited_blueprint_file_count": 10836,
+    "direct_test_constructor_count": 21,
+    "selected_test_constructor_count": 18,
+    "already_source_excluded_test_constructor_count": 3,
+    "secondary_blueprint_test_constructor_count": 0,
+    "configurable_test_module_alias_count": 0,
+    "explicit_references_to_gated_names_in_retained_blueprints": 0,
+    "implicit_runtime_consumers": "The 18 selected android_robolectric_test modules create the runtime dependency through the pinned Soong DepsMutator; all 18 receive the same enabled gate.",
+    "preserved_behavior": "Only enabled properties are added to the listed modules. Production modules, shared libraries, defaults, licenses, source-selection rules, and validation code are unchanged. This profile intentionally excludes these JVM UI tests; it does not claim to run them.",
+    "semantics_sources": [
+      "build/soong/android/module.go:288",
+      "build/soong/android/module.go:1439",
+      "build/soong/android/mutator.go:478",
+      "build/soong/java/robolectric.go:114",
+      "build/soong/java/robolectric.go:356",
+      "build/soong/docs/selects.md:64",
+      "build/make/core/config.mk:320"
+    ],
+    "validation_boundary": "Offline tests and captured-source apply checks do not prove an Android graph, recovery build, or hardware behavior. The selected profile must be observed in generated Soong VendorVars and VendorVarTypes in the next graph attempt before treating the profile as verified."
+  },
+  "native_recovery_helper_profile": {
+    "namespace": "nezha_twrp",
+    "boolean_variable": "native_recovery_only",
+    "selected_value": true,
+    "enabled_when_selected": false,
+    "otherwise": "unset",
+    "patch_ids": [
+      "0012-native-recovery-settings-ipc-testutils",
+      "0013-native-recovery-car-ui-test-support"
+    ],
+    "helper_module_count": 3,
+    "affected_file_count": 2,
+    "affected_base_project_count": 2,
+    "supplemental_projects_modified": false,
+    "audit_scope": "Graph 14 helper closure. The unchanged native_recovery_profile record describes the initial eighteen Robolectric tests and runtime helper in patches 0005 through 0011; it is historical, not the total current profile inventory.",
+    "initial_profile_record_sha256": "fc455a257d125784e99d6f9e01706f51157e00c2416e3a192a4b34c8adc9de59",
+    "previous_eleven_patch_records_sha256": "5a55847341ce6f0a3b84b7108a3dd142405c3e2e2d48f89c7be3343db510d8a9",
+    "total_declared_gate_count": 22,
+    "provenance": "Graph 14 reported Robolectric extension dependencies. These three helper modules are retained consumers identified by the follow-up reverse dependency audit, not three additional observed graph errors.",
+    "companion_source_exclusions": [
+      "external/android_onboarding/java/com/android/onboarding/contracts/testing/Android.bp",
+      "external/android_onboarding/java/com/android/onboarding/testing/Android.bp",
+      "frameworks/base/packages/SettingsLib/tests/robotests/Android.bp",
+      "frameworks/base/packages/SettingsLib/tests/robotests/fragment/Android.bp",
+      "test/robolectric-extensions/Android.bp",
+      "test/robolectric-extensions/clearcut-junit-listener/Android.bp"
+    ],
+    "source_selection_boundary": "The six companion Blueprint file exclusions are applied in the device target, not by this queue. One excludes the previously patched SettingsLibRoboTests file; its historical patch and record remain unchanged. Gate count describes declarations across the queue, not modules remaining in the selected graph.",
+    "audited_blueprint_file_count": 10855,
+    "audited_selected_blueprint_file_count": 10340,
+    "audited_make_go_file_count": 14901,
+    "closed_cut_names": [
+      "Android_Platform_Developer_Experience",
+      "ClearcutJunitListener",
+      "Robolectric-aosp-plugins",
+      "Robolectric-aosp-plugins_tests",
+      "Robolectric_all-target",
+      "Robolectric_shadows_androidx_fragment_upstream",
+      "SettingsLib-robo-testutils",
+      "SettingsLibIpc-testutils",
+      "SettingsLibRoboTests",
+      "SettingsLibShell",
+      "Settings_robolectric_meta_service_file",
+      "TestClearcutJunitListener",
+      "android_onboarding.contracts.testing",
+      "android_onboarding.testing",
+      "android_onboarding.testing.AndroidManifest",
+      "car-ui-lib-testing-support",
+      "car-ui-lib-testing-support-source"
+    ],
+    "closed_cut_edge_count": 12,
+    "retained_external_consumers_found": 0,
+    "helper_internal_dependency": {
+      "consumer": "car-ui-lib-testing-support",
+      "provider": "car-ui-lib-testing-support-source"
+    },
+    "audit_evidence": [
+      {
+        "path": "reports/twrp-graph14-robo-extended-reverse-projection.json",
+        "sha256": "01022fc2c77d8ff86e0271ec5af17f756aa4ea005342cb692084a2adc212bf2c"
+      },
+      {
+        "path": "reports/twrp-graph14-robo-extended-make-go-references.json",
+        "sha256": "c7c2803721ffb9a586d3cd76b93028f7c99d212854d0ee5d0730a76657b00f84"
+      }
+    ],
+    "preserved_behavior": "Only enabled fields are added to the three exact helpers. SettingsLibIpc and the automotive SDK production modules, all dependencies, source lists, defaults and licenses remain byte-for-byte unchanged. This profile intentionally excludes these test helpers and does not claim to run their tests.",
+    "validation_boundary": "The literal Blueprint and Make/Go reference audit is not a complete evaluated Soong graph. Captured preimage checks, syntax checks and offline tests do not prove a recovery build or runtime behavior. The next strict graph must verify the three gates together with all six companion source exclusions; no missing-dependency or security validation is waived."
+  },
+  "native_recovery_supplement_profile": {
+    "namespace": "nezha_twrp",
+    "boolean_variable": "native_recovery_only",
+    "selected_value": true,
+    "enabled_when_selected": false,
+    "otherwise": "unset",
+    "patch_ids": [
+      "0015-native-recovery-systemui-robolectric",
+      "0016-native-recovery-robolectric-integration-tests"
+    ],
+    "test_module_type": "android_robolectric_test",
+    "test_module_count": 3,
+    "affected_file_count": 3,
+    "affected_supplementary_project_count": 2,
+    "supplemental_projects_modified": true,
+    "previous_fourteen_patch_records_sha256": "d92b7a0e4b47b036a16046af964b895d16d7cdd300f47594746b7864c93b340d",
+    "previous_metadata_sha256": "61b0ecdb6721facb6f131c009345d8b424f34f0ccdd321f01d33fba222f0f637",
+    "tooling_contract_commit": "8b4ad6edc0fb090df2cca4b73ec456357790fe06",
+    "operations": {
+      "animationlib_robo_tests": "replace_existing_literal_true",
+      "CtesqueRoboTests": "insert_new_property",
+      "NativeGraphicsTests": "insert_new_property"
+    },
+    "provenance": "Source-projection closure for the separately pinned SystemUI and Robolectric providers. These three constructors are reviewed incoming-source dependencies, not three additional observed graph failures.",
+    "historical_boundary": "All fourteen previous patch entries, payloads and metadata remain unchanged. The initial nineteen-module and three-helper records describe their historical audits; the six Graph 14 source exclusions are not asserted to be the current device source selection.",
+    "default_enabled_source_proof": {
+      "soong_commit": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7",
+      "blueprint_commit": "dcb14f2e146f40cf1f212efb220e9aa1f3cfc280",
+      "report": {
+        "path": "reports/twrp-systemui-animation-robo-gate-review.json",
+        "sha256": "1bffca8f85a32746fe595ab98b884881f8f5e5966fe196568274b5a5d7b11f2d"
+      },
+      "files": {
+        "build/soong/android/module.go": "0220bdc66ff68ee95ff0f1d00433ce13ef3a46b599059ccd1e3befbef74b5c05",
+        "build/soong/android/arch.go": "e2ccc72ad54ccc36b4ed56baf6f8dabde7c9e9a275b712e916dc475244f837ac",
+        "build/soong/java/robolectric.go": "b2ddae1c9b310d894298f8b35beecb2774ecd3d36ee1f71ebd60dbe4f440210f",
+        "build/soong/java/base.go": "b2fb9345a48c5e050252ec8529d79f81e35e990c5e6a241a884527fbafcf7c65",
+        "build/blueprint/proptools/configurable.go": "272a7b80f9504332e4f7520aff51c8f3e1873c9efa0f79d14b1f31869853fe50"
+      },
+      "replacement_module": "animationlib_robo_tests",
+      "android_os_default_disabled": false,
+      "explicit_defaults": [],
+      "enable_overrides": [],
+      "forced_disabled_preserved": true,
+      "typed_false_or_absent_effective_enabled": true,
+      "present_wrong_type": "error",
+      "scope": "Exact reviewed DeviceSupported Android module; not a general unset/true equivalence.",
+      "source_chain": [
+        "build/soong/java/robolectric.go:332-347 selects DeviceSupported.",
+        "build/soong/android/arch.go:278,328 registers Android with DefaultDisabled=false.",
+        "build/soong/android/module.go:1439-1443 honors ForcedDisabled before Enabled.GetOrDefault(..., !Os.DefaultDisabled).",
+        "build/blueprint/proptools/configurable.go:1237-1238 represents unset as nil; 647-654 returns the fallback.",
+        "build/soong/android/module.go:2709-2736 and build/blueprint/proptools/configurable.go:829-831 distinguish typed Boolean, missing and incorrectly typed conditions."
+      ]
+    },
+    "dependency_dispatch": {
+      "soong_commit": "91bdc79cffb29d35b2d46a33204c061c3e7ed4f7",
+      "source": "build/soong/android/mutator.go:478-482",
+      "disabled_skips": [
+        "baseDepsMutator",
+        "robolectricTest.DepsMutator"
+      ],
+      "boundary": "Disabling these modules skips their normal dependency-mutator dispatch, not Blueprint parsing or all Soong validation."
+    },
+    "candidate_validation": {
+      "systemui_candidate_checks": 14,
+      "systemui_semantics_checks": 25,
+      "robolectric_candidate_checks": 18,
+      "robolectric_incoming_checks": 20,
+      "android_graph_verified": false,
+      "recovery_compile_verified": false,
+      "device_behavior_verified": false
+    },
+    "preserved_behavior": "Only the three named enabled properties change. The production animationlib module is unchanged. NativeGraphicsTestsAssetsLib, NativeGraphicsPseudoApp, all other definitions, dependencies, defaults, licenses and source lists are also unchanged. The original Robolectric runtime helper gate and compiler build-property producer are not modified.",
+    "source_selection_boundary": "Companion source scopes and newly admitted project rows are separate reviewed device/config changes. Restoring original Robolectric plugin and Clearcut providers does not rewrite the historical Graph 14 exclusion record or ungate the runtime helper.",
+    "validation_boundary": "The native recovery profile intentionally excludes these JVM tests and does not claim full Android test coverage. Sealed source checks and offline regressions do not prove an Android graph, recovery compile, boot or runtime behavior. No missing-dependency, SELinux, signature, AVB, VINTF, ELF or other security validation is waived."
+  }
+}

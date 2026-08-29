@@ -1,0 +1,16 @@
+diff --git a/animationlib/Android.bp b/animationlib/Android.bp
+index 9f496a9e8bb870a3644cd800dd2d3c555dc2e19c..c738b9a63cc5580d499e67a78b38f9cbfcfaf04c 100644
+--- a/animationlib/Android.bp
++++ b/animationlib/Android.bp
+@@ -60,7 +60,10 @@ android_app {
+ }
+ 
+ android_robolectric_test {
+-    enabled: true,
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     name: "animationlib_robo_tests",
+     srcs: [
+         "tests/src/**/*.kt",

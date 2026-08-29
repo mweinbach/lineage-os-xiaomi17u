@@ -1,0 +1,18 @@
+diff --git a/common/robolectric/Android.bp b/common/robolectric/Android.bp
+index 7ca6747736de6dfe94e1043ba5b9dd0a8cd98137..0ec8bc772f7ad785cba95d3f326320947d34eaef 100644
+--- a/common/robolectric/Android.bp
++++ b/common/robolectric/Android.bp
+@@ -6,9 +6,13 @@
+     //   legacy_restricted
+     default_applicable_licenses: ["prebuilts_misc_license"],
+ }
+ 
+ android_robolectric_runtimes {
+     name: "robolectric-android-all-prebuilts",
++    enabled: select(soong_config_variable("nezha_twrp", "native_recovery_only"), {
++        true: false,
++        default: unset,
++    }),
+     jars: ["android-all/*.jar"],
+     lib: "robolectric-host-android_all",
+ }

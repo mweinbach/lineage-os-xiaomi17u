@@ -11,6 +11,12 @@ You have access to practically as many subagents as you want to parrallelize wor
 - Make small, descriptive commits as useful work is completed. Run tests before
   completing a change. Use `python3 -m unittest discover -s tests -v`.
 - Check upstream branches and record commit IDs before depending on them.
+- For TWRP, use the tested `working76` derivative recorded in
+  `research/twrp-working-defaults.json` as the current baseline. It preserves
+  the `fix22ZJ-touchfix18` runtime from `research/twrp-installed-recovery.json`
+  with the tested permissive SELinux and zero-vibration defaults. Preserve its
+  hardware setup while applying measured changes. Earlier minimal recovery
+  builds remain historical experiments, not the current functional baseline.
 - Do not copy a different phone's partition layout, kernel, firmware, or device
   identity into a Xiaomi 17 Ultra build. Verify the exact variant from stock.
 - Never unlock, relock, wipe, reboot, flash, or change the connected phone unless
@@ -21,8 +27,12 @@ You have access to practically as many subagents as you want to parrallelize wor
 - Keep raw stock dumps, proprietary APKs/blobs, serials, logs, personal data,
   signing keys, and source checkouts in ignored directories. Record provenance
   and hashes; do not redistribute proprietary files without permission.
-- Retain SELinux enforcement and verified-boot/rollback constraints in the
-  design. Do not claim a stock feature works without a reproducible device test.
+- Recovery bring-up may use permissive SELinux, as explicitly authorized by
+  the user, while boot, touch, USB and logging are established. Preserve denial
+  logging and restore enforcement as a later milestone; do not disable SELinux
+  in the kernel or change normal Android's SELinux mode. Keep verified-boot and
+  rollback constraints. Magisk is a possible later task, not part of this
+  authorization. Do not claim a stock feature works without a device test.
 - `upstream/` contains reference checkouts. Full source checkouts belong on a
   case-sensitive Linux filesystem: native Linux x86-64, or the explicitly
   verified Apple Container ARM64 + Rosetta path. The latter uses a persistent
@@ -32,7 +42,8 @@ You have access to practically as many subagents as you want to parrallelize wor
   named volume. Do not mount home directories, phone evidence, or credentials.
 - Never attach the same ext4 source volume to concurrent writer VMs. Do not
   prune volumes or delete existing source checkouts. Keep signature, artifact
-  path, SELinux and device-compatibility checks enabled in container builds.
+  path and device-compatibility checks enabled in container builds. Record
+  whether the recovery policy is enforcing or intentionally permissive.
 - Do not start a full source sync or build without checking disk, OS,
   architecture, filesystem case sensitivity, and the selected manifest.
 - Favor available Codex tools and relevant skills. Coordinate file ownership

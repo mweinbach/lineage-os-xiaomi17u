@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Keep the recovery domain unable to disable SELinux. Do not add broad grants
+# or permissive domains to make a compile or future hardware test appear to pass.
+recovery_only(`
+    neverallow recovery kernel:security setenforce;
+')

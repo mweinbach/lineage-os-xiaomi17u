@@ -1,0 +1,1083 @@
+{
+  "schema_version": 1,
+  "operation": "twrp-authorized-temporary-boot-attempts",
+  "scope": "User authorized ADB reboot to bootloader and RAM-only TWRP boot; no partition-write, unlock/relock, wipe, or slot-change commands.",
+  "static_milestone": {
+    "sha256": "cca9c8b44dd244aa55fefe5bd9758e655e315e3f34c33f1e902cde31d9acbc3d",
+    "size_bytes": 11310
+  },
+  "device_observations": {
+    "product": "nezha",
+    "model": "2512BPNDAG",
+    "board": "canoe",
+    "installed_build": "OS3.0.309.0.WPACNXM",
+    "physical_sales_region_verified": false,
+    "adb_product_vendor_device": "mivendor",
+    "adb_product_odm_device": "nezha",
+    "android_reported_locked": true,
+    "bootloader_reported_unlocked": true,
+    "bootloader_reported_secure": true,
+    "slot": "a",
+    "recovery_slot_size_bytes": 104857600,
+    "boot_slot_size_bytes": 100663296,
+    "observed_max_download_bytes": 805306368
+  },
+  "host_tools": {
+    "platform_tools_version": "36.0.0-13206524"
+  },
+  "attempts": [
+    {
+      "number": 1,
+      "started_at_utc": "2026-08-29T03:20:32.139561+00:00",
+      "operation": "fastboot boot",
+      "image_role": "unchanged_build66_dedicated_recovery",
+      "image_sha256": "51478e22c6e99f7b604aa0ab1681d90adb84931f60d61b8e978e48a15ed1e791",
+      "image_size_bytes": 104857600,
+      "header_version": 4,
+      "kernel_size_bytes": 0,
+      "ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "ramdisk_size_bytes": 25192233,
+      "download_succeeded": true,
+      "boot_command_succeeded": false,
+      "bootloader_error": "Failed to load/authenticate boot image: Bad Buffer Size",
+      "returncode": 1,
+      "timed_out": false,
+      "status": "bootloader_rejected",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "evidence": {
+        "start": {
+          "sha256": "ff70a64e26066f04008810edc1d8e399ec7e53aea319a2709aa20be82651a166",
+          "size_bytes": 511
+        },
+        "result": {
+          "sha256": "05cec3972d4868431ce591fed78cd9cb541593dc0b071dad4a3d1f0c474cb98a",
+          "size_bytes": 332
+        },
+        "bootloader_variables": {
+          "sha256": "557b50e3217e07d5377ddd6633834f1c41c063bda7de80c1216faceef04e51a2",
+          "size_bytes": 1372
+        }
+      }
+    },
+    {
+      "number": 2,
+      "started_at_utc": "2026-08-29T03:41:41.566865+00:00",
+      "operation": "fastboot boot",
+      "image_role": "stock_kernel_build66_ramdisk_v4_wrapper",
+      "image_sha256": "70c2d3ab2aee6c216a2c8d6a38d05ddeb76b1e3313a3602d3a2f1fdc1a155de2",
+      "image_size_bytes": 100663296,
+      "header_version": 4,
+      "header_size_bytes": 1584,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "ramdisk_size_bytes": 25192233,
+      "ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "boot_command_accepted_stock_android_observed",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "runtime_observations": {
+        "sys_boot_completed": "1",
+        "zygote_running": true,
+        "system_server_running": true,
+        "surfaceflinger_running": true,
+        "twrp_version_property_present": false,
+        "recovery_service_present": false,
+        "force_normal_boot_property": "0",
+        "adb_uid": 2000,
+        "selinux": "Enforcing",
+        "stock_build": "OS3.0.309.0.WPACNXM",
+        "proc_cmdline_read_permitted": false,
+        "proc_bootconfig_read_permitted": false
+      },
+      "evidence": {
+        "start": {
+          "sha256": "ce6919d25032173000072b2c0a54d162b701ed735e3591a25d93cce8145667d2",
+          "size_bytes": 737
+        },
+        "result": {
+          "sha256": "c923ef7261a3c24e541523384aa6a92c3be9ba2b88f71b55f0a2a11132059653",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "45ae387f2ebc8221e82e8f34c36c743978e90e1e905dbbe4921a0bc7d32c84c9",
+          "size_bytes": 1638
+        },
+        "construction": {
+          "sha256": "7ce98a582816c4253a927f6ac289227dc9b475a64ff0861f72ba198853b1f361",
+          "size_bytes": 3315
+        },
+        "independent_image_inspection": {
+          "sha256": "48c8afb526630a67d520c8d4ebedaefda1271127bf02a36011cdfe3bc697eae9",
+          "size_bytes": 4855
+        },
+        "independent_inspector_execution": {
+          "sha256": "96d6d44587430e19d64ae15873bb16ce41b13fd97561b1706efa3231b3493cce",
+          "size_bytes": 680
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "17ea0690b98dc6118e37b538d1010728fa799d8d759fe21024103ab240ac393b",
+          "size_bytes": 1174
+        },
+        "post_boot_presence": {
+          "sha256": "cd71963cd9cb7ec5fddb348b1a3ff6a1d198745c3e42372ac4a827a552ea3319",
+          "size_bytes": 2889
+        },
+        "runtime_diagnostics": {
+          "sha256": "e2353f5f4f6fa0588f9b93fe9906e82420f1e51416a336adbfb67eb30d732aed",
+          "size_bytes": 269075
+        },
+        "metadata_peer_review": {
+          "sha256": "856d3c2f4d1df70de6d07353713a49dd7c05aedf65d3f15853f6ecf206d02e82",
+          "size_bytes": 1844
+        }
+      }
+    },
+    {
+      "number": 3,
+      "started_at_utc": "2026-08-29T03:52:28.150505+00:00",
+      "operation": "fastboot boot",
+      "image_role": "stock_kernel_build66_ramdisk_v3_wrapper",
+      "image_sha256": "f8c2a3696036faea4401dacfabcde5ad092bb9b56adeffb9444f5d4adae52118",
+      "image_size_bytes": 100663296,
+      "header_version": 3,
+      "header_size_bytes": 1580,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "ramdisk_size_bytes": 25192233,
+      "ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "command_line_sha256": "d4171d7aa65f0c4e2c0f9c1c776dda26693f7021f8443c274dcfd9121a4d8d2f",
+      "command_line_source": "eight exact stock vendor bootconfig declarations joined with spaces",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "boot_command_accepted_first_stage_abort_then_stock_android",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "runtime_observations": {
+        "stock_android_boot_completed": true,
+        "recovery_service_present": false,
+        "twrp_version_property_present": false,
+        "boot_reason": "bootloader",
+        "last_kernel_log_available_via_android_dropbox": true,
+        "direct_pstore_read_permitted": false,
+        "saved_log_first_stage_abort_observed": true,
+        "saved_log_failure_summary": "First-stage init could not mount proc, sysfs, mnt, debug_ramdisk and second_stage_resources because root mount-point directories were absent; it aborted and requested reboot to bootloader.",
+        "saved_log_init_started_seconds": 0.254202,
+        "saved_log_abort_seconds": 0.25637,
+        "saved_log_reboot_seconds": 0.25781,
+        "saved_log_kernel_version": "6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k",
+        "saved_log_contains_some_corrupted_characters": true
+      },
+      "evidence": {
+        "start": {
+          "sha256": "be3ef0cc0db54bb76f515a938b7859ca3b3e6add8d5884b623e4a93049c20331",
+          "size_bytes": 646
+        },
+        "result": {
+          "sha256": "9737e714aaf9060b54d1759a54bfc3a87a4f2982ad60735e237dc1ac35b7c00b",
+          "size_bytes": 283
+        },
+        "bootloader_variables": {
+          "sha256": "6525dba22915196faae22ca6b1959e5c7a0eb3348b85d34bcb2ae62e6625d4ff",
+          "size_bytes": 1637
+        },
+        "construction": {
+          "sha256": "30e6b5b81e909711488d9120a45c56e2fb1bb9416fa18f50c6c914509cfd2f60",
+          "size_bytes": 4568
+        },
+        "independent_image_inspection": {
+          "sha256": "1253129de8c8c5f52846d6de9e89f8f3607aef47ca766e928ec6539a12ed148b",
+          "size_bytes": 5562
+        },
+        "independent_inspector_execution": {
+          "sha256": "4a234d44a20d34609a6b0270e8dedaed10ddf4947e1f6a7ffb7045113953be56",
+          "size_bytes": 680
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "7c02b9ae8fb35fc43e3244a7d498b1097d08f6367507e050c8074ab1427dc62c",
+          "size_bytes": 1185
+        },
+        "runtime_diagnostics": {
+          "sha256": "55edfb82b4f38555e9abff81d2d27d73929ac760c20032671726a59f9fc8bf8d",
+          "size_bytes": 136901
+        },
+        "last_kernel_log": {
+          "sha256": "55f259906c8dc1375c75b8b01c2b545c062325dfcd9703a3a115bd7367e24d31",
+          "size_bytes": 68037
+        },
+        "metadata_peer_review": {
+          "sha256": "41f74ac7120110d06f5e668701d18dc8cd4f71e3b2df901fabc364932a120cd0",
+          "size_bytes": 2324
+        },
+        "public_loader_source_findings": {
+          "sha256": "300fa1242027e57c9cf7c023dc0f19ac819b40174bddd2e73fd5913c94341a62",
+          "size_bytes": 10869
+        }
+      }
+    },
+    {
+      "number": 4,
+      "started_at_utc": "2026-08-29T04:09:07.882300+00:00",
+      "operation": "fastboot boot",
+      "image_role": "v3_wrapper_with_generic_root_directories",
+      "image_sha256": "4da77ae4bd8e5a30d036b23ae2e8939fada75023a16588a6f4456fce8e866093",
+      "image_size_bytes": 100663296,
+      "header_version": 3,
+      "header_size_bytes": 1580,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "ramdisk_size_bytes": 25193270,
+      "ramdisk_sha256": "1f1c61c9c8d473d1e9753cc971c13e0d71b23318e6080e5e9615bec7b5d196ff",
+      "canonical_ramdisk_suffix": {
+        "offset_within_ramdisk_bytes": 1037,
+        "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+        "size_bytes": 25192233,
+        "unchanged": true
+      },
+      "directory_scaffold": {
+        "compressed_prefix": {
+          "sha256": "b06e73b4444e3d31f6ea48e9a65c2a673cf3a58ee70a72f23a3665249d29f40d",
+          "size_bytes": 1037
+        },
+        "contains_files_or_symlinks": false,
+        "directories": [
+          "debug_ramdisk",
+          "dev",
+          "metadata",
+          "mnt",
+          "proc",
+          "second_stage_resources",
+          "sys"
+        ],
+        "gid": 0,
+        "mode": "0755",
+        "newc": {
+          "sha256": "027b1045269d9d61baa63b204818977cef7ecdc953ef9265d5d8a9520404cd2e",
+          "size_bytes": 1024
+        },
+        "uid": 0
+      },
+      "command_line_sha256": "d4171d7aa65f0c4e2c0f9c1c776dda26693f7021f8443c274dcfd9121a4d8d2f",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "recovery_init_second_stage_reached_then_bootloader",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "runtime_observations": {
+        "missing_first_stage_mount_points_resolved": true,
+        "vendor_module_loading_observed": true,
+        "monolithic_sepolicy_loading_observed": true,
+        "recovery_init_selinux_enforcing_observed": true,
+        "second_stage_init_started_observed": true,
+        "second_stage_init_started_seconds": 18.496079,
+        "reboot_requested_seconds": 18.644637,
+        "init_log_rate_limit_suppression_observed": true,
+        "fatal_cause_identified": false,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "bootloader_after_trial_verified": true,
+        "slot_after_trial": "a",
+        "diagnostic_return_to_stock_command": "fastboot reboot",
+        "stock_authorized_adb_returned": true,
+        "last_kernel_log_available_via_android_dropbox": true,
+        "saved_log_contains_some_corrupted_characters": true
+      },
+      "evidence": {
+        "start": {
+          "sha256": "c89ca526a138828cd6cdb113f2c5bc71a59a671ff06c5c2617f9cedd4cbdcafc",
+          "size_bytes": 652
+        },
+        "result": {
+          "sha256": "6bf1c58718cbc14895ed83ae42752af0ba6687e4b359b8711ccf3ea6059ac161",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "c0f8c4c04388a9f86a00d6d54de77b71563b0c002463b000552563926f0a77b1",
+          "size_bytes": 1637
+        },
+        "construction": {
+          "sha256": "1d0bb12848b2aeee5be13d875b4b72ddef8491e2afb13c92c949a3e86bb9acb0",
+          "size_bytes": 4648
+        },
+        "independent_image_inspection": {
+          "sha256": "116d503d2525d500c58e5d55068beff845e8b85a49f2e5af8c933ce6fde7c29f",
+          "size_bytes": 8691
+        },
+        "independent_inspector_execution": {
+          "sha256": "d6552654fc32cf6c939f9f062f98ee66e6d21f0bd42afa9bf249fefc6b5096af",
+          "size_bytes": 789
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "cec2417e0a60c44ac0ea47fa24ae3de1dee3c57420a69c9e43eb5b4370749837",
+          "size_bytes": 1209
+        },
+        "native_composite_decompression": {
+          "sha256": "a47b46b96c21ea5bb22beafea246488928ee87132b96d4e0674dc798ae8052bd",
+          "size_bytes": 668
+        },
+        "bootloader_return": {
+          "sha256": "b965bda8ead83893b2926777da3ef15a243e3761f0b3e0ddb25aeac0bccbb147",
+          "size_bytes": 504
+        },
+        "diagnostic_stock_reboot": {
+          "sha256": "7b04df8888b4fb910656b4d228b94a4c2f46347b22537944cc7dcda9b92f5fe4",
+          "size_bytes": 152
+        },
+        "last_kernel_log": {
+          "sha256": "0280c1af35220af476aae971c9063d204ccf1239db0ded52947881dc50dc2b59",
+          "size_bytes": 68049
+        },
+        "metadata_peer_review": {
+          "sha256": "19a7e28028ee7ef9b2009d83c791636f9929fea82a91fb58ce15293e0398e1de",
+          "size_bytes": 3219
+        },
+        "source_prefix_findings": {
+          "sha256": "687c543bd9814d896ff68ce281a5d81508c80fdd421ba79c8379b56c099bdc66",
+          "size_bytes": 7231
+        },
+        "source_directory_plan": {
+          "sha256": "d1208908d5bceac9d2dee89f123dc71a5608d39c2743732a5af75327e17f7510",
+          "size_bytes": 2404
+        }
+      }
+    },
+    {
+      "operation": "fastboot boot",
+      "header_version": 3,
+      "header_size_bytes": 1580,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "canonical_ramdisk_suffix": {
+        "offset_within_ramdisk_bytes": 1037,
+        "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+        "size_bytes": 25192233,
+        "unchanged": true
+      },
+      "directory_scaffold": {
+        "compressed_prefix": {
+          "sha256": "b06e73b4444e3d31f6ea48e9a65c2a673cf3a58ee70a72f23a3665249d29f40d",
+          "size_bytes": 1037
+        },
+        "contains_files_or_symlinks": false,
+        "directories": [
+          "debug_ramdisk",
+          "dev",
+          "metadata",
+          "mnt",
+          "proc",
+          "second_stage_resources",
+          "sys"
+        ],
+        "gid": 0,
+        "mode": "0755",
+        "newc": {
+          "sha256": "027b1045269d9d61baa63b204818977cef7ecdc953ef9265d5d8a9520404cd2e",
+          "size_bytes": 1024
+        },
+        "uid": 0
+      },
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "number": 5,
+      "started_at_utc": "2026-08-29T04:20:37.451575+00:00",
+      "image_role": "stock_kernel_build66_ramdisk_v3_scaffold_init_logging",
+      "image_sha256": "74b1cbad15dfefcad96b0f77dbb340ae4df9461d70e28ad19a144308bb0c1bb1",
+      "image_size_bytes": 100663296,
+      "ramdisk_sha256": "1f1c61c9c8d473d1e9753cc971c13e0d71b23318e6080e5e9615bec7b5d196ff",
+      "ramdisk_size_bytes": 25193270,
+      "command_line_sha256": "b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077",
+      "command_line_size_bytes": 287,
+      "diagnostic_parameter": "printk.devkmsg=on",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "recovery_init_apex_mount_abort_then_bootloader",
+      "evidence": {
+        "start": {
+          "sha256": "b529564e2ad89a61a4499ca31a103f5c85df2d2c6cb4ede5d7b9443b42d25b73",
+          "size_bytes": 651
+        },
+        "result": {
+          "sha256": "ed1717584e2366e8f6ea0271d4f9aa9b7eb5cea46251e318fc1a4a04f81cadb5",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "61131d9d7faf49009c83b770556c7f248afc56658f160033b2d327df36a42f83",
+          "size_bytes": 1639
+        },
+        "post_boot_presence": {
+          "sha256": "ad2eac38e35875295917b63090f52b8dbdea4e221d0aee46a72154c7cd2e4448",
+          "size_bytes": 1975
+        },
+        "construction": {
+          "sha256": "094794b9a9106fff27fcb067e4ac315d65d79d473981e3efa6fa19a9ce9b838a",
+          "size_bytes": 3793
+        },
+        "independent_image_inspection": {
+          "sha256": "7a995aa6baa8f20ca6f68bbce0b2476d4f08914762b9819efec230724c8cf21b",
+          "size_bytes": 8845
+        },
+        "independent_inspector_execution": {
+          "sha256": "b99143c877ae4ee502c9668db8156fcc3f9cbf15239486eebd5672543236af1e",
+          "size_bytes": 901
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "30abb020f1f71fcf2b641f8fa182e4660310fc9cabf310c8cd1e7de49715b37f",
+          "size_bytes": 1206
+        },
+        "diagnostic_stock_reboot": {
+          "sha256": "35db5df19476ccee05b2c4d2b39047490cab67839834a7174a83aac88e07d863",
+          "size_bytes": 216
+        },
+        "diagnostic_stock_reboot_start": {
+          "sha256": "00f98db205bddf7eafaadfe6a0416bae5be47d0ec0584eabb4b68569cd5a7142",
+          "size_bytes": 305
+        },
+        "last_kernel_log": {
+          "sha256": "b11b788a558b52655215fb5a6ceca0f668ff8706dd1553014564406a8fc69d08",
+          "size_bytes": 68600
+        },
+        "rejected_stale_kernel_log": {
+          "sha256": "27700bdf869aa9aa46c32f7390be3a995208c27270975ad56fe7c896a721973a",
+          "size_bytes": 68049
+        },
+        "log_freshness_check": {
+          "sha256": "07737a7f721ed9b546f2eac30cf44179d131415f2bf1c1669a6332fca7a4d758",
+          "size_bytes": 2626
+        },
+        "logging_parameter_source_findings": {
+          "sha256": "7ded6a3ca14ebeff6158ae6b533f89a21532e5877d581626a2b3e861d2e6ec8e",
+          "size_bytes": 6973
+        },
+        "second_stage_source_audit": {
+          "sha256": "6b99d7c80bce9777e26e140f0b25077a588f3564a9b46b73486c6f2fec91bf64",
+          "size_bytes": 25984
+        }
+      },
+      "change_from_prior_trial": "Only the header command line adds printk.devkmsg=on; kernel and complete ramdisk bytes are unchanged. Fresh AVB metadata is signed with the same development key.",
+      "runtime_observations": {
+        "vendor_module_loading_observed": true,
+        "vendor_modules_loaded": 426,
+        "monolithic_sepolicy_loading_observed": true,
+        "recovery_init_selinux_enforcing_observed": true,
+        "second_stage_init_started_observed": true,
+        "second_stage_init_started_seconds": 18.495592,
+        "fatal_cause_identified": true,
+        "fatal_mount_point": "/apex",
+        "fatal_errno": "ENOENT",
+        "fatal_signal": 6,
+        "fatal_signal_seconds": 18.499899,
+        "reboot_requested_seconds": 18.643909,
+        "twrp_build_identity_observed": true,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "bootloader_after_trial_verified": true,
+        "slot_after_trial": "a",
+        "diagnostic_return_to_stock_command": "fastboot reboot",
+        "stock_authorized_adb_returned": true,
+        "last_kernel_log_available_via_android_dropbox": true,
+        "saved_log_contains_some_corrupted_characters": true,
+        "initial_stale_kernel_log_rejected": true,
+        "fresh_log_entry_local": "2026-08-29 00:22:41",
+        "fresh_log_timezone": "America/New_York",
+        "fresh_log_newer_than_diagnostic_reboot": true
+      }
+    },
+    {
+      "operation": "fastboot boot",
+      "header_version": 3,
+      "header_size_bytes": 1580,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "canonical_ramdisk_suffix": {
+        "offset_within_ramdisk_bytes": 1551,
+        "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+        "size_bytes": 25192233,
+        "unchanged": true
+      },
+      "directory_scaffold": {
+        "compressed_prefix": {
+          "sha256": "001605f7ab8e588eece60c6fa715e63ad6e9caf4a2da33cd6c90cbfeb9b10d66",
+          "size_bytes": 1551
+        },
+        "contains_files_or_symlinks": false,
+        "directories": [
+          "apex",
+          "debug_ramdisk",
+          "dev",
+          "metadata",
+          "mnt",
+          "proc",
+          "second_stage_resources",
+          "sys"
+        ],
+        "gid": 0,
+        "mode": "0755",
+        "newc": {
+          "sha256": "4ea8b5645cc9d2bc0533df35431f45c604b0a76e1dc48efd7ac6f56fe4d18c14",
+          "size_bytes": 1536
+        },
+        "uid": 0
+      },
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "number": 6,
+      "started_at_utc": "2026-08-29T04:35:16.304321+00:00",
+      "image_role": "stock_kernel_build66_ramdisk_v3_apex_scaffold_init_logging",
+      "image_sha256": "8278aa15d2aa21e5553a332787580716e3d7b43b88ad505c73e8141e37dd9e7f",
+      "image_size_bytes": 100663296,
+      "ramdisk_sha256": "56c155fe7beed5a836faee93b48e51fe545f58cce112d136d89ba7ef15476dc2",
+      "ramdisk_size_bytes": 25193784,
+      "command_line_sha256": "b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077",
+      "command_line_size_bytes": 287,
+      "diagnostic_parameter": "printk.devkmsg=on",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "boot_command_accepted_no_adb_or_fastboot_observed",
+      "evidence": {
+        "start": {
+          "sha256": "1ceb0c39ae281065420525c5650213637b193a021d1429c35ca7af20f42a8b3f",
+          "size_bytes": 648
+        },
+        "result": {
+          "sha256": "6c590c83ed34241f7d8c33a084db4a4bb4776f4958422ab2e2500b187164180c",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "0e03892d75b187edc8443ca06d6035e827f4cc87027b898979a17909be6d8fdc",
+          "size_bytes": 1640
+        },
+        "post_boot_presence": {
+          "sha256": "a9187c99d257aaac1ff183e0161c8a7f278a1511651beb1027aacb2b05c2d1db",
+          "size_bytes": 8341
+        },
+        "construction": {
+          "sha256": "a13189879d147652c57d4b796f4f9aaa1cdf739ac07141eea94cc0b76eaec163",
+          "size_bytes": 4780
+        },
+        "independent_image_inspection": {
+          "sha256": "b0dd1ec16329e89fb833da9f0ff7909021b108d4106986d969e1c86376185a66",
+          "size_bytes": 9345
+        },
+        "independent_inspector_execution": {
+          "sha256": "57b14f130195c8d8a97046552b4233ae1c39abd6416fb4997b8dc6e086035b52",
+          "size_bytes": 854
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "4271008b7d8123a09bc4e52d19dd4a1c667325d1b112e0f5a217b15a43803d88",
+          "size_bytes": 1193
+        },
+        "native_composite_decompression": {
+          "sha256": "f72eb4bf76365250beb04bf31641cd47a0b525456bffb1c4d9aaade6af335754",
+          "size_bytes": 828
+        },
+        "host_usb_descriptors": {
+          "sha256": "81ecb3270059244cd27eafb6a4e30c0a84c1eee6c1cadd28ee4a90ed679afc3e",
+          "size_bytes": 144
+        },
+        "later_user_screen_and_host_presence": {
+          "sha256": "a0d135b0517f5121e71e91a1149493b5e49b454938afe4b335183d8158727cd8",
+          "size_bytes": 512
+        },
+        "later_stock_identity": {
+          "sha256": "6d2462a5fcc1bb13a3970de3cbf6c1a6e78d2b7a2bb985f577eb89927da15791",
+          "size_bytes": 1339
+        },
+        "later_log_collection_summary": {
+          "sha256": "efead18fc24a1a79dfcbc351e446ea6ca7818bd4267b03cf7c03d4374ca66810",
+          "size_bytes": 493
+        },
+        "later_dropbox_freshness": {
+          "sha256": "2feb61017303339ce0ff51d028dcaff2decfbbabdb3c09c367946997c3d9eb71",
+          "size_bytes": 11580
+        },
+        "later_bootreceiver_logcat": {
+          "sha256": "fb2785e760d5f716799b02289dc38384f4f5be44aef80ee05659d71ee1d9c623",
+          "size_bytes": 5525
+        }
+      },
+      "change_from_prior_trial": "Add only an empty root-owned /apex directory to the prefix; preserve the exact stock kernel, original build66 compressed suffix and 287-byte diagnostic command line.",
+      "runtime_observations": {
+        "observed_at_utc": "2026-08-29T04:36:34.745389+00:00",
+        "usb_presence_poll_count": 20,
+        "usb_presence_poll_span_seconds": 57.86773570798687,
+        "adb_seen_during_observation": false,
+        "fastboot_seen_during_observation": false,
+        "current_runtime_identified": false,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "apex_mount_success_verified": false,
+        "source_directory_fix_is_not_runtime_proof": true,
+        "screen_observation_requested": true,
+        "no_reboot_sent_after_this_trial": true
+      },
+      "later_user_observations": [
+        {
+          "recorded_at_utc": "2026-08-29T11:52:05.977981+00:00",
+          "source": "user_report",
+          "screen": "black",
+          "visible_recovery_ui_reported": false,
+          "host_adb_present": false,
+          "host_fastboot_present": false,
+          "runtime_failure_cause_identified": false,
+          "stock_boot_failure_proven": false,
+          "physical_restart_requested": true
+        }
+      ],
+      "later_stock_return": {
+        "source": "user_report_and_selected_authorized_adb",
+        "stock_build": "OS3.0.309.0.WPACNXM",
+        "slot": "a",
+        "stock_boot_completed": true,
+        "recovery_ui_reported_ever_visible": false,
+        "saved_previous_kernel_log_available": false,
+        "dropbox_entries": 0,
+        "stale_log_used_for_diagnosis": false,
+        "black_screen_cause_identified": false,
+        "phone_mutating_commands_during_log_collection": false,
+        "bootreceiver_logcat_wall_time_differs_from_current_phone_clock": true,
+        "cause_of_missing_log_established": false
+      }
+    },
+    {
+      "image_role": "stock_kernel_build66_ramdisk_v3_config_scaffold_init_logging",
+      "image_sha256": "8cbc355d68750c32f1b3ba4dec1953732bd32a3924731553b16204a699ee730f",
+      "image_size_bytes": 100663296,
+      "header_version": 3,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "kernel_size_bytes": 39963136,
+      "ramdisk_sha256": "dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db",
+      "ramdisk_size_bytes": 25193784,
+      "canonical_ramdisk_suffix": {
+        "offset_within_ramdisk_bytes": 1551,
+        "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+        "size_bytes": 25192233,
+        "unchanged": true
+      },
+      "directory_scaffold": {
+        "compressed_prefix": {
+          "sha256": "602e50e43fc8b77e5550d7e01c4461339d5b02541065407a013a39d054324d9f",
+          "size_bytes": 1551
+        },
+        "contains_files_or_symlinks": false,
+        "directories": [
+          "apex",
+          "config",
+          "debug_ramdisk",
+          "dev",
+          "metadata",
+          "mnt",
+          "proc",
+          "second_stage_resources",
+          "sys"
+        ],
+        "gid": 0,
+        "mode": "0755",
+        "newc": {
+          "sha256": "21053c223bbd43731b7ba898bbe75eb5816e9b254a8a53913e145a78a6f6a5e4",
+          "size_bytes": 1536
+        },
+        "uid": 0
+      },
+      "command_line_sha256": "b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077",
+      "command_line_size_bytes": 287,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "number": 7,
+      "started_at_utc": "2026-08-29T13:27:48.447847+00:00",
+      "operation": "fastboot boot",
+      "header_size_bytes": 1580,
+      "diagnostic_parameter": "printk.devkmsg=on",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "boot_command_accepted_no_adb_or_fastboot_observed",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "runtime_observations": {
+        "observed_at_utc": "2026-08-29T13:29:00.978424+00:00",
+        "usb_presence_poll_count": 20,
+        "usb_presence_poll_span_seconds": 58.08060408299207,
+        "adb_seen_during_observation": false,
+        "fastboot_seen_during_observation": false,
+        "current_runtime_identified": false,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "configfs_mount_success_verified": false,
+        "source_directory_fix_is_not_runtime_proof": true,
+        "screen_observation_requested": true
+      },
+      "evidence": {
+        "start": {
+          "sha256": "93aad82a9791d54386281e7c306f1a13705b354fe58a380c1933ed55cace372e",
+          "size_bytes": 650
+        },
+        "result": {
+          "sha256": "e8eee3e6ac77daa14287672c30c258d1e6e0b0e6be2a874d301868bea8191146",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "cf22d6151ca54cbe44e222a05af78aa3e0dc817a5bab6c4290558ea1acf19391",
+          "size_bytes": 1639
+        },
+        "post_boot_presence": {
+          "sha256": "8e676acaeb2e4537f3a4e50766fbb0098aa44dc5aa99bab877ce0092b073b851",
+          "size_bytes": 9348
+        },
+        "host_usb_descriptors": {
+          "sha256": "e5a579c389bb6a8199b1b0a5d7374d593562c868abae996f8f4079fe5dcf40d2",
+          "size_bytes": 137
+        },
+        "construction": {
+          "sha256": "bd830d79d1b92a7d59c1770b69222f68527c50e07b59960946ac50c5ce8b8c19",
+          "size_bytes": 4996
+        },
+        "independent_image_inspection": {
+          "sha256": "2883f27f68d239a830267b401d96b22efcd71fbd437eb5d68100e5d1bd090fc5",
+          "size_bytes": 9855
+        },
+        "independent_inspector_execution": {
+          "sha256": "b48684750e3d7cffda64ce08ba535e432e7931505bac80a5d81caae0100721f9",
+          "size_bytes": 957
+        },
+        "fresh_preflight_inspection": {
+          "sha256": "2883f27f68d239a830267b401d96b22efcd71fbd437eb5d68100e5d1bd090fc5",
+          "size_bytes": 9855
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "61e3d5c71db2ddd0303903e99783e7dd51f5d0bc36b37a9ed48aa3715ffb73f1",
+          "size_bytes": 1202
+        },
+        "native_composite_decompression": {
+          "sha256": "4324de872521f5b3ad5140a09a861a07eeeb14b965effac10e7c616dc5d9482c",
+          "size_bytes": 828
+        },
+        "usb_mount_source_audit": {
+          "sha256": "3762a093373ecade2cf96cd5f4ca1bf4c72967945609dab70f3b0070e7e848f6",
+          "size_bytes": 19802
+        },
+        "later_user_fastboot_confirmation": {
+          "sha256": "5ce7e10e7736b463c5ef05ff04012a495db3a8da642e90c3f82a3d9768ad0275",
+          "size_bytes": 1533
+        },
+        "later_diagnostic_stock_reboot_result": {
+          "sha256": "7a144b89f1c6959aa7f7366f7b20c38de4fd5507ce047256d76b61d490af094d",
+          "size_bytes": 217
+        },
+        "later_stock_adb_arrival": {
+          "sha256": "919a55a8d08227c53defe009f807d05bbb7f0a8bfcf47e842ab5fea487d9c687",
+          "size_bytes": 3730
+        },
+        "later_stock_identity": {
+          "sha256": "00376033ea4fd1166fd214f6ec1c2f16f9c21dfe9e1104fbb1edd45424ab9df1",
+          "size_bytes": 677
+        },
+        "early_dropbox_observation": {
+          "sha256": "8916a1dee601cc6371f71174d75decce620d7b0f2bef96f11a932ed48e700d4d",
+          "size_bytes": 57704
+        },
+        "early_capture_clock_state": {
+          "sha256": "63ac52f4d1125dcdd2c49047c51c627b3098033db1ed7f24c6a22de893953eb1",
+          "size_bytes": 849
+        },
+        "early_bootreceiver_logcat": {
+          "sha256": "9949cc50a3a1b779f124c2530923733ff1e6b130d2b3ed2431fcedfa25101b0a",
+          "size_bytes": 5526
+        }
+      },
+      "later_stock_return": {
+        "source": "user_return_to_fastboot_and_selected_device_verification",
+        "user_returned_to_fastboot": true,
+        "selected_bootloader_identity": {
+          "product": "nezha",
+          "slot": "a",
+          "is_userspace": false,
+          "unlocked": true,
+          "secure": true
+        },
+        "diagnostic_return_to_stock_command": "fastboot reboot",
+        "diagnostic_return_to_stock_command_count": 1,
+        "diagnostic_return_to_stock_command_accepted": true,
+        "stock_authorized_adb_returned": true,
+        "stock_product": "nezha",
+        "stock_build": "OS3.0.309.0.WPACNXM",
+        "slot": "a",
+        "stock_boot_completed": true,
+        "stock_sys_boot_reason": "bootloader",
+        "stock_final_uptime_seconds": 94.05,
+        "saved_previous_kernel_log_available": false,
+        "stale_log_used_for_diagnosis": false,
+        "cause_of_missing_log_established": false,
+        "runtime_failure_cause_identified": false,
+        "recovery_stage_verified": false,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "log_collection_after_stock_return_read_only": true,
+        "early_dropbox_capture": {
+          "monotonic_budget_seconds": 90,
+          "first_observed_phone_uptime_seconds": 8.13,
+          "index_observations": 80,
+          "last_index_observation_elapsed_seconds": 84.929,
+          "system_last_kmsg_snapshot_count": 0,
+          "system_last_kmsg_candidate_count": 0,
+          "system_boot_entry_observed": true,
+          "date_filter_applied": false,
+          "candidate_logs_assumed_current": false,
+          "phone_clock_forward_correction_observed": true,
+          "phone_clock_correction_uptime_interval_seconds": [
+            18.95,
+            29.84
+          ],
+          "clock_correction_proves_log_loss": false
+        }
+      }
+    }
+  ],
+  "last_confirmed_mode": "stock_android_after_attempt_7",
+  "twrp_boot_verified": false,
+  "authenticated_recovery_adb_verified": false,
+  "runtime_selinux_enforcement_verified": false,
+  "recovery_log_access_verified": false,
+  "partition_write_command_sent": false,
+  "limitations": [
+    "The rejection does not identify which loader format, size or authentication check failed.",
+    "The dedicated recovery image has no kernel; fastboot boot sends it unchanged and does not automatically combine stock kernel or companion ramdisks.",
+    "Fastboot lock state differs from Android properties; the positively parsed bootloader unlocked result was used for the authorized trial.",
+    "The compiled static artifact milestone remains a historical record, not a claim that hardware testing succeeded.",
+    "The v4 wrapper was accepted but reached stock Android. Public Qualcomm loader code suggests init_boot ramdisk preference; the proprietary Nezha loader implementation has not been established.",
+    "No partition-write, wipe, unlock/relock, or slot-change command was sent. Temporary boot does not guarantee that a bootloader leaves all of its internal boot metadata unchanged.",
+    "The v3 trial has saved first-stage initialization failure evidence. TWRP UI, recovery ADB and recovery logs remain unverified; saved previous-kernel logs are distinct from a working recovery logger.",
+    "The directory-scaffold trial reached second-stage recovery init with SELinux enforcing. Init then rebooted; its fatal cause was not visible amid kernel write-rate-limit suppression. This is not a completed TWRP UI/ADB startup.",
+    "Attempt 5 identifies the missing /apex mount point from a fresh saved kernel log. Its earlier stale DropBox capture is retained but excluded as evidence of that trial; BootReceiver can publish after sys.boot_completed.",
+    "Attempt 6 adds the empty /apex directory, but an accepted boot command and absent USB do not prove TWRP started or the phone crashed. Screen state and the current runtime remain unresolved.",
+    "The config-directory candidate was initially recorded before upload or boot; that preparation checkpoint remains historical. Static absence of /config is a USB setup defect, not proof that it is the only runtime problem in attempt 6.",
+    "Attempt 7 was accepted but USB remained absent during the bounded observation. Adding /config alone did not establish working USB, UI or authenticated ADB; the actual startup failure still needs runtime evidence.",
+    "After attempt 7 the user returned to fastboot, and one authorized diagnostic reboot returned the verified stock build on slot a. Early read-only DropBox collection observed a SYSTEM_BOOT entry but no SYSTEM_LAST_KMSG candidate within its 90-second monotonic budget. The observed forward phone-clock correction does not establish why the kernel log is missing or what recovery stage failed."
+  ],
+  "evidence": {
+    "adb_reboot_to_bootloader": {
+      "sha256": "6379c17d798191f995d43b0950ea7787779fe29c9af7354b25de37a514ff207d",
+      "size_bytes": 54
+    },
+    "v4_previous_kernel_log": {
+      "sha256": "284e6ecf4ce9425e83b41f5594c25797b6e50f2d09c44d44cb3ff1c438c6ac40",
+      "size_bytes": 67403
+    },
+    "delayed_presence_after_attempt_6": {
+      "sha256": "d774f805428776117058bea32b89dd4d8860458eccdfd888eb36608f26997125",
+      "size_bytes": 474
+    }
+  },
+  "latest_observed_transport_state": "selected_authorized_stock_adb_after_attempt_7",
+  "prepared_candidate_checkpoints": [
+    {
+      "name": "config72",
+      "scope": "historical_preparation_before_attempt_7",
+      "status": "constructed_verified_not_booted",
+      "image_role": "stock_kernel_build66_ramdisk_v3_config_scaffold_init_logging",
+      "image_sha256": "8cbc355d68750c32f1b3ba4dec1953732bd32a3924731553b16204a699ee730f",
+      "image_size_bytes": 100663296,
+      "header_version": 3,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "kernel_size_bytes": 39963136,
+      "ramdisk_sha256": "dbaeab4b0cf35ea537fef9cf9a7cd10586f581ca964782d9ef63b39576f727db",
+      "ramdisk_size_bytes": 25193784,
+      "canonical_ramdisk_suffix": {
+        "offset_within_ramdisk_bytes": 1551,
+        "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+        "size_bytes": 25192233,
+        "unchanged": true
+      },
+      "directory_scaffold": {
+        "compressed_prefix": {
+          "sha256": "602e50e43fc8b77e5550d7e01c4461339d5b02541065407a013a39d054324d9f",
+          "size_bytes": 1551
+        },
+        "contains_files_or_symlinks": false,
+        "directories": [
+          "apex",
+          "config",
+          "debug_ramdisk",
+          "dev",
+          "metadata",
+          "mnt",
+          "proc",
+          "second_stage_resources",
+          "sys"
+        ],
+        "gid": 0,
+        "mode": "0755",
+        "newc": {
+          "sha256": "21053c223bbd43731b7ba898bbe75eb5816e9b254a8a53913e145a78a6f6a5e4",
+          "size_bytes": 1536
+        },
+        "uid": 0
+      },
+      "command_line_sha256": "b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077",
+      "command_line_size_bytes": 287,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "change_from_attempt_6": "Add only an empty /config directory to the prefix. Main recovery RC mounts configfs there without a prior mkdir; the directory is absent from the canonical archive and attempt 6 prefix.",
+      "runtime_cause_of_missing_usb_verified": false,
+      "configfs_mount_verified": false,
+      "usb_runtime_verified": false,
+      "boot_command_sent": false,
+      "boot_tested": false,
+      "partition_write_command_sent": false,
+      "requires_current_phone_state_resolution": true,
+      "evidence": {
+        "construction": {
+          "sha256": "bd830d79d1b92a7d59c1770b69222f68527c50e07b59960946ac50c5ce8b8c19",
+          "size_bytes": 4996
+        },
+        "independent_image_inspection": {
+          "sha256": "2883f27f68d239a830267b401d96b22efcd71fbd437eb5d68100e5d1bd090fc5",
+          "size_bytes": 9855
+        },
+        "independent_inspector_execution": {
+          "sha256": "b48684750e3d7cffda64ce08ba535e432e7931505bac80a5d81caae0100721f9",
+          "size_bytes": 957
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "61e3d5c71db2ddd0303903e99783e7dd51f5d0bc36b37a9ed48aa3715ffb73f1",
+          "size_bytes": 1202
+        },
+        "native_composite_decompression": {
+          "sha256": "4324de872521f5b3ad5140a09a861a07eeeb14b965effac10e7c616dc5d9482c",
+          "size_bytes": 828
+        },
+        "usb_mount_source_audit": {
+          "sha256": "3762a093373ecade2cf96cd5f4ca1bf4c72967945609dab70f3b0070e7e848f6",
+          "size_bytes": 19802
+        }
+      }
+    }
+  ]
+}

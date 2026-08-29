@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: Apache-2.0
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+// Match the original recovery init.rc alias before init commands execute.
+// This installs a symlink, not another linker binary or an APEX dependency.
+install_symlink {
+    name: "nezha_recovery_bootstrap_linker64",
+    recovery: true,
+    installed_location: "bin/bootstrap/linker64",
+    symlink_target: "/system/bin/linker64",
+    required: ["linker.recovery"],
+}
