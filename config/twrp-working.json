@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "profile_id": "nezha-working76",
+  "source_built": false,
+  "baseline": {
+    "name": "twrp-3.7.1_16-nezha-antocorvo3000-fix22ZJ-touchfix18.img",
+    "image": {
+      "sha256": "56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323",
+      "size_bytes": 104857600
+    },
+    "cpio": {
+      "sha256": "24ed8a66b5dc947cf0531287b4aa73a00e42ceabfa92e3c2a96d662b0f2c6030",
+      "size_bytes": 174870728
+    },
+    "archive_entries": 4210
+  },
+  "patch": {
+    "path": "recovery/twrp-working/0001-permissive-and-no-vibration-defaults.patch",
+    "sha256": "ed70aa4b93404a298aad867b1ed96fecdd9be598ef3f906ed70f1753043b7939",
+    "size_bytes": 989,
+    "files": {
+      "system/etc/init/hw/init.rc": {
+        "before_sha256": "5adbb3437d4966449b07ea314d537317dbda1f6c5fbc818f419a8029079bc3ae",
+        "after_sha256": "d10f0cecaaa83f9e7d44b98d0cbd6ed0e27f200142b85408ef69485d038f48fa"
+      },
+      "twres/ui.xml": {
+        "before_sha256": "58bb20b65214bf8313409bf34850a4103595d84f3cee9951d80ba9d013e0066d",
+        "after_sha256": "4579ec254db670483fb34889255a61ba6765d1d42ab75f6ef5532ba38d2c296a"
+      }
+    }
+  },
+  "output": {
+    "image": {
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600
+    },
+    "cpio": {
+      "sha256": "fe554c9d531d0aac9a93467ec638a503bf1efd05666a8d89621a411cd57dba60",
+      "size_bytes": 174871000
+    },
+    "ramdisk": {
+      "sha256": "7ab74eb99db06262376fd577b1fbb28a125f28828e925fba47af5eebfc885a35",
+      "size_bytes": 75416293
+    },
+    "unsigned_size_bytes": 75423744
+  },
+  "boot": {
+    "header_version": 4,
+    "header_size_bytes": 1584,
+    "page_size_bytes": 4096,
+    "kernel_size_bytes": 0,
+    "boot_signature_size_bytes": 0,
+    "command_line": "",
+    "os_version": "16.0.0",
+    "os_patch_level": "2026-02-01",
+    "os_version_raw": 536871330
+  },
+  "avb": {
+    "algorithm": "SHA256_RSA4096",
+    "algorithm_type": 2,
+    "partition_name": "recovery",
+    "partition_size_bytes": 104857600,
+    "hash_algorithm": "sha256",
+    "rollback_index": 1,
+    "rollback_index_location": 1,
+    "flags": 0,
+    "required_libavb_version": [1, 2],
+    "salt_hex": "00b772af29811562406dbb27c9dcbb360f2974efb7bb945d22ad80e7f6876f66",
+    "digest_hex": "3f0d8c0b4ce85bbe9a8678a56d4c6421d6b031c5e2519927a3f20b5d10d0df9d",
+    "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+    "public_key_size_bytes": 1032,
+    "vbmeta_size_bytes": 2240,
+    "release_string": "avbtool 1.3.0",
+    "properties": {
+      "com.android.build.recovery.os_version": "16",
+      "com.android.build.recovery.security_patch": "2026-02-01"
+    },
+    "oem_trust_established": false
+  },
+  "tools": {
+    "mkbootimg": {
+      "project": "system/tools/mkbootimg",
+      "commit": "808ecd09666ffe0ff5800f02af693abce56eb395",
+      "sha256": "37d84b3d162e0bc62e36c1f4e1c63c85ea0caa9f29be023eb2f8efe006ad948c",
+      "size_bytes": 26667,
+      "companion": {
+        "path": "gki/generate_gki_certificate.py",
+        "sha256": "1bb1feec68a13da18d581aa2c631798f86f6bc10b55d587b2dd31446a0f8a203",
+        "size_bytes": 2991
+      }
+    },
+    "avbtool": {
+      "project": "external/avb",
+      "commit": "5ac0c3a071d811846a62412383dd6e259f341e6e",
+      "sha256": "e5a664a38db623da00f080219bc0ee60a640a9dc4a872803616fae4938ac749b",
+      "size_bytes": 207502
+    },
+    "lz4": {
+      "version": "1.10.0",
+      "sha256": "b08405ac45dc1be5615bca7681c8d8d802a62ee9d5e1c1b4392a1e2cc7f68169"
+    },
+    "openssl": {
+      "binaries": [
+        {
+          "platform": "darwin-arm64",
+          "version": "3.6.3",
+          "sha256": "103fc7706cf6646f226d96f29242d81890363499afc730e7ef1fadd64b3a123c",
+          "size_bytes": 880512,
+          "build_allowed": true
+        },
+        {
+          "platform": "linux-aarch64",
+          "version": "3.0.13",
+          "sha256": "77268ab5d3ec14a6e479c526d431bb193354b8ee3d9006ca03d40029b142d5e5",
+          "size_bytes": 1017208,
+          "build_allowed": false
+        }
+      ]
+    }
+  }
+}

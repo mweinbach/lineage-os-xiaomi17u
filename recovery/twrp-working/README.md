@@ -1,59 +1,71 @@
-# Working Nezha recovery defaults
+# Working Nezha recovery
 
-This patch is based on the user-supplied
-`twrp-3.7.1_16-nezha-antocorvo3000-fix22ZJ-touchfix18.img`, SHA-256
-`56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323`.
-The preserved local copy is `artifacts/twrp/nezha/provided75/recovery.img`.
-It is a prebuilt baseline, not source-reproduced TWRP. Use this image's archive,
-not a different upstream Git snapshot. Its supplied baseline is unsigned;
-local development signing does not establish OEM trust.
+The maintained baseline is the tested `working76` derivative recorded in
+[`research/twrp-working-defaults.json`](../../research/twrp-working-defaults.json).
+It is a repack of the user-supplied
+`twrp-3.7.1_16-nezha-antocorvo3000-fix22ZJ-touchfix18.img`, not source-reproduced
+TWRP. The original image SHA-256 is
+`56029c8109e3ff1bcbb69ef38e8ae36355713340482d9f77405cdf6009bcd323`;
+the required derivative SHA-256 is
+`a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e`.
+The supplied original has an unsigned (`Algorithm NONE`), stale AVB footer.
+Its exact image hash identifies the baseline; that footer does not establish
+trust. Local development signing does not establish OEM trust.
 
-The user authorized permissive SELinux for recovery bring-up. The existing
-`early-init` action writes `0` to `/sys/fs/selinux/enforce`; SELinux remains
-active, the policy remains loaded, and denial logging remains available.
-This changes recovery startup only, not normal Android. Restoring enforcement
-remains a later bring-up milestone.
+The two-file patch adds a recovery `early-init` write of `0` to
+`/sys/fs/selinux/enforce` and ordinary zero defaults for action, button and
+keyboard vibration in `twres/ui.xml`. SELinux remains active with policy and
+denial logging; normal Android is unchanged. Saved settings can override the
+vibration defaults. Binaries, drivers, firmware, policy and touch setup remain
+unchanged. Restoring enforcement is a later bring-up milestone.
 
-Three ordinary theme variables default action, button, and keyboard vibration
-to zero. They load before saved settings, so a saved setting can intentionally
-override these defaults. No custom service, page action, touch-driver change,
-or executable patch is added.
+Use the maintained CLI from the repository root:
 
-Only `system/etc/init/hw/init.rc` and `twres/ui.xml` change. The assembly used
-these steps, with fresh outputs and the original image/archive preserved:
+```sh
+python3 scripts/twrp_working.py plan
+python3 scripts/twrp_working.py build \
+  --local-config .tools/recovery-local.json \
+  --output-dir artifacts/twrp/nezha/rebuild-01
+python3 scripts/twrp_working.py verify \
+  --local-config .tools/recovery-local.json \
+  --image artifacts/twrp/nezha/rebuild-01/recovery.img
+```
 
-1. Verify the image hash above and the original `recovery.cpio` SHA-256
-   `24ed8a66b5dc947cf0531287b4aa73a00e42ceabfa92e3c2a96d662b0f2c6030`.
-   Stage only the two original text members. Run `git apply --check` and
-   `git apply` with this patch and the staging directory; verify both expected
-   preimage and postimage hashes.
-2. Call `replace_files(original_cpio, replacements)` from
-   `scripts/twrp_cpio_overlay.py`, where each replacement maps its archive path
-   to `(original_bytes, patched_bytes)`. Do not recreate the archive from an
-   extracted filesystem. Check membership/order, member metadata apart from
-   changed lengths/offsets, and every unselected payload remain unchanged.
-3. Compress with native LZ4 1.10.0 and verify an exact decompression round trip:
+`plan` reads only the public profile and patch. The optional, ignored local JSON
+contains paths under these keys: `baseline_image`, `key`, `mkbootimg`, `avbtool`,
+`lz4`, `openssl`, `public_key`. Relative defaults resolve against the JSON's
+directory; explicit CLI arguments override them. Unknown fields are rejected.
+Keep that file private and never put key material in JSON or version control.
+Without it, pass the corresponding hyphenated flags explicitly. `--output-dir`
+and `--image` always remain explicit. Verification accepts a **PEM public key**,
+not a private key or the binary AVB key blob.
 
-   ```sh
-   lz4 -l -12 --favor-decSpeed recovery.cpio recovery.lz4
-   lz4 -d recovery.lz4 roundtrip.cpio
-   cmp recovery.cpio roundtrip.cpio
-   ```
+[`config/twrp-working.json`](../../config/twrp-working.json) pins the complete
+construction: original archive, patch, postimages, compressed ramdisk, tools,
+public-key identity, AVB salt and final image. The build replays the two text
+hunks in memory and uses `scripts/twrp_cpio_overlay.py` without extracting or
+executing archive paths. It checks every unchanged frame and member's metadata,
+compresses with native legacy LZ4, verifies the decompression round trip, and
+uses pinned mkbootimg for a kernel-free v4 image. Header bytes remain unchanged
+except for ramdisk length.
 
-4. Use `system/tools/mkbootimg` at
-   `808ecd09666ffe0ff5800f02af693abce56eb395`: header **4**, no kernel argument
-   (kernel size **0**), the new ramdisk, empty command line, OS `16.0.0`, patch
-   level `2026-02-01`, and page size **4096**. Verify the header matches the
-   original except for ramdisk length, and the embedded ramdisk matches.
-5. Use `external/avb` at `5ac0c3a071d811846a62412383dd6e259f341e6e`.
-   Run `avbtool.py add_hash_footer` for partition `recovery`, size **104857600**,
-   hash `sha256`, algorithm `SHA256_RSA4096`, the local development key,
-   rollback index **1**, location **1**, and flags **0**. Record a fresh 32-byte
-   salt and recovery properties `os_version:16` and
-   `security_patch:2026-02-01` under `com.android.build.recovery`.
-   Run `info_image`, then `verify_image` with the matching public key. Confirm
-   the final size, footer, unchanged unsigned payload and unchanged original.
+AVB uses the existing approved development key, `SHA256_RSA4096`, recovery
+rollback index **1**, location **1**, flags **0**, and the recorded fixed salt.
+Signature, descriptor, key identity and exact final hash must all pass; a
+different key or merely equivalent image is rejected. Current build support
+uses the pinned Darwin ARM64 LZ4/OpenSSL tools. Verification also accepts the
+pinned Linux AArch64 OpenSSL binary; this does not claim Linux build portability.
 
-Fresh AVB salt changes the signed image hash. These steps reproduce the
-assembly procedure; they do not establish a source build or hardware behavior.
-Keep private keys and local evidence out of version control.
+Build safely creates missing output parents, rejects symlink/file ancestors,
+requires a fresh leaf directory, and preserves the original. Outputs use
+directory mode `0700` and file mode `0600`: `recovery.img`, `build-report.json`,
+`verification-report.json`, `SHA256SUMS`, intermediates and native-result hashes.
+Failures preserve partial outputs; retry in a new directory. Native calls use
+argument arrays, output/file-size limits and timeouts. Selected native tools
+and private-key locations must remain trusted and stable during a build.
+`verify` uses private temporary snapshots and prints JSON; it does not persist
+a receipt. Neither command accesses a phone. Offline tests mock every native
+operation; actual reproduction and hardware behavior remain separate checks.
+
+Any future image change requires an explicit profile/code update and fresh
+validation. It must not inherit `working76`'s recorded hardware results.
