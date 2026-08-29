@@ -120,6 +120,13 @@
     "factory_inputs_rewritten": false,
     "native_target": "nezha_factory_oem_policy_check"
   },
+  "oem_properties": {
+    "contract_id": "nezha-oem-properties-v1",
+    "contract_path": "config/nezha-oem-properties.json",
+    "default_enabled": false,
+    "factory_inputs_rewritten": false,
+    "native_target": "nezha_factory_oem_policy_check"
+  },
   "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
   "platform": {
     "board_api": "202504",

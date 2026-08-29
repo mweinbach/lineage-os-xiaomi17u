@@ -130,6 +130,8 @@ class PolicyInputsTests(unittest.TestCase):
         self.assertEqual(len(result["files"]), 31)
         self.assertNotIn("oem_policy_contract", result)
         self.assertIsNone(verified["oem_policy_contract"])
+        self.assertNotIn("oem_property_contract", result)
+        self.assertIsNone(verified["oem_property_contract"])
         self.assertTrue(result["readback_verified"])
         self.assertFalse(result["scope"]["policy_compiled"])
         self.assertFalse(result["scope"]["contexts_validated"])
@@ -518,9 +520,13 @@ class PolicyInputsTests(unittest.TestCase):
     def test_blueprint_renderer_rejects_duplicate_or_removed_profile_markers(self):
         path = self.workspace / "policy/nezha/Android.bp"
         original = path.read_bytes()
-        for raw in [original.replace(policy.OEM_BEGIN.encode(), b""),
-                    original + policy.OEM_BEGIN.encode(),
-                    original.replace(b'required: ["sepolicy_neverallows"]', b'required: []')]:
+        invalid = [original.replace(policy.OEM_BEGIN.encode(), b""),
+                   original + policy.OEM_BEGIN.encode(),
+                   original.replace(b'required: ["sepolicy_neverallows"]', b'required: []')]
+        for pair in policy.OEM_PROPERTY_BLOCKS:
+            for marker in pair:
+                invalid.extend([original.replace(marker.encode(), b""), original + marker.encode()])
+        for raw in invalid:
             path.write_bytes(raw)
             self.assert_rejected(self.stage)
             self.assertFalse(self.output.exists())
@@ -536,6 +542,172 @@ class PolicyInputsTests(unittest.TestCase):
         result = json.loads(stdout.getvalue())
         self.assertEqual(result["oem_policy_contract"]["path"], policy.OEM_CONTRACT_PATH)
         self.assertFalse(result["scope"]["contexts_validated"])
+
+    def install_property_fixture(self):
+        self.install_oem_fixture()
+        self.properties = copy.deepcopy(json.loads((WORKSPACE / policy.OEM_PROPERTY_CONTRACT_PATH).read_bytes()))
+        self.properties["base_oem_contract"] = {
+            "path": policy.OEM_CONTRACT_PATH, **policy.identity(self.oem_path.read_bytes())}
+        for key in ("factory_package_sha256", "required_capability_contract", "device", "platform", "profile"):
+            self.properties[key] = copy.deepcopy(self.oem[key])
+        self.config["oem_properties"] = {
+            "contract_path": policy.OEM_PROPERTY_CONTRACT_PATH,
+            "native_target": policy.OEM_CHECK_TARGET,
+            "contract_id": self.properties["contract_id"],
+            "default_enabled": False, "factory_inputs_rewritten": False}
+        for row in self.properties["source_files"]:
+            path = self.workspace / row["path"]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((WORKSPACE / row["path"]).read_bytes())
+        self.property_path = self.workspace / policy.OEM_PROPERTY_CONTRACT_PATH
+        self.write_property_contract()
+
+    def write_property_contract(self):
+        from scripts import oem_policy
+        self.write_contracts()
+        raw = policy.encoded(self.properties)
+        self.property_path.write_bytes(raw)
+        self.enterContext(mock.patch.object(oem_policy, "PROPERTY_CONTRACT_SHA256", policy.identity(raw)["sha256"]))
+
+    def stage_properties(self, output=None):
+        return policy.stage_inputs(self.corpus, output or self.output, factory_policy_receipt=self.receipt_path,
+                                   oem_policy_contract=self.oem_path, oem_property_contract=self.property_path)
+
+    def test_property_profile_requires_the_separately_explicit_oem_base(self):
+        self.install_property_fixture()
+        self.assert_rejected(lambda: policy.stage_inputs(
+            self.corpus, self.output, factory_policy_receipt=self.receipt_path,
+            oem_property_contract=self.property_path))
+        self.assertFalse(self.output.exists())
+        for stage, name in ((self.stage, "legacy"), (self.stage_oem, "oem-v1")):
+            output = self.root / name
+            result = stage(output)
+            self.assertNotIn("oem_property_contract", result)
+            self.assertIsNone(policy.verify_bundle(output)["oem_property_contract"])
+            self.assertNotIn("--property-contract", (output / "Android.bp").read_text())
+            self.assertFalse((output / "tools/nezha-oem-properties.json").exists())
+
+    def test_property_bundle_binds_both_profiles_and_preserves_original_factory_inputs(self):
+        self.install_property_fixture()
+        result = self.stage_properties()
+        verified = policy.verify_bundle(self.output)
+        base = {"path": policy.OEM_CONTRACT_PATH, **policy.identity(self.oem_path.read_bytes())}
+        properties = {"path": policy.OEM_PROPERTY_CONTRACT_PATH, **policy.identity(self.property_path.read_bytes())}
+        self.assertEqual(result["oem_policy_contract"], base)
+        self.assertEqual(verified["oem_policy_contract"], base)
+        self.assertEqual(result["oem_property_contract"], properties)
+        self.assertEqual(verified["oem_property_contract"], properties)
+        self.assertEqual(len(result["files"]), 41)
+        self.assertEqual(result["native_targets"].count(policy.OEM_CHECK_TARGET), 1)
+        self.assertEqual(result["scope"], policy.SCOPE)
+        self.assertEqual(verified["scope"], policy.SCOPE)
+        for runtime in CORPUS_PATHS:
+            self.assertEqual((self.output / "corpus" / runtime[1:]).read_bytes(),
+                             self.originals[self.corpus / runtime[1:]])
+        for path, original in self.originals.items():
+            self.assertEqual(path.read_bytes(), original)
+        for row in self.properties["source_files"]:
+            self.assertEqual((self.output / "provenance/source" / row["path"]).read_bytes(),
+                             (self.workspace / row["path"]).read_bytes())
+        self.assertIn("--property-contract", (self.output / "Android.bp").read_text())
+        self.assertIn("--system-ext-property-contexts", (self.output / "Android.bp").read_text())
+
+    def test_property_contract_cannot_change_base_factory_helper_device_or_platform(self):
+        self.install_property_fixture()
+        original = copy.deepcopy(self.properties)
+        mutations = [lambda c: c["base_oem_contract"].update(sha256="b" * 64),
+                     lambda c: c["base_oem_contract"].update(size_bytes=1),
+                     lambda c: c.update(factory_package_sha256="b" * 64),
+                     lambda c: c["required_capability_contract"].update(value="true"),
+                     lambda c: c["device"].update(codename="other"),
+                     lambda c: c["platform"].update(branch="newer"),
+                     lambda c: c.update(profile="complete-rom")]
+        for mutate in mutations:
+            self.properties = copy.deepcopy(original)
+            mutate(self.properties)
+            self.write_property_contract()
+            self.assert_rejected(self.stage_properties)
+            self.assertFalse(self.output.exists())
+
+    def test_property_admission_must_select_the_required_native_guard_without_image_rewrites(self):
+        self.install_property_fixture()
+        original = copy.deepcopy(self.config["oem_properties"])
+        for key, value in (("contract_path", policy.OEM_CONTRACT_PATH), ("native_target", "other"),
+                           ("contract_id", "other"), ("default_enabled", True),
+                           ("factory_inputs_rewritten", True)):
+            self.config["oem_properties"] = {**original, key: value}
+            self.write_property_contract()
+            self.assert_rejected(self.stage_properties)
+            self.assertFalse(self.output.exists())
+
+    def test_property_source_hashes_contract_and_directory_inventory_are_checked(self):
+        self.install_property_fixture()
+        for path in [self.property_path, *[self.workspace / row["path"] for row in self.properties["source_files"]]]:
+            original = path.read_bytes()
+            with self.subTest(path=path.name):
+                path.write_bytes(original + b"unreviewed\n")
+                self.assert_rejected(self.stage_properties)
+                self.assertFalse(self.output.exists())
+                path.write_bytes(original)
+        extra = (self.workspace / self.properties["source_files"][0]["path"]).with_name("unreviewed.te")
+        extra.write_bytes(b"allow unreviewed unreviewed:file write;\n")
+        self.assert_rejected(self.stage_properties)
+        self.assertFalse(self.output.exists())
+
+    def test_property_source_parser_rejects_permission_broadening_even_after_identity_updates(self):
+        self.install_property_fixture()
+        row = next(row for row in self.properties["source_files"] if row["path"].endswith("/mediaextractor.te"))
+        source = self.workspace / row["path"]
+        original = source.read_bytes()
+        for appended in (b"set_prop(mediaextractor, vendor_mm_parser_prop)\n",
+                         b"get_prop(shell, vendor_mm_parser_prop)\n",
+                         b"allow mediaextractor vendor_mm_parser_prop:file write;\n"):
+            source.write_bytes(original + appended)
+            row.update(policy.identity(source.read_bytes()))
+            self.write_property_contract()
+            self.assert_rejected(self.stage_properties)
+            self.assertFalse(self.output.exists())
+
+    def test_property_receipt_cannot_drop_base_or_remove_or_forge_the_extra_profile(self):
+        self.install_property_fixture()
+        self.stage_properties()
+        path = self.output / policy.RECEIPT_NAME
+        original = json.loads(path.read_bytes())
+        for field in ("oem_policy_contract", "oem_property_contract"):
+            for value in (None, {**original[field], "sha256": "b" * 64}):
+                receipt = copy.deepcopy(original)
+                receipt[field] = value
+                path.write_bytes(policy.encoded(receipt))
+                self.assert_rejected(lambda: policy.verify_bundle(self.output))
+            receipt = copy.deepcopy(original)
+            del receipt[field]
+            path.write_bytes(policy.encoded(receipt))
+            self.assert_rejected(lambda: policy.verify_bundle(self.output))
+
+    def test_transferred_property_contract_sources_and_generated_blueprint_are_rehashed(self):
+        self.install_property_fixture()
+        self.stage_properties()
+        for member in ["Android.bp", "tools/nezha-oem-properties.json",
+                       *["provenance/source/" + row["path"] for row in self.properties["source_files"]]]:
+            path = self.output / member
+            original = path.read_bytes()
+            with self.subTest(member=member):
+                path.write_bytes(original + b"changed")
+                self.assert_rejected(lambda: policy.verify_bundle(self.output))
+                path.write_bytes(original)
+
+    def test_property_cli_reports_admission_separately_from_native_or_hardware_results(self):
+        self.install_property_fixture()
+        stdout = io.StringIO()
+        with mock.patch("sys.stdout", stdout):
+            code = policy.main(["stage", "--corpus-root", str(self.corpus), "--factory-capture-root",
+                                str(self.capture), "--output", str(self.output),
+                                "--oem-policy-contract", str(self.oem_path),
+                                "--oem-property-contract", str(self.property_path)])
+        self.assertEqual(code, 0)
+        result = json.loads(stdout.getvalue())
+        self.assertEqual(result["oem_property_contract"]["path"], policy.OEM_PROPERTY_CONTRACT_PATH)
+        self.assertEqual(result["scope"], policy.SCOPE)
 
 
 class NativePolicyTemplateTests(unittest.TestCase):
@@ -565,6 +737,20 @@ class NativePolicyTemplateTests(unittest.TestCase):
                              for path in reader.bindings))
         reader.recheck()
 
+    def test_current_public_property_controls_load_without_private_inputs(self):
+        reader = policy.vendor_policy.Reader()
+        contract, correction, controls = policy._contracts(reader)
+        base = policy._oem_controls(reader, WORKSPACE / policy.OEM_CONTRACT_PATH, contract, correction, controls)
+        binding = policy._oem_property_controls(reader, WORKSPACE / policy.OEM_PROPERTY_CONTRACT_PATH,
+                                                contract, controls, base)
+        self.assertEqual(binding, {"path": policy.OEM_PROPERTY_CONTRACT_PATH,
+                                   **policy.identity((WORKSPACE / policy.OEM_PROPERTY_CONTRACT_PATH).read_bytes())})
+        self.assertIn("tools/nezha-oem-properties.json", controls)
+        self.assertIn("--system-ext-property-contexts", controls["Android.bp"].decode())
+        self.assertFalse(any(path.relative_to(WORKSPACE).parts[0] in {"artifacts", "evidence", "reports"}
+                             for path in reader.bindings))
+        reader.recheck()
+
     def test_optional_native_guard_uses_all_current_inputs_without_binary_dependency_cycle(self):
         from scripts import oem_policy
         bp = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
@@ -583,6 +769,26 @@ class NativePolicyTemplateTests(unittest.TestCase):
         self.assertNotIn('"corpus/system_ext/', block)
         self.assertNotIn('"corpus/product/', block)
         self.assertIn('out: ["oem-policy-native-check.json"]', block)
+
+    def test_property_profile_only_changes_the_explicit_guard_inputs_and_arguments(self):
+        bp = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        legacy = policy._render_blueprint(bp, False).decode()
+        original_oem = policy._render_blueprint(bp, True).decode()
+        properties = policy._render_blueprint(bp, True, True).decode()
+        for original in (legacy, original_oem):
+            self.assertNotIn("--property-contract", original)
+            self.assertNotIn("tools/nezha-oem-properties.json", original)
+        self.assertIn('":system_ext_property_contexts"', properties)
+        self.assertIn("--property-contract", properties)
+        self.assertIn("--system-ext-property-contexts", properties)
+        for rendered in (original_oem, properties):
+            binary = rendered.split("se_policy_binary {", 1)[1].split("\n}", 1)[0]
+            inputs = binary.split("srcs: [", 1)[1].split("]", 1)[0]
+            self.assertEqual(inputs.count('"'), 20)
+            self.assertNotIn("properties", inputs)
+            self.assertIn('required: ["sepolicy_neverallows", "' + policy.OEM_CHECK_TARGET + '"]', binary)
+        with self.assertRaises(ValueError):
+            policy._render_blueprint(bp, False, True)
 
     def test_combined_binary_uses_current_framework_outputs_and_strict_guards(self):
         text = (WORKSPACE / "policy/nezha/Android.bp").read_text()

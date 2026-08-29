@@ -47,9 +47,22 @@ OEM_CAPABILITY_PATH = "config/nezha-init-helper-capability.json"
 OEM_CHECK_TARGET = "nezha_factory_oem_policy_check"
 OEM_BEGIN = "// BEGIN OPTIONAL NEZHA OEM POLICY CHECK\n"
 OEM_END = "// END OPTIONAL NEZHA OEM POLICY CHECK\n"
+OEM_PROPERTY_CONTRACT_PATH = "config/nezha-oem-properties.json"
+OEM_PROPERTY_BLOCKS = (
+    ("        // BEGIN OPTIONAL NEZHA OEM PROPERTY INPUTS\n",
+     "        // END OPTIONAL NEZHA OEM PROPERTY INPUTS\n"),
+    ("         // BEGIN OPTIONAL NEZHA OEM PROPERTY ARGUMENTS\n",
+     "         // END OPTIONAL NEZHA OEM PROPERTY ARGUMENTS\n"),
+)
 OEM_SOURCE_PATHS = {
     "device/xiaomi/nezha/sepolicy/system_ext/oem/public/nezha_oem_service.te",
     "device/xiaomi/nezha/sepolicy/system_ext/oem/private/nezha_oem_data.te",
+}
+OEM_PROPERTY_SOURCE_PATHS = {
+    "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/public/property.te",
+    "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaextractor.te",
+    "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaserver.te",
+    "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/property_contexts",
 }
 FACTORY_RECEIPT_MEMBER = "provenance/factory-policy-capture.json"
 MAX_BUNDLE_BYTES = 32 * 1024 * 1024
@@ -128,9 +141,16 @@ def _read_exact(reader, path, expected):
     return reader.read(path, expected["sha256"], expected["size_bytes"])
 
 
-def _render_blueprint(raw, oem_enabled):
+def _render_blueprint(raw, oem_enabled, properties_enabled=False):
     """Select the explicit OEM check without changing any compiled CIL input."""
+    require(not properties_enabled or oem_enabled, "OEM properties require the original OEM source profile")
     text = raw.decode("utf-8")
+    for begin, end in OEM_PROPERTY_BLOCKS:
+        require(text.count(begin) == 1 and text.count(end) == 1,
+                "native policy template must contain each reviewed optional property block once")
+        before, rest = text.split(begin)
+        optional, after = rest.split(end)
+        text = before + (optional if properties_enabled else "") + after
     require(text.count(OEM_BEGIN) == 1 and text.count(OEM_END) == 1,
             "native policy template must contain one reviewed optional OEM block")
     before, rest = text.split(OEM_BEGIN)
@@ -259,6 +279,52 @@ def _oem_controls(reader, path, contract, correction, controls):
     return {"path": OEM_CONTRACT_PATH, **identity(raw)}
 
 
+def _oem_property_controls(reader, path, contract, controls, oem_binding):
+    if __package__:
+        from . import oem_policy
+    else:
+        import oem_policy
+    require(oem_binding is not None, "the property profile requires an explicitly admitted OEM base")
+    properties = oem_policy.load_property_contract(path, reader)
+    raw = reader.read(path)
+    _read_exact(reader, ROOT / OEM_PROPERTY_CONTRACT_PATH, identity(raw))
+    selection = contract.get("oem_properties")
+    require(type(selection) is dict and selection.get("contract_path") == OEM_PROPERTY_CONTRACT_PATH
+            and selection.get("native_target") == OEM_CHECK_TARGET
+            and selection.get("contract_id") == properties.get("contract_id")
+            and selection.get("default_enabled") is False
+            and selection.get("factory_inputs_rewritten") is False,
+            "the property profile is not selected by the reviewed bundle contract")
+    require(properties.get("base_oem_contract") == oem_binding,
+            "the property profile differs from the explicitly admitted OEM base")
+    base = _json(controls["tools/nezha-oem-policy.json"])
+    require(properties.get("factory_package_sha256") == base["factory_package_sha256"]
+            and properties.get("required_capability_contract") == base["required_capability_contract"]
+            and properties.get("device") == base["device"]
+            and properties.get("platform") == base["platform"]
+            and properties.get("profile") == "framework-checks",
+            "the property profile must retain the factory, helper restriction, device and selected platform")
+    sources = properties.get("source_files")
+    require(type(sources) is list and len(sources) == 4
+            and {row.get("path") for row in sources} == OEM_PROPERTY_SOURCE_PATHS,
+            "property source selection must retain its four reviewed files")
+    expected_sources = {ROOT / row["path"] for row in sources}
+    for parent in {source.parent for source in expected_sources}:
+        vendor_policy.real_directory(parent)
+        require(set(parent.iterdir()) == {source for source in expected_sources if source.parent == parent},
+                "unreviewed file or directory in a property source directory")
+    contents = {}
+    for row in sources:
+        source = _relative(row["path"])
+        contents[source] = _read_exact(reader, ROOT / source, row)
+    oem_policy.verify_property_source_contents(contents, properties)
+    controls["tools/nezha-oem-properties.json"] = raw
+    for path, data in contents.items():
+        controls["provenance/source/" + path] = data
+    controls["Android.bp"] = _render_blueprint(controls["provenance/Android.bp.template"], True, True)
+    return {"path": OEM_PROPERTY_CONTRACT_PATH, **identity(raw)}
+
+
 def _capture(reader, receipt_path, contract):
     raw = _read_exact(reader, receipt_path, contract["factory_policy_capture"])
     capture = _json(raw)
@@ -288,7 +354,7 @@ def _capture(reader, receipt_path, contract):
     return raw
 
 
-def _manifest(contract, correction, files, stage_tool, oem_binding=None):
+def _manifest(contract, correction, files, stage_tool, oem_binding=None, property_binding=None):
     result = {
         "schema_version": 1, "operation": "stage-nezha-policy-inputs", "status": "staged",
         "device": "nezha", "bundle": BUNDLE_PATH,
@@ -305,6 +371,9 @@ def _manifest(contract, correction, files, stage_tool, oem_binding=None):
     if oem_binding is not None:
         result["oem_policy_contract"] = copy.deepcopy(oem_binding)
         result["native_targets"].append(OEM_CHECK_TARGET)
+    if property_binding is not None:
+        require(oem_binding is not None, "property receipt requires the explicit OEM base")
+        result["oem_property_contract"] = copy.deepcopy(property_binding)
     return result
 
 
@@ -338,6 +407,15 @@ def verify_bundle(bundle):
                 "unexpected OEM policy receipt binding")
         oem_binding = _oem_controls(reader, ROOT / OEM_CONTRACT_PATH, contract, correction, controls)
         require(receipt["oem_policy_contract"] == oem_binding, "OEM policy receipt differs from trusted controls")
+    property_binding = None
+    if "oem_property_contract" in receipt:
+        require(type(receipt["oem_property_contract"]) is dict
+                and receipt["oem_property_contract"].get("path") == OEM_PROPERTY_CONTRACT_PATH,
+                "unexpected OEM property receipt binding")
+        property_binding = _oem_property_controls(reader, ROOT / OEM_PROPERTY_CONTRACT_PATH,
+                                                 contract, controls, oem_binding)
+        require(receipt["oem_property_contract"] == property_binding,
+                "OEM property receipt differs from trusted controls")
     expected = dict(controls)
     expected[FACTORY_RECEIPT_MEMBER] = _capture(reader, bundle / FACTORY_RECEIPT_MEMBER, contract)
     for row in correction["inputs"]:
@@ -348,7 +426,7 @@ def verify_bundle(bundle):
     for member, data in controls.items():
         _read_exact(reader, bundle / member, identity(data))
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
-    require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding),
+    require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding, property_binding),
             "policy-input receipt differs from the reviewed files or scope")
     require(_members(bundle) == set(expected) | {RECEIPT_NAME}, "bundle has missing or unexpected files")
     reader.recheck()
@@ -359,6 +437,7 @@ def verify_bundle(bundle):
         "files": [{"path": name, **identity(data)} for name, data in sorted(expected.items())],
         "receipt": {"path": RECEIPT_NAME, **identity(raw)},
         "oem_policy_contract": copy.deepcopy(oem_binding),
+        "oem_property_contract": copy.deepcopy(property_binding),
         "scope": copy.deepcopy(SCOPE),
     }
 
@@ -376,10 +455,12 @@ def _output_path(output):
 
 
 def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_policy_receipt=None,
-                 oem_policy_contract=None):
+                 oem_policy_contract=None, oem_property_contract=None):
     """Publish a fresh private bundle atomically; originals remain untouched."""
     require((factory_capture_root is None) != (factory_policy_receipt is None),
             "choose exactly one factory capture root or receipt")
+    require(oem_property_contract is None or oem_policy_contract is not None,
+            "the property profile requires an explicit OEM base contract")
     output, parent = _output_path(output)
     corpus_root = vendor_policy.real_directory(corpus_root)
     if factory_capture_root is not None:
@@ -395,6 +476,9 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     oem_binding = None
     if oem_policy_contract is not None:
         oem_binding = _oem_controls(reader, oem_policy_contract, contract, correction, controls)
+    property_binding = None
+    if oem_property_contract is not None:
+        property_binding = _oem_property_controls(reader, oem_property_contract, contract, controls, oem_binding)
     files = dict(controls)
     files[FACTORY_RECEIPT_MEMBER] = _capture(reader, receipt_path, contract)
     for row in correction["inputs"]:
@@ -404,7 +488,7 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
         files[row["path"]] = _read_exact(reader, capture_root / row["capture_path"], row)
     require(sum(len(data) for data in files.values()) <= MAX_BUNDLE_BYTES, "policy bundle exceeds its byte limit")
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
-    receipt = _manifest(contract, correction, files, stage_tool, oem_binding)
+    receipt = _manifest(contract, correction, files, stage_tool, oem_binding, property_binding)
     files[RECEIPT_NAME] = encoded(receipt)
     required_bytes = sum(len(data) for data in files.values())
     require(shutil.disk_usage(parent).free >= required_bytes + 16 * 1024 * 1024,
@@ -448,6 +532,8 @@ def main(argv=None):
     stage.add_argument("--output", required=True, type=Path)
     stage.add_argument("--oem-policy-contract", type=Path,
                        help="explicit reviewed OEM source restoration and native output checks")
+    stage.add_argument("--oem-property-contract", type=Path,
+                       help="explicit four-property source profile; requires the OEM base contract")
     verify = commands.add_parser("verify", help="verify every transferred file against reviewed workspace controls")
     verify.add_argument("--bundle", required=True, type=Path)
     args = parser.parse_args(argv)
@@ -455,7 +541,8 @@ def main(argv=None):
         if args.command == "stage":
             result = stage_inputs(args.corpus_root, args.output, factory_capture_root=args.factory_capture_root,
                                   factory_policy_receipt=args.factory_policy_receipt,
-                                  oem_policy_contract=args.oem_policy_contract)
+                                  oem_policy_contract=args.oem_policy_contract,
+                                  oem_property_contract=args.oem_property_contract)
         else:
             result = verify_bundle(args.bundle)
     except (ValueError, OSError) as exc:

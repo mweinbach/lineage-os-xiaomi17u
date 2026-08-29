@@ -248,6 +248,10 @@ java_genrule {
         "tools/artifact_files.py",
         "tools/nezha-oem-policy.json",
         "tools/nezha-init-helper-capability.json",
+        // BEGIN OPTIONAL NEZHA OEM PROPERTY INPUTS
+        "tools/nezha-oem-properties.json",
+        ":system_ext_property_contexts",
+        // END OPTIONAL NEZHA OEM PROPERTY INPUTS
     ],
     out: ["oem-policy-native-check.json"],
     cmd: "$(location nezha_oem_policy_check_tool) check-native " +
@@ -264,6 +268,10 @@ java_genrule {
          "--derived-vendor $$(readlink -f $(location :nezha_factory_vendor_policy{derived/vendor_sepolicy.cil})) " +
          "--contract $$(readlink -f $(location tools/nezha-oem-policy.json)) " +
          "--capability-contract $$(readlink -f $(location tools/nezha-init-helper-capability.json)) " +
+         // BEGIN OPTIONAL NEZHA OEM PROPERTY ARGUMENTS
+         "--property-contract $$(readlink -f $(location tools/nezha-oem-properties.json)) " +
+         "--system-ext-property-contexts $$(readlink -f $(location :system_ext_property_contexts)) " +
+         // END OPTIONAL NEZHA OEM PROPERTY ARGUMENTS
          "--tool-source $$(readlink -f $(location tools/oem_policy.py)) " +
          "--output $$(readlink -f $(genDir))/oem-policy-native-check.json",
 }

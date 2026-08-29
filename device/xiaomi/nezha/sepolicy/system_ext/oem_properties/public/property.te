@@ -1,0 +1,7 @@
+# Preserve the four evidenced factory system_ext public property interfaces.
+# Their names do not change their recorded system/public SELinux ownership.
+# Use the pinned Android macros and normal generated 202504 public mappings.
+system_public_prop(vendor_mm_parser_prop)
+system_public_prop(vendor_sys_video_prop)
+system_public_prop(vendor_persist_dpm_prop)
+system_public_prop(vendor_wlc_public_prop)

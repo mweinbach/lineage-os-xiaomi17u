@@ -1,0 +1,2 @@
+# Exact factory framework read interface for the retained parser property.
+get_prop(mediaextractor, vendor_mm_parser_prop)
