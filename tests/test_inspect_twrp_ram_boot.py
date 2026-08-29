@@ -27,12 +27,16 @@ def _property(key, value):
     return _pad(struct.pack(">4Q", 0, following, len(key), len(value)) + key + b"\0" + value + b"\0", 8)
 
 
-def _fixture(*, salt=b"s" * 32, properties=None):
+def _fixture(*, salt=b"s" * 32, properties=None, header_version=4, command_line=None):
     kernel = b"SYNTHETIC KERNEL" * 277  # Crosses one page; not executable code.
     block = b"\x50hello"
     ramdisk = b"\x02\x21\x4c\x18" + struct.pack("<I", len(block)) + block
     header = bytearray(4096)
-    struct.pack_into("<8s9I", header, 0, b"ANDROID!", len(kernel), len(ramdisk), 0, 1584, 0, 0, 0, 0, 4)
+    header_size = 1580 if header_version == 3 else 1584
+    if command_line is None:
+        command_line = inspector.V3_COMMAND_LINE if header_version == 3 else ""
+    struct.pack_into("<8s9I", header, 0, b"ANDROID!", len(kernel), len(ramdisk), 0, header_size, 0, 0, 0, 0, header_version)
+    header[44:44 + len(command_line)] = command_line.encode("ascii")
     unsigned = bytes(header) + _pad(kernel) + _pad(ramdisk)
     digest = hashlib.sha256(salt + unsigned).digest()
     hash_size = (132 + 4 + len(salt) + 32 + 7) // 8 * 8
@@ -56,7 +60,7 @@ def _fixture(*, salt=b"s" * 32, properties=None):
     footer = inspector.envelope.AVB_FOOTER.pack(b"AVBf", 1, 0, len(unsigned), len(unsigned), len(vbmeta), bytes(28))
     image = unsigned + vbmeta + bytes(image_size - len(unsigned) - len(vbmeta) - len(footer)) + footer
     contract = inspector.RamBootContract(image_size, len(kernel), hashlib.sha256(kernel).hexdigest(),
-                                         len(ramdisk), hashlib.sha256(ramdisk).hexdigest())
+                                         len(ramdisk), hashlib.sha256(ramdisk).hexdigest(), header_version, command_line)
     offsets = {"vbmeta": len(unsigned), "auth": len(unsigned) + 256, "aux": len(unsigned) + 832,
                "hash_size": hash_size, "desc_size": len(descriptors), "vbmeta_size": len(vbmeta),
                "kernel_end": 4096 + len(kernel), "ramdisk": 4096 + len(_pad(kernel)),
@@ -223,6 +227,93 @@ class RamBootParserTests(unittest.TestCase):
         for offset in (first + 32 + len(props[0][0]), first + len(_property(*props[0])) - 1):
             self.reject(_rehash_auth(_mutate(self.image, offset, b"x"), self.offsets), "terminator|padding")
         self.reject(_rehash_auth(_mutate(self.image, first, 99, ">Q"), self.offsets))
+
+
+class RamBootV3Tests(unittest.TestCase):
+    def setUp(self):
+        self.image, self.contract, self.offsets = _fixture(header_version=3)
+
+    def test_v3_report_has_exact_command_line_and_no_absent_signature_field(self):
+        with ExitStack() as stack:
+            for target in ("builtins.open", "io.open", "os.open", "os.system", "subprocess.run", "subprocess.Popen", "socket.socket", "time.time"):
+                stack.enter_context(mock.patch(target, side_effect=AssertionError("side effect")))
+            report = inspector.inspect_bytes(self.image, contract=self.contract)
+        header = report["header"]
+        self.assertEqual((header["version"], header["size_bytes"], header["page_size_bytes"]), (3, 1580, 4096))
+        self.assertEqual(header["command_line"], inspector.V3_COMMAND_LINE)
+        self.assertEqual(header["command_line_size_bytes"], 269)
+        self.assertFalse(header["command_line_empty"])
+        self.assertEqual(header["command_line_sha256"], hashlib.sha256(inspector.V3_COMMAND_LINE.encode("ascii")).hexdigest())
+        self.assertNotIn("boot_signature_size_bytes", header)
+        self.assertTrue(report["avb"]["hash_descriptor"]["digest_verified"])
+        for key in ("signature_verified", "trusted_key_verified", "avb_trusted", "boot_tested", "runtime_verified", "authenticated_adb_verified", "flash_admitted"):
+            self.assertIs(report["validation"][key], False)
+
+    def test_v3_and_default_v4_contracts_differ_only_in_header_and_command_line(self):
+        v3, v4 = inspector.V3_EXPECTED_CONTRACT, inspector.EXPECTED_CONTRACT
+        self.assertEqual(v4.header_version, 4)
+        self.assertEqual(v4.command_line, "")
+        self.assertEqual(replace(v3, header_version=4, command_line=""), v4)
+        self.assertEqual(v3.command_line.split(" "), [
+            "androidboot.hardware=qcom", "androidboot.memcg=1", "androidboot.usbcontroller=a600000.dwc3",
+            "androidboot.load_modules_parallel=true", "androidboot.hypervisor.protected_vm.supported=true",
+            "androidboot.hypervisor.version=gunyah", "androidboot.vendor.qspa=true", "androidboot.serialconsole=0",
+        ])
+        self.assertEqual(v3.command_line, v3.command_line.strip())
+        self.assertEqual(len(v3.command_line.encode("ascii")), 269)
+
+    def test_header_version_mismatch_never_auto_selects_another_contract(self):
+        v4_image, v4_contract, _ = _fixture()
+        for data, expected in ((self.image, v4_contract), (v4_image, self.contract)):
+            with self.subTest(version=expected.header_version), self.assertRaisesRegex(inspector.RamBootInspectionError, "expected Android header"):
+                inspector.inspect_bytes(data, contract=expected)
+        with self.assertRaises(inspector.RamBootInspectionError):
+            inspector.inspect_bytes(self.image)
+
+    def test_v3_header_size_padding_os_and_reserved_bytes_remain_strict(self):
+        for offset, value in ((20, 1584), (40, 4), (16, 1), (24, 1), (1580, 1), (4092, 1)):
+            changed = _mutate(self.image, offset, value, "<I")
+            with self.subTest(offset=offset), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(changed, contract=self.contract)
+
+    def test_changed_missing_extra_and_unknown_security_flags_are_rejected(self):
+        line = inspector.V3_COMMAND_LINE
+        changes = ("", line + " ", " " + line, line.replace("memcg=1", "memcg=0"),
+                   line.replace("serialconsole=0", "serialconsole=1"), line + " androidboot.selinux=permissive",
+                   line + " androidboot.verifiedbootstate=orange", line + "\0hidden")
+        for changed_line in changes:
+            changed = _mutate(self.image, 44, changed_line.encode("ascii").ljust(1536, b"\0"))
+            with self.subTest(command_line=changed_line), self.assertRaisesRegex(inspector.RamBootInspectionError, "command line"):
+                inspector.inspect_bytes(changed, contract=self.contract)
+
+    def test_explicit_test_contract_cannot_authorize_unreviewed_flags(self):
+        for contract in (replace(self.contract, command_line=""),
+                         replace(self.contract, command_line=inspector.V3_COMMAND_LINE + " androidboot.selinux=permissive"),
+                         replace(self.contract, header_version=4), replace(self.contract, header_version=True),
+                         replace(self.contract, header_version=2)):
+            with self.subTest(contract=contract), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(self.image, contract=contract)
+
+    def test_v3_does_not_relax_kernel_ramdisk_or_avb_checks(self):
+        for changed in (_mutate(self.image, 4096, b"X"),
+                        _mutate(self.image, self.offsets["ramdisk"] + 9, b"X"),
+                        _rehash_auth(_mutate(self.image, self.offsets["vbmeta"] + 120, 1, ">I"), self.offsets)):
+            with self.subTest(), self.assertRaises(inspector.RamBootInspectionError):
+                inspector.inspect_bytes(changed, contract=self.contract)
+
+    def test_cli_requires_explicit_v3_selection_and_keeps_v4_default(self):
+        path = Path("synthetic-only.img")
+        report = inspector.inspect_bytes(self.image, contract=self.contract)
+        for args, expected in (([str(path)], inspector.EXPECTED_CONTRACT),
+                               ([str(path), "--header-version", "4"], inspector.EXPECTED_CONTRACT),
+                               ([str(path), "--header-version", "3"], inspector.V3_EXPECTED_CONTRACT)):
+            with self.subTest(args=args), mock.patch.object(inspector, "inspect_image", return_value=report) as read, redirect_stdout(io.StringIO()):
+                self.assertEqual(inspector.main(args), 0)
+                read.assert_called_once_with(path, contract=expected)
+        with mock.patch.object(inspector, "inspect_image") as read, redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as caught:
+            inspector.main([str(path), "--header-version", "2"])
+        self.assertEqual(caught.exception.code, 2)
+        read.assert_not_called()
 
 
 class RamBootFileTests(unittest.TestCase):

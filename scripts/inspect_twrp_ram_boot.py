@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Inspect the pinned Nezha RAM-boot wrapper offline, without admitting boot/flash.
 
-This is a separate kernel-containing header-v4 contract, not the kernel-free
-dedicated recovery image. Layouts follow the pinned mkbootimg 954bc3ead5e679005
+This is a separate kernel-containing contract, not the kernel-free dedicated
+recovery image. Header v4 is the default; v3 requires explicit selection and an
+exact stock-derived command line. Layouts follow mkbootimg 954bc3ead5e679005
 and avb c92ce4cb9a1b6d20 sources used by inspect_twrp_image. Hash checks do not
 verify the RSA signature, trust its embedded public key, or establish that a
 device supports this wrapper. No key files, native tools, or devices are used.
@@ -11,7 +12,7 @@ device supports this wrapper. No key files, native tools, or devices are used.
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 import hashlib
 import json
 import os
@@ -29,6 +30,7 @@ else:
 
 PAGE_SIZE = 4096
 HEADER_SIZE = 1584
+V3_HEADER_SIZE = 1580
 MAX_IMAGE_BYTES = 100663296
 MAX_VBMETA_BYTES = 64 * 1024
 ROLLBACK_INDEX = 1769904000
@@ -39,6 +41,12 @@ EXPECTED_PROPERTIES = {
     b"com.android.build.boot.os_version": b"16",
     b"com.android.build.boot.security_patch": b"2026-02-01",
 }
+V3_COMMAND_LINE = (
+    "androidboot.hardware=qcom androidboot.memcg=1 "
+    "androidboot.usbcontroller=a600000.dwc3 androidboot.load_modules_parallel=true "
+    "androidboot.hypervisor.protected_vm.supported=true androidboot.hypervisor.version=gunyah "
+    "androidboot.vendor.qspa=true androidboot.serialconsole=0"
+)
 
 
 @dataclass(frozen=True)
@@ -50,6 +58,8 @@ class RamBootContract:
     kernel_sha256: str
     ramdisk_size_bytes: int
     ramdisk_sha256: str
+    header_version: int = 4
+    command_line: str = ""
 
 
 EXPECTED_CONTRACT = RamBootContract(
@@ -59,6 +69,7 @@ EXPECTED_CONTRACT = RamBootContract(
     ramdisk_size_bytes=25192233,
     ramdisk_sha256="8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
 )
+V3_EXPECTED_CONTRACT = replace(EXPECTED_CONTRACT, header_version=3, command_line=V3_COMMAND_LINE)
 
 
 class RamBootInspectionError(ValueError):
@@ -72,6 +83,11 @@ def _require(condition, message):
 
 def _contract(contract):
     _require(type(contract) is RamBootContract, "expected an explicit RamBootContract")
+    _require(type(contract.header_version) is int and contract.header_version in (3, 4),
+             "expected header version must be 3 or 4")
+    expected_command_line = V3_COMMAND_LINE if contract.header_version == 3 else ""
+    _require(type(contract.command_line) is str and contract.command_line == expected_command_line,
+             "expected contract has an unreviewed command line")
     for size in (contract.image_size_bytes, contract.kernel_size_bytes, contract.ramdisk_size_bytes):
         _require(type(size) is int and 0 < size <= MAX_IMAGE_BYTES, "invalid expected size")
     _require(contract.image_size_bytes % PAGE_SIZE == 0, "expected image size is not page-aligned")
@@ -203,14 +219,23 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
         _require(view[:8] == b"ANDROID!", "invalid Android boot-image magic")
         kernel_size, ramdisk_size, os_version, header_size = struct.unpack_from("<4I", view, 8)
         version = struct.unpack_from("<I", view, 40)[0]
-        signature_size = struct.unpack_from("<I", view, 1580)[0]
-        _require(version == 4 and header_size == HEADER_SIZE, "expected Android header v4 of size 1584")
-        _require(os_version == 0 and signature_size == 0, "OS version and boot signature size must be zero")
+        expected_header_size = V3_HEADER_SIZE if contract.header_version == 3 else HEADER_SIZE
+        _require(version == contract.header_version and header_size == expected_header_size,
+                 f"expected Android header v{contract.header_version} of size {expected_header_size}")
+        _require(os_version == 0, "OS version must be zero")
+        if version == 4:
+            signature_size = struct.unpack_from("<I", view, 1580)[0]
+            _require(signature_size == 0, "boot signature size must be zero")
         _require(kernel_size == contract.kernel_size_bytes and ramdisk_size == contract.ramdisk_size_bytes,
                  "header kernel/ramdisk sizes differ from expected contract")
         envelope._zero(view, 24, 40, "Android header reserved bytes")
-        envelope._zero(view, 44, 1580, "Android command line")
-        envelope._zero(view, HEADER_SIZE, PAGE_SIZE, "Android header padding")
+        command_line = contract.command_line.encode("ascii")
+        if version == 3:
+            _require(bytes(view[44:1580]) == command_line.ljust(1536, b"\0"),
+                     "Android command line differs from expected v3 contract")
+        else:
+            envelope._zero(view, 44, 1580, "Android command line")
+        envelope._zero(view, expected_header_size, PAGE_SIZE, "Android header padding")
         kernel = _payload(view, PAGE_SIZE, kernel_size, contract.kernel_sha256, "kernel")
         ramdisk = _payload(view, kernel["padded_end_offset_bytes"], ramdisk_size, contract.ramdisk_sha256, "ramdisk")
         ramdisk["compression"] = envelope._lz4_envelope(view[ramdisk["offset_bytes"]:ramdisk["end_offset_bytes"]])
@@ -218,21 +243,26 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
         avb = _boot_avb(view, payload_end)
     except envelope.ImageInspectionError as exc:
         raise RamBootInspectionError(str(exc)) from exc
+    pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT)
+    header = {"version": version, "size_bytes": header_size, "page_size_bytes": PAGE_SIZE,
+              "kernel_size_bytes": kernel_size, "ramdisk_size_bytes": ramdisk_size, "os_version_raw": 0,
+              "command_line_empty": not command_line, "command_line": contract.command_line,
+              "command_line_size_bytes": len(command_line), "command_line_sha256": _sha(command_line),
+              "padded_payload_size_bytes": payload_end, "reserved_and_padding_zero": True}
+    if version == 4:
+        header["boot_signature_size_bytes"] = signature_size
     return {
         "schema_version": 1, "operation": "inspect-twrp-ram-boot",
         "status": "structurally_valid_expected_ram_boot_wrapper",
-        "contract": {**asdict(contract), "stock_kernel_build66_contract_selected": contract == EXPECTED_CONTRACT,
+        "contract": {**asdict(contract), "stock_kernel_build66_contract_selected": pinned_contract,
                      "image_role": "ram-boot-wrapper", "physical_phone_capacity_verified": False},
         "image": {"size_bytes": len(data), "sha256": _sha(view)},
-        "header": {"version": version, "size_bytes": header_size, "page_size_bytes": PAGE_SIZE,
-                   "kernel_size_bytes": kernel_size, "ramdisk_size_bytes": ramdisk_size, "os_version_raw": 0,
-                   "command_line_empty": True, "boot_signature_size_bytes": 0,
-                   "padded_payload_size_bytes": payload_end, "reserved_and_padding_zero": True},
+        "header": header,
         "kernel": kernel, "ramdisk": ramdisk, "avb": avb,
         "validation": {
             "structurally_valid": True, "expected_payload_hashes_verified": True,
             "boot_hash_descriptor_verified": True, "reserved_and_padding_zero": True,
-            "stock_kernel_build66_payloads_verified": contract == EXPECTED_CONTRACT,
+            "stock_kernel_build66_payloads_verified": pinned_contract,
             "signature_verified": False, "trusted_key_verified": False, "avb_trusted": False,
             "ramdisk_decompressed": False, "twrp_contents_verified": False,
             "compiled_selinux_policy_verified": False, "boot_tested": False,
@@ -273,10 +303,13 @@ def inspect_image(path, *, contract=EXPECTED_CONTRACT):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("image", type=Path, help="regular RAM-boot wrapper to inspect read-only")
+    parser.add_argument("--header-version", type=int, choices=(3, 4), default=4,
+                        help="explicit wrapper contract; defaults to v4")
     parser.add_argument("--output", type=Path, help="new metadata .json report; existing paths are never replaced")
     args = parser.parse_args(argv)
     try:
-        report = inspect_image(args.image)
+        contract = V3_EXPECTED_CONTRACT if args.header_version == 3 else EXPECTED_CONTRACT
+        report = inspect_image(args.image, contract=contract)
         if args.output is not None:
             envelope.write_report(args.output, report)
         print(json.dumps(report, sort_keys=True, indent=2))
