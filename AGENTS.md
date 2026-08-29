@@ -18,8 +18,12 @@ device tree. Keep verified facts separate from assumptions and unresolved work.
 - Keep raw stock dumps, proprietary APKs/blobs, serials, logs, personal data,
   signing keys, and source checkouts in ignored directories. Record provenance
   and hashes; do not redistribute proprietary files without permission.
-- Retain SELinux enforcement and verified-boot/rollback constraints in the
-  design. Do not claim a stock feature works without a reproducible device test.
+- Recovery bring-up may use permissive SELinux, as explicitly authorized by
+  the user, while boot, touch, USB and logging are established. Preserve denial
+  logging and restore enforcement as a later milestone; do not disable SELinux
+  in the kernel or change normal Android's SELinux mode. Keep verified-boot and
+  rollback constraints. Magisk is a possible later task, not part of this
+  authorization. Do not claim a stock feature works without a device test.
 - `upstream/` contains reference checkouts. Full source checkouts belong on a
   case-sensitive Linux filesystem: native Linux x86-64, or the explicitly
   verified Apple Container ARM64 + Rosetta path. The latter uses a persistent
@@ -29,7 +33,8 @@ device tree. Keep verified facts separate from assumptions and unresolved work.
   named volume. Do not mount home directories, phone evidence, or credentials.
 - Never attach the same ext4 source volume to concurrent writer VMs. Do not
   prune volumes or delete existing source checkouts. Keep signature, artifact
-  path, SELinux and device-compatibility checks enabled in container builds.
+  path and device-compatibility checks enabled in container builds. Record
+  whether the recovery policy is enforcing or intentionally permissive.
 - Do not start a full source sync or build without checking disk, OS,
   architecture, filesystem case sensitivity, and the selected manifest.
 - Favor available Codex tools and relevant skills. Coordinate file ownership

@@ -6,6 +6,26 @@ without requiring a complete Evolution X ROM first. A compiled recovery is
 not yet a tested rescue environment. Device actions require separate, explicit
 user authorization.
 
+The current route uses the complete Nezha tree from
+[`antocorvo3000/twrp-xiaomi-17-series`](https://github.com/antocorvo3000/twrp-xiaomi-17-series/tree/4a35185d43782b4dd460a7f456d674c0976c0859/twrp_device_xiaomi_nezha),
+pinned at `4a35185d43782b4dd460a7f456d674c0976c0859`. Its supplied kernel
+matches the recorded stock kernel byte for byte. Keep its recovery hardware
+initialization and product integration; adjust device identity and image
+layout only to verified Nezha stock facts, plus concrete build compatibility
+fixes. The earlier minimal recovery and its unbooted timed diagnostic remain
+separate, preserved experiments, not the selected baseline.
+
+The user explicitly authorized **permissive SELinux for initial recovery
+bring-up** on 2026-08-29. This keeps denial logging available while establishing
+boot, display, touch, USB and recovery logs. Working enforcement is a later
+milestone; do not disable SELinux in the kernel or change installed Android's
+mode. The upstream policy's permissive domains are therefore an intentional
+bring-up choice, not evidence of an enforcing recovery. Magisk is a possible
+later step; it has not been installed or used to patch the phone. Existing
+verified-boot, rollback, no-wipe and device-action authorization boundaries
+still apply. The historical checks below describe the earlier image, not this
+new upstream-based candidate.
+
 **Normal build 66 produced a recovery image that passed the complete static
 artifact sequence and the separate inventory check.** The 100 MiB image has
 SHA256 `51478e22c6e99f7b604aa0ab1681d90adb84931f60d61b8e978e48a15ed1e791`.
