@@ -24,8 +24,10 @@ import sys
 
 if __package__:
     from . import inspect_twrp_image as envelope
+    from . import twrp_ram_boot_scaffold as scaffold
 else:
     import inspect_twrp_image as envelope
+    import twrp_ram_boot_scaffold as scaffold
 
 
 PAGE_SIZE = 4096
@@ -60,6 +62,9 @@ class RamBootContract:
     ramdisk_sha256: str
     header_version: int = 4
     command_line: str = ""
+    scaffold: bool = False
+    ramdisk_suffix_size_bytes: int | None = None
+    ramdisk_suffix_sha256: str | None = None
 
 
 EXPECTED_CONTRACT = RamBootContract(
@@ -70,6 +75,12 @@ EXPECTED_CONTRACT = RamBootContract(
     ramdisk_sha256="8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
 )
 V3_EXPECTED_CONTRACT = replace(EXPECTED_CONTRACT, header_version=3, command_line=V3_COMMAND_LINE)
+V3_SCAFFOLD_EXPECTED_CONTRACT = replace(
+    V3_EXPECTED_CONTRACT, scaffold=True, ramdisk_size_bytes=25193270,
+    ramdisk_sha256="1f1c61c9c8d473d1e9753cc971c13e0d71b23318e6080e5e9615bec7b5d196ff",
+    ramdisk_suffix_size_bytes=EXPECTED_CONTRACT.ramdisk_size_bytes,
+    ramdisk_suffix_sha256=EXPECTED_CONTRACT.ramdisk_sha256,
+)
 
 
 class RamBootInspectionError(ValueError):
@@ -93,6 +104,17 @@ def _contract(contract):
     _require(contract.image_size_bytes % PAGE_SIZE == 0, "expected image size is not page-aligned")
     for digest in (contract.kernel_sha256, contract.ramdisk_sha256):
         _require(type(digest) is str and re.fullmatch(r"[0-9a-f]{64}", digest), "invalid expected SHA256")
+    _require(type(contract.scaffold) is bool, "scaffold selection must be boolean")
+    if contract.scaffold:
+        _require(contract.header_version == 3, "directory scaffold requires the explicit v3 contract")
+        _require(type(contract.ramdisk_suffix_size_bytes) is int and 0 < contract.ramdisk_suffix_size_bytes <= MAX_IMAGE_BYTES
+                 and contract.ramdisk_size_bytes == scaffold.PREFIX_SIZE + contract.ramdisk_suffix_size_bytes,
+                 "scaffold/suffix sizes differ from the expected ramdisk size")
+        _require(type(contract.ramdisk_suffix_sha256) is str and re.fullmatch(r"[0-9a-f]{64}", contract.ramdisk_suffix_sha256),
+                 "invalid expected ramdisk suffix SHA256")
+    else:
+        _require(contract.ramdisk_suffix_size_bytes is None and contract.ramdisk_suffix_sha256 is None,
+                 "suffix metadata requires explicit scaffold selection")
     payload_size = PAGE_SIZE + envelope._aligned(contract.kernel_size_bytes) + envelope._aligned(contract.ramdisk_size_bytes)
     _require(payload_size + 2 * PAGE_SIZE <= contract.image_size_bytes, "expected payload has no room for AVB metadata/footer")
 
@@ -110,6 +132,28 @@ def _payload(data, start, size, expected_sha, label):
     _require(digest == expected_sha, label + " SHA256 differs from expected contract")
     return {"offset_bytes": start, "end_offset_bytes": end, "size_bytes": size,
             "padded_end_offset_bytes": padded_end, "sha256": digest}
+
+
+def _scaffold_ramdisk(data, contract, image_offset):
+    prefix = scaffold.inspect_scaffold_prefix(bytes(data[:scaffold.PREFIX_SIZE]))
+    suffix = data[scaffold.PREFIX_SIZE:]
+    _require(len(suffix) == contract.ramdisk_suffix_size_bytes
+             and _sha(suffix) == contract.ramdisk_suffix_sha256,
+             "ramdisk suffix differs from the unchanged expected bytes")
+    _require(suffix[:4] == scaffold.LEGACY_MAGIC, "scaffold suffix must retain legacy-LZ4 encoding")
+    suffix_envelope = envelope._lz4_envelope(suffix)
+    return {
+        "compression": {"format": "concatenated-lz4-legacy-archives", "archive_count": 2,
+                        "envelope_valid": True, "compressed_blocks_decoded": False,
+                        "checksums_verified": False, "full_kernel_decompression_verified": False},
+        "scaffold": prefix,
+        "canonical_suffix": {"ramdisk_offset_bytes": scaffold.PREFIX_SIZE,
+                             "image_offset_bytes": image_offset + scaffold.PREFIX_SIZE,
+                             "size_bytes": len(suffix), "sha256": contract.ramdisk_suffix_sha256,
+                             "compression": suffix_envelope,
+                             "build66_bytes_verified": len(suffix) == EXPECTED_CONTRACT.ramdisk_size_bytes
+                             and contract.ramdisk_suffix_sha256 == EXPECTED_CONTRACT.ramdisk_sha256},
+    }
 
 
 def _boot_avb(data, payload_end):
@@ -238,12 +282,16 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
         envelope._zero(view, expected_header_size, PAGE_SIZE, "Android header padding")
         kernel = _payload(view, PAGE_SIZE, kernel_size, contract.kernel_sha256, "kernel")
         ramdisk = _payload(view, kernel["padded_end_offset_bytes"], ramdisk_size, contract.ramdisk_sha256, "ramdisk")
-        ramdisk["compression"] = envelope._lz4_envelope(view[ramdisk["offset_bytes"]:ramdisk["end_offset_bytes"]])
+        ramdisk_bytes = view[ramdisk["offset_bytes"]:ramdisk["end_offset_bytes"]]
+        if contract.scaffold:
+            ramdisk.update(_scaffold_ramdisk(ramdisk_bytes, contract, ramdisk["offset_bytes"]))
+        else:
+            ramdisk["compression"] = envelope._lz4_envelope(ramdisk_bytes)
         payload_end = ramdisk["padded_end_offset_bytes"]
         avb = _boot_avb(view, payload_end)
-    except envelope.ImageInspectionError as exc:
+    except (envelope.ImageInspectionError, scaffold.ScaffoldError) as exc:
         raise RamBootInspectionError(str(exc)) from exc
-    pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT)
+    pinned_contract = contract in (EXPECTED_CONTRACT, V3_EXPECTED_CONTRACT, V3_SCAFFOLD_EXPECTED_CONTRACT)
     header = {"version": version, "size_bytes": header_size, "page_size_bytes": PAGE_SIZE,
               "kernel_size_bytes": kernel_size, "ramdisk_size_bytes": ramdisk_size, "os_version_raw": 0,
               "command_line_empty": not command_line, "command_line": contract.command_line,
@@ -263,6 +311,7 @@ def inspect_bytes(data, *, contract=EXPECTED_CONTRACT):
             "structurally_valid": True, "expected_payload_hashes_verified": True,
             "boot_hash_descriptor_verified": True, "reserved_and_padding_zero": True,
             "stock_kernel_build66_payloads_verified": pinned_contract,
+            "directory_scaffold_verified": contract.scaffold, "full_kernel_decompression_verified": False,
             "signature_verified": False, "trusted_key_verified": False, "avb_trusted": False,
             "ramdisk_decompressed": False, "twrp_contents_verified": False,
             "compiled_selinux_policy_verified": False, "boot_tested": False,
@@ -305,10 +354,14 @@ def main(argv=None):
     parser.add_argument("image", type=Path, help="regular RAM-boot wrapper to inspect read-only")
     parser.add_argument("--header-version", type=int, choices=(3, 4), default=4,
                         help="explicit wrapper contract; defaults to v4")
+    parser.add_argument("--scaffold", action="store_true", help="verify the exact directory-only prefix; requires --header-version 3")
     parser.add_argument("--output", type=Path, help="new metadata .json report; existing paths are never replaced")
     args = parser.parse_args(argv)
+    if args.scaffold and args.header_version != 3:
+        parser.error("--scaffold requires --header-version 3")
     try:
-        contract = V3_EXPECTED_CONTRACT if args.header_version == 3 else EXPECTED_CONTRACT
+        contract = (V3_SCAFFOLD_EXPECTED_CONTRACT if args.scaffold else
+                    V3_EXPECTED_CONTRACT if args.header_version == 3 else EXPECTED_CONTRACT)
         report = inspect_image(args.image, contract=contract)
         if args.output is not None:
             envelope.write_report(args.output, report)
