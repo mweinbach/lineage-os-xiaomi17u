@@ -78,6 +78,36 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertEqual(device['recovery_slot_size_bytes'], 104857600)
         self.assertEqual(device['boot_slot_size_bytes'], 100663296)
 
+    def test_v4_wrapper_acceptance_does_not_claim_twrp_runtime(self):
+        wrapper = self.record['attempts'][1]
+        self.assertEqual(wrapper['image_sha256'],
+                         '70c2d3ab2aee6c216a2c8d6a38d05ddeb76b1e3313a3602d3a2f1fdc1a155de2')
+        self.assertEqual((wrapper['header_version'], wrapper['header_size_bytes']), (4, 1584))
+        self.assertEqual(wrapper['image_size_bytes'], 100663296)
+        self.assertEqual(wrapper['kernel_size_bytes'], 39963136)
+        self.assertEqual(wrapper['ramdisk_sha256'], self.milestone['artifact']['compressed_ramdisk_sha256'])
+        self.assertTrue(wrapper['download_succeeded'])
+        self.assertTrue(wrapper['boot_command_succeeded'])
+        self.assertEqual(wrapper['returncode'], 0)
+        self.assertFalse(wrapper['twrp_runtime_verified'])
+        self.assertEqual(wrapper['status'], 'boot_command_accepted_stock_android_observed')
+        avb = wrapper['avb']
+        self.assertEqual((avb['partition_name'], avb['algorithm'], avb['flags']),
+                         ('boot', 'SHA256_RSA4096', 0))
+        self.assertEqual((avb['rollback_index'], avb['rollback_index_location']), (1769904000, 0))
+        self.assertTrue(avb['local_development_signature_verified'])
+        self.assertFalse(avb['oem_signature'])
+        self.assertEqual(avb['properties'], {'com.android.build.boot.os_version': '16',
+                                           'com.android.build.boot.security_patch': '2026-02-01'})
+        runtime = wrapper['runtime_observations']
+        self.assertEqual(runtime['sys_boot_completed'], '1')
+        for name in ('zygote_running', 'system_server_running', 'surfaceflinger_running'):
+            self.assertTrue(runtime[name])
+        self.assertFalse(runtime['twrp_version_property_present'])
+        self.assertFalse(runtime['recovery_service_present'])
+        self.assertFalse(runtime['proc_cmdline_read_permitted'])
+        self.assertFalse(runtime['proc_bootconfig_read_permitted'])
+
 
 if __name__ == '__main__':
     unittest.main()

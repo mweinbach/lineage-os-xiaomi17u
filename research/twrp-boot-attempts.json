@@ -62,9 +62,103 @@
           "size_bytes": 1372
         }
       }
+    },
+    {
+      "number": 2,
+      "started_at_utc": "2026-08-29T03:41:41.566865+00:00",
+      "operation": "fastboot boot",
+      "image_role": "stock_kernel_build66_ramdisk_v4_wrapper",
+      "image_sha256": "70c2d3ab2aee6c216a2c8d6a38d05ddeb76b1e3313a3602d3a2f1fdc1a155de2",
+      "image_size_bytes": 100663296,
+      "header_version": 4,
+      "header_size_bytes": 1584,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "ramdisk_size_bytes": 25192233,
+      "ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "boot_command_accepted_stock_android_observed",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "runtime_observations": {
+        "sys_boot_completed": "1",
+        "zygote_running": true,
+        "system_server_running": true,
+        "surfaceflinger_running": true,
+        "twrp_version_property_present": false,
+        "recovery_service_present": false,
+        "force_normal_boot_property": "0",
+        "adb_uid": 2000,
+        "selinux": "Enforcing",
+        "stock_build": "OS3.0.309.0.WPACNXM",
+        "proc_cmdline_read_permitted": false,
+        "proc_bootconfig_read_permitted": false
+      },
+      "evidence": {
+        "start": {
+          "sha256": "ce6919d25032173000072b2c0a54d162b701ed735e3591a25d93cce8145667d2",
+          "size_bytes": 737
+        },
+        "result": {
+          "sha256": "c923ef7261a3c24e541523384aa6a92c3be9ba2b88f71b55f0a2a11132059653",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "45ae387f2ebc8221e82e8f34c36c743978e90e1e905dbbe4921a0bc7d32c84c9",
+          "size_bytes": 1638
+        },
+        "construction": {
+          "sha256": "7ce98a582816c4253a927f6ac289227dc9b475a64ff0861f72ba198853b1f361",
+          "size_bytes": 3315
+        },
+        "independent_image_inspection": {
+          "sha256": "48c8afb526630a67d520c8d4ebedaefda1271127bf02a36011cdfe3bc697eae9",
+          "size_bytes": 4855
+        },
+        "independent_inspector_execution": {
+          "sha256": "96d6d44587430e19d64ae15873bb16ce41b13fd97561b1706efa3231b3493cce",
+          "size_bytes": 680
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "17ea0690b98dc6118e37b538d1010728fa799d8d759fe21024103ab240ac393b",
+          "size_bytes": 1174
+        },
+        "post_boot_presence": {
+          "sha256": "cd71963cd9cb7ec5fddb348b1a3ff6a1d198745c3e42372ac4a827a552ea3319",
+          "size_bytes": 2889
+        },
+        "runtime_diagnostics": {
+          "sha256": "e2353f5f4f6fa0588f9b93fe9906e82420f1e51416a336adbfb67eb30d732aed",
+          "size_bytes": 269075
+        },
+        "metadata_peer_review": {
+          "sha256": "856d3c2f4d1df70de6d07353713a49dd7c05aedf65d3f15853f6ecf206d02e82",
+          "size_bytes": 1844
+        }
+      }
     }
   ],
-  "last_confirmed_mode": "bootloader_fastboot",
+  "last_confirmed_mode": "stock_android",
   "twrp_boot_verified": false,
   "authenticated_recovery_adb_verified": false,
   "runtime_selinux_enforcement_verified": false,
@@ -74,7 +168,9 @@
     "The rejection does not identify which loader format, size or authentication check failed.",
     "The dedicated recovery image has no kernel; fastboot boot sends it unchanged and does not automatically combine stock kernel or companion ramdisks.",
     "Fastboot lock state differs from Android properties; the positively parsed bootloader unlocked result was used for the authorized trial.",
-    "The compiled static artifact milestone remains a historical record, not a claim that hardware testing succeeded."
+    "The compiled static artifact milestone remains a historical record, not a claim that hardware testing succeeded.",
+    "The v4 wrapper was accepted but reached stock Android. Public Qualcomm loader code suggests init_boot ramdisk preference; the proprietary Nezha loader implementation has not been established.",
+    "No partition-write, wipe, unlock/relock, or slot-change command was sent. Temporary boot does not guarantee that a bootloader leaves all of its internal boot metadata unchanged."
   ],
   "evidence": {
     "adb_reboot_to_bootloader": {

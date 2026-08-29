@@ -41,6 +41,29 @@ matching stock kernel is therefore a testable format hypothesis, not a proven
 boot method. Flashing, unlocking/relocking, wiping and slot changes remain
 outside this authorization.
 
+The second temporary trial combined the exact matching stock kernel with the
+unchanged build-66 compressed ramdisk using pinned `mkbootimg`. The separate
+96 MiB v4 wrapper has SHA256
+`70c2d3ab2aee6c216a2c8d6a38d05ddeb76b1e3313a3602d3a2f1fdc1a155de2`.
+A new local development key signed its fresh `boot` AVB descriptor; signature
+and hash verification passed, flags remain zero, and the stock boot rollback
+index `1769904000` and location zero were preserved. Its two AVB properties
+retain the stock kernel's Android 16 / 2026-02-01 metadata, not a claim that the
+custom userspace has that patch level. The stock Xiaomi fingerprint was not
+copied. The original recovery and stock images remain unchanged.
+
+The bootloader accepted that wrapper, but the phone reached stock Android:
+`sys.boot_completed=1`, Zygote, SurfaceFlinger and system_server were present,
+with no TWRP version property or recovery service. The authorized stock ADB
+shell was UID 2000 and SELinux was enforcing. Those observations do not verify
+recovery ADB or TWRP policy at runtime. A v4 bootloader can select the installed
+`init_boot` ramdisk instead of the downloaded ramdisk; the exact Nezha loader
+implementation is not established. The
+[RAM-boot inspector](../scripts/inspect_twrp_ram_boot.py) checks the wrapper's
+bytes and AVB digest offline but deliberately does not claim signature trust,
+boot compatibility or runtime success. No flash command was sent; this does
+not establish that the bootloader leaves all internal boot metadata unchanged.
+
 ## Source and build isolation
 
 The selected experimental source is
