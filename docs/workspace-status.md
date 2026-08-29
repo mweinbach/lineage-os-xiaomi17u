@@ -9,6 +9,18 @@ with newly built Evolution components or that Evolution X boots. This page
 consolidates recorded evidence through August 29,
 2026. It does not assert that a historical builder VM is still running.
 
+The latest native policy checkpoint is **v11b**, completed at
+**2026-08-29 20:47:06 UTC**. The three missing OEM service/file classifications
+are now authored system_ext policy inputs, and all nine factory context and
+structural checks pass through the real Android build graph. Independent
+analysis passed at **20:54:46 UTC**: all 6,366 assertions remain, the concrete
+permission delta matches the reviewed projection, and three policy binaries
+have zero permissive domains. The [OEM policy integration record](oem-policy-integration.md)
+keeps these results separate from complete Treble labeling and image adoption.
+The immediate destination remains a reproducible, working Evolution baseline;
+that baseline will support a maintainable platform fork without mixing future
+framework features into device bring-up.
+
 The observed phone reports `nezha` and CN hardware-country information. Its
 physical sales region is not independently established. During the authorized
 August 29 tests, the bootloader positively reported `unlocked: yes`,
@@ -42,6 +54,13 @@ audit deliberately returns status `2` for those local changes; it does not
 reset them or describe the checkout as pristine. A source lock does not
 include the remaining build inputs below.
 
+The [v11 preflight](../research/oem-policy-integration.json) rechecked all
+1,179 revisions and origins at 19:37:51 UTC, again with 1,175 clean projects
+and the same four patched projects. The v11b native build subsequently verified
+its installed source inputs unchanged. Newly authored Soong and packaging
+patches are not included in that installed-source checkpoint; their native
+adoption needs a new source and input receipt.
+
 Those local changes are part of the build inputs: the
 [Evolution property patch](../patches/evolution/security-properties.json),
 [SELinux enforcement patch](../patches/evolution/selinux-enforcement.json), and
@@ -74,7 +93,10 @@ from a full build and require destination hash verification after transfers.
 | Strict policy prototype | Derived Binder correction plus two helper-permission removals compile as combined CIL with zero permissive domains; all 6,366 assertions retained | [Helper projection](../research/helper-policy-projection.json) |
 | Native user v10 source and factory policy | The reviewed helper patch now runs through Android M4; a native genrule reproduces the Binder correction and the strict combined policy target builds successfully, including its user permissive-domain guard | [Source integration](../research/policy-source-integration.json) |
 | Independent v10 analysis | Native combined binary matches the earlier prototype exactly; all 6,366 assertion statements remain, with only the intended 69 allow removals; three binaries have zero permissive domains | [Source integration](../research/policy-source-integration.json) |
+| Native user v11b OEM policy | Authored system_ext declarations, object roles and generated API mappings; strict combined compilation, OEM ownership guard and all nine factory context/structural checks pass | [OEM policy integration](../research/oem-policy-integration.json) |
+| Independent v11b analysis | All 6,366 assertions retained with reviewed concrete coverage; exactly five added lookup permissions and 47 removed vendor_init file permissions; zero permissive domains in three binaries | [OEM policy integration](../research/oem-policy-integration.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
+| Native VINTF build inputs | Selected framework XML, host tools and stock-kernel requirements built; the graph audit identifies the still-missing framework fragments and APEX artifacts rather than treating the partial inventory as complete compatibility | [VINTF build closure](../research/vintf-compatibility.json) |
 | Recovery device test | `working76` installed to recovery_a; matching readback; visible UI and fast touch confirmed by the user; root ADB, logs and automatic defaults verified | [Working recovery](../research/twrp-working-defaults.json) |
 | Recovery reproduction and ROM build target | Two fresh Mac rebuilds match working76 byte for byte; Linux public-key staging/verification and two actual `recoveryimage` target runs pass with unchanged output bytes | [Workspace integration](../research/workspace-integration.json) |
 
@@ -89,46 +111,63 @@ override theme defaults. No Magisk integration is included.
 
 ## Gates before a complete ROM
 
-- **Policy:** the v10 source/vendor-input path now passes the actual Android
-  combined-policy build and independent analysis. Six of nine factory context
-  and structural checks pass. The remaining failures are the missing manager
-  classifications for `vendor_hal_atfwd_hwservice` and
-  `vendor_hal_systemhelper_aidl_service`, plus missing `core_data_file_type`
-  membership for `offlinelog_file` at `/data/local/log`. Restore the evidenced
-  Xiaomi system_ext public declarations, roles and generated API mappings,
-  together with the framework-owned offlinelog classification; review the
-  effective permission changes before adopting them. Preserve the original
-  system_ext/product ownership evidence instead of adding broad attributes.
+- **Policy:** v11b restores the two evidenced Xiaomi system_ext service
+  declarations, object roles and generated API mappings, plus the framework
+  offlinelog classification. Strict combined compilation, the ownership guard
+  and all nine factory checks pass. Independent v11 comparison verifies the
+  reviewed effective permission and assertion coverage changes; unfiltered
+  analysis finds zero permissive domains in all three policy binaries.
+  The optional [four-property source contract](../config/nezha-oem-properties.json)
+  and [framework-provider policy](../config/nezha-framework-provider-policy.json)
+  are authored follow-ups, not part of the installed v11b policy result.
   Full labeling needs the actual complete Evolution APK inventory; a missing
   artifact skip or API-202504 touch-only target is not a pass. The corrected
   policy is a non-installable validation output: retained vendor/ODM images
-  still contain their original policy and need a reviewed image derivation.
+  still contain their original policy. A reviewed derivation must replace the
+  vendor CIL and the ODM combined policy plus its three matching framework
+  digests while preserving every other file and its metadata. The authored
+  [EROFS inventory tool](../tools/erofs-metadata/README.md) is preparation for
+  that proof, not an adopted image or a native round-trip result.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
-  and measured Nezha budgets. `mi_ext` is not yet packaged. Target-files, OTA,
-  super-image and flash admission remain false. Selecting TWRP does not prove
-  an OTA contains, preserves or restores it correctly on either slot. The
-  pinned target-files tool still requires a separately validated
-  `recovery-two-step.img`, which the current prebuilt integration does not
-  provide.
+  and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
+  and [A/B-only recovery packaging correction](recovery-packaging.md) are
+  authored, with host checks, but are not installed in the v11b guest source.
+  Native Kati, component and packaging checks remain necessary. The correction
+  removes the inapplicable non-A/B two-step requirement only for A/B-only
+  products; never fabricate a `recovery-two-step.img` from the kernel-free
+  working76 image. Target-files, OTA, super-image and flash admission remain
+  false. Selecting TWRP does not prove an OTA contains, preserves or restores
+  it correctly on either slot.
 - **Signing and boot chain:** the inspected v8 generated boot components have
   AVB algorithm `NONE`, despite AVB being enabled in configuration. A complete
   signed chain, key availability, rollback compatibility and partition fit
   still need validation. The recovery bundle supplies its matching public key
   instead of using the generic engineering test key for that chain descriptor;
   this configuration is not proof of a completed, trusted vbmeta chain.
+  The [new public-key image-set verifier](avb-image-set.md) has checked four
+  prior components with real avbtool/OpenSSL; complete verification remains
+  blocked by 13 absent roles. A leaf footer using `NONE` can be covered by its
+  signed parent, but no complete signed parent chain has yet been established.
   Working recovery's development signature does not sign the ROM or authorize
   relocking. Its kernel-free image depends on the intact device boot chain and
   is not protection against bootloader damage.
-- **Framework/vendor compatibility:** assemble Evolution framework matrices,
-  device matrices, kernel requirements and active APEX inputs for full VINTF
-  checks. The existing device-manifest pass and retained stock framework
-  definition failures are not that complete comparison.
+- **Framework/vendor compatibility:** the [native closure audit](vintf-compatibility.md)
+  built selected XML and kernel inputs but still found ten required framework
+  fragments and all 36 selected framework APEX artifacts absent at its
+  checkpoint. Complete those inputs, materialize the actual APEX manifests,
+  and run the full comparison with explicit kernel requirements. The pinned
+  compatibility CLI does not enforce every framework-provider expectation in
+  the factory matrix. The authored [Sigma and QCC provider bundle](framework-providers.md)
+  therefore also needs strict native ELF, policy, linker and service checks;
+  it is not installed or validated by v11b.
 - **Runtime and stock features:** no Evolution boot or native feature is
   verified. Module stage loading/signature behavior, storage, telephony, audio,
   thermals, sensors, camera/Leica and accessories require separate tests. The
   Camera APK itself is not packaged; strict signing and uses-library integration
-  remain open despite its nine dependencies building.
+  remain open despite its nine dependencies building. The new
+  [exact Camera runtime-library bundle](camera-runtime-inputs.md) is staged on
+  the host; its reviewed Soong provider patch and native rebuild remain pending.
 - **Recovery completeness:** encrypted `/data`, backup/restore coverage,
   additional reboot/Android round trips, A/B and OTA behavior, ADB host
   authentication and restoring recovery SELinux enforcement remain unverified.
@@ -145,7 +184,7 @@ source work; [recovery handling](recovery-plan.md) records recovery boundaries.
 | --- | --- |
 | This status page and [Nezha integration](nezha-integration.md) | Detailed dated checkpoints in `docs/build-progress.md` and the individual component-build records |
 | [Working TWRP instructions](../recovery/twrp-working/README.md) and [current recovery guide](twrp-bringup.md) | [Recovery history](twrp-bringup-history.md): earlier minimal builds, RAM-boot attempts and `provided75` before persistent defaults |
-| [Native source-policy integration](policy-source-integration.md) and its [current record](../research/policy-source-integration.json) | v7/v8/v9 policy builds and the copied-CIL prototypes remain dated evidence; their original results are preserved |
+| [OEM policy integration](oem-policy-integration.md) and its [current record](../research/oem-policy-integration.json) | [v10 source-policy integration](policy-source-integration.md), v7/v8/v9 builds and copied-CIL prototypes remain dated evidence; their original results are preserved |
 | Current factory vendor/ODM input receipts | Modified Xiaomi.eu package, earlier candidates, outputs and failed AVB results with their original provenance |
 
 Run `make test` before completing workspace changes. Generate into new ignored
@@ -156,11 +195,17 @@ compile Android nor test a phone. Cleanup and local builds do not authorize
 device changes; any future flash, reboot or restore needs its own explicit
 user instruction and selected-device preflight.
 
-The v10 native build completed at **2026-08-29 18:43:51 UTC**, with 255 Ninja
-actions and observed read-only source / writable user output mounts. Independent
-analysis completed at 19:02:14 UTC; the context phase completed at 19:04:29 UTC
-with its three failures retained. The final audit again matched all 1,179
-project revisions/origins, the same four intentionally patched projects, both
-original factory images and working76 recovery. A temporary Container transport
-stall was resolved without restarting the Nezha VM or shared service. No new
-source sync, image adoption or device operation occurred.
+The v10 native result, independent analysis and three failed context checks
+remain in their original record. The first v11 build resolved those checks but
+failed its new ownership guard because Android retains inherited platform
+members in generated attribute sets. The corrected guard requires that exact
+platform membership plus only the reviewed additions; it does not allow
+arbitrary widening. The v11b retry archived the ten previous validation outputs
+and reran the combined compiler and all nine checks, completing 31 Ninja actions
+with source read-only and user output writable. No check was waived. The
+independent analysis then bound the ten real compiler inputs, M4 sources,
+public exports, mappings, inherited semantics and executed native checks to
+the successful phase. Its three permissive analyses ran with inputs read-only.
+The original factory images, working76, four existing upstream patch projects and
+complete-ROM gates were preserved. No new source sync, image adoption or device
+operation occurred in this policy milestone.

@@ -24,6 +24,13 @@ The device test used the installed stock companion boot, kernel and vendor
 stack, not newly built Evolution components. Normal Android keeps enforcing
 SELinux and all existing admission gates.
 
+The immediate milestone is a reproducible Evolution build that boots and
+works on this device. Keep the pinned Evolution base, exact device/vendor
+integration, and future platform features separate. Framework, system-service,
+API, permission and SystemUI changes belong in a later explicit feature layer
+once this baseline is established; public fork naming and branding remain
+separate decisions.
+
 The supplied Xiaomi.eu package is useful for identifying the actual hardware
 and software dependencies. It is **not a valid signed image set**: the retained
 AVB metadata disagrees with vendor_boot and the logical images. Local archive,
@@ -85,6 +92,7 @@ integration work; its remaining requirements do not prohibit that profile.
 | `vendor/xiaomi/nezha` | Generated proprietary files and makefiles from a reviewed Nezha extraction list | Resolve every listed file to an exact source image/hash; preserve its partition and architecture; review ELF dependencies, VINTF, init, permissions and licenses. Do not copy another vendor tree or calibration data. |
 | Separate Nezha Camera package | Xiaomi Camera, narrowly required framework/JNI/service dependencies and feature configuration | Basic Camera2/HAL operation first; permission/signature and linker-namespace review; distinct feature tests for Leica processing, lenses, video and accessories. |
 | `vendor/lineage` | Evolution X product configuration from the selected manifest | The manifest uses this path for `Evolution-X/vendor_evolution`; do not inherit a guessed `vendor/evolution` product path. |
+| Future platform feature patches | Deliberate changes to Android framework, services, APIs, permissions and SystemUI | Separate reviewed commits and upstream pins after the device baseline; no speculative feature or rebranding is admitted by bring-up. |
 
 Do not add a local manifest until these dependencies have real reviewed
 revisions. The workspace intentionally refuses unreviewed local manifests.
@@ -121,17 +129,23 @@ change with tests, not a way to silence missing-product errors.
 5. Preserve verified boot, rollback constraints, encrypted storage and enforcing
    SELinux for normal Android. Recovery-only permissive mode is the explicitly
    authorized bring-up exception, with enforcement a later recovery milestone.
-   The [native v10 policy integration](policy-source-integration.md) now applies
+   The [native v10 policy integration](policy-source-integration.md) applies
    the helper correction through Android M4 and derives the vendor Binder
    correction in the actual build graph. Strict combined compilation and
    independent analysis pass; all 6,366 assertion statements remain and three
-   binaries have zero permissive domains. Six of nine factory checks pass.
-   Restore the two evidenced Xiaomi system_ext service declarations, roles and
-   generated 202504 mappings, and the framework-owned offlinelog classification
-   before repeating the three failed checks. Audit their effective permissions;
-   retaining assertion text is not complete mapping compatibility. Complete
-   Treble labeling remains unverified. The derived policy is still a
-   non-installable validation target; original vendor/ODM images are intact.
+   binaries have zero permissive domains at that checkpoint. The later
+   [v11b source integration](oem-policy-integration.md) restores the two Xiaomi
+   system_ext service declarations, roles and generated 202504 mappings, plus
+   the framework-owned offlinelog classification. Its native ownership guard,
+   strict compiler and all nine factory checks pass. Independent v11 analysis
+   verifies all 6,366 assertions and their reviewed concrete coverage, exactly
+   five added and 47 removed permissions, and zero permissive domains in three
+   binaries. These checks include roles, named/anonymous attribute closures,
+   public exports and generated mappings, not assertion text alone.
+   Complete Treble labeling also remains unverified. The derived policy is
+   still a non-installable validation target; original vendor/ODM images are
+   intact. Complete metadata evidence and an exact five-file derivation are
+   required before adopting policy into those images.
    Keep their eventual image derivation separate from the preserved
    [earlier copied-CIL prototype](helper-policy-projection.md).
 
@@ -162,9 +176,29 @@ The [APK import review](camera-apk-integration.md) now supplies concrete signing
 4 KiB layout and manifest checks. A tested [DEX class-loader provider patch](dex-import-uses-library.md)
 is available, but its guest and Make-app consumer integration remain pending,
 along with an explicit signing/privilege/packaging contract.
+The [runtime-input follow-up](camera-runtime-inputs.md) now stages the exact
+four JAR names and XML registrations without a module-name alias; its actual
+guest provider patch and native rebuild remain separate work.
 Neither a module-name alias nor a global relaxed library check supplies those
 requirements. Keep the existing signature and raw captures unchanged while
 reviewing any new derived input.
+
+The [selected Sigma/QCC provider bundle](framework-providers.md) and its
+[bounded policy contract](../config/nezha-framework-provider-policy.json) are
+authored inputs awaiting native adoption. Preserve their original init and
+VINTF declarations, require real ELF/linker closure, and do not infer runtime
+availability from the factory matrix or a compatibility CLI pass. Likewise,
+the optional [four-property policy](../config/nezha-oem-properties.json) has
+its own source/context and permission budget; it is not included in the v11b
+three-type result or evidence that all OEM services work.
+
+The [mi_ext prebuilt path](mi-ext-inputs.md) and
+[A/B-only recovery correction](recovery-packaging.md) are now reviewed source
+work with host checks. They have not yet been adopted into the v11b guest
+source or proven by native target-files/super/OTA artifacts. Keep working76
+unchanged and do not turn it into a fake non-A/B boot recovery. The
+[AVB verifier](avb-image-set.md) checks separate public keys for each signed
+role; it does not supply the missing signed artifacts or device rollback facts.
 
 Keep IMS separate from basic modem/data operation, and fingerprint/trusted
 services separate from ordinary touch/display operation. Preserve target-specific
@@ -197,6 +231,14 @@ revisions and remotes still match. The selected recovery bundle carries the
 matching public chain key, while its private signing key remains outside the
 VM. These changes do not admit a full target-files/OTA build or alter the
 earlier component-build and policy results.
+
+The [later v11 preflight and build](../research/oem-policy-integration.json)
+again preserve those 1,179 upstream revisions and four patched projects.
+Authored follow-up patches require their own installed-source audit. Its native
+policy retry and independent analysis establish the restored three-type slice
+and all nine context checks. Full Treble labeling, framework image/APEX closure,
+policy-image adoption, target-files and the signed boot chain remain separate
+milestones. No phone was accessed for this integration.
 
 Continue checking product inheritance, artifact paths, VINTF, ELF dependencies,
 kernel modules, SELinux and AVB as the partial image builds expand. Record the

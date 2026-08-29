@@ -6,20 +6,26 @@ outputs include boot, init_boot, vendor_boot, DTBO and both DLKM images across
 their recorded input snapshots. ARM64 `libbase.so`, the nine selected Camera
 dependency modules and the host VINTF/policy tools also built successfully.
 The Camera APK itself is not included, and a complete ROM has not been built.
-The latest [native policy integration](policy-source-integration.md) applies
-the reviewed helper patch through Android M4 and reproduces the factory Binder
-correction in a native genrule. Its strict combined-policy target passed at
-**2026-08-29 18:43:51 UTC**, after 255 Ninja actions. Independent analysis
-preserves all 6,366 assertion statements and finds zero permissive domains in
-three binaries; the combined binary exactly matches the earlier prototype.
-Six of nine factory context and structural checks pass. The three failures
-identify missing OEM service API mappings/roles and offlinelog framework
-classification. Complete Treble labeling and image adoption remain outstanding. The
+The latest [OEM policy integration](oem-policy-integration.md) restores the
+three missing service/file classifications through authored system_ext source,
+Android-generated object roles and API mappings. The **v11b** native phase
+passed at **2026-08-29 20:47:06 UTC**, completing 31 Ninja actions, including
+the ownership guard, strict combined-policy compiler and all nine factory
+context/structural checks. Independent v11 analysis passed at **20:54:46 UTC**:
+all 6,366 assertions remain with their reviewed concrete coverage, effective
+permissions change by exactly five additions and 47 removals, and three actual
+policy binaries have zero permissive domains. Complete Treble labeling and
+image adoption remain outstanding. The [v10 native integration](policy-source-integration.md)
+first applied the reviewed helper M4 and Binder corrections; its independent
+analysis preserved all 6,366 assertion statements and found zero permissive
+domains in three binaries. Its three then-failing checks are preserved in that
+record. The
 [v9 source build](dsp-policy-build.md), [Binder experiment](binder-policy-correction.md)
 and [helper projection](helper-policy-projection.md) retain their historical
-results; v10 does not rewrite those earlier failures or copied-CIL proofs.
-The [new result record](../research/policy-source-integration.json) binds the
-source installation, native build and remaining failed checks. The product
+results; later work does not rewrite those earlier failures or copied-CIL
+proofs. The [v11 result record](../research/oem-policy-integration.json) binds
+the source installation, failed first guard, correction and successful retry.
+The product
 selects Nezha, canoe, ARM64, 4 KiB kernel pages, shipping API 36 and board API
 202504, with AVB enabled. The [build record](../research/build-progress.json)
 contains the exact inputs, receipts and subsequent compilation results.
@@ -44,6 +50,15 @@ any eventual device experiment, which needs separate user authorization.
 | `system/sepolicy/private/init_dev_config.te` | Reviewed explicit capability gates two helper property SET permissions; other boards retain upstream undefined/true behavior |
 | `system/core/init` | Known boot/build property masking helpers disabled; existing `ro.boot.*` values kept write-once |
 | `build/make/core/Makefile` | Reviewed fail-closed consumer of the working76 recovery bundle |
+
+This table describes the installed v11b checkpoint, not every authored change
+in the workspace. The optional OEM properties and framework-provider policy,
+the Camera runtime bundle/Soong patch, mi_ext/0007 packaging, 0006 A/B recovery
+correction, and native EROFS exporter still require guarded guest adoption and
+their own native results. See [current status](workspace-status.md) and the
+[v11 milestone](oem-policy-integration.md). The selected VINTF input build has
+separately passed; its [artifact audit](vintf-compatibility.md) still identifies
+missing framework fragments and APEX packages before complete compatibility.
 
 The public platform manifest and all its project revisions were preserved.
 No second sync or replacement source checkout was created. The resolved
@@ -73,7 +88,8 @@ verified bundles, choose a new output path. The current factory profile uses
 all three explicit factory-contract arguments together:
 
 For the current native-policy profile, first stage a new private policy bundle
-using the [policy workflow](policy-source-integration.md). The example below
+using the [OEM policy workflow](oem-policy-integration.md), including its
+explicit `--oem-policy-contract config/nezha-oem-policy.json` option. The example below
 expects that bundle at `artifacts/policy-inputs/nezha-factory-NEW` and adds its
 explicit helper capability and receipt; it does not silently opt into them.
 
@@ -89,6 +105,7 @@ python3 scripts/generate_device_tree.py generate \
   --partition-metadata research/partition-metadata.json \
   --dsp-policy-contract research/dsp-policy-integration.json \
   --init-helper-capability-contract config/nezha-init-helper-capability.json \
+  --oem-policy-contract config/nezha-oem-policy.json \
   --policy-inputs-receipt artifacts/policy-inputs/nezha-factory-NEW/policy-inputs.json \
   --fstab-source "$factory_analysis/boot-analysis/ramdisk-comparison-v2/text-members/vendor_boot-0001.txt" \
   --output artifacts/device-candidates/nezha-framework-NEW

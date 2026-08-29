@@ -15,7 +15,12 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
-| [Native policy integration](policy-source-integration.md) | Guarded helper admission, reproducible factory derivation, actual Android targets and current validation limits |
+| [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
+| [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
+| [VINTF build closure](vintf-compatibility.md) | Actual selected framework/kernel inputs, complete artifact requirements and pinned validator limits |
+| [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
+| [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |
+| [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 
@@ -56,6 +61,11 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Camera build inputs](camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
 | [DEX runtime provider](dex-import-uses-library.md) | Tested strict Soong patch for DEX shared libraries; guest integration still pending |
+| [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
+| [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
+| [OEM property contract](../config/nezha-oem-properties.json) | Optional four-property source and permission budget; native validation separate from v11b |
+| [Framework-provider policy contract](../config/nezha-framework-provider-policy.json) | Bounded enforcing source for the two selected providers; no implied native or hardware pass |
+| [EROFS metadata inventory](../tools/erofs-metadata/README.md) | Read-only complete metadata evidence required before a policy-image derivation |
 | [ZRAM module plan](zram-module-plan.md) | Distinct vendor/GKI providers, ordered loader behavior and selector requirements |
 | [Kernel exports](kernel-export-contract.md) | Independently decoded stock kernel exports and selected module CRC matches |
 | [Module providers](module-provider-audit.md) | All 914 captured instances, matching global provider candidates and stage/loading limits |
