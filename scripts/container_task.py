@@ -14,10 +14,19 @@ import subprocess
 import sys
 import tempfile
 
+if __package__:
+    from . import workspace
+else:
+    import workspace
+
 
 CONTROL_FILES = (
     "config/sources.json", "config/apple-container.json",
     "scripts/workspace.py", "scripts/container_task.py",
+)
+SOURCE_LOCK_FILES = (
+    "config/evolution-source-lock.json",
+    "research/source-snapshots/evolution-bka-20260827.xml",
 )
 
 
@@ -63,7 +72,8 @@ def bundle_repo(path, record):
 
 def verify_bundle(path, expected_id):
     record = json.loads(bundle_path(path, "bundle.json").read_text())
-    if record.get("schema_version") != 1 or set(record["files"]) != set(CONTROL_FILES):
+    allowed = (set(CONTROL_FILES), set(CONTROL_FILES + SOURCE_LOCK_FILES))
+    if record.get("schema_version") != 1 or set(record["files"]) not in allowed:
         raise ValueError("Unexpected control bundle contents")
     if (not re.fullmatch(r"[0-9a-f]{40}", record["repo_commit"])
             or bundle_digest(record["files"], record["repo_commit"]) != expected_id):
@@ -73,7 +83,19 @@ def verify_bundle(path, expected_id):
         if file.is_symlink() or not file.is_file() or sha256(file) != expected:
             raise ValueError(f"Control file changed: {relative}")
     bundle_repo(path, record)
+    if bundled_source_lock(record):
+        # Both config bytes and the lock are bound to this bundle. Do not use
+        # load_config's module-global ROOT while checking another snapshot.
+        config = json.loads(bundle_path(path, "config/sources.json").read_text())
+        lock = workspace.load_source_lock(config, SOURCE_LOCK_FILES[0], root=path)
+        if lock["record"]["snapshot"]["path"] != SOURCE_LOCK_FILES[1]:
+            raise ValueError("Control bundle source lock selects an unreviewed XML path")
     return record
+
+
+def bundled_source_lock(record):
+    """Select a lock only from verified bundle membership, never file presence."""
+    return SOURCE_LOCK_FILES[0] if SOURCE_LOCK_FILES[0] in record["files"] else None
 
 
 def prepare_control(source, volume, control_id):
@@ -94,7 +116,7 @@ def prepare_control(source, volume, control_id):
             # Copy only the reviewed control allowlist and its pinned Repo
             # checkout, never unrelated extras placed beside a cached bundle.
             staging.mkdir()
-            for relative in (*CONTROL_FILES, "bundle.json"):
+            for relative in (*record["files"], "bundle.json"):
                 destination = staging / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(bundle_path(source, relative), destination)
@@ -107,13 +129,17 @@ def prepare_control(source, volume, control_id):
     return target
 
 
-def workspace_command(control, operation, source_dir, jobs=8):
+def workspace_command(control, operation, source_dir, jobs=8, source_lock=None):
     command = [sys.executable, str(control / "scripts/workspace.py"), operation,
                "--source-dir", str(source_dir), "--host-mode", "apple-rosetta"]
     if operation == "sync":
         command += ["--jobs", str(jobs)]
     elif operation == "doctor":
         command += ["--require-build-host"]
+    if source_lock is not None:
+        if operation not in {"init", "sync"} or source_lock != SOURCE_LOCK_FILES[0]:
+            raise ValueError("Only init/sync may use the reviewed bundled source lock")
+        command += ["--source-lock", str(bundle_path(control, source_lock))]
     return command
 
 
@@ -201,10 +227,14 @@ def main(argv=None):
     parser.add_argument("--control-id", required=True)
     parser.add_argument("operation", choices=["doctor", "init", "sync", "smoke", "shell", "inventory"])
     parser.add_argument("--jobs", type=int, default=8)
+    parser.add_argument("--source-lock", help="Reviewed descriptor relative to the immutable control bundle")
     args = parser.parse_args(argv)
     try:
         if not 1 <= args.jobs <= 64:
             raise ValueError("Jobs must be between 1 and 64")
+        if args.source_lock is not None and (args.operation not in {"init", "sync"}
+                                             or args.source_lock != SOURCE_LOCK_FILES[0]):
+            raise ValueError("Only init/sync may use the reviewed bundled source lock")
         volume = Path("/work")
         if not re.fullmatch(r"[0-9a-f]{64}", args.control_id):
             raise ValueError("Invalid control bundle ID")
@@ -215,6 +245,10 @@ def main(argv=None):
             verify_bundle(control, args.control_id)
         else:
             control = prepare_control(Path("/control"), volume, args.control_id)
+        if args.operation in {"init", "sync"}:
+            record = verify_bundle(control, args.control_id)
+            if args.source_lock != bundled_source_lock(record):
+                raise ValueError("Requested source lock does not match the immutable control bundle")
         config = json.loads((control / "config/apple-container.json").read_text())
         for key in ("source_dir", "out_dir", "cache_dir"):
             path = Path(config[key])
@@ -238,7 +272,7 @@ def main(argv=None):
             print("Persistent source shell. No lunch target or build is selected automatically.", flush=True)
             os.execvp("bash", ["bash"])
         else:
-            command = workspace_command(control, args.operation, source_dir, args.jobs)
+            command = workspace_command(control, args.operation, source_dir, args.jobs, args.source_lock)
             exit_code = run_workspace(command)
             emit_result(args, exit_code)
             return exit_code

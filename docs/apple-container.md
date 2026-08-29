@@ -6,6 +6,16 @@ Apple Container, while Rosetta handles x86-64 Linux executables. Source and
 output live on a persistent Linux ext4 volume. This preserves the distinction
 between a usable local environment and a verified complete Android 16 ROM build.
 
+At the **2026-08-29 cleanup checkpoint**, the sole active source-volume VM was
+`twrp-nezha-upstream74-20260829`, using the same image and `evolution-nezha-work`
+volume recorded below. `/work/evolution` remains present; the manifest, Repo
+and `build/make` pins were checked, and the existing `vendor/lineage` patch was
+preserved. This is not a new full-source or ROM-build validation. The host's
+`last-task.json` still names an older removed shell, so use the live
+`active_volume_users` field from `status` to find the attached VM. The wrapper
+does not replace that historical receipt or adopt the active VM. The private
+inspection receipt is `reports/workspace-integration/host-source-preflight.json`.
+
 ## Verified setup and current limits
 
 Observed on **2026-08-27**:
@@ -50,8 +60,11 @@ The Android source pins are unchanged:
 Both are recorded in [`config/sources.json`](../config/sources.json). The completed
 checkout now has an [archival resolved manifest](../research/source-snapshots/evolution-bka-20260827.xml)
 and [sanitized verification record](../research/source-sync.json). The snapshot
-records all project commits; it does not activate a device manifest or change
-the guarded `default.xml` selection.
+records all 1,179 project commits. The reviewed
+[source-lock descriptor](../config/evolution-source-lock.json) makes those exact
+XML bytes an explicit input to a new locked checkout; see the
+[source-lock workflow](source-lock.md). It does not activate a device manifest
+or convert the existing checkout's guarded `default.xml` selection.
 
 ## Completed source verification
 
@@ -254,35 +267,45 @@ No phone was accessed.
 Use the project wrapper, not a second manually mounted VM. All operations accept
 `--dry-run`, which prints a plan without starting services/VMs or changing
 images, volumes, or source files. `--jobs` defaults to 8; `--detach` is valid
-only for `sync`.
+only for `sync`. `--source-lock` is valid only for `init` and `sync` and accepts
+the reviewed `config/evolution-source-lock.json` descriptor, either relative to
+this repository or as its absolute path inside the repository.
+
+The current `/work/evolution` checkout and active VM are already populated.
+Preserve them. The initialization/download sequence below is for a deliberately
+configured **new empty source directory** when no VM owns the volume, not a
+request to repeat setup or sync the existing checkout.
 
 ```sh
-# Inspect the existing task first; a detached sync may already be active.
+# Inspect actual volume users and the historical task receipt first.
 python3 scripts/apple_container.py status
 
 # Preview a new environment without changing anything.
 python3 scripts/apple_container.py setup --dry-run
 
-# For initial setup, or deliberate revalidation when no task owns the volume:
+# For a new configured source directory, with no VM owning the volume:
 python3 scripts/apple_container.py setup
 python3 scripts/apple_container.py doctor
 python3 scripts/apple_container.py smoke
-python3 scripts/apple_container.py init
+python3 scripts/apple_container.py init --source-lock config/evolution-source-lock.json
 
 # Download in the background, retaining the named task for status and logs.
-python3 scripts/apple_container.py sync --jobs 8 --detach
+python3 scripts/apple_container.py sync --source-lock config/evolution-source-lock.json --jobs 8 --detach
 python3 scripts/apple_container.py status
 
 # Open only when no other VM is using the volume; requires an interactive terminal.
 python3 scripts/apple_container.py shell
 ```
 
-Do not rerun this entire sequence while the existing sync is active; use
+Do not rerun this sequence while the existing VM owns the volume; use
 `status`. These commands are also exposed as `make apple-setup`,
 `make apple-doctor`, `make apple-smoke`, `make apple-init`, `make apple-sync`,
 `make apple-sync-bg`, `make apple-status`, and `make apple-shell`.
+The Make init/sync targets select the reviewed source lock by default.
 `make apple-sync-bg JOBS=8` is the detached form; use the Python form when
-choosing `--dry-run` explicitly.
+choosing `--dry-run` explicitly. Direct Python commands without `--source-lock`
+retain the original pinned-manifest workflow for an existing checkout; they
+do not gain fixed per-project revisions merely because the XML is archived.
 
 | Operation | What it does |
 | --- | --- |
@@ -290,9 +313,9 @@ choosing `--dry-run` explicitly.
 | `build-image` | Rebuilds the image only. Use deliberately after changing its recipe; this can produce a new image digest. |
 | `doctor` | Checks the selected guest host mode, required resources/filesystem and Rosetta runtime contract. |
 | `smoke` | Runs the doctor, builds and executes a small x86-64 C program, checks case behavior and ext4, and creates/rechecks a persistence marker. |
-| `init` | Initializes Repo with the pinned manifest and verified Repo tool. |
-| `sync` | Runs the guarded full platform download; foreground by default, or detached with `--detach`. It does not compile a ROM. |
-| `status` | Reports service/volume and latest task state, shows recent logs, and inventories source progress in an already running task. |
+| `init` | Initializes Repo with the pinned manifest and verified Repo tool, optionally selecting the reviewed project lock for a new checkout. |
+| `sync` | Runs the guarded full platform download with the selected manifest or exact source lock; foreground by default, or detached with `--detach`. It does not compile a ROM. |
+| `status` | Reports actual active volume users separately from the last recorded task, retains known task outcomes and logs, and inventories only an already running recorded task attached to this volume. |
 | `shell` | Opens a persistent source shell. It does not source `envsetup.sh`, select a lunch target, or build automatically. |
 
 The source guard keeps `native` as the default. The wrapper explicitly passes
@@ -301,13 +324,28 @@ the expected image marker, actual x86-64 ELF/loader checks and successful probe
 execution in addition to disk, RAM and filesystem checks. Selecting the flag
 on the macOS host does not make those checks pass.
 
+With `--source-lock`, the immutable control bundle contains exactly two additional
+inputs: the reviewed descriptor and its existing resolved-manifest XML. Both
+paths and file hashes participate in the bundle identity. The guest verifies
+the descriptor's manifest/Repo pins and XML hash before forwarding the descriptor
+under `/work/control/<control-id>/config/evolution-source-lock.json` to the
+workspace command. It never forwards a host path or mounts the host source tree.
+Legacy four-file bundles remain readable. A partial pair, changed snapshot,
+symlinked input or unrecorded extra lock cannot silently select another source
+revision. A previously populated checkout is not reset or converted to fit a lock.
+
 ## Read sync status correctly
 
-The local task receipt is `.tools/apple-container/last-task.json`. For detached
+The historical local task receipt is `.tools/apple-container/last-task.json`.
+It records the last operation launched by this wrapper, not every VM that may
+later attach the source volume. `status` independently enumerates the actual
+active volume users, even when that receipt is absent or refers to a removed
+container. It does not write a replacement receipt, infer an external VM's
+source-operation success, or start another VM to inspect it. For detached
 work, `launch_exit_code=0` means the container was launched, not that Repo sync
 succeeded. A running container or a growing project count is progress only.
 
-Use `python3 scripts/apple_container.py status` to inspect the current task.
+Use `python3 scripts/apple_container.py status` to inspect both views.
 The completed task `evolution-nezha-sync-20260827155847261123` used an older
 immutable control bundle. Its inventory could show zero listed/checked-out
 projects before Repo creates `.repo/project.list` during the initial fetch.
@@ -326,14 +364,16 @@ actual state when the summary is ambiguous:
 
 ```sh
 container logs -n 80 evolution-nezha-sync-20260827155847261123
-# Replace RUNNING_TASK with the current, running VM from last-task.json.
+# Replace RUNNING_TASK with the actual running entry in active_volume_users.
 container exec RUNNING_TASK du -sh /work/evolution/.repo
 container exec RUNNING_TASK df -h /work
 ```
 
-For a later task, take its name from `.tools/apple-container/last-task.json`
-instead of reusing this checkpoint's name. `container exec` inspects the
-already running VM; do not attach the volume to a second VM for status checks.
+For a later inspection, use the live volume-user entry instead of assuming
+`last-task.json` or a dated example names the current VM. A VM created outside
+the wrapper may have no `/control` mount, so status does not attempt wrapper
+inventory inside it. `container exec` inspects the already running VM; do not
+attach the volume to a second VM for status checks.
 Growing Git storage indicates activity, not that every fetch succeeded.
 
 The guest wrapper emits `EVOLUTION_TASK_RESULT` with `operation`, `status`, and

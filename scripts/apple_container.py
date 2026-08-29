@@ -102,13 +102,15 @@ def ensure_volume(config):
     return volume_info(config)
 
 
-def active_volume_users(config, volume):
+def active_volume_users(config, volume, containers=None):
     backing = volume.get("source")
     if not isinstance(backing, str) or not Path(backing).is_absolute():
         raise ValueError("Cannot verify the persistent volume's backing-file identity")
     backing = Path(backing).resolve()
     users = []
-    for item in json_command(["container", "list", "--all", "--format", "json"]):
+    if containers is None:
+        containers = json_command(["container", "list", "--all", "--format", "json"])
+    for item in containers:
         if item.get("status", {}).get("state") == "stopped":
             continue
         settings = item.get("configuration", {})
@@ -176,11 +178,28 @@ def build_command(config):
             "--file", str(ROOT / "containers/apple/Containerfile"), str(ROOT / "containers/apple")]
 
 
-def prepare_bundle():
+def source_lock_path(source_lock):
+    if source_lock is None:
+        return None
+    lock = workspace.load_source_lock(workspace.load_config(), source_lock, root=ROOT)
+    if (lock["descriptor"] != container_task.SOURCE_LOCK_FILES[0]
+            or lock["record"]["snapshot"]["path"] != container_task.SOURCE_LOCK_FILES[1]):
+        raise ValueError("Apple Container requires the reviewed config/evolution-source-lock.json source lock")
+    return lock["descriptor"]
+
+
+def prepare_bundle(source_lock=None):
     source_config = workspace.load_config()
     tool = workspace.reference_named(source_config, "repo-tool")
     workspace.verify_reference(tool)
-    files = {name: container_task.sha256(ROOT / name) for name in container_task.CONTROL_FILES}
+    selected_lock = source_lock_path(source_lock)
+    control_files = container_task.CONTROL_FILES + (container_task.SOURCE_LOCK_FILES if selected_lock else ())
+    files = {}
+    for name in control_files:
+        path = container_task.bundle_path(ROOT, name)
+        if not path.is_file():
+            raise ValueError(f"Missing regular control file: {name}")
+        files[name] = container_task.sha256(path)
     identity = container_task.bundle_digest(files, tool["commit"])
     parent = LOCAL / "bundles"
     parent.mkdir(parents=True, exist_ok=True)
@@ -191,10 +210,10 @@ def prepare_bundle():
         return target, identity
     with tempfile.TemporaryDirectory(prefix=".bundle-", dir=parent) as directory:
         staging = Path(directory)
-        for relative in container_task.CONTROL_FILES:
+        for relative in control_files:
             destination = staging / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(ROOT / relative, destination)
+            shutil.copy2(container_task.bundle_path(ROOT, relative), destination)
         repository = staging / tool["path"]
         repository.parent.mkdir(parents=True, exist_ok=True)
         # A fresh local clone excludes untracked/private files and does not
@@ -211,7 +230,7 @@ def prepare_bundle():
     return target, identity
 
 
-def task_command(config, operation, bundle, identity, name, jobs=8, detach=False):
+def task_command(config, operation, bundle, identity, name, jobs=8, detach=False, source_lock=None):
     if "," in str(bundle):
         raise ValueError("Apple Container mount paths cannot contain commas")
     command = ["container", "run", "--name", name, "--arch", "arm64", "--rosetta",
@@ -228,8 +247,13 @@ def task_command(config, operation, bundle, identity, name, jobs=8, detach=False
         command += ["--rm"]
     if operation == "shell":
         command += ["--interactive", "--tty"]
-    return command + [config["image"], "python3", "/control/scripts/container_task.py",
-                      "--control-id", identity, operation, "--jobs", str(jobs)]
+    command += [config["image"], "python3", "/control/scripts/container_task.py",
+                "--control-id", identity, operation, "--jobs", str(jobs)]
+    if source_lock is not None:
+        if operation not in {"init", "sync"} or source_lock != container_task.SOURCE_LOCK_FILES[0]:
+            raise ValueError("Only init/sync may use the reviewed bundled source lock")
+        command += ["--source-lock", source_lock]
+    return command
 
 
 def image_info(config):
@@ -239,7 +263,7 @@ def image_info(config):
     return images[0]["configuration"]["descriptor"]["digest"]
 
 
-def execute_task(config, operation, jobs=8, detach=False):
+def execute_task(config, operation, jobs=8, detach=False, source_lock=None):
     volume = volume_info(config)
     if volume is None:
         raise ValueError("Persistent volume missing; run setup")
@@ -250,16 +274,19 @@ def execute_task(config, operation, jobs=8, detach=False):
     if operation == "shell" and not sys.stdin.isatty():
         raise ValueError("Run shell from an interactive terminal")
     digest = image_info(config)
-    bundle, identity = prepare_bundle()
+    selected_lock = source_lock_path(source_lock)
+    bundle, identity = prepare_bundle(selected_lock)
     # Bundle preparation can take time. Recheck just before launch so an
     # externally started VM is not missed by the earlier inspection.
     if active_volume_users(config, volume):
         raise ValueError("Volume became active during bundle preparation; no second container was launched")
     name = "evolution-nezha-" + operation + "-" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S%f")
-    command = task_command(config, operation, bundle, identity, name, jobs, detach)
+    command = task_command(config, operation, bundle, identity, name, jobs, detach, selected_lock)
     record = {"container": name, "operation": operation, "control_id": identity,
               "image": config["image"], "image_digest": digest, "volume": config["volume"],
               "detached": detach, "lifecycle": "launching", "started_at": datetime.now(timezone.utc).isoformat()}
+    if selected_lock:
+        record["source_lock"] = selected_lock
     write_state(record)
     try:
         result = run(command, check=False)
@@ -287,14 +314,26 @@ def status(config):
         return
     print(json.dumps({"volume": config["volume"], "format": volume["format"],
                       "capacity_gib": volume["sizeInBytes"] / GIB}, indent=2))
+    containers = json_command(["container", "list", "--all", "--format", "json"])
+    active = active_volume_users(config, volume, containers)
+    print(json.dumps({"active_volume_users": [
+        {"container": item["id"], "state": item.get("status", {}).get("state", "unknown")}
+        for item in active
+    ], "status_note": "Live volume attachments are independent of the historical last-task receipt."}, indent=2))
     if not STATE.exists():
-        print("No workspace task has been launched by this wrapper.")
+        print("No last-task receipt is available in this checkout.")
+        if active:
+            print("Active volume users were not adopted; inspect the existing VM without starting another writer.")
         return
     record = json.loads(STATE.read_text())
     if record.get("volume") != config["volume"]:
         raise ValueError("Recorded task belongs to a different volume; state was preserved")
-    matches = [item for item in json_command(["container", "list", "--all", "--format", "json"])
-               if item["id"] == record["container"]]
+    active_ids = {item["id"] for item in active}
+    if active_ids - {record["container"]}:
+        print("Active volume users differ from the last recorded task; its receipt was preserved unchanged.")
+    record = {**record, "record_kind": "last_recorded_task",
+              "active_volume_user": record["container"] in active_ids}
+    matches = [item for item in containers if item["id"] == record["container"]]
     if not matches:
         known_exit = record.get("exit_code")
         known_foreground = not record.get("detached") and type(known_exit) is int
@@ -310,7 +349,7 @@ def status(config):
     print(json.dumps({**record, "state": state,
                       "task_status": outcome["status"] if outcome else (state if state != "stopped" else "unknown"),
                       "guest_result": outcome, "logs_available": logs.returncode == 0}, indent=2))
-    if state == "running":
+    if state == "running" and record["active_volume_user"]:
         run(["container", "exec", record["container"], "python3", "/control/scripts/container_task.py",
              "--control-id", record["control_id"], "inventory"])
     if logs.stdout:
@@ -323,11 +362,15 @@ def main(argv=None):
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--detach", action="store_true", help="Keep a named sync container and return immediately")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--source-lock", help="Use the reviewed config/evolution-source-lock.json for init/sync")
     args = parser.parse_args(argv)
     try:
         config = load_config()
         if not 1 <= args.jobs <= 64 or (args.detach and args.operation != "sync"):
             raise ValueError("Jobs must be 1-64; --detach is only supported for sync")
+        if args.source_lock is not None and args.operation not in {"init", "sync"}:
+            raise ValueError("--source-lock is only supported for init/sync")
+        selected_lock = source_lock_path(args.source_lock)
         if args.dry_run:
             if args.operation in {"setup", "build-image"}:
                 print(shlex.join(build_command(config)))
@@ -335,7 +378,7 @@ def main(argv=None):
                 operation = "smoke" if args.operation == "setup" else args.operation
                 if operation != "status":
                     print(shlex.join(task_command(config, operation, LOCAL / "bundles/PREVIEW", "0" * 64,
-                                                  "evolution-nezha-preview", args.jobs, args.detach)))
+                                                  "evolution-nezha-preview", args.jobs, args.detach, selected_lock)))
             print("Preview only: no services, VMs, images, volumes, or source files changed.")
             return 0
         require_mac(config, check_disk=args.operation != "status")
@@ -353,7 +396,7 @@ def main(argv=None):
                     return 0
                 execute_task(config, "smoke", args.jobs)
             else:
-                execute_task(config, args.operation, args.jobs, args.detach)
+                execute_task(config, args.operation, args.jobs, args.detach, selected_lock)
         return 0
     except (ValueError, KeyError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
         print(f"error: {error}", file=sys.stderr)

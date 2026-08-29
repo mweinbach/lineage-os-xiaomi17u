@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "manifest": {
+    "reference": "evolution-manifest",
+    "url": "https://github.com/Evolution-X/manifest.git",
+    "commit": "cc4ebb8db9750afba6049825127304b09327f7c1"
+  },
+  "repo": {
+    "url": "https://gerrit.googlesource.com/git-repo",
+    "commit": "b85886fa9f5b4e2189cc5b2f40bd0a80459d4c77"
+  },
+  "snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "bytes": 287546,
+    "project_count": 1179
+  },
+  "scope": "Pins the upstream platform project revisions only. Repeatable ROM builds also require recorded patches, generated device/vendor inputs, private firmware and signing inputs, materialized LFS content, and the build environment. This lock does not prove a complete or bit-for-bit reproducible ROM."
+}

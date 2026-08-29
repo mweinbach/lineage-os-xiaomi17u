@@ -3,6 +3,7 @@
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -14,7 +15,7 @@ import stat
 import subprocess
 import sys
 import tempfile
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 import xml.etree.ElementTree as ET
 
 
@@ -82,7 +83,7 @@ def load_config(path=CONFIG):
 
 def run(args, cwd=None, capture=False, timeout=600):
     environment = os.environ.copy()
-    environment.update(GIT_TERMINAL_PROMPT="0", GIT_LFS_SKIP_SMUDGE="1")
+    environment.update(GIT_TERMINAL_PROMPT="0", GIT_LFS_SKIP_SMUDGE="1", GIT_NO_LAZY_FETCH="1")
     if not capture:
         print("+ " + shlex.join(str(arg) for arg in args), flush=True)
     return subprocess.run(
@@ -93,7 +94,10 @@ def run(args, cwd=None, capture=False, timeout=600):
 
 
 def git_value(target, *args):
-    return run(["git", "-C", target, *args], capture=True).stdout.strip()
+    # In particular, status must not refresh the index or invoke a configured
+    # filesystem monitor while auditing an existing checkout.
+    return run(["git", "--no-optional-locks", "-c", "core.fsmonitor=false",
+                "-C", target, *args], capture=True).stdout.strip()
 
 
 def verify_reference(reference, root=ROOT):
@@ -326,6 +330,117 @@ def repo_command(config):
     return [sys.executable, str(checked_path(ROOT, tool["path"]) / "repo")]
 
 
+def manifest_path(value):
+    """Validate a literal relative project or copy/link path, without rewriting it."""
+    if (not isinstance(value, str) or not value or value.startswith("/")
+            or "\\" in value or any(character.isspace() or ord(character) < 32 for character in value)
+            or any(part in {"", ".", "..", ".repo", ".git"} for part in value.split("/"))):
+        raise ValueError(f"Unsafe source-lock path: {value!r}")
+    return value
+
+
+def regular_bytes(path, limit, description):
+    metadata = path.lstat()
+    if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > limit:
+        raise ValueError(f"Missing or unexpected {description}")
+    return path.read_bytes()
+
+
+def load_source_lock(config, path, root=None):
+    """Read a reviewed lock from the control workspace, never from the source tree."""
+    root = ROOT if root is None else Path(root)
+    selected = Path(path).expanduser()
+    if selected.is_absolute():
+        try:
+            selected = selected.relative_to(root.resolve())
+        except ValueError as error:
+            raise ValueError("Source-lock descriptors must be inside the control workspace") from error
+    descriptor = checked_path(root, selected.as_posix())
+    record = json.loads(regular_bytes(descriptor, 65536, "source-lock descriptor"))
+    if not isinstance(record, dict) or record.get("schema_version") != 1:
+        raise ValueError("Unsupported source-lock schema")
+    manifest = reference_named(config, config["platform"]["reference"])
+    tool = reference_named(config, "repo-tool")
+    if record.get("manifest") != {"reference": manifest["name"], "url": manifest["url"],
+                                  "commit": manifest["commit"]}:
+        raise ValueError("Source lock does not match the configured manifest origin and revision")
+    if record.get("repo") != {"url": tool["url"], "commit": tool["commit"]}:
+        raise ValueError("Source lock does not match the configured Repo origin and revision")
+    snapshot = record["snapshot"]
+    if not isinstance(snapshot, dict):
+        raise ValueError("Invalid source-lock snapshot record")
+    relative = manifest_path(snapshot["path"])
+    if not relative.startswith("research/source-snapshots/"):
+        raise ValueError("Source-lock XML belongs in research/source-snapshots/")
+    if (not isinstance(snapshot["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", snapshot["sha256"])
+            or type(snapshot["bytes"]) is not int or not 0 < snapshot["bytes"] <= 16 * 1024 * 1024
+            or type(snapshot["project_count"]) is not int or snapshot["project_count"] <= 0):
+        raise ValueError("Invalid source-lock digest, size, or project count")
+    data = regular_bytes(checked_path(root, relative), 16 * 1024 * 1024, "source-lock XML")
+    if len(data) != snapshot["bytes"] or hashlib.sha256(data).hexdigest() != snapshot["sha256"]:
+        raise ValueError("Source-lock XML does not match the reviewed size and SHA256")
+    if b"<!DOCTYPE" in data or b"<!ENTITY" in data:
+        raise ValueError("Source-lock XML must not contain document types or entities")
+    try:
+        document = ET.fromstring(data)
+    except ET.ParseError as error:
+        raise ValueError("Invalid source-lock XML") from error
+    if (document.tag != "manifest" or document.attrib
+            or any(node.tag not in {"remote", "default", "project", "contactinfo"} for node in document)):
+        raise ValueError("Source lock must be a flattened manifest without includes or overrides")
+    defaults = document.findall("default")
+    if len(defaults) != 1:
+        raise ValueError("Source lock must have one default element")
+    remotes = {}
+    for remote in document.findall("remote"):
+        name = remote.get("name", "")
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", name) or name in remotes:
+            raise ValueError("Invalid or duplicate source-lock remote")
+        remotes[name] = remote.attrib
+    projects = {}
+    for node in document:
+        if node.tag != "project":
+            if list(node):
+                raise ValueError("Unexpected nested source-lock element")
+            continue
+        name = manifest_path(node.get("name"))
+        relative = manifest_path(node.get("path", name))
+        revision = node.get("revision", "")
+        if relative in projects or not re.fullmatch(r"[0-9a-f]{40}", revision):
+            raise ValueError("Source-lock projects require unique paths and explicit full commit IDs")
+        if "notdefault" in re.split(r"[\s,]+", node.get("groups", "")):
+            raise ValueError("Source lock must describe the complete default project selection")
+        remote = remotes.get(node.get("remote", defaults[0].get("remote")))
+        if remote is None:
+            raise ValueError("Unknown source-lock project remote")
+        # Repo resolves fetch against remote.origin.url of the manifest checkout,
+        # then appends the project name (manifest_xml.py at pinned b85886fa).
+        url = urljoin(manifest["url"], remote["fetch"]).rstrip("/") + "/" + name
+        parsed = urlparse(url)
+        if (parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password
+                or parsed.query or parsed.fragment or any(character.isspace() for character in url)):
+            raise ValueError("Used source-lock project URLs must be public HTTPS without credentials")
+        remote_name = remote.get("alias", remote["name"])
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", remote_name):
+            raise ValueError("Invalid source-lock Git remote name")
+        for child in node:
+            if child.tag not in {"copyfile", "linkfile"} or set(child.attrib) != {"src", "dest"} or list(child):
+                raise ValueError("Unsupported source-lock project child")
+            manifest_path(child.get("src"))
+            manifest_path(child.get("dest"))
+        projects[relative] = {"name": name, "revision": revision, "url": url, "remote": remote_name}
+    if len(projects) != snapshot["project_count"]:
+        raise ValueError("Source-lock project count does not match the reviewed record")
+    return {"record": record, "data": data, "projects": projects,
+            "descriptor": descriptor.relative_to(root.resolve()).as_posix()}
+
+
+def source_lock_summary(lock):
+    return {"descriptor": lock["descriptor"], **lock["record"]["snapshot"],
+            "manifest_commit": lock["record"]["manifest"]["commit"],
+            "repo_commit": lock["record"]["repo"]["commit"]}
+
+
 def init_command(config):
     manifest = reference_named(config, config["platform"]["reference"])
     tool = reference_named(config, "repo-tool")
@@ -365,35 +480,50 @@ def verify_source_checkout(source_dir, relative, reference, description):
         raise ValueError(f"Source {description} has local changes; preserve and review them first")
 
 
-def verify_manifest_selection(source_dir):
+def verify_manifest_selection(source_dir, lock=None, allow_default=False):
     metadata = source_dir.resolve() / ".repo"
+    if metadata.is_symlink() or not metadata.is_dir():
+        raise ValueError("Missing or symlinked source metadata")
     selection = metadata / "manifest.xml"
-    if selection.is_symlink() or not selection.is_file() or selection.stat().st_size > 65536:
+    limit = max(65536, len(lock["data"])) if lock is not None else 65536
+    if selection.is_symlink() or not selection.is_file() or selection.stat().st_size > limit:
         raise ValueError("Missing or unexpected active manifest selector")
-    try:
-        selected = ET.fromstring(selection.read_bytes())
-    except ET.ParseError as error:
-        raise ValueError("Invalid active manifest selector") from error
-    children = list(selected)
-    if (selected.tag != "manifest" or selected.attrib or len(children) != 1
-            or children[0].tag != "include" or children[0].attrib != {"name": "default.xml"}
-            or list(children[0])):
-        raise ValueError("Active manifest must select only the pinned default.xml")
+    data = selection.read_bytes()
+    if lock is not None and data == lock["data"]:
+        kind = "source-lock"
+    else:
+        if lock is not None and not allow_default:
+            raise ValueError("Active manifest does not equal the selected source lock; existing files were preserved. "
+                             "Use check-source to audit this checkout or initialize a new empty directory.")
+        if len(data) > 65536:
+            raise ValueError("Unexpected oversized default manifest selector")
+        try:
+            selected = ET.fromstring(data)
+        except ET.ParseError as error:
+            raise ValueError("Invalid active manifest selector") from error
+        children = list(selected)
+        if (selected.tag != "manifest" or selected.attrib or len(children) != 1
+                or children[0].tag != "include" or children[0].attrib != {"name": "default.xml"}
+                or list(children[0])):
+            raise ValueError("Active manifest must select only the pinned default.xml or the exact reviewed source lock")
+        kind = "default.xml"
     local = metadata / "local_manifests"
     legacy = metadata / "local_manifest.xml"
     if (local.is_symlink() or (local.exists() and (not local.is_dir() or any(local.glob("*.xml"))))
             or legacy.exists() or legacy.is_symlink()):
         raise ValueError("Local manifests need reviewed configuration; files were preserved unchanged")
+    return kind
 
 
-def verify_source_manifest(config, source_dir):
+def verify_source_manifest(config, source_dir, source_lock=None, *, allow_default=False):
     manifest = reference_named(config, config["platform"]["reference"])
     tool = reference_named(config, "repo-tool")
     # The launcher delegates to .repo/repo: verifying only .tools/git-repo
     # does not establish which implementation would execute in this checkout.
     verify_source_checkout(source_dir, "repo", tool, "Repo implementation")
     verify_source_checkout(source_dir, "manifests", manifest, "manifest")
-    verify_manifest_selection(source_dir)
+    lock = load_source_lock(config, source_lock) if source_lock is not None else None
+    return verify_manifest_selection(source_dir, lock, allow_default)
 
 
 def refuse_nested_source(source_dir):
@@ -405,17 +535,25 @@ def refuse_nested_source(source_dir):
             raise ValueError("Nested Repo source directories are unsafe; the outer checkout was preserved")
 
 
-def initialize(config, source_dir, dry_run=False, host_mode="native"):
+def initialize(config, source_dir, dry_run=False, host_mode="native", source_lock=None):
+    lock = load_source_lock(config, source_lock) if source_lock is not None else None
     command = init_command(config)
     if dry_run:
         print(f"In {source_dir}:\n" + shlex.join(command))
+        if lock is not None:
+            print("Fresh initialization only: select exact source-lock XML "
+                  + json.dumps(source_lock_summary(lock), sort_keys=True))
+            print("An existing checkout is verified only; its selector is never replaced.")
         print(f"Execution requires host mode {host_mode}; this preview does not initialize or sync.")
         return
     require_host(source_dir, config, host_mode)
     refuse_nested_source(source_dir)
     repo_command(config)
     if (source_dir / ".repo").exists() or (source_dir / ".repo").is_symlink():
-        verify_source_manifest(config, source_dir)
+        if source_lock is None:
+            verify_source_manifest(config, source_dir)
+        else:
+            verify_source_manifest(config, source_dir, source_lock)
         print("Platform manifest already initialized at the configured revision.")
         return
     if source_dir.exists() and any(source_dir.iterdir()):
@@ -423,18 +561,39 @@ def initialize(config, source_dir, dry_run=False, host_mode="native"):
     source_dir.mkdir(parents=True, exist_ok=True)
     run(command, cwd=source_dir)
     verify_source_manifest(config, source_dir)
+    if lock is not None:
+        # This branch is reachable only for this call's fresh initialization.
+        # Keep the pinned manifest Git checkout clean and its origin unchanged;
+        # Repo parses manifest.xml directly, including a flattened manifest.
+        selection = source_dir / ".repo/manifest.xml"
+        original = regular_bytes(selection, 65536, "active manifest selector")
+        with tempfile.TemporaryDirectory(prefix=".source-lock-", dir=selection.parent) as directory:
+            staging = Path(directory) / "manifest.xml"
+            staging.write_bytes(lock["data"])
+            verify_manifest_selection(source_dir)
+            if selection.read_bytes() != original:
+                raise ValueError("Manifest selector changed during initialization; files were preserved")
+            os.replace(staging, selection)
+        verify_source_manifest(config, source_dir, source_lock)
+        print("Selected upstream project lock: " + lock["record"]["snapshot"]["sha256"])
 
 
-def synchronize(config, source_dir, jobs, dry_run=False, host_mode="native"):
+def synchronize(config, source_dir, jobs, dry_run=False, host_mode="native", source_lock=None):
+    lock = load_source_lock(config, source_lock) if source_lock is not None else None
     command = sync_command(config, jobs)
     if dry_run:
         print(f"In {source_dir}:\n" + shlex.join(command))
+        if lock is not None:
+            print("Requires exact selected source lock: " + json.dumps(source_lock_summary(lock), sort_keys=True))
         print(f"Host mode {host_mode}: this previews a full platform download, not a complete Xiaomi device build.")
         return
     require_host(source_dir, config, host_mode)
     refuse_nested_source(source_dir)
     repo = repo_command(config)
-    verify_source_manifest(config, source_dir)
+    if source_lock is None:
+        verify_source_manifest(config, source_dir)
+    else:
+        verify_source_manifest(config, source_dir, source_lock)
     # LFS must be fetched for build sources, unlike lightweight references.
     environment = os.environ.copy()
     environment["GIT_TERMINAL_PROMPT"] = "0"
@@ -443,11 +602,85 @@ def synchronize(config, source_dir, jobs, dry_run=False, host_mode="native"):
     print("+ " + shlex.join(command), flush=True)
     subprocess.run(command, cwd=source_dir, env=environment, check=True,
                    stdin=subprocess.DEVNULL, shell=False)
-    verify_source_manifest(config, source_dir)
+    if source_lock is None:
+        verify_source_manifest(config, source_dir)
+    else:
+        verify_source_manifest(config, source_dir, source_lock)
     output = ROOT / "reports" / ("resolved-manifest-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + ".xml")
     output.parent.mkdir(parents=True, exist_ok=True)
     run(repo + ["manifest", "--revision-as-HEAD", "--output-file", output], cwd=source_dir)
     print(f"Saved fully resolved project revisions: {output}")
+    if source_lock is not None:
+        audit = check_source(config, source_dir, source_lock)
+        print(json.dumps(audit, indent=2))
+        if not audit["clean_base_checkout"]:
+            raise ValueError("Source sync completed but the checkout is not a clean match to the lock; "
+                             "local changes were preserved. Review check-source before building.")
+
+
+def check_source(config, source_dir, source_lock):
+    """Audit base revisions and local changes; never sync, reset, or install a selector."""
+    lock = load_source_lock(config, source_lock)
+    refuse_nested_source(source_dir)
+    selector = verify_source_manifest(config, source_dir, source_lock, allow_default=True)
+    metadata = source_dir.resolve() / ".repo"
+    projects = lock["projects"]
+    report = {
+        "schema_version": 1, "read_only": True, "source_dir": str(source_dir.resolve()),
+        "source_lock": source_lock_summary(lock), "active_selector": selector,
+        "project_count": len(projects), "head_match_count": 0,
+        "origin_match_count": 0, "clean_project_count": 0, "issues": [],
+        "excluded_inputs": ["ignored files and out-of-manifest device/vendor trees", "patch contents and replay",
+                            "materialized Git LFS payloads", "private firmware and signing inputs",
+                            "generated inputs and build environment"],
+        "claim": "Checks the upstream base and reports local changes. It does not establish complete or "
+                 "bit-for-bit reproducible ROM inputs, even when the base checkout is clean.",
+    }
+    try:
+        listed = regular_bytes(metadata / "project.list", 4 * 1024 * 1024, "Repo project list").decode().splitlines()
+        report["project_list_matches"] = len(listed) == len(set(listed)) and set(listed) == set(projects)
+        if not report["project_list_matches"]:
+            report["issues"].append({"path": ".repo/project.list", "kind": "project-list-mismatch",
+                                     "missing": sorted(set(projects) - set(listed)),
+                                     "extra": sorted(set(listed) - set(projects))})
+    except (OSError, ValueError) as error:
+        report["project_list_matches"] = False
+        report["issues"].append({"path": ".repo/project.list", "kind": "unreadable", "error": str(error)})
+    for relative, project in projects.items():
+        try:
+            target = checked_path(source_dir, relative)
+            if not target.is_dir() or not (target / ".git").exists():
+                raise ValueError("Missing project checkout")
+            if Path(git_value(target, "rev-parse", "--show-toplevel")).resolve() != target:
+                raise ValueError("Project resolves to a different Git worktree")
+            git_directory = Path(git_value(target, "rev-parse", "--absolute-git-dir")).resolve()
+            if not git_directory.is_relative_to(metadata):
+                raise ValueError("Project Git metadata escapes the source checkout")
+            head = git_value(target, "rev-parse", "HEAD")
+            origin = git_value(target, "remote", "get-url", project["remote"])
+            status = git_value(target, "status", "--porcelain", "--untracked-files=all")
+            for kind, actual, expected, count in (
+                ("revision-mismatch", head, project["revision"], "head_match_count"),
+                ("origin-mismatch", origin, project["url"], "origin_match_count"),
+            ):
+                if actual == expected:
+                    report[count] += 1
+                else:
+                    report["issues"].append({"path": relative, "kind": kind, "expected": expected, "actual": actual})
+            if status:
+                report["issues"].append({"path": relative, "kind": "local-changes", "status": status})
+            else:
+                report["clean_project_count"] += 1
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            report["issues"].append({"path": relative, "kind": "unreadable-or-unsafe", "error": str(error)})
+    # Check control metadata again, without executing Repo or modifying Git.
+    if verify_source_manifest(config, source_dir, source_lock, allow_default=True) != selector:
+        raise ValueError("Source selector changed during the read-only audit")
+    report["base_revisions_match"] = (report["project_list_matches"]
+                                      and report["head_match_count"] == len(projects)
+                                      and report["origin_match_count"] == len(projects))
+    report["clean_base_checkout"] = report["base_revisions_match"] and not report["issues"]
+    return report
 
 
 def main(argv=None):
@@ -463,10 +696,15 @@ def main(argv=None):
     for name in ("init", "sync"):
         command = commands.add_parser(name, help=f"{name.capitalize()} the full platform on a supported host")
         command.add_argument("--source-dir", type=Path)
+        command.add_argument("--source-lock", type=Path,
+                             help="Reviewed source-lock descriptor inside the control workspace; never converts an existing selector")
         command.add_argument("--host-mode", choices=HOST_MODES, default="native")
         command.add_argument("--dry-run", action="store_true")
         if name == "sync":
             command.add_argument("--jobs", type=int, default=8)
+    check = commands.add_parser("check-source", help="Read-only audit of an existing checkout against a reviewed source lock")
+    check.add_argument("--source-dir", type=Path, required=True)
+    check.add_argument("--source-lock", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         config = load_config()
@@ -486,9 +724,13 @@ def main(argv=None):
             records = [operation(reference) for reference in selected]
             print(json.dumps({"references": records, "lfs": "Reference fetches skip LFS assets; not a build checkout."}, indent=2))
         elif args.action == "init":
-            initialize(config, source_dir, args.dry_run, args.host_mode)
+            initialize(config, source_dir, args.dry_run, args.host_mode, source_lock=args.source_lock)
         elif args.action == "sync":
-            synchronize(config, source_dir, args.jobs, args.dry_run, args.host_mode)
+            synchronize(config, source_dir, args.jobs, args.dry_run, args.host_mode, source_lock=args.source_lock)
+        elif args.action == "check-source":
+            report = check_source(config, source_dir, args.source_lock)
+            print(json.dumps(report, indent=2))
+            return 0 if report["clean_base_checkout"] else 2
         return 0
     except (ValueError, KeyError, OSError, subprocess.SubprocessError, StopIteration) as error:
         print(f"error: {error}", file=sys.stderr)

@@ -1,9 +1,11 @@
 PYTHON ?= python3
 SOURCE_DIR ?= $(CURDIR)/sources/evolution
+SOURCE_LOCK ?= config/evolution-source-lock.json
 JOBS ?= 8
+SOURCE_LOCK_ARGS = $(if $(strip $(SOURCE_LOCK)),--source-lock "$(SOURCE_LOCK)")
 
 .DEFAULT_GOAL := help
-.PHONY: help doctor refs verify test init sync source-plan linux-packages stock-plan
+.PHONY: help doctor refs verify test init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 .PHONY: twrp-plan recovery-logs-plan
 
@@ -14,6 +16,7 @@ help:
 	  'make doctor          Report build-host prerequisites' \
 	  'make test            Run offline workspace tests' \
 	  'make source-plan     Preview full platform init/sync commands' \
+	  'make source-check    Audit an existing platform against the reviewed source lock' \
 	  'make apple-status    Inspect this Mac Apple Container source task' \
 	  'make apple-setup     Build/test the Apple Container + Rosetta environment' \
 	  'make apple-init      Initialize Evolution X in persistent Linux storage' \
@@ -40,17 +43,21 @@ test:
 	bash -n scripts/setup-linux.sh
 
 source-plan:
-	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" --dry-run
-	$(PYTHON) scripts/workspace.py sync --source-dir "$(SOURCE_DIR)" --jobs "$(JOBS)" --dry-run
+	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" $(SOURCE_LOCK_ARGS) --dry-run
+	$(PYTHON) scripts/workspace.py sync --source-dir "$(SOURCE_DIR)" --jobs "$(JOBS)" $(SOURCE_LOCK_ARGS) --dry-run
+
+source-check:
+	$(if $(strip $(SOURCE_LOCK)),,$(error Set SOURCE_LOCK to the reviewed source-lock descriptor))
+	$(PYTHON) scripts/workspace.py check-source --source-dir "$(SOURCE_DIR)" --source-lock "$(SOURCE_LOCK)"
 
 linux-packages:
 	bash scripts/setup-linux.sh --print
 
 init:
-	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)"
+	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" $(SOURCE_LOCK_ARGS)
 
 sync:
-	$(PYTHON) scripts/workspace.py sync --source-dir "$(SOURCE_DIR)" --jobs "$(JOBS)"
+	$(PYTHON) scripts/workspace.py sync --source-dir "$(SOURCE_DIR)" --jobs "$(JOBS)" $(SOURCE_LOCK_ARGS)
 
 stock-plan:
 	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --dry-run
@@ -72,13 +79,13 @@ apple-smoke:
 	$(PYTHON) scripts/apple_container.py smoke
 
 apple-init:
-	$(PYTHON) scripts/apple_container.py init
+	$(PYTHON) scripts/apple_container.py init $(SOURCE_LOCK_ARGS)
 
 apple-sync:
-	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)"
+	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" $(SOURCE_LOCK_ARGS)
 
 apple-sync-bg:
-	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" --detach
+	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" --detach $(SOURCE_LOCK_ARGS)
 
 apple-status:
 	$(PYTHON) scripts/apple_container.py status
@@ -88,5 +95,5 @@ apple-shell:
 
 apple-plan:
 	$(PYTHON) scripts/apple_container.py setup --dry-run
-	$(PYTHON) scripts/apple_container.py init --dry-run
-	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" --detach --dry-run
+	$(PYTHON) scripts/apple_container.py init $(SOURCE_LOCK_ARGS) --dry-run
+	$(PYTHON) scripts/apple_container.py sync --jobs "$(JOBS)" --detach $(SOURCE_LOCK_ARGS) --dry-run

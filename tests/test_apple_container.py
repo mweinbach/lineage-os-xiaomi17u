@@ -75,6 +75,37 @@ class ContainerConfigurationTests(unittest.TestCase):
             self.assertEqual(apple.main(["sync", "--jobs", "0"]), 2)
             run.assert_not_called()
 
+    def test_lock_is_forwarded_as_a_bundle_relative_path(self):
+        for operation in ("init", "sync"):
+            command = apple.task_command(self.config, operation, Path("/host/bundle"),
+                                         "a" * 64, "test", source_lock=guest.SOURCE_LOCK_FILES[0])
+            self.assertEqual(command[-2:], ["--source-lock", guest.SOURCE_LOCK_FILES[0]])
+            self.assertNotIn("/host/bundle/config/evolution-source-lock.json", command)
+
+    def test_unreviewed_or_non_source_lock_option_stops_before_runtime(self):
+        with patch.object(apple, "run") as run, patch.object(apple, "prepare_bundle") as bundle, \
+             contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(apple.main(["status", "--source-lock", guest.SOURCE_LOCK_FILES[0]]), 2)
+            run.assert_not_called()
+            bundle.assert_not_called()
+        for operation, source_lock in (("shell", guest.SOURCE_LOCK_FILES[0]),
+                                       ("init", "/host/config/evolution-source-lock.json")):
+            with self.subTest(operation=operation), self.assertRaises(ValueError):
+                apple.task_command(self.config, operation, Path("/bundle"), "a" * 64,
+                                   "test", source_lock=source_lock)
+
+    def test_locked_preview_validates_without_creating_bundle_or_running_container(self):
+        output = io.StringIO()
+        with patch.object(apple, "source_lock_path", return_value=guest.SOURCE_LOCK_FILES[0]) as selected, \
+             patch.object(apple, "run") as run, patch.object(apple, "prepare_bundle") as bundle, \
+             contextlib.redirect_stdout(output):
+            self.assertEqual(apple.main(["init", "--source-lock", "/host/reviewed-lock.json", "--dry-run"]), 0)
+        selected.assert_called_once_with("/host/reviewed-lock.json")
+        self.assertIn("--source-lock config/evolution-source-lock.json", output.getvalue())
+        self.assertNotIn("/host/reviewed-lock.json", output.getvalue())
+        run.assert_not_called()
+        bundle.assert_not_called()
+
 
 class VolumeTests(unittest.TestCase):
     def setUp(self):
@@ -210,6 +241,36 @@ class ControlBundleTests(unittest.TestCase):
         (root / "bundle.json").write_text(json.dumps({"schema_version": 1, "files": files, "repo_commit": commit}))
         return root, identity
 
+    def locked_bundle(self, directory):
+        root, _ = self.bundle(directory)
+        config = apple.workspace.load_config()
+        (root / "config/sources.json").write_text(json.dumps(config))
+        tool = apple.workspace.reference_named(config, "repo-tool")
+        manifest = apple.workspace.reference_named(config, config["platform"]["reference"])
+        snapshot = root / guest.SOURCE_LOCK_FILES[1]
+        snapshot.parent.mkdir(parents=True, exist_ok=True)
+        snapshot.write_text('<manifest><remote name="github" fetch="https://github.com/" />'
+                            '<default remote="github" /><project name="Evolution-X/build" '
+                            'path="build/make" revision="' + "b" * 40 + '" /></manifest>\n')
+        descriptor = {"schema_version": 1,
+                      "manifest": {key: manifest[key] for key in ("url", "commit")},
+                      "repo": {key: tool[key] for key in ("url", "commit")},
+                      "snapshot": {"path": guest.SOURCE_LOCK_FILES[1], "sha256": guest.sha256(snapshot),
+                                   "bytes": snapshot.stat().st_size, "project_count": 1}}
+        descriptor["manifest"]["reference"] = manifest["name"]
+        (root / guest.SOURCE_LOCK_FILES[0]).write_text(json.dumps(descriptor))
+        files = {name: guest.sha256(root / name) for name in guest.CONTROL_FILES + guest.SOURCE_LOCK_FILES}
+        identity = guest.bundle_digest(files, tool["commit"])
+        (root / "bundle.json").write_text(json.dumps({"schema_version": 1, "files": files,
+                                                      "repo_commit": tool["commit"]}))
+        return root, identity
+
+    def reseal_bundle(self, root, files=None):
+        record = json.loads((root / "bundle.json").read_text())
+        record["files"] = {name: guest.sha256(root / name) for name in (files or record["files"])}
+        (root / "bundle.json").write_text(json.dumps(record))
+        return guest.bundle_digest(record["files"], record["repo_commit"])
+
     def test_control_allowlist_excludes_private_evidence_and_credentials(self):
         self.assertEqual(set(guest.CONTROL_FILES), {"config/sources.json", "config/apple-container.json",
                                                   "scripts/workspace.py", "scripts/container_task.py"})
@@ -283,13 +344,152 @@ class ControlBundleTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Repo pin"):
                 guest.verify_bundle(source, identity)
 
+    def test_extended_bundle_copies_exact_descriptor_and_xml_bytes(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as volume_dir:
+            source, identity = self.locked_bundle(directory)
+            record = guest.verify_bundle(source, identity)
+            self.assertEqual(guest.bundled_source_lock(record), guest.SOURCE_LOCK_FILES[0])
+            control = guest.prepare_control(source, Path(volume_dir), identity)
+            for name in guest.SOURCE_LOCK_FILES:
+                self.assertEqual((source / name).read_bytes(), (control / name).read_bytes())
+            self.assertEqual(guest.prepare_control(source, Path(volume_dir), identity), control)
+
+    def test_locked_bundle_verification_is_independent_of_the_imported_workspace_root(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as unrelated_dir:
+            source, identity = self.locked_bundle(directory)
+            unrelated = Path(unrelated_dir)
+            (unrelated / "upstream").symlink_to(source, target_is_directory=True)
+            with patch.object(guest.workspace, "ROOT", unrelated):
+                self.assertEqual(guest.bundled_source_lock(guest.verify_bundle(source, identity)),
+                                 guest.SOURCE_LOCK_FILES[0])
+
+    def test_lock_files_participate_in_bundle_identity(self):
+        for name in guest.SOURCE_LOCK_FILES:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                source, identity = self.locked_bundle(directory)
+                (source / name).write_text((source / name).read_text() + " ")
+                with self.assertRaisesRegex(ValueError, "Control file changed"):
+                    guest.verify_bundle(source, identity)
+                self.assertNotEqual(self.reseal_bundle(source), identity)
+
+    def test_partial_or_extra_lock_membership_is_rejected(self):
+        for names in ((guest.SOURCE_LOCK_FILES[0],), (guest.SOURCE_LOCK_FILES[1],),
+                      (*guest.SOURCE_LOCK_FILES, "private-note.txt")):
+            with self.subTest(names=names), tempfile.TemporaryDirectory() as directory:
+                source, _ = self.locked_bundle(directory)
+                (source / "private-note.txt").write_text("not a control input")
+                identity = self.reseal_bundle(source, (*guest.CONTROL_FILES, *names))
+                with self.assertRaisesRegex(ValueError, "Unexpected control bundle contents"):
+                    guest.verify_bundle(source, identity)
+
+    def test_unrecorded_lock_does_not_activate_or_enter_legacy_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as volume_dir:
+            source, _ = self.locked_bundle(directory)
+            identity = self.reseal_bundle(source, guest.CONTROL_FILES)
+            record = guest.verify_bundle(source, identity)
+            self.assertIsNone(guest.bundled_source_lock(record))
+            control = guest.prepare_control(source, Path(volume_dir), identity)
+            for name in guest.SOURCE_LOCK_FILES:
+                self.assertFalse((control / name).exists())
+
+    def test_extended_bundle_requires_descriptor_to_bind_exact_xml(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, _ = self.locked_bundle(directory)
+            path = source / guest.SOURCE_LOCK_FILES[0]
+            descriptor = json.loads(path.read_text())
+            descriptor["snapshot"]["sha256"] = "0" * 64
+            path.write_text(json.dumps(descriptor))
+            with self.assertRaisesRegex(ValueError, "reviewed size and SHA256"):
+                guest.verify_bundle(source, self.reseal_bundle(source))
+
+    def test_damaged_existing_locked_snapshot_is_not_overwritten(self):
+        with tempfile.TemporaryDirectory() as directory, tempfile.TemporaryDirectory() as volume_dir:
+            source, identity = self.locked_bundle(directory)
+            control = guest.prepare_control(source, Path(volume_dir), identity)
+            changed = control / guest.SOURCE_LOCK_FILES[1]
+            changed.write_text("local change")
+            with self.assertRaises(ValueError):
+                guest.prepare_control(source, Path(volume_dir), identity)
+            self.assertEqual(changed.read_text(), "local change")
+
+    def test_guest_lock_argument_uses_ext4_control_path(self):
+        control = Path("/work/control/" + "a" * 64)
+        for operation in ("init", "sync"):
+            command = guest.workspace_command(control, operation, Path("/work/evolution"),
+                                              source_lock=guest.SOURCE_LOCK_FILES[0])
+            self.assertEqual(command[-2:], ["--source-lock", str(control / guest.SOURCE_LOCK_FILES[0])])
+            self.assertNotIn("--force-sync", command)
+        with self.assertRaises(ValueError):
+            guest.workspace_command(control, "doctor", Path("/work/evolution"),
+                                    source_lock=guest.SOURCE_LOCK_FILES[0])
+
+    def test_host_lock_path_is_reviewed_and_root_relative(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, _ = self.locked_bundle(directory)
+            config = json.loads((source / "config/sources.json").read_text())
+            with patch.object(apple, "ROOT", source), patch.object(apple.workspace, "load_config", return_value=config):
+                self.assertEqual(apple.source_lock_path(source.resolve() / guest.SOURCE_LOCK_FILES[0]), guest.SOURCE_LOCK_FILES[0])
+                self.assertEqual(apple.source_lock_path(guest.SOURCE_LOCK_FILES[0]), guest.SOURCE_LOCK_FILES[0])
+                with self.assertRaisesRegex(ValueError, "inside the control workspace"):
+                    apple.source_lock_path("/another-host/config/evolution-source-lock.json")
+
+    def test_host_lock_and_snapshot_symlinks_are_not_followed(self):
+        for name in guest.SOURCE_LOCK_FILES:
+            for broken in (False, True):
+                with self.subTest(name=name, broken=broken), tempfile.TemporaryDirectory() as directory:
+                    source, _ = self.locked_bundle(directory)
+                    config = json.loads((source / "config/sources.json").read_text())
+                    original = source / name
+                    moved = original.with_name("moved")
+                    original.rename(moved)
+                    original.symlink_to(moved.with_name("absent") if broken else moved)
+                    with patch.object(apple, "ROOT", source), patch.object(apple.workspace, "load_config", return_value=config), \
+                         patch.object(apple.workspace, "verify_reference"), patch.object(apple.workspace, "run") as run:
+                        with self.assertRaisesRegex(ValueError, "Symlink"):
+                            apple.prepare_bundle(guest.SOURCE_LOCK_FILES[0])
+                    run.assert_not_called()
+
+    def test_host_base_control_symlink_is_not_copied(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, _ = self.bundle(directory)
+            config = json.loads((source / "config/sources.json").read_text())
+            (source / "scripts").rename(source / "actual-scripts")
+            (source / "scripts").symlink_to(source / "actual-scripts", target_is_directory=True)
+            with patch.object(apple, "ROOT", source), patch.object(apple.workspace, "load_config", return_value=config), \
+                 patch.object(apple.workspace, "verify_reference"), patch.object(apple.workspace, "run") as run:
+                with self.assertRaisesRegex(ValueError, "Symlink"):
+                    apple.prepare_bundle()
+            run.assert_not_called()
+
+    def test_host_prepares_and_reuses_a_bundle_with_both_lock_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, _ = self.locked_bundle(directory)
+            config = json.loads((source / "config/sources.json").read_text())
+            def mocked_git(command):
+                if "clone" in command:
+                    repository = Path(command[-1])
+                    repository.mkdir()
+                    (repository / "repo").write_text("fixture repo")
+            with patch.object(apple, "ROOT", source), patch.object(apple, "LOCAL", source / ".tools/apple-container"), \
+                 patch.object(apple.workspace, "load_config", return_value=config), \
+                 patch.object(apple.workspace, "verify_reference"), \
+                 patch.object(apple.workspace, "run", side_effect=mocked_git) as run:
+                bundle, identity = apple.prepare_bundle(guest.SOURCE_LOCK_FILES[0])
+                clone_calls = run.call_count
+                self.assertEqual(apple.prepare_bundle(guest.SOURCE_LOCK_FILES[0]), (bundle, identity))
+                self.assertEqual(run.call_count, clone_calls)
+            self.assertEqual(set(guest.verify_bundle(bundle, identity)["files"]),
+                             set(guest.CONTROL_FILES + guest.SOURCE_LOCK_FILES))
+            for name in guest.SOURCE_LOCK_FILES:
+                self.assertEqual((bundle / name).read_bytes(), (source / name).read_bytes())
+
 
 class TaskLifecycleTests(unittest.TestCase):
     def setUp(self):
         self.config = apple.load_config()
         self.record = {"container": "task-id", "operation": "sync", "control_id": "a" * 64,
                        "volume": self.config["volume"], "detached": True, "launch_exit_code": 0}
-        self.volume = {"format": "ext4", "sizeInBytes": 800 * apple.GIB}
+        self.volume = {"format": "ext4", "sizeInBytes": 800 * apple.GIB, "source": "/private/volume.img"}
 
     def status_output(self, items, logs="", record=None):
         with tempfile.TemporaryDirectory() as directory:
@@ -313,6 +513,49 @@ class TaskLifecycleTests(unittest.TestCase):
         output, _ = self.status_output([], record=dict(self.record, detached=False, exit_code=0))
         self.assertIn('"state": "removed"', output)
         self.assertIn('"task_status": "complete"', output)
+
+    def test_live_external_volume_user_is_reported_despite_removed_last_task(self):
+        items = [{"id": "twrp-active", "status": {"state": "running"}, "configuration": {
+            "mounts": [{"source": self.volume["source"]}]}}]
+        output, run = self.status_output(items, record=dict(self.record, detached=False, exit_code=0))
+        self.assertIn('"active_volume_users": [', output)
+        self.assertIn('"container": "twrp-active"', output)
+        self.assertIn('"record_kind": "last_recorded_task"', output)
+        self.assertIn('"active_volume_user": false', output)
+        self.assertIn('"state": "removed"', output)
+        self.assertIn("receipt was preserved unchanged", output)
+        self.assertFalse(any("exec" in call.args[0] or "run" in call.args[0] for call in run.call_args_list))
+
+    def test_live_volume_users_are_visible_without_a_last_task_receipt(self):
+        items = [{"id": "external-vm", "status": {"state": "running"}, "configuration": {
+            "mounts": [{"source": self.config["volume"]}]}}]
+        output = io.StringIO()
+        with tempfile.TemporaryDirectory() as directory, patch.object(apple, "STATE", Path(directory) / "absent"), \
+             patch.object(apple, "volume_info", return_value=self.volume), patch.object(apple, "json_command", return_value=items), \
+             patch.object(apple, "run"), patch.object(apple, "write_state") as state, contextlib.redirect_stdout(output):
+            apple.status(self.config)
+        state.assert_not_called()
+        self.assertIn('"container": "external-vm"', output.getvalue())
+        self.assertIn("not adopted", output.getvalue())
+
+    def test_status_does_not_replace_the_historical_receipt(self):
+        items = [{"id": "external-vm", "status": {"state": "running"}, "configuration": {
+            "mounts": [{"source": self.volume["source"]}]}}]
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory) / "state.json"
+            original = json.dumps(self.record).encode()
+            state.write_bytes(original)
+            with patch.object(apple, "STATE", state), patch.object(apple, "volume_info", return_value=self.volume), \
+                 patch.object(apple, "json_command", return_value=items), patch.object(apple, "run"), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                apple.status(self.config)
+            self.assertEqual(state.read_bytes(), original)
+
+    def test_running_record_without_volume_attachment_is_not_inventoried(self):
+        output, run = self.status_output([{"id": "task-id", "status": {"state": "running"},
+                                         "configuration": {"mounts": []}}])
+        self.assertIn('"active_volume_user": false', output)
+        self.assertFalse(any("exec" in call.args[0] for call in run.call_args_list))
 
     def test_stopped_detached_task_needs_explicit_guest_result(self):
         items = [{"id": "task-id", "status": {"state": "stopped"}}]
@@ -356,12 +599,53 @@ class TaskLifecycleTests(unittest.TestCase):
         self.assertEqual(record["lifecycle"], "launch_failed")
         self.assertNotIn("exit_code", record)
 
+    def test_launch_forwards_and_records_reviewed_lock(self):
+        with patch.object(apple, "volume_info", return_value=self.volume), \
+             patch.object(apple, "active_volume_users", return_value=[]), \
+             patch.object(apple, "image_info", return_value="sha256:fixture"), \
+             patch.object(apple, "source_lock_path", return_value=guest.SOURCE_LOCK_FILES[0]), \
+             patch.object(apple, "prepare_bundle", return_value=(Path("/bundle"), "a" * 64)) as bundle, \
+             patch.object(apple, "write_state") as state, \
+             patch.object(apple, "run", return_value=subprocess.CompletedProcess([], 0)) as run:
+            apple.execute_task(self.config, "init", source_lock=guest.SOURCE_LOCK_FILES[0])
+        bundle.assert_called_once_with(guest.SOURCE_LOCK_FILES[0])
+        self.assertEqual(run.call_args.args[0][-2:], ["--source-lock", guest.SOURCE_LOCK_FILES[0]])
+        self.assertEqual(state.call_args.args[0]["source_lock"], guest.SOURCE_LOCK_FILES[0])
+
     def test_guest_preflight_failure_emits_completion_marker(self):
         output = io.StringIO()
         with patch.object(guest, "prepare_control", side_effect=ValueError("broken bundle")), \
              contextlib.redirect_stdout(output), contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(guest.main(["--control-id", "a" * 64, "sync"]), 2)
         self.assertEqual(apple.task_result(output.getvalue(), self.record)["exit_code"], 2)
+
+    def test_guest_rejects_missing_or_unrecorded_lock_before_running_workspace(self):
+        for selected, files in ((None, guest.CONTROL_FILES + guest.SOURCE_LOCK_FILES),
+                                (guest.SOURCE_LOCK_FILES[0], guest.CONTROL_FILES)):
+            arguments = ["--control-id", "a" * 64, "sync"]
+            if selected:
+                arguments += ["--source-lock", selected]
+            with self.subTest(selected=selected), \
+                 patch.object(guest, "prepare_control", return_value=Path("/work/control/fixture")), \
+                 patch.object(guest, "verify_bundle", return_value={"files": dict.fromkeys(files, "a" * 64)}), \
+                 patch.object(guest, "run_workspace") as run, patch.object(Path, "mkdir") as mkdir, \
+                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(guest.main(arguments), 2)
+            run.assert_not_called()
+            mkdir.assert_not_called()
+
+    def test_guest_runs_workspace_with_verified_ext4_lock_path(self):
+        control = Path("/work/control/" + "a" * 64)
+        record = {"files": dict.fromkeys(guest.CONTROL_FILES + guest.SOURCE_LOCK_FILES, "a" * 64)}
+        for operation in ("init", "sync"):
+            with self.subTest(operation=operation), patch.object(guest, "prepare_control", return_value=control), \
+                 patch.object(guest, "verify_bundle", return_value=record), \
+                 patch.object(Path, "read_text", return_value=json.dumps(self.config)), \
+                 patch.object(Path, "mkdir"), patch.dict(guest.os.environ), \
+                 patch.object(guest, "run_workspace", return_value=0) as run, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(guest.main(["--control-id", "a" * 64, operation,
+                                            "--source-lock", guest.SOURCE_LOCK_FILES[0]]), 0)
+            self.assertEqual(run.call_args.args[0][-2:], ["--source-lock", str(control / guest.SOURCE_LOCK_FILES[0])])
 
     def test_inventory_does_not_copy_control_or_create_directories(self):
         with patch.object(guest, "verify_bundle"), patch.object(guest, "prepare_control") as prepare, \
