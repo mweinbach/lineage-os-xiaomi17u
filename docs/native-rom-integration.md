@@ -3,8 +3,11 @@
 The **v12e source and private-input installation passed** on August 29, 2026.
 Its **first actual Android policy build failed during Kati configuration** at
 22:19:27 UTC, before any requested policy compiler or context-check action ran.
-The immediate blocker is the read of undefined `BOARD_MI_EXT_IMAGE_NO_FLASHALL`
-at `build/make/core/Makefile:4776`. The last successful policy checkpoint remains
+The failure is the read of undefined `BOARD_MI_EXT_IMAGE_NO_FLASHALL`
+at `build/make/core/Makefile:4776`. Its correction is now prepared as **v12f** and
+passes 99 native Kati fixture cases, but was **not installed at the 22:57:13 UTC
+checkpoint**. Applying that exact delta and rerunning the actual policy build
+is the next step. The last successful policy checkpoint remains
 [v11b](oem-policy-integration.md), with all 6,366 assertions retained and zero
 permissive domains in three independently analyzed policy binaries.
 
@@ -91,6 +94,47 @@ parsing and Kati-fixture mistakes before active installation. The separately
 preserved recovery Kati v3 probe passed all 12 cases before the v12e transaction.
 None of those narrower results erases the full-build failure above.
 
+## Prepared v12f correction and native fixtures
+
+Commit `44ec02f3a1eba37b23f13bcd4222f34bed3768dc` adds
+[patch 0010](../patches/evolution/0010-initialize-direct-avb-readonly.patch) and
+an [explicit source composition](../patches/evolution/direct-avb-readonly.json).
+The patch replaces direct `.KATI_READONLY` assignment with the pinned
+`readonly-variables` macro. It initializes seven undefined optional settings to
+empty, preserves two derived values and freezes the selected settings. Existing
+incoming-override guards run first and remain unchanged. In particular,
+`NO_FLASHALL` must be empty, not the nonempty string `false`, so the image remains
+eligible for the update ZIP.
+
+The v12f candidate and repeat are byte-identical, with admission SHA256
+`9bf0f6f8e5b9e76160e5b5f7291d795b87381b28fbd73d0fbed15a73295b18be`.
+Only two generated device guards change: `generated/mi-ext-prebuilt.mk` and
+`recovery-prebuilt.mk`. No device file is added or removed. Updated recovery and
+mi_ext receipts select the new exact source composition without changing either
+image or the working76 public key. The property policy bundle remains
+`b5504b326da9c4be57009a5451a6eca45b3f3105f4ebb2e733e33c0b261decbf`, including
+the unchanged `e9183b60…` OEM policy tool. Providers and metadata projection are
+not added to this base correction; the metadata composition needs its own
+explicit patch-0010 extension.
+
+The native Kati probe completed at **22:54:08 UTC**. Its **99 expected outcomes**
+comprise one reproduced historical failure, five corrected positive cases and
+93 specific negative cases. It parses the full hash-bound custom-image region,
+checks the defaults and derived values, and preserves the original inputs. It
+does not run Ninja, image recipes or avbtool. These results qualify the patch
+for installation; they do not establish a successful full Android build.
+
+The [native DEX provider fixture record](../research/dex-import-native-fixtures.json)
+also now passes: **five top-level tests and 11 subtests**, with no failures or
+skips, completed at **22:57:13 UTC**. The first run actually compiled the test
+binary in nine normal Ninja actions but then failed its freshness harness,
+which expected the idle diagnostic on stdout instead of stderr. That attempt
+ran no fixtures and remains recorded as failed. The corrected v2 harness
+verified the same binary through its normal dependency target and ran the
+selected fixtures without short mode. It did not write the full Java-suite
+stamp or execute generated Android rules, Camera JAR/JNI/XML builds, APKs or
+dex2oat. The guest still has the installed v12e input set at this checkpoint.
+
 ## Preparation that is not installed in v12e
 
 | Slice | Verified host result | Still required |
@@ -113,8 +157,9 @@ it does not execute Ninja, the metadata verifier or the target-files recipe.
 The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
-The coordinator reran `python3 -m unittest discover -s tests -v`: **3,303 tests
-passed in 169.596 seconds with no skips**. This is a workspace-tooling checkpoint,
+The coordinator reran `python3 -m unittest discover -s tests -v`: **3,336 tests
+passed in 173.710 seconds with no skips**, following the earlier 3,303-test
+checkpoint. This is a workspace-tooling checkpoint,
 not an Android build result or a phone test. Later source changes require their
 own rerun. Earlier failing runs remain preserved rather than counted as passes.
 
@@ -149,8 +194,8 @@ factory-combined binary. Original proprietary images remain untouched.
 
 ## Next build sequence
 
-Correct the undefined custom-image variable through reviewed source admission,
-then rerun the normal policy targets and their independent semantic analysis.
+Install the verified v12f source/input delta, then rerun the normal policy
+targets and their independent semantic analysis.
 Build and inspect the current Camera runtime modules, mi_ext and exact working76
 recovery targets. Admit the provider inputs separately and complete the normal
 system, system_ext and product image dependencies. Full VINTF must include the

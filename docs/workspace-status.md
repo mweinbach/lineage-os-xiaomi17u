@@ -25,8 +25,13 @@ packaging patches. Its first native policy attempt failed at **22:19:27 UTC**
 in Kati: `build/make/core/Makefile:4776` reads the undefined
 `BOARD_MI_EXT_IMAGE_NO_FLASHALL`. No policy compiler or context-check action ran
 in that attempt. The [native ROM integration record](native-rom-integration.md)
-binds the successful installation and failed build separately; correcting this
-source configuration is the next concrete build blocker.
+binds the successful installation and failed build separately. The correction
+is now committed and prepared as **v12f**; all **99 native Kati fixture cases**
+match their expected outcomes, including the reproduced original failure.
+At the **22:57:13 UTC** checkpoint, v12f has not been installed: the next step
+is its verified source/input transaction followed by the actual policy retry.
+The native DEX provider fixtures also pass, but the current Camera artifacts
+have not yet been rebuilt.
 
 The immediate destination remains a reproducible, working Evolution baseline;
 that baseline will support a maintainable platform fork without mixing future
@@ -114,6 +119,8 @@ from a full build and require destination hash verification after transfers.
 | Independent v11b analysis | All 6,366 assertions retained with reviewed concrete coverage; exactly five added lookup permissions and 47 removed vendor_init file permissions; zero permissive domains in three binaries | [OEM policy integration](../research/oem-policy-integration.json) |
 | v12e source and private-input installation | Durable ten-operation transaction; pinned sources and exact installed inputs verified; original vendor/ODM, kernel and working76 bytes preserved | [Native ROM integration](../research/native-rom-integration.json) |
 | Native recovery-mode fixtures | Twelve isolated Kati guard cases pass, including required diagnostic failures; this is not the full Android configuration, which subsequently failed on mi_ext | [Native ROM integration](../research/native-rom-integration.json) |
+| Native custom-image correction fixtures | 99 expected outcomes: one reproduced historical failure, five corrected positive cases and 93 specific negative cases; full custom-image region parsed, with no image recipes or Ninja execution | [Native ROM integration](../research/native-rom-integration.json) |
+| Native DEX provider fixtures | Five top-level tests and 11 subtests pass in the pinned Linux Soong test binary; no full Java-suite stamp, actual Camera artifact build or dex2oat execution | [Native DEX fixtures](../research/dex-import-native-fixtures.json) |
 | Native EROFS inventory-tool build | Actual compile/link/install passes with source read-only; subsequent metadata qualification has unresolved failures and is not an image-adoption pass | [Native ROM integration](../research/native-rom-integration.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
 | Native VINTF build inputs | Selected framework XML, host tools and stock-kernel requirements built; the graph audit identifies the still-missing framework fragments and APEX artifacts rather than treating the partial inventory as complete compatibility | [VINTF build closure](../research/vintf-compatibility.json) |
@@ -158,8 +165,11 @@ override theme defaults. No Magisk integration is included.
   and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
   and [A/B-only recovery packaging correction](recovery-packaging.md) are
   installed in v12e. Twelve isolated recovery-mode Kati cases pass; the full
-  build still fails on the uninitialized mi_ext variable above. Native component
-  and packaging checks remain necessary. The correction
+  build failed on the uninitialized mi_ext variable above. The prepared v12f
+  patch uses the pinned read-only initialization macro, preserving the override
+  checks and empty optional values; 99 native fixture cases pass. Install that
+  exact correction and rerun the full build before claiming the blocker closed.
+  Native component and packaging checks remain necessary. The A/B correction
   removes the inapplicable non-A/B two-step requirement only for A/B-only
   products; never fabricate a `recovery-two-step.img` from the kernel-free
   working76 image. Target-files, OTA, super-image and flash admission remain
@@ -206,7 +216,9 @@ override theme defaults. No Magisk integration is included.
   [exact Camera runtime-library bundle](camera-runtime-inputs.md) and reviewed
   Soong provider patch are installed in v12e. The current names and strict
   class-loader integration still need their native rebuild after Kati is fixed;
-  the older dependency-build result does not validate this new input set.
+  five native provider fixture tests and 11 subtests now pass, but they do not
+  execute the generated Camera build rules or dex2oat. The older dependency-build
+  result does not validate this new input set.
 - **Recovery completeness:** encrypted `/data`, backup/restore coverage,
   additional reboot/Android round trips, A/B and OTA behavior, ADB host
   authentication and restoring recovery SELinux enforcement remain unverified.
@@ -224,7 +236,7 @@ source work; [recovery handling](recovery-plan.md) records recovery boundaries.
 | This status page and [Nezha integration](nezha-integration.md) | Detailed dated checkpoints in `docs/build-progress.md` and the individual component-build records |
 | [Working TWRP instructions](../recovery/twrp-working/README.md) and [current recovery guide](twrp-bringup.md) | [Recovery history](twrp-bringup-history.md): earlier minimal builds, RAM-boot attempts and `provided75` before persistent defaults |
 | [OEM policy integration](oem-policy-integration.md) and its [current record](../research/oem-policy-integration.json) | [v10 source-policy integration](policy-source-integration.md), v7/v8/v9 builds and copied-CIL prototypes remain dated evidence; their original results are preserved |
-| [Native ROM integration](native-rom-integration.md) and its [current record](../research/native-rom-integration.json) | Preserved v12 staging failures and first Kati failure; host v13/provider, metadata and signing preparation are not native build results |
+| [Native ROM integration](native-rom-integration.md) and its [current record](../research/native-rom-integration.json) | Preserved v12 staging failures and first Kati failure; prepared v12f correction and host v13/provider, metadata and signing inputs are not completed native ROM builds |
 | Current factory vendor/ODM input receipts | Modified Xiaomi.eu package, earlier candidates, outputs and failed AVB results with their original provenance |
 
 Run `make test` before completing workspace changes. Generate into new ignored

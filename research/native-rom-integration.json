@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "v12e-installed-first-native-policy-build-failed",
-  "recorded_through_utc": "2026-08-29T22:39:19.609583+00:00",
+  "checkpoint": "v12e-installed-first-policy-build-failed-v12f-prepared-native-fixtures-passed",
+  "recorded_through_utc": "2026-08-29T22:57:13.184580+00:00",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -214,7 +214,7 @@
         "sha256": "e34a6bd0408c41169796feacbe2ce903754aa70e0357105d37f65317487e32ff"
       }
     ],
-    "next_action": "Correct the undefined custom-image variable through reviewed source admission; rerun the normal policy build and independent semantic analysis. Do not bypass Kati, neverallows or blocked targets."
+    "next_action": "Install the exact verified v12f source/input delta, then rerun the normal policy build and independent semantic analysis. The fixture pass does not close the full-build blocker or permit bypassing checks."
   },
   "installed_property_scope": {
     "contract": "config/nezha-oem-properties.json",
@@ -400,20 +400,20 @@
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
     "runner": "coordinator",
-    "passed": 3303,
+    "passed": 3336,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 169.596,
+    "elapsed_seconds": 173.71,
     "log": {
-      "path": "reports/workspace-tests-20260829-v12-first-full.log",
-      "size_bytes": 567181,
-      "sha256": "20bc43df56663cb473d06c660d5bd9c0d13e1795b6c72736dea74f528d33a816"
+      "path": "reports/workspace-tests-20260829-v12-readonly-full.log",
+      "size_bytes": 573559,
+      "sha256": "fb56058356a27b7b8af9552d710c59d3169e73ff45fd6e81bc068535d3992d64"
     },
-    "scope": "Offline workspace tooling at this checkpoint; later edits require another run. Not an Android build or physical-device test."
+    "scope": "Offline workspace tooling after the source-correction change; later edits require another run. Not an Android component build or physical-device test."
   },
   "remaining_gates": [
-    "Successful native v12 policy build and independent semantic/assertion/permissive analysis",
+    "Install the verified v12f correction and rerun the native policy build with independent semantic/assertion/permissive analysis",
     "Native Camera runtime modules, mi_ext and unchanged working76 recovery targets",
     "Reviewed provider source installation and strict native ELF/linker/policy checks",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -430,5 +430,179 @@
     "phone_operations": [],
     "source_reset_or_replacement_sync": false,
     "proprietary_payloads_and_raw_logs_remain_ignored": true
-  }
+  },
+  "prepared_source_correction": {
+    "label": "v12f",
+    "installed_in_guest_at_checkpoint": false,
+    "active_guest_input_set": "v12e",
+    "implementation_commit": "44ec02f3a1eba37b23f13bcd4222f34bed3768dc",
+    "authoring_receipt": {
+      "path": "reports/oem-policy-integration-20260829/direct-avb-readonly-authoring/summary-v1.json",
+      "size_bytes": 6956,
+      "sha256": "68c1327d1994749d37284fadf65e2a99f384dd74bc1f19f999a2412b17ecb680"
+    },
+    "patch": {
+      "path": "patches/evolution/0010-initialize-direct-avb-readonly.patch",
+      "size_bytes": 1050,
+      "sha256": "0c045c4e377eaf44e41b1603250160cc4630c1fd21f97c30facb5c838bfcf33a"
+    },
+    "contract": {
+      "path": "patches/evolution/direct-avb-readonly.json",
+      "size_bytes": 3275,
+      "sha256": "81fc394ebd031317a93ec374846f927209c0b03572463deb74bfc401a51cdcb1"
+    },
+    "source_composition": {
+      "sha256": "ee4946fd7c2da9814c1115b95108768844b53c5d293761493ab1f50ed67e5b9c",
+      "size_bytes": 4401
+    },
+    "frozen_controls": {
+      "path": "reports/oem-policy-integration-20260829/direct-avb-readonly-authoring/frozen-v12f/freeze.json",
+      "sha256": "51cf81147cc75e70e12e72a695545967523bbb740ef8c8e7ddb7055e5f8f8d10",
+      "size_bytes": 46967
+    },
+    "candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v12f/admission.json",
+      "sha256": "9bf0f6f8e5b9e76160e5b5f7291d795b87381b28fbd73d0fbed15a73295b18be",
+      "size_bytes": 61281
+    },
+    "repeat_candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v12f-repeat/admission.json",
+      "sha256": "9bf0f6f8e5b9e76160e5b5f7291d795b87381b28fbd73d0fbed15a73295b18be",
+      "size_bytes": 61281
+    },
+    "repeat_bytes_identical": true,
+    "device_changes_against_v12": {
+      "added": [],
+      "changed": [
+        "device/xiaomi/nezha/generated/mi-ext-prebuilt.mk",
+        "device/xiaomi/nezha/recovery-prebuilt.mk"
+      ],
+      "removed": []
+    },
+    "source_fix": "Use the pinned readonly-variables macro to initialize undefined optional settings before freezing, retaining the pre-initialization incoming-override rejection and existing derived values.",
+    "optional_settings_initialized_to_empty": 7,
+    "derived_values_preserved": 2,
+    "no_flashall_default": "",
+    "nonempty_false_is_not_an_empty_default": true,
+    "policy_receipt_sha256": "b5504b326da9c4be57009a5451a6eca45b3f3105f4ebb2e733e33c0b261decbf",
+    "oem_policy_tool_sha256": "e9183b606956614a2180eb53f41646d870e7bef7d364589cce36bb9ff5a6438d",
+    "policy_controls_unchanged": true,
+    "working76_and_mi_ext_bytes_changed": false,
+    "framework_providers_selected": false,
+    "metadata_projection_selected": false,
+    "metadata_composition_0010_extension_admitted": false,
+    "native_kati_probe": {
+      "completed_at": "2026-08-29T22:54:08.512458+00:00",
+      "cases_with_expected_outcomes": 99,
+      "historical_failure_controls": 1,
+      "corrected_positive_cases": 5,
+      "corrected_specific_negative_cases": 93,
+      "failed_cases": 0,
+      "inputs_unchanged": true,
+      "source_and_android_outputs_unchanged": true,
+      "scope": {
+        "avbtool_executed": false,
+        "exact_diagnostics_required": true,
+        "full_android_build_verified": false,
+        "full_custom_image_region_parsed": true,
+        "image_recipes_executed": false,
+        "images_built": false,
+        "native_kati_parse_only": true,
+        "ninja_executed": false,
+        "phone_operations": [],
+        "seven_empty_defaults_and_two_derived_values_checked": true
+      },
+      "receipts": [
+        {
+          "path": "artifacts/build-validation/nezha-kati-direct-avb-readonly-v1/orchestration.json",
+          "size_bytes": 895,
+          "sha256": "f774f928704e8b77c81e12312f143dfd003c8b36e4a400663b0dd4aeec25eba2"
+        },
+        {
+          "path": "artifacts/build-validation/nezha-kati-direct-avb-readonly-v1/probe/result.json",
+          "size_bytes": 291331,
+          "sha256": "f61e56b574bf6947d9ea5fa9c72424d931bfed6af6dc722035649b5991be48cd"
+        },
+        {
+          "path": "artifacts/build-validation/nezha-kati-direct-avb-readonly-v1/capture.json",
+          "size_bytes": 150386,
+          "sha256": "8f4f1b5df6b0c0579c2e8019a8698c965c8be14fa9aa3c5fe916ceb92745241b"
+        }
+      ],
+      "captured_files": 719,
+      "captured_bytes": 1691132
+    }
+  },
+  "native_dex_provider_fixtures": {
+    "record": {
+      "path": "research/dex-import-native-fixtures.json",
+      "size_bytes": 10276,
+      "sha256": "863ea2fd0d8fd2138d713ee089e980538c48c57a2d34785abab8c851f8d02e94"
+    },
+    "completed_at": "2026-08-29T22:57:13.184580+00:00",
+    "top_level_tests_passed": 5,
+    "subtests_passed": 11,
+    "passing_test_and_subtest_events": 16,
+    "failed_events": 0,
+    "skipped_events": 0,
+    "short_mode_used": false,
+    "full_java_suite_run": false,
+    "full_suite_stamp_written": false,
+    "first_attempt": {
+      "normal_test_binary_compilation_actions": 9,
+      "harness_passed": false,
+      "fixtures_executed": false,
+      "cause": "Freshness harness inspected stdout only; pinned Ninja emitted the exact no-work message to stderr.",
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-dex-fixtures-build-v1/receipt.json",
+        "sha256": "1a37d9dae32ddc974d5d6e1436ec679868b1a78e9f5596b1c788ebb645c163b5",
+        "size_bytes": 9908
+      }
+    },
+    "successful_retry": {
+      "native_fixture_receipt": {
+        "path": "artifacts/build-validation/nezha-dex-fixtures-run-v2/receipt.json",
+        "sha256": "a618a397fee3fb0fc723f72f5bebdd96bf886613ccfd6f1b6739ce66038a7fe6",
+        "size_bytes": 13286
+      },
+      "freshness_receipt": {
+        "path": "artifacts/build-validation/nezha-dex-fixtures-controls-v2/build.stdout",
+        "sha256": "0831bd3f0398301918937e208c2e6c0ee8cc46b2b249d09aed4a9086df320d23",
+        "size_bytes": 10106
+      },
+      "recompilation_required": false,
+      "change": "Only the harness accepts the exact idle message across separately preserved stdout and stderr; actions and additional diagnostics still fail."
+    },
+    "scope": {
+      "apk_rewritten_or_signed": false,
+      "camera_apk_imported": false,
+      "camera_or_leica_runtime_verified": false,
+      "current_camera_jar_jni_xml_rebuild_verified": false,
+      "dex2oat_executed_by_fixtures": false,
+      "full_java_suite_passed": false,
+      "full_rom_boot_verified": false,
+      "generated_android_build_rules_executed_by_fixtures": false,
+      "kati_failure_waived": false,
+      "phone_accessed": false,
+      "proprietary_jars_or_apks_executed_by_fixtures": false,
+      "signature_or_privilege_policy_changed": false
+    }
+  },
+  "previous_workspace_tests": [
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3303,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 169.596,
+      "log": {
+        "path": "reports/workspace-tests-20260829-v12-first-full.log",
+        "size_bytes": 567181,
+        "sha256": "20bc43df56663cb473d06c660d5bd9c0d13e1795b6c72736dea74f528d33a816"
+      },
+      "scope": "Offline workspace tooling at this checkpoint; later edits require another run. Not an Android build or physical-device test."
+    }
+  ]
 }

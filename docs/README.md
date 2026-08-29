@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v12e source/input installation, failed first native build, current mi_ext blocker and separate provider, metadata, EROFS and signing milestones |
+| [Native ROM integration](native-rom-integration.md) | Verified v12e installation and failed first build; prepared v12f correction, passing native fixtures and separate provider, metadata, EROFS and signing milestones |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
@@ -63,7 +63,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Nezha integration plan](nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
-| [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch for DEX shared libraries; v12e installation and pending native rebuild tracked in current status |
+| [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch with passing pinned native fixtures; current Camera artifact rebuild remains separate |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
 | [Framework-provider source admission](framework-provider-source-admission.md) | Reproducible host v13 candidate, private policy and verified payload consumers; not installed in the v12e checkpoint |
