@@ -1,0 +1,34 @@
+{
+  "added_visibility": "//device/xiaomi/nezha/framework-providers:__pkg__",
+  "files": [
+    {
+      "after": {
+        "sha256": "370703cf3a8b18bdaf77c83916bc08c486951aa4c1b524287ceac2c63d11e02b",
+        "size_bytes": 5264
+      },
+      "before": {
+        "sha256": "0c0ecdb9ecc9fc79c5047def799c9fce04d723699c12162269e8e78cae4436bd",
+        "size_bytes": 5203
+      },
+      "path": "Android.bp"
+    }
+  ],
+  "patch": {
+    "path": "patches/evolution/framework-provider-mdnssd-visibility.patch",
+    "sha256": "37302a9d7bc1134668cba9b9aba045c7269d6c4f8451bc9b6632f0e62d72062d",
+    "size_bytes": 253
+  },
+  "project": {
+    "path": "external/mdnsresponder",
+    "revision": "3e0189c4d3be5272398b1ea6ad2f223a973d0ea2"
+  },
+  "purpose": "Allow only the explicitly selected Nezha device provider package to consume the existing source-built libmdnssd shared library.",
+  "schema_version": 1,
+  "scope": {
+    "checks_disabled": false,
+    "global_visibility_enabled": false,
+    "guest_source_modified": false,
+    "library_code_changed": false,
+    "native_build_verified": false
+  }
+}
