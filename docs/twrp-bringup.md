@@ -93,6 +93,27 @@ provide the canonical seven empty root directories: `debug_ramdisk`, `dev`,
 the mounted children itself. No stock executable, debug marker, policy,
 property file or extra init script is needed for this measured failure.
 
+The fourth trial supplied those directories in a deterministic 1,037-byte
+legacy LZ4 member before the unchanged original compressed ramdisk. The
+wrapper SHA256 is
+`4da77ae4bd8e5a30d036b23ae2e8939fada75023a16588a6f4456fce8e866093`.
+An independent native decompression matched the 1,024-byte directory archive
+followed by the complete original build-66 CPIO. The prefix uses the Linux
+generator's directory link-count convention of two, rather than TWRP
+mkbootfs's one; the kernel does not apply its regular-file hardlink handling
+to directories. The [prefix helper](../scripts/twrp_ram_boot_scaffold.py)
+and inspector check the exact bytes and unchanged original suffix.
+
+This fixed the measured first-stage failure. The saved kernel log shows vendor
+modules loading, `/sepolicy` loading, SELinux entering enforcing mode, and
+`init second stage started!` at about 18.496 seconds. Init then requested a
+bootloader reboot. The phone remained on slot `a`; a diagnostic `fastboot
+reboot` returned it to stock Android to collect the saved log. TWRP's UI and
+authenticated recovery ADB have still not been reached. The fatal cause is
+not identified: kernel messages explicitly report hundreds of init lines
+suppressed by rate limiting. A logging-only RAM trial is the next diagnostic
+step, not a reason to disable SELinux or AVB.
+
 ## Source and build isolation
 
 The selected experimental source is

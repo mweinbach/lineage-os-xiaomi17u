@@ -257,6 +257,151 @@
           "size_bytes": 10869
         }
       }
+    },
+    {
+      "number": 4,
+      "started_at_utc": "2026-08-29T04:09:07.882300+00:00",
+      "operation": "fastboot boot",
+      "image_role": "v3_wrapper_with_generic_root_directories",
+      "image_sha256": "4da77ae4bd8e5a30d036b23ae2e8939fada75023a16588a6f4456fce8e866093",
+      "image_size_bytes": 100663296,
+      "header_version": 3,
+      "header_size_bytes": 1580,
+      "kernel_size_bytes": 39963136,
+      "kernel_sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "ramdisk_size_bytes": 25193270,
+      "ramdisk_sha256": "1f1c61c9c8d473d1e9753cc971c13e0d71b23318e6080e5e9615bec7b5d196ff",
+      "canonical_ramdisk_suffix": {
+        "offset_within_ramdisk_bytes": 1037,
+        "sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+        "size_bytes": 25192233,
+        "unchanged": true
+      },
+      "directory_scaffold": {
+        "compressed_prefix": {
+          "sha256": "b06e73b4444e3d31f6ea48e9a65c2a673cf3a58ee70a72f23a3665249d29f40d",
+          "size_bytes": 1037
+        },
+        "contains_files_or_symlinks": false,
+        "directories": [
+          "debug_ramdisk",
+          "dev",
+          "metadata",
+          "mnt",
+          "proc",
+          "second_stage_resources",
+          "sys"
+        ],
+        "gid": 0,
+        "mode": "0755",
+        "newc": {
+          "sha256": "027b1045269d9d61baa63b204818977cef7ecdc953ef9265d5d8a9520404cd2e",
+          "size_bytes": 1024
+        },
+        "uid": 0
+      },
+      "command_line_sha256": "d4171d7aa65f0c4e2c0f9c1c776dda26693f7021f8443c274dcfd9121a4d8d2f",
+      "download_succeeded": true,
+      "boot_command_succeeded": true,
+      "returncode": 0,
+      "timed_out": false,
+      "status": "recovery_init_second_stage_reached_then_bootloader",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "avb": {
+        "partition_name": "boot",
+        "algorithm": "SHA256_RSA4096",
+        "flags": 0,
+        "rollback_index": 1769904000,
+        "rollback_index_location": 0,
+        "local_development_signature_verified": true,
+        "oem_signature": false,
+        "public_key_sha256": "020d7559b8ddedf153e77cc4a02af26c666e3746408a230650ef8cd1e8f09b03",
+        "properties": {
+          "com.android.build.boot.os_version": "16",
+          "com.android.build.boot.security_patch": "2026-02-01"
+        }
+      },
+      "runtime_observations": {
+        "missing_first_stage_mount_points_resolved": true,
+        "vendor_module_loading_observed": true,
+        "monolithic_sepolicy_loading_observed": true,
+        "recovery_init_selinux_enforcing_observed": true,
+        "second_stage_init_started_observed": true,
+        "second_stage_init_started_seconds": 18.496079,
+        "reboot_requested_seconds": 18.644637,
+        "init_log_rate_limit_suppression_observed": true,
+        "fatal_cause_identified": false,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "bootloader_after_trial_verified": true,
+        "slot_after_trial": "a",
+        "diagnostic_return_to_stock_command": "fastboot reboot",
+        "stock_authorized_adb_returned": true,
+        "last_kernel_log_available_via_android_dropbox": true,
+        "saved_log_contains_some_corrupted_characters": true
+      },
+      "evidence": {
+        "start": {
+          "sha256": "c89ca526a138828cd6cdb113f2c5bc71a59a671ff06c5c2617f9cedd4cbdcafc",
+          "size_bytes": 652
+        },
+        "result": {
+          "sha256": "6bf1c58718cbc14895ed83ae42752af0ba6687e4b359b8711ccf3ea6059ac161",
+          "size_bytes": 282
+        },
+        "bootloader_variables": {
+          "sha256": "c0f8c4c04388a9f86a00d6d54de77b71563b0c002463b000552563926f0a77b1",
+          "size_bytes": 1637
+        },
+        "construction": {
+          "sha256": "1d0bb12848b2aeee5be13d875b4b72ddef8491e2afb13c92c949a3e86bb9acb0",
+          "size_bytes": 4648
+        },
+        "independent_image_inspection": {
+          "sha256": "116d503d2525d500c58e5d55068beff845e8b85a49f2e5af8c933ce6fde7c29f",
+          "size_bytes": 8691
+        },
+        "independent_inspector_execution": {
+          "sha256": "d6552654fc32cf6c939f9f062f98ee66e6d21f0bd42afa9bf249fefc6b5096af",
+          "size_bytes": 789
+        },
+        "explicit_key_avb_verification": {
+          "sha256": "cec2417e0a60c44ac0ea47fa24ae3de1dee3c57420a69c9e43eb5b4370749837",
+          "size_bytes": 1209
+        },
+        "native_composite_decompression": {
+          "sha256": "a47b46b96c21ea5bb22beafea246488928ee87132b96d4e0674dc798ae8052bd",
+          "size_bytes": 668
+        },
+        "bootloader_return": {
+          "sha256": "b965bda8ead83893b2926777da3ef15a243e3761f0b3e0ddb25aeac0bccbb147",
+          "size_bytes": 504
+        },
+        "diagnostic_stock_reboot": {
+          "sha256": "7b04df8888b4fb910656b4d228b94a4c2f46347b22537944cc7dcda9b92f5fe4",
+          "size_bytes": 152
+        },
+        "last_kernel_log": {
+          "sha256": "0280c1af35220af476aae971c9063d204ccf1239db0ded52947881dc50dc2b59",
+          "size_bytes": 68049
+        },
+        "metadata_peer_review": {
+          "sha256": "19a7e28028ee7ef9b2009d83c791636f9929fea82a91fb58ce15293e0398e1de",
+          "size_bytes": 3219
+        },
+        "source_prefix_findings": {
+          "sha256": "687c543bd9814d896ff68ce281a5d81508c80fdd421ba79c8379b56c099bdc66",
+          "size_bytes": 7231
+        },
+        "source_directory_plan": {
+          "sha256": "d1208908d5bceac9d2dee89f123dc71a5608d39c2743732a5af75327e17f7510",
+          "size_bytes": 2404
+        }
+      }
     }
   ],
   "last_confirmed_mode": "stock_android",
@@ -272,7 +417,8 @@
     "The compiled static artifact milestone remains a historical record, not a claim that hardware testing succeeded.",
     "The v4 wrapper was accepted but reached stock Android. Public Qualcomm loader code suggests init_boot ramdisk preference; the proprietary Nezha loader implementation has not been established.",
     "No partition-write, wipe, unlock/relock, or slot-change command was sent. Temporary boot does not guarantee that a bootloader leaves all of its internal boot metadata unchanged.",
-    "The v3 trial has saved first-stage initialization failure evidence. TWRP UI, recovery ADB and recovery logs remain unverified; saved previous-kernel logs are distinct from a working recovery logger."
+    "The v3 trial has saved first-stage initialization failure evidence. TWRP UI, recovery ADB and recovery logs remain unverified; saved previous-kernel logs are distinct from a working recovery logger.",
+    "The directory-scaffold trial reached second-stage recovery init with SELinux enforcing. Init then rebooted; its fatal cause was not visible amid kernel write-rate-limit suppression. This is not a completed TWRP UI/ADB startup."
   ],
   "evidence": {
     "adb_reboot_to_bootloader": {

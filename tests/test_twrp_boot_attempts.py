@@ -126,6 +126,31 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertLess(observed['saved_log_init_started_seconds'], observed['saved_log_abort_seconds'])
         self.assertLess(observed['saved_log_abort_seconds'], observed['saved_log_reboot_seconds'])
 
+    def test_scaffold_progress_does_not_hide_the_unknown_later_failure(self):
+        trial = self.record['attempts'][3]
+        self.assertEqual(trial['image_sha256'],
+                         '4da77ae4bd8e5a30d036b23ae2e8939fada75023a16588a6f4456fce8e866093')
+        self.assertEqual(trial['ramdisk_sha256'],
+                         '1f1c61c9c8d473d1e9753cc971c13e0d71b23318e6080e5e9615bec7b5d196ff')
+        suffix = trial['canonical_ramdisk_suffix']
+        self.assertEqual(suffix['sha256'], self.milestone['artifact']['compressed_ramdisk_sha256'])
+        self.assertEqual(suffix['offset_within_ramdisk_bytes'], 1037)
+        self.assertTrue(suffix['unchanged'])
+        self.assertEqual(trial['directory_scaffold']['directories'],
+                         ['debug_ramdisk', 'dev', 'metadata', 'mnt', 'proc', 'second_stage_resources', 'sys'])
+        self.assertFalse(trial['directory_scaffold']['contains_files_or_symlinks'])
+        observed = trial['runtime_observations']
+        for key in ('missing_first_stage_mount_points_resolved', 'vendor_module_loading_observed',
+                    'monolithic_sepolicy_loading_observed', 'recovery_init_selinux_enforcing_observed',
+                    'second_stage_init_started_observed', 'init_log_rate_limit_suppression_observed',
+                    'bootloader_after_trial_verified', 'stock_authorized_adb_returned'):
+            self.assertTrue(observed[key])
+        self.assertFalse(observed['fatal_cause_identified'])
+        self.assertFalse(observed['recovery_ui_verified'])
+        self.assertFalse(observed['recovery_adb_verified'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        self.assertLess(observed['second_stage_init_started_seconds'], observed['reboot_requested_seconds'])
+
 
 if __name__ == '__main__':
     unittest.main()
