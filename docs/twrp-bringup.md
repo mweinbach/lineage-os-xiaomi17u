@@ -5,15 +5,21 @@ TWRP is an active, separate bring-up target for the China Xiaomi 17 Ultra
 without requiring a complete Evolution X ROM first. A compiled recovery is
 not yet a tested rescue environment, and this work authorizes no phone change.
 
-**Normal build 64 produced a rebuilt engineering-key-signed recovery image.**
-Its 100 MiB size and kernel-free v4 layout passed structural inspection, and
-the build verified its AOSP test-key AVB signature. The rebuilt archive has
-unique secure properties, resolves all 44 executable interpreter paths, and
-contains the generated loader configuration. Detailed artifact verification
-is still incomplete: the inventory checker needs to distinguish Android's
-intentional linker/ABI-stub SONAME pair from an ambiguous library collision.
-No image has been booted or flashed, and no working logging environment is
-claimed.
+**Normal build 66 produced a recovery image that passed the complete static
+artifact sequence and the separate inventory check.** The 100 MiB image has
+SHA256 `51478e22c6e99f7b604aa0ab1681d90adb84931f60d61b8e978e48a15ed1e791`.
+Its kernel-free v4 layout and AOSP engineering-key AVB signature passed. The
+actual archive contains the required `/etc` alias, unique secure properties,
+and a policy with no permissive domains. All 44 executable interpreter paths,
+1,074 library dependency edges and five recovery compiler-evidence roles passed
+their checks. Both ramdisk inventories agree with the packaged contents.
+
+The local candidate is `artifacts/twrp/nezha/build66/recovery.img`; that ignored
+directory also contains its hashes and verification notes. This is a static
+artifact milestone, not a tested rescue environment. No image has been booted
+or flashed. Display, touch, boot-chain compatibility, authenticated ADB and
+usable recovery-log access remain unverified. No host key has been read or
+provisioned, and no phone operation is authorized by this result.
 
 ## Source and build isolation
 
@@ -151,11 +157,53 @@ between `system/bin/linker64` and `system/lib64/ld-android.so`. Pinned bionic
 `99926c766ef7f121950611f047dba4769a25226c` deliberately gives the linker this
 SONAME, defines the separate link-time ABI stub, and registers the running
 linker before resolving unqualified dependency names. Both files must remain.
-This is a limitation of the inventory classification; it does not prove
-runtime symbol compatibility. The original failed run is retained, and a
-reviewed inspector correction plus another complete artifact run are still
-required. The policy analyzer and compiled ADB checks were not reached by
-this run.
+This was a limitation of the inventory classification; it did not prove
+runtime symbol compatibility. The original failed run is retained. The reviewed
+successor recognizes only this exact loader/stub pair under the original path,
+architecture, ELF-type, dependency and interpreter constraints. It preserves
+the duplicate SONAME metadata and rejects ambiguous library resolution. The
+policy analyzer and compiled ADB checks were not reached by that failed run.
+
+The next build-64 artifact run passed the ELF inventory and stopped at a real
+staging/archive mode difference for the pinned UI XML. Source review of
+`mkbootfs` and `fs_config` established three exact packing rules: `twres/ui.xml`
+changes from `0755` to `0644`, the authored `init.recovery.qcom.rc` from `0644`
+to `0750`, and `system/bin/logd` from `0755` to `0550`. Their contents match.
+The verifier now checks those exact mode policies; it does not chmod outputs
+or pretend their staging and packed modes are equal. The original failed
+report remains unchanged.
+
+The same inspection found `/etc` absent from both staging and the archive.
+The target change in commit `2ced55ff186e5d361172c8ef22b19fbeb9efbae4` uses the
+existing `BOARD_RECOVERY_IMAGE_PREPARE` hook to establish
+`/etc -> /system/etc` before packing and signing. It rejects conflicting paths
+and refreshes both original inventories, including the name list's checksum.
+Graph 65 verified the rendered recipe; normal build 66 completed all 25
+incremental steps and the engineering-signature check. All 33 source patches,
+272 supplementary projects and 202 source-selection rules remain unchanged.
+All 325 cleanup-state checks passed before and after the graph and after the
+build. No source checkout, saved clean state or prior image was deleted.
+
+The complete artifact run used the actual build-66 receipt and image, with a
+new immutable verifier bundle. Bounded decompression produced a 57,758,208-byte
+CPIO archive with SHA256
+`26e00b45e58c82abca9c58bed226248645c6ced543469ff4d56be9fee2089a9e`.
+It contains 777 entries: 28 directories, 541 regular files and 208 symlinks.
+The ELF inventory parsed 160 ARM64 files with no unresolved library or
+interpreter paths. The native policy analyzer returned zero with unfiltered
+empty stdout and stderr for the exact packaged policy. The bounded LLVM reader
+and compile-command checks passed for `init`, `libtwrpinstall`, `minadbd`,
+`adbd_main` and `adbd_wifi`; the persisted capture, image, object and installed
+file bindings also passed. These checks do not attest compiler execution or
+prove runtime authentication, labeling, relocation or daemon startup.
+
+The separate inventory check compared every regular-file hash and symlink
+target with a fresh staging capture. All 778 name-list entries and 537 checksum
+entries match the original producer's census and exclusions. The name list
+includes its observed `.` root; `mkbootfs` omits that header, so no synthetic
+entry is added to the archive count. The verified `/etc` alias resolves both
+original cgroup/profile JSON lookups before init actions. Runtime cgroup mounts
+and logd behavior still require a device test.
 
 The [community reference review](twrp-community-references.md) records the two
 Nezha trees supplied during bring-up at exact commits. Their USB and touch

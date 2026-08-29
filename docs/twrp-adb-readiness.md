@@ -5,8 +5,11 @@ trusted host key is bundled, and no recovery authentication or log-access test
 has passed. Successful compilation or USB enumeration would not establish
 authorized access. The source now requests authenticated USB ADB on the secure
 user target and removes recovery's network transport fallback. These changes
-have source-contract tests, but no compiled artifact or device validation.
-Public-key provisioning remains a proposal.
+have source-contract tests and passed the build-66 static artifact checks,
+including the selected daemon, startup RC, initial `/etc` profile lookups,
+library dependencies and both recovery ADB compile inputs. No device validation
+has occurred. Public-key provisioning and the logging-access design remain
+unfinished.
 
 The optional [public-key validator](../scripts/twrp_adb_public_key.py) is now
 implemented separately from the build. It reads only one explicitly authorized
@@ -58,8 +61,9 @@ the inspected product's eight generated roots: `adbd.recovery`,
 supplies libraries rather than the daemon, and the upstream task-profile request
 is inside the disabled crypto branch. The target now explicitly requests all
 three original modules alongside `recovery`, without enabling crypto or
-inheriting the broad vendor product. This is a source change, not a finding from
-a completed installation graph or ramdisk.
+inheriting the broad vendor product. The original finding was a source review;
+the later build-66 artifact inspection confirmed the daemon and both JSON files
+in the actual ramdisk, with `/etc -> /system/etc` already present.
 
 Graph 47's generated product configuration contains the previous eight roots
 plus exactly these three additions. That graph still failed on an unrelated
@@ -68,7 +72,9 @@ ARM64 daemon at `/system/bin/adbd`, both JSON files in `/system/etc`, their
 existing SELinux labels and the `/etc` link. That link must already exist in
 the ramdisk because cgroup setup precedes the normal `early-init` and `init`
 actions. The [target notes](../recovery/twrp/device/xiaomi/nezha/README.md)
-record the exact provider names, expected paths and remaining artifact checks.
+record the exact provider names and expected paths. Build 66 passed those packed
+path, ownership, contents and staging checks. Effective runtime labels and
+cgroup/controller startup remain separate, untested requirements.
 
 Automatic startup is paired with
 [`0024-recovery-usb-only-adb.patch`](../patches/twrp/0024-recovery-usb-only-adb.patch).
@@ -88,8 +94,10 @@ Endpoint presence does not establish USB enumeration, controller readiness or
 SELinux access. Android init continues after individual mount or write failures,
 so the startup action can still request adbd after failed USB setup. No new
 controller-mode write, wait, shell helper, userdata mount, key copy, permission
-change or root request is added. Actual Ninja commands and recovery object files
-must confirm that both changed ADB translation units use the recovery branch.
+change or root request is added. The build-66 artifact sequence checked actual
+Ninja commands and the corresponding recovery object files for both changed
+ADB translation units. That static evidence does not prove transport behavior
+or authorize a host on the phone.
 
 The public tests reconstruct both complete ADB source postimages from the
 tracked patch and exercise the exact startup predicates, preserved RC prefix,
