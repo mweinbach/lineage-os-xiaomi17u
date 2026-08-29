@@ -870,11 +870,85 @@
         "usb_mount_source_audit": {
           "sha256": "3762a093373ecade2cf96cd5f4ca1bf4c72967945609dab70f3b0070e7e848f6",
           "size_bytes": 19802
+        },
+        "later_user_fastboot_confirmation": {
+          "sha256": "5ce7e10e7736b463c5ef05ff04012a495db3a8da642e90c3f82a3d9768ad0275",
+          "size_bytes": 1533
+        },
+        "later_diagnostic_stock_reboot_result": {
+          "sha256": "7a144b89f1c6959aa7f7366f7b20c38de4fd5507ce047256d76b61d490af094d",
+          "size_bytes": 217
+        },
+        "later_stock_adb_arrival": {
+          "sha256": "919a55a8d08227c53defe009f807d05bbb7f0a8bfcf47e842ab5fea487d9c687",
+          "size_bytes": 3730
+        },
+        "later_stock_identity": {
+          "sha256": "00376033ea4fd1166fd214f6ec1c2f16f9c21dfe9e1104fbb1edd45424ab9df1",
+          "size_bytes": 677
+        },
+        "early_dropbox_observation": {
+          "sha256": "8916a1dee601cc6371f71174d75decce620d7b0f2bef96f11a932ed48e700d4d",
+          "size_bytes": 57704
+        },
+        "early_capture_clock_state": {
+          "sha256": "63ac52f4d1125dcdd2c49047c51c627b3098033db1ed7f24c6a22de893953eb1",
+          "size_bytes": 849
+        },
+        "early_bootreceiver_logcat": {
+          "sha256": "9949cc50a3a1b779f124c2530923733ff1e6b130d2b3ed2431fcedfa25101b0a",
+          "size_bytes": 5526
+        }
+      },
+      "later_stock_return": {
+        "source": "user_return_to_fastboot_and_selected_device_verification",
+        "user_returned_to_fastboot": true,
+        "selected_bootloader_identity": {
+          "product": "nezha",
+          "slot": "a",
+          "is_userspace": false,
+          "unlocked": true,
+          "secure": true
+        },
+        "diagnostic_return_to_stock_command": "fastboot reboot",
+        "diagnostic_return_to_stock_command_count": 1,
+        "diagnostic_return_to_stock_command_accepted": true,
+        "stock_authorized_adb_returned": true,
+        "stock_product": "nezha",
+        "stock_build": "OS3.0.309.0.WPACNXM",
+        "slot": "a",
+        "stock_boot_completed": true,
+        "stock_sys_boot_reason": "bootloader",
+        "stock_final_uptime_seconds": 94.05,
+        "saved_previous_kernel_log_available": false,
+        "stale_log_used_for_diagnosis": false,
+        "cause_of_missing_log_established": false,
+        "runtime_failure_cause_identified": false,
+        "recovery_stage_verified": false,
+        "recovery_ui_verified": false,
+        "recovery_adb_verified": false,
+        "log_collection_after_stock_return_read_only": true,
+        "early_dropbox_capture": {
+          "monotonic_budget_seconds": 90,
+          "first_observed_phone_uptime_seconds": 8.13,
+          "index_observations": 80,
+          "last_index_observation_elapsed_seconds": 84.929,
+          "system_last_kmsg_snapshot_count": 0,
+          "system_last_kmsg_candidate_count": 0,
+          "system_boot_entry_observed": true,
+          "date_filter_applied": false,
+          "candidate_logs_assumed_current": false,
+          "phone_clock_forward_correction_observed": true,
+          "phone_clock_correction_uptime_interval_seconds": [
+            18.95,
+            29.84
+          ],
+          "clock_correction_proves_log_loss": false
         }
       }
     }
   ],
-  "last_confirmed_mode": "bootloader_before_attempt_7",
+  "last_confirmed_mode": "stock_android_after_attempt_7",
   "twrp_boot_verified": false,
   "authenticated_recovery_adb_verified": false,
   "runtime_selinux_enforcement_verified": false,
@@ -892,7 +966,8 @@
     "Attempt 5 identifies the missing /apex mount point from a fresh saved kernel log. Its earlier stale DropBox capture is retained but excluded as evidence of that trial; BootReceiver can publish after sys.boot_completed.",
     "Attempt 6 adds the empty /apex directory, but an accepted boot command and absent USB do not prove TWRP started or the phone crashed. Screen state and the current runtime remain unresolved.",
     "The config-directory candidate was initially recorded before upload or boot; that preparation checkpoint remains historical. Static absence of /config is a USB setup defect, not proof that it is the only runtime problem in attempt 6.",
-    "Attempt 7 was accepted but USB remained absent during the bounded observation. Adding /config alone did not establish working USB, UI or authenticated ADB; the actual startup failure still needs runtime evidence."
+    "Attempt 7 was accepted but USB remained absent during the bounded observation. Adding /config alone did not establish working USB, UI or authenticated ADB; the actual startup failure still needs runtime evidence.",
+    "After attempt 7 the user returned to fastboot, and one authorized diagnostic reboot returned the verified stock build on slot a. Early read-only DropBox collection observed a SYSTEM_BOOT entry but no SYSTEM_LAST_KMSG candidate within its 90-second monotonic budget. The observed forward phone-clock correction does not establish why the kernel log is missing or what recovery stage failed."
   ],
   "evidence": {
     "adb_reboot_to_bootloader": {
@@ -908,7 +983,7 @@
       "size_bytes": 474
     }
   },
-  "latest_observed_transport_state": "no_adb_or_fastboot_after_attempt_7",
+  "latest_observed_transport_state": "selected_authorized_stock_adb_after_attempt_7",
   "prepared_candidate_checkpoints": [
     {
       "name": "config72",

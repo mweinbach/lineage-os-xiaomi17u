@@ -281,6 +281,94 @@ class TwrpBootAttemptsTests(unittest.TestCase):
                     'configfs_mount_success_verified'):
             self.assertFalse(observed[key])
 
+    def test_config_stock_return_records_the_verified_device_and_one_authorized_reboot(self):
+        observed = self.record['attempts'][6]['later_stock_return']
+        self.assertEqual(observed['source'],
+                         'user_return_to_fastboot_and_selected_device_verification')
+        self.assertTrue(observed['user_returned_to_fastboot'])
+        self.assertEqual(observed['selected_bootloader_identity'], {
+            'product': 'nezha', 'slot': 'a', 'is_userspace': False,
+            'unlocked': True, 'secure': True})
+        self.assertEqual(observed['diagnostic_return_to_stock_command'], 'fastboot reboot')
+        self.assertEqual(observed['diagnostic_return_to_stock_command_count'], 1)
+        for key in ('diagnostic_return_to_stock_command_accepted',
+                    'stock_authorized_adb_returned', 'stock_boot_completed',
+                    'log_collection_after_stock_return_read_only'):
+            self.assertTrue(observed[key])
+        self.assertEqual((observed['stock_product'], observed['stock_build'], observed['slot']),
+                         ('nezha', 'OS3.0.309.0.WPACNXM', 'a'))
+        self.assertEqual(observed['stock_sys_boot_reason'], 'bootloader')
+        self.assertEqual(observed['stock_final_uptime_seconds'], 94.05)
+
+    def test_config_early_capture_distinguishes_missing_kernel_logs_from_empty_dropbox(self):
+        observed = self.record['attempts'][6]['later_stock_return']
+        capture = observed['early_dropbox_capture']
+        self.assertEqual(capture['monotonic_budget_seconds'], 90)
+        self.assertEqual(capture['first_observed_phone_uptime_seconds'], 8.13)
+        self.assertEqual(capture['index_observations'], 80)
+        self.assertEqual(capture['last_index_observation_elapsed_seconds'], 84.929)
+        self.assertLess(capture['last_index_observation_elapsed_seconds'],
+                        capture['monotonic_budget_seconds'])
+        self.assertEqual(capture['system_last_kmsg_snapshot_count'], 0)
+        self.assertEqual(capture['system_last_kmsg_candidate_count'], 0)
+        self.assertTrue(capture['system_boot_entry_observed'])
+        self.assertNotIn('dropbox_entries', observed)
+        self.assertFalse(observed['saved_previous_kernel_log_available'])
+        self.assertFalse(capture['date_filter_applied'])
+        self.assertFalse(capture['candidate_logs_assumed_current'])
+
+    def test_config_clock_correction_is_observed_without_becoming_a_log_loss_diagnosis(self):
+        observed = self.record['attempts'][6]['later_stock_return']
+        capture = observed['early_dropbox_capture']
+        self.assertTrue(capture['phone_clock_forward_correction_observed'])
+        self.assertEqual(capture['phone_clock_correction_uptime_interval_seconds'],
+                         [18.95, 29.84])
+        self.assertFalse(capture['clock_correction_proves_log_loss'])
+        for key in ('cause_of_missing_log_established', 'runtime_failure_cause_identified',
+                    'stale_log_used_for_diagnosis'):
+            self.assertFalse(observed[key])
+
+    def test_config_stock_return_does_not_relabel_original_recovery_observation(self):
+        trial = self.record['attempts'][6]
+        observed = trial['later_stock_return']
+        self.assertEqual(trial['status'], 'boot_command_accepted_no_adb_or_fastboot_observed')
+        self.assertFalse(trial['runtime_observations']['current_runtime_identified'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        for key in ('recovery_stage_verified', 'recovery_ui_verified', 'recovery_adb_verified'):
+            self.assertFalse(observed[key])
+        self.assertEqual(self.record['last_confirmed_mode'], 'stock_android_after_attempt_7')
+        self.assertEqual(self.record['latest_observed_transport_state'],
+                         'selected_authorized_stock_adb_after_attempt_7')
+        for key in ('twrp_boot_verified', 'authenticated_recovery_adb_verified',
+                    'runtime_selinux_enforcement_verified', 'recovery_log_access_verified',
+                    'partition_write_command_sent'):
+            self.assertFalse(self.record[key])
+
+    def test_config_followup_binds_separate_receipts_without_private_payloads(self):
+        evidence = self.record['attempts'][6]['evidence']
+        expected = {
+            'later_user_fastboot_confirmation': (
+                1533, '5ce7e10e7736b463c5ef05ff04012a495db3a8da642e90c3f82a3d9768ad0275'),
+            'later_diagnostic_stock_reboot_result': (
+                217, '7a144b89f1c6959aa7f7366f7b20c38de4fd5507ce047256d76b61d490af094d'),
+            'later_stock_adb_arrival': (
+                3730, '919a55a8d08227c53defe009f807d05bbb7f0a8bfcf47e842ab5fea487d9c687'),
+            'later_stock_identity': (
+                677, '00376033ea4fd1166fd214f6ec1c2f16f9c21dfe9e1104fbb1edd45424ab9df1'),
+            'early_dropbox_observation': (
+                57704, '8916a1dee601cc6371f71174d75decce620d7b0f2bef96f11a932ed48e700d4d'),
+            'early_capture_clock_state': (
+                849, '63ac52f4d1125dcdd2c49047c51c627b3098033db1ed7f24c6a22de893953eb1'),
+            'early_bootreceiver_logcat': (
+                5526, '9949cc50a3a1b779f124c2530923733ff1e6b130d2b3ed2431fcedfa25101b0a'),
+        }
+        for name, (size, digest) in expected.items():
+            with self.subTest(receipt=name):
+                self.assertEqual(evidence[name], {'size_bytes': size, 'sha256': digest})
+        self.assertEqual(evidence['post_boot_presence'], {
+            'size_bytes': 9348,
+            'sha256': '8e676acaeb2e4537f3a4e50766fbb0098aa44dc5aa99bab877ce0092b073b851'})
+
 
 if __name__ == '__main__':
     unittest.main()

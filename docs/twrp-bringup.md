@@ -193,6 +193,26 @@ ADB and the runtime cause remain unverified. The user was asked to return to
 fastboot promptly if the screen remained black so another saved-log collection
 could be attempted.
 
+The user subsequently returned the phone to fastboot. Fresh checks positively
+identified the selected `nezha`, slot `a`, `is-userspace: no`, `unlocked: yes`
+and `secure: yes`. One authorized diagnostic `fastboot reboot` was accepted,
+and authorized ADB returned on the same stock build and slot. The original
+trial's absent-USB observation remains unchanged; this later stock return
+does not establish which recovery stage ran or whether its UI or ADB started.
+
+Read-only collection began at phone uptime 8.13 seconds without waiting for
+boot completion or filtering candidates by date. Within a 90-second host
+monotonic budget, 80 DropBox index observations through 84.929 seconds of
+elapsed capture time found no `SYSTEM_LAST_KMSG` snapshot or candidate. A
+normal `SYSTEM_BOOT` entry did publish, so this was not an entirely empty
+DropBox. The phone clock corrected forward between observed uptimes of about
+18.95 and 29.84 seconds. That correction does not establish why the kernel log
+was missing, and no stale log was used to diagnose the recovery trial.
+The final stock observation had `sys.boot_completed=1`, `sys.boot.reason=bootloader`
+and uptime 94.05 seconds. No partition-write, flash, wipe, unlock/relock or
+slot-change command was sent. Recovery-stage progress, UI, authenticated
+recovery ADB and the failure cause remain unverified for this trial.
+
 ## Source and build isolation
 
 The selected experimental source is
