@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: Apache-2.0
+// Install this directory unchanged in the pinned Android source checkout.
+cc_binary_host {
+    name: "nezha_erofs_metadata",
+    defaults: ["erofs-utils_export_defaults"],
+    srcs: ["erofs_metadata.c"],
+    include_dirs: ["external/erofs-utils/lib"], // Pinned xxhash.h, not a host install.
+    c_std: "gnu11",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+    static_libs: [
+        "liberofs",
+        "libcrypto",
+        "libbase",
+        "libcutils",
+        "libext2_uuid",
+        "liblog",
+        "liblz4",
+        "libselinux",
+    ],
+    stl: "c++_static",
+    target: {
+        darwin: { enabled: false },
+    },
+}
