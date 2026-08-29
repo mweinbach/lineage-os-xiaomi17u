@@ -1,0 +1,553 @@
+{
+  "schema_version": 1,
+  "operation": "init-helper-component-capability-evidence",
+  "status": "scoped_static_and_final_init_link_evidence",
+  "observed_at_utc": "2026-08-29T18:06:43.017460+00:00",
+  "completed_at_utc": "2026-08-29T18:07:27.089388+00:00",
+  "workspace_head_at_audit_start": "199e49fda2153b4a980f2f31d046408afad0a05c",
+  "target": {
+    "device": "nezha",
+    "platform": "Evolution X Android 16 QPR2",
+    "branch": "bka",
+    "release_configuration": "bp4a",
+    "product": "lineage_nezha",
+    "variant": "user",
+    "scope": "framework-checks component policy integration"
+  },
+  "proposed_capability": {
+    "symbol": "target_init_dev_config_property_writes",
+    "definition": "target_init_dev_config_property_writes=false",
+    "meaning": "This component product does not grant init_dev_config SET access to apexd_select_prop or media_variant_prop. This is an explicit capability restriction, not proof that a helper provider cannot exist.",
+    "admission_performed_by_this_audit": false,
+    "complete_rom_admission": false
+  },
+  "audit_receipt": {
+    "path": "reports/policy-source-integration-20260829/helper-capability-audit.json",
+    "size_bytes": 110386,
+    "sha256": "c2e40926b74e48c6c0818f388383fbc463f39ac36a3d5dd726daa39a79933ed5"
+  },
+  "source_pins": {
+    "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "system/core": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+    "system/sepolicy": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+  },
+  "final_init_linkage": {
+    "stripped_installed": {
+      "both_hook_instructions_match": true,
+      "android_output_relative_path": "target/product/nezha/system/bin/init",
+      "sections": {
+        ".note.gnu.build-id": {
+          "descriptor_hex": "1f1191af0bed478c133df90ef41f1955",
+          "sha256": "5e7c36ba190d38db511682ce3eb9101f11177a42682a35e057e2c72be31bdfb8",
+          "size_bytes": 32
+        },
+        ".text": {
+          "sha256": "783b0156ddd10ae65a0475aad577914394c7438adf7032087ee9fe3cd163c069",
+          "size_bytes": 2125736
+        }
+      },
+      "sha256": "3a0001d2b6383a5a97861c288eb82241ae5b88d18b3811f16d7960230abf8ca7",
+      "size_bytes": 2708392
+    },
+    "stripped_build": {
+      "both_hook_instructions_match": true,
+      "android_output_relative_path": "soong/.intermediates/system/core/init/init_second_stage/android_arm64_armv8-a/init",
+      "sections": {
+        ".note.gnu.build-id": {
+          "descriptor_hex": "1f1191af0bed478c133df90ef41f1955",
+          "sha256": "5e7c36ba190d38db511682ce3eb9101f11177a42682a35e057e2c72be31bdfb8",
+          "size_bytes": 32
+        },
+        ".text": {
+          "sha256": "783b0156ddd10ae65a0475aad577914394c7438adf7032087ee9fe3cd163c069",
+          "size_bytes": 2125736
+        }
+      },
+      "sha256": "3a0001d2b6383a5a97861c288eb82241ae5b88d18b3811f16d7960230abf8ca7",
+      "size_bytes": 2708392
+    },
+    "unstripped_build": {
+      "both_hook_instructions_match": true,
+      "android_output_relative_path": "soong/.intermediates/system/core/init/init_second_stage/android_arm64_armv8-a/unstripped/init",
+      "sections": {
+        ".note.gnu.build-id": {
+          "descriptor_hex": "1f1191af0bed478c133df90ef41f1955",
+          "sha256": "5e7c36ba190d38db511682ce3eb9101f11177a42682a35e057e2c72be31bdfb8",
+          "size_bytes": 32
+        },
+        ".text": {
+          "sha256": "783b0156ddd10ae65a0475aad577914394c7438adf7032087ee9fe3cd163c069",
+          "size_bytes": 2125736
+        }
+      },
+      "sha256": "14d812bb8294dd57154fb0fa34fac235cef98cbd0c5c96774bc4c985f0e3441e",
+      "size_bytes": 13839072
+    },
+    "hooks": [
+      {
+        "binding": "WEAK",
+        "file_offset": 483816,
+        "instruction": "AArch64 RET",
+        "instruction_hex": "c0035fd6",
+        "size_bytes": 4,
+        "symbol": "_Z22vendor_load_propertiesv",
+        "type": "FUNC",
+        "virtual_address": "0x761e8"
+      },
+      {
+        "binding": "WEAK",
+        "file_offset": 483816,
+        "instruction": "AArch64 RET",
+        "instruction_hex": "c0035fd6",
+        "size_bytes": 4,
+        "symbol": "_Z22vendor_process_bootenvv",
+        "type": "FUNC",
+        "virtual_address": "0x761e8"
+      }
+    ],
+    "build_id": "1f1191af0bed478c133df90ef41f1955",
+    "independent_readelf_tool": {
+      "path": "/usr/bin/readelf",
+      "sha256": "6bca2bbd23b072db9e9a19ae0e65cf7b7c15c08a3c2cf01dd56453e1ac9340b1",
+      "size_bytes": 797368
+    },
+    "independent_symbol_table_and_elf_byte_checks_agreed": true,
+    "final_text_identity_verified": true,
+    "link_inputs": [
+      {
+        "android_output_relative_path": "soong/.intermediates/system/core/init/init_second_stage/android_arm64_armv8-a/unstripped/init.rsp",
+        "sha256": "99aa214635200344952d6754b0e6794d58d961027760cdb6c572706c4a9799bc",
+        "size_bytes": 5662
+      },
+      {
+        "android_output_relative_path": "soong/.intermediates/system/core/init/libinit/android_arm64_armv8-a_static/libinit.a.rsp",
+        "sha256": "6bf18eabc0a4f5e67073e65bf39a654255a23b782149e1df348e7af166924cd7",
+        "size_bytes": 9863
+      },
+      {
+        "android_output_relative_path": "soong/.intermediates/system/core/init/libinit/android_arm64_armv8-a_static/obj/system/core/init/vendor_init.o",
+        "sha256": "04444e6c69c1eb0acfbbd3da9294882af01933f7b646636c6cd658748f3b93cd",
+        "size_bytes": 3168
+      }
+    ],
+    "source_vendor_init": {
+      "android_source_relative_path": "system/core/init/vendor_init.cpp",
+      "sha256": "1f6a924d34630a2476fddbab44b5b48d615461b6ef8c46310275b107c89db828",
+      "size_bytes": 1693
+    },
+    "source_init_build": {
+      "android_source_relative_path": "system/core/init/Android.bp",
+      "sha256": "753e21f935e0a138544b65baf57ad4431adadfedf2c6b9526931ba821e1e22fa",
+      "size_bytes": 18797
+    },
+    "source_property_service": {
+      "android_source_relative_path": "system/core/init/property_service.cpp",
+      "sha256": "d82faacbbeb80256a416ca81cb9c877def16c3140aa57f4126db41889a67a887",
+      "size_bytes": 67643
+    },
+    "scope": "Existing built second-stage user init only; changed source, hook selection, link inputs, variant or binary requires revalidation."
+  },
+  "selected_init_rc": {
+    "source": {
+      "android_source_relative_path": "system/core/rootdir/init.rc",
+      "sha256": "ab5c2219e622d9ab3753e73b74dfe2f71d87d1431d235cc029b538ccf6f9654d",
+      "size_bytes": 60783
+    },
+    "installed": {
+      "android_output_relative_path": "target/product/nezha/system/etc/init/hw/init.rc",
+      "sha256": "ab5c2219e622d9ab3753e73b74dfe2f71d87d1431d235cc029b538ccf6f9654d",
+      "size_bytes": 60783
+    },
+    "source_capture": {
+      "path": "artifacts/source-contracts/nezha-init-helper-sources-v1/files/system/core/rootdir/init.rc",
+      "sha256": "ab5c2219e622d9ab3753e73b74dfe2f71d87d1431d235cc029b538ccf6f9654d",
+      "size_bytes": 60783
+    },
+    "bytes_identical": true,
+    "expected_helper_invocation_line": 79,
+    "expected_helper_service_line": 1352,
+    "expected_helper_seclabel_line": 1355,
+    "upstream_optional_service_preserved": true,
+    "extra_service_provider_or_override_observed_in_selected_files": false
+  },
+  "generated_configuration": {
+    "soong_variables": {
+      "BoardSepolicyM4Defs": [],
+      "DeviceArch": "arm64",
+      "DeviceName": "nezha",
+      "VendorVars_libinit": null,
+      "android_output_relative_path": "soong/soong.lineage_nezha.variables",
+      "sha256": "1f6e8b570cc401ff884aea73930fff71163191c1787e5f689d06c62ed10a88ea",
+      "size_bytes": 339116
+    },
+    "device_source_files": [
+      {
+        "android_source_relative_path": "device/xiaomi/nezha/BoardConfig.mk",
+        "sha256": "8bab471a6a909fd69e9d1536bbd6011859d0c458c0b62bd074d87ceb176c8f3a",
+        "size_bytes": 3748
+      },
+      {
+        "android_source_relative_path": "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+        "sha256": "04e0b55429d3e4401b3de756ece896396b3ff04b3ac93ef942511ea654fa2776",
+        "size_bytes": 3676
+      },
+      {
+        "android_source_relative_path": "device/xiaomi/nezha/generated/device-candidate.mk",
+        "sha256": "f7e8c016e3c68a4ff67d065d54494325de6ed3631ff4e506ae858c6c4d01cd0e",
+        "size_bytes": 587
+      }
+    ],
+    "source_scan_roots": [
+      {
+        "root": "android-source/device/xiaomi/nezha",
+        "selected_regular_text_files": 13,
+        "unexpected_helper_or_hook_hits": 0,
+        "skipped_files": 0
+      },
+      {
+        "root": "android-source/vendor/xiaomi/nezha",
+        "selected_regular_text_files": 10,
+        "unexpected_helper_or_hook_hits": 0,
+        "skipped_files": 7
+      },
+      {
+        "root": "android-source/kernel/xiaomi/nezha",
+        "selected_regular_text_files": 3,
+        "unexpected_helper_or_hook_hits": 0,
+        "skipped_files": 0
+      }
+    ],
+    "scan_boundary": "Regular files at most 2000000 bytes with no NUL byte; all hashes and skipped paths are in the ignored receipt."
+  },
+  "selected_factory_evidence": {
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "origin_authenticated": false,
+    "prior_capture_receipt": {
+      "path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/receipt.json",
+      "sha256": "2c5485df2264463c4485ead834b3fa57de473c238cf043b1a7e8ad4c05abb6e2",
+      "size_bytes": 87036
+    },
+    "selected_regular_files_rehashed": 253,
+    "selected_bytes_rehashed": 716487,
+    "helper_selector_or_hook_literal_hits": 0,
+    "context_files": [
+      {
+        "partition": "vendor",
+        "host_path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/vendor/files/0169",
+        "image_path": "/etc/selinux/vendor_file_contexts",
+        "sha256": "e03b0f4114a9103f9ae4056b44f787acbd2c8a2aa530d25c20edc49160eecc8a",
+        "size_bytes": 152798
+      },
+      {
+        "partition": "vendor",
+        "host_path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/vendor/files/0172",
+        "image_path": "/etc/selinux/vendor_property_contexts",
+        "sha256": "1ea657519b3869186b340700beffa8e7669aec87a7f542a708db7e2e9c0fa692",
+        "size_bytes": 65138
+      },
+      {
+        "partition": "odm",
+        "host_path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/odm/files/0070",
+        "image_path": "/etc/selinux/odm_file_contexts",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "partition": "odm",
+        "host_path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/odm/files/0072",
+        "image_path": "/etc/selinux/odm_property_contexts",
+        "sha256": "f020bb1adcdfa68dea4cfffdd2e59eb5efa1b302c126e325b1dd8232f9fe8152",
+        "size_bytes": 918
+      }
+    ],
+    "selected_vendor_symlinks_not_followed": 2,
+    "normal_boot_text_members_rehashed": 8,
+    "normal_boot_text_helper_or_alternate_init_hits": 0,
+    "normal_boot_text_scope": "Previously selected factory init_boot/vendor_boot text members only; recovery text and binary runtime inputs are excluded.",
+    "normal_boot_inventory_receipts": [
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/init_boot-inventory.json",
+        "sha256": "eaf0ed5028a8f88d8d728023f8ffe85ee094499de66ae3a8ca1c69488c57dabf",
+        "size_bytes": 9901
+      },
+      {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/ramdisk-comparison-v2/vendor_boot-inventory.json",
+        "sha256": "81ea2df0c4927f4a58d9587bb09a2809dccd5f75a62542669926fd1d9a5bdec6",
+        "size_bytes": 454747
+      }
+    ],
+    "provider_absence_proven": false
+  },
+  "alternate_boot_script_and_imports": {
+    "selected_bootconfigs": [
+      {
+        "helper_or_alternate_init_hits": [],
+        "keys": [
+          "androidboot.hardware",
+          "androidboot.memcg",
+          "androidboot.usbcontroller",
+          "androidboot.load_modules_parallel",
+          "androidboot.hypervisor.protected_vm.supported",
+          "androidboot.hypervisor.version",
+          "androidboot.vendor.qspa",
+          "androidboot.serialconsole"
+        ],
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/boot-analysis/unpacked/vendor_boot/bootconfig",
+        "sha256": "bad92331bd65be0207c84a855cb0b9580a504acd89684e3222007b20b683805f",
+        "size_bytes": 270
+      },
+      {
+        "helper_or_alternate_init_hits": [],
+        "keys": [
+          "androidboot.hardware",
+          "androidboot.hypervisor.protected_vm.supported",
+          "androidboot.hypervisor.version",
+          "androidboot.load_modules_parallel",
+          "androidboot.memcg",
+          "androidboot.serialconsole",
+          "androidboot.usbcontroller",
+          "androidboot.vendor.qspa"
+        ],
+        "path": "artifacts/build-validation/nezha-factory-boot-v8-1/configuration/vendor_bootconfig",
+        "sha256": "597ae0930da0636ed6099bf5a892004f34885bfbe9f424135d5af6cb46b8fd67",
+        "size_bytes": 270
+      },
+      {
+        "helper_or_alternate_init_hits": [],
+        "keys": [
+          "androidboot.hardware",
+          "androidboot.hypervisor.protected_vm.supported",
+          "androidboot.hypervisor.version",
+          "androidboot.load_modules_parallel",
+          "androidboot.memcg",
+          "androidboot.serialconsole",
+          "androidboot.usbcontroller",
+          "androidboot.vendor.qspa"
+        ],
+        "path": "artifacts/build-validation/nezha-factory-boot-v8-1/host-boot-validation-v3/unpacked-vendor_boot/bootconfig",
+        "sha256": "597ae0930da0636ed6099bf5a892004f34885bfbe9f424135d5af6cb46b8fd67",
+        "size_bytes": 270
+      }
+    ],
+    "built_vendor_boot": {
+      "bootconfig": {
+        "keys": [
+          "androidboot.hardware",
+          "androidboot.hypervisor.protected_vm.supported",
+          "androidboot.hypervisor.version",
+          "androidboot.load_modules_parallel",
+          "androidboot.memcg",
+          "androidboot.serialconsole",
+          "androidboot.usbcontroller",
+          "androidboot.vendor.qspa"
+        ],
+        "sha256": "597ae0930da0636ed6099bf5a892004f34885bfbe9f424135d5af6cb46b8fd67",
+        "size_bytes": 270
+      },
+      "bootconfig_offset": 22614016,
+      "cmdline": "video=vfb:640x400,bpp=32,memsize=3072000 erofs.reserved_pages=64 bootconfig bootconfig",
+      "header_version": 4,
+      "helper_or_alternate_init_hits": [],
+      "page_size": 4096,
+      "android_output_relative_path": "target/product/nezha/vendor_boot.img",
+      "sha256": "b10bdb2e9f4e12b126982924e2b754717e37da739da2ad4d6f4192742471db86",
+      "size_bytes": 100663296
+    },
+    "built_image_cmdline_and_bootconfig_helper_or_init_rc_hits": 0,
+    "observed_import_statements": 31,
+    "import_statement_scope": "Selected init scripts, ueventd configuration and ODM property files.",
+    "property_expanded_imports": 19,
+    "literal_targets_outside_selected_capture": [
+      {
+        "line": 64,
+        "literal_target_in_selected_partition_capture": false,
+        "partition": "vendor",
+        "property_expansion_required": false,
+        "selector": "/vendor/etc/init/hw/init.qcom.test.rc",
+        "source": "/etc/init/hw/init.qcom.rc"
+      },
+      {
+        "line": 32,
+        "literal_target_in_selected_partition_capture": false,
+        "partition": "vendor",
+        "property_expansion_required": false,
+        "selector": "/vendor/etc/init/hw/init.qti.kernel.test.rc",
+        "source": "/etc/init/hw/init.qti.kernel.rc"
+      },
+      {
+        "line": 63,
+        "literal_target_in_selected_partition_capture": false,
+        "partition": "vendor",
+        "property_expansion_required": false,
+        "selector": "/vendor/etc/ueventd.qcom.userdebug.rc",
+        "source": "/etc/ueventd.rc"
+      }
+    ],
+    "runtime_imports_evaluated": false,
+    "full_import_closure_verified": false,
+    "bootloader_supplied_or_dt_selected_runtime_values_measured": false
+  },
+  "existing_media_route": {
+    "source_property": "vendor.media.target_variant",
+    "destination_properties": [
+      "ro.media.xml_variant.codecs",
+      "ro.media.xml_variant.codecs_performance"
+    ],
+    "source_setter_statements": 4,
+    "init_scripts": [
+      {
+        "runtime_path": "/vendor/etc/init/hw/init.qcom.rc",
+        "host_path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/vendor/files/0049",
+        "size_bytes": 31846,
+        "sha256": "1a84076da2a8624e075907b7ff92007c32a047c44cee63cd9e7102494411f337",
+        "trigger": "property:vendor.media.target_variant=*"
+      },
+      {
+        "runtime_path": "/vendor/etc/init/init.qti.media.rc",
+        "host_path": "artifacts/source-contracts/nezha-init-helper-vendor-inputs-v1/vendor/files/0065",
+        "size_bytes": 2534,
+        "sha256": "3b8f0d3a7752a592073297a2803d0921ea98a322bd3a94234ec399aabb6c603b",
+        "trigger": "post-fs-data"
+      }
+    ],
+    "framework_existing_vendor_init_media_set": {
+      "explicit_vendor_init_media_set_count": 1,
+      "line_numbers": [
+        70677
+      ],
+      "path": "artifacts/build-validation/nezha-dsp-policy-v9-1/files/inputs/combined/system/etc/selinux/plat_sepolicy.cil",
+      "sha256": "b8353ba3f5336ff28b17508808c4617d47e289be6fe7ca6b37cf4da2a9708130",
+      "size_bytes": 3012604
+    },
+    "preserve_existing_init_and_vendor_init_authority": true,
+    "media_source_value_producer_timing_and_runtime_behavior_verified": false
+  },
+  "installed_product_scope": {
+    "installed_text_roots": [
+      {
+        "root": "android-output/target/product/nezha/vendor_ramdisk",
+        "exists": true,
+        "selected_regular_text_files": 7,
+        "helper_literal_hits": 0,
+        "unfollowed_symlinks": 0
+      },
+      {
+        "root": "android-output/target/product/nezha/ramdisk",
+        "exists": true,
+        "selected_regular_text_files": 2,
+        "helper_literal_hits": 0,
+        "unfollowed_symlinks": 7
+      },
+      {
+        "root": "android-output/target/product/nezha/system/etc/init",
+        "exists": true,
+        "selected_regular_text_files": 4,
+        "helper_literal_hits": 6,
+        "unfollowed_symlinks": 2
+      },
+      {
+        "root": "android-output/target/product/nezha/vendor/etc/init",
+        "exists": false,
+        "selected_regular_text_files": 0,
+        "helper_literal_hits": 0,
+        "unfollowed_symlinks": 0
+      },
+      {
+        "root": "android-output/target/product/nezha/odm/etc/init",
+        "exists": false,
+        "selected_regular_text_files": 0,
+        "helper_literal_hits": 0,
+        "unfollowed_symlinks": 0
+      },
+      {
+        "root": "android-output/target/product/nezha/system_ext/etc/init",
+        "exists": false,
+        "selected_regular_text_files": 0,
+        "helper_literal_hits": 0,
+        "unfollowed_symlinks": 0
+      },
+      {
+        "root": "android-output/target/product/nezha/product/etc/init",
+        "exists": false,
+        "selected_regular_text_files": 0,
+        "helper_literal_hits": 0,
+        "unfollowed_symlinks": 0
+      }
+    ],
+    "absent_selected_property_and_context_files": [
+      "android-output/target/product/nezha/system/build.prop",
+      "android-output/target/product/nezha/system/etc/prop.default",
+      "android-output/target/product/nezha/vendor/build.prop",
+      "android-output/target/product/nezha/odm/etc/build.prop",
+      "android-output/target/product/nezha/system_ext/build.prop",
+      "android-output/target/product/nezha/product/build.prop",
+      "android-output/target/product/nezha/system/etc/selinux/plat_file_contexts",
+      "android-output/target/product/nezha/system_ext/etc/selinux/system_ext_file_contexts",
+      "android-output/target/product/nezha/product/etc/selinux/product_file_contexts",
+      "android-output/target/product/nezha/vendor/etc/selinux/vendor_file_contexts",
+      "android-output/target/product/nezha/odm/etc/selinux/odm_file_contexts"
+    ],
+    "complete_installed_properties_or_contexts_verified": false,
+    "note": "These absent component outputs are outstanding gates, not successful absence tests. The six observed system init hits are the expected upstream optional helper comment, invocation, declaration and label lines."
+  },
+  "preservation_requirements": [
+    "Keep the optional upstream init_dev_config service, its property expansion and execution diagnostics unchanged.",
+    "Remove only the two scoped init_dev_config property_service SET grants when the explicit capability is false; preserve reads, socket grants, init/vendor_init authority, and assertions.",
+    "Reject duplicate or invalid M4 definitions, contradictory selected properties, additional helper invocations or labels, and unreviewed init-hook selection.",
+    "Unexpected runtime providers retain visible enforcing-policy denials; no substitute domain or permission expansion is authorized.",
+    "A full product or first-boot admission needs a fresh expanded-input audit; this component-only evidence cannot waive remaining packaging or hardware gates."
+  ],
+  "remaining_gates": [
+    "Guard duplicate and invalid definitions at source admission and actual Android M4 expansion; validate the source-generated policy with assertions and zero-permissive analysis.",
+    "Bind actual selected vendor derivations and regenerated policy/context checks; this audit did not run an Android policy build.",
+    "Re-audit complete merged properties, file contexts, init/APEX imports and generated partition contents before whole-product or first-boot admission.",
+    "Recheck changed final init binaries and all alternate boot-script selection inputs, including device-tree and bootloader-supplied inputs.",
+    "Preserve visible failures if an unexpected helper provider attempts the excluded property writes; provider contracts cannot waive assertions.",
+    "Validate media/APEX selection, codecs, native camera and accessories through separately authorized device tests."
+  ],
+  "validation": {
+    "selected_file_hash_rechecks_passed": true,
+    "final_init_hook_bytes_and_text_identity_passed": true,
+    "selected_init_rc_identity_passed": true,
+    "selected_bootconfig_checks_passed": true,
+    "android_build_or_policy_compiler_executed": false,
+    "phone_read_or_mutated": false,
+    "android_source_out_or_vm_configuration_modified": false,
+    "full_workspace_unittest_suite_run_by_this_audit": false
+  },
+  "limits": [
+    "253 selected regular vendor/ODM init, property and SELinux context files were rehashed; this did not rescan or extract the complete factory filesystems.",
+    "The two previously selected BoringSSL vendor RC symlinks remain unfollowed; the installed framework has two analogous unfollowed RC symlinks.",
+    "31 import statements were observed, including init scripts, ueventd and ODM property imports. 19 require property expansion and three literal targets are outside the selected capture. Imports were not executed or resolved at runtime.",
+    "Eight previously extracted factory normal-boot text members were rehashed and searched; binary payloads and device-tree-selected runtime properties were not exhaustively analyzed.",
+    "Source and installed-root literal scans selected regular text files no larger than 2000000 bytes and excluded NUL-containing files. Their skipped entries are preserved in this private report.",
+    "The current output contains only component artifacts: no vendor/ODM/product/system_ext init directory or complete merged property/context outputs were available.",
+    "The final linked-init proof applies to the recorded current user binary only. A changed source, hook selection, binary, output variant or link input needs revalidation.",
+    "Bootloader-supplied command line, bootconfig or DT changes, live property producers, APEX contents and complete framework partition inputs remain unmeasured.",
+    "Media selector value/producer, trigger execution, APEX selection, codecs, native camera and accessory behavior remain unverified.",
+    "No image, Android binary or firmware script was executed. No phone was read or mutated. No Android source, output or VM configuration was modified.",
+    "Only the new sanitized audit record and ignored audit receipt are written; historical evidence is retained."
+  ],
+  "path_convention": "Android source and output references are relative to the recorded existing checkout and user component output; absolute machine roots are retained only in the ignored audit receipt.",
+  "post_audit_validation": {
+    "completed_at_utc": "2026-08-29T18:11:30.358492+00:00",
+    "public_json_and_private_receipt_binding_verified": true,
+    "selected_local_source_policy_bootconfig_identities_rehashed": true,
+    "git_diff_check_passed": true,
+    "targeted_offline_tests": [
+      {
+        "command": "python3 -m unittest discover -s tests -p 'test_init_helper_property_writes.py' -v",
+        "tests": 14,
+        "exit_code": 0
+      },
+      {
+        "command": "python3 -m unittest discover -s tests -p 'test_helper_policy_projection.py' -v",
+        "tests": 23,
+        "exit_code": 0
+      }
+    ],
+    "android_policy_compilation_or_phone_test_performed": false,
+    "full_workspace_suite_deferred_to_integrating_task": true
+  }
+}
