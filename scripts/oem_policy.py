@@ -169,7 +169,7 @@ def _record(form):
             "normalized_form_sha256": vp.sha(vp.render(form.expr).encode())}
 
 
-def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract):
+def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platform_forms):
     """The existing system_ext DSP attribute is empty; OEM files add no grants.
 
     Native filtering can retain generated negative assertions and base-type
@@ -184,18 +184,30 @@ def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract):
     for name, spec in contract["types"].items():
         for attr in spec["attributes"]:
             expected_members.setdefault(attr, set()).add(name)
+    # checkpolicy emits a full membership list for each changed named attribute.
+    # Resolve the inherited part from the separate platform input: resolving it
+    # in the combined policy would already include unreviewed vendor additions.
+    try:
+        platform = vp.Policy(platform_forms)
+        membership_budget = {attr: platform.resolve(attr) | members for attr, members in expected_members.items()}
+    except vp.VendorPolicyError as exc:
+        raise OemPolicyError("source-owned membership baseline is not a self-contained platform input") from exc
+    named_assignments = Counter()
     for form in ext_forms:
         expr = form.expr
         if expr[0] == "typeattribute":
             require(expr[1] in expected_members or expr[1] == "vendor_hal_dspmanager_client"
                     or expr[1].startswith("base_typeattr_"), "unreviewed source attribute declaration")
         elif expr[0] == "typeattributeset" and not expr[1].startswith("base_typeattr_"):
-            require(expr[1] in expected_members
-                    and policy.evaluate(expr[2], policy.resolve, policy.types) <= expected_members[expr[1]],
+            require(expr[1] in membership_budget
+                    and policy.evaluate(expr[2], policy.resolve, policy.types) == membership_budget[expr[1]],
                     "unreviewed source-owned named attribute membership")
+            named_assignments[expr[1]] += 1
         elif expr[0] == "roletype":
             require(len(expr) == 3 and expr[1] == "object_r" and expr[2] in contract["types"],
                     "unreviewed source role binding")
+    require(named_assignments == Counter({attr: 1 for attr in expected_members}),
+            "source-owned named memberships must occur once per changed attribute")
     versions = {spec["versioned_attribute"] for spec in contract["types"].values()
                 if spec["versioned_attribute"] is not None}
     for form in mapping_forms:
@@ -234,7 +246,7 @@ def check_native_contents(corpus, original_vendor, contract, capability):
     system_ext_runtime = INPUT_FLAGS["system_ext_cil"]
     mapping_runtime = INPUT_FLAGS["system_ext_mapping"]
     ext_forms, mapping_forms = parsed[system_ext_runtime], parsed[mapping_runtime]
-    _declaration_only_outputs(ext_forms, mapping_forms, policy, contract)
+    _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, parsed[INPUT_FLAGS["platform_cil"]])
     expected_types = set(contract["types"])
     source_types = Counter(form.expr[1] for form in ext_forms if form.expr[0] == "type")
     require(source_types == Counter({name: 1 for name in expected_types}),
