@@ -4,6 +4,7 @@
 import argparse
 from contextlib import contextmanager
 from datetime import datetime, timezone
+import errno
 import hashlib
 import json
 import os
@@ -540,14 +541,86 @@ def replace_target_file(target, relative, expected, data, revision):
     os.replace(temporary, path)
 
 
-def revise(config, paths, host_mode, previous_root, root=ROOT):
+def reviewed_target_additions(previous, reviewed, allowed):
+    if not isinstance(allowed, (tuple, list)):
+        raise ValueError("Target additions require an explicit list of root-level file names")
+    names = []
+    for name in allowed:
+        relative = relative_path(name)
+        if len(relative.parts) != 1 or relative.as_posix() != name or name in names:
+            raise ValueError("Target additions require unique canonical root-level file names")
+        names.append(name)
+    old, new = set(previous["target_files"]), set(reviewed["target_files"])
+    added = sorted(new - old)
+    if old - new or (added and not names):
+        raise ValueError("Target revision requires the same file set; additions and removals need separate review")
+    if set(names) != set(added):
+        raise ValueError("Allowed target additions must exactly match the new control file set")
+    return added
+
+
+@contextmanager
+def target_directory(target, expected=None):
+    """Hold an existing target directory without following any ancestor link."""
+    target = Path(target)
+    # Validate, but retain the lexical path for the descriptor walk: resolving
+    # a concurrently inserted ancestor link must not redirect the operation.
+    twrp_workspace.absolute_path(target)
+    flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    descriptor = os.open(target.anchor, flags)
+    try:
+        for part in target.parts[1:]:
+            child = os.open(part, flags, dir_fd=descriptor)
+            os.close(descriptor)
+            descriptor = child
+        info = os.fstat(descriptor)
+        identity = {"device": info.st_dev, "inode": info.st_ino}
+        if expected is not None and identity != expected:
+            raise ValueError("Target directory changed during addition; changes preserved")
+        yield descriptor, identity
+    finally:
+        os.close(descriptor)
+
+
+def require_absent_target_name(descriptor, relative):
+    try:
+        os.stat(relative, dir_fd=descriptor, follow_symlinks=False)
+    except OSError as error:
+        if error.errno != errno.ENOENT:
+            raise
+    else:
+        raise ValueError(f"Target addition already exists; changes preserved: {relative}")
+
+
+def require_target_additions_absent(target, additions, expected_directory=None):
+    with target_directory(target, expected_directory) as (descriptor, identity):
+        for relative in additions:
+            require_absent_target_name(descriptor, relative)
+        return identity
+
+
+def create_target_addition(target, relative, data, expected, directory_identity):
+    """Create only an absent reviewed leaf; retain partial files on failure."""
+    with target_directory(target, directory_identity) as (parent, _):
+        require_absent_target_name(parent, relative)
+        descriptor = os.open(relative, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                             0o600, dir_fd=parent)
+        with os.fdopen(descriptor, "wb") as stream:
+            os.fchmod(stream.fileno(), 0o644)
+            if stream.write(data) != len(data):
+                raise OSError("Incomplete target addition write; partial file preserved")
+    require_file_identity(target, relative, expected)
+
+
+def revise(config, paths, host_mode, previous_root, root=ROOT, *, allow_target_additions=()):
     """Advance reviewed controls while preserving the base and existing patches."""
     host = twrp_workspace.require_host(config, paths, host_mode)
     with operation_lock(paths, "revise"):
-        return revise_locked(config, paths, host_mode, previous_root, root, host)
+        return revise_locked(config, paths, host_mode, previous_root, root, host,
+                             allow_target_additions=allow_target_additions)
 
 
-def revise_locked(config, paths, host_mode, previous_root, root, host):
+def revise_locked(config, paths, host_mode, previous_root, root, host, *, allow_target_additions=()):
     previous_root = twrp_workspace.absolute_path(previous_root)
     root = twrp_workspace.absolute_path(root)
     if any(twrp_workspace.overlap(previous_root, path) for path in paths.values()):
@@ -558,8 +631,7 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     previous = controls(previous_config, previous_root)
     reviewed = controls(config, root)
     appended = validate_patch_extension(previous, reviewed)
-    if set(previous["target_files"]) != set(reviewed["target_files"]):
-        raise ValueError("Target revision requires the same file set; additions and removals need separate review")
+    additions = reviewed_target_additions(previous, reviewed, allow_target_additions)
     validate_supplementary_extension(previous, reviewed)
     # An identical retry after a committed transition verifies the new state
     # instead of trying to restore the previous target from its bundle.
@@ -592,12 +664,20 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     changed = sorted(path for path in previous["target_files"]
                      if previous["target_files"][path] != reviewed["target_files"][path])
     target = paths["source_dir"] / TARGET
+    directory_identity = require_target_additions_absent(target, additions) if additions else None
     before, after = {}, {}
     for relative in changed:
         before[relative] = require_file_identity(target, relative, previous["target_files"][relative]).read_bytes()
+    for relative in changed + additions:
         after[relative] = text_file(root / TARGET_SOURCE, relative)
-        if sha256(after[relative]) != reviewed["target_files"][relative]["sha256"]:
+        if (sha256(after[relative]) != reviewed["target_files"][relative]["sha256"]
+                or len(after[relative]) != reviewed["target_files"][relative]["size_bytes"]):
             raise ValueError("Controlled target changed during revision planning")
+    absence_bytes = (json.dumps({"previous_build_state_sha256": sha256(state_before),
+                                "allowed_target_additions": additions, "target_directory": directory_identity,
+                                "before": {name: {"exists": False} for name in additions},
+                                "after": {name: reviewed["target_files"][name] for name in additions}},
+                               indent=2) + "\n").encode() if additions else None
     now = datetime.now(timezone.utc)
     revision = now.strftime("%Y%m%dT%H%M%S%fZ")
     archive = twrp_workspace.absolute_path(paths["report_dir"] / "build-revisions" / revision)
@@ -605,7 +685,10 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     write_new_file(archive, "build-state.before.json", state_before)
     for relative in changed:
         write_new_file(archive, "target-before/" + relative, before[relative])
+    for relative in changed + additions:
         write_new_file(archive, "target-after/" + relative, after[relative])
+    if additions:
+        write_new_file(archive, "target-additions.json", absence_bytes)
     if chained:
         evidence = archive_chain(archive, paths["source_dir"], reviewed, previous,
                                  len(previous["patches"]), rehearsal, state_before)
@@ -614,6 +697,11 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         for relative in changed:
             for prefix, data in (("target-before/", before[relative]), ("target-after/", after[relative])):
                 evidence[prefix + relative] = {"sha256": sha256(data), "size_bytes": len(data), "mode": "0644"}
+        if additions:
+            evidence["target-additions.json"] = {"sha256": sha256(absence_bytes),
+                                                 "size_bytes": len(absence_bytes), "mode": "0644"}
+            for relative in additions:
+                evidence["target-after/" + relative] = reviewed["target_files"][relative]
     else:
         for relative, identity in preimages.items():
             data = require_file_identity(paths["source_dir"], relative, identity).read_bytes()
@@ -629,6 +717,8 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
               "added_patch_ids": [patch["id"] for patch in appended["patches"]],
               "attempted_patch_ids": [], "applied_patch_ids": [], "source_preimages": preimages,
               "build_for_this_revision_verified": False, "note": LIMITATION}
+    if additions:
+        report.update(added_target_files=additions, attempted_target_additions=[], verified_target_additions=[])
     if supplementary is not None:
         report["supplementary_projects"] = supplementary
     transition_bytes = (json.dumps({**report, "controls_after": reviewed}, indent=2) + "\n").encode()
@@ -636,6 +726,19 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
     if chained:
         evidence["transition.json"] = {"sha256": sha256(transition_bytes), "size_bytes": len(transition_bytes), "mode": "0644"}
     twrp_workspace.record_action(config, paths, "revise-start", report)
+    def verify_addition_evidence():
+        if not additions:
+            return
+        require_file_identity(archive, "target-additions.json", {
+            "sha256": sha256(absence_bytes), "size_bytes": len(absence_bytes), "mode": "0644"})
+        for relative in additions:
+            require_file_identity(archive, "target-after/" + relative, reviewed["target_files"][relative])
+        if controls(config, root) != reviewed or controls(previous_config, previous_root) != previous:
+            raise ValueError("A control bundle changed during target addition")
+        if twrp_workspace.checked_report(state_path).read_bytes() != state_before:
+            raise ValueError("Build receipt changed during target addition; changes preserved")
+        with target_directory(target, directory_identity):
+            pass
     try:
         # The prior bundle authorizes only the exact prepared files. Never
         # reset projects, remove output/cache, or adopt partial local edits.
@@ -654,6 +757,9 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         verify_target(paths["source_dir"], previous["target_files"])
         if controls(config, root) != reviewed or controls(previous_config, previous_root) != previous:
             raise ValueError("A control bundle changed during target revision")
+        verify_addition_evidence()
+        if additions:
+            require_target_additions_absent(target, additions, directory_identity)
         if chained:
             apply_chain_steps(config, paths, root, reviewed, previous, previous_root, archive,
                               len(previous["patches"]), rehearsal, state_before, checked["source"], payloads, report, evidence)
@@ -674,8 +780,24 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
                 postimage = require_file_identity(paths["source_dir"], source_relative, expected).read_bytes()
                 write_new_file(archive, "source-after/" + source_relative, postimage)
             report["applied_patch_ids"].append(patch["id"])
+        expected_target = dict(previous["target_files"])
         for relative in changed:
+            if additions:
+                verify_addition_evidence()
+                verify_target(paths["source_dir"], expected_target)
+                require_target_additions_absent(target, additions, directory_identity)
             replace_target_file(target, relative, previous["target_files"][relative], after[relative], revision)
+            expected_target[relative] = reviewed["target_files"][relative]
+        for index, relative in enumerate(additions):
+            verify_addition_evidence()
+            verify_target(paths["source_dir"], expected_target)
+            require_target_additions_absent(target, additions[index:], directory_identity)
+            report["attempted_target_additions"].append(relative)
+            create_target_addition(target, relative, after[relative], reviewed["target_files"][relative],
+                                   directory_identity)
+            expected_target[relative] = reviewed["target_files"][relative]
+            report["verified_target_additions"].append(relative)
+            verify_target(paths["source_dir"], expected_target)
         source = verify_sources(config, paths, reviewed, prepared=True)
         if source != checked["source"]:
             raise ValueError("Frozen source changed during target revision")
@@ -684,6 +806,7 @@ def revise_locked(config, paths, host_mode, previous_root, root, host):
         verify_output(paths)
         if controls(config, root) != reviewed or controls(previous_config, previous_root) != previous:
             raise ValueError("A control bundle changed during target revision; receipt replacement refused")
+        verify_addition_evidence()
         if chained:
             verify_chain_archive(archive, evidence)
         state_after = {**json.loads(state_before), "controls": reviewed, "source": source,
@@ -831,6 +954,8 @@ def main(argv=None):
     parser.add_argument("--report-dir", type=Path)
     parser.add_argument("--previous-control-root", type=Path,
                         help="Exact prior control bundle; required only for an explicit target revision")
+    parser.add_argument("--allow-target-addition", action="append", default=[], metavar="NAME",
+                        help="Revise only: explicitly allow this new target root file; repeat for each addition")
     parser.add_argument("--host-mode", choices=twrp_workspace.workspace.HOST_MODES, default="native")
     parser.add_argument("--jobs", type=int, default=8)
     parser.add_argument("--variant", choices=VARIANTS, default="user")
@@ -841,6 +966,8 @@ def main(argv=None):
     try:
         if args.keep_going and args.action != "build":
             raise ValueError("--keep-going is valid only for the build action")
+        if args.allow_target_addition and args.action != "revise":
+            raise ValueError("--allow-target-addition is valid only for the revise action")
         config = twrp_workspace.load_config()
         paths = twrp_workspace.paths_for(config, args.source_dir, args.out_dir, args.report_dir)
         command("build", args.jobs)
@@ -851,7 +978,8 @@ def main(argv=None):
         elif args.action == "prepare":
             report = prepare(config, paths, args.host_mode)
         elif args.action == "revise":
-            report = revise(config, paths, args.host_mode, args.previous_control_root)
+            report = revise(config, paths, args.host_mode, args.previous_control_root,
+                            allow_target_additions=args.allow_target_addition)
         elif args.action == "check":
             report = check(config, paths, args.host_mode)
         else:

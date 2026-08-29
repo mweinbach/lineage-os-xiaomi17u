@@ -217,10 +217,30 @@ the base snapshot, output and caches. A partial application retains its backups
 and old receipt and blocks automatic retry. Existing outputs retain their
 earlier provenance; the new receipt marks the revision as not yet built or
 validated. Then run the separate `graph` and `build` commands above. Implicit
-overlap, changed source pins and changes to the target file set are rejected;
-unrelated local edits are not adopted. Supplementary source patches must match the exact active previous
+overlap, changed source pins and unapproved changes to the target file set are
+rejected; unrelated local edits are not adopted. Supplementary source patches must match the exact active previous
 bundle during `fetch`; fetching never applies a proposed patch. The
 [supplement patching guide](twrp-supplement-patching.md) describes those checks.
+
+Adding a reviewed file at the target root requires an explicit allowance on
+`revise`; the default still requires the same file set. For the new bootstrap
+link definition, run from the new control bundle with:
+
+```sh
+python3 scripts/twrp_build.py revise --host-mode apple-rosetta \
+  --previous-control-root "${TWRP_PREVIOUS_CONTROL_ROOT:?set the exact previous control bundle path}" \
+  --allow-target-addition Android.bp
+```
+
+Every added root filename must be named once, and the allowed names must
+exactly match the new control inventory. Removals, nested additions, existing
+files, directories and symlinks remain rejected. The helper archives the
+verified prior absence and the controlled new bytes, then creates the file
+exclusively without following directory links. It rechecks the complete
+target before publishing the revised receipt. A failed creation or later
+failure preserves partial files and the old receipt for inspection; it does
+not delete, adopt or silently retry them. This allowance applies only to
+source revision, not to graph, build, artifact or phone validation.
 
 The default build variant is `user`, which retains init's compile-time
 enforcement behavior. Explicit `userdebug` builds remain diagnostic experiments;
