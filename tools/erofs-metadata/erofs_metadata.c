@@ -531,8 +531,7 @@ static int read_xattrs(struct erofs_inode *inode, struct xattr_set *set)
     shared_count = body[4];
     memcpy(&disk_filter, body, sizeof(disk_filter));
     position = sizeof(struct erofs_xattr_ibody_header) + shared_count * 4U;
-    if (position > body_size || !zeros(body + 5, 7) ||
-        (shared_count && !image_sbi.xattr_blkaddr)) {
+    if (position > body_size || !zeros(body + 5, 7)) {
         result = failure_at("invalid xattr body header", inode->nid);
         goto out;
     }
@@ -550,6 +549,8 @@ static int read_xattrs(struct erofs_inode *inode, struct xattr_set *set)
         uint64_t offset;
         size_t size, consumed;
         memcpy(&disk_id, body + sizeof(struct erofs_xattr_ibody_header) + i * 4U, 4);
+        /* Block zero is a valid shared-xattr base, not an absence sentinel.
+         * Bound the resolved entry and value through raw_read below. */
         offset = (uint64_t)image_sbi.xattr_blkaddr * 4096U +
                  (uint64_t)le32_to_cpu(disk_id) * 4U;
         if (raw_read(&entry, sizeof(entry), offset)) { result = -EIO; goto out; }
