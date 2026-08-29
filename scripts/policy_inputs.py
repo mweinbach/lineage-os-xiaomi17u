@@ -35,11 +35,21 @@ CONTRACT_PATH = "config/nezha-policy-inputs.json"
 FACTORY_RECORD_PATH = "research/factory-framework-contract.json"
 CONTROL_FILES = {
     "Android.bp": "policy/nezha/Android.bp",
+    "provenance/Android.bp.template": "policy/nezha/Android.bp",
     "tools/vendor_policy.py": "scripts/vendor_policy.py",
     "tools/artifact_files.py": "scripts/artifact_files.py",
     "tools/vendor-policy-correction.json": "config/vendor-policy-correction.json",
     "tools/nezha-policy-inputs.json": CONTRACT_PATH,
     "provenance/factory-framework-contract.json": FACTORY_RECORD_PATH,
+}
+OEM_CONTRACT_PATH = "config/nezha-oem-policy.json"
+OEM_CAPABILITY_PATH = "config/nezha-init-helper-capability.json"
+OEM_CHECK_TARGET = "nezha_factory_oem_policy_check"
+OEM_BEGIN = "// BEGIN OPTIONAL NEZHA OEM POLICY CHECK\n"
+OEM_END = "// END OPTIONAL NEZHA OEM POLICY CHECK\n"
+OEM_SOURCE_PATHS = {
+    "device/xiaomi/nezha/sepolicy/system_ext/oem/public/nezha_oem_service.te",
+    "device/xiaomi/nezha/sepolicy/system_ext/oem/private/nezha_oem_data.te",
 }
 FACTORY_RECEIPT_MEMBER = "provenance/factory-policy-capture.json"
 MAX_BUNDLE_BYTES = 32 * 1024 * 1024
@@ -118,8 +128,24 @@ def _read_exact(reader, path, expected):
     return reader.read(path, expected["sha256"], expected["size_bytes"])
 
 
+def _render_blueprint(raw, oem_enabled):
+    """Select the explicit OEM check without changing any compiled CIL input."""
+    text = raw.decode("utf-8")
+    require(text.count(OEM_BEGIN) == 1 and text.count(OEM_END) == 1,
+            "native policy template must contain one reviewed optional OEM block")
+    before, rest = text.split(OEM_BEGIN)
+    optional, after = rest.split(OEM_END)
+    required = '    required: ["sepolicy_neverallows"],'
+    require(before.count(required) == 1, "native combined-policy prerequisite differs")
+    if oem_enabled:
+        before = before.replace(required, '    required: ["sepolicy_neverallows", "' + OEM_CHECK_TARGET + '"],')
+        return (before + optional + after).encode()
+    return (before + after).encode()
+
+
 def _contracts(reader):
     controls = {destination: reader.read(ROOT / source) for destination, source in CONTROL_FILES.items()}
+    controls["Android.bp"] = _render_blueprint(controls["provenance/Android.bp.template"], False)
     contract = _json(controls["tools/nezha-policy-inputs.json"])
     require(type(contract.get("schema_version")) is int and contract["schema_version"] == 1
             and contract.get("device") == "nezha" and contract.get("bundle") == BUNDLE_PATH,
@@ -166,6 +192,73 @@ def _contracts(reader):
     return contract, correction, controls
 
 
+def _oem_controls(reader, path, contract, correction, controls):
+    if __package__:
+        from . import oem_policy
+    else:
+        import oem_policy
+    oem = oem_policy.load_contract(path, reader)
+    raw = reader.read(path)
+    _read_exact(reader, ROOT / OEM_CONTRACT_PATH, identity(raw))
+    selection = contract.get("oem_policy")
+    require(type(selection) is dict and selection.get("contract_path") == OEM_CONTRACT_PATH
+            and selection.get("native_target") == OEM_CHECK_TARGET
+            and selection.get("contract_id") == oem.get("contract_id")
+            and selection.get("default_enabled") is False
+            and selection.get("factory_inputs_rewritten") is False,
+            "OEM policy check is not selected by the reviewed bundle contract")
+    require(oem.get("factory_package_sha256") == contract["package_sha256"]
+            and oem.get("profile") == "framework-checks"
+            and oem.get("device") == {"codename": "nezha", "hardware_region": "CN"}
+            and oem.get("platform") == contract.get("platform")
+                == {"branch": "bka", "release": "bp4a", "board_api": "202504"},
+            "OEM policy source and private factory bundle differ")
+    original = {row["runtime_path"]: row for row in correction["inputs"]}
+    factories = oem.get("unchanged_factory_inputs")
+    require(type(factories) is list and len(factories) == 3
+            and {row.get("runtime_path") for row in factories} == {
+                "/vendor/etc/selinux/plat_pub_versioned.cil", "/vendor/etc/selinux/vendor_sepolicy.cil",
+                "/odm/etc/selinux/odm_sepolicy.cil"}, "OEM policy must retain all three original factory inputs")
+    for row in factories:
+        require(_expected(row) == _expected(original[row["runtime_path"]]),
+                "OEM policy original factory input differs from the classification corpus")
+    derived = oem.get("existing_vendor_derivation", {})
+    require(derived.get("contract_path") == "config/vendor-policy-correction.json"
+            and derived.get("contract_sha256") == identity(controls["tools/vendor-policy-correction.json"])["sha256"]
+            and _expected(derived) == _expected(correction["output"]),
+            "OEM policy must retain the exact reviewed Binder derivation")
+    capability = oem.get("required_capability_contract", {})
+    require(capability.get("path") == OEM_CAPABILITY_PATH
+            and capability.get("symbol") == "target_init_dev_config_property_writes"
+            and capability.get("value") == "false", "OEM policy requires the reviewed helper restriction")
+    capability_raw = reader.read(ROOT / OEM_CAPABILITY_PATH, capability.get("sha256"))
+    oem_policy.verify_capability(capability_raw, oem)
+    sources = oem.get("source_files")
+    require(type(sources) is list and len(sources) == 2
+            and {row.get("path") for row in sources} == OEM_SOURCE_PATHS,
+            "OEM policy source selection must retain its two reviewed files")
+    extra = {
+        "tools/oem_policy.py": reader.read(ROOT / "scripts/oem_policy.py"),
+        "tools/nezha-oem-policy.json": raw,
+        "tools/nezha-init-helper-capability.json": capability_raw,
+    }
+    expected_sources = {ROOT / row["path"] for row in sources}
+    for parent in {source.parent for source in expected_sources}:
+        vendor_policy.real_directory(parent)
+        require(set(parent.iterdir()) == {source for source in expected_sources if source.parent == parent},
+                "unreviewed file or directory in an OEM source directory")
+    source_contents = {}
+    for row in sources:
+        source = _relative(row["path"])
+        data = _read_exact(reader, ROOT / source, row)
+        extra["provenance/source/" + source] = data
+        source_contents[source] = data
+    oem_policy.verify_source_contents(source_contents, oem)
+    controls.update(extra)
+    controls["Android.bp"] = _render_blueprint(controls["provenance/Android.bp.template"], True)
+    return {"path": OEM_CONTRACT_PATH, **identity(raw)}
+
+
 def _capture(reader, receipt_path, contract):
     raw = _read_exact(reader, receipt_path, contract["factory_policy_capture"])
     capture = _json(raw)
@@ -195,8 +288,8 @@ def _capture(reader, receipt_path, contract):
     return raw
 
 
-def _manifest(contract, correction, files, stage_tool):
-    return {
+def _manifest(contract, correction, files, stage_tool, oem_binding=None):
+    result = {
         "schema_version": 1, "operation": "stage-nezha-policy-inputs", "status": "staged",
         "device": "nezha", "bundle": BUNDLE_PATH,
         "factory_package_sha256": contract["package_sha256"],
@@ -209,6 +302,10 @@ def _manifest(contract, correction, files, stage_tool):
         "staging_tool": identity(stage_tool),
         "scope": copy.deepcopy(SCOPE), "readback_verified": True,
     }
+    if oem_binding is not None:
+        result["oem_policy_contract"] = copy.deepcopy(oem_binding)
+        result["native_targets"].append(OEM_CHECK_TARGET)
+    return result
 
 
 def _members(bundle):
@@ -232,6 +329,15 @@ def verify_bundle(bundle):
     bundle = vendor_policy.real_directory(bundle)
     reader = vendor_policy.Reader()
     contract, correction, controls = _contracts(reader)
+    raw = reader.read(bundle / RECEIPT_NAME)
+    receipt = _json(raw)
+    oem_binding = None
+    if "oem_policy_contract" in receipt:
+        require(type(receipt["oem_policy_contract"]) is dict
+                and receipt["oem_policy_contract"].get("path") == OEM_CONTRACT_PATH,
+                "unexpected OEM policy receipt binding")
+        oem_binding = _oem_controls(reader, ROOT / OEM_CONTRACT_PATH, contract, correction, controls)
+        require(receipt["oem_policy_contract"] == oem_binding, "OEM policy receipt differs from trusted controls")
     expected = dict(controls)
     expected[FACTORY_RECEIPT_MEMBER] = _capture(reader, bundle / FACTORY_RECEIPT_MEMBER, contract)
     for row in correction["inputs"]:
@@ -241,9 +347,8 @@ def verify_bundle(bundle):
         expected[row["path"]] = _read_exact(reader, bundle / row["path"], row)
     for member, data in controls.items():
         _read_exact(reader, bundle / member, identity(data))
-    raw = reader.read(bundle / RECEIPT_NAME)
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
-    require(_json(raw) == _manifest(contract, correction, expected, stage_tool),
+    require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding),
             "policy-input receipt differs from the reviewed files or scope")
     require(_members(bundle) == set(expected) | {RECEIPT_NAME}, "bundle has missing or unexpected files")
     reader.recheck()
@@ -253,6 +358,7 @@ def verify_bundle(bundle):
         "factory_package_sha256": contract["package_sha256"],
         "files": [{"path": name, **identity(data)} for name, data in sorted(expected.items())],
         "receipt": {"path": RECEIPT_NAME, **identity(raw)},
+        "oem_policy_contract": copy.deepcopy(oem_binding),
         "scope": copy.deepcopy(SCOPE),
     }
 
@@ -269,7 +375,8 @@ def _output_path(output):
     return output, parent
 
 
-def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_policy_receipt=None):
+def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_policy_receipt=None,
+                 oem_policy_contract=None):
     """Publish a fresh private bundle atomically; originals remain untouched."""
     require((factory_capture_root is None) != (factory_policy_receipt is None),
             "choose exactly one factory capture root or receipt")
@@ -285,6 +392,9 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
             "private output must not add files inside the preserved input roots")
     reader = vendor_policy.Reader()
     contract, correction, controls = _contracts(reader)
+    oem_binding = None
+    if oem_policy_contract is not None:
+        oem_binding = _oem_controls(reader, oem_policy_contract, contract, correction, controls)
     files = dict(controls)
     files[FACTORY_RECEIPT_MEMBER] = _capture(reader, receipt_path, contract)
     for row in correction["inputs"]:
@@ -294,7 +404,7 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
         files[row["path"]] = _read_exact(reader, capture_root / row["capture_path"], row)
     require(sum(len(data) for data in files.values()) <= MAX_BUNDLE_BYTES, "policy bundle exceeds its byte limit")
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
-    receipt = _manifest(contract, correction, files, stage_tool)
+    receipt = _manifest(contract, correction, files, stage_tool, oem_binding)
     files[RECEIPT_NAME] = encoded(receipt)
     required_bytes = sum(len(data) for data in files.values())
     require(shutil.disk_usage(parent).free >= required_bytes + 16 * 1024 * 1024,
@@ -336,13 +446,16 @@ def main(argv=None):
     factory.add_argument("--factory-capture-root", type=Path)
     factory.add_argument("--factory-policy-receipt", type=Path)
     stage.add_argument("--output", required=True, type=Path)
+    stage.add_argument("--oem-policy-contract", type=Path,
+                       help="explicit reviewed OEM source restoration and native output checks")
     verify = commands.add_parser("verify", help="verify every transferred file against reviewed workspace controls")
     verify.add_argument("--bundle", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
         if args.command == "stage":
             result = stage_inputs(args.corpus_root, args.output, factory_capture_root=args.factory_capture_root,
-                                  factory_policy_receipt=args.factory_policy_receipt)
+                                  factory_policy_receipt=args.factory_policy_receipt,
+                                  oem_policy_contract=args.oem_policy_contract)
         else:
             result = verify_bundle(args.bundle)
     except (ValueError, OSError) as exc:

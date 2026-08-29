@@ -1184,6 +1184,289 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                 self.assertEqual(generator.main(base + args), 0)
             self.assertEqual(generate.call_args.kwargs["policy_inputs_receipt"], expected)
 
+    def test_cli_passes_oem_source_contract_without_implicit_adoption(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--oem-policy-contract", "oem-policy.json"], Path("oem-policy.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["oem_policy_contract"], expected)
+
+    def test_oem_policy_requires_all_other_explicit_inputs_before_record_reads(self):
+        with mock.patch.object(generator, "_load_records") as records:
+            with self.assertRaisesRegex(generator.CandidateError, "OEM policy requires explicit"):
+                generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none",
+                                   vendor_receipt="none", oem_policy_contract="none")
+            records.assert_not_called()
+        inputs, _ = self.policy_bundle_inputs()
+        del inputs["policy_inputs_receipt"]
+        with mock.patch.object(generator, "_load_records") as records:
+            with self.assertRaisesRegex(generator.CandidateError, "OEM policy requires explicit"):
+                generator.generate(self.root / "artifacts/refused", oem_policy_contract="none", **inputs)
+            records.assert_not_called()
+
+    def test_legacy_helper_policy_generation_never_reads_or_includes_oem_sources(self):
+        inputs, verification = self.policy_bundle_inputs()
+        output = self.root / "artifacts/native-without-oem"
+        with mock.patch.object(generator, "_oem_policy_contract", side_effect=AssertionError("implicit OEM policy")), \
+                mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+            self.assertEqual(generator.validate(output), plan)
+        self.assertNotIn("oem_policy", plan)
+        self.assertNotIn(generator.OEM_POLICY_RECORD.as_posix(), {row["path"] for row in plan["files"]})
+        board = (output / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        for path in generator.OEM_POLICY_WIRING.values():
+            self.assertNotIn(path, board)
+        for name in generator.OEM_POLICY_FILES:
+            self.assertFalse((output / generator.DEVICE_PATH / name).exists())
+
+    def test_oem_native_bundle_cannot_be_adopted_without_oem_source_capability(self):
+        inputs, verification = self.policy_bundle_inputs()
+        verification["oem_policy_contract"] = {
+            "path": generator.OEM_POLICY_RECORD.as_posix(), "sha256": "4" * 64, "size_bytes": 100,
+        }
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            with self.assertRaisesRegex(generator.CandidateError, "same reviewed contract"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def trust_synthetic_oem_contract(self, inputs, contract, verification=None):
+        raw = (json.dumps(contract, sort_keys=True) + "\n").encode()
+        inputs["oem_policy_contract"].write_bytes(raw)
+        digest = hashlib.sha256(raw).hexdigest()
+        patcher = mock.patch.object(generator, "OEM_POLICY_CONTRACT_SHA256", digest)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        if verification is not None:
+            verification["oem_policy_contract"] = {
+                "path": generator.OEM_POLICY_RECORD.as_posix(), "sha256": digest, "size_bytes": len(raw),
+            }
+
+    def oem_inputs(self):
+        """Synthetic private evidence, with only the authored public TE sources real."""
+        inputs, verification = self.policy_bundle_inputs()
+        contract = json.loads((ROOT / generator.OEM_POLICY_RECORD).read_text())
+        dsp_record = json.loads(inputs["dsp_policy_contract"].read_text())
+        dsp = dsp_record["generator_contract"]
+        contract["factory_package_sha256"] = dsp["factory_package_sha256"]
+        contract["unchanged_factory_inputs"] = [
+            {key: row[key] for key in ("runtime_path", "sha256", "size_bytes")} for row in dsp["policy_inputs"]
+        ]
+        capture_path = self.root / dsp["policy_capture_receipt"]["path"]
+        capture = json.loads(capture_path.read_text())
+        for index, row in enumerate(contract["evidence"]["source_rows"]):
+            path = self.root / "artifacts/oem-fixture" / (str(index) + ".cil")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            raw = f"; synthetic original factory framework input {index}\n".encode()
+            path.write_bytes(raw)
+            row.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+            capture["input_order"].append({
+                "path": path.relative_to(self.root).as_posix(),
+                **{key: row[key] for key in ("runtime_path", "sha256", "size_bytes")},
+            })
+        raw = (json.dumps(capture) + "\n").encode()
+        capture_path.write_bytes(raw)
+        dsp["policy_capture_receipt"].update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        self.trust_synthetic_dsp_contract(inputs, dsp_record)
+        triage_path = self.root / contract["evidence"]["triage"]["path"]
+        triage_path.parent.mkdir(parents=True, exist_ok=True)
+        triage_raw = (json.dumps({"schema_version": 1, "all_inputs_rehashed_unchanged": True,
+                                 "compiler_invoked": False, "oem_te_source_recovered": False,
+                                 "source_or_guest_mutated": False}) + "\n").encode()
+        triage_path.write_bytes(triage_raw)
+        contract["evidence"]["triage"].update(sha256=hashlib.sha256(triage_raw).hexdigest(), size_bytes=len(triage_raw))
+        contract["required_capability_contract"]["sha256"] = hashlib.sha256(
+            inputs["init_helper_capability_contract"].read_bytes()).hexdigest()
+        for name in generator.OEM_POLICY_FILES:
+            path = inputs["template_root"] / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT / generator.DEVICE_PATH / name).read_bytes())
+        inputs["oem_policy_contract"] = self.root / "oem-policy-contract.json"
+        self.trust_synthetic_oem_contract(inputs, contract, verification)
+        return inputs, verification
+
+    def test_oem_public_contract_pins_exact_authored_sources_and_ownership(self):
+        contract, identity = generator._oem_policy_contract(ROOT / generator.OEM_POLICY_RECORD)
+        self.assertEqual(identity["sha256"], generator.OEM_POLICY_CONTRACT_SHA256)
+        self.assertEqual(contract["types"], generator.OEM_POLICY_TYPES)
+        for row in contract["source_files"]:
+            raw = (ROOT / row["path"]).read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(), row["sha256"])
+            self.assertEqual(len(raw), row["size_bytes"])
+        self.assertEqual(contract["types"]["offlinelog_file"]["mapping_members"], [])
+        self.assertIsNone(contract["types"]["offlinelog_file"]["versioned_attribute"])
+
+    def test_oem_source_generation_is_explicit_deterministic_and_keeps_all_existing_guards(self):
+        inputs, verification = self.oem_inputs()
+        for variant in generator.BUILD_VARIANTS:
+            first = self.root / "artifacts" / ("oem-" + variant)
+            second = self.root / "artifacts" / ("oem-repeat-" + variant)
+            with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+                plan = generator.generate(first, variant=variant, **inputs)
+                self.assertEqual(generator.generate(second, variant=variant, **inputs), plan)
+            self.assertEqual(generator.validate(first), plan)
+            self.assertEqual(len(plan["files"]), len(generator.TEMPLATE_FILES) + 15)
+            self.assertEqual(plan["oem_policy"]["factory_framework_evidence_files_rehashed"], 3)
+            self.assertFalse(plan["oem_policy"]["fresh_soong_or_m4_build_performed"])
+            self.assertFalse(plan["oem_policy"]["strict_full_policy_compiled"])
+            self.assertFalse(plan["oem_policy"]["complete_context_or_treble_checks_passed"])
+            board = (first / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+            self.assertTrue(board.endswith("\n" + "\n".join(generator._dsp_wiring_lines()) + "\n"))
+            self.assertIn("\n" + "\n".join(generator._init_helper_wiring_lines()) + "\n", board)
+            for name, path in generator.OEM_POLICY_WIRING.items():
+                self.assertEqual(board.count(f"{name} += {path}\n"), 1)
+            self.assertEqual(board.count("SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS"), 2)
+            self.assertEqual(board.count("SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS"), 1)
+            self.assertEqual((first / generator.DEVICE_PATH / "BoardConfig.mk").read_bytes(),
+                             (ROOT / generator.DEVICE_PATH / "BoardConfig.mk").read_bytes())
+            for purpose in ("target-files", "flash"):
+                with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                    generator.validate(first, purpose=purpose)
+
+    def test_oem_contract_requires_exact_bytes_and_refuses_symlinks(self):
+        inputs, verification = self.oem_inputs()
+        path = inputs["oem_policy_contract"]
+        original = path.read_bytes()
+        path.write_bytes(original + b"\n")
+        with self.assertRaisesRegex(generator.CandidateError, "unknown or changed OEM"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        path.write_bytes(original)
+        link = self.root / "oem-policy-link.json"
+        link.symlink_to(path)
+        with self.assertRaisesRegex(generator.CandidateError, "symlink"):
+            generator.generate(self.root / "artifacts/refused", **dict(inputs, oem_policy_contract=link))
+
+    def test_oem_contract_cannot_change_ownership_mappings_platform_or_existing_inputs(self):
+        inputs, verification = self.oem_inputs()
+        baseline = json.loads(inputs["oem_policy_contract"].read_text())
+        changes = (
+            lambda c: c["platform"].update(branch="cnb"),
+            lambda c: c["platform"].update(board_api="202604"),
+            lambda c: c["source_files"][0].update(scope="system_ext_private"),
+            lambda c: c["source_files"][0].update(path="device/xiaomi/nezha/sepolicy/generated.cil"),
+            lambda c: c["source_files"].append(copy.deepcopy(c["source_files"][0])),
+            lambda c: c["wiring"].update(SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS="device/xiaomi/other"),
+            lambda c: c.update(factory_origin_verified=True),
+            lambda c: c.update(factory_package_sha256="4" * 64),
+            lambda c: c["required_capability_contract"].update(value="true"),
+            lambda c: c["required_capability_contract"].update(sha256="4" * 64),
+            lambda c: c["required_source_revisions"].update({"build/soong": "4" * 40}),
+            lambda c: c["unchanged_factory_inputs"][0].update(sha256="4" * 64),
+            lambda c: c["types"]["vendor_hal_atfwd_hwservice"]["attributes"].append("domain"),
+            lambda c: c["types"]["vendor_hal_systemhelper_aidl_service"].update(role="unreviewed_r"),
+            lambda c: c["types"]["offlinelog_file"].update(versioned_attribute="offlinelog_file_202504"),
+            lambda c: c["types"]["vendor_hal_atfwd_hwservice"]["mapping_members"].append("domain"),
+            lambda c: c["limits"].update(new_allow_statements_added=True),
+            lambda c: c["limits"].update(complete_rom_admitted=True),
+        )
+        for change in changes:
+            contract = copy.deepcopy(baseline)
+            change(contract)
+            self.trust_synthetic_oem_contract(inputs, contract, verification)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_oem_rehashes_factory_framework_evidence_and_authored_sources(self):
+        inputs, verification = self.oem_inputs()
+        contract = json.loads(inputs["oem_policy_contract"].read_text())
+        dsp = json.loads(inputs["dsp_policy_contract"].read_text())["generator_contract"]
+        capture = json.loads((self.root / dsp["policy_capture_receipt"]["path"]).read_text())
+        selected = {row["runtime_path"] for row in contract["evidence"]["source_rows"]}
+        paths = [self.root / row["path"] for row in capture["input_order"] if row["runtime_path"] in selected]
+        paths += [inputs["template_root"] / name for name in generator.OEM_POLICY_FILES]
+        for path in paths:
+            original = path.read_bytes()
+            path.write_bytes(original + b"; changed\n")
+            with self.subTest(path=path), self.assertRaisesRegex(generator.CandidateError, "hash/size mismatch"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+
+    def test_oem_capture_cannot_substitute_framework_evidence_or_promote_triage(self):
+        inputs, verification = self.oem_inputs()
+        baseline = json.loads(inputs["oem_policy_contract"].read_text())
+        for change in (
+            lambda c: c["evidence"]["source_rows"][0].update(sha256="4" * 64),
+            lambda c: c["evidence"]["source_rows"].append(copy.deepcopy(c["evidence"]["source_rows"][0])),
+        ):
+            contract = copy.deepcopy(baseline)
+            change(contract)
+            self.trust_synthetic_oem_contract(inputs, contract, verification)
+            with self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+        contract = copy.deepcopy(baseline)
+        path = self.root / contract["evidence"]["triage"]["path"]
+        triage = json.loads(path.read_text())
+        triage["oem_te_source_recovered"] = True
+        raw = (json.dumps(triage) + "\n").encode()
+        path.write_bytes(raw)
+        contract["evidence"]["triage"].update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        self.trust_synthetic_oem_contract(inputs, contract, verification)
+        with self.assertRaisesRegex(generator.CandidateError, "bounded generated-CIL observation"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_oem_source_capability_requires_matching_native_bundle_identity(self):
+        inputs, original = self.oem_inputs()
+        for value in (None, {**original["oem_policy_contract"], "sha256": "4" * 64},
+                      {**original["oem_policy_contract"], "size_bytes": 1}):
+            verification = copy.deepcopy(original)
+            verification["oem_policy_contract"] = value
+            with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+                with self.assertRaisesRegex(generator.CandidateError, "same reviewed contract"):
+                    generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_oem_validation_rejects_resealed_sources_contract_and_admission_claims(self):
+        inputs, verification = self.oem_inputs()
+        output = self.root / "artifacts/oem-source-guards"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        names = [(generator.DEVICE_PATH / name).as_posix() for name in generator.OEM_POLICY_FILES]
+        names.append(generator.OEM_POLICY_RECORD.as_posix())
+        for name in names:
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, original + b"\n")
+            with self.subTest(name=name), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            (output / name).write_bytes(original)
+        updated = copy.deepcopy(plan)
+        updated["oem_policy"]["strict_full_policy_compiled"] = True
+        (output / "admission.json").write_text(json.dumps(updated))
+        with self.assertRaisesRegex(generator.CandidateError, "OEM policy admission"):
+            generator.validate(output)
+
+    def test_oem_validation_keeps_exact_board_and_native_bundle_guards(self):
+        inputs, verification = self.oem_inputs()
+        output = self.root / "artifacts/oem-wiring-guards"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+        original = (output / name).read_bytes()
+        first = next(iter(generator.OEM_POLICY_WIRING.items()))
+        directive = f"{first[0]} += {first[1]}\n".encode()
+        for raw in (original.replace(directive, b"# " + directive),
+                    original.replace(directive, directive + directive),
+                    original.replace(directive, directive.replace(b"/oem/public", b"/unreviewed")),
+                    original.replace(directive, b"ifeq (false,true)\n" + directive + b"endif\n")):
+            self.reseal_candidate_file(output, plan, name, raw)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+        (output / name).write_bytes(original)
+        for change in (lambda p: p.pop("policy_inputs"),
+                       lambda p: p["policy_inputs"].pop("oem_policy_contract"),
+                       lambda p: p.pop("oem_policy")):
+            updated = copy.deepcopy(plan)
+            change(updated)
+            (output / "admission.json").write_text(json.dumps(updated))
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_oem_candidate_validation_does_not_rehash_unmounted_private_evidence(self):
+        inputs, verification = self.oem_inputs()
+        output = self.root / "artifacts/oem-self-contained"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        with mock.patch.object(generator, "_bound_reference", side_effect=AssertionError("private evidence accessed")):
+            self.assertEqual(generator.validate(output), plan)
+
     def test_dsp_validation_rejects_source_tampering_even_if_inventory_is_rehashed(self):
         inputs = self.dsp_inputs()
         output = self.root / "artifacts/dsp-source-guard"

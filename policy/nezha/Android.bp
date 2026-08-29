@@ -218,3 +218,53 @@ java_genrule {
          "-f $(location factory/odm/odm_file_contexts) " +
          "-p $(location :nezha_factory_precompiled_sepolicy) -t TestDevTypeViolations && touch $(out)",
 }
+
+// BEGIN OPTIONAL NEZHA OEM POLICY CHECK
+// Staging includes this only with an explicit reviewed OEM source contract.
+// The original template is retained as provenance in both bundle profiles.
+python_binary_host {
+    name: "nezha_oem_policy_check_tool",
+    main: "tools/oem_policy.py",
+    srcs: ["tools/oem_policy.py", "tools/vendor_policy.py", "tools/artifact_files.py"],
+}
+
+java_genrule {
+    name: "nezha_factory_oem_policy_check",
+    tools: ["nezha_oem_policy_check_tool"],
+    srcs: [
+        ":plat_sepolicy.cil",
+        ":plat_mapping_file",
+        ":system_ext_sepolicy.cil",
+        ":system_ext_mapping_file",
+        ":product_sepolicy.cil",
+        ":product_mapping_file",
+        ":nezha_factory_genfs_policy",
+        ":nezha_factory_vendor_policy{derived/vendor_sepolicy.cil}",
+        "corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+        "corpus/vendor/etc/selinux/vendor_sepolicy.cil",
+        "corpus/odm/etc/selinux/odm_sepolicy.cil",
+        "tools/oem_policy.py",
+        "tools/vendor_policy.py",
+        "tools/artifact_files.py",
+        "tools/nezha-oem-policy.json",
+        "tools/nezha-init-helper-capability.json",
+    ],
+    out: ["oem-policy-native-check.json"],
+    cmd: "$(location nezha_oem_policy_check_tool) check-native " +
+         "--platform-cil $$(readlink -f $(location :plat_sepolicy.cil)) " +
+         "--platform-mapping $$(readlink -f $(location :plat_mapping_file)) " +
+         "--system-ext-cil $$(readlink -f $(location :system_ext_sepolicy.cil)) " +
+         "--system-ext-mapping $$(readlink -f $(location :system_ext_mapping_file)) " +
+         "--product-cil $$(readlink -f $(location :product_sepolicy.cil)) " +
+         "--product-mapping $$(readlink -f $(location :product_mapping_file)) " +
+         "--platform-genfs $$(readlink -f $(location :nezha_factory_genfs_policy)) " +
+         "--factory-pub $$(readlink -f $(location corpus/vendor/etc/selinux/plat_pub_versioned.cil)) " +
+         "--factory-vendor $$(readlink -f $(location corpus/vendor/etc/selinux/vendor_sepolicy.cil)) " +
+         "--factory-odm $$(readlink -f $(location corpus/odm/etc/selinux/odm_sepolicy.cil)) " +
+         "--derived-vendor $$(readlink -f $(location :nezha_factory_vendor_policy{derived/vendor_sepolicy.cil})) " +
+         "--contract $$(readlink -f $(location tools/nezha-oem-policy.json)) " +
+         "--capability-contract $$(readlink -f $(location tools/nezha-init-helper-capability.json)) " +
+         "--tool-source $$(readlink -f $(location tools/oem_policy.py)) " +
+         "--output $$(readlink -f $(genDir))/oem-policy-native-check.json",
+}
+// END OPTIONAL NEZHA OEM POLICY CHECK
