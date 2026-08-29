@@ -72,7 +72,7 @@
     "hardware_success_implied": false
   },
   "hardware_observation": {
-    "status": "installation_and_startup_defaults_verified_visual_touch_confirmation_pending",
+    "status": "installation_startup_defaults_visual_and_touch_verified",
     "observed_at_utc": "2026-08-29T15:48:32.556344+00:00",
     "recovery_a_flash_and_reboot_user_authorized": true,
     "partition_written": "recovery_a",
@@ -104,10 +104,16 @@
     "post_boot_mutating_commands_sent": [],
     "startup_defaults_verified_without_post_boot_mutations": true,
     "additional_reboot_persistence_tested": false,
-    "recovery_ui_verified": false,
-    "new_image_visual_confirmation": "pending",
-    "touch_latency_improvement_verified_on_derivative": false,
-    "new_image_touch_confirmation": "pending",
+    "recovery_ui_verified": true,
+    "new_image_visual_confirmation": "user_confirmed",
+    "touch_latency_improvement_verified_on_derivative": true,
+    "new_image_touch_confirmation": "user_confirmed",
+    "user_confirmation": {
+      "image": "working76",
+      "prompt": "Does this fresh boot still show the UI and feel fast?",
+      "response": "yes it does!",
+      "quantitative_latency_benchmark_performed": false
+    },
     "data_decryption_tested": false,
     "magisk_install_performed": false,
     "other_partition_flash_command_sent": false,
@@ -117,8 +123,8 @@
   "limitations": [
     "This is a repack of provided75 with exactly two text-file changes. The unchanged prebuilt executables, drivers, firmware and policy do not constitute a new source build or verified source provenance.",
     "The boot header is unchanged except for the ramdisk-size field. Development-key AVB verification passes with recovery rollback index 1, location 1 and flags 0; this is not an OEM signature or trust claim.",
-    "The first boot after flashing working76 verified root ADB, running recovery, the matching recovery_a readback, global Permissive and zero vibration defaults without post-boot mutations. Another persistence reboot and new-image visual/touch confirmation have not been completed.",
-    "The previous user report of much faster touch followed runtime tuning of provided75, not this working76 boot. Ordinary theme defaults can be overridden by saved settings. This record does not claim a driver change, kernel-level SELinux disable, normal Android modification, data decryption, Magisk installation or OEM trust."
+    "The first boot after flashing working76 verified root ADB, running recovery, the matching recovery_a readback, global Permissive and zero vibration defaults without post-boot mutations. The user subsequently confirmed visible UI and fast touch on this fresh boot. This is qualitative feedback, not a timed latency benchmark; another persistence reboot and an Android round trip have not been tested.",
+    "The earlier user report of much faster touch followed runtime tuning of provided75; the separate working76 confirmation is recorded with the new image's hardware observation. Ordinary theme defaults can be overridden by saved settings. This record does not claim a driver change, kernel-level SELinux disable, normal Android modification, data decryption, Magisk installation or OEM trust."
   ],
   "defaults_changed": {
     "system/etc/init/hw/init.rc": {

@@ -12,8 +12,10 @@ has SHA256 `a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e`;
 a readback of `recovery_a` matches. After reboot, without any runtime setting
 commands, root ADB reports `3.7.1_16-Xiaomi_17_Ultra`, a running recovery service,
 slot `a`, global `Permissive` SELinux, and zero for all three TWRP vibration
-settings. Fresh recovery and kernel logs were collected successfully. The new
-image's visible UI and touch responsiveness still await user confirmation.
+settings. Fresh recovery and kernel logs were collected successfully. The user
+then confirmed that this fresh boot shows the UI and still feels fast. This is
+qualitative touch feedback, not a timed latency benchmark. `working76` is now
+the tested baseline for further recovery changes.
 
 The [configuration patch](../recovery/twrp-working/README.md) changes only
 `system/etc/init/hw/init.rc` and `twres/ui.xml`. All 4,208 remaining CPIO members

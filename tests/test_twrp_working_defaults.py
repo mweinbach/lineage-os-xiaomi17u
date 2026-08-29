@@ -76,12 +76,19 @@ class TwrpWorkingDefaultsTests(unittest.TestCase):
         self.assertTrue(defaults['twres/ui.xml']['saved_settings_may_override_defaults'])
         self.assertFalse(defaults['selinux_disabled_in_kernel'] or defaults['normal_android_changed'])
 
-    def test_prior_touch_feedback_does_not_verify_new_image_visual_or_touch_behavior(self):
+    def test_fresh_boot_confirmation_is_separate_from_prior_runtime_feedback(self):
         hardware = self.record['hardware_observation']
-        self.assertEqual(hardware['new_image_visual_confirmation'], 'pending')
-        self.assertEqual(hardware['new_image_touch_confirmation'], 'pending')
-        for key in ('recovery_ui_verified', 'touch_latency_improvement_verified_on_derivative',
-                    'additional_reboot_persistence_tested', 'data_decryption_tested', 'magisk_install_performed',
+        self.assertEqual(hardware['status'], 'installation_startup_defaults_visual_and_touch_verified')
+        self.assertEqual(hardware['new_image_visual_confirmation'], 'user_confirmed')
+        self.assertEqual(hardware['new_image_touch_confirmation'], 'user_confirmed')
+        self.assertTrue(hardware['recovery_ui_verified'])
+        self.assertTrue(hardware['touch_latency_improvement_verified_on_derivative'])
+        self.assertEqual(hardware['user_confirmation'], {
+            'image': 'working76',
+            'prompt': 'Does this fresh boot still show the UI and feel fast?',
+            'response': 'yes it does!',
+            'quantitative_latency_benchmark_performed': False})
+        for key in ('additional_reboot_persistence_tested', 'data_decryption_tested', 'magisk_install_performed',
                     'other_partition_flash_command_sent', 'slot_change_command_sent', 'wipe_command_sent'):
             self.assertFalse(hardware[key])
         self.assertEqual(self.record['prior_runtime_tuning_user_feedback'], {

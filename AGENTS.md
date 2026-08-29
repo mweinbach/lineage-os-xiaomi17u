@@ -8,8 +8,10 @@ device tree. Keep verified facts separate from assumptions and unresolved work.
 - Make small, descriptive commits as useful work is completed. Run tests before
   completing a change. Use `python3 -m unittest discover -s tests -v`.
 - Check upstream branches and record commit IDs before depending on them.
-- For TWRP, start from the device-tested `fix22ZJ-touchfix18` recovery recorded
-  in `research/twrp-installed-recovery.json`. Preserve its working runtime and
+- For TWRP, use the tested `working76` derivative recorded in
+  `research/twrp-working-defaults.json` as the current baseline. It preserves
+  the `fix22ZJ-touchfix18` runtime from `research/twrp-installed-recovery.json`
+  with the tested permissive SELinux and zero-vibration defaults. Preserve its
   hardware setup while applying measured changes. Earlier minimal recovery
   builds remain historical experiments, not the current functional baseline.
 - Do not copy a different phone's partition layout, kernel, firmware, or device
