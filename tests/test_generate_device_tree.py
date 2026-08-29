@@ -5,6 +5,7 @@ from contextlib import redirect_stderr, redirect_stdout
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -714,6 +715,370 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
                 self.assertEqual(generator.main(base + args), 0)
             self.assertEqual(generate.call_args.kwargs["mi_ext_inputs_receipt"], expected)
+
+    def metadata_inputs(self):
+        """Tiny private metadata fixture; use real public controls and Make renderers."""
+        from scripts import mi_ext_inputs as mi
+        from scripts import target_files_metadata as metadata
+        inputs, mi_binding = self.mi_ext_inputs()
+        public = generator._metadata_public_binding()
+        public["factory_package_sha256"] = "3" * 64
+        vendor = json.loads(inputs["vendor_receipt"].read_bytes())
+        public["images"] = {name: {key: row[key] for key in ("sha256", "size_bytes")}
+                            for name, row in vendor["images"].items()}
+        config, legacy, controls = mi._controls.return_value
+        composed = copy.deepcopy(legacy)
+        composed.update(composition=public["native_source"], composition_identity=public["composition_identity"])
+        mi._controls.side_effect = lambda reader, composed_source_contract=None: (
+            config, legacy if composed_source_contract is None else composed, controls)
+        mi_binding["native_source"] = mi._native_source(composed)
+        self.enterContext(mock.patch.object(generator, "_verify_mi_ext_inputs", return_value=mi_binding))
+        self.enterContext(mock.patch.object(generator, "_metadata_public_binding", side_effect=lambda: copy.deepcopy(public)))
+        rows = [{"target_path": f"VENDOR/etc/vintf/fixture-{index}.xml"}
+                for index in range(public["metadata_file_count"])]
+        receipt = {"schema_version": 1, "profile": public["profile"], "images": public["images"],
+                   "source_composition": public["native_source"], "scope": public["scope"],
+                   "files": rows, "bundle_files": copy.deepcopy(public["control_files"])}
+        path = self.root / "artifacts/metadata-inputs" / generator.TARGET_FILES_METADATA_RECEIPT
+        path.parent.mkdir(parents=True)
+        for row in receipt["bundle_files"]:
+            relative = row["path"]
+            source = relative.removeprefix("controls/") if relative.startswith("controls/") else "scripts/target_files_metadata.py"
+            target = path.parent / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / source).read_bytes())
+        path.write_bytes(metadata.encoded(receipt))
+        inputs.update(target_files_metadata_receipt=path,
+                      target_files_metadata_receipt_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+        files = {row["target_path"]: (row, b"synthetic content") for row in rows}
+        verifier = self.enterContext(mock.patch.object(metadata, "verify_bundle", return_value=(receipt, files, mock.Mock())))
+        return inputs, public, receipt, verifier
+
+    def test_metadata_is_not_selected_or_inspected_by_default(self):
+        inputs = self.generation_inputs()
+        with mock.patch.object(generator, "_metadata_public_binding", side_effect=AssertionError("implicit controls")), \
+                mock.patch.object(generator, "_verify_target_files_metadata", side_effect=AssertionError("implicit bundle")):
+            first = generator.generate(self.root / "artifacts/default-metadata", **inputs)
+            second = generator.generate(self.root / "artifacts/explicit-none-metadata",
+                                        target_files_metadata_receipt=None,
+                                        target_files_metadata_receipt_sha256=None, **inputs)
+        self.assertEqual(first, second)
+        self.assertNotIn("target_files_metadata", first)
+        self.assertFalse(any(row["path"] == generator.TARGET_FILES_METADATA_INCLUDE.as_posix() for row in first["files"]))
+
+    def test_metadata_requires_paired_external_digest_factory_and_mi_ext_before_reads(self):
+        base = {"record_paths": {}, "kernel_receipt": "none", "vendor_receipt": "none"}
+        mutations = [
+            {"target_files_metadata_receipt": "none"},
+            {"target_files_metadata_receipt_sha256": "1" * 64},
+            {"target_files_metadata_receipt": "none", "target_files_metadata_receipt_sha256": "1" * 64},
+            {"target_files_metadata_receipt": "none", "target_files_metadata_receipt_sha256": "1" * 64,
+             "factory_boot_contract": "none", "partition_metadata": "none", "fstab_source": "none"},
+        ]
+        for options in mutations:
+            with self.subTest(options=options), mock.patch.object(generator, "_load_records") as load, \
+                    self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused-metadata", **base, **options)
+            load.assert_not_called()
+        for digest in ("", "x" * 64, "1" * 63, "1" * 65, "$(shell false)", True, 1):
+            with self.subTest(digest=digest), mock.patch.object(generator, "_load_records") as load, \
+                    self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused-metadata", **base,
+                                   target_files_metadata_receipt="none", target_files_metadata_receipt_sha256=digest)
+            load.assert_not_called()
+
+    def test_metadata_generation_binds_current_sources_without_promoting_packaging(self):
+        inputs, public, receipt, verifier = self.metadata_inputs()
+        first = self.root / "artifacts/metadata-first"
+        second = self.root / "artifacts/metadata-second"
+        original_recovery = (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        plan = generator.generate(first, **inputs)
+        self.assertEqual(generator.generate(second, **inputs), plan)
+        self.assertEqual(verifier.call_count, 4)
+        for call in verifier.call_args_list:
+            self.assertEqual(call, mock.call(inputs["target_files_metadata_receipt"].parent,
+                                            expected_receipt=inputs["target_files_metadata_receipt_sha256"]))
+        for call in generator._verify_mi_ext_inputs.call_args_list:
+            self.assertEqual(call.kwargs["composed_source_contract"], ROOT / generator.TARGET_FILES_METADATA_CONTRACT)
+        capability = plan["target_files_metadata"]
+        self.assertEqual(capability["metadata_file_count"], 205)
+        self.assertEqual(capability["native_source"], public["native_source"])
+        self.assertFalse(capability["native_source"]["patches_applied_by_this_tool"])
+        self.assertFalse(capability["native_source"]["whole_source_tree_verified"])
+        self.assertEqual(capability["images"], public["images"])
+        self.assertEqual(capability["scope"], receipt["scope"])
+        include = (first / generator.TARGET_FILES_METADATA_INCLUDE).read_text()
+        self.assertEqual(include.count(" := "), 3)
+        self.assertNotIn(".KATI_READONLY", include)
+        self.assertIn("BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 := " + inputs["target_files_metadata_receipt_sha256"], include)
+        self.assertIn("BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256 := " +
+                      next(row["sha256"] for row in public["control_files"] if row["path"] == "tools/target_files_metadata.py"), include)
+        recovery = (first / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        self.assertNotEqual(recovery, original_recovery)
+        self.assertEqual(recovery, generator._metadata_recovery_include(original_recovery))
+        self.assertEqual((ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes(), original_recovery)
+        for row in public["native_source"]["final_source_files"]:
+            self.assertIn(row["sha256"].encode(), recovery)
+        self.assertFalse(any(row["path"].startswith("vendor/") for row in plan["files"]))
+        self.assertTrue(plan["admission"]["configuration_allowed"])
+        self.assertTrue(all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"))
+        self.assertEqual(generator.validate(first), plan)
+        for purpose in ("target-files", "flash"):
+            with self.subTest(purpose=purpose), self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(first, purpose=purpose)
+
+    def test_metadata_receipt_identity_and_filename_are_checked_before_bundle_verification(self):
+        inputs, _, _, verifier = self.metadata_inputs()
+        path = inputs["target_files_metadata_receipt"]
+        alias = path.with_name("other.json")
+        alias.write_bytes(path.read_bytes())
+        symlink = path.with_name("link.json")
+        symlink.symlink_to(path)
+        for options in ({"target_files_metadata_receipt_sha256": "0" * 64},
+                        {"target_files_metadata_receipt": alias}, {"target_files_metadata_receipt": symlink}):
+            with self.subTest(options=options), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused-metadata", **dict(inputs, **options))
+        verifier.assert_not_called()
+
+    def test_metadata_receipt_rejects_special_files_and_hardlinks_before_opening(self):
+        inputs, _, _, verifier = self.metadata_inputs()
+        original = inputs["target_files_metadata_receipt"]
+        for kind in ("directory", "fifo", "hardlink"):
+            parent = self.root / kind
+            parent.mkdir()
+            path = parent / generator.TARGET_FILES_METADATA_RECEIPT
+            if kind == "directory":
+                path.mkdir()
+            elif kind == "fifo":
+                os.mkfifo(path)
+            else:
+                path.hardlink_to(original)
+            with self.subTest(kind=kind), self.assertRaisesRegex(generator.CandidateError, "metadata receipt refused"):
+                generator._verify_target_files_metadata(path,
+                    expected_receipt_sha256=inputs["target_files_metadata_receipt_sha256"])
+            if kind == "hardlink":
+                path.unlink()
+        verifier.assert_not_called()
+
+    def test_metadata_rejects_self_consistent_noncurrent_copied_public_controls(self):
+        inputs, _, receipt, verifier = self.metadata_inputs()
+        mutations = [
+            lambda row: row["profile"].update(sha256="0" * 64),
+            lambda row: row["source_composition"]["project"].update(commit="0" * 40),
+            lambda row: row["source_composition"]["final_source_files"][0].update(sha256="0" * 64),
+            lambda row: row["source_composition"]["contracts"][0].update(sha256="0" * 64),
+            lambda row: row["scope"].update(metadata_only=1),
+            lambda row: row["scope"].update(complete_rom_admitted=0),
+            lambda row: row["files"].pop(),
+        ]
+        mutations.extend(lambda row, path=entry["path"]: next(item for item in row["bundle_files"]
+                                                            if item["path"] == path).update(sha256="0" * 64)
+                         for entry in receipt["bundle_files"])
+        mutations.append(lambda row: row["bundle_files"].append({"path": "tools/unreviewed.py", "sha256": "0" * 64, "size_bytes": 1}))
+        original_files, reader = verifier.return_value[1:]
+        for mutate in mutations:
+            changed = copy.deepcopy(receipt)
+            mutate(changed)
+            verifier.return_value = changed, original_files, reader
+            with self.subTest(mutate=mutate), self.assertRaisesRegex(generator.CandidateError, "current public"):
+                generator.generate(self.root / "artifacts/refused-metadata", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-metadata").exists())
+
+    def test_metadata_requires_original_factory_images_and_same_vendor_bundle(self):
+        inputs, public, _, _ = self.metadata_inputs()
+        verify = generator._verify_target_files_metadata
+        for partition in ("vendor", "odm"):
+            changed = copy.deepcopy(public)
+            changed["images"][partition]["sha256"] = "0" * 64
+            raw = inputs["target_files_metadata_receipt"].read_bytes()
+            changed["receipt"] = {"path": generator.TARGET_FILES_METADATA_RECEIPT,
+                                  "sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+            with self.subTest(partition=partition), mock.patch.object(generator, "_verify_target_files_metadata", return_value=changed), \
+                    self.assertRaisesRegex(generator.CandidateError, "exact original factory vendor/ODM"):
+                generator.generate(self.root / "artifacts/refused-metadata", **inputs)
+
+        def changed_vendor(*args, **kwargs):
+            result = verify(*args, **kwargs)
+            path = inputs["vendor_receipt"]
+            path.write_bytes(path.read_bytes() + b"\n")
+            return result
+
+        with mock.patch.object(generator, "_verify_target_files_metadata", side_effect=changed_vendor), \
+                self.assertRaisesRegex(generator.CandidateError, "vendor inputs changed"):
+            generator.generate(self.root / "artifacts/refused-metadata", **inputs)
+
+    def test_metadata_rejects_legacy_mi_ext_and_recovery_source_compositions(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        binding = generator._verify_mi_ext_inputs.return_value
+        binding["native_source"].pop("composition")
+        binding["native_source"].pop("composition_identity")
+        with self.assertRaises(generator.CandidateError):
+            generator.generate(self.root / "artifacts/refused-legacy-mi", **inputs)
+        # The exact renderer refuses an altered legacy template before it can
+        # be turned into a new composition-specific guard.
+        original = (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        with self.assertRaisesRegex(generator.CandidateError, "recovery source binding refused"):
+            generator._metadata_recovery_include(original + b"# unreviewed selector\n")
+
+    def test_metadata_validation_rejects_resealed_source_scope_and_bundle_claims(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        output = self.root / "artifacts/metadata-scope"
+        original = generator.generate(output, **inputs)
+        mutations = [
+            lambda p: p["target_files_metadata"].update(bundle="vendor/xiaomi/other"),
+            lambda p: p["target_files_metadata"].update(factory_package_sha256="0" * 64),
+            lambda p: p["target_files_metadata"].update(metadata_file_count=204),
+            lambda p: p["target_files_metadata"]["scope"].update(vintf_verified=True),
+            lambda p: p["target_files_metadata"]["scope"].update(ota_verified=0),
+            lambda p: p["target_files_metadata"]["native_source"]["final_source_files"][0].update(sha256="0" * 64),
+            lambda p: p["target_files_metadata"]["control_files"][0].update(sha256="0" * 64),
+            lambda p: p["target_files_metadata"]["vendor_bundle"].update(sha256="0" * 64),
+            lambda p: (p["target_files_metadata"].update(vendor_bundle={"sha256": "invalid", "size_bytes": True}),
+                       p["bundles"]["vendor"].update(sha256="invalid", size_bytes=True)),
+            lambda p: p["target_files_metadata"]["receipt"].update(size_bytes=True),
+            lambda p: p["target_files_metadata"]["receipt"].update(path="other.json"),
+            lambda p: p["mi_ext_inputs"]["native_source"].pop("composition"),
+            lambda p: p.update(release_config="other"),
+            lambda p: p["admission"].update(full_rom_build_allowed=True),
+        ]
+        for mutate in mutations:
+            plan = copy.deepcopy(original)
+            mutate(plan)
+            (output / "admission.json").write_text(json.dumps(plan))
+            with self.subTest(mutate=mutate), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+    def test_metadata_validation_rejects_resealed_selectors_and_legacy_recovery(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        output = self.root / "artifacts/metadata-wiring"
+        plan = generator.generate(output, **inputs)
+        changes = {
+            "generated/target-files-metadata.mk": lambda raw: raw.replace(b" := ", b" ?= "),
+            "generated/BoardConfigCandidate.mk": lambda raw: raw.replace(b"include $(NEZHA_DEVICE_PATH)/generated/target-files-metadata.mk\n", b""),
+            "recovery-prebuilt.mk": lambda _: (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes(),
+        }
+        for relative, mutate in changes.items():
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, mutate(original))
+            with self.subTest(name=name), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_metadata_selectors_cannot_move_to_other_make_or_blueprint_files(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        output = self.root / "artifacts/metadata-duplicate-selector"
+        plan = generator.generate(output, **inputs)
+        lines = [b"BOARD_NEZHA_PREBUILT_METADATA := false\n",
+                 b"BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 := 0\n",
+                 b"BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256 := 0\n",
+                 b"NEZHA_PREBUILT_METADATA_ROOT := elsewhere\n",
+                 b"include vendor/xiaomi/nezha-target-files-metadata/selection.mk\n",
+                 b"include $(NEZHA_DEVICE_PATH)/generated/target-files-metadata.mk\n",
+                 b"EXTRA_TOOL := target_files_metadata.py\n"]
+        for relative in ("device.mk", "BoardConfig.mk", "Android.bp", "generated/device-candidate.mk"):
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            for line in lines:
+                self.reseal_candidate_file(output, plan, name, original + line)
+                with self.subTest(name=name, line=line), self.assertRaises(generator.CandidateError):
+                    generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_metadata_cannot_be_enabled_without_its_explicit_capability(self):
+        inputs = self.generation_inputs()
+        output = self.root / "artifacts/metadata-unselected"
+        plan = generator.generate(output, **inputs)
+        for relative, line in (("generated/BoardConfigCandidate.mk", b"BOARD_NEZHA_PREBUILT_METADATA := true\n"),
+                               ("device.mk", b"include $(NEZHA_DEVICE_PATH)/generated/target-files-metadata.mk\n"),
+                               ("Android.bp", b"// vendor/xiaomi/nezha-target-files-metadata\n")):
+            name = (generator.DEVICE_PATH / relative).as_posix()
+            original = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, original + line)
+            with self.subTest(name=name), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, original)
+        unexpected = output / generator.TARGET_FILES_METADATA_INCLUDE
+        unexpected.write_text("BOARD_NEZHA_PREBUILT_METADATA := true\n")
+        with self.assertRaisesRegex(generator.CandidateError, "unexpected candidate file|unlisted or missing candidate file"):
+            generator.validate(output)
+
+    def test_metadata_validation_does_not_reopen_private_inputs(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        output = self.root / "artifacts/portable-metadata"
+        plan = generator.generate(output, **inputs)
+        inputs["target_files_metadata_receipt"].unlink()
+        with mock.patch.object(generator, "_verify_target_files_metadata", side_effect=AssertionError("private input read")):
+            self.assertEqual(generator.validate(output), plan)
+
+    def test_metadata_external_verification_failure_or_late_change_cannot_publish(self):
+        from scripts import target_files_metadata as metadata
+        inputs, _, _, verifier = self.metadata_inputs()
+        verified = verifier.return_value
+        for calls in ([metadata.TargetFilesMetadataError("unlisted file")],
+                      [verified, metadata.TargetFilesMetadataError("late unlisted empty directory")]):
+            verifier.side_effect = calls
+            with self.subTest(calls=calls), self.assertRaisesRegex(generator.CandidateError, "metadata bundle refused"):
+                generator.generate(self.root / "artifacts/refused-metadata", **inputs)
+            self.assertFalse((self.root / "artifacts/refused-metadata").exists())
+
+    def test_metadata_rechecks_final_inventory_after_the_verifier_recheck(self):
+        inputs, _, _, verifier = self.metadata_inputs()
+        reader = verifier.return_value[2]
+        bundle = inputs["target_files_metadata_receipt"].parent
+        for kind in ("file", "empty-directory"):
+            late = bundle / ("late-" + kind)
+            def add_late():
+                if kind == "file":
+                    late.write_bytes(b"unexpected")
+                else:
+                    late.mkdir()
+            # The first wrapper succeeds. Mutate during the last bound-reader
+            # pass of the second wrapper immediately before publication.
+            def recheck():
+                if reader.recheck.call_count == 2:
+                    add_late()
+            reader.recheck.side_effect = recheck
+            with self.subTest(kind=kind), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused-metadata", **inputs)
+            self.assertFalse((self.root / "artifacts/refused-metadata").exists())
+            late.rmdir() if kind == "empty-directory" else late.unlink()
+            reader.recheck.reset_mock()
+
+    def test_metadata_rechecks_vendor_receipt_before_candidate_publication(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        validate = generator.validate
+        def change_after_validation(*args, **kwargs):
+            result = validate(*args, **kwargs)
+            path = inputs["vendor_receipt"]
+            path.write_bytes(path.read_bytes() + b"\n")
+            return result
+        with mock.patch.object(generator, "validate", side_effect=change_after_validation), \
+                self.assertRaisesRegex(generator.CandidateError, "vendor inputs changed"):
+            generator.generate(self.root / "artifacts/refused-metadata", **inputs)
+        self.assertFalse((self.root / "artifacts/refused-metadata").exists())
+
+    def test_metadata_output_cannot_be_nested_inside_the_private_bundle(self):
+        inputs, _, _, _ = self.metadata_inputs()
+        output = inputs["target_files_metadata_receipt"].parent / "new-candidate"
+        with self.assertRaisesRegex(generator.CandidateError, "nested inside a target-files metadata bundle"):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+    def test_cli_preserves_explicit_metadata_receipt_and_external_digest(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        cases = [([], None, None),
+                 (["--target-files-metadata-receipt", "metadata.json", "--target-files-metadata-receipt-sha256", "1" * 64],
+                  Path("metadata.json"), "1" * 64)]
+        for options, path, digest in cases:
+            with self.subTest(options=options), mock.patch.object(generator, "generate", return_value={}) as generate, \
+                    redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + options), 0)
+            self.assertEqual(generate.call_args.kwargs["target_files_metadata_receipt"], path)
+            self.assertEqual(generate.call_args.kwargs["target_files_metadata_receipt_sha256"], digest)
 
     def test_factory_generation_binds_geometry_and_preserves_flags_and_provenance(self):
         inputs = self.factory_inputs()

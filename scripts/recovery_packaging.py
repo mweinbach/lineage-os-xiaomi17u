@@ -357,7 +357,7 @@ def main(argv=None):
     parser.add_argument("operation", choices=("check-source", "probe"))
     parser.add_argument("--source-tree", type=Path, required=True)
     parser.add_argument("--composed-source-contract", type=Path,
-                        help="explicit reviewed 0007 contract for the ordered 0005/0006/0007 source composition")
+                        help="explicit reviewed 0007 or 0009 composition; omission retains the original packaging contract")
     args = parser.parse_args(argv)
     try:
         result = (probe if args.operation == "probe" else check_source)(

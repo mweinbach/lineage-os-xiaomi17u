@@ -68,6 +68,10 @@ POLICY_INPUTS_RECEIPT = "policy-inputs.json"
 MI_EXT_INPUTS_PATH = "vendor/xiaomi/nezha-mi-ext"
 MI_EXT_INPUTS_RECEIPT = "mi-ext-inputs.json"
 MI_EXT_BOARD_INCLUDE = DEVICE_PATH / "generated/mi-ext-prebuilt.mk"
+TARGET_FILES_METADATA_PATH = "vendor/xiaomi/nezha-target-files-metadata"
+TARGET_FILES_METADATA_RECEIPT = "target-files-metadata.json"
+TARGET_FILES_METADATA_CONTRACT = "patches/evolution/target-files-metadata.json"
+TARGET_FILES_METADATA_INCLUDE = DEVICE_PATH / "generated/target-files-metadata.mk"
 OEM_POLICY_RECORD = PurePosixPath("config/nezha-oem-policy.json")
 OEM_POLICY_CONTRACT_ID = "nezha-oem-system-ext-policy-v1"
 OEM_POLICY_CONTRACT_SHA256 = "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7"
@@ -1663,29 +1667,31 @@ def _bind_policy_inputs(plan, path, *, framework_provider_inputs_receipt=None):
     plan["policy_inputs"] = verification
 
 
-def _verify_mi_ext_inputs(path, *, expected_package_sha256):
+def _verify_mi_ext_inputs(path, *, expected_package_sha256, composed_source_contract=None):
     if __package__:
         from . import mi_ext_inputs
     else:
         import mi_ext_inputs
     try:
-        return mi_ext_inputs.validate_admission(path, expected_package_sha256=expected_package_sha256)
+        options = {} if composed_source_contract is None else {"composed_source_contract": composed_source_contract}
+        return mi_ext_inputs.validate_admission(path, expected_package_sha256=expected_package_sha256, **options)
     except mi_ext_inputs.MiExtInputsError as exc:
         raise CandidateError(f"mi_ext inputs refused: {exc}") from exc
 
 
-def _render_mi_ext_include(binding):
+def _render_mi_ext_include(binding, *, composed_source_contract=None):
     if __package__:
         from . import mi_ext_inputs
     else:
         import mi_ext_inputs
     try:
-        return mi_ext_inputs.render_board_include(binding)
+        options = {} if composed_source_contract is None else {"composed_source_contract": composed_source_contract}
+        return mi_ext_inputs.render_board_include(binding, **options)
     except mi_ext_inputs.MiExtInputsError as exc:
         raise CandidateError(f"mi_ext native source binding refused: {exc}") from exc
 
 
-def _mi_ext_binding(plan, binding):
+def _mi_ext_binding(plan, binding, *, composed_source_contract=None):
     """Bind the external factory prebuilt to this candidate's selected layout."""
     _require(type(binding) is dict and set(binding) == {
         "bundle", "factory_package_sha256", "image", "receipt", "native_source", "dynamic_layout", "scope",
@@ -1719,6 +1725,10 @@ def _mi_ext_binding(plan, binding):
              "mi_ext input binding cannot promote build, packaging or hardware readiness")
     # The renderer checks the exact current source, image, receipt and scope
     # contracts. This cannot rehash an unmounted private bundle or guest source.
+    if composed_source_contract is None and "target_files_metadata" in plan:
+        composed_source_contract = ROOT / TARGET_FILES_METADATA_CONTRACT
+    if composed_source_contract is not None:
+        return _render_mi_ext_include(binding, composed_source_contract=composed_source_contract)
     return _render_mi_ext_include(binding)
 
 
@@ -1747,12 +1757,13 @@ def _validate_mi_ext_fstab(binding, text):
              "mi_ext mount, AVB flags or framework-overlay exclusion changed")
 
 
-def _bind_mi_ext_inputs(plan, records, path, payloads, fstab):
+def _bind_mi_ext_inputs(plan, records, path, payloads, fstab, *, composed_source_contract=None):
     path = _no_symlinks(path)
     _require(path.name == MI_EXT_INPUTS_RECEIPT, "mi_ext receipt must be named mi-ext-inputs.json")
     identity, _ = _read_file(path, limit=MAX_JSON_BYTES)
-    binding = _verify_mi_ext_inputs(path, expected_package_sha256=plan["source_packages"]["vendor"])
-    include = _mi_ext_binding(plan, binding)
+    options = {} if composed_source_contract is None else {"composed_source_contract": composed_source_contract}
+    binding = _verify_mi_ext_inputs(path, expected_package_sha256=plan["source_packages"]["vendor"], **options)
+    include = _mi_ext_binding(plan, binding, **options)
     _require(identity == {key: binding["receipt"][key] for key in ("sha256", "size_bytes")},
              "mi_ext input receipt changed during verification")
     rows = records["firmware-layout"]["partitions"]
@@ -1777,6 +1788,161 @@ def _bind_mi_ext_inputs(plan, records, path, payloads, fstab):
         for note in plan["limitations"]
     ]
     payloads[MI_EXT_BOARD_INCLUDE.as_posix()] = include.encode("ascii")
+
+
+def _metadata_module():
+    if __package__:
+        from . import target_files_metadata
+    else:
+        import target_files_metadata
+    return target_files_metadata
+
+
+def _metadata_public_binding():
+    """Use the executing public control tree, never the private bundle's copy."""
+    metadata = _metadata_module()
+    try:
+        reader = metadata.Reader()
+        profile, composition, controls = metadata._controls(ROOT, reader)
+        reader.recheck()
+        control_files = [{"path": "controls/" + path, **metadata.identity(raw)}
+                         for path, raw in sorted(controls.items())]
+        control_files.extend({"path": "tools/" + Path(path).name, **metadata.identity(controls[path])}
+                             for path in metadata.CONTROL_TOOLS)
+        return {
+            "bundle": TARGET_FILES_METADATA_PATH,
+            "factory_package_sha256": profile["factory_package_sha256"],
+            "profile": {"path": metadata.PROFILE, **metadata.identity(controls[metadata.PROFILE])},
+            "control_files": sorted(control_files, key=lambda row: row["path"]),
+            "images": {name: {key: profile["partitions"][name]["image"][key]
+                              for key in ("sha256", "size_bytes")} for name in ("vendor", "odm")},
+            "metadata_file_count": sum(sum(row["counts"].values()) for row in profile["partitions"].values()),
+            "native_source": composition,
+            "composition_identity": metadata.identity(metadata.encoded(composition)),
+            "scope": profile["scope"],
+        }
+    except metadata.TargetFilesMetadataError as exc:
+        raise CandidateError(f"target-files metadata public controls refused: {exc}") from exc
+
+
+def _verify_target_files_metadata(path, *, expected_receipt_sha256):
+    """Recompute private metadata and bind every copied control to public bytes."""
+    metadata = _metadata_module()
+    expected = _digest(expected_receipt_sha256, "external target-files metadata receipt")
+    path = _no_symlinks(path)
+    _require(path.name == TARGET_FILES_METADATA_RECEIPT,
+             "target-files metadata receipt must use its canonical filename")
+    try:
+        receipt_reader = metadata.Reader()
+        identity = metadata.identity(receipt_reader.read(path))
+    except metadata.TargetFilesMetadataError as exc:
+        raise CandidateError(f"target-files metadata receipt refused: {exc}") from exc
+    _require(identity["sha256"] == expected, "target-files metadata receipt differs from external digest")
+    public = _metadata_public_binding()
+    try:
+        receipt, files, reader = metadata.verify_bundle(path.parent, expected_receipt=expected)
+        _require(metadata.encoded(receipt["profile"]) == metadata.encoded(public["profile"]) and
+                 metadata.encoded(receipt["source_composition"]) == metadata.encoded(public["native_source"]) and
+                 metadata.encoded(receipt["images"]) == metadata.encoded(public["images"]) and
+                 metadata.encoded(receipt["scope"]) == metadata.encoded(public["scope"]) and
+                 len(receipt["files"]) == len(files) == public["metadata_file_count"],
+                 "target-files metadata differs from the current public profile or source composition")
+        copied = {row["path"]: row for row in receipt["bundle_files"]}
+        actual_controls = {name for name in copied if name.startswith(("controls/", "tools/"))}
+        _require(actual_controls == {row["path"] for row in public["control_files"]} and
+                 all(copied[row["path"]] == row for row in public["control_files"]),
+                 "target-files metadata copied controls differ from current public inputs")
+        reader.recheck()
+        receipt_reader.recheck()
+        _require(metadata.encoded(public) == metadata.encoded(_metadata_public_binding()),
+                 "target-files metadata public controls changed during verification")
+        _require(metadata._files(path.parent) == set(copied) | {TARGET_FILES_METADATA_RECEIPT},
+                 "target-files metadata inventory changed during final verification")
+    except metadata.TargetFilesMetadataError as exc:
+        raise CandidateError(f"target-files metadata bundle refused: {exc}") from exc
+    return {**public, "receipt": {"path": path.name, **identity}}
+
+
+def _metadata_recovery_include(template_bytes):
+    if __package__:
+        from . import recovery_source_contracts
+    else:
+        import recovery_source_contracts
+    try:
+        return recovery_source_contracts.render_metadata_recovery_include(
+            template_bytes, root=ROOT, selected_contract=ROOT / TARGET_FILES_METADATA_CONTRACT)
+    except recovery_source_contracts.RecoverySourceError as exc:
+        raise CandidateError(f"target-files metadata recovery source binding refused: {exc}") from exc
+
+
+def _render_metadata_include(binding):
+    receipt = _digest(binding["receipt"]["sha256"], "target-files metadata receipt")
+    tool = next(row for row in binding["control_files"] if row["path"] == "tools/target_files_metadata.py")
+    tool_sha = _digest(tool["sha256"], "target-files metadata native tool")
+    # The patched build core freezes these values after BoardConfig. Freezing
+    # them here would prevent that reviewed native ownership step.
+    return ("# Exact content-only factory metadata projection; no ROM readiness admission.\n"
+            "BOARD_NEZHA_PREBUILT_METADATA := true\n"
+            f"BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 := {receipt}\n"
+            f"BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256 := {tool_sha}\n")
+
+
+def _target_files_metadata_binding(plan, binding):
+    metadata = _metadata_module()
+    public = _metadata_public_binding()
+    _require(type(binding) is dict and set(binding) == set(public) | {"receipt", "vendor_bundle"},
+             "invalid target-files metadata capability")
+    _require(metadata.encoded({key: binding[key] for key in public}) == metadata.encoded(public),
+             "target-files metadata capability differs from current public controls")
+    receipt = binding["receipt"]
+    _require(type(receipt) is dict and set(receipt) == {"path", "sha256", "size_bytes"} and
+             receipt["path"] == TARGET_FILES_METADATA_RECEIPT,
+             "invalid target-files metadata receipt binding")
+    _digest(receipt["sha256"], "target-files metadata receipt")
+    _integer(receipt["size_bytes"], "target-files metadata receipt length", MAX_JSON_BYTES)
+    _require("factory_profile" in plan and "mi_ext_inputs" in plan and
+             plan["source_packages"]["vendor"] == plan["factory_profile"]["package_sha256"] ==
+             public["factory_package_sha256"] and plan["factory_profile"]["origin_verified"] is False,
+             "target-files metadata requires the same explicit factory and mi_ext inputs")
+    vendor_binding = binding["vendor_bundle"]
+    _require(type(vendor_binding) is dict and set(vendor_binding) == {"sha256", "size_bytes"},
+             "invalid target-files metadata vendor receipt binding")
+    _digest(vendor_binding["sha256"], "target-files metadata vendor receipt")
+    _integer(vendor_binding["size_bytes"], "target-files metadata vendor receipt length", MAX_JSON_BYTES)
+    _require(vendor_binding == {key: plan["bundles"]["vendor"][key] for key in ("sha256", "size_bytes")},
+             "target-files metadata is bound to a different vendor bundle")
+    source = plan["mi_ext_inputs"].get("native_source")
+    expected_source = {"project_commit": public["native_source"]["project"]["commit"],
+                       "files": public["native_source"]["final_source_files"],
+                       "composition": public["native_source"],
+                       "composition_identity": public["composition_identity"]}
+    _require(metadata.encoded(source) == metadata.encoded(expected_source),
+             "target-files metadata and mi_ext require the same explicit 0005-0009 source composition")
+    _require(plan["profile"] == "framework-checks" and plan["release_config"] == "bp4a" and
+             plan["admission"]["configuration_allowed"] is True and
+             all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
+             "target-files metadata cannot promote build, packaging or hardware readiness")
+    return _render_metadata_include(binding)
+
+
+def _metadata_vendor_binding(plan, binding, vendor_receipt):
+    vendor, vendor_identity = _read_json(vendor_receipt)
+    _require(vendor_identity == {key: plan["bundles"]["vendor"][key] for key in ("sha256", "size_bytes")},
+             "vendor inputs changed before target-files metadata binding")
+    _require(all({key: vendor["images"][name][key] for key in ("sha256", "size_bytes")} == identity
+                 for name, identity in binding["images"].items()),
+             "target-files metadata requires the exact original factory vendor/ODM image pair")
+    return vendor_identity
+
+
+def _bind_target_files_metadata(plan, path, expected_sha256, vendor_receipt, payloads):
+    binding = _verify_target_files_metadata(path, expected_receipt_sha256=expected_sha256)
+    binding["vendor_bundle"] = _metadata_vendor_binding(plan, binding, vendor_receipt)
+    include = _target_files_metadata_binding(plan, binding)
+    recovery_name = (DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
+    payloads[recovery_name] = _metadata_recovery_include(payloads[recovery_name])
+    payloads[TARGET_FILES_METADATA_INCLUDE.as_posix()] = include.encode("ascii")
+    plan["target_files_metadata"] = binding
 
 
 def render_factory_fstab(plan, contract, source):
@@ -1913,6 +2079,9 @@ def _render_board(plan):
     if "mi_ext_inputs" in plan:
         lines += ["# Exact factory mi_ext custom image; the native consumer rechecks source and image bytes.",
                   "include $(NEZHA_DEVICE_PATH)/generated/mi-ext-prebuilt.mk"]
+    if "target_files_metadata" in plan:
+        lines += ["# Hash-bound factory metadata only; complete packaging remains unadmitted.",
+                  "include $(NEZHA_DEVICE_PATH)/generated/target-files-metadata.mk"]
     if "init_helper_capability" in plan:
         lines.extend(_init_helper_wiring_lines())
     if "oem_policy" in plan:
@@ -1961,7 +2130,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              dsp_policy_contract=None, init_helper_capability_contract=None,
              policy_inputs_receipt=None, oem_policy_contract=None, mi_ext_inputs_receipt=None,
              oem_property_contract=None, framework_provider_policy_contract=None,
-             framework_provider_inputs_receipt=None):
+             framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
+             target_files_metadata_receipt_sha256=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -1981,6 +2151,13 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                  "OEM policy requires explicit factory, DSP, helper and native policy inputs")
     if mi_ext_inputs_receipt is not None:
         _require(factory_selected, "mi_ext inputs require the explicit factory profile")
+    metadata_selected = target_files_metadata_receipt is not None or target_files_metadata_receipt_sha256 is not None
+    if metadata_selected:
+        _require(target_files_metadata_receipt is not None and target_files_metadata_receipt_sha256 is not None,
+                 "target-files metadata requires both a receipt and its external reviewed SHA256")
+        _digest(target_files_metadata_receipt_sha256, "external target-files metadata receipt")
+        _require(factory_selected and mi_ext_inputs_receipt is not None,
+                 "target-files metadata requires explicit factory and mi_ext inputs")
     if oem_property_contract is not None:
         _require(oem_policy_contract is not None and policy_inputs_receipt is not None,
                  "OEM properties require an explicit OEM source contract and matching native policy inputs")
@@ -2022,7 +2199,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if policy_inputs_receipt is not None:
         _bind_policy_inputs(plan, policy_inputs_receipt, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
-        _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab)
+        options = {"composed_source_contract": ROOT / TARGET_FILES_METADATA_CONTRACT} if metadata_selected else {}
+        _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab, **options)
+    if metadata_selected:
+        _bind_target_files_metadata(plan, target_files_metadata_receipt, target_files_metadata_receipt_sha256,
+                                    vendor_receipt, payloads)
     generated = DEVICE_PATH / "generated"
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
@@ -2040,6 +2221,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             _require(not output.is_relative_to(protected) and not any(
                 parent.exists() and parent.samefile(protected) for parent in output.parents),
                 "candidate output must not be nested inside a provider or policy input bundle")
+    if metadata_selected:
+        protected = _no_symlinks(Path(target_files_metadata_receipt).parent)
+        _require(not output.is_relative_to(protected) and not any(
+            parent.exists() and parent.samefile(protected) for parent in output.parents),
+            "candidate output must not be nested inside a target-files metadata bundle")
     output.parent.mkdir(parents=True, exist_ok=True)
     _no_symlinks(output.parent)
     staging = Path(tempfile.mkdtemp(prefix=".nezha-device-", dir=output.parent))
@@ -2059,6 +2245,14 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                      Path(workspace_root) / FRAMEWORK_PROVIDER_INPUT_RECORD) == plan["framework_providers"]["inputs"],
                      "framework provider bundle changed before candidate publication")
             _framework_provider_external_inventory(Path(framework_provider_inputs_receipt), plan["framework_providers"]["inputs"])
+        if metadata_selected:
+            # Verify the entire external tree again, including its no-extra-file
+            # inventory, before publishing the small portable candidate.
+            current = _verify_target_files_metadata(target_files_metadata_receipt,
+                                                   expected_receipt_sha256=target_files_metadata_receipt_sha256)
+            current["vendor_bundle"] = _metadata_vendor_binding(plan, current, vendor_receipt)
+            _require(current == plan["target_files_metadata"],
+                     "target-files metadata bundle changed before candidate publication")
         _no_symlinks(output.parent)
         publish_new_directory(staging, output)
     finally:
@@ -2091,6 +2285,17 @@ def validate(output, *, purpose="configuration"):
                  "generated mi_ext native input guard differs from its reviewed binding")
         _, raw = _read_file(Path(output) / DEVICE_PATH / "generated/fstab.qcom", limit=MAX_TEXT_BYTES, collect=True)
         _validate_mi_ext_fstab(plan["mi_ext_inputs"], raw.decode("utf-8"))
+    if "target_files_metadata" in plan:
+        include = _target_files_metadata_binding(plan, plan["target_files_metadata"])
+        name = TARGET_FILES_METADATA_INCLUDE.as_posix()
+        expected.add(name)
+        identity, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+        _require(identity == files.get(name) and raw == include.encode("ascii"),
+                 "generated target-files metadata selectors differ from their reviewed binding")
+        _, legacy_recovery = _read_file(ROOT / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
+        _, actual_recovery = _read_file(Path(output) / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual_recovery == _metadata_recovery_include(legacy_recovery),
+                 "target-files metadata requires the exact matching recovery source guard")
     if "dsp_policy" in plan:
         _require(isinstance(plan["dsp_policy"], dict), "invalid DSP policy admission")
         contract, identity = _dsp_contract(Path(output) / DSP_POLICY_RECORD)
@@ -2217,6 +2422,23 @@ def validate(output, *, purpose="configuration"):
     else:
         _require("mi-ext-prebuilt.mk" not in board and not re.search(r"\bmi_ext\b|\b(?:BOARD|TARGET_COPY_OUT)_MI_EXT", board),
                  "mi_ext board wiring requires an explicit verified bundle")
+    if "target_files_metadata" in plan:
+        _require(board_bytes == _render_board(plan).encode("ascii"),
+                 "generated target-files metadata board selection changed")
+    else:
+        _require(b"target-files-metadata" not in board_bytes and b"NEZHA_PREBUILT_METADATA" not in board_bytes and
+                 b"target_files_metadata" not in board_bytes,
+                 "target-files metadata selection requires an explicit verified capability")
+    for name in files:
+        if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith((".mk", ".bp")):
+            _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+            if name != TARGET_FILES_METADATA_INCLUDE.as_posix():
+                _require(b"NEZHA_PREBUILT_METADATA" not in raw and b"target_files_metadata" not in raw and
+                         TARGET_FILES_METADATA_PATH.encode("ascii") not in raw,
+                         "target-files metadata selectors may only use the reviewed generated include")
+            if name != board_name:
+                _require(b"target-files-metadata.mk" not in raw,
+                         "target-files metadata include may only use the reviewed generated board")
     group_variable = f"BOARD_{plan['super']['group_name'].upper()}_PARTITION_LIST".encode("ascii")
     for name in files:
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk"):
@@ -2311,6 +2533,10 @@ def main(argv=None):
                              help="reviewed OEM system_ext source restoration; requires matching native policy inputs")
             sub.add_argument("--mi-ext-inputs-receipt", type=Path,
                              help="verified exact factory mi_ext prebuilt; requires factory profile, never complete packaging admission")
+            sub.add_argument("--target-files-metadata-receipt", type=Path,
+                             help="exact content-only factory metadata bundle; requires its external SHA256, factory and mi_ext inputs")
+            sub.add_argument("--target-files-metadata-receipt-sha256",
+                             help="independently reviewed metadata receipt digest; never inferred from the supplied bundle")
             sub.add_argument("--oem-property-contract", type=Path,
                              help="explicit four-property system_ext source contract; requires matching OEM base and native policy inputs")
             sub.add_argument("--framework-provider-policy-contract", type=Path,
@@ -2341,7 +2567,9 @@ def main(argv=None):
                                   mi_ext_inputs_receipt=args.mi_ext_inputs_receipt,
                                   oem_property_contract=args.oem_property_contract,
                                   framework_provider_policy_contract=args.framework_provider_policy_contract,
-                                  framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)
+                                  framework_provider_inputs_receipt=args.framework_provider_inputs_receipt,
+                                  target_files_metadata_receipt=args.target_files_metadata_receipt,
+                                  target_files_metadata_receipt_sha256=args.target_files_metadata_receipt_sha256)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

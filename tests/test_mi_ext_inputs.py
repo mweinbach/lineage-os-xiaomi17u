@@ -6,6 +6,7 @@ are not AVB, Android image-build, super-image or device validation.
 """
 
 import copy
+import io
 import json
 import os
 from pathlib import Path
@@ -15,6 +16,7 @@ import unittest
 from unittest import mock
 
 from scripts import mi_ext_inputs as mi
+from scripts import target_files_metadata as metadata
 
 
 WORKSPACE = mi.ROOT
@@ -106,8 +108,8 @@ class MiExtInputsTests(unittest.TestCase):
     def save_source(self):
         self.write(self.controls / mi.SOURCE_CONTRACT_PATH, mi.encoded(self.source_contract))
 
-    def stage(self, output=None):
-        return mi.stage_inputs(self.image, output or self.bundle, logical_receipt=self.logical)
+    def stage(self, output=None, **kwargs):
+        return mi.stage_inputs(self.image, output or self.bundle, logical_receipt=self.logical, **kwargs)
 
     def verify(self, **kwargs):
         return mi.verify_bundle(self.bundle, **kwargs)
@@ -115,6 +117,61 @@ class MiExtInputsTests(unittest.TestCase):
     def refused(self, call):
         with self.assertRaises((ValueError, OSError)):
             call()
+
+    def metadata_controls(self):
+        """Use the real composer with inert native bytes, never apply a patch.
+
+        Reviewed patch texts retain their real identities. The source identities
+        are consistent synthetic transitions for testing source checks, not
+        evidence that the patches produce these fixture files.
+        """
+        records = [json.loads((WORKSPACE / path).read_bytes()) for path in metadata.SOURCE_CONTRACTS]
+        old_common = mi.identity((self.source / metadata.COMMON).read_bytes())
+        old_core = self.source_contract["source_files"][0]["after"]
+        old_add_img = mi.identity((self.source / metadata.ADD_IMG).read_bytes())
+        records[0]["source_files"][0]["after"] = copy.deepcopy(mi.EXPECTED_CORE_BEFORE)
+        records[1]["source_files"][0]["after"] = old_add_img
+        records[2]["source_files"][0].update(before=copy.deepcopy(mi.EXPECTED_CORE_BEFORE), after=old_core)
+        records[2]["composed_semantic_files"] = [
+            {"path": metadata.ADD_IMG, "requires_patch": metadata.SOURCE_PATCHES[1], **old_add_img}]
+        for index, record in enumerate(records):
+            record["semantic_files"] = []
+            for relative in metadata.SOURCE_SEMANTICS[index]:
+                path = self.source / relative
+                if relative == mi.CORE_PATH:
+                    row = mi.EXPECTED_CORE_BEFORE
+                elif relative == metadata.COMMON:
+                    row = old_common
+                else:
+                    if not path.exists():
+                        self.write(path, ("Inert metadata source fixture " + relative + "\n").encode())
+                    row = mi.identity(path.read_bytes())
+                record["semantic_files"].append({"path": relative, **row})
+        new_common = b"Inert optional-properties native common fixture\n"
+        new_core = b"Inert target-files metadata native core fixture\n"
+        self.write(self.source / metadata.COMMON, new_common)
+        self.write(self.source / metadata.CORE, new_core)
+        records[3]["source_files"][0].update(before=old_common, after=mi.identity(new_common))
+        records[4]["source_files"][0].update(before=old_core, after=mi.identity(new_core))
+        refs = []
+        for relative, record in zip(metadata.SOURCE_CONTRACTS, records):
+            if relative == metadata.SOURCE_CONTRACT:
+                record["required_predecessor_contracts"] = refs
+            raw = mi.encoded(record)
+            self.write(self.controls / relative, raw)
+            refs.append({"path": relative, **mi.identity(raw)})
+            patch = record["patch"]["path"]
+            self.write(self.controls / patch, (WORKSPACE / patch).read_bytes())
+        self.write(self.controls / mi.METADATA_COMPOSER_PATH,
+                   (WORKSPACE / mi.METADATA_COMPOSER_PATH).read_bytes())
+        self.composition = metadata.compose_sources(self.controls)
+        self.selected = self.controls / mi.METADATA_SOURCE_CONTRACT_PATH
+        self.source_contract = records[2]
+
+    def metadata_binding(self):
+        return mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                     expected_package_sha256=mi.EXPECTED_PACKAGE,
+                                     composed_source_contract=self.selected)
 
     def packaging(self):
         self.metadata = self.root / "metadata"
@@ -436,6 +493,218 @@ class MiExtInputsTests(unittest.TestCase):
         staged["scope"]["complete_rom_admitted"] = True
         self.assertEqual(self.verify()["scope"], mi.SCOPE)
         self.assertEqual(mi.SCOPE["phone_operations"], [])
+
+    def test_explicit_old_composition_retains_default_receipt_and_rendering(self):
+        self.stage()
+        old_receipt = (self.bundle / mi.RECEIPT_NAME).read_bytes()
+        selected = self.controls / mi.SOURCE_CONTRACT_PATH
+        second = self.output_parent / "explicit-old"
+        self.stage(second, composed_source_contract=selected)
+        self.assertEqual((second / mi.RECEIPT_NAME).read_bytes(), old_receipt)
+        bound = mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                     expected_package_sha256=mi.EXPECTED_PACKAGE)
+        self.assertEqual(set(bound["native_source"]), {"project_commit", "files"})
+        self.assertEqual(len(bound["native_source"]["files"]), 5)
+        self.assertEqual(mi.render_board_include(bound),
+                         mi.render_board_include(bound, composed_source_contract=selected))
+        self.assertEqual(self.verify(), self.verify(composed_source_contract=selected))
+
+    def test_metadata_composition_retains_full_patch_and_native_source_bindings(self):
+        self.metadata_controls()
+        staged = self.stage(composed_source_contract=self.selected)
+        receipt = json.loads((self.bundle / mi.RECEIPT_NAME).read_bytes())
+        bound = self.metadata_binding()
+        native = bound["native_source"]
+        self.assertEqual(native["composition"], self.composition)
+        self.assertEqual(native["composition_identity"], mi.identity(mi.encoded(self.composition)))
+        self.assertEqual(native["files"], self.composition["final_source_files"])
+        self.assertEqual(len(native["files"]), 9)
+        self.assertEqual([row["path"] for row in native["composition"]["ordered_patches"]],
+                         list(metadata.SOURCE_PATCHES))
+        self.assertEqual(receipt["required_native_source"], native)
+        self.assertEqual(staged["receipt"], bound["receipt"])
+        self.assertFalse(bound["scope"]["complete_rom_admitted"])
+        self.assertFalse(bound["scope"]["target_files_verified"])
+        self.assertEqual(bound["scope"]["phone_operations"], [])
+        self.assertNotIn(str(self.root), mi.encoded(receipt).decode())
+        controls = {row["path"]: mi.expected(row) for row in receipt["controls"]}
+        expected_paths = {mi.CONTRACT_PATH, mi.FACTORY_RECORD_PATH,
+                          "scripts/mi_ext_inputs.py", "scripts/artifact_files.py",
+                          mi.METADATA_COMPOSER_PATH, *metadata.SOURCE_CONTRACTS, *metadata.SOURCE_PATCHES}
+        self.assertEqual(set(controls), expected_paths)
+        for path, row in controls.items():
+            self.assertEqual(row, mi.identity((self.controls / path).read_bytes()))
+
+    def test_metadata_composition_requires_every_actual_native_file(self):
+        self.metadata_controls()
+        self.stage(composed_source_contract=self.selected)
+        verified = self.verify(source_tree=self.source, composed_source_contract=self.selected)
+        self.assertTrue(verified["actual_native_source_bytes_checked"])
+        self.assertFalse(verified["native_avb_run"])
+        for row in self.composition["final_source_files"]:
+            with self.subTest(path=row["path"]):
+                path = self.source / row["path"]
+                raw = path.read_bytes()
+                path.write_bytes(b"different source\n")
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.selected))
+                path.unlink()
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.selected))
+                path.write_bytes(raw)
+
+    def test_metadata_render_requires_explicit_selection_and_all_nine_guards(self):
+        self.metadata_controls()
+        self.stage(composed_source_contract=self.selected)
+        bound = self.metadata_binding()
+        generated = mi.render_board_include(bound, composed_source_contract=self.selected)
+        for row in self.composition["final_source_files"]:
+            self.assertIn(f"sha256sum < {row['path']} 2>/dev/null | cut -d ' ' -f 1),{row['sha256']}", generated)
+        self.refused(lambda: mi.render_board_include(bound))
+        self.refused(lambda: mi.render_board_include(bound,
+                     composed_source_contract=self.controls / mi.SOURCE_CONTRACT_PATH))
+        self.assertIn("BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST := mi_ext", generated)
+        self.assertNotIn("BOARD_NEZHA_PREBUILT_METADATA :=", generated)
+
+    def test_metadata_receipt_is_never_implicitly_selected(self):
+        self.metadata_controls()
+        self.stage(composed_source_contract=self.selected)
+        self.refused(self.verify)
+        self.refused(lambda: mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                                  expected_package_sha256=mi.EXPECTED_PACKAGE))
+        receipt = json.loads((self.bundle / mi.RECEIPT_NAME).read_bytes())
+        for name in ("composition", "composition_identity"):
+            receipt["required_native_source"].pop(name)
+        (self.bundle / mi.RECEIPT_NAME).write_bytes(mi.encoded(receipt))
+        self.refused(self.verify)
+        self.refused(lambda: self.verify(composed_source_contract=self.selected))
+
+    def test_old_receipt_and_binding_reject_new_explicit_composition(self):
+        self.metadata_controls()
+        self.stage()
+        bound = mi.validate_admission(self.bundle / mi.RECEIPT_NAME,
+                                     expected_package_sha256=mi.EXPECTED_PACKAGE)
+        self.refused(lambda: self.verify(composed_source_contract=self.selected))
+        self.refused(self.metadata_binding)
+        self.refused(lambda: mi.render_board_include(bound, composed_source_contract=self.selected))
+        # Availability of a newer contract does not alter default source guards.
+        self.assertEqual(len(bound["native_source"]["files"]), 5)
+        self.assertNotIn("composition", bound["native_source"])
+        self.refused(lambda: self.verify(source_tree=self.source))
+
+    def test_unknown_or_changed_explicit_source_contract_is_rejected(self):
+        self.metadata_controls()
+        selection = self.inputs / "selected-contract.json"
+        for data in (b"", b"{}", self.selected.read_bytes() + b" ",
+                     mi.encoded({"contract_id": "nezha-prebuilt-target-files-metadata-v1"})):
+            with self.subTest(data=data[:80]):
+                selection.write_bytes(data)
+                self.refused(lambda: self.stage(composed_source_contract=selection))
+                self.assertFalse(self.bundle.exists())
+
+    def test_metadata_selection_can_relocate_only_with_exact_bytes(self):
+        self.metadata_controls()
+        selected = self.inputs / "relocated-contract.json"
+        selected.write_bytes(self.selected.read_bytes())
+        self.stage(composed_source_contract=selected)
+        self.assertEqual(self.verify(composed_source_contract=selected),
+                         self.verify(composed_source_contract=self.selected))
+        selected.write_bytes(selected.read_bytes() + b" ")
+        self.refused(lambda: self.verify(composed_source_contract=selected))
+
+    def test_metadata_selection_rejects_changed_composition_identity_and_scope(self):
+        self.metadata_controls()
+        self.stage(composed_source_contract=self.selected)
+        binding = self.metadata_binding()
+        for mutation in (
+                lambda value: value["native_source"]["composition_identity"].update(sha256="0" * 64),
+                lambda value: value["native_source"]["composition"]["ordered_patches"].reverse(),
+                lambda value: value["native_source"]["composition"].update(whole_source_tree_verified=True),
+                lambda value: value["native_source"]["files"].pop(),
+                lambda value: value["scope"].update(complete_rom_admitted=True)):
+            with self.subTest(mutation=mutation):
+                changed = copy.deepcopy(binding)
+                mutation(changed)
+                self.refused(lambda: mi.render_board_include(changed, composed_source_contract=self.selected))
+
+    def test_metadata_composition_requires_all_contract_and_patch_dependencies(self):
+        self.metadata_controls()
+        for relative in (*metadata.SOURCE_CONTRACTS, *metadata.SOURCE_PATCHES, mi.METADATA_COMPOSER_PATH):
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                raw = path.read_bytes()
+                path.unlink()
+                self.refused(lambda: self.stage(composed_source_contract=self.selected))
+                self.assertFalse(self.bundle.exists())
+                path.write_bytes(raw)
+
+    def test_metadata_composer_errors_use_mi_ext_admission_error(self):
+        self.metadata_controls()
+        patch = self.controls / metadata.SOURCE_PATCHES[-1]
+        patch.write_bytes(patch.read_bytes() + b"unreviewed patch edit\n")
+        with self.assertRaisesRegex(mi.MiExtInputsError, "metadata source composition refused"):
+            self.stage(composed_source_contract=self.selected)
+        self.assertFalse(self.bundle.exists())
+
+    def test_metadata_composer_control_mutation_before_publication_is_rejected(self):
+        self.metadata_controls()
+        recheck = mi.Reader.recheck
+        for relative in (*metadata.SOURCE_CONTRACTS, *metadata.SOURCE_PATCHES, mi.METADATA_COMPOSER_PATH):
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                raw = path.read_bytes()
+                def change(reader):
+                    path.write_bytes(raw + b"changed after composition")
+                    recheck(reader)
+                with mock.patch.object(mi.Reader, "recheck", change):
+                    self.refused(lambda: self.stage(composed_source_contract=self.selected))
+                self.assertFalse(self.bundle.exists())
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(raw)
+
+    def test_composer_cannot_change_already_read_source_dependency(self):
+        self.metadata_controls()
+        compose = metadata.compose_sources
+        path = self.controls / mi.SOURCE_CONTRACT_PATH
+        def change(root):
+            result = compose(root)
+            path.write_bytes(path.read_bytes() + b" ")
+            for row in result["contracts"]:
+                if row["path"] == mi.SOURCE_CONTRACT_PATH:
+                    row.update(mi.identity(path.read_bytes()))
+            return result
+        with mock.patch.object(metadata, "compose_sources", change):
+            self.refused(lambda: self.stage(composed_source_contract=self.selected))
+        self.assertFalse(self.bundle.exists())
+
+    def test_composer_source_cannot_change_during_composition(self):
+        self.metadata_controls()
+        compose = metadata.compose_sources
+        path = self.controls / mi.METADATA_COMPOSER_PATH
+        def change(root):
+            result = compose(root)
+            path.write_bytes(path.read_bytes() + b"\n# changed during composition\n")
+            return result
+        with mock.patch.object(metadata, "compose_sources", change):
+            self.refused(lambda: self.stage(composed_source_contract=self.selected))
+        self.assertFalse(self.bundle.exists())
+        self.assertEqual(list(self.output_parent.iterdir()), [])
+
+    def test_cli_forwards_explicit_source_selection_without_implicit_default(self):
+        arguments = ["--composed-source-contract", "controls/explicit.json"]
+        with mock.patch.object(mi, "stage_inputs", return_value={}) as stage:
+            with mock.patch("sys.stdout", new_callable=io.StringIO):
+                self.assertEqual(mi.main(["stage", "--image", "image", "--logical-receipt", "logical",
+                                          "--output", "output", *arguments]), 0)
+            self.assertEqual(stage.call_args.kwargs["composed_source_contract"], Path("controls/explicit.json"))
+        with mock.patch.object(mi, "verify_bundle", return_value={}) as verify:
+            with mock.patch("sys.stdout", new_callable=io.StringIO):
+                self.assertEqual(mi.main(["verify", "--bundle", "bundle", *arguments]), 0)
+            self.assertEqual(verify.call_args.kwargs["composed_source_contract"], Path("controls/explicit.json"))
+        with mock.patch.object(mi, "verify_bundle", return_value={}) as verify:
+            with mock.patch("sys.stdout", new_callable=io.StringIO):
+                self.assertEqual(mi.main(["verify", "--bundle", "bundle"]), 0)
+            self.assertIsNone(verify.call_args.kwargs["composed_source_contract"])
 
 
 if __name__ == "__main__":

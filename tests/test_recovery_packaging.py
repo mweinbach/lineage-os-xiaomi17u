@@ -74,6 +74,18 @@ def fixture_source():
 
 
 class RecoveryPackagingContractTests(unittest.TestCase):
+    def test_explicit_metadata_composition_binds_new_common_and_all_nine_sources(self):
+        from scripts import target_files_metadata
+        baseline = packaging._contract()
+        selected, identity = packaging._selected_contract(ROOT / target_files_metadata.SOURCE_CONTRACT)
+        chain = target_files_metadata.compose_sources(ROOT)
+        self.assertEqual(selected["composition"], chain)
+        self.assertEqual(identity, packaging._identity(target_files_metadata.encoded(chain)))
+        self.assertEqual(selected["source_files"], baseline[0]["source_files"])
+        self.assertEqual(len(selected["semantic_files"]), 8)
+        self.assertEqual(selected["validation_scope"], packaging.SCOPE)
+        self.assertEqual(packaging._contract(), baseline)
+
     def test_explicit_composition_keeps_all_final_source_checks(self):
         baseline, baseline_id = packaging._contract()
         selected, selected_id = packaging._selected_contract(

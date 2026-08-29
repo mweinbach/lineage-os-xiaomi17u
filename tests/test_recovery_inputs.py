@@ -16,6 +16,7 @@ from unittest import mock
 
 from scripts import recovery_inputs as recovery
 from scripts import recovery_source_contracts as composition
+from scripts import target_files_metadata as metadata
 
 
 class RecoveryInputsTests(unittest.TestCase):
@@ -140,6 +141,54 @@ class RecoveryInputsTests(unittest.TestCase):
     def stage(self, bundle=None):
         return recovery.stage_inputs(self.image, bundle or self.bundle, **self.options)
 
+    def enable_metadata_composition(self):
+        """Extend inert source fixtures through the separate metadata contract."""
+        self.enable_composition()
+        # The metadata composer validates complete unified-patch file headers.
+        for contract_path in metadata.SOURCE_CONTRACTS[:3]:
+            path = self.root / contract_path
+            record = json.loads(path.read_bytes())
+            patch_path = self.root / record["patch"]["path"]
+            short = record["source_files"][0]["path"].removeprefix("build/make/")
+            raw = patch_path.read_bytes() + f"--- a/{short}\n+++ b/{short}\n".encode()
+            patch_path.write_bytes(raw)
+            record["patch"].update(recovery._identity(raw))
+            path.write_bytes(recovery._canonical(record))
+        self.source = json.loads((self.root / recovery.SOURCE_CONTRACT_PATH).read_bytes())
+        original_core = (self.checkout / recovery.CORE_PATH).read_bytes()
+        original_common = (self.checkout / recovery.COMMON_PATH).read_bytes()
+        for index, source_path, new_bytes in (
+                (3, recovery.COMMON_PATH, b"synthetic optional partition property source\n"),
+                (4, recovery.CORE_PATH, b"synthetic metadata build core\n")):
+            old_bytes = (self.checkout / source_path).read_bytes()
+            short = source_path.removeprefix("build/make/")
+            patch_bytes = (f"diff --git a/{short} b/{short}\n--- a/{short}\n+++ b/{short}\n"
+                           "fixture\n").encode()
+            (self.root / metadata.SOURCE_PATCHES[index]).write_bytes(patch_bytes)
+            record = {
+                "schema_version": 1, "contract_id": metadata.SOURCE_IDS[index],
+                "project": copy.deepcopy(composition.PROJECT),
+                "patch": {"path": metadata.SOURCE_PATCHES[index], **recovery._identity(patch_bytes)},
+                "source_files": [{"path": source_path, "before": recovery._identity(old_bytes),
+                                  "after": recovery._identity(new_bytes)}],
+                "semantic_files": [],
+            }
+            for path in metadata.SOURCE_SEMANTICS[index]:
+                data = ("synthetic " + path + "\n").encode()
+                target = self.checkout / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
+                record["semantic_files"].append({"path": path, **recovery._identity(data)})
+            if index == 4:
+                record["scope"] = copy.deepcopy(metadata.SCOPE)
+                record["required_predecessor_contracts"] = [
+                    {"path": path, **recovery._identity((self.root / path).read_bytes())}
+                    for path in metadata.SOURCE_CONTRACTS[:4]]
+            (self.root / metadata.SOURCE_CONTRACTS[index]).write_bytes(recovery._canonical(record))
+            (self.checkout / source_path).write_bytes(new_bytes)
+        self.options["composed_source_contract"] = self.root / composition.METADATA_PATH
+        return original_core, original_common
+
     def verify(self):
         return recovery.verify_bundle(self.bundle, **self.options)
 
@@ -245,6 +294,81 @@ class RecoveryInputsTests(unittest.TestCase):
             recovery.stage_inputs(self.image, self.bundle, **options)
         self.native.assert_not_called()
         self.assertFalse(self.bundle.exists())
+
+    def test_metadata_composition_stages_exact_five_patch_nine_source_bundle(self):
+        self.enable_metadata_composition()
+        self.stage()
+        receipt = json.loads((self.bundle / "receipt.json").read_bytes())
+        source = receipt["build_source"]
+        self.assertEqual(source["composition"], metadata.compose_sources(self.root))
+        self.assertEqual([row["path"] for row in source["composition"]["ordered_patches"]],
+                         list(metadata.SOURCE_PATCHES))
+        self.assertEqual(len(source["files"]), 9)
+        self.assertEqual(receipt["scope"], recovery.SCOPE)
+        self.assertEqual((self.bundle / "recovery.img").read_bytes(), self.image_bytes)
+        self.assertEqual((self.bundle / recovery.PUBLIC_KEY_MEMBER).read_bytes(), self.public_key_bytes)
+        self.assertEqual(self.verify()["status"], "verified")
+
+    def test_metadata_source_is_not_admitted_by_either_legacy_selection(self):
+        self.enable_metadata_composition()
+        for contract in (None, self.root / composition.COMPOSED_PATH):
+            with self.subTest(contract=contract):
+                options = {**self.options, "composed_source_contract": contract}
+                with self.assertRaisesRegex(ValueError, "required prebuilt-recovery patch"):
+                    recovery.stage_inputs(self.image, self.bundle, **options)
+                self.assertFalse(self.bundle.exists())
+        self.native.assert_not_called()
+
+    def test_metadata_selection_checks_each_final_source_before_native_verification(self):
+        self.enable_metadata_composition()
+        chain = metadata.compose_sources(self.root)
+        for row in chain["final_source_files"]:
+            with self.subTest(path=row["path"]):
+                path = self.checkout / row["path"]
+                original = path.read_bytes()
+                path.write_bytes(original + b"unexpected edit\n")
+                with self.assertRaisesRegex(ValueError, "required prebuilt-recovery patch"):
+                    self.stage()
+                self.assertFalse(self.bundle.exists())
+                path.write_bytes(original)
+        self.native.assert_not_called()
+
+    def test_metadata_composition_rejects_noncanonical_selection_and_common_gap(self):
+        self.enable_metadata_composition()
+        selected = self.root / "copied-metadata.json"
+        selected.write_bytes((self.root / composition.METADATA_PATH).read_bytes() + b" ")
+        self.options["composed_source_contract"] = selected
+        with self.assertRaisesRegex(ValueError, "explicit metadata composition differs"):
+            self.stage()
+        self.options["composed_source_contract"] = self.root / composition.METADATA_PATH
+        path = self.root / metadata.SOURCE_CONTRACTS[3]
+        record = json.loads(path.read_bytes())
+        record["source_files"][0]["before"]["sha256"] = "0" * 64
+        path.write_bytes(recovery._canonical(record))
+        with self.assertRaisesRegex(ValueError, "source patch chain has a gap"):
+            self.stage()
+        self.native.assert_not_called()
+        self.assertFalse(self.bundle.exists())
+
+    def test_new_metadata_receipt_cannot_replace_an_older_composed_receipt(self):
+        original_core, original_common = self.enable_metadata_composition()
+        old_contract = self.root / composition.COMPOSED_PATH
+        (self.checkout / recovery.CORE_PATH).write_bytes(original_core)
+        (self.checkout / recovery.COMMON_PATH).write_bytes(original_common)
+        old_options = {**self.options, "composed_source_contract": old_contract}
+        recovery.stage_inputs(self.image, self.bundle, **old_options)
+        preserved = {path.name: path.read_bytes() for path in self.bundle.iterdir()}
+        for row in json.loads((self.root / composition.METADATA_PATH).read_bytes())["source_files"]:
+            (self.checkout / row["path"]).write_bytes(b"synthetic metadata build core\n")
+        (self.checkout / recovery.COMMON_PATH).write_bytes(b"synthetic optional partition property source\n")
+        new_bundle = self.root / "new" / recovery.BUNDLE_PATH
+        self.stage(new_bundle)
+        self.assertEqual(preserved, {path.name: path.read_bytes() for path in self.bundle.iterdir()})
+        with self.assertRaisesRegex(ValueError, "receipt identity"):
+            self.verify()
+        (self.checkout / recovery.CORE_PATH).write_bytes(original_core)
+        (self.checkout / recovery.COMMON_PATH).write_bytes(original_common)
+        self.assertEqual(recovery.verify_bundle(self.bundle, **old_options)["status"], "verified")
 
     def test_legacy_bundle_and_contract_remain_unchanged_during_separate_composed_stage(self):
         self.stage()
@@ -636,6 +760,42 @@ class RecoveryInputsTests(unittest.TestCase):
 
 
 class PublicRecoveryHookTests(unittest.TestCase):
+    def test_metadata_renderer_preserves_legacy_template_and_mode_guards(self):
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        legacy, legacy_identity = composition.compose(root, root / composition.COMPOSED_PATH)
+        selected, selected_identity = composition.compose(root, root / composition.METADATA_PATH)
+        rendered = composition.render_metadata_recovery_include(
+            template, root=root, selected_contract=root / composition.METADATA_PATH)
+        self.assertEqual((root / composition.RECOVERY_TEMPLATE).read_bytes(), template)
+        self.assertEqual(legacy_identity, {"sha256": "fe4ac5f9c0db04df0d8af9e5867edf2090310b34f03d96f7856d105aa35c5abe",
+                                           "size_bytes": 3516})
+        self.assertNotIn(legacy_identity["sha256"].encode(), rendered)
+        self.assertNotIn(legacy["source_files"][0]["after"]["sha256"].encode(), rendered)
+        self.assertIn(selected_identity["sha256"].encode(), rendered)
+        for row in selected["composition"]["final_source_files"]:
+            path, digest, size = row["path"], row["sha256"], row["size_bytes"]
+            self.assertIn(f"test -f {path} && test ! -L {path}".encode(), rendered)
+            self.assertIn(f"wc -c < {path} 2>/dev/null)),{size})".encode(), rendered)
+            self.assertIn(f"sha256sum < {path} 2>/dev/null | cut -d ' ' -f 1),{digest})".encode(), rendered)
+        # Everything from the actual payload checks onward, including the A/B
+        # and no-two-step guards, must be retained literally, not reconstructed.
+        boundary = b"ifneq ($(shell test -f vendor/xiaomi/nezha-recovery/recovery.img"
+        self.assertEqual(rendered.split(boundary, 1)[1], template.split(boundary, 1)[1])
+        prefix = b"ifeq ($(origin NEZHA_RECOVERY_CORE_COMPOSITION_SHA256),undefined)\n"
+        self.assertTrue(rendered.startswith(template.split(prefix, 1)[0]))
+        self.assertEqual(selected["composition"], metadata.compose_sources(root))
+
+    def test_metadata_renderer_rejects_legacy_selection_or_changed_template(self):
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        with self.assertRaisesRegex(ValueError, "requires explicit metadata composition"):
+            composition.render_metadata_recovery_include(
+                template, root=root, selected_contract=root / composition.COMPOSED_PATH)
+        with self.assertRaisesRegex(ValueError, "unchanged authored template"):
+            composition.render_metadata_recovery_include(
+                template + b"# changed\n", root=root, selected_contract=root / composition.METADATA_PATH)
+
     def test_composed_make_guard_binds_the_ordered_current_public_contracts(self):
         root = Path(__file__).resolve().parents[1]
         text = (root / "device/xiaomi/nezha/recovery-prebuilt.mk").read_text()

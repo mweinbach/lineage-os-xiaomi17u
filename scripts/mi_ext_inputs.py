@@ -30,6 +30,8 @@ else:
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = "config/nezha-mi-ext.json"
 SOURCE_CONTRACT_PATH = "patches/evolution/direct-avb-custom-images.json"
+METADATA_SOURCE_CONTRACT_PATH = "patches/evolution/target-files-metadata.json"
+METADATA_COMPOSER_PATH = "scripts/target_files_metadata.py"
 PATCH_PATH = "patches/evolution/0007-direct-avb-custom-images.patch"
 FACTORY_RECORD_PATH = "research/factory-firmware-validation.json"
 CORE_PATH = "build/make/core/Makefile"
@@ -158,7 +160,7 @@ class Reader:
             self.read(path, row, maximum=maximum)
 
 
-def _controls(reader):
+def _controls(reader, composed_source_contract=None):
     paths = (CONTRACT_PATH, SOURCE_CONTRACT_PATH, PATCH_PATH, FACTORY_RECORD_PATH,
              "scripts/mi_ext_inputs.py", "scripts/artifact_files.py")
     controls = {path: reader.read(ROOT / path) for path in paths}
@@ -246,6 +248,33 @@ def _controls(reader):
             "native packaging requires the reviewed A/B-only recovery path")
     for row in [*semantic, *composed]:
         expected(row)
+    if composed_source_contract is not None:
+        selected = reader.read(composed_source_contract)
+        # Selecting the existing contract is equivalent to the unchanged default.
+        # A receipt never selects a newer native consumer on the caller's behalf.
+        if selected != controls[SOURCE_CONTRACT_PATH]:
+            canonical = reader.read(ROOT / METADATA_SOURCE_CONTRACT_PATH)
+            require(selected == canonical,
+                    "explicit mi_ext composition differs from a reviewed source contract")
+            controls[METADATA_COMPOSER_PATH] = reader.read(ROOT / METADATA_COMPOSER_PATH)
+            if __package__:
+                from .target_files_metadata import TargetFilesMetadataError, compose_sources
+            else:
+                from target_files_metadata import TargetFilesMetadataError, compose_sources
+            try:
+                composition = compose_sources(ROOT)
+            except TargetFilesMetadataError as exc:
+                raise MiExtInputsError(f"mi_ext metadata source composition refused: {exc}") from exc
+            for row in [*composition["contracts"], *composition["ordered_patches"]]:
+                data = reader.read(ROOT / row["path"], row)
+                require(row["path"] not in controls or controls[row["path"]] == data,
+                        "mi_ext source dependency changed during composition")
+                controls[row["path"]] = data
+            require(controls[METADATA_SOURCE_CONTRACT_PATH] == canonical,
+                    "selected metadata source changed during composition")
+            source = copy.deepcopy(source)
+            source["composition"] = composition
+            source["composition_identity"] = identity(encoded(composition))
     return contract, source, controls
 
 
@@ -267,9 +296,19 @@ def _logical_receipt(reader, path, contract):
 
 
 def _source_files(source):
+    if "composition" in source:
+        return copy.deepcopy(source["composition"]["final_source_files"])
     return ([{"path": row["path"], **row["after"]} for row in source["source_files"]]
             + [{"path": row["path"], **expected(row)}
                for row in [*source["semantic_files"], *source["composed_semantic_files"]]])
+
+
+def _native_source(source):
+    result = {"project_commit": BUILD_COMMIT, "files": _source_files(source)}
+    if "composition" in source:
+        result.update({name: copy.deepcopy(source[name])
+                       for name in ("composition", "composition_identity")})
+    return result
 
 
 def _manifest(contract, source, controls, logical_raw):
@@ -281,7 +320,7 @@ def _manifest(contract, source, controls, logical_raw):
         "avb_descriptor": copy.deepcopy(contract["avb"]), "dynamic_layout": copy.deepcopy(contract["dynamic_layout"]),
         "files": [{"path": IMAGE_MEMBER, **EXPECTED_IMAGE},
                   {"path": LOGICAL_RECEIPT_MEMBER, **identity(logical_raw)}],
-        "required_native_source": {"project_commit": BUILD_COMMIT, "files": _source_files(source)},
+        "required_native_source": _native_source(source),
         "native_source_checked_by_staging": False, "native_avb_run_by_staging": False,
         "readback_verified": True, "scope": copy.deepcopy(SCOPE),
     }
@@ -309,15 +348,15 @@ def _output_path(output):
     return output, parent
 
 
-def stage_inputs(image, output, *, logical_receipt):
-    """Copy to a fresh private directory; never alter an image or run a device."""
+def stage_inputs(image, output, *, logical_receipt, composed_source_contract=None):
+    """Copy to a fresh private directory with optional explicit source selection."""
     output, parent = _output_path(output)
     image = Path(os.path.abspath(image))
     logical_receipt = Path(os.path.abspath(logical_receipt))
     require(not output.is_relative_to(image.parent) and not output.is_relative_to(logical_receipt.parent),
             "output cannot add files inside preserved input directories")
     reader = Reader()
-    contract, source, controls = _controls(reader)
+    contract, source, controls = _controls(reader, composed_source_contract)
     logical_raw = _logical_receipt(reader, logical_receipt, contract)
     image_raw = reader.read(image, EXPECTED_IMAGE, maximum=MAX_IMAGE_BYTES)
     receipt = _manifest(contract, source, controls, logical_raw)
@@ -342,16 +381,17 @@ def stage_inputs(image, output, *, logical_receipt):
             "files": copy.deepcopy(receipt["files"]), "scope": copy.deepcopy(SCOPE)}
 
 
-def verify_bundle(bundle, *, source_tree=None):
+def verify_bundle(bundle, *, source_tree=None, composed_source_contract=None):
     """Rehash a relocated private bundle using trusted workspace controls.
 
     With source_tree supplied, also check the actual composed native consumers.
     Without it, no installed Android source or native verification is claimed.
+    The caller must explicitly select a metadata composition; receipts cannot.
     """
     bundle = real_directory(bundle)
     _members(bundle)
     reader = Reader()
-    contract, source, controls = _controls(reader)
+    contract, source, controls = _controls(reader, composed_source_contract)
     logical_raw = _logical_receipt(reader, bundle / LOGICAL_RECEIPT_MEMBER, contract)
     reader.read(bundle / IMAGE_MEMBER, EXPECTED_IMAGE, maximum=MAX_IMAGE_BYTES)
     raw = reader.read(bundle / RECEIPT_NAME)
@@ -368,30 +408,30 @@ def verify_bundle(bundle, *, source_tree=None):
             "factory_package_sha256": EXPECTED_PACKAGE, "image": copy.deepcopy(EXPECTED_IMAGE),
             "dynamic_layout": copy.deepcopy(contract["dynamic_layout"]),
             "receipt": {"path": RECEIPT_NAME, **identity(raw)},
-            "native_source": {"project_commit": BUILD_COMMIT, "files": _source_files(source)},
+            "native_source": _native_source(source),
             "actual_native_source_bytes_checked": native_checked, "native_avb_run": False,
             "scope": copy.deepcopy(SCOPE)}
 
 
-def validate_admission(receipt_path, *, expected_package_sha256):
+def validate_admission(receipt_path, *, expected_package_sha256, composed_source_contract=None):
     """Offline generator hook; native Make rechecks the actual source later."""
     receipt_path = Path(os.path.abspath(receipt_path))
     require(receipt_path.name == RECEIPT_NAME, "mi_ext receipt must retain its canonical filename")
     require(expected_package_sha256 == EXPECTED_PACKAGE, "mi_ext and admitted factory vendor packages differ")
-    verified = verify_bundle(receipt_path.parent)
+    verified = verify_bundle(receipt_path.parent, composed_source_contract=composed_source_contract)
     return {key: copy.deepcopy(verified[key]) for key in
             ("bundle", "factory_package_sha256", "image", "dynamic_layout", "receipt", "native_source", "scope")}
 
 
-def render_board_include(binding):
+def render_board_include(binding, *, composed_source_contract=None):
     """Emit a final board include from a separately verified admission binding."""
     reader = Reader()
-    contract, source, _ = _controls(reader)
+    contract, source, _ = _controls(reader, composed_source_contract)
     require(type(binding) is dict and binding.get("bundle") == BUNDLE_PATH
             and binding.get("factory_package_sha256") == EXPECTED_PACKAGE
             and binding.get("image") == EXPECTED_IMAGE and encoded(binding.get("scope")) == encoded(SCOPE)
             and encoded(binding.get("dynamic_layout")) == encoded(contract["dynamic_layout"])
-            and binding.get("native_source") == {"project_commit": BUILD_COMMIT, "files": _source_files(source)},
+            and binding.get("native_source") == _native_source(source),
             "invalid mi_ext admission binding")
     receipt = binding.get("receipt")
     require(type(receipt) is dict and receipt.get("path") == RECEIPT_NAME, "unexpected mi_ext receipt member")
@@ -497,15 +537,20 @@ def main(argv=None):
     verify = sub.add_parser("verify")
     verify.add_argument("--bundle", type=Path, required=True)
     verify.add_argument("--source-tree", type=Path)
+    for command in (stage, verify):
+        command.add_argument("--composed-source-contract", type=Path,
+                             help="Explicit reviewed source composition; omitted keeps the 0005/6/7 path")
     check = sub.add_parser("check-packaging")
     for name in ("misc-info", "fastboot-info", "ab-partitions", "images"):
         check.add_argument("--" + name, type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "stage":
-            result = stage_inputs(args.image, args.output, logical_receipt=args.logical_receipt)
+            result = stage_inputs(args.image, args.output, logical_receipt=args.logical_receipt,
+                                  composed_source_contract=args.composed_source_contract)
         elif args.command == "verify":
-            result = verify_bundle(args.bundle, source_tree=args.source_tree)
+            result = verify_bundle(args.bundle, source_tree=args.source_tree,
+                                   composed_source_contract=args.composed_source_contract)
         else:
             result = check_packaging(args.misc_info, args.fastboot_info, args.ab_partitions, args.images)
     except (ValueError, OSError, KeyError, TypeError) as exc:

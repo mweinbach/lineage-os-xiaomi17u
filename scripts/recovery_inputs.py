@@ -370,12 +370,12 @@ def main(argv=None):
     commands = parser.add_subparsers(dest="command", required=True)
     plan_parser = commands.add_parser("plan")
     plan_parser.add_argument("--composed-source-contract", type=Path,
-                             help="explicit reviewed 0007 contract for the ordered 0005/0006/0007 source composition")
+                             help="explicit reviewed 0007 or 0009 composition; omission retains the 0005-only contract")
     for command in ("stage", "verify"):
         sub = commands.add_parser(command)
         sub.add_argument("--source-tree", type=Path, required=True)
         sub.add_argument("--composed-source-contract", type=Path,
-                         help="explicit reviewed 0007 contract; omission retains the 0005-only source contract")
+                         help="explicit reviewed 0007 or 0009 composition; omission retains the 0005-only source contract")
         sub.add_argument("--local-config", type=Path, help="optional path-only tool/public-key defaults; signing keys are not used")
         for name in ("avbtool", "public-key", "openssl"):
             sub.add_argument("--" + name, type=Path)
