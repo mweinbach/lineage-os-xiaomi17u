@@ -836,6 +836,354 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         with mock.patch.object(generator, "_bound_reference", side_effect=AssertionError("private evidence accessed")):
             self.assertEqual(generator.validate(output), plan)
 
+    def trust_synthetic_helper_contract(self, inputs, contract):
+        raw = (json.dumps(contract, sort_keys=True) + "\n").encode()
+        inputs["init_helper_capability_contract"].write_bytes(raw)
+        patcher = mock.patch.object(generator, "INIT_HELPER_CONTRACT_SHA256", hashlib.sha256(raw).hexdigest())
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def helper_inputs(self):
+        """Tiny private-input substitutes; never read real captured firmware."""
+        inputs = self.dsp_inputs()
+        contract = json.loads((ROOT / generator.INIT_HELPER_RECORD).read_text())
+        dsp = json.loads(inputs["dsp_policy_contract"].read_text())["generator_contract"]
+        contract["factory_package_sha256"] = dsp["factory_package_sha256"]
+        contract["vendor_images"] = dsp["vendor_images"]
+
+        def write(name, data):
+            path = self.root / "artifacts/helper-fixture" / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            return {"path": path.relative_to(self.root).as_posix(),
+                    "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
+
+        for index, row in enumerate(contract["source_captures"]):
+            row.update(write(f"source/{index}", f"synthetic source {index}\n".encode()))
+        scan = {"schema_version": 1, "factory_package_sha256": dsp["factory_package_sha256"],
+                "factory_origin_authenticated": False, "partitions": []}
+        for name in ("vendor", "odm"):
+            files = []
+            for index in range(2):
+                row = write(f"{name}/{index}", f"# selected {name} source {index}\n".encode())
+                row["host_path"] = row.pop("path")
+                row["image_path"] = f"/etc/init/fixture{index}.rc"
+                files.append(row)
+            scan["partitions"].append({"partition": name, "files": files, "file_count": len(files),
+                                       "total_bytes": sum(row["size_bytes"] for row in files),
+                                       "image_sha256": dsp["vendor_images"][name]["sha256"]})
+        contract["static_input_scan"] = write("scan.json", (json.dumps(scan) + "\n").encode())
+        contract["static_input_file_count"] = 4
+        contract["static_input_total_bytes"] = sum(row["total_bytes"] for row in scan["partitions"])
+        audit = {
+            "schema_version": 1,
+            "source_pins": contract["required_source_revisions"],
+            "selected_factory_evidence": {"factory_package_sha256": dsp["factory_package_sha256"]},
+            "selected_init_rc": {"upstream_optional_service_preserved": True},
+            "validation": {"final_init_hook_bytes_and_text_identity_passed": True,
+                           "selected_init_rc_identity_passed": True},
+            "proposed_capability": {"complete_rom_admission": False},
+        }
+        raw = (json.dumps(audit) + "\n").encode()
+        (self.root / generator.INIT_HELPER_AUDIT).write_bytes(raw)
+        contract["prior_component_audit"].update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        inputs["init_helper_capability_contract"] = self.root / "helper-contract.json"
+        self.trust_synthetic_helper_contract(inputs, contract)
+        return inputs
+
+    def reseal_candidate_file(self, output, plan, name, raw):
+        (output / name).write_bytes(raw)
+        updated = copy.deepcopy(plan)
+        next(row for row in updated["files"] if row["path"] == name).update(
+            sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        (output / "admission.json").write_text(json.dumps(updated))
+
+    def test_helper_public_contract_and_guard_files_have_the_pinned_identity(self):
+        contract, identity = generator._init_helper_contract(ROOT / generator.INIT_HELPER_RECORD)
+        self.assertEqual(identity["sha256"], generator.INIT_HELPER_CONTRACT_SHA256)
+        for row in [*contract["device_guards"], contract["source_patch"], contract["patch_metadata"],
+                    contract["prior_component_audit"]]:
+            raw = (ROOT / row["path"]).read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(), row["sha256"])
+            self.assertEqual(len(raw), row["size_bytes"])
+        self.assertFalse(contract["limits"]["runtime_helper_absence_verified"])
+
+    def test_helper_source_option_is_explicit_and_deterministic_for_both_variants(self):
+        inputs = self.helper_inputs()
+        for variant in generator.BUILD_VARIANTS:
+            output = self.root / "artifacts" / ("helper-" + variant)
+            plan = generator.generate(output, variant=variant, **inputs)
+            repeat = generator.generate(self.root / "artifacts" / ("helper-repeat-" + variant),
+                                        variant=variant, **inputs)
+            self.assertEqual(plan, repeat)
+            self.assertEqual(generator.validate(output), plan)
+            self.assertEqual(plan["init_helper_capability"]["capability"], generator.INIT_HELPER_CAPABILITY)
+            self.assertEqual(plan["init_helper_capability"]["static_factory_files_rehashed"], 4)
+            self.assertFalse(plan["init_helper_capability"]["fresh_soong_or_m4_build_performed"])
+            self.assertFalse(plan["init_helper_capability"]["strict_full_policy_compiled"])
+            self.assertEqual(len(plan["files"]), len(generator.TEMPLATE_FILES) + 12)
+            board = (output / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+            self.assertEqual(board.count("BOARD_SEPOLICY_M4DEFS += target_init_dev_config_property_writes=false\n"), 1)
+            for purpose in ("target-files", "flash"):
+                with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                    generator.validate(output, purpose=purpose)
+
+    def test_helper_legacy_profile_leaves_upstream_value_undefined(self):
+        inputs = self.dsp_inputs()
+        with mock.patch.object(generator, "_init_helper_contract", side_effect=AssertionError("implicit helper opt-in")):
+            output = self.root / "artifacts/helper-undefined"
+            plan = generator.generate(output, **inputs)
+            self.assertEqual(generator.validate(output), plan)
+        self.assertNotIn("init_helper_capability", plan)
+        board = (output / generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").read_text()
+        self.assertNotIn(generator.INIT_HELPER_SYMBOL, board)
+
+    def test_helper_option_requires_factory_and_dsp_before_any_record_reads(self):
+        with mock.patch.object(generator, "_load_records") as records:
+            with self.assertRaisesRegex(generator.CandidateError, "explicit factory and DSP"):
+                generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none",
+                                   vendor_receipt="none", init_helper_capability_contract="none")
+            records.assert_not_called()
+
+    def test_helper_contract_refuses_changed_values_inputs_scope_and_guards(self):
+        inputs = self.helper_inputs()
+        original = json.loads(inputs["init_helper_capability_contract"].read_text())
+        changes = (
+            lambda c: c["capability"].update(value="true"),
+            lambda c: c["capability"].update(value=False),
+            lambda c: c["capability"].update(api_version_inference_used=True),
+            lambda c: c.update(provider_contract={"path": "/vendor/bin/unreviewed"}),
+            lambda c: c["limits"].update(complete_installed_input_closure_verified=True),
+            lambda c: c.update(factory_package_sha256="4" * 64),
+            lambda c: c.update(factory_origin_verified=True),
+            lambda c: c["vendor_images"]["vendor"].update(sha256="4" * 64),
+            lambda c: c["required_source_revisions"].update({"system/sepolicy": "4" * 40}),
+            lambda c: c["required_patched_source"].update(sha256="4" * 64),
+            lambda c: c["device_guards"].append(copy.deepcopy(c["device_guards"][0])),
+        )
+        for change in changes:
+            contract = copy.deepcopy(original)
+            change(contract)
+            self.trust_synthetic_helper_contract(inputs, contract)
+            with self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_helper_contract_requires_exact_bytes_and_no_symlinks(self):
+        inputs = self.helper_inputs()
+        path = inputs["init_helper_capability_contract"]
+        original = path.read_bytes()
+        path.write_bytes(original + b"\n")
+        with self.assertRaisesRegex(generator.CandidateError, "unknown or changed init-helper"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+        path.write_bytes(original)
+        link = self.root / "helper-link.json"
+        link.symlink_to(path)
+        with self.assertRaisesRegex(generator.CandidateError, "symlink"):
+            generator.generate(self.root / "artifacts/refused", **dict(inputs, init_helper_capability_contract=link))
+
+    def test_helper_rehashes_factory_files_and_captured_sources(self):
+        inputs = self.helper_inputs()
+        contract = json.loads(inputs["init_helper_capability_contract"].read_text())
+        scan = json.loads((self.root / contract["static_input_scan"]["path"]).read_text())
+        names = [row["path"] for row in contract["source_captures"]]
+        names += [row["host_path"] for part in scan["partitions"] for row in part["files"]]
+        for name in names:
+            path = self.root / name
+            original = path.read_bytes()
+            path.write_bytes(original + b"# changed\n")
+            with self.subTest(name=name), self.assertRaisesRegex(generator.CandidateError, "hash/size mismatch"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+
+    def test_helper_static_scan_rejects_new_provider_labels_and_invocations_even_if_resealed(self):
+        inputs = self.helper_inputs()
+        original = json.loads(inputs["init_helper_capability_contract"].read_text())
+        scan_path = self.root / original["static_input_scan"]["path"]
+        baseline_scan = json.loads(scan_path.read_text())
+        for text in ("ro.vendor.init_dev_config.path=/vendor/bin/helper\n",
+                     "ro.vendor.init_dev_config.path=${unresolved.selector}\n",
+                     "/vendor/bin/helper u:object_r:init_dev_config_exec:s0\n",
+                     "exec_start init_dev_config\n", "ro.boot.init_rc=/vendor/etc/alternate.rc\n"):
+            scan = copy.deepcopy(baseline_scan)
+            row = scan["partitions"][0]["files"][0]
+            raw = text.encode()
+            (self.root / row["host_path"]).write_bytes(raw)
+            old_size = row["size_bytes"]
+            row.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+            scan["partitions"][0]["total_bytes"] += len(raw) - old_size
+            scan_raw = (json.dumps(scan) + "\n").encode()
+            scan_path.write_bytes(scan_raw)
+            contract = copy.deepcopy(original)
+            contract["static_input_scan"].update(sha256=hashlib.sha256(scan_raw).hexdigest(), size_bytes=len(scan_raw))
+            contract["static_input_total_bytes"] += len(raw) - old_size
+            self.trust_synthetic_helper_contract(inputs, contract)
+            with self.subTest(text=text), self.assertRaisesRegex(generator.CandidateError, "uncontracted init-helper"):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_helper_device_sources_reject_providers_and_guard_changes(self):
+        inputs = self.helper_inputs()
+        for name, addition in (("device.mk", b"PRODUCT_VENDOR_PROPERTIES += ro.vendor.init_dev_config.path=/vendor/bin/helper\n"),
+                               ("recovery/root/init.recovery.qcom.rc", b"exec_start init_dev_config\n"),
+                               ("init-helper-capability.mk", b"BOARD_SEPOLICY_M4DEFS += target_init_dev_config_property_writes=true\n")):
+            path = inputs["template_root"] / name
+            original = path.read_bytes()
+            path.write_bytes(original + addition)
+            with self.subTest(name=name), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+            path.write_bytes(original)
+
+    def test_helper_vendor_soong_provider_is_rejected_even_with_resealed_bundle(self):
+        inputs = self.helper_inputs()
+        receipt = inputs["vendor_receipt"]
+        vendor = json.loads(receipt.read_text())
+        raw = b'cc_prebuilt_binary { name: "init_dev_config", srcs: ["helper"] }\n'
+        (receipt.parent / "Android.bp").write_bytes(raw)
+        vendor["generated_files"].append({"path": "Android.bp", "size_bytes": len(raw),
+                                          "sha256": hashlib.sha256(raw).hexdigest(), "readback_verified": True})
+        receipt.write_text(json.dumps(vendor))
+        with self.assertRaisesRegex(generator.CandidateError, "uncontracted init-helper"):
+            generator.generate(self.root / "artifacts/refused", **inputs)
+
+    def test_helper_validation_rejects_duplicate_or_commented_wiring_after_inventory_rehash(self):
+        inputs = self.helper_inputs()
+        output = self.root / "artifacts/helper-wiring"
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+        original = (output / name).read_bytes()
+        directive = b"BOARD_SEPOLICY_M4DEFS += target_init_dev_config_property_writes=false\n"
+        changes = (original.replace(directive, b"# " + directive),
+                   original.replace(directive, directive + directive),
+                   original.replace(directive, directive.replace(b"=false", b"=true")),
+                   original.replace(directive, directive + b"# " + generator.INIT_HELPER_SYMBOL.encode() + b"\n"),
+                   original.replace(generator._init_helper_wiring_lines()[0].encode() + b"\n",
+                                    generator._init_helper_wiring_lines()[0].encode() + b" \\\n"))
+        for raw in changes:
+            self.reseal_candidate_file(output, plan, name, raw)
+            with self.subTest(raw=hashlib.sha256(raw).hexdigest()), self.assertRaisesRegex(generator.CandidateError, "init-helper board wiring"):
+                generator.validate(output)
+
+    def test_helper_validation_rejects_public_guard_and_receipt_promotion(self):
+        inputs = self.helper_inputs()
+        output = self.root / "artifacts/helper-guards"
+        plan = generator.generate(output, **inputs)
+        for name in ("BoardConfig.mk", "init-helper-capability.mk"):
+            relative = (generator.DEVICE_PATH / name).as_posix()
+            original = (output / relative).read_bytes()
+            self.reseal_candidate_file(output, plan, relative, original + b"# unreviewed guard changes\n")
+            with self.assertRaisesRegex(generator.CandidateError, "init-helper public input"):
+                generator.validate(output)
+            (output / relative).write_bytes(original)
+        updated = copy.deepcopy(plan)
+        updated["init_helper_capability"]["strict_full_policy_compiled"] = True
+        (output / "admission.json").write_text(json.dumps(updated))
+        with self.assertRaisesRegex(generator.CandidateError, "init-helper admission"):
+            generator.validate(output)
+
+    def test_helper_validation_never_reads_private_evidence_or_reports_new_builds(self):
+        inputs = self.helper_inputs()
+        output = self.root / "artifacts/helper-self-contained"
+        plan = generator.generate(output, **inputs)
+        with mock.patch.object(generator, "_bound_reference", side_effect=AssertionError("private input read")):
+            self.assertEqual(generator.validate(output), plan)
+        self.assertFalse(plan["init_helper_capability"]["source_checkout_inspected"])
+
+    def test_cli_passes_optional_helper_contract_without_enabling_it_by_default(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--init-helper-capability-contract", "helper.json"], Path("helper.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["init_helper_capability_contract"], expected)
+
+    def policy_bundle_inputs(self):
+        """Mock only the separate bundle verifier; its real tests own that trust boundary."""
+        from scripts import policy_inputs
+        inputs = self.helper_inputs()
+        receipt = self.root / "policy-bundle" / generator.POLICY_INPUTS_RECEIPT
+        receipt.parent.mkdir()
+        raw = b'{"schema_version":1,"synthetic":true}\n'
+        receipt.write_bytes(raw)
+        inputs["policy_inputs_receipt"] = receipt
+        verification = {
+            "schema_version": 1, "operation": "verify-nezha-policy-inputs", "status": "verified",
+            "device": "nezha", "bundle": generator.POLICY_INPUTS_PATH,
+            "factory_package_sha256": "3" * 64,
+            "files": [{"path": "Android.bp", "sha256": "4" * 64, "size_bytes": 10}],
+            "receipt": {"path": receipt.name, "sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)},
+            "scope": copy.deepcopy(policy_inputs.SCOPE),
+        }
+        return inputs, verification
+
+    def test_policy_bundle_export_is_separate_explicit_and_generation_verified(self):
+        inputs, verification = self.policy_bundle_inputs()
+        output = self.root / "artifacts/helper-native"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification) as verify:
+            plan = generator.generate(output, **inputs)
+        verify.assert_called_once_with(inputs["policy_inputs_receipt"])
+        self.assertEqual(plan["policy_inputs"], verification)
+        self.assertFalse(plan["policy_inputs"]["scope"]["policy_compiled"])
+        self.assertFalse(plan["admission"]["complete_target_files_allowed"])
+        product = (output / generator.DEVICE_PATH / "generated/device-candidate.mk").read_text()
+        self.assertEqual(product.count("PRODUCT_SOONG_NAMESPACES += vendor/xiaomi/nezha-policy\n"), 1)
+        with mock.patch.object(generator, "_verify_policy_input_bundle", side_effect=AssertionError("external bundle rehashed")):
+            self.assertEqual(generator.validate(output), plan)
+        default = generator.generate(self.root / "artifacts/helper-no-native",
+                                     **{key: value for key, value in inputs.items() if key != "policy_inputs_receipt"})
+        self.assertNotIn("policy_inputs", default)
+        product = (self.root / "artifacts/helper-no-native" / generator.DEVICE_PATH / "generated/device-candidate.mk").read_text()
+        self.assertNotIn(generator.POLICY_INPUTS_PATH, product)
+
+    def test_policy_bundle_requires_helper_and_dsp_before_reading_inputs(self):
+        with mock.patch.object(generator, "_load_records") as records:
+            with self.assertRaisesRegex(generator.CandidateError, "explicit helper and DSP"):
+                generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none",
+                                   vendor_receipt="none", policy_inputs_receipt="none")
+            records.assert_not_called()
+
+    def test_policy_bundle_refuses_wrong_package_scope_namespace_or_receipt(self):
+        inputs, original = self.policy_bundle_inputs()
+        for change in (
+            lambda r: r.update(factory_package_sha256="4" * 64),
+            lambda r: r.update(bundle="vendor/xiaomi/other-policy"),
+            lambda r: r.update(status="not-verified"),
+            lambda r: r["scope"].update(policy_compiled=True),
+            lambda r: r["scope"].update(complete_rom_admitted=True),
+            lambda r: r["receipt"].update(sha256="4" * 64),
+            lambda r: r["files"].append(copy.deepcopy(r["files"][0])),
+        ):
+            verification = copy.deepcopy(original)
+            change(verification)
+            with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification), \
+                    self.subTest(change=change), self.assertRaises(generator.CandidateError):
+                generator.generate(self.root / "artifacts/refused", **inputs)
+        self.assertFalse((self.root / "artifacts/refused").exists())
+
+    def test_policy_bundle_cannot_export_namespace_without_receipt_or_change_it_after_generation(self):
+        inputs, verification = self.policy_bundle_inputs()
+        output = self.root / "artifacts/native-namespace"
+        with mock.patch.object(generator, "_verify_policy_input_bundle", return_value=verification):
+            plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "generated/device-candidate.mk").as_posix()
+        original = (output / name).read_bytes()
+        self.reseal_candidate_file(output, plan, name, original + b"PRODUCT_SOONG_NAMESPACES += vendor/xiaomi/nezha-policy\n")
+        with self.assertRaisesRegex(generator.CandidateError, "namespace export changed"):
+            generator.validate(output)
+        (output / name).write_bytes(original)
+        updated = copy.deepcopy(plan)
+        del updated["policy_inputs"]
+        (output / "admission.json").write_text(json.dumps(updated))
+        with self.assertRaisesRegex(generator.CandidateError, "explicit verified bundle"):
+            generator.validate(output)
+
+    def test_cli_passes_policy_bundle_receipt_without_implicit_adoption(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--policy-inputs-receipt", "policy-inputs.json"], Path("policy-inputs.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["policy_inputs_receipt"], expected)
+
     def test_dsp_validation_rejects_source_tampering_even_if_inventory_is_rehashed(self):
         inputs = self.dsp_inputs()
         output = self.root / "artifacts/dsp-source-guard"

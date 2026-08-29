@@ -79,3 +79,6 @@ endif
 ifneq ($(strip $(PRODUCT_SELINUX_TREBLE_LABELING_TRACKING_LIST_FILE)),)
 $(error Nezha does not admit unreviewed Treble labeling waivers)
 endif
+
+# Check after vendor and Lineage hooks, before Soong exports the policy values.
+include $(NEZHA_DEVICE_PATH)/init-helper-capability.mk

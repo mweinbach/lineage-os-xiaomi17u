@@ -1,0 +1,213 @@
+// Private-input template. scripts/policy_inputs.py stages exact captured bytes.
+// This namespace validates current source policy plus reviewed factory inputs.
+// It does not install a combined policy or alter opaque vendor/ODM images.
+// Original v9 framework CIL is used ONLY to classify the vendor correction.
+soong_namespace {}
+
+python_binary_host {
+    name: "nezha_vendor_policy_derivation_tool",
+    main: "tools/vendor_policy.py",
+    srcs: ["tools/vendor_policy.py", "tools/artifact_files.py"],
+}
+
+genrule {
+    name: "nezha_factory_vendor_policy",
+    tools: ["nezha_vendor_policy_derivation_tool"],
+    srcs: [
+        "corpus/system/etc/selinux/plat_sepolicy.cil",
+        "corpus/system/etc/selinux/mapping/202504.cil",
+        "corpus/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "corpus/system_ext/etc/selinux/mapping/202504.cil",
+        "corpus/product/etc/selinux/product_sepolicy.cil",
+        "corpus/product/etc/selinux/mapping/202504.cil",
+        "corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+        "corpus/vendor/etc/selinux/vendor_sepolicy.cil",
+        "corpus/odm/etc/selinux/odm_sepolicy.cil",
+        "corpus/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "tools/vendor_policy.py",
+        "tools/artifact_files.py",
+        "tools/vendor-policy-correction.json",
+    ],
+    out: ["derived/vendor_sepolicy.cil", "derived/receipt.json"],
+    // Resolve the existing OUT alias before enforcing no-symlink path guards.
+    // sbox precreates declared output parents, so derive into a distinct child.
+    cmd: "$(location nezha_vendor_policy_derivation_tool) derive " +
+         "--corpus-root $$(readlink -f $$(dirname $(location corpus/system/etc/selinux/plat_sepolicy.cil))/../../..) " +
+         "--contract $$(readlink -f $(location tools/vendor-policy-correction.json)) " +
+         "--tool-source $$(readlink -f $(location tools/vendor_policy.py)) " +
+         "--private-output-root $$(readlink -f $(genDir)) " +
+         "--output $$(readlink -f $(genDir))/candidate " +
+         "&& mv $(genDir)/candidate/vendor_sepolicy.cil $(location derived/vendor_sepolicy.cil) " +
+         "&& mv $(genDir)/candidate/receipt.json $(location derived/receipt.json) " +
+         "&& rmdir $(genDir)/candidate",
+}
+
+se_policy_binary {
+    name: "nezha_factory_precompiled_sepolicy",
+    srcs: [
+        ":plat_sepolicy.cil",
+        ":plat_mapping_file",
+        ":system_ext_sepolicy.cil",
+        ":system_ext_mapping_file",
+        ":product_sepolicy.cil",
+        ":product_mapping_file",
+        "corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+        ":nezha_factory_vendor_policy{derived/vendor_sepolicy.cil}",
+        "corpus/odm/etc/selinux/odm_sepolicy.cil",
+        ":plat_sepolicy_genfs_202504.cil",
+    ],
+    ignore_neverallow: false,
+    installable: false,
+    required: ["sepolicy_neverallows"],
+}
+
+// Aggregate all five partitions, including the authentic empty ODM captures.
+// No fabricated entries, empty-input shortcut, or context singleton skip is used.
+genrule {
+    name: "nezha_factory_all_file_contexts",
+    srcs: [
+        ":plat_file_contexts",
+        ":system_ext_file_contexts",
+        ":product_file_contexts",
+        "factory/vendor/vendor_file_contexts",
+        "factory/odm/odm_file_contexts",
+    ],
+    out: ["combined_file_contexts"],
+    cmd: "cat $(in) > $(out)",
+}
+
+file_contexts_test {
+    name: "nezha_factory_file_contexts_test",
+    srcs: [":nezha_factory_all_file_contexts"],
+    sepolicy: ":nezha_factory_precompiled_sepolicy",
+}
+
+genrule {
+    name: "nezha_factory_all_hwservice_contexts",
+    srcs: [
+        ":plat_hwservice_contexts",
+        ":system_ext_hwservice_contexts",
+        ":product_hwservice_contexts",
+        "factory/vendor/vendor_hwservice_contexts",
+        "factory/odm/odm_hwservice_contexts",
+    ],
+    out: ["combined_hwservice_contexts"],
+    cmd: "cat $(in) > $(out)",
+}
+
+hwservice_contexts_test {
+    name: "nezha_factory_hwservice_contexts_test",
+    srcs: [":nezha_factory_all_hwservice_contexts"],
+    sepolicy: ":nezha_factory_precompiled_sepolicy",
+}
+
+genrule {
+    name: "nezha_factory_all_service_contexts",
+    srcs: [
+        ":plat_service_contexts",
+        ":system_ext_service_contexts",
+        ":product_service_contexts",
+        "factory/vendor/vendor_service_contexts",
+        "factory/odm/odm_service_contexts",
+    ],
+    out: ["combined_service_contexts"],
+    cmd: "cat $(in) > $(out)",
+}
+
+service_contexts_test {
+    name: "nezha_factory_service_contexts_test",
+    srcs: [":nezha_factory_all_service_contexts"],
+    sepolicy: ":nezha_factory_precompiled_sepolicy",
+}
+
+property_contexts_test {
+    name: "nezha_factory_property_contexts_test",
+    srcs: [
+        ":plat_property_contexts",
+        ":system_ext_property_contexts",
+        ":product_property_contexts",
+        "factory/vendor/vendor_property_contexts",
+        "factory/odm/odm_property_contexts",
+    ],
+    sepolicy: ":nezha_factory_precompiled_sepolicy",
+}
+
+vndservice_contexts_test {
+    name: "nezha_factory_vndservice_contexts_test",
+    srcs: ["factory/vendor/vndservice_contexts"],
+    sepolicy: ":nezha_factory_precompiled_sepolicy",
+}
+
+// checkseapp consumes real vendor/ODM entries and current framework assertions.
+java_genrule {
+    name: "nezha_factory_seapp_contexts_checked",
+    srcs: [
+        "factory/vendor/vendor_seapp_contexts",
+        "factory/odm/odm_seapp_contexts",
+        ":plat_seapp_neverallows",
+        ":nezha_factory_precompiled_sepolicy",
+    ],
+    tools: ["checkseapp"],
+    out: ["factory_seapp_contexts"],
+    cmd: "$(location checkseapp) -p $(location :nezha_factory_precompiled_sepolicy) -c -o $(out) " +
+         "$(location factory/vendor/vendor_seapp_contexts) $(location factory/odm/odm_seapp_contexts) " +
+         "$(location :plat_seapp_neverallows)",
+}
+
+// The vendor-only -c prohibition cannot be used for framework coredomains.
+java_genrule {
+    name: "nezha_factory_platform_seapp_contexts_checked",
+    srcs: [
+        ":plat_seapp_contexts",
+        ":system_ext_seapp_contexts",
+        ":product_seapp_contexts",
+        ":plat_seapp_neverallows",
+        ":nezha_factory_precompiled_sepolicy",
+    ],
+    tools: ["checkseapp"],
+    out: ["platform_seapp_contexts"],
+    cmd: "$(location checkseapp) -p $(location :nezha_factory_precompiled_sepolicy) -o $(out) " +
+         "$(location :plat_seapp_contexts) $(location :system_ext_seapp_contexts) " +
+         "$(location :product_seapp_contexts) $(location :plat_seapp_neverallows)",
+}
+
+// Structural Treble checks run against all real context files and the combined
+// binary. These do not replace full labeling checks requiring complete APK
+// inventories. The device-type assertion is not in the tool's default suite.
+java_genrule {
+    name: "nezha_factory_sepolicy_test",
+    srcs: [
+        ":plat_file_contexts",
+        ":system_ext_file_contexts",
+        ":product_file_contexts",
+        "factory/vendor/vendor_file_contexts",
+        "factory/odm/odm_file_contexts",
+        ":nezha_factory_precompiled_sepolicy",
+    ],
+    tools: ["sepolicy_tests"],
+    out: ["nezha_factory_sepolicy_test.stamp"],
+    cmd: "$(location sepolicy_tests) " +
+         "-f $(location :plat_file_contexts) -f $(location :system_ext_file_contexts) " +
+         "-f $(location :product_file_contexts) -f $(location factory/vendor/vendor_file_contexts) " +
+         "-f $(location factory/odm/odm_file_contexts) " +
+         "-p $(location :nezha_factory_precompiled_sepolicy) && touch $(out)",
+}
+
+java_genrule {
+    name: "nezha_factory_dev_type_test",
+    srcs: [
+        ":plat_file_contexts",
+        ":system_ext_file_contexts",
+        ":product_file_contexts",
+        "factory/vendor/vendor_file_contexts",
+        "factory/odm/odm_file_contexts",
+        ":nezha_factory_precompiled_sepolicy",
+    ],
+    tools: ["sepolicy_tests"],
+    out: ["nezha_factory_dev_type_test.stamp"],
+    cmd: "$(location sepolicy_tests) " +
+         "-f $(location :plat_file_contexts) -f $(location :system_ext_file_contexts) " +
+         "-f $(location :product_file_contexts) -f $(location factory/vendor/vendor_file_contexts) " +
+         "-f $(location factory/odm/odm_file_contexts) " +
+         "-p $(location :nezha_factory_precompiled_sepolicy) -t TestDevTypeViolations && touch $(out)",
+}

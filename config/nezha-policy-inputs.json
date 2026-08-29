@@ -1,0 +1,127 @@
+{
+  "bundle": "vendor/xiaomi/nezha-policy",
+  "contexts": [
+    {
+      "capture_path": "policy/odm/files/0001",
+      "path": "factory/odm/odm_file_contexts",
+      "runtime_path": "/odm/etc/selinux/odm_file_contexts",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "capture_path": "policy/odm/files/0002",
+      "path": "factory/odm/odm_hwservice_contexts",
+      "runtime_path": "/odm/etc/selinux/odm_hwservice_contexts",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "capture_path": "policy/odm/files/0004",
+      "path": "factory/odm/odm_property_contexts",
+      "runtime_path": "/odm/etc/selinux/odm_property_contexts",
+      "sha256": "f020bb1adcdfa68dea4cfffdd2e59eb5efa1b302c126e325b1dd8232f9fe8152",
+      "size_bytes": 918
+    },
+    {
+      "capture_path": "policy/odm/files/0005",
+      "path": "factory/odm/odm_seapp_contexts",
+      "runtime_path": "/odm/etc/selinux/odm_seapp_contexts",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "capture_path": "policy/odm/files/0007",
+      "path": "factory/odm/odm_service_contexts",
+      "runtime_path": "/odm/etc/selinux/odm_service_contexts",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "capture_path": "policy/vendor/files/0005",
+      "path": "factory/vendor/vendor_file_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_file_contexts",
+      "sha256": "e03b0f4114a9103f9ae4056b44f787acbd2c8a2aa530d25c20edc49160eecc8a",
+      "size_bytes": 152798
+    },
+    {
+      "capture_path": "policy/vendor/files/0006",
+      "path": "factory/vendor/vendor_hwservice_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_hwservice_contexts",
+      "sha256": "49faa3a959a7eb57966607357679eb1d84ab26851995b972ec91c6664b4c4123",
+      "size_bytes": 8966
+    },
+    {
+      "capture_path": "policy/vendor/files/0007",
+      "path": "factory/vendor/vendor_keystore2_key_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_keystore2_key_contexts",
+      "sha256": "f9936e8aad7dd08e6409b9cbfd2a05c7a5ffe476905941184b497de1aa2f0448",
+      "size_bytes": 929
+    },
+    {
+      "capture_path": "policy/vendor/files/0009",
+      "path": "factory/vendor/vendor_property_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_property_contexts",
+      "sha256": "1ea657519b3869186b340700beffa8e7669aec87a7f542a708db7e2e9c0fa692",
+      "size_bytes": 65138
+    },
+    {
+      "capture_path": "policy/vendor/files/0010",
+      "path": "factory/vendor/vendor_seapp_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_seapp_contexts",
+      "sha256": "b9898af2521118c829a2991d9262ce947e2dcf1bf2a7a6f4b58b0def5f1794ba",
+      "size_bytes": 1453
+    },
+    {
+      "capture_path": "policy/vendor/files/0012",
+      "path": "factory/vendor/vendor_service_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_service_contexts",
+      "sha256": "24b0dd7503df441b0282c602be6fdd04e1beb9ce73fb227224c7ed97eeb97412",
+      "size_bytes": 22950
+    },
+    {
+      "capture_path": "policy/vendor/files/0013",
+      "path": "factory/vendor/vendor_tee_service_contexts",
+      "runtime_path": "/vendor/etc/selinux/vendor_tee_service_contexts",
+      "sha256": "855bfc0b490c46a2ad13f0d4e615d3b128b6652dc93adad1087244c529fb21a9",
+      "size_bytes": 927
+    },
+    {
+      "capture_path": "policy/vendor/files/0014",
+      "path": "factory/vendor/vndservice_contexts",
+      "runtime_path": "/vendor/etc/selinux/vndservice_contexts",
+      "sha256": "282b7dd3366c73cb85d000ee5bec4ea092e378cf7dec35b168c9b53aba4e147c",
+      "size_bytes": 5941
+    }
+  ],
+  "device": "nezha",
+  "factory_policy_capture": {
+    "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/policy-receipt.json",
+    "sha256": "e9b44133f73254493736496d1fb50b7402b96f3c3b395bbd042b0b35b35fedb3",
+    "size_bytes": 74014
+  },
+  "full_treble_labeling_provided": false,
+  "image_integration_provided": false,
+  "native_targets": [
+    "nezha_factory_precompiled_sepolicy",
+    "nezha_factory_file_contexts_test",
+    "nezha_factory_property_contexts_test",
+    "nezha_factory_hwservice_contexts_test",
+    "nezha_factory_service_contexts_test",
+    "nezha_factory_vndservice_contexts_test",
+    "nezha_factory_seapp_contexts_checked",
+    "nezha_factory_platform_seapp_contexts_checked",
+    "nezha_factory_sepolicy_test",
+    "nezha_factory_dev_type_test"
+  ],
+  "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "platform": {
+    "board_api": "202504",
+    "branch": "bka",
+    "release": "bp4a"
+  },
+  "schema_version": 1,
+  "unvalidated_context_kinds": [
+    "vendor_keystore2_key_contexts",
+    "vendor_tee_service_contexts"
+  ]
+}

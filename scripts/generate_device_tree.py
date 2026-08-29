@@ -30,7 +30,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
-    "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "recovery/root/init.recovery.qcom.rc",
+    "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",
+    "recovery/root/init.recovery.qcom.rc",
 )
 DSP_POLICY_RECORD = PurePosixPath("research/dsp-policy-integration.json")
 DSP_POLICY_CONTRACT_ID = "nezha-dsp-membership-v1"
@@ -43,6 +44,27 @@ DSP_POLICY_WIRING = {
     "SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/system_ext/public",
     "PRODUCT_PRIVATE_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/product/private",
 }
+INIT_HELPER_RECORD = PurePosixPath("config/nezha-init-helper-capability.json")
+INIT_HELPER_CONTRACT_ID = "nezha-init-helper-no-property-writes-v1"
+INIT_HELPER_CONTRACT_SHA256 = "9a4728a13efac5a974507557c8130591c1cf1f29cfdeb749872d3e42c28e96d7"
+INIT_HELPER_PATCH = PurePosixPath("patches/evolution/0004-gate-init-dev-config-property-writes.patch")
+INIT_HELPER_METADATA = PurePosixPath("patches/evolution/init-helper-property-writes.json")
+INIT_HELPER_AUDIT = PurePosixPath("research/init-helper-capability-audit.json")
+INIT_HELPER_SYMBOL = "target_init_dev_config_property_writes"
+INIT_HELPER_CAPABILITY = {
+    "board_variable": "BOARD_SEPOLICY_M4DEFS", "symbol": INIT_HELPER_SYMBOL,
+    "value": "false", "api_version_inference_used": False,
+}
+INIT_HELPER_LIMITS = {
+    "component_configuration_only": True,
+    "complete_installed_input_closure_verified": False,
+    "runtime_helper_absence_verified": False,
+    "runtime_apex_media_camera_verified": False,
+    "complete_rom_admitted": False,
+    "phone_mutations_authorized": False,
+}
+POLICY_INPUTS_PATH = "vendor/xiaomi/nezha-policy"
+POLICY_INPUTS_RECEIPT = "policy-inputs.json"
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
@@ -755,6 +777,239 @@ def _bind_dsp_policy(plan, records, path, workspace_root, template_root, payload
     plan["dsp_policy"] = _dsp_admission(contract, identity)
 
 
+def _init_helper_contract(path):
+    contract, identity = _read_json(path)
+    _require(identity["sha256"] == INIT_HELPER_CONTRACT_SHA256,
+             "unknown or changed init-helper capability contract")
+    _require(contract["device"] == {"codename": "nezha", "hardware_region": "CN"} and
+             contract["profile"] == "framework-checks" and
+             contract["contract_id"] == INIT_HELPER_CONTRACT_ID,
+             "unsupported init-helper capability contract")
+    _require(contract["capability"] == INIT_HELPER_CAPABILITY and
+             contract["provider_contract"] is None and contract["limits"] == INIT_HELPER_LIMITS,
+             "init-helper capability or scope changed")
+    _require(contract["factory_origin_verified"] is False,
+             "init-helper contract cannot authenticate factory origin")
+    _digest(contract["factory_package_sha256"], "init-helper factory package")
+    _require(contract["source_patch"]["path"] == INIT_HELPER_PATCH.as_posix() and
+             contract["patch_metadata"]["path"] == INIT_HELPER_METADATA.as_posix() and
+             contract["prior_component_audit"]["path"] == INIT_HELPER_AUDIT.as_posix(),
+             "unexpected init-helper source patch")
+    guards = contract["device_guards"]
+    _require(len(guards) == 2 and {row["path"] for row in guards} == {
+        (DEVICE_PATH / "BoardConfig.mk").as_posix(),
+        (DEVICE_PATH / "init-helper-capability.mk").as_posix(),
+    }, "unexpected init-helper device guards")
+    return contract, identity
+
+
+def _init_helper_factory_binding(plan, contract):
+    _require("factory_profile" in plan and "dsp_policy" in plan and
+             plan["factory_profile"]["package_sha256"] ==
+             plan["source_packages"]["vendor"] == contract["factory_package_sha256"],
+             "init-helper capability requires the reviewed factory and DSP profile")
+    _require(plan["factory_profile"]["origin_verified"] is False,
+             "init-helper admission cannot promote factory origin")
+
+
+def _init_helper_admission(contract, identity):
+    return {
+        "contract_id": INIT_HELPER_CONTRACT_ID,
+        "contract_record": {"path": INIT_HELPER_RECORD.as_posix(), **identity},
+        "capability": dict(INIT_HELPER_CAPABILITY),
+        "factory_package_sha256": contract["factory_package_sha256"],
+        "factory_origin_verified": False,
+        "required_source_revisions": contract["required_source_revisions"],
+        "required_patched_source": contract["required_patched_source"],
+        "prior_component_audit": contract["prior_component_audit"],
+        "static_factory_files_rehashed": contract["static_input_file_count"],
+        "static_factory_bytes_rehashed": contract["static_input_total_bytes"],
+        "source_checkout_inspected": False,
+        "fresh_soong_or_m4_build_performed": False,
+        "strict_full_policy_compiled": False,
+        "limits": dict(INIT_HELPER_LIMITS),
+    }
+
+
+def _init_helper_conflicts(raw, label):
+    # A deliberately conservative literal check, not an init/import evaluator.
+    # The only admitted invocation is the pinned upstream optional service;
+    # authored and selected factory inputs may not add another provider.
+    terms = (b"init_dev_config", b"ro.boot.init_rc", b"androidboot.init_rc",
+             b"TARGET_INIT_VENDOR_LIB", b"vendor_init_lib")
+    _require(not any(term in raw for term in terms),
+             f"uncontracted init-helper provider, invocation, label or boot selector: {label}")
+
+
+def _bind_init_helper_capability(plan, records, path, workspace_root, patch_source_root,
+                                 vendor_receipt, payloads):
+    contract, identity = _init_helper_contract(path)
+    _init_helper_factory_binding(plan, contract)
+    partitions = {part["name"]: part for part in records["firmware-layout"]["partitions"]}
+    _require(set(contract["vendor_images"]) == {"vendor", "odm"},
+             "init-helper contract requires both factory images")
+    for name, expected in contract["vendor_images"].items():
+        source = partitions[name + "_a"]
+        _require(expected == {"sha256": source["extraction"]["sha256"],
+                              "size_bytes": source["size_bytes"]},
+                 "init-helper image differs from its reviewed factory input")
+    metadata = _bound_reference(contract["patch_metadata"], patch_source_root)
+    _require(metadata["base_commit"] == contract["required_source_revisions"]["system/sepolicy"] and
+             metadata["patch_sha256"] == contract["source_patch"]["sha256"] and
+             len(metadata["files"]) == 1 and contract["required_patched_source"] == {
+                 "path": "system/sepolicy/" + metadata["files"][0]["path"],
+                 "sha256": metadata["files"][0]["after_sha256"],
+                 "size_bytes": metadata["files"][0]["after_size_bytes"],
+             }, "init-helper source metadata differs from its reviewed patch")
+    audit = _bound_reference(contract["prior_component_audit"], workspace_root)
+    _require(audit["source_pins"] == contract["required_source_revisions"] and
+             audit["selected_factory_evidence"]["factory_package_sha256"] == contract["factory_package_sha256"] and
+             audit["selected_init_rc"]["upstream_optional_service_preserved"] is True and
+             audit["validation"]["final_init_hook_bytes_and_text_identity_passed"] is True and
+             audit["validation"]["selected_init_rc_identity_passed"] is True and
+             audit["proposed_capability"]["complete_rom_admission"] is False,
+             "init-helper prior component audit does not bind the selected source and inputs")
+    for row in contract["source_captures"]:
+        _require(row["commit"] == contract["required_source_revisions"][row["project"]],
+                 "init-helper captured source revision differs")
+    _file_entries(Path(workspace_root), contract["source_captures"])
+    scan = _bound_reference(contract["static_input_scan"], workspace_root)
+    _require(scan["factory_package_sha256"] == contract["factory_package_sha256"] and
+             scan["factory_origin_authenticated"] is False and
+             len(scan["partitions"]) == 2 and
+             {row["partition"] for row in scan["partitions"]} == {"vendor", "odm"},
+             "init-helper static scan has different factory inputs")
+    count, total, selected = 0, 0, set()
+    for partition in scan["partitions"]:
+        name = partition["partition"]
+        _require(partition["image_sha256"] == contract["vendor_images"][name]["sha256"],
+                 "init-helper static scan image differs")
+        entries = [{"path": row["host_path"], "sha256": row["sha256"],
+                    "size_bytes": row["size_bytes"]} for row in partition["files"]]
+        _require(len(entries) == partition["file_count"] and
+                 sum(row["size_bytes"] for row in entries) == partition["total_bytes"],
+                 "init-helper static scan inventory differs")
+        verified = _file_entries(Path(workspace_root), entries)
+        for row in partition["files"]:
+            runtime = (name, row["image_path"])
+            _require(runtime not in selected, "duplicate init-helper static input")
+            selected.add(runtime)
+            actual, raw = _read_file(Path(workspace_root) / _relative(row["host_path"]),
+                                     limit=MAX_TEXT_BYTES, collect=True)
+            _require(actual == verified[row["host_path"]], "init-helper static input changed")
+            _init_helper_conflicts(raw, f"{name}{row['image_path']}")
+            count += 1
+            total += actual["size_bytes"]
+    _require(count == contract["static_input_file_count"] and
+             total == contract["static_input_total_bytes"], "init-helper static scan totals differ")
+    guarded = {row["path"] for row in contract["device_guards"]}
+    for row in contract["device_guards"]:
+        raw = payloads[row["path"]]
+        _require({"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)} ==
+                 {key: row[key] for key in ("sha256", "size_bytes")},
+                 "init-helper device guard differs from the reviewed contract")
+    for name, raw in payloads.items():
+        if name.startswith(DEVICE_PATH.as_posix() + "/") and name not in guarded and not name.endswith("README.md"):
+            _init_helper_conflicts(raw, name)
+    vendor, vendor_identity = _read_json(vendor_receipt)
+    _require(all(vendor_identity[key] == plan["bundles"]["vendor"][key]
+                 for key in ("sha256", "size_bytes")), "init-helper vendor receipt changed")
+    for row in [*vendor["generated_files"], *vendor.get("extras", [])]:
+        if Path(row["path"]).suffix in (".mk", ".bp", ".rc", ".prop", ".te", ".cil", ".json", ".xml") or "contexts" in Path(row["path"]).name:
+            actual, raw = _read_file(Path(vendor_receipt).parent / _relative(row["path"]),
+                                     limit=MAX_TEXT_BYTES, collect=True)
+            _require(actual == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "init-helper selected vendor configuration changed")
+            _init_helper_conflicts(raw, row["path"])
+    for row in (contract["source_patch"], contract["patch_metadata"]):
+        actual, raw = _read_file(Path(patch_source_root) / _relative(row["path"]),
+                                 limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")},
+                 "init-helper patch hash/size mismatch")
+        payloads[row["path"]] = raw
+    actual, raw = _read_file(Path(workspace_root) / INIT_HELPER_AUDIT, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == {key: contract["prior_component_audit"][key] for key in ("sha256", "size_bytes")},
+             "init-helper prior component audit changed before publication")
+    payloads[INIT_HELPER_AUDIT.as_posix()] = raw
+    actual, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == identity, "init-helper contract changed before publication")
+    payloads[INIT_HELPER_RECORD.as_posix()] = raw
+    plan["init_helper_capability"] = _init_helper_admission(contract, identity)
+
+
+def _init_helper_wiring_lines():
+    definitions = ("$(strip $(foreach _nezha_m4def,$(BOARD_SEPOLICY_M4DEFS),"
+                   f"$(if $(findstring {INIT_HELPER_SYMBOL},$(_nezha_m4def)),$(_nezha_m4def))))")
+    return [
+        "# Explicit reviewed init-helper capability; never inferred from an API level.",
+        "ifneq ($(origin NEZHA_INIT_HELPER_CAPABILITY_CONTRACT),undefined)",
+        "$(error Nezha init-helper capability marker must be generated exactly once)",
+        "endif",
+        f"NEZHA_INIT_HELPER_CAPABILITY_CONTRACT := {INIT_HELPER_CONTRACT_ID}",
+        "ifneq ($(filter undefined file,$(origin BOARD_SEPOLICY_M4DEFS)),$(origin BOARD_SEPOLICY_M4DEFS))",
+        "$(error Nezha init-helper M4 definitions cannot be supplied by an override)",
+        "endif",
+        f"ifneq ({definitions},)",
+        "$(error Nezha init-helper M4 definition must be generated exactly once)",
+        "endif",
+        f"BOARD_SEPOLICY_M4DEFS += {INIT_HELPER_SYMBOL}=false",
+    ]
+
+
+def _verify_policy_input_bundle(receipt):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    return policy_inputs.verify_bundle(receipt.parent)
+
+
+def _policy_inputs_binding(plan, verification):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    _require("init_helper_capability" in plan and "dsp_policy" in plan,
+             "native policy inputs require the explicit helper and DSP capabilities")
+    _require(isinstance(verification, dict) and verification.get("schema_version") == 1 and
+             verification.get("operation") == "verify-nezha-policy-inputs" and
+             verification.get("status") == "verified" and verification.get("device") == "nezha" and
+             verification.get("bundle") == POLICY_INPUTS_PATH and
+             verification.get("factory_package_sha256") == plan["source_packages"]["vendor"] and
+             verification.get("scope") == policy_inputs.SCOPE,
+             "native policy bundle binding differs from the reviewed component scope")
+    receipt = verification["receipt"]
+    _require(receipt["path"] == POLICY_INPUTS_RECEIPT, "unexpected native policy receipt name")
+    _digest(receipt["sha256"], "native policy receipt")
+    _integer(receipt["size_bytes"], "native policy receipt length", MAX_JSON_BYTES)
+    entries = verification["files"]
+    _require(isinstance(entries, list) and 0 < len(entries) <= MAX_BUNDLE_FILES,
+             "invalid native policy file inventory")
+    names = set()
+    for row in entries:
+        name = _relative(row["path"]).as_posix()
+        _require(name.casefold() not in names and name != POLICY_INPUTS_RECEIPT,
+                 "duplicate native policy file inventory entry")
+        names.add(name.casefold())
+        _digest(row["sha256"], "native policy file")
+        _require(type(row["size_bytes"]) is int and 0 <= row["size_bytes"] <= MAX_JSON_BYTES,
+                 "invalid native policy file length")
+    _require("android.bp" in names, "native policy namespace has no reviewed Android.bp")
+
+
+def _bind_policy_inputs(plan, path):
+    path = _no_symlinks(path)
+    _require(path.name == POLICY_INPUTS_RECEIPT, "native policy receipt must be named policy-inputs.json")
+    identity, _ = _read_file(path, limit=MAX_JSON_BYTES)
+    verification = _verify_policy_input_bundle(path)
+    _policy_inputs_binding(plan, verification)
+    _require(identity == {key: verification["receipt"][key] for key in ("sha256", "size_bytes")},
+             "native policy input receipt changed during verification")
+    # This records completed generation-time verification of an external bundle.
+    # Candidate validation cannot rehash an unmounted private bundle or build it.
+    plan["policy_inputs"] = verification
+
+
 def render_factory_fstab(plan, contract, source):
     """Select observed filesystems without removing factory AVB or crypto flags."""
     identity, raw = _read_file(source, limit=MAX_TEXT_BYTES, collect=True)
@@ -843,7 +1098,8 @@ def _render_board(plan):
              "BOARD_MKBOOTIMG_INIT_ARGS += --header_version 4", "BOARD_KERNEL_PAGESIZE := 4096"]
     header = plan["vendor_boot_header"]
     lines.append("BOARD_KERNEL_BASE := 0x00000000")
-    for name, value in header["load_addresses"].items():
+    for name in ("kernel", "ramdisk", "tags", "dtb"):
+        value = header["load_addresses"][name]
         lines.append(f"BOARD_MKBOOTIMG_ARGS += --{name}_offset 0x{value:x}")
     lines.append("BOARD_KERNEL_CMDLINE += " + " ".join(header["selected_cmdline"]))
     lines += [f"BOOT_SECURITY_PATCH := {plan['kernel']['boot_security_patch']}",
@@ -854,7 +1110,8 @@ def _render_board(plan):
               str(plan['bundles']['kernel']['origin_verified']).lower()]
     variable = {"boot": "BOOTIMAGE", "init_boot": "INIT_BOOT_IMAGE", "vendor_boot": "VENDOR_BOOTIMAGE",
                 "recovery": "RECOVERYIMAGE", "dtbo": "DTBOIMG"}
-    for name, budget in plan["image_budgets"].items():
+    for name in ("boot", "init_boot", "vendor_boot", "recovery", "dtbo"):
+        budget = plan["image_budgets"][name]
         lines.append(f"BOARD_{variable[name]}_PARTITION_SIZE := {budget['bytes']}")
     group = plan["super"]["group_name"]
     lines += [f"BOARD_SUPER_PARTITION_SIZE := {plan['super']['bytes']}",
@@ -872,7 +1129,8 @@ def _render_board(plan):
               "BOARD_AVB_KEY_PATH := $(NEZHA_ENGINEERING_AVB_KEY)",
               "BOARD_AVB_ALGORITHM := SHA256_RSA4096",
               f"BOARD_AVB_ROLLBACK_INDEX := {plan['avb_root_rollback_index']}"]
-    for name, chain in plan["avb_chains"].items():
+    for name in ("boot", "recovery", "vbmeta_system"):
+        chain = plan["avb_chains"][name]
         upper = name.upper()
         lines += [f"BOARD_AVB_{upper}_KEY_PATH := $(NEZHA_ENGINEERING_AVB_KEY)",
                   f"BOARD_AVB_{upper}_ALGORITHM := SHA256_RSA4096",
@@ -882,6 +1140,8 @@ def _render_board(plan):
     lines.append("BOARD_AVB_VBMETA_SYSTEM := " + " ".join(chained))
     for key, value in sorted(plan["bootconfig"].items()):
         lines.append(f"BOARD_BOOTCONFIG += {key}={value}")
+    if "init_helper_capability" in plan:
+        lines.extend(_init_helper_wiring_lines())
     if "dsp_policy" in plan:
         lines.extend(_dsp_wiring_lines())
     return "\n".join(lines) + "\n"
@@ -890,7 +1150,7 @@ def _render_board(plan):
 def _render_product(plan):
     partitions = ["boot", "dtbo", "init_boot", "recovery", "vendor_boot", "vbmeta", "vbmeta_system",
                   *FRAMEWORK_PARTITIONS]
-    return "\n".join([
+    lines = [
         "# Generated framework-checks configuration. Complete packaging is not admitted.",
         f"PRODUCT_SHIPPING_API_LEVEL := {plan['shipping_api_level']}",
         "PRODUCT_USE_DYNAMIC_PARTITIONS := true", "PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true",
@@ -898,8 +1158,12 @@ def _render_product(plan):
         "AB_OTA_PARTITIONS += " + " ".join(partitions),
         "PRODUCT_BUILD_BOOT_IMAGE := true", "PRODUCT_BUILD_INIT_BOOT_IMAGE := true",
         "PRODUCT_BUILD_VENDOR_BOOT_IMAGE := true", "PRODUCT_BUILD_RECOVERY_IMAGE := true",
-        "PRODUCT_ENFORCE_VINTF_MANIFEST := true", "",
-    ])
+        "PRODUCT_ENFORCE_VINTF_MANIFEST := true",
+    ]
+    if "policy_inputs" in plan:
+        lines += ["# Explicit private policy bundle; native component checks only.",
+                  f"PRODUCT_SOONG_NAMESPACES += {POLICY_INPUTS_PATH}"]
+    return "\n".join([*lines, ""])
 
 
 def _load_records(record_paths):
@@ -912,7 +1176,8 @@ def _load_records(record_paths):
 def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_source=None,
              variant="userdebug", workspace_root=ROOT, template_root=ROOT / DEVICE_PATH,
              patch_source_root=ROOT, factory_boot_contract=None, partition_metadata=None,
-             dsp_policy_contract=None):
+             dsp_policy_contract=None, init_helper_capability_contract=None,
+             policy_inputs_receipt=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -920,6 +1185,12 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                  "factory generation requires boot contract, partition metadata and explicit fstab source")
     if dsp_policy_contract is not None:
         _require(factory_selected, "DSP policy integration requires the explicit factory profile")
+    if init_helper_capability_contract is not None:
+        _require(factory_selected and dsp_policy_contract is not None,
+                 "init-helper capability requires the explicit factory and DSP profile")
+    if policy_inputs_receipt is not None:
+        _require(init_helper_capability_contract is not None and dsp_policy_contract is not None,
+                 "native policy inputs require the explicit helper and DSP capabilities")
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
@@ -940,6 +1211,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             Path(template_root) / name, limit=MAX_TEXT_BYTES, collect=True)
     if dsp_policy_contract is not None:
         _bind_dsp_policy(plan, records, dsp_policy_contract, workspace_root, template_root, payloads)
+    if init_helper_capability_contract is not None:
+        _bind_init_helper_capability(plan, records, init_helper_capability_contract,
+                                    workspace_root, patch_source_root, vendor_receipt, payloads)
+    if policy_inputs_receipt is not None:
+        _bind_policy_inputs(plan, policy_inputs_receipt)
     generated = DEVICE_PATH / "generated"
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
@@ -996,6 +1272,17 @@ def validate(output, *, purpose="configuration"):
         for entry in contract["source_files"]:
             _require(files.get(entry["path"]) == {key: entry[key] for key in ("sha256", "size_bytes")},
                      "DSP policy source file differs from the reviewed contract")
+    if "init_helper_capability" in plan:
+        contract, identity = _init_helper_contract(Path(output) / INIT_HELPER_RECORD)
+        _require(plan["init_helper_capability"] == _init_helper_admission(contract, identity),
+                 "init-helper admission differs from the reviewed capability contract")
+        _init_helper_factory_binding(plan, contract)
+        expected |= {INIT_HELPER_RECORD.as_posix(), INIT_HELPER_PATCH.as_posix(),
+                     INIT_HELPER_METADATA.as_posix(), INIT_HELPER_AUDIT.as_posix()}
+        for row in [*contract["device_guards"], contract["source_patch"], contract["patch_metadata"],
+                    contract["prior_component_audit"]]:
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "init-helper public input differs from the reviewed contract")
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -1008,6 +1295,22 @@ def validate(output, *, purpose="configuration"):
             present.add(path.relative_to(output).as_posix())
             _require(len(present) <= len(expected) + 1, "unexpected candidate file")
     _require(present == expected | {"admission.json"}, "unlisted or missing candidate file")
+    if "policy_inputs" in plan:
+        _policy_inputs_binding(plan, plan["policy_inputs"])
+    product_name = (DEVICE_PATH / "generated/device-candidate.mk").as_posix()
+    product_identity, product_bytes = _read_file(Path(output) / product_name, limit=MAX_TEXT_BYTES, collect=True)
+    _require(product_identity == files[product_name], "generated product changed during validation")
+    if "policy_inputs" in plan:
+        _require(product_bytes == _render_product(plan).encode("ascii"),
+                 "native policy namespace export changed")
+    else:
+        _require(POLICY_INPUTS_PATH.encode("ascii") not in product_bytes,
+                 "native policy namespace requires an explicit verified bundle")
+    for name in files:
+        if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk") and name != product_name:
+            _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+            _require(POLICY_INPUTS_PATH.encode("ascii") not in raw,
+                     "native policy namespace may only be exported by the reviewed generator")
     board_name = (DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
     board_identity, board_bytes = _read_file(Path(output) / board_name, limit=MAX_TEXT_BYTES, collect=True)
     _require(board_identity == files[board_name], "generated board changed during validation")
@@ -1015,6 +1318,20 @@ def validate(output, *, purpose="configuration"):
     _require("BOARD_AVB_ENABLE := true" in board, "generated AVB setting absent")
     _require(not re.search(r"--flags\s+[123]|--set_hashtree_disabled_flag|androidboot.selinux=permissive", board),
              "unsafe generated boot policy")
+    if "init_helper_capability" in plan:
+        wiring = "\n" + "\n".join(_init_helper_wiring_lines()) + "\n"
+        _require(board_bytes == _render_board(plan).encode("ascii") and board.count(wiring) == 1 and
+                 INIT_HELPER_SYMBOL not in board.replace(wiring, "\n") and
+                 "NEZHA_INIT_HELPER_CAPABILITY_CONTRACT" not in board.replace(wiring, "\n"),
+                 "generated init-helper board wiring changed")
+        guarded = {row["path"] for row in contract["device_guards"]}
+        for name in files:
+            if name.startswith(DEVICE_PATH.as_posix() + "/") and name not in guarded | {board_name} and not name.endswith("README.md"):
+                _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+                _init_helper_conflicts(raw, name)
+    else:
+        _require(INIT_HELPER_SYMBOL not in board and "NEZHA_INIT_HELPER_CAPABILITY_CONTRACT" not in board,
+                 "init-helper policy wiring requires an explicit reviewed contract")
     if "dsp_policy" in plan:
         wiring = ("\n" + "\n".join(_dsp_wiring_lines()) + "\n").encode("ascii")
         _require(board_bytes.endswith(wiring) and
@@ -1046,6 +1363,10 @@ def main(argv=None):
                              help="verified factory package GPT record; never a live-capacity or flash admission")
             sub.add_argument("--dsp-policy-contract", type=Path,
                              help="explicit reviewed DSP source contract; requires the factory profile, not a policy compatibility admission")
+            sub.add_argument("--init-helper-capability-contract", type=Path,
+                             help="explicit reviewed helper capability; requires factory and DSP profiles, never a ROM admission")
+            sub.add_argument("--policy-inputs-receipt", type=Path,
+                             help="verified separate native policy bundle; requires explicit helper and DSP capabilities")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -1063,7 +1384,9 @@ def main(argv=None):
                                   vendor_receipt=args.vendor_receipt, fstab_source=args.fstab_source,
                                   variant=args.variant, factory_boot_contract=args.factory_boot_contract,
                                   partition_metadata=args.partition_metadata,
-                                  dsp_policy_contract=args.dsp_policy_contract)
+                                  dsp_policy_contract=args.dsp_policy_contract,
+                                  init_helper_capability_contract=args.init_helper_capability_contract,
+                                  policy_inputs_receipt=args.policy_inputs_receipt)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

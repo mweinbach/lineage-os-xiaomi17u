@@ -143,6 +143,26 @@ the staging root. The generator records this requirement; it does not patch
 platform sources itself. Verify the resulting property outputs before claiming
 those policies are effective.
 
+The optional `--init-helper-capability-contract` accepts only
+[the reviewed Nezha declaration](../../../config/nezha-init-helper-capability.json)
+with the explicit factory and DSP profiles. It emits exactly one
+`target_init_dev_config_property_writes=false` definition through
+`BOARD_SEPOLICY_M4DEFS`. The generator binds the source patch, original factory
+images, selected input scan and [prior init linkage audit](../../../research/init-helper-capability-audit.json).
+The final BoardConfig guard freezes the expanded definition list and rejects
+duplicates, overrides, helper-provider properties and unreviewed init hooks.
+Omitting the option leaves the upstream capability undefined. No API level
+selects this behavior, and the generator does not apply the platform patch.
+
+The separate optional `--policy-inputs-receipt` verifies the private native
+policy bundle and exports its `vendor/xiaomi/nezha-policy` Soong namespace.
+It requires the helper and DSP capabilities but does not replace the original
+opaque vendor/ODM inputs. Without this receipt the namespace is not exported.
+Candidate validation checks the recorded binding; reverify the external bundle
+after transferring it. Neither option admits a complete image or first boot.
+Final merged properties, imports, contexts and changed init binaries still
+need validation, and unexpected runtime providers must retain visible denials.
+
 `validate --output PATH --purpose configuration` rechecks generated hashes and
 policy, and refuses unlisted files or symlinks. `--purpose target-files` and
 `--purpose flash` fail for this profile.

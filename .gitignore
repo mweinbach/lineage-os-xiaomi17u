@@ -10,6 +10,7 @@
 /.repo/
 /out/
 /vendor/xiaomi/nezha-recovery/
+/vendor/xiaomi/nezha-policy/
 *.sparseimage
 *.sparsebundle/
 *.dmg
