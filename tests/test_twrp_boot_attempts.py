@@ -151,6 +151,63 @@ class TwrpBootAttemptsTests(unittest.TestCase):
         self.assertFalse(trial['twrp_runtime_verified'])
         self.assertLess(observed['second_stage_init_started_seconds'], observed['reboot_requested_seconds'])
 
+    def test_logging_trial_records_the_fresh_apex_failure_without_reusing_stale_logs(self):
+        previous, trial = self.record['attempts'][3:5]
+        self.assertEqual(trial['image_sha256'],
+                         '74b1cbad15dfefcad96b0f77dbb340ae4df9461d70e28ad19a144308bb0c1bb1')
+        for key in ('kernel_sha256', 'ramdisk_sha256', 'ramdisk_size_bytes',
+                    'directory_scaffold', 'canonical_ramdisk_suffix', 'avb'):
+            self.assertEqual(trial[key], previous[key])
+        self.assertEqual(trial['diagnostic_parameter'], 'printk.devkmsg=on')
+        self.assertEqual(trial['command_line_size_bytes'], 287)
+        self.assertEqual(trial['command_line_sha256'],
+                         'b9730753e0d94e6bc6f8b4d0af5bab77ba0b87eaa8bcb89c0135f7243c659077')
+        observed = trial['runtime_observations']
+        self.assertEqual((observed['fatal_mount_point'], observed['fatal_errno'], observed['fatal_signal']),
+                         ('/apex', 'ENOENT', 6))
+        self.assertEqual(observed['vendor_modules_loaded'], 426)
+        for key in ('fatal_cause_identified', 'recovery_init_selinux_enforcing_observed',
+                    'twrp_build_identity_observed', 'initial_stale_kernel_log_rejected',
+                    'fresh_log_newer_than_diagnostic_reboot', 'stock_authorized_adb_returned'):
+            self.assertTrue(observed[key])
+        self.assertEqual(observed['fresh_log_entry_local'], '2026-08-29 00:22:41')
+        self.assertEqual(observed['fresh_log_timezone'], 'America/New_York')
+        self.assertNotEqual(trial['evidence']['last_kernel_log']['sha256'],
+                            trial['evidence']['rejected_stale_kernel_log']['sha256'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        self.assertFalse(observed['recovery_ui_verified'])
+        self.assertFalse(observed['recovery_adb_verified'])
+        self.assertLess(observed['second_stage_init_started_seconds'], observed['fatal_signal_seconds'])
+        self.assertLess(observed['fatal_signal_seconds'], observed['reboot_requested_seconds'])
+
+    def test_empty_apex_trial_does_not_treat_missing_usb_as_runtime_success_or_failure(self):
+        previous, trial = self.record['attempts'][4:6]
+        self.assertEqual(trial['image_sha256'],
+                         '8278aa15d2aa21e5553a332787580716e3d7b43b88ad505c73e8141e37dd9e7f')
+        self.assertEqual(trial['ramdisk_sha256'],
+                         '56c155fe7beed5a836faee93b48e51fe545f58cce112d136d89ba7ef15476dc2')
+        for key in ('kernel_sha256', 'command_line_sha256', 'command_line_size_bytes', 'avb'):
+            self.assertEqual(trial[key], previous[key])
+        suffix = trial['canonical_ramdisk_suffix']
+        self.assertEqual(suffix['offset_within_ramdisk_bytes'], 1551)
+        self.assertEqual(suffix['sha256'], self.milestone['artifact']['compressed_ramdisk_sha256'])
+        self.assertTrue(suffix['unchanged'])
+        self.assertEqual(trial['directory_scaffold']['directories'],
+                         ['apex', 'debug_ramdisk', 'dev', 'metadata', 'mnt', 'proc',
+                          'second_stage_resources', 'sys'])
+        self.assertFalse(trial['directory_scaffold']['contains_files_or_symlinks'])
+        observed = trial['runtime_observations']
+        self.assertEqual(observed['usb_presence_poll_count'], 20)
+        self.assertGreater(observed['usb_presence_poll_span_seconds'], 57)
+        for key in ('adb_seen_during_observation', 'fastboot_seen_during_observation',
+                    'current_runtime_identified', 'recovery_ui_verified', 'recovery_adb_verified',
+                    'apex_mount_success_verified'):
+            self.assertFalse(observed[key])
+        self.assertTrue(observed['source_directory_fix_is_not_runtime_proof'])
+        self.assertTrue(observed['no_reboot_sent_after_this_trial'])
+        self.assertFalse(trial['twrp_runtime_verified'])
+        self.assertTrue(trial['boot_command_succeeded'])
+
 
 if __name__ == '__main__':
     unittest.main()

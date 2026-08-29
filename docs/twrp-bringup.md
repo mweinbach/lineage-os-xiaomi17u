@@ -109,10 +109,41 @@ modules loading, `/sepolicy` loading, SELinux entering enforcing mode, and
 `init second stage started!` at about 18.496 seconds. Init then requested a
 bootloader reboot. The phone remained on slot `a`; a diagnostic `fastboot
 reboot` returned it to stock Android to collect the saved log. TWRP's UI and
-authenticated recovery ADB have still not been reached. The fatal cause is
-not identified: kernel messages explicitly report hundreds of init lines
-suppressed by rate limiting. A logging-only RAM trial is the next diagnostic
-step, not a reason to disable SELinux or AVB.
+authenticated recovery ADB were not verified at that checkpoint. The fatal
+cause was not identified in this log: kernel messages explicitly report
+hundreds of init lines suppressed by rate limiting.
+
+The fifth trial added only `printk.devkmsg=on` to the header command line,
+preserving the kernel and complete ramdisk bytes. Its SHA256 is
+`74b1cbad15dfefcad96b0f77dbb340ae4df9461d70e28ad19a144308bb0c1bb1`.
+This parameter removes the `/dev/kmsg` writer rate limit for already permitted
+writers; it does not grant log access or change SELinux, ADB authentication,
+AVB flags or rollback metadata. It can increase log volume. The fresh saved
+kernel log shows 426 modules loaded, enforcing policy, second-stage init and
+the TWRP build identity, then an `ENOENT` mounting tmpfs on `/apex` followed by
+`InitFatalReboot: signal 6`. The canonical archive had no `/apex` directory.
+
+BootReceiver published that trial's `SYSTEM_LAST_KMSG` entry after Android
+reported `sys.boot_completed=1`. An initial read therefore captured the older
+trial's log. Both receipts are retained, but only the entry at
+`2026-08-29 00:22:41 America/New_York`, verified newer than the diagnostic stock
+reboot, supports the fifth trial's diagnosis. Future collection must check
+entry freshness instead of assuming the newest available entry is current.
+
+The sixth trial adds only the empty `/apex` directory to the scaffold. Its
+1,551-byte LZ4 prefix precedes the unchanged original compressed ramdisk;
+native decompression, independent inspection and explicit-key AVB verification
+passed. The 96 MiB image has SHA256
+`8278aa15d2aa21e5553a332787580716e3d7b43b88ad505c73e8141e37dd9e7f`.
+Inspection requires the explicit `--header-version 3 --scaffold --init-logging
+--apex` variant. This verifies an empty directory, not working APEX packages.
+
+The bootloader accepted the sixth trial. Twenty USB presence checks spanning
+about 58 seconds found neither ADB nor fastboot, and a host USB descriptor
+check found no Android device. This does not establish that TWRP started or
+that it crashed. No further reboot was sent; the phone's screen state was
+requested before deciding the next device action. The recorded current
+runtime, display, touch and authenticated recovery ADB remain unresolved.
 
 ## Source and build isolation
 
