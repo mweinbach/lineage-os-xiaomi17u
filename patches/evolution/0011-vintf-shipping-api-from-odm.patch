@@ -1,0 +1,41 @@
+diff --git a/tools/releasetools/check_target_files_vintf.py b/tools/releasetools/check_target_files_vintf.py
+--- a/tools/releasetools/check_target_files_vintf.py
++++ b/tools/releasetools/check_target_files_vintf.py
+@@ -87,12 +87,31 @@
+ 
+ 
+ def GetArgsForShippingApiLevel(info_dict):
+-  shipping_api_level = info_dict['vendor.build.prop'].GetProp(
+-      'ro.product.first_api_level')
+-  if not shipping_api_level:
+-    logger.warning('Cannot determine ro.product.first_api_level')
+-    return []
+-  return ['--property', 'ro.product.first_api_level=' + shipping_api_level]
++  # Init loads ODM properties after vendor properties. Keep both original
++  # sources visible and reject a disagreement instead of guessing precedence.
++  property_name = 'ro.product.first_api_level'
++  levels = {}
++  for partition in ('vendor', 'odm'):
++    props = info_dict.get(partition + '.build.prop')
++    value = props.GetProp(property_name) if props is not None else None
++    if value is None:
++      continue
++    # PropertyFetcher uses uint64_t. Require canonical positive decimal text
++    # so malformed metadata cannot silently become its native default value.
++    if (not isinstance(value, str) or not 1 <= len(value) <= 20 or
++        not value.isascii() or not value.isdecimal() or value.startswith('0') or
++        int(value) > (1 << 64) - 1):
++      raise ValueError('Invalid {} in {}.build.prop: {!r}'.format(
++          property_name, partition, value))
++    levels[partition] = value
++  if not levels:
++    raise ValueError('Cannot determine {} from vendor or ODM properties'.format(
++        property_name))
++  if len(set(levels.values())) != 1:
++    raise ValueError('Conflicting {} in vendor and ODM properties: {}'.format(
++        property_name, levels))
++  shipping_api_level = levels.get('vendor', levels.get('odm'))
++  return ['--property', property_name + '=' + shipping_api_level]
+ 
+ 
+ def GetArgsForKernel(input_tmp):

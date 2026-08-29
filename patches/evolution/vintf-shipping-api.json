@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-vintf-shipping-api-v1",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0011-vintf-shipping-api-from-odm.patch",
+    "sha256": "0fa33fca9d2e7a7d6ff99d00f968f36dfa8027abc0b2adcf31a3df0ad957361b",
+    "size_bytes": 1928
+  },
+  "source_files": [
+    {
+      "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+      "before": {
+        "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+        "size_bytes": 11705
+      },
+      "after": {
+        "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+        "size_bytes": 12713
+      }
+    }
+  ],
+  "semantic_files": [
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+      "size_bytes": 157203
+    }
+  ],
+  "source_evidence": [
+    {
+      "path": "system/libvintf/include/vintf/PropertyFetcher.h",
+      "project": "system/libvintf",
+      "commit": "69c456ea4aa2f503a2904cfbc11f279a3b2efb09",
+      "sha256": "ca04d1aeb3c3074df7d5615e1e56206b29ad98ce5b3504145e1e29e920e181d1",
+      "size_bytes": 1192,
+      "purpose": "uint64_t interface and UINT64_MAX default bound"
+    },
+    {
+      "path": "system/libbase/include/android-base/parseint.h",
+      "project": "system/libbase",
+      "commit": "bdf0f4db82fae78492c92a55d473aacc4e963e79",
+      "sha256": "34fef602ce7bdb19841234811fb5746268992c8a383a0b6b1e3e0c1614c56faa",
+      "size_bytes": 4622,
+      "purpose": "unsigned parser syntax, overflow and caller maximum"
+    }
+  ],
+  "semantics": {
+    "changed_function": "GetArgsForShippingApiLevel",
+    "property": "ro.product.first_api_level",
+    "read_partitions": [
+      "vendor",
+      "odm"
+    ],
+    "preferred_partition_when_both_equal": "vendor",
+    "fallback_when_vendor_property_missing": "odm",
+    "missing_value_representation": "None",
+    "empty_present_value_rejected": true,
+    "both_missing_rejected": true,
+    "both_nonempty_values_validated": true,
+    "conflicting_values_rejected": true,
+    "numeric_form": "canonical positive ASCII decimal uint64",
+    "maximum": "18446744073709551615",
+    "maximum_digits": 20,
+    "supported_android_api_range_inferred": false,
+    "property_bytes_modified": false,
+    "other_vintf_functions_changed": false,
+    "source_composition_automatically_extended": false
+  },
+  "scope": {
+    "python_argument_forwarding_verified": false,
+    "native_compatibility_verified": false,
+    "target_files_verified": false,
+    "ota_verified": false,
+    "source_modified": false,
+    "readiness_flags_changed": false,
+    "phone_operations": []
+  },
+  "factory_property_inputs": {
+    "vendor": {
+      "runtime_path": "/vendor/build.prop",
+      "sha256": "2ea7fe521d0e7010bc3f068db034baf2056ae274023a964ff8a770ff726f4703",
+      "size_bytes": 15320,
+      "capture_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/build-property-comparison-v1/capture/vendor/receipt.json",
+        "sha256": "6a714383bd798dbfdc460b1dea17c0f7dd67b148e7aefef6f01a4666bf8605fe",
+        "size_bytes": 1742
+      }
+    },
+    "odm": {
+      "runtime_path": "/odm/etc/build.prop",
+      "sha256": "b4a5f8b818d0dbe8a3a400cba6890deaca5012737ff24baa903518027a94287b",
+      "size_bytes": 18903,
+      "capture_receipt": {
+        "path": "artifacts/source-contracts/nezha-init-helper-imports-v1/factory-odm-properties/receipt.json",
+        "sha256": "6273703ea0d5b07cf77cc9f52c826cd193018680cc5b8b0993216d0ec18839ca",
+        "size_bytes": 8311
+      }
+    }
+  },
+  "limitations": [
+    "This changes argument forwarding and strict input validation; it does not establish native VINTF compatibility or claim the pinned main checker consumes the shipping API in a particular check.",
+    "The native PropertyFetcher represents unsigned64-bit values. Canonical positive decimal validation is an intentional strict subset of native ParseUint syntax, not a list of valid released Android API levels.",
+    "The unchanged property reader does not import first_api_level overrides and silently takes the last direct duplicate assignment. This patch does not change that parser.",
+    "Only an absent GetProp result(None) permits fallback; present empty, malformed, noncanonical, conflicting or overflowing values fail.",
+    "Current metadata/recovery/mi_ext/source compositions still pin the original wrapper. A new explicit composition must admit0011 before native adoption; all older contracts and receipts remain unchanged."
+  ]
+}
