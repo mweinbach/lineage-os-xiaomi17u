@@ -1,0 +1,17 @@
+{
+  "name": "twrp-story",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "compose": "node compose.mjs",
+    "dev": "hyperframes preview --background",
+    "check": "hyperframes check",
+    "render": "hyperframes render --quality high --fps 30 --workers 8 --strict --output renders/from-black-screen-to-twrp.mp4"
+  },
+  "devDependencies": {
+    "@fontsource/bricolage-grotesque": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "gsap": "3.14.2",
+    "hyperframes": "0.8.18"
+  }
+}

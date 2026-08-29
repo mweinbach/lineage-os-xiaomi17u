@@ -1,0 +1,106 @@
+{
+  "title": "From Black Screen to TWRP",
+  "subtitle": "The Xiaomi 17 Ultra recovery story",
+  "language": "en",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "source_commit": "d50eb53",
+  "characters": {
+    "nezha": {"name": "Nezha", "role": "Curious phone", "voice": "af_heart"},
+    "patch": {"name": "Patch", "role": "Robot engineer", "voice": "am_michael"}
+  },
+  "scenes": [
+    {
+      "id": "workshop",
+      "eyebrow": "01 / THE GOAL",
+      "title": "A better place to experiment.",
+      "callout": "TWRP = recovery + testing + logs",
+      "lines": [
+        {"speaker": "nezha", "text": "I'm Nezha, our Xiaomi seventeen Ultra. Can we stop flashing images every few minutes?", "speech": "I'm Nezha, our Shao mee seventeen Ultra. Can we stop flashing images every few minutes?"},
+        {"speaker": "patch", "text": "That's why we wanted TWRP: a separate recovery workshop for testing changes and collecting logs.", "speech": "That's why we wanted T W R P: a separate recovery workshop for testing changes and collecting logs."}
+      ]
+    },
+    {
+      "id": "black-screen",
+      "eyebrow": "02 / THE FALSE STARTS",
+      "title": "The screen stayed black.",
+      "callout": "Static checks are not a boot test.",
+      "lines": [
+        {"speaker": "nezha", "text": "First came rejected boot images, surprise trips back to Android, and the dreaded black screen."},
+        {"speaker": "patch", "text": "We investigated startup and packaging failures. But static checks couldn't prove it would boot, and not every black-screen cause was isolated."}
+      ]
+    },
+    {
+      "id": "working-image",
+      "eyebrow": "03 / THE BREAKTHROUGH",
+      "title": "Start from what works.",
+      "callout": "fix22ZJ-touchfix18 / antocorvo3000",
+      "lines": [
+        {"speaker": "nezha", "text": "Then our human brought a recovery image that actually worked!"},
+        {"speaker": "patch", "text": "The supplied touch-fix eighteen build gave us a visible interface. So we made that our baseline."}
+      ]
+    },
+    {
+      "id": "slow-touch",
+      "eyebrow": "04 / VISIBLE, BUT SLOW",
+      "title": "A five-second button press?",
+      "callout": "Reported delay: 5–10 seconds",
+      "lines": [
+        {"speaker": "nezha", "text": "One problem: taps took five to ten seconds. I was thinking really, really slowly."},
+        {"speaker": "patch", "text": "Permissive SELinux in recovery helped a little. Android's setting stayed untouched, and denial logging stayed available.", "speech": "Permissive S E Linux in recovery helped a little. Android's setting stayed untouched, and denial logging stayed available."}
+      ]
+    },
+    {
+      "id": "no-buzz",
+      "eyebrow": "05 / THE BIG SPEEDUP",
+      "title": "Stop the buzz.",
+      "callout": "Action 0 · Button 0 · Keyboard 0",
+      "lines": [
+        {"speaker": "nezha", "text": "Still sluggish. Then we stopped the buzz."},
+        {"speaker": "patch", "text": "We set action, button, and keyboard vibration to zero. The user said, oh yeah, way faster. A big improvement in feel, not a measured benchmark."}
+      ]
+    },
+    {
+      "id": "two-files",
+      "eyebrow": "06 / KEEP THE WORKING PIECES",
+      "title": "Two files. Same working core.",
+      "callout": "init.rc + twres/ui.xml",
+      "lines": [
+        {"speaker": "nezha", "text": "Did that need another giant rebuild?"},
+        {"speaker": "patch", "text": "Just two configuration files. We kept the working executable, libraries, drivers, and firmware, made those settings automatic, and repackaged the image with a verified development signature."}
+      ]
+    },
+    {
+      "id": "proof",
+      "eyebrow": "07 / INSTALL, THEN VERIFY",
+      "title": "One partition. No wipe.",
+      "callout": "recovery_a only / original images preserved",
+      "lines": [
+        {"speaker": "nezha", "text": "And we didn't wipe the phone?"},
+        {"speaker": "patch", "text": "No wipe. We preserved the original and stock recovery images, then flashed only recovery A. After reboot: root ADB, logs, a matching image hash, and the defaults already active.", "speech": "No wipe. We preserved the original and stock recovery images, then flashed only recovery A. After reboot: root A D B, logs, a matching image hash, and the defaults already active."}
+      ]
+    },
+    {
+      "id": "baseline",
+      "eyebrow": "08 / OUR WORKING BASELINE",
+      "title": "It's alive. And it's responsive.",
+      "callout": "working76 / UI + touch + root ADB + logs",
+      "lines": [
+        {"speaker": "nezha", "text": "The new boot looks good, and touch still feels fast!"},
+        {"speaker": "patch", "text": "User confirmed. Two thousand four hundred seventy-five offline tooling tests also passed. Data decryption and restored enforcement still need work. Magisk comes later. A working recovery, with the ROM still ahead.", "speech": "User confirmed. Two thousand four hundred seventy-five offline tooling tests also passed. Data decryption and restored enforcement still need work. Magisk comes later. A working recovery, with the R O M still ahead."}
+      ]
+    }
+  ],
+  "truth_constraints": [
+    "The animation is an illustration, not recorded device footage.",
+    "Touch speed is based on user confirmation, not a timed benchmark.",
+    "Two configuration files changed; image packaging and a local AVB footer were rebuilt too.",
+    "This is an adaptation of the supplied prebuilt recovery, not a fresh source build.",
+    "Root ADB is in recovery; Magisk has not been installed in Android.",
+    "Original recovery images were preserved; this is not a claim of a verified user-data backup.",
+    "Only recovery_a was flashed; no wipe, slot change or additional Android round-trip test.",
+    "The 2475 tests are offline workspace tests, not comprehensive hardware certification.",
+    "Data decryption and restored SELinux enforcement remain unverified; the ROM is not completed."
+  ]
+}

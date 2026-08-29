@@ -1,0 +1,17 @@
+node_modules/
+/index.html
+.hyperframes/
+.venv/
+audio/
+renders/
+*.mp4
+*.wav
+*.aiff
+*.mp3
+*.png
+*.webm
+*.log
+timing.json
+timing.js
+captions.srt
+captions.vtt
