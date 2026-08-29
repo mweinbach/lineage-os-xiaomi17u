@@ -1044,7 +1044,19 @@ startup event are preserved. It does not guess a controller, switch a hardware
 mode, adopt stock keys or add a second module loader. Init may still request
 adbd after failed USB setup; patch 0024 removes the missing-endpoint network
 fallback but does not prove enumeration or policy access. The recovery properties
-require `ro.secure=1` and `ro.adb.secure=1`. No ADB public key is bundled, so
+require `ro.secure=1` and `ro.adb.secure=1`. The pinned Soong
+`build/soong/scripts/gen_build_prop.py` supplies both values for `user`, together
+with `ro.debuggable=0`. Build 62 exposed identical duplicate entries when this
+product also declared both secure properties. The target now omits those user
+redefinitions and supplies only `ro.adb.secure=1` inside the exact `userdebug`
+conditional, because that variant's generator already supplies `ro.secure=1`
+but not the ADB-auth property. The original userdebug debugging behavior and
+mandatory recovery authentication remain unchanged. This fixes the generation
+inputs, not the compiled property file: no postbuild deduplication is used, and
+the inspector still rejects even same-value duplicate assignments. A fresh
+image must pass the unchanged secure-property checks before admission.
+
+No ADB public key is bundled, so
 failure to authenticate must remain a failure; a separately reviewed private
 public-key input and runtime test are needed before relying on ADB. Logd and
 logcat are requested for diagnostics, but collecting those logs is not yet a

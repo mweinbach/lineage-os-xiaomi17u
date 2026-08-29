@@ -8,6 +8,11 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+USERDEBUG_ADB_PROPERTY_BLOCK = (
+    "ifeq ($(TARGET_BUILD_VARIANT),userdebug)\n"
+    "PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=1\n"
+    "endif\n"
+)
 DEVICE = ROOT / "recovery/twrp/device/xiaomi/nezha"
 RECOVERY_PACKAGES = "recovery adbd.recovery cgroups.recovery.json task_profiles.json.recovery"
 RECOVERY_SOURCE_RULES_SHA256 = "dd1778493980e7a93a254483395d1e1059070ed60685932ab2ac74d5b3cea61e"
@@ -447,8 +452,8 @@ class TwrpDeviceTests(unittest.TestCase):
         self.assertGreaterEqual(len(scopes), 182)
         raw = json.dumps(scopes[:182], separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), RECOVERY_SOURCE_RULES_SHA256)
-        self.assertEqual(self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"],
-                         "ro.secure=1 ro.adb.secure=1")
+        self.assertEqual(self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"], "ro.adb.secure=1")
+        self.assertIn(USERDEBUG_ADB_PROPERTY_BLOCK, self.device_text)
         self.assertEqual(self.device["PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING"], "true")
         self.assertEqual(self.board["BOARD_AVB_ENABLE"], "true")
         self.assertEqual(self.board["TW_NO_NETWORK"], "true")
@@ -1505,6 +1510,10 @@ class TwrpDeviceTests(unittest.TestCase):
     def test_explicit_package_addition_changes_no_other_device_make_assignments(self):
         unchanged = {key: value for key, value in self.device.items()
                      if key not in {"PRODUCT_SOURCE_ROOT_DIRS", "PRODUCT_PACKAGES"}}
+        # Preserve this historical hash after the reviewed build62 property fix.
+        self.assertIn(USERDEBUG_ADB_PROPERTY_BLOCK, self.device_text)
+        self.assertEqual(unchanged["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"], "ro.adb.secure=1")
+        unchanged["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"] = "ro.secure=1 ro.adb.secure=1"
         raw = json.dumps(unchanged, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), RECOVERY_NON_PACKAGE_ASSIGNMENTS_SHA256)
 
@@ -1624,6 +1633,10 @@ class TwrpDeviceTests(unittest.TestCase):
 
     def test_graph_forty_seven_cellbroadcast_changes_no_other_device_assignments(self):
         unchanged = {key: value for key, value in self.device.items() if key != "PRODUCT_SOURCE_ROOT_DIRS"}
+        # Preserve this historical hash after the reviewed build62 property fix.
+        self.assertIn(USERDEBUG_ADB_PROPERTY_BLOCK, self.device_text)
+        self.assertEqual(unchanged["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"], "ro.adb.secure=1")
+        unchanged["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"] = "ro.secure=1 ro.adb.secure=1"
         raw = json.dumps(unchanged, sort_keys=True, separators=(",", ":")).encode()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), GRAPH47_NON_SOURCE_ASSIGNMENTS_SHA256)
 
@@ -1974,15 +1987,34 @@ class TwrpDeviceTests(unittest.TestCase):
         for text in (self.board_text, self.device_text, self.product_text):
             self.assertNotIn("PRODUCT_ENFORCE_PACKAGES_EXIST_ALLOW_LIST", "\n".join(logical_lines(text)))
 
-    def test_adb_security_is_explicit_and_no_host_or_stock_keys_are_bundled(self):
-        properties = dict(value.split("=", 1) for value in
-                          self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"].split())
-        self.assertEqual(properties, {"ro.secure": "1", "ro.adb.secure": "1"})
-        active = "\n".join(logical_lines(self.product_text + self.device_text + self.board_text))
+    def test_adb_security_only_defines_missing_userdebug_property_and_bundles_no_keys(self):
+        self.assertEqual(self.device_text.count(USERDEBUG_ADB_PROPERTY_BLOCK), 1)
+        self.assertEqual(self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"], "ro.adb.secure=1")
+        outside = self.device_text.replace(USERDEBUG_ADB_PROPERTY_BLOCK, "")
+        active = "\n".join(logical_lines(self.product_text + outside + self.board_text))
+        self.assertNotRegex(active, r"(?<![\w.])ro\.(?:secure|adb\.secure|debuggable)\s*[:?+]?=")
         self.assertNotIn("PRODUCT_ADB_KEYS", active)
         self.assertNotIn("service.adb.root", active)
         self.assertNotIn("persist.sys.disable_rescue", active)
         self.assertFalse(any(path.name == "adb_keys" for path in DEVICE.rglob("*")))
+        rc = (DEVICE / "recovery/root/init.recovery.qcom.rc").read_text()
+        self.assertIn("property:ro.debuggable=0 && property:ro.secure=1 && property:ro.adb.secure=1", rc)
+
+    def test_secure_property_fixture_covers_both_supported_variants(self):
+        # Literal fixtures from pinned gen_build_prop.py, not a Make evaluator
+        # or a claim that a new property file/image has been built.
+        generated = {
+            "user": ["ro.secure=1", "ro.adb.secure=1", "ro.debuggable=0"],
+            "userdebug": ["ro.secure=1", "ro.debuggable=1"],
+        }
+        self.assertIn(USERDEBUG_ADB_PROPERTY_BLOCK, self.device_text)
+        for variant, entries in generated.items():
+            target = self.device["PRODUCT_SYSTEM_DEFAULT_PROPERTIES"].split() if variant == "userdebug" else []
+            combined = [tuple(entry.split("=", 1)) for entry in entries + target]
+            with self.subTest(variant=variant):
+                self.assertEqual(len(combined), len(dict(combined)))
+                self.assertEqual(dict(combined), {"ro.secure": "1", "ro.adb.secure": "1",
+                                                 "ro.debuggable": "0" if variant == "user" else "1"})
 
     def test_authored_init_forwards_verified_controller_and_guards_user_adb(self):
         rc = (DEVICE / "recovery/root/init.recovery.qcom.rc").read_text()

@@ -471,9 +471,11 @@ PRODUCT_SOURCE_ROOT_DIRS += \
 # Do not inherit vendor/twrp/config/common.mk: it adds a rescue-disable
 # property, a broad package bundle, and an unrelated recovery installer key.
 PRODUCT_ENFORCE_SELINUX_TREBLE_LABELING := true
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-    ro.secure=1 \
-    ro.adb.secure=1
+# The user build generates both secure properties. Only userdebug needs
+# an explicit ADB-auth property; repeating user defaults creates duplicates.
+ifeq ($(TARGET_BUILD_VARIANT),userdebug)
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += ro.adb.secure=1
+endif
 
 PRODUCT_COPY_FILES += \
     $(NEZHA_TWRP_DEVICE_PATH)/recovery/root/init.recovery.qcom.rc:recovery/root/init.recovery.qcom.rc
