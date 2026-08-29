@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "operation": "twrp-authorized-temporary-boot-attempts",
+  "scope": "User authorized ADB reboot to bootloader and RAM-only TWRP boot; no partition writes, unlock/relock, wipe, or slot changes.",
+  "static_milestone": {
+    "sha256": "cca9c8b44dd244aa55fefe5bd9758e655e315e3f34c33f1e902cde31d9acbc3d",
+    "size_bytes": 11310
+  },
+  "device_observations": {
+    "product": "nezha",
+    "model": "2512BPNDAG",
+    "board": "canoe",
+    "installed_build": "OS3.0.309.0.WPACNXM",
+    "physical_sales_region_verified": false,
+    "adb_product_vendor_device": "mivendor",
+    "adb_product_odm_device": "nezha",
+    "android_reported_locked": true,
+    "bootloader_reported_unlocked": true,
+    "bootloader_reported_secure": true,
+    "slot": "a",
+    "recovery_slot_size_bytes": 104857600,
+    "boot_slot_size_bytes": 100663296,
+    "observed_max_download_bytes": 805306368
+  },
+  "host_tools": {
+    "platform_tools_version": "36.0.0-13206524"
+  },
+  "attempts": [
+    {
+      "number": 1,
+      "started_at_utc": "2026-08-29T03:20:32.139561+00:00",
+      "operation": "fastboot boot",
+      "image_role": "unchanged_build66_dedicated_recovery",
+      "image_sha256": "51478e22c6e99f7b604aa0ab1681d90adb84931f60d61b8e978e48a15ed1e791",
+      "image_size_bytes": 104857600,
+      "header_version": 4,
+      "kernel_size_bytes": 0,
+      "ramdisk_sha256": "8713a11b399bec1704bec14f1d06869ec6e615bbaed851945a2ef0e4b74db333",
+      "ramdisk_size_bytes": 25192233,
+      "download_succeeded": true,
+      "boot_command_succeeded": false,
+      "bootloader_error": "Failed to load/authenticate boot image: Bad Buffer Size",
+      "returncode": 1,
+      "timed_out": false,
+      "status": "bootloader_rejected",
+      "twrp_runtime_verified": false,
+      "partition_write_command_sent": false,
+      "unlock_or_relock_command_sent": false,
+      "wipe_command_sent": false,
+      "slot_change_command_sent": false,
+      "evidence": {
+        "start": {
+          "sha256": "ff70a64e26066f04008810edc1d8e399ec7e53aea319a2709aa20be82651a166",
+          "size_bytes": 511
+        },
+        "result": {
+          "sha256": "05cec3972d4868431ce591fed78cd9cb541593dc0b071dad4a3d1f0c474cb98a",
+          "size_bytes": 332
+        },
+        "bootloader_variables": {
+          "sha256": "557b50e3217e07d5377ddd6633834f1c41c063bda7de80c1216faceef04e51a2",
+          "size_bytes": 1372
+        }
+      }
+    }
+  ],
+  "last_confirmed_mode": "bootloader_fastboot",
+  "twrp_boot_verified": false,
+  "authenticated_recovery_adb_verified": false,
+  "runtime_selinux_enforcement_verified": false,
+  "recovery_log_access_verified": false,
+  "partition_write_command_sent": false,
+  "limitations": [
+    "The rejection does not identify which loader format, size or authentication check failed.",
+    "The dedicated recovery image has no kernel; fastboot boot sends it unchanged and does not automatically combine stock kernel or companion ramdisks.",
+    "Fastboot lock state differs from Android properties; the positively parsed bootloader unlocked result was used for the authorized trial.",
+    "The compiled static artifact milestone remains a historical record, not a claim that hardware testing succeeded."
+  ],
+  "evidence": {
+    "adb_reboot_to_bootloader": {
+      "sha256": "6379c17d798191f995d43b0950ea7787779fe29c9af7354b25de37a514ff207d",
+      "size_bytes": 54
+    }
+  }
+}

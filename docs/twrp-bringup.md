@@ -1,9 +1,10 @@
 # TWRP for Nezha
 
-TWRP is an active, separate bring-up target for the China Xiaomi 17 Ultra
-(`nezha`). It is intended to shorten the eventual recovery/test/logging cycle
+TWRP is an active, separate bring-up target for the Xiaomi 17 Ultra (`nezha`),
+using the recorded China firmware inputs. It is intended to shorten the recovery/test/logging cycle
 without requiring a complete Evolution X ROM first. A compiled recovery is
-not yet a tested rescue environment, and this work authorizes no phone change.
+not yet a tested rescue environment. Device actions require separate, explicit
+user authorization.
 
 **Normal build 66 produced a recovery image that passed the complete static
 artifact sequence and the separate inventory check.** The 100 MiB image has
@@ -18,10 +19,27 @@ The local candidate is `artifacts/twrp/nezha/build66/recovery.img`; that ignored
 directory also contains its hashes and verification notes. The committed
 [artifact verification record](../research/twrp-artifact-milestone.json) binds
 the build, native inspection, compiler evidence and separate inventory reports.
-This is a static artifact milestone, not a tested rescue environment. No image has been booted
-or flashed. Display, touch, boot-chain compatibility, authenticated ADB and
-usable recovery-log access remain unverified. No host key has been read or
-provisioned, and no phone operation is authorized by this result.
+This remains a static artifact milestone, not a tested rescue environment.
+The user subsequently authorized rebooting the connected phone to its
+bootloader and trying a temporary boot. The first upload succeeded, but the
+bootloader rejected this kernel-free recovery with `Bad Buffer Size` before
+TWRP execution was established. No partition was flashed. The separate
+[hardware-attempt record](../research/twrp-boot-attempts.json) preserves that
+failure and the private receipt identities; it does not rewrite the earlier
+static verification record. Display, touch, boot-chain compatibility,
+authenticated ADB and usable recovery-log access remain unverified.
+
+The phone identifies as `nezha` / `2512BPNDAG`, running
+`OS3.0.309.0.WPACNXM`. Its physical sales region has not been independently
+established. Android reports locked boot properties, but the bootloader itself
+positively reports `unlocked: yes`, `secure: yes`, slot `a`, and 100 MiB recovery
+slots. The bootloader's unlocked result governed the authorized temporary boot.
+Its error does not isolate which format, size or authentication check failed.
+`fastboot boot` sends a supplied Android image unchanged; it does not supply
+the missing stock kernel automatically. A separate wrapper containing the
+matching stock kernel is therefore a testable format hypothesis, not a proven
+boot method. Flashing, unlocking/relocking, wiping and slot changes remain
+outside this authorization.
 
 ## Source and build isolation
 
