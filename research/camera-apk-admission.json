@@ -1,0 +1,373 @@
+{
+  "apk": {
+    "package": "com.android.camera",
+    "runtime_path": "/product/priv-app/MiuiCamera/MiuiCamera.apk",
+    "sha256": "cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79",
+    "size_bytes": 170279563,
+    "version_code": 630070100,
+    "version_name": "6.3.007010.0"
+  },
+  "bounded_call_site_review": {
+    "all_affected_features_optional_verified": false,
+    "all_command_exit_codes_zero": true,
+    "all_method_output_hashes_match_independent_review": true,
+    "apk_code_executed": false,
+    "capture_script": {
+      "path": "reports/camera-apk-admission-20260829/call-sites-v2/capture.py",
+      "sha256": "3a28343323540090e75947c3c81edb150e0269cb34651ef304dd81558e9ebb5e",
+      "size_bytes": 4986
+    },
+    "findings": {
+      "brightness": {
+        "api": "DisplayManager.setTemporaryAutoBrightnessAdjustment",
+        "captured_methods": [
+          "brightness-adapter",
+          "brightness-adjust",
+          "brightness-reset",
+          "brightness-crash"
+        ],
+        "finding": "Temporary auto-brightness adjustment/reset and crash cleanup call an adapter which catches thrown failures and returns.",
+        "requested_permission": "android.permission.CONTROL_DISPLAY_BRIGHTNESS"
+      },
+      "callback_distinction": {
+        "captured_methods": [
+          "callback-register",
+          "callback-unregister"
+        ],
+        "finding": "The inspected ActivityBase methods register/unregister device-state callbacks; they are not state-changing request calls and do not establish a startup need for CONTROL_DEVICE_STATE."
+      },
+      "device_state": {
+        "api": "DeviceStateManager.requestState / cancelStateRequest through reflection",
+        "captured_methods": [
+          "state-request",
+          "flat-selfie-state",
+          "state-cancel"
+        ],
+        "finding": "The flat-selfie display-switch path requests state through a helper that catches reflection/invocation failures and returns false. Cancellation is conditional and catches corresponding failures.",
+        "requested_permission": "android.permission.CONTROL_DEVICE_STATE"
+      },
+      "input": {
+        "api": "InputManager.injectInputEvent",
+        "captured_methods": [
+          "input-adapter",
+          "remote-motion",
+          "remote-key"
+        ],
+        "finding": "Remote motion/key handlers require a registered client entry and catch Exception; the called injection adapter catches thrown failures and returns. Remote-service authorization was not comprehensively audited.",
+        "requested_permission": "android.permission.INJECT_EVENTS"
+      }
+    },
+    "first_capture_failure": {
+      "path": "reports/camera-apk-admission-20260829/call-sites-v1/failure.json",
+      "sha256": "b9cdddc49524457e895fd44e2473bd6c4d33d66e81ca64c244a5e7d8bc5beab7",
+      "size_bytes": 1074
+    },
+    "first_capture_failure_scope": "One successful disassembly matched expected bytes, then the harness rejected empty stderr because a separate prior launcher invocation emitted a warning. Explicit JAVA_HOME capture succeeded with empty stderr. Failed attempt retained; no APK or tool patch.",
+    "input_bytes_unchanged": true,
+    "launch_without_these_permissions_verified": false,
+    "methods_disassembled": 12,
+    "receipt": {
+      "path": "reports/camera-apk-admission-20260829/call-sites-v2/receipt.json",
+      "sha256": "9ea3ca9b225e68c608fd1340908e8f5b786c5de862a1d3437680561751993cb6",
+      "size_bytes": 30045
+    },
+    "remaining_native_reflected_oem_dependencies_audited": false,
+    "system_service_enforcement_implementations_audited": false
+  },
+  "decision": {
+    "camera_apk_selected_for_first_boot": false,
+    "continue_separate_nine_runtime_dependencies": true,
+    "preserve_original_apk_and_signature": true,
+    "reason": "The retained privileged APK fails the pinned DEX packaging check. Signing identity, effective permissions and complete feature compatibility remain unresolved. First platform boot does not require selecting this proprietary APK.",
+    "rom_readiness_changed": false
+  },
+  "device": "nezha",
+  "fresh_standalone_checks": {
+    "apksigner_stderr": "JDK restricted-native-access warning preserved; signature verification returned zero.",
+    "commands": [
+      {
+        "exit_code": 0,
+        "name": "java-version",
+        "stderr": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/java-version.stderr",
+          "sha256": "0046efef9645045b92c09567779306614723085a97284c6925a61c318f5ec8af",
+          "size_bytes": 190
+        },
+        "stdout": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/java-version.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 0,
+        "name": "signature",
+        "stderr": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/signature.stderr",
+          "sha256": "32794fd86b0a7e3928438e89dbb343e49b02f6bd49ce8bf3765364a074d5f0bc",
+          "size_bytes": 448
+        },
+        "stdout": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/signature.stdout",
+          "sha256": "b12331fe212524ece208939dca4589debe1082ed8d3e11bb226d4ddcb552e190",
+          "size_bytes": 1014
+        }
+      },
+      {
+        "exit_code": 1,
+        "name": "presigned-without-preprocessed",
+        "stderr": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/presigned-without-preprocessed.stderr",
+          "sha256": "1deeb115ba330bf5645e2ea047f32be3ed2614ed1a38a3420b99f4adf21aec39",
+          "size_bytes": 375
+        },
+        "stdout": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/presigned-without-preprocessed.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 1,
+        "name": "preprocessed-privileged",
+        "stderr": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/preprocessed-privileged.stderr",
+          "sha256": "5a1cbc1326551a6c751dc336a115c85d2b1c5979ef0c9369812bc6d11803d808",
+          "size_bytes": 173
+        },
+        "stdout": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/preprocessed-privileged.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 0,
+        "name": "manifest-exact",
+        "stderr": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/manifest-exact.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/camera-apk-admission-20260829/checks-v1/manifest-exact.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      }
+    ],
+    "completed_at_utc": "2026-08-29T23:26:15.814703+00:00",
+    "input_bytes_unchanged": true,
+    "receipt": {
+      "path": "reports/camera-apk-admission-20260829/checks-v1/receipt.json",
+      "sha256": "ad24b56074fb4809c67e489973afd03cf7d56addfffa552dbba7f013691ddb9d",
+      "size_bytes": 10283
+    },
+    "scope": "Standalone host validators on the actual retained APK; not an Android import or package build.",
+    "started_at_utc": "2026-08-29T23:26:13.586358+00:00"
+  },
+  "manifest": {
+    "does_not_require_system_uid_by_manifest": true,
+    "extract_native_libs": false,
+    "fresh_aapt2_shared_user_tokens": 0,
+    "min_sdk": 29,
+    "optional_uses_libraries_in_order": [
+      "miui-cameraopt",
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "shared_user_id_declared": false,
+    "shared_user_max_sdk_declared": false,
+    "target_sdk": 35
+  },
+  "next_admission_requirements": [
+    "Resolve a compatible signed input satisfying selected privileged DEX packaging, or separately review a different signing and feature scope before any transformation.",
+    "Review effective permission and OEM trust/update requirements without changing pure signature permission definitions or adding broad grants.",
+    "Build the actual APK with exact providers and strict uses-library validation; inspect installed permissions, class-loader context and generated artifacts.",
+    "Perform separately authorized device validation for startup, camera/Leica, accessories and affected feature paths."
+  ],
+  "offline_tests": {
+    "complete_workspace_suite_run_by_this_review": false,
+    "failed": 0,
+    "invalid_pattern_attempt": {
+      "counted_as_pass": false,
+      "exit_code": 5,
+      "log": {
+        "path": "reports/camera-apk-admission-20260829/dex-import-tests.log",
+        "sha256": "e70fec2825d9bf206d27463a792768195039599cb39bcca66339f47283f84cce",
+        "size_bytes": 108
+      },
+      "pattern": "test_dex_import_uses_library.py",
+      "tests": 0
+    },
+    "passed": 42,
+    "runs": [
+      {
+        "log": {
+          "path": "reports/camera-apk-admission-20260829/camera-apk-tests-v2.log",
+          "sha256": "9baa24456630ad5a0df7c305f836cdf5048f4af1a785979359467514b620c6d4",
+          "size_bytes": 2646
+        },
+        "pattern": "test_camera_apk_integration.py",
+        "tests": 13
+      },
+      {
+        "log": {
+          "path": "reports/camera-apk-admission-20260829/camera-runtime-tests-v2.log",
+          "sha256": "220ae9a87e57ba5095ce77afdef53ed1ef610d9a48c294492fd52165e41aee06",
+          "size_bytes": 3378
+        },
+        "pattern": "test_camera_runtime_inputs.py",
+        "tests": 17
+      },
+      {
+        "log": {
+          "path": "reports/camera-apk-admission-20260829/dex-import-patch-tests-v2.log",
+          "sha256": "1b7904bcbdaedf0a143631ab383578c78381437d5b74026c38ebab66ae58e4f7",
+          "size_bytes": 2043
+        },
+        "pattern": "test_dex_import_patch.py",
+        "tests": 12
+      }
+    ],
+    "skipped": 0
+  },
+  "packaging": {
+    "apk_rewritten_or_signed": false,
+    "compressed_dex_entries": 8,
+    "global_compression_policy_changed": false,
+    "per_module_dexpreopt_disable_resolves_validator": false,
+    "preprocessed_privileged_uncompress_exit_code": 1,
+    "presigned_without_preprocessed_exit_code": 1,
+    "repacking_would_invalidate_existing_v3_signature": true,
+    "selected_privileged_packaging_passed": false,
+    "supported_per_apk_compression_exemption_found": false,
+    "target_sdk": 35,
+    "uncompressed_jni_entries": 40,
+    "validator_separate_from_preprocessed_dex_mutation_decision": true,
+    "zip_crc_verified_entries": 9477
+  },
+  "provenance": {
+    "factory_origin_authenticated": false,
+    "historical_record": {
+      "path": "research/camera-apk-integration.json",
+      "sha256": "6f509845935734a7b9e56dd3e2a12fe45750fe019e957abbb69b43b32544ae9c",
+      "size_bytes": 19742
+    },
+    "kind": "Supplied modified Xiaomi.eu APK, matching earlier live capture"
+  },
+  "purpose": "Recheck unchanged Camera APK admission constraints after native DEX-provider fixtures and bound the three signature-permission feature questions.",
+  "recorded_at_utc": "2026-08-29T23:33:08.526160+00:00",
+  "schema_version": 1,
+  "signing": {
+    "actual_future_release_platform_identity_established": false,
+    "certificate_sha256": "f87bd41b5bf1d78023a823b29a40e08ad3d90e7570c96f01d6a804b47245e869",
+    "matches_inspected_default_platform_certificate": false,
+    "permission_definition_source": {
+      "path": "reports/camera-apk-import-review-20260827/sources/platform-AndroidManifest.xml",
+      "sha256": "8230bf30f6b2eeea9df536446f1f904407a6c54a4d3f18e51673e5b28ad80beb",
+      "size_bytes": 539846
+    },
+    "permission_definition_source_revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+    "privapp_xml_alone_grants_pure_signature_permissions_to_different_signer": false,
+    "private_key_read": false,
+    "signature_permissions": [
+      {
+        "definition_count": 1,
+        "known_certs_declared": false,
+        "name": "android.permission.CONTROL_DEVICE_STATE",
+        "protection_level": "signature"
+      },
+      {
+        "definition_count": 1,
+        "known_certs_declared": false,
+        "name": "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+        "protection_level": "signature"
+      },
+      {
+        "definition_count": 1,
+        "known_certs_declared": false,
+        "name": "android.permission.INJECT_EVENTS",
+        "protection_level": "signature"
+      }
+    ],
+    "v3_signature_reverified": true
+  },
+  "source": {
+    "branch": "bka",
+    "files": [
+      {
+        "path": "reports/dex-import-clc-20260827/source/build/soong/java/app_import.go",
+        "sha256": "872d75d0a9002e51d1c48b755738426ca3f65021b74e554d8937f8d0bade87c2",
+        "size_bytes": 30689,
+        "source_path": "build/soong/java/app_import.go"
+      },
+      {
+        "path": "reports/dex-import-clc-20260827/source/build/soong/java/dexpreopt.go",
+        "sha256": "aeb784b9f58c833dfb7ab1e2c580bcfdc44adc68192dec6e1d3414b2c70003d8",
+        "size_bytes": 26987,
+        "source_path": "build/soong/java/dexpreopt.go"
+      },
+      {
+        "path": "reports/dex-import-clc-20260827/source/build/soong/scripts/check_prebuilt_presigned_apk.py",
+        "sha256": "b122f7b0b5224a0ffbf5135751e99d02f1dfcc93f4a1f8ffd1e07b2b98996614",
+        "size_bytes": 3630,
+        "source_path": "build/soong/scripts/check_prebuilt_presigned_apk.py"
+      },
+      {
+        "path": "reports/dex-import-clc-20260827/source/build/soong/scripts/manifest_check.py",
+        "sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+        "size_bytes": 14901,
+        "source_path": "build/soong/scripts/manifest_check.py"
+      }
+    ],
+    "release_configuration": "bp4a",
+    "soong_revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154"
+  },
+  "strict_uses_libraries": {
+    "actual_camera_apk_build_rule_verified": false,
+    "actual_camera_class_loader_context_verified": false,
+    "native_fixture_failures": 0,
+    "native_fixture_skips": 0,
+    "native_fixture_subtests": 11,
+    "native_fixture_top_level_tests": 5,
+    "native_synthetic_fixture_record": {
+      "path": "research/dex-import-native-fixtures.json",
+      "sha256": "863ea2fd0d8fd2138d713ee089e980538c48c57a2d34785abab8c851f8d02e94",
+      "size_bytes": 10276
+    },
+    "nine_runtime_input_bytes_modified_by_this_review": false,
+    "optional_in_order": [
+      "miui-cameraopt",
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "other_three_selected_jars_are_direct_apk_declarations": false,
+    "relax_flag_used": false,
+    "required": [],
+    "runtime_contract": {
+      "path": "config/nezha-camera-runtime.json",
+      "sha256": "00c776c3bcd28fa2abbaf5eb48865ccd27d37723661c3abe117b90e5553fb8fb",
+      "size_bytes": 3191
+    },
+    "runtime_input_record": {
+      "path": "research/camera-runtime-inputs.json",
+      "sha256": "b3724566b60c9f3fdcea8b8e9ae69046a6837ba56738a4b202fe1bf0cde30e39",
+      "size_bytes": 8648
+    },
+    "standalone_exact_manifest_check_exit_code": 0
+  },
+  "verification_boundaries": {
+    "apk_executed": false,
+    "apk_import_admitted": false,
+    "apk_installed": false,
+    "camera_or_leica_hardware_tested": false,
+    "complete_rom_built_or_booted": false,
+    "compression_signature_or_uses_library_checks_disabled": [],
+    "effective_runtime_permission_grants_verified": false,
+    "guest_accessed": false,
+    "permission_grants_changed": false,
+    "phone_accessed": false,
+    "private_key_accessed": false
+  }
+}
