@@ -381,17 +381,29 @@ class NativePolicyTemplateTests(unittest.TestCase):
         text = (WORKSPACE / "policy/nezha/Android.bp").read_text()
         block = text.split("se_policy_binary {", 1)[1].split("\n}", 1)[0]
         for module in ("plat_sepolicy.cil", "plat_mapping_file", "system_ext_sepolicy.cil",
-                       "system_ext_mapping_file", "product_sepolicy.cil", "product_mapping_file",
-                       "plat_sepolicy_genfs_202504.cil"):
+                       "system_ext_mapping_file", "product_sepolicy.cil", "product_mapping_file"):
             self.assertIn('":' + module + '"', block)
         self.assertNotIn('"corpus/system/', block)
         self.assertNotIn('"corpus/system_ext/', block)
         self.assertNotIn('"corpus/product/', block)
         self.assertIn('":nezha_factory_vendor_policy{derived/vendor_sepolicy.cil}"', block)
+        self.assertIn('":nezha_factory_genfs_policy"', block)
         self.assertIn("ignore_neverallow: false", block)
         self.assertIn("installable: false", block)
         self.assertNotIn("permissive_domains_on_user_builds", block)
         self.assertIn('required: ["sepolicy_neverallows"]', block)
+
+    def test_genfs_uses_current_device_arch_output_through_upstream_filegroup_pattern(self):
+        bp = (WORKSPACE / "policy/nezha/Android.bp").read_text()
+        group = bp.split('name: "nezha_factory_genfs_policy"', 1)[1].split("\n}", 1)[0]
+        self.assertIn('filegroup {\n    name: "nezha_factory_genfs_policy"', bp)
+        self.assertIn('device_first_srcs: [":plat_sepolicy_genfs_202504.cil"]', group)
+        self.assertNotIn('"corpus/', group)
+        binary = bp.split("se_policy_binary {", 1)[1].split("\n}", 1)[0]
+        self.assertNotIn('":plat_sepolicy_genfs_202504.cil"', binary)
+        sources = binary.split("srcs: [", 1)[1].split("]", 1)[0]
+        self.assertTrue(sources.strip().endswith('\":nezha_factory_genfs_policy\",'))
+        self.assertEqual(sources.count('\"'), 20)
 
     def test_native_derivation_has_both_outputs_and_the_original_complete_corpus(self):
         text = (WORKSPACE / "policy/nezha/Android.bp").read_text()

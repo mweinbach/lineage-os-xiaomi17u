@@ -42,6 +42,13 @@ genrule {
          "&& rmdir $(genDir)/candidate",
 }
 
+// The native genfs producer has a device-architecture variant. Match pinned
+// upstream precompiled_sepolicy_without_vendor_srcs when consuming it here.
+filegroup {
+    name: "nezha_factory_genfs_policy",
+    device_first_srcs: [":plat_sepolicy_genfs_202504.cil"],
+}
+
 se_policy_binary {
     name: "nezha_factory_precompiled_sepolicy",
     srcs: [
@@ -54,7 +61,7 @@ se_policy_binary {
         "corpus/vendor/etc/selinux/plat_pub_versioned.cil",
         ":nezha_factory_vendor_policy{derived/vendor_sepolicy.cil}",
         "corpus/odm/etc/selinux/odm_sepolicy.cil",
-        ":plat_sepolicy_genfs_202504.cil",
+        ":nezha_factory_genfs_policy",
     ],
     ignore_neverallow: false,
     installable: false,
