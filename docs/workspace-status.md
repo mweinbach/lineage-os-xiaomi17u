@@ -79,12 +79,15 @@ The incremental **vintf-v13h-2** retry finished at **16:58:47 UTC**, without a
 timeout, but failed the frozen level-5 `vintffm` check because
 `android.hidl.allocator` is mandatory and not declared in the manifest. All
 57 selected XML/APEX artifacts are present; presence is not compatibility.
-The next blocker is actual allocator service/init/manifest/policy/product
-integration, followed by the unchanged strict checks. Commit `1647192` adds the
+The next blocker is actual allocator compilation and producer/context checks,
+followed by the unchanged strict VINTF checks. Commit `1647192` adds the
 [host-verified allocator capability](framework-allocator.md), selecting the
 existing upstream service while retaining its init, SELinux and `max-level="8"`
-manifest behavior. Repeated candidates match, but this capability is not
-installed or built in the guest; v13ha remains active.
+manifest behavior. The **v13i** transaction installed that device selection at
+**18:48:34 UTC**, preserving 24 guarded inputs and 112 prior outputs. All 1,179
+base revisions and origins still match. The 37-goal **allocator-v13i-1**
+service/policy build is running, with no result verified yet; installed inputs
+do not resolve the VINTF failure by themselves.
 The separate packet for a full 39-APEX comparison is staged with all 221 files
 verified. Staging does not execute native compatibility checks or materialize
 the required generated APEX inputs.
@@ -111,9 +114,11 @@ depths and zero skips. Independent review verifies all 81 captured files, eight
 observed Ninja/loader jails, unchanged graph identities and all four tracked log
 files. This captures tool identities, producer descriptions and loader mappings;
 it does not execute the `avbtool`/`fec` entrypoints or prove a fresh producer build.
-The following host admission fails because its runtime-closure check omits the
-separately recorded interpreter. A narrow correction is under review; native
-FEC qualification, footer creation and image adoption remain unverified.
+The following v4 host admission failed because its runtime-closure comparison
+omitted the separately recorded interpreter. The narrow v5 correction passes
+host admission. **policy-footer-qualify-v1** then passes four native checks
+across seven commands, including payload/tree corruption rejection and a
+separate regenerated-FEC comparison; zero skips. Independent review is clear.
 
 The current **policy-images-v13h-v1** native reconstruction passes **nine checks
 and 38 commands with zero skips**, including 18 fsck checks. Both independent
@@ -122,8 +127,23 @@ ODM files changed; every other content digest and semantic metadata field is
 preserved under the explicit physical-layout exclusions. Independent review
 of the 97-file capture has no findings. The raw vendor image matches export4;
 the ODM image carries the sealed v13h policy and matching digests. These outputs
-remain unadopted: original images and staging are preserved, and AVB/FEC/footer,
-partition fit, current-source compatibility, runtime and boot are not verified.
+remain unadopted, with original images and staging preserved.
+
+The subsequent **policy-footer-produce-v1** run completes at **18:49:27 UTC**
+with six native checks, sixteen commands and zero skips. Two independent
+vendor/ODM pairs are byte-identical, preserve the raw EROFS prefixes, and pass
+hashtree, independently regenerated FEC and exact factory-package size checks.
+These are keyless `NONE` leaf footers; physical partition fit, a signed parent
+chain, current-source compatibility, adoption and boot remain unverified.
+Independent review of all 110 captured files is clear. The host review does not
+reopen the large native image or FEC outputs.
+
+The latest Camera source capture still fails before any Ninja query: its graph
+reader rejects the shared bootstrap `builddir` variable. A bounded diagnostic
+identifies the exact expression. The narrow shared helper is now frozen after
+72 offline checks; Camera/provider recipe admission and acceptance of the
+current graph remain pending. No Camera APK selection, build or runtime result
+follows.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -132,7 +152,7 @@ all other contents and semantic metadata are preserved. Independent review
 reparses all six complete manifests and verifies the 97-file host capture and
 77 staged packet files, with no findings. This qualifies the raw five-file
 derivation for sealed v12/export4
-inputs; it does not adopt those images, validate active v13ha, regenerate AVB/FEC,
+inputs; it does not adopt those images, validate current source, regenerate AVB/FEC,
 establish partition fit or prove a kernel mount or boot.
 
 The earlier **v12e** integration was installed into the existing guest source at
@@ -159,9 +179,13 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,665 tests in 156.924
-seconds with zero failures, errors or skips**, covering the committed allocator
-capability. The previous suite passed 3,651 in 156.391 seconds, executed by the
+The latest coordinator full workspace suite passed **3,711 tests in 158.487
+seconds with zero failures, errors or skips**, covering the optional
+[mi_ext care-map source path](mi-ext-care-map.md), committed as `8144704`.
+That capability is inactive: authentic ODM imports and the final Evolution
+SYSTEM property input still require qualification. The preceding allocator
+suite passed 3,665 in 156.924 seconds. The previous suite passed 3,651 in
+156.391 seconds, executed by the
 target-files metadata agent;
 the coordinator independently verified its complete log. The separate previous
 coordinator run passed 3,651 in 160.426 seconds after the raw-image milestone.
@@ -174,8 +198,8 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `3738a7c`. The active guest inputs remain v13ha;
-`analysis-v13h-policy-only-v1` is now the verified policy baseline.
+code and documentation through `8144704`. The active guest inputs are v13i;
+`analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
 that baseline will support a maintainable platform fork without mixing future
@@ -226,6 +250,8 @@ The v13ha snapshot still matches all 1,179 revisions and origins, with **1,173
 clean projects and six reviewed modified projects**. The additional project is
 `external/mdnsresponder`, carrying the scoped provider visibility change.
 The successful v13h build verifies its 182 selected source files unchanged.
+The v13i preinstallation audit reconfirms all 1,179 revisions/origins and the
+same six modified projects; its device selection changes no project source.
 Neither source verification nor a successful input
 transaction is a component-build result.
 
@@ -270,6 +296,7 @@ from a full build and require destination hash verification after transfers.
 | v12fa correction installation | Seven committed exchanges, exact corrected source and receipt identities, same pinned project bases and preserved original image inputs | [Native ROM integration](../research/native-rom-integration.json) |
 | v13f provider input installation | Four committed exchanges verified; original vendor/ODM, Camera runtime, mi_ext and working76 preserved; provider policy build and independent verification remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; provider runtime/ELF and image adoption remain open | [Native ROM integration](../research/native-rom-integration.json) |
+| v13i allocator input installation | One device-tree exchange commits, preserving 24 guarded inputs and 112 prior outputs; service compilation and VINTF remain pending | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
 | Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
 | Preserved independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |
@@ -284,6 +311,7 @@ from a full build and require destination hash verification after transfers.
 | Native unchanged-ODM round trip | Eight checks pass, zero skips; two identical raw images preserve all 3,059 entries and 2,925 regular-file contents under the exact 6 GiB ODM recipe; no policy replacements, AVB or boot result | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12/export4 policy-image reconstruction | Nine checks and 38 commands pass, zero skips; two identical complete TAR/image/export sets preserve all but the exact five policy payloads; raw derivation only, no adoption or AVB | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v13h policy-image reconstruction | Nine checks and 38 commands pass, zero skips; independent review confirms both exact five-file derivations and all other semantic metadata; unsigned raw outputs remain unadopted | [Native ROM integration](../research/native-rom-integration.json) |
+| Native v13h keyless leaf footers | Six checks and sixteen commands pass, zero skips; identical repeated vendor/ODM leaves preserve raw prefixes and pass hashtree, FEC and exact package budgets; no physical fit, signed parent chain or adoption | [Native ROM integration](../research/native-rom-integration.json) |
 | Native pinned-date fixtures | All 33 expected outcomes verified: nine positive/legacy cases and 24 diagnostic-specific negatives, zero skips; live product unchanged | [Native date checks](../research/pinned-build-metadata-native.json) |
 | Original factory Camera packaging | Unchanged APK passes strict privileged/preprocessed and uses-library checks; no APK selection, permission-grant, effective-label or hardware result | [Factory Camera APK](../research/factory-camera-apk.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
@@ -372,8 +400,9 @@ override theme defaults. No Magisk integration is included.
   vendor and ODM images are respectively 941,744,128 and 4,678,025,216 bytes;
   only the reviewed policy payloads change. Complete exports and diagnostics
   are captured; the large TARs/images remain guest-only and were not reopened
-  by the host collector. AVB/footer/FEC, signing, partition fit, source adoption,
-  retained-kernel mounting and boot remain unverified.
+  by the host collector. The later v13h footer run separately verifies hashtree,
+  FEC and exact package budgets; signing, physical partition fit, source
+  adoption, retained-kernel mounting and boot remain unverified.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
   and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
@@ -401,6 +430,9 @@ override theme defaults. No Magisk integration is included.
   the guest; earlier isolated Kati results do not validate its full build.
   Later policy-bearing images require a new complete derivation proof and
   metadata bundle; changing expected image hashes alone is insufficient.
+  The [optional mi_ext care-map path](mi-ext-care-map.md) is committed but
+  inactive. Qualify the authentic ODM import closure and final Evolution
+  SYSTEM marker before composing it into the ordinary packaging path.
 - **Signing and boot chain:** the inspected v8 generated boot components have
   AVB algorithm `NONE`, despite AVB being enabled in configuration. A complete
   signed chain, key availability, rollback compatibility and partition fit

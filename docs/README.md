@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v13ha policy, raw images and qualified footer-tool capture; allocator integration blocks VINTF, while host loader admission, native FEC/footer checks and image adoption remain open |
+| [Native ROM integration](native-rom-integration.md) | Verified v13h policy, raw images and keyless leaf footers; v13i allocator inputs installed and service/policy build running, with VINTF, signed parent chain and image adoption pending |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -20,15 +20,16 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Actual selected framework/kernel inputs, complete artifact requirements and pinned validator limits |
-| [Framework allocator selection](framework-allocator.md) | Committed host capability and repeated candidates select the pinned upstream service without changing init, policy or max-level 8; native installation/build and VINTF success remain pending |
+| [Framework allocator selection](framework-allocator.md) | Pinned upstream service selected by installed v13i inputs without changing init, policy or max-level 8; actual compilation and VINTF success remain pending |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
+| [Optional mi_ext care-map source](mi-ext-care-map.md) | Committed but inactive guarded path; authentic ODM imports, final Evolution SYSTEM marker, native packaging and OTA coverage remain unqualified |
 | [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |
 | [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
-| [Policy-image input preparation](policy-image-inputs.md) | Explicit v13h profile binds verified provider policy and digest evidence; matching raw reconstruction and independent review pass, with AVB, fit and adoption still pending; earlier profiles/default unchanged |
+| [Policy-image input preparation](policy-image-inputs.md) | Explicit v13h profile binds policy/digest evidence; raw reconstruction and keyless footer checks pass, with signed parent chain, physical fit and adoption pending; earlier profiles/default unchanged |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 

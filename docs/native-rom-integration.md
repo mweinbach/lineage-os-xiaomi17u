@@ -14,6 +14,11 @@ checks and 38 commands with zero skips. Independent review confirms both
 identical TAR/image/export sets and the exact five policy replacements, with
 all other contents and semantic metadata retained. Original images remain
 unchanged; this is not image adoption, AVB, partition-fit or boot evidence.
+The subsequent keyless footer run passes six native checks and sixteen commands,
+preserving both raw prefixes and verifying FEC and exact package budgets.
+The signed parent chain and physical partition fit remain separate gates. The
+**v13i** allocator selection is installed and its service/policy build is running; no new build or
+VINTF pass is verified yet.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -31,7 +36,7 @@ The later isolated native **policy-images-export4-v1** reconstruction passes
 nine checks and 38 commands with zero skips. Two independent complete
 TAR/image/export sets reproduce the exact five policy changes for the sealed
 v12/export4 baseline. These raw EROFS outputs remain unadopted and do not validate
-active v13ha inputs, AVB, partition fit or boot.
+current source inputs, AVB, partition fit or boot.
 
 The expanded **policy-v12f-export-1** build passed at **2026-08-30 00:16:57 UTC**
 (August 29 in New York), installing the missing runtime CIL/mapping outputs and
@@ -390,7 +395,7 @@ first Evolution boot or Camera/Leica operation is established.
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
-| [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit v13h evidence admission; matching raw reconstruction and independent review pass, with earlier profiles/default unchanged | AVB/footer/FEC, partition fit, current-source compatibility and image adoption |
+| [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit v13h evidence admission; matching raw reconstruction and keyless footer checks pass, with earlier profiles/default unchanged | Signed parent chain, physical partition fit, current-source compatibility and image adoption |
 | [Factory Camera grant behavior](../research/factory-camera-permission-grants.json) | Commit `e433a5d` traces three pure-signature requests through captured grant-evaluator and service source; 30 focused tooling tests pass | Effective signing/flags/grants, generated enforcement bodies and actual Camera behavior; no grant or APK installation is performed |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
 
@@ -583,10 +588,23 @@ and repeat each contain 43 payload files / 605,013 bytes: 40 are unchanged,
 one product file adds a package selection plus comment, and two controls are
 added. Both admission records have SHA256
 `429c25640ca1c0951832a56fe91ca7efc05b8ad1200d6430fba32d7171024baf`.
-Independent host review has no open findings. This is host source admission
-only: the capability is not installed or built in the active v13ha guest.
-Actual service compilation, producer/init/context checks and unchanged VINTF
-checks remain required; runtime registration is not established.
+Independent host review has no open findings. That host source admission is
+separate from the later installation and still does not prove service behavior.
+
+The **run-v13i** transaction installs the allocator device selection at
+**18:48:34 UTC** through one tree exchange and a journal ending in
+`commit_verified`. Manifest SHA256 is
+`f399be79c9745fea9389bd1bf5094eb8facae7973fbb43cea740e8f3e2fe1c2d`;
+the 19,531-byte installed receipt is
+`571c46dbe7392e58cffd008deaad7f0e34bf4b559e1e54b068fef1e33855b8fc`.
+All 24 guarded inputs and 112 prior outputs are preserved, including the existing
+policy and runtime outputs. The snapshot matches all 1,179 project revisions
+and origins, with 1,173 clean projects and the same six reviewed modified
+projects. It retains strict 16 KiB checks and changes no policy/provider inputs
+or project source. The 37-goal **allocator-v13i-1** service/policy build is
+running, with no completed result. Actual producer, init/context and unchanged
+VINTF checks remain required. Runtime registration and compatibility with the
+current source remain unverified.
 
 The separate full-check packet is now staged: all 221 files are verified,
 including the manifest
@@ -656,21 +674,41 @@ complete linker/Python provenance or prove fresh producer execution.
 The subsequent **root-qualify-admission-v1** host attempt, using the v4 packet,
 fails with `runtime closure omits a dependency`: its closure comparison does
 not account for the separately recorded interpreter. The empty stdout and
-complete stderr remain hash-bound in the research record. A narrow v5
-admission correction is under review; no native FEC qualification or footer
-result follows from this capture, and no image is adopted.
+complete stderr remain hash-bound in the research record. The narrow v5
+correction now passes host admission. The separate **policy-footer-qualify-v1**
+run passes four native checks across seven commands with zero skips at
+**18:27:14 UTC**. Payload and tree corruption are rejected; independent parity
+regeneration detects FEC corruption that native AVB verification alone does not
+detect. Its 81,252-byte receipt is
+`30643b81e3465af2d1050b00b644fccb77b0135a231ce23972091dae64e5a8c6`;
+the independent review is
+`09c5b5b6bd1b3911b0a9ecfcc7ca7ae98f7f72577c475d32d8837a724d6db005`.
+All 44 captured files rehash. This synthetic qualification precedes the real
+production result recorded below; it does not itself touch the original images.
+
+The **Camera capture v3** still fails before any Ninja query: the graph reader
+rejects `builddir = ${g.bootstrap.outDir}` in the shared bootstrap shard. The
+bounded diagnostic receipt
+`295f71a37a16bf7e37ef4f353f838cdd2c8437264e60982886481e47d902047f`
+identifies that exact expression, without admitting the graph, selecting the
+APK or running a build. It does not establish full source/OUT nonmutation.
+The shared v4 helper now admits only this exact variable under definition,
+alias, ordering and uniqueness guards; 50 author and 22 independent offline
+checks pass with zero skips. Its freeze does not authorize execution or prove
+current native graph acceptance. Camera/provider recipe admission remains
+required against v13i inputs.
 
 The host packaging rebase now produces identical validated candidates from the
-current v13ha inputs while preserving the provider correction, strict settings
+then-current v13ha inputs while preserving the provider correction, strict settings
 and original images. Its freeze is
 `cf0622bfc69ff2e431442b4348edc6594403d2b9812fc696a1d33c4aa6e6b5f6`;
 the candidate admission is
 `4aaf5a905a00745e628750b6de8e18c327636456516e2739293a103fb862f66c`.
 The separate host metadata bridge verifies all 205 original metadata members
-against both raw reconstruction passes. Delivery remains blocked on final
-footer evidence. These are host preparation results, without guest source
-installation, image adoption, native target-files packaging or compatibility
-admission; no unfinished native packet is counted as a pass.
+against both raw reconstruction passes. Delivery still requires source-bound
+admission of the new footer outputs. These are host preparation results, without
+guest source installation, image adoption, native target-files packaging or
+compatibility admission; no unfinished native packet is counted as a pass.
 
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
@@ -696,9 +734,12 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,665 tests in 156.924 seconds with zero failures, errors or skips**, executed
-by the coordinator for committed allocator capability `1647192`. The previous
-3,651-test run in 156.391 seconds was executed by the target-files metadata
+**3,711 tests in 158.487 seconds with zero failures, errors or skips**, executed
+by the coordinator for the optional [mi_ext care-map source](mi-ext-care-map.md)
+committed as `8144704`. It remains inactive: authentic ODM imports and the final
+Evolution SYSTEM property input still require qualification. The previous
+coordinator run passed 3,665 in 156.924 seconds for allocator capability
+`1647192`. The previous 3,651-test run in 156.391 seconds was executed by the target-files metadata
 agent with bytecode writing disabled; the
 coordinator independently verified the complete log. The preceding coordinator
 run passed 3,651 in 160.426 seconds after the v13h raw-image milestone.
@@ -930,6 +971,30 @@ read-only for this operation. No AVB/FEC/footer, partition fit, compatibility
 with the active source, provider runtime, image adoption, mount with the retained
 kernel, boot or hardware result is established.
 
+The separate **policy-footer-produce-v1** operation runs from **18:41:19 to
+18:49:27 UTC** and passes **six native checks and sixteen commands, zero skips**.
+Two complete vendor/ODM leaf derivations are byte-identical. Each preserves its
+raw EROFS prefix, verifies the hashtree, compares the complete FEC payload with
+independent native regeneration, and fits its exact original package budget.
+Original vendor/ODM inputs, bound tools and controls remain unchanged. The leaf
+algorithm is `NONE`; the intended signed parent chain is not yet verified.
+
+| Partition | Footer image bytes | SHA256 |
+| --- | ---: | --- |
+| vendor | 959,709,184 | `ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43` |
+| odm | 4,767,621,120 | `854c0047709496136557fbdaf2f3ee0a124fa6a18c1bfaddd063d2a3d006d257` |
+
+The 256,866-byte native receipt is
+`025b8524e0c6b843cf63790c2ba2bee14d8deb4641f8dbd8840bfd07f0c70e5e`.
+All **110 captured files / 939,530 bytes** rehash; the large image and FEC
+outputs remain in the guest and are not reopened by this host evidence review.
+Independent review has no findings; its 28,422-byte receipt is
+`a17f0ba3c6992650ce44f617da476682a79904a96663308f4c2e17960d8be664`.
+This proves keyless leaf derivation and exact package-budget fit, not physical
+partition fit, rollback compatibility,
+a signed parent chain, current-source compatibility, image adoption or boot.
+No private key or phone is accessed; working76 remains unchanged.
+
 ## Next build sequence
 
 Commit **78376c7** adds the explicit `v13h-policy-only` preparation profile with
@@ -937,11 +1002,11 @@ canonical SHA256
 `39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0`.
 It binds the verified native policy and sidecar records and is eligible for
 evidence validation; both older profiles and the blocked default remain
-unchanged. The matching raw image reconstruction now passes, but hashtree/FEC,
-footer, AVB, partition-fit and current-source checks still precede any adoption.
+unchanged. Matching raw reconstruction and keyless footer/FEC checks now pass;
+signed-parent, physical-fit and current-source checks still precede any adoption.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
-Integrate the required allocator service and rerun the unchanged ordinary VINTF
-checks, then perform the full framework/vendor/APEX/kernel comparison. The
+Build and inspect the allocator service selected by installed v13i, then rerun
+the unchanged ordinary VINTF checks and perform the full framework/vendor/APEX/kernel comparison. The
 captured all-target alias alone cannot establish compatibility.
 Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
 without lowering checks. The bounded Camera component producer/output review
