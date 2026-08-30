@@ -368,7 +368,7 @@ first Evolution boot or Camera/Leica operation is established.
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
-| [Policy-image input preparation](policy-image-inputs.md) | Commit `3cb17cb` binds exact five-file replacement inputs, complete stock manifests, two TAR preparations and finite production limits | Seven current native-policy record pins remain missing; actual production preparation, native writer execution, AVB and image adoption remain unverified |
+| [Policy-image input preparation](policy-image-inputs.md) | Commit `35324b4` adds explicit v12/export4 record admission, verified by the coordinator's complete unmocked replay; historical default remains blocked | Actual changed-policy TAR preparation, writer execution, AVB and image adoption; the v12 profile does not admit current v13f inputs |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
 
 The metadata projection is content-only packaging input. It is not a full
@@ -410,6 +410,24 @@ capture totals 159,676 bytes. Resolve the exact ABI/source graph rather than
 blindly rewriting the V2 dependency to V4. V13f remains installed, but
 v12f/export4 is still the latest verified policy baseline.
 
+Three isolated native Soong fixtures pass their expected outcomes: a consistent
+shared-prebuilt graph succeeds, while both shared-scoped and top-level mixed
+Audio AIDL graphs are rejected. Selecting only the shared variant therefore
+does not resolve the V2/V4 conflict. The fixture receipt is
+`7f2f85c40d1fcc4356636910d8516872249c45434a3b7e5593716c49edeb5e92`
+(54,722 bytes); it is neither a product build nor a full AIDL suite. The first
+compile-only audio-layout probe failed at **03:24:05 UTC** with an unrecognized
+AST record header. No ABI was admitted, and no target code was linked or run.
+The corrected **audio-native-layout-run-v2** completes at **03:31:25 UTC**:
+two cases, four compilations and all 15 measured factory constraints match.
+Its receipt is `a76cc907…4dadd9` (6,222,532 bytes), with 17 captured files totaling
+13,874,960 bytes; sandbox observations are captured separately. This is a
+compile-only layout result, not complete ABI admission, linking or target-code
+execution. Static review of the two selected descriptor-vtable CFI checks also
+finds matching type metadata and acceptance predicates without CFI suppression;
+runtime linker/CFI routing and the remaining caller ABI stay unverified. The
+proposed Miracast dependency correction is not yet admitted or installed.
+
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
 finds 22 of the 26 provider ELFs use 4 KiB load alignment; the other four use
@@ -434,7 +452,9 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest coordinator `python3 -m unittest discover -s tests -v` run passed
-**3,558 tests in 163.269 seconds with zero skips**. The separate page-size agent
+**3,591 tests in 152.682 seconds with zero failures, errors or skips**, covering
+the policy-image profile committed as `35324b4`. The prior coordinator component
+checkpoint passed **3,558 tests in 163.269 seconds**. The separate page-size agent
 run passed the same 3,558 tests in 153.985 seconds at `84d63c2`; the later
 `d3c29a5` native-date documentation records separate focused rechecks.
 The previous coordinator full run passed **3,517 tests in 176.383 seconds**.
@@ -571,6 +591,27 @@ export, deterministic writer qualification, whole-filesystem comparison,
 hashtree/FEC regeneration, AVB and partition-fit checks precede adoption.
 The old source-only ODM policy output must not substitute for the validated
 factory-combined binary. Original proprietary images remain untouched.
+
+The separate **policy-sidecar-native-v2** run passes all six checks and fourteen
+native commands with zero skips. It derives the three platform/system_ext/product
+digest files from the sealed v12f/export4 CIL and mapping inputs using the pinned
+source recipe. Exact-output checks also reject reversed input order, changed
+input bytes and a missing final newline. The receipt is
+`54e95463bcbc02f47bcca7c27b0d2089ad3da54f67a4ac4c37557b1ca5976865`
+(41,444 bytes); all 61 captured files, totaling 6,868,442 bytes, are rehashed.
+Source, Android output and inputs were read-only. These are derived validation
+files, not captured installed sidecars or executed Android genrules. No image
+was accessed or adopted. The v1 loader-output parser failure remains recorded
+as a failure, and current provider-policy validation is still required before
+adopting a policy-bearing image.
+
+Commit **35324b4** adds explicit `v12-export4` evidence admission with canonical
+contract SHA256 `5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4`.
+The coordinator's complete unmocked replay passes policy, sidecar and original
+filesystem qualification checks. It performs no TAR preparation, native
+execution or image access. The historical profile remains the blocked default;
+neither profile selection nor this replay establishes compatibility with the
+active v13f inputs or admits changed-policy images.
 
 ## Next build sequence
 

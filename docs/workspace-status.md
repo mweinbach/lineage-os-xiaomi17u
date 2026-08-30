@@ -31,10 +31,18 @@ at **02:36:44 UTC**. `nezha_framework_libmiracastsystem`'s emitted static varian
 depends on Audio AIDL V2 directly and V4 through `libaudiofoundation`. No new
 policy compiled or context check passed. Resolving that exact source/ABI graph
 conflict is the next blocker; blindly substituting V4 for V2 is not a fix.
+Three native Soong fixtures reproduce the expected graph outcomes and show
+that selecting only the shared variant does not resolve the mixed V2/V4
+dependency. The first compile-only audio-layout probe failed in its AST parser;
+the corrected v2 probe passes two cases and four compilations, matching all
+15 measured factory layout constraints. Static review also verifies the two
+selected descriptor-vtable CFI checks without requiring CFI suppression. Neither
+result admits the complete caller ABI or proves runtime routing. The proposed
+Miracast dependency correction is not yet admitted or installed.
 Export4 does not verify those providers. Retained vendor/ODM images still contain
 their original policy. Provider compatibility, complete Treble APK labeling,
-policy-image derivation and the
-remaining ROM build gates are still open. Earlier tool-bound, aggregate-model
+policy-image derivation and the remaining ROM build gates are still open.
+Earlier tool-bound, aggregate-model
 and M4-guard failures remain preserved in the
 [native integration record](native-rom-integration.md); they are not relabeled
 as passes.
@@ -63,11 +71,12 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,558 tests in 163.269
-seconds with zero skips**. The separate page-size agent run passed the same
-3,558 tests in 153.985 seconds. These are offline tooling results, separate from
+The latest coordinator full workspace suite passed **3,591 tests in 152.682
+seconds with zero failures, errors or skips**. The earlier coordinator component
+checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
+passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `a6866c8`. The active guest inputs are now v13f;
+code and documentation through `35324b4`. The active guest inputs are now v13f;
 the latest fully verified policy baseline remains v12f/export4.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -220,9 +229,16 @@ override theme defaults. No Magisk integration is included.
   results below are separate; policy-image adoption remains open.
   The [five-file policy-image preparation](policy-image-inputs.md) now binds
   complete stock manifests, exact replacements, repeated TAR construction and
-  finite production limits. Its plan correctly remains blocked on seven
-  missing reviewed policy record pins; no actual factory TAR, image, AVB or
-  source/vendor adoption result follows from that preparation code.
+  finite production limits. Commit `35324b4` adds an explicit `v12-export4`
+  profile with the reviewed native records; the historical default retains its
+  original seven-pin blocker. The coordinator's complete unmocked admission
+  replay passes, without running TAR preparation, opening images or executing
+  native tools. This profile does not admit the active v13f provider policy.
+  The separate native sidecar v2 run now passes six checks and fourteen commands
+  with zero skips, deriving all three framework digest files from the sealed
+  v12f/export4 inputs and pinned recipe. These are validation derivatives, not
+  captured installed outputs or executed Android genrules. No image, policy or
+  source adoption follows; the first loader-parser failure remains preserved.
   The native production-size primitive probe now passes four checks with zero
   skips, using finite 2 GiB/6 GiB file limits and bounded log-overflow handling.
   Its 59-file capture is verified; the first failed attempt remains preserved.

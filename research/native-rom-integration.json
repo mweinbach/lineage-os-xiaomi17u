@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "v13f-installed-first-policy-build-failed-audio-aidl-graph-v12f-export4-baseline-retained",
+  "checkpoint": "v13f-graph-blocker-retained-native-sidecars-and-selected-audio-layouts-verified",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -449,7 +449,9 @@
       "contract": {
         "path": "config/nezha-policy-images.json",
         "sha256": "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
-        "size_bytes": 7429
+        "size_bytes": 7429,
+        "git_revision": "3cb17cb912086eb39c71efc5b47b1f222f80ac07",
+        "scope": "Historical contract at the preparation commit. The current workspace file may contain a later separately reviewed profile; this identity does not assert its current bytes."
       },
       "promoted_helper": {
         "path": "tools/erofs-metadata/full_tar.py",
@@ -502,7 +504,8 @@
         "size_bytes": 5439
       },
       "actual_production_tar_or_image_generated": false,
-      "source_or_vendor_adopted": false
+      "source_or_vendor_adopted": false,
+      "later_native_sidecar_derivation": "native_policy_sidecar_derivation"
     },
     "pinned_build_metadata": {
       "implementation_commit": "ec21a87745cafc22f36c62cb216a22ac690d8250",
@@ -626,6 +629,59 @@
       "android_component_built": false,
       "apk_transformed_or_signed": false,
       "scope": "A separate packet and standalone host content-verifying producer pass on unchanged factory input. Actual source installation and a graph-limited intermediate-only component phase need separate admission; absence from PRODUCT_PACKAGES alone does not prevent installation writes."
+    },
+    "policy_image_inputs_v12_export4": {
+      "implementation_commit": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158",
+      "documentation": "docs/policy-image-inputs.md",
+      "profile": "v12-export4",
+      "contract_id": "nezha-five-file-policy-image-inputs-v12-export4-v1",
+      "canonical_selected_contract_sha256": "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
+      "profile_status": "ready_for_evidence_validation",
+      "explicit_profile_selection_required": true,
+      "historical_default": "historical-v12",
+      "historical_default_unchanged_and_blocked": true,
+      "public_files": [
+        {
+          "path": "scripts/policy_image_inputs.py",
+          "sha256": "07371b80a782172462d6851a1fe62f4e77018de621ff6342ff4106d080975dc6",
+          "size_bytes": 92987,
+          "git_revision": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158"
+        },
+        {
+          "path": "config/nezha-policy-images.json",
+          "sha256": "5eafe62d517e43de2f3756e4a62d3ec88f6da9435beecd7de38678650fe2ca0c",
+          "size_bytes": 20787,
+          "git_revision": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158"
+        },
+        {
+          "path": "tests/test_policy_image_inputs.py",
+          "sha256": "9eed1e203a73cbb418d987a5310310c28d0ce7681896ff9131582468c90dadf1",
+          "size_bytes": 115265,
+          "git_revision": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158"
+        },
+        {
+          "path": "docs/policy-image-inputs.md",
+          "sha256": "8df9413e17334177330f7d33558cd06e1c2d3f682fe14568a1c6cd24442eedfe",
+          "size_bytes": 18734,
+          "git_revision": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158"
+        }
+      ],
+      "read_only_admission_replay": {
+        "path": "reports/oem-policy-integration-20260829/root-policy-admission-replay-v1.json",
+        "sha256": "1c1defd4f8db438bbc2f9bd8600f41bb525fcf240619289bc88a032afe400231",
+        "size_bytes": 4988
+      },
+      "read_only_admission_replay_passed": true,
+      "native_sidecar_evidence": "native_policy_sidecar_derivation",
+      "sidecars_observed_at_native_install_paths": false,
+      "current_active_v13f_compatibility_proven": false,
+      "tar_preparation_executed": false,
+      "native_tools_executed_by_admission_replay": false,
+      "images_opened_by_admission_replay": false,
+      "production_policy_writer_admitted": false,
+      "changed_policy_images_built_or_adopted": false,
+      "complete_rom_ready": false,
+      "scope": "Committed public profile for explicit sealed-v12/export4 evidence admission and TAR preparation, with a successful complete unmocked read-only admission replay. No TAR preparation, native execution or image access occurred in that replay; this does not admit active v13f inputs. The separate ignored future writer-packet freeze is not this public profile or an executed writer."
     }
   },
   "erofs_qualification": {
@@ -842,17 +898,18 @@
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
     "runner": "coordinator",
-    "passed": 3558,
+    "passed": 3591,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 163.269,
+    "elapsed_seconds": 152.682,
+    "code_commit": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-component-milestone-v1.log",
-      "sha256": "d69827d19a7a842872a4f41ee66603e8b87cde311ab1952b67354d110af28b9d",
-      "size_bytes": 611862
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-policy-image-profile-v1.log",
+      "sha256": "7195b554bb63b1346117accbb25f92ff499d30c8f2d2073fba29587c66f9ac19",
+      "size_bytes": 618190
     },
-    "scope": "Fresh coordinator full workspace run after the component milestone; separate from native component, partial policy-analysis, authoring-agent and hardware evidence. It does not approve the held 4096 profile."
+    "scope": "Coordinator full offline workspace run covering the committed explicit v12/export4 policy-image profile. Separate from native sidecar execution, compile-only audio measurements, actual Android product builds and hardware tests; does not approve the held 4 KiB profile."
   },
   "remaining_gates": [
     "Resolve the exact Audio AIDL V2/V4 dependency conflict, rerun v13f policy targets and independently verify provider policy against v12f/export4; retain the 4 KiB hold and do not lower compatibility checks",
@@ -1148,6 +1205,21 @@
         "size_bytes": 1131
       },
       "scope": "Separate page-size authoring full run before the later d3c29a5 native-date documentation checkpoint. Its passing tests do not approve the held 4096 profile or establish native integration, VSR compatibility or hardware success."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3558,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 163.269,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-component-milestone-v1.log",
+        "sha256": "d69827d19a7a842872a4f41ee66603e8b87cde311ab1952b67354d110af28b9d",
+        "size_bytes": 611862
+      },
+      "scope": "Fresh coordinator full workspace run after the component milestone; separate from native component, partial policy-analysis, authoring-agent and hardware evidence. It does not approve the held 4096 profile."
     }
   ],
   "previous_v11b_policy": {
@@ -1496,7 +1568,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "latest_native_observation_utc": "2026-08-30T02:36:44.248020+00:00",
+  "latest_native_observation_utc": "2026-08-30T03:31:25.389032+00:00",
   "recorded_at_utc": "2026-08-30T02:41:21.140863+00:00",
   "latest_native_build_completed_at_utc": "2026-08-30T02:36:44.248020+00:00",
   "native_policy_export_build": {
@@ -2856,7 +2928,8 @@
       "prebuilt_max_page_size_check": true,
       "strict_soong_elf_checks_selected": true,
       "checker_actions_verified": false
-    }
+    },
+    "subsequent_graph_and_abi_evidence": "provider_aidl_native_followup"
   },
   "active_guest_inputs": {
     "integration": "v13f",
@@ -2865,5 +2938,277 @@
     "provider_policy_build": "provider_v13f_policy_build",
     "four_kib_experiment_adopted": false
   },
-  "latest_native_build_status": "failed-soong-bootstrap"
+  "latest_native_build_status": "failed-soong-bootstrap",
+  "provider_aidl_native_followup": {
+    "fixtures": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-aidl-native-fixtures-v1/receipt.json",
+        "sha256": "7f2f85c40d1fcc4356636910d8516872249c45434a3b7e5593716c49edeb5e92",
+        "size_bytes": 54722
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-aidl-native-fixtures-v1/capture.json",
+        "sha256": "50e2e0abb4a636e351c25ab40acaa6c893624bbbf4970b2b05bd1a36cb08b59b",
+        "size_bytes": 3466
+      },
+      "sandbox": {
+        "path": "artifacts/build-validation/nezha-aidl-native-fixtures-observation-v1/sandbox.json",
+        "sha256": "6dbb8cea32ec7613860e3dd3465ca46e7b7bfabbc553d39304b888ebf9e08d3e",
+        "size_bytes": 2127
+      },
+      "started_at": "2026-08-30T02:57:53.707041+00:00",
+      "completed_at": "2026-08-30T02:58:00.797679+00:00",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "tests": [
+        "TestNezhaProviderSharedPrebuiltConsistentAidlGraph",
+        "TestNezhaProviderSharedScopedMixedAidlGraphRejected",
+        "TestNezhaProviderTopLevelMixedAidlGraphRejected"
+      ],
+      "captured_fixture_files": 20,
+      "captured_fixture_bytes": 64371,
+      "all_fixture_and_observation_capture_files_rehashed": true,
+      "consistent_shared_graph_accepted": true,
+      "shared_scoped_and_top_level_mixed_graphs_rejected": true,
+      "variant_only_workaround_resolves_aidl_conflict": false,
+      "product_build_run": false,
+      "full_aidl_suite_run": false,
+      "full_suite_stamp_written": false,
+      "production_source_or_output_changed": false,
+      "proprietary_code_executed": false,
+      "phone_accessed": false
+    },
+    "layout_v1_failure": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-audio-layout-v1-failed/receipt.json",
+        "sha256": "8d6e8143d09af30ec7fa26808af857a04017d72943a437c4e0bc11cab551b043",
+        "size_bytes": 557804
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-audio-layout-v1-failed/capture.json",
+        "sha256": "4c85fd3e079119c8c067e168eb01f6540c1dd35fbf597afa5b2347386deee69f",
+        "size_bytes": 950
+      },
+      "started_at": "2026-08-30T03:24:02.850445+00:00",
+      "completed_at": "2026-08-30T03:24:05.461381+00:00",
+      "passed": false,
+      "error": "ValueError: unrecognized AST record header",
+      "captured_files": 5,
+      "captured_bytes": 2014015,
+      "all_capture_files_rehashed": true,
+      "abi_admitted": false,
+      "linked": false,
+      "native_target_code_executed": false,
+      "source_or_production_output_written": false,
+      "phone_accessed": false
+    },
+    "source_and_stock_abi_investigation_complete": false,
+    "active_provider_inputs_changed_by_fixtures_or_probe": false,
+    "scope": "Native fixtures show a variant-only change does not resolve mixed Audio AIDL versions. The corrected compile-only layout probe matches 15 measured factory constraints, and static review verifies two selected CFI predicates without suppression. Complete caller ABI and runtime routing remain unverified; the proposed Miracast dependency correction is not yet admitted or installed.",
+    "layout_v2": {
+      "phase": "audio-native-layout-run-v2",
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-audio-layout-v2/receipt.json",
+        "sha256": "a76cc907312a01e2659865a0d19ced99f77242867176829cd73af713eb4dadd9",
+        "size_bytes": 6222532
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-audio-layout-v2/capture.json",
+        "sha256": "4d2ec8d9d3493e3af5858416f60c451d34ddaec1440b67402e0602fcff3a9e1c",
+        "size_bytes": 2960
+      },
+      "sandbox": {
+        "path": "artifacts/build-validation/nezha-audio-layout-observation-v2/sandbox.json",
+        "sha256": "d88d3ed0b1702be2ba0ad08a983506b43db01f95832414e6ec96df32ce037054",
+        "size_bytes": 2119
+      },
+      "sandbox_capture": {
+        "path": "artifacts/build-validation/nezha-audio-layout-observation-v2/capture.json",
+        "sha256": "274c719a00810dcf965686a88060875d856a5a3498af0f31e509c48c1eb9686f",
+        "size_bytes": 454
+      },
+      "started_at": "2026-08-30T03:31:12.278314+00:00",
+      "completed_at": "2026-08-30T03:31:25.389032+00:00",
+      "passed": true,
+      "cases_passed": 2,
+      "native_compilations_passed": 4,
+      "factory_constraints_matched": 15,
+      "comparison_basis": "factory observations, not inferred old type definitions",
+      "captured_files": 17,
+      "captured_bytes": 13874960,
+      "observation_files": 2,
+      "observation_bytes": 4102,
+      "all_capture_files_rehashed": true,
+      "abi_admitted": false,
+      "linked": false,
+      "native_target_code_executed": false,
+      "headers_regenerated": false,
+      "complete_host_runtime_dso_closure_claimed": false,
+      "source_or_production_output_written": false,
+      "phone_accessed": false,
+      "scope": "Compile-only measurements of common_v4 and framework_v4 match 15 selected factory layout constraints. This is not whole-caller ABI admission, linking or target execution; the first AST-parser failure remains preserved."
+    },
+    "selected_cfi_static_review": {
+      "analysis": {
+        "path": "reports/framework-providers-20260829/audio-cfi-review-v1/analysis.json",
+        "sha256": "35f7535bd52d733d7a44c1a287f7d88ebaf2d503f5a4561a5253ad143b788b41",
+        "size_bytes": 30643
+      },
+      "selected_descriptor_vtable_checks": 2,
+      "static_positive_controls": 4,
+      "static_negative_controls": 20,
+      "source_built_metadata_and_acceptance_predicates_match": true,
+      "cfi_change_or_suppression_required_for_selected_checks": false,
+      "runtime_linker_and_cfi_shadow_routing_verified": false,
+      "complete_caller_abi_or_all_cfi_sites_admitted": false,
+      "native_execution_test": false,
+      "source_inputs_changed": false,
+      "phone_accessed": false,
+      "scope": "Two original libmiracastsystem descriptor-vtable CFI checks only",
+      "limitations": [
+        "Static decoded-constant arithmetic only; no DSO loading, __cfi_check invocation, target/native firmware execution or runtime test",
+        "The constructor GOT must resolve to this source-built vtable, and bionic CFI shadow routing must select this DSO; neither runtime condition is observed here",
+        "No complete libmiracastsystem ABI or all CFI call sites approved",
+        "Type metadata hash equality alone was not used as proof; actual dispatch, constructor relocation and success predicates were checked",
+        "No original caller compiler sanitizer-kind classification beyond the observed vtable type checks",
+        "No source, product input, guest, phone or Git edits"
+      ]
+    },
+    "miracast_dependency_correction_admitted": false,
+    "miracast_dependency_correction_installed": false
+  },
+  "native_policy_sidecar_derivation": {
+    "phase": "policy-sidecar-native-v2",
+    "baseline": "v12f/export4",
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/results/receipt.json",
+      "sha256": "54e95463bcbc02f47bcca7c27b0d2089ad3da54f67a4ac4c37557b1ca5976865",
+      "size_bytes": 41444
+    },
+    "orchestration": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/results/orchestration.json",
+      "sha256": "bd95b95c67d04315e1fd81afc0fac4390abeb29d3fb96d18b1a08dc8f4a7bcd5",
+      "size_bytes": 51017
+    },
+    "sandbox": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/results/sandbox.json",
+      "sha256": "4e4c6d69431339f19f8abf34d23f807670828cd08295c27b62be9c018d527449",
+      "size_bytes": 4161
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/capture.json",
+      "sha256": "08ff454b2241b0197653bd439a2f3e3fca5d5b075a8d94170be89ef53bf3c3e7",
+      "size_bytes": 10269
+    },
+    "source_recipe": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/inputs/Android.bp",
+      "sha256": "17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8",
+      "size_bytes": 43467
+    },
+    "contract": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/inputs/contract.json",
+      "sha256": "e6dae118db54e221a046b32e3051eb6e174d82d6650af1b3a3ba229d13d607a2",
+      "size_bytes": 6482
+    },
+    "baseline_receipt": {
+      "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/inputs/baseline.json",
+      "sha256": "dd338730212aadf7dde9847cd63f60e5023c3c1d5c2fae91ff3d199593219c95",
+      "size_bytes": 342300
+    },
+    "passed": true,
+    "checks_passed": 6,
+    "commands_passed": 14,
+    "skipped": 0,
+    "captured_files": 61,
+    "captured_bytes": 6868442,
+    "all_capture_files_rehashed": true,
+    "known_answer_checks": 3,
+    "negative_controls": [
+      "reversed-order",
+      "changed-input",
+      "missing-final-lf"
+    ],
+    "negative_controls_rejected_by_exact_output_check": true,
+    "ordered_cil_mapping_inputs": 6,
+    "derived_outputs": [
+      {
+        "role": "plat",
+        "ordered_input_roles": [
+          "plat-cil",
+          "plat-mapping"
+        ],
+        "file": {
+          "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/results/derived/plat_sepolicy_and_mapping.sha256",
+          "sha256": "b0ebad72754afac819eb42b91ffe01c64694ae9c1b8831d333f0933224bbce42",
+          "size_bytes": 65
+        },
+        "installed_output": false
+      },
+      {
+        "role": "system_ext",
+        "ordered_input_roles": [
+          "system_ext-cil",
+          "system_ext-mapping"
+        ],
+        "file": {
+          "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/results/derived/system_ext_sepolicy_and_mapping.sha256",
+          "sha256": "a4b56f4b08df6a9edac53d7847ed34fa88c289ce6e6d7c52d169485a61ca250a",
+          "size_bytes": 65
+        },
+        "installed_output": false
+      },
+      {
+        "role": "product",
+        "ordered_input_roles": [
+          "product-cil",
+          "product-mapping"
+        ],
+        "file": {
+          "path": "artifacts/build-validation/nezha-policy-sidecar-native-v2/results/derived/product_sepolicy_and_mapping.sha256",
+          "sha256": "47ac967fe4a690137321beb1f863778de31a7f3534e200c1642f6659e2a45d53",
+          "size_bytes": 65
+        },
+        "installed_output": false
+      }
+    ],
+    "native_recipe_executed": true,
+    "native_android_genrules_executed": false,
+    "installed_sidecars_captured": false,
+    "source_android_output_and_inputs_readonly": true,
+    "input_and_tool_runtime_bytes_preserved": true,
+    "global_android_output_unchanged_claimed": false,
+    "source_or_android_output_writes": false,
+    "images_accessed_or_written": false,
+    "policy_adopted": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "previous_v1_failure": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-policy-sidecar-native-v1-failed/receipt.json",
+        "sha256": "86c1b7c3cee10dedef57a3941f77108bb23bb025f17a5155be2c5c91d06c07cd",
+        "size_bytes": 9348
+      },
+      "orchestration": {
+        "path": "artifacts/build-validation/nezha-policy-sidecar-native-v1-failed/orchestration.json",
+        "sha256": "83f30c0e409d7c5d76bc3e27805f33cd011c4d2a6cb03102807ff5e85ba85d68",
+        "size_bytes": 16143
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-policy-sidecar-native-v1-failed/capture.json",
+        "sha256": "01ada2e922d2325f178268ed54baedeb59424c058a0a5e467c1ac9a4db0edabe",
+        "size_bytes": 1878
+      },
+      "passed": false,
+      "error": "unrecognized loader list output",
+      "checks_passed": 0,
+      "skipped": 0,
+      "native_recipe_executed": false,
+      "captured_files": 11,
+      "captured_bytes": 32119,
+      "all_capture_files_rehashed": true
+    },
+    "scope": "Native isolated execution of the pinned source recipe against six sealed v12f/export4 inputs derives three exact sidecars. This does not capture installed digest outputs, execute Android genrules, validate current v13f provider policy or adopt an image. The initial loader-parser failure remains preserved."
+  },
+  "latest_native_observation_kind": "audio-layout-compile-only"
 }

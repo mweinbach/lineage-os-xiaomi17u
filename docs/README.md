@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v12f/export4 baseline; installed v13f inputs hit an Audio AIDL graph conflict; bounded component producer review and unchanged vendor/ODM reconstructions pass separately |
+| [Native ROM integration](native-rom-integration.md) | Verified v12f/export4 baseline and native digest derivation; v13f remains blocked on the reproduced Audio AIDL graph conflict, without ABI or policy-image admission |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -27,7 +27,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
-| [Policy-image input preparation](policy-image-inputs.md) | Exact five-file vendor/ODM replacement inputs and finite TAR/writer limits; missing current analysis pins block production preparation |
+| [Policy-image input preparation](policy-image-inputs.md) | Explicit v12/export4 profile passes read-only evidence admission; historical default stays blocked, with changed-policy TAR/image production and v13f admission still separate |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 
