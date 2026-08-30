@@ -2,7 +2,8 @@
 
 The proposed [version-date patch](../patches/evolution/0012-pinned-version-date.patch)
 lets the two Evolution date strings use an explicit build epoch. It is an
-opt-in source preparation, **not installed in the guest**, and does not prove
+opt-in source preparation, **not installed in the Android source checkout**,
+and does not prove
 reproducible images or a bootable ROM. Its [contract](../patches/evolution/pinned-version-date.json)
 pins the vendor revision, full source preimages and postimages, helper, patch
 and source-order evidence. Existing patches and source compositions are unchanged.
@@ -61,7 +62,8 @@ the byte identities and capture provenance of these source files:
    `config.mk`. Neither later Make helper is suitable here. Standalone dumpvar
    evaluation also need not have called `SetupOutDir` to create a date file.
 
-This establishes the Soong-to-Kati source path. Native adoption must still
+This establishes the Soong-to-Kati source path. The isolated native fixtures
+below have passed, but adoption must still
 verify Kati's actual helper environment in both dumpvars and build configuration.
 Normal `SetupPath` places pinned build-tools before the host tool interposer;
 record the actual Python executable and runtime used. A successful host helper
@@ -109,15 +111,41 @@ missing alternative sources, clock independence and failure output. They also
 bind both full source files and preserve the unchanged legacy/property regions.
 Run `python3 -m unittest discover -s tests -v` with the workspace suite.
 
+The isolated native Kati v2 run completed on **August 30, 2026 at 01:33 UTC**
+with all **33 cases meeting their expected outcomes**, zero skips and zero
+timeouts. Nine positive or legacy cases exited zero; 24 expected negatives
+exited one with the exact intended diagnostic. It evaluated complete patched
+source copies using the pinned `ckati` and the Git-bound build-tools Python
+3.13.1 route with `-I -S -B`. Enabled cases made no clock calls. The three
+legacy cases each made two calls to an instrumented date stub, preserving
+the independent upstream expressions without changing any clock.
+
+The [native evidence record](../research/pinned-build-metadata-native.json)
+binds the packet, launcher, transport, sandbox observation, complete capture
+and unchanged source/tool checks. The fixture had read-only source, Android
+OUT and input mounts while a separate component build continued. No global
+unchanged-OUT claim is made. It generated only isolated phony Ninja files and
+did not execute Ninja, install the patch, run actual Soong product configuration
+or build images. The supervisor's retained namespace-mapping warnings are
+separate from case stderr; host-unprivileged execution is not claimed.
+
+The preceding v1 run remains a failed harness result: all 33 cases executed,
+but its nine positive or legacy assessments passed and 24 negative assessments
+failed because the harness did not admit pinned Kati's exact include trace and
+trailing period. V2 corrected only diagnostic admission and evidence, requiring
+the entire stderr stream in order, with source-derived paths and line numbers.
+Unknown or extra diagnostics still fail. The public patch and helper did not
+change, and the complete failed v1 capture remains preserved. V2's 38 offline
+harness tests also passed with zero skips; those are separate from native cases.
+
 Before a guest installation, verify exact source preimages, absence of the new
 helper, unchanged existing security-property patch 0001, patch replay without
 fuzz, and both postimages. Extend an explicit source composition separately.
-Use pinned native Kati fixtures for enabled, disabled, invalid capability,
-missing/malformed epoch and helper-failure cases, with no image recipes. Then
-check the actual `lineage_nezha-bp4a-user` product through dumpvars and ordinary
+The next adoption check is the actual `lineage_nezha-bp4a-user` product through
+dumpvars and ordinary
 configuration, recording the helper runtime and child environment. Test a
 second identical-epoch invocation across a different actual UTC date without
-changing the system clock. These native checks have not yet run.
+changing the system clock. These product and cross-date checks have not yet run.
 
 Even after those checks, complete-ROM reproducibility requires separate
 verification of proprietary and generated inputs, image metadata, tools,

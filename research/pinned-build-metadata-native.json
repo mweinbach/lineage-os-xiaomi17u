@@ -1,0 +1,398 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "platform": {
+    "distribution": "Evolution X",
+    "android": "16 QPR2",
+    "branch": "bka",
+    "release_configuration": "bp4a",
+    "product_adoption_target": "lineage_nezha-bp4a-user"
+  },
+  "status": "isolated_native_kati_fixtures_verified_not_installed",
+  "completed_at_utc": "2026-08-30T01:33:47.785053+00:00",
+  "source_preparation": {
+    "workspace_commit": "ec21a87745cafc22f36c62cb216a22ac690d8250",
+    "patch": {
+      "path": "patches/evolution/0012-pinned-version-date.patch",
+      "sha256": "63b5fd3802881296d51b683fa733e89f05b88f479ba26a69345520fa6bdeb688",
+      "size_bytes": 4462
+    },
+    "contract": {
+      "path": "patches/evolution/pinned-version-date.json",
+      "sha256": "f49518af8e607cd2b1cfb1b2137de5ab720ec725ed6365661753fed124d61734",
+      "size_bytes": 12604
+    },
+    "source_postimages": [
+      {
+        "path": "vendor/lineage/config/version.mk",
+        "sha256": "8453b15e114b1ccc5bf575f261fd88cb2aa59f149ef5ee4d55dd7294875f609a",
+        "size_bytes": 2729
+      },
+      {
+        "path": "vendor/lineage/build/tools/nezha_pinned_build_date.py",
+        "sha256": "04ad67351996879c69732d4e74838a185957d1ccb68ff46a5487ed193d152657",
+        "size_bytes": 1138
+      }
+    ],
+    "patch_and_helper_unchanged_from_v1": true,
+    "installed_in_android_checkout": false
+  },
+  "native_result": {
+    "cases_executed": 33,
+    "expected_outcomes_verified": 33,
+    "positive_or_legacy_exit_zero": 9,
+    "expected_negative_exit_one": 24,
+    "skipped": 0,
+    "timeouts": 0,
+    "case_groups": {
+      "enabled_utc_boundary_cases": 5,
+      "enabled_python_isolation_case": 1,
+      "legacy_unset_empty_false_cases": 3,
+      "invalid_capabilities": 8,
+      "invalid_or_out_of_range_epochs": 10,
+      "missing_epoch": 1,
+      "wrong_epoch_origins": 2,
+      "reserved_variable_overrides": 2,
+      "missing_helper": 1
+    },
+    "source_copies": "Complete patched version.mk and helper, replayed from the unchanged public patch; helper intentionally absent only in its expected-failure fixture.",
+    "diagnostic_contract": "Compare complete stderr bytes in child/include/Kati order. Include and error locations derive from exact fixture and source statements; the pinned Kati trailing period and final newline are literal. Extra, missing, reordered or different diagnostics fail.",
+    "helper_exit_code_directly_observed": false,
+    "helper_exit_code": null,
+    "helper_failure_evidence": "Exact child stderr followed by the exact Kati failure; Kati exit 1 is not attributed to the helper.",
+    "clock_observation": "Six enabled cases used UTC epoch output with no clock calls. Each of three legacy cases made two calls to a fixture-local instrumented date stub. This is not an actual-clock rollover test.",
+    "result": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/probe/result.json",
+      "sha256": "f98c047213e00a8d1f05587291856b51ddf7622737a0bb110e989bfb5fbf7f9a",
+      "size_bytes": 136418
+    }
+  },
+  "tools": {
+    "project_revisions": {
+      "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "vendor/lineage": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "prebuilts/build-tools": "412724a805835d89234d67c363f7ada7f5f8a67f"
+    },
+    "ckati": {
+      "path": "prebuilts/build-tools/linux-x86/bin/ckati",
+      "sha256": "a93383d2387d1344ba4a8a538501a1248ff080813324a8877a2c01d817b25434",
+      "size_bytes": 422464
+    },
+    "python_route": "prebuilts/build-tools/path/linux-x86/python3",
+    "python_resolved": "prebuilts/build-tools/linux-x86/bin/py3-cmd",
+    "python_git_blob_chain": [
+      {
+        "path": "path/linux-x86/python3",
+        "kind": "symlink",
+        "target": "../../linux-x86/bin/py3-cmd",
+        "sha256": "12eb48996de77b5e484a4f565b2eb00a3c2534e4d4a7b5a12f86cc55ecfb9248",
+        "size_bytes": 27
+      },
+      {
+        "path": "linux-x86/bin/py3-cmd",
+        "kind": "executable",
+        "sha256": "9c2d36f4a78e588bd4b8f65977d5937c1bdb13528717c5c592e42e5fab930635",
+        "size_bytes": 19219197
+      }
+    ],
+    "python_runtime": {
+      "version": "3.13.1",
+      "arguments": [
+        "-I",
+        "-S",
+        "-B"
+      ],
+      "isolated": true,
+      "no_site": true,
+      "dont_write_bytecode": true,
+      "qualification_exit_code": 0,
+      "qualification_stdout": {
+        "path": "artifacts/build-validation/nezha-pinned-date-v2/probe/python-qualification.stdout",
+        "sha256": "80f551e81540e87d8447208b1a62211a8c3cf4b0a8353ba1edb61f519c26e2a8",
+        "size_bytes": 937
+      },
+      "qualification_stderr": {
+        "path": "artifacts/build-validation/nezha-pinned-date-v2/probe/python-qualification.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    },
+    "nsjail": {
+      "path": "prebuilts/build-tools/linux-x86/bin/nsjail",
+      "sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280",
+      "size_bytes": 284176
+    }
+  },
+  "source_and_sandbox": {
+    "checked_live_source_files": 15,
+    "selected_live_source_and_tool_bytes_rechecked_unchanged": true,
+    "live_version_preimage_rechecked_unchanged": true,
+    "new_helper_absent_from_live_checkout": true,
+    "existing_security_property_patch_0001_preserved": true,
+    "project_heads_and_tracked_status_rechecked_unchanged": true,
+    "existing_local_patches_not_reset": true,
+    "source_android_out_and_fixture_inputs_readonly_verified": true,
+    "separate_mount_network_pid_user_namespaces_verified": true,
+    "all_five_capability_sets_zero": true,
+    "host_unprivileged_execution_claimed": false,
+    "supervisor_stderr_preserved": "Two nsjail UID/GID mapping warnings; kept separate from exact child case diagnostics.",
+    "concurrent_component_build_allowed_and_observed": true,
+    "global_android_out_unchanged_claimed": false,
+    "supervisor": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/orchestration.json",
+      "sha256": "de3886a5775bf3e21b1f73d3ff8df2bf1d03e46dc7c141704be3a07e1fa95fd8",
+      "size_bytes": 5118
+    },
+    "supervisor_stdout": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/supervisor.stdout",
+      "sha256": "0e6e7eeb7bc20fd7f5d417782e82ba413853d8d5e59c443315a11b9949af1800",
+      "size_bytes": 150
+    },
+    "supervisor_stderr": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/supervisor.stderr",
+      "sha256": "971a8c0c5aec45becea4a8d0264715f8cdc33a5723c49b45c99f6a6391392c50",
+      "size_bytes": 315
+    },
+    "observer": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/sandbox-observation.json",
+      "sha256": "73211ce4e8dd16373701ef35eed456a72a4eafb0b90f5a958d7a2ec9a5b2d1ef",
+      "size_bytes": 4219
+    },
+    "mountinfo": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/sandbox-observation.mountinfo",
+      "sha256": "a4bb42fef862c847180541b8ea1035d9b04a0273bc6fbfc61e9b3ddd72cb7fc1",
+      "size_bytes": 1618
+    }
+  },
+  "frozen_launch": {
+    "packet": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/packet.json",
+      "sha256": "62ecf949b8a15c9495fc471e3cf34a3a6cc0e93693ddafafba63e31e38cd1842",
+      "size_bytes": 2922
+    },
+    "launcher_inputs": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launcher-inputs.json",
+      "sha256": "495c00aca5d61737c109135d9ae9e867575ac695df555850cf10f6e0914c614a",
+      "size_bytes": 2670
+    },
+    "launcher": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launch.py",
+      "sha256": "f61f6ed5242e63959d275eeeceb1e796887865058a4722d89d282bd19f348d10",
+      "size_bytes": 6924
+    },
+    "guest_launcher": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launch_guest.py",
+      "sha256": "d15d41cc57a69ac47c50e9f26ae1e98fa2167828461b6f743192d78230ace85c",
+      "size_bytes": 12232
+    },
+    "preparation_verification": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/verification/receipt.json",
+      "sha256": "bb9d5aa8c3a4994f6516b43039b28cc0cfa9979f486ebec38af70044329bfd6d",
+      "size_bytes": 7789
+    },
+    "stage_manifest": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launches/run-v1/stage-manifest.json",
+      "sha256": "8d7642d1c3731aaf6cd2e8cf3803f141878279adef5335a8015e1075a2a491b3",
+      "size_bytes": 2797
+    },
+    "payload_files": 15,
+    "payload_bytes": 170879,
+    "root_command": [
+      "python3",
+      "reports/pinned-version-date-20260829/native-fixture-v2/launch.py",
+      "run-v1",
+      "--run"
+    ],
+    "owner_status": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launches/run-v1/owner-status.log",
+      "sha256": "bda2a552e80441aa4da130f75d1312b574bd07d7b957d8b1f8347409d0a19292",
+      "size_bytes": 1401
+    },
+    "transport_exit_code": 0,
+    "transport_timed_out": false,
+    "transport_uncertain": false,
+    "transport_receipt": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launches/run-v1/transport-receipt.json",
+      "sha256": "9f1c924c2a06cd00c7d9655d0d827f96c528dc51ff4b9944d3f4366f3d72a427",
+      "size_bytes": 758
+    },
+    "transport_stdout": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launches/run-v1/transport.stdout.jsonl",
+      "sha256": "a82b837bc65e3e2d0611765c4a712b4fca2a164743db939b145e07dacc6825fc",
+      "size_bytes": 4762
+    },
+    "transport_stderr": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/launches/run-v1/transport.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    }
+  },
+  "capture": {
+    "manifest": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v2/capture.json",
+      "sha256": "729a79702268f3e3da64228a4e281974e5b0051a6b3464e2667d1c2948b08278",
+      "size_bytes": 56985
+    },
+    "files_rehashed": 279,
+    "bytes_rehashed": 430706
+  },
+  "failed_v1_preserved": {
+    "native_all_passed": false,
+    "cases_executed": 33,
+    "passing_positive_or_legacy_harness_assessments": 9,
+    "failing_expected_negative_harness_assessments": 24,
+    "timeouts": 0,
+    "cause": "The harness did not admit the actual pinned Kati include trace and trailing period; all negative cases exited 1 with the intended failure. V2 changed diagnostic admission and evidence only.",
+    "packet": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v1/packet.json",
+      "sha256": "f781d9ec1a3394e1d496686b30b85c0a4bbba5c82a8ea47052a07bf685e0cfa4",
+      "size_bytes": 2421
+    },
+    "launcher_inputs": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v1/launcher-inputs.json",
+      "sha256": "ac2a30c7805c23e301230d0a8c965f2f76adf86a43f6127ed7e3e787e0f0654f",
+      "size_bytes": 2670
+    },
+    "transport_receipt": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v1/launches/run-v1/transport-receipt.json",
+      "sha256": "caa582fdac653462e299355c7612a9c45cff6a4315ec84a70eb8af6cfbd256be",
+      "size_bytes": 756
+    },
+    "supervisor": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v1-failed/orchestration.json",
+      "sha256": "4bae108e709b838f08b437695d5237367395be3ae0ef362e02b6e04a5b20477f",
+      "size_bytes": 5186
+    },
+    "result": {
+      "path": "artifacts/build-validation/nezha-pinned-date-v1-failed/probe/result.json",
+      "sha256": "02cc2e72064320ec352e370ad6e46ac42794204740da764d78f0494a305671f6",
+      "size_bytes": 112628
+    },
+    "capture": {
+      "manifest": {
+        "path": "artifacts/build-validation/nezha-pinned-date-v1-failed/capture.json",
+        "sha256": "c3bafea764da591ce015212d0c2cf585d21c575fbd1d80f54a02415400a69a7b",
+        "size_bytes": 56985
+      },
+      "files_rehashed": 279,
+      "bytes_rehashed": 384762
+    },
+    "relabeled_as_passed": false
+  },
+  "host_preflight_history": {
+    "initial_lookup": "reports/pinned-version-date-20260829/native-fixture-v2/verification/launcher-receipt.json",
+    "initial_lookup_status": "failed_nonexistent_path",
+    "initial_lookup_evidence": "Root execution report; this failed preliminary lookup is not counted as a successful preflight.",
+    "corrected_receipt": "reports/pinned-version-date-20260829/native-fixture-v2/launcher-inputs.json",
+    "corrected_packet_and_launcher_hashes_rechecked": true,
+    "native_launcher_also_verified_hashes": true,
+    "successful_transport_and_current_result_required": true
+  },
+  "offline_validation": {
+    "harness_tests": 38,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "log": {
+      "path": "reports/pinned-version-date-20260829/native-fixture-v2/verification/offline-tests.log",
+      "sha256": "2fb5a7a463458e7ca80730447ce4a8647fa3ecd2abafaa65c2d9799e450f6875",
+      "size_bytes": 5901
+    },
+    "native_cases_and_offline_tests_are_separate": true,
+    "latest_workspace_suite": {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "tests": 3558,
+      "elapsed_seconds": 153.985,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "log": {
+        "path": "reports/nezha-page-size-20260829/workspace-tests-v1.log",
+        "sha256": "98ce3cc00c46e47996e953942fdfe3296458a934dde14462f57008c5f179015a",
+        "size_bytes": 611862
+      },
+      "validation_receipt": {
+        "path": "reports/nezha-page-size-20260829/validation-v1.json",
+        "sha256": "7cb3294a893a9617331ef8845b50a75fc895bf9accf34e15a78abfff2ab74250",
+        "size_bytes": 1131
+      },
+      "execution": "Separate page-size agent run, completed before this documentation and research update; log and receipt rehashed here.",
+      "native_evidence_substitute": false,
+      "workspace_commit_prefix": "84d63c2"
+    },
+    "documentation_milestone_rechecks": {
+      "public_patch_tests": 12,
+      "native_harness_tests": 38,
+      "skips": 0,
+      "commands": [
+        {
+          "name": "public-patch-tests",
+          "argv": [
+            "python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests",
+            "-p",
+            "test_pinned_version_date_patch.py",
+            "-v"
+          ],
+          "exit_code": 0,
+          "log": {
+            "path": "reports/pinned-version-date-20260829/native-record-validation-v1/public-patch-tests.log",
+            "sha256": "93ea5523d27865bed2c48a51ec4ee177a702ca412fcd36a70cff93a96176e3f8",
+            "size_bytes": 2401
+          }
+        },
+        {
+          "name": "native-harness-tests",
+          "argv": [
+            "python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "reports/pinned-version-date-20260829/native-fixture-v2",
+            "-p",
+            "test_*.py",
+            "-v"
+          ],
+          "exit_code": 0,
+          "log": {
+            "path": "reports/pinned-version-date-20260829/native-record-validation-v1/native-harness-tests.log",
+            "sha256": "9faecfee9d044931071516032ca4f56819c09852ad5122c9f57907b714283011",
+            "size_bytes": 5901
+          }
+        }
+      ],
+      "guest_operations": false
+    }
+  },
+  "remaining_gates": [
+    "Reviewed installation into an explicit source composition with exact preimage/postimage checks.",
+    "Actual lineage_nezha-bp4a-user dumpvars and ordinary Soong configuration, including observed helper environment and Python route.",
+    "Identical explicit epoch across a later actual UTC date without changing clocks.",
+    "Pin all four build metadata inputs and verify regenerated partition properties and images, accounting for order-only date-file dependencies.",
+    "Complete proprietary/generated input, AVB/signing, rollback, partition fit, packaging, first boot and hardware validation."
+  ],
+  "scope": {
+    "ninja_executed": false,
+    "android_images_built_by_fixture": false,
+    "actual_soong_product_configuration_verified": false,
+    "cross_actual_utc_date_reproducibility_verified": false,
+    "full_image_reproducibility_verified": false,
+    "complete_rom_readiness": false,
+    "phone_operations": [],
+    "raw_logs_and_captures_remain_ignored": true
+  }
+}
