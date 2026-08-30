@@ -1,0 +1,114 @@
+diff --git a/config/version.mk b/config/version.mk
+index a852d66ec56492feac5015a5333cbcf297617644..f0b68ed6bda7c3eeb10ce79e80643965152f25b1 100644
+--- a/config/version.mk
++++ b/config/version.mk
+@@ -1,32 +1,66 @@
+ PRODUCT_VERSION_MAJOR = 16
+ PRODUCT_VERSION_MINOR = 0
+ 
+ # Increase EVO Version with each major release.
+ EVO_VERSION_BASE := 11.10
+ EVO_BUILD_TYPE ?= Unofficial
+ 
+ ifeq ($(EVO_BUILD_TYPE),Official)
+ else ifeq ($(EVO_BUILD_TYPE),Unofficial)
+ else
+ $(error EVO_BUILD_TYPE must be Official or Unofficial. Current value: $(EVO_BUILD_TYPE))
+ endif
+ 
+ ifeq ($(WITH_GMS),true)
+ EVO_VERSION := $(EVO_VERSION_BASE)
+ else
+ EVO_VERSION := $(EVO_VERSION_BASE)-Vanilla
+ endif
+ 
++# Optional reproducible version dates. Soong receives BUILD_DATETIME from the
++# environment before product configuration; its later Make date helpers are
++# not available here. Leave ordinary upstream date evaluation unchanged.
++ifneq ($(filter-out undefined file,$(origin _nezha_use_pinned_build_datetime)),)
++$(error _nezha_use_pinned_build_datetime is reserved for config/version.mk)
++endif
++_nezha_use_pinned_build_datetime :=
++ifneq ($(origin NEZHA_USE_PINNED_BUILD_DATETIME),undefined)
++_nezha_use_pinned_build_datetime := $(value NEZHA_USE_PINNED_BUILD_DATETIME)
++endif
++ifneq ($(_nezha_use_pinned_build_datetime),)
++ifneq ($(_nezha_use_pinned_build_datetime),false)
++ifneq ($(_nezha_use_pinned_build_datetime),true)
++$(error NEZHA_USE_PINNED_BUILD_DATETIME must be true, false, or unset)
++endif
++endif
++endif
++
++ifeq ($(_nezha_use_pinned_build_datetime),true)
++ifneq ($(origin BUILD_DATETIME),environment)
++$(error Pinned version dates require BUILD_DATETIME in the soong_ui environment)
++endif
++ifneq ($(filter-out undefined file,$(origin _nezha_pinned_version_date)),)
++$(error _nezha_pinned_version_date is reserved for config/version.mk)
++endif
++# Read the raw environment in isolated Python; never interpolate the epoch.
++_nezha_pinned_version_date := $(shell python3 -I -S -B vendor/lineage/build/tools/nezha_pinned_build_date.py)
++ifeq ($(_nezha_pinned_version_date),)
++$(error Failed to derive the pinned Evolution version date from BUILD_DATETIME)
++endif
++LINEAGE_VERSION := EvolutionX-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(_nezha_pinned_version_date)-$(LINEAGE_BUILD)-$(EVO_VERSION)-$(EVO_BUILD_TYPE)
++LINEAGE_DISPLAY_VERSION := v$(EVO_VERSION)-$(_nezha_pinned_version_date)
++else
+ # Internal version
+ LINEAGE_VERSION := EvolutionX-$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR)-$(shell date +%Y%m%d)-$(LINEAGE_BUILD)-$(EVO_VERSION)-$(EVO_BUILD_TYPE)
+ 
+ # Display version
+ LINEAGE_DISPLAY_VERSION := v$(EVO_VERSION)-$(shell date +%Y%m%d)
++endif
+ 
+ # Evolution X version properties
+ PRODUCT_PRODUCT_PROPERTIES += \
+     ro.evolution.build.type=$(EVO_BUILD_TYPE) \
+     ro.evolution.build.version=$(LINEAGE_VERSION) \
+     ro.evolution.display.version=$(LINEAGE_DISPLAY_VERSION) \
+     ro.evolution.version=$(PRODUCT_VERSION_MAJOR).$(PRODUCT_VERSION_MINOR) \
+     ro.modversion=$(EVO_VERSION)
+diff --git a/build/tools/nezha_pinned_build_date.py b/build/tools/nezha_pinned_build_date.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..6486b25eaeee6e3b89991452fe0a24d0676263b5
+--- /dev/null
++++ b/build/tools/nezha_pinned_build_date.py
+@@ -0,0 +1,37 @@
++#!/usr/bin/env python3
++# Copyright (C) 2026 Nezha bring-up contributors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Format the explicit Soong build epoch once, without consulting the clock."""
++
++from datetime import datetime, timedelta, timezone
++import os
++import re
++import sys
++
++
++MAX_EPOCH = 253402300799  # Last second representable with a four-digit UTC year.
++
++
++def format_build_date(epoch):
++    if not isinstance(epoch, str) or not re.fullmatch(r"0|[1-9][0-9]{0,11}", epoch):
++        raise ValueError("BUILD_DATETIME must be canonical nonnegative ASCII decimal seconds")
++    seconds = int(epoch)
++    if seconds > MAX_EPOCH:
++        raise ValueError("BUILD_DATETIME exceeds the four-digit UTC year range")
++    value = datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(seconds=seconds)
++    return f"{value.year:04d}{value.month:02d}{value.day:02d}"
++
++
++def main():
++    try:
++        value = format_build_date(os.environ.get("BUILD_DATETIME"))
++    except ValueError as error:
++        print(f"nezha_pinned_build_date: {error}", file=sys.stderr)
++        return 1
++    print(value)
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())

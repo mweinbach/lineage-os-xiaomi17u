@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-pinned-version-date-v1",
+  "project": {
+    "path": "vendor/lineage",
+    "commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+    "repository": "https://github.com/Evolution-X/vendor_evolution.git",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0012-pinned-version-date.patch",
+    "sha256": "63b5fd3802881296d51b683fa733e89f05b88f479ba26a69345520fa6bdeb688",
+    "size_bytes": 4462
+  },
+  "source_files": [
+    {
+      "path": "vendor/lineage/config/version.mk",
+      "operation": "modify",
+      "before": {
+        "sha256": "d416c5abb8504f181b5f20362b3a8b4ec7405c729ba8c87e3707f9cb1f431b8e",
+        "size_bytes": 1041
+      },
+      "after": {
+        "sha256": "8453b15e114b1ccc5bf575f261fd88cb2aa59f149ef5ee4d55dd7294875f609a",
+        "size_bytes": 2729
+      },
+      "before_git_blob": "a852d66ec56492feac5015a5333cbcf297617644",
+      "after_git_blob": "f0b68ed6bda7c3eeb10ce79e80643965152f25b1"
+    },
+    {
+      "path": "vendor/lineage/build/tools/nezha_pinned_build_date.py",
+      "operation": "add",
+      "before": null,
+      "after": {
+        "sha256": "04ad67351996879c69732d4e74838a185957d1ccb68ff46a5487ed193d152657",
+        "size_bytes": 1138
+      },
+      "after_git_blob": "6486b25eaeee6e3b89991452fe0a24d0676263b5",
+      "mode": "100644"
+    }
+  ],
+  "capability": {
+    "name": "NEZHA_USE_PINNED_BUILD_DATETIME",
+    "enabled_value": "true",
+    "disabled_values": [
+      "false",
+      ""
+    ],
+    "undefined_means_disabled": true,
+    "other_values_rejected": true,
+    "enabled_automatically": false,
+    "make_expansion_of_raw_value": false,
+    "required_rejected_fixture_values": [
+      "yes",
+      "TRUE",
+      "1",
+      "true false",
+      " true",
+      "true ",
+      "$(strip true)",
+      "$(shell printf true)"
+    ]
+  },
+  "epoch": {
+    "name": "BUILD_DATETIME",
+    "required_make_origin": "environment",
+    "format": "canonical nonnegative ASCII decimal seconds",
+    "minimum": "0",
+    "maximum": "253402300799",
+    "timezone": "UTC",
+    "clock_fallback_when_enabled": false,
+    "date_file_fallback": false,
+    "source_date_epoch_fallback": false,
+    "interpolated_into_shell": false
+  },
+  "behavior": {
+    "enabled_utc_date_computations_per_version_file_evaluation": 1,
+    "legacy_wall_clock_calls_preserved": 2,
+    "changed_variables": [
+      "LINEAGE_VERSION",
+      "LINEAGE_DISPLAY_VERSION"
+    ],
+    "changed_properties": [
+      "ro.evolution.build.version",
+      "ro.evolution.display.version"
+    ],
+    "upstream_disabled_behavior_preserved": true,
+    "missing_or_failed_helper_stops_configuration": true,
+    "readiness_flags_changed": false,
+    "signing_or_rollback_settings_changed": false,
+    "python_arguments": [
+      "-I",
+      "-S",
+      "-B"
+    ],
+    "reserved_make_variables_reject_external_overrides": true
+  },
+  "source_order_evidence": [
+    {
+      "path": "build/soong/ui/build/config.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "92039bce978fe0669dca86aa4d9fef99e100b17230409b89a90bab3ad0f70b72",
+      "size_bytes": 57146,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/config.go",
+      "purpose": "newConfig imports the process environment, consumes an explicit BUILD_DATETIME before product configuration, and otherwise uses the clock"
+    },
+    {
+      "path": "build/soong/ui/build/environment.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "47c5953e21b564833609d3e86e726f1bdd3a2c125b8c743d6c3f88805be55a31",
+      "size_bytes": 5681,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/environment.go",
+      "purpose": "OsEnvironment copies the invoking process environment"
+    },
+    {
+      "path": "build/soong/ui/build/exec.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "28d42149e19c712c53bcc36356b80f199f59a608a7411bd0500f8b2212db8f2d",
+      "size_bytes": 5242,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/exec.go",
+      "purpose": "Command copies Config.Environment into the executed Kati process"
+    },
+    {
+      "path": "build/soong/ui/build/build.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "c97175df364937c82d7891960b29f13ec56c0914cb3f7e73803abbebd81ccca6",
+      "size_bytes": 17275,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/build.go",
+      "purpose": "SetupOutDir writes the selected epoch before runMakeProductConfig; explicit build number/user/hostname inputs have separate defaults"
+    },
+    {
+      "path": "build/soong/ui/build/dumpvars.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "c62c973fcd8f4dda096593cba52dbf81a82aa1c64988d33aecc8ca6083869391",
+      "size_bytes": 11018,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/dumpvars.go",
+      "purpose": "product configuration runs Kati core/config.mk with the copied environment"
+    },
+    {
+      "path": "build/soong/ui/build/kati.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "82a62022c21cc641b1ad9e4aa514aaa6de40b908e620e3e378b4ab2d9db4d3f7",
+      "size_bytes": 14286,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/kati.go",
+      "purpose": "ordinary Kati also uses Config.Environment; only BUILD_NUMBER and BUILD_HOSTNAME are explicitly unset among build metadata"
+    },
+    {
+      "path": "build/soong/ui/build/path.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "e7b8f7263e58b33d3ad992628f69ec9e14a16c506af10c30b9f84262499b5756",
+      "size_bytes": 8590,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/ui/build/path.go",
+      "purpose": "normal build prepends the pinned prebuilts/build-tools/path host directory before product configuration"
+    },
+    {
+      "path": "build/soong/android/build_prop.go",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "1d79c46c0fe1fc5acc47eee6a5849ead785cf15a2d8b06e72c73e0120502151e",
+      "size_bytes": 8092,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/android/build_prop.go",
+      "purpose": "the generated date file is an order-only dependency, so old properties need not refresh when only the epoch changes"
+    },
+    {
+      "path": "build/soong/scripts/gen_build_prop.py",
+      "project": "build/soong",
+      "commit": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "sha256": "c468668749bb678b7dceacec37a91dc0bf9ddbab3ac9997d8e02d577c21f5e2a",
+      "size_bytes": 28275,
+      "capture_path": "reports/dex-import-clc-20260827/source/build/soong/scripts/gen_build_prop.py",
+      "purpose": "core date properties consume the epoch and engineering incremental versions substitute it"
+    },
+    {
+      "path": "build/make/core/config.mk",
+      "project": "build/make",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "6e3fa7096b649fd7cc51e011aeba3cd7d34b16f6681c9344c7eb5f15114a57ee",
+      "size_bytes": 60597,
+      "capture_path": "reports/selinux-source-review-20260827/build/make/core/config.mk",
+      "purpose": "envsetup.mk is included before BUILD_DATETIME_FROM_FILE is defined"
+    },
+    {
+      "path": "build/make/core/envsetup.mk",
+      "project": "build/make",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "17bd8c57f366abaa384614b9ff5872ac162f72739293a1d92ca2d9f9bc443e41",
+      "size_bytes": 45722,
+      "capture_path": "reports/oem-policy-integration-20260829/source-builddate/build/make/core/envsetup.mk",
+      "purpose": "includes product_config.mk while config.mk is evaluating envsetup"
+    },
+    {
+      "path": "build/make/core/product_config.mk",
+      "project": "build/make",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "sha256": "667da5ff1e564abe6b6de8c4bd2d018dcb69f6233f04753ae6d74b477fe07cb2",
+      "size_bytes": 29760,
+      "capture_path": "reports/device-candidate-build-source/core/product_config.mk",
+      "purpose": "imports the selected product while evaluating envsetup"
+    },
+    {
+      "path": "vendor/lineage/config/common.mk",
+      "project": "vendor/lineage",
+      "commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "sha256": "a0b49c75c1055d73e7984c7cab73dc608a9b1b298d7ba710372dd1a1360edf35",
+      "size_bytes": 10466,
+      "capture_path": "upstream/evolution-vendor/config/common.mk",
+      "purpose": "base common.mk includes version.mk; existing 0001 changes unrelated security properties only"
+    },
+    {
+      "path": "vendor/lineage/build/tasks/evolution.mk",
+      "project": "vendor/lineage",
+      "commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "sha256": "bd94d2b71819f79c28c72e9594174eea41687152cc1abd944e6dcd5f736f50a2",
+      "size_bytes": 1506,
+      "capture_path": "upstream/evolution-vendor/build/tasks/evolution.mk",
+      "purpose": "Evolution archive name consumes LINEAGE_VERSION"
+    },
+    {
+      "path": "vendor/lineage/build/tools/createjson.py",
+      "project": "vendor/lineage",
+      "commit": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+      "sha256": "c7a4896d52f88bafdd77d68768c77f069cabf6862a76ce1eda5c86ce9ec7669a",
+      "size_bytes": 4735,
+      "capture_path": "upstream/evolution-vendor/build/tools/createjson.py",
+      "purpose": "OTA JSON receives the archive name and separately reads ro.system.build.date.utc"
+    }
+  ],
+  "source_capture_receipts": [
+    {
+      "path": "reports/dex-import-clc-20260827/source-archives.json",
+      "sha256": "fdd76b4385613cbc30372fd87074f88edfdb9840eac05912c6cd65168f5c8154",
+      "size_bytes": 4554
+    },
+    {
+      "path": "reports/selinux-source-review-20260827/receipt.json",
+      "sha256": "4ea4a3a73c660261310ae4899664ae67737a5e10ac24507dbcc821a08c7cbd13",
+      "size_bytes": 4413
+    },
+    {
+      "path": "reports/device-candidate-build-source/receipt.json",
+      "sha256": "e90d3c07ed7277929475c3d26beb98e22a54e4798eae7362c470c8bec2207a25",
+      "size_bytes": 2297
+    },
+    {
+      "path": "reports/oem-policy-integration-20260829/source-builddate/capture.json",
+      "sha256": "03f8498e84b39dd84246cd067d2f8e796922253d168b1256e961818617453f62",
+      "size_bytes": 529
+    }
+  ],
+  "composition": {
+    "existing_patch_preserved": "patches/evolution/0001-allow-device-to-enforce-security-properties.patch",
+    "existing_patch_touched_file": "vendor/lineage/config/common.mk",
+    "new_patch_touched_existing_file": "vendor/lineage/config/version.mk",
+    "existing_source_compositions_automatically_extended": false,
+    "source_lock_changed": false
+  },
+  "validation_scope": {
+    "offline_helper_and_patch_tests": true,
+    "native_kati_verified": false,
+    "actual_product_configuration_verified": false,
+    "guest_source_installed": false,
+    "images_rebuilt": false,
+    "complete_rom_reproducibility_verified": false,
+    "phone_operations": []
+  },
+  "verification_requirements": [
+    "Before adoption, verify the project revision, exact before bytes, absent new helper, unchanged existing 0001 postimage, and patch hash; replay without fuzz and verify both after files.",
+    "Run the pinned native Kati on an isolated fixture and the actual product with explicit capability and environment BUILD_DATETIME; bind interpreter identity and its actual child environment.",
+    "Exercise disabled and invalid capability values, missing and malformed epoch, helper failure, UTC day/leap boundaries, and two identical epoch invocations across different wall-clock dates.",
+    "Set and record explicit BUILD_NUMBER, BUILD_USERNAME and BUILD_HOSTNAME separately; choose and record the build epoch without changing host clocks or global environment.",
+    "Record actual build_date.txt, build_number.txt, build_hostname.txt, fingerprints and resulting properties from every freshly completed partition. Order-only date dependencies mean changing the environment alone need not refresh existing outputs.",
+    "Do not claim full-image reproducibility until separate complete builds and all proprietary inputs, tools, generated metadata, signing and packaging outputs have been compared."
+  ]
+}
