@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Expanded policy build, export3 host rehearsal and reproducible unchanged-vendor round trip; policy analysis, components, ELF alignment, ODM and image adoption remain open |
+| [Native ROM integration](native-rom-integration.md) | Verified export4 native policy baseline, successful Camera/mi_ext/recovery build and unchanged-vendor round trip; provider integration, detailed component checks and image adoption remain open |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -70,7 +70,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Preserved Xiaomi.eu/live input checks and two reproduced packaging failures |
 | [Original factory Camera APK](factory-camera-apk.md) | Unchanged factory input passes strict privileged/preprocessed packaging; permission grants, effective SELinux label and product selection remain unverified |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Repeated host source packet and verified producer; no guest namespace installation, product membership or APK component result |
-| [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch with passing pinned native fixtures; current Camera artifact rebuild remains separate |
+| [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch and native fixtures; current component build passes, with detailed graph/checker evidence tracked separately |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
 | [Framework-provider source admission](framework-provider-source-admission.md) | Reproducible host v13 candidate, private policy and verified payload consumers; not installed in the v12fa checkpoint |

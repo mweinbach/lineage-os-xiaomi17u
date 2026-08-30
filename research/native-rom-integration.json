@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "expanded-policy-build-and-export3-host-rehearsal-passed-native-analysis-and-components-pending",
+  "checkpoint": "native-v12f-policy-verified-components-passed-provider-and-policy-image-integration-open",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -212,9 +212,10 @@
     "reviewed_get_prop_uses": 2,
     "expected_ordinary_allow_edge_additions": 105,
     "existing_dontaudit_edges_newly_applicable": 7190,
-    "semantic_budget_verified_by_fresh_v12_native_analysis": false,
+    "semantic_budget_verified_by_fresh_v12_native_analysis": true,
     "semantic_budget_verified_by_host_rehearsal": true,
-    "host_rehearsal_record": "host_semantic_rehearsal"
+    "host_rehearsal_record": "host_semantic_rehearsal",
+    "native_verification_evidence": "independent_policy_export4_native_verification"
   },
   "native_recovery_guard_fixtures": {
     "passed": 12,
@@ -838,28 +839,22 @@
   },
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
-    "runner": "page-size agent",
+    "runner": "coordinator",
     "passed": 3558,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 153.985,
-    "code_commit": "84d63c2b62b2e42f4e7b64ac82f15fa4f94daadf",
+    "elapsed_seconds": 163.269,
     "log": {
-      "path": "reports/nezha-page-size-20260829/workspace-tests-v1.log",
-      "sha256": "98ce3cc00c46e47996e953942fdfe3296458a934dde14462f57008c5f179015a",
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-component-milestone-v1.log",
+      "sha256": "d69827d19a7a842872a4f41ee66603e8b87cde311ab1952b67354d110af28b9d",
       "size_bytes": 611862
     },
-    "validation_receipt": {
-      "path": "reports/nezha-page-size-20260829/validation-v1.json",
-      "sha256": "7cb3294a893a9617331ef8845b50a75fc895bf9accf34e15a78abfff2ab74250",
-      "size_bytes": 1131
-    },
-    "scope": "Separate page-size authoring full run before the later d3c29a5 native-date documentation checkpoint. Its passing tests do not approve the held 4096 profile or establish native integration, VSR compatibility or hardware success."
+    "scope": "Fresh coordinator full workspace run after the component milestone; separate from native component, partial policy-analysis, authoring-agent and hardware evidence. It does not approve the held 4096 profile."
   },
   "remaining_gates": [
-    "Complete the active component build, then run the reviewed export3 full native independent analysis with fresh output-byte, assertion, permission and permissive-domain verification",
-    "Native Camera runtime modules, mi_ext and unchanged working76 recovery targets",
+    "Use the verified v12f/export4 policy baseline for separately reviewed provider integration and policy-bearing image derivation; retain the 4 KiB hold and resolve required 16 KiB compatibility without suppressing checks",
+    "Finish detailed graph, fresh checker and generated ODEX/VDEX analysis of the successful Camera runtime, mi_ext and working76 component phase",
     "Reviewed provider source installation and strict native ELF/linker/policy checks",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
     "Metadata-preserving vendor/ODM policy derivation and new hashtree/FEC/AVB/partition-fit evidence",
@@ -1130,6 +1125,27 @@
         "size_bytes": 605303
       },
       "scope": "Coordinator-run full offline workspace suite at unchanged code commit ec21a87745cafc22f36c62cb216a22ac690d8250. The earlier agent 3517-test run, coordinator 3505-test run and focused date-patch rerun remain separate evidence. No native build or hardware claim."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "page-size agent",
+      "passed": 3558,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 153.985,
+      "code_commit": "84d63c2b62b2e42f4e7b64ac82f15fa4f94daadf",
+      "log": {
+        "path": "reports/nezha-page-size-20260829/workspace-tests-v1.log",
+        "sha256": "98ce3cc00c46e47996e953942fdfe3296458a934dde14462f57008c5f179015a",
+        "size_bytes": 611862
+      },
+      "validation_receipt": {
+        "path": "reports/nezha-page-size-20260829/validation-v1.json",
+        "sha256": "7cb3294a893a9617331ef8845b50a75fc895bf9accf34e15a78abfff2ab74250",
+        "size_bytes": 1131
+      },
+      "scope": "Separate page-size authoring full run before the later d3c29a5 native-date documentation checkpoint. Its passing tests do not approve the held 4096 profile or establish native integration, VSR compatibility or hardware success."
     }
   ],
   "previous_v11b_policy": {
@@ -1154,9 +1170,12 @@
     "phase": "policy-v12f-export-1",
     "completed_at": "2026-08-30T00:16:57.719846+00:00",
     "native_build_passed": true,
-    "independent_analysis_status": "export3-host-rehearsal-passed-native-analysis-awaits-component-idle",
+    "independent_analysis_status": "verified-export4",
     "evidence": "native_policy_export_build",
-    "native_assertion_permission_and_permissive_results_not_yet_claimed": true
+    "native_independent_verification_passed": true,
+    "independent_analysis_evidence": "independent_policy_export4_native_verification",
+    "independent_analysis_completed_at_utc": "2026-08-30T02:13:44.762892+00:00",
+    "native_full_analysis_verified": true
   },
   "source_fixup_installation": {
     "label": "run-v12fa",
@@ -1475,9 +1494,9 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "latest_native_observation_utc": "2026-08-30T00:28:11.339588+00:00",
-  "recorded_at_utc": "2026-08-30T01:56:28.236789+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-30T00:16:57.719846+00:00",
+  "latest_native_observation_utc": "2026-08-30T02:13:44.762892+00:00",
+  "recorded_at_utc": "2026-08-30T02:19:04.492091+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T02:03:33.120021+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -1654,31 +1673,6 @@
     "phone_accessed": false,
     "scope": "Read-only input capture for host rehearsal while component compilation is active; not a native analysis result or fresh-check proof."
   },
-  "component_build_pending": {
-    "phase": "components-v12f-1",
-    "request": {
-      "path": "reports/oem-policy-integration-20260829/native-v13f-driver/run-components-v12f-1/request.json",
-      "sha256": "6069f0863543eb45b5000e17f38987cf557c32d6f2c6f7d958e8cfb35b8e9a5f",
-      "size_bytes": 2360
-    },
-    "goals": [
-      "camerax-vendor-extensions.jar",
-      "com.xiaomi.hardware.camera.companion-V1",
-      "miui-cameraopt",
-      "vendor.xiaomi.hardware.postprocservice-V1-java",
-      "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
-      "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
-      "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
-      "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
-      "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so",
-      "mi_extimage",
-      "recoveryimage"
-    ],
-    "status_at_checkpoint": "running-no-completed-result",
-    "camera_apk_selected": false,
-    "component_or_image_pass_claimed": false,
-    "hardware_pass_claimed": false
-  },
   "host_semantic_rehearsal": {
     "proof": {
       "path": "reports/oem-policy-integration-20260829/analysis-v12f-export2-rehearsal/run-v1/aggregate-assignment-proof.json",
@@ -1754,75 +1748,9 @@
     "source_allow_clauses_exactly_two": true,
     "all_global_named_and_anonymous_closures_match": true,
     "all_roles_and_namespaces_match": true,
-    "scope": "Original host-only diagnostic proof over the captured inputs. The unchanged export2 verifier still rejects the aggregate source form. The later complete export3 host rehearsal is recorded separately; no final native analysis, fresh-check binding, three-binary permissive analysis, image adoption or hardware result is claimed."
-  },
-  "next_independent_analysis_adapter": {
-    "label": "export3",
-    "status": "frozen-host-validated-native-pending",
-    "required_aggregate_guard": "Require only property_type, system_property_type and system_public_property_type assignments to preserve the exact old platform-member prefix plus the four restored property types. Preserve every other assignment and all reviewed effect budgets.",
-    "native_analysis_passed": false,
-    "source_policy_changed_by_host_proof": false,
-    "native_execution_status": "pending-component-build-idle",
-    "validation": {
-      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/local-validation-v1.json",
-      "sha256": "46d3d96b21d8907c3ea56d5262546de0c9d12db38a6896f92dd5349a286506b5",
-      "size_bytes": 10844
-    },
-    "frozen_at": "2026-08-30T00:53:01.026415+00:00",
-    "prepared_package": {
-      "baseline_receipt_sha256": "6fe08672416a7752875da29da5a8c2da350fcb6842f0e9492aaa80047b75cfd0",
-      "bytes": 9654116,
-      "driver_destination": "/work/validation/nezha-oem-policy-integration-20260829/analysis-v12f-export3-driver-v1",
-      "export_phase": "v12f-runtime-policy-exports-v1",
-      "file_count": 36,
-      "guest_contacted": false,
-      "installed_integration_manifest_sha256": "084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820",
-      "manifest_sha256": "23676a9a5658e1a4393c887cd62a6c44179e5fd519a2e7b29f1a762a6e106322",
-      "prepare_only": true,
-      "reviewed_property_impact_sha256": "845c63a2b1a395763a7233fe1c019e0b9675efd7c5c5124168b52e53241e8a43",
-      "source_fixup_manifest_sha256": "8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14"
-    },
-    "offline_tests": {
-      "passed": 240,
-      "skipped": 0,
-      "exit_code": 0,
-      "log": {
-        "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/local-validation-v1.tests.stderr",
-        "sha256": "483fcf6c929b0bb0f0d62f0bcc7e624f4cd980de73e2ee2256ea1d0044dbbaa7",
-        "size_bytes": 37382
-      }
-    },
-    "independent_review": {
-      "findings": 0,
-      "independent_host_semantic_replay_passed": true,
-      "reviewer_count": 1,
-      "scoped_tests_passed": 52,
-      "skipped": 0
-    },
-    "adapter_scope": {
-      "exact_authored_four_type_suffix_required": true,
-      "exact_literal_form_per_attribute": 1,
-      "exact_unchanged_platform_prefix_required": true,
-      "general_assignment_comparator_changed": false,
-      "named_attributes": [
-        "property_type",
-        "system_property_type",
-        "system_public_property_type"
-      ],
-      "source_policy_or_cil_changed": false
-    },
-    "native_freshness_and_provenance_checks_retained": true,
-    "next_command_after_live_idle_and_source_state_checks": [
-      "python3",
-      "-I",
-      "-B",
-      "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/run.py",
-      "policy-v12f-export-1",
-      "driver-v1",
-      "analysis-v12f-export3-v1"
-    ],
-    "native_analysis_executed": false,
-    "guest_contacted_by_preparation": false
+    "scope": "Original host-only diagnostic proof over the captured inputs. The unchanged export2 verifier still rejects the aggregate source form. The later complete export3 host rehearsal is recorded separately; no final native analysis, fresh-check binding, three-binary permissive analysis, image adoption or hardware result is claimed.",
+    "subsequent_native_attempt": "independent_policy_export3_native_attempt",
+    "later_successful_native_verification": "independent_policy_export4_native_verification"
   },
   "host_export3_full_rehearsal": {
     "receipt": {
@@ -1849,7 +1777,7 @@
     "policy_or_android_output_modified": false,
     "vm_contacted": false,
     "phone_accessed": false,
-    "scope": "Complete corrected export3 property-delta, public-exporter and OEM-semantic-record functions pass against captured inputs on the host. This supersedes the export2 diagnostic source-form failure only for the corrected host analysis; final native verification remains pending component idle.",
+    "scope": "Complete corrected export3 property-delta, public-exporter and OEM-semantic-record functions passed on captured inputs on the host. Its later native attempt is recorded separately and failed the M4 source-provenance guard after partial verified subresults.",
     "property_delta": {
       "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-rehearsal/run-v1/property-delta.json",
       "sha256": "5740bd707cdf96c2dc32a8bcd9af74216ed61f089accdf0ffec3246a53b3f193",
@@ -1864,7 +1792,9 @@
       "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-rehearsal/run-v1/oem-semantic-record.json",
       "sha256": "97005123084d4c5373962b37e8e37b19ca2f3172254b3fe955564c27ca9194bb",
       "size_bytes": 997
-    }
+    },
+    "subsequent_native_attempt": "independent_policy_export3_native_attempt",
+    "later_successful_native_verification": "independent_policy_export4_native_verification"
   },
   "production_erofs_primitive_probe": {
     "label": "production-erofs-probe-v2",
@@ -2141,5 +2071,400 @@
       "phone_accessed": false,
       "scope": "Actual unchanged-vendor roundtrip with native mkfs, strict fsck, complete export comparisons and two reproducible raw outputs. Physical layout is allowed to differ from stock; neither output is adopted or signed. This is not ODM, policy-replacement, AVB, partition-fit, mount or boot evidence."
     }
+  },
+  "native_component_build": {
+    "phase": "components-v12f-1",
+    "started_at": "2026-08-30T00:21:12.997601+00:00",
+    "completed_at": "2026-08-30T02:03:33.120021+00:00",
+    "elapsed_seconds": 6140.12242,
+    "target_product": "lineage_nezha",
+    "target_release": "bp4a",
+    "variant": "user",
+    "goals": [
+      "camerax-vendor-extensions.jar",
+      "com.xiaomi.hardware.camera.companion-V1",
+      "miui-cameraopt",
+      "vendor.xiaomi.hardware.postprocservice-V1-java",
+      "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
+      "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
+      "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
+      "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
+      "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so",
+      "mi_extimage",
+      "recoveryimage"
+    ],
+    "exit_code": 0,
+    "build_passed": true,
+    "source_inputs_unchanged": true,
+    "native_sandbox_verified": true,
+    "timed_out": false,
+    "sandbox_fallback": false,
+    "remaining_build_processes": [],
+    "result": {
+      "path": "artifacts/build-validation/nezha-components-v12f-1/result.json",
+      "sha256": "f878a247245662d2cf4c83679b25b01097a515107b89968195939a26bae22e86",
+      "size_bytes": 7382
+    },
+    "build_log": {
+      "path": "artifacts/build-validation/nezha-components-v12f-1/build.log",
+      "sha256": "1f4c1b018e1f87c53e013f81dc89ef165631345823a5ba86ac3fe677c3a8b357",
+      "size_bytes": 3174241
+    },
+    "source_inputs": {
+      "path": "artifacts/build-validation/nezha-components-v12f-1/source-inputs.json",
+      "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
+      "size_bytes": 21918
+    },
+    "sandbox": {
+      "path": "artifacts/build-validation/nezha-components-v12f-1/sandbox.json",
+      "sha256": "d5ada5ea953662d64a069eb5578bdc410d59a62c69e05b5ef8e0e2c110a7f0c4",
+      "size_bytes": 1850
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-components-v12f-1/capture.json",
+      "sha256": "40ae9146587af4b6c039d8367992e8ac65183d4da4623709be5e056b1bf43d76",
+      "size_bytes": 900
+    },
+    "capture_files": 5,
+    "capture_bytes": 3207797,
+    "all_build_capture_files_rehashed": true,
+    "installed_capture": {
+      "path": "artifacts/build-validation/nezha-components-v12f-1-installed/capture.json",
+      "sha256": "b704645a72fddab27a388f444054a6a42d4613e721d17d4cb32a14e6513c3a37",
+      "size_bytes": 15468
+    },
+    "installed_capture_completed_at": "2026-08-30T02:05:25.701175+00:00",
+    "installed_outputs": 11,
+    "all_installed_payloads_independently_rehashed": true,
+    "payload_inspection": {
+      "path": "reports/oem-policy-integration-20260829/components-v12f-artifact-review/installed-payload-review-v1.json",
+      "sha256": "9229fd36b5c9f26fd5afea1d62cad8b6a596b5ba8f964d867facb564ccb3670e",
+      "size_bytes": 9372
+    },
+    "camera_payloads_byte_identical_to_inputs": 9,
+    "recovery_image": {
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600
+    },
+    "mi_ext_image": {
+      "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+      "size_bytes": 111198208
+    },
+    "fresh_dexpreopt_actions_observed_in_build_log": 4,
+    "dexpreopt_log_lines": [
+      24204,
+      24205,
+      24206,
+      24207
+    ],
+    "odex_vdex_install_actions_observed_in_build_log": 8,
+    "odex_vdex_install_log_lines": [
+      24208,
+      24209,
+      24210,
+      24211,
+      24212,
+      24213,
+      24214,
+      24215
+    ],
+    "detailed_graph_checker_and_generated_output_analysis_complete": false,
+    "fresh_independent_art_or_elf_checks_verified": false,
+    "full_avb_chain_verified": false,
+    "camera_apk_selected_or_built": false,
+    "complete_rom_built": false,
+    "phone_accessed": false,
+    "scope": "Successful actual eleven-goal Android component phase plus independent host inspection of the exact installed base payloads. Log evidence records four dexpreopt and eight ODEX/VDEX install actions; complete graph, checker and generated-output verification remains separate. No Camera APK, full image set, complete AVB chain or hardware result is established."
+  },
+  "component_build_request": {
+    "phase": "components-v12f-1",
+    "request": {
+      "path": "reports/oem-policy-integration-20260829/native-v13f-driver/run-components-v12f-1/request.json",
+      "sha256": "6069f0863543eb45b5000e17f38987cf557c32d6f2c6f7d958e8cfb35b8e9a5f",
+      "size_bytes": 2360
+    },
+    "goals": [
+      "camerax-vendor-extensions.jar",
+      "com.xiaomi.hardware.camera.companion-V1",
+      "miui-cameraopt",
+      "vendor.xiaomi.hardware.postprocservice-V1-java",
+      "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
+      "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
+      "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
+      "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
+      "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so",
+      "mi_extimage",
+      "recoveryimage"
+    ],
+    "status_at_checkpoint": "completed-passed-see-native_component_build",
+    "camera_apk_selected": false,
+    "component_or_image_pass_claimed": true,
+    "hardware_pass_claimed": false,
+    "component_build_passed": true,
+    "complete_rom_pass_claimed": false
+  },
+  "independent_policy_export3_native_attempt": {
+    "phase": "analysis-v12f-export3-v1",
+    "native_analysis_executed": true,
+    "passed": false,
+    "failure_stage": "property-context M4 source-provenance guard",
+    "diagnostic": "native property-context M4 did not consume exactly the authored source",
+    "failure_log": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/driver-v1-analysis-v12f-export3-v1.stderr.log",
+      "sha256": "e0508b0f024892125447bf15beda297d044db41a112ce4cc2f12cfa999a51e22",
+      "size_bytes": 1753
+    },
+    "semantic_comparison": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export3-v1-failure-evidence/results/semantic-comparison.json",
+      "sha256": "d4a6904b8613ceef9804b1a82099e4543d45ef20a5061288344a49626d4fe1a2",
+      "size_bytes": 71878
+    },
+    "semantic_comparison_status": "verified",
+    "original_assertions_retained_in_partial_comparison": 6366,
+    "fresh_context_structural_actions": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export3-v1-failure-evidence/results/native-context-actions.json",
+      "sha256": "9429ac0ed87003bc7028fa931d16b3847faf23ebb99d732b3e7474b1c13441a0",
+      "size_bytes": 92979
+    },
+    "fresh_context_structural_checks_verified": 9,
+    "failure_evidence_capture": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export3-v1-failure-evidence/capture.json",
+      "sha256": "fad34c05b51eb87d90a15217a4e76309eb013cef53d9f9949f75dd2903d81b5f",
+      "size_bytes": 5325
+    },
+    "captured_files": 31,
+    "captured_bytes": 29031281,
+    "all_failure_capture_files_rehashed": true,
+    "initial_empty_capture": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export3-v1-failed/capture.json",
+      "sha256": "2d6f6fcda2ed83d9f548c7c0a5b87db2181d508cb6dafd92731816d5fc43393b",
+      "size_bytes": 151
+    },
+    "initial_empty_capture_is_proof": false,
+    "complete_native_analysis_verified": false,
+    "three_binary_permissive_analysis_claimed": false,
+    "policy_failure_established": false,
+    "policy_changed": false,
+    "scope": "The actual native attempt produced verified semantic-comparison and nine fresh-check subresults before the producer guard rejected newline interleaving. Final producer provenance and remaining independent analysis are incomplete; this is neither a policy failure nor a completed native analysis pass.",
+    "later_successful_verification": "independent_policy_export4_native_verification"
+  },
+  "previous_independent_analysis_adapters": [
+    {
+      "label": "export3",
+      "status": "native-executed-failed-property-context-m4-source-guard",
+      "required_aggregate_guard": "Require only property_type, system_property_type and system_public_property_type assignments to preserve the exact old platform-member prefix plus the four restored property types. Preserve every other assignment and all reviewed effect budgets.",
+      "native_analysis_passed": false,
+      "source_policy_changed_by_host_proof": false,
+      "native_execution_status": "failed-see-independent_policy_export3_native_attempt",
+      "validation": {
+        "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/local-validation-v1.json",
+        "sha256": "46d3d96b21d8907c3ea56d5262546de0c9d12db38a6896f92dd5349a286506b5",
+        "size_bytes": 10844
+      },
+      "frozen_at": "2026-08-30T00:53:01.026415+00:00",
+      "prepared_package": {
+        "baseline_receipt_sha256": "6fe08672416a7752875da29da5a8c2da350fcb6842f0e9492aaa80047b75cfd0",
+        "bytes": 9654116,
+        "driver_destination": "/work/validation/nezha-oem-policy-integration-20260829/analysis-v12f-export3-driver-v1",
+        "export_phase": "v12f-runtime-policy-exports-v1",
+        "file_count": 36,
+        "guest_contacted": false,
+        "installed_integration_manifest_sha256": "084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820",
+        "manifest_sha256": "23676a9a5658e1a4393c887cd62a6c44179e5fd519a2e7b29f1a762a6e106322",
+        "prepare_only": true,
+        "reviewed_property_impact_sha256": "845c63a2b1a395763a7233fe1c019e0b9675efd7c5c5124168b52e53241e8a43",
+        "source_fixup_manifest_sha256": "8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14"
+      },
+      "offline_tests": {
+        "passed": 240,
+        "skipped": 0,
+        "exit_code": 0,
+        "log": {
+          "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/local-validation-v1.tests.stderr",
+          "sha256": "483fcf6c929b0bb0f0d62f0bcc7e624f4cd980de73e2ee2256ea1d0044dbbaa7",
+          "size_bytes": 37382
+        }
+      },
+      "independent_review": {
+        "findings": 0,
+        "independent_host_semantic_replay_passed": true,
+        "reviewer_count": 1,
+        "scoped_tests_passed": 52,
+        "skipped": 0
+      },
+      "adapter_scope": {
+        "exact_authored_four_type_suffix_required": true,
+        "exact_literal_form_per_attribute": 1,
+        "exact_unchanged_platform_prefix_required": true,
+        "general_assignment_comparator_changed": false,
+        "named_attributes": [
+          "property_type",
+          "system_property_type",
+          "system_public_property_type"
+        ],
+        "source_policy_or_cil_changed": false
+      },
+      "native_freshness_and_provenance_checks_retained": true,
+      "native_analysis_executed": true,
+      "guest_contacted_by_preparation": false,
+      "attempted_command": [
+        "python3",
+        "-I",
+        "-B",
+        "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/run.py",
+        "policy-v12f-export-1",
+        "driver-v1",
+        "analysis-v12f-export3-v1"
+      ]
+    },
+    {
+      "label": "export4",
+      "status": "superseded-preparation-checkpoint-see-verified-export4",
+      "reason": "Bind the pinned newline-interleaved property-context M4 producer form while retaining all exact source and native checks.",
+      "native_analysis_executed": false,
+      "native_analysis_passed": false,
+      "policy_changed": false
+    }
+  ],
+  "independent_policy_export4_native_verification": {
+    "operation": "verify-native-oem-properties-v12f-export4",
+    "status": "verified",
+    "phase": "analysis-v12f-export4-v1",
+    "build_phase": "policy-v12f-export-1",
+    "completed_at_utc": "2026-08-30T02:13:44.762892+00:00",
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export4-v1/receipt.json",
+      "sha256": "dd338730212aadf7dde9847cd63f60e5023c3c1d5c2fae91ff3d199593219c95",
+      "size_bytes": 342300
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export4-v1/capture.json",
+      "sha256": "c3396e680b8b1cd25e3f3a8e12fd4325f4b129c9f85b0717572d5bc0e18be1f3",
+      "size_bytes": 11709
+    },
+    "captured_files": 67,
+    "captured_bytes": 38863497,
+    "all_capture_files_independently_rehashed": true,
+    "driver_preparation": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export4-driver/local-validation-v1.json",
+      "sha256": "978fe0bfbf313fa1cb48f7b48e11014106670ff9bbffbd334e0a1191fd476fb2",
+      "size_bytes": 6619
+    },
+    "driver_manifest_sha256": "ac6744d85513328c954fbbd3a64643ccdf369b3345883c333832c3c436fdea1f",
+    "offline_driver_tests_passed": 243,
+    "offline_driver_tests_skipped": 0,
+    "source_exact_correction": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export4-driver/evidence/correction.json",
+      "sha256": "92d5792bad507e220b83b5257e6ec0657d7717c73a243452d136b2e997cd2c2b",
+      "size_bytes": 2012
+    },
+    "correction_scope": "Require the pinned newline file after every M4 context input, including flagging_macros; do not filter missing or additional inputs.",
+    "original_assertion_statements_retained": 6366,
+    "original_assertion_statements_identical": true,
+    "concrete_rule_effect_counts": {
+      "allow": {
+        "added": 105,
+        "removed": 0
+      },
+      "auditallow": {
+        "added": 0,
+        "removed": 0
+      },
+      "dontaudit": {
+        "added": 7190,
+        "removed": 0
+      },
+      "neverallow": {
+        "added": 28604,
+        "removed": 0
+      }
+    },
+    "new_dontaudit_statements": 0,
+    "denial_logging_unchanged": false,
+    "effect_scope": "7190 existing-rule dontaudit effects become applicable, and 28604 concrete neverallow coverage effects are added under unchanged assertions. These are not new assertion statements.",
+    "strict_compiler_flags_verified": true,
+    "actual_compiler_input_count": 10,
+    "compiler_temporary_to_analyzed_final_copy_verified": true,
+    "native_context_structural_checks_verified": 9,
+    "fresh_oem_guard_verified": true,
+    "complete_oem_guard_result_independently_rebound": true,
+    "native_m4_producer_graphs_verified": 3,
+    "native_api_202504_mapping_producers_verified": 3,
+    "all_guarded_inputs_unchanged": true,
+    "bound_input_records": 251,
+    "permissive_analyses": [
+      {
+        "name": "combined",
+        "binary_sha256": "b9c1577a546bf1d1ae15b59b4c03d7fe594eba6cef8963d30051c7e165fac8eb",
+        "size_bytes": 1515262,
+        "exit_code": 0,
+        "unfiltered": true,
+        "zero_permissive_domains": true,
+        "sandbox_observed": true,
+        "stdout_bytes": 0
+      },
+      {
+        "name": "source-precompiled",
+        "binary_sha256": "ae65d4463d670412ec49ad434a4e51554cdbba13ce8e1f8514dfe5bfe2cfdc87",
+        "size_bytes": 722232,
+        "exit_code": 0,
+        "unfiltered": true,
+        "zero_permissive_domains": true,
+        "sandbox_observed": true,
+        "stdout_bytes": 0
+      },
+      {
+        "name": "source-neverallows",
+        "binary_sha256": "fc9a6da66f06840638501e9558c4e737681ba2b643a471ee05e2049cff7d6ab5",
+        "size_bytes": 774934,
+        "exit_code": 0,
+        "unfiltered": true,
+        "zero_permissive_domains": true,
+        "sandbox_observed": true,
+        "stdout_bytes": 0
+      }
+    ],
+    "normal_android_neverallows_enabled": true,
+    "helper_property_write_capability_disabled": true,
+    "provider_profile_selected": false,
+    "full_treble_apk_labeling_pass": false,
+    "runtime_mls_evaluation_performed": false,
+    "embedded_python_code_equivalence_independently_proven": false,
+    "policy_compiler_replayed": false,
+    "source_or_android_output_modified": false,
+    "images_changed": false,
+    "complete_rom_or_runtime_support_proven": false,
+    "phone_accessed": false,
+    "scope": "Complete actual native verification of the installed v12fa/four-property source baseline against the pinned v11 corpus and successful export build. Provider policy remains unselected, retained vendor/ODM images remain original, and image adoption, complete Treble APK labeling, packaging and hardware evidence remain separate."
+  },
+  "current_independent_analysis_adapter": {
+    "label": "export4",
+    "status": "actual-native-verification-passed",
+    "native_analysis_executed": true,
+    "native_analysis_passed": true,
+    "evidence": "independent_policy_export4_native_verification",
+    "prepared_package": {
+      "baseline_receipt_sha256": "6fe08672416a7752875da29da5a8c2da350fcb6842f0e9492aaa80047b75cfd0",
+      "bytes": 9654636,
+      "driver_destination": "/work/validation/nezha-oem-policy-integration-20260829/analysis-v12f-export4-driver-v1",
+      "export_phase": "v12f-runtime-policy-exports-v1",
+      "file_count": 36,
+      "guest_contacted": false,
+      "installed_integration_manifest_sha256": "084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820",
+      "manifest_sha256": "ac6744d85513328c954fbbd3a64643ccdf369b3345883c333832c3c436fdea1f",
+      "prepare_only": true,
+      "reviewed_property_impact_sha256": "845c63a2b1a395763a7233fe1c019e0b9675efd7c5c5124168b52e53241e8a43",
+      "source_fixup_manifest_sha256": "8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14"
+    },
+    "executed_command": [
+      "python3",
+      "-I",
+      "-B",
+      "reports/oem-policy-integration-20260829/analysis-v12f-export4-driver/run.py",
+      "policy-v12f-export-1",
+      "driver-v1",
+      "analysis-v12f-export4-v1"
+    ],
+    "policy_changed": false
   }
 }

@@ -1,18 +1,24 @@
 # Native ROM integration after v11b
 
+The independent **analysis-v12f-export4-v1** native verification passed at
+**2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
+reviewed property effects and zero permissive domains in three binaries.
+Source/M4, API mapping, compiler, OEM guard and nine fresh check bindings pass.
+This is the current v12f policy baseline; providers and policy-image adoption
+remain separate. The Camera/mi_ext/recovery phase also passes, with all eleven
+installed base payloads inspected and detailed component checks still pending.
+
 The expanded **policy-v12f-export-1** build passed at **2026-08-30 00:16:57 UTC**
 (August 29 in New York), installing the missing runtime CIL/mapping outputs and
 freshly executing the compiler, OEM guard and nine factory checks. Its 35 main
-Ninja actions follow 162 configuration steps. Independent verification now
-passes runtime/compiler equality but stopped before semantics while hashing a
+Ninja actions follow 162 configuration steps. The first independent verification
+passed runtime/compiler equality but stopped before semantics while hashing a
 build tool larger than its reader bound. Host rehearsal then verified the exact
-aggregate-property representation and reviewed effect budgets. The complete
-export3 host rehearsal now passes, but native verification awaits an idle
-component build. Export2 remains held; the running Camera/mi_ext/recovery build
-has no result yet.
-[v11b](oem-policy-integration.md) remains the latest completed independent native
-comparison, retaining all 6,366 assertions and zero permissive domains in
-three binaries.
+aggregate-property representation and reviewed effect budgets. Export3 later
+ran natively, producing a verified semantic comparison and nine fresh check
+records before its M4 source guard rejected newline interleaving. The successful
+export4 correction below is a separate result; export2 remains held.
+[v11b](oem-policy-integration.md) remains the preserved comparison baseline.
 
 The first **v12e** build remains a recorded Kati failure at **22:19:27 UTC**:
 `build/make/core/Makefile:4776` read undefined `BOARD_MI_EXT_IMAGE_NO_FLASHALL`
@@ -45,9 +51,9 @@ volume; no new VM, attachment or sync was created.
 
 The property contract budgets **105 added ordinary allow edges** and records
 **7,190 existing dontaudit edges that become applicable** through the new
-property memberships. These are intended semantic changes, not a native v12
-analysis result. A successful rebuild must independently verify this budget,
-the logging effect, source/M4 mappings, all assertions and enforcing binaries.
+property memberships. The later export4 native analysis independently verifies
+this budget, the logging effect, source/M4 mappings, all assertions and enforcing
+binaries; the input contract alone did not establish those results.
 The provider-policy extension is a later, distinct input set.
 
 Staging completed at **22:06:35 UTC**; installation completed at **22:10:41 UTC**.
@@ -203,10 +209,9 @@ Full identities and the graph-audit receipt are in the research record. The
 requested policy-compiler targets did not guarantee that these runtime install
 targets ran. The later expanded 25-target build preserved 11 previous outputs
 and forced fresh execution through the normal graph; no hand-edited or manually
-copied generated CIL was substituted. Until a new native independent analysis
-passes, no native v12 assertion count, concrete permission delta, dontaudit
-effect or three-binary permissive result is claimed. The failed
-analysis and its captured commands remain preserved.
+copied generated CIL was substituted. That failed attempt establishes no
+semantic or permissive result; the later successful export4 analysis is separate.
+The failed analysis and its captured commands remain preserved.
 
 ## Expanded runtime exports and the next verification failure
 
@@ -260,8 +265,7 @@ The corrected **export3** adapter's complete host rehearsal passed at
 record. All 22 captured files and 47 host input bindings were rehashed, including
 the seven runtime/compiler pairs. This runs the corrected analysis against
 captured inputs, but does not verify fresh native checks, native sandboxing or
-permissive binaries. Its native analysis and fresh check bindings remain
-required after the active component build is idle.
+permissive binaries. The subsequent native attempt is recorded separately below.
 
 The final export3 package is frozen at manifest
 `23676a9a5658e1a4393c887cd62a6c44179e5fd519a2e7b29f1a762a6e106322`:
@@ -269,9 +273,65 @@ The final export3 package is frozen at manifest
 independent review found no remaining issue. The record binds the exact next
 command; package preparation did not contact the guest or run native analysis.
 
-The active component request selects the nine exact Camera runtime modules,
-`mi_extimage` and `recoveryimage`. It does not select the Camera APK or establish
-any artifact or hardware result until its actual completion and inspections.
+The native **analysis-v12f-export3-v1** attempt produced a verified semantic
+comparison and nine independently fresh context/structural action records.
+It then failed with `native property-context M4 did not consume exactly the
+authored source`: the guard did not model the command's newline interleaving.
+The 31-file failure capture preserves those partial results. An earlier empty
+capture from the wrong result path is also retained and proves nothing. This
+failure does not establish a policy violation or a complete analysis pass.
+The source-exact export4 correction and its later successful execution are
+recorded below; export3 remains failed.
+
+## Verified current native policy baseline
+
+**analysis-v12f-export4-v1** completed at **02:13:44 UTC**, status `verified`,
+against the actual `policy-v12f-export-1` build. The correction binds the pinned
+`buildGeneralContexts` behavior: a newline file follows every M4 input,
+including `flagging_macros`. It requires the exact sequence without dropping,
+ignoring or changing inputs. Its 243 offline tests passed before native use;
+no source policy or generated CIL was edited.
+
+The native receipt verifies all 6,366 original assertion statements and exactly
+105 added allow effects, 7,190 newly applicable inherited dontaudit effects and
+28,604 added neverallow coverage effects, with zero removals. These are concrete
+effects under the retained assertions, not new assertion statements. Three
+unfiltered `sepolicy-analyze` runs report zero permissive domains: the factory
+combined binary and both source-policy binaries. Strict compiler flags, source/M4
+and API mapping producers, the fresh OEM action, nine context/structural actions,
+and final input rehashes all pass. Runtime MLS evaluation and embedded Python
+bytecode equivalence are not claimed by this analysis.
+
+The receipt is **342,300 bytes**, SHA256
+`dd338730212aadf7dde9847cd63f60e5023c3c1d5c2fae91ff3d199593219c95`.
+The 67-file capture totals 38,863,497 bytes. The stdout serialization has a
+different whitespace/hash representation; it is not substituted for this file.
+All guarded inputs remain unchanged, provider policy is unselected, and no
+Android source/output, image or phone mutation occurred. Full Treble APK labeling,
+provider integration, policy-bearing vendor/ODM images, packaging and boot
+remain unverified.
+
+## Completed Camera, mi_ext and recovery component build
+
+**components-v12f-1** ran from **00:21:12 to 02:03:33 UTC**, exit 0, taking
+102 minutes 20 seconds. Its eleven goals are the nine exact Camera runtime
+modules, `mi_extimage` and `recoveryimage`. Source inputs remained unchanged,
+the native sandbox was verified, and no timeout, fallback or remaining build
+process was recorded. The five-file build capture totals 3,207,797 bytes.
+
+All eleven installed outputs were captured and inspected. The four JARs,
+four XML registrations and JNI library match the admitted payload bytes;
+JAR member content, DEX checksums/alignment, XML registrations and the ARM64
+ELF header pass the separate host inspection. Recovery is exact working76
+(`a130ba75…018e`) and mi_ext is the unchanged factory image (`60f79117…e196`).
+The inspection does not independently verify native producer execution,
+fresh ART/ELF checks or a complete AVB chain.
+
+The actual build log records four Camera dexpreopt actions at lines
+24204–24207 and eight ODEX/VDEX installs at 24208–24215. Detailed graph,
+configuration, checker and generated-output analysis remains pending. No
+Camera APK was selected or built; these results do not establish complete
+framework images, packaging, first Evolution boot or Camera/Leica operation.
 
 ## Preparation that is not installed in v12fa
 
@@ -325,10 +385,10 @@ it does not execute Ninja, the metadata verifier or the target-files recipe.
 The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
-The latest recorded `python3 -m unittest discover -s tests -v` run, by the
-page-size agent, passed **3,558 tests in 153.985 seconds with zero skips** at
-the `84d63c2` code checkpoint. The later `d3c29a5` native-date documentation
-records separate focused rechecks.
+The latest coordinator `python3 -m unittest discover -s tests -v` run passed
+**3,558 tests in 163.269 seconds with zero skips**. The separate page-size agent
+run passed the same 3,558 tests in 153.985 seconds at `84d63c2`; the later
+`d3c29a5` native-date documentation records separate focused rechecks.
 The previous coordinator full run passed **3,517 tests in 176.383 seconds**.
 The date-patch agent's separate full run passed the same 3,517 tests in
 156.752 seconds, and the
@@ -448,12 +508,12 @@ factory-combined binary. Original proprietary images remain untouched.
 
 ## Next build sequence
 
-Complete the current component build, then run the reviewed export3 native
-analysis against consistent runtime exports, actual compiler inputs and fresh
-check evidence. Preserve the separate host-rehearsal scope.
-Build and inspect the current Camera runtime modules, mi_ext and exact working76
-recovery targets. Admit the provider inputs separately and complete the normal
-system, system_ext and product image dependencies. Full VINTF must include the
+Use the verified v12f/export4 baseline for the next separately reviewed provider
+integration and policy-image derivation. Keep the 4 KiB experiment held and
+resolve the 16 KiB compatibility requirement without lowering checks. Finish
+the detailed Camera component graph/checker/output review; the eleven base
+payloads already pass inspection. Admit the provider inputs separately and
+complete the normal system, system_ext and product image dependencies. Full VINTF must include the
 actual framework and vendor APEX manifests, explicit kernel requirements and
 the original shipping-API evidence; full Treble labeling requires real APK
 inventories.
