@@ -283,9 +283,10 @@ any artifact or hardware result until its actual completion and inspections.
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Fresh unchanged-signature, ZIP CRC and strict library-name checks; two real validator failures remain reproduced for the Xiaomi.eu/live input | This input stays unselected; its code findings do not transfer to the distinct factory DEX payloads |
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
+| [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
 | [Policy-image input preparation](policy-image-inputs.md) | Commit `3cb17cb` binds exact five-file replacement inputs, complete stock manifests, two TAR preparations and finite production limits | Seven current native-policy record pins remain missing; actual production preparation, native writer execution, AVB and image adoption remain unverified |
-| [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability for the two Evolution version-date strings, preserving the default path | Guest admission, native Kati/helper-environment checks and actual output inspection; not enabled in this build or proof of reproducible images |
+| [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
 
 The metadata projection is content-only packaging input. It is not a full
 filesystem inventory, an APK inventory or proof that a rebuilt partition
@@ -304,9 +305,18 @@ composition. This candidate remains uninstalled in the guest.
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
 finds 22 of the 26 provider ELFs use 4 KiB load alignment; the other four use
-16 KiB. The snapshot was collected during the component build. No native ELF
-checker ran for this inspection, and resolution is under review; no page-size
-configuration change or check exception is selected here.
+16 KiB. The snapshot was collected during the component build. The optional
+[4 KiB experiment](nezha-page-size.md), commit `84d63c2`, and its host v13g
+candidate are on hold and unadopted. Lowering the checker threshold does not
+resolve the pinned 16 KiB/VSR requirement. Active v12fa remains at `16384` with
+checking enabled; this experiment is not approved as the next integration.
+
+The [native date fixture record](../research/pinned-build-metadata-native.json)
+verifies nine positive/legacy cases and 24 specific negative outcomes, with
+zero skips, at **01:33:47 UTC**. Source and Android output mounts remained
+read-only. The live date patch/helper were not installed, and the first failed
+diagnostic harness is preserved. This is not an ordinary product configuration,
+an actual clock-rollover test or a reproducible-image result.
 
 The metadata Kati probe completed at **22:39:19 UTC** with 14 positive and 29
 specific negative cases, source and Android outputs unchanged. It parses the
@@ -315,9 +325,13 @@ it does not execute Ninja, the metadata verifier or the target-files recipe.
 The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
-The coordinator's latest full `python3 -m unittest discover -s tests -v` run
-passed **3,517 tests in 176.383 seconds with zero skips**. The date-patch agent's
-separate full run passed the same 3,517 tests in 156.752 seconds, and the
+The latest recorded `python3 -m unittest discover -s tests -v` run, by the
+page-size agent, passed **3,558 tests in 153.985 seconds with zero skips** at
+the `84d63c2` code checkpoint. The later `d3c29a5` native-date documentation
+records separate focused rechecks.
+The previous coordinator full run passed **3,517 tests in 176.383 seconds**.
+The date-patch agent's separate full run passed the same 3,517 tests in
+156.752 seconds, and the
 coordinator also reran its 12 focused tests successfully. The earlier
 coordinator full run passed **3,505 tests in 161.056 seconds**, following the
 3,303-, 3,336- and 3,363-test checkpoints. These are workspace-tooling results,
@@ -349,6 +363,7 @@ The pinned `external/erofs-utils` revision remains
 | Read-only stock v2 | 6 | 0 | 0 | Both original images export completely and pass upstream fsck; 3,910 vendor and 3,059 ODM entries are recorded |
 | Synthetic writer round trip | 11 | 6 | 0 | Both fixture partitions reproduce the exact five-file change across two independent derivations; all six upstream empty-xattr checks fail |
 | Production file-size primitives v2 | 4 | 0 | 0 | Finite 2 GiB/6 GiB syscall limits, sparse readback/cleanup, bounded stdout overflow and input preservation pass; no production mkfs execution |
+| Full unchanged-vendor v2 | 8 | 0 | 0 | Two independent TAR/image/export passes preserve the complete stock vendor contents and nonphysical metadata; exact 2 GiB recipe qualified, no policy adoption |
 
 The stock failure exposed an invalid exporter assumption that a shared xattr
 table cannot begin at block zero. The narrow C correction, committed as
@@ -361,8 +376,9 @@ qualification completed at **23:47:05 UTC**, with source, Android outputs and
 original images unchanged. The tool capture alone is not build provenance;
 the separate successful C build and unchanged source manifest supply that
 binding. All exported stock inode timestamps have zero fractional nanoseconds,
-and the stock receipts report no hardlink groups. A complete writer round trip
-of the factory images is still unverified. The existing bounds
+and the stock receipts report no hardlink groups. At that checkpoint neither
+factory filesystem had a complete writer round trip; the later vendor result
+is recorded below. The existing bounds
 checks remain. The first
 native fixture attempts and their resource-limit failures are retained.
 
@@ -393,9 +409,34 @@ reject oversized growth and verify a bounded sparse write at the last valid
 byte; the overflow case terminates the whole process group and drains both
 pipes. All four checks pass, with zero skips, and all 59 captured files rehash.
 The v1 compiler-planning failure remains recorded. This qualifies only the
-file-size/log primitives: `mkfs_production_execution_qualified` remains false.
-Actual full-TAR mkfs execution, fallback/spool behavior, disk headroom, complete
-filesystem preservation and image/AVB admission still require evidence.
+file-size/log primitives: its `mkfs_production_execution_qualified` remains
+false. The separate later vendor run supplies the bounded writer evidence below.
+
+The later **full-original-vendor v1** attempt remains failed. Fresh full export
+and original structure/data/xattr checks passed, and fsck extraction completed.
+The harness then required the wrong completion diagnostic for extraction and
+stopped before TAR construction or mkfs image creation. No derived or signed
+image resulted. V2 narrows completion checks by fsck role and passes 28 offline
+tests without relabeling that failed attempt.
+
+The actual **full-original-vendor v2** run then passed all **eight native checks,
+zero skips**. Two independently assembled 1,643,234,816-byte TARs have SHA256
+`e3e4f2c88b4252adc303bbe0b240f2a7a1ca8d982f51cdc897c604ce872f51ff`.
+Both 941,744,128-byte raw images have SHA256
+`63008bee074d0030630b502c0bf4a396c26419b825480c68b6c8a2eb7dd20d59`.
+Every one of the 3,910 entries and 3,389 regular-file contents matches stock,
+as do nonphysical metadata and UUID/features. Only inode IDs and the recorded
+physical superblock placement fields are excluded from that comparison.
+
+The exact unchanged-vendor recipe ran within its 2 GiB file limit, with actual
+private spools observed and resource bounds retained. Disk-buffer fallback is
+inferred from those spools, pinned source and limits; its 2 TiB failure errno
+was not directly traced. The host capture verifies 63 direct diagnostic and
+metadata files totaling 5,815,807 bytes. The four large TAR/image artifacts were
+rehashed and remain only in the private guest directory. Original inputs were
+preserved. This does not qualify ODM under its 6 GiB limit, the five policy
+replacements, AVB, partition fit, kernel mounting or boot. No image is adopted,
+and the earlier synthetic failures remain failures.
 
 Image adoption still needs an exact five-file change: the derived vendor CIL,
 the strict combined ODM policy, and its three framework matching digests.

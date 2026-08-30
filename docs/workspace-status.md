@@ -52,9 +52,11 @@ builds. **components-v12f-1** is running at this checkpoint; it is not a compone
 or image pass. Native DEX provider fixtures pass, but the current Camera
 artifacts have not yet been verified.
 
-The latest coordinator workspace suite passed **3,517 tests in 176.383 seconds
-with zero skips**. This is offline tooling evidence, separate from Android
-builds, host policy proofs and physical-device tests.
+The latest recorded full workspace suite, run by the page-size agent, passed
+**3,558 tests in 153.985 seconds with zero skips**. The prior coordinator run
+passed 3,517 tests. These are offline tooling results, separate from Android
+builds, host policy proofs and physical-device tests. This checkpoint records
+code through `d3c29a5`; the active guest remains the earlier v12fa integration.
 
 The immediate destination remains a reproducible, working Evolution baseline;
 that baseline will support a maintainable platform fork without mixing future
@@ -149,7 +151,9 @@ from a full build and require destination hash verification after transfers.
 | Native custom-image correction fixtures | 99 expected outcomes: one reproduced historical failure, five corrected positive cases and 93 specific negative cases; full custom-image region parsed, with no image recipes or Ninja execution | [Native ROM integration](../research/native-rom-integration.json) |
 | Native DEX provider fixtures | Five top-level tests and 11 subtests pass in the pinned Linux Soong test binary; no full Java-suite stamp, actual Camera artifact build or dex2oat execution | [Native DEX fixtures](../research/dex-import-native-fixtures.json) |
 | Native EROFS inventory-tool build | Actual compile/link/install passes with source read-only; subsequent metadata qualification has unresolved failures and is not an image-adoption pass | [Native ROM integration](../research/native-rom-integration.json) |
-| Native production file-size primitives | Four checks pass with zero skips, including finite 2 GiB/6 GiB limits and bounded log-overflow termination; production mkfs and image writing remain unqualified | [Native ROM integration](../research/native-rom-integration.json) |
+| Native production file-size primitives | Four checks pass with zero skips, including finite 2 GiB/6 GiB limits and bounded log-overflow termination; this probe did not execute mkfs | [Native ROM integration](../research/native-rom-integration.json) |
+| Native unchanged-vendor round trip | Eight checks pass, zero skips; two identical raw images preserve all 3,910 entries and 3,389 regular-file contents under the exact 2 GiB vendor recipe; not policy/image adoption | [Native ROM integration](../research/native-rom-integration.json) |
+| Native pinned-date fixtures | All 33 expected outcomes verified: nine positive/legacy cases and 24 diagnostic-specific negatives, zero skips; live product unchanged | [Native date checks](../research/pinned-build-metadata-native.json) |
 | Original factory Camera packaging | Unchanged APK passes strict privileged/preprocessed and uses-library checks; no APK selection, permission-grant, effective-label or hardware result | [Factory Camera APK](../research/factory-camera-apk.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
 | Native VINTF build inputs | Selected framework XML, host tools and stock-kernel requirements built; the graph audit identifies the still-missing framework fragments and APEX artifacts rather than treating the partial inventory as complete compatibility | [VINTF build closure](../research/vintf-compatibility.json) |
@@ -200,8 +204,8 @@ override theme defaults. No Magisk integration is included.
   writer/upstream-fsck failures. The earlier exporter failures remain preserved.
   The synthetic writer round-trip run records **11 passes and six failures**:
   repeated exact five-file derivations pass, but all six upstream empty-xattr
-  checks fail. No actual factory image was derived. Complete factory
-  metadata/content preservation and image adoption remain unverified.
+  checks fail. That synthetic run derived no factory image. The later vendor
+  result below is separate; ODM preservation and policy-image adoption remain open.
   The [five-file policy-image preparation](policy-image-inputs.md) now binds
   complete stock manifests, exact replacements, repeated TAR construction and
   finite production limits. Its plan correctly remains blocked on seven
@@ -212,6 +216,15 @@ override theme defaults. No Magisk integration is included.
   Its 59-file capture is verified; the first failed attempt remains preserved.
   It did not execute mkfs or qualify its production fallback, full spool I/O,
   disk headroom, partition fit or AVB.
+  The subsequent full-vendor no-change attempt remains failed: two checks and
+  original fsck extraction completed, then the harness rejected that operation's
+  completion diagnostic before TAR construction or mkfs image creation. The
+  corrected v2 then passed all eight native checks with zero skips. Its two
+  941,744,128-byte raw images are identical to each other and preserve all
+  original content and nonphysical metadata, including UUID/features. This
+  qualifies the unchanged-vendor 2 GiB recipe only. ODM under 6 GiB, the five
+  policy replacements, AVB, partition fit, mounting and boot remain unverified;
+  neither image is adopted.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
   and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
@@ -251,8 +264,9 @@ override theme defaults. No Magisk integration is included.
   the existing development key and 15 final input images. Its planning and
   unsigned descriptor-carrier checks have run; private-key signing and the
   complete 17-role output-chain verification have not. Keys remain on the Mac.
-  The [pinned build-metadata capability](pinned-build-metadata.md) is authored
-  and tested, but not installed or enabled. It cannot relabel earlier build
+  The [pinned build-metadata capability](pinned-build-metadata.md) now verifies
+  33 expected isolated native Kati outcomes, but is not installed or enabled.
+  The first diagnostic-harness failure remains preserved. It cannot relabel earlier build
   dates or establish reproducible images without native and artifact checks.
   Working recovery's development signature does not sign the ROM or authorize
   relocking. Its kernel-free image depends on the intact device boot chain and
@@ -270,8 +284,11 @@ override theme defaults. No Magisk integration is included.
   It is not installed in v12fa or validated by the v12f policy build.
   A captured current Soong configuration selects maximum ELF page size 16,384
   with the prebuilt check enabled; static inspection finds 22 of 26 provider
-  ELFs have 4 KiB load alignment. Resolution remains under review, with no
-  configuration decision or native checker pass inferred from this snapshot.
+  ELFs have 4 KiB load alignment. The [optional 4 KiB experiment](nezha-page-size.md)
+  in `84d63c2` and its host v13g candidate are **on hold and unadopted**.
+  Lowering the threshold does not resolve the 16 KiB/VSR requirement and must
+  not suppress the failures. Active v12fa retains `16384` and the enabled check;
+  the 4 KiB path is not approved as the next integration.
   The [original-ODM shipping-API patch](vintf-shipping-api.md) passes source-bound
   host probes without fabricating vendor properties; it is authored but not
   installed in v12fa and is not a complete native compatibility result.
@@ -296,6 +313,10 @@ override theme defaults. No Magisk integration is included.
   compression blocker. Its ten always-privileged requests, rising to eleven
   across feature branches, still need actual grant and effective
   SELinux-label validation. Neither APK is selected or hardware-tested.
+  The [build-only Camera packet](camera-apk-build-admission.md), committed as
+  `117261c`, reproduces on the host and its content-verifying producer passes.
+  Its separate namespace is not installed in the guest or exported to Make;
+  product selection, permissions, MAC labeling and real APK outputs remain open.
 - **Recovery completeness:** encrypted `/data`, backup/restore coverage,
   additional reboot/Android round trips, A/B and OTA behavior, ADB host
   authentication and restoring recovery SELinux enforcement remain unverified.

@@ -521,12 +521,35 @@
       },
       "guest_source_installed": false,
       "capability_enabled_in_product": false,
-      "native_kati_or_child_environment_verified": false,
       "image_reproducibility_verified": false,
       "coordinator_focused_rerun": {
         "tests": 12,
         "passed": true,
         "evidence_source": "Coordinator report for this checkpoint; separate from the agent-run full-suite receipt."
+      },
+      "isolated_native_kati_and_child_environment_verified": true,
+      "active_product_native_integration_verified": false,
+      "native_fixture_record": {
+        "path": "research/pinned-build-metadata-native.json",
+        "sha256": "d28e49caa33a0dcfe1af0f907dbaa06d2be3796d1413cc1b3eceb6e68a34343b",
+        "size_bytes": 16440
+      },
+      "native_fixture_record_commit": "d3c29a56a4598a74a6dda9ccb2a837854b8ef950",
+      "native_expected_outcomes": {
+        "total": 33,
+        "positive_or_legacy": 9,
+        "diagnostic_specific_negative": 24,
+        "skipped": 0,
+        "completed_at_utc": "2026-08-30T01:33:47.785053+00:00",
+        "source_and_android_outputs_readonly": true,
+        "live_source_patch_installed": false,
+        "actual_clock_rollover_verified": false,
+        "failed_v1_preserved": true,
+        "record": {
+          "path": "artifacts/build-validation/nezha-pinned-date-v2/probe/result.json",
+          "sha256": "f98c047213e00a8d1f05587291856b51ddf7622737a0bb110e989bfb5fbf7f9a",
+          "size_bytes": 136418
+        }
       }
     },
     "factory_camera_apk": {
@@ -554,6 +577,52 @@
       "camera_or_leica_hardware_tested": false,
       "earlier_input_failures_preserved": true,
       "scope": "Distinct unchanged factory APK passes pinned host packaging and declaration checks. The earlier Xiaomi.eu/live APK keeps its compression failure. Neither input is selected; signature permissions, effective installed grants and actual composed MAC/seapp labels remain separate admission requirements."
+    },
+    "factory_camera_build_packet": {
+      "implementation_commit": "117261c45e49d760ca15487641f2c7c9cea2eb4d",
+      "documentation": "docs/camera-apk-build-admission.md",
+      "contract": {
+        "path": "config/nezha-camera-apk.json",
+        "sha256": "0db6561f34300f7c7aea527ed5a60513f3f12bb241e8d448820a8467e23870ac",
+        "size_bytes": 3420
+      },
+      "host_validation": {
+        "path": "reports/camera-apk-build-admission-20260829/host-validation-v1.json",
+        "sha256": "0d5b7ec034b921e20a27a161070df31bbf300debe67adaeebf98234dae9e92a6",
+        "size_bytes": 6774
+      },
+      "packet_receipt": {
+        "path": "artifacts/camera-apk-inputs-20260829/bundle-v1/camera-apk-inputs.json",
+        "sha256": "67fd02858d6ea08cb21bdbb8964ccec2fa83bc2aa5dce9961830c220c01f3c06",
+        "size_bytes": 3860
+      },
+      "repeat_packet_receipt": {
+        "path": "artifacts/camera-apk-inputs-20260829/bundle-v1-repeat/camera-apk-inputs.json",
+        "sha256": "67fd02858d6ea08cb21bdbb8964ccec2fa83bc2aa5dce9961830c220c01f3c06",
+        "size_bytes": 3860
+      },
+      "source_install_contract": {
+        "path": "artifacts/camera-apk-inputs-20260829/bundle-v1/source-install.json",
+        "sha256": "11db4be518ce5ceec99f3bc15e8227df9b51c0e3ecf9e95b04533b4ff81e209f",
+        "size_bytes": 5248
+      },
+      "standalone_host_producer": {
+        "path": "reports/camera-apk-build-admission-20260829/native-v1.json",
+        "sha256": "ce72fabc60932548a2ed915ce83c208ebe2d7354eb2823d2ad119257fff9d4c9",
+        "size_bytes": 2051
+      },
+      "repeated_files_identical": 13,
+      "host_producer_exit_code": 0,
+      "focused_tests_passed": 59,
+      "skipped": 0,
+      "source_namespace": "vendor/xiaomi/nezha-camera-apk-check",
+      "source_installed_in_guest": false,
+      "exported_to_make": false,
+      "product_selected": false,
+      "permission_or_mac_admitted": false,
+      "android_component_built": false,
+      "apk_transformed_or_signed": false,
+      "scope": "A separate packet and standalone host content-verifying producer pass on unchanged factory input. Actual source installation and a graph-limited intermediate-only component phase need separate admission; absence from PRODUCT_PACKAGES alone does not prevent installation writes."
     }
   },
   "erofs_qualification": {
@@ -769,18 +838,24 @@
   },
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
-    "runner": "coordinator",
-    "passed": 3517,
+    "runner": "page-size agent",
+    "passed": 3558,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 176.383,
+    "elapsed_seconds": 153.985,
+    "code_commit": "84d63c2b62b2e42f4e7b64ac82f15fa4f94daadf",
     "log": {
-      "path": "reports/workspace-tests-20260829-current-native-checkpoint.log",
-      "sha256": "03bd3e04fe7313cf44c43f92113d2538301d76def57fb51e3f46efc07dd757a6",
-      "size_bytes": 605303
+      "path": "reports/nezha-page-size-20260829/workspace-tests-v1.log",
+      "sha256": "98ce3cc00c46e47996e953942fdfe3296458a934dde14462f57008c5f179015a",
+      "size_bytes": 611862
     },
-    "scope": "Coordinator-run full offline workspace suite at unchanged code commit ec21a87745cafc22f36c62cb216a22ac690d8250. The earlier agent 3517-test run, coordinator 3505-test run and focused date-patch rerun remain separate evidence. No native build or hardware claim."
+    "validation_receipt": {
+      "path": "reports/nezha-page-size-20260829/validation-v1.json",
+      "sha256": "7cb3294a893a9617331ef8845b50a75fc895bf9accf34e15a78abfff2ab74250",
+      "size_bytes": 1131
+    },
+    "scope": "Separate page-size authoring full run before the later d3c29a5 native-date documentation checkpoint. Its passing tests do not approve the held 4096 profile or establish native integration, VSR compatibility or hardware success."
   },
   "remaining_gates": [
     "Complete the active component build, then run the reviewed export3 full native independent analysis with fresh output-byte, assertion, permission and permissive-domain verification",
@@ -1040,6 +1115,21 @@
         "size_bytes": 4462
       },
       "scope": "Agent-run full offline workspace suite after the date-patch preparation. The coordinator separately reran 12 focused tests; the previous coordinator full run remains the separate 3505-test checkpoint. No native build or hardware claim."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3517,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 176.383,
+      "log": {
+        "path": "reports/workspace-tests-20260829-current-native-checkpoint.log",
+        "sha256": "03bd3e04fe7313cf44c43f92113d2538301d76def57fb51e3f46efc07dd757a6",
+        "size_bytes": 605303
+      },
+      "scope": "Coordinator-run full offline workspace suite at unchanged code commit ec21a87745cafc22f36c62cb216a22ac690d8250. The earlier agent 3517-test run, coordinator 3505-test run and focused date-patch rerun remain separate evidence. No native build or hardware claim."
     }
   ],
   "previous_v11b_policy": {
@@ -1386,7 +1476,7 @@
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
   "latest_native_observation_utc": "2026-08-30T00:28:11.339588+00:00",
-  "recorded_at_utc": "2026-08-30T01:17:48.662250+00:00",
+  "recorded_at_utc": "2026-08-30T01:56:28.236789+00:00",
   "latest_native_build_completed_at_utc": "2026-08-30T00:16:57.719846+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -1872,8 +1962,184 @@
     "files_with_16384_load_alignment": 4,
     "all_provider_payload_hashes_independently_rechecked": true,
     "native_elf_checker_executed_by_inspection": false,
-    "configuration_decision": "under-review",
+    "configuration_decision": "hold-4096-profile-retain-active-16384-check-enabled",
     "configuration_or_check_exception_selected": false,
-    "scope": "Measured current Soong settings and static provider load-segment layouts only. No native checker, linking, runtime compatibility or configuration change is implied."
+    "scope": "Measured current Soong settings and static provider layouts, followed by a preserved optional host-only 4096 experiment. That experiment is held and is not approved as a compatibility fix or the next native integration; active v12fa stays at 16384 with the check enabled.",
+    "optional_4k_experiment": {
+      "implementation_commit": "84d63c2b62b2e42f4e7b64ac82f15fa4f94daadf",
+      "documentation": "docs/nezha-page-size.md",
+      "contract": {
+        "path": "config/nezha-page-size-profile.json",
+        "sha256": "9d180aeeb13e0c04a4f2726bf94ad6651e1052cb5f9162359c147814bc6607ca",
+        "size_bytes": 13226
+      },
+      "investigation": {
+        "path": "reports/nezha-page-size-20260829/investigation-v1.json",
+        "sha256": "b4ed3a4c989af100dc9c9ce1de2cd54974cf51d81617b06059227c8a758e5c6f",
+        "size_bytes": 6148
+      },
+      "validation": {
+        "path": "reports/nezha-page-size-20260829/validation-v1.json",
+        "sha256": "7cb3294a893a9617331ef8845b50a75fc895bf9accf34e15a78abfff2ab74250",
+        "size_bytes": 1131
+      },
+      "host_candidate": {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-v13g/admission.json",
+        "sha256": "7aab1224502a612500e70c6838c5d5040d6ce744fff0fe53d596a6864318ca3a",
+        "size_bytes": 111628
+      },
+      "repeat_host_candidate": {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-v13g-repeat/admission.json",
+        "sha256": "7aab1224502a612500e70c6838c5d5040d6ce744fff0fe53d596a6864318ca3a",
+        "size_bytes": 111628
+      },
+      "status": "held-unadopted-host-experiment",
+      "approved_next_integration": false,
+      "installed_in_guest": false,
+      "native_4096_path_on_hold": true,
+      "active_guest_integration": "v12fa",
+      "active_DeviceMaxPageSizeSupported": "16384",
+      "active_DeviceCheckPrebuiltMaxPageSize": true,
+      "compatibility_16k_verified": false,
+      "vsr_compatibility_verified": false,
+      "reason": "Lowering the maximum to 4096 does not resolve the required 16 KiB/VSR alignment failures and would lower the failing threshold. The user forbids suppression; the coordinator has held this path."
+    }
+  },
+  "workspace_code_checkpoint": "d3c29a56a4598a74a6dda9ccb2a837854b8ef950",
+  "full_vendor_no_change_roundtrip": {
+    "v1": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-erofs-full-vendor-v1-failed/receipt.json",
+        "sha256": "89db8a3cc41c5f713a0cd5557550a2a8cf105c287c7c841cf585212ce1c5b9ab",
+        "size_bytes": 31651
+      },
+      "orchestration": {
+        "path": "artifacts/build-validation/nezha-erofs-full-vendor-v1-failed/orchestration.json",
+        "sha256": "36847ee58d3b4d376425bf8c1174acfbf89ca7927e698eeb07c25d7ec1a9d8f0",
+        "size_bytes": 42096
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-erofs-full-vendor-v1-failed/capture.json",
+        "sha256": "b0348ee85c552045e10630612c5fb67f5f854619adf3df1585d58255f88828f0",
+        "size_bytes": 5578
+      },
+      "passed": false,
+      "completed_checks": 2,
+      "skipped": 0,
+      "original_entries_exported": 3910,
+      "original_fsck_extraction_exit_code": 0,
+      "failure": "The harness required the read-only fsck completion message after extraction, which had its own successful completion diagnostic.",
+      "tar_construction_executed": false,
+      "mkfs_image_construction_executed": false,
+      "signed_image_produced": false,
+      "policy_adopted": false,
+      "preserved_failed_not_reclassified": true
+    },
+    "v2_preparation": {
+      "authoring_receipt": {
+        "path": "reports/oem-policy-integration-20260829/erofs-full-vendor-v2/authoring-receipt.json",
+        "sha256": "f4995a579f84ce4be766610605068d61e42df0777cf45b7caf04b67f09c0c1a2",
+        "size_bytes": 2817
+      },
+      "preparation": {
+        "path": "reports/oem-policy-integration-20260829/erofs-full-vendor-v2/prepare-only.json",
+        "sha256": "a6065280c76178aab776206c2c23397f33d4eaca5b646003a533d670d45ee5a9",
+        "size_bytes": 1896
+      },
+      "change_scope": "Exact role-specific fsck completion classification; metadata, resource and isolation guards retained.",
+      "offline_tests_passed": 28,
+      "skipped": 0,
+      "status_at_checkpoint": "prepared-then-executed-see-v2_native_result",
+      "native_roundtrip_qualified": false,
+      "subsequent_native_execution": "v2_native_result"
+    },
+    "scope": "The failed v1 and v2 preparation remain separate from the successful eight-check native v2 unchanged-vendor roundtrip. Only the exact vendor 2 GiB recipe is qualified; ODM, policy replacements, AVB and image/boot admission remain open.",
+    "v2_native_result": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-erofs-full-vendor-v2/receipt.json",
+        "sha256": "a4afbf6be2f392c46f30bcc223bff92d6606854a2aa69c712877f6a09a473763",
+        "size_bytes": 70659
+      },
+      "orchestration": {
+        "path": "artifacts/build-validation/nezha-erofs-full-vendor-v2/orchestration.json",
+        "sha256": "4600b52e6330b517fa9428ab1466445e94f53b0272f84fb90acdfcc575f57868",
+        "size_bytes": 85159
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-erofs-full-vendor-v2/capture.json",
+        "sha256": "8b7ca11340e961a56fe9f94696a96beb49b212ce291ce2aad1401c43c238e5aa",
+        "size_bytes": 12060
+      },
+      "passed": true,
+      "outer_exit_code": 0,
+      "checks_passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "captured_direct_files": 63,
+      "captured_bytes": 5815807,
+      "all_direct_capture_files_independently_rehashed": true,
+      "guest_only_large_artifacts": [
+        {
+          "guest_relative_path": "vendor-noop-1.erofs",
+          "sha256": "63008bee074d0030630b502c0bf4a396c26419b825480c68b6c8a2eb7dd20d59",
+          "size_bytes": 941744128
+        },
+        {
+          "guest_relative_path": "vendor-noop-1.tar",
+          "sha256": "e3e4f2c88b4252adc303bbe0b240f2a7a1ca8d982f51cdc897c604ce872f51ff",
+          "size_bytes": 1643234816
+        },
+        {
+          "guest_relative_path": "vendor-noop-2.erofs",
+          "sha256": "63008bee074d0030630b502c0bf4a396c26419b825480c68b6c8a2eb7dd20d59",
+          "size_bytes": 941744128
+        },
+        {
+          "guest_relative_path": "vendor-noop-2.tar",
+          "sha256": "e3e4f2c88b4252adc303bbe0b240f2a7a1ca8d982f51cdc897c604ce872f51ff",
+          "size_bytes": 1643234816
+        }
+      ],
+      "large_artifact_hashes_recorded_by_guest_capture": true,
+      "large_artifacts_copied_to_host": false,
+      "independent_raw_images_identical": true,
+      "independent_tars_identical": true,
+      "independent_export_manifests_identical": true,
+      "stock_entries_compared": 3910,
+      "stock_regular_contents_compared": 3389,
+      "content_replacements": [],
+      "all_nonphysical_metadata_equal": true,
+      "stock_uuid_and_feature_bits_preserved": true,
+      "metadata_exclusions": [
+        "inode.nid"
+      ],
+      "superblock_physical_exclusions": [
+        "meta_blkaddr",
+        "primary_blocks",
+        "root_nid",
+        "total_blocks",
+        "xattr_blkaddr"
+      ],
+      "exact_vendor_file_limit_bytes": 2147483648,
+      "exact_vendor_no_change_mkfs_qualified": true,
+      "actual_private_spools_observed": true,
+      "resource_bounds_retained": true,
+      "diskbuf_2tib_errno_directly_traced": false,
+      "diskbuf_fallback_inferred_from_pinned_source_limits_and_observed_spool": true,
+      "bound_selected_inputs_unchanged": true,
+      "original_images_written": false,
+      "source_or_android_output_writes": false,
+      "global_android_output_unchanged_claimed": false,
+      "odm_6gib_writer_qualified": false,
+      "five_policy_replacements_qualified": false,
+      "production_policy_writer_admitted": false,
+      "avb_verified": false,
+      "partition_fit_verified": false,
+      "retained_kernel_mount_or_boot_verified": false,
+      "policy_or_image_adopted": false,
+      "complete_rom_admitted": false,
+      "phone_accessed": false,
+      "scope": "Actual unchanged-vendor roundtrip with native mkfs, strict fsck, complete export comparisons and two reproducible raw outputs. Physical layout is allowed to differ from stock; neither output is adopted or signed. This is not ODM, policy-replacement, AVB, partition-fit, mount or boot evidence."
+    }
   }
 }
