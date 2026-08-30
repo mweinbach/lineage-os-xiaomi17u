@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "allocator-host-capability-committed-native-install-pending-query-qualification-failed",
+  "checkpoint": "allocator-native-install-pending-query-v2-and-footer-capture-v3-verified-host-admission-failed",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -953,7 +953,7 @@
   },
   "remaining_gates": [
     "Install the reviewed allocator capability through the guarded current-source path, build the actual upstream service and inspect its binary/init/fragment producers and policy/context checks, then rerun unchanged ordinary VINTF. Recapture the changed graph before full 39-APEX compatibility; retain the 4 KiB hold and all checks",
-    "Correct the two failed native Ninja qualification expectations and complete actual read-only -n/-t qualification before resuming held footer/provider/Camera query captures; preserve original logs and never use writable-OUT fallback",
+    "Apply the exact qualified read-only Ninja recipe and explicit admission to each remaining query capture; correct the footer host loader-closure comparison before actual native FEC qualification and footer construction. Preserve original logs, keep earlier direct-query nonmutation unproven and never use writable-OUT fallback",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "Strict native provider runtime ELF/linker and service checks against the now independently verified provider-policy baseline",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -1705,7 +1705,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-30T17:42:45.086438+00:00",
+  "recorded_at_utc": "2026-08-30T18:23:45.891911+00:00",
   "latest_native_build_completed_at_utc": "2026-08-30T16:58:47.414585+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -3638,7 +3638,7 @@
   },
   "latest_timestamped_native_observation_utc": "2026-08-30T17:12:42Z",
   "latest_timestamped_native_observation_kind": "readonly-current-ninja-log-state-observation",
-  "latest_native_observation_kind": "footer-query-readonly-failure-and-unproven-direct-query-log-side-effects",
+  "latest_native_observation_kind": "qualified-readonly-query-v2-and-footer-tool-capture-v3-with-host-admission-failure",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -4904,7 +4904,7 @@
       "camera_apk_build_verified": false,
       "correction_verified_natively": false
     },
-    "scope": "Separate failed evidence collectors, preserved without converting incomplete captures into native footer, provider ELF, Camera build or compatibility passes. The second footer capture exposed pinned Ninja log-opening behavior under read-only mounts. All affected query captures are now held pending exact mode and confinement qualification; earlier direct-query and memfd no-write claims are unproven.",
+    "scope": "Separate failed evidence collectors remain preserved without converting incomplete captures into footer, provider ELF, Camera build or compatibility passes. The second footer capture exposed pinned Ninja log-opening behavior under read-only mounts. Later qualification v2 releases only the reviewed footer capture v3 recipe; other graph recipes are not automatically admitted. Earlier direct-query and memfd no-write claims remain unproven.",
     "footer_tools_v2": {
       "receipt": {
         "path": "artifacts/build-validation/nezha-policy-footer-tools-native-v2/receipt.json",
@@ -5006,7 +5006,7 @@
     "scope": "Host-only packaging candidate rebase and metadata preservation bridge for the existing v13ha integration. The two candidate receipts and two raw-policy metadata replays match. No guest installation, final footer admission, native packaging, full VINTF, derived-image adoption or runtime result follows."
   },
   "native_query_side_effects_hold": {
-    "status": "held-do-not-execute",
+    "status": "qualified-only-for-reviewed-footer-capture",
     "hold_receipt": {
       "path": "reports/framework-providers-20260830/provider-elf-preparation-v1/correction-v2/hold-native-query-side-effects.json",
       "sha256": "42f79267d41d944d5a6594710b27bb0c0691daf40b616219282a78ce63127057",
@@ -5043,7 +5043,6 @@
     "exact_writer_or_mutation_attribution_proven": false,
     "original_project_source_payload_changes_known": false,
     "source_or_output_log_write_absence_proven": false,
-    "affected_query_captures_held": true,
     "pinned_ninja_n_and_t_modes_require_native_qualification": true,
     "actual_readonly_confinement_required": true,
     "original_out_writable_fallback_allowed": false,
@@ -5054,10 +5053,15 @@
     "footer_tool_runtime_verified": false,
     "complete_rom_ready": false,
     "phone_accessed": false,
-    "scope": "The actual jailed footer query demonstrates build-log opening in the pinned Ninja fork. Earlier unconfined provider queries and a memfd fixture cannot establish their static no-source/OUT-write claims. The later observation binds four current log identities, including two small source-root files, but does not identify their writer or prove prior nonmutation. Logs remain preserved; no original project source payload change is known. This does not retroactively invalidate the separately passed normal VINTF build source guards.",
-    "qualification_attempt": "native_query_readonly_qualification_v1",
+    "scope": "The actual jailed footer query demonstrates build-log opening in the pinned Ninja fork. Earlier unconfined provider queries and a memfd fixture cannot establish their static no-source/OUT-write claims. The later observation binds four current log identities, including two small source-root files, but does not identify their writer or prove prior nonmutation. Logs remain preserved; no original project source payload change is known. This does not retroactively invalidate the separately passed normal VINTF build source guards. The corrected v2 qualification now passes; the limited footer-capture release does not prove earlier nonmutation, qualify tool entrypoints or automatically release other graph collectors.",
+    "qualification_attempt": "native_query_readonly_qualification_v2",
     "qualification_attempt_executed": true,
-    "whole_qualification_passed": false
+    "whole_qualification_passed": true,
+    "previous_status": "held-do-not-execute",
+    "remaining_graph_capture_recipes_held": true,
+    "other_graph_capture_recipes_released": false,
+    "previous_qualification_attempt": "native_query_readonly_qualification_v1",
+    "release_scope": "Only the independently reviewed footer-freeze-v4 producer/runtime capture recipe, executed as policy-footer-tools-native-v3. Every other graph-capture recipe requires its own admission with the qualified command modes and actual read-only confinement."
   },
   "host_framework_allocator_capability": {
     "code_commit": "164719256271d28508999bdd8b13a00ea1a20faa",
@@ -5163,5 +5167,130 @@
     "complete_rom_ready": false,
     "phone_accessed": false,
     "scope": "Actual native qualification ran under read-only confinement and failed two of six expectations. Positive -n known answers do not turn the complete qualification into a pass, prove intrinsic read-only behavior, or establish earlier direct-query nonmutation. Captures remain held."
+  },
+  "native_query_readonly_qualification_v2": {
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-ninja-readonly-query-v2/receipt.json",
+      "sha256": "31f0c3327a53f9905a38e7c0c656afcfceda56723b5595e2305b312493c954e3",
+      "size_bytes": 62072
+    },
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/policy-images-v13h-footer-preparation/query-readonly-actual-v2-review.json",
+      "sha256": "14e9b7da9d2709ba46b289760ea557d2e3498e22ed8fd290b286ab817a0d802c",
+      "size_bytes": 29584
+    },
+    "operation": "qualify-pinned-ninja-dry-tool-queries-in-readonly-jail-v2",
+    "status": "passed-for-reviewed-footer-capture-only",
+    "passed": true,
+    "checks_passed": 6,
+    "checks_failed": 0,
+    "skipped": 0,
+    "commands": 11,
+    "raw_files_captured_and_rehashed": 55,
+    "raw_file_bytes": 68618,
+    "expected_outcomes": [
+      "captured pinned version",
+      "documented informational help exit 1 on stderr",
+      "plain query denied while opening the read-only build log",
+      "dry-query exact known answer",
+      "dry-commands exact known answer",
+      "corrupt-deps repair denied by read-only mount after owner-write permission is established"
+    ],
+    "fixtures_full_stat_and_bytes_unchanged": true,
+    "all_11_command_observers_mountinfo_and_exact_argv_verified": true,
+    "bound_selected_inputs_unchanged": true,
+    "bound_raw_diagnostics_unchanged": true,
+    "independent_review_open_findings": [],
+    "conditional_release": {
+      "only_recipe": "footer-freeze-v4-producer-runtime-capture",
+      "actual_capture": "native_footer_tool_capture_v3",
+      "other_graph_capture_recipes_released": false,
+      "requires_fresh_owner_status_and_no_source_or_out_writer": true,
+      "requires_all_existing_graph_source_tool_log_and_readonly_guards": true
+    },
+    "earlier_v1_still_failed": true,
+    "earlier_direct_query_nonmutation_established": false,
+    "ninja_intrinsically_readonly": false,
+    "source_to_binary_equivalence_verified": false,
+    "native_build_executed": false,
+    "footer_tools_executed": false,
+    "images_accessed": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Six expected outcomes pass under measured read-only confinement. Expected command failures remain negative controls, not zero-exit successes. This qualifies only the reviewed footer capture recipe and does not retroactively prove earlier direct queries did not write logs."
+  },
+  "native_footer_tool_capture_v3": {
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-policy-footer-tools-native-v3/receipt.json",
+      "sha256": "21f37f03237c40475f68a75ef3e80ec7e252c874eb6914aac0b8162197f5cf5d",
+      "size_bytes": 144303
+    },
+    "host_capture": {
+      "path": "reports/oem-policy-integration-20260829/policy-images-v13h-footer-preparation/policy-footer-tools-native-v3-host/host-receipt.json",
+      "sha256": "29cbf53daeff36cbbd16f93684eea73cccc2a6503cc77e9c11ce9649b69a03e9",
+      "size_bytes": 41230
+    },
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/policy-images-v13h-footer-preparation/capture-v3-independent-review.json",
+      "sha256": "1e031ac05aa5ba9f366214c41c8f53349ee5601b5c5c405716c55e55af1b45cd",
+      "size_bytes": 6790
+    },
+    "operation": "capture-current-footer-tool-producers-and-runtime-v1",
+    "status": "capture-verified-host-loader-admission-failed",
+    "passed": true,
+    "commands": 28,
+    "query_depths": 2,
+    "skipped": 0,
+    "captured_files_rehashed": 81,
+    "captured_file_bytes": 4879688,
+    "raw_diagnostic_files": 80,
+    "observed_ninja_and_loader_jails": 8,
+    "recorded_graph_identities_unchanged": 15,
+    "tracked_logs_full_stat_and_hash_unchanged": 4,
+    "selected_source_inputs_unchanged": 27,
+    "source_project_states_unchanged": 4,
+    "original_and_sealed_tool_identities_match": true,
+    "captured_tool_roles": [
+      "avbtool",
+      "fec",
+      "libc++.so"
+    ],
+    "loader_discovery_and_confirmation_raw_outputs_match": true,
+    "fec_resolves_only_sealed_libcpp": true,
+    "current_producer_descriptions_captured": true,
+    "bound_selected_inputs_unchanged": true,
+    "source_or_android_output_writes": false,
+    "producer_execution_verified": false,
+    "fresh_build_verified": false,
+    "source_binary_equivalence_verified": false,
+    "complete_linker_or_python_input_provenance_verified": false,
+    "footer_tool_entrypoints_executed": false,
+    "native_fec_qualification_passed": false,
+    "footer_derivation_completed": false,
+    "images_opened": false,
+    "source_or_vendor_inputs_adopted": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "following_host_admission": {
+      "attempt": "root-qualify-admission-v1",
+      "packet_revision": "v4",
+      "status": "failed-before-native-qualification",
+      "stdout": {
+        "path": "reports/oem-policy-integration-20260829/policy-images-v13h-footer-preparation/root-qualify-admission-v1.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stderr": {
+        "path": "reports/oem-policy-integration-20260829/policy-images-v13h-footer-preparation/root-qualify-admission-v1.stderr",
+        "sha256": "c74fd9b816cd0f75c13ef6e4c8a953e6e3ee1ca5eb29a85aae248fe325ccaec2",
+        "size_bytes": 2111
+      },
+      "diagnostic": "runtime closure omits a dependency",
+      "diagnosis": "The host dependency-set comparison does not account for the separately recorded interpreter.",
+      "narrow_v5_correction_status": "under-review",
+      "native_fec_qualification_executed": false,
+      "footer_images_produced": false
+    },
+    "scope": "Successful capture and independent review bind current producer descriptions, sealed tool identities, loader mappings and eight observed Ninja/loader jails; not all 28 commands are jailed. The host rehashed captured diagnostics and receipt, not the guest graph/library/image contents. This is not a producer freshness, complete runtime provenance, tool-entrypoint, FEC, footer or image-adoption result. Earlier direct-query no-write claims remain unproven."
   }
 }

@@ -89,7 +89,7 @@ The separate packet for a full 39-APEX comparison is staged with all 221 files
 verified. Staging does not execute native compatibility checks or materialize
 the required generated APEX inputs.
 
-Ninja query captures are now held pending qualification of the pinned query
+Ninja query captures were held pending qualification of the pinned query
 modes under read-only mounts. The second footer capture accepted the valid empty
 Soong shard, then failed its first jailed query while trying to open a build log
 on a read-only filesystem. Earlier unconfined provider queries and the memfd
@@ -98,10 +98,22 @@ source-root `.ninja_log` and `.ninja_deps` files are recorded and preserved in
 place; their writer is not established. No original project payload change is
 known. This caveat does not invalidate the VINTF builds' separately verified
 source guards or relax their compatibility checks.
-The actual query qualification v1 has now run: four checks pass and two fail,
+The actual query qualification v1 remains failed: four checks pass and two fail,
 with zero skips. Its positive `-n` known answers pass, but the help-stream and
-corrupt-dependency negative-fixture expectations fail. Overall qualification
-remains false and query captures remain held.
+corrupt-dependency negative-fixture expectations fail. The corrected **query
+qualification v2 passes all six checks**, with eleven commands and zero skips,
+including the expected read-only failure controls. Independent review releases
+only the exact reviewed footer-capture recipe; other graph-capture recipes are
+not automatically admitted, and earlier no-write claims remain unproven.
+
+The actual **footer-tools-native-v3** capture passes with 28 commands, two query
+depths and zero skips. Independent review verifies all 81 captured files, eight
+observed Ninja/loader jails, unchanged graph identities and all four tracked log
+files. This captures tool identities, producer descriptions and loader mappings;
+it does not execute the `avbtool`/`fec` entrypoints or prove a fresh producer build.
+The following host admission fails because its runtime-closure check omits the
+separately recorded interpreter. A narrow correction is under review; native
+FEC qualification, footer creation and image adoption remain unverified.
 
 The current **policy-images-v13h-v1** native reconstruction passes **nine checks
 and 38 commands with zero skips**, including 18 fsck checks. Both independent
@@ -162,7 +174,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `1647192`. The active guest inputs remain v13ha;
+code and documentation through `3738a7c`. The active guest inputs remain v13ha;
 `analysis-v13h-policy-only-v1` is now the verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;

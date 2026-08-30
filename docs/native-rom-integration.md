@@ -607,7 +607,7 @@ inventory, including the valid empty shard, but its first read-only jailed
 query fails with `ninja: error: opening build log: Read-only file system`.
 Its 48,329-byte receipt is
 `63a6955831db77a6dc09ef7e9116906959d6d7a3a6d85e76bf92104932b296e8`.
-No query or footer-tool runtime result passed.
+No query or footer-tool runtime result passed in that second capture.
 
 Earlier direct provider queries and the native memfd fixture lacked read-only
 mount protection. Their static no-source/OUT-write flags are unproven. The
@@ -615,8 +615,8 @@ mount protection. Their static no-source/OUT-write flags are unproven. The
 16-byte `.ninja_deps`; those files remain preserved in place. Without prior
 before/after identities, neither their exact writer nor absence of earlier log
 mutation is established. No original project source payload change is known.
-All affected query captures are held until the pinned `-n`/`-t` behavior and
-actual read-only confinement are qualified; writable original-OUT fallback and
+All affected query captures were held until the pinned `-n`/`-t` behavior and
+actual read-only confinement were qualified; writable original-OUT fallback and
 log deletion are not allowed. These limitations do not change the VINTF builds'
 passing source guards, and no ordinary compatibility check is waived.
 
@@ -627,8 +627,38 @@ The help-output-stream expectation and corrupt-dependency negative fixture
 fail; the latter does not establish the expected read-only denial separately
 from ordinary access permissions. Receipt SHA256 is
 `7caa0ae905357d1fe0742c67fe709dbb2b6569dd9515cf255a635a3ada25bd7f`.
-This is an executed failed qualification, not pending execution or permission
-to resume captures. The hold and earlier unproven no-write claims remain.
+This remains an executed failed qualification, not permission to resume captures.
+
+The corrected **ninja-readonly-query-v2** passes **six checks across eleven
+commands, with zero skips** and all 55 raw diagnostic files captured. Its positive `-n`
+known answers and expected read-only build-log/dependency-log failure controls
+pass, with fixtures unchanged. Receipt SHA256 is
+`31f0c3327a53f9905a38e7c0c656afcfceda56723b5595e2305b312493c954e3`.
+The independent 29,584-byte review
+`14e9b7da9d2709ba46b289760ea557d2e3498e22ed8fd290b286ab817a0d802c`
+releases only the exact reviewed footer-capture recipe under its source, graph,
+tool, log and read-only-mount guards. Other graph-capture recipes are not
+automatically admitted. Ninja is not intrinsically read-only, and the earlier
+unconfined queries' no-write claims remain unproven.
+
+The actual **policy-footer-tools-native-v3** capture passes with **28 commands,
+two query depths and zero skips**. Its 144,303-byte receipt is
+`21f37f03237c40475f68a75ef3e80ec7e252c874eb6914aac0b8162197f5cf5d`.
+Independent review
+`1e031ac05aa5ba9f366214c41c8f53349ee5601b5c5c405716c55e55af1b45cd`
+verifies 81 captured files, including 80 raw diagnostics, and eight observed
+Ninja/loader jails. Fifteen graph identities, four full-stat log records,
+27 selected sources and four project states remain unchanged. The evidence
+binds copied `avbtool`/`fec` identities, producer descriptions and loader
+discovery/confirmation; it does not execute those tool entrypoints, establish
+complete linker/Python provenance or prove fresh producer execution.
+
+The subsequent **root-qualify-admission-v1** host attempt, using the v4 packet,
+fails with `runtime closure omits a dependency`: its closure comparison does
+not account for the separately recorded interpreter. The empty stdout and
+complete stderr remain hash-bound in the research record. A narrow v5
+admission correction is under review; no native FEC qualification or footer
+result follows from this capture, and no image is adopted.
 
 The host packaging rebase now produces identical validated candidates from the
 current v13ha inputs while preserving the provider correction, strict settings
