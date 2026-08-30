@@ -97,6 +97,9 @@ POLICY_IMAGE_DELIVERY_SCOPE = {
 PAGE_SIZE_PROFILE_RECORD = PurePosixPath("config/nezha-page-size-profile.json")
 PAGE_SIZE_PROFILE_ID = "nezha-stock-4k-bringup-v1"
 PAGE_SIZE_PROFILE_SHA256 = "9d180aeeb13e0c04a4f2726bf94ad6651e1052cb5f9162359c147814bc6607ca"
+PAGE_SIZE_PROFILE_V2_RECORD = PurePosixPath("config/nezha-page-size-profile-v2.json")
+PAGE_SIZE_PROFILE_V2_ID = "nezha-stock-4k-bringup-v2"
+PAGE_SIZE_PROFILE_V2_SHA256 = "bed228b0595ef2dc1dd814e98c0966ba9b9452b542de50354db522e2420bed1e"
 PAGE_SIZE_PRODUCT_SETTINGS = {
     "PRODUCT_MAX_PAGE_SIZE_SUPPORTED": 4096,
     "PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE": True,
@@ -2150,7 +2153,7 @@ def _target_files_metadata_binding(plan, binding):
                  delivery["required_framework_providers"] and
                  plan["framework_allocator"].get("contract_record", {}).get("sha256") ==
                  FRAMEWORK_ALLOCATOR_CONTRACT_SHA256,
-                 "policy-image delivery requires its exact current policy, providers and allocator, without the held page profile")
+                 "policy-image delivery requires its exact current policy, providers and allocator, without a page-profile change")
     return _render_metadata_include(binding)
 
 
@@ -2514,12 +2517,23 @@ def _page_size_same(actual, expected):
     return json.dumps(actual, sort_keys=True) == json.dumps(expected, sort_keys=True)
 
 
+def _page_size_profile_record(profile_id):
+    if profile_id == PAGE_SIZE_PROFILE_ID:
+        return PAGE_SIZE_PROFILE_RECORD
+    if profile_id == PAGE_SIZE_PROFILE_V2_ID:
+        return PAGE_SIZE_PROFILE_V2_RECORD
+    raise CandidateError("unsupported page-size profile")
+
+
 def _page_size_profile_contract(path):
     profile, identity = _read_json(path)
-    _require(identity["sha256"] == PAGE_SIZE_PROFILE_SHA256,
+    profile_id = profile.get("profile_id")
+    _require(type(profile_id) is str, "unsupported page-size profile")
+    expected_digest = {PAGE_SIZE_PROFILE_ID: PAGE_SIZE_PROFILE_SHA256,
+                       PAGE_SIZE_PROFILE_V2_ID: PAGE_SIZE_PROFILE_V2_SHA256}.get(profile_id)
+    _require(expected_digest is not None and identity["sha256"] == expected_digest,
              "page-size profile differs from the reviewed contract")
     _require(type(profile.get("schema_version")) is int and profile["schema_version"] == 1 and
-             profile.get("profile_id") == PAGE_SIZE_PROFILE_ID and
              profile.get("device") == {"codename": "nezha", "soc": "SM8850", "board": "canoe", "architecture": "arm64"}
              and profile.get("release_config") == "bp4a", "unsupported page-size profile")
     _require(_page_size_same(profile.get("product_settings"), PAGE_SIZE_PRODUCT_SETTINGS) and
@@ -2557,6 +2571,10 @@ def _page_size_profile_contract(path):
                  "page-size provider 16 KiB limitation differs")
         incompatible += not compatible
     _require(incompatible == 22, "page-size profile must retain all 22 known 16 KiB gaps")
+    if profile_id == PAGE_SIZE_PROFILE_V2_ID:
+        _require(_page_size_same(profile.get("predecessor"), {
+            "path": PAGE_SIZE_PROFILE_RECORD.as_posix(), "sha256": PAGE_SIZE_PROFILE_SHA256, "size_bytes": 13226,
+        }), "page-size predecessor differs from the preserved v1 descriptor")
     return profile, identity
 
 
@@ -2581,13 +2599,39 @@ def _page_size_profile_binding(plan, profile, identity):
              plan["shipping_api_level"] == 36 and
              all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
              "page-size profile cannot change platform or image admission")
-    return {"profile_id": PAGE_SIZE_PROFILE_ID, "contract": {"path": PAGE_SIZE_PROFILE_RECORD.as_posix(), **identity},
-            "kernel_receipt": kernel_receipt, "kernel_image": copy.deepcopy(kernel["image"]),
-            "kernel_config": copy.deepcopy(kernel["config"]), "provider_receipt": provider_receipt,
-            "provider_contract": copy.deepcopy(providers["contract"]),
-            "known_16k_incompatible_files": [row["runtime_path"] for row in providers["files"]
-                                            if not row["compatible_with_16k_alignment"]],
-            "product_settings": copy.deepcopy(PAGE_SIZE_PRODUCT_SETTINGS), "scope": copy.deepcopy(PAGE_SIZE_SCOPE)}
+    result = {"profile_id": profile["profile_id"],
+              "contract": {"path": _page_size_profile_record(profile["profile_id"]).as_posix(), **identity},
+              "kernel_receipt": kernel_receipt, "kernel_image": copy.deepcopy(kernel["image"]),
+              "kernel_config": copy.deepcopy(kernel["config"]), "provider_receipt": provider_receipt,
+              "provider_contract": copy.deepcopy(providers["contract"]),
+              "known_16k_incompatible_files": [row["runtime_path"] for row in providers["files"]
+                                              if not row["compatible_with_16k_alignment"]],
+              "product_settings": copy.deepcopy(PAGE_SIZE_PRODUCT_SETTINGS), "scope": copy.deepcopy(PAGE_SIZE_SCOPE)}
+    if profile["profile_id"] == PAGE_SIZE_PROFILE_V2_ID:
+        derivations = providers.get("payload_derivations")
+        overrides = providers.get("effective_file_overrides")
+        _require(type(derivations) is list and len(derivations) == 1 and type(derivations[0]) is dict and
+                 _page_size_same(derivations, selected.get("payload_derivations")),
+                 "page-size provider derivation differs from the verified current receipt")
+        _require(type(overrides) is list and len(overrides) == 1 and type(overrides[0]) is dict,
+                 "page-size effective file override coverage differs")
+        derivation = derivations[0]
+        original = next((row for row in providers["files"] if row["runtime_path"] == derivation.get("runtime_path")), None)
+        recipe = derivation.get("recipe", {})
+        _require(original is not None and type(recipe) is dict and
+                 _page_size_same(recipe.get("original"), {key: original[key] for key in ("sha256", "size_bytes")}),
+                 "page-size derivation original differs from the preserved provider file")
+        derived = recipe.get("derived")
+        _require(type(derived) is dict and set(derived) == {"sha256", "size_bytes"},
+                 "page-size derived provider identity differs")
+        _digest(derived["sha256"], "page-size derived provider")
+        _integer(derived["size_bytes"], "page-size derived provider size")
+        _require(_page_size_same(overrides[0], {**original, **derived}),
+                 "page-size effective provider identity, module or load alignment differs")
+        result.update(predecessor_contract=copy.deepcopy(profile["predecessor"]),
+                      provider_payload_derivations=copy.deepcopy(derivations),
+                      effective_file_overrides=copy.deepcopy(overrides))
+    return result
 
 
 def _verify_page_size_kernel(profile, kernel_path):
@@ -2789,7 +2833,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                  target_files_metadata_receipt_sha256 is not None and policy_inputs_receipt is not None and
                  framework_provider_policy_contract is not None and framework_provider_inputs_receipt is not None and
                  framework_allocator_contract is not None and page_size_profile is None,
-                 "policy-image delivery requires paired metadata, combined source, current policy/providers and allocator, without the held page profile")
+                 "policy-image delivery requires paired metadata, combined source, current policy/providers and allocator, without a page-profile change")
     if direct_avb_readonly_contract is not None:
         _require(factory_selected and mi_ext_inputs_receipt is not None,
                  "direct AVB read-only requires explicit factory and mi_ext inputs")
@@ -2850,7 +2894,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         plan["page_size_profile"] = _page_size_profile_binding(plan, page_profile, page_identity)
         identity, raw = _read_file(page_size_profile, limit=MAX_JSON_BYTES, collect=True)
         _require(identity == page_identity, "page-size profile changed during generation")
-        payloads[PAGE_SIZE_PROFILE_RECORD.as_posix()] = raw
+        payloads[_page_size_profile_record(page_profile["profile_id"]).as_posix()] = raw
     if policy_inputs_receipt is not None:
         _bind_policy_inputs(plan, policy_inputs_receipt, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
@@ -3102,10 +3146,15 @@ def validate(output, *, purpose="configuration"):
         _, blueprint = _read_file(Path(output) / FRAMEWORK_PROVIDER_BLUEPRINT, limit=MAX_TEXT_BYTES, collect=True)
         _require(blueprint == _framework_provider_blueprint(provider_inputs), "generated framework provider Blueprint changed")
     if "page_size_profile" in plan:
-        page_profile, page_identity = _page_size_profile_contract(Path(output) / PAGE_SIZE_PROFILE_RECORD)
+        page_binding = plan["page_size_profile"]
+        _require(type(page_binding) is dict, "page-size profile admission is malformed")
+        page_record = _page_size_profile_record(page_binding.get("profile_id"))
+        _require(type(page_binding.get("contract")) is dict and page_binding["contract"].get("path") == page_record.as_posix(),
+                 "page-size profile admission path differs from its approved profile")
+        page_profile, page_identity = _page_size_profile_contract(Path(output) / page_record)
         _require(_page_size_same(plan["page_size_profile"], _page_size_profile_binding(plan, page_profile, page_identity)),
                  "page-size profile admission differs from its reviewed kernel/provider binding")
-        expected.add(PAGE_SIZE_PROFILE_RECORD.as_posix())
+        expected.add(page_record.as_posix())
     if "framework_allocator" in plan:
         allocator, allocator_identity = _framework_allocator_contract(Path(output) / FRAMEWORK_ALLOCATOR_RECORD)
         _require(plan["framework_allocator"] == _framework_allocator_admission(plan, allocator, allocator_identity),
