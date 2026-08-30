@@ -1,0 +1,288 @@
+"""Offline consumer tests; synthetic bundles are not Android install evidence."""
+
+from contextlib import redirect_stdout
+import copy
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import tempfile
+import unittest
+from unittest import mock
+
+from scripts import generate_device_tree as g
+from scripts import target_files_metadata as original
+from scripts import target_files_metadata_combined as combined
+from scripts import target_files_metadata_delivery as delivery
+from tests import test_generate_device_tree as fixtures
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / g.TARGET_FILES_SOURCE_CONTRACT
+CONTRACT = ROOT / g.POLICY_IMAGE_DELIVERY_CONTRACT
+
+
+class TargetFilesDeliveryTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        fixtures.GenerateDeviceTreeTests.setUpClass()
+
+    def setUp(self):
+        self.fixture = fixtures.GenerateDeviceTreeTests()
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.doCleanups)
+        self.root = self.fixture.root
+
+    def public(self):
+        return g._metadata_public_binding(source_contract=SOURCE, image_contract=CONTRACT)
+
+    def binding_plan(self):
+        binding = self.public()
+        vendor = {"sha256": "1" * 64, "size_bytes": 100}
+        binding.update(receipt={"path": g.TARGET_FILES_METADATA_RECEIPT, "sha256": "2" * 64, "size_bytes": 200},
+                       vendor_bundle=vendor)
+        plan = {"profile": "framework-checks", "release_config": "bp4a", "variant": "user",
+                "product": "lineage_nezha", "device": {"codename": "nezha"}, "shipping_api_level": 36,
+                "admission": {"configuration_allowed": True, "flash_allowed": False,
+                              "complete_target_files_allowed": False},
+                "source_packages": {"vendor": binding["factory_package_sha256"]},
+                "factory_profile": {"package_sha256": binding["factory_package_sha256"], "origin_verified": False},
+                "bundles": {"vendor": vendor}, "target_files_metadata": binding,
+                "policy_inputs": {"receipt": copy.deepcopy(g.POLICY_IMAGE_DELIVERY_POLICY)},
+                "framework_providers": {"inputs": {"receipt": copy.deepcopy(g.POLICY_IMAGE_DELIVERY_PROVIDERS)}},
+                "framework_allocator": {"contract_record": {"sha256": g.FRAMEWORK_ALLOCATOR_CONTRACT_SHA256}},
+                "mi_ext_inputs": {"native_source": {
+                    "project_commit": binding["native_source"]["project"]["commit"],
+                    "files": binding["native_source"]["final_source_files"],
+                    "composition": binding["native_source"], "composition_identity": binding["composition_identity"]}}}
+        return binding, plan
+
+    def generation_inputs(self):
+        """Reuse existing tiny provider fixtures, mocking only private verifiers."""
+        inputs, provider, policy = self.fixture.provider_inputs(properties=True)
+        self.enterContext(mock.patch.object(g, "_verify_framework_provider_bundle", return_value=provider))
+        self.enterContext(mock.patch.object(g, "_verify_policy_input_bundle", return_value=policy))
+        real_public = self.public()
+        inputs, factory_public, receipt, _ = self.fixture.metadata_inputs(source_contract=SOURCE, inputs=inputs)
+        real_public.update({key: copy.deepcopy(factory_public[key]) for key in ("factory_package_sha256", "images")})
+        real_public["policy_image_delivery"]["required_policy_inputs"] = copy.deepcopy(policy["receipt"])
+        real_public["policy_image_delivery"]["required_framework_providers"] = copy.deepcopy(provider["receipt"])
+        self.enterContext(mock.patch.object(g, "_metadata_public_binding", side_effect=lambda **kw:
+            copy.deepcopy(real_public if "image_contract" in kw else factory_public)))
+        receipt.update(schema_version=3, operation="stage-policy-image-target-files-metadata-v2",
+                       bundle_files=copy.deepcopy(real_public["control_files"]),
+                       packaged_images=copy.deepcopy(real_public["policy_image_delivery"]["packaged_images"]),
+                       current_policy_evidence={"path": "provenance/current-policy-evidence.json",
+                           **real_public["policy_image_delivery"]["current_policy_evidence"]},
+                       selected_delivery_evidence={"path": "provenance/selected-delivery-evidence.json",
+                           **real_public["policy_image_delivery"]["selected_delivery_evidence"]})
+        bundle = inputs["target_files_metadata_receipt"].parent
+        _, _, controls = delivery._controls(ROOT, delivery.Reader(), source_contract=SOURCE, image_contract=CONTRACT)
+        runtime = delivery.runtime_tool_payloads(controls)
+        for row in receipt["bundle_files"]:
+            name = row["path"]
+            target = bundle / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / name.removeprefix("controls/")).read_bytes()
+                               if name.startswith("controls/") else runtime[name])
+        raw = delivery.encoded(receipt)
+        inputs["target_files_metadata_receipt"].write_bytes(raw)
+        inputs["target_files_metadata_receipt_sha256"] = hashlib.sha256(raw).hexdigest()
+        files = {str(index): ({}, b"synthetic metadata") for index in range(real_public["metadata_file_count"])}
+        verifier = self.enterContext(mock.patch.object(delivery, "verify_bundle", return_value=(receipt, files, mock.Mock())))
+        allocator = json.loads((ROOT / g.FRAMEWORK_ALLOCATOR_RECORD).read_bytes())
+        for row in (allocator["source_lock"], allocator["source_snapshot"]):
+            target = self.root / row["path"]
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((ROOT / row["path"]).read_bytes())
+        inputs["framework_allocator_contract"] = ROOT / g.FRAMEWORK_ALLOCATOR_RECORD
+        inputs["policy_image_delivery_contract"] = CONTRACT
+        inputs["variant"] = "user"
+        (inputs["template_root"] / "BoardConfig.mk").write_bytes((ROOT / g.DEVICE_PATH / "BoardConfig.mk").read_bytes())
+        return inputs, receipt, verifier
+
+    def test_factory_routing_does_not_inspect_delivery(self):
+        with mock.patch.object(g, "_policy_image_delivery_reference", side_effect=AssertionError("implicit delivery")):
+            self.assertIs(g._metadata_module(), original)
+            self.assertIs(g._metadata_module(source_contract=SOURCE), combined)
+            self.assertNotIn("policy_image_delivery", g._metadata_public_binding(source_contract=SOURCE))
+
+    def test_default_generation_and_explicit_none_have_identical_bytes(self):
+        inputs = self.fixture.generation_inputs()
+        with mock.patch.object(g, "_policy_image_delivery_reference", side_effect=AssertionError("implicit delivery")):
+            first = g.generate(self.root / "artifacts/default", **inputs)
+            second = g.generate(self.root / "artifacts/none", policy_image_delivery_contract=None, **inputs)
+        self.assertEqual(first, second)
+        for row in first["files"]:
+            self.assertEqual((self.root / "artifacts/default" / row["path"]).read_bytes(),
+                             (self.root / "artifacts/none" / row["path"]).read_bytes())
+
+    def test_public_closure_is_four_maintained_sources_and_one_runtime(self):
+        public = self.public()
+        self.assertEqual(delivery.CONTROL_TOOLS, ("scripts/target_files_metadata.py",
+            "scripts/target_files_metadata_combined.py", "scripts/target_files_metadata_policy_images.py",
+            "scripts/target_files_metadata_delivery.py"))
+        self.assertEqual(len(public["control_files"]), 23)
+        self.assertFalse(any(row["path"].startswith("controls/reports/") for row in public["control_files"]))
+        self.assertEqual([row["path"] for row in public["control_files"] if row["path"].startswith("tools/")],
+                         ["tools/target_files_metadata.py"])
+        self.assertEqual(len(public["native_source"]["final_source_files"]), 10)
+        self.assertEqual(public["metadata_file_count"], 205)
+        for name in ("vendor", "odm"):
+            self.assertNotEqual(public["images"][name], public["policy_image_delivery"]["packaged_images"][name])
+
+    def test_cli_only_selects_the_explicit_flag(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", "--output", "artifacts/out"]
+        for extra, expected in (([], None), (["--policy-image-delivery-contract", "selected.json"], Path("selected.json"))):
+            with mock.patch.object(g, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(g.main(base + extra), 0)
+            self.assertEqual(generate.call_args.kwargs["policy_image_delivery_contract"], expected)
+
+    def test_incomplete_capabilities_and_held_page_profile_fail_before_input_reads(self):
+        required = dict(target_files_source_contract="source", target_files_metadata_receipt="receipt",
+                        target_files_metadata_receipt_sha256="1" * 64, policy_inputs_receipt="policy",
+                        framework_provider_policy_contract="provider-policy", framework_provider_inputs_receipt="providers",
+                        framework_allocator_contract="allocator")
+        for missing in required:
+            options = {k: v for k, v in required.items() if k != missing}
+            with self.subTest(missing=missing), mock.patch.object(g, "_load_records") as load, self.assertRaises(g.CandidateError):
+                g.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none", vendor_receipt="none",
+                           variant="user", policy_image_delivery_contract=CONTRACT, **options)
+            load.assert_not_called()
+        with mock.patch.object(g, "_load_records") as load, self.assertRaises(g.CandidateError):
+            g.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none", vendor_receipt="none",
+                       variant="user", policy_image_delivery_contract=CONTRACT, page_size_profile="held", **required)
+        load.assert_not_called()
+
+    def test_delivery_rejects_userdebug_before_input_reads(self):
+        with mock.patch.object(g, "_load_records") as load, self.assertRaisesRegex(g.CandidateError, "explicit user variant"):
+            g.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="none", vendor_receipt="none",
+                       variant="userdebug", policy_image_delivery_contract=CONTRACT)
+        load.assert_not_called()
+
+    def test_changed_linked_and_special_contracts_are_rejected(self):
+        for kind in ("changed", "symlink", "hardlink", "directory", "fifo"):
+            path = self.root / kind
+            if kind == "changed": path.write_bytes(CONTRACT.read_bytes() + b"\n")
+            elif kind == "symlink": path.symlink_to(CONTRACT)
+            elif kind == "hardlink":
+                original_path = self.root / "contract-copy"
+                original_path.write_bytes(CONTRACT.read_bytes())
+                path.hardlink_to(original_path)
+            elif kind == "directory": path.mkdir()
+            else: os.mkfifo(path)
+            with self.subTest(kind=kind), self.assertRaises((g.CandidateError, OSError)):
+                g._policy_image_delivery_reference(path)
+
+    def test_wrong_current_inputs_and_forged_scope_are_rejected(self):
+        binding, plan = self.binding_plan()
+        self.assertIn("BOARD_NEZHA_PREBUILT_METADATA := true", g._target_files_metadata_binding(plan, binding))
+        mutations = [lambda p: p.update(variant="userdebug"), lambda p: p.update(release_config="other"),
+                     lambda p: p.update(product="other"), lambda p: p["device"].update(codename="other"),
+                     lambda p: p.update(shipping_api_level=35),
+                     lambda p: p["policy_inputs"]["receipt"].update(sha256="0" * 64),
+                     lambda p: p["framework_providers"]["inputs"]["receipt"].update(sha256="0" * 64),
+                     lambda p: p["framework_allocator"]["contract_record"].update(sha256="0" * 64),
+                     lambda p: p.pop("framework_allocator"), lambda p: p.update(page_size_profile={}),
+                     lambda p: p["target_files_metadata"]["policy_image_delivery"]["scope"].update(native_image_bytes_verified=True),
+                     lambda p: p["target_files_metadata"]["policy_image_delivery"]["packaged_images"]["vendor"].update(sha256="0" * 64),
+                     lambda p: p["target_files_metadata"]["images"].update(vendor=binding["policy_image_delivery"]["packaged_images"]["vendor"])]
+        for mutation in mutations:
+            changed = copy.deepcopy(plan)
+            mutation(changed)
+            with self.subTest(mutation=mutation), self.assertRaises(g.CandidateError):
+                g._target_files_metadata_binding(changed, changed["target_files_metadata"])
+
+    def test_source_overlay_keeps_complete_board_guard_and_original_paths(self):
+        binding, plan = self.binding_plan()
+        board = (g.DEVICE_PATH / "BoardConfig.mk").as_posix()
+        before = (ROOT / board).read_bytes()
+        after = g._policy_image_delivery_board(before)
+        addition = b"include $(NEZHA_DEVICE_PATH)/generated/policy-image-delivery.mk\n"
+        self.assertEqual(after.replace(addition, b"", 1), before)
+        payloads = {board: after, g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix(): g._render_policy_image_delivery(binding).encode()}
+        g._policy_image_delivery_source_guards(plan, payloads)
+        guard = payloads[g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix()]
+        for name in ("vendor", "odm"):
+            self.assertIn(f"ifneq ($(origin BOARD_PREBUILT_{name.upper()}IMAGE),file)".encode(), guard)
+            self.assertIn(f"vendor/xiaomi/nezha/proprietary/images/{name}.img".encode(), guard)
+            self.assertIn(f"BOARD_PREBUILT_{name.upper()}IMAGE := {g.POLICY_IMAGE_DELIVERY_PATH}/images/{name}.img".encode(), guard)
+        self.assertNotIn(b"override ", guard)
+        self.assertNotIn(b".KATI_READONLY", guard)
+
+    def test_source_gate_rejects_missing_capability_extra_selectors_and_mutated_board(self):
+        binding, plan = self.binding_plan()
+        board = (g.DEVICE_PATH / "BoardConfig.mk").as_posix()
+        payloads = {board: g._policy_image_delivery_board((ROOT / board).read_bytes()),
+                    g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix(): g._render_policy_image_delivery(binding).encode()}
+        with self.assertRaises(g.CandidateError): g._policy_image_delivery_source_guards({}, payloads)
+        for name, extra in ((board, b"# changed\n"),
+                            ((g.DEVICE_PATH / "device.mk").as_posix(), b"BOARD_PREBUILT_VENDORIMAGE := other\n"),
+                            (g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix(), b"BOARD_AVB_ENABLE := false\n")):
+            mutated = dict(payloads)
+            mutated[name] = mutated.get(name, b"") + extra
+            with self.subTest(name=name), self.assertRaises(g.CandidateError):
+                g._policy_image_delivery_source_guards(plan, mutated)
+
+    def test_full_generation_is_repeatable_and_preserves_readiness(self):
+        inputs, _, verifier = self.generation_inputs()
+        first, second = self.root / "artifacts/delivery-one", self.root / "artifacts/delivery-two"
+        plan = g.generate(first, **inputs)
+        self.assertEqual(g.generate(second, **inputs), plan)
+        self.assertEqual(g.validate(first), plan)
+        self.assertEqual(verifier.call_count, 4)
+        self.assertTrue(all(call.kwargs == {"expected_receipt": inputs["target_files_metadata_receipt_sha256"],
+            "source_contract": SOURCE, "image_contract": CONTRACT} for call in verifier.call_args_list))
+        for purpose in ("target-files", "flash"):
+            with self.subTest(purpose=purpose), self.assertRaisesRegex(g.CandidateError, "not a complete signed partition set"):
+                g.validate(first, purpose=purpose)
+        self.assertFalse(plan["admission"]["complete_target_files_allowed"])
+        self.assertNotIn("page_size_profile", plan)
+        self.assertFalse(any(row["path"].startswith("vendor/") for row in plan["files"]))
+
+    def test_new_receipt_cannot_select_delivery_through_the_old_mode(self):
+        inputs, _, _ = self.generation_inputs()
+        with self.assertRaises(g.CandidateError):
+            g._verify_target_files_metadata(inputs["target_files_metadata_receipt"],
+                expected_receipt_sha256=inputs["target_files_metadata_receipt_sha256"], source_contract=SOURCE)
+
+    def test_schema_current_copy_and_runtime_mutations_fail(self):
+        inputs, receipt, _ = self.generation_inputs()
+        baseline = copy.deepcopy(receipt)
+        mutations = [lambda r: r.update(schema_version=True), lambda r: r.update(schema_version=2),
+                     lambda r: r.update(operation="stage-policy-image-target-files-metadata"),
+                     lambda r: r["current_policy_evidence"].update(sha256="0" * 64),
+                     lambda r: r["selected_delivery_evidence"].update(size_bytes=True),
+                     lambda r: r["packaged_images"].update(vendor=r["images"]["vendor"]),
+                     lambda r: r["bundle_files"].pop()]
+        for mutate in mutations:
+            receipt.clear(); receipt.update(copy.deepcopy(baseline)); mutate(receipt)
+            with self.subTest(mutate=mutate), self.assertRaises(g.CandidateError):
+                g._verify_target_files_metadata(inputs["target_files_metadata_receipt"],
+                    expected_receipt_sha256=inputs["target_files_metadata_receipt_sha256"],
+                    source_contract=SOURCE, image_contract=CONTRACT)
+
+    def test_validation_rejects_resealed_delivery_guard_and_weakened_board(self):
+        inputs, _, _ = self.generation_inputs()
+        output = self.root / "artifacts/guarded"
+        plan = g.generate(output, **inputs)
+        for name in ((g.DEVICE_PATH / "BoardConfig.mk").as_posix(), g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix()):
+            raw = (output / name).read_bytes()
+            self.fixture.reseal_candidate_file(output, plan, name, raw + b"BOARD_AVB_ENABLE := false\n")
+            with self.subTest(name=name), self.assertRaises(g.CandidateError): g.validate(output)
+            self.fixture.reseal_candidate_file(output, plan, name, raw)
+        self.assertEqual(g.validate(output), plan)
+
+    def test_portable_validation_does_not_read_private_images_or_bundle(self):
+        inputs, _, _ = self.generation_inputs()
+        output = self.root / "artifacts/portable"
+        plan = g.generate(output, **inputs)
+        inputs["target_files_metadata_receipt"].unlink()
+        with mock.patch.object(g, "_verify_target_files_metadata", side_effect=AssertionError("private bundle reopened")), \
+                mock.patch("subprocess.Popen", side_effect=AssertionError("native command executed")):
+            self.assertEqual(g.validate(output), plan)
+
+
+if __name__ == "__main__":
+    unittest.main()

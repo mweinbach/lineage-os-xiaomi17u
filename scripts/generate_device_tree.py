@@ -75,6 +75,25 @@ TARGET_FILES_METADATA_CONTRACT = "patches/evolution/target-files-metadata.json"
 TARGET_FILES_METADATA_INCLUDE = DEVICE_PATH / "generated/target-files-metadata.mk"
 TARGET_FILES_SOURCE_CONTRACT = "patches/evolution/target-files-source-composition.json"
 TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
+POLICY_IMAGE_DELIVERY_CONTRACT = "config/nezha-policy-image-delivery.json"
+POLICY_IMAGE_DELIVERY_CONTRACT_ID = "nezha-v13i-final-leaf-metadata-delivery-v2"
+POLICY_IMAGE_DELIVERY_PATH = "vendor/xiaomi/nezha-policy-images"
+POLICY_IMAGE_DELIVERY_INCLUDE = DEVICE_PATH / "generated/policy-image-delivery.mk"
+POLICY_IMAGE_DELIVERY_POLICY = {
+    "path": "policy-inputs.json",
+    "sha256": "40f7127305b41ae74c524f5634a62efd12a5946efc43905b2dae97e58cf7b938", "size_bytes": 32855,
+}
+POLICY_IMAGE_DELIVERY_PROVIDERS = {
+    "path": "framework-provider-inputs.json",
+    "sha256": "c8d2ec1822e45181f45af57fd2389a9939eb635e14866dce41b85736fe65513e", "size_bytes": 13737,
+}
+POLICY_IMAGE_DELIVERY_SCOPE = {
+    "configuration_only": True, "original_vendor_inputs_changed": False,
+    "source_image_bundle_staged": False, "native_image_bytes_verified": False,
+    "native_metadata_installed": False, "full_vintf_compatibility_verified": False,
+    "signed_parent_chain_verified": False, "physical_partition_fit_verified": False,
+    "runtime_verified": False, "complete_rom_admitted": False, "phone_operations": [],
+}
 PAGE_SIZE_PROFILE_RECORD = PurePosixPath("config/nezha-page-size-profile.json")
 PAGE_SIZE_PROFILE_ID = "nezha-stock-4k-bringup-v1"
 PAGE_SIZE_PROFILE_SHA256 = "9d180aeeb13e0c04a4f2726bf94ad6651e1052cb5f9162359c147814bc6607ca"
@@ -1838,7 +1857,15 @@ def _bind_mi_ext_inputs(plan, records, path, payloads, fstab, *, composed_source
     payloads[MI_EXT_BOARD_INCLUDE.as_posix()] = include.encode("ascii")
 
 
-def _metadata_module(*, source_contract=None):
+def _metadata_module(*, source_contract=None, image_contract=None):
+    if image_contract is not None:
+        _require(source_contract is not None,
+                 "policy-image delivery requires the explicit combined source composition")
+        if __package__:
+            from . import target_files_metadata_delivery
+        else:
+            import target_files_metadata_delivery
+        return target_files_metadata_delivery
     if source_contract is not None:
         if __package__:
             from . import target_files_metadata_combined
@@ -1886,14 +1913,76 @@ def _metadata_source_selection(binding):
     return ROOT / TARGET_FILES_SOURCE_CONTRACT
 
 
-def _metadata_public_binding(*, source_contract=None):
+def _policy_image_delivery_reference(selected_contract):
+    if __package__:
+        from . import mi_ext_inputs
+    else:
+        import mi_ext_inputs
+    canonical = ROOT / POLICY_IMAGE_DELIVERY_CONTRACT
+    reader = mi_ext_inputs.Reader()
+    try:
+        canonical_raw = reader.read(canonical, maximum=MAX_JSON_BYTES)
+        selected_raw = reader.read(_no_symlinks(selected_contract), maximum=MAX_JSON_BYTES)
+        admission = json.loads(canonical_raw, object_pairs_hook=_unique_object)
+        _require(selected_raw == canonical_raw and type(admission) is dict and
+                 type(admission.get("schema_version")) is int and admission["schema_version"] == 2 and
+                 admission.get("contract_id") == POLICY_IMAGE_DELIVERY_CONTRACT_ID,
+                 "policy-image delivery selection differs from the maintained image contract")
+        reader.recheck()
+    except mi_ext_inputs.MiExtInputsError as exc:
+        raise CandidateError(f"policy-image delivery contract refused: {exc}") from exc
+    identity = mi_ext_inputs.identity(canonical_raw)
+    return {"path": POLICY_IMAGE_DELIVERY_CONTRACT, "contract_id": POLICY_IMAGE_DELIVERY_CONTRACT_ID, **identity}
+
+
+def _metadata_image_selection(binding):
+    _require(type(binding) is dict, "invalid target-files metadata capability")
+    if "policy_image_delivery" not in binding:
+        return None
+    delivery = binding["policy_image_delivery"]
+    _require(type(delivery) is dict and type(delivery.get("contract")) is dict and
+             json.dumps(delivery["contract"], sort_keys=True) == json.dumps(
+                 _policy_image_delivery_reference(ROOT / POLICY_IMAGE_DELIVERY_CONTRACT), sort_keys=True),
+             "policy-image delivery selector differs from the maintained contract")
+    _require(_metadata_source_selection(binding) is not None,
+             "policy-image delivery requires the combined source capability")
+    return ROOT / POLICY_IMAGE_DELIVERY_CONTRACT
+
+
+def _metadata_options(binding):
+    source, image = _metadata_source_selection(binding), _metadata_image_selection(binding)
+    options = {} if source is None else {"source_contract": source}
+    if image is not None:
+        options["image_contract"] = image
+    return options
+
+
+def _metadata_public_binding(*, source_contract=None, image_contract=None):
     """Use the executing public control tree, never the private bundle's copy."""
     options = {} if source_contract is None else {"source_contract": source_contract}
+    if image_contract is not None:
+        options["image_contract"] = image_contract
     metadata = _metadata_module(**options)
     selection = {} if source_contract is None else {"source_contract": _target_files_source_reference(source_contract)}
     try:
         reader = metadata.Reader()
         profile, composition, controls = metadata._controls(ROOT, reader, **options)
+        if image_contract is not None:
+            reference = _policy_image_delivery_reference(image_contract)
+            _require(metadata.IMAGE_CONTRACT == POLICY_IMAGE_DELIVERY_CONTRACT and
+                     metadata.identity(controls[POLICY_IMAGE_DELIVERY_CONTRACT]) ==
+                     {key: reference[key] for key in ("sha256", "size_bytes")},
+                     "policy-image delivery adapter uses a different maintained contract")
+            admission = json.loads(controls[POLICY_IMAGE_DELIVERY_CONTRACT], object_pairs_hook=_unique_object)
+            selection["policy_image_delivery"] = {
+                "contract": reference, "bundle": POLICY_IMAGE_DELIVERY_PATH,
+                "packaged_images": admission["packaged_images"],
+                "current_policy_evidence": admission["current_policy_build_evidence"],
+                "selected_delivery_evidence": admission["selected_delivery_evidence"],
+                "required_policy_inputs": copy.deepcopy(POLICY_IMAGE_DELIVERY_POLICY),
+                "required_framework_providers": copy.deepcopy(POLICY_IMAGE_DELIVERY_PROVIDERS),
+                "scope": copy.deepcopy(POLICY_IMAGE_DELIVERY_SCOPE),
+            }
         reader.recheck()
         control_files = [{"path": "controls/" + path, **metadata.identity(raw)}
                          for path, raw in sorted(controls.items())]
@@ -1931,9 +2020,11 @@ def _metadata_public_binding(*, source_contract=None):
         raise CandidateError(f"target-files metadata public controls refused: {exc}") from exc
 
 
-def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contract=None):
+def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contract=None, image_contract=None):
     """Recompute private metadata and bind every copied control to public bytes."""
     options = {} if source_contract is None else {"source_contract": source_contract}
+    if image_contract is not None:
+        options["image_contract"] = image_contract
     metadata = _metadata_module(**options)
     expected = _digest(expected_receipt_sha256, "external target-files metadata receipt")
     path = _no_symlinks(path)
@@ -1948,6 +2039,16 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contr
     public = _metadata_public_binding(**options)
     try:
         receipt, files, reader = metadata.verify_bundle(path.parent, expected_receipt=expected, **options)
+        if image_contract is not None:
+            delivery = public["policy_image_delivery"]
+            _require(type(receipt.get("schema_version")) is int and receipt["schema_version"] == 3 and
+                     receipt.get("operation") == "stage-policy-image-target-files-metadata-v2" and
+                     metadata.encoded(receipt.get("packaged_images")) == metadata.encoded(delivery["packaged_images"]) and
+                     metadata.encoded(receipt.get("current_policy_evidence")) == metadata.encoded(
+                         {"path": "provenance/current-policy-evidence.json", **delivery["current_policy_evidence"]}) and
+                     metadata.encoded(receipt.get("selected_delivery_evidence")) == metadata.encoded(
+                         {"path": "provenance/selected-delivery-evidence.json", **delivery["selected_delivery_evidence"]}),
+                     "policy-image delivery receipt differs from its explicit maintained capability")
         _require(metadata.encoded(receipt["profile"]) == metadata.encoded(public["profile"]) and
                  metadata.encoded(receipt["source_composition"]) == metadata.encoded(public["native_source"]) and
                  metadata.encoded(receipt["images"]) == metadata.encoded(public["images"]) and
@@ -1991,15 +2092,17 @@ def _render_metadata_include(binding):
     tool_sha = _digest(tool["sha256"], "target-files metadata native tool")
     # The patched build core freezes these values after BoardConfig. Freezing
     # them here would prevent that reviewed native ownership step.
-    return ("# Exact content-only factory metadata projection; no ROM readiness admission.\n"
+    header = ("# Explicit policy-image metadata delivery; actual packaged-policy checks remain required.\n"
+              if "policy_image_delivery" in binding else
+              "# Exact content-only factory metadata projection; no ROM readiness admission.\n")
+    return (header +
             "BOARD_NEZHA_PREBUILT_METADATA := true\n"
             f"BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 := {receipt}\n"
             f"BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256 := {tool_sha}\n")
 
 
 def _target_files_metadata_binding(plan, binding):
-    selection = _metadata_source_selection(binding)
-    options = {} if selection is None else {"source_contract": selection}
+    options = _metadata_options(binding)
     metadata = _metadata_module(**options)
     public = _metadata_public_binding(**options)
     _require("direct_avb_readonly" not in plan,
@@ -2036,7 +2139,99 @@ def _target_files_metadata_binding(plan, binding):
              plan["admission"]["configuration_allowed"] is True and
              all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
              "target-files metadata cannot promote build, packaging or hardware readiness")
+    if "policy_image_delivery" in binding:
+        delivery = binding["policy_image_delivery"]
+        _require(plan.get("variant") == "user" and plan.get("product") == "lineage_nezha" and
+                 _codename(plan) == "nezha" and plan.get("shipping_api_level") == 36,
+                 "these policy-image leaves require the exact lineage_nezha-bp4a-user context")
+        _require("page_size_profile" not in plan and "framework_allocator" in plan and
+                 plan.get("policy_inputs", {}).get("receipt") == delivery["required_policy_inputs"] and
+                 plan.get("framework_providers", {}).get("inputs", {}).get("receipt") ==
+                 delivery["required_framework_providers"] and
+                 plan["framework_allocator"].get("contract_record", {}).get("sha256") ==
+                 FRAMEWORK_ALLOCATOR_CONTRACT_SHA256,
+                 "policy-image delivery requires its exact current policy, providers and allocator, without the held page profile")
     return _render_metadata_include(binding)
+
+
+def _policy_image_delivery_file_guard(path, digest):
+    _relative(path)
+    _require(re.fullmatch(r"[A-Za-z0-9_./-]+", path), "unsafe policy-image input path")
+    _digest(digest, "policy-image delivery input")
+    checks = []
+    for parent in reversed(PurePosixPath(path).parents):
+        if str(parent) != ".":
+            checks.extend((f"test -d {parent}", f"test ! -L {parent}"))
+    checks.extend((f"test -f {path}", f"test ! -L {path}", "echo regular"))
+    return [f"ifneq ($(shell {' && '.join(checks)}),regular)",
+            f"$(error Nezha delivery requires a regular reviewed input: {path})", "endif",
+            f"ifneq ($(shell sha256sum < {path} 2>/dev/null | cut -d ' ' -f 1),{digest})",
+            f"$(error Nezha delivery input differs: {path})", "endif"]
+
+
+def _render_policy_image_delivery(binding):
+    delivery = binding["policy_image_delivery"]
+    _require(delivery["bundle"] == POLICY_IMAGE_DELIVERY_PATH and
+             set(delivery["packaged_images"]) == {"vendor", "odm"},
+             "policy-image delivery requires its separate exact image pair")
+    lines = ["# Explicit policy-image delivery; original proprietary inputs remain unchanged.",
+             "# This configuration does not admit a complete ROM or signed parent AVB chain.",
+             "ifneq ($(BOARD_AVB_ENABLE),true)",
+             "$(error Nezha policy-image delivery requires AVB)", "endif"]
+    for name in ("vendor", "odm"):
+        variable = "BOARD_PREBUILT_" + name.upper() + "IMAGE"
+        lines.extend((f"ifneq ($(origin {variable}),file)",
+                      f"$(error Nezha delivery requires the original file-owned {variable})", "endif",
+                      f"ifneq ($({variable}),vendor/xiaomi/nezha/proprietary/images/{name}.img)",
+                      f"$(error Nezha delivery refuses an alternate incoming {variable})", "endif"))
+    for path, digest in (
+        (POLICY_IMAGE_DELIVERY_PATH + "/image-admission.json", delivery["contract"]["sha256"]),
+        (POLICY_IMAGE_DELIVERY_PATH + "/selected-delivery-evidence.json", delivery["selected_delivery_evidence"]["sha256"]),
+        (TARGET_FILES_METADATA_PATH + "/" + TARGET_FILES_METADATA_RECEIPT, binding["receipt"]["sha256"]),
+    ):
+        lines.extend(_policy_image_delivery_file_guard(path, digest))
+    for name in ("vendor", "odm"):
+        image = delivery["packaged_images"][name]
+        _require(type(image) is dict and set(image) == {"sha256", "size_bytes"}, "invalid delivered image identity")
+        _integer(image["size_bytes"], "delivered image length", MAX_FILE_BYTES)
+        lines.extend(_policy_image_delivery_file_guard(POLICY_IMAGE_DELIVERY_PATH + "/images/" + name + ".img",
+                                                       image["sha256"]))
+    lines.extend(("# The pinned board-config path owns finalization of these standard variables.",
+                  "# Native Kati and actual component copies must qualify this selected path."))
+    lines.extend("BOARD_PREBUILT_" + name.upper() + "IMAGE := " + POLICY_IMAGE_DELIVERY_PATH + "/images/" + name + ".img"
+                 for name in ("vendor", "odm"))
+    return "\n".join([*lines, ""])
+
+
+def _policy_image_delivery_board(original):
+    token = b"include $(NEZHA_VENDOR_PATH)/BoardConfigVendor.mk\n"
+    include = b"include $(NEZHA_DEVICE_PATH)/generated/policy-image-delivery.mk\n"
+    _require(original.count(token) == 1 and include not in original,
+             "policy-image delivery requires one unchanged original vendor board include")
+    return original.replace(token, token + include, 1)
+
+
+def _policy_image_delivery_source_guards(plan, payloads):
+    binding = plan.get("target_files_metadata", {})
+    selected = "policy_image_delivery" in binding
+    board = (DEVICE_PATH / "BoardConfig.mk").as_posix()
+    include = POLICY_IMAGE_DELIVERY_INCLUDE.as_posix()
+    if selected:
+        _, original = _read_file(ROOT / board, limit=MAX_TEXT_BYTES, collect=True)
+        _require(payloads.get(board) == _policy_image_delivery_board(original) and
+                 payloads.get(include) == _render_policy_image_delivery(binding).encode("ascii"),
+                 "policy-image delivery requires the exact generated board and input guards")
+    else:
+        _require(include not in payloads, "policy-image delivery requires an explicit paired capability")
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/") or not name.endswith((".mk", ".bp")):
+            continue
+        _require((selected and name == include) or
+                 (POLICY_IMAGE_DELIVERY_PATH.encode("ascii") not in raw and
+                  not re.search(rb"\bBOARD_PREBUILT_(?:VENDOR|ODM)IMAGE\b", raw)),
+                 "policy-image selectors may only use the exact generated delivery include")
+        _require((selected and name == board) or b"policy-image-delivery.mk" not in raw,
+                 "policy-image delivery include may only follow the unchanged vendor board include")
 
 
 def _metadata_vendor_binding(plan, binding, vendor_receipt):
@@ -2049,14 +2244,25 @@ def _metadata_vendor_binding(plan, binding, vendor_receipt):
     return vendor_identity
 
 
-def _bind_target_files_metadata(plan, path, expected_sha256, vendor_receipt, payloads, *, source_contract=None):
+def _bind_target_files_metadata(plan, path, expected_sha256, vendor_receipt, payloads, *, source_contract=None,
+                                image_contract=None):
     options = {} if source_contract is None else {"source_contract": source_contract}
+    if image_contract is not None:
+        options["image_contract"] = image_contract
     binding = _verify_target_files_metadata(path, expected_receipt_sha256=expected_sha256, **options)
     binding["vendor_bundle"] = _metadata_vendor_binding(plan, binding, vendor_receipt)
     include = _target_files_metadata_binding(plan, binding)
     recovery_name = (DEVICE_PATH / "recovery-prebuilt.mk").as_posix()
-    payloads[recovery_name] = _metadata_recovery_include(payloads[recovery_name], **options)
+    recovery_options = {} if source_contract is None else {"source_contract": source_contract}
+    payloads[recovery_name] = _metadata_recovery_include(payloads[recovery_name], **recovery_options)
     payloads[TARGET_FILES_METADATA_INCLUDE.as_posix()] = include.encode("ascii")
+    if image_contract is not None:
+        board_name = (DEVICE_PATH / "BoardConfig.mk").as_posix()
+        _, original = _read_file(ROOT / board_name, limit=MAX_TEXT_BYTES, collect=True)
+        _require(payloads[board_name] == original,
+                 "policy-image delivery may not replace the authored complete-target board guard")
+        payloads[board_name] = _policy_image_delivery_board(original)
+        payloads[POLICY_IMAGE_DELIVERY_INCLUDE.as_posix()] = _render_policy_image_delivery(binding).encode("ascii")
     plan["target_files_metadata"] = binding
 
 
@@ -2552,7 +2758,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              oem_property_contract=None, framework_provider_policy_contract=None,
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
-             target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None):
+             target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
+             policy_image_delivery_contract=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -2576,6 +2783,13 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if target_files_source_contract is not None:
         _require(target_files_metadata_receipt is not None and target_files_metadata_receipt_sha256 is not None,
                  "target-files source composition requires an explicit metadata receipt and its external SHA256")
+    if policy_image_delivery_contract is not None:
+        _require(variant == "user", "these policy-image leaves require the explicit user variant")
+        _require(target_files_source_contract is not None and target_files_metadata_receipt is not None and
+                 target_files_metadata_receipt_sha256 is not None and policy_inputs_receipt is not None and
+                 framework_provider_policy_contract is not None and framework_provider_inputs_receipt is not None and
+                 framework_allocator_contract is not None and page_size_profile is None,
+                 "policy-image delivery requires paired metadata, combined source, current policy/providers and allocator, without the held page profile")
     if direct_avb_readonly_contract is not None:
         _require(factory_selected and mi_ext_inputs_receipt is not None,
                  "direct AVB read-only requires explicit factory and mi_ext inputs")
@@ -2652,6 +2866,9 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _bind_mi_ext_inputs(plan, records, mi_ext_inputs_receipt, payloads, fstab, **options)
     if metadata_selected:
         options = {} if target_files_source_contract is None else {"source_contract": target_files_source_contract}
+        if policy_image_delivery_contract is not None:
+            _policy_image_delivery_reference(policy_image_delivery_contract)
+            options["image_contract"] = policy_image_delivery_contract
         _bind_target_files_metadata(plan, target_files_metadata_receipt, target_files_metadata_receipt_sha256,
                                     vendor_receipt, payloads, **options)
     if direct_avb_readonly_contract is not None:
@@ -2662,6 +2879,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         payloads[(generated / name).as_posix()] = content.encode()
     _page_size_source_guards(plan, payloads)
     _framework_allocator_source_guards(plan, payloads)
+    _policy_image_delivery_source_guards(plan, payloads)
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
     plan["schema_version"] = 1
@@ -2719,6 +2937,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             # Verify the entire external tree again, including its no-extra-file
             # inventory, before publishing the small portable candidate.
             options = {} if target_files_source_contract is None else {"source_contract": target_files_source_contract}
+            if policy_image_delivery_contract is not None:
+                options["image_contract"] = policy_image_delivery_contract
             current = _verify_target_files_metadata(target_files_metadata_receipt,
                                                    expected_receipt_sha256=target_files_metadata_receipt_sha256, **options)
             current["vendor_bundle"] = _metadata_vendor_binding(plan, current, vendor_receipt)
@@ -2789,6 +3009,8 @@ def validate(output, *, purpose="configuration"):
         options = {} if selection is None else {"source_contract": selection}
         _require(actual_recovery == _metadata_recovery_include(legacy_recovery, **options),
                  "target-files metadata requires the exact matching recovery source guard")
+        if "policy_image_delivery" in plan["target_files_metadata"]:
+            expected.add(POLICY_IMAGE_DELIVERY_INCLUDE.as_posix())
     if "direct_avb_readonly" in plan:
         _direct_avb_readonly_binding(plan, plan["direct_avb_readonly"])
         _, legacy_recovery = _read_file(ROOT / DEVICE_PATH / "recovery-prebuilt.mk", limit=MAX_TEXT_BYTES, collect=True)
@@ -2815,6 +3037,16 @@ def validate(output, *, purpose="configuration"):
                      INIT_HELPER_METADATA.as_posix(), INIT_HELPER_AUDIT.as_posix()}
         for row in [*contract["device_guards"], contract["source_patch"], contract["patch_metadata"],
                     contract["prior_component_audit"]]:
+            if ("policy_image_delivery" in plan.get("target_files_metadata", {}) and
+                    row["path"] == (DEVICE_PATH / "BoardConfig.mk").as_posix()):
+                # Preserve the original helper guard, then admit only the exact
+                # one-include delivery derivation. No other guarded bytes vary.
+                original_identity, original = _read_file(ROOT / row["path"], limit=MAX_TEXT_BYTES, collect=True)
+                actual_identity, actual = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
+                _require(original_identity == {key: row[key] for key in ("sha256", "size_bytes")} and
+                         actual_identity == files.get(row["path"]) and actual == _policy_image_delivery_board(original),
+                         "policy-image delivery changed the guarded init-helper board beyond its exact include")
+                continue
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
                      "init-helper public input differs from the reviewed contract")
     if "oem_policy" in plan:
@@ -2921,6 +3153,14 @@ def validate(output, *, purpose="configuration"):
     for name in files:
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk") and name != product_name:
             _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
+            if ("policy_image_delivery" in plan.get("target_files_metadata", {}) and
+                    name == POLICY_IMAGE_DELIVERY_INCLUDE.as_posix()):
+                _require(raw == _render_policy_image_delivery(plan["target_files_metadata"]).encode("ascii"),
+                         "policy-image delivery input guard changed")
+                # This separate image directory shares the policy namespace's
+                # textual prefix but never exports that namespace. Permit only
+                # its exact generated spelling in the exact reviewed include.
+                raw = raw.replace(POLICY_IMAGE_DELIVERY_PATH.encode("ascii"), b"")
             _require(POLICY_INPUTS_PATH.encode("ascii") not in raw,
                      "native policy namespace may only be exported by the reviewed generator")
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith((".mk", ".bp")) and name not in {product_name, FRAMEWORK_PROVIDER_BLUEPRINT}:
@@ -2950,8 +3190,10 @@ def validate(output, *, purpose="configuration"):
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith((".mk", ".bp")):
             _, raw = _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)
             if name != TARGET_FILES_METADATA_INCLUDE.as_posix():
+                delivery_include = ("policy_image_delivery" in plan.get("target_files_metadata", {}) and
+                                    name == POLICY_IMAGE_DELIVERY_INCLUDE.as_posix())
                 _require(b"NEZHA_PREBUILT_METADATA" not in raw and b"target_files_metadata" not in raw and
-                         TARGET_FILES_METADATA_PATH.encode("ascii") not in raw,
+                         (delivery_include or TARGET_FILES_METADATA_PATH.encode("ascii") not in raw),
                          "target-files metadata selectors may only use the reviewed generated include")
             if name != board_name:
                 _require(b"target-files-metadata.mk" not in raw,
@@ -3020,6 +3262,9 @@ def validate(output, *, purpose="configuration"):
     else:
         _require(not any(path in board for path in FRAMEWORK_PROVIDER_WIRING.values()),
                  "framework provider policy wiring requires an explicit reviewed contract")
+    delivery_payloads = {name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
+                         for name in files if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith((".mk", ".bp"))}
+    _policy_image_delivery_source_guards(plan, delivery_payloads)
     _require(purpose == "configuration", f"{purpose} admission refused: framework-checks is not a complete signed partition set")
     return plan
 
@@ -3059,6 +3304,8 @@ def main(argv=None):
                              help="independently reviewed metadata receipt digest; never inferred from the supplied bundle")
             sub.add_argument("--target-files-source-contract", type=Path,
                              help="explicit combined metadata/0010/0011 source composition; requires paired metadata inputs")
+            sub.add_argument("--policy-image-delivery-contract", type=Path,
+                             help="explicit current-policy schema-3 delivery; requires paired metadata, combined sources and current provider/allocator inputs")
             sub.add_argument("--oem-property-contract", type=Path,
                              help="explicit four-property system_ext source contract; requires matching OEM base and native policy inputs")
             sub.add_argument("--framework-provider-policy-contract", type=Path,
@@ -3099,7 +3346,8 @@ def main(argv=None):
                                   direct_avb_readonly_contract=args.direct_avb_readonly_contract,
                                   target_files_source_contract=args.target_files_source_contract,
                                   page_size_profile=args.page_size_profile,
-                                  framework_allocator_contract=args.framework_allocator_contract)
+                                  framework_allocator_contract=args.framework_allocator_contract,
+                                  policy_image_delivery_contract=args.policy_image_delivery_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
