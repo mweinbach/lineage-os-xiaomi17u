@@ -1,0 +1,1273 @@
+{
+  "apk_identity": {
+    "binary_manifest_sha256": "520f7201ad35b695e7205e61d482661b6493b5cf70c88a00a7487a37489c6a0e",
+    "extract_native_libraries": false,
+    "minimum_sdk": 29,
+    "package": "com.android.camera",
+    "shared_uid_declared": false,
+    "target_sdk": 35,
+    "version_code": 630070100,
+    "version_name": "6.3.007010.0"
+  },
+  "decision": {
+    "camera_apk_selected_in_product": false,
+    "packaging_blocker_resolved_for_this_input": true,
+    "permission_and_mac_admission_complete": false,
+    "rom_readiness_changed": false,
+    "runtime_verified": false
+  },
+  "device": "nezha",
+  "earlier_input_comparison": {
+    "certificate_sha256": "f87bd41b5bf1d78023a823b29a40e08ad3d90e7570c96f01d6a804b47245e869",
+    "changed_dex_payloads": 8,
+    "comparison": {
+      "path": "reports/factory-camera-apk-20260829/inspection-v1/zip-comparison.json",
+      "sha256": "72d797750f6047141ac7996977a7eeb119bcaea027a24fa1169528c657e6cb1c",
+      "size_bytes": 362178
+    },
+    "earlier_dex_compressed_count": 8,
+    "identical_jni_payloads": 40,
+    "prior_code_callsite_findings_apply_to_factory": false,
+    "record": {
+      "path": "research/camera-apk-integration.json",
+      "sha256": "6f509845935734a7b9e56dd3e2a12fe45750fe019e957abbb69b43b32544ae9c",
+      "size_bytes": 19742
+    },
+    "sha256": "cadf2c07cb6fd25c06f7fe6f37dc227df204bed3a873b3025aff93d53d72da79",
+    "size_bytes": 170279563,
+    "version_and_binary_manifest_identical": true
+  },
+  "factory_input": {
+    "capture": {
+      "path": "artifacts/factory-camera-apk-20260829/capture-v1/receipt.json",
+      "sha256": "4a608fb01ff888c35de1dda4b67ff2b201cb238c8d70dbac20860405da3de40c",
+      "size_bytes": 1424
+    },
+    "capture_readback_verified": true,
+    "image_relative_path": "/priv-app/MiuiCamera/MiuiCamera.apk",
+    "image_sha256": "67e6c683c1091abc0a548c27e4681bbe26471529129d15453b95c8d69417795f",
+    "image_size_bytes": 4942934016,
+    "nid": 144004480,
+    "oem_trust_root_authenticated": false,
+    "original_unchanged": true,
+    "package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "partition": "product_a",
+    "runtime_path": "/product/priv-app/MiuiCamera/MiuiCamera.apk",
+    "sha256": "7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e",
+    "size_bytes": 204365218,
+    "user_provided_package_origin_authenticated": false
+  },
+  "host_validation": {
+    "all_original_inputs_unchanged": true,
+    "commands": [
+      {
+        "exit_code": 0,
+        "label": "java-version",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/java-version.stderr",
+          "sha256": "0046efef9645045b92c09567779306614723085a97284c6925a61c318f5ec8af",
+          "size_bytes": 190
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/java-version.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "signature",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/signature.stderr",
+          "sha256": "32794fd86b0a7e3928438e89dbb343e49b02f6bd49ce8bf3765364a074d5f0bc",
+          "size_bytes": 448
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/signature.stdout",
+          "sha256": "57e609775846c02fd7148c3443d9c88cb31dbde32bd2b1fc3db25f5b18ffd363",
+          "size_bytes": 1007
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "manifest",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/manifest.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/manifest.stdout",
+          "sha256": "999440c0464031395c6441cac9382cae26676efe8c0581921ad628934e7aa1fd",
+          "size_bytes": 134960
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "badging",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/badging.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/badging.stdout",
+          "sha256": "eea71d0dc6c610c2bcd0bed219e75017ec573d5a7194ca5dd41ca99b0f2eff11",
+          "size_bytes": 14612
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "zipalign-4k",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/zipalign-4k.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/zipalign-4k.stdout",
+          "sha256": "5cfb38746fe4d45b1b23b451eadb490d8d2e4b1424ee320f47e5a607702187be",
+          "size_bytes": 638480
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "zipalign-16k",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/zipalign-16k.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/zipalign-16k.stdout",
+          "sha256": "5cfb38746fe4d45b1b23b451eadb490d8d2e4b1424ee320f47e5a607702187be",
+          "size_bytes": 638480
+        }
+      },
+      {
+        "exit_code": 1,
+        "label": "presigned-without-preprocessed",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/presigned-without-preprocessed.stderr",
+          "sha256": "94ec0597cc4da24c03e40566f3cedb9ff7990ee75eb7178a1ec806847fb62cc7",
+          "size_bytes": 370
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/presigned-without-preprocessed.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "preprocessed-privileged",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/preprocessed-privileged.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/preprocessed-privileged.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 0,
+        "label": "strict-manifest-existing-libraries",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/strict-manifest-existing-libraries.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/inspection-v1/strict-manifest-existing-libraries.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      }
+    ],
+    "import_bound_strict_commands": [
+      {
+        "exit_code": 0,
+        "label": "strict-manifest",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/review-v3/strict-manifest.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/review-v3/strict-manifest.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      },
+      {
+        "exit_code": 255,
+        "label": "wrong-module-negative-control",
+        "stderr": {
+          "path": "reports/factory-camera-apk-20260829/review-v3/wrong-module-negative-control.stderr",
+          "sha256": "ef316d94ae12bc6b9901db43fa62ef9e661572baaf6b7135d6896426cc930bb6",
+          "size_bytes": 1441
+        },
+        "stdout": {
+          "path": "reports/factory-camera-apk-20260829/review-v3/wrong-module-negative-control.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        }
+      }
+    ],
+    "inspection_receipt": {
+      "path": "reports/factory-camera-apk-20260829/inspection-v1/receipt.json",
+      "sha256": "875aa0ed80afe0eff2092e62a8af1c60100cfc96289e9ff40aa615cd48ee5b0b",
+      "size_bytes": 18713
+    },
+    "inspection_script": {
+      "path": "reports/factory-camera-apk-20260829/inspection-v1/apk_inspection.py",
+      "sha256": "022ad1d71fd6b6d7e1ae574ca02c966efc496789199412a1b57a036c2f01d242",
+      "size_bytes": 10277
+    },
+    "manifest_helper_pinned_to_original_archive": true,
+    "permission_review_script": {
+      "path": "reports/factory-camera-apk-20260829/review-v3/review.py",
+      "sha256": "e59f55ae5cde1da39f6594ad46ad8e0da798ce7a4248c1587af683c7186ea507",
+      "size_bytes": 8614
+    },
+    "sdk_build_tools": "36.0.0",
+    "source_and_tool_hashes_in_private_receipts": true,
+    "source_revisions": {
+      "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "frameworks/base": "8140698cc12983deecdbd434220affb5f931bfc6"
+    },
+    "unfiltered_logs_retained": true
+  },
+  "observed_at_utc": "2026-08-30T00:42:37.720178+00:00",
+  "offline_tests": {
+    "complete_workspace_suite_run_by_this_review": false,
+    "failed": 0,
+    "passed": 42,
+    "runs": [
+      {
+        "log": {
+          "path": "reports/factory-camera-apk-20260829/camera-apk-tests-v2.log",
+          "sha256": "9a51d47562293f205c49378469a2fc3f4850e1b045bfff5816cb023ea36e8b37",
+          "size_bytes": 2646
+        },
+        "passed": 13,
+        "pattern": "test_camera_apk_integration.py",
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "reports/factory-camera-apk-20260829/camera-runtime-tests-v2.log",
+          "sha256": "3f199eda661461a99fb47b7d4ea121a3c3e3c40c227f499e9aa54aabfa2f55d8",
+          "size_bytes": 3378
+        },
+        "passed": 17,
+        "pattern": "test_camera_runtime_inputs.py",
+        "skipped": 0
+      },
+      {
+        "log": {
+          "path": "reports/factory-camera-apk-20260829/dex-import-tests-v2.log",
+          "sha256": "e8021a9e25b0a8e785c558746b8d928a5f6fd6d900968e468689686b2fc1b98a",
+          "size_bytes": 2043
+        },
+        "passed": 12,
+        "pattern": "test_dex_import_patch.py",
+        "skipped": 0
+      }
+    ],
+    "scope": "Existing Camera APK, runtime-input and DEX-patch tooling tests; not hardware or an Android APK component build.",
+    "skipped": 0
+  },
+  "packaging": {
+    "apk_copy_for_cli_suffix": {
+      "copy_mode": "0444",
+      "identity_copy_only": true,
+      "original_and_copy_hashes_equal_before_and_after": true,
+      "output": {
+        "path": "reports/factory-camera-apk-20260829/inspection-v1/FactoryMiuiCamera.apk",
+        "sha256": "7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e",
+        "size_bytes": 204365218
+      },
+      "reason": "Pinned manifest checker chooses APK parsing by .apk suffix; the bounded capture uses flat filename 0001."
+    },
+    "crc_verified_zip_entries": 9494,
+    "dex_count": 8,
+    "dex_four_byte_alignment_passed": true,
+    "dex_stored_count": 8,
+    "elf_16k_exceptions": [
+      "lib/arm64-v8a/libHawk.so",
+      "lib/arm64-v8a/libavif_android.so",
+      "lib/arm64-v8a/libpendant.so"
+    ],
+    "elf_16k_passed": 37,
+    "elf_4k_passed": 40,
+    "jni_architecture": "AArch64",
+    "jni_count": 40,
+    "jni_stored_count": 40,
+    "non_preprocessed_failure": "Target SDK 35 requires preprocessed handling.",
+    "preprocessed_privileged_with_uncompress_priv_app_dex_exit_code": 0,
+    "presigned_without_preprocessed_exit_code": 1,
+    "validator_checks_skipped": false,
+    "zip_records": {
+      "comparison": {
+        "path": "reports/factory-camera-apk-20260829/inspection-v1/zip-comparison.json",
+        "sha256": "72d797750f6047141ac7996977a7eeb119bcaea027a24fa1169528c657e6cb1c",
+        "size_bytes": 362178
+      },
+      "earlier": {
+        "path": "reports/factory-camera-apk-20260829/inspection-v1/earlier-zip.json",
+        "sha256": "c7bb8564dd8ba74c0fc6a430d79e7e282fd74d7291d6afbfbff298a3959a41b4",
+        "size_bytes": 2131605
+      },
+      "factory": {
+        "path": "reports/factory-camera-apk-20260829/inspection-v1/factory-zip.json",
+        "sha256": "2dd444baa0dc466bedd63bd9242c242e36847fbef847ac8dc651973b65a1e387",
+        "size_bytes": 1986611
+      }
+    },
+    "zipalign_16k_exit_code": 0,
+    "zipalign_4k_exit_code": 0
+  },
+  "permissions": {
+    "boot_permission_enforcement_verified": false,
+    "captured_permission_and_sysconfig_xml_files_reviewed": 258,
+    "effective_installed_feature_flags_resolved": false,
+    "external_definers_not_resolved": 21,
+    "factory_allow_count": 13,
+    "factory_allow_without_platform_privileged_bit": [
+      "android.permission.READ_PHONE_STATE",
+      "mediatek.permission.ACCESS_APU_SYS"
+    ],
+    "factory_camera_block": {
+      "allow": [
+        "android.permission.WRITE_MEDIA_STORAGE",
+        "android.permission.WRITE_SECURE_SETTINGS",
+        "android.permission.MANAGE_USB",
+        "android.permission.INTERACT_ACROSS_USERS",
+        "mediatek.permission.ACCESS_APU_SYS",
+        "android.permission.DUMP",
+        "android.permission.LOG_COMPAT_CHANGE",
+        "android.permission.READ_COMPAT_CHANGE_CONFIG",
+        "android.permission.START_ACTIVITIES_FROM_BACKGROUND",
+        "android.permission.SYSTEM_CAMERA",
+        "android.permission.TURN_SCREEN_ON",
+        "android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE",
+        "android.permission.READ_PHONE_STATE"
+      ],
+      "capture": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/files/0017",
+        "sha256": "0e38a538d01e17876d2ce79ad081d4d684ffa9f208cfca2f4e4910231f3d4da5",
+        "size_bytes": 21197
+      },
+      "deny": [],
+      "image_sha256": "67e6c683c1091abc0a548c27e4681bbe26471529129d15453b95c8d69417795f",
+      "partition": "product",
+      "path": "/etc/permissions/privapp-permissions-product.xml",
+      "receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/receipt.json",
+        "sha256": "545dd2397fb3233f683770f3f2a8eeadcfce729f3eab94ed13f2835c06eef877",
+        "size_bytes": 14334
+      }
+    },
+    "factory_deny_count": 0,
+    "feature_conditional_platform_definitions": {
+      "android.permission.DEVICE_POWER": [
+        {
+          "feature_flag": "!android.permission.flags.bluetooth_permission_use_module_protection_level",
+          "protection_level": "signature|role"
+        },
+        {
+          "feature_flag": "android.permission.flags.bluetooth_permission_use_module_protection_level",
+          "protection_level": "signature|role|module"
+        }
+      ],
+      "android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE": [
+        {
+          "feature_flag": "!android.security.subscribe_to_keyguard_locked_state_perm_priv_flag",
+          "protection_level": "signature|module|role"
+        },
+        {
+          "feature_flag": "android.security.subscribe_to_keyguard_locked_state_perm_priv_flag",
+          "protection_level": "signature|privileged|module|role"
+        }
+      ]
+    },
+    "grants_added": false,
+    "literal_privileged_token_always_present_count": 9,
+    "literal_privileged_token_possibly_present_count": 10,
+    "normalized_always_privileged_count": 10,
+    "normalized_always_privileged_requests": [
+      "android.permission.DUMP",
+      "android.permission.INTERACT_ACROSS_USERS",
+      "android.permission.LOG_COMPAT_CHANGE",
+      "android.permission.MANAGE_USB",
+      "android.permission.READ_COMPAT_CHANGE_CONFIG",
+      "android.permission.START_ACTIVITIES_FROM_BACKGROUND",
+      "android.permission.SYSTEM_CAMERA",
+      "android.permission.TURN_SCREEN_ON",
+      "android.permission.WRITE_MEDIA_STORAGE",
+      "android.permission.WRITE_SECURE_SETTINGS"
+    ],
+    "normalized_possibly_privileged_count": 11,
+    "normalized_possibly_privileged_requests": [
+      "android.permission.DUMP",
+      "android.permission.INTERACT_ACROSS_USERS",
+      "android.permission.LOG_COMPAT_CHANGE",
+      "android.permission.MANAGE_USB",
+      "android.permission.READ_COMPAT_CHANGE_CONFIG",
+      "android.permission.START_ACTIVITIES_FROM_BACKGROUND",
+      "android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE",
+      "android.permission.SYSTEM_CAMERA",
+      "android.permission.TURN_SCREEN_ON",
+      "android.permission.WRITE_MEDIA_STORAGE",
+      "android.permission.WRITE_SECURE_SETTINGS"
+    ],
+    "normalized_protection_flag_counts_verified": true,
+    "platform_defined": 46,
+    "possible_privileged_requests_uncovered_by_factory_camera_block": [],
+    "prior_harness_failures": [
+      {
+        "path": "reports/factory-camera-apk-20260829/review-v1/failure.json",
+        "sha256": "6706036fc41f2f68825f1e86e8246cbf82258a944ed78dd323decd9d6ade902b",
+        "size_bytes": 803
+      },
+      {
+        "path": "reports/factory-camera-apk-20260829/review-v2/failure.json",
+        "sha256": "85a3554624f70da818536516ddf6ed0f9125d9e358a490d47a2825ef2e074835",
+        "size_bytes": 711
+      }
+    ],
+    "protection_flag_normalization": {
+      "path": "reports/factory-camera-apk-20260829/protection-flags-v1.json",
+      "sha256": "76719bdf73a0b33bac3d3002eedd9e77eb1257806e38147f34f6e0065c774663",
+      "size_bytes": 22255
+    },
+    "pure_platform_signature_requests": [
+      "android.permission.CONTROL_DEVICE_STATE",
+      "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+      "android.permission.INJECT_EVENTS"
+    ],
+    "requested_unique": 70,
+    "requests": [
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1001",
+            "protection_level": "dangerous|instant"
+          }
+        ],
+        "name": "android.permission.ACCESS_COARSE_LOCATION"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1001",
+            "protection_level": "dangerous|instant"
+          }
+        ],
+        "name": "android.permission.ACCESS_FINE_LOCATION"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1000",
+            "protection_level": "normal|instant"
+          }
+        ],
+        "name": "android.permission.ACCESS_NETWORK_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.ACCESS_WIFI_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.BLUETOOTH"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.BLUETOOTH_ADMIN"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.BLUETOOTH_ADVERTISE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.BLUETOOTH_CONNECT"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.BLUETOOTH_SCAN"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1001",
+            "protection_level": "dangerous|instant"
+          }
+        ],
+        "name": "android.permission.CAMERA"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.CHANGE_NETWORK_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.CHANGE_WIFI_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x2",
+            "protection_level": "signature"
+          }
+        ],
+        "name": "android.permission.CONTROL_DEVICE_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x2",
+            "protection_level": "signature"
+          }
+        ],
+        "name": "android.permission.CONTROL_DISPLAY_BRIGHTNESS"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": "!android.permission.flags.bluetooth_permission_use_module_protection_level",
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x4000002",
+            "protection_level": "signature|role"
+          },
+          {
+            "feature_flag": "android.permission.flags.bluetooth_permission_use_module_protection_level",
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x4400002",
+            "protection_level": "signature|role|module"
+          }
+        ],
+        "name": "android.permission.DEVICE_POWER"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x32",
+            "protection_level": "signature|privileged|development"
+          }
+        ],
+        "name": "android.permission.DUMP"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1000",
+            "protection_level": "normal|instant"
+          }
+        ],
+        "name": "android.permission.FOREGROUND_SERVICE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1000",
+            "protection_level": "normal|instant"
+          }
+        ],
+        "name": "android.permission.FOREGROUND_SERVICE_CAMERA"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x2",
+            "protection_level": "signature"
+          }
+        ],
+        "name": "android.permission.INJECT_EVENTS"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x4000032",
+            "protection_level": "signature|privileged|development|role"
+          }
+        ],
+        "name": "android.permission.INTERACT_ACROSS_USERS"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x4400102",
+            "protection_level": "signature|installer|module|role"
+          }
+        ],
+        "name": "android.permission.INTERACT_ACROSS_USERS_FULL"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1000",
+            "protection_level": "normal|instant"
+          }
+        ],
+        "name": "android.permission.INTERNET"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x12",
+            "protection_level": "signature|privileged"
+          }
+        ],
+        "name": "android.permission.LOG_COMPAT_CHANGE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x442",
+            "protection_level": "signature|appop|preinstalled"
+          }
+        ],
+        "name": "android.permission.MANAGE_EXTERNAL_STORAGE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x12",
+            "protection_level": "signature|privileged"
+          }
+        ],
+        "name": "android.permission.MANAGE_USB"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.MODIFY_AUDIO_SETTINGS"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1001",
+            "protection_level": "dangerous|instant"
+          }
+        ],
+        "name": "android.permission.POST_NOTIFICATIONS"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x12",
+            "protection_level": "signature|privileged"
+          }
+        ],
+        "name": "android.permission.READ_COMPAT_CHANGE_CONFIG"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.READ_EXTERNAL_STORAGE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.READ_MEDIA_AUDIO"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.READ_MEDIA_IMAGES"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.READ_MEDIA_VIDEO"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.READ_PHONE_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x0",
+            "protection_level": "normal"
+          }
+        ],
+        "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1001",
+            "protection_level": "dangerous|instant"
+          }
+        ],
+        "name": "android.permission.RECORD_AUDIO"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x400c212",
+            "protection_level": "signature|privileged|vendorPrivileged|oem|verifier|role"
+          }
+        ],
+        "name": "android.permission.START_ACTIVITIES_FROM_BACKGROUND"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": "!android.security.subscribe_to_keyguard_locked_state_perm_priv_flag",
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x4400002",
+            "protection_level": "signature|module|role"
+          },
+          {
+            "feature_flag": "android.security.subscribe_to_keyguard_locked_state_perm_priv_flag",
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x4400012",
+            "protection_level": "signature|privileged|module|role"
+          }
+        ],
+        "name": "android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x9e2",
+            "protection_level": "signature|setup|appop|installer|pre23|development"
+          }
+        ],
+        "name": "android.permission.SYSTEM_ALERT_WINDOW"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x4000012",
+            "protection_level": "system|signature|role"
+          }
+        ],
+        "name": "android.permission.SYSTEM_CAMERA"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x52",
+            "protection_level": "signature|privileged|appop"
+          }
+        ],
+        "name": "android.permission.TURN_SCREEN_ON"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1000",
+            "protection_level": "normal|instant"
+          }
+        ],
+        "name": "android.permission.VIBRATE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1000",
+            "protection_level": "normal|instant"
+          }
+        ],
+        "name": "android.permission.WAKE_LOCK"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x1",
+            "protection_level": "dangerous"
+          }
+        ],
+        "name": "android.permission.WRITE_EXTERNAL_STORAGE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x12",
+            "protection_level": "signature|privileged"
+          }
+        ],
+        "name": "android.permission.WRITE_MEDIA_STORAGE"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": true,
+            "normalized_protection_bits": "0x4000132",
+            "protection_level": "signature|privileged|development|role|installer"
+          }
+        ],
+        "name": "android.permission.WRITE_SECURE_SETTINGS"
+      },
+      {
+        "definition": "pinned-platform",
+        "definition_branches": [
+          {
+            "feature_flag": null,
+            "has_privileged_bit": false,
+            "normalized_protection_bits": "0x40004c2",
+            "protection_level": "signature|preinstalled|appop|pre23|role"
+          }
+        ],
+        "name": "android.permission.WRITE_SETTINGS"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.android.SystemUI.permission.TIGGER_TOGGLE"
+      },
+      {
+        "definition": "same-apk",
+        "name": "com.android.camera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "protection_level_raw": "0x00000002"
+      },
+      {
+        "definition": "same-apk",
+        "name": "com.android.camera.permission.DebugProvider",
+        "protection_level_raw": "0x00000002"
+      },
+      {
+        "definition": "same-apk",
+        "name": "com.android.camera.permission.MIPUSH_RECEIVE",
+        "protection_level_raw": "0x00000002"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.android.settings.permission.CLOUD_SETTINGS_PROVIDER"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.google.android.gms.permission.AD_ID"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.bugreport.permission.DUMP_CACHED_LOG"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.gallery.permission.BIND_SERVICE"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.gallery.permission.MEDIA_SCANNER"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.maintenancemode.model.MaintenanceModeProvider.read"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.maintenancemode.model.MaintenanceModeProvider.write"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.powerkeeper.permission.KILL_CAMERA"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.security.permission.DETECT_TEXT"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.securitycenter.permission.ACCESS_SECURITY_CENTER_PROVIDER"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.securitycenter.permission.PERM_USE_INFO"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.miui.securitycenter.permission.SYSTEM_PERMISSION_DECLARE"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.xiaomi.mi_connect_service.permission.RECEIVE_ENDPOINT"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.xiaomi.permission.BIND_CONTINUITY_SERVICE"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.xiaomi.permission.BIND_CONTINUITY_SERVICE_INTERNAL"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.xiaomi.permission.CLOUD_MANAGER"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "com.xiaomi.scanner.receiver.RECEIVER"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "mediatek.permission.ACCESS_APU_SYS"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "miui.permission.BUGREPORT"
+      },
+      {
+        "definition": "external-not-resolved-in-this-review",
+        "name": "miui.permission.DUMP_CACHED_LOG"
+      }
+    ],
+    "review_receipt": {
+      "path": "reports/factory-camera-apk-20260829/review-v3/receipt.json",
+      "sha256": "87812e72938d58caa72e490409dad1620e104e3570ae2a7b6d0502a06579bf09",
+      "size_bytes": 339886
+    },
+    "same_apk_defined": 3,
+    "source_policy_installed": false,
+    "system_alias_equals_privileged_bit": true,
+    "system_alias_must_not_be_excluded_from_privileged_review": true
+  },
+  "purpose": "Inspect a distinct original factory Camera input without selecting, transforming, signing or executing it.",
+  "runtime_dependencies": {
+    "actual_selected_files_rehashed_and_unchanged": true,
+    "bundle_receipt": {
+      "path": "artifacts/vendor-inputs/nezha-factory-camera-runtime-20260829-v1/vendor-inputs.json",
+      "sha256": "061cf33a7f062cda6de73a64ebd3d494c04093308b511b4eb42cd4de8f3c865d",
+      "size_bytes": 12776
+    },
+    "complete_dependency_closure_proven": false,
+    "contract": {
+      "path": "config/nezha-camera-runtime.json",
+      "sha256": "00c776c3bcd28fa2abbaf5eb48865ccd27d37723661c3abe117b90e5553fb8fb",
+      "size_bytes": 3191
+    },
+    "count": 9,
+    "direct_manifest_libraries_added": false,
+    "record": {
+      "path": "research/camera-runtime-inputs.json",
+      "sha256": "b3724566b60c9f3fdcea8b8e9ae69046a6837ba56738a4b202fe1bf0cde30e39",
+      "size_bytes": 8648
+    }
+  },
+  "schema_version": 1,
+  "selinux": {
+    "actual_composed_policy_load_verified": false,
+    "actual_loaded_seinfo_or_domain_verified": false,
+    "all_original_files_unchanged": true,
+    "android_signature_permissions_inferred_from_seinfo": false,
+    "factory_camera_specific_seapp_rows": 0,
+    "factory_mac_files_reviewed": 5,
+    "factory_seapp_files_reviewed": 5,
+    "framework_resolver": {
+      "actual_evolution_output_policy_load_verified": false,
+      "capture": {
+        "path": "reports/oem-policy-integration-20260829/source-cameramac/capture.json",
+        "sha256": "9710f1d40567ee858eb1f72fcc40e7a0988404513b07e14964f8a1ce71ee31a9",
+        "size_bytes": 515
+      },
+      "complete_factory_policy_set_execution_verified": false,
+      "factory_platform_and_vendor_contain_duplicate_global_signer_selectors": true,
+      "inspection_type": "static source inspection, not executing framework Java",
+      "policy_and_comparator_in_same_file": true,
+      "semantics": {
+        "compared_global_same_signer_sets_marked_duplicate_regardless_of_value": true,
+        "complete_factory_set_duplicate_detection_proven": false,
+        "default_base_seinfo_when_policy_unread_or_no_match": true,
+        "existing_system_ext_product_vendor_odm_files_loaded": true,
+        "matching_package_refinement_precedes_global_within_matching_signer": true,
+        "no_partial_policy_publication_on_failure": true,
+        "no_separate_all_pairs_duplicate_scan": true,
+        "package_specific_stanzas_precede_global": true,
+        "platform_mac_file_required": true,
+        "privileged_suffix_and_target_sdk_and_partition_appended_separately": true,
+        "read_install_policy_false_on_duplicate": true,
+        "signature_exact_match_or_supported_certificate_history_used": true,
+        "unrelated_same_category_entries_compare_equal": true
+      },
+      "source": {
+        "path": "reports/oem-policy-integration-20260829/source-cameramac/frameworks/base/services/core/java/com/android/server/pm/SELinuxMMAC.java",
+        "sha256": "fba2501498437cea023435f670474a70d599839bc15564b3189617e8cfd05487",
+        "size_bytes": 32753
+      }
+    },
+    "matching_factory_signer_global_seinfo": "platform",
+    "next_readonly_capture": {
+      "additional_permission_input": "Built framework manifest or resolved feature flags for DEVICE_POWER and SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE; raw source branches do not identify the installed protection levels.",
+      "current_existence_and_completeness_verified": false,
+      "expected_product_outputs": [
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/selinux/plat_mac_permissions.xml",
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/selinux/plat_seapp_contexts",
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/system_ext/etc/selinux/system_ext_mac_permissions.xml",
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/system_ext/etc/selinux/system_ext_seapp_contexts",
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/product/etc/selinux/product_mac_permissions.xml",
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/product/etc/selinux/product_seapp_contexts"
+      ],
+      "framework_java_resolver_already_captured": true,
+      "limitations": "Capture actual installed framework outputs and actual retained-image metadata. Source-only generated vendor/ODM contexts do not replace opaque image contents. Resolver file existence must be checked before capture.",
+      "opaque_image_metadata": [
+        "/vendor/etc/selinux/vendor_mac_permissions.xml",
+        "/vendor/etc/selinux/vendor_seapp_contexts",
+        "/odm/etc/selinux/odm_mac_permissions.xml",
+        "/odm/etc/selinux/odm_seapp_contexts"
+      ],
+      "source_candidate_existence_verified": false,
+      "source_candidates": [
+        "external/selinux/libselinux/src/android/android_platform.c"
+      ],
+      "source_revisions": {
+        "external/selinux": "085c131ad1b984bfa8ffdafee7a976e9d89f403c",
+        "frameworks/base": "8140698cc12983deecdbd434220affb5f931bfc6"
+      }
+    },
+    "partitions_with_matching_global_signer": [
+      "system",
+      "vendor"
+    ],
+    "platform_certificate_comparison_alone_determines_seinfo": false,
+    "review_receipt": {
+      "path": "reports/factory-camera-apk-20260829/selinux-review-v3.json",
+      "sha256": "ea02355ab3b34df81ce18bec215a51fe0c4fbfaf50145f8230bb179ceb3151c2",
+      "size_bytes": 30601
+    },
+    "signer_mapping_added": false
+  },
+  "signature": {
+    "algorithm": "RSA",
+    "android_signature_permissions_granted_verified": false,
+    "certificate_sha256": "c9009d01ebf9f5d0302bc71b2fe9aa9a47a432bba17308a3111b75d7b2149025",
+    "future_platform_key_affinity_verified": false,
+    "key_bits": 2048,
+    "matches_earlier_apk_certificate": false,
+    "matches_inspected_default_platform_certificate": false,
+    "signers": 1,
+    "verification_exit_code": 0,
+    "verified_schemes": [
+      "v3"
+    ]
+  },
+  "uses_libraries": {
+    "actual_apk_class_loader_context_verified": false,
+    "exact_strict_check_exit_code": 0,
+    "native_apk_dependency_graph_built": false,
+    "optional_in_order": [
+      "miui-cameraopt",
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "relaxation_or_missing_library_exception_used": false,
+    "required": [],
+    "wrong_module_name_control_exit_code": 255
+  },
+  "verification_boundaries": {
+    "apk_executed": false,
+    "apk_selected_or_installed": false,
+    "apk_transformed_or_signed": false,
+    "camera_or_leica_hardware_tested": false,
+    "guest_accessed_by_review": false,
+    "native_linking_verified": false,
+    "permission_grants_changed": false,
+    "phone_accessed": false,
+    "private_keys_accessed": false,
+    "rom_boot_verified": false,
+    "signer_mappings_added": false
+  }
+}
