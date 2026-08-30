@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-direct-mi-ext-care-map-v1",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0013-direct-mi-ext-care-map.patch",
+    "sha256": "041856af35c121a6f5ea618cd8eac6c841a0156979c92d5327e49f4d71febe01",
+    "size_bytes": 25443
+  },
+  "source_files": [
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "before": {
+        "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+        "size_bytes": 48289
+      },
+      "after": {
+        "sha256": "3792eacdd1ff000847aa28e6e54d9a2ab5561943ec4655b6e640b98d72a19024",
+        "size_bytes": 61354
+      }
+    }
+  ],
+  "requires_source_composition": {
+    "path": "patches/evolution/target-files-source-composition.json",
+    "sha256": "b9c6c485ad7a1617bc29a315ba8ff89034ff28cbe4e8a9196eff726ee1811f2a",
+    "size_bytes": 19228
+  },
+  "historical_contracts_or_defaults_rewritten": false,
+  "semantic_files": [
+    {
+      "path": "build/make/tools/releasetools/common.py",
+      "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+      "size_bytes": 157203
+    },
+    {
+      "path": "external/avb/avbtool.py",
+      "sha256": "fc5332131a907ae22978e16a84fa12a14d277a60d8e2ad77c31a0097dafeb657",
+      "size_bytes": 227067
+    },
+    {
+      "path": "build/make/tools/releasetools/rangelib.py",
+      "sha256": "4405370eef1b4e7102960a7e170a2f448a80f21f587f41ab825768127cea2e18",
+      "size_bytes": 9805
+    },
+    {
+      "path": "build/make/tools/releasetools/test_add_img_to_target_files.py",
+      "sha256": "811917eae87c07875158545e2efcd6366dd5011601e7565355d92bb394ebfe4d",
+      "size_bytes": 15583
+    },
+    {
+      "path": "bootable/recovery/update_verifier/update_verifier.cpp",
+      "sha256": "eae545a8eff34e9f85541a57319b4bc0ebbb445ec45ae3cc84f5269614e9acd4",
+      "size_bytes": 14623
+    },
+    {
+      "path": "bootable/recovery/update_verifier/care_map.proto",
+      "sha256": "7ef0202a5efb4f954712b305658038483277929736663c494a07eb5e7716778a",
+      "size_bytes": 895
+    },
+    {
+      "path": "bootable/recovery/update_verifier/care_map_generator.py",
+      "sha256": "3e1921d351c4b6f57af99f81ddd9ea92375200eb73e0d583b3af3942e9beda6c",
+      "size_bytes": 4510
+    },
+    {
+      "path": "system/core/init/property_service.cpp",
+      "sha256": "d82faacbbeb80256a416ca81cb9c877def16c3140aa57f4126db41889a67a887",
+      "size_bytes": 67643
+    }
+  ],
+  "semantic_project_pins": {
+    "external/avb": "91f1bfc948d35265c3b1e5e97bf1c410e65d18fa",
+    "bootable/recovery": "28dc82d7422c53793392c2ed6850b840b90f2a14",
+    "system/core": "241488ea392c01079941d86ddc458b8a0c9ae6e1"
+  },
+  "selection": {
+    "misc_info_key": "nezha_direct_mi_ext_care_map",
+    "value": "factory-system-fingerprint-v1",
+    "absent_keeps_legacy_behavior": true
+  },
+  "preserved_input_profile": {
+    "path": "config/nezha-mi-ext.json",
+    "sha256": "d340f97641f28997182799111549095e9e554c365c1dcf4bca36cff88813f69d",
+    "size_bytes": 3103
+  },
+  "retained_image": {
+    "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+    "size_bytes": 111198208
+  },
+  "hashtree_descriptor_sha256": "c7251f78926feb64f83671a61b4a164f9851948cf12291f1106069f8fac35269",
+  "data_only_range": {
+    "raw": "2,0,26720",
+    "half_open": [
+      0,
+      26720
+    ],
+    "block_size_bytes": 4096,
+    "data_size_bytes": 109445120
+  },
+  "footer": {
+    "original_image_size": 109445120,
+    "vbmeta_offset": 111190016,
+    "vbmeta_size": 832
+  },
+  "semantics": {
+    "changed_source_file_count": 1,
+    "common_partition_lists_unchanged": true,
+    "upstream_GetCareMap_unchanged": true,
+    "required_logical_partitions": [
+      "system",
+      "system_ext",
+      "product",
+      "vendor",
+      "odm",
+      "vendor_dlkm",
+      "system_dlkm",
+      "mi_ext"
+    ],
+    "direct_root_descriptor_required": true,
+    "child_signing_or_invented_verity_settings_rejected": true,
+    "system_marker_id": "ro.system.build.fingerprint",
+    "system_runtime_file": "/system/build.prop",
+    "system_target_files_file": "SYSTEM/build.prop",
+    "preferred_system_alias_must_agree": "SYSTEM/etc/build.prop",
+    "common_computed_fingerprint_or_thumbprint_fallback_allowed": false,
+    "property_imports_admitted": false,
+    "property_conflicts_or_duplicate_marker_definitions_admitted": false,
+    "vendor_hook_runtime_value_proven_by_static_parser": false,
+    "protobuf_roundtrip_required_only_under_new_selection": true,
+    "missing_unknown_duplicate_or_empty_required_entries_admitted": false,
+    "mi_ext_properties_fabricated": false,
+    "mi_ext_image_modified": false,
+    "normal_android_selinux_changed": false
+  },
+  "current_blockers": [
+    "The final Evolution SYSTEM/build.prop has not been captured or qualified for this marker.",
+    "The authentic factory ODM/etc/build.prop contains two boot-selected imports. This first constructor intentionally rejects them; a later explicit source capability must qualify their complete captured closure.",
+    "This source transition is not included in an active composition, generated product or native source checkout.",
+    "No native care_map_generator/protobuf build, complete target-files/OTA output or authorized runtime test has run for this patch."
+  ],
+  "validation_scope": {
+    "source_patch_and_offline_behavior_only": true,
+    "actual_native_care_map_generator_executed": false,
+    "complete_care_map_protobuf_verified": false,
+    "runtime_marker_verified": false,
+    "full_target_files_verified": false,
+    "ota_verified": false,
+    "complete_signed_avb_chain_verified": false,
+    "fec_cryptographic_verification_performed": false,
+    "hardware_tested": false,
+    "complete_rom_admitted": false,
+    "phone_operations": []
+  },
+  "limitations": [
+    "The original image hash and direct descriptor bind the care-map range. Reusing the genuine SYSTEM marker is freshness bookkeeping, not a cryptographic mi_ext identity.",
+    "Static ordinary property files cannot prove arbitrary vendor init hooks or the final runtime property value. A matching SYSTEM pair is necessary, not runtime success.",
+    "The no-import constructor checks the named current normal-user boot-default paths and conservative standard alternatives; it does not emulate native property expansion, mount topology, debug ramdisk selection or an arbitrary future init.",
+    "The selected normal SYSTEM entry must use the same pair; missing or thumbprint-only SYSTEM metadata fails. No unknown placeholder is permitted in any of the eight selected entries.",
+    "Only actual final protobuf parsing and full target-files/OTA checks can establish complete artifact coverage. Runtime update_verifier may skip entries or use snapshot verification; slot success alone does not establish full block verification.",
+    "This patch does not authenticate the root vbmeta signature, validate complete parent chains or verify FEC parity. Those gates remain separately required.",
+    "No old profile emits the selector. A future reviewed composition and fresh source-bound input receipts are required before use; do not edit historical expected hashes."
+  ]
+}

@@ -1,0 +1,560 @@
+diff --git a/tools/releasetools/add_img_to_target_files.py b/tools/releasetools/add_img_to_target_files.py
+--- a/tools/releasetools/add_img_to_target_files.py
++++ b/tools/releasetools/add_img_to_target_files.py
+@@ -1,316 +1,556 @@
+ #!/usr/bin/env python
+ #
+ # Copyright (C) 2014 The Android Open Source Project
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #      http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+ """
+ Given a target-files zipfile that does not contain images (ie, does
+ not have an IMAGES/ top-level subdirectory), produce the images and
+ add them to the zipfile.
+ 
+ Usage:  add_img_to_target_files [flag] target_files
+ 
+   -a  (--add_missing)
+       Build and add missing images to "IMAGES/". If this option is
+       not specified, this script will simply exit when "IMAGES/"
+       directory exists in the target file.
+ 
+   -r  (--rebuild_recovery)
+       Rebuild the recovery patch and write it to the system image. Only
+       meaningful when system image needs to be rebuilt and there're separate
+       boot / recovery images.
+ 
+   --replace_verity_private_key
+       Replace the private key used for verity signing. (same as the option
+       in sign_target_files_apks)
+ 
+   --replace_verity_public_key
+        Replace the certificate (public key) used for verity verification. (same
+        as the option in sign_target_files_apks)
+ 
+   --is_signing
+       Skip building & adding the images for "userdata" and "cache" if we
+       are signing the target files.
+ 
+   --avb-resolve-rollback-index-location-conflict
+       If provided, resolve the conflict AVB rollback index location when
+       necessary.
+ """
+ 
+ from __future__ import print_function
+ 
+ import avbtool
+ import datetime
++import hashlib
+ import logging
+ import os
+ import shlex
+ import shutil
+ import stat
+ import sys
+ import uuid
+ import tempfile
+ import zipfile
+ 
+ import build_image
+ import build_super_image
+ import common
+ import verity_utils
+ import ota_metadata_pb2
+ import rangelib
+ import sparse_img
+ from concurrent.futures import ThreadPoolExecutor
+ from apex_utils import GetApexInfoFromTargetFiles
+ from common import ZipDelete, PARTITIONS_WITH_CARE_MAP, ExternalError, RunAndCheckOutput, IsSparseImage, MakeTempFile, ZipWrite
+ from build_image import FIXED_FILE_TIMESTAMP
+ 
+ if sys.hexversion < 0x02070000:
+   print("Python 2.7 or newer is required.", file=sys.stderr)
+   sys.exit(1)
+ 
+ logger = logging.getLogger(__name__)
+ 
+ OPTIONS = common.OPTIONS
+ OPTIONS.add_missing = False
+ OPTIONS.rebuild_recovery = False
+ OPTIONS.replace_updated_files_list = []
+ OPTIONS.is_signing = False
+ OPTIONS.avb_resolve_rollback_index_location_conflict = False
+ 
+ 
+ def ParseAvbFooter(img_path) -> avbtool.AvbFooter:
+   with open(img_path, 'rb') as fp:
+     fp.seek(-avbtool.AvbFooter.SIZE, os.SEEK_END)
+     data = fp.read(avbtool.AvbFooter.SIZE)
+     return avbtool.AvbFooter(data)
+ 
+ 
+ def GetCareMap(which, imgname):
+   """Returns the care_map string for the given partition.
+ 
+   Args:
+     which: The partition name, must be listed in PARTITIONS_WITH_CARE_MAP.
+     imgname: The filename of the image.
+ 
+   Returns:
+     (which, care_map_ranges): care_map_ranges is the raw string of the care_map
+     RangeSet; or None.
+   """
+   assert which in PARTITIONS_WITH_CARE_MAP
+ 
+   is_sparse_img = IsSparseImage(imgname)
+   unsparsed_image_size = os.path.getsize(imgname)
+ 
+   # A verified image contains original image + hash tree data + FEC data
+   # + AVB footer, all concatenated together. The caremap specifies a range
+   # of blocks that update_verifier should read on top of dm-verity device
+   # to verify correctness of OTA updates. When reading off of dm-verity device,
+   # the hashtree and FEC part of image isn't available. So caremap should
+   # only contain the original image blocks.
+   try:
+     avbfooter = None
+     if is_sparse_img:
+       with tempfile.NamedTemporaryFile() as tmpfile:
+         img = sparse_img.SparseImage(imgname)
+         unsparsed_image_size = img.total_blocks * img.blocksize
+         for data in img.ReadBlocks(img.total_blocks - 1, 1):
+           tmpfile.write(data)
+         tmpfile.flush()
+         avbfooter = ParseAvbFooter(tmpfile.name)
+     else:
+       avbfooter = ParseAvbFooter(imgname)
+   except LookupError as e:
+     logger.warning(
+         "Failed to parse avbfooter for partition %s image %s, %s", which, imgname, e)
+     return None
+ 
+   image_size = avbfooter.original_image_size
+   assert image_size < unsparsed_image_size, f"AVB footer's original image size {image_size} is larger than or equal to image size on disk {unsparsed_image_size}, this can't happen because a verified image = original image + hash tree data + FEC data + avbfooter."
+   assert image_size > 0
+ 
+   image_blocks = int(image_size) // 4096 - 1
+   # It's OK for image_blocks to be 0, because care map ranges are inclusive.
+   # So 0-0 means "just block 0", which is valid.
+   assert image_blocks >= 0, "blocks for {} must be non-negative, image size: {}".format(
+       which, image_size)
+ 
+   # For sparse images, we will only check the blocks that are listed in the care
+   # map, i.e. the ones with meaningful data.
+   if is_sparse_img:
+     simg = sparse_img.SparseImage(imgname)
+     care_map_ranges = simg.care_map.intersect(
+         rangelib.RangeSet("0-{}".format(image_blocks)))
+ 
+   # Otherwise for non-sparse images, we read all the blocks in the filesystem
+   # image.
+   else:
+     care_map_ranges = rangelib.RangeSet("0-{}".format(image_blocks))
+ 
+   return [which, care_map_ranges.to_string_raw()]
+ 
+ 
++def _NezhaCareMapPath(relative, required=True):
++  """Read only ordinary target-files paths for the explicit Nezha profile."""
++  path = os.path.realpath(OPTIONS.input_tmp)
++  parts = relative.split('/')
++  for index, part in enumerate(parts):
++    if part in ('', '.', '..'):
++      raise ExternalError('Invalid Nezha care-map input path: ' + relative)
++    path = os.path.join(path, part)
++    if not os.path.lexists(path):
++      if not required:
++        return None
++      raise ExternalError('Missing Nezha care-map input: ' + relative)
++    if os.path.islink(path):
++      raise ExternalError('Symlinked Nezha care-map input: ' + relative)
++    if index != len(parts) - 1 and not stat.S_ISDIR(os.stat(path).st_mode):
++      raise ExternalError('Non-directory Nezha care-map input parent: ' + relative)
++  if not stat.S_ISREG(os.stat(path).st_mode):
++    raise ExternalError('Non-regular Nezha care-map input: ' + relative)
++  return path
++
++
++def _NezhaCareMapSystemFingerprint():
++  """Conservatively check static inputs; this does not prove a runtime value.
++
++  init loads /system/build.prop, whereas common prefers SYSTEM/etc/build.prop.
++  Reject ambiguous paths, imports and conflicting later property definitions.
++  The factory ODM imports need separate qualification before this profile can
++  be selected; common.PartitionBuildProps does not evaluate their full meaning.
++  """
++  property_id = 'ro.system.build.fingerprint'
++  roots = (
++      ('SYSTEM', 'build.prop'), ('SYSTEM_EXT', 'etc/build.prop'),
++      ('SYSTEM_DLKM', 'etc/build.prop'), ('VENDOR', 'build.prop'),
++      ('VENDOR_DLKM', 'etc/build.prop'),
++      ('VENDOR/odm_dlkm', 'etc/build.prop'), ('ODM', 'etc/build.prop'),
++      ('PRODUCT', 'etc/build.prop'))
++  definitions = {}
++  for root, canonical in roots:
++    for name in ('build.prop', 'etc/build.prop', 'default.prop'):
++      relative = root + '/' + name
++      path = _NezhaCareMapPath(relative, required=(name == canonical))
++      if path is None:
++        continue
++      before = os.stat(path)
++      with open(path, 'rb') as prop_file:
++        opened = os.fstat(prop_file.fileno())
++        raw = prop_file.read(1024 * 1024 + 1)
++        after = os.fstat(prop_file.fileno())
++      states = {tuple(getattr(value, key) for key in
++                      ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns'))
++                for value in (before, opened, after, os.stat(path))}
++      if len(states) != 1 or _NezhaCareMapPath(relative) != path:
++        raise ExternalError('Nezha care-map property input changed: ' + relative)
++      if len(raw) > 1024 * 1024 or any(byte < 32 and byte not in (9, 10) for byte in raw):
++        raise ExternalError('Invalid Nezha care-map property file: ' + relative)
++      # Native init splits only LF. Python splitlines/strip would normalize
++      # additional Unicode/control separators and could conceal an override.
++      for line in raw.decode('utf-8').split('\n'):
++        line = line.strip(' \t')
++        if not line or line.startswith('#'):
++          continue
++        if line.startswith('import'):
++          raise ExternalError('Unqualified Nezha care-map property import: ' + relative)
++        if '=' not in line:
++          raise ExternalError('Invalid Nezha care-map property line: ' + relative)
++        key, value = (part.strip(' \t') for part in line.split('=', 1))
++        if key == property_id:
++          if relative in definitions:
++            raise ExternalError('Duplicate SYSTEM fingerprint in ' + relative)
++          definitions[relative] = value
++  fingerprint = definitions.get('SYSTEM/build.prop')
++  if (not fingerprint or fingerprint == 'unknown' or
++      any(ord(char) < 33 or ord(char) > 126 for char in fingerprint)):
++    raise ExternalError('Missing or invalid canonical SYSTEM fingerprint')
++  if any(value != fingerprint for value in definitions.values()):
++    raise ExternalError('Conflicting runtime-input SYSTEM fingerprints')
++  preferred = _NezhaCareMapPath('SYSTEM/etc/build.prop', required=False)
++  if preferred and definitions.get('SYSTEM/etc/build.prop') != fingerprint:
++    raise ExternalError('Preferred SYSTEM property path lacks the canonical fingerprint')
++  props = OPTIONS.info_dict.get('system.build.prop')
++  if not props or props.GetProp(property_id) != fingerprint:
++    raise ExternalError('Packaged SYSTEM fingerprint differs from the runtime input')
++  # Debug ramdisk properties are outside this normal-user, static constructor.
++  for root in ('BOOT', 'INIT_BOOT', 'VENDOR_BOOT'):
++    if _NezhaCareMapPath(root + '/RAMDISK/adb_debug.prop', required=False):
++      raise ExternalError('Unqualified Nezha debug ramdisk property input')
++  return [property_id, fingerprint]
++
++
++def _NezhaCareMapAvbImage(relative, expected_size=None, expected_sha256=None):
++  """Rehash ordinary bytes and parse AVB read-only; do not verify a signature."""
++  path = _NezhaCareMapPath(relative)
++
++  def state(value):
++    return (value.st_dev, value.st_ino, value.st_size,
++            value.st_mtime_ns, value.st_ctime_ns)
++
++  before = state(os.stat(path))
++  limit = expected_size if expected_size is not None else 1024 * 1024
++  if before[2] <= avbtool.AvbFooter.SIZE or before[2] > limit:
++    raise ExternalError('Unexpected Nezha care-map AVB input size: ' + relative)
++  if expected_size is not None and before[2] != expected_size:
++    raise ExternalError('Nezha mi_ext must retain its exact original size')
++  digest = hashlib.sha256()
++  hashed_bytes = 0
++  with open(path, 'rb') as image_file:
++    if state(os.fstat(image_file.fileno())) != before:
++      raise ExternalError('Nezha care-map image changed before hashing')
++    for block in iter(lambda: image_file.read(1024 * 1024), b''):
++      hashed_bytes += len(block)
++      if hashed_bytes > limit:
++        raise ExternalError('Nezha care-map image grew beyond its admitted size')
++      digest.update(block)
++    if state(os.fstat(image_file.fileno())) != before:
++      raise ExternalError('Nezha care-map image changed while hashing')
++  if expected_sha256 is not None and digest.hexdigest() != expected_sha256:
++    raise ExternalError('Nezha mi_ext must retain its exact original SHA256')
++  image = avbtool.ImageHandler(path, read_only=True)
++  try:
++    if image.is_sparse or state(os.fstat(image._image.fileno())) != before:
++      raise ExternalError('Sparse or changed Nezha care-map AVB input')
++    result = avbtool.Avb()._parse_image(image)
++    if state(os.fstat(image._image.fileno())) != before:
++      raise ExternalError('Nezha care-map image changed while parsing')
++  finally:
++    image._image.close()
++  if _NezhaCareMapPath(relative) != path or state(os.stat(path)) != before:
++    raise ExternalError('Nezha care-map image changed after parsing')
++  return result
++
++
++def _NezhaDirectMiExtCareMap(ab_partitions, image_paths):
++  """Admit only the original direct-root mi_ext with a genuine SYSTEM marker."""
++  info = OPTIONS.info_dict
++  required = {'system', 'system_ext', 'system_dlkm', 'vendor', 'vendor_dlkm',
++              'odm', 'product', 'mi_ext'}
++  selected = [name.strip() for name in ab_partitions]
++  dynamic = info.get('dynamic_partition_list', '').split()
++  if (len(selected) != len(set(selected)) or not required.issubset(selected) or
++      len(dynamic) != len(set(dynamic)) or set(dynamic) != required):
++    raise ExternalError('Nezha care map requires the complete unique A/B logical set')
++  if (info.get('ab_update') != 'true' or info.get('allow_non_ab') == 'true' or
++      info.get('avb_enable') != 'true' or
++      info.get('avb_custom_images_partition_list', '').split() != ['mi_ext'] or
++      info.get('avb_custom_images_direct_partition_list', '').split() != ['mi_ext'] or
++      info.get('avb_mi_ext_image_list', '').split() != ['mi_ext.img']):
++    raise ExternalError('Nezha care map requires the original direct AVB custom image')
++  for setting in ('key_path', 'algorithm', 'rollback_index',
++                  'rollback_index_location', 'add_hashtree_footer_args',
++                  'partition_size', 'hashtree_enable'):
++    if 'avb_mi_ext_' + setting in info:
++      raise ExternalError('Nezha direct mi_ext has an unqualified setting: ' + setting)
++  if 'mi_ext_verity_block_device' in info:
++    raise ExternalError('Nezha direct mi_ext must not invent a verity device property')
++  for key, value in info.items():
++    if key.startswith('avb_vbmeta_') and isinstance(value, str) and 'mi_ext' in value.split():
++      raise ExternalError('Nezha mi_ext must not be delegated to a chained vbmeta')
++  marker = _NezhaCareMapSystemFingerprint()
++  if image_paths.get('mi_ext') != os.path.join(OPTIONS.input_tmp, 'IMAGES', 'mi_ext.img'):
++    raise ExternalError('Missing or noncanonical selected Nezha mi_ext image')
++  footer, header, descriptors, image_size = _NezhaCareMapAvbImage(
++      'IMAGES/mi_ext.img', 111198208,
++      '60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196')
++  trees = [desc for desc in descriptors if isinstance(desc, avbtool.AvbHashtreeDescriptor)]
++  if len(trees) != 1:
++    raise ExternalError('Nezha mi_ext requires its sole original hashtree descriptor')
++  tree = trees[0]
++  if (hashlib.sha256(tree.encode()).hexdigest() !=
++      'c7251f78926feb64f83671a61b4a164f9851948cf12291f1106069f8fac35269'):
++    raise ExternalError('Nezha mi_ext hashtree descriptor differs from the original')
++  if (footer is None or footer.original_image_size != 109445120 or
++      footer.vbmeta_offset != 111190016 or footer.vbmeta_size != 832 or
++      image_size != 111198208 or header.algorithm_type != 0 or header.flags != 0 or
++      tree.partition_name != 'mi_ext' or tree.image_size != footer.original_image_size or
++      tree.image_size % 4096 or tree.tree_offset != tree.image_size or
++      tree.tree_size != 868352 or tree.fec_offset != tree.tree_offset + tree.tree_size or
++      tree.fec_size != 876544 or tree.fec_offset + tree.fec_size != footer.vbmeta_offset or
++      tree.data_block_size != 4096 or tree.hash_block_size != 4096 or
++      tree.fec_num_roots != 2 or tree.flags != 0):
++    raise ExternalError('Nezha mi_ext footer and hashtree geometry disagree')
++  root_footer, root_header, root_descriptors, _ = _NezhaCareMapAvbImage('IMAGES/vbmeta.img')
++  root_matches = [desc for desc in root_descriptors
++                  if getattr(desc, 'partition_name', None) == 'mi_ext']
++  if (root_footer is not None or root_header.flags != 0 or len(root_matches) != 1 or
++      not isinstance(root_matches[0], avbtool.AvbHashtreeDescriptor) or
++      root_matches[0].encode() != tree.encode()):
++    raise ExternalError('Root vbmeta must retain the exact direct mi_ext hashtree')
++  # Use the original range algorithm without widening its accepted partition list.
++  blocks = tree.image_size // 4096
++  ranges = rangelib.RangeSet('0-{}'.format(blocks - 1)).to_string_raw()
++  if ranges != '2,0,26720':
++    raise ExternalError('Unexpected Nezha mi_ext data-only care-map range')
++  return ['mi_ext', ranges] + marker
++
++
++def _CheckNezhaCareMapCoverage(entries, mi_ext_entry):
++  """Do not call a partial or unknown text input a complete selected care map."""
++  rows = [entries[index:index + 4] for index in range(0, len(entries), 4)]
++  names = [row[0] for row in rows]
++  required = {'system', 'system_ext', 'system_dlkm', 'vendor', 'vendor_dlkm',
++              'odm', 'product', 'mi_ext'}
++  if (len(entries) % 4 or len(names) != len(set(names)) or set(names) != required or
++      any(not value or value == 'unknown' or '\n' in value or '\r' in value
++          for row in rows for value in row)):
++    raise ExternalError('Incomplete or ambiguous required Nezha care-map entries')
++  for row in rows:
++    try:
++      ranges = rangelib.RangeSet.parse_raw(row[1])
++      if (not ranges or not ranges.monotonic or ranges.data[0] < 0 or
++          ranges.to_string_raw() != row[1]):
++        raise ValueError('empty, unordered or noncanonical range')
++    except (ValueError, AssertionError) as error:
++      raise ExternalError('Invalid required Nezha care-map range: ' + row[0]) from error
++  system = next(row for row in rows if row[0] == 'system')
++  if system[2:] != mi_ext_entry[2:]:
++    raise ExternalError('Nezha mi_ext must share the genuine SYSTEM freshness pair')
++
++
+ def AddCareMapForAbOta(output_file, ab_partitions, image_paths):
+   """Generates and adds care_map.pb for a/b partition that has care_map.
+ 
+   Args:
+     output_file: The output zip file (needs to be already open),
+         or file path to write care_map.pb.
+     ab_partitions: The list of A/B partitions.
+     image_paths: A map from the partition name to the image path.
+   """
+   if not output_file:
+     raise ExternalError('Expected output_file for AddCareMapForAbOta')
+ 
++  mi_ext_entry = None
++  selection = OPTIONS.info_dict.get('nezha_direct_mi_ext_care_map')
++  if selection is not None:
++    if selection != 'factory-system-fingerprint-v1':
++      raise ExternalError('Unknown Nezha direct mi_ext care-map selection')
++    mi_ext_entry = _NezhaDirectMiExtCareMap(ab_partitions, image_paths)
++
+   care_map_list = []
+   for partition in ab_partitions:
+     partition = partition.strip()
++    if partition == 'mi_ext' and mi_ext_entry is not None:
++      care_map_list += mi_ext_entry
++      continue
+     if partition not in PARTITIONS_WITH_CARE_MAP:
+       continue
+ 
+     verity_block_device = "{}_verity_block_device".format(partition)
+     avb_hashtree_enable = "avb_{}_hashtree_enable".format(partition)
+     if (verity_block_device in OPTIONS.info_dict or
+             OPTIONS.info_dict.get(avb_hashtree_enable) == "true"):
+       if partition not in image_paths:
+         logger.warning('Potential partition with care_map missing from images: %s',
+                        partition)
+         continue
+       image_path = image_paths[partition]
+       if not os.path.exists(image_path):
+         raise ExternalError('Expected image at path {}'.format(image_path))
+ 
+       care_map = GetCareMap(partition, image_path)
+       if not care_map:
+         continue
+       care_map_list += care_map
+ 
+       # adds fingerprint field to the care_map
+       # TODO(xunchang) revisit the fingerprint calculation for care_map.
+       partition_props = OPTIONS.info_dict.get(partition + ".build.prop")
+       prop_name_list = ["ro.{}.build.fingerprint".format(partition),
+                         "ro.{}.build.thumbprint".format(partition)]
+ 
+       present_props = [x for x in prop_name_list if
+                        partition_props and partition_props.GetProp(x)]
+       if not present_props:
+         logger.warning(
+             "fingerprint is not present for partition %s", partition)
+         property_id, fingerprint = "unknown", "unknown"
+       else:
+         property_id = present_props[0]
+         fingerprint = partition_props.GetProp(property_id)
+       care_map_list += [property_id, fingerprint]
+ 
++  if mi_ext_entry is not None:
++    _CheckNezhaCareMapCoverage(care_map_list, mi_ext_entry)
++
+   if not care_map_list:
+     return
+ 
+   # Converts the list into proto buf message by calling care_map_generator; and
+   # writes the result to a temp file.
+   temp_care_map_text = MakeTempFile(prefix="caremap_text-",
+                                            suffix=".txt")
+   with open(temp_care_map_text, 'w') as text_file:
+     text_file.write('\n'.join(care_map_list))
+ 
+   temp_care_map = MakeTempFile(prefix="caremap-", suffix=".pb")
+   care_map_gen_cmd = ["care_map_generator", temp_care_map_text, temp_care_map]
+   RunAndCheckOutput(care_map_gen_cmd)
++  if mi_ext_entry is not None:
++    parsed_care_map = MakeTempFile(prefix="caremap_parsed-", suffix=".txt")
++    RunAndCheckOutput(["care_map_generator", "--parse_proto",
++                       temp_care_map, parsed_care_map])
++    with open(parsed_care_map, 'r') as parsed_file:
++      if parsed_file.read() != '\n'.join(care_map_list):
++        raise ExternalError('Nezha care-map protobuf did not preserve every required entry')
++
+ 
+   if not isinstance(output_file, zipfile.ZipFile):
+     shutil.copy(temp_care_map, output_file)
+     return
+   # output_file is a zip file
+   care_map_path = "META/care_map.pb"
+   if care_map_path in output_file.namelist():
+     # Copy the temp file into the OPTIONS.input_tmp dir and update the
+     # replace_updated_files_list used by add_img_to_target_files
+     if not OPTIONS.replace_updated_files_list:
+       OPTIONS.replace_updated_files_list = []
+     shutil.copy(temp_care_map, os.path.join(OPTIONS.input_tmp, care_map_path))
+     OPTIONS.replace_updated_files_list.append(care_map_path)
+   else:
+     ZipWrite(output_file, temp_care_map, arcname=care_map_path)
+ 
+ 
+ class OutputFile(object):
+   """A helper class to write a generated file to the given dir or zip.
+ 
+   When generating images, we want the outputs to go into the given zip file, or
+   the given dir.
+ 
+   Attributes:
+     name: The name of the output file, regardless of the final destination.
+   """
+ 
+   def __init__(self, output_zip, input_dir, *args):
+     # We write the intermediate output file under the given input_dir, even if
+     # the final destination is a zip archive.
+     self.name = os.path.join(input_dir, *args)
+     self._output_zip = output_zip
+     if self._output_zip:
+       self._zip_name = os.path.join(*args)
+ 
+   def Write(self, compress_type=None):
+     if self._output_zip:
+       common.ZipWrite(self._output_zip, self.name,
+                       self._zip_name, compress_type=compress_type)
+ 
+ 
+ def AddSystem(output_zip, recovery_img=None, boot_img=None):
+   """Turn the contents of SYSTEM into a system image and store it in
+   output_zip. Returns the name of the system image file."""
+ 
+   img = OutputFile(output_zip, OPTIONS.input_tmp, "IMAGES", "system.img")
+   if os.path.exists(img.name):
+     logger.info("system.img already exists; no need to rebuild...")
+     return img.name
+ 
+   def output_sink(fn, data):
+     output_file = os.path.join(OPTIONS.input_tmp, "SYSTEM", fn)
+     with open(output_file, "wb") as ofile:
+       ofile.write(data)
+ 
+     if output_zip:
+       arc_name = "SYSTEM/" + fn
+       if arc_name in output_zip.namelist():
+         OPTIONS.replace_updated_files_list.append(arc_name)
+       else:
+         common.ZipWrite(output_zip, output_file, arc_name)
+ 
+   board_uses_vendorimage = OPTIONS.info_dict.get(
+       "board_uses_vendorimage") == "true"
+ 
+   if (OPTIONS.rebuild_recovery and not board_uses_vendorimage and
+           recovery_img is not None and boot_img is not None):
+     logger.info("Building new recovery patch on system at system/vendor")
+     common.MakeRecoveryPatch(OPTIONS.input_tmp, output_sink, recovery_img,
+                              boot_img, info_dict=OPTIONS.info_dict)
+ 
+   block_list = OutputFile(output_zip, OPTIONS.input_tmp,
+                           "IMAGES", "system.map")
+   CreateImage(OPTIONS.input_tmp, OPTIONS.info_dict, "system", img,
+               block_list=block_list)
+   return img.name
+ 
+ 
+ def AddSystemOther(output_zip):
+   """Turn the contents of SYSTEM_OTHER into a system_other image
+   and store it in output_zip."""
+ 
+   img = OutputFile(output_zip, OPTIONS.input_tmp, "IMAGES", "system_other.img")
+   if os.path.exists(img.name):
+     logger.info("system_other.img already exists; no need to rebuild...")
+     return
+ 
+   CreateImage(OPTIONS.input_tmp, OPTIONS.info_dict, "system_other", img)
+ 
+ 
