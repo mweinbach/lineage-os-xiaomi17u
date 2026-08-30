@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "v13ha-raw-images-verified-vintf-allocator-blocked-query-captures-held",
+  "checkpoint": "allocator-host-capability-committed-native-install-pending-query-qualification-failed",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -936,25 +936,24 @@
     }
   },
   "workspace_tests": {
-    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v",
-    "runner": "target_files_metadata agent",
-    "coordinator_independently_verified_complete_log": true,
-    "passed": 3651,
+    "command": "python3 -m unittest discover -s tests -v",
+    "runner": "coordinator",
+    "passed": 3665,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 156.391,
-    "code_commit": "78376c70021f9b6104511350bcdca9301828da7a",
+    "elapsed_seconds": 156.924,
+    "code_commit": "164719256271d28508999bdd8b13a00ea1a20faa",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/implementation-v1/workspace-tests-v1.log",
-      "sha256": "5b48026f2f03adbbb829ffb953783391b1a09a485f1a7e7124cc6f4bc2fba796",
-      "size_bytes": 628995
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-allocator-v1.log",
+      "sha256": "cbe68f6c4fbd89ae016534ee1c771bf95503206ce098c15fd3fbae164090229a",
+      "size_bytes": 631791
     },
-    "scope": "Agent-executed full offline suite with bytecode writing disabled; the coordinator independently reopened and verified the entire log. Public code was unchanged at that recorded run. This is distinct from the earlier coordinator-executed 160.426-second run and from native build, compatibility, packaging or hardware evidence."
+    "scope": "Coordinator full offline suite covering the committed framework allocator capability. Separate from native candidate installation, service compilation, VINTF closure, query qualification, image adoption and hardware evidence."
   },
   "remaining_gates": [
-    "Integrate the required android.hidl.allocator service through actual module/init/manifest/policy/product inputs and rerun the unchanged ordinary VINTF checks. Then capture actual outputs/tools and execute full 39-APEX materialization plus framework/vendor/kernel/APEX compatibility; keep the 4 KiB hold and all checks",
-    "Qualify exact pinned Ninja -n/-t behavior under actual read-only confinement before resuming held footer/provider/Camera query captures; preserve original source-root and OUT logs and do not use writable-OUT fallback",
+    "Install the reviewed allocator capability through the guarded current-source path, build the actual upstream service and inspect its binary/init/fragment producers and policy/context checks, then rerun unchanged ordinary VINTF. Recapture the changed graph before full 39-APEX compatibility; retain the 4 KiB hold and all checks",
+    "Correct the two failed native Ninja qualification expectations and complete actual read-only -n/-t qualification before resuming held footer/provider/Camera query captures; preserve original logs and never use writable-OUT fallback",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "Strict native provider runtime ELF/linker and service checks against the now independently verified provider-policy baseline",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -1341,6 +1340,23 @@
         "size_bytes": 628995
       },
       "scope": "Fresh coordinator full offline suite after the completed v13h raw-image reconstruction and independent review; public code unchanged from the preceding profile run. Separate from native reconstruction, provider runtime/ELF checks, full VINTF, AVB/image adoption and hardware tests."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v",
+      "runner": "target_files_metadata agent",
+      "coordinator_independently_verified_complete_log": true,
+      "passed": 3651,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 156.391,
+      "code_commit": "78376c70021f9b6104511350bcdca9301828da7a",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/implementation-v1/workspace-tests-v1.log",
+        "sha256": "5b48026f2f03adbbb829ffb953783391b1a09a485f1a7e7124cc6f4bc2fba796",
+        "size_bytes": 628995
+      },
+      "scope": "Agent-executed full offline suite with bytecode writing disabled; the coordinator independently reopened and verified the entire log. Public code was unchanged at that recorded run. This is distinct from the earlier coordinator-executed 160.426-second run and from native build, compatibility, packaging or hardware evidence."
     }
   ],
   "previous_v11b_policy": {
@@ -1689,7 +1705,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-30T17:17:22.883626+00:00",
+  "recorded_at_utc": "2026-08-30T17:42:45.086438+00:00",
   "latest_native_build_completed_at_utc": "2026-08-30T16:58:47.414585+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -2130,7 +2146,7 @@
       "scope_after_provider_installation": "Provider installation retains the held 4096 boundary. The first policy-only attempt failed on the Audio AIDL graph conflict with 16384 and checks enabled; no user approval for the 4 KiB experiment is recorded."
     }
   },
-  "workspace_code_checkpoint": "a1b5445b0982737a88bbe59414a236ca071a3afd",
+  "workspace_code_checkpoint": "164719256271d28508999bdd8b13a00ea1a20faa",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -5038,6 +5054,114 @@
     "footer_tool_runtime_verified": false,
     "complete_rom_ready": false,
     "phone_accessed": false,
-    "scope": "The actual jailed footer query demonstrates build-log opening in the pinned Ninja fork. Earlier unconfined provider queries and a memfd fixture cannot establish their static no-source/OUT-write claims. The later observation binds four current log identities, including two small source-root files, but does not identify their writer or prove prior nonmutation. Logs remain preserved; no original project source payload change is known. This does not retroactively invalidate the separately passed normal VINTF build source guards."
+    "scope": "The actual jailed footer query demonstrates build-log opening in the pinned Ninja fork. Earlier unconfined provider queries and a memfd fixture cannot establish their static no-source/OUT-write claims. The later observation binds four current log identities, including two small source-root files, but does not identify their writer or prove prior nonmutation. Logs remain preserved; no original project source payload change is known. This does not retroactively invalidate the separately passed normal VINTF build source guards.",
+    "qualification_attempt": "native_query_readonly_qualification_v1",
+    "qualification_attempt_executed": true,
+    "whole_qualification_passed": false
+  },
+  "host_framework_allocator_capability": {
+    "code_commit": "164719256271d28508999bdd8b13a00ea1a20faa",
+    "status": "host-reviewed-not-installed",
+    "guide": {
+      "path": "docs/framework-allocator.md",
+      "sha256": "be21fa6f21ae645496835932f4e1d6537fcd23c9874c3e3ee799b7143091e830",
+      "size_bytes": 6109,
+      "git_revision": "164719256271d28508999bdd8b13a00ea1a20faa"
+    },
+    "contract": {
+      "path": "config/nezha-framework-allocator.json",
+      "sha256": "295bd8768156d14867da402c547a3d4b65308514a75e53ef6e4d1a2270b72074",
+      "size_bytes": 11940,
+      "git_revision": "164719256271d28508999bdd8b13a00ea1a20faa"
+    },
+    "exact_source_preconditions": 24,
+    "captured_source_bytes": 329015,
+    "all_source_preconditions_rehashed": true,
+    "selected_upstream_module": "android.hidl.allocator@1.0-service",
+    "upstream_init_and_selinux_retained": true,
+    "upstream_vintf_max_level": 8,
+    "additional_policy": false,
+    "frozen_matrix_changed": false,
+    "candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v13i-allocator/admission.json",
+      "sha256": "429c25640ca1c0951832a56fe91ca7efc05b8ad1200d6430fba32d7171024baf",
+      "size_bytes": 122358
+    },
+    "repeat_candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v13i-allocator-repeat/admission.json",
+      "sha256": "429c25640ca1c0951832a56fe91ca7efc05b8ad1200d6430fba32d7171024baf",
+      "size_bytes": 122358
+    },
+    "candidate_payload_files_each": 43,
+    "candidate_payload_bytes_each": 605013,
+    "all_candidate_payload_files_rehashed": true,
+    "candidate_and_repeat_byte_identical": true,
+    "unchanged_payload_files": 40,
+    "changed_product_files": 1,
+    "added_controls": 2,
+    "product_delta": "One PRODUCT_PACKAGES selection for the existing service plus its comment.",
+    "independent_final_review": {
+      "path": "reports/oem-policy-integration-20260829/framework-allocator-v13h-integration-v1/review/final-review-receipt-v1.json",
+      "sha256": "080324ac82a0746bc27aa2959a119e986e14b2d01d197328d196d13df4aca6c2",
+      "size_bytes": 1391
+    },
+    "independent_candidate_review": {
+      "path": "reports/oem-policy-integration-20260829/framework-allocator-v13h-integration-v1/review/candidate-review-v1.json",
+      "sha256": "036c987b818e00fcafcf49b4ad922b299a35e6c70477ea58c89d8f49f7b70490",
+      "size_bytes": 2294
+    },
+    "native_installed": false,
+    "native_service_built": false,
+    "native_producer_or_context_checks_passed": false,
+    "vintf_failure_resolved": false,
+    "runtime_registration_verified": false,
+    "active_guest_inputs": "v13ha",
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Committed host generator capability and repeated portable candidates. Existing module/init/SELinux and max-level 8 behavior are retained. The active guest remains unchanged; actual service compilation and binary/init/fragment producer, context, policy and VINTF checks are still required. No new policy, matrix suppression, runtime registration or hardware claim."
+  },
+  "native_query_readonly_qualification_v1": {
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-ninja-readonly-query-v1/receipt.json",
+      "sha256": "7caa0ae905357d1fe0742c67fe709dbb2b6569dd9515cf255a635a3ada25bd7f",
+      "size_bytes": 59939
+    },
+    "operation": "qualify-pinned-ninja-dry-tool-queries-in-readonly-jail-v1",
+    "status": "executed-failed-qualification",
+    "passed": false,
+    "checks_passed": 4,
+    "checks_failed": 2,
+    "skipped": 0,
+    "positive_known_answer_cases_passed": [
+      "dry-query",
+      "dry-commands"
+    ],
+    "plain_query_expected_readonly_log_failure_observed": true,
+    "failed_cases": [
+      {
+        "error": "help did not match supported informational exit1 and documented flags",
+        "fixtures_unchanged_after_case": true,
+        "name": "help"
+      },
+      {
+        "error": "corrupt deps did not demonstrate denied repair under dry-run",
+        "fixtures_unchanged_after_case": true,
+        "name": "corrupt-deps-query"
+      }
+    ],
+    "help_failure": "Expected output stream/diagnostic mismatch.",
+    "negative_fixture_failure": "Corrupt-dependency fixture did not establish read-only repair denial separately from DAC access restrictions.",
+    "bound_selected_inputs_unchanged": true,
+    "bound_raw_diagnostics_unchanged": true,
+    "whole_qualification_verified": false,
+    "captures_remain_held": true,
+    "earlier_direct_query_nonmutation_established": false,
+    "ninja_intrinsically_readonly": false,
+    "native_build_executed": false,
+    "footer_tools_executed": false,
+    "images_accessed": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual native qualification ran under read-only confinement and failed two of six expectations. Positive -n known answers do not turn the complete qualification into a pass, prove intrinsic read-only behavior, or establish earlier direct-query nonmutation. Captures remain held."
   }
 }

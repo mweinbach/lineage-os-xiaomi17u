@@ -575,8 +575,18 @@ Ninja arguments pass, with no post-build validation error or remaining process.
 The eleven-file capture totals **672,905 bytes**; result SHA256 is
 `88e4200261601edc7b941249b275bc2a2f47ff7cd0c2c3dc872b5d0d7c159f4f`.
 The configuration retains `16384` and the enabled prebuilt page-size check.
-Actual allocator module/init/manifest/policy/product integration is being
-prepared; it is not fixed by this checkpoint, and the frozen check stays enabled.
+The [allocator capability](framework-allocator.md), committed as **1647192**,
+binds **24 exact captured sources / 329,015 bytes** and selects the existing
+upstream `android.hidl.allocator@1.0-service`. It retains upstream init, SELinux
+and `max-level="8"` behavior, with no extra policy or matrix changes. Candidate
+and repeat each contain 43 payload files / 605,013 bytes: 40 are unchanged,
+one product file adds a package selection plus comment, and two controls are
+added. Both admission records have SHA256
+`429c25640ca1c0951832a56fe91ca7efc05b8ad1200d6430fba32d7171024baf`.
+Independent host review has no open findings. This is host source admission
+only: the capability is not installed or built in the active v13ha guest.
+Actual service compilation, producer/init/context checks and unchanged VINTF
+checks remain required; runtime registration is not established.
 
 The separate full-check packet is now staged: all 221 files are verified,
 including the manifest
@@ -609,6 +619,16 @@ All affected query captures are held until the pinned `-n`/`-t` behavior and
 actual read-only confinement are qualified; writable original-OUT fallback and
 log deletion are not allowed. These limitations do not change the VINTF builds'
 passing source guards, and no ordinary compatibility check is waived.
+
+The actual **ninja-readonly-query-v1** qualification subsequently ran and failed
+overall: **four checks pass, two fail, zero skips**. Its dry-query and
+dry-commands `-n` cases match their known answers under read-only confinement.
+The help-output-stream expectation and corrupt-dependency negative fixture
+fail; the latter does not establish the expected read-only denial separately
+from ordinary access permissions. Receipt SHA256 is
+`7caa0ae905357d1fe0742c67fe709dbb2b6569dd9515cf255a635a3ada25bd7f`.
+This is an executed failed qualification, not pending execution or permission
+to resume captures. The hold and earlier unproven no-write claims remain.
 
 The host packaging rebase now produces identical validated candidates from the
 current v13ha inputs while preserving the provider correction, strict settings
@@ -646,11 +666,13 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,651 tests in 156.391 seconds with zero failures, errors or skips**. The
-target-files metadata agent executed it with bytecode writing disabled; the
+**3,665 tests in 156.924 seconds with zero failures, errors or skips**, executed
+by the coordinator for committed allocator capability `1647192`. The previous
+3,651-test run in 156.391 seconds was executed by the target-files metadata
+agent with bytecode writing disabled; the
 coordinator independently verified the complete log. The preceding coordinator
 run passed 3,651 in 160.426 seconds after the v13h raw-image milestone.
-That run used unchanged public code from the earlier
+Those earlier runs used unchanged public code from the
 3,651-test run in 158.950 seconds for the profile committed as `78376c7`. The
 preceding v13ha integration run passed 3,634 in 152.111 seconds. The previous coordinator
 run passed 3,634 in 156.509

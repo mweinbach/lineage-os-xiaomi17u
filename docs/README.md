@@ -20,6 +20,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Actual selected framework/kernel inputs, complete artifact requirements and pinned validator limits |
+| [Framework allocator selection](framework-allocator.md) | Committed host capability and repeated candidates select the pinned upstream service without changing init, policy or max-level 8; native installation/build and VINTF success remain pending |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
 | [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |

@@ -80,7 +80,11 @@ timeout, but failed the frozen level-5 `vintffm` check because
 `android.hidl.allocator` is mandatory and not declared in the manifest. All
 57 selected XML/APEX artifacts are present; presence is not compatibility.
 The next blocker is actual allocator service/init/manifest/policy/product
-integration, followed by the unchanged strict checks. No fix is claimed yet.
+integration, followed by the unchanged strict checks. Commit `1647192` adds the
+[host-verified allocator capability](framework-allocator.md), selecting the
+existing upstream service while retaining its init, SELinux and `max-level="8"`
+manifest behavior. Repeated candidates match, but this capability is not
+installed or built in the guest; v13ha remains active.
 The separate packet for a full 39-APEX comparison is staged with all 221 files
 verified. Staging does not execute native compatibility checks or materialize
 the required generated APEX inputs.
@@ -94,6 +98,10 @@ source-root `.ninja_log` and `.ninja_deps` files are recorded and preserved in
 place; their writer is not established. No original project payload change is
 known. This caveat does not invalidate the VINTF builds' separately verified
 source guards or relax their compatibility checks.
+The actual query qualification v1 has now run: four checks pass and two fail,
+with zero skips. Its positive `-n` known answers pass, but the help-stream and
+corrupt-dependency negative-fixture expectations fail. Overall qualification
+remains false and query captures remain held.
 
 The current **policy-images-v13h-v1** native reconstruction passes **nine checks
 and 38 commands with zero skips**, including 18 fsck checks. Both independent
@@ -139,11 +147,13 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest full workspace suite passed **3,651 tests in 156.391 seconds with
-zero failures, errors or skips**, executed by the target-files metadata agent;
+The latest coordinator full workspace suite passed **3,665 tests in 156.924
+seconds with zero failures, errors or skips**, covering the committed allocator
+capability. The previous suite passed 3,651 in 156.391 seconds, executed by the
+target-files metadata agent;
 the coordinator independently verified its complete log. The separate previous
 coordinator run passed 3,651 in 160.426 seconds after the raw-image milestone.
-That run used unchanged public code from the earlier profile run, which passed 3,651
+Those earlier runs used unchanged public code from the profile run, which passed 3,651
 tests in 158.950 seconds at `78376c7`. The preceding v13ha integration
 run passed 3,634 in 152.111 seconds. The previous v7 run passed 3,634 in
 156.509 seconds, and the previous profile
@@ -152,7 +162,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `a1b5445`. The active guest inputs remain v13ha;
+code and documentation through `1647192`. The active guest inputs remain v13ha;
 `analysis-v13h-policy-only-v1` is now the verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
