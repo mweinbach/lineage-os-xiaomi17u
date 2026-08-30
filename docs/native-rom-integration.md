@@ -632,7 +632,22 @@ validation and runtime registration remain unverified. The strict v13h policy
 analysis is reused through unchanged policy inputs and exact byte equality of
 the analyzed policy; no fresh compiler/assertion/permissive analysis is claimed.
 
-The separate full-check packet is now staged: all 221 files are verified,
+The first **allocator-producers-v13i-1** read-only capture passes nine commands
+across three query layers and describes all three allocator outputs, with zero
+skips. Its inner receipt is
+`8432513247ccb0cb675005d3a0927c148e4c6d267b974cb5fb76a2578b1de9a0`
+and outer receipt is
+`9ec7fabe993d9610ff49b3f6ada8819cbe41a9104bc842a732ff513280c5452f`.
+The accepted capture-time envelope preserves source, outputs, graphs and logs;
+it does not rebuild the allocator or establish source-to-binary equivalence.
+The later product-list metadata copy appends 126 bytes to OUT `.ninja_log`,
+making this snapshot stale for the current full-VINTF guard. The exact
+staleness record is
+`d44a863f77770d9d05feecedb1544ab9e1e993ceea834ee252d7fa8fdb46f7a9`.
+The historical capture remains valid evidence; a fresh phase-2 capture is
+required before full compatibility, without relaxing the complete log guard.
+
+The older v13h full-check packet remains historical staging: all 221 files are verified,
 including the manifest
 `35927a29e117c8c2d879cc36d46aed6c7f3001700ef60543b5a0c2f032ca4143`
 (which lists 220 files). It requires 36 generated framework APEX
@@ -642,6 +657,9 @@ without source or Android-output writes. It does not execute materialization,
 admit future build outputs or run full compatibility. The coordinator's 44
 offline packet tests pass in 0.333 seconds with zero skips; these are not native
 VINTF results.
+The current v13i 230-member full packet has not been emitted. Its complete
+current graph/log guard requires a fresh phase-2 producer receipt after the
+metadata log change; the older staged packet cannot substitute for it.
 
 Three separate capture attempts remain failures: the footer-tool reader rejected
 a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
@@ -732,9 +750,55 @@ Post-capture verification did not complete. The subsequent successful bounded
 definition at bootstrap line 28 and main Soong line 500 in distinct roots.
 Its 19,197-byte receipt is
 `9ee94c44c294032b1a448723c0ac4cb05c9f8d4d01ab3dde1c697f5381338639`.
-Shared v4 consumers remain held pending a corrected per-root reader. The
+Shared v4 consumers were held pending a corrected per-root reader. The
 diagnostic runs no queries and admits no graph; no APK selection, build,
 producer proof or source/OUT nonmutation is inferred.
+
+The subsequent **product-list-build-v1** prerequisite runs one actual upstream
+Ninja copy edge from **21:09:37 to 21:09:40 UTC**. It produces a 26,921-byte
+`product_packages.txt`, SHA256
+`b2bd4d22699704f19b4179f727b207e342f9c8b2552f30e5f043defb80b068eb`,
+matching all 1,230 selected packages and the raw producer input. All five
+postchecks pass. The 204 source inputs, thirteen policy/eleven runtime outputs
+and sixteen graph files are preserved. Only OUT `.ninja_log` grows by 126
+bytes; source-root logs and dependency logs are unchanged. This is a metadata
+component build, not a Camera APK build.
+
+The **Camera read-only capture v5b** then passes four queries from **21:12:19
+to 21:15:28 UTC**, with complete postchecks and unchanged guarded source,
+output, graph and log inputs. Receipt SHA256 is
+`95e6b79165a4c1641457274eefa756212daea28a1f5a239237c60ee8d9b7ba64`.
+All 28 captured byte records and eight raw query streams rehash. Independent
+review `d141fe4d1210fb9ea8e93649a9922702555ff155c17894f44c836c03c557885f`
+is clear. Strict normal preoptimization and the three selected providers remain
+intact. The Camera namespace is still unexported and unselected, with no APK
+admission, build or grants. The complete protected-target inventory, source
+transaction and actual build checks remain required.
+
+Provider capture v6 fails on ambiguous source/private-provider resolution.
+The corrected **v7 read-only capture** passes five queries, retaining strict
+16 KiB configuration and its source, graph, log and selected-input guards.
+Its receipt is
+`5fbf5e1bea88a90de270a654c3516efaf547b0c600af3a92bc96678e51c07ea7`.
+All 26 selected ELF-check stamps are absent in the capture, which executes no
+native ELF or symbol check. Actual check results remain unverified; graph
+capture is not provider compatibility.
+
+The first image-delivery dispatch fails before staging because its two
+case-observation paths are absent; no image copy is attempted. The corrected
+dispatch prepares independent private guest copies of the exact vendor/ODM
+footer images. Its 61,136-byte receipt is
+`dd11cdbee4b5d9193dfeb875ff2bfbfd5410cc4e2de14213577b386545b4c4ab`.
+The guest verifies both destination hashes and preserves 204 source, thirteen
+policy, eleven runtime and original-image inputs. Source/OUT are on a writable
+mount; this is guarded preservation, not a read-only namespace claim. The
+copier records distinct inodes, but raw inode numbers are not retained for
+independent host reconstruction. Large image bodies stay in the guest.
+Independent review
+`77af2a71e0463379ec65aff3a787b18ec4d8627d31ce7c4e0e150ec606842045`
+accepts only the private copies and guarded preservation, with no blocking
+findings. Metadata/source/image adoption, signatures, physical fit and boot
+remain unverified.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1045,7 +1109,8 @@ unchanged. Matching raw reconstruction and keyless footer/FEC checks now pass;
 signed-parent, physical-fit and current-source checks still precede any adoption.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
 Qualify the exact allocator source/output provenance for the successful
-v13i component build, then perform full framework/vendor/APEX/kernel comparison.
+v13i component build using a fresh capture after the metadata log change, then
+perform full framework/vendor/APEX/kernel comparison.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
 Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement

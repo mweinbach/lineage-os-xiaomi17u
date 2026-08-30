@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v13h policy, raw images and keyless footers; v13i allocator component build and output review pass, with allocator provenance, full VINTF, signed parent chain and image adoption pending |
+| [Native ROM integration](native-rom-integration.md) | Verified policy, keyless footers, allocator build and Camera prerequisite/capture; refreshed allocator guard, full VINTF, provider ELF checks, APK build and image adoption remain pending |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -72,7 +72,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Preserved Xiaomi.eu/live input checks and two reproduced packaging failures |
 | [Original factory Camera APK](factory-camera-apk.md) | Unchanged factory input passes strict privileged/preprocessed packaging; permission grants, effective SELinux label and product selection remain unverified |
 | [Factory Camera permission grants](../research/factory-camera-permission-grants.json) | Captured source distinguishes pure-signature grant denial and service enforcement; effective grants, installed signing state and Camera behavior remain unverified |
-| [Factory Camera build-only packet](camera-apk-build-admission.md) | Repeated host source packet and verified producer; no guest namespace installation, product membership or APK component result |
+| [Factory Camera build-only packet](camera-apk-build-admission.md) | Exact host packet, native product-list prerequisite and reviewed read-only capture; no guest namespace admission, product membership or APK component result |
 | [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch and native fixtures; current component build and bounded producer/output review pass, without Camera APK or runtime API closure |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |

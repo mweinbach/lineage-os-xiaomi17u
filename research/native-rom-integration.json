@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "allocator-v13i-component-build-and-output-review-passed-full-compatibility-pending-camera-v4-held",
+  "checkpoint": "camera-metadata-and-readonly-capture-verified-provider-graph-captured-private-images-prepared-full-guard-refresh-pending",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -942,20 +942,36 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 152.316,
-    "code_commit": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
+    "elapsed_seconds": 154.009,
+    "code_commit": "6075f4a2e8f5ea6c0b527eae730b493e182999c2",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-allocator-v13i-v1.log",
-      "sha256": "6e410219313c729fa869bfed1faf10a16391f4552831b79fccacf6a94c0e9db5",
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-camera-delivery-v1.log",
+      "sha256": "f6800bf67736f3a10ff27879aed9342541d7b0605c9e216464ea2e8a934eeedd",
       "size_bytes": 639334
     },
-    "scope": "Coordinator full offline suite after the actual allocator component build. Its zero-skipped tooling result does not replace the native build, which explicitly skips a partial VINTF matrix-definition subcheck, or establish full compatibility, image adoption or hardware success."
+    "scope": "Coordinator full offline suite after the actual Camera metadata build, read-only Camera/provider captures and private vendor/ODM copy milestone. Tracked edits during this run were the four central checkpoint documents/records; no tooling source changed. Zero skipped tooling tests do not replace Android builds, complete VINTF, image adoption, signing or hardware validation.",
+    "previous_allocator_component_run": {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3711,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 152.316,
+      "code_commit": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-allocator-v13i-v1.log",
+        "sha256": "6e410219313c729fa869bfed1faf10a16391f4552831b79fccacf6a94c0e9db5",
+        "size_bytes": 639334
+      },
+      "scope": "Coordinator full offline suite after the actual allocator component build. Its zero-skipped tooling result does not replace the native build, which explicitly skips a partial VINTF matrix-definition subcheck, or establish full compatibility, image adoption or hardware success."
+    }
   },
   "remaining_gates": [
-    "Qualify exact allocator source/output provenance for the successful v13i component build, then run full framework/vendor/kernel/39-APEX compatibility. Existing strict v13h analysis is reused through unchanged policy inputs and exact analyzed-byte equality, without claiming fresh analysis. Preserve the partial VINTF matrix-definition skip; retain the 4 KiB hold and all strict checks",
-    "Implement and qualify the corrected per-root graph reader for the now diagnosed Camera v4 bootstrap-definition failure before releasing shared v4 guard consumers. Apply the qualified read-only Ninja recipe and consumer-specific admission; preserve original logs, keep earlier direct-query nonmutation unproven and never use writable-OUT fallback",
+    "Refresh the allocator producer capture after the verified metadata action changed OUT .ninja_log, then complete allocator provenance and full framework/vendor/kernel/39-APEX compatibility. Preserve capture-time phase1 evidence and require the complete current log guard; unchanged analyzed policy remains covered by exact-byte reuse of strict v13h analysis",
+    "Use the reviewed Camera capture for an explicit source transaction, complete protected-target inventory and actual APK graph/class-loader/check/build admission. The namespace and APK remain unselected; preserve strict preoptimization, uses-library and native checks",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
-    "Strict native provider runtime ELF/linker and service checks against the now independently verified provider-policy baseline",
+    "Execute all 26 strict native provider ELF/symbol checks using the verified v7 capture, then establish linker/service runtime behavior; graph capture and absent checker stamps are not compatibility passes",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
     "Complete signed-parent, rollback, physical-partition-fit and current-active-source compatibility evidence before separately adopting the independently reviewed v13h keyless leaf derivatives. Exact package-budget and native hashtree/FEC checks pass; original inputs and historical export4 results remain preserved",
     "Ordinary target-files, super, A/B, snapshot and OTA packaging; the optional mi_ext care-map path still requires authentic ODM import-closure and final Evolution SYSTEM input qualification before source composition or native adoption",
@@ -1737,8 +1753,8 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-30T19:54:50.797282+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-30T19:20:26.538912+00:00",
+  "recorded_at_utc": "2026-08-30T21:28:00.873956+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T21:09:40.192378+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -2178,7 +2194,7 @@
       "scope_after_provider_installation": "Provider installation retains the held 4096 boundary. The first policy-only attempt failed on the Audio AIDL graph conflict with 16384 and checks enabled; no user approval for the 4 KiB experiment is recorded."
     }
   },
-  "workspace_code_checkpoint": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
+  "workspace_code_checkpoint": "6075f4a2e8f5ea6c0b527eae730b493e182999c2",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -3111,7 +3127,7 @@
     "independent_policy_analysis": "native_provider_policy_analysis",
     "previous_integration": "v13ha"
   },
-  "latest_native_build_status": "allocator-v13i-1-passed-component-scope-only",
+  "latest_native_build_status": "product-list-metadata-v1-passed-one-upstream-copy-action",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -3669,9 +3685,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-30T19:53:45.602232+00:00",
-  "latest_timestamped_native_observation_kind": "camera-bootstrap-definition-per-root-diagnostic-verified-without-graph-admission",
-  "latest_native_observation_kind": "allocator-v13i-component-build-passed-camera-per-root-reader-correction-pending",
+  "latest_timestamped_native_observation_utc": "2026-08-30T21:15:28.919096+00:00",
+  "latest_timestamped_native_observation_kind": "camera-v5b-readonly-capture-completed",
+  "latest_native_observation_kind": "camera-and-provider-graphs-captured-private-image-copies-prepared-allocator-current-guard-stale",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -5065,6 +5081,20 @@
         "source_and_out_nonmutation_postverified": false,
         "corrected_per_root_reader_pending": true
       }
+    },
+    "provider_elf_v6": {
+      "receipt": {
+        "path": "reports/framework-providers-20260830/provider-elf-preparation-v1/correction-v6/capture-v1/capture.json",
+        "sha256": "77073c467015f667afaf0d028a1a5def77260274b6670cdd581f748ee0454f7e",
+        "size_bytes": 1217533
+      },
+      "status": "failed-parser-ambiguity",
+      "diagnostic": "ValueError: ambiguous source/private provider module",
+      "graph_and_candidate_log_bytes_stats_absence_unchanged": true,
+      "native_build_or_checker_executed": false,
+      "strict_elf_checks_passed": false,
+      "symbol_checks_passed": false,
+      "scope": "Preserved failed graph parser; its post-preservation evidence does not turn it into a provider ELF or symbol-check pass."
     }
   },
   "host_packaging_v13ha_followup": {
@@ -5771,5 +5801,228 @@
     "scope": "Actual component build and independent bounded output review. Fresh allocator actions are logged, but exact allocator source/output provenance remains pending. The existing strict v13h policy analysis is reused through unchanged policy inputs and exact analyzed-byte equality; no fresh analysis is claimed. Partial VINTF explicitly skips a matrix-definition check and does not run full vendor/kernel/APEX compatibility. Three raw allocator outputs are independently inspected; source/mount proofs come from captured guest observations, without reopening live source/OUT. No warning-free, zero-skipped native, APEX signature, provider runtime, image-adoption or boot claim.",
     "analyzed_policy_inputs_unchanged": true,
     "prior_policy_analysis_reuse_bound_by_exact_byte_equality": true
+  },
+  "allocator_v13i_producer_capture_phase1": {
+    "inner_receipt": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-capture-adapter/successor-v5/host-result-collector/collection-v1/files/allocator-producers/results/receipt.json",
+      "sha256": "8432513247ccb0cb675005d3a0927c148e4c6d267b974cb5fb76a2578b1de9a0",
+      "size_bytes": 196771
+    },
+    "outer_receipt": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-capture-adapter/successor-v5/host-result-collector/collection-v1/files/receipt.json",
+      "sha256": "9ec7fabe993d9610ff49b3f6ada8819cbe41a9104bc842a732ff513280c5452f",
+      "size_bytes": 137238
+    },
+    "capture_time_envelope_validation": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/phase1-actual-envelope-validation-v1.json",
+      "sha256": "2701e2e16ff4ac72eff550292dc60b4faddc9fe2877eaf18b9a12307042d0fe2",
+      "size_bytes": 21993
+    },
+    "staleness_comparison": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-phase1-staleness-v1.json",
+      "sha256": "d44a863f77770d9d05feecedb1544ab9e1e993ceea834ee252d7fa8fdb46f7a9",
+      "size_bytes": 4897
+    },
+    "phase": "allocator-producers-v13i-1",
+    "capture_time_passed": true,
+    "started_at_utc": "2026-08-30T20:57:43.512357+00:00",
+    "completed_at_utc": "2026-08-30T21:02:42.294669+00:00",
+    "commands": 9,
+    "query_layers": 3,
+    "producer_outputs_described": 3,
+    "skipped": 0,
+    "capture_time_graph_and_logs_unchanged": true,
+    "capture_time_source_and_android_output_unchanged": true,
+    "capture_time_envelope_linkage_passed": true,
+    "source_to_binary_equivalence_verified": false,
+    "fresh_native_action_verified": false,
+    "subsequent_tracked_log_change": {
+      "output_relative_path": ".ninja_log",
+      "size_delta_bytes": 126,
+      "cause": "verified product-list metadata copy action"
+    },
+    "current_native_log_admission_verified": false,
+    "fresh_phase2_required": true,
+    "must_not_use_for_current_full_vintf": true,
+    "full_vintf_verified": false,
+    "runtime_registration_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Valid native read-only producer-description capture with retained outputs and nine successful commands. Later known metadata log growth makes the current full-run snapshot stale, without invalidating the historical capture. The full current graph/log guard remains required; no fresh action, source-to-binary equivalence or full compatibility follows.",
+    "planned_current_full_packet_members": 230,
+    "current_full_packet_emitted": false,
+    "older_staged_packet": "full_vintf_v13h_packet"
+  },
+  "camera_product_list_metadata_build": {
+    "receipt": {
+      "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/product-list-build-v1/run-native-v1/stdout.jsonl",
+      "sha256": "fe0de93353214ce8c203c1023998ebc412e93ea55a351e86ddfb8b2e121bbb39",
+      "size_bytes": 231437
+    },
+    "independent_review": {
+      "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/actual-metadata-camera-review-v1/review.json",
+      "sha256": "d141fe4d1210fb9ea8e93649a9922702555ff155c17894f44c836c03c557885f",
+      "size_bytes": 57764
+    },
+    "operation": "build-one-upstream-product-list-metadata-edge-v1",
+    "passed": true,
+    "started_at_utc": "2026-08-30T21:09:37.149575+00:00",
+    "completed_at_utc": "2026-08-30T21:09:40.192378+00:00",
+    "native_upstream_copy_actions": 1,
+    "exit_code": 0,
+    "postchecks_passed": 5,
+    "output": {
+      "product_relative_path": "product_packages.txt",
+      "sha256": "b2bd4d22699704f19b4179f727b207e342f9c8b2552f30e5f043defb80b068eb",
+      "size_bytes": 26921
+    },
+    "selected_packages": 1230,
+    "output_equals_current_all_set_and_raw_producer_input": true,
+    "source_inputs_preserved": 204,
+    "policy_outputs_preserved": 13,
+    "runtime_outputs_preserved": 11,
+    "graph_files_preserved": 16,
+    "tracked_out_ninja_log_growth_bytes": 126,
+    "source_root_logs_and_dependency_logs_unchanged": true,
+    "apk_build_admitted": false,
+    "images_requested": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "One actual upstream metadata copy edge and complete postchecks. This creates the package-list prerequisite and appends its normal Ninja log row; it does not build or select the Camera APK. The changed OUT log makes the earlier allocator snapshot stale for a later full-run guard."
+  },
+  "camera_v5b_readonly_capture": {
+    "receipt": {
+      "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/correction-v5/run-native-v5b/stdout.jsonl",
+      "sha256": "95e6b79165a4c1641457274eefa756212daea28a1f5a239237c60ee8d9b7ba64",
+      "size_bytes": 2946270
+    },
+    "independent_review": {
+      "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/actual-metadata-camera-review-v1/review.json",
+      "sha256": "d141fe4d1210fb9ea8e93649a9922702555ff155c17894f44c836c03c557885f",
+      "size_bytes": 57764
+    },
+    "operation": "capture-camera-build-inputs-after-v13i",
+    "status": "verified",
+    "passed": true,
+    "started_at_utc": "2026-08-30T21:12:19.875970+00:00",
+    "completed_at_utc": "2026-08-30T21:15:28.919096+00:00",
+    "read_only_queries_passed": 4,
+    "captured_byte_records_rehashed": 28,
+    "captured_payload_bytes": 1232576,
+    "raw_query_streams_rehashed": 8,
+    "post_capture_verification_completed": true,
+    "guarded_sources_and_captured_outputs_unchanged": true,
+    "query_graph_and_log_inputs_unchanged": true,
+    "independent_review_status": "pass",
+    "new_configuration_blocker_found": false,
+    "normal_dex_preoptimization_retained": true,
+    "strict_uses_library_checks_retained": true,
+    "all_three_runtime_providers_selected": true,
+    "namespace_exported": false,
+    "apk_selected": false,
+    "apk_build_admitted": false,
+    "build_run": false,
+    "full_protected_target_inventory_captured": false,
+    "runtime_grants_verified": false,
+    "source_or_android_output_written": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual corrected read-only graph/input capture and independent review, following the successful metadata prerequisite. All captured byte records and raw query streams rehash; package membership agrees with the current 1,230-package producer. This neither installs the Camera namespace nor admits the APK transaction, complete protected targets, actual build/class-loader checks, grants, MAC labeling or hardware behavior."
+  },
+  "provider_v7_readonly_capture": {
+    "receipt": {
+      "path": "reports/framework-providers-20260830/provider-elf-preparation-v1/correction-v7/capture-v1/capture.json",
+      "sha256": "5fbf5e1bea88a90de270a654c3516efaf547b0c600af3a92bc96678e51c07ea7",
+      "size_bytes": 12972219
+    },
+    "operation": "capture-v13i-provider-elf-graph-readonly-v7",
+    "status": "captured",
+    "read_only_capture_verified": true,
+    "queries_passed": 5,
+    "native_check_goals_selected": 26,
+    "current_checker_stamps_absent": 26,
+    "strict_configuration_verified": true,
+    "max_page_size_supported": 16384,
+    "current_source_and_graph_log_preservation_verified": true,
+    "guard_errors": [],
+    "native_build_or_checker_executed": false,
+    "strict_elf_checks_passed": false,
+    "symbol_checks_passed": false,
+    "source_or_output_written": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Five successful native read-only queries describe the strict current provider checker graph. All 26 check stamps are absent. Configuration and graph capture do not establish actual ELF, symbol, ABI, linker or service compatibility."
+  },
+  "private_image_delivery_preparation_v2": {
+    "failed_first_dispatch": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/delivery-v2/dispatch-host-v1/dispatch.json",
+      "sha256": "a2d47226b71c2afe259512c959e9197757a33e0341400c2d3698dd3d83df7917",
+      "size_bytes": 35228
+    },
+    "corrected_case_observation": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/delivery-v2/root-case-observation-v1/stdout.json",
+      "sha256": "cd05c48f87da7593fbde083eeacf7c48d083e9dea9f39cdce1f065ad31a60697",
+      "size_bytes": 557
+    },
+    "dispatch": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/delivery-v2/dispatch-host-v2/dispatch.json",
+      "sha256": "fb26563d657230d1f073948a86018aac4d5af8e72c74aca1a6c50c42a2656dd6",
+      "size_bytes": 204462
+    },
+    "guest_receipt": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/delivery-v2/dispatch-host-v2/guest-receipt.bin",
+      "sha256": "dd11cdbee4b5d9193dfeb875ff2bfbfd5410cc4e2de14213577b386545b4c4ab",
+      "size_bytes": 61136
+    },
+    "operation": "prepare-v13i-policy-delivery-images-v1",
+    "status": "prepared-private-validation-bundle",
+    "passed": true,
+    "skipped": 0,
+    "first_dispatch_failed_before_copy": true,
+    "first_failure": "read-only source case-sensitivity observation failed; both attempted names absent",
+    "outer_and_child_exit_codes": 0,
+    "child_stderr_empty": true,
+    "child_stdout_equals_complete_receipt": true,
+    "incomplete_marker_absent": true,
+    "copies": {
+      "vendor": {
+        "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+        "size_bytes": 959709184
+      },
+      "odm": {
+        "sha256": "854c0047709496136557fbdaf2f3ee0a124fa6a18c1bfaddd063d2a3d006d257",
+        "size_bytes": 4767621120
+      }
+    },
+    "source_and_destination_rehashed_by_guest": true,
+    "independent_inodes_reported_by_guest": true,
+    "raw_inode_pairs_retained_for_host_reconstruction": false,
+    "guarded_source_inputs_preserved": 204,
+    "guarded_policy_inputs_preserved": 13,
+    "guarded_runtime_inputs_preserved": 11,
+    "original_images_preserved": true,
+    "source_output_namespace_readonly": false,
+    "source_or_android_output_written": false,
+    "image_bodies_copied_to_host": false,
+    "independent_review_status": "accepted-private-validation-image-copies-and-guarded-preservation-only",
+    "metadata_installed": false,
+    "delivery_images_adopted": false,
+    "signed_parent_chain_verified": false,
+    "physical_partition_fit_verified": false,
+    "device_rollback_compatibility_verified": false,
+    "full_vintf_compatibility_verified": false,
+    "runtime_verified": false,
+    "private_keys_accessed": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Successful private guest copy preparation only, after a preserved pre-stage case-probe failure. The guest rehashes source and independent destination copies and reports protected-input preservation. Source/OUT were writable mounts, not a read-only namespace. Large image bodies and raw inode pairs were not reopened by this host checkpoint; no metadata/source/image adoption, signature, physical-fit or boot result follows.",
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/delivery-v2/actual-review-v1/review-v1.json",
+      "sha256": "77af2a71e0463379ec65aff3a787b18ec4d8627d31ce7c4e0e150ec606842045",
+      "size_bytes": 11208
+    },
+    "independent_review_blocking_findings": [],
+    "independent_review_captured_files_verified": 11,
+    "metadata_provenance_members_bound": 205
   }
 }

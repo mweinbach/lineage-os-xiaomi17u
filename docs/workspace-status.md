@@ -96,9 +96,15 @@ level. This is not a zero-skipped native or full compatibility result. Exact
 allocator producer-command qualification remains separate. The strict v13h
 policy analysis is reused through unchanged policy inputs and exact byte
 equality of the analyzed policy; no fresh analysis is claimed.
-The separate packet for a full 39-APEX comparison is staged with all 221 files
-verified. Staging does not execute native compatibility checks or materialize
-the required generated APEX inputs.
+The first allocator producer capture passes nine commands across three query
+layers and describes all three outputs, with zero skips and preserved inputs.
+Its capture-time evidence remains valid, but the later product-list metadata
+action appended 126 bytes to OUT `.ninja_log`. The full VINTF guard therefore
+requires a fresh capture; that guard is not weakened to accept stale logs.
+The older v13h full-check packet remains historical staging with all 221 files
+verified. The current v13i 230-member full packet has not been emitted; it
+requires the fresh phase-2 producer receipt. Neither staging nor a producer
+capture executes full native compatibility checks.
 
 Ninja query captures were held pending qualification of the pinned query
 modes under read-only mounts. The second footer capture accepted the valid empty
@@ -146,12 +152,26 @@ chain, current-source compatibility, adoption and boot remain unverified.
 Independent review of all 110 captured files is clear. The host review does not
 reopen the large native image or FEC outputs.
 
-The latest **Camera capture v4** fails before any Ninja query with a protected
-bootstrap-definition error. Its full failed receipt is preserved. The successful
-bounded diagnostic finds the same literal definition in distinct bootstrap
-and combined/main-Soong roots. Shared v4 guard consumers remain held for a
-corrected per-root reader; the diagnostic runs no queries and admits no graph.
-No Camera APK selection, build or producer proof follows.
+The **Camera product-list prerequisite** now passes one actual upstream Ninja
+copy action, producing the exact 26,921-byte list of 1,230 packages. All 204
+source inputs, thirteen policy and eleven runtime outputs, and sixteen graph
+files remain unchanged; only OUT `.ninja_log` grows by the expected 126 bytes.
+The subsequent **Camera capture v5b** completes four read-only queries and all
+postchecks at **21:15:28 UTC**, preserving its source, graph and log inputs.
+Independent review is clear. The namespace remains unexported and unselected;
+APK source admission, protected-output inventory, actual build checks, grants
+and runtime behavior remain unverified. Earlier failed captures are preserved.
+
+Provider capture v6 remains a parser-ambiguity failure. The corrected **v7
+read-only capture** passes five queries with strict 16 KiB configuration and
+unchanged guarded inputs, but all 26 ELF-check stamps are absent in the capture;
+actual ELF-check results remain unverified. The first image-delivery dispatch failed before staging on its
+case-observation check. The corrected dispatch now prepares independent private
+guest copies of the exact vendor/ODM footer images, with preserved source,
+policy, runtime and original-image inputs. This is private preparation, not
+metadata or image adoption. Delivery used a writable source/OUT namespace;
+preservation is checked, not inferred from read-only mounts. Independent review
+accepts only these private copies and their guarded preservation.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -187,9 +207,10 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,711 tests in 152.316
-seconds with zero failures, errors or skips** after the allocator component
-build. The preceding 3,711-test run passed in 158.487 seconds, covering the optional
+The latest coordinator full workspace suite passed **3,711 tests in 154.009
+seconds with zero failures, errors or skips** after the Camera metadata/capture
+and private image-copy milestone. The preceding allocator component checkpoint
+passed 3,711 tests in 152.316 seconds. An earlier 3,711-test run passed in 158.487 seconds, covering the optional
 [mi_ext care-map source path](mi-ext-care-map.md), committed as `8144704`.
 That capability is inactive: authentic ODM imports and the final Evolution
 SYSTEM property input still require qualification. The preceding allocator
@@ -207,7 +228,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `2228845`. The active guest inputs are v13i;
+code and documentation through `6075f4a`. The active guest inputs are v13i;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
