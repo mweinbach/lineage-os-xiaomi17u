@@ -528,6 +528,32 @@
         "passed": true,
         "evidence_source": "Coordinator report for this checkpoint; separate from the agent-run full-suite receipt."
       }
+    },
+    "factory_camera_apk": {
+      "implementation_commit": "d3316b4",
+      "documentation": "docs/factory-camera-apk.md",
+      "record": {
+        "path": "research/factory-camera-apk.json",
+        "sha256": "cc3321f60ab51b128a48a5918ab176bfc2f479e71475a39e8b1b7bb623ae5d1c",
+        "size_bytes": 46377
+      },
+      "original_apk_sha256": "7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e",
+      "original_apk_size_bytes": 204365218,
+      "original_apk_unchanged": true,
+      "strict_privileged_preprocessed_packaging_passed": true,
+      "exact_uses_libraries_check_passed": true,
+      "validator_checks_skipped": false,
+      "normalized_always_privileged_requests": 10,
+      "normalized_possible_privileged_requests": 11,
+      "effective_feature_flag_definitions_resolved": false,
+      "actual_permission_grants_verified": false,
+      "actual_composed_selinux_label_verified": false,
+      "apk_selected_in_product": false,
+      "apk_transformed_or_signed": false,
+      "native_apk_build_verified": false,
+      "camera_or_leica_hardware_tested": false,
+      "earlier_input_failures_preserved": true,
+      "scope": "Distinct unchanged factory APK passes pinned host packaging and declaration checks. The earlier Xiaomi.eu/live APK keeps its compression failure. Neither input is selected; signature permissions, effective installed grants and actual composed MAC/seapp labels remain separate admission requirements."
     }
   },
   "erofs_qualification": {
@@ -1360,7 +1386,7 @@
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
   "latest_native_observation_utc": "2026-08-30T00:28:11.339588+00:00",
-  "recorded_at_utc": "2026-08-30T00:54:12.236298+00:00",
+  "recorded_at_utc": "2026-08-30T01:17:48.662250+00:00",
   "latest_native_build_completed_at_utc": "2026-08-30T00:16:57.719846+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -1749,5 +1775,105 @@
       "sha256": "97005123084d4c5373962b37e8e37b19ca2f3172254b3fe955564c27ca9194bb",
       "size_bytes": 997
     }
+  },
+  "production_erofs_primitive_probe": {
+    "label": "production-erofs-probe-v2",
+    "review": {
+      "path": "reports/oem-policy-integration-20260829/production-erofs-probe/native-v2-review.json",
+      "sha256": "4f943a0c352b7e53a088acd9c7db847d0c866180b80adaab1c258ba00ba8b434",
+      "size_bytes": 11733
+    },
+    "reviewed_at_utc": "2026-08-30T01:09:58.371241+00:00",
+    "capture": {
+      "path": "artifacts/build-validation/nezha-production-erofs-probe-v2/capture.json",
+      "sha256": "60b416148ce179d63dc56862e08e45923c4e58649f9a83ed6cbdf0e4752e6dc5",
+      "size_bytes": 9802
+    },
+    "captured_files": 59,
+    "captured_bytes": 16999966,
+    "all_capture_files_independently_rehashed": true,
+    "native_receipt": {
+      "path": "artifacts/build-validation/nezha-production-erofs-probe-v2/probe-v1/receipt.json",
+      "sha256": "78da86e46757ef5bcf6edd7ceaaaf7ca6fdff47b0ca7288eb7dfaa1c0a113f5b",
+      "size_bytes": 7519
+    },
+    "build_receipt": {
+      "path": "artifacts/build-validation/nezha-production-erofs-probe-v2/build-receipt.json",
+      "sha256": "370bae68971b0039b6b1b2c05bf9791d11d206fecb4c347984dbc287703e7dc1",
+      "size_bytes": 87193
+    },
+    "native_binary": {
+      "path": "artifacts/build-validation/nezha-production-erofs-probe-v2/fsize_probe",
+      "sha256": "af313f11e27f44a7ec5ea00d35af8f786a7bd9c7b2aa69916fc965c9582df16d",
+      "size_bytes": 16008
+    },
+    "checks_passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "native_processes": 3,
+    "native_abi": "x86_64 ELF64 with 64-bit off_t; existing ARM64 Linux guest and Rosetta",
+    "finite_limits_bytes": [
+      2147483648,
+      6442450944
+    ],
+    "both_limit_cases_reject_oversized_growth_and_verify_sparse_boundary_readback_cleanup": true,
+    "native_stdout_overflow_whole_group_killed_and_both_pipes_eof": true,
+    "stdout_cap_bytes": 16777216,
+    "primitive_profile_qualified": true,
+    "mkfs_executed": false,
+    "mkfs_internal_fallback_observed": false,
+    "mkfs_production_execution_qualified": false,
+    "full_stock_image_writer_admitted": false,
+    "disk_headroom_or_full_spool_io_qualified": false,
+    "partition_fit_or_avb_qualified": false,
+    "source_or_android_output_writes": false,
+    "global_android_output_unchanged_claimed": false,
+    "images_accessed_or_written": false,
+    "phone_accessed": false,
+    "previous_attempt": {
+      "label": "production-erofs-probe-v1",
+      "passed": false,
+      "failure_stage": "compiler planning before native primitive execution",
+      "orchestration": {
+        "path": "artifacts/build-validation/nezha-production-erofs-probe-v1/orchestration.json",
+        "sha256": "036bdd20fdb1c7cf765d58ecb010c6d943f877b02a720f4db539e0806d242640",
+        "size_bytes": 9790
+      },
+      "retained": true
+    },
+    "scope": "Actual native syscall/log-limit primitives only. This is not production mkfs execution, observation of its internal fallback, full spool I/O, filesystem derivation, policy adoption or a boot result. Existing finite caps and readiness gates remain unchanged."
+  },
+  "provider_elf_alignment_review": {
+    "layout": {
+      "path": "reports/oem-policy-integration-20260829/provider-elf-layout-v1.json",
+      "sha256": "1a4c13240f8cdee0d59d2a59a874013b5c98b23e226bc232fc2348632d19a6df",
+      "size_bytes": 19159
+    },
+    "configuration_snapshots": [
+      {
+        "path": "reports/oem-policy-integration-20260829/provider-elf-config-snapshot-v2.json",
+        "sha256": "f3040cdc9648d0a2c6f6c024d9a4e9fc4b96e3ce776b82b7066529de7a2b15ec",
+        "size_bytes": 478
+      },
+      {
+        "path": "reports/oem-policy-integration-20260829/provider-elf-config-snapshot-v3.json",
+        "sha256": "1b77ca0eefc91dc663410c5633d3fe3febedd6eeb945462357513f60b7c223fe",
+        "size_bytes": 523
+      }
+    ],
+    "configuration_source_sha256": "a8ad24b9fa17d18e1ed30bb81dc7fe87bc70c49247a796cb012b3087890f57cf",
+    "measured_DeviceMaxPageSizeSupported": "16384",
+    "measured_DeviceCheckPrebuiltMaxPageSize": true,
+    "measured_BuildBrokenPrebuiltELFFiles": false,
+    "measured_RELEASE_SOONG_CHECK_ELF_FILES": "true",
+    "concurrent_build_snapshot": true,
+    "provider_elf_files": 26,
+    "files_with_4096_load_alignment": 22,
+    "files_with_16384_load_alignment": 4,
+    "all_provider_payload_hashes_independently_rechecked": true,
+    "native_elf_checker_executed_by_inspection": false,
+    "configuration_decision": "under-review",
+    "configuration_or_check_exception_selected": false,
+    "scope": "Measured current Soong settings and static provider load-segment layouts only. No native checker, linking, runtime compatibility or configuration change is implied."
   }
 }

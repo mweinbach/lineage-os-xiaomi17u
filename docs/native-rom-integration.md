@@ -281,7 +281,8 @@ any artifact or hardware result until its actual completion and inspections.
 | [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host verification binds nine composed source files through patches 0005–0009; source admission and 43 isolated native Kati cases pass | Guest installation and ordinary target-files checks; a new complete preservation contract for policy-bearing vendor/ODM derivatives |
 | [Host AVB signing](avb-signing.md) | Inert planning, offline workflow tests and real unsigned countrycode/pvmfw descriptor-carrier checks; original inputs preserved | All 15 final input images with correct hashtrees/FEC, explicit Mac signing and independent verification of the resulting 17 image roles |
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
-| [Camera APK admission](camera-apk-inputs.md) | Fresh unchanged-signature, ZIP CRC and strict library-name checks; two real validator failures remain reproduced | Resolve original-signature/preprocessed privileged DEX packaging and separate privilege questions before selecting the APK; no APK or hardware validation is claimed |
+| [Earlier Camera APK admission](camera-apk-inputs.md) | Fresh unchanged-signature, ZIP CRC and strict library-name checks; two real validator failures remain reproduced for the Xiaomi.eu/live input | This input stays unselected; its code findings do not transfer to the distinct factory DEX payloads |
+| [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
 | [Policy-image input preparation](policy-image-inputs.md) | Commit `3cb17cb` binds exact five-file replacement inputs, complete stock manifests, two TAR preparations and finite production limits | Seven current native-policy record pins remain missing; actual production preparation, native writer execution, AVB and image adoption remain unverified |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability for the two Evolution version-date strings, preserving the default path | Guest admission, native Kati/helper-environment checks and actual output inspection; not enabled in this build or proof of reproducible images |
@@ -299,6 +300,13 @@ candidate, one metadata include is added and three device includes change;
 policy/provider/OEM/DSP/helper bindings and readiness flags remain unchanged.
 Metadata, mi_ext and recovery receipts share the same exact ten-file source
 composition. This candidate remains uninstalled in the guest.
+
+The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
+as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
+finds 22 of the 26 provider ELFs use 4 KiB load alignment; the other four use
+16 KiB. The snapshot was collected during the component build. No native ELF
+checker ran for this inspection, and resolution is under review; no page-size
+configuration change or check exception is selected here.
 
 The metadata Kati probe completed at **22:39:19 UTC** with 14 positive and 29
 specific negative cases, source and Android outputs unchanged. It parses the
@@ -340,6 +348,7 @@ The pinned `external/erofs-utils` revision remains
 | Synthetic v4 | 25 | 2 | 0 | Corrected exporter checks pass; the same fractional-nanosecond writer and empty-xattr fsck failures remain |
 | Read-only stock v2 | 6 | 0 | 0 | Both original images export completely and pass upstream fsck; 3,910 vendor and 3,059 ODM entries are recorded |
 | Synthetic writer round trip | 11 | 6 | 0 | Both fixture partitions reproduce the exact five-file change across two independent derivations; all six upstream empty-xattr checks fail |
+| Production file-size primitives v2 | 4 | 0 | 0 | Finite 2 GiB/6 GiB syscall limits, sparse readback/cleanup, bounded stdout overflow and input preservation pass; no production mkfs execution |
 
 The stock failure exposed an invalid exporter assumption that a shared xattr
 table cannot begin at block zero. The narrow C correction, committed as
@@ -377,6 +386,16 @@ files totaling 3,566,793 bytes; `path_hex` preserves each original byte path and
 These capture corrections do not change the native qualification result.
 No original factory image, source or Android output was changed, and no AVB,
 retained-image writer admission or policy-image adoption passed.
+
+The later production-size probe compiled and ran an x86-64 C executable through
+the existing Rosetta path, with 64-bit file offsets. Both finite-limit cases
+reject oversized growth and verify a bounded sparse write at the last valid
+byte; the overflow case terminates the whole process group and drains both
+pipes. All four checks pass, with zero skips, and all 59 captured files rehash.
+The v1 compiler-planning failure remains recorded. This qualifies only the
+file-size/log primitives: `mkfs_production_execution_qualified` remains false.
+Actual full-TAR mkfs execution, fallback/spool behavior, disk headroom, complete
+filesystem preservation and image/AVB admission still require evidence.
 
 Image adoption still needs an exact five-file change: the derived vendor CIL,
 the strict combined ODM policy, and its three framework matching digests.

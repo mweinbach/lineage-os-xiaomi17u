@@ -149,6 +149,8 @@ from a full build and require destination hash verification after transfers.
 | Native custom-image correction fixtures | 99 expected outcomes: one reproduced historical failure, five corrected positive cases and 93 specific negative cases; full custom-image region parsed, with no image recipes or Ninja execution | [Native ROM integration](../research/native-rom-integration.json) |
 | Native DEX provider fixtures | Five top-level tests and 11 subtests pass in the pinned Linux Soong test binary; no full Java-suite stamp, actual Camera artifact build or dex2oat execution | [Native DEX fixtures](../research/dex-import-native-fixtures.json) |
 | Native EROFS inventory-tool build | Actual compile/link/install passes with source read-only; subsequent metadata qualification has unresolved failures and is not an image-adoption pass | [Native ROM integration](../research/native-rom-integration.json) |
+| Native production file-size primitives | Four checks pass with zero skips, including finite 2 GiB/6 GiB limits and bounded log-overflow termination; production mkfs and image writing remain unqualified | [Native ROM integration](../research/native-rom-integration.json) |
+| Original factory Camera packaging | Unchanged APK passes strict privileged/preprocessed and uses-library checks; no APK selection, permission-grant, effective-label or hardware result | [Factory Camera APK](../research/factory-camera-apk.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
 | Native VINTF build inputs | Selected framework XML, host tools and stock-kernel requirements built; the graph audit identifies the still-missing framework fragments and APEX artifacts rather than treating the partial inventory as complete compatibility | [VINTF build closure](../research/vintf-compatibility.json) |
 | Recovery device test | `working76` installed to recovery_a; matching readback; visible UI and fast touch confirmed by the user; root ADB, logs and automatic defaults verified | [Working recovery](../research/twrp-working-defaults.json) |
@@ -205,6 +207,11 @@ override theme defaults. No Magisk integration is included.
   finite production limits. Its plan correctly remains blocked on seven
   missing reviewed policy record pins; no actual factory TAR, image, AVB or
   source/vendor adoption result follows from that preparation code.
+  The native production-size primitive probe now passes four checks with zero
+  skips, using finite 2 GiB/6 GiB file limits and bounded log-overflow handling.
+  Its 59-file capture is verified; the first failed attempt remains preserved.
+  It did not execute mkfs or qualify its production fallback, full spool I/O,
+  disk headroom, partition fit or AVB.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
   and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
@@ -261,6 +268,10 @@ override theme defaults. No Magisk integration is included.
   [v13 source admission](framework-provider-source-admission.md) reproduces a
   host candidate with its 31 payloads, 27 installable modules and private policy.
   It is not installed in v12fa or validated by the v12f policy build.
+  A captured current Soong configuration selects maximum ELF page size 16,384
+  with the prebuilt check enabled; static inspection finds 22 of 26 provider
+  ELFs have 4 KiB load alignment. Resolution remains under review, with no
+  configuration decision or native checker pass inferred from this snapshot.
   The [original-ODM shipping-API patch](vintf-shipping-api.md) passes source-bound
   host probes without fabricating vendor properties; it is authored but not
   installed in v12fa and is not a complete native compatibility result.
@@ -275,11 +286,16 @@ override theme defaults. No Magisk integration is included.
   five native provider fixture tests and 11 subtests now pass, but they do not
   execute the generated Camera build rules or dex2oat. The older dependency-build
   result does not validate this new input set.
-  The [fresh APK admission review](camera-apk-inputs.md) verifies the unchanged
+  The [earlier APK admission review](camera-apk-inputs.md) verifies the unchanged
   signature, ZIP contents and exact library names, while reproducing both
   packaging failures: target SDK 35 needs preprocessed handling, and privileged
   preprocessed handling rejects the compressed DEX entries. The APK remains
   unselected; no signing or privilege exception was introduced.
+  The distinct [original factory Camera APK](factory-camera-apk.md) passes the
+  strict privileged/preprocessed check unchanged, resolving that input's DEX
+  compression blocker. Its ten always-privileged requests, rising to eleven
+  across feature branches, still need actual grant and effective
+  SELinux-label validation. Neither APK is selected or hardware-tested.
 - **Recovery completeness:** encrypted `/data`, backup/restore coverage,
   additional reboot/Android round trips, A/B and OTA behavior, ADB host
   authentication and restoring recovery SELinux enforcement remain unverified.

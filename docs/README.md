@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Expanded runtime-policy build and passing export3 host rehearsal; export2 held, native analysis/components and image gates still open |
+| [Native ROM integration](native-rom-integration.md) | Expanded policy build, export3 host rehearsal and native file-size primitives; policy analysis, component results, provider ELF alignment and image adoption remain open |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability for Evolution date strings; host-tested preparation, not active guest configuration or image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -67,7 +67,8 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Nezha integration plan](nezha-integration.md) | Device/vendor/kernel boundaries and remaining complete-ROM gates |
 | [Camera build inputs](camera-inputs.md) | Narrow system-ext dependency selection, requested ELF checks and unresolved APK class-loader requirements |
 | [Camera APK integration](camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
-| [Current Camera APK admission](camera-apk-inputs.md) | Fresh unchanged-signature, strict-library and ZIP checks; two reproduced packaging failures keep the APK unselected |
+| [Earlier Camera APK admission](camera-apk-inputs.md) | Preserved Xiaomi.eu/live input checks and two reproduced packaging failures |
+| [Original factory Camera APK](factory-camera-apk.md) | Unchanged factory input passes strict privileged/preprocessed packaging; permission grants, effective SELinux label and product selection remain unverified |
 | [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch with passing pinned native fixtures; current Camera artifact rebuild remains separate |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
