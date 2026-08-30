@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v13h policy, raw images and keyless leaf footers; v13i allocator inputs installed and service/policy build running, with VINTF, signed parent chain and image adoption pending |
+| [Native ROM integration](native-rom-integration.md) | Verified v13h policy, raw images and keyless footers; v13i allocator component build and output review pass, with allocator provenance, full VINTF, signed parent chain and image adoption pending |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -20,7 +20,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Actual selected framework/kernel inputs, complete artifact requirements and pinned validator limits |
-| [Framework allocator selection](framework-allocator.md) | Pinned upstream service selected by installed v13i inputs without changing init, policy or max-level 8; actual compilation and VINTF success remain pending |
+| [Framework allocator selection](framework-allocator.md) | Actual v13i compilation and three-output review pass with upstream init and max-level 8 retained; producer-command qualification, full VINTF and runtime registration remain pending |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
 | [Optional mi_ext care-map source](mi-ext-care-map.md) | Committed but inactive guarded path; authentic ODM imports, final Evolution SYSTEM marker, native packaging and OTA coverage remain unqualified |

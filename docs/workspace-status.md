@@ -10,7 +10,7 @@ consolidates recorded evidence through **August 30, 2026** in UTC and New York.
 Earlier UTC milestones before 04:00 on August 30 occurred on August 29 in
 New York. This page does not assert that a historical builder VM is still running.
 
-The latest successful native policy build is **policy-only-v13h-1**, completed
+The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
 configuration. Source inputs remained unchanged, the native sandbox was verified,
 and all eleven preserved policy outputs and eleven protected runtime outputs
@@ -79,15 +79,23 @@ The incremental **vintf-v13h-2** retry finished at **16:58:47 UTC**, without a
 timeout, but failed the frozen level-5 `vintffm` check because
 `android.hidl.allocator` is mandatory and not declared in the manifest. All
 57 selected XML/APEX artifacts are present; presence is not compatibility.
-The next blocker is actual allocator compilation and producer/context checks,
-followed by the unchanged strict VINTF checks. Commit `1647192` adds the
+The next blocker is exact allocator source/output provenance and full
+VINTF compatibility. Commit `1647192` adds the
 [host-verified allocator capability](framework-allocator.md), selecting the
 existing upstream service while retaining its init, SELinux and `max-level="8"`
 manifest behavior. The **v13i** transaction installed that device selection at
 **18:48:34 UTC**, preserving 24 guarded inputs and 112 prior outputs. All 1,179
 base revisions and origins still match. The 37-goal **allocator-v13i-1**
-service/policy build is running, with no result verified yet; installed inputs
-do not resolve the VINTF failure by themselves.
+component build passed at **19:20:26 UTC**, with 178 Ninja progress rows after
+163 frontend steps. Independent review confirms fresh allocator compile/link/
+strip/install actions, all three captured outputs and strict 16 KiB alignment.
+The init file matches upstream bytes; the generated manifest preserves the
+expected allocator declaration and max-level 8 semantics. The partial VINTF
+run explicitly skipped `checkMatrixHalsHasDefinition` for a matrix with no
+level. This is not a zero-skipped native or full compatibility result. Exact
+allocator producer-command qualification remains separate. The strict v13h
+policy analysis is reused through unchanged policy inputs and exact byte
+equality of the analyzed policy; no fresh analysis is claimed.
 The separate packet for a full 39-APEX comparison is staged with all 221 files
 verified. Staging does not execute native compatibility checks or materialize
 the required generated APEX inputs.
@@ -138,12 +146,12 @@ chain, current-source compatibility, adoption and boot remain unverified.
 Independent review of all 110 captured files is clear. The host review does not
 reopen the large native image or FEC outputs.
 
-The latest Camera source capture still fails before any Ninja query: its graph
-reader rejects the shared bootstrap `builddir` variable. A bounded diagnostic
-identifies the exact expression. The narrow shared helper is now frozen after
-72 offline checks; Camera/provider recipe admission and acceptance of the
-current graph remain pending. No Camera APK selection, build or runtime result
-follows.
+The latest **Camera capture v4** fails before any Ninja query with a protected
+bootstrap-definition error. Its full failed receipt is preserved. The successful
+bounded diagnostic finds the same literal definition in distinct bootstrap
+and combined/main-Soong roots. Shared v4 guard consumers remain held for a
+corrected per-root reader; the diagnostic runs no queries and admits no graph.
+No Camera APK selection, build or producer proof follows.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -179,8 +187,9 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,711 tests in 158.487
-seconds with zero failures, errors or skips**, covering the optional
+The latest coordinator full workspace suite passed **3,711 tests in 152.316
+seconds with zero failures, errors or skips** after the allocator component
+build. The preceding 3,711-test run passed in 158.487 seconds, covering the optional
 [mi_ext care-map source path](mi-ext-care-map.md), committed as `8144704`.
 That capability is inactive: authentic ODM imports and the final Evolution
 SYSTEM property input still require qualification. The preceding allocator
@@ -198,7 +207,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `8144704`. The active guest inputs are v13i;
+code and documentation through `2228845`. The active guest inputs are v13i;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -296,7 +305,7 @@ from a full build and require destination hash verification after transfers.
 | v12fa correction installation | Seven committed exchanges, exact corrected source and receipt identities, same pinned project bases and preserved original image inputs | [Native ROM integration](../research/native-rom-integration.json) |
 | v13f provider input installation | Four committed exchanges verified; original vendor/ODM, Camera runtime, mi_ext and working76 preserved; provider policy build and independent verification remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; provider runtime/ELF and image adoption remain open | [Native ROM integration](../research/native-rom-integration.json) |
-| v13i allocator input installation | One device-tree exchange commits, preserving 24 guarded inputs and 112 prior outputs; service compilation and VINTF remain pending | [Native ROM integration](../research/native-rom-integration.json) |
+| v13i allocator installation and component build | One device-tree exchange commits; 37 goals complete with fresh allocator actions and three inspected outputs; partial VINTF has an explicit skipped subcheck, and exact producer/full compatibility checks remain open | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
 | Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
 | Preserved independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |

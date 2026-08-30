@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "allocator-v13i-build-running-v13h-keyless-footers-produced-and-independently-reviewed",
+  "checkpoint": "allocator-v13i-component-build-and-output-review-passed-full-compatibility-pending-camera-v4-held",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -942,18 +942,18 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 158.487,
-    "code_commit": "8144704799bd295319ba783c949f59a3701b5b2e",
+    "elapsed_seconds": 152.316,
+    "code_commit": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-mi-ext-care-map-v1.log",
-      "sha256": "36dfbeac98cef69ca10f0138249681e26558a9bb892ca33f483825df292576f4",
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-allocator-v13i-v1.log",
+      "sha256": "6e410219313c729fa869bfed1faf10a16391f4552831b79fccacf6a94c0e9db5",
       "size_bytes": 639334
     },
-    "scope": "Coordinator full offline suite covering the optional committed mi_ext care-map source path. The path is inactive and still rejects authentic unqualified ODM imports. Separate from native allocator compilation, target-files/OTA generation, signed parent chain, image adoption and hardware evidence."
+    "scope": "Coordinator full offline suite after the actual allocator component build. Its zero-skipped tooling result does not replace the native build, which explicitly skips a partial VINTF matrix-definition subcheck, or establish full compatibility, image adoption or hardware success."
   },
   "remaining_gates": [
-    "Build the upstream allocator service selected by installed v13i, inspect its binary/init/fragment producers and policy/context checks, then rerun unchanged ordinary VINTF. Recapture the changed graph before full 39-APEX compatibility; retain the 4 KiB hold and all checks",
-    "Apply the qualified read-only Ninja recipe and explicit admission to each remaining query capture. Preserve original logs, keep earlier direct-query nonmutation unproven and never use writable-OUT fallback",
+    "Qualify exact allocator source/output provenance for the successful v13i component build, then run full framework/vendor/kernel/39-APEX compatibility. Existing strict v13h analysis is reused through unchanged policy inputs and exact analyzed-byte equality, without claiming fresh analysis. Preserve the partial VINTF matrix-definition skip; retain the 4 KiB hold and all strict checks",
+    "Implement and qualify the corrected per-root graph reader for the now diagnosed Camera v4 bootstrap-definition failure before releasing shared v4 guard consumers. Apply the qualified read-only Ninja recipe and consumer-specific admission; preserve original logs, keep earlier direct-query nonmutation unproven and never use writable-OUT fallback",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "Strict native provider runtime ELF/linker and service checks against the now independently verified provider-policy baseline",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -1373,6 +1373,22 @@
         "size_bytes": 631791
       },
       "scope": "Coordinator full offline suite covering the committed framework allocator capability. Separate from native candidate installation, service compilation, VINTF closure, query qualification, image adoption and hardware evidence."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3711,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 158.487,
+      "code_commit": "8144704799bd295319ba783c949f59a3701b5b2e",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-mi-ext-care-map-v1.log",
+        "sha256": "36dfbeac98cef69ca10f0138249681e26558a9bb892ca33f483825df292576f4",
+        "size_bytes": 639334
+      },
+      "scope": "Coordinator full offline suite covering the optional committed mi_ext care-map source path. The path is inactive and still rejects authentic unqualified ODM imports. Separate from native allocator compilation, target-files/OTA generation, signed parent chain, image adoption and hardware evidence."
     }
   ],
   "previous_v11b_policy": {
@@ -1721,8 +1737,8 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-30T19:12:33.951568+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-30T16:58:47.414585+00:00",
+  "recorded_at_utc": "2026-08-30T19:54:50.797282+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T19:20:26.538912+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -2162,7 +2178,7 @@
       "scope_after_provider_installation": "Provider installation retains the held 4096 boundary. The first policy-only attempt failed on the Audio AIDL graph conflict with 16384 and checks enabled; no user approval for the 4 KiB experiment is recorded."
     }
   },
-  "workspace_code_checkpoint": "8144704799bd295319ba783c949f59a3701b5b2e",
+  "workspace_code_checkpoint": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -3095,7 +3111,7 @@
     "independent_policy_analysis": "native_provider_policy_analysis",
     "previous_integration": "v13ha"
   },
-  "latest_native_build_status": "allocator-v13i-1-running-result-pending",
+  "latest_native_build_status": "allocator-v13i-1-passed-component-scope-only",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -3653,9 +3669,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-30T18:49:27Z",
-  "latest_timestamped_native_observation_kind": "two-pass-v13h-keyless-leaf-footer-production-completed",
-  "latest_native_observation_kind": "allocator-v13i-inputs-installed-and-v13h-keyless-leaf-footers-produced",
+  "latest_timestamped_native_observation_utc": "2026-08-30T19:53:45.602232+00:00",
+  "latest_timestamped_native_observation_kind": "camera-bootstrap-definition-per-root-diagnostic-verified-without-graph-admission",
+  "latest_native_observation_kind": "allocator-v13i-component-build-passed-camera-per-root-reader-correction-pending",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -5001,6 +5017,54 @@
         "execution_allowed_by_helper_freeze": false,
         "native_graph_or_query_verified": false
       }
+    },
+    "camera_v4": {
+      "failed_capture": {
+        "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/correction-v4/run-native-v4/stdout.jsonl",
+        "sha256": "47ad2ca0896131396bef550db42a0a473588cedd25774a10268092c27884467b",
+        "size_bytes": 1292107
+      },
+      "failed_capture_exit": {
+        "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/correction-v4/run-native-v4/exit.json",
+        "sha256": "b0b90c14c8e81d5db9836aedbc2ca1a9aa762b6ba5af458fbacb4a4a2d87b1cd",
+        "size_bytes": 67
+      },
+      "status": "failed-protected-bootstrap-definition-before-query",
+      "native_capture_exit_code": 1,
+      "captured_at_utc": "2026-08-30T19:37:20.137141+00:00",
+      "diagnostic": "foreign, ambiguous, or continued protected bootstrap definition",
+      "queries_attempted": 0,
+      "exact_diagnostic_investigation_pending": false,
+      "all_shared_v4_guard_consumers_held": true,
+      "post_capture_verification_completed": false,
+      "full_protected_target_inventory_captured": false,
+      "source_or_output_nonmutation_verified": false,
+      "apk_selected": false,
+      "apk_build_admitted": false,
+      "build_run": false,
+      "producer_proof_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "scope": "Actual v4 capture stopped in source/tool readback before any Ninja query. The full failure receipt is preserved, but post-capture validation did not finish. A subsequent bounded diagnostic verifies the same literal definition in distinct bootstrap and combined/main-Soong roots. Shared v4 consumers remain held for a corrected per-root reader; no native graph admission, source/OUT nonmutation, APK build or producer proof follows.",
+      "corrected_per_root_reader_pending": true,
+      "subsequent_exact_diagnostic": {
+        "receipt": {
+          "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/graph-diagnostic-v2/run-native-v2/stdout.jsonl",
+          "sha256": "9ee94c44c294032b1a448723c0ac4cb05c9f8d4d01ab3dde1c697f5381338639",
+          "size_bytes": 19197
+        },
+        "operation": "diagnose-camera-bootstrap-definition-rejection-v2",
+        "completed_at_utc": "2026-08-30T19:53:45.602232+00:00",
+        "diagnostic_observation_verified": true,
+        "same_literal_definition_in_distinct_roots": true,
+        "variable": "g.bootstrap.outDir",
+        "bootstrap_definition_line": 28,
+        "main_soong_definition_line": 500,
+        "queries_attempted": 0,
+        "original_graph_admitted": false,
+        "source_and_out_nonmutation_postverified": false,
+        "corrected_per_root_reader_pending": true
+      }
     }
   },
   "host_packaging_v13ha_followup": {
@@ -5135,7 +5199,7 @@
   },
   "host_framework_allocator_capability": {
     "code_commit": "164719256271d28508999bdd8b13a00ea1a20faa",
-    "status": "host-reviewed-subsequently-installed-as-v13i",
+    "status": "installed-and-component-built-producer-and-full-compatibility-pending",
     "guide": {
       "path": "docs/framework-allocator.md",
       "sha256": "be21fa6f21ae645496835932f4e1d6537fcd23c9874c3e3ee799b7143091e830",
@@ -5185,15 +5249,16 @@
       "size_bytes": 2294
     },
     "native_installed": true,
-    "native_service_built": false,
+    "native_service_built": true,
     "native_producer_or_context_checks_passed": false,
     "vintf_failure_resolved": false,
     "runtime_registration_verified": false,
     "active_guest_inputs": "v13i",
     "complete_rom_ready": false,
     "phone_accessed": false,
-    "scope": "Committed host generator capability and repeated portable candidates, subsequently installed as v13i. Existing module/init/SELinux and max-level 8 behavior are retained. Actual service compilation and binary/init/fragment producer, context, policy and VINTF checks remain required. No new policy, matrix suppression, runtime registration or hardware claim.",
-    "native_installation_evidence": "allocator_v13i_installation"
+    "scope": "Committed host generator capability and repeated candidates, installed as v13i and now built with fresh logged allocator actions. Existing init bytes and max-level 8 semantics are retained. Exact producer-command qualification, complete VINTF and runtime registration remain unverified; the partial native VINTF run explicitly skips a matrix-definition subcheck. No new policy, matrix suppression or hardware claim.",
+    "native_installation_evidence": "allocator_v13i_installation",
+    "native_build_evidence": "allocator_v13i_component_build"
   },
   "native_query_readonly_qualification_v1": {
     "receipt": {
@@ -5414,22 +5479,23 @@
     "strict_elf_checks_required": true,
     "normal_android_enforcing_required": true,
     "service_policy_build_goals_prepared": 37,
-    "native_service_built": false,
+    "native_service_built": true,
     "renewed_vintf_passed": false,
     "runtime_registration_verified": false,
     "image_inputs_adopted": false,
     "complete_rom_ready": false,
     "phone_accessed": false,
-    "scope": "The committed single device-tree transaction selects the existing allocator service while preserving protected policy/runtime inputs, previous outputs and all project source payloads. The full source audit checks base revisions/origins, not pristine inputs. It is not a service compilation, current-source policy/compatibility pass, image adoption or runtime result.",
+    "scope": "The committed single device-tree transaction selects the existing allocator service while preserving protected policy/runtime inputs, previous outputs and all project source payloads. The full source audit checks base revisions/origins, not pristine inputs. The later component build is recorded separately; neither the transaction nor that limited build establishes full VINTF, image adoption or runtime behavior.",
     "native_service_policy_build_launched": true,
-    "native_service_policy_build_completed": false,
-    "native_service_policy_build_status": "allocator-v13i-1-running-result-pending",
+    "native_service_policy_build_completed": true,
+    "native_service_policy_build_status": "allocator-v13i-1-passed-component-scope-only",
     "build_request": {
       "path": "reports/oem-policy-integration-20260829/native-v13i-allocator-driver/run-allocator-v13i-1/request.json",
       "sha256": "78eaebbb0cd8e8a10289d046e13218509e0698472dc9daca491ff031e6aef1c2",
       "size_bytes": 588652
     },
-    "last_event_sequence": 4
+    "last_event_sequence": 4,
+    "native_build_evidence": "allocator_v13i_component_build"
   },
   "native_footer_qualification_v1": {
     "receipt": {
@@ -5587,5 +5653,123 @@
     "complete_rom_ready": false,
     "phone_accessed": false,
     "scope": "An explicit guarded mi_ext care-map path without changing common partition/property lists or legacy profiles. Current authentic ODM imports are rejected, and final Evolution SYSTEM marker evidence is still required. Source composition, receipt regeneration, native packaging/protobuf and OTA coverage remain separate."
+  },
+  "allocator_v13i_component_build": {
+    "phase": "allocator-v13i-1",
+    "operation": "build-post-v13i-framework-allocator-and-vintf",
+    "result": {
+      "path": "artifacts/build-validation/nezha-allocator-v13i-1/result.json",
+      "sha256": "11ab9b9348474adc42b5fe5e4172c4a54b52b75529df999b589d8819304311d7",
+      "size_bytes": 146370
+    },
+    "log": {
+      "path": "artifacts/build-validation/nezha-allocator-v13i-1/build.log",
+      "sha256": "a290f8a25c31900ccb15e1a902ae548e51f6bfc057e0b0266408a52ae426cd5f",
+      "size_bytes": 103740
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-allocator-v13i-1/capture.json",
+      "sha256": "e2f91c11bc5f753ad0e778fc6286f2f749f1717b7045b7af0acbddad8a2f0d09",
+      "size_bytes": 2187
+    },
+    "allocator_output_capture": {
+      "path": "artifacts/build-validation/nezha-allocator-v13i-1/allocator-outputs/capture.json",
+      "sha256": "2207ec1813721402cbf5ee8009964ee5790442dce40ec8783acb5c02526debba",
+      "size_bytes": 1463
+    },
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/allocator-v13i-independent-review-v1/review-v1.json",
+      "sha256": "df29af4c64dc93fe313b4dfa67fcbce4ad3c330736c859ecd07b3e5a034fd410",
+      "size_bytes": 11431
+    },
+    "started_at_utc": "2026-08-30T19:06:17.929982+00:00",
+    "completed_at_utc": "2026-08-30T19:20:26.538912+00:00",
+    "build_passed": true,
+    "build_passed_scope": "native-37-goal-component-build-only",
+    "exit_code": 0,
+    "requested_goals": 37,
+    "ninja_progress_rows_after_start": 178,
+    "frontend_progress_rows": 163,
+    "progress_total_including_frontend": 341,
+    "core_capture_files_rehashed": 13,
+    "core_capture_bytes": 389430,
+    "allocator_outputs": [
+      {
+        "path": "artifacts/build-validation/nezha-allocator-v13i-1/allocator-outputs/system_ext/bin/hw/android.hidl.allocator@1.0-service",
+        "role": "binary",
+        "sha256": "e3e262c7b0f57f2688633a65578e172138b159aa625261b15b69508884266709",
+        "size_bytes": 51800
+      },
+      {
+        "path": "artifacts/build-validation/nezha-allocator-v13i-1/allocator-outputs/system_ext/etc/init/android.hidl.allocator@1.0-service.rc",
+        "role": "init",
+        "sha256": "2daefa28c9013feb1d6b17e366bcb2dfbd5b904e239b644d93a16df01b15c29d",
+        "size_bytes": 187
+      },
+      {
+        "path": "artifacts/build-validation/nezha-allocator-v13i-1/allocator-outputs/system_ext/etc/vintf/manifest/android.hidl.allocator@1.0-service.xml",
+        "role": "vintf_fragment",
+        "sha256": "b0444198fcfedc428719034c6fcb926a66fa00e866ce5b857c1e2a0de47751f4",
+        "size_bytes": 350
+      }
+    ],
+    "allocator_output_files_rehashed": 3,
+    "allocator_payload_bytes": 52337,
+    "fresh_allocator_compile_link_strip_install_actions_logged": true,
+    "independent_review_blocking_findings": [],
+    "allocator_aarch64_pie_verified": true,
+    "allocator_load_alignments": [
+      16384,
+      16384,
+      16384,
+      16384
+    ],
+    "allocator_load_offsets_and_vaddrs_congruent_at_16384": true,
+    "init_byte_identical_to_pinned_upstream": true,
+    "vintf_semantic_identity_verified": true,
+    "vintf_byte_identical_to_source": false,
+    "vintf_max_level": 8,
+    "source_manifest_files_preserved": 204,
+    "allocator_source_guards_preserved": 24,
+    "protected_policy_hashes_preserved": 13,
+    "protected_runtime_hashes_preserved": 11,
+    "project_heads_matched": 1179,
+    "project_origins_matched": 1179,
+    "clean_projects": 1173,
+    "reviewed_modified_projects": 6,
+    "strict_16k_and_prebuilt_check_flags_retained": true,
+    "source_readonly_output_writable_sandbox_observation_verified": true,
+    "unprivileged_or_zero_capability_process_claimed": false,
+    "whole_soong_variables_file_unchanged": false,
+    "ninja_argv_verified": true,
+    "sandbox_fallback": false,
+    "timed_out": false,
+    "post_build_error": null,
+    "remaining_build_processes": [],
+    "limited_vintf_edges_include_allocator_fragment": true,
+    "skipped_native_subchecks": [
+      {
+        "name": "checkMatrixHalsHasDefinition",
+        "input": "system/etc/vintf/compatibility_matrix.device.xml",
+        "reason": "matrix has no level",
+        "build_log_line": 394
+      }
+    ],
+    "zero_skipped_native_checks_claimed": false,
+    "allocator_producer_verification_pending": true,
+    "fresh_policy_compiler_actions_verified": false,
+    "prior_policy_analysis_reused": true,
+    "fresh_assertion_or_permissive_measurements_verified": false,
+    "full_vendor_kernel_apex_compatibility_executed": false,
+    "provider_elf_compatibility_verified": false,
+    "apex_cryptographic_validation_performed": false,
+    "allocator_runtime_registration_verified": false,
+    "images_requested": false,
+    "images_adopted": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual component build and independent bounded output review. Fresh allocator actions are logged, but exact allocator source/output provenance remains pending. The existing strict v13h policy analysis is reused through unchanged policy inputs and exact analyzed-byte equality; no fresh analysis is claimed. Partial VINTF explicitly skips a matrix-definition check and does not run full vendor/kernel/APEX compatibility. Three raw allocator outputs are independently inspected; source/mount proofs come from captured guest observations, without reopening live source/OUT. No warning-free, zero-skipped native, APEX signature, provider runtime, image-adoption or boot claim.",
+    "analyzed_policy_inputs_unchanged": true,
+    "prior_policy_analysis_reuse_bound_by_exact_byte_equality": true
   }
 }

@@ -17,8 +17,9 @@ unchanged; this is not image adoption, AVB, partition-fit or boot evidence.
 The subsequent keyless footer run passes six native checks and sixteen commands,
 preserving both raw prefixes and verifying FEC and exact package budgets.
 The signed parent chain and physical partition fit remain separate gates. The
-**v13i** allocator selection is installed and its service/policy build is running; no new build or
-VINTF pass is verified yet.
+**v13i** allocator component build and independent output review now pass.
+Its partial VINTF run has an explicit skipped matrix-definition subcheck;
+full compatibility and exact producer-command qualification remain open.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -601,10 +602,35 @@ All 24 guarded inputs and 112 prior outputs are preserved, including the existin
 policy and runtime outputs. The snapshot matches all 1,179 project revisions
 and origins, with 1,173 clean projects and the same six reviewed modified
 projects. It retains strict 16 KiB checks and changes no policy/provider inputs
-or project source. The 37-goal **allocator-v13i-1** service/policy build is
-running, with no completed result. Actual producer, init/context and unchanged
-VINTF checks remain required. Runtime registration and compatibility with the
-current source remain unverified.
+or project source.
+
+The 37-goal **allocator-v13i-1** component build runs from **19:06:17 to
+19:20:26 UTC** and returns exit 0, with no timeout or remaining build process.
+There are **178 Ninja progress rows after 163 frontend steps**, not 341 native
+checks. The log records fresh allocator compile, link, strip and install actions.
+All 204 selected source files, 24 allocator source guards, 13 protected policy
+and eleven runtime output hashes are preserved; strict 16 KiB settings and
+source-read-only/output-writable sandbox checks pass. This does not establish
+an unprivileged or zero-capability process.
+
+The 13-file core capture totals **389,430 bytes**. Result SHA256 is
+`11ab9b9348474adc42b5fe5e4172c4a54b52b75529df999b589d8819304311d7`.
+The separate three-output capture contains the 51,800-byte AArch64 allocator
+binary, 187-byte init file and 350-byte VINTF fragment. Independent review
+`df29af4c64dc93fe313b4dfa67fcbce4ad3c330736c859ecd07b3e5a034fd410`
+has no blocking findings. It confirms all four ELF load segments have 16 KiB
+alignment and congruent offsets, byte-identical upstream init, and semantic
+agreement of the generated allocator fragment, including max-level 8. The XML
+is canonicalized and is not byte-identical to source.
+
+The actual partial VINTF log explicitly skips `checkMatrixHalsHasDefinition`
+for `compatibility_matrix.device.xml` with no level. The two limited VINTF edges
+include the allocator fragment, but do not perform full vendor/kernel/APEX
+compatibility. No zero-skipped native claim is made. Exact allocator
+source-to-output producer commands, provider ELF checks, APEX cryptographic
+validation and runtime registration remain unverified. The strict v13h policy
+analysis is reused through unchanged policy inputs and exact byte equality of
+the analyzed policy; no fresh compiler/assertion/permissive analysis is claimed.
 
 The separate full-check packet is now staged: all 221 files are verified,
 including the manifest
@@ -697,6 +723,18 @@ alias, ordering and uniqueness guards; 50 author and 22 independent offline
 checks pass with zero skips. Its freeze does not authorize execution or prove
 current native graph acceptance. Camera/provider recipe admission remains
 required against v13i inputs.
+The subsequent **Camera capture v4** also fails before any query, now with
+`foreign, ambiguous, or continued protected bootstrap definition`. Its
+1,292,107-byte failed receipt has SHA256
+`47ad2ca0896131396bef550db42a0a473588cedd25774a10268092c27884467b`.
+Post-capture verification did not complete. The subsequent successful bounded
+**graph-diagnostic-v2** observation binds the same literal `g.bootstrap.outDir`
+definition at bootstrap line 28 and main Soong line 500 in distinct roots.
+Its 19,197-byte receipt is
+`9ee94c44c294032b1a448723c0ac4cb05c9f8d4d01ab3dde1c697f5381338639`.
+Shared v4 consumers remain held pending a corrected per-root reader. The
+diagnostic runs no queries and admits no graph; no APK selection, build,
+producer proof or source/OUT nonmutation is inferred.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -734,8 +772,9 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,711 tests in 158.487 seconds with zero failures, errors or skips**, executed
-by the coordinator for the optional [mi_ext care-map source](mi-ext-care-map.md)
+**3,711 tests in 152.316 seconds with zero failures, errors or skips**, executed
+by the coordinator after the allocator component build. The preceding 3,711-test
+run passed in 158.487 seconds for the optional [mi_ext care-map source](mi-ext-care-map.md)
 committed as `8144704`. It remains inactive: authentic ODM imports and the final
 Evolution SYSTEM property input still require qualification. The previous
 coordinator run passed 3,665 in 156.924 seconds for allocator capability
@@ -1005,9 +1044,10 @@ evidence validation; both older profiles and the blocked default remain
 unchanged. Matching raw reconstruction and keyless footer/FEC checks now pass;
 signed-parent, physical-fit and current-source checks still precede any adoption.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
-Build and inspect the allocator service selected by installed v13i, then rerun
-the unchanged ordinary VINTF checks and perform the full framework/vendor/APEX/kernel comparison. The
-captured all-target alias alone cannot establish compatibility.
+Qualify the exact allocator source/output provenance for the successful
+v13i component build, then perform full framework/vendor/APEX/kernel comparison.
+The partial all-target alias and its skipped matrix-definition subcheck cannot
+establish full compatibility.
 Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
 without lowering checks. The bounded Camera component producer/output review
 passes; runtime API and linker access, Camera APK admission and full checker-input
