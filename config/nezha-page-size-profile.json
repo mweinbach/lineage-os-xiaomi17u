@@ -1,0 +1,408 @@
+{
+  "device": {
+    "architecture": "arm64",
+    "board": "canoe",
+    "codename": "nezha",
+    "soc": "SM8850"
+  },
+  "kernel": {
+    "config": {
+      "path": "reference/kernel.config",
+      "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+      "size_bytes": 220352
+    },
+    "image": {
+      "path": "kernel/Image",
+      "sha256": "4441e484563158ae961f0938462fa9a6ba54024a800329c4339f39a5ac8e35c8",
+      "size_bytes": 39963136
+    },
+    "receipt": {
+      "sha256": "4ce149410ba2ab5f24653ebd8c4020a7401ba5172e2648c19f3c8bf726a7e9bb",
+      "size_bytes": 457217
+    },
+    "runtime_page_size_bytes": 4096,
+    "settings": {
+      "CONFIG_ARM64_16K_PAGES": "n",
+      "CONFIG_ARM64_4K_PAGES": "y",
+      "CONFIG_ARM64_64K_PAGES": "n",
+      "CONFIG_PAGE_SHIFT": "12"
+    }
+  },
+  "limitations": [
+    "The selected stock kernel uses fixed 4 KiB pages; boot-image container pages and ELF segment alignment are separate contracts.",
+    "The pinned build uses one maximum for source linking and prebuilt ELF checks; this 4 KiB profile also changes newly linked platform binaries.",
+    "Pinned VTS requires 16 KiB alignment for init and non-exempt 64-bit userspace ELFs at vendor API 202504. The 22 preserved providers are a known compatibility gap, not a passed or skipped check.",
+    "No API level, low-RAM flag, kernel boot-mode property, module ignore flag or VTS check is changed.",
+    "All previous generator profiles retain their old rendering when this capability is omitted."
+  ],
+  "product_settings": {
+    "PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE": true,
+    "PRODUCT_MAX_PAGE_SIZE_SUPPORTED": 4096,
+    "PRODUCT_NO_BIONIC_PAGE_SIZE_MACRO": true
+  },
+  "profile_id": "nezha-stock-4k-bringup-v1",
+  "providers": {
+    "contract": {
+      "path": "config/nezha-framework-providers.json",
+      "sha256": "467667d20399469d0b5621a4a7891e896ce6c3f785830ee0ad0dd17a06b8c45f",
+      "size_bytes": 29380
+    },
+    "files": [
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_qccsyshal_aidl-service",
+        "runtime_path": "/system_ext/bin/qccsyshal_aidl-service",
+        "sha256": "b35a1fca0ce90bfba8bef2bbdc7237482dbce39c793ff07dedd9d59c557ee86b",
+        "size_bytes": 27640
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_sigma_miracasthalservice_aidl",
+        "runtime_path": "/system_ext/bin/sigma_miracasthalservice_aidl",
+        "sha256": "aab0364134cc04e33d3662f8b50b70e37ee77194f874c396af2262b83b411381",
+        "size_bytes": 27560
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libmiracastsystem",
+        "runtime_path": "/system_ext/lib64/libmiracastsystem.so",
+        "sha256": "45880ab976336616c2ff91753d176d3d10e175564005d51266359316ad965541",
+        "size_bytes": 119560
+      },
+      {
+        "compatible_with_16k_alignment": true,
+        "load_alignments": [
+          16384,
+          16384,
+          16384,
+          16384
+        ],
+        "module": "nezha_framework_libmmosal",
+        "runtime_path": "/system_ext/lib64/libmmosal.so",
+        "sha256": "1882f4adbd5689292db527dacc7baea0aa97a190de03851629d5bda31eaf4a10",
+        "size_bytes": 85664
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libmmparser_lite",
+        "runtime_path": "/system_ext/lib64/libmmparser_lite.so",
+        "sha256": "a37cd814dd572416ec572779c216346684346b7f2cb63f1733c238f51886edc9",
+        "size_bytes": 1459248
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libmmrtpdecoder",
+        "runtime_path": "/system_ext/lib64/libmmrtpdecoder.so",
+        "sha256": "824a9465712514d90ce643280db4b4588144b37fb9dc518bc706292311f1f97e",
+        "size_bytes": 109688
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libmmrtpencoder",
+        "runtime_path": "/system_ext/lib64/libmmrtpencoder.so",
+        "sha256": "be71dbb4dd1cbfc022841cfdb2c27d1ecc801fdf68c8ceb379bdcddc6949e3ec",
+        "size_bytes": 76752
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libqcc_file_agent_sys",
+        "runtime_path": "/system_ext/lib64/libqcc_file_agent_sys.so",
+        "sha256": "cfc00ea6cf09bc4b703b878a4aaac74e1f913d51cc3ac607063c51e807bcd8a9",
+        "size_bytes": 81144
+      },
+      {
+        "compatible_with_16k_alignment": true,
+        "load_alignments": [
+          16384,
+          16384,
+          16384,
+          16384
+        ],
+        "module": "nezha_framework_libsigmautils",
+        "runtime_path": "/system_ext/lib64/libsigmautils.so",
+        "sha256": "7b0bd1ced656edd230eefe1becce692bf922028278fee87462c11309108642c4",
+        "size_bytes": 52480
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfdclient",
+        "runtime_path": "/system_ext/lib64/libwfdclient.so",
+        "sha256": "d4c79a1a602cded5b7c406b50e254d7492412c79021b9e72cceeaea0b396f742",
+        "size_bytes": 205712
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfdcommonutils",
+        "runtime_path": "/system_ext/lib64/libwfdcommonutils.so",
+        "sha256": "b195d73f5d4e56343d80e6f3de9cb5689980ace253b7bea69c9403bbbcf92cc9",
+        "size_bytes": 64632
+      },
+      {
+        "compatible_with_16k_alignment": true,
+        "load_alignments": [
+          16384,
+          16384,
+          16384,
+          16384
+        ],
+        "module": "nezha_framework_libwfdconfigutils",
+        "runtime_path": "/system_ext/lib64/libwfdconfigutils.so",
+        "sha256": "8c2e76f37771d25e78fd2ddf2f88fe0d01e2f9838bfe2cbbd429513eeb6cbf57",
+        "size_bytes": 151856
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfddisplayconfig",
+        "runtime_path": "/system_ext/lib64/libwfddisplayconfig.so",
+        "sha256": "234e95c0e6c7b243fa96967e931dda8a0747144462530d5b1087c6b9256b3613",
+        "size_bytes": 27440
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfdmminterface",
+        "runtime_path": "/system_ext/lib64/libwfdmminterface.so",
+        "sha256": "e1c02de0c35a71c24e03f8e01a93b56ea497df2dd5eb7c78b5630376a9134a7b",
+        "size_bytes": 43728
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfdmmsink",
+        "runtime_path": "/system_ext/lib64/libwfdmmsink.so",
+        "sha256": "4ec66a04965a2c8fd8612d6ba4cd5f832654b5c517da1e7d2d7b5df04962197b",
+        "size_bytes": 216416
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfdrtsp",
+        "runtime_path": "/system_ext/lib64/libwfdrtsp.so",
+        "sha256": "56642fce5f4feafe1c53ad454eeac57f7ee86397e31529fe1a6bb155dc50c247",
+        "size_bytes": 485416
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfdsinksm",
+        "runtime_path": "/system_ext/lib64/libwfdsinksm.so",
+        "sha256": "5df774331d9d70a613c8073bb8e688db78b7c3743c152ee6d240b107a22f7020",
+        "size_bytes": 188752
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfduibcinterface",
+        "runtime_path": "/system_ext/lib64/libwfduibcinterface.so",
+        "sha256": "70139c00ef568073fc42e9410e20027b4510576a483f63f89997ede3a3414ae1",
+        "size_bytes": 14880
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfduibcsink",
+        "runtime_path": "/system_ext/lib64/libwfduibcsink.so",
+        "sha256": "e70370cac7478b76e47be3fe6a5af63e85bcd0aa71d47455106242c36ba6af84",
+        "size_bytes": 51912
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfduibcsinkinterface",
+        "runtime_path": "/system_ext/lib64/libwfduibcsinkinterface.so",
+        "sha256": "462a013e56a1b0e1131cc16d1ebf79098f0829ede0446706f1d77253cb88ff39",
+        "size_bytes": 19688
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfduibcsrc",
+        "runtime_path": "/system_ext/lib64/libwfduibcsrc.so",
+        "sha256": "3a769599f188916f711ce5c7742dc713bead2dde046cd4fd6c2cb13cbd86593e",
+        "size_bytes": 69056
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_libwfduibcsrcinterface",
+        "runtime_path": "/system_ext/lib64/libwfduibcsrcinterface.so",
+        "sha256": "a53bedca8bd4f6f2e81e8f0768d95998ded7ad176d5414f19049ed2d6a289214",
+        "size_bytes": 19648
+      },
+      {
+        "compatible_with_16k_alignment": true,
+        "load_alignments": [
+          16384,
+          16384,
+          16384,
+          16384
+        ],
+        "module": "nezha_framework_vendor.qti.hardware.sigma_miracast_aidl-V1-ndk",
+        "runtime_path": "/system_ext/lib64/vendor.qti.hardware.sigma_miracast_aidl-V1-ndk.so",
+        "sha256": "0200bc36ff73f1f4cb65c6e296df2b161a69db4d58940d2cd4e9b75f3c997f4f",
+        "size_bytes": 85944
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_vendor.qti.hardware.sigma_miracast_aidl-halimpl",
+        "runtime_path": "/system_ext/lib64/vendor.qti.hardware.sigma_miracast_aidl-halimpl.so",
+        "sha256": "bea7d88e36b2c221d0c72bfcd0e02c9bdb93ec878ed54fa3d4f955a9f968e3e2",
+        "size_bytes": 31520
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_vendor.qti.qccsyshal_aidl-V1-ndk",
+        "runtime_path": "/system_ext/lib64/vendor.qti.qccsyshal_aidl-V1-ndk.so",
+        "sha256": "d45e3d7dfda3e4cb1eda9c9a2b02ef264a82be13fc7ac41e2091972039d117ab",
+        "size_bytes": 119496
+      },
+      {
+        "compatible_with_16k_alignment": false,
+        "load_alignments": [
+          4096,
+          4096,
+          4096,
+          4096
+        ],
+        "module": "nezha_framework_vendor.qti.qccsyshal_aidl-halimpl",
+        "runtime_path": "/system_ext/lib64/vendor.qti.qccsyshal_aidl-halimpl.so",
+        "sha256": "7e1019e387eb8098c8d25ab8f0e840952d50c1a686cc35c2b1a18e91c78e56d9",
+        "size_bytes": 82088
+      }
+    ],
+    "native_file_count": 26,
+    "not_16k_aligned_file_count": 22,
+    "receipt": {
+      "sha256": "8847765ce31f0ce2cdca5f4973153a95a0336363783e4d80c8f0c9d685de2b28",
+      "size_bytes": 12674
+    }
+  },
+  "release_config": "bp4a",
+  "schema_version": 1,
+  "scope": {
+    "compatibility_16k_verified": false,
+    "complete_rom_admitted": false,
+    "first_boot_bringup_only": true,
+    "hardware_tested": false,
+    "native_component_build_verified": false,
+    "phone_operations": [],
+    "private_inputs_changed": false,
+    "strict_elf_checks_required": true,
+    "upstream_source_patch_required": false,
+    "vsr_compatibility_verified": false
+  }
+}

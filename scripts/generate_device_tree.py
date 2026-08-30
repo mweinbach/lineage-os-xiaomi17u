@@ -9,6 +9,7 @@ firmware executable or device command is run by this module.
 from __future__ import annotations
 
 import argparse
+import copy
 from datetime import date
 import hashlib
 import json
@@ -74,6 +75,25 @@ TARGET_FILES_METADATA_CONTRACT = "patches/evolution/target-files-metadata.json"
 TARGET_FILES_METADATA_INCLUDE = DEVICE_PATH / "generated/target-files-metadata.mk"
 TARGET_FILES_SOURCE_CONTRACT = "patches/evolution/target-files-source-composition.json"
 TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
+PAGE_SIZE_PROFILE_RECORD = PurePosixPath("config/nezha-page-size-profile.json")
+PAGE_SIZE_PROFILE_ID = "nezha-stock-4k-bringup-v1"
+PAGE_SIZE_PROFILE_SHA256 = "9d180aeeb13e0c04a4f2726bf94ad6651e1052cb5f9162359c147814bc6607ca"
+PAGE_SIZE_PRODUCT_SETTINGS = {
+    "PRODUCT_MAX_PAGE_SIZE_SUPPORTED": 4096,
+    "PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE": True,
+    "PRODUCT_NO_BIONIC_PAGE_SIZE_MACRO": True,
+}
+PAGE_SIZE_KERNEL_SETTINGS = {
+    "CONFIG_PAGE_SHIFT": "12", "CONFIG_ARM64_4K_PAGES": "y",
+    "CONFIG_ARM64_16K_PAGES": "n", "CONFIG_ARM64_64K_PAGES": "n",
+}
+PAGE_SIZE_SCOPE = {
+    "first_boot_bringup_only": True, "strict_elf_checks_required": True,
+    "private_inputs_changed": False, "upstream_source_patch_required": False,
+    "native_component_build_verified": False, "compatibility_16k_verified": False,
+    "vsr_compatibility_verified": False, "complete_rom_admitted": False,
+    "hardware_tested": False, "phone_operations": [],
+}
 DIRECT_AVB_READONLY_CONTRACT = "patches/evolution/direct-avb-readonly.json"
 DIRECT_AVB_READONLY_CONTRACT_ID = "nezha-direct-avb-readonly-v1"
 DIRECT_AVB_READONLY_SCOPE = {
@@ -2269,6 +2289,137 @@ def _render_board(plan):
     return "\n".join(lines) + "\n"
 
 
+def _page_size_same(actual, expected):
+    return json.dumps(actual, sort_keys=True) == json.dumps(expected, sort_keys=True)
+
+
+def _page_size_profile_contract(path):
+    profile, identity = _read_json(path)
+    _require(identity["sha256"] == PAGE_SIZE_PROFILE_SHA256,
+             "page-size profile differs from the reviewed contract")
+    _require(type(profile.get("schema_version")) is int and profile["schema_version"] == 1 and
+             profile.get("profile_id") == PAGE_SIZE_PROFILE_ID and
+             profile.get("device") == {"codename": "nezha", "soc": "SM8850", "board": "canoe", "architecture": "arm64"}
+             and profile.get("release_config") == "bp4a", "unsupported page-size profile")
+    _require(_page_size_same(profile.get("product_settings"), PAGE_SIZE_PRODUCT_SETTINGS) and
+             _page_size_same(profile.get("scope"), PAGE_SIZE_SCOPE), "page-size settings or scope differ")
+    kernel, providers = profile.get("kernel", {}), profile.get("providers", {})
+    _require(type(kernel.get("runtime_page_size_bytes")) is int and kernel["runtime_page_size_bytes"] == 4096 and
+             _page_size_same(kernel.get("settings"), PAGE_SIZE_KERNEL_SETTINGS), "page-size kernel settings differ")
+    _require(kernel.get("image", {}).get("path") == "kernel/Image" and
+             kernel.get("config", {}).get("path") == "reference/kernel.config", "page-size kernel paths differ")
+    for row in (kernel["image"], kernel["config"], kernel["receipt"], providers.get("contract", {}), providers.get("receipt", {})):
+        _digest(row.get("sha256"), "page-size input")
+        _integer(row.get("size_bytes"), "page-size input size")
+    _require(providers.get("contract", {}).get("path") == FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix() and
+             type(providers.get("native_file_count")) is int and providers["native_file_count"] == 26 and
+             type(providers.get("not_16k_aligned_file_count")) is int and providers["not_16k_aligned_file_count"] == 22,
+             "page-size provider inventory differs")
+    rows = providers.get("files")
+    _require(type(rows) is list and len(rows) == 26 and all(type(row) is dict for row in rows) and
+             len({row.get("runtime_path") for row in rows}) == 26 and
+             len({row.get("module") for row in rows}) == 26, "duplicate or missing page-size provider")
+    incompatible = 0
+    for row in rows:
+        _require(isinstance(row.get("runtime_path"), str) and row["runtime_path"].startswith("/system_ext/") and
+                 isinstance(row.get("module"), str) and row["module"].startswith("nezha_framework_"),
+                 "page-size provider path or module differs")
+        _relative(row["runtime_path"].removeprefix("/"))
+        _digest(row.get("sha256"), "page-size provider")
+        _integer(row.get("size_bytes"), "page-size provider size")
+        alignments = row.get("load_alignments")
+        _require(type(alignments) is list and alignments and
+                 all(type(value) is int and value >= 4096 and value & (value - 1) == 0 for value in alignments),
+                 "page-size provider alignment differs")
+        compatible = all(value % 16384 == 0 for value in alignments)
+        _require(row.get("compatible_with_16k_alignment") is compatible,
+                 "page-size provider 16 KiB limitation differs")
+        incompatible += not compatible
+    _require(incompatible == 22, "page-size profile must retain all 22 known 16 KiB gaps")
+    return profile, identity
+
+
+def _page_size_profile_binding(plan, profile, identity):
+    _require("framework_providers" in plan and "bundles" in plan,
+             "page-size profile requires admitted kernel and provider receipts")
+    kernel, providers = profile["kernel"], profile["providers"]
+    selected = plan["framework_providers"]["inputs"]
+    kernel_receipt = {key: plan["bundles"]["kernel"][key] for key in ("sha256", "size_bytes")}
+    provider_receipt = {key: selected["receipt"][key] for key in ("sha256", "size_bytes")}
+    _require(plan["kernel"]["sha256"] == kernel["image"]["sha256"] and
+             type(plan["kernel"]["page_size_bytes"]) is int and plan["kernel"]["page_size_bytes"] == 4096 and
+             _page_size_same(kernel_receipt, kernel["receipt"]), "page-size profile kernel binding differs")
+    _require(_page_size_same(provider_receipt, providers["receipt"]) and
+             _page_size_same(selected["contract"], {key: providers["contract"][key] for key in ("sha256", "size_bytes")}),
+             "page-size profile provider receipt or contract differs")
+    selected_files = {row["path"]: {key: row[key] for key in ("sha256", "size_bytes")} for row in selected["files"]}
+    for row in providers["files"]:
+        _require(selected_files.get("proprietary" + row["runtime_path"]) ==
+                 {key: row[key] for key in ("sha256", "size_bytes")}, "page-size profile provider bytes differ")
+    _require(plan["profile"] == "framework-checks" and plan["release_config"] == "bp4a" and
+             plan["shipping_api_level"] == 36 and
+             all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
+             "page-size profile cannot change platform or image admission")
+    return {"profile_id": PAGE_SIZE_PROFILE_ID, "contract": {"path": PAGE_SIZE_PROFILE_RECORD.as_posix(), **identity},
+            "kernel_receipt": kernel_receipt, "kernel_image": copy.deepcopy(kernel["image"]),
+            "kernel_config": copy.deepcopy(kernel["config"]), "provider_receipt": provider_receipt,
+            "provider_contract": copy.deepcopy(providers["contract"]),
+            "known_16k_incompatible_files": [row["runtime_path"] for row in providers["files"]
+                                            if not row["compatible_with_16k_alignment"]],
+            "product_settings": copy.deepcopy(PAGE_SIZE_PRODUCT_SETTINGS), "scope": copy.deepcopy(PAGE_SIZE_SCOPE)}
+
+
+def _verify_page_size_kernel(profile, kernel_path):
+    receipt, identity = _read_json(kernel_path)
+    expected = profile["kernel"]
+    _require(identity == expected["receipt"] and
+             receipt["kernel"].get("page_size", receipt["kernel"].get("page_size_bytes")) == 4096,
+             "page-size kernel receipt changed")
+    for row in (expected["image"], expected["config"]):
+        bound, raw = _read_file(Path(kernel_path).parent / row["path"],
+                               limit=MAX_TEXT_BYTES if row == expected["config"] else MAX_FILE_BYTES,
+                               collect=row == expected["config"])
+        _require(bound == {key: row[key] for key in ("sha256", "size_bytes")} and
+                 any(entry.get("path") == row["path"] and entry.get("sha256") == bound["sha256"] and
+                     entry.get("size_bytes") == bound["size_bytes"] for entry in receipt["files"]),
+                 "page-size kernel image/config is not bound to the admitted receipt")
+        if row == expected["config"]:
+            for name, value in PAGE_SIZE_KERNEL_SETTINGS.items():
+                matches = re.findall(r"^(?:" + name + r"=(.*)|# " + name + r" is not set)$", raw.decode("ascii"), re.M)
+                _require(len(matches) == 1 and (matches[0] or "n") == value,
+                         "page-size kernel configuration is absent, duplicated or contradictory: " + name)
+    _require(_read_json(kernel_path) == (receipt, identity), "page-size kernel receipt changed during verification")
+
+
+def _page_size_product_lines(plan):
+    if "page_size_profile" not in plan:
+        return []
+    lines = ["# Explicit stock-kernel 4 KiB bring-up profile; 16 KiB/VSR compatibility remains unverified."]
+    for name, value in PAGE_SIZE_PRODUCT_SETTINGS.items():
+        literal = str(value).lower()
+        lines += [f"{name} := {literal}", f"ifneq ($(value {name}),{literal})",
+                  f"$(error Nezha 4 KiB profile requires {name}={literal})", "endif"]
+    return lines
+
+
+def _page_size_source_guards(plan, payloads):
+    product = (DEVICE_PATH / "generated/device-candidate.mk").as_posix()
+    tokens = (*PAGE_SIZE_PRODUCT_SETTINGS, "TARGET_MAX_PAGE_SIZE_SUPPORTED", "TARGET_CHECK_PREBUILT_MAX_PAGE_SIZE",
+              "TARGET_NO_BIONIC_PAGE_SIZE_MACRO", "TARGET_BOOTS_16K", "PRODUCT_16K_DEVELOPER_OPTION",
+              "LOCAL_IGNORE_MAX_PAGE_SIZE", "ignore_max_page_size", "ro.product.cpu.pagesize.max", "ro.product.page_size")
+    pattern = rb"\b(?:" + b"|".join(re.escape(value.encode()) for value in tokens) + rb")\b"
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/") or not name.endswith((".mk", ".bp")):
+            continue
+        if name == product and "page_size_profile" in plan:
+            _require(raw == _render_product(plan).encode(), "page-size generated product is duplicated or contradictory")
+        else:
+            _require(not re.search(pattern, raw), "page-size selectors require the explicit generated profile only")
+        if "page_size_profile" in plan:
+            _require(not re.search(rb"(?:ignore_max_page_size|LOCAL_IGNORE_MAX_PAGE_SIZE|ro\.config\.low_ram|ro\.vendor\.api_level)", raw),
+                     "page-size profile cannot add an ignore flag or fake runtime capability")
+
+
 def _render_product(plan):
     partitions = ["boot", "dtbo", "init_boot", "recovery", "vendor_boot", "vbmeta", "vbmeta_system",
                   *_logical_partition_selection(plan)]
@@ -2282,6 +2433,7 @@ def _render_product(plan):
         "PRODUCT_BUILD_VENDOR_BOOT_IMAGE := true", "PRODUCT_BUILD_RECOVERY_IMAGE := true",
         "PRODUCT_ENFORCE_VINTF_MANIFEST := true",
     ]
+    lines += _page_size_product_lines(plan)
     if "policy_inputs" in plan:
         lines += ["# Explicit private policy bundle; native component checks only.",
                   f"PRODUCT_SOONG_NAMESPACES += {POLICY_INPUTS_PATH}"]
@@ -2306,7 +2458,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              oem_property_contract=None, framework_provider_policy_contract=None,
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
-             target_files_source_contract=None):
+             target_files_source_contract=None, page_size_profile=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -2349,6 +2501,10 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _require(framework_provider_policy_contract is not None and framework_provider_inputs_receipt is not None and
                  oem_policy_contract is not None and policy_inputs_receipt is not None,
                  "framework providers require explicit paired provider source and input receipts, OEM sources and native policy inputs")
+    if page_size_profile is not None:
+        _require(providers_selected and factory_selected,
+                 "page-size profile requires the explicit factory and paired framework provider capabilities")
+        page_profile, page_identity = _page_size_profile_contract(page_size_profile)
     records, identities = _load_records(record_paths)
     plan = derive_plan(records, identities, variant=variant)
     kernel = _bind_bundles(plan, records, kernel_receipt, vendor_receipt)
@@ -2379,6 +2535,12 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if providers_selected:
         _bind_framework_providers(plan, framework_provider_policy_contract, framework_provider_inputs_receipt,
                                   workspace_root, template_root, patch_source_root, payloads)
+    if page_size_profile is not None:
+        _verify_page_size_kernel(page_profile, kernel_receipt)
+        plan["page_size_profile"] = _page_size_profile_binding(plan, page_profile, page_identity)
+        identity, raw = _read_file(page_size_profile, limit=MAX_JSON_BYTES, collect=True)
+        _require(identity == page_identity, "page-size profile changed during generation")
+        payloads[PAGE_SIZE_PROFILE_RECORD.as_posix()] = raw
     if policy_inputs_receipt is not None:
         _bind_policy_inputs(plan, policy_inputs_receipt, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
     if mi_ext_inputs_receipt is not None:
@@ -2402,6 +2564,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
         payloads[(generated / name).as_posix()] = content.encode()
+    _page_size_source_guards(plan, payloads)
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
     plan["schema_version"] = 1
@@ -2444,6 +2607,10 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                      Path(workspace_root) / FRAMEWORK_PROVIDER_INPUT_RECORD) == plan["framework_providers"]["inputs"],
                      "framework provider bundle changed before candidate publication")
             _framework_provider_external_inventory(Path(framework_provider_inputs_receipt), plan["framework_providers"]["inputs"])
+        if page_size_profile is not None:
+            _require(_page_size_profile_contract(page_size_profile) == (page_profile, page_identity),
+                     "page-size profile changed before candidate publication")
+            _verify_page_size_kernel(page_profile, kernel_receipt)
         if metadata_selected:
             # Verify the entire external tree again, including its no-extra-file
             # inventory, before publishing the small portable candidate.
@@ -2597,6 +2764,11 @@ def validate(output, *, purpose="configuration"):
                      "framework provider source lock or required patch changed")
         _, blueprint = _read_file(Path(output) / FRAMEWORK_PROVIDER_BLUEPRINT, limit=MAX_TEXT_BYTES, collect=True)
         _require(blueprint == _framework_provider_blueprint(provider_inputs), "generated framework provider Blueprint changed")
+    if "page_size_profile" in plan:
+        page_profile, page_identity = _page_size_profile_contract(Path(output) / PAGE_SIZE_PROFILE_RECORD)
+        _require(_page_size_same(plan["page_size_profile"], _page_size_profile_binding(plan, page_profile, page_identity)),
+                 "page-size profile admission differs from its reviewed kernel/provider binding")
+        expected.add(PAGE_SIZE_PROFILE_RECORD.as_posix())
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -2667,6 +2839,7 @@ def validate(output, *, purpose="configuration"):
             if name != board_name:
                 _require(b"target-files-metadata.mk" not in raw,
                          "target-files metadata include may only use the reviewed generated board")
+            _page_size_source_guards(plan, {name: raw})
     group_variable = f"BOARD_{plan['super']['group_name'].upper()}_PARTITION_LIST".encode("ascii")
     for name in files:
         if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith(".mk"):
@@ -2775,6 +2948,8 @@ def main(argv=None):
                              help="explicit private Sigma/QCC source policy; requires paired provider inputs and matching native policy bundle")
             sub.add_argument("--framework-provider-inputs-receipt", type=Path,
                              help="exact external provider bundle; requires paired source policy and does not establish runtime support")
+            sub.add_argument("--page-size-profile", type=Path,
+                             help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -2803,7 +2978,8 @@ def main(argv=None):
                                   target_files_metadata_receipt=args.target_files_metadata_receipt,
                                   target_files_metadata_receipt_sha256=args.target_files_metadata_receipt_sha256,
                                   direct_avb_readonly_contract=args.direct_avb_readonly_contract,
-                                  target_files_source_contract=args.target_files_source_contract)
+                                  target_files_source_contract=args.target_files_source_contract,
+                                  page_size_profile=args.page_size_profile)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
