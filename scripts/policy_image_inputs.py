@@ -17,6 +17,7 @@ import re
 import shutil
 import sys
 import types
+import uuid
 
 sys.dont_write_bytecode = True
 if __package__:
@@ -31,6 +32,14 @@ else:
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config/nezha-policy-images.json"
 CONTRACT_ID = "nezha-five-file-policy-image-inputs-v1"
+HISTORICAL_PROFILE = "historical-v12"
+EXPORT4_PROFILE = "v12-export4"
+EXPORT4_CONTRACT_ID = "nezha-five-file-policy-image-inputs-v12-export4-v1"
+PROFILE_CONTRACT_IDS = {HISTORICAL_PROFILE: CONTRACT_ID, EXPORT4_PROFILE: EXPORT4_CONTRACT_ID}
+PROFILE_CONTRACT_SHA256 = {
+    HISTORICAL_PROFILE: "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
+    EXPORT4_PROFILE: "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
+}
 TEXT = 8 << 20
 POLICY = 64 << 20
 RESERVE = 2 << 30
@@ -50,6 +59,10 @@ RECORD_ROLES = frozenset(("erofs_build", "erofs_source_manifest", "erofs_tools",
     "erofs_synthetic", "erofs_stock", "erofs_writer", "erofs_writer_orchestration", "policy_build",
     "policy_analysis", "vendor_derivation", "policy_build_log", "policy_source_manifest", "policy_build_sandbox",
     "native_oem_guard"))
+EXPORT4_RECORD_ROLES = RECORD_ROLES | {"erofs_fsize_probe", "erofs_fsize_orchestration",
+    "sidecar_source_capture", "sidecar_native_validation", "sidecar_orchestration", "sidecar_sandbox"} | {
+    "erofs_" + partition + "_noop" + suffix
+    for partition in PARTITIONS for suffix in ("", "_orchestration", "_sandbox", "_capture")}
 RUNTIME_INPUTS = (
     "/system/etc/selinux/plat_sepolicy.cil", "/system/etc/selinux/mapping/202504.cil",
     "/system_ext/etc/selinux/system_ext_sepolicy.cil", "/system_ext/etc/selinux/mapping/202504.cil",
@@ -101,17 +114,33 @@ def read_json(path, expected=None):
     return avb._json(raw), raw
 
 
-def load_contract():
-    c, raw = read_json(CONTRACT)
-    avb._keys(c, ("schema_version", "contract_id", "device", "platform", "factory_package_sha256", "originals",
+def record_roles(contract):
+    require(contract["contract_id"] in PROFILE_CONTRACT_IDS.values(), "unknown policy snapshot profile")
+    return EXPORT4_RECORD_ROLES if contract["contract_id"] == EXPORT4_CONTRACT_ID else RECORD_ROLES
+
+
+def load_contract(selected_profile=HISTORICAL_PROFILE):
+    document, _ = read_json(CONTRACT)
+    avb._keys(document, ("schema_version", "profiles"), "policy-image profile catalog")
+    require(type(document["schema_version"]) is int and document["schema_version"] == 2
+            and type(document["profiles"]) is dict and set(document["profiles"]) == set(PROFILE_CONTRACT_IDS)
+            and selected_profile in PROFILE_CONTRACT_IDS, "unknown or incomplete policy-image profile catalog")
+    c = document["profiles"][selected_profile]
+    raw = json_bytes(c)
+    expected = PROFILE_CONTRACT_SHA256[selected_profile]
+    require(expected is None or avb._sha(raw) == expected, "selected reviewed contract bytes changed")
+    fields = {"schema_version", "contract_id", "device", "platform", "factory_package_sha256", "originals",
         "dependencies", "erofs_revision", "exporter_source", "native_driver_sha256", "shared_driver_sha256",
         "writer_driver_sha256", "native_records", "native_tools", "production_execution_profile", "admitted_metadata",
-        "output_root", "independent_tar_passes", "limits"), "policy-image contract")
+        "output_root", "independent_tar_passes", "limits"}
+    if selected_profile == EXPORT4_PROFILE:
+        fields.add("sidecar_derivation")
+    avb._keys(c, fields, "policy-image contract")
     require(c["schema_version"] == 1 and type(c["schema_version"]) is int
-            and c["contract_id"] == CONTRACT_ID and c["device"] == "nezha"
+            and c["contract_id"] == PROFILE_CONTRACT_IDS[selected_profile] and c["device"] == "nezha"
             and c["platform"] == {"branch": "bka", "release_config": "bp4a", "board_api": "202504"},
             "unsupported policy-image contract")
-    require(set(c["originals"]) == PARTITIONS and set(c["native_records"]) == RECORD_ROLES
+    require(set(c["originals"]) == PARTITIONS and set(c["native_records"]) == record_roles(c)
             and c["independent_tar_passes"] == 2 and type(c["independent_tar_passes"]) is int
             and c["output_root"] == "artifacts/policy-images/nezha" and json_bytes(c["limits"]) == json_bytes(BOUNDARIES),
             "policy-image scope or evidence coverage changed")
@@ -159,6 +188,16 @@ def load_contract():
     for row in c["native_records"].values():
         if row is not None:
             avb._identity_spec(row)
+    if selected_profile == EXPORT4_PROFILE:
+        sidecar = c["sidecar_derivation"]
+        avb._keys(sidecar, ("source_revision", "source", "recipe", "contract", "driver", "launcher", "collector"),
+                  "source-bound sidecar derivation")
+        require(sidecar["source_revision"] == "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+                and sidecar["source"] == {"sha256": "17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8",
+                    "size_bytes": 43467} and sidecar["recipe"] == "cat $(in) | sha256sum | cut -d' ' -f1 > $(out)",
+                "source-bound sidecar algorithm changed")
+        for name in ("source", "contract", "driver", "launcher", "collector"):
+            avb._identity_spec(sidecar[name])
     require(set(c["native_tools"]) == {"mkfs", "fsck", "exporter", "metadata_checker"}, "native tool role pins differ")
     for row in c["native_tools"].values():
         avb._identity_spec(row)
@@ -172,10 +211,12 @@ def load_contract():
     return c, avb._sha(raw), profile, helper
 
 
-def plan():
-    c, digest, _, _ = load_contract()
+def plan(selected_profile=HISTORICAL_PROFILE):
+    c, digest, _, _ = load_contract(selected_profile)
     return {"schema_version": 1, "operation": "plan-nezha-policy-image-inputs", "contract_sha256": digest,
-        "status": "blocked" if any(row is None for row in c["native_records"].values()) else "ready_for_evidence_validation",
+        "profile": selected_profile, "contract_id": c["contract_id"],
+        "status": "blocked" if (PROFILE_CONTRACT_SHA256[selected_profile] is None
+            or any(row is None for row in c["native_records"].values())) else "ready_for_evidence_validation",
         "missing_reviewed_native_record_pins": sorted(name for name, row in c["native_records"].items() if row is None),
         "required_replacements": {name: sorted(metadata.REPLACEMENT_PATHS[name]) for name in sorted(PARTITIONS)},
         "two_complete_tar_passes_required": True, "production_writer_admitted": False,
@@ -188,13 +229,16 @@ def load_control(path, expected_sha, contract, contract_sha):
     path = avb.envelope._absolute_path(path)
     value, raw = read_json(path)
     require(avb._sha(raw) == expected_sha, "input control digest differs")
-    avb._keys(value, ("schema_version", "contract_id", "contract_sha256", "artifact_set_id",
-                      "records", "partitions", "policy_files"), "policy image inputs")
+    export4 = contract["contract_id"] == EXPORT4_CONTRACT_ID
+    fields = {"schema_version", "contract_id", "contract_sha256", "artifact_set_id", "records", "partitions", "policy_files"}
+    if export4:
+        fields.add("noop_manifests")
+    avb._keys(value, fields, "policy image inputs")
     require(value["schema_version"] == 1 and type(value["schema_version"]) is int
-            and value["contract_id"] == CONTRACT_ID and value["contract_sha256"] == contract_sha
+            and value["contract_id"] == contract["contract_id"] and value["contract_sha256"] == contract_sha
             and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", value["artifact_set_id"]), "input contract differs")
     require(type(value["records"]) is dict and type(value["partitions"]) is dict
-            and set(value["records"]) == RECORD_ROLES and set(value["partitions"]) == PARTITIONS,
+            and set(value["records"]) == record_roles(contract) and set(value["partitions"]) == PARTITIONS,
             "missing or extra native evidence/partition")
     def selected(row, native=False):
         if native:
@@ -209,12 +253,21 @@ def load_control(path, expected_sha, contract, contract_sha):
         selected(row)
         require(contract["native_records"][name] is not None
                 and identity(row) == contract["native_records"][name], "native record is not reviewed and pinned: " + name)
-    expected_roles = {*RUNTIME_INPUTS, "combined", "plat_sha256", "system_ext_sha256", "product_sha256"}
+    expected_roles = {*RUNTIME_INPUTS, "combined"}
+    if not export4:
+        expected_roles |= {"plat_sha256", "system_ext_sha256", "product_sha256"}
     require(type(value["policy_files"]) is dict and set(value["policy_files"]) == expected_roles,
             "policy/compiler/hash-file coverage differs")
     for row in value["policy_files"].values():
         selected(row, True)
         require(row["size_bytes"] <= POLICY, "policy artifact exceeds bound")
+    if export4:
+        require(type(value["noop_manifests"]) is dict and set(value["noop_manifests"]) == PARTITIONS,
+                "complete vendor/ODM no-op manifest coverage required")
+        for rows in value["noop_manifests"].values():
+            require(type(rows) is list and len(rows) == 2, "both no-op manifest passes are required")
+            for row in rows:
+                selected(row)
     for name, row in value["partitions"].items():
         avb._keys(row, ("image", "manifest", "staging_root"), "partition input")
         selected(row["image"]); selected(row["manifest"])
@@ -372,21 +425,437 @@ def qualify_erofs(records, contract, control):
                 and identity(info["manifest"]) == identity(control["partitions"][name]["manifest"])
                 and info["image_hash_reported_by_native_exporter"] == contract["originals"][name]["image"]["sha256"]
                 and info["entry_count"] == contract["originals"][name]["entry_count"], "stock metadata capture differs")
-    return {"tools": lock["tools"], "reviewed_failed_checks_retained": {
+    result = {"tools": lock["tools"], "reviewed_failed_checks_retained": {
         "synthetic": synthetic_failures, "writer_upstream_xattrs": writer_failures},
         "nonzero_nanoseconds_admitted": False, "empty_xattr_values_admitted": False,
         "native_reexecuted_by_this_command": False, "production_writer_admitted": False}
+    if contract["contract_id"] == EXPORT4_CONTRACT_ID:
+        result["complete_original_noop_qualification"] = qualify_noops(records, contract, control)
+    return result
+
+
+def _noop_equal(before, after):
+    physical = {"root_nid", "primary_blocks", "total_blocks", "meta_blkaddr", "xattr_blkaddr"}
+    require(set(before.entries) == set(after.entries) and before.hardlinks == after.hardlinks,
+            "no-op namespace or hardlink topology changed")
+    require(all({k: v for k, v in before.entries[path].items() if k != "nid"}
+                == {k: v for k, v in after.entries[path].items() if k != "nid"} for path in before.entries),
+            "no-op inode metadata or content changed")
+    require({k: v for k, v in before.header["superblock"].items() if k not in physical}
+            == {k: v for k, v in after.header["superblock"].items() if k not in physical},
+            "no-op semantic superblock changed")
+    return {"entries_compared": len(before.entries),
+            "regular_contents_compared": sum(row["type"] == "regular" for row in before.entries.values()),
+            "metadata_exclusions": ["inode.nid"], "superblock_physical_exclusions": sorted(physical),
+            "content_replacements": [], "all_semantic_fields_equal": True}
+
+
+def _noop_sandbox(sandbox):
+    require(sandbox["source_out_and_inputs_readonly"] is True
+            and type(sandbox["uid"]) is int and sandbox["uid"] == 65534
+            and type(sandbox["gid"]) is int and sandbox["gid"] == 65534,
+            "no-op sandbox identity or read-only source proof differs")
+    require(set(sandbox["capabilities"]) == {"CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb"}
+            and all(int(value, 16) == 0 for value in sandbox["capabilities"].values()), "no-op capabilities are not empty")
+    require(set(sandbox["namespaces"]) == set(sandbox["parent_namespaces"]) == {"mnt", "net", "pid", "user"}
+            and all(sandbox["namespaces"][name] != sandbox["parent_namespaces"][name]
+                    for name in sandbox["namespaces"]), "no-op namespace isolation differs")
+    for field in ("uid_map", "gid_map"):
+        require([list(map(int, line.split())) for line in sandbox["identity_maps"][field].splitlines()]
+                == [[65534, 0, 1]], "no-op identity mapping differs")
+    require(sandbox["readonly_flag"] == 1 and all(sandbox["effective_mount_flags"][name] & 1
+            for name in ("/", "/work", "/work/evolution", "/work/out")), "no-op protected mounts are writable")
+    avb._digest(sandbox["mountinfo_sha256"])
+
+
+def qualify_noops(records, contract, control):
+    """Rebind measured original-image proofs; never admit changed policy images."""
+    probe, probe_outer = records["erofs_fsize_probe"], records["erofs_fsize_orchestration"]
+    require(probe["operation"] == "native-production-fsize-sparse-log-profile-proof"
+            and probe["passed"] is True and type(probe["skipped"]) is int and probe["skipped"] == 0
+            and probe_outer["passed"] is True and probe_outer["bound_input_bytes_preserved"] is True
+            and identity(probe_outer["native_probe_receipt"]) == identity(control["records"]["erofs_fsize_probe"]),
+            "native finite-file primitive proof is incomplete")
+    expected_checks = {"limit-2gib", "limit-6gib", "log-overflow-group-kill", "bound-inputs-unchanged"}
+    checks = {row["name"]: row for row in probe["checks"]}
+    require(len(probe["checks"]) == len(checks) == 4 and set(checks) == expected_checks
+            and all(row["status"] == "passed" for row in checks.values()), "native primitive checks differ")
+    for gib in (2, 6):
+        row = checks["limit-" + str(gib) + "gib"]["native_result"]
+        require(row["passed"] is True and row["architecture"] == "x86_64" and row["off_t_bytes"] == 8
+                and row["limit_bytes"] == row["rlimit_soft_bytes"] == row["rlimit_hard_bytes"] == gib << 30
+                and row["sigxfsz"] == "SIG_IGN" and row["sigpipe"] == "SIG_DFL"
+                and row["filesystem_magic"] == 0xEF53
+                and set(row["checks"]) == {"inherited_signal_profile", "finite_limits", "ext4_alignment",
+                    "truncate_2tib_rejected", "truncate_over_limit_rejected", "write_at_limit_rejected",
+                    "sparse_boundary_write", "sparse_allocation_bounded", "sparse_readback",
+                    "truncated_back_to_zero", "cleanup_completed"}
+                and all(value is True for value in row["checks"].values()), "native finite-file ABI/limit proof differs")
+    require(probe["scope"]["mkfs_executed"] is False
+            and probe["scope"]["mkfs_production_execution_qualified"] is False,
+            "primitive falsely claims image-writer qualification")
+    results = {}
+    for partition, revision in (("vendor", 2), ("odm", 1)):
+        role = "erofs_" + partition + "_noop"
+        native, outer, sandbox, capture = (records[role + suffix]
+            for suffix in ("", "_orchestration", "_sandbox", "_capture"))
+        require(native["operation"] == f"full-original-{partition}-noop-erofs-roundtrip-v{revision}"
+                and native["passed"] is True and type(native["skipped"]) is int and native["skipped"] == 0
+                and native["replacements"] == [] and native["bound_inputs_preserved"] is True,
+                "complete original no-op proof differs")
+        expected = {"fresh-original-full-export", "original-structure-data-xattrs",
+                    "independent-tar-image-manifest-reproducibility", "original-tools-runtime-inputs-and-stage-preserved"}
+        expected |= {f"{partition}-noop-{n}-{suffix}" for n in (1, 2)
+                     for suffix in ("structure-data-xattrs", "all-bytes-and-metadata")}
+        checks = {row["name"]: row for row in native["checks"]}
+        require(len(native["checks"]) == len(checks) == 8 and set(checks) == expected
+                and all(row["status"] == "passed" for row in checks.values()), "complete no-op checks are absent, failed or duplicated")
+        require(outer["operation"] == f"root-full-{partition}-noop-orchestration-v{revision}"
+                and outer["passed"] is True and outer["native_result"] == native
+                and identity(outer["native_receipt"]) == identity(control["records"][role])
+                and outer["bound_selected_inputs_unchanged"] is True
+                and outer["global_android_output_unchanged_claimed"] is False
+                and outer["global_build_idle_required"] is False, "no-op outer/native linkage differs")
+        require(identity(native["sandbox_observation"]) == identity(outer["sandbox_observation"])
+                == identity(control["records"][role + "_sandbox"]), "no-op sandbox receipt identity differs")
+        _noop_sandbox(sandbox)
+        require(identity(outer["exporter_source"]) == identity(contract["exporter_source"])
+                and set(native["tools"]) == {"mkfs", "fsck", "exporter"}
+                and all(identity(row) == contract["native_tools"][name] for name, row in native["tools"].items()),
+                "no-op source or copied native tool bytes differ")
+        scope = native["scope"]
+        require(scope["raw_" + partition + "_noop_roundtrip_qualified"] is True
+                and all(scope[key] is False for key in ("policy_adopted", "original_images_written",
+                    "source_or_android_output_writes", "global_android_output_unchanged_claimed",
+                    "complete_rom_admitted", "avb_verified", "partition_fit_verified",
+                    "retained_kernel_mount_or_boot_verified", "production_policy_writer_admitted", "phone_accessed")),
+                "no-op scope claims unproved adoption or runtime support")
+        require(native["prior_synthetic_evidence"] == {"passed": 11, "failed": 6, "skipped": 0,
+                "all_checks_passed": False, "known_empty_xattr_fsck_failures_retained": True},
+                "no-op proof lost the historical synthetic failures")
+        resources = native["resources"]
+        require(len(resources["effective_cpus"]) == 1
+                and set(resources["effective_cpus"]) <= set(resources["inherited_allowed_cpus"])
+                and resources["nice"] == 19 and resources["whole_job_wall_seconds"] == 7200
+                and resources["initial_headroom"]["available_disk_bytes"] >= 48 << 30
+                and resources["initial_headroom"]["mem_available_bytes"] >= 8 << 30,
+                "no-op bounded resource profile differs")
+        captured = {row["path"]: row for row in capture["files"]}
+        require(len(captured) == len(capture["files"]) == 63
+                and all(Path(name).name == name for name in captured)
+                and sum(row["size_bytes"] for row in captured.values()) == capture["total_bytes"],
+                "no-op capture inventory is incomplete or unsafe")
+        require(identity(captured["receipt.json"]) == identity(control["records"][role])
+                and identity(captured["orchestration.json"]) == identity(control["records"][role + "_orchestration"])
+                and identity(captured["sandbox.json"]) == identity(control["records"][role + "_sandbox"]),
+                "no-op capture/record linkage differs")
+        before_row = control["partitions"][partition]["manifest"]
+        before = metadata.read_manifest(before_row["path"], expected_manifest_sha256=before_row["sha256"],
+            expected_image_sha256=contract["originals"][partition]["image"]["sha256"])
+        require(identity(captured["original-export.stdout"]) == before.identity
+                == checks["fresh-original-full-export"]["manifest"], "no-op original manifest selection differs")
+        require(native["stock_profile"]["entry_count"] == len(before.entries)
+                and native["stock_profile"]["superblock"] == before.header["superblock"]
+                and all(native["stock_profile"][key] == 0 for key in
+                    ("hardlink_groups", "empty_xattrs", "nonzero_nanoseconds", "set_id_inodes", "special_inodes")),
+                "no-op original profile differs")
+        require(len(native["artifacts"]) == len(native["final_artifact_identities"])
+                == len(control["noop_manifests"][partition]) == 2,
+                "two independently rehashed no-op artifact sets are required")
+        for number, (artifact, selected) in enumerate(zip(native["artifacts"], control["noop_manifests"][partition]), 1):
+            require({key: artifact[key] for key in ("tar", "image", "manifest")}
+                    == native["final_artifact_identities"][number - 1]
+                    and identity(artifact["manifest"]) == identity(selected)
+                    == identity(captured[f"{partition}-noop-{number}-export.stdout"]),
+                    "no-op final artifact or selected manifest identity changed")
+            after = metadata.read_manifest(selected["path"], expected_manifest_sha256=selected["sha256"],
+                expected_image_sha256=artifact["image"]["sha256"])
+            comparison = _noop_equal(before, after)
+            sb = after.header["superblock"]
+            require(artifact["comparison"] == comparison
+                    == checks[f"{partition}-noop-{number}-all-bytes-and-metadata"]["comparison"]
+                    and artifact["superblock"] == sb
+                    and artifact["image"]["size_bytes"] == after.header["image_size_bytes"]
+                    == sb["primary_blocks"] * sb["block_size"] and sb["total_blocks"] == sb["primary_blocks"],
+                    "no-op semantic proof or raw filesystem boundary differs")
+        require(all(identity(native["artifacts"][0][kind]) == identity(native["artifacts"][1][kind])
+                    for kind in ("tar", "image", "manifest")), "no-op independent derivations differ")
+        commands = native["commands"]
+        require(len(commands) == 24, "no-op command coverage differs")
+        mkfs = []
+        for command in commands:
+            require(type(command["exit_code"]) is int and command["exit_code"] == 0
+                    and command["kill_reason"] is None and command["whole_process_group_killed"] is False
+                    and command["all_pipes_eof"] is True, "no-op command did not complete successfully")
+            limits = command["limits"]
+            is_mkfs = "--tar=f" in command["argv"]
+            require(limits["file_size_soft_and_hard_bytes"] == PRODUCTION_PROFILE["mkfs_fsize_soft_and_hard_bytes"][partition]
+                    and limits["log_cap_each_bytes"] == 16 << 20 and limits["sampled_rss_ceiling_bytes"] == 2 << 30
+                    and limits["rss_is_kernel_hard_limit"] is False and limits["cpu_soft_seconds"] == 1800
+                    and limits["cpu_hard_seconds"] == 1801 and limits["wall_seconds"] == 1800
+                    and limits["sigxfsz"] == ("SIG_IGN" if is_mkfs else "SIG_DFL")
+                    and limits["restore_signals"] is False, "no-op native limits or signal profile changed")
+            for row in command["logs"].values():
+                require(identity(row) == identity(captured[Path(row["path"]).name]) and row["size_bytes"] <= 16 << 20,
+                        "no-op native log capture differs")
+            if is_mkfs:
+                mkfs.append(command)
+                require(command["argv"][0] == native["tools"]["mkfs"]["path"]
+                        and command["observed_unlinked_private_spools"]
+                        and any(row["size_bytes"] > 0 and row["target"].startswith(command["private_tmpdir"] + "/tmp.")
+                                and row["target"].endswith(" (deleted)") for row in command["observed_unlinked_private_spools"]),
+                        "actual private no-op diskbuf fallback was not observed")
+        require(len(mkfs) == 2, "two actual no-op mkfs commands required")
+        sb = before.header["superblock"]
+        options = ["--tar=f", "--clean=data", "--mkfs-time", "--preserve-mtime", "-T", str(sb["build_time_sec"]),
+                   "-U", str(uuid.UUID(hex=sb["uuid_hex"])), "-L", bytes.fromhex(sb["volume_name_hex"]).split(b"\0", 1)[0].decode("ascii"),
+                   "-b4096", "-zlz4hc,level=9", "-C4096", "--uid-offset=0", "--workers=0", "--ovlfs-strip=0"]
+        if not sb["feature_compat"] & 4:
+            options += ["-E", "^xattr-name-filter"]
+        for number, command in enumerate(mkfs):
+            args = command["argv"]
+            require(re.fullmatch(r"/proc/self/fd/[0-9]+", args[-1]) and args == [native["tools"]["mkfs"]["path"],
+                    *options, native["artifacts"][number]["image"]["path"], args[-1]], "no-op compression/UUID/time/worker recipe differs")
+        retained = {row["path"]: identity(row) for row in capture["guest_only_large_artifacts"]}
+        expected_retained = {Path(row[kind]["path"]).name: identity(row[kind])
+                             for row in native["artifacts"] for kind in ("tar", "image")}
+        require(len(capture["guest_only_large_artifacts"]) == 4 and retained == expected_retained,
+                "root-retained large no-op artifact identities differ")
+        require(native["staging_before"] == native["staging_after"]
+                and native["staging_after"]["all_paths_checked_without_following_symlinks"] == len(before.entries)
+                and native["staging_after"]["host_metadata_used_as_authority"] is False
+                and native["staging_after"]["staging_content_executed"] is False, "no-op regular-byte staging preservation differs")
+        results[partition] = {"native_checks_passed": 8, "skipped": 0, "complete_metadata_manifests_rechecked": 2,
+            "original_entry_count": len(before.entries), "scope": "original-noop-only",
+            "policy_replacement_images_qualified": False, "original_images_reopened_by_this_qualifier": False}
+    return {"partitions": results, "finite_file_primitive_verified": True,
+            "native_processes_reexecuted": False, "policy_replacement_images_qualified": False}
+
+
+def qualify_sidecar_derivation(records, control, held, contract):
+    """Verify the recorded shell recipe without inventing installed outputs."""
+    native, outer, sandbox, source = (records[role] for role in
+        ("sidecar_native_validation", "sidecar_orchestration", "sidecar_sandbox", "sidecar_source_capture"))
+    pins = contract["sidecar_derivation"]
+    require(source["schema_version"] == 1 and source["guest_writes"] is False and source["phone_accessed"] is False
+            and source["files"] == [{"path": "system/sepolicy/Android.bp", **pins["source"]}]
+            and source["total_bytes"] == pins["source"]["size_bytes"]
+            and source["projects"] == {"system/sepolicy": {"head": pins["source_revision"],
+                "status": "M private/init_dev_config.te\n M private/su.te"}}, "sidecar source capture differs")
+    require(type(native["schema_version"]) is int and native["schema_version"] == 1
+            and native["operation"] == "derive-export4-policy-sidecars-native-v1" and native["passed"] is True
+            and type(native["skipped"]) is int and native["skipped"] == 0
+            and native["input_bytes_preserved"] is True and native["tool_and_runtime_bytes_preserved"] is True,
+            "native derived-sidecar validation is incomplete")
+    require(native["scope"] == {"native_recipe_executed": True, "derived_sidecars_verified": True,
+                "installed_sidecars_captured": False, "native_android_genrules_executed": False,
+                "source_or_android_output_writes": False, "images_accessed_or_written": False,
+                "policy_adopted": False, "complete_rom_ready": False, "phone_accessed": False},
+            "derived sidecars falsely claim installed outputs or image adoption")
+    require(identity(native["contract"]) == pins["contract"] and identity(native["driver"]) == pins["driver"]
+            and identity(native["collector"]) == pins["collector"]
+            and identity(native["source_capture"]) == identity(control["records"]["sidecar_source_capture"])
+            and identity(native["recipe_source"]) == pins["source"]
+            and native["recipe_source"]["project_revision"] == pins["source_revision"]
+            and native["recipe_source"]["native_path"] == "/work/evolution/system/sepolicy/Android.bp"
+            and identity(native["baseline"]) == identity(control["records"]["policy_analysis"])
+            and native["baseline"]["operation"] == "verify-native-oem-properties-v12f-export4",
+            "native sidecar source, tool or export4 binding differs")
+    require(outer["operation"] == "root-policy-sidecar-native-orchestration-v1" and outer["passed"] is True
+            and outer["native_result"] == native
+            and identity(outer["native_receipt"]) == identity(control["records"]["sidecar_native_validation"])
+            and identity(outer["launcher"]) == pins["launcher"]
+            and identity(outer["collector"]) == pins["collector"]
+            and identity(outer["live_recipe_source"]) == pins["source"]
+            and outer["bound_selected_inputs_unchanged"] is True
+            and all(outer[key] is False for key in ("global_build_idle_required", "global_android_output_unchanged_claimed",
+                "source_or_android_output_writes", "images_accessed_or_written", "phone_accessed")),
+            "sidecar root orchestration linkage or preservation differs")
+    require(identity(native["sandbox"]) == identity(outer["sandbox_observation"])
+            == identity(control["records"]["sidecar_sandbox"]), "sidecar sandbox binding differs")
+    _noop_sandbox(sandbox)
+    base = outer["guest_base"]
+    require(type(base) is str and re.fullmatch(
+            r"/work/validation/nezha-oem-policy-integration-20260829/policy-sidecar-native-v[1-9][0-9]*", base),
+            "sidecar native work directory differs")
+    for prefix in (base, base + "/inputs"):
+        require(sandbox["effective_mount_flags"][prefix] & 1, "sidecar sealed inputs were writable")
+    require(sandbox["argv"] == ["/usr/bin/python3", "-I", "-B", base + "/inputs/driver.py", "--base", base]
+            and native["driver"]["path"] == base + "/inputs/driver.py"
+            and native["collector"]["path"] == base + "/inputs/bound_util.py"
+            and outer["collector"]["path"] == base + "/inputs/bound_util.py"
+            and outer["launcher"]["path"] == base + "/inputs/run.py"
+            and identity(native["staging_manifest"]) == identity(outer["staging_manifest"]),
+            "sidecar isolated invocation differs")
+    require(native["limits"] == {"command_cpu_hard_seconds": 11, "command_cpu_soft_seconds": 10,
+            "command_wall_seconds": 20, "file_size_soft_and_hard_bytes": 16 << 20,
+            "initial_free_bytes": 256 << 20, "log_cap_each_bytes": 16 << 20, "whole_job_wall_seconds": 180}
+            and native["environment"] == {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "TZ": "UTC", "TMPDIR": "/tmp"},
+            "native sidecar execution limits or environment differ")
+
+    def successful(command, supervisor=False):
+        require(type(command["exit_code"]) is int and command["exit_code"] == 0
+                and command["timed_out"] is False and command["log_overflow"] is False
+                and command["whole_process_group_killed"] is False and command["all_pipes_eof"] is True
+                and command["log_cap_each_bytes"] == 16 << 20 and command["supervisor_log_separated"] is supervisor
+                and set(command["logs"]) == ({"stdout", "stderr", "supervisor"} if supervisor else {"stdout", "stderr"})
+                and identity(command["logs"]["stderr"]) == avb._identity(b""), "native sidecar command did not complete cleanly")
+        for row in command["logs"].values():
+            avb._digest(row["sha256"])
+            require(type(row["size_bytes"]) is int and 0 <= row["size_bytes"] <= 16 << 20
+                    and (row["size_bytes"] != 0 or row["sha256"] == avb._sha(b""))
+                    and row["path"].startswith(base + "/results/"),
+                    "native sidecar log bound or destination differs")
+
+    commands = native["commands"]
+    require(len(commands) == 14 and len(outer["commands"]) == 3, "native sidecar command coverage differs")
+    for command in commands:
+        successful(command)
+    for index, command in enumerate(outer["commands"]):
+        successful(command, index == 1)
+        if index != 1:
+            require(command["argv"] == ["/usr/bin/git", "--no-optional-locks", "-C",
+                "/work/evolution/system/sepolicy", "rev-parse", "HEAD"]
+                and identity(command["logs"]["stdout"]) == avb._identity((pins["source_revision"] + "\n").encode()),
+                "sidecar live source revision was not preserved")
+    require(outer["nsjail"]["sha256"] == "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280"
+            and outer["commands"][1]["argv"][0] == outer["nsjail"]["path"], "sidecar native jail changed")
+    require(set(native["tools"]) == {"bash", "cat", "sha256sum", "cut"}, "native sidecar tool coverage differs")
+    for index, name in enumerate(("bash", "cat", "sha256sum", "cut")):
+        tool = native["tools"][name]
+        machine = tool["abi"]["elf_machine"]
+        loader = "/lib64/ld-linux-x86-64.so.2" if machine == 62 else "/lib/ld-linux-aarch64.so.1"
+        require(machine in (62, 183) and tool["abi"]["interpreter"] == loader
+                and tool["identity"]["selected_path"] == "/usr/bin/" + name
+                and tool["loader"]["selected_path"] == loader and tool["runtime"]
+                and tool["runtime_command_index"] == 2 * index and tool["version_command_index"] == 2 * index + 1
+                and commands[2 * index]["argv"] == [loader, "--list", "/usr/bin/" + name]
+                and commands[2 * index + 1]["argv"] == ["/usr/bin/" + name, "--version"]
+                and commands[2 * index]["logs"]["stdout"]["size_bytes"] > 0
+                and commands[2 * index + 1]["logs"]["stdout"]["size_bytes"] > 0,
+                "native sidecar tool/runtime selection differs")
+        for row in [tool["identity"], tool["loader"], *tool["runtime"]]:
+            avb._identity_spec(identity(row["canonical"]))
+            require(row["canonical"]["size_bytes"] > 0 and type(row["symlink_chain"]) is list,
+                    "native sidecar binary or runtime identity is absent")
+        parsed = tool["loader_output_parse"]
+        avb._keys(parsed, ("adapter", "abi", "original_stdout", "named_records_stdout", "initial_address_only_record",
+            "named_file_paths", "named_records_checked_by_unchanged_frozen_parser", "unnamed_record_file_origin_claimed"),
+            "native sidecar loader-output proof")
+        require(parsed["adapter"] == "initial-aarch64-address-only-record-v1" and parsed["abi"] == tool["abi"]
+                and identity(parsed["original_stdout"]) == identity(commands[2 * index]["logs"]["stdout"])
+                and parsed["named_file_paths"] == sorted(row["selected_path"] for row in tool["runtime"])
+                and len(set(parsed["named_file_paths"])) == len(parsed["named_file_paths"])
+                and parsed["named_records_checked_by_unchanged_frozen_parser"] is True
+                and parsed["unnamed_record_file_origin_claimed"] is False, "native sidecar named runtime proof differs")
+        avb._identity_spec(identity(parsed["named_records_stdout"]))
+        unnamed = parsed["initial_address_only_record"]
+        if unnamed is None:
+            require(identity(parsed["named_records_stdout"]) == identity(parsed["original_stdout"]),
+                    "native sidecar loader output was altered without a recorded initial line")
+        else:
+            avb._keys(unnamed, ("line_index", "raw_line", "file_path", "file_identity_verified", "mapping_kind_identified"),
+                      "unnamed native loader record")
+            require(machine == 183 and type(unnamed["line_index"]) is int and unnamed["line_index"] == 0
+                    and re.fullmatch(r"\t \(0x[0-9a-f]{16}\)\n", unnamed["raw_line"])
+                    and unnamed["file_path"] is None and unnamed["file_identity_verified"] is False
+                    and unnamed["mapping_kind_identified"] is False
+                    and parsed["original_stdout"]["size_bytes"] == parsed["named_records_stdout"]["size_bytes"]
+                        + len(unnamed["raw_line"].encode()), "unqualified or misattributed unnamed loader record")
+
+    roles = [name + "-" + suffix for name in ("plat", "system_ext", "product") for suffix in ("cil", "mapping")]
+    require([row["role"] for row in native["inputs"]] == roles
+            and [row["runtime_path"] for row in native["inputs"]] == list(RUNTIME_INPUTS[:6]),
+            "sidecar compiler input coverage or ordering differs")
+    for row, runtime in zip(native["inputs"], RUNTIME_INPUTS):
+        selected = control["policy_files"][runtime]
+        require(identity(row) == identity(selected) == avb._identity(held[runtime])
+                and row["native_compiler_input"] == selected["native_path"]
+                and row["filename"] == row["role"] + ".cil"
+                and row["derived_input_path"] == base + "/inputs/" + row["filename"],
+                "sidecar input is not the sealed actual compiler file")
+    require(len(native["recipes"]) == len(native["outputs"]) == 3, "three source recipes and native outputs required")
+    pipeline = '/usr/bin/cat "$1" "$2" | /usr/bin/sha256sum | /usr/bin/cut -d\' \' -f1 > "$3"'
+    def arguments(left, right, destination):
+        return ["/usr/bin/bash", "--noprofile", "--norc", "-euo", "pipefail", "-c", pipeline,
+                "sidecar-recipe", left, right, destination]
+    known = {}
+    for index, name in enumerate(("plat", "system_ext", "product")):
+        pair_roles = roles[2 * index:2 * index + 2]
+        recipe, output = native["recipes"][index], native["outputs"][index]
+        expected = hashlib.sha256(held[RUNTIME_INPUTS[2 * index]] + held[RUNTIME_INPUTS[2 * index + 1]]).hexdigest().encode() + b"\n"
+        known[name] = expected
+        require(recipe == {"module": name + "_sepolicy_and_mapping.sha256_gen",
+            "source_modules": [":" + name + "_sepolicy.cil", ":" + name + "_mapping_file"],
+            "ordered_input_roles": pair_roles, "command": pins["recipe"],
+            "line_start": (514, 531, 549)[index], "line_end": (522, 539, 557)[index]},
+            "pinned Android source recipe order differs")
+        destination = base + "/results/derived/" + name + "_sepolicy_and_mapping.sha256"
+        require(output["name"] == name and output["ordered_input_roles"] == pair_roles
+                and output["command_index"] == 8 + index and output["native_installed_path"] is None
+                and output["provenance"] == "derived-from-sealed-export4-inputs"
+                and output["output"]["path"] == destination and output["ascii_content"].encode() == expected
+                and identity(output["output"]) == avb._identity(expected)
+                and commands[8 + index]["argv"] == arguments(*[base + "/inputs/" + r + ".cil" for r in pair_roles], destination),
+                "native sidecar is not the exact ordered CIL/mapping digest plus LF")
+    checks = {row["name"]: row for row in native["checks"]}
+    require(len(native["checks"]) == len(checks) == 6 and set(checks) == {"plat-known-answer", "system_ext-known-answer",
+            "product-known-answer", "reversed-order", "changed-input", "missing-final-lf"}
+            and all(row["status"] == "passed" for row in checks.values()), "native sidecar negative cases are absent or failed")
+    first, second = held[RUNTIME_INPUTS[0]], held[RUNTIME_INPUTS[1]]
+    changed = bytes([first[0] ^ 1]) + first[1:]
+    mutations = {"reversed-order": hashlib.sha256(second + first).hexdigest().encode() + b"\n",
+                 "changed-input": hashlib.sha256(changed + second).hexdigest().encode() + b"\n",
+                 "missing-final-lf": known["plat"][:-1]}
+    for index, (name, expected) in enumerate(mutations.items(), 11):
+        require(checks[name]["command_index"] == index and checks[name]["rejected_by_exact_output_check"] is True
+                and identity(checks[name]["output"]) == avb._identity(expected) and expected != known["plat"]
+                and checks[name]["output"]["path"] == base + "/results/" + name + ".sha256",
+                "native sidecar negative output was not independently rejected")
+    left, right = [base + "/inputs/plat-" + suffix + ".cil" for suffix in ("cil", "mapping")]
+    expected_negative_commands = [arguments(right, left, base + "/results/reversed-order.sha256"),
+        arguments(base + "/results/changed-plat.cil", right, base + "/results/changed-input.sha256"),
+        ["/usr/bin/bash", "--noprofile", "--norc", "-euo", "pipefail", "-c",
+         'printf \'%s\' "$1" > "$2"', "negative-lf", known["plat"].decode().rstrip("\n"),
+         base + "/results/missing-final-lf.sha256"]]
+    require([row["argv"] for row in commands[11:]] == expected_negative_commands
+            and all(identity(row["logs"]["stdout"]) == avb._identity(b"") for row in commands[8:]),
+            "native sidecar negative invocation or redirected output differs")
+    require(native["changed_input"] == {"original_role": "plat-cil", "mutation": "first-byte-xor-1",
+        "output": {"path": base + "/results/changed-plat.cil", **avb._identity(changed)}}, "native sidecar negative input differs")
+    return {"source_recipe_bound": True, "native_known_answers": 3, "native_negative_cases": 3, "skipped": 0,
+        "native_installed_sidecars_captured": False, "android_genrule_execution_claimed": False,
+        "derivation_kind": "sealed-v12-export4-CIL-and-mapping", "native_reexecuted_by_this_command": False}
 
 
 def qualify_policy(records, control, contract):
     build, analysis = records["policy_build"], records["policy_analysis"]
+    export4 = contract["contract_id"] == EXPORT4_CONTRACT_ID
+    operation = "verify-native-oem-properties-v12f-export4" if export4 else "verify-native-oem-properties-v12f"
     _build(build)
     require(type(analysis["schema_version"]) is int and analysis["schema_version"] == 1
-            and analysis["operation"] == "verify-native-oem-properties-v12f" and analysis["status"] == "verified"
+            and analysis["operation"] == operation and analysis["status"] == "verified"
             and analysis["build_phase"] == build["phase"] and analysis["provider_profile_selected"] is False
             and analysis["strict_compiler_flags_verified"] is True
             and analysis["compiler_temporary_to_analyzed_final_copy_verified"] is True
             and analysis["all_guarded_inputs_unchanged"] is True, "current factory policy analysis is incomplete")
+    if export4:
+        require(analysis["build_phase"] == "policy-v12f-export-1"
+                and analysis["export_phase"] == "v12f-runtime-policy-exports-v1"
+                and analysis["installed_fixup_manifest_sha256"] == "8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14"
+                and analysis["installed_integration_manifest_sha256"] == "084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820"
+                and all(analysis[key] is False for key in ("full_treble_apk_labeling_pass", "policy_compiler_replayed",
+                    "source_or_android_output_modified", "images_changed", "phone_accessed", "complete_rom_or_runtime_support_proven")),
+                "export4 snapshot, installation linkage or evidence boundary differs")
+        source = analysis["source_fixup_provenance"]
+        require(source["operation"] == "verify-v12f-fixed-addendum-chain" and source["status"] == "verified"
+                and source["normal_android_enforcing_required"] is True
+                and source["unchanged_policy_component_retained"] is True
+                and source["unchanged_vendor_component_retained"] is True
+                and source["native_build_binding"]["phase"] == analysis["build_phase"]
+                and source["native_build_binding"]["packaged_commit_equal_to_build_record"] is True
+                and source["source_capture"]["all_effective_source_guards_bound"] is True,
+                "export4 captured source/fixup provenance is incomplete")
     for field, role in (("build_result_sha256", "policy_build"), ("build_log_sha256", "policy_build_log"),
                         ("build_source_manifest_sha256", "policy_source_manifest"), ("build_sandbox_sha256", "policy_build_sandbox")):
         require(analysis[field] == control["records"][role]["sha256"], "policy analysis build linkage differs")
@@ -537,15 +1006,25 @@ def qualify_policy(records, control, contract):
                     "odm": {"/etc/selinux/precompiled_sepolicy": files["combined"]}}
     for index, name in ((0, "plat"), (2, "system_ext"), (4, "product")):
         expected = hashlib.sha256(held[RUNTIME_INPUTS[index]] + held[RUNTIME_INPUTS[index + 1]]).hexdigest().encode() + b"\n"
-        row = files[name + "_sha256"]
-        partition = "system" if name == "plat" else name
-        suffix = "/target/product/nezha/" + partition + "/etc/selinux/" + name + "_sepolicy_and_mapping.sha256"
-        require(row["native_path"] == native_out + suffix and held[name + "_sha256"] == expected,
-                "framework sidecar does not equal SHA256(CIL || mapping/202504.cil) plus LF")
+        if export4:
+            row = {**avb._identity(expected), "derived_bytes": expected, "sidecar_name": name,
+                   "source_kind": "derived-from-sealed-native-cil-and-mapping",
+                   "ordered_input_roles": [RUNTIME_INPUTS[index], RUNTIME_INPUTS[index + 1]]}
+        else:
+            row = files[name + "_sha256"]
+            partition = "system" if name == "plat" else name
+            suffix = "/target/product/nezha/" + partition + "/etc/selinux/" + name + "_sepolicy_and_mapping.sha256"
+            require(row["native_path"] == native_out + suffix and held[name + "_sha256"] == expected,
+                    "framework sidecar does not equal SHA256(CIL || mapping/202504.cil) plus LF")
         replacements["odm"]["/etc/selinux/precompiled_sepolicy." + name + "_sepolicy_and_mapping.sha256"] = row
-    return replacements, {"current_factory_combined_binary_bound": True, "sidecars_recomputed_and_matched": True,
+    proof = {"current_factory_combined_binary_bound": True, "sidecars_recomputed_and_matched": True,
         "assertion_statements_retained": 6366, "normal_android_permissive_domains": 0,
         "full_treble_apk_labeling_proven": False, "native_policy_reexecuted": False}
+    if export4:
+        proof["sidecar_derivation"] = qualify_sidecar_derivation(records, control, held, contract)
+        proof.update(native_policy_snapshot="policy-v12f-export-1", current_active_source_compatibility_proven=False,
+                     sidecars_observed_at_native_install_paths=False, provider_profile_selected=False)
+    return replacements, proof
 
 
 class Counter:
@@ -622,15 +1101,28 @@ def production_budget(manifests, plans, tar_sizes, contract):
         "native_execution_qualified": False, "profile": profile}
 
 
-def prepare(input_path, expected_sha, *, output_dir):
-    contract, contract_sha, profile, helper = load_contract()
+def prepare(input_path, expected_sha, *, output_dir, selected_profile=HISTORICAL_PROFILE):
+    contract, contract_sha, profile, helper = load_contract(selected_profile)
     workflow = avb._identity(avb._small(ROOT / "scripts/policy_image_inputs.py", TEXT))
-    require(all(row is not None for row in contract["native_records"].values()),
+    require(PROFILE_CONTRACT_SHA256[selected_profile] is not None
+            and all(row is not None for row in contract["native_records"].values()),
             "actual native evidence pins are not ready; preparation remains blocked")
     control, original_control = load_control(input_path, expected_sha, contract, contract_sha)
     records = read_records(control)
     erofs_proof = qualify_erofs(records, contract, control)
     selected, policy_proof = qualify_policy(records, control, contract)
+    out = avb.envelope._absolute_path(output_dir)
+    allowed = ROOT / contract["output_root"]
+    require(out != allowed and out.is_relative_to(allowed), "output must be a fresh ignored policy-images/nezha child")
+    require(all(not out.is_relative_to(row["staging_root"]) for row in control["partitions"].values()),
+            "output must be outside every read-only regular-byte staging tree")
+    derived = []
+    for rows in selected.values():
+        for row in rows.values():
+            if "derived_bytes" in row:
+                require(selected_profile == EXPORT4_PROFILE and "native_path" not in row, "derived sidecar cannot claim a native installation path")
+                row["path"] = out / "derived-sidecars" / (row["sidecar_name"] + "_sepolicy_and_mapping.sha256")
+                derived.append(row)
     manifests, plans, sizes, avb_sources = {}, {}, {}, {}
     for name in sorted(PARTITIONS):
         row = control["partitions"][name]
@@ -656,14 +1148,20 @@ def prepare(input_path, expected_sha, *, output_dir):
         sizes[name] = tar_size(helper, manifest, replacements)
         manifests[name] = manifest
     budget = production_budget(manifests, plans, sizes, contract)
-    out = avb.envelope._absolute_path(output_dir)
-    allowed = ROOT / contract["output_root"]
-    require(out != allowed and out.is_relative_to(allowed), "output must be a fresh ignored policy-images/nezha child")
-    require(all(not out.is_relative_to(row["staging_root"]) for row in control["partitions"].values()),
-            "output must be outside every read-only regular-byte staging tree")
     with io._private_creation():
         io._fresh_output(out)
         require(shutil.disk_usage(out).free >= 2 * sum(sizes.values()) + RESERVE, "insufficient space for two complete TAR sets")
+        if derived:
+            require(len(derived) == 3, "three derived sidecars required")
+            io._mkdir(out / "derived-sidecars")
+            for row in derived:
+                with avb.envelope._parent_directory(row["path"]) as parent:
+                    fd = os.open(row["path"].name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=parent)
+                with os.fdopen(fd, "wb") as stream:
+                    stream.write(row["derived_bytes"])
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                avb._rehash(row["path"], row)
         results = []
         for repetition in (1, 2):
             directory = out / f"pass-{repetition}"
@@ -700,12 +1198,18 @@ def prepare(input_path, expected_sha, *, output_dir):
             io._save(out / (name + "-replacement-plan.json"), plans[name])
         for row in control["policy_files"].values():
             avb._rehash(row["path"], row)
+        for row in derived:
+            avb._rehash(row["path"], row)
+        for rows in control.get("noop_manifests", {}).values():
+            for row in rows:
+                avb._rehash(row["path"], row)
         read_records(control)
-        require(read_json(input_path)[1] == original_control and load_contract()[1] == contract_sha
+        require(read_json(input_path)[1] == original_control and load_contract(selected_profile)[1] == contract_sha
                 and avb._identity(avb._small(ROOT / "scripts/policy_image_inputs.py", TEXT)) == workflow,
                 "input selection or source contract changed")
         report = {"schema_version": 1, "operation": "prepare-nezha-five-file-policy-image-inputs",
             "status": "complete-tar-inputs-prepared", "artifact_set_id": control["artifact_set_id"],
+            "profile": selected_profile, "contract_id": contract["contract_id"],
             "contract_sha256": contract_sha, "input_control_sha256": expected_sha,
             "workflow": workflow,
             "original_images": {name: identity(row["image"]) for name, row in control["partitions"].items()},
@@ -718,7 +1222,15 @@ def prepare(input_path, expected_sha, *, output_dir):
             "original_images_unchanged": True, "metadata_from_staging_tree": False,
             "qualified_helper_promotion_byte_identical": True, "production_writer_admitted": False,
             "comparison_contract_generated": False, "old_avb_tail_copied": False,
-            "remaining_gates": ["Qualify the recorded finite production limits, scratch filesystem and bounded log executor, then run two native builds.",
+            "derived_sidecars": [{"path": str(row["path"].relative_to(out)), **identity(row),
+                "source_kind": row["source_kind"], "ordered_input_roles": row["ordered_input_roles"],
+                "ordered_inputs": [{"runtime_path": role, "native_path": control["policy_files"][role]["native_path"],
+                                    **identity(control["policy_files"][role])} for role in row["ordered_input_roles"]],
+                "native_installed_output_claimed": False} for row in derived],
+            "remaining_gates": [
+                ("Apply the qualified finite limits in fresh isolated work and build both policy-substituted images twice."
+                 if selected_profile == EXPORT4_PROFILE else
+                 "Qualify the recorded finite production limits, scratch filesystem and bounded log executor, then run two native builds."),
                 "Complete native metadata exports and exact-five-file semantic comparison for both new images.",
                 "Regenerate hashtrees/FEC/AVB footers; verify final identities, partition fit and signed parent chain."],
             **BOUNDARIES}
@@ -729,14 +1241,17 @@ def prepare(input_path, expected_sha, *, output_dir):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="operation", required=True)
-    sub.add_parser("plan")
+    planned = sub.add_parser("plan")
     selected = sub.add_parser("prepare")
     selected.add_argument("--input", required=True, type=Path)
     selected.add_argument("--expected-sha256", required=True)
     selected.add_argument("--output-dir", required=True, type=Path)
+    for command in (planned, selected):
+        command.add_argument("--profile", choices=tuple(PROFILE_CONTRACT_IDS), default=HISTORICAL_PROFILE)
     args = parser.parse_args(argv)
     try:
-        result = plan() if args.operation == "plan" else prepare(args.input, args.expected_sha256, output_dir=args.output_dir)
+        result = plan(args.profile) if args.operation == "plan" else prepare(args.input, args.expected_sha256,
+            output_dir=args.output_dir, selected_profile=args.profile)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 2 if result["status"] == "blocked" else 0
     except (PolicyImageError, avb.AvbImageSetError, metadata.MetadataError, io.TwrpWorkingError,

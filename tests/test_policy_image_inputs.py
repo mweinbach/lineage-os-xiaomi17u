@@ -64,7 +64,7 @@ class SyntheticInputs:
 
     def __init__(self, root):
         self.root = root
-        self.contract = json.loads(policy.CONTRACT.read_text())
+        self.contract = json.loads(policy.CONTRACT.read_text())["profiles"][policy.HISTORICAL_PROFILE]
         self.contract["production_execution_profile"] = copy.deepcopy(policy.PRODUCTION_PROFILE)
         self.contract_sha = hashlib.sha256(b"synthetic policy-input contract").hexdigest()
         self.helper = load_helper()
@@ -453,7 +453,7 @@ class OfflineTests(unittest.TestCase):
 
 
 class ContractTests(OfflineTests):
-    def test_current_contract_has_fifteen_records_and_blocks_seven_unreviewed_policy_records(self):
+    def test_historical_contract_has_fifteen_records_and_blocks_seven_unreviewed_policy_records(self):
         contract, digest, _, helper = policy.load_contract()
         result = policy.plan()
         self.assertEqual(EXPECTED_RECORDS, set(contract["native_records"]))
@@ -500,6 +500,41 @@ class ContractTests(OfflineTests):
         for name in policy.BOUNDARIES:
             self.assertIs(failure[name], False, name)
 
+    def test_catalog_preserves_historical_canonical_bytes_and_requires_explicit_current_selection(self):
+        catalog = json.loads(policy.CONTRACT.read_bytes())
+        historical = catalog["profiles"][policy.HISTORICAL_PROFILE]
+        self.assertEqual("0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
+                         identity(policy.json_bytes(historical))["sha256"])
+        self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
+        current = policy.plan(policy.EXPORT4_PROFILE)
+        self.assertEqual(policy.EXPORT4_CONTRACT_ID, current["contract_id"])
+        self.assertEqual("ready_for_evidence_validation", current["status"])
+        self.assertEqual([], current["missing_reviewed_native_record_pins"])
+        self.assertEqual(policy.PROFILE_CONTRACT_SHA256[policy.EXPORT4_PROFILE], current["contract_sha256"])
+        self.assert_boundaries(current)
+        self.assertFalse(current["production_writer_admitted"])
+
+    def test_unknown_or_mutated_profile_fails_before_private_input_reads(self):
+        with self.assertRaisesRegex(ValueError, "unknown or incomplete"):
+            policy.load_contract("v13-prototype")
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary).resolve() / "contract.json"
+            original = json.loads(policy.CONTRACT.read_bytes())
+            for change in (lambda c: c["profiles"][policy.HISTORICAL_PROFILE].update(device="other"),
+                           lambda c: c["profiles"].update({"v13-prototype": {}})):
+                value = copy.deepcopy(original)
+                change(value)
+                path.write_bytes(policy.json_bytes(value))
+                with mock.patch.object(policy, "CONTRACT", path):
+                    with self.assertRaisesRegex(ValueError, "reviewed contract bytes|unknown or incomplete"):
+                        policy.load_contract()
+            value = copy.deepcopy(original)
+            value["profiles"][policy.EXPORT4_PROFILE]["native_records"]["sidecar_native_validation"]["sha256"] = "f" * 64
+            path.write_bytes(policy.json_bytes(value))
+            with mock.patch.object(policy, "CONTRACT", path):
+                with self.assertRaisesRegex(ValueError, "reviewed contract bytes"):
+                    policy.load_contract(policy.EXPORT4_PROFILE)
+
 
 class FixtureTests(OfflineTests):
     def setUp(self):
@@ -508,6 +543,415 @@ class FixtureTests(OfflineTests):
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name).resolve()
         self.fx = SyntheticInputs(self.root)
+
+
+def select_export4(fx):
+    """Select the new schema using only inert local evidence identities."""
+    fx.contract["contract_id"] = policy.EXPORT4_CONTRACT_ID
+    fx.contract["sidecar_derivation"] = copy.deepcopy(json.loads(policy.CONTRACT.read_text())["profiles"]
+                                                     [policy.EXPORT4_PROFILE]["sidecar_derivation"])
+    fx.control["contract_id"] = policy.EXPORT4_CONTRACT_ID
+    for role in sorted(policy.EXPORT4_RECORD_ROLES - EXPECTED_RECORDS):
+        row = fx.write("records/" + role + ".json", policy.json_bytes({"inert_record": role}))
+        fx.control["records"][role] = row
+        fx.contract["native_records"][role] = policy.identity(row)
+    for name in ("plat", "system_ext", "product"):
+        fx.control["policy_files"].pop(name + "_sha256")
+    fx.control["noop_manifests"] = {name: [copy.deepcopy(fx.control["partitions"][name]["manifest"]) for unused in range(2)]
+                                    for name in ("vendor", "odm")}
+    fx.save()
+
+
+def sidecar_evidence(fx, control):
+    """Literal recipe/output evidence shape; no command is executed."""
+    pins = fx.contract["sidecar_derivation"]
+    base = "/work/validation/nezha-oem-policy-integration-20260829/policy-sidecar-native-v1"
+    row = lambda name, raw=b"inert": {"path": base + "/" + name, **identity(raw)}
+    sandbox = {"source_out_and_inputs_readonly": True, "uid": 65534, "gid": 65534,
+        "capabilities": {name: "0" * 16 for name in ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb")},
+        "namespaces": {name: name + ":[2]" for name in ("mnt", "net", "pid", "user")},
+        "parent_namespaces": {name: name + ":[1]" for name in ("mnt", "net", "pid", "user")},
+        "identity_maps": {name: "65534 0 1\n" for name in ("uid_map", "gid_map")}, "readonly_flag": 1,
+        "effective_mount_flags": {name: 1 for name in ("/", "/work", "/work/evolution", "/work/out", base, base + "/inputs")},
+        "mountinfo_sha256": identity(b"inert mountinfo")["sha256"],
+        "argv": ["/usr/bin/python3", "-I", "-B", base + "/inputs/driver.py", "--base", base]}
+    source = {"schema_version": 1, "guest_writes": False, "phone_accessed": False,
+        "files": [{"path": "system/sepolicy/Android.bp", **pins["source"]}], "total_bytes": pins["source"]["size_bytes"],
+        "projects": {"system/sepolicy": {"head": pins["source_revision"], "status": "M private/init_dev_config.te\n M private/su.te"}}}
+    held = {runtime: fx.policy_bytes[runtime] for runtime in policy.RUNTIME_INPUTS[:6]}
+    native = {"schema_version": 1, "operation": "derive-export4-policy-sidecars-native-v1", "passed": True,
+        "skipped": 0, "input_bytes_preserved": True, "tool_and_runtime_bytes_preserved": True,
+        "scope": {"native_recipe_executed": True, "derived_sidecars_verified": True,
+            "installed_sidecars_captured": False, "native_android_genrules_executed": False,
+            "source_or_android_output_writes": False, "images_accessed_or_written": False,
+            "policy_adopted": False, "complete_rom_ready": False, "phone_accessed": False},
+        "contract": row("inputs/contract.json"),
+        "driver": {"path": base + "/inputs/driver.py", **pins["driver"]},
+        "collector": {"path": base + "/inputs/bound_util.py", **pins["collector"]},
+        "source_capture": policy.identity(control["records"]["sidecar_source_capture"]),
+        "recipe_source": {**pins["source"], "project_revision": pins["source_revision"], "native_path": "/work/evolution/system/sepolicy/Android.bp"},
+        "baseline": {**policy.identity(control["records"]["policy_analysis"]), "operation": "verify-native-oem-properties-v12f-export4"},
+        "sandbox": policy.identity(control["records"]["sidecar_sandbox"]), "staging_manifest": row("inputs/staging.json"),
+        "limits": {"command_cpu_hard_seconds": 11, "command_cpu_soft_seconds": 10, "command_wall_seconds": 20,
+            "file_size_soft_and_hard_bytes": 16 << 20, "initial_free_bytes": 256 << 20,
+            "log_cap_each_bytes": 16 << 20, "whole_job_wall_seconds": 180},
+        "environment": {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C", "TZ": "UTC", "TMPDIR": "/tmp"},
+        "commands": [], "tools": {}, "inputs": [], "recipes": [], "outputs": [], "checks": []}
+    native["contract"].update(pins["contract"])
+
+    def command(argv, stdout=b"", supervisor=False):
+        return {"argv": argv, "exit_code": 0, "timed_out": False, "log_overflow": False,
+            "whole_process_group_killed": False, "all_pipes_eof": True, "log_cap_each_bytes": 16 << 20,
+            "supervisor_log_separated": supervisor,
+            "logs": {name: row("results/command." + name, stdout if name == "stdout" else b"")
+                     for name in (("stdout", "stderr", "supervisor") if supervisor else ("stdout", "stderr"))}}
+
+    def linked(path):
+        return {"selected_path": path, "canonical": {"path": path, **identity(b"inert ELF fixture")}, "symlink_chain": []}
+
+    for index, name in enumerate(("bash", "cat", "sha256sum", "cut")):
+        loader = "/lib/ld-linux-aarch64.so.1"
+        native["tools"][name] = {"abi": {"elf_machine": 183, "interpreter": loader},
+            "identity": linked("/usr/bin/" + name), "loader": linked(loader), "runtime": [linked("/lib/libc.so.6")],
+            "runtime_command_index": 2 * index, "version_command_index": 2 * index + 1}
+        native["commands"] += [command([loader, "--list", "/usr/bin/" + name], b"inert loader output"),
+                               command(["/usr/bin/" + name, "--version"], b"inert version output")]
+        native["tools"][name]["loader_output_parse"] = {
+            "adapter": "initial-aarch64-address-only-record-v1", "abi": copy.deepcopy(native["tools"][name]["abi"]),
+            "original_stdout": identity(b"inert loader output"), "named_records_stdout": identity(b"inert loader output"),
+            "initial_address_only_record": None, "named_file_paths": ["/lib/libc.so.6"],
+            "named_records_checked_by_unchanged_frozen_parser": True, "unnamed_record_file_origin_claimed": False}
+    roles = [name + "-" + suffix for name in ("plat", "system_ext", "product") for suffix in ("cil", "mapping")]
+    for runtime, role in zip(policy.RUNTIME_INPUTS, roles):
+        native["inputs"].append({"role": role, "runtime_path": runtime, **identity(held[runtime]),
+            "native_compiler_input": control["policy_files"][runtime]["native_path"], "filename": role + ".cil",
+            "derived_input_path": base + "/inputs/" + role + ".cil"})
+    pipeline = '/usr/bin/cat "$1" "$2" | /usr/bin/sha256sum | /usr/bin/cut -d\' \' -f1 > "$3"'
+    arguments = lambda left, right, dest: ["/usr/bin/bash", "--noprofile", "--norc", "-euo", "pipefail", "-c",
+        pipeline, "sidecar-recipe", left, right, dest]
+    for index, name in enumerate(("plat", "system_ext", "product")):
+        pair = roles[2 * index:2 * index + 2]
+        content = hashlib.sha256(held[policy.RUNTIME_INPUTS[2 * index]] + held[policy.RUNTIME_INPUTS[2 * index + 1]]).hexdigest().encode() + b"\n"
+        destination = base + "/results/derived/" + name + "_sepolicy_and_mapping.sha256"
+        native["recipes"].append({"module": name + "_sepolicy_and_mapping.sha256_gen",
+            "source_modules": [":" + name + "_sepolicy.cil", ":" + name + "_mapping_file"],
+            "ordered_input_roles": pair, "command": pins["recipe"],
+            "line_start": (514, 531, 549)[index], "line_end": (522, 539, 557)[index]})
+        native["outputs"].append({"name": name, "ordered_input_roles": pair, "command_index": 8 + index,
+            "native_installed_path": None, "provenance": "derived-from-sealed-export4-inputs",
+            "output": {"path": destination, **identity(content)}, "ascii_content": content.decode()})
+        native["commands"].append(command(arguments(*[base + "/inputs/" + r + ".cil" for r in pair], destination)))
+        native["checks"].append({"name": name + "-known-answer", "status": "passed"})
+    first, second = held[policy.RUNTIME_INPUTS[0]], held[policy.RUNTIME_INPUTS[1]]
+    changed = bytes([first[0] ^ 1]) + first[1:]
+    mutations = {"reversed-order": hashlib.sha256(second + first).hexdigest().encode() + b"\n",
+        "changed-input": hashlib.sha256(changed + second).hexdigest().encode() + b"\n",
+        "missing-final-lf": native["outputs"][0]["ascii_content"].encode()[:-1]}
+    left, right = [base + "/inputs/plat-" + suffix + ".cil" for suffix in ("cil", "mapping")]
+    mutation_commands = [arguments(right, left, base + "/results/reversed-order.sha256"),
+        arguments(base + "/results/changed-plat.cil", right, base + "/results/changed-input.sha256"),
+        ["/usr/bin/bash", "--noprofile", "--norc", "-euo", "pipefail", "-c", 'printf \'%s\' "$1" > "$2"',
+         "negative-lf", native["outputs"][0]["ascii_content"].rstrip("\n"), base + "/results/missing-final-lf.sha256"]]
+    for index, (name, content) in enumerate(mutations.items(), 11):
+        native["commands"].append(command(mutation_commands[index - 11]))
+        native["checks"].append({"name": name, "status": "passed", "command_index": index,
+            "output": row("results/" + name + ".sha256", content), "rejected_by_exact_output_check": True})
+    native["changed_input"] = {"original_role": "plat-cil", "mutation": "first-byte-xor-1",
+        "output": row("results/changed-plat.cil", changed)}
+    outer = {"operation": "root-policy-sidecar-native-orchestration-v1", "passed": True,
+        "native_result": native, "native_receipt": policy.identity(control["records"]["sidecar_native_validation"]),
+        "launcher": {"path": base + "/inputs/run.py", **pins["launcher"]},
+        "collector": {"path": base + "/inputs/bound_util.py", **pins["collector"]},
+        "live_recipe_source": pins["source"], "bound_selected_inputs_unchanged": True,
+        "global_build_idle_required": False, "global_android_output_unchanged_claimed": False,
+        "source_or_android_output_writes": False, "images_accessed_or_written": False, "phone_accessed": False,
+        "sandbox_observation": native["sandbox"], "guest_base": base, "staging_manifest": native["staging_manifest"],
+        "nsjail": {"path": "/work/evolution/prebuilts/build-tools/linux-x86/bin/nsjail",
+            "sha256": "3f97556c3cf8a83d3f5ae854e6dfc2f345355ead547dd661d07a369b6c2ba280", "size_bytes": 1},
+        "commands": [command(["/usr/bin/git", "--no-optional-locks", "-C", "/work/evolution/system/sepolicy", "rev-parse", "HEAD"],
+                             (pins["source_revision"] + "\n").encode())]}
+    outer["commands"] += [command([outer["nsjail"]["path"]], supervisor=True), copy.deepcopy(outer["commands"][0])]
+    return {"sidecar_native_validation": native, "sidecar_orchestration": outer,
+            "sidecar_sandbox": sandbox, "sidecar_source_capture": source}, held
+
+
+class Export4InputTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        select_export4(self.fx)
+
+    def test_current_selection_has_only_eleven_real_policy_artifacts_and_four_noop_manifests(self):
+        control = self.fx.loaded()
+        self.assertEqual({*policy.RUNTIME_INPUTS, "combined"}, set(control["policy_files"]))
+        self.assertEqual(29, len(control["records"]))
+        self.assertEqual({"vendor": 2, "odm": 2}, {p: len(rows) for p, rows in control["noop_manifests"].items()})
+
+    def test_absent_installed_sidecars_cannot_be_fabricated_as_selectors(self):
+        self.fx.control["policy_files"]["plat_sha256"] = copy.deepcopy(self.fx.control["policy_files"]["combined"])
+        self.fx.save()
+        with self.assertRaisesRegex(ValueError, "coverage differs"):
+            self.fx.loaded()
+
+    def test_missing_complete_noop_pass_and_extra_profile_field_are_rejected(self):
+        original = copy.deepcopy(self.fx.control)
+        for change in (lambda: self.fx.control["noop_manifests"]["vendor"].pop(),
+                       lambda: self.fx.control.update(profile="v12-export4")):
+            self.fx.control = copy.deepcopy(original)
+            change(); self.fx.save()
+            with self.assertRaises(ValueError):
+                self.fx.loaded()
+
+    def test_historical_control_cannot_select_current_contract(self):
+        self.fx.control["contract_id"] = policy.CONTRACT_ID
+        self.fx.save()
+        with self.assertRaisesRegex(ValueError, "contract differs"):
+            self.fx.loaded()
+
+
+class SidecarQualificationTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        select_export4(self.fx)
+        self.control = self.fx.loaded()
+        self.records, self.held = sidecar_evidence(self.fx, self.control)
+
+    def qualify(self):
+        return policy.qualify_sidecar_derivation(self.records, self.control, self.held, self.fx.contract)
+
+    def test_ordered_known_answers_and_three_negatives_admit_only_derived_outputs(self):
+        proof = self.qualify()
+        self.assertEqual((3, 3, 0), (proof["native_known_answers"], proof["native_negative_cases"], proof["skipped"]))
+        self.assertIs(proof["native_installed_sidecars_captured"], False)
+        self.assertIs(proof["android_genrule_execution_claimed"], False)
+
+    def test_derivation_cannot_be_relabelled_as_installed_android_output(self):
+        native = self.records["sidecar_native_validation"]
+        for key in ("installed_sidecars_captured", "native_android_genrules_executed", "policy_adopted", "complete_rom_ready"):
+            with self.subTest(key=key):
+                native["scope"][key] = True
+                with self.assertRaisesRegex(ValueError, "falsely claim"):
+                    self.qualify()
+                native["scope"][key] = False
+        native["outputs"][0]["native_installed_path"] = "/work/out/target/product/nezha/system/etc/selinux/plat_sepolicy_and_mapping.sha256"
+        with self.assertRaisesRegex(ValueError, "exact ordered"):
+            self.qualify()
+
+    def test_reversed_recipe_order_even_with_valid_input_identities_is_rejected(self):
+        self.records["sidecar_native_validation"]["recipes"][0]["source_modules"].reverse()
+        with self.assertRaisesRegex(ValueError, "recipe order"):
+            self.qualify()
+
+    def test_output_content_and_recorded_identity_must_both_match_recomputed_digest(self):
+        native = self.records["sidecar_native_validation"]
+        for content in ("0" * 64 + "\n", native["outputs"][0]["ascii_content"][:-1]):
+            with self.subTest(content=content):
+                original = copy.deepcopy(native["outputs"][0])
+                native["outputs"][0]["ascii_content"] = content
+                native["outputs"][0]["output"].update(identity(content.encode()))
+                with self.assertRaisesRegex(ValueError, "digest plus LF"):
+                    self.qualify()
+                native["outputs"][0] = original
+
+    def test_different_native_compiler_source_and_swapped_pair_are_rejected(self):
+        native = self.records["sidecar_native_validation"]
+        native["inputs"][0]["native_compiler_input"] = "/work/out/unrelated.cil"
+        with self.assertRaisesRegex(ValueError, "actual compiler file"):
+            self.qualify()
+        native["inputs"][0]["native_compiler_input"] = self.control["policy_files"][policy.RUNTIME_INPUTS[0]]["native_path"]
+        native["inputs"][0], native["inputs"][1] = native["inputs"][1], native["inputs"][0]
+        with self.assertRaisesRegex(ValueError, "input coverage"):
+            self.qualify()
+
+    def test_missing_or_forged_negative_check_cannot_count_as_pass(self):
+        native = self.records["sidecar_native_validation"]
+        native["checks"].pop()
+        with self.assertRaisesRegex(ValueError, "negative cases"):
+            self.qualify()
+        self.records, self.held = sidecar_evidence(self.fx, self.control)
+        native = self.records["sidecar_native_validation"]
+        native["checks"][3]["output"].update(policy.identity(native["outputs"][0]["output"]))
+        with self.assertRaisesRegex(ValueError, "negative output"):
+            self.qualify()
+
+    def test_writable_sealed_inputs_changed_driver_and_nonzero_capabilities_reject(self):
+        for change in (lambda: self.records["sidecar_sandbox"]["effective_mount_flags"].update({self.records["sidecar_orchestration"]["guest_base"] + "/inputs": 0}),
+                       lambda: self.records["sidecar_native_validation"]["driver"].update(sha256="f" * 64),
+                       lambda: self.records["sidecar_sandbox"]["capabilities"].update(CapEff="1")):
+            self.records, self.held = sidecar_evidence(self.fx, self.control)
+            change()
+            with self.assertRaises(ValueError):
+                self.qualify()
+
+    def test_failed_or_truncated_native_pipeline_is_not_a_pass(self):
+        for key, value in (("exit_code", 1), ("log_overflow", True), ("all_pipes_eof", False)):
+            self.records, self.held = sidecar_evidence(self.fx, self.control)
+            self.records["sidecar_native_validation"]["commands"][8][key] = value
+            with self.assertRaisesRegex(ValueError, "complete cleanly"):
+                self.qualify()
+
+    def test_actual_abi_address_only_line_is_recorded_without_assigning_file_or_mapping_origin(self):
+        native = self.records["sidecar_native_validation"]
+        parsed = native["tools"]["bash"]["loader_output_parse"]
+        raw = "\t (0x0000ffff88890000)\n"
+        parsed["initial_address_only_record"] = {"line_index": 0, "raw_line": raw, "file_path": None,
+            "file_identity_verified": False, "mapping_kind_identified": False}
+        parsed["original_stdout"] = identity(raw.encode() + b"inert loader output")
+        native["commands"][0]["logs"]["stdout"].update(parsed["original_stdout"])
+        self.qualify()
+        for key, value in (("line_index", 1), ("raw_line", "unrecognized line\n"),
+                           ("file_identity_verified", True), ("mapping_kind_identified", True)):
+            original = parsed["initial_address_only_record"][key]
+            parsed["initial_address_only_record"][key] = value
+            with self.assertRaisesRegex(ValueError, "unnamed loader record"):
+                self.qualify()
+            parsed["initial_address_only_record"][key] = original
+
+    def test_loader_adapter_cannot_drop_named_files_or_claim_unnamed_file_origin(self):
+        parsed = self.records["sidecar_native_validation"]["tools"]["bash"]["loader_output_parse"]
+        for key, value in (("named_file_paths", []), ("unnamed_record_file_origin_claimed", True),
+                           ("named_records_checked_by_unchanged_frozen_parser", False)):
+            original = parsed[key]
+            parsed[key] = value
+            with self.assertRaisesRegex(ValueError, "named runtime proof"):
+                self.qualify()
+            parsed[key] = original
+
+
+def export4_policy_evidence(fx):
+    records, unused = fx.policy_evidence()
+    select_export4(fx)
+    control = fx.loaded()
+    analysis = records["policy_analysis"]
+    phase = "policy-v12f-export-1"
+    records["policy_build"]["phase"] = phase
+    analysis.update(operation="verify-native-oem-properties-v12f-export4", build_phase=phase,
+        export_phase="v12f-runtime-policy-exports-v1",
+        installed_fixup_manifest_sha256="8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14",
+        installed_integration_manifest_sha256="084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820",
+        **{key: False for key in ("full_treble_apk_labeling_pass", "policy_compiler_replayed",
+            "source_or_android_output_modified", "images_changed", "phone_accessed", "complete_rom_or_runtime_support_proven")})
+    analysis["source_fixup_provenance"] = {"operation": "verify-v12f-fixed-addendum-chain", "status": "verified",
+        "normal_android_enforcing_required": True, "unchanged_policy_component_retained": True,
+        "unchanged_vendor_component_retained": True,
+        "native_build_binding": {"phase": phase, "packaged_commit_equal_to_build_record": True},
+        "source_capture": {"all_effective_source_guards_bound": True}}
+    for row in [*analysis["native_context_checks"], analysis["native_oem_check"]]:
+        row["build_phase"] = phase
+    sidecars, unused = sidecar_evidence(fx, control)
+    records.update(sidecars)
+    return records, control
+
+
+class Export4PolicyTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.records, self.control = export4_policy_evidence(self.fx)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+
+    def qualify(self):
+        return policy.qualify_policy(self.records, self.control, self.fx.contract)
+
+    def test_actual_v12_shape_retains_strict_policy_guards_and_derives_three_uninstalled_files(self):
+        replacements, proof = self.qualify()
+        self.assertEqual(policy.metadata.REPLACEMENT_PATHS, {name: set(rows) for name, rows in replacements.items()})
+        self.assertEqual(6366, proof["assertion_statements_retained"])
+        self.assertEqual(0, proof["normal_android_permissive_domains"])
+        self.assertFalse(proof["current_active_source_compatibility_proven"])
+        self.assertFalse(proof["sidecars_observed_at_native_install_paths"])
+        for path, row in replacements["odm"].items():
+            if path.endswith(".sha256"):
+                self.assertEqual(65, len(row["derived_bytes"]))
+                self.assertNotIn("native_path", row)
+                self.assertNotIn("path", row)
+
+    def test_old_operation_or_provider_profile_cannot_be_admitted_as_export4(self):
+        analysis = self.records["policy_analysis"]
+        for key, wrong in (("operation", "verify-native-oem-properties-v12f"), ("provider_profile_selected", True)):
+            old = analysis[key]
+            analysis[key] = wrong
+            with self.assertRaisesRegex(ValueError, "policy analysis is incomplete"):
+                self.qualify()
+            analysis[key] = old
+
+    def test_current_snapshot_still_rejects_source_only_odm_and_missing_assertions(self):
+        old = self.control["policy_files"]["combined"]["native_path"]
+        self.control["policy_files"]["combined"]["native_path"] = "/work/out/target/product/nezha/odm/etc/selinux/precompiled_sepolicy"
+        with self.assertRaisesRegex(ValueError, "factory-combined"):
+            self.qualify()
+        self.control["policy_files"]["combined"]["native_path"] = old
+        self.records["policy_analysis"]["semantics"]["original_assertion_statement_count"] = 6365
+        with self.assertRaisesRegex(ValueError, "assertion or capability"):
+            self.qualify()
+
+
+class Export4PreparationTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.records, unused = export4_policy_evidence(self.fx)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+        self.enterContext(mock.patch.object(policy, "load_contract", return_value=(
+            self.fx.contract, self.fx.contract_sha, self.fx.profile, self.fx.helper)))
+        self.enterContext(mock.patch.dict(policy.PROFILE_CONTRACT_SHA256, {policy.EXPORT4_PROFILE: self.fx.contract_sha}))
+        self.enterContext(mock.patch.object(policy, "qualify_erofs", return_value={"synthetic_native_evidence_mock": True}))
+        qualify = policy.qualify_policy
+        self.enterContext(mock.patch.object(policy, "qualify_policy", side_effect=lambda unused, control, contract:
+                                            qualify(self.records, control, contract)))
+        self.enterContext(mock.patch.object(policy.shutil, "disk_usage", return_value=shutil._ntuple_diskusage(1 << 40, 0, 1 << 40)))
+
+    def prepare(self):
+        return policy.prepare(self.fx.path, self.fx.sha, output_dir=self.fx.output, selected_profile=policy.EXPORT4_PROFILE)
+
+    def test_derived_sidecars_have_own_provenance_and_complete_repeated_tar_contents(self):
+        report = self.prepare()
+        self.assert_boundaries(report)
+        self.assertEqual(policy.EXPORT4_PROFILE, report["profile"])
+        self.assertEqual(3, len(report["derived_sidecars"]))
+        self.assertFalse(report["policy_proof"]["sidecars_observed_at_native_install_paths"])
+        for row in report["derived_sidecars"]:
+            path = self.fx.output / row["path"]
+            raw = path.read_bytes()
+            self.assertEqual(identity(raw), policy.identity(row))
+            self.assertEqual(65, len(raw))
+            self.assertFalse(row["native_installed_output_claimed"])
+            self.assertEqual(2, len(row["ordered_inputs"]))
+            self.assertEqual(row["ordered_input_roles"], [r["runtime_path"] for r in row["ordered_inputs"]])
+            self.assertEqual(0o600, stat.S_IMODE(path.stat().st_mode))
+            member = "etc/selinux/precompiled_sepolicy." + path.name
+            for repetition in (1, 2):
+                with tarfile.open(self.fx.output / f"pass-{repetition}/odm.tar", "r:") as archive:
+                    self.assertEqual(raw, archive.extractfile(member).read())
+        self.assertEqual((self.fx.output / "pass-1/odm.tar").read_bytes(), (self.fx.output / "pass-2/odm.tar").read_bytes())
+
+    def test_changed_derived_sidecar_after_assembly_prevents_success_receipt(self):
+        assemble = self.fx.helper.assemble
+        calls = 0
+        def mutate_after_last(*args):
+            nonlocal calls
+            result = assemble(*args)
+            calls += 1
+            if calls == 4:
+                (self.fx.output / "derived-sidecars/plat_sepolicy_and_mapping.sha256").write_bytes(b"0" * 64 + b"\n")
+            return result
+        with mock.patch.object(self.fx.helper, "assemble", side_effect=mutate_after_last):
+            with self.assertRaisesRegex(ValueError, "input changed"):
+                self.prepare()
+        self.assertFalse((self.fx.output / "preparation.json").exists())
+
+    def test_changed_complete_noop_manifest_after_assembly_prevents_success_receipt(self):
+        assemble = self.fx.helper.assemble
+        calls = 0
+        def mutate_after_last(*args):
+            nonlocal calls
+            result = assemble(*args)
+            calls += 1
+            if calls == 4:
+                path = self.root / self.fx.control["noop_manifests"]["vendor"][0]["path"]
+                path.write_bytes(b"changed evidence\n")
+            return result
+        with mock.patch.object(self.fx.helper, "assemble", side_effect=mutate_after_last):
+            with self.assertRaisesRegex(ValueError, "input changed"):
+                self.prepare()
+        self.assertFalse((self.fx.output / "preparation.json").exists())
 
 
 class InputTests(FixtureTests):
@@ -573,7 +1017,7 @@ class PreparationTests(FixtureTests):
                                             (self.fx.selected(control), {"native_policy_reexecuted": False})))
         self.enterContext(mock.patch.object(policy.shutil, "disk_usage", return_value=shutil._ntuple_diskusage(1 << 40, 0, 1 << 40)))
 
-    def contract(self):
+    def contract(self, selected_profile=policy.HISTORICAL_PROFILE):
         return self.fx.contract, self.fx.contract_sha, self.fx.profile, self.fx.helper
 
     def prepare(self, output=None):
@@ -1113,6 +1557,327 @@ class ProductionBudgetTests(FixtureTests):
         self.tar_sizes["vendor"] = 2 << 30
         with self.assertRaisesRegex(ValueError, "finite construction cap"):
             self.budget()
+
+
+class SyntheticNoopEvidence:
+    """Two original inodes, two complete after captures, and full receipt links."""
+
+    def __init__(self, root):
+        self.root = root
+        root.mkdir(parents=True)
+        self.records, self.rows = {}, {}
+        self.control = {"records": {}, "partitions": {}, "noop_manifests": {}}
+        self.contract = {
+            "contract_id": policy.EXPORT4_CONTRACT_ID, "originals": {},
+            "exporter_source": identity(b"synthetic exporter source"),
+            "native_tools": {name: identity(("synthetic " + name).encode())
+                             for name in ("mkfs", "fsck", "exporter")},
+        }
+        primitive_names = (
+            "inherited_signal_profile", "finite_limits", "ext4_alignment",
+            "truncate_2tib_rejected", "truncate_over_limit_rejected", "write_at_limit_rejected",
+            "sparse_boundary_write", "sparse_allocation_bounded", "sparse_readback",
+            "truncated_back_to_zero", "cleanup_completed",
+        )
+        self.records["erofs_fsize_probe"] = {
+            "operation": "native-production-fsize-sparse-log-profile-proof", "passed": True, "skipped": 0,
+            "scope": {"mkfs_executed": False, "mkfs_production_execution_qualified": False},
+            "checks": [{"name": f"limit-{gib}gib", "status": "passed", "native_result": {
+                "passed": True, "architecture": "x86_64", "off_t_bytes": 8,
+                "limit_bytes": gib << 30, "rlimit_soft_bytes": gib << 30, "rlimit_hard_bytes": gib << 30,
+                "sigxfsz": "SIG_IGN", "sigpipe": "SIG_DFL", "filesystem_magic": 0xEF53,
+                "checks": {name: True for name in primitive_names},
+            }} for gib in (2, 6)] + [
+                {"name": "log-overflow-group-kill", "status": "passed"},
+                {"name": "bound-inputs-unchanged", "status": "passed"},
+            ],
+        }
+        self.records["erofs_fsize_orchestration"] = {"passed": True, "bound_input_bytes_preserved": True}
+        for partition, revision in (("vendor", 2), ("odm", 1)):
+            self._partition(partition, revision)
+        self.rebind()
+
+    def _manifest(self, partition, label, rows):
+        raw = b"".join((json.dumps(row, sort_keys=True) + "\n").encode() for row in rows)
+        path = self.root / f"{partition}-{label}.jsonl"
+        path.write_bytes(raw)
+        return {"path": str(path), **identity(raw)}
+
+    def _partition(self, partition, revision):
+        role = "erofs_" + partition + "_noop"
+        original_hash = identity((partition + " original image identity only").encode())["sha256"]
+        rows = metadata_fixture(partition, original_hash)
+        rows = [rows[0], by_path(rows, b"/"), by_path(rows, b"/unchanged"), rows[-1]]
+        rows[0]["superblock"].update(inode_count=2, feature_compat=7 if partition == "vendor" else 3)
+        rows[1].update(nid=1, nlink=2, size_bytes=48, mtime_nsec=0)
+        rows[2].update(nid=2, nlink=1, mtime_nsec=0)
+        rows[2]["xattrs"].append({"name_hex": b"user.binary".hex(), "value_hex": b"\x00\xff\n=\x80".hex()})
+        rows[-1]["entry_count"] = 2
+        before = self._manifest(partition, "original", rows)
+        self.control["partitions"][partition] = {"manifest": before}
+        self.contract["originals"][partition] = {"image": {"sha256": original_hash}}
+        image_hash = identity((partition + " raw image identity only").encode())["sha256"]
+        after = copy.deepcopy(rows)
+        after[0].update(image_size_bytes=16384, image_sha256=image_hash)
+        after[0]["superblock"]["root_nid"] = 101
+        after[1]["nid"], after[2]["nid"] = 101, 102
+        after[-1]["image_sha256"] = image_hash
+        self.rows[partition] = {"before": rows, "after": after}
+        self.control["noop_manifests"][partition] = [self._manifest(partition, str(n), after) for n in (1, 2)]
+        comparison = {
+            "entries_compared": 2, "regular_contents_compared": 1, "metadata_exclusions": ["inode.nid"],
+            "superblock_physical_exclusions": ["meta_blkaddr", "primary_blocks", "root_nid", "total_blocks", "xattr_blkaddr"],
+            "content_replacements": [], "all_semantic_fields_equal": True,
+        }
+        artifacts = [{
+            "image": {"path": f"/synthetic/{partition}-noop-{n}.erofs", "sha256": image_hash, "size_bytes": 16384},
+            "tar": {"path": f"/synthetic/{partition}-noop-{n}.tar", **identity(b"synthetic complete TAR identity")},
+            "manifest": {"path": f"/synthetic/{partition}-noop-{n}-export.stdout", **policy.identity(selected)},
+            "superblock": copy.deepcopy(after[0]["superblock"]), "comparison": copy.deepcopy(comparison),
+        } for n, selected in enumerate(self.control["noop_manifests"][partition], 1)]
+        checks = [
+            {"name": "fresh-original-full-export", "status": "passed", "manifest": policy.identity(before)},
+            {"name": "original-structure-data-xattrs", "status": "passed"},
+            {"name": "independent-tar-image-manifest-reproducibility", "status": "passed"},
+            {"name": "original-tools-runtime-inputs-and-stage-preserved", "status": "passed"},
+        ] + [{"name": f"{partition}-noop-{n}-{suffix}", "status": "passed", "comparison": copy.deepcopy(comparison)}
+             for n in (1, 2) for suffix in ("structure-data-xattrs", "all-bytes-and-metadata")]
+        staging = {"all_paths_checked_without_following_symlinks": 2,
+                   "host_metadata_used_as_authority": False, "staging_content_executed": False}
+        tools = {name: {"path": "/synthetic/tools/" + name, **pin} for name, pin in self.contract["native_tools"].items()}
+        scope = {key: False for key in (
+            "policy_adopted", "original_images_written", "source_or_android_output_writes",
+            "global_android_output_unchanged_claimed", "complete_rom_admitted", "avb_verified",
+            "partition_fit_verified", "retained_kernel_mount_or_boot_verified", "production_policy_writer_admitted", "phone_accessed")}
+        scope["raw_" + partition + "_noop_roundtrip_qualified"] = True
+        native = self.records[role] = {
+            "operation": f"full-original-{partition}-noop-erofs-roundtrip-v{revision}",
+            "passed": True, "skipped": 0, "replacements": [], "bound_inputs_preserved": True,
+            "checks": checks, "scope": scope, "tools": tools, "artifacts": artifacts,
+            "stock_profile": {"entry_count": 2, "superblock": copy.deepcopy(rows[0]["superblock"]),
+                **{name: 0 for name in ("hardlink_groups", "empty_xattrs", "nonzero_nanoseconds", "set_id_inodes", "special_inodes")}},
+            "prior_synthetic_evidence": {"passed": 11, "failed": 6, "skipped": 0,
+                "all_checks_passed": False, "known_empty_xattr_fsck_failures_retained": True},
+            "resources": {"effective_cpus": [0], "inherited_allowed_cpus": [0, 1], "nice": 19,
+                "whole_job_wall_seconds": 7200, "initial_headroom": {"available_disk_bytes": 48 << 30, "mem_available_bytes": 8 << 30}},
+            "staging_before": staging, "staging_after": copy.deepcopy(staging), "commands": [],
+        }
+        captured = [{"path": "original-export.stdout", **policy.identity(before)}]
+        captured += [{"path": f"{partition}-noop-{n}-export.stdout", **policy.identity(row)}
+                     for n, row in enumerate(self.control["noop_manifests"][partition], 1)]
+        options = ["--tar=f", "--clean=data", "--mkfs-time", "--preserve-mtime", "-T", "1230768000",
+                   "-U", "01234567-89ab-cdef-0123-456789abcdef", "-L", "", "-b4096", "-zlz4hc,level=9",
+                   "-C4096", "--uid-offset=0", "--workers=0", "--ovlfs-strip=0"]
+        if partition == "odm":
+            options += ["-E", "^xattr-name-filter"]
+        for number in range(24):
+            is_mkfs = number >= 22
+            logs = {kind: {"path": f"/synthetic/command-{number}.{kind}", **identity(b"")}
+                    for kind in ("stdout", "stderr")}
+            captured += [{"path": Path(row["path"]).name, **policy.identity(row)} for row in logs.values()]
+            native["commands"].append({
+                "argv": ([tools["mkfs"]["path"], *options, artifacts[number - 22]["image"]["path"], "/proc/self/fd/4"]
+                         if is_mkfs else [tools["fsck"]["path"], "--synthetic-record-only"]),
+                "exit_code": 0, "kill_reason": None, "whole_process_group_killed": False, "all_pipes_eof": True,
+                "logs": logs, "private_tmpdir": "/synthetic/private-tmp",
+                "observed_unlinked_private_spools": [{"size_bytes": 4096, "target": "/synthetic/private-tmp/tmp.1 (deleted)"}],
+                "limits": {"file_size_soft_and_hard_bytes": (2 if partition == "vendor" else 6) << 30,
+                    "log_cap_each_bytes": 16 << 20, "sampled_rss_ceiling_bytes": 2 << 30, "rss_is_kernel_hard_limit": False,
+                    "cpu_soft_seconds": 1800, "cpu_hard_seconds": 1801, "wall_seconds": 1800,
+                    "sigxfsz": "SIG_IGN" if is_mkfs else "SIG_DFL", "restore_signals": False},
+            })
+        self.records[role + "_sandbox"] = {
+            "source_out_and_inputs_readonly": True, "uid": 65534, "gid": 65534,
+            "capabilities": {name: "0000000000000000" for name in ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb")},
+            "namespaces": {name: "child:" + name for name in ("mnt", "net", "pid", "user")},
+            "parent_namespaces": {name: "parent:" + name for name in ("mnt", "net", "pid", "user")},
+            "identity_maps": {name: "65534 0 1\n" for name in ("uid_map", "gid_map")}, "readonly_flag": 1,
+            "effective_mount_flags": {name: 1 for name in ("/", "/work", "/work/evolution", "/work/out")},
+            "mountinfo_sha256": identity(b"synthetic mount observation")["sha256"],
+        }
+        self.records[role + "_orchestration"] = {
+            "operation": f"root-full-{partition}-noop-orchestration-v{revision}", "passed": True,
+            "bound_selected_inputs_unchanged": True, "global_android_output_unchanged_claimed": False,
+            "global_build_idle_required": False, "exporter_source": self.contract["exporter_source"],
+        }
+        self.records[role + "_capture"] = {"files": captured + [
+            {"path": f"supervisor-{n}.stdout", **identity(b"inert supervisor record")}
+            for n in range(9)]}
+
+    def _record_selector(self, role):
+        selected = {"path": str(self.root / (role + ".json")), **identity(policy.json_bytes(self.records[role]))}
+        self.control["records"][role] = selected
+        return selected
+
+    def rebind(self):
+        """Refresh all receipt identities without repairing any semantic claim."""
+        probe = self._record_selector("erofs_fsize_probe")
+        self.records["erofs_fsize_orchestration"]["native_probe_receipt"] = copy.deepcopy(probe)
+        self._record_selector("erofs_fsize_orchestration")
+        for partition in ("vendor", "odm"):
+            role = "erofs_" + partition + "_noop"
+            native, outer, capture = (self.records[role + suffix] for suffix in ("", "_orchestration", "_capture"))
+            sandbox = self._record_selector(role + "_sandbox")
+            native["sandbox_observation"] = copy.deepcopy(sandbox)
+            native["final_artifact_identities"] = [{key: copy.deepcopy(row[key]) for key in ("tar", "image", "manifest")}
+                                                    for row in native["artifacts"]]
+            outer.update(native_result=copy.deepcopy(native), native_receipt=self._record_selector(role),
+                         sandbox_observation=copy.deepcopy(sandbox))
+            self._record_selector(role + "_orchestration")
+            retained = {row["path"]: row for row in capture["files"]}
+            for suffix, name in (("", "receipt.json"), ("_orchestration", "orchestration.json"), ("_sandbox", "sandbox.json")):
+                retained[name] = {"path": name, **policy.identity(self.control["records"][role + suffix])}
+            capture["files"] = list(retained.values())
+            capture["total_bytes"] = sum(row["size_bytes"] for row in capture["files"])
+            capture["guest_only_large_artifacts"] = [{"path": Path(row[kind]["path"]).name, **policy.identity(row[kind])}
+                                                    for row in native["artifacts"] for kind in ("tar", "image")]
+            self._record_selector(role + "_capture")
+
+    def rewrite_after(self, partition, mutation):
+        rows = self.rows[partition]["after"]
+        mutation(rows)
+        role = "erofs_" + partition + "_noop"
+        capture = {row["path"]: row for row in self.records[role + "_capture"]["files"]}
+        for number in (1, 2):
+            selected = self._manifest(partition, str(number), rows)
+            self.control["noop_manifests"][partition][number - 1] = selected
+            self.records[role]["artifacts"][number - 1]["manifest"].update(policy.identity(selected))
+            capture[f"{partition}-noop-{number}-export.stdout"].update(policy.identity(selected))
+
+    def mkfs(self, partition="vendor"):
+        return self.records["erofs_" + partition + "_noop"]["commands"][22]
+
+    def qualify(self):
+        self.rebind()
+        return policy.qualify_noops(self.records, self.contract, self.control)
+
+
+class NoopQualificationTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name).resolve()
+        self.counter = 0
+        self.enterContext(mock.patch("subprocess.Popen", side_effect=AssertionError("native execution forbidden")))
+        self.enterContext(mock.patch("subprocess.run", side_effect=AssertionError("native execution forbidden")))
+
+    def fresh(self):
+        self.counter += 1
+        return SyntheticNoopEvidence(self.root / str(self.counter))
+
+    def test_full_synthetic_graph_rechecks_four_complete_manifests(self):
+        evidence = self.fresh()
+        result = evidence.qualify()
+        self.assertTrue(result["finite_file_primitive_verified"])
+        self.assertFalse(result["native_processes_reexecuted"])
+        self.assertFalse(result["policy_replacement_images_qualified"])
+        for row in result["partitions"].values():
+            self.assertEqual((row["native_checks_passed"], row["skipped"], row["complete_metadata_manifests_rechecked"]), (8, 0, 2))
+            self.assertEqual(row["original_entry_count"], 2)
+        self.assertEqual(len(list(evidence.root.iterdir())), 6)
+        self.assertTrue(all(path.suffix == ".jsonl" for path in evidence.root.iterdir()))
+
+    def test_missing_or_extra_selected_manifest_never_claims_two_rechecks(self):
+        for partition in ("vendor", "odm"):
+            for count in (0, 1, 3):
+                with self.subTest(partition=partition, count=count):
+                    evidence = self.fresh()
+                    evidence.control["noop_manifests"][partition] = evidence.control["noop_manifests"][partition][:1] * count
+                    with self.assertRaisesRegex(policy.PolicyImageError, "two independently rehashed"):
+                        evidence.qualify()
+
+    def test_native_primitive_requires_all_eleven_named_checks(self):
+        for change in ("empty", "missing", "extra", "false"):
+            with self.subTest(change=change):
+                evidence = self.fresh()
+                checks = evidence.records["erofs_fsize_probe"]["checks"][0]["native_result"]["checks"]
+                if change == "empty": checks.clear()
+                elif change == "missing": checks.pop("sparse_readback")
+                elif change == "extra": checks["unreviewed"] = True
+                else: checks["truncate_2tib_rejected"] = False
+                with self.assertRaisesRegex(policy.PolicyImageError, "finite-file ABI/limit"):
+                    evidence.qualify()
+
+    def test_rehashed_content_xattr_and_mode_changes_still_fail(self):
+        mutations = {
+            "content": lambda rows: rows[2].update(content_sha256=identity(b"changed!!")["sha256"]),
+            "xattr": lambda rows: rows[2]["xattrs"][1].update(value_hex=b"different".hex()),
+            "mode": lambda rows: rows[2].update(mode=rows[2]["mode"] ^ 1),
+        }
+        for name, mutation in mutations.items():
+            with self.subTest(name=name):
+                evidence = self.fresh()
+                evidence.rewrite_after("vendor", mutation)
+                with self.assertRaisesRegex(policy.PolicyImageError, "inode metadata or content changed"):
+                    evidence.qualify()
+
+    def test_rehashed_filesystem_feature_change_is_not_a_physical_exclusion(self):
+        evidence = self.fresh()
+        evidence.rewrite_after("odm", lambda rows: rows[0]["superblock"].update(feature_compat=7))
+        with self.assertRaisesRegex(policy.PolicyImageError, "semantic superblock changed"):
+            evidence.qualify()
+
+    def test_repeated_tar_identity_must_match_even_when_all_links_are_rebound(self):
+        evidence = self.fresh()
+        evidence.records["erofs_vendor_noop"]["artifacts"][1]["tar"]["sha256"] = identity(b"different TAR")["sha256"]
+        with self.assertRaisesRegex(policy.PolicyImageError, "independent derivations differ"):
+            evidence.qualify()
+
+    def test_scope_cannot_claim_policy_or_boot_admission(self):
+        for name in ("policy_adopted", "production_policy_writer_admitted", "retained_kernel_mount_or_boot_verified"):
+            with self.subTest(name=name):
+                evidence = self.fresh()
+                evidence.records["erofs_vendor_noop"]["scope"][name] = True
+                with self.assertRaisesRegex(policy.PolicyImageError, "unproved adoption or runtime"):
+                    evidence.qualify()
+
+    def test_capability_identity_and_readonly_guards_are_not_receipt_decoration(self):
+        mutations = {
+            "capability": lambda s: s["capabilities"].update(CapEff="0000000000000001"),
+            "missing-cap-set": lambda s: s["capabilities"].pop("CapBnd"),
+            "mapping": lambda s: s["identity_maps"].update(uid_map="65534 1000 1\n"),
+            "source-writable": lambda s: s["effective_mount_flags"].update({"/work/evolution": 0}),
+        }
+        for name, mutation in mutations.items():
+            with self.subTest(name=name):
+                evidence = self.fresh()
+                mutation(evidence.records["erofs_vendor_noop_sandbox"])
+                with self.assertRaisesRegex(policy.PolicyImageError, "capabilities|mapping|protected mounts"):
+                    evidence.qualify()
+
+    def test_worker_uuid_and_overlay_recipe_are_exact(self):
+        for option, replacement in (("--workers=0", "--workers=1"),
+                                    ("01234567-89ab-cdef-0123-456789abcdef", "00000000-0000-0000-0000-000000000000"),
+                                    ("--ovlfs-strip=0", "--ovlfs-strip=1")):
+            with self.subTest(option=option):
+                evidence = self.fresh()
+                args = evidence.mkfs()["argv"]
+                args[args.index(option)] = replacement
+                with self.assertRaisesRegex(policy.PolicyImageError, "recipe differs"):
+                    evidence.qualify()
+
+    def test_mkfs_only_ignored_sigxfsz_and_fixed_limits(self):
+        for index, key, value in ((22, "sigxfsz", "SIG_DFL"), (0, "sigxfsz", "SIG_IGN"),
+                                  (22, "restore_signals", True), (22, "file_size_soft_and_hard_bytes", 3 << 30),
+                                  (22, "log_cap_each_bytes", 17 << 20), (22, "sampled_rss_ceiling_bytes", 3 << 30)):
+            with self.subTest(index=index, key=key):
+                evidence = self.fresh()
+                evidence.records["erofs_vendor_noop"]["commands"][index]["limits"][key] = value
+                with self.assertRaisesRegex(policy.PolicyImageError, "limits or signal profile changed"):
+                    evidence.qualify()
+
+    def test_private_nonempty_unlinked_spool_must_be_observed(self):
+        for change in ("absent", "empty", "outside", "linked"):
+            with self.subTest(change=change):
+                evidence = self.fresh()
+                rows = evidence.mkfs()["observed_unlinked_private_spools"]
+                if change == "absent": rows.clear()
+                elif change == "empty": rows[0]["size_bytes"] = 0
+                elif change == "outside": rows[0]["target"] = "/elsewhere/tmp.1 (deleted)"
+                else: rows[0]["target"] = "/synthetic/private-tmp/tmp.1"
+                with self.assertRaisesRegex(policy.PolicyImageError, "fallback was not observed"):
+                    evidence.qualify()
+
 
 
 class NativeCheckRecordTests(OfflineTests):

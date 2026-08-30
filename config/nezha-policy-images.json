@@ -1,216 +1,538 @@
 {
-  "admitted_metadata": {
-    "compatible_features": [
-      3,
-      7
-    ],
-    "compression_algorithms": 1,
-    "empty_xattr_values": false,
-    "incompatible_features": 1,
-    "inode_nanoseconds": 0,
-    "superblock_nanoseconds": 0
-  },
-  "contract_id": "nezha-five-file-policy-image-inputs-v1",
-  "dependencies": [
-    {
-      "path": "tools/erofs-metadata/full_tar.py",
-      "sha256": "ec487d93ea158fab7022f427793839211978790f01dbcfc9361a63b02b681daa",
-      "size_bytes": 17421
-    },
-    {
-      "path": "scripts/erofs_metadata.py",
-      "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
-      "size_bytes": 22556
-    },
-    {
-      "path": "scripts/avb_image_set.py",
-      "sha256": "08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c",
-      "size_bytes": 41370
-    },
-    {
-      "path": "scripts/twrp_working.py",
-      "sha256": "902fd97f96369593aaa103e008ac62ae6c0a9da866283a6a535701a0603d2a4b",
-      "size_bytes": 36015
-    },
-    {
-      "path": "scripts/inspect_twrp_image.py",
-      "sha256": "8fcbb0e8e24e36b3d7fd557e3a578e7c3a5afa90a66fc7d491c3bbdbc161f839",
-      "size_bytes": 16472
-    },
-    {
-      "path": "config/nezha-avb-image-set.json",
-      "sha256": "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
-      "size_bytes": 4339
-    },
-    {
-      "path": "config/vendor-policy-correction.json",
-      "sha256": "6adafb4ada4a96a926289009a43ec8039d2b7108572f52b938d575d29de3990b",
-      "size_bytes": 4070
-    },
-    {
-      "path": "research/factory-framework-contract.json",
-      "sha256": "b01b713fba3e8253a2383b001b2c4eca7bfe6e2ac3b6f1a29f580d6b8d628a67",
-      "size_bytes": 60799
-    },
-    {
-      "path": "config/nezha-oem-policy.json",
-      "sha256": "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7",
-      "size_bytes": 12375
-    },
-    {
-      "path": "config/nezha-oem-properties.json",
-      "sha256": "f5796d6df4b7232d32ffdece83bc2d5726669fbb6f34f0ba2ef86be6cbc1d711",
-      "size_bytes": 65716
-    }
-  ],
-  "device": "nezha",
-  "erofs_revision": "2c190a73fceb29f00da0558e44bb88ce19ec5bf4",
-  "exporter_source": {
-    "path": "tools/erofs-metadata/erofs_metadata.c",
-    "sha256": "89d60827a44c1c808b8c9bb6f180b28aeaa0e440ff7180856e9c16180cab06b3",
-    "size_bytes": 56498
-  },
-  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
-  "independent_tar_passes": 2,
-  "limits": {
-    "avb_signed": false,
-    "complete_rom_ready": false,
-    "filesystem_extracted": false,
-    "guest_accessed": false,
-    "hashtree_or_fec_regenerated": false,
-    "native_tools_executed": false,
-    "phone_accessed": false,
-    "raw_erofs_built": false,
-    "source_or_vendor_inputs_adopted": false
-  },
-  "native_driver_sha256": "e2ce79fd47f54ddb97dd571b66cd81d7bf0b66084513ea9a67c5b6f3947a7119",
-  "native_records": {
-    "erofs_build": {
-      "sha256": "9db004d20cf498728bf321913c038c3c82fb472daf831a53dbdc2801694691ff",
-      "size_bytes": 7498
-    },
-    "erofs_shared": {
-      "sha256": "802792df012c43657eab248b741570f389072d21d3349230a5c8314a92944350",
-      "size_bytes": 29190
-    },
-    "erofs_source_manifest": {
-      "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
-      "size_bytes": 21918
-    },
-    "erofs_stock": {
-      "sha256": "347f605dbd79bc85180ec9ad5338bbbbf5db4854e1a602648f910c5b13ab5340",
-      "size_bytes": 19578
-    },
-    "erofs_synthetic": {
-      "sha256": "7abadb8f9d2e2ba11e4e57e075c4c8a165a137dca47bddb0b08387f20026ae40",
-      "size_bytes": 101800
-    },
-    "erofs_tools": {
-      "sha256": "4c26cf8b2e7afa41ebe2daf8ac48d8ff6b3c8adb6dc43ee7e6cc9df1f13e7eff",
-      "size_bytes": 1232
-    },
-    "erofs_writer": {
-      "sha256": "de5ae6a3eda010f6431b27ccd776ef8f0bf64b1dab83971715e7961ec75e941b",
-      "size_bytes": 80705
-    },
-    "erofs_writer_orchestration": {
-      "sha256": "530ebc6349634dda65db3e99842849c5a83aba5938e467d22485bfb3ef3d33b8",
-      "size_bytes": 11114
-    },
-    "native_oem_guard": null,
-    "policy_analysis": null,
-    "policy_build": null,
-    "policy_build_log": null,
-    "policy_build_sandbox": null,
-    "policy_source_manifest": null,
-    "vendor_derivation": null
-  },
-  "native_tools": {
-    "exporter": {
-      "sha256": "9fa98c5d9a698868b730201852c0029747c3a7458f1a9dc40426d878f8e3d270",
-      "size_bytes": 3611664
-    },
-    "fsck": {
-      "sha256": "b33b383b9399ea51899d21cf17ab760246370eb9fab4a58c6711dd7f831499c1",
-      "size_bytes": 1224272
-    },
-    "metadata_checker": {
-      "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
-      "size_bytes": 22556
-    },
-    "mkfs": {
-      "sha256": "6d48a11be98044ba4c89afd6a3f10b4fd37b98fbd583da2339304ab995fbc32b",
-      "size_bytes": 2800648
-    }
-  },
-  "originals": {
-    "odm": {
-      "entry_count": 3059,
-      "image": {
-        "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
-        "size_bytes": 4767621120
+  "profiles": {
+    "historical-v12": {
+      "admitted_metadata": {
+        "compatible_features": [
+          3,
+          7
+        ],
+        "compression_algorithms": 1,
+        "empty_xattr_values": false,
+        "incompatible_features": 1,
+        "inode_nanoseconds": 0,
+        "superblock_nanoseconds": 0
       },
-      "replacements": {
-        "/etc/selinux/precompiled_sepolicy": {
-          "sha256": "5ce021d525fa536e0c5e9b2b2b5b8b105d1a94993514ca4d406b298dd137f9b1",
-          "size_bytes": 1571392
+      "contract_id": "nezha-five-file-policy-image-inputs-v1",
+      "dependencies": [
+        {
+          "path": "tools/erofs-metadata/full_tar.py",
+          "sha256": "ec487d93ea158fab7022f427793839211978790f01dbcfc9361a63b02b681daa",
+          "size_bytes": 17421
         },
-        "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256": {
-          "sha256": "588e50fa5b784daba22bf6b0258491a313f4c8d17fd06a15acd11ef9e2012bc3",
-          "size_bytes": 65
+        {
+          "path": "scripts/erofs_metadata.py",
+          "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
+          "size_bytes": 22556
         },
-        "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256": {
-          "sha256": "00a413dceb7ce664bf8eb42623a51a9e5b0d133d7603491b042d6d7564f578b7",
-          "size_bytes": 65
+        {
+          "path": "scripts/avb_image_set.py",
+          "sha256": "08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c",
+          "size_bytes": 41370
         },
-        "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256": {
-          "sha256": "f698c2fb42a498896149a1ac4a9c80a741022c99e28aaa81326acebd6b594caa",
-          "size_bytes": 65
+        {
+          "path": "scripts/twrp_working.py",
+          "sha256": "902fd97f96369593aaa103e008ac62ae6c0a9da866283a6a535701a0603d2a4b",
+          "size_bytes": 36015
+        },
+        {
+          "path": "scripts/inspect_twrp_image.py",
+          "sha256": "8fcbb0e8e24e36b3d7fd557e3a578e7c3a5afa90a66fc7d491c3bbdbc161f839",
+          "size_bytes": 16472
+        },
+        {
+          "path": "config/nezha-avb-image-set.json",
+          "sha256": "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
+          "size_bytes": 4339
+        },
+        {
+          "path": "config/vendor-policy-correction.json",
+          "sha256": "6adafb4ada4a96a926289009a43ec8039d2b7108572f52b938d575d29de3990b",
+          "size_bytes": 4070
+        },
+        {
+          "path": "research/factory-framework-contract.json",
+          "sha256": "b01b713fba3e8253a2383b001b2c4eca7bfe6e2ac3b6f1a29f580d6b8d628a67",
+          "size_bytes": 60799
+        },
+        {
+          "path": "config/nezha-oem-policy.json",
+          "sha256": "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7",
+          "size_bytes": 12375
+        },
+        {
+          "path": "config/nezha-oem-properties.json",
+          "sha256": "f5796d6df4b7232d32ffdece83bc2d5726669fbb6f34f0ba2ef86be6cbc1d711",
+          "size_bytes": 65716
         }
-      }
-    },
-    "vendor": {
-      "entry_count": 3910,
-      "image": {
-        "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
-        "size_bytes": 959709184
+      ],
+      "device": "nezha",
+      "erofs_revision": "2c190a73fceb29f00da0558e44bb88ce19ec5bf4",
+      "exporter_source": {
+        "path": "tools/erofs-metadata/erofs_metadata.c",
+        "sha256": "89d60827a44c1c808b8c9bb6f180b28aeaa0e440ff7180856e9c16180cab06b3",
+        "size_bytes": 56498
       },
-      "replacements": {
-        "/etc/selinux/vendor_sepolicy.cil": {
-          "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
-          "size_bytes": 1708593
+      "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "independent_tar_passes": 2,
+      "limits": {
+        "avb_signed": false,
+        "complete_rom_ready": false,
+        "filesystem_extracted": false,
+        "guest_accessed": false,
+        "hashtree_or_fec_regenerated": false,
+        "native_tools_executed": false,
+        "phone_accessed": false,
+        "raw_erofs_built": false,
+        "source_or_vendor_inputs_adopted": false
+      },
+      "native_driver_sha256": "e2ce79fd47f54ddb97dd571b66cd81d7bf0b66084513ea9a67c5b6f3947a7119",
+      "native_records": {
+        "erofs_build": {
+          "sha256": "9db004d20cf498728bf321913c038c3c82fb472daf831a53dbdc2801694691ff",
+          "size_bytes": 7498
+        },
+        "erofs_shared": {
+          "sha256": "802792df012c43657eab248b741570f389072d21d3349230a5c8314a92944350",
+          "size_bytes": 29190
+        },
+        "erofs_source_manifest": {
+          "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
+          "size_bytes": 21918
+        },
+        "erofs_stock": {
+          "sha256": "347f605dbd79bc85180ec9ad5338bbbbf5db4854e1a602648f910c5b13ab5340",
+          "size_bytes": 19578
+        },
+        "erofs_synthetic": {
+          "sha256": "7abadb8f9d2e2ba11e4e57e075c4c8a165a137dca47bddb0b08387f20026ae40",
+          "size_bytes": 101800
+        },
+        "erofs_tools": {
+          "sha256": "4c26cf8b2e7afa41ebe2daf8ac48d8ff6b3c8adb6dc43ee7e6cc9df1f13e7eff",
+          "size_bytes": 1232
+        },
+        "erofs_writer": {
+          "sha256": "de5ae6a3eda010f6431b27ccd776ef8f0bf64b1dab83971715e7961ec75e941b",
+          "size_bytes": 80705
+        },
+        "erofs_writer_orchestration": {
+          "sha256": "530ebc6349634dda65db3e99842849c5a83aba5938e467d22485bfb3ef3d33b8",
+          "size_bytes": 11114
+        },
+        "native_oem_guard": null,
+        "policy_analysis": null,
+        "policy_build": null,
+        "policy_build_log": null,
+        "policy_build_sandbox": null,
+        "policy_source_manifest": null,
+        "vendor_derivation": null
+      },
+      "native_tools": {
+        "exporter": {
+          "sha256": "9fa98c5d9a698868b730201852c0029747c3a7458f1a9dc40426d878f8e3d270",
+          "size_bytes": 3611664
+        },
+        "fsck": {
+          "sha256": "b33b383b9399ea51899d21cf17ab760246370eb9fab4a58c6711dd7f831499c1",
+          "size_bytes": 1224272
+        },
+        "metadata_checker": {
+          "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
+          "size_bytes": 22556
+        },
+        "mkfs": {
+          "sha256": "6d48a11be98044ba4c89afd6a3f10b4fd37b98fbd583da2339304ab995fbc32b",
+          "size_bytes": 2800648
         }
-      }
+      },
+      "originals": {
+        "odm": {
+          "entry_count": 3059,
+          "image": {
+            "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+            "size_bytes": 4767621120
+          },
+          "replacements": {
+            "/etc/selinux/precompiled_sepolicy": {
+              "sha256": "5ce021d525fa536e0c5e9b2b2b5b8b105d1a94993514ca4d406b298dd137f9b1",
+              "size_bytes": 1571392
+            },
+            "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256": {
+              "sha256": "588e50fa5b784daba22bf6b0258491a313f4c8d17fd06a15acd11ef9e2012bc3",
+              "size_bytes": 65
+            },
+            "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256": {
+              "sha256": "00a413dceb7ce664bf8eb42623a51a9e5b0d133d7603491b042d6d7564f578b7",
+              "size_bytes": 65
+            },
+            "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256": {
+              "sha256": "f698c2fb42a498896149a1ac4a9c80a741022c99e28aaa81326acebd6b594caa",
+              "size_bytes": 65
+            }
+          }
+        },
+        "vendor": {
+          "entry_count": 3910,
+          "image": {
+            "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+            "size_bytes": 959709184
+          },
+          "replacements": {
+            "/etc/selinux/vendor_sepolicy.cil": {
+              "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+              "size_bytes": 1708593
+            }
+          }
+        }
+      },
+      "output_root": "artifacts/policy-images/nezha",
+      "platform": {
+        "board_api": "202504",
+        "branch": "bka",
+        "release_config": "bp4a"
+      },
+      "production_execution_profile": {
+        "bounded_parent_pipe_capture_required": true,
+        "construction_allowance_bytes": 134217728,
+        "fsize_signal_offset_and_log_overflow_probes_required": true,
+        "log_limit_per_stream_bytes": 16777216,
+        "metadata_output_limit_bytes": 134217728,
+        "minimum_additional_free_bytes": 51539607552,
+        "mkfs_fsize_soft_and_hard_bytes": {
+          "odm": 6442450944,
+          "vendor": 2147483648
+        },
+        "native_execution_qualified": false,
+        "original_image_copies_required": false,
+        "private_persistent_ext4_tmpdir_required": true,
+        "regular_capture_max_batch_bytes": 2147483648,
+        "regular_capture_max_file_bytes": 536870912,
+        "reserve_bytes": 2147483648,
+        "schema_version": 1,
+        "scratch_alignment_max_bytes": 65536,
+        "sequential_native_processes": true
+      },
+      "schema_version": 1,
+      "shared_driver_sha256": "04109dd3f3acaf6ed51b5548816645e5a85f30d4583a5960ce539d870798c12a",
+      "writer_driver_sha256": "61628ab739c00cec89b60586fcb9f1a997f3767bf2e983ebe20ddb747915abca"
+    },
+    "v12-export4": {
+      "admitted_metadata": {
+        "compatible_features": [
+          3,
+          7
+        ],
+        "compression_algorithms": 1,
+        "empty_xattr_values": false,
+        "incompatible_features": 1,
+        "inode_nanoseconds": 0,
+        "superblock_nanoseconds": 0
+      },
+      "contract_id": "nezha-five-file-policy-image-inputs-v12-export4-v1",
+      "dependencies": [
+        {
+          "path": "tools/erofs-metadata/full_tar.py",
+          "sha256": "ec487d93ea158fab7022f427793839211978790f01dbcfc9361a63b02b681daa",
+          "size_bytes": 17421
+        },
+        {
+          "path": "scripts/erofs_metadata.py",
+          "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
+          "size_bytes": 22556
+        },
+        {
+          "path": "scripts/avb_image_set.py",
+          "sha256": "08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c",
+          "size_bytes": 41370
+        },
+        {
+          "path": "scripts/twrp_working.py",
+          "sha256": "902fd97f96369593aaa103e008ac62ae6c0a9da866283a6a535701a0603d2a4b",
+          "size_bytes": 36015
+        },
+        {
+          "path": "scripts/inspect_twrp_image.py",
+          "sha256": "8fcbb0e8e24e36b3d7fd557e3a578e7c3a5afa90a66fc7d491c3bbdbc161f839",
+          "size_bytes": 16472
+        },
+        {
+          "path": "config/nezha-avb-image-set.json",
+          "sha256": "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
+          "size_bytes": 4339
+        },
+        {
+          "path": "config/vendor-policy-correction.json",
+          "sha256": "6adafb4ada4a96a926289009a43ec8039d2b7108572f52b938d575d29de3990b",
+          "size_bytes": 4070
+        },
+        {
+          "path": "research/factory-framework-contract.json",
+          "sha256": "b01b713fba3e8253a2383b001b2c4eca7bfe6e2ac3b6f1a29f580d6b8d628a67",
+          "size_bytes": 60799
+        },
+        {
+          "path": "config/nezha-oem-policy.json",
+          "sha256": "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7",
+          "size_bytes": 12375
+        },
+        {
+          "path": "config/nezha-oem-properties.json",
+          "sha256": "f5796d6df4b7232d32ffdece83bc2d5726669fbb6f34f0ba2ef86be6cbc1d711",
+          "size_bytes": 65716
+        }
+      ],
+      "device": "nezha",
+      "erofs_revision": "2c190a73fceb29f00da0558e44bb88ce19ec5bf4",
+      "exporter_source": {
+        "path": "tools/erofs-metadata/erofs_metadata.c",
+        "sha256": "89d60827a44c1c808b8c9bb6f180b28aeaa0e440ff7180856e9c16180cab06b3",
+        "size_bytes": 56498
+      },
+      "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "independent_tar_passes": 2,
+      "limits": {
+        "avb_signed": false,
+        "complete_rom_ready": false,
+        "filesystem_extracted": false,
+        "guest_accessed": false,
+        "hashtree_or_fec_regenerated": false,
+        "native_tools_executed": false,
+        "phone_accessed": false,
+        "raw_erofs_built": false,
+        "source_or_vendor_inputs_adopted": false
+      },
+      "native_driver_sha256": "e2ce79fd47f54ddb97dd571b66cd81d7bf0b66084513ea9a67c5b6f3947a7119",
+      "native_records": {
+        "erofs_build": {
+          "sha256": "9db004d20cf498728bf321913c038c3c82fb472daf831a53dbdc2801694691ff",
+          "size_bytes": 7498
+        },
+        "erofs_fsize_orchestration": {
+          "sha256": "8e7e92e45ea548a73a12b0c16e0daf81b1aab2a1259fd5e04d16ec70e3008f38",
+          "size_bytes": 61283
+        },
+        "erofs_fsize_probe": {
+          "sha256": "78da86e46757ef5bcf6edd7ceaaaf7ca6fdff47b0ca7288eb7dfaa1c0a113f5b",
+          "size_bytes": 7519
+        },
+        "erofs_odm_noop": {
+          "sha256": "762c7e7607658414b3feaf4d0a3ef5f8a0884d86810d68d5f6344d003aae35b7",
+          "size_bytes": 70151
+        },
+        "erofs_odm_noop_capture": {
+          "sha256": "05fe6af8bb05127fa17479ccb59638f413644b4eef066f76c497e2c33e3a75eb",
+          "size_bytes": 11925
+        },
+        "erofs_odm_noop_orchestration": {
+          "sha256": "7e84512e0f0e15404105133c7121c687ae7f213dd10746ee5f46e9e90f94697d",
+          "size_bytes": 84552
+        },
+        "erofs_odm_noop_sandbox": {
+          "sha256": "d66142bb5b6cc58b72e49233a0b888f0091d8531db65d00bab0089feaa8c3399",
+          "size_bytes": 4235
+        },
+        "erofs_shared": {
+          "sha256": "802792df012c43657eab248b741570f389072d21d3349230a5c8314a92944350",
+          "size_bytes": 29190
+        },
+        "erofs_source_manifest": {
+          "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
+          "size_bytes": 21918
+        },
+        "erofs_stock": {
+          "sha256": "347f605dbd79bc85180ec9ad5338bbbbf5db4854e1a602648f910c5b13ab5340",
+          "size_bytes": 19578
+        },
+        "erofs_synthetic": {
+          "sha256": "7abadb8f9d2e2ba11e4e57e075c4c8a165a137dca47bddb0b08387f20026ae40",
+          "size_bytes": 101800
+        },
+        "erofs_tools": {
+          "sha256": "4c26cf8b2e7afa41ebe2daf8ac48d8ff6b3c8adb6dc43ee7e6cc9df1f13e7eff",
+          "size_bytes": 1232
+        },
+        "erofs_vendor_noop": {
+          "sha256": "a4afbf6be2f392c46f30bcc223bff92d6606854a2aa69c712877f6a09a473763",
+          "size_bytes": 70659
+        },
+        "erofs_vendor_noop_capture": {
+          "sha256": "8b7ca11340e961a56fe9f94696a96beb49b212ce291ce2aad1401c43c238e5aa",
+          "size_bytes": 12060
+        },
+        "erofs_vendor_noop_orchestration": {
+          "sha256": "4600b52e6330b517fa9428ab1466445e94f53b0272f84fb90acdfcc575f57868",
+          "size_bytes": 85159
+        },
+        "erofs_vendor_noop_sandbox": {
+          "sha256": "3aa3774d3cd2f9462122e9d94865efaf3a5ffe3bb0c6c47b827b88e8f467f059",
+          "size_bytes": 4262
+        },
+        "erofs_writer": {
+          "sha256": "de5ae6a3eda010f6431b27ccd776ef8f0bf64b1dab83971715e7961ec75e941b",
+          "size_bytes": 80705
+        },
+        "erofs_writer_orchestration": {
+          "sha256": "530ebc6349634dda65db3e99842849c5a83aba5938e467d22485bfb3ef3d33b8",
+          "size_bytes": 11114
+        },
+        "native_oem_guard": {
+          "sha256": "5f9fcd53505ef13e5c402bf9363c95dd1b6600c5e1033cb777da072f7dfc4eff",
+          "size_bytes": 19859
+        },
+        "policy_analysis": {
+          "sha256": "dd338730212aadf7dde9847cd63f60e5023c3c1d5c2fae91ff3d199593219c95",
+          "size_bytes": 342300
+        },
+        "policy_build": {
+          "sha256": "97ccf088f4027748a4d4b47268a1e29d23b95a03ff80f301795988709b8b181b",
+          "size_bytes": 23313
+        },
+        "policy_build_log": {
+          "sha256": "e00b6e431af0206ef8fa50a09f44d0dc3eb30f0608971241563466bf0346a143",
+          "size_bytes": 24434
+        },
+        "policy_build_sandbox": {
+          "sha256": "32c55a88ea2cf8d3e4bc14caafdb9bbca3bd89eece390138e83d34212b789e3b",
+          "size_bytes": 2161
+        },
+        "policy_source_manifest": {
+          "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
+          "size_bytes": 21918
+        },
+        "sidecar_native_validation": {
+          "sha256": "54e95463bcbc02f47bcca7c27b0d2089ad3da54f67a4ac4c37557b1ca5976865",
+          "size_bytes": 41444
+        },
+        "sidecar_orchestration": {
+          "sha256": "bd95b95c67d04315e1fd81afc0fac4390abeb29d3fb96d18b1a08dc8f4a7bcd5",
+          "size_bytes": 51017
+        },
+        "sidecar_sandbox": {
+          "sha256": "4e4c6d69431339f19f8abf34d23f807670828cd08295c27b62be9c018d527449",
+          "size_bytes": 4161
+        },
+        "sidecar_source_capture": {
+          "sha256": "c417b371833c6ca31e22fdad96d925fc3b5724ab136cd7546798d875d30ff38b",
+          "size_bytes": 514
+        },
+        "vendor_derivation": {
+          "sha256": "864c595a0f0694480af903e7b9a3f6800b5ea608ea3ad40fd07c8eae503e8fb2",
+          "size_bytes": 29341
+        }
+      },
+      "native_tools": {
+        "exporter": {
+          "sha256": "9fa98c5d9a698868b730201852c0029747c3a7458f1a9dc40426d878f8e3d270",
+          "size_bytes": 3611664
+        },
+        "fsck": {
+          "sha256": "b33b383b9399ea51899d21cf17ab760246370eb9fab4a58c6711dd7f831499c1",
+          "size_bytes": 1224272
+        },
+        "metadata_checker": {
+          "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
+          "size_bytes": 22556
+        },
+        "mkfs": {
+          "sha256": "6d48a11be98044ba4c89afd6a3f10b4fd37b98fbd583da2339304ab995fbc32b",
+          "size_bytes": 2800648
+        }
+      },
+      "originals": {
+        "odm": {
+          "entry_count": 3059,
+          "image": {
+            "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+            "size_bytes": 4767621120
+          },
+          "replacements": {
+            "/etc/selinux/precompiled_sepolicy": {
+              "sha256": "5ce021d525fa536e0c5e9b2b2b5b8b105d1a94993514ca4d406b298dd137f9b1",
+              "size_bytes": 1571392
+            },
+            "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256": {
+              "sha256": "588e50fa5b784daba22bf6b0258491a313f4c8d17fd06a15acd11ef9e2012bc3",
+              "size_bytes": 65
+            },
+            "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256": {
+              "sha256": "00a413dceb7ce664bf8eb42623a51a9e5b0d133d7603491b042d6d7564f578b7",
+              "size_bytes": 65
+            },
+            "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256": {
+              "sha256": "f698c2fb42a498896149a1ac4a9c80a741022c99e28aaa81326acebd6b594caa",
+              "size_bytes": 65
+            }
+          }
+        },
+        "vendor": {
+          "entry_count": 3910,
+          "image": {
+            "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+            "size_bytes": 959709184
+          },
+          "replacements": {
+            "/etc/selinux/vendor_sepolicy.cil": {
+              "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+              "size_bytes": 1708593
+            }
+          }
+        }
+      },
+      "output_root": "artifacts/policy-images/nezha",
+      "platform": {
+        "board_api": "202504",
+        "branch": "bka",
+        "release_config": "bp4a"
+      },
+      "production_execution_profile": {
+        "bounded_parent_pipe_capture_required": true,
+        "construction_allowance_bytes": 134217728,
+        "fsize_signal_offset_and_log_overflow_probes_required": true,
+        "log_limit_per_stream_bytes": 16777216,
+        "metadata_output_limit_bytes": 134217728,
+        "minimum_additional_free_bytes": 51539607552,
+        "mkfs_fsize_soft_and_hard_bytes": {
+          "odm": 6442450944,
+          "vendor": 2147483648
+        },
+        "native_execution_qualified": false,
+        "original_image_copies_required": false,
+        "private_persistent_ext4_tmpdir_required": true,
+        "regular_capture_max_batch_bytes": 2147483648,
+        "regular_capture_max_file_bytes": 536870912,
+        "reserve_bytes": 2147483648,
+        "schema_version": 1,
+        "scratch_alignment_max_bytes": 65536,
+        "sequential_native_processes": true
+      },
+      "schema_version": 1,
+      "shared_driver_sha256": "04109dd3f3acaf6ed51b5548816645e5a85f30d4583a5960ce539d870798c12a",
+      "sidecar_derivation": {
+        "collector": {
+          "sha256": "0e8279d08ae5620c267d0c772ce2d4470bac28a49cc928eb6bcdda2f79f35b0f",
+          "size_bytes": 35200
+        },
+        "contract": {
+          "sha256": "e6dae118db54e221a046b32e3051eb6e174d82d6650af1b3a3ba229d13d607a2",
+          "size_bytes": 6482
+        },
+        "driver": {
+          "sha256": "d896d68d1b4c05f3fcacab51c8bade8bd4ce397302b14d62187c7d87fed076da",
+          "size_bytes": 14912
+        },
+        "launcher": {
+          "sha256": "bb29904cc9a23943d71445a2cca66027b0e7893832f8ab8bee1aa0afab4af50f",
+          "size_bytes": 11799
+        },
+        "recipe": "cat $(in) | sha256sum | cut -d' ' -f1 > $(out)",
+        "source": {
+          "sha256": "17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8",
+          "size_bytes": 43467
+        },
+        "source_revision": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+      },
+      "writer_driver_sha256": "61628ab739c00cec89b60586fcb9f1a997f3767bf2e983ebe20ddb747915abca"
     }
   },
-  "output_root": "artifacts/policy-images/nezha",
-  "platform": {
-    "board_api": "202504",
-    "branch": "bka",
-    "release_config": "bp4a"
-  },
-  "production_execution_profile": {
-    "bounded_parent_pipe_capture_required": true,
-    "construction_allowance_bytes": 134217728,
-    "fsize_signal_offset_and_log_overflow_probes_required": true,
-    "log_limit_per_stream_bytes": 16777216,
-    "metadata_output_limit_bytes": 134217728,
-    "minimum_additional_free_bytes": 51539607552,
-    "mkfs_fsize_soft_and_hard_bytes": {
-      "odm": 6442450944,
-      "vendor": 2147483648
-    },
-    "native_execution_qualified": false,
-    "original_image_copies_required": false,
-    "private_persistent_ext4_tmpdir_required": true,
-    "regular_capture_max_batch_bytes": 2147483648,
-    "regular_capture_max_file_bytes": 536870912,
-    "reserve_bytes": 2147483648,
-    "schema_version": 1,
-    "scratch_alignment_max_bytes": 65536,
-    "sequential_native_processes": true
-  },
-  "schema_version": 1,
-  "shared_driver_sha256": "04109dd3f3acaf6ed51b5548816645e5a85f30d4583a5960ce539d870798c12a",
-  "writer_driver_sha256": "61628ab739c00cec89b60586fcb9f1a997f3767bf2e983ebe20ddb747915abca"
+  "schema_version": 2
 }

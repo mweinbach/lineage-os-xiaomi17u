@@ -6,21 +6,62 @@ filesystem, execute an image writer, regenerate an AVB footer, sign anything,
 adopt a vendor image, or authorize a device operation. The selected platform
 remains Evolution X `bka` / `bp4a` and normal Android remains enforcing.
 
-The public contract is `config/nezha-policy-images.json`. The originals remain
-the vendor and ODM images from factory package SHA256
+The public contract is `config/nezha-policy-images.json`. Its schema-2 profile
+container preserves the original contract unchanged under `historical-v12` and
+adds the explicitly selected `v12-export4` profile. `historical-v12` remains the
+default and remains blocked; selecting a newer profile is never implicit.
+The current profile's contract ID is
+`nezha-five-file-policy-image-inputs-v12-export4-v1`.
+
+The originals remain the vendor and ODM images from factory package SHA256
 `d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b`.
 Their image hashes, package budgets, five original file hashes, source tools,
 native tool identities and reviewed native qualification records are pinned.
-The current policy-analysis and associated producer records remain unfilled
-until the current native factory-combined policy analysis is captured and
-reviewed. `plan` reports these missing records; they are not bypassable flags.
+The export4 native policy analysis and both complete stock no-op reconstruction
+proofs now exist. The three framework hash sidecars are absent from the selected
+native OUT. The current profile therefore requires a captured producer recipe
+and separate native validation before explicitly deriving those files from
+the captured CIL and mapping inputs. The fresh native validation passed all
+three known answers and all three specific negative cases, with zero skips;
+its source, tools, isolation and exact results are pinned. Expected bytes alone
+do not complete admission. Derived files are recorded as
+derivations, never as captured native outputs or invented native paths.
+
+The first native sidecar run is preserved under ignored
+`artifacts/build-validation/nezha-policy-sidecar-native-v1-failed/`. It failed
+during loader-output inspection before any sidecar recipe executed. Its result
+is not admitted as a pass. The fresh v2 validation handles only the captured
+initial AArch64 address-only record, preserves its text without assigning a
+file origin or mapping type, and checks all named tool/runtime records with
+the unchanged parser. Unknown output still fails.
+
+The successful native receipt is
+`artifacts/build-validation/nezha-policy-sidecar-native-v2/results/receipt.json`,
+SHA256 `54e95463bcbc02f47bcca7c27b0d2089ad3da54f67a4ac4c37557b1ca5976865`
+(41,444 bytes). It records fourteen executed commands and six passed checks.
+The public profile separately binds its outer orchestration, sandbox and source
+capture. The source recipe is the three `java_genrule` definitions in
+`system/sepolicy/Android.bp` at revision
+`e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27`, file SHA256
+`17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8`.
+The recorded implementation runs that recipe with the measured guest system
+shell and hash tools against sealed export4 inputs. It does not claim that
+Android's genrules executed or that installed sidecars were captured.
+
+The selected export4 contract's canonical SHA256 is
+`5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4`.
+This admits evidence validation and TAR preparation only. The changed-policy
+EROFS images have not yet been built or adopted by this workflow.
 
 ```sh
 python3 scripts/policy_image_inputs.py plan
+python3 scripts/policy_image_inputs.py plan --profile v12-export4
 ```
 
-The plan intentionally exits 2 while prerequisites are missing. This is not a
-failed Android build or a skipped native test.
+`plan` reports the selected profile and its missing prerequisites. It exits 2
+while prerequisites remain missing; this is not a failed Android build or a
+skipped native test. A profile selection does not change readiness flags,
+authorize native execution, or adopt the later installed provider inputs.
 
 ## Scope and native evidence
 
@@ -55,30 +96,74 @@ EROFS source remains commit `2c190a73fceb29f00da0558e44bb88ce19ec5bf4`;
 the metadata exporter source remains
 `89d60827a44c1c808b8c9bb6f180b28aeaa0e440ff7180856e9c16180cab06b3`.
 
+The complete original vendor and ODM no-op native reconstructions also passed:
+
+| Native capture | Checks | Raw image bytes per independent build | Receipt SHA256 |
+| --- | --- | ---: | --- |
+| `nezha-erofs-full-vendor-v2` | 8 passed, 0 skipped | 941,744,128 | `a4afbf6be2f392c46f30bcc223bff92d6606854a2aa69c712877f6a09a473763` |
+| `nezha-erofs-full-odm-v1` | 8 passed, 0 skipped | 4,678,053,888 | `762c7e7607658414b3feaf4d0a3ef5f8a0884d86810d68d5f6344d003aae35b7` |
+
+Each capture under ignored `artifacts/build-validation/` retains its native
+receipt, orchestration record, diagnostics and complete metadata exports. The
+two TARs, raw images and exports are byte-identical within each partition's
+independent builds. All original file bytes and semantic metadata match;
+only physical inode/block locations are excluded from the comparison. Both
+runs used zero replacements and passed structure, data and raw-xattr checks.
+ODM processed its actual 6,004,780,032-byte TAR beyond the 4 GiB boundary.
+These results qualify those exact stock no-op reconstructions, not the five
+policy substitutions, equality with the original signed image, retained-kernel
+mounting, AVB, partition fit or boot. Earlier failed attempts and synthetic
+limitations remain preserved.
+
+The selected policy proof is `analysis-v12f-export4-v1`, operation
+`verify-native-oem-properties-v12f-export4`. Its captured receipt at
+`artifacts/build-validation/nezha-analysis-v12f-export4-v1/receipt.json` is
+342,300 bytes, SHA256
+`dd338730212aadf7dde9847cd63f60e5023c3c1d5c2fae91ff3d199593219c95`.
+It binds the successful `policy-v12f-export-1` native build, exact compiler
+inputs and source-fixup chain; verifies source/M4 and API-202504 mapping
+provenance, the fresh OEM guard and nine context/structural checks; and retains
+all 6,366 assertions with the exact reviewed effects. All three analyzed
+binaries have zero permissive domains. The framework provider profile remains
+unselected. Full Treble APK labeling, later provider inputs and runtime
+compatibility are not proven by this receipt.
+
 ## Private input control
 
 Keep the control JSON, original images, regular file bytes, native captures and
 outputs in ignored private directories. The control requires schema version 1,
-contract ID `nezha-five-file-policy-image-inputs-v1`, the exact public contract
-SHA256, a simple `artifact_set_id`, and these three complete maps:
+the selected profile's `contract_id`, its `contract_sha256`, and a simple
+`artifact_set_id`. There is no `profile` field in the private control: the CLI
+selects it, and mismatched control identities fail. `contract_sha256` hashes the
+selected profile object serialized as sorted-key, two-space-indented JSON plus
+one newline, not the whole schema-2 catalog. The historical contract ID remains
+`nezha-five-file-policy-image-inputs-v1`; the current ID is
+`nezha-five-file-policy-image-inputs-v12-export4-v1`.
 
 | Map | Required entries |
 | --- | --- |
-| `records` | `erofs_build`, `erofs_source_manifest`, `erofs_tools`, `erofs_shared`, `erofs_synthetic`, `erofs_stock`, `erofs_writer`, `erofs_writer_orchestration`, `policy_build`, `policy_build_log`, `policy_source_manifest`, `policy_build_sandbox`, `policy_analysis`, `native_oem_guard`, `vendor_derivation` |
+| `records` | Exactly the keys of the selected profile's `native_records`; export4 includes the bound native limit probe, both full no-op captures and their outer/sandbox records, and sidecar recipe/native validation evidence, in addition to the policy and EROFS prerequisites |
 | `partitions` | `vendor` and `odm`; each has `image`, `manifest` and a separate, non-nested `staging_root` |
-| `policy_files` | The exact ten ordered runtime CIL/mapping inputs in `RUNTIME_INPUTS`, plus `combined`, `plat_sha256`, `system_ext_sha256` and `product_sha256` |
+| `policy_files` | For export4, exactly the ten runtime CIL/mapping inputs in `RUNTIME_INPUTS`, plus `combined`; historical-v12 additionally requires `plat_sha256`, `system_ext_sha256` and `product_sha256` |
+| `noop_manifests` | Export4 only: `vendor` and `odm`, each selecting the two complete native no-op manifests with ordinary `path` / `sha256` / `size_bytes` rows |
 
 Every file selector contains `path`, `sha256` and `size_bytes`. A policy file
 also contains `native_path`, the absolute physical producer path from the
 current analysis. Local paths resolve relative to the private control. Native
 paths are evidence, not commands to execute.
 
-The single vendor replacement is `/etc/selinux/vendor_sepolicy.cil`. The four
-ODM replacements are `/etc/selinux/precompiled_sepolicy` and its
-`plat_sepolicy_and_mapping.sha256`, `system_ext_sepolicy_and_mapping.sha256`
-and `product_sepolicy_and_mapping.sha256` sidecars. The ODM binary must be the
-actual `nezha_factory_precompiled_sepolicy` output consuming the exact ten
-reviewed compiler inputs. The source-only installed
+Both profiles permit only these five content replacements:
+
+| Partition | Exact path within that filesystem |
+| --- | --- |
+| vendor | `/etc/selinux/vendor_sepolicy.cil` |
+| odm | `/etc/selinux/precompiled_sepolicy` |
+| odm | `/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256` |
+| odm | `/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256` |
+| odm | `/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256` |
+
+The ODM binary must be the actual `nezha_factory_precompiled_sepolicy` output
+consuming the exact ten reviewed compiler inputs. The source-only installed
 `OUT/target/product/nezha/odm/etc/selinux/precompiled_sepolicy` is rejected as
 the replacement even though its own zero-permissive analysis remains required.
 
@@ -93,20 +178,31 @@ preservation claims.
 
 Each sidecar is independently recomputed as lowercase
 `SHA256(framework CIL bytes || 202504 mapping bytes)` followed by one newline:
-65 bytes. All three framework producer paths must belong to the same native
-OUT directory. No empty or stale hash sidecar is invented.
+65 bytes. The source CIL/mapping selectors remain bound to the exact native
+compiler inputs in the selected OUT. Historical-v12 also requires captured
+sidecars at their native producer paths and remains blocked.
+
+Export4 deliberately omits those absent native sidecar selectors. After the
+required source-recipe capture and native known-answer validation are admitted,
+preparation writes the three explicit derivations under the fresh output's
+`derived-sidecars/`. Their provenance records the source-pair identities and
+recipe/native-validation evidence. They do not receive a `native_path` or claim
+that the corresponding installed native files existed. Missing validation
+blocks preparation; byte agreement with a locally calculated hash alone cannot
+satisfy it. No empty, stale or unrelated sidecar is substituted.
 
 The staging roots supply only regular file bytes. They are not trusted for
 ownership, mode, SELinux labels, capabilities, timestamps, symlink targets or
 hardlinks. Those come from the complete native export, including byte paths
 and exact xattrs. The helper verifies every original regular path, including
-the five original replacement preimages, rejects extra staging entries and
+the five original replacement preimages and includes only manifest-listed
+paths in the TAR; extra staging entries are not copied or rejected. It
 uses no-follow directory/file access. It then substitutes the five selected
 payloads while retaining the original metadata. Do not use a privileged
 filesystem extraction/restore step as a substitute for this evidence.
 
 ```sh
-python3 scripts/policy_image_inputs.py prepare \
+python3 scripts/policy_image_inputs.py prepare --profile v12-export4 \
   --input artifacts/private-policy-inputs/control.json \
   --expected-sha256 CONTROL_SHA256 \
   --output-dir artifacts/policy-images/nezha/NEW_UNIQUE_RUN
@@ -132,7 +228,8 @@ VM, changing the source checkout, or transferring keys.
 ## Finite production execution parameters
 
 The public contract records concrete limits for a subsequent native executor.
-They are not yet a claim that the production executor or new images passed.
+The full stock no-op runs exercised the pinned tools and these partition file
+limits, but did not admit an executor for the five policy substitutions.
 Do not change the frozen synthetic runner, whose mkfs limit is 16 MiB.
 
 | Quantity before replacements | Vendor | ODM |
@@ -193,7 +290,8 @@ unsets `SOURCE_DATE_EPOCH`, preserves inode times, retains overlay xattrs and
 does not reconstruct metadata from the staging tree. The recipe is data only;
 this command never executes it.
 
-Two actual native builds must subsequently pass complete metadata exports,
+Two actual native builds containing the five replacements must subsequently
+pass complete metadata exports,
 strict semantic comparison permitting exactly the five content changes,
 unfiltered filesystem/xattr checks, and byte-identical image/export comparison.
 The expected-after manifest and image identities must come from those actual
