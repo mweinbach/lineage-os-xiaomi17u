@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "v13f-graph-blocker-retained-native-sidecars-and-selected-audio-layouts-verified",
+  "checkpoint": "sealed-v12-export4-exact-five-raw-images-reconstructed-v13f-source-blocker-retained",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -681,7 +681,8 @@
       "production_policy_writer_admitted": false,
       "changed_policy_images_built_or_adopted": false,
       "complete_rom_ready": false,
-      "scope": "Committed public profile for explicit sealed-v12/export4 evidence admission and TAR preparation, with a successful complete unmocked read-only admission replay. No TAR preparation, native execution or image access occurred in that replay; this does not admit active v13f inputs. The separate ignored future writer-packet freeze is not this public profile or an executed writer."
+      "scope": "Committed public profile for explicit sealed-v12/export4 evidence admission and TAR preparation, with a successful complete unmocked read-only admission replay. No TAR preparation, native execution or image access occurred in that earlier replay; the separate later native reconstruction is recorded independently and does not admit active v13f inputs.",
+      "separate_later_native_reconstruction": "native_policy_image_reconstruction"
     }
   },
   "erofs_qualification": {
@@ -898,25 +899,25 @@
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
     "runner": "coordinator",
-    "passed": 3591,
+    "passed": 3634,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 152.682,
-    "code_commit": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158",
+    "elapsed_seconds": 156.509,
+    "code_commit": "364ab89efef4c2dc888ce5ff96152da01cacf8bb",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-policy-image-profile-v1.log",
-      "sha256": "7195b554bb63b1346117accbb25f92ff499d30c8f2d2073fba29587c66f9ac19",
-      "size_bytes": 618190
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-provider-v7-integration-v1.log",
+      "sha256": "40be2f70cf6fbeb3e0325101ac6a41a48ea061046d0ae681fdc6a9f9a97c9672",
+      "size_bytes": 625652
     },
-    "scope": "Coordinator full offline workspace run covering the committed explicit v12/export4 policy-image profile. Separate from native sidecar execution, compile-only audio measurements, actual Android product builds and hardware tests; does not approve the held 4 KiB profile."
+    "scope": "Coordinator full offline workspace run covering all thirteen committed v7 provider integration files. This validates workspace tooling, not active guest source admission, the future v13h candidate/build, complete ABI, runtime behavior, raw-image adoption or hardware."
   },
   "remaining_gates": [
-    "Resolve the exact Audio AIDL V2/V4 dependency conflict, rerun v13f policy targets and independently verify provider policy against v12f/export4; retain the 4 KiB hold and do not lower compatibility checks",
+    "Admit the committed v7 producer/consumer correction through a verified v13h bundle/candidate and guest transaction, then run the strict native build and independently verify provider policy against v12f/export4; retain the 4 KiB hold and all compatibility checks",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "Strict native provider runtime ELF/linker and service checks after independent provider-policy verification",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
-    "Metadata-preserving vendor/ODM policy derivation and new hashtree/FEC/AVB/partition-fit evidence",
+    "After current provider policy verification, derive its matching vendor/ODM images and complete new hashtree/FEC/AVB/partition-fit evidence; the sealed v12/export4 exact-five raw reconstruction now passes but remains unadopted",
     "Ordinary target-files, super, A/B, snapshot and OTA packaging",
     "Complete signed AVB chain and rollback compatibility",
     "Separately authorized first Evolution X boot and hardware stabilization"
@@ -1220,6 +1221,22 @@
         "size_bytes": 611862
       },
       "scope": "Fresh coordinator full workspace run after the component milestone; separate from native component, partial policy-analysis, authoring-agent and hardware evidence. It does not approve the held 4096 profile."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3591,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 152.682,
+      "code_commit": "35324b4fbe63e106ae66df3d3f43cf3ae4a4a158",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-policy-image-profile-v1.log",
+        "sha256": "7195b554bb63b1346117accbb25f92ff499d30c8f2d2073fba29587c66f9ac19",
+        "size_bytes": 618190
+      },
+      "scope": "Coordinator full offline workspace run covering the committed explicit v12/export4 policy-image profile. Separate from native sidecar execution, compile-only audio measurements, actual Android product builds and hardware tests; does not approve the held 4 KiB profile."
     }
   ],
   "previous_v11b_policy": {
@@ -1568,7 +1585,6 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "latest_native_observation_utc": "2026-08-30T03:31:25.389032+00:00",
   "recorded_at_utc": "2026-08-30T02:41:21.140863+00:00",
   "latest_native_build_completed_at_utc": "2026-08-30T02:36:44.248020+00:00",
   "native_policy_export_build": {
@@ -3005,7 +3021,7 @@
     },
     "source_and_stock_abi_investigation_complete": false,
     "active_provider_inputs_changed_by_fixtures_or_probe": false,
-    "scope": "Native fixtures show a variant-only change does not resolve mixed Audio AIDL versions. The corrected compile-only layout probe matches 15 measured factory constraints, and static review verifies two selected CFI predicates without suppression. Complete caller ABI and runtime routing remain unverified; the proposed Miracast dependency correction is not yet admitted or installed.",
+    "scope": "Native fixtures show a variant-only change does not resolve mixed Audio AIDL versions. Compile-only layout measurements and selected static CFI checks support the exact v7 input derivation, whose host producer/consumer integration is now committed. Active guest admission, v13h candidate/build, complete caller ABI and runtime routing remain unverified.",
     "layout_v2": {
       "phase": "audio-native-layout-run-v2",
       "receipt": {
@@ -3076,7 +3092,62 @@
       ]
     },
     "miracast_dependency_correction_admitted": false,
-    "miracast_dependency_correction_installed": false
+    "miracast_dependency_correction_installed": false,
+    "host_v7_correction_status": "Producer and consumer integration committed at 364ab89 with host verification complete; active guest remains failed v13f and the v13h bundle/candidate, installation and native build are pending.",
+    "committed_v7_host_correction": {
+      "code_commit": "364ab89efef4c2dc888ce5ff96152da01cacf8bb",
+      "committed_integration_files": 13,
+      "compatibility_record": {
+        "path": "research/framework-provider-audio-compatibility.json",
+        "sha256": "ed39a807cb07ee7b79cdd1da8e794419845815573826ac5c0326c059d6c3e37c",
+        "size_bytes": 12267,
+        "git_revision": "364ab89efef4c2dc888ce5ff96152da01cacf8bb"
+      },
+      "bundle_verification": {
+        "path": "reports/framework-providers-20260829/provider-v7-integration/verify.json",
+        "sha256": "dd5b1c0e24787ca51a1f0d9bd692f6bf679c9e6289d3133ace93db5532478b70",
+        "size_bytes": 13933
+      },
+      "host_producer": {
+        "path": "reports/framework-providers-20260829/provider-v7-integration/producer-smoke.json",
+        "sha256": "b28b4c90d53fe1c15b9fc0f02be5e5bd5480dfca5947b0b3cc35793575e8c37b",
+        "size_bytes": 1512
+      },
+      "host_consumer_replay": {
+        "path": "reports/framework-providers-20260829/provider-v7-consumers/real-v7-replay-v1.json",
+        "sha256": "9e6e7b77c373e5be1b5b83204b9a34b21bda9e44d5ef306eb47fdbbab7754112",
+        "size_bytes": 2435
+      },
+      "host_producer_and_consumer_verified": true,
+      "original_input_preserved": true,
+      "exact_dt_needed_derivation": {
+        "changed_byte_file_offset": 17588,
+        "derived": {
+          "sha256": "06ffed0abd8cd7258c44e672e7fde4377f39626dddbed59eef70f60426c08082",
+          "size_bytes": 119560
+        },
+        "derived_byte_hex": "34",
+        "dt_needed_string_file_offset": 17554,
+        "kind": "exact-equal-length-dt-needed-string-replacement",
+        "new": "android.media.audio.common.types-V4-cpp.so",
+        "old": "android.media.audio.common.types-V2-cpp.so",
+        "original": {
+          "sha256": "45880ab976336616c2ff91753d176d3d10e175564005d51266359316ad965541",
+          "size_bytes": 119560
+        },
+        "original_byte_hex": "32"
+      },
+      "original_native_inputs": 42,
+      "original_payloads": 31,
+      "host_producer_output_count_including_receipt": 32,
+      "consumer_provider_bundle_members": 45,
+      "v13h_bundle_and_candidate_admitted": false,
+      "active_guest_correction_installed": false,
+      "native_source_build_run": false,
+      "complete_caller_abi_or_runtime_verified": false,
+      "phone_accessed": false,
+      "scope": "Committed source/tooling with verified host producer and consumer bindings for the exact derived input. Active guest inputs remain failed v13f; the v13h bundle/candidate, guest transaction and actual native build are separate pending work."
+    }
   },
   "native_policy_sidecar_derivation": {
     "phase": "policy-sidecar-native-v2",
@@ -3210,5 +3281,235 @@
     },
     "scope": "Native isolated execution of the pinned source recipe against six sealed v12f/export4 inputs derives three exact sidecars. This does not capture installed digest outputs, execute Android genrules, validate current v13f provider policy or adopt an image. The initial loader-parser failure remains preserved."
   },
-  "latest_native_observation_kind": "audio-layout-compile-only"
+  "native_policy_image_reconstruction": {
+    "phase": "policy-images-export4-v1",
+    "operation": "native-exact-five-export4-policy-images-v1",
+    "baseline": "sealed-v12/export4",
+    "canonical_profile_sha256": "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
+    "receipt": {
+      "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/receipt.json",
+      "sha256": "77b40170a55f15418f75d2bbe89ff7bb99c5024600f0d5aacee23c064f3f765e",
+      "size_bytes": 152538
+    },
+    "orchestration": {
+      "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/orchestration.json",
+      "sha256": "ef4dddea197c382d39c6c31e5ba814cc5a979288faa7e8463875de7cef76dc89",
+      "size_bytes": 171877
+    },
+    "sandbox": {
+      "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/sandbox.json",
+      "sha256": "f7be058f1165889ba908514ff82388c07e8d8ae898c3b535f1b12397e8ab51f6",
+      "size_bytes": 6398
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-policy-images-export4-v1/capture.json",
+      "sha256": "772f2e8af2df008f33af92b82a30d2c759059ac03a027ebd6fa736b8d3cde5e1",
+      "size_bytes": 52308
+    },
+    "public_tar_preparation_receipt": {
+      "path": "artifacts/build-validation/nezha-policy-images-export4-v1/workspace/artifacts/policy-images/nezha/prepared/preparation.json",
+      "sha256": "30b22c6dbea3d7c5bbbfb648e95a1b4d43742819b8b36811ca0d164911db25a6",
+      "size_bytes": 27025
+    },
+    "passed": true,
+    "checks_passed": 9,
+    "commands_passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "captured_files": 97,
+    "captured_bytes": 10639644,
+    "missing_capture_files": 0,
+    "all_host_capture_files_rehashed": true,
+    "large_tars_and_images_copied_to_host": false,
+    "large_tars_and_images_reopened_by_collector": false,
+    "large_artifact_identities_recorded_by_native_run": true,
+    "complete_derived_exports_captured": 4,
+    "actual_public_tar_preparation_executed": true,
+    "actual_native_erofs_writer_executed": true,
+    "two_independent_complete_tar_image_export_sets_identical": true,
+    "partitions": {
+      "vendor": {
+        "independent_passes": 2,
+        "raw_image": {
+          "sha256": "b74b8b92d121a83ffbe4ee14d9e973bb4f52ff40c0dbdea9000e112b463aa065",
+          "size_bytes": 941744128
+        },
+        "complete_tar": {
+          "sha256": "988edbc4b5b27ba15318768c190471023f5686086ea9999bf7805c58a07e8a6d",
+          "size_bytes": 1643234816
+        },
+        "complete_exports": [
+          {
+            "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/vendor-policy-1-export.stdout",
+            "sha256": "b9343de5bad905e88e16ce784d1ccc3e3f4fd0029765b5fc2a2595a36b1b71a7",
+            "size_bytes": 1756503
+          },
+          {
+            "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/vendor-policy-2-export.stdout",
+            "sha256": "b9343de5bad905e88e16ce784d1ccc3e3f4fd0029765b5fc2a2595a36b1b71a7",
+            "size_bytes": 1756503
+          }
+        ],
+        "tars_images_and_exports_identical_between_passes": true,
+        "entries_compared": 3910,
+        "regular_contents_compared": 3389,
+        "content_replacements": [
+          {
+            "after": {
+              "sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+              "size_bytes": 1708593
+            },
+            "before": {
+              "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+              "size_bytes": 1708593
+            },
+            "path": "/etc/selinux/vendor_sepolicy.cil"
+          }
+        ],
+        "all_other_contents_and_semantic_metadata_equal": true,
+        "inode_metadata_exclusions": [
+          "inode.nid"
+        ],
+        "superblock_physical_exclusions": [
+          "meta_blkaddr",
+          "primary_blocks",
+          "root_nid",
+          "total_blocks",
+          "xattr_blkaddr"
+        ]
+      },
+      "odm": {
+        "independent_passes": 2,
+        "raw_image": {
+          "sha256": "9e7fc8ef9b65c728d3943f11221e2efa19a50ace6797f447e41f23b6a8260078",
+          "size_bytes": 4678025216
+        },
+        "complete_tar": {
+          "sha256": "6ecfeb9d1a17b7797e7010746a9b8be562968a4b14817ffe2e4f43cce056c7ac",
+          "size_bytes": 6004723712
+        },
+        "complete_exports": [
+          {
+            "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/odm-policy-1-export.stdout",
+            "sha256": "f4362d216963fe3db3c63faf83779444cf527b1dda09ddc5989941aff58c0078",
+            "size_bytes": 1421156
+          },
+          {
+            "path": "artifacts/build-validation/nezha-policy-images-export4-v1/results/odm-policy-2-export.stdout",
+            "sha256": "f4362d216963fe3db3c63faf83779444cf527b1dda09ddc5989941aff58c0078",
+            "size_bytes": 1421156
+          }
+        ],
+        "tars_images_and_exports_identical_between_passes": true,
+        "entries_compared": 3059,
+        "regular_contents_compared": 2925,
+        "content_replacements": [
+          {
+            "after": {
+              "sha256": "b9c1577a546bf1d1ae15b59b4c03d7fe594eba6cef8963d30051c7e165fac8eb",
+              "size_bytes": 1515262
+            },
+            "before": {
+              "sha256": "5ce021d525fa536e0c5e9b2b2b5b8b105d1a94993514ca4d406b298dd137f9b1",
+              "size_bytes": 1571392
+            },
+            "path": "/etc/selinux/precompiled_sepolicy"
+          },
+          {
+            "after": {
+              "sha256": "b0ebad72754afac819eb42b91ffe01c64694ae9c1b8831d333f0933224bbce42",
+              "size_bytes": 65
+            },
+            "before": {
+              "sha256": "588e50fa5b784daba22bf6b0258491a313f4c8d17fd06a15acd11ef9e2012bc3",
+              "size_bytes": 65
+            },
+            "path": "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256"
+          },
+          {
+            "after": {
+              "sha256": "47ac967fe4a690137321beb1f863778de31a7f3534e200c1642f6659e2a45d53",
+              "size_bytes": 65
+            },
+            "before": {
+              "sha256": "00a413dceb7ce664bf8eb42623a51a9e5b0d133d7603491b042d6d7564f578b7",
+              "size_bytes": 65
+            },
+            "path": "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256"
+          },
+          {
+            "after": {
+              "sha256": "a4b56f4b08df6a9edac53d7847ed34fa88c289ce6e6d7c52d169485a61ca250a",
+              "size_bytes": 65
+            },
+            "before": {
+              "sha256": "f698c2fb42a498896149a1ac4a9c80a741022c99e28aaa81326acebd6b594caa",
+              "size_bytes": 65
+            },
+            "path": "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256"
+          }
+        ],
+        "all_other_contents_and_semantic_metadata_equal": true,
+        "inode_metadata_exclusions": [
+          "inode.nid"
+        ],
+        "superblock_physical_exclusions": [
+          "meta_blkaddr",
+          "primary_blocks",
+          "root_nid",
+          "total_blocks",
+          "xattr_blkaddr"
+        ]
+      }
+    },
+    "exact_policy_content_replacements": 5,
+    "bound_inputs_tools_and_staging_preserved": true,
+    "raw_exact_five_policy_derivation_qualified": true,
+    "independent_host_review_complete": true,
+    "current_active_v13f_compatibility_proven": false,
+    "original_images_written": false,
+    "original_staging_written": false,
+    "filesystem_extraction_performed": false,
+    "original_image_copies_created": false,
+    "source_or_android_output_writes": false,
+    "global_android_output_unchanged_claimed": false,
+    "hashtree_fec_or_footer_generated": false,
+    "avb_signed_or_verified": false,
+    "partition_fit_verified": false,
+    "policy_or_images_adopted": false,
+    "retained_kernel_mount_or_boot_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual isolated native raw EROFS reconstruction for sealed v12/export4 inputs, after the public preparation produced two identical complete TAR sets. Both vendor/ODM passes preserve every non-replaced content and semantic metadata field under explicit physical-layout exclusions. This is not an ordinary Android image-target build, active v13f compatibility, signed/packaged image adoption or hardware result. Large artifact identities come from the native run; only the bounded diagnostics and complete exports are copied and rehashed on the host.",
+    "independent_host_review": {
+      "receipt": {
+        "path": "reports/oem-policy-integration-20260829/policy-images-export4-independent-v1/receipt.json",
+        "sha256": "fca05a27579a9a666e27a69db4b9a5b3f47cc7042bb4d6048539f030a86afcd4",
+        "size_bytes": 11234
+      },
+      "status": "verified_with_explicit_evidence_limits",
+      "findings": [],
+      "captured_files_rehashed": 97,
+      "captured_bytes_rehashed": 10639644,
+      "staged_files_rehashed": 77,
+      "staged_bytes_rehashed": 18700732,
+      "complete_manifests_independently_compared": 6,
+      "subject_comparator_used": false,
+      "native_fsck_invocations_bound": 18,
+      "native_mkfs_invocations_bound": 4,
+      "native_checks_bound": 9,
+      "native_commands_bound": 38,
+      "skipped": 0,
+      "process_kills": 0,
+      "both_passes_exact_five_changes_and_other_semantic_metadata_preserved": true,
+      "paired_artifacts_and_native_final_hash_stat_rechecks_bound": true,
+      "source_and_sandbox_bindings_verified": true,
+      "large_images_tars_originals_or_staging_reopened_on_host": false,
+      "guest_commands_or_native_reexecution": false,
+      "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
+    }
+  },
+  "latest_timestamped_native_observation_utc": "2026-08-30T03:31:25.389032+00:00",
+  "latest_timestamped_native_observation_kind": "audio-layout-compile-only",
+  "latest_native_observation_kind": "isolated-raw-five-file-policy-image-reconstruction"
 }

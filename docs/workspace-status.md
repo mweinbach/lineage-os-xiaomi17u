@@ -6,8 +6,9 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **August 30, 2026 UTC** (August 29 in
-New York). It does not assert that a historical builder VM is still running.
+consolidates recorded evidence through **August 30, 2026** in UTC and New York.
+Earlier UTC milestones before 04:00 on August 30 occurred on August 29 in
+New York. This page does not assert that a historical builder VM is still running.
 
 The latest successful native policy build is **policy-v12f-export-1**, completed
 at **2026-08-30 00:16:57 UTC**, with 35 Ninja actions after configuration. Its
@@ -29,23 +30,36 @@ This establishes the latest verified v12f policy baseline, superseding the compl
 installed, but their first 31-goal policy build failed during Soong bootstrap
 at **02:36:44 UTC**. `nezha_framework_libmiracastsystem`'s emitted static variant
 depends on Audio AIDL V2 directly and V4 through `libaudiofoundation`. No new
-policy compiled or context check passed. Resolving that exact source/ABI graph
-conflict is the next blocker; blindly substituting V4 for V2 is not a fix.
+policy compiled or context check passed. The reviewed correction for that exact
+graph still needs candidate admission, guest installation and a native build.
 Three native Soong fixtures reproduce the expected graph outcomes and show
 that selecting only the shared variant does not resolve the mixed V2/V4
 dependency. The first compile-only audio-layout probe failed in its AST parser;
 the corrected v2 probe passes two cases and four compilations, matching all
 15 measured factory layout constraints. Static review also verifies the two
 selected descriptor-vtable CFI checks without requiring CFI suppression. Neither
-result admits the complete caller ABI or proves runtime routing. The proposed
-Miracast dependency correction is not yet admitted or installed.
+result admits the complete caller ABI or proves runtime routing. Commit
+`364ab89` includes the v7 Miracast correction and verified host producer/consumer
+bindings. It remains outside the active guest inputs: the v13h bundle/candidate,
+installation and real source build are still pending.
 Export4 does not verify those providers. Retained vendor/ODM images still contain
 their original policy. Provider compatibility, complete Treble APK labeling,
-policy-image derivation and the remaining ROM build gates are still open.
+current-provider policy-image integration and the remaining ROM build gates are
+still open.
 Earlier tool-bound, aggregate-model
 and M4-guard failures remain preserved in the
 [native integration record](native-rom-integration.md); they are not relabeled
 as passes.
+
+The separate **policy-images-export4-v1** native reconstruction now passes
+**nine checks and 38 commands with zero skips**. Both independent TAR/image/export
+sets match, with exactly one vendor policy file and four ODM files changed;
+all other contents and semantic metadata are preserved. Independent review
+reparses all six complete manifests and verifies the 97-file host capture and
+77 staged packet files, with no findings. This qualifies the raw five-file
+derivation for sealed v12/export4
+inputs; it does not adopt those images, validate active v13f, regenerate AVB/FEC,
+establish partition fit or prove a kernel mount or boot.
 
 The earlier **v12e** integration was installed into the existing guest source at
 **22:10:41 UTC**. It adds the four OEM property sources, exact Camera runtime
@@ -71,12 +85,14 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,591 tests in 152.682
-seconds with zero failures, errors or skips**. The earlier coordinator component
+The latest coordinator full workspace suite passed **3,634 tests in 156.509
+seconds with zero failures, errors or skips**, covering the committed v7 producer
+and consumer integration. The previous profile checkpoint passed 3,591 tests in
+152.682 seconds. The earlier coordinator component
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `35324b4`. The active guest inputs are now v13f;
+code and documentation through `364ab89`. The active guest inputs are now v13f;
 the latest fully verified policy baseline remains v12f/export4.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -178,6 +194,7 @@ from a full build and require destination hash verification after transfers.
 | Native production file-size primitives | Four checks pass with zero skips, including finite 2 GiB/6 GiB limits and bounded log-overflow termination; this probe did not execute mkfs | [Native ROM integration](../research/native-rom-integration.json) |
 | Native unchanged-vendor round trip | Eight checks pass, zero skips; two identical raw images preserve all 3,910 entries and 3,389 regular-file contents under the exact 2 GiB vendor recipe; not policy/image adoption | [Native ROM integration](../research/native-rom-integration.json) |
 | Native unchanged-ODM round trip | Eight checks pass, zero skips; two identical raw images preserve all 3,059 entries and 2,925 regular-file contents under the exact 6 GiB ODM recipe; no policy replacements, AVB or boot result | [Native ROM integration](../research/native-rom-integration.json) |
+| Native v12/export4 policy-image reconstruction | Nine checks and 38 commands pass, zero skips; two identical complete TAR/image/export sets preserve all but the exact five policy payloads; raw derivation only, no adoption or AVB | [Native ROM integration](../research/native-rom-integration.json) |
 | Native pinned-date fixtures | All 33 expected outcomes verified: nine positive/legacy cases and 24 diagnostic-specific negatives, zero skips; live product unchanged | [Native date checks](../research/pinned-build-metadata-native.json) |
 | Original factory Camera packaging | Unchanged APK passes strict privileged/preprocessed and uses-library checks; no APK selection, permission-grant, effective-label or hardware result | [Factory Camera APK](../research/factory-camera-apk.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
@@ -254,8 +271,14 @@ override theme defaults. No Magisk integration is included.
   also passes eight native checks with zero skips under its 6 GiB limit. Its two
   4,678,053,888-byte raw images match each other and preserve all 3,059 paths,
   2,925 regular-file contents and nonphysical metadata. Both runs make zero
-  policy replacements. The five-file policy derivation, AVB, partition fit,
-  mounting and boot remain unverified; none of these images is adopted.
+  policy replacements and do not themselves qualify changed policy inputs.
+  The later **policy-images-export4-v1** run now qualifies the exact five-file
+  raw derivation, with nine checks, 38 commands and zero skips. Its repeated
+  vendor and ODM images are respectively 941,744,128 and 4,678,025,216 bytes;
+  only the reviewed policy payloads change. Complete exports and diagnostics
+  are captured; the large TARs/images remain guest-only and were not reopened
+  by the host collector. AVB/footer/FEC, signing, partition fit, source adoption,
+  retained-kernel mounting and boot remain unverified.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
   and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
