@@ -23,7 +23,7 @@ else:
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = "config/nezha-framework-provider-policy.json"
-CONTRACT_SHA256 = "6515395854a7cdc08f2d9c9ed5f7119164a9c0376ca8710a152ffb1999dc52f8"
+CONTRACT_SHA256 = "aa4b0ffb5395ad555e8f62c9074e00252d4d76812888ab68032a1ef01845ef4f"
 EXT_RUNTIME = "/system_ext/etc/selinux/system_ext_sepolicy.cil"
 EXT_MAPPING = "/system_ext/etc/selinux/mapping/202504.cil"
 CONTROLLED_HEADS = frozenset({"allow", "auditallow", "dontaudit", "allowx", "typetransition"})

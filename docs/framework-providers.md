@@ -73,6 +73,40 @@ installation names remain unchanged through `stem`/`filename` and
   output. The direct data dependency remains even for image targets that do not
   traverse a non-installable `required` check module.
 
+The original `libmiracastsystem.so` has one reviewed dependency correction in
+that producer. All 31 staged proprietary files, including this library, remain
+identical to the factory captures. The producer checks all 42 original inputs
+before deriving any output. It then changes exactly the byte at file offset
+17,588 from ASCII `2` to `4` in the selected `DT_NEEDED` string
+`android.media.audio.common.types-V2-cpp.so`. The published library names V4;
+its generated module therefore depends on the actual V4 source module. The
+original and derived sizes both remain 119,560 bytes:
+
+| File role | SHA256 |
+| --- | --- |
+| Preserved proprietary input | `45880ab976336616c2ff91753d176d3d10e175564005d51266359316ad965541` |
+| Verified generated payload | `06ffed0abd8cd7258c44e672e7fde4377f39626dddbed59eef70f60426c08082` |
+
+The [compatibility record](../research/framework-provider-audio-compatibility.json)
+binds the evidence supporting this specific correction. The
+[pure derivation helper](../scripts/framework_provider_derivations.py) checks
+the original ELF's selected dynamic string, parsed metadata and protected
+regions during staging and verification. The generated standalone build tool
+repeats the exact original hash, string, offset, byte and complete output hash
+guards. Its checked receipt binds original and effective output identities
+separately. A premodified proprietary input, changed recipe, or incorrect
+derived hash fails before publication. The ELF build-id is unchanged because
+all other bytes are unchanged; use the derived SHA256 as its identity.
+
+This is not a general AIDL version upgrade. The earlier native v13f bootstrap
+failed because the factory library's direct V2 dependency and the current audio
+foundation's V4 dependency reached the same module. Three isolated tests using
+the pinned real Soong/AIDL implementation established that moving dependencies
+under `shared` only moves the conflict to the shared variant. Suppressing that
+check or changing only the Blueprint's dependency would leave the original ELF
+inconsistent. The producer instead supplies the reviewed derivative to the
+normal native ELF and AIDL checks.
+
 The producer holds the verified bytes, prepares and reads back all outputs,
 then publishes complete files exclusively and writes the success receipt last.
 It accepts only the expected empty output directories precreated by Soong's
@@ -143,6 +177,26 @@ The ignored audit index is
 Its exact disassembly and symbol tables remain private. The source-module
 inventory and selected source definitions are also under the ignored
 `reports/framework-providers-20260829/` directory.
+
+The later audio correction has a narrower, stronger evidence set than the
+initial module inventory. Factory caller instructions match the factory V4
+audio layouts, while the factory audio companion libraries already name V4.
+Two actual compile-only probes using the pinned current compiler, generated
+V4 headers and original target/LTO/CFI flags matched all 15 measured factory
+size, offset and stride constraints. Static analysis of the actual current
+audio foundation's CFI dispatch accepts the caller's two relevant type checks.
+All 20 selected strong, unversioned audio imports have unique matching exports
+in the four actual current audio DSOs. The one changed string byte has no
+other reference among the original library's dynamic string references.
+
+These results support the exact dependency correction. They do not establish
+every private C++ ABI or semantic contract, dynamic linker resolution, service
+startup, wireless-display behavior, or a booting ROM. No target code or firmware
+was executed for the layout and static checks. The first layout run failed in
+the audit harness after a successful discovery compile; that result is
+preserved separately and is not counted as the successful fresh measurement.
+The compatibility record remains a fixed admission checkpoint; subsequent
+native build and device results must be recorded separately.
 
 Sigma imports private graphics/audio C++ APIs, including SurfaceComposer and
 AudioSystem methods, plus mDNS functions. QCC imports Binder/FMQ APIs. Matching

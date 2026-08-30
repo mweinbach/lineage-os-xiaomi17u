@@ -75,6 +75,7 @@ class FrameworkProviderInputsTests(unittest.TestCase):
             "source_dependencies": {"libc.so": "libc"}, "source_replacements": [],
             "required_source_patches": [], "runtime_requirements": ["Runtime is not tested."],
             "native_output_recipe": copy.deepcopy(provider.NATIVE_OUTPUT_RECIPE),
+            "payload_derivations": [],
             "scope": copy.deepcopy(provider.SCOPE),
         }
         (self.workspace / "config/source-lock.json").write_bytes(b"synthetic source lock\n")
@@ -161,6 +162,153 @@ class FrameworkProviderInputsTests(unittest.TestCase):
         arguments = ["--output-dir", str(self.root / "native-output"),
                      *[str(root / name) for name in namespace["EXPECTED"]]]
         return namespace["main"], arguments
+
+    def add_derivation(self):
+        runtime = "/system_ext/lib64/libalpha.so"
+        old, new = "libaudio-types-V2.so", "libaudio-types-V4.so"
+        raw = bytearray(elf([old, "libc.so"], soname="libalpha.so"))
+        # This inert fixture has one read-only load. Never transform executable
+        # bytes merely to make an ELF fixture pass the production guard.
+        struct.pack_into("<I", raw, 68, 4)
+        raw = bytes(raw)
+        start, offset = 0x501, 0x501 + old.index("2")
+        derived = raw[:offset] + b"4" + raw[offset + 1:]
+        row = next(item for item in self.contract["files"] if item["runtime_path"] == runtime)
+        row["needed"] = [old, "libc.so"]
+        self.replace_data(runtime, raw)
+        evidence = b'{"scope": "synthetic test evidence only"}\n'
+        (self.workspace / "config/compatibility.json").write_bytes(evidence)
+        rule = {"kind": "exact-equal-length-dt-needed-string-replacement",
+                "original": provider.identity(raw), "derived": provider.identity(derived),
+                "old": old, "new": new, "dt_needed_string_file_offset": start,
+                "changed_byte_file_offset": offset, "original_byte_hex": "32", "derived_byte_hex": "34"}
+        self.contract["payload_derivations"] = [{"runtime_path": runtime, "recipe": rule,
+            "evidence": {"path": "config/compatibility.json", **provider.identity(evidence)}}]
+        self.contract["source_dependencies"][new] = "libaudio-types-V4"
+        self.write_contract()
+        return raw, derived, rule
+
+    def test_derivation_preserves_all_original_inputs_and_uses_effective_dependency(self):
+        raw, derived, rule = self.add_derivation()
+        manifest = self.stage()
+        verified = provider.verify_bundle(self.output)
+        self.assertEqual(verified["payload_derivations"], self.contract["payload_derivations"])
+        self.assertEqual(manifest["payload_derivations"][0]["recipe"], rule)
+        self.assertEqual((self.output / "proprietary/system_ext/lib64/libalpha.so").read_bytes(), raw)
+        for path, original in self.originals.items():
+            self.assertEqual(path.read_bytes(), original)
+        bp = (self.output / provider.MODULE_BLUEPRINT).read_text()
+        self.assertIn('"libaudio-types-V4",', bp)
+        self.assertNotIn('"libaudio-types-V2",', bp)
+        checker, arguments = self.native_checker()
+        with contextlib.redirect_stdout(io.StringIO()):
+            checker(arguments)
+        output = self.root / "native-output"
+        self.assertEqual((output / "verified/system_ext/lib64/libalpha.so").read_bytes(), derived)
+        receipt = json.loads((output / "framework-provider-inputs-checked.json").read_bytes())
+        self.assertEqual(receipt["input_count"], 12)
+        self.assertEqual(receipt["payload_count"], 9)
+        self.assertEqual(receipt["derivations"], [{"path": "verified/system_ext/lib64/libalpha.so",
+            "source": "proprietary/system_ext/lib64/libalpha.so", "recipe": rule}])
+        for row in self.contract["files"]:
+            name = "verified" + row["runtime_path"]
+            expected = rule["derived"] if row["runtime_path"].endswith("/libalpha.so") else provider._expected(row)
+            self.assertEqual(provider.identity((output / name).read_bytes()), expected)
+            self.assertIn({"path": name, **expected}, receipt["outputs"])
+
+    def test_derivation_requires_exact_evidence_bytes(self):
+        self.add_derivation()
+        (self.workspace / "config/compatibility.json").write_bytes(b"unreviewed evidence")
+        self.reject()
+        self.assertFalse(self.output.exists())
+
+    def test_derivation_rejects_unbound_original_and_posthash(self):
+        self.add_derivation()
+        original = copy.deepcopy(self.contract)
+        for key in ("original", "derived"):
+            self.contract = copy.deepcopy(original)
+            self.contract["payload_derivations"][0]["recipe"][key]["sha256"] = "f" * 64
+            self.write_contract()
+            with self.subTest(key=key):
+                self.reject()
+                self.assertFalse(self.output.exists())
+
+    def test_derivation_rejects_invalid_payload_selection_and_multiple_rules(self):
+        self.add_derivation()
+        original = copy.deepcopy(self.contract)
+        for runtime in ("/system_ext/lib64/missing.so", "/system_ext/bin/alpha", "/system_ext/etc/settings.xml"):
+            self.contract = copy.deepcopy(original)
+            self.contract["payload_derivations"][0]["runtime_path"] = runtime
+            self.write_contract()
+            with self.subTest(runtime=runtime):
+                self.reject()
+        self.contract = copy.deepcopy(original)
+        self.contract["payload_derivations"] *= 2
+        self.write_contract()
+        self.reject()
+
+    def test_effective_dependency_cannot_be_missing_or_retain_unused_original(self):
+        self.add_derivation()
+        original = copy.deepcopy(self.contract)
+        for mutation in ("missing", "unused-original"):
+            self.contract = copy.deepcopy(original)
+            if mutation == "missing":
+                del self.contract["source_dependencies"]["libaudio-types-V4.so"]
+            else:
+                self.contract["source_dependencies"]["libaudio-types-V2.so"] = "libaudio-types-V2"
+            self.write_contract()
+            with self.subTest(mutation=mutation):
+                self.reject()
+
+    def test_native_derivation_checks_originals_and_posthash_before_any_output(self):
+        self.add_derivation()
+        self.stage()
+        checker, arguments = self.native_checker()
+        namespace = checker.__globals__
+        namespace["DERIVATIONS"][0]["recipe"]["derived"]["sha256"] = "f" * 64
+        self.reject(lambda: checker(arguments))
+        self.assertFalse((self.root / "native-output").exists())
+
+    def test_native_derivation_rejects_wrong_string_offset_and_input_binding(self):
+        self.add_derivation()
+        self.stage()
+        for mutation in ("offset", "source", "duplicate"):
+            checker, arguments = self.native_checker()
+            derivations = checker.__globals__["DERIVATIONS"]
+            if mutation == "offset":
+                derivations[0]["recipe"]["dt_needed_string_file_offset"] += 1
+                derivations[0]["recipe"]["changed_byte_file_offset"] += 1
+            elif mutation == "source":
+                derivations[0]["source"] = "proprietary/system_ext/lib64/libbeta.so"
+            else:
+                derivations.append(copy.deepcopy(derivations[0]))
+            with self.subTest(mutation=mutation):
+                self.reject(lambda: checker(arguments))
+                self.assertFalse((self.root / "native-output").exists())
+
+    def test_derivation_cannot_be_preapplied_to_the_original_bundle(self):
+        _, derived, _ = self.add_derivation()
+        self.stage()
+        (self.output / "proprietary/system_ext/lib64/libalpha.so").write_bytes(derived)
+        self.reject(lambda: provider.verify_bundle(self.output))
+        checker, arguments = self.native_checker()
+        self.reject(lambda: checker(arguments))
+        self.assertFalse((self.root / "native-output").exists())
+
+    def test_derivation_retains_publication_rollback(self):
+        self.add_derivation()
+        self.stage()
+        checker, arguments = self.native_checker()
+        original_link = os.link
+
+        def fail_success_receipt(source, target, **kwargs):
+            if Path(target).name == "framework-provider-inputs-checked.json":
+                raise OSError("simulated receipt publication error")
+            return original_link(source, target, **kwargs)
+
+        with mock.patch("os.link", side_effect=fail_success_receipt):
+            self.reject(lambda: checker(arguments))
+        self.assertEqual([path for path in (self.root / "native-output").rglob("*") if path.is_file()], [])
 
     def test_stage_verifies_originals_private_modes_and_native_definitions(self):
         receipt = self.stage()

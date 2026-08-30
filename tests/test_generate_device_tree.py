@@ -2779,6 +2779,7 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes((ROOT / generator.DEVICE_PATH / name).read_bytes())
         for row, destination in [(profile["source_lock"], self.root),
+                                 *((item["evidence"], self.root) for item in profile["payload_derivations"]),
                                  *((row, inputs.get("patch_source_root", ROOT)) for row in profile["required_source_patches"])]:
             path = destination / row["path"]
             if destination != ROOT:
@@ -2809,6 +2810,7 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             "contract": profile_identity, "factory_package_sha256": "3" * 64,
             "factory_image": profile["factory_image"], "source_lock": profile["source_lock"],
             "native_check_target": provider_inputs.CHECK, "native_output_recipe": profile["native_output_recipe"],
+            "payload_derivations": copy.deepcopy(profile["payload_derivations"]),
             "packages": [row["module"] for row in profile["files"] if "module" in row], "providers": profile["providers"],
             "scope": profile["scope"], "readback_verified": True,
             "module_blueprint": {"path": "framework-providers.Android.bp", **files["framework-providers.Android.bp"]},
@@ -2841,6 +2843,14 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         self.assertEqual(blueprint.count("check_elf_files: true"), 26)
         self.assertEqual(blueprint.count("allow_undefined_symbols: false"), 26)
         self.assertNotIn("proprietary/", blueprint)
+        self.assertEqual(len(profile["payload_derivations"]), 1)
+        derivation = profile["payload_derivations"][0]
+        original = next(row for row in profile["files"] if row["runtime_path"] == derivation["runtime_path"])
+        self.assertEqual({key: original[key] for key in ("sha256", "size_bytes")}, derivation["recipe"]["original"])
+        self.assertIn(derivation["recipe"]["old"], original["needed"])
+        module = blueprint.split('name: "' + original["module"] + '",', 1)[1].split("\n}", 1)[0]
+        self.assertIn('"android.media.audio.common.types-V4-cpp"', module)
+        self.assertNotIn('"android.media.audio.common.types-V2-cpp"', module)
 
     def test_provider_requires_explicit_source_inputs_oem_and_native_policy_before_reads(self):
         for values in ({"framework_provider_policy_contract": "none"},
@@ -2863,6 +2873,9 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         self.assertEqual(self.generate_provider(second, inputs, verification, policy), plan)
         self.assertNotIn("oem_properties", plan)
         self.assertEqual(plan["framework_providers"]["inputs"], policy["framework_provider_inputs"])
+        self.assertEqual(len(plan["framework_providers"]["inputs"]["payload_derivations"]), 1)
+        evidence = plan["framework_providers"]["inputs"]["payload_derivations"][0]["evidence"]
+        self.assertEqual((first / evidence["path"]).read_bytes(), (self.root / evidence["path"]).read_bytes())
         self.assertEqual((first / generator.FRAMEWORK_PROVIDER_BLUEPRINT).read_bytes(),
                          (inputs["framework_provider_inputs_receipt"].parent / "framework-providers.Android.bp").read_bytes())
         product = (first / generator.DEVICE_PATH / "generated/device-candidate.mk").read_text()
@@ -3044,6 +3057,75 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             (output / "admission.json").write_text(json.dumps(changed))
             with self.subTest(field=field), self.assertRaisesRegex(generator.CandidateError, "exact canonical manifest"):
                 generator.validate(output)
+
+    def test_provider_validation_rejects_jointly_resealed_derivation_metadata(self):
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-derivation-metadata"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        mutations = (
+            lambda value: value.pop("payload_derivations"),
+            lambda value: value.update(payload_derivations=[]),
+            lambda value: value["payload_derivations"].append(copy.deepcopy(value["payload_derivations"][0])),
+            lambda value: value["payload_derivations"][0]["recipe"].update(changed_byte_file_offset=1),
+            lambda value: value["payload_derivations"][0]["recipe"]["original"].update(sha256="f" * 64),
+            lambda value: value["payload_derivations"][0]["recipe"]["derived"].update(sha256="f" * 64),
+            lambda value: value["payload_derivations"][0]["recipe"].update(new="unreviewed.so"),
+            lambda value: value["payload_derivations"][0]["evidence"].update(sha256="f" * 64),
+            lambda value: value["native_output_recipe"].pop("payload_transformations"),
+            lambda value: value["native_output_recipe"].update(payload_transformations="arbitrary_elf_rewrite"),
+        )
+        for number, mutate in enumerate(mutations):
+            changed = copy.deepcopy(plan)
+            for record in (changed["framework_providers"]["inputs"], changed["policy_inputs"]["framework_provider_inputs"]):
+                mutate(record)
+                record["receipt"].update(generator._framework_provider_receipt_identity(record))
+            (output / "admission.json").write_text(json.dumps(changed))
+            with self.subTest(number=number), self.assertRaisesRegex(generator.CandidateError, "reviewed source admission"):
+                generator.validate(output)
+
+    def test_provider_validation_rejects_native_checker_that_omits_the_byte_derivation(self):
+        from scripts import framework_provider_inputs as provider_inputs
+        inputs, verification, policy = self.provider_inputs()
+        output = self.root / "artifacts/providers-raw-checker"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        profile = json.loads((self.root / generator.FRAMEWORK_PROVIDER_INPUT_RECORD).read_bytes())
+        checker_path = "tools/verify_framework_provider_inputs.py"
+        native_files = {row["path"]: {key: row[key] for key in ("sha256", "size_bytes")}
+                        for row in verification["files"]
+                        if row["path"] not in {"Android.bp", "framework-providers.mk", checker_path}}
+        forged = provider_inputs._native_checker(dict(sorted(native_files.items())),
+                                                 provider_inputs._native_outputs(profile), [])
+        for record in (plan["framework_providers"]["inputs"], plan["policy_inputs"]["framework_provider_inputs"]):
+            next(row for row in record["files"] if row["path"] == checker_path).update(
+                sha256=hashlib.sha256(forged).hexdigest(), size_bytes=len(forged))
+            record["receipt"].update(generator._framework_provider_receipt_identity(record))
+        (output / "admission.json").write_text(json.dumps(plan))
+        with self.assertRaisesRegex(generator.CandidateError, "input inventory differs"):
+            generator.validate(output)
+
+    def test_provider_derivation_evidence_is_required_before_staging_and_after_relocation(self):
+        inputs, verification, policy = self.provider_inputs()
+        reference = verification["payload_derivations"][0]["evidence"]
+        evidence = self.root / reference["path"]
+        original = evidence.read_bytes()
+        for kind in ("missing", "changed", "symlink"):
+            evidence.unlink()
+            if kind == "changed":
+                evidence.write_bytes(original + b"unreviewed")
+            elif kind == "symlink":
+                evidence.symlink_to(inputs["framework_provider_policy_contract"])
+            output = self.root / "artifacts" / ("refused-evidence-" + kind)
+            with self.subTest(kind=kind), self.assertRaises((generator.CandidateError, OSError)):
+                self.generate_provider(output, inputs, verification, policy)
+            self.assertFalse(output.exists())
+            if evidence.exists() or evidence.is_symlink():
+                evidence.unlink()
+            evidence.write_bytes(original)
+        output = self.root / "artifacts/providers-evidence"
+        plan = self.generate_provider(output, inputs, verification, policy)
+        self.reseal_candidate_file(output, plan, reference["path"], original + b"unreviewed")
+        with self.assertRaisesRegex(generator.CandidateError, "derivation evidence"):
+            generator.validate(output)
 
     def test_provider_cli_arguments_are_explicit_and_default_to_none(self):
         base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", "--output", "artifacts/out"]

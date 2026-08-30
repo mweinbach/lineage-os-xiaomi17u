@@ -1,0 +1,313 @@
+{
+  "derivation": {
+    "changed_byte_file_offset": 17588,
+    "derived": {
+      "sha256": "06ffed0abd8cd7258c44e672e7fde4377f39626dddbed59eef70f60426c08082",
+      "size_bytes": 119560
+    },
+    "derived_byte_hex": "34",
+    "dt_needed_string_file_offset": 17554,
+    "kind": "exact-equal-length-dt-needed-string-replacement",
+    "new": "android.media.audio.common.types-V4-cpp.so",
+    "old": "android.media.audio.common.types-V2-cpp.so",
+    "original": {
+      "sha256": "45880ab976336616c2ff91753d176d3d10e175564005d51266359316ad965541",
+      "size_bytes": 119560
+    },
+    "original_byte_hex": "32"
+  },
+  "device": "nezha",
+  "evidence": {
+    "current_cfi": {
+      "path": "reports/framework-providers-20260829/audio-cfi-review-v1/analysis.json",
+      "sha256": "35f7535bd52d733d7a44c1a287f7d88ebaf2d503f5a4561a5253ad143b788b41",
+      "size_bytes": 30643
+    },
+    "current_cfi_with_pinned_relocation_source": {
+      "path": "reports/framework-providers-20260829/audio-cfi-review-v1/receipt-with-aps2-source.json",
+      "sha256": "7ebebc1321893c0c24b68304e74d322712b656a70d3aaefcd5fe633bdc2c80d7",
+      "size_bytes": 6070
+    },
+    "current_companion_capture": {
+      "path": "artifacts/build-validation/nezha-audio-current-companions-v1/capture.json",
+      "sha256": "60f6cb9d66f8115631cd1c2e11ba2850d6aa4ffa05066a2f4ffe97bcadcd1131",
+      "size_bytes": 2215
+    },
+    "current_exports": {
+      "path": "reports/framework-providers-20260829/audio-current-export-v1/analysis.json",
+      "sha256": "93418595183e0b37920863c903726af5ea25490c14ec26ef58b344876e7826b3",
+      "size_bytes": 83197
+    },
+    "factory_layout_comparison": {
+      "path": "reports/framework-providers-20260829/audio-abi-stock-v3/comparison-v4.json",
+      "sha256": "347d81ab4b8ea25eb5e1cda51baa0004c6a327dabb6186d01de81737f75049f5",
+      "size_bytes": 123583
+    },
+    "native_aidl_fixtures": {
+      "path": "artifacts/build-validation/nezha-aidl-native-fixtures-v1/receipt.json",
+      "sha256": "7f2f85c40d1fcc4356636910d8516872249c45434a3b7e5593716c49edeb5e92",
+      "size_bytes": 54722
+    },
+    "native_layout": {
+      "path": "artifacts/build-validation/nezha-audio-layout-v2/receipt.json",
+      "sha256": "a76cc907312a01e2659865a0d19ced99f77242867176829cd73af713eb4dadd9",
+      "size_bytes": 6222532
+    },
+    "native_layout_capture": {
+      "path": "artifacts/build-validation/nezha-audio-layout-v2/capture.json",
+      "sha256": "4d2ec8d9d3493e3af5858416f60c451d34ddaec1440b67402e0602fcff3a9e1c",
+      "size_bytes": 2960
+    },
+    "native_layout_recheck": {
+      "path": "reports/framework-providers-20260829/audio-native-layout-recheck-v1/proof-summary.json",
+      "sha256": "65cf1f462c873fab780a8900f26ed866c0a9fc891e22649bd302cf193a96a311",
+      "size_bytes": 12014
+    },
+    "native_layout_sandbox": {
+      "path": "artifacts/build-validation/nezha-audio-layout-observation-v2/sandbox.json",
+      "sha256": "d88d3ed0b1702be2ba0ad08a983506b43db01f95832414e6ec96df32ce037054",
+      "size_bytes": 2119
+    },
+    "selected_original_dynamic_section_bindings": {
+      "path": "reports/framework-providers-20260829/needed-derivation-review-v1/selected-section-dynamic-binding.json",
+      "sha256": "64c5210dfa64656b6f707bb372cdda63531c23c370ef84e89633c40b97b3da6a",
+      "size_bytes": 600
+    },
+    "selected_original_symbol_version_alias_review": {
+      "path": "reports/framework-providers-20260829/needed-derivation-review-v1/review.json",
+      "sha256": "2d05149c64a81fabb863456e1ba3b76ec1630ad94683baa71130d36da611ffe0",
+      "size_bytes": 3248
+    }
+  },
+  "findings": {
+    "current_selected_exports": {
+      "all_dynamic_symbols_reparsed_and_llvm_crosschecked": 2430,
+      "providers": {
+        "android.media.audio.common.types-V4-cpp.so": 10,
+        "audioclient-types-aidl-cpp.so": 5,
+        "libaudioclient.so": 1,
+        "libaudiofoundation.so": 4
+      },
+      "strong_unversioned_imports": 20,
+      "undefined_copies_counted_as_exports": false,
+      "unique_matching_definitions_within_four_captured_dsos": 20
+    },
+    "exact_byte_boundary": {
+      "affected_references": [
+        {
+          "kind": "DT_NEEDED",
+          "string_file_offset": 17554
+        }
+      ],
+      "changed_bytes": 1,
+      "executable_load_bytes_changed": false,
+      "gnu_build_id_unchanged_and_not_used_as_derived_identity": true,
+      "present_dynamic_string_references_checked": 302,
+      "symbol_version_aliases": 0
+    },
+    "factory_caller_layout": "The original caller uses the factory V4 AudioPortExt tag and related framework object layouts; its factory audio companions already name common V4.",
+    "native_aidl_fixtures": {
+      "consistent_dependency_positive": true,
+      "mixed_shared_scoped_rejected": true,
+      "mixed_top_level_rejected": true,
+      "passed": 3,
+      "skipped": 0
+    },
+    "native_layout": {
+      "cases": 2,
+      "compile_only_commands": 4,
+      "constraints": [
+        {
+          "expected_bytes": 304,
+          "id": "common-port-factory-interval",
+          "kind": "sizeof",
+          "matched": true,
+          "observed_bytes": 304,
+          "record": "android::media::audio::common::AudioPort"
+        },
+        {
+          "expected_bytes": 128,
+          "id": "common-port-extension",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 128,
+          "record": "android::media::audio::common::AudioPort"
+        },
+        {
+          "expected_bytes": 168,
+          "id": "extension-outer-tag",
+          "kind": "outer_variant_index_offset",
+          "matched": true,
+          "observed_bytes": 168,
+          "record": "android::media::audio::common::AudioPortExt"
+        },
+        {
+          "expected_bytes": 128,
+          "id": "profile-factory-vector-stride",
+          "kind": "sizeof",
+          "matched": true,
+          "observed_bytes": 128,
+          "record": "android::media::audio::common::AudioProfile"
+        },
+        {
+          "expected_bytes": 48,
+          "id": "extra-descriptor-factory-vector-stride",
+          "kind": "sizeof",
+          "matched": true,
+          "observed_bytes": 48,
+          "record": "android::media::audio::common::ExtraAudioDescriptor"
+        },
+        {
+          "expected_bytes": 64,
+          "id": "gain-factory-vector-stride",
+          "kind": "sizeof",
+          "matched": true,
+          "observed_bytes": 64,
+          "record": "android::media::audio::common::AudioGain"
+        },
+        {
+          "expected_bytes": 848,
+          "id": "framework-port-factory-interval",
+          "kind": "sizeof",
+          "matched": true,
+          "observed_bytes": 848,
+          "record": "android::media::AudioPortFw"
+        },
+        {
+          "expected_bytes": 312,
+          "id": "framework-port-sys",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 312,
+          "record": "android::media::AudioPortFw"
+        },
+        {
+          "expected_bytes": 416,
+          "id": "descriptor-factory-allocation",
+          "kind": "sizeof",
+          "matched": true,
+          "observed_bytes": 416,
+          "record": "android::DeviceDescriptorBase"
+        },
+        {
+          "expected_bytes": 144,
+          "id": "descriptor-config-base",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 144,
+          "record": "android::DeviceDescriptorBase"
+        },
+        {
+          "expected_bytes": 320,
+          "id": "descriptor-device",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 320,
+          "record": "android::DeviceDescriptorBase"
+        },
+        {
+          "expected_bytes": 400,
+          "id": "descriptor-virtual-refbase",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 400,
+          "record": "android::DeviceDescriptorBase"
+        },
+        {
+          "expected_bytes": 48,
+          "id": "descriptor-name",
+          "kind": "nested_offset",
+          "matched": true,
+          "observed_bytes": 48,
+          "record": "android::DeviceDescriptorBase"
+        },
+        {
+          "expected_bytes": 16,
+          "id": "device-address",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 16,
+          "record": "android::AudioDeviceTypeAddr"
+        },
+        {
+          "expected_bytes": 368,
+          "id": "descriptor-encoded-formats",
+          "kind": "direct_offset",
+          "matched": true,
+          "observed_bytes": 368,
+          "record": "android::DeviceDescriptorBase"
+        }
+      ],
+      "required_class_records": 28,
+      "unchanged_target_lto_cfi_flags": true
+    },
+    "observed_failure": "Native v13f Soong bootstrap rejected the simultaneous direct common V2 and transitive common V4 dependency; policy compilation had not started.",
+    "static_current_cfi": {
+      "checks": [
+        {
+          "accepted": true,
+          "type": "AudioPort",
+          "type_id": "0x202d7a3c940917f2"
+        },
+        {
+          "accepted": true,
+          "type": "DeviceDescriptorBase",
+          "type_id": "0x2f03370551eab8e1"
+        }
+      ],
+      "no_cfi_suppression": true,
+      "primary_vptr_relative": "0x44a78"
+    }
+  },
+  "limits": [
+    "This fixed admission record is not a complete C++ ABI, serialization, Binder, media or display semantic compatibility claim.",
+    "Exports are unique within the four captured current audio DSOs; actual namespace resolution, interposition and loaded CFI routing remain unobserved.",
+    "Native compile-only results preserve source and production output. Some compiler, runtime and header identities were verified by the guest receipt rather than reread on the host; the bound recheck records exact coverage.",
+    "The first layout capture failed in the parser after a discovery compile and remains historical; only the fresh v2 native run supplies the successful measurement.",
+    "The pure byte helper compares selected parsed dynamic metadata, not all ELF symbol/version references. The separate exact-input static reference audits establish no other string alias at the changed byte.",
+    "No regenerated full provider graph, native check_elf_file result, service startup or physical feature test is asserted at this admission checkpoint.",
+    "Subsequent component builds and device results must be recorded separately; this record does not change complete-ROM readiness or authorize any phone action."
+  ],
+  "operation": "review-exact-miracast-audio-dependency-derivation",
+  "platform": {
+    "board_api": "202504",
+    "branch": "bka",
+    "release": "bp4a"
+  },
+  "producer_requirements": {
+    "all_original_42_inputs_verified_before_any_payload_output": true,
+    "effective_dependency_module": "android.media.audio.common.types-V4-cpp",
+    "normal_aidl_elf_and_cfi_checks_retained": true,
+    "original_proprietary_input_preserved": true,
+    "output_count_including_checked_receipt": 32,
+    "payload_count": 31,
+    "prebuilt_consumes_tagged_verified_output": true,
+    "receipt_binds_original_and_derived_hashes_separately": true
+  },
+  "runtime_path": "/system_ext/lib64/libmiracastsystem.so",
+  "schema_version": 1,
+  "scope": {
+    "aidl_checks_disabled": false,
+    "cfi_disabled": false,
+    "complete_abi_verified": false,
+    "complete_rom_boot_verified": false,
+    "elf_checks_disabled": false,
+    "firmware_executed": false,
+    "hardware_tested": false,
+    "native_provider_build_after_correction_verified": false,
+    "original_proprietary_inputs_modified": false,
+    "phone_accessed": false,
+    "platform_libraries_replaced": false,
+    "runtime_linker_verified": false,
+    "services_started": false,
+    "target_code_executed": false
+  },
+  "source_revisions": {
+    "bionic": "f30d4f5c85d44c44af76e317d1c9d5e02b7b7936",
+    "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "frameworks/av": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
+    "system/hardware/interfaces": "8266ce79ba801eb1cb71f123651ab083ad1c1044",
+    "system/tools/aidl": "3747384b876442e7ea0c355fe5adc75b29362833"
+  },
+  "status": "static-and-compile-only-evidence-for-exact-derived-input"
+}

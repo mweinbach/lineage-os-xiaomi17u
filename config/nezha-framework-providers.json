@@ -752,9 +752,37 @@
     "all_inputs_checked_before_outputs": true,
     "consumer_inputs": "verified_producer_outputs",
     "payload_output_prefix": "verified",
+    "payload_transformations": "reviewed_exact_dt_needed_byte",
     "producer": "nezha_framework_provider_inputs_check",
     "receipt_output": "framework-provider-inputs-checked.json"
   },
+  "payload_derivations": [
+    {
+      "evidence": {
+        "path": "research/framework-provider-audio-compatibility.json",
+        "sha256": "ed39a807cb07ee7b79cdd1da8e794419845815573826ac5c0326c059d6c3e37c",
+        "size_bytes": 12267
+      },
+      "recipe": {
+        "changed_byte_file_offset": 17588,
+        "derived": {
+          "sha256": "06ffed0abd8cd7258c44e672e7fde4377f39626dddbed59eef70f60426c08082",
+          "size_bytes": 119560
+        },
+        "derived_byte_hex": "34",
+        "dt_needed_string_file_offset": 17554,
+        "kind": "exact-equal-length-dt-needed-string-replacement",
+        "new": "android.media.audio.common.types-V4-cpp.so",
+        "old": "android.media.audio.common.types-V2-cpp.so",
+        "original": {
+          "sha256": "45880ab976336616c2ff91753d176d3d10e175564005d51266359316ad965541",
+          "size_bytes": 119560
+        },
+        "original_byte_hex": "32"
+      },
+      "runtime_path": "/system_ext/lib64/libmiracastsystem.so"
+    }
+  ],
   "platform": {
     "board_api": "202504",
     "branch": "bka",
@@ -806,7 +834,7 @@
     "RTP debug code names libwfdcommonutils_proprietary.so on an alternate path. The selected stock libmmosal GetContext returns zero and selects the staged libwfdcommonutils.so under normal non-interposed resolution; no new vendor namespace exposure is selected.",
     "The original vendor /vendor/etc/wfdconfig.xml stays in the opaque vendor image. This bundle preserves the actual /system_ext/etc/wfdconfigsink.xml.",
     "QCC client applications, application signing and application-domain policy are not included.",
-    "CFI, object layout, media and display semantics still require native and physical-device verification after ELF checks."
+    "The bound Miracast correction evidence covers 15 measured layout constraints, two static current CFI predicates and 20 selected current audio exports; complete ABI, loaded CFI/linker routing and media/display behavior still require native and physical-device verification."
   ],
   "schema_version": 1,
   "scope": {
@@ -828,7 +856,7 @@
     "android.hardware.common.fmq-V1-ndk.so": "android.hardware.common.fmq-V1-ndk",
     "android.hidl.allocator@1.0.so": "android.hidl.allocator@1.0",
     "android.hidl.memory@1.0.so": "android.hidl.memory@1.0",
-    "android.media.audio.common.types-V2-cpp.so": "android.media.audio.common.types-V2-cpp",
+    "android.media.audio.common.types-V4-cpp.so": "android.media.audio.common.types-V4-cpp",
     "audioclient-types-aidl-cpp.so": "audioclient-types-aidl-cpp",
     "libEGL.so": "libEGL",
     "libGLESv2.so": "libGLESv2",

@@ -29,17 +29,23 @@ CORPUS_PATHS = [
 ]
 
 
-def provider_elf():
-    """A synthetic ARM64 PIE with one DT_NEEDED entry; never executed."""
+def provider_elf(needed="libc.so", *, soname=None):
+    """A small synthetic ARM64 ELF with one DT_NEEDED entry; never executed."""
     raw = bytearray(0x800)
     raw[:16] = b"\x7fELF\x02\x01\x01" + b"\0" * 9
-    strings = b"\0libc.so\0"
-    dynamic = [(1, 1), (5, 0x500), (10, len(strings)), (0, 0)]
+    strings = b"\0" + needed.encode() + b"\0"
+    dynamic = [(1, 1)]
+    if soname is not None:
+        dynamic.append((14, len(strings)))
+        strings += soname.encode() + b"\0"
+    dynamic += [(5, 0x500), (10, len(strings)), (0, 0)]
     interpreter = b"/system/bin/linker64\0"
-    struct.pack_into("<HHIQQQIHHHHHH", raw, 16, 3, 183, 1, 0x400, 64, 0, 0, 64, 56, 3, 0, 0, 0)
-    struct.pack_into("<IIQQQQQQ", raw, 64, 1, 5, 0, 0, 0, len(raw), len(raw), 4096)
+    struct.pack_into("<HHIQQQIHHHHHH", raw, 16, 3, 183, 1, 0x400, 64, 0, 0, 64, 56,
+                     3 if soname is None else 2, 0, 0, 0)
+    struct.pack_into("<IIQQQQQQ", raw, 64, 1, 5 if soname is None else 4, 0, 0, 0, len(raw), len(raw), 4096)
     struct.pack_into("<IIQQQQQQ", raw, 120, 2, 6, 0x200, 0x200, 0, len(dynamic) * 16, len(dynamic) * 16, 8)
-    struct.pack_into("<IIQQQQQQ", raw, 176, 3, 4, 0x400, 0x400, 0, len(interpreter), len(interpreter), 1)
+    if soname is None:
+        struct.pack_into("<IIQQQQQQ", raw, 176, 3, 4, 0x400, 0x400, 0, len(interpreter), len(interpreter), 1)
     for index, pair in enumerate(dynamic):
         struct.pack_into("<qQ", raw, 0x200 + index * 16, *pair)
     raw[0x400:0x400 + len(interpreter)] = interpreter
@@ -730,7 +736,7 @@ class PolicyInputsTests(unittest.TestCase):
         self.assertEqual(result["oem_property_contract"]["path"], policy.OEM_PROPERTY_CONTRACT_PATH)
         self.assertEqual(result["scope"], policy.SCOPE)
 
-    def install_provider_fixture(self, *, properties=False):
+    def install_provider_fixture(self, *, properties=False, derivation=False):
         from scripts import framework_provider_inputs as inputs
         from scripts import framework_provider_policy as source
         self.install_property_fixture() if properties else self.install_oem_fixture()
@@ -747,6 +753,7 @@ class PolicyInputsTests(unittest.TestCase):
             "source_dependencies": {"libc.so": "libc"}, "source_replacements": [],
             "required_source_patches": [], "runtime_requirements": ["Synthetic inputs; runtime not tested."],
             "native_output_recipe": copy.deepcopy(inputs.NATIVE_OUTPUT_RECIPE), "scope": copy.deepcopy(inputs.SCOPE),
+            "payload_derivations": [],
         }
         (self.workspace / "config/provider-source-lock.json").write_bytes(b"provider fixture lock\n")
         capture = self.root / "provider-capture"
@@ -779,6 +786,31 @@ class PolicyInputsTests(unittest.TestCase):
                                           **policy.identity(data)})
                 self.provider_source["selected_provider_artifacts"].append({
                     "path": runtime.removeprefix("/system_ext"), **policy.identity(data)})
+        if derivation:
+            old, new = "libfixture-V2.so", "libfixture-V4.so"
+            runtime = "/system_ext/lib64/libfixture.so"
+            original = provider_elf(old, soname="libfixture.so")
+            offset = 0x501 + old.index("2")
+            derived = original[:offset] + b"4" + original[offset + 1:]
+            (capture / "fixture-library").write_bytes(original)
+            self.provider_profile["files"].append({
+                "runtime_path": runtime, "kind": "shared_library", "capture": "fixture",
+                "capture_path": "fixture-library", "mode": "0644", **policy.identity(original),
+                "module": "nezha_framework_fixture_library", "needed": [old], "soname": "libfixture.so"})
+            receipt["files"].append({"path": runtime.removeprefix("/system_ext"), "output_path": "fixture-library",
+                                     "type": "regular", "mode": "0644", "readback_verified": True,
+                                     **policy.identity(original)})
+            evidence = b'{"scope":"synthetic dependency evidence, no runtime proof"}\n'
+            evidence_path = "research/fixture-provider-compatibility.json"
+            (self.workspace / evidence_path).write_bytes(evidence)
+            self.provider_profile["payload_derivations"] = [{"runtime_path": runtime,
+                "recipe": {"kind": "exact-equal-length-dt-needed-string-replacement",
+                           "original": policy.identity(original), "derived": policy.identity(derived),
+                           "old": old, "new": new, "dt_needed_string_file_offset": 0x501,
+                           "changed_byte_file_offset": offset, "original_byte_hex": "32", "derived_byte_hex": "34"},
+                "evidence": {"path": evidence_path, **policy.identity(evidence)}}]
+            self.provider_profile["source_dependencies"][new] = "libfixture-V4"
+            self.provider_derivation_bytes = (original, derived)
         capture_raw = policy.encoded(receipt)
         (capture / "capture.json").write_bytes(capture_raw)
         self.provider_profile["captures"]["fixture"] = {"path": "capture.json", **policy.identity(capture_raw)}
@@ -796,7 +828,7 @@ class PolicyInputsTests(unittest.TestCase):
             path = self.workspace / row["path"]
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes((WORKSPACE / row["path"]).read_bytes())
-        for name in ("framework_provider_policy", "framework_provider_inputs"):
+        for name in ("framework_provider_policy", "framework_provider_inputs", "framework_provider_derivations"):
             (self.workspace / ("scripts/" + name + ".py")).write_bytes(b"synthetic provider control source\n")
         self.provider_source_path = self.workspace / policy.PROVIDER_POLICY_CONTRACT_PATH
         self.write_provider_contracts()
@@ -842,7 +874,7 @@ class PolicyInputsTests(unittest.TestCase):
         self.assertEqual(verified["framework_provider_inputs"], provider)
         self.assertEqual(result["framework_provider_policy_contract"], {
             "path": policy.PROVIDER_POLICY_CONTRACT_PATH, **policy.identity(self.provider_source_path.read_bytes())})
-        self.assertEqual(len(result["files"]), 45)
+        self.assertEqual(len(result["files"]), 46)
         self.assertEqual(result["native_targets"].count(inputs.CHECK), 1)
         self.assertNotIn("oem_property_contract", result)
         self.assertEqual(verified["scope"], policy.SCOPE)
@@ -856,13 +888,88 @@ class PolicyInputsTests(unittest.TestCase):
         self.install_provider_fixture(properties=True)
         result = self.stage_providers()
         verified = self.verify_providers()
-        self.assertEqual(len(result["files"]), 50)
+        self.assertEqual(len(result["files"]), 51)
         self.assertEqual(verified["oem_property_contract"]["path"], policy.OEM_PROPERTY_CONTRACT_PATH)
         self.assertEqual(verified["framework_provider_policy_contract"]["path"], policy.PROVIDER_POLICY_CONTRACT_PATH)
         text = (self.output / "Android.bp").read_text()
         self.assertIn("--property-contract", text)
         self.assertIn("--provider-contract", text)
         self.assertEqual(result["scope"], policy.SCOPE)
+
+    def test_provider_derivation_composes_with_properties_without_replacing_originals(self):
+        inputs, _ = self.install_provider_fixture(properties=True, derivation=True)
+        result = self.stage_providers()
+        verified = self.verify_providers()
+        self.assertEqual(verified["framework_provider_inputs"]["payload_derivations"],
+                         self.provider_profile["payload_derivations"])
+        self.assertEqual(len(result["files"]), 52)
+        evidence = self.provider_profile["payload_derivations"][0]["evidence"]
+        for original, member in ((self.workspace / evidence["path"], "provenance/evidence/" + evidence["path"]),
+                                 (self.workspace / "scripts/framework_provider_derivations.py",
+                                  "provenance/tools/framework_provider_derivations.py")):
+            self.assertEqual((self.output / member).read_bytes(), original.read_bytes())
+        namespace = {"__name__": "offline_test"}
+        script = self.provider_bundle / "tools/verify_framework_provider_inputs.py"
+        exec(compile(script.read_bytes(), str(script), "exec"), namespace)
+        native_output = self.root / "native-output"
+        with mock.patch("sys.stdout", new=io.StringIO()) as stdout:
+            namespace["main"](["--output-dir", str(native_output),
+                               *(str(self.provider_bundle / name) for name in namespace["EXPECTED"])])
+        self.assertIs(json.loads(stdout.getvalue())["verified"], True)
+        original, derived = self.provider_derivation_bytes
+        self.assertEqual((self.provider_bundle / "proprietary/system_ext/lib64/libfixture.so").read_bytes(), original)
+        self.assertEqual((native_output / "verified/system_ext/lib64/libfixture.so").read_bytes(), derived)
+        self.assertEqual(sum(a != b for a, b in zip(original, derived)), 1)
+        self.assertEqual(inputs.verify_bundle(self.provider_bundle), verified["framework_provider_inputs"])
+        self.assertFalse(verified["scope"]["complete_rom_admitted"])
+
+    def test_provider_verification_cannot_drop_or_reseal_derivation_metadata(self):
+        inputs, _ = self.install_provider_fixture(derivation=True)
+        original = inputs.verify_bundle(self.provider_bundle)
+        mutations = (
+            lambda value: value.pop("payload_derivations"),
+            lambda value: value.update(payload_derivations=[]),
+            lambda value: value["payload_derivations"].append(copy.deepcopy(value["payload_derivations"][0])),
+            lambda value: value["payload_derivations"][0]["recipe"].update(changed_byte_file_offset=1),
+            lambda value: value["payload_derivations"][0]["recipe"]["derived"].update(sha256="f" * 64),
+            lambda value: value["payload_derivations"][0]["evidence"].update(sha256="f" * 64),
+        )
+        for number, mutate in enumerate(mutations):
+            changed = copy.deepcopy(original)
+            mutate(changed)
+            output = self.root / ("refused-provider-" + str(number))
+            with self.subTest(number=number), mock.patch.object(inputs, "verify_bundle", return_value=changed), \
+                    self.assertRaisesRegex(policy.PolicyInputsError, "external provider verification differs"):
+                self.stage_providers(output)
+            self.assertFalse(output.exists())
+        self.stage_providers()
+        receipt_path = self.output / policy.RECEIPT_NAME
+        receipt = json.loads(receipt_path.read_bytes())
+        receipt["framework_provider_inputs"]["payload_derivations"] = []
+        receipt_path.write_bytes(policy.encoded(receipt))
+        self.assert_rejected(self.verify_providers)
+
+    def test_provider_derivation_evidence_and_helper_are_rechecked_after_transfer(self):
+        self.install_provider_fixture(derivation=True)
+        self.stage_providers()
+        reference = self.provider_profile["payload_derivations"][0]["evidence"]
+        evidence = self.workspace / reference["path"]
+        for path in (evidence, self.output / ("provenance/evidence/" + reference["path"]),
+                     self.workspace / "scripts/framework_provider_derivations.py",
+                     self.output / "provenance/tools/framework_provider_derivations.py"):
+            raw = path.read_bytes()
+            with self.subTest(path=path):
+                path.write_bytes(raw + b"unreviewed")
+                self.assert_rejected(self.verify_providers)
+                path.write_bytes(raw)
+        original = evidence.read_bytes()
+        evidence.unlink()
+        self.assert_rejected(lambda: self.stage_providers(self.root / "missing-evidence"))
+        evidence.symlink_to(self.provider_source_path)
+        self.assert_rejected(lambda: self.stage_providers(self.root / "symlink-evidence"))
+        evidence.unlink()
+        evidence.write_bytes(original)
+        self.assertEqual(self.verify_providers()["status"], "verified")
 
     def test_provider_opt_in_requires_base_source_and_external_receipt_together(self):
         self.install_provider_fixture()
@@ -905,6 +1012,9 @@ class PolicyInputsTests(unittest.TestCase):
         self.install_provider_fixture()
         original = copy.deepcopy(self.provider_profile["native_output_recipe"])
         for recipe in (None, {**original, "consumer_inputs": "raw_filegroups"},
+                       {key: value for key, value in original.items() if key != "payload_transformations"},
+                       {**original, "payload_transformations": "arbitrary_elf_rewrite"},
+                       {**original, "unreviewed_option": True},
                        {**original, "all_inputs_checked_before_outputs": False},
                        {**original, "all_inputs_checked_before_outputs": 1},
                        {**original, "producer": "unreviewed"}):

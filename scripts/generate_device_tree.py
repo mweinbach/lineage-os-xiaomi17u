@@ -181,9 +181,9 @@ OEM_PROPERTY_LIMITS = frozenset({
 })
 OEM_PROPERTY_EVIDENCE = ("finite_impact_audit", "finite_impact_readback", "independent_finite_impact_review")
 FRAMEWORK_PROVIDER_RECORD = PurePosixPath("config/nezha-framework-provider-policy.json")
-FRAMEWORK_PROVIDER_CONTRACT_SHA256 = "6515395854a7cdc08f2d9c9ed5f7119164a9c0376ca8710a152ffb1999dc52f8"
+FRAMEWORK_PROVIDER_CONTRACT_SHA256 = "aa4b0ffb5395ad555e8f62c9074e00252d4d76812888ab68032a1ef01845ef4f"
 FRAMEWORK_PROVIDER_INPUT_RECORD = PurePosixPath("config/nezha-framework-providers.json")
-FRAMEWORK_PROVIDER_INPUT_SHA256 = "467667d20399469d0b5621a4a7891e896ce6c3f785830ee0ad0dd17a06b8c45f"
+FRAMEWORK_PROVIDER_INPUT_SHA256 = "7e514674abbf7739efb2e7520d79e7c1f302de773a3e49c0d683aba7c51fc8a7"
 FRAMEWORK_PROVIDER_INPUTS_PATH = "vendor/xiaomi/nezha-framework-providers"
 FRAMEWORK_PROVIDER_INPUTS_RECEIPT = "framework-provider-inputs.json"
 FRAMEWORK_PROVIDER_MODULE_PACKAGE = "device/xiaomi/nezha/framework-providers"
@@ -1440,7 +1440,8 @@ def _framework_provider_native_controls(contract, native_files):
     return {
         "Android.bp": provider_inputs._bp(contract, native_files),
         "tools/verify_framework_provider_inputs.py": provider_inputs._native_checker(
-            dict(sorted(native_files.items())), provider_inputs._native_outputs(contract)),
+            dict(sorted(native_files.items())), provider_inputs._native_outputs(contract),
+            provider_inputs._native_derivations(contract)),
     }
 
 
@@ -1514,6 +1515,7 @@ def _framework_provider_binding(plan, contract, input_contract, input_identity, 
         "factory_image": input_contract["factory_image"], "source_lock": input_contract["source_lock"],
         "native_check_target": "nezha_framework_provider_inputs_check",
         "native_output_recipe": input_contract["native_output_recipe"], "packages": packages,
+        "payload_derivations": input_contract["payload_derivations"],
         "providers": input_contract["providers"], "scope": input_contract["scope"], "readback_verified": True,
     }
     _require(type(verification) is dict and set(verification) == set(expected_fields) | {"files", "receipt", "module_blueprint"} and
@@ -1613,10 +1615,11 @@ def _bind_framework_providers(plan, path, receipt, workspace_root, template_root
              blueprint == _framework_provider_blueprint(input_contract), "framework provider Blueprint changed after verification")
     payloads[FRAMEWORK_PROVIDER_BLUEPRINT] = blueprint
     for row, root in [(input_contract["source_lock"], workspace_root),
+                      *((row["evidence"], workspace_root) for row in input_contract["payload_derivations"]),
                       *((row, patch_source_root) for row in input_contract["required_source_patches"])]:
         actual, raw = _read_file(Path(root) / _relative(row["path"]), limit=MAX_TEXT_BYTES, collect=True)
         _require(actual == {key: row[key] for key in ("sha256", "size_bytes")},
-                 "framework provider source lock or required patch changed")
+                 "framework provider source lock, derivation evidence or required patch changed")
         payloads[row["path"]] = raw
     for source, destination, expected in ((path, FRAMEWORK_PROVIDER_RECORD, identity),
                                           (input_path, FRAMEWORK_PROVIDER_INPUT_RECORD, input_identity)):
@@ -2758,10 +2761,11 @@ def validate(output, *, purpose="configuration"):
                      "framework provider policy source differs from its reviewed contract")
             _, provider_contents[row["path"]] = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
         _verify_framework_provider_sources(provider_contents, provider_contract)
-        for row in [provider_inputs["source_lock"], *provider_inputs["required_source_patches"]]:
+        for row in [provider_inputs["source_lock"], *provider_inputs["required_source_patches"],
+                    *(item["evidence"] for item in provider_inputs["payload_derivations"])]:
             expected.add(row["path"])
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
-                     "framework provider source lock or required patch changed")
+                     "framework provider source lock, derivation evidence or required patch changed")
         _, blueprint = _read_file(Path(output) / FRAMEWORK_PROVIDER_BLUEPRINT, limit=MAX_TEXT_BYTES, collect=True)
         _require(blueprint == _framework_provider_blueprint(provider_inputs), "generated framework provider Blueprint changed")
     if "page_size_profile" in plan:

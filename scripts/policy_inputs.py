@@ -78,6 +78,7 @@ PROVIDER_NATIVE_OUTPUT_RECIPE = {
     "payload_output_prefix": "verified",
     "consumer_inputs": "verified_producer_outputs",
     "all_inputs_checked_before_outputs": True,
+    "payload_transformations": "reviewed_exact_dt_needed_byte",
 }
 PROVIDER_BLOCKS = (
     ("        // BEGIN OPTIONAL NEZHA FRAMEWORK PROVIDER INPUTS\n",
@@ -429,7 +430,12 @@ def _provider_controls(reader, path, contract, controls, oem_binding, properties
         "tools/nezha-framework-provider-policy.json": raw,
         "provenance/nezha-framework-providers.json": profile_raw,
         "provenance/tools/framework_provider_inputs.py": reader.read(ROOT / "scripts/framework_provider_inputs.py"),
+        "provenance/tools/framework_provider_derivations.py": reader.read(ROOT / "scripts/framework_provider_derivations.py"),
     })
+    for derivation in profile["payload_derivations"]:
+        evidence = derivation["evidence"]
+        name = _relative(evidence["path"])
+        controls["provenance/evidence/" + name] = _read_exact(reader, ROOT / name, evidence)
     controls.update({"provenance/source/" + path: data for path, data in contents.items()})
     controls["Android.bp"] = _render_blueprint(controls["provenance/Android.bp.template"],
                                               True, properties_enabled, True)
@@ -448,6 +454,7 @@ def _provider_inputs(reader, receipt_path, contract, controls, *, output=None):
     require(output is None or not output.is_relative_to(provider_root),
             "policy staging must not add descendants to the preserved provider bundle")
     verification = provider_inputs.verify_bundle(provider_root, contract_path=ROOT / PROVIDER_INPUTS_CONTRACT_PATH)
+    profile = _json(controls["provenance/nezha-framework-providers.json"])
     require(verification.get("status") == "verified"
             and verification.get("operation") == "stage-framework-provider-inputs"
             and verification.get("device") == contract["device"]
@@ -457,6 +464,7 @@ def _provider_inputs(reader, receipt_path, contract, controls, *, output=None):
             and verification.get("native_check_target") == PROVIDER_NATIVE_OUTPUT_RECIPE["producer"]
             and verification.get("native_output_recipe") == PROVIDER_NATIVE_OUTPUT_RECIPE
             and verification["native_output_recipe"].get("all_inputs_checked_before_outputs") is True
+            and verification.get("payload_derivations") == profile["payload_derivations"]
             and verification.get("scope") == provider_inputs.SCOPE
             and verification.get("contract") == identity(controls["provenance/nezha-framework-providers.json"]),
             "external provider verification differs from the admitted source capability")

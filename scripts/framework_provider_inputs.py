@@ -24,10 +24,12 @@ import xml.etree.ElementTree as ET
 if __package__:
     from .apex_inputs import elf_dynamic
     from .artifact_files import publish_new_directory
+    from .framework_provider_derivations import derive_needed, validate_rule
     from .vendor_policy import Reader, real_directory
 else:
     from apex_inputs import elf_dynamic
     from artifact_files import publish_new_directory
+    from framework_provider_derivations import derive_needed, validate_rule
     from vendor_policy import Reader, real_directory
 
 
@@ -45,6 +47,7 @@ NATIVE_OUTPUT_RECIPE = {
     "payload_output_prefix": "verified",
     "consumer_inputs": "verified_producer_outputs",
     "all_inputs_checked_before_outputs": True,
+    "payload_transformations": "reviewed_exact_dt_needed_byte",
 }
 MAX_BUNDLE_BYTES = 64 * 1024 * 1024
 SAFE_NAME = re.compile(r"[A-Za-z0-9_+.@-]+")
@@ -144,7 +147,8 @@ def load_contract(reader=None, contract_path=None):
     require(set(contract) == {"schema_version", "device", "platform", "bundle", "module_package", "factory_package_sha256",
                               "factory_image", "source_lock", "captures", "files", "providers",
                               "source_dependencies", "source_replacements", "required_source_patches",
-                              "runtime_requirements", "native_output_recipe", "scope"}, "unexpected provider contract fields")
+                              "runtime_requirements", "native_output_recipe", "payload_derivations", "scope"},
+            "unexpected provider contract fields")
     require(type(contract["schema_version"]) is int and contract["schema_version"] == 1
             and contract["device"] == "nezha" and contract["bundle"] == BUNDLE
             and contract["module_package"] == MODULE_PACKAGE
@@ -213,13 +217,33 @@ def load_contract(reader=None, contract_path=None):
             if kind == "shared_library":
                 require(expected_soname not in library_names, "duplicate private SONAME")
                 library_names[expected_soname] = row["module"]
+    derivations = contract["payload_derivations"]
+    require(type(derivations) is list and len(derivations) <= 1,
+            "only the reviewed single dependency correction is supported")
+    by_runtime = {row["runtime_path"]: row for row in files}
+    for derivation in derivations:
+        require(type(derivation) is dict and set(derivation) == {"runtime_path", "recipe", "evidence"},
+                "unexpected payload derivation fields")
+        require(type(derivation["runtime_path"]) is str, "invalid derivation runtime path")
+        row = by_runtime.get(derivation["runtime_path"])
+        require(row is not None and row["kind"] == "shared_library",
+                "a dependency derivation must select an admitted shared library")
+        rule = derivation["recipe"]
+        validate_rule(rule)
+        require(rule["original"] == _expected(row) and rule["old"] in row["needed"]
+                and rule["new"] not in row["needed"],
+                "derivation must bind the original dependency and exact admitted input")
+        evidence = derivation["evidence"]
+        require(type(evidence) is dict and set(evidence) == {"path", "sha256", "size_bytes"},
+                "dependency derivation requires reviewed compatibility evidence")
+        _read_bound(reader, ROOT / _relative(evidence["path"]), evidence)
     dependencies = contract["source_dependencies"]
     require(type(dependencies) is dict and dependencies, "pinned source dependencies are required")
     for soname, module in dependencies.items():
         require(_name(soname).endswith(".so") and soname not in library_names,
                 "a source library cannot also be replaced with a private prebuilt")
         _module(module)
-    all_needed = {name for row in files for name in row.get("needed", [])}
+    all_needed = {name for row in files for name in _effective_needed(contract, row)}
     require(all_needed <= set(library_names) | set(dependencies), "unresolved explicit DT_NEEDED dependency")
     require(set(dependencies) <= all_needed, "unused source dependency in contract")
     providers = contract["providers"]
@@ -292,6 +316,10 @@ def validate_inputs(contract, payload):
         else:
             require(b"\0" not in raw, "init RC cannot contain NUL")
             raw.decode("utf-8", "strict")
+    # Verify the exact semantic boundary without replacing any admitted input.
+    # The native producer repeats the pinned byte recipe before publishing.
+    for derivation in contract["payload_derivations"]:
+        derive_needed(payload[derivation["runtime_path"]], derivation["recipe"])
     for provider in contract["providers"]:
         rc = payload[provider["init_rc"]].decode("utf-8")
         declarations = [line.split() for line in rc.splitlines()
@@ -308,12 +336,27 @@ def validate_inputs(contract, payload):
                 "VINTF declaration differs from its actual reviewed provider")
 
 
+def _effective_needed(contract, row):
+    needed = row.get("needed", [])
+    for derivation in contract["payload_derivations"]:
+        if derivation["runtime_path"] == row["runtime_path"]:
+            rule = derivation["recipe"]
+            return [rule["new"] if name == rule["old"] else name for name in needed]
+    return needed
+
+
+def _native_derivations(contract):
+    return [{"path": "verified" + item["runtime_path"],
+             "source": "proprietary" + item["runtime_path"], "recipe": item["recipe"]}
+            for item in contract["payload_derivations"]]
+
+
 def _native_outputs(contract):
     return {"verified" + row["runtime_path"]: "proprietary" + row["runtime_path"]
             for row in contract["files"]}
 
 
-def _native_checker(identities, payloads):
+def _native_checker(identities, payloads, derivations):
     """A small standalone native build tool; exact data is generated from the contract."""
     return ('''#!/usr/bin/env python3
 """Produce only verified provider files for native Android consumers."""
@@ -328,7 +371,39 @@ import tempfile
 
 EXPECTED = ''' + repr(identities) + '''
 PAYLOADS = ''' + repr(payloads) + '''
+DERIVATIONS = ''' + repr(derivations) + '''
 RECEIPT = "framework-provider-inputs-checked.json"
+
+def identity(raw):
+    return {"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+
+def verified_payloads(contents):
+    # The trusted host renderer validated ELF structure and the bound source
+    # evidence. Here all original bytes are already SHA256-verified; execute
+    # only the literal pinned single-byte recipe and verify its full result.
+    outputs = {name: contents[source] for name, source in PAYLOADS.items()}
+    seen = set()
+    for item in DERIVATIONS:
+        name, source, rule = item["path"], item["source"], item["recipe"]
+        if name in seen or PAYLOADS.get(name) != source or EXPECTED[source] != rule["original"]:
+            raise ValueError("native derivation does not bind its original input")
+        seen.add(name)
+        raw = outputs[name]
+        old, new = rule["old"].encode("ascii"), rule["new"].encode("ascii")
+        start, offset = rule["dt_needed_string_file_offset"], rule["changed_byte_file_offset"]
+        changed = [index for index, pair in enumerate(zip(old, new)) if pair[0] != pair[1]]
+        if (rule["kind"] != "exact-equal-length-dt-needed-string-replacement"
+                or identity(raw) != rule["original"] or len(old) != len(new)
+                or len(changed) != 1 or offset != start + changed[0]
+                or raw[start:start + len(old) + 1] != old + b"\\0"
+                or rule["original_byte_hex"] != f"{old[changed[0]]:02x}"
+                or rule["derived_byte_hex"] != f"{new[changed[0]]:02x}"):
+            raise ValueError("native derivation byte or string precondition failed")
+        derived = raw[:offset] + bytes([new[changed[0]]]) + raw[offset + 1:]
+        if len(derived) != len(raw) or identity(derived) != rule["derived"]:
+            raise ValueError("native derived payload failed SHA256 verification")
+        outputs[name] = derived
+    return outputs
 
 def signature(info):
     return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
@@ -404,18 +479,20 @@ def main(arguments):
     # Hold the actual verified bytes. Do not reopen the source files for copies.
     # Every control and payload input must pass before any payload is written.
     contents, states = verify_inputs(arguments[2:])
+    payloads = verified_payloads(contents)
     unchanged(states)
     root = output_root(arguments[1])
     receipt = {"verified": True, "input_count": len(contents), "payload_count": len(PAYLOADS),
                "firmware_executed": False,
                "contract": EXPECTED["provenance/nezha-framework-providers.json"],
-               "outputs": [{"path": name, **EXPECTED[source]} for name, source in PAYLOADS.items()]}
+               "derivations": DERIVATIONS,
+               "outputs": [{"path": name, **identity(data)} for name, data in payloads.items()]}
     receipt_bytes = (json.dumps(receipt, sort_keys=True, indent=2) + "\\n").encode()
     staging = Path(tempfile.mkdtemp(prefix=".provider-verified-", dir=root))
     published = []
     try:
         for name, source in PAYLOADS.items():
-            write_checked(staging, name, contents[source])
+            write_checked(staging, name, payloads[name])
         write_checked(staging, RECEIPT, receipt_bytes)
         unchanged(states)
         # Hard-link newly created staging files, never original inputs. This
@@ -514,7 +591,7 @@ def _module_bp(contract):
                        '    check_elf_files: true,', '    allow_undefined_symbols: false,',
                        '    strip: { none: true },', '    stl: "none",', '    system_shared_libs: [],',
                        '    shared_libs: [']
-            output += ['        ' + json.dumps(dependencies[name]) + ',' for name in row["needed"]]
+            output += ['        ' + json.dumps(dependencies[name]) + ',' for name in _effective_needed(contract, row)]
             output += ['    ],']
             if kind == "binary":
                 provider = providers[row["runtime_path"]]
@@ -531,7 +608,8 @@ def _generated(contract, raw, capture_bytes):
     native_files = {"proprietary" + row["runtime_path"]: _expected(row) for row in contract["files"]}
     native_files.update({name: identity(data) for name, data in result.items()})
     result["tools/verify_framework_provider_inputs.py"] = _native_checker(dict(sorted(native_files.items())),
-                                                                        _native_outputs(contract))
+                                                                        _native_outputs(contract),
+                                                                        _native_derivations(contract))
     result["Android.bp"] = _bp(contract, native_files)
     packages = [row["module"] for row in contract["files"] if "module" in row]
     product = ["# Explicitly admitted private Nezha provider bundle.",
@@ -587,6 +665,7 @@ def _manifest(contract, raw, files):
             "files": [{"path": name, **identity(data)} for name, data in sorted(files.items())],
             "native_check_target": CHECK,
             "native_output_recipe": contract["native_output_recipe"],
+            "payload_derivations": contract["payload_derivations"],
             "packages": [row["module"] for row in contract["files"] if "module" in row],
             "providers": contract["providers"], "scope": SCOPE, "readback_verified": True}
 
