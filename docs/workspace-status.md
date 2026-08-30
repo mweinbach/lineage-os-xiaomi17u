@@ -71,8 +71,21 @@ The read-only VINTF graph capture
 now binds 21 XML inputs, including both provider fragments, and 36 APEX inputs.
 Its `check-vintf-all` alias still omits full compatibility. The three-goal
 **vintf-v13h-1** build is running; no result or complete comparison is claimed.
+The separate packet for a full 39-APEX comparison is staged with all 221 files
+verified. Staging does not execute native compatibility checks or materialize
+the required generated APEX inputs.
 
-The separate **policy-images-export4-v1** native reconstruction now passes
+The current **policy-images-v13h-v1** native reconstruction passes **nine checks
+and 38 commands with zero skips**, including 18 fsck checks. Both independent
+TAR/image/export sets are byte-identical, with exactly one vendor file and four
+ODM files changed; every other content digest and semantic metadata field is
+preserved under the explicit physical-layout exclusions. Independent review
+of the 97-file capture has no findings. The raw vendor image matches export4;
+the ODM image carries the sealed v13h policy and matching digests. These outputs
+remain unadopted: original images and staging are preserved, and AVB/FEC/footer,
+partition fit, current-source compatibility, runtime and boot are not verified.
+
+The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
 sets match, with exactly one vendor policy file and four ODM files changed;
 all other contents and semantic metadata are preserved. Independent review
@@ -106,9 +119,10 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,651 tests in 158.950
-seconds with zero failures, errors or skips**, covering the explicit v13h
-policy-image profile committed as `78376c7`. The preceding v13ha integration
+The latest coordinator full workspace suite passed **3,651 tests in 160.426
+seconds with zero failures, errors or skips**, after the v13h raw-image milestone.
+Public code is unchanged from the preceding profile run, which passed 3,651
+tests in 158.950 seconds at `78376c7`. The preceding v13ha integration
 run passed 3,634 in 152.111 seconds. The previous v7 run passed 3,634 in
 156.509 seconds, and the previous profile
 checkpoint passed 3,591 tests in
@@ -116,7 +130,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `78376c7`. The active guest inputs remain v13ha;
+code and documentation through `94ddfb3`. The active guest inputs remain v13ha;
 `analysis-v13h-policy-only-v1` is now the verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -225,6 +239,7 @@ from a full build and require destination hash verification after transfers.
 | Native unchanged-vendor round trip | Eight checks pass, zero skips; two identical raw images preserve all 3,910 entries and 3,389 regular-file contents under the exact 2 GiB vendor recipe; not policy/image adoption | [Native ROM integration](../research/native-rom-integration.json) |
 | Native unchanged-ODM round trip | Eight checks pass, zero skips; two identical raw images preserve all 3,059 entries and 2,925 regular-file contents under the exact 6 GiB ODM recipe; no policy replacements, AVB or boot result | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12/export4 policy-image reconstruction | Nine checks and 38 commands pass, zero skips; two identical complete TAR/image/export sets preserve all but the exact five policy payloads; raw derivation only, no adoption or AVB | [Native ROM integration](../research/native-rom-integration.json) |
+| Native v13h policy-image reconstruction | Nine checks and 38 commands pass, zero skips; independent review confirms both exact five-file derivations and all other semantic metadata; unsigned raw outputs remain unadopted | [Native ROM integration](../research/native-rom-integration.json) |
 | Native pinned-date fixtures | All 33 expected outcomes verified: nine positive/legacy cases and 24 diagnostic-specific negatives, zero skips; live product unchanged | [Native date checks](../research/pinned-build-metadata-native.json) |
 | Original factory Camera packaging | Unchanged APK passes strict privileged/preprocessed and uses-library checks; no APK selection, permission-grant, effective-label or hardware result | [Factory Camera APK](../research/factory-camera-apk.json) |
 | Static vendor VINTF | Vendor/ODM manifest load and merge, including captured active vendor APEX fragments | [VINTF validation](../research/vintf-validation.json) |
@@ -262,14 +277,15 @@ override theme defaults. No Magisk integration is included.
   complete reviewed effect delta. Neither later addition was part of v11b.
   Commit `78376c7` adds the explicit matching `v13h-policy-only` image-input
   profile, eligible for evidence validation. Earlier profiles and the blocked
-  default are unchanged. The separate `policy-images-v13h-v1` reconstruction is
-  in progress; no completed reconstruction or image adoption is verified.
+  default are unchanged. The separate `policy-images-v13h-v1` raw reconstruction
+  and independent review now pass; image adoption remains unverified.
   Full labeling needs the actual complete Evolution APK inventory; a missing
   artifact skip or API-202504 touch-only target is not a pass. The corrected
   policy is a non-installable validation output: retained vendor/ODM images
-  still contain their original policy. A reviewed derivation must replace the
-  vendor CIL and the ODM combined policy plus its three matching framework
-  digests while preserving every other file and its metadata. The authored
+  still contain their original policy. The qualified raw derivation replaces
+  the vendor CIL and the ODM combined policy plus its three matching framework
+  digests while preserving every other file and semantic metadata field under
+  explicit physical-layout exclusions. Its adoption is a separate gate. The authored
   [EROFS inventory tool](../tools/erofs-metadata/README.md) has built natively.
   The corrected exporter now passes all six read-only stock checks, exporting
   3,910 vendor and 3,059 ODM entries, and all eight shared-xattr regression
@@ -383,7 +399,10 @@ override theme defaults. No Magisk integration is included.
   The new read-only VINTF graph capture binds 21 XML and 36 APEX inputs, but
   confirms the all-target alias lacks the full compatibility action. Its
   three-goal build is running; no successful build or complete comparison is
-  claimed from that work.
+  claimed from that work. The separate full-check packet is staged, with 221
+  files verified and 39 APEX packages required; native materialization and
+  compatibility checks remain unexecuted. Its 44 coordinator offline tests
+  pass with zero skips, separately from the native build.
   A captured current Soong configuration selects maximum ELF page size 16,384
   with the prebuilt check enabled; static inspection finds 22 of 26 provider
   ELFs have 4 KiB load alignment. The [optional 4 KiB experiment](nezha-page-size.md)
