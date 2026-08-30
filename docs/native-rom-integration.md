@@ -2,17 +2,20 @@
 
 The **policy-only-v13h-1** source build passes at **2026-08-30 05:40:07 UTC**:
 31 goals and 273 Ninja actions after configuration, with unchanged source inputs
-and verified sandboxing. The v13ha correction is installed. Independent analysis
-of the resulting provider policy remains pending; no new exact assertion/effect,
-provider runtime/ELF, image adoption or hardware result is claimed.
+and verified sandboxing. The installed v13ha policy subsequently passes
+**analysis-v13h-policy-only-v1** at **13:12:51 UTC**, with all 6,366 original
+assertions plus four provider assertions, nine fresh checks and three
+zero-permissive binaries. Independent capture review has no findings, and the
+matching native digest derivation passes six checks with zero skips. Provider
+runtime/ELF, image adoption and hardware remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
 reviewed property effects and zero permissive domains in three binaries.
 Source/M4, API mapping, compiler, OEM guard and nine fresh check bindings pass.
-This remains the latest independently verified policy baseline. The earlier
-v13f bootstrap failure is preserved; the corrected v13ha source build does not
-replace independent semantic verification. Policy-image adoption remains
+This is the preserved baseline for the later v13h comparison. The earlier
+v13f bootstrap failure is preserved. Current provider-policy verification and
+the older five-file image derivation are distinct evidence; image adoption remains
 separate. The Camera/mi_ext/recovery
 phase and bounded producer review pass, with all eleven installed base payloads
 inspected. Runtime API closure, Camera APK integration and a complete signed
@@ -373,7 +376,7 @@ first Evolution boot or Camera/Leica operation is established.
 
 | Slice | Verified result | Still required |
 | --- | --- | --- |
-| [Sigma/QCC source admission](framework-provider-source-admission.md) | Historical v13 candidate/repeat and v13f installation are preserved; the v13ha correction is installed and its 31-goal policy source build passes | Independent provider-policy analysis, strict native runtime ELF/linker checks, full labeling and service validation |
+| [Sigma/QCC source admission](framework-provider-source-admission.md) | Historical v13 candidate/repeat and v13f installation are preserved; installed v13ha passes the policy source build and native semantic/provenance analysis | Strict native runtime ELF/linker checks, complete VINTF and APK labeling, service validation and matching image adoption |
 | [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host verification binds nine composed source files through patches 0005–0009; source admission and 43 isolated native Kati cases pass | Guest installation and ordinary target-files checks; a new complete preservation contract for policy-bearing vendor/ODM derivatives |
 | [Host AVB signing](avb-signing.md) | Inert planning, offline workflow tests and real unsigned countrycode/pvmfw descriptor-carrier checks; original inputs preserved | All 15 final input images with correct hashtrees/FEC, explicit Mac signing and independent verification of the resulting 17 image roles |
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
@@ -381,7 +384,7 @@ first Evolution boot or Camera/Leica operation is established.
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
-| [Policy-image input preparation](policy-image-inputs.md) | Commit `35324b4` adds explicit v12/export4 record admission; the later native reconstruction qualifies the exact five-file raw derivation; historical default remains blocked | AVB/footer/FEC, partition fit and image adoption; the v12 profile does not admit current v13ha inputs |
+| [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit current v13h evidence admission; earlier profiles/default are unchanged and the v12/export4 raw reconstruction remains separate | Matching v13h reconstruction, AVB/footer/FEC, partition fit and image adoption |
 | [Factory Camera grant behavior](../research/factory-camera-permission-grants.json) | Commit `e433a5d` traces three pure-signature requests through captured grant-evaluator and service source; 30 focused tooling tests pass | Effective signing/flags/grants, generated enforcement bodies and actual Camera behavior; no grant or APK installation is performed |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
 
@@ -469,9 +472,74 @@ timeout or remaining build process. Eleven preserved policy outputs and all
 eleven protected runtime outputs pass their separate post-build checks. The
 35-file capture totals 3,466,855 bytes; its 213,849-byte result is
 `1596843eca8377fdb17359e3a70009b84c95aad5a0219531f521e52e21659e5b`.
-Provider runtime/ELF actions and images are not requested or built. Independent
-policy analysis is still required before treating the new provider inputs as
-semantically verified or deriving matching images.
+Provider runtime/ELF actions and images are not requested or built. The separate
+native analysis below supplies the subsequent semantic and provenance evidence.
+
+The canonical **analysis-v13h-policy-only-v1** receipt is **10,058,468 bytes**,
+SHA256 `bb6e8f0218d1f4c61a3cd8221478007548e2a1950d048a9dd60d5d7842334b66`.
+It completes at **13:12:51 UTC** and binds the exact successful build, ten
+compiler inputs, source/M4 and API-202504 producer graphs, public exports,
+the fresh OEM guard and nine fresh context/structural checks. The complete
+208-file capture totals 58,407,051 bytes. No compiler or OEM guard is replayed
+by this analysis; their fresh build actions and exact provenance are rebound.
+
+Against the actual v12f/export4 baseline, all **6,366 original assertions** remain
+and **four provider assertions** are added. The ordinary concrete effect delta
+is **+12,005 allow, +1,883 dontaudit and +3,291,674 neverallow coverage**, with
+zero removals. The complete review separately records extended permissions and
+inherited changes. Two added CIL dontaudit statements are present, so denial
+logging is not claimed unchanged. Helper property-set permissions remain zero.
+Three unfiltered native analyses find no permissive domains. The strict combined
+binary is **1,517,136 bytes**, SHA256
+`44113598331ae410279432d39adb884db56fc1217ab5a35158c36fb3bee9f707`.
+
+The provider-input genrule freshly executed in the build at action 207/273.
+Its 42 original inputs produce 31 verified payloads: 30 remain unchanged and
+one has only the admitted one-byte DT_NEEDED derivation. The analysis binds
+the real command, dependencies, producer outputs and receipt; file modification
+times alone are not used to infer execution. This does not build or install the
+provider runtime modules, execute firmware or prove ELF/linker compatibility.
+The 31 native payload files were not separately copied in this analysis capture;
+their byte checks are bound through the native receipts and graph queries.
+
+Independent review rehashes all 208 captured files, 36 frozen controls, 55
+prepared inputs and the 42 original provider inputs, and reconstructs the
+one-byte derivative. The complete effect inventory matches its unchanged
+reviewed identity after only four validated generated assertion-name roles are
+normalized for comparison. No source or CIL is changed. The review has no
+findings; its receipt is
+`6de9be94f6765cd18f27feb6a5789194cd0b511b55f25fb9d098e407ec0ff82b`
+(8,926 bytes). The separate author's capture summary records completed checks
+without rerunning them. Neither review reruns compilation, native analyses or
+the offline suite.
+
+All guarded inputs remain unchanged, and the analysis writes no Android source,
+output or images. Normal Android enforcement and strict neverallows remain
+selected. Six MAC/seapp exports match their producer bytes, without a freshness
+or Camera permission claim. Full Treble APK labeling, provider runtime/ELF,
+complete VINTF, matching current-policy images, AVB and hardware remain open.
+
+The matching **policy-sidecar-v13h-native-v1** run passes **six checks and
+fourteen native commands, zero skips**. It derives platform, system_ext and
+product digest files from the six sealed CIL/mapping inputs using the pinned
+source recipe. The 65-byte system_ext digest file changes to SHA256
+`04b3cfdefbc293724f48a4a6c0e6098d46aa944274c74928b9b9cd20b6709335`;
+platform and product files match the earlier derivation. All 61 captured files,
+16,606,505 bytes, rehash. The native receipt is
+`d679acf232419b70c89c1fd05a48dd6647ca0a9d818f2dc9386db71669626630`.
+Known-answer and three negative controls pass. Source and Android output remain
+read-only for this operation; installed digest outputs are not captured and
+Android genrules are not executed. This derives validation files without
+adopting policy or accessing images.
+
+The read-only post-v13h VINTF graph capture completed at **13:29:30 UTC**. It
+binds 21 selected XML inputs, including both provider fragments, and 36 APEX
+inputs. The graph still defines no full compatibility action: `check-vintf-all`
+depends only on the system and frozen-manifest checks. The three-goal
+**vintf-v13h-1** build is running, requesting that alias and the stock-kernel
+version/configuration outputs. No result or fresh full compatibility comparison
+is claimed. The captured configuration retains `16384` and the enabled prebuilt
+page-size check; checker execution is a separate gate.
 
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
@@ -497,8 +565,10 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest coordinator `python3 -m unittest discover -s tests -v` run passed
-**3,634 tests in 152.111 seconds with zero failures, errors or skips**, after
-the v13ha integration. The previous coordinator run passed 3,634 in 156.509
+**3,651 tests in 158.950 seconds with zero failures, errors or skips**, covering
+the explicit v13h image-input profile committed as `78376c7`. The preceding
+v13ha integration run passed 3,634 in 152.111 seconds. The previous coordinator
+run passed 3,634 in 156.509
 seconds for the v7 producer/consumer integration committed as `364ab89`. The preceding
 policy-image profile checkpoint passed 3,591 tests in 152.682 seconds at
 `35324b4`. The prior coordinator component
@@ -650,8 +720,8 @@ input bytes and a missing final newline. The receipt is
 Source, Android output and inputs were read-only. These are derived validation
 files, not captured installed sidecars or executed Android genrules. No image
 was accessed or adopted. The v1 loader-output parser failure remains recorded
-as a failure, and current provider-policy validation is still required before
-adopting a policy-bearing image.
+as a failure. This v12 derivation does not validate the later provider policy;
+the separate v13h result above supplies its own matching digest evidence.
 
 Commit **35324b4** adds explicit `v12-export4` evidence admission with canonical
 contract SHA256 `5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4`.
@@ -692,15 +762,23 @@ This qualifies the raw five-file derivation for sealed v12/export4 inputs only.
 Original images and staging, Android source/output and the phone are untouched.
 No hashtree/FEC/footer is generated, no AVB signing or verification is performed,
 and no partition-fit, source/image adoption, retained-kernel mount or boot result
-is established. The current v13ha provider policy has a successful source build
-but still requires independent analysis and a matching image derivation.
+is established. The current v13ha provider policy now has a successful source
+build and native analysis, but still requires its own matching image derivation.
 
 ## Next build sequence
 
-Independently analyze the successful v13h policy build and verify the provider
-delta, source/M4 provenance and assertions against v12f/export4 before deriving matching provider
-policy images. The successful raw v12/export4 reconstruction remains a separate
+Commit **78376c7** adds the explicit `v13h-policy-only` preparation profile with
+canonical SHA256
+`39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0`.
+It binds the verified native policy and sidecar records and is eligible for
+evidence validation; both older profiles and the blocked default remain
+unchanged. Derive and verify its matching images through the qualified
+metadata-preserving pipeline. The separate **policy-images-v13h-v1** native
+reconstruction is in progress, with no verified result or image adoption. The successful
+raw v12/export4 reconstruction remains a separate
 baseline and must not be substituted for the active provider inputs.
+Complete the requested VINTF build and the full framework/vendor/APEX/kernel
+comparison; the captured all-target alias alone cannot establish compatibility.
 Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
 without lowering checks. The bounded Camera component producer/output review
 passes; runtime API and linker access, Camera APK admission and full checker-input

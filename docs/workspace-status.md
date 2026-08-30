@@ -15,19 +15,25 @@ at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
 configuration. Source inputs remained unchanged, the native sandbox was verified,
 and all eleven preserved policy outputs and eleven protected runtime outputs
 were verified. Provider runtime/ELF actions and images were not requested.
-Independent policy analysis is still pending; the completed source build does
-not yet establish the provider policy's exact assertions and effects.
+The subsequent native analysis now verifies the provider policy's exact
+assertions, effects and source provenance.
 
-The latest completed independent policy analysis, **analysis-v12f-export4-v1**,
-passed at **02:13:44 UTC**. It verifies source/M4 and API-mapping provenance,
-the fresh OEM guard and nine context/structural checks, all **6,366 original
-assertions**, and **zero permissive domains in three binaries**. The reviewed
-delta is exact: 105 added allow effects, 7,190 newly applicable dontaudit effects
-and 28,604 added neverallow coverage effects, with no removals. Normal Android
-enforcement and neverallows remain intact; all guarded inputs are unchanged.
+The latest native analysis, **analysis-v13h-policy-only-v1**, passed at
+**13:12:51 UTC**. It retains all **6,366 original assertions plus four provider
+assertions**, verifies nine fresh context/structural checks, and finds **zero
+permissive domains in three binaries**. Against v12f/export4, the reviewed
+ordinary delta is exactly **12,005 allow**, **1,883 dontaudit** and **3,291,674
+neverallow coverage effects added**, with none removed. The complete review also
+binds extended-permission changes. Two new dontaudit statements are recorded;
+denial logging is not claimed unchanged. Helper property-set permissions remain
+zero, normal Android stays enforcing, and all guarded inputs remain unchanged.
+The independent capture review has no findings: all 208 captured files and the
+complete reviewed effect inventory match, with only four validated generated
+assertion-name roles normalized for comparison. This does not modify policy.
 
-This establishes the latest verified v12f policy baseline, superseding the complete
-[v11b analysis](oem-policy-integration.md). The earlier v13f provider inputs were
+This establishes the current v13ha policy baseline. The earlier v12f/export4
+analysis and [v11b analysis](oem-policy-integration.md) remain separate dated
+evidence. The earlier v13f provider inputs were
 installed, but their first 31-goal policy build failed during Soong bootstrap
 at **02:36:44 UTC**. `nezha_framework_libmiracastsystem`'s emitted static variant
 depends on Audio AIDL V2 directly and V4 through `libaudiofoundation`. No new
@@ -43,9 +49,11 @@ the corrected v2 probe passes two cases and four compilations, matching all
 selected descriptor-vtable CFI checks without requiring CFI suppression. Neither
 result admits the complete caller ABI or proves runtime routing. Commit
 `364ab89` includes the v7 Miracast correction and verified host producer/consumer
-bindings now installed as v13ha. Current-source independent analysis, strict
-provider runtime checks and runtime behavior remain separate gates.
-Export4 does not verify those providers. Retained vendor/ODM images still contain
+bindings now installed as v13ha. The analysis binds the actual provider-input
+genrule: 42 original inputs and 31 payloads, with 30 unchanged and one exact
+one-byte dependency derivation. This is input-production evidence; provider
+ELF compatibility, runtime installation and service behavior remain unverified.
+Retained vendor/ODM images still contain
 their original policy. Provider compatibility, complete Treble APK labeling,
 current-provider policy-image integration and the remaining ROM build gates are
 still open.
@@ -53,6 +61,16 @@ Earlier tool-bound, aggregate-model
 and M4-guard failures remain preserved in the
 [native integration record](native-rom-integration.md); they are not relabeled
 as passes.
+
+The matching **policy-sidecar-v13h-native-v1** derivation passes six native
+checks and fourteen commands with zero skips. It derives three digest files
+from the sealed current-policy inputs; the system_ext digest changes while
+platform and product remain unchanged. These are validation outputs; installed
+digest files, Android genrule execution and image adoption remain separate.
+The read-only VINTF graph capture
+now binds 21 XML inputs, including both provider fragments, and 36 APEX inputs.
+Its `check-vintf-all` alias still omits full compatibility. The three-goal
+**vintf-v13h-1** build is running; no result or complete comparison is claimed.
 
 The separate **policy-images-export4-v1** native reconstruction now passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -88,16 +106,18 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,634 tests in 152.111
-seconds with zero failures, errors or skips**, after the v13ha integration.
-The previous v7 run passed 3,634 in 156.509 seconds, and the previous profile
+The latest coordinator full workspace suite passed **3,651 tests in 158.950
+seconds with zero failures, errors or skips**, covering the explicit v13h
+policy-image profile committed as `78376c7`. The preceding v13ha integration
+run passed 3,634 in 152.111 seconds. The previous v7 run passed 3,634 in
+156.509 seconds, and the previous profile
 checkpoint passed 3,591 tests in
 152.682 seconds. The earlier coordinator component
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `e433a5d`. The active guest inputs are now v13ha;
-the latest fully verified policy baseline remains v12f/export4.
+code and documentation through `78376c7`. The active guest inputs remain v13ha;
+`analysis-v13h-policy-only-v1` is now the verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
 that baseline will support a maintainable platform fork without mixing future
@@ -191,10 +211,11 @@ from a full build and require destination hash verification after transfers.
 | v12e source and private-input installation | Durable ten-operation transaction; pinned sources and exact installed inputs verified; original vendor/ODM, kernel and working76 bytes preserved | [Native ROM integration](../research/native-rom-integration.json) |
 | v12fa correction installation | Seven committed exchanges, exact corrected source and receipt identities, same pinned project bases and preserved original image inputs | [Native ROM integration](../research/native-rom-integration.json) |
 | v13f provider input installation | Four committed exchanges verified; original vendor/ODM, Camera runtime, mi_ext and working76 preserved; provider policy build and independent verification remain separate | [Native ROM integration](../research/native-rom-integration.json) |
-| v13ha correction installation and policy build | Three exchanges commit with preserved prior state; 31 native policy goals and 273 Ninja actions pass; independent provider analysis and runtime ELF checks remain open | [Native ROM integration](../research/native-rom-integration.json) |
+| v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; provider runtime/ELF and image adoption remain open | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
 | Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
-| Current independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |
+| Preserved independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |
+| Native v13h policy sidecars | Six checks and fourteen commands pass, zero skips; three current-policy digest files derive from sealed inputs, without Android genrule execution or image adoption | [Native ROM integration](../research/native-rom-integration.json) |
 | Current Camera/mi_ext/recovery build | Eleven goals complete; captured producers verify four fresh DEX invocations, matching ODEX/VDEX, strict JNI checks, working76 copy and mi_ext integrity; APK/runtime and signed-chain gates remain open | [Native ROM integration](../research/native-rom-integration.json) |
 | Native recovery-mode fixtures | Twelve isolated Kati guard cases pass, including required diagnostic failures; the first full v12e configuration separately failed on mi_ext before the later v12f correction passed | [Native ROM integration](../research/native-rom-integration.json) |
 | Native custom-image correction fixtures | 99 expected outcomes: one reproduced historical failure, five corrected positive cases and 93 specific negative cases; full custom-image region parsed, with no image recipes or Ninja execution | [Native ROM integration](../research/native-rom-integration.json) |
@@ -236,8 +257,13 @@ override theme defaults. No Magisk integration is included.
   stale-export and analysis-adapter failures remain preserved; export4's exact
   newline-interleaved source check does not change policy or waive checks.
   The [framework-provider policy](../config/nezha-framework-provider-policy.json)
-  remains a separately authored, host-verified follow-up. Neither is part of
-  the successful v11b policy result.
+  now passes the actual v13h source build and native analysis against export4:
+  6,370 assertions, nine fresh checks, three zero-permissive binaries and the
+  complete reviewed effect delta. Neither later addition was part of v11b.
+  Commit `78376c7` adds the explicit matching `v13h-policy-only` image-input
+  profile, eligible for evidence validation. Earlier profiles and the blocked
+  default are unchanged. The separate `policy-images-v13h-v1` reconstruction is
+  in progress; no completed reconstruction or image adoption is verified.
   Full labeling needs the actual complete Evolution APK inventory; a missing
   artifact skip or API-202504 touch-only target is not a pass. The corrected
   policy is a non-installable validation output: retained vendor/ODM images
@@ -352,8 +378,12 @@ override theme defaults. No Magisk integration is included.
   the direct Audio AIDL V2 versus transitive V4 conflict above, before any new
   policy compilation. The strict 16 KiB settings remain enabled, but no provider
   ELF actions ran. The later v13ha correction is installed and its 31-goal
-  native policy build passes; independent provider analysis is still pending.
-  V12f/export4 remains the independently verified baseline.
+  native policy build and independent analysis now pass. This closes the policy
+  verification slice, not provider ELF, runtime or complete VINTF compatibility.
+  The new read-only VINTF graph capture binds 21 XML and 36 APEX inputs, but
+  confirms the all-target alias lacks the full compatibility action. Its
+  three-goal build is running; no successful build or complete comparison is
+  claimed from that work.
   A captured current Soong configuration selects maximum ELF page size 16,384
   with the prebuilt check enabled; static inspection finds 22 of 26 provider
   ELFs have 4 KiB load alignment. The [optional 4 KiB experiment](nezha-page-size.md)

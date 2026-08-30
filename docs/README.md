@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Installed v13ha correction and 31-goal native policy build pass; independent provider analysis remains pending, with v12f/export4 the verified semantic/image-derivation baseline |
+| [Native ROM integration](native-rom-integration.md) | Installed v13ha policy build, independently reviewed native analysis and current-policy digest derivation pass; VINTF graph captured with its build pending; images, provider runtime/ELF and complete compatibility remain separate |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -27,7 +27,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
-| [Policy-image input preparation](policy-image-inputs.md) | Pinned explicit v12/export4 preparation profile; successful raw reconstruction remains separate from AVB and current-provider admission |
+| [Policy-image input preparation](policy-image-inputs.md) | Explicit v13h profile binds verified provider policy and digest evidence; earlier profiles/default unchanged; current-policy reconstruction is in progress, with no verified result, AVB or adoption |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 
