@@ -1,0 +1,94 @@
+{
+  "apk": {
+    "image_relative_path": "/priv-app/MiuiCamera/MiuiCamera.apk",
+    "nid": 144004480,
+    "runtime_path": "/product/priv-app/MiuiCamera/MiuiCamera.apk",
+    "sha256": "7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e",
+    "size_bytes": 204365218
+  },
+  "capture": {
+    "path": "artifacts/factory-camera-apk-20260829/capture-v1/receipt.json",
+    "sha256": "4a608fb01ff888c35de1dda4b67ff2b201cb238c8d70dbac20860405da3de40c",
+    "size_bytes": 1424
+  },
+  "device": "nezha",
+  "factory_image": {
+    "partition": "product_a",
+    "sha256": "67e6c683c1091abc0a548c27e4681bbe26471529129d15453b95c8d69417795f",
+    "size_bytes": 4942934016
+  },
+  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "import": {
+    "enforce_uses_libs": true,
+    "optional_uses_libs": [
+      "miui-cameraopt",
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "preprocessed": true,
+    "presigned": true,
+    "privileged": true,
+    "product_specific": true,
+    "uses_libs": []
+  },
+  "module": "nezha_factory_camera_build_check",
+  "namespace": "vendor/xiaomi/nezha-camera-apk-check",
+  "native_fixture_record": {
+    "path": "research/dex-import-native-fixtures.json",
+    "sha256": "863ea2fd0d8fd2138d713ee089e980538c48c57a2d34785abab8c851f8d02e94",
+    "size_bytes": 10276
+  },
+  "platform": {
+    "branch": "bka",
+    "release": "bp4a"
+  },
+  "provider_patch": {
+    "path": "patches/evolution/dex-import-uses-library.patch",
+    "sha256": "30358a2e304f6a1ad536c4b2ad0a4ad114ab7ddbc649266dd42b89944eb7e708",
+    "size_bytes": 13049
+  },
+  "purpose": "factory-camera-build-only-inputs",
+  "review": {
+    "path": "research/factory-camera-apk.json",
+    "sha256": "cc3321f60ab51b128a48a5918ab176bfc2f479e71475a39e8b1b7bb623ae5d1c",
+    "size_bytes": 46377
+  },
+  "runtime_bundle": {
+    "path": "artifacts/vendor-inputs/nezha-factory-camera-runtime-20260829-v1/vendor-inputs.json",
+    "sha256": "061cf33a7f062cda6de73a64ebd3d494c04093308b511b4eb42cd4de8f3c865d",
+    "size_bytes": 12776
+  },
+  "runtime_contract": {
+    "path": "config/nezha-camera-runtime.json",
+    "sha256": "00c776c3bcd28fa2abbaf5eb48865ccd27d37723661c3abe117b90e5553fb8fb",
+    "size_bytes": 3191
+  },
+  "schema_version": 1,
+  "scope": {
+    "apk_transformed_or_signed": false,
+    "image_adoption_allowed": false,
+    "mac_admission_complete": false,
+    "make_namespace_exports": [],
+    "native_build_verified": false,
+    "permission_admission_complete": false,
+    "phone_accessed": false,
+    "product_packages": [],
+    "source_packet_only": true
+  },
+  "signer_certificate_sha256": "c9009d01ebf9f5d0302bc71b2fe9aa9a47a432bba17308a3111b75d7b2149025",
+  "source_lock": {
+    "path": "config/evolution-source-lock.json",
+    "sha256": "9b3a825a359fc618ff85234383e06c736c662b5427591d0d68252cdece6aace5",
+    "size_bytes": 857
+  },
+  "source_requirements": {
+    "files": {
+      "java/Android.bp": "45d2dec7100165c18545906c5e4876f3b94028835d052aabd62739c3120f66c3",
+      "java/app_import.go": "872d75d0a9002e51d1c48b755738426ca3f65021b74e554d8937f8d0bade87c2",
+      "java/dex_import_test.go": "9fdae6601f597dc6e34be4d49c9d8eedb77d7958f227b6ddf468c9b816d63d25",
+      "java/java.go": "3a734817ece2c86529a24b989ce1de2f07114ec40c2cafc73c630a856f9ae844"
+    },
+    "project": "build/soong",
+    "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154"
+  }
+}
