@@ -542,10 +542,41 @@ The read-only post-v13h VINTF graph capture completed at **13:29:30 UTC**. It
 binds 21 selected XML inputs, including both provider fragments, and 36 APEX
 inputs. The graph still defines no full compatibility action: `check-vintf-all`
 depends only on the system and frozen-manifest checks. The three-goal
-**vintf-v13h-1** build is running, requesting that alias and the stock-kernel
-version/configuration outputs. No result or fresh full compatibility comparison
-is claimed. The captured configuration retains `16384` and the enabled prebuilt
-page-size check; checker execution is a separate gate.
+**vintf-v13h-1** build requested that alias and the stock-kernel version and
+configuration outputs. It ran from **13:32:27 to 16:32:28 UTC**, then timed out
+at its configured **10,800-second** limit, returning exit 1. The last logged
+progress was **58,702/61,802**, not a completed action count. No forced kill,
+post-build validation error or remaining build process is reported. Source
+history, strict settings, Ninja arguments, sandboxing and the 13 policy/11
+runtime guards pass their separate checks; the build remains failed.
+
+The timeout capture contains eleven files and 9,590,702 bytes; result SHA256 is
+`a61d5ba729f6763ba19615d637dc6aae2f00a3ecd2fd2ccfd28c32b07abca011`.
+A separate preservation captures the Ninja action log and nine available XML
+outputs, with 41,138,767 payload bytes plus its receipt. This is not a complete
+intermediate inventory or proof that the requested final targets passed.
+
+The fresh read-only capture at **16:42:27 UTC**, SHA256
+`b6d13e0a1f5eb3a4acee1d66063e0f7273194c47429cb1ae49722dd0bfd6b0be`,
+matches the original goals and selected graph shape, the post-timeout graph
+identity, and unchanged source history/settings. The **vintf-v13h-2** incremental
+retry retained the same three goals, strict checks and 10,800-second limit,
+reusing existing outputs without cleaning or replacing the checkout. It ran
+from **16:46:32 to 16:58:47 UTC** and returned **exit 1 without a timeout**.
+At logged progress 3,108/3,109, the `vintffm.log` action failed because
+`android.hidl.allocator` is mandatory but undeclared. The diagnostic identifies
+the frozen level-5 device matrix. This is a real strict-check failure, not a
+completed VINTF build.
+
+The post-build graph inventory records all **21 XML and 36 APEX artifacts
+present**, with none missing; the separate requested-target success inventory
+is empty. Source, 13 policy/11 runtime guards, strict settings, sandboxing and
+Ninja arguments pass, with no post-build validation error or remaining process.
+The eleven-file capture totals **672,905 bytes**; result SHA256 is
+`88e4200261601edc7b941249b275bc2a2f47ff7cd0c2c3dc872b5d0d7c159f4f`.
+The configuration retains `16384` and the enabled prebuilt page-size check.
+Actual allocator module/init/manifest/policy/product integration is being
+prepared; it is not fixed by this checkpoint, and the frozen check stays enabled.
 
 The separate full-check packet is now staged: all 221 files are verified,
 including the manifest
@@ -557,6 +588,39 @@ without source or Android-output writes. It does not execute materialization,
 admit future build outputs or run full compatibility. The coordinator's 44
 offline packet tests pass in 0.333 seconds with zero skips; these are not native
 VINTF results.
+
+Three separate capture attempts remain failures: the footer-tool reader rejected
+a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
+edges, and the Camera capture stopped at its first Ninja query without retaining
+the raw query diagnostic. The second footer capture accepts the complete graph
+inventory, including the valid empty shard, but its first read-only jailed
+query fails with `ninja: error: opening build log: Read-only file system`.
+Its 48,329-byte receipt is
+`63a6955831db77a6dc09ef7e9116906959d6d7a3a6d85e76bf92104932b296e8`.
+No query or footer-tool runtime result passed.
+
+Earlier direct provider queries and the native memfd fixture lacked read-only
+mount protection. Their static no-source/OUT-write flags are unproven. The
+**17:12:42 UTC** observation records a 15-byte source-root `.ninja_log` and
+16-byte `.ninja_deps`; those files remain preserved in place. Without prior
+before/after identities, neither their exact writer nor absence of earlier log
+mutation is established. No original project source payload change is known.
+All affected query captures are held until the pinned `-n`/`-t` behavior and
+actual read-only confinement are qualified; writable original-OUT fallback and
+log deletion are not allowed. These limitations do not change the VINTF builds'
+passing source guards, and no ordinary compatibility check is waived.
+
+The host packaging rebase now produces identical validated candidates from the
+current v13ha inputs while preserving the provider correction, strict settings
+and original images. Its freeze is
+`cf0622bfc69ff2e431442b4348edc6594403d2b9812fc696a1d33c4aa6e6b5f6`;
+the candidate admission is
+`4aaf5a905a00745e628750b6de8e18c327636456516e2739293a103fb862f66c`.
+The separate host metadata bridge verifies all 205 original metadata members
+against both raw reconstruction passes. Delivery remains blocked on final
+footer evidence. These are host preparation results, without guest source
+installation, image adoption, native target-files packaging or compatibility
+admission; no unfinished native packet is counted as a pass.
 
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
@@ -581,9 +645,12 @@ it does not execute Ninja, the metadata verifier or the target-files recipe.
 The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
-The latest coordinator `python3 -m unittest discover -s tests -v` run passed
-**3,651 tests in 160.426 seconds with zero failures, errors or skips**, after
-the v13h raw-image milestone. Public code is unchanged from the preceding
+The latest full `python3 -m unittest discover -s tests -v` run passed
+**3,651 tests in 156.391 seconds with zero failures, errors or skips**. The
+target-files metadata agent executed it with bytecode writing disabled; the
+coordinator independently verified the complete log. The preceding coordinator
+run passed 3,651 in 160.426 seconds after the v13h raw-image milestone.
+That run used unchanged public code from the earlier
 3,651-test run in 158.950 seconds for the profile committed as `78376c7`. The
 preceding v13ha integration run passed 3,634 in 152.111 seconds. The previous coordinator
 run passed 3,634 in 156.509
@@ -821,8 +888,9 @@ evidence validation; both older profiles and the blocked default remain
 unchanged. The matching raw image reconstruction now passes, but hashtree/FEC,
 footer, AVB, partition-fit and current-source checks still precede any adoption.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
-Complete the requested VINTF build and the full framework/vendor/APEX/kernel
-comparison; the captured all-target alias alone cannot establish compatibility.
+Integrate the required allocator service and rerun the unchanged ordinary VINTF
+checks, then perform the full framework/vendor/APEX/kernel comparison. The
+captured all-target alias alone cannot establish compatibility.
 Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
 without lowering checks. The bounded Camera component producer/output review
 passes; runtime API and linker access, Camera APK admission and full checker-input

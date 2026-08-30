@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Installed v13ha policy and independently reviewed raw image reconstruction pass; VINTF build pending and full-check packet staged; image adoption, provider runtime/ELF and complete compatibility remain separate |
+| [Native ROM integration](native-rom-integration.md) | Verified v13ha policy and raw images; mandatory allocator integration blocks VINTF and query captures are held for read-only qualification; image adoption and full compatibility remain open |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |

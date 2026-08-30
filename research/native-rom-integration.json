@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "v13ha-raw-policy-images-independently-verified-vintf-build-and-signed-adoption-pending",
+  "checkpoint": "v13ha-raw-images-verified-vintf-allocator-blocked-query-captures-held",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -936,23 +936,25 @@
     }
   },
   "workspace_tests": {
-    "command": "python3 -m unittest discover -s tests -v",
-    "runner": "coordinator",
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v",
+    "runner": "target_files_metadata agent",
+    "coordinator_independently_verified_complete_log": true,
     "passed": 3651,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 160.426,
+    "elapsed_seconds": 156.391,
     "code_commit": "78376c70021f9b6104511350bcdca9301828da7a",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-v13h-raw-images-v1.log",
-      "sha256": "1b18c4f80d827f2e9469330e9ecbaf16d3a4c4ac0c4620487697bd1dffd1560d",
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/implementation-v1/workspace-tests-v1.log",
+      "sha256": "5b48026f2f03adbbb829ffb953783391b1a09a485f1a7e7124cc6f4bc2fba796",
       "size_bytes": 628995
     },
-    "scope": "Fresh coordinator full offline suite after the completed v13h raw-image reconstruction and independent review; public code unchanged from the preceding profile run. Separate from native reconstruction, provider runtime/ELF checks, full VINTF, AVB/image adoption and hardware tests."
+    "scope": "Agent-executed full offline suite with bytecode writing disabled; the coordinator independently reopened and verified the entire log. Public code was unchanged at that recorded run. This is distinct from the earlier coordinator-executed 160.426-second run and from native build, compatibility, packaging or hardware evidence."
   },
   "remaining_gates": [
-    "Complete the running three-goal VINTF build, capture its actual outputs/tools, then execute full 39-APEX materialization and framework/vendor/kernel/APEX compatibility from the staged packet; the all-target alias alone omits full compatibility. Retain the 4 KiB hold and all checks",
+    "Integrate the required android.hidl.allocator service through actual module/init/manifest/policy/product inputs and rerun the unchanged ordinary VINTF checks. Then capture actual outputs/tools and execute full 39-APEX materialization plus framework/vendor/kernel/APEX compatibility; keep the 4 KiB hold and all checks",
+    "Qualify exact pinned Ninja -n/-t behavior under actual read-only confinement before resuming held footer/provider/Camera query captures; preserve original source-root and OUT logs and do not use writable-OUT fallback",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "Strict native provider runtime ELF/linker and service checks against the now independently verified provider-policy baseline",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -1323,6 +1325,22 @@
         "size_bytes": 628995
       },
       "scope": "Fresh coordinator full offline suite covering the committed explicit v13h policy-image input profile. Separate from native image reconstruction, provider runtime/ELF checks, full VINTF, image adoption and hardware tests."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3651,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 160.426,
+      "code_commit": "78376c70021f9b6104511350bcdca9301828da7a",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-v13h-raw-images-v1.log",
+        "sha256": "1b18c4f80d827f2e9469330e9ecbaf16d3a4c4ac0c4620487697bd1dffd1560d",
+        "size_bytes": 628995
+      },
+      "scope": "Fresh coordinator full offline suite after the completed v13h raw-image reconstruction and independent review; public code unchanged from the preceding profile run. Separate from native reconstruction, provider runtime/ELF checks, full VINTF, AVB/image adoption and hardware tests."
     }
   ],
   "previous_v11b_policy": {
@@ -1671,8 +1689,8 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-30T14:34:16.403072+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-30T05:40:07.007967+00:00",
+  "recorded_at_utc": "2026-08-30T17:17:22.883626+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T16:58:47.414585+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -2112,7 +2130,7 @@
       "scope_after_provider_installation": "Provider installation retains the held 4096 boundary. The first policy-only attempt failed on the Audio AIDL graph conflict with 16384 and checks enabled; no user approval for the 4 KiB experiment is recorded."
     }
   },
-  "workspace_code_checkpoint": "94ddfb3c8364b6b3489f0bb6053381c81d999f2e",
+  "workspace_code_checkpoint": "a1b5445b0982737a88bbe59414a236ca071a3afd",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -3044,7 +3062,7 @@
     "previous_fully_verified_policy_baseline": "v12f/export4",
     "independent_policy_analysis": "native_provider_policy_analysis"
   },
-  "latest_native_build_status": "passed-policy-only-native-analysis-complete",
+  "latest_native_build_status": "vintf-v13h-2-failed-mandatory-allocator-vintf-check",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -3602,9 +3620,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-30T13:29:30.177643+00:00",
-  "latest_timestamped_native_observation_kind": "read-only-post-v13h-vintf-graph-capture",
-  "latest_native_observation_kind": "native-v13h-raw-policy-image-reconstruction-and-full-vintf-input-staging",
+  "latest_timestamped_native_observation_utc": "2026-08-30T17:12:42Z",
+  "latest_timestamped_native_observation_kind": "readonly-current-ninja-log-state-observation",
+  "latest_native_observation_kind": "footer-query-readonly-failure-and-unproven-direct-query-log-side-effects",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -4259,11 +4277,12 @@
     "subsequent_build": {
       "phase": "vintf-v13h-1",
       "goals": 3,
-      "status": "running-result-pending",
-      "completed_result_recorded": false,
-      "full_compatibility_verified": false
+      "status": "failed-timeout",
+      "completed_result_recorded": true,
+      "full_compatibility_verified": false,
+      "result_record": "v13h_vintf_build_attempt"
     },
-    "scope": "Read-only generated-graph and selected-input capture. The all-target alias includes only system and frozen-manifest checks, not full framework/vendor/APEX/kernel compatibility. The separately launched three-goal build has no completed result at this checkpoint."
+    "scope": "Read-only generated-graph and selected-input capture. The all-target alias includes only system and frozen-manifest checks, not full framework/vendor/APEX/kernel compatibility. The first three-goal build timed out; the incremental retry later failed the mandatory allocator declaration at frozen level 5. Both results are preserved separately."
   },
   "v13h_policy_image_profile": {
     "code_commit": "78376c70021f9b6104511350bcdca9301828da7a",
@@ -4598,6 +4617,427 @@
       },
       "native_compatibility_evidence": false
     },
-    "scope": "Actual original-input packet staging with all 221 files verified, following separately reviewed host preparation. The packet requires full 39-APEX materialization, five partition maps, the apex map, two kernel files and authentic recorded property values after the running build and fresh capture. Staging is not native compatibility execution or admission of future build artifacts."
+    "scope": "Actual original-input packet staging with all 221 files verified, following separately reviewed host preparation. Full 39-APEX materialization, five partition maps, the apex map, two kernel files and authentic recorded properties still require a successful ordinary build and fresh capture. V1 timed out and v2 failed the mandatory allocator check; staging does not execute full compatibility or admit future artifacts."
+  },
+  "v13h_vintf_build_attempt": {
+    "phase": "vintf-v13h-1",
+    "operation": "build-post-v13h-ordinary-vintf-closure",
+    "status": "failed-timeout",
+    "started_at": "2026-08-30T13:32:27.455681+00:00",
+    "completed_at": "2026-08-30T16:32:28.162038+00:00",
+    "result": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-1/result.json",
+      "sha256": "a61d5ba729f6763ba19615d637dc6aae2f00a3ecd2fd2ccfd28c32b07abca011",
+      "size_bytes": 137767
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-1/capture.json",
+      "sha256": "f6cf37944bfe15c27d5a75cfff0910bddc95f6fb6d6e35ca4585bfc89fbd6028",
+      "size_bytes": 1860
+    },
+    "build_log": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-1/build.log",
+      "sha256": "b19e784f5c4eddfd51cf87408bce5b949980b78268a8b741bb9ea3ef5ad27d91",
+      "size_bytes": 9344280
+    },
+    "captured_files": 11,
+    "captured_bytes": 9590702,
+    "all_captured_files_rehashed": true,
+    "requested_goals": [
+      "check-vintf-all",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_version.txt",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_configs.txt"
+    ],
+    "configured_timeout_seconds": 10800,
+    "build_passed": false,
+    "exit_code": 1,
+    "timed_out": true,
+    "last_logged_progress": {
+      "completed_counter": 58702,
+      "total_counter": 61802,
+      "is_verified_fresh_action_count": false
+    },
+    "forced_kill_after_timeout": false,
+    "post_build_error": null,
+    "remaining_build_processes": [],
+    "source_history_verified": true,
+    "source_files_checked": 182,
+    "ninja_argv_verified": true,
+    "sandbox_namespace_and_mount_checks_passed": true,
+    "source_readonly_output_writable": true,
+    "sandbox_fallback": false,
+    "strict_settings_before_after_equal": true,
+    "max_page_size": 16384,
+    "prebuilt_max_page_size_check": true,
+    "strict_elf_checks_selected": true,
+    "protected_policy_inputs": {
+      "count": 13,
+      "snapshot": {
+        "path": "artifacts/build-validation/nezha-vintf-v13h-1/protected-policy.json",
+        "sha256": "fc4e6f5aae4665172f9799a7cafd9e37824207c49f5cbf407cf2c28826a6ea56",
+        "size_bytes": 3406
+      },
+      "post_build_guard_verified": true
+    },
+    "protected_runtime_outputs": {
+      "count": 11,
+      "snapshot": {
+        "path": "artifacts/build-validation/nezha-vintf-v13h-1/protected-runtime.json",
+        "sha256": "15d0b73c1e76356d29a2e28a61b8a3d65da6ce046e889543f0d203f701870522",
+        "size_bytes": 2698
+      },
+      "post_build_guard_verified": true
+    },
+    "requested_target_outputs_recorded": 0,
+    "full_vendor_kernel_apex_compatibility_executed": false,
+    "compatibility_verified": false,
+    "provider_elf_compatibility_verified": false,
+    "images_requested": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual three-goal native build stopped at its configured three-hour limit. Separate source/settings/argv/sandbox and protected-input guards pass, but no completed closure, full compatibility or provider ELF result follows. The last progress counter is not independently counted fresh actions.",
+    "preserved_timeout_evidence": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-vintf-v13h-1-preservation-v1/receipt.json",
+        "sha256": "5bda57a15399842aeff5bb748339b7a609761583525ec3a28755e337aa509cb0",
+        "size_bytes": 4999
+      },
+      "capture": {
+        "path": "artifacts/build-validation/nezha-vintf-v13h-1-preservation-v1/capture.json",
+        "sha256": "ef7d6b21d9fc21d5f5339781a3da8b9be7abebe6fa4070e3fad79a54505091e6",
+        "size_bytes": 2413
+      },
+      "passed": true,
+      "captured_files": 11,
+      "captured_bytes": 41143766,
+      "all_captured_files_rehashed": true,
+      "payload_files": 10,
+      "payload_bytes": 41138767,
+      "ninja_action_log_preserved": true,
+      "available_xml_outputs_preserved": 9,
+      "complete_intermediate_inventory_preserved": false,
+      "native_build_passed": false,
+      "missing_artifacts_fabricated": false,
+      "source_or_android_output_modified": false,
+      "phone_accessed": false,
+      "scope": "Ten pre-retry payloads (the Ninja log and nine available XML files), plus the receipt, were preserved after the timeout. This is partial historical action/output evidence, not a full intermediate snapshot or a passed native target."
+    }
+  },
+  "v13h_vintf_incremental_retry": {
+    "phase": "vintf-v13h-2",
+    "status": "failed-mandatory-allocator-vintf-check",
+    "preceding_failed_phase": "vintf-v13h-1",
+    "fresh_capture": {
+      "path": "reports/oem-policy-integration-20260829/vintf-v13h-incremental-retry-preparation/capture-native-v2/stdout.jsonl",
+      "sha256": "b6d13e0a1f5eb3a4acee1d66063e0f7273194c47429cb1ae49722dd0bfd6b0be",
+      "size_bytes": 100081
+    },
+    "fresh_capture_at": "2026-08-30T16:42:27.772108+00:00",
+    "fresh_capture_review": {
+      "path": "reports/oem-policy-integration-20260829/vintf-v13h-incremental-retry-preparation/capture-native-v2/root-review.json",
+      "sha256": "d61d647be8d0e5b4c1b1edb76937b6eb24ec7cebb655604ad985c6e4e3c334d9",
+      "size_bytes": 678
+    },
+    "request": {
+      "path": "reports/oem-policy-integration-20260829/vintf-v13h-incremental-retry-preparation/build-native-v2/request.json",
+      "sha256": "8a6db62180137808ccaef5031fffd8f1bc90626bcb1f6bdba15e9f7de187d57b",
+      "size_bytes": 252013
+    },
+    "host_preparation": {
+      "path": "reports/oem-policy-integration-20260829/vintf-v13h-incremental-retry-preparation/build-native-v2/preparation.json",
+      "sha256": "d0b7f08552d0997494c6d175a2d742748f4d9bb91a16e307c0a65104e2781943",
+      "size_bytes": 667
+    },
+    "same_requested_goals": true,
+    "goals": [
+      "check-vintf-all",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_version.txt",
+      "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/check_vintf_all_intermediates/kernel_configs.txt"
+    ],
+    "configured_timeout_seconds": 10800,
+    "source_history_and_settings_unchanged": true,
+    "selected_graph_shape_and_goals_match_original": true,
+    "graph_identity_matches_actual_post_timeout": true,
+    "existing_outputs_reused": true,
+    "checkout_cleaned_or_replaced": false,
+    "strict_checks_retained": true,
+    "max_page_size": 16384,
+    "prebuilt_max_page_size_check": true,
+    "completed_build_result_recorded": true,
+    "full_compatibility_verified": false,
+    "provider_elf_compatibility_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Completed incremental retry failed the ordinary frozen level-5 VINTF check because the mandatory allocator declaration is absent. All 57 selected XML/APEX artifacts are present and source/settings/argv/sandbox/protected-input guards pass, but these facts do not establish target success or full compatibility. Actual allocator service integration remains required; no check is relaxed.",
+    "started_at": "2026-08-30T16:46:32.172628+00:00",
+    "completed_at": "2026-08-30T16:58:47.414585+00:00",
+    "result": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-2/result.json",
+      "sha256": "88e4200261601edc7b941249b275bc2a2f47ff7cd0c2c3dc872b5d0d7c159f4f",
+      "size_bytes": 143338
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-2/capture.json",
+      "sha256": "43b38b6b3ac30ce26efb59ceb586c09f5ad62dbea06dddb18660e9b78c7eee90",
+      "size_bytes": 1858
+    },
+    "build_log": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-2/build.log",
+      "sha256": "8237f827172672ccaef4a1b406aa2c617dc2915a3b77b4a198a64963e06167e0",
+      "size_bytes": 420908
+    },
+    "captured_files": 11,
+    "captured_bytes": 672905,
+    "all_captured_files_rehashed": true,
+    "build_passed": false,
+    "exit_code": 1,
+    "timed_out": false,
+    "forced_kill_after_timeout": false,
+    "post_build_error": null,
+    "remaining_build_processes": [],
+    "last_logged_progress": {
+      "completed_counter": 3108,
+      "total_counter": 3109,
+      "is_verified_fresh_action_count": false
+    },
+    "failed_check": "vintffm",
+    "failed_target": "obj/PACKAGING/check_vintf_all_intermediates/vintffm.log",
+    "diagnostic": "android.hidl.allocator is not declared in the VINTF manifest but is mandatory",
+    "frozen_device_matrix": "system/libhidl/vintfdata/frozen5.xml",
+    "frozen_framework_level": 5,
+    "source_history_verified": true,
+    "ninja_argv_verified": true,
+    "sandbox_namespace_and_mount_checks_passed": true,
+    "sandbox_fallback": false,
+    "strict_settings_before_after_equal": true,
+    "protected_policy_inputs": {
+      "count": 13,
+      "snapshot": {
+        "path": "artifacts/build-validation/nezha-vintf-v13h-2/protected-policy.json",
+        "sha256": "fc4e6f5aae4665172f9799a7cafd9e37824207c49f5cbf407cf2c28826a6ea56",
+        "size_bytes": 3406
+      },
+      "post_build_guard_verified": true
+    },
+    "protected_runtime_outputs": {
+      "count": 11,
+      "snapshot": {
+        "path": "artifacts/build-validation/nezha-vintf-v13h-2/protected-runtime.json",
+        "sha256": "15d0b73c1e76356d29a2e28a61b8a3d65da6ce046e889543f0d203f701870522",
+        "size_bytes": 2698
+      },
+      "post_build_guard_verified": true
+    },
+    "selected_output_inventory": {
+      "xml_artifacts_present": 21,
+      "apex_artifacts_present": 36,
+      "total_present": 57,
+      "missing": 0,
+      "inventory_source": "result.graph_after.artifacts",
+      "artifact_presence_is_compatibility": false,
+      "requested_target_success_outputs_recorded": 0
+    },
+    "full_vendor_kernel_apex_compatibility_executed": false,
+    "allocator_integration_fixed": false
+  },
+  "native_followup_capture_failures": {
+    "footer_tools_v1": {
+      "receipt": {
+        "path": "reports/oem-policy-integration-20260829/policy-images-v13h-footer-preparation/policy-footer-tools-native-v1-host/host-receipt.json",
+        "sha256": "ba7769236e209728940c10b482c007dd7ec6d0b83647a8ddf68de2685ae2c7d8",
+        "size_bytes": 16015
+      },
+      "status": "failed-capture",
+      "error": "invalid graph file",
+      "diagnosis": "A valid empty Soong shard was rejected by the graph reader.",
+      "footer_tool_entrypoints_executed": false,
+      "images_opened": false,
+      "compatibility_or_footer_result_verified": false,
+      "correction_verified_natively": false
+    },
+    "provider_elf_v1": {
+      "stderr": {
+        "path": "reports/framework-providers-20260830/provider-elf-preparation-v1/capture-v1/capture.stderr",
+        "sha256": "8cd8a0d05afc2c5260cffabb71213b0517debc064458e1824f3aa1be01647f94",
+        "size_bytes": 308
+      },
+      "status": "failed-capture",
+      "error": "duplicate native dependency edge",
+      "diagnosis": "The captured dependency graph was rejected by the parser.",
+      "provider_elf_compatibility_verified": false,
+      "correction_verified_natively": false,
+      "source_or_output_write_absence_verified": false,
+      "direct_query_execution_readonly_confined": false
+    },
+    "camera_v1": {
+      "stderr": {
+        "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/run-native-v1/stderr.log",
+        "sha256": "71908ed7fabe6736e905fdcca95867089a75f802c9256b665ef8f967664f5058",
+        "size_bytes": 545
+      },
+      "stdout": {
+        "path": "reports/camera-apk-build-admission-20260829/capture-command-v1/run-native-v1/stdout.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "status": "failed-capture",
+      "error": "read-only Ninja query failed",
+      "first_query_failed": true,
+      "raw_query_diagnostic_retained": false,
+      "actual_failure_cause_established": false,
+      "camera_apk_build_verified": false,
+      "correction_verified_natively": false
+    },
+    "scope": "Separate failed evidence collectors, preserved without converting incomplete captures into native footer, provider ELF, Camera build or compatibility passes. The second footer capture exposed pinned Ninja log-opening behavior under read-only mounts. All affected query captures are now held pending exact mode and confinement qualification; earlier direct-query and memfd no-write claims are unproven.",
+    "footer_tools_v2": {
+      "receipt": {
+        "path": "artifacts/build-validation/nezha-policy-footer-tools-native-v2/receipt.json",
+        "sha256": "63a6955831db77a6dc09ef7e9116906959d6d7a3a6d85e76bf92104932b296e8",
+        "size_bytes": 48329
+      },
+      "stderr": {
+        "path": "artifacts/build-validation/nezha-policy-footer-tools-native-v2/ninja-query-0.stderr",
+        "sha256": "0c08660e08626027dba46f3bda61efd3f18396914a2fca3b1002031696ddb789",
+        "size_bytes": 55
+      },
+      "sandbox": {
+        "path": "artifacts/build-validation/nezha-policy-footer-tools-native-v2/ninja-query-0-sandbox.json",
+        "sha256": "853ac229fdfd4f5099c21876d4d01c8a04df26d39046987394c0b901e69fd936",
+        "size_bytes": 4340
+      },
+      "status": "failed-first-readonly-jailed-query",
+      "graph_inventory_including_valid_empty_shard_verified": true,
+      "first_query_exit_code": 1,
+      "diagnostic": "ninja: error: opening build log: Read-only file system",
+      "queries_passed": 0,
+      "footer_tool_runtime_verified": false,
+      "footer_tool_entrypoints_executed": false,
+      "images_opened": false,
+      "footer_derivation_completed": false,
+      "scope": "Actual graph inventory passed, including the valid zero-byte Soong shard. The first query then failed under read-only confinement while opening its build log; no query or footer-tool runtime pass is inferred."
+    }
+  },
+  "host_packaging_v13ha_followup": {
+    "status": "host-prepared-not-installed",
+    "freeze": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13h-rebase-preparation/final-freeze-v1.json",
+      "sha256": "cf0622bfc69ff2e431442b4348edc6594403d2b9812fc696a1d33c4aa6e6b5f6",
+      "size_bytes": 10402
+    },
+    "verification": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13h-rebase-preparation/final-check-v1.stdout.json",
+      "sha256": "f3fee16269fd7254ffcac0ff23ff6bca3b228ab36f7ab428d4c28863e6cf1dec",
+      "size_bytes": 5142
+    },
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13h-rebase-preparation/review-v1.json",
+      "sha256": "3d0076bdc77670fd8e76b5247b4c45c7e2c58954c95fd9c1851fe8efa1dbc61c",
+      "size_bytes": 1182
+    },
+    "candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v13h-metadata-preparation-v1/admission.json",
+      "sha256": "4aaf5a905a00745e628750b6de8e18c327636456516e2739293a103fb862f66c",
+      "size_bytes": 132163
+    },
+    "repeat_candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v13h-metadata-preparation-v1-repeat/admission.json",
+      "sha256": "4aaf5a905a00745e628750b6de8e18c327636456516e2739293a103fb862f66c",
+      "size_bytes": 132163
+    },
+    "repeated_candidates_byte_identical": true,
+    "source_transitions": [
+      "0008",
+      "0009",
+      "0011"
+    ],
+    "actual_ten_source_preimages_bound": true,
+    "provider_v7_and_current_policy_preserved": true,
+    "original_vendor_odm_images_selected": true,
+    "derived_policy_images_admitted": false,
+    "native_install_allowed": false,
+    "native_android_build_run": false,
+    "guest_accessed": false,
+    "private_key_accessed": false,
+    "phone_accessed": false,
+    "metadata_bridge": {
+      "handoff": {
+        "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/implementation-v1/handoff-v1.json",
+        "sha256": "488eac906a61bf88f5470dd5cf33c71ad22e60e8f4f268f6237de666a7802b36",
+        "size_bytes": 7815
+      },
+      "actual_host_replay": {
+        "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/implementation-v1/replay-v2.json",
+        "sha256": "551fd03ff5fb46459eb72b296e4a8e1d5e233b5535f4ace5c72b0a58918a78ed",
+        "size_bytes": 705355
+      },
+      "actual_host_repeat": {
+        "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/implementation-v1/replay-repeat-v2.json",
+        "sha256": "551fd03ff5fb46459eb72b296e4a8e1d5e233b5535f4ace5c72b0a58918a78ed",
+        "size_bytes": 705355
+      },
+      "original_metadata_files": 205,
+      "member_pass_checks": 410,
+      "raw_policy_metadata_bridge_verified": true,
+      "host_replays_byte_identical": true,
+      "delivery_status": "blocked",
+      "final_footer_evidence_available": false,
+      "final_image_bytes_opened": false,
+      "raw_image_bytes_reopened": false,
+      "native_tools_executed": false,
+      "target_files_metadata_installed": false,
+      "source_or_vendor_inputs_adopted": false
+    },
+    "scope": "Host-only packaging candidate rebase and metadata preservation bridge for the existing v13ha integration. The two candidate receipts and two raw-policy metadata replays match. No guest installation, final footer admission, native packaging, full VINTF, derived-image adoption or runtime result follows."
+  },
+  "native_query_side_effects_hold": {
+    "status": "held-do-not-execute",
+    "hold_receipt": {
+      "path": "reports/framework-providers-20260830/provider-elf-preparation-v1/correction-v2/hold-native-query-side-effects.json",
+      "sha256": "42f79267d41d944d5a6594710b27bb0c0691daf40b616219282a78ce63127057",
+      "size_bytes": 1921
+    },
+    "log_state_observation": {
+      "path": "reports/oem-policy-integration-20260829/ninja-log-state-after-vintf-v2-v1/stdout.json",
+      "sha256": "8f6853faf919f0ff0ef9e31d96e4cd4be50a36ecc2d8c5f6b8a74b6146a5b01d",
+      "size_bytes": 1423
+    },
+    "observed_at_utc": "2026-08-30T17:12:42Z",
+    "source_root_logs": [
+      {
+        "source_root_relative_path": ".ninja_log",
+        "sha256": "5b82b794db4d570773bc84bd089effa542b2017965cf316478f4f14f72930c14",
+        "size_bytes": 15,
+        "mtime_ns": 1788108387177859959,
+        "ctime_ns": 1788108387177859959,
+        "preserved_in_place": true
+      },
+      {
+        "source_root_relative_path": ".ninja_deps",
+        "sha256": "971a2f3c7663b07e7e7a9854021dd31229b977a27ea8c13cf14f23da57814dcb",
+        "size_bytes": 16,
+        "mtime_ns": 1788108387178104001,
+        "ctime_ns": 1788108387178104001,
+        "preserved_in_place": true
+      }
+    ],
+    "log_state_observer_writes_performed": false,
+    "earlier_direct_provider_query_write_absence_verified": false,
+    "native_memfd_fixture_write_absence_verified": false,
+    "prior_before_after_log_identity_proof_available": false,
+    "exact_writer_or_mutation_attribution_proven": false,
+    "original_project_source_payload_changes_known": false,
+    "source_or_output_log_write_absence_proven": false,
+    "affected_query_captures_held": true,
+    "pinned_ninja_n_and_t_modes_require_native_qualification": true,
+    "actual_readonly_confinement_required": true,
+    "original_out_writable_fallback_allowed": false,
+    "original_logs_may_be_deleted": false,
+    "normal_vintf_build_source_guard_results_invalidated": false,
+    "ordinary_compatibility_checks_unchanged": true,
+    "provider_elf_compatibility_verified": false,
+    "footer_tool_runtime_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "The actual jailed footer query demonstrates build-log opening in the pinned Ninja fork. Earlier unconfined provider queries and a memfd fixture cannot establish their static no-source/OUT-write claims. The later observation binds four current log identities, including two small source-root files, but does not identify their writer or prove prior nonmutation. Logs remain preserved; no original project source payload change is known. This does not retroactively invalidate the separately passed normal VINTF build source guards."
   }
 }

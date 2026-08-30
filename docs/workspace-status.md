@@ -70,10 +70,30 @@ digest files, Android genrule execution and image adoption remain separate.
 The read-only VINTF graph capture
 now binds 21 XML inputs, including both provider fragments, and 36 APEX inputs.
 Its `check-vintf-all` alias still omits full compatibility. The three-goal
-**vintf-v13h-1** build is running; no result or complete comparison is claimed.
+**vintf-v13h-1** build timed out at **16:32:28 UTC** after its configured
+10,800 seconds, with logged progress at 58,702/61,802. It returned exit 1;
+no forced kill or remaining build process was reported. The failed result,
+logs and nine available XML outputs are preserved. A fresh capture at
+**16:42:27 UTC** verifies the same source history, graph and strict settings.
+The incremental **vintf-v13h-2** retry finished at **16:58:47 UTC**, without a
+timeout, but failed the frozen level-5 `vintffm` check because
+`android.hidl.allocator` is mandatory and not declared in the manifest. All
+57 selected XML/APEX artifacts are present; presence is not compatibility.
+The next blocker is actual allocator service/init/manifest/policy/product
+integration, followed by the unchanged strict checks. No fix is claimed yet.
 The separate packet for a full 39-APEX comparison is staged with all 221 files
 verified. Staging does not execute native compatibility checks or materialize
 the required generated APEX inputs.
+
+Ninja query captures are now held pending qualification of the pinned query
+modes under read-only mounts. The second footer capture accepted the valid empty
+Soong shard, then failed its first jailed query while trying to open a build log
+on a read-only filesystem. Earlier unconfined provider queries and the memfd
+fixture therefore do not prove absence of source-root or OUT log writes. Small
+source-root `.ninja_log` and `.ninja_deps` files are recorded and preserved in
+place; their writer is not established. No original project payload change is
+known. This caveat does not invalidate the VINTF builds' separately verified
+source guards or relax their compatibility checks.
 
 The current **policy-images-v13h-v1** native reconstruction passes **nine checks
 and 38 commands with zero skips**, including 18 fsck checks. Both independent
@@ -119,9 +139,11 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,651 tests in 160.426
-seconds with zero failures, errors or skips**, after the v13h raw-image milestone.
-Public code is unchanged from the preceding profile run, which passed 3,651
+The latest full workspace suite passed **3,651 tests in 156.391 seconds with
+zero failures, errors or skips**, executed by the target-files metadata agent;
+the coordinator independently verified its complete log. The separate previous
+coordinator run passed 3,651 in 160.426 seconds after the raw-image milestone.
+That run used unchanged public code from the earlier profile run, which passed 3,651
 tests in 158.950 seconds at `78376c7`. The preceding v13ha integration
 run passed 3,634 in 152.111 seconds. The previous v7 run passed 3,634 in
 156.509 seconds, and the previous profile
@@ -130,7 +152,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `94ddfb3`. The active guest inputs remain v13ha;
+code and documentation through `a1b5445`. The active guest inputs remain v13ha;
 `analysis-v13h-policy-only-v1` is now the verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -398,8 +420,11 @@ override theme defaults. No Magisk integration is included.
   verification slice, not provider ELF, runtime or complete VINTF compatibility.
   The new read-only VINTF graph capture binds 21 XML and 36 APEX inputs, but
   confirms the all-target alias lacks the full compatibility action. Its
-  three-goal build is running; no successful build or complete comparison is
-  claimed from that work. The separate full-check packet is staged, with 221
+  first three-goal build timed out and remains failed. The incremental
+  `vintf-v13h-2` retry completed without timeout but failed the mandatory
+  `android.hidl.allocator` declaration at frozen level 5. All 57 selected XML/APEX
+  artifacts are present; service integration and a successful unchanged check
+  remain required. The separate full-check packet is staged, with 221
   files verified and 39 APEX packages required; native materialization and
   compatibility checks remain unexecuted. Its 44 coordinator offline tests
   pass with zero skips, separately from the native build.
