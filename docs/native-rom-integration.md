@@ -4,9 +4,12 @@ The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
 reviewed property effects and zero permissive domains in three binaries.
 Source/M4, API mapping, compiler, OEM guard and nine fresh check bindings pass.
-This is the current v12f policy baseline; providers and policy-image adoption
-remain separate. The Camera/mi_ext/recovery phase also passes, with all eleven
-installed base payloads inspected and detailed component checks still pending.
+This is the latest verified v12f policy baseline. The later v13f provider inputs
+are installed, but their first 31-goal policy build failed before policy
+compilation; policy-image adoption remains separate. The Camera/mi_ext/recovery
+phase and bounded producer review pass, with all eleven installed base payloads
+inspected. Runtime API closure, Camera APK integration and a complete signed
+boot chain remain unverified.
 
 The expanded **policy-v12f-export-1** build passed at **2026-08-30 00:16:57 UTC**
 (August 29 in New York), installing the missing runtime CIL/mapping outputs and
@@ -324,20 +327,40 @@ four XML registrations and JNI library match the admitted payload bytes;
 JAR member content, DEX checksums/alignment, XML registrations and the ARM64
 ELF header pass the separate host inspection. Recovery is exact working76
 (`a130ba75…018e`) and mi_ext is the unchanged factory image (`60f79117…e196`).
-The inspection does not independently verify native producer execution,
-fresh ART/ELF checks or a complete AVB chain.
+That initial payload inspection is separate from the later producer review.
 
-The actual build log records four Camera dexpreopt actions at lines
-24204–24207 and eight ODEX/VDEX installs at 24208–24215. Detailed graph,
-configuration, checker and generated-output analysis remains pending. No
-Camera APK was selected or built; these results do not establish complete
-framework images, packaging, first Evolution boot or Camera/Leica operation.
+The bounded producer review rehashes 58 captured files and all eleven installed
+outputs, then binds four fresh DEX invocations to their raw serialized Soong
+inputs and matching installed ODEX/VDEX. The actual commands use `quicken`,
+`--abort-on-hard-verifier-error` and recorded `PCL[]` contexts. None of the four
+`dexpreopt.config` targets was materialized; their existing raw producer inputs
+are verified instead, without counting an absent target as a pass. The observed
+library-import `EnforceUsesLibraries=false` does not validate the Camera APK's
+manifest or uses-library contract, or establish runtime API closure.
 
-## Preparation that is not installed in v12fa
+The JNI action freshly ran with SONAME, DT_NEEDED, symbol-resolution and 16 KiB
+alignment checks enabled; the captured ARM64 load segments independently satisfy
+16 KiB. The separate phony `recoveryimage` recipe freshly performed its guarded
+working76 copy, and mi_ext freshly passed native NONE-footer and SHA-256 hashtree
+verification. Neither is a new TWRP runtime compilation or complete signed-chain
+result. Freshness is bound to phase actions, output/ledger times and preserved
+source/graph evidence; opaque Ninja ledger command hashes are not independently
+recomputed.
 
-| Slice | Verified host result | Still required |
+The review receipt is **22,098 bytes**, SHA256
+`f197a5b1ff666d08bf447291e1511dd6cdb662a542a35e2da4af4f38eea5baa2`.
+The coordinator reran the unchanged host review and produced an identical
+receipt. Native DEX/ELF commands were not independently replayed; the complete
+bootclasspath, dynamic dex2oat flag-file contents, all ELF dependencies and host
+tool bytes were not recaptured by this review. No Camera APK was selected or
+built, and no runtime linker access, complete framework images, packaging,
+first Evolution boot or Camera/Leica operation is established.
+
+## Other inputs and installation boundaries
+
+| Slice | Verified result | Still required |
 | --- | --- | --- |
-| [Sigma/QCC source admission](framework-provider-source-admission.md) | v13 candidate and repeat are byte-identical; 31 proprietary payloads, 27 installable modules, private enforcing policy and verified producer outputs are bound to the composed policy bundle | Reviewed guest transaction, strict native ELF/linker and policy checks, full labeling and runtime service validation |
+| [Sigma/QCC source admission](framework-provider-source-admission.md) | v13 candidate and repeat are byte-identical; the later v13f transaction installs the exact device, policy and provider inputs with the scoped mdnssd visibility patch | Complete current policy build and independent analysis, strict native runtime ELF/linker checks, full labeling and service validation |
 | [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host verification binds nine composed source files through patches 0005–0009; source admission and 43 isolated native Kati cases pass | Guest installation and ordinary target-files checks; a new complete preservation contract for policy-bearing vendor/ODM derivatives |
 | [Host AVB signing](avb-signing.md) | Inert planning, offline workflow tests and real unsigned countrycode/pvmfw descriptor-carrier checks; original inputs preserved | All 15 final input images with correct hashtrees/FEC, explicit Mac signing and independent verification of the resulting 17 image roles |
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
@@ -362,14 +385,39 @@ policy/provider/OEM/DSP/helper bindings and readiness flags remain unchanged.
 Metadata, mi_ext and recovery receipts share the same exact ten-file source
 composition. This candidate remains uninstalled in the guest.
 
+The separate **v13f provider packet** completed staging at **02:18:20 UTC**,
+manifest `e370994fe7fd7d29353ddf0924ef6546c98f13f54aecabe281776a0289f996a0`.
+The staging receipt verifies active sources and previous outputs unchanged.
+The later installation committed at **02:34:51 UTC**, with four exchanges and
+the transaction journal read back as `commit_verified`. It installs the device,
+policy and framework-provider trees plus the scoped `external/mdnsresponder`
+visibility change. Previous objects and independent copies remain preserved;
+the original images, Camera runtime, mi_ext, recovery and exporter trees are
+unchanged. Active inputs are now v13f, but export4's verified policy baseline
+still applies only to the earlier v12f input set.
+
+The **policy-only-v13f-1** request contains 31 exact goals, including
+policy/runtime exports and MAC/seapp outputs. It retains the 16 KiB maximum and
+enabled prebuilt checks, requests no provider runtime or image build, and has
+failed during Soong bootstrap at **02:36:44 UTC**, exit 1. The emitted
+`android_arm64_armv8-a_static` variant of `nezha_framework_libmiracastsystem`
+depends on `android.media.audio.common.types-V2-cpp` directly and V4 through
+`libaudiofoundation`. The complete dependency-path diagnostics remain captured.
+No new policy compiled, no context check ran, and no provider ELF action passed.
+Source inputs remained unchanged; the phase recorded no timeout or remaining
+process, and never reached the native Ninja sandbox. The six-file failure
+capture totals 159,676 bytes. Resolve the exact ABI/source graph rather than
+blindly rewriting the V2 dependency to V4. V13f remains installed, but
+v12f/export4 is still the latest verified policy baseline.
+
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
 finds 22 of the 26 provider ELFs use 4 KiB load alignment; the other four use
 16 KiB. The snapshot was collected during the component build. The optional
 [4 KiB experiment](nezha-page-size.md), commit `84d63c2`, and its host v13g
 candidate are on hold and unadopted. Lowering the checker threshold does not
-resolve the pinned 16 KiB/VSR requirement. Active v12fa remains at `16384` with
-checking enabled; this experiment is not approved as the next integration.
+resolve the pinned 16 KiB/VSR requirement. The failed v13f policy build retained `16384`
+with checking enabled; this experiment is not approved as the next integration.
 
 The [native date fixture record](../research/pinned-build-metadata-native.json)
 verifies nine positive/legacy cases and 24 specific negative outcomes, with
@@ -424,6 +472,7 @@ The pinned `external/erofs-utils` revision remains
 | Synthetic writer round trip | 11 | 6 | 0 | Both fixture partitions reproduce the exact five-file change across two independent derivations; all six upstream empty-xattr checks fail |
 | Production file-size primitives v2 | 4 | 0 | 0 | Finite 2 GiB/6 GiB syscall limits, sparse readback/cleanup, bounded stdout overflow and input preservation pass; no production mkfs execution |
 | Full unchanged-vendor v2 | 8 | 0 | 0 | Two independent TAR/image/export passes preserve the complete stock vendor contents and nonphysical metadata; exact 2 GiB recipe qualified, no policy adoption |
+| Full unchanged-ODM v1 | 8 | 0 | 0 | Two independent TAR/image/export passes preserve all 3,059 stock paths and 2,925 regular contents; exact 6 GiB recipe qualified, no policy adoption |
 
 The stock failure exposed an invalid exporter assumption that a shared xattr
 table cannot begin at block zero. The narrow C correction, committed as
@@ -494,9 +543,26 @@ inferred from those spools, pinned source and limits; its 2 TiB failure errno
 was not directly traced. The host capture verifies 63 direct diagnostic and
 metadata files totaling 5,815,807 bytes. The four large TAR/image artifacts were
 rehashed and remain only in the private guest directory. Original inputs were
-preserved. This does not qualify ODM under its 6 GiB limit, the five policy
-replacements, AVB, partition fit, kernel mounting or boot. No image is adopted,
-and the earlier synthetic failures remain failures.
+preserved. This vendor-only result does not qualify the separate ODM recipe,
+the five policy replacements, AVB, partition fit, kernel mounting or boot.
+
+The later **full-original-ODM v1** run passes all **eight native checks with
+zero skips** under its 6 GiB file limit. Both independently constructed raw
+images are 4,678,053,888 bytes with SHA256
+`6bb446e5ba6811cdd0a8c7bde994d3a42f81ce130bd0d81d31b504a9d1a60492`.
+The two 6,004,780,032-byte TARs share SHA256
+`c26e9a304ec6a375d511ecadca8b9f2e24f0bcc9ef6d3186531341f6655d09b3`.
+All 3,059 paths and 2,925 regular-file contents, nonphysical metadata and
+UUID/features match stock under the same explicit physical-layout exclusions.
+Private spools were observed; internal fallback remains inferred rather than
+directly tracing its 2 TiB failure errno.
+
+The ODM host capture contains 63 direct files totaling 4,759,090 bytes. Four
+large TAR/image artifacts were rehashed and retained only in the private guest
+directory. These qualify the exact unchanged vendor and ODM recipes; they do
+not qualify modified policy inputs, AVB, partition fit, kernel mounting or boot.
+No image is adopted, and all earlier synthetic and harness failures remain
+recorded as failures.
 
 Image adoption still needs an exact five-file change: the derived vendor CIL,
 the strict combined ODM policy, and its three framework matching digests.
@@ -508,12 +574,13 @@ factory-combined binary. Original proprietary images remain untouched.
 
 ## Next build sequence
 
-Use the verified v12f/export4 baseline for the next separately reviewed provider
-integration and policy-image derivation. Keep the 4 KiB experiment held and
-resolve the 16 KiB compatibility requirement without lowering checks. Finish
-the detailed Camera component graph/checker/output review; the eleven base
-payloads already pass inspection. Admit the provider inputs separately and
-complete the normal system, system_ext and product image dependencies. Full VINTF must include the
+Resolve the Audio AIDL source/ABI conflict, then rerun the v13f policy build and
+verify the provider delta against v12f/export4 before policy-image derivation.
+Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
+without lowering checks. The bounded Camera component producer/output review
+passes; runtime API and linker access, Camera APK admission and full checker-input
+coverage remain separate. Complete strict provider runtime checks and the normal
+system, system_ext and product image dependencies. Full VINTF must include the
 actual framework and vendor APEX manifests, explicit kernel requirements and
 the original shipping-API evidence; full Treble labeling requires real APK
 inventories.
