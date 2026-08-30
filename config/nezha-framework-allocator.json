@@ -1,0 +1,285 @@
+{
+  "additional_policy": [],
+  "contract_id": "nezha-upstream-framework-allocator-v1",
+  "device": "nezha",
+  "evidence": {
+    "failure_log": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-2/build.log",
+      "sha256": "8237f827172672ccaef4a1b406aa2c617dc2915a3b77b4a198a64963e06167e0",
+      "size_bytes": 420908
+    },
+    "failure_result": {
+      "path": "artifacts/build-validation/nezha-vintf-v13h-2/result.json",
+      "sha256": "88e4200261601edc7b941249b275bc2a2f47ff7cd0c2c3dc872b5d0d7c159f4f",
+      "size_bytes": 143338
+    },
+    "source_captures": [
+      {
+        "path": "reports/oem-policy-integration-20260829/source-frameworkallocatorv1/capture.json",
+        "sha256": "cb81d15c1079511a5656d0f5cbe4b8cb6e883e5358b965bcff8f5f6586a031a3",
+        "size_bytes": 3531
+      },
+      {
+        "path": "reports/oem-policy-integration-20260829/source-frameworkallocatorv2/capture.json",
+        "sha256": "f48f92d1ad5d322b0b4b339316e7ebe0de388ad0bc1be27ec88f76c21e80f238",
+        "size_bytes": 1692
+      },
+      {
+        "path": "reports/oem-policy-integration-20260829/source-frameworkallocatorv3/capture.json",
+        "sha256": "92ff0dc4ddce7c51daa570163f59366c6131b9d7506e7e926a64711c653e4fd6",
+        "size_bytes": 796
+      }
+    ]
+  },
+  "init": {
+    "class": "hal",
+    "disabled_property": "hidl_memory.disabled",
+    "disabled_value": "true",
+    "executable": "/system/system_ext/bin/hw/android.hidl.allocator@1.0-service",
+    "group": "system",
+    "name": "hidl_memory",
+    "property_action": "stop hidl_memory",
+    "user": "system"
+  },
+  "installed_outputs": [
+    {
+      "owner_module": "android.hidl.allocator@1.0-service",
+      "path": "system_ext/bin/hw/android.hidl.allocator@1.0-service",
+      "role": "binary"
+    },
+    {
+      "owner_module": "android.hidl.allocator@1.0-service",
+      "path": "system_ext/etc/init/android.hidl.allocator@1.0-service.rc",
+      "role": "init",
+      "source_path": "system/libhidl/transport/allocator/1.0/default/android.hidl.allocator@1.0-service.rc"
+    },
+    {
+      "owner_module": "android.hidl.allocator@1.0-service.xml",
+      "path": "system_ext/etc/vintf/manifest/android.hidl.allocator@1.0-service.xml",
+      "required_by_module": "android.hidl.allocator@1.0-service",
+      "role": "vintf_fragment",
+      "source_path": "system/libhidl/transport/allocator/1.0/default/android.hidl.allocator@1.0-service.xml"
+    }
+  ],
+  "limitations": [
+    "The source-admission generator does not inspect the live Android checkout or run a build. The source preconditions are mandatory inputs for the separate native transaction.",
+    "Only the upstream service is selected. No replacement binary, fabricated XML, copied init file, new policy type or permission is generated.",
+    "The unchanged upstream max-level 8 manifest and getTransport check intentionally allow the service to stop on newer device levels. This selection is not a claim that allocator registration is expected or tested on Nezha.",
+    "The candidate-local ownership scan does not prove global source or installed-output uniqueness; the selected native graph and init/context checks must do that.",
+    "The source lock does not replace private inputs, patches, tools, signing records or complete ROM and hardware evidence."
+  ],
+  "module": "android.hidl.allocator@1.0-service",
+  "partition": "system_ext",
+  "platform": {
+    "branch": "bka",
+    "release_config": "bp4a",
+    "shipping_api_level": 36
+  },
+  "profile": "framework-checks",
+  "required_native_checks": [
+    "Recheck all selected source revisions and exact source_preconditions before installation and build; preserve the complete current source audit and reviewed local patches.",
+    "Resolve the selected module and its three installed outputs to the pinned upstream Blueprint; reject competing module definitions, init service declarations, VINTF declarations and output destinations in the actual selected graph.",
+    "Build the actual android.hidl.allocator@1.0-service component with its dependency closure, init and VINTF fragment, not only a manifest checker alias.",
+    "Verify the installed binary producer, ELF and dependencies, exact upstream init and source fragment bytes, and the installed fragment producer and semantic content; preserve max-level 8 and the transport-gated self-disable behavior.",
+    "Run the existing normal Android enforcing policy, init/context/Treble and all frozen framework manifest checks without removing assertions or checks.",
+    "Recapture the complete selected framework/vendor/kernel/APEX inputs after source installation and run full VINTF compatibility.",
+    "Keep runtime registration, image inclusion and physical-device support unverified until separately demonstrated."
+  ],
+  "required_source_revisions": {
+    "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "system/libhidl": "d063c3a2bf981d8dab2ca60ea471f940d71167a6",
+    "system/sepolicy": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27"
+  },
+  "schema_version": 1,
+  "scope": {
+    "complete_rom_admitted": false,
+    "full_vintf_compatibility_verified": false,
+    "hardware_tested": false,
+    "image_integration_verified": false,
+    "native_init_checked": false,
+    "native_selinux_checked": false,
+    "native_service_binary_built": false,
+    "native_vintf_checked": false,
+    "phone_operations": [],
+    "runtime_service_registration_verified": false,
+    "source_checkout_inspected": false,
+    "upstream_sources_changed": false
+  },
+  "selinux": {
+    "domain": "hal_allocator_default",
+    "exec_type": "hal_allocator_default_exec",
+    "existing_platform_policy_only": true,
+    "hwservice_type": "hidl_allocator_hwservice",
+    "normal_android_enforcing": true,
+    "property_type": "hidl_memory_prop"
+  },
+  "source_lock": {
+    "path": "config/evolution-source-lock.json",
+    "sha256": "9b3a825a359fc618ff85234383e06c736c662b5427591d0d68252cdece6aace5",
+    "size_bytes": 857
+  },
+  "source_patches": [],
+  "source_preconditions": [
+    {
+      "path": "build/make/target/product/base_system.mk",
+      "project": "build/make",
+      "sha256": "c2fdd7e8d292ae3e39b87bef056f4649c7d1ef6a31204ccbf9fd2c1c34fe0b90",
+      "size_bytes": 14297
+    },
+    {
+      "path": "build/make/target/product/full_base_telephony.mk",
+      "project": "build/make",
+      "sha256": "e95a12f220c2c1400d128209bd20751408edd8db3414b66f41d530bf3cce72f0",
+      "size_bytes": 1373
+    },
+    {
+      "path": "build/make/target/product/generic_system.mk",
+      "project": "build/make",
+      "sha256": "96bd5c75b14eb9d078d4c3cf3c59431c1a3b0f9cb442c380b4e3425266f934f2",
+      "size_bytes": 4602
+    },
+    {
+      "path": "system/libhidl/Android.bp",
+      "project": "system/libhidl",
+      "sha256": "391bd323142282e2c3297f4c8268f1817353e6b190db89e961af0a31b5a86a1a",
+      "size_bytes": 5730
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/Android.bp",
+      "project": "system/libhidl",
+      "sha256": "378bd7537ab5549704fb274caabcec5d85851207b5ef94868fddc325c6be8a1e",
+      "size_bytes": 795
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/IAllocator.hal",
+      "project": "system/libhidl",
+      "sha256": "fc6cbbc8a22edabd4b58f8949e591359d3138d16a82506052e25ac43e1dbda68",
+      "size_bytes": 1526
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/default/Android.bp",
+      "project": "system/libhidl",
+      "sha256": "22d4701079b03590b2de8f16cd8d33200be45719b6dfcd2b56bbda124c791db6",
+      "size_bytes": 1634
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/default/AshmemAllocator.cpp",
+      "project": "system/libhidl",
+      "sha256": "c28839ac2b0a7f73cf6dfd3803edefbec5c85894cb808c973de0dba97bf70a6b",
+      "size_bytes": 2995
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/default/AshmemAllocator.h",
+      "project": "system/libhidl",
+      "sha256": "c13d31c3db6b26212bfccd80242bf6e64608f70ae97506db83b79cb5e51cfd19",
+      "size_bytes": 1718
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/default/android.hidl.allocator@1.0-service.rc",
+      "project": "system/libhidl",
+      "sha256": "2daefa28c9013feb1d6b17e366bcb2dfbd5b904e239b644d93a16df01b15c29d",
+      "size_bytes": 187
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/default/android.hidl.allocator@1.0-service.xml",
+      "project": "system/libhidl",
+      "sha256": "5d976c3414fa3130f0784a227f119870a8c5a5dcb3bc2e74c0a379d4471ed5a7",
+      "size_bytes": 321
+    },
+    {
+      "path": "system/libhidl/transport/allocator/1.0/default/service.cpp",
+      "project": "system/libhidl",
+      "sha256": "60e6379eff8336bb49b086b091e4239e581678c0f8111af6a26b717b745b2be9",
+      "size_bytes": 1788
+    },
+    {
+      "path": "system/libhidl/vintfdata/Android.bp",
+      "project": "system/libhidl",
+      "sha256": "fa9e0b07f4e9588b9fc1221f95b4017ccdc07677a4f6ff3d089eb464f7d01f66",
+      "size_bytes": 1510
+    },
+    {
+      "path": "system/libhidl/vintfdata/frozen/5.xml",
+      "project": "system/libhidl",
+      "sha256": "afc68552e09bbb985579dc7ded459d4cc3acf39dbc58c3d8c78d47cbbc914d6a",
+      "size_bytes": 3233
+    },
+    {
+      "path": "system/sepolicy/private/file_contexts",
+      "project": "system/sepolicy",
+      "sha256": "e12200ba518ddf62ed4b4d9ce2c9b48cbc40723c3df2a87e672e12cc18f52e04",
+      "size_bytes": 53964
+    },
+    {
+      "path": "system/sepolicy/private/hal_allocator.te",
+      "project": "system/sepolicy",
+      "sha256": "1e71a67b185d442d3852e7838d851a5b503fefd71d24498db0f6ba146310be72",
+      "size_bytes": 321
+    },
+    {
+      "path": "system/sepolicy/private/hal_allocator_default.te",
+      "project": "system/sepolicy",
+      "sha256": "4549dc6c31c7121ec0419d733188897f5e56ff04a8ff54a673aa11237d00a853",
+      "size_bytes": 323
+    },
+    {
+      "path": "system/sepolicy/private/hwservice_contexts",
+      "project": "system/sepolicy",
+      "sha256": "e9f9f83ce1dfec4b036e09baa3b5cedeb27e8855b59164d42979ef5903f10668",
+      "size_bytes": 8865
+    },
+    {
+      "path": "system/sepolicy/private/property.te",
+      "project": "system/sepolicy",
+      "sha256": "db60e92ed01dfbb15e131a89e7886bb54d97e5d4e8a80a481c50af0e6a21d01b",
+      "size_bytes": 20261
+    },
+    {
+      "path": "system/sepolicy/private/property_contexts",
+      "project": "system/sepolicy",
+      "sha256": "ddbbea0522d0d36880f3584c9eaeaf5e62179729155653a765c9e7712e5b1351",
+      "size_bytes": 123510
+    },
+    {
+      "path": "system/sepolicy/public/attributes",
+      "project": "system/sepolicy",
+      "sha256": "0fc07e9b72900316ccd27c26c146cebb310fd7a286aa5e53cc966021c2bd30f3",
+      "size_bytes": 16103
+    },
+    {
+      "path": "system/sepolicy/public/hwservice.te",
+      "project": "system/sepolicy",
+      "sha256": "ae13fb5e146309a5aadb4d2fcb91a0955da5c9e7ae77d4bb785f18d52c0cf934",
+      "size_bytes": 6845
+    },
+    {
+      "path": "system/sepolicy/public/property.te",
+      "project": "system/sepolicy",
+      "sha256": "41dce140dc4c36d36069364cd44d34c80978e18b56c27f4c1b732488fd3ce39f",
+      "size_bytes": 14875
+    },
+    {
+      "path": "system/sepolicy/public/te_macros",
+      "project": "system/sepolicy",
+      "sha256": "b749c90e4ad0b7873eaa03192309846fddc7a33b06284e1925ad849c2d5111cd",
+      "size_bytes": 42239
+    }
+  ],
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "vintf": {
+    "frozen_requirement_path": "system/libhidl/vintfdata/frozen/5.xml",
+    "hal_name": "android.hidl.allocator",
+    "instance": "ashmem",
+    "interface": "IAllocator",
+    "manifest_type": "framework",
+    "max_level": 8,
+    "module_property": "vintf_fragment_modules",
+    "register_only_when_transport_hwbinder": true,
+    "transport": "hwbinder",
+    "version": "1.0"
+  }
+}

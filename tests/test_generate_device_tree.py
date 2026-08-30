@@ -3778,6 +3778,206 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         with self.assertRaisesRegex(generator.CandidateError, "hash/size mismatch"):
             generator.validate(self.root)
 
+    def allocator_inputs(self, inputs=None):
+        inputs = inputs or self.generation_inputs()
+        contract = json.loads((ROOT / generator.FRAMEWORK_ALLOCATOR_RECORD).read_bytes())
+        for row in (contract["source_lock"], contract["source_snapshot"]):
+            path = self.root / row["path"]
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((ROOT / row["path"]).read_bytes())
+        return dict(inputs, framework_allocator_contract=ROOT / generator.FRAMEWORK_ALLOCATOR_RECORD)
+
+    def reseal_allocator_candidate(self, output, plan, name, raw):
+        path = output / name
+        path.write_bytes(raw)
+        row = next(row for row in plan["files"] if row["path"] == name)
+        row.update(sha256=hashlib.sha256(raw).hexdigest(), size_bytes=len(raw))
+        (output / "admission.json").write_text(json.dumps(plan))
+
+    def test_allocator_contract_pins_real_service_and_separate_native_obligations(self):
+        contract, identity = generator._framework_allocator_contract(ROOT / generator.FRAMEWORK_ALLOCATOR_RECORD)
+        self.assertEqual(identity["sha256"], generator.FRAMEWORK_ALLOCATOR_CONTRACT_SHA256)
+        self.assertEqual(contract["partition"], "system_ext")
+        self.assertEqual(contract["vintf"]["max_level"], 8)
+        self.assertTrue(contract["vintf"]["register_only_when_transport_hwbinder"])
+        self.assertEqual(contract["init"]["executable"],
+                         "/system/system_ext/bin/hw/android.hidl.allocator@1.0-service")
+        self.assertEqual(contract["source_patches"], [])
+        self.assertEqual(contract["additional_policy"], [])
+        self.assertEqual({row["role"] for row in contract["installed_outputs"]},
+                         {"binary", "init", "vintf_fragment"})
+        self.assertEqual(len(contract["source_preconditions"]), 24)
+        self.assertEqual(contract["required_source_revisions"]["system/libhidl"],
+                         "d063c3a2bf981d8dab2ca60ea471f940d71167a6")
+        self.assertIn("Build the actual android.hidl.allocator@1.0-service component",
+                      "\n".join(contract["required_native_checks"]))
+
+    def test_allocator_opt_in_selects_binary_owner_once_without_copying_a_fragment(self):
+        inputs = self.allocator_inputs()
+        first, second = self.root / "artifacts/allocator", self.root / "artifacts/allocator-repeat"
+        plan = generator.generate(first, **inputs)
+        self.assertEqual(generator.generate(second, **inputs), plan)
+        product = (first / generator.DEVICE_PATH / "generated/device-candidate.mk").read_text()
+        self.assertEqual(product.count("PRODUCT_PACKAGES += android.hidl.allocator@1.0-service\n"), 1)
+        self.assertNotIn("PRODUCT_COPY_FILES", product)
+        self.assertFalse(any(row["path"].startswith("system/libhidl/") or
+                             row["path"].endswith(("-service.rc", "-service.xml")) for row in plan["files"]))
+        self.assertEqual(plan["framework_allocator"]["scope"], generator.FRAMEWORK_ALLOCATOR_SCOPE)
+        self.assertNotIn("page_size_profile", plan)
+        self.assertNotIn("framework_providers", plan)
+        self.assertEqual(generator.validate(first), plan)
+        for purpose in ("target-files", "flash"):
+            with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                generator.validate(first, purpose=purpose)
+
+    def test_allocator_omission_preserves_existing_product_and_does_not_read_capability(self):
+        inputs = self.generation_inputs()
+        with mock.patch.object(generator, "_framework_allocator_contract", side_effect=AssertionError("implicit allocator")):
+            before = generator.generate(self.root / "artifacts/before", **inputs)
+            explicit_none = generator.generate(self.root / "artifacts/none", framework_allocator_contract=None, **inputs)
+        self.assertEqual(before, explicit_none)
+        self.assertNotIn("framework_allocator", before)
+        self.assertNotIn("PRODUCT_PACKAGES", generator._render_product(before))
+        self.assertNotIn(generator.FRAMEWORK_ALLOCATOR_RECORD.as_posix(), {row["path"] for row in before["files"]})
+
+    def test_allocator_composes_with_current_provider_profile_without_policy_or_alignment_changes(self):
+        inputs, verification, policy = self.provider_inputs(properties=True)
+        before = self.generate_provider(self.root / "artifacts/provider-before", inputs, verification, policy)
+        inputs = self.allocator_inputs(inputs)
+        after = self.generate_provider(self.root / "artifacts/provider-allocator", inputs, verification, policy)
+        self.assertEqual(before["framework_providers"], after["framework_providers"])
+        self.assertEqual(before["policy_inputs"], after["policy_inputs"])
+        self.assertEqual(before["oem_properties"], after["oem_properties"])
+        self.assertEqual(generator._render_board(before), generator._render_board(after))
+        self.assertNotIn("page_size_profile", after)
+        self.assertNotIn("PRODUCT_MAX_PAGE_SIZE_SUPPORTED", generator._render_product(after))
+        self.assertEqual(after["admission"], before["admission"])
+
+    def test_allocator_changed_contract_fails_before_candidate_publication(self):
+        inputs = self.allocator_inputs()
+        path = self.root / "changed-allocator.json"
+        contract = json.loads(inputs["framework_allocator_contract"].read_bytes())
+        contract["vintf"]["max_level"] = 202504
+        path.write_text(json.dumps(contract))
+        inputs["framework_allocator_contract"] = path
+        output = self.root / "artifacts/refused"
+        with self.assertRaisesRegex(generator.CandidateError, "changed framework allocator contract"):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+    def test_allocator_missing_or_changed_source_lock_is_not_accepted(self):
+        inputs = self.allocator_inputs()
+        contract = json.loads(inputs["framework_allocator_contract"].read_bytes())
+        for key in ("source_lock", "source_snapshot"):
+            path = self.root / contract[key]["path"]
+            original = path.read_bytes()
+            path.write_bytes(original + b"\n")
+            with self.subTest(key=key), self.assertRaisesRegex(generator.CandidateError, "source lock or snapshot differs"):
+                generator.generate(self.root / ("artifacts/refused-" + key), **inputs)
+            path.write_bytes(original)
+        (self.root / contract["source_snapshot"]["path"]).unlink()
+        with self.assertRaises((generator.CandidateError, OSError)):
+            generator.generate(self.root / "artifacts/missing", **inputs)
+
+    def test_allocator_rechecks_source_inputs_before_publication(self):
+        inputs = self.allocator_inputs()
+        contract = json.loads(inputs["framework_allocator_contract"].read_bytes())
+        snapshot = self.root / contract["source_snapshot"]["path"]
+        real_validate = generator.validate
+        def mutate_after_validation(*args, **kwargs):
+            result = real_validate(*args, **kwargs)
+            snapshot.write_bytes(snapshot.read_bytes() + b"\n")
+            return result
+        output = self.root / "artifacts/refused"
+        with mock.patch.object(generator, "validate", side_effect=mutate_after_validation), \
+                self.assertRaisesRegex(generator.CandidateError, "source lock or snapshot differs"):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+    def test_allocator_resealed_native_success_or_partition_change_is_rejected(self):
+        inputs = self.allocator_inputs()
+        output = self.root / "artifacts/allocator"
+        original = generator.generate(output, **inputs)
+        for change in (lambda row: row["scope"].update(native_service_binary_built=True),
+                       lambda row: row["scope"].update(full_vintf_compatibility_verified=True),
+                       lambda row: row.update(partition="system"),
+                       lambda row: row["vintf"].update(max_level=202504),
+                       lambda row: row.update(source_preconditions=[]),
+                       lambda row: row["installed_outputs"].pop()):
+            plan = copy.deepcopy(original)
+            change(plan["framework_allocator"])
+            (output / "admission.json").write_text(json.dumps(plan))
+            with self.assertRaisesRegex(generator.CandidateError, "allocator admission differs"):
+                generator.validate(output)
+
+    def test_allocator_resealed_product_cannot_select_fragment_alone_or_disable_checks(self):
+        inputs = self.allocator_inputs()
+        output = self.root / "artifacts/allocator"
+        original = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "generated/device-candidate.mk").as_posix()
+        raw = (output / name).read_bytes()
+        for changed in (raw.replace(b"-service\n", b"-service.xml\n"),
+                        raw + b"PRODUCT_PACKAGES += android.hidl.allocator@1.0-service\n",
+                        raw.replace(b"PRODUCT_ENFORCE_VINTF_MANIFEST := true", b"PRODUCT_ENFORCE_VINTF_MANIFEST := false")):
+            plan = copy.deepcopy(original)
+            self.reseal_allocator_candidate(output, plan, name, changed)
+            with self.assertRaisesRegex(generator.CandidateError, "allocator generated product"):
+                generator.validate(output)
+
+    def test_allocator_unselected_service_cannot_be_injected_into_a_resealed_candidate(self):
+        inputs = self.generation_inputs()
+        output = self.root / "artifacts/no-allocator"
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "device.mk").as_posix()
+        self.reseal_allocator_candidate(output, plan, name,
+            (output / name).read_bytes() + b"\nPRODUCT_PACKAGES += android.hidl.allocator@1.0-service\n")
+        with self.assertRaisesRegex(generator.CandidateError, "only use the reviewed upstream module"):
+            generator.validate(output)
+
+    def test_allocator_duplicate_init_manifest_policy_and_module_ownership_is_rejected(self):
+        plan = self.plan()
+        payloads = {
+            "device.mk": b"PRODUCT_PACKAGES += android.hidl.allocator@1.0-service\n",
+            "lineage_nezha.mk": b"NEZHA_ALLOCATOR_INTERFACE := android.hidl.allocator@1.0\nPRODUCT_PACKAGES += $(NEZHA_ALLOCATOR_INTERFACE)-service\n",
+            "Android.bp": b'cc_binary { name: "android.hidl.allocator@1.0-service", }\n',
+            "init.rc": b"service hidl_memory /different/service\n",
+            "init-tab.rc": b"service\thidl_memory\t/different/service\n",
+            "init-spaces.rc": b"service  hidl_memory  /different/service\n",
+            "manifest.xml": b"<hal><name>android.hidl.allocator</name></hal>\n",
+            "allocator.te": b"type hal_allocator_default, domain;\n",
+            "hwservice.te": b"type hidl_allocator_hwservice, hwservice_manager_type;\n",
+            "property.te": b"type hidl_memory_prop, property_type;\n",
+            "file_contexts": b"/system_ext/bin/hw/android\\.hidl\\.allocator@1\\.0-service u:object_r:wrong:s0\n",
+            "property_contexts": b"hidl_memory.disabled u:object_r:wrong:s0\n",
+        }
+        for name, raw in payloads.items():
+            with self.subTest(name=name), self.assertRaisesRegex(generator.CandidateError, "only use the reviewed upstream module"):
+                generator._framework_allocator_source_guards(plan, {(generator.DEVICE_PATH / name).as_posix(): raw})
+
+    def test_allocator_public_interface_library_clients_remain_allowed(self):
+        generator._framework_allocator_source_guards(self.plan(), {
+            (generator.DEVICE_PATH / "framework-providers/Android.bp").as_posix():
+                b'cc_prebuilt_library_shared { name: "client", shared_libs: ["android.hidl.allocator@1.0"], }\n',
+            (generator.DEVICE_PATH / "client.te").as_posix():
+                b'allow client hidl_allocator_hwservice:hwservice_manager find;\n'})
+
+    def test_allocator_resealed_source_snapshot_is_rejected(self):
+        inputs = self.allocator_inputs()
+        output = self.root / "artifacts/allocator"
+        plan = generator.generate(output, **inputs)
+        name = plan["framework_allocator"]["source_snapshot"]["path"]
+        self.reseal_allocator_candidate(output, plan, name, (output / name).read_bytes() + b"\n")
+        with self.assertRaisesRegex(generator.CandidateError, "source lock or snapshot changed"):
+            generator.validate(output)
+
+    def test_allocator_cli_forwards_only_the_explicit_capability(self):
+        with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+            result = generator.main(["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                                     "--framework-allocator-contract", "allocator.json", "--output", "candidate"])
+        self.assertEqual(result, 0)
+        self.assertEqual(generate.call_args.kwargs["framework_allocator_contract"], Path("allocator.json"))
+
+
 
 class NezhaBoardHookTests(unittest.TestCase):
     def test_recovery_prebuilt_hook_is_public_and_precedes_lineage_without_relocating_recovery(self):

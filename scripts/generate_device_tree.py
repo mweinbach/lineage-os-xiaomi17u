@@ -197,6 +197,18 @@ FRAMEWORK_PROVIDER_FILES = (
 FRAMEWORK_PROVIDER_WIRING = {
     "SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private",
 }
+FRAMEWORK_ALLOCATOR_RECORD = PurePosixPath("config/nezha-framework-allocator.json")
+FRAMEWORK_ALLOCATOR_CONTRACT_ID = "nezha-upstream-framework-allocator-v1"
+FRAMEWORK_ALLOCATOR_CONTRACT_SHA256 = "295bd8768156d14867da402c547a3d4b65308514a75e53ef6e4d1a2270b72074"
+FRAMEWORK_ALLOCATOR_MODULE = "android.hidl.allocator@1.0-service"
+FRAMEWORK_ALLOCATOR_SCOPE = {
+    "source_checkout_inspected": False, "upstream_sources_changed": False,
+    "native_service_binary_built": False, "native_init_checked": False,
+    "native_vintf_checked": False, "native_selinux_checked": False,
+    "full_vintf_compatibility_verified": False, "runtime_service_registration_verified": False,
+    "image_integration_verified": False, "hardware_tested": False,
+    "complete_rom_admitted": False, "phone_operations": [],
+}
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
@@ -2423,6 +2435,82 @@ def _page_size_source_guards(plan, payloads):
                      "page-size profile cannot add an ignore flag or fake runtime capability")
 
 
+def _framework_allocator_contract(path):
+    contract, identity = _read_json(path)
+    _require(identity["sha256"] == FRAMEWORK_ALLOCATOR_CONTRACT_SHA256,
+             "unknown or changed framework allocator contract")
+    _require(contract["schema_version"] == 1 and contract["device"] == "nezha" and
+             contract["contract_id"] == FRAMEWORK_ALLOCATOR_CONTRACT_ID and
+             contract["profile"] == "framework-checks" and
+             contract["platform"] == {"branch": "bka", "release_config": "bp4a", "shipping_api_level": 36} and
+             contract["module"] == FRAMEWORK_ALLOCATOR_MODULE and
+             contract["scope"] == FRAMEWORK_ALLOCATOR_SCOPE,
+             "framework allocator platform, module or scope changed")
+    _require(contract["partition"] == "system_ext" and contract["vintf"]["max_level"] == 8 and
+             contract["init"]["name"] == "hidl_memory" and
+             contract["init"]["disabled_property"] == "hidl_memory.disabled" and
+             contract["source_patches"] == [] and contract["additional_policy"] == [],
+             "framework allocator must preserve the upstream partition, level and service behavior")
+    sources = contract["source_preconditions"]
+    _require(type(sources) is list and len(sources) == len({row["path"] for row in sources}) and
+             sources and all(row["project"] in contract["required_source_revisions"] and
+                 _relative(row["path"]).is_relative_to(row["project"]) for row in sources),
+             "framework allocator source preconditions are absent or duplicated")
+    for row in sources:
+        _digest(row["sha256"], "framework allocator source")
+        _integer(row["size_bytes"], "framework allocator source length", MAX_TEXT_BYTES)
+    return contract, identity
+
+
+def _framework_allocator_admission(plan, contract, identity):
+    _require(plan["profile"] == "framework-checks" and plan["product"] == "lineage_nezha" and
+             plan["release_config"] == "bp4a" and plan["shipping_api_level"] == 36 and
+             plan["admission"]["configuration_allowed"] is True and
+             all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
+             "framework allocator cannot change platform or ROM admission")
+    return {"contract_record": {"path": FRAMEWORK_ALLOCATOR_RECORD.as_posix(), **identity},
+            **{key: copy.deepcopy(contract[key]) for key in (
+                "contract_id", "module", "partition", "source_lock", "source_snapshot",
+                "required_source_revisions", "source_preconditions", "installed_outputs", "init", "vintf",
+                "selinux", "source_patches", "additional_policy", "required_native_checks", "scope")}}
+
+
+def _bind_framework_allocator(plan, path, workspace_root, payloads):
+    contract, identity = _framework_allocator_contract(path)
+    for row in (contract["source_lock"], contract["source_snapshot"]):
+        name = _relative(row["path"]).as_posix()
+        actual, raw = _read_file(Path(workspace_root) / name, limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")} and
+                 (name not in payloads or payloads[name] == raw),
+                 "framework allocator source lock or snapshot differs")
+        payloads[name] = raw
+    actual, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == identity, "framework allocator contract changed during generation")
+    payloads[FRAMEWORK_ALLOCATOR_RECORD.as_posix()] = raw
+    plan["framework_allocator"] = _framework_allocator_admission(plan, contract, identity)
+
+
+def _framework_allocator_source_guards(plan, payloads):
+    product = (DEVICE_PATH / "generated/device-candidate.mk").as_posix()
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/"):
+            continue
+        if name == product and "framework_allocator" in plan:
+            _require(raw == _render_product(plan).encode("ascii"),
+                     "framework allocator generated product is duplicated or contradictory")
+            continue
+        # Reserve service ownership, not the public allocator interface library:
+        # retained providers legitimately link android.hidl.allocator@1.0.
+        text = raw.replace(b"\\", b"")
+        forbidden = (FRAMEWORK_ALLOCATOR_MODULE.encode(), b"u:object_r:hal_allocator_default_exec:",
+                     b"u:object_r:hidl_allocator_hwservice:", b"hidl_memory.disabled")
+        _require(not any(token in text for token in forbidden) and
+                 not re.search(rb"\btype\s+(?:hal_allocator_default(?:_exec)?|hidl_allocator_hwservice|hidl_memory_prop)\s*[,;]|\bservice\s+hidl_memory\s", text) and
+                 not (name.endswith(".mk") and b"android.hidl.allocator" in text) and
+                 not (name.endswith(".xml") and b"android.hidl.allocator" in text),
+                 "framework allocator service, manifest and policy may only use the reviewed upstream module")
+
+
 def _render_product(plan):
     partitions = ["boot", "dtbo", "init_boot", "recovery", "vendor_boot", "vbmeta", "vbmeta_system",
                   *_logical_partition_selection(plan)]
@@ -2443,6 +2531,9 @@ def _render_product(plan):
     if "framework_providers" in plan:
         lines += ["# Exact verified provider bundle owns its two namespaces and native package list.",
                   f"$(call inherit-product, {FRAMEWORK_PROVIDER_INPUTS_PATH}/framework-providers.mk)"]
+    if "framework_allocator" in plan:
+        lines += ["# Upstream system_ext service owns its binary, init and max-level-8 VINTF fragment.",
+                  f"PRODUCT_PACKAGES += {FRAMEWORK_ALLOCATOR_MODULE}"]
     return "\n".join([*lines, ""])
 
 
@@ -2461,7 +2552,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              oem_property_contract=None, framework_provider_policy_contract=None,
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
-             target_files_source_contract=None, page_size_profile=None):
+             target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None):
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -2538,6 +2629,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if providers_selected:
         _bind_framework_providers(plan, framework_provider_policy_contract, framework_provider_inputs_receipt,
                                   workspace_root, template_root, patch_source_root, payloads)
+    if framework_allocator_contract is not None:
+        _bind_framework_allocator(plan, framework_allocator_contract, workspace_root, payloads)
     if page_size_profile is not None:
         _verify_page_size_kernel(page_profile, kernel_receipt)
         plan["page_size_profile"] = _page_size_profile_binding(plan, page_profile, page_identity)
@@ -2568,6 +2661,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
         payloads[(generated / name).as_posix()] = content.encode()
     _page_size_source_guards(plan, payloads)
+    _framework_allocator_source_guards(plan, payloads)
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
     plan["schema_version"] = 1
@@ -2614,6 +2708,13 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             _require(_page_size_profile_contract(page_size_profile) == (page_profile, page_identity),
                      "page-size profile changed before candidate publication")
             _verify_page_size_kernel(page_profile, kernel_receipt)
+        if framework_allocator_contract is not None:
+            current = {}
+            current_plan = copy.deepcopy(plan)
+            _bind_framework_allocator(current_plan, framework_allocator_contract, workspace_root, current)
+            _require(current_plan["framework_allocator"] == plan["framework_allocator"] and
+                     all(payloads[name] == raw for name, raw in current.items()),
+                     "framework allocator inputs changed before candidate publication")
         if metadata_selected:
             # Verify the entire external tree again, including its no-extra-file
             # inventory, before publishing the small portable candidate.
@@ -2773,6 +2874,15 @@ def validate(output, *, purpose="configuration"):
         _require(_page_size_same(plan["page_size_profile"], _page_size_profile_binding(plan, page_profile, page_identity)),
                  "page-size profile admission differs from its reviewed kernel/provider binding")
         expected.add(PAGE_SIZE_PROFILE_RECORD.as_posix())
+    if "framework_allocator" in plan:
+        allocator, allocator_identity = _framework_allocator_contract(Path(output) / FRAMEWORK_ALLOCATOR_RECORD)
+        _require(plan["framework_allocator"] == _framework_allocator_admission(plan, allocator, allocator_identity),
+                 "framework allocator admission differs from the reviewed source capability")
+        expected.add(FRAMEWORK_ALLOCATOR_RECORD.as_posix())
+        for row in (allocator["source_lock"], allocator["source_snapshot"]):
+            expected.add(row["path"])
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "framework allocator source lock or snapshot changed")
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -2785,6 +2895,9 @@ def validate(output, *, purpose="configuration"):
             present.add(path.relative_to(output).as_posix())
             _require(len(present) <= len(expected) + 1, "unexpected candidate file")
     _require(present == expected | {"admission.json"}, "unlisted or missing candidate file")
+    _framework_allocator_source_guards(plan, {
+        name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
+        for name in files if name.startswith(DEVICE_PATH.as_posix() + "/")})
     if "policy_inputs" in plan:
         _policy_inputs_binding(plan, plan["policy_inputs"])
     product_name = (DEVICE_PATH / "generated/device-candidate.mk").as_posix()
@@ -2954,6 +3067,8 @@ def main(argv=None):
                              help="exact external provider bundle; requires paired source policy and does not establish runtime support")
             sub.add_argument("--page-size-profile", type=Path,
                              help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
+            sub.add_argument("--framework-allocator-contract", type=Path,
+                             help="explicit pinned upstream allocator service; preserves its init, SELinux and max-level-8 VINTF behavior")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -2983,7 +3098,8 @@ def main(argv=None):
                                   target_files_metadata_receipt_sha256=args.target_files_metadata_receipt_sha256,
                                   direct_avb_readonly_contract=args.direct_avb_readonly_contract,
                                   target_files_source_contract=args.target_files_source_contract,
-                                  page_size_profile=args.page_size_profile)
+                                  page_size_profile=args.page_size_profile,
+                                  framework_allocator_contract=args.framework_allocator_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
