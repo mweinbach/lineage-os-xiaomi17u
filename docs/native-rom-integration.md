@@ -1,11 +1,16 @@
 # Native ROM integration after v11b
 
-The **actual v12f policy and corrected EROFS exporter build passed** on
-August 29, 2026, at **23:40:31 UTC**. Source/combined policy compilation, the OEM
-guard and all nine factory context and structural checks ran successfully.
-Independent v12f verification failed before semantic analysis because two
-installed system_ext CIL/mapping outputs were stale;
-[v11b](oem-policy-integration.md) remains the latest completed independent
+The expanded **policy-v12f-export-1** build passed at **2026-08-30 00:16:57 UTC**
+(August 29 in New York), installing the missing runtime CIL/mapping outputs and
+freshly executing the compiler, OEM guard and nine factory checks. Its 35 main
+Ninja actions follow 162 configuration steps. Independent verification now
+passes runtime/compiler equality but stopped before semantics while hashing a
+build tool larger than its reader bound. Host rehearsal then verified the exact
+aggregate-property representation and reviewed effect budgets. The complete
+export3 host rehearsal now passes, but native verification awaits an idle
+component build. Export2 remains held; the running Camera/mi_ext/recovery build
+has no result yet.
+[v11b](oem-policy-integration.md) remains the latest completed independent native
 comparison, retaining all 6,366 assertions and zero permissive domains in
 three binaries.
 
@@ -196,12 +201,77 @@ stale runtime files:
 
 Full identities and the graph-audit receipt are in the research record. The
 requested policy-compiler targets did not guarantee that these runtime install
-targets ran. An expanded normal 25-target build is being prepared, with 11
-previous check outputs preserved before forcing fresh execution. No hand-edited
-or manually copied generated CIL substitutes for the graph. Until that build
-and a new independent analysis pass, no v12 assertion count, concrete permission
-delta, dontaudit effect or three-binary permissive result is claimed. The failed
+targets ran. The later expanded 25-target build preserved 11 previous outputs
+and forced fresh execution through the normal graph; no hand-edited or manually
+copied generated CIL was substituted. Until a new native independent analysis
+passes, no native v12 assertion count, concrete permission delta, dontaudit
+effect or three-binary permissive result is claimed. The failed
 analysis and its captured commands remain preserved.
+
+## Expanded runtime exports and the next verification failure
+
+The expanded phase ran from **00:03:38 to 00:16:57 UTC on August 30**, exit 0.
+It adds seven ordinary runtime-policy goals to the earlier 18 goals. The log
+has **35 main Ninja actions**, numbered 163/197–197/197 after 162 Kati steps.
+The system_ext mapping and CIL install at entries 169 and 170; product exports
+also install. All 11 preserved outputs have one fresh producer action: the
+combined compiler, OEM guard, five context checks, two seapp checks and two
+structural checks. Source identities and sandbox verification pass; no image
+was requested and no build process remained. The 29-file capture retains
+3,189,204 bytes, including both preserved and moved copies of the old outputs.
+
+Preservation verifies those old copies; it does not itself rehash the newly
+produced active outputs. That binding belongs to independent analysis. The
+subsequent **analysis-v12f-export-v1** verified runtime/compiler equality, then
+failed because the 19,226,918-byte `build_sepolicy` executable exceeded the
+16,777,216-byte policy-reader limit. The failure is retained. It is a provenance
+reader failure, not a new SELinux assertion failure or a completed semantic pass.
+
+The frozen **export2** analysis driver uses the existing bounded resource
+streamer for only the two exactly pinned mapping executables, with final
+rehashing and alias checks. The policy-reader limit and semantic requirements
+are unchanged. Its 224 offline checks and package preparation pass; native
+execution is held pending the additional aggregate adapter below. A separate
+22-file, 9,655,573-byte policy snapshot was captured for host rehearsal while
+`components-v12f-1` was running. That
+read-only snapshot is not native analysis or proof of freshly executed checks.
+
+Host rehearsal found exactly three aggregate source assignments that differ
+from the earlier model. Each contains the unchanged platform members followed
+by the four restored property types:
+
+| Aggregate | Unchanged platform members | Actual members |
+| --- | ---: | ---: |
+| `property_type` | 369 | 373 |
+| `system_property_type` | 364 | 368 |
+| `system_public_property_type` | 145 | 149 |
+
+The [recorded host proof](../research/native-rom-integration.json) preserves all
+6,366 original assertion statements and exactly the reviewed **105 added allow
+edges, 7,190 newly applicable dontaudit edges and 28,604 additional neverallow
+coverage edges**, with no extra effects. Other assignments, global closures,
+roles and namespaces match; the two intended source allow clauses remain exact.
+The unchanged verifier still rejects the aggregate assignment form. Neither
+policy nor driver was edited by this diagnostic rehearsal, and no native
+verification is claimed. Export2 remains held with its known-failing model.
+
+The corrected **export3** adapter's complete host rehearsal passed at
+**00:50:22 UTC**: property delta, public exports and recomputed OEM semantic
+record. All 22 captured files and 47 host input bindings were rehashed, including
+the seven runtime/compiler pairs. This runs the corrected analysis against
+captured inputs, but does not verify fresh native checks, native sandboxing or
+permissive binaries. Its native analysis and fresh check bindings remain
+required after the active component build is idle.
+
+The final export3 package is frozen at manifest
+`23676a9a5658e1a4393c887cd62a6c44179e5fd519a2e7b29f1a762a6e106322`:
+36 files, 9,654,116 bytes, with 240 offline tests passing and zero skips. The
+independent review found no remaining issue. The record binds the exact next
+command; package preparation did not contact the guest or run native analysis.
+
+The active component request selects the nine exact Camera runtime modules,
+`mi_extimage` and `recoveryimage`. It does not select the Camera APK or establish
+any artifact or hardware result until its actual completion and inspections.
 
 ## Preparation that is not installed in v12fa
 
@@ -213,6 +283,8 @@ analysis and its captured commands remain preserved.
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
 | [Camera APK admission](camera-apk-inputs.md) | Fresh unchanged-signature, ZIP CRC and strict library-name checks; two real validator failures remain reproduced | Resolve original-signature/preprocessed privileged DEX packaging and separate privilege questions before selecting the APK; no APK or hardware validation is claimed |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
+| [Policy-image input preparation](policy-image-inputs.md) | Commit `3cb17cb` binds exact five-file replacement inputs, complete stock manifests, two TAR preparations and finite production limits | Seven current native-policy record pins remain missing; actual production preparation, native writer execution, AVB and image adoption remain unverified |
+| [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability for the two Evolution version-date strings, preserving the default path | Guest admission, native Kati/helper-environment checks and actual output inspection; not enabled in this build or proof of reproducible images |
 
 The metadata projection is content-only packaging input. It is not a full
 filesystem inventory, an APK inventory or proof that a rebuilt partition
@@ -221,6 +293,13 @@ rejects future policy-bearing image hashes until their complete derivation is
 reviewed. The signing workflow has not read a private key or signed a ROM.
 It preserves the existing recovery image and never authorizes relocking.
 
+The combined packaging candidate and repeat match all 41 manifest-listed
+payload files plus their admission receipt. Against the preserved host v13f
+candidate, one metadata include is added and three device includes change;
+policy/provider/OEM/DSP/helper bindings and readiness flags remain unchanged.
+Metadata, mi_ext and recovery receipts share the same exact ten-file source
+composition. This candidate remains uninstalled in the guest.
+
 The metadata Kati probe completed at **22:39:19 UTC** with 14 positive and 29
 specific negative cases, source and Android outputs unchanged. It parses the
 exact hash-bound patch-0009 guard and checks the positive dependency closure;
@@ -228,16 +307,20 @@ it does not execute Ninja, the metadata verifier or the target-files recipe.
 The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
-The coordinator reran `python3 -m unittest discover -s tests -v`: **3,363 tests
-passed in 177.286 seconds with no skips**, following the earlier 3,303- and 3,336-test
-checkpoint. This is a workspace-tooling checkpoint,
+The coordinator's latest full `python3 -m unittest discover -s tests -v` run
+passed **3,517 tests in 176.383 seconds with zero skips**. The date-patch agent's
+separate full run passed the same 3,517 tests in 156.752 seconds, and the
+coordinator also reran its 12 focused tests successfully. The earlier
+coordinator full run passed **3,505 tests in 161.056 seconds**, following the
+3,303-, 3,336- and 3,363-test checkpoints. These are workspace-tooling results,
 not an Android build result or a phone test. Later source changes require their
 own rerun. Earlier failing runs remain preserved rather than counted as passes.
 
 The later combined-source change passed a coordinator run of **441 focused
 tests in 19.955 seconds** and a separate agent-run full suite of **3,452 tests**,
 both with zero skips. That later full run is not relabeled as the coordinator's
-earlier 3,363-test checkpoint.
+earlier 3,363-test checkpoint. The 3,505-test coordinator run covers the
+committed policy-image preparation changes as well.
 
 ## EROFS qualification and image adoption
 
@@ -305,8 +388,9 @@ factory-combined binary. Original proprietary images remain untouched.
 
 ## Next build sequence
 
-Build the complete ordinary policy-output target set, then repeat independent
-v12f semantic analysis with consistent runtime exports and real compiler inputs.
+Complete the current component build, then run the reviewed export3 native
+analysis against consistent runtime exports, actual compiler inputs and fresh
+check evidence. Preserve the separate host-rehearsal scope.
 Build and inspect the current Camera runtime modules, mi_ext and exact working76
 recovery targets. Admit the provider inputs separately and complete the normal
 system, system_ext and product image dependencies. Full VINTF must include the

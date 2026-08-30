@@ -12,8 +12,9 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v12fa correction installation and successful v12f policy/exporter build; preserved first failure and separate analysis, image and runtime gates |
+| [Native ROM integration](native-rom-integration.md) | Expanded runtime-policy build and passing export3 host rehearsal; export2 held, native analysis/components and image gates still open |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
+| [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability for Evolution date strings; host-tested preparation, not active guest configuration or image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
@@ -26,6 +27,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
+| [Policy-image input preparation](policy-image-inputs.md) | Exact five-file vendor/ODM replacement inputs and finite TAR/writer limits; missing current analysis pins block production preparation |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "v12f-build-passed-independent-analysis-rejected-stale-exports-corrected-stock-reader-passed-synthetic-writer-partial",
+  "checkpoint": "expanded-policy-build-and-export3-host-rehearsal-passed-native-analysis-and-components-pending",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -212,7 +212,9 @@
     "reviewed_get_prop_uses": 2,
     "expected_ordinary_allow_edge_additions": 105,
     "existing_dontaudit_edges_newly_applicable": 7190,
-    "semantic_budget_verified_by_fresh_v12_native_analysis": false
+    "semantic_budget_verified_by_fresh_v12_native_analysis": false,
+    "semantic_budget_verified_by_host_rehearsal": true,
+    "host_rehearsal_record": "host_semantic_rehearsal"
   },
   "native_recovery_guard_fixtures": {
     "passed": 12,
@@ -406,7 +408,126 @@
           "sha256": "547b40ab60be76a929557f18bc0f025e782d6a370b4d9491d27032d5b384b29f"
         }
       },
-      "scope": "Host source and input admission only. This later agent full run is distinct from the coordinator 3363-test checkpoint; native source installation, runtime policy export closure and ordinary packaging remain separate."
+      "scope": "Host source and input admission only. This later agent full run is distinct from the coordinator 3363-test checkpoint; native source installation, runtime policy export closure and ordinary packaging remain separate.",
+      "final_summary": {
+        "path": "reports/oem-policy-integration-20260829/combined-source-admission/summary-v1.json",
+        "sha256": "6e3921b38e8dda3c46cf91115c52acc03c459c3134596fbe67bacbb6bd1fe835",
+        "size_bytes": 7501
+      },
+      "candidate": {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-metadata-combined-v1/admission.json",
+        "sha256": "5371b96a9c000b01d613a3df73db68982f0f62129fb113dcea2f2a8619c8a05b",
+        "size_bytes": 129196
+      },
+      "repeat_candidate": {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-metadata-combined-v1-repeat/admission.json",
+        "sha256": "5371b96a9c000b01d613a3df73db68982f0f62129fb113dcea2f2a8619c8a05b",
+        "size_bytes": 129196
+      },
+      "manifest_listed_payload_files": 41,
+      "physical_files_including_admission": 42,
+      "all_candidate_and_repeat_bytes_equal": true,
+      "changes_against_preserved_host_v13f": {
+        "added": [
+          "device/xiaomi/nezha/generated/target-files-metadata.mk"
+        ],
+        "changed": [
+          "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+          "device/xiaomi/nezha/generated/mi-ext-prebuilt.mk",
+          "device/xiaomi/nezha/recovery-prebuilt.mk"
+        ],
+        "removed": []
+      },
+      "policy_and_provider_bindings_unchanged": true
+    },
+    "policy_image_inputs": {
+      "implementation_commit": "3cb17cb912086eb39c71efc5b47b1f222f80ac07",
+      "documentation": "docs/policy-image-inputs.md",
+      "contract": {
+        "path": "config/nezha-policy-images.json",
+        "sha256": "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
+        "size_bytes": 7429
+      },
+      "promoted_helper": {
+        "path": "tools/erofs-metadata/full_tar.py",
+        "sha256": "ec487d93ea158fab7022f427793839211978790f01dbcfc9361a63b02b681daa",
+        "size_bytes": 17421
+      },
+      "plan_exit_code": 2,
+      "plan_result": {
+        "avb_signed": false,
+        "complete_rom_ready": false,
+        "contract_sha256": "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
+        "filesystem_extracted": false,
+        "guest_accessed": false,
+        "hashtree_or_fec_regenerated": false,
+        "images_or_policy_inputs_opened": false,
+        "missing_production_execution_profile": false,
+        "missing_reviewed_native_record_pins": [
+          "native_oem_guard",
+          "policy_analysis",
+          "policy_build",
+          "policy_build_log",
+          "policy_build_sandbox",
+          "policy_source_manifest",
+          "vendor_derivation"
+        ],
+        "native_tools_executed": false,
+        "operation": "plan-nezha-policy-image-inputs",
+        "phone_accessed": false,
+        "production_writer_admitted": false,
+        "raw_erofs_built": false,
+        "required_replacements": {
+          "odm": [
+            "/etc/selinux/precompiled_sepolicy",
+            "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256",
+            "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256",
+            "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256"
+          ],
+          "vendor": [
+            "/etc/selinux/vendor_sepolicy.cil"
+          ]
+        },
+        "schema_version": 1,
+        "source_or_vendor_inputs_adopted": false,
+        "status": "blocked",
+        "two_complete_tar_passes_required": true
+      },
+      "review_receipt": {
+        "path": "reports/oem-policy-integration-20260829/documentation-review-v12f-export-1/checkpoint-v1.json",
+        "sha256": "749fd3f47c6560f0820171fd261d00cc5d044ad56da5e76a49da6b383fe4da47",
+        "size_bytes": 5439
+      },
+      "actual_production_tar_or_image_generated": false,
+      "source_or_vendor_adopted": false
+    },
+    "pinned_build_metadata": {
+      "implementation_commit": "ec21a87745cafc22f36c62cb216a22ac690d8250",
+      "documentation": "docs/pinned-build-metadata.md",
+      "contract": {
+        "path": "patches/evolution/pinned-version-date.json",
+        "sha256": "f49518af8e607cd2b1cfb1b2137de5ab720ec725ed6365661753fed124d61734",
+        "size_bytes": 12604
+      },
+      "patch": {
+        "path": "patches/evolution/0012-pinned-version-date.patch",
+        "sha256": "63b5fd3802881296d51b683fa733e89f05b88f479ba26a69345520fa6bdeb688",
+        "size_bytes": 4462
+      },
+      "review_receipt": {
+        "path": "reports/pinned-version-date-20260829/verification-v1/review-receipt.json",
+        "sha256": "253fd4dd34e6c57281b5d9b3311368bbf16fc92cdafb0558839c0f2d5bf13520",
+        "size_bytes": 4462
+      },
+      "guest_source_installed": false,
+      "capability_enabled_in_product": false,
+      "native_kati_or_child_environment_verified": false,
+      "image_reproducibility_verified": false,
+      "coordinator_focused_rerun": {
+        "tests": 12,
+        "passed": true,
+        "evidence_source": "Coordinator report for this checkpoint; separate from the agent-run full-suite receipt."
+      }
     }
   },
   "erofs_qualification": {
@@ -623,20 +744,20 @@
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
     "runner": "coordinator",
-    "passed": 3363,
+    "passed": 3517,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 177.286,
+    "elapsed_seconds": 176.383,
     "log": {
-      "path": "reports/workspace-tests-20260829-vintf-api-full.log",
-      "size_bytes": 577309,
-      "sha256": "5c1938af5970cd3601dca2ae6a7696f49066799c935626646b8a970036ebbdf9"
+      "path": "reports/workspace-tests-20260829-current-native-checkpoint.log",
+      "sha256": "03bd3e04fe7313cf44c43f92113d2538301d76def57fb51e3f46efc07dd757a6",
+      "size_bytes": 605303
     },
-    "scope": "Offline tooling checkpoint after the authored shipping-API patch; later edits require another run. Not an Android component build or device test."
+    "scope": "Coordinator-run full offline workspace suite at unchanged code commit ec21a87745cafc22f36c62cb216a22ac690d8250. The earlier agent 3517-test run, coordinator 3505-test run and focused date-patch rerun remain separate evidence. No native build or hardware claim."
   },
   "remaining_gates": [
-    "Build the complete ordinary runtime-policy target set and rerun independent semantic/assertion/permissive analysis after the stale-export rejection",
+    "Complete the active component build, then run the reviewed export3 full native independent analysis with fresh output-byte, assertion, permission and permissive-domain verification",
     "Native Camera runtime modules, mi_ext and unchanged working76 recovery targets",
     "Reviewed provider source installation and strict native ELF/linker/policy checks",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -843,6 +964,56 @@
         "sha256": "fb56058356a27b7b8af9552d710c59d3169e73ff45fd6e81bc068535d3992d64"
       },
       "scope": "Offline workspace tooling after the source-correction change; later edits require another run. Not an Android component build or physical-device test."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3363,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 177.286,
+      "log": {
+        "path": "reports/workspace-tests-20260829-vintf-api-full.log",
+        "size_bytes": 577309,
+        "sha256": "5c1938af5970cd3601dca2ae6a7696f49066799c935626646b8a970036ebbdf9"
+      },
+      "scope": "Offline tooling checkpoint after the authored shipping-API patch; later edits require another run. Not an Android component build or device test."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3505,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 161.056,
+      "log": {
+        "path": "reports/workspace-tests-20260829-policy-images-full.log",
+        "sha256": "4c12ea2ab15a38fcd4723f97b71661f4f6bd99f8075cc242a5eff6792087b665",
+        "size_bytes": 603001
+      },
+      "scope": "Offline workspace tooling after committed policy-image input preparation; later edits require another run. Not a native policy analysis, component build or hardware result."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "pinned-version-date agent",
+      "passed": 3517,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 156.752,
+      "log": {
+        "path": "reports/pinned-version-date-20260829/verification-v1/workspace-unittest.log",
+        "sha256": "e36318050b092b79a411f918a596d94af8408cc59ae9dde0a823db0b1866ec2b",
+        "size_bytes": 605303
+      },
+      "review_receipt": {
+        "path": "reports/pinned-version-date-20260829/verification-v1/review-receipt.json",
+        "sha256": "253fd4dd34e6c57281b5d9b3311368bbf16fc92cdafb0558839c0f2d5bf13520",
+        "size_bytes": 4462
+      },
+      "scope": "Agent-run full offline workspace suite after the date-patch preparation. The coordinator separately reran 12 focused tests; the previous coordinator full run remains the separate 3505-test checkpoint. No native build or hardware claim."
     }
   ],
   "previous_v11b_policy": {
@@ -864,12 +1035,12 @@
     "bootstrap_actions": 1
   },
   "last_successful_policy": {
-    "phase": "policy-v12f-1",
-    "completed_at": "2026-08-29T23:40:31.199254+00:00",
+    "phase": "policy-v12f-export-1",
+    "completed_at": "2026-08-30T00:16:57.719846+00:00",
     "native_build_passed": true,
-    "independent_analysis_status": "failed-before-semantics-stale-runtime-exports",
-    "assertion_permission_and_permissive_results_not_yet_claimed": true,
-    "evidence": "native_policy_retry"
+    "independent_analysis_status": "export3-host-rehearsal-passed-native-analysis-awaits-component-idle",
+    "evidence": "native_policy_export_build",
+    "native_assertion_permission_and_permissive_results_not_yet_claimed": true
   },
   "source_fixup_installation": {
     "label": "run-v12fa",
@@ -1185,8 +1356,398 @@
     "required_followup": "Expand the normal build to include runtime policy installation targets, preserve previous check outputs and force fresh native checks, then rerun independent analysis against matching runtime exports and actual compiler inputs.",
     "planned_normal_target_count": 25,
     "previous_check_outputs_to_preserve_and_rerun": 11,
+    "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
+    "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
+  },
+  "latest_native_observation_utc": "2026-08-30T00:28:11.339588+00:00",
+  "recorded_at_utc": "2026-08-30T00:54:12.236298+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T00:16:57.719846+00:00",
+  "native_policy_export_build": {
+    "phase": "policy-v12f-export-1",
+    "started_at": "2026-08-30T00:03:38.970767+00:00",
+    "completed_at": "2026-08-30T00:16:57.719846+00:00",
+    "exit_code": 0,
+    "build_passed": true,
+    "main_ninja_actions": 35,
+    "configuration_progress_entries": 162,
+    "cumulative_progress_entries": 197,
+    "requested_goal_count": 25,
+    "requested_goals": [
+      "precompiled_sepolicy",
+      "precompiled_sepolicy_without_vendor",
+      "sepolicy_neverallows",
+      "se_freeze_test",
+      "sepolicy_test",
+      "sepolicy-analyze",
+      "nezha_factory_precompiled_sepolicy",
+      "nezha_factory_file_contexts_test",
+      "nezha_factory_property_contexts_test",
+      "nezha_factory_hwservice_contexts_test",
+      "nezha_factory_service_contexts_test",
+      "nezha_factory_vndservice_contexts_test",
+      "nezha_factory_seapp_contexts_checked",
+      "nezha_factory_platform_seapp_contexts_checked",
+      "nezha_factory_sepolicy_test",
+      "nezha_factory_dev_type_test",
+      "nezha_factory_oem_policy_check",
+      "nezha_erofs_metadata",
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file",
+      "plat_sepolicy_genfs_202504.cil"
+    ],
+    "added_runtime_export_goals": [
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file",
+      "plat_sepolicy_genfs_202504.cil"
+    ],
+    "source_inputs_unchanged": true,
+    "source_manifest_unchanged_from_first_v12f_build": true,
+    "native_sandbox_verified": true,
+    "sandbox_fallback": false,
+    "timed_out": false,
+    "remaining_build_processes": [],
+    "preserved_prior_outputs": 11,
+    "preservation_verified": true,
+    "preserved_output_active_bytes_rechecked_by_preservation_helper": false,
+    "fresh_execution_proof": "All eleven preserved outputs have one fresh producer action in the native log: combined compiler, OEM guard, five context checks, two seapp checks and two structural checks. Fresh byte and semantic binding remain independent-analysis work.",
+    "system_ext_mapping_install_progress_entry": 169,
+    "system_ext_cil_install_progress_entry": 170,
+    "capture_members": 29,
+    "capture_bytes": 3189204,
+    "all_capture_members_rehashed": true,
+    "records": [
+      {
+        "path": "artifacts/build-validation/nezha-policy-v12f-export-1/result.json",
+        "sha256": "97ccf088f4027748a4d4b47268a1e29d23b95a03ff80f301795988709b8b181b",
+        "size_bytes": 23313
+      },
+      {
+        "path": "artifacts/build-validation/nezha-policy-v12f-export-1/build.log",
+        "sha256": "e00b6e431af0206ef8fa50a09f44d0dc3eb30f0608971241563466bf0346a143",
+        "size_bytes": 24434
+      },
+      {
+        "path": "artifacts/build-validation/nezha-policy-v12f-export-1/source-inputs.json",
+        "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
+        "size_bytes": 21918
+      },
+      {
+        "path": "artifacts/build-validation/nezha-policy-v12f-export-1/capture.json",
+        "sha256": "9093e511464d33780788d6a16d7ac8eeb40001fd066a0fd0be7a3742ee44f4b5",
+        "size_bytes": 7087
+      },
+      {
+        "path": "artifacts/build-validation/nezha-policy-v12f-export-1/preservation.json",
+        "sha256": "dc8fab9c4222a37cb6dde9ebf9a8b9b5bfa90fa03ef293602fb31b108ae18741",
+        "size_bytes": 13879
+      },
+      {
+        "path": "artifacts/build-validation/nezha-policy-v12f-export-1/preservation-journal.jsonl",
+        "sha256": "3c3a4bad8c1032c9816958d04c44e11a441a2fa665efba3d74830076df306066",
+        "size_bytes": 18969
+      }
+    ],
+    "images_requested": false,
+    "complete_rom_built": false,
+    "phone_accessed": false
+  },
+  "independent_policy_export_analysis_attempt": {
+    "phase": "analysis-v12f-export-v1",
+    "passed": false,
+    "runtime_compiler_input_equality_passed": true,
+    "semantic_comparison_started": false,
+    "diagnostic": "input is not a bounded regular file",
+    "cause": "The exact build_sepolicy resource is larger than the policy reader bound. version_policy hashing and the earlier runtime/compiler equality succeeded before this read.",
+    "policy_reader_limit_bytes": 16777216,
+    "mapping_tool": {
+      "sha256": "ead9c7f466f54f2bcf3daf69b3205e9a844ee05a1f3cfd2a6bdeeb56686c1bda",
+      "size_bytes": 19226918,
+      "regular": true,
+      "symlink": false,
+      "nlink": 1
+    },
+    "failure_log": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export-driver/driver-v1-analysis-v12f-export-v1.stderr.log",
+      "sha256": "7580f7aca61d0645ffc6d9b2945946e5bde87b5035696e61ac9785209d7c3f7a",
+      "size_bytes": 991
+    },
+    "preserved_capture": {
+      "path": "artifacts/build-validation/nezha-analysis-v12f-export-v1-failed/capture.json",
+      "sha256": "93c8ee9a4c0f8caa06378ca86fb45256ba7f1a215cf43c1313ac6bc25f619132",
+      "size_bytes": 1363
+    },
+    "host_diagnosis": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export2-driver/host-diagnosis-v1.json",
+      "sha256": "809aef859ecf120da3e6924aa02b173ff28e59c865938fa9487e79a1942f8096",
+      "size_bytes": 2410
+    },
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false
   },
-  "latest_native_observation_utc": "2026-08-29T23:49:25.897957+00:00",
-  "recorded_at_utc": "2026-08-30T00:00:28.584933+00:00"
+  "pending_independent_analysis_retry": {
+    "phase": "analysis-v12f-export2-v1",
+    "native_execution_status": "held-after-host-aggregate-source-assignment-diagnosis",
+    "local_validation": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export2-driver/local-validation-v1.json",
+      "sha256": "62db5fd1cbb3909b338a2c630a802f1dd1e8322c645a1352c7e89236b150746e",
+      "size_bytes": 8373
+    },
+    "local_validation_completed_at": "2026-08-30T00:27:02.591243+00:00",
+    "offline_driver_tests_passed": 224,
+    "offline_driver_tests_skipped": 0,
+    "prepared_package": {
+      "baseline_receipt_sha256": "6fe08672416a7752875da29da5a8c2da350fcb6842f0e9492aaa80047b75cfd0",
+      "bytes": 9600177,
+      "driver_destination": "/work/validation/nezha-oem-policy-integration-20260829/analysis-v12f-export2-driver-v1",
+      "export_phase": "v12f-runtime-policy-exports-v1",
+      "file_count": 31,
+      "guest_contacted": false,
+      "installed_integration_manifest_sha256": "084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820",
+      "manifest_sha256": "18d226f9e976b92f9d0486fb983a05abffda492863d240894b6c383b0ca17e76",
+      "prepare_only": true,
+      "reviewed_property_impact_sha256": "845c63a2b1a395763a7233fe1c019e0b9675efd7c5c5124168b52e53241e8a43",
+      "source_fixup_manifest_sha256": "8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14"
+    },
+    "repair": "Only the exactly pinned mapping executables use the existing bounded resource streamer, with final rehash and alias recheck. The policy reader and semantic/fresh-action requirements remain unchanged.",
+    "policy_reader_limit_bytes": 16777216,
+    "resource_upper_bound_bytes": 268435456,
+    "actual_native_semantic_result_claimed": false,
+    "superseded_by_frozen_adapter": "export3",
+    "do_not_launch": true
+  },
+  "host_semantic_rehearsal_snapshot": {
+    "capture": {
+      "path": "artifacts/build-validation/nezha-policy-semantic-snapshot-v2/capture.json",
+      "sha256": "08aab72c0646b8f5e7912f562fae54a5d0df948a7d0c2fa016e883afb840249b",
+      "size_bytes": 7986
+    },
+    "captured_at": "2026-08-30T00:28:11.339588+00:00",
+    "files": 22,
+    "total_bytes": 9655573,
+    "concurrent_build": "components-v12f-1",
+    "native_analysis_performed": false,
+    "fresh_check_proof": false,
+    "source_or_output_written": false,
+    "phone_accessed": false,
+    "scope": "Read-only input capture for host rehearsal while component compilation is active; not a native analysis result or fresh-check proof."
+  },
+  "component_build_pending": {
+    "phase": "components-v12f-1",
+    "request": {
+      "path": "reports/oem-policy-integration-20260829/native-v13f-driver/run-components-v12f-1/request.json",
+      "sha256": "6069f0863543eb45b5000e17f38987cf557c32d6f2c6f7d958e8cfb35b8e9a5f",
+      "size_bytes": 2360
+    },
+    "goals": [
+      "camerax-vendor-extensions.jar",
+      "com.xiaomi.hardware.camera.companion-V1",
+      "miui-cameraopt",
+      "vendor.xiaomi.hardware.postprocservice-V1-java",
+      "nezha_system_ext_etc_permissions_camerax_vendor_extensions_xml",
+      "nezha_system_ext_etc_permissions_com_xiaomi_hardware_camera_companion_xml",
+      "nezha_system_ext_etc_permissions_miui_cameraopt_xml",
+      "nezha_system_ext_etc_permissions_vendor_xiaomi_hardware_postprocservice_V1_java_permission_xml",
+      "nezha_system_ext_lib64_libcamera_algoup_jni_xiaomi_so",
+      "mi_extimage",
+      "recoveryimage"
+    ],
+    "status_at_checkpoint": "running-no-completed-result",
+    "camera_apk_selected": false,
+    "component_or_image_pass_claimed": false,
+    "hardware_pass_claimed": false
+  },
+  "host_semantic_rehearsal": {
+    "proof": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export2-rehearsal/run-v1/aggregate-assignment-proof.json",
+      "sha256": "865350d80f8a83c864b0a0cedff09ade378b7f922b628707044e4a9323bfe81e",
+      "size_bytes": 31794
+    },
+    "input_snapshot_sha256": "08aab72c0646b8f5e7912f562fae54a5d0df948a7d0c2fa016e883afb840249b",
+    "native_verification_claimed": false,
+    "vm_contacted": false,
+    "policy_or_driver_modified": false,
+    "original_verifier_still_fails_source_assignment_shape": true,
+    "source_assignment_difference": {
+      "property_type": {
+        "actual_source_members": 373,
+        "actual_source_members_sha256": "a0050e69b8aa55ee14e7a8cec3103b0047308946a9503e47068b146e7477554f",
+        "excess_exactly_unchanged_platform_members": true,
+        "native_form_is_exact_platform_prefix_plus_four_restored_types": true,
+        "old_platform_members": 369,
+        "old_platform_members_sha256": "3e08641ec2532893818fb0368364eb65ddd2c7a199ef1f343818207a9b8ca49d",
+        "restored_members": 4
+      },
+      "system_property_type": {
+        "actual_source_members": 368,
+        "actual_source_members_sha256": "89216fe31e738d98afc38458edb1a35367aa96c6e2607222207c4a4fb4b47be8",
+        "excess_exactly_unchanged_platform_members": true,
+        "native_form_is_exact_platform_prefix_plus_four_restored_types": true,
+        "old_platform_members": 364,
+        "old_platform_members_sha256": "7f9db6817dd0a29fcef7217698b161fe58e03dc6f594187c1933a2e6bda70494",
+        "restored_members": 4
+      },
+      "system_public_property_type": {
+        "actual_source_members": 149,
+        "actual_source_members_sha256": "a92fa6d1aef4d60db577196ce2b0b4c7dfce74eadf384215ad93c52a4dca9ee9",
+        "excess_exactly_unchanged_platform_members": true,
+        "native_form_is_exact_platform_prefix_plus_four_restored_types": true,
+        "old_platform_members": 145,
+        "old_platform_members_sha256": "cc93b78a3dc8ea8a70d7fe294dd535bcdde1fa1eaadbb93463fdc86c812974d2",
+        "restored_members": 4
+      }
+    },
+    "all_other_runtime_owned_assignments_exact": true,
+    "all_6366_original_assertion_statements_preserved": true,
+    "assertion_statements": {
+      "neverallow": 5976,
+      "neverallowx": 390
+    },
+    "concrete_added_effects": {
+      "allow": {
+        "count": 105,
+        "sha256_sorted_compact_json_rows": "ccadbfab57ae3f18a24e7c44c7c3f849350215fca084ac9489ffa53ac4faf856"
+      },
+      "auditallow": {
+        "count": 0,
+        "sha256_sorted_compact_json_rows": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "dontaudit": {
+        "count": 7190,
+        "sha256_sorted_compact_json_rows": "dddefbf2defdbf6b65ce124f2a594e54803087d3d6cd014e5d79e3b7f6a13e9d"
+      },
+      "neverallow": {
+        "count": 28604,
+        "sha256_sorted_compact_json_rows": "0de00bbf93900ec602f0bfdb01a844b4f00efb4e3932c4e15a87bd70bebe3865"
+      }
+    },
+    "concrete_removed_effects": {
+      "allow": 0,
+      "auditallow": 0,
+      "dontaudit": 0,
+      "neverallow": 0
+    },
+    "effect_scope": "The 28604 neverallow effects are added concrete coverage under unchanged assertions, not new assertion statements. The 7190 dontaudit effects arise from existing statements becoming applicable.",
+    "extra_effects_beyond_review": false,
+    "source_allow_clauses_exactly_two": true,
+    "all_global_named_and_anonymous_closures_match": true,
+    "all_roles_and_namespaces_match": true,
+    "scope": "Original host-only diagnostic proof over the captured inputs. The unchanged export2 verifier still rejects the aggregate source form. The later complete export3 host rehearsal is recorded separately; no final native analysis, fresh-check binding, three-binary permissive analysis, image adoption or hardware result is claimed."
+  },
+  "next_independent_analysis_adapter": {
+    "label": "export3",
+    "status": "frozen-host-validated-native-pending",
+    "required_aggregate_guard": "Require only property_type, system_property_type and system_public_property_type assignments to preserve the exact old platform-member prefix plus the four restored property types. Preserve every other assignment and all reviewed effect budgets.",
+    "native_analysis_passed": false,
+    "source_policy_changed_by_host_proof": false,
+    "native_execution_status": "pending-component-build-idle",
+    "validation": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/local-validation-v1.json",
+      "sha256": "46d3d96b21d8907c3ea56d5262546de0c9d12db38a6896f92dd5349a286506b5",
+      "size_bytes": 10844
+    },
+    "frozen_at": "2026-08-30T00:53:01.026415+00:00",
+    "prepared_package": {
+      "baseline_receipt_sha256": "6fe08672416a7752875da29da5a8c2da350fcb6842f0e9492aaa80047b75cfd0",
+      "bytes": 9654116,
+      "driver_destination": "/work/validation/nezha-oem-policy-integration-20260829/analysis-v12f-export3-driver-v1",
+      "export_phase": "v12f-runtime-policy-exports-v1",
+      "file_count": 36,
+      "guest_contacted": false,
+      "installed_integration_manifest_sha256": "084e740e4888bdded20c2ca3b44ce3400652c5ac8ab242a8c17dc99d56a04820",
+      "manifest_sha256": "23676a9a5658e1a4393c887cd62a6c44179e5fd519a2e7b29f1a762a6e106322",
+      "prepare_only": true,
+      "reviewed_property_impact_sha256": "845c63a2b1a395763a7233fe1c019e0b9675efd7c5c5124168b52e53241e8a43",
+      "source_fixup_manifest_sha256": "8907f7705cd1a767a037531c63ee9b4c4454def1ec8bfbd623862f4df879ce14"
+    },
+    "offline_tests": {
+      "passed": 240,
+      "skipped": 0,
+      "exit_code": 0,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/local-validation-v1.tests.stderr",
+        "sha256": "483fcf6c929b0bb0f0d62f0bcc7e624f4cd980de73e2ee2256ea1d0044dbbaa7",
+        "size_bytes": 37382
+      }
+    },
+    "independent_review": {
+      "findings": 0,
+      "independent_host_semantic_replay_passed": true,
+      "reviewer_count": 1,
+      "scoped_tests_passed": 52,
+      "skipped": 0
+    },
+    "adapter_scope": {
+      "exact_authored_four_type_suffix_required": true,
+      "exact_literal_form_per_attribute": 1,
+      "exact_unchanged_platform_prefix_required": true,
+      "general_assignment_comparator_changed": false,
+      "named_attributes": [
+        "property_type",
+        "system_property_type",
+        "system_public_property_type"
+      ],
+      "source_policy_or_cil_changed": false
+    },
+    "native_freshness_and_provenance_checks_retained": true,
+    "next_command_after_live_idle_and_source_state_checks": [
+      "python3",
+      "-I",
+      "-B",
+      "reports/oem-policy-integration-20260829/analysis-v12f-export3-driver/run.py",
+      "policy-v12f-export-1",
+      "driver-v1",
+      "analysis-v12f-export3-v1"
+    ],
+    "native_analysis_executed": false,
+    "guest_contacted_by_preparation": false
+  },
+  "host_export3_full_rehearsal": {
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-rehearsal/run-v1/receipt.json",
+      "sha256": "80705f4c0c5713eec8a18c56093514e085f05f2a31c8c5574810d460f3d19c54",
+      "size_bytes": 22278
+    },
+    "completed_at": "2026-08-30T00:50:22.597325+00:00",
+    "checks": {
+      "oem-semantic-record": "passed",
+      "property-delta": "passed",
+      "public-exporters": "passed"
+    },
+    "input_binding_count": 47,
+    "all_input_bindings_independently_rehashed": true,
+    "all_22_capture_files_rehashed": true,
+    "captured_runtime_compiler_equality_count": 7,
+    "input_snapshot_sha256": "08aab72c0646b8f5e7912f562fae54a5d0df948a7d0c2fa016e883afb840249b",
+    "driver_validation_sha256": "41af97abdca361b3c7dd69be20d8995922c676240348c5332d50910ce9e68132",
+    "fresh_native_checks_verified": false,
+    "native_sandbox_verified": false,
+    "permissive_binaries_analyzed": false,
+    "successful_actual_native_baseline": false,
+    "policy_or_android_output_modified": false,
+    "vm_contacted": false,
+    "phone_accessed": false,
+    "scope": "Complete corrected export3 property-delta, public-exporter and OEM-semantic-record functions pass against captured inputs on the host. This supersedes the export2 diagnostic source-form failure only for the corrected host analysis; final native verification remains pending component idle.",
+    "property_delta": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-rehearsal/run-v1/property-delta.json",
+      "sha256": "5740bd707cdf96c2dc32a8bcd9af74216ed61f089accdf0ffec3246a53b3f193",
+      "size_bytes": 77118
+    },
+    "public_exporters": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-rehearsal/run-v1/public-exporters.json",
+      "sha256": "7dc946cceb2de15f265bf8d9ae0302e99eac2bbda60f1435677915f2a0e542ce",
+      "size_bytes": 1149
+    },
+    "oem_semantic_record": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v12f-export3-rehearsal/run-v1/oem-semantic-record.json",
+      "sha256": "97005123084d4c5373962b37e8e37b19ca2f3172254b3fe955564c27ca9194bb",
+      "size_bytes": 997
+    }
+  }
 }

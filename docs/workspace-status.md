@@ -6,21 +6,30 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through August 29,
-2026. It does not assert that a historical builder VM is still running.
+consolidates recorded evidence through **August 30, 2026 UTC** (August 29 in
+New York). It does not assert that a historical builder VM is still running.
 
-The latest successful native policy build is **v12f**, completed at
-**2026-08-29 23:40:31 UTC**, with 73 Ninja actions after configuration. The
-original three OEM classifications and four new property sources build through Android's actual
-source/M4 path; the OEM guard and all nine factory context and structural
-checks pass. The corrected EROFS exporter also compiled and linked. Source
-inputs remained unchanged and the read-only source sandbox was verified.
-Independent v12f verification **failed before semantic analysis**: two
-system_ext runtime CIL/mapping outputs still contained v11 bytes, despite fresh
-compiler inputs. The next normal build must include their installation targets
-and rerun the checks; no generated CIL is copied by hand. The prior
+The latest successful native policy build is **policy-v12f-export-1**, completed
+at **2026-08-30 00:16:57 UTC**, with 35 Ninja actions after configuration. Its
+25 ordinary goals installed the missing runtime CIL/mapping outputs and freshly
+reran all 11 preserved compiler/guard/check outputs. Source inputs remained
+unchanged and the read-only source sandbox was verified. The earlier stale
+system_ext exports now match the compiler inputs.
+
+Independent verification then **failed while hashing a build tool**, before
+semantic analysis: the 19,226,918-byte `build_sepolicy` exceeded the 16 MiB
+policy-reader bound. Export2 fixes that resource handling, but its launch is
+held after host rehearsal identified three aggregate membership forms omitted
+by the earlier model. The host proof finds exactly the unchanged platform
+members plus four restored property types, with all 6,366 assertions and the
+reviewed 105 allow, 7,190 dontaudit and 28,604 neverallow effect budgets intact.
+The corrected export3 host rehearsal then passed the complete property delta,
+public exports and recomputed OEM record. This remains host evidence only;
+export3's native verification awaits an idle component build and remains the
+leading policy gate. Export2 must not be launched with its known-failing model.
+The prior
 [v11b analysis](oem-policy-integration.md) remains the latest
-completed semantic comparison: all 6,366 assertions retained, the reviewed
+completed native semantic comparison: all 6,366 assertions retained, the reviewed
 permission delta and zero permissive domains in three binaries. The
 [native integration record](native-rom-integration.md) keeps these evidence
 levels separate from complete Treble labeling and image adoption.
@@ -37,11 +46,15 @@ passed all **99 native Kati fixture cases**, including the reproduced original
 failure, then was installed as **run-v12fa** at **23:22:28 UTC**. Its seven
 changes include the corrected C source, while retaining the property policy
 bundle and original images. The actual v12f retry now passes; the v12e failure
-and earlier stage-only run-v12f remain preserved. The next work is the complete
-policy-output target set, independent analysis and the current Camera runtime,
-mi_ext and working76 component
-builds. Native DEX provider fixtures pass, but the current Camera artifacts
-have not yet been rebuilt.
+and earlier stage-only run-v12f remain preserved. The next work is independent
+policy analysis and the current Camera runtime, mi_ext and working76 component
+builds. **components-v12f-1** is running at this checkpoint; it is not a component
+or image pass. Native DEX provider fixtures pass, but the current Camera
+artifacts have not yet been verified.
+
+The latest coordinator workspace suite passed **3,517 tests in 176.383 seconds
+with zero skips**. This is offline tooling evidence, separate from Android
+builds, host policy proofs and physical-device tests.
 
 The immediate destination remains a reproducible, working Evolution baseline;
 that baseline will support a maintainable platform fork without mixing future
@@ -131,6 +144,7 @@ from a full build and require destination hash verification after transfers.
 | v12e source and private-input installation | Durable ten-operation transaction; pinned sources and exact installed inputs verified; original vendor/ODM, kernel and working76 bytes preserved | [Native ROM integration](../research/native-rom-integration.json) |
 | v12fa correction installation | Seven committed exchanges, exact corrected source and receipt identities, same pinned project bases and preserved original image inputs | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
+| Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
 | Native recovery-mode fixtures | Twelve isolated Kati guard cases pass, including required diagnostic failures; the first full v12e configuration separately failed on mi_ext before the later v12f correction passed | [Native ROM integration](../research/native-rom-integration.json) |
 | Native custom-image correction fixtures | 99 expected outcomes: one reproduced historical failure, five corrected positive cases and 93 specific negative cases; full custom-image region parsed, with no image recipes or Ninja execution | [Native ROM integration](../research/native-rom-integration.json) |
 | Native DEX provider fixtures | Five top-level tests and 11 subtests pass in the pinned Linux Soong test binary; no full Java-suite stamp, actual Camera artifact build or dex2oat execution | [Native DEX fixtures](../research/dex-import-native-fixtures.json) |
@@ -160,10 +174,14 @@ override theme defaults. No Magisk integration is included.
   The [four-property source contract](../config/nezha-oem-properties.json) now
   passes the actual v12f policy build after the Kati correction. Its independent
   comparison against v11b, including the permission and dontaudit effects,
-  stopped before semantics because the runtime system_ext CIL and API mapping
-  were stale. Regenerate their ordinary installation targets before repeating
-  the independent analysis; the successful compiler checks alone do not verify
-  installed policy consistency.
+  first stopped because the runtime system_ext CIL and API mapping were stale.
+  The expanded ordinary build installed those outputs, and the next analysis
+  verified runtime/compiler equality before failing on its build-tool reader
+  bound. Host rehearsal subsequently verified the exact three aggregate
+  assignments and all reviewed effects, but the original verifier still rejects
+  their source form. The export3 host rehearsal passes the complete property,
+  public-export and OEM-record checks; export2 remains held. No final native
+  semantic or three-binary permissive pass is claimed.
   The [framework-provider policy](../config/nezha-framework-provider-policy.json)
   remains a separately authored, host-verified follow-up. Neither is part of
   the successful v11b policy result.
@@ -182,6 +200,11 @@ override theme defaults. No Magisk integration is included.
   repeated exact five-file derivations pass, but all six upstream empty-xattr
   checks fail. No actual factory image was derived. Complete factory
   metadata/content preservation and image adoption remain unverified.
+  The [five-file policy-image preparation](policy-image-inputs.md) now binds
+  complete stock manifests, exact replacements, repeated TAR construction and
+  finite production limits. Its plan correctly remains blocked on seven
+  missing reviewed policy record pins; no actual factory TAR, image, AVB or
+  source/vendor adoption result follows from that preparation code.
 - **Complete partition and OTA packaging:** retain `mi_ext`, both DLKM sets,
   the dedicated A/B recovery layout, factory encryption/AVB fstab declarations
   and measured Nezha budgets. The [mi_ext input and build path](mi-ext-inputs.md)
@@ -191,7 +214,8 @@ override theme defaults. No Magisk integration is included.
   correction uses the pinned read-only initialization macro, preserving the
   override checks and empty optional values. The actual policy build now gets
   through configuration successfully; it requested no images.
-  Native component and packaging checks remain necessary. The A/B correction
+  The current Camera/mi_ext/recovery component build is running, with no completed
+  result yet. Native component and packaging checks remain necessary. The A/B correction
   removes the inapplicable non-A/B two-step requirement only for A/B-only
   products; never fabricate a `recovery-two-step.img` from the kernel-free
   working76 image. Target-files, OTA, super-image and flash admission remain
@@ -220,6 +244,9 @@ override theme defaults. No Magisk integration is included.
   the existing development key and 15 final input images. Its planning and
   unsigned descriptor-carrier checks have run; private-key signing and the
   complete 17-role output-chain verification have not. Keys remain on the Mac.
+  The [pinned build-metadata capability](pinned-build-metadata.md) is authored
+  and tested, but not installed or enabled. It cannot relabel earlier build
+  dates or establish reproducible images without native and artifact checks.
   Working recovery's development signature does not sign the ROM or authorize
   relocking. Its kernel-free image depends on the intact device boot chain and
   is not protection against bootloader damage.
