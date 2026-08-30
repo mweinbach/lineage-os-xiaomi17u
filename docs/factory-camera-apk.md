@@ -112,3 +112,35 @@ APK, its signer, narrowly derived same-partition permission policy and actual
 label expectations. Then build the real APK with strict library checks and
 inspect its outputs before any authorized device test. No signing, compression,
 permission or SELinux exception is proposed, and no boot-readiness flag changed.
+
+## Pinned grant and enforcement follow-up (August 30)
+
+The later [source review](../research/factory-camera-permission-grants.json)
+narrows the initial grant-logic gap above. It inspects the captured
+`frameworks/base@8140698cc12983deecdbd434220affb5f931bfc6` evaluator and service
+implementations; it does not establish their active runtime configuration.
+
+For a present, non-shared package with no qualifying signing relationship, the
+inspected evaluator records no grant for these three pure-signature requests.
+It does not reject installation merely because those requests cannot be granted.
+They also do not enter its privileged-allowlist violation path. Other
+`signature|privileged` requests can still accumulate violations that fail system
+readiness. Neither a privapp allowlist, the separate signature allowlist nor a
+debuggable build substitutes for the required signing relationship.
+
+The service implementations give more specific call behavior:
+
+- Device-state requests have a limited exemption for a top, foreground caller
+  requesting an app-available state; base-state overrides explicitly enforce
+  permission. Cancellation has a separate feature-gated rule.
+- Seven brightness methods call generated enforcement helpers. Their bodies
+  remain uncaptured, and other brightness APIs have different checks.
+- The input-injection Binder method explicitly throws `SecurityException` when
+  its permission check fails. Its service-process and permitted instrumentation
+  branches do not create an own-target-UID exemption.
+
+These findings do not establish overall installation success, actual grants,
+Camera startup or hardware support. No factory callsite behavior was inferred
+from Xiaomi.eu. The original inspection record, Camera input contract and frozen
+packet remain unchanged, as do all permission definitions, grants and SELinux
+mappings. Eight bound inputs were rehashed; no runtime or device test was run.

@@ -1,0 +1,122 @@
+{
+  "actions_by_this_followup": {
+    "apk_selected_or_installed": false,
+    "guest_accessed": false,
+    "hardware_support_claimed": false,
+    "permission_definitions_changed": false,
+    "permission_grants_changed": false,
+    "phone_accessed": false,
+    "private_keys_accessed": false,
+    "selinux_mapping_changed": false
+  },
+  "device": "nezha",
+  "evidence_limits": [
+    "This is the captured evaluator and service source, not proof that these exact paths or feature flags are active in an installed build.",
+    "Effective permission definitions, platform/requester SigningDetails and permission flags remain unverified.",
+    "The result does not establish overall package-scan or installation success, Camera startup, or device support.",
+    "No factory APK callsites or exception handlers were inferred from the earlier Xiaomi.eu APK.",
+    "The frozen private review lists narrow follow-up source candidates for flag/dispatch/signing helpers and generated Binder enforcement; candidate existence is not claimed."
+  ],
+  "factory_apk_record": {
+    "path": "research/factory-camera-apk.json",
+    "sha256": "cc3321f60ab51b128a48a5918ab176bfc2f479e71475a39e8b1b7bb623ae5d1c",
+    "size_bytes": 46377
+  },
+  "grant_evaluator": {
+    "debuggable_build_overrides_failed_signing_check": false,
+    "denial_path_lines": [
+      1058,
+      1106
+    ],
+    "other_privileged_permissions": "Other signature|privileged requests can still accumulate enforced allowlist violations and cause onSystemReady to throw IllegalStateException.",
+    "privapp_allowlist_creates_signature_eligibility": false,
+    "signature_allowlist_overrides_failed_signing_check": false,
+    "signature_and_allowlist_lines": [
+      [
+        1363,
+        1435
+      ],
+      [
+        1487,
+        1530
+      ],
+      [
+        1663,
+        1773
+      ],
+      [
+        1821,
+        1827
+      ]
+    ],
+    "source": {
+      "path": "reports/oem-policy-integration-20260829/source-cameragrantimpl2/frameworks/base/services/permission/java/com/android/server/permission/access/permission/AppIdPermissionPolicy.kt",
+      "sha256": "5a03ad1e88bb9efa87b82400ea07ad2db483e3dc062a985b88af7117fe3ec9e6",
+      "size_bytes": 95390
+    },
+    "these_three_pure_signature_requests_enter_privileged_violation_path": false,
+    "unmatched_signature_result": "For a present non-shared package with no qualifying signing relationship and the captured pure-signature definitions, the evaluator stores zero permission flags rather than throwing an installation-rejection exception for those requests."
+  },
+  "permissions": [
+    {
+      "definition_count": 1,
+      "feature_flag": null,
+      "name": "android.permission.CONTROL_DEVICE_STATE",
+      "protection_level": "signature"
+    },
+    {
+      "definition_count": 1,
+      "feature_flag": null,
+      "name": "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+      "protection_level": "signature"
+    },
+    {
+      "definition_count": 1,
+      "feature_flag": null,
+      "name": "android.permission.INJECT_EVENTS",
+      "protection_level": "signature"
+    }
+  ],
+  "preserved_inputs": {
+    "camera_input_contract_unchanged": true,
+    "frozen_camera_packet_unchanged": true,
+    "original_factory_record_unchanged": true,
+    "prior_declaration_only_evidence_preserved": true,
+    "pure_signature_definitions_unchanged": true
+  },
+  "purpose": "source-only follow-up on factory Camera pure-signature permission grants and service enforcement",
+  "review": {
+    "path": "reports/factory-camera-apk-20260829/permission-grant-review-v1/review.json",
+    "sha256": "f9dab2c8b3af88f5e17fb5103a45cd21bfa6ec127598bf7cf08f167a26bf54ba",
+    "size_bytes": 14288
+  },
+  "review_date": "2026-08-30",
+  "schema_version": 1,
+  "service_enforcement": {
+    "CONTROL_DEVICE_STATE": "requestState has a top-app AND foreground-app AND app-requestable-state exemption. Cancellation has a separate feature-gated rule. Base-state overrides explicitly invoke permission enforcement. Effective device flags/state configuration were not checked.",
+    "CONTROL_DISPLAY_BRIGHTNESS": "Seven methods invoke generated permission-enforcement helpers. Those helper bodies are uncaptured, so their exact exception implementation is not established; other brightness APIs have different checks.",
+    "INJECT_EVENTS": "The inspected injectInputEventToTarget Binder method explicitly throws SecurityException when its check fails, before clearing caller identity. The check permits the service process and, when enabled for that method, an instrumentation source that independently holds permission. There is no own-target-UID exemption in this method."
+  },
+  "source_capture": {
+    "path": "reports/oem-policy-integration-20260829/source-cameragrantimpl2/capture.json",
+    "sha256": "da57ef4e05f33f05fc28edc1f0b504ebe3b956719e5c24401f4bbfd03c16e0a5",
+    "size_bytes": 1249
+  },
+  "source_revision": "frameworks/base@8140698cc12983deecdbd434220affb5f931bfc6",
+  "validation": {
+    "android_build_run_by_this_followup": false,
+    "captured_implementation_bytes": 640243,
+    "captured_implementation_files": 4,
+    "frozen_review_inputs_rehashed": 8,
+    "independent_service_review_completed": true,
+    "java_or_kotlin_execution": false,
+    "package_install_or_device_test": false,
+    "static_checks_are_not_runtime_test_passes": true,
+    "unique_pure_signature_definitions": 3
+  },
+  "verification": {
+    "path": "reports/factory-camera-apk-20260829/permission-grant-review-v1/verification.json",
+    "sha256": "9c2737c37b891e3d7843f6462559c00617c2a84b3984c1b2de5e6ade0dc4639e",
+    "size_bytes": 3363
+  }
+}
