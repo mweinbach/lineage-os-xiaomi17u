@@ -1920,5 +1920,443 @@ class NativeCheckRecordTests(OfflineTests):
             self.check(record)
 
 
+def select_provider(fx):
+    """Add the provider selection without changing either frozen v12 fixture."""
+    published = json.loads(policy.CONTRACT.read_bytes())["profiles"][policy.PROVIDER_PROFILE]
+    fx.contract["contract_id"] = fx.control["contract_id"] = policy.PROVIDER_CONTRACT_ID
+    for name in ("provider_policy", "sidecar_derivation"):
+        fx.contract[name] = copy.deepcopy(published[name])
+    existing_paths = {row["path"] for row in fx.contract["dependencies"]}
+    for row in published["dependencies"]:
+        if row["path"] not in existing_paths:
+            fx.contract["dependencies"].append(copy.deepcopy(row))
+            fx.write(row["path"], (REAL_ROOT / row["path"]).read_bytes())
+    for role in sorted(policy.PROVIDER_RECORD_ROLES - EXPECTED_RECORDS):
+        row = fx.write("records/" + role + ".json", policy.json_bytes({"synthetic_record_role": role}))
+        fx.control["records"][role] = row
+        fx.contract["native_records"][role] = policy.identity(row)
+    for name in ("plat", "system_ext", "product"):
+        fx.control["policy_files"].pop(name + "_sha256")
+    fx.control["noop_manifests"] = {
+        name: [copy.deepcopy(fx.control["partitions"][name]["manifest"]) for unused in range(2)]
+        for name in ("vendor", "odm")}
+    fx.save()
+
+
+def provider_record(fx, records, role, *, padded_size=None):
+    raw = policy.json_bytes(records[role])
+    if padded_size is not None:
+        assert len(raw) < padded_size
+        raw += b" " * (padded_size - len(raw))
+    row = fx.write("records/" + role + ".json", raw)
+    fx.control["records"][role] = row
+    fx.contract["native_records"][role] = policy.identity(row)
+    return policy.identity(row)
+
+
+def bind_provider_sections(fx, records, *names):
+    analysis = records["policy_analysis"]
+    for name in names or policy.PROVIDER_PROOF_SECTIONS:
+        fx.contract["provider_policy"]["proof_sections"][name] = identity(policy.json_bytes(analysis[name]))
+
+
+def provider_policy_evidence(fx, *, review_size=None):
+    """A wholly synthetic v13h graph, including actual bounded record reads.
+
+    Opaque source/action sections contain inert records. Their exact canonical
+    identities are still checked; this fixture never claims native execution.
+    """
+    records, unused = fx.policy_evidence()
+    select_provider(fx)
+    control = fx.loaded()
+    build, analysis = records["policy_build"], records["policy_analysis"]
+    pins = fx.contract["provider_policy"]
+    pins["baseline"] = identity(b"synthetic reviewed v12 baseline")
+    for path, role in (("config/nezha-framework-provider-policy.json", "native_contract"),
+                       ("config/nezha-framework-providers.json", "input_contract"),
+                       ("scripts/framework_provider_policy.py", "native_policy_tool")):
+        pins[role] = identity((fx.root / path).read_bytes())
+    build.update(phase="policy-only-v13h-1", provider_phase="v13h-provider-policy-only-runtime-exports-v1",
+                 policy_only=True, preservation_verified=True, protected_runtime_outputs_unchanged=True,
+                 remaining_build_processes=[], preservation_error=None, protected_runtime_outputs_error=None,
+                 post_build_error=None,
+                 argv=["build/soong/soong_ui.bash", "--make-mode", "-j8"] + ["synthetic-goal-" + str(i) for i in range(31)])
+    for key in ("provider_runtime_requested", "provider_runtime_built", "strict_elf_actions_verified", "images_requested",
+                "complete_rom_built", "phone_accessed", "forced_kill_after_timeout"):
+        build[key] = False
+    analysis.update(operation="verify-native-provider-policy-only-v13h", build_phase=build["phase"],
+                    provider_phase=build["provider_phase"], provider_profile_selected=True, policy_only=True,
+                    provider_contract_sha256=pins["native_contract"]["sha256"],
+                    baseline_receipt_sha256=pins["baseline"]["sha256"])
+    for key in ("full_treble_apk_labeling_pass", "policy_compiler_replayed", "source_or_android_output_modified",
+                "images_changed", "phone_accessed", "provider_runtime_built", "provider_runtime_installation_verified",
+                "strict_elf_actions_verified", "provider_elf_compatibility_verified", "complete_rom_or_runtime_support_proven"):
+        analysis[key] = False
+    manifest_identity = identity(b"synthetic three-operation fixup manifest")
+    commit = {"manifest_sha256": manifest_identity["sha256"], "verified": True,
+              "last_event": {"sequence": 8, "operation_count": 3, "event": "commit_verified"}}
+    source = {"operation": "verify-v13h-policy-input-sources-after-build", "verified": True,
+              "actual_commit": copy.deepcopy(commit), "manifest_identity": manifest_identity,
+              "operation_count": 3, "journal_events": 9, "component_trees_checked": 3,
+              "unchanged_component_trees_checked": 4, "normal_android_enforcing_required": True,
+              "live_outputs_checked": False}
+    build.update(provider_fixup_manifest_identity=copy.deepcopy(manifest_identity),
+                 provider_fixup_commit=copy.deepcopy(commit), source_history_proof=copy.deepcopy(source),
+                 post_build_source_verification=copy.deepcopy(source))
+    analysis.update(provider_fixup_manifest_identity=copy.deepcopy(manifest_identity),
+                    provider_fixup_commit_identity=identity(policy.json_bytes(commit)),
+                    source_history_proof=copy.deepcopy(source))
+    analysis["provider_policy_contract_crosspin"] = {
+        "verified": True, "actual_native_contract": pins["native_contract"], "actual_input_profile": pins["input_contract"],
+        "preserved_semantic_contract": pins["semantic_contract"],
+        "only_changed_json_path": ["required_contracts", "provider_inputs", "sha256"],
+        "all_other_contract_values_exact": True, "semantic_contract_bytes_replaced": False, "source_or_cil_modified": False}
+    analysis["provider_policy_tool_crosspin"] = {
+        "verified": True, "actual_native_policy_tool": pins["native_policy_tool"],
+        "new_policy_contract": pins["native_contract"], "old_policy_contract": pins["semantic_contract"],
+        "all_other_tool_bytes_exact": True, "source_files_modified": False}
+    native = analysis["actual_compiler_inputs"]
+    before = [{"runtime_path": row["runtime_path"], **policy.identity(row)} for row in native]
+    before[2].update(identity(b"synthetic previous system_ext CIL"))
+    pins["baseline_corpus_sha256"] = identity(json.dumps(before, sort_keys=True, separators=(",", ":")).encode())["sha256"]
+    expected_properties = json.loads((fx.root / "config/nezha-oem-properties.json").read_bytes())["native_effective_ordinary_allow_edges"]
+    analysis["semantics"] = {
+        "status": "verified", "operation": "actual-v12f-to-v13f-provider-semantic-delta",
+        "provider_contract_sha256": pins["semantic_contract"]["sha256"],
+        "actual_v12f_baseline_receipt_sha256": pins["baseline"]["sha256"],
+        "candidate_input_identities": [{"runtime_path": row["runtime_path"], **policy.identity(row)} for row in native],
+        "actual_baseline_input_identities": before, "native_provenance_verified_by_this_module": False,
+        "native_actions_contexts_images_or_hardware_verified_by_this_module": False,
+        "effect_inventory": {
+            "status": "review-required", "operation": "provider-semantic-effect-inventory",
+            "native_capture_authenticated": False, "complete_effect_review_admitted": False,
+            "contract_projection_matches_candidate_semantics": True, "original_assertions_retained": 6366,
+            "assertions_after": 6370, "new_assertions": 4, "new_source_dontaudit_statements": 2,
+            "source_additions": {"allow": 26, "dontaudit": 2, "typetransition": 2, "neverallow": 4},
+            "all_six_oem_public_mappings_unchanged": True, "helper_effective_property_set_permissions": 0,
+            "denial_logging_unchanged": False, "oem_property_ordinary_allow_totals": copy.deepcopy(expected_properties)}}
+    records["provider_complete_effect_review"] = {
+        "complete_effect_inventory_reviewed": True, "baseline_receipt_sha256": pins["baseline"]["sha256"],
+        "baseline_corpus_identity_sha256": pins["baseline_corpus_sha256"],
+        "provider_contract_sha256": pins["semantic_contract"]["sha256"],
+        "synthetic_complete_inventory": [{"change": "four assertion additions", "count": 4}]}
+    review_identity = provider_record(fx, records, "provider_complete_effect_review", padded_size=review_size)
+    pins["complete_review_canonical_sha256"] = identity(json.dumps(
+        records["provider_complete_effect_review"], sort_keys=True, separators=(",", ":")).encode())["sha256"]
+    analysis["complete_effect_review"] = review_identity
+    for row in analysis["native_context_checks"] + [analysis["native_oem_check"]]:
+        row["build_phase"] = build["phase"]
+    oem = analysis["native_oem_check"]
+    oem.update(provider_profile_present=True, assertion_statement_counts={"neverallow": 5980, "neverallowx": 390})
+    oem["input_binding_proof"]["count"] = 22
+    oem["inputs"].extend({"path": "synthetic-provider-input-" + str(i), "resolved_path": "/work/provider/input-" + str(i),
+                          **identity(("provider-input-" + str(i)).encode())} for i in range(13))
+    producer = {key: copy.deepcopy(oem[key]) for key in (
+        "status", "fresh_execution_observed", "build_phase", "build_log_sha256", "mtime_used_to_infer_execution",
+        "ninja_success_records", "action_log_line", "action_log_text")}
+    producer.update(operation="verify-policy-only-provider-inputs", target="nezha_framework_provider_inputs_check",
+                    provider_phase=build["provider_phase"], original_input_count=42, current_reviewed_input_count=42,
+                    verified_payload_count=31, unchanged_payload_count=30, derived_payload_count=1, declared_output_count=32,
+                    inputs=[{"synthetic_input": i} for i in range(42)],
+                    payload_outputs=[{"synthetic_output": i} for i in range(31)], native_receipt_exact_bytes_verified=True,
+                    payload_outputs_exact_bytes_verified=True, all_copy_mappings_verified=True, original_inputs_rehashed=True,
+                    original_proprietary_inputs_preserved=True,
+                    transitive_oem_dependency={"content_dependency_verified": True, "order_only_dependency_used_as_evidence": False},
+                    scope={"provider_runtime_built": False, "policy_adopted": False})
+    analysis["provider_input_action"] = producer
+    records["native_oem_guard"].update(provider_contract_sha256=pins["native_contract"]["sha256"],
+                                       assertion_statement_counts={"neverallow": 5980, "neverallowx": 390})
+    for role in ("policy_source_manifest", "policy_build_sandbox", "native_oem_guard", "vendor_derivation"):
+        provider_record(fx, records, role)
+    build["source_manifest"] = policy.identity(fx.control["records"]["policy_source_manifest"])
+    oem["output"] = policy.identity(fx.control["records"]["native_oem_guard"])
+    receipt_path = control["policy_files"][policy.RUNTIME_INPUTS[7]]["native_path"].removesuffix("vendor_sepolicy.cil") + "receipt.json"
+    next(row for row in analysis["input_bindings"] if row["path"] == receipt_path).update(
+        policy.identity(fx.control["records"]["vendor_derivation"]))
+    provider_record(fx, records, "policy_build")
+    for field, role in (("build_result_sha256", "policy_build"), ("build_log_sha256", "policy_build_log"),
+                        ("build_source_manifest_sha256", "policy_source_manifest"), ("build_sandbox_sha256", "policy_build_sandbox")):
+        analysis[field] = fx.control["records"][role]["sha256"]
+    analysis["selection"] = {
+        "schema_version": 1, "operation": "admit-actual-v13h-policy-only-analysis",
+        "source_and_history_verification_required": True, "build_record_identity": policy.identity(fx.control["records"]["policy_build"]),
+        "phase": build["phase"], "provider_phase": build["provider_phase"], "argv": copy.deepcopy(build["argv"]),
+        "provider_fixup_manifest_identity": copy.deepcopy(manifest_identity),
+        "provider_fixup_commit_identity": identity(policy.json_bytes(commit)), "complete_effect_review": copy.deepcopy(review_identity),
+        "baseline_receipt": copy.deepcopy(pins["baseline"])}
+    for name in policy.PROVIDER_PROOF_SECTIONS:
+        analysis.setdefault(name, {"synthetic_pinned_section": name})
+    bind_provider_sections(fx, records)
+    provider_record(fx, records, "policy_analysis")
+    fx.save()
+    control = fx.loaded()
+    sidecars, unused = sidecar_evidence(fx, control)
+
+    def current(value):
+        if isinstance(value, dict):
+            return {current(key): current(child) for key, child in value.items()}
+        if isinstance(value, list):
+            return [current(child) for child in value]
+        if isinstance(value, str):
+            return (value.replace("policy-sidecar-native-v", "policy-sidecar-v13h-native-v")
+                    .replace("derive-export4-policy-sidecars-native-v1", "derive-v13h-policy-sidecars-native-v1")
+                    .replace("root-policy-sidecar-native-orchestration-v1", "root-policy-sidecar-v13h-native-orchestration-v1")
+                    .replace("verify-native-oem-properties-v12f-export4", "verify-native-provider-policy-only-v13h")
+                    .replace("derived-from-sealed-export4-inputs", "derived-from-sealed-v13h-inputs"))
+        return value
+
+    records.update(current(sidecars))
+    native_sidecar, outer = records["sidecar_native_validation"], records["sidecar_orchestration"]
+    provider_record(fx, records, "sidecar_source_capture")
+    provider_record(fx, records, "sidecar_sandbox")
+    native_sidecar["source_capture"] = policy.identity(fx.control["records"]["sidecar_source_capture"])
+    native_sidecar["sandbox"] = policy.identity(fx.control["records"]["sidecar_sandbox"])
+    outer["sandbox_observation"] = copy.deepcopy(native_sidecar["sandbox"])
+    outer["native_result"] = native_sidecar
+    provider_record(fx, records, "sidecar_native_validation")
+    outer["native_receipt"] = policy.identity(fx.control["records"]["sidecar_native_validation"])
+    provider_record(fx, records, "sidecar_orchestration")
+    fx.save()
+    return records, fx.loaded()
+
+
+class ProviderContractTests(OfflineTests):
+    def test_additive_provider_catalog_preserves_both_prior_canonical_contracts(self):
+        catalog = json.loads(policy.CONTRACT.read_bytes())
+        self.assertEqual({policy.HISTORICAL_PROFILE, policy.EXPORT4_PROFILE, policy.PROVIDER_PROFILE}, set(catalog["profiles"]))
+        for name, expected in ((policy.HISTORICAL_PROFILE, "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4"),
+                               (policy.EXPORT4_PROFILE, "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4")):
+            self.assertEqual(expected, identity(policy.json_bytes(catalog["profiles"][name]))["sha256"])
+        self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
+        current = policy.plan(policy.PROVIDER_PROFILE)
+        self.assertEqual(policy.PROVIDER_CONTRACT_ID, current["contract_id"])
+        self.assertEqual(policy.PROVIDER_PROFILE, current["profile"])
+        self.assertFalse(current["images_or_policy_inputs_opened"])
+        self.assert_boundaries(current)
+        blocked = bool(current["missing_reviewed_native_record_pins"]) or policy.PROFILE_CONTRACT_SHA256[policy.PROVIDER_PROFILE] is None
+        self.assertEqual("blocked" if blocked else "ready_for_evidence_validation", current["status"])
+
+    def test_missing_provider_native_pin_stops_before_control_reads(self):
+        contract, digest, profile, helper = policy.load_contract(policy.PROVIDER_PROFILE)
+        contract["native_records"]["sidecar_native_validation"] = None
+        with mock.patch.object(policy, "load_contract", return_value=(contract, digest, profile, helper)):
+            with mock.patch.object(policy, "load_control", side_effect=AssertionError("private selection must stay unopened")) as selected:
+                with self.assertRaisesRegex(ValueError, "native evidence pins"):
+                    policy.prepare(Path("/nonexistent/provider-control"), "a" * 64,
+                                   output_dir=Path("/nonexistent/output"), selected_profile=policy.PROVIDER_PROFILE)
+        selected.assert_not_called()
+
+
+class ProviderRecordLimitTests(OfflineTests):
+    def setUp(self):
+        super().setUp()
+        temporary = tempfile.TemporaryDirectory(prefix="provider-record-limit-test-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+
+    def record(self, size):
+        raw = b'{"synthetic":true}\n'
+        raw += b" " * (size - len(raw))
+        path = self.root / "bounded-evidence.json"
+        path.write_bytes(raw)
+        return {"path": path, **identity(raw)}
+
+    def test_only_two_provider_roles_receive_the_larger_json_limit(self):
+        self.assertEqual(8 << 20, policy.TEXT)
+        for profile in (policy.CONTRACT_ID, policy.EXPORT4_CONTRACT_ID, policy.PROVIDER_CONTRACT_ID):
+            for role in policy.PROVIDER_RECORD_ROLES:
+                with self.subTest(profile=profile, role=role):
+                    large = profile == policy.PROVIDER_CONTRACT_ID and role in {"policy_analysis", "provider_complete_effect_review"}
+                    self.assertEqual(16 << 20 if large else 8 << 20, policy.record_json_limit({"contract_id": profile}, role))
+
+    def test_named_roles_accept_valid_json_through_16mib_but_reject_one_more_byte(self):
+        for size in ((8 << 20) + 1, 16 << 20, (16 << 20) + 1):
+            row = self.record(size)
+            for role in ("policy_analysis", "provider_complete_effect_review"):
+                with self.subTest(size=size, role=role):
+                    control = {"contract_id": policy.PROVIDER_CONTRACT_ID, "records": {role: row}}
+                    if size <= 16 << 20:
+                        self.assertEqual({role: {"synthetic": True}}, policy.read_records(control))
+                    else:
+                        with self.assertRaises(ValueError):
+                            policy.read_records(control)
+
+    def test_ordinary_records_and_default_control_reader_keep_the_original_8mib_cap(self):
+        row = self.record(8 << 20)
+        self.assertEqual({"synthetic": True}, policy.read_json(row["path"])[0])
+        row = self.record((8 << 20) + 1)
+        for contract_id, role in ((policy.CONTRACT_ID, "policy_analysis"), (policy.EXPORT4_CONTRACT_ID, "policy_analysis"),
+                                 (policy.PROVIDER_CONTRACT_ID, "native_oem_guard"), (policy.PROVIDER_CONTRACT_ID, "sidecar_native_validation")):
+            with self.subTest(contract_id=contract_id, role=role):
+                with self.assertRaises(ValueError):
+                    policy.read_records({"contract_id": contract_id, "records": {role: row}})
+        with self.assertRaises(ValueError):
+            policy.read_json(row["path"])
+        with self.assertRaises(ValueError):
+            policy.load_control(row["path"], row["sha256"], {}, "b" * 64)
+
+
+class ProviderPolicyTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.records, self.control = provider_policy_evidence(self.fx)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+
+    def qualify(self):
+        return policy.qualify_policy(self.records, self.control, self.fx.contract)
+
+    def test_provider_selection_has_thirty_records_eleven_artifacts_and_full_proof(self):
+        self.assertEqual(30, len(self.control["records"]))
+        self.assertEqual({*policy.RUNTIME_INPUTS, "combined"}, set(self.control["policy_files"]))
+        replacements, proof = self.qualify()
+        self.assertEqual((6366, 4, 6370), tuple(proof[key] for key in
+                         ("assertion_statements_retained", "assertion_statements_added", "assertion_statements_total")))
+        self.assertTrue(proof["provider_profile_selected"])
+        self.assertTrue(proof["complete_native_provider_proof_sections_bound"])
+        self.assertTrue(proof["complete_effect_review_bound"])
+        self.assertEqual(policy.metadata.REPLACEMENT_PATHS, {name: set(rows) for name, rows in replacements.items()})
+        self.assertEqual("sealed-v13h-CIL-and-mapping", proof["sidecar_derivation"]["derivation_kind"])
+        for key in ("native_policy_reexecuted", "provider_runtime_support_proven", "full_treble_apk_labeling_proven",
+                    "sidecars_observed_at_native_install_paths", "current_active_source_compatibility_proven"):
+            self.assertFalse(proof[key], key)
+
+    def test_missing_review_or_old_control_cannot_select_provider_profile(self):
+        original = copy.deepcopy(self.fx.control)
+        for change in (lambda: self.fx.control["records"].pop("provider_complete_effect_review"),
+                       lambda: self.fx.control.update(contract_id=policy.EXPORT4_CONTRACT_ID),
+                       lambda: self.fx.control["policy_files"].update(plat_sha256=copy.deepcopy(self.fx.control["policy_files"]["combined"]))):
+            self.fx.control = copy.deepcopy(original)
+            change()
+            self.fx.save()
+            with self.assertRaises(ValueError):
+                self.fx.loaded()
+
+    def test_provider_flag_policy_only_and_runtime_boundaries_are_enforced(self):
+        analysis = self.records["policy_analysis"]
+        for key, value in (("provider_profile_selected", False), ("policy_only", False),
+                           ("provider_runtime_built", True), ("images_changed", True), ("strict_elf_actions_verified", True)):
+            with self.subTest(key=key):
+                old = analysis[key]
+                analysis[key] = value
+                with self.assertRaisesRegex(ValueError, "analysis is incomplete|unsupported scope"):
+                    self.qualify()
+                analysis[key] = old
+
+    def test_same_total_cannot_hide_changed_retained_or_added_assertions(self):
+        impact = self.records["policy_analysis"]["semantics"]["effect_inventory"]
+        impact.update(original_assertions_retained=6365, new_assertions=5)
+        self.assertEqual(6370, impact["assertions_after"])
+        with self.assertRaisesRegex(ValueError, "complete v13h proof changed: semantics"):
+            self.qualify()
+        bind_provider_sections(self.fx, self.records, "semantics")
+        with self.assertRaisesRegex(ValueError, "provider assertions"):
+            self.qualify()
+
+    def test_rehashed_source_history_must_still_match_the_selected_installation(self):
+        analysis = self.records["policy_analysis"]
+        source = analysis["source_history_proof"]
+        source["manifest_identity"] = identity(b"another internally consistent installation")
+        build = self.records["policy_build"]
+        build["source_history_proof"] = copy.deepcopy(source)
+        build["post_build_source_verification"] = copy.deepcopy(source)
+        bind_provider_sections(self.fx, self.records, "source_history_proof")
+        with self.assertRaisesRegex(ValueError, "source/history proof differs"):
+            self.qualify()
+
+    def test_rehashed_contract_crosspin_cannot_replace_the_preserved_semantic_contract(self):
+        cross = self.records["policy_analysis"]["provider_policy_contract_crosspin"]
+        cross["preserved_semantic_contract"] = identity(b"unreviewed semantic contract")
+        bind_provider_sections(self.fx, self.records, "provider_policy_contract_crosspin")
+        with self.assertRaisesRegex(ValueError, "contract crosspin differs"):
+            self.qualify()
+
+    def test_internally_rehashed_complete_review_cannot_claim_another_baseline(self):
+        review = self.records["provider_complete_effect_review"]
+        review["baseline_receipt_sha256"] = "a" * 64
+        selected = provider_record(self.fx, self.records, "provider_complete_effect_review")
+        self.control["records"]["provider_complete_effect_review"].update(selected)
+        self.records["policy_analysis"]["complete_effect_review"] = selected
+        self.records["policy_analysis"]["selection"]["complete_effect_review"] = copy.deepcopy(selected)
+        self.fx.contract["provider_policy"]["complete_review_canonical_sha256"] = identity(
+            json.dumps(review, sort_keys=True, separators=(",", ":")).encode())["sha256"]
+        bind_provider_sections(self.fx, self.records, "selection")
+        with self.assertRaisesRegex(ValueError, "complete provider effect review"):
+            self.qualify()
+
+    def test_rehashed_producer_section_requires_all_retained_inputs_and_payloads(self):
+        producer = self.records["policy_analysis"]["provider_input_action"]
+        producer["payload_outputs"].pop()
+        bind_provider_sections(self.fx, self.records, "provider_input_action")
+        with self.assertRaisesRegex(ValueError, "fresh provider producer"):
+            self.qualify()
+
+    def test_rehashed_context_proof_cannot_use_another_combined_binary(self):
+        check = self.records["policy_analysis"]["native_context_checks"][0]
+        check["inputs"][0]["sha256"] = "b" * 64
+        bind_provider_sections(self.fx, self.records, "native_context_checks")
+        with self.assertRaisesRegex(ValueError, "context check used a different combined"):
+            self.qualify()
+
+    def test_valid_export4_sidecar_bytes_do_not_substitute_for_fresh_provider_evidence(self):
+        native = self.records["sidecar_native_validation"]
+        native["operation"] = "derive-export4-policy-sidecars-native-v1"
+        with self.assertRaisesRegex(ValueError, "derived-sidecar validation is incomplete"):
+            self.qualify()
+        native["operation"] = "derive-v13h-policy-sidecars-native-v1"
+        native["baseline"]["operation"] = "verify-native-oem-properties-v12f-export4"
+        with self.assertRaisesRegex(ValueError, "selected policy binding differs"):
+            self.qualify()
+
+
+class ProviderPreparationTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.records, unused = provider_policy_evidence(self.fx, review_size=(8 << 20) + 1)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+        self.enterContext(mock.patch.object(policy, "load_contract", return_value=(
+            self.fx.contract, self.fx.contract_sha, self.fx.profile, self.fx.helper)))
+        self.enterContext(mock.patch.dict(policy.PROFILE_CONTRACT_SHA256, {policy.PROVIDER_PROFILE: self.fx.contract_sha}))
+        self.enterContext(mock.patch.object(policy, "qualify_erofs", return_value={"synthetic_native_evidence_mock": True}))
+        self.enterContext(mock.patch.object(policy.shutil, "disk_usage", return_value=shutil._ntuple_diskusage(1 << 40, 0, 1 << 40)))
+
+    def prepare(self):
+        return policy.prepare(self.fx.path, self.fx.sha, output_dir=self.fx.output, selected_profile=policy.PROVIDER_PROFILE)
+
+    def test_large_review_prepares_with_real_record_reads_and_provider_qualifier(self):
+        report = self.prepare()
+        self.assertEqual(policy.PROVIDER_PROFILE, report["profile"])
+        self.assertEqual(6370, report["policy_proof"]["assertion_statements_total"])
+        self.assertEqual((8 << 20) + 1, report["native_evidence"]["provider_complete_effect_review"]["size_bytes"])
+        self.assert_boundaries(report)
+        self.assertEqual(3, len(report["derived_sidecars"]))
+        for row in report["derived_sidecars"]:
+            self.assertFalse(row["native_installed_output_claimed"])
+            self.assertEqual(65, (self.fx.output / row["path"]).stat().st_size)
+
+    def test_same_size_large_review_mutation_after_fourth_assembly_blocks_success(self):
+        assemble = self.fx.helper.assemble
+        calls = 0
+        mutated = False
+
+        def mutate_after_last(*args):
+            nonlocal calls, mutated
+            result = assemble(*args)
+            calls += 1
+            if calls == 4:
+                path = self.root / self.fx.control["records"]["provider_complete_effect_review"]["path"]
+                raw = path.read_bytes()
+                self.assertEqual((8 << 20) + 1, len(raw))
+                path.write_bytes(raw[:-1] + b"\n")
+                mutated = True
+            return result
+
+        with mock.patch.object(self.fx.helper, "assemble", side_effect=mutate_after_last):
+            with self.assertRaisesRegex(ValueError, "JSON evidence identity differs"):
+                self.prepare()
+        self.assertEqual(4, calls)
+        self.assertTrue(mutated)
+        self.assertFalse((self.fx.output / "preparation.json").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

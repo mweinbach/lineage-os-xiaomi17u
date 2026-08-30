@@ -35,12 +35,17 @@ CONTRACT_ID = "nezha-five-file-policy-image-inputs-v1"
 HISTORICAL_PROFILE = "historical-v12"
 EXPORT4_PROFILE = "v12-export4"
 EXPORT4_CONTRACT_ID = "nezha-five-file-policy-image-inputs-v12-export4-v1"
-PROFILE_CONTRACT_IDS = {HISTORICAL_PROFILE: CONTRACT_ID, EXPORT4_PROFILE: EXPORT4_CONTRACT_ID}
+PROVIDER_PROFILE = "v13h-policy-only"
+PROVIDER_CONTRACT_ID = "nezha-five-file-policy-image-inputs-v13h-v1"
+PROFILE_CONTRACT_IDS = {HISTORICAL_PROFILE: CONTRACT_ID, EXPORT4_PROFILE: EXPORT4_CONTRACT_ID,
+                        PROVIDER_PROFILE: PROVIDER_CONTRACT_ID}
 PROFILE_CONTRACT_SHA256 = {
     HISTORICAL_PROFILE: "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
     EXPORT4_PROFILE: "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
+    PROVIDER_PROFILE: "39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0",
 }
 TEXT = 8 << 20
+PROVIDER_EVIDENCE = 16 << 20
 POLICY = 64 << 20
 RESERVE = 2 << 30
 PRODUCTION_PROFILE = {
@@ -63,6 +68,12 @@ EXPORT4_RECORD_ROLES = RECORD_ROLES | {"erofs_fsize_probe", "erofs_fsize_orchest
     "sidecar_source_capture", "sidecar_native_validation", "sidecar_orchestration", "sidecar_sandbox"} | {
     "erofs_" + partition + "_noop" + suffix
     for partition in PARTITIONS for suffix in ("", "_orchestration", "_sandbox", "_capture")}
+PROVIDER_RECORD_ROLES = EXPORT4_RECORD_ROLES | {"provider_complete_effect_review"}
+PROVIDER_PROOF_SECTIONS = frozenset(("selection", "source_history_proof", "provider_policy_contract_crosspin",
+    "provider_policy_tool_crosspin", "portable_provider_provenance", "native_policy_output_preservation",
+    "protected_existing_component_outputs", "configuration", "m4", "native_202504_mapping_producers",
+    "public_exporters", "provider_input_action", "application_policy_exports", "semantics",
+    "native_oem_check", "native_context_checks"))
 RUNTIME_INPUTS = (
     "/system/etc/selinux/plat_sepolicy.cil", "/system/etc/selinux/mapping/202504.cil",
     "/system_ext/etc/selinux/system_ext_sepolicy.cil", "/system_ext/etc/selinux/mapping/202504.cil",
@@ -97,9 +108,9 @@ def json_bytes(value):
     return (json.dumps(value, indent=2, sort_keys=True) + "\n").encode()
 
 
-def read_json(path, expected=None):
+def read_json(path, expected=None, *, limit=TEXT):
     # Do not buffer an accidentally selected PEM payload as a JSON input.
-    with avb._input(path, TEXT) as (stream, st):
+    with avb._input(path, limit) as (stream, st):
         prefix = bytearray()
         while len(prefix) < min(st.st_size, 4096):
             byte = stream.read(1)
@@ -116,7 +127,21 @@ def read_json(path, expected=None):
 
 def record_roles(contract):
     require(contract["contract_id"] in PROFILE_CONTRACT_IDS.values(), "unknown policy snapshot profile")
+    if contract["contract_id"] == PROVIDER_CONTRACT_ID:
+        return PROVIDER_RECORD_ROLES
     return EXPORT4_RECORD_ROLES if contract["contract_id"] == EXPORT4_CONTRACT_ID else RECORD_ROLES
+
+
+def derived_sidecars(contract):
+    return contract["contract_id"] in (EXPORT4_CONTRACT_ID, PROVIDER_CONTRACT_ID)
+
+
+def record_json_limit(control, role):
+    # Only the two reviewed provider records exceed the original 8 MiB bound.
+    # The private control cannot choose an arbitrary reader limit.
+    if control["contract_id"] == PROVIDER_CONTRACT_ID and role in ("policy_analysis", "provider_complete_effect_review"):
+        return PROVIDER_EVIDENCE
+    return TEXT
 
 
 def load_contract(selected_profile=HISTORICAL_PROFILE):
@@ -133,8 +158,10 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
         "dependencies", "erofs_revision", "exporter_source", "native_driver_sha256", "shared_driver_sha256",
         "writer_driver_sha256", "native_records", "native_tools", "production_execution_profile", "admitted_metadata",
         "output_root", "independent_tar_passes", "limits"}
-    if selected_profile == EXPORT4_PROFILE:
+    if selected_profile in (EXPORT4_PROFILE, PROVIDER_PROFILE):
         fields.add("sidecar_derivation")
+    if selected_profile == PROVIDER_PROFILE:
+        fields.add("provider_policy")
     avb._keys(c, fields, "policy-image contract")
     require(c["schema_version"] == 1 and type(c["schema_version"]) is int
             and c["contract_id"] == PROFILE_CONTRACT_IDS[selected_profile] and c["device"] == "nezha"
@@ -163,6 +190,9 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
                 "scripts/twrp_working.py", "scripts/inspect_twrp_image.py", "config/nezha-avb-image-set.json",
                 "config/vendor-policy-correction.json", "tools/erofs-metadata/erofs_metadata.c",
                 "research/factory-framework-contract.json", "config/nezha-oem-policy.json", "config/nezha-oem-properties.json"}
+    if selected_profile == PROVIDER_PROFILE:
+        required |= {"config/nezha-framework-provider-policy.json", "config/nezha-framework-providers.json",
+                     "scripts/framework_provider_policy.py"}
     require(paths == required, "implementation source pins are incomplete")
     profile, profile_sha = avb.load_profile()
     require(profile_sha == "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
@@ -188,7 +218,7 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
     for row in c["native_records"].values():
         if row is not None:
             avb._identity_spec(row)
-    if selected_profile == EXPORT4_PROFILE:
+    if selected_profile in (EXPORT4_PROFILE, PROVIDER_PROFILE):
         sidecar = c["sidecar_derivation"]
         avb._keys(sidecar, ("source_revision", "source", "recipe", "contract", "driver", "launcher", "collector"),
                   "source-bound sidecar derivation")
@@ -198,6 +228,22 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
                 "source-bound sidecar algorithm changed")
         for name in ("source", "contract", "driver", "launcher", "collector"):
             avb._identity_spec(sidecar[name])
+    if selected_profile == PROVIDER_PROFILE:
+        provider = c["provider_policy"]
+        avb._keys(provider, ("analysis_operation", "build_phase", "provider_phase", "baseline", "baseline_corpus_sha256",
+            "native_contract", "input_contract", "native_policy_tool", "semantic_contract", "complete_review_canonical_sha256",
+            "proof_sections"), "provider policy snapshot")
+        require(provider["analysis_operation"] == "verify-native-provider-policy-only-v13h"
+                and provider["build_phase"] == "policy-only-v13h-1"
+                and provider["provider_phase"] == "v13h-provider-policy-only-runtime-exports-v1"
+                and set(provider["proof_sections"]) == PROVIDER_PROOF_SECTIONS,
+                "provider policy source/action proof coverage differs")
+        for name in ("baseline", "native_contract", "input_contract", "native_policy_tool", "semantic_contract"):
+            avb._identity_spec(provider[name])
+        for name in ("baseline_corpus_sha256", "complete_review_canonical_sha256"):
+            avb._digest(provider[name])
+        for row in provider["proof_sections"].values():
+            avb._identity_spec(row)
     require(set(c["native_tools"]) == {"mkfs", "fsck", "exporter", "metadata_checker"}, "native tool role pins differ")
     for row in c["native_tools"].values():
         avb._identity_spec(row)
@@ -229,7 +275,7 @@ def load_control(path, expected_sha, contract, contract_sha):
     path = avb.envelope._absolute_path(path)
     value, raw = read_json(path)
     require(avb._sha(raw) == expected_sha, "input control digest differs")
-    export4 = contract["contract_id"] == EXPORT4_CONTRACT_ID
+    export4 = derived_sidecars(contract)
     fields = {"schema_version", "contract_id", "contract_sha256", "artifact_set_id", "records", "partitions", "policy_files"}
     if export4:
         fields.add("noop_manifests")
@@ -286,7 +332,7 @@ def read_records(control):
         if name == "policy_build_log":
             avb._small(row["path"], 256 << 20, row)
         else:
-            result[name] = read_json(row["path"], row)[0]
+            result[name] = read_json(row["path"], row, limit=record_json_limit(control, name))[0]
     return result
 
 
@@ -429,7 +475,7 @@ def qualify_erofs(records, contract, control):
         "synthetic": synthetic_failures, "writer_upstream_xattrs": writer_failures},
         "nonzero_nanoseconds_admitted": False, "empty_xattr_values_admitted": False,
         "native_reexecuted_by_this_command": False, "production_writer_admitted": False}
-    if contract["contract_id"] == EXPORT4_CONTRACT_ID:
+    if derived_sidecars(contract):
         result["complete_original_noop_qualification"] = qualify_noops(records, contract, control)
     return result
 
@@ -634,6 +680,10 @@ def qualify_noops(records, contract, control):
 
 def qualify_sidecar_derivation(records, control, held, contract):
     """Verify the recorded shell recipe without inventing installed outputs."""
+    provider = contract["contract_id"] == PROVIDER_CONTRACT_ID
+    native_operation = "derive-v13h-policy-sidecars-native-v1" if provider else "derive-export4-policy-sidecars-native-v1"
+    outer_operation = "root-policy-sidecar-v13h-native-orchestration-v1" if provider else "root-policy-sidecar-native-orchestration-v1"
+    baseline_operation = "verify-native-provider-policy-only-v13h" if provider else "verify-native-oem-properties-v12f-export4"
     native, outer, sandbox, source = (records[role] for role in
         ("sidecar_native_validation", "sidecar_orchestration", "sidecar_sandbox", "sidecar_source_capture"))
     pins = contract["sidecar_derivation"]
@@ -643,7 +693,7 @@ def qualify_sidecar_derivation(records, control, held, contract):
             and source["projects"] == {"system/sepolicy": {"head": pins["source_revision"],
                 "status": "M private/init_dev_config.te\n M private/su.te"}}, "sidecar source capture differs")
     require(type(native["schema_version"]) is int and native["schema_version"] == 1
-            and native["operation"] == "derive-export4-policy-sidecars-native-v1" and native["passed"] is True
+            and native["operation"] == native_operation and native["passed"] is True
             and type(native["skipped"]) is int and native["skipped"] == 0
             and native["input_bytes_preserved"] is True and native["tool_and_runtime_bytes_preserved"] is True,
             "native derived-sidecar validation is incomplete")
@@ -659,9 +709,9 @@ def qualify_sidecar_derivation(records, control, held, contract):
             and native["recipe_source"]["project_revision"] == pins["source_revision"]
             and native["recipe_source"]["native_path"] == "/work/evolution/system/sepolicy/Android.bp"
             and identity(native["baseline"]) == identity(control["records"]["policy_analysis"])
-            and native["baseline"]["operation"] == "verify-native-oem-properties-v12f-export4",
-            "native sidecar source, tool or export4 binding differs")
-    require(outer["operation"] == "root-policy-sidecar-native-orchestration-v1" and outer["passed"] is True
+            and native["baseline"]["operation"] == baseline_operation,
+            "native sidecar source, tool or selected policy binding differs")
+    require(outer["operation"] == outer_operation and outer["passed"] is True
             and outer["native_result"] == native
             and identity(outer["native_receipt"]) == identity(control["records"]["sidecar_native_validation"])
             and identity(outer["launcher"]) == pins["launcher"]
@@ -675,8 +725,9 @@ def qualify_sidecar_derivation(records, control, held, contract):
             == identity(control["records"]["sidecar_sandbox"]), "sidecar sandbox binding differs")
     _noop_sandbox(sandbox)
     base = outer["guest_base"]
+    namespace = "policy-sidecar-v13h-native-v" if provider else "policy-sidecar-native-v"
     require(type(base) is str and re.fullmatch(
-            r"/work/validation/nezha-oem-policy-integration-20260829/policy-sidecar-native-v[1-9][0-9]*", base),
+            r"/work/validation/nezha-oem-policy-integration-20260829/" + namespace + r"[1-9][0-9]*", base),
             "sidecar native work directory differs")
     for prefix in (base, base + "/inputs"):
         require(sandbox["effective_mount_flags"][prefix] & 1, "sidecar sealed inputs were writable")
@@ -793,7 +844,7 @@ def qualify_sidecar_derivation(records, control, held, contract):
         destination = base + "/results/derived/" + name + "_sepolicy_and_mapping.sha256"
         require(output["name"] == name and output["ordered_input_roles"] == pair_roles
                 and output["command_index"] == 8 + index and output["native_installed_path"] is None
-                and output["provenance"] == "derived-from-sealed-export4-inputs"
+                and output["provenance"] == ("derived-from-sealed-v13h-inputs" if provider else "derived-from-sealed-export4-inputs")
                 and output["output"]["path"] == destination and output["ascii_content"].encode() == expected
                 and identity(output["output"]) == avb._identity(expected)
                 and commands[8 + index]["argv"] == arguments(*[base + "/inputs/" + r + ".cil" for r in pair_roles], destination),
@@ -825,10 +876,255 @@ def qualify_sidecar_derivation(records, control, held, contract):
         "output": {"path": base + "/results/changed-plat.cil", **avb._identity(changed)}}, "native sidecar negative input differs")
     return {"source_recipe_bound": True, "native_known_answers": 3, "native_negative_cases": 3, "skipped": 0,
         "native_installed_sidecars_captured": False, "android_genrule_execution_claimed": False,
-        "derivation_kind": "sealed-v12-export4-CIL-and-mapping", "native_reexecuted_by_this_command": False}
+        "derivation_kind": "sealed-v13h-CIL-and-mapping" if provider else "sealed-v12-export4-CIL-and-mapping",
+        "native_reexecuted_by_this_command": False}
+
+
+def qualify_provider_policy(records, control, contract):
+    """Admit one reviewed native provider snapshot, never a projected policy.
+
+    The complete source, action and effect inventories remain exact pinned
+    sections of the native receipt. Their canonical hashes preserve every
+    nested fact without recreating the native CIL comparator or relabeling its
+    deliberately limited inner scope. Independent byte and producer bindings
+    below connect that proof to the files actually selected for replacement.
+    """
+    build, analysis = records["policy_build"], records["policy_analysis"]
+    pins = contract["provider_policy"]
+    _build(build)
+    require(analysis["schema_version"] == 1 and type(analysis["schema_version"]) is int
+            and analysis["operation"] == pins["analysis_operation"] and analysis["status"] == "verified"
+            and analysis["build_phase"] == build["phase"] == pins["build_phase"]
+            and analysis["provider_phase"] == build["provider_phase"] == pins["provider_phase"]
+            and analysis["provider_profile_selected"] is True and analysis["policy_only"] is True
+            and analysis["strict_compiler_flags_verified"] is True
+            and analysis["compiler_temporary_to_analyzed_final_copy_verified"] is True
+            and analysis["all_guarded_inputs_unchanged"] is True, "v13h native policy analysis is incomplete")
+    for key in ("full_treble_apk_labeling_pass", "policy_compiler_replayed", "source_or_android_output_modified",
+                "images_changed", "phone_accessed", "provider_runtime_built", "provider_runtime_installation_verified",
+                "strict_elf_actions_verified", "provider_elf_compatibility_verified", "complete_rom_or_runtime_support_proven"):
+        require(analysis[key] is False, "v13h policy analysis claims unsupported scope: " + key)
+    require(build["policy_only"] is True and build["preservation_verified"] is True
+            and build["protected_runtime_outputs_unchanged"] is True and build["remaining_build_processes"] == []
+            and build["preservation_error"] is None and build["protected_runtime_outputs_error"] is None
+            and build["post_build_error"] is None, "v13h build preservation or completion differs")
+    for key in ("provider_runtime_requested", "provider_runtime_built", "strict_elf_actions_verified", "images_requested",
+                "complete_rom_built", "phone_accessed", "forced_kill_after_timeout"):
+        require(build[key] is False, "v13h build claims unsupported scope: " + key)
+    for field, role in (("build_result_sha256", "policy_build"), ("build_log_sha256", "policy_build_log"),
+                        ("build_source_manifest_sha256", "policy_source_manifest"), ("build_sandbox_sha256", "policy_build_sandbox")):
+        require(analysis[field] == control["records"][role]["sha256"], "v13h analysis build linkage differs")
+    require(identity(build["source_manifest"]) == identity(control["records"]["policy_source_manifest"])
+            and identity(build["log"]) == identity(control["records"]["policy_build_log"])
+            and records["policy_build_sandbox"] == build["sandbox"], "v13h build capture or sandbox differs")
+    require(set(pins["proof_sections"]) == PROVIDER_PROOF_SECTIONS, "v13h complete proof coverage differs")
+    for name in sorted(PROVIDER_PROOF_SECTIONS):
+        require(avb._identity(json_bytes(analysis[name])) == pins["proof_sections"][name],
+                "reviewed complete v13h proof changed: " + name)
+    selection = analysis["selection"]
+    require(selection["schema_version"] == 1 and selection["operation"] == "admit-actual-v13h-policy-only-analysis"
+            and selection["source_and_history_verification_required"] is True
+            and selection["build_record_identity"] == identity(control["records"]["policy_build"])
+            and selection["phase"] == build["phase"] and selection["provider_phase"] == build["provider_phase"]
+            and selection["argv"] == build["argv"]
+            and build["argv"][:3] == ["build/soong/soong_ui.bash", "--make-mode", "-j8"] and len(build["argv"]) == 34,
+            "v13h exact native invocation or selection differs")
+    commit = build["provider_fixup_commit"]
+    require(analysis["provider_fixup_manifest_identity"] == selection["provider_fixup_manifest_identity"]
+            == build["provider_fixup_manifest_identity"]
+            and analysis["provider_fixup_commit_identity"] == selection["provider_fixup_commit_identity"]
+            == avb._identity(json_bytes(commit))
+            and commit["manifest_sha256"] == analysis["provider_fixup_manifest_identity"]["sha256"]
+            and commit["verified"] is True and commit["last_event"]["sequence"] == 8
+            and commit["last_event"]["operation_count"] == 3
+            and commit["last_event"]["event"] == "commit_verified", "v13h three-operation installation differs")
+    source = analysis["source_history_proof"]
+    require(source == build["source_history_proof"] == build["post_build_source_verification"]
+            and source["operation"] == "verify-v13h-policy-input-sources-after-build" and source["verified"] is True
+            and source["actual_commit"] == commit and source["manifest_identity"] == analysis["provider_fixup_manifest_identity"]
+            and source["operation_count"] == 3 and source["journal_events"] == 9
+            and source["component_trees_checked"] == 3 and source["unchanged_component_trees_checked"] == 4
+            and source["normal_android_enforcing_required"] is True and source["live_outputs_checked"] is False,
+            "v13h source/history proof differs")
+    cross, tool_cross = analysis["provider_policy_contract_crosspin"], analysis["provider_policy_tool_crosspin"]
+    require(analysis["provider_contract_sha256"] == pins["native_contract"]["sha256"]
+            and cross["verified"] is True and cross["actual_native_contract"] == pins["native_contract"]
+            and cross["actual_input_profile"] == pins["input_contract"]
+            and cross["preserved_semantic_contract"] == pins["semantic_contract"]
+            and cross["only_changed_json_path"] == ["required_contracts", "provider_inputs", "sha256"]
+            and cross["all_other_contract_values_exact"] is True and cross["semantic_contract_bytes_replaced"] is False
+            and cross["source_or_cil_modified"] is False
+            and tool_cross["verified"] is True and tool_cross["actual_native_policy_tool"] == pins["native_policy_tool"]
+            and tool_cross["new_policy_contract"] == pins["native_contract"]
+            and tool_cross["old_policy_contract"] == pins["semantic_contract"]
+            and tool_cross["all_other_tool_bytes_exact"] is True and tool_cross["source_files_modified"] is False,
+            "v13h semantic/native contract crosspin differs")
+    for path, name in (("config/nezha-framework-provider-policy.json", "native_contract"),
+                       ("config/nezha-framework-providers.json", "input_contract"),
+                       ("scripts/framework_provider_policy.py", "native_policy_tool")):
+        avb._small(ROOT / path, TEXT, pins[name])
+    native, files = analysis["actual_compiler_inputs"], control["policy_files"]
+    require([row["runtime_path"] for row in native] == list(RUNTIME_INPUTS), "actual ten compiler inputs/order differ")
+    require(files["combined"]["native_path"].endswith(COMBINED_SUFFIX),
+            "ODM replacement must be the actual factory-combined binary, not the source-only installed policy")
+    native_out = files["combined"]["native_path"].removesuffix(COMBINED_SUFFIX)
+    require(native_out and native_out != "/", "invalid physical native OUT root")
+    for row in native:
+        selected = files[row["runtime_path"]]
+        require(identity(row) == identity(selected) and row["resolved_path"] == selected["native_path"],
+                "selected CIL is not the actual compiler input")
+    semantics = analysis["semantics"]
+    review = records["provider_complete_effect_review"]
+    review_digest = avb._sha(json.dumps(review, sort_keys=True, separators=(",", ":")).encode())
+    require(analysis["complete_effect_review"] == selection["complete_effect_review"]
+            == identity(control["records"]["provider_complete_effect_review"])
+            and review_digest == pins["complete_review_canonical_sha256"]
+            and review["complete_effect_inventory_reviewed"] is True
+            and review["baseline_receipt_sha256"] == analysis["baseline_receipt_sha256"] == pins["baseline"]["sha256"]
+            and selection["baseline_receipt"] == pins["baseline"]
+            and review["baseline_corpus_identity_sha256"] == pins["baseline_corpus_sha256"]
+            and review["provider_contract_sha256"] == pins["semantic_contract"]["sha256"],
+            "complete provider effect review or actual baseline differs")
+    require(semantics["status"] == "verified" and semantics["operation"] == "actual-v12f-to-v13f-provider-semantic-delta"
+            and semantics["provider_contract_sha256"] == pins["semantic_contract"]["sha256"]
+            and semantics["actual_v12f_baseline_receipt_sha256"] == pins["baseline"]["sha256"]
+            and semantics["candidate_input_identities"] == [{"runtime_path": row["runtime_path"], **identity(row)} for row in native]
+            and semantics["native_provenance_verified_by_this_module"] is False
+            and semantics["native_actions_contexts_images_or_hardware_verified_by_this_module"] is False,
+            "v13h reviewed semantic comparison differs")
+    before = semantics["actual_baseline_input_identities"]
+    require([row["runtime_path"] for row in before] == list(RUNTIME_INPUTS)
+            and avb._sha(json.dumps(before, sort_keys=True, separators=(",", ":")).encode()) == pins["baseline_corpus_sha256"],
+            "provider baseline compiler corpus differs")
+    for old, new in zip(before, native):
+        if old["runtime_path"] != RUNTIME_INPUTS[2]:
+            require(identity(old) == identity(new), "provider policy changed a non-system_ext compiler input")
+    impact = semantics["effect_inventory"]
+    require(impact["status"] == "review-required" and impact["operation"] == "provider-semantic-effect-inventory"
+            and impact["native_capture_authenticated"] is False and impact["complete_effect_review_admitted"] is False
+            and impact["contract_projection_matches_candidate_semantics"] is True
+            and impact["original_assertions_retained"] == 6366 and impact["assertions_after"] == 6370
+            and impact["new_assertions"] == 4 and impact["new_source_dontaudit_statements"] == 2
+            and impact["source_additions"] == {"allow": 26, "dontaudit": 2, "typetransition": 2, "neverallow": 4}
+            and impact["all_six_oem_public_mappings_unchanged"] is True
+            and impact["helper_effective_property_set_permissions"] == 0 and impact["denial_logging_unchanged"] is False,
+            "provider assertions, permissions or inner evidence scope differs")
+    properties, properties_raw = read_json(ROOT / "config/nezha-oem-properties.json")
+    _, oem_raw = read_json(ROOT / "config/nezha-oem-policy.json")
+    expected_properties = properties["native_effective_ordinary_allow_edges"]
+    require(analysis["oem_property_contract_sha256"] == avb._sha(properties_raw)
+            and analysis["oem_contract_sha256"] == avb._sha(oem_raw), "native OEM contracts differ")
+    for observed in (impact["oem_property_ordinary_allow_totals"], analysis["native_oem_check"]["property_effective_ordinary_allow_edges"]):
+        require(set(observed) == set(expected_properties), "provider property effect coverage differs")
+        for name, expected in expected_properties.items():
+            require({k: observed[name][k] for k in ("count", "sha256_sorted_compact_json_rows")} == expected,
+                    "provider changed the retained OEM property effects")
+    binaries = {row["name"]: row for row in analysis["analyses"]}
+    require(len(binaries) == len(analysis["analyses"]) == 3 and set(binaries) == {
+        "combined", "source-precompiled", "source-neverallows"}, "native permissive analysis coverage differs")
+    paths = {"combined": files["combined"]["native_path"],
+        "source-precompiled": native_out + "/target/product/nezha/odm/etc/selinux/precompiled_sepolicy",
+        "source-neverallows": native_out + "/soong/.intermediates/system/sepolicy/sepolicy_neverallows/android_common/policy"}
+    for name, row in binaries.items():
+        require(type(row["exit_code"]) is int and row["exit_code"] == 0
+                and type(row["stdout_bytes"]) is int and row["stdout_bytes"] == 0
+                and row["stdout_sha256"] == avb._sha(b"") and row["unfiltered"] is True
+                and row["zero_permissive_domains"] is True and row["sandbox_observed"] is True
+                and row["build_path"] == paths[name], "native provider policy permissive analysis differs")
+        bindings = [r for r in analysis["input_bindings"] if r["path"] == paths[name]]
+        require(len(bindings) == 1 and identity(bindings[0]) == identity(row), "analyzed native binary identity differs")
+        avb._digest(row["sandbox_receipt_sha256"]); avb._digest(row["mountinfo_sha256"])
+    require(identity(binaries["combined"]) == identity(files["combined"]), "selected factory-combined policy differs")
+    contexts, oem, producer = analysis["native_context_checks"], analysis["native_oem_check"], analysis["provider_input_action"]
+    require(len(contexts) == 9 and {row["target"] for row in contexts} == CONTEXT_TARGETS,
+            "required factory context checks are incomplete")
+    for row in contexts + [oem, producer]:
+        require(row["status"] == "executed_and_passed" and row["fresh_execution_observed"] is True
+                and row["build_phase"] == analysis["build_phase"] and row["build_log_sha256"] == analysis["build_log_sha256"]
+                and row["mtime_used_to_infer_execution"] is False and bool(row["ninja_success_records"])
+                and type(row["action_log_line"]) is int and row["action_log_line"] > 0
+                and type(row["action_log_text"]) is str and bool(row["action_log_text"]), "stale native provider policy check")
+    for row in contexts:
+        matches = [r for r in row["inputs"] if r["resolved_path"] == files["combined"]["native_path"]]
+        require(row["empty_stamp_alone_used_as_evidence"] is False and len(matches) == 1
+                and identity(matches[0]) == identity(files["combined"]), "context check used a different combined binary")
+    require(producer["operation"] == "verify-policy-only-provider-inputs"
+            and producer["target"] == "nezha_framework_provider_inputs_check"
+            and producer["provider_phase"] == pins["provider_phase"] and producer["original_input_count"] == 42
+            and producer["current_reviewed_input_count"] == 42 and producer["verified_payload_count"] == 31
+            and producer["unchanged_payload_count"] == 30 and producer["derived_payload_count"] == 1
+            and producer["declared_output_count"] == 32 and len(producer["inputs"]) == 42
+            and len(producer["payload_outputs"]) == 31 and producer["native_receipt_exact_bytes_verified"] is True
+            and producer["payload_outputs_exact_bytes_verified"] is True and producer["all_copy_mappings_verified"] is True
+            and producer["original_inputs_rehashed"] is True and producer["original_proprietary_inputs_preserved"] is True
+            and producer["transitive_oem_dependency"]["content_dependency_verified"] is True
+            and producer["transitive_oem_dependency"]["order_only_dependency_used_as_evidence"] is False
+            and producer["scope"] and all(value is False for value in producer["scope"].values()),
+            "fresh provider producer or its retained-input scope differs")
+    assertions = {"neverallow": 5980, "neverallowx": 390}
+    require(oem["target"] == "nezha_factory_oem_policy_check" and oem["guard_json_alone_used_as_evidence"] is False
+            and oem["actual_strict_compiler_input_count"] == 10 and oem["input_binding_proof"]["count"] == 22
+            and len(oem["inputs"]) == 23 and oem["input_binding_proof"]["exact_paths_hashes_sizes_verified"] is True
+            and oem["full_guard_result_independently_rebound"] is True and oem["executed_tool_runtime_files_rehashed"] is True
+            and oem["all_copy_mappings_verified"] is True and oem["provider_profile_present"] is True
+            and oem["assertion_statement_counts"] == assertions
+            and identity(oem["output"]) == identity(control["records"]["native_oem_guard"]),
+            "native provider OEM guard binding differs")
+    for row in native:
+        matches = [r for r in oem["inputs"] if r["path"] == row["compiler_input"]]
+        require(len(matches) == 1 and identity(matches[0]) == identity(row)
+                and matches[0]["resolved_path"] == row["resolved_path"], "OEM guard did not consume the actual compiler inputs")
+    raw_guard = records["native_oem_guard"]
+    require(raw_guard["schema_version"] == 1 and raw_guard["operation"] == "check-nezha-oem-native-policy-inputs"
+            and raw_guard["status"] == "verified" and raw_guard["contract_sha256"] == analysis["oem_contract_sha256"]
+            and raw_guard["property_contract_sha256"] == analysis["oem_property_contract_sha256"]
+            and raw_guard["provider_contract_sha256"] == pins["native_contract"]["sha256"]
+            and raw_guard["helper_effective_property_set_grants"] == 0 and raw_guard["permissive_cil_declarations"] == 0
+            and raw_guard["original_factory_inputs_preserved"] is True and raw_guard["existing_binder_derivation_preserved"] is True
+            and raw_guard["all_inputs_rehashed_unchanged"] is True and raw_guard["assertion_statement_counts"] == assertions
+            and raw_guard["property_effective_ordinary_allow_edges"] == expected_properties
+            and raw_guard["tool_sources_sha256"] == oem["source_tool_sha256"], "raw native provider OEM result differs")
+    derivation = records["vendor_derivation"]
+    correction, correction_raw = read_json(ROOT / "config/vendor-policy-correction.json")
+    require(derivation["operation"] == "nezha-factory-binder-correction-v1"
+            and derivation["contract_sha256"] == avb._sha(correction_raw)
+            and derivation["factory_package_sha256"] == contract["factory_package_sha256"]
+            and derivation["output"] == correction["output"] and derivation["measured"] == correction["expected"]
+            and derivation["inputs"] == correction["inputs"]
+            and [{k: row[k] for k in ("runtime_path", "sha256", "size_bytes")} for row in derivation["input_manifest"]] == correction["inputs"]
+            and derivation["preservation"] == {k: True for k in ("all_unselected_bytes_and_line_positions", "all_assertions",
+                "type_role_alias_attribute_and_mapping_declarations", "valid_process_binder_grants", "fd_and_service_manager_grants")}
+            and derivation["output_readback_verified"] is True and derivation["all_inputs_rehashed_unchanged"] is True
+            and derivation["tool_sha256"] == oem["source_tool_sha256"]["vendor_policy.py"]
+            and derivation["publisher_sha256"] == oem["source_tool_sha256"]["artifact_files.py"], "vendor correction receipt differs")
+    require(files[RUNTIME_INPUTS[7]]["native_path"] == native_out + VENDOR_SUFFIX
+            and identity(files[RUNTIME_INPUTS[7]]) == identity(correction["output"]), "vendor correction output changed")
+    receipt_path = files[RUNTIME_INPUTS[7]]["native_path"].removesuffix("vendor_sepolicy.cil") + "receipt.json"
+    matches = [r for r in analysis["input_bindings"] if r["path"] == receipt_path]
+    require(len(matches) == 1 and identity(matches[0]) == identity(control["records"]["vendor_derivation"]),
+            "vendor derivation is not bound by the current native analysis")
+    held = {name: avb._small(row["path"], POLICY, row) for name, row in files.items()}
+    replacements = {"vendor": {"/etc/selinux/vendor_sepolicy.cil": files[RUNTIME_INPUTS[7]]},
+                    "odm": {"/etc/selinux/precompiled_sepolicy": files["combined"]}}
+    for index, name in ((0, "plat"), (2, "system_ext"), (4, "product")):
+        value = hashlib.sha256(held[RUNTIME_INPUTS[index]] + held[RUNTIME_INPUTS[index + 1]]).hexdigest().encode() + b"\n"
+        replacements["odm"]["/etc/selinux/precompiled_sepolicy." + name + "_sepolicy_and_mapping.sha256"] = {
+            **avb._identity(value), "derived_bytes": value, "sidecar_name": name,
+            "source_kind": "derived-from-sealed-native-cil-and-mapping",
+            "ordered_input_roles": [RUNTIME_INPUTS[index], RUNTIME_INPUTS[index + 1]]}
+    sidecars = qualify_sidecar_derivation(records, control, held, contract)
+    return replacements, {"current_factory_combined_binary_bound": True, "sidecars_recomputed_and_matched": True,
+        "assertion_statements_retained": 6366, "assertion_statements_added": 4, "assertion_statements_total": 6370,
+        "normal_android_permissive_domains": 0, "full_treble_apk_labeling_proven": False,
+        "native_policy_reexecuted": False, "sidecar_derivation": sidecars, "native_policy_snapshot": pins["build_phase"],
+        "current_active_source_compatibility_proven": False, "sidecars_observed_at_native_install_paths": False,
+        "provider_profile_selected": True, "provider_runtime_support_proven": False,
+        "complete_native_provider_proof_sections_bound": True, "complete_effect_review_bound": True}
 
 
 def qualify_policy(records, control, contract):
+    if contract["contract_id"] == PROVIDER_CONTRACT_ID:
+        return qualify_provider_policy(records, control, contract)
     build, analysis = records["policy_build"], records["policy_analysis"]
     export4 = contract["contract_id"] == EXPORT4_CONTRACT_ID
     operation = "verify-native-oem-properties-v12f-export4" if export4 else "verify-native-oem-properties-v12f"
@@ -1120,7 +1416,7 @@ def prepare(input_path, expected_sha, *, output_dir, selected_profile=HISTORICAL
     for rows in selected.values():
         for row in rows.values():
             if "derived_bytes" in row:
-                require(selected_profile == EXPORT4_PROFILE and "native_path" not in row, "derived sidecar cannot claim a native installation path")
+                require(derived_sidecars(contract) and "native_path" not in row, "derived sidecar cannot claim a native installation path")
                 row["path"] = out / "derived-sidecars" / (row["sidecar_name"] + "_sepolicy_and_mapping.sha256")
                 derived.append(row)
     manifests, plans, sizes, avb_sources = {}, {}, {}, {}
@@ -1229,7 +1525,7 @@ def prepare(input_path, expected_sha, *, output_dir, selected_profile=HISTORICAL
                 "native_installed_output_claimed": False} for row in derived],
             "remaining_gates": [
                 ("Apply the qualified finite limits in fresh isolated work and build both policy-substituted images twice."
-                 if selected_profile == EXPORT4_PROFILE else
+                 if derived_sidecars(contract) else
                  "Qualify the recorded finite production limits, scratch filesystem and bounded log executor, then run two native builds."),
                 "Complete native metadata exports and exact-five-file semantic comparison for both new images.",
                 "Regenerate hashtrees/FEC/AVB footers; verify final identities, partition fit and signed parent chain."],

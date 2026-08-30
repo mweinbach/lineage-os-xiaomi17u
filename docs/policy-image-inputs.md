@@ -8,9 +8,11 @@ remains Evolution X `bka` / `bp4a` and normal Android remains enforcing.
 
 The public contract is `config/nezha-policy-images.json`. Its schema-2 profile
 container preserves the original contract unchanged under `historical-v12` and
-adds the explicitly selected `v12-export4` profile. `historical-v12` remains the
+the separately selected `v12-export4` profile. The newer `v13h-policy-only`
+profile binds the completed provider policy build and analysis described below.
+`historical-v12` remains the
 default and remains blocked; selecting a newer profile is never implicit.
-The current profile's contract ID is
+The export4 profile's contract ID is
 `nezha-five-file-policy-image-inputs-v12-export4-v1`.
 
 The originals remain the vendor and ODM images from factory package SHA256
@@ -19,7 +21,7 @@ Their image hashes, package budgets, five original file hashes, source tools,
 native tool identities and reviewed native qualification records are pinned.
 The export4 native policy analysis and both complete stock no-op reconstruction
 proofs now exist. The three framework hash sidecars are absent from the selected
-native OUT. The current profile therefore requires a captured producer recipe
+native OUT. The export4 profile therefore requires a captured producer recipe
 and separate native validation before explicitly deriving those files from
 the captured CIL and mapping inputs. The fresh native validation passed all
 three known answers and all three specific negative cases, with zero skips;
@@ -50,12 +52,19 @@ Android's genrules executed or that installed sidecars were captured.
 
 The selected export4 contract's canonical SHA256 is
 `5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4`.
-This admits evidence validation and TAR preparation only. The changed-policy
-EROFS images have not yet been built or adopted by this workflow.
+This admits evidence validation and TAR preparation only. A separate native
+export4 reconstruction subsequently passed nine checks and 38 commands with
+zero skips, exactly one vendor and four ODM content changes, and identical
+repeated raw images. Its receipt is
+`artifacts/build-validation/nezha-policy-images-export4-v1/results/receipt.json`,
+SHA256 `77b40170a55f15418f75d2bbe89ff7bb99c5024600f0d5aacee23c064f3f765e`.
+Those images remain separate unsigned derivatives; they were not adopted and
+do not carry the v13h provider policy.
 
 ```sh
 python3 scripts/policy_image_inputs.py plan
 python3 scripts/policy_image_inputs.py plan --profile v12-export4
+python3 scripts/policy_image_inputs.py plan --profile v13h-policy-only
 ```
 
 `plan` reports the selected profile and its missing prerequisites. It exits 2
@@ -128,6 +137,73 @@ binaries have zero permissive domains. The framework provider profile remains
 unselected. Full Treble APK labeling, later provider inputs and runtime
 compatibility are not proven by this receipt.
 
+## Explicit v13h provider policy snapshot
+
+`v13h-policy-only` has contract ID
+`nezha-five-file-policy-image-inputs-v13h-v1` and canonical profile SHA256
+`39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0`.
+The two earlier profile objects and their canonical digests remain unchanged.
+Selecting the new profile does not upgrade their evidence or change the default.
+
+The actual `policy-only-v13h-1` build requested 31 normal Android policy and
+export goals for `lineage_nezha-bp4a-user`, with provider phase
+`v13h-provider-policy-only-runtime-exports-v1`. Its captured result is
+`artifacts/build-validation/nezha-policy-only-v13h-1/result.json`, SHA256
+`1596843eca8377fdb17359e3a70009b84c95aad5a0219531f521e52e21659e5b`.
+The independent native analysis is
+`artifacts/build-validation/nezha-analysis-v13h-policy-only-v1/receipt.json`,
+SHA256 `bb6e8f0218d1f4c61a3cd8221478007548e2a1950d048a9dd60d5d7842334b66`
+(10,058,468 bytes). It binds the strict factory-combined binary SHA256
+`44113598331ae410279432d39adb884db56fc1217ab5a35158c36fb3bee9f707`
+(1,517,136 bytes), ten actual compiler inputs, nine fresh factory checks, the
+fresh OEM guard and provider input producer, and three unfiltered policies
+with zero permissive domains.
+
+All 6,366 original assertions remain, with four reviewed provider registration
+assertions added: 5,980 `neverallow` plus 390 `neverallowx` statements. Only the
+system_ext CIL changes relative to export4; the other nine compiler inputs
+remain byte-identical. The complete effect review is separately pinned at
+`provider_complete_effect_review`, SHA256
+`8037229ed752ec9e762ac6a2b624ffc0b76911a7dad068fdc9aa0f65dc325046`
+(8,535,547 bytes). It includes inherited effects, 26 source allows, two
+transitions and two deliberate dontaudit additions, while preserving the six
+OEM public mappings, 105 property allow edges and zero helper property writes.
+It does not claim unchanged denial logging.
+
+Sixteen complete source, producer, context and semantic sections of the actual
+analysis are pinned by canonical hash and length. This preserves the reviewed
+nested details without adding a second CIL semantics implementation. Explicit
+checks also bind their build, source, compiler inputs, factory-combined output,
+raw OEM result and replacement files. The native provider contract differs
+from the preserved semantic contract only at its input-profile hash; the
+policy checker differs only at the corresponding single hash literal. Both
+crosspin proofs are required. The nested semantic operation intentionally
+remains `actual-v12f-to-v13f-provider-semantic-delta`; its limited inner scope
+flags are not rewritten into native success claims.
+
+Only this profile's `policy_analysis` and `provider_complete_effect_review`
+JSON roles may use a 16 MiB reader bound. The generic 8 MiB bound and both old
+profiles are unchanged. The exact identities and finite bounds apply on the
+initial read and final re-read; no truncation or private-control limit override
+is accepted.
+
+The fresh native sidecar result is
+`artifacts/build-validation/nezha-policy-sidecar-v13h-native-v1/results/receipt.json`,
+SHA256 `d679acf232419b70c89c1fd05a48dd6647ca0a9d818f2dc9386db71669626630`
+(41,770 bytes). Its 14 commands and six checks passed with zero skips, using
+the same source recipe on the six actual v13h CIL/mapping inputs. The new
+system_ext sidecar file SHA256 is
+`04b3cfdefbc293724f48a4a6c0e6098d46aa944274c74928b9b9cd20b6709335`;
+plat and product sidecars retain their earlier contents. All three remain
+explicit 65-byte derivations, without installed-path or Android-genrule claims.
+The old sidecar results cannot satisfy the new profile even when bytes agree.
+
+The new profile reuses the unchanged original-image, tool and complete no-op
+EROFS qualifications. Fresh v13h images still need both native reconstructions,
+complete metadata comparison and deterministic repeat results. No provider
+runtime, strict ELF action, full Treble APK labeling, AVB/partition fit, active
+ROM compatibility, image adoption or phone boot is established by this profile.
+
 ## Private input control
 
 Keep the control JSON, original images, regular file bytes, native captures and
@@ -137,22 +213,22 @@ the selected profile's `contract_id`, its `contract_sha256`, and a simple
 selects it, and mismatched control identities fail. `contract_sha256` hashes the
 selected profile object serialized as sorted-key, two-space-indented JSON plus
 one newline, not the whole schema-2 catalog. The historical contract ID remains
-`nezha-five-file-policy-image-inputs-v1`; the current ID is
-`nezha-five-file-policy-image-inputs-v12-export4-v1`.
+`nezha-five-file-policy-image-inputs-v1`; the explicit newer IDs are documented
+with their profiles above.
 
 | Map | Required entries |
 | --- | --- |
-| `records` | Exactly the keys of the selected profile's `native_records`; export4 includes the bound native limit probe, both full no-op captures and their outer/sandbox records, and sidecar recipe/native validation evidence, in addition to the policy and EROFS prerequisites |
+| `records` | Exactly the keys of the selected profile's `native_records`; export4 has 29 roles including the native limit probe, both full no-op captures and sidecar validation; v13h has those roles plus `provider_complete_effect_review`, with fresh policy and sidecar records |
 | `partitions` | `vendor` and `odm`; each has `image`, `manifest` and a separate, non-nested `staging_root` |
-| `policy_files` | For export4, exactly the ten runtime CIL/mapping inputs in `RUNTIME_INPUTS`, plus `combined`; historical-v12 additionally requires `plat_sha256`, `system_ext_sha256` and `product_sha256` |
-| `noop_manifests` | Export4 only: `vendor` and `odm`, each selecting the two complete native no-op manifests with ordinary `path` / `sha256` / `size_bytes` rows |
+| `policy_files` | For export4 and v13h, exactly the ten runtime CIL/mapping inputs in `RUNTIME_INPUTS`, plus `combined`; historical-v12 additionally requires `plat_sha256`, `system_ext_sha256` and `product_sha256` |
+| `noop_manifests` | Export4 and v13h: `vendor` and `odm`, each selecting the two complete native no-op manifests with ordinary `path` / `sha256` / `size_bytes` rows |
 
 Every file selector contains `path`, `sha256` and `size_bytes`. A policy file
 also contains `native_path`, the absolute physical producer path from the
 current analysis. Local paths resolve relative to the private control. Native
 paths are evidence, not commands to execute.
 
-Both profiles permit only these five content replacements:
+Every profile permits only these five content replacements:
 
 | Partition | Exact path within that filesystem |
 | --- | --- |
@@ -167,8 +243,8 @@ consuming the exact ten reviewed compiler inputs. The source-only installed
 `OUT/target/product/nezha/odm/etc/selinux/precompiled_sepolicy` is rejected as
 the replacement even though its own zero-permissive analysis remains required.
 
-The current analysis must show the strict compiler, all 6,366 unchanged
-assertions, zero permissive domains for all three analyzed policies, nine
+The selected analysis must show the strict compiler, all 6,366 retained
+assertions plus the four reviewed additions in v13h, zero permissive domains for all three analyzed policies, nine
 fresh context tests and the source-bound OEM guard. The helper property-write
 capability remains disabled. The four-property finite effect budget and
 Binder correction are rebound to their reviewed public contracts and native
@@ -182,7 +258,7 @@ Each sidecar is independently recomputed as lowercase
 compiler inputs in the selected OUT. Historical-v12 also requires captured
 sidecars at their native producer paths and remains blocked.
 
-Export4 deliberately omits those absent native sidecar selectors. After the
+Export4 and v13h deliberately omit those absent native sidecar selectors. After the
 required source-recipe capture and native known-answer validation are admitted,
 preparation writes the three explicit derivations under the fresh output's
 `derived-sidecars/`. Their provenance records the source-pair identities and
