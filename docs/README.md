@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Verified v12f/export4 policy and exact five-file native image reconstruction; v13f remains blocked, with AVB, adoption, full ABI and boot gates open |
+| [Native ROM integration](native-rom-integration.md) | Installed v13ha correction and 31-goal native policy build pass; independent provider analysis remains pending, with v12f/export4 the verified semantic/image-derivation baseline |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -27,7 +27,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
-| [Policy-image input preparation](policy-image-inputs.md) | Pinned explicit v12/export4 preparation profile; later successful raw reconstruction is recorded in current native integration, without AVB or v13f admission |
+| [Policy-image input preparation](policy-image-inputs.md) | Pinned explicit v12/export4 preparation profile; successful raw reconstruction remains separate from AVB and current-provider admission |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 
@@ -69,11 +69,12 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Camera APK integration](camera-apk-integration.md) | Verified signature/layout and exact Java, privilege and packaging requirements before importing the APK |
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Preserved Xiaomi.eu/live input checks and two reproduced packaging failures |
 | [Original factory Camera APK](factory-camera-apk.md) | Unchanged factory input passes strict privileged/preprocessed packaging; permission grants, effective SELinux label and product selection remain unverified |
+| [Factory Camera permission grants](../research/factory-camera-permission-grants.json) | Captured source distinguishes pure-signature grant denial and service enforcement; effective grants, installed signing state and Camera behavior remain unverified |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Repeated host source packet and verified producer; no guest namespace installation, product membership or APK component result |
 | [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch and native fixtures; current component build and bounded producer/output review pass, without Camera APK or runtime API closure |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
-| [Miracast audio correction evidence](../research/framework-provider-audio-compatibility.json) | Committed v7 exact dependency derivation with host producer/consumer verification; corrected candidate and native source build remain pending |
+| [Miracast audio correction evidence](../research/framework-provider-audio-compatibility.json) | Exact v7 dependency derivation installed as v13ha; policy source build passes, without complete ABI or runtime admission |
 | [Framework-provider source admission](framework-provider-source-admission.md) | Reproducible host v13 candidate, private policy and verified payload consumers; not installed in the v12fa checkpoint |
 | [Held 4 KiB experiment](nezha-page-size.md) | Unadopted profile and v13g candidate; lowering the threshold does not resolve required 16 KiB compatibility and is not the next integration path |
 | [OEM property contract](../config/nezha-oem-properties.json) | Optional four-property source and permission budget; native validation separate from v11b |

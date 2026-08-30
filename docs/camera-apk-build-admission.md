@@ -81,9 +81,12 @@ python3 -m unittest discover -s tests -p 'test_camera_apk_inputs.py' -v
 ## Native execution remains a separate admission
 
 The packet records requirements for the future runner, **not permission to
-execute a module target**. The pinned importer always emits an APK installation
-rule, and dexpreopt emits installation rules too. Absence from
-`PRODUCT_PACKAGES` alone does not protect partition staging.
+execute a module target**. The pinned importer and dexpreopt request installation.
+Core suppresses full-install and Kati copy rules for this unexported namespace,
+while retaining packaging specifications and checkbuild inputs. Installation
+hooks run before that gate, so graph generation still needs the enclosing
+read-only partition protection. Absence from `PRODUCT_PACKAGES` alone does not
+protect partition staging.
 
 Resolve the current graph's exact intermediate APK, packaging validation stamp,
 strict library status, dexpreopt configuration and real ODEX/VDEX outputs.

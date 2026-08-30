@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "sealed-v12-export4-exact-five-raw-images-reconstructed-v13f-source-blocker-retained",
+  "checkpoint": "v13ha-installed-native-policy-build-passed-independent-analysis-pending",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -683,6 +683,45 @@
       "complete_rom_ready": false,
       "scope": "Committed public profile for explicit sealed-v12/export4 evidence admission and TAR preparation, with a successful complete unmocked read-only admission replay. No TAR preparation, native execution or image access occurred in that earlier replay; the separate later native reconstruction is recorded independently and does not admit active v13f inputs.",
       "separate_later_native_reconstruction": "native_policy_image_reconstruction"
+    },
+    "factory_camera_permission_grants": {
+      "documentation_commit": "e433a5d387c8ae1cdcbfee0cd1f52813b32fad66",
+      "record": {
+        "path": "research/factory-camera-permission-grants.json",
+        "sha256": "0d680212d8ca21ab1800d0ce126ced1baf9897c149479283c91a76894711831a",
+        "size_bytes": 5625,
+        "git_revision": "e433a5d387c8ae1cdcbfee0cd1f52813b32fad66"
+      },
+      "source_revision": "frameworks/base@8140698cc12983deecdbd434220affb5f931bfc6",
+      "pure_signature_requests": [
+        "android.permission.CONTROL_DEVICE_STATE",
+        "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+        "android.permission.INJECT_EVENTS"
+      ],
+      "source_review_complete": true,
+      "privapp_allowlist_creates_signing_eligibility": false,
+      "debuggable_or_signature_allowlist_overrides_failed_signing_check": false,
+      "conditional_unmatched_signer_grant_result": "For a present non-shared package using the captured pure-signature definitions and no qualifying signing relationship, the evaluator stores zero permission flags rather than throwing an installation-rejection exception for these three requests.",
+      "effective_definitions_signing_flags_and_grants_verified": false,
+      "overall_package_scan_or_installation_verified": false,
+      "camera_behavior_verified": false,
+      "permission_definitions_or_grants_changed": false,
+      "apk_selected_or_installed": false,
+      "phone_accessed": false,
+      "focused_workspace_tests": {
+        "runner": "coordinator",
+        "passed": 30,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0,
+        "elapsed_seconds": 0.414,
+        "log": {
+          "path": "reports/factory-camera-apk-20260829/permission-grant-review-v1/root-camera-tooling-tests.log",
+          "sha256": "2071005374812f53bf1023bdc2feb4dd28dc602206f99098890a3d392c027100",
+          "size_bytes": 5601
+        }
+      },
+      "scope": "Source-only grant evaluator and service-enforcement follow-up; no Java/Kotlin runtime execution, installed permission state or Camera hardware result."
     }
   },
   "erofs_qualification": {
@@ -903,17 +942,16 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 156.509,
-    "code_commit": "364ab89efef4c2dc888ce5ff96152da01cacf8bb",
+    "elapsed_seconds": 152.111,
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-provider-v7-integration-v1.log",
-      "sha256": "40be2f70cf6fbeb3e0325101ac6a41a48ea061046d0ae681fdc6a9f9a97c9672",
+      "path": "reports/oem-policy-integration-20260829/workspace-tests-v13ha-integration-v1.log",
+      "sha256": "dfb336936b2bfaaecbc8ee92c0f1301f42eade63a71901e6678d41f85c883c27",
       "size_bytes": 625652
     },
-    "scope": "Coordinator full offline workspace run covering all thirteen committed v7 provider integration files. This validates workspace tooling, not active guest source admission, the future v13h candidate/build, complete ABI, runtime behavior, raw-image adoption or hardware."
+    "scope": "Fresh coordinator full offline suite after actual v13ha installation and policy-source build. Separate from native policy analysis, provider runtime/ELF validation, image adoption and hardware tests."
   },
   "remaining_gates": [
-    "Admit the committed v7 producer/consumer correction through a verified v13h bundle/candidate and guest transaction, then run the strict native build and independently verify provider policy against v12f/export4; retain the 4 KiB hold and all compatibility checks",
+    "Independently verify the successful v13h policy build against v12f/export4, including exact provider assertion/effect and source/M4 provenance; retain the 4 KiB hold and all compatibility checks",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "Strict native provider runtime ELF/linker and service checks after independent provider-policy verification",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -1237,6 +1275,22 @@
         "size_bytes": 618190
       },
       "scope": "Coordinator full offline workspace run covering the committed explicit v12/export4 policy-image profile. Separate from native sidecar execution, compile-only audio measurements, actual Android product builds and hardware tests; does not approve the held 4 KiB profile."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3634,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 156.509,
+      "code_commit": "364ab89efef4c2dc888ce5ff96152da01cacf8bb",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-provider-v7-integration-v1.log",
+        "sha256": "40be2f70cf6fbeb3e0325101ac6a41a48ea061046d0ae681fdc6a9f9a97c9672",
+        "size_bytes": 625652
+      },
+      "scope": "Coordinator full offline workspace run covering all thirteen committed v7 provider integration files. This validates workspace tooling, not active guest source admission, the future v13h candidate/build, complete ABI, runtime behavior, raw-image adoption or hardware."
     }
   ],
   "previous_v11b_policy": {
@@ -1586,7 +1640,7 @@
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
   "recorded_at_utc": "2026-08-30T02:41:21.140863+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-30T02:36:44.248020+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T05:40:07.007967+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -2017,7 +2071,7 @@
       "approved_next_integration": false,
       "installed_in_guest": false,
       "native_4096_path_on_hold": true,
-      "active_guest_integration": "v13f",
+      "active_guest_integration": "v13ha",
       "active_DeviceMaxPageSizeSupported": "16384",
       "active_DeviceCheckPrebuiltMaxPageSize": true,
       "compatibility_16k_verified": false,
@@ -2827,7 +2881,8 @@
     "complete_rom_ready": false,
     "phone_accessed": false,
     "scope": "Actual committed provider input installation only. It preserves prior outputs and unchanged component trees; the v12f/export4 result does not validate the newly installed provider policy.",
-    "first_native_policy_build_result": "provider_v13f_policy_build"
+    "first_native_policy_build_result": "provider_v13f_policy_build",
+    "subsequent_corrected_installation": "provider_v13ha_installation"
   },
   "provider_v13f_policy_build": {
     "phase": "policy-only-v13f-1",
@@ -2945,16 +3000,17 @@
       "strict_soong_elf_checks_selected": true,
       "checker_actions_verified": false
     },
-    "subsequent_graph_and_abi_evidence": "provider_aidl_native_followup"
+    "subsequent_graph_and_abi_evidence": "provider_aidl_native_followup",
+    "subsequent_corrected_build": "provider_v13h_policy_build"
   },
   "active_guest_inputs": {
-    "integration": "v13f",
-    "evidence": "provider_v13f_installation",
+    "integration": "v13ha",
+    "evidence": "provider_v13ha_installation",
     "latest_fully_verified_policy_baseline": "v12f/export4",
-    "provider_policy_build": "provider_v13f_policy_build",
+    "provider_policy_build": "provider_v13h_policy_build",
     "four_kib_experiment_adopted": false
   },
-  "latest_native_build_status": "failed-soong-bootstrap",
+  "latest_native_build_status": "passed-policy-only-independent-analysis-pending",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -3021,7 +3077,7 @@
     },
     "source_and_stock_abi_investigation_complete": false,
     "active_provider_inputs_changed_by_fixtures_or_probe": false,
-    "scope": "Native fixtures show a variant-only change does not resolve mixed Audio AIDL versions. Compile-only layout measurements and selected static CFI checks support the exact v7 input derivation, whose host producer/consumer integration is now committed. Active guest admission, v13h candidate/build, complete caller ABI and runtime routing remain unverified.",
+    "scope": "Native fixtures, selected compile-only layouts and static CFI evidence support the exact v7 input derivation. It is now installed as v13ha and its policy-only source build passes. Independent provider semantics, complete caller ABI and runtime routing remain unverified.",
     "layout_v2": {
       "phase": "audio-native-layout-run-v2",
       "receipt": {
@@ -3091,9 +3147,8 @@
         "No source, product input, guest, phone or Git edits"
       ]
     },
-    "miracast_dependency_correction_admitted": false,
-    "miracast_dependency_correction_installed": false,
-    "host_v7_correction_status": "Producer and consumer integration committed at 364ab89 with host verification complete; active guest remains failed v13f and the v13h bundle/candidate, installation and native build are pending.",
+    "miracast_dependency_correction_installed": true,
+    "host_v7_correction_status": "Committed v7 producer/consumer correction installed as v13ha; policy-only-v13h-1 passes, with independent provider policy analysis and runtime/ELF checks still pending.",
     "committed_v7_host_correction": {
       "code_commit": "364ab89efef4c2dc888ce5ff96152da01cacf8bb",
       "committed_integration_files": 13,
@@ -3146,8 +3201,12 @@
       "native_source_build_run": false,
       "complete_caller_abi_or_runtime_verified": false,
       "phone_accessed": false,
-      "scope": "Committed source/tooling with verified host producer and consumer bindings for the exact derived input. Active guest inputs remain failed v13f; the v13h bundle/candidate, guest transaction and actual native build are separate pending work."
-    }
+      "scope": "At the committed host checkpoint, producer/consumer verification did not install guest sources or run Android. The separately recorded v13ha transaction and v13h policy build now provide those later results without establishing complete ABI or runtime behavior.",
+      "later_native_installation": "provider_v13ha_installation",
+      "later_native_build": "provider_v13h_policy_build"
+    },
+    "miracast_dependency_correction_admitted_into_guest_sources": true,
+    "provider_runtime_compatibility_verified": false
   },
   "native_policy_sidecar_derivation": {
     "phase": "policy-sidecar-native-v2",
@@ -3509,7 +3568,238 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-30T03:31:25.389032+00:00",
-  "latest_timestamped_native_observation_kind": "audio-layout-compile-only",
-  "latest_native_observation_kind": "isolated-raw-five-file-policy-image-reconstruction"
+  "latest_timestamped_native_observation_utc": "2026-08-30T05:40:07.007967+00:00",
+  "latest_timestamped_native_observation_kind": "android-policy-only-source-build",
+  "latest_native_observation_kind": "android-policy-only-source-build",
+  "provider_v13h_initial_snapshot_failure": {
+    "run": "run-v13h",
+    "empty_stdout": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13h/snapshot.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "exit": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13h/snapshot.exit.json",
+      "sha256": "b9f87d4ceb14f54a8787da14c5985aa499e13197fe39c8f0f4ecf87e7a01957e",
+      "size_bytes": 22
+    },
+    "diagnostic": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13h/snapshot.stderr.log",
+      "sha256": "3f0fc0d39fd3169fb1908888a12dcfd93551d41e80a7c00d5edb092e29c168fb",
+      "size_bytes": 756
+    },
+    "returncode": 1,
+    "snapshot_passed": false,
+    "error": "FileNotFoundError at the missing provider-producer intermediate parent directory",
+    "stage_or_install_performed": false,
+    "retry_provenance": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/retry-provenance.json",
+      "sha256": "a800cf46c496bb5b3e69d3f458cc862fe7c0fd584ff0a09b7d487a1c1bbf84dc",
+      "size_bytes": 1794
+    },
+    "retry_profile_unchanged": true,
+    "scope": "Preserved failed read-only snapshot, with zero-byte stdout and a nonzero exit. The v13ha retry adjusts first-missing-ancestor handling and the run label without changing the integration profile or rewriting this failure."
+  },
+  "provider_v13ha_installation": {
+    "run": "run-v13ha",
+    "profile": "v13f-provider-audio-v4-fixup-v1",
+    "snapshot": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/snapshot.json",
+      "sha256": "8f89e27be02307fdb3eb31e554400bd46c8efea87eb322e770cab5561069426e",
+      "size_bytes": 67463
+    },
+    "profile_record": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/profile.json",
+      "sha256": "e7bdb98129af4c7596de0afaf0300b299a1c6242187f41d76156d295f49abc75",
+      "size_bytes": 109964
+    },
+    "manifest": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/manifest.json",
+      "sha256": "07ff79c70c72f65f6d65debf6a8ddcdcba387b7df12eda39fdab0347d60f27b0",
+      "size_bytes": 89987
+    },
+    "stage": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/stage.json",
+      "sha256": "943d9415c6c2af4eb17f00b44f21db0da989a83c1378f66c04b873e82d1f63c9",
+      "size_bytes": 116257
+    },
+    "acknowledgment": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/install.json",
+      "sha256": "f0b0e64c7fda378f46dc22350f6552a1b4c6a363903a36cdade9b16bf377df1d",
+      "size_bytes": 537
+    },
+    "installation": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-v13ha/captured-installation.json",
+      "sha256": "1b035f5a831de4f9fd40e603232ded9fd1f97360b9263ab9b1151cfca0839ad7",
+      "size_bytes": 69309
+    },
+    "host_record_binding": {
+      "path": "reports/oem-policy-integration-20260829/analysis-v13h-policy-only-driver/installation-host-binding-v1.json",
+      "sha256": "73a049cf90ba2a163d0560df73ea61eb816c9e3e0d59aa56124dab6d1f733570",
+      "size_bytes": 6328
+    },
+    "snapshot_completed_at": "2026-08-30T04:48:32.840393+00:00",
+    "committed_at": "2026-08-30T04:52:42.615021+00:00",
+    "verified": true,
+    "operations": 3,
+    "journal_events": 9,
+    "commit_event": "commit_verified",
+    "journal_native_identity": {
+      "sha256": "7c0c0855a875dca2b2643ae9bc2e255ee72ffeb986795480253f9711c6122f4a",
+      "size_bytes": 41674
+    },
+    "installed_verifier_native_identity": {
+      "sha256": "d9755a40e303be657ad919babe37a3a6cd1d961814476e31b6dc9344ed053b44",
+      "size_bytes": 127139
+    },
+    "exchanged_trees": [
+      "device/xiaomi/nezha",
+      "vendor/xiaomi/nezha-policy",
+      "vendor/xiaomi/nezha-framework-providers"
+    ],
+    "source_audit": {
+      "projects": 1179,
+      "matching_revisions": 1179,
+      "matching_origins": 1179,
+      "clean_projects": 1173,
+      "reviewed_modified_projects": [
+        "build/make",
+        "build/soong",
+        "external/mdnsresponder",
+        "system/core",
+        "system/sepolicy",
+        "vendor/lineage"
+      ]
+    },
+    "snapshot_source_files": 180,
+    "subsequent_build_source_files": 182,
+    "prior_outputs_verified_at_installation": 55,
+    "included_protected_runtime_outputs": 11,
+    "old_objects_and_independent_previous_copies_preserved": true,
+    "prior_outputs_unchanged_at_installation": true,
+    "original_vendor_odm_camera_mi_ext_recovery_inputs_preserved": true,
+    "snapshot_maximum_page_size": 16384,
+    "snapshot_max_page_size_check_enabled": true,
+    "snapshot_provider_elf_actions_verified": false,
+    "native_build_performed_by_installation": false,
+    "images_built": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "first_snapshot_failure": "provider_v13h_initial_snapshot_failure",
+    "subsequent_build": "provider_v13h_policy_build",
+    "scope": "Verified three-tree correction transaction. The successful retry preserves the first snapshot failure and original inputs/outputs; installing source inputs does not itself validate provider policy, runtime ABI, images or hardware."
+  },
+  "provider_v13h_policy_build": {
+    "phase": "policy-only-v13h-1",
+    "provider_phase": "v13h-provider-policy-only-runtime-exports-v1",
+    "installed_input_integration": "v13ha",
+    "request": {
+      "path": "reports/oem-policy-integration-20260829/native-v13h-driver/run-policy-only-v13h-1/request.json",
+      "sha256": "61e0023c81fee8b03f63d4e0667d196279be9effaed310a0e0063bb7b204502c",
+      "size_bytes": 201366
+    },
+    "result": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/result.json",
+      "sha256": "1596843eca8377fdb17359e3a70009b84c95aad5a0219531f521e52e21659e5b",
+      "size_bytes": 213849
+    },
+    "build_log": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/build.log",
+      "sha256": "5e030ba06a18460705798530819496a4724ae59258ea9bca83071c71800ddbec",
+      "size_bytes": 35282
+    },
+    "source_inputs": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/source-inputs.json",
+      "sha256": "d5df7461e3a9ca882024cda430fe31cf3bde9767ef0149714a3356837e72e586",
+      "size_bytes": 38883
+    },
+    "source_audit": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/source-audit.json",
+      "sha256": "d09f28e64cdb731d690f9fdec7e596d81baf82cc41f1a8241b470d74edccb815",
+      "size_bytes": 1993
+    },
+    "installation_proof": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/installation-proof.json",
+      "sha256": "5260fffe46344748bc7dff77455a154ae7eab281147baa7f1fcb3e034dbbeed7",
+      "size_bytes": 49933
+    },
+    "sandbox": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/sandbox.json",
+      "sha256": "07680fddc0ac3c0cc5790bfb331002d1d9bf5dd50dafd1422279173a2d445510",
+      "size_bytes": 2337
+    },
+    "preservation": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/preservation.json",
+      "sha256": "17430378bc1d539fffe8be201a4910eb349e43486c2ed1e7310b764291047cbd",
+      "size_bytes": 13833
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-policy-only-v13h-1/capture.json",
+      "sha256": "60bc8dddd46bf2d8b9836a3c8f317fbf57130cf3f87eddf6a7b96c20630ad43d",
+      "size_bytes": 8094
+    },
+    "started_at": "2026-08-30T04:55:14.335858+00:00",
+    "completed_at": "2026-08-30T05:40:07.007967+00:00",
+    "goals": [
+      "precompiled_sepolicy",
+      "precompiled_sepolicy_without_vendor",
+      "sepolicy_neverallows",
+      "se_freeze_test",
+      "sepolicy_test",
+      "sepolicy-analyze",
+      "nezha_factory_precompiled_sepolicy",
+      "nezha_factory_file_contexts_test",
+      "nezha_factory_property_contexts_test",
+      "nezha_factory_hwservice_contexts_test",
+      "nezha_factory_service_contexts_test",
+      "nezha_factory_vndservice_contexts_test",
+      "nezha_factory_seapp_contexts_checked",
+      "nezha_factory_platform_seapp_contexts_checked",
+      "nezha_factory_sepolicy_test",
+      "nezha_factory_dev_type_test",
+      "nezha_factory_oem_policy_check",
+      "nezha_erofs_metadata",
+      "plat_sepolicy.cil",
+      "plat_mapping_file",
+      "system_ext_sepolicy.cil",
+      "system_ext_mapping_file",
+      "product_sepolicy.cil",
+      "product_mapping_file",
+      "plat_sepolicy_genfs_202504.cil",
+      "plat_mac_permissions.xml",
+      "plat_seapp_contexts",
+      "system_ext_mac_permissions.xml",
+      "system_ext_seapp_contexts",
+      "product_mac_permissions.xml",
+      "product_seapp_contexts"
+    ],
+    "goal_count": 31,
+    "main_ninja_actions_after_configuration": 273,
+    "exit_code": 0,
+    "build_passed": true,
+    "source_inputs_unchanged": true,
+    "source_files_bound": 182,
+    "native_sandbox_verified": true,
+    "sandbox_fallback": false,
+    "timed_out": false,
+    "forced_kill_after_timeout": false,
+    "remaining_build_processes": [],
+    "preserved_policy_outputs_verified": 11,
+    "protected_runtime_outputs_unchanged": 11,
+    "captured_files": 35,
+    "captured_bytes": 3466855,
+    "all_capture_files_rehashed": true,
+    "maximum_page_size": 16384,
+    "maximum_page_size_check_enabled": true,
+    "provider_runtime_requested": false,
+    "provider_runtime_built": false,
+    "strict_elf_actions_verified": false,
+    "images_requested": false,
+    "complete_rom_built": false,
+    "independent_policy_analysis_complete": false,
+    "exact_assertion_and_effect_analysis_verified": false,
+    "latest_independently_verified_policy_baseline": "v12f/export4",
+    "phone_accessed": false,
+    "scope": "Successful actual 31-goal policy-only Android source build for installed v13ha. The source/sandbox and preserved-output checks pass. Exact provider assertion/effect and source/M4 semantics remain pending independent analysis; no provider runtime/ELF action, image or hardware result follows."
+  }
 }

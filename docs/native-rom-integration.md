@@ -1,12 +1,19 @@
 # Native ROM integration after v11b
 
+The **policy-only-v13h-1** source build passes at **2026-08-30 05:40:07 UTC**:
+31 goals and 273 Ninja actions after configuration, with unchanged source inputs
+and verified sandboxing. The v13ha correction is installed. Independent analysis
+of the resulting provider policy remains pending; no new exact assertion/effect,
+provider runtime/ELF, image adoption or hardware result is claimed.
+
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
 reviewed property effects and zero permissive domains in three binaries.
 Source/M4, API mapping, compiler, OEM guard and nine fresh check bindings pass.
-This is the latest verified v12f policy baseline. The later v13f provider inputs
-are installed, but their first 31-goal policy build failed before policy
-compilation; policy-image adoption remains separate. The Camera/mi_ext/recovery
+This remains the latest independently verified policy baseline. The earlier
+v13f bootstrap failure is preserved; the corrected v13ha source build does not
+replace independent semantic verification. Policy-image adoption remains
+separate. The Camera/mi_ext/recovery
 phase and bounded producer review pass, with all eleven installed base payloads
 inspected. Runtime API closure, Camera APK integration and a complete signed
 boot chain remain unverified.
@@ -15,7 +22,7 @@ The later isolated native **policy-images-export4-v1** reconstruction passes
 nine checks and 38 commands with zero skips. Two independent complete
 TAR/image/export sets reproduce the exact five policy changes for the sealed
 v12/export4 baseline. These raw EROFS outputs remain unadopted and do not validate
-active v13f inputs, AVB, partition fit or boot.
+active v13ha inputs, AVB, partition fit or boot.
 
 The expanded **policy-v12f-export-1** build passed at **2026-08-30 00:16:57 UTC**
 (August 29 in New York), installing the missing runtime CIL/mapping outputs and
@@ -366,7 +373,7 @@ first Evolution boot or Camera/Leica operation is established.
 
 | Slice | Verified result | Still required |
 | --- | --- | --- |
-| [Sigma/QCC source admission](framework-provider-source-admission.md) | v13 candidate and repeat are byte-identical; the later v13f transaction installs the exact device, policy and provider inputs with the scoped mdnssd visibility patch | Complete current policy build and independent analysis, strict native runtime ELF/linker checks, full labeling and service validation |
+| [Sigma/QCC source admission](framework-provider-source-admission.md) | Historical v13 candidate/repeat and v13f installation are preserved; the v13ha correction is installed and its 31-goal policy source build passes | Independent provider-policy analysis, strict native runtime ELF/linker checks, full labeling and service validation |
 | [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host verification binds nine composed source files through patches 0005–0009; source admission and 43 isolated native Kati cases pass | Guest installation and ordinary target-files checks; a new complete preservation contract for policy-bearing vendor/ODM derivatives |
 | [Host AVB signing](avb-signing.md) | Inert planning, offline workflow tests and real unsigned countrycode/pvmfw descriptor-carrier checks; original inputs preserved | All 15 final input images with correct hashtrees/FEC, explicit Mac signing and independent verification of the resulting 17 image roles |
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
@@ -374,7 +381,8 @@ first Evolution boot or Camera/Leica operation is established.
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
-| [Policy-image input preparation](policy-image-inputs.md) | Commit `35324b4` adds explicit v12/export4 record admission; the later native reconstruction qualifies the exact five-file raw derivation; historical default remains blocked | AVB/footer/FEC, partition fit and image adoption; the v12 profile does not admit current v13f inputs |
+| [Policy-image input preparation](policy-image-inputs.md) | Commit `35324b4` adds explicit v12/export4 record admission; the later native reconstruction qualifies the exact five-file raw derivation; historical default remains blocked | AVB/footer/FEC, partition fit and image adoption; the v12 profile does not admit current v13ha inputs |
+| [Factory Camera grant behavior](../research/factory-camera-permission-grants.json) | Commit `e433a5d` traces three pure-signature requests through captured grant-evaluator and service source; 30 focused tooling tests pass | Effective signing/flags/grants, generated enforcement bodies and actual Camera behavior; no grant or APK installation is performed |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
 
 The metadata projection is content-only packaging input. It is not a full
@@ -399,7 +407,7 @@ the transaction journal read back as `commit_verified`. It installs the device,
 policy and framework-provider trees plus the scoped `external/mdnsresponder`
 visibility change. Previous objects and independent copies remain preserved;
 the original images, Camera runtime, mi_ext, recovery and exporter trees are
-unchanged. Active inputs are now v13f, but export4's verified policy baseline
+unchanged. Active inputs became v13f at that checkpoint, but export4's policy baseline
 still applies only to the earlier v12f input set.
 
 The **policy-only-v13f-1** request contains 31 exact goals, including
@@ -413,8 +421,8 @@ No new policy compiled, no context check ran, and no provider ELF action passed.
 Source inputs remained unchanged; the phase recorded no timeout or remaining
 process, and never reached the native Ninja sandbox. The six-file failure
 capture totals 159,676 bytes. Resolve the exact ABI/source graph rather than
-blindly rewriting the V2 dependency to V4. V13f remains installed, but
-v12f/export4 is still the latest verified policy baseline.
+blindly rewriting the V2 dependency to V4. V13f remained installed after that
+failure; the later v13ha correction and successful source build are recorded below.
 
 Three isolated native Soong fixtures pass their expected outcomes: a consistent
 shared-prebuilt graph succeeds, while both shared-scoped and top-level mixed
@@ -435,8 +443,35 @@ runtime linker/CFI routing and the remaining caller ABI stay unverified. The
 host-verified v7 Miracast correction is now committed as **364ab89**, including
 the producer and consumer bindings. The [correction record](../research/framework-provider-audio-compatibility.json)
 preserves the original input and binds the exact one-byte DT_NEEDED derivation.
-The v13h bundle/candidate, installation and actual source build remain pending;
-these host results do not establish the whole caller ABI or runtime behavior.
+Those host results do not establish the whole caller ABI or runtime behavior.
+
+The first **run-v13h** snapshot failed before staging because the absent provider
+producer had a missing intermediate parent directory. Its empty stdout, nonzero
+exit and diagnostic are preserved. The **run-v13ha** retry changes only the
+snapshot handling and run label, retaining the same profile. Its read-only
+snapshot completes at **04:48:32 UTC** with all 1,179 revisions/origins matching,
+1,173 clean projects and the six reviewed modified projects. No source reset,
+replacement sync or native build is performed by that snapshot.
+
+The v13ha installation commits at **04:52:42 UTC**: three tree exchanges and
+nine journal events, replacing only the device, policy and framework-provider
+trees. The manifest is `07ff79c7…f27b0` (89,987 bytes); the installation receipt
+is `1b035f5a…39ad7` (69,309 bytes), bound by the 537-byte commit acknowledgment.
+Old objects and independent copies remain preserved. The subsequent source
+proof binds 182 files; all 55 prior output identities were preserved at
+installation, including the eleven runtime outputs. The snapshot retains the
+16 KiB maximum and enabled prebuilt checks, without claiming an ELF action ran.
+
+The actual **policy-only-v13h-1** build runs from **04:55:14 to 05:40:07 UTC**,
+exit 0, for 31 goals and 273 Ninja actions after configuration. All source
+inputs remain unchanged; the native sandbox is verified with no fallback,
+timeout or remaining build process. Eleven preserved policy outputs and all
+eleven protected runtime outputs pass their separate post-build checks. The
+35-file capture totals 3,466,855 bytes; its 213,849-byte result is
+`1596843eca8377fdb17359e3a70009b84c95aad5a0219531f521e52e21659e5b`.
+Provider runtime/ELF actions and images are not requested or built. Independent
+policy analysis is still required before treating the new provider inputs as
+semantically verified or deriving matching images.
 
 The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
@@ -462,8 +497,9 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest coordinator `python3 -m unittest discover -s tests -v` run passed
-**3,634 tests in 156.509 seconds with zero failures, errors or skips**, covering
-the v7 producer/consumer integration committed as `364ab89`. The preceding
+**3,634 tests in 152.111 seconds with zero failures, errors or skips**, after
+the v13ha integration. The previous coordinator run passed 3,634 in 156.509
+seconds for the v7 producer/consumer integration committed as `364ab89`. The preceding
 policy-image profile checkpoint passed 3,591 tests in 152.682 seconds at
 `35324b4`. The prior coordinator component
 checkpoint passed **3,558 tests in 163.269 seconds**. The separate page-size agent
@@ -623,7 +659,7 @@ The coordinator's complete unmocked replay passes policy, sidecar and original
 filesystem qualification checks. It performs no TAR preparation, native
 execution or image access. The historical profile remains the blocked default;
 neither profile selection nor this replay establishes compatibility with the
-active v13f inputs or admits changed-policy images.
+then-active v13f inputs or admits changed-policy images.
 
 The subsequent **policy-images-export4-v1** run executes the actual public TAR
 preparation and native EROFS writer under the qualified finite limits. All nine
@@ -656,14 +692,13 @@ This qualifies the raw five-file derivation for sealed v12/export4 inputs only.
 Original images and staging, Android source/output and the phone are untouched.
 No hashtree/FEC/footer is generated, no AVB signing or verification is performed,
 and no partition-fit, source/image adoption, retained-kernel mount or boot result
-is established. The active v13f provider policy still requires its own successful
-source build, independent analysis and matching image derivation.
+is established. The current v13ha provider policy has a successful source build
+but still requires independent analysis and a matching image derivation.
 
 ## Next build sequence
 
-Admit the committed v7 correction through a verified v13h bundle/candidate and
-guest transaction, then run the strict native build and verify the provider
-delta against v12f/export4 before deriving matching provider
+Independently analyze the successful v13h policy build and verify the provider
+delta, source/M4 provenance and assertions against v12f/export4 before deriving matching provider
 policy images. The successful raw v12/export4 reconstruction remains a separate
 baseline and must not be substituted for the active provider inputs.
 Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
