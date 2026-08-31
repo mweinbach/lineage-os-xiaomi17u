@@ -29,7 +29,9 @@ source is installed**, and the 37-goal **pagesize-v13j-1** component build passe
 at **2026-08-31 00:43:11 UTC (August 30 in New York)**. Generated settings now
 verify 4096 with prebuilt checks enabled. The separate **26-provider ELF/symbol
 checks pass freshly at 01:15:10 UTC**; full VINTF and runtime validation remain
-pending. All earlier 16 KiB evidence is preserved. The inactive Camera stage and
+unverified. The later full VINTF run reaches the combined command and fails on
+155 device HAL instances absent from the framework matrix. All earlier 16 KiB
+evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
@@ -407,6 +409,7 @@ first Evolution boot or Camera/Leica operation is established.
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
+| [ROM construction prerequisites](rom-construction.md) | Commit `4070b1a` adds an unbound inspection-only descriptor/consumer; exact missing native roles are reported and explicit generator selection refuses before private inputs or publication | Reviewed selected-input binding, necessary VINTF coverage and native construction integration; no BoardConfig or blocked target is enabled |
 | [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit v13h evidence admission; matching raw reconstruction and keyless footer checks pass, with earlier profiles/default unchanged | Signed parent chain, physical partition fit, current-source compatibility and image adoption |
 | [Factory Camera grant behavior](../research/factory-camera-permission-grants.json) | Commit `e433a5d` traces three pure-signature requests through captured grant-evaluator and service source; 30 focused tooling tests pass | Effective signing/flags/grants, generated enforcement bodies and actual Camera behavior; no grant or APK installation is performed |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
@@ -698,6 +701,22 @@ failures remain preserved. The unfinished 16 KiB packet is historical after the
 source turnover. The 4 KiB component build now passes; a fresh capture and full
 compatibility checks must use its actual outputs.
 
+The current **allocator-producers-v13j-4k-1** capture runs from **01:26:19 to
+01:31:45 UTC** and passes nine commands across three query layers, zero skips,
+describing all three allocator outputs. Its outer receipt is
+`3fd6d3dda7681d1351dfc9daeb84858fd98b8029a69d8ff015b0b54583aaf40c`;
+the inner producer receipt is
+`5e8a44f27ab9ea25fd93ff9d666f418e00d16373c481b5d1ed243f43ada02744`.
+The 66 captured payloads total 1,879,899 bytes, with collection receipt
+`7e0927910e48434f9866d57282c15a737e1f5f03e8dcac6d95cf5c8256a3890e`.
+Host envelope admission
+`c54fb57f78e23f510a593a004930e463e47cbb5c6d4b498b85b2527758c1ba8e`
+binds the recorded success, preserved source/graph/log inputs and matching
+producer identities. It explicitly does not perform full native allocator
+admission: external native references must still be reopened. No fresh compiler
+action, source-to-binary equivalence, runtime registration or full compatibility
+is inferred from this read-only capture.
+
 The auxiliary source-to-bytecode capture v2 preserves a 179-file failed
 capture: thirteen commands pass, but the producer query exceeds its 8 GiB RSS
 limit. The query-only v3 successor allows 32 GiB sampled RSS and 300 seconds,
@@ -709,8 +728,63 @@ rlimit. It gets past the memory limit but fails on `unknown pool name
 Thirteen other commands and all postflight guards pass; preservation covers
 selected bound inputs, not a complete OUT census. Neither attempt completes a
 source-to-bytecode comparison or full VINTF. The corrected combined-graph
-retry is pending verification, without inventing a pool or changing the global
-VINTF memory limit.
+retry below is a separate passing result, without inventing a pool or changing
+the global VINTF memory limit.
+
+The **v4 compiler capture and whole-bytecode proof both pass**, with capture
+receipt `0f30a4c4c3f5618f0dda4b5bcc1d9816af7074a46e93a7b0a34345960c3bd2f1`
+and proof receipt
+`442daf21b91e5109d83e0bec654b88a4375273a48240c05063c7a84b174e66eb`.
+The two phases execute 28 native commands, all with zero exit and zero skips.
+Four comparisons reproduce complete packaged `.pyc` bytes, including headers
+and marshaled bodies, using the exact pinned Soong compilation recipe:
+`apexd_host.pyc`, `deapexer.pyc`, and `apex_manifest.pyc` in each tool. The
+10,987-byte inner proof is
+`6638a0075fd9fdd7fb4475ac848c619ee3b920e5f4c45e966150e0ccc1c23787`.
+The host capture returns 183 capture-phase files and 185 proof-phase files;
+independent review rehashes 408 evidence/input files and verifies all four
+comparisons, with receipt
+`e2e7ba117137fdf8384dc47f4c78141a3e754035fe5d04667c8318c3ca36aeda`.
+It does not rerun native execution or reopen live guest inputs. Preservation
+covers the selected bound inputs and source-project state, not a whole OUT
+census. Generated-proto source provenance, APEX signatures, runtime activation,
+full VINTF and boot remain unverified.
+
+The subsequent **current 4 KiB full-VINTF input capture** completes with zero
+exit and empty stderr. Its 493,527-byte receipt is
+`83a59e55a5732cbbf44693f7cb2552817e26f621e10c99c9e07b111691ea49dd`.
+It freshly reopens and verifies the external allocator prerequisites, binding
+nine commands, three query depths and six described nodes. It also revalidates
+the existing four whole-PYC comparisons and their current compiler/runtime
+inputs; no new bytecode compilation occurs in this capture. The closure binds
+22 framework XML files and all 39 APEX packages, comprising 36 framework and
+three vendor packages, against the actual 4 KiB component result and strict
+4096 settings. Source and Android outputs remain unchanged. APEX materialization
+and full compatibility comparisons remain unexecuted in this capture; its
+compatibility, runtime-activation and ROM-readiness fields stay false.
+
+The subsequent **full 4 KiB VINTF run fails normally**. APEX materialization
+for all 39 packages, framework consistency and vendor/ODM consistency each
+return zero. The combined framework/vendor/kernel/APEX command returns **65**:
+`checkUnusedHals` reports **155 unique instances** in the device manifest but
+absent from the framework compatibility matrix. There are no unreached commands;
+all fifteen postflight checks pass, and source and Android outputs remain
+unchanged. The framework command retains one explicit matrix-definition skip
+and two warnings. The log identifies kernel 6.12.23 as non-mainline, but complete
+kernel acceptance and required VINTF coverage are not established by this
+failure. The native 1,129,945-byte receipt is
+`59fd65765e521e6ca98f91b27067d285d46ec17bbbbdd6fd4484c448dce6e969`.
+The 54-file / 5,279,920-byte host capture includes the complete selected
+diagnostics, not the materialized APEX payloads or manifests. No APEX-signature,
+runtime-activation, signed-chain or boot result follows. The next source work
+must resolve the framework matrix without suppressing the failing check.
+Independent host review
+`61960cea5eeeb0ca068780339e8a369e5b91f5f1ab0dae32f9cde906ac502f55`
+binds the full failure, all 54 captured files and nine immutable command-ledger
+revisions. The separate materialization review covers the recorded 39-package
+closure. Its 1,110 payload inventory rows describe paths and metadata, not
+hashes of every regular-file body; extracted manifest and payload bytes were
+not returned by this capture or reopened by the host reviewer.
 
 Three separate capture attempts remain failures: the footer-tool reader rejected
 a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
@@ -833,8 +907,26 @@ independent review
 `177217e380639605d1b2b3fe633653b7b40f427731a18e63dc8e0a95dc483646`
 passes for staging only. All 204 source files, thirteen policy/eleven runtime
 outputs and sixteen graphs are preserved. The active namespace is unchanged;
-activation remains held for a fresh producer receipt
-and full VINTF. No APK selection, graph generation or build follows.
+activation remains held for full VINTF and the remaining Camera admission
+checks. No APK selection, graph generation or build follows.
+
+The fresh **4 KiB Camera prerequisite capture** runs from **01:46:10 to
+01:50:13 UTC**, with four passing read-only queries and unchanged source,
+captured-output and query-log guards. Its 3,120,685-byte receipt is
+`f930b76d8d4939587948f7540bc492bedf12b1e4a3e3a7181635eee01177ebde`.
+Independent review
+`8514c0502c3a8cc882639ccdd441b45d4b4b56a6ef246b7c7e60d189eae25cde`
+rehashes 28 copied files, eight query streams and 83 host bindings. It verifies
+the strict 4096/prebuilt/Bionic/preoptimization settings and unchanged sixteen
+graph/four log identity records; it does not reread complete guest graph bytes.
+Two namespace mapping warnings remain recorded, with all native Ninja stderr
+streams empty. That capture does not include the complete target inventory,
+activate the namespace or build an APK. The subsequent **complete target/alias
+inventory capture** passes at **02:29:12 UTC**, with 1,570,791-byte receipt
+`20aa80f53b90d9a74e3def15875d967b422488e23c1b2c756181b97b4b6b9092`.
+It verifies source/output preservation. Independent inventory review remains
+pending; source activation, graph execution, APK build and runtime grants are
+still unadmitted.
 
 Provider capture v6 fails on ambiguous source/private-provider resolution.
 The corrected **v7 read-only capture** passes five queries, retaining strict
@@ -947,6 +1039,23 @@ receipt remains provenance, not a fresh 4 KiB image-copy operation. Neither
 these candidate sources nor the metadata/image selections are installed;
 current input qualification, normal product execution and the metadata hook
 remain pending. Older descriptors and delivery modes are unchanged.
+
+The subsequent **inactive 4 KiB policy-image stage passes** with dispatch
+`b2607057026c8ba6be71fb9d810fa22d91a2719672fb7416eeef39522e86de4a`
+and native receipt
+`0bbfe2a95d4a2a205602119120376b5b224b9d9dcb3df15bb5abbd056a77c651`.
+It prepares a separate candidate subtree containing the exact vendor/ODM
+keyless leaf bytes and their bound controls, rehashing current source, policy
+and runtime inputs. The source/OUT namespace is writable, so preservation is
+verified rather than attributed to read-only mounting. Active source and
+Android outputs remain unchanged. Complete stage review
+`ddffc5ec310a0dc624e365abbc9919e5aa7948e240b69abb7dec70a048badcde`
+binds the separate transport and native-receipt reviews, with no findings.
+All eleven captured transport files verify; large image bodies were not
+reopened by the host reviewer. The admitted scope is this inactive four-file
+copy only. A later transaction requires deliberate rebase and fresh source
+admission after the matrix correction; metadata installation, active image
+selection and signed-parent/physical-fit validation remain separate.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1078,8 +1187,22 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,835 tests in 166.748 seconds with zero failures, errors or skips**, executed
-by the coordinator on `8fc2162` with the seven delivery successor files later
+**3,892 tests in 164.280 seconds with zero failures, errors or skips**, executed
+by the care-map owner, covering `4070b1a` and the four files committed unchanged
+as `203ab67`. The coordinator rehashed the complete log
+`7b07299ac970db1d268613633b0da58ac535ef5799bbef5dd457174c13007125`.
+The handoff is
+`4d0dcc25a490b96739f6cc550dd674d4026af0313250c0b3c4ee2723fc5e012a`.
+This is host coverage for the inactive original-ODM-import care-map successor;
+native codec/tool qualification, the final Evolution SYSTEM input and active
+composition remain pending. Later matrix source changes are not covered.
+The preceding run passed **3,854 tests in 172.911 seconds**, executed
+by the construction owner for the five files committed as `4070b1a`.
+The coordinator independently rehashed the complete log
+`7740705a60d9546d807c2068125743832720a6bd967378c522814ed390176711`.
+This run excludes the concurrently authored 0014 care-map tests; a combined
+coordinator rerun is pending. The preceding coordinator run passed
+**3,835 tests in 166.748 seconds** on `8fc2162` with the seven delivery successor files later
 committed unchanged as `137f438`. The complete log is
 `a65f67c99fe5ce4dc66c709db130cd38d9f1fff36e1c2cee83dacb6946d22ed6`.
 The preceding coordinator run passed **3,795 tests in 163.444 seconds** on
@@ -1369,8 +1492,12 @@ The earlier raw v12/export4 reconstruction remains a separate baseline.
 Use the completed 4 KiB component result and its verified generated settings
 for the next provider and compatibility checks. Preserve the earlier allocator
 producer capture and unfinished 16 KiB full packet as
-historical evidence. Qualify packaged bytecode against the pinned Soong recipe,
-then capture fresh 4 KiB outputs for full framework/vendor/APEX/kernel comparison.
+historical evidence. The four selected whole-bytecode comparisons now pass;
+the fresh 4 KiB input capture verifies the producer prerequisites and complete
+selected XML/APEX closure. Materialization and separate consistency checks now
+pass, but the combined check fails on 155 missing framework-matrix instances.
+Implement and verify the source matrix correction, then rerun the full checks
+and assess necessary coverage before claiming compatibility.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
 The separate 26-provider ELF/symbol checks now pass for the installed 4 KiB

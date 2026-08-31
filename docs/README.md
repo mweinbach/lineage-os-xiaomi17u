@@ -12,24 +12,25 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Installed 4 KiB source, 37-goal component build and all 26 fresh provider ELF/symbol checks pass; full VINTF, runtime and hardware validation remain pending |
+| [Native ROM integration](native-rom-integration.md) | 4 KiB component/provider checks and bytecode proof pass; full VINTF reaches a 155-instance framework-matrix failure, with original evidence and remaining runtime/hardware gates preserved |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
-| [VINTF build closure](vintf-compatibility.md) | Actual selected framework/kernel inputs, complete artifact requirements and pinned validator limits |
-| [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation/provenance and current 4 KiB allocator load-alignment proof; producer qualification for the new output, full VINTF and runtime registration remain pending |
+| [VINTF build closure](vintf-compatibility.md) | Current 22-XML/39-APEX input closure is captured; the actual combined check fails on framework-matrix HAL coverage, with a retained matrix-definition skip and separate validator limits |
+| [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation and current 4 KiB alignment/producer capture; guest prerequisite verification passes, without source-to-binary equivalence, full VINTF or runtime registration |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
-| [Optional mi_ext care-map source](mi-ext-care-map.md) | Committed but inactive guarded path; authentic ODM imports, final Evolution SYSTEM marker, native packaging and OTA coverage remain unqualified |
+| [Optional mi_ext care-map source](mi-ext-care-map.md) | Committed inactive successor binds all 22 original ODM property files and exact imports; native tools, final Evolution SYSTEM marker, packaging and OTA coverage remain unqualified |
 | [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |
 | [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Maintained policy-image delivery](policy-image-delivery.md) | Explicit 4 KiB successor repeats 247-file host bundles bound to the actual component result; metadata hook and source/image selection remain pending, with signed-chain/rollback/fit gates retained for final artifacts |
 | [Device delivery integration](target-files-delivery-integration.md) | Committed opt-in generator and matching 47-file 4 KiB delivery candidates; isolated Kati fixture passes 60 cases, while ordinary product execution and source/image selection remain pending |
+| [ROM construction prerequisites](rom-construction.md) | Committed inspection-only consumer reports five unbound native input/coverage roles and refuses construction; no BoardConfig or blocked target is enabled |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
 | [Policy-image input preparation](policy-image-inputs.md) | Explicit v13h profile binds policy/digest evidence; raw reconstruction and keyless footer checks pass, with signed parent chain, physical fit and adoption pending; earlier profiles/default unchanged |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
@@ -74,7 +75,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Preserved Xiaomi.eu/live input checks and two reproduced packaging failures |
 | [Original factory Camera APK](factory-camera-apk.md) | Unchanged factory input passes strict privileged/preprocessed packaging; permission grants, effective SELinux label and product selection remain unverified |
 | [Factory Camera permission grants](../research/factory-camera-permission-grants.json) | Captured source distinguishes pure-signature grant denial and service enforcement; effective grants, installed signing state and Camera behavior remain unverified |
-| [Factory Camera build-only packet](camera-apk-build-admission.md) | Exact packet, native prerequisite/capture and inactive candidate staging; no active namespace, product membership or APK component result |
+| [Factory Camera build-only packet](camera-apk-build-admission.md) | Fresh 4 KiB prerequisite capture passes review; complete target/alias inventory capture also passes with review pending, while activation and APK build remain held |
 | [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch and native fixtures; current component build and bounded producer/output review pass, without Camera APK or runtime API closure |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
