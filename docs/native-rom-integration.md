@@ -60,11 +60,14 @@ The original guard reads `TARGET_RELEASE` after the pinned release configuration
 forbids direct access. The current **first-target-files-release-flags-v1** source
 corrects that one file at **09:17:15 UTC**, retaining the source count and prior
 outputs. Independent correction review passes for the recorded installation;
-successful product checks and target-files builds remain unverified.
-The subsequent selected-input closure is sealed. The fourth ordinary product
-configuration attempt reaches native dumpvars but fails on an obsolete variable
-query. The three preceding preflight failures are preserved; none invoked the
-native build system. A corrected query remains pending.
+complete native configuration, metadata-file freshness and target-files builds
+remain unverified. The subsequent selected-input closure is sealed, and two
+corrected native queries pass 28 selected value checks. The three preflight
+failures and fourth attempt's native obsolete-variable failure remain preserved.
+Their later success does not establish fresh metadata-file contents or Ninja
+build actions. The following `nothing` command exits zero but fails two exact
+generated-configuration validation checks; that attempt is recorded separately
+below.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1310,9 +1313,39 @@ kernel-origin/AVB warning. Preflight completes, all six source/input admission
 sets match before and after, and no postcheck errors are reported; the product
 profile itself does not complete or validate. Seven metadata/log preservation
 copies verify. No image invalidation occurs, but whole-output-tree immutability
-is not claimed. A source-bound query correction is being prepared without an
-Android-source change. Generated product metadata, sidecar production and
-target-files remain unverified.
+is not claimed. The later source-bound query correction changes the query
+adapters, not Android source; the failed receipt remains unchanged.
+
+The corrected **config5** and **context5** native queries finish at **10:40:19**
+and **10:45:23 UTC**, both with exit 0 and successful value postchecks: 21 primary
+configuration fields and seven context fields. A fresh read-only confirmation
+rehashes both guest result files. Each query preserves the six source/input
+guard sets, 1,475 selected inputs, 478 source files, 1,179 pins and the complete
+generated configuration. Independent reviews of both queries are clear within
+that scope.
+The three `FROM_FILE` assignments are checked as literal references. The six
+metadata-file bodies and freshness require the following ordinary `nothing`
+phase; the selected build identifier is not yet verified from its generated
+file. The complete property-declaration string matches the expected source
+projection, but effective postprocessed properties remain unverified. Both
+known kernel-origin/AVB warning occurrences remain in each query. Neither
+query verifies Ninja actions, a new producer graph, sidecar outputs, images,
+target-files or boot.
+
+The **nothing1** native invocation runs from **10:56:20 to 11:09:02 UTC** and
+returns exit 0. Its wrapper returns exit 1: `verify_source_history` and
+`verify_strict_settings` each report that the full generated Soong configuration
+differs from the exact reviewed phase state. Four after-admission entries match,
+but the archive entry returns cached source-history data after the configuration
+guard throws. Only selected-input, source-lock and protected-input groups are
+fresh. Neither the retained source-history observation nor that archive entry
+is a fresh full after-source/archive verification. The profile does not complete, and
+its metadata postcheck remains null, so no six-file content/freshness result is
+claimed. Seven preservation copies verify and no image invalidation is requested;
+whole-output-tree immutability is not claimed. The 18,464-byte native stdout ends
+at the `nothing` phony target and native stderr is empty. These raw logs and the
+failed wrapper are preserved without diagnosing the configuration change or
+claiming component-image, target-files or boot success.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1444,10 +1477,14 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,972 tests in 168.418 seconds with zero failures, errors or skips**, executed
-by the coordinator. All three product-input checkpoint documents stayed
+**3,972 tests in 169.113 seconds with zero failures, errors or skips**, executed
+by the coordinator. All three checkpoint documents stayed
 unchanged during the run; the subsequent factual test-evidence refresh is separate.
 The full log is
+`43cb0ecd5d2b68942fe35389fabc963eb30639d4f64d0cef03c8a133974e1a8e`.
+The earlier v1 launcher failed preflight before running tests; it is not counted
+as a skipped or completed suite. The preceding 3,972-test run took 168.418
+seconds, preserving its three product-input checkpoint documents; its log remains
 `e14c7ba21776f0dde729c1511131e8c741187334674e8f44c493a8df520a28d0`.
 The preceding 3,972-test run took 166.208 seconds, preserving all eight
 construction-source checkpoint files; its log remains

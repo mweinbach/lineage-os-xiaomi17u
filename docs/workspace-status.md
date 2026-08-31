@@ -17,12 +17,12 @@ not a prerequisite for that initial bring-up. The active guest source is now
 outputs; independent correction review passes for the recorded installation.
 It replaces forbidden direct
 `TARGET_RELEASE` access with four resolved release flags, while `bp4a` remains
-a separate invocation binding. Normal Kati and target-files validation remain
-pending at this source checkpoint. The selected input closure is now sealed.
-The fourth ordinary product-configuration attempt reaches native dumpvars but
-fails on its obsolete `BUILD_DATETIME` query. Three earlier attempts stopped in
-preflight. A query correction is being prepared; no configuration or build
-success is claimed. The maintained
+a separate invocation binding. The selected input closure is now sealed, and
+the corrected native queries pass **21 configuration and seven context value
+checks**. The subsequent `nothing` command exits zero, but its validation fails
+two exact generated-Soong-state checks. Metadata-file contents/freshness and
+target-files remain unverified. The three
+preflight failures and obsolete-query native failure remain preserved. The maintained
 [construction source selector](rom-construction.md) now reproduces all thirty
 installed device files through the full original input checks. Two fresh
 candidates match, while omitting the selector preserves the original candidate.
@@ -504,8 +504,28 @@ The fourth attempt reaches native dumpvars and fails at **10:17:52 UTC** because
 `BUILD_DATETIME_FROM_FILE`. All six source/input guard sets match before and
 after, the seven metadata/log preservation copies verify, and no images are
 invalidated. Both occurrences of the existing kernel-origin/AVB warning remain.
-The query correction and next outcome are pending; no sidecar, final metadata
-hook or target-files result is inferred.
+The later corrected queries retain this failed receipt.
+
+The corrected native **config5** and **context5** queries finish successfully at
+**10:40:19 and 10:45:23 UTC**, checking 21 and seven selected values. Both six-part
+source/input guard sets and the full generated configuration remain unchanged.
+The three `FROM_FILE` results are literal references, not file-content proof;
+six metadata files and their freshness still require the ordinary `nothing`
+phase. Independent reviews
+of both queries are clear within their selected-value scope.
+The two existing kernel-origin/AVB warnings remain in each query. No Ninja
+actions, effective partition properties, images, sidecars or target-files are
+verified by these queries.
+
+The **nothing1** native command finishes at **11:09:02 UTC** with exit 0, but the
+overall attempt returns exit 1. `verify_source_history` and
+`verify_strict_settings` both reject a generated Soong configuration that differs
+from the exact reviewed phase state. Four after-admission entries match, but the
+archive entry is cached alongside the stale source-history observation. Only
+selected-input, source-lock and protected-input checks are fresh; this is not a
+fresh full source/archive proof. The metadata postcheck does not run, and no six-file
+success is claimed. The result and raw logs are preserved while the configuration
+change is investigated; no cause or image/boot success is inferred.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -560,10 +580,13 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,972 tests in 168.418
+The latest completed full workspace suite passed **3,972 tests in 169.113
 seconds with zero failures, errors or skips**, executed by the coordinator.
-All three product-input checkpoint documents stayed unchanged during that run;
-the subsequent factual test-evidence refresh is separate. The preceding
+All three checkpoint documents stayed unchanged during that run;
+the subsequent factual test-evidence refresh is separate. The earlier v1 launcher
+failed preflight before running tests and contributes no skipped-test count.
+The preceding 3,972-test run took 168.418 seconds and retained its three
+product-input checkpoint documents. The earlier
 3,972-test run took 166.208 seconds and retained its eight construction-source
 checkpoint files. The preceding 3,961-test run took 171.407 seconds and retained
 its three packaging-source checkpoint files.
@@ -623,7 +646,7 @@ Android builds, host policy proofs and physical-device tests. This checkpoint re
 code through `a253c97`, with the previous component checkpoint committed
 as `8fc2162`, followed by `da9648b`, `3001e85` and `4116868`. The active
 guest source is now first-target-files-release-flags-v1 with the 4 KiB product unchanged. Its
-first build remains pending; the latest verified component outputs are from
+first validated build remains pending; the latest verified component outputs are from
 matrix-v1, with the failed wrapper and distinct passing postcheck/review preserved;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 

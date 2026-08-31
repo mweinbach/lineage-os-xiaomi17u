@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "ordinary-product-native-query-failed-correction-pending",
+  "checkpoint": "ordinary-value-queries-passed-nothing-generated-state-validation-failed",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -942,21 +942,23 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 168.418,
-    "code_commit": "43e7349d92072b263c75318b5ff2deb185a85325",
+    "elapsed_seconds": 169.113,
+    "code_commit": "e330a34217c206cfd975161d0caa25b1759bebef",
     "bound_files_unchanged_during_run": 3,
     "checkpoint_document_files": 3,
+    "started_at_utc": "2026-08-31T11:18:43.695955+00:00",
+    "finished_at_utc": "2026-08-31T11:21:33.597682+00:00",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-product-inputs-v1/tests.log",
-      "sha256": "e14c7ba21776f0dde729c1511131e8c741187334674e8f44c493a8df520a28d0",
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-product-queries-v2/tests.log",
+      "sha256": "43cb0ecd5d2b68942fe35389fabc963eb30639d4f64d0cef03c8a133974e1a8e",
       "size_bytes": 687536
     },
     "completion": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-product-inputs-v1/completion.json",
-      "sha256": "17e092df00177d5dfe124fb8be2b7d8fd296320309b3cbeeddc3b2190319ebfb",
-      "size_bytes": 1894
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-product-queries-v2/completion.json",
+      "sha256": "2d7dd81d0c5c848e2e00f39b58fdbae37f82252f4f21aec7ba7dc48164f6a129",
+      "size_bytes": 1897
     },
-    "scope": "Coordinator executed the exact full offline command with all three product-input checkpoint documents unchanged during the run. The subsequent factual test-evidence refresh is separate. The native product query remains failed; no sidecar, target-files, image signing, runtime or hardware success follows from these tooling tests."
+    "scope": "Coordinator executed the exact full offline command with all three checkpoint documents unchanged during the run. The subsequent factual test-evidence refresh is separate. The earlier v1 launcher failed preflight before executing tests and is not counted as a passed or skipped suite. Tooling tests do not resolve the failed nothing profile or establish metadata-file, sidecar, target-files, image-signing, runtime or hardware success."
   },
   "remaining_gates": [
     "Carry the scoped matrix-v1 VINTF result into current-input/construction admission and complete required coverage. All four native commands and independent reviews pass, but framework consistency still skips unlevelled matrix definitions; host RuntimeInfo substitutes kernel SELinux support and omits runtime AVB-version checks. Complete input compatibility remains false. Current allocator prerequisites and package/trust/tool equality are verified; APEX crypto is reused without new crypto commands. Runtime, partition AVB, OTA and boot remain separate.",
@@ -965,7 +967,7 @@
     "The 26 selected provider ELF/symbol checks pass at 4 KiB; complete ABI, runtime services and VTS/hardware remain separate. Preserve the failed v13j stage and 16 KiB four-pass/twenty-two-failure inventory. The paired policy-image and metadata source selection is now committed, but no build or final target-files admission has run from that selection.",
     "Complete framework images and required compatibility/coverage evidence against their final inputs, plus full Treble APK labeling. The selected matrix-v1 VINTF invocation passes all four native commands but does not establish complete input or runtime compatibility.",
     "Verified v13h NONE leaf derivatives are now selected through the reviewed packaging-matrix source transaction, with AVB enabled and original inputs preserved. Final flashable-artifact admission still requires complete signed parent chain, rollback settings and physical partition fit; existing exact package-budget/hashtree/FEC proofs do not replace those gates.",
-    "Admit the corrected constructor guard through normal Kati and actual native dispatch/configuration. Build the three ordinary policy-sidecar modules and verify their real installed outputs. The unchanged final metadata policy/installation checks remain mandatory. Complete target-files, super, A/B, snapshot and OTA packaging; generated build number and helper execution remain unverified, and the optional mi_ext care-map path still needs final SYSTEM/native qualification.",
+    "Carry the successful selected-value queries into ordinary configuration and the nothing phase, verifying all six metadata-file bodies and freshness. Build the three ordinary policy-sidecar modules and verify their real installed outputs. The unchanged final metadata policy/installation checks remain mandatory. Complete target-files, super, A/B, snapshot and OTA packaging; a literal FROM_FILE query does not prove generated file contents, and the optional mi_ext care-map path still needs final SYSTEM/native qualification.",
     "Complete signed AVB chain and rollback compatibility",
     "Separately authorized first Evolution X boot and hardware stabilization"
   ],
@@ -1769,6 +1771,29 @@
         "size_bytes": 1436
       },
       "scope": "Coordinator executed the exact full offline command with all three packaging-source checkpoint documents unchanged during the run. Only evidence documentation changed from the previously tested code. The subsequent factual test-log refresh and two independent-review documentation corrections are separate. This does not establish target-files construction, image signing, runtime behavior or hardware success."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3972,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 168.418,
+      "code_commit": "43e7349d92072b263c75318b5ff2deb185a85325",
+      "bound_files_unchanged_during_run": 3,
+      "checkpoint_document_files": 3,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-product-inputs-v1/tests.log",
+        "sha256": "e14c7ba21776f0dde729c1511131e8c741187334674e8f44c493a8df520a28d0",
+        "size_bytes": 687536
+      },
+      "completion": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-product-inputs-v1/completion.json",
+        "sha256": "17e092df00177d5dfe124fb8be2b7d8fd296320309b3cbeeddc3b2190319ebfb",
+        "size_bytes": 1894
+      },
+      "scope": "Coordinator executed the exact full offline command with all three product-input checkpoint documents unchanged during the run. The subsequent factual test-evidence refresh is separate. The native product query remains failed; no sidecar, target-files, image signing, runtime or hardware success follows from these tooling tests."
     }
   ],
   "previous_v11b_policy": {
@@ -2117,7 +2142,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-31T10:26:51.680995+00:00",
+  "recorded_at_utc": "2026-08-31T11:14:29.610525+00:00",
   "latest_native_build_completed_at_utc": "2026-08-31T06:10:10.772752+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -3495,13 +3520,13 @@
     "installed_product_maximum_page_size_bytes": 4096,
     "installed_prebuilt_alignment_check_enabled": true,
     "last_verified_generated_soong_maximum_page_size_bytes": 4096,
-    "current_generated_soong_maximum_verified": true,
+    "current_generated_soong_maximum_verified": false,
     "current_native_build": "native_matrix_component_attempt",
     "historical_v13g_experiment_adopted": false,
     "latest_completed_component_build": "native_matrix_component_attempt",
     "framework_matrix_source_selected": true,
-    "current_generated_soong_matrix_selection_verified": true,
-    "current_generated_configuration_matches_matrix_source_verified": true,
+    "current_generated_soong_matrix_selection_verified": false,
+    "current_generated_configuration_matches_matrix_source_verified": false,
     "latest_completed_output_integration": "matrix-v1",
     "current_output_verification_reference": "matrix_canonical_xml_postcheck_v2",
     "independent_matrix_postcheck_review_completed": true,
@@ -3535,8 +3560,12 @@
     "construction_release_guard_correction_independent_review_completed": true,
     "ordinary_product_input_closure": "ordinary_product_input_closure",
     "selected_input_build_number": "nezha.76dfc5727ce7a5291cb53565",
-    "ordinary_product_configuration_status": "native-query-failed-no-completed-configuration",
-    "ordinary_product_native_invocation_executed": true
+    "ordinary_product_configuration_status": "selected-value-queries-passed-metadata-files-unverified",
+    "ordinary_product_native_invocation_executed": true,
+    "ordinary_product_value_query_evidence": "ordinary_product_value_queries_v5",
+    "selected_configuration_value_queries_verified": true,
+    "latest_native_configuration_attempt": "ordinary_nothing_phase_v1",
+    "current_generated_configuration_admission_status": "exact-phase-state-validation-failed"
   },
   "latest_native_build_status": "ordinary-provider-install-and-independent-raw-review-passed",
   "provider_aidl_native_followup": {
@@ -4096,9 +4125,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-31T10:17:52.174269+00:00",
-  "latest_timestamped_native_observation_kind": "ordinary-product-configuration-native-dumpvars-failed",
-  "latest_native_observation_kind": "fourth-product-configuration-attempt-native-failure-obsolete-date-query",
+  "latest_timestamped_native_observation_utc": "2026-08-31T11:09:02.342675+00:00",
+  "latest_timestamped_native_observation_kind": "ordinary-nothing-native-exit-zero-profile-validation-failed",
+  "latest_native_observation_kind": "nothing-profile-failed-two-exact-generated-soong-state-checks",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -7490,7 +7519,7 @@
     "Preserve the original matrix38 wrapper failure alongside native exit zero and the distinct passing read-only postcheck. Its 291 progress rows are 163 frontend steps plus 128 Ninja actions; do not infer fresh compiler/checker tests from every row.",
     "Use the separately verified 26 fresh 4 KiB provider ELF/symbol checks, preserving the original 16 KiB outcomes and remaining full-ABI/runtime/VTS limits.",
     "Use the reviewed provider installation, current native producer/input captures and scoped independent reviews of the successful matrix-v1 VINTF invocation. Carry its explicit subcheck/runtime limitations into construction admission. Rebind later source, package, image or trust-input changes; historical APEX crypto remains reused evidence, not a new run.",
-    "Use committed packaging and constructor/date source selections with the one-file release-guard correction and AVB enabled. Admit normal Kati/native dispatch and configuration, build all three ordinary policy-sidecar modules, and run the unchanged final target-files policy/installation gate. Verify generated metadata and real outputs before final signing, rollback/fit checks and separately authorized device validation; source selection alone is not build success."
+    "Use committed packaging and constructor/date sources with the corrected release guard and AVB enabled. Preserve the successful 21-plus-seven selected-value queries, then verify ordinary nothing, generated metadata-file bodies/freshness and configuration. Build all three ordinary policy-sidecar modules and run the unchanged final target-files policy/installation gate before final signing, rollback/fit checks and separately authorized device validation."
   ],
   "maintained_four_kib_policy_delivery": {
     "implementation_commit": "137f43877a2c2b9c170ba8dd0883701003cecaec",
@@ -10034,9 +10063,9 @@
       "size_bytes": 160
     },
     "environment_override_scope": "The exact container-exec environment probe still observed the conflicting inherited OUT_DIR. The third failed attempt remains a preflight failure, not a Kati/compiler failure.",
-    "current_attempt": 4,
-    "current_phase": "first-target-files-product-config-4",
-    "status": "fourth-attempt-native-query-failed-successor-outcome-pending",
+    "current_attempt": 5,
+    "current_phase": "first-target-files-product-context-5",
+    "status": "corrected-selected-value-queries-passed-full-configuration-and-metadata-files-pending",
     "ordinary_product_configuration_verified": false,
     "generated_product_metadata_verified": false,
     "ordinary_policy_sidecar_production_verified": false,
@@ -10044,7 +10073,7 @@
     "complete_rom_ready": false,
     "flash_allowed": false,
     "phone_accessed": false,
-    "scope": "The first three attempts return exit1 before native invocation or output preparation. The fourth passes preflight, invokes native dumpvars and fails on obsolete BUILD_DATETIME. A query correction is being prepared without an Android-source change; no successful successor or generated product metadata is claimed.",
+    "scope": "The first three attempts return exit1 before native invocation or output preparation. The fourth invokes native dumpvars and fails on obsolete BUILD_DATETIME. The separately recorded corrected config5/context5 queries pass their selected value checks without an Android-source change; metadata-file contents/freshness and complete ordinary configuration remain unverified.",
     "native_configuration_failure": {
       "attempt": 4,
       "phase": "first-target-files-product-config-4",
@@ -10086,6 +10115,224 @@
       "timed_out": false,
       "forced_kill": false,
       "scope": "Actual ordinary Soong/dumpvars invocation fails on the queried obsolete variable. Six recorded source/input guard sets remain equal and all seven preservation copies verify; the product profile does not complete. The two existing kernel-origin/AVB warning occurrences are retained. This is separate from the first three preflight failures and is not image or ROM construction success."
-    }
+    },
+    "successful_query_evidence": "ordinary_product_value_queries_v5"
+  },
+  "ordinary_product_value_queries_v5": {
+    "source_integration": "first-target-files-release-flags-v1",
+    "input_closure": "ordinary_product_input_closure",
+    "status": "two-native-selected-value-queries-passed-and-independently-reviewed",
+    "source_bound_query_correction": {
+      "path": "reports/oem-policy-integration-20260829/pinned-build-metadata-adoption-preparation-v1/descriptor-body-proposal-v1/nonobsolete-dumpvars-v1/component-freeze-v1.json",
+      "sha256": "222836f4ada848010d9cef3a6a7c31418564fce9c580f87fa42ff43efbae510c",
+      "size_bytes": 3161
+    },
+    "native_query_preparation": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/nonobsolete-query-v5/freeze.json",
+      "sha256": "41a3c468dbd2536858011a888c49bb81de1aa307133942fbaeaaac13a7895bd5",
+      "size_bytes": 3795
+    },
+    "native_results": [
+      {
+        "profile": "product-config",
+        "phase": "first-target-files-product-config-5",
+        "result": {
+          "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-config-v5/stdout.jsonl",
+          "sha256": "c8db1e100895acbcd2fbb8b31e43112ba5c2a0c88c91cfb16c178d4ad23166f7",
+          "size_bytes": 9909167
+        },
+        "stdout": {
+          "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-config-v5-logs/files/build.stdout",
+          "sha256": "6cfd0b623f71f32d3ec9551447b6e40c7e07f1ffd91f84071362d17956024a23",
+          "size_bytes": 4480
+        },
+        "stderr": {
+          "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-config-v5-logs/files/build.stderr",
+          "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+          "size_bytes": 372
+        },
+        "native_started_at_utc": "2026-08-31T10:39:25.051466+00:00",
+        "native_finished_at_utc": "2026-08-31T10:40:19.670843+00:00",
+        "native_exit_code": 0,
+        "native_invocation_executed": true,
+        "profile_completed": true,
+        "profile_validation_verified": true,
+        "selected_value_checks_passed": 21,
+        "postcheck_errors": [],
+        "source_and_input_guard_sets_equal_before_after": 6,
+        "complete_generated_configuration_unchanged": true,
+        "existing_kernel_origin_and_avb_warning_occurrences": 2,
+        "ninja_observed": false,
+        "image_outputs_invalidated_or_deleted": false
+      },
+      {
+        "profile": "product-context",
+        "phase": "first-target-files-product-context-5",
+        "result": {
+          "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-context-v5/stdout.jsonl",
+          "sha256": "fe440404b173f005b164af21ee0cc1fe6a5126cc8fe79d309811a5bfd7d11316",
+          "size_bytes": 9896492
+        },
+        "stdout": {
+          "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-context-v5-logs/files/build.stdout",
+          "sha256": "629364929e5482740fd396858ddbd9918d486735c2ba87dc8f8d2a56f2f38d2c",
+          "size_bytes": 230
+        },
+        "stderr": {
+          "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-context-v5-logs/files/build.stderr",
+          "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+          "size_bytes": 372
+        },
+        "native_started_at_utc": "2026-08-31T10:44:28.533372+00:00",
+        "native_finished_at_utc": "2026-08-31T10:45:23.164582+00:00",
+        "native_exit_code": 0,
+        "native_invocation_executed": true,
+        "profile_completed": true,
+        "profile_validation_verified": true,
+        "selected_value_checks_passed": 7,
+        "postcheck_errors": [],
+        "source_and_input_guard_sets_equal_before_after": 6,
+        "complete_generated_configuration_unchanged": true,
+        "existing_kernel_origin_and_avb_warning_occurrences": 2,
+        "ninja_observed": false,
+        "image_outputs_invalidated_or_deleted": false
+      }
+    ],
+    "guest_result_identity_confirmation": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-product-result-confirmation-v1/stdout.json",
+      "sha256": "2ccd00f7ae57f0c9aec19974989def17987044305ebdc3ff20605a90e177c7d2",
+      "size_bytes": 556
+    },
+    "configuration_independent_review": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/actual-product-review-v1/config5-success-review-v1.json",
+      "sha256": "2919b405737779a716eabd21daa195b76d6b1b74fe22533475aa7a2fdea78292",
+      "size_bytes": 12257
+    },
+    "configuration_independent_review_completed": true,
+    "context_independent_review_completed": true,
+    "native_invocations": 2,
+    "selected_value_checks_passed": 28,
+    "literal_from_file_references_checked": 3,
+    "metadata_files_requiring_separate_body_and_freshness_verification": 6,
+    "selected_input_count": 1475,
+    "source_files": 478,
+    "pinned_projects": 1179,
+    "source_and_descriptor_identity_changed": false,
+    "old_three_preflight_failures_and_config4_native_failure_preserved": true,
+    "property_declaration_string_verified": true,
+    "effective_postprocessed_properties_verified": false,
+    "warnings_resolved": false,
+    "generated_build_number_file_verified": false,
+    "generated_product_metadata_files_verified": false,
+    "output_freshness_verified": false,
+    "ordinary_nothing_verified": false,
+    "native_ninja_actions_verified": false,
+    "ordinary_sidecar_production_verified": false,
+    "complete_target_files_verified": false,
+    "image_reproducibility_verified": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "phone_accessed": false,
+    "scope": "Two ordinary native dumpvars invocations pass their selected 21-field and seven-field value checks, with exact raw streams and fresh guest result identities captured. Independent reviews of both queries are clear within that scope. FROM_FILE values remain literal references, not six-file content/freshness or a generated BUILD_NUMBER-file proof. The complete existing generated configuration and six source/input guard sets remain unchanged. Existing kernel warnings and the previous four failures are preserved. The following ordinary nothing phase exits zero natively but fails two exact generated-state validation checks, as separately recorded. No Ninja graph/actions, effective partition properties, sidecars, image, target-files, signed-chain or boot result is inferred.",
+    "context_independent_review": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/actual-product-review-v1/context5-success-review-v1.json",
+      "sha256": "c1a792f605909b7c841cecd1fb3fd65fe063aa9108c528500d454edbd17926b1",
+      "size_bytes": 9257
+    },
+    "next_ordinary_phase": "nothing",
+    "next_ordinary_phase_status": "native-exit-zero-profile-validation-failed",
+    "next_ordinary_phase_evidence": "ordinary_nothing_phase_v1"
+  },
+  "ordinary_nothing_phase_v1": {
+    "phase": "first-target-files-nothing-1",
+    "source_integration": "first-target-files-release-flags-v1",
+    "input_closure": "ordinary_product_input_closure",
+    "predecessor_queries": "ordinary_product_value_queries_v5",
+    "status": "native-exit-zero-profile-validation-failed-generated-soong-state",
+    "result": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-nothing-v1/stdout.jsonl",
+      "sha256": "418036771230d2629eac9b39333c8a671a12d8cb27d8ab818be4bd5df805fce4",
+      "size_bytes": 8869286
+    },
+    "wrapper_exit": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-nothing-v1/exit.json",
+      "sha256": "1cca59870db8ba4ec5456df156f9a3fdc2740e66bb4ca015731a156b1892b242",
+      "size_bytes": 65
+    },
+    "wrapper_stderr": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-nothing-v1/stderr.log",
+      "sha256": "a47cac4590d916ce9984169d5126cbeb1f252bac071540e7446236faae71de63",
+      "size_bytes": 285
+    },
+    "native_stdout": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-nothing-v1-logs/files/build.stdout",
+      "sha256": "23fb13b1fa7860e39c2a37f0ce0acfc911e929b6df81f370672c49e00cc89fe0",
+      "size_bytes": 18464
+    },
+    "native_stderr": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/root-nothing-v1-logs/files/build.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "native_started_at_utc": "2026-08-31T10:56:20.395451+00:00",
+    "native_finished_at_utc": "2026-08-31T11:09:02.342675+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 1,
+    "native_invocation_executed": true,
+    "native_process_succeeded": true,
+    "preflight_completed": true,
+    "profile_completed": false,
+    "profile_validation_verified": false,
+    "metadata_postcheck": null,
+    "postcheck_errors": [
+      {
+        "check": "verify_source_history",
+        "message": "full generated Soong configuration differs from exact reviewed phase state",
+        "type": "ValueError"
+      },
+      {
+        "check": "verify_strict_settings",
+        "message": "full generated Soong configuration differs from exact reviewed phase state",
+        "type": "ValueError"
+      }
+    ],
+    "after_source_history_observation_fresh": false,
+    "full_after_source_verification_claimed": false,
+    "preserved_metadata_and_log_copies": 7,
+    "preservation_copies_verified": true,
+    "image_outputs_invalidated_or_deleted": false,
+    "entire_output_tree_unchanged_claimed": false,
+    "ninja_observed": true,
+    "ninja_argv_verified": false,
+    "native_stdout_final_progress": "167/167 nothing",
+    "native_component_actions_verified": false,
+    "timed_out": false,
+    "forced_kill": false,
+    "generated_configuration_change_diagnosed": false,
+    "six_metadata_files_verified": false,
+    "output_freshness_verified": false,
+    "ordinary_sidecar_production_verified": false,
+    "complete_target_files_verified": false,
+    "image_reproducibility_verified": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "phone_accessed": false,
+    "scope": "The ordinary nothing native process exits0 after Make/Ninja processing, but the wrapper exits1 because verify_source_history and verify_strict_settings reject the full generated Soong state. Four after-admission entries match, but verify_immutable_archive returns cached source-history data after the configuration guard throws. Only selected-input, source-lock and protected-input groups provide fresh after-check evidence. Neither the retained after-source-history observation nor the archive entry is a fresh full source/archive proof. No metadata postcheck runs, and no six-file success is claimed. Result, raw native logs and wrapper diagnostics are preserved; the configuration-change cause and component/image/target-files/boot outcomes are not inferred.",
+    "matching_after_admission_entries": [
+      "verify_immutable_archive",
+      "verify_protected_inputs",
+      "verify_selected_inputs",
+      "verify_source_lock"
+    ],
+    "after_admission_entries_equal_before": true,
+    "fresh_after_check_groups": [
+      "verify_protected_inputs",
+      "verify_selected_inputs",
+      "verify_source_lock"
+    ],
+    "cached_after_admission_entries": [
+      "verify_immutable_archive"
+    ],
+    "after_archive_verification_fresh": false
   }
 }
