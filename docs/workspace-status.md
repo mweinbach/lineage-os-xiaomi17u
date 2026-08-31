@@ -10,10 +10,13 @@ consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The corrected Evolution/factory policy source build now **passes policy3**,
-resolving the camera-property compile failure. The next gate is **complete
-policy semantics and producer-provenance verification**, followed by current
-image compatibility; this is not yet a complete policy or ROM qualification.
+The corrected Evolution/factory policy source build and its **scoped policy3
+verification now pass**. Source/M4/context review retains all 6,399 assertions,
+all twelve normal binaries pass unfiltered zero-permissive checks, and the
+public-name freeze check is verified. The next gate is **current policy-image
+inputs, delivery and packaging**. Full recursive graph provenance and final
+installed-APK Treble coverage remain unverified; no ROM or boot readiness is
+implied.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
 build configuration. The thirteen retained policy identities and earlier strict
 analysis remain historical evidence; they do not establish current policy or
@@ -48,9 +51,12 @@ wrapper exit 0 and all six fresh source/input guard groups matching. The log
 records 390 main Ninja actions after 166 frontend steps, not 556 tests.
 All six metadata-file values match the selected `d1485e` identity; fresh rewrites
 are not inferred. Independent wrapper/source/metadata and retention-accounting
-reviews are clear within that scope. Complete semantic/producer review and
-current factory-image compatibility remain unverified. Normal Android
-enforcement remains required.
+reviews are clear within that scope. The later semantic review preserves all
+seven factory property-prefix regions and finds zero helper property-write
+grants. Separate native analysis verifies zero permissive domains in all twelve
+normal binaries. The scoped public freeze compares 1,419 types and 353
+attributes without differences. Current image compatibility and final packaging
+remain unverified. Normal Android enforcement remains required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The preceding guest source was
@@ -667,11 +673,15 @@ context bytes remain unchanged. The later source transaction now installs both
 corrections, preserving 90 independent source preimages, copies of all eleven
 present partial outputs and the ten then-recorded absences. The subsequent
 policy3 source build passes, including the previously failing combined-policy
-target. Its source/input guards and profile validation pass, while complete
-five-context semantics, producer-command provenance and unfiltered enforcing
-binary analyses remain separate. The two known duplicate service-context
-diagnostics are warnings, not failed targets. All 84 selected evidence records
-are retained in the guest; host semantic/provenance analysis is still pending.
+target. Scoped actual source/M4 and five-context review now verifies the seven
+complete prefix regions: all 55 baseline camera readers and both writers remain,
+with only three expected Evolution app readers added; audio/USB ordinary edges
+do not change. The two duplicate service-context diagnostics remain warnings.
+All twelve unfiltered binary checks pass separately, without implying strict
+neverallow compilation for every upstream compatibility binary. The public-name
+freeze is verified, while full recursive graph provenance and final installed-APK
+Treble labeling remain separate. All three ordinary policy-sidecar generators
+and installs ran in policy3; their read-only output qualification is pending.
 
 Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
 Its source is now installed, while compilation, linking and execution remain

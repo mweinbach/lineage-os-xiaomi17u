@@ -12,15 +12,15 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Current source, scoped VINTF and metadata results, the full Evolution policy blocker, and remaining image/boot gates; earlier failures remain preserved |
+| [Native ROM integration](native-rom-integration.md) | Current source, scoped policy3/VINTF/metadata verification and remaining image-delivery, packaging and boot gates; earlier failures remain preserved |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability and retained isolated Kati qualification; active product and metadata-file results are recorded in current status |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
-| [Explicit Evolution policy base](evolution-policy-base.md) | Corrected policy3 source build passes all 32 goals; complete semantic/provenance and current image checks remain pending, with policy1/2 failures preserved |
-| [Camera property write capability](camera-property-vendor-init-write.md) | Installed one-grant correction clears the native compile failure in policy3; full permission-effect and producer verification remain pending |
-| [Factory property-prefix preservation](factory-property-contexts-capability.md) | Installed seven-row capability participates in passing policy3; complete five-context semantics and image compatibility remain unverified |
+| [Explicit Evolution policy base](evolution-policy-base.md) | Policy3 source build, scoped semantic/M4 review, twelve unfiltered binary checks and public-name freeze pass; image delivery, packaging and final APK/Treble gates remain |
+| [Camera property write capability](camera-property-vendor-init-write.md) | Installed correction clears the strict compile failure; scoped policy3 review verifies the intended property effects without hardware or image claims |
+| [Factory property-prefix preservation](factory-property-contexts-capability.md) | Policy3 review verifies all seven full prefix regions retain factory labels; current image delivery and hardware behavior remain unverified |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Preserved factory/APEX input closure and original matrix-coverage failure; later scoped comparison results and remaining limits are in native ROM integration |
 | [Exact framework matrix](framework-matrix.md) | Installed source produces all 155 tuples; a reviewed distinct postcheck accepts canonical default-version omission and verifies current outputs, without full compatibility or runtime claims |

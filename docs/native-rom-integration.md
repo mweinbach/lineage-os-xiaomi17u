@@ -91,8 +91,10 @@ events. The current source vector has 539 files across thirteen projects.
 Policy3 now passes the 32-goal source build at **18:40:00 UTC**, with native and
 wrapper exit 0, all six fresh source/input guards matching, and six verified
 metadata-file values. The camera-property compile failure is resolved; the
-failed policy1/policy2 records remain unchanged. Complete policy semantics,
-producer provenance and current image compatibility remain unverified.
+failed policy1/policy2 records remain unchanged. The later scoped source/M4,
+semantic/context, twelve-binary and public-name freeze checks now pass. Current
+image inputs, delivery and packaging are the next gate; full recursive graph
+provenance and final installed-APK Treble coverage remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1677,10 +1679,56 @@ to `e00f6c58d041f75549474240b95eab2b13d6c5673f24fe333ea374013445812a`;
 strict 4 KiB ELF checks remain enabled. The six metadata-file value checks pass
 for `nezha.d1485e4f90954f20dfca5f4d`, without independent freshness or image
 metadata proof. The guest retains **84 evidence records / 21,118,286 bytes**.
-That finite capture and successful build do not establish complete semantics,
-producer-command provenance, a new image basis or full Treble APK labeling;
-those result flags remain false. No image, target-files or hardware pass is
-claimed. Host semantic/provenance analysis follows this source-build milestone.
+That finite capture and successful build did not themselves establish complete
+semantics, producer-command provenance, a new image basis or full Treble APK
+labeling; the original result flags remain false. The later scoped reviews below
+are separate evidence, without an image, target-files or hardware pass.
+
+Actual semantic/source/context review
+`b2743829e4d6a74088208b0296e5989f53cb7f10c31333cb0b17f8410f193225`
+verifies all **6,399 assertions: 6,366 original, four provider and 29 Evolution
+base assertions**. The strict factory compiler action has no `-N` flag and uses
+the ten required inputs in order. All 80 reviewed M4 commands have the exact
+capabilities, and five normal/base source pairs preserve their ordered flags and
+unowned source order. The helper has zero effective property-set grants. All
+seven complete prefix regions retain factory labels and string types, with no
+equal/deeper overrides. Camera retains all 55 baseline readers and both writers;
+only `mediashell_app`, `mosey_app` and `updater_app` are added as expected readers.
+Audio and USB ordinary edges do not change. These are policy effects, not
+hardware results. Full recursive graph/history replay remains outside this
+scoped review.
+
+A separate native invocation then passes **twelve unfiltered permissive-domain
+checks**, with twelve native and supervisor zero exits and complete empty native
+stdout/stderr. Result
+`932ba4bfd06f5278acb53a129abb90712202e4577791f1fab5d7bde5200f4c73`
+and independent review
+`bc1cc68b5ce15ad74056c6c1e66623b4713c323d81bc0a090997f51b877c7ba9`
+bind the exact live/retained binaries, tool, 539 source files/modes and unchanged
+`e00f6c58` configuration. Guards cover 39 initial identities and 47 final
+identities, adding only four freeze inputs and four copies. This analysis writes
+no source or Android outputs and compiles no policy. Zero permissive domains
+do not imply that every upstream compatibility binary was compiled with
+neverallows enforced; the strict factory compilation is separately bound above.
+
+The focused public freeze review
+`a6823c3fe63f29015d87d70f21d84c9bfb9d2291664083149bc50db9e24dff4e`
+and freeze `d1f8b2eb38f29e6b806abc3c3dd8ca4fd09d6e63ada59728a63407b458855d28`
+bind actual policy3 action **371**, the exact checker/current/API CIL and stamp.
+Both complete checker/parser PYC bodies match reproduction from captured source.
+The source comparator returns normally and silently, finding no added or removed
+names among **1,419 public types and 353 compared attributes**, using the existing
+upstream generated-attribute exclusion. This proves the selected public-name
+comparison, not permission, membership or full-CIL equality. No new native
+comparator rerun was performed or required for this scoped evidence.
+
+All three ordinary policy-sidecar generators ran in policy3: platform action
+**331** and install **378**, system_ext **397/402**, and product **409/418**.
+Their logged execution does not replace read-only qualification of the actual
+delivered bytes, which remains pending. The next work binds the current strict
+policy/context outputs and sidecars into the image inputs and delivery path,
+then verifies ordinary packaging. Final installed-APK Treble labeling, full
+recursive graph provenance and image/AVB/boot gates remain distinct and open.
 
 Commit `76fe97584caf990677da033261e6c1d6c74dd745` adds the
 [unlevelled-matrix AIDL metadata audit source](../tools/vintf-definition-audit/README.md).
