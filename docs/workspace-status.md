@@ -11,8 +11,12 @@ New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
-not a prerequisite for that initial bring-up. The **v13ja source configuration
-is now installed**, selecting `4096` with prebuilt checks enabled. Commit **17cde61** adds
+not a prerequisite for that initial bring-up. The active guest source is now
+**matrix-v1**, committed at **2026-08-31 03:14:25 UTC**, while the last completed
+component outputs remain the earlier **v13ja 4 KiB** build. The 38-goal matrix
+build is running through configuration; it has no completed result, and the
+VINTF retry remains pending. The previous v13ja source
+configuration introduced `4096` with prebuilt checks enabled. Commit **17cde61** adds
 the [current-provider 4 KiB successor](nezha-page-size-v2-integration.md), with
 matching host candidates and checks enabled, without ignore flags or SELinux
 changes. Only the generated product fragment and new descriptor change. The
@@ -53,7 +57,7 @@ captured files rehash, the fourteen historical evidence files remain preserved,
 and strict settings, source, policy and runtime guards pass. This closes the
 selected provider ELF/symbol gate at 4 KiB, not full ABI, service registration,
 runtime behavior, VTS or boot validation.
-The **current full VINTF run fails the combined check**: 155 device HAL
+The **latest completed full VINTF run, before matrix-v1, fails the combined check**: 155 device HAL
 instances are absent from the framework compatibility matrix. All 39 APEX
 packages materialize and the two separate consistency commands exit zero, but
 the combined command exits 65. Native integration and verification of the
@@ -63,8 +67,14 @@ Commit **c3686ed** adds the [exact framework-matrix source projection](framework
 Host verification binds all 155 missing AIDL tuples to original declarations
 and factory matrix coverage, producing 130 packages without wildcard instances,
 broadened versions or changes to numbered platform matrices. Repeated 47-file
-candidates match. Native matrix build and the compatibility retry remain
-unverified; the preserved exit-65 result is still the current full-check result.
+candidates match. The subsequent matrix-v1 transaction now selects that source
+through one atomic exchange and a five-event journal ending in `commit_verified`.
+The guarded source set grows from 219 to 220 with the authored XML: the original
+204 source inputs plus fifteen producer preconditions and the new file. All
+thirteen policy/eleven runtime identities and the 4 KiB product remain unchanged;
+238 rollback copies and 26 stamps are retained. Native matrix build and the
+compatibility retry remain unverified; the preserved exit-65 result remains
+the latest completed full-check result.
 
 The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
@@ -189,7 +199,15 @@ signatures, runtime activation or full VINTF.
 The separate **AVB-tool bytecode capture/proof also passes**: 28 zero-exit
 native commands reproduce the one complete packaged `avbtool.pyc` member from
 the pinned recipe, with zero skips. This does not verify an APEX signature or
-signed image chain; cryptographic APEX verification remains pending.
+signed image chain. The subsequent **native APEX integrity run passes
+for all 39 packages**, with 130 completed zero-exit commands, no postflight
+errors and preserved source/OUT. Independent raw review verifies all 1,589
+captured files and replays the 130 completions and diagnostics: 65 APK signature
+checks verify v3, 26 CAPEX digests match and 39 signed AVB payloads verify.
+This is static verification of the historical pre-matrix v13ja inputs. It does
+not establish every embedded signature scheme, independent OEM signer
+authenticity for retained vendor baselines, runtime activation, partition AVB
+or OTA validation.
 
 The current **allocator-producers-v13j-4k-1** capture completes at
 **01:31:45 UTC**, with nine zero-exit commands across three query layers and
@@ -404,8 +422,20 @@ imports without skipping arbitrary imports or changing original properties.
 Native codec/tool qualification, the final Evolution SYSTEM identity and
 ordinary packaging remain unverified; the active source composition is unchanged.
 
-The latest completed full workspace suite passed **3,919 tests in 164.103
-seconds with zero failures, errors or skips**, executed by the matrix owner.
+Commit **a253c97** adds the [read-only target-files AVB inventory](target-files-avb-inventory.md).
+Its 42 new synthetic tests cover bounded archive/role inspection and failure
+handling. It separates final image entries, generated vbmeta outputs and the
+two retained firmware inputs; it does not extract, validate or sign images.
+No actual target-files archive has been admitted with this helper.
+
+The latest completed full workspace suite passed **3,961 tests in 173.222
+seconds with zero failures, errors or skips**, executed by the coordinator.
+All seven files—the helper's three files and the four checkpoint documents—
+stayed unchanged during that run. The preceding coordinator run passed
+**3,919 tests in 164.329 seconds**.
+All four checkpoint files stayed unchanged throughout that run and were then
+committed as `4116868`. The preceding matrix-owner run passed **3,919 in
+164.103 seconds**.
 The five frozen public files match `c3686ed`. Executable controls and tests
 stayed unchanged during the run; the dedicated matrix guide gained host evidence
 details during it. This is host source/projection coverage, not native matrix
@@ -449,9 +479,10 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code through `c3686ed`, with the previous component checkpoint committed
-as `8fc2162`, followed by `da9648b` and the full-failure checkpoint `3001e85`. The active
-guest source remains v13ja with 4 KiB selected;
+code through `a253c97`, with the previous component checkpoint committed
+as `8fc2162`, followed by `da9648b`, `3001e85` and `4116868`. The active
+guest source is now matrix-v1 with the 4 KiB product unchanged; the latest
+completed component output baseline remains v13ja until the matrix build passes;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -550,7 +581,7 @@ from a full build and require destination hash verification after transfers.
 | v13f provider input installation | Four committed exchanges verified; original vendor/ODM, Camera runtime, mi_ext and working76 preserved; provider policy build and independent verification remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; runtime and image adoption remain open, with later 4 KiB ELF evidence separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13i allocator installation and component build | One device-tree exchange commits; 37 goals complete with fresh allocator actions and three inspected outputs; partial VINTF has an explicit skipped subcheck, and exact producer/full compatibility checks remain open | [Native ROM integration](../research/native-rom-integration.json) |
-| Current v13ja 4 KiB source and component build | Corrected installation and 37 goals pass; only one of 254 generated settings changes, with all thirteen policy and eleven runtime identities preserved; partial VINTF still skips one subcheck | [Native ROM integration](../research/native-rom-integration.json) |
+| Latest completed 4 KiB component build | The earlier v13ja installation and 37 goals pass; the newer matrix-v1 source is installed with prior outputs retained, and its 38-goal build remains pending | [Native ROM integration](../research/native-rom-integration.json) |
 | Current 4 KiB provider ELF/symbol checks | All 26 checks execute freshly and pass within 48 native actions; complete raw review verifies commands, new log rows and stamps; full ABI, runtime and hardware remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | Current allocator producer capture | Nine commands across three query layers report success; all 66 payloads are collected and subsequent guest prerequisite verification reopens the external references; no fresh compile/runtime claim | [Native ROM integration](../research/native-rom-integration.json) |
 | Native packaged-bytecode proof | Four complete PYC members reproduce from the pinned Soong recipe; 28 native commands across capture/proof pass with zero skips; generated-proto provenance, signatures and full VINTF remain separate | [Native ROM integration](../research/native-rom-integration.json) |

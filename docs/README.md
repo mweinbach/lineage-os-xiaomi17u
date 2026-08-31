@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | 4 KiB component/provider checks and bytecode proof pass; full VINTF reaches a 155-instance framework-matrix failure, with original evidence and remaining runtime/hardware gates preserved |
+| [Native ROM integration](native-rom-integration.md) | Matrix-v1 source is installed over the preserved 4 KiB outputs; matrix build/retry remain pending, while the 39-package static APEX crypto result passes raw review for pre-matrix inputs |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -20,7 +20,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Current 22-XML/39-APEX input closure is captured; the actual combined check fails on framework-matrix HAL coverage, with a retained matrix-definition skip and separate validator limits |
-| [Exact framework matrix](framework-matrix.md) | Committed host projection binds the 155 missing tuples to original declarations and factory matrix coverage; matching candidates pass admission, with native build/retry unverified |
+| [Exact framework matrix](framework-matrix.md) | Exact 155-tuple source projection is now selected by matrix-v1 installation; prior outputs remain preserved and native matrix build/retry are unverified |
 | [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation and current 4 KiB alignment/producer capture; guest prerequisite verification passes, without source-to-binary equivalence, full VINTF or runtime registration |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
@@ -28,6 +28,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |
 | [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
+| [Target-files AVB inventory](target-files-avb-inventory.md) | Read-only bounded ZIP/retained-input inspection with 42 synthetic tests; no actual target-files admission, extraction, image validation or signing |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
 | [Maintained policy-image delivery](policy-image-delivery.md) | Explicit 4 KiB successor repeats 247-file host bundles bound to the actual component result; metadata hook and source/image selection remain pending, with signed-chain/rollback/fit gates retained for final artifacts |
 | [Device delivery integration](target-files-delivery-integration.md) | Committed opt-in generator and matching 47-file 4 KiB delivery candidates; isolated Kati fixture passes 60 cases, while ordinary product execution and source/image selection remain pending |

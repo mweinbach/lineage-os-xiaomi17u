@@ -34,9 +34,11 @@ unverified. The later full VINTF run reaches the combined command and fails on
 evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
 Commit **c3686ed** provides the reviewed [framework-matrix projection](framework-matrix.md)
-for the exact 155 missing tuples. Its host candidates pass; native build and
-compatibility retry remain unverified. The completed full-run failure is not
-relabelled as a pass by this source preparation.
+for the exact 155 missing tuples. The **matrix-v1 source transaction is now
+installed**, while output files still belong to the previous v13ja 4 KiB build.
+Its 38-goal component build is running through configuration without a completed
+result; the compatibility retry remains pending. The completed
+full-run failure is not relabelled as a pass by this source installation.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -765,6 +767,23 @@ comparison. The 7,884-byte inner proof is
 Selected inputs remain unchanged. Reproducing the packaged tool's bytecode is
 not APEX-signature, signed-chain or runtime validation; those gates remain open.
 
+The subsequent **APEX integrity run and independent raw review pass for all 39
+packages**, with 130 completed zero-exit commands, no postflight errors and
+source/OUT preservation. Its 4,509,310-byte receipt is
+`40a79b5c6ba160132aa0b7a9e868816e86661b4984709118dc22b1e7f99e7215`.
+The 1,589-file capture contains 15,966,766 evidence bytes; no package, payload
+image or manifest bodies were copied by that collector. Independent review
+`5393443eaff971e7fe454bbfdcc49ed29ba7fa88267eeb6dbb9047eeca00859b`
+rehashes all 1,589 files and replays all 130 native completions, read-only
+observations and diagnostics. It verifies 65 APK v3 signature checks, 26 CAPEX
+digests and 39 signed AVB payloads, with zero failed or skipped native commands.
+The admitted scope is static cryptography for the historical pre-matrix v13ja
+204-source/4-KiB output basis. It does not admit later source/package changes,
+every embedded signature scheme, a source stamp, runtime activation, partition
+AVB or OTA validation. The one presigned and three retained vendor baselines
+prove exact selected bytes and internal signatures, not independent OEM signer
+authenticity. No private key was read.
+
 The subsequent **current 4 KiB full-VINTF input capture** completes with zero
 exit and empty stderr. Its 493,527-byte receipt is
 `83a59e55a5732cbbf44693f7cb2552817e26f621e10c99c9e07b111691ea49dd`.
@@ -1213,8 +1232,20 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,919 tests in 164.103 seconds with zero failures, errors or skips**, executed
-by the matrix owner. The five frozen public files match `c3686ed`; executable
+**3,961 tests in 173.222 seconds with zero failures, errors or skips**, executed
+by the coordinator. All seven bound files stayed unchanged: the three files
+committed as `a253c97` and these four checkpoint documents. The full log is
+`20f5203fcd2658f11677c00a003a61cf0cbb8134d9cbc448c6fe9b5ed7b12d72`.
+The new [read-only target-files AVB inventory](target-files-avb-inventory.md)
+adds 42 synthetic tests. It hashes bounded ZIP roles and explicit retained
+firmware inputs, without extraction, image validation, signing or actual
+target-files admission. The preceding full run passed
+**3,919 tests in 164.329 seconds**, executed
+by the coordinator, with all four checkpoint documents unchanged throughout.
+They were subsequently committed as `4116868`; the full log is
+`b5770d1840b800f9ea6fbcd6169ef77e2fc95498ed9c7e46b30ee9a447779605`.
+The preceding matrix-owner run passed **3,919 in 164.103 seconds**.
+The five frozen public files match `c3686ed`; executable
 controls and tests stayed unchanged while the dedicated guide gained host
 verification details during the run. The full log is
 `6c9e801fa3ced648913da6f1d67d5991f19e4d0e6789cb313b7b6e9df3194d4d`.
@@ -1509,6 +1540,20 @@ No private key or phone is accessed; working76 remains unchanged.
 
 ## Next build sequence
 
+The **matrix-v1** installation commits at **2026-08-31 03:14:25 UTC** through
+one atomic device-tree exchange. Its five-event journal ends in
+`commit_verified`; installation receipt
+`37871f4a0879aa0a0fc69eb9f3ab60b3f6aca74c0c25ecb22fb27c62579037ee`
+and journal
+`62480298bcacf9d6e031af1a848ad484bb2f854d9425cce4fec9b927625d5b43`
+bind the transaction. The source guard count grows from 219 to 220: the
+original 204 inputs, fifteen read-only producer preconditions and the new
+matrix XML. Thirteen policy/eleven runtime outputs and the 4 KiB product remain
+unchanged; 238 rollback copies and 26 stamps are preserved. This installs
+source only. Existing outputs retain their prior v13ja provenance until the
+running 38-goal matrix build and subsequent VINTF retry complete; no completed
+matrix build result is recorded yet.
+
 Commit **78376c7** adds the explicit `v13h-policy-only` preparation profile with
 canonical SHA256
 `39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0`.
@@ -1528,7 +1573,7 @@ historical evidence. The four selected whole-bytecode comparisons now pass;
 the fresh 4 KiB input capture verifies the producer prerequisites and complete
 selected XML/APEX closure. Materialization and separate consistency checks now
 pass, but the combined check fails on 155 missing framework-matrix instances.
-Install and natively verify the committed exact matrix source projection, then rerun the full checks
+Build and verify the installed exact matrix source projection, then rerun the full checks
 and assess necessary coverage before claiming compatibility.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
