@@ -60,8 +60,11 @@ The original guard reads `TARGET_RELEASE` after the pinned release configuration
 forbids direct access. The current **first-target-files-release-flags-v1** source
 corrects that one file at **09:17:15 UTC**, retaining the source count and prior
 outputs. Independent correction review passes for the recorded installation;
-normal Kati and target-files
-execution remain unverified.
+successful product checks and target-files builds remain unverified.
+The subsequent selected-input closure is sealed. The fourth ordinary product
+configuration attempt reaches native dumpvars but fails on an obsolete variable
+query. The three preceding preflight failures are preserved; none invoked the
+native build system. A corrected query remains pending.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1287,6 +1290,30 @@ preparation tests pass with zero skips. Independent actual correction review
 reopening live source or archives. Normal Kati parsing, generated metadata and
 the first build are not verified by this source transaction.
 
+The ordinary-product metadata closure now binds **1,475 unique inputs**: 1,474
+named-file inputs and one process-backed Rosetta runtime identity. Its frozen
+five-descriptor composition derives `nezha.76dfc5727ce7a5291cb53565` without
+claiming that Android has generated that build number. Independent host review
+binds the selected composition and deterministic calculation; it does not admit
+native dispatch, all future packaging/signing inputs or cross-date image equality.
+
+The first three product-configuration attempts each return exit 1 before native
+invocation or output preparation. Attempt 1 stops on the source-history reader's
+`file` alias; attempt 2 rejects conflicting inherited `OUT_DIR`; attempt 3 retains
+that conflict after the container environment override. An isolated observation
+confirms that the override did not change the inherited output directory. These
+are preflight failures, not Kati/compiler failures. The fourth attempt runs from
+**10:16:56 to 10:17:52 UTC** and returns native exit 1: dumpvars rejects obsolete
+`BUILD_DATETIME` and directs the caller to `BUILD_DATETIME_FROM_FILE`. Its stdout
+is empty and stderr is 513 bytes, including two occurrences of the retained
+kernel-origin/AVB warning. Preflight completes, all six source/input admission
+sets match before and after, and no postcheck errors are reported; the product
+profile itself does not complete or validate. Seven metadata/log preservation
+copies verify. No image invalidation occurs, but whole-output-tree immutability
+is not claimed. A source-bound query correction is being prepared without an
+Android-source change. Generated product metadata, sidecar production and
+target-files remain unverified.
+
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
 and original images. Its freeze is
@@ -1417,10 +1444,13 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,972 tests in 166.208 seconds with zero failures, errors or skips**, executed
-by the coordinator. All eight construction-source checkpoint files stayed
-unchanged during the run; the subsequent factual evidence refresh is separate.
+**3,972 tests in 168.418 seconds with zero failures, errors or skips**, executed
+by the coordinator. All three product-input checkpoint documents stayed
+unchanged during the run; the subsequent factual test-evidence refresh is separate.
 The full log is
+`e14c7ba21776f0dde729c1511131e8c741187334674e8f44c493a8df520a28d0`.
+The preceding 3,972-test run took 166.208 seconds, preserving all eight
+construction-source checkpoint files; its log remains
 `ab23f5a27305eddfd458a911f6f1ab64994efab9781289ece8185db533ffe494`.
 The preceding 3,961-test run took 171.407 seconds, preserving all three packaging
 checkpoint files; its log remains

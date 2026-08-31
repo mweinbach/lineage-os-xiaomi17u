@@ -18,7 +18,11 @@ outputs; independent correction review passes for the recorded installation.
 It replaces forbidden direct
 `TARGET_RELEASE` access with four resolved release flags, while `bp4a` remains
 a separate invocation binding. Normal Kati and target-files validation remain
-pending at this source checkpoint. The maintained
+pending at this source checkpoint. The selected input closure is now sealed.
+The fourth ordinary product-configuration attempt reaches native dumpvars but
+fails on its obsolete `BUILD_DATETIME` query. Three earlier attempts stopped in
+preflight. A query correction is being prepared; no configuration or build
+success is claimed. The maintained
 [construction source selector](rom-construction.md) now reproduces all thirty
 installed device files through the full original input checks. Two fresh
 candidates match, while omitting the selector preserves the original candidate.
@@ -489,6 +493,20 @@ vector without reopening live source or archives. Twenty-three host preparation 
 pass, but normal Kati/build execution remains unverified. The three ordinary
 sidecar modules and final policy hook remain required.
 
+The reviewed ordinary-product input closure binds **1,475 unique inputs** and
+derives a deterministic build identifier; this is selected-input metadata, not
+generated product metadata or reproducible-image proof. The first three
+configuration attempts stop before native invocation: a source-history field
+alias error, then two inherited `OUT_DIR` conflicts, the latter persisting after
+the container environment override. Their failed receipts remain preserved.
+The fourth attempt reaches native dumpvars and fails at **10:17:52 UTC** because
+`BUILD_DATETIME` is obsolete; the error directs callers to
+`BUILD_DATETIME_FROM_FILE`. All six source/input guard sets match before and
+after, the seven metadata/log preservation copies verify, and no images are
+invalidated. Both occurrences of the existing kernel-origin/AVB warning remain.
+The query correction and next outcome are pending; no sidecar, final metadata
+hook or target-files result is inferred.
+
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
 sets match, with exactly one vendor policy file and four ODM files changed;
@@ -542,11 +560,13 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,972 tests in 166.208
+The latest completed full workspace suite passed **3,972 tests in 168.418
 seconds with zero failures, errors or skips**, executed by the coordinator.
-All eight construction-source checkpoint files stayed unchanged during that run;
-the subsequent factual evidence refresh is separate. The preceding 3,961-test
-run took 171.407 seconds and retained its three packaging-source checkpoint files.
+All three product-input checkpoint documents stayed unchanged during that run;
+the subsequent factual test-evidence refresh is separate. The preceding
+3,972-test run took 166.208 seconds and retained its eight construction-source
+checkpoint files. The preceding 3,961-test run took 171.407 seconds and retained
+its three packaging-source checkpoint files.
 The earlier 3,961-test run took 166.023 seconds and retained its three-file
 scoped VINTF checkpoint. The earlier 3,961-test run took 165.776 seconds and retained its three-file
 provider checkpoint. The earlier 3,961-test run took 167.201 seconds and retained its five-file
