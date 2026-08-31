@@ -88,10 +88,11 @@ host stagings match across all 63 files while preserving factory inputs.
 The paired corrections and separate AIDL-audit source are now installed at
 **18:10:01 UTC**, with reviewed readback, four operations and eleven journal
 events. The current source vector has 539 files across thirteen projects.
-Policy3 is now dispatched with its reviewed host-derived successor identity;
-no completed native result or new metadata qualification is available. The
-failed policy2 record is unchanged. Current policy/context and image
-compatibility remain unverified.
+Policy3 now passes the 32-goal source build at **18:40:00 UTC**, with native and
+wrapper exit 0, all six fresh source/input guards matching, and six verified
+metadata-file values. The camera-property compile failure is resolved; the
+failed policy1/policy2 records remain unchanged. Complete policy semantics,
+producer provenance and current image compatibility remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1622,8 +1623,9 @@ bytes remain unchanged, and relocated trusted controls reproduce verification.
 That host component packet was not a complete candidate or guest source
 transaction. The later installation below is separate evidence. An ordinary
 Android source/M4 build, five-context analysis, strict combined compilation
-and unfiltered enforcing-binary checks remain required. Policy2 and all earlier
-failures remain preserved; no policy3, new image or hardware pass is claimed.
+and unfiltered enforcing-binary checks were still required at that host
+checkpoint. Policy3's later source-build result is separate evidence below;
+policy2 and all earlier failures remain preserved.
 
 The actual source installation commits at **2026-08-31 18:10:01.912276 UTC**,
 with four operations and eleven journal events ending at sequence 10. It
@@ -1643,9 +1645,42 @@ target-files qualification is inferred from the transaction. A separate host
 derivation produces
 `nezha.d1485e4f90954f20dfca5f4d`; coordinator replay verifies fifteen bound inputs
 and nine byte-identical outputs, and independent review is clear. The final
-component freeze binds twenty files. Policy3 is now dispatched from the frozen
-execution packet with that identity selected; its result and six-file metadata
-qualification remain pending.
+component freeze binds twenty files. The later policy3 invocation selects that
+identity and verifies the six metadata-file values; it does not prove that the
+files were freshly rewritten.
+
+The **32-goal policy3** invocation runs from **18:24:33.084257 to
+18:40:00.466929 UTC**, with native and wrapper exit 0. Result
+`344ba909febe8be29479f5bf1d48d122e931e88fb1d4d71dbcdab08708483c18`
+reports completed profile validation, all six fresh source/input guard groups
+matching and no postcheck errors. Main-Ninja argv, sandbox and resource limits
+verify, without fallback, timeout, overflow or forced kill. The complete stdout
+`4c6280588e2e8d88f1ba2af2d77f3f24aabcc2948c76bf0e974a3923f8e00190`
+has **166 frontend steps and 390 main Ninja actions**, with no failed targets;
+stderr is empty. Two existing duplicate service-context warnings remain.
+The previously failing combined-policy target completes, resolving the
+camera-property compile blocker without relabelling either earlier failure.
+Independent wrapper/source/metadata review
+`8cabb5ffc94a57be71cd8fb6a832f7197892320b55a817f83c0cd7a891eaed5e`
+is clear, binding 539 source files/modes, thirteen projects, 1,535 named inputs
+and one runtime input. All 1,179 upstream revisions/origins match, with seven
+reviewed dirty projects retained. Separate accounting review
+`bd6e08f431a058a5ac1f78ffcff4f5256f213177fac44f33d56bf945304c4544`
+replays the finite retention accounting and full stdout/stderr, without
+claiming a full host replay of the large Ninja logs or producer commands.
+
+Only `BoardSepolicyM4Defs` changes among all 254 generated configuration fields:
+the existing helper flag remains, with the camera-write `false` and factory-label
+`true` capabilities added. The configuration changes from
+`2d3433a946ffb29019c8ec04c0c5be5862ff0bdf337eb1a7f7f1d585258c79b4`
+to `e00f6c58d041f75549474240b95eab2b13d6c5673f24fe333ea374013445812a`;
+strict 4 KiB ELF checks remain enabled. The six metadata-file value checks pass
+for `nezha.d1485e4f90954f20dfca5f4d`, without independent freshness or image
+metadata proof. The guest retains **84 evidence records / 21,118,286 bytes**.
+That finite capture and successful build do not establish complete semantics,
+producer-command provenance, a new image basis or full Treble APK labeling;
+those result flags remain false. No image, target-files or hardware pass is
+claimed. Host semantic/provenance analysis follows this source-build milestone.
 
 Commit `76fe97584caf990677da033261e6c1d6c74dd745` adds the
 [unlevelled-matrix AIDL metadata audit source](../tools/vintf-definition-audit/README.md).

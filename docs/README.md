@@ -18,9 +18,9 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
-| [Explicit Evolution policy base](evolution-policy-base.md) | Policy2 fails the strict camera-property neverallow; paired corrections are installed and policy3 is dispatched, without a completed native result |
-| [Camera property write capability](camera-property-vendor-init-write.md) | Paired source correction is installed with reviewed readback; types, reads and assertions are preserved, while native policy verification remains pending |
-| [Factory property-prefix preservation](factory-property-contexts-capability.md) | Seven-row capability and paired 63-file bundle are installed with factory inputs preserved; Android M4 and final context/policy checks remain pending |
+| [Explicit Evolution policy base](evolution-policy-base.md) | Corrected policy3 source build passes all 32 goals; complete semantic/provenance and current image checks remain pending, with policy1/2 failures preserved |
+| [Camera property write capability](camera-property-vendor-init-write.md) | Installed one-grant correction clears the native compile failure in policy3; full permission-effect and producer verification remain pending |
+| [Factory property-prefix preservation](factory-property-contexts-capability.md) | Installed seven-row capability participates in passing policy3; complete five-context semantics and image compatibility remain unverified |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Preserved factory/APEX input closure and original matrix-coverage failure; later scoped comparison results and remaining limits are in native ROM integration |
 | [Exact framework matrix](framework-matrix.md) | Installed source produces all 155 tuples; a reviewed distinct postcheck accepts canonical default-version omission and verifies current outputs, without full compatibility or runtime claims |

@@ -10,9 +10,10 @@ consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The leading blocker is **strict native verification of the corrected
-Evolution/factory SELinux policy**. The latest attempt still records the
-camera-property neverallow failure; its source corrections are now installed.
+The corrected Evolution/factory policy source build now **passes policy3**,
+resolving the camera-property compile failure. The next gate is **complete
+policy semantics and producer-provenance verification**, followed by current
+image compatibility; this is not yet a complete policy or ROM qualification.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
 build configuration. The thirteen retained policy identities and earlier strict
 analysis remain historical evidence; they do not establish current policy or
@@ -41,10 +42,14 @@ inputs unchanged. The paired corrections and separate AIDL-audit source are
 now installed at **2026-08-31 18:10:01 UTC**, with four committed operations,
 eleven journal events, complete receipt readback and independent review.
 The current inventory is **539 source files across thirteen projects**;
-strict 4 KiB checks and prior outputs are preserved. Policy3 is now dispatched
-with the reviewed host-derived successor identity; no completed native result
-or new metadata qualification is available. Complete policy/context review
-and current factory-image compatibility remain unverified. Normal Android
+strict 4 KiB checks and historical output archives are preserved. **Policy3
+passes all 32 requested goals at 2026-08-31 18:40:00 UTC**, with native and
+wrapper exit 0 and all six fresh source/input guard groups matching. The log
+records 390 main Ninja actions after 166 frontend steps, not 556 tests.
+All six metadata-file values match the selected `d1485e` identity; fresh rewrites
+are not inferred. Independent wrapper/source/metadata and retention-accounting
+reviews are clear within that scope. Complete semantic/producer review and
+current factory-image compatibility remain unverified. Normal Android
 enforcement remains required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
@@ -59,9 +64,9 @@ the corrected native queries pass **21 configuration and seven context value
 checks**. The later **nothing2** run passes the exact source/configuration checks
 and six metadata-file value checks, with independent review complete. This does
 not prove fresh rewrites or image reproducibility, and its metadata evidence
-retains its pre-component input scope. The later component build number is
-host-derived and selected in the failed attempt, without a new six-file
-metadata qualification. The three preflight failures,
+retains its pre-component input scope. The earlier component build number was
+host-derived and selected in its failed attempt, without a new six-file
+metadata qualification; policy3's later value checks are separate. The three preflight failures,
 obsolete-query native failure and failed `nothing1` validation remain preserved. The maintained
 [construction source selector](rom-construction.md) reproduces the thirty
 then-installed device files through the full original input checks. Two fresh
@@ -660,9 +665,13 @@ The paired integration verifies exact definition/override guards and repeats
 the **63-file / 6,265,781-byte** private bundle. All original CIL and factory
 context bytes remain unchanged. The later source transaction now installs both
 corrections, preserving 90 independent source preimages, copies of all eleven
-present partial outputs and the ten recorded absences. The expected final
-five-context selection, strict compilation and unfiltered enforcing-binary
-analyses remain pending; source installation is not a new policy result.
+present partial outputs and the ten then-recorded absences. The subsequent
+policy3 source build passes, including the previously failing combined-policy
+target. Its source/input guards and profile validation pass, while complete
+five-context semantics, producer-command provenance and unfiltered enforcing
+binary analyses remain separate. The two known duplicate service-context
+diagnostics are warnings, not failed targets. All 84 selected evidence records
+are retained in the guest; host semantic/provenance analysis is still pending.
 
 Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
 Its source is now installed, while compilation, linking and execution remain
