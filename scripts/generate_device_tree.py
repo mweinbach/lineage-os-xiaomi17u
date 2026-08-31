@@ -72,6 +72,10 @@ POLICY_INPUTS_PATH = "vendor/xiaomi/nezha-policy"
 POLICY_INPUTS_RECEIPT = "policy-inputs.json"
 EVOLUTION_POLICY_BASE_RECORD = PurePosixPath("config/evolution-policy-base.json")
 EVOLUTION_POLICY_BASE_GROUPS = DEVICE_PATH / "sepolicy/Android.bp"
+CAMERA_PROPERTY_RECORD = PurePosixPath("patches/evolution/camera-property-vendor-init-write.json")
+CAMERA_PROPERTY_GUARD = DEVICE_PATH / "generated/camera-property-capability.mk"
+FACTORY_CONTEXTS_RECORD = PurePosixPath("patches/evolution/factory-property-contexts.json")
+FACTORY_CONTEXTS_GUARD = DEVICE_PATH / "generated/factory-property-contexts-capability.mk"
 MI_EXT_INPUTS_PATH = "vendor/xiaomi/nezha-mi-ext"
 MI_EXT_INPUTS_RECEIPT = "mi-ext-inputs.json"
 MI_EXT_BOARD_INCLUDE = DEVICE_PATH / "generated/mi-ext-prebuilt.mk"
@@ -1774,6 +1778,200 @@ def _bind_evolution_policy_base(plan, path, payloads):
     plan["evolution_policy_base"] = _evolution_policy_base_admission(contract, identity)
 
 
+def _camera_property_contract(path):
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    contract = evolution_policy_base.load_camera_contract(path)
+    identity, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(json.loads(raw) == contract, "camera property contract changed while reading")
+    return contract, identity, raw
+
+
+def _factory_contexts_contract(path):
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    contract = evolution_policy_base.load_factory_contexts_contract(path)
+    identity, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(json.loads(raw) == contract, "factory property contexts contract changed while reading")
+    return contract, identity, raw
+
+
+def _camera_property_binding(plan, contract):
+    _require("evolution_policy_base" in plan and "init_helper_capability" in plan and
+             plan["variant"] == "user" and _codename(plan) == "nezha",
+             "camera property capability requires the explicit user Evolution base and helper profiles")
+    _require(contract["selected_profile"] == {
+        "device": "nezha", "hardware_region": "CN", "branch": "bka", "release": "bp4a",
+        "board_api": str(plan["board_shipping_api_level"]), "build_variant": plan["variant"],
+        "capability_value": "false",
+    }, "camera property capability differs from the selected device and platform")
+
+
+def _factory_contexts_binding(plan, contract):
+    _require("camera_property_capability" in plan and "evolution_policy_base" in plan and
+             "init_helper_capability" in plan and plan["variant"] == "user" and _codename(plan) == "nezha",
+             "factory property contexts require the explicit user camera, Evolution base and helper profiles")
+    _require(contract["selected_profile"] == {
+        "device": "nezha", "hardware_region": "CN", "branch": "bka", "release": "bp4a",
+        "board_api": str(plan["board_shipping_api_level"]), "build_variant": plan["variant"],
+        "capability_value": "true",
+    }, "factory property contexts capability differs from the selected device and platform")
+
+
+def _camera_property_admission(contract, identity):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    source = contract["files"][0]
+    guard = policy_inputs.render_camera_property_guard()
+    return {
+        "contract_id": contract["contract_id"],
+        "contract_record": {"path": CAMERA_PROPERTY_RECORD.as_posix(), **identity},
+        "capability": {"board_variable": "BOARD_SEPOLICY_M4DEFS",
+                       "symbol": policy_inputs.CAMERA_PROPERTY_SYMBOL, "value": "false"},
+        "source_patch": {"path": contract["patch"], "sha256": contract["patch_sha256"],
+                         "size_bytes": contract["patch_size_bytes"]},
+        "required_patched_source": {"path": contract["project"] + "/" + source["path"],
+                                    "sha256": source["after_sha256"], "size_bytes": source["after_size_bytes"]},
+        "generated_guard": {"path": CAMERA_PROPERTY_GUARD.as_posix(),
+                            "sha256": hashlib.sha256(guard).hexdigest(), "size_bytes": len(guard)},
+        "source_checkout_inspected": False, "fresh_soong_or_m4_build_performed": False,
+        "strict_full_policy_compiled": False, "image_integration_verified": False,
+        "hardware_tested": False,
+    }
+
+
+def _factory_contexts_admission(contract, identity):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    result = _camera_property_admission(contract, identity)
+    result["contract_record"] = {"path": FACTORY_CONTEXTS_RECORD.as_posix(), **identity}
+    result["capability"] = {"board_variable": "BOARD_SEPOLICY_M4DEFS",
+                            "symbol": policy_inputs.FACTORY_CONTEXTS_SYMBOL, "value": "true"}
+    guard = policy_inputs.render_factory_property_contexts_guard()
+    result["generated_guard"] = {"path": FACTORY_CONTEXTS_GUARD.as_posix(),
+                                  "sha256": hashlib.sha256(guard).hexdigest(), "size_bytes": len(guard)}
+    return result
+
+
+def _bind_camera_property(plan, path, patch_source_root, payloads):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    _require("camera_property_capability" not in plan and CAMERA_PROPERTY_GUARD.as_posix() not in payloads,
+             "camera property capability must not be selected or rendered twice")
+    contract, identity, raw = _camera_property_contract(path)
+    _camera_property_binding(plan, contract)
+    patch_identity, patch = _read_file(Path(patch_source_root) / _relative(contract["patch"]),
+                                     limit=MAX_TEXT_BYTES, collect=True)
+    _require(patch_identity == {"sha256": contract["patch_sha256"], "size_bytes": contract["patch_size_bytes"]},
+             "camera property source patch differs from its reviewed contract")
+    payloads[CAMERA_PROPERTY_RECORD.as_posix()] = raw
+    payloads[contract["patch"]] = patch
+    payloads[CAMERA_PROPERTY_GUARD.as_posix()] = policy_inputs.render_camera_property_guard()
+    plan["camera_property_capability"] = _camera_property_admission(contract, identity)
+
+
+def _bind_factory_contexts(plan, path, patch_source_root, payloads):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    _require("factory_property_contexts_capability" not in plan and FACTORY_CONTEXTS_GUARD.as_posix() not in payloads,
+             "factory property contexts capability must not be selected or rendered twice")
+    contract, identity, raw = _factory_contexts_contract(path)
+    _factory_contexts_binding(plan, contract)
+    patch_identity, patch = _read_file(Path(patch_source_root) / _relative(contract["patch"]),
+                                     limit=MAX_TEXT_BYTES, collect=True)
+    _require(patch_identity == {"sha256": contract["patch_sha256"], "size_bytes": contract["patch_size_bytes"]},
+             "factory property contexts source patch differs from its reviewed contract")
+    payloads[FACTORY_CONTEXTS_RECORD.as_posix()] = raw
+    payloads[contract["patch"]] = patch
+    payloads[FACTORY_CONTEXTS_GUARD.as_posix()] = policy_inputs.render_factory_property_contexts_guard()
+    plan["factory_property_contexts_capability"] = _factory_contexts_admission(contract, identity)
+
+
+def _camera_property_source_guards(plan, payloads):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    selected = "camera_property_capability" in plan
+    board = (DEVICE_PATH / "BoardConfig.mk").as_posix()
+    generated = (DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+    guard = CAMERA_PROPERTY_GUARD.as_posix()
+    symbol = policy_inputs.CAMERA_PROPERTY_SYMBOL.encode("ascii")
+    marker = policy_inputs.CAMERA_PROPERTY_MARKER.encode("ascii")
+    if selected:
+        _require(payloads.get(guard) == policy_inputs.render_camera_property_guard(),
+                 "camera property capability requires the exact generated final guard")
+        _, original = _read_file(ROOT / board, limit=MAX_TEXT_BYTES, collect=True)
+        if "policy_image_delivery" in plan.get("target_files_metadata", {}):
+            original = _policy_image_delivery_board(original)
+        if construction_source.BINDING in plan:
+            original = construction_source.derive_board(original)
+        original = policy_inputs.camera_property_board(original)
+        if "factory_property_contexts_capability" in plan:
+            original = policy_inputs.factory_property_contexts_board(original)
+        _require(payloads.get(board) == original,
+                 "camera property capability changed the board beyond its exact final include")
+        wiring = ("\n" + "\n".join(policy_inputs.camera_property_wiring_lines()) + "\n").encode("ascii")
+        raw = payloads.get(generated, b"")
+        _require(raw == _render_board(plan).encode("ascii") and raw.count(wiring) == 1 and
+                 symbol not in raw.replace(wiring, b"\n") and marker not in raw.replace(wiring, b"\n"),
+                 "camera property capability requires exactly one generated M4 definition")
+    else:
+        _require(guard not in payloads, "camera property guard requires an explicit source capability")
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/") or not name.endswith((".mk", ".bp")):
+            continue
+        _require((selected and name in (guard, generated)) or (symbol not in raw and marker not in raw),
+                 "camera property definitions may only use the exact generated capability guards")
+        _require((selected and name == board) or b"camera-property-capability.mk" not in raw,
+                 "camera property final guard may only follow the admitted init-helper guard")
+
+
+def _factory_contexts_source_guards(plan, payloads):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    selected = "factory_property_contexts_capability" in plan
+    board = (DEVICE_PATH / "BoardConfig.mk").as_posix()
+    generated = (DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+    guard = FACTORY_CONTEXTS_GUARD.as_posix()
+    symbol = policy_inputs.FACTORY_CONTEXTS_SYMBOL.encode("ascii")
+    marker = policy_inputs.FACTORY_CONTEXTS_MARKER.encode("ascii")
+    if selected:
+        _require("camera_property_capability" in plan and
+                 payloads.get(guard) == policy_inputs.render_factory_property_contexts_guard(),
+                 "factory property contexts require the exact generated final guard and camera capability")
+        # The camera source guard compares the full authored Board with both
+        # exact include transformations and preserves its original other bytes.
+        wiring = ("\n" + "\n".join(policy_inputs.factory_property_contexts_wiring_lines()) + "\n").encode("ascii")
+        raw = payloads.get(generated, b"")
+        _require(raw == _render_board(plan).encode("ascii") and raw.count(wiring) == 1 and
+                 symbol not in raw.replace(wiring, b"\n") and marker not in raw.replace(wiring, b"\n"),
+                 "factory property contexts require exactly one generated M4 definition")
+    else:
+        _require(guard not in payloads, "factory property context guard requires an explicit source capability")
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/") or not name.endswith((".mk", ".bp")):
+            continue
+        _require((selected and name in (guard, generated)) or (symbol not in raw and marker not in raw),
+                 "factory property context definitions may only use the exact generated capability guards")
+        _require((selected and name == board) or b"factory-property-contexts-capability.mk" not in raw,
+                 "factory property context final guard may only follow the admitted camera guard")
+
+
 def _policy_inputs_binding(plan, verification):
     if __package__:
         from . import policy_inputs
@@ -1800,6 +1998,12 @@ def _policy_inputs_binding(plan, verification):
     _require(verification.get("evolution_policy_base_contract") ==
              plan.get("evolution_policy_base", {}).get("contract_record"),
              "Evolution policy base source and native policy bundle require the same explicit contract")
+    _require(verification.get("camera_property_capability_contract") ==
+             plan.get("camera_property_capability", {}).get("contract_record"),
+             "camera property source and native policy bundle require the same explicit contract")
+    _require(verification.get("factory_property_contexts_capability_contract") ==
+             plan.get("factory_property_contexts_capability", {}).get("contract_record"),
+             "factory property contexts source and native policy bundle require the same explicit contract")
     receipt = verification["receipt"]
     _require(receipt["path"] == POLICY_INPUTS_RECEIPT, "unexpected native policy receipt name")
     _digest(receipt["sha256"], "native policy receipt")
@@ -2371,6 +2575,14 @@ def _policy_image_delivery_source_guards(plan, payloads):
         expected_board = _policy_image_delivery_board(original)
         if construction_source.BINDING in plan:
             expected_board = construction_source.derive_board(expected_board)
+        if "camera_property_capability" in plan:
+            if __package__:
+                from . import policy_inputs
+            else:
+                import policy_inputs
+            expected_board = policy_inputs.camera_property_board(expected_board)
+            if "factory_property_contexts_capability" in plan:
+                expected_board = policy_inputs.factory_property_contexts_board(expected_board)
         _require(payloads.get(board) == expected_board and
                  payloads.get(include) == _render_policy_image_delivery(binding).encode("ascii"),
                  "policy-image delivery requires the exact generated board and input guards")
@@ -2654,6 +2866,18 @@ def _render_board(plan):
         lines.extend(framework_matrix.wiring_lines())
     if "init_helper_capability" in plan:
         lines.extend(_init_helper_wiring_lines())
+    if "camera_property_capability" in plan:
+        if __package__:
+            from . import policy_inputs
+        else:
+            import policy_inputs
+        lines.extend(policy_inputs.camera_property_wiring_lines())
+    if "factory_property_contexts_capability" in plan:
+        if __package__:
+            from . import policy_inputs
+        else:
+            import policy_inputs
+        lines.extend(policy_inputs.factory_property_contexts_wiring_lines())
     if "oem_policy" in plan:
         lines.extend(_oem_policy_wiring_lines())
     if "oem_properties" in plan:
@@ -3024,7 +3248,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
              target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
              policy_image_delivery_contract=None, rom_construction_contract=None, framework_matrix_contract=None,
-             rom_construction_source_contract=None, evolution_policy_base_contract=None):
+             rom_construction_source_contract=None, evolution_policy_base_contract=None,
+             camera_property_capability_contract=None, factory_property_contexts_capability_contract=None):
     if rom_construction_contract is not None:
         try:
             from . import rom_construction
@@ -3035,6 +3260,10 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         except ValueError as exc:
             raise CandidateError(str(exc)) from exc
     variant = _build_variant(variant)
+    _require(camera_property_capability_contract is None or evolution_policy_base_contract is not None,
+             "camera property capability requires the explicit Evolution policy base")
+    _require(factory_property_contexts_capability_contract is None or camera_property_capability_contract is not None,
+             "factory property contexts require the explicit camera property capability")
     if evolution_policy_base_contract is not None:
         _require(variant == "user" and all(value is not None for value in (
             policy_inputs_receipt, oem_policy_contract, oem_property_contract,
@@ -3144,6 +3373,10 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                                   workspace_root, template_root, patch_source_root, payloads)
     if evolution_policy_base_contract is not None:
         _bind_evolution_policy_base(plan, evolution_policy_base_contract, payloads)
+    if camera_property_capability_contract is not None:
+        _bind_camera_property(plan, camera_property_capability_contract, patch_source_root, payloads)
+    if factory_property_contexts_capability_contract is not None:
+        _bind_factory_contexts(plan, factory_property_contexts_capability_contract, patch_source_root, payloads)
     if framework_allocator_contract is not None:
         _bind_framework_allocator(plan, framework_allocator_contract, workspace_root, payloads)
     if framework_matrix_contract is not None:
@@ -3176,6 +3409,15 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                                     vendor_receipt, payloads, **options)
     if direct_avb_readonly_contract is not None:
         _bind_direct_avb_readonly(plan, direct_avb_readonly_contract, payloads)
+    if camera_property_capability_contract is not None:
+        if __package__:
+            from . import policy_inputs
+        else:
+            import policy_inputs
+        board = (DEVICE_PATH / "BoardConfig.mk").as_posix()
+        payloads[board] = policy_inputs.camera_property_board(payloads[board])
+        if factory_property_contexts_capability_contract is not None:
+            payloads[board] = policy_inputs.factory_property_contexts_board(payloads[board])
     generated = DEVICE_PATH / "generated"
     for name, content in (("BoardConfigCandidate.mk", _render_board(plan)),
                           ("device-candidate.mk", _render_product(plan)), ("fstab.qcom", fstab)):
@@ -3184,6 +3426,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     _framework_allocator_source_guards(plan, payloads)
     _framework_matrix_source_guards(plan, payloads)
     _policy_image_delivery_source_guards(plan, payloads)
+    _camera_property_source_guards(plan, payloads)
+    _factory_contexts_source_guards(plan, payloads)
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
     plan["schema_version"] = 1
@@ -3357,15 +3601,26 @@ def validate(output, *, purpose="configuration"):
                      INIT_HELPER_METADATA.as_posix(), INIT_HELPER_AUDIT.as_posix()}
         for row in [*contract["device_guards"], contract["source_patch"], contract["patch_metadata"],
                     contract["prior_component_audit"]]:
-            if ("policy_image_delivery" in plan.get("target_files_metadata", {}) and
+            if (("policy_image_delivery" in plan.get("target_files_metadata", {}) or
+                    "camera_property_capability" in plan) and
                     row["path"] == (DEVICE_PATH / "BoardConfig.mk").as_posix()):
                 # Preserve the original helper guard, then admit only the exact
                 # one-include delivery derivation. No other guarded bytes vary.
                 original_identity, original = _read_file(ROOT / row["path"], limit=MAX_TEXT_BYTES, collect=True)
                 actual_identity, actual = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
-                expected_board = _policy_image_delivery_board(original)
+                expected_board = original
+                if "policy_image_delivery" in plan.get("target_files_metadata", {}):
+                    expected_board = _policy_image_delivery_board(expected_board)
                 if construction_source.BINDING in plan:
                     expected_board = construction_source.derive_board(expected_board)
+                if "camera_property_capability" in plan:
+                    if __package__:
+                        from . import policy_inputs
+                    else:
+                        import policy_inputs
+                    expected_board = policy_inputs.camera_property_board(expected_board)
+                    if "factory_property_contexts_capability" in plan:
+                        expected_board = policy_inputs.factory_property_contexts_board(expected_board)
                 _require(original_identity == {key: row[key] for key in ("sha256", "size_bytes")} and
                          actual_identity == files.get(row["path"]) and actual == expected_board,
                          "policy-image delivery changed the guarded init-helper board beyond its exact include")
@@ -3398,6 +3653,26 @@ def validate(output, *, purpose="configuration"):
             for row in rows:
                 _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
                          "Evolution policy base changed an admitted source exclusion")
+    if "camera_property_capability" in plan:
+        camera_contract, camera_identity, _ = _camera_property_contract(Path(output) / CAMERA_PROPERTY_RECORD)
+        _camera_property_binding(plan, camera_contract)
+        _require(plan["camera_property_capability"] == _camera_property_admission(camera_contract, camera_identity)
+                 and "policy_inputs" in plan,
+                 "camera property admission differs from its exact source capability")
+        expected |= {CAMERA_PROPERTY_RECORD.as_posix(), CAMERA_PROPERTY_GUARD.as_posix(), camera_contract["patch"]}
+        patch = plan["camera_property_capability"]["source_patch"]
+        _require(files.get(patch["path"]) == {key: patch[key] for key in ("sha256", "size_bytes")},
+                 "camera property source patch differs from its reviewed contract")
+    if "factory_property_contexts_capability" in plan:
+        context_contract, context_identity, _ = _factory_contexts_contract(Path(output) / FACTORY_CONTEXTS_RECORD)
+        _factory_contexts_binding(plan, context_contract)
+        _require(plan["factory_property_contexts_capability"] == _factory_contexts_admission(context_contract, context_identity)
+                 and "policy_inputs" in plan,
+                 "factory property contexts admission differs from its exact source capability")
+        expected |= {FACTORY_CONTEXTS_RECORD.as_posix(), FACTORY_CONTEXTS_GUARD.as_posix(), context_contract["patch"]}
+        patch = plan["factory_property_contexts_capability"]["source_patch"]
+        _require(files.get(patch["path"]) == {key: patch[key] for key in ("sha256", "size_bytes")},
+                 "factory property contexts source patch differs from its reviewed contract")
     if "oem_properties" in plan:
         property_contract, property_identity = _oem_property_contract(Path(output) / OEM_PROPERTY_RECORD)
         _require(plan["oem_properties"] == _oem_property_admission(property_contract, property_identity),
@@ -3621,6 +3896,8 @@ def validate(output, *, purpose="configuration"):
     delivery_payloads = {name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
                          for name in files if name.startswith(DEVICE_PATH.as_posix() + "/") and name.endswith((".mk", ".bp"))}
     _policy_image_delivery_source_guards(plan, delivery_payloads)
+    _camera_property_source_guards(plan, delivery_payloads)
+    _factory_contexts_source_guards(plan, delivery_payloads)
     _require(purpose == "configuration", f"{purpose} admission refused: framework-checks is not a complete signed partition set")
     return plan
 
@@ -3670,6 +3947,10 @@ def main(argv=None):
                              help="exact external provider bundle; requires paired source policy and does not establish runtime support")
             sub.add_argument("--evolution-policy-base-contract", type=Path,
                              help="explicit user Evolution-base source comparison; requires all OEM/property/provider capabilities")
+            sub.add_argument("--camera-property-capability-contract", type=Path,
+                             help="explicit camera-property source correction; requires the Evolution policy base")
+            sub.add_argument("--factory-property-contexts-capability-contract", type=Path,
+                             help="explicit seven-prefix factory label preservation; requires the camera property capability")
             sub.add_argument("--page-size-profile", type=Path,
                              help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
             sub.add_argument("--framework-allocator-contract", type=Path,
@@ -3715,7 +3996,9 @@ def main(argv=None):
                                   rom_construction_contract=args.rom_construction_contract,
                                   framework_matrix_contract=args.framework_matrix_contract,
                                   rom_construction_source_contract=args.rom_construction_source_contract,
-                                  evolution_policy_base_contract=args.evolution_policy_base_contract)
+                                  evolution_policy_base_contract=args.evolution_policy_base_contract,
+                                  camera_property_capability_contract=args.camera_property_capability_contract,
+                                  factory_property_contexts_capability_contract=args.factory_property_contexts_capability_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

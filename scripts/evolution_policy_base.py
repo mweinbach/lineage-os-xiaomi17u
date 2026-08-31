@@ -25,6 +25,12 @@ else:
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = "config/evolution-policy-base.json"
 CONTRACT_SHA256 = "7f187d6ab76df8acfd83d0791f5dd9576c5ac43e1d8a43bff02615fbebec8032"
+CAMERA_CONTRACT_PATH = "patches/evolution/camera-property-vendor-init-write.json"
+CAMERA_CONTRACT_SHA256 = "70d90fc8431b0edc0c67e3e0d8610a72763924bb985aead45439d9c033194c3d"
+CAMERA_CONTRACT_CANONICAL_SHA256 = "881dfc68de209de79c6012fc7b0e883286c5d43ad4a3d7b4e30c24042a9a14ab"
+FACTORY_CONTEXTS_CONTRACT_PATH = "patches/evolution/factory-property-contexts.json"
+FACTORY_CONTEXTS_CONTRACT_SHA256 = "bdd8d56d4af0ad820b52dbbb052a1e58e56ed22a20a2d9965cc85d02d9aac230"
+FACTORY_CONTEXTS_CONTRACT_CANONICAL_SHA256 = "3e7d0473e5cff2096274307117c2762d3495bacd653c40bea6cc0ce485ffb06c"
 EXT = "/system_ext/etc/selinux/system_ext_sepolicy.cil"
 MAPPING = "/system_ext/etc/selinux/mapping/202504.cil"
 BASE_EXT = "evolution-base/system_ext_sepolicy.cil"
@@ -36,6 +42,19 @@ INPUT_FLAGS = {
     "evolution_base_property_contexts": "property_contexts",
     "evolution_base_file_contexts": "file_contexts",
     "evolution_base_service_contexts": "service_contexts",
+}
+FACTORY_CONTEXT_FLAGS = {
+    "platform_property_contexts": "platform",
+    "product_property_contexts": "product",
+    "factory_vendor_property_contexts": "vendor",
+    "factory_odm_property_contexts": "odm",
+}
+PROPERTY_CONTEXT_RUNTIMES = {
+    "platform": "/system/etc/selinux/plat_property_contexts",
+    "system_ext": "/system_ext/etc/selinux/system_ext_property_contexts",
+    "product": "/product/etc/selinux/product_property_contexts",
+    "vendor": "/vendor/etc/selinux/vendor_property_contexts",
+    "odm": "/odm/etc/selinux/odm_property_contexts",
 }
 AV_HEADS = frozenset({"allow", "auditallow", "dontaudit", "neverallow",
                       "allowx", "auditallowx", "dontauditx", "neverallowx"})
@@ -77,18 +96,87 @@ def load_contract(path=None, reader=None):
     return result
 
 
-def source_rows(contract):
-    return (contract["base_policy_sources"]["system_ext_public"]
+def load_camera_contract(path, reader=None):
+    """Load the explicit capability; the legacy base never selects it itself."""
+    reader = reader or vp.Reader()
+    result = json.loads(reader.read(path, CAMERA_CONTRACT_SHA256, 8749))
+    validate_camera_contract(result)
+    return result
+
+
+def validate_camera_contract(contract):
+    # Pure callers must not be able to alter the selected value, source pins,
+    # assertions, or ownership budget after loading the reviewed document.
+    require(digest(contract) == CAMERA_CONTRACT_CANONICAL_SHA256,
+            "camera property capability differs from the exact reviewed contract")
+
+
+def load_factory_contexts_contract(path, reader=None):
+    reader = reader or vp.Reader()
+    result = json.loads(reader.read(path, FACTORY_CONTEXTS_CONTRACT_SHA256, 17058))
+    validate_factory_contexts_contract(result)
+    return result
+
+
+def validate_factory_contexts_contract(contract):
+    require(digest(contract) == FACTORY_CONTEXTS_CONTRACT_CANONICAL_SHA256,
+            "factory context capability differs from the exact reviewed contract")
+
+
+def _factory_source_rows(rows, contract, capability):
+    validate_factory_contexts_contract(capability)
+    selected = capability["selected_profile"]
+    require(contract["device"] == {"codename": selected["device"], "hardware_region": selected["hardware_region"]}
+            and contract["platform"] == {key: selected[key] for key in ("branch", "release", "board_api")}
+            and contract["build_variant"] == selected["build_variant"]
+            and contract["upstream"]["project"] == capability["project"]
+            and contract["upstream"]["commit"] == capability["base_commit"],
+            "factory context capability does not bind the selected Evolution base")
+    patch = capability["files"][0]
+    path = capability["project"] + "/" + patch["path"]
+    before = {"path": path, "sha256": patch["before_sha256"], "size_bytes": patch["before_size_bytes"]}
+    require([row for row in rows if row["path"] == path] == [before],
+            "factory context source preimage is missing, duplicated, or different")
+    after = {"path": path, "sha256": patch["after_sha256"], "size_bytes": patch["after_size_bytes"]}
+    return [dict(after if row["path"] == path else row) for row in rows]
+
+
+def source_rows(contract, camera_contract=None, factory_contexts_contract=None):
+    rows = (contract["base_policy_sources"]["system_ext_public"]
             + contract["base_policy_sources"]["system_ext_private"]
             + contract["base_context_sources"]["property_contexts"]
             + contract["base_context_sources"]["file_contexts"]
             + contract["base_context_sources"]["service_contexts"])
+    if camera_contract is None:
+        require(factory_contexts_contract is None,
+                "factory context capability requires the explicit camera capability")
+        return rows
+    validate_camera_contract(camera_contract)
+    selected = camera_contract["selected_profile"]
+    require(contract["device"] == {"codename": selected["device"],
+                                    "hardware_region": selected["hardware_region"]}
+            and contract["platform"] == {key: selected[key] for key in ("branch", "release", "board_api")}
+            and contract["build_variant"] == selected["build_variant"]
+            and contract["upstream"]["project"] == camera_contract["project"]
+            and contract["upstream"]["commit"] == camera_contract["base_commit"],
+            "camera property capability does not bind the selected Evolution base")
+    patch = camera_contract["files"][0]
+    path = camera_contract["project"] + "/" + patch["path"]
+    before = {"path": path, "sha256": patch["before_sha256"], "size_bytes": patch["before_size_bytes"]}
+    require([row for row in rows if row["path"] == path] == [before],
+            "camera property source preimage is missing, duplicated, or different")
+    # Return a derived expectation without changing the pinned v1 contract or
+    # any source bytes. Every other selector and identity remains untouched.
+    after = {"path": path, "sha256": patch["after_sha256"], "size_bytes": patch["after_size_bytes"]}
+    rows = [dict(after if row["path"] == path else row) for row in rows]
+    return (_factory_source_rows(rows, contract, factory_contexts_contract)
+            if factory_contexts_contract is not None else rows)
 
 
-def verify_source_files(paths, contract, reader=None):
+def verify_source_files(paths, contract, reader=None, camera_contract=None, factory_contexts_contract=None):
     """Verify the actual source-filegroup expansion, including its order."""
     reader = reader or vp.Reader()
-    rows = source_rows(contract)
+    rows = source_rows(contract, camera_contract, factory_contexts_contract)
     require(type(paths) in (list, tuple) and len(paths) == len(rows),
             "Evolution reference source list is incomplete or contains extra files")
     roots, observed = set(), []
@@ -295,10 +383,241 @@ def check_contexts(base, full, property_contract, provider_contract):
     return result
 
 
+def _complete_property_rows(raw, runtime):
+    """Read native property syntax, including multiword enum value types."""
+    require(type(raw) is bytes and b"\x00" not in raw, "invalid complete property context bytes")
+    rows = []
+    for number, line in enumerate(raw.decode("utf-8").splitlines(), 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = line.split()
+        require("#" not in line and len(fields) >= 2
+                and re.fullmatch(r"u:object_r:[A-Za-z0-9_-]+:s0", fields[1]) is not None,
+                "unsupported complete property context row")
+        match = fields[2] if len(fields) >= 3 else "prefix"
+        require(match in {"prefix", "exact"}, "unsupported complete property context match operation")
+        types = fields[3:]
+        require(not types or (len(types) == 1 and types[0] in {"string", "bool", "int", "uint", "double", "size"})
+                or (len(types) > 1 and types[0] == "enum"), "unsupported complete property value type")
+        rows.append({"selector": fields[0], "context": fields[1], "match_kind": match,
+                     "value_type": " ".join(types) if types else None,
+                     "runtime_path": runtime, "line": number})
+    return rows
+
+
+def _property_row_identity(row):
+    return tuple(row[key] for key in ("selector", "context", "match_kind", "value_type"))
+
+
+def check_factory_contexts(base_raw, full_raw, inputs, contract, property_contract):
+    validate_factory_contexts_contract(contract)
+    return _check_factory_contexts_contents(base_raw, full_raw, inputs, contract, property_contract)
+
+
+def _check_factory_contexts_contents(base_raw, full_raw, inputs, contract, property_contract):
+    """Pure finite-region proof; production entrypoints require the pinned contract."""
+    require(type(inputs) is dict and set(inputs) == set(FACTORY_CONTEXT_FLAGS.values()),
+            "factory capability requires all four complete property context inputs")
+    identities, fixed = [], []
+    anchors = {row["runtime_path"]: row for row in contract["preimage_context_closure"]["five_complete_context_inputs"]}
+    for role, runtime in PROPERTY_CONTEXT_RUNTIMES.items():
+        if role == "system_ext":
+            continue
+        raw, expected = inputs[role], anchors[runtime]
+        require(vp.sha(raw) == expected["sha256"] and len(raw) == expected["size_bytes"],
+                "complete non-system_ext property context input differs from the reviewed anchor")
+        fixed += _complete_property_rows(raw, runtime)
+        identities.append({"runtime_path": runtime, "sha256": vp.sha(raw), "size_bytes": len(raw)})
+    runtime = PROPERTY_CONTEXT_RUNTIMES["system_ext"]
+    expected_raw = ("\n".join(" ".join(row) for row in contract["selected_base_semantic_rows"]) + "\n").encode()
+    expected_base = Counter(_property_row_identity(row) for row in _complete_property_rows(expected_raw, runtime))
+    require(sum(expected_base.values()) == 25 and len(expected_base) == 25,
+            "selected factory context profile is not the exact twenty-five-row base")
+    owned = Counter((row["property_pattern"], row["context"], row["match"], row["value_type"])
+                    for row in property_contract["property_contexts"])
+    require(sum(owned.values()) == 8 and len(owned) == 8, "factory context profile requires all eight owned rows")
+    require(len(contract["suppressed_rows"]) == 7
+            and len({row["selector"] for row in contract["suppressed_rows"]}) == 7,
+            "factory context profile is not the exact seven-prefix removal")
+    scopes = {}
+    for scope, raw, expected in (("comparison", base_raw, expected_base), ("actual", full_raw, expected_base + owned)):
+        source_rows = _complete_property_rows(raw, runtime)
+        require(Counter(_property_row_identity(row) for row in source_rows) == expected,
+                "selected " + scope + " property context rows differ from exact retained base plus owned")
+        complete = fixed + source_rows
+        require(len({(row["selector"], row["match_kind"]) for row in complete}) == len(complete),
+                "duplicate exact or prefix selector across complete property contexts")
+        regions = []
+        for suppressed in contract["suppressed_rows"]:
+            prefix = suppressed["selector"]
+            # Reject every equal/deeper exact or prefix rule, not merely a
+            # finite set of sample property names. This proves the entire
+            # reviewed prefix language has no hidden descendant exceptions.
+            require(not any(row["selector"].startswith(prefix) for row in complete),
+                    "removed property prefix has an equal or deeper context override")
+            ancestors = [row for row in complete if row["match_kind"] == "prefix"
+                         and prefix.startswith(row["selector"])]
+            require(ancestors, "removed property prefix has no factory fallback")
+            selected = max(ancestors, key=lambda row: len(row["selector"]))
+            fallback = suppressed["factory_fallback"]
+            require(all(selected[key] == fallback[key] for key in
+                        ("selector", "context", "match_kind", "runtime_path")),
+                    "removed property prefix no longer selects the exact factory fallback")
+            # Android inherits value type independently from context. These
+            # seven reviewed regions inherit string: no applicable ancestor
+            # may introduce another type, including through an untyped child.
+            require(all(row["value_type"] in {None, "string"} for row in ancestors),
+                    "removed property prefix no longer retains the factory string value type")
+            regions.append({"prefix": prefix, "factory_fallback": selected,
+                            "effective_value_type": "string", "whole_prefix_language_verified": True,
+                            "equal_or_deeper_exact_or_prefix_overrides": 0})
+        scopes[scope] = {"source_rows": len(source_rows), "complete_rows": len(complete),
+                         "source_row_multiset_sha256": digest(sorted(expected.elements(), key=repr)),
+                         "seven_prefix_regions": regions}
+    return {"status": "verified", "contract_id": contract["contract_id"],
+            "contract_sha256": FACTORY_CONTEXTS_CONTRACT_SHA256,
+            "capability_symbol": contract["capability"]["symbol"], "capability_value": "true",
+            "unchanged_complete_context_inputs": identities, "native_contexts": scopes,
+            "all_other_twenty_five_base_and_eight_owned_rows_retained": True,
+            "source_or_generated_contexts_modified_by_check": False,
+            "permission_or_image_or_runtime_admitted": False}
+
+
+def _camera_capability_rules(policy, forms, source, target, cls):
+    """Return effective permissions and occurrences, including indirect grants."""
+    permissions, matches = set(), []
+    for form in forms:
+        expr = form.expr
+        if expr[0] == "allowx":
+            require(not (len(expr) == 4 and isinstance(expr[3], tuple)
+                         and len(expr[3]) > 1 and expr[3][1] == "property_service"),
+                    "extended camera property-service permissions are unsupported")
+        if expr[0] != "allow":
+            continue
+        require(len(expr) == 4 and isinstance(expr[3], tuple) and len(expr[3]) == 2
+                and isinstance(expr[3][1], tuple), "unsupported camera capability access-vector form")
+        if expr[3][0] != cls:
+            continue
+        sources = _endpoint(policy, expr[1])
+        targets = _endpoint(policy, expr[2], sources)
+        if source in sources and target in targets and (expr[2] != "self" or source == target):
+            permissions.update(expr[3][1])
+            matches.append(form)
+    return permissions, matches
+
+
+def _check_camera_capability(actual, reference, full_forms, base_forms, full_mapping, base_mapping,
+                             full_public, base_public, contract):
+    """Require the selected removal in both real M4 products without editing CIL."""
+    validate_camera_contract(contract)
+    camera = contract["source_effect"]["property_type"]
+    version = contract["duplicate_type_ownership"]["mapping_attribute"]
+    factory_runtime = contract["factory_assertion"]["runtime_path"]
+    factory_assertion = vp.parse(contract["factory_assertion"]["expression"].encode())[0].expr
+    factory_attribute = vp.parse(contract["factory_assertion"]["source_attribute_definition"].encode())[0].expr
+    expected_mapping = Counter({
+        ("typeattribute", version): 1,
+        ("typeattributeset", version, (camera,)): 1,
+        ("expandtypeattribute", (version,), "true"): 1,
+    })
+    retained = (("property_socket", "sock_file", {"write"}),
+                ("init", "unix_stream_socket", {"connectto"}),
+                (camera, "file", {"getattr", "open", "read", "map"}))
+    scopes = {}
+    for name, policy, forms, mapping, public in (
+            ("actual", actual, full_forms, full_mapping, full_public),
+            ("comparison", reference, base_forms, base_mapping, base_public)):
+        domain, core = policy.resolve("domain"), policy.resolve("coredomain")
+        require("vendor_init" in domain - core and "init" in domain & core,
+                "camera capability requires vendor_init outside coredomain and init inside it")
+        require(camera in policy.types and camera not in domain
+                and policy.resolve(version) == {camera}
+                and policy.role_bindings()[camera] == {"object_r"},
+                "camera property type, object role, or nonempty singleton mapping differs")
+        require(Counter(form.expr for form in forms if form.expr[0] == "type" and form.expr[1] == camera)
+                == Counter({("type", camera): 1})
+                and Counter(form.expr for form in forms if form.expr[0] == "roletype"
+                            and camera in _endpoint(policy, form.expr[2]))
+                == Counter({("roletype", "object_r", camera): 1}),
+                "camera source declaration or role is missing or duplicated")
+        require(Counter(form.expr for form in public if form.expr[0] == "type" and form.expr[1] == camera)
+                == Counter({("type", camera): 1}),
+                "camera public export is missing or duplicated")
+        require(Counter(form.expr for form in mapping if {camera, version} & _atoms(form.expr))
+                == expected_mapping, "camera public mapping definition is missing, duplicated, or different")
+        factory_forms = [form for form in policy.forms if form.runtime == factory_runtime]
+        require(Counter(form.expr for form in factory_forms
+                        if form.expr[0] == "type" and form.expr[1] == camera)
+                == Counter({("type", camera): 1})
+                and Counter(form.expr for form in factory_forms if form.expr[0] == "roletype"
+                            and camera in _endpoint(policy, form.expr[2]))
+                == Counter({("roletype", "object_r", version): 1}),
+                "camera factory declaration or role is missing or duplicated")
+        for origin, selected, expected in (
+                ("source", forms, {"property_type", "system_property_type", "system_public_property_type"}),
+                ("factory", factory_forms,
+                 {"property_type", "system_property_type", "system_restricted_property_type"})):
+            attributes = Counter(form.expr[1] for form in selected
+                                 if form.expr[0] == "typeattributeset"
+                                 and not form.expr[1].startswith((ANONYMOUS, "nezha_reference_"))
+                                 and camera in policy.evaluate(form.expr[2], policy.resolve, policy.types))
+            require(attributes == Counter({attribute: 1 for attribute in expected}),
+                    "camera " + origin + " property attributes are missing, duplicated, or reclassified")
+        permissions, _ = _camera_capability_rules(policy, policy.forms, "vendor_init", camera,
+                                                  "property_service")
+        require("set" not in permissions, "native camera vendor_init property-write capability is enabled")
+        for target, cls, expected in retained:
+            # Android filters platform-provided duplicates out of system_ext.
+            # The pinned source retains the macros; verify their effective
+            # permissions in the complete corpus, including inherited rules.
+            permissions, _ = _camera_capability_rules(policy, policy.forms, "vendor_init", target, cls)
+            require(expected <= permissions, "camera effective socket or read permissions were removed")
+        source_assertions = []
+        for form in forms:
+            expr = form.expr
+            if expr[0] != "neverallow" or expr[3] != ("property_service", ("set",)):
+                continue
+            sources = _endpoint(policy, expr[1])
+            if _endpoint(policy, expr[2], sources) == {camera}:
+                source_assertions.append(sources)
+        require(source_assertions == [domain - {"init", "vendor_init"}],
+                "camera source assertion is missing, duplicated, or weakened")
+        require(Counter(form.expr for form in factory_forms if form.expr == factory_assertion)
+                == Counter({factory_assertion: 1})
+                and Counter(form.expr for form in factory_forms if form.expr == factory_attribute)
+                == Counter({factory_attribute: 1}),
+                "camera factory assertion or its definition is missing or duplicated")
+        require(_endpoint(policy, factory_assertion[1]) == domain - core
+                and _endpoint(policy, factory_assertion[2]) == {camera},
+                "camera factory assertion no longer covers all non-coredomains")
+        scopes[name] = {
+            "effective_vendor_init_property_set_grants": 0,
+            "source_assertions": 1, "factory_assertions": 1,
+            "source_asserted_domain_closure_sha256": digest(sorted(source_assertions[0])),
+            "factory_asserted_domain_closure_sha256": digest(sorted(domain - core)),
+            "effective_socket_and_read_permissions_retained": True,
+            "source_public_and_factory_restricted_attributes_retained": True,
+            "duplicate_type_owners_role_public_export_and_singleton_mapping_retained": True,
+        }
+    return {"status": "verified", "contract_id": contract["contract_id"],
+            "contract_sha256": CAMERA_CONTRACT_SHA256,
+            "capability_symbol": contract["capability"]["symbol"], "capability_value": "false",
+            "native_policies": scopes, "source_or_generated_cil_modified_by_check": False,
+            "binary_or_image_or_runtime_admitted": False}
+
+
 def check_composition(corpus, parsed, actual, owned_contract, properties, provider,
-                      base, contract, full_contexts, full_public):
+                      base, contract, full_contexts, full_public, camera_contract=None,
+                      factory_contexts_contract=None, factory_property_contexts=None):
     """Validate the full actual corpus; no owned-only filtered input is made."""
     require(set(base) == set(INPUT_FLAGS.values()), "missing or extra native base reference input")
+    require((factory_contexts_contract is None) == (factory_property_contexts is None),
+            "factory context capability and four complete context inputs must be selected together")
+    require(factory_contexts_contract is None or camera_contract is not None,
+            "factory context capability requires the explicit camera capability")
+    if camera_contract is not None:
+        source_rows(contract, camera_contract, factory_contexts_contract)
     fixed = []
     immutable_assertions = 0
     for row in contract["unchanged_cil_inputs"]:
@@ -411,6 +730,14 @@ def check_composition(corpus, parsed, actual, owned_contract, properties, provid
         "vendor_source_delivery_into_factory_images_proven": False,
         "image_or_runtime_admitted": False,
     }
+    if camera_contract is not None:
+        result["camera_property_capability_verification"] = _check_camera_capability(
+            actual, reference, current_forms, modeled_base, parsed[MAPPING], base_maps,
+            full_public_forms, base_public_forms, camera_contract)
+    if factory_contexts_contract is not None:
+        result["factory_property_contexts_capability_verification"] = check_factory_contexts(
+            base["property_contexts"], full_contexts["property_contexts"], factory_property_contexts,
+            factory_contexts_contract, properties)
     return {"reference": reference, "membership_budget": {
         name: reference.resolve(name) for name in source_named},
         "base_types": base_types, "result": result}

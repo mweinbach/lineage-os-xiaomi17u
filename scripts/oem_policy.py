@@ -515,13 +515,21 @@ def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platfo
 
 def check_native_contents(corpus, original_vendor, contract, capability, property_contract=None, property_contexts=None,
                           provider_contract=None, provider_file_contexts=None, provider_service_contexts=None,
-                          evolution_base_contract=None, evolution_base_inputs=None, system_ext_public_cil=None):
+                          evolution_base_contract=None, evolution_base_inputs=None, system_ext_public_cil=None,
+                          camera_property_contract=None, factory_contexts_contract=None,
+                          factory_property_contexts=None):
     """Static checks of actual compiler inputs, not a substitute for compilation."""
     require(list(corpus) == list(INPUT_FLAGS.values()), "native CIL input order or set differs")
     evolution_selected = evolution_base_contract is not None
     require(evolution_selected == (evolution_base_inputs is not None)
             and evolution_selected == (system_ext_public_cil is not None),
             "Evolution base contract, complete native references, and full exporter must be selected together")
+    require(camera_property_contract is None or evolution_selected,
+            "camera property capability requires the complete explicit Evolution base profile")
+    require((factory_contexts_contract is None) == (factory_property_contexts is None),
+            "factory context capability and four complete context inputs must be selected together")
+    require(factory_contexts_contract is None or camera_property_contract is not None,
+            "factory context capability requires the explicit camera capability")
     if evolution_selected:
         require(property_contract is not None and provider_contract is not None,
                 "Evolution base requires the explicit property and provider profiles")
@@ -594,7 +602,9 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
             corpus, parsed, policy, contract, property_contract, provider_contract,
             evolution_base_inputs, evolution_base_contract,
             {"property_contexts": property_contexts, "file_contexts": provider_file_contexts,
-             "service_contexts": provider_service_contexts}, system_ext_public_cil)
+             "service_contexts": provider_service_contexts}, system_ext_public_cil,
+            camera_contract=camera_property_contract, factory_contexts_contract=factory_contexts_contract,
+            factory_property_contexts=factory_property_contexts)
         membership_budget = evolution_result["membership_budget"]
     else:
         membership_budget = _declaration_only_outputs(ext_forms, mapping_forms, policy, contract,
@@ -705,7 +715,9 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
                  property_contract_path=None, property_contexts_path=None, provider_contract_path=None,
                  provider_file_contexts_path=None, provider_service_contexts_path=None,
                  evolution_base_contract_path=None, evolution_base_inputs=None,
-                 system_ext_public_cil_path=None, evolution_base_source_files=None):
+                 system_ext_public_cil_path=None, evolution_base_source_files=None,
+                 camera_property_contract_path=None, factory_contexts_contract_path=None,
+                 factory_property_context_paths=None):
     reader = vp.Reader()
     contract = load_contract(contract_path, reader)
     require((property_contract_path is None) == (property_contexts_path is None),
@@ -724,18 +736,36 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
             and evolution_selected == (system_ext_public_cil_path is not None)
             and evolution_selected == (evolution_base_source_files is not None),
             "Evolution base contract, references, exporter, and exact source list must be selected together")
-    evolution_contract = evolution_inputs = full_public = source_files = None
+    require(camera_property_contract_path is None or evolution_selected,
+            "camera property capability requires the complete explicit Evolution base profile")
+    require((factory_contexts_contract_path is None) == (factory_property_context_paths is None),
+            "factory context capability and four complete context inputs must be selected together")
+    require(factory_contexts_contract_path is None or camera_property_contract_path is not None,
+            "factory context capability requires the explicit camera capability")
+    evolution_contract = evolution_inputs = full_public = source_files = camera_contract = None
+    factory_contexts_contract = factory_contexts = None
     if evolution_selected:
         require(provider_selected and properties is not None,
                 "Evolution base requires the explicit property and provider profiles")
         eb = _evolution_base_module()
         evolution_contract = eb.load_contract(evolution_base_contract_path, reader)
+        if camera_property_contract_path is not None:
+            camera_contract = eb.load_camera_contract(camera_property_contract_path, reader)
+        if factory_contexts_contract_path is not None:
+            factory_contexts_contract = eb.load_factory_contexts_contract(factory_contexts_contract_path, reader)
+            require(set(factory_property_context_paths) == set(eb.FACTORY_CONTEXT_FLAGS)
+                    and all(path is not None for path in factory_property_context_paths.values()),
+                    "factory capability requires all four complete property context inputs")
+            factory_contexts = {role: reader.read(factory_property_context_paths[flag])
+                                for flag, role in eb.FACTORY_CONTEXT_FLAGS.items()}
         require(set(evolution_base_inputs) == set(eb.INPUT_FLAGS)
                 and all(path is not None for path in evolution_base_inputs.values()),
                 "native Evolution reference input flags differ or are incomplete")
         evolution_inputs = {role: reader.read(evolution_base_inputs[flag]) for flag, role in eb.INPUT_FLAGS.items()}
         full_public = reader.read(system_ext_public_cil_path)
-        source_files = eb.verify_source_files(evolution_base_source_files, evolution_contract, reader)
+        source_files = eb.verify_source_files(evolution_base_source_files, evolution_contract, reader,
+                                               camera_contract=camera_contract,
+                                               factory_contexts_contract=factory_contexts_contract)
     require(set(inputs) == set(INPUT_FLAGS), "native input flags differ")
     corpus = {runtime: reader.read(inputs[flag]) for flag, runtime in INPUT_FLAGS.items()}
     original = reader.read(original_vendor)
@@ -749,7 +779,10 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
     tools = {name: vp.sha(reader.read(source.with_name(name))) for name in tool_names}
     result = check_native_contents(corpus, original, contract, capability, properties, property_contexts,
                                    provider, provider_files, provider_services,
-                                   evolution_contract, evolution_inputs, full_public)
+                                   evolution_contract, evolution_inputs, full_public,
+                                   camera_property_contract=camera_contract,
+                                   factory_contexts_contract=factory_contexts_contract,
+                                   factory_property_contexts=factory_contexts)
     if evolution_selected:
         result["evolution_policy_base_source_files"] = source_files
     reader.recheck()
@@ -795,6 +828,8 @@ def main(argv=None):
     native.add_argument("--system-ext-file-contexts", type=Path)
     native.add_argument("--system-ext-service-contexts", type=Path)
     native.add_argument("--evolution-policy-base-contract", type=Path)
+    native.add_argument("--camera-property-capability-contract", type=Path)
+    native.add_argument("--factory-property-contexts-capability-contract", type=Path)
     native.add_argument("--system-ext-public-cil", type=Path)
     native.add_argument("--evolution-base-source-files", nargs="+", type=Path)
     # Do not import the optional helper while parsing a legacy bundle command.
@@ -802,6 +837,10 @@ def main(argv=None):
                        "evolution_base_public_cil", "evolution_base_property_contexts",
                        "evolution_base_file_contexts", "evolution_base_service_contexts")
     for flag in evolution_flags:
+        native.add_argument("--" + flag.replace("_", "-"), type=Path)
+    factory_context_flags = ("platform_property_contexts", "product_property_contexts",
+                             "factory_vendor_property_contexts", "factory_odm_property_contexts")
+    for flag in factory_context_flags:
         native.add_argument("--" + flag.replace("_", "-"), type=Path)
     native.add_argument("--output", type=Path)
     for flag in INPUT_FLAGS:
@@ -823,7 +862,12 @@ def main(argv=None):
                                   evolution_base_inputs=({flag: getattr(args, flag) for flag in evolution_flags}
                                       if any(getattr(args, flag) is not None for flag in evolution_flags) else None),
                                   system_ext_public_cil_path=args.system_ext_public_cil,
-                                  evolution_base_source_files=args.evolution_base_source_files)
+                                  evolution_base_source_files=args.evolution_base_source_files,
+                                  camera_property_contract_path=args.camera_property_capability_contract,
+                                  factory_contexts_contract_path=args.factory_property_contexts_capability_contract,
+                                  factory_property_context_paths=(
+                                      {flag: getattr(args, flag) for flag in factory_context_flags}
+                                      if any(getattr(args, flag) is not None for flag in factory_context_flags) else None))
         _write_result(result, args.output)
     except (OSError, ValueError) as exc:
         print(f"oem-policy: {exc}", file=sys.stderr)

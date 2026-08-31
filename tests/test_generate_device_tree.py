@@ -2946,6 +2946,197 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             generator._bind_evolution_policy_base(without_binding, inputs["evolution_policy_base_contract"],
                 {generator.EVOLUTION_POLICY_BASE_GROUPS.as_posix(): policy_inputs.render_evolution_owned_groups()})
 
+    def camera_property_inputs(self):
+        inputs, providers, native = self.evolution_base_inputs()
+        path = ROOT / generator.CAMERA_PROPERTY_RECORD
+        raw = path.read_bytes()
+        native["camera_property_capability_contract"] = {
+            "path": generator.CAMERA_PROPERTY_RECORD.as_posix(),
+            "sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+        inputs["camera_property_capability_contract"] = path
+        return inputs, providers, native
+
+    def test_camera_property_generation_is_explicit_repeatable_and_preserves_other_sources(self):
+        from scripts import policy_inputs
+        inputs, providers, native = self.camera_property_inputs()
+        first, repeat = self.root / "artifacts/camera", self.root / "artifacts/camera-repeat"
+        plan = self.generate_provider(first, inputs, providers, native)
+        self.assertEqual(self.generate_provider(repeat, inputs, providers, native), plan)
+        self.assertEqual(generator.validate(first), plan)
+        legacy = self.root / "artifacts/camera-absent"
+        old_inputs = {key: value for key, value in inputs.items() if key != "camera_property_capability_contract"}
+        old_native = {key: value for key, value in native.items() if key != "camera_property_capability_contract"}
+        baseline = self.generate_provider(legacy, old_inputs, providers, old_native)
+        self.assertNotIn("camera_property_capability", baseline)
+        before = {row["path"]: row for row in baseline["files"]}
+        after = {row["path"]: row for row in plan["files"]}
+        camera = plan["camera_property_capability"]
+        self.assertEqual(set(after) - set(before), {
+            generator.CAMERA_PROPERTY_RECORD.as_posix(), generator.CAMERA_PROPERTY_GUARD.as_posix(),
+            camera["source_patch"]["path"]})
+        self.assertEqual({name for name in before if before[name] != after[name]}, {
+            "device/xiaomi/nezha/BoardConfig.mk", "device/xiaomi/nezha/generated/BoardConfigCandidate.mk"})
+        old_board = (legacy / "device/xiaomi/nezha/BoardConfig.mk").read_bytes()
+        new_board = (first / "device/xiaomi/nezha/BoardConfig.mk").read_bytes()
+        self.assertEqual(new_board, policy_inputs.camera_property_board(old_board))
+        self.assertEqual((first / generator.CAMERA_PROPERTY_GUARD).read_bytes(), policy_inputs.render_camera_property_guard())
+        generated = (first / "device/xiaomi/nezha/generated/BoardConfigCandidate.mk").read_text()
+        self.assertEqual(generated.count("BOARD_SEPOLICY_M4DEFS += " + policy_inputs.CAMERA_PROPERTY_SYMBOL + "=false\n"), 1)
+        self.assertFalse(camera["fresh_soong_or_m4_build_performed"])
+        self.assertFalse(camera["strict_full_policy_compiled"])
+        self.assertFalse(plan["admission"]["flash_allowed"])
+
+    def test_camera_property_source_and_native_bundle_require_same_explicit_profile(self):
+        inputs, providers, native = self.camera_property_inputs()
+        no_source = {key: value for key, value in inputs.items() if key != "camera_property_capability_contract"}
+        no_native = {key: value for key, value in native.items() if key != "camera_property_capability_contract"}
+        for label, selected, verified in (("source", no_source, native), ("bundle", inputs, no_native)):
+            with self.subTest(label=label), self.assertRaisesRegex(generator.CandidateError, "same explicit contract"):
+                self.generate_provider(self.root / "artifacts" / label, selected, providers, verified)
+        with mock.patch.object(generator, "_load_records") as read:
+            with self.assertRaisesRegex(generator.CandidateError, "explicit Evolution"):
+                generator.generate(self.root / "artifacts/refused-camera", record_paths={},
+                    kernel_receipt="unused", vendor_receipt="unused", camera_property_capability_contract="unused")
+            read.assert_not_called()
+
+    def test_camera_property_resealed_duplicate_conflicting_and_other_file_definitions_fail(self):
+        from scripts import policy_inputs
+        inputs, providers, native = self.camera_property_inputs()
+        output = self.root / "artifacts/camera-tampering"
+        plan = self.generate_provider(output, inputs, providers, native)
+        generated = "device/xiaomi/nezha/generated/BoardConfigCandidate.mk"
+        original = (output / generated).read_bytes()
+        definition = ("BOARD_SEPOLICY_M4DEFS += " + policy_inputs.CAMERA_PROPERTY_SYMBOL + "=false\n").encode()
+        for change in (original + definition, original.replace(definition, definition.replace(b"=false", b"=true")),
+                       original.replace(definition, b""), original + b"BOARD_SEPOLICY_M4DEFS += $(LATE_CAMERA_FLAGS)\n"):
+            self.reseal_candidate_file(output, plan, generated, change)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, generated, original)
+        for name in ("device/xiaomi/nezha/device.mk", "device/xiaomi/nezha/Android.bp",
+                     generator.CAMERA_PROPERTY_GUARD.as_posix()):
+            data = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, data + definition)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, data)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_camera_final_guard_and_board_include_cannot_be_removed_or_doubled(self):
+        from scripts import policy_inputs
+        inputs, providers, native = self.camera_property_inputs()
+        output = self.root / "artifacts/camera-final-guard"
+        plan = self.generate_provider(output, inputs, providers, native)
+        name = "device/xiaomi/nezha/BoardConfig.mk"
+        raw = (output / name).read_bytes()
+        token = b"include $(NEZHA_DEVICE_PATH)/generated/camera-property-capability.mk\n"
+        for changed in (raw.replace(token, b""), raw + token):
+            self.reseal_candidate_file(output, plan, name, changed)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, name, raw)
+        with self.assertRaisesRegex(policy_inputs.PolicyInputsError, "exactly one"):
+            policy_inputs.camera_property_board(raw)
+        with self.assertRaisesRegex(generator.CandidateError, "selected or rendered twice"):
+            generator._bind_camera_property(plan, inputs["camera_property_capability_contract"], ROOT, {})
+
+    def test_camera_cli_does_not_implicitly_select_other_profiles(self):
+        for extra, expected in (([], None), (["--camera-property-capability-contract", "camera.json"], Path("camera.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(["generate", "--output", "artifacts/unused",
+                    "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", *extra]), 0)
+            self.assertEqual(generate.call_args.kwargs["camera_property_capability_contract"], expected)
+            self.assertIsNone(generate.call_args.kwargs["evolution_policy_base_contract"])
+
+    def factory_contexts_inputs(self):
+        inputs, providers, native = self.camera_property_inputs()
+        path = ROOT / generator.FACTORY_CONTEXTS_RECORD
+        raw = path.read_bytes()
+        native["factory_property_contexts_capability_contract"] = {
+            "path": generator.FACTORY_CONTEXTS_RECORD.as_posix(),
+            "sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+        inputs["factory_property_contexts_capability_contract"] = path
+        return inputs, providers, native
+
+    def test_factory_contexts_generation_pairs_two_distinct_capabilities_and_preserves_other_bytes(self):
+        from scripts import policy_inputs
+        inputs, providers, native = self.factory_contexts_inputs()
+        output, repeat = self.root / "artifacts/contexts", self.root / "artifacts/contexts-repeat"
+        plan = self.generate_provider(output, inputs, providers, native)
+        self.assertEqual(self.generate_provider(repeat, inputs, providers, native), plan)
+        self.assertEqual(generator.validate(output), plan)
+        old_inputs = {key: value for key, value in inputs.items() if key != "factory_property_contexts_capability_contract"}
+        old_native = {key: value for key, value in native.items() if key != "factory_property_contexts_capability_contract"}
+        old = self.root / "artifacts/contexts-absent"
+        baseline = self.generate_provider(old, old_inputs, providers, old_native)
+        before = {row["path"]: row for row in baseline["files"]}
+        after = {row["path"]: row for row in plan["files"]}
+        contexts = plan["factory_property_contexts_capability"]
+        self.assertEqual(set(after) - set(before), {generator.FACTORY_CONTEXTS_RECORD.as_posix(),
+            generator.FACTORY_CONTEXTS_GUARD.as_posix(), contexts["source_patch"]["path"]})
+        self.assertEqual({name for name in before if before[name] != after[name]}, {
+            "device/xiaomi/nezha/BoardConfig.mk", "device/xiaomi/nezha/generated/BoardConfigCandidate.mk"})
+        self.assertEqual((output / "device/xiaomi/nezha/BoardConfig.mk").read_bytes(),
+            policy_inputs.factory_property_contexts_board((old / "device/xiaomi/nezha/BoardConfig.mk").read_bytes()))
+        self.assertEqual((output / generator.FACTORY_CONTEXTS_GUARD).read_bytes(), policy_inputs.render_factory_property_contexts_guard())
+        board = (output / "device/xiaomi/nezha/generated/BoardConfigCandidate.mk").read_text()
+        self.assertEqual(board.count("BOARD_SEPOLICY_M4DEFS += " + policy_inputs.CAMERA_PROPERTY_SYMBOL + "=false\n"), 1)
+        self.assertEqual(board.count("BOARD_SEPOLICY_M4DEFS += " + policy_inputs.FACTORY_CONTEXTS_SYMBOL + "=true\n"), 1)
+        self.assertEqual(plan["camera_property_capability"], baseline["camera_property_capability"])
+        self.assertFalse(contexts["fresh_soong_or_m4_build_performed"])
+        self.assertFalse(contexts["image_integration_verified"])
+
+    def test_factory_contexts_generation_requires_explicit_camera_and_matching_native_profile(self):
+        inputs, providers, native = self.factory_contexts_inputs()
+        missing_source = {key: value for key, value in inputs.items() if key != "factory_property_contexts_capability_contract"}
+        missing_native = {key: value for key, value in native.items() if key != "factory_property_contexts_capability_contract"}
+        for name, options, verified in (("source", missing_source, native), ("native", inputs, missing_native)):
+            with self.subTest(name=name), self.assertRaisesRegex(generator.CandidateError, "same explicit contract"):
+                self.generate_provider(self.root / "artifacts" / name, options, providers, verified)
+        with mock.patch.object(generator, "_load_records") as load:
+            with self.assertRaisesRegex(generator.CandidateError, "explicit camera"):
+                generator.generate(self.root / "artifacts/missing-camera", record_paths={},
+                    kernel_receipt="unused", vendor_receipt="unused", factory_property_contexts_capability_contract="unused")
+            load.assert_not_called()
+
+    def test_factory_contexts_resealed_duplicate_false_removed_or_relocated_definitions_fail(self):
+        from scripts import policy_inputs
+        inputs, providers, native = self.factory_contexts_inputs()
+        output = self.root / "artifacts/contexts-tampering"
+        plan = self.generate_provider(output, inputs, providers, native)
+        generated = "device/xiaomi/nezha/generated/BoardConfigCandidate.mk"
+        original = (output / generated).read_bytes()
+        definition = ("BOARD_SEPOLICY_M4DEFS += " + policy_inputs.FACTORY_CONTEXTS_SYMBOL + "=true\n").encode()
+        for changed in (original + definition, original.replace(definition, definition.replace(b"=true", b"=false")),
+                        original.replace(definition, b""), original + b"BOARD_SEPOLICY_M4DEFS += $(LATE_CONTEXT_FLAGS)\n"):
+            self.reseal_candidate_file(output, plan, generated, changed)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, generated, original)
+        for name in ("device/xiaomi/nezha/device.mk", generator.FACTORY_CONTEXTS_GUARD.as_posix()):
+            raw = (output / name).read_bytes()
+            self.reseal_candidate_file(output, plan, name, raw + definition)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+            self.reseal_candidate_file(output, plan, name, raw)
+        board = "device/xiaomi/nezha/BoardConfig.mk"
+        raw = (output / board).read_bytes()
+        token = b"include $(NEZHA_DEVICE_PATH)/generated/factory-property-contexts-capability.mk\n"
+        for changed in (raw.replace(token, b""), raw + token):
+            self.reseal_candidate_file(output, plan, board, changed)
+            with self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+        self.reseal_candidate_file(output, plan, board, raw)
+        self.assertEqual(generator.validate(output), plan)
+
+    def test_factory_contexts_cli_does_not_select_camera_implicitly(self):
+        for extra, expected in (([], None), (["--factory-property-contexts-capability-contract", "contexts.json"], Path("contexts.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(["generate", "--output", "artifacts/unused",
+                    "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json", *extra]), 0)
+            self.assertEqual(generate.call_args.kwargs["factory_property_contexts_capability_contract"], expected)
+            self.assertIsNone(generate.call_args.kwargs["camera_property_capability_contract"])
+
     def test_provider_public_contracts_and_source_statements_are_pinned(self):
         contract, identity = generator._framework_provider_contract(ROOT / generator.FRAMEWORK_PROVIDER_RECORD)
         profile, profile_identity = generator._framework_provider_input_contract(ROOT / generator.FRAMEWORK_PROVIDER_INPUT_RECORD)

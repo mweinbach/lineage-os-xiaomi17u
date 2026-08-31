@@ -1050,6 +1050,163 @@ class PolicyInputsTests(unittest.TestCase):
             for name in ("oem_policy_contract", "oem_property_contract", "framework_provider_policy_contract"):
                 self.assertIsNone(stage.call_args.kwargs[name])
 
+    def install_camera_fixture(self):
+        self.install_evolution_fixture()
+        self.camera_path = self.workspace / policy.CAMERA_PROPERTY_CONTRACT_PATH
+        self.camera_path.parent.mkdir(parents=True, exist_ok=True)
+        self.camera_path.write_bytes((WORKSPACE / policy.CAMERA_PROPERTY_CONTRACT_PATH).read_bytes())
+        camera = json.loads(self.camera_path.read_bytes())
+        patch = self.workspace / camera["patch"]
+        patch.write_bytes((WORKSPACE / camera["patch"]).read_bytes())
+        return camera
+
+    def stage_camera(self, output=None):
+        return policy.stage_inputs(self.corpus, output or self.output, **self.evolution_options(),
+                                   camera_property_capability_contract=self.camera_path)
+
+    def test_camera_bundle_is_explicit_paired_and_does_not_replace_any_cil(self):
+        camera = self.install_camera_fixture()
+        baseline = self.stage_evolution(self.root / "camera-absent")
+        result = self.stage_camera()
+        self.assertEqual(result, self.stage_camera(self.root / "camera-repeat"))
+        verified = self.verify_providers()
+        self.assertEqual(verified["camera_property_capability_contract"], {
+            "path": policy.CAMERA_PROPERTY_CONTRACT_PATH, **policy.identity(self.camera_path.read_bytes())})
+        self.assertNotIn("camera_property_capability_contract", baseline)
+        before = {row["path"]: row for row in baseline["files"]}
+        after = {row["path"]: row for row in result["files"]}
+        self.assertEqual(set(after) - set(before), {
+            "tools/camera-property-vendor-init-write.json", "provenance/" + camera["patch"],
+            "provenance/camera-property-capability.mk"})
+        self.assertEqual([name for name in before if before[name] != after[name]], ["Android.bp"])
+        self.assertEqual(result["classification_inputs"], baseline["classification_inputs"])
+        self.assertEqual(result["native_targets"], baseline["native_targets"])
+        self.assertEqual(result["scope"], baseline["scope"])
+        rendered = (self.output / "Android.bp").read_text()
+        original = (self.root / "camera-absent/Android.bp").read_text()
+        additions = [line for line in rendered.splitlines() if line not in original.splitlines()]
+        self.assertEqual(len(additions), 2)
+        self.assertIn('        "tools/camera-property-vendor-init-write.json",', additions)
+
+    def test_camera_bundle_requires_base_before_reading_inputs(self):
+        with mock.patch.object(policy, "_contracts") as load:
+            self.assert_rejected(lambda: policy.stage_inputs(self.corpus, self.output,
+                factory_policy_receipt=self.receipt_path, camera_property_capability_contract="unused"))
+            load.assert_not_called()
+
+    def test_camera_bundle_cannot_demote_profile_or_change_guard_patch_or_contract(self):
+        camera = self.install_camera_fixture()
+        self.stage_camera()
+        path = self.output / policy.RECEIPT_NAME
+        original = json.loads(path.read_bytes())
+        for mutate in (lambda item: item.pop("camera_property_capability_contract"),
+                       lambda item: item.pop("evolution_policy_base_contract"),
+                       lambda item: item["camera_property_capability_contract"].update(sha256="f" * 64)):
+            changed = copy.deepcopy(original)
+            mutate(changed)
+            path.write_bytes(policy.encoded(changed))
+            self.assert_rejected(self.verify_providers)
+        path.write_bytes(policy.encoded(original))
+        for name in ("tools/camera-property-vendor-init-write.json", "provenance/" + camera["patch"],
+                     "provenance/camera-property-capability.mk"):
+            target = self.output / name
+            data = target.read_bytes()
+            target.write_bytes(data + b"unreviewed\n")
+            self.assert_rejected(self.verify_providers)
+            target.write_bytes(data)
+        self.assertEqual(self.verify_providers()["status"], "verified")
+
+    def test_camera_native_render_requires_explicit_base_and_is_exactly_additive(self):
+        template = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        for args in ((False, False, False, False), (True, True, True, False)):
+            with self.assertRaisesRegex(policy.PolicyInputsError, "explicit Evolution"):
+                policy._render_blueprint(template, *args, camera_property_enabled=True)
+        before = policy._render_blueprint(template, True, True, True, True)
+        after = policy._render_blueprint(template, True, True, True, True, True)
+        self.assertEqual(before, after.replace(b'        "tools/camera-property-vendor-init-write.json",\n', b"").replace(
+            b'         "--camera-property-capability-contract $$(readlink -f $(location tools/camera-property-vendor-init-write.json)) " +\n', b""))
+
+    def test_camera_cli_flag_does_not_select_the_base_implicitly(self):
+        args = ["stage", "--corpus-root", "corpus", "--factory-capture-root", "factory", "--output", "out"]
+        for extra, expected in (([], None), (["--camera-property-capability-contract", "camera.json"], Path("camera.json"))):
+            with mock.patch.object(policy, "stage_inputs", return_value={}) as stage, mock.patch("sys.stdout", io.StringIO()):
+                self.assertEqual(policy.main([*args, *extra]), 0)
+            self.assertEqual(stage.call_args.kwargs["camera_property_capability_contract"], expected)
+            self.assertIsNone(stage.call_args.kwargs["evolution_policy_base_contract"])
+
+    def install_factory_contexts_fixture(self):
+        self.install_camera_fixture()
+        self.factory_contexts_path = self.workspace / policy.FACTORY_CONTEXTS_CONTRACT_PATH
+        self.factory_contexts_path.write_bytes((WORKSPACE / policy.FACTORY_CONTEXTS_CONTRACT_PATH).read_bytes())
+        contract = json.loads(self.factory_contexts_path.read_bytes())
+        (self.workspace / contract["patch"]).write_bytes((WORKSPACE / contract["patch"]).read_bytes())
+        return contract
+
+    def stage_factory_contexts(self, output=None):
+        return policy.stage_inputs(self.corpus, output or self.output, **self.evolution_options(),
+            camera_property_capability_contract=self.camera_path,
+            factory_property_contexts_capability_contract=self.factory_contexts_path)
+
+    def test_factory_contexts_bundle_is_paired_repeatable_and_preserves_original_contexts(self):
+        contexts = self.install_factory_contexts_fixture()
+        baseline = self.stage_camera(self.root / "contexts-absent")
+        result = self.stage_factory_contexts()
+        self.assertEqual(result, self.stage_factory_contexts(self.root / "contexts-repeat"))
+        verified = self.verify_providers()
+        self.assertEqual(verified["factory_property_contexts_capability_contract"], {
+            "path": policy.FACTORY_CONTEXTS_CONTRACT_PATH, **policy.identity(self.factory_contexts_path.read_bytes())})
+        self.assertNotIn("factory_property_contexts_capability_contract", baseline)
+        before = {row["path"]: row for row in baseline["files"]}
+        after = {row["path"]: row for row in result["files"]}
+        self.assertEqual(set(after) - set(before), {"tools/factory-property-contexts.json",
+            "provenance/" + contexts["patch"], "provenance/factory-property-contexts-capability.mk"})
+        self.assertEqual([name for name in before if before[name] != after[name]], ["Android.bp"])
+        self.assertEqual(result["contexts"], baseline["contexts"])
+        self.assertEqual(result["classification_inputs"], baseline["classification_inputs"])
+        self.assertEqual(result["native_targets"], baseline["native_targets"])
+        self.assertEqual(result["scope"], baseline["scope"])
+        new = (self.output / "Android.bp").read_text()
+        old = (self.root / "contexts-absent/Android.bp").read_text()
+        self.assertEqual(len(new.splitlines()) - len(old.splitlines()), 10)
+
+    def test_factory_contexts_bundle_requires_camera_profile_before_reading(self):
+        with mock.patch.object(policy, "_contracts") as load:
+            self.assert_rejected(lambda: policy.stage_inputs(self.corpus, self.output,
+                factory_policy_receipt=self.receipt_path, factory_property_contexts_capability_contract="unused"))
+            load.assert_not_called()
+        with self.assertRaisesRegex(policy.PolicyInputsError, "camera property"):
+            policy._render_blueprint((WORKSPACE / "policy/nezha/Android.bp").read_bytes(),
+                                      True, True, True, True, False, True)
+
+    def test_factory_contexts_transferred_profile_guard_patch_and_original_inputs_are_bound(self):
+        contexts = self.install_factory_contexts_fixture()
+        self.stage_factory_contexts()
+        receipt = self.output / policy.RECEIPT_NAME
+        raw = receipt.read_bytes()
+        for key in ("factory_property_contexts_capability_contract", "camera_property_capability_contract"):
+            changed = json.loads(raw)
+            del changed[key]
+            receipt.write_bytes(policy.encoded(changed))
+            self.assert_rejected(self.verify_providers)
+        receipt.write_bytes(raw)
+        for name in ("tools/factory-property-contexts.json", "provenance/" + contexts["patch"],
+                     "provenance/factory-property-contexts-capability.mk", "factory/vendor/vendor_property_contexts",
+                     "factory/odm/odm_property_contexts"):
+            path = self.output / name
+            before = path.read_bytes()
+            path.write_bytes(before + b"changed\n")
+            self.assert_rejected(self.verify_providers)
+            path.write_bytes(before)
+        self.assertEqual(self.verify_providers()["status"], "verified")
+
+    def test_factory_contexts_cli_flag_does_not_implicitly_select_camera(self):
+        args = ["stage", "--corpus-root", "corpus", "--factory-capture-root", "factory", "--output", "out"]
+        for extra, expected in (([], None), (["--factory-property-contexts-capability-contract", "contexts.json"], Path("contexts.json"))):
+            with mock.patch.object(policy, "stage_inputs", return_value={}) as stage, mock.patch("sys.stdout", io.StringIO()):
+                self.assertEqual(policy.main([*args, *extra]), 0)
+            self.assertEqual(stage.call_args.kwargs["factory_property_contexts_capability_contract"], expected)
+            self.assertIsNone(stage.call_args.kwargs["camera_property_capability_contract"])
+
     def test_provider_verification_cannot_drop_or_reseal_derivation_metadata(self):
         inputs, _ = self.install_provider_fixture(derivation=True)
         original = inputs.verify_bundle(self.provider_bundle)

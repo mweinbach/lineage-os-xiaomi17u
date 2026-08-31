@@ -94,6 +94,16 @@ PROVIDER_SOURCE_PATHS = {
 }
 EVOLUTION_BASE_CONTRACT_PATH = "config/evolution-policy-base.json"
 EVOLUTION_BASE_GROUPS_PATH = "device/xiaomi/nezha/sepolicy/Android.bp"
+CAMERA_PROPERTY_CONTRACT_PATH = "patches/evolution/camera-property-vendor-init-write.json"
+CAMERA_PROPERTY_CONTRACT_ID = "nezha-camera-property-vendor-init-no-write-v1"
+CAMERA_PROPERTY_SYMBOL = "target_vendor_persist_camera_prop_vendor_init_writes"
+CAMERA_PROPERTY_MARKER = "NEZHA_CAMERA_PROPERTY_CAPABILITY_CONTRACT"
+CAMERA_PROPERTY_GUARD_PATH = "device/xiaomi/nezha/generated/camera-property-capability.mk"
+FACTORY_CONTEXTS_CONTRACT_PATH = "patches/evolution/factory-property-contexts.json"
+FACTORY_CONTEXTS_CONTRACT_ID = "nezha-preserve-factory-property-contexts-v1"
+FACTORY_CONTEXTS_SYMBOL = "target_nezha_preserve_factory_property_labels"
+FACTORY_CONTEXTS_MARKER = "NEZHA_FACTORY_PROPERTY_CONTEXTS_CAPABILITY_CONTRACT"
+FACTORY_CONTEXTS_GUARD_PATH = "device/xiaomi/nezha/generated/factory-property-contexts-capability.mk"
 EVOLUTION_BASE_OWNED_GROUPS = {
     "nezha_owned_system_ext_public_policy": [
         "device/xiaomi/nezha/sepolicy/system_ext/oem/public/nezha_oem_service.te",
@@ -217,13 +227,135 @@ def render_evolution_owned_groups():
     return ("\n".join(lines) + "\n").encode("ascii")
 
 
+def camera_property_wiring_lines():
+    """Select exactly one explicit definition before inherited board hooks."""
+    definitions = ("$(strip $(foreach _nezha_camera_def,$(BOARD_SEPOLICY_M4DEFS),"
+                   f"$(if $(findstring {CAMERA_PROPERTY_SYMBOL},$(_nezha_camera_def)),$(_nezha_camera_def))))")
+    return [
+        "# Explicit reviewed camera property capability; retain upstream behavior otherwise.",
+        f"ifneq ($(origin {CAMERA_PROPERTY_MARKER}),undefined)",
+        "$(error Nezha camera property capability must be generated exactly once)",
+        "endif",
+        f"{CAMERA_PROPERTY_MARKER} := {CAMERA_PROPERTY_CONTRACT_ID}",
+        "ifneq ($(filter undefined file,$(origin BOARD_SEPOLICY_M4DEFS)),$(origin BOARD_SEPOLICY_M4DEFS))",
+        "$(error Nezha camera property M4 definitions cannot be supplied by an override)",
+        "endif",
+        f"ifneq ({definitions},)",
+        "$(error Nezha camera property M4 definition must be generated exactly once)",
+        "endif",
+        f"BOARD_SEPOLICY_M4DEFS += {CAMERA_PROPERTY_SYMBOL}=false",
+    ]
+
+
+def render_camera_property_guard():
+    """Check the complete inherited list after the helper freezes it in Kati."""
+    definitions = ("$(strip $(foreach _nezha_camera_def,$(BOARD_SEPOLICY_M4DEFS),"
+                   f"$(if $(findstring {CAMERA_PROPERTY_SYMBOL},$(_nezha_camera_def)),$(_nezha_camera_def))))")
+    lines = [
+        "# SPDX-License-Identifier: Apache-2.0",
+        "# Included only for the exact reviewed camera-property source capability.",
+        "# The preceding init-helper guard freezes the complete M4 list read-only.",
+        "ifneq ($(NEZHA_INIT_HELPER_CAPABILITY_CONTRACT),nezha-init-helper-no-property-writes-v1)",
+        "$(error Nezha camera property capability requires the admitted init-helper guard)",
+        "endif",
+        f"ifneq ($(origin {CAMERA_PROPERTY_MARKER}),file)",
+        "$(error Nezha camera property capability requires the generated file marker)",
+        "endif",
+        f"ifneq ($({CAMERA_PROPERTY_MARKER}),{CAMERA_PROPERTY_CONTRACT_ID})",
+        "$(error Nezha camera property capability contract differs)",
+        "endif",
+        "ifneq ($(origin BOARD_SEPOLICY_M4DEFS),file)",
+        "$(error Nezha camera property M4 definitions cannot be supplied by an override)",
+        "endif",
+        "ifneq ($(flavor BOARD_SEPOLICY_M4DEFS),simple)",
+        "$(error Nezha camera property M4 definitions must be frozen by the init-helper guard)",
+        "endif",
+        f"ifneq ({definitions},{CAMERA_PROPERTY_SYMBOL}=false)",
+        "$(error Nezha requires exactly one admitted camera property M4 definition with value false)",
+        "endif",
+        f".KATI_READONLY := {CAMERA_PROPERTY_MARKER}",
+    ]
+    return ("\n".join(lines) + "\n").encode("ascii")
+
+
+def camera_property_board(original):
+    """Add one final guard after the unchanged helper guard, without rerendering."""
+    token = b"include $(NEZHA_DEVICE_PATH)/init-helper-capability.mk\n"
+    include = b"include $(NEZHA_DEVICE_PATH)/generated/camera-property-capability.mk\n"
+    require(original.count(token) == 1 and include not in original,
+            "camera property capability requires exactly one unchanged final init-helper include")
+    return original.replace(token, token + include, 1)
+
+
+def factory_property_contexts_wiring_lines():
+    """Keep the seven reviewed factory label fallbacks under an explicit flag."""
+    definitions = ("$(strip $(foreach _nezha_context_def,$(BOARD_SEPOLICY_M4DEFS),"
+                   f"$(if $(findstring {FACTORY_CONTEXTS_SYMBOL},$(_nezha_context_def)),$(_nezha_context_def))))")
+    return [
+        "# Explicit reviewed factory property labels; no property grants are added.",
+        f"ifneq ($(origin {FACTORY_CONTEXTS_MARKER}),undefined)",
+        "$(error Nezha factory property contexts capability must be generated exactly once)",
+        "endif",
+        f"{FACTORY_CONTEXTS_MARKER} := {FACTORY_CONTEXTS_CONTRACT_ID}",
+        "ifneq ($(filter undefined file,$(origin BOARD_SEPOLICY_M4DEFS)),$(origin BOARD_SEPOLICY_M4DEFS))",
+        "$(error Nezha factory property context M4 definitions cannot be supplied by an override)",
+        "endif",
+        f"ifneq ({definitions},)",
+        "$(error Nezha factory property context M4 definition must be generated exactly once)",
+        "endif",
+        f"BOARD_SEPOLICY_M4DEFS += {FACTORY_CONTEXTS_SYMBOL}=true",
+    ]
+
+
+def render_factory_property_contexts_guard():
+    definitions = ("$(strip $(foreach _nezha_context_def,$(BOARD_SEPOLICY_M4DEFS),"
+                   f"$(if $(findstring {FACTORY_CONTEXTS_SYMBOL},$(_nezha_context_def)),$(_nezha_context_def))))")
+    lines = [
+        "# SPDX-License-Identifier: Apache-2.0",
+        "# The preceding init-helper guard freezes the complete M4 list read-only.",
+        "ifneq ($(NEZHA_INIT_HELPER_CAPABILITY_CONTRACT),nezha-init-helper-no-property-writes-v1)",
+        "$(error Nezha factory property contexts require the admitted init-helper guard)",
+        "endif",
+        f"ifneq ($(origin {FACTORY_CONTEXTS_MARKER}),file)",
+        "$(error Nezha factory property contexts require the generated file marker)",
+        "endif",
+        f"ifneq ($({FACTORY_CONTEXTS_MARKER}),{FACTORY_CONTEXTS_CONTRACT_ID})",
+        "$(error Nezha factory property contexts capability contract differs)",
+        "endif",
+        "ifneq ($(origin BOARD_SEPOLICY_M4DEFS),file)",
+        "$(error Nezha factory property context M4 definitions cannot be supplied by an override)",
+        "endif",
+        "ifneq ($(flavor BOARD_SEPOLICY_M4DEFS),simple)",
+        "$(error Nezha factory property context M4 definitions must be frozen by the init-helper guard)",
+        "endif",
+        f"ifneq ({definitions},{FACTORY_CONTEXTS_SYMBOL}=true)",
+        "$(error Nezha requires exactly one admitted factory property context M4 definition with value true)",
+        "endif",
+        f".KATI_READONLY := {FACTORY_CONTEXTS_MARKER}",
+    ]
+    return ("\n".join(lines) + "\n").encode("ascii")
+
+
+def factory_property_contexts_board(original):
+    token = b"include $(NEZHA_DEVICE_PATH)/generated/camera-property-capability.mk\n"
+    include = b"include $(NEZHA_DEVICE_PATH)/generated/factory-property-contexts-capability.mk\n"
+    require(original.count(token) == 1 and include not in original,
+            "factory property contexts require exactly one admitted camera-property final include")
+    return original.replace(token, token + include, 1)
+
+
 def _render_blueprint(raw, oem_enabled, properties_enabled=False, providers_enabled=False,
-                      evolution_base_enabled=False):
+                      evolution_base_enabled=False, camera_property_enabled=False,
+                      factory_contexts_enabled=False):
     """Select the explicit OEM check without changing any compiled CIL input."""
     require(not properties_enabled or oem_enabled, "OEM properties require the original OEM source profile")
     require(not providers_enabled or oem_enabled, "framework providers require the original OEM source profile")
     require(not evolution_base_enabled or all((oem_enabled, properties_enabled, providers_enabled)),
             "the Evolution policy base requires the explicit OEM, property and provider source profiles")
+    require(not camera_property_enabled or evolution_base_enabled,
+            "the camera property capability requires the explicit Evolution policy base")
+    require(not factory_contexts_enabled or camera_property_enabled,
+            "factory property contexts require the explicit camera property capability")
     text = raw.decode("utf-8")
     for blocks, enabled in ((OEM_PROPERTY_BLOCKS, properties_enabled), (PROVIDER_BLOCKS, providers_enabled),
                             (EVOLUTION_BASE_BLOCKS, evolution_base_enabled)):
@@ -233,6 +365,33 @@ def _render_blueprint(raw, oem_enabled, properties_enabled=False, providers_enab
             before, rest = text.split(begin)
             optional, after = rest.split(end)
             text = before + (optional if enabled else "") + after
+    if camera_property_enabled:
+        source = '        "tools/evolution-policy-base.json",\n'
+        argument = '         "--evolution-policy-base-contract $$(readlink -f $(location tools/evolution-policy-base.json)) " +\n'
+        require(text.count(source) == 1 and text.count(argument) == 1,
+                "camera property capability requires the exact native Evolution base inputs")
+        text = text.replace(source, source + '        "tools/camera-property-vendor-init-write.json",\n')
+        text = text.replace(argument, argument +
+            '         "--camera-property-capability-contract $$(readlink -f $(location tools/camera-property-vendor-init-write.json)) " +\n')
+    if factory_contexts_enabled:
+        source = '        "tools/camera-property-vendor-init-write.json",\n'
+        argument = '         "--camera-property-capability-contract $$(readlink -f $(location tools/camera-property-vendor-init-write.json)) " +\n'
+        sources = ['"tools/factory-property-contexts.json"', '":plat_property_contexts"',
+                   '":product_property_contexts"', '"factory/vendor/vendor_property_contexts"',
+                   '"factory/odm/odm_property_contexts"']
+        arguments = [
+            ("factory-property-contexts-capability-contract", "tools/factory-property-contexts.json"),
+            ("platform-property-contexts", ":plat_property_contexts"),
+            ("product-property-contexts", ":product_property_contexts"),
+            ("factory-vendor-property-contexts", "factory/vendor/vendor_property_contexts"),
+            ("factory-odm-property-contexts", "factory/odm/odm_property_contexts"),
+        ]
+        require(text.count(source) == 1 and text.count(argument) == 1,
+                "factory property contexts require the exact native camera capability input")
+        text = text.replace(source, source + "".join("        " + name + ",\n" for name in sources))
+        text = text.replace(argument, argument + "".join(
+            '         "--' + name + ' $$(readlink -f $(location ' + path + ')) " +\n'
+            for name, path in arguments))
     tool_sources = '    srcs: ["tools/oem_policy.py", "tools/vendor_policy.py", "tools/artifact_files.py"],'
     require(text.count(tool_sources) == 1, "native OEM check tool source list differs")
     extra_tools = []
@@ -539,6 +698,57 @@ def _evolution_base_controls(reader, path, contract, controls, oem_binding,
     return {"path": EVOLUTION_BASE_CONTRACT_PATH, **identity(raw)}
 
 
+def _camera_property_controls(reader, path, controls, evolution_binding):
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    require(evolution_binding is not None,
+            "camera property capability requires the explicit Evolution policy base")
+    camera = evolution_policy_base.load_camera_contract(path, reader)
+    raw = reader.read(path)
+    _read_exact(reader, ROOT / CAMERA_PROPERTY_CONTRACT_PATH, identity(raw))
+    base = evolution_policy_base.load_contract(ROOT / EVOLUTION_BASE_CONTRACT_PATH, reader)
+    # This derives only an expected source identity; no upstream source is copied
+    # or rewritten, and the native guard must rehash the actual M4 dependencies.
+    evolution_policy_base.source_rows(base, camera_contract=camera)
+    patch = {"path": camera["patch"], "sha256": camera["patch_sha256"],
+             "size_bytes": camera["patch_size_bytes"]}
+    controls.update({
+        "tools/camera-property-vendor-init-write.json": raw,
+        "provenance/" + _relative(patch["path"]): _read_exact(reader, ROOT / patch["path"], patch),
+        "provenance/camera-property-capability.mk": render_camera_property_guard(),
+    })
+    controls["Android.bp"] = _render_blueprint(
+        controls["provenance/Android.bp.template"], True, True, True, True, True)
+    return {"path": CAMERA_PROPERTY_CONTRACT_PATH, **identity(raw)}
+
+
+def _factory_contexts_controls(reader, path, controls, camera_binding):
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    require(camera_binding is not None,
+            "factory property contexts require the explicit camera property capability")
+    contexts = evolution_policy_base.load_factory_contexts_contract(path, reader)
+    raw = reader.read(path)
+    _read_exact(reader, ROOT / FACTORY_CONTEXTS_CONTRACT_PATH, identity(raw))
+    base = evolution_policy_base.load_contract(ROOT / EVOLUTION_BASE_CONTRACT_PATH, reader)
+    camera = evolution_policy_base.load_camera_contract(ROOT / CAMERA_PROPERTY_CONTRACT_PATH, reader)
+    evolution_policy_base.source_rows(base, camera_contract=camera, factory_contexts_contract=contexts)
+    patch = {"path": contexts["patch"], "sha256": contexts["patch_sha256"],
+             "size_bytes": contexts["patch_size_bytes"]}
+    controls.update({
+        "tools/factory-property-contexts.json": raw,
+        "provenance/" + _relative(patch["path"]): _read_exact(reader, ROOT / patch["path"], patch),
+        "provenance/factory-property-contexts-capability.mk": render_factory_property_contexts_guard(),
+    })
+    controls["Android.bp"] = _render_blueprint(
+        controls["provenance/Android.bp.template"], True, True, True, True, True, True)
+    return {"path": FACTORY_CONTEXTS_CONTRACT_PATH, **identity(raw)}
+
+
 def _provider_inputs(reader, receipt_path, contract, controls, *, output=None):
     if __package__:
         from . import framework_provider_inputs as provider_inputs
@@ -631,7 +841,8 @@ def _capture(reader, receipt_path, contract):
 
 
 def _manifest(contract, correction, files, stage_tool, oem_binding=None, property_binding=None,
-              provider_binding=None, provider_inputs=None, evolution_binding=None):
+              provider_binding=None, provider_inputs=None, evolution_binding=None, camera_binding=None,
+              factory_contexts_binding=None):
     result = {
         "schema_version": 1, "operation": "stage-nezha-policy-inputs", "status": "staged",
         "device": "nezha", "bundle": BUNDLE_PATH,
@@ -662,6 +873,12 @@ def _manifest(contract, correction, files, stage_tool, oem_binding=None, propert
         require(all(value is not None for value in (oem_binding, property_binding, provider_binding)),
                 "the Evolution policy base receipt requires all three explicit source profiles")
         result["evolution_policy_base_contract"] = copy.deepcopy(evolution_binding)
+    if camera_binding is not None:
+        require(evolution_binding is not None, "camera property receipt requires the explicit Evolution policy base")
+        result["camera_property_capability_contract"] = copy.deepcopy(camera_binding)
+    if factory_contexts_binding is not None:
+        require(camera_binding is not None, "factory contexts receipt requires the explicit camera capability")
+        result["factory_property_contexts_capability_contract"] = copy.deepcopy(factory_contexts_binding)
     return result
 
 
@@ -730,6 +947,24 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
             contract, controls, oem_binding, property_binding, provider_binding)
         require(receipt["evolution_policy_base_contract"] == evolution_binding,
                 "the Evolution policy base receipt differs from the trusted controls")
+    camera_binding = None
+    if "camera_property_capability_contract" in receipt:
+        require(type(receipt["camera_property_capability_contract"]) is dict and
+                receipt["camera_property_capability_contract"].get("path") == CAMERA_PROPERTY_CONTRACT_PATH,
+                "unexpected camera property capability receipt binding")
+        camera_binding = _camera_property_controls(reader, ROOT / CAMERA_PROPERTY_CONTRACT_PATH,
+                                                   controls, evolution_binding)
+        require(receipt["camera_property_capability_contract"] == camera_binding,
+                "camera property capability receipt differs from trusted controls")
+    factory_contexts_binding = None
+    if "factory_property_contexts_capability_contract" in receipt:
+        require(type(receipt["factory_property_contexts_capability_contract"]) is dict and
+                receipt["factory_property_contexts_capability_contract"].get("path") == FACTORY_CONTEXTS_CONTRACT_PATH,
+                "unexpected factory property contexts capability receipt binding")
+        factory_contexts_binding = _factory_contexts_controls(reader, ROOT / FACTORY_CONTEXTS_CONTRACT_PATH,
+                                                             controls, camera_binding)
+        require(receipt["factory_property_contexts_capability_contract"] == factory_contexts_binding,
+                "factory property contexts capability receipt differs from trusted controls")
     expected = dict(controls)
     expected[FACTORY_RECEIPT_MEMBER] = _capture(reader, bundle / FACTORY_RECEIPT_MEMBER, contract)
     for row in correction["inputs"]:
@@ -741,7 +976,8 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
         _read_exact(reader, bundle / member, identity(data))
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
     require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding, property_binding,
-                                provider_binding, provider_inputs, evolution_binding),
+                                provider_binding, provider_inputs, evolution_binding, camera_binding,
+                                factory_contexts_binding),
             "policy-input receipt differs from the reviewed files or scope")
     require(_members(bundle) == set(expected) | {RECEIPT_NAME}, "bundle has missing or unexpected files")
     if provider_inputs is not None:
@@ -761,6 +997,10 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
     }
     if evolution_binding is not None:
         result["evolution_policy_base_contract"] = copy.deepcopy(evolution_binding)
+    if camera_binding is not None:
+        result["camera_property_capability_contract"] = copy.deepcopy(camera_binding)
+    if factory_contexts_binding is not None:
+        result["factory_property_contexts_capability_contract"] = copy.deepcopy(factory_contexts_binding)
     return result
 
 
@@ -779,7 +1019,8 @@ def _output_path(output):
 def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_policy_receipt=None,
                  oem_policy_contract=None, oem_property_contract=None,
                  framework_provider_policy_contract=None, framework_provider_inputs_receipt=None,
-                 evolution_policy_base_contract=None):
+                 evolution_policy_base_contract=None, camera_property_capability_contract=None,
+                 factory_property_contexts_capability_contract=None):
     """Publish a fresh private bundle atomically; originals remain untouched."""
     require((factory_capture_root is None) != (factory_policy_receipt is None),
             "choose exactly one factory capture root or receipt")
@@ -793,6 +1034,10 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
         oem_policy_contract, oem_property_contract, framework_provider_policy_contract,
         framework_provider_inputs_receipt)),
         "the Evolution policy base requires explicit OEM, property and provider profiles")
+    require(camera_property_capability_contract is None or evolution_policy_base_contract is not None,
+            "camera property capability requires the explicit Evolution policy base")
+    require(factory_property_contexts_capability_contract is None or camera_property_capability_contract is not None,
+            "factory property contexts require the explicit camera property capability")
     output, parent = _output_path(output)
     corpus_root = vendor_policy.real_directory(corpus_root)
     if factory_capture_root is not None:
@@ -821,6 +1066,14 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     if evolution_policy_base_contract is not None:
         evolution_binding = _evolution_base_controls(reader, evolution_policy_base_contract, contract,
             controls, oem_binding, property_binding, provider_binding)
+    camera_binding = None
+    if camera_property_capability_contract is not None:
+        camera_binding = _camera_property_controls(reader, camera_property_capability_contract,
+                                                   controls, evolution_binding)
+    factory_contexts_binding = None
+    if factory_property_contexts_capability_contract is not None:
+        factory_contexts_binding = _factory_contexts_controls(reader, factory_property_contexts_capability_contract,
+                                                             controls, camera_binding)
     files = dict(controls)
     files[FACTORY_RECEIPT_MEMBER] = _capture(reader, receipt_path, contract)
     for row in correction["inputs"]:
@@ -831,7 +1084,8 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     require(sum(len(data) for data in files.values()) <= MAX_BUNDLE_BYTES, "policy bundle exceeds its byte limit")
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
     receipt = _manifest(contract, correction, files, stage_tool, oem_binding, property_binding,
-                        provider_binding, provider_inputs, evolution_binding)
+                        provider_binding, provider_inputs, evolution_binding, camera_binding,
+                        factory_contexts_binding)
     files[RECEIPT_NAME] = encoded(receipt)
     required_bytes = sum(len(data) for data in files.values())
     require(shutil.disk_usage(parent).free >= required_bytes + 16 * 1024 * 1024,
@@ -888,6 +1142,10 @@ def main(argv=None):
                        help="separate provider bundle receipt, reverified before policy publication")
     stage.add_argument("--evolution-policy-base-contract", type=Path,
                        help="explicit native Evolution-base comparison; requires OEM, property and provider profiles")
+    stage.add_argument("--camera-property-capability-contract", type=Path,
+                       help="explicit camera-property source correction; requires the Evolution policy base")
+    stage.add_argument("--factory-property-contexts-capability-contract", type=Path,
+                       help="explicit seven-prefix factory label preservation; requires the camera property capability")
     verify = commands.add_parser("verify", help="verify every transferred file against reviewed workspace controls")
     verify.add_argument("--bundle", required=True, type=Path)
     verify.add_argument("--framework-provider-inputs-receipt", type=Path,
@@ -901,7 +1159,9 @@ def main(argv=None):
                                   oem_property_contract=args.oem_property_contract,
                                   framework_provider_policy_contract=args.framework_provider_policy_contract,
                                   framework_provider_inputs_receipt=args.framework_provider_inputs_receipt,
-                                  evolution_policy_base_contract=args.evolution_policy_base_contract)
+                                  evolution_policy_base_contract=args.evolution_policy_base_contract,
+                                  camera_property_capability_contract=args.camera_property_capability_contract,
+                                  factory_property_contexts_capability_contract=args.factory_property_contexts_capability_contract)
         else:
             result = verify_bundle(args.bundle,
                                    framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)
