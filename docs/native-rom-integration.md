@@ -81,10 +81,12 @@ on the device filegroup's forbidden specific-vendor visibility. The separate
 with complete receipt readback. The second native attempt passes Soong/main
 Ninja but fails strict combined-policy compilation at **15:28:07 UTC** on the
 camera-property neverallow. Commit **85c5b40** supplies the unactivated
-[one-grant correction](camera-property-vendor-init-write.md); a separate patch
-0017 is being authored for the seven factory-prefix label differences. Neither
-is admitted through a new native policy build;
-current policy/context and image-compatibility checks remain unverified.
+[one-grant correction](camera-property-vendor-init-write.md). Commit **7c22c82**
+adds the separate [factory-prefix capability](factory-property-contexts-capability.md),
+and **641af6a** integrates the pair into explicit source/bundle admission. Two
+host stagings match across all 63 files while preserving factory inputs.
+Guest source installation and policy3 have not run; current policy/context and
+image-compatibility checks remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1583,9 +1585,40 @@ readers. Independent camera-grant inventory
 `68b645731c07b5ba04e716417745c9d5a2cbf14bb1e4935357aff4eacaa788c0`
 keeps application-domain reads distinct from the lost service/HAL access.
 These are static TE effects in captured inputs to a failed policy build, not
-a valid compiled policy or observed device regressions. Patch 0017 is being
-implemented to preserve all seven factory-prefix labels; it is not activated.
+a valid compiled policy or observed device regressions. The later committed
+patch 0017 supplies the factory-prefix capability; it is not activated.
 Patch 0016 alone does not resolve this context-selection issue.
+
+Commit `7c22c82bcab0971d8eeacbe7981b77f8eae938e8` adds the guarded seven-row
+source patch, contract and offline tests. Source freeze
+`82189252e89559d7470901cc60c28fb58ec06f0dc60412e37f375106fd7a0d31`
+binds two identical host patch copies and 48 valid plus 22 expected-invalid
+host M4 cases. Explicit `true` suppresses the seven Evolution prefix rows;
+absent/`false` preserves the default context text. Other rows, declarations,
+permissions, assertions and factory files remain unchanged. The expected
+projection has 25 base rows plus eight owned rows; that 33-row total is not a
+native result. Truthful M4 sync directives remain in the raw fixture outputs.
+
+Commit `641af6af3a1ba614acc22d448dd2f1f48449a59c` adds paired generator,
+private-bundle and checker admission. The factory-context option requires the
+camera capability, which requires the reviewed user Evolution-base profile.
+Eighteen host GNU Make cases verify syntax and exact definition/override checks;
+Kati's late-write enforcement is not executed by those fixtures. The reviewed
+native checker wiring requires the complete property-context inputs and exact
+source/permission effects; it has not run against the new selection.
+Final host freeze
+`0daa448e693c7d5518b7246c3e1364a8161b1e77b51602b2af131fa1dd9270e0`
+and summary `365646cc3ecb4d3edaf6cde552d0cb5c5ac330f313c253f2e9baab628b21a903`
+bind two byte-identical **63-file / 6,265,781-byte** bundles, including receipt
+`b02f5822de8057206e36ee7b90af09a5937b8250b037a2bdad1a33a61075142c`.
+Relative to the installed visibility bundle, 53 members are unchanged, four
+change and six are added; none are removed. Original CIL and factory context
+bytes remain unchanged, and relocated trusted controls reproduce verification.
+This is a host component packet, not a complete candidate or guest source
+transaction. Both capability patches still require guarded installation, an
+ordinary Android source/M4 build, five-context analysis, strict combined
+compilation and unfiltered enforcing-binary checks. Policy2 and all earlier
+failures remain preserved; no policy3, new image or hardware pass is claimed.
 
 Commit `76fe97584caf990677da033261e6c1d6c74dd745` adds the
 [unlevelled-matrix AIDL metadata audit source](../tools/vintf-definition-audit/README.md).
@@ -1726,14 +1759,22 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**4,055 tests in 171.878 seconds with zero failures, errors or skips**, executed
+**4,115 tests in 175.932 seconds with zero failures, errors or skips**, executed
+by the coordinator against `5204366` plus the eleven frozen 0017/integration
+files. All eleven remained unchanged and were committed as `7c22c82` and
+`641af6a`. Log
+`33aab9ce69cbdd4196add399a5c4910ce8bd5fc2154ab174dbd5d4540cc3604b`
+and completion `1eba56c054676fc4619151bb5e4de95c78a10ea911d3a9a060c03b0aa0d43b33`
+bind that complete source cohort. This later central-document update is
+separate; the suite does not install source or run Android policy checks.
+The preceding suite passed **4,055 tests in 171.878 seconds with zero failures, errors or skips**, executed
 by the coordinator in an isolated `fdc9b1e` snapshot plus the exact seven
 0016/audit files, equivalent to commit `76fe975`. Log
 `6eae17e2f9d2c36e88cf750263781b12d27a7d72adcf764895d5d7ee29754652`
 and completion `63f0056098b870e3a89763edc3def7979d3c5f40fbf769e7648aceb2718a9f05`
-bind that unchanged cohort. The seven ongoing integration-file changes in the
-active working tree and this later document update are excluded. This is not
-a full test of the active tree or native compilation of the new C++ audit.
+bind that unchanged cohort. The seven then-ongoing integration-file changes in
+the working tree and its later document update were excluded. That run was not
+a full test of the working tree or native compilation of the new C++ audit.
 The preceding suite passed **4,043 in 169.370 seconds**, with two
 source-correction files and four checkpoint
 documents unchanged. The source bytes are committed as `30a9f74`; its log is

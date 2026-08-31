@@ -32,11 +32,14 @@ Ninja, but **fails strict combined-policy compilation at 15:28:07 UTC**:
 Evolution allows `vendor_init` to set `vendor_persist_camera_prop`, conflicting
 with the factory neverallow for non-core domains. Commit **85c5b40** prepares the
 [one-grant source correction](camera-property-vendor-init-write.md), without
-removing assertions; it is not activated. Captured context/access differences
-also require separate preservation of seven factory property prefixes, now
-being implemented as patch 0017. Complete policy/context review
-and current factory-image compatibility remain unverified. Normal Android
-enforcement remains required.
+removing assertions; it is not activated. Commit **7c22c82** adds the separate
+[seven-prefix factory-label capability](factory-property-contexts-capability.md),
+and **641af6a** integrates both capabilities into explicit source/bundle admission.
+Two host stagings reproduce all 63 policy-bundle files, with original factory
+inputs unchanged. Neither correction is installed in the guest, and policy3 has
+not run. The next step is guarded source installation and strict native policy
+verification. Complete policy/context review and current factory-image
+compatibility remain unverified. Normal Android enforcement remains required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The preceding guest source was
@@ -574,8 +577,8 @@ target-files results remain unverified.
 Commit **3c9cd2a** adds the [recovery-only backuptool guard](evolution-backuptool-enforcing.md).
 Patch 0015 wraps the existing permissive declaration in `recovery_only`, without
 changing types, permissions or assertions. The component transaction now installs
-its reviewed postimage; Android M4/policy compilation remains pending. Working76
-is unchanged.
+its reviewed postimage; complete strict policy verification remains pending.
+Working76 is unchanged.
 
 Commit **5d557a0** adds an explicit Evolution-base option without changing the
 default generator path or the 4 KiB selection. Its independent source review
@@ -643,9 +646,15 @@ host-qualified source input. A separate diagnostic on the failed policy2 CIL
 and contexts finds lost camera-service/HAL reads and HAL writes, USB access
 losses, and wider Dolby reader access under seven changed labels. Application
 domain camera reads remain present in that diagnostic. These are static policy
-effects, not observed hardware failures. Patch **0017** is being authored to
-preserve the factory prefix labels; neither correction is activated or verified
-by a new Android policy build.
+effects, not observed hardware failures. Committed patch **0017** suppresses
+only the seven Evolution prefix rows when explicitly selected, preserving
+factory labels and the default source path. Its host M4 fixtures pass 48 valid
+and 22 expected-invalid cases; these are not Android M4 or native context checks.
+The paired integration verifies exact definition/override guards and repeats
+the **63-file / 6,265,781-byte** private bundle. All original CIL and factory
+context bytes remain unchanged. Neither correction is activated, and the
+expected final five-context selection, strict compilation and unfiltered
+enforcing-binary analyses remain pending.
 
 Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
 It is source for a separate host tool using the real generated AIDL metadata;
@@ -705,13 +714,19 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,055 tests in 171.878
+The latest completed full workspace suite passed **4,115 tests in 175.932
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `5204366` plus the exact eleven frozen 0017/integration files, then
+committed as `7c22c82` and `641af6a`. All eleven files remained unchanged. This
+tests the completed paired source implementation; it is not a guest installation
+or Android policy build. This later central-document update is separate.
+The preceding suite passed **4,055 tests in 171.878
 seconds with zero failures, errors or skips**, executed by the coordinator in
 an **isolated snapshot** of `fdc9b1e` plus the exact seven committed 0016/audit
-files, equivalent to `76fe975`. The seven ongoing integration-file changes in
-the active working tree are excluded; this is not a full test of that working
-tree or a native build of the audit tool. This later documentation update is
-separate. The preceding suite passed **4,043 in 169.370 seconds**, with
+files, equivalent to `76fe975`. The seven then-ongoing integration-file changes
+were excluded; that run was not a full test of the working tree or a native
+build of the audit tool. Its later documentation update was separate.
+The preceding suite passed **4,043 in 169.370 seconds**, with
 two source-correction files and four checkpoint documents unchanged. The source
 bytes are committed as `30a9f74`; this later factual test-record refresh is
 separate. The preceding suite passed **4,043 in 169.140 seconds**, with

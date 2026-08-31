@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "policy2-partial-state-captured-camera-capability-and-aidl-audit-committed-native-repair-pending",
+  "checkpoint": "paired-property-capability-source-and-host-bundles-verified-native-installation-and-policy3-pending",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -937,48 +937,38 @@
   },
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
-    "runner": "coordinator-isolated-snapshot",
-    "passed": 4055,
+    "runner": "coordinator-working-tree",
+    "passed": 4115,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 171.878,
-    "code_commit": "76fe97584caf990677da033261e6c1d6c74dd745",
+    "elapsed_seconds": 175.932,
+    "code_commit": "641af6af3a1ba614acc22d448dd2f1f48449a59c",
     "included_commits": [
-      "85c5b40a2aa54b97132983f32d1d9f4cdacb5019",
-      "76fe97584caf990677da033261e6c1d6c74dd745"
+      "7c22c82bcab0971d8eeacbe7981b77f8eae938e8",
+      "641af6af3a1ba614acc22d448dd2f1f48449a59c"
     ],
-    "isolated_snapshot_base_commit": "fdc9b1e51ab333a542d6157f2a30cc07989f14dc",
-    "isolated_snapshot_equivalent_to_code_commit": true,
-    "live_working_tree_tested": false,
-    "bound_files_unchanged_during_run": 7,
-    "checkpoint_document_files": 2,
-    "checkpoint_code_config_test_files": 5,
-    "in_progress_integration_files_excluded": [
-      "scripts/evolution_policy_base.py",
-      "scripts/generate_device_tree.py",
-      "scripts/oem_policy.py",
-      "scripts/policy_inputs.py",
-      "tests/test_evolution_policy_base.py",
-      "tests/test_generate_device_tree.py",
-      "tests/test_policy_inputs.py"
-    ],
-    "started_at_utc": "2026-08-31T16:29:08.866380+00:00",
-    "finished_at_utc": "2026-08-31T16:32:02.193422+00:00",
+    "base_head_during_run": "5204366842005c93f02c3f337587b646fd60a45f",
+    "live_working_tree_tested": true,
+    "bound_files_unchanged_during_run": 11,
+    "checkpoint_document_files": 1,
+    "checkpoint_code_config_test_files": 10,
+    "started_at_utc": "2026-08-31T17:30:30.507847+00:00",
+    "finished_at_utc": "2026-08-31T17:33:27.471611+00:00",
     "log": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-camera-patch-v1/tests.log",
-      "sha256": "6eae17e2f9d2c36e88cf750263781b12d27a7d72adcf764895d5d7ee29754652",
-      "size_bytes": 703563
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-property-capabilities-v1/tests.log",
+      "sha256": "33aab9ce69cbdd4196add399a5c4910ce8bd5fc2154ab174dbd5d4540cc3604b",
+      "size_bytes": 715426
     },
     "completion": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-camera-patch-v1/completion.json",
-      "sha256": "63f0056098b870e3a89763edc3def7979d3c5f40fbf769e7648aceb2718a9f05",
-      "size_bytes": 1907
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-property-capabilities-v1/completion.json",
+      "sha256": "1eba56c054676fc4619151bb5e4de95c78a10ea911d3a9a060c03b0aa0d43b33",
+      "size_bytes": 2433
     },
-    "scope": "Coordinator ran the exact full offline command in an isolated fdc9b1e snapshot plus the seven frozen 0016 capability and VINTF-audit files, exactly equivalent to commit 76fe975. All seven files remained unchanged. The seven ongoing integration-file modifications in the active tree and this later central-document update are excluded. This is not a full active-working-tree pass, native compilation/linking of the C++ audit, Android policy compilation, source activation, image or hardware proof."
+    "scope": "Coordinator ran the exact full offline command against base 5204366 plus the eleven frozen 0017 source and paired-integration files. All eleven files remained unchanged and were then committed as 7c22c82 and 641af6a. This later central-document update is separate. This is not guest source activation, Android M4/policy compilation, native context checking, image admission or hardware evidence."
   },
   "remaining_gates": [
-    "Complete paired source/bundle admission for committed 0016 and the separate 0017 factory-prefix preservation work, retaining all assertions and normal Android enforcement. Recheck the 21 observed partial states and independently preserve each of the 11 present outputs before activation/invalidation; retain 10 absences without placeholders and keep earlier archives separate. Neither patch is active. Rebind inputs, pass strict combined compilation and complete source/context/Treble, binary and image-compatibility checks.",
+    "Install the reviewed paired 0016/0017 source and private-bundle inputs; neither patch is active and policy3 has not run. Recheck the 21 observed partial states and independently preserve each of the 11 present outputs before activation/invalidation; retain 10 absences without placeholders and keep earlier archives separate. Preserve normal enforcement and all assertions, then rebind inputs and pass strict combined compilation, complete source/five-context/Treble, unfiltered binary and current image-compatibility checks.",
     "Carry the scoped matrix-v1 VINTF result into current-input/construction admission and complete required coverage. All four native commands and independent reviews pass, but framework consistency still skips unlevelled matrix definitions; host RuntimeInfo substitutes kernel SELinux support and omits runtime AVB-version checks. Complete input compatibility remains false. Current allocator prerequisites and package/trust/tool equality are verified; APEX crypto is reused without new crypto commands. Runtime, partition AVB, OTA and boot remain separate.",
     "Refresh source/build/graph/configuration and complete Camera target evidence after the matrix exchange. The reviewed v13ja inventory identifies ten protected policy intermediates outside the target tree that require separate read-only protection. Preserve the scoped current VINTF result and its coverage limits while clearing remaining Camera admission holds before namespace activation or the APK graph/class-loader/check/build path; keep strict checks enabled.",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
@@ -1921,6 +1911,48 @@
         "size_bytes": 1550
       },
       "scope": "Coordinator ran the exact full offline command with two frozen source-correction files and four central checkpoint documents unchanged. The exact source bytes were committed as 30a9f74. This later factual test-record refresh is separate. The suite does not establish guest correction installation, native policy compilation, metadata freshness, image compatibility, target-files or boot."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator-isolated-snapshot",
+      "passed": 4055,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 171.878,
+      "code_commit": "76fe97584caf990677da033261e6c1d6c74dd745",
+      "included_commits": [
+        "85c5b40a2aa54b97132983f32d1d9f4cdacb5019",
+        "76fe97584caf990677da033261e6c1d6c74dd745"
+      ],
+      "isolated_snapshot_base_commit": "fdc9b1e51ab333a542d6157f2a30cc07989f14dc",
+      "isolated_snapshot_equivalent_to_code_commit": true,
+      "live_working_tree_tested": false,
+      "bound_files_unchanged_during_run": 7,
+      "checkpoint_document_files": 2,
+      "checkpoint_code_config_test_files": 5,
+      "in_progress_integration_files_excluded": [
+        "scripts/evolution_policy_base.py",
+        "scripts/generate_device_tree.py",
+        "scripts/oem_policy.py",
+        "scripts/policy_inputs.py",
+        "tests/test_evolution_policy_base.py",
+        "tests/test_generate_device_tree.py",
+        "tests/test_policy_inputs.py"
+      ],
+      "started_at_utc": "2026-08-31T16:29:08.866380+00:00",
+      "finished_at_utc": "2026-08-31T16:32:02.193422+00:00",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-camera-patch-v1/tests.log",
+        "sha256": "6eae17e2f9d2c36e88cf750263781b12d27a7d72adcf764895d5d7ee29754652",
+        "size_bytes": 703563
+      },
+      "completion": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-camera-patch-v1/completion.json",
+        "sha256": "63f0056098b870e3a89763edc3def7979d3c5f40fbf769e7648aceb2718a9f05",
+        "size_bytes": 1907
+      },
+      "scope": "Coordinator ran the exact full offline command in an isolated fdc9b1e snapshot plus the seven frozen 0016 capability and VINTF-audit files, exactly equivalent to commit 76fe975. All seven files remained unchanged. The seven ongoing integration-file modifications in the active tree and this later central-document update are excluded. This is not a full active-working-tree pass, native compilation/linking of the C++ audit, Android policy compilation, source activation, image or hardware proof."
     }
   ],
   "previous_v11b_policy": {
@@ -2269,7 +2301,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-31T16:50:21.499611+00:00",
+  "recorded_at_utc": "2026-08-31T18:02:03.290827+00:00",
   "latest_native_build_completed_at_utc": "2026-08-31T06:10:10.772752+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -2712,7 +2744,7 @@
     "historical_checkpoint": true,
     "current_decision_reference": "current_page_size_decision"
   },
-  "workspace_code_checkpoint": "76fe97584caf990677da033261e6c1d6c74dd745",
+  "workspace_code_checkpoint": "641af6af3a1ba614acc22d448dd2f1f48449a59c",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -7803,7 +7835,7 @@
   "last_completed_native_component_build_reference": "native_matrix_component_attempt",
   "last_completed_native_provider_elf_reference": "provider_four_kib_native_build",
   "current_build_sequence": [
-    "Use the captured 21-output partial state as a bounded retention input, not a policy pass. Finish the explicit 0016 one-grant source integration and the separate seven-prefix context-preservation correction, checking capability multiplicity and legacy defaults. Preserve originals/current copies before source activation, then bind inputs and rerun strict native policy checks without dropping assertions or promoting old metadata/image results.",
+    "Use the committed paired 0016/0017 source integration and verified repeated 63-file host bundle for guarded source installation. Recheck the captured 21-output partial state and preserve independent copies before activation, retaining capability multiplicity/override checks and legacy defaults. Then bind inputs and run policy3 through ordinary Android M4, strict combined compilation, context/Treble and unfiltered binary checks without dropping assertions or promoting old metadata/image results.",
     "Preserve the original matrix38 wrapper failure alongside native exit zero and the distinct passing read-only postcheck. Its 291 progress rows are 163 frontend steps plus 128 Ninja actions; do not infer fresh compiler/checker tests from every row.",
     "Use the separately verified 26 fresh 4 KiB provider ELF/symbol checks, preserving the original 16 KiB outcomes and remaining full-ABI/runtime/VTS limits.",
     "Use the reviewed provider installation, current native producer/input captures and scoped independent reviews of the successful matrix-v1 VINTF invocation. Carry its explicit subcheck/runtime limitations into construction admission. Rebind later source, package, image or trust-input changes; historical APEX crypto remains reused evidence, not a new run.",
@@ -10763,7 +10795,7 @@
     "scope": "Prepared enforcement correction for the newly selected full Evolution policy. Host patch/M4 qualification and isolated tooling tests do not establish Android compilation, current-policy compatibility, source installation or image/runtime behavior."
   },
   "current_evolution_policy_scope": {
-    "status": "policy2-strict-camera-failure-partial-state-captured-host0016-ready-prefix-preservation-in-progress",
+    "status": "policy2-strict-camera-failure-paired0016-and0017-source-committed-host-bundles-verified-not-activated",
     "selection": "LINEAGE_BUILD=nezha activates Evolution policy directories absent from the previous configuration",
     "source_explanation": "ordinary_nothing_phase_v2.seven_leaf_source_explanation",
     "historical_policy_analysis": "native_provider_policy_analysis",
@@ -10785,8 +10817,11 @@
     "filegroup_visibility_correction_native_graph_verified": true,
     "camera_property_source_correction_installed": false,
     "camera_property_capability_preparation": "host_camera_property_write_capability",
-    "factory_prefix_preservation_preparation": "camera_factory_prefix_preservation_preparation",
-    "partial_output_capture": "policy2_partial_output_capture"
+    "factory_prefix_preservation_preparation": "host_paired_property_capability_integration",
+    "partial_output_capture": "policy2_partial_output_capture",
+    "paired_property_capability_host_integration": "host_paired_property_capability_integration",
+    "factory_prefix_preservation_source_installed": false,
+    "policy3_executed": false
   },
   "evolution_policy_base_host_preparation": {
     "implementation_commit": "5d557a06182bd8c8ea16db726cd80ef16587626d",
@@ -11635,5 +11670,134 @@
     "complete_input_compatibility_verified": false,
     "hardware_tested": false,
     "complete_rom_ready": false
+  },
+  "host_paired_property_capability_integration": {
+    "status": "committed-source-and-paired-host-bundles-verified-not-activated",
+    "source_patch_commit": "7c22c82bcab0971d8eeacbe7981b77f8eae938e8",
+    "paired_integration_commit": "641af6af3a1ba614acc22d448dd2f1f48449a59c",
+    "prior_diagnostic_preparation": "camera_factory_prefix_preservation_preparation",
+    "separate_camera_capability": "host_camera_property_write_capability",
+    "source_patch": {
+      "path": "patches/evolution/0017-preserve-factory-property-contexts.patch",
+      "sha256": "1c467b55273f153dd569838ce6f58f89b334c4aa40911bcc99436b48e0c6e819",
+      "size_bytes": 4005
+    },
+    "source_contract": {
+      "path": "patches/evolution/factory-property-contexts.json",
+      "sha256": "bdd8d56d4af0ad820b52dbbb052a1e58e56ed22a20a2d9965cc85d02d9aac230",
+      "size_bytes": 17058
+    },
+    "source_freeze": {
+      "path": "reports/oem-policy-integration-20260829/factory-property-contexts-source-v1/freeze.json",
+      "sha256": "82189252e89559d7470901cc60c28fb58ec06f0dc60412e37f375106fd7a0d31",
+      "size_bytes": 3106
+    },
+    "source_review": {
+      "path": "reports/oem-policy-integration-20260829/factory-property-contexts-source-v1/review/four-file-review-v1.json",
+      "sha256": "58a500c5644b4850bac07166346234b1f8faf881cf9f0e771765be3b6e0c0e1f",
+      "size_bytes": 5023
+    },
+    "host_m4_receipt": {
+      "path": "reports/oem-policy-integration-20260829/factory-property-contexts-source-v1/host-validation-v1/receipt.json",
+      "sha256": "be6d0f6d0e42f002f1ba79275151913406119d0e2aab624bde0892efe1e12727",
+      "size_bytes": 75847
+    },
+    "host_source_validation": {
+      "independent_patch_copies": 2,
+      "m4_valid_cases": 48,
+      "m4_expected_invalid_cases": 22,
+      "android_m4_executed": false,
+      "raw_sync_directives_preserved": true
+    },
+    "factory_context_capability": "target_nezha_preserve_factory_property_labels",
+    "selected_value": "true",
+    "default_absent_or_false_preserves_context_text": true,
+    "selected_evolution_prefix_rows_omitted": 7,
+    "other_context_rows_preserved": true,
+    "source_effect": "Suppress only the seven Evolution camera/Dolby/USB prefix rows, without changing declarations, permissions, assertions, factory files or property values.",
+    "expected_context_projection": {
+      "base_rows": 25,
+      "owned_rows_unchanged": 8,
+      "full_system_ext_rows": 33,
+      "native_verified": false
+    },
+    "paired_admission": "The factory-context option requires the camera capability, which requires the reviewed user Evolution-base profile. Exact capability definition/override guards and complete native property-context arguments are wired; the native checks have not run.",
+    "host_make_guards": {
+      "path": "reports/oem-policy-integration-20260829/property-capability-make-guards-v1/receipt.json",
+      "sha256": "d6574895dae67edd018a5e7d9c098d41b8b3c33aa2d1cfa9b28a5b55fc4f5671",
+      "size_bytes": 7982
+    },
+    "host_make_cases_passed": 18,
+    "kati_late_write_enforcement_executed": false,
+    "integration_freeze": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/freeze.json",
+      "sha256": "0daa448e693c7d5518b7246c3e1364a8161b1e77b51602b2af131fa1dd9270e0",
+      "size_bytes": 14847
+    },
+    "integration_summary": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/receipt.json",
+      "sha256": "365646cc3ecb4d3edaf6cde552d0cb5c5ac330f313c253f2e9baab628b21a903",
+      "size_bytes": 3144
+    },
+    "wiring_review": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/wiring-review.json",
+      "sha256": "ff93a4edaef853521ca3c42a642f22189077b096f3391f43b3235ec1db644561",
+      "size_bytes": 437
+    },
+    "policy_receipt": {
+      "path": "artifacts/policy-inputs/nezha-property-capabilities-20260831-v1/policy-inputs.json",
+      "sha256": "b02f5822de8057206e36ee7b90af09a5937b8250b037a2bdad1a33a61075142c",
+      "size_bytes": 35407
+    },
+    "repeat_policy_receipt": {
+      "path": "artifacts/policy-inputs/nezha-property-capabilities-20260831-repeat-v1/policy-inputs.json",
+      "sha256": "b02f5822de8057206e36ee7b90af09a5937b8250b037a2bdad1a33a61075142c",
+      "size_bytes": 35407
+    },
+    "verification": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/verify-first.stdout.json",
+      "sha256": "9c6fe7ecb725940173f5ee8169b9b7c36257c8aae30a45424fb723776245429c",
+      "size_bytes": 28685
+    },
+    "isolated_verification": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/isolated-verify.stdout.json",
+      "sha256": "9c6fe7ecb725940173f5ee8169b9b7c36257c8aae30a45424fb723776245429c",
+      "size_bytes": 28685
+    },
+    "component": {
+      "path": "artifacts/device-candidates/nezha-property-capabilities-20260831-v1/component-inputs.json",
+      "sha256": "e96141413606e9b2da5f0aa0638e65713d7dbbc0712c5b75517a5e26e62332c6",
+      "size_bytes": 18224
+    },
+    "trusted_controls": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/controls-manifest.json",
+      "sha256": "8847982473b377d0f2773fe783e4cce3f08984b647d75272b1ef0ba599b98a27",
+      "size_bytes": 7700
+    },
+    "public_freeze": {
+      "path": "reports/oem-policy-integration-20260829/property-capabilities-integration-v1/public-freeze.json",
+      "sha256": "f5e640c2f263b081a8c4a9d879f54d6bd4fb6be22c3ac289ffdd8503d3faf778",
+      "size_bytes": 1765
+    },
+    "bundle_files_including_receipt": 63,
+    "bundle_total_bytes": 6265781,
+    "independent_stagings_byte_identical": true,
+    "file_mode": "0600",
+    "root_mode": "0700",
+    "unchanged_members_relative_to_installed_visibility_bundle": 53,
+    "changed_members_relative_to_installed_visibility_bundle": 4,
+    "added_members_relative_to_installed_visibility_bundle": 6,
+    "removed_members": 0,
+    "original_cil_and_factory_context_bytes_unchanged": true,
+    "full_candidate_admission": false,
+    "guest_source_installed": false,
+    "policy3_executed": false,
+    "native_context_checks_passed": false,
+    "native_strict_policy_compiled": false,
+    "unfiltered_enforcing_binary_analysis_completed": false,
+    "image_admission_changed": false,
+    "hardware_tested": false,
+    "complete_rom_ready": false,
+    "scope": "Completed host source, paired input reproduction and offline validation only. The guest remains evolution-policy-visibility-v1 with 529 monitored files; strict policy2 remains failed. Guarded source installation, ordinary Android M4/compile/context/Treble checks, unfiltered binary analysis and current image compatibility remain required. Earlier source contracts, native failures, original proprietary inputs and recovery are preserved."
   }
 }
