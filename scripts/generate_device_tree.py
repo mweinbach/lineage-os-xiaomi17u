@@ -2864,7 +2864,16 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
              target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
-             policy_image_delivery_contract=None):
+             policy_image_delivery_contract=None, rom_construction_contract=None):
+    if rom_construction_contract is not None:
+        try:
+            from . import rom_construction
+        except ImportError:
+            import rom_construction
+        try:
+            rom_construction.require_admission(rom_construction_contract)
+        except ValueError as exc:
+            raise CandidateError(str(exc)) from exc
     variant = _build_variant(variant)
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
@@ -3436,6 +3445,8 @@ def main(argv=None):
                              help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
             sub.add_argument("--framework-allocator-contract", type=Path,
                              help="explicit pinned upstream allocator service; preserves its init, SELinux and max-level-8 VINTF behavior")
+            sub.add_argument("--rom-construction-contract", type=Path,
+                             help="explicit construction prerequisites; currently fails closed until actual selected native inputs and coverage are admitted")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -3467,7 +3478,8 @@ def main(argv=None):
                                   target_files_source_contract=args.target_files_source_contract,
                                   page_size_profile=args.page_size_profile,
                                   framework_allocator_contract=args.framework_allocator_contract,
-                                  policy_image_delivery_contract=args.policy_image_delivery_contract)
+                                  policy_image_delivery_contract=args.policy_image_delivery_contract,
+                                  rom_construction_contract=args.rom_construction_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

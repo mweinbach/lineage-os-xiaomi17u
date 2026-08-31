@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-rom-construction-prerequisites-v1",
+  "status": "native-prerequisites-unbound",
+  "context": {
+    "device": "nezha",
+    "product": "lineage_nezha",
+    "variant": "user",
+    "branch": "bka",
+    "release_config": "bp4a",
+    "shipping_api_level": 36,
+    "maximum_page_size_bytes": 4096
+  },
+  "available_basis": {
+    "four_kib_component_result": {
+      "path": "reports/nezha-page-size-20260829/native-v13j-preparation/build-controls/run-pagesize-v13j-1/stdout.jsonl",
+      "sha256": "949bd0882087d403637e542a0bc82c37b4ecabc8196ba0c160fe8a3ddd46e145",
+      "size_bytes": 206610
+    },
+    "four_kib_provider_checks": {
+      "path": "reports/framework-providers-20260830/provider-elf-4k-preparation-v1/bound-v1/run-v1/capture.json",
+      "sha256": "c0ace122a40697f42a1d014e6575d872594cf88e038bacb979cab3a5b6c53c54",
+      "size_bytes": 924077
+    },
+    "four_kib_provider_review": {
+      "path": "reports/framework-providers-20260830/provider-elf-4k-preparation-v1/bound-v1/actual-build-review-v1/review.json",
+      "sha256": "b3bf3e304dc1316685d88823625cda4a6f37403758e41c59ad2b2be94621d3f6",
+      "size_bytes": 200837
+    }
+  },
+  "required_selected_input_roles": {
+    "source_and_private_input_closure": null,
+    "policy_and_context_checks": null,
+    "provider_elf_and_install_closure": null,
+    "full_vintf_native_result": null,
+    "necessary_vintf_coverage": null
+  },
+  "phases": {
+    "target-files": {
+      "ordinary_goal": "target-files-package",
+      "additional_input_roles": [],
+      "artifact_checks": [
+        "ordinary-metadata-hook-with-actual-images-policy-and-sidecars",
+        "final-installed-apk-inventory-and-strict-treble-labeling",
+        "final-selected-framework-vendor-kernel-apex-compatibility",
+        "complete-image-and-partition-metadata-inventory",
+        "ordinary-target-files-validation"
+      ]
+    },
+    "super": {
+      "ordinary_goal": "superimage",
+      "additional_input_roles": ["validated_target_files_and_image_set"],
+      "artifact_checks": [
+        "real-super-output-present",
+        "all-lp-metadata-copies-and-eight-logical-partitions",
+        "group-slot-and-package-budgets",
+        "extracted-logical-images-match-selected-inputs"
+      ]
+    },
+    "ota": {
+      "ordinary_goal": "otapackage",
+      "additional_input_roles": [
+        "validated_signed_target_files_and_image_set",
+        "apk_apex_payload_zip_signing_and_trust",
+        "qualified_care_map_and_snapshot_inputs"
+      ],
+      "artifact_checks": [
+        "actual-ab-payload-membership-and-working76-recovery",
+        "virtual-ab-snapshot-and-cow-metadata",
+        "final-payload-hashes-signatures-and-care-map-coverage",
+        "opaque-vendor-apex-and-metadata-byte-equality",
+        "ordinary-ota-validation"
+      ]
+    }
+  },
+  "vintf_coverage_requirements": {
+    "native_result_is_not_complete_coverage": true,
+    "reported_skips_remain_uncovered": true,
+    "check_one_stub_runtime_is_not_kernel_compatibility": true,
+    "mainline_kernel_bypass_is_not_requirement_matching": true,
+    "size_max_is_not_kernel_selinux_policy_version_evidence": true,
+    "default_disabled_avb_version_check_is_not_avb_verification": true,
+    "absence_of_warnings_is_not_coverage": true
+  },
+  "downstream_only": [
+    "final-image-avb-signing-and-complete-descriptor-chain",
+    "actual-image-partition-fit-and-device-rollback-review",
+    "authorized-first-boot-and-hardware-stabilization"
+  ],
+  "reproducibility": {
+    "source_contract": {
+      "path": "patches/evolution/pinned-version-date.json",
+      "sha256": "f49518af8e607cd2b1cfb1b2137de5ab720ec725ed6365661753fed124d61734",
+      "size_bytes": 12604
+    },
+    "selected": false,
+    "manifest_epoch_evidence": null,
+    "build_metadata_environment_evidence": null,
+    "ordinary_product_route_evidence": null,
+    "changes_current_packaging_composition": false
+  },
+  "scope": {
+    "input_admission_schema_only": true,
+    "native_goal_dispatch_allowed": false,
+    "framework_target_guards_changed": false,
+    "complete_target_files_allowed": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "hardware_tested": false,
+    "phone_operations": []
+  }
+}
