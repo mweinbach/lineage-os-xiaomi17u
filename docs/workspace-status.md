@@ -10,8 +10,9 @@ consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The leading blocker is now a **camera-property neverallow conflict in the
-combined Evolution/factory SELinux policy**.
+The leading blocker is **strict native verification of the corrected
+Evolution/factory SELinux policy**. The latest attempt still records the
+camera-property neverallow failure; its source corrections are now installed.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
 build configuration. The thirteen retained policy identities and earlier strict
 analysis remain historical evidence; they do not establish current policy or
@@ -20,8 +21,8 @@ factory-image compatibility. Commit **5d557a0** adds the explicit
 checker. Two host stagings reproduce the same 57-file private policy bundle.
 Those inputs and patch 0015 are now installed as **evolution-policy-components-v1**
 at **2026-08-31 13:24:59 UTC**, with three committed operations, complete receipt
-readback and independent review. The monitored source inventory is 529 files
-across thirteen projects. The first 32-goal attempt now **fails in Soong graph
+readback and independent review. That transaction inventories 529 source files
+across thirteen projects. The first 32-goal attempt **fails in Soong graph
 generation at 14:02:13 UTC**, before policy compilation: a device filegroup
 requests visibility to a specific vendor package, which Soong forbids.
 The minimal correction from commit **30a9f74** is now installed as
@@ -32,14 +33,19 @@ Ninja, but **fails strict combined-policy compilation at 15:28:07 UTC**:
 Evolution allows `vendor_init` to set `vendor_persist_camera_prop`, conflicting
 with the factory neverallow for non-core domains. Commit **85c5b40** prepares the
 [one-grant source correction](camera-property-vendor-init-write.md), without
-removing assertions; it is not activated. Commit **7c22c82** adds the separate
+removing assertions. Commit **7c22c82** adds the separate
 [seven-prefix factory-label capability](factory-property-contexts-capability.md),
 and **641af6a** integrates both capabilities into explicit source/bundle admission.
 Two host stagings reproduce all 63 policy-bundle files, with original factory
-inputs unchanged. Neither correction is installed in the guest, and policy3 has
-not run. The next step is guarded source installation and strict native policy
-verification. Complete policy/context review and current factory-image
-compatibility remain unverified. Normal Android enforcement remains required.
+inputs unchanged. The paired corrections and separate AIDL-audit source are
+now installed at **2026-08-31 18:10:01 UTC**, with four committed operations,
+eleven journal events, complete receipt readback and independent review.
+The current inventory is **539 source files across thirteen projects**;
+strict 4 KiB checks and prior outputs are preserved. Policy3 is now dispatched
+with the reviewed host-derived successor identity; no completed native result
+or new metadata qualification is available. Complete policy/context review
+and current factory-image compatibility remain unverified. Normal Android
+enforcement remains required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The preceding guest source was
@@ -652,14 +658,22 @@ factory labels and the default source path. Its host M4 fixtures pass 48 valid
 and 22 expected-invalid cases; these are not Android M4 or native context checks.
 The paired integration verifies exact definition/override guards and repeats
 the **63-file / 6,265,781-byte** private bundle. All original CIL and factory
-context bytes remain unchanged. Neither correction is activated, and the
-expected final five-context selection, strict compilation and unfiltered
-enforcing-binary analyses remain pending.
+context bytes remain unchanged. The later source transaction now installs both
+corrections, preserving 90 independent source preimages, copies of all eleven
+present partial outputs and the ten recorded absences. The expected final
+five-context selection, strict compilation and unfiltered enforcing-binary
+analyses remain pending; source installation is not a new policy result.
 
 Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
-It is source for a separate host tool using the real generated AIDL metadata;
-compilation, linking and execution remain pending. It does not change production
-`checkvintf`, remove the retained definition skip or prove full compatibility.
+Its source is now installed, while compilation, linking and execution remain
+pending. A read-only discovery of existing policy2 artifacts and host replay
+find **149 of 155 matrix tuples / 134 of 140 names absent from all 336 captured
+metadata modules**. The generated C++ is reproduced byte for byte from the
+captured JSON on the host; that does not prove native producer execution or
+linkage. Export filtering means metadata absence is not proof of source absence.
+This exposes a definition-coverage gap without changing production `checkvintf`,
+removing its retained skip or inventing interface definitions. Complete VINTF
+compatibility remains unverified.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export

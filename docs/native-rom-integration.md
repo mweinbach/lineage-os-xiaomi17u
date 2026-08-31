@@ -80,13 +80,18 @@ on the device filegroup's forbidden specific-vendor visibility. The separate
 **evolution-policy-visibility-v1** source correction commits at **14:43:26 UTC**,
 with complete receipt readback. The second native attempt passes Soong/main
 Ninja but fails strict combined-policy compilation at **15:28:07 UTC** on the
-camera-property neverallow. Commit **85c5b40** supplies the unactivated
+camera-property neverallow. Commit **85c5b40** supplies the
 [one-grant correction](camera-property-vendor-init-write.md). Commit **7c22c82**
 adds the separate [factory-prefix capability](factory-property-contexts-capability.md),
 and **641af6a** integrates the pair into explicit source/bundle admission. Two
 host stagings match across all 63 files while preserving factory inputs.
-Guest source installation and policy3 have not run; current policy/context and
-image-compatibility checks remain unverified.
+The paired corrections and separate AIDL-audit source are now installed at
+**18:10:01 UTC**, with reviewed readback, four operations and eleven journal
+events. The current source vector has 539 files across thirteen projects.
+Policy3 is now dispatched with its reviewed host-derived successor identity;
+no completed native result or new metadata qualification is available. The
+failed policy2 record is unchanged. Current policy/context and image
+compatibility remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1586,7 +1591,7 @@ readers. Independent camera-grant inventory
 keeps application-domain reads distinct from the lost service/HAL access.
 These are static TE effects in captured inputs to a failed policy build, not
 a valid compiled policy or observed device regressions. The later committed
-patch 0017 supplies the factory-prefix capability; it is not activated.
+patch 0017 supplies the factory-prefix capability.
 Patch 0016 alone does not resolve this context-selection issue.
 
 Commit `7c22c82bcab0971d8eeacbe7981b77f8eae938e8` adds the guarded seven-row
@@ -1614,20 +1619,53 @@ bind two byte-identical **63-file / 6,265,781-byte** bundles, including receipt
 Relative to the installed visibility bundle, 53 members are unchanged, four
 change and six are added; none are removed. Original CIL and factory context
 bytes remain unchanged, and relocated trusted controls reproduce verification.
-This is a host component packet, not a complete candidate or guest source
-transaction. Both capability patches still require guarded installation, an
-ordinary Android source/M4 build, five-context analysis, strict combined
-compilation and unfiltered enforcing-binary checks. Policy2 and all earlier
+That host component packet was not a complete candidate or guest source
+transaction. The later installation below is separate evidence. An ordinary
+Android source/M4 build, five-context analysis, strict combined compilation
+and unfiltered enforcing-binary checks remain required. Policy2 and all earlier
 failures remain preserved; no policy3, new image or hardware pass is claimed.
+
+The actual source installation commits at **2026-08-31 18:10:01.912276 UTC**,
+with four operations and eleven journal events ending at sequence 10. It
+installs the paired capability inputs, exact source patches and two audit source
+files. Complete readback binds installation
+`d985947f2ad31003d32ee081f802f8f65e40c449d4d99ea21277f6bc779de961`
+and independent actual review
+`a0bc0538f2a3f8dc4b2bcedbf605b0dedd0326b8f0dd456257f6b81f92643cc4`.
+The 539-file inventory comprises 521 unchanged, eight changed and ten added
+members across thirteen projects. Ninety independent source preimages, eleven
+partial-output copies, ten absences and the original visibility history remain
+verified. Strict 4096 checks and the prior generated configuration remain
+unchanged. The host review replays captured receipts and byte/mode vectors; it
+does not re-execute guest filesystem checks. At that installation checkpoint,
+neither policy3 nor the native audit had run, and no new metadata, image or
+target-files qualification is inferred from the transaction. A separate host
+derivation produces
+`nezha.d1485e4f90954f20dfca5f4d`; coordinator replay verifies fifteen bound inputs
+and nine byte-identical outputs, and independent review is clear. The final
+component freeze binds twenty files. Policy3 is now dispatched from the frozen
+execution packet with that identity selected; its result and six-file metadata
+qualification remain pending.
 
 Commit `76fe97584caf990677da033261e6c1d6c74dd745` adds the
 [unlevelled-matrix AIDL metadata audit source](../tools/vintf-definition-audit/README.md).
 It pins the existing 155-tuple matrix and checks 140 distinct package/type
-names against real VINTF-stable generated metadata. Native compilation, linkage
-and execution remain pending. It does not modify `checkvintf` or close the
-existing definition skip. Name presence would not establish interface kind,
-versions/hashes, instance registration, ABI, complete compatibility or hardware
-behavior.
+names against real VINTF-stable generated metadata. The two source files are
+now installed; native compilation, linkage and execution remain pending.
+Separate read-only discovery of existing policy2 artifacts is bound by
+`6a640d221fb690f565bc0f355f686243ff4a2b2a30b06932024d02f4d1b7513b`;
+host classification is
+`55a1f48cca4b6b225a48b2b2bd3bcfceb9aa16e6b083d6fa5661e890e0498fd3`.
+It finds **149 matrix tuples / 134 distinct names missing from all 336 captured
+metadata modules**, with six tuples/names present. Host replay reproduces the
+complete generated C++ from the captured JSON, without executing the native
+producer or proving linkage. The singleton's export filter means this does not
+prove those names are absent from all source. Discovery leaves graphs/logs
+unchanged but does not revalidate the full source inventory. The definition gap
+remains open; production `checkvintf` and its existing skip are unchanged.
+No interface definitions are fabricated. Name presence alone would not establish
+interface kind, versions/hashes, instance registration, ABI, complete
+compatibility or hardware behavior.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
