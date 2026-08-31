@@ -47,12 +47,21 @@ false: the combined check has no reported skips/warnings, but the separate
 framework-consistency path retains one definition skip and two warnings. The
 earlier full-run failure is preserved, not relabelled by this later success.
 
-The active source subsequently advances to **packaging-matrix-v1** at
+The source subsequently advances to **packaging-matrix-v1** at
 **2026-08-31 08:13:39 UTC**. Eight committed operations and their complete readback
 select reviewed packaging inputs while preserving the prior native outputs.
 Independent transaction review is clear. No build has run from that source
 selection; the matrix-v1 component, VINTF and crypto results retain their exact
 earlier scope, and the three normal policy-sidecar modules remain required.
+The later **first-target-files-v1** source selects the construction guard and
+pinned-date patch 0012 at **08:45:28 UTC**. Its 478-file vector is recorded below;
+native dispatch, generated build metadata and the first build remain unverified.
+The original guard reads `TARGET_RELEASE` after the pinned release configuration
+forbids direct access. The current **first-target-files-release-flags-v1** source
+corrects that one file at **09:17:15 UTC**, retaining the source count and prior
+outputs. Independent correction review passes for the recorded installation;
+normal Kati and target-files
+execution remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -429,10 +438,10 @@ first Evolution boot or Camera/Leica operation is established.
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
 | [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities; later packaging-matrix installation binds current metadata/recovery/mi_ext and policy-image inputs, preserving the older contracts | Complete native configuration and ordinary packaging; final flashable-artifact admission remains separate |
-| [ROM construction prerequisites](rom-construction.md) | Commit `4070b1a` adds an unbound inspection-only descriptor/consumer; exact missing native roles are reported and explicit generator selection refuses before private inputs or publication | Reviewed selected-input binding, necessary VINTF coverage and native construction integration; no BoardConfig or blocked target is enabled |
+| [ROM construction prerequisites](rom-construction.md) | The initial unbound consumer reports missing roles; the later explicit constructor source transaction selects its guard with retained evidence | Native dispatch/configuration admission, required coverage and actual construction; source selection is not a build result |
 | [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit v13h evidence admission; raw reconstruction and keyless footer checks pass, and later packaging-matrix source selection retains the exact reviewed leaves | Signed parent chain, physical partition fit and final-input compatibility; source selection is not flashable-artifact admission |
 | [Factory Camera grant behavior](../research/factory-camera-permission-grants.json) | Commit `e433a5d` traces three pure-signature requests through captured grant-evaluator and service source; 30 focused tooling tests pass | Effective signing/flags/grants, generated enforcement bodies and actual Camera behavior; no grant or APK installation is performed |
-| [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
+| [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; 33 isolated native Kati outcomes pass, and later patch 0012/helper source selection commits | Actual product configuration, generated metadata and helper execution; source selection is not proof of a build number or reproducible images |
 
 The metadata projection is content-only packaging input. It is not a full
 filesystem inventory, an APK inventory or proof that a rebuilt partition
@@ -1240,11 +1249,43 @@ It binds all nine captured files, nineteen events, eight operations and twelve
 source-project records without reopening the live guest, large image bodies or
 archives, and without executing a new installation helper in the guest.
 This is actual source-input selection, not a new image build or final
-flashable-artifact admission. The construction capability and pinned-date patch
-0012 remain unselected. No native
+flashable-artifact admission. Construction and pinned-date source remain unselected
+at that packaging checkpoint. No native
 build, normal sidecar generation or target-files hook runs in the transaction.
 Scoped VINTF/crypto evidence does not become complete input, runtime, AVB-chain,
 OTA or boot verification through source selection.
+
+The subsequent **first-target-files-v1** transaction commits at **08:45:28 UTC**,
+with **three operations and nine journal events**. One device-tree exchange adds
+the construction guard; two vendor/lineage file exchanges select patch 0012 and
+its pinned-date helper. The installation is
+`f70dab48bb862a06fef4d67e0b2ae76369c77eeb06ebc82f4bbd4cea8d7591b7`
+(1,150,851 bytes). Complete per-file readback retains four files / 2,430,463 bytes,
+including the unchanged staged record. It verifies **478 source files and modes
+across twelve projects**, preserving prior outputs and strict 4 KiB settings.
+Independent transaction review
+`98b1152497a10bb196121eeb83d3b606f8a4215117efbccb2c48fe63f1c5de90`
+(9,839 bytes) passes for the recorded source installation without reopening
+live source, archives or image bodies. Native dispatch and the full
+configuration delta remain unadmitted. No `BUILD_NUMBER`, product metadata,
+date-helper execution, sidecar output or native build success is inferred;
+readiness and flash permission remain false.
+Captured `envsetup.mk` includes release configuration at line 51 and board
+configuration at line 368; the former forbids direct `TARGET_RELEASE` access
+before the original guard reads it. This source-order finding is not a failed
+native build. Its separate correction commits at **09:17:15 UTC** through one
+exchange and five journal events, replacing only that guard with
+`fe1e32cffe0d7b7ba20a9fd1d90f1cf8712f9fa6b7aa0e3ec1a90a6b7058c469`
+(2,553 bytes). Eight complete stable reads return 1,664,080 bytes, including the
+active corrected guard and both original preimages. Exactly one of 478 source
+identities changes; all twelve project records, strict 4 KiB settings and prior
+outputs remain unchanged. The guard checks four resolved `RELEASE_*` flags;
+the raw `bp4a` selector still requires separate invocation binding. The 23 host
+preparation tests pass with zero skips. Independent actual correction review
+`3a4a4408a3ebbeb6cb901f36cdc2adad8bf5fc2a9c5baa1968f738dbba151abf`
+(9,389 bytes) binds the captured guard and recorded source vector without
+reopening live source or archives. Normal Kati parsing, generated metadata and
+the first build are not verified by this source transaction.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1376,13 +1417,15 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,961 tests in 171.407 seconds with zero failures, errors or skips**, executed
-by the coordinator. All three packaging-source checkpoint files stayed unchanged
-during the run; the subsequent factual evidence refresh and two review
-corrections are separate.
+**3,972 tests in 166.208 seconds with zero failures, errors or skips**, executed
+by the coordinator. All eight construction-source checkpoint files stayed
+unchanged during the run; the subsequent factual evidence refresh is separate.
 The full log is
+`ab23f5a27305eddfd458a911f6f1ab64994efab9781289ece8185db533ffe494`.
+The preceding 3,961-test run took 171.407 seconds, preserving all three packaging
+checkpoint files; its log remains
 `8840c2da10b9178247884e491f6c6653520c3fd5bc9dcbc79ae284df0cfa6497`.
-The preceding 3,961-test run took 166.023 seconds, preserving all three scoped
+The earlier 3,961-test run took 166.023 seconds, preserving all three scoped
 VINTF checkpoint files; its log remains
 `983894a1ee29fb2fdf79222d5e6f3b1ba9ea74bf56b10d0c071080c4224b3c91`.
 The earlier 3,961-test run took 165.776 seconds, preserving all three provider

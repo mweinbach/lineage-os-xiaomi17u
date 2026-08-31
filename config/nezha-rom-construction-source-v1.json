@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-first-target-files-source-v1",
+  "context": {
+    "device": "nezha",
+    "product": "lineage_nezha",
+    "branch": "bka",
+    "release_config": "bp4a",
+    "variant": "user",
+    "maximum_page_size_bytes": 4096,
+    "with_gms": true
+  },
+  "base_admission": {
+    "sha256": "13b6924419fde3ca9053c28f19d5e5fee9ec7e404ee11fb76a83fd77484f33ae",
+    "size_bytes": 162579
+  },
+  "board_before": {
+    "sha256": "f7cbc7a3bf92489e53c6d0e80e0443722c043fda5713076902aacb0eeb215332",
+    "size_bytes": 3948
+  },
+  "board_after": {
+    "sha256": "51869a9cdeb61630183a954e239aeca6f14a2f483cffa9c53f4a56110b5f7c5b",
+    "size_bytes": 3560
+  },
+  "guard": {
+    "sha256": "fe1e32cffe0d7b7ba20a9fd1d90f1cf8712f9fa6b7aa0e3ec1a90a6b7058c469",
+    "size_bytes": 2553
+  },
+  "recorded_source_installation": {
+    "original_constructor": {
+      "sha256": "f70dab48bb862a06fef4d67e0b2ae76369c77eeb06ebc82f4bbd4cea8d7591b7",
+      "size_bytes": 1150851
+    },
+    "release_guard_correction": {
+      "sha256": "2bbfdefca827390b1af5b0c97ffaeb1448e6d89539866c36567e21b958864464",
+      "size_bytes": 1024917
+    },
+    "corrected_source_spec": {
+      "sha256": "00c526c40055ec04e13a84eaf693d1686a46d7f2ab3d79d911a8abdd59d26900",
+      "size_bytes": 251549
+    },
+    "source_files": 478,
+    "current_source_verification_required_before_native_dispatch": true,
+    "record_is_not_a_current_state_or_native_build_proof": true
+  },
+  "ordinary_goal": "target-files-package",
+  "required_native_preflight": [
+    "nothing",
+    "recoveryimage",
+    "mi_extimage",
+    "vendorimage",
+    "odmimage",
+    "plat_sepolicy_and_mapping.sha256",
+    "system_ext_sepolicy_and_mapping.sha256",
+    "product_sepolicy_and_mapping.sha256"
+  ],
+  "release_selector_binding": "The native invocation separately binds bp4a; BoardConfig uses the resulting release flags after TARGET_RELEASE is cleared or poisoned.",
+  "metadata_selection": "The separate installed 0012 capability and actual fixed input descriptors remain mandatory; BUILD_NUMBER stays invocation-only.",
+  "coverage_limits_retained": [
+    "one-uncovered-unlevelled-framework-matrix-definition-skip",
+    "two-framework-only-warnings",
+    "host-kernel-runtime-checks-do-not-prove-physical-kernel-behavior",
+    "stub-runtime-info-is-not-complete-runtime-compatibility",
+    "size-max-selinux-policy-version-is-not-device-version-evidence",
+    "default-disabled-avb-version-check-is-not-avb-chain-verification"
+  ],
+  "scope": {
+    "source_derivation_only": true,
+    "first_ordinary_target_files_source_selected": true,
+    "native_dispatch_allowed": false,
+    "native_preflight_verified_by_generator": false,
+    "default_rom_super_ota_allowed": false,
+    "complete_target_files_allowed": false,
+    "complete_input_compatibility_verified": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "hardware_tested": false,
+    "phone_operations": []
+  }
+}

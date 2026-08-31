@@ -24,9 +24,11 @@ import tempfile
 try:
     from .artifact_files import publish_new_directory
     from . import framework_compatibility_matrix as framework_matrix
+    from . import rom_construction_source as construction_source
 except ImportError:
     from artifact_files import publish_new_directory
     import framework_compatibility_matrix as framework_matrix
+    import rom_construction_source as construction_source
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -2284,7 +2286,10 @@ def _policy_image_delivery_source_guards(plan, payloads):
     include = POLICY_IMAGE_DELIVERY_INCLUDE.as_posix()
     if selected:
         _, original = _read_file(ROOT / board, limit=MAX_TEXT_BYTES, collect=True)
-        _require(payloads.get(board) == _policy_image_delivery_board(original) and
+        expected_board = _policy_image_delivery_board(original)
+        if construction_source.BINDING in plan:
+            expected_board = construction_source.derive_board(expected_board)
+        _require(payloads.get(board) == expected_board and
                  payloads.get(include) == _render_policy_image_delivery(binding).encode("ascii"),
                  "policy-image delivery requires the exact generated board and input guards")
     else:
@@ -2743,6 +2748,8 @@ def _page_size_source_guards(plan, payloads):
             continue
         if name == product and "page_size_profile" in plan:
             _require(raw == _render_product(plan).encode(), "page-size generated product is duplicated or contradictory")
+        elif name == construction_source.GUARD and construction_source.BINDING in plan:
+            _require(raw == construction_source.render_guard(), "construction page-size checks changed")
         else:
             _require(not re.search(pattern, raw), "page-size selectors require the explicit generated profile only")
         if "page_size_profile" in plan:
@@ -2934,7 +2941,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
              target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
-             policy_image_delivery_contract=None, rom_construction_contract=None, framework_matrix_contract=None):
+             policy_image_delivery_contract=None, rom_construction_contract=None, framework_matrix_contract=None,
+             rom_construction_source_contract=None):
     if rom_construction_contract is not None:
         try:
             from . import rom_construction
@@ -2945,6 +2953,14 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         except ValueError as exc:
             raise CandidateError(str(exc)) from exc
     variant = _build_variant(variant)
+    if rom_construction_source_contract is not None:
+        _require(variant == "user" and policy_image_delivery_contract is not None
+                 and page_size_profile is not None and framework_matrix_contract is not None,
+                 "construction source selection requires the exact user, delivery, 4 KiB and matrix base")
+        try:
+            construction_source.load_contract(rom_construction_source_contract)
+        except ValueError as exc:
+            raise CandidateError(str(exc)) from exc
     factory_selected = factory_boot_contract is not None or partition_metadata is not None
     if factory_selected:
         _require(factory_boot_contract is not None and partition_metadata is not None and fstab_source is not None,
@@ -3082,6 +3098,10 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
     plan["schema_version"] = 1
+    if rom_construction_source_contract is not None:
+        plan, payloads = construction_source.apply(plan, payloads, rom_construction_source_contract)
+        _page_size_source_guards(plan, payloads)
+        _policy_image_delivery_source_guards(plan, payloads)
     output = _no_symlinks(output, existing=False)
     artifacts = _no_symlinks(Path(workspace_root) / "artifacts", existing=False)
     _require(output != artifacts and output.is_relative_to(artifacts), "output must be a new artifacts subdirectory")
@@ -3194,6 +3214,11 @@ def validate(output, *, purpose="configuration"):
     expected |= {(DEVICE_PATH / "generated" / name).as_posix()
                  for name in ("BoardConfigCandidate.mk", "device-candidate.mk", "fstab.qcom")}
     expected |= {SECURITY_PATCH.as_posix(), SECURITY_RECORD.as_posix()}
+    if construction_source.BINDING in plan:
+        payloads = {name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
+                    for name in files}
+        construction_source.validate(plan, payloads)
+        expected.add(construction_source.GUARD)
     if "mi_ext_inputs" in plan:
         mi_ext_include = _mi_ext_binding(plan, plan["mi_ext_inputs"])
         expected.add(MI_EXT_BOARD_INCLUDE.as_posix())
@@ -3249,8 +3274,11 @@ def validate(output, *, purpose="configuration"):
                 # one-include delivery derivation. No other guarded bytes vary.
                 original_identity, original = _read_file(ROOT / row["path"], limit=MAX_TEXT_BYTES, collect=True)
                 actual_identity, actual = _read_file(Path(output) / row["path"], limit=MAX_TEXT_BYTES, collect=True)
+                expected_board = _policy_image_delivery_board(original)
+                if construction_source.BINDING in plan:
+                    expected_board = construction_source.derive_board(expected_board)
                 _require(original_identity == {key: row[key] for key in ("sha256", "size_bytes")} and
-                         actual_identity == files.get(row["path"]) and actual == _policy_image_delivery_board(original),
+                         actual_identity == files.get(row["path"]) and actual == expected_board,
                          "policy-image delivery changed the guarded init-helper board beyond its exact include")
                 continue
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
@@ -3545,6 +3573,8 @@ def main(argv=None):
                              help="exact stock-backed device framework matrix; preserves platform FCMs and requires a new native compatibility check")
             sub.add_argument("--rom-construction-contract", type=Path,
                              help="explicit construction prerequisites; currently fails closed until actual selected native inputs and coverage are admitted")
+            sub.add_argument("--rom-construction-source-contract", type=Path,
+                             help="exact maintained first target-files source derivative; requires the full pinned base and separate native preflight")
             sub.add_argument("--output", type=Path, required=True)
     check = commands.add_parser("validate")
     check.add_argument("--output", type=Path, required=True)
@@ -3578,7 +3608,8 @@ def main(argv=None):
                                   framework_allocator_contract=args.framework_allocator_contract,
                                   policy_image_delivery_contract=args.policy_image_delivery_contract,
                                   rom_construction_contract=args.rom_construction_contract,
-                                  framework_matrix_contract=args.framework_matrix_contract)
+                                  framework_matrix_contract=args.framework_matrix_contract,
+                                  rom_construction_source_contract=args.rom_construction_source_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:

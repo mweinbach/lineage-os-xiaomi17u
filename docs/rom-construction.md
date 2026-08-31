@@ -1,7 +1,9 @@
 # Explicit ROM construction prerequisites
 
-The maintained construction consumer separates **input admission** from
-**artifact validation** and **device testing**. Its first descriptor,
+Construction separates **source derivation**, **native input admission**,
+**artifact validation** and **device testing**. The explicit maintained source
+selector now reproduces the installed first target-files BoardConfig and guard.
+It does not dispatch a build or admit a flashable ROM. The first inspection descriptor,
 [`nezha-rom-construction.json`](../config/nezha-rom-construction.json), is
 deliberately unbound. It does not enable a complete product or admit any
 currently blocked framework-checks target. No readiness flags change.
@@ -24,12 +26,51 @@ The generator recognizes an explicit `--rom-construction-contract` argument.
 Selecting this descriptor fails before reading proprietary input bundles or
 publishing a candidate, with the missing native roles in the error. Omitting
 the argument preserves the prior generator behavior and candidate bytes.
-Existing `target-files`, `super`, OTA, default-build and alias restrictions
-remain unchanged. Do not invoke raw output paths or nodeps aliases to bypass
-them. This is the implemented fail-closed schema/consumer slice; a
-construction-enabled BoardConfig derivative is not implemented or installed.
+That version-1 interface retains its `target-files`, `super`, OTA, default-build
+and alias restrictions. It is not the new source selector. Do not invoke raw
+output paths or nodeps aliases to bypass either interface.
 
-The exact missing selected-input roles are:
+The separate source selector is
+`--rom-construction-source-contract config/nezha-rom-construction-source-v1.json`,
+implemented by [`rom_construction_source.py`](../scripts/rom_construction_source.py).
+Use it with the complete existing user/4 KiB/matrix/policy-image-delivery recipe.
+The generator first performs all ordinary base-input checks and requires the
+exact complete base admission `13b69244…` (162,579 bytes). It then replaces only
+the reviewed BoardConfig target block with an include and adds the exact
+generated `rom-construction.mk`. Validation reconstructs the complete base
+admission, so changing other source bytes, input identities, scope fields or
+readiness flags—even with new file hashes—fails. Omitting the selector retains
+the prior candidate bytes and restrictions. Existing input bundles and frozen
+candidate/control copies are not rewritten.
+
+The source derivative permits only the sole ordinary `target-files-package`
+goal under the pinned product, user variant, 4 KiB checks, AVB, GMS selection
+and 0012 metadata interface. Existing component targets remain available for
+preflight; default ROM, super, OTA and packaging aliases remain blocked. The
+native runner must separately verify current source and inputs, bind the actual
+fixed metadata environment and `bp4a` invocation, run `nothing`, then build and
+verify `recoveryimage`, `mi_extimage`, `vendorimage`, `odmimage` and the three
+ordinary framework policy-digest modules before target-files. Source selection
+does not assert that those component artifacts or a native Make parse already
+passed. Final signing, partition fit, super/OTA and authorized device admission
+remain later gates; they are not circular prerequisites to compilation.
+
+The August 31 source installation has two immutable records. The original
+three-operation constructor receipt `f70dab48…` installed 0012 and the source
+derivative. Source inspection then found that `release_config.mk` clears or
+poisons `TARGET_RELEASE` before `envsetup.mk` includes BoardConfig. The separate
+one-file correction receipt `2bbfdefc…` preserves that history and changes only
+the generated guard. Its current-source proof retains 478 files and twelve
+project observations. The corrected guard is
+`fe1e32cffe0d7b7ba20a9fd1d90f1cf8712f9fa6b7aa0e3ec1a90a6b7058c469`
+(2,553 bytes); it checks the resulting `BP4A`, `REL`, `16` and `36` release flags
+without reading the unavailable raw selector. The maintained generator produces
+those exact installed bytes. The source-order regression was verified with
+host GNU Make; it is not evidence of a native Kati or target-files build.
+
+The unchanged inspection descriptor records these unbound roles. Later actual
+source/component records do not automatically rewrite or activate that historical
+version; current native dispatch must bind the applicable records separately:
 
 - `source_and_private_input_closure`: actual adopted source composition,
   current generated inputs, selected image/metadata bytes and their guards.
@@ -63,12 +104,14 @@ Signed final images, live physical fit and successful hardware operation are
 not prerequisites to the first image compilation. They remain required before
 their respective final artifact and authorized device admissions.
 
-Reproducibility remains separate: the descriptor references the existing 0012
-version-date contract but does not select it, invent an epoch/build number, or
-modify the current 0005–0011 packaging composition. A later source successor
-must bind actual manifest epoch/build metadata evidence and validate the
-maintained interface through the ordinary product route. The 33 earlier
-isolated Kati cases are not evidence of active adoption or reproducible images.
+Reproducibility remains separate. The original inspection descriptor does not
+select 0012 or invent an epoch/build number. The recorded constructor source
+successor installs the exact two 0012 leaves separately from the eight-operation
+0005–0011 packaging transaction. Actual fixed input descriptors and the ordinary
+product metadata route still require their own verification. BUILD_NUMBER stays
+invocation-only; it is not included in its own source-descriptor preimage. Neither
+the earlier 33 isolated Kati cases nor source installation proves reproducible
+images.
 
 The implementation reuses the metadata tool's bounded, no-follow reader and
 strict JSON parser. Offline tests cover resealed controls, input/scope changes,

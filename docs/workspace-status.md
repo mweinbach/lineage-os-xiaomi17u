@@ -12,9 +12,21 @@ This page does not assert that a historical builder VM is still running.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The active guest source is now
-**packaging-matrix-v1**, committed at **2026-08-31 08:13:39 UTC**. The eight-operation
-transaction and its complete readback verify the new packaging selections;
-independent review is clear for source selection. No build has run from that selection. The preceding
+**first-target-files-release-flags-v1**. A one-file correction commits at
+**2026-08-31 09:17:15 UTC**, preserving the 478-file source vector and prior
+outputs; independent correction review passes for the recorded installation.
+It replaces forbidden direct
+`TARGET_RELEASE` access with four resolved release flags, while `bp4a` remains
+a separate invocation binding. Normal Kati and target-files validation remain
+pending at this source checkpoint. The maintained
+[construction source selector](rom-construction.md) now reproduces all thirty
+installed device files through the full original input checks. Two fresh
+candidates match, while omitting the selector preserves the original candidate.
+This does not admit flashable artifacts or change the default generator path.
+The reviewed **first-target-files-v1** construction/date installation
+at **08:45:28 UTC**, its original guard and all nine journal events remain
+preserved. No generated build-number result is claimed. The preceding **packaging-matrix-v1** transaction
+committed eight operations at **08:13:39 UTC**, with reviewed packaging selections. The earlier
 **matrix-v1** source was committed at **03:14:25 UTC**. Its 38-goal build
 finishes at **03:51:10 UTC** with native exit 0 and **128 Ninja actions after
 163 frontend steps** (291 total progress rows), but the
@@ -456,9 +468,26 @@ recovery/mi_ext input records, metadata bundle and reviewed vendor/ODM leaf bund
 are now selected in source. Working76 and mi_ext image bytes, the 269 preserved
 outputs, thirteen policy files and eleven runtime files remain unchanged.
 Independent transaction review is clear. No component build, sidecar production
-or target-files result is claimed. The prospective 478-file construction profile
-and pinned-date patch 0012 have not been activated. Scoped VINTF/crypto limits, 4 KiB settings and false
-ROM-readiness flags remain in force.
+or target-files result is claimed by that transaction. Construction and pinned-date
+source were not yet selected at that checkpoint; the later transaction follows.
+Scoped VINTF/crypto limits, 4 KiB settings and false ROM-readiness flags remain in force.
+
+The **construction/0012 source transaction commits at 08:45:28 UTC**: one device
+tree exchange and two vendor/lineage file exchanges, with **nine events and 478
+source files/modes across twelve projects**. Its four-file readback preserves
+the staged record and prior outputs. Independent review confirms the recorded
+transaction without reopening live source or archives. Construction
+and date source are selected, but native dispatch and the configuration delta
+remain unadmitted; no generated `BUILD_NUMBER`, sidecar, target-files or build
+success follows. The original guard's direct `TARGET_RELEASE` access is a
+source-order finding, not a failed native attempt. A **one-file correction
+commits at 09:17:15 UTC**, with five journal events and an eight-file readback
+retaining both original preimages. Exactly one of 478 source identities changes;
+the twelve project records, strict settings and prior outputs remain unchanged.
+Independent correction review binds the captured guard and recorded source
+vector without reopening live source or archives. Twenty-three host preparation tests
+pass, but normal Kati/build execution remains unverified. The three ordinary
+sidecar modules and final policy hook remain required.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -495,10 +524,10 @@ checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
 Commit **4070b1a** adds the [construction-prerequisite consumer](rom-construction.md).
-It inspects five missing selected-input roles but deliberately remains unbound:
-the check exits 2 and explicit generator selection refuses before private-input
-reads or candidate publication. It enables no native product, BoardConfig or
-blocked target. Final compatibility coverage remains distinct from a runner's
+That initial unbound consumer reports five missing selected-input roles and
+refuses explicit generation before private-input reads or candidate publication.
+The later explicit source transaction selects the construction guard; it does
+not itself admit native dispatch or a completed build. Final compatibility coverage remains distinct from a runner's
 outer success field and from artifact/device admission.
 
 Commit **203ab67** adds the inactive [ODM-import care-map successor](mi-ext-care-map.md).
@@ -513,11 +542,12 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,961 tests in 171.407
+The latest completed full workspace suite passed **3,972 tests in 166.208
 seconds with zero failures, errors or skips**, executed by the coordinator.
-All three packaging-source checkpoint files stayed unchanged during that run;
-the subsequent factual evidence refresh and two review corrections are separate.
-The preceding 3,961-test run took 166.023 seconds and retained its three-file
+All eight construction-source checkpoint files stayed unchanged during that run;
+the subsequent factual evidence refresh is separate. The preceding 3,961-test
+run took 171.407 seconds and retained its three packaging-source checkpoint files.
+The earlier 3,961-test run took 166.023 seconds and retained its three-file
 scoped VINTF checkpoint. The earlier 3,961-test run took 165.776 seconds and retained its three-file
 provider checkpoint. The earlier 3,961-test run took 167.201 seconds and retained its five-file
 checkpoint. The earlier 3,961-test run took 173.222 seconds and retained its
@@ -572,7 +602,7 @@ passed 3,558 in 153.985 seconds. These are offline tooling results, separate fro
 Android builds, host policy proofs and physical-device tests. This checkpoint records
 code through `a253c97`, with the previous component checkpoint committed
 as `8fc2162`, followed by `da9648b`, `3001e85` and `4116868`. The active
-guest source is now packaging-matrix-v1 with the 4 KiB product unchanged. Its
+guest source is now first-target-files-release-flags-v1 with the 4 KiB product unchanged. Its
 first build remains pending; the latest verified component outputs are from
 matrix-v1, with the failed wrapper and distinct passing postcheck/review preserved;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
@@ -831,7 +861,8 @@ override theme defaults. No Magisk integration is included.
   unsigned descriptor-carrier checks have run; private-key signing and the
   complete 17-role output-chain verification have not. Keys remain on the Mac.
   The [pinned build-metadata capability](pinned-build-metadata.md) now verifies
-  33 expected isolated native Kati outcomes, but is not installed or enabled.
+  33 expected isolated native Kati outcomes. Patch 0012 and its helper are now
+  selected in source, but actual product metadata and helper execution are unverified.
   The first diagnostic-harness failure remains preserved. It cannot relabel earlier build
   dates or establish reproducible images without native and artifact checks.
   Working recovery's development signature does not sign the ROM or authorize

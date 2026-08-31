@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "packaging-matrix-source-image-and-metadata-selection-committed-reviewed-build-pending",
+  "checkpoint": "first-target-files-release-guard-correction-installed-reviewed-native-build-pending",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -938,25 +938,26 @@
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
     "runner": "coordinator",
-    "passed": 3961,
+    "passed": 3972,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 171.407,
-    "code_commit": "7e1d290d3a42d3398d30b52d42307195992797a3",
-    "bound_files_unchanged_during_run": 3,
-    "checkpoint_document_files": 3,
+    "elapsed_seconds": 166.208,
+    "code_commit": "71034fca2eff19ce1eb3a146fb5769b03d05c008",
+    "bound_files_unchanged_during_run": 8,
+    "checkpoint_document_files": 4,
     "log": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-packaging-source-v1/workspace-tests.log",
-      "sha256": "8840c2da10b9178247884e491f6c6653520c3fd5bc9dcbc79ae284df0cfa6497",
-      "size_bytes": 685483
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-construction-source-v1/workspace-tests.log",
+      "sha256": "ab23f5a27305eddfd458a911f6f1ab64994efab9781289ece8185db533ffe494",
+      "size_bytes": 687536
     },
     "completion": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-packaging-source-v1/completion.json",
-      "sha256": "f533ab3adc9c20f522456a44e0f1169d9a10fbc768fda671a45318607893aa23",
-      "size_bytes": 1436
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-construction-source-v1/completion.json",
+      "sha256": "414e6abad250f814683f12a08898155743ca9f0555af344f392f479eb76dbd0c",
+      "size_bytes": 3041
     },
-    "scope": "Coordinator executed the exact full offline command with all three packaging-source checkpoint documents unchanged during the run. Only evidence documentation changed from the previously tested code. The subsequent factual test-log refresh and two independent-review documentation corrections are separate. This does not establish target-files construction, image signing, runtime behavior or hardware success."
+    "scope": "Coordinator executed the exact full offline command with all eight construction-source checkpoint files unchanged during the run. The maintained selector, contract, generator integration and focused tests are included. The subsequent factual documentation and test-evidence refresh is separate. This does not establish native product configuration, target-files construction, image signing, runtime behavior or hardware success.",
+    "checkpoint_code_config_test_files": 4
   },
   "remaining_gates": [
     "Carry the scoped matrix-v1 VINTF result into current-input/construction admission and complete required coverage. All four native commands and independent reviews pass, but framework consistency still skips unlevelled matrix definitions; host RuntimeInfo substitutes kernel SELinux support and omits runtime AVB-version checks. Complete input compatibility remains false. Current allocator prerequisites and package/trust/tool equality are verified; APEX crypto is reused without new crypto commands. Runtime, partition AVB, OTA and boot remain separate.",
@@ -965,7 +966,7 @@
     "The 26 selected provider ELF/symbol checks pass at 4 KiB; complete ABI, runtime services and VTS/hardware remain separate. Preserve the failed v13j stage and 16 KiB four-pass/twenty-two-failure inventory. The paired policy-image and metadata source selection is now committed, but no build or final target-files admission has run from that selection.",
     "Complete framework images and required compatibility/coverage evidence against their final inputs, plus full Treble APK labeling. The selected matrix-v1 VINTF invocation passes all four native commands but does not establish complete input or runtime compatibility.",
     "Verified v13h NONE leaf derivatives are now selected through the reviewed packaging-matrix source transaction, with AVB enabled and original inputs preserved. Final flashable-artifact admission still requires complete signed parent chain, rollback settings and physical partition fit; existing exact package-budget/hashtree/FEC proofs do not replace those gates.",
-    "Build the three ordinary framework policy-sidecar modules and verify their real installed outputs; the unchanged final metadata policy and installation checks remain mandatory. Complete ordinary target-files, super, A/B, snapshot and OTA packaging. Construction capability and pinned-date patch0012 remain unselected; the optional mi_ext care-map path still needs final SYSTEM/native qualification.",
+    "Admit the corrected constructor guard through normal Kati and actual native dispatch/configuration. Build the three ordinary policy-sidecar modules and verify their real installed outputs. The unchanged final metadata policy/installation checks remain mandatory. Complete target-files, super, A/B, snapshot and OTA packaging; generated build number and helper execution remain unverified, and the optional mi_ext care-map path still needs final SYSTEM/native qualification.",
     "Complete signed AVB chain and rollback compatibility",
     "Separately authorized first Evolution X boot and hardware stabilization"
   ],
@@ -1722,6 +1723,29 @@
         "size_bytes": 1435
       },
       "scope": "Coordinator executed the exact full offline command with all three scoped VINTF checkpoint documents unchanged during the run. Only evidence documentation changed from the previously tested code. The post-run factual test-log update is separate. This does not establish target-files construction, image signing, runtime behavior or hardware success."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3961,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 171.407,
+      "code_commit": "7e1d290d3a42d3398d30b52d42307195992797a3",
+      "bound_files_unchanged_during_run": 3,
+      "checkpoint_document_files": 3,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-packaging-source-v1/workspace-tests.log",
+        "sha256": "8840c2da10b9178247884e491f6c6653520c3fd5bc9dcbc79ae284df0cfa6497",
+        "size_bytes": 685483
+      },
+      "completion": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-packaging-source-v1/completion.json",
+        "sha256": "f533ab3adc9c20f522456a44e0f1169d9a10fbc768fda671a45318607893aa23",
+        "size_bytes": 1436
+      },
+      "scope": "Coordinator executed the exact full offline command with all three packaging-source checkpoint documents unchanged during the run. Only evidence documentation changed from the previously tested code. The subsequent factual test-log refresh and two independent-review documentation corrections are separate. This does not establish target-files construction, image signing, runtime behavior or hardware success."
     }
   ],
   "previous_v11b_policy": {
@@ -2070,7 +2094,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-31T08:25:46.218192+00:00",
+  "recorded_at_utc": "2026-08-31T09:24:39.480821+00:00",
   "latest_native_build_completed_at_utc": "2026-08-31T06:10:10.772752+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -3437,13 +3461,13 @@
     "subsequent_corrected_build": "provider_v13h_policy_build"
   },
   "active_guest_inputs": {
-    "integration": "packaging-matrix-v1",
-    "evidence": "native_packaging_source_installation",
+    "integration": "first-target-files-release-flags-v1",
+    "evidence": "native_first_target_files_release_guard_correction",
     "latest_fully_verified_policy_baseline": "analysis-v13h-policy-only-v1",
     "provider_policy_build": "provider_v13h_policy_build",
     "previous_fully_verified_policy_baseline": "v12f/export4",
     "independent_policy_analysis": "native_provider_policy_analysis",
-    "previous_integration": "matrix-v1",
+    "previous_integration": "first-target-files-v1",
     "current_four_kib_source_selected": true,
     "installed_product_maximum_page_size_bytes": 4096,
     "installed_prebuilt_alignment_check_enabled": true,
@@ -3466,7 +3490,7 @@
     "selected_full_vintf_native_commands_passed": true,
     "full_vintf_independent_scoped_review_completed": true,
     "complete_input_compatibility_verified": false,
-    "active_source_file_count": 475,
+    "active_source_file_count": 478,
     "packaging_source_adoption_verified": true,
     "policy_image_source_selection_verified": true,
     "target_files_metadata_source_selected": true,
@@ -3475,8 +3499,17 @@
     "last_verified_generated_configuration_source_integration": "matrix-v1",
     "normal_sidecar_production_verified": false,
     "target_files_hook_executed": false,
-    "construction_profile_activated": false,
-    "pinned_date_patch_0012_activated": false
+    "construction_profile_activated": true,
+    "pinned_date_patch_0012_activated": true,
+    "construction_and_date_activation_scope": "source-selection-only",
+    "native_dispatch_admitted": false,
+    "generated_build_number_verified": false,
+    "generated_product_metadata_verified": false,
+    "constructor_independent_review_completed": true,
+    "construction_release_guard_correction_pending": false,
+    "construction_release_guard_correction_installed": true,
+    "construction_release_guard_native_parse_verified": false,
+    "construction_release_guard_correction_independent_review_completed": true
   },
   "latest_native_build_status": "ordinary-provider-install-and-independent-raw-review-passed",
   "provider_aidl_native_followup": {
@@ -4036,9 +4069,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-31T08:13:39.205719+00:00",
-  "latest_timestamped_native_observation_kind": "packaging-source-transaction-commit-verified",
-  "latest_native_observation_kind": "packaging-source-input-selection-independently-reviewed",
+  "latest_timestamped_native_observation_utc": "2026-08-31T09:17:15.080537+00:00",
+  "latest_timestamped_native_observation_kind": "single-file-release-guard-correction-commit-verified",
+  "latest_native_observation_kind": "release-guard-source-correction-installed-and-independently-reviewed",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -7184,6 +7217,20 @@
       "selected_full_vintf_native_commands_passed": true,
       "full_vintf_independent_scoped_review_completed": true,
       "complete_input_compatibility_verified": false
+    },
+    {
+      "integration": "packaging-matrix-v1",
+      "evidence": "native_packaging_source_installation",
+      "active_source_file_count": 475,
+      "packaging_source_adoption_verified": true,
+      "current_source_native_build_verified": false
+    },
+    {
+      "integration": "first-target-files-v1",
+      "evidence": "native_first_target_files_source_installation",
+      "active_source_file_count": 478,
+      "construction_and_date_activation_scope": "source-selection-only",
+      "current_source_native_build_verified": false
     }
   ],
   "native_v13ja_source_installation": {
@@ -7416,7 +7463,7 @@
     "Preserve the original matrix38 wrapper failure alongside native exit zero and the distinct passing read-only postcheck. Its 291 progress rows are 163 frontend steps plus 128 Ninja actions; do not infer fresh compiler/checker tests from every row.",
     "Use the separately verified 26 fresh 4 KiB provider ELF/symbol checks, preserving the original 16 KiB outcomes and remaining full-ABI/runtime/VTS limits.",
     "Use the reviewed provider installation, current native producer/input captures and scoped independent reviews of the successful matrix-v1 VINTF invocation. Carry its explicit subcheck/runtime limitations into construction admission. Rebind later source, package, image or trust-input changes; historical APEX crypto remains reused evidence, not a new run.",
-    "Use the committed packaging-matrix source/input selection with AVB enabled. Build and verify all three ordinary policy-sidecar modules, retain the unchanged final target-files policy/installation gate, and complete ordinary configuration/packaging before final signed-chain, rollback, physical-fit and separately authorized device validation. Do not treat the prospective construction/date preparations as active or built."
+    "Use committed packaging and constructor/date source selections with the one-file release-guard correction and AVB enabled. Admit normal Kati/native dispatch and configuration, build all three ordinary policy-sidecar modules, and run the unchanged final target-files policy/installation gate. Verify generated metadata and real outputs before final signing, rollback/fit checks and separately authorized device validation; source selection alone is not build success."
   ],
   "maintained_four_kib_policy_delivery": {
     "implementation_commit": "137f43877a2c2b9c170ba8dd0883701003cecaec",
@@ -9600,5 +9647,259 @@
     "scope": "Eight actual source operations select combined packaging Make/releasetools, the device tree, recovery/mi_ext records, target-files metadata and exact reviewed vendor/ODM leaf inputs. Complete readback and independent host review bind the nineteen-event committed transaction and installed semantic checks to 475 current source files. No Ninja build, normal sidecar generation or final target-files hook executes. The review reopens captured records, not live source/archive/image bodies, and does not execute a new guest helper. Source-input selection does not establish final signed-chain/rollback/physical-fit, complete compatibility, OTA, boot or hardware admission.",
     "tree_operations": 5,
     "tree_additions": 2
+  },
+  "native_first_target_files_source_installation": {
+    "integration": "first-target-files-v1",
+    "previous_integration": "packaging-matrix-v1",
+    "status": "construction-and-pinned-date-source-installation-reviewed-with-source-order-limitation",
+    "commit": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/operational-v1/root-install-v1/stdout.jsonl",
+      "sha256": "f3aff7b51a0fcbb1d35b764d8212c1ba9079161135aacb1c6621ee414532340b",
+      "size_bytes": 481
+    },
+    "installation": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/operational-v1/root-install-readback-v1/files/installation.json",
+      "sha256": "f70dab48bb862a06fef4d67e0b2ae76369c77eeb06ebc82f4bbd4cea8d7591b7",
+      "size_bytes": 1150851
+    },
+    "journal": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/operational-v1/root-install-readback-v1/files/transaction.jsonl",
+      "sha256": "0f0b16464caa6e2c468fc7b05563bf8eabaf55f875bc9cc8e4dc980973bd1ded",
+      "size_bytes": 11911
+    },
+    "readback": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/operational-v1/root-install-readback-v1/stdout.jsonl",
+      "sha256": "02a3506a506823f2e1cc3fd9a3476ff2242eeb22425a91141695dac2286b2d2d",
+      "size_bytes": 3244098
+    },
+    "preserved_staged_record": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/operational-v1/root-install-readback-v1/files/staged.json",
+      "sha256": "9d86890063d042a5b2a093490d374cd5635416cd0708e64ad6aa78c9d63abc44",
+      "size_bytes": 1236593
+    },
+    "committed_at_utc": "2026-08-31T08:45:28.951045+00:00",
+    "manifest_sha256": "a1e768cf3c137affee20cbd5d5af634c3e115723ad25ae046f5e8ca3d41541ba",
+    "operation_count": 3,
+    "journal_events": 9,
+    "journal_final_sequence": 8,
+    "journal_final_event": "commit_verified",
+    "operations": [
+      {
+        "id": "component:device/xiaomi/nezha",
+        "kind": "tree",
+        "active_source_path": "device/xiaomi/nezha"
+      },
+      {
+        "id": "source:vendor/lineage/config/version.mk",
+        "kind": "file",
+        "active_source_path": "vendor/lineage/config/version.mk"
+      },
+      {
+        "id": "source:vendor/lineage/build/tools/nezha_pinned_build_date.py",
+        "kind": "file",
+        "active_source_path": "vendor/lineage/build/tools/nezha_pinned_build_date.py"
+      }
+    ],
+    "captured_files": 4,
+    "captured_bytes": 2430463,
+    "per_file_stability_verified": true,
+    "atomic_multi_file_snapshot_claimed": false,
+    "source_files_checked": 478,
+    "source_file_modes_verified": 478,
+    "source_projects": 12,
+    "construction_guard_source_selected": true,
+    "pinned_date_patch_0012_source_selected": true,
+    "packaging_source_selection_preserved": true,
+    "prior_outputs_unchanged": true,
+    "independent_previous_copies_preserved": true,
+    "strict_page_size_bytes": 4096,
+    "prebuilt_alignment_check_enabled": true,
+    "normal_android_enforcing_required": true,
+    "independent_actual_review_completed": true,
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/operational-v1/actual-install-review-v1.json",
+      "sha256": "98b1152497a10bb196121eeb83d3b606f8a4215117efbccb2c48fe63f1c5de90",
+      "size_bytes": 9839,
+      "status": "passed-for-recorded-source-installation",
+      "findings": [],
+      "known_release_guard_limitation_retained": true,
+      "reviewer_reopened_live_source_or_archives": false,
+      "native_kati_guard_parse_verified": false
+    },
+    "first_target_source_order_blocker": {
+      "status": "original-installed-guard-source-order-finding",
+      "installed_guard": {
+        "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/source-packet-v1/staged/evolution/device/xiaomi/nezha/generated/rom-construction.mk",
+        "sha256": "1849e8d637697c7fc57c8dc4287537070254a7603635aeceb7d333d599018a94",
+        "size_bytes": 2137
+      },
+      "captured_envsetup": {
+        "path": "reports/oem-policy-integration-20260829/pinned-build-metadata-adoption-preparation-v1/descriptor-body-proposal-v1/product-context-admission-v1/root-capture-v1/files/work/evolution/build/make/core/envsetup.mk",
+        "sha256": "17bd8c57f366abaa384614b9ff5872ac162f72739293a1d92ca2d9f9bc443e41",
+        "size_bytes": 45722
+      },
+      "captured_release_config": {
+        "path": "reports/oem-policy-integration-20260829/pinned-build-metadata-adoption-preparation-v1/descriptor-body-proposal-v1/product-context-admission-v1/root-capture-v1/files/work/evolution/build/make/core/release_config.mk",
+        "sha256": "833cbde63008e30da3ff201bc4c8134030a32248e4e598ef00d269158ffe1119",
+        "size_bytes": 8669
+      },
+      "finding": "envsetup includes release_config at line51 before board_config at line368. release_config lines169-176 forbid normal direct TARGET_RELEASE access; the installed guard reads it at line19.",
+      "native_build_attempted": false,
+      "native_failure_claimed": false,
+      "correction_scope": "Original source-order finding before any native attempt; the later one-file installation is recorded separately.",
+      "correction_installed_at_observation": false
+    },
+    "native_dispatch_admitted": false,
+    "full_configuration_delta_admitted": false,
+    "generated_build_number_verified": false,
+    "generated_product_metadata_verified": false,
+    "date_helper_execution_verified": false,
+    "installed_sidecar_artifacts_verified": false,
+    "native_build_performed": false,
+    "complete_target_files_verified": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "phone_accessed": false,
+    "scope": "Three source operations commit a construction-guard device tree plus version.mk and its pinned-date helper. Four complete stable file reads bind the installation, nine-event journal, retained staged record and control identity to 478 source files/modes and twelve project records. Independent review passes for the recorded installation while preserving the known release-guard source-order limitation; it does not reopen live source or archives. No build, helper execution, generated build number, configuration-delta admission, sidecar output or target-files result is inferred; prior native outputs and scoped compatibility/crypto proofs remain unchanged.",
+    "later_source_correction": "native_first_target_files_release_guard_correction"
+  },
+  "native_first_target_files_release_guard_correction": {
+    "integration": "first-target-files-release-flags-v1",
+    "previous_integration": "first-target-files-v1",
+    "status": "one-source-file-correction-installed-and-independently-reviewed",
+    "preparation": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/freeze-v1.json",
+      "sha256": "5dac54dad0238dff8c7b3e5aa7fad52c6a303fb8d401cb5be4b2c76f4c4bb786",
+      "size_bytes": 2726
+    },
+    "commit": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/root-install-v1/stdout.jsonl",
+      "sha256": "d0c88cdcefd1240cb9eeb58eecfc4d6e9959d7989023832d6058fb83354e2024",
+      "size_bytes": 480
+    },
+    "installation": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/root-install-readback-v1/files/candidates/nezha-first-target-files-release-flags-v1/installation.json",
+      "sha256": "2bbfdefca827390b1af5b0c97ffaeb1448e6d89539866c36567e21b958864464",
+      "size_bytes": 1024917
+    },
+    "journal": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/root-install-readback-v1/files/candidates/nezha-first-target-files-release-flags-v1/transaction.jsonl",
+      "sha256": "9d2a6dd2c6338c7982a49b8494cecdc3109272c43dbb158e93ad7e6056309cc9",
+      "size_bytes": 1975
+    },
+    "readback": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/root-install-readback-v1/stdout.jsonl",
+      "sha256": "bf24e42f57d5dedc6e631cae163b562dbef97560140a3efd26cdda2a3d87a32a",
+      "size_bytes": 2225316
+    },
+    "corrected_guard": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/root-install-readback-v1/files/evolution/device/xiaomi/nezha/generated/rom-construction.mk",
+      "sha256": "fe1e32cffe0d7b7ba20a9fd1d90f1cf8712f9fa6b7aa0e3ec1a90a6b7058c469",
+      "size_bytes": 2553
+    },
+    "host_preparation_tests": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/tests-v1.json",
+      "sha256": "418dfe612456be6ad30eb9316f931012781f07c745587c04cbe02fb6db4b4f29",
+      "size_bytes": 2364
+    },
+    "committed_at_utc": "2026-08-31T09:17:15.080537+00:00",
+    "manifest_sha256": "00c526c40055ec04e13a84eaf693d1686a46d7f2ab3d79d911a8abdd59d26900",
+    "operation_count": 1,
+    "journal_events": 5,
+    "journal_final_sequence": 4,
+    "journal_final_event": "commit_verified",
+    "changed_source_files": 1,
+    "source_files_checked": 478,
+    "source_projects": 12,
+    "captured_files": 8,
+    "captured_bytes": 1664080,
+    "per_file_stability_verified": true,
+    "atomic_multi_file_snapshot_claimed": false,
+    "source_path": "device/xiaomi/nezha/generated/rom-construction.mk",
+    "predecessor_guard_sha256": "1849e8d637697c7fc57c8dc4287537070254a7603635aeceb7d333d599018a94",
+    "two_original_guard_preimages_retained": true,
+    "resolved_release_flags": {
+      "RELEASE_PLATFORM_VERSION": "BP4A",
+      "RELEASE_PLATFORM_VERSION_CODENAME": "REL",
+      "RELEASE_PLATFORM_VERSION_LAST_STABLE": "16",
+      "RELEASE_PLATFORM_SDK_VERSION": "36"
+    },
+    "raw_bp4a_invocation_binding_still_required": true,
+    "host_preparation_tests_passed": 23,
+    "host_preparation_tests_skipped": 0,
+    "original_three_operation_transaction_preserved": true,
+    "source_modes_preserved": true,
+    "project_records_unchanged": true,
+    "strict_settings_unchanged": true,
+    "prior_outputs_unchanged": true,
+    "strict_page_size_bytes": 4096,
+    "prebuilt_alignment_check_enabled": true,
+    "normal_android_enforcing_required": true,
+    "independent_actual_review_completed": true,
+    "native_kati_guard_parse_verified": false,
+    "native_dispatch_admitted": false,
+    "full_configuration_delta_admitted": false,
+    "generated_build_number_verified": false,
+    "generated_product_metadata_verified": false,
+    "date_helper_execution_verified": false,
+    "installed_sidecar_artifacts_verified": false,
+    "native_build_performed": false,
+    "complete_target_files_verified": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "phone_accessed": false,
+    "scope": "One committed source-file exchange replaces the forbidden raw TARGET_RELEASE access with four resolved release flags. Complete stable readback retains the active guard, both original preimages and the five-event journal; exactly one of 478 source identities changes while modes, twelve project records, strict settings and prior outputs match. The original three-operation installation and source-order finding remain preserved. Host preparation tests are not normal Kati execution, native dispatch, generated metadata or a build result. Independent actual review binds the captured guard and recorded source vector without reopening live source or archives; normal Kati remains untested.",
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/release-guard-fix-v1/actual-install-review-v1.json",
+      "sha256": "3a4a4408a3ebbeb6cb901f36cdc2adad8bf5fc2a9c5baa1968f738dbba151abf",
+      "size_bytes": 9389,
+      "status": "passed-for-recorded-source-installation-and-captured-guard",
+      "findings": [],
+      "all_478_live_source_bodies_independently_recaptured": false,
+      "reviewer_reopened_live_source_or_archives": false,
+      "native_make_guard_tested": false
+    }
+  },
+  "maintained_construction_source_generator": {
+    "status": "host-reproduction-reviewed",
+    "contract": "config/nezha-rom-construction-source-v1.json",
+    "selector": "--rom-construction-source-contract",
+    "public_freeze": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/maintained-source-v1/public-freeze-v1.json",
+      "sha256": "fd08dabf0c2b9cb174b52c800b40642dc9cae7bdf9c386c8dd8e095948b886c5",
+      "size_bytes": 1335
+    },
+    "real_input_generation": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/maintained-source-v1/generation-v1.json",
+      "sha256": "c5eac6f82fc11c1671760f4902d50c17db5bb1127b7e761ec3c395a60b60a1cf",
+      "size_bytes": 11301
+    },
+    "independent_review": {
+      "path": "reports/oem-policy-integration-20260829/rom-construction-capability-v1/activation-preparation/maintained-source-v1/review-v1.json",
+      "sha256": "8a5d8ca8ab6479f591ac41573d9166c514bd3bc62173a50ddb928b5992660f76",
+      "size_bytes": 6758
+    },
+    "default_generator_behavior_unchanged": true,
+    "original_base_admission": {
+      "sha256": "13b6924419fde3ca9053c28f19d5e5fee9ec7e404ee11fb76a83fd77484f33ae",
+      "size_bytes": 162579
+    },
+    "paired_candidate_admission": {
+      "sha256": "151d7e4c4247e8490a6dfbf31096f9c5cdd7b978b32b7bb63f09a2245eb8470d",
+      "size_bytes": 163622
+    },
+    "paired_candidates_identical": true,
+    "candidate_files_including_admission": 50,
+    "device_files_matching_current_source": 30,
+    "source_differences": [
+      "exact BoardConfig construction block replaced with reviewed include",
+      "exact corrected release-flag guard added"
+    ],
+    "original_inspection_only_interface_unchanged": true,
+    "native_build_executed_by_generator": false,
+    "target_files_admission": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "phone_accessed": false
   }
 }
