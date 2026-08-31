@@ -1,0 +1,87 @@
+diff --git a/common/private/property_contexts b/common/private/property_contexts
+index 2e97da55bf208d3954f035a18ee2c408dc362c49..5aa968e62bcc5e23a700d50d88b402e96dafa5a2 100644
+--- a/common/private/property_contexts
++++ b/common/private/property_contexts
+@@ -1,72 +1,79 @@
++ifdef(`target_nezha_preserve_factory_property_labels', `ifelse(defn(`target_nezha_preserve_factory_property_labels'), `true', `',
++       defn(`target_nezha_preserve_factory_property_labels'), `false', `',
++       `errprint(`target_nezha_preserve_factory_property_labels must be true or false
++')m4exit(1)')')dnl
+ # ATV
+ # used by mediashell
+ ro.odm.cast.ssid_suffix u:object_r:odm_cast_prop:s0
+ 
+ # Aux camera
+-vendor.camera.aux.packageexcludelist   u:object_r:vendor_persist_camera_prop:s0
++ifelse(defn(`target_nezha_preserve_factory_property_labels'), `true', `', `vendor.camera.aux.packageexcludelist   u:object_r:vendor_persist_camera_prop:s0
+ vendor.camera.aux.packagelist          u:object_r:vendor_persist_camera_prop:s0
+ vendor.camera.skip_unconfigure.packagelist  u:object_r:vendor_persist_camera_prop:s0
++')dnl
+ 
+ # Boot animation
+ persist.sys.bootanimation_style        u:object_r:bootanim_system_prop:s0 exact int
+ 
+ # Bluetooth
+ bluetooth.hci.disabled_commands        u:object_r:bluetooth_config_prop:s0
+ bluetooth.hci.erroneous_data_reporting.enabled        u:object_r:bluetooth_config_prop:s0
+ 
+ # Custom legal URL
+ ro.lineagelegal.url                    u:object_r:legal_url_prop:s0
+ 
+ # Custom version
+ ro.lineage.version                     u:object_r:custom_version_prop:s0
+ ro.lineage.display.version             u:object_r:custom_version_prop:s0
+ ro.lineage.build.version               u:object_r:custom_version_prop:s0
+ ro.lineage.releasetype                 u:object_r:custom_version_prop:s0
+ ro.lineage.device                      u:object_r:custom_version_prop:s0
+ 
+ # Columbus ApSensor
+ persist.columbus.use_ap_sensor         u:object_r:system_prop:s0
+ 
+ # Compact HUN
+ persist.sys.compact_heads_up_notification.always_show          u:object_r:system_prop:s0
+ 
+ # Dolby Properties
+ ro.vendor.dolby.dax.version            u:object_r:exported_system_prop:s0
+-ro.vendor.audio.dolby.dax.support      u:object_r:exported_system_prop:s0
++ifelse(defn(`target_nezha_preserve_factory_property_labels'), `true', `', `ro.vendor.audio.dolby.dax.support      u:object_r:exported_system_prop:s0
+ ro.vendor.audio.dolby.dax.version      u:object_r:exported_system_prop:s0
+ ro.vendor.audio.dolby.surround.enable  u:object_r:exported_system_prop:s0
++')dnl
+ 
+ # Force multi-window behavior
+ ro.config.force_multi_window           u:object_r:exported_config_prop:s0 exact bool
+ 
+ # NFC
+ persist.vendor.nfc.config_file_name    u:object_r:vendor_persist_nfc_prop:s0 exact string
+ persist.vendor.nfc.fw_file_name        u:object_r:vendor_persist_nfc_prop:s0 exact string
+ 
+ # Recovery battery
+ ro.recovery.batteryless                u:object_r:recovery_config_prop:s0 exact bool
+ 
+ # Recovery filesystem
+ ro.recovery.supported_fs               u:object_r:recovery_config_prop:s0 exact string
+ 
+ # Recovery input
+ ro.minui.blacklist_input_devices       u:object_r:recovery_config_prop:s0
+ 
+ # Recovery touch
+ ro.minui.default_touch_rotation        u:object_r:recovery_config_prop:s0
+ 
+ # Recovery update
+ persist.vendor.recovery_update         u:object_r:recovery_update_prop:s0
+ 
+ # SurfaceFlinger
+ ro.surface_flinger.blur_disabled_by_default u:object_r:surfaceflinger_prop:s0 exact bool
+ 
+ # xtra-daemon control
+ persist.sys.xtra-daemon.enabled        u:object_r:xtra_control_prop:s0 exact bool
+ 
+ # Screen mirroring disablement
+ persist.sysui.disable_mirroring_confirmation_dialog u:object_r:hdmi_config_prop:s0
+ 
+ # USB
+ ro.usb.uvc.disable_video_encode_flag   u:object_r:usb_uvc_config_prop:s0
+-vendor.usb.uvc.payload_transfer_size   u:object_r:usb_uvc_config_prop:s0
++ifelse(defn(`target_nezha_preserve_factory_property_labels'), `true', `', `vendor.usb.uvc.payload_transfer_size   u:object_r:usb_uvc_config_prop:s0
++')dnl

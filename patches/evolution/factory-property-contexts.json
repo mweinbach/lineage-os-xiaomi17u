@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "id": "evolution-factory-property-contexts-v1",
+  "contract_id": "nezha-preserve-factory-property-contexts-v1",
+  "status": "tested_optional_source_patch_not_installed",
+  "project": "device/lineage/sepolicy",
+  "origin": "https://github.com/Evolution-X/device_evolution_sepolicy",
+  "branch": "bka",
+  "base_commit": "37c13c9b74344c17eddd6067541e9fcba116a34e",
+  "patch": "patches/evolution/0017-preserve-factory-property-contexts.patch",
+  "patch_sha256": "1c467b55273f153dd569838ce6f58f89b334c4aa40911bcc99436b48e0c6e819",
+  "patch_size_bytes": 4005,
+  "files": [
+    {
+      "path": "common/private/property_contexts",
+      "mode": "100644",
+      "before_sha256": "a29095adf4349ac75c516e75ebe60efd2e419c09aaaa6c8bd6409e9208c4b3ff",
+      "before_size_bytes": 2870,
+      "before_git_blob": "2e97da55bf208d3954f035a18ee2c408dc362c49",
+      "after_sha256": "33884485f126d7941542f92f2a09d5f6aec1aba1bff63af52b4d1c721d2769be",
+      "after_size_bytes": 3423,
+      "after_git_blob": "5aa968e62bcc5e23a700d50d88b402e96dafa5a2"
+    }
+  ],
+  "capability": {
+    "symbol": "target_nezha_preserve_factory_property_labels",
+    "board_variable": "BOARD_SEPOLICY_M4DEFS",
+    "proposed_definition": "target_nezha_preserve_factory_property_labels=true",
+    "allowed_explicit_values": [
+      "true",
+      "false"
+    ],
+    "undefined_preserves_upstream_contexts": true,
+    "false_preserves_upstream_contexts": true,
+    "true_suppresses_only_selected_rows": true,
+    "invalid_value_causes_fatal_m4_error": true,
+    "duplicate_definitions_rejected_by_admission": true,
+    "duplicate_definition_guard_is_separate_from_m4_value_validation": true,
+    "api_or_device_name_inference_used": false
+  },
+  "selected_profile": {
+    "device": "nezha",
+    "hardware_region": "CN",
+    "branch": "bka",
+    "release": "bp4a",
+    "board_api": "202504",
+    "build_variant": "user",
+    "capability_value": "true"
+  },
+  "suppressed_rows": [
+    {
+      "selector": "vendor.camera.aux.packageexcludelist",
+      "context": "u:object_r:vendor_persist_camera_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 6,
+      "raw_line": "vendor.camera.aux.packageexcludelist   u:object_r:vendor_persist_camera_prop:s0\n",
+      "factory_fallback": {
+        "selector": "vendor.camera.",
+        "context": "u:object_r:vendor_camera_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 86,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    },
+    {
+      "selector": "vendor.camera.aux.packagelist",
+      "context": "u:object_r:vendor_persist_camera_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 7,
+      "raw_line": "vendor.camera.aux.packagelist          u:object_r:vendor_persist_camera_prop:s0\n",
+      "factory_fallback": {
+        "selector": "vendor.camera.",
+        "context": "u:object_r:vendor_camera_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 86,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    },
+    {
+      "selector": "vendor.camera.skip_unconfigure.packagelist",
+      "context": "u:object_r:vendor_persist_camera_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 8,
+      "raw_line": "vendor.camera.skip_unconfigure.packagelist  u:object_r:vendor_persist_camera_prop:s0\n",
+      "factory_fallback": {
+        "selector": "vendor.camera.",
+        "context": "u:object_r:vendor_camera_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 86,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    },
+    {
+      "selector": "ro.vendor.audio.dolby.dax.support",
+      "context": "u:object_r:exported_system_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 35,
+      "raw_line": "ro.vendor.audio.dolby.dax.support      u:object_r:exported_system_prop:s0\n",
+      "factory_fallback": {
+        "selector": "ro.vendor.audio.",
+        "context": "u:object_r:vendor_audio_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 81,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    },
+    {
+      "selector": "ro.vendor.audio.dolby.dax.version",
+      "context": "u:object_r:exported_system_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 36,
+      "raw_line": "ro.vendor.audio.dolby.dax.version      u:object_r:exported_system_prop:s0\n",
+      "factory_fallback": {
+        "selector": "ro.vendor.audio.",
+        "context": "u:object_r:vendor_audio_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 81,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    },
+    {
+      "selector": "ro.vendor.audio.dolby.surround.enable",
+      "context": "u:object_r:exported_system_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 37,
+      "raw_line": "ro.vendor.audio.dolby.surround.enable  u:object_r:exported_system_prop:s0\n",
+      "factory_fallback": {
+        "selector": "ro.vendor.audio.",
+        "context": "u:object_r:vendor_audio_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 81,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    },
+    {
+      "selector": "vendor.usb.uvc.payload_transfer_size",
+      "context": "u:object_r:usb_uvc_config_prop:s0",
+      "match_kind": "prefix",
+      "explicit_value_type_fields": [],
+      "source_line": 72,
+      "raw_line": "vendor.usb.uvc.payload_transfer_size   u:object_r:usb_uvc_config_prop:s0\n",
+      "factory_fallback": {
+        "selector": "vendor.usb.",
+        "context": "u:object_r:vendor_usb_prop:s0",
+        "match_kind": "prefix",
+        "effective_value_type": "string",
+        "source_line": 102,
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts"
+      }
+    }
+  ],
+  "retained_special_rows": [
+    "ro.vendor.dolby.dax.version            u:object_r:exported_system_prop:s0\n",
+    "ro.usb.uvc.disable_video_encode_flag   u:object_r:usb_uvc_config_prop:s0\n"
+  ],
+  "context_effect": {
+    "suppressed_row_count": 7,
+    "suppressed_byte_count": 540,
+    "original_base_semantic_rows": 32,
+    "selected_base_semantic_rows": 25,
+    "original_full_system_ext_rows": 40,
+    "expected_selected_full_system_ext_rows": 33,
+    "unchanged_owned_rows": 8,
+    "all_other_context_row_bytes_and_order_unchanged": true,
+    "all_original_rows_remain_in_conditional_source": true,
+    "default_plain_m4_output_byte_identical": true,
+    "default_synchronized_non_marker_bytes_identical": true,
+    "raw_synchronized_line_markers_may_differ": true,
+    "raw_line_markers_rewritten": false,
+    "type_declarations_changed": false,
+    "permissions_changed": false,
+    "assertions_changed": false,
+    "factory_contexts_changed": false,
+    "property_values_copied_or_changed": false
+  },
+  "factory_context_sources": [
+    {
+      "runtime_path": "/vendor/etc/selinux/vendor_property_contexts",
+      "sha256": "1ea657519b3869186b340700beffa8e7669aec87a7f542a708db7e2e9c0fa692",
+      "size_bytes": 65138
+    },
+    {
+      "runtime_path": "/odm/etc/selinux/odm_property_contexts",
+      "sha256": "f020bb1adcdfa68dea4cfffdd2e59eb5efa1b302c126e325b1dd8232f9fe8152",
+      "size_bytes": 918
+    }
+  ],
+  "preimage_context_closure": {
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy2-failure-analysis-v1/actual-cil-v1/seven-context-row-closure.json",
+      "sha256": "e82829d10d1c0f50e009e76dfffacd2891143af12003928db8e5c183014988d3",
+      "size_bytes": 26090
+    },
+    "five_complete_context_inputs": [
+      {
+        "runtime_path": "/system/etc/selinux/plat_property_contexts",
+        "sha256": "fb8d4a9d6dd7b31493c1a7a4cbb50c04eb280332b1482d687c42c125d2a10200",
+        "size_bytes": 124648
+      },
+      {
+        "runtime_path": "/system_ext/etc/selinux/system_ext_property_contexts",
+        "sha256": "7d0996fb2eba9ff9cb4b2ebd72ee95cded103e5959e3dffb6da6bc363b8d511b",
+        "size_bytes": 4948
+      },
+      {
+        "runtime_path": "/product/etc/selinux/product_property_contexts",
+        "sha256": "6fdd463c3f3fed3fad0612c1cf340c04b374c113028d85919bec63865989064d",
+        "size_bytes": 955
+      },
+      {
+        "runtime_path": "/vendor/etc/selinux/vendor_property_contexts",
+        "sha256": "1ea657519b3869186b340700beffa8e7669aec87a7f542a708db7e2e9c0fa692",
+        "size_bytes": 65138
+      },
+      {
+        "runtime_path": "/odm/etc/selinux/odm_property_contexts",
+        "sha256": "f020bb1adcdfa68dea4cfffdd2e59eb5efa1b302c126e325b1dd8232f9fe8152",
+        "size_bytes": 918
+      }
+    ],
+    "entire_seven_prefix_languages_analyzed": true,
+    "unexpected_exact_or_deeper_overrides": 0,
+    "selected_native_context_outputs_produced": false
+  },
+  "source_capture_receipt": {
+    "path": "reports/oem-policy-integration-20260829/root-evolution-policy-source-v1/stdout.json",
+    "sha256": "fcbf82e4788c7c89e4f055442a1ba7fa5aee1062db970b3e669ad3df789e4435",
+    "size_bytes": 80968
+  },
+  "related_camera_write_contract": {
+    "path": "patches/evolution/camera-property-vendor-init-write.json",
+    "sha256": "70d90fc8431b0edc0c67e3e0d8610a72763924bb985aead45439d9c033194c3d",
+    "size_bytes": 8749,
+    "separate_permission_effect_unchanged": true
+  },
+  "native_builder_source": {
+    "project": "system/sepolicy",
+    "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+    "path": "build/soong/selinux_contexts.go",
+    "sha256": "f923ae17cad3fe3476ea46d9e9347b939df952bcb11d7f1d16e93ebe993db1a2",
+    "size_bytes": 24019,
+    "function": "buildGeneralContexts",
+    "m4_flags": [
+      "--fatal-warnings",
+      "-s"
+    ],
+    "appends_generated_newline_after_each_source": true,
+    "preserves_property_context_comments_and_line_markers": true,
+    "exact_native_command_captured": false
+  },
+  "host_validation": {
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/factory-property-contexts-source-v1/host-validation-v1/receipt.json",
+      "sha256": "be6d0f6d0e42f002f1ba79275151913406119d0e2aab624bde0892efe1e12727",
+      "size_bytes": 75847
+    },
+    "patch_copies_reproduced": 2,
+    "patch_max_fuzz": 0,
+    "m4_tool": {
+      "path": "/usr/bin/m4",
+      "version": "GNU M4 1.4.6",
+      "sha256": "1685f2c90307faa05ef5ae8f707d3a18a519c9dad75882768f66abb475f1b3d7",
+      "size_bytes": 118640,
+      "is_android_build_m4": false
+    },
+    "valid_cases": 48,
+    "variants": [
+      "user",
+      "userdebug",
+      "eng"
+    ],
+    "recovery_values": [
+      "false",
+      "true"
+    ],
+    "sync_lines_values": [
+      false,
+      true
+    ],
+    "source_capability_cases": [
+      "original",
+      "undefined",
+      "disabled",
+      "selected"
+    ],
+    "invalid_values": [
+      "",
+      "0",
+      "1",
+      "TRUE",
+      "FALSE",
+      " true",
+      "true ",
+      "yes",
+      "auto",
+      "true,false",
+      "m4exit(0)"
+    ],
+    "invalid_cases": 22,
+    "invalid_exit_code": 1,
+    "invalid_context_rows_emitted": 0,
+    "selected_plain_context_text": {
+      "sha256": "e9482be864095e35b62486f9ac0b5f9e7886cc88ee3038848c900434e289f438",
+      "size_bytes": 2330
+    },
+    "all_valid_stderr_empty": true,
+    "default_without_sync_byte_identical": true,
+    "default_with_sync_non_marker_bytes_and_order_identical": true,
+    "raw_synchronized_markers_retained_and_different": true,
+    "native_generated_newline_inputs_appended": false,
+    "exact_native_command_replayed": false,
+    "original_source_bytes_preserved": true
+  },
+  "adoption_requirements": [
+    "Pair explicit device/source and private policy-bundle admission with the exact seven-row source patch and original factory context inputs; no default profile selects true.",
+    "Generate exactly one reviewed BOARD_SEPOLICY_M4DEFS value and reject missing, duplicate, conflicting, injected or overridden definitions without sorting or deduplicating them.",
+    "Use the same true definition for ordinary and independent Evolution context producers. Verify their native M4 source dependencies and keep truthful -s line markers; never edit generated context outputs.",
+    "Require exactly 25 base and 33 full system_ext semantic rows, preserving all other 25 base rows and eight owned rows; explicitly retain the fourth Dolby row and non-vendor USB row.",
+    "Compare the complete five-context corpus across each entire selected prefix language. Require the original factory labels and string types with no unexpected exact or deeper override, including names extending the selected prefixes.",
+    "Keep patch 0016 and its separate write-permission capability unchanged. Context suppression does not remove that declaration's conflicting set grant or replace its factory-assertion correction.",
+    "Run native context/property-info and applicable Treble checks, strict combined policy compilation and unfiltered normal-policy permissive analysis before image adoption; no grants, declarations or assertions may be changed by this context capability.",
+    "Review effective access with the final labels and actual complete policy; source rows alone do not establish runtime access or feature support. Do not copy factory system property defaults or infer Camera Java fallback semantics."
+  ],
+  "selected_base_semantic_rows": [
+    [
+      "ro.odm.cast.ssid_suffix",
+      "u:object_r:odm_cast_prop:s0"
+    ],
+    [
+      "persist.sys.bootanimation_style",
+      "u:object_r:bootanim_system_prop:s0",
+      "exact",
+      "int"
+    ],
+    [
+      "bluetooth.hci.disabled_commands",
+      "u:object_r:bluetooth_config_prop:s0"
+    ],
+    [
+      "bluetooth.hci.erroneous_data_reporting.enabled",
+      "u:object_r:bluetooth_config_prop:s0"
+    ],
+    [
+      "ro.lineagelegal.url",
+      "u:object_r:legal_url_prop:s0"
+    ],
+    [
+      "ro.lineage.version",
+      "u:object_r:custom_version_prop:s0"
+    ],
+    [
+      "ro.lineage.display.version",
+      "u:object_r:custom_version_prop:s0"
+    ],
+    [
+      "ro.lineage.build.version",
+      "u:object_r:custom_version_prop:s0"
+    ],
+    [
+      "ro.lineage.releasetype",
+      "u:object_r:custom_version_prop:s0"
+    ],
+    [
+      "ro.lineage.device",
+      "u:object_r:custom_version_prop:s0"
+    ],
+    [
+      "persist.columbus.use_ap_sensor",
+      "u:object_r:system_prop:s0"
+    ],
+    [
+      "persist.sys.compact_heads_up_notification.always_show",
+      "u:object_r:system_prop:s0"
+    ],
+    [
+      "ro.vendor.dolby.dax.version",
+      "u:object_r:exported_system_prop:s0"
+    ],
+    [
+      "ro.config.force_multi_window",
+      "u:object_r:exported_config_prop:s0",
+      "exact",
+      "bool"
+    ],
+    [
+      "persist.vendor.nfc.config_file_name",
+      "u:object_r:vendor_persist_nfc_prop:s0",
+      "exact",
+      "string"
+    ],
+    [
+      "persist.vendor.nfc.fw_file_name",
+      "u:object_r:vendor_persist_nfc_prop:s0",
+      "exact",
+      "string"
+    ],
+    [
+      "ro.recovery.batteryless",
+      "u:object_r:recovery_config_prop:s0",
+      "exact",
+      "bool"
+    ],
+    [
+      "ro.recovery.supported_fs",
+      "u:object_r:recovery_config_prop:s0",
+      "exact",
+      "string"
+    ],
+    [
+      "ro.minui.blacklist_input_devices",
+      "u:object_r:recovery_config_prop:s0"
+    ],
+    [
+      "ro.minui.default_touch_rotation",
+      "u:object_r:recovery_config_prop:s0"
+    ],
+    [
+      "persist.vendor.recovery_update",
+      "u:object_r:recovery_update_prop:s0"
+    ],
+    [
+      "ro.surface_flinger.blur_disabled_by_default",
+      "u:object_r:surfaceflinger_prop:s0",
+      "exact",
+      "bool"
+    ],
+    [
+      "persist.sys.xtra-daemon.enabled",
+      "u:object_r:xtra_control_prop:s0",
+      "exact",
+      "bool"
+    ],
+    [
+      "persist.sysui.disable_mirroring_confirmation_dialog",
+      "u:object_r:hdmi_config_prop:s0"
+    ],
+    [
+      "ro.usb.uvc.disable_video_encode_flag",
+      "u:object_r:usb_uvc_config_prop:s0"
+    ]
+  ],
+  "selected_base_semantic_row_format": "Source-order whitespace-tokenized rows; no line-marker normalization is applied to retained raw evidence.",
+  "limits": {
+    "active_source_patch_applied": false,
+    "android_build_m4_executed": false,
+    "exact_native_command_replayed": false,
+    "full_selected_context_corpus_verified": false,
+    "policy_compiler_executed": false,
+    "duplicate_make_definition_guard_tested_by_this_fixture": false,
+    "runtime_camera_usb_audio_support_verified": false,
+    "images_adopted": false,
+    "complete_rom_ready": false,
+    "guest_accessed": false,
+    "phone_accessed": false
+  }
+}
