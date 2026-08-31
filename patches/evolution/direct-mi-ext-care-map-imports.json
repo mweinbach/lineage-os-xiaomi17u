@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-direct-mi-ext-care-map-imports-v2",
+  "project": {
+    "path": "build/make",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "repository": "https://github.com/Evolution-X/build",
+    "branch": "bka"
+  },
+  "patch": {
+    "path": "patches/evolution/0014-direct-mi-ext-care-map-imports.patch",
+    "sha256": "d25ee1d42818c3622e05693dc2757b5249f73f01be5535b4304efa81c55d9ac9",
+    "size_bytes": 13129
+  },
+  "requires_predecessor": {
+    "path": "patches/evolution/direct-mi-ext-care-map.json",
+    "sha256": "65553a8ef6cf77a999f87c588f9e5121d6ad34cf6afb7d46eb53be90e80791d0",
+    "size_bytes": 7358
+  },
+  "source_files": [
+    {
+      "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+      "before": {
+        "sha256": "3792eacdd1ff000847aa28e6e54d9a2ab5561943ec4655b6e640b98d72a19024",
+        "size_bytes": 61354
+      },
+      "after": {
+        "sha256": "022af2517928d9877a9e334a32415ce9900fb2e5f5725bdcfa14e901fc961222",
+        "size_bytes": 71901
+      }
+    }
+  ],
+  "historical_patch_and_contracts_rewritten": false,
+  "active_source_composition_modified": false,
+  "selection": {
+    "misc_info_key": "nezha_direct_mi_ext_care_map",
+    "value": "factory-system-fingerprint-odm-imports-v2",
+    "old_value": "factory-system-fingerprint-v1",
+    "absent_keeps_legacy_behavior": true,
+    "old_value_keeps_no_import_behavior": true,
+    "required_declared_boot_selectors": {
+      "nezha_care_map_odm_import_sku": "ro.boot.product.hardware.sku",
+      "nezha_care_map_odm_import_country": "ro.boot.ptcountrycode",
+      "nezha_care_map_odm_import_hwversion": "ro.boot.hwversion"
+    },
+    "current_runtime_tuple": null,
+    "runtime_values_inferred_from_names_or_property_map": false
+  },
+  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "original_odm_image": {
+    "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+    "size_bytes": 4767621120
+  },
+  "odm_capture": {
+    "path": "artifacts/source-contracts/nezha-init-helper-imports-v1/factory-odm-properties/receipt.json",
+    "sha256": "6273703ea0d5b07cf77cc9f52c826cd193018680cc5b8b0993216d0ec18839ca",
+    "size_bytes": 8311
+  },
+  "odm_inventory": {
+    "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/inventory.json",
+    "sha256": "3c23471a08548cf30bf8f39f383a3a5acf2afc4b279b62f082587494ef41dd23",
+    "size_bytes": 358469
+  },
+  "odm_inventory_receipt": {
+    "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/receipt.json",
+    "sha256": "1d413e0fa4ad0ab3b40fe06d5cefdc9558980ffa430eb9f2502fa9edf15e8a66",
+    "size_bytes": 985
+  },
+  "odm_property_files": [
+    {
+      "path": "ODM/etc/build.prop",
+      "size_bytes": 18903,
+      "sha256": "b4a5f8b818d0dbe8a3a400cba6890deaca5012737ff24baa903518027a94287b"
+    },
+    {
+      "path": "ODM/etc/nezha_5.0.6.prop",
+      "size_bytes": 679,
+      "sha256": "bbfe34831a92690f1a7ea7737f39a9745f54e4096d451b7406b67afb757cb6e1"
+    },
+    {
+      "path": "ODM/etc/nezha_5.0.8.prop",
+      "size_bytes": 680,
+      "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259"
+    },
+    {
+      "path": "ODM/etc/nezha_5.1.6.prop",
+      "size_bytes": 680,
+      "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259"
+    },
+    {
+      "path": "ODM/etc/nezha_5.1.7.prop",
+      "size_bytes": 527,
+      "sha256": "2d41192ba10c877b3677421e1b86f781800208840c0df1e9286eab530b07dbff"
+    },
+    {
+      "path": "ODM/etc/nezha_5.1.8.prop",
+      "size_bytes": 680,
+      "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259"
+    },
+    {
+      "path": "ODM/etc/nezha_5.1.9.prop",
+      "size_bytes": 527,
+      "sha256": "2d41192ba10c877b3677421e1b86f781800208840c0df1e9286eab530b07dbff"
+    },
+    {
+      "path": "ODM/etc/nezha_5.11.6.prop",
+      "size_bytes": 543,
+      "sha256": "a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a"
+    },
+    {
+      "path": "ODM/etc/nezha_5.12.6.prop",
+      "size_bytes": 543,
+      "sha256": "a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a"
+    },
+    {
+      "path": "ODM/etc/nezha_5.19.9.prop",
+      "size_bytes": 543,
+      "sha256": "a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a"
+    },
+    {
+      "path": "ODM/etc/nezha_5.2.1.prop",
+      "size_bytes": 375,
+      "sha256": "5fe4e89643a7f91158599c5312f3b44c307d01b31e747dd694c471ed6abb5be8"
+    },
+    {
+      "path": "ODM/etc/nezha_5.2.5.prop",
+      "size_bytes": 600,
+      "sha256": "3e1a469e2dd29ea7a5fe27a78b9f1f09ea7c5eaa47cf80e571d9ee2aad37cfa2"
+    },
+    {
+      "path": "ODM/etc/nezha_5.2.7.prop",
+      "size_bytes": 680,
+      "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259"
+    },
+    {
+      "path": "ODM/etc/nezha_5.2.8.prop",
+      "size_bytes": 375,
+      "sha256": "5fe4e89643a7f91158599c5312f3b44c307d01b31e747dd694c471ed6abb5be8"
+    },
+    {
+      "path": "ODM/etc/nezha_5.21.1.prop",
+      "size_bytes": 62,
+      "sha256": "f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43"
+    },
+    {
+      "path": "ODM/etc/nezha_5.22.0.prop",
+      "size_bytes": 62,
+      "sha256": "f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43"
+    },
+    {
+      "path": "ODM/etc/nezha_5.29.0.prop",
+      "size_bytes": 62,
+      "sha256": "f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43"
+    },
+    {
+      "path": "ODM/etc/nezha_5.9.7.prop",
+      "size_bytes": 680,
+      "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259"
+    },
+    {
+      "path": "ODM/etc/nezha_5.9.9.prop",
+      "size_bytes": 600,
+      "sha256": "3e1a469e2dd29ea7a5fe27a78b9f1f09ea7c5eaa47cf80e571d9ee2aad37cfa2"
+    },
+    {
+      "path": "ODM/etc/nezha_in_build.prop",
+      "size_bytes": 833,
+      "sha256": "9274ef923e353b8da774ae1da1b121d58c07bf9f4cbc8eca7bc7f718c44ec3eb"
+    },
+    {
+      "path": "ODM/etc/nezha_ru_build.prop",
+      "size_bytes": 833,
+      "sha256": "caf19c75c254cde94a2dae23b611c29cf2c25d0eb0ea559fa0ebbe9237383d09"
+    },
+    {
+      "path": "ODM/etc/nezha_tr_build.prop",
+      "size_bytes": 833,
+      "sha256": "726b650080b01ab7124b61e826ce1520ef86c1d37ec914dd6106869516ed0964"
+    }
+  ],
+  "semantic_sources": [
+    {
+      "project": "system/core",
+      "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+      "source_path": "system/core/init/property_service.cpp",
+      "capture": {
+        "path": "reports/oem-policy-integration-20260829/source-miextcaremapv2/system/core/init/property_service.cpp",
+        "sha256": "d82faacbbeb80256a416ca81cb9c877def16c3140aa57f4126db41889a67a887",
+        "size_bytes": 67643
+      },
+      "source_receipt": {
+        "path": "reports/oem-policy-integration-20260829/source-miextcaremapv2/capture.json",
+        "sha256": "66ec14cee7c7ee4f972e3114ce86a40336675f079fe4c928edea473528769e60",
+        "size_bytes": 1634
+      },
+      "functions": [
+        "LoadProperties",
+        "load_properties_from_file",
+        "PropertyLoadBootDefaults"
+      ],
+      "reviewed_existing_patches_retained": true
+    },
+    {
+      "project": "system/core",
+      "commit": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+      "source_path": "system/core/init/util.cpp",
+      "capture": {
+        "path": "artifacts/source-contracts/nezha-init-helper-runtime-source-v1/files/system/core/init/util.cpp",
+        "sha256": "15715717581e7864af46569d42e1f1dfa8050c4175f290edf68e4744c1d2efd0",
+        "size_bytes": 28995
+      },
+      "source_receipt": {
+        "path": "artifacts/source-contracts/nezha-init-helper-runtime-source-v1/receipt.json",
+        "sha256": "b6ed9602b6bcaf5f4e501a97ef7e8d24052969fe183271aa6fb4047a135a584a",
+        "size_bytes": 4335
+      },
+      "functions": [
+        "ReadFile",
+        "ExpandProps"
+      ],
+      "pinned_upstream_bytes": true
+    }
+  ],
+  "import_semantics": {
+    "literal_imports": [
+      {
+        "line": 32,
+        "template": "/odm/etc/${ro.boot.product.hardware.sku}_${ro.boot.ptcountrycode}_build.prop",
+        "filter": null
+      },
+      {
+        "line": 33,
+        "template": "/odm/etc/${ro.boot.product.hardware.sku}_${ro.boot.hwversion}.prop",
+        "filter": null
+      }
+    ],
+    "selector_source": "global property service; not accumulating boot-default file map",
+    "permitted_sku": "nezha",
+    "declared_selector_syntax": "ASCII letter/digit first, then letters/digits/underscore/dot/hyphen; 1..92 characters; unknown rejected",
+    "runtime_domain_confinement_proven": false,
+    "all_candidates_required": 22,
+    "all_candidate_bytes_preserved": true,
+    "existing_leaf_count": 21,
+    "complete_original_odm_inventory_entries": 3059,
+    "import_marker_definitions_allowed": false,
+    "nested_or_filtered_imports_allowed": false,
+    "missing_empty_unsafe_selector_declarations_allowed": false,
+    "missing_expected_candidate_allowed": false,
+    "unlisted_safe_expansion": "explicit inventory-proven-absent only when complete property directory matches and selected path is absent; not reported as a successful load",
+    "native_ignored_statement": {
+      "path": "ODM/etc/build.prop",
+      "line": 480,
+      "literal": "ro.vendor.mitee_support",
+      "reason": "no equals sign; exact original importer only"
+    },
+    "literal_lf_only": true,
+    "final_no_follow_bytes_and_identity_recheck": true
+  },
+  "current_selector_evidence": {
+    "historical_sku_record": "research/vintf-contract.json",
+    "historical_sku_observed_at_utc": "2026-08-27T17:37:55.774425+00:00",
+    "hardware_sku": "nezha",
+    "country_record_found_in_index": false,
+    "hwversion_record_found_in_index": false,
+    "different_reported_hwc_property_substituted": false,
+    "complete_tuple_bound": false
+  },
+  "preserved_requirements": {
+    "genuine_final_SYSTEM_build_prop_required": true,
+    "packaging_GetProp_and_SYSTEM_care_map_pair_must_match": true,
+    "optional_SYSTEM_etc_alias_must_match": true,
+    "retained_mi_ext_hash_and_direct_descriptor_checks_unchanged": true,
+    "eight_unique_entries_and_protobuf_roundtrip_unchanged": true,
+    "GetCareMap_and_common_partition_lists_unchanged": true,
+    "normal_android_selinux_unchanged": true
+  },
+  "validation_scope": {
+    "source_patch_and_offline_behavior_only": true,
+    "selected_in_active_composition": false,
+    "runtime_selector_tuple_verified": false,
+    "runtime_selector_domain_confined": false,
+    "final_system_artifact_verified": false,
+    "native_init_property_execution_performed": false,
+    "native_care_map_generator_executed": false,
+    "target_files_verified": false,
+    "ota_verified": false,
+    "complete_rom_admitted": false,
+    "phone_operations": []
+  },
+  "remaining_artifact_gates": [
+    "Bind actual selected boot-property declarations and their provenance; metadata declarations alone do not prove runtime values or confinement.",
+    "Bind the final Evolution SYSTEM/build.prop and selected init/runtime configuration to generated images.",
+    "Compose 0013 and 0014 explicitly, regenerate affected source-bound receipts, and retain old composition and profiles.",
+    "Run finite pinned native property/protobuf checks, then ordinary complete target-files and signed OTA validation; independently require all eight care-map entries.",
+    "Complete signed AVB/rollback/partition-fit and authorized runtime update verification separately."
+  ],
+  "limitations": [
+    "Content closure is qualified for explicitly declared confined selector values only. A previously observed SKU does not establish the remaining values or current boot behavior.",
+    "The original inventory/capture binds bytes and path membership, not OEM authenticity or a new derived image. Final image-to-target-files equivalence remains separately required.",
+    "Read-only overrides in a vendor hook, initial property sources and runtime imports are not proved by this constructor.",
+    "The source retains all previous marker, AVB, range and protobuf gates; a successful synthetic property fixture is not a final SYSTEM identity."
+  ]
+}

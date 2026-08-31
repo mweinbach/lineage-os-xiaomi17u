@@ -1,17 +1,22 @@
 # Direct mi_ext care-map source integration
 
 The separately authored [0013 patch](../patches/evolution/0013-direct-mi-ext-care-map.patch)
-adds a narrow, explicit `mi_ext` care-map path to the pinned
-`add_img_to_target_files.py`. It is **not selected in an active product or
-source composition**. Existing profiles retain their behavior and the common
-partition/property lists stay unchanged.
+adds an explicit `mi_ext` care-map path to the pinned
+`add_img_to_target_files.py`. Its new
+[0014 successor](../patches/evolution/0014-direct-mi-ext-care-map-imports.patch)
+admits the exact captured ODM property imports under separately declared boot
+selectors. **Neither patch is selected in an active product or source
+composition.** The original patch and selector retain their behavior; the
+common partition/property lists remain unchanged.
 
-The current factory property inputs deliberately cannot pass the new path:
-the actual ODM property file contains two unqualified boot-selected imports.
-The final Evolution SYSTEM property file also still needs artifact-bound
-qualification. This patch supplies the guarded packaging behavior; it does
-not establish complete target-files, OTA or runtime success and does not hold
-the separate allocator or vendor/ODM footer work.
+The successor now verifies the content of all 22 authentic ODM property files,
+including their two imports and the bare property name that native init
+ignores. This removes the source parser's blanket rejection without inventing
+a runtime selector tuple. Existing indexed evidence supplies only a historical
+hardware SKU; the country code and hardware version remain unbound. The final
+Evolution SYSTEM property file still needs artifact-bound qualification.
+These source changes do not establish complete target-files, OTA or runtime
+success and do not hold the separate compatibility or image work.
 
 ## Why a separate path is needed
 
@@ -30,6 +35,11 @@ source selector, private receipt or generated product is rewritten. Pinned
 `GetCareMap`, the standard partition lists, the existing upstream tests and
 the recovery/AVB behavior outside this branch are unchanged.
 
+The [import successor contract](../patches/evolution/direct-mi-ext-care-map-imports.json)
+pins a second transition from the exact 0013 output. It changes only that same
+Python source file. It does not amend the active 0005–0011 composition, emit a
+product selector, stage inputs in the guest or change any image.
+
 ## Explicit selection and checks
 
 A future reviewed source/product capability must supply this exact
@@ -42,6 +52,28 @@ nezha_direct_mi_ext_care_map=factory-system-fingerprint-v1
 Absence selects the original behavior. An unknown or empty value fails. No
 existing generator emits this field; manually adding it to an otherwise
 unqualified package is not an admission procedure.
+
+The import successor accepts a separate value:
+
+```text
+nezha_direct_mi_ext_care_map=factory-system-fingerprint-odm-imports-v2
+```
+
+It also requires exactly these three selector declaration fields, with no
+default values:
+
+| Metadata field | Native global property |
+| --- | --- |
+| `nezha_care_map_odm_import_sku` | `ro.boot.product.hardware.sku` |
+| `nezha_care_map_odm_import_country` | `ro.boot.ptcountrycode` |
+| `nezha_care_map_odm_import_hwversion` | `ro.boot.hwversion` |
+
+These fields declare the inputs being checked. They do not prove the bootloader
+or property service will supply those values. No current tuple is populated by
+this work. The historical August 27 SKU observation in
+[the VINTF record](vintf-contract.md) is `nezha`; no indexed collection record
+was found for the other two properties. The baseline's `reported_hwc` is a
+different property and is not substituted.
 
 When selected, the branch requires:
 
@@ -82,14 +114,14 @@ The SYSTEM pair is a **freshness marker for the selected artifact set**. It is
 not a cryptographic identity for `mi_ext`. The image hash, descriptor, complete
 AVB chain, signed target-files and OTA signatures retain their separate roles.
 
-## Conservative property boundary
+## Property boundary and preserved first profile
 
 Pinned init explicitly loads `/system/build.prop`, while the packaging reader
 prefers `SYSTEM/etc/build.prop`. Init later loads other partition properties,
 supports recursive imports and permits readonly overrides during its vendor
 hook. The common packaging parser does not model all of that behavior.
 
-This first constructor checks ordinary canonical files for SYSTEM,
+The first constructor checks ordinary canonical files for SYSTEM,
 SYSTEM_EXT, SYSTEM_DLKM, VENDOR, VENDOR_DLKM, the real nested vendor ODM_DLKM,
 ODM and PRODUCT, plus their standard `build.prop`, `etc/build.prop` and
 `default.prop` alternatives when present. It rejects imports and conflicting
@@ -101,9 +133,39 @@ The authentic `ODM/etc/build.prop` contains two imports using boot property
 selectors. The preserved capture includes 21 candidate imported files; an
 observation that they contain no SYSTEM fingerprint assignment is not yet a
 qualified selector/import closure. The actual patched helper rejects this
-file. No runtime-proof flag can override that rejection. A later, separately
-reviewed source capability may admit the exact captured closure without
-changing these original input bytes or weakening the old profile.
+file. No runtime-proof flag can override that rejection. The 0013 selector
+continues to reject this file.
+
+The 0014 selector separately checks the exact original importer and all 21
+candidate files against their content hashes. The table comes from the full
+3,059-entry original ODM inventory; every `.prop` member is one of those 22
+regular files directly under `/etc`. All 22 must remain present, even if the
+declared selectors choose only two of them. Missing or changed files, extra
+`.prop` entries, symlinked paths, hardlink aliases, nested imports, filtered
+imports and any SYSTEM fingerprint assignment fail. The entire closure and
+selector declarations are rechecked before the SYSTEM marker is accepted.
+
+Pinned `ExpandProps` reads global properties, not the accumulating property
+file map. It appends their values verbatim, without recursive expansion.
+Consequently the successor requires SKU `nezha` and nonempty ASCII selectors
+that form single filename components: a letter or digit first, then letters,
+digits, underscore, dot or hyphen, with at most 92 characters. Empty, `unknown`,
+path-valued, whitespace-bearing and dollar-bearing declarations fail. No
+assignment in a captured `.prop` file is used to supply these values.
+
+For a selected basename in the original table, the helper records
+`captured-file`. A safe basename outside that complete table is accepted only
+when the actual property directory still matches the table and the selected
+path is absent; it records `inventory-proven-absent`. This models native init's
+missing-file outcome explicitly and does not call it a successful load. A
+missing expected captured file always fails. Actual runtime values outside
+the admitted component syntax are not covered by this static qualification.
+
+The native loader also ignores lines without `=`. The original importer has
+one such line, `ro.vendor.mitee_support` at line 480. The successor admits only
+that exact statement in the hash-bound original importer; it does not relax
+the original selector or ignore arbitrary malformed property files. Parsing
+uses literal LF and ASCII space/tab boundaries, without Unicode line splitting.
 
 The located SYSTEM property capture is stock firmware. It cannot substitute
 for the final Evolution SYSTEM file and its image-to-target-files binding.
@@ -122,12 +184,34 @@ need a private image, source checkout, native executable, network or phone:
 python3 -B -m unittest discover -s tests -p 'test_mi_ext_care_map.py' -v
 ```
 
-The implementation run passed **46 focused tests with zero skips**. The
+The first implementation run passed **46 focused tests with zero skips**. The
 existing mi_ext input suite separately passed **66 tests with zero skips**.
 Independent review reproduced and resolved one property-parser discrepancy:
 the new check now uses init's literal LF boundary and does not normalize
 Unicode separators into an apparently matching fingerprint. The coordinator
 owns the full workspace test run before committing this slice.
+
+The successor adds **38 offline tests with zero skips**:
+
+```sh
+python3 -B -m unittest discover -s tests -p 'test_mi_ext_care_map_imports.py' -v
+```
+
+These tests execute the actual patch with explicitly synthetic property-content
+fixtures. A separate host replay uses all 22 unmodified captured files (30,300
+bytes) and the complete original inventory. All 54 combinations of the three
+captured country filenames and eighteen hardware filenames resolve to two
+captured files. Those combinations are declared test inputs, not observed
+device values. The replay also checks explicit absent-file behavior and
+refuses both an undeclared tuple and a missing final `SYSTEM/build.prop`.
+It neither creates a final SYSTEM fingerprint nor opens an image.
+
+The new ignored evidence and finite native-check preparation live under
+`reports/oem-policy-integration-20260829/mi-ext-care-map-imports-v2/`.
+The native plan retains missing tool/producer bindings as required inputs.
+Its proposed codec fixtures are synthetic and cannot qualify final image
+coverage. No native init, protobuf command or ordinary target-files build is
+counted as executed by this source work.
 
 The ignored implementation record is
 `reports/oem-policy-integration-20260829/mi-ext-care-map-implementation-v1/`.
@@ -139,8 +223,9 @@ descriptor, derives the exact data-only range and demonstrates refusal of
 the authentic ODM imports. Its positive property case is explicitly
 synthetic. None of these results is native care-map/protobuf or boot evidence.
 
-Before this source transition can be selected, qualify the authentic import
-closure and final Evolution SYSTEM input, compose the additional source hash
+Before either source transition can be selected, bind the declared boot
+selector tuple and its provenance, qualify the final Evolution SYSTEM input
+and selected init configuration, compose the additional source hashes
 explicitly, and regenerate the source-bound recovery, mi_ext and metadata
 receipts while preserving their immutable payloads. Do not edit old expected
 hashes or treat current original-image metadata profiles as admitting new

@@ -1,0 +1,232 @@
+diff --git a/tools/releasetools/add_img_to_target_files.py b/tools/releasetools/add_img_to_target_files.py
+--- a/tools/releasetools/add_img_to_target_files.py
++++ b/tools/releasetools/add_img_to_target_files.py
+@@ -181,14 +181,187 @@
+   return path
+ 
+ 
++_NEZHA_CARE_MAP_ODM_PROPERTIES = (
++    ('ODM/etc/build.prop', 18903, 'b4a5f8b818d0dbe8a3a400cba6890deaca5012737ff24baa903518027a94287b'),
++    ('ODM/etc/nezha_5.0.6.prop', 679, 'bbfe34831a92690f1a7ea7737f39a9745f54e4096d451b7406b67afb757cb6e1'),
++    ('ODM/etc/nezha_5.0.8.prop', 680, '40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259'),
++    ('ODM/etc/nezha_5.1.6.prop', 680, '40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259'),
++    ('ODM/etc/nezha_5.1.7.prop', 527, '2d41192ba10c877b3677421e1b86f781800208840c0df1e9286eab530b07dbff'),
++    ('ODM/etc/nezha_5.1.8.prop', 680, '40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259'),
++    ('ODM/etc/nezha_5.1.9.prop', 527, '2d41192ba10c877b3677421e1b86f781800208840c0df1e9286eab530b07dbff'),
++    ('ODM/etc/nezha_5.11.6.prop', 543, 'a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a'),
++    ('ODM/etc/nezha_5.12.6.prop', 543, 'a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a'),
++    ('ODM/etc/nezha_5.19.9.prop', 543, 'a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a'),
++    ('ODM/etc/nezha_5.2.1.prop', 375, '5fe4e89643a7f91158599c5312f3b44c307d01b31e747dd694c471ed6abb5be8'),
++    ('ODM/etc/nezha_5.2.5.prop', 600, '3e1a469e2dd29ea7a5fe27a78b9f1f09ea7c5eaa47cf80e571d9ee2aad37cfa2'),
++    ('ODM/etc/nezha_5.2.7.prop', 680, '40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259'),
++    ('ODM/etc/nezha_5.2.8.prop', 375, '5fe4e89643a7f91158599c5312f3b44c307d01b31e747dd694c471ed6abb5be8'),
++    ('ODM/etc/nezha_5.21.1.prop', 62, 'f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43'),
++    ('ODM/etc/nezha_5.22.0.prop', 62, 'f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43'),
++    ('ODM/etc/nezha_5.29.0.prop', 62, 'f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43'),
++    ('ODM/etc/nezha_5.9.7.prop', 680, '40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259'),
++    ('ODM/etc/nezha_5.9.9.prop', 600, '3e1a469e2dd29ea7a5fe27a78b9f1f09ea7c5eaa47cf80e571d9ee2aad37cfa2'),
++    ('ODM/etc/nezha_in_build.prop', 833, '9274ef923e353b8da774ae1da1b121d58c07bf9f4cbc8eca7bc7f718c44ec3eb'),
++    ('ODM/etc/nezha_ru_build.prop', 833, 'caf19c75c254cde94a2dae23b611c29cf2c25d0eb0ea559fa0ebbe9237383d09'),
++    ('ODM/etc/nezha_tr_build.prop', 833, '726b650080b01ab7124b61e826ce1520ef86c1d37ec914dd6106869516ed0964'),
++)
++
++
++def _NezhaCareMapPropertyBytes(relative):
++  """Read a bounded ordinary property file and retain its filesystem identity."""
++  path = _NezhaCareMapPath(relative)
++  descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
++  try:
++    before = os.fstat(descriptor)
++    if not stat.S_ISREG(before.st_mode) or before.st_nlink != 1:
++      raise ExternalError('Non-regular or aliased Nezha ODM property: ' + relative)
++    if not 0 < before.st_size <= 1024 * 1024:
++      raise ExternalError('Invalid Nezha ODM property size: ' + relative)
++    with os.fdopen(descriptor, 'rb', closefd=False) as stream:
++      raw = stream.read(1024 * 1024 + 1)
++    states = {tuple(getattr(value, key) for key in
++                    ('st_dev', 'st_ino', 'st_mode', 'st_nlink', 'st_size',
++                     'st_mtime_ns', 'st_ctime_ns'))
++              for value in (before, os.fstat(descriptor), os.lstat(path))}
++    if (len(states) != 1 or len(raw) != before.st_size or
++        _NezhaCareMapPath(relative) != path):
++      raise ExternalError('Nezha ODM property changed while reading: ' + relative)
++    return raw, next(iter(states))
++  finally:
++    os.close(descriptor)
++
++
++def _NezhaCareMapOdmStatements(raw, relative):
++  """Inspect the exact captured import grammar, using native init LF lines.
++
++  This is intentionally not a general property interpreter. Permission checks
++  cannot create a SYSTEM fingerprint when no captured statement assigns one.
++  Native init ignores the one bare factory key because it has no '='.
++  """
++  if any(byte < 32 and byte not in (9, 10) for byte in raw):
++    raise ExternalError('Invalid Nezha ODM property text: ' + relative)
++  try:
++    text = raw.decode('utf-8')
++  except UnicodeError as error:
++    raise ExternalError('Invalid Nezha ODM property encoding: ' + relative) from error
++  imports = []
++  ignored = []
++  expected = (
++      (32, 'import /odm/etc/${ro.boot.product.hardware.sku}_${ro.boot.ptcountrycode}_build.prop'),
++      (33, 'import /odm/etc/${ro.boot.product.hardware.sku}_${ro.boot.hwversion}.prop'))
++  for number, line in enumerate(text.split('\n'), 1):
++    line = line.strip(' \t')
++    if not line or line.startswith('#'):
++      continue
++    if line.startswith('import'):
++      imports.append((number, line))
++    elif '=' not in line:
++      ignored.append((number, line))
++    elif line.split('=', 1)[0].strip(' \t') == 'ro.system.build.fingerprint':
++      raise ExternalError('Imported Nezha ODM SYSTEM fingerprint: ' + relative)
++  if relative == 'ODM/etc/build.prop':
++    if imports != list(expected) or ignored != [(480, 'ro.vendor.mitee_support')]:
++      raise ExternalError('Nezha ODM importer grammar differs from the original')
++  elif imports or ignored:
++    raise ExternalError('Unqualified nested Nezha ODM property statement: ' + relative)
++  return [line for _, line in imports + ignored]
++
++
++def _NezhaCareMapOdmImports():
++  """Qualify all captured candidates and resolve explicitly supplied selectors.
++
++  The caller supplies declarations, not proof of live boot-property values.
++  Final image/selector/init provenance and runtime equality remain separate
++  gates. Expansion reads global properties in init, not this file's property
++  map; never infer selector values from assignments or captured filenames.
++  """
++  names = {
++      'sku': 'ro.boot.product.hardware.sku',
++      'country': 'ro.boot.ptcountrycode',
++      'hwversion': 'ro.boot.hwversion'}
++  prefix = 'nezha_care_map_odm_import_'
++  info = OPTIONS.info_dict
++  if {key for key in info if key.startswith(prefix)} != {prefix + key for key in names}:
++    raise ExternalError('Nezha ODM imports require exactly three declared boot selectors')
++  selectors = {}
++  allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.-'
++  for key, property_name in names.items():
++    value = info[prefix + key]
++    if (not isinstance(value, str) or not 1 <= len(value) <= 92 or
++        value in ('.', '..', 'unknown') or value[0] not in allowed[:62] or
++        any(char not in allowed for char in value)):
++      raise ExternalError('Unsafe or empty Nezha ODM boot selector: ' + property_name)
++    selectors[property_name] = value
++  if selectors[names['sku']] != 'nezha':
++    raise ExternalError('Unqualified Nezha ODM hardware SKU')
++
++  # This table is the complete direct /etc/*.prop projection of the pinned
++  # original ODM inventory: one importer and 21 leaf files, with no links.
++  # Require every candidate, even when today's declared selector picks another.
++  inputs = {}
++  allowed_statements = None
++  for relative, size, digest in _NEZHA_CARE_MAP_ODM_PROPERTIES:
++    raw, state = _NezhaCareMapPropertyBytes(relative)
++    if len(raw) != size or hashlib.sha256(raw).hexdigest() != digest:
++      raise ExternalError('Nezha ODM property differs from its captured original: ' + relative)
++    statements = _NezhaCareMapOdmStatements(raw, relative)
++    if relative == 'ODM/etc/build.prop':
++      allowed_statements = statements
++    inputs[relative] = {'sha256': digest, 'size_bytes': size, 'state': state}
++  if len(inputs) != 22 or len({value['state'][:2] for value in inputs.values()}) != 22:
++    raise ExternalError('Incomplete or aliased Nezha ODM property closure')
++  directory = os.path.dirname(_NezhaCareMapPath('ODM/etc/build.prop'))
++  actual = {'ODM/etc/' + name for name in os.listdir(directory) if name.endswith('.prop')}
++  if actual != set(inputs):
++    raise ExternalError('Nezha ODM property directory differs from its complete captured closure')
++
++  # These exact unfiltered templates use braced GetProperty substitutions.
++  # Native ExpandProps appends values verbatim; it does not recursively expand
++  # substituted '$' or turn substituted whitespace into an import filter.
++  paths = (
++      '/odm/etc/' + selectors[names['sku']] + '_' + selectors[names['country']] + '_build.prop',
++      '/odm/etc/' + selectors[names['sku']] + '_' + selectors[names['hwversion']] + '.prop')
++  imports = []
++  for runtime_path in paths:
++    relative = 'ODM' + runtime_path[len('/odm'):]
++    present = _NezhaCareMapPath(relative, required=False)
++    if relative in inputs:
++      if present is None:
++        raise ExternalError('Missing selected Nezha ODM import: ' + relative)
++      outcome = 'captured-file'
++    else:
++      # A single-component selector cannot escape /odm/etc. The complete
++      # original inventory has no other .prop basename, and the target-files
++      # directory must agree. This is explicit native missing-file behavior,
++      # not successful loading or a blanket permission to skip an import.
++      if present is not None:
++        raise ExternalError('Unqualified selected Nezha ODM import: ' + relative)
++      outcome = 'inventory-proven-absent'
++    imports.append({'path': runtime_path, 'outcome': outcome})
++    logger.info('Nezha declared ODM import %s: %s', runtime_path, outcome)
++  return {'selectors': selectors, 'inputs': inputs,
++          'allowed_statements': allowed_statements, 'imports': imports}
++
++
++def _NezhaCareMapRecheckOdmImports(closure):
++  """Recheck original bytes and declarations before accepting the marker."""
++  current = _NezhaCareMapOdmImports()
++  if current != closure:
++    raise ExternalError('Nezha ODM property closure changed while selecting the marker')
++
++
+ def _NezhaCareMapSystemFingerprint():
+   """Conservatively check static inputs; this does not prove a runtime value.
+ 
+   init loads /system/build.prop, whereas common prefers SYSTEM/etc/build.prop.
+   Reject ambiguous paths, imports and conflicting later property definitions.
+-  The factory ODM imports need separate qualification before this profile can
+-  be selected; common.PartitionBuildProps does not evaluate their full meaning.
++  The original selector rejects imports. The explicit v2 selector separately
++  qualifies the captured ODM closure against declared global boot selectors;
++  common.PartitionBuildProps does not evaluate their full meaning.
+   """
++  odm_closure = None
++  if OPTIONS.info_dict.get('nezha_direct_mi_ext_care_map') == 'factory-system-fingerprint-odm-imports-v2':
++    odm_closure = _NezhaCareMapOdmImports()
+   property_id = 'ro.system.build.fingerprint'
+   roots = (
+       ('SYSTEM', 'build.prop'), ('SYSTEM_EXT', 'etc/build.prop'),
+@@ -215,12 +388,19 @@
+         raise ExternalError('Nezha care-map property input changed: ' + relative)
+       if len(raw) > 1024 * 1024 or any(byte < 32 and byte not in (9, 10) for byte in raw):
+         raise ExternalError('Invalid Nezha care-map property file: ' + relative)
++      if odm_closure is not None and relative == 'ODM/etc/build.prop':
++        original = odm_closure['inputs'][relative]
++        if len(raw) != original['size_bytes'] or hashlib.sha256(raw).hexdigest() != original['sha256']:
++          raise ExternalError('Nezha ODM importer changed after closure qualification')
+       # Native init splits only LF. Python splitlines/strip would normalize
+       # additional Unicode/control separators and could conceal an override.
+       for line in raw.decode('utf-8').split('\n'):
+         line = line.strip(' \t')
+         if not line or line.startswith('#'):
+           continue
++        if (odm_closure is not None and relative == 'ODM/etc/build.prop' and
++            line in odm_closure['allowed_statements']):
++          continue  # Exact imports were resolved above; init ignores the pinned bare key.
+         if line.startswith('import'):
+           raise ExternalError('Unqualified Nezha care-map property import: ' + relative)
+         if '=' not in line:
+@@ -246,6 +426,8 @@
+   for root in ('BOOT', 'INIT_BOOT', 'VENDOR_BOOT'):
+     if _NezhaCareMapPath(root + '/RAMDISK/adb_debug.prop', required=False):
+       raise ExternalError('Unqualified Nezha debug ramdisk property input')
++  if odm_closure is not None:
++    _NezhaCareMapRecheckOdmImports(odm_closure)
+   return [property_id, fingerprint]
+ 
+ 
+@@ -393,7 +575,8 @@
+   mi_ext_entry = None
+   selection = OPTIONS.info_dict.get('nezha_direct_mi_ext_care_map')
+   if selection is not None:
+-    if selection != 'factory-system-fingerprint-v1':
++    if selection not in ('factory-system-fingerprint-v1',
++                         'factory-system-fingerprint-odm-imports-v2'):
+       raise ExternalError('Unknown Nezha direct mi_ext care-map selection')
+     mi_ext_entry = _NezhaDirectMiExtCareMap(ab_partitions, image_paths)
+ 
