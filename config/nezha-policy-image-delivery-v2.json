@@ -1,0 +1,2586 @@
+{
+  "contract_id": "nezha-4k-final-leaf-metadata-delivery-v3",
+  "current_policy_build_evidence": {
+    "sha256": "949bd0882087d403637e542a0bc82c37b4ecabc8196ba0c160fe8a3ddd46e145",
+    "size_bytes": 206610
+  },
+  "delivery_proof": {
+    "sha256": "5afbe95eaf34628ba23ac92125aea7cbf2afff099b4a0f9fd2aad432900228cc",
+    "size_bytes": 251482
+  },
+  "expected_root_descriptors": {
+    "odm": {
+      "data_block_size": 4096,
+      "digest_hex": "4144743d007e91d73a6602019fc6faf8cdb937e83dfbcd0bf637941727b186e6",
+      "encoded_sha256": "530937f32981f9a5dcb33fb60058f8c9f6e7918318993fd166946d4ff20423f7",
+      "fec_num_roots": 2,
+      "fec_offset": 4714864640,
+      "fec_size": 37273600,
+      "flags": 0,
+      "hash_algorithm": "sha256",
+      "hash_block_size": 4096,
+      "image_size": 4678025216,
+      "kind": "hashtree",
+      "partition": "odm",
+      "salt_hex": "0878c1dbacec693ccc32acf1d12eee90723b3153360fa66a3ab04197212acbde",
+      "size_bytes": 248,
+      "tree_offset": 4678025216,
+      "tree_size": 36839424
+    },
+    "vendor": {
+      "data_block_size": 4096,
+      "digest_hex": "e707b9514cab0d21ce2e329bc8a5e2b3a55f23eb123de5f2ee5e33445b5fd51d",
+      "encoded_sha256": "6d990b68d13032234e472f319a802dd8815455c87a6e34da85c2a812b6406475",
+      "fec_num_roots": 2,
+      "fec_offset": 949170176,
+      "fec_size": 7503872,
+      "flags": 0,
+      "hash_algorithm": "sha256",
+      "hash_block_size": 4096,
+      "image_size": 941744128,
+      "kind": "hashtree",
+      "partition": "vendor",
+      "salt_hex": "1f1ef22f0916ba72b94533a55cbe4a6283bf78caa0776ee892f1c69aab7fdef5",
+      "size_bytes": 256,
+      "tree_offset": 941744128,
+      "tree_size": 7426048
+    }
+  },
+  "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+  "historical_current_policy_evidence": {
+    "sha256": "8ec546ed3e3e9992cce543c3c1cb80103edc2f8a1adc2fc496b5f343571a008d",
+    "size_bytes": 85108
+  },
+  "historical_delivery_admission": {
+    "path": "config/nezha-policy-image-delivery.json",
+    "sha256": "a6883fd115c75336fc9152b0f38549d5e40706d45e7a2d88da1dfe8b246dbc02",
+    "size_bytes": 92893
+  },
+  "metadata_members": [
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/build.prop",
+      "payload": {
+        "sha256": "b4a5f8b818d0dbe8a3a400cba6890deaca5012737ff24baa903518027a94287b",
+        "size_bytes": 18903
+      },
+      "target_path": "ODM/etc/build.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.0.6.prop",
+      "payload": {
+        "sha256": "bbfe34831a92690f1a7ea7737f39a9745f54e4096d451b7406b67afb757cb6e1",
+        "size_bytes": 679
+      },
+      "target_path": "ODM/etc/nezha_5.0.6.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.0.8.prop",
+      "payload": {
+        "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259",
+        "size_bytes": 680
+      },
+      "target_path": "ODM/etc/nezha_5.0.8.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.1.6.prop",
+      "payload": {
+        "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259",
+        "size_bytes": 680
+      },
+      "target_path": "ODM/etc/nezha_5.1.6.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.1.7.prop",
+      "payload": {
+        "sha256": "2d41192ba10c877b3677421e1b86f781800208840c0df1e9286eab530b07dbff",
+        "size_bytes": 527
+      },
+      "target_path": "ODM/etc/nezha_5.1.7.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.1.8.prop",
+      "payload": {
+        "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259",
+        "size_bytes": 680
+      },
+      "target_path": "ODM/etc/nezha_5.1.8.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.1.9.prop",
+      "payload": {
+        "sha256": "2d41192ba10c877b3677421e1b86f781800208840c0df1e9286eab530b07dbff",
+        "size_bytes": 527
+      },
+      "target_path": "ODM/etc/nezha_5.1.9.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.11.6.prop",
+      "payload": {
+        "sha256": "a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a",
+        "size_bytes": 543
+      },
+      "target_path": "ODM/etc/nezha_5.11.6.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.12.6.prop",
+      "payload": {
+        "sha256": "a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a",
+        "size_bytes": 543
+      },
+      "target_path": "ODM/etc/nezha_5.12.6.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.19.9.prop",
+      "payload": {
+        "sha256": "a953b3f7165e4c275d9775d23d83c15ed535bf4972749dfa111bff9fe7be1a0a",
+        "size_bytes": 543
+      },
+      "target_path": "ODM/etc/nezha_5.19.9.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.2.1.prop",
+      "payload": {
+        "sha256": "5fe4e89643a7f91158599c5312f3b44c307d01b31e747dd694c471ed6abb5be8",
+        "size_bytes": 375
+      },
+      "target_path": "ODM/etc/nezha_5.2.1.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.2.5.prop",
+      "payload": {
+        "sha256": "3e1a469e2dd29ea7a5fe27a78b9f1f09ea7c5eaa47cf80e571d9ee2aad37cfa2",
+        "size_bytes": 600
+      },
+      "target_path": "ODM/etc/nezha_5.2.5.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.2.7.prop",
+      "payload": {
+        "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259",
+        "size_bytes": 680
+      },
+      "target_path": "ODM/etc/nezha_5.2.7.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.2.8.prop",
+      "payload": {
+        "sha256": "5fe4e89643a7f91158599c5312f3b44c307d01b31e747dd694c471ed6abb5be8",
+        "size_bytes": 375
+      },
+      "target_path": "ODM/etc/nezha_5.2.8.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.21.1.prop",
+      "payload": {
+        "sha256": "f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43",
+        "size_bytes": 62
+      },
+      "target_path": "ODM/etc/nezha_5.21.1.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.22.0.prop",
+      "payload": {
+        "sha256": "f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43",
+        "size_bytes": 62
+      },
+      "target_path": "ODM/etc/nezha_5.22.0.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.29.0.prop",
+      "payload": {
+        "sha256": "f96fd8c4b16ef1134f7b47be1bd24045db19a60832b8487690b37838ee665e43",
+        "size_bytes": 62
+      },
+      "target_path": "ODM/etc/nezha_5.29.0.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.9.7.prop",
+      "payload": {
+        "sha256": "40a1007c092ed033c069c52fc438ab41b5558e13a0ba81d566150a850ea11259",
+        "size_bytes": 680
+      },
+      "target_path": "ODM/etc/nezha_5.9.7.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_5.9.9.prop",
+      "payload": {
+        "sha256": "3e1a469e2dd29ea7a5fe27a78b9f1f09ea7c5eaa47cf80e571d9ee2aad37cfa2",
+        "size_bytes": 600
+      },
+      "target_path": "ODM/etc/nezha_5.9.9.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_in_build.prop",
+      "payload": {
+        "sha256": "9274ef923e353b8da774ae1da1b121d58c07bf9f4cbc8eca7bc7f718c44ec3eb",
+        "size_bytes": 833
+      },
+      "target_path": "ODM/etc/nezha_in_build.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_ru_build.prop",
+      "payload": {
+        "sha256": "caf19c75c254cde94a2dae23b611c29cf2c25d0eb0ea559fa0ebbe9237383d09",
+        "size_bytes": 833
+      },
+      "target_path": "ODM/etc/nezha_ru_build.prop"
+    },
+    {
+      "kind": "properties",
+      "partition": "odm",
+      "path": "/etc/nezha_tr_build.prop",
+      "payload": {
+        "sha256": "726b650080b01ab7124b61e826ce1520ef86c1d37ec914dd6106869516ed0964",
+        "size_bytes": 833
+      },
+      "target_path": "ODM/etc/nezha_tr_build.prop"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/AHBF-V3-service.xml",
+      "payload": {
+        "sha256": "d6eae99d3e16bf4158750bf11feaf0ab78de60c1a2cf4de89b76d4e892ffcc25",
+        "size_bytes": 322
+      },
+      "target_path": "ODM/etc/vintf/manifest/AHBF-V3-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/android.hardware.biometrics.face-v4.xml",
+      "payload": {
+        "sha256": "5d3b8eb085eb696b3fa8188484f7a771eeb9b0cf02742c672048d36aebab6e48",
+        "size_bytes": 324
+      },
+      "target_path": "ODM/etc/vintf/manifest/android.hardware.biometrics.face-v4.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/android.hardware.security.keymint-service.strongbox-thales.xml",
+      "payload": {
+        "sha256": "c60f3eb777149fbf4c1fd127b93d287cdee4c1adb531fd255782d324e6ad09e9",
+        "size_bytes": 542
+      },
+      "target_path": "ODM/etc/vintf/manifest/android.hardware.security.keymint-service.strongbox-thales.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/android.hardware.security.sharedsecret-service.strongbox-thales.xml",
+      "payload": {
+        "sha256": "e9b2d463dc714e28a374941a2a74c6166ddab89e4efd257a596b0f8de2bafe6c",
+        "size_bytes": 338
+      },
+      "target_path": "ODM/etc/vintf/manifest/android.hardware.security.sharedsecret-service.strongbox-thales.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/android.hardware.weaver-service.thales.xml",
+      "payload": {
+        "sha256": "89de9acd89f78b4657ae02d7b28e701aec4ce7cf6b7c0b1750a93e391c9b018d",
+        "size_bytes": 314
+      },
+      "target_path": "ODM/etc/vintf/manifest/android.hardware.weaver-service.thales.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/dvs-aidl-service.xml",
+      "payload": {
+        "sha256": "53b2e90f9442a923111076bc1e99cbb6bfa7e99c1f4172cc31744479a9dff6ae",
+        "size_bytes": 256
+      },
+      "target_path": "ODM/etc/vintf/manifest/dvs-aidl-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/fod-aidl.xml",
+      "payload": {
+        "sha256": "205b1f35f8c721040c2392b8db3b2f5d4c92216cf530355bd4fa04995c1a70d5",
+        "size_bytes": 709
+      },
+      "target_path": "ODM/etc/vintf/manifest/fod-aidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.midevauth.xml",
+      "payload": {
+        "sha256": "dbaa2342aef14493adb342ba02eb7829eb7b8f7b3dec45e5ee53b5ca7540af79",
+        "size_bytes": 325
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.midevauth.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.mtdservice.xml",
+      "payload": {
+        "sha256": "95d66c2fa377dc2d199cb0ea471919e77442fae4140f4afd93a45798ab28b397",
+        "size_bytes": 320
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.mtdservice.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.tidaservice.xml",
+      "payload": {
+        "sha256": "d04f274e54b29476661ed00a8f67aaaf9d6a2126f848cf221eebf1d386625e9c",
+        "size_bytes": 325
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.tidaservice.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mfidoca.xml",
+      "payload": {
+        "sha256": "eaf19d8be7bfac9d870c3d653c8b9f9c8cb8e7f2899372c5bceca5a3265eb983",
+        "size_bytes": 303
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mfidoca.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mlipay.xml",
+      "payload": {
+        "sha256": "08dddc0db158a2483f2ac24a8dc43bddda6e30917886755f7971b38f0d545f6e",
+        "size_bytes": 302
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mlipay.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.otrpagent@2.0.xml",
+      "payload": {
+        "sha256": "21c4dff2e2b4a34246ea94707c427907aab7e417f6e53892393f89ddf805cdfc",
+        "size_bytes": 312
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.otrpagent@2.0.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.vsimapp.xml",
+      "payload": {
+        "sha256": "d6c7f07715a7c9e66967a6632388d6d8c1779b954ecfb03a7ffe82a16647e76c",
+        "size_bytes": 303
+      },
+      "target_path": "ODM/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.vsimapp.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/mi_satellite_manifest.xml",
+      "payload": {
+        "sha256": "8b829fa649c84437f01ed05852237f5f8de4f794b1b514889263f84a7dd755e7",
+        "size_bytes": 327
+      },
+      "target_path": "ODM/etc/vintf/manifest/mi_satellite_manifest.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/miaon_frame.xml",
+      "payload": {
+        "sha256": "906128d4166cef2370bc9298e0a34c2ed533d5c249c4415091552d16faf2d04c",
+        "size_bytes": 279
+      },
+      "target_path": "ODM/etc/vintf/manifest/miaon_frame.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/micrtk.xml",
+      "payload": {
+        "sha256": "36093a4ee16c83ffce1c49c28d51e0f8bbd17beeee2e4dc0457ad997dd50eb5e",
+        "size_bytes": 413
+      },
+      "target_path": "ODM/etc/vintf/manifest/micrtk.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/misecmedia.xml",
+      "payload": {
+        "sha256": "67caff98301730baf4b3fff8cea907ffd5411ebc14f4b79c20911f022be7ea43",
+        "size_bytes": 280
+      },
+      "target_path": "ODM/etc/vintf/manifest/misecmedia.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/misensor_camera.xml",
+      "payload": {
+        "sha256": "76f4cd580373c33feef10e94c36bd9b950ceda19ec38e135a467b3ea9c836f6a",
+        "size_bytes": 280
+      },
+      "target_path": "ODM/etc/vintf/manifest/misensor_camera.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/mrm.xml",
+      "payload": {
+        "sha256": "363f5e0b7853f44ce119244e7d3871bcbc3776ea87bf0c4d93cd9e86f5dee1f4",
+        "size_bytes": 649
+      },
+      "target_path": "ODM/etc/vintf/manifest/mrm.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/mseccam.xml",
+      "payload": {
+        "sha256": "0f70b69aab2273d45c7c8f0705e31d9f751246abdf054f72e4fb0129125fc68f",
+        "size_bytes": 259
+      },
+      "target_path": "ODM/etc/vintf/manifest/mseccam.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/nfc-service-st.xml",
+      "payload": {
+        "sha256": "732e0536aea15f3e730db9f4acb3fac394da0a6c8fa38418893fc12ae202c576",
+        "size_bytes": 276
+      },
+      "target_path": "ODM/etc/vintf/manifest/nfc-service-st.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/secure_element-service-goodix.xml",
+      "payload": {
+        "sha256": "167f85dfdd5860467548389cb020477c3268370383a4ddd355e940ed9a1aaa4e",
+        "size_bytes": 164
+      },
+      "target_path": "ODM/etc/vintf/manifest/secure_element-service-goodix.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/uwbhal-saidl.xml",
+      "payload": {
+        "sha256": "4a9103f3e577114b1dc3987958010e0e5c84d030f9703f8f13d981b7b885e4a1",
+        "size_bytes": 254
+      },
+      "target_path": "ODM/etc/vintf/manifest/uwbhal-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.aon.auth.xml",
+      "payload": {
+        "sha256": "88ff7e7b9f09b1620e34d94cbf4526955711c7d3f109619f841febbcd6d2e5c3",
+        "size_bytes": 293
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.aon.auth.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.authsecretd.xml",
+      "payload": {
+        "sha256": "04fa6c94420a5ea183f4cc3d7b01959cfc3bc534d88e5ce4103f6dba04ed404f",
+        "size_bytes": 357
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.authsecretd.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.cstransfer.xml",
+      "payload": {
+        "sha256": "92fe1c765a3635e65475a38b746d894872571bc052f4d9fba3766bb6750481be",
+        "size_bytes": 321
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.cstransfer.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.idmanager.xml",
+      "payload": {
+        "sha256": "04bd5385fd862447c8525b62b2880f57c0f5270cbe11a7a6667edf934f78707d",
+        "size_bytes": 441
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.idmanager.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mediaeventgatherservice.xml",
+      "payload": {
+        "sha256": "6695d9c71108882c1ea7851ef7cecf05532b28ecb3abd838a0bfeffbb2677e2e",
+        "size_bytes": 354
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.mediaeventgatherservice.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mikeybag.xml",
+      "payload": {
+        "sha256": "055d527e30af464962ea33e2c9bc4f3f0990c534e059951d2555f654f1121984",
+        "size_bytes": 301
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.mikeybag.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mitrustedui.xml",
+      "payload": {
+        "sha256": "0ae45e42a26642a1921a48f74b5a714161e061f755d3dee5bb2c91db0f43ceb5",
+        "size_bytes": 396
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.mitrustedui.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.seaaudio.xml",
+      "payload": {
+        "sha256": "f175a962a54e878f5acabfd7b8d1af6e055b8769c37d3d2db818bb9145a13ebb",
+        "size_bytes": 313
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.seaaudio.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.smc.xml",
+      "payload": {
+        "sha256": "82798ae1da9905b5769398b32156c980c41f78c253d48ef7e223e90fdb75aaef",
+        "size_bytes": 274
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.smc.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.vibratorfeature.service.xml",
+      "payload": {
+        "sha256": "9d9e02baaff1c260a165e769614a9addf91beeefae47edb1e8d13a95e548265f",
+        "size_bytes": 342
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hardware.vibratorfeature.service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hw.touchfeature-service.xml",
+      "payload": {
+        "sha256": "b2b6ddf9208e6e25b1c38cb66d92f8b4b6f7f0d1c51bc2e4d9e4502457a46c65",
+        "size_bytes": 323
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.hw.touchfeature-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.sensor.citsensorservice.aidl.xml",
+      "payload": {
+        "sha256": "3b34e854c31924821cc016d4bad8575e4ee41e39c9f7b16f5213ed92e1b8ca9c",
+        "size_bytes": 334
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.sensor.citsensorservice.aidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "odm",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.sensor.tofsensorservice.aidl.xml",
+      "payload": {
+        "sha256": "31fe27864e8a60ef2c6f58167e64b6a0b7ea758e4c80bc3103da874f77bc7c79",
+        "size_bytes": 356
+      },
+      "target_path": "ODM/etc/vintf/manifest/vendor.xiaomi.sensor.tofsensorservice.aidl.xml"
+    },
+    {
+      "kind": "apex",
+      "partition": "vendor",
+      "path": "/apex/com.android.hardware.cas.apex",
+      "payload": {
+        "sha256": "7d0ddec71e4b6a84a55e76faf147332a1908a89a0706836a72e85877f2569210",
+        "size_bytes": 380928
+      },
+      "target_path": "VENDOR/apex/com.android.hardware.cas.apex"
+    },
+    {
+      "kind": "apex",
+      "partition": "vendor",
+      "path": "/apex/com.google.android.widevine.nonupdatable.apex",
+      "payload": {
+        "sha256": "4a680a496773eb72bcf4beba906b8ba8ac660bd8a5f116a2ad4f169d7dd820a8",
+        "size_bytes": 5619712
+      },
+      "target_path": "VENDOR/apex/com.google.android.widevine.nonupdatable.apex"
+    },
+    {
+      "kind": "apex",
+      "partition": "vendor",
+      "path": "/apex/com.xiaomi.wifi.apex",
+      "payload": {
+        "sha256": "b76fe0135990383d5e635d4d53ac19ea172e0024ff5e72b0b70ba990a5ecbc2d",
+        "size_bytes": 348160
+      },
+      "target_path": "VENDOR/apex/com.xiaomi.wifi.apex"
+    },
+    {
+      "kind": "properties",
+      "partition": "vendor",
+      "path": "/build.prop",
+      "payload": {
+        "sha256": "2ea7fe521d0e7010bc3f068db034baf2056ae274023a964ff8a770ff726f4703",
+        "size_bytes": 15320
+      },
+      "target_path": "VENDOR/build.prop"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/compatibility_matrix.xml",
+      "payload": {
+        "sha256": "c20215ca383a5a205da20d8c9947e68826cc16ac95a384a8fef02832d2649f9f",
+        "size_bytes": 597
+      },
+      "target_path": "VENDOR/etc/vintf/compatibility_matrix.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/ImsRtpService-aidl.xml",
+      "payload": {
+        "sha256": "7ae9c5ff1c047bcc4ffd92b46643557e157e011de665133cbdbd8f05783c61d3",
+        "size_bytes": 331
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/ImsRtpService-aidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/Manifest_IAGM.xml",
+      "payload": {
+        "sha256": "739fbdd55130a576768a6808a3d89ef1adac5c43ee3bd806dfc352beaad1b4e1",
+        "size_bytes": 258
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/Manifest_IAGM.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/Manifest_IPAL.xml",
+      "payload": {
+        "sha256": "d526c4923d6898faa851bc4100483953788dedd58cc9353aaadfd031644625f9",
+        "size_bytes": 258
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/Manifest_IPAL.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.camera.provider.external.xml",
+      "payload": {
+        "sha256": "bb71ff4e0c902507bba43421823ded929a87b031cc38a7112564b27c48427c1d",
+        "size_bytes": 310
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.camera.provider.external.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.drm-service.clearkey.xml",
+      "payload": {
+        "sha256": "61d138658fc2deed1ae0913b20ddb94414a60101ce0bbbbd2e63ab994fe9983a",
+        "size_bytes": 293
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.drm-service.clearkey.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.drm-service.xml",
+      "payload": {
+        "sha256": "18afb08137f762a95e864925f6c1192910f0b4e8c40666747be04e11848bc515",
+        "size_bytes": 1751
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.drm-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.gatekeeper-service-qti.xml",
+      "payload": {
+        "sha256": "5fb402e995b91cc597dba9cf1e469591872e33dd1d4251491ca141b439fea285",
+        "size_bytes": 297
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.gatekeeper-service-qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.gnss-aidl-service-qti.xml",
+      "payload": {
+        "sha256": "4d05beefa674cf791561b9a546ec61de684ffa73c11cb1d9112d1325e3312ac7",
+        "size_bytes": 304
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.gnss-aidl-service-qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.health-service.qti.xml",
+      "payload": {
+        "sha256": "b9890d7ea0425ed299cce9561d6ff44f1e1d280fd66f476e785ad173f19b1ab3",
+        "size_bytes": 309
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.health-service.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.ir-service.example.xml",
+      "payload": {
+        "sha256": "decf833ede20d21af061800a633e9b0911bca9ef1c475372e0d6732f2c1131fb",
+        "size_bytes": 276
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.ir-service.example.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.powerstats-service.xml",
+      "payload": {
+        "sha256": "555f6a40b0fc9f7ea0fe4e14e4b7ddced0514a9d30bd3ce94db69cda3f42416c",
+        "size_bytes": 317
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.powerstats-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.config.xml",
+      "payload": {
+        "sha256": "25ff2f590f2c6b8a0329f3875261b6bdc54a975d371aeb74f06683e87c575743",
+        "size_bytes": 317
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.config.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.data.xml",
+      "payload": {
+        "sha256": "32dfd6154852e3a012904758964dd5caffd9f797964bfd3190235cc2d09b04c6",
+        "size_bytes": 347
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.data.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.messaging.xml",
+      "payload": {
+        "sha256": "88a2402f9c908151912a2ea43d441c5072ff33bec0f87ec6dd3b76e88a2edf09",
+        "size_bytes": 371
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.messaging.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.modem.xml",
+      "payload": {
+        "sha256": "17b73f2d813cd3ad112d018ddaeb3ad578314aeb8f278e6ad33893bea75c0a04",
+        "size_bytes": 355
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.modem.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.network.xml",
+      "payload": {
+        "sha256": "ea2889fdf4530a1cf1b2fc393f90b320192e83fdaff45e8dfc5496c3a690ff7e",
+        "size_bytes": 363
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.network.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.sap.xml",
+      "payload": {
+        "sha256": "ab962a4ee97d45730588ee0585beb986553d5e95c0a7d583e03e2de7db7573bf",
+        "size_bytes": 308
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.sap.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.sim.xml",
+      "payload": {
+        "sha256": "8861ae9ae8d1e1b467a6639e86d8fb0769d24f32f8538e6f4a304af9d05a1c31",
+        "size_bytes": 347
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.sim.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.radio.voice.xml",
+      "payload": {
+        "sha256": "e7e43ee56b7f3c906d6511dd729dcfe1b5f475faa9ec00d7d0662612f2bfe717",
+        "size_bytes": 355
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.radio.voice.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.secure_element.xml",
+      "payload": {
+        "sha256": "459e501c5375536d697f582cf90fd394c4f9f2491e52b5bf1882410b4ab4e6e9",
+        "size_bytes": 336
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.secure_element.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.security.onekeymint-service-qti.xml",
+      "payload": {
+        "sha256": "71b43ecedc2949f09d0445b49486ceb2c04bbb5b14f46e121dd6db5873ebf9aa",
+        "size_bytes": 526
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.security.onekeymint-service-qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.security.secretkeeper-service-qti.xml",
+      "payload": {
+        "sha256": "ea13713aedb1ae5f163fbb11aec37a40abd48058b5ec6dc2998d56f0e00b0aa5",
+        "size_bytes": 360
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.security.secretkeeper-service-qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.security.secureclock-service-qti.xml",
+      "payload": {
+        "sha256": "e6215f1a179f762deab881785479c0174ec9ac8ab7d7d0034f9f5cc8e141d428",
+        "size_bytes": 318
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.security.secureclock-service-qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.security.sharedsecret-service-qti.xml",
+      "payload": {
+        "sha256": "69ec653a168cfd305e3d545e7a9502a73a4ee42f9e3089f120b601df12f10fa1",
+        "size_bytes": 321
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.security.sharedsecret-service-qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.sensors-multihal.xml",
+      "payload": {
+        "sha256": "fcc6446c3f5a1255e423a58305924c094990acbc34c297469a0d52b097108ed3",
+        "size_bytes": 311
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.sensors-multihal.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.thermal-service.qti.xml",
+      "payload": {
+        "sha256": "b52093a925b594026aa9c1117d85aa7388bd69d4a282a456e62689c12b21f8f4",
+        "size_bytes": 307
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.thermal-service.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.usb-service.qti.xml",
+      "payload": {
+        "sha256": "d01230c4a553d69db478ede9b2b4d2716986c80bc424d5fc7f378257dc43e84b",
+        "size_bytes": 262
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.usb-service.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.usb.gadget-service.qti.xml",
+      "payload": {
+        "sha256": "037e01470fdb8add8af1eea12040bf38636d439382a5fe0867f75802e6e573b8",
+        "size_bytes": 282
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.usb.gadget-service.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.wifi-service.xml",
+      "payload": {
+        "sha256": "b0244c7741b58325669b372154776f5b800f6c19c73f08688ad1aaa45ba596a8",
+        "size_bytes": 297
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.wifi-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.wifi.hostapd.xml",
+      "payload": {
+        "sha256": "2bb8b7148536575a9022ad2bb008a02ed2f0fbcec341b0efbbc5f59e470e8881",
+        "size_bytes": 304
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.wifi.hostapd.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/android.hardware.wifi.supplicant.xml",
+      "payload": {
+        "sha256": "274686e58b747d64159d3fa76390b72929ce6836c5967645fc159f1aca661968",
+        "size_bytes": 475
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/android.hardware.wifi.supplicant.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/atfwd-saidl.xml",
+      "payload": {
+        "sha256": "4271581c863b88755b28b05328e00bcf68f701a245086ef51dbfa04ce7ac4735",
+        "size_bytes": 277
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/atfwd-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/audioeffectservice_qti.xml",
+      "payload": {
+        "sha256": "e100c5f7e4529674777ab83938d92edfab2dc4d048c4f808a6340ef2c445bba3",
+        "size_bytes": 320
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/audioeffectservice_qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/avf_qcvm_manager.xml",
+      "payload": {
+        "sha256": "f4d59de1989039fa78a9703a46345a12528239fa0ffcea32cb38fbf2d7a699ca",
+        "size_bytes": 280
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/avf_qcvm_manager.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bcs-ranging.xml",
+      "payload": {
+        "sha256": "83ea9b36f33133f45876fd9e97b715bd2e189901ba513964eba79d56f86dd5d5",
+        "size_bytes": 339
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bcs-ranging.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bluetooth-finder.xml",
+      "payload": {
+        "sha256": "0ae5233864e456267b84f1eb34a321d06a94d30b7af9a7141f4cd1a29d241cde",
+        "size_bytes": 304
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bluetooth-finder.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bluetooth_audio.xml",
+      "payload": {
+        "sha256": "2a0e267800e97c8b18c3482535dfc7ed87ad64b4463e17e4bf6a0376f6e586b8",
+        "size_bytes": 330
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bluetooth_audio.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bluetooth_hci.xml",
+      "payload": {
+        "sha256": "e1241716393915da7756a60c63e347c0235521768c0dfdfdc5384d9683dfcc37",
+        "size_bytes": 292
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bluetooth_hci.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bluetooth_sar.xml",
+      "payload": {
+        "sha256": "5127530e46bba50bbeb9449770279a1c399cf26f4875646b7eb6b45ff0573663",
+        "size_bytes": 310
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bluetooth_sar.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/boot-service.qti.xml",
+      "payload": {
+        "sha256": "3089f00e4540c09c8ceacd8fd3e6129adfae2050f6de275be55574275d7fea3b",
+        "size_bytes": 252
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/boot-service.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bt_lmp_event-saidl.xml",
+      "payload": {
+        "sha256": "89edcae5f3cf415fd5eddc2c3b1b12d6707d02f13a1ee50b534087a501c9b580",
+        "size_bytes": 316
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bt_lmp_event-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/bttpi-saidl.xml",
+      "payload": {
+        "sha256": "f3bd431b2587add71bd9d1977598279ab8ae199a92b106b1d33a70b8d259a39b",
+        "size_bytes": 309
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/bttpi-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/c2_manifest_vendor.xml",
+      "payload": {
+        "sha256": "77fb135b8e536fc154998691b8e4551f64d90ad4eb1797061f500ff2f6f66135",
+        "size_bytes": 290
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/c2_manifest_vendor.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/c2_manifest_vendor_audio.xml",
+      "payload": {
+        "sha256": "c48d9adff8aa0b034fde43fe1dae25d8b6bf363f39155b3d9e46192d9fe67101",
+        "size_bytes": 292
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/c2_manifest_vendor_audio.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/cacert-saidl.xml",
+      "payload": {
+        "sha256": "8d3799231b633aeb83e15eca05cfd34e4ba481d4a77a08270a9833e231fb2f5c",
+        "size_bytes": 296
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/cacert-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/dataconnection-saidl.xml",
+      "payload": {
+        "sha256": "5a75f54238efa5127c52ae53b9556e51a7a2304f5a6d07a4eba8c86e91b20dac",
+        "size_bytes": 322
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/dataconnection-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/datafactoryservice-saidl.xml",
+      "payload": {
+        "sha256": "a46dbc8c87249e432204a1796fea253eaac0df57e9a6a840a8398c2e8b5aaf76",
+        "size_bytes": 316
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/datafactoryservice-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/deviceinfo-saidl.xml",
+      "payload": {
+        "sha256": "6c2d739a9dd319164fa6b37ec51cf4c7107faae9420157da7880a284af87b1b0",
+        "size_bytes": 303
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/deviceinfo-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/dms-service.xml",
+      "payload": {
+        "sha256": "120ace26af893448224b09490738d1a75c136d45a4f691f403d6ed4ff6498a88",
+        "size_bytes": 240
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/dms-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/dpm-saidl.xml",
+      "payload": {
+        "sha256": "3111bf64af393399881964509c5dceabc0f759cb98ad7218b5bfb072f79caa18",
+        "size_bytes": 278
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/dpm-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/dumpstate-xiaomi.xml",
+      "payload": {
+        "sha256": "d61b519b6bfe56906721cbf729c7632b4ecdd8ed8e6858c23d94160393a68e27",
+        "size_bytes": 274
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/dumpstate-xiaomi.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/eid-default.xml",
+      "payload": {
+        "sha256": "ba0b3ef2be4a1883127667c9831f15fc868a224e34176d95eab4c99fdc5f42a1",
+        "size_bytes": 269
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/eid-default.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/fm_hci.xml",
+      "payload": {
+        "sha256": "3c5654d7795e6c06a66f005e9b913066cae0a60610d291f084b60cbd1b199016",
+        "size_bytes": 274
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/fm_hci.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/imsdcservice-saidl.xml",
+      "payload": {
+        "sha256": "19a1e58de7f92fdeca55a0c10e6e1e39d3907657b098e0d821f7f3219628b44b",
+        "size_bytes": 346
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/imsdcservice-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/manifest_audiocorehal_default.xml",
+      "payload": {
+        "sha256": "b10dafb2fd11044f4bb6c19dde6aa967531abee184bcdd1ee0916575f47a1444",
+        "size_bytes": 783
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/manifest_audiocorehal_default.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/manifest_blackbox.xml",
+      "payload": {
+        "sha256": "52f25bfdc813ec8acc61b2d5342900738c4dc935673980661bd9eb30a1b0543d",
+        "size_bytes": 333
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/manifest_blackbox.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/manifest_btaudiocoreservices_qti.xml",
+      "payload": {
+        "sha256": "363ce3925be415bd736a80164a7becb96614920261401ed5cd9ea732abbad667",
+        "size_bytes": 329
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/manifest_btaudiocoreservices_qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.cld_aidl.xml",
+      "payload": {
+        "sha256": "b121211f1a26a3837ec4a69b94d1957164922670eeabd267eee51a7d917fabee",
+        "size_bytes": 306
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.cld_aidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.fbo.xml",
+      "payload": {
+        "sha256": "9d582cc7f4c8ae3140845e32d1a280384c8dfb1874fc503d2cb2d3f68eab6281",
+        "size_bytes": 294
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.fbo.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.swap.xml",
+      "payload": {
+        "sha256": "764035f98024e64512d47eacadde6945f3671eb47dfab9b2aedb5f219f8f8531",
+        "size_bytes": 299
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.swap.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/mapper.qti.xml",
+      "payload": {
+        "sha256": "d5f18a308a516e1f0fe80fd599b2d9cc0efb45f83e84ae702ade77a2a0d332da",
+        "size_bytes": 223
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/mapper.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/media_c2_mi.xml",
+      "payload": {
+        "sha256": "60c07cc79790be46dc4f665a5588ec2c8328beebc324d04550176e8592346f8f",
+        "size_bytes": 280
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/media_c2_mi.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/memtrack_qti.xml",
+      "payload": {
+        "sha256": "d4343a4ad6d8314fa971591e57843cd28287d3f88762ead7cc07c705fc2fa072",
+        "size_bytes": 256
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/memtrack_qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/mwqem-saidl.xml",
+      "payload": {
+        "sha256": "8d8c79c73812c58a99793f09f9a973f7a8327b0ffeac1eed8d8e9efeb45a9eaf",
+        "size_bytes": 300
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/mwqem-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/ozonotify-1.0.xml",
+      "payload": {
+        "sha256": "26c4770fea668d735348b0f52d9990bef417c07a6c4a6b65ff585a3f291a43a5",
+        "size_bytes": 283
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/ozonotify-1.0.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/power.xml",
+      "payload": {
+        "sha256": "41159ba41cc19f9b172479caf644794a252edba7bf8938a00b92e84069a749e2",
+        "size_bytes": 266
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/power.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/qcrilhook-saidl.xml",
+      "payload": {
+        "sha256": "c76c12f2f60393acdbf55e87ab5aea9c141159d3b3448f5ad6c4a772188efb25",
+        "size_bytes": 330
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/qcrilhook-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/qesdk-manager.xml",
+      "payload": {
+        "sha256": "0e4ee7a1f0f95c817e475461e8cfcc4f9766d900cc3e0e2ecbfba6766fa8a05c",
+        "size_bytes": 298
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/qesdk-manager.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/qms-saidl.xml",
+      "payload": {
+        "sha256": "0305e256cbbe1718691b41d4ac48f0de6fd7e1b95ad00ca4c0f3939cd8d4111f",
+        "size_bytes": 586
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/qms-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/qspa/qspa-modem.xml",
+      "payload": {
+        "sha256": "58d16c76011df3056a70d3673d4936fc75e9ebc51222eb6007c64344cc53a741",
+        "size_bytes": 2486
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/qspa/qspa-modem.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/qspa/qspa-nav.xml",
+      "payload": {
+        "sha256": "e35e2c516f74a6166a22ed7e6f1138ee15a5cecae61a710c7636c7eb8f95562c",
+        "size_bytes": 294
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/qspa/qspa-nav.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/qtiradio-saidl.xml",
+      "payload": {
+        "sha256": "87c7c1a5aa83e5d4b510ccf5a462a9336f0a6e6cec1e221a436b147dee8148ca",
+        "size_bytes": 360
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/qtiradio-saidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/secure_element-service.xml",
+      "payload": {
+        "sha256": "7b581c593f6b808c59bcdee67343debeaa471a14d9600e4a14a12ebb6d233a34",
+        "size_bytes": 278
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/secure_element-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/snapdragon_services.xml",
+      "payload": {
+        "sha256": "0c07a6e258401bd7d2713ddccd5f9d10a13ee87e0e23a979b7f09b67835bde36",
+        "size_bytes": 327
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/snapdragon_services.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/soundtrigger.qti.xml",
+      "payload": {
+        "sha256": "0b4934a38c462d92e936e76c4b41994851e1983915cd07d0a9b407905295e58a",
+        "size_bytes": 284
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/soundtrigger.qti.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.dolby.media.c2-default-service-dax.xml",
+      "payload": {
+        "sha256": "335e923efaedfb3069008ca8e59e0dfaa0e8fd12f4ce96ee5b7bafdcbeeaf313",
+        "size_bytes": 280
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.dolby.media.c2-default-service-dax.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.MemHal.xml",
+      "payload": {
+        "sha256": "5d62d06a16bac5e94936092f5825a40df6e2f258ec2c5dd848bab5ab26412a78",
+        "size_bytes": 257
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.MemHal.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.camera.offlinecamera-impl.xml",
+      "payload": {
+        "sha256": "214e5330b77cb5c935bb643a3fb87e8390369706c05a009594dc4fd985049632",
+        "size_bytes": 464
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.camera.offlinecamera-impl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.camera.provider.xml",
+      "payload": {
+        "sha256": "415852b40ef1f67c1932f1f0eb4cb91bd94c3f8c6bfdb236f5a2ed7cee29b73f",
+        "size_bytes": 339
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.camera.provider.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.diag.hal.service.xml",
+      "payload": {
+        "sha256": "0097dab30bee82ef8b01f377d71a313dbbc64aaccdb05f09c068915730c3800e",
+        "size_bytes": 261
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.diag.hal.service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.gnss-service.xml",
+      "payload": {
+        "sha256": "a7ba27bce7dce7be87dd84d32206d4c231cda4bb89f97471f2d83d563b05c838",
+        "size_bytes": 300
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.gnss-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.alarm.xml",
+      "payload": {
+        "sha256": "760ab2ef08a38d6a9128eb6f5dcfb91001a3c407c792e82489992ce72fbcbbef",
+        "size_bytes": 287
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.alarm.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.bluetooth.btavsprovider.xml",
+      "payload": {
+        "sha256": "4ce842a0fa210bd7b6f40d69049df2bd9ceb83691ff81fe057bd6ba99eacb052",
+        "size_bytes": 324
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.bluetooth.btavsprovider.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.bluetooth.xpanprovider.xml",
+      "payload": {
+        "sha256": "14c851db053dfd1b4a9141797f64f5ba0937608e6c10cc3cc57633901b973932",
+        "size_bytes": 325
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.bluetooth.xpanprovider.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.c2pa-aidl-service.xml",
+      "payload": {
+        "sha256": "fac5bf183ca2d3d151308ab30f10f34f6f33306d6475b5bc75aee7efce7102b5",
+        "size_bytes": 305
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.c2pa-aidl-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.capabilityconfigstore-service.xml",
+      "payload": {
+        "sha256": "9d1a26258d94ec8daeae84f64f5567894d53eea6ed74ca614b371082f0353230",
+        "size_bytes": 323
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.capabilityconfigstore-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.data.connectionaidl.xml",
+      "payload": {
+        "sha256": "0fb59c732718ab5b3e6d854e6acb80401edde139f656b312eaeab5a8e54b6002",
+        "size_bytes": 352
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.data.connectionaidl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.data.iwlandata.xml",
+      "payload": {
+        "sha256": "7c170aa3fc3fd1a1733e042fa3725b06e39178619e3ecbbcc4ed552225e4a170",
+        "size_bytes": 353
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.data.iwlandata.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.display.allocator-service.xml",
+      "payload": {
+        "sha256": "a4cbe94cf2812ef4df07307520b3960b9ec4cd6bb05ee5b31bd82772529e6f37",
+        "size_bytes": 324
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.display.allocator-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v4.xml",
+      "payload": {
+        "sha256": "d5222a40400ac72a26a3e9f118f3c47c93a89df70326187b52806db23adcd4c6",
+        "size_bytes": 1120
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v4.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.xml",
+      "payload": {
+        "sha256": "53c97609665db6cf2f229ee0fbfbcc69b57b3036e9dac80058b1d0ea76d0c231",
+        "size_bytes": 303
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.dsp-service.xml",
+      "payload": {
+        "sha256": "d041f56d2e4ee4573e5bc5466e51473c14dd0b3233b46655184251780ced6b6a",
+        "size_bytes": 283
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.dsp-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.embmssl.xml",
+      "payload": {
+        "sha256": "7d9dc3543a94c36220e32e80ccd923b1c5289f7ff4e99978b85ff25c376bc8ed",
+        "size_bytes": 330
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.embmssl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.hexlp-service.xml",
+      "payload": {
+        "sha256": "12b80be2e39819ff0487bf6babc9243a8a98c97f1ea03438d6d2bd363db528df",
+        "size_bytes": 389
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.hexlp-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.lights.service.xml",
+      "payload": {
+        "sha256": "92ccde3dff84c56b715e83a56175bfa36cb7f80b368fc1ed181a50771f115e72",
+        "size_bytes": 297
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.lights.service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.minkipcbinder-service.xml",
+      "payload": {
+        "sha256": "b02b6458048654aea9543a76d0dd36cf930df5d6d911b4e68b3e0370717bb7aa",
+        "size_bytes": 332
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.minkipcbinder-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.perf2.xml",
+      "payload": {
+        "sha256": "1259869d69957c13954b60972f4dd2380054b5e6bcabacf2d70174aa512e0aca",
+        "size_bytes": 283
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.perf2.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.power.powermodule.xml",
+      "payload": {
+        "sha256": "eb44d7d17e15bcca13e9030af8f07c1d612e5f82e879891834e1be6c12f0785a",
+        "size_bytes": 313
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.power.powermodule.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.qconfig-service.xml",
+      "payload": {
+        "sha256": "e0b285a2b5bba4398b0bc631ba123b0d838afcbb1e7416fb2639d1b2cc859fb9",
+        "size_bytes": 314
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.qconfig-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.am.xml",
+      "payload": {
+        "sha256": "57b847f5173b4cbc774510c1a8706799e3725c41d3fee635851256eb56211ff3",
+        "size_bytes": 326
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.am.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml",
+      "payload": {
+        "sha256": "db85ea4a6324d07279fb46d5ed9b0337c4386838402e78e4e2ddb5923d2bc576",
+        "size_bytes": 362
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.lpa.xml",
+      "payload": {
+        "sha256": "33b4d0a61a2ece147238f5a58bac5e50aff06cbec9398930b2676081bb62d491",
+        "size_bytes": 324
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.lpa.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.qtiradioconfig.xml",
+      "payload": {
+        "sha256": "f0922bb21a4069a60362e891506f19cb01238c5c18e9fecb8dd11c6bc064a6b8",
+        "size_bytes": 342
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.qtiradioconfig.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.uim.xml",
+      "payload": {
+        "sha256": "20b879b0106edc21040820eaca389f2b5d977a23855f925c3866e1d9dd632fe3",
+        "size_bytes": 312
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.uim.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_client.xml",
+      "payload": {
+        "sha256": "dd886cf1a83f6661f7bfcc461ac22d8856033e20e61af185613123930a1ab7d5",
+        "size_bytes": 402
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_client.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_server.xml",
+      "payload": {
+        "sha256": "bd2b778452f27566f9a9d583cd9b0b52d3f2de9377325545d51a505a6f975e6b",
+        "size_bytes": 402
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_server.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.secureprocessor.xml",
+      "payload": {
+        "sha256": "f21c1d8ee81b527ee892b0afefbb381b868021abd01fb9d36375b4e9f2d1ef1e",
+        "size_bytes": 388
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.secureprocessor.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.sensorscalibrate.xml",
+      "payload": {
+        "sha256": "42df64b6c626806071292abe3ec9df035f12856132248e210715222dc9413001",
+        "size_bytes": 328
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.sensorscalibrate.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.servicetrackeraidl-service.xml",
+      "payload": {
+        "sha256": "abbb564483766df941a63d1201eb5c46ec09c3684e8a6a7c6120dc2af699125d",
+        "size_bytes": 340
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.servicetrackeraidl-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.soter-service.xml",
+      "payload": {
+        "sha256": "d451a63c6a6132aeb6d87dd58ada44b375c3fbb0cbc714399c0ea51095cae58b",
+        "size_bytes": 294
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.soter-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.tetheroffload.service.xml",
+      "payload": {
+        "sha256": "8726f9daf8f65c25f7785ba18728256d318f909b8f168163af6bcdd1cf879147",
+        "size_bytes": 304
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.tetheroffload.service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.trustedui-aidl-service.xml",
+      "payload": {
+        "sha256": "dbd7c17f3174446ee78a7acf72e1d10e056a01599f2d32fc1180405b5140d050",
+        "size_bytes": 360
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.trustedui-aidl-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.vpp-service.xml",
+      "payload": {
+        "sha256": "6c3a22f9d419bbce6403e88d10ad28f15bfee402b12be9575268feaf14c63b41",
+        "size_bytes": 284
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.vpp-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.hardware.wifidisplaysession-service.xml",
+      "payload": {
+        "sha256": "4e1f4011fb0de47532328e866977be83bebb62636417bd89b14ceb0694c1306b",
+        "size_bytes": 1971
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.hardware.wifidisplaysession-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.ims.factoryaidlservice.xml",
+      "payload": {
+        "sha256": "8b7bc71ce0bad9647b2bd018b7a4408babbea5603e5b1a27c4d8a8190ab6bb25",
+        "size_bytes": 293
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.ims.factoryaidlservice.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.qccvndhal_aidl-service.xml",
+      "payload": {
+        "sha256": "e8cfd005980ba019cd95322e38cf77a856fabec203ba366378a14bb3fe6fdb24",
+        "size_bytes": 287
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.qccvndhal_aidl-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.qspa-service.xml",
+      "payload": {
+        "sha256": "5ba76abaea2272adfd9f8b0a21ab02eb94da5953e56bcc4e91d47f10ef0c4d12",
+        "size_bytes": 280
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.qspa-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.qspmhal-service.xml",
+      "payload": {
+        "sha256": "c43ac844fcf416fc231637ee225dc742744a8916bcf31589d991f21e9580103e",
+        "size_bytes": 267
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.qspmhal-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.qti.syshealthmon-service.xml",
+      "payload": {
+        "sha256": "33d0eef5228e5aa63922582d7b27044905442293442d9d9da82a953641a91444",
+        "size_bytes": 300
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.qti.syshealthmon-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.camera.aon-impl.xml",
+      "payload": {
+        "sha256": "64b3d1ed064383ff2616181e5d2dc3089f4a39085f9b203c47dbbcc073f347ca",
+        "size_bytes": 298
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.camera.aon-impl.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.cit.bluetooth-service.xml",
+      "payload": {
+        "sha256": "988095a2e90a1fb0607fe7a63247ec6e5814d78d7d283cb555d631ebb99ed523",
+        "size_bytes": 307
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.cit.bluetooth-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.cit.wifi-service.xml",
+      "payload": {
+        "sha256": "b5413971029d0e6f165d17b0acf53b55ff25cbeab8be8699b9cf8f2cae4e2d93",
+        "size_bytes": 316
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.cit.wifi-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.aidl.intentaware-service.xml",
+      "payload": {
+        "sha256": "adf68d6e942f40f6826f9e6afc78749d4dbb95c9761907ffebbca03b9974c986",
+        "size_bytes": 342
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.aidl.intentaware-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.aidlbgservice-service.xml",
+      "payload": {
+        "sha256": "e371a17af0ca4e11156411a26678c66a9218072fb9d14d170ebdb2bbe6b2a639",
+        "size_bytes": 313
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.aidlbgservice-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.batteryantiaging.xml",
+      "payload": {
+        "sha256": "b997a9981080a66742d8b21ce30a9be05caff50a7a8aff9b98e67b294ed428c3",
+        "size_bytes": 326
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.batteryantiaging.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.camera.mivimessage-service.xml",
+      "payload": {
+        "sha256": "63f22d655157511b48d2613954f349a964c748d647091464a07ef7a828c6d5c4",
+        "size_bytes": 349
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.camera.mivimessage-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.displayfeature_aidl-service.xml",
+      "payload": {
+        "sha256": "ec0609ba8b2ce11260b6becd76225b88f0cff41d0fa94024414b37712a1e97ea",
+        "size_bytes": 376
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.displayfeature_aidl-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.dynamiccameraserver.xml",
+      "payload": {
+        "sha256": "feca3e6c5ba44129d4bfd5b5f47d1aaddd0ff37ccf182b1fffaa4061741fc4b9",
+        "size_bytes": 326
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.dynamiccameraserver.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.micharge.xml",
+      "payload": {
+        "sha256": "e29acc3482cf6a56f35e12eea728d29f2120d1967355f2775f7b6ed323ac2611",
+        "size_bytes": 323
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.micharge.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mimd2-service.xml",
+      "payload": {
+        "sha256": "51204cf6b8e1eb5f77065554ec4432dd6d3b6509139bd0dd7aa17682299c8f55",
+        "size_bytes": 285
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.mimd2-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.misys.common.xml",
+      "payload": {
+        "sha256": "32ef8df45b21fa9ef2c8fa44b165c316538f778c0a8ca8a23da1744bd811dd03",
+        "size_bytes": 397
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.misys.common.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.misys.core.xml",
+      "payload": {
+        "sha256": "9a8c0b182c569a830b4ffcc8dbf269479f73b19f46c513b8ccffd7a3d2f96828",
+        "size_bytes": 309
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.misys.core.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.postprocservice-service.xml",
+      "payload": {
+        "sha256": "c006883101b41d9c6946c7edda250ab398ae7437897c30364b8402a544a19211",
+        "size_bytes": 329
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.postprocservice-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.quickcamera.xml",
+      "payload": {
+        "sha256": "eac0a6174ad1e3821e4707be27ff0cc9516e234e166c1251dd03769d6efe3d06",
+        "size_bytes": 335
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.quickcamera.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.radio.cdc.xml",
+      "payload": {
+        "sha256": "a3786901ec5f18fdb0dcf813ae28be40c0bb358f22f02c8acd7bb751ab2721cc",
+        "size_bytes": 371
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.radio.cdc.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.radio.xml",
+      "payload": {
+        "sha256": "f218d19cdc38d404538d6d5248d14ea971e5aa6188c7046a10bac29850d554dc",
+        "size_bytes": 354
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.radio.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.hardware.videoservice-service.xml",
+      "payload": {
+        "sha256": "993abe22e24ac444021e6a48c057c43e10dd0d6a83116f9c9c6e8e75239b9989",
+        "size_bytes": 350
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.hardware.videoservice-service.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest/vendor.xiaomi.modem.qms.xml",
+      "payload": {
+        "sha256": "0f734ab09d559e5dd2e47d6d1ef1d409e6df9da02772d6b75e41fb1893959c18",
+        "size_bytes": 275
+      },
+      "target_path": "VENDOR/etc/vintf/manifest/vendor.xiaomi.modem.qms.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest_alor.xml",
+      "payload": {
+        "sha256": "f75119737f4b7ec9292df3b90e7083d8f879d61cf0be45dc21970578ba11a944",
+        "size_bytes": 340
+      },
+      "target_path": "VENDOR/etc/vintf/manifest_alor.xml"
+    },
+    {
+      "kind": "vintf",
+      "partition": "vendor",
+      "path": "/etc/vintf/manifest_canoe.xml",
+      "payload": {
+        "sha256": "3ea5780e87654ac313a9a6fd96fa8200b858a25033ebd63b36264fc372ff9b2b",
+        "size_bytes": 1150
+      },
+      "target_path": "VENDOR/etc/vintf/manifest_canoe.xml"
+    },
+    {
+      "kind": "properties",
+      "partition": "vendor",
+      "path": "/odm_dlkm/etc/build.prop",
+      "payload": {
+        "sha256": "e3717ee9e0664508a5af41f06b75ae99318b94482a6937bc43253d45292bd367",
+        "size_bytes": 1197
+      },
+      "target_path": "VENDOR/odm_dlkm/etc/build.prop"
+    }
+  ],
+  "original_images": {
+    "odm": {
+      "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+      "size_bytes": 4767621120
+    },
+    "vendor": {
+      "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+      "size_bytes": 959709184
+    }
+  },
+  "packaged_images": {
+    "odm": {
+      "sha256": "854c0047709496136557fbdaf2f3ee0a124fa6a18c1bfaddd063d2a3d006d257",
+      "size_bytes": 4767621120
+    },
+    "vendor": {
+      "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+      "size_bytes": 959709184
+    }
+  },
+  "page_size_context": {
+    "product_settings": {
+      "PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE": true,
+      "PRODUCT_MAX_PAGE_SIZE_SUPPORTED": 4096,
+      "PRODUCT_NO_BIONIC_PAGE_SIZE_MACRO": true
+    },
+    "profile": {
+      "path": "config/nezha-page-size-profile-v2.json",
+      "sha256": "bed228b0595ef2dc1dd814e98c0966ba9b9452b542de50354db522e2420bed1e",
+      "size_bytes": 15567
+    },
+    "profile_id": "nezha-stock-4k-bringup-v2",
+    "source_candidate": {
+      "sha256": "392485b8ef5005f6d8079487c7a8ee7931597bacaab593478277f8201c4d03a2",
+      "size_bytes": 127103
+    },
+    "source_product": {
+      "path": "device/xiaomi/nezha/generated/device-candidate.mk",
+      "sha256": "d336169a8f683bd798bb63360fbc62ee9ebdc03343e2f7ab91906052cde568a9",
+      "size_bytes": 1661
+    }
+  },
+  "policy_inputs": {
+    "actual_compiler_inputs": [
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/plat_sepolicy.cil/android_common/plat_sepolicy.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/plat_sepolicy.cil/android_common/plat_sepolicy.cil",
+        "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+        "sha256": "8b32099077319d12127b900fb1f50d03852897d6628fca13c96d4f81b4143a42",
+        "size_bytes": 3012345
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/plat_mapping_file/android_common/202504.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/plat_mapping_file/android_common/202504.cil",
+        "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+        "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+        "size_bytes": 229237
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/system_ext_sepolicy.cil/android_common/nezha/system_ext_sepolicy.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/system_ext_sepolicy.cil/android_common/nezha/system_ext_sepolicy.cil",
+        "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+        "sha256": "a415c77bcb0c8db269242d3ff3db2f869dd5d5623a5752a90ce6b2e2ed603f88",
+        "size_bytes": 73378
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/system_ext_mapping_file/android_common/nezha/202504.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/system_ext_mapping_file/android_common/nezha/202504.cil",
+        "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+        "sha256": "3d5599f31ba121d4ed725065aaff3c13e8a54ff02e7ecef9bcaa419896d5031d",
+        "size_bytes": 1143
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/product_sepolicy.cil/android_common/nezha/product_sepolicy.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/product_sepolicy.cil/android_common/nezha/product_sepolicy.cil",
+        "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+        "sha256": "238af2a9cee8a300b574de03a0d26620fb23c6af0a7814e8ff0b6b84da7d2f5d",
+        "size_bytes": 73
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/product_mapping_file/android_common/nezha/202504.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/product_mapping_file/android_common/nezha/202504.cil",
+        "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "compiler_input": "vendor/xiaomi/nezha-policy/corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+        "resolved_path": "/work/evolution/vendor/xiaomi/nezha-policy/corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+        "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+        "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+        "size_bytes": 396303
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/vendor/xiaomi/nezha-policy/nezha_factory_vendor_policy/gen/derived/vendor_sepolicy.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/vendor/xiaomi/nezha-policy/nezha_factory_vendor_policy/gen/derived/vendor_sepolicy.cil",
+        "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+        "sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+        "size_bytes": 1708593
+      },
+      {
+        "compiler_input": "vendor/xiaomi/nezha-policy/corpus/odm/etc/selinux/odm_sepolicy.cil",
+        "resolved_path": "/work/evolution/vendor/xiaomi/nezha-policy/corpus/odm/etc/selinux/odm_sepolicy.cil",
+        "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+        "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+        "size_bytes": 14292
+      },
+      {
+        "compiler_input": "out-nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/compat/plat_sepolicy_genfs_202504.cil/android_arm64_armv8-a/plat_sepolicy_genfs_202504.cil",
+        "resolved_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/compat/plat_sepolicy_genfs_202504.cil/android_arm64_armv8-a/plat_sepolicy_genfs_202504.cil",
+        "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+        "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+        "size_bytes": 142
+      }
+    ],
+    "exact_five_replacement_identities": {
+      "odm": {
+        "/etc/selinux/precompiled_sepolicy": {
+          "sha256": "44113598331ae410279432d39adb884db56fc1217ab5a35158c36fb3bee9f707",
+          "size_bytes": 1517136
+        },
+        "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256": {
+          "sha256": "b0ebad72754afac819eb42b91ffe01c64694ae9c1b8831d333f0933224bbce42",
+          "size_bytes": 65
+        },
+        "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256": {
+          "sha256": "47ac967fe4a690137321beb1f863778de31a7f3534e200c1642f6659e2a45d53",
+          "size_bytes": 65
+        },
+        "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256": {
+          "sha256": "04b3cfdefbc293724f48a4a6c0e6098d46aa944274c74928b9b9cd20b6709335",
+          "size_bytes": 65
+        }
+      },
+      "vendor": {
+        "/etc/selinux/vendor_sepolicy.cil": {
+          "sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+          "size_bytes": 1708593
+        }
+      }
+    }
+  },
+  "schema_version": 3,
+  "scope": {
+    "complete_rom_ready": false,
+    "complete_target_files_verified": false,
+    "current_policy_build_equivalence_verified": false,
+    "delivery_images_adopted": false,
+    "device_rollback_compatibility_verified": false,
+    "guest_accessed": false,
+    "host_large_images_copied": false,
+    "images_or_keys_read": false,
+    "native_commands_run": false,
+    "packaged_framework_policy_verified": false,
+    "phone_accessed": false,
+    "physical_partition_fit_verified": false,
+    "public_or_frozen_files_modified": false,
+    "runtime_verified": false,
+    "selected_guest_images_rehashed": false,
+    "signed_parent_chain_verified": false,
+    "target_files_metadata_installed": false,
+    "target_files_vintf_compatible": false
+  },
+  "selected_delivery_evidence": {
+    "sha256": "dd11cdbee4b5d9193dfeb875ff2bfbfd5410cc4e2de14213577b386545b4c4ab",
+    "size_bytes": 61136
+  },
+  "source_composition": {
+    "contracts": [
+      {
+        "path": "patches/evolution/prebuilt-recovery.json",
+        "sha256": "4d4b49050e5808f72d74fe023b80c2e83b646a542856182361ee594f48a9656b",
+        "size_bytes": 4741
+      },
+      {
+        "path": "patches/evolution/ab-only-recovery-packaging.json",
+        "sha256": "8dc262578a254ca6e2f4a6a342c8d0e0a1b82d38585b2f1c059d848929938a2b",
+        "size_bytes": 5058
+      },
+      {
+        "path": "patches/evolution/direct-avb-custom-images.json",
+        "sha256": "47008985f4972699e9c25fb91de7780abd433d7748dc5028e1fb21098d9113fc",
+        "size_bytes": 3189
+      },
+      {
+        "path": "patches/evolution/optional-partition-build-props.json",
+        "sha256": "ffe4dba8ffcdf202d57d263bf8ebbf40dfba1ed484f1f96122322b6901914e23",
+        "size_bytes": 3641
+      },
+      {
+        "path": "patches/evolution/target-files-metadata.json",
+        "sha256": "595382e29c0d03a203bf40e08649f42280c88d982e04eef2826813262b4b01b9",
+        "size_bytes": 3680
+      },
+      {
+        "path": "patches/evolution/direct-avb-readonly.json",
+        "sha256": "81fc394ebd031317a93ec374846f927209c0b03572463deb74bfc401a51cdcb1",
+        "size_bytes": 3275
+      },
+      {
+        "path": "patches/evolution/vintf-shipping-api.json",
+        "sha256": "c0a555d4b0aa6cddad58e788e9cf45026b7578c98a2a3cd1e7e66e4ef2c8fcf1",
+        "size_bytes": 4789
+      },
+      {
+        "path": "patches/evolution/target-files-source-composition.json",
+        "sha256": "b9c6c485ad7a1617bc29a315ba8ff89034ff28cbe4e8a9196eff726ee1811f2a",
+        "size_bytes": 19228
+      }
+    ],
+    "final_source_files": [
+      {
+        "path": "build/make/core/Makefile",
+        "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+        "size_bytes": 392084
+      },
+      {
+        "path": "build/make/core/product.mk",
+        "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+        "size_bytes": 31527
+      },
+      {
+        "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+        "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+        "size_bytes": 48289
+      },
+      {
+        "path": "build/make/tools/releasetools/apex_utils.py",
+        "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+        "size_bytes": 23271
+      },
+      {
+        "path": "build/make/tools/releasetools/build_super_image.py",
+        "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+        "size_bytes": 7212
+      },
+      {
+        "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+        "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+        "size_bytes": 12713
+      },
+      {
+        "path": "build/make/tools/releasetools/common.py",
+        "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+        "size_bytes": 157203
+      },
+      {
+        "path": "build/make/tools/releasetools/non_ab_ota.py",
+        "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+        "size_bytes": 28122
+      },
+      {
+        "path": "build/make/tools/releasetools/ota_from_target_files.py",
+        "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+        "size_bytes": 66479
+      },
+      {
+        "path": "build/make/tools/releasetools/validate_target_files.py",
+        "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+        "size_bytes": 22638
+      }
+    ],
+    "initial_source_files": [
+      {
+        "path": "build/make/core/Makefile",
+        "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e",
+        "size_bytes": 378285
+      },
+      {
+        "path": "build/make/core/product.mk",
+        "sha256": "6cd4e999a569b5efe5864b1e1ec7a3f988383576e7c57b32df56f5cba0f0712f",
+        "size_bytes": 31527
+      },
+      {
+        "path": "build/make/tools/releasetools/add_img_to_target_files.py",
+        "sha256": "9ace653e00cc3635ae476d15e03b44b7bf6c70898497c343bf41f6ce521dbd98",
+        "size_bytes": 48004
+      },
+      {
+        "path": "build/make/tools/releasetools/apex_utils.py",
+        "sha256": "cba4dcffb78e0dd3eb26ddfa7cbf5de8c17f132991824de93ca71430a01502e5",
+        "size_bytes": 23271
+      },
+      {
+        "path": "build/make/tools/releasetools/build_super_image.py",
+        "sha256": "6c9fe795ce3d03214b3128888b48336d28fce89f68ffb0730bcdd6de923d2cfc",
+        "size_bytes": 7212
+      },
+      {
+        "path": "build/make/tools/releasetools/check_target_files_vintf.py",
+        "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+        "size_bytes": 11705
+      },
+      {
+        "path": "build/make/tools/releasetools/common.py",
+        "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+        "size_bytes": 156263
+      },
+      {
+        "path": "build/make/tools/releasetools/non_ab_ota.py",
+        "sha256": "c19ca505f666379115f0b25c3cb1a726c409194f0cd44cffff87ee38d1c62691",
+        "size_bytes": 28122
+      },
+      {
+        "path": "build/make/tools/releasetools/ota_from_target_files.py",
+        "sha256": "8cff8d9400f45571c3a15689705a45198a96443acc2dcd4ab74aa7df0e4717be",
+        "size_bytes": 66479
+      },
+      {
+        "path": "build/make/tools/releasetools/validate_target_files.py",
+        "sha256": "7d177c3692aaa34d04da50c7e933d5598be47f625db20e00ad546c29d69f52ec",
+        "size_bytes": 22638
+      }
+    ],
+    "ordered_patches": [
+      {
+        "path": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+        "sha256": "622bd7df162ba92631cddcf6e853823715c0b1795ee255ebf41364e4a7c4407e",
+        "size_bytes": 7477
+      },
+      {
+        "path": "patches/evolution/0006-ab-only-recovery-packaging.patch",
+        "sha256": "29b8ed6a208d4ad6356d72c995c84b72204494acb9672aaf3fceb49a21f58a8c",
+        "size_bytes": 2608
+      },
+      {
+        "path": "patches/evolution/0007-direct-avb-custom-images.patch",
+        "sha256": "80e0081c5fbb9cc42dac058bd2dc153396a565732b9daea04b65214e0e90b9cf",
+        "size_bytes": 10414
+      },
+      {
+        "path": "patches/evolution/0008-optional-partition-build-props.patch",
+        "sha256": "85a554f8a1e93068f0eaabc903c34c06b9f5a75bc8c689d4cb3b556297c7967e",
+        "size_bytes": 4292
+      },
+      {
+        "path": "patches/evolution/0009-prebuilt-target-files-metadata.patch",
+        "sha256": "889ae23b909f46621c5c223bf9b637baadf039d7cc67057d12d14495597ad721",
+        "size_bytes": 4057
+      },
+      {
+        "path": "patches/evolution/0010-initialize-direct-avb-readonly.patch",
+        "sha256": "0c045c4e377eaf44e41b1603250160cc4630c1fd21f97c30facb5c838bfcf33a",
+        "size_bytes": 1050
+      },
+      {
+        "path": "patches/evolution/0011-vintf-shipping-api-from-odm.patch",
+        "sha256": "0fa33fca9d2e7a7d6ff99d00f968f36dfa8027abc0b2adcf31a3df0ad957361b",
+        "size_bytes": 1928
+      }
+    ],
+    "patches_applied_by_this_tool": false,
+    "project": {
+      "branch": "bka",
+      "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "path": "build/make",
+      "repository": "https://github.com/Evolution-X/build"
+    },
+    "schema_version": 1,
+    "source_transitions": [
+      {
+        "after": {
+          "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+          "size_bytes": 382008
+        },
+        "before": {
+          "sha256": "c88f2df44f4210243cdccce6cfeffc156d778aab00a7d7108777b9217b70146e",
+          "size_bytes": 378285
+        },
+        "patch": {
+          "path": "patches/evolution/0005-verified-prebuilt-recovery.patch",
+          "sha256": "622bd7df162ba92631cddcf6e853823715c0b1795ee255ebf41364e4a7c4407e",
+          "size_bytes": 7477
+        },
+        "path": "build/make/core/Makefile"
+      },
+      {
+        "after": {
+          "sha256": "ef2e4014238ad323e8157a3bf80190d1795f01b6dd0c087b5e8c2cc167a43c51",
+          "size_bytes": 48289
+        },
+        "before": {
+          "sha256": "9ace653e00cc3635ae476d15e03b44b7bf6c70898497c343bf41f6ce521dbd98",
+          "size_bytes": 48004
+        },
+        "patch": {
+          "path": "patches/evolution/0006-ab-only-recovery-packaging.patch",
+          "sha256": "29b8ed6a208d4ad6356d72c995c84b72204494acb9672aaf3fceb49a21f58a8c",
+          "size_bytes": 2608
+        },
+        "path": "build/make/tools/releasetools/add_img_to_target_files.py"
+      },
+      {
+        "after": {
+          "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+          "size_bytes": 388709
+        },
+        "before": {
+          "sha256": "61a40da9741cae2119263ca0a92cd717874a88320e28fb0ee67505bed6829d31",
+          "size_bytes": 382008
+        },
+        "patch": {
+          "path": "patches/evolution/0007-direct-avb-custom-images.patch",
+          "sha256": "80e0081c5fbb9cc42dac058bd2dc153396a565732b9daea04b65214e0e90b9cf",
+          "size_bytes": 10414
+        },
+        "path": "build/make/core/Makefile"
+      },
+      {
+        "after": {
+          "sha256": "66c76097fafb6d4422e617b232babc1fc9f5da3d5e8f0d52d925c8841104792d",
+          "size_bytes": 157203
+        },
+        "before": {
+          "sha256": "78b74437cb9916eda2b25ac4c8afd13b50847648f10c2e4fd66df0e02ab90bc2",
+          "size_bytes": 156263
+        },
+        "patch": {
+          "path": "patches/evolution/0008-optional-partition-build-props.patch",
+          "sha256": "85a554f8a1e93068f0eaabc903c34c06b9f5a75bc8c689d4cb3b556297c7967e",
+          "size_bytes": 4292
+        },
+        "path": "build/make/tools/releasetools/common.py"
+      },
+      {
+        "after": {
+          "sha256": "af8af76a36d6d2303dba471545bc2e36e15347211d9c96a4145a1ea3c6351d8b",
+          "size_bytes": 392075
+        },
+        "before": {
+          "sha256": "3c12ae16e8ff6b937c5d09746f26a41473f2e0b65d40c65006594edd370b376e",
+          "size_bytes": 388709
+        },
+        "patch": {
+          "path": "patches/evolution/0009-prebuilt-target-files-metadata.patch",
+          "sha256": "889ae23b909f46621c5c223bf9b637baadf039d7cc67057d12d14495597ad721",
+          "size_bytes": 4057
+        },
+        "path": "build/make/core/Makefile"
+      },
+      {
+        "after": {
+          "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+          "size_bytes": 392084
+        },
+        "before": {
+          "sha256": "af8af76a36d6d2303dba471545bc2e36e15347211d9c96a4145a1ea3c6351d8b",
+          "size_bytes": 392075
+        },
+        "patch": {
+          "path": "patches/evolution/0010-initialize-direct-avb-readonly.patch",
+          "sha256": "0c045c4e377eaf44e41b1603250160cc4630c1fd21f97c30facb5c838bfcf33a",
+          "size_bytes": 1050
+        },
+        "path": "build/make/core/Makefile"
+      },
+      {
+        "after": {
+          "sha256": "8ada3c9809c7b6e5e07dd02a361a1dcb8a28b615bc37f62f46e156ac06159a93",
+          "size_bytes": 12713
+        },
+        "before": {
+          "sha256": "df247272684b97b77ae8d6d556c4a9e3df70e394d9738b907363bf5cb496424a",
+          "size_bytes": 11705
+        },
+        "patch": {
+          "path": "patches/evolution/0011-vintf-shipping-api-from-odm.patch",
+          "sha256": "0fa33fca9d2e7a7d6ff99d00f968f36dfa8027abc0b2adcf31a3df0ad957361b",
+          "size_bytes": 1928
+        },
+        "path": "build/make/tools/releasetools/check_target_files_vintf.py"
+      }
+    ],
+    "whole_source_tree_verified": false
+  }
+}

@@ -102,6 +102,35 @@ class TargetFilesDeliveryTests(unittest.TestCase):
         (inputs["template_root"] / "BoardConfig.mk").write_bytes((ROOT / g.DEVICE_PATH / "BoardConfig.mk").read_bytes())
         return inputs, receipt, verifier
 
+    def paired_4k_binding_plan(self):
+        """Exercise the consumer boundary without inventing native proof data."""
+        binding, plan = self.binding_plan()
+        profile, profile_identity = g._page_size_profile_contract(ROOT / g.PAGE_SIZE_PROFILE_V2_RECORD)
+        plan["kernel"] = {"sha256": profile["kernel"]["image"]["sha256"], "page_size_bytes": 4096}
+        plan["bundles"]["kernel"] = copy.deepcopy(profile["kernel"]["receipt"])
+        plan["framework_providers"]["inputs"].update(
+            contract={key: profile["providers"]["contract"][key] for key in ("sha256", "size_bytes")},
+            files=[{"path": "proprietary" + row["runtime_path"],
+                    **{key: row[key] for key in ("sha256", "size_bytes")}} for row in profile["providers"]["files"]],
+            payload_derivations=copy.deepcopy(profile["providers"]["payload_derivations"]))
+        plan["page_size_profile"] = g._page_size_profile_binding(plan, profile, profile_identity)
+        partitions = [*g.FRAMEWORK_PARTITIONS, "mi_ext"]
+        plan.update(packaged_logical_partitions=partitions, required_unpacked_partitions=[],
+                    logical_filesystems={name: "erofs" for name in partitions})
+        selected = binding["policy_image_delivery"]
+        selected["contract"] = {"path": g.POLICY_IMAGE_DELIVERY_4K_CONTRACT,
+                                "contract_id": g.POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID,
+                                "sha256": "4" * 64, "size_bytes": 400}
+        selected["page_size_context"] = copy.deepcopy(g.POLICY_IMAGE_DELIVERY_4K_CONTEXT)
+        selected["historical_current_policy_evidence"] = copy.deepcopy(selected["current_policy_evidence"])
+        public = {key: copy.deepcopy(value) for key, value in binding.items() if key not in {"receipt", "vendor_bundle"}}
+        # The independent maintained adapter owns native evidence validation.
+        # These mocks isolate the generator's page/product pairing checks.
+        self.enterContext(mock.patch.object(g, "_metadata_options", return_value={}))
+        self.enterContext(mock.patch.object(g, "_metadata_module", return_value=delivery))
+        self.enterContext(mock.patch.object(g, "_metadata_public_binding", return_value=public))
+        return binding, plan
+
     def test_factory_routing_does_not_inspect_delivery(self):
         with mock.patch.object(g, "_policy_image_delivery_reference", side_effect=AssertionError("implicit delivery")):
             self.assertIs(g._metadata_module(), original)
@@ -282,6 +311,155 @@ class TargetFilesDeliveryTests(unittest.TestCase):
         with mock.patch.object(g, "_verify_target_files_metadata", side_effect=AssertionError("private bundle reopened")), \
                 mock.patch("subprocess.Popen", side_effect=AssertionError("native command executed")):
             self.assertEqual(g.validate(output), plan)
+
+    def test_4k_selector_has_closed_id_schema_and_canonical_path(self):
+        path = self.root / g.POLICY_IMAGE_DELIVERY_4K_CONTRACT
+        path.parent.mkdir(parents=True, exist_ok=True)
+        descriptor = {"schema_version": 3, "contract_id": g.POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID}
+        path.write_text(json.dumps(descriptor))
+        # This is only the descriptor-selection boundary, not image admission.
+        with mock.patch.object(g, "ROOT", self.root):
+            selected = g._policy_image_delivery_reference(path)
+            self.assertEqual(selected["path"], g.POLICY_IMAGE_DELIVERY_4K_CONTRACT)
+            self.assertEqual(selected["contract_id"], g.POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID)
+            for mutation in ({"schema_version": 2}, {"schema_version": True}, {"contract_id": "unknown"},
+                             {"contract_id": g.POLICY_IMAGE_DELIVERY_CONTRACT_ID}):
+                path.write_text(json.dumps({**descriptor, **mutation}))
+                with self.subTest(mutation=mutation), self.assertRaises((g.CandidateError, OSError)):
+                    g._policy_image_delivery_reference(path)
+
+    def test_4k_selector_never_opens_an_admission_supplied_path(self):
+        binding, _ = self.binding_plan()
+        binding["policy_image_delivery"]["contract"].update(
+            contract_id=g.POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID, path="../../unreviewed.json")
+        with mock.patch.object(g, "_policy_image_delivery_reference", side_effect=AssertionError("untrusted path read")), \
+                self.assertRaisesRegex(g.CandidateError, "selector differs"):
+            g._metadata_image_selection(binding)
+
+    def test_4k_pairing_requires_full_admission_and_exact_product_bytes(self):
+        binding, plan = self.paired_4k_binding_plan()
+        product = g._render_product(plan).encode()
+        self.assertEqual({"sha256": hashlib.sha256(product).hexdigest(), "size_bytes": len(product)},
+                         {key: g.POLICY_IMAGE_DELIVERY_4K_CONTEXT["source_product"][key] for key in ("sha256", "size_bytes")})
+        self.assertIn("BOARD_NEZHA_PREBUILT_METADATA := true", g._target_files_metadata_binding(plan, binding))
+        for mutate in (lambda p: p.pop("page_size_profile"),
+                       lambda p: p["page_size_profile"].update(profile_id=g.PAGE_SIZE_PROFILE_ID),
+                       lambda p: p["page_size_profile"]["contract"].update(sha256="0" * 64),
+                       lambda p: p["page_size_profile"]["product_settings"].update(PRODUCT_MAX_PAGE_SIZE_SUPPORTED=16384),
+                       lambda p: p["page_size_profile"]["product_settings"].update(PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE=1),
+                       lambda p: p["page_size_profile"]["scope"].update(complete_rom_admitted=True),
+                       lambda p: p["kernel"].update(sha256="0" * 64),
+                       lambda p: p["framework_providers"]["inputs"]["receipt"].update(sha256="0" * 64)):
+            changed = copy.deepcopy(plan)
+            mutate(changed)
+            with self.subTest(mutate=mutate), self.assertRaises(g.CandidateError):
+                g._target_files_metadata_binding(changed, changed["target_files_metadata"])
+        with mock.patch.object(g, "_render_product", return_value=product.decode() + "# changed\n"), \
+                self.assertRaisesRegex(g.CandidateError, "unchanged current product"):
+            g._target_files_metadata_binding(plan, binding)
+
+    def test_4k_pairing_does_not_promote_scope_or_accept_a_resealed_context(self):
+        binding, plan = self.paired_4k_binding_plan()
+        mutations = (lambda p: p.update(variant="userdebug"),
+                     lambda p: p.update(release_config="other"),
+                     lambda p: p["admission"].update(complete_target_files_allowed=True),
+                     lambda p: p["target_files_metadata"]["policy_image_delivery"]["page_size_context"]["source_candidate"].update(sha256="0" * 64),
+                     lambda p: p["target_files_metadata"]["policy_image_delivery"]["historical_current_policy_evidence"].update(sha256="0" * 64))
+        for mutate in mutations:
+            changed = copy.deepcopy(plan)
+            mutate(changed)
+            with self.subTest(mutate=mutate), self.assertRaises(g.CandidateError):
+                g._target_files_metadata_binding(changed, changed["target_files_metadata"])
+
+    def test_actual_4k_public_route_preserves_historical_controls_and_metadata(self):
+        from scripts import target_files_metadata_delivery_4k as paired
+        selected_contract = ROOT / g.POLICY_IMAGE_DELIVERY_4K_CONTRACT
+        public = g._metadata_public_binding(source_contract=SOURCE, image_contract=selected_contract)
+        old = self.public()
+        self.assertIs(g._metadata_module(source_contract=SOURCE, image_contract=selected_contract), paired)
+        self.assertEqual(paired.CONTROL_TOOLS, (*delivery.CONTROL_TOOLS, "scripts/target_files_metadata_delivery_4k.py"))
+        selected = public["policy_image_delivery"]
+        self.assertEqual(selected["page_size_context"], g.POLICY_IMAGE_DELIVERY_4K_CONTEXT)
+        self.assertEqual(selected["historical_current_policy_evidence"], old["policy_image_delivery"]["current_policy_evidence"])
+        self.assertEqual(selected["selected_delivery_evidence"], old["policy_image_delivery"]["selected_delivery_evidence"])
+        self.assertNotEqual(selected["current_policy_evidence"], selected["historical_current_policy_evidence"])
+        self.assertEqual(selected["packaged_images"], old["policy_image_delivery"]["packaged_images"])
+        for key in ("images", "scope", "metadata_file_count", "native_source", "composition_identity"):
+            self.assertEqual(public[key], old[key])
+        before = {row["path"]: row for row in old["control_files"] if row["path"].startswith("controls/")}
+        after = {row["path"]: row for row in public["control_files"] if row["path"].startswith("controls/")}
+        self.assertTrue(all(after.get(name) == row for name, row in before.items()))
+        self.assertEqual([row["path"] for row in public["control_files"] if row["path"].startswith("tools/")],
+                         ["tools/target_files_metadata.py"])
+
+    def test_4k_consumer_rejects_resealed_legacy_receipts_and_context_changes(self):
+        from scripts import target_files_metadata_delivery_4k as paired
+        selected_contract = ROOT / g.POLICY_IMAGE_DELIVERY_4K_CONTRACT
+        public = g._metadata_public_binding(source_contract=SOURCE, image_contract=selected_contract)
+        selected = public["policy_image_delivery"]
+        receipt = {key: copy.deepcopy(public[key]) for key in ("profile", "images", "scope")}
+        receipt.update(schema_version=4, operation="stage-policy-image-target-files-metadata-4k-v3",
+                       source_composition=copy.deepcopy(public["native_source"]),
+                       files=[{} for _ in range(public["metadata_file_count"])],
+                       bundle_files=copy.deepcopy(public["control_files"]),
+                       packaged_images=copy.deepcopy(selected["packaged_images"]),
+                       page_size_context=copy.deepcopy(selected["page_size_context"]))
+        for key, name in (("current_policy_evidence", "current-policy-evidence.json"),
+                          ("selected_delivery_evidence", "selected-delivery-evidence.json"),
+                          ("historical_current_policy_evidence", "historical-v13i-policy-evidence.json")):
+            receipt[key] = {"path": "provenance/" + name, **selected[key]}
+        _, _, controls = paired._controls(ROOT, paired.Reader(), source_contract=SOURCE, image_contract=selected_contract)
+        payloads = {"controls/" + name: raw for name, raw in controls.items()}
+        payloads.update(paired.runtime_tool_payloads(controls))
+        bundle = self.root / "synthetic-consumer-boundary"
+        for name, raw in payloads.items():
+            target = bundle / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        path = bundle / g.TARGET_FILES_METADATA_RECEIPT
+        baseline = copy.deepcopy(receipt)
+        # The adapter owns metadata/native proof verification. Isolate that
+        # boundary here, including a resealed external receipt for every case.
+        projected = {str(index): ({}, b"synthetic metadata") for index in range(public["metadata_file_count"])}
+        with mock.patch.object(paired, "verify_bundle", return_value=(receipt, projected, mock.Mock())) as verifier:
+            def verify():
+                raw = paired.encoded(receipt)
+                path.write_bytes(raw)
+                return g._verify_target_files_metadata(path, expected_receipt_sha256=hashlib.sha256(raw).hexdigest(),
+                                                       source_contract=SOURCE, image_contract=selected_contract)
+            self.assertEqual(verify()["policy_image_delivery"], selected)
+            self.assertEqual(verifier.call_args.kwargs["image_contract"], selected_contract)
+            mutations = (lambda r: r.update(schema_version=3), lambda r: r.update(schema_version=True),
+                         lambda r: r.update(operation="stage-policy-image-target-files-metadata-v2"),
+                         lambda r: r.pop("page_size_context"),
+                         lambda r: r["page_size_context"]["product_settings"].update(PRODUCT_MAX_PAGE_SIZE_SUPPORTED=16384),
+                         lambda r: r["page_size_context"]["product_settings"].update(PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE=1),
+                         lambda r: r["page_size_context"]["source_product"].update(sha256="0" * 64),
+                         lambda r: r["current_policy_evidence"].update(selected["historical_current_policy_evidence"]),
+                         lambda r: r.pop("historical_current_policy_evidence"),
+                         lambda r: r["historical_current_policy_evidence"].update(path="provenance/current-policy-evidence.json"),
+                         lambda r: r["selected_delivery_evidence"].update(sha256="0" * 64),
+                         lambda r: r["packaged_images"].update(vendor=r["images"]["vendor"]),
+                         lambda r: r["bundle_files"].pop())
+            for mutate in mutations:
+                receipt.clear()
+                receipt.update(copy.deepcopy(baseline))
+                mutate(receipt)
+                with self.subTest(mutate=mutate), self.assertRaises(g.CandidateError):
+                    verify()
+
+    def test_4k_delivery_requires_explicit_current_profile_before_private_inputs(self):
+        required = {name: "explicit" for name in (
+            "target_files_source_contract", "target_files_metadata_receipt", "target_files_metadata_receipt_sha256",
+            "policy_inputs_receipt", "framework_provider_policy_contract", "framework_provider_inputs_receipt",
+            "framework_allocator_contract", "factory_boot_contract", "partition_metadata", "fstab_source",
+            "dsp_policy_contract", "init_helper_capability_contract")}
+        for page in (None, ROOT / g.PAGE_SIZE_PROFILE_RECORD):
+            with self.subTest(page=page), mock.patch.object(g, "_load_records", side_effect=AssertionError("private input read")), \
+                    self.assertRaisesRegex(g.CandidateError, "4 KiB policy-image delivery requires"):
+                g.generate(self.root / "artifacts/refused-4k", record_paths={}, kernel_receipt=None, vendor_receipt=None,
+                           variant="user", policy_image_delivery_contract=ROOT / g.POLICY_IMAGE_DELIVERY_4K_CONTRACT,
+                           page_size_profile=page, **required)
 
 
 if __name__ == "__main__":

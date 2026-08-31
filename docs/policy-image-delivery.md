@@ -8,14 +8,16 @@ admit a complete ROM. The original
 remain byte-for-byte unchanged; their existing selectors still require the
 original factory images.
 
-Two maintained adapters preserve the reviewed candidate's separate stages:
+The maintained adapters preserve the reviewed candidate's separate stages:
 
 | Maintained source | Explicit descriptor | Purpose |
 | --- | --- | --- |
 | [`target_files_metadata_policy_images.py`](../scripts/target_files_metadata_policy_images.py) | [`nezha-policy-image-delivery-basis.json`](../config/nezha-policy-image-delivery-basis.json) | Binds the original metadata and final leaf derivation. Its missing-current-policy install gate still fails. |
 | [`target_files_metadata_delivery.py`](../scripts/target_files_metadata_delivery.py) | [`nezha-policy-image-delivery.json`](../config/nezha-policy-image-delivery.json) | Adds the exact current v13i policy evidence and actual independent guest-copy receipt. Installation requires actual packaged inputs. |
+| [`target_files_metadata_delivery_4k.py`](../scripts/target_files_metadata_delivery_4k.py) | [`nezha-policy-image-delivery-v2.json`](../config/nezha-policy-image-delivery-v2.json), based on [`nezha-policy-image-delivery-basis-v2.json`](../config/nezha-policy-image-delivery-basis-v2.json) | Pairs the authorized current-provider 4 KiB profile with the actual completed component result, preserving the earlier image-copy provenance. |
 
-The descriptors preserve the reviewed schema-1 and schema-2 bytes, respectively.
+The two earlier descriptors preserve the reviewed schema-1 and schema-2 bytes,
+respectively.
 They record identities and metadata paths, not proprietary file contents. The
 actual delivery descriptor pins the 61,136-byte selected-copy receipt
 `dd11cdbee4b5d9193dfeb875ff2bfbfd5410cc4e2de14213577b386545b4c4ab` and the
@@ -23,6 +25,25 @@ actual delivery descriptor pins the 61,136-byte selected-copy receipt
 `8ec546ed3e3e9992cce543c3c1cb80103edc2f8a1adc2fc496b5f343571a008d`.
 Those private records, their complete native evidence, images and source
 checkouts stay in ignored locations.
+
+The 4 KiB successor preserves both earlier adapters and descriptors byte for
+byte. Its schema-3 descriptor reconstructs the exact earlier delivery and
+image basis before admitting its added page context. The current evidence is
+the actual `pagesize-v13j-1` native result, 206,610 bytes with SHA256
+`949bd0882087d403637e542a0bc82c37b4ecabc8196ba0c160fe8a3ddd46e145`.
+The existing post-build collector read back that result, source/history,
+settings and output evidence: 54 file bodies and 36 APEX metadata records.
+This is a successful 37-goal component build with exact protected policy and
+runtime identities, not a full compatibility or fresh-compiler-action claim.
+
+The successor requires the exact v2 page profile, source-only candidate,
+installed transaction and native settings transition from 16384 to 4096. Both
+prebuilt page-size checking and strict ELF checks remain selected. Its 204
+current source rows must differ from the historical rows only at the generated
+product file; all 13 protected policy and 11 protected runtime rows must remain
+equal. The old `8ec546ed…` current record is retained separately as historical
+provenance, and `dd11cdbe…` still describes the original actual copies. Neither
+is relabelled as a fresh 4 KiB image-copy operation.
 
 The final images differ from their factory originals:
 
@@ -75,6 +96,19 @@ paths or code alter the generated checker and bundle receipt; the earlier
 private candidate receipt is not reusable for the maintained bundle. Preserve
 old bundles and record each new derivation.
 
+For the 4 KiB successor, use `target_files_metadata_delivery_4k.py` and
+`config/nezha-policy-image-delivery-v2.json`. Keep the original bundle,
+delivery proof and selected-copy arguments above. Pass the actual completed
+native result at
+`reports/nezha-page-size-20260829/native-v13j-preparation/build-controls/run-pagesize-v13j-1/stdout.jsonl`
+to `--current-policy-evidence`, and pass the earlier
+`delivery-v1/current-policy/report-v2.json` to the additional required
+`--historical-policy-evidence` argument. Choose a new output directory. Its
+schema-4 receipt retains the original metadata and image fields, adds the
+exact page context and historical-policy reference, and binds a checker
+assembled from five maintained source modules. It does not import the private
+build wrapper or an ignored evidence-verification script.
+
 The generator's `--policy-image-delivery-contract` is a separate opt-in, paired
 with the metadata receipt/SHA256 and combined source contract. The factory
 image bundle remains unchanged. A root-owned installation must independently
@@ -83,6 +117,15 @@ copy and hash the selected leaves into a separate
 the receipt provide provenance; later regular files at other paths can be
 verified only against the exact final identities. This does not permit implicit
 image substitution or replacement of the original proprietary images.
+
+Combining delivery with a page profile is admitted only by the new explicit
+descriptor and the exact v2 4 KiB profile. The historical delivery mode still
+rejects page profiles. Generation and portable validation require the complete
+existing page-profile admission, including its kernel/provider bindings and
+the exact generated 4 KiB product file. The original factory images are never
+overwritten. Later guest staging must freshly hash the selected image copies
+and the current source/policy/runtime guards; a host metadata receipt does not
+replace those checks or perform source adoption.
 
 The unchanged build-core hook invokes the generated verifier before metadata
 publication. It requires all ten final source-file hashes from the explicit
@@ -94,6 +137,15 @@ changes during publication trigger rollback of only the newly owned metadata.
 There is no override for missing policy evidence. A complete target-files
 package is not required before source adoption, but these actual packaging
 checks remain mandatory when the hook runs.
+
+The 4 KiB mode additionally reads the exact generated product file from the
+actual source tree before allowing the policy gate. This closes the gap
+between its 4 KiB product context and the ten packaging-source files, which
+do not include that product file. The three sidecars still derive from the
+same ordered CIL/mapping bytes; changing the product page-size maximum does
+not justify changing their identities. The native source and image checks
+also remain necessary after the separate 0008/0009/0011 packaging-source
+integration.
 
 Offline tests use inert fixtures and mock process/network actions. They cover
 explicit selectors, changed receipts, stale inputs, source and image guards,

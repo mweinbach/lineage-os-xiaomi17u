@@ -77,6 +77,8 @@ TARGET_FILES_SOURCE_CONTRACT = "patches/evolution/target-files-source-compositio
 TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
 POLICY_IMAGE_DELIVERY_CONTRACT = "config/nezha-policy-image-delivery.json"
 POLICY_IMAGE_DELIVERY_CONTRACT_ID = "nezha-v13i-final-leaf-metadata-delivery-v2"
+POLICY_IMAGE_DELIVERY_4K_CONTRACT = "config/nezha-policy-image-delivery-v2.json"
+POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID = "nezha-4k-final-leaf-metadata-delivery-v3"
 POLICY_IMAGE_DELIVERY_PATH = "vendor/xiaomi/nezha-policy-images"
 POLICY_IMAGE_DELIVERY_INCLUDE = DEVICE_PATH / "generated/policy-image-delivery.mk"
 POLICY_IMAGE_DELIVERY_POLICY = {
@@ -115,6 +117,17 @@ PAGE_SIZE_SCOPE = {
     "native_component_build_verified": False, "compatibility_16k_verified": False,
     "vsr_compatibility_verified": False, "complete_rom_admitted": False,
     "hardware_tested": False, "phone_operations": [],
+}
+POLICY_IMAGE_DELIVERY_4K_CONTEXT = {
+    "profile": {"path": PAGE_SIZE_PROFILE_V2_RECORD.as_posix(),
+                "sha256": PAGE_SIZE_PROFILE_V2_SHA256, "size_bytes": 15567},
+    "profile_id": PAGE_SIZE_PROFILE_V2_ID,
+    "source_candidate": {"sha256": "392485b8ef5005f6d8079487c7a8ee7931597bacaab593478277f8201c4d03a2",
+                         "size_bytes": 127103},
+    "source_product": {"path": "device/xiaomi/nezha/generated/device-candidate.mk",
+                       "sha256": "d336169a8f683bd798bb63360fbc62ee9ebdc03343e2f7ab91906052cde568a9",
+                       "size_bytes": 1661},
+    "product_settings": copy.deepcopy(PAGE_SIZE_PRODUCT_SETTINGS),
 }
 DIRECT_AVB_READONLY_CONTRACT = "patches/evolution/direct-avb-readonly.json"
 DIRECT_AVB_READONLY_CONTRACT_ID = "nezha-direct-avb-readonly-v1"
@@ -1864,6 +1877,13 @@ def _metadata_module(*, source_contract=None, image_contract=None):
     if image_contract is not None:
         _require(source_contract is not None,
                  "policy-image delivery requires the explicit combined source composition")
+        reference = _policy_image_delivery_reference(image_contract)
+        if reference["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+            if __package__:
+                from . import target_files_metadata_delivery_4k
+            else:
+                import target_files_metadata_delivery_4k
+            return target_files_metadata_delivery_4k
         if __package__:
             from . import target_files_metadata_delivery
         else:
@@ -1916,26 +1936,34 @@ def _metadata_source_selection(binding):
     return ROOT / TARGET_FILES_SOURCE_CONTRACT
 
 
+def _policy_image_delivery_spec(contract_id):
+    if contract_id == POLICY_IMAGE_DELIVERY_CONTRACT_ID:
+        return POLICY_IMAGE_DELIVERY_CONTRACT, 2
+    if contract_id == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+        return POLICY_IMAGE_DELIVERY_4K_CONTRACT, 3
+    raise CandidateError("unknown explicit policy-image delivery contract")
+
+
 def _policy_image_delivery_reference(selected_contract):
     if __package__:
         from . import mi_ext_inputs
     else:
         import mi_ext_inputs
-    canonical = ROOT / POLICY_IMAGE_DELIVERY_CONTRACT
     reader = mi_ext_inputs.Reader()
     try:
-        canonical_raw = reader.read(canonical, maximum=MAX_JSON_BYTES)
         selected_raw = reader.read(_no_symlinks(selected_contract), maximum=MAX_JSON_BYTES)
-        admission = json.loads(canonical_raw, object_pairs_hook=_unique_object)
-        _require(selected_raw == canonical_raw and type(admission) is dict and
-                 type(admission.get("schema_version")) is int and admission["schema_version"] == 2 and
-                 admission.get("contract_id") == POLICY_IMAGE_DELIVERY_CONTRACT_ID,
+        admission = json.loads(selected_raw, object_pairs_hook=_unique_object)
+        _require(type(admission) is dict, "invalid policy-image delivery descriptor")
+        record, schema = _policy_image_delivery_spec(admission.get("contract_id"))
+        canonical_raw = reader.read(ROOT / record, maximum=MAX_JSON_BYTES)
+        _require(selected_raw == canonical_raw and type(admission.get("schema_version")) is int and
+                 admission["schema_version"] == schema,
                  "policy-image delivery selection differs from the maintained image contract")
         reader.recheck()
     except mi_ext_inputs.MiExtInputsError as exc:
         raise CandidateError(f"policy-image delivery contract refused: {exc}") from exc
     identity = mi_ext_inputs.identity(canonical_raw)
-    return {"path": POLICY_IMAGE_DELIVERY_CONTRACT, "contract_id": POLICY_IMAGE_DELIVERY_CONTRACT_ID, **identity}
+    return {"path": record, "contract_id": admission["contract_id"], **identity}
 
 
 def _metadata_image_selection(binding):
@@ -1943,13 +1971,16 @@ def _metadata_image_selection(binding):
     if "policy_image_delivery" not in binding:
         return None
     delivery = binding["policy_image_delivery"]
-    _require(type(delivery) is dict and type(delivery.get("contract")) is dict and
+    _require(type(delivery) is dict and type(delivery.get("contract")) is dict,
+             "invalid policy-image delivery selector")
+    record, _ = _policy_image_delivery_spec(delivery["contract"].get("contract_id"))
+    _require(delivery["contract"].get("path") == record and
              json.dumps(delivery["contract"], sort_keys=True) == json.dumps(
-                 _policy_image_delivery_reference(ROOT / POLICY_IMAGE_DELIVERY_CONTRACT), sort_keys=True),
+                 _policy_image_delivery_reference(ROOT / record), sort_keys=True),
              "policy-image delivery selector differs from the maintained contract")
     _require(_metadata_source_selection(binding) is not None,
              "policy-image delivery requires the combined source capability")
-    return ROOT / POLICY_IMAGE_DELIVERY_CONTRACT
+    return ROOT / record
 
 
 def _metadata_options(binding):
@@ -1972,11 +2003,11 @@ def _metadata_public_binding(*, source_contract=None, image_contract=None):
         profile, composition, controls = metadata._controls(ROOT, reader, **options)
         if image_contract is not None:
             reference = _policy_image_delivery_reference(image_contract)
-            _require(metadata.IMAGE_CONTRACT == POLICY_IMAGE_DELIVERY_CONTRACT and
-                     metadata.identity(controls[POLICY_IMAGE_DELIVERY_CONTRACT]) ==
+            _require(metadata.IMAGE_CONTRACT == reference["path"] and
+                     metadata.identity(controls[reference["path"]]) ==
                      {key: reference[key] for key in ("sha256", "size_bytes")},
                      "policy-image delivery adapter uses a different maintained contract")
-            admission = json.loads(controls[POLICY_IMAGE_DELIVERY_CONTRACT], object_pairs_hook=_unique_object)
+            admission = json.loads(controls[reference["path"]], object_pairs_hook=_unique_object)
             selection["policy_image_delivery"] = {
                 "contract": reference, "bundle": POLICY_IMAGE_DELIVERY_PATH,
                 "packaged_images": admission["packaged_images"],
@@ -1986,6 +2017,12 @@ def _metadata_public_binding(*, source_contract=None, image_contract=None):
                 "required_framework_providers": copy.deepcopy(POLICY_IMAGE_DELIVERY_PROVIDERS),
                 "scope": copy.deepcopy(POLICY_IMAGE_DELIVERY_SCOPE),
             }
+            if reference["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+                _require(metadata.encoded(admission["page_size_context"]) == metadata.encoded(POLICY_IMAGE_DELIVERY_4K_CONTEXT),
+                         "policy-image delivery requires the reviewed current 4 KiB context")
+                selection["policy_image_delivery"].update(
+                    page_size_context=copy.deepcopy(admission["page_size_context"]),
+                    historical_current_policy_evidence=copy.deepcopy(admission["historical_current_policy_evidence"]))
         reader.recheck()
         control_files = [{"path": "controls/" + path, **metadata.identity(raw)}
                          for path, raw in sorted(controls.items())]
@@ -2044,14 +2081,23 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contr
         receipt, files, reader = metadata.verify_bundle(path.parent, expected_receipt=expected, **options)
         if image_contract is not None:
             delivery = public["policy_image_delivery"]
-            _require(type(receipt.get("schema_version")) is int and receipt["schema_version"] == 3 and
-                     receipt.get("operation") == "stage-policy-image-target-files-metadata-v2" and
+            paired_4k = delivery["contract"]["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID
+            schema, operation = ((4, "stage-policy-image-target-files-metadata-4k-v3") if paired_4k else
+                                 (3, "stage-policy-image-target-files-metadata-v2"))
+            _require(type(receipt.get("schema_version")) is int and receipt["schema_version"] == schema and
+                     receipt.get("operation") == operation and
                      metadata.encoded(receipt.get("packaged_images")) == metadata.encoded(delivery["packaged_images"]) and
                      metadata.encoded(receipt.get("current_policy_evidence")) == metadata.encoded(
                          {"path": "provenance/current-policy-evidence.json", **delivery["current_policy_evidence"]}) and
                      metadata.encoded(receipt.get("selected_delivery_evidence")) == metadata.encoded(
                          {"path": "provenance/selected-delivery-evidence.json", **delivery["selected_delivery_evidence"]}),
                      "policy-image delivery receipt differs from its explicit maintained capability")
+            if paired_4k:
+                _require(metadata.encoded(receipt.get("page_size_context")) == metadata.encoded(delivery["page_size_context"]) and
+                         metadata.encoded(receipt.get("historical_current_policy_evidence")) == metadata.encoded(
+                             {"path": "provenance/historical-v13i-policy-evidence.json",
+                              **delivery["historical_current_policy_evidence"]}),
+                         "4 KiB delivery receipt changes its page context or historical evidence")
         _require(metadata.encoded(receipt["profile"]) == metadata.encoded(public["profile"]) and
                  metadata.encoded(receipt["source_composition"]) == metadata.encoded(public["native_source"]) and
                  metadata.encoded(receipt["images"]) == metadata.encoded(public["images"]) and
@@ -2147,13 +2193,28 @@ def _target_files_metadata_binding(plan, binding):
         _require(plan.get("variant") == "user" and plan.get("product") == "lineage_nezha" and
                  _codename(plan) == "nezha" and plan.get("shipping_api_level") == 36,
                  "these policy-image leaves require the exact lineage_nezha-bp4a-user context")
-        _require("page_size_profile" not in plan and "framework_allocator" in plan and
+        _require("framework_allocator" in plan and
                  plan.get("policy_inputs", {}).get("receipt") == delivery["required_policy_inputs"] and
                  plan.get("framework_providers", {}).get("inputs", {}).get("receipt") ==
                  delivery["required_framework_providers"] and
                  plan["framework_allocator"].get("contract_record", {}).get("sha256") ==
                  FRAMEWORK_ALLOCATOR_CONTRACT_SHA256,
-                 "policy-image delivery requires its exact current policy, providers and allocator, without a page-profile change")
+                 "policy-image delivery requires its exact current policy, providers and allocator")
+        if delivery["contract"]["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+            page_profile, page_identity = _page_size_profile_contract(ROOT / PAGE_SIZE_PROFILE_V2_RECORD)
+            expected_page = _page_size_profile_binding(plan, page_profile, page_identity)
+            context = delivery["page_size_context"]
+            product = _render_product(plan).encode()
+            _require(_page_size_same(plan.get("page_size_profile"), expected_page) and
+                     _page_size_same(context["profile"], expected_page["contract"]) and
+                     _page_size_same(context["product_settings"], expected_page["product_settings"]) and
+                     context["source_product"] == {
+                         "path": (DEVICE_PATH / "generated/device-candidate.mk").as_posix(),
+                         "sha256": hashlib.sha256(product).hexdigest(), "size_bytes": len(product)},
+                     "4 KiB policy-image delivery requires its exact page admission and unchanged current product")
+        else:
+            _require("page_size_profile" not in plan,
+                     "policy-image delivery requires its original context without a page-profile change")
     return _render_metadata_include(binding)
 
 
@@ -2832,8 +2893,18 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _require(target_files_source_contract is not None and target_files_metadata_receipt is not None and
                  target_files_metadata_receipt_sha256 is not None and policy_inputs_receipt is not None and
                  framework_provider_policy_contract is not None and framework_provider_inputs_receipt is not None and
-                 framework_allocator_contract is not None and page_size_profile is None,
-                 "policy-image delivery requires paired metadata, combined source, current policy/providers and allocator, without a page-profile change")
+                 framework_allocator_contract is not None,
+                 "policy-image delivery requires paired metadata, combined source, current policy/providers and allocator")
+        delivery_reference = _policy_image_delivery_reference(policy_image_delivery_contract)
+        if delivery_reference["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+            _require(page_size_profile is not None,
+                     "4 KiB policy-image delivery requires its explicit current page profile")
+            selected_page, _ = _page_size_profile_contract(page_size_profile)
+            _require(selected_page["profile_id"] == PAGE_SIZE_PROFILE_V2_ID,
+                     "4 KiB policy-image delivery requires the current provider-v7 page profile")
+        else:
+            _require(page_size_profile is None,
+                     "policy-image delivery requires its original context without a page-profile change")
     if direct_avb_readonly_contract is not None:
         _require(factory_selected and mi_ext_inputs_receipt is not None,
                  "direct AVB read-only requires explicit factory and mi_ext inputs")
