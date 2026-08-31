@@ -38,8 +38,9 @@ for the exact 155 missing tuples. The **matrix-v1 source transaction is now
 installed**. Its 38-goal native command completes with exit 0 and 128 Ninja
 actions after 163 frontend steps, producing new matrix outputs, but the wrapper fails an XML postcheck
 that requires explicit default AIDL version 1. The separate corrected read-only
-postcheck and independent review now pass; the compatibility retry remains
-pending. The completed
+postcheck and independent review now pass. The later ordinary 27-goal provider
+installation and full raw review pass with 29 fresh copies and two preserved XML
+outputs; current producer qualification and the compatibility retry remain pending. The completed
 full-run failure is not relabelled as a pass by this source installation.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
@@ -1234,11 +1235,15 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,961 tests in 167.201 seconds with zero failures, errors or skips**, executed
-by the coordinator. All five checkpoint files stayed unchanged during the run.
+**3,961 tests in 165.776 seconds with zero failures, errors or skips**, executed
+by the coordinator. All three provider checkpoint files stayed unchanged during
+the run.
 The full log is
+`f0ffbbd2f6357698175f640a5173dd86f9fe706c349fc78b40dcf642c227221a`.
+The preceding 3,961-test run took 167.201 seconds, preserving all five checkpoint
+files; its log remains
 `7bfd1ea06a54e1674670689904bf285b519ff157077f03d46ed203aefa241cd1`.
-The preceding 3,961-test run took 173.222 seconds, preserving all seven bound
+The earlier 3,961-test run took 173.222 seconds, preserving all seven bound
 files; its log remains
 `20f5203fcd2658f11677c00a003a61cf0cbb8134d9cbc448c6fe9b5ed7b12d72`.
 The new [read-only target-files AVB inventory](target-files-avb-inventory.md)
@@ -1581,14 +1586,73 @@ the existing strict policy analysis through exact thirteen-file equality.
 The original failed wrapper receipt is unchanged. Provider installation,
 producer qualification and the complete VINTF retry remain separate.
 
-The first provider-install preflight then stops after two successful read-only
-Ninja queries. Capture `0f1070455754f9959b545ec98b535feb4c206d8798efab12c8722c47fdf34a60`
-records a strict reader rejection: each of 27 selected phony aggregate targets
-contains its primary installed destination twice. Pinned `base_rules.mk`
-adds that dependency both directly and via `LOCAL_SOONG_INSTALL_PAIRS`.
-No content-producing node query or installation was reached; source/output
-guards remain unchanged. The failed record remains separate from the upcoming
-narrow reader correction and complete preflight retry.
+Three provider-install preflights stop in the evidence reader, while their
+native read-only queries all return zero. The preserved capture identities are:
+
+| Attempt | Capture SHA256 | Bytes | Native queries | Reader failure |
+| --- | --- | ---: | ---: | --- |
+| v1 | `0f1070455754f9959b545ec98b535feb4c206d8798efab12c8722c47fdf34a60` | 943,319 | 2 | Exact duplicate aggregate dependency |
+| v2 | `e201ed83b9b4d5f19b53099d543071e710aa40ec50b08a8aed6d45707b3232ff` | 1,074,981 | 3 | Companion install not reached by alias-only traversal |
+| v3 | `1ed962fb8148d283f877f4dbcb2b7f794131b84f8e62cf2cd1fa84d9911fd8e8` | 1,469,623 | 4 | Two manifest producers do not have a single explicit input |
+
+Pinned `base_rules.mk` adds the primary installed destination twice for each
+of exactly 27 phony aggregates, directly and through `LOCAL_SOONG_INSTALL_PAIRS`.
+The corrected reader preserves that raw multiplicity and rejects other duplicate
+edges. Bounded traversal then follows each owner's selected installed nodes,
+including order-only links to companion init/manifest files, without expanding
+unrelated dependency branches. The two selected manifest producers use the
+verified XML and pinned `assemble_vintf` tool; their source and assembled-output
+identities are separate roles. The other 29 installs require ordinary copies.
+
+Two subsequent diagnostics pass one read-only query each: the two-XML capture
+is `1530f0f4bdd33ffca07ccb6b59379eca7bd51edc1104aee4bb5e69458bd0eb75`
+(903,504 bytes), and the complete 31-leaf recipe capture is
+`be2f0104ee514d11b30018b3c3eb57fb10c57ce2b2422b9832a0987017abd660`
+(934,078 bytes). The latter records exactly 29 copy and two assembly recipes,
+with two XML outputs already present and the other 29 install outputs absent.
+Exact command matching does not admit generic shell unwrapping. Source, graph,
+log and selected-output guards remain unchanged; no installation or fresh ELF
+check occurs in these diagnostics. The full corrected v4 preflight, with freeze
+`97d8ec7ea34fc65af413ec4f7cd503581661bb9b6e0646ce90202ede2d6a8659`
+(39,740 bytes), now passes all nine read-only queries. Its 13,911,611-byte
+capture is `5c6e97461da3fe0e4a473df3ec9b8dbcafd155b09bae2e57575e10998736947d`.
+It binds all 27 ordinary goals through 80 phony nodes to 31 selected installs,
+their 26 enabled ELF checks and 71 shared dependencies. Native query stderr is
+empty, streams are complete, and source/output, graph/log and strict settings
+guards pass. This is complete graph capture, without a build, fresh checker
+execution or newly installed outputs. Independent host admission now passes,
+reconstructing all nine queries and rehashing 126 bound host inputs. Its review
+is `3f03537e78bc2fbb7d318e7f1a600cc9ffec57b4431a65a2e96d1884b2ad02e2`
+(39,277 bytes). A separate host-only three-field mapping correction preserves
+the rejected legacy-field attempt and the original matrix build/postcheck pair;
+it does not require new native queries. The ordinary 27-goal build uses freeze
+`6bd87cbc83259fedda0782d4531565b1ae5540f60d29cd8a1a38369af2efd64b`
+(87,626 bytes). All earlier failure records remain unchanged.
+
+The normal **provider-install-matrix-v1-1** command runs from **06:09:56 to
+06:10:10 UTC on August 31**, returning zero. Its 1,428,675-byte result is
+`02e81e88a850dc4b5e65598df29a537eca3bbdae59caadc0e35fff8fbc7c12c8`.
+It reports 29 fresh copy installs and two preserved assembled manifest files,
+verifying all 31 selected destinations. The existing 26 strict ELF passes are
+reused by exact effective-input, dependency, tool and flag equality: there are
+**zero fresh strict checker actions and zero failed checks**. No old stamp is
+deleted or invalidated. All six postcheck groups complete without errors or
+remaining build processes. Source, policy/runtime, protected XML/APEX, producer
+graphs and tools remain unchanged; ordinary output writes and the added Ninja
+log rows are expected build effects. Independent replay now verifies all **164
+contiguous Ninja actions**, with no failed lines, and all 31 install/26 reused
+checker outcomes. The complete seven-file capture contains **95,812,419 bytes**;
+its 3,484-byte manifest is
+`466d9e5ac9b570a3bd50e838fda89435f7b034279232f0d82faa0eb6873085d7`.
+The 312,192-byte independent review is
+`c6f295345c8a72486ef711411b2627349282b40905ec39d515860988bcf98923`.
+It rehashes the seven raw files, 186 host inputs, fourteen historical files and
+seven prior 4 KiB files. Other source/graph/tool/dependency identities remain
+bound to the actual guarded native receipt, not a separate host reopening of
+every native input. The 220 source inputs, thirteen policy/eleven runtime files,
+22 XML files, 39 APEX packages and 152 read-only guards retain their documented
+preservation scope. This is an installed-provider component result, without full
+ABI, service registration, image file-mode verification, full VINTF or boot evidence.
 
 Commit **78376c7** adds the explicit `v13h-policy-only` preparation profile with
 canonical SHA256
@@ -1609,7 +1673,8 @@ historical evidence. The four selected whole-bytecode comparisons now pass;
 the fresh 4 KiB input capture verifies the producer prerequisites and complete
 selected XML/APEX closure. Materialization and separate consistency checks now
 pass, but the combined check fails on 155 missing framework-matrix instances.
-Build and verify the installed exact matrix source projection, then rerun the full checks
+Use the verified matrix outputs and reviewed ordinary provider installation,
+finish current producer qualification, then rerun the full checks
 and assess necessary coverage before claiming compatibility.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.

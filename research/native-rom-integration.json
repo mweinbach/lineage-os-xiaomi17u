@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "matrix38-native-exit-zero-wrapper-failure-preserved-distinct-readonly-postchecks-and-review-passed",
+  "checkpoint": "matrix-provider-normal27-install-and-independent-raw-review-passed",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -942,24 +942,24 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 167.201,
-    "code_commit": "12ae4b755a858262dca5d054432432a6de05a9a0",
-    "bound_files_unchanged_during_run": 5,
-    "checkpoint_document_files": 5,
+    "elapsed_seconds": 165.776,
+    "code_commit": "f1961a1220088174af180aa3fe315250ef91dd07",
+    "bound_files_unchanged_during_run": 3,
+    "checkpoint_document_files": 3,
     "log": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-matrix-postcheck-v1/workspace-tests.log",
-      "sha256": "7bfd1ea06a54e1674670689904bf285b519ff157077f03d46ed203aefa241cd1",
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-provider-install-v1/workspace-tests.log",
+      "sha256": "f0ffbbd2f6357698175f640a5173dd86f9fe706c349fc78b40dcf642c227221a",
       "size_bytes": 685483
     },
     "completion": {
-      "path": "reports/oem-policy-integration-20260829/root-checkpoint-matrix-postcheck-v1/completion.json",
-      "sha256": "dca89f2c68a3ea67fa409f81dfdf6fbf98b4fcea43f5243924a46c5ef240e0d3",
-      "size_bytes": 3051
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-provider-install-v1/completion.json",
+      "sha256": "d235ca83f4372af4879a629f3c2333d1a5dabaf549908745fb681063e75d0e50",
+      "size_bytes": 1435
     },
-    "scope": "Coordinator executed the exact full offline command with all five checkpoint files unchanged during the run. Only evidence documentation changed from the previously tested code. The post-run factual test-log update is separate. This does not establish native compatibility, target-files construction, image signing or hardware behavior."
+    "scope": "Coordinator executed the exact full offline command with all three provider checkpoint documents unchanged during the run. Only evidence documentation changed from the previously tested code. The post-run factual test-log update is separate. This does not establish full native VINTF compatibility, target-files construction, image signing or hardware behavior."
   },
   "remaining_gates": [
-    "Qualify pending provider installation/producer evidence and repeat full VINTF with necessary coverage review. The native matrix command exits zero, its original wrapper failure is preserved, and a distinct corrected read-only postcheck plus independent review verify exact tuples and current source/output guards. The latest full VINTF run still fails at exit 65, retaining its skip and warnings. Pre-matrix APEX static cryptography remains separate from changed-source/package admission and runtime/partition-AVB/OTA validation",
+    "Complete current producer qualification and repeat full VINTF with necessary coverage review. The ordinary provider build and independent raw replay verify 29 fresh copies plus two preserved XML files and reuse 26 prior strict passes without fresh checker actions. The matrix native exit zero, failed original wrapper and distinct passing read-only postcheck/review remain separate. The latest full VINTF result is still exit 65; pre-matrix APEX static cryptography does not admit later inputs or runtime/partition-AVB/OTA behavior.",
     "Refresh source/build/graph/configuration and complete Camera target evidence after the matrix exchange. The reviewed v13ja inventory identifies ten protected policy intermediates outside the target tree that require separate read-only protection. Clear full-VINTF and remaining admission holds before activating the inactive candidate or running its APK graph/class-loader/check/build path; preserve strict checks",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "The selected 26-provider ELF/symbol checks pass freshly at 4 KiB. Complete ABI, runtime service behavior and VTS/hardware validation remain separate. Preserve the failed v13j stage, retained backups and 16 KiB four-pass/twenty-two-failure inventory; the new paired delivery candidate remains host-only pending current source/image qualification and installation",
@@ -1138,6 +1138,29 @@
     }
   },
   "previous_workspace_tests": [
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3961,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 167.201,
+      "code_commit": "12ae4b755a858262dca5d054432432a6de05a9a0",
+      "bound_files_unchanged_during_run": 5,
+      "checkpoint_document_files": 5,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-matrix-postcheck-v1/workspace-tests.log",
+        "sha256": "7bfd1ea06a54e1674670689904bf285b519ff157077f03d46ed203aefa241cd1",
+        "size_bytes": 685483
+      },
+      "completion": {
+        "path": "reports/oem-policy-integration-20260829/root-checkpoint-matrix-postcheck-v1/completion.json",
+        "sha256": "dca89f2c68a3ea67fa409f81dfdf6fbf98b4fcea43f5243924a46c5ef240e0d3",
+        "size_bytes": 3051
+      },
+      "scope": "Coordinator executed the exact full offline command with all five checkpoint files unchanged during the run. Only evidence documentation changed from the previously tested code. The post-run factual test-log update is separate. This does not establish native compatibility, target-files construction, image signing or hardware behavior."
+    },
     {
       "command": "python3 -m unittest discover -s tests -v",
       "runner": "coordinator",
@@ -2001,8 +2024,8 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-31T04:56:34.840401+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-31T03:51:10.405451+00:00",
+  "recorded_at_utc": "2026-08-31T06:10:10.772752+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-31T06:10:10.772752+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -3388,9 +3411,12 @@
     "current_generated_configuration_matches_matrix_source_verified": true,
     "latest_completed_output_integration": "matrix-v1",
     "current_output_verification_reference": "matrix_canonical_xml_postcheck_v2",
-    "independent_matrix_postcheck_review_completed": true
+    "independent_matrix_postcheck_review_completed": true,
+    "latest_completed_provider_installation": "provider_install_normal27_native_build",
+    "provider_install_native_result_verified": true,
+    "provider_install_independent_raw_review_completed": true
   },
-  "latest_native_build_status": "matrix38-native-exit-zero-original-wrapper-failed-separate-postchecks-passed",
+  "latest_native_build_status": "ordinary-provider-install-and-independent-raw-review-passed",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -3948,9 +3974,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-31T04:32:59.853193+00:00",
-  "latest_timestamped_native_observation_kind": "separate-matrix-postcheck-v2-native-pass",
-  "latest_native_observation_kind": "matrix-native-exit-zero-and-distinct-readonly-postchecks-independently-reviewed",
+  "latest_timestamped_native_observation_utc": "2026-08-31T06:10:10.772752+00:00",
+  "latest_timestamped_native_observation_kind": "ordinary-provider-install-native-command-completed",
+  "latest_native_observation_kind": "ordinary-provider-install-native-result-independently-reviewed",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -7290,13 +7316,13 @@
     "provider_elf_compatibility_verified": false,
     "full_compatibility_verified": false
   },
-  "latest_completed_native_build_status": "matrix38-native-exit-zero-original-wrapper-failed-separate-postchecks-passed",
+  "latest_completed_native_build_status": "ordinary-provider-install-and-independent-raw-review-passed",
   "last_completed_native_component_build_reference": "native_matrix_component_attempt",
   "last_completed_native_provider_elf_reference": "provider_four_kib_native_build",
   "current_build_sequence": [
     "Preserve the original matrix38 wrapper failure alongside native exit zero and the distinct passing read-only postcheck. Its 291 progress rows are 163 frontend steps plus 128 Ninja actions; do not infer fresh compiler/checker tests from every row.",
     "Use the separately verified 26 fresh 4 KiB provider ELF/symbol checks, preserving the original 16 KiB outcomes and remaining full-ABI/runtime/VTS limits.",
-    "Complete pending provider/producer qualification, then rerun full framework/vendor/kernel/39-APEX compatibility with necessary coverage review on the matrix outputs. Preserve the independently reviewed native-build/read-only-postcheck pair and the pre-matrix APEX static-crypto result on their exact source/output bases; rebind any changed inputs.",
+    "Use the independently reviewed ordinary 27-goal provider installation, complete current producer qualification, then rerun full framework/vendor/kernel/39-APEX compatibility on the matrix outputs. Preserve the original matrix-build/read-only-postcheck pair and pre-matrix APEX static crypto on their exact input bases; rebind changed inputs.",
     "Qualify current inputs and install the reviewed paired policy-image delivery source selection with AVB enabled, then complete ordinary packaging, final signed-chain/rollback/physical-fit evidence and separately authorized device validation."
   ],
   "maintained_four_kib_policy_delivery": {
@@ -8491,5 +8517,409 @@
       "sha256": "7ee26339110baa527fbb4697b6a5c8048d6a30ebe44168a19f8e90be2b6f5bea",
       "size_bytes": 696
     }
+  },
+  "provider_install_query_attempts_v2_v3": [
+    {
+      "attempt": "v2",
+      "status": "failed-read-only-evidence-reader",
+      "capture": {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v2/capture-v1/capture.json",
+        "sha256": "e201ed83b9b4d5f19b53099d543071e710aa40ec50b08a8aed6d45707b3232ff",
+        "size_bytes": 1074981
+      },
+      "transport": {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v2/capture-v1/transport.json",
+        "sha256": "589ff40a20a3cc1371fa7a96a1b717b384c50ee156149a8285f68c4adb3dceeb",
+        "size_bytes": 6842
+      },
+      "stderr": {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v2/capture-v1/capture.stderr",
+        "sha256": "0a6a5f3d7de12753e7b9e6f02e27b55290459cf5a6be0b59307a2162e1123ecd",
+        "size_bytes": 4968
+      },
+      "wrapper_exit_code": 1,
+      "native_query_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "native_query_stderr_bytes": [
+        0,
+        0,
+        0
+      ],
+      "all_query_streams_complete": true,
+      "error": "ValueError: ordinary module alias does not reach its selected installs",
+      "guard_errors": [],
+      "graph_and_candidate_log_bytes_stats_absence_unchanged": true,
+      "selected_artifacts_before_after_equal": true,
+      "settings_before_after_equal": true,
+      "raw_source_or_output_written_claim": null,
+      "native_build_or_checker_executed": false,
+      "provider_installation_verified": false,
+      "normal_module_goal_count": 27,
+      "selected_install_count": 31,
+      "scope": "The corrected duplicate-edge reader reaches the next guard, which rejects companion init/manifest installs because alias-only traversal does not follow their order-only installed-node links. The raw failure leaves its write-claim field unset; postflight preservation is recorded separately, not relabelled as a complete preflight or fresh native checker pass."
+    },
+    {
+      "attempt": "v3",
+      "status": "failed-read-only-evidence-reader",
+      "capture": {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v3/capture-v1/capture.json",
+        "sha256": "1ed962fb8148d283f877f4dbcb2b7f794131b84f8e62cf2cd1fa84d9911fd8e8",
+        "size_bytes": 1469623
+      },
+      "transport": {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v3/capture-v1/transport.json",
+        "sha256": "89555558cc80c3e670b3fe11f7d0dc2032063ca600e9ebfd425a4dcfb101d544",
+        "size_bytes": 6842
+      },
+      "stderr": {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v3/capture-v1/capture.stderr",
+        "sha256": "0b8cd6be074aa335efd44b605234fbdc71d17b9aca0f6637a7aa42caaf4bb082",
+        "size_bytes": 4968
+      },
+      "wrapper_exit_code": 1,
+      "native_query_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "native_query_stderr_bytes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "all_query_streams_complete": true,
+      "error": "ValueError: selected install lacks one ordinary content producer",
+      "guard_errors": [],
+      "graph_and_candidate_log_bytes_stats_absence_unchanged": true,
+      "selected_artifacts_before_after_equal": true,
+      "settings_before_after_equal": true,
+      "raw_source_or_output_written_claim": null,
+      "native_build_or_checker_executed": false,
+      "provider_installation_verified": false,
+      "normal_module_goal_count": 27,
+      "selected_install_count": 31,
+      "scope": "The bounded installed-node traversal reaches the next guard, which incorrectly expects one explicit content input for the two selected manifest-assembly producers. The raw failure leaves its write-claim field unset; postflight preservation is recorded separately, not relabelled as a complete preflight or fresh native checker pass."
+    }
+  ],
+  "provider_install_reader_correction_v4": {
+    "status": "corrected-full-read-only-preflight-and-ordinary-build-reviewed",
+    "predecessor_failure_references": [
+      "provider_install_query_attempt_v1",
+      "provider_install_query_attempts_v2_v3"
+    ],
+    "derivations": [
+      {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v2/derivation-v1.json",
+        "sha256": "c4aadb7702691392b0ab9b32e9dc591fc6dfe6a2829d14ad0a9bfe6a0df905cd",
+        "size_bytes": 17238
+      },
+      {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v3/derivation-v1.json",
+        "sha256": "8ee63f55a55bc8abef7ced8b71e20d654272950ce4ed31cc2e6d3417a7e7d44f",
+        "size_bytes": 1538
+      },
+      {
+        "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/derivation-v1.json",
+        "sha256": "e64d87a8bc5288c8d2b6c83b48fa03d5df5a614bc464693462b98e52fbe6d9a1",
+        "size_bytes": 6732
+      }
+    ],
+    "freeze": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/freeze-v1.json",
+      "sha256": "97d8ec7ea34fc65af413ec4f7cd503581661bb9b6e0646ce90202ede2d6a8659",
+      "size_bytes": 39740
+    },
+    "normal_module_goals": 27,
+    "selected_installed_destinations": 31,
+    "exact_primary_duplicate_aggregate_dependencies": 27,
+    "other_duplicate_edges_rejected": true,
+    "raw_dependency_multiplicity_preserved": true,
+    "companion_order_only_links_followed_within_exact_owner_install_set": true,
+    "unrelated_dependency_branches_expanded": false,
+    "exact_ordinary_copy_recipes": 29,
+    "exact_xml_assembly_recipes": 2,
+    "xml_source_identity_separate_from_assembled_output_identity": true,
+    "assembler_identity_pinned": true,
+    "generic_shell_unwrapping_admitted": false,
+    "native_diagnostics": [
+      {
+        "diagnostic": "v1",
+        "status": "read-only-leaf-diagnostic-passed",
+        "capture": {
+          "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/diagnostic-v1/capture-v1/capture.json",
+          "sha256": "1530f0f4bdd33ffca07ccb6b59379eca7bd51edc1104aee4bb5e69458bd0eb75",
+          "size_bytes": 903504
+        },
+        "transport": {
+          "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/diagnostic-v1/capture-v1/transport.json",
+          "sha256": "7e5ac2f825165f765c45226b199cf6aea3db64a8cdeaf2863afdb759825365a4",
+          "size_bytes": 6841
+        },
+        "wrapper_exit_code": 0,
+        "target_count": 2,
+        "native_query_count": 1,
+        "native_query_exit_codes": [
+          0
+        ],
+        "native_query_stderr_bytes": [
+          0
+        ],
+        "read_only_capture_verified": true,
+        "strict_configuration_verified": true,
+        "graph_and_candidate_log_bytes_stats_absence_unchanged": true,
+        "guard_errors": [],
+        "selected_outputs_observed": 31,
+        "selected_outputs_present": 2,
+        "selected_outputs_absent": 29,
+        "source_or_output_written": false,
+        "native_build_or_checker_executed": false,
+        "full_install_closure_verified": false,
+        "installed_outputs_claimed_fresh": false,
+        "scope": "One native leaf-command query only; no ordinary module installation or ELF/symbol checker action. The two existing assembled manifest outputs and 29 absent copy outputs are observed, not newly produced."
+      },
+      {
+        "diagnostic": "v2",
+        "status": "read-only-leaf-diagnostic-passed",
+        "capture": {
+          "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/diagnostic-v2/capture-v1/capture.json",
+          "sha256": "be2f0104ee514d11b30018b3c3eb57fb10c57ce2b2422b9832a0987017abd660",
+          "size_bytes": 934078
+        },
+        "transport": {
+          "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/diagnostic-v2/capture-v1/transport.json",
+          "sha256": "ca7662ffea134749850ee08a6ba20e51c36b28d2dda2377f85f648e761266c73",
+          "size_bytes": 6841
+        },
+        "wrapper_exit_code": 0,
+        "target_count": 31,
+        "native_query_count": 1,
+        "native_query_exit_codes": [
+          0
+        ],
+        "native_query_stderr_bytes": [
+          0
+        ],
+        "read_only_capture_verified": true,
+        "strict_configuration_verified": true,
+        "graph_and_candidate_log_bytes_stats_absence_unchanged": true,
+        "guard_errors": [],
+        "selected_outputs_observed": 31,
+        "selected_outputs_present": 2,
+        "selected_outputs_absent": 29,
+        "source_or_output_written": false,
+        "native_build_or_checker_executed": false,
+        "full_install_closure_verified": false,
+        "installed_outputs_claimed_fresh": false,
+        "scope": "One native leaf-command query only; no ordinary module installation or ELF/symbol checker action. The two existing assembled manifest outputs and 29 absent copy outputs are observed, not newly produced."
+      }
+    ],
+    "full_preflight_result_verified": true,
+    "ordinary_provider_installation_executed": true,
+    "fresh_elf_checks_executed": false,
+    "full_vintf_retry_verified": false,
+    "source_integration": "matrix-v1",
+    "normal_android_selinux_changed": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "The corrections recognize only measured pinned-Make topology and exact 31 leaf recipes. The complete v4 read-only preflight and independent host admission pass. The ordinary 27-goal build and separate full raw replay subsequently verify installation. All three failed preflights and the legacy host-field rejection are preserved.",
+    "actual_capture_reference": "provider_install_readonly_capture_v4",
+    "subsequent_native_build_reference": "provider_install_normal27_native_build"
+  },
+  "provider_install_readonly_capture_v4": {
+    "status": "complete-read-only-provider-graph-capture-passed",
+    "capture": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/capture-v1/capture.json",
+      "sha256": "5c6e97461da3fe0e4a473df3ec9b8dbcafd155b09bae2e57575e10998736947d",
+      "size_bytes": 13911611
+    },
+    "transport": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/capture-v1/transport.json",
+      "sha256": "9c89d9178d676f3d3e0e2f52cabbb523378d70d7822d47ab1cc76c5e0e71986a",
+      "size_bytes": 6843
+    },
+    "outer_stderr": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/capture-v1/capture.stderr",
+      "sha256": "c4d00c8aecdefe6a91a10efbb4be96f4555514a4d8c4919fe9253cd68342f43f",
+      "size_bytes": 4968
+    },
+    "wrapper_exit_code": 0,
+    "transport_streams_complete": true,
+    "transport_timed_out": false,
+    "transport_output_overflow": false,
+    "native_query_count": 9,
+    "native_query_exit_codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "native_query_stderr_bytes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "all_native_query_streams_rehashed": true,
+    "normal_module_goal_count": 27,
+    "phony_node_count": 27,
+    "selected_install_count": 31,
+    "installed_outputs_present_before": 103,
+    "installed_outputs_absent_before": 32,
+    "ordinary_copy_recipe_count": 29,
+    "assembled_manifest_recipe_count": 2,
+    "enabled_native_check_goal_count": 26,
+    "shared_dependency_count": 71,
+    "source_dependency_soname_count": 47,
+    "strict_configuration_verified": true,
+    "graph_and_candidate_log_bytes_stats_absence_unchanged": true,
+    "guard_errors": [],
+    "source_or_output_written": false,
+    "normal_install_build_executed": false,
+    "installed_outputs_claimed_fresh": false,
+    "native_build_or_checker_executed": false,
+    "host_build_admission_verified": true,
+    "provider_installation_verified": false,
+    "full_vintf_retry_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Nine zero-exit read-only queries bind current matrix-v1 source/output preconditions, exact module-to-install reachability, 29 copy/two assembly recipes and the selected strict ELF/symbol graph. Query outputs are evidence, not executed checker recipes or fresh installs. The subsequent ordinary build and independent raw replay have separate records.",
+    "independent_actual_review": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/query_capture/correction-v4/actual-review-v1/review.json",
+      "sha256": "3f03537e78bc2fbb7d318e7f1a600cc9ffec57b4431a65a2e96d1884b2ad02e2",
+      "size_bytes": 39277
+    },
+    "host_field_mapping_correction": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/host-field-mapping-correction-v1.json",
+      "sha256": "7ef10c5e8712bb7fbdea1d496538061ff88bcc5a510846845f58ed3be363f2e3",
+      "size_bytes": 1165
+    },
+    "host_review_inputs_rehashed": 126,
+    "host_review_source_files": 220,
+    "host_review_protected_xml": 22,
+    "host_review_protected_apex": 39,
+    "ordinary_build_freeze": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/build-freeze-v1.json",
+      "sha256": "6bd87cbc83259fedda0782d4531565b1ae5540f60d29cd8a1a38369af2efd64b",
+      "size_bytes": 87626
+    },
+    "ordinary_build_result_verified": true,
+    "subsequent_native_build_reference": "provider_install_normal27_native_build"
+  },
+  "provider_install_normal27_native_build": {
+    "status": "native-ordinary-provider-install-and-independent-raw-review-passed",
+    "phase": "provider-install-matrix-v1-1",
+    "capture": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/run-v1/capture.json",
+      "sha256": "02e81e88a850dc4b5e65598df29a537eca3bbdae59caadc0e35fff8fbc7c12c8",
+      "size_bytes": 1428675
+    },
+    "transport": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/run-v1/transport.json",
+      "sha256": "37f98852979b9186775276271343dceb57e43931b1b623217ccbe3c0493ad040",
+      "size_bytes": 26687
+    },
+    "build_freeze": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/build-freeze-v1.json",
+      "sha256": "6bd87cbc83259fedda0782d4531565b1ae5540f60d29cd8a1a38369af2efd64b",
+      "size_bytes": 87626
+    },
+    "preflight_reference": "provider_install_readonly_capture_v4",
+    "native_started_at_utc": "2026-08-31T06:09:56.171825+00:00",
+    "native_completed_at_utc": "2026-08-31T06:10:10.772752+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "native_streams_complete": true,
+    "native_timed_out": false,
+    "native_forced_kill": false,
+    "native_output_overflow": false,
+    "ordinary_module_goal_count": 27,
+    "independent_raw_action_review_completed": true,
+    "full_raw_capture_completed": true,
+    "fresh_install_count": 29,
+    "preserved_existing_xml_install_count": 2,
+    "verified_installed_file_count": 31,
+    "prior_strict_pass_reused_count": 26,
+    "fresh_strict_check_count": 0,
+    "failed_strict_check_count": 0,
+    "prior_effective_inputs_dependencies_tools_and_strict_flags_equal": true,
+    "historical_results_counted_as_fresh": false,
+    "prior_elf_reference": "provider_four_kib_native_build",
+    "postcheck_groups": [
+      "current_sources_policy_runtime_strict_xml_apex",
+      "whole_graphs_and_source_logs",
+      "bound_inputs_tools_and_prior_evidence",
+      "all_installed_dependencies_and_checker_outputs",
+      "logs_and_actions",
+      "sandbox_and_process_cleanup"
+    ],
+    "post_verification_completed": true,
+    "post_verification_errors": [],
+    "remaining_build_processes": [],
+    "source_integration": "matrix-v1",
+    "source_inputs_unchanged": true,
+    "selected_max_page_size": 4096,
+    "producer_graphs_unchanged": true,
+    "protected_xml_apex_unchanged": true,
+    "verified_producer_outputs_unchanged": true,
+    "old_stamps_deleted_or_invalidated": false,
+    "source_changes_requested": false,
+    "graph_regeneration_requested": false,
+    "normal_build_output_writes_performed": true,
+    "policy_or_runtime_outputs_invalidated_or_moved": false,
+    "provider_outputs_invalidated_or_moved": false,
+    "image_fs_config_modes_verified": false,
+    "images_requested": false,
+    "full_abi_verified": false,
+    "runtime_or_boot_verified": false,
+    "full_vintf_retry_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual ordinary module build, native postchecks and independent raw replay pass. All seven captured native files and historical evidence are directly rehashed; other native source/graph/tool/dependency identities are bound to the guarded native receipt. Twenty-nine copies are fresh and two assembled XML files are preserved. Twenty-six prior strict passes are reused by exact effective-input equality, not counted as fresh actions. The original matrix wrapper failure and distinct read-only postcheck remain separate. No source exchange, full ABI, image-mode, runtime, full compatibility or boot admission.",
+    "independent_actual_review": {
+      "path": "reports/oem-policy-integration-20260829/provider-install-closure-preparation-v1/actual-build-review-v1/review.json",
+      "sha256": "c6f295345c8a72486ef711411b2627349282b40905ec39d515860988bcf98923",
+      "size_bytes": 312192
+    },
+    "raw_collection": {
+      "path": "artifacts/build-validation/nezha-provider-install-matrix-v1-1/capture.json",
+      "sha256": "466d9e5ac9b570a3bd50e838fda89435f7b034279232f0d82faa0eb6873085d7",
+      "size_bytes": 3484
+    },
+    "captured_native_file_count": 7,
+    "captured_native_bytes": 95812419,
+    "captured_stdout": {
+      "path": "artifacts/build-validation/nezha-provider-install-matrix-v1-1/build.stdout",
+      "sha256": "8077ed5e42aab7e674803a01bb2a7d7d86218ef02dd5e43e1af9c774b539da78",
+      "size_bytes": 83198
+    },
+    "native_ninja_action_count": 164,
+    "contiguous_native_progress_verified": true,
+    "native_failed_line_count": 0,
+    "host_review_input_count": 186,
+    "historical_native_file_count_preserved": 14,
+    "prior_four_kib_evidence_file_count_preserved": 7,
+    "current_source_file_count": 220,
+    "protected_policy_file_count": 13,
+    "protected_runtime_file_count": 11,
+    "protected_xml_count": 22,
+    "protected_apex_count": 39,
+    "protected_readonly_file_count": 152,
+    "independent_review_findings": [],
+    "reviewer_executed_native_actions": false
   }
 }
