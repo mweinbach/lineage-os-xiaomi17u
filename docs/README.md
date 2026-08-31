@@ -39,7 +39,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Device delivery integration](target-files-delivery-integration.md) | Committed opt-in generator and matching 47-file 4 KiB delivery candidates; isolated Kati fixture passes 60 cases, while ordinary product execution and source/image selection remain pending |
 | [ROM construction prerequisites](rom-construction.md) | Committed inspection-only consumer reports five unbound native input/coverage roles and refuses construction; no BoardConfig or blocked target is enabled |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
-| [Policy-image input preparation](policy-image-inputs.md) | Committed policy3 profile and qualified installed sidecars produce independently reviewed identical raw-image pairs; footer/FEC, adoption, signing and packaging remain pending, with earlier profiles/default preserved |
+| [Policy-image input preparation](policy-image-inputs.md) | Policy3 raw reconstruction and subsequent NONE footer/FEC production pass independent review with repeated outputs identical; delivery/adoption, signed parent chain, physical fit and packaging remain pending |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
 | [Helper policy projection](helper-policy-projection.md) | Preserved passing copied-CIL prototype preceding native source integration |
 

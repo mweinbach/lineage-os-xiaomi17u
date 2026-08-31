@@ -94,7 +94,8 @@ metadata-file values. The camera-property compile failure is resolved; the
 failed policy1/policy2 records remain unchanged. The later scoped source/M4,
 semantic/context, twelve-binary and public-name freeze checks now pass. Current
 raw reconstruction now passes independently reviewed two-pass checks. Current
-footer/FEC qualification, delivery and packaging are the next gate. Commit
+footer/FEC production also passes; delivery, source adoption and packaging are
+the next gate. Commit
 **4335f1b** adds explicit policy3 image-input admission with qualified installed
 sidecars; the resulting raw images are not adopted. Full recursive graph
 provenance and final installed-APK Treble
@@ -1769,9 +1770,31 @@ The exact policy3 snapshot and three qualified installed sidecars are bound.
 This capture leaves large native TAR/image outputs and staging in the guest;
 the host review does not reopen those files or the native original images.
 Source/Android-output writes are excluded for this operation, not globally.
-Current footer/FEC production is prepared but unrun. Image delivery/adoption,
-AVB signing, physical partition fit, ordinary packaging and boot validation
-remain separate; no policy compilation or binary analysis was repeated here.
+No policy compilation or binary analysis was repeated by raw reconstruction.
+
+The later **policy-footer-produce-v2** run completes at **23:33:34 UTC** with
+**six checks, sixteen top-level commands, twelve nested FEC calls and zero skips**.
+Receipt `3a6330f188a38f8b4821519a10a7db057340d8bfb180e3c9a6a88ea3832c10ad`
+and independent review
+`2e1f9a773095cdb54129a7912449faad4d59ac9763f966ff7cb2b2600c293ce2`
+bind the complete 110-file, 907,291-byte capture. Both passes preserve the raw
+prefixes and produce identical NONE leaves: vendor **959,709,184 bytes**, SHA256
+`ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43`,
+and ODM **4,767,621,120 bytes**, SHA256
+`52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27`.
+Four independent native FEC encodes verify the complete regenerated parity;
+AVB verification alone is not treated as FEC payload verification. The preceding
+synthetic qualification retains its intentional corruption outcomes.
+
+The capture/resource review preserves two UID/GID mapping warnings and the
+exact successful resource profile: sampled RSS is not a hard kernel limit,
+larger inputs are unqualified, and process-group extinction is not claimed.
+Empty logs bind captured content, not fresh guest inode checks. Host review
+does not reopen the large native images/parity/TARs. Exact package-budget
+geometry passes; physical partition fit, rollback compatibility and the signed
+parent chain remain unverified. These leaves are not adopted. Current source
+stays at 539 files; delivery must rehash the selected guest images and bind
+metadata/provenance before ordinary packaging. No boot or hardware claim follows.
 
 Following a host restart, the coordinator starts only the existing stopped
 `twrp-nezha-upstream74-20260829` builder at **22:47:59 UTC**. The later
@@ -1942,6 +1965,14 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
+**4,162 tests in 167.578 seconds with zero failures, errors or skips**, executed
+by the coordinator against `9f0c8bd` plus the four raw-image checkpoint documents,
+then committed as `7c8c27e`. All eleven bound identities remained unchanged.
+Log `59331e0d74160bfde3916ce6b5904343ddc4707aab6e0454ce06a3cf21fb1562`
+and completion `4cbd17a0434fc48d6f6fbf69508bfc339b0c4682a2e0bbc098e27f0c46646b01`
+bind the run. This later footer/test-record update is separate from that suite
+and from native footer qualification.
+The preceding full run passed
 **4,162 tests in 165.342 seconds with zero failures, errors or skips**, executed
 by the coordinator against `4335f1b` plus the four then-current checkpoint
 documents and three namespace files; the three namespace files were subsequently

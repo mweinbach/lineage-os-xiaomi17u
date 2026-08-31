@@ -15,8 +15,9 @@ verification now pass**. Source/M4/context review retains all 6,399 assertions,
 all twelve normal binaries pass unfiltered zero-permissive checks, and the
 public-name freeze check is verified. The **policy3 raw-image reconstruction
 also passes**, with both TAR/image/export sets identical and independent review
-confirming exactly five policy-file replacements. The next gate is **current
-policy-image footer/FEC qualification, delivery and packaging**. Commit
+confirming exactly five policy-file replacements. The subsequent **NONE leaf
+footer/FEC production also passes** with identical repeated outputs. The next
+gate is **current image delivery, source adoption and packaging**. Commit
 **4335f1b** adds the explicit
 [policy3 image-input profile](policy-image-inputs.md), including qualified
 installed sidecars. The new raw images are not adopted; signing and physical
@@ -699,8 +700,13 @@ default remain unchanged. Its native reconstruction now passes **nine checks and
 both passes: exactly one vendor and four ODM policy payloads change, while other
 contents and semantic metadata are preserved. The 97-file capture is complete;
 large TAR/image outputs remain in the guest and were not reopened by the host
-review. No new footer/FEC, signed-chain, physical-fit, image-adoption or boot result
-is implied. After a host restart, the
+review. The separate footer run completes at **23:33:34 UTC** with **six checks,
+sixteen top-level commands and zero skips**, plus twelve nested FEC calls.
+Independent review verifies raw-prefix preservation, regenerated parity and
+identical repeated NONE leaves within the exact package budgets. This does not
+establish physical partition fit or a signed parent chain. Delivery/adoption
+and boot remain unverified; original images and the 539-file source are unchanged.
+After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
 read-only verification records it as the sole source-volume writer, with the
 same 539-source/configuration proofs, case-sensitive ext4, about 211 GiB free
@@ -777,7 +783,13 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,162 tests in 165.342
+The latest completed full workspace suite passed **4,162 tests in 167.578
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `9f0c8bd` plus the four raw-image checkpoint documents, then committed
+as `7c8c27e`. All eleven bound document/code/config/test identities remained
+unchanged. This later footer/test-record update is outside that run; native
+footer evidence is recorded separately from the offline suite.
+The preceding suite passed **4,162 tests in 165.342
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `4335f1b` plus the four then-current checkpoint documents and three
 namespace files; the three namespace files were subsequently committed as
