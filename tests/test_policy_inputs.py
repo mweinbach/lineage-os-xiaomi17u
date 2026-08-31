@@ -923,6 +923,133 @@ class PolicyInputsTests(unittest.TestCase):
         self.assertEqual(inputs.verify_bundle(self.provider_bundle), verified["framework_provider_inputs"])
         self.assertFalse(verified["scope"]["complete_rom_admitted"])
 
+    def install_evolution_fixture(self):
+        from scripts import evolution_policy_base
+        self.install_provider_fixture(properties=True, derivation=True)
+        self.evolution = copy.deepcopy(json.loads((WORKSPACE / policy.EVOLUTION_BASE_CONTRACT_PATH).read_bytes()))
+        self.evolution["required_contracts"] = {
+            "oem_policy": {"path": policy.OEM_CONTRACT_PATH, **policy.identity(self.oem_path.read_bytes())},
+            "oem_properties": {"path": policy.OEM_PROPERTY_CONTRACT_PATH, **policy.identity(self.property_path.read_bytes())},
+            "framework_provider_policy": {"path": policy.PROVIDER_POLICY_CONTRACT_PATH,
+                                           **policy.identity(self.provider_source_path.read_bytes())},
+        }
+        for paths in policy.EVOLUTION_BASE_OWNED_GROUPS.values():
+            for name in paths:
+                target = self.workspace / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                if not target.exists():
+                    target.write_bytes((WORKSPACE / name).read_bytes())
+        (self.workspace / "scripts/evolution_policy_base.py").write_bytes(b"synthetic native comparison helper, never executed\n")
+        self.evolution_path = self.workspace / policy.EVOLUTION_BASE_CONTRACT_PATH
+        self.write_evolution_contract()
+        return evolution_policy_base
+
+    def write_evolution_contract(self):
+        from scripts import evolution_policy_base
+        raw = policy.encoded(self.evolution)
+        self.evolution_path.write_bytes(raw)
+        self.enterContext(mock.patch.object(evolution_policy_base, "CONTRACT_SHA256", policy.identity(raw)["sha256"]))
+
+    def evolution_options(self):
+        return {"factory_policy_receipt": self.receipt_path, "oem_policy_contract": self.oem_path,
+                "oem_property_contract": self.property_path,
+                "framework_provider_policy_contract": self.provider_source_path,
+                "framework_provider_inputs_receipt": self.provider_receipt,
+                "evolution_policy_base_contract": self.evolution_path}
+
+    def stage_evolution(self, output=None):
+        return policy.stage_inputs(self.corpus, output or self.output, **self.evolution_options())
+
+    def test_evolution_bundle_is_explicit_repeatable_and_adds_no_copied_upstream_sources(self):
+        self.install_evolution_fixture()
+        baseline = self.stage_providers(self.root / "legacy-provider-bundle")
+        result = self.stage_evolution()
+        repeat = self.stage_evolution(self.root / "evolution-repeat")
+        self.assertEqual(result, repeat)
+        verified = self.verify_providers()
+        self.assertEqual(verified["evolution_policy_base_contract"], {
+            "path": policy.EVOLUTION_BASE_CONTRACT_PATH, **policy.identity(self.evolution_path.read_bytes())})
+        self.assertNotIn("evolution_policy_base_contract", baseline)
+        before = {row["path"]: row for row in baseline["files"]}
+        after = {row["path"]: row for row in result["files"]}
+        self.assertEqual(set(after) - set(before), {
+            "tools/evolution_policy_base.py", "tools/evolution-policy-base.json",
+            "provenance/nezha-owned-policy.Android.bp",
+            "provenance/source/device/xiaomi/nezha/sepolicy/system_ext/public/attributes"})
+        for path, row in before.items():
+            if path != "Android.bp":
+                self.assertEqual(after[path], row)
+        self.assertFalse(any("device/lineage/" in row["path"] for row in result["files"]))
+        self.assertEqual(result["classification_inputs"], baseline["classification_inputs"])
+        self.assertEqual(result["native_targets"], baseline["native_targets"])
+        self.assertEqual(result["scope"], policy.SCOPE)
+        for path, raw in self.originals.items():
+            self.assertEqual(path.read_bytes(), raw)
+
+    def test_evolution_bundle_requires_all_explicit_source_profiles_before_reading(self):
+        self.install_evolution_fixture()
+        for name in ("oem_policy_contract", "oem_property_contract", "framework_provider_policy_contract",
+                     "framework_provider_inputs_receipt"):
+            options = {**self.evolution_options(), name: None}
+            with self.subTest(name=name), mock.patch.object(policy, "_contracts") as load:
+                self.assert_rejected(lambda: policy.stage_inputs(self.corpus, self.output, **options))
+                load.assert_not_called()
+            self.assertFalse(self.output.exists())
+
+    def test_evolution_bundle_rejects_wrong_contract_coupling_and_broadened_exclusions(self):
+        self.install_evolution_fixture()
+        original = copy.deepcopy(self.evolution)
+        mutations = [lambda value: value["required_contracts"]["oem_properties"].update(sha256="f" * 64),
+                     lambda value: value.update(build_variant="userdebug"),
+                     lambda value: value["platform"].update(release="future"),
+                     lambda value: value["owned_source_groups"]["nezha_owned_system_ext_public_policy"].pop(),
+                     lambda value: value["owned_source_groups"]["nezha_owned_system_ext_private_policy"][0].update(
+                         path="device/xiaomi/nezha/sepolicy/system_ext/oem/private/*.te")]
+        for mutate in mutations:
+            with self.subTest(mutation=mutate):
+                self.evolution = copy.deepcopy(original)
+                mutate(self.evolution)
+                self.write_evolution_contract()
+                self.assert_rejected(self.stage_evolution)
+                self.assertFalse(self.output.exists())
+
+    def test_evolution_profile_cannot_be_removed_or_forged_in_a_transferred_receipt(self):
+        self.install_evolution_fixture()
+        self.stage_evolution()
+        path = self.output / policy.RECEIPT_NAME
+        original = json.loads(path.read_bytes())
+        for mutation in (lambda value: value.pop("evolution_policy_base_contract"),
+                         lambda value: value["evolution_policy_base_contract"].update(sha256="f" * 64)):
+            changed = copy.deepcopy(original)
+            mutation(changed)
+            path.write_bytes(policy.encoded(changed))
+            self.assert_rejected(self.verify_providers)
+        path.write_bytes(policy.encoded(original))
+        self.assertEqual(self.verify_providers()["status"], "verified")
+
+    def test_evolution_transferred_tool_descriptor_groups_and_dsp_source_are_rehashed(self):
+        self.install_evolution_fixture()
+        self.stage_evolution()
+        for name in ("tools/evolution_policy_base.py", "tools/evolution-policy-base.json",
+                     "provenance/nezha-owned-policy.Android.bp",
+                     "provenance/source/device/xiaomi/nezha/sepolicy/system_ext/public/attributes"):
+            path = self.output / name
+            original = path.read_bytes()
+            with self.subTest(name=name):
+                path.write_bytes(original + b"unreviewed\n")
+                self.assert_rejected(self.verify_providers)
+                path.write_bytes(original)
+        self.assertEqual(self.verify_providers()["status"], "verified")
+
+    def test_evolution_cli_flag_does_not_implicitly_enable_other_capabilities(self):
+        base = ["stage", "--corpus-root", "corpus", "--factory-capture-root", "factory", "--output", "out"]
+        for arguments, expected in (([], None), (["--evolution-policy-base-contract", "base.json"], Path("base.json"))):
+            with mock.patch.object(policy, "stage_inputs", return_value={}) as stage, mock.patch("sys.stdout", io.StringIO()):
+                self.assertEqual(policy.main([*base, *arguments]), 0)
+            self.assertEqual(stage.call_args.kwargs["evolution_policy_base_contract"], expected)
+            for name in ("oem_policy_contract", "oem_property_contract", "framework_provider_policy_contract"):
+                self.assertIsNone(stage.call_args.kwargs[name])
+
     def test_provider_verification_cannot_drop_or_reseal_derivation_metadata(self):
         inputs, _ = self.install_provider_fixture(derivation=True)
         original = inputs.verify_bundle(self.provider_bundle)
@@ -1269,6 +1396,25 @@ class NativePolicyTemplateTests(unittest.TestCase):
                              for path in reader.bindings))
         reader.recheck()
 
+    def test_current_evolution_public_controls_load_without_private_or_upstream_source_reads(self):
+        reader = policy.vendor_policy.Reader()
+        contract, correction, controls = policy._contracts(reader)
+        oem = policy._oem_controls(reader, WORKSPACE / policy.OEM_CONTRACT_PATH, contract, correction, controls)
+        properties = policy._oem_property_controls(reader, WORKSPACE / policy.OEM_PROPERTY_CONTRACT_PATH,
+                                                    contract, controls, oem)
+        providers = policy._provider_controls(reader, WORKSPACE / policy.PROVIDER_POLICY_CONTRACT_PATH,
+                                              contract, controls, oem, True)
+        binding = policy._evolution_base_controls(reader, WORKSPACE / policy.EVOLUTION_BASE_CONTRACT_PATH,
+                                                  contract, controls, oem, properties, providers)
+        self.assertEqual(binding, {"path": policy.EVOLUTION_BASE_CONTRACT_PATH,
+                                   **policy.identity((WORKSPACE / policy.EVOLUTION_BASE_CONTRACT_PATH).read_bytes())})
+        self.assertIn("--evolution-policy-base-contract", controls["Android.bp"].decode())
+        self.assertEqual(controls["provenance/nezha-owned-policy.Android.bp"], policy.render_evolution_owned_groups())
+        self.assertFalse(any(path.relative_to(WORKSPACE).parts[0] in {"artifacts", "evidence", "reports"}
+                             or path.relative_to(WORKSPACE).as_posix().startswith("device/lineage/")
+                             for path in reader.bindings))
+        reader.recheck()
+
     def test_optional_native_guard_uses_all_current_inputs_without_binary_dependency_cycle(self):
         from scripts import oem_policy
         bp = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
@@ -1346,6 +1492,89 @@ class NativePolicyTemplateTests(unittest.TestCase):
             with self.subTest(flags=flags):
                 self.assertEqual(policy.identity(policy._render_blueprint(raw, *flags)),
                                  {"sha256": digest, "size_bytes": size})
+
+    def test_evolution_base_opt_in_preserves_both_provider_profiles_exactly(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        for flags, digest, size in (
+            ((True, False, True), "55faa9d1f214ad21dc13099f49188c00ab8aa83290b1d283bfe308dca3875740", 11852),
+            ((True, True, True), "5cd20287b966d752f1ed62ce6c9b17011f8b6162ce1b90077f29ee5db8eafc4c", 12133),
+        ):
+            with self.subTest(flags=flags):
+                before = policy._render_blueprint(raw, *flags)
+                self.assertEqual(policy.identity(before), {"sha256": digest, "size_bytes": size})
+                self.assertEqual(before, policy._render_blueprint(raw, *flags, evolution_base_enabled=False))
+                self.assertNotIn(b"evolution_base", before)
+
+    def test_evolution_base_requires_all_three_source_profiles(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        for flags in ((False, False, False), (True, False, False), (True, True, False), (True, False, True)):
+            with self.subTest(flags=flags), self.assertRaises(ValueError):
+                policy._render_blueprint(raw, *flags, evolution_base_enabled=True)
+
+    def test_evolution_comparison_never_joins_or_changes_strict_compiler_inputs(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        before = policy._render_blueprint(raw, True, True, True).decode()
+        after = policy._render_blueprint(raw, True, True, True, True).decode()
+        binary = lambda text: text.split("se_policy_binary {", 1)[1].split("\n}", 1)[0]
+        self.assertEqual(binary(before), binary(after))
+        guard = after.split('name: "' + policy.OEM_CHECK_TARGET + '"', 1)[1].split("\n}", 1)[0]
+        for name in ("nezha_evolution_base_system_ext_sepolicy.cil", "nezha_evolution_base_system_ext_mapping_file",
+                     "nezha_evolution_base_system_ext_pub_policy.cil", "system_ext_pub_policy.cil"):
+            self.assertIn('":' + name + '"', guard)
+            self.assertIn("$(location :" + name + ")", guard)
+        self.assertNotIn(":nezha_factory_precompiled_sepolicy", guard)
+        self.assertIn("--evolution-base-source-files $(locations :nezha_evolution_base_source_files)", guard)
+        tool = after.split('name: "nezha_oem_policy_check_tool"', 1)[1].split("\n}", 1)[0]
+        self.assertIn('"tools/evolution_policy_base.py"', tool)
+        self.assertIn('"tools/evolution_policy_base.py"', guard)
+
+    def test_evolution_comparison_uses_native_source_subtraction_and_strict_private_cil(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        text = policy._render_blueprint(raw, True, True, True, True).decode()
+        for scope in ("public", "private"):
+            group = text.split('name: "nezha_evolution_base_' + scope + '_policy"', 1)[1].split("\n}", 1)[0]
+            self.assertIn('srcs: [":se_build_files{.system_ext_' + scope + '}"]', group)
+            self.assertIn('exclude_srcs: ["//device/xiaomi/nezha:nezha_owned_system_ext_' + scope + '_policy"]', group)
+            self.assertNotIn("*", group)
+        private = text.split('name: "nezha_evolution_base_system_ext_sepolicy.cil"', 1)[1].split("\n}", 1)[0]
+        self.assertIn('filter_out: [":plat_sepolicy.cil"]', private)
+        self.assertIn("secilc_check: true", private)
+        self.assertIn("ignore_neverallow: false", private)
+        self.assertIn("installable: false", private)
+        mapping = text.split('name: "nezha_evolution_base_system_ext_mapping_file"', 1)[1].split("\n}", 1)[0]
+        self.assertIn('version: "current"', mapping)
+        self.assertIn('filter_out: [":plat_mapping_file"]', mapping)
+        self.assertIn("installable: false", mapping)
+        self.assertNotIn("dependent_cils", mapping)
+
+    def test_evolution_context_comparisons_use_native_types_without_install_claims(self):
+        raw = (WORKSPACE / "policy/nezha/Android.bp").read_bytes()
+        text = policy._render_blueprint(raw, True, True, True, True).decode()
+        for kind in ("property", "file", "service"):
+            name = "nezha_evolution_base_" + kind + "_contexts"
+            self.assertIn(kind + '_contexts {\n    name: "' + name + '"', text)
+            block = text.split('name: "' + name + '"', 1)[1].split("\n}", 1)[0]
+            self.assertIn('defaults: ["contexts_flags_defaults"]', block)
+            self.assertIn("system_ext_specific: true", block)
+            self.assertNotIn("installable", block)
+        self.assertNotIn("PRODUCT_PACKAGES +=", text)
+        self.assertNotIn("nezha_evolution_base_seapp", text)
+
+    def test_evolution_owned_groups_are_exact_local_source_selectors(self):
+        raw = policy.render_evolution_owned_groups().decode()
+        self.assertEqual(raw.count("filegroup {"), 5)
+        self.assertNotIn("soong_namespace", raw)
+        self.assertNotIn("../", raw)
+        self.assertNotIn("*", raw)
+        self.assertNotIn("PRODUCT_PACKAGES", raw)
+        base = "device/xiaomi/nezha/sepolicy/"
+        for name, paths in policy.EVOLUTION_BASE_OWNED_GROUPS.items():
+            block = raw.split('name: "' + name + '"', 1)[1].split("\n}", 1)[0]
+            selected = block.split("srcs: [", 1)[1].split("]", 1)[0]
+            self.assertEqual(selected.count('"'), len(paths) * 2)
+            for path in paths:
+                self.assertIn('"' + path.removeprefix(base) + '"', selected)
+            self.assertIn('visibility: ["//vendor/xiaomi/nezha-policy:__pkg__"]', block)
 
     def test_combined_binary_uses_current_framework_outputs_and_strict_guards(self):
         text = (WORKSPACE / "policy/nezha/Android.bp").read_text()

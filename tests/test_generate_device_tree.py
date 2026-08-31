@@ -2348,6 +2348,27 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                 self.assertEqual(generator.main(base + args), 0)
             self.assertEqual(generate.call_args.kwargs["oem_policy_contract"], expected)
 
+    def test_cli_passes_evolution_base_contract_without_implicit_adoption(self):
+        base = ["generate", "--kernel-receipt", "kernel.json", "--vendor-receipt", "vendor.json",
+                "--output", "artifacts/out"]
+        for args, expected in (([], None), (["--evolution-policy-base-contract", "evolution-base.json"], Path("evolution-base.json"))):
+            with mock.patch.object(generator, "generate", return_value={}) as generate, redirect_stdout(io.StringIO()):
+                self.assertEqual(generator.main(base + args), 0)
+            self.assertEqual(generate.call_args.kwargs["evolution_policy_base_contract"], expected)
+
+    def test_evolution_base_requires_user_and_complete_explicit_sources_before_reads(self):
+        names = ("policy_inputs_receipt", "oem_policy_contract", "oem_property_contract",
+                 "framework_provider_policy_contract", "framework_provider_inputs_receipt")
+        selected = {name: "unused" for name in names}
+        cases = [{**selected, "variant": "userdebug"}]
+        cases.extend({**selected, "variant": "user", name: None} for name in names)
+        for options in cases:
+            with self.subTest(options=options), mock.patch.object(generator, "_load_records") as load, \
+                    self.assertRaisesRegex(generator.CandidateError, "Evolution policy base requires explicit"):
+                generator.generate(self.root / "artifacts/refused", record_paths={}, kernel_receipt="unused",
+                                   vendor_receipt="unused", evolution_policy_base_contract="unused", **options)
+            load.assert_not_called()
+
     def test_oem_policy_requires_all_other_explicit_inputs_before_record_reads(self):
         with mock.patch.object(generator, "_load_records") as records:
             with self.assertRaisesRegex(generator.CandidateError, "OEM policy requires explicit"):
@@ -2831,6 +2852,99 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         with mock.patch.object(generator, "_verify_framework_provider_bundle", return_value=verification), \
                 mock.patch.object(generator, "_verify_policy_input_bundle", return_value=policy_verification):
             return generator.generate(output, **inputs)
+
+    def evolution_base_inputs(self):
+        """Use exact public source selectors with synthetic private admissions."""
+        inputs, providers, native = self.provider_inputs(properties=True)
+        inputs["variant"] = "user"
+        contract = json.loads((ROOT / generator.EVOLUTION_POLICY_BASE_RECORD).read_bytes())
+        contract["required_contracts"] = {
+            "oem_policy": native["oem_policy_contract"],
+            "oem_properties": native["oem_property_contract"],
+            "framework_provider_policy": native["framework_provider_policy_contract"],
+        }
+        path = self.root / generator.EVOLUTION_POLICY_BASE_RECORD
+        path.parent.mkdir(parents=True, exist_ok=True)
+        raw = (json.dumps(contract, indent=2, sort_keys=True) + "\n").encode()
+        path.write_bytes(raw)
+        identity = {"sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)}
+
+        def trusted_synthetic_contract(selected):
+            self.assertEqual(Path(selected).read_bytes(), raw)
+            return copy.deepcopy(contract), identity, raw
+
+        # This isolates generator coupling. The policy-input suite exercises the
+        # real public contract loader and byte verifier, without this boundary.
+        self.enterContext(mock.patch.object(generator, "_evolution_policy_base_contract",
+                                            side_effect=trusted_synthetic_contract))
+        native["evolution_policy_base_contract"] = {
+            "path": generator.EVOLUTION_POLICY_BASE_RECORD.as_posix(), **identity}
+        inputs["evolution_policy_base_contract"] = path
+        return inputs, providers, native
+
+    def test_evolution_base_generation_is_explicit_repeatable_and_preserves_existing_sources(self):
+        inputs, providers, native = self.evolution_base_inputs()
+        first, repeat = self.root / "artifacts/evolution-base", self.root / "artifacts/evolution-base-repeat"
+        plan = self.generate_provider(first, inputs, providers, native)
+        self.assertEqual(self.generate_provider(repeat, inputs, providers, native), plan)
+        self.assertEqual(generator.validate(first), plan)
+        legacy_inputs = {key: value for key, value in inputs.items() if key != "evolution_policy_base_contract"}
+        legacy_native = {key: value for key, value in native.items() if key != "evolution_policy_base_contract"}
+        legacy = self.root / "artifacts/evolution-base-absent"
+        baseline = self.generate_provider(legacy, legacy_inputs, providers, legacy_native)
+        self.assertNotIn("evolution_policy_base", baseline)
+        old_files = {row["path"]: row for row in baseline["files"]}
+        new_files = {row["path"]: row for row in plan["files"]}
+        self.assertEqual(set(new_files) - set(old_files), {
+            generator.EVOLUTION_POLICY_BASE_RECORD.as_posix(), generator.EVOLUTION_POLICY_BASE_GROUPS.as_posix()})
+        for name, row in old_files.items():
+            self.assertEqual(new_files[name], row)
+            self.assertEqual((first / name).read_bytes(), (legacy / name).read_bytes())
+        self.assertFalse(plan["admission"]["flash_allowed"])
+        self.assertFalse(plan["admission"]["complete_target_files_allowed"])
+        self.assertFalse(plan["evolution_policy_base"]["fresh_soong_or_m4_build_performed"])
+        self.assertFalse(plan["evolution_policy_base"]["image_integration_verified"])
+
+    def test_evolution_base_source_and_native_bundle_must_be_selected_together(self):
+        inputs, providers, native = self.evolution_base_inputs()
+        without_source = {key: value for key, value in inputs.items() if key != "evolution_policy_base_contract"}
+        without_native = {key: value for key, value in native.items() if key != "evolution_policy_base_contract"}
+        for name, selected, verification in (("source-missing", without_source, native),
+                                               ("native-missing", inputs, without_native)):
+            output = self.root / "artifacts" / name
+            with self.subTest(name=name), self.assertRaisesRegex(generator.CandidateError, "same explicit contract"):
+                self.generate_provider(output, selected, providers, verification)
+            self.assertFalse(output.exists())
+
+    def test_evolution_base_resealed_blueprint_or_profile_removal_is_rejected(self):
+        inputs, providers, native = self.evolution_base_inputs()
+        output = self.root / "artifacts/evolution-base-tampering"
+        plan = self.generate_provider(output, inputs, providers, native)
+        name = generator.EVOLUTION_POLICY_BASE_GROUPS.as_posix()
+        original = (output / name).read_bytes()
+        changed = original.replace(b'"system_ext/public/attributes"', b'"system_ext/public/*"')
+        self.assertNotEqual(changed, original)
+        self.reseal_candidate_file(output, plan, name, changed)
+        with self.assertRaisesRegex(generator.CandidateError, "source filegroups differ"):
+            generator.validate(output)
+        self.reseal_candidate_file(output, plan, name, original)
+        removed = copy.deepcopy(plan)
+        del removed["evolution_policy_base"]
+        (output / "admission.json").write_text(json.dumps(removed))
+        with self.assertRaises(generator.CandidateError):
+            generator.validate(output)
+
+    def test_evolution_base_owned_group_render_cannot_be_applied_twice(self):
+        from scripts import policy_inputs
+        inputs, providers, native = self.evolution_base_inputs()
+        output = self.root / "artifacts/evolution-base-duplicate"
+        plan = self.generate_provider(output, inputs, providers, native)
+        with self.assertRaisesRegex(generator.CandidateError, "selected or rendered twice"):
+            generator._bind_evolution_policy_base(plan, inputs["evolution_policy_base_contract"], {})
+        without_binding = {key: value for key, value in plan.items() if key != "evolution_policy_base"}
+        with self.assertRaisesRegex(generator.CandidateError, "selected or rendered twice"):
+            generator._bind_evolution_policy_base(without_binding, inputs["evolution_policy_base_contract"],
+                {generator.EVOLUTION_POLICY_BASE_GROUPS.as_posix(): policy_inputs.render_evolution_owned_groups()})
 
     def test_provider_public_contracts_and_source_statements_are_pinned(self):
         contract, identity = generator._framework_provider_contract(ROOT / generator.FRAMEWORK_PROVIDER_RECORD)

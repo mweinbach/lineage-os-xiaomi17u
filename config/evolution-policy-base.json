@@ -1,0 +1,496 @@
+{
+  "base_context_sources": {
+    "file_contexts": [
+      {
+        "path": "device/lineage/sepolicy/common/private/file_contexts",
+        "sha256": "5460b11b4ee67ffdc3de3b705a2508b73a8df1edd753c98d66eee8fd549d1c30",
+        "size_bytes": 1022
+      }
+    ],
+    "property_contexts": [
+      {
+        "path": "device/lineage/sepolicy/common/private/property_contexts",
+        "sha256": "a29095adf4349ac75c516e75ebe60efd2e419c09aaaa6c8bd6409e9208c4b3ff",
+        "size_bytes": 2870
+      }
+    ],
+    "service_contexts": [
+      {
+        "path": "device/lineage/sepolicy/common/private/service_contexts",
+        "sha256": "05f4e42abb59ab75601eb62a444279e245cf0fa6ebca9578ae1893bca7234de1",
+        "size_bytes": 1312
+      }
+    ]
+  },
+  "base_factory_duplicate_types": {
+    "vendor_persist_camera_prop": {
+      "factory_runtime": "/vendor/etc/selinux/plat_pub_versioned.cil",
+      "mapping_attribute": "vendor_persist_camera_prop_202504",
+      "role": "object_r",
+      "source_runtime": "/system_ext/etc/selinux/system_ext_sepolicy.cil"
+    }
+  },
+  "base_policy_sources": {
+    "system_ext_private": [
+      {
+        "path": "device/lineage/sepolicy/common/private/adbd.te",
+        "sha256": "970a94a48a59bdb2f21a46e6fbb97d0f7ce7bfab4ddfc2e873254bb2e6857b24",
+        "size_bytes": 81
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/adbroot.te",
+        "sha256": "77812df1421555443bbb8851ca2dde8ea607fc60a4c691214b1bd4fa7b7ccd9b",
+        "size_bytes": 472
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/appdomain.te",
+        "sha256": "5a8387c4c71e3e3fb28b10ae77b26ae1afef053866f761c0b60020c142daf97a",
+        "size_bytes": 99
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/backuptool.te",
+        "sha256": "3a1cb8110f792bc8669e8604c86208f9b8e948486ef2617a64a2a1ef67827e54",
+        "size_bytes": 171
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/bootanim.te",
+        "sha256": "af87221eaf86528dba7d60362ce299f2a472ce40cc3337e780ae2389f6f4bd48",
+        "size_bytes": 163
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/crash_dump.te",
+        "sha256": "5a3d1b6c5bde4e6565e2f751f8194060a83454905824fb6ed5c6a4d3f6a96318",
+        "size_bytes": 42
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/device_as_webcam.te",
+        "sha256": "69cd25c3a795763593cd1b300b0c9234dedb630eabc3fe56961b68b878a3a498",
+        "size_bytes": 48
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/file.te",
+        "sha256": "424f5ff8a9453e841cab39bf204f6340ef9cf0d9328ea7fd413d6ca5163573f2",
+        "size_bytes": 359
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/fsck_untrusted.te",
+        "sha256": "42aeec571010d410486ba91b71a501a5f2e53d952a438937a7fc7f284eeb0b09",
+        "size_bytes": 67
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/gmscore_app.te",
+        "sha256": "885f541f8ccad80eacfb8b8b1234e50fc12e7a24335fcec18f4e4ac962f56ac8",
+        "size_bytes": 90
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/init.te",
+        "sha256": "905c2fc2802c25f3f18cf9ccdfa84c2ef0c7ec2d2dced6086d1c1792a732cfe9",
+        "size_bytes": 49
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/kcmdlinectrl.te",
+        "sha256": "878b085eb7fc619ea605c4e31a0a6c9023789189cdf34ea4eece751f076a1cb4",
+        "size_bytes": 68
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/linkerconfig.te",
+        "sha256": "5a7f896307324d9d6d7201e4ad258343e847f01b7ec978466368ca3b5a2c4de3",
+        "size_bytes": 41
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/mediashell_app.te",
+        "sha256": "a64794cb43dbd9246d8abc02f7f4f8d0e847643a0e642cf50246faf8e8ae0ee1",
+        "size_bytes": 1840
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/misctrl.te",
+        "sha256": "64aff55d23f0ffab66b66989c530f0395414cbf062b7706d70d8a296a3e0ea36",
+        "size_bytes": 63
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/mkfs.te",
+        "sha256": "e0327588cc83382b0c36f2292436df8a436aa763eb049eb87eb2de04f2e8d7ef",
+        "size_bytes": 309
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/odrefresh.te",
+        "sha256": "4d43c9901f7002e30cf9cde912dc22eb4baba3786df563d90ff61992d69f4fa6",
+        "size_bytes": 66
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/platform_app.te",
+        "sha256": "7e448c5d03df3743bf1b5022f665f0544370fc9ca8eca3c0df25bfdbf87ad45e",
+        "size_bytes": 2265
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/priv_app.te",
+        "sha256": "2bc5d7a7e0efa404c4fd143e7e52797298d595480f17e8b0b34e336a0bceb107",
+        "size_bytes": 110
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/property.te",
+        "sha256": "ec36caa04bf5a75d1d8d2d10b414ca02793b54a4cc5072b35cec8062441839e3",
+        "size_bytes": 243
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/recovery.te",
+        "sha256": "21e2a0bad3adeeb1ad47f8374b91ddcfd6a89b014349b80597a723283149b70f",
+        "size_bytes": 1224
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/rootfs.te",
+        "sha256": "1ff126e9908107132bc7cb9e9f8fb327a0294e74d527bb18f9a00a8fb8717090",
+        "size_bytes": 45
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/sdcardfs.te",
+        "sha256": "3419af23f28a2738b8604678509aa4e0d94645176b37f06bd9705797b3f4b577",
+        "size_bytes": 47
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/service.te",
+        "sha256": "f58a5bff7c86f52251b11741538275e11a8a86cf0760ad74ecb10722223497c2",
+        "size_bytes": 1485
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/shell.te",
+        "sha256": "d5530334994056fbcfa16e8d6b1991ee739862d91d0dcea259901c73612a60c0",
+        "size_bytes": 157
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/system_app.te",
+        "sha256": "6b21066811a8e56b0fe493b855dd4e53b59161249ad2fc6176db24d9a5b89c8a",
+        "size_bytes": 1378
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/system_server.te",
+        "sha256": "4561d406c8adb88d6b808059066d72eed7d47de3d20e21d4c20e1a8e0a47591f",
+        "size_bytes": 1757
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/toolbox.te",
+        "sha256": "4060924cc8688044caf0fb7839c4f56ad77e8b275864dccf81c86f57360fc521",
+        "size_bytes": 36
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/uncrypt.te",
+        "sha256": "33d6cb22e1dce9b795bdc619999f3d9ba61c505ded1893061a0381783995dfd8",
+        "size_bytes": 92
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/untrusted_app.te",
+        "sha256": "9dc86cce1ff5beb62de94d640f116f6c417efccecd7bd4c4c0833078cb67af75",
+        "size_bytes": 137
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/update_engine.te",
+        "sha256": "5ad5fbcd687e44ff7dc7d85654f7172f8c55280366d5c41ce8ca1a5e0245f33e",
+        "size_bytes": 479
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/updater_app.te",
+        "sha256": "f5ddc46c044bf9c6d8aa9a8e9b6bde3db6f0d12fd72bcd5e831ee3b1bf2519c5",
+        "size_bytes": 1077
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/vendor_init.te",
+        "sha256": "c0145aefccd008f8b632a0c306e70113ba0c26e1ccc75aca96fd7f717f7f02a7",
+        "size_bytes": 63
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/vold.te",
+        "sha256": "079c399beb7f7215474c64733bc57ddd6b23560dfde01127f6ac25bf99fae70b",
+        "size_bytes": 377
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/zygote.te",
+        "sha256": "cd4667c5f710b873b62ed57ad7f486996876a20956cf96ccdee3aed878442d76",
+        "size_bytes": 39
+      },
+      {
+        "path": "device/lineage/sepolicy/mosey/system_ext/private/mosey_app.te",
+        "sha256": "c100353c2149132a07d9307258a5ce4150555490cdad57f987ef14ec085ffd15",
+        "size_bytes": 213
+      },
+      {
+        "path": "device/lineage/sepolicy/common/private/genfs_contexts",
+        "sha256": "d340299eeb56482ccc995c10afcd35ff6e2bfe6c5f32a1cf2dcae79ae5420c91",
+        "size_bytes": 376
+      }
+    ],
+    "system_ext_public": [
+      {
+        "path": "device/lineage/sepolicy/common/public/te_macros",
+        "sha256": "234dd8e1884a6680502d10df36e0d9ff71afb8de36c2f114d23b926140d36a6f",
+        "size_bytes": 851
+      },
+      {
+        "path": "device/lineage/sepolicy/common/public/attributes",
+        "sha256": "51a32121241ea7bf7c3e657466cb46d7524064db06d40fd1a32650db9ec13f38",
+        "size_bytes": 204
+      },
+      {
+        "path": "device/lineage/sepolicy/common/public/file.te",
+        "sha256": "35381c23563e1ca251ae8b712db1434fdfc05753ed38e01261688bc879d685f9",
+        "size_bytes": 104
+      },
+      {
+        "path": "device/lineage/sepolicy/common/public/property.te",
+        "sha256": "e0448d64ba284410fb5281ee3390d53aee0b3730cf6ab0f44926009d5b50d6f7",
+        "size_bytes": 267
+      },
+      {
+        "path": "device/lineage/sepolicy/common/public/shell.te",
+        "sha256": "b6bd4dfe08d32654749b7f4513fc5d59bac64d229e3a75b34298de5b770d4093",
+        "size_bytes": 70
+      },
+      {
+        "path": "device/lineage/sepolicy/mosey/system_ext/public/mosey_app.te",
+        "sha256": "0471110a54a2e2142d567428c8f790f78302724e9d123b9a3f57a53e79d6f3bc",
+        "size_bytes": 24
+      }
+    ]
+  },
+  "build_variant": "user",
+  "configured_directories": {
+    "BoardVendorSepolicyDirs": [
+      "device/lineage/sepolicy/mosey/vendor",
+      "device/lineage/sepolicy/common/dynamic",
+      "device/lineage/sepolicy/common/vendor"
+    ],
+    "SystemExtPrivateSepolicyDirs": [
+      "device/xiaomi/nezha/sepolicy/system_ext/oem/private",
+      "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private",
+      "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private",
+      "device/lineage/sepolicy/common/private",
+      "device/lineage/sepolicy/mosey/system_ext/private"
+    ],
+    "SystemExtPublicSepolicyDirs": [
+      "device/xiaomi/nezha/sepolicy/system_ext/oem/public",
+      "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/public",
+      "device/xiaomi/nezha/sepolicy/system_ext/public",
+      "device/lineage/sepolicy/common/public",
+      "device/lineage/sepolicy/mosey/system_ext/public"
+    ]
+  },
+  "contract_id": "nezha-evolution-system-ext-base-v1",
+  "device": {
+    "codename": "nezha",
+    "hardware_region": "CN"
+  },
+  "enforcement_patch": {
+    "path": "patches/evolution/backuptool-enforcing.json",
+    "sha256": "9ff54d435b95e7a38fa38c9891433040afe4ac01b6a8d0f388445e9c89abb99f",
+    "size_bytes": 5488
+  },
+  "limits": {
+    "all_native_context_tests_executed": false,
+    "compiled_binary_permissive_analysis_performed": false,
+    "complete_rom_ready": false,
+    "generated_cil_edited": false,
+    "hardware_support_proven": false,
+    "images_admitted": false,
+    "source_files_modified": false,
+    "vendor_source_policy_adopted_into_factory_images": false
+  },
+  "native_recipe": {
+    "base_source_count": 46,
+    "board_api": "202504",
+    "checkpolicy_flags": [
+      "-C",
+      "-M",
+      "-L",
+      "-c",
+      "30"
+    ],
+    "conf_defaults": "se_policy_conf_flags_defaults",
+    "context_defaults": "contexts_flags_defaults",
+    "ignore_neverallow": false,
+    "mapping_filter": [
+      "plat_mapping_file"
+    ],
+    "mapping_version": "current",
+    "native_producer_recipe_and_action_verification_required": true,
+    "private_filter": [
+      "plat_sepolicy.cil"
+    ],
+    "private_secilc_flags": [
+      "-v",
+      "-m",
+      "-M",
+      "true",
+      "-G",
+      "-c",
+      "30"
+    ],
+    "public_exporter_is_incomplete_subset": true,
+    "public_mask_filter": [
+      "reqd_policy_mask.cil"
+    ],
+    "selection": "current native system_ext tag minus exact owned filegroup; no global selector changes",
+    "source_filegroup": "se_build_files"
+  },
+  "operation": "admit-explicit-native-evolution-system-ext-base",
+  "original_assertions": {
+    "immutable_input_neverallows": 5976,
+    "immutable_input_neverallowx": 390,
+    "provider_registration_assertions": 4,
+    "total": 6370
+  },
+  "owned_attribute_declarations": [
+    "vendor_hal_dspmanager_client"
+  ],
+  "owned_source_groups": {
+    "nezha_owned_system_ext_file_contexts": [
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/file_contexts",
+        "sha256": "2fc17eac70bb7fbfbd27ff2ff77e4f2947a7e722feb1e68a9320c6bad76254a3",
+        "size_bytes": 480
+      }
+    ],
+    "nezha_owned_system_ext_private_policy": [
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/oem/private/nezha_oem_data.te",
+        "sha256": "883311e6bdaaf51244cc4314ae5c1cea0284ede0b5e094c5dc4c4dd5aac64c06",
+        "size_bytes": 373
+      },
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaextractor.te",
+        "sha256": "3cc45a4be37570b042a7d935fb3496b8e389464b9eab615490293c4ae405b4e4",
+        "size_bytes": 123
+      },
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaserver.te",
+        "sha256": "7a92bcf83ad72c17de04274cc75c55f907ba1198afa5accf22fc2b487a08717b",
+        "size_bytes": 121
+      },
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_qccsyshal_qti.te",
+        "sha256": "81908dc46e2fde565a4dcd71f9849545695cc0d8f1ca417644e360a8cbd01684",
+        "size_bytes": 1413
+      },
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_sigmahal_qti.te",
+        "sha256": "020c953c68bbe032277f48ac768c1b46a960e39103d547f401ace07d6622f470",
+        "size_bytes": 1334
+      }
+    ],
+    "nezha_owned_system_ext_property_contexts": [
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/property_contexts",
+        "sha256": "de2d404d105563880030b263966dbb4688f72de40dcd99b977885e0a84d8da2b",
+        "size_bytes": 658
+      }
+    ],
+    "nezha_owned_system_ext_public_policy": [
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/oem/public/nezha_oem_service.te",
+        "sha256": "c0732c519706b6344012eedcd5f0e6717c29e22429c9ebd8b476df0283fb3de6",
+        "size_bytes": 590
+      },
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/public/property.te",
+        "sha256": "9de2b501ded0fccd08d6ac6ec2eeb5bbeb93b904bb17c580d5652b220835caed",
+        "size_bytes": 401
+      },
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/public/attributes",
+        "sha256": "66658bc9fe936e88b469c4a57d3e884d8d194e7e1a5a37fe82ef620908d92803",
+        "size_bytes": 169
+      }
+    ],
+    "nezha_owned_system_ext_service_contexts": [
+      {
+        "path": "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/service_contexts",
+        "sha256": "0a6c2a4280b0b1d028d3a924fdb996084326273e3574bfff2e723a025f61c2e8",
+        "size_bytes": 196
+      }
+    ]
+  },
+  "platform": {
+    "board_api": "202504",
+    "branch": "bka",
+    "release": "bp4a"
+  },
+  "required_contracts": {
+    "framework_provider_policy": {
+      "path": "config/nezha-framework-provider-policy.json",
+      "sha256": "aa4b0ffb5395ad555e8f62c9074e00252d4d76812888ab68032a1ef01845ef4f",
+      "size_bytes": 34809
+    },
+    "oem_policy": {
+      "path": "config/nezha-oem-policy.json",
+      "sha256": "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7",
+      "size_bytes": 12375
+    },
+    "oem_properties": {
+      "path": "config/nezha-oem-properties.json",
+      "sha256": "f5796d6df4b7232d32ffdece83bc2d5726669fbb6f34f0ba2ef86be6cbc1d711",
+      "size_bytes": 65716
+    }
+  },
+  "schema_version": 1,
+  "unchanged_cil_inputs": [
+    {
+      "neverallow": 4929,
+      "neverallowx": 390,
+      "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+      "sha256": "8b32099077319d12127b900fb1f50d03852897d6628fca13c96d4f81b4143a42",
+      "size_bytes": 3012345
+    },
+    {
+      "neverallow": 0,
+      "neverallowx": 0,
+      "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+      "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+      "size_bytes": 229237
+    },
+    {
+      "neverallow": 0,
+      "neverallowx": 0,
+      "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+      "sha256": "238af2a9cee8a300b574de03a0d26620fb23c6af0a7814e8ff0b6b84da7d2f5d",
+      "size_bytes": 73
+    },
+    {
+      "neverallow": 0,
+      "neverallowx": 0,
+      "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_bytes": 1
+    },
+    {
+      "neverallow": 432,
+      "neverallowx": 0,
+      "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+      "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+      "size_bytes": 396303
+    },
+    {
+      "neverallow": 615,
+      "neverallowx": 0,
+      "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+      "sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+      "size_bytes": 1708593
+    },
+    {
+      "neverallow": 0,
+      "neverallowx": 0,
+      "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+      "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+      "size_bytes": 14292
+    },
+    {
+      "neverallow": 0,
+      "neverallowx": 0,
+      "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+      "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+      "size_bytes": 142
+    }
+  ],
+  "upstream": {
+    "commit": "37c13c9b74344c17eddd6067541e9fcba116a34e",
+    "project": "device/lineage/sepolicy",
+    "repository": "https://github.com/Evolution-X/device_evolution_sepolicy"
+  }
+}

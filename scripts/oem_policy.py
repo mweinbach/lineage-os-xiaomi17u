@@ -91,6 +91,15 @@ def _provider_module():
     return framework_provider_policy
 
 
+def _evolution_base_module():
+    # Older private bundles deliberately omit this explicit base profile.
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    return evolution_policy_base
+
+
 def _check_provider_binding(base, provider):
     required = provider["required_contracts"]
     require(required["oem_policy"] == {"path": CONTRACT_PATH, "sha256": CONTRACT_SHA256}
@@ -323,7 +332,7 @@ def _record(form):
             "normalized_form_sha256": vp.sha(vp.render(form.expr).encode())}
 
 
-def _property_effective_allow_budget(policy, properties):
+def _property_effective_allow_edges(policy, properties):
     """Check both directions of every ordinary edge involving a property type.
 
     This includes inherited framework grants, retained vendor grants activated
@@ -351,8 +360,16 @@ def _property_effective_allow_budget(policy, properties):
         selected = sorted(edge for edge in edges if name in edge[:2])
         raw = b"".join(json.dumps(row, separators=(",", ":")).encode() + b"\n" for row in selected)
         actual[name] = {"count": len(selected), "sha256_sorted_compact_json_rows": vp.sha(raw)}
-    require(actual == properties["native_effective_ordinary_allow_edges"],
-            "property effective ordinary permissions differ from the reviewed finite edge budget")
+    return actual
+
+
+def _property_effective_allow_budget(policy, properties, *, reference=None):
+    actual = _property_effective_allow_edges(policy, properties)
+    expected = (properties["native_effective_ordinary_allow_edges"] if reference is None else
+                _property_effective_allow_edges(reference, properties))
+    require(actual == expected,
+            "property effective ordinary permissions differ from the reviewed finite edge budget" if reference is None
+            else "property effective ordinary permissions differ from the independent Evolution base plus owned budget")
     return actual
 
 
@@ -497,15 +514,42 @@ def _declaration_only_outputs(ext_forms, mapping_forms, policy, contract, platfo
 
 
 def check_native_contents(corpus, original_vendor, contract, capability, property_contract=None, property_contexts=None,
-                          provider_contract=None, provider_file_contexts=None, provider_service_contexts=None):
+                          provider_contract=None, provider_file_contexts=None, provider_service_contexts=None,
+                          evolution_base_contract=None, evolution_base_inputs=None, system_ext_public_cil=None):
     """Static checks of actual compiler inputs, not a substitute for compilation."""
     require(list(corpus) == list(INPUT_FLAGS.values()), "native CIL input order or set differs")
+    evolution_selected = evolution_base_contract is not None
+    require(evolution_selected == (evolution_base_inputs is not None)
+            and evolution_selected == (system_ext_public_cil is not None),
+            "Evolution base contract, complete native references, and full exporter must be selected together")
+    if evolution_selected:
+        require(property_contract is not None and provider_contract is not None,
+                "Evolution base requires the explicit property and provider profiles")
+        eb = _evolution_base_module()
+        required = evolution_base_contract["required_contracts"]
+        require(required == {
+            "oem_policy": {"path": CONTRACT_PATH, "sha256": CONTRACT_SHA256, "size_bytes": 12375},
+            "oem_properties": {"path": PROPERTY_CONTRACT_PATH, "sha256": PROPERTY_CONTRACT_SHA256,
+                               "size_bytes": 65716},
+            "framework_provider_policy": {"path": _provider_module().CONTRACT_PATH,
+                "sha256": _provider_module().CONTRACT_SHA256, "size_bytes": 34809},
+        } and evolution_base_contract["device"] == contract["device"]
+            and evolution_base_contract["platform"] == contract["platform"]
+            and evolution_base_contract["build_variant"] == "user",
+            "Evolution base does not bind the selected device, platform, variant, and owned contracts")
     if property_contract is not None:
         contract = _compose_contract(contract, property_contract)
         require(property_contexts is not None, "the property profile requires its current native context output")
-        observed_contexts = _property_context_rows(property_contexts)
         expected_contexts = [{key: row[key] for key in ("property_pattern", "context", "match", "value_type")}
                              for row in property_contract["property_contexts"]]
+        if evolution_selected:
+            selectors = {row["property_pattern"] for row in expected_contexts}
+            observed_contexts = [dict(zip(("property_pattern", "context", "match", "value_type"), row))
+                                 for row in eb._context_rows(property_contexts, "property_contexts")
+                                 if row[0] in selectors]
+            # Every remaining row is independently checked as a base row below.
+        else:
+            observed_contexts = _property_context_rows(property_contexts)
         require(Counter(tuple(sorted(row.items())) for row in observed_contexts)
                 == Counter(tuple(sorted(row.items())) for row in expected_contexts),
                 "native property context output differs from the eight reviewed prefixes")
@@ -544,14 +588,29 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
     system_ext_runtime = INPUT_FLAGS["system_ext_cil"]
     mapping_runtime = INPUT_FLAGS["system_ext_mapping"]
     ext_forms, mapping_forms = parsed[system_ext_runtime], parsed[mapping_runtime]
-    membership_budget = _declaration_only_outputs(ext_forms, mapping_forms, policy, contract,
-                                                   parsed[INPUT_FLAGS["platform_cil"]], provider_contract)
+    evolution_result = None
+    if evolution_selected:
+        evolution_result = eb.check_composition(
+            corpus, parsed, policy, contract, property_contract, provider_contract,
+            evolution_base_inputs, evolution_base_contract,
+            {"property_contexts": property_contexts, "file_contexts": provider_file_contexts,
+             "service_contexts": provider_service_contexts}, system_ext_public_cil)
+        membership_budget = evolution_result["membership_budget"]
+    else:
+        membership_budget = _declaration_only_outputs(ext_forms, mapping_forms, policy, contract,
+                                                       parsed[INPUT_FLAGS["platform_cil"]], provider_contract)
     expected_types = set(contract["types"])
     all_source_types = expected_types | (set(provider_contract["types"]) if provider_contract is not None else set())
+    if evolution_result is not None:
+        all_source_types |= evolution_result["base_types"]
     source_types = Counter(form.expr[1] for form in ext_forms if form.expr[0] == "type")
     require(source_types == Counter({name: 1 for name in all_source_types}),
             "system_ext must own exactly the explicitly reviewed OEM type declarations")
-    if provider_contract is not None:
+    if provider_contract is not None and not evolution_selected:
+        # The explicit Evolution profile already checks every inherited
+        # attribute against the independent native base plus owned contracts,
+        # including definition counts. The older isolation check assumes a
+        # platform-only reference and cannot represent that selected base.
         _provider_anonymous_ownership(parsed, policy, membership_budget)
     original_factory = {runtime: parsed[runtime] for runtime in (INPUT_FLAGS["factory_pub"], INPUT_FLAGS["factory_odm"])}
     original_factory[vendor_runtime] = vp.parse(original_vendor, vendor_runtime)
@@ -626,7 +685,8 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
         result["property_contexts_verified"] = observed_contexts
         result["explicit_source_read_clauses"] = property_contract["read_clauses"]
         result["property_read_sources"] = read_sources
-        result["property_effective_ordinary_allow_edges"] = _property_effective_allow_budget(policy, property_contract)
+        result["property_effective_ordinary_allow_edges"] = _property_effective_allow_budget(
+            policy, property_contract, reference=evolution_result["reference"] if evolution_result is not None else None)
     if provider_contract is not None:
         # Validate the original full corpus. Nothing is removed to make the
         # older OEM or property checks pass; their own budgets remain enforced.
@@ -634,12 +694,18 @@ def check_native_contents(corpus, original_vendor, contract, capability, propert
         result["provider_context_verification"] = provider_context_result
         result["provider_contract_id"] = provider_contract["contract_id"]
         result["provider_contract_sha256"] = fp.CONTRACT_SHA256
+    if evolution_result is not None:
+        result["evolution_policy_base_verification"] = evolution_result["result"]
+        result["property_effective_edge_budget_basis"] = "independent-native-evolution-base-plus-owned-contracts"
+        result["legacy_property_edge_budget_reused_as_current"] = False
     return result
 
 
 def check_native(inputs, original_vendor, capability_path, *, contract_path=None, tool_source=None,
                  property_contract_path=None, property_contexts_path=None, provider_contract_path=None,
-                 provider_file_contexts_path=None, provider_service_contexts_path=None):
+                 provider_file_contexts_path=None, provider_service_contexts_path=None,
+                 evolution_base_contract_path=None, evolution_base_inputs=None,
+                 system_ext_public_cil_path=None, evolution_base_source_files=None):
     reader = vp.Reader()
     contract = load_contract(contract_path, reader)
     require((property_contract_path is None) == (property_contexts_path is None),
@@ -653,6 +719,23 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
     provider = _provider_module().load_contract(provider_contract_path, reader) if provider_selected else None
     provider_files = reader.read(provider_file_contexts_path) if provider_selected else None
     provider_services = reader.read(provider_service_contexts_path) if provider_selected else None
+    evolution_selected = evolution_base_contract_path is not None
+    require(evolution_selected == (evolution_base_inputs is not None)
+            and evolution_selected == (system_ext_public_cil_path is not None)
+            and evolution_selected == (evolution_base_source_files is not None),
+            "Evolution base contract, references, exporter, and exact source list must be selected together")
+    evolution_contract = evolution_inputs = full_public = source_files = None
+    if evolution_selected:
+        require(provider_selected and properties is not None,
+                "Evolution base requires the explicit property and provider profiles")
+        eb = _evolution_base_module()
+        evolution_contract = eb.load_contract(evolution_base_contract_path, reader)
+        require(set(evolution_base_inputs) == set(eb.INPUT_FLAGS)
+                and all(path is not None for path in evolution_base_inputs.values()),
+                "native Evolution reference input flags differ or are incomplete")
+        evolution_inputs = {role: reader.read(evolution_base_inputs[flag]) for flag, role in eb.INPUT_FLAGS.items()}
+        full_public = reader.read(system_ext_public_cil_path)
+        source_files = eb.verify_source_files(evolution_base_source_files, evolution_contract, reader)
     require(set(inputs) == set(INPUT_FLAGS), "native input flags differ")
     corpus = {runtime: reader.read(inputs[flag]) for flag, runtime in INPUT_FLAGS.items()}
     original = reader.read(original_vendor)
@@ -661,9 +744,14 @@ def check_native(inputs, original_vendor, capability_path, *, contract_path=None
     tool_names = ["oem_policy.py", "vendor_policy.py", "artifact_files.py"]
     if provider_selected:
         tool_names.append("framework_provider_policy.py")
+    if evolution_selected:
+        tool_names.append("evolution_policy_base.py")
     tools = {name: vp.sha(reader.read(source.with_name(name))) for name in tool_names}
     result = check_native_contents(corpus, original, contract, capability, properties, property_contexts,
-                                   provider, provider_files, provider_services)
+                                   provider, provider_files, provider_services,
+                                   evolution_contract, evolution_inputs, full_public)
+    if evolution_selected:
+        result["evolution_policy_base_source_files"] = source_files
     reader.recheck()
     result["input_bindings"] = list(reader.bindings.values())
     result["tool_sources_sha256"] = tools
@@ -706,6 +794,15 @@ def main(argv=None):
     native.add_argument("--provider-contract", type=Path)
     native.add_argument("--system-ext-file-contexts", type=Path)
     native.add_argument("--system-ext-service-contexts", type=Path)
+    native.add_argument("--evolution-policy-base-contract", type=Path)
+    native.add_argument("--system-ext-public-cil", type=Path)
+    native.add_argument("--evolution-base-source-files", nargs="+", type=Path)
+    # Do not import the optional helper while parsing a legacy bundle command.
+    evolution_flags = ("evolution_base_system_ext_cil", "evolution_base_system_ext_mapping",
+                       "evolution_base_public_cil", "evolution_base_property_contexts",
+                       "evolution_base_file_contexts", "evolution_base_service_contexts")
+    for flag in evolution_flags:
+        native.add_argument("--" + flag.replace("_", "-"), type=Path)
     native.add_argument("--output", type=Path)
     for flag in INPUT_FLAGS:
         native.add_argument("--" + flag.replace("_", "-"), required=True, type=Path)
@@ -721,7 +818,12 @@ def main(argv=None):
                                   property_contexts_path=args.system_ext_property_contexts,
                                   provider_contract_path=args.provider_contract,
                                   provider_file_contexts_path=args.system_ext_file_contexts,
-                                  provider_service_contexts_path=args.system_ext_service_contexts)
+                                  provider_service_contexts_path=args.system_ext_service_contexts,
+                                  evolution_base_contract_path=args.evolution_policy_base_contract,
+                                  evolution_base_inputs=({flag: getattr(args, flag) for flag in evolution_flags}
+                                      if any(getattr(args, flag) is not None for flag in evolution_flags) else None),
+                                  system_ext_public_cil_path=args.system_ext_public_cil,
+                                  evolution_base_source_files=args.evolution_base_source_files)
         _write_result(result, args.output)
     except (OSError, ValueError) as exc:
         print(f"oem-policy: {exc}", file=sys.stderr)

@@ -219,6 +219,129 @@ java_genrule {
          "-p $(location :nezha_factory_precompiled_sepolicy) -t TestDevTypeViolations && touch $(out)",
 }
 
+// BEGIN OPTIONAL EVOLUTION POLICY BASE
+// These comparison producers use the current upstream source lists and flags.
+// Only the explicitly admitted Nezha source groups are excluded. Their outputs
+// are never added to the ten inputs of the strict combined policy above.
+filegroup {
+    name: "nezha_evolution_base_public_policy",
+    srcs: [":se_build_files{.system_ext_public}"],
+    exclude_srcs: ["//device/xiaomi/nezha:nezha_owned_system_ext_public_policy"],
+}
+
+filegroup {
+    name: "nezha_evolution_base_private_policy",
+    srcs: [":se_build_files{.system_ext_private}"],
+    exclude_srcs: ["//device/xiaomi/nezha:nezha_owned_system_ext_private_policy"],
+}
+
+se_policy_conf {
+    name: "nezha_evolution_base_system_ext_sepolicy.conf",
+    defaults: ["se_policy_conf_flags_defaults"],
+    srcs: [
+        ":se_build_files{.plat_public}",
+        ":se_build_files{.plat_private}",
+        ":nezha_evolution_base_public_policy",
+        ":nezha_evolution_base_private_policy",
+    ],
+    system_ext_specific: true,
+    installable: false,
+}
+
+se_policy_cil {
+    name: "nezha_evolution_base_system_ext_sepolicy.cil",
+    src: ":nezha_evolution_base_system_ext_sepolicy.conf",
+    filter_out: [":plat_sepolicy.cil"],
+    secilc_check: true,
+    ignore_neverallow: false,
+    system_ext_specific: true,
+    installable: false,
+}
+
+se_policy_conf {
+    name: "nezha_evolution_base_system_ext_pub_policy.conf",
+    defaults: ["se_policy_conf_flags_defaults"],
+    srcs: [
+        ":se_build_files{.plat_public}",
+        ":nezha_evolution_base_public_policy",
+        ":se_build_files{.reqd_mask}",
+    ],
+    system_ext_specific: true,
+    installable: false,
+}
+
+se_policy_cil {
+    name: "nezha_evolution_base_system_ext_pub_policy.cil",
+    src: ":nezha_evolution_base_system_ext_pub_policy.conf",
+    filter_out: [":reqd_policy_mask.cil"],
+    // Like the upstream public exporter, this is an incomplete policy subset.
+    secilc_check: false,
+    system_ext_specific: true,
+    installable: false,
+}
+
+se_versioned_policy {
+    name: "nezha_evolution_base_system_ext_mapping_file",
+    base: ":nezha_evolution_base_system_ext_pub_policy.cil",
+    mapping: true,
+    version: "current",
+    filter_out: [":plat_mapping_file"],
+    system_ext_specific: true,
+    installable: false,
+}
+
+filegroup {
+    name: "nezha_evolution_base_property_contexts_files",
+    srcs: [":property_contexts_files{.system_ext_private}"],
+    exclude_srcs: ["//device/xiaomi/nezha:nezha_owned_system_ext_property_contexts"],
+}
+
+filegroup {
+    name: "nezha_evolution_base_file_contexts_files",
+    srcs: [":file_contexts_files{.system_ext_private}"],
+    exclude_srcs: ["//device/xiaomi/nezha:nezha_owned_system_ext_file_contexts"],
+}
+
+filegroup {
+    name: "nezha_evolution_base_service_contexts_files",
+    srcs: [":service_contexts_files{.system_ext_private}"],
+    exclude_srcs: ["//device/xiaomi/nezha:nezha_owned_system_ext_service_contexts"],
+}
+
+// Native context types declare install rules. Keep these unique comparison
+// names out of PRODUCT_PACKAGES and direct build goals; only consume outputs.
+property_contexts {
+    name: "nezha_evolution_base_property_contexts",
+    defaults: ["contexts_flags_defaults"],
+    srcs: [":nezha_evolution_base_property_contexts_files"],
+    system_ext_specific: true,
+}
+
+file_contexts {
+    name: "nezha_evolution_base_file_contexts",
+    defaults: ["contexts_flags_defaults"],
+    srcs: [":nezha_evolution_base_file_contexts_files"],
+    system_ext_specific: true,
+}
+
+service_contexts {
+    name: "nezha_evolution_base_service_contexts",
+    defaults: ["contexts_flags_defaults"],
+    srcs: [":nezha_evolution_base_service_contexts_files"],
+    system_ext_specific: true,
+}
+
+filegroup {
+    name: "nezha_evolution_base_source_files",
+    srcs: [
+        ":nezha_evolution_base_public_policy",
+        ":nezha_evolution_base_private_policy",
+        ":nezha_evolution_base_property_contexts_files",
+        ":nezha_evolution_base_file_contexts_files",
+        ":nezha_evolution_base_service_contexts_files",
+    ],
+}
+// END OPTIONAL EVOLUTION POLICY BASE
 // BEGIN OPTIONAL NEZHA OEM POLICY CHECK
 // Staging includes this only with an explicit reviewed OEM source contract.
 // The original template is retained as provenance in both bundle profiles.
@@ -259,6 +382,18 @@ java_genrule {
         ":system_ext_service_contexts",
         "//vendor/xiaomi/nezha-framework-providers:nezha_framework_provider_inputs_check{framework-provider-inputs-checked.json}",
         // END OPTIONAL NEZHA FRAMEWORK PROVIDER INPUTS
+        // BEGIN OPTIONAL EVOLUTION POLICY BASE INPUTS
+        "tools/evolution_policy_base.py",
+        "tools/evolution-policy-base.json",
+        ":nezha_evolution_base_system_ext_sepolicy.cil",
+        ":nezha_evolution_base_system_ext_mapping_file",
+        ":nezha_evolution_base_system_ext_pub_policy.cil",
+        ":system_ext_pub_policy.cil",
+        ":nezha_evolution_base_property_contexts",
+        ":nezha_evolution_base_file_contexts",
+        ":nezha_evolution_base_service_contexts",
+        ":nezha_evolution_base_source_files",
+        // END OPTIONAL EVOLUTION POLICY BASE INPUTS
     ],
     out: ["oem-policy-native-check.json"],
     cmd: "$(location nezha_oem_policy_check_tool) check-native " +
@@ -284,6 +419,17 @@ java_genrule {
          "--system-ext-file-contexts $$(readlink -f $(location :system_ext_file_contexts)) " +
          "--system-ext-service-contexts $$(readlink -f $(location :system_ext_service_contexts)) " +
          // END OPTIONAL NEZHA FRAMEWORK PROVIDER ARGUMENTS
+         // BEGIN OPTIONAL EVOLUTION POLICY BASE ARGUMENTS
+         "--evolution-policy-base-contract $$(readlink -f $(location tools/evolution-policy-base.json)) " +
+         "--evolution-base-system-ext-cil $$(readlink -f $(location :nezha_evolution_base_system_ext_sepolicy.cil)) " +
+         "--evolution-base-system-ext-mapping $$(readlink -f $(location :nezha_evolution_base_system_ext_mapping_file)) " +
+         "--evolution-base-public-cil $$(readlink -f $(location :nezha_evolution_base_system_ext_pub_policy.cil)) " +
+         "--system-ext-public-cil $$(readlink -f $(location :system_ext_pub_policy.cil)) " +
+         "--evolution-base-property-contexts $$(readlink -f $(location :nezha_evolution_base_property_contexts)) " +
+         "--evolution-base-file-contexts $$(readlink -f $(location :nezha_evolution_base_file_contexts)) " +
+         "--evolution-base-service-contexts $$(readlink -f $(location :nezha_evolution_base_service_contexts)) " +
+         "--evolution-base-source-files $(locations :nezha_evolution_base_source_files) " +
+         // END OPTIONAL EVOLUTION POLICY BASE ARGUMENTS
          "--tool-source $$(readlink -f $(location tools/oem_policy.py)) " +
          "--output $$(readlink -f $(genDir))/oem-policy-native-check.json",
 }

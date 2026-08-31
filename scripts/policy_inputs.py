@@ -92,6 +92,39 @@ PROVIDER_SOURCE_PATHS = {
     "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_qccsyshal_qti.te",
     "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_sigmahal_qti.te",
 }
+EVOLUTION_BASE_CONTRACT_PATH = "config/evolution-policy-base.json"
+EVOLUTION_BASE_GROUPS_PATH = "device/xiaomi/nezha/sepolicy/Android.bp"
+EVOLUTION_BASE_OWNED_GROUPS = {
+    "nezha_owned_system_ext_public_policy": [
+        "device/xiaomi/nezha/sepolicy/system_ext/oem/public/nezha_oem_service.te",
+        "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/public/property.te",
+        "device/xiaomi/nezha/sepolicy/system_ext/public/attributes",
+    ],
+    "nezha_owned_system_ext_private_policy": [
+        "device/xiaomi/nezha/sepolicy/system_ext/oem/private/nezha_oem_data.te",
+        "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaextractor.te",
+        "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/mediaserver.te",
+        "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_qccsyshal_qti.te",
+        "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/vendor_sigmahal_qti.te",
+    ],
+    "nezha_owned_system_ext_property_contexts": [
+        "device/xiaomi/nezha/sepolicy/system_ext/oem_properties/private/property_contexts",
+    ],
+    "nezha_owned_system_ext_file_contexts": [
+        "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/file_contexts",
+    ],
+    "nezha_owned_system_ext_service_contexts": [
+        "device/xiaomi/nezha/sepolicy/system_ext/framework_providers/private/service_contexts",
+    ],
+}
+EVOLUTION_BASE_BLOCKS = (
+    ("// BEGIN OPTIONAL EVOLUTION POLICY BASE\n",
+     "// END OPTIONAL EVOLUTION POLICY BASE\n"),
+    ("        // BEGIN OPTIONAL EVOLUTION POLICY BASE INPUTS\n",
+     "        // END OPTIONAL EVOLUTION POLICY BASE INPUTS\n"),
+    ("         // BEGIN OPTIONAL EVOLUTION POLICY BASE ARGUMENTS\n",
+     "         // END OPTIONAL EVOLUTION POLICY BASE ARGUMENTS\n"),
+)
 FACTORY_RECEIPT_MEMBER = "provenance/factory-policy-capture.json"
 MAX_BUNDLE_BYTES = 32 * 1024 * 1024
 SCOPE = {
@@ -169,12 +202,30 @@ def _read_exact(reader, path, expected):
     return reader.read(path, expected["sha256"], expected["size_bytes"])
 
 
-def _render_blueprint(raw, oem_enabled, properties_enabled=False, providers_enabled=False):
+def render_evolution_owned_groups():
+    """Emit only selectors for already admitted device sources, with no globs."""
+    parent = PurePosixPath(EVOLUTION_BASE_GROUPS_PATH).parent
+    lines = ["// SPDX-License-Identifier: Apache-2.0",
+             "// Explicit Evolution-base comparison selectors; no policy or package selection.",
+             "// This package inherits the existing //device/xiaomi/nezha namespace.", ""]
+    for name, sources in EVOLUTION_BASE_OWNED_GROUPS.items():
+        lines.extend(["filegroup {", '    name: "' + name + '",', "    srcs: ["])
+        lines.extend('        "' + PurePosixPath(source).relative_to(parent).as_posix() + '",'
+                     for source in sources)
+        lines.extend(["    ],", '    visibility: ["//vendor/xiaomi/nezha-policy:__pkg__"],', "}", ""])
+    return ("\n".join(lines) + "\n").encode("ascii")
+
+
+def _render_blueprint(raw, oem_enabled, properties_enabled=False, providers_enabled=False,
+                      evolution_base_enabled=False):
     """Select the explicit OEM check without changing any compiled CIL input."""
     require(not properties_enabled or oem_enabled, "OEM properties require the original OEM source profile")
     require(not providers_enabled or oem_enabled, "framework providers require the original OEM source profile")
+    require(not evolution_base_enabled or all((oem_enabled, properties_enabled, providers_enabled)),
+            "the Evolution policy base requires the explicit OEM, property and provider source profiles")
     text = raw.decode("utf-8")
-    for blocks, enabled in ((OEM_PROPERTY_BLOCKS, properties_enabled), (PROVIDER_BLOCKS, providers_enabled)):
+    for blocks, enabled in ((OEM_PROPERTY_BLOCKS, properties_enabled), (PROVIDER_BLOCKS, providers_enabled),
+                            (EVOLUTION_BASE_BLOCKS, evolution_base_enabled)):
         for begin, end in blocks:
             require(text.count(begin) == 1 and text.count(end) == 1,
                     "native policy template must contain each reviewed optional profile block once")
@@ -183,8 +234,13 @@ def _render_blueprint(raw, oem_enabled, properties_enabled=False, providers_enab
             text = before + (optional if enabled else "") + after
     tool_sources = '    srcs: ["tools/oem_policy.py", "tools/vendor_policy.py", "tools/artifact_files.py"],'
     require(text.count(tool_sources) == 1, "native OEM check tool source list differs")
+    extra_tools = []
     if providers_enabled:
-        text = text.replace(tool_sources, tool_sources[:-2] + ', "tools/framework_provider_policy.py"],')
+        extra_tools.append('"tools/framework_provider_policy.py"')
+    if evolution_base_enabled:
+        extra_tools.append('"tools/evolution_policy_base.py"')
+    if extra_tools:
+        text = text.replace(tool_sources, tool_sources[:-2] + ', ' + ', '.join(extra_tools) + '],')
     require(text.count(OEM_BEGIN) == 1 and text.count(OEM_END) == 1,
             "native policy template must contain one reviewed optional OEM block")
     before, rest = text.split(OEM_BEGIN)
@@ -442,6 +498,46 @@ def _provider_controls(reader, path, contract, controls, oem_binding, properties
     return {"path": PROVIDER_POLICY_CONTRACT_PATH, **identity(raw)}
 
 
+def _evolution_base_controls(reader, path, contract, controls, oem_binding,
+                             property_binding, provider_binding):
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    require(all(value is not None for value in (oem_binding, property_binding, provider_binding)),
+            "the Evolution policy base requires explicit OEM, property and provider profiles")
+    base = evolution_policy_base.load_contract(path, reader)
+    raw = reader.read(path)
+    _read_exact(reader, ROOT / EVOLUTION_BASE_CONTRACT_PATH, identity(raw))
+    require(base.get("required_contracts") == {
+        "oem_policy": oem_binding, "oem_properties": property_binding,
+        "framework_provider_policy": provider_binding,
+    }, "the Evolution policy base differs from the admitted OEM, property or provider contracts")
+    require(base.get("device") == {"codename": contract["device"], "hardware_region": "CN"}
+            and base.get("platform") == contract["platform"] and base.get("build_variant") == "user",
+            "the Evolution policy base must retain the selected device and platform")
+    groups = base.get("owned_source_groups")
+    require(type(groups) is dict and set(groups) == set(EVOLUTION_BASE_OWNED_GROUPS),
+            "the Evolution policy base must name exactly the five reviewed source groups")
+    for name, paths in EVOLUTION_BASE_OWNED_GROUPS.items():
+        rows = groups[name]
+        require(type(rows) is list and [row.get("path") for row in rows] == paths,
+                "the Evolution policy base may exclude only the exact admitted device source files")
+        for row in rows:
+            data = _read_exact(reader, ROOT / row["path"], row)
+            member = "provenance/source/" + row["path"]
+            require(member not in controls or controls[member] == data,
+                    "an Evolution exclusion differs from the admitted device source")
+            controls[member] = data
+    controls.update({
+        "tools/evolution_policy_base.py": reader.read(ROOT / "scripts/evolution_policy_base.py"),
+        "tools/evolution-policy-base.json": raw,
+        "provenance/nezha-owned-policy.Android.bp": render_evolution_owned_groups(),
+    })
+    controls["Android.bp"] = _render_blueprint(controls["provenance/Android.bp.template"], True, True, True, True)
+    return {"path": EVOLUTION_BASE_CONTRACT_PATH, **identity(raw)}
+
+
 def _provider_inputs(reader, receipt_path, contract, controls, *, output=None):
     if __package__:
         from . import framework_provider_inputs as provider_inputs
@@ -534,7 +630,7 @@ def _capture(reader, receipt_path, contract):
 
 
 def _manifest(contract, correction, files, stage_tool, oem_binding=None, property_binding=None,
-              provider_binding=None, provider_inputs=None):
+              provider_binding=None, provider_inputs=None, evolution_binding=None):
     result = {
         "schema_version": 1, "operation": "stage-nezha-policy-inputs", "status": "staged",
         "device": "nezha", "bundle": BUNDLE_PATH,
@@ -561,6 +657,10 @@ def _manifest(contract, correction, files, stage_tool, oem_binding=None, propert
         result["framework_provider_policy_contract"] = copy.deepcopy(provider_binding)
         result["framework_provider_inputs"] = copy.deepcopy(provider_inputs)
         result["native_targets"].append(PROVIDER_NATIVE_OUTPUT_RECIPE["producer"])
+    if evolution_binding is not None:
+        require(all(value is not None for value in (oem_binding, property_binding, provider_binding)),
+                "the Evolution policy base receipt requires all three explicit source profiles")
+        result["evolution_policy_base_contract"] = copy.deepcopy(evolution_binding)
     return result
 
 
@@ -620,6 +720,15 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
         require(receipt["framework_provider_policy_contract"] == provider_binding
                 and receipt["framework_provider_inputs"] == provider_inputs,
                 "provider receipt differs from the source capability or reverified external inputs")
+    evolution_binding = None
+    if "evolution_policy_base_contract" in receipt:
+        require(type(receipt["evolution_policy_base_contract"]) is dict
+                and receipt["evolution_policy_base_contract"].get("path") == EVOLUTION_BASE_CONTRACT_PATH,
+                "unexpected Evolution policy base receipt binding")
+        evolution_binding = _evolution_base_controls(reader, ROOT / EVOLUTION_BASE_CONTRACT_PATH,
+            contract, controls, oem_binding, property_binding, provider_binding)
+        require(receipt["evolution_policy_base_contract"] == evolution_binding,
+                "the Evolution policy base receipt differs from the trusted controls")
     expected = dict(controls)
     expected[FACTORY_RECEIPT_MEMBER] = _capture(reader, bundle / FACTORY_RECEIPT_MEMBER, contract)
     for row in correction["inputs"]:
@@ -631,13 +740,13 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
         _read_exact(reader, bundle / member, identity(data))
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
     require(receipt == _manifest(contract, correction, expected, stage_tool, oem_binding, property_binding,
-                                provider_binding, provider_inputs),
+                                provider_binding, provider_inputs, evolution_binding),
             "policy-input receipt differs from the reviewed files or scope")
     require(_members(bundle) == set(expected) | {RECEIPT_NAME}, "bundle has missing or unexpected files")
     if provider_inputs is not None:
         _provider_inventory(framework_provider_inputs_receipt, provider_inputs)
     reader.recheck()
-    return {
+    result = {
         "schema_version": 1, "operation": "verify-nezha-policy-inputs", "status": "verified",
         "device": "nezha", "bundle": BUNDLE_PATH,
         "factory_package_sha256": contract["package_sha256"],
@@ -649,6 +758,9 @@ def verify_bundle(bundle, *, framework_provider_inputs_receipt=None):
         "framework_provider_inputs": copy.deepcopy(provider_inputs),
         "scope": copy.deepcopy(SCOPE),
     }
+    if evolution_binding is not None:
+        result["evolution_policy_base_contract"] = copy.deepcopy(evolution_binding)
+    return result
 
 
 def _output_path(output):
@@ -665,7 +777,8 @@ def _output_path(output):
 
 def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_policy_receipt=None,
                  oem_policy_contract=None, oem_property_contract=None,
-                 framework_provider_policy_contract=None, framework_provider_inputs_receipt=None):
+                 framework_provider_policy_contract=None, framework_provider_inputs_receipt=None,
+                 evolution_policy_base_contract=None):
     """Publish a fresh private bundle atomically; originals remain untouched."""
     require((factory_capture_root is None) != (factory_policy_receipt is None),
             "choose exactly one factory capture root or receipt")
@@ -675,6 +788,10 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
             "select provider policy and the verified external provider input receipt together")
     require(framework_provider_policy_contract is None or oem_policy_contract is not None,
             "provider policy requires an explicit OEM base contract")
+    require(evolution_policy_base_contract is None or all(value is not None for value in (
+        oem_policy_contract, oem_property_contract, framework_provider_policy_contract,
+        framework_provider_inputs_receipt)),
+        "the Evolution policy base requires explicit OEM, property and provider profiles")
     output, parent = _output_path(output)
     corpus_root = vendor_policy.real_directory(corpus_root)
     if factory_capture_root is not None:
@@ -699,6 +816,10 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
                                                controls, oem_binding, property_binding is not None)
         provider_inputs = _provider_inputs(reader, framework_provider_inputs_receipt, contract, controls,
                                             output=output)
+    evolution_binding = None
+    if evolution_policy_base_contract is not None:
+        evolution_binding = _evolution_base_controls(reader, evolution_policy_base_contract, contract,
+            controls, oem_binding, property_binding, provider_binding)
     files = dict(controls)
     files[FACTORY_RECEIPT_MEMBER] = _capture(reader, receipt_path, contract)
     for row in correction["inputs"]:
@@ -709,7 +830,7 @@ def stage_inputs(corpus_root, output, *, factory_capture_root=None, factory_poli
     require(sum(len(data) for data in files.values()) <= MAX_BUNDLE_BYTES, "policy bundle exceeds its byte limit")
     stage_tool = reader.read(ROOT / "scripts/policy_inputs.py")
     receipt = _manifest(contract, correction, files, stage_tool, oem_binding, property_binding,
-                        provider_binding, provider_inputs)
+                        provider_binding, provider_inputs, evolution_binding)
     files[RECEIPT_NAME] = encoded(receipt)
     required_bytes = sum(len(data) for data in files.values())
     require(shutil.disk_usage(parent).free >= required_bytes + 16 * 1024 * 1024,
@@ -764,6 +885,8 @@ def main(argv=None):
                        help="explicit private provider source policy; requires OEM and external provider inputs")
     stage.add_argument("--framework-provider-inputs-receipt", type=Path,
                        help="separate provider bundle receipt, reverified before policy publication")
+    stage.add_argument("--evolution-policy-base-contract", type=Path,
+                       help="explicit native Evolution-base comparison; requires OEM, property and provider profiles")
     verify = commands.add_parser("verify", help="verify every transferred file against reviewed workspace controls")
     verify.add_argument("--bundle", required=True, type=Path)
     verify.add_argument("--framework-provider-inputs-receipt", type=Path,
@@ -776,7 +899,8 @@ def main(argv=None):
                                   oem_policy_contract=args.oem_policy_contract,
                                   oem_property_contract=args.oem_property_contract,
                                   framework_provider_policy_contract=args.framework_provider_policy_contract,
-                                  framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)
+                                  framework_provider_inputs_receipt=args.framework_provider_inputs_receipt,
+                                  evolution_policy_base_contract=args.evolution_policy_base_contract)
         else:
             result = verify_bundle(args.bundle,
                                    framework_provider_inputs_receipt=args.framework_provider_inputs_receipt)

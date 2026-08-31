@@ -70,6 +70,8 @@ INIT_HELPER_LIMITS = {
 }
 POLICY_INPUTS_PATH = "vendor/xiaomi/nezha-policy"
 POLICY_INPUTS_RECEIPT = "policy-inputs.json"
+EVOLUTION_POLICY_BASE_RECORD = PurePosixPath("config/evolution-policy-base.json")
+EVOLUTION_POLICY_BASE_GROUPS = DEVICE_PATH / "sepolicy/Android.bp"
 MI_EXT_INPUTS_PATH = "vendor/xiaomi/nezha-mi-ext"
 MI_EXT_INPUTS_RECEIPT = "mi-ext-inputs.json"
 MI_EXT_BOARD_INCLUDE = DEVICE_PATH / "generated/mi-ext-prebuilt.mk"
@@ -1695,6 +1697,83 @@ def _verify_policy_input_bundle(receipt, *, framework_provider_inputs_receipt=No
     return policy_inputs.verify_bundle(receipt.parent, framework_provider_inputs_receipt=framework_provider_inputs_receipt)
 
 
+def _evolution_policy_base_contract(path):
+    if __package__:
+        from . import evolution_policy_base
+    else:
+        import evolution_policy_base
+    contract = evolution_policy_base.load_contract(path)
+    identity, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(json.loads(raw) == contract, "Evolution policy base contract changed while reading")
+    return contract, identity, raw
+
+
+def _evolution_policy_base_binding(plan, contract):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    _require(plan.get("variant") == "user" and all(key in plan for key in (
+        "factory_profile", "dsp_policy", "init_helper_capability", "oem_policy",
+        "oem_properties", "framework_providers")),
+        "Evolution policy base requires the explicit user, factory, DSP, helper, OEM, property and provider profiles")
+    _require(contract.get("device") == {"codename": "nezha", "hardware_region": "CN"}
+        and contract.get("build_variant") == "user" and contract.get("platform") == {
+        "branch": "bka", "release": "bp4a", "board_api": "202504"}
+        and contract.get("required_contracts") == {
+            "oem_policy": plan["oem_policy"]["contract_record"],
+            "oem_properties": plan["oem_properties"]["contract_record"],
+            "framework_provider_policy": plan["framework_providers"]["contract_record"],
+        }, "Evolution policy base differs from the exact admitted platform or source contracts")
+    groups = contract.get("owned_source_groups")
+    _require(type(groups) is dict and set(groups) == set(policy_inputs.EVOLUTION_BASE_OWNED_GROUPS),
+             "Evolution policy base requires exactly five reviewed owned-source selectors")
+    for name, paths in policy_inputs.EVOLUTION_BASE_OWNED_GROUPS.items():
+        _require(type(groups[name]) is list and [row.get("path") for row in groups[name]] == paths,
+                 "Evolution policy base source selectors may not broaden the admitted exclusions")
+
+
+def _evolution_policy_base_admission(contract, identity):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    raw = policy_inputs.render_evolution_owned_groups()
+    return {
+        "contract_record": {"path": EVOLUTION_POLICY_BASE_RECORD.as_posix(), **identity},
+        "owned_source_groups": copy.deepcopy(contract["owned_source_groups"]),
+        "owned_source_blueprint": {"path": EVOLUTION_POLICY_BASE_GROUPS.as_posix(),
+                                    "sha256": hashlib.sha256(raw).hexdigest(), "size_bytes": len(raw)},
+        "source_checkout_inspected": False,
+        "fresh_soong_or_m4_build_performed": False,
+        "strict_full_policy_compiled": False,
+        "complete_context_or_treble_checks_passed": False,
+        "image_integration_verified": False,
+        "hardware_tested": False,
+    }
+
+
+def _bind_evolution_policy_base(plan, path, payloads):
+    if __package__:
+        from . import policy_inputs
+    else:
+        import policy_inputs
+    _require("evolution_policy_base" not in plan and EVOLUTION_POLICY_BASE_GROUPS.as_posix() not in payloads,
+             "Evolution policy base must not be selected or rendered twice")
+    contract, identity, raw = _evolution_policy_base_contract(path)
+    _evolution_policy_base_binding(plan, contract)
+    for rows in contract["owned_source_groups"].values():
+        for row in rows:
+            data = payloads.get(row["path"])
+            _require(type(data) is bytes and {
+                "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)
+            } == {key: row[key] for key in ("sha256", "size_bytes")},
+                "Evolution policy base may select only unchanged admitted device source bytes")
+    payloads[EVOLUTION_POLICY_BASE_RECORD.as_posix()] = raw
+    payloads[EVOLUTION_POLICY_BASE_GROUPS.as_posix()] = policy_inputs.render_evolution_owned_groups()
+    plan["evolution_policy_base"] = _evolution_policy_base_admission(contract, identity)
+
+
 def _policy_inputs_binding(plan, verification):
     if __package__:
         from . import policy_inputs
@@ -1718,6 +1797,9 @@ def _policy_inputs_binding(plan, verification):
     _require(verification.get("framework_provider_policy_contract") == providers.get("contract_record") and
              verification.get("framework_provider_inputs") == providers.get("inputs"),
              "framework provider inputs require the same separately supported source capability and complete bundle")
+    _require(verification.get("evolution_policy_base_contract") ==
+             plan.get("evolution_policy_base", {}).get("contract_record"),
+             "Evolution policy base source and native policy bundle require the same explicit contract")
     receipt = verification["receipt"]
     _require(receipt["path"] == POLICY_INPUTS_RECEIPT, "unexpected native policy receipt name")
     _digest(receipt["sha256"], "native policy receipt")
@@ -2942,7 +3024,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
              target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
              policy_image_delivery_contract=None, rom_construction_contract=None, framework_matrix_contract=None,
-             rom_construction_source_contract=None):
+             rom_construction_source_contract=None, evolution_policy_base_contract=None):
     if rom_construction_contract is not None:
         try:
             from . import rom_construction
@@ -2953,6 +3035,11 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         except ValueError as exc:
             raise CandidateError(str(exc)) from exc
     variant = _build_variant(variant)
+    if evolution_policy_base_contract is not None:
+        _require(variant == "user" and all(value is not None for value in (
+            policy_inputs_receipt, oem_policy_contract, oem_property_contract,
+            framework_provider_policy_contract, framework_provider_inputs_receipt)),
+            "Evolution policy base requires explicit user, OEM, property, provider and native policy inputs")
     if rom_construction_source_contract is not None:
         _require(variant == "user" and policy_image_delivery_contract is not None
                  and page_size_profile is not None and framework_matrix_contract is not None,
@@ -3055,6 +3142,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if providers_selected:
         _bind_framework_providers(plan, framework_provider_policy_contract, framework_provider_inputs_receipt,
                                   workspace_root, template_root, patch_source_root, payloads)
+    if evolution_policy_base_contract is not None:
+        _bind_evolution_policy_base(plan, evolution_policy_base_contract, payloads)
     if framework_allocator_contract is not None:
         _bind_framework_allocator(plan, framework_allocator_contract, workspace_root, payloads)
     if framework_matrix_contract is not None:
@@ -3295,6 +3384,20 @@ def validate(output, *, purpose="configuration"):
             expected.add(row["path"])
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
                      "OEM policy source file differs from the reviewed contract")
+    if "evolution_policy_base" in plan:
+        evolution_contract, evolution_identity, _ = _evolution_policy_base_contract(Path(output) / EVOLUTION_POLICY_BASE_RECORD)
+        _evolution_policy_base_binding(plan, evolution_contract)
+        _require(plan["evolution_policy_base"] == _evolution_policy_base_admission(evolution_contract, evolution_identity)
+                 and "policy_inputs" in plan,
+                 "Evolution policy base admission differs from its exact source capability")
+        expected |= {EVOLUTION_POLICY_BASE_RECORD.as_posix(), EVOLUTION_POLICY_BASE_GROUPS.as_posix()}
+        group = plan["evolution_policy_base"]["owned_source_blueprint"]
+        _require(files.get(group["path"]) == {key: group[key] for key in ("sha256", "size_bytes")},
+                 "Evolution policy base source filegroups differ from the exact renderer")
+        for rows in evolution_contract["owned_source_groups"].values():
+            for row in rows:
+                _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                         "Evolution policy base changed an admitted source exclusion")
     if "oem_properties" in plan:
         property_contract, property_identity = _oem_property_contract(Path(output) / OEM_PROPERTY_RECORD)
         _require(plan["oem_properties"] == _oem_property_admission(property_contract, property_identity),
@@ -3565,6 +3668,8 @@ def main(argv=None):
                              help="explicit private Sigma/QCC source policy; requires paired provider inputs and matching native policy bundle")
             sub.add_argument("--framework-provider-inputs-receipt", type=Path,
                              help="exact external provider bundle; requires paired source policy and does not establish runtime support")
+            sub.add_argument("--evolution-policy-base-contract", type=Path,
+                             help="explicit user Evolution-base source comparison; requires all OEM/property/provider capabilities")
             sub.add_argument("--page-size-profile", type=Path,
                              help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
             sub.add_argument("--framework-allocator-contract", type=Path,
@@ -3609,7 +3714,8 @@ def main(argv=None):
                                   policy_image_delivery_contract=args.policy_image_delivery_contract,
                                   rom_construction_contract=args.rom_construction_contract,
                                   framework_matrix_contract=args.framework_matrix_contract,
-                                  rom_construction_source_contract=args.rom_construction_source_contract)
+                                  rom_construction_source_contract=args.rom_construction_source_contract,
+                                  evolution_policy_base_contract=args.evolution_policy_base_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
