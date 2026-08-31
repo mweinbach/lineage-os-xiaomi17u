@@ -57,7 +57,7 @@ The later **first-target-files-v1** source selects the construction guard and
 pinned-date patch 0012 at **08:45:28 UTC**. Its 478-file vector is recorded below;
 native dispatch, generated build metadata and the first build remain unverified.
 The original guard reads `TARGET_RELEASE` after the pinned release configuration
-forbids direct access. The current **first-target-files-release-flags-v1** source
+forbids direct access. The later **first-target-files-release-flags-v1** source
 corrects that one file at **09:17:15 UTC**, retaining the source count and prior
 outputs. Independent correction review passes for the recorded installation;
 effective partition properties, metadata-file freshness and target-files builds
@@ -72,8 +72,13 @@ full Evolution policy selected by `LINEAGE_BUILD`, which was absent from the
 earlier configuration. Retained policy/VINTF results do not establish full
 current-policy or image compatibility. Commit **5d557a0** now provides the
 explicit [Evolution-base source/reference integration](evolution-policy-base.md),
-with repeated host bundle verification. These new inputs are not installed in
-the VM; native policy/context and image-compatibility checks remain pending.
+with repeated host bundle verification. The **evolution-policy-components-v1**
+transaction now installs those inputs and patch 0015 at **13:24:59 UTC**, with
+complete readback and independent review. The first 32-goal invocation then
+fails in Soong graph generation at **14:02:13 UTC**, before policy compilation,
+on the device filegroup's forbidden specific-vendor visibility. The source
+correction is not yet installed; current policy/context and image-compatibility
+checks remain pending.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1379,7 +1384,8 @@ Commit `3c9cd2adfa5aff8de8c6ee0c670ba415f6664049` prepares
 [patch 0015](evolution-backuptool-enforcing.md), wrapping only the existing
 backuptool permissive declaration in `recovery_only`. Types, permissions and
 assertions are unchanged. Host qualification is separate from Android M4,
-policy compilation and installation, none of which is claimed for this patch.
+policy compilation and installation. The later component transaction below
+installs this postimage; no Android M4/policy result is yet claimed for it.
 
 Commit `5d557a06182bd8c8ea16db726cd80ef16587626d` adds the explicit
 [Evolution-base contract and reference checker](evolution-policy-base.md),
@@ -1406,7 +1412,7 @@ the workspace verifier. The separate component packet adds only the device
 policy filegroup Blueprint; no existing device Makefile, root Blueprint, page
 size, construction or image selector changes.
 
-This is host preparation, with no VM source installation or new native policy
+That host checkpoint did not install VM sources or produce a new native policy
 result. The proposed 32-goal phase includes twelve distinct normal policy
 binaries requiring unfiltered permissive-domain analysis. Existing diagnostic
 compatibility producers must not be called strict neverallow passes. Actual
@@ -1415,6 +1421,59 @@ permission effects; the four owned-property checks do not cover them. Selected
 vendor-source contributions are not delivered into opaque factory images by
 this reference mechanism. Current image compatibility, normal enforcement,
 all assertions, target-files and device validation remain separate gates.
+
+The **evolution-policy-components-v1** transaction commits at
+**2026-08-31 13:24:59.689736 UTC**. Its three operations add the device policy
+filegroup Blueprint, exchange the private policy bundle and install patch 0015's
+backuptool postimage. Commit receipt
+`95b809b29c189fddd315a306d7ca38438d3ba85ea23ec3165fbc62c0b077c60d`
+binds nine journal events ending in `commit_verified`. The monitored inventory
+extends from 524 preflight files to 529 installed files across thirteen projects;
+it includes the additional upstream-base selectors rather than treating every
+monitored file as changed. The transaction retains 54 independent source
+preimages and 21 policy-output archive records, eleven existing and ten new.
+Complete readback returns the staged record, installation and journal, all
+hash-verified. Independent review
+`5a898b8250d6456f898f59e86594de904f0656d1c19e7985fe255da5c3c25c5e`
+(2,096 bytes) replays these captured records and source/mode vectors; the host
+review does not reexecute guest filesystem checks.
+
+The original read-only preflight fails on the dated OEM report binding and
+remains preserved. Comparison `530d960a3acfc6f5e21b02bca407aa9e603430edb25bf47e01982c410fcf9e71`
+and producer trace `a3c9f547ca9472963b89b3fa273f8a957df59c3611cbfcface26f0a276e86e57`
+explain exactly 66 inode/mtime/ctime value changes across 22 input bindings,
+with all semantic fields unchanged, from the earlier matrix producer. The
+corrected preflight verifies 524 sources, 21 live policy outputs and eleven
+existing archives. It retains the current report without upgrading the failed
+matrix wrapper or admitting new policy semantics. Installation preserves strict
+4096 settings and configuration `2d3433a946ffb29019c8ec04c0c5be5862ff0bdf337eb1a7f7f1d585258c79b4`.
+The old `nothing2` metadata values retain their earlier input scope; no new
+component build number, M4/CIL/context result, image or target-files result is
+admitted by this source transaction.
+
+The **first-target-files-policy-1** attempt executes from
+**2026-08-31 14:01:11.929319 to 14:02:13.676800 UTC**. Native and wrapper exits
+are both 1. Result
+`b90ae845518a76b070c932b9d89a77a46e6208bdbd2057ffb995b7eb9d35ac98`
+(9,210,589 bytes) and raw stdout
+`d11e4e3e63fa078bb6cfffbd748e919c811e698a171e362d04e4f95c4df99999`
+(2,619 bytes; stderr empty) preserve the exact failure. Soong rejects
+`//vendor/xiaomi/nezha-policy:__pkg__` on
+`nezha_owned_system_ext_public_policy`: packages outside vendor must use
+`//vendor:__subpackages__` for this access. Bootstrap Ninja/frontend work runs;
+the required main-Ninja argv/namespace observation is not obtained, and no
+policy compiler action or policy postcheck runs. A minimal generator correction
+is being prepared, not counted as installed or tested in Android.
+
+Preflight completes and all six source/input guard groups match before and
+after, including 1,525 named inputs, one runtime input, source history and the
+1,179 revision/origin bindings. Eleven prior outputs are actually preserved
+and renamed for regeneration; the entire output tree is not unchanged.
+The result has no postcheck errors, timeout or forced kill. Host replay verifies
+the new input identity and the attempted environment selects
+`nezha.c70cf5547ff9f24c2ecefa65`, but the failed phase provides no six-file
+post-make metadata qualification or fresh policy result. The successful
+installation and earlier `nothing2` evidence retain their separate scopes.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1546,8 +1605,14 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**4,043 tests in 169.140 seconds with zero failures, errors or skips**, executed
-by the coordinator with all ten frozen Evolution-base files unchanged and then
+**4,043 tests in 169.370 seconds with zero failures, errors or skips**, executed
+by the coordinator with two source-correction files and four checkpoint
+documents unchanged. The source bytes are committed as `30a9f74`; its log is
+`38b22224580b7190b79adbfddd878064f0f7fc5a84392b71661866a6c2984f14`
+and completion receipt is
+`c27d3481da3a3b16a26cdd80f31be5943e7959ad9de264247526f8bf4d23a65d`.
+This later factual test-record refresh is separate. The preceding suite passed
+**4,043 in 169.140 seconds**, with all ten frozen Evolution-base files unchanged and then
 committed as `5d557a0`. Its log is
 `ac46eb711280f518615d4c0d26a2b0798e1c944aa6c6bd360045320c7d519733`;
 completion receipt

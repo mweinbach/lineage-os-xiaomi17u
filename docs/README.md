@@ -18,7 +18,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
-| [Explicit Evolution policy base](evolution-policy-base.md) | Committed source/reference checker and repeated host bundle; new VM installation, native policy/context and image-compatibility checks remain pending |
+| [Explicit Evolution policy base](evolution-policy-base.md) | Inputs and patch 0015 are installed; the first policy attempt fails Soong visibility before compilation, with source correction and native policy/context checks pending |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Preserved factory/APEX input closure and original matrix-coverage failure; later scoped comparison results and remaining limits are in native ROM integration |
 | [Exact framework matrix](framework-matrix.md) | Installed source produces all 155 tuples; a reviewed distinct postcheck accepts canonical default-version omission and verifies current outputs, without full compatibility or runtime claims |

@@ -17,25 +17,34 @@ analysis remain historical evidence; they do not establish current policy or
 factory-image compatibility. Commit **5d557a0** adds the explicit
 [Evolution policy base](evolution-policy-base.md) and its source/reference
 checker. Two host stagings reproduce the same 57-file private policy bundle.
-The new inputs are not installed in the VM; native source/M4 compilation,
-context-effect review and factory-image compatibility remain pending. Normal
-Android enforcement and all assertions remain required.
+Those inputs and patch 0015 are now installed as **evolution-policy-components-v1**
+at **2026-08-31 13:24:59 UTC**, with three committed operations, complete receipt
+readback and independent review. The monitored source inventory is 529 files
+across thirteen projects. The first 32-goal attempt now **fails in Soong graph
+generation at 14:02:13 UTC**, before policy compilation: a device filegroup
+requests visibility to a specific vendor package, which Soong forbids.
+The minimal visibility correction is being prepared but is not installed.
+Source/M4 compilation, context-effect review and factory-image compatibility
+remain pending. Normal Android enforcement and all assertions remain required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
-not a prerequisite for that initial bring-up. The active guest source is now
-**first-target-files-release-flags-v1**. A one-file correction commits at
+not a prerequisite for that initial bring-up. The preceding guest source was
+**first-target-files-release-flags-v1**. Its one-file correction commits at
 **2026-08-31 09:17:15 UTC**, preserving the 478-file source vector and prior
 outputs; independent correction review passes for the recorded installation.
 It replaces forbidden direct
 `TARGET_RELEASE` access with four resolved release flags, while `bp4a` remains
-a separate invocation binding. The selected input closure is now sealed, and
+a separate invocation binding. That selected input closure was sealed, and
 the corrected native queries pass **21 configuration and seven context value
 checks**. The later **nothing2** run passes the exact source/configuration checks
 and six metadata-file value checks, with independent review complete. This does
-not prove fresh rewrites or image reproducibility. The three preflight failures,
+not prove fresh rewrites or image reproducibility, and its metadata evidence
+retains its pre-component input scope. The later component build number is
+host-derived and selected in the failed attempt, without a new six-file
+metadata qualification. The three preflight failures,
 obsolete-query native failure and failed `nothing1` validation remain preserved. The maintained
-[construction source selector](rom-construction.md) now reproduces all thirty
-installed device files through the full original input checks. Two fresh
+[construction source selector](rom-construction.md) reproduces the thirty
+then-installed device files through the full original input checks. Two fresh
 candidates match, while omitting the selector preserves the original candidate.
 This does not admit flashable artifacts or change the default generator path.
 The reviewed **first-target-files-v1** construction/date installation
@@ -553,20 +562,40 @@ target-files results remain unverified.
 
 Commit **3c9cd2a** adds the [recovery-only backuptool guard](evolution-backuptool-enforcing.md).
 Patch 0015 wraps the existing permissive declaration in `recovery_only`, without
-changing types, permissions or assertions. It is committed and host-tested, but
-not installed or compiled through Android M4/policy. Working76 is unchanged.
+changing types, permissions or assertions. The component transaction now installs
+its reviewed postimage; Android M4/policy compilation remains pending. Working76
+is unchanged.
 
 Commit **5d557a0** adds an explicit Evolution-base option without changing the
-default generator path or the active 4 KiB source. Its independent source review
+default generator path or the 4 KiB selection. Its independent source review
 is clear. The host preparation reproduces all **57 files / 6,204,545 bytes**,
 including the receipt; relocated trusted controls give the same verification
 result. All ten classification inputs and thirteen factory contexts remain
 unchanged. The reference uses normal Android M4/compiler/mapping producers and
 separately checks the owned policy contribution; it does not edit generated CIL.
-The proposed 32-goal phase and twelve unfiltered normal-binary analyses have
-not run. Seven base property-prefix specializations still require actual label
+The first 32-goal invocation stops before policy compilation; the twelve
+unfiltered normal-binary analyses remain unrun. Seven base property-prefix specializations still require actual label
 and permission-effect review, and selected vendor-source contributions have
 not been delivered into the retained factory images.
+
+The component installation retains 54 independent source preimages and 21
+policy-output archives, including eleven existing copies and ten new copies.
+The nine-event journal ends in `commit_verified`; source/mode vectors, strict
+4096 settings and the complete prior configuration pass the recorded checks.
+The first read-only preflight rejected a dated OEM report. Exact comparison
+traces its 66 stat-field changes to the earlier matrix producer, with semantic
+fields unchanged; both report versions and the failed attempt remain preserved.
+The corrected preflight and installation admit source changes and retention
+only, without a new policy, metadata, image or boot result.
+
+The **first-target-files-policy-1** invocation runs from **14:01:11 to 14:02:13
+UTC** and exits 1, as does its wrapper. All six source/input guard groups pass
+before and after, including 1,525 named inputs and the runtime input. Eleven
+prior outputs are preserved and renamed for regeneration; this is not an
+unchanged-output claim. Bootstrap Ninja runs, but the required main-Ninja
+observation is not obtained. The policy postcheck never runs and there are no
+postcheck errors. The failure, raw logs and original source installation remain
+preserved; no new policy or metadata success is inferred.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -621,8 +650,11 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,043 tests in 169.140
+The latest completed full workspace suite passed **4,043 tests in 169.370
 seconds with zero failures, errors or skips**, executed by the coordinator with
+two source-correction files and four checkpoint documents unchanged. The source
+bytes are committed as `30a9f74`; this later factual test-record refresh is
+separate. The preceding suite passed **4,043 in 169.140 seconds**, with
 all ten frozen Evolution-base source files unchanged, then committed as
 `5d557a0`. This later central-document update is separate. The preceding suite
 passed **3,984 in 168.104 seconds**, executed in an
