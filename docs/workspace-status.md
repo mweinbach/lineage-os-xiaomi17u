@@ -12,7 +12,10 @@ This page does not assert that a historical builder VM is still running.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The active guest source is now
-**matrix-v1**, committed at **2026-08-31 03:14:25 UTC**. Its 38-goal build
+**packaging-matrix-v1**, committed at **2026-08-31 08:13:39 UTC**. The eight-operation
+transaction and its complete readback verify the new packaging selections;
+independent review is clear for source selection. No build has run from that selection. The preceding
+**matrix-v1** source was committed at **03:14:25 UTC**. Its 38-goal build
 finishes at **03:51:10 UTC** with native exit 0 and **128 Ninja actions after
 163 frontend steps** (291 total progress rows), but the
 wrapper exits 1 on an XML postcheck that wrongly requires explicit AIDL
@@ -408,21 +411,22 @@ The corrected fixture now passes **all 60 cases with zero skips**, retaining
 the exact production include and all source/postflight guards. The failed
 first attempt remains preserved. Independent review of the 73-file capture is
 clear for this isolated fixture.
-Ordinary product execution, source/image adoption and the metadata hook remain
-pending; complete targets stay blocked.
+That fixture does not establish ordinary product execution, source/image
+adoption or the metadata hook; complete targets stay blocked.
 
 Commit **137f438** adds a separate, explicitly paired 4 KiB delivery successor.
 Two host metadata bundles match across all **247 files**, retaining the 205
 original metadata members, and two **47-file** device candidates are identical.
 The capability binds the actual 37-goal result and current 4 KiB profile;
 independent host reviews are clear within their stated scope. The older
-delivery mode and descriptor remain unchanged. Neither the metadata bundle nor
-these new source/image candidates are installed. Historical private-copy
+delivery mode and descriptor remain unchanged. That host checkpoint did not
+install the metadata bundle or source/image candidates. Historical private-copy
 evidence is retained as provenance, not a fresh 4 KiB copy or source check.
-Current input qualification and ordinary product/metadata-hook execution remain
-required. Reversible source-input integration may select the exact verified
-`NONE` leaf images with AVB enabled; final flashable-artifact admission still
-requires the complete signed parent chain, rollback settings and physical
+At that checkpoint, current input qualification and source activation remained
+required. The later transaction below selects the exact verified `NONE` leaf
+images with AVB enabled. Ordinary product/metadata-hook execution remains
+pending. Final flashable-artifact admission still requires the complete signed
+parent chain, rollback settings and physical
 partition fit.
 The subsequent **inactive 4 KiB policy-image stage now passes**, copying the
 exact reviewed vendor/ODM leaves into a separate candidate source bundle and
@@ -430,9 +434,31 @@ rehashing current source/policy/runtime inputs. It changes neither active
 source nor Android outputs and does not install metadata or adopt images.
 The complete transport and native-receipt reviews pass within their stated
 scope, including all eleven captured transport files. Large image bodies remain
-in the guest. Any activation needs a deliberate source rebase and fresh
-admission after the matrix correction; no signed-parent, physical-fit or boot
+in the guest. Activation required the deliberate source rebase and fresh
+admission recorded below; no signed-parent, physical-fit or boot
 result follows.
+
+The later **matrix packaging qualification passes at 08:00:47 UTC**. It verifies
+seven current policy inputs and three ordered digest comparisons, with **zero
+installed framework-sidecar checks**. It does not run the normal Android
+sidecar generators or the final target-files hook. The original private mi_ext
+directory-mode failure and the later missing-platform-sidecar failure remain
+preserved, including their incomplete markers. Only the platform sidecar was
+observed absent; the other two installed sidecars and normal generator outputs
+were not observed. All three ordinary sidecar modules and the unchanged final
+policy/installation checks remain mandatory before packaging admission.
+
+The eight-operation packaging source installer subsequently returns
+`commit_verified` at **08:13:39 UTC**. Its complete nine-file readback verifies all
+nineteen journal events and the actual **475-file source inventory**, up from
+the installer's 222-file baseline. The three build/make edits, device tree,
+recovery/mi_ext input records, metadata bundle and reviewed vendor/ODM leaf bundle
+are now selected in source. Working76 and mi_ext image bytes, the 269 preserved
+outputs, thirteen policy files and eleven runtime files remain unchanged.
+Independent transaction review is clear. No component build, sidecar production
+or target-files result is claimed. The prospective 478-file construction profile
+and pinned-date patch 0012 have not been activated. Scoped VINTF/crypto limits, 4 KiB settings and false
+ROM-readiness flags remain in force.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -479,7 +505,7 @@ Commit **203ab67** adds the inactive [ODM-import care-map successor](mi-ext-care
 It binds all 22 original ODM property files and resolves the exact captured
 imports without skipping arbitrary imports or changing original properties.
 Native codec/tool qualification, the final Evolution SYSTEM identity and
-ordinary packaging remain unverified; the active source composition is unchanged.
+ordinary packaging remain unverified; this care-map source capability remains inactive.
 
 Commit **a253c97** adds the [read-only target-files AVB inventory](target-files-avb-inventory.md).
 Its 42 new synthetic tests cover bounded archive/role inspection and failure
@@ -487,10 +513,12 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,961 tests in 166.023
+The latest completed full workspace suite passed **3,961 tests in 171.407
 seconds with zero failures, errors or skips**, executed by the coordinator.
-All three scoped VINTF checkpoint files stayed unchanged during that run. The
-preceding 3,961-test run took 165.776 seconds and retained its three-file
+All three packaging-source checkpoint files stayed unchanged during that run;
+the subsequent factual evidence refresh and two review corrections are separate.
+The preceding 3,961-test run took 166.023 seconds and retained its three-file
+scoped VINTF checkpoint. The earlier 3,961-test run took 165.776 seconds and retained its three-file
 provider checkpoint. The earlier 3,961-test run took 167.201 seconds and retained its five-file
 checkpoint. The earlier 3,961-test run took 173.222 seconds and retained its
 seven-file checkpoint.
@@ -544,9 +572,9 @@ passed 3,558 in 153.985 seconds. These are offline tooling results, separate fro
 Android builds, host policy proofs and physical-device tests. This checkpoint records
 code through `a253c97`, with the previous component checkpoint committed
 as `8fc2162`, followed by `da9648b`, `3001e85` and `4116868`. The active
-guest source is now matrix-v1 with the 4 KiB product unchanged; the matrix
-command has produced new outputs and the distinct read-only postcheck and its
-independent review pass, with the earlier v13ja record preserved;
+guest source is now packaging-matrix-v1 with the 4 KiB product unchanged. Its
+first build remains pending; the latest verified component outputs are from
+matrix-v1, with the failed wrapper and distinct passing postcheck/review preserved;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -780,10 +808,11 @@ override theme defaults. No Magisk integration is included.
   installed in v12fa or a target-files pass.
   The new [combined source composition](target-files-source-composition.md)
   joins patches 0005–0011 through explicit ten-file identities, with fresh
-  host-verified metadata/recovery/mi_ext admission. It is not installed in
-  the guest; earlier isolated Kati results do not validate its full build.
-  Later policy-bearing images require a new complete derivation proof and
-  metadata bundle; changing expected image hashes alone is insufficient.
+  host-verified metadata/recovery/mi_ext admission. The later packaging-matrix
+  transaction now selects the reviewed source composition and policy-image
+  metadata; no build or final target-files hook has run from that selection.
+  Its complete derivation and metadata bindings remain required; changing
+  expected image hashes alone is insufficient.
   The [optional mi_ext care-map path](mi-ext-care-map.md) is committed but
   inactive. Qualify the authentic ODM import closure and final Evolution
   SYSTEM marker before composing it into the ordinary packaging path.

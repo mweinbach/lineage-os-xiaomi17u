@@ -47,6 +47,13 @@ false: the combined check has no reported skips/warnings, but the separate
 framework-consistency path retains one definition skip and two warnings. The
 earlier full-run failure is preserved, not relabelled by this later success.
 
+The active source subsequently advances to **packaging-matrix-v1** at
+**2026-08-31 08:13:39 UTC**. Eight committed operations and their complete readback
+select reviewed packaging inputs while preserving the prior native outputs.
+Independent transaction review is clear. No build has run from that source
+selection; the matrix-v1 component, VINTF and crypto results retain their exact
+earlier scope, and the three normal policy-sidecar modules remain required.
+
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
 reviewed property effects and zero permissive domains in three binaries.
@@ -415,15 +422,15 @@ first Evolution boot or Camera/Leica operation is established.
 | Slice | Verified result | Still required |
 | --- | --- | --- |
 | [Sigma/QCC source admission](framework-provider-source-admission.md) | Installed v13ha policy passes native semantic/provenance analysis; the later v13ja 4 KiB source passes all 26 fresh ELF/symbol checks | Complete ABI/runtime linker behavior, VINTF and APK labeling, service validation and matching image selection |
-| [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host verification binds nine composed source files through patches 0005–0009; source admission and 43 isolated native Kati cases pass | Guest installation and ordinary target-files checks; a new complete preservation contract for policy-bearing vendor/ODM derivatives |
+| [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host source admission and isolated Kati cases pass, with later reviewed packaging-matrix source selection recorded below | Ordinary sidecar production and final target-files policy/installation checks; source selection does not prove packaging |
 | [Host AVB signing](avb-signing.md) | Inert planning, offline workflow tests and real unsigned countrycode/pvmfw descriptor-carrier checks; original inputs preserved | All 15 final input images with correct hashtrees/FEC, explicit Mac signing and independent verification of the resulting 17 image roles |
-| [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
+| [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36; the combined packaging source is now selected | Ordinary target-files path execution and final-input compatibility checks; no property bytes are fabricated |
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Fresh unchanged-signature, ZIP CRC and strict library-name checks; two real validator failures remain reproduced for the Xiaomi.eu/live input | This input stays unselected; its code findings do not transfer to the distinct factory DEX payloads |
 | [Original factory Camera APK](factory-camera-apk.md) | Commit `d3316b4` records unchanged original input passing strict privileged/preprocessed packaging and exact uses-library checks | Ten always-privileged requests, eleven across feature branches, still require grant review, effective SELinux labeling and actual APK build; neither APK is selected or hardware-tested |
 | [Factory Camera build-only packet](camera-apk-build-admission.md) | Commit `117261c` adds a separate exact namespace packet; 13 repeated files match and the host content-verifying producer passes | Explicit guest source admission and a verified graph limited to intermediate outputs; no product selection, permission/MAC admission or real APK build |
-| [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities and fresh metadata/recovery/mi_ext admission, preserving the older contracts | Guest installation, complete native configuration and ordinary packaging; no policy-bearing factory image is admitted by this host composition |
+| [Combined packaging sources](target-files-source-composition.md) | Commit `1a4bd58` joins patches 0005–0011 with ten complete source identities; later packaging-matrix installation binds current metadata/recovery/mi_ext and policy-image inputs, preserving the older contracts | Complete native configuration and ordinary packaging; final flashable-artifact admission remains separate |
 | [ROM construction prerequisites](rom-construction.md) | Commit `4070b1a` adds an unbound inspection-only descriptor/consumer; exact missing native roles are reported and explicit generator selection refuses before private inputs or publication | Reviewed selected-input binding, necessary VINTF coverage and native construction integration; no BoardConfig or blocked target is enabled |
-| [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit v13h evidence admission; matching raw reconstruction and keyless footer checks pass, with earlier profiles/default unchanged | Signed parent chain, physical partition fit, current-source compatibility and image adoption |
+| [Policy-image input preparation](policy-image-inputs.md) | Commit `78376c7` adds explicit v13h evidence admission; raw reconstruction and keyless footer checks pass, and later packaging-matrix source selection retains the exact reviewed leaves | Signed parent chain, physical partition fit and final-input compatibility; source selection is not flashable-artifact admission |
 | [Factory Camera grant behavior](../research/factory-camera-permission-grants.json) | Commit `e433a5d` traces three pure-signature requests through captured grant-evaluator and service source; 30 focused tooling tests pass | Effective signing/flags/grants, generated enforcement bodies and actual Camera behavior; no grant or APK installation is performed |
 | [Pinned build metadata](pinned-build-metadata.md) | Commit `ec21a87` adds an explicit UTC epoch capability; `d3c29a5` records 33 expected native Kati outcomes on isolated source copies | Guest admission, actual product configuration and output inspection; not enabled in this build or proof of reproducible images |
 
@@ -1146,10 +1153,10 @@ The new mode binds the actual 37-goal build and exact current 4 KiB profile.
 Independent host review checks the metadata consumer, repeated candidates and
 source composition within its stated scope. It does not rerun native
 installation or read the large image bodies. The historical private-copy
-receipt remains provenance, not a fresh 4 KiB image-copy operation. Neither
-these candidate sources nor the metadata/image selections are installed;
-current input qualification, normal product execution and the metadata hook
-remain pending. Older descriptors and delivery modes are unchanged.
+receipt remains provenance, not a fresh 4 KiB image-copy operation. That host
+checkpoint did not install the candidate sources or metadata/image selections;
+the later matrix source transaction is separate. Normal product execution and
+the metadata hook remain pending. Older descriptors and delivery modes are unchanged.
 
 The subsequent **inactive 4 KiB policy-image stage passes** with dispatch
 `b2607057026c8ba6be71fb9d810fa22d91a2719672fb7416eeef39522e86de4a`
@@ -1167,6 +1174,77 @@ reopened by the host reviewer. The admitted scope is this inactive four-file
 copy only. A later transaction requires deliberate rebase and fresh source
 admission after the matrix correction; metadata installation, active image
 selection and signed-parent/physical-fit validation remain separate.
+
+The **matrix packaging qualification v2** runs from **07:59:50 to 08:00:47 UTC
+on August 31** and passes. Its receipt is
+`05733356e962a634a3ed2911c9e537b9060b03e38f8d6548f5a4507f84298c7a`
+(206,546 bytes). The complete eight-file / 311,701-byte readback is bound by
+`04c3a984a9a1bba0018da98cf133841455058b9ced587fbcfabffe2b82e092dc`
+(417,987 bytes). Qualification verifies seven current policy inputs and
+recomputes the three digest recipes in their pinned input order; it performs
+**zero installed-sidecar artifact checks** and does not run normal Android
+genrules or the actual target-files hook.
+
+The first inactive-stage attempt failed because the private mi_ext bundle did
+not have the required directory mode. The private-view successor then failed
+when it assumed an installed platform digest already existed. Both failed
+attempts, diagnostics and `INCOMPLETE` markers remain unchanged. The platform
+sidecar is confirmed absent by that failure; the system_ext/product installed
+files and normal generator intermediates remain unobserved. Absence from an
+earlier capture is not evidence that every possible output is missing.
+The source-backed producer audit is
+`35f52e554cf82edbcf31fea556c079b5a66ac76c463c13d1b6a3d1da7e0944dc`
+(10,298 bytes). The normal modules remain required:
+
+- `plat_sepolicy_and_mapping.sha256`
+- `system_ext_sepolicy_and_mapping.sha256`
+- `product_sepolicy_and_mapping.sha256`
+
+Their real installed 65-byte contents must match the recomputed digests. The
+unchanged final metadata `_policy_gate` must still inspect all seven actual
+target-files policy inputs and all three installed framework-sidecar paths;
+`_installation_report` must reject missing sidecars. No digest file is fabricated,
+copied from isolated validation outputs or admitted by counting a missing check
+as a pass. Qualification preserves all 269 archive copies (7,651,215,453 bytes),
+37 source preimages, 542 staged payload files and six staged guest-copy inputs.
+Its read-only scope includes rechecking the selected derivative images and the
+205 original metadata members, not adopting a final flashable image.
+
+The subsequent eight-operation source installer returns a verified commit at
+**08:13:39 UTC**. Its 539-byte completion is
+`f708e58837b2bfa720154d22ad9176a040203a0fefca0f3794f8dc7595793bb9`;
+the journal ends at sequence 18, for nineteen events. The complete nine-file /
+549,554-byte readback is bound by
+`07b27b0a134610fcd1a14c6b6113366f2a4125df7a83197aaf7b9af79485bd7e`
+(735,413 bytes). The installation receipt is
+`44cab4e34179269cd984f5fde4539ab5750a606d4eec7b8d3ae5e6b5346c5ec5`
+(382,046 bytes), and the journal is
+`ca835aaf8b93cee76f9aa79c9700b1fcfd264571ae5dea00b33b75638bd3851c`
+(57,929 bytes). The installed-input semantic check is
+`6ffcfd421198d1b844fb0c34832f2d863315fba48c4dcebf5303158544a91ea2`
+(27,174 bytes), with zero installed-sidecar checks as before.
+
+Three source-file exchanges update the combined build/make recipe; five tree
+operations (three exchanges and two additions) install the device tree,
+recovery records, mi_ext records, metadata
+bundle and reviewed policy-image bundle. The actual source inventory grows
+from 222 to **475 files**; 478 belongs to a prospective construction profile.
+The selected vendor/ODM `NONE` leaf images are the existing `ce11f1c6…` and
+`854c0047…` derivatives. Original images and independent prior copies remain
+preserved. Recovery stays exactly working76 (`a130ba75…`), and mi_ext image bytes
+remain unchanged. The installer verifies all 269 prior outputs, thirteen policy
+files and eleven runtime files unchanged, with normal Android enforcement
+required. The 6,900-byte independent transaction review is
+`f6b8f2441189092ec8840953f95246976822d61471860351b9590b412011c5d1`.
+It binds all nine captured files, nineteen events, eight operations and twelve
+source-project records without reopening the live guest, large image bodies or
+archives, and without executing a new installation helper in the guest.
+This is actual source-input selection, not a new image build or final
+flashable-artifact admission. The construction capability and pinned-date patch
+0012 remain unselected. No native
+build, normal sidecar generation or target-files hook runs in the transaction.
+Scoped VINTF/crypto evidence does not become complete input, runtime, AVB-chain,
+OTA or boot verification through source selection.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1298,12 +1376,16 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,961 tests in 166.023 seconds with zero failures, errors or skips**, executed
-by the coordinator. All three scoped VINTF checkpoint files stayed unchanged during
-the run.
+**3,961 tests in 171.407 seconds with zero failures, errors or skips**, executed
+by the coordinator. All three packaging-source checkpoint files stayed unchanged
+during the run; the subsequent factual evidence refresh and two review
+corrections are separate.
 The full log is
+`8840c2da10b9178247884e491f6c6653520c3fd5bc9dcbc79ae284df0cfa6497`.
+The preceding 3,961-test run took 166.023 seconds, preserving all three scoped
+VINTF checkpoint files; its log remains
 `983894a1ee29fb2fdf79222d5e6f3b1ba9ea74bf56b10d0c071080c4224b3c91`.
-The preceding 3,961-test run took 165.776 seconds, preserving all three provider
+The earlier 3,961-test run took 165.776 seconds, preserving all three provider
 checkpoint files; its log remains
 `f0ffbbd2f6357698175f640a5173dd86f9fe706c349fc78b40dcf642c227221a`.
 The earlier 3,961-test run took 167.201 seconds, preserving all five checkpoint
@@ -1755,7 +1837,10 @@ actual framework and vendor APEX manifests, explicit kernel requirements and
 the original shipping-API evidence; full Treble labeling requires real APK
 inventories.
 
-After reviewed metadata-preserving source-input selection, complete ordinary target-files,
+The reviewed packaging-matrix source selection is now committed. Build and verify
+the three ordinary policy-sidecar modules and retain the unchanged final policy
+and installation hook; neither isolated digest recipes nor an absent sidecar is
+a substitute. Then complete ordinary target-files,
 super, A/B/snapshot/OTA packaging and the signed AVB chain. Construction and
 flash readiness remain false throughout this checkpoint. Source-lock, runtime
 integration, private-input derivation and future platform features stay
