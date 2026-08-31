@@ -10,7 +10,8 @@ consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The leading blocker is now **full Evolution SELinux policy integration**.
+The leading blocker is now a **camera-property neverallow conflict in the
+combined Evolution/factory SELinux policy**.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
 build configuration. The thirteen retained policy identities and earlier strict
 analysis remain historical evidence; they do not establish current policy or
@@ -26,9 +27,13 @@ requests visibility to a specific vendor package, which Soong forbids.
 The minimal correction from commit **30a9f74** is now installed as
 **evolution-policy-visibility-v1** at **14:43:26 UTC**, with complete receipt
 readback. It changes three files and preserves the 529-file inventory, patch
-0015 and strict 4 KiB settings. The native policy retry has not run.
-Source/M4 compilation, context-effect review and factory-image compatibility
-remain pending. Normal Android enforcement and all assertions remain required.
+0015 and strict 4 KiB settings. The second attempt passes Soong and enters main
+Ninja, but **fails strict combined-policy compilation at 15:28:07 UTC**:
+Evolution allows `vendor_init` to set `vendor_persist_camera_prop`, conflicting
+with the factory neverallow for non-core domains. The source correction is
+pending; no assertion is removed or bypassed. Complete policy/context review
+and current factory-image compatibility remain unverified. Normal Android
+enforcement remains required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The preceding guest source was
@@ -576,8 +581,9 @@ including the receipt; relocated trusted controls give the same verification
 result. All ten classification inputs and thirteen factory contexts remain
 unchanged. The reference uses normal Android M4/compiler/mapping producers and
 separately checks the owned policy contribution; it does not edit generated CIL.
-The first 32-goal invocation stops before policy compilation; the twelve
-unfiltered normal-binary analyses remain unrun. Seven base property-prefix specializations still require actual label
+The first 32-goal invocation stops before policy compilation; the second reaches
+the strict compiler but fails. Complete unfiltered analysis of the twelve normal
+binaries remains unverified. Seven base property-prefix specializations still require actual label
 and permission-effect review, and selected vendor-source contributions have
 not been delivered into the retained factory images.
 
@@ -611,7 +617,20 @@ build-identity/metadata result.
 The separate host metadata successor now derives
 `nezha.9c8ecb23e876fcf464a02e1d`; coordinator replay verifies all fifteen bound
 files and nine identical outputs. Native input rechecks and six-file metadata
-qualification remain pending.
+qualification were pending at that host checkpoint. The second native attempt
+selects this identity and passes the input guards, but does not qualify the six
+post-make metadata files.
+
+The **first-target-files-policy-2** invocation runs from **15:13:37 to 15:28:07
+UTC**, with native and wrapper exit 1. Main-Ninja argv, sandbox and resource-limit
+verification pass, along with all six fresh source/input guard groups. The sole
+reported failed target is `nezha_factory_precompiled_sepolicy`: the diagnostic
+binds factory `plat_pub_versioned.cil:6117` to Evolution `public/property.te:2`.
+No policy postcheck runs; its error list is empty, and there is no timeout or
+forced kill. All eleven retained policy1 originals and their independent copies
+remain verified. Active partial outputs await read-only capture and are not
+claimed absent or unchanged. The original Soong failure remains preserved;
+no new combined-policy, six-file metadata, image or boot success is claimed.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export

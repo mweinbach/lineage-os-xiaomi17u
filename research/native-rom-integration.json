@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "evolution-policy-visibility-correction-installed-and-reviewed-native-retry-pending",
+  "checkpoint": "evolution-policy2-failed-strict-combined-camera-property-neverallow",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -963,7 +963,7 @@
     "scope": "Coordinator ran the exact full offline command with two frozen source-correction files and four central checkpoint documents unchanged. The exact source bytes were committed as 30a9f74. This later factual test-record refresh is separate. The suite does not establish guest correction installation, native policy compilation, metadata freshness, image compatibility, target-files or boot."
   },
   "remaining_gates": [
-    "Recheck live selected inputs against the host-derived successor identity for the installed minimal Soong visibility correction, preserving the failed policy1 attempt. Retry the 32-goal phase and compile the full LINEAGE_BUILD=nezha source/M4 selection, retaining all assertions and normal enforcement. Verify producer provenance, policy/context/Treble results and factory-policy/image compatibility; prior retained outputs and strict analyses remain historical.",
+    "Resolve the vendor_persist_camera_prop conflict through reviewed Evolution source/M4 and factory-policy integration, retaining the factory neverallow and normal Android enforcement. Preserve and inspect partial policy2 outputs before another regeneration; source correction is not yet installed. Rebind inputs and retry strict combined compilation, then complete producer, policy/context/Treble, unfiltered binary and current factory-image compatibility checks.",
     "Carry the scoped matrix-v1 VINTF result into current-input/construction admission and complete required coverage. All four native commands and independent reviews pass, but framework consistency still skips unlevelled matrix definitions; host RuntimeInfo substitutes kernel SELinux support and omits runtime AVB-version checks. Complete input compatibility remains false. Current allocator prerequisites and package/trust/tool equality are verified; APEX crypto is reused without new crypto commands. Runtime, partition AVB, OTA and boot remain separate.",
     "Refresh source/build/graph/configuration and complete Camera target evidence after the matrix exchange. The reviewed v13ja inventory identifies ten protected policy intermediates outside the target tree that require separate read-only protection. Preserve the scoped current VINTF result and its coverage limits while clearing remaining Camera admission holds before namespace activation or the APK graph/class-loader/check/build path; keep strict checks enabled.",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
@@ -2227,7 +2227,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-31T15:04:07.168942+00:00",
+  "recorded_at_utc": "2026-08-31T15:53:45.637760+00:00",
   "latest_native_build_completed_at_utc": "2026-08-31T06:10:10.772752+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -3606,14 +3606,14 @@
     "installed_prebuilt_alignment_check_enabled": true,
     "last_verified_generated_soong_maximum_page_size_bytes": 4096,
     "current_generated_soong_maximum_verified": true,
-    "current_native_build": "native_evolution_policy_attempt_v1",
+    "current_native_build": "native_evolution_policy_attempt_v2",
     "historical_v13g_experiment_adopted": false,
     "latest_completed_component_build": "native_matrix_component_attempt",
     "framework_matrix_source_selected": true,
     "current_generated_soong_matrix_selection_verified": true,
     "current_generated_configuration_matches_matrix_source_verified": false,
     "latest_completed_output_integration": "matrix-v1",
-    "current_output_verification_reference": "matrix_canonical_xml_postcheck_v2",
+    "current_output_verification_reference": null,
     "independent_matrix_postcheck_review_completed": true,
     "latest_completed_provider_installation": "provider_install_normal27_native_build",
     "provider_install_native_result_verified": true,
@@ -3644,32 +3644,36 @@
     "construction_release_guard_native_parse_verified": false,
     "construction_release_guard_correction_independent_review_completed": true,
     "ordinary_product_input_closure": "ordinary_product_input_closure",
-    "selected_input_build_number": null,
-    "ordinary_product_configuration_status": "visibility-correction-installed-native-retry-and-metadata-pending",
+    "selected_input_build_number": "nezha.9c8ecb23e876fcf464a02e1d",
+    "ordinary_product_configuration_status": "policy2-input-guards-and-soong-main-ninja-passed-strict-combined-policy-failed",
     "ordinary_product_native_invocation_executed": true,
     "ordinary_product_value_query_evidence": "ordinary_product_value_queries_v5",
     "selected_configuration_value_queries_verified": true,
     "latest_native_configuration_attempt": "ordinary_nothing_phase_v2",
     "current_generated_configuration_admission_status": "previous-nothing2-map-preserved-new-component-product-generation-pending",
     "ordinary_nothing_validation_verified": true,
-    "generated_metadata_verification_scope": "No new metadata qualification from the visibility-corrected source. Preserve both the failed policy1 selected identity and the earlier nothing2 values with their original input scopes.",
+    "generated_metadata_verification_scope": "The 9c8ecb identity is selected in policy2, but no six-file post-make qualification runs. Keep older nothing2 file values within their original input scope.",
     "latest_policy_baseline_scope": "Historical policy selection before LINEAGE_BUILD activated the full Evolution policy; not full current compatibility.",
     "current_full_evolution_policy_verified": false,
     "current_factory_policy_image_compatibility_verified": false,
-    "current_source_native_build_verification_scope": "Three-file visibility correction is installed and read back; no native retry, new Soong graph or policy compilation has run from this corrected source.",
+    "current_source_native_build_verification_scope": "Policy2 reaches the strict factory-aware combined compiler and fails the camera-property neverallow. Main-Ninja argv/sandbox/limits and all source/input guards pass; no complete policy/context/binary or metadata postcheck runs.",
     "active_source_project_count": 13,
     "explicit_evolution_policy_component_source_installed": true,
     "backuptool_recovery_only_patch_0015_installed": true,
-    "ordinary_product_input_closure_scope": "The 1525-input policy1 proof remains historical. The visibility-corrected source requires a newly bound selected-input identity.",
+    "ordinary_product_input_closure_scope": "Policy2 verifies 1525 named inputs and one runtime input before and after. This is selected-input proof for the failed invocation, not policy or image compatibility.",
     "previous_selected_input_build_number": "nezha.c70cf5547ff9f24c2ecefa65",
-    "selected_input_build_number_scope": "The host successor is prepared, but no native retry has selected it in a verified invocation; c70cf belongs to the preserved failed policy1 attempt.",
+    "selected_input_build_number_scope": "The host-derived visibility-successor identity is selected in the failed policy2 invocation; no new six-file metadata qualification.",
     "filegroup_visibility_correction_installed": true,
     "filegroup_visibility_correction_actual_review_completed": true,
     "prepared_input_build_number": "nezha.9c8ecb23e876fcf464a02e1d",
     "prepared_input_identity_sha256": "9c8ecb23e876fcf464a02e1d2c24efd4888d6ed875f96ec90093fb8bc453b700",
-    "prepared_input_identity_scope": "Visibility-corrected host successor, with fifteen bound files and nine outputs replayed. Native selection and post-make metadata qualification remain unverified."
+    "prepared_input_identity_scope": "The prepared identity was selected in policy2, whose source/input guards pass; strict combined compilation fails and metadata qualification remains unverified.",
+    "filegroup_visibility_correction_native_graph_verified": true,
+    "previous_verified_output_reference": "matrix_canonical_xml_postcheck_v2",
+    "current_policy_output_state": "partial-build-state-unknown-pending-readonly-capture",
+    "current_policy_output_presence_verified": false
   },
-  "latest_native_build_status": "evolution-policy32-soong-visibility-failed-before-policy-compilation",
+  "latest_native_build_status": "evolution-policy32-strict-combined-camera-property-neverallow-failed",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -4227,9 +4231,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-31T14:02:13.676800+00:00",
-  "latest_timestamped_native_observation_kind": "first-target-files-policy-1-failed-soong-visibility",
-  "latest_native_observation_kind": "first-target-files-policy-1-failed-soong-visibility",
+  "latest_timestamped_native_observation_utc": "2026-08-31T15:28:07.450304+00:00",
+  "latest_timestamped_native_observation_kind": "first-target-files-policy-2-failed-strict-combined-policy",
+  "latest_native_observation_kind": "first-target-files-policy-2-failed-strict-combined-policy",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -7754,7 +7758,7 @@
   "last_completed_native_component_build_reference": "native_matrix_component_attempt",
   "last_completed_native_provider_elf_reference": "provider_four_kib_native_build",
   "current_build_sequence": [
-    "Use the reviewed visibility-correction installation, recheck live inputs against its host-derived successor identity, and retry native policy32. Preserve the original Soong failure, the eleven retained/renamed policy1 outputs, and the current source/output guards. Neither the correction installation nor its focused offline tests establish policy, metadata, image or boot success.",
+    "Preserve the failed policy2 receipt and inspect its active partial outputs read-only; retained policy1 originals/copies already verify. Correct the camera-property source integration without removing assertions or suppressing checks, then rebind inputs before another native policy32 attempt. The passing source/input and main-Ninja guards do not establish combined-policy, metadata, image or boot success.",
     "Preserve the original matrix38 wrapper failure alongside native exit zero and the distinct passing read-only postcheck. Its 291 progress rows are 163 frontend steps plus 128 Ninja actions; do not infer fresh compiler/checker tests from every row.",
     "Use the separately verified 26 fresh 4 KiB provider ELF/symbol checks, preserving the original 16 KiB outcomes and remaining full-ABI/runtime/VTS limits.",
     "Use the reviewed provider installation, current native producer/input captures and scoped independent reviews of the successful matrix-v1 VINTF invocation. Carry its explicit subcheck/runtime limitations into construction admission. Rebind later source, package, image or trust-input changes; historical APEX crypto remains reused evidence, not a new run.",
@@ -10714,7 +10718,7 @@
     "scope": "Prepared enforcement correction for the newly selected full Evolution policy. Host patch/M4 qualification and isolated tooling tests do not establish Android compilation, current-policy compatibility, source installation or image/runtime behavior."
   },
   "current_evolution_policy_scope": {
-    "status": "minimal-soong-visibility-correction-installed-native-retry-pending",
+    "status": "strict-combined-policy-failed-camera-property-neverallow",
     "selection": "LINEAGE_BUILD=nezha activates Evolution policy directories absent from the previous configuration",
     "source_explanation": "ordinary_nothing_phase_v2.seven_leaf_source_explanation",
     "historical_policy_analysis": "native_provider_policy_analysis",
@@ -10731,7 +10735,10 @@
     "first_native_attempt": "native_evolution_policy_attempt_v1",
     "filegroup_visibility_correction_installed": true,
     "visibility_correction": "native_evolution_policy_visibility_correction",
-    "visibility_successor_metadata_host_verified": true
+    "visibility_successor_metadata_host_verified": true,
+    "latest_native_attempt": "native_evolution_policy_attempt_v2",
+    "filegroup_visibility_correction_native_graph_verified": true,
+    "camera_property_source_correction_installed": false
   },
   "evolution_policy_base_host_preparation": {
     "implementation_commit": "5d557a06182bd8c8ea16db726cd80ef16587626d",
@@ -11294,5 +11301,103 @@
       "guest_action_performed": false,
       "complete_rom_ready": false
     }
+  },
+  "native_evolution_policy_attempt_v2": {
+    "status": "failed-strict-factory-aware-combined-policy-camera-neverallow",
+    "phase": "first-target-files-policy-2",
+    "source_installation": "native_evolution_policy_visibility_correction",
+    "preserved_first_attempt": "native_evolution_policy_attempt_v1",
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/evolution-policy32-preparation-v1/operational-v2/root-policy-v2/stdout.jsonl",
+      "sha256": "2bf26bbc014271706320303f94563fd3c857569304689f001de9df4b225908c2",
+      "size_bytes": 9365703
+    },
+    "wrapper_exit": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/evolution-policy32-preparation-v1/operational-v2/root-policy-v2/exit.json",
+      "sha256": "9b5e5e48764b8c63a9e3beee397f9abfbdfa019d1ba283706a70200172fd1f73",
+      "size_bytes": 64
+    },
+    "native_stdout": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/evolution-policy32-preparation-v1/operational-v2/root-policy-v2-logs/files/build.stdout",
+      "sha256": "79d7e2ff679c4a4b100bf3fca1081b2f93a3ed8bc1e96db500c54b801f7f5925",
+      "size_bytes": 85108
+    },
+    "native_stderr": {
+      "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/evolution-policy32-preparation-v1/operational-v2/root-policy-v2-logs/files/build.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "native_started_at_utc": "2026-08-31T15:13:37.689682+00:00",
+    "native_finished_at_utc": "2026-08-31T15:28:07.450304+00:00",
+    "native_exit_code": 1,
+    "wrapper_exit_code": 1,
+    "requested_goals": 32,
+    "reported_failed_target_count": 1,
+    "failed_module": "nezha_factory_precompiled_sepolicy",
+    "conflict": {
+      "factory_neverallow_source": "vendor/xiaomi/nezha-policy/corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+      "factory_neverallow_line": 6117,
+      "factory_constraint": "Non-core-domain property_service set on vendor_persist_camera_prop is prohibited.",
+      "evolution_allow_source": "device/lineage/sepolicy/common/public/property.te",
+      "evolution_allow_line": 2,
+      "domain": "vendor_init",
+      "property_type": "vendor_persist_camera_prop",
+      "class": "property_service",
+      "permission": "set",
+      "combined_compiler_assertions_enabled": true,
+      "source_correction_installed": false,
+      "scope": "Actual strict compiler diagnostic; no assertion removal, check suppression or complete current-policy analysis is claimed."
+    },
+    "preflight_completed": true,
+    "source_input_guard_groups_before_after_equal": 6,
+    "all_six_after_guard_groups_fresh": true,
+    "named_inputs_verified": 1525,
+    "runtime_inputs_verified": 1,
+    "source_history_files_verified": 529,
+    "source_history_projects_verified": 13,
+    "strict_page_size_bytes": 4096,
+    "prebuilt_and_symbol_checks_enabled": true,
+    "native_execution": {
+      "soong_graph_generation_passed": true,
+      "main_ninja_observed": true,
+      "main_ninja_argv_verified": true,
+      "main_ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "sandbox_fallback": false,
+      "strict_combined_compiler_executed": true,
+      "policy_postcheck_executed": false,
+      "postcheck_errors": [],
+      "timed_out": false,
+      "forced_kill": false,
+      "output_overflow": false,
+      "process_reaped": true,
+      "streams_complete": true
+    },
+    "retention_and_partial_outputs": {
+      "retained_policy1_originals_verified": 11,
+      "independent_copies_verified": 11,
+      "active_outputs_rechecked_by_retention_guard": false,
+      "active_partial_output_state": "unknown-pending-readonly-snapshot",
+      "active_moved_paths_absence_claimed": false,
+      "entire_output_tree_unchanged": false,
+      "new_output_invalidation_or_deletion_by_preparation": false,
+      "scope": "The retention proof covers preserved originals and independent copies, not the presence, contents or freshness of active partial build outputs."
+    },
+    "selected_metadata": {
+      "host_preparation": "native_evolution_policy_visibility_correction.host_successor_metadata",
+      "build_number": "nezha.9c8ecb23e876fcf464a02e1d",
+      "selected_in_actual_invocation": true,
+      "six_file_post_make_qualification_verified": false,
+      "output_freshness_verified": false
+    },
+    "normal_android_enforcing_required": true,
+    "new_strict_combined_policy_verified": false,
+    "complete_current_policy_analysis_verified": false,
+    "complete_context_and_unfiltered_binary_analysis_verified": false,
+    "current_factory_image_compatibility_verified": false,
+    "new_images_admitted": false,
+    "target_files_admitted": false,
+    "phone_accessed": false,
+    "complete_rom_ready": false
   }
 }

@@ -78,8 +78,10 @@ complete readback and independent review. The first 32-goal invocation then
 fails in Soong graph generation at **14:02:13 UTC**, before policy compilation,
 on the device filegroup's forbidden specific-vendor visibility. The separate
 **evolution-policy-visibility-v1** source correction commits at **14:43:26 UTC**,
-with complete receipt readback. The native retry has not run; current
-policy/context and image-compatibility checks remain pending.
+with complete receipt readback. The second native attempt passes Soong/main
+Ninja but fails strict combined-policy compilation at **15:28:07 UTC** on the
+camera-property neverallow. A source integration correction is pending;
+current policy/context and image-compatibility checks remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1502,7 +1504,8 @@ commit/stage records and complete source/mode vectors without rerunning guest
 filesystem checks.
 Neither the source transaction nor the coordinator's ten focused offline tests
 establishes a new Soong parse, policy result or successor build identity.
-The native retry and its metadata qualification remain pending.
+The native retry and its metadata qualification were pending at that
+installation checkpoint; the later failed retry is recorded below.
 
 The separate host metadata successor derives
 `nezha.9c8ecb23e876fcf464a02e1d`, bound by input freeze
@@ -1511,7 +1514,38 @@ Coordinator replay `def599228a3e931052a26b4d40982057916bef037a10306dd7dd6a5f96b6
 rehashes fifteen files and reproduces nine outputs byte for byte with process
 launches blocked. This is host identity preparation, not native dispatch,
 six-file post-make qualification or policy success; the native caller must
-recheck all live inputs.
+recheck all live inputs. The second attempt subsequently selects this identity
+and passes its source/input guards, without successful policy or metadata
+postchecks.
+
+The **first-target-files-policy-2** native invocation executes from
+**2026-08-31 15:13:37.689682 to 15:28:07.450304 UTC**. Native and wrapper exits
+are both 1. Result
+`2bf26bbc014271706320303f94563fd3c857569304689f001de9df4b225908c2`
+(9,365,703 bytes) binds successful exact main-Ninja argv, sandbox and limit
+verification. All six fresh source/input guard groups match before and after;
+there is no timeout, forced kill or postcheck error. Raw stdout
+`79d7e2ff679c4a4b100bf3fca1081b2f93a3ed8bc1e96db500c54b801f7f5925`
+(85,108 bytes; stderr empty) shows the visibility fix passing graph generation
+and the sole reported failed target, `nezha_factory_precompiled_sepolicy`.
+
+Strict `secilc` rejects the factory neverallow at
+`vendor/xiaomi/nezha-policy/corpus/vendor/etc/selinux/plat_pub_versioned.cil:6117`:
+the non-core-domain property-write prohibition conflicts with the
+`vendor_init` allow for `vendor_persist_camera_prop`, traced to
+`device/lineage/sepolicy/common/public/property.te:2`. Assertions remain enabled;
+the source integration correction is pending. This attempt executes compiler
+work but does not produce an admitted combined-policy result. Its policy
+postcheck is not executed, so no new full binary/context analysis or six-file
+metadata qualification follows from the selected `9c8ecb` identity.
+
+The eleven retained policy1 originals and eleven independent copies are still
+verified after the attempt. Active outputs are not rechecked by that retention
+guard: the partial-build state remains unknown pending a read-only snapshot.
+No absence, unchanged-output or freshness claim is made for those active paths.
+The first visibility failure, both source transactions and their reviews remain
+unchanged historical evidence. No new policy image, target-files or hardware
+success is established.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
