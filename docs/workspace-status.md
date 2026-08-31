@@ -6,25 +6,42 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **August 30, 2026** in UTC and New York.
-Earlier UTC milestones before 04:00 on August 30 occurred on August 29 in
-New York. This page does not assert that a historical builder VM is still running.
+consolidates recorded evidence through **August 31, 2026 UTC (August 30 in
+New York)**. UTC milestones before 04:00 occur on the preceding New York date.
+This page does not assert that a historical builder VM is still running.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
-not a prerequisite for that initial bring-up. The active v13i guest still has
-the measured `16384` maximum and enabled prebuilt checks. Commit **17cde61** adds
+not a prerequisite for that initial bring-up. The **v13ja source configuration
+is now installed**, selecting `4096` with prebuilt checks enabled. Commit **17cde61** adds
 the [current-provider 4 KiB successor](nezha-page-size-v2-integration.md), with
 matching host candidates and checks enabled, without ignore flags or SELinux
 changes. Only the generated product fragment and new descriptor change. The
 compiled stock kernel's 4 KiB configuration is independently verified; running
-phone behavior is not. Native adoption and VTS compatibility remain unverified,
-and earlier 16 KiB failures and the old host experiment remain preserved.
+phone behavior is not. The **37-goal `pagesize-v13j-1` component build passes at
+2026-08-31 00:43:11 UTC (August 30 in New York)**. Its actual generated Soong
+maximum changes from `16384` to `4096`, with prebuilt checks still enabled.
+All thirteen protected policy and eleven runtime identities match the prior
+result, preserving the existing strict policy analysis. This is not a fresh
+full-policy analysis or the separate 26-provider ELF check. The partial VINTF
+alias skips the matrix-definition subcheck for a matrix with no level; full
+compatibility and VTS remain unverified. Earlier 16 KiB failures and the old
+host experiment remain preserved.
+Scoped review verifies **4,890 logged Ninja actions after 163 frontend steps**,
+not 5,053 tests. Only the maximum changes among 254 generated settings. The
+captured allocator has four 4 KiB-aligned load segments; qualified producer
+capture, runtime registration and the full provider ELF inventory remain open.
 The fresh pre-install snapshot passes at **23:30:55 UTC**, retaining all 1,179
 source pins/origins and the active 16 KiB settings; it does not install the
 candidate or run a build. The subsequent inactive v13j stage fails while
 checking an absent archive path with a missing ancestor, before installation.
-The backup and active source/OUT remain preserved; a corrected v13ja successor
-is being prepared. No 4 KiB source or build is active yet.
+That failed stage and its backup remain preserved. The corrected v13ja
+transaction commits at **2026-08-31 00:07:36 UTC (August 30 in New York)**,
+with one device-tree exchange and a five-event journal ending in
+`commit_verified`. The independent host review binds the captured receipts;
+it does not reread the live guest. The later component result is separate
+evidence, with 54 selected file bodies captured and 36 APEX identities recorded
+as metadata only; no image or APEX bodies were returned. The scoped build and
+log reviews are clear within those limits.
 
 The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
@@ -95,8 +112,9 @@ The incremental **vintf-v13h-2** retry finished at **16:58:47 UTC**, without a
 timeout, but failed the frozen level-5 `vintffm` check because
 `android.hidl.allocator` is mandatory and not declared in the manifest. All
 57 selected XML/APEX artifacts are present; presence is not compatibility.
-The current compatibility blockers are the provider ELF checks below and full
-VINTF; the fresh allocator producer capture is now admitted for packet preparation.
+The current compatibility blockers include the provider ELF checks below and
+full VINTF. The earlier v13i allocator producer capture remains admitted for
+its historical packet; the new 4 KiB output needs its own producer qualification.
 Commit `1647192` adds the
 [host-verified allocator capability](framework-allocator.md), selecting the
 existing upstream service while retaining its init, SELinux and `max-level="8"`
@@ -127,8 +145,10 @@ preparation. The older 221-file v13h staging remains historical. A subsequent
 shadowed writable `/work` mount beneath the read-only overlay. The corrected
 capture advances past that check, then fails because its archive reader expects
 `.py` sources while the built tools package `.pyc` files. A deterministic
-source-to-bytecode proof using the pinned Soong recipe is in progress. No full
-native VINTF compatibility check has executed.
+source-to-bytecode proof using the pinned Soong recipe is in progress. This
+unfinished 16 KiB packet remains historical. The 4 KiB component build now
+passes; the next checks require its fresh outputs and the separate provider
+ELF results. No full native VINTF compatibility check has executed.
 
 Ninja query captures were held pending qualification of the pinned query
 modes under read-only mounts. The second footer capture accepted the valid empty
@@ -291,7 +311,8 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `17cde61`. The active guest inputs are v13i;
+code through `17cde61`, with the previous documentation checkpoint committed
+as `fbe88a0`. The active guest source is v13ja with 4 KiB selected;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -581,8 +602,9 @@ override theme defaults. No Magisk integration is included.
   in `84d63c2` and its host v13g candidate remain unadopted historical inputs.
   The user now authorizes a 4 KiB first-boot baseline, with enabled checks and
   a separate current-provider candidate, now host-verified in `17cde61`.
-  Active v13i still retains `16384`;
-  neither the new decision nor future 4 KiB results resolve the recorded
+  The corrected v13ja source transaction selects `4096`, and its completed
+  37-goal native build verifies that generated maximum with checks enabled;
+  neither that selection nor future 4 KiB results resolve the recorded
   16 KiB/VTS compatibility gap.
   The [original-ODM shipping-API patch](vintf-shipping-api.md) passes source-bound
   host probes without fabricating vendor properties; it is authored but not

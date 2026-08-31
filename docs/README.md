@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Four provider checks pass and twenty-two fail at 16 KiB; the inactive 4 KiB stage and VINTF tool-archive capture remain blocked, with no 4 KiB source adoption or full compatibility claim |
+| [Native ROM integration](native-rom-integration.md) | Corrected 4 KiB source and 37-goal component build pass with generated settings verified; separate provider ELF checks, full VINTF and hardware validation remain pending |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -20,7 +20,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Actual selected framework/kernel inputs, complete artifact requirements and pinned validator limits |
-| [Framework allocator selection](framework-allocator.md) | Actual v13i compilation and three-output review pass with upstream init and max-level 8 retained; fresh producer descriptions are admitted, while full VINTF and runtime registration remain pending |
+| [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation/provenance and current 4 KiB allocator load-alignment proof; producer qualification for the new output, full VINTF and runtime registration remain pending |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
 | [Optional mi_ext care-map source](mi-ext-care-map.md) | Committed but inactive guarded path; authentic ODM imports, final Evolution SYSTEM marker, native packaging and OTA coverage remain unqualified |
@@ -80,8 +80,8 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
 | [Miracast audio correction evidence](../research/framework-provider-audio-compatibility.json) | Exact v7 dependency derivation installed as v13ha; policy source build passes, without complete ABI or runtime admission |
 | [Framework-provider source admission](framework-provider-source-admission.md) | Reproducible host v13 candidate, private policy and verified payload consumers; not installed in the v12fa checkpoint |
-| [Current 4 KiB bring-up profile](nezha-page-size-v2.md) | Explicitly authorized baseline bound to the compiled stock kernel and current v7 providers; checks remain enabled and native adoption is unverified |
-| [Current-provider 4 KiB source integration](nezha-page-size-v2-integration.md) | Committed opt-in generator, identical host candidates and verified snapshot; first inactive stage fails before installation, with a corrected successor in preparation |
+| [Current 4 KiB bring-up profile](nezha-page-size-v2.md) | Explicitly authorized baseline bound to the compiled stock kernel and current v7 providers; native component build passes with checks enabled, while provider ELF and hardware validation remain separate |
+| [Current-provider 4 KiB source integration](nezha-page-size-v2-integration.md) | Corrected v13ja installation and native 37-goal build pass; first-stage failure and 16 KiB evidence preserved, without full compatibility or image-adoption claims |
 | [Historical 4 KiB experiment](nezha-page-size.md) | Preserved v1 descriptor and unadopted v13g candidate; superseded by the separate current-provider preparation, without resolving 16 KiB/VTS compatibility |
 | [OEM property contract](../config/nezha-oem-properties.json) | Optional four-property source and permission budget; native validation separate from v11b |
 | [Framework-provider policy contract](../config/nezha-framework-provider-policy.json) | Bounded enforcing source for the two selected providers; no implied native or hardware pass |

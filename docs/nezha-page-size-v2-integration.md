@@ -6,6 +6,24 @@ The user explicitly approved a 4 KiB bring-up baseline after the initial
 provider-v7 inputs. It does not change the default 16 KiB profile or rewrite
 the earlier held v1 descriptor and v13g candidate.
 
+The corrected **v13ja source transaction committed at 2026-08-31 00:07:36 UTC**,
+and its normal **37-goal `pagesize-v13j-1` build passed at 00:43:11 UTC**
+(August 30 in New York). The captured settings differ in exactly one of 254
+fields: the maximum changes from 16384 to 4096. Strict prebuilt and ELF checks
+remain enabled. The build logs contain 4,890 Ninja action descriptions after
+163 frontend steps; these are not counts of tests.
+
+All 204 guarded source inputs match the admitted configuration. The thirteen
+protected policy identities and eleven runtime identities are unchanged,
+allowing reuse of the existing strict policy analysis without claiming a new
+assertion recount. The rebuilt allocator has four 4096-aligned load segments.
+The partial VINTF alias explicitly skips the matrix-definition subcheck for a
+matrix with no level. Fresh provider ELF checks, full framework/vendor/kernel/
+APEX compatibility, packaging and boot remain open. The
+[native integration record](native-rom-integration.md) binds the actual result,
+54 captured file bodies, 36 APEX metadata records and scoped reviews. The first
+failed inactive v13j stage and all earlier 16 KiB evidence remain preserved.
+
 Select this successor with the existing `--page-size-profile` argument. The
 generator admits only the two reviewed profile IDs, exact descriptor hashes
 and canonical candidate paths. Without that argument, neither profile is read

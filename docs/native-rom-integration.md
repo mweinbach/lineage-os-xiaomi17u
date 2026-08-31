@@ -23,9 +23,11 @@ the fresh producer descriptions are admitted, but full compatibility remains ope
 The first 26-goal provider ELF build and four-goal follow-up produce a distinct
 inventory of four passed checks and twenty-two alignment failures at 16 KiB.
 The follow-up's complete readback and independent evidence review pass. The
-user now authorizes a checked 4 KiB first-boot baseline; its current-provider
-successor is committed and host-verified, but not installed or built yet.
-The inactive Camera stage and
+user now authorizes a checked 4 KiB first-boot baseline; the corrected **v13ja
+source is installed**, and the 37-goal **pagesize-v13j-1** component build passes
+at **2026-08-31 00:43:11 UTC (August 30 in New York)**. Generated settings now
+verify 4096 with prebuilt checks enabled. The separate provider ELF checks and
+full VINTF remain pending; all earlier 16 KiB evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
@@ -690,7 +692,9 @@ built `apexd_host` and `deapexer` package `.pyc` files. The diagnostic is
 `418f80e0c60500b3fec16d2e3c43df75628a029a35c21b4be545560cc58d29af`.
 A deterministic source-to-bytecode proof using the pinned Soong recipe is in
 progress. No full native compatibility command has executed; both capture
-failures remain preserved.
+failures remain preserved. The unfinished 16 KiB packet is historical after the
+source turnover. The 4 KiB component build now passes; a fresh capture and full
+compatibility checks must use its actual outputs.
 
 Three separate capture attempts remain failures: the footer-tool reader rejected
 a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
@@ -939,8 +943,7 @@ bindings are independently reverified. The freeze is
 Default rendering and the old descriptor remain unchanged. Combining this
 profile with the earlier policy-image delivery evidence is explicitly blocked
 until current native equality and paired admission are verified.
-The active v13i guest remains
-at 16384 until a verified transaction changes it. This decision does not turn
+The corrected v13ja source transaction below now selects 4096. This does not turn
 the failed 16 KiB checks into passes or establish VTS compatibility, native
 adoption or hardware support; normal Android SELinux remains enforcing.
 The **23:30:55 UTC** pre-install snapshot binds 216 present files among 266
@@ -953,9 +956,56 @@ verifies snapshot preparation, not a source transaction or native 4 KiB build.
 The subsequent inactive **run-v13j** stage returns exit 1 before installation:
 the archive verifier's `ensure_absent` call requires a missing ancestor.
 Diagnostic `1431f52ca97ebedabff070a8d9568d72cfa254e1db7472a3166830c0a206e657`
-is preserved with the backup and unchanged active source/OUT. The corrected
-v13ja successor is being prepared; archive verification and source installation
-are not claimed successful.
+is preserved with the backup; the active source/OUT was not replaced by that
+failed attempt.
+
+The corrected **run-v13ja** stage passes with receipt
+`7b3eba00c88f3ec2dbad5d58259f62662ac60e7f32ae8ac497cad9a25f2bbe8c`.
+Its installation commits at **2026-08-31 00:07:36 UTC (August 30 in New York)**:
+one device-tree exchange, with five journal events ending in `commit_verified`.
+The captured installation is
+`0c477a6a405fec0f3a282fcdf3f1fb726ba0fd2bee69b9c5cb8dd03ae72f109a`;
+the journal is
+`26dbbec24fb165541072a2645a4c929bf05a05d00336d7f6ae10865267d08db9`.
+Only the generated product fragment differs within the exchanged device tree.
+The prior tree and independent backup copies remain retained. The independent
+review passes eight host checks with zero skips, binding captured hashes and
+journal relationships. It does not independently rerun installation verification
+or reread guest source/output/archive bytes; the receipt's preservation check
+does not freshly check live outputs.
+
+The **37-goal pagesize-v13j-1** component build runs from **00:13:06 to
+00:43:11 UTC on August 31**, with request
+`9cba3287760503b47a4cc9402d019f4e29ec38a916c15f516733f9252a8a399b`.
+It returns exit 0, with no post-build error or remaining build process. Result
+`949bd0882087d403637e542a0bc82c37b4ecabc8196ba0c160fe8a3ddd46e145`
+verifies the generated maximum's transition from 16384 to 4096, retaining the
+enabled ELF/prebuilt checks. Source verification covers 204 files; all thirteen
+protected policy and eleven runtime identities match the preceding result.
+The existing strict policy analysis is reused by byte identity, not relabeled
+as a new semantic analysis. The partial VINTF alias explicitly skips
+`checkMatrixHalsHasDefinition` for the device matrix without a level; this is
+not a zero-skipped native compatibility result.
+
+The completed-build readback contains **54 selected file bodies / 3,655,836
+bytes**, all rehashed, and metadata for **36 APEX packages**. No image or APEX
+bodies are returned. Its capture is
+`af16ba1962d75abd1912d334aeee90f73604d40d1be0dac6c34ed3602b65fc45`.
+The request includes policy, allocator and partial VINTF artifact targets;
+it is not the separate 26-provider ELF check or full unfiltered compatibility run.
+
+The scoped review
+`dc7d9ea95e8c5775dedc30f3bce14416f4749bf20122737eca87041ba84e0a55`
+and independent log review verify **4,890 normal Ninja action descriptions
+after 163 frontend steps**. The displayed 5,053 total is not a test count.
+Only the maximum changes among all 254 raw Soong settings. Fresh CIL,
+neverallow and context action descriptions are present, but no separately
+named fresh Treble/freeze action or new assertion/permissive analysis is claimed.
+The captured 27,224-byte allocator has four load segments aligned to 4096, with
+matching offset/address alignment. Its logged link/strip/install actions do
+not establish fresh C++ compilation, qualified producer capture or runtime
+registration. Vendor-manifest and device/kernel FCM warnings remain recorded;
+the skipped matrix-definition subcheck is not a pass.
 
 The [native date fixture record](../research/pinned-build-metadata-native.json)
 verifies nine positive/legacy cases and 24 specific negative outcomes, with
@@ -1251,14 +1301,15 @@ evidence validation; both older profiles and the blocked default remain
 unchanged. Matching raw reconstruction and keyless footer/FEC checks now pass;
 signed-parent, physical-fit and current-source checks still precede any adoption.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
-Preserve the admitted fresh allocator producer capture, verify the full
-packet's packaged bytecode against the pinned Soong source recipe, then perform
-full framework/vendor/APEX/kernel comparison. Correct the inactive v13j archive
-absence guard before installing the separately prepared 4 KiB successor.
+Use the completed 4 KiB component result and its verified generated settings
+for the next provider and compatibility checks. Preserve the earlier allocator
+producer capture and unfinished 16 KiB full packet as
+historical evidence. Qualify packaged bytecode against the pinned Soong recipe,
+then capture fresh 4 KiB outputs for full framework/vendor/APEX/kernel comparison.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
-Prepare and verify the explicitly authorized current-provider 4 KiB baseline
-with ELF checks enabled and no ignore flags; preserve the original 16 KiB
+Run the separate provider ELF checks for the installed 4 KiB baseline with
+checks enabled and no ignore flags; preserve the original 16 KiB
 failures and record the remaining VTS compatibility gap. The bounded Camera
 component producer/output review passes; runtime API and linker access, Camera
 APK admission and full checker-input

@@ -6,6 +6,13 @@ it’s hard.” The separately versioned
 that development choice to the selected stock kernel and current v7 framework
 provider inputs. It does not establish a native 4 KiB build or boot result.
 
+The later **v13ja installation and `pagesize-v13j-1` component build passed**
+on August 31, 2026 UTC (August 30 in New York). That separate native evidence
+verifies the generated 4096 maximum and unchanged strict checks; the descriptor's
+original evidence scope remains unchanged. See the
+[current integration checkpoint](nezha-page-size-v2-integration.md) and
+[workspace status](workspace-status.md) for the remaining gates.
+
 This changes the selected build maximum from 16384 to 4096. It does **not** fix
 the 22 known 16 KiB ELF alignment failures or pass their VTS requirements.
 Those remain recorded, including the vendor API 202504 compatibility gap.
@@ -102,7 +109,8 @@ the immutable predecessor, current contract/receipt, original inventory,
 reviewed derivation/evidence, effective override, and retained compatibility
 gaps without reading private artifacts. Generator admission tests are separate.
 
-A fresh native product-variable capture and strict component checks must prove
-that the explicit profile is selected and the other checks remain active.
+The later native result and captured product variables now prove that the
+explicit profile is selected and the other checks remain active. The separate
+26-provider ELF checks still require fresh successful native actions.
 Packaging, AVB, complete-ROM compatibility, first boot and hardware validation
 remain separate gates. No phone operation is authorized by this profile.
