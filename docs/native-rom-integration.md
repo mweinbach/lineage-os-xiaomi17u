@@ -80,7 +80,10 @@ on the device filegroup's forbidden specific-vendor visibility. The separate
 **evolution-policy-visibility-v1** source correction commits at **14:43:26 UTC**,
 with complete receipt readback. The second native attempt passes Soong/main
 Ninja but fails strict combined-policy compilation at **15:28:07 UTC** on the
-camera-property neverallow. A source integration correction is pending;
+camera-property neverallow. Commit **85c5b40** supplies the unactivated
+[one-grant correction](camera-property-vendor-init-write.md); a separate patch
+0017 is being authored for the seven factory-prefix label differences. Neither
+is admitted through a new native policy build;
 current policy/context and image-compatibility checks remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
@@ -1541,11 +1544,57 @@ metadata qualification follows from the selected `9c8ecb` identity.
 
 The eleven retained policy1 originals and eleven independent copies are still
 verified after the attempt. Active outputs are not rechecked by that retention
-guard: the partial-build state remains unknown pending a read-only snapshot.
-No absence, unchanged-output or freshness claim is made for those active paths.
+guard: the partial-build state was unknown at that failure checkpoint. The
+subsequent read-only snapshot below records its observed presence and bytes;
+no freshness claim follows from those observations.
 The first visibility failure, both source transactions and their reviews remain
 unchanged historical evidence. No new policy image, target-files or hardware
 success is established.
+
+The actual failure snapshot and replay now bind **21 tracked outputs: eleven
+present and ten absent**. Six present files match the dated bytes/modes and five
+differ. Retention vector
+`c5b9642bfed996c410b370f49f467c5ea88a4a3991198ff860471a4edf4ae5bb`
+records these states without placeholders. Capture replay
+`64bb9fc4d205d0179e4e013a0e79e92f4463537571a91842267de63d5f1f6cf0`
+verifies 41 observed rows, 23 captured file bodies and all final rechecks. The
+failed result remains exact; this snapshot does not capture the current Ninja
+or verbose producer log bodies or the remaining 84 output-vector records.
+Source activation and new independent copies of the eleven present outputs
+are not admitted by this diagnostic. Recheck all 21 states and preserve each
+present file independently before later invalidation, keeping the original
+phase1 retained files and archive history separate.
+
+Commit `85c5b40a2aa54b97132983f32d1d9f4cdacb5019` adds
+[patch 0016 and its exact capability contract](camera-property-vendor-init-write.md).
+An explicit `false` removes only the emitted `vendor_init` camera-property set
+grant; absent/`true` retains the original behavior. Type declarations, reads,
+socket permissions and assertions remain. Host patch/M4 qualification and
+offline tests do not establish Android M4, source activation or strict combined
+compilation. Paired source/bundle admission must still reject missing,
+duplicate, conflicting or overridden capability definitions.
+
+The separate seven-prefix diagnostic uses the actual CIL and contexts from the
+failed policy2 attempt. Summary
+`cbc82e85b3d75db3ac32a82fdd11ff5b2e50cfe589a1165e48e90652ff3cfb40`
+binds changed camera, Dolby and USB labels. It identifies lost camera-service/HAL
+reads and the camera HAL's set grant, USB access losses, and expanded Dolby
+readers. Independent camera-grant inventory
+`68b645731c07b5ba04e716417745c9d5a2cbf14bb1e4935357aff4eacaa788c0`
+keeps application-domain reads distinct from the lost service/HAL access.
+These are static TE effects in captured inputs to a failed policy build, not
+a valid compiled policy or observed device regressions. Patch 0017 is being
+implemented to preserve all seven factory-prefix labels; it is not activated.
+Patch 0016 alone does not resolve this context-selection issue.
+
+Commit `76fe97584caf990677da033261e6c1d6c74dd745` adds the
+[unlevelled-matrix AIDL metadata audit source](../tools/vintf-definition-audit/README.md).
+It pins the existing 155-tuple matrix and checks 140 distinct package/type
+names against real VINTF-stable generated metadata. Native compilation, linkage
+and execution remain pending. It does not modify `checkvintf` or close the
+existing definition skip. Name presence would not establish interface kind,
+versions/hashes, instance registration, ABI, complete compatibility or hardware
+behavior.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1677,8 +1726,16 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**4,043 tests in 169.370 seconds with zero failures, errors or skips**, executed
-by the coordinator with two source-correction files and four checkpoint
+**4,055 tests in 171.878 seconds with zero failures, errors or skips**, executed
+by the coordinator in an isolated `fdc9b1e` snapshot plus the exact seven
+0016/audit files, equivalent to commit `76fe975`. Log
+`6eae17e2f9d2c36e88cf750263781b12d27a7d72adcf764895d5d7ee29754652`
+and completion `63f0056098b870e3a89763edc3def7979d3c5f40fbf769e7648aceb2718a9f05`
+bind that unchanged cohort. The seven ongoing integration-file changes in the
+active working tree and this later document update are excluded. This is not
+a full test of the active tree or native compilation of the new C++ audit.
+The preceding suite passed **4,043 in 169.370 seconds**, with two
+source-correction files and four checkpoint
 documents unchanged. The source bytes are committed as `30a9f74`; its log is
 `38b22224580b7190b79adbfddd878064f0f7fc5a84392b71661866a6c2984f14`
 and completion receipt is

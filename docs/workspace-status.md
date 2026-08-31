@@ -30,8 +30,11 @@ readback. It changes three files and preserves the 529-file inventory, patch
 0015 and strict 4 KiB settings. The second attempt passes Soong and enters main
 Ninja, but **fails strict combined-policy compilation at 15:28:07 UTC**:
 Evolution allows `vendor_init` to set `vendor_persist_camera_prop`, conflicting
-with the factory neverallow for non-core domains. The source correction is
-pending; no assertion is removed or bypassed. Complete policy/context review
+with the factory neverallow for non-core domains. Commit **85c5b40** prepares the
+[one-grant source correction](camera-property-vendor-init-write.md), without
+removing assertions; it is not activated. Captured context/access differences
+also require separate preservation of seven factory property prefixes, now
+being implemented as patch 0017. Complete policy/context review
 and current factory-image compatibility remain unverified. Normal Android
 enforcement remains required.
 
@@ -628,9 +631,26 @@ reported failed target is `nezha_factory_precompiled_sepolicy`: the diagnostic
 binds factory `plat_pub_versioned.cil:6117` to Evolution `public/property.te:2`.
 No policy postcheck runs; its error list is empty, and there is no timeout or
 forced kill. All eleven retained policy1 originals and their independent copies
-remain verified. Active partial outputs await read-only capture and are not
-claimed absent or unchanged. The original Soong failure remains preserved;
+remain verified. A later read-only snapshot now finds **eleven present and ten
+absent outputs** in the tracked 21-file set; five present files differ from the
+dated bytes/modes and six match. This is observed state, not producer freshness
+or policy success. The original Soong failure remains preserved;
 no new combined-policy, six-file metadata, image or boot success is claimed.
+
+Patch **0016** gates only the `vendor_init` camera-property set grant, preserving
+the type, reads, socket permissions and assertions. It remains a committed,
+host-qualified source input. A separate diagnostic on the failed policy2 CIL
+and contexts finds lost camera-service/HAL reads and HAL writes, USB access
+losses, and wider Dolby reader access under seven changed labels. Application
+domain camera reads remain present in that diagnostic. These are static policy
+effects, not observed hardware failures. Patch **0017** is being authored to
+preserve the factory prefix labels; neither correction is activated or verified
+by a new Android policy build.
+
+Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
+It is source for a separate host tool using the real generated AIDL metadata;
+compilation, linking and execution remain pending. It does not change production
+`checkvintf`, remove the retained definition skip or prove full compatibility.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -685,8 +705,13 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,043 tests in 169.370
-seconds with zero failures, errors or skips**, executed by the coordinator with
+The latest completed full workspace suite passed **4,055 tests in 171.878
+seconds with zero failures, errors or skips**, executed by the coordinator in
+an **isolated snapshot** of `fdc9b1e` plus the exact seven committed 0016/audit
+files, equivalent to `76fe975`. The seven ongoing integration-file changes in
+the active working tree are excluded; this is not a full test of that working
+tree or a native build of the audit tool. This later documentation update is
+separate. The preceding suite passed **4,043 in 169.370 seconds**, with
 two source-correction files and four checkpoint documents unchanged. The source
 bytes are committed as `30a9f74`; this later factual test-record refresh is
 separate. The preceding suite passed **4,043 in 169.140 seconds**, with

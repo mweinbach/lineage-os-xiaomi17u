@@ -19,9 +19,11 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Explicit Evolution policy base](evolution-policy-base.md) | Installed inputs pass Soong after the visibility fix; strict combined policy fails the camera-property neverallow, with source integration and full policy/context checks pending |
+| [Camera property write capability](camera-property-vendor-init-write.md) | Committed one-grant correction preserves types, reads and assertions; source activation, Android policy compilation and separate factory-label preservation remain pending |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Preserved factory/APEX input closure and original matrix-coverage failure; later scoped comparison results and remaining limits are in native ROM integration |
 | [Exact framework matrix](framework-matrix.md) | Installed source produces all 155 tuples; a reviewed distinct postcheck accepts canonical default-version omission and verifies current outputs, without full compatibility or runtime claims |
+| [AIDL metadata name audit](../tools/vintf-definition-audit/README.md) | Source for a separate host audit of the unlevelled matrix; native compilation/execution and complete compatibility remain unverified |
 | [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation and current 4 KiB alignment/producer capture; guest prerequisite verification passes, without source-to-binary equivalence, full VINTF or runtime registration |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
