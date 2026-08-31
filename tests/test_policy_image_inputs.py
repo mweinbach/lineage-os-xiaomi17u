@@ -2123,7 +2123,7 @@ def provider_policy_evidence(fx, *, review_size=None):
 class ProviderContractTests(OfflineTests):
     def test_additive_provider_catalog_preserves_both_prior_canonical_contracts(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())
-        self.assertEqual({policy.HISTORICAL_PROFILE, policy.EXPORT4_PROFILE, policy.PROVIDER_PROFILE}, set(catalog["profiles"]))
+        self.assertEqual({policy.HISTORICAL_PROFILE, policy.EXPORT4_PROFILE, policy.PROVIDER_PROFILE, policy.POLICY3_PROFILE}, set(catalog["profiles"]))
         for name, expected in ((policy.HISTORICAL_PROFILE, "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4"),
                                (policy.EXPORT4_PROFILE, "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4")):
             self.assertEqual(expected, identity(policy.json_bytes(catalog["profiles"][name]))["sha256"])
@@ -2355,6 +2355,1096 @@ class ProviderPreparationTests(FixtureTests):
                 self.prepare()
         self.assertEqual(4, calls)
         self.assertTrue(mutated)
+        self.assertFalse((self.fx.output / "preparation.json").exists())
+
+
+class Policy3Evidence:
+    """Independent, inert policy3 records; no private capture is consulted.
+
+    The old fixture supplies only the tiny files, metadata, and Binder receipt.
+    All source/build/review records below are newly synthetic. In particular,
+    none of the earlier shell-derived sidecar evidence is reused.
+    """
+
+    def __init__(self, fx):
+        self.fx = fx
+        legacy, unused = fx.policy_evidence()
+        published = json.loads(policy.CONTRACT.read_bytes())["profiles"][policy.POLICY3_PROFILE]
+        fx.contract["contract_id"] = fx.control["contract_id"] = policy.POLICY3_CONTRACT_ID
+        fx.contract["evolution_policy"] = copy.deepcopy(published["evolution_policy"])
+        existing = {row["path"] for row in fx.contract["dependencies"]}
+        for row in published["dependencies"]:
+            if row["path"] not in existing:
+                fx.contract["dependencies"].append(copy.deepcopy(row))
+                fx.write(row["path"], (REAL_ROOT / row["path"]).read_bytes())
+        fx.control["records"] = {}
+        fx.contract["native_records"] = {}
+        fx.control["noop_manifests"] = {
+            name: [copy.deepcopy(fx.control["partitions"][name]["manifest"]) for unused in range(2)]
+            for name in ("vendor", "odm")}
+        self.records = {role: {"synthetic_record_role": role} for role in policy.POLICY3_RECORD_ROLES}
+        self.pins = fx.contract["evolution_policy"]
+        self.records["vendor_derivation"] = legacy["vendor_derivation"]
+        goals = ["synthetic-policy-goal-" + str(i) for i in range(31)] + ["selinux_policy"]
+        strict = {"framework_matrix_source": "device/xiaomi/nezha/generated/framework-compatibility-matrix.xml",
+                  "maximum": 4096, "no_bionic_page_size_macro": True,
+                  "prebuilt_alignment_check": True, "strict_elf_checks": True}
+        guards = {name: {"synthetic_unchanged_guard": name} for name in (
+            "verify_immutable_archive", "verify_protected_inputs", "verify_selected_inputs",
+            "verify_source_history", "verify_source_lock")}
+        guards["verify_strict_settings"] = strict
+        self.records["policy_build"] = {
+            "schema_version": 1, "operation": self.pins["build_operation"], "phase": self.pins["build_phase"],
+            "profile": "policy", "profile_completed": True, "native_invocation_executed": True,
+            "native_process_succeeded": True, "preflight_completed": True, "profile_validation_verified": True,
+            "preflight_error": None, "postcheck_errors": [], "goals": goals,
+            "argv": ["build/soong/soong_ui.bash", "--make-mode", "-j8", *goals],
+            "soong_argv": ["build/soong/soong_ui.bash", "--make-mode", "-j8", *goals],
+            "fixed_environment": {"TARGET_PRODUCT": "lineage_nezha", "TARGET_RELEASE": "bp4a",
+                                  "TARGET_BUILD_VARIANT": "user", "LINEAGE_BUILD": "nezha"},
+            "invocation": {"exit_code": 0, **{key: True for key in (
+                "process_reaped", "streams_complete", "ninja_observed", "ninja_argv_verified",
+                "ninja_limits_verified", "sandbox_checks_passed")}, **{key: False for key in (
+                "timed_out", "forced_kill", "output_overflow", "sandbox_fallback", "disk_floor_breached")}},
+            "source_and_input_admission_before": copy.deepcopy(guards),
+            "source_and_input_admission_after": copy.deepcopy(guards),
+            **{"source_observations_" + when: {"strict_settings": {**strict,
+                "synthetic_observation_identity": identity(when.encode())}} for when in ("before", "after")},
+            **{key: False for key in ("source_mutation_requested", "capture_only", "complete_rom_ready",
+                "signed_flashable_rom_verified", "fresh_action_claims_from_matching_bytes", "image_reproducibility_verified")},
+        }
+        semantic = {
+            "status": "verified", "helper_effective_property_set_grants": 0, "permissive_cil_declarations": 0,
+            "assertion_statement_counts": {"neverallow": 6009, "neverallowx": 390},
+            "legacy_property_edge_budget_reused_as_current": False,
+            "property_effective_edge_budget_basis": "independent-native-evolution-base-plus-owned-contracts",
+            "evolution_policy_base_verification": {
+                "immutable_original_assertions": 6366, "owned_provider_assertions": 4, "base_assertions": 29,
+                "all_source_access_audit_assertion_transition_forms_accounted_for": True,
+                "full_named_and_inherited_anonymous_closures_match_independent_reference": True,
+                "base_factory_duplicate_types": ["vendor_persist_camera_prop"],
+                "vendor_source_delivery_into_factory_images_proven": False,
+                "binary_zero_permissive_check_performed": False, "image_or_runtime_admitted": False,
+                "contract_sha256": identity((fx.root / "config/evolution-policy-base.json").read_bytes())["sha256"]},
+        }
+        self.records["native_oem_guard"] = {
+            **copy.deepcopy(semantic), "tool_sources_sha256": copy.deepcopy(legacy["native_oem_guard"]["tool_sources_sha256"])}
+        dynamic = {"policy_capture_mapping", "policy_oem_replay", "policy_analysis", "policy_review_freeze"}
+        for role in self.records.keys() - dynamic:
+            self.persist(role)
+        build_id = policy.identity(fx.control["records"]["policy_build"])
+
+        def capture(role, native, selected):
+            return {"roles": [role], "original_native": {"path": native, **policy.identity(selected)},
+                    "retained_native": {"path": "/work/synthetic-retained/" + str(len(captured)), **policy.identity(selected)},
+                    "host": {"path": "synthetic-captured/" + str(len(captured)), **policy.identity(selected)}}
+
+        captured = []
+        self.pins["compiler_inputs"] = []
+        for runtime in policy.RUNTIME_INPUTS:
+            row = fx.control["policy_files"][runtime]
+            self.pins["compiler_inputs"].append({"runtime_path": runtime, "native_path": row["native_path"], **policy.identity(row)})
+            captured.append(capture("factory_compiler_input:" + runtime, row["native_path"], row))
+        combined = fx.control["policy_files"]["combined"]
+        self.pins["combined"] = {"native_path": combined["native_path"], **policy.identity(combined)}
+        captured.append(capture("normal_binary:nezha_factory_precompiled_sepolicy", combined["native_path"], combined))
+        for name, role in (("native_oem_output", "native_oem_guard"),
+                           ("factory_vendor_derivation_receipt", "vendor_derivation")):
+            captured.append(capture(name, "/work/synthetic/" + role + ".json", fx.control["records"][role]))
+        while len(captured) < 89:
+            label = "synthetic-retained-role-" + str(len(captured))
+            captured.append(capture(label, "/work/synthetic/" + label, identity(label.encode())))
+        self.records["policy_capture_mapping"] = {
+            "build_result": build_id, "files": captured, **{key: True for key in (
+                "all89_base64_and_host_bodies_exact", "all89_guest_final_rechecks", "all89_host_final_rechecks",
+                "all89_request_and_decoded_rows_exact", "gzip_decompression_equals_retained_plain", "invocation_equals_actual_result")}}
+        self.persist("policy_capture_mapping")
+        source_commit = {"synthetic_policy3_source_commit": True, "source_rows": 539}
+        self.pins["source_commit"] = identity(policy.json_bytes(source_commit))
+        self.pins["oem_semantics"] = identity(policy.json_bytes(semantic))
+        self.records["policy_oem_replay"] = {
+            "operation": "replay-actual-policy3-frozen-oem-composition", "build_result": build_id,
+            "capture_mapping": policy.identity(fx.control["records"]["policy_capture_mapping"]),
+            "source_commit": source_commit, "input_bindings_replayed_count": 83,
+            "semantic_result": semantic, "semantic_fields_equal_to_native_report": sorted(semantic),
+            "native_report": copy.deepcopy(captured[11]), **{key: True for key in (
+                "all_source_and_captured_inputs_rehashed_unchanged", "bundle62_payloads_rehashed_before_after",
+                "source46_equal_to_actual539_before_after_inventory", "source46_exactly_equal_to_capability_composed_contract")}}
+        self.persist("policy_oem_replay")
+        self.pins["review_evidence"] = {role: copy.deepcopy(fx.control["records"][role])
+                                        for role in policy.POLICY3_REVIEW_ROLES}
+        scope = {**{key: True for key in ("host_cil_semantic_replay_verified", "preserved_property_label_effects_verified",
+                                         "source_m4_and_native_command_forms_reviewed")},
+                 **{key: False for key in ("all12_binary_zero_permissive_verified", "complete_se_freeze_admission_verified",
+                     "complete_treble_apk_labeling_verified", "full_recursive_producer_provenance_verified",
+                     "new_image_basis_admitted", "hardware_or_runtime_verified", "complete_rom_ready")}}
+        self.records["policy_analysis"] = {
+            "schema_version": 1, "operation": self.pins["review_operation"], "status": self.pins["review_status"],
+            "actual_result": build_id, "evidence": list(copy.deepcopy(self.pins["review_evidence"]).values()), "scope": scope,
+            "native_completion": {"ordinary_goals": 32, "current_source_rows": 539, "source_projects": 13,
+                "guard_groups_rechecked_equal": 6, "native_exit_code": 0, "wrapper_exit_code": 0,
+                "complete_stdout_stderr_and_reaped": True},
+            "strict_factory_compile": {"factory_binary": copy.deepcopy(captured[10]),
+                "ten_compiler_inputs_in_exact_required_order": True, "ignore_neverallow_flag_present": False,
+                "secilc_flags": ["-v", "-m", "-M", "true", "-G", "-c", "30"]},
+            "source_and_oem_composition": {"assertions": {"original_contract": 6366, "provider": 4, "evolution_base": 29,
+                "neverallow": 6009, "neverallowx": 390, "total": 6399}, "helper_effective_property_set_grants": 0,
+                "camera_vendor_init_set_grants": 0, "permissive_cil_declarations": 0, "immutable_cil_inputs_preserved": 8},
+            "m4_recipe": {"all_three_capabilities_exactly_once": {"target_init_dev_config_property_writes": "false",
+                "target_nezha_preserve_factory_property_labels": "true", "target_vendor_persist_camera_prop_vendor_init_writes": "false"}},
+            "seven_prefix_effects": {"complete_prefix_languages": 7, "original_factory_labels_and_string_types_preserved": True,
+                "camera_added_policy_reader_domains": ["mediashell_app", "mosey_app", "updater_app"],
+                "camera_writer_domains": ["hal_camera_default", "init"], "camera_writer_changes": 0,
+                "camera_readers_lost": [], "context_relabel_only_edge_deltas": 0, "audio_and_usb_ordinary_edge_deltas": 0},
+            "native_context_checks": {"nine_factory_context_and_structural_commands_observed": True,
+                "file_hwservice_service_aggregates_equal_ordered_five_inputs": True,
+                "system_ext_rows": {"property": {"base": 25, "owned": 8, "full": 33}},
+                "warnings_not_counted_as_passes_or_suppressed": True},
+            "producer_provenance_limits": {"full_recursive_producer_provenance_verified": False,
+                "synthetic_exact_pinned_limitation": "scoped source and command review only"},
+        }
+        self.rebind_sections()
+        self.persist("policy_analysis")
+        self.records["policy_review_freeze"] = {
+            "operation": "freeze-scoped-actual-policy3-review", "schema_version": 1,
+            "final_recheck": {"all_equal": True, "evidence_pins": 10, "own_members": 6, "retained_host_bodies": 89},
+            "scope": copy.deepcopy(scope), "dependencies": {"actual_result": build_id,
+                "actual_decoded_capture": policy.identity(fx.control["records"]["policy_retained_capture"])},
+            "files": [copy.deepcopy(fx.control["records"][role]) for role in (
+                "policy_analysis", "policy_capture_mapping", "policy_oem_replay", "policy_freeze_selectors",
+                "policy_native_log_review", "policy_m4_source_review")]}
+        self.persist("policy_review_freeze")
+        fx.save()
+        self.control = fx.loaded()
+
+    def persist(self, role):
+        row = self.fx.write("records/" + role + ".json", policy.json_bytes(self.records[role]))
+        self.fx.control["records"][role] = row
+        self.fx.contract["native_records"][role] = policy.identity(row)
+        return policy.identity(row)
+
+    def rebind_sections(self, *names):
+        for name in names or policy.POLICY3_REVIEW_SECTIONS:
+            self.pins["review_sections"][name] = identity(policy.json_bytes(self.records["policy_analysis"][name]))
+
+
+class Policy3ContractTests(OfflineTests):
+    def test_policy3_is_additive_explicit_and_cannot_promote_earlier_profiles(self):
+        catalog = json.loads(policy.CONTRACT.read_bytes())["profiles"]
+        previous = {policy.HISTORICAL_PROFILE: "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
+                    policy.EXPORT4_PROFILE: "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
+                    policy.PROVIDER_PROFILE: "39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0"}
+        for name, expected in previous.items():
+            with self.subTest(profile=name):
+                self.assertEqual(expected, identity(policy.json_bytes(catalog[name]))["sha256"])
+        self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
+        current = policy.plan(policy.POLICY3_PROFILE)
+        self.assertEqual(policy.POLICY3_CONTRACT_ID, current["contract_id"])
+        self.assertEqual(policy.POLICY3_PROFILE, current["profile"])
+        self.assertFalse(current["images_or_policy_inputs_opened"])
+        self.assert_boundaries(current)
+        blocked = bool(current["missing_reviewed_native_record_pins"]) or policy.PROFILE_CONTRACT_SHA256[policy.POLICY3_PROFILE] is None
+        self.assertEqual("blocked" if blocked else "ready_for_evidence_validation", current["status"])
+
+    def test_each_separate_pending_native_proof_blocks_before_control_or_output(self):
+        contract, digest, profile, helper = policy.load_contract(policy.POLICY3_PROFILE)
+        for role in ("policy_binary_validation", "policy_freeze_review", "policy_sidecar_capture", "policy_sidecar_validation"):
+            with self.subTest(role=role):
+                candidate = copy.deepcopy(contract)
+                candidate["native_records"] = {name: row or identity(name.encode())
+                                               for name, row in candidate["native_records"].items()}
+                candidate["native_records"][role] = None
+                with mock.patch.object(policy, "load_contract", return_value=(candidate, digest, profile, helper)), \
+                        mock.patch.dict(policy.PROFILE_CONTRACT_SHA256, {policy.POLICY3_PROFILE: digest}):
+                    with mock.patch.object(policy, "load_control", side_effect=AssertionError("control must stay unopened")) as opened:
+                        with self.assertRaisesRegex(ValueError, "native evidence pins"):
+                            policy.prepare(Path("/nonexistent/policy3-control"), "a" * 64,
+                                           output_dir=Path("/nonexistent/policy3-output"), selected_profile=policy.POLICY3_PROFILE)
+                opened.assert_not_called()
+
+    def test_only_policy3_build_record_gets_the_new_16mib_limit(self):
+        control = {"contract_id": policy.POLICY3_CONTRACT_ID}
+        for role in policy.POLICY3_RECORD_ROLES:
+            with self.subTest(role=role):
+                self.assertEqual(16 << 20 if role == "policy_build" else 8 << 20, policy.record_json_limit(control, role))
+        with tempfile.TemporaryDirectory(prefix="policy3-json-limit-") as temporary:
+            path = Path(temporary).resolve() / "build.json"
+            for size in ((8 << 20) + 1, 16 << 20, (16 << 20) + 1):
+                raw = b'{"synthetic":true}\n' + b" " * (size - len(b'{"synthetic":true}\n'))
+                path.write_bytes(raw)
+                row = {"path": path, **identity(raw)}
+                selected = {**control, "records": {"policy_build": row}}
+                if size <= 16 << 20:
+                    self.assertEqual({"policy_build": {"synthetic": True}}, policy.read_records(selected))
+                else:
+                    with self.assertRaises(ValueError):
+                        policy.read_records(selected)
+                with self.assertRaises(ValueError):
+                    policy.read_records({**control, "records": {"policy_analysis": row}})
+
+
+class Policy3BasisTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.evidence = Policy3Evidence(self.fx)
+        self.records, self.control = self.evidence.records, self.evidence.control
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+
+    def qualify(self):
+        return policy.qualify_policy3_basis(self.records, self.control, self.fx.contract)
+
+    def test_exact_scoped_basis_binds_39_records_14_files_and_all_6399_assertions(self):
+        self.assertEqual(39, len(self.control["records"]))
+        self.assertEqual(EXPECTED_POLICY_FILES, set(self.control["policy_files"]))
+        self.assertFalse(policy.derived_sidecars(self.fx.contract))
+        self.assertTrue(policy.complete_noops_required(self.fx.contract))
+        self.assertEqual(self.records, policy.read_records(self.control))
+        held, proof = self.qualify()
+        self.assertEqual({*policy.RUNTIME_INPUTS, "combined"}, set(held))
+        self.assertEqual(11, len(held))
+        self.assertEqual((6366, 4, 29, 6399), tuple(proof[key] for key in (
+            "assertion_statements_retained", "provider_assertion_statements", "evolution_assertion_statements", "assertion_statements_total")))
+        self.assertEqual(4096, proof["max_page_size_supported"])
+        self.assertEqual(0, proof["helper_property_write_grants"])
+        self.assertEqual(0, proof["camera_vendor_init_property_write_grants"])
+        for key in ("full_recursive_producer_provenance_verified", "complete_treble_apk_labeling_proven",
+                    "vendor_source_delivery_into_factory_images_proven", "native_binary_zero_permissive_verified_by_basis",
+                    "native_freeze_verified_by_basis", "native_sidecars_verified_by_basis", "image_admission_enabled_by_basis"):
+            self.assertIs(proof[key], False, key)
+
+    def test_four_native_records_three_actual_sidecars_and_both_noops_cannot_be_omitted(self):
+        original = copy.deepcopy(self.fx.control)
+        for group, key in (("records", "policy_binary_validation"), ("records", "policy_freeze_review"),
+                           ("records", "policy_sidecar_capture"), ("records", "policy_sidecar_validation"),
+                           ("policy_files", "plat_sha256"), ("policy_files", "system_ext_sha256"), ("policy_files", "product_sha256")):
+            with self.subTest(group=group, key=key):
+                self.fx.control = copy.deepcopy(original)
+                self.fx.control[group].pop(key)
+                self.fx.save()
+                with self.assertRaises(ValueError):
+                    self.fx.loaded()
+        self.fx.control = copy.deepcopy(original)
+        self.fx.control["records"]["sidecar_native_validation"] = self.fx.control["records"]["policy_sidecar_validation"]
+        self.fx.save()
+        with self.assertRaisesRegex(ValueError, "missing or extra native evidence"):
+            self.fx.loaded()
+        self.fx.control = copy.deepcopy(original)
+        self.fx.control["noop_manifests"]["vendor"].pop()
+        self.fx.save()
+        with self.assertRaisesRegex(ValueError, "both no-op manifest passes"):
+            self.fx.loaded()
+
+    def test_current_source_inventory_and_all_review_members_are_not_optional(self):
+        completion = self.records["policy_analysis"]["native_completion"]
+        completion["current_source_rows"] = 538
+        with self.assertRaisesRegex(ValueError, "reviewed complete policy3 section changed"):
+            self.qualify()
+        self.evidence.rebind_sections("native_completion")
+        with self.assertRaisesRegex(ValueError, "source inventory"):
+            self.qualify()
+        completion["current_source_rows"] = 539
+        self.evidence.rebind_sections("native_completion")
+        self.records["policy_review_freeze"]["files"].pop()
+        with self.assertRaisesRegex(ValueError, "six complete members"):
+            self.qualify()
+
+    def test_relaxed_4k_settings_or_user_release_fail_even_with_equal_guard_groups(self):
+        build = self.records["policy_build"]
+        original = copy.deepcopy(build)
+        for field, value in (("maximum", 16384), ("prebuilt_alignment_check", False), ("strict_elf_checks", False)):
+            with self.subTest(field=field):
+                for when in ("before", "after"):
+                    build["source_and_input_admission_" + when]["verify_strict_settings"][field] = value
+                    build["source_observations_" + when]["strict_settings"][field] = value
+                with self.assertRaisesRegex(ValueError, "strict 4 KiB settings"):
+                    self.qualify()
+                build.clear()
+                build.update(copy.deepcopy(original))
+        build["fixed_environment"]["TARGET_RELEASE"] = "unreviewed-release"
+        with self.assertRaisesRegex(ValueError, "selected Evolution user product"):
+            self.qualify()
+
+    def test_native_build_failures_and_mutated_goals_do_not_count_as_completed(self):
+        build = self.records["policy_build"]
+        native = build["invocation"]
+        for field, value in (("exit_code", False), ("streams_complete", False), ("output_overflow", True), ("sandbox_fallback", True)):
+            with self.subTest(field=field):
+                old = native[field]
+                native[field] = value
+                with self.assertRaisesRegex(ValueError, "native invocation"):
+                    self.qualify()
+                native[field] = old
+        build["argv"].insert(3, "-k0")
+        build["soong_argv"] = copy.deepcopy(build["argv"])
+        with self.assertRaisesRegex(ValueError, "ordinary build did not complete"):
+            self.qualify()
+
+    def test_rehashed_scope_cannot_turn_the_basis_into_native_or_image_admission(self):
+        scope = self.records["policy_analysis"]["scope"]
+        for key in ("all12_binary_zero_permissive_verified", "complete_se_freeze_admission_verified",
+                    "full_recursive_producer_provenance_verified", "new_image_basis_admitted", "complete_rom_ready"):
+            with self.subTest(scope=key):
+                scope[key] = self.records["policy_review_freeze"]["scope"][key] = True
+                self.evidence.rebind_sections("scope")
+                with self.assertRaisesRegex(ValueError, "promoted into an unperformed check"):
+                    self.qualify()
+                scope[key] = self.records["policy_review_freeze"]["scope"][key] = False
+                self.evidence.rebind_sections("scope")
+
+    def test_rehashed_same_total_cannot_move_assertions_between_original_provider_and_base(self):
+        composition = self.records["policy_analysis"]["source_and_oem_composition"]
+        composition["assertions"].update(original_contract=6365, provider=5)
+        self.assertEqual(6399, composition["assertions"]["total"])
+        self.evidence.rebind_sections("source_and_oem_composition")
+        with self.assertRaisesRegex(ValueError, "assertion membership"):
+            self.qualify()
+
+    def test_independently_rehashed_oem_semantics_still_require_all_three_assertion_sets(self):
+        replay = self.records["policy_oem_replay"]
+        semantic = replay["semantic_result"]
+        semantic["evolution_policy_base_verification"].update(owned_provider_assertions=5, base_assertions=28)
+        self.records["native_oem_guard"]["evolution_policy_base_verification"] = copy.deepcopy(semantic["evolution_policy_base_verification"])
+        self.evidence.pins["oem_semantics"] = identity(policy.json_bytes(semantic))
+        with self.assertRaisesRegex(ValueError, "Evolution/owned assertion"):
+            self.qualify()
+
+    def test_rehashed_disabled_write_capabilities_and_context_composition_stay_exact(self):
+        review = self.records["policy_analysis"]
+        for field in ("helper_effective_property_set_grants", "camera_vendor_init_set_grants"):
+            with self.subTest(field=field):
+                review["source_and_oem_composition"][field] = 1
+                self.evidence.rebind_sections("source_and_oem_composition")
+                with self.assertRaisesRegex(ValueError, "disabled write capability"):
+                    self.qualify()
+                review["source_and_oem_composition"][field] = 0
+                self.evidence.rebind_sections("source_and_oem_composition")
+        review["native_context_checks"]["system_ext_rows"]["property"] = {"base": 24, "owned": 9, "full": 33}
+        self.evidence.rebind_sections("native_context_checks")
+        with self.assertRaisesRegex(ValueError, "context composition"):
+            self.qualify()
+
+    def test_capture_role_aliases_or_changed_compiler_and_combined_paths_are_rejected(self):
+        mapping = self.records["policy_capture_mapping"]
+        mapping["files"][-1]["roles"].append("factory_compiler_input:" + policy.RUNTIME_INPUTS[0])
+        with self.assertRaisesRegex(ValueError, "missing or duplicate actual policy3 input role"):
+            self.qualify()
+        mapping["files"][-1]["roles"].pop()
+        selected = self.control["policy_files"][policy.RUNTIME_INPUTS[2]]
+        selected["native_path"] = "/work/synthetic/source-only-system-ext.cil"
+        with self.assertRaisesRegex(ValueError, "exact actual compiler input"):
+            self.qualify()
+        selected["native_path"] = self.evidence.pins["compiler_inputs"][2]["native_path"]
+        self.control["policy_files"]["combined"]["native_path"] = "/work/out/target/product/nezha/odm/etc/selinux/precompiled_sepolicy"
+        with self.assertRaisesRegex(ValueError, "actual factory-combined binary"):
+            self.qualify()
+
+    def test_review_evidence_capture_and_binder_receipt_crosslinks_cannot_be_substituted(self):
+        role = "policy_property_bindings"
+        original = policy.identity(self.control["records"][role])
+        self.control["records"][role].update(identity(b"different complete property binding"))
+        with self.assertRaisesRegex(ValueError, "selected review evidence differs"):
+            self.qualify()
+        self.control["records"][role].update(original)
+        derivation = self.records["vendor_derivation"]
+        derivation["publisher_sha256"] = "a" * 64
+        with self.assertRaisesRegex(ValueError, "Binder derivation changed"):
+            self.qualify()
+
+
+POLICY3_EXPECTED_BINARY_MODULES = (
+    ("precompiled_sepolicy", False), ("plat_precompiled_sepolicy", False), ("sepolicy_neverallows", False),
+    ("29.0_compat_test", True), ("30.0_compat_test", True), ("31.0_compat_test", True),
+    ("32.0_compat_test", True), ("33.0_compat_test", True), ("34.0_compat_test", True),
+    ("202404_compat_test", True), ("precompiled_sepolicy_without_vendor", False),
+    ("nezha_factory_precompiled_sepolicy", None))
+
+
+def policy3_binary_evidence(evidence):
+    """Add twelve inert command records and their separate independent review."""
+    fx, records = evidence.fx, evidence.records
+    build = records["policy_build"]
+    for when in ("before", "after"):
+        build["source_observations_" + when]["strict_settings"]["file"] = {
+            "path": "/work/synthetic-configuration-" + when, **identity(("configuration-" + when).encode())}
+    evidence.persist("policy_build")
+    build_id = policy.identity(fx.control["records"]["policy_build"])
+    mapping = records["policy_capture_mapping"]
+    native_out = fx.control["policy_files"]["combined"]["native_path"].removesuffix(policy.COMBINED_SUFFIX)
+    for index, (module, unused) in enumerate(POLICY3_EXPECTED_BINARY_MODULES[:-1]):
+        binary = identity(("inert binary " + module).encode())
+        mapping["files"][13 + index] = {
+            "roles": ["normal_binary:" + module],
+            "original_native": {"path": native_out + "/synthetic-normal/" + module, **binary},
+            "retained_native": {"path": "/work/synthetic-retained/binaries/" + module, **binary},
+            "host": {"path": "synthetic-captured/binaries/" + module, **binary}}
+    mapping["build_result"] = build_id
+    evidence.persist("policy_capture_mapping")
+    replay = records["policy_oem_replay"]
+    replay.update(build_result=build_id, capture_mapping=policy.identity(fx.control["records"]["policy_capture_mapping"]))
+    evidence.persist("policy_oem_replay")
+    evidence.pins["review_evidence"] = {role: copy.deepcopy(fx.control["records"][role])
+                                       for role in policy.POLICY3_REVIEW_ROLES}
+    basis = records["policy_analysis"]
+    basis.update(actual_result=build_id, evidence=list(copy.deepcopy(evidence.pins["review_evidence"]).values()))
+    evidence.persist("policy_analysis")
+    frozen = records["policy_review_freeze"]
+    frozen["dependencies"]["actual_result"] = build_id
+    frozen["files"] = [copy.deepcopy(fx.control["records"][role]) for role in (
+        "policy_analysis", "policy_capture_mapping", "policy_oem_replay", "policy_freeze_selectors",
+        "policy_native_log_review", "policy_m4_source_review")]
+    evidence.persist("policy_review_freeze")
+    analyzer_path = native_out + "/host/linux-x86/bin/sepolicy-analyze"
+    inputs = [{"path": analyzer_path,
+               "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669", "size_bytes": 543160}]
+    profile = {"core_bytes": 0, "cpu_hard_seconds": 181, "cpu_soft_seconds": 180, "fsize_bytes": 64 << 20,
+               "jail_cpu_soft_and_hard_seconds": 180, "log_cap_each_bytes": 16 << 20, "minimum_disk_bytes": 20 << 30,
+               "minimum_mem_available_bytes": 12 << 30, "nofile": 1024, "outer_drain_margin_seconds": 30,
+               "sampled_rss_ceiling_bytes": 8 << 30, "wall_seconds": 180}
+    commands = []
+    for index, (module, ignore) in enumerate(POLICY3_EXPECTED_BINARY_MODULES):
+        captured = next(row for row in mapping["files"] if "normal_binary:" + module in row["roles"])
+        selected = {"module": module, "upstream_compile_ignores_neverallows": ignore,
+                    "live": copy.deepcopy(captured["original_native"]), "retained": copy.deepcopy(captured["retained_native"])}
+        inputs.extend(copy.deepcopy(selected[name]) for name in ("live", "retained"))
+        logs = {stream: {"path": f"/work/synthetic-native-logs/{index}/{stream}.bin", **identity(b""),
+                         "observed_bytes": 0, "truncated": False} for stream in ("stdout", "stderr")}
+        supervisor = b"synthetic nsjail supervisor diagnostics\n"
+        logs["supervisor"] = {"path": f"/work/synthetic-native-logs/{index}/supervisor.bin", **identity(supervisor),
+                              "observed_bytes": len(supervisor), "truncated": False}
+        attempt = {
+            "operation": "bounded-native-command", "status": "completed", "returncode": 0, "exit_code": 0,
+            "exit_code_scope": "nsjail-supervisor", "native_exit_code_claimed": False,
+            "kill_reason": None, "reasons": [], "logs": copy.deepcopy(logs), **{key: True for key in (
+                "all_pipes_eof", "diagnostics_persisted", "launch_attempted", "launched",
+                "no_live_descendants_observed_before_exit", "process_reaped", "process_started", "supervisor_log_separated")}}
+        native = {"name": f"permissive-{index:02d}", "argv": [analyzer_path, selected["live"]["path"], "permissive"],
+                  "passed": True, "complete_native_exit": True, "exit_code": 0, "supervisor_exit_code": 0,
+                  "errors": [], "resource_profile": copy.deepcopy(profile), "bounded_attempt": attempt,
+                  **{stream: {"path": row["path"], **policy.identity(row)} for stream, row in logs.items()}}
+        for name in ("bounded_attempt_record", "mountinfo", "native_exit_observation", "resource_observation", "sandbox"):
+            native[name] = {"path": f"/work/synthetic-native-logs/{index}/{name}.json", **identity((module + ":" + name).encode())}
+        commands.append({**selected, "native": native})
+    for index in range(14):
+        inputs.append({"path": "/work/synthetic-tools/input-" + str(index), **identity(("input-" + str(index)).encode())})
+    freezes = []
+    for role in ("sepolicy_freeze_test_tool", "current_platform_public_freeze_cil",
+                 "api_202504_platform_public_freeze_cil", "se_freeze_test_stamp"):
+        row = {"role": role, "comparison_execution_claimed_by_capture": False}
+        row.update({name: {"path": (native_out if name == "original" else "/work/synthetic-retained")
+                          + "/synthetic-freeze/" + role, **identity(role.encode())}
+                    for name in ("original", "retained")})
+        freezes.append(row)
+    source_before = {"verified": True, "configuration": identity(b"complete synthetic configuration observation"),
+                     "source_proof": identity(b"complete synthetic source539 proof")}
+    result = {
+        "schema_version": 1, "operation": "policy3-twelve-unfiltered-permissive-checks-v1",
+        "passed": True, "zero_permissive_binaries_verified": True, "errors": [], "unreached_binary_modules": [],
+        "build_result": build_id, "capture": policy.identity(fx.control["records"]["policy_retained_capture"]),
+        "source_before": source_before, "inputs_before": inputs, "freeze_capture_complete": True,
+        "freeze_inputs": freezes, "commands": commands,
+        "checks": [{"name": "source-after", "verified": True, "value": copy.deepcopy(source_before)},
+                   {"name": "inputs-after", "verified": True,
+                    "value": copy.deepcopy(inputs + [row[name] for row in freezes for name in ("original", "retained")])}],
+        **{key: False for key in ("complete_rom_ready", "full_treble_apk_labeling_verified", "host_unprivileged_execution_claimed",
+            "images_modified", "new_image_basis_verified", "phone_accessed", "policy_compiled_here",
+            "policy_semantics_or_full_provenance_verified", "source_or_android_output_modified")}}
+    records["policy_binary_validation"] = result
+    result_id = evidence.persist("policy_binary_validation")
+    records["policy_binary_review"] = {
+        "schema_version": 1, "operation": "review-actual-policy3-twelve-native-permissive-result-v1",
+        "status": "verified-within-recorded-scope", "findings": [], "actual_result": result_id,
+        "canonical_guest_receipt": copy.deepcopy(result_id), "canonical_guest_receipt_hash_only_rechecked": True,
+        "binary_results": [{**{key: copy.deepcopy(row[key]) for key in (
+            "live", "module", "retained", "upstream_compile_ignores_neverallows")}, "zero_permissive_domains": True} for row in commands],
+        "source": {"files": 539, "modes": 539, "projects": 13,
+            "full_source_proof_reconstructed_from_actual_policy3_after_state": True,
+            "source_and_configuration_after_guards_passed": True,
+            "fresh_metadata_six_file_check_performed_by_this_analysis": False,
+            "actual_commit": copy.deepcopy(replay["source_commit"]),
+            "actual_generated_configuration": policy.identity(build["source_observations_after"]["strict_settings"]["file"]),
+            "full_configuration_observation_before_and_after": copy.deepcopy(source_before["configuration"]),
+            "source_proof_before_and_after": copy.deepcopy(source_before["source_proof"])},
+        "native": {"exact_module_order": [name for name, unused in POLICY3_EXPECTED_BINARY_MODULES],
+            **{key: 12 for key in ("command_count", "empty_unfiltered_native_stderr", "empty_unfiltered_native_stdout",
+                "native_exit_zero", "supervisor_exit_zero", "supervisor_streams_separate_and_retained")},
+            "all_complete_nontruncated_reaped_eof_without_kill_or_reason": True,
+            "bound_native_caller_verified_actual_namespace_mount_capability_resource_records": True,
+            "canonical_json_ledgers_reconstructed": 17, "canonical_record_reconstructions": 60,
+            "raw_sandbox_mountinfo_and_supervisor_bodies_replayed_on_host": False},
+        "scope": {"zero_permissive_domains_verified_for_exact_twelve_binaries": True,
+            "strict_compatibility_assertions_verified": False, "complete_freeze_verified": False,
+            "full_recursive_producer_provenance_verified": False, "complete_rom_ready": False},
+        "freeze_inputs": {"capture_complete": True, "comparator_success_claimed_by_capture": False}}
+    evidence.persist("policy_binary_review")
+    fx.save()
+    evidence.control = fx.loaded()
+    return records, evidence.control
+
+
+class Policy3BinaryTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.evidence = Policy3Evidence(self.fx)
+        self.records, self.control = policy3_binary_evidence(self.evidence)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+
+    def qualify(self):
+        return policy.qualify_policy3_binaries(self.records, self.control, self.fx.contract)
+
+    def test_twelve_exact_native_commands_keep_seven_diagnostics_and_separate_false_scope(self):
+        self.assertEqual(POLICY3_EXPECTED_BINARY_MODULES, policy.POLICY3_BINARY_MODULES)
+        self.assertEqual(self.records, policy.read_records(self.control))
+        unused, basis = policy.qualify_policy3_basis(self.records, self.control, self.fx.contract)
+        self.assertFalse(basis["native_binary_zero_permissive_verified_by_basis"])
+        result = self.records["policy_binary_validation"]
+        self.assertEqual((39, 47), (len(result["inputs_before"]), len(result["checks"][1]["value"])))
+        flags = [row["upstream_compile_ignores_neverallows"] for row in result["commands"]]
+        self.assertEqual((7, 4, 1), tuple(sum(value is flag for value in flags) for flag in (True, False, None)))
+        proof = self.qualify()
+        self.assertEqual(12, proof["native_unfiltered_binary_count"])
+        self.assertEqual(0, proof["native_unfiltered_permissive_domains"])
+        self.assertEqual(7, proof["diagnostic_compatibility_binaries_count"])
+        self.assertFalse(proof["diagnostic_compatibility_compiles_used_as_strict_assertion_proof"])
+        self.assertFalse(proof["native_permissive_analysis_reexecuted_by_preparation"])
+
+    def test_missing_reordered_or_relabelled_binary_diagnostics_fail(self):
+        result = self.records["policy_binary_validation"]
+        original = copy.deepcopy(result["commands"])
+        result["commands"].pop()
+        with self.assertRaisesRegex(ValueError, "coverage or order"):
+            self.qualify()
+        result["commands"] = copy.deepcopy(original)
+        result["commands"][0], result["commands"][1] = result["commands"][1], result["commands"][0]
+        with self.assertRaisesRegex(ValueError, "coverage or order"):
+            self.qualify()
+        result["commands"] = copy.deepcopy(original)
+        for index, flag in ((3, False), (11, False), (0, None)):
+            with self.subTest(index=index, flag=flag):
+                result["commands"][index]["upstream_compile_ignores_neverallows"] = flag
+                with self.assertRaisesRegex(ValueError, "diagnostic compile scope"):
+                    self.qualify()
+                result["commands"] = copy.deepcopy(original)
+
+    def test_native_stdout_stderr_and_supervisor_streams_have_independent_guards(self):
+        command = self.records["policy_binary_validation"]["commands"][0]
+        original = copy.deepcopy(command["native"])
+        for stream in ("stdout", "stderr"):
+            with self.subTest(stream=stream):
+                native = command["native"]
+                nonempty = identity(b"permissive_domain\n")
+                native[stream].update(nonempty)
+                native["bounded_attempt"]["logs"][stream].update(nonempty, observed_bytes=nonempty["size_bytes"])
+                with self.assertRaisesRegex(ValueError, "nonempty or truncated"):
+                    self.qualify()
+                command["native"] = copy.deepcopy(original)
+                command["native"]["bounded_attempt"]["logs"][stream]["truncated"] = True
+                with self.assertRaisesRegex(ValueError, "nonempty or truncated"):
+                    self.qualify()
+                command["native"] = copy.deepcopy(original)
+        command["native"]["bounded_attempt"]["logs"]["supervisor"]["observed_bytes"] += 1
+        with self.assertRaisesRegex(ValueError, "supervisor diagnostics"):
+            self.qualify()
+
+    def test_boolean_or_failed_exits_filtered_argv_and_relaxed_limits_are_not_native_success(self):
+        command = self.records["policy_binary_validation"]["commands"][0]
+        original = copy.deepcopy(command["native"])
+        for field, value in (("exit_code", False), ("supervisor_exit_code", 1), ("supervisor_exit_code", False),
+                             ("complete_native_exit", False)):
+            with self.subTest(field=field, value=value):
+                command["native"][field] = value
+                with self.assertRaisesRegex(ValueError, "filtered, failed or used different limits"):
+                    self.qualify()
+                command["native"] = copy.deepcopy(original)
+        command["native"]["argv"].extend(["|", "head", "-0"])
+        with self.assertRaisesRegex(ValueError, "filtered, failed or used different limits"):
+            self.qualify()
+        command["native"] = copy.deepcopy(original)
+        command["native"]["resource_profile"]["cpu_hard_seconds"] += 1
+        with self.assertRaisesRegex(ValueError, "filtered, failed or used different limits"):
+            self.qualify()
+        command["native"] = copy.deepcopy(original)
+        command["native"]["bounded_attempt"]["returncode"] = False
+        with self.assertRaisesRegex(ValueError, "separate bounded streams"):
+            self.qualify()
+
+    def test_39_inputs_and_four_freeze_pairs_require_exact_47_unique_final_paths(self):
+        result = self.records["policy_binary_validation"]
+        original = copy.deepcopy(result)
+        result["checks"][1]["value"].pop()
+        with self.assertRaisesRegex(ValueError, "four separate freeze captures"):
+            self.qualify()
+        self.records["policy_binary_validation"] = result = copy.deepcopy(original)
+        result["freeze_inputs"][0]["retained"]["path"] = result["freeze_inputs"][0]["original"]["path"]
+        result["checks"][1]["value"] = result["inputs_before"] + [row[name] for row in result["freeze_inputs"] for name in ("original", "retained")]
+        self.assertEqual(47, len(result["checks"][1]["value"]))
+        with self.assertRaisesRegex(ValueError, "four separate freeze captures"):
+            self.qualify()
+        self.records["policy_binary_validation"] = result = copy.deepcopy(original)
+        result["freeze_inputs"][0]["comparison_execution_claimed_by_capture"] = True
+        with self.assertRaisesRegex(ValueError, "four separate freeze captures"):
+            self.qualify()
+        self.records["policy_binary_validation"] = result = copy.deepcopy(original)
+        result["inputs_before"].pop()
+        with self.assertRaisesRegex(ValueError, "binary/tool input coverage"):
+            self.qualify()
+
+    def test_binary_paths_and_analyzer_cannot_be_rebound_outside_the_selected_capture(self):
+        result = self.records["policy_binary_validation"]
+        command = result["commands"][0]
+        original_path = command["live"]["path"]
+        command["live"]["path"] = "/work/another-build/same-hash-policy"
+        for rows in (result["inputs_before"], result["checks"][1]["value"]):
+            next(row for row in rows if row["path"] == original_path)["path"] = command["live"]["path"]
+        command["native"]["argv"][1] = command["live"]["path"]
+        with self.assertRaisesRegex(ValueError, "current captured native output"):
+            self.qualify()
+        command["live"]["path"] = original_path
+        for rows in (result["inputs_before"], result["checks"][1]["value"]):
+            next(row for row in rows if row["path"] == "/work/another-build/same-hash-policy")["path"] = original_path
+        command["native"]["argv"][1] = original_path
+        for rows in (result["inputs_before"], result["checks"][1]["value"]):
+            rows[0]["sha256"] = "a" * 64
+        with self.assertRaisesRegex(ValueError, "permissive analyzer identity"):
+            self.qualify()
+
+    def test_source539_generated_configuration_and_complete_observation_are_cross_bound(self):
+        review = self.records["policy_binary_review"]
+        source = review["source"]
+        original = copy.deepcopy(source)
+        for field, value in (("files", 538), ("modes", 538), ("actual_generated_configuration", identity(b"stale generated configuration")),
+                             ("full_configuration_observation_before_and_after", identity(b"partial configuration observation")),
+                             ("actual_commit", {"different_source_commit": True})):
+            with self.subTest(field=field):
+                source[field] = value
+                with self.assertRaisesRegex(ValueError, "actual source539 and complete configuration"):
+                    self.qualify()
+                source.clear()
+                source.update(copy.deepcopy(original))
+        self.records["policy_binary_validation"]["checks"][0]["value"]["source_proof"] = identity(b"source changed after native checks")
+        with self.assertRaisesRegex(ValueError, "binary source changed"):
+            self.qualify()
+
+    def test_independent_review_cannot_replace_actual_result_or_claim_unperformed_freeze(self):
+        review = self.records["policy_binary_review"]
+        original = copy.deepcopy(review)
+        review["actual_result"] = identity(b"another native twelve-check receipt")
+        review["canonical_guest_receipt"] = copy.deepcopy(review["actual_result"])
+        with self.assertRaisesRegex(ValueError, "independent binary review"):
+            self.qualify()
+        self.records["policy_binary_review"] = review = copy.deepcopy(original)
+        review["binary_results"][3]["upstream_compile_ignores_neverallows"] = False
+        with self.assertRaisesRegex(ValueError, "independent binary review"):
+            self.qualify()
+        self.records["policy_binary_review"] = review = copy.deepcopy(original)
+        review["scope"]["complete_freeze_verified"] = True
+        with self.assertRaisesRegex(ValueError, "promotes incomplete freeze"):
+            self.qualify()
+        self.records["policy_binary_review"] = review = copy.deepcopy(original)
+        review["freeze_inputs"]["comparator_success_claimed_by_capture"] = True
+        with self.assertRaisesRegex(ValueError, "promotes incomplete freeze"):
+            self.qualify()
+
+
+def policy3_freeze_evidence(evidence):
+    """Add a public-name-only comparison with two complete synthetic members."""
+    fx, records = evidence.fx, evidence.records
+    native = records["policy_binary_validation"]
+    captures = []
+    for index, row in enumerate(native["freeze_inputs"]):
+        captures.append({**copy.deepcopy(row), "host": {"path": "synthetic-freeze-captured/" + str(index),
+                                                        **policy.identity(row["original"])}})
+    mapping = records["policy_capture_mapping"]
+    mapping["files"][24] = {
+        "roles": ["public_exporter:plat_pub_policy.cil"], "original_native": copy.deepcopy(captures[1]["original"]),
+        "retained_native": copy.deepcopy(captures[1]["retained"]), "host": copy.deepcopy(captures[1]["host"])}
+    verbose_id = identity(b"synthetic complete policy3 verbose capture\n")
+    mapping["files"][25] = {"roles": ["native-verbose-plain"],
+        "original_native": {"path": "/work/synthetic-verbose.txt", **verbose_id},
+        "retained_native": {"path": "/work/synthetic-retained/verbose.txt", **verbose_id},
+        "host": {"path": "synthetic-captured/verbose.txt", **verbose_id}}
+    evidence.persist("policy_capture_mapping")
+    records["policy_oem_replay"]["capture_mapping"] = policy.identity(fx.control["records"]["policy_capture_mapping"])
+    evidence.persist("policy_oem_replay")
+    evidence.pins["review_evidence"] = {role: copy.deepcopy(fx.control["records"][role]) for role in policy.POLICY3_REVIEW_ROLES}
+    records["policy_analysis"]["evidence"] = list(copy.deepcopy(evidence.pins["review_evidence"]).values())
+    evidence.persist("policy_analysis")
+    records["policy_review_freeze"]["files"] = [copy.deepcopy(fx.control["records"][role]) for role in (
+        "policy_analysis", "policy_capture_mapping", "policy_oem_replay", "policy_freeze_selectors",
+        "policy_native_log_review", "policy_m4_source_review")]
+    evidence.persist("policy_review_freeze")
+    native_out = fx.control["policy_files"]["combined"]["native_path"].removesuffix(policy.COMBINED_SUFFIX)
+    aliases = ["out-" + Path(native_out).name + row["original"]["path"].removeprefix(native_out) for row in captures]
+    comparisons = []
+    for name in ("sepolicy_freeze_test.pyc", "mini_parser.pyc"):
+        member = identity(("inert whole member " + name).encode())
+        comparisons.append({"packaged_member": name, "whole_bytes_equal": True,
+            "packaged_sha256": member["sha256"], "regenerated_sha256": member["sha256"],
+            "packaged_size_bytes": member["size_bytes"], "regenerated_size_bytes": member["size_bytes"],
+            "pyc_flags": 3, "pyc_magic": "f30d0d0a"})
+    records["policy_freeze_review"] = {
+        "schema_version": 1, "operation": "review-actual-policy3-public-freeze",
+        "status": "verified-policy3-platform-public-api-freeze", "public_freeze_comparison_verified": True,
+        "fresh_logged_comparator_action_verified": True,
+        "actual_build_result": policy.identity(fx.control["records"]["policy_build"]),
+        "actual_native_readback": policy.identity(fx.control["records"]["policy_binary_validation"]),
+        "native_comparator_rerun_performed": False, "native_comparator_rerun_required": False,
+        "recursive_graph_replay_required_for_this_scope": False, "freeze_inputs": captures,
+        **{name: copy.deepcopy(row["original"]) for name, row in zip(("tool", "current_cil", "api_cil", "stamp"), captures)},
+        "source_and_recipe_witnesses": {"actual_policy3_source_checkpoint": copy.deepcopy(records["policy_oem_replay"]["source_commit"]),
+            "board_api": "202504", "build_variant": "user", "captured_source_project": {
+                "head": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "status": "M private/init_dev_config.te\n M private/su.te"}},
+        "logged_native_comparison": {"tokens": [aliases[0], "-c", aliases[1], "-p", aliases[2], "&&", "touch", aliases[3]],
+            "line": 654, "main_ninja_action": 371, "verbose": copy.deepcopy(mapping["files"][25]["host"]),
+            "actual_native_build_exit_code": 0, "actual_wrapper_exit_code": 0,
+            "se_freeze_test_was_an_ordinary_goal": True, "comparator_precedes_success_conditional_stamp_touch": True,
+            "standalone_stamp_or_timestamp_used_as_pass": False,
+            "per_process_historical_tool_hash_at_action_launch_independently_sampled": False},
+        "packaged_tool_source_binding": {"complete_tool_hash_bound": True,
+            "two_complete_pyc_members_reproduced_from_exact_captured_sources": True,
+            "entrypoint": "sepolicy_freeze_test", "entrypoint_bootstrap": {"single_expected_entrypoint": True},
+            "native_android_compiler_identity_assumed": False, "source_hash_headers_alone_used_as_proof": False,
+            "stdlib_and_native_launcher_audit_claimed": False, "comparisons": comparisons},
+        "public_comparison": {"captured_upstream_do_main_returned_normally": True,
+            "current_cil_equals_already_bound_current_platform_public_exporter": True,
+            "current_declared_type_count": 1419, "api_declared_type_count": 1419,
+            "current_compared_attribute_count": 353, "api_compared_attribute_count": 353,
+            "current_excluded_generated_attribute_count": 234, "api_excluded_generated_attribute_count": 234,
+            "added_attributes": [], "added_types": [], "removed_attributes": [], "removed_types": [],
+            "host_stdout_bytes": 0, "host_stderr_bytes": 0, "full_cil_byte_equality": False},
+        "scope": {"platform_public_freeze_for_actual_policy3_verified": True,
+            "full_policy_permission_equivalence_verified": False, "full_recursive_producer_provenance_verified": False,
+            "complete_rom_ready": False},
+        "validation": {"actual_source_comparator_replay_passed": True, "four_bodies_and_sources_rehashed_after": True,
+            "complete_pyc_member_matches": 2, "failures": 0, "skips": 0}}
+    evidence.persist("policy_freeze_review")
+    fx.save()
+    evidence.control = fx.loaded()
+    return records, evidence.control
+
+
+class Policy3FreezeTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.evidence = Policy3Evidence(self.fx)
+        policy3_binary_evidence(self.evidence)
+        self.records, self.control = policy3_freeze_evidence(self.evidence)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+
+    def qualify(self):
+        return policy.qualify_policy3_freeze(self.records, self.control, self.fx.contract)
+
+    def test_four_captured_bodies_source_reproduction_and_logged_action_prove_only_public_names(self):
+        self.assertEqual(self.records, policy.read_records(self.control))
+        policy.qualify_policy3_basis(self.records, self.control, self.fx.contract)
+        policy.qualify_policy3_binaries(self.records, self.control, self.fx.contract)
+        proof = self.qualify()
+        self.assertTrue(proof["public_freeze_comparison_verified"])
+        self.assertTrue(proof["fresh_logged_comparator_action_verified"])
+        self.assertTrue(proof["public_type_and_attribute_names_only"])
+        self.assertFalse(proof["freeze_native_comparator_reexecuted_by_preparation"])
+        self.assertFalse(proof["full_policy_permission_equivalence_claimed_by_freeze"])
+
+    def test_retained_native_and_host_freeze_captures_cannot_be_substituted(self):
+        result = self.records["policy_freeze_review"]
+        original = copy.deepcopy(result)
+        result["freeze_inputs"][1]["retained"].update(identity(b"different retained current public policy"))
+        with self.assertRaisesRegex(ValueError, "actual four captured inputs"):
+            self.qualify()
+        self.records["policy_freeze_review"] = result = copy.deepcopy(original)
+        result["freeze_inputs"][1]["host"].update(identity(b"different host public policy"))
+        with self.assertRaisesRegex(ValueError, "body identity"):
+            self.qualify()
+        self.records["policy_freeze_review"] = result = copy.deepcopy(original)
+        result["actual_native_readback"] = identity(b"unrelated twelve-binary result")
+        with self.assertRaisesRegex(ValueError, "matching comparison and fresh native action"):
+            self.qualify()
+
+    def test_complete_checker_and_parser_reproduction_cannot_be_replaced_by_headers(self):
+        packaged = self.records["policy_freeze_review"]["packaged_tool_source_binding"]
+        original = copy.deepcopy(packaged)
+        packaged["source_hash_headers_alone_used_as_proof"] = True
+        with self.assertRaisesRegex(ValueError, "packaged checker/parser source binding"):
+            self.qualify()
+        packaged.clear()
+        packaged.update(copy.deepcopy(original))
+        packaged["comparisons"][1]["regenerated_sha256"] = "a" * 64
+        with self.assertRaisesRegex(ValueError, "source reproduction is incomplete"):
+            self.qualify()
+        packaged.clear()
+        packaged.update(copy.deepcopy(original))
+        packaged["comparisons"].pop()
+        with self.assertRaisesRegex(ValueError, "packaged checker/parser source binding"):
+            self.qualify()
+
+    def test_stamp_only_old_action_or_wrong_api_is_not_an_ordinary_comparator_pass(self):
+        result = self.records["policy_freeze_review"]
+        logged = result["logged_native_comparison"]
+        original = copy.deepcopy(logged)
+        for key, value in (("tokens", logged["tokens"][-2:]), ("line", 653), ("main_ninja_action", 370),
+                           ("standalone_stamp_or_timestamp_used_as_pass", True)):
+            with self.subTest(key=key):
+                logged[key] = value
+                with self.assertRaisesRegex(ValueError, "missing, stale or inferred from its stamp"):
+                    self.qualify()
+                logged.clear()
+                logged.update(copy.deepcopy(original))
+        result["source_and_recipe_witnesses"]["board_api"] = "202404"
+        with self.assertRaisesRegex(ValueError, "source, selected API or product"):
+            self.qualify()
+
+    def test_equal_public_counts_do_not_admit_different_names_or_full_policy_equivalence(self):
+        result = self.records["policy_freeze_review"]
+        comparison = result["public_comparison"]
+        original = copy.deepcopy(comparison)
+        for key, value in (("added_types", ["synthetic_new_public_type"]),
+                           ("current_excluded_generated_attribute_count", 235), ("full_cil_byte_equality", True)):
+            with self.subTest(key=key):
+                comparison[key] = value
+                with self.assertRaisesRegex(ValueError, "public type/attribute comparison differs"):
+                    self.qualify()
+                comparison.clear()
+                comparison.update(copy.deepcopy(original))
+        result["scope"]["full_policy_permission_equivalence_verified"] = True
+        with self.assertRaisesRegex(ValueError, "overstates its scope"):
+            self.qualify()
+
+
+def policy3_sidecar_evidence(evidence):
+    """Synthetic captured Android outputs, including both source-audit contexts."""
+    import base64
+
+    fx, records = evidence.fx, evidence.records
+    build = records["policy_build"]
+    build_source = build["source_observations_after"]
+    build_source["source_history"] = {"synthetic_complete_source_proof": True, "files": 539, "projects": 13}
+    build_source["configuration"] = {"synthetic_complete_configuration": True, "release": "bp4a", "maximum": 4096}
+    build_id = evidence.persist("policy_build")
+    records["policy_capture_mapping"]["build_result"] = build_id
+    evidence.persist("policy_capture_mapping")
+    records["policy_oem_replay"].update(build_result=build_id,
+        capture_mapping=policy.identity(fx.control["records"]["policy_capture_mapping"]))
+    evidence.persist("policy_oem_replay")
+    evidence.pins["review_evidence"] = {role: copy.deepcopy(fx.control["records"][role]) for role in policy.POLICY3_REVIEW_ROLES}
+    records["policy_analysis"].update(actual_result=build_id,
+        evidence=list(copy.deepcopy(evidence.pins["review_evidence"]).values()))
+    evidence.persist("policy_analysis")
+    records["policy_review_freeze"]["dependencies"]["actual_result"] = build_id
+    records["policy_review_freeze"]["files"] = [copy.deepcopy(fx.control["records"][role]) for role in (
+        "policy_analysis", "policy_capture_mapping", "policy_oem_replay", "policy_freeze_selectors",
+        "policy_native_log_review", "policy_m4_source_review")]
+    evidence.persist("policy_review_freeze")
+    records["policy_binary_validation"]["build_result"] = build_id
+    binary_id = evidence.persist("policy_binary_validation")
+    records["policy_binary_review"].update(actual_result=binary_id, canonical_guest_receipt=copy.deepcopy(binary_id))
+    evidence.persist("policy_binary_review")
+    records["policy_freeze_review"].update(actual_build_result=build_id, actual_native_readback=binary_id)
+    evidence.persist("policy_freeze_review")
+    evidence.pins["sidecar_source"] = identity(b"synthetic Android.bp sidecar recipes\n")
+    native_out = fx.control["policy_files"]["combined"]["native_path"].removesuffix(policy.COMBINED_SUFFIX)
+    alias = "out-" + Path(native_out).name
+    modules, observations, genrules, installs, intermediates, generated_selectors, installed_selectors = [], [], [], [], [], [], []
+    for index, name in enumerate(("plat", "system_ext", "product")):
+        module = name + "_sepolicy_and_mapping.sha256"
+        partition = "system" if name == "plat" else name
+        roles = policy.RUNTIME_INPUTS[index * 2:index * 2 + 2]
+        inputs = [{"path": fx.control["policy_files"][role]["native_path"],
+                   **policy.identity(fx.control["policy_files"][role])} for role in roles]
+        directory = "/soong/.intermediates/system/sepolicy/" + module + "_gen/android_common/"
+        generated = alias + directory + "gen/" + module
+        intermediate = alias + "/soong/.intermediates/system/sepolicy/" + module + "/android_arm64_armv8-a/" + module
+        installed = alias + "/target/product/nezha/" + partition + "/etc/selinux/" + module
+        paths = {"generated": native_out + directory + "gen/" + module,
+                 "installed": native_out + installed.removeprefix(alias),
+                 "sbox_manifest": native_out + directory + "genrule.sbox.textproto"}
+        operands = ["__SBOX_SANDBOX_DIR__/out" + row["path"].removeprefix(native_out) for row in inputs]
+        command = "cat " + " ".join(operands) + " | sha256sum | cut -d' ' -f1 > __SBOX_SANDBOX_DIR__/out/" + module
+        row = {"module": module, "partition": partition, "ordered_inputs": copy.deepcopy(inputs),
+               "dependency_chain": {"module": module, "generated_selector": generated,
+                   "prebuilt_intermediate_selector": intermediate, "installed_selector": installed,
+                   "installed_copy_reads_prebuilt_intermediate": True}}
+        for offset, kind in enumerate(("generated", "installed", "sbox_manifest")):
+            raw = (command + "\n").encode() if kind == "sbox_manifest" else fx.policy_bytes[name + "_sha256"]
+            encoded = base64.b64encode(raw).decode()
+            inode = {"st_mode": stat.S_IFREG | 0o644, "st_nlink": 1, "st_size": len(raw)}
+            observed = {"path": paths[kind], **identity(raw), "stat": inode, "present": True}
+            observations.append({"selection_index": index * 5 + offset, "role": kind, "module": module,
+                                 "observation": copy.deepcopy(observed), "body_base64": encoded})
+            row[kind] = {"path": paths[kind], **identity(raw), "stat": copy.deepcopy(inode),
+                "body_origin": "actual-readonly-native-file-capture",
+                "capture_body_selector": f"observations_before[{index * 5 + offset}].body_base64", "body_base64": encoded}
+        for offset, item in enumerate(inputs):
+            observations.append({"selection_index": index * 5 + 3 + offset, "role": "ordered_input_" + str(offset),
+                "module": module, "observation": {**copy.deepcopy(item), "present": True}, "body_base64": None})
+        row["sbox_recipe"] = {"module": module, "ordered_inputs": copy.deepcopy(inputs),
+            "manifest": policy.identity(row["sbox_manifest"]), "command": command,
+            "opaque_input_hash_not_used_as_content_digest": True, "native_command_executed_by_verifier": False,
+            "opaque_soong_input_hash": identity(("opaque native source hash " + module).encode())["sha256"]}
+        modules.append(row)
+        genrules.append(alias + "/host/linux-x86/bin/sbox --sandbox-path " + alias + "/soong/.temp --output-dir "
+            + generated.rsplit("/", 1)[0] + " --manifest " + alias + directory + "genrule.sbox.textproto")
+        installs.append('/bin/bash -c "rm -f ' + installed + " && cp -f -d " + intermediate + " " + installed + '"')
+        intermediates.append("rm -f " + intermediate + " && cp -d  " + generated + " " + intermediate)
+        generated_selectors.append(generated)
+        installed_selectors.append(installed)
+    for index in range(15, 19):
+        observations.append({"selection_index": index, "role": "synthetic_supporting_observation", "module": None,
+            "observation": {"path": "/work/synthetic-sidecar-support/" + str(index), **identity(str(index).encode()),
+                            "present": True}, "body_base64": None})
+    child_source = {"source_files_checked": 0, "source_projects_checked": 0, "root_current539_guard_required": True,
+        "actual_commit": copy.deepcopy(records["policy_oem_replay"]["source_commit"]),
+        "historical_source_history_reverified": False, "source_or_output_modified": False,
+        "configuration": copy.deepcopy(build_source["strict_settings"]["file"]),
+        "strict_settings": copy.deepcopy(build_source["strict_settings"])}
+    capture = {"schema_version": 1, "operation": "capture-policy3-sidecar-producer-evidence-readonly-v1",
+        "status": "captured", "read_only_capture_verified": True, "guard_errors": [],
+        "observations_before": observations, "observations_after": copy.deepcopy(observations),
+        "ordered_leaf_commands": genrules + installs,
+        **{key: False for key in ("source_or_output_written", "native_build_or_checker_executed", "new_native_genrules_executed",
+                                 "producer_actions_admitted", "sidecar_success_verified", "complete_rom_ready", "phone_accessed")}}
+    for when in ("before", "after"):
+        capture["source_" + when] = copy.deepcopy(child_source)
+        capture["native_result_" + when] = copy.deepcopy(build_id)
+        capture["ninja_" + when] = {"synthetic_unchanged_readonly_ninja_query": True}
+        capture["sandbox_" + when] = {"checks_passed": True, "all_work_readonly": True}
+    records["policy_sidecar_capture"] = capture
+    capture_id = evidence.persist("policy_sidecar_capture")
+    prior = [{"command": command, "action": (100 if index < 3 else 300) + index % 3,
+              "line": 400 + index, "total": 556} for index, command in enumerate(genrules + installs)]
+    middle = [{"command": command, "action": 200 + index, "line": 500 + index, "total": 556}
+              for index, command in enumerate(intermediates)]
+    records["policy_sidecar_validation"] = {
+        "schema_version": 1, "operation": "qualify-existing-policy3-sidecar-producers-readonly-v1", "status": "verified",
+        "sidecar_success_verified": True, "evidence": {"read_only_capture": capture_id, "policy3_result": build_id},
+        "actual_outputs_checked": 6, "actual_ordered_inputs_checked": 6, "actual_sbox_manifests_checked": 3,
+        "exact_dependency_chains_checked": 3, "read_only_ninja_queries": 2,
+        "scope": {"normal_android_enforcing_required": True, "native_genrules_reexecuted": False,
+                  "full_recursive_producer_provenance_verified": False, "images_modified": False, "complete_rom_ready": False},
+        "source_context": {"operation": "verify-current539-in-original-root-context", "verified": True,
+            "source_files_checked": 539, "source_projects_checked": 13, "uid": 0, "gid": 0,
+            "source_proof": identity(policy.json_bytes(build_source["source_history"])),
+            "configuration": identity(policy.json_bytes(build_source["configuration"])), "policy3_result": build_id,
+            "private_view_owner_mode_guards_unchanged": True, "source_or_output_modified": False},
+        "recipe_source": {"path": "/work/evolution/system/sepolicy/Android.bp", **evidence.pins["sidecar_source"]},
+        "recipe_project_head": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27", "modules": modules,
+        "production": {"policy3_result": build_id, "prior_native_command_count": 6, "prior_genrule_commands": 3,
+            "prior_installed_copy_commands": 3, "supporting_intermediate_copy_count": 3, "fresh_native_actions": 0,
+            "command_hash_prediction_claimed": False, "prior_native_commands": prior,
+            "supporting_prior_intermediate_copy_commands": middle,
+            "ninja_success_rows": [{"selector": value} for value in generated_selectors + installed_selectors]}}
+    evidence.persist("policy_sidecar_validation")
+    fx.save()
+    evidence.control = fx.loaded()
+    return records, evidence.control
+
+
+class Policy3PreparationTests(FixtureTests):
+    def setUp(self):
+        super().setUp()
+        self.evidence = Policy3Evidence(self.fx)
+        policy3_binary_evidence(self.evidence)
+        policy3_freeze_evidence(self.evidence)
+        self.records, self.control = policy3_sidecar_evidence(self.evidence)
+        self.enterContext(mock.patch.object(policy, "ROOT", self.root))
+        self.enterContext(mock.patch.object(policy, "load_contract", return_value=(
+            self.fx.contract, self.fx.contract_sha, self.fx.profile, self.fx.helper)))
+        self.enterContext(mock.patch.dict(policy.PROFILE_CONTRACT_SHA256, {policy.POLICY3_PROFILE: self.fx.contract_sha}))
+        self.enterContext(mock.patch.object(policy, "qualify_erofs", return_value={"synthetic_native_evidence_mock": True}))
+        self.enterContext(mock.patch.object(policy.shutil, "disk_usage", return_value=shutil._ntuple_diskusage(1 << 40, 0, 1 << 40)))
+
+    def prepare(self):
+        return policy.prepare(self.fx.path, self.fx.sha, output_dir=self.fx.output, selected_profile=policy.POLICY3_PROFILE)
+
+    def test_complete_policy3_preparation_uses_actual_sidecars_without_derivation_or_adoption(self):
+        originals = {row["path"]: row["path"].read_bytes() for row in self.control["policy_files"].values()}
+        report = self.prepare()
+        self.assertEqual(policy.POLICY3_PROFILE, report["profile"])
+        self.assertEqual("complete-tar-inputs-prepared", report["status"])
+        self.assertEqual(39, len(report["native_evidence"]))
+        self.assert_boundaries(report)
+        proof = report["policy_proof"]
+        self.assertEqual(6399, proof["assertion_statements_total"])
+        self.assertEqual(12, proof["binary_checks"]["native_unfiltered_binary_count"])
+        self.assertTrue(proof["public_freeze"]["public_freeze_comparison_verified"])
+        self.assertEqual("captured-ordinary-android-installed-sidecars", proof["sidecar_native_production"]["source_kind"])
+        self.assertEqual(0, proof["sidecar_native_production"]["fresh_native_actions"])
+        self.assertFalse(proof["native_policy_reexecuted"])
+        self.assertFalse(proof["current_active_source_compatibility_proven"])
+        self.assertEqual([], report["derived_sidecars"])
+        self.assertFalse((self.fx.output / "derived-sidecars").exists())
+        selected = self.fx.selected(self.control)
+        self.assertEqual((1, 4), tuple(len(report["replacements"][name]) for name in ("vendor", "odm")))
+        for partition in ("vendor", "odm"):
+            first = self.fx.output / "pass-1" / (partition + ".tar")
+            second = self.fx.output / "pass-2" / (partition + ".tar")
+            self.assertEqual(first.read_bytes(), second.read_bytes())
+            self.assertEqual(identity(first.read_bytes()), report["passes"][0][partition]["tar"])
+            self.assertEqual(len(self.fx.original_bytes[partition]), report["passes"][0][partition]["regular_paths_verified"])
+            with tarfile.open(first, "r:") as archive:
+                for path, row in selected[partition].items():
+                    self.assertEqual(originals[row["path"]], archive.extractfile(path.lstrip("/")).read())
+        for path, raw in originals.items():
+            self.assertEqual(raw, path.read_bytes())
+        self.assertEqual(report, json.loads((self.fx.output / "preparation.json").read_bytes()))
+
+    def test_sidecars_reject_derived_capture_wrong_native_install_path_or_reversed_inputs(self):
+        original_records, original_control = copy.deepcopy(self.records), copy.deepcopy(self.control)
+        for mutation, expected in (("capture", "selected actual capture"), ("path", "captured native installed output"),
+                                   ("order", "another ordered compiler pair")):
+            with self.subTest(mutation=mutation):
+                records, control = copy.deepcopy(original_records), copy.deepcopy(original_control)
+                module = records["policy_sidecar_validation"]["modules"][0]
+                if mutation == "capture":
+                    module["generated"]["body_origin"] = "derived-from-sealed-v13h-inputs"
+                elif mutation == "path":
+                    control["policy_files"]["plat_sha256"]["native_path"] = "/work/another-build/system/plat_sepolicy_and_mapping.sha256"
+                else:
+                    module["ordered_inputs"].reverse()
+                with self.assertRaisesRegex(ValueError, expected):
+                    policy.qualify_policy(records, control, self.fx.contract)
+        self.assertFalse(self.fx.output.exists())
+
+    def test_installed_sidecar_change_after_fourth_tar_prevents_success(self):
+        assemble = self.fx.helper.assemble
+        calls = 0
+        path = self.control["policy_files"]["system_ext_sha256"]["path"]
+        original = path.read_bytes()
+
+        def mutate_after_fourth(*args):
+            nonlocal calls
+            result = assemble(*args)
+            calls += 1
+            if calls == 4:
+                path.write_bytes((b"1" if original[:1] != b"1" else b"2") + original[1:])
+            return result
+
+        with mock.patch.object(self.fx.helper, "assemble", side_effect=mutate_after_fourth):
+            with self.assertRaises(ValueError):
+                self.prepare()
+        self.assertEqual(4, calls)
+        self.assertEqual(65, path.stat().st_size)
+        self.assertNotEqual(original, path.read_bytes())
+        self.assertFalse((self.fx.output / "preparation.json").exists())
+
+    def test_valid_json_evidence_change_after_fourth_tar_prevents_success(self):
+        assemble = self.fx.helper.assemble
+        calls = 0
+        path = self.control["records"]["policy_sidecar_validation"]["path"]
+        original = path.read_bytes()
+
+        def mutate_after_fourth(*args):
+            nonlocal calls
+            result = assemble(*args)
+            calls += 1
+            if calls == 4:
+                path.write_bytes(original[:-1] + b" ")
+            return result
+
+        with mock.patch.object(self.fx.helper, "assemble", side_effect=mutate_after_fourth):
+            with self.assertRaisesRegex(ValueError, "JSON evidence identity differs"):
+                self.prepare()
+        self.assertEqual(4, calls)
+        self.assertEqual(len(original), path.stat().st_size)
+        self.assertEqual(json.loads(original), json.loads(path.read_bytes()))
         self.assertFalse((self.fx.output / "preparation.json").exists())
 
 

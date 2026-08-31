@@ -10,6 +10,10 @@ The public contract is `config/nezha-policy-images.json`. Its schema-2 profile
 container preserves the original contract unchanged under `historical-v12` and
 the separately selected `v12-export4` profile. The newer `v13h-policy-only`
 profile binds the completed provider policy build and analysis described below.
+The explicit `policy3-evolution` successor binds the ordinary Evolution source
+composition and the separate native binary, public-freeze and installed-sidecar
+evidence. It permits validation and TAR preparation for that exact snapshot;
+its scoped source review alone cannot admit image preparation.
 `historical-v12` remains the
 default and remains blocked; selecting a newer profile is never implicit.
 The export4 profile's contract ID is
@@ -20,8 +24,8 @@ The originals remain the vendor and ODM images from factory package SHA256
 Their image hashes, package budgets, five original file hashes, source tools,
 native tool identities and reviewed native qualification records are pinned.
 The export4 native policy analysis and both complete stock no-op reconstruction
-proofs now exist. The three framework hash sidecars are absent from the selected
-native OUT. The export4 profile therefore requires a captured producer recipe
+proofs now exist. The three framework hash sidecars were absent from the selected
+export4 snapshot. That profile therefore requires a captured producer recipe
 and separate native validation before explicitly deriving those files from
 the captured CIL and mapping inputs. The fresh native validation passed all
 three known answers and all three specific negative cases, with zero skips;
@@ -65,6 +69,7 @@ do not carry the v13h provider policy.
 python3 scripts/policy_image_inputs.py plan
 python3 scripts/policy_image_inputs.py plan --profile v12-export4
 python3 scripts/policy_image_inputs.py plan --profile v13h-policy-only
+python3 scripts/policy_image_inputs.py plan --profile policy3-evolution
 ```
 
 `plan` reports the selected profile and its missing prerequisites. It exits 2
@@ -198,11 +203,127 @@ plat and product sidecars retain their earlier contents. All three remain
 explicit 65-byte derivations, without installed-path or Android-genrule claims.
 The old sidecar results cannot satisfy the new profile even when bytes agree.
 
-The new profile reuses the unchanged original-image, tool and complete no-op
-EROFS qualifications. Fresh v13h images still need both native reconstructions,
-complete metadata comparison and deterministic repeat results. No provider
-runtime, strict ELF action, full Treble APK labeling, AVB/partition fit, active
-ROM compatibility, image adoption or phone boot is established by this profile.
+The profile reuses the unchanged original-image, tool and complete no-op
+EROFS qualifications. Its separate native reconstruction subsequently passed
+nine checks and 38 commands with zero skips: both independent image pairs,
+complete TARs and metadata exports matched, with exactly the five permitted
+content replacements. The later keyless footer experiment is recorded
+separately in [the current workspace status](workspace-status.md). Neither
+result admits the later policy3 inputs, proves a signed parent AVB chain or
+establishes a phone boot. This input profile itself does not establish provider
+runtime, strict ELF execution, full Treble APK labeling, active ROM
+compatibility or image adoption.
+
+## Explicit ordinary Evolution policy3 snapshot
+
+`policy3-evolution` uses contract ID
+`nezha-five-file-policy-image-inputs-policy3-evolution-v1` and canonical profile
+SHA256 `f49240bf1e128212b4f2e58092b37e4988fe6cf9a042d081bdb25a1411bd0b9a`.
+The three earlier
+profile objects, their canonical identities and the blocked historical default
+remain unchanged. The selected platform is still `bka` / `bp4a`, with the
+explicitly selected 4 KiB maximum page size and strict ELF and prebuilt alignment
+checks enabled.
+
+The actual `first-target-files-policy-3` ordinary Android build completed all
+32 requested goals for `lineage_nezha-bp4a-user`, including `selinux_policy`.
+The native build record is SHA256
+`344ba909febe8be29479f5bf1d48d122e931e88fb1d4d71dbcdab08708483c18`
+(10,165,316 bytes). Only this new profile's `policy_build` JSON role receives
+a finite 16 MiB read bound. All other new roles keep the 8 MiB bound, and the
+earlier profiles retain their existing limits. Initial and final reads apply
+the same identity and size checks.
+
+The scoped review under ignored
+`reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy3-actual-review-v1/`
+is SHA256 `b2743829e4d6a74088208b0296e5989f53cb7f10c31333cb0b17f8410f193225`
+(16,599 bytes). Its separate freeze is
+`4547cb1bce20de5f1a2e8101d8d4d8d193a5b8cc25ab0c66de0e8749dc18d4c1`.
+The profile binds all eight complete review sections, ten evidence records,
+the six-member review freeze, the 89-body input capture and the full native
+OEM semantic result. It requires the actual 539 source rows across thirteen
+projects and all six before/after source and input guard groups.
+
+The strict factory-combined policy is
+`eef85951730890201b1d023ab68e7a44aab3a39f879d889f8eba1cadeb109270`
+(1,537,590 bytes). Its ten compiler inputs are selected by exact runtime role,
+actual native path, hash and size. Only the system_ext CIL and its 202504
+mapping change relative to v13h; the other eight inputs and the reviewed
+vendor Binder derivation are unchanged. The proof retains all 6,366 original
+assertions, the four provider assertions and 29 Evolution assertions: 6,009
+`neverallow` plus 390 `neverallowx` statements. It requires zero helper and
+camera-init property writes and zero CIL permissive declarations.
+
+The seven factory property-prefix languages retain their original labels and
+string types. The three expected additional camera-property reader domains
+are `mediashell_app`, `mosey_app` and `updater_app`; camera writers stay
+`hal_camera_default` and `init`. The source composition contains 25 Evolution
+and eight owned system_ext property-context rows. The earlier v12 property
+edge-count budget is not reused as a substitute for reviewing this composition.
+
+The source review deliberately does not claim all twelve binary permissive
+checks, the public freeze comparison, installed sidecars, full recursive
+producer provenance or complete Treble APK labeling. The successor requires
+separate actual native evidence for the first three before preparation. It
+does not require a recursive capture of the whole build graph or promote the
+38 optional vendor source fragments into a mandatory factory runtime. Final
+APK labeling and complete Treble checks remain later packaging gates.
+
+The separate native binary result is
+`932ba4bfd06f5278acb53a129abb90712202e4577791f1fab5d7bde5200f4c73`
+(225,221 bytes), with independently replayed review
+`bc1cc68b5ce15ad74056c6c1e66623b4713c323d81bc0a090997f51b877c7ba9`
+(22,017 bytes). All twelve exact live/retained binary pairs passed unfiltered
+`sepolicy-analyze ... permissive`: all 24 native output streams were empty,
+both native and supervisor exits were zero, and diagnostics were complete and
+separate. The source539 and complete configuration remained unchanged. The
+seven upstream compatibility binaries retain their diagnostic compile scope;
+they are not presented as strict neverallow enforcement. The strict factory
+compiler proof remains independently bound by the scoped source review.
+
+The focused public-freeze review is
+`a6823c3fe63f29015d87d70f21d84c9bfb9d2291664083149bc50db9e24dff4e`
+(16,928 bytes). It verifies the actual ordinary-build comparator action and,
+separately, the current/API public CIL comparison using the captured checker
+and parser sources. Both complete packaged Python bytecode members reproduce
+from those sources. The 1,419 public types and 353 compared attributes match;
+234 generated attributes are excluded by the upstream rule. This proves the
+selected public-name interface, not whole-policy permission equivalence.
+The captured stamp is not used alone as evidence of a successful comparison.
+
+Unlike export4 and v13h, policy3 selects three actual installed sidecar files
+in addition to the ten compiler inputs and factory-combined binary. Each must
+be exactly the 65-byte hash of its ordered current CIL and mapping pair,
+produced and installed through the ordinary Android build with captured
+recipe, command and output evidence. Expected bytes or an empty stamp alone
+cannot complete this proof. No locally derived file is assigned a native
+installation path.
+
+The successful read-only capture is
+`85cc5fc4dbe586734402d4e014bc71d049947be178e53bd637974f40fe89fd30`
+(2,112,990 bytes); its producer qualification is
+`57e2191f1d948407dda3adf040edb3b58ce018adb6bb4a1d56471bb0226682fd`
+(44,989 bytes). Both remain within the ordinary 8 MiB JSON bound. The nineteen
+observations match before and after capture. Three genrules, three intermediate
+copies and three installations are tied to the completed policy3 build, with
+six appended Ninja success records. The qualification performs zero fresh
+native producer actions. It binds the actual three 65-byte installed outputs
+to the six captured compiler-input bodies and the exact sbox recipes.
+
+The first capture failed on a private-view ownership check before its queries
+ran and remains preserved in the ignored seven-producer capture directory.
+The corrected capture checks the complete 539-row, thirteen-project source
+proof in the original root context, retaining the owner/mode guards. Its
+read-only namespace separately checks the selected configuration, inputs and
+outputs; it records zero source-history rows checked there and explicitly
+requires the root proof. The profile verifies both contexts and does not
+relabel the earlier failure as a pass.
+
+The profile now reports `ready_for_evidence_validation`, which is only the
+prerequisite state for exact input validation and TAR preparation. Missing,
+changed or mismatched records still stop preparation before output creation.
+New raw policy3 images, repeated native comparison and the full AVB/package
+chain remain separate stages.
 
 ## Private input control
 
@@ -218,10 +339,10 @@ with their profiles above.
 
 | Map | Required entries |
 | --- | --- |
-| `records` | Exactly the keys of the selected profile's `native_records`; export4 has 29 roles including the native limit probe, both full no-op captures and sidecar validation; v13h has those roles plus `provider_complete_effect_review`, with fresh policy and sidecar records |
+| `records` | Exactly the keys of the selected profile's `native_records`; export4 has 29 roles, v13h adds `provider_complete_effect_review`, and policy3 has 39 roles for its separately bound ordinary source, native binary, public-freeze and sidecar proofs |
 | `partitions` | `vendor` and `odm`; each has `image`, `manifest` and a separate, non-nested `staging_root` |
-| `policy_files` | For export4 and v13h, exactly the ten runtime CIL/mapping inputs in `RUNTIME_INPUTS`, plus `combined`; historical-v12 additionally requires `plat_sha256`, `system_ext_sha256` and `product_sha256` |
-| `noop_manifests` | Export4 and v13h: `vendor` and `odm`, each selecting the two complete native no-op manifests with ordinary `path` / `sha256` / `size_bytes` rows |
+| `policy_files` | For export4 and v13h, exactly the ten runtime CIL/mapping inputs in `RUNTIME_INPUTS`, plus `combined`; historical-v12 and policy3 additionally require `plat_sha256`, `system_ext_sha256` and `product_sha256` as captured native outputs |
+| `noop_manifests` | Export4, v13h and policy3: `vendor` and `odm`, each selecting the two complete native no-op manifests with ordinary `path` / `sha256` / `size_bytes` rows |
 
 Every file selector contains `path`, `sha256` and `size_bytes`. A policy file
 also contains `native_path`, the absolute physical producer path from the
@@ -243,13 +364,15 @@ consuming the exact ten reviewed compiler inputs. The source-only installed
 `OUT/target/product/nezha/odm/etc/selinux/precompiled_sepolicy` is rejected as
 the replacement even though its own zero-permissive analysis remains required.
 
-The selected analysis must show the strict compiler, all 6,366 retained
-assertions plus the four reviewed additions in v13h, zero permissive domains for all three analyzed policies, nine
-fresh context tests and the source-bound OEM guard. The helper property-write
-capability remains disabled. The four-property finite effect budget and
-Binder correction are rebound to their reviewed public contracts and native
-inputs. The independent vendor correction receipt must be the exact adjacent
-receipt consumed by that analysis, including all original inputs and its five
+The selected analysis must show the strict compiler and all 6,366 retained
+assertions, plus four provider additions for v13h and policy3 and the further
+29 Evolution additions for policy3. The older profiles bind three analyzed
+policies; policy3 binds the twelve exact native binary checks above. Nine
+fresh factory context tests and the source-bound OEM guard are required. The
+helper property-write capability remains disabled. Each profile binds its
+own reviewed effects; policy3 does not reuse the older property edge budget.
+The independent vendor correction receipt must be the exact adjacent receipt
+consumed by that analysis, including all original inputs and its five
 preservation claims.
 
 Each sidecar is independently recomputed as lowercase

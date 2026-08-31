@@ -216,6 +216,520 @@
       "shared_driver_sha256": "04109dd3f3acaf6ed51b5548816645e5a85f30d4583a5960ce539d870798c12a",
       "writer_driver_sha256": "61628ab739c00cec89b60586fcb9f1a997f3767bf2e983ebe20ddb747915abca"
     },
+    "policy3-evolution": {
+      "admitted_metadata": {
+        "compatible_features": [
+          3,
+          7
+        ],
+        "compression_algorithms": 1,
+        "empty_xattr_values": false,
+        "incompatible_features": 1,
+        "inode_nanoseconds": 0,
+        "superblock_nanoseconds": 0
+      },
+      "contract_id": "nezha-five-file-policy-image-inputs-policy3-evolution-v1",
+      "dependencies": [
+        {
+          "path": "tools/erofs-metadata/full_tar.py",
+          "sha256": "ec487d93ea158fab7022f427793839211978790f01dbcfc9361a63b02b681daa",
+          "size_bytes": 17421
+        },
+        {
+          "path": "scripts/erofs_metadata.py",
+          "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
+          "size_bytes": 22556
+        },
+        {
+          "path": "scripts/avb_image_set.py",
+          "sha256": "08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c",
+          "size_bytes": 41370
+        },
+        {
+          "path": "scripts/twrp_working.py",
+          "sha256": "902fd97f96369593aaa103e008ac62ae6c0a9da866283a6a535701a0603d2a4b",
+          "size_bytes": 36015
+        },
+        {
+          "path": "scripts/inspect_twrp_image.py",
+          "sha256": "8fcbb0e8e24e36b3d7fd557e3a578e7c3a5afa90a66fc7d491c3bbdbc161f839",
+          "size_bytes": 16472
+        },
+        {
+          "path": "config/nezha-avb-image-set.json",
+          "sha256": "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
+          "size_bytes": 4339
+        },
+        {
+          "path": "config/vendor-policy-correction.json",
+          "sha256": "6adafb4ada4a96a926289009a43ec8039d2b7108572f52b938d575d29de3990b",
+          "size_bytes": 4070
+        },
+        {
+          "path": "research/factory-framework-contract.json",
+          "sha256": "b01b713fba3e8253a2383b001b2c4eca7bfe6e2ac3b6f1a29f580d6b8d628a67",
+          "size_bytes": 60799
+        },
+        {
+          "path": "config/nezha-oem-policy.json",
+          "sha256": "3de325f5ff8ba52dc8e43e20556fe876cc44905b04d40ed3b0ff038eaff10cc7",
+          "size_bytes": 12375
+        },
+        {
+          "path": "config/nezha-oem-properties.json",
+          "sha256": "f5796d6df4b7232d32ffdece83bc2d5726669fbb6f34f0ba2ef86be6cbc1d711",
+          "size_bytes": 65716
+        },
+        {
+          "path": "config/evolution-policy-base.json",
+          "sha256": "7f187d6ab76df8acfd83d0791f5dd9576c5ac43e1d8a43bff02615fbebec8032",
+          "size_bytes": 18236
+        },
+        {
+          "path": "config/nezha-framework-provider-policy.json",
+          "sha256": "aa4b0ffb5395ad555e8f62c9074e00252d4d76812888ab68032a1ef01845ef4f",
+          "size_bytes": 34809
+        }
+      ],
+      "device": "nezha",
+      "erofs_revision": "2c190a73fceb29f00da0558e44bb88ce19ec5bf4",
+      "evolution_policy": {
+        "build_operation": "first-ordinary-target-files-construction",
+        "build_phase": "first-target-files-policy-3",
+        "combined": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/vendor/xiaomi/nezha-policy/nezha_factory_precompiled_sepolicy/android_common/nezha_factory_precompiled_sepolicy",
+          "sha256": "eef85951730890201b1d023ab68e7a44aab3a39f879d889f8eba1cadeb109270",
+          "size_bytes": 1537590
+        },
+        "compiler_inputs": [
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/plat_sepolicy.cil/android_common/plat_sepolicy.cil",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy.cil",
+            "sha256": "8b32099077319d12127b900fb1f50d03852897d6628fca13c96d4f81b4143a42",
+            "size_bytes": 3012345
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/plat_mapping_file/android_common/202504.cil",
+            "runtime_path": "/system/etc/selinux/mapping/202504.cil",
+            "sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+            "size_bytes": 229237
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/system_ext_sepolicy.cil/android_common/nezha/system_ext_sepolicy.cil",
+            "runtime_path": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+            "sha256": "4f0ae3803e45d250f6afe1606f3fb35b44254ea05f47bedecc21aad8b27e8584",
+            "size_bytes": 141182
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/system_ext_mapping_file/android_common/nezha/202504.cil",
+            "runtime_path": "/system_ext/etc/selinux/mapping/202504.cil",
+            "sha256": "f9007a167e684ba7ca317257472e5c85b087a48726affdd8d016e955c1acc050",
+            "size_bytes": 2196
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/product_sepolicy.cil/android_common/nezha/product_sepolicy.cil",
+            "runtime_path": "/product/etc/selinux/product_sepolicy.cil",
+            "sha256": "238af2a9cee8a300b574de03a0d26620fb23c6af0a7814e8ff0b6b84da7d2f5d",
+            "size_bytes": 73
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/product_mapping_file/android_common/nezha/202504.cil",
+            "runtime_path": "/product/etc/selinux/mapping/202504.cil",
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+            "size_bytes": 1
+          },
+          {
+            "native_path": "/work/evolution/vendor/xiaomi/nezha-policy/corpus/vendor/etc/selinux/plat_pub_versioned.cil",
+            "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+            "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+            "size_bytes": 396303
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/vendor/xiaomi/nezha-policy/nezha_factory_vendor_policy/gen/derived/vendor_sepolicy.cil",
+            "runtime_path": "/vendor/etc/selinux/vendor_sepolicy.cil",
+            "sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+            "size_bytes": 1708593
+          },
+          {
+            "native_path": "/work/evolution/vendor/xiaomi/nezha-policy/corpus/odm/etc/selinux/odm_sepolicy.cil",
+            "runtime_path": "/odm/etc/selinux/odm_sepolicy.cil",
+            "sha256": "a26ceeb765bfd0b871e6c534ce97a1b566fd46a370eb8351a80116a72327c191",
+            "size_bytes": 14292
+          },
+          {
+            "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/.intermediates/system/sepolicy/compat/plat_sepolicy_genfs_202504.cil/android_arm64_armv8-a/plat_sepolicy_genfs_202504.cil",
+            "runtime_path": "/system/etc/selinux/plat_sepolicy_genfs_202504.cil",
+            "sha256": "480d503e7730236b659230d16b3946b628394d529dabfef67c679281fd98357b",
+            "size_bytes": 142
+          }
+        ],
+        "oem_semantics": {
+          "sha256": "35a11ac37ea25ff818039a54dff01260ca338b723be3707bcd33a5a832a1e49b",
+          "size_bytes": 31208
+        },
+        "review_evidence": {
+          "policy_capture_mapping": {
+            "path": "reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy3-actual-review-v1/captured-inputs.json",
+            "sha256": "71ef7da83fa8511c278d7e2ce4c8bd1d8d052f456ebeb64a71a575c8d3ebd0bf",
+            "size_bytes": 98664
+          },
+          "policy_freeze_selectors": {
+            "path": "reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy3-actual-review-v1/freeze-input-selectors.json",
+            "sha256": "b16d3df4ebe2691adaca81dd3bb5ac7bdae89aaa6304df1f610739fa4e66fc08",
+            "size_bytes": 4102
+          },
+          "policy_m4_source_review": {
+            "path": "reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy3-actual-review-v1/native-log-review/native-m4-source-review.json",
+            "sha256": "05035730158adc4c3743519387cbbd9c00163ca61bb7d2202923ba68f3bbd4d3",
+            "size_bytes": 8816
+          },
+          "policy_native_log_review": {
+            "path": "reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy3-actual-review-v1/native-log-review/native-log-review.json",
+            "sha256": "9dd863b6cda673194143b1144442223cb265b6f5f377c534c27d6a6ff95ca9f9",
+            "size_bytes": 19307
+          },
+          "policy_oem_replay": {
+            "path": "reports/oem-policy-integration-20260829/ordinary-evolution-policy-transition-v1/policy3-actual-review-v1/oem-composition-replay.json",
+            "sha256": "e14c3c0f644e6713e90ab79567a739ef6102ba3a9bc671702f15797c1a2c7e34",
+            "size_bytes": 86396
+          },
+          "policy_property_bindings": {
+            "path": "reports/oem-policy-integration-20260829/evolution-property-impact-preserved-labels-v1/actual-policy3-v1/native-bindings.json",
+            "sha256": "42aaf2d13c068b9e8f7a3ad2a715518afdc6700b3e0b45f7822a12b6c3f4ff7b",
+            "size_bytes": 3644
+          },
+          "policy_property_effects": {
+            "path": "reports/oem-policy-integration-20260829/evolution-property-impact-preserved-labels-v1/actual-policy3-v1/property-impact.json",
+            "sha256": "9c1b59dc4619511cad3b09429c98079e859399263c517e68693ac2df10767976",
+            "size_bytes": 341311
+          },
+          "policy_property_freeze": {
+            "path": "reports/oem-policy-integration-20260829/evolution-property-impact-preserved-labels-v1/actual-policy3-v1/freeze.json",
+            "sha256": "8c83c50eed003b83cc24bfec636422927db5aac27f377d8673accbe2126bc1e8",
+            "size_bytes": 2644
+          },
+          "policy_property_summary": {
+            "path": "reports/oem-policy-integration-20260829/evolution-property-impact-preserved-labels-v1/actual-policy3-v1/summary.json",
+            "sha256": "1c917d735a3846dbeba11c0cfb2f48625589a118aac7f047c0a91815d892152b",
+            "size_bytes": 23637
+          },
+          "policy_wrapper_review": {
+            "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/evolution-policy32-preparation-v1/operational-v3/actual-review-v1/wrapper-review.json",
+            "sha256": "8cabb5ffc94a57be71cd8fb6a832f7197892320b55a817f83c0cd7a891eaed5e",
+            "size_bytes": 8742
+          }
+        },
+        "review_operation": "review-actual-policy3-selected-factory-baseline",
+        "review_sections": {
+          "m4_recipe": {
+            "sha256": "22893713fc2517e48da68057a175e6549000a0fe9ba5168f57f58c9a4356a9fd",
+            "size_bytes": 5076
+          },
+          "native_completion": {
+            "sha256": "905d110c4926ba97ca42bcef30a581c9d715a5aa5718769edfbfe6d0ac4364c7",
+            "size_bytes": 418
+          },
+          "native_context_checks": {
+            "sha256": "a5b44777aa67b632c05b2cdee71693837cfc1bba90ec958ea4c1e48ef0084de7",
+            "size_bytes": 603
+          },
+          "producer_provenance_limits": {
+            "sha256": "f5aca471e3ec5fee1ca791aea9d0e95a83abe2bc7045bfe300b7e3abe6c4b5e3",
+            "size_bytes": 619
+          },
+          "scope": {
+            "sha256": "b8f5ee539492289a54063e475f68952d63e94437cbea4edf91239eb989e1864f",
+            "size_bytes": 580
+          },
+          "seven_prefix_effects": {
+            "sha256": "4e725e84c6c0fbc8b7354bee294485c719143eff9af367d64bcce69eb864a518",
+            "size_bytes": 649
+          },
+          "source_and_oem_composition": {
+            "sha256": "61c61b89d046098efaf59f44646da5f64fb66ae14f5e7a3387ac59162b47e9e3",
+            "size_bytes": 699
+          },
+          "strict_factory_compile": {
+            "sha256": "f85f79d6e42f0e630ab545029fbd2ad503aae2d880cb1fe53850ca3bacd03282",
+            "size_bytes": 1444
+          }
+        },
+        "review_status": "verified-native-completion-and-scoped-semantic-source-context-review",
+        "sidecar_source": {
+          "sha256": "17171fec6b4e253db277c351f817670077c6fd235ca07ac33be509c8faa4d2f8",
+          "size_bytes": 43467
+        },
+        "source_commit": {
+          "sha256": "6fe666f3ef1f067f2e82f153b5deb615f0577b80a8cea3eb5f1d3bdf5f50b57d",
+          "size_bytes": 540
+        }
+      },
+      "exporter_source": {
+        "path": "tools/erofs-metadata/erofs_metadata.c",
+        "sha256": "89d60827a44c1c808b8c9bb6f180b28aeaa0e440ff7180856e9c16180cab06b3",
+        "size_bytes": 56498
+      },
+      "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+      "independent_tar_passes": 2,
+      "limits": {
+        "avb_signed": false,
+        "complete_rom_ready": false,
+        "filesystem_extracted": false,
+        "guest_accessed": false,
+        "hashtree_or_fec_regenerated": false,
+        "native_tools_executed": false,
+        "phone_accessed": false,
+        "raw_erofs_built": false,
+        "source_or_vendor_inputs_adopted": false
+      },
+      "native_driver_sha256": "e2ce79fd47f54ddb97dd571b66cd81d7bf0b66084513ea9a67c5b6f3947a7119",
+      "native_records": {
+        "erofs_build": {
+          "sha256": "9db004d20cf498728bf321913c038c3c82fb472daf831a53dbdc2801694691ff",
+          "size_bytes": 7498
+        },
+        "erofs_fsize_orchestration": {
+          "sha256": "8e7e92e45ea548a73a12b0c16e0daf81b1aab2a1259fd5e04d16ec70e3008f38",
+          "size_bytes": 61283
+        },
+        "erofs_fsize_probe": {
+          "sha256": "78da86e46757ef5bcf6edd7ceaaaf7ca6fdff47b0ca7288eb7dfaa1c0a113f5b",
+          "size_bytes": 7519
+        },
+        "erofs_odm_noop": {
+          "sha256": "762c7e7607658414b3feaf4d0a3ef5f8a0884d86810d68d5f6344d003aae35b7",
+          "size_bytes": 70151
+        },
+        "erofs_odm_noop_capture": {
+          "sha256": "05fe6af8bb05127fa17479ccb59638f413644b4eef066f76c497e2c33e3a75eb",
+          "size_bytes": 11925
+        },
+        "erofs_odm_noop_orchestration": {
+          "sha256": "7e84512e0f0e15404105133c7121c687ae7f213dd10746ee5f46e9e90f94697d",
+          "size_bytes": 84552
+        },
+        "erofs_odm_noop_sandbox": {
+          "sha256": "d66142bb5b6cc58b72e49233a0b888f0091d8531db65d00bab0089feaa8c3399",
+          "size_bytes": 4235
+        },
+        "erofs_shared": {
+          "sha256": "802792df012c43657eab248b741570f389072d21d3349230a5c8314a92944350",
+          "size_bytes": 29190
+        },
+        "erofs_source_manifest": {
+          "sha256": "b279cd3a75a4b76f3d050488dcb8a3a86dfb5b063f20860b198f1cd5284cf61d",
+          "size_bytes": 21918
+        },
+        "erofs_stock": {
+          "sha256": "347f605dbd79bc85180ec9ad5338bbbbf5db4854e1a602648f910c5b13ab5340",
+          "size_bytes": 19578
+        },
+        "erofs_synthetic": {
+          "sha256": "7abadb8f9d2e2ba11e4e57e075c4c8a165a137dca47bddb0b08387f20026ae40",
+          "size_bytes": 101800
+        },
+        "erofs_tools": {
+          "sha256": "4c26cf8b2e7afa41ebe2daf8ac48d8ff6b3c8adb6dc43ee7e6cc9df1f13e7eff",
+          "size_bytes": 1232
+        },
+        "erofs_vendor_noop": {
+          "sha256": "a4afbf6be2f392c46f30bcc223bff92d6606854a2aa69c712877f6a09a473763",
+          "size_bytes": 70659
+        },
+        "erofs_vendor_noop_capture": {
+          "sha256": "8b7ca11340e961a56fe9f94696a96beb49b212ce291ce2aad1401c43c238e5aa",
+          "size_bytes": 12060
+        },
+        "erofs_vendor_noop_orchestration": {
+          "sha256": "4600b52e6330b517fa9428ab1466445e94f53b0272f84fb90acdfcc575f57868",
+          "size_bytes": 85159
+        },
+        "erofs_vendor_noop_sandbox": {
+          "sha256": "3aa3774d3cd2f9462122e9d94865efaf3a5ffe3bb0c6c47b827b88e8f467f059",
+          "size_bytes": 4262
+        },
+        "erofs_writer": {
+          "sha256": "de5ae6a3eda010f6431b27ccd776ef8f0bf64b1dab83971715e7961ec75e941b",
+          "size_bytes": 80705
+        },
+        "erofs_writer_orchestration": {
+          "sha256": "530ebc6349634dda65db3e99842849c5a83aba5938e467d22485bfb3ef3d33b8",
+          "size_bytes": 11114
+        },
+        "native_oem_guard": {
+          "sha256": "2c37f5fee148ee9bc632d8e81744b78d0850073d1ae2035e43a0cf266f5416eb",
+          "size_bytes": 86867
+        },
+        "policy_analysis": {
+          "sha256": "b2743829e4d6a74088208b0296e5989f53cb7f10c31333cb0b17f8410f193225",
+          "size_bytes": 16599
+        },
+        "policy_binary_review": {
+          "sha256": "bc1cc68b5ce15ad74056c6c1e66623b4713c323d81bc0a090997f51b877c7ba9",
+          "size_bytes": 22017
+        },
+        "policy_binary_validation": {
+          "sha256": "932ba4bfd06f5278acb53a129abb90712202e4577791f1fab5d7bde5200f4c73",
+          "size_bytes": 225221
+        },
+        "policy_build": {
+          "sha256": "344ba909febe8be29479f5bf1d48d122e931e88fb1d4d71dbcdab08708483c18",
+          "size_bytes": 10165316
+        },
+        "policy_capture_mapping": {
+          "sha256": "71ef7da83fa8511c278d7e2ce4c8bd1d8d052f456ebeb64a71a575c8d3ebd0bf",
+          "size_bytes": 98664
+        },
+        "policy_freeze_review": {
+          "sha256": "a6823c3fe63f29015d87d70f21d84c9bfb9d2291664083149bc50db9e24dff4e",
+          "size_bytes": 16928
+        },
+        "policy_freeze_selectors": {
+          "sha256": "b16d3df4ebe2691adaca81dd3bb5ac7bdae89aaa6304df1f610739fa4e66fc08",
+          "size_bytes": 4102
+        },
+        "policy_m4_source_review": {
+          "sha256": "05035730158adc4c3743519387cbbd9c00163ca61bb7d2202923ba68f3bbd4d3",
+          "size_bytes": 8816
+        },
+        "policy_native_log_review": {
+          "sha256": "9dd863b6cda673194143b1144442223cb265b6f5f377c534c27d6a6ff95ca9f9",
+          "size_bytes": 19307
+        },
+        "policy_oem_replay": {
+          "sha256": "e14c3c0f644e6713e90ab79567a739ef6102ba3a9bc671702f15797c1a2c7e34",
+          "size_bytes": 86396
+        },
+        "policy_property_bindings": {
+          "sha256": "42aaf2d13c068b9e8f7a3ad2a715518afdc6700b3e0b45f7822a12b6c3f4ff7b",
+          "size_bytes": 3644
+        },
+        "policy_property_effects": {
+          "sha256": "9c1b59dc4619511cad3b09429c98079e859399263c517e68693ac2df10767976",
+          "size_bytes": 341311
+        },
+        "policy_property_freeze": {
+          "sha256": "8c83c50eed003b83cc24bfec636422927db5aac27f377d8673accbe2126bc1e8",
+          "size_bytes": 2644
+        },
+        "policy_property_summary": {
+          "sha256": "1c917d735a3846dbeba11c0cfb2f48625589a118aac7f047c0a91815d892152b",
+          "size_bytes": 23637
+        },
+        "policy_retained_capture": {
+          "sha256": "7a4b13816600ca3ac1d0c2f73bdf09c8e9998a22a9238f58b4fa05a5b0a8951c",
+          "size_bytes": 45211
+        },
+        "policy_review_freeze": {
+          "sha256": "4547cb1bce20de5f1a2e8101d8d4d8d193a5b8cc25ab0c66de0e8749dc18d4c1",
+          "size_bytes": 4107
+        },
+        "policy_sidecar_capture": {
+          "sha256": "85cc5fc4dbe586734402d4e014bc71d049947be178e53bd637974f40fe89fd30",
+          "size_bytes": 2112990
+        },
+        "policy_sidecar_validation": {
+          "sha256": "57e2191f1d948407dda3adf040edb3b58ce018adb6bb4a1d56471bb0226682fd",
+          "size_bytes": 44989
+        },
+        "policy_wrapper_review": {
+          "sha256": "8cabb5ffc94a57be71cd8fb6a832f7197892320b55a817f83c0cd7a891eaed5e",
+          "size_bytes": 8742
+        },
+        "vendor_derivation": {
+          "sha256": "864c595a0f0694480af903e7b9a3f6800b5ea608ea3ad40fd07c8eae503e8fb2",
+          "size_bytes": 29341
+        }
+      },
+      "native_tools": {
+        "exporter": {
+          "sha256": "9fa98c5d9a698868b730201852c0029747c3a7458f1a9dc40426d878f8e3d270",
+          "size_bytes": 3611664
+        },
+        "fsck": {
+          "sha256": "b33b383b9399ea51899d21cf17ab760246370eb9fab4a58c6711dd7f831499c1",
+          "size_bytes": 1224272
+        },
+        "metadata_checker": {
+          "sha256": "9a0e09e2e60f9adc715ad6d3094285422657262f362cb342878c34e570727386",
+          "size_bytes": 22556
+        },
+        "mkfs": {
+          "sha256": "6d48a11be98044ba4c89afd6a3f10b4fd37b98fbd583da2339304ab995fbc32b",
+          "size_bytes": 2800648
+        }
+      },
+      "originals": {
+        "odm": {
+          "entry_count": 3059,
+          "image": {
+            "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+            "size_bytes": 4767621120
+          },
+          "replacements": {
+            "/etc/selinux/precompiled_sepolicy": {
+              "sha256": "5ce021d525fa536e0c5e9b2b2b5b8b105d1a94993514ca4d406b298dd137f9b1",
+              "size_bytes": 1571392
+            },
+            "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256": {
+              "sha256": "588e50fa5b784daba22bf6b0258491a313f4c8d17fd06a15acd11ef9e2012bc3",
+              "size_bytes": 65
+            },
+            "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256": {
+              "sha256": "00a413dceb7ce664bf8eb42623a51a9e5b0d133d7603491b042d6d7564f578b7",
+              "size_bytes": 65
+            },
+            "/etc/selinux/precompiled_sepolicy.system_ext_sepolicy_and_mapping.sha256": {
+              "sha256": "f698c2fb42a498896149a1ac4a9c80a741022c99e28aaa81326acebd6b594caa",
+              "size_bytes": 65
+            }
+          }
+        },
+        "vendor": {
+          "entry_count": 3910,
+          "image": {
+            "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+            "size_bytes": 959709184
+          },
+          "replacements": {
+            "/etc/selinux/vendor_sepolicy.cil": {
+              "sha256": "38cbf8ed15e7f1dfe75741df453db4b8811a7585ff4e01c19dcf76710c44d500",
+              "size_bytes": 1708593
+            }
+          }
+        }
+      },
+      "output_root": "artifacts/policy-images/nezha",
+      "platform": {
+        "board_api": "202504",
+        "branch": "bka",
+        "release_config": "bp4a"
+      },
+      "production_execution_profile": {
+        "bounded_parent_pipe_capture_required": true,
+        "construction_allowance_bytes": 134217728,
+        "fsize_signal_offset_and_log_overflow_probes_required": true,
+        "log_limit_per_stream_bytes": 16777216,
+        "metadata_output_limit_bytes": 134217728,
+        "minimum_additional_free_bytes": 51539607552,
+        "mkfs_fsize_soft_and_hard_bytes": {
+          "odm": 6442450944,
+          "vendor": 2147483648
+        },
+        "native_execution_qualified": false,
+        "original_image_copies_required": false,
+        "private_persistent_ext4_tmpdir_required": true,
+        "regular_capture_max_batch_bytes": 2147483648,
+        "regular_capture_max_file_bytes": 536870912,
+        "reserve_bytes": 2147483648,
+        "schema_version": 1,
+        "scratch_alignment_max_bytes": 65536,
+        "sequential_native_processes": true
+      },
+      "schema_version": 1,
+      "shared_driver_sha256": "04109dd3f3acaf6ed51b5548816645e5a85f30d4583a5960ce539d870798c12a",
+      "writer_driver_sha256": "61628ab739c00cec89b60586fcb9f1a997f3767bf2e983ebe20ddb747915abca"
+    },
     "v12-export4": {
       "admitted_metadata": {
         "compatible_features": [

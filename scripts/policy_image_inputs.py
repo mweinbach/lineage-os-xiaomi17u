@@ -9,12 +9,14 @@ Raw EROFS construction, metadata comparison, FEC, AVB and adoption remain gates.
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import sys
 import types
 import uuid
@@ -37,12 +39,15 @@ EXPORT4_PROFILE = "v12-export4"
 EXPORT4_CONTRACT_ID = "nezha-five-file-policy-image-inputs-v12-export4-v1"
 PROVIDER_PROFILE = "v13h-policy-only"
 PROVIDER_CONTRACT_ID = "nezha-five-file-policy-image-inputs-v13h-v1"
+POLICY3_PROFILE = "policy3-evolution"
+POLICY3_CONTRACT_ID = "nezha-five-file-policy-image-inputs-policy3-evolution-v1"
 PROFILE_CONTRACT_IDS = {HISTORICAL_PROFILE: CONTRACT_ID, EXPORT4_PROFILE: EXPORT4_CONTRACT_ID,
-                        PROVIDER_PROFILE: PROVIDER_CONTRACT_ID}
+                        PROVIDER_PROFILE: PROVIDER_CONTRACT_ID, POLICY3_PROFILE: POLICY3_CONTRACT_ID}
 PROFILE_CONTRACT_SHA256 = {
     HISTORICAL_PROFILE: "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
     EXPORT4_PROFILE: "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
     PROVIDER_PROFILE: "39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0",
+    POLICY3_PROFILE: "f49240bf1e128212b4f2e58092b37e4988fe6cf9a042d081bdb25a1411bd0b9a",
 }
 TEXT = 8 << 20
 PROVIDER_EVIDENCE = 16 << 20
@@ -69,6 +74,22 @@ EXPORT4_RECORD_ROLES = RECORD_ROLES | {"erofs_fsize_probe", "erofs_fsize_orchest
     "erofs_" + partition + "_noop" + suffix
     for partition in PARTITIONS for suffix in ("", "_orchestration", "_sandbox", "_capture")}
 PROVIDER_RECORD_ROLES = EXPORT4_RECORD_ROLES | {"provider_complete_effect_review"}
+POLICY3_REVIEW_ROLES = frozenset(("policy_capture_mapping", "policy_oem_replay", "policy_native_log_review",
+    "policy_m4_source_review", "policy_freeze_selectors", "policy_wrapper_review", "policy_property_freeze",
+    "policy_property_effects", "policy_property_summary", "policy_property_bindings"))
+POLICY3_RECORD_ROLES = (EXPORT4_RECORD_ROLES - {
+    "policy_build_log", "policy_source_manifest", "policy_build_sandbox", "sidecar_source_capture",
+    "sidecar_native_validation", "sidecar_orchestration", "sidecar_sandbox"}) | POLICY3_REVIEW_ROLES | {
+    "policy_review_freeze", "policy_retained_capture", "policy_binary_validation", "policy_binary_review", "policy_freeze_review",
+    "policy_sidecar_capture", "policy_sidecar_validation"}
+POLICY3_REVIEW_SECTIONS = frozenset(("m4_recipe", "native_completion", "native_context_checks",
+    "producer_provenance_limits", "scope", "seven_prefix_effects", "source_and_oem_composition", "strict_factory_compile"))
+POLICY3_BINARY_MODULES = (
+    ("precompiled_sepolicy", False), ("plat_precompiled_sepolicy", False), ("sepolicy_neverallows", False),
+    ("29.0_compat_test", True), ("30.0_compat_test", True), ("31.0_compat_test", True),
+    ("32.0_compat_test", True), ("33.0_compat_test", True), ("34.0_compat_test", True),
+    ("202404_compat_test", True), ("precompiled_sepolicy_without_vendor", False),
+    ("nezha_factory_precompiled_sepolicy", None))
 PROVIDER_PROOF_SECTIONS = frozenset(("selection", "source_history_proof", "provider_policy_contract_crosspin",
     "provider_policy_tool_crosspin", "portable_provider_provenance", "native_policy_output_preservation",
     "protected_existing_component_outputs", "configuration", "m4", "native_202504_mapping_producers",
@@ -127,6 +148,8 @@ def read_json(path, expected=None, *, limit=TEXT):
 
 def record_roles(contract):
     require(contract["contract_id"] in PROFILE_CONTRACT_IDS.values(), "unknown policy snapshot profile")
+    if contract["contract_id"] == POLICY3_CONTRACT_ID:
+        return POLICY3_RECORD_ROLES
     if contract["contract_id"] == PROVIDER_CONTRACT_ID:
         return PROVIDER_RECORD_ROLES
     return EXPORT4_RECORD_ROLES if contract["contract_id"] == EXPORT4_CONTRACT_ID else RECORD_ROLES
@@ -136,11 +159,17 @@ def derived_sidecars(contract):
     return contract["contract_id"] in (EXPORT4_CONTRACT_ID, PROVIDER_CONTRACT_ID)
 
 
+def complete_noops_required(contract):
+    return derived_sidecars(contract) or contract["contract_id"] == POLICY3_CONTRACT_ID
+
+
 def record_json_limit(control, role):
-    # Only the two reviewed provider records exceed the original 8 MiB bound.
-    # The private control cannot choose an arbitrary reader limit.
+    # Only explicitly selected, measured record roles exceed the original
+    # 8 MiB bound. The private control cannot choose an arbitrary reader limit.
     if control["contract_id"] == PROVIDER_CONTRACT_ID and role in ("policy_analysis", "provider_complete_effect_review"):
         return PROVIDER_EVIDENCE
+    if control["contract_id"] == POLICY3_CONTRACT_ID and role == "policy_build":
+        return 16 << 20
     return TEXT
 
 
@@ -162,6 +191,8 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
         fields.add("sidecar_derivation")
     if selected_profile == PROVIDER_PROFILE:
         fields.add("provider_policy")
+    if selected_profile == POLICY3_PROFILE:
+        fields.add("evolution_policy")
     avb._keys(c, fields, "policy-image contract")
     require(c["schema_version"] == 1 and type(c["schema_version"]) is int
             and c["contract_id"] == PROFILE_CONTRACT_IDS[selected_profile] and c["device"] == "nezha"
@@ -193,6 +224,8 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
     if selected_profile == PROVIDER_PROFILE:
         required |= {"config/nezha-framework-provider-policy.json", "config/nezha-framework-providers.json",
                      "scripts/framework_provider_policy.py"}
+    if selected_profile == POLICY3_PROFILE:
+        required |= {"config/evolution-policy-base.json", "config/nezha-framework-provider-policy.json"}
     require(paths == required, "implementation source pins are incomplete")
     profile, profile_sha = avb.load_profile()
     require(profile_sha == "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
@@ -244,6 +277,25 @@ def load_contract(selected_profile=HISTORICAL_PROFILE):
             avb._digest(provider[name])
         for row in provider["proof_sections"].values():
             avb._identity_spec(row)
+    if selected_profile == POLICY3_PROFILE:
+        evolution = c["evolution_policy"]
+        avb._keys(evolution, ("build_phase", "build_operation", "review_operation", "review_status", "review_evidence",
+            "compiler_inputs", "combined", "review_sections", "oem_semantics", "source_commit", "sidecar_source"),
+            "policy3 Evolution snapshot")
+        require(evolution["build_phase"] == "first-target-files-policy-3"
+                and evolution["build_operation"] == "first-ordinary-target-files-construction"
+                and evolution["review_operation"] == "review-actual-policy3-selected-factory-baseline"
+                and evolution["review_status"] == "verified-native-completion-and-scoped-semantic-source-context-review"
+                and set(evolution["review_evidence"]) == POLICY3_REVIEW_ROLES
+                and set(evolution["review_sections"]) == POLICY3_REVIEW_SECTIONS
+                and [row["runtime_path"] for row in evolution["compiler_inputs"]] == list(RUNTIME_INPUTS),
+                "policy3 source or ordered evidence selection differs")
+        for row in evolution["review_evidence"].values():
+            avb._identity_spec(row, path=True)
+        for row in evolution["review_sections"].values():
+            avb._identity_spec(row)
+        for name in ("oem_semantics", "source_commit", "sidecar_source"):
+            avb._identity_spec(evolution[name])
     require(set(c["native_tools"]) == {"mkfs", "fsck", "exporter", "metadata_checker"}, "native tool role pins differ")
     for row in c["native_tools"].values():
         avb._identity_spec(row)
@@ -277,7 +329,7 @@ def load_control(path, expected_sha, contract, contract_sha):
     require(avb._sha(raw) == expected_sha, "input control digest differs")
     export4 = derived_sidecars(contract)
     fields = {"schema_version", "contract_id", "contract_sha256", "artifact_set_id", "records", "partitions", "policy_files"}
-    if export4:
+    if complete_noops_required(contract):
         fields.add("noop_manifests")
     avb._keys(value, fields, "policy image inputs")
     require(value["schema_version"] == 1 and type(value["schema_version"]) is int
@@ -307,7 +359,7 @@ def load_control(path, expected_sha, contract, contract_sha):
     for row in value["policy_files"].values():
         selected(row, True)
         require(row["size_bytes"] <= POLICY, "policy artifact exceeds bound")
-    if export4:
+    if complete_noops_required(contract):
         require(type(value["noop_manifests"]) is dict and set(value["noop_manifests"]) == PARTITIONS,
                 "complete vendor/ODM no-op manifest coverage required")
         for rows in value["noop_manifests"].values():
@@ -475,7 +527,7 @@ def qualify_erofs(records, contract, control):
         "synthetic": synthetic_failures, "writer_upstream_xattrs": writer_failures},
         "nonzero_nanoseconds_admitted": False, "empty_xattr_values_admitted": False,
         "native_reexecuted_by_this_command": False, "production_writer_admitted": False}
-    if derived_sidecars(contract):
+    if complete_noops_required(contract):
         result["complete_original_noop_qualification"] = qualify_noops(records, contract, control)
     return result
 
@@ -1122,7 +1174,578 @@ def qualify_provider_policy(records, control, contract):
         "complete_native_provider_proof_sections_bound": True, "complete_effect_review_bound": True}
 
 
+def qualify_policy3_basis(records, control, contract):
+    """Bind the scoped actual Evolution source review, without promoting its limits.
+
+    Binary permissive, freeze-comparator and installed-sidecar checks are
+    separate requirements. This helper alone cannot admit a preparation.
+    """
+    pins = contract["evolution_policy"]
+    build, review = records["policy_build"], records["policy_analysis"]
+    build_id = identity(control["records"]["policy_build"])
+    require(build["schema_version"] == 1 and type(build["schema_version"]) is int
+            and build["operation"] == pins["build_operation"] and build["phase"] == pins["build_phase"]
+            and build["profile"] == "policy" and build["profile_completed"] is True
+            and build["native_invocation_executed"] is True and build["native_process_succeeded"] is True
+            and build["preflight_completed"] is True and build["profile_validation_verified"] is True
+            and build["preflight_error"] is None and build["postcheck_errors"] == []
+            and build["argv"] == build["soong_argv"]
+            and build["argv"] == ["build/soong/soong_ui.bash", "--make-mode", "-j8", *build["goals"]]
+            and len(build["goals"]) == 32 and build["goals"][-1] == "selinux_policy",
+            "actual policy3 ordinary build did not complete")
+    for key in ("source_mutation_requested", "capture_only", "complete_rom_ready", "signed_flashable_rom_verified",
+                "fresh_action_claims_from_matching_bytes", "image_reproducibility_verified"):
+        require(build[key] is False, "policy3 build claims unsupported scope: " + key)
+    env = build["fixed_environment"]
+    require({key: env[key] for key in ("TARGET_PRODUCT", "TARGET_RELEASE", "TARGET_BUILD_VARIANT", "LINEAGE_BUILD")}
+            == {"TARGET_PRODUCT": "lineage_nezha", "TARGET_RELEASE": "bp4a", "TARGET_BUILD_VARIANT": "user", "LINEAGE_BUILD": "nezha"},
+            "policy3 is not the selected Evolution user product")
+    native = build["invocation"]
+    require(type(native["exit_code"]) is int and native["exit_code"] == 0
+            and all(native[key] is True for key in ("process_reaped", "streams_complete", "ninja_observed",
+                "ninja_argv_verified", "ninja_limits_verified", "sandbox_checks_passed"))
+            and all(native[key] is False for key in ("timed_out", "forced_kill", "output_overflow", "sandbox_fallback", "disk_floor_breached")),
+            "policy3 native invocation was incomplete or relaxed")
+    guards = build["source_and_input_admission_before"]
+    require(guards == build["source_and_input_admission_after"] and set(guards) == {
+        "verify_immutable_archive", "verify_protected_inputs", "verify_selected_inputs", "verify_source_history",
+        "verify_source_lock", "verify_strict_settings"}, "policy3 six source/input guard groups differ")
+    settings = {"framework_matrix_source": "device/xiaomi/nezha/generated/framework-compatibility-matrix.xml",
+                "maximum": 4096, "no_bionic_page_size_macro": True, "prebuilt_alignment_check": True, "strict_elf_checks": True}
+    require(guards["verify_strict_settings"] == settings
+            and all({key: build["source_observations_" + when]["strict_settings"][key] for key in settings} == settings
+                    for when in ("before", "after")), "policy3 strict 4 KiB settings differ")
+    require(review["schema_version"] == 1 and review["operation"] == pins["review_operation"]
+            and review["status"] == pins["review_status"] and identity(review["actual_result"]) == build_id,
+            "policy3 scoped review is not for the actual completed build")
+    require(set(pins["review_sections"]) == POLICY3_REVIEW_SECTIONS, "policy3 complete scoped-review coverage differs")
+    for name in sorted(POLICY3_REVIEW_SECTIONS):
+        require(avb._identity(json_bytes(review[name])) == pins["review_sections"][name],
+                "reviewed complete policy3 section changed: " + name)
+    evidence = pins["review_evidence"]
+    require(len(review["evidence"]) == len(evidence) == 10
+            and {row["path"]: identity(row) for row in review["evidence"]}
+                == {row["path"]: identity(row) for row in evidence.values()}, "policy3 review evidence coverage differs")
+    for role, row in evidence.items():
+        require(identity(control["records"][role]) == identity(row), "policy3 selected review evidence differs: " + role)
+    frozen = records["policy_review_freeze"]
+    require(frozen["operation"] == "freeze-scoped-actual-policy3-review" and frozen["schema_version"] == 1
+            and frozen["final_recheck"] == {"all_equal": True, "evidence_pins": 10, "own_members": 6, "retained_host_bodies": 89}
+            and frozen["scope"] == review["scope"]
+            and identity(frozen["dependencies"]["actual_result"]) == build_id
+            and identity(frozen["dependencies"]["actual_decoded_capture"]) == identity(control["records"]["policy_retained_capture"]),
+            "policy3 scoped review freeze differs")
+    expected_members = {identity(control["records"][role])["sha256"]: identity(control["records"][role]) for role in (
+        "policy_analysis", "policy_capture_mapping", "policy_oem_replay", "policy_freeze_selectors",
+        "policy_native_log_review", "policy_m4_source_review")}
+    require(len(frozen["files"]) == 6 and {row["sha256"]: identity(row) for row in frozen["files"]} == expected_members,
+            "policy3 review freeze does not bind its six complete members")
+    require(review["scope"]["host_cil_semantic_replay_verified"] is True
+            and review["scope"]["preserved_property_label_effects_verified"] is True
+            and review["scope"]["source_m4_and_native_command_forms_reviewed"] is True
+            and all(review["scope"][key] is False for key in ("all12_binary_zero_permissive_verified",
+                "complete_se_freeze_admission_verified", "complete_treble_apk_labeling_verified",
+                "full_recursive_producer_provenance_verified", "new_image_basis_admitted", "hardware_or_runtime_verified", "complete_rom_ready")),
+            "policy3 scoped review has been promoted into an unperformed check")
+    completion = review["native_completion"]
+    require(completion["ordinary_goals"] == 32 and completion["current_source_rows"] == 539
+            and completion["source_projects"] == 13 and completion["guard_groups_rechecked_equal"] == 6
+            and completion["native_exit_code"] == completion["wrapper_exit_code"] == 0
+            and completion["complete_stdout_stderr_and_reaped"] is True,
+            "policy3 source inventory or native completion differs")
+    mapping = records["policy_capture_mapping"]
+    require(identity(mapping["build_result"]) == build_id and len(mapping["files"]) == 89
+            and all(mapping[key] is True for key in ("all89_base64_and_host_bodies_exact", "all89_guest_final_rechecks",
+                "all89_host_final_rechecks", "all89_request_and_decoded_rows_exact", "gzip_decompression_equals_retained_plain",
+                "invocation_equals_actual_result")), "policy3 retained input capture is incomplete")
+    def captured(role):
+        rows = [row for row in mapping["files"] if role in row["roles"]]
+        require(len(rows) == 1, "missing or duplicate actual policy3 input role: " + role)
+        row = rows[0]
+        require(identity(row["host"]) == identity(row["original_native"]) == identity(row["retained_native"]),
+                "policy3 retained and live input identities differ")
+        return row
+    files = control["policy_files"]
+    for expected in pins["compiler_inputs"]:
+        role = expected["runtime_path"]
+        row = captured("factory_compiler_input:" + role)
+        require(identity(files[role]) == identity(expected) == identity(row["original_native"])
+                and files[role]["native_path"] == expected["native_path"] == row["original_native"]["path"],
+                "selected policy3 CIL is not the exact actual compiler input")
+    combined = captured("normal_binary:nezha_factory_precompiled_sepolicy")
+    require(combined == review["strict_factory_compile"]["factory_binary"]
+            and identity(files["combined"]) == identity(pins["combined"]) == identity(combined["original_native"])
+            and files["combined"]["native_path"] == pins["combined"]["native_path"] == combined["original_native"]["path"]
+            and files["combined"]["native_path"].endswith(COMBINED_SUFFIX),
+            "policy3 replacement must be the actual factory-combined binary, not a source-only policy")
+    require(review["strict_factory_compile"]["ten_compiler_inputs_in_exact_required_order"] is True
+            and review["strict_factory_compile"]["ignore_neverallow_flag_present"] is False
+            and review["strict_factory_compile"]["secilc_flags"] == ["-v", "-m", "-M", "true", "-G", "-c", "30"],
+            "policy3 strict compiler recipe differs")
+    replay, raw_oem = records["policy_oem_replay"], records["native_oem_guard"]
+    require(replay["operation"] == "replay-actual-policy3-frozen-oem-composition" and identity(replay["build_result"]) == build_id
+            and identity(replay["capture_mapping"]) == identity(control["records"]["policy_capture_mapping"])
+            and avb._identity(json_bytes(replay["source_commit"])) == pins["source_commit"]
+            and all(replay[key] is True for key in ("all_source_and_captured_inputs_rehashed_unchanged",
+                "bundle62_payloads_rehashed_before_after", "source46_equal_to_actual539_before_after_inventory",
+                "source46_exactly_equal_to_capability_composed_contract"))
+            and replay["input_bindings_replayed_count"] == 83, "policy3 OEM source/input replay differs")
+    semantic = replay["semantic_result"]
+    require(avb._identity(json_bytes(semantic)) == pins["oem_semantics"]
+            and set(replay["semantic_fields_equal_to_native_report"]) == set(semantic)
+            and all(raw_oem[key] == value for key, value in semantic.items())
+            and replay["native_report"] == captured("native_oem_output")
+            and identity(replay["native_report"]["host"]) == identity(control["records"]["native_oem_guard"]),
+            "complete policy3 semantic replay does not equal the captured native OEM output")
+    base = semantic["evolution_policy_base_verification"]
+    require(semantic["status"] == "verified" and semantic["helper_effective_property_set_grants"] == 0
+            and semantic["permissive_cil_declarations"] == 0
+            and semantic["assertion_statement_counts"] == {"neverallow": 6009, "neverallowx": 390}
+            and semantic["legacy_property_edge_budget_reused_as_current"] is False
+            and semantic["property_effective_edge_budget_basis"] == "independent-native-evolution-base-plus-owned-contracts"
+            and base["immutable_original_assertions"] == 6366 and base["owned_provider_assertions"] == 4
+            and base["base_assertions"] == 29 and base["all_source_access_audit_assertion_transition_forms_accounted_for"] is True
+            and base["full_named_and_inherited_anonymous_closures_match_independent_reference"] is True
+            and base["base_factory_duplicate_types"] == ["vendor_persist_camera_prop"]
+            and base["vendor_source_delivery_into_factory_images_proven"] is False
+            and base["binary_zero_permissive_check_performed"] is False and base["image_or_runtime_admitted"] is False,
+            "policy3 exact Evolution/owned assertion and capability composition differs")
+    _, base_raw = read_json(ROOT / "config/evolution-policy-base.json")
+    require(base["contract_sha256"] == avb._sha(base_raw), "policy3 Evolution base contract differs")
+    composition = review["source_and_oem_composition"]
+    require(composition["assertions"] == {"original_contract": 6366, "provider": 4, "evolution_base": 29,
+                "neverallow": 6009, "neverallowx": 390, "total": 6399}
+            and composition["helper_effective_property_set_grants"] == composition["camera_vendor_init_set_grants"] == 0
+            and composition["permissive_cil_declarations"] == 0 and composition["immutable_cil_inputs_preserved"] == 8,
+            "policy3 assertion membership or disabled write capability differs")
+    require(review["m4_recipe"]["all_three_capabilities_exactly_once"] == {
+        "target_init_dev_config_property_writes": "false", "target_nezha_preserve_factory_property_labels": "true",
+        "target_vendor_persist_camera_prop_vendor_init_writes": "false"}, "policy3 M4 capability guards differ")
+    effects = review["seven_prefix_effects"]
+    require(effects["complete_prefix_languages"] == 7 and effects["original_factory_labels_and_string_types_preserved"] is True
+            and effects["camera_added_policy_reader_domains"] == ["mediashell_app", "mosey_app", "updater_app"]
+            and effects["camera_writer_domains"] == ["hal_camera_default", "init"]
+            and effects["camera_writer_changes"] == 0 and effects["camera_readers_lost"] == []
+            and effects["context_relabel_only_edge_deltas"] == effects["audio_and_usb_ordinary_edge_deltas"] == 0,
+            "policy3 seven-prefix property effects differ")
+    contexts = review["native_context_checks"]
+    require(contexts["nine_factory_context_and_structural_commands_observed"] is True
+            and contexts["file_hwservice_service_aggregates_equal_ordered_five_inputs"] is True
+            and contexts["system_ext_rows"]["property"] == {"base": 25, "owned": 8, "full": 33}
+            and contexts["warnings_not_counted_as_passes_or_suppressed"] is True,
+            "policy3 context composition or warning accounting differs")
+    derivation = records["vendor_derivation"]
+    correction, correction_raw = read_json(ROOT / "config/vendor-policy-correction.json")
+    require(identity(control["records"]["vendor_derivation"]) == identity(captured("factory_vendor_derivation_receipt")["host"])
+            and derivation["operation"] == "nezha-factory-binder-correction-v1"
+            and derivation["contract_sha256"] == avb._sha(correction_raw)
+            and derivation["factory_package_sha256"] == contract["factory_package_sha256"]
+            and derivation["inputs"] == correction["inputs"] and derivation["output"] == correction["output"]
+            and derivation["measured"] == correction["expected"]
+            and derivation["preservation"] == {k: True for k in ("all_unselected_bytes_and_line_positions", "all_assertions",
+                "type_role_alias_attribute_and_mapping_declarations", "valid_process_binder_grants", "fd_and_service_manager_grants")}
+            and derivation["output_readback_verified"] is True and derivation["all_inputs_rehashed_unchanged"] is True
+            and derivation["tool_sha256"] == raw_oem["tool_sources_sha256"]["vendor_policy.py"]
+            and derivation["publisher_sha256"] == raw_oem["tool_sources_sha256"]["artifact_files.py"]
+            and identity(files[RUNTIME_INPUTS[7]]) == identity(correction["output"]), "policy3 Binder derivation changed")
+    held = {name: avb._small(files[name]["path"], POLICY, files[name]) for name in (*RUNTIME_INPUTS, "combined")}
+    return held, {"scoped_current_source_basis_bound": True, "complete_policy3_oem_semantics_bound": True,
+        "max_page_size_supported": 4096,
+        "assertion_statements_retained": 6366, "provider_assertion_statements": 4, "evolution_assertion_statements": 29,
+        "assertion_statements_total": 6399, "helper_property_write_grants": 0, "camera_vendor_init_property_write_grants": 0,
+        "permissive_cil_declarations": 0, "full_recursive_producer_provenance_verified": False,
+        "complete_treble_apk_labeling_proven": False, "vendor_source_delivery_into_factory_images_proven": False,
+        "native_binary_zero_permissive_verified_by_basis": False, "native_freeze_verified_by_basis": False,
+        "native_sidecars_verified_by_basis": False, "image_admission_enabled_by_basis": False}
+
+
+def qualify_policy3_binaries(records, control, contract):
+    """Require the twelve actual, unfiltered analyses of the selected binaries."""
+    result = records["policy_binary_validation"]
+    require(result["schema_version"] == 1 and type(result["schema_version"]) is int
+            and result["operation"] == "policy3-twelve-unfiltered-permissive-checks-v1"
+            and result["passed"] is True and result["zero_permissive_binaries_verified"] is True
+            and result["errors"] == [] and result["unreached_binary_modules"] == []
+            and identity(result["build_result"]) == identity(control["records"]["policy_build"])
+            and identity(result["capture"]) == identity(control["records"]["policy_retained_capture"]),
+            "policy3 unfiltered binary checks are incomplete or use another build")
+    for key in ("complete_rom_ready", "full_treble_apk_labeling_verified", "host_unprivileged_execution_claimed",
+                "images_modified", "new_image_basis_verified", "phone_accessed", "policy_compiled_here",
+                "policy_semantics_or_full_provenance_verified", "source_or_android_output_modified"):
+        require(result[key] is False, "policy3 binary analysis has unsupported scope: " + key)
+    require(len(result["checks"]) == 2 and [row["name"] for row in result["checks"]] == ["source-after", "inputs-after"]
+            and all(row["verified"] is True for row in result["checks"]), "policy3 final binary input/source rechecks differ")
+    before, after = result["source_before"], result["checks"][0]["value"]
+    require(before["verified"] is True and after["verified"] is True
+            and all(identity(before[key]) == identity(after[key]) for key in ("configuration", "source_proof")),
+            "policy3 binary source changed")
+    inputs = result["inputs_before"]
+    require(len(inputs) == 39 and len({row["path"] for row in inputs}) == 39,
+            "policy3 binary/tool input coverage differs")
+    freezes = result["freeze_inputs"]
+    require(result["freeze_capture_complete"] is True and len(freezes) == 4
+            and [row["role"] for row in freezes] == ["sepolicy_freeze_test_tool", "current_platform_public_freeze_cil",
+                "api_202504_platform_public_freeze_cil", "se_freeze_test_stamp"]
+            and all(row["comparison_execution_claimed_by_capture"] is False
+                    and identity(row["original"]) == identity(row["retained"]) for row in freezes)
+            and result["checks"][1]["value"] == inputs + [row[name] for row in freezes for name in ("original", "retained")]
+            and len({row["path"] for row in result["checks"][1]["value"]}) == 47,
+            "policy3 final binary inputs or four separate freeze captures differ")
+    native_out = control["policy_files"]["combined"]["native_path"].removesuffix(COMBINED_SUFFIX)
+    analyzer_path = native_out + "/host/linux-x86/bin/sepolicy-analyze"
+    analyzer = [row for row in inputs if row["path"] == analyzer_path]
+    require(len(analyzer) == 1 and identity(analyzer[0]) == {
+        "sha256": "a271e82042286276651db28a34928bd149c745ccb6ba7cacf18b51258b909669", "size_bytes": 543160},
+        "policy3 permissive analyzer identity differs")
+    commands = result["commands"]
+    require(len(commands) == 12 and [row["module"] for row in commands] == [name for name, _ in POLICY3_BINARY_MODULES],
+            "policy3 binary analysis coverage or order differs")
+    empty = avb._identity(b"")
+    profile = {"core_bytes": 0, "cpu_hard_seconds": 181, "cpu_soft_seconds": 180, "fsize_bytes": 64 << 20,
+        "jail_cpu_soft_and_hard_seconds": 180, "log_cap_each_bytes": 16 << 20, "minimum_disk_bytes": 20 << 30,
+        "minimum_mem_available_bytes": 12 << 30, "nofile": 1024, "outer_drain_margin_seconds": 30,
+        "sampled_rss_ceiling_bytes": 8 << 30, "wall_seconds": 180}
+    for index, (row, (module, ignore)) in enumerate(zip(commands, POLICY3_BINARY_MODULES)):
+        matches = [entry for entry in records["policy_capture_mapping"]["files"]
+                   if "normal_binary:" + module in entry["roles"]]
+        require(len(matches) == 1 and row["upstream_compile_ignores_neverallows"] is ignore,
+                "policy3 binary selection or diagnostic compile scope differs")
+        bound = matches[0]
+        for name, capture_name in (("live", "original_native"), ("retained", "retained_native")):
+            require(identity(row[name]) == identity(bound[capture_name])
+                    and row[name]["path"] == bound[capture_name]["path"]
+                    and len([item for item in inputs if item == row[name]]) == 1,
+                    "policy3 binary is not the current captured native output")
+        native = row["native"]
+        require(native["name"] == f"permissive-{index:02d}"
+                and native["argv"] == [analyzer_path, row["live"]["path"], "permissive"]
+                and native["passed"] is True and native["complete_native_exit"] is True
+                and type(native["exit_code"]) is int and native["exit_code"] == 0
+                and type(native["supervisor_exit_code"]) is int and native["supervisor_exit_code"] == 0
+                and native["errors"] == [] and native["resource_profile"] == profile,
+                "policy3 binary command was filtered, failed or used different limits")
+        attempt = native["bounded_attempt"]
+        require(attempt["operation"] == "bounded-native-command" and attempt["status"] == "completed"
+                and type(attempt["returncode"]) is int and attempt["returncode"] == 0
+                and type(attempt["exit_code"]) is int and attempt["exit_code"] == 0
+                and attempt["exit_code_scope"] == "nsjail-supervisor" and attempt["native_exit_code_claimed"] is False
+                and all(attempt[key] is True for key in ("all_pipes_eof", "diagnostics_persisted", "launch_attempted",
+                    "launched", "no_live_descendants_observed_before_exit", "process_reaped", "process_started", "supervisor_log_separated"))
+                and attempt["kill_reason"] is None and attempt["reasons"] == [],
+                "policy3 native command did not finish with separate bounded streams")
+        for stream in ("stdout", "stderr"):
+            log = attempt["logs"][stream]
+            require(identity(native[stream]) == identity(log) == empty
+                    and native[stream]["path"] == log["path"]
+                    and type(log["observed_bytes"]) is int and log["observed_bytes"] == 0
+                    and log["truncated"] is False, "policy3 unfiltered permissive output is nonempty or truncated")
+        supervisor = attempt["logs"]["supervisor"]
+        require(identity(native["supervisor"]) == identity(supervisor)
+                and native["supervisor"]["path"] == supervisor["path"]
+                and supervisor["observed_bytes"] == supervisor["size_bytes"] <= profile["log_cap_each_bytes"]
+                and supervisor["truncated"] is False, "policy3 supervisor diagnostics are incomplete or mixed with native output")
+        for key in ("bounded_attempt_record", "mountinfo", "native_exit_observation", "resource_observation", "sandbox"):
+            avb._identity_spec(identity(native[key]))
+    review = records["policy_binary_review"]
+    require(review["schema_version"] == 1 and review["operation"] == "review-actual-policy3-twelve-native-permissive-result-v1"
+            and review["status"] == "verified-within-recorded-scope" and review["findings"] == []
+            and identity(review["actual_result"]) == identity(control["records"]["policy_binary_validation"])
+            and identity(review["canonical_guest_receipt"]) == identity(review["actual_result"])
+            and review["canonical_guest_receipt_hash_only_rechecked"] is True
+            and review["binary_results"] == [{**{key: row[key] for key in ("live", "module", "retained",
+                    "upstream_compile_ignores_neverallows")}, "zero_permissive_domains": True} for row in commands],
+            "policy3 independent binary review does not bind the twelve actual commands")
+    source = review["source"]
+    require(source["files"] == source["modes"] == 539 and source["projects"] == 13
+            and source["full_source_proof_reconstructed_from_actual_policy3_after_state"] is True
+            and source["source_and_configuration_after_guards_passed"] is True
+            and source["fresh_metadata_six_file_check_performed_by_this_analysis"] is False
+            and avb._identity(json_bytes(source["actual_commit"])) == contract["evolution_policy"]["source_commit"]
+            and identity(source["actual_generated_configuration"]) == identity(
+                records["policy_build"]["source_observations_after"]["strict_settings"]["file"])
+            and source["full_configuration_observation_before_and_after"] == identity(before["configuration"])
+            and source["source_proof_before_and_after"] == identity(before["source_proof"]),
+            "policy3 native binary review is not bound to the actual source539 and complete configuration")
+    observed = review["native"]
+    require(observed["exact_module_order"] == [name for name, _ in POLICY3_BINARY_MODULES]
+            and all(observed[key] == 12 for key in ("command_count", "empty_unfiltered_native_stderr",
+                "empty_unfiltered_native_stdout", "native_exit_zero", "supervisor_exit_zero", "supervisor_streams_separate_and_retained"))
+            and observed["all_complete_nontruncated_reaped_eof_without_kill_or_reason"] is True
+            and observed["bound_native_caller_verified_actual_namespace_mount_capability_resource_records"] is True
+            and observed["canonical_json_ledgers_reconstructed"] == 17 and observed["canonical_record_reconstructions"] == 60
+            and observed["raw_sandbox_mountinfo_and_supervisor_bodies_replayed_on_host"] is False,
+            "policy3 independent native command reconstruction or scope differs")
+    require(review["scope"]["zero_permissive_domains_verified_for_exact_twelve_binaries"] is True
+            and all(value is False for key, value in review["scope"].items()
+                    if key != "zero_permissive_domains_verified_for_exact_twelve_binaries")
+            and review["freeze_inputs"]["capture_complete"] is True
+            and review["freeze_inputs"]["comparator_success_claimed_by_capture"] is False,
+            "policy3 binary review promotes incomplete freeze, strict compatibility or runtime proof")
+    return {"native_unfiltered_binary_count": 12, "native_unfiltered_permissive_domains": 0,
+        "diagnostic_compatibility_binaries_count": 7, "diagnostic_compatibility_compiles_used_as_strict_assertion_proof": False,
+        "native_permissive_analysis_reexecuted_by_preparation": False}
+
+
+def qualify_policy3_freeze(records, control, contract):
+    """Bind the public-name comparator and its actual ordinary-build action."""
+    result = records["policy_freeze_review"]
+    require(result["schema_version"] == 1 and type(result["schema_version"]) is int
+            and result["operation"] == "review-actual-policy3-public-freeze"
+            and result["status"] == "verified-policy3-platform-public-api-freeze"
+            and result["public_freeze_comparison_verified"] is True
+            and result["fresh_logged_comparator_action_verified"] is True
+            and identity(result["actual_build_result"]) == identity(control["records"]["policy_build"])
+            and identity(result["actual_native_readback"]) == identity(control["records"]["policy_binary_validation"])
+            and result["native_comparator_rerun_performed"] is False
+            and result["native_comparator_rerun_required"] is False
+            and result["recursive_graph_replay_required_for_this_scope"] is False,
+            "policy3 public freeze has no matching comparison and fresh native action")
+    captured = result["freeze_inputs"]
+    native = records["policy_binary_validation"]["freeze_inputs"]
+    require(len(captured) == len(native) == 4
+            and [{key: row[key] for key in ("role", "original", "retained", "comparison_execution_claimed_by_capture")}
+                 for row in captured] == native,
+            "policy3 freeze review does not select the actual four captured inputs")
+    for key, row in zip(("tool", "current_cil", "api_cil", "stamp"), captured):
+        require(result[key] == row["original"]
+                and identity(row["host"]) == identity(row["original"]) == identity(row["retained"])
+                and row["comparison_execution_claimed_by_capture"] is False,
+                "policy3 freeze body identity or capture-only scope differs")
+    mapping = records["policy_capture_mapping"]["files"]
+    exporter = [row for row in mapping if "public_exporter:plat_pub_policy.cil" in row["roles"]]
+    verbose = [row for row in mapping if "native-verbose-plain" in row["roles"]]
+    require(len(exporter) == len(verbose) == 1
+            and identity(result["current_cil"]) == identity(exporter[0]["original_native"]),
+            "policy3 public freeze is not the selected current platform public exporter")
+    source = result["source_and_recipe_witnesses"]
+    require(avb._identity(json_bytes(source["actual_policy3_source_checkpoint"])) == contract["evolution_policy"]["source_commit"]
+            and source["board_api"] == "202504" and source["build_variant"] == "user"
+            and source["captured_source_project"] == {"head": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+                "status": "M private/init_dev_config.te\n M private/su.te"},
+            "policy3 public freeze source, selected API or product differs")
+    logged = result["logged_native_comparison"]
+    native_out = control["policy_files"]["combined"]["native_path"].removesuffix(COMBINED_SUFFIX)
+    def alias(row):
+        require(row["path"].startswith(native_out + "/"), "policy3 freeze path is outside the selected native OUT")
+        return "out-" + Path(native_out).name + row["path"].removeprefix(native_out)
+    require(logged["tokens"] == [alias(result["tool"]), "-c", alias(result["current_cil"]),
+                "-p", alias(result["api_cil"]), "&&", "touch", alias(result["stamp"])]
+            and logged["line"] == 654 and logged["main_ninja_action"] == 371
+            and identity(logged["verbose"]) == identity(verbose[0]["host"])
+            and logged["actual_native_build_exit_code"] == logged["actual_wrapper_exit_code"] == 0
+            and logged["se_freeze_test_was_an_ordinary_goal"] is True
+            and logged["comparator_precedes_success_conditional_stamp_touch"] is True
+            and logged["standalone_stamp_or_timestamp_used_as_pass"] is False
+            and logged["per_process_historical_tool_hash_at_action_launch_independently_sampled"] is False,
+            "policy3 freeze action is missing, stale or inferred from its stamp")
+    packaged = result["packaged_tool_source_binding"]
+    require(packaged["complete_tool_hash_bound"] is True
+            and packaged["two_complete_pyc_members_reproduced_from_exact_captured_sources"] is True
+            and packaged["entrypoint"] == "sepolicy_freeze_test"
+            and packaged["entrypoint_bootstrap"]["single_expected_entrypoint"] is True
+            and packaged["native_android_compiler_identity_assumed"] is False
+            and packaged["source_hash_headers_alone_used_as_proof"] is False
+            and packaged["stdlib_and_native_launcher_audit_claimed"] is False
+            and [row["packaged_member"] for row in packaged["comparisons"]] == ["sepolicy_freeze_test.pyc", "mini_parser.pyc"],
+            "policy3 freeze packaged checker/parser source binding differs")
+    for row in packaged["comparisons"]:
+        require(row["whole_bytes_equal"] is True and row["packaged_sha256"] == row["regenerated_sha256"]
+                and row["packaged_size_bytes"] == row["regenerated_size_bytes"]
+                and row["pyc_flags"] == 3 and row["pyc_magic"] == "f30d0d0a",
+                "policy3 freeze source reproduction is incomplete")
+        avb._digest(row["packaged_sha256"])
+    comparison = result["public_comparison"]
+    require(comparison["captured_upstream_do_main_returned_normally"] is True
+            and comparison["current_cil_equals_already_bound_current_platform_public_exporter"] is True
+            and comparison["current_declared_type_count"] == comparison["api_declared_type_count"] == 1419
+            and comparison["current_compared_attribute_count"] == comparison["api_compared_attribute_count"] == 353
+            and comparison["current_excluded_generated_attribute_count"] == comparison["api_excluded_generated_attribute_count"] == 234
+            and all(comparison[name] == [] for name in ("added_attributes", "added_types", "removed_attributes", "removed_types"))
+            and comparison["host_stdout_bytes"] == comparison["host_stderr_bytes"] == 0
+            and comparison["full_cil_byte_equality"] is False,
+            "policy3 actual public type/attribute comparison differs")
+    require(result["scope"]["platform_public_freeze_for_actual_policy3_verified"] is True
+            and all(value is False for key, value in result["scope"].items()
+                    if key != "platform_public_freeze_for_actual_policy3_verified")
+            and result["validation"]["actual_source_comparator_replay_passed"] is True
+            and result["validation"]["four_bodies_and_sources_rehashed_after"] is True
+            and result["validation"]["complete_pyc_member_matches"] == 2
+            and result["validation"]["failures"] == result["validation"]["skips"] == 0,
+            "policy3 freeze review overstates its scope or omits a final input check")
+    return {"public_freeze_comparison_verified": True, "fresh_logged_comparator_action_verified": True,
+        "public_type_and_attribute_names_only": True, "freeze_native_comparator_reexecuted_by_preparation": False,
+        "full_policy_permission_equivalence_claimed_by_freeze": False}
+
+
+def qualify_policy3_sidecars(records, control, contract, held):
+    """Select actual ordinary-build outputs, independently recomputing their bytes."""
+    capture, result = records["policy_sidecar_capture"], records["policy_sidecar_validation"]
+    require(result["schema_version"] == 1 and type(result["schema_version"]) is int
+            and result["operation"] == "qualify-existing-policy3-sidecar-producers-readonly-v1"
+            and result["status"] == "verified" and result["sidecar_success_verified"] is True
+            and identity(result["evidence"]["read_only_capture"]) == identity(control["records"]["policy_sidecar_capture"])
+            and identity(result["evidence"]["policy3_result"]) == identity(control["records"]["policy_build"])
+            and result["actual_outputs_checked"] == result["actual_ordered_inputs_checked"] == 6
+            and result["actual_sbox_manifests_checked"] == result["exact_dependency_chains_checked"] == 3
+            and result["read_only_ninja_queries"] == 2 and result["scope"]["normal_android_enforcing_required"] is True
+            and all(value is False for key, value in result["scope"].items() if key != "normal_android_enforcing_required"),
+            "policy3 installed sidecar producer validation is incomplete or has unsupported scope")
+    require(capture["schema_version"] == 1 and capture["operation"] == "capture-policy3-sidecar-producer-evidence-readonly-v1"
+            and capture["status"] == "captured" and capture["read_only_capture_verified"] is True
+            and capture["guard_errors"] == [] and "error" not in capture
+            and all(capture[key] is False for key in ("source_or_output_written", "native_build_or_checker_executed",
+                "new_native_genrules_executed", "producer_actions_admitted", "sidecar_success_verified", "complete_rom_ready", "phone_accessed"))
+            and all(capture[key + "_before"] == capture[key + "_after"] for key in ("source", "native_result", "ninja", "sandbox"))
+            and capture["sandbox_before"]["checks_passed"] is True and capture["sandbox_before"]["all_work_readonly"] is True
+            and identity(capture["native_result_before"]) == identity(control["records"]["policy_build"]),
+            "policy3 sidecar capture is incomplete, changed inputs or claims producer success by itself")
+    root_source, source = result["source_context"], capture["source_before"]
+    build_source = records["policy_build"]["source_observations_after"]
+    require(root_source["operation"] == "verify-current539-in-original-root-context"
+            and root_source["verified"] is True and root_source["source_files_checked"] == 539
+            and root_source["source_projects_checked"] == 13
+            and type(root_source["uid"]) is int and root_source["uid"] == 0
+            and type(root_source["gid"]) is int and root_source["gid"] == 0
+            and root_source["source_proof"] == avb._identity(json_bytes(build_source["source_history"]))
+            and root_source["configuration"] == avb._identity(json_bytes(build_source["configuration"]))
+            and root_source["policy3_result"] == identity(control["records"]["policy_build"])
+            and root_source["private_view_owner_mode_guards_unchanged"] is True
+            and root_source["source_or_output_modified"] is False,
+            "policy3 complete source proof is not bound to its original root context")
+    require(source["source_files_checked"] == 0 and source["source_projects_checked"] == 0
+            and source["root_current539_guard_required"] is True
+            and avb._identity(json_bytes(source["actual_commit"])) == contract["evolution_policy"]["source_commit"]
+            and source["historical_source_history_reverified"] is False and source["source_or_output_modified"] is False
+            and identity(source["configuration"]) == identity(records["policy_build"]["source_observations_after"]["strict_settings"]["file"])
+            and source["strict_settings"] == records["policy_build"]["source_observations_after"]["strict_settings"]
+            and result["recipe_source"]["path"] == "/work/evolution/system/sepolicy/Android.bp"
+            and identity(result["recipe_source"]) == contract["evolution_policy"]["sidecar_source"]
+            and result["recipe_project_head"] == "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+            "policy3 native sidecar source/configuration/recipe differs")
+    observations = capture["observations_before"]
+    require(len(observations) == 19 and observations == capture["observations_after"]
+            and [row["selection_index"] for row in observations] == list(range(19))
+            and len({row["observation"]["path"] for row in observations}) == 19,
+            "policy3 sidecar capture does not cover the nineteen unchanged observations")
+    modules = result["modules"]
+    names = ("plat", "system_ext", "product")
+    require(len(modules) == 3 and [row["module"] for row in modules] == [name + "_sepolicy_and_mapping.sha256" for name in names],
+            "policy3 ordinary sidecar module coverage or order differs")
+    files, selected, installed = control["policy_files"], {}, []
+    native_out = files["combined"]["native_path"].removesuffix(COMBINED_SUFFIX)
+    alias = "out-" + Path(native_out).name
+    commands, intermediate_commands, success_selectors = [], [], []
+    for index, (name, row) in enumerate(zip(names, modules)):
+        module, partition = name + "_sepolicy_and_mapping.sha256", ("system" if name == "plat" else name)
+        roles = RUNTIME_INPUTS[index * 2:index * 2 + 2]
+        inputs = [{"path": files[role]["native_path"], **identity(files[role])} for role in roles]
+        require(row["partition"] == partition and row["ordered_inputs"] == inputs,
+                "policy3 sidecar producer uses another ordered compiler pair")
+        value = hashlib.sha256(held[roles[0]] + held[roles[1]]).hexdigest().encode() + b"\n"
+        directory = "/soong/.intermediates/system/sepolicy/" + module + "_gen/android_common/"
+        generated = alias + directory + "gen/" + module
+        intermediate = alias + "/soong/.intermediates/system/sepolicy/" + module + "/android_arm64_armv8-a/" + module
+        installed_selector = alias + "/target/product/nezha/" + partition + "/etc/selinux/" + module
+        require(row["dependency_chain"] == {"module": module, "generated_selector": generated,
+            "prebuilt_intermediate_selector": intermediate, "installed_selector": installed_selector,
+            "installed_copy_reads_prebuilt_intermediate": True}, "policy3 genrule/prebuilt/installed dependency chain differs")
+        paths = {"generated": native_out + directory + "gen/" + module,
+                 "installed": native_out + installed_selector.removeprefix(alias),
+                 "sbox_manifest": native_out + directory + "genrule.sbox.textproto"}
+        for offset, kind in enumerate(("generated", "installed", "sbox_manifest")):
+            body = row[kind]
+            captured = observations[index * 5 + offset]
+            observed = captured["observation"]
+            require(captured["role"] == kind and captured["module"] == module
+                    and body["path"] == paths[kind] == observed["path"]
+                    and identity(body) == identity(observed) and body["stat"] == observed["stat"]
+                    and observed["present"] is True
+                    and body["body_origin"] == "actual-readonly-native-file-capture"
+                    and body["capture_body_selector"] == f"observations_before[{index * 5 + offset}].body_base64"
+                    and body["body_base64"] == captured["body_base64"],
+                    "policy3 sidecar body is not the selected actual capture")
+            raw = base64.b64decode(body["body_base64"], validate=True)
+            require(avb._identity(raw) == identity(body) and stat.S_ISREG(body["stat"]["st_mode"])
+                    and body["stat"]["st_nlink"] == 1 and body["stat"]["st_size"] == len(raw),
+                    "policy3 captured sidecar bytes or inode differ")
+            if kind != "sbox_manifest":
+                require(raw == value and len(raw) == 65 and stat.S_IMODE(body["stat"]["st_mode"]) == 0o644,
+                        "actual policy3 sidecar is not SHA256(CIL || mapping) plus LF")
+        for offset, expected in enumerate(inputs):
+            observed = observations[index * 5 + 3 + offset]
+            require(observed["role"] == "ordered_input_" + str(offset) and observed["module"] == module
+                    and observed["body_base64"] is None and observed["observation"]["present"] is True
+                    and {key: observed["observation"][key] for key in ("path", "sha256", "size_bytes")} == expected,
+                    "policy3 sidecar capture is not joined to the actual compiler input")
+        recipe = row["sbox_recipe"]
+        operand_paths = ["__SBOX_SANDBOX_DIR__/out" + item["path"].removeprefix(native_out) for item in inputs]
+        expected_command = "cat " + " ".join(operand_paths) + " | sha256sum | cut -d' ' -f1 > __SBOX_SANDBOX_DIR__/out/" + module
+        require(recipe["module"] == module and recipe["ordered_inputs"] == inputs
+                and recipe["manifest"] == identity(row["sbox_manifest"]) and recipe["command"] == expected_command
+                and recipe["opaque_input_hash_not_used_as_content_digest"] is True
+                and recipe["native_command_executed_by_verifier"] is False,
+                "policy3 actual sbox recipe or ordered operands differ")
+        avb._digest(recipe["opaque_soong_input_hash"])
+        selected[name] = files[name + "_sha256"]
+        require(selected[name]["native_path"] == paths["installed"]
+                and identity(selected[name]) == identity(row["installed"])
+                and avb._small(selected[name]["path"], 65, selected[name]) == value,
+                "policy3 replacement sidecar is not the captured native installed output")
+        installed.append({"name": name, "native_path": paths["installed"], **identity(selected[name])})
+        commands.append(alias + "/host/linux-x86/bin/sbox --sandbox-path " + alias + "/soong/.temp --output-dir "
+            + generated.rsplit("/", 1)[0] + " --manifest " + alias + directory + "genrule.sbox.textproto")
+        intermediate_commands.append("rm -f " + intermediate + " && cp -d  " + generated + " " + intermediate)
+        success_selectors.append((generated, installed_selector))
+    commands += ['/bin/bash -c "rm -f ' + row[1] + " && cp -f -d " + modules[index]["dependency_chain"]["prebuilt_intermediate_selector"]
+                 + " " + row[1] + '"' for index, row in enumerate(success_selectors)]
+    production = result["production"]
+    require(production["policy3_result"] == identity(control["records"]["policy_build"])
+            and production["prior_native_command_count"] == 6 and production["prior_genrule_commands"] == 3
+            and production["prior_installed_copy_commands"] == 3 and production["supporting_intermediate_copy_count"] == 3
+            and production["fresh_native_actions"] == 0 and production["command_hash_prediction_claimed"] is False
+            and [row["command"] for row in production["prior_native_commands"]] == commands == capture["ordered_leaf_commands"]
+            and [row["command"] for row in production["supporting_prior_intermediate_copy_commands"]] == intermediate_commands,
+            "policy3 ordinary sidecar producer/copy evidence is incomplete or claims new execution")
+    actions = production["prior_native_commands"] + production["supporting_prior_intermediate_copy_commands"]
+    require(len({row["action"] for row in actions}) == 9
+            and all(type(row["line"]) is int and row["line"] > 0 and row["total"] == 556 for row in actions)
+            and all(production["prior_native_commands"][index]["action"]
+                < production["supporting_prior_intermediate_copy_commands"][index]["action"]
+                < production["prior_native_commands"][index + 3]["action"] for index in range(3)),
+            "policy3 native sidecar actions do not prove the complete ordered copy chain")
+    require([row["selector"] for row in production["ninja_success_rows"]]
+            == [row[0] for row in success_selectors] + [row[1] for row in success_selectors],
+            "policy3 current producer success row coverage differs")
+    return selected, {"source_kind": "captured-ordinary-android-installed-sidecars",
+        "native_installed_outputs": installed, "ordered_input_count": 6, "prior_native_genrule_commands": 3,
+        "prior_native_installed_copy_commands": 3, "supporting_prior_intermediate_copy_commands": 3,
+        "fresh_native_actions": 0, "native_captured_sidecars_read_and_recomputed": True,
+        "native_genrules_reexecuted_by_preparation": False, "full_recursive_producer_provenance_verified": False}
+
+
+def qualify_policy3_policy(records, control, contract):
+    held, basis = qualify_policy3_basis(records, control, contract)
+    binaries = qualify_policy3_binaries(records, control, contract)
+    freeze = qualify_policy3_freeze(records, control, contract)
+    sidecars, sidecar_proof = qualify_policy3_sidecars(records, control, contract, held)
+    files = control["policy_files"]
+    replacements = {"vendor": {"/etc/selinux/vendor_sepolicy.cil": files[RUNTIME_INPUTS[7]]},
+                    "odm": {"/etc/selinux/precompiled_sepolicy": files["combined"]}}
+    for name, row in sidecars.items():
+        replacements["odm"]["/etc/selinux/precompiled_sepolicy." + name + "_sepolicy_and_mapping.sha256"] = row
+    return replacements, {"current_factory_combined_binary_bound": True, "sidecars_recomputed_and_matched": True,
+        "assertion_statements_retained": 6366, "assertion_statements_added": 33, "assertion_statements_total": 6399,
+        "normal_android_permissive_domains": 0, "full_treble_apk_labeling_proven": False,
+        "native_policy_reexecuted": False, "native_policy_snapshot": contract["evolution_policy"]["build_phase"],
+        "current_active_source_compatibility_proven": False, "sidecars_observed_at_native_install_paths": True,
+        "provider_profile_selected": True, "provider_runtime_support_proven": False,
+        "source_basis": basis, "binary_checks": binaries, "public_freeze": freeze,
+        "sidecar_native_production": sidecar_proof}
+
+
 def qualify_policy(records, control, contract):
+    if contract["contract_id"] == POLICY3_CONTRACT_ID:
+        return qualify_policy3_policy(records, control, contract)
     if contract["contract_id"] == PROVIDER_CONTRACT_ID:
         return qualify_provider_policy(records, control, contract)
     build, analysis = records["policy_build"], records["policy_analysis"]
@@ -1525,7 +2148,7 @@ def prepare(input_path, expected_sha, *, output_dir, selected_profile=HISTORICAL
                 "native_installed_output_claimed": False} for row in derived],
             "remaining_gates": [
                 ("Apply the qualified finite limits in fresh isolated work and build both policy-substituted images twice."
-                 if derived_sidecars(contract) else
+                 if complete_noops_required(contract) else
                  "Qualify the recorded finite production limits, scratch filesystem and bounded log executor, then run two native builds."),
                 "Complete native metadata exports and exact-five-file semantic comparison for both new images.",
                 "Regenerate hashtrees/FEC/AVB footers; verify final identities, partition fit and signed parent chain."],
