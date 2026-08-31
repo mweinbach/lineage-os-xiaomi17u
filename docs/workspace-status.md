@@ -62,12 +62,17 @@ captured files rehash, the fourteen historical evidence files remain preserved,
 and strict settings, source, policy and runtime guards pass. This closes the
 selected provider ELF/symbol gate at 4 KiB, not full ABI, service registration,
 runtime behavior, VTS or boot validation.
-The **latest completed full VINTF run, before matrix-v1, fails the combined check**: 155 device HAL
-instances are absent from the framework compatibility matrix. All 39 APEX
-packages materialize and the two separate consistency commands exit zero, but
-the combined command exits 65. The matrix source and outputs are now verified;
-provider installation and the full compatibility retry remain blocked; no check is suppressed
-or counted as a pass.
+The **latest full VINTF run on matrix-v1 now passes all four native commands**:
+39-APEX materialization, framework consistency, vendor/ODM consistency and the
+combined framework/vendor/kernel/APEX check. All fifteen postflight checks pass
+with source and Android outputs unchanged; no command is unreached. The combined
+command has no reported skips or warnings and accepts the supplied non-mainline
+kernel inputs. The separate framework-consistency command retains one no-level
+matrix-definition skip and two warnings; its skipped subcheck is not a pass.
+Complete input compatibility, runtime behavior and ROM readiness remain false.
+Final independent raw, coverage and materialization reviews pass within that
+scope. The earlier pre-matrix run's
+exit-65 failure on 155 missing HAL instances remains preserved.
 Commit **c3686ed** adds the [exact framework-matrix source projection](framework-matrix.md).
 Host verification binds all 155 missing AIDL tuples to original declarations
 and factory matrix coverage, producing 130 packages without wildcard instances,
@@ -90,9 +95,9 @@ binds both receipts and confirms one retained no-level matrix-definition skip,
 which is not counted as a pass. Existing strict policy analysis is reused by
 exact equality of thirteen protected policy files. Neither the failed receipt
 nor generated XML is rewritten.
-The preserved exit-65 result remains the latest full VINTF
-result; the provider installation and its raw review now pass as described below,
-while current producer qualification and the complete compatibility retry remain pending.
+The provider installation and its raw review now pass as described below. Fresh
+producer descriptions and the full-input capture bind the successful VINTF retry
+without rewriting the earlier failed matrix wrapper or the exit-65 result.
 
 Three read-only provider-install preflights stop in their evidence reader after
 two, three and four zero-exit native queries. The bounded corrections recognize
@@ -254,7 +259,7 @@ checks pass. That host-only admission leaves external native references for a
 subsequent guest check; no new compile action, source-to-binary equivalence or
 runtime registration is established by this read-only capture.
 
-The subsequent **current 4 KiB full-VINTF input capture passes**, freshly
+The earlier **pre-matrix 4 KiB full-VINTF input capture passes**, freshly
 reopening the allocator prerequisites and the four bytecode proof comparisons.
 It verifies the nine-command/three-layer/six-node allocator descriptions and
 binds **22 framework XML files and 39 APEX packages**: 36 framework plus three
@@ -262,7 +267,7 @@ vendor packages. Strict 4096 settings and the actual component result remain
 bound. This closes those input prerequisites; the subsequent full run below is
 a separate failed compatibility result.
 
-The actual full run materializes all 39 APEX packages and passes the framework
+That pre-matrix full run materializes all 39 APEX packages and passes the framework
 and vendor/ODM consistency commands. The combined framework/vendor/kernel/APEX
 command then returns **65**, reporting **155 unique device HAL instances not
 specified in the framework matrix** through `checkUnusedHals`. All four
@@ -276,6 +281,23 @@ activation, complete VINTF coverage and ROM readiness remain unverified.
 Independent host review is clear for the captured failure and materialization
 evidence. It does not reopen extracted payload bodies or turn the failed
 combined command into a compatibility pass.
+
+The later **matrix-v1 producer capture** records nine read-only commands across
+three query depths and six described nodes. All 68 evidence files are collected;
+the subsequent guest input check reopens the native references and verifies the
+paired original-build/separate-postcheck observations. It does not claim a fresh
+compile, source-to-binary equivalence or runtime registration. The fresh full
+capture binds 220 source identities, 53 source guards, 22 framework XML files and
+all 39 APEX packages. The subsequent four-command run is the current successful
+native VINTF result above, not a replacement for the preserved failure.
+
+The same capture also verifies equality of all 39 packages and their selected
+trust, tool and runtime inputs against the prior static APEX proof. Independent
+review permits reuse of that **130-command cryptographic result**, with **zero
+new cryptographic commands**. A later final review binds that reuse to the
+actual successful materialization and all fifteen postflight checks, without
+rerunning cryptography. No partition AVB chain, OTA behavior, APEX activation
+or hardware result is inferred.
 
 Ninja query captures were held pending qualification of the pinned query
 modes under read-only mounts. The second footer capture accepted the valid empty
@@ -335,7 +357,7 @@ and runtime behavior remain unverified. Earlier failed captures are preserved.
 The exact eleven-file Camera namespace and original APK are now staged in an
 inactive candidate, with all fifteen file/directory modes verified. Independent
 review confirms preserved source, output and graph guards. Activation remains
-held for full VINTF and the remaining Camera admission checks; staging
+held for refreshed Camera source/output evidence and remaining admission checks; staging
 does not change the active namespace or select/build the APK.
 The fresh **4 KiB Camera prerequisite capture** completes at **01:50:13 UTC**,
 passing four read-only queries with source, captured-output and query-log
@@ -465,10 +487,11 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,961 tests in 165.776
+The latest completed full workspace suite passed **3,961 tests in 166.023
 seconds with zero failures, errors or skips**, executed by the coordinator.
-All three provider checkpoint files stayed unchanged during that run. The
-preceding 3,961-test run took 167.201 seconds and retained its five-file
+All three scoped VINTF checkpoint files stayed unchanged during that run. The
+preceding 3,961-test run took 165.776 seconds and retained its three-file
+provider checkpoint. The earlier 3,961-test run took 167.201 seconds and retained its five-file
 checkpoint. The earlier 3,961-test run took 173.222 seconds and retained its
 seven-file checkpoint.
 The earlier coordinator run passed
@@ -625,9 +648,9 @@ from a full build and require destination hash verification after transfers.
 | Matrix 4 KiB component attempt | Matrix-v1 runs 38 goals with native exit 0 and 128 Ninja actions after 163 frontend steps; the failed wrapper receipt is preserved, while the distinct read-only postcheck and independent review pass | [Native ROM integration](../research/native-rom-integration.json) |
 | Current 4 KiB provider ELF/symbol checks | All 26 checks execute freshly and pass within 48 native actions; complete raw review verifies commands, new log rows and stamps; full ABI, runtime and hardware remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | Ordinary provider installation | The normal 27-goal build and independent raw replay pass: 164 actions, 29 fresh installs and two preserved XML files; all 31 verify and 26 prior strict ELF passes are reused, with zero fresh checks | [Native ROM integration](../research/native-rom-integration.json) |
-| Current allocator producer capture | Nine commands across three query layers report success; all 66 payloads are collected and subsequent guest prerequisite verification reopens the external references; no fresh compile/runtime claim | [Native ROM integration](../research/native-rom-integration.json) |
+| Current allocator producer capture | Matrix-v1 records nine read-only commands across three query layers and six nodes; all 68 evidence files are collected and the full-input check reopens native references; no fresh compile/runtime claim | [Native ROM integration](../research/native-rom-integration.json) |
 | Native packaged-bytecode proof | Four complete PYC members reproduce from the pinned Soong recipe; 28 native commands across capture/proof pass with zero skips; generated-proto provenance, signatures and full VINTF remain separate | [Native ROM integration](../research/native-rom-integration.json) |
-| Current full-VINTF result | Input capture verifies allocator/bytecode prerequisites and the 22-XML/39-APEX closure; all 39 APEX packages subsequently materialize, but the combined check fails at exit 65 on 155 missing matrix tuples | [Native ROM integration](../research/native-rom-integration.json) |
+| Current full-VINTF result | All four native commands, fifteen postflight checks and scoped independent review pass on matrix-v1; the combined check has no reported skips/warnings, while framework consistency retains one definition skip and two warnings; complete input compatibility stays false | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
 | Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
 | Preserved independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |

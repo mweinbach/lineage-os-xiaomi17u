@@ -28,8 +28,8 @@ user now authorizes a checked 4 KiB first-boot baseline; the corrected **v13ja
 source is installed**, and the 37-goal **pagesize-v13j-1** component build passes
 at **2026-08-31 00:43:11 UTC (August 30 in New York)**. Generated settings now
 verify 4096 with prebuilt checks enabled. The separate **26-provider ELF/symbol
-checks pass freshly at 01:15:10 UTC**; full VINTF and runtime validation remain
-unverified. The later full VINTF run reaches the combined command and fails on
+checks pass freshly at 01:15:10 UTC**; that result does not itself establish
+VINTF or runtime validation. The first full VINTF run reaches the combined command and fails on
 155 device HAL instances absent from the framework matrix. All earlier 16 KiB
 evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
@@ -40,8 +40,12 @@ actions after 163 frontend steps, producing new matrix outputs, but the wrapper 
 that requires explicit default AIDL version 1. The separate corrected read-only
 postcheck and independent review now pass. The later ordinary 27-goal provider
 installation and full raw review pass with 29 fresh copies and two preserved XML
-outputs; current producer qualification and the compatibility retry remain pending. The completed
-full-run failure is not relabelled as a pass by this source installation.
+outputs. Fresh producer/input captures now lead to a separate successful
+four-command VINTF run on matrix-v1. Its fifteen postflight checks and final
+independent raw/coverage/materialization reviews pass. Complete input compatibility remains
+false: the combined check has no reported skips/warnings, but the separate
+framework-consistency path retains one definition skip and two warnings. The
+earlier full-run failure is preserved, not relabelled by this later success.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -787,7 +791,7 @@ AVB or OTA validation. The one presigned and three retained vendor baselines
 prove exact selected bytes and internal signatures, not independent OEM signer
 authenticity. No private key was read.
 
-The subsequent **current 4 KiB full-VINTF input capture** completes with zero
+The earlier **pre-matrix 4 KiB full-VINTF input capture** completes with zero
 exit and empty stderr. Its 493,527-byte receipt is
 `83a59e55a5732cbbf44693f7cb2552817e26f621e10c99c9e07b111691ea49dd`.
 It freshly reopens and verifies the external allocator prerequisites, binding
@@ -800,7 +804,7 @@ three vendor packages, against the actual 4 KiB component result and strict
 and full compatibility comparisons remain unexecuted in this capture; its
 compatibility, runtime-activation and ROM-readiness fields stay false.
 
-The subsequent **full 4 KiB VINTF run fails normally**. APEX materialization
+The subsequent **pre-matrix full 4 KiB VINTF run fails normally**. APEX materialization
 for all 39 packages, framework consistency and vendor/ODM consistency each
 return zero. The combined framework/vendor/kernel/APEX command returns **65**:
 `checkUnusedHals` reports **155 unique instances** in the device manifest but
@@ -813,8 +817,8 @@ failure. The native 1,129,945-byte receipt is
 `59fd65765e521e6ca98f91b27067d285d46ec17bbbbdd6fd4484c448dce6e969`.
 The 54-file / 5,279,920-byte host capture includes the complete selected
 diagnostics, not the materialized APEX payloads or manifests. No APEX-signature,
-runtime-activation, signed-chain or boot result follows. The next source work
-must resolve the framework matrix without suppressing the failing check.
+runtime-activation, signed-chain or boot result follows. That failure required
+the subsequent exact framework-matrix correction without suppressing the check.
 Independent host review
 `61960cea5eeeb0ca068780339e8a369e5b91f5f1ab0dae32f9cde906ac502f55`
 binds the full failure, all 54 captured files and nine immutable command-ledger
@@ -822,6 +826,65 @@ revisions. The separate materialization review covers the recorded 39-package
 closure. Its 1,110 payload inventory rows describe paths and metadata, not
 hashes of every regular-file body; extracted manifest and payload bytes were
 not returned by this capture or reopened by the host reviewer.
+
+The later matrix-v1 producer capture records **nine read-only commands, three
+query depths and six described nodes**. Its inner receipt is
+`a18ef5b6092a2fbef9015d13503c476694a33be7273beea6c8229b4ddb3227f2`
+(198,499 bytes); the paired outer receipt is
+`41ed78612e38fbbf41e4e0c02218734e2f799334f11cfbde19de320480bbb87c`
+(265,988 bytes). Collection retains all **68 files / 3,242,620 bytes**, and host
+envelope admission passes. The subsequent full-input guest check reopens the
+external native evidence and verifies the paired observations. It preserves the
+original `f83b2e87` failed wrapper and separate `7ab3bf7d` postcheck; neither a
+fresh allocator compiler action nor source-to-binary equivalence is claimed.
+
+The fresh full-input capture is
+`3b972242280279ae67356e75bf24ddbd278cd5e3f660ca10583b2a59f816a7f6`
+(1,191,048 bytes). It binds the matrix-v1 source inventory of 220 files, 53
+source guards, strict 4096 settings, 22 framework XML files and 36 framework plus
+three vendor APEX packages. Its capture-only review is
+`b6ee53023c13c38684eed3ea11b180f27c185c7d768cae9753b80a4d0ffb17f0`
+(4,746 bytes). Current allocator prerequisites and the four-plus-one existing
+whole-PYC proof inputs are revalidated without a new compile. Independent
+APEX input-equality review
+`972ef5b47107b9bec89c4c0b24db7fc1b1f66780cf6d33709a243eb8b0634788`
+(6,060 bytes) permits reuse of the previous 39-package, 130-command static crypto
+result. It verifies the selected package, public-trust, tool/runtime and source
+expectations; **zero cryptographic commands are rerun**. That review does not
+itself establish fresh materialization or full-run postflight success.
+
+The subsequent **full matrix-v1 VINTF run passes all four native commands**:
+39-package materialization, both consistency commands and the combined
+framework/vendor/kernel/APEX check. The native receipt is
+`209a4cc05a378dc8ff7144ffbbdc92fe62346afaa7ad2578862e171e02863e8e`
+(1,815,685 bytes); the **54-file / 5,593,782-byte** capture manifest is
+`4fca4d8ced5ca76fb66e00b9e263c7bbf609f50a880610dc073ffcd7757fd9ee`
+(31,073 bytes). All fifteen postflight checks pass, no command is unreached,
+and source/Android outputs remain unchanged. The combined command reports no
+skips or warnings and accepts the supplied non-mainline kernel requirements.
+The separate framework-consistency command still reports one no-level
+matrix-definition skip and two warnings. The combined path does not execute
+that omitted matrix-definition check; zero exit does not prove every required
+subcheck ran. Host runtime substitution also does not verify the running kernel,
+kernel SELinux policy-version support, runtime AVB versions or a signed chain.
+Final independent raw, coverage and materialization reviews now pass. The
+7,534-byte scoped final review is
+`bc799001f86dfb16e5ac096ea4014f57476f68e4685bc8aceb7010e1cabb9372`.
+It binds all 54 captured files, nine immutable command-ledger revisions and
+the 39-package materialization record with 1,110 inventory entries and two APEX
+VINTF fragments. Five absent allowlisted temporary journals are expected
+absences, not skipped checks. Inventory entries describe retained paths and
+metadata, not hashes of every payload body. Complete input compatibility,
+runtime APEX activation, partition AVB, OTA and boot remain unverified. This
+capture leaves materialized APEX payloads/manifests in the guest and does not
+reopen their bodies on the host. Any construction admission consuming this
+result must retain its coverage limits and the other independent gates.
+The subsequent 6,222-byte final crypto-reuse review is
+`0eb9c0987fde2d2b7604f6db5c767e6771da1e2fc1b0d5665e3a941eca5bd15c`.
+It binds the earlier input-equality review to this actual full result,
+materialization and all fifteen postflight checks. The historical 130 crypto
+commands remain reused evidence, with zero new cryptographic execution and
+unchanged runtime, partition-AVB, OTA and boot limits.
 
 Three separate capture attempts remain failures: the footer-tool reader rejected
 a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
@@ -944,8 +1007,8 @@ independent review
 `177217e380639605d1b2b3fe633653b7b40f427731a18e63dc8e0a95dc483646`
 passes for staging only. All 204 source files, thirteen policy/eleven runtime
 outputs and sixteen graphs are preserved. The active namespace is unchanged;
-activation remains held for full VINTF and the remaining Camera admission
-checks. No APK selection, graph generation or build follows.
+activation remains held for refreshed Camera source/output evidence and remaining
+admission checks. The later VINTF command success does not select or build this APK.
 
 The fresh **4 KiB Camera prerequisite capture** runs from **01:46:10 to
 01:50:13 UTC**, with four passing read-only queries and unchanged source,
@@ -1235,12 +1298,15 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,961 tests in 165.776 seconds with zero failures, errors or skips**, executed
-by the coordinator. All three provider checkpoint files stayed unchanged during
+**3,961 tests in 166.023 seconds with zero failures, errors or skips**, executed
+by the coordinator. All three scoped VINTF checkpoint files stayed unchanged during
 the run.
 The full log is
+`983894a1ee29fb2fdf79222d5e6f3b1ba9ea74bf56b10d0c071080c4224b3c91`.
+The preceding 3,961-test run took 165.776 seconds, preserving all three provider
+checkpoint files; its log remains
 `f0ffbbd2f6357698175f640a5173dd86f9fe706c349fc78b40dcf642c227221a`.
-The preceding 3,961-test run took 167.201 seconds, preserving all five checkpoint
+The earlier 3,961-test run took 167.201 seconds, preserving all five checkpoint
 files; its log remains
 `7bfd1ea06a54e1674670689904bf285b519ff157077f03d46ed203aefa241cd1`.
 The earlier 3,961-test run took 173.222 seconds, preserving all seven bound
@@ -1671,11 +1737,11 @@ for the next provider and compatibility checks. Preserve the earlier allocator
 producer capture and unfinished 16 KiB full packet as
 historical evidence. The four selected whole-bytecode comparisons now pass;
 the fresh 4 KiB input capture verifies the producer prerequisites and complete
-selected XML/APEX closure. Materialization and separate consistency checks now
-pass, but the combined check fails on 155 missing framework-matrix instances.
-Use the verified matrix outputs and reviewed ordinary provider installation,
-finish current producer qualification, then rerun the full checks
-and assess necessary coverage before claiming compatibility.
+selected XML/APEX closure. Preserve the pre-matrix exit-65 failure separately
+from the successful matrix-v1 retry. Use the verified matrix outputs, reviewed
+provider installation and current producer/input captures with their scoped
+independent reviews; address the documented coverage limits before making a complete
+compatibility claim.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
 The separate 26-provider ELF/symbol checks now pass for the installed 4 KiB
