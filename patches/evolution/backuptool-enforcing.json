@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "id": "evolution-backuptool-enforcing-v1",
+  "status": "tested_source_patch_not_installed",
+  "project": "device/lineage/sepolicy",
+  "origin": "https://github.com/Evolution-X/device_evolution_sepolicy",
+  "branch": "bka",
+  "base_commit": "37c13c9b74344c17eddd6067541e9fcba116a34e",
+  "patch": "patches/evolution/0015-backuptool-permissive-only-recovery.patch",
+  "patch_sha256": "70ac3adb7166f32b52c70eb16962f7b4ca6ad3c47630ecf4672dc47384a32a50",
+  "patch_size_bytes": 438,
+  "files": [
+    {
+      "path": "common/private/backuptool.te",
+      "mode": "100644",
+      "before_sha256": "cff90d8a5c7c7dcd3332cf74c1200ebbd0e7feeb8a43dba4bb41f64fe5775ba2",
+      "before_size_bytes": 152,
+      "before_git_blob": "b670fb07fe36d08edf645583ea15332e2a626dff",
+      "after_sha256": "3a1cb8110f792bc8669e8604c86208f9b8e948486ef2617a64a2a1ef67827e54",
+      "after_size_bytes": 171,
+      "after_git_blob": "22ff6d81a4ceb0c8c4d450263d22c8500dfde7f6"
+    }
+  ],
+  "purpose": "Keep normal Android backuptool enforcing while retaining the approved recovery-only permissive exception through the existing recovery_only macro.",
+  "source_effect": {
+    "guarded_statement": "permissive backuptool;",
+    "selector": "target_recovery",
+    "only_selected_value": "true",
+    "added_lines": ["recovery_only(`", "')"],
+    "all_original_source_bytes_retained_in_order": true,
+    "normal_variant_exemptions_added": false,
+    "allow_rules_changed": false,
+    "neverallow_rules_changed": false,
+    "type_declarations_changed": false,
+    "shared_macros_changed": false,
+    "upstream_permissive_allowlists_changed": false,
+    "runtime_transition_or_file_contexts_changed": false
+  },
+  "source_capture_receipt": {
+    "path": "reports/oem-policy-integration-20260829/root-evolution-policy-source-v1/stdout.json",
+    "sha256": "fcbf82e4788c7c89e4f055442a1ba7fa5aee1062db970b3e669ad3df789e4435",
+    "size_bytes": 80968,
+    "project_worktree_status": ""
+  },
+  "macro_source": {
+    "project": "system/sepolicy",
+    "path": "public/te_macros",
+    "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+    "capture_path": "artifacts/source-contracts/nezha-policy-variant-v2/files/public/te_macros",
+    "sha256": "b749c90e4ad0b7873eaa03192309846fddc7a33b06284e1925ad849c2d5111cd",
+    "size_bytes": 42239,
+    "line": 544,
+    "definition": "define(`recovery_only', ifelse(target_recovery, `true', $1, ))\n"
+  },
+  "host_validation": {
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/backuptool-enforcing-patch-v1/host-validation-v1/receipt.json",
+      "sha256": "bcc02d72d02a0fc06210bd83bd76d855a1cdb658ae0e8a13d4602a74e2fdc735",
+      "size_bytes": 29222
+    },
+    "patch_copies_reproduced": 2,
+    "patch_max_fuzz": 0,
+    "source_mode_preserved": "100644",
+    "m4_tool": {
+      "path": "/usr/bin/m4",
+      "version": "GNU M4 1.4.6",
+      "sha256": "1685f2c90307faa05ef5ae8f707d3a18a519c9dad75882768f66abb475f1b3d7",
+      "size_bytes": 118640,
+      "is_android_build_m4": false
+    },
+    "m4_cases": 24,
+    "source_versions": ["before", "after"],
+    "variants": ["user", "userdebug", "eng"],
+    "recovery_selectors": ["false", null, "true"],
+    "additional_after_user_nontrue_selectors": ["", "TRUE", "1", " true", "true ", "other"],
+    "all_expansions_exact": true,
+    "all_m4_stderr_empty": true,
+    "type_and_neverallow_tokens_unchanged": true,
+    "original_inputs_preserved": true,
+    "only_recovery_only_definition_expanded": true
+  },
+  "independent_full_macro_host_validation": {
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/backuptool-enforcing-patch-v1/review/full-macro-expansion-v1/receipt.json",
+      "sha256": "e85e4e5797b65b6408d3bfdde298a38ab579c6eb755e491da50d5630d8e33cad",
+      "size_bytes": 17861
+    },
+    "variant_selector_pairs": 9,
+    "host_m4_commands": 27,
+    "inputs_per_pair": ["complete_platform_macro_file_only", "macros_and_original_source", "macros_and_guarded_source"],
+    "same_pinned_macro_source_and_host_tool": true,
+    "all_passed": true,
+    "all_stderr_empty": true,
+    "original_inputs_preserved": true,
+    "android_build_executed": false,
+    "full_policy_compiler_executed": false
+  },
+  "adoption_requirements": [
+    "Verify the pinned project revision, original file, macro definition and patch identities before applying the single-file change; preserve the original source and prior policy outputs.",
+    "Rebuild the actual selected Evolution/OEM policy through Android source and M4 with all neverallow assertions retained and no permission or allowlist relaxation.",
+    "Run unfiltered sepolicy-analyze permissive on each normal Android policy binary and require empty output, separately from recovery policy.",
+    "Run the relevant strict combined vendor/ODM compilation, context and Treble checks before deriving or selecting new policy images.",
+    "Keep backup, addon.d, restore and OTA behavior unverified until their dependencies and separately authorized device tests succeed; the normal update_engine transition to backuptool remains present."
+  ],
+  "limits": {
+    "active_source_patch_applied": false,
+    "android_build_m4_executed": false,
+    "full_policy_compiler_executed": false,
+    "complete_normal_policy_enforcement_verified": false,
+    "images_adopted": false,
+    "backup_restore_ota_functionality_verified": false,
+    "guest_accessed": false,
+    "phone_accessed": false,
+    "complete_rom_ready": false
+  }
+}

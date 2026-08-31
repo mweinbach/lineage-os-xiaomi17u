@@ -1,0 +1,16 @@
+diff --git a/common/private/backuptool.te b/common/private/backuptool.te
+index b670fb07fe36d08edf645583ea15332e2a626dff..22ff6d81a4ceb0c8c4d450263d22c8500dfde7f6 100644
+--- a/common/private/backuptool.te
++++ b/common/private/backuptool.te
+@@ -1,9 +1,11 @@
+ type backuptool, domain, coredomain;
+ 
++recovery_only(`
+ permissive backuptool;
++')
+ 
+ neverallow {
+     domain
+     -recovery
+     -update_engine
+ } backuptool:process transition;
