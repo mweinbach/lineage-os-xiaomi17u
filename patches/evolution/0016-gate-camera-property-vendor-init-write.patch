@@ -1,0 +1,25 @@
+diff --git a/common/public/property.te b/common/public/property.te
+index 17c5cd0e38d7dea6cc9bc4e448db24349ff8415b..a86de112ec1df669198fd74a9bbe40e3a00e8ddc 100644
+--- a/common/public/property.te
++++ b/common/public/property.te
+@@ -1,11 +1,19 @@
+ # Aux camera allow/excludelist prop
+-system_vendor_config_prop(vendor_persist_camera_prop)
++ifdef(`target_vendor_persist_camera_prop_vendor_init_writes', `ifelse(defn(`target_vendor_persist_camera_prop_vendor_init_writes'), `true', `',
++       defn(`target_vendor_persist_camera_prop_vendor_init_writes'), `false', `',
++       `errprint(`target_vendor_persist_camera_prop_vendor_init_writes must be true or false
++')m4exit(1)')')dnl
++ifelse(defn(`target_vendor_persist_camera_prop_vendor_init_writes'), `false', `system_public_prop(vendor_persist_camera_prop)
++unix_socket_connect(vendor_init, property, init)
++get_prop(vendor_init, vendor_persist_camera_prop)
++neverallow { domain -init -vendor_init } vendor_persist_camera_prop:property_service set;',
++`system_vendor_config_prop(vendor_persist_camera_prop)')
+ 
+ # NFC
+ system_vendor_config_prop(vendor_persist_nfc_prop)
+ 
+ # USB
+ system_vendor_config_prop(usb_uvc_config_prop)
+ 
+ # xtra-daemon control
+ system_restricted_prop(xtra_control_prop)

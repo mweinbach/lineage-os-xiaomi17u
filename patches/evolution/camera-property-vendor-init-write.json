@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "id": "evolution-camera-property-vendor-init-write-v1",
+  "contract_id": "nezha-camera-property-vendor-init-no-write-v1",
+  "status": "tested_optional_source_patch_not_installed",
+  "project": "device/lineage/sepolicy",
+  "origin": "https://github.com/Evolution-X/device_evolution_sepolicy",
+  "branch": "bka",
+  "base_commit": "37c13c9b74344c17eddd6067541e9fcba116a34e",
+  "patch": "patches/evolution/0016-gate-camera-property-vendor-init-write.patch",
+  "patch_sha256": "ed58352acd05991a22d48efd829dca9af8060baa071a664ef7aed0d2e963a1b3",
+  "patch_size_bytes": 1244,
+  "files": [
+    {
+      "path": "common/public/property.te",
+      "mode": "100644",
+      "before_sha256": "e0448d64ba284410fb5281ee3390d53aee0b3730cf6ab0f44926009d5b50d6f7",
+      "before_size_bytes": 267,
+      "before_git_blob": "17c5cd0e38d7dea6cc9bc4e448db24349ff8415b",
+      "after_sha256": "f61da3a36e2cbea8c74284270da46dc0ba8459483eea740e5aa2818440f9e3c4",
+      "after_size_bytes": 925,
+      "after_git_blob": "a86de112ec1df669198fd74a9bbe40e3a00e8ddc"
+    }
+  ],
+  "capability": {
+    "symbol": "target_vendor_persist_camera_prop_vendor_init_writes",
+    "board_variable": "BOARD_SEPOLICY_M4DEFS",
+    "proposed_definition": "target_vendor_persist_camera_prop_vendor_init_writes=false",
+    "allowed_explicit_values": ["true", "false"],
+    "undefined_preserves_upstream_grants": true,
+    "true_preserves_upstream_grants": true,
+    "default_and_true_macro_expansions_byte_identical": true,
+    "invalid_value_causes_fatal_m4_error": true,
+    "duplicate_definitions_rejected_by_admission": true,
+    "duplicate_definition_guard_is_separate_from_m4_value_validation": true,
+    "api_or_device_name_inference_used": false
+  },
+  "selected_profile": {
+    "device": "nezha",
+    "hardware_region": "CN",
+    "branch": "bka",
+    "release": "bp4a",
+    "board_api": "202504",
+    "build_variant": "user",
+    "capability_value": "false"
+  },
+  "source_effect": {
+    "property_type": "vendor_persist_camera_prop",
+    "removed_edge": {
+      "source": "vendor_init",
+      "target": "vendor_persist_camera_prop",
+      "class": "property_service",
+      "permission": "set"
+    },
+    "removed_statement": "allow vendor_init vendor_persist_camera_prop:property_service set;",
+    "removed_occurrences_when_false": 1,
+    "grants_added": 0,
+    "property_declaration_macro_retained": "system_public_prop(vendor_persist_camera_prop)",
+    "socket_macro_retained": "unix_socket_connect(vendor_init, property, init)",
+    "read_macro_retained": "get_prop(vendor_init, vendor_persist_camera_prop)",
+    "assertion_retained": "neverallow { domain -init -vendor_init } vendor_persist_camera_prop:property_service set;",
+    "all_other_source_statements_unchanged": true,
+    "type_attributes_changed": false,
+    "property_contexts_changed": false,
+    "shared_macros_changed": false,
+    "assertions_removed_or_weakened": false,
+    "factory_inputs_changed": false,
+    "nfc_usb_xtra_declarations_changed": false
+  },
+  "macro_source": {
+    "project": "system/sepolicy",
+    "path": "public/te_macros",
+    "commit": "e631d35d7bd7b7993e84f3d49eeb34ec87dd1a27",
+    "capture_path": "artifacts/source-contracts/nezha-policy-variant-v2/files/public/te_macros",
+    "sha256": "b749c90e4ad0b7873eaa03192309846fddc7a33b06284e1925ad849c2d5111cd",
+    "size_bytes": 42239,
+    "macros": ["system_vendor_config_prop", "system_public_prop", "define_prop", "set_prop", "unix_socket_connect", "get_prop"],
+    "system_vendor_config_prop_definition": "define(`system_vendor_config_prop', `\n  system_public_prop($1)\n  set_prop(vendor_init, $1)\n  neverallow { domain -init -vendor_init } $1:property_service set;\n')\n"
+  },
+  "factory_assertion": {
+    "runtime_path": "/vendor/etc/selinux/plat_pub_versioned.cil",
+    "sha256": "4258020807f41ab856992db8f44027bf8a3fd80cbc40f506129595aa5fa17dd8",
+    "size_bytes": 396303,
+    "line": 6117,
+    "expression": "(neverallow base_typeattr_232_202504 vendor_persist_camera_prop_202504 (property_service (set)))",
+    "source_attribute_definition": "(typeattributeset base_typeattr_232_202504 (and (domain) (not (coredomain))))",
+    "versioned_property_scope_attribute": "system_restricted_property_type",
+    "versioned_property": "vendor_persist_camera_prop_202504",
+    "original_bytes_preserved": true
+  },
+  "duplicate_type_ownership": {
+    "property_type": "vendor_persist_camera_prop",
+    "factory_runtime": "/vendor/etc/selinux/plat_pub_versioned.cil",
+    "source_runtime": "/system_ext/etc/selinux/system_ext_sepolicy.cil",
+    "declarations_per_runtime": 1,
+    "role": "object_r",
+    "mapping_attribute": "vendor_persist_camera_prop_202504",
+    "mapping_members": ["vendor_persist_camera_prop"],
+    "existing_contract_ownership_unchanged": true
+  },
+  "source_capture_receipt": {
+    "path": "reports/oem-policy-integration-20260829/root-evolution-policy-source-v1/stdout.json",
+    "sha256": "fcbf82e4788c7c89e4f055442a1ba7fa5aee1062db970b3e669ad3df789e4435",
+    "size_bytes": 80968
+  },
+  "native_failure_receipt": {
+    "path": "reports/oem-policy-integration-20260829/first-target-files-driver-preparation-v1/operational-v2/evolution-policy32-preparation-v1/operational-v2/root-policy-v2/stdout.jsonl",
+    "sha256": "2bf26bbc014271706320303f94563fd3c857569304689f001de9df4b225908c2",
+    "size_bytes": 9365703,
+    "failed_target": "nezha_factory_precompiled_sepolicy",
+    "original_failed_result_preserved": true
+  },
+  "host_validation": {
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/camera-property-write-source-v1/host-validation-v1/receipt.json",
+      "sha256": "45a9dfc91bd9abfac17cbff937f9f0bcb71b413c0571e971f9810e7f4ee51d3a",
+      "size_bytes": 81110
+    },
+    "patch_copies_reproduced": 2,
+    "patch_max_fuzz": 0,
+    "m4_tool": {
+      "path": "/usr/bin/m4",
+      "version": "GNU M4 1.4.6",
+      "sha256": "1685f2c90307faa05ef5ae8f707d3a18a519c9dad75882768f66abb475f1b3d7",
+      "size_bytes": 118640,
+      "is_android_build_m4": false
+    },
+    "complete_captured_platform_macros_used": true,
+    "valid_cases": 24,
+    "variants": ["user", "userdebug", "eng"],
+    "recovery_values": ["false", "true"],
+    "source_capability_cases": ["original", "undefined", "enabled", "disabled"],
+    "invalid_values": ["", "0", "1", "TRUE", "FALSE", " false", "false ", "yes", "auto", "false,true", "m4exit(0)"],
+    "invalid_cases": 11,
+    "invalid_exit_code": 1,
+    "invalid_policy_statements_emitted": 0,
+    "default_and_true_expansions_byte_identical": true,
+    "only_one_camera_set_statement_removed_when_false": true,
+    "original_type_declarations": 4,
+    "original_neverallows": 4,
+    "original_allow_statements": 12,
+    "disabled_allow_statements": 11,
+    "all_other_ordered_statements_unchanged": true,
+    "all_valid_stderr_empty": true,
+    "original_source_and_factory_inputs_preserved": true
+  },
+  "adoption_requirements": [
+    "Pair the explicit device/source and private policy-bundle capability with this exact patch, source preimage/postimage, selected factory input and macro identity; no default profile selects false.",
+    "Generate exactly one reviewed BOARD_SEPOLICY_M4DEFS value; reject missing, duplicate, conflicting, injected or overridden capability definitions without sorting or deduplicating them.",
+    "Use the same false definition in ordinary policy and the independent Evolution comparison producers. Verify actual M4 source dependencies and output, not a hand-edited generated CIL.",
+    "Retain the existing exact duplicate-type owners, declaration counts, role, singleton public mapping and property attributes. Do not omit the source declaration or reclassify vendor_init.",
+    "Require effective vendor_init camera-property set access to be empty while preserving its socket and read permissions and the complete Evolution/factory assertions.",
+    "Run strict combined policy compilation, all applicable contexts and Treble checks, and unfiltered normal-policy permissive analysis before image adoption; no assertion or check may be disabled.",
+    "Review actual merged camera property labels, assignments and readers separately; neither source compilation nor this host proof verifies camera behavior or transfers write permission to another domain."
+  ],
+  "limits": {
+    "active_source_patch_applied": false,
+    "android_build_m4_executed": false,
+    "full_policy_compiler_executed": false,
+    "duplicate_make_definition_guard_tested_by_this_fixture": false,
+    "combined_factory_policy_verified": false,
+    "camera_property_labels_or_runtime_verified": false,
+    "images_adopted": false,
+    "complete_rom_ready": false,
+    "guest_accessed": false,
+    "phone_accessed": false
+  }
+}
