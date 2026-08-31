@@ -35,9 +35,11 @@ evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
 Commit **c3686ed** provides the reviewed [framework-matrix projection](framework-matrix.md)
 for the exact 155 missing tuples. The **matrix-v1 source transaction is now
-installed**, while output files still belong to the previous v13ja 4 KiB build.
-Its 38-goal component build is running through configuration without a completed
-result; the compatibility retry remains pending. The completed
+installed**. Its 38-goal native command completes with exit 0 and 128 Ninja
+actions after 163 frontend steps, producing new matrix outputs, but the wrapper fails an XML postcheck
+that requires explicit default AIDL version 1. The separate corrected read-only
+postcheck and independent review now pass; the compatibility retry remains
+pending. The completed
 full-run failure is not relabelled as a pass by this source installation.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
@@ -1232,9 +1234,12 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,961 tests in 173.222 seconds with zero failures, errors or skips**, executed
-by the coordinator. All seven bound files stayed unchanged: the three files
-committed as `a253c97` and these four checkpoint documents. The full log is
+**3,961 tests in 167.201 seconds with zero failures, errors or skips**, executed
+by the coordinator. All five checkpoint files stayed unchanged during the run.
+The full log is
+`7bfd1ea06a54e1674670689904bf285b519ff157077f03d46ed203aefa241cd1`.
+The preceding 3,961-test run took 173.222 seconds, preserving all seven bound
+files; its log remains
 `20f5203fcd2658f11677c00a003a61cf0cbb8134d9cbc448c6fe9b5ed7b12d72`.
 The new [read-only target-files AVB inventory](target-files-avb-inventory.md)
 adds 42 synthetic tests. It hashes bounded ZIP roles and explicit retained
@@ -1550,9 +1555,40 @@ bind the transaction. The source guard count grows from 219 to 220: the
 original 204 inputs, fifteen read-only producer preconditions and the new
 matrix XML. Thirteen policy/eleven runtime outputs and the 4 KiB product remain
 unchanged; 238 rollback copies and 26 stamps are preserved. This installs
-source only. Existing outputs retain their prior v13ja provenance until the
-running 38-goal matrix build and subsequent VINTF retry complete; no completed
-matrix build result is recorded yet.
+source only. The subsequent native **matrix-v1-1** command finishes at
+**03:51:10 UTC**, with 128 Ninja actions after 163 frontend steps and exit 0;
+291 progress rows are not 291 native actions. The wrapper exits 1 with
+`matrix HAL contains non-exact declaration syntax`; original result
+`f83b2e8706d947e86b30d2a4a31a0d823d96fb6d2d7e84efb891c4349759f962`
+remains a failed wrapper record. Its parser incorrectly requires an explicit
+version child even when pinned libvintf uses the canonical AIDL default of 1.
+The installed/generated matrix preserves all 155 tuples across 130 HAL nodes;
+103 HAL nodes omit the default version, covering 122 version-1 tuples.
+The reviewed correction only accepts that omission and retains rejection of
+empty, zero, range or duplicate explicit versions. It does not edit generated
+XML, remove checks or rewrite the failed receipt. The distinct read-only
+**matrix-postcheck-v2** runs from **04:29:59 to 04:32:59 UTC (August 31 in New
+York)** and exits zero with empty stderr. Receipt
+`7ab3bf7d5b7de50f89a030284f43ad54175515335aa0890c4019f969a519a071`
+verifies the exact source selector and normal Ninja input, all 155 tuples,
+220 source inputs, thirteen policy/eleven runtime outputs, three allocator
+outputs, four tools and five targets. It executes no build commands and makes
+no source/output changes. Independent paired review
+`ee86f6ce55f4d22f7f15c17ed885b07953dfc04f04db6e5c23d5409923891a0f`
+verifies both receipts and the action counts, without rerunning the build. It
+preserves one explicit no-level matrix-definition skip as a skip and reuses
+the existing strict policy analysis through exact thirteen-file equality.
+The original failed wrapper receipt is unchanged. Provider installation,
+producer qualification and the complete VINTF retry remain separate.
+
+The first provider-install preflight then stops after two successful read-only
+Ninja queries. Capture `0f1070455754f9959b545ec98b535feb4c206d8798efab12c8722c47fdf34a60`
+records a strict reader rejection: each of 27 selected phony aggregate targets
+contains its primary installed destination twice. Pinned `base_rules.mk`
+adds that dependency both directly and via `LOCAL_SOONG_INSTALL_PAIRS`.
+No content-producing node query or installation was reached; source/output
+guards remain unchanged. The failed record remains separate from the upcoming
+narrow reader correction and complete preflight retry.
 
 Commit **78376c7** adds the explicit `v13h-policy-only` preparation profile with
 canonical SHA256

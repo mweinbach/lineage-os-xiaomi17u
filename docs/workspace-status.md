@@ -6,16 +6,21 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **August 31, 2026 UTC (August 30 in
+consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The active guest source is now
-**matrix-v1**, committed at **2026-08-31 03:14:25 UTC**, while the last completed
-component outputs remain the earlier **v13ja 4 KiB** build. The 38-goal matrix
-build is running through configuration; it has no completed result, and the
-VINTF retry remains pending. The previous v13ja source
+**matrix-v1**, committed at **2026-08-31 03:14:25 UTC**. Its 38-goal build
+finishes at **03:51:10 UTC** with native exit 0 and **128 Ninja actions after
+163 frontend steps** (291 total progress rows), but the
+wrapper exits 1 on an XML postcheck that wrongly requires explicit AIDL
+version 1. The original failed receipt is preserved. A separate read-only
+postcheck now passes at **04:32:59 UTC (August 31 in New York)**, verifying the
+new matrix outputs and guarded inputs. Independent host review now passes;
+this does not rewrite the failed wrapper or prove full VINTF. The previous
+**v13ja 4 KiB** component record remains historical. The previous v13ja source
 configuration introduced `4096` with prebuilt checks enabled. Commit **17cde61** adds
 the [current-provider 4 KiB successor](nezha-page-size-v2-integration.md), with
 matching host candidates and checks enabled, without ignore flags or SELinux
@@ -72,9 +77,28 @@ through one atomic exchange and a five-event journal ending in `commit_verified`
 The guarded source set grows from 219 to 220 with the authored XML: the original
 204 source inputs plus fifteen producer preconditions and the new file. All
 thirteen policy/eleven runtime identities and the 4 KiB product remain unchanged;
-238 rollback copies and 26 stamps are retained. Native matrix build and the
-compatibility retry remain unverified; the preserved exit-65 result remains
-the latest completed full-check result.
+238 rollback copies and 26 stamps are retained. The native matrix command now
+exits zero; its failed wrapper is followed by the separate passing postcheck.
+The installed and
+generated XML have the same 30,492-byte identity and all 155 expected tuples;
+103 HAL nodes omit the canonical default version 1. The correction uses the
+pinned libvintf default and keeps invalid explicit declarations rejected. Its
+separate read-only postcheck verifies all 220 source inputs, thirteen policy
+and eleven runtime outputs, three allocator outputs, four tools and five
+targets, without another build or source/output writes. Independent review
+binds both receipts and confirms one retained no-level matrix-definition skip,
+which is not counted as a pass. Existing strict policy analysis is reused by
+exact equality of thirteen protected policy files. Neither the failed receipt
+nor generated XML is rewritten.
+The preserved exit-65 result remains the latest full VINTF
+result; provider installation and the complete retry remain pending.
+
+The first read-only provider-install preflight stops in its graph reader after
+two zero-exit native queries. Each selected aggregate target repeats its
+installed file dependency; pinned Make rules add it both directly and through
+Soong's install pairs. The failed capture is preserved. Source/output guards
+remain unchanged, and no provider installation ran. The next slice corrects
+only this aggregate-target reader case before repeating the complete preflight.
 
 The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
@@ -428,10 +452,11 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,961 tests in 173.222
+The latest completed full workspace suite passed **3,961 tests in 167.201
 seconds with zero failures, errors or skips**, executed by the coordinator.
-All seven files—the helper's three files and the four checkpoint documents—
-stayed unchanged during that run. The preceding coordinator run passed
+All five checkpoint files stayed unchanged during that run. The preceding
+3,961-test run took 173.222 seconds and retained its seven-file checkpoint.
+The earlier coordinator run passed
 **3,919 tests in 164.329 seconds**.
 All four checkpoint files stayed unchanged throughout that run and were then
 committed as `4116868`. The preceding matrix-owner run passed **3,919 in
@@ -481,8 +506,9 @@ passed 3,558 in 153.985 seconds. These are offline tooling results, separate fro
 Android builds, host policy proofs and physical-device tests. This checkpoint records
 code through `a253c97`, with the previous component checkpoint committed
 as `8fc2162`, followed by `da9648b`, `3001e85` and `4116868`. The active
-guest source is now matrix-v1 with the 4 KiB product unchanged; the latest
-completed component output baseline remains v13ja until the matrix build passes;
+guest source is now matrix-v1 with the 4 KiB product unchanged; the matrix
+command has produced new outputs and the distinct read-only postcheck and its
+independent review pass, with the earlier v13ja record preserved;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -581,7 +607,7 @@ from a full build and require destination hash verification after transfers.
 | v13f provider input installation | Four committed exchanges verified; original vendor/ODM, Camera runtime, mi_ext and working76 preserved; provider policy build and independent verification remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; runtime and image adoption remain open, with later 4 KiB ELF evidence separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13i allocator installation and component build | One device-tree exchange commits; 37 goals complete with fresh allocator actions and three inspected outputs; partial VINTF has an explicit skipped subcheck, and exact producer/full compatibility checks remain open | [Native ROM integration](../research/native-rom-integration.json) |
-| Latest completed 4 KiB component build | The earlier v13ja installation and 37 goals pass; the newer matrix-v1 source is installed with prior outputs retained, and its 38-goal build remains pending | [Native ROM integration](../research/native-rom-integration.json) |
+| Latest 4 KiB component attempt | Matrix-v1 runs 38 goals with native exit 0 and 128 Ninja actions after 163 frontend steps; the failed wrapper receipt is preserved, while the distinct read-only postcheck and independent review pass | [Native ROM integration](../research/native-rom-integration.json) |
 | Current 4 KiB provider ELF/symbol checks | All 26 checks execute freshly and pass within 48 native actions; complete raw review verifies commands, new log rows and stamps; full ABI, runtime and hardware remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | Current allocator producer capture | Nine commands across three query layers report success; all 66 payloads are collected and subsequent guest prerequisite verification reopens the external references; no fresh compile/runtime claim | [Native ROM integration](../research/native-rom-integration.json) |
 | Native packaged-bytecode proof | Four complete PYC members reproduce from the pinned Soong recipe; 28 native commands across capture/proof pass with zero skips; generated-proto provenance, signatures and full VINTF remain separate | [Native ROM integration](../research/native-rom-integration.json) |

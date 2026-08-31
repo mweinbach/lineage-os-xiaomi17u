@@ -153,3 +153,49 @@ user/userdebug cases. The review is
 `source-review/implementation-review-v1.json`, SHA256
 `9fe1eb7ecb6e3e5dd04450c65156f7ceacf22efbc75643aa8c7c39a2ff06cfc5`.
 These are host source/projection results, not a native compatibility pass.
+
+## Native build and canonical AIDL versions
+
+The matrix-v1 source transaction completed at **2026-08-31 03:14:25 UTC**.
+It exchanges the device tree once, selecting the authored matrix while
+preserving the 4 KiB product, provider inputs and policy sources. The native
+38-goal component invocation completed at **03:51:10 UTC** with exit zero and
+**128 Ninja actions after 163 configuration steps**. The displayed total of
+291 includes both phases. The wrapper nevertheless returned one because its
+post-build XML parser required an explicit version on every AIDL declaration.
+The original result remains failed, with SHA256
+`f83b2e8706d947e86b30d2a4a31a0d823d96fb6d2d7e84efb891c4349759f962`;
+it is not rewritten as a successful verification result.
+
+Pinned `system/libvintf` at
+`69c456ea4aa2f503a2904cfbc11f279a3b2efb09` deliberately omits its default AIDL
+version when serializing a matrix and restores that default when parsing it.
+The value is **1**, established by `constants-private.h` and
+`include/vintf/constants.h`, rather than by the stale version-zero comment in
+`parse_xml.cpp`. Both generated and installed XML have SHA256
+`dc91ab1640e532a1bf42cb7aa99ca471b0f7a71e30c27e754bf0d3dc04fab353`
+and contain 30,492 bytes. Exactly 103 packages omit the version tag; these
+account for all 122 version-1 tuples. Interpreting only an absent AIDL version
+as 1 preserves all **155 unique tuples in 130 packages**. Empty, zero,
+duplicate or ranged versions and wildcard instances remain rejected.
+
+The separate `matrix-postcheck-v2` verifier applies that narrow parser
+correction and checks the previously unreached source, producer, matrix,
+allocator and tool outputs. It makes no Android source or generated-XML edit
+and runs no new build. Its independently reviewed helper is pinned at
+`3111886d87c822a0f3d969f39f3cf0d50796761441bab36e10b68845dc3d392a`.
+The actual postcheck passed at **2026-08-31 04:32:59 UTC** with receipt SHA256
+`7ab3bf7d5b7de50f89a030284f43ad54175515335aa0890c4019f969a519a071`
+(287,116 bytes), exit zero and empty stderr. It verifies the 220 guarded source
+inputs, unchanged thirteen policy and eleven runtime outputs, all 155 matrix
+tuples, three allocator outputs, four tool outputs and five target outputs.
+The captured result passes the separate host replay recorded in
+`postcheck-v2/actual-review-v1.json`, SHA256
+`ee86f6ce55f4d22f7f15c17ed885b07953dfc04f04db6e5c23d5409923891a0f`.
+The component log still contains the explicit no-level matrix-definition
+skip; it is not counted as a passed check.
+The original native invocation and this later read-only verification are
+separate evidence; neither establishes full VINTF compatibility. The selected
+provider installations and full compatibility retry remain pending. See
+[current integration evidence](native-rom-integration.md) for those results
+and the separate packaging and hardware limits.
