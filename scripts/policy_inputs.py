@@ -212,7 +212,8 @@ def render_evolution_owned_groups():
         lines.extend(["filegroup {", '    name: "' + name + '",', "    srcs: ["])
         lines.extend('        "' + PurePosixPath(source).relative_to(parent).as_posix() + '",'
                      for source in sources)
-        lines.extend(["    ],", '    visibility: ["//vendor/xiaomi/nezha-policy:__pkg__"],', "}", ""])
+        # Pinned Soong forbids specific vendor-package visibility from device/.
+        lines.extend(["    ],", '    visibility: ["//vendor:__subpackages__"],', "}", ""])
     return ("\n".join(lines) + "\n").encode("ascii")
 
 

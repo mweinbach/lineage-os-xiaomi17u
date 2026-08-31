@@ -1574,7 +1574,10 @@ class NativePolicyTemplateTests(unittest.TestCase):
             self.assertEqual(selected.count('"'), len(paths) * 2)
             for path in paths:
                 self.assertIn('"' + path.removeprefix(base) + '"', selected)
-            self.assertIn('visibility: ["//vendor/xiaomi/nezha-policy:__pkg__"]', block)
+            # Soong visibility.go rejects individual vendor packages when the
+            # declaring source package is outside vendor/.
+            self.assertIn('visibility: ["//vendor:__subpackages__"]', block)
+            self.assertNotIn("//vendor/xiaomi/nezha-policy", block)
 
     def test_combined_binary_uses_current_framework_outputs_and_strict_guards(self):
         text = (WORKSPACE / "policy/nezha/Android.bp").read_text()
