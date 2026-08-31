@@ -19,7 +19,14 @@ preserving both raw prefixes and verifying FEC and exact package budgets.
 The signed parent chain and physical partition fit remain separate gates. The
 **v13i** allocator component build and independent output review now pass.
 Its partial VINTF run has an explicit skipped matrix-definition subcheck;
-full compatibility and exact producer-command qualification remain open.
+the fresh producer descriptions are admitted, but full compatibility remains open.
+The first 26-goal provider ELF build and four-goal follow-up produce a distinct
+inventory of four passed checks and twenty-two alignment failures at 16 KiB.
+The follow-up's complete readback and independent evidence review pass. The
+user now authorizes a checked 4 KiB first-boot baseline; its current-provider
+successor is committed and host-verified, but not installed or built yet.
+The inactive Camera stage and
+maintained delivery candidates do not bypass the remaining native gates.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -644,8 +651,8 @@ The later product-list metadata copy appends 126 bytes to OUT `.ninja_log`,
 making this snapshot stale for the current full-VINTF guard. The exact
 staleness record is
 `d44a863f77770d9d05feecedb1544ab9e1e993ceea834ee252d7fa8fdb46f7a9`.
-The historical capture remains valid evidence; a fresh phase-2 capture is
-required before full compatibility, without relaxing the complete log guard.
+The historical capture remains valid evidence; the fresh phase-2 capture below
+supplies the required current receipt without relaxing the complete log guard.
 
 The older v13h full-check packet remains historical staging: all 221 files are verified,
 including the manifest
@@ -657,9 +664,33 @@ without source or Android-output writes. It does not execute materialization,
 admit future build outputs or run full compatibility. The coordinator's 44
 offline packet tests pass in 0.333 seconds with zero skips; these are not native
 VINTF results.
-The current v13i 230-member full packet has not been emitted. Its complete
-current graph/log guard requires a fresh phase-2 producer receipt after the
-metadata log change; the older staged packet cannot substitute for it.
+The fresh **allocator-producers-v13i-2** capture runs from **22:41:16 to
+22:46:09 UTC** and passes nine commands across three query layers, zero skips,
+with source and Android outputs unchanged. The inner receipt is
+`77dc707aa544240ad30c45644afff7e58376a05066fc5ae9b0d92f5b902d7543`,
+and the outer receipt is
+`8cb6f9f8e01ffe870c3d698f1aad74bb461b0dc24cf4a23491873b8e296c5867`.
+Independent transport review reopens all 69 published members, including 66
+payloads totaling 1,428,590 bytes, and verifies the terminal recheck. The 35
+absent optional allowlist slots are explicit, not passes. The receipt is
+admitted for packet preparation; this does not claim a fresh compiler action,
+source-to-binary equivalence or service registration.
+
+The full v13i packet now has **230 payloads plus its manifest**, SHA256
+`63af6f0e8483d89561192b3e8f3732af9bc4a06386bce1155fd7a205de3c15e1`.
+It binds 22 framework XML files and all 39 APEX inputs to the existing 16 KiB
+source state. This first packet remains preserved and unstaged. After correcting
+the historical-baseline versus live-state guard, the successor stages all 231
+files, but its first capture rejects a shadowed writable `/work` mount beneath
+the read-only overlay. The preserved diagnostic is
+`edf891f2987637c0835044e0178e6896b8ae92fecf6dc5994ac870ce715c26f9`.
+The mount-stack correction stages another 231-file packet. Its capture advances
+past that check, then fails its assumed `.py` archive membership: the actual
+built `apexd_host` and `deapexer` package `.pyc` files. The diagnostic is
+`418f80e0c60500b3fec16d2e3c43df75628a029a35c21b4be545560cc58d29af`.
+A deterministic source-to-bytecode proof using the pinned Soong recipe is in
+progress. No full native compatibility command has executed; both capture
+failures remain preserved.
 
 Three separate capture attempts remain failures: the footer-tool reader rejected
 a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
@@ -774,15 +805,62 @@ is clear. Strict normal preoptimization and the three selected providers remain
 intact. The Camera namespace is still unexported and unselected, with no APK
 admission, build or grants. The complete protected-target inventory, source
 transaction and actual build checks remain required.
+The later inactive Camera stage preserves the exact eleven-file namespace and
+original APK, with all fifteen file/directory modes checked. Its 69,116-byte
+host capture is
+`fd6c1efae5fe58037142d33fdb88ac8a06480024966897aaa32fd5c99e0128eb`;
+independent review
+`177217e380639605d1b2b3fe633653b7b40f427731a18e63dc8e0a95dc483646`
+passes for staging only. All 204 source files, thirteen policy/eleven runtime
+outputs and sixteen graphs are preserved. The active namespace is unchanged;
+activation remains held for provider ELF results, a fresh producer receipt
+and full VINTF. No APK selection, graph generation or build follows.
 
 Provider capture v6 fails on ambiguous source/private-provider resolution.
 The corrected **v7 read-only capture** passes five queries, retaining strict
 16 KiB configuration and its source, graph, log and selected-input guards.
 Its receipt is
 `5fbf5e1bea88a90de270a654c3516efaf547b0c600af3a92bc96678e51c07ea7`.
-All 26 selected ELF-check stamps are absent in the capture, which executes no
-native ELF or symbol check. Actual check results remain unverified; graph
-capture is not provider compatibility.
+All 26 selected ELF-check stamps are absent in that capture, which executes no
+native ELF or symbol check. The subsequent **provider-elf-v13i-1** build runs
+from **21:51:33 to 21:51:56 UTC** and returns exit 1 without timeout or overflow.
+Its seven-file capture totals **91,591,689 bytes**; result SHA256 is
+`b97659d56e4ff3e3b99a664cb1d604dffcc481f09f71e0723b45714b72b09313`.
+
+| First provider ELF attempt | Targets |
+| --- | ---: |
+| Passed checks | 3 |
+| Failed 4 KiB alignment against the retained 16 KiB requirement | 19 |
+| Unreached or unproven | 4 |
+
+Six separate dependency-strip failures report read-only temporary storage.
+Source inputs, protected policy/runtime outputs and strict settings remain
+unchanged, and postchecks complete. Independent review
+`bc56abc6667dbbba2cfe2106790efc3459d5aa4260f13e8146547111ba8b9127`
+reconstructs all 26 outcomes from the complete selection, native output and
+both Ninja logs, with no findings about that evidence. The native build remains
+failed; unreached targets are not passes and no full ABI or runtime claim follows.
+
+The four-goal **provider-elf-v13i-2** follow-up runs from **22:38:06 to
+22:38:14 UTC**, using the existing writable Soong temporary directory while
+retaining the 16 KiB requirement. `libwfdconfigutils` passes; `libmiracastsystem`,
+`libwfdcommonutils` and `libwfddisplayconfig` fail alignment. None of these four
+targets remains unreached. Its result
+`64107767b9c962853dfd6339049b327a29fe304a293b29fdb0ca6d9a76f72df7`
+records all six global postchecks passing, no postcheck errors and no remaining
+build processes. The native exit remains 1. The prior three passes and nineteen
+failures are preserved, giving **four distinct passes and twenty-two alignment
+failures** across both attempts. Normal dependency actions extend beyond the
+four selected goals; this is not a claim of 26 fresh checker results. Independent
+review `3df11175b7a9df364d4697e3b1c9861f6c6ec44d6b064e7448598469540649b2`
+reconstructs the complete outcome inventory from all seven new capture files
+(90,950,619 bytes), seven prior files and full raw envelopes, with no findings.
+It accounts for thirteen repeated prior alignment failures separately. All 71
+dependency outputs are present and no temporary-directory failure recurs;
+twenty-two modules still fail before symbol checking. Other source, graph,
+tool and dependency identities remain bound to the guarded native receipts,
+without additional guest reads by the reviewer. No full ABI, provider runtime
+or image-adoption result follows.
 
 The first image-delivery dispatch fails before staging because its two
 case-observation paths are absent; no image copy is attempted. The corrected
@@ -800,6 +878,37 @@ accepts only the private copies and guarded preservation, with no blocking
 findings. Metadata/source/image adoption, signatures, physical fit and boot
 remain unverified.
 
+Commit **e304faa** brings the reviewed [delivery adapters](policy-image-delivery.md)
+and [generator capability](target-files-delivery-integration.md) into ten
+maintained workspace files. The original metadata tools and factory selectors
+remain unchanged. Repeated delivery candidates match at admission SHA256
+`0f8bea1ac8a16754633af3430089e565c42c8d9c7be4a74cd07cec9bdb740b11`;
+the maintained consumer freeze is
+`e30d0904189ddf16d62f4bd0a4702e8d5cdae74b7e974d9e2fa8a29c9a7ab674`.
+Both maintained metadata bundles preserve all 205 original metadata files /
+6,460,780 bytes while binding the reviewed leaves and current-policy/copy
+evidence. This is host source admission, not a selected guest input. Normal
+product Kati, the explicit source/image transaction and ordinary metadata-hook checks
+remain pending; no date, care-map or page-size profile is selected by that
+delivery candidate. Its first isolated native Kati fixture records **58 passed
+and two failed cases, zero skips**. Both undefined original-image selector
+cases stop at `probe.mk:10: missing separator` before reaching the expected
+production diagnostic. The preserved embedded result is
+`fdf8d649e0d74b1d045e48f54d6aac6f098b99b3c77f1083b9661bf74d0f1f39`.
+Source/postflight guards pass, with no timeout or forced cleanup; the owned
+jail process group is quiescent. The corrected fixture now passes **all 60
+cases with zero failures or skips**. Its dispatch is
+`8ac0a9d80c4e649994faa3e8f263fee1049b69136c6e9c82d40809e899fd7c51`,
+and embedded probe result is
+`f1ed984cfe2aec07c40bedd8baedd3b0a0a3843bc317b64ad22da6f2a83a4c3f`.
+Source and postflight guards, namespace/limits and owned-group cleanup pass.
+The production include is unchanged; only the fixture was corrected. This
+does not execute the ordinary product route, Ninja or the metadata hook, verify
+real images or adopt source/image inputs. Independent review
+`e1c179ede17ac0790b2f5dd50314f06c877afc0c4b65eca781151bf337bf7497`
+accepts the isolated fixture after reviewing all 73 captured payloads and the
+complete native result. The first 58/2 attempt stays failed.
+
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
 and original images. Its freeze is
@@ -812,14 +921,41 @@ admission of the new footer outputs. These are host preparation results, without
 guest source installation, image adoption, native target-files packaging or
 compatibility admission; no unfinished native packet is counted as a pass.
 
-The current Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
+The retained Soong configuration snapshot selects `DeviceMaxPageSizeSupported`
 as `16384` and `DeviceCheckPrebuiltMaxPageSize=true`, while static inspection
 finds 22 of the 26 provider ELFs use 4 KiB load alignment; the other four use
 16 KiB. The snapshot was collected during the component build. The optional
 [4 KiB experiment](nezha-page-size.md), commit `84d63c2`, and its host v13g
-candidate are on hold and unadopted. Lowering the checker threshold does not
-resolve the pinned 16 KiB/VSR requirement. The failed v13f policy build retained `16384`
-with checking enabled; this experiment is not approved as the next integration.
+candidate remain unadopted historical inputs. The user now explicitly accepts
+a **4 KiB first-boot baseline**, without requiring 16 KiB compatibility for the
+initial bring-up. Commit **17cde61** adds the separate
+[current-provider successor](nezha-page-size-v2-integration.md), with the check
+enabled at 4096 and no ignore flags. Both actual host candidates match admission
+`392485b8ef5005f6d8079487c7a8ee7931597bacaab593478277f8201c4d03a2`:
+44 payloads plus admission, changing only the generated product fragment and
+adding the v2 descriptor. The stock Image/configuration and current provider
+bindings are independently reverified. The freeze is
+`600e286a1be0ee29d06c26a831cd7ef92db042915bef695a4ce234873c429551`.
+Default rendering and the old descriptor remain unchanged. Combining this
+profile with the earlier policy-image delivery evidence is explicitly blocked
+until current native equality and paired admission are verified.
+The active v13i guest remains
+at 16384 until a verified transaction changes it. This decision does not turn
+the failed 16 KiB checks into passes or establish VTS compatibility, native
+adoption or hardware support; normal Android SELinux remains enforcing.
+The **23:30:55 UTC** pre-install snapshot binds 216 present files among 266
+requested paths, totaling 7,646,909,660 bytes. All 1,179 base revisions and
+origins match; the six reviewed patched projects remain intact. It freshly
+checks 204 source inputs, thirteen policy and eleven runtime outputs, with
+the active maximum still 16384 and checks enabled. Receipt
+`b3bda63a1e5d62996f80766d2280cb073aaaf083ee80941560523d5b005d7ff2`
+verifies snapshot preparation, not a source transaction or native 4 KiB build.
+The subsequent inactive **run-v13j** stage returns exit 1 before installation:
+the archive verifier's `ensure_absent` call requires a missing ancestor.
+Diagnostic `1431f52ca97ebedabff070a8d9568d72cfa254e1db7472a3166830c0a206e657`
+is preserved with the backup and unchanged active source/OUT. The corrected
+v13ja successor is being prepared; archive verification and source installation
+are not claimed successful.
 
 The [native date fixture record](../research/pinned-build-metadata-native.json)
 verifies nine positive/legacy cases and 24 specific negative outcomes, with
@@ -836,8 +972,15 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,711 tests in 152.316 seconds with zero failures, errors or skips**, executed
-by the coordinator after the allocator component build. The preceding 3,711-test
+**3,795 tests in 163.444 seconds with zero failures, errors or skips**, executed
+by the coordinator on committed `17cde61`, with these checkpoint documents
+uncommitted. The page-size integration owner's preceding run passed 3,795 in
+143.328 seconds; the coordinator rehashed that complete log. The six frozen
+public files match the commit. The previous coordinator
+run passed 3,778 in 157.969 seconds with the ten maintained delivery files
+uncommitted, before their commit as `e304faa`. The preceding Camera metadata/capture and private-copy
+checkpoint passed 3,711 in 154.009 seconds; the earlier allocator component
+checkpoint passed 3,711 in 152.316 seconds. The preceding 3,711-test
 run passed in 158.487 seconds for the optional [mi_ext care-map source](mi-ext-care-map.md)
 committed as `8144704`. It remains inactive: authentic ODM imports and the final
 Evolution SYSTEM property input still require qualification. The previous
@@ -1108,14 +1251,17 @@ evidence validation; both older profiles and the blocked default remain
 unchanged. Matching raw reconstruction and keyless footer/FEC checks now pass;
 signed-parent, physical-fit and current-source checks still precede any adoption.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
-Qualify the exact allocator source/output provenance for the successful
-v13i component build using a fresh capture after the metadata log change, then
-perform full framework/vendor/APEX/kernel comparison.
+Preserve the admitted fresh allocator producer capture, verify the full
+packet's packaged bytecode against the pinned Soong source recipe, then perform
+full framework/vendor/APEX/kernel comparison. Correct the inactive v13j archive
+absence guard before installing the separately prepared 4 KiB successor.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
-Keep the 4 KiB experiment held and resolve the 16 KiB compatibility requirement
-without lowering checks. The bounded Camera component producer/output review
-passes; runtime API and linker access, Camera APK admission and full checker-input
+Prepare and verify the explicitly authorized current-provider 4 KiB baseline
+with ELF checks enabled and no ignore flags; preserve the original 16 KiB
+failures and record the remaining VTS compatibility gap. The bounded Camera
+component producer/output review passes; runtime API and linker access, Camera
+APK admission and full checker-input
 coverage remain separate. Complete strict provider runtime checks and the normal
 system, system_ext and product image dependencies. Full VINTF must include the
 actual framework and vendor APEX manifests, explicit kernel requirements and

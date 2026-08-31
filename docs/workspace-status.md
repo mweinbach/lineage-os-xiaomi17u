@@ -10,6 +10,22 @@ consolidates recorded evidence through **August 30, 2026** in UTC and New York.
 Earlier UTC milestones before 04:00 on August 30 occurred on August 29 in
 New York. This page does not assert that a historical builder VM is still running.
 
+The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
+not a prerequisite for that initial bring-up. The active v13i guest still has
+the measured `16384` maximum and enabled prebuilt checks. Commit **17cde61** adds
+the [current-provider 4 KiB successor](nezha-page-size-v2-integration.md), with
+matching host candidates and checks enabled, without ignore flags or SELinux
+changes. Only the generated product fragment and new descriptor change. The
+compiled stock kernel's 4 KiB configuration is independently verified; running
+phone behavior is not. Native adoption and VTS compatibility remain unverified,
+and earlier 16 KiB failures and the old host experiment remain preserved.
+The fresh pre-install snapshot passes at **23:30:55 UTC**, retaining all 1,179
+source pins/origins and the active 16 KiB settings; it does not install the
+candidate or run a build. The subsequent inactive v13j stage fails while
+checking an absent archive path with a missing ancestor, before installation.
+The backup and active source/OUT remain preserved; a corrected v13ja successor
+is being prepared. No 4 KiB source or build is active yet.
+
 The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
 configuration. Source inputs remained unchanged, the native sandbox was verified,
@@ -79,8 +95,9 @@ The incremental **vintf-v13h-2** retry finished at **16:58:47 UTC**, without a
 timeout, but failed the frozen level-5 `vintffm` check because
 `android.hidl.allocator` is mandatory and not declared in the manifest. All
 57 selected XML/APEX artifacts are present; presence is not compatibility.
-The next blocker is exact allocator source/output provenance and full
-VINTF compatibility. Commit `1647192` adds the
+The current compatibility blockers are the provider ELF checks below and full
+VINTF; the fresh allocator producer capture is now admitted for packet preparation.
+Commit `1647192` adds the
 [host-verified allocator capability](framework-allocator.md), selecting the
 existing upstream service while retaining its init, SELinux and `max-level="8"`
 manifest behavior. The **v13i** transaction installed that device selection at
@@ -93,7 +110,8 @@ The init file matches upstream bytes; the generated manifest preserves the
 expected allocator declaration and max-level 8 semantics. The partial VINTF
 run explicitly skipped `checkMatrixHalsHasDefinition` for a matrix with no
 level. This is not a zero-skipped native or full compatibility result. Exact
-allocator producer-command qualification remains separate. The strict v13h
+allocator producer descriptions do not prove source-to-binary equivalence or
+runtime service registration. The strict v13h
 policy analysis is reused through unchanged policy inputs and exact byte
 equality of the analyzed policy; no fresh analysis is claimed.
 The first allocator producer capture passes nine commands across three query
@@ -101,10 +119,16 @@ layers and describes all three outputs, with zero skips and preserved inputs.
 Its capture-time evidence remains valid, but the later product-list metadata
 action appended 126 bytes to OUT `.ninja_log`. The full VINTF guard therefore
 requires a fresh capture; that guard is not weakened to accept stale logs.
-The older v13h full-check packet remains historical staging with all 221 files
-verified. The current v13i 230-member full packet has not been emitted; it
-requires the fresh phase-2 producer receipt. Neither staging nor a producer
-capture executes full native compatibility checks.
+The fresh **allocator-producers-v13i-2** capture passes at **22:46:09 UTC**,
+with nine commands, three query layers, zero skips and unchanged source/OUT.
+Its complete host collection is independently reviewed and admitted for packet
+preparation. The older 221-file v13h staging remains historical. A subsequent
+231-file v13i packet stages successfully, but its first capture rejects a
+shadowed writable `/work` mount beneath the read-only overlay. The corrected
+capture advances past that check, then fails because its archive reader expects
+`.py` sources while the built tools package `.pyc` files. A deterministic
+source-to-bytecode proof using the pinned Soong recipe is in progress. No full
+native VINTF compatibility check has executed.
 
 Ninja query captures were held pending qualification of the pinned query
 modes under read-only mounts. The second footer capture accepted the valid empty
@@ -161,17 +185,49 @@ postchecks at **21:15:28 UTC**, preserving its source, graph and log inputs.
 Independent review is clear. The namespace remains unexported and unselected;
 APK source admission, protected-output inventory, actual build checks, grants
 and runtime behavior remain unverified. Earlier failed captures are preserved.
+The exact eleven-file Camera namespace and original APK are now staged in an
+inactive candidate, with all fifteen file/directory modes verified. Independent
+review confirms preserved source, output and graph guards. Activation remains
+held for provider ELF results, a fresh producer receipt and full VINTF; staging
+does not change the active namespace or select/build the APK.
 
 Provider capture v6 remains a parser-ambiguity failure. The corrected **v7
 read-only capture** passes five queries with strict 16 KiB configuration and
-unchanged guarded inputs, but all 26 ELF-check stamps are absent in the capture;
-actual ELF-check results remain unverified. The first image-delivery dispatch failed before staging on its
+unchanged guarded inputs, with all 26 ELF-check stamps absent at capture time.
+The subsequent **provider-elf-v13i-1** build fails at **21:51:56 UTC**: three
+checks pass, nineteen reject 4 KiB alignment where 16 KiB is required, and four
+are unreached or unproven. Six separate dependency-strip actions fail on
+read-only `/tmp`. Independent review confirms these outcomes. The targeted
+four-goal follow-up finishes at **22:38:14 UTC** using the corrected temporary
+directory: `libwfdconfigutils` passes, while `libmiracastsystem`,
+`libwfdcommonutils` and `libwfddisplayconfig` fail alignment. All six global
+postchecks pass. Across the two attempts, the distinct inventory is **four
+passed and twenty-two failed at 16 KiB**; this is not 26 newly executed checks
+or a replay of the earlier successful checks. Independent review rehashes all
+seven new capture files and all seven prior files, separately accounting for
+thirteen repeated failures. All 71 dependency outputs are now present and the
+temporary-storage failure is resolved. The authorized 4 KiB successor still
+needs its own native checks; these failed 16 KiB results are not relabeled.
+
+The first image-delivery dispatch failed before staging on its
 case-observation check. The corrected dispatch now prepares independent private
 guest copies of the exact vendor/ODM footer images, with preserved source,
 policy, runtime and original-image inputs. This is private preparation, not
 metadata or image adoption. Delivery used a writable source/OUT namespace;
 preservation is checked, not inferred from read-only mounts. Independent review
 accepts only these private copies and their guarded preservation.
+Commit **e304faa** adds the maintained [policy-image delivery adapters](policy-image-delivery.md)
+and [explicit device integration](target-files-delivery-integration.md). Repeated
+host candidates match and preserve all 205 original metadata files. Original
+factory modes remain unchanged. The first isolated delivery Kati fixture runs
+60 cases: **58 pass and two fail, with zero skips**. Both undefined-selector
+cases stop at a fixture parse error before their intended production guard.
+The corrected fixture now passes **all 60 cases with zero skips**, retaining
+the exact production include and all source/postflight guards. The failed
+first attempt remains preserved. Independent review of the 73-file capture is
+clear for this isolated fixture.
+Ordinary product execution, source/image adoption and the metadata hook remain
+pending; complete targets stay blocked.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -207,9 +263,16 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,711 tests in 154.009
-seconds with zero failures, errors or skips** after the Camera metadata/capture
-and private image-copy milestone. The preceding allocator component checkpoint
+The latest coordinator full workspace suite passed **3,795 tests in 163.444
+seconds with zero failures, errors or skips** on committed `17cde61`, with
+these separately owned checkpoint documents uncommitted. The preceding
+page-size integration owner run passed 3,795 in 143.328 seconds; the coordinator
+independently rehashed its full log. All six frozen public files match the
+commit. The preceding coordinator suite passed **3,778
+tests in 157.969 seconds**, covering the ten maintained delivery files before
+their commit as `e304faa`. The preceding Camera
+metadata/capture and private-copy checkpoint passed 3,711 in 154.009 seconds.
+The preceding allocator component checkpoint
 passed 3,711 tests in 152.316 seconds. An earlier 3,711-test run passed in 158.487 seconds, covering the optional
 [mi_ext care-map source path](mi-ext-care-map.md), committed as `8144704`.
 That capability is inactive: authentic ODM imports and the final Evolution
@@ -228,7 +291,7 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code and documentation through `6075f4a`. The active guest inputs are v13i;
+code and documentation through `17cde61`. The active guest inputs are v13i;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -508,18 +571,19 @@ override theme defaults. No Magisk integration is included.
   `vintf-v13h-2` retry completed without timeout but failed the mandatory
   `android.hidl.allocator` declaration at frozen level 5. All 57 selected XML/APEX
   artifacts are present; service integration and a successful unchanged check
-  remain required. The separate full-check packet is staged, with 221
+  remain required. The older v13h full-check packet is historical staging, with 221
   files verified and 39 APEX packages required; native materialization and
   compatibility checks remain unexecuted. Its 44 coordinator offline tests
   pass with zero skips, separately from the native build.
   A captured current Soong configuration selects maximum ELF page size 16,384
   with the prebuilt check enabled; static inspection finds 22 of 26 provider
-  ELFs have 4 KiB load alignment. The [optional 4 KiB experiment](nezha-page-size.md)
-  in `84d63c2` and its host v13g candidate are **on hold and unadopted**.
-  Lowering the threshold does not resolve the 16 KiB/VSR requirement and must
-  not suppress the failures. Both the failed v13f build and successful v13h
-  policy-only build retain `16384` and the enabled check, without provider ELF actions;
-  the 4 KiB path is not approved as the next integration.
+  ELFs have 4 KiB load alignment. The [older 4 KiB experiment](nezha-page-size.md)
+  in `84d63c2` and its host v13g candidate remain unadopted historical inputs.
+  The user now authorizes a 4 KiB first-boot baseline, with enabled checks and
+  a separate current-provider candidate, now host-verified in `17cde61`.
+  Active v13i still retains `16384`;
+  neither the new decision nor future 4 KiB results resolve the recorded
+  16 KiB/VTS compatibility gap.
   The [original-ODM shipping-API patch](vintf-shipping-api.md) passes source-bound
   host probes without fabricating vendor properties; it is authored but not
   installed by the v13f provider transaction and is not a complete native compatibility result.

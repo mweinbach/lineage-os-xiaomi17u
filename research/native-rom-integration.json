@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "camera-metadata-and-readonly-capture-verified-provider-graph-captured-private-images-prepared-full-guard-refresh-pending",
+  "checkpoint": "checked-four-kib-host-baseline-native-kati-sixty-pass-inactive-stage-and-vintf-capture-blocked",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -938,40 +938,31 @@
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
     "runner": "coordinator",
-    "passed": 3711,
+    "passed": 3795,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 154.009,
-    "code_commit": "6075f4a2e8f5ea6c0b527eae730b493e182999c2",
+    "elapsed_seconds": 163.444,
+    "code_commit": "17cde61541ca64e35f421c7853ab90b814cccefc",
+    "tracked_code_matches_commit": true,
+    "separately_owned_central_documentation_uncommitted": true,
     "log": {
-      "path": "reports/oem-policy-integration-20260829/workspace-tests-camera-delivery-v1.log",
-      "sha256": "f6800bf67736f3a10ff27879aed9342541d7b0605c9e216464ea2e8a934eeedd",
-      "size_bytes": 639334
+      "path": "reports/nezha-page-size-20260829/current-v13i-integration-v2/workspace-tests-4k-root-v1.log",
+      "sha256": "efc3ffddf0d9448a44d7a79220e0a88e8f7d52e83ab9d924e5936f6393a6cd69",
+      "size_bytes": 654896
     },
-    "scope": "Coordinator full offline suite after the actual Camera metadata build, read-only Camera/provider captures and private vendor/ODM copy milestone. Tracked edits during this run were the four central checkpoint documents/records; no tooling source changed. Zero skipped tooling tests do not replace Android builds, complete VINTF, image adoption, signing or hardware validation.",
-    "previous_allocator_component_run": {
-      "command": "python3 -m unittest discover -s tests -v",
-      "runner": "coordinator",
-      "passed": 3711,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0,
-      "elapsed_seconds": 152.316,
-      "code_commit": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
-      "log": {
-        "path": "reports/oem-policy-integration-20260829/workspace-tests-allocator-v13i-v1.log",
-        "sha256": "6e410219313c729fa869bfed1faf10a16391f4552831b79fccacf6a94c0e9db5",
-        "size_bytes": 639334
-      },
-      "scope": "Coordinator full offline suite after the actual allocator component build. Its zero-skipped tooling result does not replace the native build, which explicitly skips a partial VINTF matrix-definition subcheck, or establish full compatibility, image adoption or hardware success."
-    }
+    "receipt": {
+      "path": "reports/nezha-page-size-20260829/current-v13i-integration-v2/workspace-tests-4k-root-v1.json",
+      "sha256": "f3acaebdfeff8d175b2b7012712b7163c38b7832d5af2b013be28d98da3742ed",
+      "size_bytes": 776
+    },
+    "scope": "Coordinator reran the exact full offline command on committed 17cde61 with these separately owned central checkpoint documents uncommitted. Distinct from the owner precommit 3795/143.328-second run and from isolated native Kati, source installation, complete Android/VINTF builds, image adoption or device testing."
   },
   "remaining_gates": [
-    "Refresh the allocator producer capture after the verified metadata action changed OUT .ninja_log, then complete allocator provenance and full framework/vendor/kernel/39-APEX compatibility. Preserve capture-time phase1 evidence and require the complete current log guard; unchanged analyzed policy remains covered by exact-byte reuse of strict v13h analysis",
-    "Use the reviewed Camera capture for an explicit source transaction, complete protected-target inventory and actual APK graph/class-loader/check/build admission. The namespace and APK remain unselected; preserve strict preoptimization, uses-library and native checks",
+    "Retain the admitted fresh phase-2 allocator producer capture, prove the built host-tool bytecode from the pinned Soong source recipe, and complete the full native capture, materialization and framework/vendor/kernel/39-APEX compatibility commands. Preserve both failed captures and historical phase1 evidence; unchanged analyzed policy remains covered by exact-byte reuse of strict v13h analysis",
+    "Activate the exact inactive Camera source candidate only after the coordinated provider/fresh-producer/full-VINTF hold is cleared, then qualify the complete protected-target inventory and actual APK graph/class-loader/check/build path. The APK and namespace remain unselected; retain strict preoptimization, uses-library and native checks",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
-    "Execute all 26 strict native provider ELF/symbol checks using the verified v7 capture, then establish linker/service runtime behavior; graph capture and absent checker stamps are not compatibility passes",
+    "Correct and verify the inactive archive absence guard before installing the explicitly authorized current-provider 4 KiB successor. Preserve the failed v13j stage, backup and reviewed 16 KiB inventory of four distinct passes and twenty-two alignment failures. Execute the new component and enabled ELF/symbol checks without ignore flags, then obtain fresh paired image-delivery admission; no 16 KiB/VTS or hardware compatibility is inferred",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
     "Complete signed-parent, rollback, physical-partition-fit and current-active-source compatibility evidence before separately adopting the independently reviewed v13h keyless leaf derivatives. Exact package-budget and native hashtree/FEC checks pass; original inputs and historical export4 results remain preserved",
     "Ordinary target-files, super, A/B, snapshot and OTA packaging; the optional mi_ext care-map path still requires authentic ODM import-closure and final Evolution SYSTEM input qualification before source composition or native adoption",
@@ -1405,6 +1396,87 @@
         "size_bytes": 639334
       },
       "scope": "Coordinator full offline suite covering the optional committed mi_ext care-map source path. The path is inactive and still rejects authentic unqualified ODM imports. Separate from native allocator compilation, target-files/OTA generation, signed parent chain, image adoption and hardware evidence."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3711,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 154.009,
+      "code_commit": "6075f4a2e8f5ea6c0b527eae730b493e182999c2",
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-camera-delivery-v1.log",
+        "sha256": "f6800bf67736f3a10ff27879aed9342541d7b0605c9e216464ea2e8a934eeedd",
+        "size_bytes": 639334
+      },
+      "scope": "Coordinator full offline suite after the actual Camera metadata build, read-only Camera/provider captures and private vendor/ODM copy milestone. Tracked edits during this run were the four central checkpoint documents/records; no tooling source changed. Zero skipped tooling tests do not replace Android builds, complete VINTF, image adoption, signing or hardware validation.",
+      "previous_allocator_component_run": {
+        "command": "python3 -m unittest discover -s tests -v",
+        "runner": "coordinator",
+        "passed": 3711,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "elapsed_seconds": 152.316,
+        "code_commit": "222884511f23d4afbd49b1fa58d8e8561d618b3e",
+        "log": {
+          "path": "reports/oem-policy-integration-20260829/workspace-tests-allocator-v13i-v1.log",
+          "sha256": "6e410219313c729fa869bfed1faf10a16391f4552831b79fccacf6a94c0e9db5",
+          "size_bytes": 639334
+        },
+        "scope": "Coordinator full offline suite after the actual allocator component build. Its zero-skipped tooling result does not replace the native build, which explicitly skips a partial VINTF matrix-definition subcheck, or establish full compatibility, image adoption or hardware success."
+      }
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "coordinator",
+      "passed": 3778,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 157.969,
+      "code_commit": "e304faaded956c9a6e2478bae16d80b486428a9d",
+      "tested_parent_commit": "1c7e28f1e3baead3af28a036552312e91731bb59",
+      "tested_uncommitted_maintained_files": 10,
+      "tested_changes_committed_unchanged": true,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-policy-delivery-root-v1.log",
+        "sha256": "da04249a0d8e781f56144f1685c9d444e57cc1317f83d75384e57daeede86280",
+        "size_bytes": 651707
+      },
+      "receipt": {
+        "path": "reports/oem-policy-integration-20260829/workspace-tests-policy-delivery-root-v1.json",
+        "sha256": "bda45e95952b92a932da3e1d73a8a9a08053de79ec0927f0e962f2f00c1db66d",
+        "size_bytes": 620
+      },
+      "scope": "Coordinator full offline suite with ten reviewed maintained delivery files uncommitted atop the recorded parent; all ten frozen public bytes match subsequent commit e304faa. Separate from native ELF outcomes, source/image adoption, metadata-hook execution or hardware evidence."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "page-size-integration-owner",
+      "coordinator_independently_rehashed_log": true,
+      "passed": 3795,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 143.328,
+      "code_commit": "17cde61541ca64e35f421c7853ab90b814cccefc",
+      "tested_parent_commit": "e304faaded956c9a6e2478bae16d80b486428a9d",
+      "tested_uncommitted_public_files": 6,
+      "tested_changes_committed_unchanged": true,
+      "log": {
+        "path": "reports/nezha-page-size-20260829/current-v13i-integration-v2/workspace-tests-v1.log",
+        "sha256": "bdacc8ad2d4aa0e8c0c49ec152bbee7099151897b6553dd9bb07c4b52eb654bb",
+        "size_bytes": 654896
+      },
+      "authoring_freeze": {
+        "path": "reports/nezha-page-size-20260829/current-v13i-integration-v2/public-freeze-v1.json",
+        "sha256": "da13d72345122a0312ce1b4965fcf8d64cdfe4bde8dd89ef09ee2bdbc034d993",
+        "size_bytes": 3464
+      },
+      "scope": "Full offline suite executed by the page-size integration owner before the six frozen public files were committed unchanged as 17cde61. The coordinator independently rehashed the complete successful log; this is not a coordinator rerun, native 4 KiB build, VINTF pass, image adoption or hardware result."
     }
   ],
   "previous_v11b_policy": {
@@ -1753,8 +1825,8 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-30T21:28:00.873956+00:00",
-  "latest_native_build_completed_at_utc": "2026-08-30T21:09:40.192378+00:00",
+  "recorded_at_utc": "2026-08-30T23:57:57.309985+00:00",
+  "latest_native_build_completed_at_utc": "2026-08-30T22:38:14.916712+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
     "started_at": "2026-08-30T00:03:38.970767+00:00",
@@ -2192,9 +2264,11 @@
       "vsr_compatibility_verified": false,
       "reason": "Lowering the maximum to 4096 does not resolve the required 16 KiB/VSR alignment failures and would lower the failing threshold. The user forbids suppression; the coordinator has held this path.",
       "scope_after_provider_installation": "Provider installation retains the held 4096 boundary. The first policy-only attempt failed on the Audio AIDL graph conflict with 16384 and checks enabled; no user approval for the 4 KiB experiment is recorded."
-    }
+    },
+    "historical_checkpoint": true,
+    "current_decision_reference": "current_page_size_decision"
   },
-  "workspace_code_checkpoint": "6075f4a2e8f5ea6c0b527eae730b493e182999c2",
+  "workspace_code_checkpoint": "17cde61541ca64e35f421c7853ab90b814cccefc",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -3127,7 +3201,7 @@
     "independent_policy_analysis": "native_provider_policy_analysis",
     "previous_integration": "v13ha"
   },
-  "latest_native_build_status": "product-list-metadata-v1-passed-one-upstream-copy-action",
+  "latest_native_build_status": "provider-elf-v13i-2-failed-one-new-pass-three-alignment-failures-combined-four-passed-twenty-two-failed-at-16k",
   "provider_aidl_native_followup": {
     "fixtures": {
       "receipt": {
@@ -3685,9 +3759,9 @@
       "scope": "Independent parsing and comparison of six complete captured manifests, with all bounded capture and staged packet file hashes checked. Large guest-only artifacts remain supported by rebound native final hash/stat evidence; this review does not reopen them, execute native commands or admit v13f, AVB, image adoption or hardware."
     }
   },
-  "latest_timestamped_native_observation_utc": "2026-08-30T21:15:28.919096+00:00",
-  "latest_timestamped_native_observation_kind": "camera-v5b-readonly-capture-completed",
-  "latest_native_observation_kind": "camera-and-provider-graphs-captured-private-image-copies-prepared-allocator-current-guard-stale",
+  "latest_timestamped_native_observation_utc": "2026-08-30T23:30:55.744281+00:00",
+  "latest_timestamped_native_observation_kind": "preinstall-v13j-snapshot-verified-existing-16k-source",
+  "latest_native_observation_kind": "four-kib-inactive-stage-failed-before-installation-and-full-vintf-capture-failed-packaged-bytecode-assumption",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -6024,5 +6098,746 @@
     "independent_review_blocking_findings": [],
     "independent_review_captured_files_verified": 11,
     "metadata_provenance_members_bound": 205
+  },
+  "maintained_policy_delivery_integration": {
+    "code_commit": "e304faaded956c9a6e2478bae16d80b486428a9d",
+    "maintained_public_files": 10,
+    "frozen_public_bytes_match_commit": true,
+    "consumer_freeze": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/maintained-consumer-freeze-v1.json",
+      "sha256": "e30d0904189ddf16d62f4bd0a4702e8d5cdae74b7e974d9e2fa8a29c9a7ab674",
+      "size_bytes": 7069
+    },
+    "metadata_promotion_freeze": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/maintained-promotion-v1/freeze-v1.json",
+      "sha256": "2b72e19b10e6933e366d52792d3d7a146a92431437bea9d373ece9fcf63fd73f",
+      "size_bytes": 8729
+    },
+    "consumer_independent_review": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/maintained-consumer-review-v1.json",
+      "sha256": "b7bbd79d79402fe762fb04853d5d16be3953a71e7cbec61f9975edfa13601fd0",
+      "size_bytes": 2072
+    },
+    "metadata_independent_review": {
+      "path": "reports/oem-policy-integration-20260829/target-files-v13h-image-admission/maintained-promotion-v1/review-v1.json",
+      "sha256": "60b4af33394a1e9c2132c12b80b04e91c228e0aeb12c5275f6ea9c3f7ab7f64d",
+      "size_bytes": 13091
+    },
+    "candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v13i-policy-delivery-v1/admission.json",
+      "sha256": "0f8bea1ac8a16754633af3430089e565c42c8d9c7be4a74cd07cec9bdb740b11",
+      "size_bytes": 145894
+    },
+    "repeat_candidate": {
+      "path": "artifacts/device-candidates/nezha-factory-framework-user-v13i-policy-delivery-v1-repeat/admission.json",
+      "sha256": "0f8bea1ac8a16754633af3430089e565c42c8d9c7be4a74cd07cec9bdb740b11",
+      "size_bytes": 145894
+    },
+    "metadata_bundle": {
+      "path": "artifacts/target-files-metadata/nezha-policy-delivery-maintained-v1/target-files-metadata.json",
+      "sha256": "0c567538a831e081ea6a7c155f8e2ba1bbe328dca5582376604eff3168595858",
+      "size_bytes": 201001
+    },
+    "repeat_metadata_bundle": {
+      "path": "artifacts/target-files-metadata/nezha-policy-delivery-maintained-v1-repeat/target-files-metadata.json",
+      "sha256": "0c567538a831e081ea6a7c155f8e2ba1bbe328dca5582376604eff3168595858",
+      "size_bytes": 201001
+    },
+    "delivery_guide": {
+      "path": "docs/policy-image-delivery.md",
+      "sha256": "9315845ffba58a4f7d758cdb41c485b5bd3e00004ffc4280e17a981e54210384",
+      "size_bytes": 6888,
+      "git_revision": "e304faaded956c9a6e2478bae16d80b486428a9d"
+    },
+    "device_integration_guide": {
+      "path": "docs/target-files-delivery-integration.md",
+      "sha256": "c8d7cc4f1c06ae27cbce9b00608589ea797442d7a2a08941d7d8a6730b9f66de",
+      "size_bytes": 6804,
+      "git_revision": "e304faaded956c9a6e2478bae16d80b486428a9d"
+    },
+    "repeated_candidates_byte_identical": true,
+    "repeated_metadata_bundles_byte_identical": true,
+    "original_metadata_files_preserved": 205,
+    "original_metadata_bytes_preserved": 6460780,
+    "original_metadata_tools_and_factory_modes_unchanged": true,
+    "combined_ten_file_source_composition_unchanged": true,
+    "explicit_opt_in_required": true,
+    "metadata_controls": 22,
+    "host_source_admission_verified": true,
+    "native_kati_verified": true,
+    "native_metadata_hook_executed": false,
+    "source_image_bundle_staged": false,
+    "metadata_or_images_adopted": false,
+    "date_or_care_map_selected": false,
+    "held_page_profile_selected": false,
+    "full_vintf_compatibility_verified": false,
+    "signed_parent_chain_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Maintained workspace delivery adapters and explicit device-generator capability, with unchanged original metadata paths and repeated host candidates. The corrected isolated native Kati fixture now verifies sixty expected outcomes against the unchanged production include. Ordinary product Kati, independently copied source inputs, the source transaction and metadata-hook checks remain separate; complete targets remain blocked.",
+    "isolated_native_fixture_reference": "native_delivery_kati_fixture_v2",
+    "native_kati_verification_scope": "isolated fixture against the unchanged production include",
+    "ordinary_product_kati_verified": false
+  },
+  "camera_inactive_stage_v1": {
+    "actual_stage_capture": {
+      "path": "reports/camera-apk-build-admission-20260829/source-admission-v1/prepared-host-v1/stage.json",
+      "sha256": "fd6c1efae5fe58037142d33fdb88ac8a06480024966897aaa32fd5c99e0128eb",
+      "size_bytes": 69116
+    },
+    "independent_review": {
+      "path": "reports/camera-apk-build-admission-20260829/source-admission-v1/actual-stage-review-v1.json",
+      "sha256": "177217e380639605d1b2b3fe633653b7b40f427731a18e63dc8e0a95dc483646",
+      "size_bytes": 2144
+    },
+    "guest_stage_receipt_identity": {
+      "sha256": "299d9ce5f0bb8220edf7e6f4f0814feb259d80bda8e39adcec59a6a1e00a25cf",
+      "size_bytes": 65787
+    },
+    "operation": "independent-review-actual-camera-inactive-stage-v1",
+    "status": "pass-inactive-stage-only",
+    "exact_source_files": 11,
+    "namespace_file_and_directory_modes_verified": 15,
+    "original_apk_preserved": true,
+    "current_source_files_preserved": 204,
+    "captured_source_and_output_records_preserved": 28,
+    "protected_graphs": 16,
+    "protected_policy_inputs_outputs": 13,
+    "protected_runtime_outputs": 11,
+    "activation_held_for": [
+      "provider ELF outcomes",
+      "fresh producer receipt",
+      "full VINTF result"
+    ],
+    "source_activation_performed": false,
+    "namespace_exported": false,
+    "apk_selected": false,
+    "graph_generated": false,
+    "build_run": false,
+    "permissions_changed": false,
+    "mac_mapping_changed": false,
+    "signing_changed": false,
+    "out_written": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Actual exact Camera candidate staged outside the active namespace; independent review verifies original APK/source identities, all file/directory modes and current-source/OUT preservation. This does not activate source, select the APK, generate a graph, admit complete targets, change grants/MAC/signing or run a build."
+  },
+  "provider_elf_native_attempt_v1": {
+    "phase": "provider-elf-v13i-1",
+    "result": {
+      "path": "artifacts/build-validation/nezha-provider-elf-v13i-1/result.json",
+      "sha256": "b97659d56e4ff3e3b99a664cb1d604dffcc481f09f71e0723b45714b72b09313",
+      "size_bytes": 727901
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-provider-elf-v13i-1/capture.json",
+      "sha256": "857c315840d7e28ea6b3e512a2e897d3067b986ee741b2a85db4e55dfa966d3f",
+      "size_bytes": 3414
+    },
+    "checker_outcomes": {
+      "path": "artifacts/build-validation/nezha-provider-elf-v13i-1/checker-outcomes.json",
+      "sha256": "22c1c290211ce70c27fa650fd402e14a032424ab4b64b4ea4a2c5759713f5672",
+      "size_bytes": 178775
+    },
+    "build_stdout": {
+      "path": "artifacts/build-validation/nezha-provider-elf-v13i-1/build.stdout",
+      "sha256": "2345442a24997f1a27ea0239fd8d8fb076d09f349298ff843e72f9ef562ce785",
+      "size_bytes": 625300
+    },
+    "independent_review": {
+      "path": "reports/framework-providers-20260830/provider-elf-build-v2/actual-review-v1/review.json",
+      "sha256": "bc56abc6667dbbba2cfe2106790efc3459d5aa4260f13e8146547111ba8b9127",
+      "size_bytes": 25150
+    },
+    "started_at_utc": "2026-08-30T21:51:33.851504+00:00",
+    "completed_at_utc": "2026-08-30T21:51:56.684856+00:00",
+    "native_build_passed": false,
+    "native_exit_code": 1,
+    "timed_out": false,
+    "output_overflow": false,
+    "selected_check_goals": 26,
+    "checks_passed": 3,
+    "alignment_checks_failed": 19,
+    "unreached_or_unproven": 4,
+    "unreached_counted_as_passes": false,
+    "separate_dependency_strip_actions_failed": 6,
+    "missing_source_dependency_outputs": 7,
+    "strip_failure_cause": "mktemp cannot create a temporary file on read-only /tmp",
+    "alignment_failure": "Load segment alignment is 4096 while the retained requirement is 16384.",
+    "core_capture_files_rehashed": 7,
+    "core_capture_bytes": 91591689,
+    "independent_evidence_review_status": "passed",
+    "independent_evidence_review_open_findings": [],
+    "all26_outcomes_reconstructed_by_independent_review": true,
+    "full_native_output_and_both_ninja_logs_reviewed": true,
+    "source_inputs_unchanged": true,
+    "verified_producer_outputs_unchanged": true,
+    "producer_graphs_unchanged": true,
+    "post_verification_completed": true,
+    "post_verification_errors": [],
+    "strict_page_size_requirement": 16384,
+    "page_size_profile_changed": false,
+    "policy_or_runtime_outputs_invalidated_or_moved": false,
+    "provider_outputs_invalidated_or_moved": false,
+    "planned_followup": "Four unreached goals with a narrowly corrected writable temporary directory; existing alignment checks remain unchanged.",
+    "followup_executed": true,
+    "fresh_phase2_producer_capture_pending": false,
+    "full_vintf_pending": true,
+    "full_abi_verified": false,
+    "images_requested": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "First actual strict 26-goal provider ELF build, with all stamps absent at launch. Independent evidence review confirms three fresh passes, nineteen real alignment failures, four unreached/unproven targets and six separate dependency-strip failures. The review passes only the reconstruction of evidence; the native build remains failed. Unreached checks are not passes, and a temporary-directory correction does not solve the 16 KiB alignment failures.",
+    "subsequent_followup": "provider_elf_native_followup_v3",
+    "subsequent_admitted_producer_capture": "allocator_v13i_producer_capture_phase2"
+  },
+  "current_page_size_decision": {
+    "decision": "user-authorized-four-kib-first-boot-baseline",
+    "authorization_source": "explicit-user-instruction-in-current-session",
+    "authorized_at_date": "2026-08-30",
+    "baseline_page_size_bytes": 4096,
+    "sixteen_kib_compatibility_required_for_first_baseline": false,
+    "active_guest_integration": "v13i",
+    "active_max_page_size_bytes": 16384,
+    "active_prebuilt_max_page_size_check": true,
+    "current_provider_successor_status": "host-verified-first-inactive-stage-failed-before-installation-v13ja-preparing",
+    "successor_prebuilt_max_page_size_check_required": true,
+    "ignore_max_page_size_authorized": false,
+    "normal_android_selinux_enforcing_required": true,
+    "old_optional_descriptor_and_v13g_candidate_adopted": false,
+    "native_four_kib_integration_verified": false,
+    "native_four_kib_checker_results_verified": false,
+    "sixteen_kib_or_vts_compatibility_verified": false,
+    "hardware_page_size_verified": false,
+    "complete_rom_ready": false,
+    "scope": "The user accepts a 4 KiB initial bring-up baseline. This supersedes the earlier decision to hold all 4 KiB source integration, but does not adopt the old host experiment, install a current-provider successor, disable ELF checks, remove the failed 16 KiB evidence, establish VTS compliance or prove hardware behavior.",
+    "host_preparation_reference": "host_current_provider_4k_profile",
+    "compiled_stock_kernel_four_kib_configuration_independently_verified": true
+  },
+  "provider_elf_native_followup_v3": {
+    "phase": "provider-elf-v13i-2",
+    "result": {
+      "path": "artifacts/build-validation/nezha-provider-elf-v13i-2/result.json",
+      "sha256": "64107767b9c962853dfd6339049b327a29fe304a293b29fdb0ca6d9a76f72df7",
+      "size_bytes": 727431
+    },
+    "dispatch_result": {
+      "path": "reports/framework-providers-20260830/provider-elf-build-v3/run-v1/capture.json",
+      "sha256": "64107767b9c962853dfd6339049b327a29fe304a293b29fdb0ca6d9a76f72df7",
+      "size_bytes": 727431
+    },
+    "capture": {
+      "path": "artifacts/build-validation/nezha-provider-elf-v13i-2/capture.json",
+      "sha256": "6a65954b6a398dccc808b253b3f9e08b1ada53c427fad68c54fc3380a1cfc694",
+      "size_bytes": 3412
+    },
+    "independent_review": {
+      "path": "reports/framework-providers-20260830/provider-elf-build-v3/actual-review-v1/review.json",
+      "sha256": "3df11175b7a9df364d4697e3b1c9861f6c6ec44d6b064e7448598469540649b2",
+      "size_bytes": 36893
+    },
+    "started_at_utc": "2026-08-30T22:38:06.050695+00:00",
+    "completed_at_utc": "2026-08-30T22:38:14.916712+00:00",
+    "native_build_passed": false,
+    "native_exit_code": 1,
+    "timed_out": false,
+    "output_overflow": false,
+    "selected_check_goals": 4,
+    "new_checks_passed": 1,
+    "new_alignment_checks_failed": 3,
+    "unreached_or_unproven": 0,
+    "new_pass_module": "nezha_framework_libwfdconfigutils",
+    "new_alignment_failed_modules": [
+      "nezha_framework_libmiracastsystem",
+      "nezha_framework_libwfdcommonutils",
+      "nezha_framework_libwfddisplayconfig"
+    ],
+    "prior_distinct_checks_passed": 3,
+    "prior_distinct_alignment_failures": 19,
+    "prior_results_counted_as_fresh": false,
+    "repeated_prior_alignment_failures_counted_separately": 13,
+    "normal_dependency_actions_not_limited_to_four": true,
+    "combined_distinct_check_goals": 26,
+    "combined_distinct_checks_passed": 4,
+    "combined_distinct_alignment_failures": 22,
+    "combined_unreached_or_unproven": 0,
+    "combined_inventory_is_26_fresh_actions": false,
+    "global_postchecks_passed": 6,
+    "post_verification_errors": [],
+    "remaining_build_processes": [],
+    "source_inputs_unchanged": true,
+    "producer_graphs_unchanged": true,
+    "verified_producer_outputs_unchanged": true,
+    "policy_or_runtime_outputs_invalidated_or_moved": false,
+    "provider_outputs_invalidated_or_moved": false,
+    "strict_page_size_requirement": 16384,
+    "page_size_profile_changed": false,
+    "corrected_tmpdir": "existing-soong-output-temp-directory",
+    "system_tmp_remained_readonly": true,
+    "temporary_directory_failure_recurred": false,
+    "all_dependency_outputs_present": 71,
+    "core_capture_files_rehashed": 7,
+    "core_capture_bytes": 90950619,
+    "prior_capture_files_rehashed": 7,
+    "full_native_output_and_both_ninja_logs_reviewed": true,
+    "raw_envelopes_decoded_and_matched": true,
+    "independent_evidence_review_status": "passed",
+    "independent_evidence_review_open_findings": [],
+    "reviewer_performed_additional_native_source_graph_tool_dependency_reads": false,
+    "full_abi_verified": false,
+    "provider_runtime_verified": false,
+    "images_requested": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "The four formerly unreached roots execute with a valid writable temporary directory and unchanged 16384 checks. One newly passes and three fail alignment; thirteen repeated prior failures are accounted separately. Full readback and independent evidence review verify seven new files, seven prior files and raw envelopes. The combined four-pass/twenty-two-failure inventory spans two attempts, not twenty-six fresh actions. Source/graph/tool/dependency preservation is bound to guarded native receipts; the reviewer did not reread those native bytes. This remains a failed native build, with no full ABI, 4 KiB, runtime, image-adoption or boot success."
+  },
+  "allocator_v13i_producer_capture_phase2": {
+    "stage": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/phase2-actual-stage-v1.json",
+      "sha256": "9d590cda428916f326d7af55c24940501ba0de27c5f1798083e6a1bb4ae7ace2",
+      "size_bytes": 3035
+    },
+    "staged_files_verified": 18,
+    "staged_bytes_verified": 1016216,
+    "stage_source_or_android_output_modified": false,
+    "stage_native_capture_executed": false,
+    "subsequent_run_status": "passed-and-admitted-for-full-packet-preparation",
+    "completed_run_receipt_verified": true,
+    "current_source_graph_log_proof_admitted": true,
+    "planned_current_full_packet_members": 231,
+    "current_full_packet_emitted": true,
+    "full_vintf_verified": false,
+    "complete_rom_ready": false,
+    "scope": "Actual fresh readonly producer capture passes, is completely collected, and is admitted for host packet preparation. Independent collection review verifies transport completeness and terminal rechecks, not fresh compiler actions or runtime registration. Both later full-packet captures fail before complete compatibility: first in mount-stack observation, then in assumed Python archive members. Historical phase1 evidence remains separate.",
+    "started_at_utc": "2026-08-30T22:41:16.500673+00:00",
+    "completed_at_utc": "2026-08-30T22:46:09.917860+00:00",
+    "inner_receipt": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-phase2-preparation/host-result-collector/collection-v1/files/allocator-producers/results/receipt.json",
+      "sha256": "77dc707aa544240ad30c45644afff7e58376a05066fc5ae9b0d92f5b902d7543",
+      "size_bytes": 196771
+    },
+    "outer_receipt": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-phase2-preparation/host-result-collector/collection-v1/files/receipt.json",
+      "sha256": "8cb6f9f8e01ffe870c3d698f1aad74bb461b0dc24cf4a23491873b8e296c5867",
+      "size_bytes": 137238
+    },
+    "collection": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-phase2-preparation/host-result-collector/collection-v1/collection.json",
+      "sha256": "16903efecc45c66d3b524d5e163626787be53cd211774e0074929e3e017fc3d4",
+      "size_bytes": 40748
+    },
+    "independent_collection_review": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/producer-phase2-preparation/host-result-collector/review/actual-collection-review-v1.json",
+      "sha256": "d9e784aa99506732c255394ce20c54336747870b2590eb7308da6f0e2f07ff42",
+      "size_bytes": 3531
+    },
+    "producer_admission": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/actual-phase2-producer-admission-v1.json",
+      "sha256": "7d62ab4bd8a5c24e91d3cc4babb59d135821a090d6e556bb2d1f59b3abfae593",
+      "size_bytes": 532
+    },
+    "recorded_commands": 9,
+    "query_layers": 3,
+    "described_allocator_outputs": 3,
+    "skipped": 0,
+    "source_and_android_output_unchanged": true,
+    "graph_and_ninja_logs_unchanged": true,
+    "collection_payload_files_rehashed": 66,
+    "collection_payload_bytes_rehashed": 1428590,
+    "collection_published_members_reopened": 69,
+    "absent_optional_allowlist_slots": 35,
+    "absent_slots_counted_as_passes": false,
+    "fresh_native_action_verified": false,
+    "source_to_binary_equivalence_verified": false,
+    "runtime_registration_verified": false,
+    "current_full_packet_staged": true,
+    "full_packet_reference": "full_vintf_v13i_capture_attempts"
+  },
+  "host_current_provider_4k_profile": {
+    "implementation_commit": "17cde61541ca64e35f421c7853ab90b814cccefc",
+    "descriptor": {
+      "path": "config/nezha-page-size-profile-v2.json",
+      "sha256": "bed228b0595ef2dc1dd814e98c0966ba9b9452b542de50354db522e2420bed1e",
+      "size_bytes": 15567,
+      "git_revision": "17cde61541ca64e35f421c7853ab90b814cccefc"
+    },
+    "documentation": [
+      {
+        "path": "docs/nezha-page-size-v2.md",
+        "sha256": "aa9917d2ccaf982bf91296a6139f8f891c579ed1f459ea22ff9bb0d259808b20",
+        "size_bytes": 6062,
+        "git_revision": "17cde61541ca64e35f421c7853ab90b814cccefc"
+      },
+      {
+        "path": "docs/nezha-page-size-v2-integration.md",
+        "sha256": "faee8368c3755babdcb8b77ebd53c3f3e6997f253f96993486b954646d708e60",
+        "size_bytes": 3190,
+        "git_revision": "17cde61541ca64e35f421c7853ab90b814cccefc"
+      }
+    ],
+    "descriptor_freeze": {
+      "path": "reports/nezha-page-size-20260830-v2/profile-freeze.json",
+      "sha256": "30492c40d3d7ee148090dd627fdd9278a2dbde7414f83de4ca17db68ca5018a2",
+      "size_bytes": 2110
+    },
+    "kernel_independent_review": {
+      "path": "reports/nezha-page-size-20260830-v2/independent-kernel-review.json",
+      "sha256": "8f72c0ff90296e9d4311467b4efae8948987d76331686733fcd9a03408187814",
+      "size_bytes": 14951
+    },
+    "current_provider_proof": {
+      "path": "reports/nezha-page-size-20260830-v2/current-provider-profile-proof.json",
+      "sha256": "ec6e1c278d62e87c97d6b0541ff914e2ca2b02a15c4836fa0b05a968538ac946",
+      "size_bytes": 73174
+    },
+    "public_consumer_freeze": {
+      "path": "reports/nezha-page-size-20260829/current-v13i-integration-v2/public-freeze-v1.json",
+      "sha256": "da13d72345122a0312ce1b4965fcf8d64cdfe4bde8dd89ef09ee2bdbc034d993",
+      "size_bytes": 3464
+    },
+    "host_candidate_freeze": {
+      "path": "reports/nezha-page-size-20260829/current-v13i-integration-v2/final-freeze-v1.json",
+      "sha256": "600e286a1be0ee29d06c26a831cd7ef92db042915bef695a4ce234873c429551",
+      "size_bytes": 5328
+    },
+    "host_candidate_pair": [
+      {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-v13j-4k/admission.json",
+        "sha256": "392485b8ef5005f6d8079487c7a8ee7931597bacaab593478277f8201c4d03a2",
+        "size_bytes": 127103
+      },
+      {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-v13j-4k-repeat/admission.json",
+        "sha256": "392485b8ef5005f6d8079487c7a8ee7931597bacaab593478277f8201c4d03a2",
+        "size_bytes": 127103
+      }
+    ],
+    "host_candidate_payload_files": 44,
+    "host_candidate_total_files": 45,
+    "host_candidate_pair_byte_identical": true,
+    "source_delta": {
+      "added": [
+        "config/nezha-page-size-profile-v2.json"
+      ],
+      "changed": [
+        "device/xiaomi/nezha/generated/device-candidate.mk"
+      ],
+      "removed": []
+    },
+    "six_frozen_public_files_match_commit": true,
+    "maximum_page_size_supported": 4096,
+    "prebuilt_max_page_size_check_enabled": true,
+    "no_bionic_page_size_macro": true,
+    "old_descriptor_and_default_rendering_unchanged": true,
+    "compiled_stock_kernel_configuration_verified": true,
+    "hardware_page_size_verified": false,
+    "provider_v7_original_and_derived_identities_preserved": true,
+    "ignore_flags_selected": false,
+    "normal_android_selinux_changed": false,
+    "earlier_policy_image_delivery_composition_allowed": false,
+    "fresh_native_policy_equality_and_paired_delivery_admission_required": true,
+    "native_installation_verified": false,
+    "native_component_build_verified": false,
+    "native_elf_checks_verified": false,
+    "compatibility_16k_verified": false,
+    "vsr_compatibility_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Explicit current-provider 4 KiB source-only capability, committed after reviewed host generation and byte-identical repeated candidates. The two-payload delta preserves allocator, policy, current v7 providers, selected stock kernel, recovery, mi_ext and original images. Compiled kernel configuration and static provider layouts are independently verified, not running-device behavior or complete native ELF/symbol checks. Default/old profile rendering remains unchanged. Existing policy-image delivery evidence cannot be combined before fresh affected native equality and paired admission.",
+    "preinstall_snapshot_reference": "preinstall_v13j_snapshot",
+    "native_stage_attempt_reference": "native_v13j_inactive_stage_attempt"
+  },
+  "full_vintf_v13i_packet_v1": {
+    "host_freeze": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/actual-full-freeze-v1.json",
+      "sha256": "b91521d1f2b1e3e189687953a3905b1c39674d2ba5906fa522c9f058f231e856",
+      "size_bytes": 9660
+    },
+    "packet_manifest": {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/packet-v1/packet-manifest.json",
+      "sha256": "63af6f0e8483d89561192b3e8f3732af9bc4a06386bce1155fd7a205de3c15e1",
+      "size_bytes": 45438
+    },
+    "host_freeze_created_at_utc": "2026-08-30T23:08:27.321805+00:00",
+    "payload_files": 230,
+    "payload_bytes": 7903623,
+    "total_members_including_manifest": 231,
+    "total_bytes_including_manifest": 7949061,
+    "framework_xml_inputs": 22,
+    "framework_apex_inputs": 36,
+    "original_vendor_apex_inputs": 3,
+    "baseline_page_size_bytes": 16384,
+    "status": "frozen-not-staged-held-for-historical-versus-live-guard-correction",
+    "guard_correction_in_progress": true,
+    "native_staging_verified": false,
+    "native_materialization_performed": false,
+    "full_native_compatibility_verified": false,
+    "future_four_kib_evidence": false,
+    "complete_rom_ready": false,
+    "scope": "Preserved first full-packet freeze bound to the fresh v13i producer receipt and existing 16 KiB source state. It was not staged: a historical-before versus live-after guard mismatch requires a corrected successor before native capture/materialization and unfiltered compatibility commands. Host freezing/reviews do not establish actual full VINTF, future 4 KiB compatibility or source/image adoption.",
+    "historical_checkpoint": true,
+    "subsequent_attempts": "full_vintf_v13i_capture_attempts"
+  },
+  "native_delivery_kati_fixture_v1": {
+    "host_result": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/native-kati-preparation-v1/root-runner-v1/run-v1/result.json",
+      "sha256": "c6420802fb6f3143c762fdb2c8aa3149aa039c364c75aba55874334d8ca9d84f",
+      "size_bytes": 1838
+    },
+    "dispatch": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/native-kati-preparation-v1/root-runner-v1/run-v1/dispatch.stdout",
+      "sha256": "cd2c4643889536e71b99752d7c3bf308902e6c9b8f1fc90e4597d23009cd41f0",
+      "size_bytes": 431583
+    },
+    "transport": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/native-kati-preparation-v1/root-runner-v1/run-v1/dispatch.transport.json",
+      "sha256": "923110f413f13ea6073d961a0c88bc368a31358ef230a8eb9e2ac0bb83ff9dc5",
+      "size_bytes": 1251
+    },
+    "embedded_probe_result_identity": {
+      "sha256": "fdf8d649e0d74b1d045e48f54d6aac6f098b99b3c77f1083b9661bf74d0f1f39",
+      "size_bytes": 218900
+    },
+    "cases": 60,
+    "passed": 58,
+    "failed": 2,
+    "skipped": 0,
+    "whole_fixture_passed": false,
+    "failed_cases": [
+      "board_prebuilt_vendorimage-undefined",
+      "board_prebuilt_odmimage-undefined"
+    ],
+    "failure": "probe.mk:10: missing separator before the intended original-selector production guard",
+    "production_include_changed": false,
+    "fixture_only_correction_pending": false,
+    "source_and_postflight_guards_passed": true,
+    "post_errors": [],
+    "protected_source_inputs": 204,
+    "protected_policy_outputs": 13,
+    "protected_runtime_outputs": 11,
+    "timed_out": false,
+    "output_overflow": false,
+    "forced_cleanup": false,
+    "owned_jail_process_group_quiescent": true,
+    "entire_guest_quiescence_inferred": false,
+    "source_profile": "v13i-16384",
+    "full_android_product_route_verified": false,
+    "real_images_verified": false,
+    "ninja_executed": false,
+    "metadata_hook_executed": false,
+    "source_image_bundle_staged": false,
+    "complete_rom_ready": false,
+    "scope": "First actual isolated native delivery Kati fixture, using explicit inert inputs for five digest literals. Two undefined-selector cases fail in fixture parsing before the intended guard; they are not expected negative passes. Production include and guarded source remain unchanged. This is not ordinary product execution, image verification/adoption or a successful sixty-case result.",
+    "corrected_followup": "native_delivery_kati_fixture_v2"
+  },
+  "native_delivery_kati_fixture_v2": {
+    "dispatch": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/native-kati-preparation-v1/root-runner-v2/run-v1/dispatch.stdout",
+      "sha256": "8ac0a9d80c4e649994faa3e8f263fee1049b69136c6e9c82d40809e899fd7c51",
+      "size_bytes": 431689
+    },
+    "embedded_probe_result_identity": {
+      "sha256": "f1ed984cfe2aec07c40bedd8baedd3b0a0a3843bc317b64ad22da6f2a83a4c3f",
+      "size_bytes": 219036
+    },
+    "cases": 60,
+    "passed": 60,
+    "failed": 0,
+    "skipped": 0,
+    "whole_fixture_passed": true,
+    "prior_failed_attempt": "native_delivery_kati_fixture_v1",
+    "production_include_changed": false,
+    "fixture_only_correction": true,
+    "source_and_postflight_guards_passed": true,
+    "post_errors": [],
+    "protected_source_inputs": 204,
+    "protected_policy_outputs": 13,
+    "protected_runtime_outputs": 11,
+    "namespace_and_limits_verified": true,
+    "timed_out": false,
+    "output_overflow": false,
+    "forced_cleanup": false,
+    "owned_jail_process_group_quiescent": true,
+    "entire_guest_quiescence_inferred": false,
+    "source_profile": "v13i-16384",
+    "full_android_product_route_verified": false,
+    "real_images_verified": false,
+    "ninja_executed": false,
+    "metadata_hook_executed": false,
+    "source_image_bundle_staged": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Corrected isolated Kati fixture verifies all sixty expected outcomes, including both previously misconstructed undefined-selector cases. The exact production include and guarded current source are unchanged. This is native parser/guard fixture evidence with inert digest inputs, not an ordinary product route, real-image validation, metadata-hook execution, source/image adoption or boot.",
+    "actual_capture": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/native-kati-preparation-v1/root-runner-v2/actual-capture-v1/run-v1/capture.json",
+      "sha256": "8f5ffce9dfa4101da7b836a3a091f4bf55c9303246b71b8b223d692f6d62599a",
+      "size_bytes": 13823
+    },
+    "independent_actual_review": {
+      "path": "reports/oem-policy-integration-20260829/packaging-v13i-integration-preparation/native-kati-preparation-v1/root-runner-v2/actual-success-review-v1.json",
+      "sha256": "e1c179ede17ac0790b2f5dd50314f06c877afc0c4b65eca781151bf337bf7497",
+      "size_bytes": 12778
+    },
+    "captured_payload_files": 73,
+    "captured_payload_bytes": 25166,
+    "independent_review_status": "accepted-isolated-native-parser-fixture",
+    "independent_review_findings": [],
+    "host_evidence_files_rehashed_by_reviewer": 132,
+    "reviewer_rechecked_latest_live_source": false,
+    "reviewer_reexecuted_native_cases": false,
+    "capture_accessed_source_or_android_output": false,
+    "capture_claimed_readonly_namespace": false,
+    "host_unprivileged_execution_claimed": false,
+    "jail_warning_count": 2,
+    "warning_free_run_claimed": false
+  },
+  "full_vintf_v13i_capture_attempts": {
+    "baseline_page_size_bytes": 16384,
+    "first_stage": {
+      "receipt": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-stage-1/command.stdout",
+        "sha256": "5dee5fd4a65d0b36648b137711bd682f0392ac1db281e20f6be58c0e64d01975",
+        "size_bytes": 513
+      },
+      "completion": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-stage-1/completion.json",
+        "sha256": "6d51d452a24e83169a4f9af217a72e80225217b748784eb7019109f0eb380bbe",
+        "size_bytes": 161
+      },
+      "packet_manifest": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/packet-v2/packet-manifest.json",
+        "sha256": "91d146e4e650d9e7cd1ddee185ceb7e85a858d4a63e2baf0fe2d51e56d5c2c06",
+        "size_bytes": 45438
+      },
+      "members_verified": 231,
+      "bytes_verified": 7949144,
+      "source_or_android_output_modified": false
+    },
+    "first_capture": {
+      "exception": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-capture-1/exception.json",
+        "sha256": "15feadd3c9fc1340b09c1ce380ac0616c8d0785271de4a805d3b91582e0af0d5",
+        "size_bytes": 386
+      },
+      "diagnostic": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-capture-1/command.stderr",
+        "sha256": "edf891f2987637c0835044e0178e6896b8ae92fecf6dc5994ac870ce715c26f9",
+        "size_bytes": 2161
+      },
+      "completed_receipt_present": false,
+      "passed": false,
+      "failure": "mount observer rejects a shadowed writable /work mount below the read-only overlay",
+      "failed_capture_postflight_pass_claimed": false,
+      "native_result_inferred_from_host_failure": false
+    },
+    "corrected_stage": {
+      "receipt": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-stage-2/command.stdout",
+        "sha256": "35442e803fb6c8adacb7c5a656b87e284f0916a5cf85994687d7685838687515",
+        "size_bytes": 513
+      },
+      "completion": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-stage-2/completion.json",
+        "sha256": "6d51d452a24e83169a4f9af217a72e80225217b748784eb7019109f0eb380bbe",
+        "size_bytes": 161
+      },
+      "packet_manifest": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/packet-v3/packet-manifest.json",
+        "sha256": "829f64b1bac9ab86d9eb470e025b98986ca9bcfbb70f2b40062f991bc21c9d87",
+        "size_bytes": 45438
+      },
+      "members_verified": 231,
+      "bytes_verified": 7950872,
+      "source_or_android_output_modified": false
+    },
+    "corrected_capture_result_verified": false,
+    "native_materialization_verified": false,
+    "full_compatibility_verified": false,
+    "future_four_kib_evidence": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "The settings-corrected packet is staged, but its first capture fails in mount-stack validation. The narrowly corrected successor also stages and advances past that check; its capture then fails an incorrect .py archive-member assumption for built tools containing .pyc. A deterministic source-to-bytecode proof from the pinned Soong recipe is in progress. No completed capture, materialization or full compatibility command is claimed. Staging preservation evidence is separate from failed-capture postflight; both packets belong to the existing 16 KiB v13i source state.",
+    "corrected_capture": {
+      "exception": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-capture-2/exception.json",
+        "sha256": "15feadd3c9fc1340b09c1ce380ac0616c8d0785271de4a805d3b91582e0af0d5",
+        "size_bytes": 386
+      },
+      "diagnostic": {
+        "path": "reports/oem-policy-integration-20260829/full-vintf-v13i-preparation/root-execution/report-capture-2/command.stderr",
+        "sha256": "418f80e0c60500b3fec16d2e3c43df75628a029a35c21b4be545560cc58d29af",
+        "size_bytes": 1245
+      },
+      "completed_receipt_present": false,
+      "passed": false,
+      "advanced_past_mount_stack_check": true,
+      "failure": "Assumed .py archive members are absent; the actual built apexd_host and deapexer package .pyc files.",
+      "failed_capture_postflight_pass_claimed": false,
+      "native_result_inferred_from_host_failure": false
+    },
+    "pinned_soong_source_to_bytecode_proof_status": "in-progress",
+    "full_native_compatibility_commands_executed": false
+  },
+  "latest_full_vintf_status": "second-capture-failed-packaged-python-member-assumption-source-to-bytecode-proof-pending",
+  "preinstall_v13j_snapshot": {
+    "receipt": {
+      "path": "reports/nezha-page-size-20260829/native-v13j-preparation/snapshot-v1/stdout.jsonl",
+      "sha256": "b3bda63a1e5d62996f80766d2280cb073aaaf083ee80941560523d5b005d7ff2",
+      "size_bytes": 158642
+    },
+    "started_at_utc": "2026-08-30T23:29:38.225436+00:00",
+    "completed_at_utc": "2026-08-30T23:30:55.744281+00:00",
+    "status": "verified",
+    "requested_paths": 266,
+    "present_regular_files": 216,
+    "present_file_bytes": 7646909660,
+    "base_project_count": 1179,
+    "base_head_matches": 1179,
+    "base_origin_matches": 1179,
+    "clean_projects": 1173,
+    "reviewed_modified_projects": 6,
+    "guarded_source_files": 204,
+    "protected_policy_outputs": 13,
+    "protected_runtime_outputs": 11,
+    "active_integration": "v13i",
+    "active_maximum_page_size_bytes": 16384,
+    "prebuilt_alignment_check": true,
+    "strict_elf_checks": true,
+    "fresh_output_hashes": true,
+    "predecessor_output_hashes_reused": false,
+    "source_or_output_modified": false,
+    "native_build_performed": false,
+    "four_kib_source_installed": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "Fresh guarded native pre-install snapshot for the current-provider 4 KiB candidate. Original source pins/origins, the six reviewed patches and current output identities are checked with the active maximum still 16384. The captured native receipt binds the present files and explicit absent paths; this does not install the candidate, change Android output, execute a 4 KiB build or demonstrate boot."
+  },
+  "native_v13j_inactive_stage_attempt": {
+    "diagnostic": {
+      "path": "reports/nezha-page-size-20260829/native-v13j-preparation/run-v13j/stage/stderr.log",
+      "sha256": "1431f52ca97ebedabff070a8d9568d72cfa254e1db7472a3166830c0a206e657",
+      "size_bytes": 929
+    },
+    "exit": {
+      "path": "reports/nezha-page-size-20260829/native-v13j-preparation/run-v13j/stage/exit.json",
+      "sha256": "795886a1473fc6b6553d750bb6f02c519eecbacb8b1a88dcd63ab299186f8140",
+      "size_bytes": 47
+    },
+    "native_exit_code": 1,
+    "stage_verified": false,
+    "failure": "Archive ensure_absent verification encounters a missing ancestor before source installation.",
+    "preinstall_snapshot_reference": "preinstall_v13j_snapshot",
+    "backup_retained": true,
+    "active_source_and_android_output_preserved": true,
+    "archive_complete_verification_passed": false,
+    "source_installation_performed": false,
+    "native_four_kib_build_performed": false,
+    "active_integration": "v13i",
+    "active_page_size_maximum": 16384,
+    "successor": "v13ja",
+    "successor_status": "preparing",
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "scope": "First inactive archive stage for the host-verified 4 KiB candidate fails before installation. The pre-install backup and original active source/OUT are preserved; no complete archive-verification receipt or source adoption is claimed. The missing-ancestor verifier correction is being prepared as a separate v13ja successor. No 4 KiB component/checker/boot result follows."
   }
 }
