@@ -10,6 +10,14 @@ consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The leading blocker is now **full Evolution SELinux policy integration**.
+`LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
+build configuration. The thirteen retained policy identities and earlier strict
+analysis remain historical evidence; they do not establish current policy or
+factory-image compatibility. Source/M4 integration and new strict policy/context
+checks are in progress. Normal Android enforcement and all assertions remain
+required; no new policy or image success is claimed.
+
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The active guest source is now
 **first-target-files-release-flags-v1**. A one-file correction commits at
@@ -19,17 +27,18 @@ It replaces forbidden direct
 `TARGET_RELEASE` access with four resolved release flags, while `bp4a` remains
 a separate invocation binding. The selected input closure is now sealed, and
 the corrected native queries pass **21 configuration and seven context value
-checks**. The subsequent `nothing` command exits zero, but its validation fails
-two exact generated-Soong-state checks. Metadata-file contents/freshness and
-target-files remain unverified. The three
-preflight failures and obsolete-query native failure remain preserved. The maintained
+checks**. The later **nothing2** run passes the exact source/configuration checks
+and six metadata-file value checks, with independent review complete. This does
+not prove fresh rewrites or image reproducibility. The three preflight failures,
+obsolete-query native failure and failed `nothing1` validation remain preserved. The maintained
 [construction source selector](rom-construction.md) now reproduces all thirty
 installed device files through the full original input checks. Two fresh
 candidates match, while omitting the selector preserves the original candidate.
 This does not admit flashable artifacts or change the default generator path.
 The reviewed **first-target-files-v1** construction/date installation
 at **08:45:28 UTC**, its original guard and all nine journal events remain
-preserved. No generated build-number result is claimed. The preceding **packaging-matrix-v1** transaction
+preserved. Those source transactions alone did not verify generated metadata.
+The preceding **packaging-matrix-v1** transaction
 committed eight operations at **08:13:39 UTC**, with reviewed packaging selections. The earlier
 **matrix-v1** source was committed at **03:14:25 UTC**. Its 38-goal build
 finishes at **03:51:10 UTC** with native exit 0 and **128 Ninja actions after
@@ -137,7 +146,7 @@ Ninja actions** and the complete seven-file capture, with no findings. It keeps
 fresh installs, preserved XML and reused checks distinct. No new source selection,
 image integration, full ABI, runtime or hardware success is implied.
 
-The independently analyzed policy baseline is **policy-only-v13h-1**, completed
+The previously analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
 configuration. Source inputs remained unchanged, the native sandbox was verified,
 and all eleven preserved policy outputs and eleven protected runtime outputs
@@ -158,7 +167,8 @@ The independent capture review has no findings: all 208 captured files and the
 complete reviewed effect inventory match, with only four validated generated
 assertion-name roles normalized for comparison. This does not modify policy.
 
-This establishes the current v13ha policy baseline. The earlier v12f/export4
+This establishes the historical v13ha policy-selection baseline, not the full
+current Evolution policy. The earlier v12f/export4
 analysis and [v11b analysis](oem-policy-integration.md) remain separate dated
 evidence. The earlier v13f provider inputs were
 installed, but their first 31-goal policy build failed during Soong bootstrap
@@ -510,8 +520,8 @@ The corrected native **config5** and **context5** queries finish successfully at
 **10:40:19 and 10:45:23 UTC**, checking 21 and seven selected values. Both six-part
 source/input guard sets and the full generated configuration remain unchanged.
 The three `FROM_FILE` results are literal references, not file-content proof;
-six metadata files and their freshness still require the ordinary `nothing`
-phase. Independent reviews
+six metadata files and their freshness required separate ordinary-phase evidence.
+Independent reviews
 of both queries are clear within their selected-value scope.
 The two existing kernel-origin/AVB warnings remain in each query. No Ninja
 actions, effective partition properties, images, sidecars or target-files are
@@ -525,7 +535,23 @@ archive entry is cached alongside the stale source-history observation. Only
 selected-input, source-lock and protected-input checks are fresh; this is not a
 fresh full source/archive proof. The metadata postcheck does not run, and no six-file
 success is claimed. The result and raw logs are preserved while the configuration
-change is investigated; no cause or image/boot success is inferred.
+change was investigated; that failed result is not relabelled by the later pass.
+
+A source-bound explanation now accounts for all seven changed leaves in the
+complete 254-key configuration. `LINEAGE_BUILD` selects additional Evolution
+policy, changes conditional package/copy lists and exports the already selected
+4 KiB maximum. This is exact source-derived admission, not a general mismatch
+exception. The **nothing2** retry finishes at **11:44:57 UTC** with native and
+wrapper exit 0. All six current source/input guards run freshly and match, and
+all six captured metadata values verify, including the selected build number.
+Fresh confirmation rehashes the result and six files; independent actual review
+is clear. File rewrites/freshness, effective partition properties, image and
+target-files results remain unverified.
+
+Commit **3c9cd2a** adds the [recovery-only backuptool guard](evolution-backuptool-enforcing.md).
+Patch 0015 wraps the existing permissive declaration in `recovery_only`, without
+changing types, permissions or assertions. It is committed and host-tested, but
+not installed or compiled through Android M4/policy. Working76 is unchanged.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -580,10 +606,13 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,972 tests in 169.113
-seconds with zero failures, errors or skips**, executed by the coordinator.
-All three checkpoint documents stayed unchanged during that run;
-the subsequent factual test-evidence refresh is separate. The earlier v1 launcher
+The latest completed full workspace suite passed **3,984 tests in 168.104
+seconds with zero failures, errors or skips**, executed by the coordinator in an
+**isolated snapshot** of `ee2d19db` plus the four frozen backuptool files,
+equivalent to commit `3c9cd2a`. Other in-progress root policy edits and this later
+documentation update are excluded. The preceding working-tree suite passed
+**3,972 in 169.113 seconds**, with all three checkpoint documents unchanged;
+its subsequent factual test-evidence refresh is separate. Its earlier v1 launcher
 failed preflight before running tests and contributes no skipped-test count.
 The preceding 3,972-test run took 168.418 seconds and retained its three
 product-input checkpoint documents. The earlier
@@ -646,9 +675,10 @@ Android builds, host policy proofs and physical-device tests. This checkpoint re
 code through `a253c97`, with the previous component checkpoint committed
 as `8fc2162`, followed by `da9648b`, `3001e85` and `4116868`. The active
 guest source is now first-target-files-release-flags-v1 with the 4 KiB product unchanged. Its
-first validated build remains pending; the latest verified component outputs are from
+first target-files build remains pending; the latest verified component outputs are from
 matrix-v1, with the failed wrapper and distinct passing postcheck/review preserved;
-`analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
+`analysis-v13h-policy-only-v1` remains the latest verified policy baseline for the
+earlier source selection.
 
 The immediate destination remains a reproducible, working Evolution baseline;
 that baseline will support a maintainable platform fork without mixing future
@@ -905,7 +935,8 @@ override theme defaults. No Magisk integration is included.
   complete 17-role output-chain verification have not. Keys remain on the Mac.
   The [pinned build-metadata capability](pinned-build-metadata.md) now verifies
   33 expected isolated native Kati outcomes. Patch 0012 and its helper are now
-  selected in source, but actual product metadata and helper execution are unverified.
+  selected in source. Nothing2 verifies six metadata-file values; independent
+  rewrites, output freshness and helper-execution proof remain unverified.
   The first diagnostic-harness failure remains preserved. It cannot relabel earlier build
   dates or establish reproducible images without native and artifact checks.
   Working recovery's development signature does not sign the ROM or authorize

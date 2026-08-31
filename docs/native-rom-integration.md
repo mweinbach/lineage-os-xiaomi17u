@@ -60,14 +60,17 @@ The original guard reads `TARGET_RELEASE` after the pinned release configuration
 forbids direct access. The current **first-target-files-release-flags-v1** source
 corrects that one file at **09:17:15 UTC**, retaining the source count and prior
 outputs. Independent correction review passes for the recorded installation;
-complete native configuration, metadata-file freshness and target-files builds
+effective partition properties, metadata-file freshness and target-files builds
 remain unverified. The subsequent selected-input closure is sealed, and two
 corrected native queries pass 28 selected value checks. The three preflight
 failures and fourth attempt's native obsolete-variable failure remain preserved.
-Their later success does not establish fresh metadata-file contents or Ninja
-build actions. The following `nothing` command exits zero but fails two exact
-generated-configuration validation checks; that attempt is recorded separately
-below.
+The original `nothing1` command exits zero but fails two exact generated-state
+checks. The later **nothing2** run passes current source/configuration and six
+metadata-value checks, with independent review complete; fresh file rewrites
+and image reproducibility remain unverified. The current leading blocker is
+full Evolution policy selected by `LINEAGE_BUILD`, which was absent from the
+earlier configuration. Retained policy/VINTF results do not establish full
+current-policy or image compatibility.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1323,10 +1326,9 @@ rehashes both guest result files. Each query preserves the six source/input
 guard sets, 1,475 selected inputs, 478 source files, 1,179 pins and the complete
 generated configuration. Independent reviews of both queries are clear within
 that scope.
-The three `FROM_FILE` assignments are checked as literal references. The six
-metadata-file bodies and freshness require the following ordinary `nothing`
-phase; the selected build identifier is not yet verified from its generated
-file. The complete property-declaration string matches the expected source
+The three `FROM_FILE` assignments are checked as literal references. These
+queries do not verify metadata-file bodies or freshness; the later ordinary
+phase supplies the separate value evidence below. The complete property-declaration string matches the expected source
 projection, but effective postprocessed properties remain unverified. Both
 known kernel-origin/AVB warning occurrences remain in each query. Neither
 query verifies Ninja actions, a new producer graph, sidecar outputs, images,
@@ -1346,6 +1348,35 @@ whole-output-tree immutability is not claimed. The 18,464-byte native stdout end
 at the `nothing` phony target and native stderr is empty. These raw logs and the
 failed wrapper are preserved without diagnosing the configuration change or
 claiming component-image, target-files or boot success.
+
+The exact seven-leaf explanation (`79ab14bf06bd56b733d35e0ff97dae83c010a1dff17ee1b24bef28d88b51101d`)
+reconstructs the complete 254-key configuration from captured source rules.
+`LINEAGE_BUILD` adds the Evolution policy directories, removes the conditional
+AllAudio/APNs block and Camera2/debug-su selections, and re-exports the existing
+4 KiB maximum. The observed vendor-policy branch is inferred from its exact
+directory list; its selector was not directly dumped. The source-admission
+review permits only the exact `nothing` retry, not current policy or images.
+
+The **nothing2** native invocation runs from **11:43:13 to 11:44:57 UTC**, with
+native and wrapper exit 0. All six source/input guards use fresh current-phase
+proof and match, including the complete reviewed configuration. The frozen
+validator checks all six metadata bodies (240 bytes); fresh read-only
+confirmation rehashes the result and files. Independent actual review
+`b704098dede258e57548694ad630d466e51b14d1e5e6bc01e7d0ced64ee55cc3`
+(15,162 bytes) is clear within this scope. The build-number file contains
+`nezha.76dfc5727ce7a5291cb53565`. This does not prove that this invocation freshly
+rewrote every file: output-freshness and Ninja-action proof remain false.
+Kernel-origin/AVB and UID/GID warnings remain. No image, target-files or boot
+success follows, and the original nothing1 failure/cache limits stay preserved.
+
+The expanded Evolution policy now requires new source/M4 integration, strict
+compilation and context checks against the factory inputs. The older thirteen
+policy identities are preserved, not promoted to full current compatibility.
+Commit `3c9cd2adfa5aff8de8c6ee0c670ba415f6664049` prepares
+[patch 0015](evolution-backuptool-enforcing.md), wrapping only the existing
+backuptool permissive declaration in `recovery_only`. Types, permissions and
+assertions are unchanged. Host qualification is separate from Android M4,
+policy compilation and installation, none of which is claimed for this patch.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1477,10 +1508,14 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,972 tests in 169.113 seconds with zero failures, errors or skips**, executed
-by the coordinator. All three checkpoint documents stayed
-unchanged during the run; the subsequent factual test-evidence refresh is separate.
-The full log is
+**3,984 tests in 168.104 seconds with zero failures, errors or skips**, executed
+by the coordinator in an isolated `ee2d19db` snapshot plus the four frozen
+backuptool files, equivalent to commit `3c9cd2a`. The log is
+`d42c8ce8cbd478ba444841b46b33ff77504d73cdc8c53678e3a671f7ac68fba5`.
+Other in-progress root policy edits and this later documentation update are
+excluded; this is not a full test of the current dirty workspace. The preceding
+working-tree run passed **3,972 in 169.113 seconds**, with all three checkpoint
+documents unchanged. Its later factual evidence refresh is separate; its log is
 `43cb0ecd5d2b68942fe35389fabc963eb30639d4f64d0cef03c8a133974e1a8e`.
 The earlier v1 launcher failed preflight before running tests; it is not counted
 as a skipped or completed suite. The preceding 3,972-test run took 168.418
