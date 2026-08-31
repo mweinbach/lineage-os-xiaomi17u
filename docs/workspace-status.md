@@ -13,8 +13,14 @@ This page does not assert that a historical builder VM is still running.
 The corrected Evolution/factory policy source build and its **scoped policy3
 verification now pass**. Source/M4/context review retains all 6,399 assertions,
 all twelve normal binaries pass unfiltered zero-permissive checks, and the
-public-name freeze check is verified. The next gate is **current policy-image
-inputs, delivery and packaging**. Full recursive graph provenance and final
+public-name freeze check is verified. The **policy3 raw-image reconstruction
+also passes**, with both TAR/image/export sets identical and independent review
+confirming exactly five policy-file replacements. The next gate is **current
+policy-image footer/FEC qualification, delivery and packaging**. Commit
+**4335f1b** adds the explicit
+[policy3 image-input profile](policy-image-inputs.md), including qualified
+installed sidecars. The new raw images are not adopted; signing and physical
+partition fit remain unverified. Full recursive graph provenance and final
 installed-APK Treble coverage remain unverified; no ROM or boot readiness is
 implied.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
@@ -681,7 +687,25 @@ All twelve unfiltered binary checks pass separately, without implying strict
 neverallow compilation for every upstream compatibility binary. The public-name
 freeze is verified, while full recursive graph provenance and final installed-APK
 Treble labeling remain separate. All three ordinary policy-sidecar generators
-and installs ran in policy3; their read-only output qualification is pending.
+and installs ran in policy3. Their later read-only qualification now verifies
+the three installed 65-byte outputs against six ordered CIL/mapping inputs,
+three exact recipes and recorded producer/copy actions, without new native
+generator execution. The original failed capture remains preserved.
+
+The new `policy3-evolution` profile permits exact evidence validation and TAR
+preparation for this snapshot; the three earlier profiles and blocked historical
+default remain unchanged. Its native reconstruction now passes **nine checks and
+38 commands with zero skips**. Independent review compares all 6,969 entries in
+both passes: exactly one vendor and four ODM policy payloads change, while other
+contents and semantic metadata are preserved. The 97-file capture is complete;
+large TAR/image outputs remain in the guest and were not reopened by the host
+review. No new footer/FEC, signed-chain, physical-fit, image-adoption or boot result
+is implied. After a host restart, the
+coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
+read-only verification records it as the sole source-volume writer, with the
+same 539-source/configuration proofs, case-sensitive ext4, about 211 GiB free
+and working Rosetta Ninja. No replacement VM or source sync was started.
+This is a dated environment check, not a new Android build or phone test.
 
 Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
 Its source is now installed, while compilation, linking and execution remain
@@ -693,6 +717,12 @@ linkage. Export filtering means metadata absence is not proof of source absence.
 This exposes a definition-coverage gap without changing production `checkvintf`,
 removing its retained skip or inventing interface definitions. Complete VINTF
 compatibility remains unverified.
+
+Commit **9f0c8bd** separately adds an optional, explicit
+[Qualcomm AIDL namespace contract](../config/nezha-qti-aidl-namespaces.json) and
+generator support. This host-only preparation is not activated in the 539-file
+guest source. Native metadata, API and backend checks remain pending; it does
+not close the captured definition-coverage gap or establish runtime support.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -747,7 +777,21 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,115 tests in 175.932
+The latest completed full workspace suite passed **4,162 tests in 165.342
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `4335f1b` plus the four then-current checkpoint documents and three
+namespace files; the three namespace files were subsequently committed as
+`9f0c8bd`. All eleven bound file
+identities remained unchanged, including the four committed image-profile files.
+This later raw-image/test-record documentation update is outside that run;
+offline tests do not establish native image or hardware success.
+The preceding suite passed **4,146 tests in 161.125
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `6f504fa` plus the exact four image-profile files, then committed as
+`4335f1b`. All four files remained unchanged. This later central-document update
+and any subsequent source work are outside that recorded run; it does not
+qualify native image reconstruction or hardware.
+The preceding suite passed **4,115 tests in 175.932
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `5204366` plus the exact eleven frozen 0017/integration files, then
 committed as `7c22c82` and `641af6a`. All eleven files remained unchanged. This

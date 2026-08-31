@@ -67,7 +67,7 @@ failures and fourth attempt's native obsolete-variable failure remain preserved.
 The original `nothing1` command exits zero but fails two exact generated-state
 checks. The later **nothing2** run passes current source/configuration and six
 metadata-value checks, with independent review complete; fresh file rewrites
-and image reproducibility remain unverified. The current leading blocker is
+and image reproducibility remain unverified. The next blocker at that checkpoint was
 full Evolution policy selected by `LINEAGE_BUILD`, which was absent from the
 earlier configuration. Retained policy/VINTF results do not establish full
 current-policy or image compatibility. Commit **5d557a0** now provides the
@@ -93,8 +93,12 @@ wrapper exit 0, all six fresh source/input guards matching, and six verified
 metadata-file values. The camera-property compile failure is resolved; the
 failed policy1/policy2 records remain unchanged. The later scoped source/M4,
 semantic/context, twelve-binary and public-name freeze checks now pass. Current
-image inputs, delivery and packaging are the next gate; full recursive graph
-provenance and final installed-APK Treble coverage remain unverified.
+raw reconstruction now passes independently reviewed two-pass checks. Current
+footer/FEC qualification, delivery and packaging are the next gate. Commit
+**4335f1b** adds explicit policy3 image-input admission with qualified installed
+sidecars; the resulting raw images are not adopted. Full recursive graph
+provenance and final installed-APK Treble
+coverage remain unverified.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1724,11 +1728,61 @@ comparator rerun was performed or required for this scoped evidence.
 
 All three ordinary policy-sidecar generators ran in policy3: platform action
 **331** and install **378**, system_ext **397/402**, and product **409/418**.
-Their logged execution does not replace read-only qualification of the actual
-delivered bytes, which remains pending. The next work binds the current strict
-policy/context outputs and sidecars into the image inputs and delivery path,
-then verifies ordinary packaging. Final installed-APK Treble labeling, full
-recursive graph provenance and image/AVB/boot gates remain distinct and open.
+Their logged execution was followed by separate read-only qualification of the
+actual delivered bytes. Capture
+`85cc5fc4dbe586734402d4e014bc71d049947be178e53bd637974f40fe89fd30`
+and qualification
+`57e2191f1d948407dda3adf040edb3b58ce018adb6bb4a1d56471bb0226682fd`
+verify nineteen unchanged observations and two read-only queries. Three
+65-byte installed sidecars match their ordered current CIL/mapping inputs and
+captured sbox recipes. Three genrules, three intermediate copies and three
+installations are bound to policy3; six selected Ninja success rows are not a
+claim of only six total commands. Qualification executes zero new producers.
+The root context verifies all 539 source rows; the read-only child checks
+selected files and reports zero source-history rows there. The earlier failed
+private-view preflight and known namespace warnings remain preserved.
+
+Commit `4335f1bc1e4d90786731d62d7aace97d590d4a95` adds the explicit
+`policy3-evolution` [image-input profile](policy-image-inputs.md), canonical
+identity `f49240bf1e128212b4f2e58092b37e4988fe6cf9a042d081bdb25a1411bd0b9a`.
+It binds 39 evidence roles and permits exact input validation and two TAR
+preparations; the three earlier profiles and blocked historical default are
+unchanged. Only the policy3 build-record role receives a 16 MiB JSON limit;
+other roles retain their bounds. The subsequent native two-pass reconstruction
+now passes **nine checks and 38 commands with zero skips**, including eighteen
+fsck checks. Receipt
+`06ec1cef82dca1effee7f0ee7fef612dd7e958acb95ec614e5d81081b15d700e`
+and independent review
+`f634b027b4079014c0a0dd8586ff0bb6a9c35ce2eccf48270e2a481fffb0887e`
+bind the complete 97-file, 10,641,390-byte host capture. The review independently
+compares all 6,969 entries in both passes without the subject comparator:
+exactly one vendor and four ODM payloads change, preserving all other contents
+and semantic metadata. Only inode NID and five recorded physical superblock
+layout fields are excluded from semantic equality. Both TAR, raw-image and
+complete-export pairs are byte-identical.
+
+The vendor raw image is **941,744,128 bytes**, SHA256
+`b74b8b92d121a83ffbe4ee14d9e973bb4f52ff40c0dbdea9000e112b463aa065`;
+ODM is **4,678,037,504 bytes**, SHA256
+`fff1a4b168e465b221bd80d29bfe4fdc62091513eeb6ae139565b50f78aa88cc`.
+The exact policy3 snapshot and three qualified installed sidecars are bound.
+This capture leaves large native TAR/image outputs and staging in the guest;
+the host review does not reopen those files or the native original images.
+Source/Android-output writes are excluded for this operation, not globally.
+Current footer/FEC production is prepared but unrun. Image delivery/adoption,
+AVB signing, physical partition fit, ordinary packaging and boot validation
+remain separate; no policy compilation or binary analysis was repeated here.
+
+Following a host restart, the coordinator starts only the existing stopped
+`twrp-nezha-upstream74-20260829` builder at **22:47:59 UTC**. The later
+**22:50:26 UTC** verification, receipt
+`2be39ac81e92469d45409d32727e7708624e23ec95c7541f68cc42c1a0aa10ae`,
+rechecks the same 539-source and complete configuration proofs on the ext4
+volume. The recorded sole writer is the existing VM; available space is
+226,282,541,056 bytes (about 211 GiB), case distinction passes, and Rosetta
+Ninja reports `1.9.0.git`. No replacement VM, source sync or Android build is
+performed by that verification. The historical last-task receipt remains
+unchanged and is not used as evidence of current ownership.
 
 Commit `76fe97584caf990677da033261e6c1d6c74dd745` adds the
 [unlevelled-matrix AIDL metadata audit source](../tools/vintf-definition-audit/README.md).
@@ -1749,6 +1803,14 @@ remains open; production `checkvintf` and its existing skip are unchanged.
 No interface definitions are fabricated. Name presence alone would not establish
 interface kind, versions/hashes, instance registration, ABI, complete
 compatibility or hardware behavior.
+
+Commit `9f0c8bd5f7165374ab10a8ad01db01e2776db62a` adds optional explicit
+[Qualcomm namespace exports](../config/nezha-qti-aidl-namespaces.json) for the
+pinned source trees. Generator support preserves earlier ordered exports and
+adds each selected namespace once. The capability is host-only and inactive in
+the current 539-file guest source: native metadata generation, API/backend
+checks and runtime compatibility remain unverified. It does not itself close
+the existing matrix-definition coverage gap.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1880,7 +1942,25 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**4,115 tests in 175.932 seconds with zero failures, errors or skips**, executed
+**4,162 tests in 165.342 seconds with zero failures, errors or skips**, executed
+by the coordinator against `4335f1b` plus the four then-current checkpoint
+documents and three namespace files; the three namespace files were subsequently
+committed as `9f0c8bd`.
+All eleven bound identities remained unchanged, including the four committed
+image-profile files. Log
+`9b5b3ec597c401163539012d2bcf1be5ef96955f24508f3740048ada7d7a72e0`
+and completion `918ea854f880ac87e93f85336fbd9c6578474260a48b3234ac6beeb053d93faf`
+bind that run. This later raw-image/test-record documentation update is outside
+the run; offline tooling tests remain separate from native and hardware proof.
+The preceding full run passed
+**4,146 tests in 161.125 seconds with zero failures, errors or skips**, executed
+by the coordinator against `6f504fa` plus the four frozen image-profile files,
+then committed as `4335f1b`. All four remained unchanged. Log
+`a15c18380a9102fb5c21fa004c4380b396295f6f8be3bd1174b6128c4588f440`
+and completion `d955e1518dc1ddbaf7ba6cb7da8d8753c241648c12955ce8890f529ede15cf98`
+bind that run. This later central-document update and subsequent source work
+are separate; the suite does not qualify native images or hardware.
+The preceding suite passed **4,115 tests in 175.932 seconds with zero failures, errors or skips**, executed
 by the coordinator against `5204366` plus the eleven frozen 0017/integration
 files. All eleven remained unchanged and were committed as `7c22c82` and
 `641af6a`. Log
@@ -2383,10 +2463,10 @@ actual framework and vendor APEX manifests, explicit kernel requirements and
 the original shipping-API evidence; full Treble labeling requires real APK
 inventories.
 
-The reviewed packaging-matrix source selection is now committed. Build and verify
-the three ordinary policy-sidecar modules and retain the unchanged final policy
-and installation hook; neither isolated digest recipes nor an absent sidecar is
-a substitute. Then complete ordinary target-files,
+The reviewed packaging-matrix source selection is now committed. The three
+ordinary policy-sidecar modules have executed and their installed outputs are
+qualified. Retain the unchanged final policy and installation hook; the sidecar
+proof does not itself execute that packaging gate. Complete ordinary target-files,
 super, A/B/snapshot/OTA packaging and the signed AVB chain. Construction and
 flash readiness remain false throughout this checkpoint. Source-lock, runtime
 integration, private-input derivation and future platform features stay
