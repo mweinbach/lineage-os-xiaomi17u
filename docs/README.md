@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Corrected 4 KiB source and 37-goal component build pass with generated settings verified; separate provider ELF checks, full VINTF and hardware validation remain pending |
+| [Native ROM integration](native-rom-integration.md) | Installed 4 KiB source, 37-goal component build and all 26 fresh provider ELF/symbol checks pass; full VINTF, runtime and hardware validation remain pending |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
@@ -28,8 +28,8 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files metadata](target-files-metadata.md) | Exact 205-file projection for retained factory images and ordinary recipe hook; native packaging and policy-image admission remain separate |
-| [Maintained policy-image delivery](policy-image-delivery.md) | Explicit adapters bind derived leaves, current policy and private-copy evidence while preserving original metadata; native hook and image adoption remain pending |
-| [Device delivery integration](target-files-delivery-integration.md) | Committed opt-in generator and matching host candidates; corrected isolated Kati fixture passes all 60 cases, with ordinary product execution and source/image adoption still pending |
+| [Maintained policy-image delivery](policy-image-delivery.md) | Explicit 4 KiB successor repeats 247-file host bundles bound to the actual component result; metadata hook and source/image selection remain pending, with signed-chain/rollback/fit gates retained for final artifacts |
+| [Device delivery integration](target-files-delivery-integration.md) | Committed opt-in generator and matching 47-file 4 KiB delivery candidates; isolated Kati fixture passes 60 cases, while ordinary product execution and source/image selection remain pending |
 | [Combined packaging source composition](target-files-source-composition.md) | Explicit ten-file closure for patches 0005–0011, preserving older contracts and original metadata; native adoption remains pending |
 | [Policy-image input preparation](policy-image-inputs.md) | Explicit v13h profile binds policy/digest evidence; raw reconstruction and keyless footer checks pass, with signed parent chain, physical fit and adoption pending; earlier profiles/default unchanged |
 | [Binder correction](binder-policy-correction.md) | Preserved intermediate correction prototype |
@@ -80,8 +80,8 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |
 | [Miracast audio correction evidence](../research/framework-provider-audio-compatibility.json) | Exact v7 dependency derivation installed as v13ha; policy source build passes, without complete ABI or runtime admission |
 | [Framework-provider source admission](framework-provider-source-admission.md) | Reproducible host v13 candidate, private policy and verified payload consumers; not installed in the v12fa checkpoint |
-| [Current 4 KiB bring-up profile](nezha-page-size-v2.md) | Explicitly authorized baseline bound to the compiled stock kernel and current v7 providers; native component build passes with checks enabled, while provider ELF and hardware validation remain separate |
-| [Current-provider 4 KiB source integration](nezha-page-size-v2-integration.md) | Corrected v13ja installation and native 37-goal build pass; first-stage failure and 16 KiB evidence preserved, without full compatibility or image-adoption claims |
+| [Current 4 KiB bring-up profile](nezha-page-size-v2.md) | Authorized baseline bound to the compiled stock kernel and current v7 providers; component build and 26 fresh ELF/symbol checks pass with checks enabled, while full compatibility and hardware remain unverified |
+| [Current-provider 4 KiB source integration](nezha-page-size-v2-integration.md) | Corrected v13ja installation, native 37-goal build and separate 26-provider checks pass; first-stage failure and 16 KiB evidence preserved, without full compatibility or image-adoption claims |
 | [Historical 4 KiB experiment](nezha-page-size.md) | Preserved v1 descriptor and unadopted v13g candidate; superseded by the separate current-provider preparation, without resolving 16 KiB/VTS compatibility |
 | [OEM property contract](../config/nezha-oem-properties.json) | Optional four-property source and permission budget; native validation separate from v11b |
 | [Framework-provider policy contract](../config/nezha-framework-provider-policy.json) | Bounded enforcing source for the two selected providers; no implied native or hardware pass |

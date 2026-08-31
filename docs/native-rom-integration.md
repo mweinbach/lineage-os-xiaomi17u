@@ -7,7 +7,8 @@ and verified sandboxing. The installed v13ha policy subsequently passes
 assertions plus four provider assertions, nine fresh checks and three
 zero-permissive binaries. Independent capture review has no findings, and the
 matching native digest derivation passes six checks with zero skips. Provider
-runtime/ELF, image adoption and hardware remain unverified.
+runtime, image adoption and hardware remain unverified. The later separate
+4 KiB ELF/symbol result is recorded below.
 
 The matching **policy-images-v13h-v1** raw EROFS reconstruction now passes nine
 checks and 38 commands with zero skips. Independent review confirms both
@@ -26,8 +27,9 @@ The follow-up's complete readback and independent evidence review pass. The
 user now authorizes a checked 4 KiB first-boot baseline; the corrected **v13ja
 source is installed**, and the 37-goal **pagesize-v13j-1** component build passes
 at **2026-08-31 00:43:11 UTC (August 30 in New York)**. Generated settings now
-verify 4096 with prebuilt checks enabled. The separate provider ELF checks and
-full VINTF remain pending; all earlier 16 KiB evidence is preserved. The inactive Camera stage and
+verify 4096 with prebuilt checks enabled. The separate **26-provider ELF/symbol
+checks pass freshly at 01:15:10 UTC**; full VINTF and runtime validation remain
+pending. All earlier 16 KiB evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
@@ -397,7 +399,7 @@ first Evolution boot or Camera/Leica operation is established.
 
 | Slice | Verified result | Still required |
 | --- | --- | --- |
-| [Sigma/QCC source admission](framework-provider-source-admission.md) | Historical v13 candidate/repeat and v13f installation are preserved; installed v13ha passes the policy source build and native semantic/provenance analysis | Strict native runtime ELF/linker checks, complete VINTF and APK labeling, service validation and matching image adoption |
+| [Sigma/QCC source admission](framework-provider-source-admission.md) | Installed v13ha policy passes native semantic/provenance analysis; the later v13ja 4 KiB source passes all 26 fresh ELF/symbol checks | Complete ABI/runtime linker behavior, VINTF and APK labeling, service validation and matching image selection |
 | [Target-files metadata](target-files-metadata.md) | Original-image bundle contains all 205 required property, VINTF and complete APEX files; host verification binds nine composed source files through patches 0005–0009; source admission and 43 isolated native Kati cases pass | Guest installation and ordinary target-files checks; a new complete preservation contract for policy-bearing vendor/ODM derivatives |
 | [Host AVB signing](avb-signing.md) | Inert planning, offline workflow tests and real unsigned countrycode/pvmfw descriptor-carrier checks; original inputs preserved | All 15 final input images with correct hashtrees/FEC, explicit Mac signing and independent verification of the resulting 17 image roles |
 | [Original ODM shipping API](vintf-shipping-api.md) | Patch 0011 and 59 source-bound host cases forward the original ODM API 36 with strict conflict and malformed-input rejection | Explicit composition extension, guest installation and complete native VINTF checks; no property bytes are fabricated |
@@ -696,6 +698,20 @@ failures remain preserved. The unfinished 16 KiB packet is historical after the
 source turnover. The 4 KiB component build now passes; a fresh capture and full
 compatibility checks must use its actual outputs.
 
+The auxiliary source-to-bytecode capture v2 preserves a 179-file failed
+capture: thirteen commands pass, but the producer query exceeds its 8 GiB RSS
+limit. The query-only v3 successor allows 32 GiB sampled RSS and 300 seconds,
+requiring 40 GiB available-memory headroom; it does not apply an address-space
+rlimit. It gets past the memory limit but fails on `unknown pool name
+'highmem_pool'` in the standalone Soong graph. Its 183-file capture totals
+1,238,748 bytes, with receipt
+`3667f50271f24db454b50ed51ef728aa754187b507dfa7efd51941dce6dfea78`.
+Thirteen other commands and all postflight guards pass; preservation covers
+selected bound inputs, not a complete OUT census. Neither attempt completes a
+source-to-bytecode comparison or full VINTF. The corrected combined-graph
+retry is pending verification, without inventing a pool or changing the global
+VINTF memory limit.
+
 Three separate capture attempts remain failures: the footer-tool reader rejected
 a valid empty Soong shard, the provider ELF parser rejected duplicate dependency
 edges, and the Camera capture stopped at its first Ninja query without retaining
@@ -817,7 +833,7 @@ independent review
 `177217e380639605d1b2b3fe633653b7b40f427731a18e63dc8e0a95dc483646`
 passes for staging only. All 204 source files, thirteen policy/eleven runtime
 outputs and sixteen graphs are preserved. The active namespace is unchanged;
-activation remains held for provider ELF results, a fresh producer receipt
+activation remains held for a fresh producer receipt
 and full VINTF. No APK selection, graph generation or build follows.
 
 Provider capture v6 fails on ambiguous source/private-provider resolution.
@@ -913,6 +929,25 @@ real images or adopt source/image inputs. Independent review
 accepts the isolated fixture after reviewing all 73 captured payloads and the
 complete native result. The first 58/2 attempt stays failed.
 
+Commit **137f438** adds the explicitly paired 4 KiB delivery successor in seven
+maintained files. Both host metadata bundles contain the same **247 files**,
+including all 205 preserved original metadata members; their shared receipt is
+`dbefc908c596a25b70aa75956cb02e52505b00ce314c069e6064fa311ed27680`.
+The metadata freeze is
+`373d17e585ea778f0b7d331e8b896a77efe7b82578688f49858da0b81e53e666`.
+Two **47-file** device candidates match admission
+`159ad7e2807fe143a7484b44c286d210500ac0a3c43134e8a035a05824cb35c2`;
+their freeze is
+`f09d8b981b78d452478d0654987786c24aeadb6aadf6b3692998f5677229f1fb`.
+The new mode binds the actual 37-goal build and exact current 4 KiB profile.
+Independent host review checks the metadata consumer, repeated candidates and
+source composition within its stated scope. It does not rerun native
+installation or read the large image bodies. The historical private-copy
+receipt remains provenance, not a fresh 4 KiB image-copy operation. Neither
+these candidate sources nor the metadata/image selections are installed;
+current input qualification, normal product execution and the metadata hook
+remain pending. Older descriptors and delivery modes are unchanged.
+
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
 and original images. Its freeze is
@@ -941,11 +976,12 @@ adding the v2 descriptor. The stock Image/configuration and current provider
 bindings are independently reverified. The freeze is
 `600e286a1be0ee29d06c26a831cd7ef92db042915bef695a4ce234873c429551`.
 Default rendering and the old descriptor remain unchanged. Combining this
-profile with the earlier policy-image delivery evidence is explicitly blocked
-until current native equality and paired admission are verified.
+profile through the earlier delivery mode remains explicitly blocked. The
+separate `137f438` successor above supplies reviewed host pairing to the actual
+native result, without selecting those delivery inputs in the guest.
 The corrected v13ja source transaction below now selects 4096. This does not turn
 the failed 16 KiB checks into passes or establish VTS compatibility, native
-adoption or hardware support; normal Android SELinux remains enforcing.
+image adoption or hardware support; normal Android SELinux remains enforcing.
 The **23:30:55 UTC** pre-install snapshot binds 216 present files among 266
 requested paths, totaling 7,646,909,660 bytes. All 1,179 base revisions and
 origins match; the six reviewed patched projects remain intact. It freshly
@@ -1007,6 +1043,26 @@ not establish fresh C++ compilation, qualified producer capture or runtime
 registration. Vendor-manifest and device/kernel FCM warnings remain recorded;
 the skipped matrix-definition subcheck is not a pass.
 
+The separate **provider-elf-v13j-4k-1** normal build runs from
+**2026-08-31 01:14:54 to 01:15:10 UTC** and passes **all 26 fresh ELF and symbol
+checks** at 4096. Its 924,077-byte result is
+`c0ace122a40697f42a1d014e6575d872594cf88e038bacb979cab3a5b6c53c54`.
+The preceding five-query read-only capture binds the current graph/settings
+with receipt `677231ed3dd097fed1876020ae67448d02dae38e1eb426de87adc9855654dbea`.
+The native build executes 48 actions: 26 checks and 22 dependency actions.
+Independent review replays all seven native evidence files / 93,444,455 bytes
+and the complete transport envelopes. Each pass has its exact verbose command,
+a new complete Ninja-log row and an empty current stamp; the four existing
+stamps are not counted as cached passes. All 71 dependency outputs are present,
+fourteen historical evidence files remain preserved, and the strict settings,
+source, graph, policy and runtime guards pass, including 86 protected read-only
+paths. The 200,837-byte independent review is
+`b3bf3e304dc1316685d88823625cda4a6f37403758e41c59ad2b2be94621d3f6`.
+The selected ELF/symbol gate passes; this does not establish complete ABI
+compatibility, runtime service registration, full VINTF, VTS or boot behavior.
+The earlier 16 KiB inventory remains four passes and twenty-two alignment
+failures, unchanged.
+
 The [native date fixture record](../research/pinned-build-metadata-native.json)
 verifies nine positive/legacy cases and 24 specific negative outcomes, with
 zero skips, at **01:33:47 UTC**. Source and Android output mounts remained
@@ -1022,9 +1078,13 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,795 tests in 163.444 seconds with zero failures, errors or skips**, executed
-by the coordinator on committed `17cde61`, with these checkpoint documents
-uncommitted. The page-size integration owner's preceding run passed 3,795 in
+**3,835 tests in 166.748 seconds with zero failures, errors or skips**, executed
+by the coordinator on `8fc2162` with the seven delivery successor files later
+committed unchanged as `137f438`. The complete log is
+`a65f67c99fe5ce4dc66c709db130cd38d9f1fff36e1c2cee83dacb6946d22ed6`.
+The preceding coordinator run passed **3,795 tests in 163.444 seconds** on
+committed `17cde61`, with these checkpoint documents then uncommitted.
+The page-size integration owner's preceding run passed 3,795 in
 143.328 seconds; the coordinator rehashed that complete log. The six frozen
 public files match the commit. The previous coordinator
 run passed 3,778 in 157.969 seconds with the ten maintained delivery files
@@ -1179,8 +1239,9 @@ recorded as failures.
 The policy-image contract requires exactly five changes: the derived vendor CIL,
 the strict combined ODM policy, and its three framework matching digests.
 Every other file and semantic metadata field must be preserved. The sealed
-v12/export4 reconstruction below now verifies that derivation; hashtree/FEC,
-AVB, partition-fit and current-source compatibility checks still precede adoption.
+v12/export4 reconstruction below verifies that derivation. The later v13h
+hashtree/FEC result and current-source qualification govern source selection;
+final artifacts separately require the signed AVB chain and physical fit.
 The old source-only ODM policy output must not substitute for the validated
 factory-combined binary. Original proprietary images remain untouched.
 
@@ -1299,7 +1360,11 @@ canonical SHA256
 It binds the verified native policy and sidecar records and is eligible for
 evidence validation; both older profiles and the blocked default remain
 unchanged. Matching raw reconstruction and keyless footer/FEC checks now pass;
-signed-parent, physical-fit and current-source checks still precede any adoption.
+reversible source-input integration may select the exact verified `NONE` leaf
+images after current-source qualification, with AVB still enabled. Final
+flashable-artifact admission separately requires the complete signed parent
+chain, rollback settings and physical partition fit. This stage distinction
+neither adopts the current host candidates nor changes readiness flags.
 The earlier raw v12/export4 reconstruction remains a separate baseline.
 Use the completed 4 KiB component result and its verified generated settings
 for the next provider and compatibility checks. Preserve the earlier allocator
@@ -1308,9 +1373,9 @@ historical evidence. Qualify packaged bytecode against the pinned Soong recipe,
 then capture fresh 4 KiB outputs for full framework/vendor/APEX/kernel comparison.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.
-Run the separate provider ELF checks for the installed 4 KiB baseline with
-checks enabled and no ignore flags; preserve the original 16 KiB
-failures and record the remaining VTS compatibility gap. The bounded Camera
+The separate 26-provider ELF/symbol checks now pass for the installed 4 KiB
+baseline with checks enabled and no ignore flags. Preserve the original 16 KiB
+failures and the remaining VTS compatibility gap. The bounded Camera
 component producer/output review passes; runtime API and linker access, Camera
 APK admission and full checker-input
 coverage remain separate. Complete strict provider runtime checks and the normal
@@ -1319,7 +1384,7 @@ actual framework and vendor APEX manifests, explicit kernel requirements and
 the original shipping-API evidence; full Treble labeling requires real APK
 inventories.
 
-After metadata-preserving policy-image adoption, complete ordinary target-files,
+After reviewed metadata-preserving source-input selection, complete ordinary target-files,
 super, A/B/snapshot/OTA packaging and the signed AVB chain. Construction and
 flash readiness remain false throughout this checkpoint. Source-lock, runtime
 integration, private-input derivation and future platform features stay

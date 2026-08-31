@@ -29,7 +29,8 @@ host experiment remain preserved.
 Scoped review verifies **4,890 logged Ninja actions after 163 frontend steps**,
 not 5,053 tests. Only the maximum changes among 254 generated settings. The
 captured allocator has four 4 KiB-aligned load segments; qualified producer
-capture, runtime registration and the full provider ELF inventory remain open.
+capture and runtime registration remain open. The separate provider result is
+recorded below.
 The fresh pre-install snapshot passes at **23:30:55 UTC**, retaining all 1,179
 source pins/origins and the active 16 KiB settings; it does not install the
 candidate or run a build. The subsequent inactive v13j stage fails while
@@ -42,6 +43,16 @@ it does not reread the live guest. The later component result is separate
 evidence, with 54 selected file bodies captured and 36 APEX identities recorded
 as metadata only; no image or APEX bodies were returned. The scoped build and
 log reviews are clear within those limits.
+
+The separate **provider-elf-v13j-4k-1** build now passes **all 26 fresh ELF and
+symbol checks**, completing at **2026-08-31 01:15:10 UTC**. Independent review
+reconstructs each exact command, new Ninja-log row and empty result stamp;
+the four stamps already present before launch are not counted as cached passes.
+The 48 native actions comprise 26 checks and 22 dependency actions. All seven
+captured files rehash, the fourteen historical evidence files remain preserved,
+and strict settings, source, policy and runtime guards pass. This closes the
+selected provider ELF/symbol gate at 4 KiB, not full ABI, service registration,
+runtime behavior, VTS or boot validation.
 
 The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
@@ -112,8 +123,8 @@ The incremental **vintf-v13h-2** retry finished at **16:58:47 UTC**, without a
 timeout, but failed the frozen level-5 `vintffm` check because
 `android.hidl.allocator` is mandatory and not declared in the manifest. All
 57 selected XML/APEX artifacts are present; presence is not compatibility.
-The current compatibility blockers include the provider ELF checks below and
-full VINTF. The earlier v13i allocator producer capture remains admitted for
+Full VINTF remains a compatibility blocker after the selected 4 KiB provider
+ELF checks pass. The earlier v13i allocator producer capture remains admitted for
 its historical packet; the new 4 KiB output needs its own producer qualification.
 Commit `1647192` adds the
 [host-verified allocator capability](framework-allocator.md), selecting the
@@ -149,6 +160,13 @@ source-to-bytecode proof using the pinned Soong recipe is in progress. This
 unfinished 16 KiB packet remains historical. The 4 KiB component build now
 passes; the next checks require its fresh outputs and the separate provider
 ELF results. No full native VINTF compatibility check has executed.
+The auxiliary bytecode capture v2 fails one producer query at its 8 GiB RSS
+limit while thirteen other commands pass. Its narrowly enlarged query-only
+successor v3 gets past that limit but fails because the standalone Soong graph
+does not define `highmem_pool`. All v3 postflight guards pass; its selected
+inputs remain unchanged. Both failed captures are preserved. The combined-graph
+reader retry is pending verification; no fabricated pool or global VINTF memory-limit
+change is admitted, and no source-to-bytecode comparison has passed.
 
 Ninja query captures were held pending qualification of the pinned query
 modes under read-only mounts. The second footer capture accepted the valid empty
@@ -208,7 +226,7 @@ and runtime behavior remain unverified. Earlier failed captures are preserved.
 The exact eleven-file Camera namespace and original APK are now staged in an
 inactive candidate, with all fifteen file/directory modes verified. Independent
 review confirms preserved source, output and graph guards. Activation remains
-held for provider ELF results, a fresh producer receipt and full VINTF; staging
+held for a fresh producer receipt and full VINTF; staging
 does not change the active namespace or select/build the APK.
 
 Provider capture v6 remains a parser-ambiguity failure. The corrected **v7
@@ -226,8 +244,8 @@ passed and twenty-two failed at 16 KiB**; this is not 26 newly executed checks
 or a replay of the earlier successful checks. Independent review rehashes all
 seven new capture files and all seven prior files, separately accounting for
 thirteen repeated failures. All 71 dependency outputs are now present and the
-temporary-storage failure is resolved. The authorized 4 KiB successor still
-needs its own native checks; these failed 16 KiB results are not relabeled.
+temporary-storage failure is resolved. The later authorized 4 KiB successor
+passes its own 26 fresh checks; these failed 16 KiB results are not relabeled.
 
 The first image-delivery dispatch failed before staging on its
 case-observation check. The corrected dispatch now prepares independent private
@@ -248,6 +266,20 @@ first attempt remains preserved. Independent review of the 73-file capture is
 clear for this isolated fixture.
 Ordinary product execution, source/image adoption and the metadata hook remain
 pending; complete targets stay blocked.
+
+Commit **137f438** adds a separate, explicitly paired 4 KiB delivery successor.
+Two host metadata bundles match across all **247 files**, retaining the 205
+original metadata members, and two **47-file** device candidates are identical.
+The capability binds the actual 37-goal result and current 4 KiB profile;
+independent host reviews are clear within their stated scope. The older
+delivery mode and descriptor remain unchanged. Neither the metadata bundle nor
+these new source/image candidates are installed. Historical private-copy
+evidence is retained as provenance, not a fresh 4 KiB copy or source check.
+Current input qualification and ordinary product/metadata-hook execution remain
+required. Reversible source-input integration may select the exact verified
+`NONE` leaf images with AVB enabled; final flashable-artifact admission still
+requires the complete signed parent chain, rollback settings and physical
+partition fit.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -283,9 +315,12 @@ byte for byte. Native checkers were not independently replayed, and complete
 checker-input recapture and runtime API validation remain separate. No Camera
 APK was built, and this is not a complete ROM, signed-chain or boot result.
 
-The latest coordinator full workspace suite passed **3,795 tests in 163.444
-seconds with zero failures, errors or skips** on committed `17cde61`, with
-these separately owned checkpoint documents uncommitted. The preceding
+The latest coordinator full workspace suite passed **3,835 tests in 166.748
+seconds with zero failures, errors or skips**, covering all seven delivery
+successor files subsequently committed unchanged as `137f438`, on parent
+`8fc2162`. The preceding coordinator run passed **3,795 tests in 163.444
+seconds**, on committed `17cde61`, with these checkpoint documents then
+uncommitted. The preceding
 page-size integration owner run passed 3,795 in 143.328 seconds; the coordinator
 independently rehashed its full log. All six frozen public files match the
 commit. The preceding coordinator suite passed **3,778
@@ -311,8 +346,8 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code through `17cde61`, with the previous documentation checkpoint committed
-as `fbe88a0`. The active guest source is v13ja with 4 KiB selected;
+code through `137f438`, with the previous component checkpoint committed
+as `8fc2162`. The active guest source remains v13ja with 4 KiB selected;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
 The immediate destination remains a reproducible, working Evolution baseline;
@@ -409,8 +444,10 @@ from a full build and require destination hash verification after transfers.
 | v12e source and private-input installation | Durable ten-operation transaction; pinned sources and exact installed inputs verified; original vendor/ODM, kernel and working76 bytes preserved | [Native ROM integration](../research/native-rom-integration.json) |
 | v12fa correction installation | Seven committed exchanges, exact corrected source and receipt identities, same pinned project bases and preserved original image inputs | [Native ROM integration](../research/native-rom-integration.json) |
 | v13f provider input installation | Four committed exchanges verified; original vendor/ODM, Camera runtime, mi_ext and working76 preserved; provider policy build and independent verification remain separate | [Native ROM integration](../research/native-rom-integration.json) |
-| v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; provider runtime/ELF and image adoption remain open | [Native ROM integration](../research/native-rom-integration.json) |
+| v13ha correction and native policy verification | Three exchanges commit; 31 native goals pass; analysis retains 6,370 assertions, exact reviewed effects and three zero-permissive binaries; runtime and image adoption remain open, with later 4 KiB ELF evidence separate | [Native ROM integration](../research/native-rom-integration.json) |
 | v13i allocator installation and component build | One device-tree exchange commits; 37 goals complete with fresh allocator actions and three inspected outputs; partial VINTF has an explicit skipped subcheck, and exact producer/full compatibility checks remain open | [Native ROM integration](../research/native-rom-integration.json) |
+| Current v13ja 4 KiB source and component build | Corrected installation and 37 goals pass; only one of 254 generated settings changes, with all thirteen policy and eleven runtime identities preserved; partial VINTF still skips one subcheck | [Native ROM integration](../research/native-rom-integration.json) |
+| Current 4 KiB provider ELF/symbol checks | All 26 checks execute freshly and pass within 48 native actions; complete raw review verifies commands, new log rows and stamps; full ABI, runtime and hardware remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
 | Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
 | Preserved independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |
