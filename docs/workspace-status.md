@@ -23,7 +23,10 @@ readback and independent review. The monitored source inventory is 529 files
 across thirteen projects. The first 32-goal attempt now **fails in Soong graph
 generation at 14:02:13 UTC**, before policy compilation: a device filegroup
 requests visibility to a specific vendor package, which Soong forbids.
-The minimal visibility correction is being prepared but is not installed.
+The minimal correction from commit **30a9f74** is now installed as
+**evolution-policy-visibility-v1** at **14:43:26 UTC**, with complete receipt
+readback. It changes three files and preserves the 529-file inventory, patch
+0015 and strict 4 KiB settings. The native policy retry has not run.
 Source/M4 compilation, context-effect review and factory-image compatibility
 remain pending. Normal Android enforcement and all assertions remain required.
 
@@ -596,6 +599,19 @@ unchanged-output claim. Bootstrap Ninja runs, but the required main-Ninja
 observation is not obtained. The policy postcheck never runs and there are no
 postcheck errors. The failure, raw logs and original source installation remain
 preserved; no new policy or metadata success is inferred.
+
+The subsequent visibility transaction changes only the device filegroup
+Blueprint, its private provenance copy and the policy receipt. It uses Soong's
+required `//vendor:__subpackages__` form without changing SELinux sources or
+permissions. Three operations and nine journal events commit the correction;
+three original preimages, the eleven policy1 output archives and ten other live
+outputs remain verified. The host code review and the separate actual receipt
+replay are clear. This is not a new Soong/policy pass or a successor
+build-identity/metadata result.
+The separate host metadata successor now derives
+`nezha.9c8ecb23e876fcf464a02e1d`; coordinator replay verifies all fifteen bound
+files and nine identical outputs. Native input rechecks and six-file metadata
+qualification remain pending.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export

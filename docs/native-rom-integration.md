@@ -76,9 +76,10 @@ with repeated host bundle verification. The **evolution-policy-components-v1**
 transaction now installs those inputs and patch 0015 at **13:24:59 UTC**, with
 complete readback and independent review. The first 32-goal invocation then
 fails in Soong graph generation at **14:02:13 UTC**, before policy compilation,
-on the device filegroup's forbidden specific-vendor visibility. The source
-correction is not yet installed; current policy/context and image-compatibility
-checks remain pending.
+on the device filegroup's forbidden specific-vendor visibility. The separate
+**evolution-policy-visibility-v1** source correction commits at **14:43:26 UTC**,
+with complete receipt readback. The native retry has not run; current
+policy/context and image-compatibility checks remain pending.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1462,8 +1463,8 @@ are both 1. Result
 `nezha_owned_system_ext_public_policy`: packages outside vendor must use
 `//vendor:__subpackages__` for this access. Bootstrap Ninja/frontend work runs;
 the required main-Ninja argv/namespace observation is not obtained, and no
-policy compiler action or policy postcheck runs. A minimal generator correction
-is being prepared, not counted as installed or tested in Android.
+policy compiler action or policy postcheck runs. The later minimal correction
+is installed separately below; it does not reclassify this failed attempt.
 
 Preflight completes and all six source/input guard groups match before and
 after, including 1,525 named inputs, one runtime input, source history and the
@@ -1474,6 +1475,43 @@ the new input identity and the attempted environment selects
 `nezha.c70cf5547ff9f24c2ecefa65`, but the failed phase provides no six-file
 post-make metadata qualification or fresh policy result. The successful
 installation and earlier `nothing2` evidence retain their separate scopes.
+
+The **evolution-policy-visibility-v1** correction, generated from commit
+`30a9f74d64cd514f496e77968da3322bc6b46a6d`, commits at
+**2026-08-31 14:43:26.323848 UTC**. The three changed files are the device
+filegroup Blueprint, its private provenance copy and the policy receipt.
+Five visibility substitutions in each Blueprint use the pinned Soong-required
+`//vendor:__subpackages__` form. All other source identities, including SELinux
+rules, stay exact; the monitored inventory remains 529 files across thirteen
+projects, with patch 0015 and strict 4096 settings retained.
+
+Commit receipt
+`e07dc9b7eb07129b26088ee7a529eab14911da4583b32052b6e5cecf4472ddec`
+binds three operations and nine journal events ending in `commit_verified`.
+The complete three-file readback verifies installation
+`a70d3cf66ef52388f90c1709a30df14e160443568460e637b94b9c0dc5640e69`,
+staging and journal identities. The transaction preserves three independent
+source preimages, verifies the eleven policy1 originals/archives and their
+absent active paths, and checks ten remaining live outputs. Host review
+`9d1acacef22b8c3ea27974f3e7caed19a4adfa5f36db1f71edb253ea0d43b2dd`
+is clear for the installer code; that review did not independently reread the
+actual guest result. The later actual receipt replay
+`1a81d444f95c478d6bf76925f2e15e85d32585521b023c47fc01a5ecde36138e`
+(2,582 bytes) is separately clear, rebinding all three captured bodies, the
+commit/stage records and complete source/mode vectors without rerunning guest
+filesystem checks.
+Neither the source transaction nor the coordinator's ten focused offline tests
+establishes a new Soong parse, policy result or successor build identity.
+The native retry and its metadata qualification remain pending.
+
+The separate host metadata successor derives
+`nezha.9c8ecb23e876fcf464a02e1d`, bound by input freeze
+`fd2fbd866053c0a725acf05a23d26ed3f2439562c6a94d1325f764a97ac9ced2`.
+Coordinator replay `def599228a3e931052a26b4d40982057916bef037a10306dd7dd6a5f96b6167d`
+rehashes fifteen files and reproduces nine outputs byte for byte with process
+launches blocked. This is host identity preparation, not native dispatch,
+six-file post-make qualification or policy success; the native caller must
+recheck all live inputs.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
