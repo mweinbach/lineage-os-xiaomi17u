@@ -254,6 +254,33 @@ FRAMEWORK_ALLOCATOR_SCOPE = {
     "image_integration_verified": False, "hardware_tested": False,
     "complete_rom_admitted": False, "phone_operations": [],
 }
+QTI_AIDL_NAMESPACE_RECORD = PurePosixPath("config/nezha-qti-aidl-namespaces.json")
+QTI_AIDL_NAMESPACE_CONTRACT_ID = "nezha-locked-qti-aidl-namespace-exports-v1"
+QTI_AIDL_NAMESPACE_CONTRACT_SHA256 = "792dbd1800859f610ecba25dd5ee019ce7c0b04d742a7c37248ee0c7a753331a"
+QTI_AIDL_NAMESPACES = (
+    "hardware/qcom-caf/sm8750", "vendor/qcom/opensource/commonsys-intf/display",
+)
+QTI_AIDL_PRIOR_EXPORTS = (
+    "vendor/xiaomi/nezha-policy", "vendor/xiaomi/nezha-framework-providers",
+    "device/xiaomi/nezha/framework-providers", "vendor/xiaomi/nezha",
+    "device/xiaomi/nezha", "vendor/xiaomi/nezha", "vendor/lineage/prebuilts", "vendor/bcr",
+)
+QTI_AIDL_REQUIRED_INTERFACES = {
+    "vendor.qti.hardware.agm": ("IAGM", 1, "efa4ab1ccef17baa301d81deca852ddc0bbafbfb"),
+    "vendor.qti.hardware.pal": ("IPAL", 1, "efa1395e3de0d2b7d4af32f4d8d0943bb061804e"),
+    "vendor.qti.hardware.display.config": ("IDisplayConfig", 13, "650b872a89db1a3d042c29a8890c6320fe849d75"),
+    "vendor.qti.hardware.display.aiqe": ("IDisplayAiqe", 3, "05383291fa2089555fc691c6fe5e11ad2b58ac7f"),
+    "vendor.qti.hardware.display.color": ("IDisplayColor", 1, "423c962c634a981b3722b48ad99e9fd851a4f8e8"),
+    "vendor.qti.hardware.display.demura": ("IDemuraFileFinder", 1, "e333c843c65c9b04c9b18f0231caef5e077682ae"),
+    "vendor.qti.hardware.display.postproc": ("IDisplayPostproc", 1, "717b637207e7b53e81228f9ebc0b2418cf873f2b"),
+}
+QTI_AIDL_NAMESPACE_SCOPE = {
+    "source_checkout_inspected": False, "upstream_sources_changed": False,
+    "native_metadata_built": False, "native_api_checked": False, "native_backend_built": False,
+    "future_generated_names_checked": False, "full_vintf_compatibility_verified": False,
+    "runtime_verified": False, "hardware_tested": False, "complete_rom_admitted": False,
+    "phone_operations": [],
+}
 SECURITY_RECORD = PurePosixPath("patches/evolution/security-properties.json")
 SECURITY_PATCH = PurePosixPath("patches/evolution/0001-allow-device-to-enforce-security-properties.patch")
 RECORD_NAMES = ("device-baseline", "boot-contract", "firmware-layout", "vintf-contract")
@@ -3139,6 +3166,159 @@ def _framework_allocator_source_guards(plan, payloads):
                  "framework allocator service, manifest and policy may only use the reviewed upstream module")
 
 
+def _qti_aidl_namespace_contract(path):
+    contract, identity = _read_json(path)
+    _require(identity["sha256"] == QTI_AIDL_NAMESPACE_CONTRACT_SHA256,
+             "unknown or changed QTI AIDL namespace contract")
+    _require(contract["schema_version"] == 1 and contract["device"] == "nezha" and
+             contract["contract_id"] == QTI_AIDL_NAMESPACE_CONTRACT_ID and
+             contract["profile"] == "framework-checks" and
+             contract["platform"] == {"branch": "bka", "release_config": "bp4a", "shipping_api_level": 36},
+             "QTI AIDL namespace platform or contract changed")
+    _require(contract["namespaces"] == list(QTI_AIDL_NAMESPACES) and
+             contract["prior_evaluated_exports"] == list(QTI_AIDL_PRIOR_EXPORTS),
+             "QTI AIDL namespace exports must preserve the exact two additions and prior sequence")
+    rule = contract["evaluated_exports_rule"]
+    expected_rule = {"each_added_namespace_occurs_exactly_once": True,
+                     "remove_added_namespaces_to_reproduce_prior_ordered_sequence": True,
+                     "preserve_prior_duplicates": True, "terminal_append_assumed": False,
+                     "native_evaluation_required": True}
+    _require(type(rule) is dict and set(rule) == set(expected_rule) and
+             all(rule[key] is value for key, value in expected_rule.items()),
+             "QTI AIDL exports require the prior ordered sequence and later native evaluation")
+    scope = contract["scope"]
+    _require(type(scope) is dict and set(scope) == set(QTI_AIDL_NAMESPACE_SCOPE) and
+             all(scope[key] is False for key in scope if key != "phone_operations") and
+             type(scope["phone_operations"]) is list and scope["phone_operations"] == [],
+             "QTI AIDL namespace contract cannot claim native or runtime success")
+    _require(contract["source_patches"] == contract["product_packages"] == contract["runtime_services"] == contract["additional_policy"] == [],
+             "QTI AIDL namespace selection cannot add patches, packages or services")
+    sources = contract["source_preconditions"]
+    _require(type(sources) is list and len(sources) == 666 and
+             [row["path"] for row in sources] == sorted({row["path"] for row in sources}),
+             "QTI AIDL source preconditions are absent, duplicated or unordered")
+    revisions = contract["required_source_revisions"]
+    _require(type(revisions) is dict and len(revisions) == 13 and all(
+        _relative(name).as_posix() == name and isinstance(revision, str) and
+        re.fullmatch(r"[a-f0-9]{40}", revision) for name, revision in revisions.items()),
+        "QTI AIDL source revisions are malformed")
+    for row in sources:
+        _require(row["project"] in revisions and _relative(row["path"]).is_relative_to(row["project"]),
+                 "QTI AIDL source precondition is outside its pinned project")
+        _digest(row["sha256"], "QTI AIDL source")
+        _integer(row["size_bytes"], "QTI AIDL source length", MAX_TEXT_BYTES)
+    interfaces = contract["required_interfaces"]
+    _require(type(interfaces) is list and len(interfaces) == len(QTI_AIDL_REQUIRED_INTERFACES) and
+             len({row["name"] for row in interfaces}) == len(interfaces) and
+             {row["name"]: (row["interface"], row["required_version"], row["required_frozen_hash"])
+              for row in interfaces} == QTI_AIDL_REQUIRED_INTERFACES and
+             all(type(row["required_version"]) is int for row in interfaces),
+             "QTI AIDL required interfaces or frozen versions changed")
+    by_path = {row["path"]: row for row in sources}
+    for row in interfaces:
+        source = row["blueprint"]
+        _require(isinstance(source, str) and source in by_path and source.endswith("/Android.bp"),
+                 "QTI AIDL Blueprint is not one of the pinned source preconditions")
+    physical = {"path": "hardware/qcom-caf/common/os_pickup_qssi.bp", "project": "hardware/qcom-caf/common",
+                "sha256": "12a3be1a3012a236601b3d8b105ffd5f0cc456fd9b1679d89a74642a8ba1ce86", "size_bytes": 141}
+    aliases = contract["source_symlink_preconditions"]
+    _require(aliases == [{"path": "hardware/qcom-caf/sm8750/Android.bp", "project": "hardware/qcom-caf/common",
+                         "type": "symlink", "link_target": "../common/os_pickup_qssi.bp",
+                         "manifest_linkfile": {"src": "os_pickup_qssi.bp", "dest": "hardware/qcom-caf/sm8750/Android.bp"},
+                         "physical_target": physical, "namespace_owner": "hardware/qcom-caf/sm8750",
+                         "general_symlink_following_allowed": False}] and
+             aliases[0]["general_symlink_following_allowed"] is False and
+             by_path.get(physical["path"]) == physical,
+             "QTI AIDL namespace requires the exact separately pinned manifest link target")
+    ownership = contract["namespace_ownership"]
+    _require(ownership["future_generated_name_registry_verified"] is False and
+             ownership["make_conditionals_evaluated"] is False and
+             ownership["export_does_not_select_runtime_services"] is True,
+             "QTI AIDL namespace ownership cannot claim future native resolution")
+    provider = contract["preserved_framework_provider_contract"]
+    _require(provider == {"path": FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix(),
+                         "sha256": FRAMEWORK_PROVIDER_INPUT_SHA256, "size_bytes": 30596} and
+             contract["preserved_wfd_dependency"] == {
+                 "consumer_module": "nezha_framework_libwfddisplayconfig",
+                 "source_module": "//vendor/qcom/opensource/commonsys-intf/display:vendor.qti.hardware.display.config-V5-ndk",
+                 "soname": "vendor.qti.hardware.display.config-V5-ndk.so"},
+             "QTI AIDL namespace selection cannot replace the preserved WFD V5 dependency")
+    return contract, identity
+
+
+def _qti_aidl_namespace_admission(plan, contract, identity):
+    _require(plan["profile"] == "framework-checks" and plan["product"] == "lineage_nezha" and
+             plan["release_config"] == "bp4a" and plan["shipping_api_level"] == 36 and
+             plan["admission"]["configuration_allowed"] is True and
+             all(value is False for key, value in plan["admission"].items() if key != "configuration_allowed"),
+             "QTI AIDL namespaces cannot change platform or ROM admission")
+    return {"contract_record": {"path": QTI_AIDL_NAMESPACE_RECORD.as_posix(), **identity},
+            **{key: copy.deepcopy(value) for key, value in contract.items() if key not in ("evidence", "limitations")}}
+
+
+def _qti_aidl_namespace_metadata(contract):
+    return (contract["source_lock"], contract["source_snapshot"], contract["preserved_framework_provider_contract"])
+
+
+def _bind_qti_aidl_namespaces(plan, path, workspace_root, payloads):
+    contract, identity = _qti_aidl_namespace_contract(path)
+    for row in _qti_aidl_namespace_metadata(contract):
+        name = _relative(row["path"]).as_posix()
+        actual, raw = _read_file(Path(workspace_root) / name, limit=MAX_TEXT_BYTES, collect=True)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")} and
+                 (name not in payloads or payloads[name] == raw),
+                 "QTI AIDL source lock, snapshot or provider contract differs")
+        if name == FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix():
+            _verify_qti_aidl_wfd_dependency(json.loads(raw), contract)
+        payloads[name] = raw
+    actual, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == identity, "QTI AIDL namespace contract changed during generation")
+    payloads[QTI_AIDL_NAMESPACE_RECORD.as_posix()] = raw
+    plan["qti_aidl_namespaces"] = _qti_aidl_namespace_admission(plan, contract, identity)
+
+
+def _verify_qti_aidl_wfd_dependency(provider, contract):
+    dependency = contract["preserved_wfd_dependency"]
+    consumers = [row for row in provider["files"] if row.get("module") == dependency["consumer_module"]]
+    _require(len(consumers) == 1 and consumers[0]["needed"].count(dependency["soname"]) == 1 and
+             provider["source_dependencies"].get(dependency["soname"]) == dependency["source_module"],
+             "QTI AIDL namespace selection changed the actual preserved WFD V5 mapping")
+
+
+def _qti_aidl_namespace_source_guards(plan, payloads):
+    product = (DEVICE_PATH / "generated/device-candidate.mk").as_posix()
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/"):
+            continue
+        if name == product and "qti_aidl_namespaces" in plan:
+            _require(raw == _render_product(plan).encode("ascii"),
+                     "QTI AIDL namespace generated product is duplicated or contradictory")
+            continue
+        if name.endswith(".mk"):
+            # Candidate-local spelling guard only. Native Make still establishes
+            # the complete evaluated sequence and normal duplicate-name checks.
+            spelled = re.sub(rb"\\\r?\n[ \t]*", b"", raw)
+            for line in spelled.splitlines():
+                assignment = re.match(rb"^[ \t]*(?:(override|export)[ \t]+)?([A-Za-z_][A-Za-z0-9_.]*)[ \t]*(:=|\+=|\?=|=)[ \t]*(.*)$", line)
+                if assignment is None:
+                    continue
+                if assignment[2] == b"PRODUCT_SOONG_NAMESPACES" and "qti_aidl_namespaces" in plan:
+                    _require(assignment[1] is None and assignment[3] == b"+=",
+                             "QTI AIDL namespaces cannot reset or override the existing export list")
+                value = assignment[4]
+                if assignment[2] != b"PRODUCT_SOONG_NAMESPACES":
+                    for namespace in QTI_AIDL_NAMESPACES:
+                        # Allow qualified clients, never an export pretending
+                        # that the namespace is a qualified module reference.
+                        value = re.sub(rb"//" + re.escape(namespace.encode()) + rb":[A-Za-z0-9_.+-]+", b"", value)
+                _require(not any(namespace.encode() in value for namespace in QTI_AIDL_NAMESPACES),
+                         "QTI AIDL namespaces may only be exported by the reviewed generated product")
+        if name.endswith(".bp"):
+            _require(not any(re.search(rb'\bname\s*:\s*"' + re.escape(module.encode()) + rb'"', raw)
+                             for module in QTI_AIDL_REQUIRED_INTERFACES),
+                     "QTI AIDL source definitions cannot be duplicated in the candidate")
+
+
 def _framework_matrix_contract(path):
     contract, identity = _read_json(path)
     try:
@@ -3228,6 +3408,9 @@ def _render_product(plan):
     if "framework_allocator" in plan:
         lines += ["# Upstream system_ext service owns its binary, init and max-level-8 VINTF fragment.",
                   f"PRODUCT_PACKAGES += {FRAMEWORK_ALLOCATOR_MODULE}"]
+    if "qti_aidl_namespaces" in plan:
+        lines += ["# Existing locked AIDL definitions; no packages or runtime services are selected.",
+                  "PRODUCT_SOONG_NAMESPACES += " + " ".join(QTI_AIDL_NAMESPACES)]
     return "\n".join([*lines, ""])
 
 
@@ -3247,6 +3430,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
              target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
+             qti_aidl_namespace_contract=None,
              policy_image_delivery_contract=None, rom_construction_contract=None, framework_matrix_contract=None,
              rom_construction_source_contract=None, evolution_policy_base_contract=None,
              camera_property_capability_contract=None, factory_property_contexts_capability_contract=None):
@@ -3381,6 +3565,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         _bind_framework_allocator(plan, framework_allocator_contract, workspace_root, payloads)
     if framework_matrix_contract is not None:
         _bind_framework_matrix(plan, framework_matrix_contract, workspace_root, payloads)
+    if qti_aidl_namespace_contract is not None:
+        _bind_qti_aidl_namespaces(plan, qti_aidl_namespace_contract, workspace_root, payloads)
     if page_size_profile is not None:
         _verify_page_size_kernel(page_profile, kernel_receipt)
         plan["page_size_profile"] = _page_size_profile_binding(plan, page_profile, page_identity)
@@ -3424,6 +3610,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         payloads[(generated / name).as_posix()] = content.encode()
     _page_size_source_guards(plan, payloads)
     _framework_allocator_source_guards(plan, payloads)
+    _qti_aidl_namespace_source_guards(plan, payloads)
     _framework_matrix_source_guards(plan, payloads)
     _policy_image_delivery_source_guards(plan, payloads)
     _camera_property_source_guards(plan, payloads)
@@ -3434,6 +3621,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if rom_construction_source_contract is not None:
         plan, payloads = construction_source.apply(plan, payloads, rom_construction_source_contract)
         _page_size_source_guards(plan, payloads)
+        _qti_aidl_namespace_source_guards(plan, payloads)
         _policy_image_delivery_source_guards(plan, payloads)
     output = _no_symlinks(output, existing=False)
     artifacts = _no_symlinks(Path(workspace_root) / "artifacts", existing=False)
@@ -3492,6 +3680,13 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             _require(current_plan["framework_matrix"] == plan["framework_matrix"] and
                      all(payloads[name] == raw for name, raw in current.items()),
                      "framework matrix inputs changed before candidate publication")
+        if qti_aidl_namespace_contract is not None:
+            current = {}
+            current_plan = copy.deepcopy(plan)
+            _bind_qti_aidl_namespaces(current_plan, qti_aidl_namespace_contract, workspace_root, current)
+            _require(current_plan["qti_aidl_namespaces"] == plan["qti_aidl_namespaces"] and
+                     all(payloads[name] == raw for name, raw in current.items()),
+                     "QTI AIDL namespace inputs changed before candidate publication")
         if metadata_selected:
             # Verify the entire external tree again, including its no-extra-file
             # inventory, before publishing the small portable candidate.
@@ -3743,6 +3938,17 @@ def validate(output, *, purpose="configuration"):
             expected.add(row["path"])
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
                      "framework matrix source lock or snapshot changed")
+    if "qti_aidl_namespaces" in plan:
+        namespace_contract, namespace_identity = _qti_aidl_namespace_contract(Path(output) / QTI_AIDL_NAMESPACE_RECORD)
+        _require(plan["qti_aidl_namespaces"] == _qti_aidl_namespace_admission(plan, namespace_contract, namespace_identity),
+                 "QTI AIDL namespace admission differs from the reviewed source capability")
+        expected.add(QTI_AIDL_NAMESPACE_RECORD.as_posix())
+        for row in _qti_aidl_namespace_metadata(namespace_contract):
+            expected.add(row["path"])
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "QTI AIDL source lock, snapshot or provider contract changed")
+        provider, _ = _read_json(Path(output) / namespace_contract["preserved_framework_provider_contract"]["path"])
+        _verify_qti_aidl_wfd_dependency(provider, namespace_contract)
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -3756,6 +3962,9 @@ def validate(output, *, purpose="configuration"):
             _require(len(present) <= len(expected) + 1, "unexpected candidate file")
     _require(present == expected | {"admission.json"}, "unlisted or missing candidate file")
     _framework_allocator_source_guards(plan, {
+        name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
+        for name in files if name.startswith(DEVICE_PATH.as_posix() + "/")})
+    _qti_aidl_namespace_source_guards(plan, {
         name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
         for name in files if name.startswith(DEVICE_PATH.as_posix() + "/")})
     _framework_matrix_source_guards(plan, {
@@ -3955,6 +4164,8 @@ def main(argv=None):
                              help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
             sub.add_argument("--framework-allocator-contract", type=Path,
                              help="explicit pinned upstream allocator service; preserves its init, SELinux and max-level-8 VINTF behavior")
+            sub.add_argument("--qti-aidl-namespace-contract", type=Path,
+                             help="explicit two-namespace export for pinned AIDL definitions; selects no packages or services and requires new native checks")
             sub.add_argument("--framework-matrix-contract", type=Path,
                              help="exact stock-backed device framework matrix; preserves platform FCMs and requires a new native compatibility check")
             sub.add_argument("--rom-construction-contract", type=Path,
@@ -3992,6 +4203,7 @@ def main(argv=None):
                                   target_files_source_contract=args.target_files_source_contract,
                                   page_size_profile=args.page_size_profile,
                                   framework_allocator_contract=args.framework_allocator_contract,
+                                  qti_aidl_namespace_contract=args.qti_aidl_namespace_contract,
                                   policy_image_delivery_contract=args.policy_image_delivery_contract,
                                   rom_construction_contract=args.rom_construction_contract,
                                   framework_matrix_contract=args.framework_matrix_contract,

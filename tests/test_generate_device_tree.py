@@ -4283,6 +4283,296 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         self.assertEqual(generate.call_args.kwargs["framework_allocator_contract"], Path("allocator.json"))
 
 
+    def qti_namespace_inputs(self, inputs=None):
+        inputs = inputs or self.generation_inputs()
+        source = ROOT / generator.QTI_AIDL_NAMESPACE_RECORD
+        raw = source.read_bytes()
+        contract = json.loads(raw)
+        for field in ('source_lock', 'source_snapshot', 'preserved_framework_provider_contract'):
+            row = contract[field]
+            destination = self.root / row['path']
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes((ROOT / row['path']).read_bytes())
+        destination = self.root / generator.QTI_AIDL_NAMESPACE_RECORD
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(raw)
+        return dict(inputs, qti_aidl_namespace_contract=destination)
+
+
+    def test_qti_contract_pins_exact_roots_and_preserves_source_only_scope(self):
+        inputs = self.qti_namespace_inputs()
+        contract, identity = generator._qti_aidl_namespace_contract(inputs['qti_aidl_namespace_contract'])
+        self.assertEqual(identity['sha256'], generator.QTI_AIDL_NAMESPACE_CONTRACT_SHA256)
+        self.assertEqual(contract['contract_id'], generator.QTI_AIDL_NAMESPACE_CONTRACT_ID)
+        self.assertEqual(contract['namespaces'], [
+            'hardware/qcom-caf/sm8750', 'vendor/qcom/opensource/commonsys-intf/display'])
+        self.assertEqual(contract['prior_evaluated_exports'], [
+            'vendor/xiaomi/nezha-policy', 'vendor/xiaomi/nezha-framework-providers',
+            'device/xiaomi/nezha/framework-providers', 'vendor/xiaomi/nezha',
+            'device/xiaomi/nezha', 'vendor/xiaomi/nezha', 'vendor/lineage/prebuilts', 'vendor/bcr'])
+        self.assertEqual(len(contract['required_interfaces']), 7)
+        self.assertEqual(len(contract['source_preconditions']), 666)
+        provider_raw = (ROOT / generator.FRAMEWORK_PROVIDER_INPUT_RECORD).read_bytes()
+        self.assertEqual(contract['preserved_framework_provider_contract'], {
+            'path': generator.FRAMEWORK_PROVIDER_INPUT_RECORD.as_posix(),
+            'sha256': '7e514674abbf7739efb2e7520d79e7c1f302de773a3e49c0d683aba7c51fc8a7',
+            'size_bytes': 30596})
+        self.assertEqual(hashlib.sha256(provider_raw).hexdigest(),
+                         contract['preserved_framework_provider_contract']['sha256'])
+        self.assertEqual(len(provider_raw), contract['preserved_framework_provider_contract']['size_bytes'])
+        generator._verify_qti_aidl_wfd_dependency(json.loads(provider_raw), contract)
+        for key in ('source_patches', 'product_packages', 'runtime_services'):
+            self.assertEqual(contract[key], [])
+        self.assertEqual(contract['scope'], generator.QTI_AIDL_NAMESPACE_SCOPE)
+        self.assertTrue(all(value is False for key, value in contract['scope'].items()
+                            if key != 'phone_operations'))
+        self.assertIs(type(contract['scope']['phone_operations']), list)
+        self.assertEqual(contract['scope']['phone_operations'], [])
+
+
+    def test_qti_omission_preserves_baseline_bytes_without_contract_reads(self):
+        inputs = self.generation_inputs()
+        baseline = generator
+        before_dir = self.root / 'artifacts/qti-before'
+        before = baseline.generate(before_dir, **inputs)
+        default_dir, none_dir = self.root / 'artifacts/qti-default', self.root / 'artifacts/qti-none'
+        with mock.patch.object(generator, '_qti_aidl_namespace_contract',
+                               side_effect=AssertionError('implicit namespace contract read')):
+            default = generator.generate(default_dir, **inputs)
+            explicit_none = generator.generate(none_dir, qti_aidl_namespace_contract=None, **inputs)
+        self.assertEqual(before, default)
+        self.assertEqual(default, explicit_none)
+        self.assertNotIn('qti_aidl_namespaces', default)
+        self.assertNotIn(generator.QTI_AIDL_NAMESPACE_RECORD.as_posix(), {row['path'] for row in default['files']})
+        for row in before['files']:
+            self.assertEqual((before_dir / row['path']).read_bytes(), (default_dir / row['path']).read_bytes())
+            self.assertEqual((before_dir / row['path']).read_bytes(), (none_dir / row['path']).read_bytes())
+
+
+    def test_qti_explicit_render_adds_only_two_namespaces_once(self):
+        inputs = self.generation_inputs()
+        before_dir = self.root / 'artifacts/qti-base'
+        before = generator.generate(before_dir, **inputs)
+        inputs = self.qti_namespace_inputs(inputs)
+        first_dir, second_dir = self.root / 'artifacts/qti-first', self.root / 'artifacts/qti-second'
+        selected = generator.generate(first_dir, **inputs)
+        self.assertEqual(generator.generate(second_dir, **inputs), selected)
+        product_name = (generator.DEVICE_PATH / 'generated/device-candidate.mk').as_posix()
+        before_product = (before_dir / product_name).read_text()
+        after_product = (first_dir / product_name).read_text()
+        expected = ('PRODUCT_SOONG_NAMESPACES += hardware/qcom-caf/sm8750 '
+                    'vendor/qcom/opensource/commonsys-intf/display')
+        extra = [line for line in after_product.splitlines() if line not in before_product.splitlines()
+                 and line.strip() and not line.lstrip().startswith('#')]
+        self.assertEqual(extra, [expected])
+        self.assertEqual(after_product.splitlines().count(expected), 1)
+        self.assertEqual([line for line in after_product.splitlines() if 'PRODUCT_PACKAGES' in line],
+                         [line for line in before_product.splitlines() if 'PRODUCT_PACKAGES' in line])
+        self.assertEqual(selected['admission'], before['admission'])
+        for row in before['files']:
+            if row['path'] != product_name:
+                self.assertEqual((before_dir / row['path']).read_bytes(), (first_dir / row['path']).read_bytes())
+        self.assertFalse(any(row['path'].startswith(('hardware/qcom-caf/', 'vendor/qcom/opensource/'))
+                             for row in selected['files']))
+        self.assertEqual(generator.validate(first_dir), selected)
+
+
+    def test_qti_rendered_plan_composition_preserves_provider_packages_and_wfd_v5(self):
+        # Load the real namespace contract before the existing fixture patches
+        # provider pins to synthetic private receipts. This checks composition
+        # at the rendered-plan boundary, not a real private bundle admission.
+        source = ROOT / generator.QTI_AIDL_NAMESPACE_RECORD
+        contract, identity = generator._qti_aidl_namespace_contract(source)
+        inputs, verification, policy = self.provider_inputs(properties=True)
+        before_dir = self.root / 'artifacts/qti-provider-before'
+        before = self.generate_provider(before_dir, inputs, verification, policy)
+        after = copy.deepcopy(before)
+        after['qti_aidl_namespaces'] = generator._qti_aidl_namespace_admission(after, contract, identity)
+        for key in ('framework_providers', 'policy_inputs', 'oem_properties', 'admission'):
+            self.assertEqual(after[key], before[key])
+        self.assertEqual(generator._render_board(after), generator._render_board(before))
+        before_product, after_product = generator._render_product(before), generator._render_product(after)
+        self.assertEqual([line for line in after_product.splitlines() if 'PRODUCT_PACKAGES' in line],
+                         [line for line in before_product.splitlines() if 'PRODUCT_PACKAGES' in line])
+        expected = ('PRODUCT_SOONG_NAMESPACES += hardware/qcom-caf/sm8750 '
+                    'vendor/qcom/opensource/commonsys-intf/display')
+        self.assertEqual([line for line in after_product.splitlines() if line not in before_product.splitlines()
+                          and line.strip() and not line.lstrip().startswith('#')], [expected])
+        blueprint = (before_dir / generator.FRAMEWORK_PROVIDER_BLUEPRINT).read_bytes()
+        generator._qti_aidl_namespace_source_guards(after, {
+            (generator.DEVICE_PATH / 'generated/device-candidate.mk').as_posix(): after_product.encode(),
+            generator.FRAMEWORK_PROVIDER_BLUEPRINT: blueprint})
+        profile = json.loads((self.root / generator.FRAMEWORK_PROVIDER_INPUT_RECORD).read_bytes())
+        wfd = '//vendor/qcom/opensource/commonsys-intf/display:vendor.qti.hardware.display.config-V5-ndk'
+        self.assertEqual(profile['source_dependencies']['vendor.qti.hardware.display.config-V5-ndk.so'], wfd)
+        self.assertEqual(contract['preserved_wfd_dependency']['source_module'], wfd)
+        self.assertIn(wfd.encode(), blueprint)
+        self.assertEqual(generator._framework_provider_product(profile),
+                         generator._framework_provider_product(json.loads((ROOT / generator.FRAMEWORK_PROVIDER_INPUT_RECORD).read_bytes())))
+
+
+    def test_qti_source_guard_allows_existing_qualified_wfd_client_reference(self):
+        generator._qti_aidl_namespace_source_guards(self.plan(), {
+            generator.FRAMEWORK_PROVIDER_BLUEPRINT:
+                b'cc_prebuilt_library_shared { name: "existing_client", shared_libs: ["//vendor/qcom/opensource/commonsys-intf/display:vendor.qti.hardware.display.config-V5-ndk"], }\n'})
+
+    def test_qti_qualified_client_exception_cannot_be_used_as_namespace_export(self):
+        name = (generator.DEVICE_PATH / 'device.mk').as_posix()
+        qualified = b'//vendor/qcom/opensource/commonsys-intf/display:vendor.qti.hardware.display.config-V5-ndk'
+        generator._qti_aidl_namespace_source_guards(self.plan(), {
+            name: b'WFD_LIBRARY := ' + qualified + b'\n'})
+        for separator in (b' ', b' \\\n    '):
+            with self.subTest(separator=separator), self.assertRaisesRegex(
+                    generator.CandidateError, 'only be exported by the reviewed generated product'):
+                generator._qti_aidl_namespace_source_guards(self.plan(), {
+                    name: b'PRODUCT_SOONG_NAMESPACES +=' + separator + qualified + b'\n'})
+
+
+    def test_qti_changed_contract_is_rejected_before_publication(self):
+        inputs = self.qti_namespace_inputs()
+        path = inputs['qti_aidl_namespace_contract']
+        original = json.loads(path.read_bytes())
+        changes = [lambda x: x['namespaces'].append('unreviewed/namespace'),
+                   lambda x: x['namespaces'].reverse(),
+                   lambda x: x['namespaces'].append(x['namespaces'][0]),
+                   lambda x: x['prior_evaluated_exports'].remove('vendor/xiaomi/nezha'),
+                   lambda x: x['product_packages'].append('unreviewed-module'),
+                   lambda x: x['source_patches'].append('unreviewed.patch')]
+        for index, change in enumerate(changes):
+            contract = copy.deepcopy(original)
+            change(contract)
+            path.write_text(json.dumps(contract))
+            output = self.root / ('artifacts/qti-bad-contract-' + str(index))
+            with self.subTest(index=index), self.assertRaises(generator.CandidateError):
+                generator.generate(output, **inputs)
+            self.assertFalse(output.exists())
+
+
+    def test_qti_missing_public_metadata_dependency_is_rejected(self):
+        inputs = self.qti_namespace_inputs()
+        contract = json.loads(inputs['qti_aidl_namespace_contract'].read_bytes())
+        for key in ('source_lock', 'source_snapshot', 'preserved_framework_provider_contract'):
+            path = self.root / contract[key]['path']
+            raw = path.read_bytes()
+            path.unlink()
+            output = self.root / ('artifacts/qti-missing-' + key)
+            try:
+                with self.subTest(key=key), self.assertRaises((generator.CandidateError, OSError)):
+                    generator.generate(output, **inputs)
+                self.assertFalse(output.exists())
+            finally:
+                path.write_bytes(raw)
+
+
+    def test_qti_rechecks_metadata_before_publication(self):
+        inputs = self.qti_namespace_inputs()
+        contract = json.loads(inputs['qti_aidl_namespace_contract'].read_bytes())
+        snapshot = self.root / contract['source_snapshot']['path']
+        real_validate = generator.validate
+        def mutate_after_validation(*args, **kwargs):
+            result = real_validate(*args, **kwargs)
+            snapshot.write_bytes(snapshot.read_bytes() + b'\n')
+            return result
+        output = self.root / 'artifacts/qti-late-input'
+        with mock.patch.object(generator, 'validate', side_effect=mutate_after_validation), \
+                self.assertRaises(generator.CandidateError):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+
+    def test_qti_contract_symlink_is_rejected(self):
+        inputs = self.qti_namespace_inputs()
+        link = self.root / 'namespace-contract-link.json'
+        link.symlink_to(inputs['qti_aidl_namespace_contract'])
+        inputs['qti_aidl_namespace_contract'] = link
+        output = self.root / 'artifacts/qti-symlink'
+        with self.assertRaises(generator.CandidateError):
+            generator.generate(output, **inputs)
+        self.assertFalse(output.exists())
+
+
+    def test_qti_resealed_plan_scope_or_namespace_change_is_rejected(self):
+        inputs = self.qti_namespace_inputs()
+        output = self.root / 'artifacts/qti-plan'
+        original = generator.generate(output, **inputs)
+        changes = [lambda p: p['qti_aidl_namespaces']['namespaces'].append('other/namespace'),
+                   lambda p: p['qti_aidl_namespaces']['scope'].update(
+                       {next(iter(p['qti_aidl_namespaces']['scope'])): True}),
+                   lambda p: p['qti_aidl_namespaces']['contract_record'].update(sha256='0' * 64),
+                   lambda p: p.pop('qti_aidl_namespaces')]
+        for index, change in enumerate(changes):
+            plan = copy.deepcopy(original)
+            change(plan)
+            (output / 'admission.json').write_text(json.dumps(plan))
+            with self.subTest(index=index), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+
+    def test_qti_resealed_generated_export_change_is_rejected(self):
+        inputs = self.qti_namespace_inputs()
+        output = self.root / 'artifacts/qti-product'
+        original = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / 'generated/device-candidate.mk').as_posix()
+        raw = (output / name).read_bytes()
+        line = (b'PRODUCT_SOONG_NAMESPACES += hardware/qcom-caf/sm8750 '
+                b'vendor/qcom/opensource/commonsys-intf/display\n')
+        changes = [raw + line, raw.replace(line, b''),
+                   raw.replace(line, line.replace(b' += ', b' := ')),
+                   raw + b'PRODUCT_PACKAGES += unreviewed-module\n']
+        for index, changed in enumerate(changes):
+            plan = copy.deepcopy(original)
+            self.reseal_allocator_candidate(output, plan, name, changed)
+            with self.subTest(index=index), self.assertRaises(generator.CandidateError):
+                generator.validate(output)
+
+
+    def test_qti_conflicting_export_in_other_device_file_is_rejected(self):
+        inputs = self.qti_namespace_inputs()
+        output = self.root / 'artifacts/qti-other-export'
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / 'device.mk').as_posix()
+        changed = (output / name).read_bytes() + b'\nPRODUCT_SOONG_NAMESPACES += hardware/qcom-caf/sm8750\n'
+        self.reseal_allocator_candidate(output, plan, name, changed)
+        with self.assertRaises(generator.CandidateError):
+            generator.validate(output)
+
+
+    def test_qti_unselected_export_cannot_be_injected(self):
+        output = self.root / 'artifacts/qti-no-selection'
+        plan = generator.generate(output, **self.generation_inputs())
+        name = (generator.DEVICE_PATH / 'device.mk').as_posix()
+        changed = (output / name).read_bytes() + b'\nPRODUCT_SOONG_NAMESPACES += vendor/qcom/opensource/commonsys-intf/display\n'
+        self.reseal_allocator_candidate(output, plan, name, changed)
+        with self.assertRaises(generator.CandidateError):
+            generator.validate(output)
+
+
+    def test_qti_source_admission_cannot_claim_native_or_flash_readiness(self):
+        output = self.root / 'artifacts/qti-not-native'
+        plan = generator.generate(output, **self.qti_namespace_inputs())
+        scope = plan['qti_aidl_namespaces']['scope']
+        self.assertEqual(scope, generator.QTI_AIDL_NAMESPACE_SCOPE)
+        self.assertTrue(all(value is False for key, value in scope.items() if key != 'phone_operations'))
+        self.assertIs(type(scope['phone_operations']), list)
+        self.assertEqual(scope['phone_operations'], [])
+        self.assertTrue(plan['admission']['configuration_allowed'])
+        self.assertTrue(all(value is False for key, value in plan['admission'].items()
+                            if key != 'configuration_allowed'))
+        for purpose in ('target-files', 'flash'):
+            with self.subTest(purpose=purpose), self.assertRaisesRegex(generator.CandidateError, 'admission refused'):
+                generator.validate(output, purpose=purpose)
+
+
+    def test_qti_cli_forwards_only_explicit_selection(self):
+        for option, expected in (([], None), (['--qti-aidl-namespace-contract', 'namespace.json'], Path('namespace.json'))):
+            with mock.patch.object(generator, 'generate', return_value={}) as generate, redirect_stdout(io.StringIO()):
+                code = generator.main(['generate', '--kernel-receipt', 'kernel.json', '--vendor-receipt', 'vendor.json',
+                                       '--output', 'candidate', *option])
+            self.assertEqual(code, 0)
+            self.assertEqual(generate.call_args.kwargs['qti_aidl_namespace_contract'], expected)
+
+
+
 
 class NezhaBoardHookTests(unittest.TestCase):
     def test_recovery_prebuilt_hook_is_public_and_precedes_lineage_without_relocating_recovery(self):
