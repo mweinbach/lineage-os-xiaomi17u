@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: Apache-2.0
+// Host-only audit. This module is never added to PRODUCT_PACKAGES.
+package {
+    default_applicable_licenses: ["nezha_vintf_definition_audit_license"],
+}
+
+license {
+    name: "nezha_vintf_definition_audit_license",
+    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+}
+
+cc_binary_host {
+    name: "nezha_unlevelled_aidl_metadata_audit",
+    defaults: ["libvintf-defaults"],
+    srcs: ["audit.cpp"],
+    static_libs: [
+        "libaidlmetadata",
+        "libbase",
+        "libcrypto",
+        "liblog",
+        "libutils",
+        "libtinyxml2",
+        "libvintf",
+    ],
+    stl: "libc++_static",
+    compile_multilib: "64",
+    target: {
+        darwin: {
+            enabled: false,
+        },
+    },
+}
