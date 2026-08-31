@@ -1,0 +1,5345 @@
+{
+  "contract_id": "nezha-exact-factory-framework-matrix-v1",
+  "derivation": {
+    "actual_failure_count": 155,
+    "duplicate_stock_matrix_entries_coalesced": [
+      "vendor.xiaomi.hardware.displayfeature_aidl",
+      "vendor.xiaomi.hardware.micharge",
+      "vendor.xiaomi.hardware.mimd2"
+    ],
+    "full_stock_matrix_copied": false,
+    "numbered_fcm_matrices_modified": false,
+    "optional_attributes_emitted": false,
+    "original_system_product_locations_preserved_in_provenance": true,
+    "packages": 130,
+    "policy": "Project only exact tuples present in both original device manifests and original framework matrices. All source declarations use exact instances. AIDL omitted version is recorded separately and projected as explicit version 1.",
+    "product_entries_relocated_to_device_fcm": [
+      {
+        "instance": "default",
+        "interface": "IDvs",
+        "name": "vendor.dolby.dvs",
+        "version": 1
+      },
+      {
+        "instance": "default",
+        "interface": "ITouchFeature",
+        "name": "vendor.xiaomi.hw.touchfeature",
+        "version": 1
+      },
+      {
+        "instance": "default",
+        "interface": "ITofSensorService",
+        "name": "vendor.xiaomi.sensor.tofsensorservice",
+        "version": 1
+      }
+    ],
+    "source_device_matrix_unique_tuples": 152,
+    "source_product_matrix_unique_tuples": 3,
+    "version_ranges_emitted": false,
+    "wildcards_emitted": false
+  },
+  "device": "nezha",
+  "entries": [
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            17
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISecureElementService",
+      "manifest_inputs": [
+        58
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "android.se.omapi",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            18
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IOzoNotify",
+      "manifest_inputs": [
+        53
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "com.android.ozoaudio.notify",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            23
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IFpcExtension",
+      "manifest_inputs": [
+        1
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "com.fingerprints.fpc.extension",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            34
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDms",
+      "manifest_inputs": [
+        43
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.dolby.dms",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            1
+          ],
+          "input": 28
+        }
+      ],
+      "instance": "default",
+      "interface": "IDvs",
+      "manifest_inputs": [
+        0
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        28
+      ],
+      "name": "vendor.dolby.dvs",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            43
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IAvfQcvmManager",
+      "manifest_inputs": [
+        36
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.AvfQcvmManager",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            44
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "ImsRtpService",
+      "interface": "IRTPService",
+      "manifest_inputs": [
+        31
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.ImsRtpService",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            45
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMemHal",
+      "manifest_inputs": [
+        60
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.MemHal",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            47
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IService",
+      "manifest_inputs": [
+        56
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.data.dmapconsent",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            49
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IFactory",
+      "manifest_inputs": [
+        41
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.data.factoryservice",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            50
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQmsSatelliteService",
+      "manifest_inputs": [
+        56
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.data.ntn",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-7"
+          ],
+          "hal_indexes_1based": [
+            51
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ITxPwrService",
+      "manifest_inputs": [
+        56
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.data.txpwrservice",
+      "version": 7
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            53
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "Idiag",
+      "manifest_inputs": [
+        62
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.diaghal",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-9"
+          ],
+          "hal_indexes_1based": [
+            56
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ILocAidlGnss",
+      "manifest_inputs": [
+        63
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.gnss",
+      "version": 8
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            60
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IAGM",
+      "manifest_inputs": [
+        32
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.agm",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            63
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IAlarm",
+      "manifest_inputs": [
+        64
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.alarm",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            64
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBtAVsProvider",
+      "manifest_inputs": [
+        65
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.bluetooth.btavsprovider",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            65
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IXpanProvider",
+      "manifest_inputs": [
+        66
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.bluetooth.xpanprovider",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            69
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBluetoothSar",
+      "manifest_inputs": [
+        37
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.bluetooth_sar",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            71
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBtTpi",
+      "manifest_inputs": [
+        38
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.bttpi",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            72
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IC2PA",
+      "manifest_inputs": [
+        67
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.c2pa",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            74
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IService",
+      "manifest_inputs": [
+        39
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.cacertaidlservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            77
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IOfflineCameraService",
+      "manifest_inputs": [
+        61
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.camera.offlinecamera",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            81
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ICapabilityConfigStore",
+      "manifest_inputs": [
+        68
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.capabilityconfigstore",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            85
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IDataConnection",
+      "manifest_inputs": [
+        69
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.data.connectionaidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            85
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot2",
+      "interface": "IDataConnection",
+      "manifest_inputs": [
+        69
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.data.connectionaidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            86
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot0",
+      "interface": "IFactory",
+      "manifest_inputs": [
+        40
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.data.connectionfactory",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            86
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IFactory",
+      "manifest_inputs": [
+        40
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.data.connectionfactory",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            88
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IIWlan",
+      "manifest_inputs": [
+        70
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.data.iwlandata",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            88
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot2",
+      "interface": "IIWlan",
+      "manifest_inputs": [
+        70
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.data.iwlandata",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            92
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDisplayAiqe",
+      "manifest_inputs": [
+        71
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.display.aiqe",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            94
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDisplayColor",
+      "manifest_inputs": [
+        71
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.display.color",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-14"
+          ],
+          "hal_indexes_1based": [
+            97
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDisplayConfig",
+      "manifest_inputs": [
+        71
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.display.config",
+      "version": 13
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            99
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDemuraFileFinder",
+      "manifest_inputs": [
+        72
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.display.demura",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            101
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDisplayPostproc",
+      "manifest_inputs": [
+        71
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.display.postproc",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            103
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDpmService",
+      "manifest_inputs": [
+        44
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.dpmaidlservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            105
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDspService",
+      "manifest_inputs": [
+        73
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.dsp",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            109
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IEmbms",
+      "manifest_inputs": [
+        74
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.embmssl",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            113
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQfpExtendedFingerprint",
+      "manifest_inputs": [
+        1
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.fingerprint",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            115
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IFmHci",
+      "manifest_inputs": [
+        46
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.fm",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            117
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IHexlpService",
+      "manifest_inputs": [
+        75
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.hexlp",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            117
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "unsigned",
+      "interface": "IHexlpService",
+      "manifest_inputs": [
+        75
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.hexlp",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            121
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMinkServer",
+      "manifest_inputs": [
+        76
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.minkipcbinder",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            123
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "MwqemAdapter",
+      "interface": "IMwqemAdapter",
+      "manifest_inputs": [
+        52
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.mwqemadapteraidlservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            125
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IPAL",
+      "manifest_inputs": [
+        33
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.pal",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            129
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IPerf",
+      "manifest_inputs": [
+        77
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.perf2",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            131
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IPowerModule",
+      "manifest_inputs": [
+        78
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.power.powermodule",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "hal_indexes_1based": [
+            135
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQConfig",
+      "manifest_inputs": [
+        79
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.qconfig",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            139
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQspa",
+      "manifest_inputs": [
+        96
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.qspa",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            144
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IQcRilAudio",
+      "manifest_inputs": [
+        80
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.am",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            144
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot2",
+      "interface": "IQcRilAudio",
+      "manifest_inputs": [
+        80
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.am",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            146
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "AtFwdAidl",
+      "interface": "IAtFwd",
+      "manifest_inputs": [
+        35
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.atfwd",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-20"
+          ],
+          "hal_indexes_1based": [
+            148
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "imsradio0",
+      "interface": "IImsRadio",
+      "manifest_inputs": [
+        81
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.ims",
+      "version": 20
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-20"
+          ],
+          "hal_indexes_1based": [
+            148
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "imsradio1",
+      "interface": "IImsRadio",
+      "manifest_inputs": [
+        81
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.ims",
+      "version": 20
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            150
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "deviceinfo",
+      "interface": "IDeviceInfo",
+      "manifest_inputs": [
+        42
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.internal.deviceinfo",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            152
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "UimLpa0",
+      "interface": "IUimLpa",
+      "manifest_inputs": [
+        82
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.lpa",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            152
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "UimLpa1",
+      "interface": "IUimLpa",
+      "manifest_inputs": [
+        82
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.lpa",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            154
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "oemhook0",
+      "interface": "IQtiOemHook",
+      "manifest_inputs": [
+        54
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.qcrilhook",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            154
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "oemhook1",
+      "interface": "IQtiOemHook",
+      "manifest_inputs": [
+        54
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.qcrilhook",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-16"
+          ],
+          "hal_indexes_1based": [
+            156
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IQtiRadioStable",
+      "manifest_inputs": [
+        57
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.qtiradio",
+      "version": 16
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-16"
+          ],
+          "hal_indexes_1based": [
+            156
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot2",
+      "interface": "IQtiRadioStable",
+      "manifest_inputs": [
+        57
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.qtiradio",
+      "version": 16
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-6"
+          ],
+          "hal_indexes_1based": [
+            157
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQtiRadioConfig",
+      "manifest_inputs": [
+        83
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.qtiradioconfig",
+      "version": 6
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            159
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "Uim0",
+      "interface": "IUim",
+      "manifest_inputs": [
+        84
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.uim",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            159
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "Uim1",
+      "interface": "IUim",
+      "manifest_inputs": [
+        84
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.uim",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            161
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "uimRemoteClient0",
+      "interface": "IUimRemoteServiceClient",
+      "manifest_inputs": [
+        85
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.uim_remote_client",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            161
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "uimRemoteClient1",
+      "interface": "IUimRemoteServiceClient",
+      "manifest_inputs": [
+        85
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.uim_remote_client",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            163
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "uimRemoteServer0",
+      "interface": "IUimRemoteServiceServer",
+      "manifest_inputs": [
+        86
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.uim_remote_server",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            163
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "uimRemoteServer1",
+      "interface": "IUimRemoteServiceServer",
+      "manifest_inputs": [
+        86
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.radio.uim_remote_server",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            168
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "qti-tee",
+      "interface": "ISecureProcessor",
+      "manifest_inputs": [
+        87
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.secureprocessor.device",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            168
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "qti-tvm",
+      "interface": "ISecureProcessor",
+      "manifest_inputs": [
+        87
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.secureprocessor.device",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            170
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISensorsCalibrate",
+      "manifest_inputs": [
+        88
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.sensorscalibrate",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            172
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IServicetracker",
+      "manifest_inputs": [
+        89
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.servicetrackeraidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            175
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISoter",
+      "manifest_inputs": [
+        90
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.soter",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            181
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ITrustedInput",
+      "manifest_inputs": [
+        91
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.trustedui",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            181
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ITrustedUI",
+      "manifest_inputs": [
+        91
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.trustedui",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            185
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IVppService",
+      "manifest_inputs": [
+        92
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.vpp",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            188
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISupplicantVendor",
+      "manifest_inputs": [
+        34
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.wifi.supplicant",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            196
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IWifiDisplaySession",
+      "manifest_inputs": [
+        93
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.wifidisplaysession_aidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            196
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IWifiDisplaySessionAudioTrack",
+      "manifest_inputs": [
+        93
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.wifidisplaysession_aidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            196
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IWifiDisplaySessionImageTrack",
+      "manifest_inputs": [
+        93
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.wifidisplaysession_aidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            196
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IWifiDisplaySessionVideoTrack",
+      "manifest_inputs": [
+        93
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.hardware.wifidisplaysession_aidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            201
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDataChannelService",
+      "manifest_inputs": [
+        47
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.ims.datachannelservice",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            203
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IImsFactory",
+      "manifest_inputs": [
+        94
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.ims.factoryaidlservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            212
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "qccvndhal",
+      "interface": "IQccvndhal",
+      "manifest_inputs": [
+        95
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.qccvndhal_aidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            216
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQesdhal",
+      "manifest_inputs": [
+        55
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.qesdhalaidl",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            219
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQspmhal",
+      "manifest_inputs": [
+        97
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.qspmhal",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            223
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISlaAIDLService",
+      "manifest_inputs": [
+        118
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.sla.service",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            224
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISnapdragonServices",
+      "manifest_inputs": [
+        59
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.snapdragonServices",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            229
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISysHealthMon",
+      "manifest_inputs": [
+        98
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.qti.syshealthmon",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            230
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IEidDeviceAidl",
+      "manifest_inputs": [
+        45
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.rongcard.eid",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            231
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiNetAIDLService",
+      "manifest_inputs": [
+        118
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.aidl.minet",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            232
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiPowerHalAIDLService",
+      "manifest_inputs": [
+        118
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.aidl.mipowerhal",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            233
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiwillAIDLService",
+      "manifest_inputs": [
+        118
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.aidl.miwill",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            235
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBluetoothService",
+      "manifest_inputs": [
+        100
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.cit.bluetooth",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            237
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IWifiService",
+      "manifest_inputs": [
+        101
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.cit.wifi",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            239
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IIntentAwareService",
+      "manifest_inputs": [
+        102
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aidl.intentaware",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            240
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMidevauthService",
+      "manifest_inputs": [
+        2
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aidl.midevauth",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            241
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMTService",
+      "manifest_inputs": [
+        3
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aidl.mtdservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            243
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ITidaService",
+      "manifest_inputs": [
+        4
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aidl.tidaservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            244
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBGService",
+      "manifest_inputs": [
+        103
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aidlbgservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            245
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "miaonservicehal",
+      "interface": "IAlwaysOn",
+      "manifest_inputs": [
+        99
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aon",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            246
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IAONAuth",
+      "manifest_inputs": [
+        16
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.aon.auth",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            247
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBatteryAntiAging",
+      "manifest_inputs": [
+        104
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.batteryantiaging",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            250
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IBlackboxImpl",
+      "manifest_inputs": [
+        48
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.blackbox",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            251
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IService",
+      "manifest_inputs": [
+        105
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.camera.mivimessage",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            253
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IVirtualCameraRegistrar",
+      "manifest_inputs": [
+        107
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.camera.synthetic",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            256
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ICld",
+      "manifest_inputs": [
+        49
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.cld_aidl",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            257
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ICSTransfer",
+      "manifest_inputs": [
+        18
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.cstransfer",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            258
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiHwcExtension",
+      "manifest_inputs": [
+        71
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.display.mihwcextension",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "2"
+          ],
+          "hal_indexes_1based": [
+            260,
+            261
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IDisplayFeature",
+      "manifest_inputs": [
+        106
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.displayfeature_aidl",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            264
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IFbo",
+      "manifest_inputs": [
+        50
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.fbo",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            267
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IXiaomiFingerprint",
+      "manifest_inputs": [
+        1
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.fingerprintextension",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            271
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiFxTunnel",
+      "manifest_inputs": [
+        1
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.fx.tunnel",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            272
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IIdManagerService",
+      "manifest_inputs": [
+        19
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.idmanager",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            273
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISecidService",
+      "manifest_inputs": [
+        19
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.idmanager",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            276
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMediaGather",
+      "manifest_inputs": [
+        20
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mediaeventgatherservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            278
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IFidoService",
+      "manifest_inputs": [
+        5
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mfidoca",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            279
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ICpaceService",
+      "manifest_inputs": [
+        17
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.miauthsecretd",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            279
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMIAuthSecret",
+      "manifest_inputs": [
+        17
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.miauthsecretd",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            281,
+            283
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiCharge",
+      "manifest_inputs": [
+        108
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.micharge",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            284
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiCertKeyService",
+      "manifest_inputs": [
+        11
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.micrtk",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            287
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiKeyBagService",
+      "manifest_inputs": [
+        21
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mikeybag",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            292,
+            293
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMimd",
+      "manifest_inputs": [
+        109
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mimd2",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            296
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiSharedAuth",
+      "manifest_inputs": [
+        14
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.misauth",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            297
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiSecMediaService",
+      "manifest_inputs": [
+        12
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.misecmedia",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            300
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IHypSysIntl",
+      "manifest_inputs": [
+        110
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.misys.common",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            300
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiSysImpl",
+      "manifest_inputs": [
+        110
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.misys.common",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            301
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiSysCore",
+      "manifest_inputs": [
+        111
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.misys.core",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            303
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiTrueDeviceService",
+      "manifest_inputs": [
+        11
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mitruedevice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            304
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiTrustedUIListener",
+      "manifest_inputs": [
+        22
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mitrustedui",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-2"
+          ],
+          "hal_indexes_1based": [
+            304
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiTrustedUIService",
+      "manifest_inputs": [
+        22
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mitrustedui",
+      "version": 2
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            306
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMlipayService",
+      "manifest_inputs": [
+        6
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mlipay",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            309
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiCertificate",
+      "manifest_inputs": [
+        14
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mrm",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            308
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMrm",
+      "manifest_inputs": [
+        14
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mrm",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            310
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMrmRemoteAuth",
+      "manifest_inputs": [
+        14
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.mrm",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            316
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IOTrPAgent",
+      "manifest_inputs": [
+        7
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.otrpagent2",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            317
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IPostProcService",
+      "manifest_inputs": [
+        112
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.postprocservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            320
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IQuickCameraService",
+      "manifest_inputs": [
+        113
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.quickcamera",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            322
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IXmRadio",
+      "manifest_inputs": [
+        115
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.radio",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            322
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot2",
+      "interface": "IXmRadio",
+      "manifest_inputs": [
+        115
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.radio",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            323
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot1",
+      "interface": "IXmRadioCdc",
+      "manifest_inputs": [
+        114
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.radio.cdc",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            323
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "slot2",
+      "interface": "IXmRadioCdc",
+      "manifest_inputs": [
+        114
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.radio.cdc",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-3"
+          ],
+          "hal_indexes_1based": [
+            324
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "satellite_slot1",
+      "interface": "INTNRadio",
+      "manifest_inputs": [
+        9
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.satellite",
+      "version": 3
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            325
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISeaAudio",
+      "manifest_inputs": [
+        23
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.seaaudio",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            326
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiSecCam",
+      "manifest_inputs": [
+        15
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.seccam",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            327
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISmc",
+      "manifest_inputs": [
+        24
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.smc",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            329
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ISwap",
+      "manifest_inputs": [
+        51
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.swap",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [
+            "1-11"
+          ],
+          "hal_indexes_1based": [
+            333
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IVideoService",
+      "manifest_inputs": [
+        116
+      ],
+      "manifest_version_defaulted_to_1": false,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.videoservice",
+      "version": 8
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            335
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IVSIMService",
+      "manifest_inputs": [
+        8
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.hardware.vsimapp",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            1
+          ],
+          "input": 29
+        }
+      ],
+      "instance": "default",
+      "interface": "ITouchFeature",
+      "manifest_inputs": [
+        25
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        29
+      ],
+      "name": "vendor.xiaomi.hw.touchfeature",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            340
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiQms",
+      "manifest_inputs": [
+        117
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.modem.qms",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            341
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiAonFrame",
+      "manifest_inputs": [
+        10
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.sensor.aonframe",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            342
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "IMiCam",
+      "manifest_inputs": [
+        13
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.sensor.camera",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            345
+          ],
+          "input": 30
+        }
+      ],
+      "instance": "default",
+      "interface": "ICitSensorService",
+      "manifest_inputs": [
+        26
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        30
+      ],
+      "name": "vendor.xiaomi.sensor.citsensorservice",
+      "version": 1
+    },
+    {
+      "factory_matrix_elements": [
+        {
+          "declared_versions": [],
+          "hal_indexes_1based": [
+            3
+          ],
+          "input": 28
+        }
+      ],
+      "instance": "default",
+      "interface": "ITofSensorService",
+      "manifest_inputs": [
+        27
+      ],
+      "manifest_version_defaulted_to_1": true,
+      "matrix_inputs": [
+        28
+      ],
+      "name": "vendor.xiaomi.sensor.tofsensorservice",
+      "version": 1
+    }
+  ],
+  "evidence_records": [
+    {
+      "path": "artifacts/build-validation/nezha-full-vintf-v13ja-4k-capture-v1/results/full-framework-vendor-kernel-apex.stderr.log",
+      "sha256": "c6185d0ea2d9d5859b6dc114800190af34a13ca8513e3ad4a6fc038583e6fa5c",
+      "size_bytes": 10599
+    },
+    {
+      "path": "artifacts/build-validation/nezha-full-vintf-v13ja-4k-capture-v1/results/receipt.json",
+      "sha256": "59fd65765e521e6ca98f91b27067d285d46ec17bbbbdd6fd4484c448dce6e969",
+      "size_bytes": 1129945
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/inventory.json",
+      "sha256": "3c23471a08548cf30bf8f39f383a3a5acf2afc4b279b62f082587494ef41dd23",
+      "size_bytes": 358469
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/receipt.json",
+      "sha256": "1d413e0fa4ad0ab3b40fe06d5cefdc9558980ffa430eb9f2502fa9edf15e8a66",
+      "size_bytes": 985
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/product/inventory.json",
+      "sha256": "68a29dbdefbca23838a75ef8af561e61b0158f0029455dba3415dd1cb0cb7cb3",
+      "size_bytes": 347250
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/product/receipt.json",
+      "sha256": "f9b762063b93c2d9fa5e2c920191f9a8a36e5373bfa7e3c5ec2044b32081c51d",
+      "size_bytes": 989
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/system/inventory.json",
+      "sha256": "353790ad3097bf6867a4de12bb5b46f3cf095f10919a11fc0f031177b635c09d",
+      "size_bytes": 518911
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/system/receipt.json",
+      "sha256": "1437095d5d75a3723b74cf14026ed3dab3a803268c1bee802e79c2889a955619",
+      "size_bytes": 987
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/vendor/inventory.json",
+      "sha256": "2677ca8c215b3c2d3f4e4a4d6b9261782f65d52a4f7ea8897cd67257556a9768",
+      "size_bytes": 435142
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/vendor/receipt.json",
+      "sha256": "6c7fe9ee4631f5ac43aa62d49b4241b64fa4e7b8dc761ee7dc259668946bff71",
+      "size_bytes": 987
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml-receipt.json",
+      "sha256": "eeeb49835adba454f729fca48c203f7dbca9509abaacd5513ce13628ba04cef3",
+      "size_bytes": 884775
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "sha256": "cbc1a4343584a2040a88890a7e9ebbec9b9e3a31b9aef40e81b13a47cd35bc23",
+      "size_bytes": 20230
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/receipt.json",
+      "sha256": "545dd2397fb3233f683770f3f2a8eeadcfce729f3eab94ed13f2835c06eef877",
+      "size_bytes": 14334
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/system/receipt.json",
+      "sha256": "8c4f340e57c1e06c5187e124a98f42245d5aed2cc183e56e1ac5ae32fd75dc5c",
+      "size_bytes": 23347
+    },
+    {
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "sha256": "01961cce16142d8d9d0bfdac395965776de55571ec36ca8a57cabf52068e18a7",
+      "size_bytes": 78389
+    },
+    {
+      "path": "artifacts/source-contracts/nezha-treble-labeling-v1/receipt.json",
+      "sha256": "7f4bdfa6bc3959584d690dfde8672ed8b8a4d425a9d67fc0aaf9842cd443b984",
+      "size_bytes": 4228
+    },
+    {
+      "path": "reports/oem-policy-integration-20260829/full-vintf-v13ja-4k-preparation/packet-v1/packet-manifest.json",
+      "sha256": "e9a55bf677caa577cb16233044652d41e4e0c33d07bd2298469d3daeb2c196a8",
+      "size_bytes": 47983
+    },
+    {
+      "path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv1/capture.json",
+      "sha256": "88ee38c09059da7c9db5005c77feca4e67d265618fd9b3dda3aaeb6b2212fdad",
+      "size_bytes": 490
+    },
+    {
+      "path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv2/capture.json",
+      "sha256": "7bcb6a059bb8b21bd6a1f5373e5cfd163c0a3bb38d2507d679c579bf966e6e83",
+      "size_bytes": 1446
+    },
+    {
+      "path": "reports/vintf-compatibility-20260829/native-output-capture-v1/receipt.json",
+      "sha256": "79bf7ef1d9b53ae99b644f7eac080f653360c19df86a09656021a12bb1f3938a",
+      "size_bytes": 4518
+    },
+    {
+      "path": "reports/vintf-compatibility-20260829/source-semantics/receipt.json",
+      "sha256": "236f7d53896c1edc6f638ef02ffb29948ef0e6f8c7d6752ee2e200a9f25f29ec",
+      "size_bytes": 290
+    },
+    {
+      "path": "reports/vintf-compatibility-20260829/source/receipt.json",
+      "sha256": "12fa769a4c5a6c2b89ff173bafeb149a84e19729e38e97c0a5efdf17b39a1d28",
+      "size_bytes": 4081
+    }
+  ],
+  "factory_package": {
+    "origin_verified": false,
+    "sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "source_kind": "user-provided China fastboot TGZ",
+    "source_url": null
+  },
+  "factory_partitions": {
+    "odm": {
+      "capture_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+        "sha256": "cbc1a4343584a2040a88890a7e9ebbec9b9e3a31b9aef40e81b13a47cd35bc23",
+        "size_bytes": 20230
+      },
+      "image": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/odm_a.img",
+        "sha256": "4a269421a596c1eb1d90c982ef5497591ed1091e424a21bb9e7a83cf1a943ff5",
+        "size_bytes": 4767621120
+      },
+      "inventory": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/inventory.json",
+        "sha256": "3c23471a08548cf30bf8f39f383a3a5acf2afc4b279b62f082587494ef41dd23",
+        "size_bytes": 358469
+      },
+      "inventory_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/odm/receipt.json",
+        "sha256": "1d413e0fa4ad0ab3b40fe06d5cefdc9558980ffa430eb9f2502fa9edf15e8a66",
+        "size_bytes": 985
+      }
+    },
+    "product": {
+      "capture_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/receipt.json",
+        "sha256": "545dd2397fb3233f683770f3f2a8eeadcfce729f3eab94ed13f2835c06eef877",
+        "size_bytes": 14334
+      },
+      "image": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/product_a.img",
+        "sha256": "67e6c683c1091abc0a548c27e4681bbe26471529129d15453b95c8d69417795f",
+        "size_bytes": 4942934016
+      },
+      "inventory": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/product/inventory.json",
+        "sha256": "68a29dbdefbca23838a75ef8af561e61b0158f0029455dba3415dd1cb0cb7cb3",
+        "size_bytes": 347250
+      },
+      "inventory_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/product/receipt.json",
+        "sha256": "f9b762063b93c2d9fa5e2c920191f9a8a36e5373bfa7e3c5ec2044b32081c51d",
+        "size_bytes": 989
+      }
+    },
+    "system": {
+      "capture_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/system/receipt.json",
+        "sha256": "8c4f340e57c1e06c5187e124a98f42245d5aed2cc183e56e1ac5ae32fd75dc5c",
+        "size_bytes": 23347
+      },
+      "image": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/system_a.img",
+        "sha256": "fee197e94c2da775eb253090c216bb00add42ad96b7668a07f22354af4584bc7",
+        "size_bytes": 912273408
+      },
+      "inventory": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/system/inventory.json",
+        "sha256": "353790ad3097bf6867a4de12bb5b46f3cf095f10919a11fc0f031177b635c09d",
+        "size_bytes": 518911
+      },
+      "inventory_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/system/receipt.json",
+        "sha256": "1437095d5d75a3723b74cf14026ed3dab3a803268c1bee802e79c2889a955619",
+        "size_bytes": 987
+      }
+    },
+    "vendor": {
+      "capture_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+        "sha256": "01961cce16142d8d9d0bfdac395965776de55571ec36ca8a57cabf52068e18a7",
+        "size_bytes": 78389
+      },
+      "image": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/logical-partitions/vendor_a.img",
+        "sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+        "size_bytes": 959709184
+      },
+      "inventory": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/vendor/inventory.json",
+        "sha256": "2677ca8c215b3c2d3f4e4a4d6b9261782f65d52a4f7ea8897cd67257556a9768",
+        "size_bytes": 435142
+      },
+      "inventory_receipt": {
+        "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/inventory/vendor/receipt.json",
+        "sha256": "6c7fe9ee4631f5ac43aa62d49b4241b64fa4e7b8dc761ee7dc259668946bff71",
+        "size_bytes": 987
+      }
+    }
+  },
+  "factory_xml_inputs": [
+    {
+      "capture_output_path": "files/0022",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/dvs-aidl-service.xml",
+      "kind": "device_manifest",
+      "nid": 98523254,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0022",
+      "runtime_path": "/odm/etc/vintf/manifest/dvs-aidl-service.xml",
+      "sha256": "53b2e90f9442a923111076bc1e99cbb6bfa7e99c1f4172cc31744479a9dff6ae",
+      "size_bytes": 256
+    },
+    {
+      "capture_output_path": "files/0023",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/fod-aidl.xml",
+      "kind": "device_manifest",
+      "nid": 98523621,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0023",
+      "runtime_path": "/odm/etc/vintf/manifest/fod-aidl.xml",
+      "sha256": "205b1f35f8c721040c2392b8db3b2f5d4c92216cf530355bd4fa04995c1a70d5",
+      "size_bytes": 709
+    },
+    {
+      "capture_output_path": "files/0024",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.midevauth.xml",
+      "kind": "device_manifest",
+      "nid": 98523648,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0024",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.midevauth.xml",
+      "sha256": "dbaa2342aef14493adb342ba02eb7829eb7b8f7b3dec45e5ee53b5ca7540af79",
+      "size_bytes": 325
+    },
+    {
+      "capture_output_path": "files/0025",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.mtdservice.xml",
+      "kind": "device_manifest",
+      "nid": 98523660,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0025",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.mtdservice.xml",
+      "sha256": "95d66c2fa377dc2d199cb0ea471919e77442fae4140f4afd93a45798ab28b397",
+      "size_bytes": 320
+    },
+    {
+      "capture_output_path": "files/0026",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.tidaservice.xml",
+      "kind": "device_manifest",
+      "nid": 98523672,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0026",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.aidl.tidaservice.xml",
+      "sha256": "d04f274e54b29476661ed00a8f67aaaf9d6a2126f848cf221eebf1d386625e9c",
+      "size_bytes": 325
+    },
+    {
+      "capture_output_path": "files/0027",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mfidoca.xml",
+      "kind": "device_manifest",
+      "nid": 98523684,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0027",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mfidoca.xml",
+      "sha256": "eaf19d8be7bfac9d870c3d653c8b9f9c8cb8e7f2899372c5bceca5a3265eb983",
+      "size_bytes": 303
+    },
+    {
+      "capture_output_path": "files/0028",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mlipay.xml",
+      "kind": "device_manifest",
+      "nid": 98523695,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0028",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.mlipay.xml",
+      "sha256": "08dddc0db158a2483f2ac24a8dc43bddda6e30917886755f7971b38f0d545f6e",
+      "size_bytes": 302
+    },
+    {
+      "capture_output_path": "files/0029",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.otrpagent@2.0.xml",
+      "kind": "device_manifest",
+      "nid": 98523706,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0029",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.otrpagent@2.0.xml",
+      "sha256": "21c4dff2e2b4a34246ea94707c427907aab7e417f6e53892393f89ddf805cdfc",
+      "size_bytes": 312
+    },
+    {
+      "capture_output_path": "files/0030",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.vsimapp.xml",
+      "kind": "device_manifest",
+      "nid": 98523718,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0030",
+      "runtime_path": "/odm/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.vsimapp.xml",
+      "sha256": "d6c7f07715a7c9e66967a6632388d6d8c1779b954ecfb03a7ffe82a16647e76c",
+      "size_bytes": 303
+    },
+    {
+      "capture_output_path": "files/0031",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/mi_satellite_manifest.xml",
+      "kind": "device_manifest",
+      "nid": 98523729,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0031",
+      "runtime_path": "/odm/etc/vintf/manifest/mi_satellite_manifest.xml",
+      "sha256": "8b829fa649c84437f01ed05852237f5f8de4f794b1b514889263f84a7dd755e7",
+      "size_bytes": 327
+    },
+    {
+      "capture_output_path": "files/0032",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/miaon_frame.xml",
+      "kind": "device_manifest",
+      "nid": 98523741,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0032",
+      "runtime_path": "/odm/etc/vintf/manifest/miaon_frame.xml",
+      "sha256": "906128d4166cef2370bc9298e0a34c2ed533d5c249c4415091552d16faf2d04c",
+      "size_bytes": 279
+    },
+    {
+      "capture_output_path": "files/0033",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/micrtk.xml",
+      "kind": "device_manifest",
+      "nid": 98523752,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0033",
+      "runtime_path": "/odm/etc/vintf/manifest/micrtk.xml",
+      "sha256": "36093a4ee16c83ffce1c49c28d51e0f8bbd17beeee2e4dc0457ad997dd50eb5e",
+      "size_bytes": 413
+    },
+    {
+      "capture_output_path": "files/0034",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/misecmedia.xml",
+      "kind": "device_manifest",
+      "nid": 98523776,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0034",
+      "runtime_path": "/odm/etc/vintf/manifest/misecmedia.xml",
+      "sha256": "67caff98301730baf4b3fff8cea907ffd5411ebc14f4b79c20911f022be7ea43",
+      "size_bytes": 280
+    },
+    {
+      "capture_output_path": "files/0035",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/misensor_camera.xml",
+      "kind": "device_manifest",
+      "nid": 98523787,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0035",
+      "runtime_path": "/odm/etc/vintf/manifest/misensor_camera.xml",
+      "sha256": "76f4cd580373c33feef10e94c36bd9b950ceda19ec38e135a467b3ea9c836f6a",
+      "size_bytes": 280
+    },
+    {
+      "capture_output_path": "files/0036",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/mrm.xml",
+      "kind": "device_manifest",
+      "nid": 98523798,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0036",
+      "runtime_path": "/odm/etc/vintf/manifest/mrm.xml",
+      "sha256": "363f5e0b7853f44ce119244e7d3871bcbc3776ea87bf0c4d93cd9e86f5dee1f4",
+      "size_bytes": 649
+    },
+    {
+      "capture_output_path": "files/0037",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/mseccam.xml",
+      "kind": "device_manifest",
+      "nid": 98523820,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0037",
+      "runtime_path": "/odm/etc/vintf/manifest/mseccam.xml",
+      "sha256": "0f70b69aab2273d45c7c8f0705e31d9f751246abdf054f72e4fb0129125fc68f",
+      "size_bytes": 259
+    },
+    {
+      "capture_output_path": "files/0041",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.aon.auth.xml",
+      "kind": "device_manifest",
+      "nid": 98523851,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0041",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.aon.auth.xml",
+      "sha256": "88ff7e7b9f09b1620e34d94cbf4526955711c7d3f109619f841febbcd6d2e5c3",
+      "size_bytes": 293
+    },
+    {
+      "capture_output_path": "files/0042",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.authsecretd.xml",
+      "kind": "device_manifest",
+      "nid": 98523862,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0042",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.authsecretd.xml",
+      "sha256": "04fa6c94420a5ea183f4cc3d7b01959cfc3bc534d88e5ce4103f6dba04ed404f",
+      "size_bytes": 357
+    },
+    {
+      "capture_output_path": "files/0043",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.cstransfer.xml",
+      "kind": "device_manifest",
+      "nid": 98523875,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0043",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.cstransfer.xml",
+      "sha256": "92fe1c765a3635e65475a38b746d894872571bc052f4d9fba3766bb6750481be",
+      "size_bytes": 321
+    },
+    {
+      "capture_output_path": "files/0044",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.idmanager.xml",
+      "kind": "device_manifest",
+      "nid": 98523887,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0044",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.idmanager.xml",
+      "sha256": "04bd5385fd862447c8525b62b2880f57c0f5270cbe11a7a6667edf934f78707d",
+      "size_bytes": 441
+    },
+    {
+      "capture_output_path": "files/0045",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mediaeventgatherservice.xml",
+      "kind": "device_manifest",
+      "nid": 98523904,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0045",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.mediaeventgatherservice.xml",
+      "sha256": "6695d9c71108882c1ea7851ef7cecf05532b28ecb3abd838a0bfeffbb2677e2e",
+      "size_bytes": 354
+    },
+    {
+      "capture_output_path": "files/0046",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mikeybag.xml",
+      "kind": "device_manifest",
+      "nid": 98523917,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0046",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.mikeybag.xml",
+      "sha256": "055d527e30af464962ea33e2c9bc4f3f0990c534e059951d2555f654f1121984",
+      "size_bytes": 301
+    },
+    {
+      "capture_output_path": "files/0047",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mitrustedui.xml",
+      "kind": "device_manifest",
+      "nid": 98523928,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0047",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.mitrustedui.xml",
+      "sha256": "0ae45e42a26642a1921a48f74b5a714161e061f755d3dee5bb2c91db0f43ceb5",
+      "size_bytes": 396
+    },
+    {
+      "capture_output_path": "files/0048",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.seaaudio.xml",
+      "kind": "device_manifest",
+      "nid": 98523942,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0048",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.seaaudio.xml",
+      "sha256": "f175a962a54e878f5acabfd7b8d1af6e055b8769c37d3d2db818bb9145a13ebb",
+      "size_bytes": 313
+    },
+    {
+      "capture_output_path": "files/0049",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.smc.xml",
+      "kind": "device_manifest",
+      "nid": 98523954,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0049",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hardware.smc.xml",
+      "sha256": "82798ae1da9905b5769398b32156c980c41f78c253d48ef7e223e90fdb75aaef",
+      "size_bytes": 274
+    },
+    {
+      "capture_output_path": "files/0051",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hw.touchfeature-service.xml",
+      "kind": "device_manifest",
+      "nid": 98523978,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0051",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.hw.touchfeature-service.xml",
+      "sha256": "b2b6ddf9208e6e25b1c38cb66d92f8b4b6f7f0d1c51bc2e4d9e4502457a46c65",
+      "size_bytes": 323
+    },
+    {
+      "capture_output_path": "files/0052",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.sensor.citsensorservice.aidl.xml",
+      "kind": "device_manifest",
+      "nid": 98523990,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0052",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.sensor.citsensorservice.aidl.xml",
+      "sha256": "3b34e854c31924821cc016d4bad8575e4ee41e39c9f7b16f5213ed92e1b8ca9c",
+      "size_bytes": 334
+    },
+    {
+      "capture_output_path": "files/0053",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.sensor.tofsensorservice.aidl.xml",
+      "kind": "device_manifest",
+      "nid": 98524002,
+      "partition": "odm",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/odm/files/0053",
+      "runtime_path": "/odm/etc/vintf/manifest/vendor.xiaomi.sensor.tofsensorservice.aidl.xml",
+      "sha256": "31fe27864e8a60ef2c6f58167e64b6a0b7ea758e4c80bc3103da874f77bc7c79",
+      "size_bytes": 356
+    },
+    {
+      "capture_output_path": "files/0032",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/receipt.json",
+      "image_path": "/etc/vintf/compatibility_matrix.xml",
+      "kind": "framework_matrix",
+      "nid": 99120470,
+      "partition": "product",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/files/0032",
+      "runtime_path": "/product/etc/vintf/compatibility_matrix.xml",
+      "sha256": "e3d9b04cbebe3af5b3c8f07396a2de4f50850ddc73125a66ce0c0d1d60d6f58a",
+      "size_bytes": 1107
+    },
+    {
+      "capture_output_path": "files/0034",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/receipt.json",
+      "image_path": "/etc/vintf/touch_framework_compatibility_matrix.xml",
+      "kind": "framework_matrix",
+      "nid": 99118189,
+      "partition": "product",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/product/files/0034",
+      "runtime_path": "/product/etc/vintf/touch_framework_compatibility_matrix.xml",
+      "sha256": "6f0ce5932bb6db336bd25735f1b657455f498165098a098d1c48f9f41c6fc9cc",
+      "size_bytes": 407
+    },
+    {
+      "capture_output_path": "files/0049",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/system/receipt.json",
+      "image_path": "/system/etc/vintf/compatibility_matrix.device.xml",
+      "kind": "framework_matrix",
+      "nid": 10148977,
+      "partition": "system",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/system/files/0049",
+      "runtime_path": "/system/etc/vintf/compatibility_matrix.device.xml",
+      "sha256": "378f41d642384e0896b88ad9d08791e3202f6ce897fba70f10600cd32b0fdd26",
+      "size_bytes": 94740
+    },
+    {
+      "capture_output_path": "files/0075",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/ImsRtpService-aidl.xml",
+      "kind": "device_manifest",
+      "nid": 8708595,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0075",
+      "runtime_path": "/vendor/etc/vintf/manifest/ImsRtpService-aidl.xml",
+      "sha256": "7ae9c5ff1c047bcc4ffd92b46643557e157e011de665133cbdbd8f05783c61d3",
+      "size_bytes": 331
+    },
+    {
+      "capture_output_path": "files/0076",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/Manifest_IAGM.xml",
+      "kind": "device_manifest",
+      "nid": 8610293,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0076",
+      "runtime_path": "/vendor/etc/vintf/manifest/Manifest_IAGM.xml",
+      "sha256": "739fbdd55130a576768a6808a3d89ef1adac5c43ee3bd806dfc352beaad1b4e1",
+      "size_bytes": 258
+    },
+    {
+      "capture_output_path": "files/0077",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/Manifest_IPAL.xml",
+      "kind": "device_manifest",
+      "nid": 8597608,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0077",
+      "runtime_path": "/vendor/etc/vintf/manifest/Manifest_IPAL.xml",
+      "sha256": "d526c4923d6898faa851bc4100483953788dedd58cc9353aaadfd031644625f9",
+      "size_bytes": 258
+    },
+    {
+      "capture_output_path": "files/0105",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/android.hardware.wifi.supplicant.xml",
+      "kind": "device_manifest",
+      "nid": 8780833,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0105",
+      "runtime_path": "/vendor/etc/vintf/manifest/android.hardware.wifi.supplicant.xml",
+      "sha256": "274686e58b747d64159d3fa76390b72929ce6836c5967645fc159f1aca661968",
+      "size_bytes": 475
+    },
+    {
+      "capture_output_path": "files/0106",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/atfwd-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8780850,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0106",
+      "runtime_path": "/vendor/etc/vintf/manifest/atfwd-saidl.xml",
+      "sha256": "4271581c863b88755b28b05328e00bcf68f701a245086ef51dbfa04ce7ac4735",
+      "size_bytes": 277
+    },
+    {
+      "capture_output_path": "files/0108",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/avf_qcvm_manager.xml",
+      "kind": "device_manifest",
+      "nid": 8780873,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0108",
+      "runtime_path": "/vendor/etc/vintf/manifest/avf_qcvm_manager.xml",
+      "sha256": "f4d59de1989039fa78a9703a46345a12528239fa0ffcea32cb38fbf2d7a699ca",
+      "size_bytes": 280
+    },
+    {
+      "capture_output_path": "files/0113",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/bluetooth_sar.xml",
+      "kind": "device_manifest",
+      "nid": 8780939,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0113",
+      "runtime_path": "/vendor/etc/vintf/manifest/bluetooth_sar.xml",
+      "sha256": "5127530e46bba50bbeb9449770279a1c399cf26f4875646b7eb6b45ff0573663",
+      "size_bytes": 310
+    },
+    {
+      "capture_output_path": "files/0116",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/bttpi-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8780973,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0116",
+      "runtime_path": "/vendor/etc/vintf/manifest/bttpi-saidl.xml",
+      "sha256": "f3bd431b2587add71bd9d1977598279ab8ae199a92b106b1d33a70b8d259a39b",
+      "size_bytes": 309
+    },
+    {
+      "capture_output_path": "files/0119",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/cacert-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781007,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0119",
+      "runtime_path": "/vendor/etc/vintf/manifest/cacert-saidl.xml",
+      "sha256": "8d3799231b633aeb83e15eca05cfd34e4ba481d4a77a08270a9833e231fb2f5c",
+      "size_bytes": 296
+    },
+    {
+      "capture_output_path": "files/0120",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/dataconnection-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781018,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0120",
+      "runtime_path": "/vendor/etc/vintf/manifest/dataconnection-saidl.xml",
+      "sha256": "5a75f54238efa5127c52ae53b9556e51a7a2304f5a6d07a4eba8c86e91b20dac",
+      "size_bytes": 322
+    },
+    {
+      "capture_output_path": "files/0121",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/datafactoryservice-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781030,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0121",
+      "runtime_path": "/vendor/etc/vintf/manifest/datafactoryservice-saidl.xml",
+      "sha256": "a46dbc8c87249e432204a1796fea253eaac0df57e9a6a840a8398c2e8b5aaf76",
+      "size_bytes": 316
+    },
+    {
+      "capture_output_path": "files/0122",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/deviceinfo-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781042,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0122",
+      "runtime_path": "/vendor/etc/vintf/manifest/deviceinfo-saidl.xml",
+      "sha256": "6c2d739a9dd319164fa6b37ec51cf4c7107faae9420157da7880a284af87b1b0",
+      "size_bytes": 303
+    },
+    {
+      "capture_output_path": "files/0123",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/dms-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781056,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0123",
+      "runtime_path": "/vendor/etc/vintf/manifest/dms-service.xml",
+      "sha256": "120ace26af893448224b09490738d1a75c136d45a4f691f403d6ed4ff6498a88",
+      "size_bytes": 240
+    },
+    {
+      "capture_output_path": "files/0124",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/dpm-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781065,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0124",
+      "runtime_path": "/vendor/etc/vintf/manifest/dpm-saidl.xml",
+      "sha256": "3111bf64af393399881964509c5dceabc0f759cb98ad7218b5bfb072f79caa18",
+      "size_bytes": 278
+    },
+    {
+      "capture_output_path": "files/0126",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/eid-default.xml",
+      "kind": "device_manifest",
+      "nid": 8781087,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0126",
+      "runtime_path": "/vendor/etc/vintf/manifest/eid-default.xml",
+      "sha256": "ba0b3ef2be4a1883127667c9831f15fc868a224e34176d95eab4c99fdc5f42a1",
+      "size_bytes": 269
+    },
+    {
+      "capture_output_path": "files/0127",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/fm_hci.xml",
+      "kind": "device_manifest",
+      "nid": 8781097,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0127",
+      "runtime_path": "/vendor/etc/vintf/manifest/fm_hci.xml",
+      "sha256": "3c5654d7795e6c06a66f005e9b913066cae0a60610d291f084b60cbd1b199016",
+      "size_bytes": 274
+    },
+    {
+      "capture_output_path": "files/0128",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/imsdcservice-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781108,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0128",
+      "runtime_path": "/vendor/etc/vintf/manifest/imsdcservice-saidl.xml",
+      "sha256": "19a1e58de7f92fdeca55a0c10e6e1e39d3907657b098e0d821f7f3219628b44b",
+      "size_bytes": 346
+    },
+    {
+      "capture_output_path": "files/0130",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_blackbox.xml",
+      "kind": "device_manifest",
+      "nid": 8781147,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0130",
+      "runtime_path": "/vendor/etc/vintf/manifest/manifest_blackbox.xml",
+      "sha256": "52f25bfdc813ec8acc61b2d5342900738c4dc935673980661bd9eb30a1b0543d",
+      "size_bytes": 333
+    },
+    {
+      "capture_output_path": "files/0132",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.cld_aidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781171,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0132",
+      "runtime_path": "/vendor/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.cld_aidl.xml",
+      "sha256": "b121211f1a26a3837ec4a69b94d1957164922670eeabd267eee51a7d917fabee",
+      "size_bytes": 306
+    },
+    {
+      "capture_output_path": "files/0133",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.fbo.xml",
+      "kind": "device_manifest",
+      "nid": 8781184,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0133",
+      "runtime_path": "/vendor/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.fbo.xml",
+      "sha256": "9d582cc7f4c8ae3140845e32d1a280384c8dfb1874fc503d2cb2d3f68eab6281",
+      "size_bytes": 294
+    },
+    {
+      "capture_output_path": "files/0134",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.swap.xml",
+      "kind": "device_manifest",
+      "nid": 8781195,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0134",
+      "runtime_path": "/vendor/etc/vintf/manifest/manifest_vendor.xiaomi.hardware.swap.xml",
+      "sha256": "764035f98024e64512d47eacadde6945f3671eb47dfab9b2aedb5f219f8f8531",
+      "size_bytes": 299
+    },
+    {
+      "capture_output_path": "files/0138",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/mwqem-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781236,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0138",
+      "runtime_path": "/vendor/etc/vintf/manifest/mwqem-saidl.xml",
+      "sha256": "8d8c79c73812c58a99793f09f9a973f7a8327b0ffeac1eed8d8e9efeb45a9eaf",
+      "size_bytes": 300
+    },
+    {
+      "capture_output_path": "files/0139",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/ozonotify-1.0.xml",
+      "kind": "device_manifest",
+      "nid": 8781247,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0139",
+      "runtime_path": "/vendor/etc/vintf/manifest/ozonotify-1.0.xml",
+      "sha256": "26c4770fea668d735348b0f52d9990bef417c07a6c4a6b65ff585a3f291a43a5",
+      "size_bytes": 283
+    },
+    {
+      "capture_output_path": "files/0141",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/qcrilhook-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781268,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0141",
+      "runtime_path": "/vendor/etc/vintf/manifest/qcrilhook-saidl.xml",
+      "sha256": "c76c12f2f60393acdbf55e87ab5aea9c141159d3b3448f5ad6c4a772188efb25",
+      "size_bytes": 330
+    },
+    {
+      "capture_output_path": "files/0142",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/qesdk-manager.xml",
+      "kind": "device_manifest",
+      "nid": 8781280,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0142",
+      "runtime_path": "/vendor/etc/vintf/manifest/qesdk-manager.xml",
+      "sha256": "0e4ee7a1f0f95c817e475461e8cfcc4f9766d900cc3e0e2ecbfba6766fa8a05c",
+      "size_bytes": 298
+    },
+    {
+      "capture_output_path": "files/0143",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/qms-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781291,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0143",
+      "runtime_path": "/vendor/etc/vintf/manifest/qms-saidl.xml",
+      "sha256": "0305e256cbbe1718691b41d4ac48f0de6fd7e1b95ad00ca4c0f3939cd8d4111f",
+      "size_bytes": 586
+    },
+    {
+      "capture_output_path": "files/0146",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/qtiradio-saidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781312,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0146",
+      "runtime_path": "/vendor/etc/vintf/manifest/qtiradio-saidl.xml",
+      "sha256": "87c7c1a5aa83e5d4b510ccf5a462a9336f0a6e6cec1e221a436b147dee8148ca",
+      "size_bytes": 360
+    },
+    {
+      "capture_output_path": "files/0147",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/secure_element-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781325,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0147",
+      "runtime_path": "/vendor/etc/vintf/manifest/secure_element-service.xml",
+      "sha256": "7b581c593f6b808c59bcdee67343debeaa471a14d9600e4a14a12ebb6d233a34",
+      "size_bytes": 278
+    },
+    {
+      "capture_output_path": "files/0148",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/snapdragon_services.xml",
+      "kind": "device_manifest",
+      "nid": 8781336,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0148",
+      "runtime_path": "/vendor/etc/vintf/manifest/snapdragon_services.xml",
+      "sha256": "0c07a6e258401bd7d2713ddccd5f9d10a13ee87e0e23a979b7f09b67835bde36",
+      "size_bytes": 327
+    },
+    {
+      "capture_output_path": "files/0151",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.MemHal.xml",
+      "kind": "device_manifest",
+      "nid": 8781370,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0151",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.MemHal.xml",
+      "sha256": "5d62d06a16bac5e94936092f5825a40df6e2f258ec2c5dd848bab5ab26412a78",
+      "size_bytes": 257
+    },
+    {
+      "capture_output_path": "files/0152",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.camera.offlinecamera-impl.xml",
+      "kind": "device_manifest",
+      "nid": 8781380,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0152",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.camera.offlinecamera-impl.xml",
+      "sha256": "214e5330b77cb5c935bb643a3fb87e8390369706c05a009594dc4fd985049632",
+      "size_bytes": 464
+    },
+    {
+      "capture_output_path": "files/0154",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.diag.hal.service.xml",
+      "kind": "device_manifest",
+      "nid": 8781409,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0154",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.diag.hal.service.xml",
+      "sha256": "0097dab30bee82ef8b01f377d71a313dbbc64aaccdb05f09c068915730c3800e",
+      "size_bytes": 261
+    },
+    {
+      "capture_output_path": "files/0155",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.gnss-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781419,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0155",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.gnss-service.xml",
+      "sha256": "a7ba27bce7dce7be87dd84d32206d4c231cda4bb89f97471f2d83d563b05c838",
+      "size_bytes": 300
+    },
+    {
+      "capture_output_path": "files/0156",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.alarm.xml",
+      "kind": "device_manifest",
+      "nid": 8781568,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0156",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.alarm.xml",
+      "sha256": "760ab2ef08a38d6a9128eb6f5dcfb91001a3c407c792e82489992ce72fbcbbef",
+      "size_bytes": 287
+    },
+    {
+      "capture_output_path": "files/0157",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.bluetooth.btavsprovider.xml",
+      "kind": "device_manifest",
+      "nid": 8781579,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0157",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.bluetooth.btavsprovider.xml",
+      "sha256": "4ce842a0fa210bd7b6f40d69049df2bd9ceb83691ff81fe057bd6ba99eacb052",
+      "size_bytes": 324
+    },
+    {
+      "capture_output_path": "files/0158",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.bluetooth.xpanprovider.xml",
+      "kind": "device_manifest",
+      "nid": 8781591,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0158",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.bluetooth.xpanprovider.xml",
+      "sha256": "14c851db053dfd1b4a9141797f64f5ba0937608e6c10cc3cc57633901b973932",
+      "size_bytes": 325
+    },
+    {
+      "capture_output_path": "files/0159",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.c2pa-aidl-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781603,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0159",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.c2pa-aidl-service.xml",
+      "sha256": "fac5bf183ca2d3d151308ab30f10f34f6f33306d6475b5bc75aee7efce7102b5",
+      "size_bytes": 305
+    },
+    {
+      "capture_output_path": "files/0160",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.capabilityconfigstore-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781615,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0160",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.capabilityconfigstore-service.xml",
+      "sha256": "9d1a26258d94ec8daeae84f64f5567894d53eea6ed74ca614b371082f0353230",
+      "size_bytes": 323
+    },
+    {
+      "capture_output_path": "files/0161",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.data.connectionaidl.xml",
+      "kind": "device_manifest",
+      "nid": 8781627,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0161",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.data.connectionaidl.xml",
+      "sha256": "0fb59c732718ab5b3e6d854e6acb80401edde139f656b312eaeab5a8e54b6002",
+      "size_bytes": 352
+    },
+    {
+      "capture_output_path": "files/0162",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.data.iwlandata.xml",
+      "kind": "device_manifest",
+      "nid": 8781640,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0162",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.data.iwlandata.xml",
+      "sha256": "7c170aa3fc3fd1a1733e042fa3725b06e39178619e3ecbbcc4ed552225e4a170",
+      "size_bytes": 353
+    },
+    {
+      "capture_output_path": "files/0164",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v4.xml",
+      "kind": "device_manifest",
+      "nid": 8781696,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0164",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v4.xml",
+      "sha256": "d5222a40400ac72a26a3e9f118f3c47c93a89df70326187b52806db23adcd4c6",
+      "size_bytes": 1120
+    },
+    {
+      "capture_output_path": "files/0165",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781665,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0165",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.display.demura-service.xml",
+      "sha256": "53c97609665db6cf2f229ee0fbfbcc69b57b3036e9dac80058b1d0ea76d0c231",
+      "size_bytes": 303
+    },
+    {
+      "capture_output_path": "files/0166",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.dsp-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781676,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0166",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.dsp-service.xml",
+      "sha256": "d041f56d2e4ee4573e5bc5466e51473c14dd0b3233b46655184251780ced6b6a",
+      "size_bytes": 283
+    },
+    {
+      "capture_output_path": "files/0167",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.embmssl.xml",
+      "kind": "device_manifest",
+      "nid": 8781733,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0167",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.embmssl.xml",
+      "sha256": "7d9dc3543a94c36220e32e80ccd923b1c5289f7ff4e99978b85ff25c376bc8ed",
+      "size_bytes": 330
+    },
+    {
+      "capture_output_path": "files/0168",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.hexlp-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781745,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0168",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.hexlp-service.xml",
+      "sha256": "12b80be2e39819ff0487bf6babc9243a8a98c97f1ea03438d6d2bd363db528df",
+      "size_bytes": 389
+    },
+    {
+      "capture_output_path": "files/0170",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.minkipcbinder-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781770,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0170",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.minkipcbinder-service.xml",
+      "sha256": "b02b6458048654aea9543a76d0dd36cf930df5d6d911b4e68b3e0370717bb7aa",
+      "size_bytes": 332
+    },
+    {
+      "capture_output_path": "files/0171",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.perf2.xml",
+      "kind": "device_manifest",
+      "nid": 8781782,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0171",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.perf2.xml",
+      "sha256": "1259869d69957c13954b60972f4dd2380054b5e6bcabacf2d70174aa512e0aca",
+      "size_bytes": 283
+    },
+    {
+      "capture_output_path": "files/0172",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.power.powermodule.xml",
+      "kind": "device_manifest",
+      "nid": 8781793,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0172",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.power.powermodule.xml",
+      "sha256": "eb44d7d17e15bcca13e9030af8f07c1d612e5f82e879891834e1be6c12f0785a",
+      "size_bytes": 313
+    },
+    {
+      "capture_output_path": "files/0173",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.qconfig-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781805,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0173",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.qconfig-service.xml",
+      "sha256": "e0b285a2b5bba4398b0bc631ba123b0d838afcbb1e7416fb2639d1b2cc859fb9",
+      "size_bytes": 314
+    },
+    {
+      "capture_output_path": "files/0174",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.am.xml",
+      "kind": "device_manifest",
+      "nid": 8781824,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0174",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.am.xml",
+      "sha256": "57b847f5173b4cbc774510c1a8706799e3725c41d3fee635851256eb56211ff3",
+      "size_bytes": 326
+    },
+    {
+      "capture_output_path": "files/0175",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml",
+      "kind": "device_manifest",
+      "nid": 8781836,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0175",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.ims.xml",
+      "sha256": "db85ea4a6324d07279fb46d5ed9b0337c4386838402e78e4e2ddb5923d2bc576",
+      "size_bytes": 362
+    },
+    {
+      "capture_output_path": "files/0176",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.lpa.xml",
+      "kind": "device_manifest",
+      "nid": 8781849,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0176",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.lpa.xml",
+      "sha256": "33b4d0a61a2ece147238f5a58bac5e50aff06cbec9398930b2676081bb62d491",
+      "size_bytes": 324
+    },
+    {
+      "capture_output_path": "files/0177",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.qtiradioconfig.xml",
+      "kind": "device_manifest",
+      "nid": 8781861,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0177",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.qtiradioconfig.xml",
+      "sha256": "f0922bb21a4069a60362e891506f19cb01238c5c18e9fecb8dd11c6bc064a6b8",
+      "size_bytes": 342
+    },
+    {
+      "capture_output_path": "files/0178",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.uim.xml",
+      "kind": "device_manifest",
+      "nid": 8781874,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0178",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.uim.xml",
+      "sha256": "20b879b0106edc21040820eaca389f2b5d977a23855f925c3866e1d9dd632fe3",
+      "size_bytes": 312
+    },
+    {
+      "capture_output_path": "files/0179",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_client.xml",
+      "kind": "device_manifest",
+      "nid": 8781886,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0179",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_client.xml",
+      "sha256": "dd886cf1a83f6661f7bfcc461ac22d8856033e20e61af185613123930a1ab7d5",
+      "size_bytes": 402
+    },
+    {
+      "capture_output_path": "files/0180",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_server.xml",
+      "kind": "device_manifest",
+      "nid": 8781901,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0180",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.radio.uim_remote_server.xml",
+      "sha256": "bd2b778452f27566f9a9d583cd9b0b52d3f2de9377325545d51a505a6f975e6b",
+      "size_bytes": 402
+    },
+    {
+      "capture_output_path": "files/0181",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.secureprocessor.xml",
+      "kind": "device_manifest",
+      "nid": 8781916,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0181",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.secureprocessor.xml",
+      "sha256": "f21c1d8ee81b527ee892b0afefbb381b868021abd01fb9d36375b4e9f2d1ef1e",
+      "size_bytes": 388
+    },
+    {
+      "capture_output_path": "files/0182",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.sensorscalibrate.xml",
+      "kind": "device_manifest",
+      "nid": 8781930,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0182",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.sensorscalibrate.xml",
+      "sha256": "42df64b6c626806071292abe3ec9df035f12856132248e210715222dc9413001",
+      "size_bytes": 328
+    },
+    {
+      "capture_output_path": "files/0183",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.servicetrackeraidl-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781952,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0183",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.servicetrackeraidl-service.xml",
+      "sha256": "abbb564483766df941a63d1201eb5c46ec09c3684e8a6a7c6120dc2af699125d",
+      "size_bytes": 340
+    },
+    {
+      "capture_output_path": "files/0184",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.soter-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781965,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0184",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.soter-service.xml",
+      "sha256": "d451a63c6a6132aeb6d87dd58ada44b375c3fbb0cbc714399c0ea51095cae58b",
+      "size_bytes": 294
+    },
+    {
+      "capture_output_path": "files/0186",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.trustedui-aidl-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781987,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0186",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.trustedui-aidl-service.xml",
+      "sha256": "dbd7c17f3174446ee78a7acf72e1d10e056a01599f2d32fc1180405b5140d050",
+      "size_bytes": 360
+    },
+    {
+      "capture_output_path": "files/0187",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.vpp-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782000,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0187",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.vpp-service.xml",
+      "sha256": "6c3a22f9d419bbce6403e88d10ad28f15bfee402b12be9575268feaf14c63b41",
+      "size_bytes": 284
+    },
+    {
+      "capture_output_path": "files/0188",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.hardware.wifidisplaysession-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782011,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0188",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.hardware.wifidisplaysession-service.xml",
+      "sha256": "4e1f4011fb0de47532328e866977be83bebb62636417bd89b14ceb0694c1306b",
+      "size_bytes": 1971
+    },
+    {
+      "capture_output_path": "files/0189",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.ims.factoryaidlservice.xml",
+      "kind": "device_manifest",
+      "nid": 8782080,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0189",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.ims.factoryaidlservice.xml",
+      "sha256": "8b7bc71ce0bad9647b2bd018b7a4408babbea5603e5b1a27c4d8a8190ab6bb25",
+      "size_bytes": 293
+    },
+    {
+      "capture_output_path": "files/0190",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.qccvndhal_aidl-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782091,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0190",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.qccvndhal_aidl-service.xml",
+      "sha256": "e8cfd005980ba019cd95322e38cf77a856fabec203ba366378a14bb3fe6fdb24",
+      "size_bytes": 287
+    },
+    {
+      "capture_output_path": "files/0191",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.qspa-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782102,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0191",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.qspa-service.xml",
+      "sha256": "5ba76abaea2272adfd9f8b0a21ab02eb94da5953e56bcc4e91d47f10ef0c4d12",
+      "size_bytes": 280
+    },
+    {
+      "capture_output_path": "files/0192",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.qspmhal-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781430,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0192",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.qspmhal-service.xml",
+      "sha256": "c43ac844fcf416fc231637ee225dc742744a8916bcf31589d991f21e9580103e",
+      "size_bytes": 267
+    },
+    {
+      "capture_output_path": "files/0193",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.qti.syshealthmon-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782113,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0193",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.qti.syshealthmon-service.xml",
+      "sha256": "33d0eef5228e5aa63922582d7b27044905442293442d9d9da82a953641a91444",
+      "size_bytes": 300
+    },
+    {
+      "capture_output_path": "files/0194",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.camera.aon-impl.xml",
+      "kind": "device_manifest",
+      "nid": 8782124,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0194",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.camera.aon-impl.xml",
+      "sha256": "64b3d1ed064383ff2616181e5d2dc3089f4a39085f9b203c47dbbcc073f347ca",
+      "size_bytes": 298
+    },
+    {
+      "capture_output_path": "files/0195",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.cit.bluetooth-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782135,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0195",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.cit.bluetooth-service.xml",
+      "sha256": "988095a2e90a1fb0607fe7a63247ec6e5814d78d7d283cb555d631ebb99ed523",
+      "size_bytes": 307
+    },
+    {
+      "capture_output_path": "files/0196",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.cit.wifi-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782147,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0196",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.cit.wifi-service.xml",
+      "sha256": "b5413971029d0e6f165d17b0acf53b55ff25cbeab8be8699b9cf8f2cae4e2d93",
+      "size_bytes": 316
+    },
+    {
+      "capture_output_path": "files/0197",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.aidl.intentaware-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782159,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0197",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.aidl.intentaware-service.xml",
+      "sha256": "adf68d6e942f40f6826f9e6afc78749d4dbb95c9761907ffebbca03b9974c986",
+      "size_bytes": 342
+    },
+    {
+      "capture_output_path": "files/0198",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.aidlbgservice-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782172,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0198",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.aidlbgservice-service.xml",
+      "sha256": "e371a17af0ca4e11156411a26678c66a9218072fb9d14d170ebdb2bbe6b2a639",
+      "size_bytes": 313
+    },
+    {
+      "capture_output_path": "files/0199",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.batteryantiaging.xml",
+      "kind": "device_manifest",
+      "nid": 8782184,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0199",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.batteryantiaging.xml",
+      "sha256": "b997a9981080a66742d8b21ce30a9be05caff50a7a8aff9b98e67b294ed428c3",
+      "size_bytes": 326
+    },
+    {
+      "capture_output_path": "files/0200",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.camera.mivimessage-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781440,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0200",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.camera.mivimessage-service.xml",
+      "sha256": "63f22d655157511b48d2613954f349a964c748d647091464a07ef7a828c6d5c4",
+      "size_bytes": 349
+    },
+    {
+      "capture_output_path": "files/0201",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.displayfeature_aidl-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781453,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0201",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.displayfeature_aidl-service.xml",
+      "sha256": "ec0609ba8b2ce11260b6becd76225b88f0cff41d0fa94024414b37712a1e97ea",
+      "size_bytes": 376
+    },
+    {
+      "capture_output_path": "files/0202",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.dynamiccameraserver.xml",
+      "kind": "device_manifest",
+      "nid": 8782196,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0202",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.dynamiccameraserver.xml",
+      "sha256": "feca3e6c5ba44129d4bfd5b5f47d1aaddd0ff37ccf182b1fffaa4061741fc4b9",
+      "size_bytes": 326
+    },
+    {
+      "capture_output_path": "files/0203",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.micharge.xml",
+      "kind": "device_manifest",
+      "nid": 8781467,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0203",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.micharge.xml",
+      "sha256": "e29acc3482cf6a56f35e12eea728d29f2120d1967355f2775f7b6ed323ac2611",
+      "size_bytes": 323
+    },
+    {
+      "capture_output_path": "files/0204",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.mimd2-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781479,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0204",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.mimd2-service.xml",
+      "sha256": "51204cf6b8e1eb5f77065554ec4432dd6d3b6509139bd0dd7aa17682299c8f55",
+      "size_bytes": 285
+    },
+    {
+      "capture_output_path": "files/0205",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.misys.common.xml",
+      "kind": "device_manifest",
+      "nid": 8781490,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0205",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.misys.common.xml",
+      "sha256": "32ef8df45b21fa9ef2c8fa44b165c316538f778c0a8ca8a23da1744bd811dd03",
+      "size_bytes": 397
+    },
+    {
+      "capture_output_path": "files/0206",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.misys.core.xml",
+      "kind": "device_manifest",
+      "nid": 8781504,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0206",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.misys.core.xml",
+      "sha256": "9a8c0b182c569a830b4ffcc8dbf269479f73b19f46c513b8ccffd7a3d2f96828",
+      "size_bytes": 309
+    },
+    {
+      "capture_output_path": "files/0207",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.postprocservice-service.xml",
+      "kind": "device_manifest",
+      "nid": 8781516,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0207",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.postprocservice-service.xml",
+      "sha256": "c006883101b41d9c6946c7edda250ab398ae7437897c30364b8402a544a19211",
+      "size_bytes": 329
+    },
+    {
+      "capture_output_path": "files/0208",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.quickcamera.xml",
+      "kind": "device_manifest",
+      "nid": 8781528,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0208",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.quickcamera.xml",
+      "sha256": "eac0a6174ad1e3821e4707be27ff0cc9516e234e166c1251dd03769d6efe3d06",
+      "size_bytes": 335
+    },
+    {
+      "capture_output_path": "files/0209",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.radio.cdc.xml",
+      "kind": "device_manifest",
+      "nid": 8781540,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0209",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.radio.cdc.xml",
+      "sha256": "a3786901ec5f18fdb0dcf813ae28be40c0bb358f22f02c8acd7bb751ab2721cc",
+      "size_bytes": 371
+    },
+    {
+      "capture_output_path": "files/0210",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.radio.xml",
+      "kind": "device_manifest",
+      "nid": 8781554,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0210",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.radio.xml",
+      "sha256": "f218d19cdc38d404538d6d5248d14ea971e5aa6188c7046a10bac29850d554dc",
+      "size_bytes": 354
+    },
+    {
+      "capture_output_path": "files/0211",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.hardware.videoservice-service.xml",
+      "kind": "device_manifest",
+      "nid": 8782208,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0211",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.hardware.videoservice-service.xml",
+      "sha256": "993abe22e24ac444021e6a48c057c43e10dd0d6a83116f9c9c6e8e75239b9989",
+      "size_bytes": 350
+    },
+    {
+      "capture_output_path": "files/0212",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest/vendor.xiaomi.modem.qms.xml",
+      "kind": "device_manifest",
+      "nid": 8782221,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0212",
+      "runtime_path": "/vendor/etc/vintf/manifest/vendor.xiaomi.modem.qms.xml",
+      "sha256": "0f734ab09d559e5dd2e47d6d1ef1d409e6df9da02772d6b75e41fb1893959c18",
+      "size_bytes": 275
+    },
+    {
+      "capture_output_path": "files/0214",
+      "capture_receipt": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/receipt.json",
+      "image_path": "/etc/vintf/manifest_canoe.xml",
+      "kind": "device_manifest",
+      "nid": 8708557,
+      "partition": "vendor",
+      "path": "artifacts/firmware-analysis/d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b/erofs-contract-v1/xml/vendor/files/0214",
+      "runtime_path": "/vendor/etc/vintf/manifest_canoe.xml",
+      "sha256": "3ea5780e87654ac313a9a6fd96fa8200b858a25033ebd63b36264fc372ff9b2b",
+      "size_bytes": 1150
+    }
+  ],
+  "limitations": [
+    "This device-specific compatibility declaration does not implement or enable a service. The preserved proprietary binaries and their framework clients require independent runtime and ABI validation.",
+    "android.se.omapi is the exact original vendor VINTF declaration, with an existing frozen AOSP version1 interface. The pinned SecureElement app conditionally registers ISecureElementService/default for the system user when secure_element_vintf_enabled is true. This is distinct from android.hardware.secure_element; selected resources, app inclusion and runtime registration remain unverified.",
+    "com.android.ozoaudio.notify, com.fingerprints.fpc.extension and vendor.dolby declarations are retained as original proprietary interfaces, despite their different package prefixes.",
+    "Three original product-matrix tuples are deliberately projected into the single Nezha system device FCM. This consolidates static framework support declarations only and does not move any runtime service or proprietary file.",
+    "The original stock device matrix has additional legacy declarations and version ranges, which are not imported. Duplicate original entries are coalesced and retained as provenance.",
+    "Private original XML and receipts are reopened for generation, not copied into the portable candidate. Source image hashes remain provenance; this helper does not reread complete original images.",
+    "The pinned checker does not compare HAL presence in HalManifest::checkCompatibility. This extension addresses its observed checkUnusedHals error and is not a complete service implementation test."
+  ],
+  "platform": {
+    "branch": "bka",
+    "release_config": "bp4a",
+    "shipping_api_level": 36,
+    "target_fcm_level": 202504
+  },
+  "profile": "framework-checks",
+  "required_native_checks": [
+    "Verify source pins and every source_preconditions identity in the existing checkout; preserve all reviewed patches, original proprietary inputs and previous failed native evidence.",
+    "Install a separately recorded device candidate. The changed source files are generated/BoardConfigCandidate.mk and the new generated/framework-compatibility-matrix.xml; the product fragment, SELinux inputs and provider binaries must remain unchanged.",
+    "Run normal framework_compatibility_matrix.device.xml and check-vintf-all component goals. Confirm exported DeviceFrameworkCompatibilityMatrixFile is the exact singleton source path, no product selector is active, and the native Ninja producer consumes that path. Inspect the installed matrix rather than assuming source/output byte equality.",
+    "Verify the installed device FCM contains exactly these 155 AIDL tuples without regex or version ranges, while retaining the normal generated SELinux and AVB requirements. Preserve all numbered platform FCM identities.",
+    "Recapture the selected framework/vendor/ODM/kernel/APEX inputs after the matrix build; run all original framework consistency, vendor/ODM consistency and full --check-compat commands, with all 39 selected APEX packages materialized and the stock kernel configuration supplied.",
+    "Retain the pinned no-level matrix-definition skip and other native validator coverage limits explicitly. Offline XML projection and a native unused-HAL pass do not prove interface implementations, runtime service registration, full ABI, encryption, OTA or boot."
+  ],
+  "required_source_revisions": {
+    "build/make": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "build/soong": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "frameworks/base": "8140698cc12983deecdbd434220affb5f931bfc6",
+    "hardware/interfaces": "60a7ef5031b21d9e2f18b17ba9beea690d0fdc72",
+    "packages/apps/SecureElement": "bef9e6f1cc13956bf4718db1e303cf942f5b0e04",
+    "system/libvintf": "69c456ea4aa2f503a2904cfbc11f279a3b2efb09"
+  },
+  "schema_version": 1,
+  "scope": {
+    "complete_rom_admitted": false,
+    "full_vintf_compatibility_verified": false,
+    "hardware_tested": false,
+    "native_matrix_built": false,
+    "normal_android_selinux_enforcing": true,
+    "numbered_platform_matrices_changed": false,
+    "original_proprietary_inputs_changed": false,
+    "phone_operations": [],
+    "runtime_services_verified": false,
+    "source_projection_only": true
+  },
+  "selection": {
+    "installed_path": "system/etc/vintf/compatibility_matrix.device.xml",
+    "level": null,
+    "matrix_type": "framework",
+    "matrix_version": "9.0",
+    "module": "framework_compatibility_matrix.device.xml",
+    "source_path": "device/xiaomi/nezha/generated/framework-compatibility-matrix.xml",
+    "variable": "DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE"
+  },
+  "source_lock": {
+    "path": "config/evolution-source-lock.json",
+    "sha256": "9b3a825a359fc618ff85234383e06c736c662b5427591d0d68252cdece6aace5",
+    "size_bytes": 857
+  },
+  "source_patches": [],
+  "source_preconditions": [
+    {
+      "captured_path": "reports/vintf-compatibility-20260829/source/hardware/interfaces/compatibility_matrices/Android.bp",
+      "path": "hardware/interfaces/compatibility_matrices/Android.bp",
+      "project": "hardware/interfaces",
+      "sha256": "bcce05de7b203d0b575d9db4996c10e219776ad9497fa1009c762ab0047c3733",
+      "size_bytes": 5734
+    },
+    {
+      "captured_path": "reports/vintf-compatibility-20260829/source/hardware/interfaces/compatibility_matrices/compatibility_matrix.202504.xml",
+      "path": "hardware/interfaces/compatibility_matrices/compatibility_matrix.202504.xml",
+      "project": "hardware/interfaces",
+      "sha256": "669d121b27999f9afee265f4b347361e84c57d451a30f36e5bce9f36b6ce4669",
+      "size_bytes": 22759
+    },
+    {
+      "captured_path": "reports/vintf-compatibility-20260829/native-output-capture-v1/additional_source_files/hardware/interfaces/compatibility_matrices/build/vintf_compatibility_matrix.go",
+      "path": "hardware/interfaces/compatibility_matrices/build/vintf_compatibility_matrix.go",
+      "project": "hardware/interfaces",
+      "sha256": "cae3efa789fd6d5506de28d0e29dd32dc765d7d5d80ad367e765e17b73dab596",
+      "size_bytes": 11588
+    },
+    {
+      "captured_path": "artifacts/source-contracts/nezha-treble-labeling-v1/files/build/make/core/soong_config.mk",
+      "path": "build/make/core/soong_config.mk",
+      "project": "build/make",
+      "sha256": "7d333ed88412e94d77ab367d4f2eb883fd2795b3bec841a88f4bba476987580b",
+      "size_bytes": 49437
+    },
+    {
+      "captured_path": "artifacts/source-contracts/nezha-treble-labeling-v1/files/build/soong/android/variable.go",
+      "path": "build/soong/android/variable.go",
+      "project": "build/soong",
+      "sha256": "2a495d801945cac5b799d66593cb879179c1ac1b3efe4d710a3636d58c32ea26",
+      "size_bytes": 44532
+    },
+    {
+      "captured_path": "artifacts/source-contracts/nezha-treble-labeling-v1/files/build/soong/android/config.go",
+      "path": "build/soong/android/config.go",
+      "project": "build/soong",
+      "sha256": "07d5779f92c93858e6996e9609ce49e8b8f882a66c195d82698066fe0198b011",
+      "size_bytes": 86467
+    },
+    {
+      "captured_path": "reports/vintf-compatibility-20260829/source/system/libvintf/check_vintf.cpp",
+      "path": "system/libvintf/check_vintf.cpp",
+      "project": "system/libvintf",
+      "sha256": "294fad7f990bae008cafc66e394bbe3dfe63ad69a90e471fee90bd7c366127dd",
+      "size_bytes": 22927
+    },
+    {
+      "captured_path": "reports/vintf-compatibility-20260829/source/system/libvintf/VintfObject.cpp",
+      "path": "system/libvintf/VintfObject.cpp",
+      "project": "system/libvintf",
+      "sha256": "400516d6679d96f102915dd7c0a14ddb0e45098b189ece42cb15136e220d04cb",
+      "size_bytes": 58877
+    },
+    {
+      "captured_path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv1/packages/apps/SecureElement/Android.bp",
+      "path": "packages/apps/SecureElement/Android.bp",
+      "project": "packages/apps/SecureElement",
+      "sha256": "18d7002d78af73bdaacbb1a9beeb360aeb1aee7336b7ef284b6aa25856801fdb",
+      "size_bytes": 1176
+    },
+    {
+      "captured_path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv2/frameworks/base/omapi/aidl/Android.bp",
+      "path": "frameworks/base/omapi/aidl/Android.bp",
+      "project": "frameworks/base",
+      "sha256": "b4c0f0f30ae2252f2de1ddb8497015a9f9c2af877612f63de4cf5aba4bd4ae6f",
+      "size_bytes": 1289
+    },
+    {
+      "captured_path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv2/frameworks/base/omapi/aidl/android/se/omapi/ISecureElementService.aidl",
+      "path": "frameworks/base/omapi/aidl/android/se/omapi/ISecureElementService.aidl",
+      "project": "frameworks/base",
+      "sha256": "26d06171ca03af9bf40e4a49c7848187f71b0509ab30e277dcd64d9ed087496a",
+      "size_bytes": 1908
+    },
+    {
+      "captured_path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv2/frameworks/base/omapi/aidl/aidl_api/android.se.omapi/1/android/se/omapi/ISecureElementService.aidl",
+      "path": "frameworks/base/omapi/aidl/aidl_api/android.se.omapi/1/android/se/omapi/ISecureElementService.aidl",
+      "project": "frameworks/base",
+      "sha256": "1ca22d7bb0bde890a5d833947bb9c9979d72b886fb8187d98e611bbb6f6b7b8a",
+      "size_bytes": 2103
+    },
+    {
+      "captured_path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv2/packages/apps/SecureElement/src/com/android/se/SecureElementService.java",
+      "path": "packages/apps/SecureElement/src/com/android/se/SecureElementService.java",
+      "project": "packages/apps/SecureElement",
+      "sha256": "1090eb30492cac47c9e607918d7645fcb642f8dd9ee4bfa09db241c99074645b",
+      "size_bytes": 21078
+    },
+    {
+      "captured_path": "reports/oem-policy-integration-20260829/source-frameworkmatrix4kv2/packages/apps/SecureElement/AndroidManifest.xml",
+      "path": "packages/apps/SecureElement/AndroidManifest.xml",
+      "project": "packages/apps/SecureElement",
+      "sha256": "e1ad869127f0732e165d5e9e2a146d5ad3fe54b700ca5de885080b5b9e6688a0",
+      "size_bytes": 880
+    },
+    {
+      "captured_path": "reports/vintf-compatibility-20260829/source-semantics/HalManifest.cpp",
+      "path": "system/libvintf/HalManifest.cpp",
+      "project": "system/libvintf",
+      "sha256": "09bb9b81ca3c2dfe1e91aa369438f5606f3eab30b615488de4d3df97193d429f",
+      "size_bytes": 32836
+    }
+  ],
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  }
+}

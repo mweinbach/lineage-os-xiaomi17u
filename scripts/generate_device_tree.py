@@ -23,8 +23,10 @@ import tempfile
 
 try:
     from .artifact_files import publish_new_directory
+    from . import framework_compatibility_matrix as framework_matrix
 except ImportError:
     from artifact_files import publish_new_directory
+    import framework_compatibility_matrix as framework_matrix
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -2561,6 +2563,8 @@ def _render_board(plan):
     if "target_files_metadata" in plan:
         lines += ["# Hash-bound factory metadata only; complete packaging remains unadmitted.",
                   "include $(NEZHA_DEVICE_PATH)/generated/target-files-metadata.mk"]
+    if "framework_matrix" in plan:
+        lines.extend(framework_matrix.wiring_lines())
     if "init_helper_capability" in plan:
         lines.extend(_init_helper_wiring_lines())
     if "oem_policy" in plan:
@@ -2822,6 +2826,72 @@ def _framework_allocator_source_guards(plan, payloads):
                  "framework allocator service, manifest and policy may only use the reviewed upstream module")
 
 
+def _framework_matrix_contract(path):
+    contract, identity = _read_json(path)
+    try:
+        framework_matrix.validate_contract(contract, identity)
+    except (ValueError, KeyError, TypeError) as exc:
+        raise CandidateError(str(exc)) from exc
+    return contract, identity
+
+
+def _framework_matrix_admission(plan, contract, identity):
+    try:
+        return framework_matrix.admission(plan, contract, identity)
+    except (ValueError, KeyError, TypeError) as exc:
+        raise CandidateError(str(exc)) from exc
+
+
+def _bind_framework_matrix(plan, path, workspace_root, payloads):
+    contract, identity = _framework_matrix_contract(path)
+    try:
+        framework_matrix.verify_inputs(contract, lambda name: _read_file(
+            Path(workspace_root) / _relative(name), limit=MAX_JSON_BYTES, collect=True)[1])
+    except (ValueError, KeyError, TypeError) as exc:
+        raise CandidateError(str(exc)) from exc
+    for row in (contract["source_lock"], contract["source_snapshot"]):
+        name = _relative(row["path"]).as_posix()
+        actual, raw = _read_file(Path(workspace_root) / name, limit=MAX_JSON_BYTES, collect=True)
+        _require(actual == {key: row[key] for key in ("sha256", "size_bytes")} and
+                 (name not in payloads or payloads[name] == raw),
+                 "framework matrix source lock or snapshot differs")
+        payloads[name] = raw
+    actual, raw = _read_file(path, limit=MAX_JSON_BYTES, collect=True)
+    _require(actual == identity, "framework matrix contract changed during generation")
+    payloads[framework_matrix.CONTRACT_PATH] = raw
+    payloads[framework_matrix.SOURCE_PATH] = framework_matrix.render(contract)
+    plan["framework_matrix"] = _framework_matrix_admission(plan, contract, identity)
+
+
+def _framework_matrix_source_guards(plan, payloads):
+    board = (DEVICE_PATH / "generated/BoardConfigCandidate.mk").as_posix()
+    selector = rb"\bDEVICE_(?:FRAMEWORK|PRODUCT)_COMPATIBILITY_MATRIX_FILE\b"
+    for name, raw in payloads.items():
+        if not name.startswith(DEVICE_PATH.as_posix() + "/"):
+            continue
+        if "framework_matrix" in plan and name == board:
+            _require(raw == _render_board(plan).encode("ascii"),
+                     "framework matrix generated board selection changed")
+        else:
+            # Conservative spelling guard; native Kati and the final exported
+            # Soong list still establish the actual evaluated selection.
+            spelled = re.sub(rb"\\\r?\n[ \t]*", b"", raw).replace(b"\\", b"")
+            _require(not re.search(selector, spelled),
+                     "framework matrix selectors require the explicit generated board only")
+        if name == framework_matrix.SOURCE_PATH:
+            _require("framework_matrix" in plan and
+                     framework_matrix.identity(raw) == {key: plan["framework_matrix"]["generated_source"][key]
+                                                        for key in ("sha256", "size_bytes")},
+                     "framework matrix source differs from the reviewed exact projection")
+        elif name.endswith(".xml"):
+            _require(b"compatibility-matrix" not in raw,
+                     "unreviewed extra compatibility matrix in generated device source")
+        if name.endswith((".mk", ".bp")) and name != board:
+            _require(framework_matrix.SOURCE_PATH.encode("ascii") not in raw and
+                     b"framework-compatibility-matrix.xml" not in raw,
+                     "framework matrix source may only be selected by its generated board")
+
+
 def _render_product(plan):
     partitions = ["boot", "dtbo", "init_boot", "recovery", "vendor_boot", "vbmeta", "vbmeta_system",
                   *_logical_partition_selection(plan)]
@@ -2864,7 +2934,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
              framework_provider_inputs_receipt=None, target_files_metadata_receipt=None,
              target_files_metadata_receipt_sha256=None, direct_avb_readonly_contract=None,
              target_files_source_contract=None, page_size_profile=None, framework_allocator_contract=None,
-             policy_image_delivery_contract=None, rom_construction_contract=None):
+             policy_image_delivery_contract=None, rom_construction_contract=None, framework_matrix_contract=None):
     if rom_construction_contract is not None:
         try:
             from . import rom_construction
@@ -2879,6 +2949,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if factory_selected:
         _require(factory_boot_contract is not None and partition_metadata is not None and fstab_source is not None,
                  "factory generation requires boot contract, partition metadata and explicit fstab source")
+    if framework_matrix_contract is not None:
+        _require(factory_selected, "framework matrix requires the explicit factory profile")
     if dsp_policy_contract is not None:
         _require(factory_selected, "DSP policy integration requires the explicit factory profile")
     if init_helper_capability_contract is not None:
@@ -2969,6 +3041,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                                   workspace_root, template_root, patch_source_root, payloads)
     if framework_allocator_contract is not None:
         _bind_framework_allocator(plan, framework_allocator_contract, workspace_root, payloads)
+    if framework_matrix_contract is not None:
+        _bind_framework_matrix(plan, framework_matrix_contract, workspace_root, payloads)
     if page_size_profile is not None:
         _verify_page_size_kernel(page_profile, kernel_receipt)
         plan["page_size_profile"] = _page_size_profile_binding(plan, page_profile, page_identity)
@@ -3003,6 +3077,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
         payloads[(generated / name).as_posix()] = content.encode()
     _page_size_source_guards(plan, payloads)
     _framework_allocator_source_guards(plan, payloads)
+    _framework_matrix_source_guards(plan, payloads)
     _policy_image_delivery_source_guards(plan, payloads)
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
@@ -3057,6 +3132,13 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             _require(current_plan["framework_allocator"] == plan["framework_allocator"] and
                      all(payloads[name] == raw for name, raw in current.items()),
                      "framework allocator inputs changed before candidate publication")
+        if framework_matrix_contract is not None:
+            current = {}
+            current_plan = copy.deepcopy(plan)
+            _bind_framework_matrix(current_plan, framework_matrix_contract, workspace_root, current)
+            _require(current_plan["framework_matrix"] == plan["framework_matrix"] and
+                     all(payloads[name] == raw for name, raw in current.items()),
+                     "framework matrix inputs changed before candidate publication")
         if metadata_selected:
             # Verify the entire external tree again, including its no-extra-file
             # inventory, before publishing the small portable candidate.
@@ -3244,6 +3326,17 @@ def validate(output, *, purpose="configuration"):
             expected.add(row["path"])
             _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
                      "framework allocator source lock or snapshot changed")
+    if "framework_matrix" in plan:
+        matrix, matrix_identity = _framework_matrix_contract(Path(output) / framework_matrix.CONTRACT_PATH)
+        _require(plan["framework_matrix"] == _framework_matrix_admission(plan, matrix, matrix_identity),
+                 "framework matrix admission differs from the reviewed source projection")
+        expected |= {framework_matrix.CONTRACT_PATH, framework_matrix.SOURCE_PATH}
+        _, matrix_raw = _read_file(Path(output) / framework_matrix.SOURCE_PATH, limit=MAX_TEXT_BYTES, collect=True)
+        _require(matrix_raw == framework_matrix.render(matrix), "generated framework matrix differs")
+        for row in (matrix["source_lock"], matrix["source_snapshot"]):
+            expected.add(row["path"])
+            _require(files.get(row["path"]) == {key: row[key] for key in ("sha256", "size_bytes")},
+                     "framework matrix source lock or snapshot changed")
     _require(set(files) == expected, "generated file set is incomplete or unexpected")
     present = set()
     for directory, subdirectories, filenames in os.walk(output, followlinks=False):
@@ -3257,6 +3350,9 @@ def validate(output, *, purpose="configuration"):
             _require(len(present) <= len(expected) + 1, "unexpected candidate file")
     _require(present == expected | {"admission.json"}, "unlisted or missing candidate file")
     _framework_allocator_source_guards(plan, {
+        name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
+        for name in files if name.startswith(DEVICE_PATH.as_posix() + "/")})
+    _framework_matrix_source_guards(plan, {
         name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
         for name in files if name.startswith(DEVICE_PATH.as_posix() + "/")})
     if "policy_inputs" in plan:
@@ -3445,6 +3541,8 @@ def main(argv=None):
                              help="explicit reviewed stock-kernel 4 KiB profile; requires exact kernel/provider receipts and leaves 16 KiB/VSR compatibility unverified")
             sub.add_argument("--framework-allocator-contract", type=Path,
                              help="explicit pinned upstream allocator service; preserves its init, SELinux and max-level-8 VINTF behavior")
+            sub.add_argument("--framework-matrix-contract", type=Path,
+                             help="exact stock-backed device framework matrix; preserves platform FCMs and requires a new native compatibility check")
             sub.add_argument("--rom-construction-contract", type=Path,
                              help="explicit construction prerequisites; currently fails closed until actual selected native inputs and coverage are admitted")
             sub.add_argument("--output", type=Path, required=True)
@@ -3479,7 +3577,8 @@ def main(argv=None):
                                   page_size_profile=args.page_size_profile,
                                   framework_allocator_contract=args.framework_allocator_contract,
                                   policy_image_delivery_contract=args.policy_image_delivery_contract,
-                                  rom_construction_contract=args.rom_construction_contract)
+                                  rom_construction_contract=args.rom_construction_contract,
+                                  framework_matrix_contract=args.framework_matrix_contract)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except (CandidateError, OSError, KeyError, TypeError, StopIteration, ValueError) as exc:
