@@ -33,6 +33,10 @@ unverified. The later full VINTF run reaches the combined command and fails on
 155 device HAL instances absent from the framework matrix. All earlier 16 KiB
 evidence is preserved. The inactive Camera stage and
 maintained delivery candidates do not bypass the remaining native gates.
+Commit **c3686ed** provides the reviewed [framework-matrix projection](framework-matrix.md)
+for the exact 155 missing tuples. Its host candidates pass; native build and
+compatibility retry remain unverified. The completed full-run failure is not
+relabelled as a pass by this source preparation.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -750,6 +754,17 @@ covers the selected bound inputs and source-project state, not a whole OUT
 census. Generated-proto source provenance, APEX signatures, runtime activation,
 full VINTF and boot remain unverified.
 
+The separate **AVB-tool whole-bytecode capture/proof passes**, preserving the
+earlier four-member proof unchanged. Capture receipt
+`6748d82a9b658d5d8074b1a56bd68d1c187b8d7c040395eb38f7900ffd24459d`
+and proof receipt
+`cd244b3b378b6a13efd7147c0928ceb78aad64353b34168c77efc1c60a2c2280`
+bind 28 native zero-exit commands, zero skips and one complete `avbtool.pyc`
+comparison. The 7,884-byte inner proof is
+`cc5f84a8c2fac84eca171a1e7f8ddd819a2fd4a13388d9e679d992e4e4a15ce7`.
+Selected inputs remain unchanged. Reproducing the packaged tool's bytecode is
+not APEX-signature, signed-chain or runtime validation; those gates remain open.
+
 The subsequent **current 4 KiB full-VINTF input capture** completes with zero
 exit and empty stderr. Its 493,527-byte receipt is
 `83a59e55a5732cbbf44693f7cb2552817e26f621e10c99c9e07b111691ea49dd`.
@@ -924,9 +939,20 @@ streams empty. That capture does not include the complete target inventory,
 activate the namespace or build an APK. The subsequent **complete target/alias
 inventory capture** passes at **02:29:12 UTC**, with 1,570,791-byte receipt
 `20aa80f53b90d9a74e3def15875d967b422488e23c1b2c756181b97b4b6b9092`.
-It verifies source/output preservation. Independent inventory review remains
-pending; source activation, graph execution, APK build and runtime grants are
-still unadmitted.
+It verifies source/output preservation. Independent inventory review now
+passes: review
+`8c500f3889cb0738707f2309ac729c35438f0e4935dd6c3b7eb59ec16270360a`
+accepts the recorded v13ja inventory of 4,071 entries: 3,321 regular files
+(2,263,742,391 bytes), 711 directories and 39 symlinks, without external
+hardlinks. Twenty-four links stay within the target; fifteen reference eleven
+absent guest `/system` or `/apex` destinations. No writable OUT alias escapes
+the target, but ten protected policy intermediates are outside that tree and
+must be protected separately in any future target-read-only build. This was
+an inventory collection, not a Ninja query or target build. Target-file bodies
+were not returned or independently rehashed by the host reviewer. Fresh
+source/build/graph/configuration and inventory evidence is required after the
+matrix exchange. Source activation, graph execution, APK build and runtime
+grants remain unadmitted.
 
 Provider capture v6 fails on ambiguous source/private-provider resolution.
 The corrected **v7 read-only capture** passes five queries, retaining strict
@@ -1187,7 +1213,13 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,892 tests in 164.280 seconds with zero failures, errors or skips**, executed
+**3,919 tests in 164.103 seconds with zero failures, errors or skips**, executed
+by the matrix owner. The five frozen public files match `c3686ed`; executable
+controls and tests stayed unchanged while the dedicated guide gained host
+verification details during the run. The full log is
+`6c9e801fa3ced648913da6f1d67d5991f19e4d0e6789cb313b7b6e9df3194d4d`.
+Native matrix and APEX cryptographic results remain separate. The preceding
+run passed **3,892 tests in 164.280 seconds**, executed
 by the care-map owner, covering `4070b1a` and the four files committed unchanged
 as `203ab67`. The coordinator rehashed the complete log
 `7b07299ac970db1d268613633b0da58ac535ef5799bbef5dd457174c13007125`.
@@ -1496,7 +1528,7 @@ historical evidence. The four selected whole-bytecode comparisons now pass;
 the fresh 4 KiB input capture verifies the producer prerequisites and complete
 selected XML/APEX closure. Materialization and separate consistency checks now
 pass, but the combined check fails on 155 missing framework-matrix instances.
-Implement and verify the source matrix correction, then rerun the full checks
+Install and natively verify the committed exact matrix source projection, then rerun the full checks
 and assess necessary coverage before claiming compatibility.
 The partial all-target alias and its skipped matrix-definition subcheck cannot
 establish full compatibility.

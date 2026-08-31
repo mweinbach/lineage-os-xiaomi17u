@@ -56,8 +56,15 @@ runtime behavior, VTS or boot validation.
 The **current full VINTF run fails the combined check**: 155 device HAL
 instances are absent from the framework compatibility matrix. All 39 APEX
 packages materialize and the two separate consistency commands exit zero, but
-the combined command exits 65. A source-level matrix correction is the next
-compatibility blocker; no check is suppressed or counted as a pass.
+the combined command exits 65. Native integration and verification of the
+matrix correction is the next compatibility blocker; no check is suppressed
+or counted as a pass.
+Commit **c3686ed** adds the [exact framework-matrix source projection](framework-matrix.md).
+Host verification binds all 155 missing AIDL tuples to original declarations
+and factory matrix coverage, producing 130 packages without wildcard instances,
+broadened versions or changes to numbered platform matrices. Repeated 47-file
+candidates match. Native matrix build and the compatibility retry remain
+unverified; the preserved exit-65 result is still the current full-check result.
 
 The independently analyzed policy baseline is **policy-only-v13h-1**, completed
 at **2026-08-30 05:40:07 UTC**, with 31 goals and 273 Ninja actions after
@@ -179,6 +186,10 @@ recipe: `apexd_host.pyc`, `deapexer.pyc` and the `apex_manifest.pyc` member of
 each tool. Independent review verifies the captured proof and selected-input
 preservation. This does not prove generated-proto source provenance, APEX
 signatures, runtime activation or full VINTF.
+The separate **AVB-tool bytecode capture/proof also passes**: 28 zero-exit
+native commands reproduce the one complete packaged `avbtool.pyc` member from
+the pinned recipe, with zero skips. This does not verify an APEX signature or
+signed image chain; cryptographic APEX verification remains pending.
 
 The current **allocator-producers-v13j-4k-1** capture completes at
 **01:31:45 UTC**, with nine zero-exit commands across three query layers and
@@ -278,8 +289,12 @@ eight query streams while retaining the exact strict settings. The complete prot
 inventory was still missing from that capture; it does not select the APK or
 establish permission grants. The subsequent **complete target/alias inventory
 capture passes at 02:29:12 UTC**, with source/output preservation verified.
-Its independent review is pending. Namespace activation, graph execution and
-the actual APK build remain held.
+Independent review now passes for that recorded v13ja state: 4,071 entries
+include 3,321 regular files, 711 directories and 39 symlinks. No writable OUT
+alias is found outside the target tree, but ten protected policy outputs lie
+outside that tree and need separate read-only protection in a future build.
+Fresh source/graph/inventory evidence is required after the matrix exchange.
+Namespace activation, graph execution and the actual APK build remain held.
 
 Provider capture v6 remains a parser-ambiguity failure. The corrected **v7
 read-only capture** passes five queries with strict 16 KiB configuration and
@@ -389,8 +404,13 @@ imports without skipping arbitrary imports or changing original properties.
 Native codec/tool qualification, the final Evolution SYSTEM identity and
 ordinary packaging remain unverified; the active source composition is unchanged.
 
-The latest completed full workspace suite passed **3,892 tests in 164.280
-seconds with zero failures, errors or skips**, executed by the care-map owner
+The latest completed full workspace suite passed **3,919 tests in 164.103
+seconds with zero failures, errors or skips**, executed by the matrix owner.
+The five frozen public files match `c3686ed`. Executable controls and tests
+stayed unchanged during the run; the dedicated matrix guide gained host evidence
+details during it. This is host source/projection coverage, not native matrix
+or APEX cryptographic verification. The preceding suite passed **3,892 tests in
+164.280 seconds**, executed by the care-map owner
 and independently log-verified by the coordinator. It covers `4070b1a` and the
 four care-map files committed unchanged as `203ab67`; later matrix source work
 is not included. The preceding suite passed **3,854 tests in 172.911 seconds**,
@@ -429,8 +449,8 @@ checkpoint passed 3,591 tests in
 checkpoint passed 3,558 tests in 163.269 seconds; the separate page-size agent run
 passed 3,558 in 153.985 seconds. These are offline tooling results, separate from
 Android builds, host policy proofs and physical-device tests. This checkpoint records
-code through `203ab67`, with the previous component checkpoint committed
-as `8fc2162`, followed by the provider-check checkpoint `da9648b`. The active
+code through `c3686ed`, with the previous component checkpoint committed
+as `8fc2162`, followed by `da9648b` and the full-failure checkpoint `3001e85`. The active
 guest source remains v13ja with 4 KiB selected;
 `analysis-v13h-policy-only-v1` remains the latest verified policy baseline.
 
@@ -534,7 +554,7 @@ from a full build and require destination hash verification after transfers.
 | Current 4 KiB provider ELF/symbol checks | All 26 checks execute freshly and pass within 48 native actions; complete raw review verifies commands, new log rows and stamps; full ABI, runtime and hardware remain separate | [Native ROM integration](../research/native-rom-integration.json) |
 | Current allocator producer capture | Nine commands across three query layers report success; all 66 payloads are collected and subsequent guest prerequisite verification reopens the external references; no fresh compile/runtime claim | [Native ROM integration](../research/native-rom-integration.json) |
 | Native packaged-bytecode proof | Four complete PYC members reproduce from the pinned Soong recipe; 28 native commands across capture/proof pass with zero skips; generated-proto provenance, signatures and full VINTF remain separate | [Native ROM integration](../research/native-rom-integration.json) |
-| Current full-VINTF input capture | Allocator and bytecode prerequisites verify against current inputs; 22 XML and all 39 APEX packages are bound, without completed materialization or compatibility comparisons | [Native ROM integration](../research/native-rom-integration.json) |
+| Current full-VINTF result | Input capture verifies allocator/bytecode prerequisites and the 22-XML/39-APEX closure; all 39 APEX packages subsequently materialize, but the combined check fails at exit 65 on 155 missing matrix tuples | [Native ROM integration](../research/native-rom-integration.json) |
 | Native v12f policy and exporter build | 73 Ninja actions after configuration; source/combined policy compilation, OEM guard, five context checks, two seapp checks and two structural checks pass; corrected C exporter compiled and linked | [Native ROM integration](../research/native-rom-integration.json) |
 | Expanded native policy-output build | 25 ordinary goals, 35 Ninja actions; runtime CIL/mapping installation and all 11 preserved compiler/guard/check outputs freshly executed; independent analysis subsequently stopped on its tool-reader bound | [Native ROM integration](../research/native-rom-integration.json) |
 | Preserved independent v12f policy analysis | Export4 verifies source/M4/mapping and fresh-check provenance, all 6,366 assertions and exact reviewed effects; three unfiltered zero-permissive binaries; provider policy unselected | [Native ROM integration](../research/native-rom-integration.json) |

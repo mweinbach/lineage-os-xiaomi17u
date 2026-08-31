@@ -20,6 +20,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
 | [VINTF build closure](vintf-compatibility.md) | Current 22-XML/39-APEX input closure is captured; the actual combined check fails on framework-matrix HAL coverage, with a retained matrix-definition skip and separate validator limits |
+| [Exact framework matrix](framework-matrix.md) | Committed host projection binds the 155 missing tuples to original declarations and factory matrix coverage; matching candidates pass admission, with native build/retry unverified |
 | [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation and current 4 KiB alignment/producer capture; guest prerequisite verification passes, without source-to-binary equivalence, full VINTF or runtime registration |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
 | [Factory mi_ext integration](mi-ext-inputs.md) | Reviewed prebuilt admission and direct-root AVB packaging path; native adoption tracked in current status |
@@ -75,7 +76,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Earlier Camera APK admission](camera-apk-inputs.md) | Preserved Xiaomi.eu/live input checks and two reproduced packaging failures |
 | [Original factory Camera APK](factory-camera-apk.md) | Unchanged factory input passes strict privileged/preprocessed packaging; permission grants, effective SELinux label and product selection remain unverified |
 | [Factory Camera permission grants](../research/factory-camera-permission-grants.json) | Captured source distinguishes pure-signature grant denial and service enforcement; effective grants, installed signing state and Camera behavior remain unverified |
-| [Factory Camera build-only packet](camera-apk-build-admission.md) | Fresh 4 KiB prerequisite capture passes review; complete target/alias inventory capture also passes with review pending, while activation and APK build remain held |
+| [Factory Camera build-only packet](camera-apk-build-admission.md) | Prerequisite and complete target/alias inventory reviews pass for v13ja; a fresh post-matrix baseline and ten extra protected policy leaves are required before activation or APK builds |
 | [DEX runtime provider](dex-import-uses-library.md) | Strict Soong patch and native fixtures; current component build and bounded producer/output review pass, without Camera APK or runtime API closure |
 | [Camera runtime inputs](camera-runtime-inputs.md) | Exact JAR module names and XML registrations without relaxing class-loader checks |
 | [Factory framework providers](framework-providers.md) | Captured Sigma/QCC providers and strict native dependency admission; runtime and ABI limits |

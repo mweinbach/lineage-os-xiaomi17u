@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "device": "nezha",
-  "checkpoint": "four-kib-full-vintf-failed-on-framework-matrix-inactive-policy-image-stage-reviewed-camera-inventory-review-pending",
+  "checkpoint": "matrix-source-host-integration-committed-avbtool-bytecode-and-camera-inventory-reviewed-native-matrix-and-apex-crypto-pending",
   "purpose": "Separate reviewed source/input installation, actual native build results, host preparation and remaining complete-ROM gates.",
   "platform": {
     "branch": "bka",
@@ -937,32 +937,37 @@
   },
   "workspace_tests": {
     "command": "python3 -m unittest discover -s tests -v",
-    "runner": "care-map-import-successor-owner",
-    "passed": 3892,
+    "runner": "framework-matrix-owner",
+    "passed": 3919,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "elapsed_seconds": 164.28,
-    "tested_parent_code_commit": "4070b1a0989996f438f1b87002829dfdb5b4fe6b",
-    "subsequent_code_commit": "203ab670b7abe494d74dd687be004cf7c64c7e63",
-    "coordinator_independently_rehashed_full_log": true,
-    "construction_and_four_care_map_files_covered": true,
-    "later_framework_matrix_source_work_covered": false,
+    "elapsed_seconds": 164.103,
+    "tested_parent_commit": "3001e8542bf99b66d6a30dbba1ed2d70343c7d09",
+    "subsequent_code_commit": "c3686ed99ca0ad6caed6224dc53720a6b0944103",
+    "executable_controls_and_tests_unchanged_during_run": true,
+    "dedicated_documentation_updated_with_host_details_during_run": true,
+    "all_five_public_files_match_final_freeze": true,
     "log": {
-      "path": "reports/oem-policy-integration-20260829/mi-ext-care-map-imports-v2/full-workspace-tests-v1.log",
-      "sha256": "7b07299ac970db1d268613633b0da58ac535ef5799bbef5dd457174c13007125",
-      "size_bytes": 672439
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/workspace-tests-v1.log",
+      "sha256": "6c9e801fa3ced648913da6f1d67d5991f19e4d0e6789cb313b7b6e9df3194d4d",
+      "size_bytes": 677231
     },
-    "handoff": {
-      "path": "reports/oem-policy-integration-20260829/mi-ext-care-map-imports-v2/handoff-v1.json",
-      "sha256": "4d0dcc25a490b96739f6cc550dd674d4026af0313250c0b3c4ee2723fc5e012a",
-      "size_bytes": 5767
+    "receipt": {
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/workspace-tests-v1.json",
+      "sha256": "0b5a49af322cece5fed615a3bf8256e7b5ba45a7e6ebddd36466b6fba4a85fd3",
+      "size_bytes": 1222
     },
-    "scope": "Care-map owner executed the full offline suite covering construction commit 4070b1a and the four care-map files committed unchanged as 203ab67. Coordinator rehashed its complete log. No later matrix implementation/test work or native validation is covered."
+    "public_freeze": {
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/public-freeze-v1.json",
+      "sha256": "39894f4da6e9bb016df01f32ec5fcba3f758f0ff221c8afea3dbf1a391d70d35",
+      "size_bytes": 1419
+    },
+    "scope": "Matrix owner executed the complete offline suite. Executable controls and tests stayed unchanged; the dedicated guide received host verification details during the run. All five final public file identities match commit c3686ed. This is not a native matrix build, compatibility retry, APEX cryptographic check or hardware result."
   },
   "remaining_gates": [
-    "Implement the exact framework-matrix source correction for the 155 unique instances reported by the actual current 4 KiB combined VINTF command, then regenerate affected inputs and rerun full comparisons with necessary coverage review. All 39 APEX packages materialize and both consistency commands exit zero, but the combined check exits 65. Preserve the matrix-definition skip, two warnings and all historical failures; no full compatibility or complete kernel acceptance is established",
-    "Independently review the captured complete Camera target/alias inventory and clear the full-VINTF and remaining source-admission holds before activating the exact inactive candidate. Then verify the actual APK graph/class-loader/check/build path. The current 4 KiB prerequisite capture passes independent review and the target inventory is captured; APK and namespace remain unselected with strict preoptimization, uses-library and native checks retained",
+    "Install and natively verify the committed exact framework-matrix projection for the 155 missing tuples, regenerate affected inputs and repeat full VINTF with necessary coverage review. The current completed run materialized all 39 APEX packages and passed two consistency commands but failed the combined command at exit 65. Preserve its matrix-definition skip and warnings; neither the host source fix nor AVB-tool bytecode proof establishes native compatibility or APEX signatures",
+    "Refresh source/build/graph/configuration and complete Camera target evidence after the matrix exchange. The reviewed v13ja inventory identifies ten protected policy intermediates outside the target tree that require separate read-only protection. Clear full-VINTF and remaining admission holds before activating the inactive candidate or running its APK graph/class-loader/check/build path; preserve strict checks",
     "Camera runtime API and linker access, actual Camera APK admission, and any stronger checker verification requiring full dependency/tool capture and independent native replay; the bounded component producer/output review is complete",
     "The selected 26-provider ELF/symbol checks pass freshly at 4 KiB. Complete ABI, runtime service behavior and VTS/hardware validation remain separate. Preserve the failed v13j stage, retained backups and 16 KiB four-pass/twenty-two-failure inventory; the new paired delivery candidate remains host-only pending current source/image qualification and installation",
     "Complete framework images, VINTF including actual APEX/kernel inputs, and full Treble APK labeling",
@@ -1553,6 +1558,31 @@
         "size_bytes": 12555
       },
       "scope": "Owner executed the full offline suite for the five construction-consumer files subsequently committed as 4070b1a; the coordinator rehashed the full log. Hashes were observed during and after the suite, not before it began. The concurrently authored 0014 care-map tests were not included; this is not a combined current-workspace rerun or native validation."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -v",
+      "runner": "care-map-import-successor-owner",
+      "passed": 3892,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed_seconds": 164.28,
+      "tested_parent_code_commit": "4070b1a0989996f438f1b87002829dfdb5b4fe6b",
+      "subsequent_code_commit": "203ab670b7abe494d74dd687be004cf7c64c7e63",
+      "coordinator_independently_rehashed_full_log": true,
+      "construction_and_four_care_map_files_covered": true,
+      "later_framework_matrix_source_work_covered": false,
+      "log": {
+        "path": "reports/oem-policy-integration-20260829/mi-ext-care-map-imports-v2/full-workspace-tests-v1.log",
+        "sha256": "7b07299ac970db1d268613633b0da58ac535ef5799bbef5dd457174c13007125",
+        "size_bytes": 672439
+      },
+      "handoff": {
+        "path": "reports/oem-policy-integration-20260829/mi-ext-care-map-imports-v2/handoff-v1.json",
+        "sha256": "4d0dcc25a490b96739f6cc550dd674d4026af0313250c0b3c4ee2723fc5e012a",
+        "size_bytes": 5767
+      },
+      "scope": "Care-map owner executed the full offline suite covering construction commit 4070b1a and the four care-map files committed unchanged as 203ab67. Coordinator rehashed its complete log. No later matrix implementation/test work or native validation is covered."
     }
   ],
   "previous_v11b_policy": {
@@ -1901,7 +1931,7 @@
     "fresh_assertion_permission_dontaudit_and_unfiltered_permissive_results_claimed": false,
     "later_runtime_export_resolution": "The normal policy-v12f-export-1 build installed the missing exports. The following analysis-v12f-export-v1 passed runtime/compiler equality before a separate mapping-tool reader failure."
   },
-  "recorded_at_utc": "2026-08-31T02:35:00.796590+00:00",
+  "recorded_at_utc": "2026-08-31T02:58:47.828637+00:00",
   "latest_native_build_completed_at_utc": "2026-08-31T01:15:10.939645+00:00",
   "native_policy_export_build": {
     "phase": "policy-v12f-export-1",
@@ -2344,7 +2374,7 @@
     "historical_checkpoint": true,
     "current_decision_reference": "current_page_size_decision"
   },
-  "workspace_code_checkpoint": "203ab670b7abe494d74dd687be004cf7c64c7e63",
+  "workspace_code_checkpoint": "c3686ed99ca0ad6caed6224dc53720a6b0944103",
   "full_vendor_no_change_roundtrip": {
     "v1": {
       "receipt": {
@@ -3844,7 +3874,7 @@
   },
   "latest_timestamped_native_observation_utc": "2026-08-31T02:29:12.220254+00:00",
   "latest_timestamped_native_observation_kind": "camera-current-four-kib-complete-target-inventory-capture-passed",
-  "latest_native_observation_kind": "full-vintf-failure-and-inactive-image-copy-reviewed-camera-target-inventory-captured",
+  "latest_native_observation_kind": "avbtool-whole-bytecode-proof-completed-camera-inventory-review-passed-full-vintf-failure-retained",
   "provider_v13h_initial_snapshot_failure": {
     "run": "run-v13h",
     "empty_stdout": {
@@ -7173,7 +7203,7 @@
   "current_build_sequence": [
     "Use the verified pagesize-v13j-1 result and generated 4096 settings; preserve the exact component/review scope and the skipped partial-VINTF subcheck.",
     "Use the separately verified 26 fresh 4 KiB provider ELF/symbol checks, preserving the original 16 KiB outcomes and remaining full-ABI/runtime/VTS limits.",
-    "Resolve the actual 155-instance framework-matrix failure through reviewed source integration, rebuild affected outputs and rerun full framework/vendor/kernel/39-APEX comparisons with necessary coverage review. Preserve passed input prerequisites and the failed native result; do not suppress checkUnusedHals or infer full kernel acceptance.",
+    "Install and natively verify the committed exact matrix projection, then rerun full framework/vendor/kernel/39-APEX comparisons with necessary coverage review. Complete APEX cryptographic verification separately; the one AVB-tool PYC proof does not provide it.",
     "Qualify current inputs and install the reviewed paired policy-image delivery source selection with AVB enabled, then complete ordinary packaging, final signed-chain/rollback/physical-fit evidence and separately authorized device validation."
   ],
   "maintained_four_kib_policy_delivery": {
@@ -7635,7 +7665,7 @@
     "all_native_ninja_stderr_empty": true,
     "subsequent_target_inventory_reference": "camera_four_kib_complete_target_inventory"
   },
-  "prior_documentation_commit": "da9648bb12352dd1c477a90f18aeac428d0be843",
+  "prior_documentation_commit": "3001e8542bf99b66d6a30dbba1ed2d70343c7d09",
   "full_vintf_four_kib_input_capture": {
     "status": "passed-input-capture-only",
     "receipt": {
@@ -7909,7 +7939,7 @@
     "scope": "Explicit original-ODM-import care-map selector preserves original bytes and binds complete property membership and exact import behavior. Host replay and offline tests pass; the native tool/runtime tuple, final SYSTEM input, active composition and ordinary packaging remain unqualified."
   },
   "camera_four_kib_complete_target_inventory": {
-    "status": "native-capture-passed-independent-review-pending",
+    "status": "passed-independent-review-for-recorded-v13ja-state",
     "receipt": {
       "path": "reports/camera-apk-build-admission-20260829/source-admission-v1/fourk-preparation/target-inventory-v1/run-native-v1/stdout.jsonl",
       "sha256": "20aa80f53b90d9a74e3def15875d967b422488e23c1b2c756181b97b4b6b9092",
@@ -7921,13 +7951,154 @@
     "complete_target_and_alias_inventory_capture_verified": true,
     "source_or_output_modified": false,
     "post_capture_verification_completed": true,
-    "independent_review_completed": false,
+    "independent_review_completed": true,
     "source_activation_admitted": false,
     "graph_execution_admitted": false,
     "apk_selected": false,
     "apk_build_admitted": false,
     "complete_rom_ready": false,
     "phone_accessed": false,
-    "scope": "The native complete-target and alias inventory capture reports verified completion with preserved source and outputs. Independent review is pending. It does not activate source, admit graph execution, select or build the APK, verify grants or establish runtime behavior."
+    "scope": "Independent review accepts the exact recorded v13ja target and alias inventory. No writable OUT alias escapes the target, but ten protected policy intermediates require separate read-only protection. Bodies were not returned or independently rehashed by the host. The capture executes no Ninja queries and does not activate source or admit graph/APK execution; fresh source/build/graph/configuration and target evidence is required after the matrix exchange.",
+    "independent_review": {
+      "path": "reports/camera-apk-build-admission-20260829/source-admission-v1/fourk-preparation/target-inventory-v1/actual-review-v1/review.json",
+      "sha256": "8c500f3889cb0738707f2309ac729c35438f0e4935dd6c3b7eb59ec16270360a",
+      "size_bytes": 7978
+    },
+    "inventory_entries": 4071,
+    "regular_files": 3321,
+    "directories": 711,
+    "symlinks": 39,
+    "regular_file_bytes": 2263742391,
+    "external_hardlink_groups": 0,
+    "symlink_destinations_inside_target": 24,
+    "symlinks_to_absent_absolute_guest_destinations": 15,
+    "distinct_absent_absolute_guest_destinations": 11,
+    "writable_out_aliases_outside_target": 0,
+    "additional_protected_policy_leaves_outside_target": 10,
+    "future_write_protection_verified": false,
+    "target_file_bodies_returned_or_independently_rehashed_by_host": false,
+    "ninja_queries_executed": false,
+    "fresh_post_matrix_baseline_required": true
+  },
+  "host_framework_matrix_projection": {
+    "implementation_commit": "c3686ed99ca0ad6caed6224dc53720a6b0944103",
+    "status": "committed-host-verified-native-matrix-result-pending",
+    "documentation": {
+      "path": "docs/framework-matrix.md",
+      "sha256": "848b375b9b6b6cdbdc5c3711a247bd757c47d43870d774596fd2dade9c4ca870",
+      "size_bytes": 8945,
+      "git_revision": "c3686ed99ca0ad6caed6224dc53720a6b0944103"
+    },
+    "contract": {
+      "path": "config/nezha-framework-matrix.json",
+      "sha256": "0300ab7fc9896bb85583d2a400959c91788dc79446bbe5c3219fc35dd2b5f56e",
+      "size_bytes": 182670,
+      "git_revision": "c3686ed99ca0ad6caed6224dc53720a6b0944103"
+    },
+    "public_freeze": {
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/public-freeze-v1.json",
+      "sha256": "39894f4da6e9bb016df01f32ec5fcba3f758f0ff221c8afea3dbf1a391d70d35",
+      "size_bytes": 1419
+    },
+    "independent_implementation_review": {
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/source-review/implementation-review-v1.json",
+      "sha256": "9fe1eb7ecb6e3e5dd04450c65156f7ceacf22efbc75643aa8c7c39a2ff06cfc5",
+      "size_bytes": 3002
+    },
+    "actual_input_review": {
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/source-review/actual-input-review-v1.json",
+      "sha256": "74c04f76a4832565778e627b0a1f101975bd1eaa5fec75e91b65f00adc1a264f",
+      "size_bytes": 382
+    },
+    "candidate_controls_freeze": {
+      "path": "reports/oem-policy-integration-20260829/framework-matrix-integration-v1/candidate-controls-freeze-v1.json",
+      "sha256": "4e69430e2e67dfab3a34ba6369624959f0277734862dc8cae43ba71ca2059aec",
+      "size_bytes": 34232
+    },
+    "candidate_pair": [
+      {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-v13j-4k-matrix-v1/admission.json",
+        "sha256": "3fa9b1e20d10bce5d05834ce1a10808b6e09c2f3b8f808acdbff53b13c823058",
+        "size_bytes": 137175
+      },
+      {
+        "path": "artifacts/device-candidates/nezha-factory-framework-user-v13j-4k-matrix-v1-repeat/admission.json",
+        "sha256": "3fa9b1e20d10bce5d05834ce1a10808b6e09c2f3b8f808acdbff53b13c823058",
+        "size_bytes": 137175
+      }
+    ],
+    "candidate_total_files": 47,
+    "candidate_pair_byte_identical": true,
+    "selected_original_xml_files": 119,
+    "selected_device_manifests": 116,
+    "original_framework_matrices": 3,
+    "evidence_records": 22,
+    "source_preconditions": 15,
+    "emitted_aidl_packages": 130,
+    "emitted_exact_tuples": 155,
+    "original_matrix_element_references": 158,
+    "source_delta": [
+      "device/xiaomi/nezha/generated/BoardConfigCandidate.mk",
+      "device/xiaomi/nezha/generated/framework-compatibility-matrix.xml"
+    ],
+    "no_wildcards_or_broadened_versions": true,
+    "numbered_platform_matrices_modified": false,
+    "normal_android_selinux_modified": false,
+    "provider_binaries_or_package_selection_modified": false,
+    "default_generator_output_preserved": true,
+    "native_installation_verified_by_this_record": false,
+    "native_matrix_build_verified": false,
+    "native_compatibility_retry_verified": false,
+    "runtime_services_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "preserved_failure_reference": "full_vintf_four_kib_native_attempt",
+    "scope": "Explicit host source projection binds all 155 reported missing AIDL tuples to original device declarations and factory matrix coverage, with 130 emitted packages and matching repeated candidates. It uses the existing device framework-matrix producer without changing numbered platform matrices, adding services, broadening versions or suppressing checks. Native integration/build and a compatibility retry require separate evidence."
+  },
+  "native_avbtool_whole_pyc_proof": {
+    "status": "native-capture-and-proof-passed",
+    "capture_receipt": {
+      "path": "reports/oem-policy-integration-20260829/apex-integrity-v13ja-4k-preparation/avb-bytecode-preparation/launches/capture-v1/stdout.jsonl",
+      "sha256": "6748d82a9b658d5d8074b1a56bd68d1c187b8d7c040395eb38f7900ffd24459d",
+      "size_bytes": 276000
+    },
+    "proof_receipt": {
+      "path": "reports/oem-policy-integration-20260829/apex-integrity-v13ja-4k-preparation/avb-bytecode-preparation/launches/proof-v1/stdout.jsonl",
+      "sha256": "cd244b3b378b6a13efd7147c0928ceb78aad64353b34168c77efc1c60a2c2280",
+      "size_bytes": 227550
+    },
+    "capture_collection": {
+      "path": "artifacts/build-validation/nezha-avb-pyc-capture-v1-native-v1/capture.json",
+      "sha256": "ef9ed805b18bfca3c829b9f63cf82abf748a3cabac4802e86961a7bfaa755419",
+      "size_bytes": 32043
+    },
+    "proof_collection": {
+      "path": "artifacts/build-validation/nezha-avb-pyc-proof-v1-native-v1/capture.json",
+      "sha256": "da0a4c37c71d855823dbdf46d83967b2c80c5fc71ea4b7d578c2d0b0b24e707e",
+      "size_bytes": 32275
+    },
+    "inner_proof": {
+      "path": "artifacts/build-validation/nezha-avb-pyc-proof-v1-native-v1/results/whole-pyc-proof.stdout.log",
+      "sha256": "cc5f84a8c2fac84eca171a1e7f8ddd819a2fd4a13388d9e679d992e4e4a15ce7",
+      "size_bytes": 7884
+    },
+    "phases": 2,
+    "actual_native_commands": 28,
+    "native_zero_exit_commands": 28,
+    "skipped": 0,
+    "whole_pyc_comparisons": 1,
+    "member": "avbtool.pyc",
+    "capture_payload_files": 183,
+    "capture_payload_bytes": 1452426,
+    "proof_payload_files": 185,
+    "proof_payload_bytes": 1458332,
+    "earlier_four_member_proof_unchanged": true,
+    "source_or_android_output_modified": false,
+    "preservation_scope": "selected bound inputs and source-project state, not a complete OUT census",
+    "apex_signatures_verified": false,
+    "avb_chain_verified": false,
+    "runtime_activation_verified": false,
+    "complete_rom_ready": false,
+    "scope": "The actual separate capture and proof reproduce the complete packaged AVB-tool PYC member with the pinned Soong recipe. This establishes that tool-bytecode comparison only; APEX cryptographic verification, a complete signed image chain and runtime behavior remain separate."
   }
 }
