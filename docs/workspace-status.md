@@ -14,9 +14,12 @@ The leading blocker is now **full Evolution SELinux policy integration**.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
 build configuration. The thirteen retained policy identities and earlier strict
 analysis remain historical evidence; they do not establish current policy or
-factory-image compatibility. Source/M4 integration and new strict policy/context
-checks are in progress. Normal Android enforcement and all assertions remain
-required; no new policy or image success is claimed.
+factory-image compatibility. Commit **5d557a0** adds the explicit
+[Evolution policy base](evolution-policy-base.md) and its source/reference
+checker. Two host stagings reproduce the same 57-file private policy bundle.
+The new inputs are not installed in the VM; native source/M4 compilation,
+context-effect review and factory-image compatibility remain pending. Normal
+Android enforcement and all assertions remain required.
 
 The user now authorizes a **4 KiB first-boot baseline**; 16 KiB compatibility is
 not a prerequisite for that initial bring-up. The active guest source is now
@@ -553,6 +556,18 @@ Patch 0015 wraps the existing permissive declaration in `recovery_only`, without
 changing types, permissions or assertions. It is committed and host-tested, but
 not installed or compiled through Android M4/policy. Working76 is unchanged.
 
+Commit **5d557a0** adds an explicit Evolution-base option without changing the
+default generator path or the active 4 KiB source. Its independent source review
+is clear. The host preparation reproduces all **57 files / 6,204,545 bytes**,
+including the receipt; relocated trusted controls give the same verification
+result. All ten classification inputs and thirteen factory contexts remain
+unchanged. The reference uses normal Android M4/compiler/mapping producers and
+separately checks the owned policy contribution; it does not edit generated CIL.
+The proposed 32-goal phase and twelve unfiltered normal-binary analyses have
+not run. Seven base property-prefix specializations still require actual label
+and permission-effect review, and selected vendor-source contributions have
+not been delivered into the retained factory images.
+
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
 sets match, with exactly one vendor policy file and four ODM files changed;
@@ -606,11 +621,14 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **3,984 tests in 168.104
-seconds with zero failures, errors or skips**, executed by the coordinator in an
+The latest completed full workspace suite passed **4,043 tests in 169.140
+seconds with zero failures, errors or skips**, executed by the coordinator with
+all ten frozen Evolution-base source files unchanged, then committed as
+`5d557a0`. This later central-document update is separate. The preceding suite
+passed **3,984 in 168.104 seconds**, executed in an
 **isolated snapshot** of `ee2d19db` plus the four frozen backuptool files,
-equivalent to commit `3c9cd2a`. Other in-progress root policy edits and this later
-documentation update are excluded. The preceding working-tree suite passed
+equivalent to commit `3c9cd2a`. Other then-in-progress root policy edits and its
+later documentation update were excluded from that isolated run. The preceding working-tree suite passed
 **3,972 in 169.113 seconds**, with all three checkpoint documents unchanged;
 its subsequent factual test-evidence refresh is separate. Its earlier v1 launcher
 failed preflight before running tests and contributes no skipped-test count.

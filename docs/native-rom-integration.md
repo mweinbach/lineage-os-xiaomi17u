@@ -70,7 +70,10 @@ metadata-value checks, with independent review complete; fresh file rewrites
 and image reproducibility remain unverified. The current leading blocker is
 full Evolution policy selected by `LINEAGE_BUILD`, which was absent from the
 earlier configuration. Retained policy/VINTF results do not establish full
-current-policy or image compatibility.
+current-policy or image compatibility. Commit **5d557a0** now provides the
+explicit [Evolution-base source/reference integration](evolution-policy-base.md),
+with repeated host bundle verification. These new inputs are not installed in
+the VM; native policy/context and image-compatibility checks remain pending.
 
 The independent **analysis-v12f-export4-v1** native verification passed at
 **2026-08-30 02:13:44 UTC**, retaining all 6,366 original assertions, exact
@@ -1378,6 +1381,41 @@ backuptool permissive declaration in `recovery_only`. Types, permissions and
 assertions are unchanged. Host qualification is separate from Android M4,
 policy compilation and installation, none of which is claimed for this patch.
 
+Commit `5d557a06182bd8c8ea16db726cd80ef16587626d` adds the explicit
+[Evolution-base contract and reference checker](evolution-policy-base.md),
+source filegroups and optional bundle/generator integration. Omitting the option
+preserves the previous path. The source freeze
+`59f2a3dfea0842e8bd488aa532fd00daa2a5ed1f4d2d3aedc8a354765e321a64`
+and independent review
+`1b053251eeb62da72a6e62c0c62156bb5c4bb6d6d2fc9531ece6bfb59d353c9d`
+bind the source-only result. Normal Android M4, CIL and mapping producers supply
+the independent base; the checker compares the full corpus with that base plus
+the reviewed owned contribution without writing generated CIL. Native producer
+provenance, strict compilation, contexts and unfiltered binary analysis remain
+required.
+
+Two actual host stagings reproduce **57 files / 6,204,545 bytes**, including
+receipt `27741ceaef6b46f50842d8c466baf46dd7eb93b255f10805d138a6b775957186`.
+The bundle freeze is
+`065bc5d4c5c5aee362a3ed8de3d5a4bffa9dddd039debfb03296a274873773e3`.
+Compared with the preserved v13h bundle, 49 payload members are unchanged,
+three change, four are added and none are removed. The ten classification CIL
+inputs, thirteen factory contexts and ten prior owned source copies remain
+exact. Verification from the relocated 36-file trusted control tree matches
+the workspace verifier. The separate component packet adds only the device
+policy filegroup Blueprint; no existing device Makefile, root Blueprint, page
+size, construction or image selector changes.
+
+This is host preparation, with no VM source installation or new native policy
+result. The proposed 32-goal phase includes twelve distinct normal policy
+binaries requiring unfiltered permissive-domain analysis. Existing diagnostic
+compatibility producers must not be called strict neverallow passes. Actual
+review must also resolve the seven Evolution-base property-prefix label and
+permission effects; the four owned-property checks do not cover them. Selected
+vendor-source contributions are not delivered into opaque factory images by
+this reference mechanism. Current image compatibility, normal enforcement,
+all assertions, target-files and device validation remain separate gates.
+
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
 and original images. Its freeze is
@@ -1508,12 +1546,19 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
-**3,984 tests in 168.104 seconds with zero failures, errors or skips**, executed
-by the coordinator in an isolated `ee2d19db` snapshot plus the four frozen
+**4,043 tests in 169.140 seconds with zero failures, errors or skips**, executed
+by the coordinator with all ten frozen Evolution-base files unchanged and then
+committed as `5d557a0`. Its log is
+`ac46eb711280f518615d4c0d26a2b0798e1c944aa6c6bd360045320c7d519733`;
+completion receipt
+`bd01a8bc0f7de9ede079da9c5be17565c5678cabfaa1543ef13dbd2920b50261`
+binds the exact source cohort. This later central-document update is separate.
+The preceding **3,984-test run in 168.104 seconds** was executed by the
+coordinator in an isolated `ee2d19db` snapshot plus the four frozen
 backuptool files, equivalent to commit `3c9cd2a`. The log is
 `d42c8ce8cbd478ba444841b46b33ff77504d73cdc8c53678e3a671f7ac68fba5`.
-Other in-progress root policy edits and this later documentation update are
-excluded; this is not a full test of the current dirty workspace. The preceding
+Other then-in-progress root policy edits and its later documentation update
+were excluded from that isolated run. The preceding
 working-tree run passed **3,972 in 169.113 seconds**, with all three checkpoint
 documents unchanged. Its later factual evidence refresh is separate; its log is
 `43cb0ecd5d2b68942fe35389fabc963eb30639d4f64d0cef03c8a133974e1a8e`.

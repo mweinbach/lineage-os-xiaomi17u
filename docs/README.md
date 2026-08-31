@@ -12,14 +12,15 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Native ROM integration](native-rom-integration.md) | Matrix38 native exit 0, distinct read-only postcheck and independent review pass; original wrapper failure and matrix-definition skip remain preserved, with full VINTF retry pending |
+| [Native ROM integration](native-rom-integration.md) | Current source, scoped VINTF and metadata results, the full Evolution policy blocker, and remaining image/boot gates; earlier failures remain preserved |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
-| [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability with 33 verified isolated native Kati outcomes; not installed in the active product or proof of image reproducibility |
+| [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability and retained isolated Kati qualification; active product and metadata-file results are recorded in current status |
 | [Working recovery build](../recovery/twrp-working/README.md) | Fixed inputs, deterministic image assembly, local signing and verification |
 | [Recovery logs](recovery-logs.md) | Bounded collection from an explicitly selected recovery device |
 | [OEM policy integration](oem-policy-integration.md) | Current three-type source integration, native ownership/context checks, independent semantic verification and remaining image gates |
+| [Explicit Evolution policy base](evolution-policy-base.md) | Committed source/reference checker and repeated host bundle; new VM installation, native policy/context and image-compatibility checks remain pending |
 | [Helper and Binder source integration](policy-source-integration.md) | Preserved v10 native result, guarded helper admission and reproducible factory derivation |
-| [VINTF build closure](vintf-compatibility.md) | Current 22-XML/39-APEX input closure is captured; the actual combined check fails on framework-matrix HAL coverage, with a retained matrix-definition skip and separate validator limits |
+| [VINTF build closure](vintf-compatibility.md) | Preserved factory/APEX input closure and original matrix-coverage failure; later scoped comparison results and remaining limits are in native ROM integration |
 | [Exact framework matrix](framework-matrix.md) | Installed source produces all 155 tuples; a reviewed distinct postcheck accepts canonical default-version omission and verifies current outputs, without full compatibility or runtime claims |
 | [Framework allocator selection](framework-allocator.md) | Preserved v13i compilation and current 4 KiB alignment/producer capture; guest prerequisite verification passes, without source-to-binary equivalence, full VINTF or runtime registration |
 | [Original ODM shipping API](vintf-shipping-api.md) | Reviewed wrapper forwarding with original property bytes; native source adoption and complete compatibility remain separate |
