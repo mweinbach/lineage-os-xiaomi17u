@@ -180,3 +180,155 @@ def validate(plan, payloads):
     base["files"] = file_entries(files)
     _check_base(base, files)
     return base
+
+
+# Explicit successor only. The original functions above and their default
+# Board/guard identities remain unchanged. The new descriptor binds a separate
+# complete policy3 base; native output and device admission remain separate.
+POLICY3_CONTRACT = "config/nezha-rom-construction-source-policy3-v1.json"
+POLICY3_CONTRACT_ID = "nezha-policy3-first-target-files-source-v1"
+POLICY3_CONTRACT_SHA256 = "8edf25080891ccd41a7650804f764ddaca0572ac834e294ecfc9e387f50f894c"
+POLICY3_BINDINGS = ("base_admission", "board_before", "board_after")
+POLICY3_IMAGE_CONTRACT = "config/nezha-policy-image-delivery-policy3.json"
+POLICY3_IMAGE_CONTRACT_ID = "nezha-policy3-final-leaf-metadata-delivery-v1"
+POLICY3_BASIS = {
+    "image_input_profile": "policy3-evolution",
+    "image_input_contract_id": "nezha-five-file-policy-image-inputs-policy3-evolution-v1",
+    "policy_build": {"sha256": "344ba909febe8be29479f5bf1d48d122e931e88fb1d4d71dbcdab08708483c18", "size_bytes": 10165316},
+    "sidecar_validation": {"sha256": "57e2191f1d948407dda3adf040edb3b58ce018adb6bb4a1d56471bb0226682fd", "size_bytes": 44989},
+    "source_files": 539, "source_projects": 13,
+    "recorded_basis_only": True, "future_candidate_or_installation_verified": False,
+}
+_v1_load_contract = load_contract
+_v1_derive_board = derive_board
+_v1_restore_board = restore_board
+_v1_apply = apply
+_v1_validate = validate
+
+
+def _policy3_contract(raw):
+    value = metadata._json(raw)
+    old, _ = _v1_load_contract()
+    keys = (set(old) - {"recorded_source_installation"}) | {"recorded_policy_basis", "selected_policy_image_contract"}
+    require(type(value) is dict and set(value) == keys
+            and type(value["schema_version"]) is int and value["schema_version"] == 2
+            and value["contract_id"] == POLICY3_CONTRACT_ID,
+            "unknown policy3 construction source schema or fields")
+    for name in keys - {"schema_version", "contract_id", "recorded_policy_basis", "selected_policy_image_contract", *POLICY3_BINDINGS}:
+        require(metadata.encoded(value[name]) == metadata.encoded(old[name]),
+                "policy3 construction changes preserved context, guard or scope: " + name)
+    require(metadata.encoded(value["recorded_policy_basis"]) == metadata.encoded(POLICY3_BASIS),
+            "policy3 construction recorded policy basis differs")
+    image = value["selected_policy_image_contract"]
+    require(type(image) is dict and set(image) == {"path", "contract_id", "sha256", "size_bytes"}
+            and image["path"] == POLICY3_IMAGE_CONTRACT and image["contract_id"] == POLICY3_IMAGE_CONTRACT_ID,
+            "policy3 construction requires its exact selected image contract reference")
+    missing = [name for name in POLICY3_BINDINGS if value[name] is None]
+    missing.extend("selected_policy_image_contract." + key for key in ("sha256", "size_bytes") if image[key] is None)
+    require(not missing, "policy3 construction is unbound; missing actual bindings: " + ", ".join(missing))
+    bindings = {name: value[name] for name in POLICY3_BINDINGS}
+    bindings["selected_policy_image_contract"] = {key: image[key] for key in ("sha256", "size_bytes")}
+    for name, row in bindings.items():
+        require(type(row) is dict and set(row) == {"sha256", "size_bytes"}
+                and type(row["sha256"]) is str and len(row["sha256"]) == 64
+                and all(character in "0123456789abcdef" for character in row["sha256"])
+                and type(row["size_bytes"]) is int and 0 < row["size_bytes"] <= 8 << 20,
+                "policy3 construction actual binding is invalid: " + name)
+    return value
+
+
+def load_contract(path=None):
+    """Omission retains v1; only exact explicit policy3 bytes select its route."""
+    if path is None:
+        return _v1_load_contract()
+    reader = metadata.Reader()
+    selected = reader.read(path)
+    value = metadata._json(selected)
+    if type(value) is not dict or value.get("contract_id") != POLICY3_CONTRACT_ID:
+        reader.recheck()
+        return _v1_load_contract(path)
+    raw = reader.read(ROOT / POLICY3_CONTRACT)
+    require(metadata.identity(raw)["sha256"] == POLICY3_CONTRACT_SHA256,
+            "maintained policy3 construction contract changed; review a new binding")
+    require(selected == raw, "policy3 construction selector differs from the maintained contract")
+    contract = _policy3_contract(raw)
+    reader.recheck()
+    return contract, metadata.identity(raw)
+
+
+def _derive_policy3_board(raw, contract):
+    require(type(raw) is bytes and metadata.identity(raw) == contract["board_before"]
+            and raw.count(BLOCK) == 1 and b"rom-construction" not in raw,
+            "policy3 construction requires the exact future delivery Board predecessor")
+    result = raw.replace(BLOCK, INCLUDE, 1)
+    require(metadata.identity(result) == contract["board_after"], "policy3 construction Board derivation differs")
+    return result
+
+
+def derive_board(raw, contract_path=None):
+    if contract_path is None:
+        return _v1_derive_board(raw)
+    contract, _ = load_contract(contract_path)
+    return (_derive_policy3_board(raw, contract) if contract["contract_id"] == POLICY3_CONTRACT_ID
+            else _v1_derive_board(raw))
+
+
+def _restore_policy3_board(raw, contract):
+    require(type(raw) is bytes and metadata.identity(raw) == contract["board_after"]
+            and raw.count(INCLUDE) == 1 and BLOCK not in raw, "policy3 construction Board bytes differ")
+    result = raw.replace(INCLUDE, BLOCK, 1)
+    require(_derive_policy3_board(result, contract) == raw, "policy3 Board changed outside its exact derivation")
+    return result
+
+
+def restore_board(raw, contract_path=None):
+    if contract_path is None:
+        return _v1_restore_board(raw)
+    contract, _ = load_contract(contract_path)
+    return (_restore_policy3_board(raw, contract) if contract["contract_id"] == POLICY3_CONTRACT_ID
+            else _v1_restore_board(raw))
+
+
+def _check_policy3_base(plan, payloads, contract):
+    require(BINDING not in plan and GUARD not in payloads, "construction source capability selected twice")
+    require(plan.get("files") == file_entries(payloads), "base source bytes differ from their admission")
+    require(metadata.identity(metadata.encoded(plan)) == contract["base_admission"],
+            "policy3 construction requires the complete exact selected base admission")
+    delivery = plan.get("target_files_metadata", {}).get("policy_image_delivery", {}).get("contract")
+    require(metadata.encoded(delivery) == metadata.encoded(contract["selected_policy_image_contract"]),
+            "policy3 complete base uses a different image delivery contract")
+
+
+def apply(plan, payloads, contract_path):
+    contract, identity = load_contract(contract_path)
+    if contract["contract_id"] != POLICY3_CONTRACT_ID:
+        return _v1_apply(plan, payloads, contract_path)
+    _check_policy3_base(plan, payloads, contract)
+    result, files = copy.deepcopy(plan), dict(payloads)
+    files[BOARD] = _derive_policy3_board(files[BOARD], contract)
+    files[GUARD] = render_guard()
+    result[BINDING] = {"contract": identity, "contract_id": POLICY3_CONTRACT_ID,
+                       "base_admission": contract["base_admission"], "scope": copy.deepcopy(contract["scope"])}
+    result["files"] = file_entries(files)
+    validate(result, files)
+    return result, files
+
+
+def validate(plan, payloads):
+    binding = plan.get(BINDING)
+    if type(binding) is not dict or binding.get("contract_id") != POLICY3_CONTRACT_ID:
+        return _v1_validate(plan, payloads)
+    contract, identity = load_contract(ROOT / POLICY3_CONTRACT)
+    expected = {"contract": identity, "contract_id": POLICY3_CONTRACT_ID,
+                "base_admission": contract["base_admission"], "scope": contract["scope"]}
+    require(metadata.encoded(binding) == metadata.encoded(expected),
+            "policy3 construction admission differs from the maintained capability")
+    require(plan.get("files") == file_entries(payloads) and payloads.get(GUARD) == render_guard(),
+            "policy3 source files or unchanged construction guard differ")
+    base, files = copy.deepcopy(plan), dict(payloads)
+    del base[BINDING]
+    del files[GUARD]
+    files[BOARD] = _restore_policy3_board(files[BOARD], contract)
+    base["files"] = file_entries(files)
+    _check_policy3_base(base, files, contract)
+    return base

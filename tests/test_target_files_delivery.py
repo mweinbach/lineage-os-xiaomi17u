@@ -15,6 +15,9 @@ from scripts import generate_device_tree as g
 from scripts import target_files_metadata as original
 from scripts import target_files_metadata_combined as combined
 from scripts import target_files_metadata_delivery as delivery
+from scripts import target_files_metadata_delivery_policy3 as metadata
+from scripts import rom_construction_source as construction
+from scripts import policy_inputs
 from tests import test_generate_device_tree as fixtures
 
 
@@ -461,6 +464,114 @@ class TargetFilesDeliveryTests(unittest.TestCase):
                            variant="user", policy_image_delivery_contract=ROOT / g.POLICY_IMAGE_DELIVERY_4K_CONTRACT,
                            page_size_profile=page, **required)
 
+
+    def test_policy3_public_required_receipts_preserve_canonical_filenames(self):
+        with mock.patch.object(g, "ROOT", metadata.ROOT):
+            binding = g._metadata_public_binding(
+                source_contract=metadata.ROOT / "patches/evolution/target-files-source-composition.json",
+                image_contract=metadata.ROOT / metadata.IMAGE_CONTRACT)
+        selected = binding["policy_image_delivery"]
+        self.assertEqual(selected["required_policy_inputs"],
+                         {"path": "policy-inputs.json", **metadata.REQUIRED_POLICY})
+        self.assertEqual(selected["required_framework_providers"],
+                         {"path": "framework-provider-inputs.json", **metadata.REQUIRED_PROVIDERS})
+
+    def test_policy3_closed_selector_and_pending_release_refusal(self):
+        self.assertEqual(g._policy_image_delivery_spec(g.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID),
+                         ("config/nezha-policy-image-delivery-policy3.json", 4))
+        with mock.patch.object(metadata, "IMAGE_CONTRACT_IDENTITY", None), \
+                mock.patch.object(g, "ROOT", metadata.ROOT), \
+                mock.patch.object(g, "_bind_bundles", side_effect=AssertionError("private bundle opened")):
+            with self.assertRaisesRegex(g.CandidateError, "policy3 delivery is blocked"):
+                g._policy_image_delivery_reference(metadata.ROOT / metadata.IMAGE_CONTRACT)
+
+    def test_policy3_exact_current_policy_and_final_product_required(self):
+        binding, plan = self.paired_4k_binding_plan()
+        selected = binding["policy_image_delivery"]
+        selected["contract"].update(path=g.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT,
+                                    contract_id=g.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID)
+        selected.pop("historical_current_policy_evidence")
+        selected["page_size_context"].pop("source_candidate")
+        selected["page_size_context"]["production_source_product"] = copy.deepcopy(selected["page_size_context"]["source_product"])
+        selected["required_policy_inputs"] = copy.deepcopy(metadata.REQUIRED_POLICY)
+        selected["policy3_basis"] = {"required_policy_inputs": copy.deepcopy(metadata.REQUIRED_POLICY)}
+        plan["policy_inputs"]["receipt"] = copy.deepcopy(metadata.REQUIRED_POLICY)
+        final_product = g._render_product(plan).encode() + b"# synthetic final namespace selection\n"
+        selected["page_size_context"]["source_product"].update(metadata.identity(final_product))
+        g._metadata_public_binding.return_value = {key: copy.deepcopy(value) for key, value in binding.items()
+                                                  if key not in {"receipt", "vendor_bundle"}}
+        with mock.patch.object(g, "_render_product", return_value=final_product.decode()):
+            self.assertIn("BOARD_NEZHA_PREBUILT_METADATA := true", g._target_files_metadata_binding(plan, binding))
+            stale = copy.deepcopy(plan)
+            stale["policy_inputs"]["receipt"] = copy.deepcopy(g.POLICY_IMAGE_DELIVERY_POLICY)
+            with self.assertRaisesRegex(g.CandidateError, "exact current policy"):
+                g._target_files_metadata_binding(stale, stale["target_files_metadata"])
+            for mutation in (lambda p: p.update(variant="userdebug"), lambda p: p.update(release_config="other"),
+                             lambda p: p["admission"].update(complete_target_files_allowed=True)):
+                changed = copy.deepcopy(plan)
+                mutation(changed)
+                with self.assertRaises(g.CandidateError):
+                    g._target_files_metadata_binding(changed, changed["target_files_metadata"])
+        with self.assertRaisesRegex(g.CandidateError, "unchanged current product"):
+            g._target_files_metadata_binding(plan, binding)
+
+    def test_policy3_construction_derives_after_camera_and_factory_includes(self):
+        plan = {"target_files_metadata": {"policy_image_delivery": {}}, "camera_property_capability": {},
+                "factory_property_contexts_capability": {}, construction.BINDING: {"contract_id": construction.POLICY3_CONTRACT_ID}}
+        board_path = (g.DEVICE_PATH / "BoardConfig.mk").as_posix()
+        before = g._policy_image_delivery_board((ROOT / board_path).read_bytes())
+        before = policy_inputs.factory_property_contexts_board(policy_inputs.camera_property_board(before))
+        after = before + b"# synthetic constructor result\n"
+        payloads = {board_path: after, g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix(): b"# synthetic delivery guard\n"}
+        def derive(raw, contract_path=None):
+            self.assertEqual(raw, before)
+            self.assertEqual(contract_path, g.ROOT / construction.POLICY3_CONTRACT)
+            return after
+        with mock.patch.object(construction, "derive_board", side_effect=derive) as called, \
+                mock.patch.object(g, "_render_policy_image_delivery", return_value="# synthetic delivery guard\n"):
+            g._policy_image_delivery_source_guards(plan, payloads)
+            called.assert_called_once()
+
+    def test_policy3_audit_sources_are_exact_and_opt_in(self):
+        selected = {"target_files_metadata": {"policy_image_delivery": {
+            "contract": {"contract_id": g.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID}}}}
+        unrelated = {"device/xiaomi/nezha/unrelated.txt": b"preserved sentinel"}
+        default = dict(unrelated)
+        g._bind_policy3_audit_sources({}, default)
+        self.assertEqual(default, unrelated)
+        g._policy3_audit_source_guards({}, default)
+        payloads = dict(unrelated)
+        g._bind_policy3_audit_sources(selected, payloads)
+        self.assertEqual(set(payloads) - set(unrelated), {row["path"] for row in g.POLICY3_AUDIT_SOURCE_FILES})
+        self.assertEqual(payloads["device/xiaomi/nezha/unrelated.txt"], b"preserved sentinel")
+        g._policy3_audit_source_guards(selected, payloads)
+        with self.assertRaises(g.CandidateError):
+            g._policy3_audit_source_guards({}, payloads)
+        with self.assertRaises(g.CandidateError):
+            g._bind_policy3_audit_sources(selected, payloads)
+        for row in g.POLICY3_AUDIT_SOURCE_FILES:
+            missing = dict(payloads)
+            del missing[row["path"]]
+            with self.assertRaises(g.CandidateError):
+                g._policy3_audit_source_guards(selected, missing)
+            changed = dict(payloads)
+            changed[row["path"]] += b"\n// mutation\n"
+            with self.assertRaises(g.CandidateError):
+                g._policy3_audit_source_guards(selected, changed)
+
+    def test_policy3_missing_or_mutated_maintained_audit_source_fails(self):
+        selected = {"target_files_metadata": {"policy_image_delivery": {
+            "contract": {"contract_id": g.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID}}}}
+        with mock.patch.object(g, "ROOT", self.root):
+            with self.assertRaises(g.CandidateError):
+                g._bind_policy3_audit_sources(selected, {})
+            for row in g.POLICY3_AUDIT_SOURCE_FILES:
+                path = self.root / row["source"]
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((ROOT / row["source"]).read_bytes())
+            path.write_bytes(path.read_bytes() + b"\n// changed producer\n")
+            with self.assertRaises(g.CandidateError):
+                g._bind_policy3_audit_sources(selected, {})
 
 if __name__ == "__main__":
     unittest.main()

@@ -147,5 +147,120 @@ class RomConstructionSourceTests(unittest.TestCase):
                 generator.generate(Path("unused"), record_paths={}, kernel_receipt=Path("unused"), vendor_receipt=Path("unused"))
 
 
+class Policy3ConstructionSourceTests(unittest.TestCase):
+    def setUp(self):
+        from scripts import policy_inputs
+        self.public_root = source.ROOT
+        self.actual, self.actual_id = source.load_contract(source.ROOT / source.POLICY3_CONTRACT)
+        self.old, self.old_id = source.load_contract()
+        board = generator._policy_image_delivery_board((source.ROOT / source.BOARD).read_bytes())
+        self.board = policy_inputs.factory_property_contexts_board(policy_inputs.camera_property_board(board))
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+        (self.root / "config").mkdir()
+        for name in (source.CONTRACT, source.POLICY3_CONTRACT):
+            (self.root / name).write_bytes((source.ROOT / name).read_bytes())
+        patch = mock.patch.object(source, "ROOT", self.root)
+        patch.start(); self.addCleanup(patch.stop)
+        self.path = self.root / source.POLICY3_CONTRACT
+
+    def fixture(self, board=None):
+        board = self.board if board is None else board
+        image = copy.deepcopy(self.actual["selected_policy_image_contract"])
+        files = {source.BOARD: board, "device/xiaomi/nezha/device.mk": b"# unrelated synthetic source\n"}
+        plan = {"schema_version": 1, "profile": "synthetic-offline-fixture", "files": source.file_entries(files),
+                "target_files_metadata": {"policy_image_delivery": {"contract": image}},
+                "admission": {"complete_target_files_allowed": False, "flash_allowed": False}}
+        contract = copy.deepcopy(self.actual)
+        contract.update(base_admission=source.metadata.identity(source.metadata.encoded(plan)),
+                        board_before=source.metadata.identity(board),
+                        board_after=source.metadata.identity(board.replace(source.BLOCK, source.INCLUDE, 1)))
+        return plan, files, contract
+
+    def synthetic_binding(self, contract):
+        raw = source.metadata.encoded(contract)
+        self.path.write_bytes(raw)
+        return mock.patch.object(source, "POLICY3_CONTRACT_SHA256", source.metadata.identity(raw)["sha256"])
+
+    def test_policy3_actual_public_board_and_guard_preserve_default_scope(self):
+        self.assertEqual(source.metadata.identity(self.board), self.actual["board_before"])
+        after = source.derive_board(self.board, self.path)
+        self.assertEqual(source.metadata.identity(after), self.actual["board_after"])
+        self.assertEqual(source.restore_board(after, self.path), self.board)
+        self.assertEqual(source.load_contract(), (self.old, self.old_id))
+        self.assertEqual(source.metadata.identity(source.render_guard()), self.old["guard"])
+        for key in ("scope", "context", "required_native_preflight", "coverage_limits_retained"):
+            self.assertEqual(self.actual[key], self.old[key])
+
+    def test_policy3_missing_bindings_fail_before_payload_or_process(self):
+        class Unreadable(dict):
+            def get(self, *args): raise AssertionError("pending plan inspected")
+            def __getitem__(self, key): raise AssertionError("pending payload inspected")
+        contract = copy.deepcopy(self.actual)
+        for name in source.POLICY3_BINDINGS:
+            contract[name] = None
+        contract["selected_policy_image_contract"].update(sha256=None, size_bytes=None)
+        with self.synthetic_binding(contract), mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            for action in (lambda: source.load_contract(self.path),
+                           lambda: source.apply(Unreadable(), Unreadable(), self.path),
+                           lambda: source.derive_board(b"unused", self.path)):
+                with self.assertRaisesRegex(source.ConstructionSourceError, "missing actual bindings"):
+                    action()
+
+    def test_policy3_synthetic_complete_base_changes_only_board_and_guard(self):
+        plan, files, contract = self.fixture()
+        before = copy.deepcopy(plan), dict(files)
+        with self.synthetic_binding(contract), mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            selected, payloads = source.apply(plan, files, self.path)
+            self.assertEqual(source.validate(selected, payloads), plan)
+            self.assertEqual(set(payloads) - set(files), {source.GUARD})
+            self.assertEqual([name for name in files if files[name] != payloads[name]], [source.BOARD])
+            self.assertEqual(selected["admission"], plan["admission"])
+            with self.assertRaisesRegex(source.ConstructionSourceError, "selected twice"):
+                source.apply(selected, payloads, self.path)
+        self.assertEqual((plan, files), before)
+
+    def test_policy3_resealed_context_scope_basis_or_identity_cannot_expand_selection(self):
+        _, _, original = self.fixture()
+        for mutate in (lambda d: d.update(extra=True), lambda d: d.update(schema_version=True),
+                       lambda d: d["scope"].update(native_dispatch_allowed=True),
+                       lambda d: d["context"].update(with_gms=1),
+                       lambda d: d["recorded_policy_basis"].update(source_files=204),
+                       lambda d: d["base_admission"].update(size_bytes=True),
+                       lambda d: d["selected_policy_image_contract"].update(path="config/nezha-policy-image-delivery-v2.json")):
+            contract = copy.deepcopy(original); mutate(contract)
+            with self.subTest(mutate=mutate), self.synthetic_binding(contract):
+                with self.assertRaises(source.ConstructionSourceError):
+                    source.load_contract(self.path)
+
+    def test_policy3_resealed_payload_or_plan_does_not_change_the_bound_base(self):
+        plan, files, contract = self.fixture()
+        with self.synthetic_binding(contract):
+            selected, payloads = source.apply(plan, files, self.path)
+            for name in payloads:
+                changed = {**payloads, name: payloads[name] + b"# mutation\n"}
+                with self.subTest(path=name), self.assertRaises(source.ConstructionSourceError):
+                    source.validate({**selected, "files": source.file_entries(changed)}, changed)
+            with self.assertRaisesRegex(source.ConstructionSourceError, "complete exact selected base"):
+                source.validate({**selected, "invented_native_success": True}, payloads)
+
+    def test_policy3_old_image_contract_cannot_be_relabelled_as_the_new_base(self):
+        plan, files, contract = self.fixture()
+        plan["target_files_metadata"]["policy_image_delivery"]["contract"]["contract_id"] = generator.POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID
+        contract["base_admission"] = source.metadata.identity(source.metadata.encoded(plan))
+        with self.synthetic_binding(contract), self.assertRaisesRegex(source.ConstructionSourceError, "different image delivery contract"):
+            source.apply(plan, files, self.path)
+
+    def test_policy3_exact_board_block_and_default_selector_remain_closed(self):
+        for board in (self.board + source.BLOCK, self.board.replace(source.BLOCK, b""), self.board + source.INCLUDE):
+            plan, files, contract = self.fixture(board)
+            with self.subTest(size=len(board)), self.synthetic_binding(contract):
+                with self.assertRaisesRegex(source.ConstructionSourceError, "exact future delivery Board"):
+                    source.apply(plan, files, self.path)
+        with self.assertRaises(source.ConstructionSourceError):
+            source.derive_board(self.board)
+
+
 if __name__ == "__main__":
     unittest.main()

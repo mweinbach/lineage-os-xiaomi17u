@@ -89,6 +89,16 @@ POLICY_IMAGE_DELIVERY_CONTRACT = "config/nezha-policy-image-delivery.json"
 POLICY_IMAGE_DELIVERY_CONTRACT_ID = "nezha-v13i-final-leaf-metadata-delivery-v2"
 POLICY_IMAGE_DELIVERY_4K_CONTRACT = "config/nezha-policy-image-delivery-v2.json"
 POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID = "nezha-4k-final-leaf-metadata-delivery-v3"
+POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT = "config/nezha-policy-image-delivery-policy3.json"
+POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID = "nezha-policy3-final-leaf-metadata-delivery-v1"
+POLICY3_AUDIT_SOURCE_FILES = (
+    {"source": "tools/vintf-definition-audit/Android.bp",
+     "path": "device/xiaomi/nezha/tools/vintf-definition-audit/Android.bp",
+     "sha256": "bbec3a9369646e9ff46040c1ccede968916024f070715fef1f9ac3c827b6459a", "size_bytes": 754},
+    {"source": "tools/vintf-definition-audit/audit.cpp",
+     "path": "device/xiaomi/nezha/tools/vintf-definition-audit/audit.cpp",
+     "sha256": "274efc28ec03b522aef06c67a62328e2aeab8165cd208c3d9db76ef0dd8fe3d7", "size_bytes": 13148},
+)
 POLICY_IMAGE_DELIVERY_PATH = "vendor/xiaomi/nezha-policy-images"
 POLICY_IMAGE_DELIVERY_INCLUDE = DEVICE_PATH / "generated/policy-image-delivery.mk"
 POLICY_IMAGE_DELIVERY_POLICY = {
@@ -1926,6 +1936,13 @@ def _bind_factory_contexts(plan, path, patch_source_root, payloads):
     plan["factory_property_contexts_capability"] = _factory_contexts_admission(contract, identity)
 
 
+def _policy3_construction_path(plan):
+    binding = plan.get(construction_source.BINDING, {})
+    if binding.get("contract_id") == "nezha-policy3-first-target-files-source-v1":
+        return ROOT / "config/nezha-rom-construction-source-policy3-v1.json"
+    return None
+
+
 def _camera_property_source_guards(plan, payloads):
     if __package__:
         from . import policy_inputs
@@ -1943,11 +1960,13 @@ def _camera_property_source_guards(plan, payloads):
         _, original = _read_file(ROOT / board, limit=MAX_TEXT_BYTES, collect=True)
         if "policy_image_delivery" in plan.get("target_files_metadata", {}):
             original = _policy_image_delivery_board(original)
-        if construction_source.BINDING in plan:
+        if construction_source.BINDING in plan and _policy3_construction_path(plan) is None:
             original = construction_source.derive_board(original)
         original = policy_inputs.camera_property_board(original)
         if "factory_property_contexts_capability" in plan:
             original = policy_inputs.factory_property_contexts_board(original)
+        if _policy3_construction_path(plan) is not None:
+            original = construction_source.derive_board(original, contract_path=_policy3_construction_path(plan))
         _require(payloads.get(board) == original,
                  "camera property capability changed the board beyond its exact final include")
         wiring = ("\n" + "\n".join(policy_inputs.camera_property_wiring_lines()) + "\n").encode("ascii")
@@ -2195,6 +2214,12 @@ def _metadata_module(*, source_contract=None, image_contract=None):
         _require(source_contract is not None,
                  "policy-image delivery requires the explicit combined source composition")
         reference = _policy_image_delivery_reference(image_contract)
+        if reference["contract_id"] == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID:
+            if __package__:
+                from . import target_files_metadata_delivery_policy3
+            else:
+                import target_files_metadata_delivery_policy3
+            return target_files_metadata_delivery_policy3
         if reference["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
             if __package__:
                 from . import target_files_metadata_delivery_4k
@@ -2258,6 +2283,8 @@ def _policy_image_delivery_spec(contract_id):
         return POLICY_IMAGE_DELIVERY_CONTRACT, 2
     if contract_id == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
         return POLICY_IMAGE_DELIVERY_4K_CONTRACT, 3
+    if contract_id == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID:
+        return POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT, 4
     raise CandidateError("unknown explicit policy-image delivery contract")
 
 
@@ -2276,6 +2303,17 @@ def _policy_image_delivery_reference(selected_contract):
         _require(selected_raw == canonical_raw and type(admission.get("schema_version")) is int and
                  admission["schema_version"] == schema,
                  "policy-image delivery selection differs from the maintained image contract")
+        if admission["contract_id"] == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID:
+            if __package__:
+                from . import target_files_metadata_delivery_policy3 as policy3
+            else:
+                import target_files_metadata_delivery_policy3 as policy3
+            try:
+                policy3._ready()
+                _require(policy3.identity(canonical_raw) == policy3.IMAGE_CONTRACT_IDENTITY,
+                         "policy3 delivery descriptor is not the reviewed released identity")
+            except policy3.TargetFilesMetadataError as exc:
+                raise CandidateError(str(exc)) from exc
         reader.recheck()
     except mi_ext_inputs.MiExtInputsError as exc:
         raise CandidateError(f"policy-image delivery contract refused: {exc}") from exc
@@ -2340,6 +2378,14 @@ def _metadata_public_binding(*, source_contract=None, image_contract=None):
                 selection["policy_image_delivery"].update(
                     page_size_context=copy.deepcopy(admission["page_size_context"]),
                     historical_current_policy_evidence=copy.deepcopy(admission["historical_current_policy_evidence"]))
+            elif reference["contract_id"] == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID:
+                selection["policy_image_delivery"].update(
+                    page_size_context=copy.deepcopy(admission["page_size_context"]),
+                    policy3_basis=copy.deepcopy(admission["policy3_basis"]),
+                    required_policy_inputs={"path": "policy-inputs.json",
+                        **copy.deepcopy(admission["policy3_basis"]["required_policy_inputs"])},
+                    required_framework_providers={"path": "framework-provider-inputs.json",
+                        **copy.deepcopy(admission["policy3_basis"]["required_framework_providers"])})
         reader.recheck()
         control_files = [{"path": "controls/" + path, **metadata.identity(raw)}
                          for path, raw in sorted(controls.items())]
@@ -2399,7 +2445,9 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contr
         if image_contract is not None:
             delivery = public["policy_image_delivery"]
             paired_4k = delivery["contract"]["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID
-            schema, operation = ((4, "stage-policy-image-target-files-metadata-4k-v3") if paired_4k else
+            paired_policy3 = delivery["contract"]["contract_id"] == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID
+            schema, operation = ((5, "stage-policy3-image-target-files-metadata-v1") if paired_policy3 else
+                                 (4, "stage-policy-image-target-files-metadata-4k-v3") if paired_4k else
                                  (3, "stage-policy-image-target-files-metadata-v2"))
             _require(type(receipt.get("schema_version")) is int and receipt["schema_version"] == schema and
                      receipt.get("operation") == operation and
@@ -2415,6 +2463,10 @@ def _verify_target_files_metadata(path, *, expected_receipt_sha256, source_contr
                              {"path": "provenance/historical-v13i-policy-evidence.json",
                               **delivery["historical_current_policy_evidence"]}),
                          "4 KiB delivery receipt changes its page context or historical evidence")
+            elif paired_policy3:
+                _require(metadata.encoded(receipt.get("page_size_context")) == metadata.encoded(delivery["page_size_context"]) and
+                         metadata.encoded(receipt.get("policy3_basis")) == metadata.encoded(delivery["policy3_basis"]),
+                         "policy3 delivery receipt changes its page, source, copy or policy basis")
         _require(metadata.encoded(receipt["profile"]) == metadata.encoded(public["profile"]) and
                  metadata.encoded(receipt["source_composition"]) == metadata.encoded(public["native_source"]) and
                  metadata.encoded(receipt["images"]) == metadata.encoded(public["images"]) and
@@ -2517,7 +2569,7 @@ def _target_files_metadata_binding(plan, binding):
                  plan["framework_allocator"].get("contract_record", {}).get("sha256") ==
                  FRAMEWORK_ALLOCATOR_CONTRACT_SHA256,
                  "policy-image delivery requires its exact current policy, providers and allocator")
-        if delivery["contract"]["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+        if delivery["contract"]["contract_id"] in (POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID, POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID):
             page_profile, page_identity = _page_size_profile_contract(ROOT / PAGE_SIZE_PROFILE_V2_RECORD)
             expected_page = _page_size_profile_binding(plan, page_profile, page_identity)
             context = delivery["page_size_context"]
@@ -2533,6 +2585,32 @@ def _target_files_metadata_binding(plan, binding):
             _require("page_size_profile" not in plan,
                      "policy-image delivery requires its original context without a page-profile change")
     return _render_metadata_include(binding)
+
+
+def _policy3_delivery_selected(plan):
+    delivery = plan.get("target_files_metadata", {}).get("policy_image_delivery", {})
+    return delivery.get("contract", {}).get("contract_id") == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID
+
+
+def _bind_policy3_audit_sources(plan, payloads):
+    if not _policy3_delivery_selected(plan):
+        return
+    for row in POLICY3_AUDIT_SOURCE_FILES:
+        _require(row["path"] not in payloads, "policy3 audit source must be selected once")
+        identity, raw = _read_file(ROOT / row["source"], limit=MAX_TEXT_BYTES, collect=True)
+        _require(identity == {key: row[key] for key in ("sha256", "size_bytes")},
+                 "policy3 must preserve the exact maintained VINTF audit source")
+        payloads[row["path"]] = raw
+
+
+def _policy3_audit_source_guards(plan, payloads):
+    present = {name for name in payloads if name.startswith("device/xiaomi/nezha/tools/vintf-definition-audit/")}
+    wanted = {row["path"] for row in POLICY3_AUDIT_SOURCE_FILES} if _policy3_delivery_selected(plan) else set()
+    _require(present == wanted, "policy3 VINTF audit source is missing, extra or selected implicitly")
+    for row in POLICY3_AUDIT_SOURCE_FILES if wanted else ():
+        identity, raw = _read_file(ROOT / row["source"], limit=MAX_TEXT_BYTES, collect=True)
+        _require(identity == {key: row[key] for key in ("sha256", "size_bytes")} and payloads[row["path"]] == raw,
+                 "policy3 VINTF audit source changed from the maintained installed bytes")
 
 
 def _policy_image_delivery_file_guard(path, digest):
@@ -2600,7 +2678,7 @@ def _policy_image_delivery_source_guards(plan, payloads):
     if selected:
         _, original = _read_file(ROOT / board, limit=MAX_TEXT_BYTES, collect=True)
         expected_board = _policy_image_delivery_board(original)
-        if construction_source.BINDING in plan:
+        if construction_source.BINDING in plan and _policy3_construction_path(plan) is None:
             expected_board = construction_source.derive_board(expected_board)
         if "camera_property_capability" in plan:
             if __package__:
@@ -2610,6 +2688,8 @@ def _policy_image_delivery_source_guards(plan, payloads):
             expected_board = policy_inputs.camera_property_board(expected_board)
             if "factory_property_contexts_capability" in plan:
                 expected_board = policy_inputs.factory_property_contexts_board(expected_board)
+        if _policy3_construction_path(plan) is not None:
+            expected_board = construction_source.derive_board(expected_board, contract_path=_policy3_construction_path(plan))
         _require(payloads.get(board) == expected_board and
                  payloads.get(include) == _render_policy_image_delivery(binding).encode("ascii"),
                  "policy-image delivery requires the exact generated board and input guards")
@@ -3493,7 +3573,7 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
                  framework_allocator_contract is not None,
                  "policy-image delivery requires paired metadata, combined source, current policy/providers and allocator")
         delivery_reference = _policy_image_delivery_reference(policy_image_delivery_contract)
-        if delivery_reference["contract_id"] == POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID:
+        if delivery_reference["contract_id"] in (POLICY_IMAGE_DELIVERY_4K_CONTRACT_ID, POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID):
             _require(page_size_profile is not None,
                      "4 KiB policy-image delivery requires its explicit current page profile")
             selected_page, _ = _page_size_profile_contract(page_size_profile)
@@ -3615,6 +3695,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     _policy_image_delivery_source_guards(plan, payloads)
     _camera_property_source_guards(plan, payloads)
     _factory_contexts_source_guards(plan, payloads)
+    _bind_policy3_audit_sources(plan, payloads)
+    _policy3_audit_source_guards(plan, payloads)
     plan["files"] = [{"path": path, "sha256": hashlib.sha256(data).hexdigest(), "size_bytes": len(data)}
                      for path, data in sorted(payloads.items())]
     plan["schema_version"] = 1
@@ -3742,6 +3824,10 @@ def validate(output, *, purpose="configuration"):
     expected |= {(DEVICE_PATH / "generated" / name).as_posix()
                  for name in ("BoardConfigCandidate.mk", "device-candidate.mk", "fstab.qcom")}
     expected |= {SECURITY_PATCH.as_posix(), SECURITY_RECORD.as_posix()}
+    if _policy3_delivery_selected(plan):
+        expected.update(row["path"] for row in POLICY3_AUDIT_SOURCE_FILES)
+    _policy3_audit_source_guards(plan, {name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
+        for name in files if name.startswith("device/xiaomi/nezha/tools/vintf-definition-audit/")})
     if construction_source.BINDING in plan:
         payloads = {name: _read_file(Path(output) / name, limit=MAX_TEXT_BYTES, collect=True)[1]
                     for name in files}
@@ -3806,7 +3892,7 @@ def validate(output, *, purpose="configuration"):
                 expected_board = original
                 if "policy_image_delivery" in plan.get("target_files_metadata", {}):
                     expected_board = _policy_image_delivery_board(expected_board)
-                if construction_source.BINDING in plan:
+                if construction_source.BINDING in plan and _policy3_construction_path(plan) is None:
                     expected_board = construction_source.derive_board(expected_board)
                 if "camera_property_capability" in plan:
                     if __package__:
@@ -3816,6 +3902,8 @@ def validate(output, *, purpose="configuration"):
                     expected_board = policy_inputs.camera_property_board(expected_board)
                     if "factory_property_contexts_capability" in plan:
                         expected_board = policy_inputs.factory_property_contexts_board(expected_board)
+                if _policy3_construction_path(plan) is not None:
+                    expected_board = construction_source.derive_board(expected_board, contract_path=_policy3_construction_path(plan))
                 _require(original_identity == {key: row[key] for key in ("sha256", "size_bytes")} and
                          actual_identity == files.get(row["path"]) and actual == expected_board,
                          "policy-image delivery changed the guarded init-helper board beyond its exact include")
