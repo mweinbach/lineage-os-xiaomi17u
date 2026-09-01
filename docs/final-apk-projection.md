@@ -192,6 +192,64 @@ After successful actual Package2 inputs exist, the remaining work is concrete:
    describe those boundaries. Native Treble labeling does not validate Android
    permission grants, actual runtime label selection, installation or hardware.
 
+## Existing acquisition APIs and the first post-package read
+
+The [acquisition recipe](../reports/final-apk-projection-20260901/acquisition-preparation-v1/README.md)
+and its [closed call specification](../reports/final-apk-projection-20260901/acquisition-preparation-v1/call-specification.json)
+map the missing input work to existing implementations. Their future Package2,
+reader, APK, context, tool and native-result bindings remain null. This is a
+source543 baseline preparation; Camera554 needs a successor package and fresh
+consumer admission. No additional maintained transfer, ZIP or executor wrapper
+was added.
+
+The existing
+[`source543-package2-v3/boot_current.py`](../reports/oem-policy-integration-20260829/boot-chain-current-package-preparation-v1/source543-package2-v3/boot_current.py)
+already composes `load_controls`, `admit_package` and `admit_materialization`.
+It checks the shared package consumer, strict transfer-v3 admission, actual
+outer completions and all 15 materialized image roles against a replayed
+final-path ZIP inventory. Its returned image subset contains five boot roles;
+keep that API unchanged and select the eight logical roles from its validated
+full input manifest using the existing signing-schema reader. Admission replays
+the ZIP and validates the image mapping; explicitly register and stream-hash
+the eight materialized local files with `ctx['guards'].remember` before scanning
+them. The recipe supplies the original API calls and profile bounds. The
+raw-input requirements and 64 GiB Package2/transfer ceiling remain intact.
+Recheck every held input at the end; neither a pending transfer receipt nor the
+materializer's prepublication receipt establishes successful completion.
+
+The first native reader after successful Package2 should use the existing
+qualified read-only query primitive for exactly these argument suffixes:
+
+```text
+query check-selinux-treble-labeling <Make-defined timestamp target>
+commands -s <the same timestamp target>
+```
+
+The complete literal targets and required `ninja -n -w dupbuild=err -f ... -t`
+prefix are in the call specification. Root must bind the actual package,
+perform all six source/input callbacks before and after, retain current Ninja
+qualification and read-only namespace observations, and compare the complete
+graph/log snapshots. `current_package.validate_fresh_sources` validates those
+full maps; it does not execute their callbacks. Preserve original query streams,
+their hashes/counts and outer completion, with no cap changes or unqualified
+native call.
+
+This first read must retain a missing-artifacts skip or error leaf as a failure
+to establish the intended APK scope. Such a branch may not expose the platform
+APK vector at all. Package2's two producer queries, installed-files reports and
+whatever APKs are present cannot substitute for the exact generated Make
+selection. Inspect actual leaf output before writing a parser for its quoting
+or claiming a complete producer chain.
+
+The subsequent bounded acquisition needs the built `treble_labeling_tests` and
+`aapt2` tools, their complete runtime dependencies, current framework-only and
+factory-aware policy producers, three platform seapp files, and vendor/ODM
+seapp/file-context bytes from their admitted images. Missing tools or policies
+require an ordinary component build and another capture. The recipe preserves
+the pinned Makefile's exact eight checker flag roles and rejects warning,
+tracking-list and debuggable exemptions. Native Treble success still would not
+establish APK signatures, privileged grants or effective runtime labels.
+
 The focused offline test command is
 `python3 -B -m unittest tests.test_final_apk_projection -v`. Its fixtures use
 inert bytes, original producer-shaped receipts and temporary local files; native
