@@ -1517,5 +1517,135 @@
       }
     },
     "saved_receipt_matches_actual_result": true
+  },
+  "offline_validation_image_aidl_capture_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4261,
+    "elapsed_seconds": 193.21,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "4dad41f8b65642190f68c2984897bef5f8eb7bcc",
+    "completed_utc": "2026-09-01T05:17:30.118415+00:00",
+    "scope": "Committed code plus four unchanged image/AIDL-capture documents, subsequently committed as d072d06ae4e0a5e56b4fed9bc9021308c5d9f8f1. This later artifact-review/component-build update is outside the offline suite.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-image-verification-aidl-capture-v1/tests.log",
+      "sha256": "182fe181a00abc0e4167e9d6ad434c044d6287fd277cc251f37184f911db75c0",
+      "size_bytes": 742361
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-image-verification-aidl-capture-v1/completion.json",
+      "sha256": "fcb8546fcc504b7a77c5e56006f64385941393b5ce044ada87ae5845832b210d",
+      "size_bytes": 1970
+    }
+  },
+  "ordinary_images1_postcheck_review_20260901": {
+    "status": "independent-actual-postcheck-review-passed-with-explicit-evidence-limits",
+    "supersedes_pending_review_in": "ordinary_images1_postcheck_20260901",
+    "actual_postcheck_and_saved_receipt_match": true,
+    "frozen_admission_and_verifier_replay_passed": true,
+    "fresh_producer_actions": 7,
+    "selected_output_images": 4,
+    "recomputed_policy_sidecars": 3,
+    "outer_source_input_callbacks": 6,
+    "metadata_file_contents_verified": 6,
+    "sidecar_odm_join_basis": "Exact delivery replacement entries, selected packaged ODM image and prior raw-image/footer provenance; no separate equality array or new host image extraction.",
+    "new_host_image_extraction_performed": false,
+    "new_read_only_mount_namespace_established": false,
+    "original_images1_wrapper_exit_code": 1,
+    "original_images1_result_unchanged": true,
+    "old_combined_graph_body_independently_captured": false,
+    "old_combined_graph_reconstruction_limit_retained": true,
+    "limits": {
+      "metadata_freshness_verified": false,
+      "metadata_hook_verified": false,
+      "target_files_admitted": false,
+      "root_signing_verified": false,
+      "physical_partition_fit_verified": false,
+      "runtime_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "independent_actual_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/actual-images1-supplement-review-v1.json",
+        "sha256": "85dbfea6753e0873ebf4a170114d5784c691d19311af1a7b8960803caf3b5301",
+        "size_bytes": 45079
+      }
+    }
+  },
+  "aidl_component_build_v4_20260901": {
+    "status": "native-wrapper-and-independent-action-review-passed",
+    "native_started_utc": "2026-09-01T05:31:41.283729+00:00",
+    "native_completed_utc": "2026-09-01T05:34:01.237233+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "profile_completed": true,
+    "profile_validation_verified": true,
+    "postcheck_errors": [],
+    "displayed_progress_rows": 342,
+    "bootstrap_steps": 1,
+    "main_ninja_actions": 341,
+    "selected_outputs": 70,
+    "fresh_selected_actions": 38,
+    "reused_selected_actions": 32,
+    "reused_actions_counted_as_fresh": false,
+    "host_metadata_auditor_compiled_and_linked": true,
+    "ndk_backend_libraries_compiled": 7,
+    "metadata_auditor_executed": false,
+    "java_or_rust_backend_success_claimed": false,
+    "source_files": 537,
+    "source_projects": 13,
+    "six_source_input_guard_maps_unchanged": true,
+    "configuration_unchanged": true,
+    "normal_dependency_checks_not_bypassed": true,
+    "exact_ninja_arguments_limits_and_sandbox_verified": true,
+    "runtime_package_selection_changed": false,
+    "preservation_scope": {
+      "source_inputs_verified": true,
+      "current_recovery_image_verified": true,
+      "current_mi_ext_image_verified": true,
+      "current_vendor_odm_output_preservation_established_by_component_callback": false
+    },
+    "independent_action_review_pending": false,
+    "limits": {
+      "full_definition_coverage_verified": false,
+      "complete_dependency_closure_verified": false,
+      "runtime_verified": false,
+      "target_files_admitted": false,
+      "signed_flashable_rom_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "actual_result": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/component-preparation-v4/bound-v1/run-v1/stdout.jsonl",
+        "sha256": "03bad37d837e8509c5a8ed4902777845ba0110a3a72c612fd81dc083693ed79c",
+        "size_bytes": 11228190
+      },
+      "result_readback_completion": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-aidl-components-readback-v1/completion.json",
+        "sha256": "b821ec8b3ce2b04ae300be0850ad381d1010e9ad6ddfa94d2725bc9a0f2be0f2",
+        "size_bytes": 1426
+      },
+      "complete_action_log_readback": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-aidl-action-logs-v1/completion.json",
+        "sha256": "c0f8031e68955e1191f460a3270e17e22029eae84f9d6eb8d9d41810f3c4030e",
+        "size_bytes": 4091
+      },
+      "independent_actual_action_review": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/component-preparation-v4/actual-review-v1/actual-review-v1.json",
+        "sha256": "b52e4f29e6facc17bd2814a84133647b96fe7912cab7242406696ded6b93de57",
+        "size_bytes": 110687
+      },
+      "independent_review_freeze": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/component-preparation-v4/actual-review-v1/freeze-v1.json",
+        "sha256": "0e5114b0f875f89f55716b2d4f36bfcc0831469e0f3a4cb2c7694f6b292ad2a5",
+        "size_bytes": 3274
+      }
+    },
+    "all_reused_selected_actions_are_display_config": true
   }
 }

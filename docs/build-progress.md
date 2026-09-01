@@ -1,5 +1,13 @@
 # Nezha product and build progress
 
+The **2026-09-01 05:34:01 UTC AIDL component build** passes with native and
+wrapper exit 0. The log has 341 main Ninja actions plus one bootstrap step.
+Among 70 selected outputs, 38 have fresh action evidence and 32 display-config
+checks are reused. The host auditor and seven NDK backends compile; auditor
+execution, full definition coverage and runtime remain unverified. Independent
+review of the captured action evidence passes. Source inputs and current recovery/mi_ext are
+preserved; this callback does not verify current vendor/ODM output preservation.
+
 The **2026-09-01 04:26:42 UTC images1 attempt** finishes with native exit 0
 and wrapper exit 1. The sole validation failure is the combined Ninja graph's
 pool-depth change from 15 to 8, explained by the pinned generator and observed
@@ -8,8 +16,10 @@ captured; all six admission maps, 254 configuration fields and fifteen other
 graphs match. The failed receipt remains unchanged. The **separate read-only
 postcheck passes at 05:03:29 UTC**, checking four output images, three sidecars
 and all seven producers' fresh action evidence without another build or output
-write. Saved-receipt readback matches; independent artifact review remains pending;
-target-files, signing and boot remain unverified.
+write. Saved-receipt readback and independent artifact review pass, including
+the sidecar-to-ODM join through prior delivery and raw-image/footer evidence.
+There is no new host image extraction or read-only mount-namespace claim.
+Target-files, signing and boot remain unverified.
 
 The **2026-09-01 03:22:47 UTC ordinary `nothing3` checkpoint** passes graph
 regeneration, all six source/input guard groups and the six metadata-file value
@@ -33,7 +43,9 @@ Commit **1ef9bf3** adds the maintained
 streaming archive copier. Its 72 added tests use synthetic archives and mocked
 cryptography; its full workspace suite passes 4,261 tests in 192.570 seconds,
 with zero skips. The later preparation-document checkpoint passes 4,261 tests
-in 204.808 seconds with zero skips, before this image-attempt/capture update.
+in 204.808 seconds with zero skips. The last full suite before this current
+artifact-review/component-build update passes 4,261 tests in 193.210 seconds,
+with zero skips, against the four unchanged documents committed as `d072d06`.
 No actual signing or target-files reconciliation has run.
 
 The **2026-09-01 03:01:01 UTC product-query checkpoint** verifies the adopted

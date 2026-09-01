@@ -35,10 +35,11 @@ the combined Ninja graph's pool-depth change from 15 to 8. Independent review
 explains that exact change from the pinned source and observed `-j8`; it does
 not promote the failed wrapper result. A **separate read-only postcheck passes
 at 05:03:29 UTC**, verifying four output images, three policy sidecars and all
-seven producers' fresh action evidence. Its independent review and saved-receipt
-readback are separate: the saved receipt matches, while independent artifact
-review remains pending. **Packaged-policy checks and target-files remain
-unverified**. Commit **4335f1b** adds
+seven producers' fresh action evidence. Saved-receipt readback and independent
+artifact review now pass within that scope. The later **AIDL component build
+exits native 0/wrapper 0 at 05:34:01 UTC**, compiling the host auditor and seven
+NDK backends; the auditor has not been executed. **Packaged-policy checks and
+target-files remain unverified**. Commit **4335f1b** adds
 the explicit [policy3 image-input profile](policy-image-inputs.md), including
 qualified installed sidecars. Source-input selection does not admit a final
 flashable artifact: the full signed chain and physical partition fit remain
@@ -812,21 +813,31 @@ output images match their selected source copies, the three framework sidecars
 are recomputed and match the ODM basis, and all seven fresh producer actions
 are tied to the recorded commands and log rows. This qualifies output production
 separately from the earlier source-image reconstruction. It performs no new
-build or source/output writes. The saved receipt matches the actual result;
-independent artifact review remains pending. Target-files and the packaged
-metadata hook are not verified.
+build or source/output writes. The saved receipt matches the actual result,
+and independent artifact review now passes. Its sidecar-to-ODM join uses the
+selected delivery entries and prior raw-image/footer evidence, without new host
+image extraction. This root-context verifier does not establish a new read-only
+mount namespace. Target-files and the packaged metadata hook are not verified.
 
 The first optional AIDL capture's 8 MiB query-bound failure is preserved. Its
 v2 successor completes reviewed, scoped read-only capture of 1,163 nodes,
-753 declarations and
-62 API-check descriptions through 74 query and eight command-list calls.
-Those are captured descriptions, not executed component checks. Protection
+753 declarations and 62 API-check descriptions through 74 query and eight
+command-list calls. Those captures do not execute component checks. Protection
 covers exactly three policy sidecars, sixteen graphs/four logs and six outer
 source/input callbacks; it does not establish seven protected image outputs.
 The review retains 1,996 frontier groups outside the fixed scope; this is not
-full dependency closure. Artifact qualification, target-files,
-AIDL compilation, full signing, super/OTA and hardware checks remain separate
-gates. See the [actual attempt and capture records](../research/workspace-integration.json).
+full dependency closure.
+
+The subsequent **AIDL component v4 build passes at 05:34:01 UTC**, with native
+and wrapper exit 0. Its 341 main Ninja actions follow one bootstrap step; they
+are not workspace tests. The postcheck accounts for 70 selected outputs:
+**38 fresh actions and 32 reused display-config checks**. The host metadata
+auditor and seven NDK backends compile, but the auditor has not run. Source
+inputs and current recovery/mi_ext are preserved; this component callback does
+not establish preservation of current vendor/ODM output images. Independent
+review of the complete captured action logs and all 70 outcomes passes. Auditor execution, full definition coverage,
+target-files, signing, super/OTA and hardware checks remain separate gates.
+See the [actual build and review records](../research/workspace-integration.json).
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
@@ -836,8 +847,8 @@ and working Rosetta Ninja. No replacement VM or source sync was started.
 This is a dated environment check, not a new Android build or phone test.
 
 Commit **76fe975** adds the [unlevelled-matrix AIDL name audit](../tools/vintf-definition-audit/README.md).
-Its source is now installed, while compilation, linking and execution remain
-pending. A read-only discovery of existing policy2 artifacts and host replay
+Its host tool is now compiled and linked; execution remains pending. The
+historical read-only discovery of policy2 artifacts and host replay
 find **149 of 155 matrix tuples / 134 of 140 names absent from all 336 captured
 metadata modules**. The generated C++ is reproduced byte for byte from the
 captured JSON on the host; that does not prove native producer execution or
@@ -915,7 +926,12 @@ archive while integrating an already verified signed image set; the helper
 itself does not sign. No actual target-files archive, signing operation or
 reconciliation run is established by this tooling milestone.
 
-The last full workspace suite recorded before this milestone passed **4,261 tests in 204.808
+The last full workspace suite recorded before this milestone passed **4,261
+tests in 193.210 seconds with zero failures, errors or skips**, executed by the
+coordinator against `4dad41f` plus four unchanged image/AIDL-capture documents,
+then committed as `d072d06`. This later artifact-review/component-build update
+is outside that offline run; native evidence remains separate.
+The preceding suite passed **4,261 tests in 204.808
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `1ef9bf3` plus the four unchanged preparation documents, then committed
 as `4dad41f`. This later image-attempt/AIDL-capture documentation is outside that
