@@ -1,5 +1,27 @@
 # Nezha product and build progress
 
+The **GMS2 native build and postcheck pass**, with native/root exit 0 on the
+543-file/fourteen-project `3c24` source. Native execution finishes at
+**2026-09-01 16:06:05 UTC**. Its proof records three fresh SignApk actions plus
+CrossDevice's fresh build/install pair, with ten ordinary actions reused.
+The four strict uses-library statuses are verified reuse, with zero fresh
+status actions. All six input guard maps and the 254 configuration entries
+remain equal; no source inputs or output trees are invalidated. Complete
+readback of 94 retained files and independent replay pass. Eight strict
+signature checks and eight manifest-badging commands all exited 0; host replay
+does not establish a fresh observation of the physical APKs or JARs.
+
+The preceding 25-query capture, host admission and both native input stages
+have separate successful records. The original `73e92126…` capture and GMS1
+overall failure stay intact. Images2, package2 and ROM readiness remain
+unverified. See [GMS source integration](gms-source-integration.md).
+
+The preceding boot-runtime documentation checkpoint was committed as
+**901a925** after the coordinator's full suite passed **4,317 tests in 190.748
+seconds with zero skips** at **15:34:14 UTC**. The four bound files stayed
+unchanged and match that commit. This later capture/admission/component
+documentation milestone is outside that run.
+
 The **543-file source passes config8/context8 and ordinary `nothing5`** through
 **2026-09-01 14:33:17 UTC**, with native/root exit 0 and successful postchecks.
 All six input guard maps and 254 configuration entries remain equal before and

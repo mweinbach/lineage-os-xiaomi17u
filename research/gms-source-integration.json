@@ -2,17 +2,17 @@
   "schema_version": 1,
   "device": "nezha",
   "observed_on": "2026-09-01",
-  "status": "signapk-source-native-metadata-verified-component-retry-pending",
+  "status": "gms2-native-postcheck-and-complete-retained-evidence-replay-passed",
   "current_source": {
-    "scope": "Installed 0020 source with successful config8/context8/nothing5 and six actual metadata-file values; corrected signer and GMS artifact verification remain pending.",
+    "scope": "Installed 0020 source with successful native metadata, read-only graph capture and GMS2 component postcheck. Complete retained-evidence replay verifies fresh signer/CrossDevice actions and strict APK checks; current physical-output reobservation and package admission remain separate.",
     "files": 543,
     "projects": 14,
     "previous_adopted_source_files": 541,
     "source_adoption_completed_utc": "2026-09-01T13:36:04.974906+00:00",
     "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
-    "identity_scope": "Host-calculated identity subsequently selected by native config8/context8/nothing5; six captured metadata values match. This does not qualify fresh producer actions, a regenerated graph or component artifacts.",
+    "identity_scope": "Native metadata values confirm the 3c24 source identity. Separate capture, action and postcheck records establish their own limited scopes; no image or hardware identity is inferred.",
     "native_configuration_and_metadata_values_verified": true,
-    "detail_record": "signapk_native_metadata_checkpoint_20260901",
+    "detail_record": "ordinary_component_retry_checkpoint_20260901",
     "build_number": "nezha.3c24f46cf801e6abd6d5361c",
     "native_metadata_completed_utc": "2026-09-01T14:33:17.732834+00:00"
   },
@@ -92,7 +92,7 @@
     "config7_dispatch_reported_utc": "2026-09-01T09:13:54+00:00",
     "context7": "passed-on-prior-541-source",
     "nothing4": "passed-on-prior-541-source",
-    "four_gms_modules": "pending-retry-on-adopted-543-source-prior-attempt-failed",
+    "four_gms_modules": "passed-native-postcheck-and-complete-retained-evidence-replay",
     "images2": "pending",
     "package2": "pending",
     "prepared_nothing_argv": [
@@ -104,27 +104,44 @@
     "explicit_j8_caller_independently_reviewed": true,
     "caller_changes_installed_source": false,
     "source_input_and_graph_guards_preserved": true,
-    "regenerated_graph_verified": false,
-    "graph_verification_scope": "The 83f7622d read-only capture, twelve-own-action host qualification and original four-module action rows belong to the prior 541-source checkpoint. No regenerated graph, new own-action qualification or completed artifact/fresh-action verification is established for the adopted 543-source state.",
+    "regenerated_graph_verified": true,
+    "graph_verification_scope": "The a2c27844 capture preserves current 543-source graph/log observations and all 25 read-only streams. Corrected host admission qualifies twelve own module actions and three SignApk producer steps. Native GMS2 action and postcheck evidence is recorded separately; capture/admission alone does not establish complete transitive recipe provenance. The 83f7622d capture and GMS1 result retain their historical scopes.",
     "fresh_ordinary_gms_status_actions_verified": false,
     "actual_module_and_dexpreopt_contexts_verified": false,
     "target_files_package_verified": false,
-    "read_only_graph_capture_verified": false,
-    "scoped_own_action_graph_qualification_verified": false,
-    "module_context_scope": "Fresh 543-source observations retain two Window dependency-config bodies and four expected app-config absences under the existing prebuilt-preopt-disabled branch. They do not establish newly generated app class-loader contexts or runtime behavior.",
+    "read_only_graph_capture_verified": true,
+    "scoped_own_action_graph_qualification_verified": true,
+    "module_context_scope": "The current component postcheck preserves the prebuilt-preopt-disabled source branch and its two Window dependency configs. Four app-config absences remain a prebuild observation; generated app class-loader contexts, provider runtime registration and final installed/archive selection remain unverified.",
     "native_gms_stdout_reports_four_strict_status_actions": false,
-    "complete_gms_component_postcheck_verified": false,
-    "signapk_source_correction": "adopted-v2-source-native-build-pending",
+    "complete_gms_component_postcheck_verified": true,
+    "signapk_source_correction": "adopted-v2-and-native-signer-production-verified",
     "signapk_history_guard_correction": "adopted-v2-before-after-status-selection-native-history-verified",
     "read_only_apk_diagnostics": "prior-541-source-sixteen-commands-complete-aggregate-failed",
-    "apk_output_format_correction": "host-saved-output-replay-passed-no-native-retry",
+    "apk_output_format_correction": "used-by-completed-native-gms2-postcheck-and-retained-output-replay",
     "current_source_files": 543,
     "config8": "passed-on-adopted-543-source",
     "context8": "passed-on-adopted-543-source",
     "nothing5": "passed-on-adopted-543-source",
-    "rebuilt_signapk_verified": false,
+    "rebuilt_signapk_verified": true,
     "actual_metadata_file_values_verified": 6,
-    "fresh_read_only_log_and_config_observations_verified": true
+    "fresh_read_only_log_and_config_observations_verified": true,
+    "six_component_proof_records_staged": true,
+    "current_signapk_tool_graph_qualified": true,
+    "historical_strict_status_actions_qualified": 4,
+    "current_native_status_reuse_verified": true,
+    "complete_component_request_staged": true,
+    "verified_reused_gms_strict_statuses": 4,
+    "current_fresh_gms_strict_statuses": 0,
+    "current_native_ordinary_actions": {
+      "fresh": 2,
+      "reused": 10
+    },
+    "current_native_signapk_fresh_actions": 3,
+    "full_current_artifact_readback_replay_verified": true,
+    "current_native_signature_commands_passed": 8,
+    "current_native_manifest_badging_commands_passed": 8,
+    "current_live_apk_or_jar_hashes_reobserved_by_host_replay": false,
+    "future_package_prerequisite_admitted": false
   },
   "historical_audit_scope": {
     "original_selected_apks": 95,
@@ -1551,6 +1568,494 @@
         "sha256": "f92d8ffc55c52f311a49708b3aaf9d3081b76b62e765a84d95ec27d67e486e41",
         "size_bytes": 658
       }
+    }
+  },
+  "signapk_graph_capture_and_admission_checkpoint_20260901": {
+    "status": "corrected-read-only-capture-host-admission-and-input-staging-passed-native-retry-pending",
+    "observed_on": "2026-09-01",
+    "source_files": 543,
+    "source_projects": 14,
+    "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+    "build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "read_only_capture": {
+      "verified": true,
+      "transport_exit_code": 0,
+      "queries": 25,
+      "gms_queries": 14,
+      "provider_queries": 5,
+      "signapk_queries": 6,
+      "all_query_exits_zero": true,
+      "all_query_streams_complete": true,
+      "graph_files": 16,
+      "graph_bytes": 6862572445,
+      "log_files": 4,
+      "log_bytes": 230713456,
+      "complete_graph_log_observations_equal_before_after": true,
+      "source_guard_maps_compared_before_hashing": 6,
+      "complete_source_guard_execution_context": "Real root before and after the confined child.",
+      "all_complete_raw_source_guard_bodies_retained_in_capture": false,
+      "individual_provider_source_bodies_checked_inside_jail": 3,
+      "individual_signapk_source_bodies_checked_inside_jail": 2,
+      "full_source_history_callbacks_run_inside_jail": false,
+      "three_policy_sidecar_observations_preserved": true,
+      "source_or_output_written": false,
+      "native_build_or_checker_executed": false,
+      "independent_capture_provenance_review_passed": true,
+      "start_end_utc_recorded": false,
+      "timestamp_scope": "The closed capture, packet and transport contain no explicit start/end timestamps. No interval is inferred from filesystem metadata."
+    },
+    "host_admission": {
+      "complete_actual_admission_replayed": true,
+      "independent_actual_replay_passed": true,
+      "own_module_actions": 12,
+      "module_nodes": 20,
+      "strict_status_commands": 4,
+      "signapk_producer_actions": 3,
+      "signapk_tool_artifact_outputs": 2,
+      "normal_compile_source_dependency_verified": true,
+      "complete_transitive_recipe_provenance_claimed": false,
+      "captured_control_map_unchanged": true,
+      "host_control_roles": 15,
+      "host_control_map_changed_roles": 3,
+      "historical_graph_identity": {
+        "sha256": "1b11f44770723aa146c2094f3b010ee776bed00e2c379a16179667b69a19551b",
+        "size_bytes": 38405
+      },
+      "current_graph_identity": {
+        "sha256": "5bfbf3a2b9876ec08385b8cded4a51a80a4707642739ccc1f15240b01cd0d437",
+        "size_bytes": 45853
+      },
+      "cross_dependency_overlap_scope": "Only the exact CrossDevice built-APK query and own rule, bound to the admitted 0020 source postimage, permit the installed SignApk JAR in both normal and order-only categories. Complete raw vectors remain unchanged.",
+      "cross_query_bytes": 1114,
+      "cross_own_rule_bytes": 909,
+      "original_other_nineteen_nodes_use_unchanged_strict_parser": true,
+      "historical_status_actions_verified": 4,
+      "historical_status_proof_original_files": 7,
+      "historical_result_remains_failed": true,
+      "current_native_action_or_status_reuse_verified": false,
+      "current_native_input_file_existence_verified": false,
+      "strict_apk_commands_required": 16,
+      "warnings_remain_errors": true,
+      "tests": {
+        "executor": "independent host reviewer",
+        "run": 97,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "native_build_executed": false,
+      "context_scope": "Prebuilt-preopt-disabled source and the two Window dependency configs are checked. No generated app class-loader context, provider runtime registration or final archive selection is established.",
+      "effective_product_install_or_archive_selection_verified": false,
+      "provider_runtime_registration_verified": false
+    },
+    "six_proof_staging": {
+      "started_utc": "2026-09-01T15:50:01.601034+00:00",
+      "completed_utc": "2026-09-01T15:50:02.600556+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "files": 6,
+      "bytes": 14070196,
+      "file_mode": "0400",
+      "directory_mode": "0700",
+      "uid": 0,
+      "gid": 0,
+      "each_file_nlink": 1,
+      "all_six_complete_bodies_read_back": true,
+      "host_input_stats_unchanged": true,
+      "source_or_android_output_modified": false,
+      "native_build_performed": false,
+      "source_or_output_image_bytes_supplied": false,
+      "private_keys_supplied": false,
+      "phone_accessed": false
+    },
+    "preserved_failed_capture": {
+      "status": "failed",
+      "transport_exit_code": 1,
+      "source_or_output_written": null,
+      "error": "invalid raw native query node",
+      "cause": "Exact installed SignApk query exceeded the ordinary 1 MiB per-node bound; this was not a transport timeout.",
+      "failed_capture_promoted": false,
+      "subsequent_correction": "The SignApk-only parser retains its full fan-out, exact Conscrypt overlap and javac implicit annotation output while ordinary query limits remain unchanged."
+    },
+    "next_gates": {
+      "native_gms_component_retry": "pending",
+      "corrected_signapk_built": false,
+      "successful_component_postcheck_verified": false,
+      "fresh_current_producer_actions_verified": false,
+      "images2": "pending",
+      "package2": "pending",
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "capture": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/bound-nothing5-v1/root-capture-v1/capture.json",
+        "sha256": "a2c27844a4b14b481baa9f07fd80c2e519927ddd971a14fa0e0a51cf3000cc33",
+        "size_bytes": 686593
+      },
+      "transport": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/bound-nothing5-v1/root-capture-v1/transport.json",
+        "sha256": "4d59240011aabfbbbd89605985405fb6bc85f899d115f6aafbb3b5fa884a3315",
+        "size_bytes": 17150
+      },
+      "outer_source_and_sidecar_binding": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/bound-nothing5-v1/root-capture-v1/outer-sidecar-presence.json",
+        "sha256": "917c57a86254ec61f2cbca5465416bfec11cc6c17e25a02c3551ab66b2f92f63",
+        "size_bytes": 58269
+      },
+      "capture_review": {
+        "path": "reports/signapk-source-stamp-20260901/component-capture-review-v1/actual-nothing5-query-shape-v1/review.json",
+        "sha256": "5f0fa3cb36655b3bbd1078dcaf5ef635c1f01d2ee58c8c6223f4756b76813bee",
+        "size_bytes": 15332
+      },
+      "captured_control_map": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/bound-nothing5-v1/component-controls.json",
+        "sha256": "03fe1558457413a0f29222e25db440fdc2aba42f023cc04efbcc86558329f381",
+        "size_bytes": 9138
+      },
+      "host_control_map": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/host-cross-overlap-preparation-v1/host-component-controls.json",
+        "sha256": "4393e23ce4c2bb3af4da54d3967f5656ca29b8f5138e7f6d787361ff076b3475",
+        "size_bytes": 7986
+      },
+      "host_current_graph_validator": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/host-cross-overlap-preparation-v1/graph-helper-v1/graph_checks.py",
+        "sha256": "5bfbf3a2b9876ec08385b8cded4a51a80a4707642739ccc1f15240b01cd0d437",
+        "size_bytes": 45853
+      },
+      "host_admission": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/actual-components-2-preparation-v1/admission-v1/admission.json",
+        "sha256": "c7da5719e718770c0173749d80bdb8bf26faf530b13941accb44c50ea3b6bf09",
+        "size_bytes": 46841762
+      },
+      "host_qualification": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/actual-components-2-preparation-v1/admission-v1/qualification.json",
+        "sha256": "cacf82aa0e912676f6a0d911647fa5a81a5f6ae43eb6e169cb3c1015ad5f343c",
+        "size_bytes": 265020
+      },
+      "host_derivation": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/actual-components-2-preparation-v1/admission-v1/derivation.json",
+        "sha256": "dac2073aba04f16a4b7e0f0b0ad266bf8588288844a2af951f86b0044110b3a9",
+        "size_bytes": 13084
+      },
+      "host_selection": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/actual-components-2-preparation-v1/admission-v1/selection.json",
+        "sha256": "41fcdd12d3418c7b77c00f54112f241479329705e44295693bf177a792cb2d58",
+        "size_bytes": 52302
+      },
+      "host_combined_independent_review": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/host-cross-overlap-preparation-v1/independent-review-v1/review.json",
+        "sha256": "b5d6dc193a455d3b1532cec1d52e2c5d6003ff6869559de077a805497ab132cc",
+        "size_bytes": 130414
+      },
+      "host_release": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-query-shape-v1/host-cross-overlap-preparation-v1/release-v1.json",
+        "sha256": "ae79a0f46a3acd0d1f35d9076eea31f37aad3e32db0dccc6b74ce263e7720bd4",
+        "size_bytes": 2900
+      },
+      "original_historical_status_proof": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/status-proof-preparation-v1/actual-prior-v1/status-reuse-proof.json",
+        "sha256": "0a93877f63d0ffc8cb06138e5bb26b9e46b50b073f6beb119ae9bd0db5545ab6",
+        "size_bytes": 14782144
+      },
+      "preserved_failed_capture": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-time-budget-v1/bound-nothing5-v1/root-capture-v1/capture.json",
+        "sha256": "73e92126bb4f6f1231211f2611a0f491eedbd55bf050925ee751602e8c261037",
+        "size_bytes": 654664
+      },
+      "failed_capture_review": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/graph-time-budget-v1/actual-capture-failure-review-v1/review.json",
+        "sha256": "4db2371286327a3a05f45149c21ce1e0a0cf13fa739477d0005731301412f964",
+        "size_bytes": 4687
+      },
+      "six_proof_stage": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-proof-v1/root-stage-gms-component-proofs-v2/stdout.json",
+        "sha256": "5254f91ac0acc4ab7771064c8017b44b4c2a0f0a1b71fa8bcc4134eca4f0d962",
+        "size_bytes": 2784
+      },
+      "six_proof_stage_completion": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-proof-v1/root-stage-gms-component-proofs-v2/completion.json",
+        "sha256": "c39b9c8d1ad3b3e907032e1eb255620dd1dd686ce780e6dd912f3757fca9ae34",
+        "size_bytes": 1212
+      },
+      "full_request_stage": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-request-v1/root-stage-gms-component-request-v2/stdout.json",
+        "sha256": "3ed2bdb49ff33f10c038be34365443b43ea1e42561e795529c97431594ba5dd5",
+        "size_bytes": 886
+      },
+      "full_request_stage_completion": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-request-v1/root-stage-gms-component-request-v2/completion.json",
+        "sha256": "8cef45c841975744dee85aabd97b32fa072ebdd38cdfed6ddafd4267815e0a22",
+        "size_bytes": 1205
+      },
+      "full_request_input": {
+        "path": "reports/signapk-source-stamp-20260901/component-preparation-v1/actual-components-2-preparation-v1/derived-v1/request.json",
+        "sha256": "4ea9743ee2d2e1b35b8264f5eaafdfb2e507300e9f3cccd890ce469a9892ad82",
+        "size_bytes": 60131308
+      },
+      "publisher_independent_review": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-request-v1/independent-review-v1/publisher-review.json",
+        "sha256": "1ebf17047f514bc567f398e9bb8619b19c6c3371aef9d55ff50e2d49a89f3c4f",
+        "size_bytes": 4078
+      },
+      "publisher_release": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-request-v1/release-v1.json",
+        "sha256": "d7323643d7e6e163d12ca397889acd58a5e19073be2941f99dbd5d97d3980c9b",
+        "size_bytes": 3737
+      },
+      "publisher_freeze": {
+        "path": "reports/signapk-source-stamp-20260901/component-staging-preparation-v2/actual-components-2-request-v1/publisher-freeze-v1.json",
+        "sha256": "d751463891ae337434de7eb49cf643c382d10fb85c7a6d6c980d08f6d6c95516",
+        "size_bytes": 5227
+      }
+    },
+    "full_request_staging": {
+      "started_utc": "2026-09-01T15:57:26.850535+00:00",
+      "completed_utc": "2026-09-01T15:57:27.955795+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "files": 1,
+      "request_sha256": "4ea9743ee2d2e1b35b8264f5eaafdfb2e507300e9f3cccd890ce469a9892ad82",
+      "bytes": 60131308,
+      "request_limit_bytes": 67108864,
+      "request_limit_changed": false,
+      "file_mode": "0400",
+      "directory_mode": "0700",
+      "uid": 0,
+      "gid": 0,
+      "file_nlink": 1,
+      "complete_body_read_back": true,
+      "host_input_stats_unchanged": true,
+      "source_or_android_output_modified": false,
+      "native_build_performed": false,
+      "private_keys_supplied": false,
+      "phone_accessed": false
+    },
+    "host_publisher": {
+      "published_files": 13,
+      "independent_byte_exact_replay_passed": true,
+      "original_transport_functions_preserved": true,
+      "file_mode": "0444",
+      "same_full_request_sha256": "4ea9743ee2d2e1b35b8264f5eaafdfb2e507300e9f3cccd890ce469a9892ad82",
+      "native_execution_proved_by_this_host_review": false,
+      "scope": "Preparation and byte-exact publication only. Actual native component execution has separate evidence."
+    }
+  },
+  "ordinary_component_retry_checkpoint_20260901": {
+    "status": "native-build-component-postcheck-and-retained-evidence-replay-passed",
+    "phase": "first-target-files-gms-uses-library-components-2",
+    "source_files": 543,
+    "source_projects": 14,
+    "build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+    "native_started_utc": "2026-09-01T16:04:16.531450+00:00",
+    "native_finished_utc": "2026-09-01T16:06:05.204931+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "native_interval_excludes_wrapper_preflight_and_postcheck": true,
+    "frontend_argv": [
+      "build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j8",
+      "CrossDeviceAccessServicePrimary",
+      "CustomizationBundlePrebuiltFullVersion",
+      "PersistentBackgroundServices",
+      "SafetyHubPrebuilt"
+    ],
+    "profile_completed": true,
+    "profile_validation_verified": true,
+    "postcheck_verified": true,
+    "postcheck_errors": [],
+    "ordinary_actions": {
+      "total": 12,
+      "fresh": 2,
+      "reused": 10,
+      "fresh_roles": [
+        "CrossDeviceAccessServicePrimary built APK",
+        "CrossDeviceAccessServicePrimary installed APK"
+      ],
+      "fresh_strict_statuses": 0,
+      "verified_reused_strict_statuses": 4,
+      "unchecked_cached_status_counted_as_pass": false,
+      "append_only_ninja_log_verified": true,
+      "original_gms1_overall_failure_preserved": true
+    },
+    "signapk_tool_actions": {
+      "fresh": 3,
+      "qualified_actions": 3,
+      "artifact_outputs": 2,
+      "unchecked_cached_tool_counted_as_pass": false,
+      "append_only_ninja_log_verified": true,
+      "cross_apk_has_separate_fresh_action_proof": true,
+      "compiled_jar_after": {
+        "sha256": "384c6f699c2719ff038454e0d60bd831fdf03bcb832a0ea58c64aa8a32960313",
+        "size_bytes": 25382
+      },
+      "installed_jar_after": {
+        "sha256": "0d33b4e1bb0f925dfa0d09cba1409ea312ebae43955efe0c7656b1d85b9cfb47",
+        "size_bytes": 3321509
+      }
+    },
+    "native_execution_guards": {
+      "all_six_complete_input_guard_maps_equal_before_after": true,
+      "all_254_configuration_entries_equal_before_after": true,
+      "output_alias_source_history_and_strict_settings_equal": true,
+      "complete_runtime_observation_equality_claimed": false,
+      "source_mutation_requested": false,
+      "output_invalidated_or_deleted": false,
+      "ninja_observed": true,
+      "ninja_argv_verified": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "streams_complete": true,
+      "process_reaped": true,
+      "observer_stopped": true,
+      "timed_out": false,
+      "output_overflow": false,
+      "disk_floor_breached": false
+    },
+    "metadata_file_values_verified": 6,
+    "metadata_file_fresh_rewrites_claimed": false,
+    "context_limits_preserved_from_actual_result": {
+      "mode": "prebuilt-preopt-disabled-by-source",
+      "module_info_entries_synthesized": false,
+      "generated_app_class_loader_contexts_verified": false,
+      "postbuild_config_absence_verified": false,
+      "config_absence_observation_scope": "prebuild-only",
+      "provider_runtime_presence_verified": false,
+      "provider_runtime_registration_verified": false,
+      "early_product_membership_independently_replayed": false,
+      "effective_install_selection_verified": false,
+      "effective_archive_selection_verified": false,
+      "full_manifest_xml_equivalence_verified": false
+    },
+    "artifact_record_readback": {
+      "native_component_actions_sha256": "be1bde94879554023a1b57b320ef645c0d9d5bac3a03f4040ba5e7a0c14809ef",
+      "native_component_actions_bytes": 4264994,
+      "full_host_readback_verified": true,
+      "all_raw_signature_manifest_commands_independently_replayed": true,
+      "independent_actual_result_review": "clear-within-recorded-result-scope",
+      "scope": "The complete action record and separate 94-file closure (91 evidence files plus native result and both build streams) are retained. Independent original-helper replay reproduces all sixteen completed native command records and component verification; it is not a new physical APK/JAR observation or future package admission.",
+      "independent_complete_evidence_review": "clear-completed-component-evidence",
+      "retained_files": 94,
+      "retained_body_bytes": 131889979,
+      "component_evidence_files": 91,
+      "raw_artifact_attempt_files": 80,
+      "native_result_and_build_streams_byte_exact": true,
+      "all_readback_native_files_uid_gid_zero_and_single_link": true,
+      "all_readback_native_nine_stat_identities_verified": true,
+      "both_final_full_native_rereads_equal": true,
+      "readback_started_utc": "2026-09-01T16:27:37.701520+00:00",
+      "readback_finished_utc": "2026-09-01T16:27:43.518651+00:00",
+      "readback_native_returncodes": [
+        0,
+        0
+      ],
+      "independent_host_inputs": 118,
+      "all_independent_host_bytes_and_nine_stat_fields_unchanged": true,
+      "second_original_helper_replay_passed": true,
+      "current_physical_apks_or_jars_rehashed_by_host_reviewer": false,
+      "new_native_build_or_artifact_commands_during_readback_or_replay": false,
+      "future_package_prerequisite_admitted": false
+    },
+    "preserved_baseline": {
+      "branch": "bka",
+      "target_release": "bp4a",
+      "variant": "user",
+      "with_gms": true,
+      "build_epoch": 1788144555,
+      "page_size_bytes": 4096,
+      "recovery": "working76",
+      "normal_android_enforcing_required": true
+    },
+    "remaining_gates": {
+      "images2": "pending",
+      "package2": "pending",
+      "complete_gms_manifest_coverage_verified": false,
+      "complete_current_vintf_verified": false,
+      "camera_runtime_verified": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "hardware_boot_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "native_result": {
+        "path": "reports/signapk-source-stamp-20260901/component-launcher-preparation-v2/bound-components-2-v1/root-component-build-v1/stdout.jsonl",
+        "sha256": "fa38ecd8d8797711ed2c546c9cadec250eb2a4bed90916c7249dfbbb8b5205a2",
+        "size_bytes": 10487509
+      },
+      "wrapper_exit": {
+        "path": "reports/signapk-source-stamp-20260901/component-launcher-preparation-v2/bound-components-2-v1/root-component-build-v1/exit.json",
+        "sha256": "0efc7070ef72d347cd6cc6e9db0ea6cae8229f593567f27f223c65f00ae23479",
+        "size_bytes": 85
+      },
+      "component_actions": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms2-actions-readback-v1/component-actions.json",
+        "sha256": "be1bde94879554023a1b57b320ef645c0d9d5bac3a03f4040ba5e7a0c14809ef",
+        "size_bytes": 4264994
+      },
+      "component_actions_readback": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms2-actions-readback-v1/completion.json",
+        "sha256": "8e07b99047d8af0dbe11c951627a40c408398c7ba11b9f2f1d010d4fc1e0f77a",
+        "size_bytes": 901
+      },
+      "component_actions_readback_derivation": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms2-actions-readback-v1/derivation.json",
+        "sha256": "137316d1c362ea1ba964c33421328d00232461345aa01593ee7b6f7b90264dea",
+        "size_bytes": 1089
+      },
+      "complete_evidence_readback": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms2-complete-evidence-readback-v1/verification.json",
+        "sha256": "d071dd1218ccb7874f4e4f60dcfff6a4fd408d3e589f254e4135e5684e795b4d",
+        "size_bytes": 67511
+      },
+      "recorded_result_review": {
+        "path": "reports/signapk-source-stamp-20260901/component-result-review-v1/actual-components-2-v1/review.json",
+        "sha256": "09c631b087fe222385dbea8cd487f76c3cdf100aa181b5697f1ca9cf1ed14c55",
+        "size_bytes": 32670
+      },
+      "independent_complete_evidence_replay": {
+        "path": "reports/signapk-source-stamp-20260901/component-result-review-v1/actual-components-2-v1/full-evidence-replay-v1/review.json",
+        "sha256": "25f8ed386b15bbfa6a20c93d0d01d4b75665953fef1f62b318d0c766158fb101",
+        "size_bytes": 38334
+      },
+      "second_original_helper_replay": {
+        "path": "reports/signapk-source-stamp-20260901/component-result-review-v1/actual-components-2-complete-replay-v1/replay-result.json",
+        "sha256": "7fcfdf6207b7b6ba2a1d3b7a8efce35773f93ebb42406cb5dd4ff6865350ea09",
+        "size_bytes": 64640
+      },
+      "second_original_helper_replay_freeze": {
+        "path": "reports/signapk-source-stamp-20260901/component-result-review-v1/actual-components-2-complete-replay-v1/freeze.json",
+        "sha256": "63dee618033528f9b1732345051530b3bbaa96f961058381977f43e56948d4ba",
+        "size_bytes": 824
+      },
+      "native_build_stdout": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms2-complete-evidence-readback-v1/files/build.stdout",
+        "sha256": "762449a56aae235748f4abc844a926183b3596faa8cb5ab09de8a3ae3a944e3d",
+        "size_bytes": 2458
+      },
+      "native_build_stderr": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms2-complete-evidence-readback-v1/files/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    },
+    "native_apk_verification": {
+      "source_and_installed_pairs": 4,
+      "signature_commands": 8,
+      "manifest_badging_commands": 8,
+      "all_sixteen_direct_child_exit_codes_zero": true,
+      "all_native_receipts_seals_start_records_and_raw_streams_replayed": true,
+      "strict_signature_Werr_retained": true,
+      "sdk_override_used": false,
+      "certificate_and_manifest_results_reproduced_by_original_helpers": true,
+      "full_manifest_xml_equivalence_claimed": false,
+      "source_apk_bytes_unchanged_at_native_component_check": true,
+      "current_physical_apk_hash_reobservation_claimed_by_host_replay": false,
+      "original_failed_gms1_receipt_reclassified": false
     }
   }
 }

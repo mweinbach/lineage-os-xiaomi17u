@@ -1,5 +1,82 @@
 # GMS source integration
 
+The **GMS2 component attempt passes**, with native and wrapper exit 0 on the
+543-file/fourteen-project source and build number
+**`nezha.3c24f46cf801e6abd6d5361c`**. Native Soong runs from
+**2026-09-01 16:04:16.531450 to 16:06:05.204931 UTC**. The completed profile and
+postcheck both verify with no postcheck errors. All six source/input guard maps
+and 254 configuration entries remain equal before/after; no output invalidation
+is requested. Ninja argv, limits, sandbox, stream and cleanup checks pass.
+
+The ordinary action proof records **two fresh actions** for CrossDevice's built
+and installed APKs, and **ten reused actions**. All four strict uses-library
+statuses are verified from unchanged commands, content inputs and retained
+historical action evidence: **zero fresh, four verified reused**. The separate
+SignApk proof records **three fresh producer actions**. Reused statuses are not
+unchecked cached files or newly executed checks.
+
+Complete readback passes for `component-actions.json` and **94 retained files
+(131,889,979 bytes)**: its 91 evidence files, the native result and both build
+streams. Independent replay verifies all sixteen
+native APK commands: **eight `apksigner -Werr` signature checks and eight
+`aapt2 dump badging` commands**, covering each source and installed APK for the
+four modules. All exited 0, with no SDK override or relaxed signature check.
+Installed CrossDevice verifies APK Signature Scheme v3 with the expected
+platform certificate and no obsolete SourceStamp warning; it does not carry a
+verified SourceStamp.
+The original pinned helpers reproduce the certificate, manifest, action and
+six-file metadata results. All 118 host inputs retain their bytes and nine stat
+fields across replay. This authenticates the completed native evidence; it
+neither rehashes current physical APK/JAR outputs nor admits a future package.
+
+The result preserves the context limits: app precompilation remains disabled
+by the existing source setting; generated app class-loader contexts, provider
+runtime registration, final installed/archive package selection and full
+manifest-XML equivalence remain unverified. Images2, package2, Camera behavior,
+complete VINTF, signed-chain/fit/OTA and hardware gates remain separate. Normal
+Android enforcement, 4 KiB and working76 are unchanged. Earlier failures and
+preparation checkpoints below retain their original scopes.
+
+The corrected **read-only graph capture passes on the 543-file source**, with transport
+exit 0 and 25 complete native query responses: fourteen GMS, five provider and
+six SignApk queries. All sixteen graph observations (**6,862,572,445 bytes**) and
+four log observations (**230,713,456 bytes**) remain equal before/after. The
+confined child checks three provider and two SignApk source bodies; the six
+complete source/history callbacks run outside it as real root. Their compared
+identities are retained, not full copies of every callback return. Independent
+review accepts capture provenance only, with no build or checker execution.
+
+The capture retains its **`03fe1558…` control map**. Subsequent host admission
+uses a separate **`5bfbf3a2…` graph validator** for the exact CrossDevice
+normal/order-only SignApk dependency overlap introduced by 0020. That exception
+binds the complete 1,114-byte query, original 909-byte rule and admitted source
+postimage; neither dependency category is removed. The **`1b11f447…` validator**
+remains bound to the original GMS1 graph and status proof. No captured controls,
+generated Ninja files or Android sources are rewritten by this host correction.
+
+The completed host replay qualifies twelve module actions and the three-step
+SignApk producer route, including its normal source dependency. It separately
+authenticates four historical strict-status actions without promoting the
+failed GMS1 result. Native proof-file checks, fresh signer/CrossDevice producer
+actions and all sixteen strict APK commands remain required for the next
+component attempt. Six proof records are staged at **2026-09-01 15:50:02 UTC**
+with native/root exit 0: **14,070,196 bytes**, each mode `0400`, root-owned and
+single-linked in a `0700` directory. Their host input observations remain
+unchanged. This writes proof records only, with no Android source/output
+changes or build. The complete **60,131,308-byte request** is separately staged
+at **15:57:27 UTC**, with exit 0 and the same `0400` file/`0700` directory
+constraints; the existing 64 MiB request limit is unchanged.
+The native GMS attempt remains pending at this checkpoint;
+no new APK, image, package or hardware success follows from admission or staging.
+
+The earlier **`73e92126…` capture remains failed**. Its first SignApk response
+exceeded the ordinary 1 MiB node bound; this was not a transport timeout. The
+successor handles the exact complete SignApk fan-out, Conscrypt dependency
+overlap and javac's implicit annotation output while preserving ordinary query
+limits. The failed receipt's aggregate source/output-write field remains
+`null`, and no result is reclassified from later evidence. The older GMS1
+SourceStamp failure and all following historical checkpoints remain intact.
+
 The adopted **543-file/fourteen-project source passes config8, context8 and
 ordinary `nothing5`**, with native/root exit 0 and successful postchecks through
 **2026-09-01 14:33:17 UTC**. config8 verifies 21 assignments and context8 verifies
@@ -159,6 +236,10 @@ to claim later native results.
 | nothing5 | 14:21:38.439959 | 14:33:17.732834 | Native/root 0; six metadata-file values pass, no component-action qualification |
 | Post-nothing5 log/source measurement (root interval) | 14:37:57.743324 | 14:37:58.035735 | Exit 0; four log measurements and two full file bodies retained, no graph admission |
 | Six config-path observations (root interval) | 14:37:58.037515 | 14:37:58.112198 | Exit 0; two Window bodies and four anchored app-config absences, no component admission |
+| Six component2 proof records (root interval) | 15:50:01.601034 | 15:50:02.600556 | Exit 0; 14,070,196 bytes staged, no Android source/output changes or build |
+| Complete component2 request (root interval) | 15:57:26.850535 | 15:57:27.955795 | Exit 0; 60,131,308 bytes staged under the unchanged 64 MiB bound, no build |
+| Four-module GMS2 native build | 16:04:16.531450 | 16:06:05.204931 | Native 0; completed wrapper/postcheck also 0, with fresh and reused actions counted separately |
+| Full GMS2 retained-evidence readback (root interval) | 16:27:37.701520 | 16:27:43.518651 | Both batches exit 0; 94 complete files retained, no new build or APK checks |
 
 The component command is `build/soong/soong_ui.bash --make-mode -j8` with
 `CrossDeviceAccessServicePrimary`, `CustomizationBundlePrebuiltFullVersion`,

@@ -10,6 +10,18 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **GMS2 component attempt passes its native build and postcheck** on the
+543-file/fourteen-project source with identity `3c24`. Native Soong exits 0 at
+**2026-09-01 16:06:05 UTC**; the completed wrapper also exits 0. Three SignApk
+actions and CrossDevice's build/install pair are fresh. Ten ordinary module
+actions are verified as reused, including all four strict uses-library checks;
+none of those four is claimed fresh. Complete retained-evidence readback and
+independent replay pass, including all sixteen native signature/manifest checks.
+Strict signature verification remains enabled. The earlier failed capture and GMS1 attempt
+remain failed; Images2, package2 and ROM readiness remain unverified. See
+[GMS source integration](gms-source-integration.md) for the separate capture,
+staging, action and postcheck evidence.
+
 The **543-file/fourteen-project source passes config8, context8 and ordinary
 `nothing5`**, with native/root exit 0 through **2026-09-01 14:33:17 UTC**.
 Six actual metadata-file values verify build number
