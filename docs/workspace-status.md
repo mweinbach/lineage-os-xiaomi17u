@@ -10,21 +10,30 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The **config7/context7 queries and ordinary `nothing4` run now pass with native
-and root exit 0** on the 541-file/fourteen-project source and build number
+The **corrected GMS read-only graph capture passes at 2026-09-01 11:11:47 UTC**,
+with all nineteen query streams verified and source, graph and log guards
+unchanged. Six proof records are staged at **11:21:37 UTC**; these are neither
+app builds nor image outputs. The four ordinary GMS module builds, Images2 and
+package2 remain pending. [GMS source integration](gms-source-integration.md)
+records the source-defined HTTP runtime provider, existing precompilation
+settings and the preserved earlier capture failure. ROM readiness remains false.
+
+The preceding **config7/context7 queries and ordinary `nothing4` run pass with
+native and root exit 0** on the 541-file/fourteen-project source and build number
 **`nezha.a2d9ab6affbe09593d338212`**. config7 passes 21 values at **09:17:23 UTC**,
 context7 passes seven at **09:25:02 UTC**, and `nothing4` finishes at
 **2026-09-01 09:46:14 UTC**. All six complete guard maps and all 254 configuration
 entries match; six actual metadata-file values match the new identity. Those
 value checks do not establish fresh file rewrites. The retained stdout shows
 165 frontend steps plus one `nothing` action, not GMS module or image builds.
-The four GMS modules, Images2 and package2 remain next; their status actions,
-class-loader contexts, graph provenance and package outputs are not yet qualified.
+Fresh GMS status actions, APK outputs and final package selection remain
+unverified; the later bounded graph qualification does not establish them.
 
 The source audit matches all **1,179 pinned HEADs and origins**, with **eight
 intentional locally patched projects** whose statuses match the installed source
-guards. The read-only post-run measurement retains the complete `nothing4`
-stdout and current log measurements; it grants no new graph-capture admission.
+guards. The earlier read-only post-run measurement retains the complete
+`nothing4` stdout and log measurements; the later graph capture has its own
+separate evidence and scope.
 
 The **four-file GMS source adoption completes at 2026-09-01 09:08:48 UTC with
 native and root exit 0**. Staging, full installation readback and all eleven
@@ -47,9 +56,9 @@ automatic SDK-28 compatibility.
 
 The earlier **95-APK audit remains 91 passes/four mismatches**, and the
 **08:45:34 UTC four-module proposal probe** remains separate read-only evidence,
-without generated rules or ordinary status stamps. The seven omitted selected
-declarations are now classified as three compressed ETC payloads, two JARs and
-two APKs with pre-existing strict-check waivers. None is counted as a manifest
+without generated rules or ordinary status stamps. The seven omitted declarations
+in the raw product request inventory are three compressed ETC payloads, two JARs
+and two APKs with pre-existing strict-check waivers. None is counted as a manifest
 pass. The Bugle/Velvet read-only manifest capture completes at **09:29:53 UTC**
 with native/root exit 0 and all five input guards unchanged. Neither APK declares
 a required Java uses-library; Bugle omits four optional declarations and Velvet

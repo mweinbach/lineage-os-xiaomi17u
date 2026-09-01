@@ -1,6 +1,13 @@
 # GMS source integration
 
-The current native baseline passes **config7, context7 and `nothing4`**, with
+The **corrected GMS read-only graph capture passes with native/root exit 0**
+at **2026-09-01 11:11:47 UTC**. All nineteen query streams are complete and
+independently reviewed. Six proof records are staged at **11:21:37 UTC**.
+The later host qualification covers twelve own actions for the four GMS
+modules, but their targeted build, Images2 and package2 remain pending.
+Provider runtime bytes, registration and final package selection remain separate.
+
+The preceding native baseline passes **config7, context7 and `nothing4`**, with
 native/root exit 0 through **2026-09-01 09:46:14 UTC**. It selects 541 source
 files across fourteen projects and build number `nezha.a2d9ab6affbe09593d338212`.
 The four GMS module builds, Images2 and package2 remain pending; these successful
@@ -15,13 +22,15 @@ ordinary GMS module build or a successful target-files package. The frozen
 patch contracts retain their earlier preparation scope; they are not rewritten
 to claim later native results.
 
-| Native phase | Started UTC | Finished UTC | Result |
+| Phase (native unless noted) | Started UTC | Finished UTC | Result |
 | --- | --- | --- | --- |
 | Stage | 08:56:41.613955 | 09:00:35.538351 | Native/root 0; four original copies and four postimages retained |
 | Install and accept | 09:02:19.958339 | 09:08:48.856056 | Native/root 0; four file exchanges and eleven journal events |
 | config7 | 09:16:31.165545 | 09:17:23.663493 | Native/root 0; 21 configuration values pass |
 | context7 | 09:24:10.391849 | 09:25:02.663108 | Native/root 0; seven context values pass |
 | nothing4 | 09:34:56.316554 | 09:46:14.038756 | Native/root 0; six metadata-file values pass |
+| Corrected read-only graph capture (root interval) | 10:58:17.868611 | 11:11:47.896959 | Native/root 0; fourteen GMS and five provider queries |
+| Six-proof staging (root interval) | 11:21:37.252232 | 11:21:37.544322 | Native/root 0; proof files only, no build |
 
 The journal's final `commit_verified` event is **09:06:54.418454 UTC**, before
 the complete installation acceptance finishes. Full readback binds the stage,
@@ -65,10 +74,50 @@ The actual frontend command is exactly
 165 frontend steps followed by one `nothing` action, not four successful GMS
 module builds. Ninja, its limits and sandbox are observed; descendant Ninja
 argv and native component actions remain outside this profile's qualification.
-The post-run read-only capture retains that complete stdout and current log
-measurements, but grants no graph-capture admission or module-info content claim.
-Fresh ordinary status actions and module/dexpreopt class-loader contexts still
-need verification against the installed source.
+The post-run read-only measurement retains that complete stdout and log
+measurements, without a module-info content claim. The later graph capture and
+bounded host qualification below are separate evidence; fresh ordinary status
+actions and APK verification still need the actual module build.
+
+The corrected capture retains all **fourteen GMS queries and five provider
+queries**, with **sixteen graph files totaling 6,862,572,001 bytes** and **four
+log files totaling 230,711,288 bytes** unchanged before and after. Six complete
+source/history callback returns are compared at real root before hashing,
+covering 541 source files across fourteen projects. The capture does not retain
+all raw callback maps inside its JSON. Three additional provider source bodies
+are checked inside the read-only jail; this is not the complete source vector.
+No build recipe or manifest checker executes during the capture.
+
+Actual pinned source defines the HTTP runtime alias
+`org.apache.http.legacy.impl`, whose captured forward path reaches the installed
+`system/framework/org.apache.http.legacy.jar` producer. The earlier selector
+incorrectly expected the SDK API alias to reach that installed JAR. Its failed
+`49d383f3` capture remains unchanged, including the error and incomplete-result
+fields. The corrected capture does not by itself qualify producer actions,
+all transitive recipes, installed provider bytes or runtime registration.
+
+The existing `DONT_DEXPREOPT_PREBUILTS := true` source branch disables
+precompilation for these four APKs, without disabling their four strict
+uses-library checks. Their app `dexpreopt.config` files are not
+produced by this configuration; no substitute files or generated class-loader
+contexts are fabricated or counted as passes. The two AndroidX Window dependency
+configs used by the strict checks are present and verified separately. These
+absence observations are scoped to the pre-build read; parent-directory metadata
+is not required to remain unchanged across a future build.
+
+The captured `product_packages.txt` is the raw `PRODUCT_PACKAGES` request list
+before override filtering, not an installed-app inventory. The original host
+admission's EmergencyInfo rejection is preserved. A corrected source-based
+interpretation now passes host admission while retaining SafetyHub's override;
+actual installed or archived EmergencyInfo absence is not yet verified.
+
+A separate hash-only observation at **11:12:45 UTC** verifies all four original
+source APKs and their `0644` modes unchanged; it runs no APK signature checker.
+The six staged proof files total **9,768,787 bytes**, with `0400` modes and
+root ownership, in a dedicated validation directory. This stage writes only
+proof records, not source, images or Android output. The actual host admission
+qualifies the four modules' twelve own actions and preserves strict checks;
+it remains preparation for the ordinary build, not an execution result.
 
 The source audit matches all **1,179 pinned HEADs and origins**. Eight projects
 carry intentional local patches: `build/make`, `build/soong`,
@@ -84,7 +133,8 @@ but remains read-only proposal evidence, without generated commands or ordinary
 build stamps. Source adoption does not retroactively turn either into ordinary
 module or package success.
 
-The seven omitted declarations are all selected by the captured product: three
+The seven omitted declarations appear in the captured raw product request
+inventory; their final installed selection is not established here. They are three
 compressed full APK payloads packaged as `ETC`, two `JAVA_LIBRARIES` JARs, and
 `PrebuiltBugle`/`Velvet` APKs with pre-existing explicit uses-library waivers.
 The separate stub APK passes do not cover the three full compressed payloads.

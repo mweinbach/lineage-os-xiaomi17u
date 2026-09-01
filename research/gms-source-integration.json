@@ -2,7 +2,7 @@
   "schema_version": 1,
   "device": "nezha",
   "observed_on": "2026-09-01",
-  "status": "native-source-and-ordinary-metadata-verified-gms-components-and-packaging-pending",
+  "status": "native-source-metadata-and-read-only-gms-graph-verified-components-and-packaging-pending",
   "prior_checkpoint": "research/workspace-integration.json:selected_gms_manifest_audit_checkpoint_20260901",
   "source": {
     "prior_files": 537,
@@ -91,10 +91,13 @@
     "caller_changes_installed_source": false,
     "source_input_and_graph_guards_preserved": true,
     "regenerated_graph_verified": false,
-    "graph_verification_scope": "Fresh component graph capture and full provenance remain unqualified; the ordinary nothing4 frontend run is verified separately.",
+    "graph_verification_scope": "The corrected read-only capture and host qualification of twelve own actions are verified in read_only_graph_capture_checkpoint_20260901; complete transitive recipe provenance and native component execution remain unverified.",
     "fresh_ordinary_gms_status_actions_verified": false,
     "actual_module_and_dexpreopt_contexts_verified": false,
-    "target_files_package_verified": false
+    "target_files_package_verified": false,
+    "read_only_graph_capture_verified": true,
+    "scoped_own_action_graph_qualification_verified": true,
+    "module_context_scope": "The existing prebuilt-preopt-disabled source branch and two dependency configs are verified; four app configs are not produced, and no generated app class-loader context or runtime result is claimed."
   },
   "historical_audit_scope": {
     "original_selected_apks": 95,
@@ -147,7 +150,9 @@
       "provider_presence_established": false,
       "waiver_settings_unchanged": true
     },
-    "waivers_changed_by_source_adoption": false
+    "waivers_changed_by_source_adoption": false,
+    "captured_product_selection_scope": "Raw PRODUCT_PACKAGES request inventory before install override filtering; this is not final installed or archived app selection.",
+    "final_installed_or_archived_selection_verified": false
   },
   "limits": {
     "complete_gms_manifest_coverage_verified": false,
@@ -374,6 +379,247 @@
         "path": "reports/gms-uses-library-20260901/root-post-nothing4-measurement-v1/nothing4.build.stdout",
         "sha256": "8e2b0d5044055780030045029ebe3d1bed738ed3b2ed74ec1516e29d48499934",
         "size_bytes": 17534
+      }
+    }
+  },
+  "read_only_graph_capture_checkpoint_20260901": {
+    "status": "read-only-graph-capture-and-proof-staging-verified-ordinary-components-pending",
+    "source_files": 541,
+    "source_projects": 14,
+    "build_number": "nezha.a2d9ab6affbe09593d338212",
+    "capture": {
+      "root_started_utc": "2026-09-01T10:58:17.868611+00:00",
+      "root_completed_utc": "2026-09-01T11:11:47.896959+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "read_only_capture_verified": true,
+      "gms_query_records": 14,
+      "provider_query_records": 5,
+      "complete_query_streams": 19,
+      "all_original_streams_losslessly_replayed": true,
+      "independent_review_passed": true,
+      "graph_files": 16,
+      "graph_total_bytes": 6862572001,
+      "log_files": 4,
+      "log_total_bytes": 230711288,
+      "complete_graph_and_log_observations_unchanged": true,
+      "complete_root_guard_callback_returns_compared_before_hashing": 6,
+      "complete_raw_guard_maps_retained_in_capture_json": false,
+      "individual_provider_source_bodies_checked_inside_jail": 3,
+      "complete_source_history_vector_checked_inside_jail": false,
+      "source_and_android_output_unchanged": true,
+      "producer_actions_admitted_by_capture": false,
+      "producer_mapping_verified_by_capture": false,
+      "complete_transitive_recipe_provenance_verified": false,
+      "native_build_or_manifest_checker_executed": false
+    },
+    "http_provider": {
+      "source_defined_runtime_alias": "org.apache.http.legacy.impl",
+      "captured_forward_route": [
+        "org.apache.http.legacy.impl",
+        "device_org.apache.http.legacy.impl_all_targets",
+        "out-nezha-user-policy-20260827T2220Z/target/product/nezha/system/framework/org.apache.http.legacy.jar"
+      ],
+      "source_alias_and_single_installed_jar_producer_scope_verified": true,
+      "installed_provider_jar_bytes_verified": false,
+      "runtime_registration_verified": false
+    },
+    "original_capture_failure": {
+      "status": "failed",
+      "failure": "one reachable actual provider JAR required",
+      "original_result_preserved": true,
+      "source_or_output_written": null,
+      "later_success_does_not_reclassify_original": true
+    },
+    "source_precompilation_semantics": {
+      "mode": "prebuilt-preopt-disabled-by-source",
+      "dont_dexpreopt_prebuilts": true,
+      "new_dexpreopt_disable_or_waiver_added": false,
+      "strict_manifest_status_commands_retained": 4,
+      "fresh_status_actions_executed": false,
+      "app_dexpreopt_configs_not_produced_by_selected_source": 4,
+      "app_config_absence_observation_scope": "prebuild-only",
+      "app_config_absence_after_future_build_verified": false,
+      "generated_app_class_loader_contexts_verified": false,
+      "substitute_app_config_files_created": false,
+      "androidx_window_dependency_configs_present_and_verified": 2,
+      "runtime_provider_presence_verified": false
+    },
+    "product_request_inventory": {
+      "kind": "declared-product-packages-before-install-overrides",
+      "source_export_and_override_filter_verified": true,
+      "emergency_info_present_in_raw_request_list": true,
+      "safetyhub_override_preserved": "EmergencyInfo",
+      "android_source_or_product_list_changed": false,
+      "effective_installed_or_archived_selection_verified": false,
+      "emergency_info_installed_or_archived_absence_verified": false,
+      "original_host_admission_failure_preserved": true
+    },
+    "source_apk_observation": {
+      "native_started_utc": "2026-09-01T11:12:45.354894+00:00",
+      "native_finished_utc": "2026-09-01T11:12:45.440793+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "original_source_apks_rehashed": 4,
+      "all_before_after_observations_equal": true,
+      "source_modes": "0644",
+      "apk_signature_checker_executed": false,
+      "source_or_android_output_written": false
+    },
+    "host_component_admission": {
+      "host_replay_passed": true,
+      "independent_review_passed": true,
+      "modules": 4,
+      "own_actions": 12,
+      "strict_manifest_status_commands": 4,
+      "full_transitive_recipe_provenance_verified": false,
+      "native_input_file_existence_verified_by_host_replay": false,
+      "native_component_dispatch_or_execution_verified": false,
+      "proof_staging_claimed_by_host_derivation": false,
+      "proof_staging_scope": "The six-file proof staging below is separate native evidence; the host derivation does not establish it."
+    },
+    "proof_staging": {
+      "root_started_utc": "2026-09-01T11:21:37.252232+00:00",
+      "root_completed_utc": "2026-09-01T11:21:37.544322+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "files": 6,
+      "total_bytes": 9768787,
+      "file_names": [
+        "capture.json",
+        "capture.stderr",
+        "nothing4-request.json",
+        "outer-sidecar-presence.json",
+        "packet.json",
+        "six-config-paths.json"
+      ],
+      "file_modes": "0400",
+      "uid": 0,
+      "gid": 0,
+      "source_or_android_output_modified": false,
+      "source_or_output_image_bytes_supplied": false,
+      "private_keys_supplied": false,
+      "native_build_performed": false
+    },
+    "next_gates": {
+      "four_ordinary_gms_modules": "pending",
+      "images2": "pending",
+      "package2": "pending",
+      "fresh_ordinary_gms_status_actions_verified": false,
+      "actual_gms_apk_outputs_verified": false,
+      "target_files_package_verified": false,
+      "complete_current_vintf_verified": false,
+      "complete_signed_chain_verified": false,
+      "runtime_verified": false,
+      "hardware_tested": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "corrected_capture": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/component-admission-v2/graph-capture-provider-v2/bound-nothing4-v1/root-capture-v1/capture.json",
+        "sha256": "83f7622dcfbb7c0ca09bd7ea5df446e26f7b3e0d0e540d8a0292d1dbac947a2f",
+        "size_bytes": 440910
+      },
+      "capture_completion": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-capture-provider2-execution-v1/completion.json",
+        "sha256": "195595b7baaca68694899258b55cf1020e5ffa5e4a5dd15eaae1189dcc537624",
+        "size_bytes": 378
+      },
+      "root_capture_review": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-capture-provider2-review-v1.json",
+        "sha256": "d4909338e1b8ec4e74336fcbf5d95c3c6f99da4252cf2714f677e0482a4f1807",
+        "size_bytes": 1093
+      },
+      "independent_capture_review": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/actual-gms-capture-result-review-v2/review.json",
+        "sha256": "62f9473215bcf090a19d1b66bb55db0d8274c038966021f2e9270b5e6a639695",
+        "size_bytes": 9442
+      },
+      "original_failed_capture": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/component-admission-v2/graph-capture-v1/bound-nothing4-v1/root-capture-v1/capture.json",
+        "sha256": "49d383f3dce79807f716050bfd27311dd5371c3bfc28628b46badd066d293ca6",
+        "size_bytes": 256013
+      },
+      "source_apk_observation": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-current-source-apks-v1/stdout.json",
+        "sha256": "1bbd0e14a88d0b92c7b824858e41b528e568240d9153c37cde4b3b4829ad2e85",
+        "size_bytes": 15184
+      },
+      "source_apk_observation_completion": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-current-source-apks-v1/completion.json",
+        "sha256": "4de9c696dd54c7a97be371442e1de4f059105d8ea1b5206f8c751990cf1d01f0",
+        "size_bytes": 381
+      },
+      "prebuilt_preopt_source": {
+        "path": "reports/gms-uses-library-20260901/root-prebuilt-dexpreopt-source-v1/stdout.json",
+        "sha256": "3917bcf548cd48c67d7c4fc4e5d80c6fd06234df19f549dccee2aab7f6d71db3",
+        "size_bytes": 57211
+      },
+      "make_context_source": {
+        "path": "reports/gms-uses-library-20260901/root-gms-fixed-context-readback-v2/stdout.json",
+        "sha256": "e99d17a7d3d0b76a3cde030427b911b49bda4de31fd5d5d277739c7e7b8fc7b4",
+        "size_bytes": 368448
+      },
+      "six_config_path_observations": {
+        "path": "reports/gms-uses-library-20260901/root-gms-six-config-paths-v2/stdout.json",
+        "sha256": "3534abb8e5b463f6d45cd7f8db9af054c77ce40d590493ef31c4d27f2465dc5f",
+        "size_bytes": 41431
+      },
+      "override_source": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-override-source-v1/stdout.json",
+        "sha256": "6adab044271f52adf305599559278aeb081874571905974939298d1fb5199c5f",
+        "size_bytes": 192243
+      },
+      "package_inventory_writer_source": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-package-writer-source-v1/stdout.json",
+        "sha256": "034ac199993c02137efc4ef989dcf6a1f48e912f2fbadb54094dfcda79c38fc8",
+        "size_bytes": 923943
+      },
+      "package_inventory_export_source": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-soong-package-export-source-v1/stdout.json",
+        "sha256": "dd16e7743c570a35fba916781359023c9324f675ea53fd231f89c3695c13f8fe",
+        "size_bytes": 120748
+      },
+      "host_admission_derivation": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/component-admission-v2/actual-admission-preparation-v2/actual-components-1-v1/derivation.json",
+        "sha256": "26bd4d771436ca083068e6e01cd5a8cd235df0313f5cdfed8efe6298c2b0575e",
+        "size_bytes": 2663
+      },
+      "host_graph_qualification": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/component-admission-v2/actual-admission-preparation-v2/actual-components-1-v1/qualification.json",
+        "sha256": "24e3e078f985dd9a91afb3467336aa9e69ebf8c8280518733da24a2580004aad",
+        "size_bytes": 86435
+      },
+      "host_context_validation": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/component-admission-v2/actual-admission-preparation-v2/actual-components-1-v1/context_validation.json",
+        "sha256": "388cc9e234f59e69990f658a5dbdecbf6524aecf7876b89476ab38d7e53f9976",
+        "size_bytes": 84447
+      },
+      "independent_host_admission_replay": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/actual-component-assembly-review-v2/actual-replay.json",
+        "sha256": "466d1582bc57dc9589672efc8c83eceea3d90e6ab3ae94db8ec67a6b23e9df15",
+        "size_bytes": 20020
+      },
+      "independent_host_admission_review": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/actual-component-assembly-review-v2/review.json",
+        "sha256": "e38adf9849900cbf0537477ae39833838eda4428eaa0417933b9515c0f335510",
+        "size_bytes": 19848
+      },
+      "original_failed_host_admission": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/component-admission-v2/actual-admission-preparation-v1/actual-components-1-v1/failure.json",
+        "sha256": "e7bc154e562ab0424d527ad22332a3592070fed436d49604d7201f58bebbc9e8",
+        "size_bytes": 1358
+      },
+      "proof_staging": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/component-proof-staging-preparation-v1/actual-render-v1/root-stage-gms-component-proofs-v1/stdout.json",
+        "sha256": "19ded800ddf425e75761d05518f3ceeff998f911337d02e76adabe147273c82a",
+        "size_bytes": 2781
+      },
+      "proof_staging_completion": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/component-proof-staging-preparation-v1/actual-render-v1/root-stage-gms-component-proofs-v1/completion.json",
+        "sha256": "955587e9a73b77aaaa3461b6160509b7202526fd05e9e4a2576526ca19a08912",
+        "size_bytes": 1212
       }
     }
   }

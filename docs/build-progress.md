@@ -1,5 +1,19 @@
 # Nezha product and build progress
 
+The **2026-09-01 11:11:47 UTC corrected GMS read-only capture** passes with
+native/root exit 0, nineteen complete query streams and unchanged guarded
+source, graph and log observations. Six proof records are staged at
+**11:21:37 UTC**, without source or Android-output changes. Host qualification
+now covers the four modules' twelve own actions; their targeted build,
+Images2 and package2 remain pending. The original capture and earlier host
+admission failures remain retained. See [GMS source integration](gms-source-integration.md)
+for the source-defined HTTP provider, precompilation and package-list scope.
+
+The preceding metadata checkpoint was committed as **2d138b8** after the
+coordinator's full suite passed **4,305 tests in 194.988 seconds with zero skips**
+at **10:07:15 UTC**. That run covers the six frozen metadata-checkpoint files,
+not this later capture/staging documentation change.
+
 The **2026-09-01 09:46:14 UTC `nothing4` checkpoint** passes with native and
 root exit 0 on the current 541-file/fourteen-project source and `a2d9` identity.
 The preceding config7/context7 queries also pass, checking 21 and seven values
@@ -12,9 +26,10 @@ The exact frontend command is `build/soong/soong_ui.bash --make-mode -j8 nothing
 Ninja is observed with passing limit and sandbox checks, while descendant argv
 and component actions remain unqualified. All 1,179 source-lock HEADs and origins
 match; the eight expected locally patched projects match their installed guards.
-The later read-only measurement captures the complete stdout and current log
-identities without granting new graph-capture admission. Four GMS module builds,
-Images2 and package2 remain pending, with no Camera or hardware success implied.
+The post-run read-only measurement captures the complete stdout and log
+identities; the later graph capture above is separate evidence. Four GMS module
+builds, Images2 and package2 remain pending, with no Camera or hardware success
+implied.
 See [GMS source integration](gms-source-integration.md) for exact phase evidence.
 
 The earlier six-file adoption checkpoint was committed as **8857312** after
