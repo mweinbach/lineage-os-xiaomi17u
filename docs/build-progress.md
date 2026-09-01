@@ -7,10 +7,20 @@ configuration is the approved namespace-export list, from eight to ten entries.
 Its 166 frontend steps plus one `nothing` phony are not component/image builds
 or tests. Ninja and its sandbox are observed, but exact Ninja arguments are not
 qualified by this profile; matching metadata values do not prove fresh rewrites.
-Current producer/sidecar evidence, seven image goals and target-files are next.
-Kernel AVB/origin, signing, super/OTA and hardware gates remain. See
+The subsequent read-only producer capture, exact recovery-declaration review
+and nine-proof staging are complete. They execute no image recipe; the outcome
+for four image targets and three policy sidecars, followed by target-files,
+remains unverified. The first
+optional AIDL capture fails its bounded Ninja query without compilation. Kernel
+AVB/origin, signing, super/OTA and hardware gates remain. See
 [current status](workspace-status.md) and the
-[ordinary run evidence](../research/workspace-integration.json).
+[ordinary run and preparation evidence](../research/workspace-integration.json).
+
+Commit **1ef9bf3** adds the maintained
+[signed target-files reconciler](signed-target-files-reconciliation.md) and
+streaming archive copier. Its 72 added tests use synthetic archives and mocked
+cryptography; the full workspace suite passes 4,261 tests in 192.570 seconds,
+with zero skips. No actual signing or target-files reconciliation has run.
 
 The **2026-09-01 03:01:01 UTC product-query checkpoint** verifies the adopted
 537-source/thirteen-project configuration with identity

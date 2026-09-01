@@ -6,8 +6,8 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 1, 2026 UTC (August 31 in
-New York)**. UTC milestones before 04:00 occur on the preceding New York date.
+consolidates recorded evidence through **September 1, 2026 in UTC and
+New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
 The corrected Evolution/factory policy source build and its **scoped policy3
@@ -29,9 +29,11 @@ and **config6/context6 pass all 21 configuration and seven context value checks*
 on the adopted source. The subsequent **ordinary `nothing3` run passes at
 2026-09-01 03:22:47 UTC**, including graph regeneration and the six actual
 metadata-file value checks for the new identity. This does not establish fresh
-rewrites or component/image actions. Current producer/sidecar evidence is next,
-followed by the seven image goals and target-files. **Output-image builds and
-packaged-policy checks remain pending**. Commit **4335f1b** adds
+rewrites or component/image actions. The current read-only producer/sidecar
+capture, exact recovery-declaration review and nine-record proof stage are
+complete. The execution outcome for four image targets and three policy
+sidecars, followed by target-files, remains unverified.
+**Output-image builds and packaged-policy checks remain pending**. Commit **4335f1b** adds
 the explicit [policy3 image-input profile](policy-image-inputs.md), including
 qualified installed sidecars. Source-input selection does not admit a final
 flashable artifact: the full signed chain and physical partition fit remain
@@ -789,9 +791,16 @@ arguments; its automatic `-j19` is not component-build qualification. Four
 kernel AVB/origin warnings, the prebuilt-kernel banner and two namespace UID/GID
 warnings remain preserved. The 537-source/thirteen-project input and protected
 records remain verified, while graph/configuration/metadata writes are allowed.
-Current producer and sidecar capture must precede the seven image goals and
-target-files; optional AIDL, full signing, super/OTA and hardware checks remain
-separate gates. See the [actual run record](../research/workspace-integration.json).
+Subsequent read-only capture covers four image goals and three policy sidecars,
+with independent review of the outer 537-file/thirteen-project source guards and two
+Ninja queries. Separate review binds exactly two identical recovery goal/leaf
+command declarations. Nine proof records are staged without image bodies or
+private keys. These results prepare the image phase; they do not establish
+producer execution or a new recovery/image build. The first optional AIDL
+capture fails its 8 MiB Ninja-query bound, with no compilation; its failed
+capture is preserved while a successor is prepared. The seven-goal phase,
+target-files, optional AIDL, full signing, super/OTA and hardware checks remain
+separate gates. See the [actual preparation record](../research/workspace-integration.json).
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
@@ -873,7 +882,23 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,189 tests in 178.577
+Commit **1ef9bf3** promotes the maintained
+[signed target-files reconciler](signed-target-files-reconciliation.md) and
+streaming archive copier with 72 synthetic tests. They preserve an original
+archive while integrating an already verified signed image set; the helper
+itself does not sign. No actual target-files archive, signing operation or
+reconciliation run is established by this tooling milestone.
+
+The latest completed full workspace suite passed **4,261 tests in 192.570
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `d5e9305` plus the five signed-target-files tooling files, then committed
+as `1ef9bf3`. All five identities remained unchanged. This later preparation
+documentation is outside that offline run; synthetic cryptography tests are not
+native signing evidence.
+The preceding suite passed **4,189 tests in 172.558 seconds with zero failures,
+errors or skips**, against `e6a0a63` plus the three unchanged `nothing3` documents,
+then committed as `d5e9305`.
+The preceding suite passed **4,189 tests in 178.577
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `f99a944` plus the three query documents, then committed as `e6a0a63`.
 All three bound document identities remained unchanged. This later `nothing3`
@@ -1260,6 +1285,9 @@ override theme defaults. No Magisk integration is included.
   the existing development key and 15 final input images. Its planning and
   unsigned descriptor-carrier checks have run; private-key signing and the
   complete 17-role output-chain verification have not. Keys remain on the Mac.
+  The maintained [signed target-files reconciler](signed-target-files-reconciliation.md)
+  can preserve an existing archive around an already verified signed set; its
+  synthetic tests do not supply an actual archive or signing result.
   The [pinned build-metadata capability](pinned-build-metadata.md) now verifies
   33 expected isolated native Kati outcomes. Patch 0012 and its helper are now
   selected in source. Nothing2 verifies six metadata-file values; independent

@@ -1138,5 +1138,153 @@
       }
     },
     "independent_actual_review_verified": true
+  },
+  "offline_validation_nothing_checkpoint_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests_run": 4189,
+    "reported_test_seconds": 172.558,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "e6a0a63923211a96608461187c1f39e7f350eb96",
+    "completed_utc": "2026-09-01T03:35:30.513769+00:00",
+    "scope": "Committed code plus three unchanged nothing3 documents; later tooling and preparation are outside this run.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-policy3-nothing-v1/unittest.log",
+      "sha256": "c24a47238d5e96b5d5c6260df7d36242411419804c4aa32b208ff68d4a1b0dd6",
+      "size_bytes": 729763
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-policy3-nothing-v1/completion.json",
+      "sha256": "44d35df2800b2d1edd6362eaa94494b050ab03668922c448f0e39d27fdd2e01d",
+      "size_bytes": 1667
+    }
+  },
+  "offline_validation_signed_target_files_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests_run": 4261,
+    "reported_test_seconds": 192.57,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "d5e93059d35d1d2b7865ea5260a50e5982391fe9",
+    "completed_utc": "2026-09-01T04:09:03.196378+00:00",
+    "scope": "Committed code plus five unchanged reconciler/copier/doc/test files, then committed as 1ef9bf398a424cff0d13de932f8309b6073ded12. This subsequent checkpoint documentation is outside the run; mocked native cryptography is not actual signing evidence.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-signed-target-files-tooling-v1/tests.log",
+      "sha256": "5038bd87ada0930be9c5b0cb43a5a302fefa0f28644978abd838e221bac50873",
+      "size_bytes": 742361
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-signed-target-files-tooling-v1/completion.json",
+      "sha256": "304b70417af616b2629ef1e60cbcb424b98b40804d703ffcd6e1993889e89014",
+      "size_bytes": 2419
+    }
+  },
+  "packaging_preparation_20260901": {
+    "status": "verified-readonly-producer-capture-and-proof-staging-plus-maintained-host-tooling-not-image-builds",
+    "signed_target_files_tooling": {
+      "commit": "1ef9bf398a424cff0d13de932f8309b6073ded12",
+      "guide": "docs/signed-target-files-reconciliation.md",
+      "coordinator": "scripts/reconcile_signed_target_files.py",
+      "copier": "scripts/target_files_archive_copy.py",
+      "added_synthetic_tests": 72,
+      "native_cryptography_mocked_in_tests": true,
+      "original_archive_and_unselected_members_preservation_implemented": true,
+      "actual_rom_archive_reconciliation_performed": false,
+      "actual_signing_performed": false
+    },
+    "producer_capture": {
+      "read_only_capture_verified": true,
+      "image_goals": 4,
+      "policy_sidecars": 3,
+      "ninja_queries": 2,
+      "outer_source_files_verified_each_pass": 537,
+      "outer_source_projects_verified_each_pass": 13,
+      "jailed_child_source_files_verified": 0,
+      "graph_logs_outputs_and_bound_inputs_preserved": true,
+      "capture_alone_admits_producer_mapping_or_actions": false,
+      "native_build_or_checker_executed": false,
+      "unprivileged_host_execution_claimed": false
+    },
+    "recovery_declarations": {
+      "selected_identical_goal_and_leaf_command_declarations": 2,
+      "general_duplicate_command_admission": false,
+      "new_recovery_build_or_image_verification_performed": false
+    },
+    "proof_staging": {
+      "records": 9,
+      "total_bytes": 328910,
+      "file_mode": "0400",
+      "image_bodies_supplied": false,
+      "private_keys_supplied": false,
+      "source_or_android_output_modified": false,
+      "native_build_performed": false
+    },
+    "aidl_first_capture": {
+      "status": "failed",
+      "error": "Ninja query output exceeded bound",
+      "query_bound_bytes": 8388608,
+      "query_observed_stdout_bytes": 8388949,
+      "overflowing_query_exit_code": -9,
+      "stdout_truncated": true,
+      "guard_errors": [],
+      "discovery_complete": false,
+      "producer_actions_admitted": false,
+      "native_compilation_performed": false,
+      "complete_preservation_proof_claimed": false,
+      "successor_preparation_pending": true
+    },
+    "next_gate": "Qualify the four image targets and three policy sidecars, followed by target-files. AIDL compilation, actual signing/reconciliation, super/OTA and hardware validation remain separate.",
+    "limits": {
+      "current_image_phase_success_verified": false,
+      "target_files_admitted": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "full_recursive_graph_provenance_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "producer_capture": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/seven-producer-capture-v3/root-seven-producer-capture-v1/capture.json",
+        "sha256": "a239123e3b4e443097f3e976ccd833428300e2e306f77b5faef8db522ec43aed",
+        "size_bytes": 134587
+      },
+      "producer_capture_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/caller-review-v1/actual-seven-capture-review-v1.json",
+        "sha256": "4c5bda425f4f427490e81eeaa8cb0f030e33a5ee56dfa66edc046d135fa44ee9",
+        "size_bytes": 11949
+      },
+      "recovery_declarations": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-recovery-rule-capture-v1/run-v1/stdout.json",
+        "sha256": "27301b1e2cca64b7e080255017a131567b53e2c3667fce9e8dd1cb6f349ee3b1",
+        "size_bytes": 5269
+      },
+      "recovery_declaration_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/recovery-rules-review-v1.json",
+        "sha256": "ea4b8606bea7416c56cf67be6457dd5fa41f57f8b53cd8609d3480f28d9a88c2",
+        "size_bytes": 8151
+      },
+      "nine_proof_staging": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-stage-image-proofs-v1/stdout.json",
+        "sha256": "7d92efdc99c10ff07ed69509e63e1e4e04ce6640fd2ad5a4a78a217b60e1c50b",
+        "size_bytes": 3705
+      },
+      "nine_proof_staging_completion": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-stage-image-proofs-v1/completion.json",
+        "sha256": "795ceea2df547592d5cda62b99e5ba10f0293f7fc4f62704213d9d4125eb8218",
+        "size_bytes": 1203
+      },
+      "failed_aidl_capture": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/capture-preparation-v1/bound-v1/run-v1/capture.json",
+        "sha256": "897bfc618930e8a6b99a53b52f2aa5644ecab3dbf2586536962d84b190d24885",
+        "size_bytes": 11598019
+      }
+    }
   }
 }
