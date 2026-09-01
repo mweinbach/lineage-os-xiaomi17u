@@ -2,7 +2,7 @@
   "schema_version": 1,
   "device": "nezha",
   "observed_on": "2026-09-01",
-  "status": "native-four-file-source-adoption-verified-ordinary-builds-pending",
+  "status": "native-source-and-ordinary-metadata-verified-gms-components-and-packaging-pending",
   "prior_checkpoint": "research/workspace-integration.json:selected_gms_manifest_audit_checkpoint_20260901",
   "source": {
     "prior_files": 537,
@@ -59,6 +59,7 @@
     "native_module_or_image_build_performed": false
   },
   "projected_identity": {
+    "scope": "Host projection only; later native configuration and metadata verification is recorded in ordinary_metadata_checkpoint_20260901.",
     "identity_sha256": "a2d9ab6affbe09593d3382120be86d02f453c4f2c82dce1aef2a68910b16d488",
     "build_number": "nezha.a2d9ab6affbe09593d338212",
     "prior_identity_sha256": "8643b579050aab0dd3218ae364c00eb56a99db4d539f0f0ff239616a279548cd",
@@ -73,10 +74,13 @@
     "native_configuration_and_metadata_values_verified": false
   },
   "next_native_checks": {
-    "config7": "dispatch-recorded-without-completed-result",
+    "config7": "passed",
     "config7_dispatch_reported_utc": "2026-09-01T09:13:54+00:00",
-    "context7": "pending",
-    "nothing4": "pending",
+    "context7": "passed",
+    "nothing4": "passed",
+    "four_gms_modules": "pending",
+    "images2": "pending",
+    "package2": "pending",
     "prepared_nothing_argv": [
       "build/soong/soong_ui.bash",
       "--make-mode",
@@ -87,6 +91,7 @@
     "caller_changes_installed_source": false,
     "source_input_and_graph_guards_preserved": true,
     "regenerated_graph_verified": false,
+    "graph_verification_scope": "Fresh component graph capture and full provenance remain unqualified; the ordinary nothing4 frontend run is verified separately.",
     "fresh_ordinary_gms_status_actions_verified": false,
     "actual_module_and_dexpreopt_contexts_verified": false,
     "target_files_package_verified": false
@@ -119,7 +124,29 @@
     "separate_stub_apk_passes_cover_full_payloads": false,
     "waiver_rationale_established": false,
     "waiver_manifest_capture_prepared": true,
-    "waiver_manifest_capture_executed": false,
+    "waiver_manifest_capture_executed": true,
+    "waiver_manifest_capture": {
+      "started_utc": "2026-09-01T09:29:49.051865+00:00",
+      "completed_utc": "2026-09-01T09:29:53.353115+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "successful_aapt2_commands": 2,
+      "unchanged_guarded_inputs": 5,
+      "required_java_uses_libraries": {
+        "PrebuiltBugle": [],
+        "Velvet": []
+      },
+      "omitted_optional_declarations": {
+        "PrebuiltBugle": 4,
+        "Velvet": 6
+      },
+      "velvet_http_already_declared": true,
+      "independent_review_passed": true,
+      "strict_checker_executed_against_apks": false,
+      "apk_signatures_verified": false,
+      "provider_presence_established": false,
+      "waiver_settings_unchanged": true
+    },
     "waivers_changed_by_source_adoption": false
   },
   "limits": {
@@ -204,6 +231,150 @@
       "path": "reports/gms-uses-library-20260901/omitted-check-review-v1/verification.json",
       "sha256": "a6f79b751b5fb92e16989687a1cc3baa8839eff30f67ccc4975947fd1b06f283",
       "size_bytes": 6223
+    },
+    "omitted_manifest_capture": {
+      "path": "reports/gms-uses-library-20260901/root-omitted-manifest-capture-v1/result.json",
+      "sha256": "35932857b8d262d95314097269f01d418dd3d9911df77c9342845814aa50c7e0",
+      "size_bytes": 56170
+    },
+    "omitted_manifest_capture_review": {
+      "path": "reports/gms-uses-library-20260901/omitted-check-review-v1/actual-capture-review-v1/review.json",
+      "sha256": "965c9e0dabbdbce625af68747262564cf13a5bed3346cb0b79d0990d59bbedee",
+      "size_bytes": 13246
+    }
+  },
+  "ordinary_metadata_checkpoint_20260901": {
+    "status": "config7-context7-and-ordinary-nothing4-verified-components-images2-package2-pending",
+    "completed_utc": "2026-09-01T09:46:14.038756+00:00",
+    "source_files": 541,
+    "source_projects": 14,
+    "build_number": "nezha.a2d9ab6affbe09593d338212",
+    "identity_sha256": "a2d9ab6affbe09593d3382120be86d02f453c4f2c82dce1aef2a68910b16d488",
+    "config7": {
+      "native_started_utc": "2026-09-01T09:16:31.165545+00:00",
+      "native_finished_utc": "2026-09-01T09:17:23.663493+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "verified_values": 21,
+      "ninja_observed": false
+    },
+    "context7": {
+      "native_started_utc": "2026-09-01T09:24:10.391849+00:00",
+      "native_finished_utc": "2026-09-01T09:25:02.663108+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "verified_values": 7,
+      "ninja_observed": false
+    },
+    "nothing4": {
+      "native_started_utc": "2026-09-01T09:34:56.316554+00:00",
+      "native_finished_utc": "2026-09-01T09:46:14.038756+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "frontend_argv": [
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j8",
+        "nothing"
+      ],
+      "frontend_steps": 165,
+      "nothing_actions": 1,
+      "ninja_observed": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "descendant_ninja_argv_verified": false,
+      "native_component_actions_verified": false,
+      "actual_metadata_file_values_verified": 6,
+      "metadata_files": [
+        "build_date.txt",
+        "file_name_tag.txt",
+        "soong/build_hostname.txt",
+        "soong/build_number.txt",
+        "target/product/nezha/build_fingerprint-lineage_nezha.txt",
+        "target/product/nezha/build_thumbprint-lineage_nezha.txt"
+      ],
+      "output_freshness_verified": false
+    },
+    "shared_verification": {
+      "all_six_complete_guard_maps_equal_for_each_phase": true,
+      "configuration_entries": 254,
+      "all_configuration_entries_aliases_source_history_and_strict_settings_equal": true,
+      "source_lock_matching_heads": 1179,
+      "source_lock_matching_origins": 1179,
+      "expected_locally_patched_projects": [
+        "build/make",
+        "build/soong",
+        "device/lineage/sepolicy",
+        "external/mdnsresponder",
+        "system/core",
+        "system/sepolicy",
+        "vendor/gms",
+        "vendor/lineage"
+      ],
+      "each_reported_patch_status_matches_installed_source_guards": true,
+      "corrected_root_review_preserves_expected_patch_reports": true
+    },
+    "post_nothing_measurement": {
+      "started_utc": "2026-09-01T09:53:51.475070+00:00",
+      "finished_utc": "2026-09-01T09:53:51.604975+00:00",
+      "full_nothing_stdout_materialized": true,
+      "current_ninja_log_files_measured": 4,
+      "module_info_content_captured": false,
+      "graph_capture_admission_granted": false,
+      "source_or_output_written": false
+    },
+    "next_gates": {
+      "four_gms_modules": "pending",
+      "images2": "pending",
+      "package2": "pending",
+      "fresh_ordinary_gms_status_actions_verified": false,
+      "actual_module_and_dexpreopt_contexts_verified": false,
+      "complete_component_graph_provenance_verified": false,
+      "target_files_package_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "config7_result": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-product-config-7-v1/stdout.jsonl",
+        "sha256": "2623ece40a3169739a6644ab4a1fcdc0df48e55b8044759b92d72fedcdea6535",
+        "size_bytes": 10144604
+      },
+      "config7_review": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-product-config-7-review-v1.json",
+        "sha256": "cad0184118cff533e634a76709825aa577a2fa5049c5726d545558b87e708877",
+        "size_bytes": 939
+      },
+      "context7_result": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-product-context-7-v1/stdout.jsonl",
+        "sha256": "e3b5b73ccc63bcfa38d059bff2b9d071a776e962f987058e93b93aad4463f4dc",
+        "size_bytes": 10131931
+      },
+      "context7_review": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-product-context-7-review-v1.json",
+        "sha256": "f389ea38c65b64adc30aa83c5cfa5610147a698085747a80cecb23c2ee7065ac",
+        "size_bytes": 750
+      },
+      "nothing4_result": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-nothing-4-v1/stdout.jsonl",
+        "sha256": "e561da228789473e0174727f7c93de96b4a7fd130c1a3c23c4c1158c59a56e01",
+        "size_bytes": 10135380
+      },
+      "nothing4_review": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-nothing-4-review-v1.json",
+        "sha256": "ef7dd3cfdb0038fa574cc722c8b335e20b000df0220e08edfc70988f3ebd0148",
+        "size_bytes": 1407
+      },
+      "post_nothing_measurement": {
+        "path": "reports/gms-uses-library-20260901/root-post-nothing4-measurement-v1/stdout.json",
+        "sha256": "a91275a382ce4aee437ab368051844fddb83400393b4f6e811b68f1225ce6037",
+        "size_bytes": 105004
+      },
+      "full_nothing_stdout": {
+        "path": "reports/gms-uses-library-20260901/root-post-nothing4-measurement-v1/nothing4.build.stdout",
+        "sha256": "8e2b0d5044055780030045029ebe3d1bed738ed3b2ed74ec1516e29d48499934",
+        "size_bytes": 17534
+      }
     }
   }
 }

@@ -1,5 +1,30 @@
 # Nezha product and build progress
 
+The **2026-09-01 09:46:14 UTC `nothing4` checkpoint** passes with native and
+root exit 0 on the current 541-file/fourteen-project source and `a2d9` identity.
+The preceding config7/context7 queries also pass, checking 21 and seven values
+respectively. All three runs preserve the six complete source/input guard maps
+and the 254-field configuration. `nothing4` verifies all six actual metadata-file
+values; matching values do not prove fresh rewrites.
+
+The full retained stdout shows **165 frontend steps and one `nothing` action**.
+The exact frontend command is `build/soong/soong_ui.bash --make-mode -j8 nothing`.
+Ninja is observed with passing limit and sandbox checks, while descendant argv
+and component actions remain unqualified. All 1,179 source-lock HEADs and origins
+match; the eight expected locally patched projects match their installed guards.
+The later read-only measurement captures the complete stdout and current log
+identities without granting new graph-capture admission. Four GMS module builds,
+Images2 and package2 remain pending, with no Camera or hardware success implied.
+See [GMS source integration](gms-source-integration.md) for exact phase evidence.
+
+The earlier six-file adoption checkpoint was committed as **8857312** after
+the coordinator's full suite passed **4,305 tests in 182.264 seconds with zero
+skips**. That run verified the frozen adoption documents, not this later
+query/`nothing4` documentation milestone.
+
+The adoption paragraphs below retain their earlier query-dispatch checkpoint;
+the completed native query and metadata results above supersede that status.
+
 The **2026-09-01 09:08:48 UTC four-file GMS source-adoption checkpoint** passes
 with native and root exit 0. Staging finishes at 09:00:35 UTC; installation
 records four exchanges and eleven journal events, with `commit_verified` at

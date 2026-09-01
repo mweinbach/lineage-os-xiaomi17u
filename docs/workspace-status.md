@@ -10,6 +10,22 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **config7/context7 queries and ordinary `nothing4` run now pass with native
+and root exit 0** on the 541-file/fourteen-project source and build number
+**`nezha.a2d9ab6affbe09593d338212`**. config7 passes 21 values at **09:17:23 UTC**,
+context7 passes seven at **09:25:02 UTC**, and `nothing4` finishes at
+**2026-09-01 09:46:14 UTC**. All six complete guard maps and all 254 configuration
+entries match; six actual metadata-file values match the new identity. Those
+value checks do not establish fresh file rewrites. The retained stdout shows
+165 frontend steps plus one `nothing` action, not GMS module or image builds.
+The four GMS modules, Images2 and package2 remain next; their status actions,
+class-loader contexts, graph provenance and package outputs are not yet qualified.
+
+The source audit matches all **1,179 pinned HEADs and origins**, with **eight
+intentional locally patched projects** whose statuses match the installed source
+guards. The read-only post-run measurement retains the complete `nothing4`
+stdout and current log measurements; it grants no new graph-capture admission.
+
 The **four-file GMS source adoption completes at 2026-09-01 09:08:48 UTC with
 native and root exit 0**. Staging, full installation readback and all eleven
 journal events are retained; the journal's `commit_verified` event is earlier,
@@ -20,12 +36,11 @@ Makefiles, the installed 0018/0019 changes and eight unchanged image observation
 (six present files and two exact archive absences). Independent stage and
 installation reviews pass; the separate host identity review is also clear.
 
-Host reprojection produces build number **`nezha.a2d9ab6affbe09593d338212`**.
-That calculation does not qualify native configuration or metadata values.
-config7 dispatch is recorded at **09:13:54 UTC**, without a completed result;
-context7, `nothing4`, graph regeneration and fresh ordinary GMS status actions
-remain pending. The reviewed explicit `-j8 nothing` caller changes no
-installed source and retains the existing guards. The 4 KiB baseline, working76,
+The earlier host identity calculation remains distinct from the later native
+query and metadata results above. The ordinary frontend uses the reviewed exact
+`-j8 nothing` command; observed Ninja limits and sandbox checks pass, but this
+profile does not qualify descendant Ninja argv or component actions. No
+installed source changes in this run. The 4 KiB baseline, working76,
 normal Android enforcement and original APKs remain unchanged. HTTP remains
 selected; CrossDevice removes only its stale direct declaration and retains
 automatic SDK-28 compatibility.
@@ -35,7 +50,11 @@ The earlier **95-APK audit remains 91 passes/four mismatches**, and the
 without generated rules or ordinary status stamps. The seven omitted selected
 declarations are now classified as three compressed ETC payloads, two JARs and
 two APKs with pre-existing strict-check waivers. None is counted as a manifest
-pass. The Bugle/Velvet waiver-manifest capture is prepared but has not run.
+pass. The Bugle/Velvet read-only manifest capture completes at **09:29:53 UTC**
+with native/root exit 0 and all five input guards unchanged. Neither APK declares
+a required Java uses-library; Bugle omits four optional declarations and Velvet
+omits six. No strict checker, APK signature or provider-presence result follows,
+and the existing waivers remain unchanged.
 
 The **first ordinary `target-files-package` build remains failed**, with native
 and wrapper exit 1 at **08:03:01 UTC** on the customization bundle's missing

@@ -2174,5 +2174,90 @@
     "runtime_verified": false,
     "complete_rom_ready": false,
     "phone_accessed": false
+  },
+  "offline_validation_gms_source_adoption_checkpoint_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4305,
+    "elapsed_seconds": 182.264,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "6253533ffd2d2c9c2276a87e47bf005bcd3a51b1",
+    "completed_utc": "2026-09-01T09:21:36.715157+00:00",
+    "tested_files": 6,
+    "tested_files_unchanged": true,
+    "subsequent_commit": "8857312838a196e79c13f070f46ab851348ec8f0",
+    "scope": "Committed code plus six unchanged native-source-adoption documents and research records, subsequently committed as 8857312838a196e79c13f070f46ab851348ec8f0. This later config7/context7/nothing4 documentation milestone is outside that run.",
+    "log": {
+      "path": "reports/gms-uses-library-20260901/root-source-adoption-checkpoint-tests-v1/unittest.log",
+      "sha256": "2f8d346addf638b1c95309018bb6c6f4d6dda26bc7add3248406da980e577140",
+      "size_bytes": 750327
+    },
+    "completion": {
+      "path": "reports/gms-uses-library-20260901/root-source-adoption-checkpoint-tests-v1/completion.json",
+      "sha256": "2a6569aa553f07f694bd62763fb5d95c55f5a08a38b94a7d17d3690d6b040df0",
+      "size_bytes": 545
+    }
+  },
+  "gms_ordinary_metadata_checkpoint_20260901": {
+    "status": "config7-context7-and-nothing4-verified-four-gms-modules-images2-package2-pending",
+    "supersedes_current_status_of": "gms_source_adoption_checkpoint_20260901",
+    "historical_adoption_audit_proposal_and_failed_package_records_preserved": true,
+    "guide": "docs/gms-source-integration.md",
+    "record": "research/gms-source-integration.json:ordinary_metadata_checkpoint_20260901",
+    "source_files": 541,
+    "source_projects": 14,
+    "build_number": "nezha.a2d9ab6affbe09593d338212",
+    "identity_sha256": "a2d9ab6affbe09593d3382120be86d02f453c4f2c82dce1aef2a68910b16d488",
+    "config7": {
+      "completed_utc": "2026-09-01T09:17:23.663493+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "verified_values": 21
+    },
+    "context7": {
+      "completed_utc": "2026-09-01T09:25:02.663108+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "verified_values": 7
+    },
+    "nothing4": {
+      "completed_utc": "2026-09-01T09:46:14.038756+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "verified_metadata_files": 6,
+      "frontend_steps": 165,
+      "nothing_actions": 1
+    },
+    "all_six_full_guard_maps_equal_for_each_phase": true,
+    "all_254_configuration_entries_equal": true,
+    "matching_source_lock_heads_and_origins": 1179,
+    "expected_locally_patched_projects": 8,
+    "all_reported_patch_statuses_match_installed_source_guards": true,
+    "output_freshness_verified": false,
+    "nothing_descendant_ninja_argv_verified": false,
+    "native_component_actions_verified": false,
+    "post_nothing_stdout_and_log_measurements_retained": true,
+    "new_graph_capture_admission_granted": false,
+    "four_gms_modules_verified": false,
+    "images2_verified": false,
+    "package2_verified": false,
+    "fresh_ordinary_gms_status_actions_verified": false,
+    "actual_module_and_dexpreopt_contexts_verified": false,
+    "complete_component_graph_provenance_verified": false,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "normal_android_enforcing_required": true,
+    "target_files_package_verified": false,
+    "complete_current_vintf_verified": false,
+    "camera_apk_or_hardware_behavior_verified": false,
+    "complete_signed_chain_verified": false,
+    "physical_partition_fit_verified": false,
+    "ota_verified": false,
+    "runtime_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false
   }
 }
