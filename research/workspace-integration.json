@@ -3918,5 +3918,190 @@
         "size_bytes": 29097
       }
     }
+  },
+  "clock_source_adoption_checkpoint_20260901": {
+    "status": "actual-clock-0022-source-adoption-readback-and-host-identity-projection-passed",
+    "guide": "docs/systemui-clocks-optional-window-libraries.md",
+    "source_files": 545,
+    "source_projects": 15,
+    "ancestral_source_rows_and_modes_preserved": 544,
+    "source_controls": 8,
+    "source_file_exchanges": 1,
+    "journal_events": 5,
+    "rollback_performed": false,
+    "changed_project": "vendor/extras",
+    "project_revision": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+    "project_origin": "https://github.com/Evolution-X/vendor_extras",
+    "project_after_status": " M bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk\n M themes/SystemUIClocks/Android.bp\n",
+    "changed_source_path": "vendor/extras/themes/SystemUIClocks/Android.bp",
+    "installed_source_bytes": 2690,
+    "added_source_bytes": 644,
+    "preserved_source_mode": "0755",
+    "preserved_line_endings": "CRLF",
+    "corrected_imports": 7,
+    "flex_and_existing_bcr_declaration_preserved": true,
+    "native_install_started_utc": "2026-09-01T22:39:41.156698+00:00",
+    "native_install_finished_utc": "2026-09-01T22:47:17.749678+00:00",
+    "native_install_exit_code": 0,
+    "root_install_started_utc": "2026-09-01T22:39:40.548134+00:00",
+    "root_install_finished_utc": "2026-09-01T22:47:17.919264+00:00",
+    "root_install_elapsed_seconds": 457.3693119160016,
+    "root_install_exit_code": 0,
+    "journal_commit_verified_utc": "2026-09-01T22:44:52.967102+00:00",
+    "journal_commit_precedes_final_acceptance": true,
+    "complete_readback_finished_utc": "2026-09-01T22:47:23.419752+00:00",
+    "complete_readback_exit_code": 0,
+    "complete_readback_bodies_verified": true,
+    "actual_commit_is_exact_native_stdout": true,
+    "actual_receipt_semantic_review_verified": true,
+    "review_scope": "Host validation of completed actual installation and readback records, including the completed native before/after/final guards; no separate VM read, whole-history replay or new build by the reviewer.",
+    "protected_apks": {
+      "bcr": 1,
+      "clock": 8,
+      "gms": 4
+    },
+    "protected_apk_count": 13,
+    "current_configuration_and_strict_settings_preserved": true,
+    "originals_retained": true,
+    "incoming_inode_became_installed_inode": true,
+    "all_source_controls_and_modes_preserved": true,
+    "preserved_image_observations": {
+      "exact_absences": 2,
+      "image_build_executed": false,
+      "image_copies_created": false,
+      "observation_identity": {
+        "sha256": "d776b95eb5bd415deaa306b0c1bc477894c2dac31f08d80681b599879f1107b8",
+        "size_bytes": 19494
+      },
+      "parent_membership_identity": {
+        "sha256": "d965ad4ab1837989f0225b5387af10ed4a75c7f22144b07c535d4a892f2e6c2f",
+        "size_bytes": 3431
+      },
+      "present_files": 6,
+      "verified": true
+    },
+    "host_identity_projection": {
+      "finished_utc": "2026-09-01T22:50:30.435466+00:00",
+      "exit_code": 0,
+      "identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+      "build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+      "build_epoch": 1788144555,
+      "prior_identity_sha256": "f9f678051a7b3de57c741ca215072e7bac189e87304da06b47bc061c227e0db1",
+      "source_count_from_actual_union": 545,
+      "all_held_inputs_unchanged": true,
+      "native_execution": false,
+      "live_source_or_private_inputs_reverified": false,
+      "native_configuration_or_metadata_verified": false
+    },
+    "public_0022_preparation_contract_and_historical_failure_records_preserved": true,
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "next_gate": "Native config10/context10 and nothing7 under the derived identity, regenerated Clock checker rules, corrected strict checks and fresh ordinary producer/signature evidence, then the current image/package sequence.",
+    "limits": {
+      "native_config10_context10_verified": false,
+      "ordinary_nothing7_verified": false,
+      "corrected_clock_strict_status_or_build_verified": false,
+      "current_apk_signatures_verified": false,
+      "new_image_build_or_admission_verified": false,
+      "images3_verified": false,
+      "package3_verified": false,
+      "signed_avb_chain_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "frozen_public_patch": {
+        "path": "patches/evolution/0022-systemui-clocks-optional-window-libraries.patch",
+        "sha256": "ebae241f30864a722daba678822c03b05014c6e01c15dfac71d2032733b5faf0",
+        "size_bytes": 3087
+      },
+      "frozen_public_preparation_contract": {
+        "path": "patches/evolution/systemui-clocks-optional-window-libraries.json",
+        "sha256": "e06ce67fbdb128de35135fd4f9c2d1ed001929bf17c0602eea7ac61081c1859a",
+        "size_bytes": 22438
+      },
+      "source_installer": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/installation.py",
+        "sha256": "5a3d65c69cd750f54c3c6f96a1765b7564630fe020702a3322ea75b6cc9e48bb",
+        "size_bytes": 57402
+      },
+      "source_spec": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/source-spec.json",
+        "sha256": "3031154450e8e89a85ae7bf5b7e183db30a81d66843e18b067f3c81c60f11cb5",
+        "size_bytes": 909319
+      },
+      "source_map": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/source-map.json",
+        "sha256": "3fce255ce85d437eac4b7b2c3c4fd21e285edcdd60c6c85263896382c0030d1b",
+        "size_bytes": 30135879
+      },
+      "actual_stage": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/root-install-readback-v1/staged.json",
+        "sha256": "6650661df906fa593be367ca2f00b2a1beafd7547d6eb43d66cfc8621ee33758",
+        "size_bytes": 1372093
+      },
+      "native_install_completion": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/root-install-v1/exit.json",
+        "sha256": "bdd880c8a12e19cc612f34e2417201a9fd5efdf64ef314685633b6a2175d17e8",
+        "size_bytes": 464
+      },
+      "root_install_completion": {
+        "path": "reports/bcr-uses-library-20260901/root-clock-source-install-dispatch-v2/completion.json",
+        "sha256": "9579b0c759e77dbfea8d8e36f1b894c2655e59fefa8a107c072e88ced571bfc1",
+        "size_bytes": 1019
+      },
+      "actual_commit": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/root-install-readback-v1/actual-commit.json",
+        "sha256": "cbb8568b1d7d61ebe71b09619a65205b582c29849001b047beb1a0428e7f97c1",
+        "size_bytes": 480
+      },
+      "actual_installation": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/root-install-readback-v1/installation.json",
+        "sha256": "7565dfa8aa4860db84b698e4aa80dca5ef383e4d699106d6a108ce1432f72a2f",
+        "size_bytes": 1101417
+      },
+      "complete_journal": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/root-install-readback-v1/transaction.jsonl",
+        "sha256": "f9012623b907603c6d1f0cbf0f3ae72eaef840ef44916dc2e96b65e1ba17c873",
+        "size_bytes": 1497
+      },
+      "complete_readback": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/native-execution-v1/root-install-readback-v1/completion.json",
+        "sha256": "f397b3f8157664c7a1cfa1b53d166dd37018a50e5d12b40a9c1d59cf8f396f64",
+        "size_bytes": 5106
+      },
+      "actual_installation_semantic_review": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/actual-installation-review-v1/review.json",
+        "sha256": "ae3a745dfca1c16409a61eadd09ae00e16d67ba74f83e993404373a2f4dc5b97",
+        "size_bytes": 5561
+      },
+      "host_identity_projection_completion": {
+        "path": "reports/bcr-uses-library-20260901/root-clock-identity-projection-v1/completion.json",
+        "sha256": "1610d78d8c3d0e8d20dc567b64d968f205ea05b5387785d710d47a456bdf3d54",
+        "size_bytes": 22797
+      },
+      "host_identity_descriptor": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/identity-projection-v1/completed-v1/descriptor-fragment.json",
+        "sha256": "e86d607f9ac7295900bcff115c2ef8abfb9c974ce91273cdd372bf530fa4885f",
+        "size_bytes": 966802
+      },
+      "host_identity_calculation": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/identity-projection-v1/completed-v1/identity-calculation.json",
+        "sha256": "dff5afadfc6b36e4935f6750dc30d2cb0d4c6220047825b4a5158253e8b16784",
+        "size_bytes": 3551
+      },
+      "host_identity_projection": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/identity-projection-v1/completed-v1/projection.json",
+        "sha256": "d2e69c2e93f3d1e0dfa1dda8d82224898eaf99257d2836b080b986ccc5e94e27",
+        "size_bytes": 4012
+      }
+    }
   }
 }

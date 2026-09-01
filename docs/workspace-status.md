@@ -10,6 +10,24 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **Clock 0022 source correction is installed**, with native/root exit 0 at
+**2026-09-01 22:47:17 UTC**. Complete readback and review of the actual receipts
+pass. The active inventory now contains **545 files across fifteen projects**,
+preserving all 544 ancestral rows and modes and thirteen protected APKs. One
+source exchange adds the seven reviewed optional-library declarations; Flex
+and the existing BCR integration remain unchanged.
+
+The separate host projection completes at **22:50:30 UTC**, calculating build
+number **`nezha.b51a6b5609d2001e9ae1f7ae`** with the same pinned epoch. This is
+not yet verified in native configuration or metadata. config10/context10,
+ordinary `nothing7`, corrected strict Clock checks and fresh producer/signature
+evidence remain pending, as do Images3 and Package3. The earlier two-pass,
+seven-mismatch audit retains its failed result. Normal Android enforcement,
+the 4 KiB baseline and working76 are unchanged, and complete-ROM readiness
+remains false. [Clock source integration](systemui-clocks-optional-window-libraries.md)
+records the adoption and its limits. Earlier checkpoints below retain their
+dated source counts, identities and then-pending work.
+
 The next verified blocker is the **nine-APK strict library audit: two passes
 and seven Clock manifest mismatches**, ending with exit 1 at
 **2026-09-01 21:49:21 UTC**. BCR and SystemUIClocks-Flex pass the standalone

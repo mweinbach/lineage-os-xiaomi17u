@@ -1,5 +1,23 @@
 # SystemUI Clock optional Window libraries
 
+The **actual 0022 source installation completes at 2026-09-01 22:47:17 UTC**,
+with native/root exit 0. Complete receipt readback and host semantic review pass:
+one exchange, five journal events, no rollback, eight exact source controls
+and preserved originals. The active source contains **545 files across fifteen
+projects**, preserving all 544 ancestral rows/modes and thirteen protected APKs.
+The seven arrays are installed with the original mode and CRLF endings; Flex,
+the BCR declaration, signing choices and existing dexpreopt settings remain.
+
+The separate host projection at **22:50:30 UTC** calculates
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, retaining epoch **1788144555**. Native
+config10/context10, `nothing7`, corrected strict checks, fresh ordinary producer
+and signature evidence remain unverified. This adoption verifies no new image,
+package or boot; normal Android enforcement, 4 KiB and working76 remain selected.
+[Current status](workspace-status.md) and the
+[actual adoption record](../research/workspace-integration.json) bind the receipts.
+The preparation description and public contract below retain their dated scope,
+including the original failed audit and prepared-status fields.
+
 At this September 1, 2026 preparation checkpoint,
 [patch 0022](../patches/evolution/0022-systemui-clocks-optional-window-libraries.patch)
 corrects seven Clock imports without changing Flex. The

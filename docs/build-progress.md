@@ -1,5 +1,32 @@
 # Nezha product and build progress
 
+The **Clock 0022 source adoption passes**, with native installation from
+**2026-09-01 22:39:41 UTC to 22:47:17 UTC** and native/root exit 0. One exchange
+produces five chronological journal events without rollback; `commit_verified`
+at **22:44:52 UTC** precedes final acceptance. Complete readback finishes at
+**22:47:23 UTC**. Host review of those actual records verifies the eight source
+controls, exact staged replacement, retained originals and source/project delta.
+
+The inventory is **545 files/fifteen projects**, preserving all 544 ancestral
+rows and modes. The Clock Blueprint retains mode `0755`, CRLF and all original
+bytes while adding the seven arrays; Flex stays unchanged. Native installation
+guards preserve thirteen APKs, the existing BCR change, current configuration
+and strict settings. Recorded image observations remain unchanged; this does
+not supply a new image build or image admission.
+
+The host identity projection finishes at **22:50:30 UTC**, producing
+`b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38`
+and build number **`nezha.b51a6b5609d2001e9ae1f7ae`**, still using epoch
+**1788144555**. It derives the successor from the actual installed union,
+without verifying native configuration, metadata or binary outputs. config10,
+context10, `nothing7`, corrected strict checks and fresh ordinary producer/signature
+evidence remain pending before the current image/package sequence. The
+[Clock guide](systemui-clocks-optional-window-libraries.md) and
+[adoption checkpoint](../research/workspace-integration.json) retain exact
+receipts. The 4 KiB baseline, normal Android enforcement, working76 and false
+ROM readiness remain unchanged; earlier failed audits and builds keep their
+original results below.
+
 The **standalone nine-APK uses-library audit fails with two passes and seven
 manifest mismatches**. Its root transport runs from **2026-09-01 21:42:55 UTC
 to 21:49:21 UTC**, ending with exit 1. BCR and SystemUIClocks-Flex pass; the
