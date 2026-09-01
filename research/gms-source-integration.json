@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "observed_on": "2026-09-01",
+  "status": "native-four-file-source-adoption-verified-ordinary-builds-pending",
+  "prior_checkpoint": "research/workspace-integration.json:selected_gms_manifest_audit_checkpoint_20260901",
+  "source": {
+    "prior_files": 537,
+    "prior_projects": 13,
+    "files": 541,
+    "projects": 14,
+    "project": "vendor/gms",
+    "base_commit": "89c3940a77298c204c55a21efded92ddafb59fe9",
+    "changed_makefiles": [
+      "vendor/gms/product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/Android.mk",
+      "vendor/gms/product/packages/privileged_apps/SafetyHubPrebuilt/Android.mk",
+      "vendor/gms/system_ext/packages/apps/CrossDeviceAccessServicePrimary/Android.mk",
+      "vendor/gms/system_ext/packages/privileged_apps/PersistentBackgroundServices/Android.mk"
+    ],
+    "patch_contracts": [
+      "patches/evolution/gms-customization-optional-library.json",
+      "patches/evolution/gms-prebuilt-optional-libraries.json"
+    ],
+    "frozen_patch_contracts_preserved_with_preparation_scope": true,
+    "prior_source_rows_and_project_contexts_preserved": true,
+    "original_apks_and_source_modes_preserved": true,
+    "http_selected_and_automatic_sdk28_compatibility_preserved": true,
+    "provider_or_registration_added": false,
+    "source_lock_changed": false,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "normal_android_enforcing_required": true
+  },
+  "stage": {
+    "native_started_utc": "2026-09-01T08:56:41.613955+00:00",
+    "native_finished_utc": "2026-09-01T09:00:35.538351+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "full_readback_verified": true,
+    "original_copies": 4,
+    "postimages": 4,
+    "independent_review": "clear-for-exact-recorded-stage",
+    "independent_review_scope": "Stage evidence only; installation acceptance is a separate result."
+  },
+  "installation": {
+    "native_started_utc": "2026-09-01T09:02:19.958339+00:00",
+    "native_finished_utc": "2026-09-01T09:08:48.856056+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "file_exchanges": 4,
+    "journal_events": 11,
+    "journal_commit_verified_utc": "2026-09-01T09:06:54.418454+00:00",
+    "full_result_journal_and_commit_readback_verified": true,
+    "independent_original_copies_preserved": 4,
+    "image_observations_unchanged": 8,
+    "present_image_files": 6,
+    "exact_archive_absences": 2,
+    "independent_installation_review": "clear-for-exact-recorded-source-installation",
+    "native_module_or_image_build_performed": false
+  },
+  "projected_identity": {
+    "identity_sha256": "a2d9ab6affbe09593d3382120be86d02f453c4f2c82dce1aef2a68910b16d488",
+    "build_number": "nezha.a2d9ab6affbe09593d338212",
+    "prior_identity_sha256": "8643b579050aab0dd3218ae364c00eb56a99db4d539f0f0ff239616a279548cd",
+    "host_calculation_complete": true,
+    "actual_captured_installation_admitted": true,
+    "prior_descriptor_rows_and_modes_preserved": true,
+    "independent_host_projection_review_passed": true,
+    "independent_projection_replay_files": 8,
+    "live_source_or_private_inputs_reverified": false,
+    "input_closure_verified": false,
+    "admission_or_dispatch_authorized_by_calculation": false,
+    "native_configuration_and_metadata_values_verified": false
+  },
+  "next_native_checks": {
+    "config7": "dispatch-recorded-without-completed-result",
+    "config7_dispatch_reported_utc": "2026-09-01T09:13:54+00:00",
+    "context7": "pending",
+    "nothing4": "pending",
+    "prepared_nothing_argv": [
+      "build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j8",
+      "nothing"
+    ],
+    "explicit_j8_caller_independently_reviewed": true,
+    "caller_changes_installed_source": false,
+    "source_input_and_graph_guards_preserved": true,
+    "regenerated_graph_verified": false,
+    "fresh_ordinary_gms_status_actions_verified": false,
+    "actual_module_and_dexpreopt_contexts_verified": false,
+    "target_files_package_verified": false
+  },
+  "historical_audit_scope": {
+    "original_selected_apks": 95,
+    "original_passed": 91,
+    "original_manifest_mismatches": 4,
+    "original_audit_result_preserved": true,
+    "corrected_native_proposal_passes": 4,
+    "corrected_probe_remains_proposal_evidence_not_ordinary_status_actions": true,
+    "all_95_regenerated_checks_passed_claimed": false
+  },
+  "omitted_declarations": {
+    "all_seven_selected_by_captured_product": true,
+    "etc_gzip_payloads": [
+      "Chrome",
+      "TrichromeLibrary",
+      "WebViewGoogle"
+    ],
+    "java_libraries": [
+      "com.google.android.dialer.support",
+      "com.android.omadm.radioconfig"
+    ],
+    "apps_with_preexisting_strict_check_waivers": [
+      "PrebuiltBugle",
+      "Velvet"
+    ],
+    "counted_as_manifest_passes": 0,
+    "separate_stub_apk_passes_cover_full_payloads": false,
+    "waiver_rationale_established": false,
+    "waiver_manifest_capture_prepared": true,
+    "waiver_manifest_capture_executed": false,
+    "waivers_changed_by_source_adoption": false
+  },
+  "limits": {
+    "complete_gms_manifest_coverage_verified": false,
+    "camera_apk_or_runtime_verified": false,
+    "complete_current_vintf_verified": false,
+    "packaged_policy_verified": false,
+    "complete_signed_chain_verified": false,
+    "physical_partition_fit_verified": false,
+    "ota_verified": false,
+    "runtime_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false
+  },
+  "evidence": {
+    "staged": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/native-execution-v1/root-stage-readback-v1/staged.json",
+      "sha256": "33ce633e7708e2e47289ca74e833d3a43ee5593aa8872382b550cc9182958bbd",
+      "size_bytes": 1369275
+    },
+    "independent_stage_review": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/actual-stage-review-v1/review.json",
+      "sha256": "a1fd8bfb21e16dc9319cfebe9eeaaa2de98ac209194568030b4781ffeef54a08",
+      "size_bytes": 4805
+    },
+    "installation": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/native-execution-v1/root-install-readback-v1/installation.json",
+      "sha256": "8584f47408611cb616457d1e75f93b3fc0ab81bd4da5e6d3c2dc03031bf3b774",
+      "size_bytes": 1107394
+    },
+    "journal": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/native-execution-v1/root-install-readback-v1/transaction.jsonl",
+      "sha256": "d77c58bc6de3a08ab836a8ccc86ca99bf7604bfb8eb6a43903b36faa48e5f09d",
+      "size_bytes": 4078
+    },
+    "actual_commit": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/native-execution-v1/root-install-readback-v1/actual-commit.json",
+      "sha256": "d6846f2ce55f51be7f974b53d3ac4a410c13b0020cf0dc80861d201c3bd19335",
+      "size_bytes": 481
+    },
+    "root_install_readback_review": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/native-execution-v1/root-install-readback-v1/root-review.json",
+      "sha256": "4ca826210632b56a25b4a7f925892e1d59327d041610d996fffb6242f32a3711",
+      "size_bytes": 1486
+    },
+    "independent_installation_review": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/actual-install-review-v1/review.json",
+      "sha256": "6d937bcf98bc50669f3479efdd545c4c90c17f02b4fcc120d3c267084c641aef",
+      "size_bytes": 4398
+    },
+    "independent_source_installation_review": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/actual-install-review-v1/source-review.json",
+      "sha256": "d19581ad8a9317b186f1abb965c943077eb37dfb466580bcb59d92e019d5879e",
+      "size_bytes": 8127
+    },
+    "identity_projection": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/identity-projection-v2/completed-v2/projection.json",
+      "sha256": "c9c9c982253dc017d02d815fadff5a1ae8b4f7b00f577fbcee4530c903a8eb67",
+      "size_bytes": 4077
+    },
+    "identity_calculation": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/identity-projection-v2/completed-v2/identity-calculation.json",
+      "sha256": "62e827d765e8d519c5202f9a00c940802c1f7c1f9d3761a5cc476520e5d40282",
+      "size_bytes": 3551
+    },
+    "independent_identity_review_freeze": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/identity-projection-review-v2/freeze-v2.json",
+      "sha256": "a4ed9edaede28072954b3e404ce20c194c4607d0186147591ecb938fdcaff938",
+      "size_bytes": 1731
+    },
+    "explicit_j8_caller_review": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/nothing-j8-preparation-v1/independent-review-v1/review.json",
+      "sha256": "1340d0080509075123b3e0f8105b4b2dae15434c7e44b9f207e75349cebde2fd",
+      "size_bytes": 4157
+    },
+    "omitted_declaration_review": {
+      "path": "reports/gms-uses-library-20260901/omitted-check-review-v1/review.md",
+      "sha256": "a6f61df55a7feca2fb5e606f4881f9dca892f3e5536be3c044ace20e534e7b82",
+      "size_bytes": 7873
+    },
+    "omitted_declaration_verification": {
+      "path": "reports/gms-uses-library-20260901/omitted-check-review-v1/verification.json",
+      "sha256": "a6f79b751b5fb92e16989687a1cc3baa8839eff30f67ccc4975947fd1b06f283",
+      "size_bytes": 6223
+    }
+  }
+}

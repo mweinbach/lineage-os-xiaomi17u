@@ -10,30 +10,32 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The **strict GMS audit completes at 2026-09-01 08:31:40 UTC with 91 passes,
-four manifest mismatches and zero command errors** across 95 original APKs.
-Native audit and root wrapper both exit 1 because of the mismatches. All 216
-guarded inputs remain unchanged; the audit writes no ordinary build status
-files. Seven omitted declarations are neither audited nor counted as passes.
-This is scoped manifest-check evidence, not full GMS or runtime validation.
+The **four-file GMS source adoption completes at 2026-09-01 09:08:48 UTC with
+native and root exit 0**. Staging, full installation readback and all eleven
+journal events are retained; the journal's `commit_verified` event is earlier,
+at **09:06:54 UTC**. The active source inventory is now **541 files across
+fourteen projects**, preserving the prior 537-file/thirteen-project checkpoint.
+The [source integration record](gms-source-integration.md) binds all four original
+Makefiles, the installed 0018/0019 changes and eight unchanged image observations
+(six present files and two exact archive absences). Independent stage and
+installation reviews pass; the separate host identity review is also clear.
 
-The [0018 customization correction](gms-customization-optional-library.md)
-remains unchanged. The new [0019 preparation](gms-prebuilt-optional-libraries.md)
-corrects the other three Make declarations: CrossDevice, Persistent Background
-Services and SafetyHub. Together they form a pending **four-file source-v2
-proposal**, with host replay and synthetic strict-checker fixtures passing.
-The captured product still selects `org.apache.http.legacy`; CrossDevice removes
-only its stale direct declaration, preserving automatic SDK-28 HTTP compatibility.
-SafetyHub retains HTTP and places optional Wear first. The earlier one-file
-proposal was never installed. A separate **four-module read-only native proposal
-probe passes at 08:45:34 UTC**, with native/root exit 0, the original APKs and
-dependency configurations unchanged, and zero errors. It checks proposed library
-lists without installing source, regenerating commands or producing ordinary
-build stamps. The other 91 original checks are not rerun; the original 91/4 audit
-remains unchanged. Source adoption, graph regeneration and fresh ordinary status
-actions remain pending. The selected 537-file/thirteen-project source, `8643`
-build identity, 4 KiB baseline, working76 and normal Android enforcement are
-unchanged.
+Host reprojection produces build number **`nezha.a2d9ab6affbe09593d338212`**.
+That calculation does not qualify native configuration or metadata values.
+config7 dispatch is recorded at **09:13:54 UTC**, without a completed result;
+context7, `nothing4`, graph regeneration and fresh ordinary GMS status actions
+remain pending. The reviewed explicit `-j8 nothing` caller changes no
+installed source and retains the existing guards. The 4 KiB baseline, working76,
+normal Android enforcement and original APKs remain unchanged. HTTP remains
+selected; CrossDevice removes only its stale direct declaration and retains
+automatic SDK-28 compatibility.
+
+The earlier **95-APK audit remains 91 passes/four mismatches**, and the
+**08:45:34 UTC four-module proposal probe** remains separate read-only evidence,
+without generated rules or ordinary status stamps. The seven omitted selected
+declarations are now classified as three compressed ETC payloads, two JARs and
+two APKs with pre-existing strict-check waivers. None is counted as a manifest
+pass. The Bugle/Velvet waiver-manifest capture is prepared but has not run.
 
 The **first ordinary `target-files-package` build remains failed**, with native
 and wrapper exit 1 at **08:03:01 UTC** on the customization bundle's missing
@@ -42,6 +44,8 @@ logs remain retained; no artifact postcheck or verified ZIP is established.
 Package production does not itself run the full VINTF comparison: final package
 inputs and explicit SKU/vendor-API selection still need admission. The older
 220-source VINTF evidence remains historical.
+
+The policy and image sequence below preserves its earlier source checkpoints.
 
 The corrected Evolution/factory policy source build and its **scoped policy3
 verification now pass**. Source/M4/context review retains all 6,399 assertions,

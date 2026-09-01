@@ -1,5 +1,35 @@
 # Nezha product and build progress
 
+The **2026-09-01 09:08:48 UTC four-file GMS source-adoption checkpoint** passes
+with native and root exit 0. Staging finishes at 09:00:35 UTC; installation
+records four exchanges and eleven journal events, with `commit_verified` at
+09:06:54 UTC before final acceptance completes. Full stage/install readback
+preserves the original Makefiles and eight image observations: six present
+files and two exact archive absences. No image or module build occurred.
+Independent stage/install reviews and separate host identity review pass.
+
+The active source is now **541 files across fourteen projects**. Its host-derived
+build number is **`nezha.a2d9ab6affbe09593d338212`**, while native configuration,
+metadata values and generated rules remain unverified for that identity.
+config7 dispatch is recorded at 09:13:54 UTC, without a completed result;
+context7 and `nothing4` (ordinary `-j8 nothing`) remain pending.
+The caller change preserves source/input guards and changes no installed source.
+Ordinary GMS status actions, module/class-loader-context checks and target-files
+remain separate. See [GMS source integration](gms-source-integration.md).
+
+The seven omitted product-selected declarations are now classified from saved
+evidence: three ETC gzip payloads, two JARs and the Bugle/Velvet APKs with
+pre-existing strict-check waivers. None becomes a manifest pass. The planned
+waiver-manifest capture has not run; no waiver is removed or relaxed here.
+
+The previous seven-file audit/0019 checkpoint was committed as **6253533** after
+the coordinator's full suite completed at **08:51:45 UTC**: **4,305 tests in
+182.294 seconds, with zero failures, errors or skips**, and frozen files unchanged.
+That earlier run excludes native adoption and this documentation milestone.
+
+The proposal, audit and package paragraphs below preserve their earlier source
+and validation scopes; they do not describe the now-installed four-file source.
+
 The **2026-09-01 08:45:34 UTC corrected native proposal probe** passes all four
 checks against the original APKs and dependency configurations, with native and
 root exit 0, zero errors, unchanged guarded inputs and read-only source/output.
