@@ -1,5 +1,48 @@
 # Nezha product and build progress
 
+The **2026-09-01 08:45:34 UTC corrected native proposal probe** passes all four
+checks against the original APKs and dependency configurations, with native and
+root exit 0, zero errors, unchanged guarded inputs and read-only source/output.
+The 7.190-second run applies proposed optional-library lists only: it does not
+install the four Makefiles, regenerate their commands or produce ordinary build
+stamps. The other 91 original commands are not rerun, and the original audit
+below remains 91 passes/four mismatches. This is separate from source adoption,
+actual module integration, dexpreopt and package completion.
+
+The **2026-09-01 08:31:40 UTC strict GMS audit** completes all 95 selected
+original APK checks with **91 passes, four manifest mismatches and zero command
+errors**. Native audit and root wrapper exit 1. The 101 native commands return;
+all 216 guarded inputs remain unchanged, including 95 APKs totaling
+2,017,701,815 bytes. Only the ordinary status-output argument is removed from
+the captured checker commands to keep source and build output read-only.
+Enforcement and dependency inputs remain intact. Seven omitted declarations
+are not audited or passed; no ordinary status stamps or package success follow
+from this audit. Independent review verifies the recorded audit within that scope.
+
+The unchanged [0018 preparation](gms-customization-optional-library.md) and
+new [0019 preparation](gms-prebuilt-optional-libraries.md) cover the four failing
+Make declarations. Paired host replay and synthetic checker fixtures pass.
+CrossDevice removes only its stale direct HTTP declaration: the product still
+selects `org.apache.http.legacy`, and automatic SDK-28 compatibility stays intact.
+Persistent adds optional `com.google.input.gia.giaservicemanager`; SafetyHub
+prepends optional `wear-sdk` while retaining HTTP and both window libraries.
+The one-file proposal was never installed. Four-file source-v2 adoption,
+graph regeneration and fresh ordinary status actions remain pending; the
+separate proposal probe above does not establish them. The active 537-file/
+thirteen-project source, `8643` identity, 4 KiB baseline, normal Android
+enforcement and working76 are unchanged.
+
+The preceding seven-file package-failure/0018 checkpoint was committed as
+**9a2135c** after the coordinator's full suite completed at **08:29:32 UTC**:
+**4,305 tests in 182.279 seconds, with zero failures, errors or skips**, and all
+seven tested files unchanged. That run excludes the later 95-module audit,
+corrected proposal probe, 0019 preparation and this documentation update. Exact
+receipts and the separate audit are in the
+[checkpoint record](../research/workspace-integration.json).
+
+The package1 and materializer paragraphs below preserve the earlier checkpoint;
+the audit and recorded offline run above supersede their then-current status.
+
 The **2026-09-01 08:03:01 UTC package1 checkpoint** records the first ordinary
 `target-files-package` attempt failing with native and wrapper exit 1, after
 native execution began at 06:11:54 UTC. Its only retained `FAILED:` entry is at

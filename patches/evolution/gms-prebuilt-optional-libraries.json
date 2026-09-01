@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "id": "gms-prebuilt-optional-libraries-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-01 additional GMS source preparation",
+  "project": "vendor/gms",
+  "origin": "https://github.com/Evolution-X/vendor_gms",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "89c3940a77298c204c55a21efded92ddafb59fe9",
+  "patch": "patches/evolution/0019-gms-prebuilt-optional-libraries.patch",
+  "patch_sha256": "d136a265dc8eea35c1af9d507e1609536951e28107c5e2d5ca2fd60ac3670f03",
+  "patch_size_bytes": 2282,
+  "files": [
+    {
+      "path": "product/packages/privileged_apps/SafetyHubPrebuilt/Android.mk",
+      "mode": "100644",
+      "before_sha256": "14f6b1a7746ed667440f5fd22f020f2726e09a130bde916b0ce95e30e2889bfe",
+      "before_size_bytes": 1174,
+      "before_git_blob": "c0e749222c8145967eba29715eb8790bf34f18c6",
+      "after_sha256": "cc93b54e9c4331ac16eeaa660a412d6aa7e4b97fb837436ac7f17a2cd85bb863",
+      "after_size_bytes": 1183,
+      "after_git_blob": "eb0117e689d8b538c7cc7dd417cd8c826ec5eb91",
+      "module": "SafetyHubPrebuilt",
+      "required_uses_libraries_before": [],
+      "required_uses_libraries_after": [],
+      "optional_uses_libraries_before": [
+        "org.apache.http.legacy",
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_after": [
+        "wear-sdk",
+        "org.apache.http.legacy",
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "retained_module_settings": {
+        "certificate": "PRESIGNED",
+        "module_class": "APPS",
+        "privileged": true,
+        "partition": "product",
+        "overrides_packages": [
+          "EmergencyInfo"
+        ]
+      },
+      "original_apk": {
+        "project_path": "product/packages/privileged_apps/SafetyHubPrebuilt/SafetyHubPrebuilt.apk",
+        "sha256": "46b357519efe7d7a2b132bbf5164ce57a06e425289b33b630b87e25f032fbb28",
+        "size_bytes": 29185964,
+        "mode": "0644",
+        "manifest_required_uses_libraries": [],
+        "manifest_optional_uses_libraries": [
+          "wear-sdk",
+          "org.apache.http.legacy",
+          "androidx.window.extensions",
+          "androidx.window.sidecar"
+        ],
+        "manifest_evidence": "Ordered tags emitted by the strict native checker against the actual guarded APK.",
+        "upstream_lfs_reconciliation_performed": false,
+        "signature_validation_performed": false
+      },
+      "original_native_failure": {
+        "native_command_index": 72,
+        "exit_code": 255,
+        "literal_ninja_command_identity": {
+          "sha256": "8f7602ebf912d4c9881d1d94ec0c21d93c5f0be687191f934a7ed1027a11fd7a",
+          "size_bytes": 2907
+        },
+        "stderr_identity": {
+          "sha256": "1e3458fef6e6043f3b82c6d187ef6c60c3a39ae317a0fe0dce324e8b173087e3",
+          "size_bytes": 1447
+        },
+        "ordinary_status_output_argument_removed_for_readonly_audit": true
+      }
+    },
+    {
+      "path": "system_ext/packages/apps/CrossDeviceAccessServicePrimary/Android.mk",
+      "mode": "100644",
+      "before_sha256": "7f783ee4daf1ffa7dc330e1f884e073e20801b83a7961eab1cef970b9dc7dccd",
+      "before_size_bytes": 1046,
+      "before_git_blob": "7201a39453c2a5a620e93af394f15b33e6d6cf1f",
+      "after_sha256": "a5e6b9aa8ebe94a4863f325a54ad6e105774b9f09cab323aa6387a8131c79a94",
+      "after_size_bytes": 1023,
+      "after_git_blob": "ef253b7682b3b7c8cc0f5f29b3dd661962925872",
+      "module": "CrossDeviceAccessServicePrimary",
+      "required_uses_libraries_before": [],
+      "required_uses_libraries_after": [],
+      "optional_uses_libraries_before": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar",
+        "org.apache.http.legacy"
+      ],
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "retained_module_settings": {
+        "certificate": "platform",
+        "module_class": "APPS",
+        "privileged": false,
+        "partition": "system_ext",
+        "overrides_packages": []
+      },
+      "original_apk": {
+        "project_path": "system_ext/packages/apps/CrossDeviceAccessServicePrimary/CrossDeviceAccessServicePrimary.apk",
+        "sha256": "c92b827634ae5a9522460b277390ac8a8eb4719962c322aa365a3a4ee841c97a",
+        "size_bytes": 16962727,
+        "mode": "0644",
+        "manifest_required_uses_libraries": [],
+        "manifest_optional_uses_libraries": [
+          "androidx.window.extensions",
+          "androidx.window.sidecar"
+        ],
+        "manifest_evidence": "Ordered tags emitted by the strict native checker against the actual guarded APK.",
+        "upstream_lfs_reconciliation_performed": false,
+        "signature_validation_performed": false
+      },
+      "original_native_failure": {
+        "native_command_index": 18,
+        "exit_code": 255,
+        "literal_ninja_command_identity": {
+          "sha256": "081d16830aea1b8a3d115995ceb2e075262c8a767c4665592c19f978cbac39fd",
+          "size_bytes": 2955
+        },
+        "stderr_identity": {
+          "sha256": "9c050201c00b32de53de7edcb7820a3d6c4de2c8dbcaef124c80a33f8ad644b8",
+          "size_bytes": 1343
+        },
+        "ordinary_status_output_argument_removed_for_readonly_audit": true
+      }
+    },
+    {
+      "path": "system_ext/packages/privileged_apps/PersistentBackgroundServices/Android.mk",
+      "mode": "100644",
+      "before_sha256": "33c755fc1fc656fb71417256e756af009335240216fb882e9047c61def0cb8d0",
+      "before_size_bytes": 966,
+      "before_git_blob": "2f5d4e015fe2be486ce0a08ee233fdabeb53ebde",
+      "after_sha256": "f9df8965324973489f04a13a54c2e7b340d83d37f54787130320ac591307e2a0",
+      "after_size_bytes": 1038,
+      "after_git_blob": "4002844a15de064c780ff1abe7e60d90640653ff",
+      "module": "PersistentBackgroundServices",
+      "required_uses_libraries_before": [],
+      "required_uses_libraries_after": [],
+      "optional_uses_libraries_before": [],
+      "optional_uses_libraries_after": [
+        "com.google.input.gia.giaservicemanager"
+      ],
+      "retained_module_settings": {
+        "certificate": "PRESIGNED",
+        "module_class": "APPS",
+        "privileged": true,
+        "partition": "system_ext",
+        "overrides_packages": []
+      },
+      "original_apk": {
+        "project_path": "system_ext/packages/privileged_apps/PersistentBackgroundServices/PersistentBackgroundServices.apk",
+        "sha256": "6785e22f073e733b9c1d30d62aa86d8c7efd7f6d12406070ac957614904982bf",
+        "size_bytes": 1841916,
+        "mode": "0644",
+        "manifest_required_uses_libraries": [],
+        "manifest_optional_uses_libraries": [
+          "com.google.input.gia.giaservicemanager"
+        ],
+        "manifest_evidence": "Ordered tags emitted by the strict native checker against the actual guarded APK.",
+        "upstream_lfs_reconciliation_performed": false,
+        "signature_validation_performed": false
+      },
+      "original_native_failure": {
+        "native_command_index": 51,
+        "exit_code": 255,
+        "literal_ninja_command_identity": {
+          "sha256": "1ff673c2024cbcd8229477e2b395a62af36835b6d87393881bebafd0fb488c9f",
+          "size_bytes": 2505
+        },
+        "stderr_identity": {
+          "sha256": "a99d335da9b9beba7f88ce6fcbdd7f214055a9eab53b1728ca78687d3058b673",
+          "size_bytes": 1219
+        },
+        "ordinary_status_output_argument_removed_for_readonly_audit": true
+      }
+    }
+  ],
+  "purpose": "Match three actual ordered optional-library manifests while preserving strict validation and each module's existing signing and placement.",
+  "companion_patch": {
+    "patch": {
+      "path": "patches/evolution/0018-gms-customization-optional-wear-sdk.patch",
+      "sha256": "237bbcb622a0c0bd0288e042bfc44ee713a2d027d942ea1df0330776f7c74a29",
+      "size_bytes": 661
+    },
+    "contract": {
+      "path": "patches/evolution/gms-customization-optional-library.json",
+      "sha256": "7881ab48c8fa9f2d508189ea7a534d1e9d95796bf20175570219f26119dae190",
+      "size_bytes": 11044
+    },
+    "files_disjoint": true,
+    "committed_files_unchanged": true
+  },
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "source_body_capture": {
+    "path": "reports/gms-uses-library-20260901/root-native-metadata-capture-v1/stdout.json",
+    "sha256": "b6a7b079659b77afa712bcf773ae891062b6973d11e2172b2f7b8eed67f72176",
+    "size_bytes": 550181
+  },
+  "fresh_native_capture": {
+    "receipt": {
+      "path": "reports/gms-uses-library-20260901/root-adoption-inputs-capture-v2/stdout.json",
+      "sha256": "70f742eb276b6f0ccb2cfeb61a5a2e4e299aacfb7c11f7e8684b1396a6273090",
+      "size_bytes": 33467
+    },
+    "completed_at_utc": "2026-09-01T08:34:15.950064+00:00",
+    "gms_head_verified": true,
+    "gms_status_exit_code": 0,
+    "gms_porcelain_status": "",
+    "all_four_makefiles_and_apks_have_unchanged_hashes_modes_and_stat_identities": true
+  },
+  "original_native_audit": {
+    "receipt": {
+      "path": "reports/gms-uses-library-20260901/root-selected-manifest-audit-v1/result.json",
+      "sha256": "b7e4e63ca7f3f1848aafbee57e86c78a3fe4a47ee63921cdfd30df62f840bb9f",
+      "size_bytes": 2375440
+    },
+    "completed_at_utc": "2026-09-01T08:31:40.793482+00:00",
+    "exit_code": 1,
+    "audit_completed": true,
+    "enforced_consumers": 95,
+    "passed": 91,
+    "manifest_mismatches": 4,
+    "other_errors": 0,
+    "omitted_selected_declarations": 7,
+    "input_guards_passed": true,
+    "source_or_out_written": false,
+    "full_gms_manifest_coverage_verified": false,
+    "ordinary_build_stamp_verified": false,
+    "full_package_verified": false,
+    "upstream_lfs_reconciliation_performed": false,
+    "original_result_preserved": true,
+    "independent_result_review": {
+      "path": "reports/gms-uses-library-20260901/actual-audit-review-v1/result-readback.json",
+      "sha256": "83e30d6c8c8227d28cec6c8e1729dd37392c6d9f9071be5108f6a32f57306c09",
+      "size_bytes": 73902
+    }
+  },
+  "source_effect": {
+    "changed_makefiles": 3,
+    "only_optional_uses_library_declarations_changed": true,
+    "required_library_settings_changed": false,
+    "apk_bytes_or_manifests_changed": false,
+    "signing_settings_changed": false,
+    "privilege_or_partition_changed": false,
+    "overrides_changed": false,
+    "dexpreopt_settings_changed": false,
+    "enforcement_settings_changed": false,
+    "global_or_other_module_settings_changed": false,
+    "providers_or_library_registration_added": false,
+    "source_lock_changed": false,
+    "normal_android_selinux_changed": false,
+    "page_size_changed": false,
+    "recovery_changed": false
+  },
+  "pinned_semantics": {
+    "make_revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "make_path": "core/dex_preopt_odex_install.mk",
+    "make_sha256": "ed519a7bafff2a8e1b9b89cc345ab4b882fd09f31fc8d617aae93e15e9b1d23f",
+    "make_size_bytes": 26203,
+    "checker_revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "checker_path": "scripts/manifest_check.py",
+    "checker_sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+    "checker_size_bytes": 14901,
+    "full_optional_list_checked_in_order": true,
+    "dexpreopt_dependencies_filtered_by_product": true,
+    "early_product_filter_can_miss_indirect_installations": true,
+    "complete_runtime_provider_absence_verified": false,
+    "product_packages": {
+      "receipt": {
+        "path": "reports/gms-uses-library-20260901/root-source-capture-v3/files/nezha-user-policy-20260827T2220Z/target/product/nezha/product_packages.txt",
+        "sha256": "dcf6cd3b09d502143143bc7731d88184691c821aef8d7cf2ff0aeb1588b7d1c0",
+        "size_bytes": 26913
+      },
+      "present_exact_names": [
+        "org.apache.http.legacy",
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "absent_exact_names": [
+        "wear-sdk",
+        "com.google.input.gia.giaservicemanager"
+      ],
+      "same_identity_bound_by_actual_audit": true
+    },
+    "cross_device_only_stale_explicit_http_declaration_removed": true,
+    "automatic_sdk28_http_compatibility_rule_preserved": true,
+    "compatibility_libraries_excluded_from_explicit_dependency_config_prerequisites": true,
+    "source_verification": {
+      "path": "reports/gms-uses-library-20260901/semantics-review-v1/source-verification.json",
+      "sha256": "bea746d91f50ece874a15980bb1ddb66f1a1d951345d57e9a6cd27462e4f513b",
+      "size_bytes": 8948
+    }
+  },
+  "host_validation": {
+    "paired_patch_replay": {
+      "path": "reports/gms-uses-library-20260901/additional-patch-preparation-v1/replay-receipt.json",
+      "sha256": "d1a94f11dc3a74bd32ccd0aa6f24222702b07669de7408cffb5b0c0e78cb045d",
+      "size_bytes": 17719
+    },
+    "paired_forward_and_reverse_copies": 2,
+    "expected_joint_postimages": 4,
+    "fuzz": 0,
+    "offsets": 0,
+    "duplicate_0019_application_rejected": true,
+    "admission_drift_rejections": 8,
+    "original_source_bytes_and_modes_restored": true,
+    "original_0018_triplet_preserved": true,
+    "git_executed": false,
+    "strict_checker_fixtures": {
+      "path": "reports/gms-uses-library-20260901/additional-patch-preparation-v1/strict-checker-fixtures-v1/receipt.json",
+      "sha256": "1de8bcf5fee8ce2f44728d6694975dbf21a54975e23df55d0c72a8ca1a2492ac",
+      "size_bytes": 56099
+    },
+    "synthetic_xml_cases": 8,
+    "corrected_declaration_passes": 3,
+    "expected_strict_failures": 5,
+    "positive_status_files_empty": true,
+    "negative_exit_code": 255,
+    "negative_status_files_absent": true,
+    "relaxation_or_missing_marker_used": false,
+    "actual_apk_or_native_graph_exercised_by_host_fixtures": false
+  },
+  "adoption_requirements": [
+    "Recheck the exact GMS revision, clean status, all four Makefile/APK inputs, modes, patch controls and the pinned Make/checker. Keep 0018 and its historical records unchanged.",
+    "Admit the disjoint 0018 and 0019 changes together through one separately reviewed four-file source transaction, preserving the old source537/build8643 checkpoint and recomputing new source and build-identity bindings.",
+    "Regenerate the ordinary bka/bp4a user graph. Inspect all four real rules for exact ordered optional declarations, unchanged required lists and original APKs, retained strict enforcement and no relaxation.",
+    "Require fresh successful execution of all four ordinary status producers and empty status files before actual module and dexpreopt validation. A corrected read-only probe does not establish source adoption, ordinary status production or package completion.",
+    "Validate actual module class-loader contexts, product selections and any real provider DEX paths and registrations; do not fabricate providers, waive missing inputs or infer runtime absence solely from early product filtering.",
+    "Resume ordinary target-files packaging with signing, dexpreopt, required-library, VINTF, AVB and rollback checks retained. Preserve normal Android enforcement, the 4 KiB baseline and working76 recovery."
+  ],
+  "preparation_limits": {
+    "active_source_patches_applied": false,
+    "graph_regeneration_verified": false,
+    "actual_corrected_ordinary_status_actions_verified": false,
+    "actual_module_dexpreopt_verified": false,
+    "target_files_package_verified": false,
+    "signed_images_admitted": false,
+    "rom_boot_or_ota_verified": false,
+    "guest_accessed_by_patch_preparation": false,
+    "phone_accessed": false,
+    "proprietary_apks_redistributed": false,
+    "complete_rom_ready": false
+  }
+}

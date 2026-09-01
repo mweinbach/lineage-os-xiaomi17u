@@ -1915,5 +1915,193 @@
         "size_bytes": 550181
       }
     }
+  },
+  "offline_validation_gms_customization_patch_checkpoint_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4305,
+    "elapsed_seconds": 182.279,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "26472a61115743dcc52a235558528630e6dfe421",
+    "completed_utc": "2026-09-01T08:29:32.398527+00:00",
+    "tested_files": 7,
+    "tested_files_unchanged": true,
+    "subsequent_commit": "9a2135c2e95eeab64208d33503fb1e1f51eb7ddc",
+    "scope": "Committed code plus seven unchanged package-failure and 0018 checkpoint files, subsequently committed as 9a2135c2e95eeab64208d33503fb1e1f51eb7ddc. The later 95-module audit, corrected proposal probe, 0019 preparation and this central-document update are outside that run.",
+    "log": {
+      "path": "reports/gms-uses-library-20260901/root-patch-checkpoint-tests-v1/unittest.log",
+      "sha256": "8bd27c6eb0431189f78967904996bc6fae9845675856a1faa9e94a748f5c46ac",
+      "size_bytes": 750327
+    },
+    "completion": {
+      "path": "reports/gms-uses-library-20260901/root-patch-checkpoint-tests-v1/completion.json",
+      "sha256": "886c2b5174669f7e946b503670231456c0d00790f66b28103a1346c5d8b75d38",
+      "size_bytes": 545
+    }
+  },
+  "selected_gms_manifest_audit_checkpoint_20260901": {
+    "status": "completed-readonly-native-audit-with-four-mismatches-and-passing-correction-probe",
+    "observed_on": "2026-09-01",
+    "supersedes_current_status_of": "target_files_package_failure_checkpoint_20260901",
+    "historical_checkpoint_and_failed_package_preserved": true,
+    "native_audit": {
+      "started_utc": "2026-09-01T08:31:04.727591+00:00",
+      "completed_utc": "2026-09-01T08:31:40.793482+00:00",
+      "native_exit_code": 1,
+      "wrapper_exit_code": 1,
+      "selected_original_apks_checked": 95,
+      "original_apk_bytes": 2017701815,
+      "passed": 91,
+      "manifest_mismatches": 4,
+      "errors": 0,
+      "mismatch_checker_exit_code": 255,
+      "native_commands_returned": 101,
+      "checks_completed_without_truncation": true,
+      "guarded_inputs": 216,
+      "guarded_input_before_after_identity_equal": true,
+      "source_and_output_readonly": true,
+      "ordinary_status_output_argument_removed": true,
+      "enforcement_and_dependency_inputs_preserved": true,
+      "ordinary_build_status_files_written": false,
+      "omitted_declarations_not_audited_or_passed": [
+        "com.google.android.dialer.support",
+        "Chrome",
+        "TrichromeLibrary",
+        "WebViewGoogle",
+        "PrebuiltBugle",
+        "Velvet",
+        "com.android.omadm.radioconfig"
+      ],
+      "complete_gms_coverage_established": false,
+      "independent_review_passed_within_audit_scope": true
+    },
+    "source_preparation": {
+      "guide": "docs/gms-prebuilt-optional-libraries.md",
+      "contract": "patches/evolution/gms-prebuilt-optional-libraries.json",
+      "project": "vendor/gms",
+      "base_commit": "89c3940a77298c204c55a21efded92ddafb59fe9",
+      "original_0018_patch_record_and_guide_preserved": true,
+      "prior_one_file_proposal_ever_installed": false,
+      "next_source_proposal": "four-file-source-v2",
+      "combined_changed_makefiles": 4,
+      "patches": [
+        "patches/evolution/0018-gms-customization-optional-wear-sdk.patch",
+        "patches/evolution/0019-gms-prebuilt-optional-libraries.patch"
+      ],
+      "proposed_optional_libraries": {
+        "CustomizationBundlePrebuiltFullVersion": [
+          "wear-sdk"
+        ],
+        "CrossDeviceAccessServicePrimary": [
+          "androidx.window.extensions",
+          "androidx.window.sidecar"
+        ],
+        "PersistentBackgroundServices": [
+          "com.google.input.gia.giaservicemanager"
+        ],
+        "SafetyHubPrebuilt": [
+          "wear-sdk",
+          "org.apache.http.legacy",
+          "androidx.window.extensions",
+          "androidx.window.sidecar"
+        ]
+      },
+      "required_library_declarations_and_apks_unchanged": true,
+      "http_library_still_selected_by_captured_product": true,
+      "crossdevice_only_stale_direct_http_declaration_removed": true,
+      "automatic_sdk28_http_compatibility_preserved": true,
+      "provider_or_registration_added": false,
+      "enforcement_or_dexpreopt_settings_changed": false,
+      "source_lock_changed": false,
+      "host_paired_replay_and_synthetic_checker_fixtures_passed": true,
+      "corrected_four_module_native_proposal_probe_executed": true,
+      "native_source_adopted": false,
+      "regenerated_native_graph_verified": false,
+      "fresh_successful_native_status_actions_verified": false,
+      "actual_module_dexpreopt_contexts_verified": false
+    },
+    "corrected_proposal_probe": {
+      "started_utc": "2026-09-01T08:45:27.381028+00:00",
+      "completed_utc": "2026-09-01T08:45:34.570818+00:00",
+      "wall_seconds": 7.189572417002637,
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "proposed_checks_passed": 4,
+      "errors": 0,
+      "proposal_only": true,
+      "original_apks_and_dependency_configs_preserved": true,
+      "input_guards_passed": true,
+      "source_and_output_readonly": true,
+      "proposed_source_installed": false,
+      "generated_proposed_commands_verified": false,
+      "ordinary_build_stamp_verified": false,
+      "other_91_original_commands_not_reexecuted": true,
+      "original_95_module_audit_preserved": true,
+      "all_95_regenerated_checks_passed_claimed": false
+    },
+    "active_source": {
+      "files": 537,
+      "projects": 13,
+      "build_number": "nezha.8643b579050aab0dd3218ae3",
+      "page_size_bytes": 4096,
+      "recovery": "working76",
+      "normal_android_enforcing_required": true
+    },
+    "limits": {
+      "actual_module_build_or_packaging_verified": false,
+      "target_files_package_verified": false,
+      "complete_current_vintf_verified": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "runtime_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "actual_native_audit": {
+        "path": "reports/gms-uses-library-20260901/root-selected-manifest-audit-v1/result.json",
+        "sha256": "b7e4e63ca7f3f1848aafbee57e86c78a3fe4a47ee63921cdfd30df62f840bb9f",
+        "size_bytes": 2375440
+      },
+      "audit_completion": {
+        "path": "reports/gms-uses-library-20260901/root-selected-manifest-audit-v1/completion.json",
+        "sha256": "dd25a977ebaa53362c039007c443f0011c28f30eba3c8b6dd25a056125b01178",
+        "size_bytes": 415
+      },
+      "root_audit_review": {
+        "path": "reports/gms-uses-library-20260901/root-selected-manifest-audit-v1/root-review.json",
+        "sha256": "3e38898f03f47deaf42adabafe65f1bf9728243eb63816c2fbe3c1fed526ceba",
+        "size_bytes": 4771
+      },
+      "independent_audit_review": {
+        "path": "reports/gms-uses-library-20260901/actual-audit-review-v1/completion.json",
+        "sha256": "350bd916705187d94cb0cbcf5dbb074cd6e1d711ae5728c2dd48be8c38b0a111",
+        "size_bytes": 1187
+      },
+      "additional_source_patch": {
+        "path": "patches/evolution/0019-gms-prebuilt-optional-libraries.patch",
+        "sha256": "d136a265dc8eea35c1af9d507e1609536951e28107c5e2d5ca2fd60ac3670f03",
+        "size_bytes": 2282
+      },
+      "additional_source_contract": {
+        "path": "patches/evolution/gms-prebuilt-optional-libraries.json",
+        "sha256": "476a3003aa9121189aea12c6a68621bd3ee0814cced7665d9e7ba33583b5146c",
+        "size_bytes": 15755
+      },
+      "corrected_proposal_probe": {
+        "path": "reports/gms-uses-library-20260901/root-corrected-four-probe-v1/result.json",
+        "sha256": "f30eba940781e36bc49be19304c5829c66f1fe18a8ff1b1688e69855cb09d8a9",
+        "size_bytes": 1310602
+      },
+      "corrected_proposal_probe_completion": {
+        "path": "reports/gms-uses-library-20260901/root-corrected-four-probe-v1/completion.json",
+        "sha256": "c99f36f28e5954b5ea25c5631f61664b08d573ec279191935ce64b99be92516b",
+        "size_bytes": 415
+      }
+    }
   }
 }

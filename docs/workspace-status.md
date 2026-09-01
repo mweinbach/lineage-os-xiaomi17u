@@ -10,21 +10,38 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The **first ordinary `target-files-package` build fails with native and wrapper
-exit 1 at 2026-09-01 08:03:01 UTC**. Its single retained `FAILED:` entry is the
-strict uses-library check for `CustomizationBundlePrebuiltFullVersion`: the
-unchanged APK declares optional `wear-sdk`, absent from its Make declaration.
-The complete result, stdout and three action logs are retained and verified;
-the package profile remains false, with no artifact postcheck or verified ZIP.
-The [one-line GMS source correction](gms-customization-optional-library.md)
-passes isolated host replay and checker fixtures, but is not adopted into the
-native source or verified by a fresh generated status action. Read-only capture
-includes 95 GMS status-leaf commands and the failing APK's native badging; the
-broader strict audit has not run. The selected 537-file/thirteen-project source,
-`8643` build identity, 4 KiB baseline, working76 and normal Android enforcement
-are unchanged. Package production does not itself run the full VINTF comparison:
-final package inputs and explicit SKU/vendor-API selection still need admission.
-The older 220-source VINTF evidence remains historical.
+The **strict GMS audit completes at 2026-09-01 08:31:40 UTC with 91 passes,
+four manifest mismatches and zero command errors** across 95 original APKs.
+Native audit and root wrapper both exit 1 because of the mismatches. All 216
+guarded inputs remain unchanged; the audit writes no ordinary build status
+files. Seven omitted declarations are neither audited nor counted as passes.
+This is scoped manifest-check evidence, not full GMS or runtime validation.
+
+The [0018 customization correction](gms-customization-optional-library.md)
+remains unchanged. The new [0019 preparation](gms-prebuilt-optional-libraries.md)
+corrects the other three Make declarations: CrossDevice, Persistent Background
+Services and SafetyHub. Together they form a pending **four-file source-v2
+proposal**, with host replay and synthetic strict-checker fixtures passing.
+The captured product still selects `org.apache.http.legacy`; CrossDevice removes
+only its stale direct declaration, preserving automatic SDK-28 HTTP compatibility.
+SafetyHub retains HTTP and places optional Wear first. The earlier one-file
+proposal was never installed. A separate **four-module read-only native proposal
+probe passes at 08:45:34 UTC**, with native/root exit 0, the original APKs and
+dependency configurations unchanged, and zero errors. It checks proposed library
+lists without installing source, regenerating commands or producing ordinary
+build stamps. The other 91 original checks are not rerun; the original 91/4 audit
+remains unchanged. Source adoption, graph regeneration and fresh ordinary status
+actions remain pending. The selected 537-file/thirteen-project source, `8643`
+build identity, 4 KiB baseline, working76 and normal Android enforcement are
+unchanged.
+
+The **first ordinary `target-files-package` build remains failed**, with native
+and wrapper exit 1 at **08:03:01 UTC** on the customization bundle's missing
+optional `wear-sdk` declaration. Its complete result, stdout and three action
+logs remain retained; no artifact postcheck or verified ZIP is established.
+Package production does not itself run the full VINTF comparison: final package
+inputs and explicit SKU/vendor-API selection still need admission. The older
+220-source VINTF evidence remains historical.
 
 The corrected Evolution/factory policy source build and its **scoped policy3
 verification now pass**. Source/M4/context review retains all 6,399 assertions,

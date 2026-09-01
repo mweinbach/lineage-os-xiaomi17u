@@ -1,0 +1,35 @@
+diff --git a/product/packages/privileged_apps/SafetyHubPrebuilt/Android.mk b/product/packages/privileged_apps/SafetyHubPrebuilt/Android.mk
+index c0e749222c8145967eba29715eb8790bf34f18c6..eb0117e689d8b538c7cc7dd417cd8c826ec5eb91 100644
+--- a/product/packages/privileged_apps/SafetyHubPrebuilt/Android.mk
++++ b/product/packages/privileged_apps/SafetyHubPrebuilt/Android.mk
+@@ -26,7 +26,7 @@
+ LOCAL_MODULE_CLASS := APPS
+ LOCAL_PRODUCT_MODULE := true
+ LOCAL_PRIVILEGED_MODULE := true
+-LOCAL_OPTIONAL_USES_LIBRARIES := org.apache.http.legacy androidx.window.extensions androidx.window.sidecar
++LOCAL_OPTIONAL_USES_LIBRARIES := wear-sdk org.apache.http.legacy androidx.window.extensions androidx.window.sidecar
+ LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+ LOCAL_OVERRIDES_PACKAGES := EmergencyInfo
+ include $(BUILD_PREBUILT)
+diff --git a/system_ext/packages/apps/CrossDeviceAccessServicePrimary/Android.mk b/system_ext/packages/apps/CrossDeviceAccessServicePrimary/Android.mk
+index 7201a39453c2a5a620e93af394f15b33e6d6cf1f..ef253b7682b3b7c8cc0f5f29b3dd661962925872 100644
+--- a/system_ext/packages/apps/CrossDeviceAccessServicePrimary/Android.mk
++++ b/system_ext/packages/apps/CrossDeviceAccessServicePrimary/Android.mk
+@@ -24,6 +24,6 @@
+ LOCAL_CERTIFICATE := platform
+ LOCAL_MODULE_CLASS := APPS
+ LOCAL_SYSTEM_EXT_MODULE := true
+-LOCAL_OPTIONAL_USES_LIBRARIES := androidx.window.extensions androidx.window.sidecar org.apache.http.legacy
++LOCAL_OPTIONAL_USES_LIBRARIES := androidx.window.extensions androidx.window.sidecar
+ LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+ include $(BUILD_PREBUILT)
+diff --git a/system_ext/packages/privileged_apps/PersistentBackgroundServices/Android.mk b/system_ext/packages/privileged_apps/PersistentBackgroundServices/Android.mk
+index 2f5d4e015fe2be486ce0a08ee233fdabeb53ebde..4002844a15de064c780ff1abe7e60d90640653ff 100644
+--- a/system_ext/packages/privileged_apps/PersistentBackgroundServices/Android.mk
++++ b/system_ext/packages/privileged_apps/PersistentBackgroundServices/Android.mk
+@@ -26,4 +26,5 @@
+ LOCAL_SYSTEM_EXT_MODULE := true
+ LOCAL_PRIVILEGED_MODULE := true
+ LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
++LOCAL_OPTIONAL_USES_LIBRARIES := com.google.input.gia.giaservicemanager
+ include $(BUILD_PREBUILT)
