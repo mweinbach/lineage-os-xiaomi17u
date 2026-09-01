@@ -10,6 +10,32 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **ordinary Images2 build and postcheck pass**, with native exit 0 at
+**2026-09-01 17:10:06 UTC** and wrapper exit 0 at **17:13:46 UTC**. All seven
+installed-output producers are verified fresh: the four selected prebuilt
+images (`recovery`, `mi_ext`, `vendor`, `odm`) and three framework-policy SHA
+sidecars. The images match their pinned source inputs, including working76;
+the sidecars match the selected ODM policy basis. Seven compiler-output and
+installed-policy pairs are verified. All six complete source/input guard maps
+and all 254 configuration entries remain equal on the **543-file/fourteen-project
+`3c24` source**, with the 4 KiB baseline and normal Android enforcement unchanged.
+
+The reviewed preparation deliberately moved four prior installed images and
+three sidecars into retained locations before the build, preserving their
+originals. The result therefore records **`output_invalidated_or_deleted=true`**;
+this was a scoped output rebuild, without source changes or another whole-output
+archive. Readback of all 56 planned evidence files and independent replay of
+action and policy evidence pass. The readback excludes large image and graph
+bodies; the native postcheck supplies the source/output image hash checks.
+Package2, final package VINTF/AIDL and boot checks, the signed AVB chain,
+partition fit and physical-device testing remain separate
+gates. No complete or flashable ROM is verified. See
+[build progress](build-progress.md) and the
+[Images2 checkpoint](../research/workspace-integration.json).
+
+The following paragraphs preserve earlier dated checkpoints. Their pending
+work and failed attempts retain that historical scope.
+
 The **GMS2 component attempt passes its native build and postcheck** on the
 543-file/fourteen-project source with identity `3c24`. Native Soong exits 0 at
 **2026-09-01 16:06:05 UTC**; the completed wrapper also exits 0. Three SignApk

@@ -1,5 +1,44 @@
 # Nezha product and build progress
 
+The **ordinary Images2 phase passes its native build and postcheck** on the
+543-file/fourteen-project source, with build number
+**`nezha.3c24f46cf801e6abd6d5361c`**. Native execution runs from
+**2026-09-01 17:08:14 UTC to 17:10:06 UTC**; the wrapper completes at
+**17:13:46 UTC**, both with exit 0. Its exact `-j8` invocation builds
+`recoveryimage`, `mi_extimage`, `vendorimage`, `odmimage` and the three
+`*_sepolicy_and_mapping.sha256` goals.
+
+All seven installed-output producers have fresh Ninja and verbose evidence.
+Recovery additionally records both required recipe executions and one fresh
+installed-image row. The four prebuilt image outputs match their pinned inputs;
+working76 remains `a130ba75…`. Three freshly installed policy SHA sidecars are
+recomputed against the selected ODM basis, and seven compiler-output and
+installed-policy pairs match. This verifies delivery of those selected inputs,
+without claiming newly compiled recovery or vendor runtimes.
+
+Before execution, the reviewed preservation step moved four prior installed
+images and three sidecars into retained locations and preserved their originals.
+The result explicitly records **`output_invalidated_or_deleted=true`**.
+All six complete source/input guard maps and all 254 configuration entries
+remain equal; the 4 KiB profile, enforcing
+normal Android policy and source identity are unchanged. CAP7, the four-record
+recovery rule proof, nine staged proof records and the 68-input caller freeze
+have separate admission records. A fresh read-only four-log measurement completes
+at **17:16:00 UTC**, without itself admitting a package build.
+
+Readback of all **56 planned evidence files, totaling 138,621,501 bytes**, passes.
+A host decoder correction preserves each descriptive `name` field against the
+original saved native records; no native capture is repeated. Independent replay
+also verifies the seven fresh actions, full policy bodies and ordered sidecar
+hashes, retention journals and twelve current/preserved metadata files. Large
+image and graph bodies are outside this readback; the native postcheck supplies
+the source/output image hash checks.
+Package2 and its final VINTF/AIDL, image, AVB/rollback and partition checks remain
+unverified, as do runtime behavior and a physical Evolution boot. The
+[Images2 checkpoint](../research/workspace-integration.json) records exact
+inputs, action counts, hashes and scope. The following paragraphs preserve
+earlier checkpoints, including their then-pending work and original failures.
+
 The **GMS2 native build and postcheck pass**, with native/root exit 0 on the
 543-file/fourteen-project `3c24` source. Native execution finishes at
 **2026-09-01 16:06:05 UTC**. Its proof records three fresh SignApk actions plus
