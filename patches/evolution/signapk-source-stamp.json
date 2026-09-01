@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "id": "signapk-source-stamp-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-01 host preparation after the failed first ordinary GMS component postcheck",
+  "project": "build/make",
+  "origin": "https://github.com/Evolution-X/build",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+  "patch": "patches/evolution/0020-signapk-remove-stale-source-stamp.patch",
+  "patch_sha256": "007e8cf5f714b48baa0a58694cd1e7846c62b127acc3ae59dff1ca647add3343",
+  "patch_size_bytes": 1900,
+  "files": [
+    {
+      "after_git_blob": "a6e5a2ffd6ed05558a1fa96bf1c2678b3dac48df",
+      "after_sha256": "1694fe9e005f4c94b639b16cefb905fb1fc8b960659d80b575f129d5b4f126da",
+      "after_size_bytes": 10648,
+      "before_git_blob": "ca3814c33fa53089b551f2f79ac73de75c3ab0fe",
+      "before_sha256": "24567acfe9cf31468d3824b95523aa0957eb0c7b79153caab7ef5d9a11c14bbe",
+      "before_size_bytes": 10510,
+      "mode": "100644",
+      "path": "core/app_prebuilt_internal.mk"
+    },
+    {
+      "after_git_blob": "196daba1088e143f9a6f0a32915bded7b5a93c56",
+      "after_sha256": "a1ef3eaac711108c867c1834c475a84a4425d0fb29d07364b3fd20ed71f260f9",
+      "after_size_bytes": 61172,
+      "before_git_blob": "654e19675d7c836f4734dd986293ac7506096207",
+      "before_sha256": "6aa7fa0c1a5aae0f0595e519023c6ee2f70d75ce5bc8aac8e9d9a87961eb2bd2",
+      "before_size_bytes": 60936,
+      "mode": "100644",
+      "path": "tools/signapk/src/com/android/signapk/SignApk.java"
+    }
+  ],
+  "purpose": "Remove only the obsolete source-stamp digest when SignApk replaces an APK signing block, and rebuild ordinary non-PRESIGNED APKs when SignApk changes.",
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "source_capture": {
+    "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-signapk-source-stamp-source-v1/stdout.json",
+    "sha256": "b55a95682ec9c6e3449e58a22e737499d413f44302d092ac7acb6d9562b5eaf5",
+    "size_bytes": 312802
+  },
+  "pinned_semantics": {
+    "apksig_revision": "ba8f1f1c74b62b8742c9946b09d4a9c6ac7446ae",
+    "apksig_origin": "https://android.googlesource.com/platform/tools/apksig",
+    "captures": [
+      {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-apksigner-source-stamp-source-v1/stdout.json",
+        "sha256": "852e5a29b676128aae8a6ee313bcf08d400694a5ce359d4498a2173e3fc292d3",
+        "size_bytes": 358077
+      },
+      {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-apkutils-stamp-constant-source-v1/stdout.json",
+        "sha256": "92081532a22237a5d2cb49508837ce7ddb96ffecece9b3638295547171789395",
+        "size_bytes": 45626
+      },
+      {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-source-stamp-constants-v1/stdout.json",
+        "sha256": "26b8ef49cf72a580061094fe24d45df57b54cad289c82da6b8311cb87efb2f95",
+        "size_bytes": 3409
+      }
+    ],
+    "files": [
+      {
+        "project": "build/make",
+        "path": "core/definitions.mk",
+        "sha256": "1dd4ddad3f2273a19806069cf4ad57dd6cfde93dc3bd2d05df566d49aab01171",
+        "size_bytes": 157774
+      },
+      {
+        "project": "build/make",
+        "path": "tools/signapk/Android.bp",
+        "sha256": "8b7091626314839e7724d9a8749f7fa0b88a0f977a846bde23d92d77d0eb9a4e",
+        "size_bytes": 1460
+      },
+      {
+        "project": "tools/apksig",
+        "path": "src/apksigner/java/com/android/apksigner/ApkSignerTool.java",
+        "sha256": "c627ebdef1c91038441ef340bee726d170ac9305044acdc5a8659e920f0083ec",
+        "size_bytes": 65273
+      },
+      {
+        "project": "tools/apksig",
+        "path": "src/main/java/com/android/apksig/ApkVerifier.java",
+        "sha256": "e0e006a494783ab12991296d2f710bd5ef24f6782e5f225109f650fe1200d1fe",
+        "size_bytes": 161479
+      },
+      {
+        "project": "tools/apksig",
+        "path": "src/main/java/com/android/apksig/apk/ApkUtils.java",
+        "sha256": "82137a70946a03383995da6530f09438f4d7e9505b11bab778202efbb2987b83",
+        "size_bytes": 33204
+      },
+      {
+        "project": "tools/apksig",
+        "path": "src/main/java/com/android/apksig/internal/apk/stamp/SourceStampConstants.java",
+        "sha256": "c455d9ce0b173752efda1d51d9c5887ba8e7a324fcd35e062d95a60e3981934d",
+        "size_bytes": 1505
+      }
+    ],
+    "stamp_constant": "ApkUtils.SOURCE_STAMP_CERTIFICATE_HASH_ZIP_ENTRY_NAME",
+    "stamp_constant_alias": "SourceStampConstants.SOURCE_STAMP_CERTIFICATE_HASH_ZIP_ENTRY_NAME",
+    "stamp_constant_value": "stamp-cert-sha256",
+    "source_stamp_v2_block_id": "0x6dff800d",
+    "ignored_filename_pattern_checked_before_entry_copy": true,
+    "normal_apk_verifier_checks_present_stamp_digest": true,
+    "verify_source_stamp_false_is_already_default": true,
+    "verify_source_stamp_true_selects_stamp_only_verification": true
+  },
+  "source_effect": {
+    "changed_files": 2,
+    "apk_copy_call_replacements": 1,
+    "excluded_zip_entry": "stamp-cert-sha256",
+    "filename_match": "Pattern.quote literal with Matcher.matches whole-name matching",
+    "apk_signing_block_already_discarded": true,
+    "other_signers_already_not_preserved": true,
+    "normal_signapk_dependency_added": true,
+    "normal_dependency_condition": "ifneq ($(LOCAL_CERTIFICATE),PRESIGNED)",
+    "normal_dependency_target": "$(built_module): $(SIGNAPK_JAR)",
+    "normal_dependency_precedes_unchanged_common_recipe": true,
+    "scope": "All APK re-signing through SignApk; incremental dependency correction only for its ordinary non-PRESIGNED prebuilt recipe.",
+    "whole_file_ota_signing_changed": false,
+    "strip_pattern_changed": false,
+    "ordinary_presigned_recipe_changed": false,
+    "ordinary_presigned_dependencies_changed": false,
+    "split_apk_recipe_changed": false,
+    "signing_algorithms_or_keys_changed": false,
+    "original_apk_bytes_changed": false,
+    "verifier_flags_changed": false,
+    "source_stamp_generated": false,
+    "source_lock_changed": false,
+    "normal_android_selinux_changed": false,
+    "page_size_changed": false,
+    "recovery_changed": false
+  },
+  "observed_failure": {
+    "receipt": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/component-launcher-preparation-v1/bound-components-1-v1/root-components-1-v1/stdout.jsonl",
+      "sha256": "8b3376f2d33c379a4c4e9ee05ca2df3f9bf1a6f3774ce474e03b9c12f7996a33",
+      "size_bytes": 10205010
+    },
+    "diagnostics": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/stdout.json",
+      "sha256": "79a84011208aad38b66853c16a1c014c280ba2180107a8bd46f85c04a70d6f01",
+      "size_bytes": 78479
+    },
+    "structure_receipt": {
+      "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-crossdevice-stamp-structure-v1/stdout.json",
+      "sha256": "95970ba5dcf8ddf41df274b700016a8d54e5151248a1ae21d6c8fffbe9f3d0ad",
+      "size_bytes": 5518
+    },
+    "module": "CrossDeviceAccessServicePrimary",
+    "native_build_exit_code": 0,
+    "installed_signature_exit_code": 1,
+    "wrapper_exit_code": 1,
+    "installed_signature_stderr": "WARNING: No SourceStamp signature\n",
+    "warnings_as_errors_retained": "-Werr",
+    "installed_v3_signature_verified": true,
+    "installed_signer_count": 1,
+    "installed_signer_certificate_sha256": "c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8",
+    "original_apk": {
+      "sha256": "c92b827634ae5a9522460b277390ac8a8eb4719962c322aa365a3a4ee841c97a",
+      "size_bytes": 16962727
+    },
+    "failed_built_and_installed_apk": {
+      "sha256": "f3a86078ec28d75b4b252a75f5ae8bf74d4d4f79ca91a11cdc9cc847bc831440",
+      "size_bytes": 16954535
+    },
+    "stamp_digest_entry_present_in_all_three": true,
+    "source_stamp_v2_block_present_in_original": true,
+    "source_stamp_v2_block_absent_in_built_and_installed": true,
+    "failed_result_preserved": true,
+    "successful_component_postcheck_established": false
+  },
+  "host_validation": {
+    "receipt": {
+      "path": "reports/signapk-source-stamp-20260901/patch-preparation-v1/replay-receipt.json",
+      "sha256": "40a153f885614248e87c257a8d334cc024348c04cd5834496f02743c90f3334a",
+      "size_bytes": 8246
+    },
+    "exact_forward_reverse_copies_per_file": 2,
+    "full_captured_files": 2,
+    "duplicate_application_rejected": true,
+    "negative_guard_cases": 16,
+    "fuzz": 0,
+    "offsets": 0,
+    "original_source_bytes_and_modes_preserved": true,
+    "offline_tests_use_partial_hunks_with_inert_surrounding_text": true,
+    "java_or_make_execution_established_by_offline_tests": false,
+    "previous_one_file_draft_retained": "reports/signapk-source-stamp-20260901/patch-preparation-v1/one-file-draft-v1"
+  },
+  "adoption_requirements": [
+    "Recheck the pinned bka project HEAD and origin, both complete source preimages, mode 0644 and all patch controls. Reject drift, duplicate application, extra paths, offsets or fuzz; preserve every other reviewed local change.",
+    "Adopt both source files together through the reviewed source transaction, retain original proprietary APKs and past failed outputs, and recompute the complete source inventory and build identity.",
+    "Regenerate the actual bp4a graph and require SIGNAPK_JAR as a normal dependency of each selected non-PRESIGNED prebuilt APK. Preserve the ordinary PRESIGNED and whole-file OTA paths. Do not delete outputs, touch dependencies or force actions to simulate correct incremental rebuilding.",
+    "Build SignApk from the patched source and require fresh ordinary APK production through that tool. Verify no stamp-cert-sha256 entry remains in rebuilt APKs whose original signing block was discarded; confirm unrelated entry contents remain intact.",
+    "Repeat the full strict four-module postcheck, including apksigner verify --verbose --print-certs -Werr, the expected signer identities, original APK guards and unchanged strict uses-library checks. No warning exception, signer switch or source-stamp-only verification is authorized.",
+    "Keep native component success, final package contents, VINTF, AVB, rollback and partition-fit checks separate from this host preparation. Preserve the 4 KiB baseline, working76 recovery and normal Android enforcement; no ROM, boot, OTA or hardware success is implied."
+  ],
+  "preparation_limits": {
+    "active_source_patch_applied": false,
+    "java_compiled": false,
+    "ordinary_graph_regenerated": false,
+    "corrected_native_component_build_verified": false,
+    "corrected_apk_signature_verified": false,
+    "target_files_package_verified": false,
+    "signed_images_admitted": false,
+    "rom_boot_or_ota_verified": false,
+    "guest_accessed_by_patch_preparation": false,
+    "phone_accessed": false,
+    "private_keys_accessed": false,
+    "proprietary_apks_redistributed": false,
+    "complete_rom_ready": false
+  }
+}

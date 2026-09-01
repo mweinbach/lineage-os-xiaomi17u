@@ -1,0 +1,34 @@
+diff --git a/core/app_prebuilt_internal.mk b/core/app_prebuilt_internal.mk
+index ca3814c33fa53089b551f2f79ac73de75c3ab0fe..a6e5a2ffd6ed05558a1fa96bf1c2678b3dac48df 100644
+--- a/core/app_prebuilt_internal.mk
++++ b/core/app_prebuilt_internal.mk
+@@ -214,6 +214,11 @@
+ $(built_module) : $(GZIP)
+ endif
+ 
++# Re-sign non-presigned APKs when the signing tool changes.
++ifneq ($(LOCAL_CERTIFICATE),PRESIGNED)
++$(built_module): $(SIGNAPK_JAR)
++endif
++
+ $(built_module) : $(my_prebuilt_src_file) | $(ZIPALIGN) $(ZIP2ZIP) $(SIGNAPK_JAR) $(SIGNAPK_JNI_LIBRARY_PATH)
+ 	$(transform-prebuilt-to-target)
+ 	$(uncompress-prebuilt-embedded-jni-libs)
+diff --git a/tools/signapk/src/com/android/signapk/SignApk.java b/tools/signapk/src/com/android/signapk/SignApk.java
+index 654e19675d7c836f4734dd986293ac7506096207..196daba1088e143f9a6f0a32915bded7b5a93c56 100644
+--- a/tools/signapk/src/com/android/signapk/SignApk.java
++++ b/tools/signapk/src/com/android/signapk/SignApk.java
+@@ -1280,8 +1280,11 @@
+                     // Use maximum compression for compressed entries because the APK lives forever
+                     // on the system partition.
+                     outputJar.setLevel(9);
+-                    copyFiles(inputJar, null, apkSigner, outputJar,
+-                              outputJarCounter, timestamp, alignment);
++                    // The discarded signing block leaves its source-stamp digest obsolete.
++                    copyFiles(inputJar,
++                            Pattern.compile(Pattern.quote(
++                                    ApkUtils.SOURCE_STAMP_CERTIFICATE_HASH_ZIP_ENTRY_NAME)),
++                            apkSigner, outputJar, outputJarCounter, timestamp, alignment);
+                     ApkSignerEngine.OutputJarSignatureRequest addV1SignatureRequest =
+                             apkSigner.outputJarEntries();
+                     if (addV1SignatureRequest != null) {
