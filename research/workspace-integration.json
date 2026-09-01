@@ -1647,5 +1647,150 @@
       }
     },
     "all_reused_selected_actions_are_display_config": true
+  },
+  "offline_validation_aidl_image_review_checkpoint_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4261,
+    "elapsed_seconds": 179.563,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "d072d06ae4e0a5e56b4fed9bc9021308c5d9f8f1",
+    "completed_utc": "2026-09-01T05:57:49.658112+00:00",
+    "scope": "Committed code plus four unchanged AIDL/component-image-review documents, subsequently committed as aa93e72efe202e0bbe5ec0cc2d64a70f3ab43a56. Later materializer and package-progress work is outside this suite.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-aidl-component-image-review-v1/tests.log",
+      "sha256": "681758749a9897252dfd7b515a8584da6c727fa6ccd5251c83d671149fe1cae2",
+      "size_bytes": 742361
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-aidl-component-image-review-v1/completion.json",
+      "sha256": "b55d6f09b1e262708525f3dde015ab5dccf69266920c303ab28ba1bc63a1444a",
+      "size_bytes": 1173
+    }
+  },
+  "offline_validation_target_files_materializer_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4305,
+    "elapsed_seconds": 202.826,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "aa93e72efe202e0bbe5ec0cc2d64a70f3ab43a56",
+    "completed_utc": "2026-09-01T06:37:39.514754+00:00",
+    "scope": "Committed code plus three unchanged materializer implementation/test/guide files, subsequently committed as 0f09135cede31b30af7978ca1aedb4d232bdbb54. This later central-document milestone and native package execution are outside the offline suite.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-target-files-materializer-v1/tests.log",
+      "sha256": "afa50119c1ffd69b95e41c77083665d461c1e46f65dd770a2f1333f7ca3f1026",
+      "size_bytes": 750327
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-target-files-materializer-v1/completion.json",
+      "sha256": "aab904d3cf7b1cd4646a11e5eb20c42cb910ae407024a4e1e911f917bc22ac74",
+      "size_bytes": 1002
+    }
+  },
+  "target_files_package_and_materializer_checkpoint_20260901": {
+    "status": "package-execution-in-progress-and-maintained-materializer-tested-no-package-completion",
+    "package_attempt": {
+      "phase": "first-target-files-package-1",
+      "goal": "target-files-package",
+      "dispatch_reported_utc": "2026-09-01T06:10:14.015275+00:00",
+      "main_ninja_observed_by_coordinator": true,
+      "observation_basis": "Dated coordinator dispatch and main-Ninja observation, not a continuing live-state assertion. Frozen preparation and review records do not establish native completion.",
+      "actual_result": null,
+      "native_exit_code": null,
+      "verified_zip_identity": null,
+      "source_files_selected": 537,
+      "source_projects_selected": 13,
+      "build_number": "nezha.8643b579050aab0dd3218ae3",
+      "page_size_bytes": 4096,
+      "recovery": "working76",
+      "normal_android_enforcing_required": true,
+      "source_mutation_requested": false,
+      "phone_operations": []
+    },
+    "materializer": {
+      "commit": "0f09135cede31b30af7978ca1aedb4d232bdbb54",
+      "guide": "docs/target-files-materialization.md",
+      "implementation": "scripts/materialize_target_files_inputs.py",
+      "literal_zip_image_roles": 13,
+      "retained_factory_input_roles": 2,
+      "focused_synthetic_tests_passed": 44,
+      "combined_related_tests_passed": 238,
+      "combined_includes_focused_tests": true,
+      "offline_test_skips": 0,
+      "persisted_receipt_status": "verified-before-publication",
+      "persisted_receipt_proves_publication": false,
+      "successful_api_return_or_cli_exit_zero_required": true,
+      "successful_return_status": "materialized-inputs-only",
+      "normalized_signer_manifest_digest_differs_from_materializer_manifest": true,
+      "reconciliation_uses_preparation_normalized_manifest_digest": true,
+      "space_checks_are_sampled_not_reserved": true,
+      "actual_materialization_performed": false,
+      "actual_signing_performed": false
+    },
+    "final_package_checks": {
+      "status": "host-only-input-map-waiting-for-actual-completed-package",
+      "target_files_goal_runs_full_vintf_comparison": false,
+      "explicit_final_sku_and_vendor_api_selection_required": true,
+      "final_selection_admitted": false,
+      "historical_vintf_source_files": 220,
+      "historical_vintf_evidence_admits_current_package": false,
+      "command_templates_are_admitted_native_argv": false,
+      "native_check_packet_dispatch_ready": false,
+      "final_meta_xml_apex_apk_and_image_to_tree_joins_verified": false
+    },
+    "limits": {
+      "target_files_package_verified": false,
+      "complete_current_vintf_verified": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "runtime_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "materializer_handoff": {
+        "path": "reports/oem-policy-integration-20260829/boot-chain-next-check-v1/post-target-files-native-gates-v1/materializer-promotion-validation-v1/handoff-final-v1.json",
+        "sha256": "aaaca0cba5aa51c6b2b1d507b9840736b2bbfc9592e9b32d567351e34417c7fc",
+        "size_bytes": 7647
+      },
+      "package_request": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package-1-v1/request.json",
+        "sha256": "8ed48c5dcd08308cb0891ab786e572c0f8b284b0d3084c91cd3188ce00da23df",
+        "size_bytes": 6798220
+      },
+      "package_preparation": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package-1-v1/preparation.json",
+        "sha256": "0e22b19d25babb09212993ce421e6c7fc034ce1dc66725d91fa25983adbc4ae3",
+        "size_bytes": 6473
+      },
+      "package_caller_release": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/actual-package-1-bindings-v1/release.json",
+        "sha256": "2e9c4568650a6245648b5d9722d669537b2e3c3a31ebca6547b8bf9f520cfe64",
+        "size_bytes": 5827
+      },
+      "package_preparation_freeze": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/actual-package-1-bindings-v1/preparation-freeze.json",
+        "sha256": "02c1e312eea0c4918e8fd31b4807c66cda20b962cf7a70f721d1d6f6cdd77b3b",
+        "size_bytes": 16296
+      },
+      "package_preparation_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/caller-review-v1/actual-package-build-v1/package-binding-review-v1.json",
+        "sha256": "73276e65f1147277305fcd27858365b6cd82c91196ed3e19e6491d7840bfbe63",
+        "size_bytes": 30658
+      },
+      "final_package_check_input_map": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/final-package-check-preparation-v1/check-input-map-v1.json",
+        "sha256": "b5553e09dfa16320bb1515b9a379381e343ce2c7b2ee73fde55513af4b77a08e",
+        "size_bytes": 22594
+      }
+    }
   }
 }

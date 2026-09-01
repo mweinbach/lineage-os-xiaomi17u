@@ -1,5 +1,23 @@
 # Nezha product and build progress
 
+The **first ordinary target-files build was dispatched at 2026-09-01
+06:10:14 UTC** and was observed in main Ninja. This checkpoint records it as
+in progress, without a completed native result or verified target-files ZIP.
+The selected source, `8643` identity and 4 KiB/enforcement/recovery settings are
+unchanged. Full VINTF is a separate final-package check; explicit final SKU and
+vendor-API selection and current package inputs remain required. Historical
+220-source compatibility evidence does not qualify the final package.
+
+Commit **0f09135** adds the tested
+[target-files input materializer](target-files-materialization.md). Its 44
+synthetic tests do not establish actual materialization. The persisted receipt
+only verifies the checkpoint before publication; successful return is required,
+and subsequent signing preparation supplies a distinct normalized-manifest
+digest. The last full suite before this documentation update passes **4,305
+tests in 202.826 seconds with zero skips**. The preceding four-document checkpoint
+passes 4,261 tests in 179.563 seconds. No actual materializer publication or signing
+is claimed.
+
 The **2026-09-01 05:34:01 UTC AIDL component build** passes with native and
 wrapper exit 0. The log has 341 main Ninja actions plus one bootstrap step.
 Among 70 selected outputs, 38 have fresh action evidence and 32 display-config
@@ -43,7 +61,7 @@ Commit **1ef9bf3** adds the maintained
 streaming archive copier. Its 72 added tests use synthetic archives and mocked
 cryptography; its full workspace suite passes 4,261 tests in 192.570 seconds,
 with zero skips. The later preparation-document checkpoint passes 4,261 tests
-in 204.808 seconds with zero skips. The last full suite before this current
+in 204.808 seconds with zero skips. The earlier suite before the
 artifact-review/component-build update passes 4,261 tests in 193.210 seconds,
 with zero skips, against the four unchanged documents committed as `d072d06`.
 No actual signing or target-files reconciliation has run.

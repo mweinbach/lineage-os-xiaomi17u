@@ -10,6 +10,15 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **first ordinary `target-files-package` build is in progress** at this
+checkpoint. The coordinator records dispatch at **2026-09-01 06:10:14 UTC**
+and subsequent main Ninja activity; no completion result, successful native
+exit or verified ZIP is recorded here. The selected 537-file/thirteen-project
+source, `8643` build identity, 4 KiB baseline, working76 and normal Android
+enforcement are unchanged. Package production does not itself run the full
+VINTF comparison: final package inputs and explicit SKU/vendor-API selection
+still need admission. The older 220-source VINTF evidence remains historical.
+
 The corrected Evolution/factory policy source build and its **scoped policy3
 verification now pass**. Source/M4/context review retains all 6,399 assertions,
 all twelve normal binaries pass unfiltered zero-permissive checks, and the
@@ -926,7 +935,24 @@ archive while integrating an already verified signed image set; the helper
 itself does not sign. No actual target-files archive, signing operation or
 reconciliation run is established by this tooling milestone.
 
-The last full workspace suite recorded before this milestone passed **4,261
+Commit **0f09135** adds the maintained
+[target-files input materializer](target-files-materialization.md), with 44
+synthetic tests. It copies thirteen selected ZIP images and two retained inputs
+into the existing signing-manifest format; no actual materialization has run.
+Its persisted receipt verifies only the checkpoint before publication. A
+successful API return or CLI exit 0 is required to establish publication, and
+later reconciliation must use the signer's normalized-manifest digest rather
+than the earlier materializer-manifest digest. This is preparation for actual
+archive handling, not image, signing or boot validation.
+
+The last full workspace suite recorded before this milestone passed **4,305
+tests in 202.826 seconds with zero failures, errors or skips**, against `aa93e72`
+plus the three unchanged materializer files, then committed as `0f09135`.
+This later package-progress/materializer checkpoint is outside that offline run.
+The preceding suite passed **4,261 tests in 179.563 seconds with zero failures,
+errors or skips**, against `d072d06` plus the four unchanged AIDL/image-review
+documents, then committed as `aa93e72`.
+The preceding suite passed **4,261
 tests in 193.210 seconds with zero failures, errors or skips**, executed by the
 coordinator against `4dad41f` plus four unchanged image/AIDL-capture documents,
 then committed as `d072d06`. This later artifact-review/component-build update
