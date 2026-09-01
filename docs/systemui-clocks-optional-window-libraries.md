@@ -1,5 +1,30 @@
 # SystemUI Clock optional Window libraries
 
+The **545-file/fifteen-project source now passes native config10/context10**,
+with Soong exit 0 at **2026-09-01 23:00:17 UTC** and **23:08:51 UTC**. Both
+wrappers and complete retained-stream reviews pass; context10 closes at
+**23:11:57 UTC**. All six source/input guard maps and 254 configuration entries
+match within and across the queries; all 1,179 pinned project HEADs and origins
+match, with nine reviewed locally patched projects preserved. The native
+environment is bound to **`nezha.b51a6b5609d2001e9ae1f7ae`** and epoch
+**1788144555**, without admitting physical metadata files or regenerated rules.
+
+The seven context values include Android 16 build **`BP4A.251205.006`**,
+Xiaomi branding and `test-keys`. The exact selected-kernel warnings remain:
+failed input AVB verification, unverified origin, and no verified kernel/module
+compatibility or device boot. An initial host dispatcher metadata lookup fails
+before any VM command; the recorded correction changes no native request or
+build setting. The corrected invocation, not that failed prelaunch, supplies
+the passing result.
+
+Ordinary `nothing7`, physical metadata checks, regenerated strict Clock rules
+and fresh producer/signature evidence remain the next work, followed by the
+current image/package sequence. No Ninja action, new image, signed boot chain
+or hardware behavior is verified by these queries. Normal Android enforcement,
+4 KiB, working76 and false complete-ROM readiness remain unchanged. See the
+[native query record](../research/workspace-integration.json). The adoption
+and preparation checkpoints below retain their original dates and limits.
+
 The **actual 0022 source installation completes at 2026-09-01 22:47:17 UTC**,
 with native/root exit 0. Complete receipt readback and host semantic review pass:
 one exchange, five journal events, no rollback, eight exact source controls

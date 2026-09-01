@@ -4103,5 +4103,210 @@
         "size_bytes": 4012
       }
     }
+  },
+  "clock_native_configuration_checkpoint_20260901": {
+    "status": "native-config10-context10-and-complete-host-review-passed-no-ordinary-build",
+    "guide": "docs/systemui-clocks-optional-window-libraries.md",
+    "source_files": 545,
+    "source_projects": 15,
+    "identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+    "build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+    "build_epoch": 1788144555,
+    "native_queries": {
+      "product_config": {
+        "phase": "first-target-files-product-config-10",
+        "native_started_utc": "2026-09-01T22:59:23.235141+00:00",
+        "native_finished_utc": "2026-09-01T23:00:17.416313+00:00",
+        "native_exit_code": 0,
+        "root_started_utc": "2026-09-01T22:56:03.026431+00:00",
+        "root_finished_utc": "2026-09-01T23:03:16.046065+00:00",
+        "root_exit_code": 0,
+        "native_dumpvar_assignments": 21,
+        "profile_validation_verified": true,
+        "full_streams_decoded_and_bound": {
+          "stderr": {
+            "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+            "size_bytes": 372
+          },
+          "stdout": {
+            "sha256": "6cfd0b623f71f32d3ec9551447b6e40c7e07f1ffd91f84071362d17956024a23",
+            "size_bytes": 4480
+          }
+        }
+      },
+      "product_context": {
+        "phase": "first-target-files-product-context-10",
+        "native_started_utc": "2026-09-01T23:07:58.661040+00:00",
+        "native_finished_utc": "2026-09-01T23:08:51.429064+00:00",
+        "native_exit_code": 0,
+        "root_started_utc": "2026-09-01T23:04:58.764120+00:00",
+        "root_finished_utc": "2026-09-01T23:11:57.520301+00:00",
+        "root_exit_code": 0,
+        "native_dumpvar_assignments": 7,
+        "profile_validation_verified": true,
+        "full_streams_decoded_and_bound": {
+          "stderr": {
+            "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+            "size_bytes": 372
+          },
+          "stdout": {
+            "sha256": "629364929e5482740fd396858ddbd9918d486735c2ba87dc8f8d2a56f2f38d2c",
+            "size_bytes": 230
+          }
+        }
+      }
+    },
+    "all_six_source_input_callbacks_equal_before_and_after": true,
+    "all_six_source_input_callbacks_equal_across_both_queries": true,
+    "configuration_fields": 254,
+    "configuration_matches_actual_admission_and_both_queries": true,
+    "configuration_raw_identity": {
+      "sha256": "c95cfba5a33c7600e9d18d3e5f6e0509d27e0d2969a3a661c88c82ef5d24fca7",
+      "size_bytes": 318997
+    },
+    "upstream_revision_and_origin_matches": 1179,
+    "reviewed_locally_patched_projects_preserved": 9,
+    "complete_host_stream_review_passed": true,
+    "supplemental_dispatcher_held_inputs_reverified": 75,
+    "all_held_input_hashes_and_nine_field_stats_unchanged": true,
+    "selected_context_values": {
+      "BUILD_ID": "BP4A.251205.006",
+      "BUILD_KEYS": "test-keys",
+      "BUILD_VERSION_TAGS": "test-keys",
+      "DEFAULT_SYSTEM_DEV_CERTIFICATE": "build/make/target/product/security/testkey",
+      "PLATFORM_VERSION": "16",
+      "PRODUCT_BRAND": "Xiaomi",
+      "TARGET_BUILD_TYPE": "release"
+    },
+    "retained_kernel_diagnostics": {
+      "device_boot_verified": false,
+      "exact_line_count": 2,
+      "kernel_input_avb_status": "failed",
+      "kernel_module_compatibility_verified": false,
+      "kernel_origin_verified": false,
+      "kind": "selected-candidate-kernel-unverified-warning",
+      "source_admission_verified_here": false,
+      "source_bindings": [
+        {
+          "path": "kernel/xiaomi/nezha/stock-prebuilt.mk",
+          "sha256": "abcfb055ae6fea3811d5b6a9a12acb71dd1adac76bcfeba235d1ac029290f97b",
+          "size_bytes": 6225
+        },
+        {
+          "path": "vendor/xiaomi/nezha-kernel/kernel-inputs.mk",
+          "sha256": "6d5e6ad3311a8a70d642120b5588981bee2101f1ce1d0926c31a3e415c10202b",
+          "size_bytes": 90200
+        }
+      ]
+    },
+    "context_prelaunch_failure": {
+      "failure": "KeyError: actual_source_review at root wrapper line83 before launch.json, native directory or any VM command",
+      "original_failed_attempt_preserved": true,
+      "native_query_attempted_before_correction": false,
+      "correction_utc": "2026-09-01T23:04:57.449655+00:00",
+      "correction_scope": "Read the actual-source-review pin from the authenticated local review, where context10 stores it. The same review is already in the held70-file inventory.",
+      "native_caller_or_request_changed": false,
+      "source_or_android_output_written_by_correction": false
+    },
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "source_mutation_requested": false,
+    "output_invalidated_or_deleted": false,
+    "entire_output_tree_unchanged_claimed": false,
+    "next_gate": "Ordinary nothing7 and physical metadata verification under the current identity; qualify regenerated Clock checker rules and collect corrected strict status/module and fresh producer/signature evidence before the current image/package sequence.",
+    "limits": {
+      "ordinary_nothing7_verified": false,
+      "current_physical_metadata_files_verified": false,
+      "current_regenerated_graph_verified": false,
+      "ninja_actions_executed_by_queries": false,
+      "corrected_clock_strict_status_or_build_verified": false,
+      "current_apk_signatures_verified": false,
+      "new_image_build_or_admission_verified": false,
+      "images3_verified": false,
+      "package3_verified": false,
+      "oem_signing_trust_established": false,
+      "signed_avb_chain_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "product_config_request": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-config-10-v1/request.json",
+        "sha256": "1aa778e3296430d61e95e604dfa6d7bf6d69c01d3cd0281c22c7ca7351a2975d",
+        "size_bytes": 32751994
+      },
+      "product_config_native_result": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-config-10-v1/stdout.jsonl",
+        "sha256": "d6b07ee364b4bc293a1ccc8a641616be001c501ef2520d4835997ddcadeebfa3",
+        "size_bytes": 10383904
+      },
+      "product_config_native_exit": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-config-10-v1/exit.json",
+        "sha256": "856c498f4a7f9bcaa4cdbbfaa9994ba0a6af7b3ff2da0b5f0f6400993b0af81b",
+        "size_bytes": 73
+      },
+      "product_config_root_completion": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-config-10-dispatch-v1/completion.json",
+        "sha256": "96bf4583a32cd4cf93013c8434a1976ad52fe686900adc4d5342d72062517755",
+        "size_bytes": 799
+      },
+      "product_config_full_stream_review": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-config-10-review-v1/review.json",
+        "sha256": "15958e159215d2fdd4a37301d9893d6a2cc10bd84fce7171911ff2bbb659a146",
+        "size_bytes": 7408
+      },
+      "product_context_request": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-context-10-v1/request.json",
+        "sha256": "238d86ed8644359dd4326285f01f0f2cc44e0901bb922d23ac510460810806c5",
+        "size_bytes": 32751385
+      },
+      "product_context_native_result": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-context-10-v1/stdout.jsonl",
+        "sha256": "65a36a6c547cd90c6bfeee589f1088694825cf96fcbf077fdaf91386f2203c19",
+        "size_bytes": 10371230
+      },
+      "product_context_native_exit": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-context-10-v1/exit.json",
+        "sha256": "998999af92978595113f94799b5b472c205336d11a66808546d486e24df53f15",
+        "size_bytes": 74
+      },
+      "product_context_root_completion": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-context-10-dispatch-v1/completion.json",
+        "sha256": "aceab1d7245622001c75f73de0be9107eed270763906a68b45d2c3ae7d157310",
+        "size_bytes": 801
+      },
+      "product_context_full_stream_review": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-context-10-review-v1/review.json",
+        "sha256": "771e98e7ec57ae8e56ddd8f365459b5c44ece90ff601c0143fa700c5ae0974fa",
+        "size_bytes": 6564
+      },
+      "source_spec": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/prepared-v1/source-spec.json",
+        "sha256": "3031154450e8e89a85ae7bf5b7e183db30a81d66843e18b067f3c81c60f11cb5",
+        "size_bytes": 909319
+      },
+      "context_prelaunch_wrapper_correction": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-product-context-10-dispatch-v1/wrapper-metadata-correction.json",
+        "sha256": "2fbd4df30fd737013811f4985e1121e4e7c1131f25ba1269fbcdd2718d7f4d31",
+        "size_bytes": 830
+      },
+      "host_full_stream_reviewer": {
+        "path": "reports/bcr-uses-library-20260901/root-clock-query-result-review-v1/review.py",
+        "sha256": "3603761e70380d8baec46c207fe8747b408734a4bbd14663b1c517fffe7ce0aa",
+        "size_bytes": 10687
+      },
+      "supplemental_cross_query_review": {
+        "path": "reports/continuation-20260901/context-check/supplemental-review.json",
+        "sha256": "88ddae0eee948e3ef24e56c003cfd8da396ebffdc3ab10d7e38863c514682e86",
+        "size_bytes": 2462
+      }
+    }
   }
 }

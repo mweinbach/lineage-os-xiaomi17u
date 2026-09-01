@@ -1,5 +1,39 @@
 # Nezha product and build progress
 
+The **545-file/fifteen-project source passes config10 and context10**. The
+ordinary native dumpvars queries run at **2026-09-01 22:59:23–23:00:17 UTC**
+and **23:07:58–23:08:51 UTC**, both with exit 0. Their wrappers close with exit
+0 at **23:03:16 UTC** and **23:11:57 UTC**. Host review decodes and binds both
+complete streams to their native log identities, accepting 21 configuration
+assignments and seven context assignments. It finds no unexpected diagnostics.
+
+All six source/input guard maps match before and after each query and across
+both queries. All 254 configuration entries match actual admission and one
+another; all 1,179 pinned project revisions and origins match, preserving nine
+reviewed locally patched projects. The native environment uses build number
+**`nezha.b51a6b5609d2001e9ae1f7ae`** and epoch **1788144555**. Context10 reports
+Xiaomi, Android 16, **`BP4A.251205.006`**, the testkey certificate path and
+`test-keys`; this is not OEM signing trust. Each query retains the two exact
+kernel warnings: input AVB verification failed, origin is unverified, and
+kernel/module compatibility and device boot remain unverified.
+
+The first context10 dispatcher fails with `KeyError: actual_source_review`
+before a launch receipt, native directory or VM command. A separate recorded
+host lookup correction reads the already authenticated review field; it does
+not change the native caller, request or build settings. The corrected dispatch
+produces the passing result above. Full host review finishes at **23:13:48 UTC**;
+a supplemental review rechecks all 75 dispatcher-held input hashes and stat
+identities and the cross-query guards.
+
+These are native configuration results, not ordinary graph generation, physical
+metadata-file verification or Ninja producer evidence. `nothing7`, regenerated
+Clock checker rules, corrected strict status/module checks, current signatures,
+Images3 and Package3 remain pending. Normal Android enforcement, 4 KiB,
+working76 and false ROM readiness are unchanged. The
+[Clock guide](systemui-clocks-optional-window-libraries.md) and
+[native query checkpoint](../research/workspace-integration.json) retain exact
+receipts. Earlier checkpoints and failures below keep their original scope.
+
 The **Clock 0022 source adoption passes**, with native installation from
 **2026-09-01 22:39:41 UTC to 22:47:17 UTC** and native/root exit 0. One exchange
 produces five chronological journal events without rollback; `commit_verified`

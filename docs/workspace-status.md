@@ -10,6 +10,32 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **545-file/fifteen-project Clock-corrected source now passes native
+config10 and context10**. Soong exits 0 at **2026-09-01 23:00:17 UTC** and
+**23:08:51 UTC**; the wrappers also exit 0, with context10 closing at
+**23:11:57 UTC**. Complete retained-stream review passes. All six source/input
+guard maps remain equal within and across both queries, all 254 configuration
+entries match admission, and all 1,179 pinned project HEADs and origins match.
+The nine reviewed locally patched projects are preserved. The native build
+environment is bound to **`nezha.b51a6b5609d2001e9ae1f7ae`** and epoch
+**1788144555**; this does not verify physical metadata files for that identity.
+
+Context10 reports Android 16 build **`BP4A.251205.006`**, Xiaomi branding and
+**`test-keys`**. Both queries retain the exact warning that the selected kernel
+inputs report failed AVB verification and unverified origin, kernel/module
+compatibility and device boot. The initial context dispatcher failed on a
+host metadata lookup before any native query; its corrected wrapper changes
+no native request or build setting. That prelaunch failure remains recorded.
+
+The next gate is ordinary **`nothing7`**, physical metadata verification and
+regenerated Clock rules, followed by corrected strict checks and fresh ordinary
+producer/signature evidence. Images3, Package3, the signed boot chain and
+hardware validation remain separate. Normal Android enforcement, the 4 KiB
+baseline, working76 and false complete-ROM readiness are unchanged. The
+[Clock guide](systemui-clocks-optional-window-libraries.md) and
+[query checkpoint](../research/workspace-integration.json) retain the evidence.
+The earlier source-adoption and audit checkpoints below keep their dated scope.
+
 The **Clock 0022 source correction is installed**, with native/root exit 0 at
 **2026-09-01 22:47:17 UTC**. Complete readback and review of the actual receipts
 pass. The active inventory now contains **545 files across fifteen projects**,
