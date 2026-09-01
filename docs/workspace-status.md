@@ -6,7 +6,7 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **August 31, 2026 UTC (August 31 in
+consolidates recorded evidence through **September 1, 2026 UTC (August 31 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
@@ -16,8 +16,12 @@ all twelve normal binaries pass unfiltered zero-permissive checks, and the
 public-name freeze check is verified. The **policy3 raw-image reconstruction
 also passes**, with both TAR/image/export sets identical and independent review
 confirming exactly five policy-file replacements. The subsequent **NONE leaf
-footer/FEC production also passes** with identical repeated outputs. The next
-gate is **current image delivery, source adoption and packaging**. Commit
+footer/FEC production also passes** with identical repeated outputs. Private
+image copies and a separate inactive source stage are verified, but the later
+three-tree adoption stage **stops at the disk-capacity preflight**. It creates
+no new adoption candidate and leaves the **539-file source unchanged**. Adequate
+volume capacity is the immediate gate before source adoption and packaging;
+the reserve was not lowered. Commit
 **4335f1b** adds the explicit
 [policy3 image-input profile](policy-image-inputs.md), including qualified
 installed sidecars. The new raw images are not adopted; signing and physical
@@ -706,6 +710,19 @@ Independent review verifies raw-prefix preservation, regenerated parity and
 identical repeated NONE leaves within the exact package budgets. This does not
 establish physical partition fit or a signed parent chain. Delivery/adoption
 and boot remain unverified; original images and the 539-file source are unchanged.
+
+Commit **4505222** adds explicit policy3 delivery/construction-source support.
+The independent private image copies and inactive four-file image-source
+candidate pass their recorded native checks and independent reviews. The later
+three-tree adoption stage fails at **2026-09-01 00:43:45 UTC**, before creating
+its candidate. A separate read-only post-failure proof retains all 539 source
+files across thirteen projects and the current configuration. It records
+**165,301,895,168 bytes available**, below the unchanged requirement of
+**226,459,516,499 bytes**: a 200 GiB reserve plus 11,711,151,699 bytes of copies.
+The prospective 537-file source is not installed; no image-goal or target-files
+build has run from it. Storage expansion is under read-only investigation,
+without a volume change. The earlier successful inactive stage remains separate.
+
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
 read-only verification records it as the sole source-volume writer, with the
@@ -726,9 +743,11 @@ compatibility remains unverified.
 
 Commit **9f0c8bd** separately adds an optional, explicit
 [Qualcomm AIDL namespace contract](../config/nezha-qti-aidl-namespaces.json) and
-generator support. This host-only preparation is not activated in the 539-file
-guest source. Native metadata, API and backend checks remain pending; it does
-not close the captured definition-coverage gap or establish runtime support.
+generator support. The capability is not activated in the 539-file guest source.
+The post-failure native input guard verifies 666 regular files, one explicitly
+declared namespace alias and thirteen required project HEADs. This does not
+compile metadata/APIs/backends or close the definition-coverage gap; runtime
+support remains unverified.
 
 The earlier **policy-images-export4-v1** native reconstruction passes
 **nine checks and 38 commands with zero skips**. Both independent TAR/image/export
@@ -783,7 +802,14 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,162 tests in 167.578
+The latest completed full workspace suite passed **4,189 tests in 168.608
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `e6bb4e7` plus eight integration files, then committed as `4505222`.
+All thirteen bound identities remained unchanged. The interrupted v1 run is
+preserved as a non-pass; its whole-workspace-copy fixture was corrected to copy
+only declared controls. This later documentation update and native adoption
+attempt are outside the offline suite.
+The preceding suite passed **4,162 tests in 167.578
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `9f0c8bd` plus the four raw-image checkpoint documents, then committed
 as `7c8c27e`. All eleven bound document/code/config/test identities remained

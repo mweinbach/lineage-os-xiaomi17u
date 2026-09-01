@@ -94,8 +94,10 @@ metadata-file values. The camera-property compile failure is resolved; the
 failed policy1/policy2 records remain unchanged. The later scoped source/M4,
 semantic/context, twelve-binary and public-name freeze checks now pass. Current
 raw reconstruction now passes independently reviewed two-pass checks. Current
-footer/FEC production also passes; delivery, source adoption and packaging are
-the next gate. Commit
+footer/FEC production also passes, followed by verified private copies and an
+inactive image-source stage. The later three-tree adoption stage fails its
+disk-capacity preflight without creating a candidate or changing source539.
+Capacity, source adoption and packaging are the next gates. Commit
 **4335f1b** adds explicit policy3 image-input admission with qualified installed
 sidecars; the resulting raw images are not adopted. Full recursive graph
 provenance and final installed-APK Treble
@@ -1793,8 +1795,35 @@ Empty logs bind captured content, not fresh guest inode checks. Host review
 does not reopen the large native images/parity/TARs. Exact package-budget
 geometry passes; physical partition fit, rollback compatibility and the signed
 parent chain remain unverified. These leaves are not adopted. Current source
-stays at 539 files; delivery must rehash the selected guest images and bind
-metadata/provenance before ordinary packaging. No boot or hardware claim follows.
+stays at 539 files; delivery must bind selected guest bytes and metadata/provenance
+before ordinary packaging. No boot or hardware claim follows.
+
+Commit `4505222afe40d53a7cd606039e3979ea44de6254` adds explicit policy3
+delivery/construction-source support. The private copy receipt
+`878546c7cb87a8e48c7e7dd1b5d7d0ef448bf6f6bbbd30b991999304505a89f9`
+and independent review `42002828e6c242587552c6c88013eab61f8c34afd9f84b0cf95f9d69a5e76fbf`
+bind the exact vendor/ODM leaves copied to private validation storage.
+The subsequent inactive four-file image-source stage has receipt
+`dc1ae2afe05a720b446d5e1db3e9bfe6a7a97b72173b344605c279cdbf50db5c`
+and review `9a783ba1cda5bde916a92efe60a6ee435f6386528ef99a9aa0c1761f3e90f246`.
+Both operations preserve their source/configuration guards. Independent-inode
+checks are recorded by the reviewed copier; the host review does not reopen
+images or reconstruct missing numeric destination inode tuples. Neither
+operation activates source, metadata or images or executes Android build tools.
+
+The later three-tree adoption stage exits **1 at 2026-09-01 00:43:45 UTC
+(August 31 in New York)**. Its empty stdout and preserved 394-byte error record
+show rejection by the ext4 capacity guard before candidate creation. The
+separate read-only post-failure proof
+`033c59fa7696c8e94ec3c8b79a8571623eed847e7ae70c0fc1792982b5b46fb1`
+confirms that new candidate is absent and the complete 539-file, thirteen-project
+source/configuration is unchanged. Available space is **165,301,895,168 bytes**;
+the unchanged requirement is **226,459,516,499 bytes**, comprising the 200 GiB
+reserve plus 11,711,151,699 bytes for copies. No reserve was lowered, and the
+prospective 537-file source is not installed. The earlier inactive image-source
+candidate remains separate. Storage expansion is being investigated read-only;
+no volume change, seven-image-goal build, target-files, signed parent chain,
+physical-fit, rollback or boot success is claimed.
 
 Following a host restart, the coordinator starts only the existing stopped
 `twrp-nezha-upstream74-20260829` builder at **22:47:59 UTC**. The later
@@ -1830,10 +1859,12 @@ compatibility or hardware behavior.
 Commit `9f0c8bd5f7165374ab10a8ad01db01e2776db62a` adds optional explicit
 [Qualcomm namespace exports](../config/nezha-qti-aidl-namespaces.json) for the
 pinned source trees. Generator support preserves earlier ordered exports and
-adds each selected namespace once. The capability is host-only and inactive in
-the current 539-file guest source: native metadata generation, API/backend
-checks and runtime compatibility remain unverified. It does not itself close
-the existing matrix-definition coverage gap.
+adds each selected namespace once. The capability is inactive in the current
+539-file guest source. The post-failure native guard verifies 666 regular files,
+one explicit namespace alias and thirteen required project HEADs, with general
+symlink following still forbidden. This is input qualification only: namespace
+activation, native metadata generation, API/backend checks and runtime
+compatibility remain unverified. It does not close the matrix-definition gap.
 
 The host packaging rebase now produces identical validated candidates from the
 then-current v13ha inputs while preserving the provider correction, strict settings
@@ -1965,6 +1996,16 @@ The metadata source-admission changes are committed as `9c528cf`; they are
 not included in the frozen v12e installation.
 
 The latest full `python3 -m unittest discover -s tests -v` run passed
+**4,189 tests in 168.608 seconds with zero failures, errors or skips**, executed
+by the coordinator against `e6bb4e7` plus eight integration files, then committed
+as `4505222`. All thirteen bound identities remained unchanged. Log
+`e786467461d51b618ec5ec52ee163682e1ec6c6bf341b1b534b136fe1a2359a3`
+and completion `31b87c92431725f81269af0e5cd19ccc943443e16e47b8448ca16c907b2bc4f5`
+bind the run. The interrupted v1 attempt retains exit -2 and no completed test
+count; it is not a pass. The corrected fixture copies only declared controls,
+not the workspace. This later documentation update and native adoption attempt
+are separate from the offline suite.
+The preceding full run passed
 **4,162 tests in 167.578 seconds with zero failures, errors or skips**, executed
 by the coordinator against `9f0c8bd` plus the four raw-image checkpoint documents,
 then committed as `7c8c27e`. All eleven bound identities remained unchanged.
