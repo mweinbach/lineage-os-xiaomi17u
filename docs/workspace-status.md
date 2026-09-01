@@ -10,6 +10,25 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **BCR 0021 source correction is now installed**, completing through the
+guarded Linux source transaction at **2026-09-01 19:32:56 UTC**, with native/root
+exit 0. One 85-byte optional-library assignment is added; the APK, signing
+selection, privileges and product placement are unchanged. Complete readback
+and independent installation review pass. The active inventory is **544 files
+across fifteen projects**, preserving all 543 ancestral rows and modes. The
+pinned `vendor/extras` project has exactly the one reviewed modified declaration.
+
+The host identity projection passes at **19:36:03 UTC**, calculating
+**`nezha.f9f678051a7b3de57c741ca2`**. This is not yet a native configuration or
+metadata result. At this adoption checkpoint, config9, graph regeneration,
+strict BCR component checks, Images3 and Package3 remain unverified; the broader
+non-GMS audit is also required before packaging. The Package2 failure and prior
+GMS2/Images2 successes retain their original scopes. Normal Android enforcement,
+the 4 KiB baseline, working76 and false complete-ROM readiness are unchanged.
+See [BCR source integration](bcr-optional-window-libraries.md). The paragraphs
+below preserve the preceding checkpoints, including their source counts and
+then-pending adoption state.
+
 The current build blocker is **Package2's strict BCR uses-library mismatch**.
 The ordinary `target-files-package` attempt exits native 1 at
 **2026-09-01 18:08:23 UTC** and wrapper 1 at **18:12:04 UTC**. BCR's manifest

@@ -3281,5 +3281,164 @@
         "size_bytes": 0
       }
     }
+  },
+  "bcr_source_adoption_checkpoint_20260901": {
+    "status": "native-bcr-source-adoption-readback-and-independent-review-passed",
+    "guide": "docs/bcr-optional-window-libraries.md",
+    "source_files": 544,
+    "source_projects": 15,
+    "ancestral_source_rows_and_modes_preserved": 543,
+    "changed_project": "vendor/extras",
+    "project_revision": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+    "project_origin": "https://github.com/Evolution-X/vendor_extras",
+    "project_after_status": " M bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk\n",
+    "source_file_exchanges": 1,
+    "inserted_bytes": 85,
+    "journal_events": 5,
+    "rollback_performed": false,
+    "native_install_started_utc": "2026-09-01T19:25:36.029716+00:00",
+    "native_install_finished_utc": "2026-09-01T19:32:56.631894+00:00",
+    "native_install_exit_code": 0,
+    "root_install_finished_utc": "2026-09-01T19:32:56.655348+00:00",
+    "root_install_exit_code": 0,
+    "commit_verified_utc": "2026-09-01T19:30:36.546893+00:00",
+    "commit_event_precedes_final_install_acceptance": true,
+    "all_31_frozen_host_controls_unchanged": true,
+    "complete_readback_finished_utc": "2026-09-01T19:34:55.582796+00:00",
+    "complete_readback_verified": true,
+    "independent_actual_installation_review_verified": true,
+    "raw_actual_commit_equals_completed_native_stdout": true,
+    "installed_inode_equals_staged_incoming_inode": true,
+    "original_inode_and_independent_preimage_retained": true,
+    "existing_configuration_namespace_metadata_strictness_and_contracts_preserved": true,
+    "constructor_history_and_image_input_evidence_unchanged": true,
+    "original_bcr_apk": {
+      "sha256": "57b0356e32ba804b900e37a24b01f163b20af242f402a2f501720434456afc76",
+      "size_bytes": 5233666
+    },
+    "original_apk_unchanged": true,
+    "apk_signature_validation_performed_by_adoption": false,
+    "signing_privilege_partition_or_enforcement_settings_changed": false,
+    "optional_libraries": [
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "public_0021_preparation_contract_unchanged": true,
+    "public_contract_prepared_status_remains_dated_history": true,
+    "host_identity_projection": {
+      "finished_utc": "2026-09-01T19:36:03.871997+00:00",
+      "exit_code": 0,
+      "identity_sha256": "f9f678051a7b3de57c741ca215072e7bac189e87304da06b47bc061c227e0db1",
+      "build_number": "nezha.f9f678051a7b3de57c741ca2",
+      "actual_source_count": 544,
+      "all_six_actual_inputs_unchanged": true,
+      "native_execution": false,
+      "native_configuration_or_metadata_values_verified": false
+    },
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "prior_package2_failure_and_gms2_images2_successes_preserved": true,
+    "next_gate": "Native config9/context9 and nothing6, regenerated BCR rules and strict status/module/class-loader checks, the combined non-GMS audit, then Images3 and Package3 under the new identity.",
+    "limits": {
+      "native_config9_verified": false,
+      "ordinary_nothing6_verified": false,
+      "new_graph_or_library_status_verified": false,
+      "bcr_module_and_class_loader_checks_verified": false,
+      "combined_nongms_audit_completed": false,
+      "images3_verified": false,
+      "package3_verified": false,
+      "native_output_or_image_build_performed_by_adoption": false,
+      "signed_images_admitted": false,
+      "runtime_or_boot_verified": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "frozen_public_patch": {
+        "path": "patches/evolution/0021-bcr-optional-window-libraries.patch",
+        "sha256": "3e21e7033877d47f6dbaec1c4c501fb970fa1d4a15cd5471ccaea0dd10091856",
+        "size_bytes": 784
+      },
+      "frozen_preparation_contract": {
+        "path": "patches/evolution/bcr-optional-window-libraries.json",
+        "sha256": "b4c6c72d9f612f65b1fbb301da4c4160e36d8680bf5a594212ce36f0d9584db6",
+        "size_bytes": 10048
+      },
+      "source_installer": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/prepared-v1/installation.py",
+        "sha256": "60ce5837c13c3dd8339801809bcbfbf55ac6bf8e505f04da81fab63b4aa50664",
+        "size_bytes": 55342
+      },
+      "source_spec": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/prepared-v1/source-spec.json",
+        "sha256": "243ea1c3acfe0af831b7d67bf2f0d8bb212f911d0112175d44037f3496215c67",
+        "size_bytes": 900160
+      },
+      "source_map": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/prepared-v1/source-map.json",
+        "sha256": "d2fac1cbfa9f35a72244fbfdb9e5f0575c170c7f3debfe139fe9eed5e24bbb9d",
+        "size_bytes": 17424976
+      },
+      "actual_stage": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/native-execution-v1/root-stage-readback-v2/staged.json",
+        "sha256": "f1956b913b15aa3d797becbcc61ea1f87eb8c9c5fe36e5791a315e7b0d2e3540",
+        "size_bytes": 1367199
+      },
+      "independent_actual_stage_review": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/actual-stage-review-v1/review.json",
+        "sha256": "37874f192c7c783e0ff8d75d5083bb9420d2ca27a9ecda66ff87d0c0995eb63c",
+        "size_bytes": 3547
+      },
+      "native_install_completion": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/native-execution-v1/root-install-v1/exit.json",
+        "sha256": "b939a0f140bffd63b2cc1c66afaba8648a0670907f1a1fa26c2ca2013c591246",
+        "size_bytes": 464
+      },
+      "root_install_completion": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/root-install-dispatch-v1/completion.json",
+        "sha256": "6c44de9c12868d5f7d19114b722aa22b99bf0eca7ec7f39c4ccf0b7a0fc16e96",
+        "size_bytes": 748
+      },
+      "actual_commit": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/native-execution-v1/root-install-readback-v1/actual-commit.json",
+        "sha256": "3f38566ba2897a124b364ee83175d8bd59613fb3d0d64e1806c566dd6262d229",
+        "size_bytes": 480
+      },
+      "actual_installation": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/native-execution-v1/root-install-readback-v1/installation.json",
+        "sha256": "9291d4b4362bf4a09cf277c981cc1d84ee816e766bc744263695440b29f43c6b",
+        "size_bytes": 1100724
+      },
+      "complete_journal": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/native-execution-v1/root-install-readback-v1/transaction.jsonl",
+        "sha256": "4602185c072aae382209f13bd75e7d9078abc58547327058de3fb03a5bf36686",
+        "size_bytes": 1477
+      },
+      "complete_readback": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/native-execution-v1/root-install-readback-v1/completion.json",
+        "sha256": "32854e932aca67b1f4e04bce7f54bdbe4ec4a3dd6fffa3dcfc8350756074981a",
+        "size_bytes": 5312
+      },
+      "independent_actual_installation_review": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/actual-install-review-v1/review.json",
+        "sha256": "478399bbf505c1110d58485b0fd89e2de57466fb963c80cbd19fd8c99a6ffb9b",
+        "size_bytes": 5582
+      },
+      "host_identity_projection_completion": {
+        "path": "reports/bcr-uses-library-20260901/root-identity-projection-v1/completion.json",
+        "sha256": "feaf87c4390980913446205d6e6ae64faa6983e06e561e7a8f1aaeb69c95f8b5",
+        "size_bytes": 3271
+      },
+      "host_identity_calculation": {
+        "path": "reports/bcr-uses-library-20260901/identity-projection-v2/completed-v1/identity-calculation.json",
+        "sha256": "8ba6246a604a7286b292e11811670cab21595a0c644b4111b09f7ce50c62b3f7",
+        "size_bytes": 3551
+      }
+    }
   }
 }

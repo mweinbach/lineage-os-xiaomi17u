@@ -1,5 +1,27 @@
 # BCR optional Window libraries
 
+The **actual BCR source installation succeeds at 2026-09-01 19:32:56 UTC**,
+with native/root exit 0, one exchange, five journal events and no rollback.
+Complete native receipt readback and independent review pass. The selected
+inventory now contains **544 files across fifteen projects**; all 543 ancestral
+rows and modes are preserved. Only the pinned `vendor/extras` BCR declaration
+changes. The original 5,233,666-byte APK is authenticated by the adoption inputs
+and remains unchanged; this does not establish signature verification or runtime
+behavior. Its original signing choice, privileges and product placement remain.
+
+The separate host projection calculates build number
+**`nezha.f9f678051a7b3de57c741ca2`** at **19:36:03 UTC**. Native config9,
+`nothing6`, regenerated BCR rules, strict status/module/class-loader checks,
+Images3 and Package3 remain separate gates. The combined non-GMS audit is also
+required before Package3. [Current status](workspace-status.md) and the
+[adoption record](../research/workspace-integration.json) bind the actual stage,
+installation, full readback, independent review and host projection.
+
+The preparation description and public contract below retain their dated
+scope. In particular, the contract's prepared-status and limit fields are
+unchanged; the separate adoption record carries the later native evidence.
+Package2 remains failed, and no complete-ROM or hardware claim is made.
+
 At this September 1, 2026 preparation checkpoint, patch
 [0021](../patches/evolution/0021-bcr-optional-window-libraries.patch) corrects
 BCR's optional-library declaration. It has passed host checks but has not been

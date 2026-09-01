@@ -1,5 +1,32 @@
 # Nezha product and build progress
 
+The **BCR 0021 source adoption passes**, with the native installation running
+from **2026-09-01 19:25:36 UTC to 19:32:56 UTC** and both native/root exits 0.
+One file exchange produces five chronological journal events, with no rollback;
+the `commit_verified` event at **19:30:36 UTC** precedes final acceptance.
+Complete receipt readback finishes at **19:34:55 UTC**, and independent review
+verifies the exact staged replacement, retained originals and source/project
+delta. All 31 frozen host controls remain unchanged during installation.
+
+The declaration grows from 310 to 395 bytes while preserving CRLF, mode and
+every original byte. Its ordered optional Window pair changes no APK, signing,
+privilege, placement or enforcement setting. The inventory is now **544 files
+across fifteen projects**, with all 543 ancestral rows and modes retained.
+The `vendor/extras` revision remains `c401d732…`, with exactly one modified path.
+Existing configuration, namespace, metadata, strictness and source contracts,
+constructor history and image-input evidence remain unchanged.
+
+The separate host projection completes at **19:36:03 UTC**, producing identity
+`f9f678051a7b3de57c741ca215072e7bac189e87304da06b47bc061c227e0db1`
+and build number **`nezha.f9f678051a7b3de57c741ca2`**. Native config9, ordinary
+`nothing6`, fresh strict BCR status/module and class-loader checks, Images3 and
+Package3 are not verified by this adoption. The combined non-GMS audit remains
+required before Package3. [BCR source integration](bcr-optional-window-libraries.md)
+and the [adoption record](../research/workspace-integration.json) retain exact
+receipts. The 4 KiB baseline, normal Android enforcement and working76 remain
+selected; no ROM or boot success follows. Earlier checkpoints below keep their
+original results and source identities.
+
 The ordinary **Package2 attempt fails at BCR's strict uses-library check**.
 `build/soong/soong_ui.bash --make-mode -j8 target-files-package` runs from
 **2026-09-01 18:05:41 UTC to 18:08:23 UTC**, exiting 1; the wrapper closes with
