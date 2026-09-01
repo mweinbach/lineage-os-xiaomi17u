@@ -1,12 +1,22 @@
 # Nezha product and build progress
 
+The **2026-09-01 02:14:58 UTC maintenance checkpoint** clears the recorded
+source-staging capacity blocker: the existing ext4 volume is now **1,024 GiB**,
+with 402,047,229,952 bytes available against the unchanged 226,459,516,499-byte
+budget. The same builder and current 539-source proof are verified after restart;
+the retained 800 GiB APFS clone/swap state is not an independent physical backup.
+This is environment maintenance, not a new Android build or source adoption.
+See [current status](workspace-status.md), [environment details](apple-container.md)
+and the [maintenance evidence](../research/workspace-integration.json). The
+component and source checkpoints below retain their historical input scope.
+
 The authored Nezha product has completed actual user and userdebug component
 builds in the existing Apple Container source checkout. Built and inspected
 outputs include boot, init_boot, vendor_boot, DTBO and both DLKM images across
 their recorded input snapshots. ARM64 `libbase.so`, the nine selected Camera
 dependency modules and the host VINTF/policy tools also built successfully.
 The Camera APK itself is not included, and a complete ROM has not been built.
-The latest [OEM policy integration](oem-policy-integration.md) restores the
+The earlier [OEM policy integration](oem-policy-integration.md) restores the
 three missing service/file classifications through authored system_ext source,
 Android-generated object roles and API mappings. The **v11b** native phase
 passed at **2026-08-29 20:47:06 UTC**, completing 31 Ninja actions, including

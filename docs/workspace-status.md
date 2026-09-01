@@ -18,10 +18,15 @@ also passes**, with both TAR/image/export sets identical and independent review
 confirming exactly five policy-file replacements. The subsequent **NONE leaf
 footer/FEC production also passes** with identical repeated outputs. Private
 image copies and a separate inactive source stage are verified, but the later
-three-tree adoption stage **stops at the disk-capacity preflight**. It creates
-no new adoption candidate and leaves the **539-file source unchanged**. Adequate
-volume capacity is the immediate gate before source adoption and packaging;
-the reserve was not lowered. Commit
+three-tree adoption stage **stopped at the disk-capacity preflight**, creating
+no candidate. Subsequent offline maintenance expanded the existing volume from
+**800 to 1,024 GiB**; the **2026-09-01 02:14:58 UTC** qualification verifies
+adequate capacity and the unchanged **539-file source** after restarting the
+same builder. The capacity blocker is cleared for the recorded staging budget;
+**source adoption and packaging remain pending**, with the reserve unchanged.
+The retry stops before activation at a file-mode guard for an unchanged Camera
+JNI output; its incomplete candidate is retained while the permission-validation
+fix is prepared. See the [maintenance record](apple-container.md). Commit
 **4335f1b** adds the explicit
 [policy3 image-input profile](policy-image-inputs.md), including qualified
 installed sidecars. The new raw images are not adopted; signing and physical
@@ -720,8 +725,21 @@ files across thirteen projects and the current configuration. It records
 **165,301,895,168 bytes available**, below the unchanged requirement of
 **226,459,516,499 bytes**: a 200 GiB reserve plus 11,711,151,699 bytes of copies.
 The prospective 537-file source is not installed; no image-goal or target-files
-build has run from it. Storage expansion is under read-only investigation,
-without a volume change. The earlier successful inactive stage remains separate.
+build has run from it. The earlier successful inactive stage remains separate.
+This failed capacity check is preserved; subsequent maintenance clears that
+specific storage gate without adopting the candidate.
+
+At **2026-09-01 02:14:58 UTC**, the existing source volume is qualified at
+**1,024 GiB**, with **402,047,229,952 bytes available** against the unchanged
+226,459,516,499-byte staging requirement. The original 800 GiB image and volume
+metadata remain retained through APFS clone/swap, **not an independent physical
+backup**. The initial preen exit 1 remains a failed attempt; separate confirmation,
+growth and postcheck each return native exit 0. Complete raw-image hashes and
+post-restart checks bind the retained original, current 539-source/thirteen-project
+proof, strict 4 KiB configuration and inactive staged inputs. The same builder
+is the sole observed volume user. This maintenance is not an Android build,
+source adoption or ROM/boot proof; see the [environment details](apple-container.md)
+and [bounded maintenance evidence](../research/workspace-integration.json).
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**

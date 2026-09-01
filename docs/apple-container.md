@@ -6,6 +6,24 @@ Apple Container, while Rosetta handles x86-64 Linux executables. Source and
 output live on a persistent Linux ext4 volume. This preserves the distinction
 between a usable local environment and a verified complete Android 16 ROM build.
 
+The **2026-09-01 02:14:58 UTC maintenance checkpoint** expands the existing
+`evolution-nezha-work` volume from **800 to 1,024 GiB** offline, then restarts the
+same builder, `twrp-nezha-upstream74-20260829`. The original 800 GiB raw image and
+volume metadata are retained through APFS clone/swap; this is **not an independent
+physical backup**. Initial preen exits 1 and remains failed; separate confirmation,
+growth and postcheck return native exit 0. Complete old/grown raw-image hashes
+are recorded, without claiming semantic equivalence of every filesystem object.
+Post-restart checks verify aarch64, case-sensitive ext4, Rosetta Ninja, the same
+539 source files across thirteen projects, strict 4 KiB settings, and unchanged
+inactive staged inputs. Available space is **402,047,229,952 bytes**, above the
+unchanged **226,459,516,499-byte** staging budget including its **200 GiB reserve**.
+This is a dated capacity observation, not reserved space. The same builder is
+the sole observed volume user; no replacement VM, source sync, adoption or
+Android build is part of this maintenance. The
+[maintenance evidence](../research/workspace-integration.json) preserves the
+receipts and limits; [current status](workspace-status.md) tracks the pending
+source adoption and packaging. The older setup observations below remain dated.
+
 At the **2026-08-29 cleanup checkpoint**, the sole active source-volume VM was
 `twrp-nezha-upstream74-20260829`, using the same image and `evolution-nezha-work`
 volume recorded below. `/work/evolution` remains present; the manifest, Repo

@@ -449,5 +449,212 @@
       "finding": "The original generated recovery chain key selected the generic engineering test key, which differs from working76.",
       "resolution": "Schema 2 stages the exact verified public PEM and selects it for recovery chain metadata; no private signing key is transferred. A complete vbmeta chain is still not verified."
     }
-  ]
+  ],
+  "historical_checkpoint_scope": "The pre-existing August 29 records, including observed_on, build_host, offline_validation and remaining_gates, retain that historical scope. Current decisions are in docs/workspace-status.md; the additive maintenance record below does not replace those results.",
+  "volume_maintenance_20260901": {
+    "record_status": "verified-existing-volume-growth-and-post-restart-input-capacity-not-source-adoption",
+    "completed_utc": "2026-09-01T02:14:58.373356+00:00",
+    "volume": "evolution-nezha-work",
+    "builder_observed": "twrp-nezha-upstream74-20260829",
+    "old_capacity_bytes": 858993459200,
+    "new_capacity_bytes": 1099511627776,
+    "retention": {
+      "method": "Offline APFS clone and raw-image/volume-metadata swap; original raw image and entity retained.",
+      "independent_physical_backup": false,
+      "retained_original_states_match_publication": true,
+      "full_old_raw_image": {
+        "sha256": "c6434a85b7b3a2b4690d90d8888cfba96360a454c28ef7a9b643a7bf79a6979e",
+        "size_bytes": 858993459200,
+        "complete_bytes_read": 858993459200
+      },
+      "full_grown_raw_image": {
+        "sha256": "8b1316f6557893193433752904974bd38959c2908dcac5622ccc49e3f52c9732",
+        "size_bytes": 1099511627776,
+        "complete_bytes_read": 1099511627776
+      },
+      "all_filesystem_objects_semantically_compared": false,
+      "all_host_metadata_preservation_claimed": false,
+      "crash_recovery_tested": false
+    },
+    "filesystem_checks": {
+      "initial_readonly": {
+        "native_exit_code": 0,
+        "passed": true,
+        "receipt": {
+          "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/fs-readonly-v1/receipt.json",
+          "sha256": "e6d2c90b2801e6ec8412a1d63988c18eaf12018f9d039d2f1ec439cab6e496cc",
+          "size_bytes": 14484
+        }
+      },
+      "initial_preen": {
+        "native_exit_code": 1,
+        "passed": false,
+        "receipt": {
+          "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/fs-preen-v1/receipt.json",
+          "sha256": "6ac7023ee8af08c4c8976df0caf40f916f38e3101b7f52790b2df310e5b947f5",
+          "size_bytes": 10881
+        }
+      },
+      "separate_preen_confirmation": {
+        "native_exit_code": 0,
+        "passed": true,
+        "receipt": {
+          "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/fs-preen-confirm-v1/receipt.json",
+          "sha256": "4709688fbb8fc67aa7af7da57c1ef00ed07a58f15100bf732b27662b84583414",
+          "size_bytes": 15281
+        }
+      },
+      "grow": {
+        "native_exit_code": 0,
+        "passed": true,
+        "receipt": {
+          "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/fs-grow-v1/receipt.json",
+          "sha256": "b4daaf93258514dcae8fbc9bfa375eaa5e0f498c5cfe7e0d739d746026bc5e6e",
+          "size_bytes": 14508
+        }
+      },
+      "postcheck": {
+        "native_exit_code": 0,
+        "passed": true,
+        "receipt": {
+          "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/fs-postcheck-v1/receipt.json",
+          "sha256": "08927466032cdb53f9f7faf3c8a760f452952364c84e29c7712cf85d0e19a2c0",
+          "size_bytes": 14509
+        }
+      }
+    },
+    "post_restart_observation": {
+      "managed_and_guest_block_device_size_bytes": 1099511627776,
+      "capacity": {
+        "available_bytes": 402047229952,
+        "copy_bytes": 11711151699,
+        "required_free_bytes": 226459516499,
+        "reserve_bytes": 214748364800,
+        "sufficient": true
+      },
+      "capacity_observed_not_reserved": true,
+      "single_existing_builder_observed": true,
+      "architecture": "aarch64",
+      "filesystem": "ext4",
+      "case_sensitive": true,
+      "rosetta_ninja_version": "1.9.0.git",
+      "source_files_checked": 539,
+      "source_projects_checked": 13,
+      "premaintenance_source_and_namespace_proof_matches": true,
+      "separate_namespace_regular_files_checked": 666,
+      "explicit_namespace_manifest_alias_checked": true,
+      "namespace_project_heads_checked": 13,
+      "inactive_source_bodies_checked": 4,
+      "inactive_source_directories_and_modes_checked": 5,
+      "configuration_identity": {
+        "sha256": "e00f6c58d041f75549474240b95eab2b13d6c5673f24fe333ea374013445812a",
+        "size_bytes": 318922
+      },
+      "maximum_page_size": 4096,
+      "strict_elf_and_prebuilt_alignment_checks_enabled": true,
+      "normal_android_enforcing_required": true,
+      "adoption_candidate_absent_at_observation": true
+    },
+    "scope": {
+      "new_vm_created": false,
+      "source_sync_started": false,
+      "source_adoption_performed": false,
+      "namespace_activation_or_compiled_api_support_verified": false,
+      "android_build_started": false,
+      "images_admitted": false,
+      "target_files_admitted": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "historical_failed_stage_and_initial_preen_preserved": true
+    },
+    "evidence": {
+      "clone_readback": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/backup-readback-v2/backup-verified.json",
+        "sha256": "50da33dbfc658cc64af917b2e65e5da56451a4de823f3d669438b3049d457fd0",
+        "size_bytes": 7220
+      },
+      "clone_readback_review": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/backup-readback-v2/root-review-v1.json",
+        "sha256": "d6b440b6f520e5d1536fff3542aefb435ea1cbad6ea112e08171d82346f01e99",
+        "size_bytes": 1427
+      },
+      "complete_post_growth_hashes": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/post-growth-hash-v1/receipt.json",
+        "sha256": "2f55f240f9cc57b73e6aa0784377775608759134477d2107eaeb01c53b84f30a",
+        "size_bytes": 8151
+      },
+      "publication": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/publication-v1/published.json",
+        "sha256": "a7d1eb1a3f3c3cb805e40b14753ca82915bacad9018e5fb3a7f02c329b7708e7",
+        "size_bytes": 2419
+      },
+      "publication_postlude": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/publication-postlude-v1.json",
+        "sha256": "682e553ea741072c359e39df76c7d820580ea6e9d4778a42fd1dfa04a09fff32",
+        "size_bytes": 6524
+      },
+      "same_builder_restart": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/restart-v1/receipt.json",
+        "sha256": "33731c50ea7b92574dce941acb82c48e393ef1da246aee7cb82511000647f5e4",
+        "size_bytes": 18129
+      },
+      "post_restart_architecture_and_source": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/resume-source-v1/guest-verification-v1/stdout.json",
+        "sha256": "68810c0148fd804f949461737e20defa9d7c5a45bc7220e27666234814bb733d",
+        "size_bytes": 817
+      },
+      "post_restart_architecture_and_source_completion": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/resume-source-v1/guest-verification-v1/exit.json",
+        "sha256": "b60cdce5347b223b262888de48fb2bb856fa391847c6313c0275ed8d21642737",
+        "size_bytes": 446
+      },
+      "post_restart_full_guest_result": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/after-growth-guest-v1/stdout.json",
+        "sha256": "8c054b6bbb64d07d6284d1acd8eb1cd15bc02123b1d1a7436e106ed21cc7fbe7",
+        "size_bytes": 961250
+      },
+      "post_restart_completion": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/after-growth-guest-v1/completion.json",
+        "sha256": "f11796b9647a7c817c6cf5947799e008155562bda556bb81cb3fa683a2ffafe2",
+        "size_bytes": 1290
+      },
+      "qualification": {
+        "path": "reports/oem-policy-integration-20260829/root-volume-maintenance-preparation-v1/qualification-v1.json",
+        "sha256": "31c6744e6465791ef905f205ba36f104201eeb5abe8e7bf06f7cca042ecb3db3",
+        "size_bytes": 3158
+      }
+    },
+    "subsequent_stage_observation": {
+      "completed_utc": "2026-09-01T02:19:00.011312+00:00",
+      "stage_returncode": 1,
+      "source_adoption_performed": false,
+      "current_source_files_checked": 539,
+      "current_source_unchanged": true,
+      "partial_candidate_retained_with_incomplete_marker": true,
+      "stage_receipt_and_installation_transaction_absent": true,
+      "blocker": "Existing archive validator rejects the native 0711 mode of the exact Camera JNI output; copied bytes and mode match the original. A narrow permission-validation correction is pending; no original chmod or source activation is claimed.",
+      "evidence": {
+        "failed_stage": {
+          "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v2/root-stage-v2/exit.json",
+          "sha256": "5509b29179e0890b47df5e16a19f3c4eeb339a87c31a8864b38c5536234b9d0e",
+          "size_bytes": 462
+        },
+        "failed_stage_diagnostic": {
+          "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v2/root-stage-v2/stderr.log",
+          "sha256": "59338f02f4482a0dcf4027713beffbf0058c923662514440caabf5dd9617a91f",
+          "size_bytes": 343
+        },
+        "readonly_diagnostic": {
+          "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v2/root-stage-failure-mode-diagnostic-v1/stdout.json",
+          "sha256": "24ed458f22c7cc92dd768037ab381eb6cb9b255e4e3272ea30c986f757ddd2dd",
+          "size_bytes": 968707
+        },
+        "readonly_diagnostic_completion": {
+          "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v2/root-stage-failure-mode-diagnostic-v1/completion.json",
+          "sha256": "cbec99fe07af48c6689e9d286b44f933083f84cec77b15744c9d6d06457ffd13",
+          "size_bytes": 1181
+        }
+      }
+    }
+  }
 }
