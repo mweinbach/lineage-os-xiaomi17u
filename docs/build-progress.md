@@ -1,5 +1,38 @@
 # Nezha product and build progress
 
+The **standalone nine-APK uses-library audit fails with two passes and seven
+manifest mismatches**. Its root transport runs from **2026-09-01 21:42:55 UTC
+to 21:49:21 UTC**, ending with exit 1. BCR and SystemUIClocks-Flex pass; the
+seven other selected Clock imports fail because their manifests declare
+optional `androidx.window.extensions` then `androidx.window.sidecar`, while
+their build lists are empty. Flex's empty lists already match and must remain
+unchanged.
+
+All nine badging commands pass. Complete before/after guards cover all nine
+source APKs, totaling **23,937,581 bytes**, with 54 input snapshots unchanged
+and all six current root callback return maps matching Nothing6. No selected
+APK is skipped, waived, omitted or unresolved. Completed failure review verifies
+these results; there is no resource or transport failure. Source, APKs and OUT
+are unchanged by this read-only audit. It produces no ordinary status stamp,
+verifies no APK signature and does not constitute an ordinary BCR build.
+
+The reviewed [0022 source patch](systemui-clocks-optional-window-libraries.md)
+adds ordered optional-library arrays to exactly seven imports. Flex, all APKs,
+signing choices, placement and existing dexpreopt settings remain unchanged.
+Ten offline unit tests pass. Thirteen host synthetic-checker cases produce
+eight expected passes and five expected failures, with zero skips; complete
+source replay and twelve negative patch guards also pass. These host results
+do not repair the failed native audit by themselves. Guarded source adoption,
+regenerated rules and fresh ordinary producer evidence are still required;
+an approved targeted build or packaging may supply that evidence.
+
+The active source is still **544 files/fifteen projects with identity `f9`**;
+no successor source inventory is adopted. The 4 KiB baseline, enforcing normal
+Android policy and working76 remain selected. Current images, packaging,
+AVB/rollback, boot and hardware checks remain open, with ROM readiness false.
+The [audit and patch-preparation checkpoint](../research/workspace-integration.json)
+retains exact receipts. Earlier checkpoints below preserve their results.
+
 The **544-file/fifteen-project source passes config9, context9 and ordinary
 `nothing6`**. The two queries finish with native exit 0 at
 **2026-09-01 19:47:09 UTC** and **19:58:23 UTC**. The exact

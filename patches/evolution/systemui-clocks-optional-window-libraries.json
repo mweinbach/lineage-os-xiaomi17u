@@ -1,0 +1,532 @@
+{
+  "schema_version": 1,
+  "id": "systemui-clocks-optional-window-libraries-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-01 seven SystemUI Clock source corrections after the completed nine-prebuilt audit",
+  "project": "vendor/extras",
+  "origin": "https://github.com/Evolution-X/vendor_extras",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+  "patch": "patches/evolution/0022-systemui-clocks-optional-window-libraries.patch",
+  "patch_sha256": "ebae241f30864a722daba678822c03b05014c6e01c15dfac71d2032733b5faf0",
+  "patch_size_bytes": 3087,
+  "files": [
+    {
+      "after_git_blob": "26a114a748f81af9cfe851a5ca3bae6d486b6373",
+      "after_sha256": "60a4e55feec15932b0bb732742e0528dcbefcdc224363247afabcfff7b3fb58e",
+      "after_size_bytes": 2690,
+      "before_git_blob": "f8a352ab85bbcbc25f03036cbf3e82a29575d4f7",
+      "before_sha256": "361ee46333c9d7898b0a032b10944a3fa8ad32932174af4513a530e3c8eb1574",
+      "before_size_bytes": 2046,
+      "line_endings": "CRLF",
+      "mode": "100755",
+      "path": "themes/SystemUIClocks/Android.bp"
+    }
+  ],
+  "purpose": "Match seven observed optional-library manifests while leaving the already-correct Flex import and all original APKs, signing choices and build settings unchanged.",
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "source_capture": {
+    "intake": {
+      "path": "reports/bcr-uses-library-20260901/root-intake-v1/stdout.json",
+      "sha256": "a678b9e7a67886b1fb299eb988aa04bf03d0ad68da5720936958ae79bcda73fa",
+      "size_bytes": 8123679
+    },
+    "indexed_decoder": {
+      "path": "reports/bcr-uses-library-20260901/root-intake-v1/decoded-v2/verification.json",
+      "sha256": "b0b18f9738079fb06a78a2fe617d5269c33682ea59929954cd9cff68575facd5",
+      "size_bytes": 1656890
+    },
+    "flat_body": {
+      "path": "reports/bcr-uses-library-20260901/root-intake-v1/decoded-v2/files/0023.bin",
+      "sha256": "361ee46333c9d7898b0a032b10944a3fa8ad32932174af4513a530e3c8eb1574",
+      "size_bytes": 2046
+    },
+    "native_source_body_index": 23,
+    "native_git_index_entry": 17,
+    "index_mode": "100755",
+    "index_blob": "f8a352ab85bbcbc25f03036cbf3e82a29575d4f7",
+    "complete_body_equals_native_base64_and_git_blob": true,
+    "fresh_audit_source_bytes_mode_and_stats_unchanged": true,
+    "native_mode_not_inferred_from_flat_host_file_mode": true,
+    "historical_intake_guarded_source_files": 543,
+    "historical_intake_guarded_projects": 14,
+    "historical_intake_precedes_bcr_0021_adoption": true,
+    "current_clock_source_reauthenticated_by_nine_prebuilt_audit": true
+  },
+  "source_inventory_basis": {
+    "source_spec": {
+      "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/control-read-correction-v1/prepared-v1/source-spec.json",
+      "sha256": "243ea1c3acfe0af831b7d67bf2f0d8bb212f911d0112175d44037f3496215c67",
+      "size_bytes": 900160
+    },
+    "combined_capture": {
+      "path": "reports/bcr-uses-library-20260901/gms-source-compatibility-preparation-v1/bound-nothing6-v1/root-capture-v1/capture.json",
+      "sha256": "bc1d0b2aa52f7156e8107abce80e345a4298232cff13985a03beef5f2e408dbe",
+      "size_bytes": 2979296
+    },
+    "source_files": 544,
+    "projects": 15,
+    "Clock_file_exact_matches": 0,
+    "vendor_extras_already_present": true,
+    "expected_existing_project_status_porcelain": " M bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk\n",
+    "source_count_after_not_derived_by_preparation": true
+  },
+  "original_native_audit": {
+    "capture": {
+      "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/capture.json",
+      "sha256": "659a44bb7ec0a320dcb3b1829c518d63391d0a57768fc61dc5bbc5a05d3fe76f",
+      "size_bytes": 329902
+    },
+    "root_envelope_stderr": {
+      "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/capture.stderr",
+      "sha256": "fe0a8748a67865effe7c02c2485828a33d317239d65c5bbcf3fb19b781b90644",
+      "size_bytes": 24251
+    },
+    "completion": {
+      "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/completion.json",
+      "sha256": "d725fef1126ee53cfc9b09d3e7bb99e098ffd28b05a21f1a156a78fef9a05409",
+      "size_bytes": 28720
+    },
+    "finished_at_utc": "2026-09-01T21:49:21.991072+00:00",
+    "exit_code": 1,
+    "reported_selected": 9,
+    "passed": 2,
+    "manifest_mismatches": 7,
+    "unchanged_passed_modules": [
+      "bcr",
+      "SystemUIClocks-Flex"
+    ],
+    "all_nine_badging_commands_passed": true,
+    "all_nine_original_apk_hashes_modes_and_stats_guarded": true,
+    "all_nine_apk_bytes": 23937581,
+    "clock_apk_bytes": 18703915,
+    "explicit_waivers": 0,
+    "omitted_selected": 0,
+    "unresolved_selected": 0,
+    "errors": [],
+    "source_input_guards_passed": true,
+    "before_after_root_source_guards_verified": true,
+    "root_source_files": 544,
+    "root_source_projects": 15,
+    "all_seven_failures_were_strict_manifest_mismatches": true,
+    "original_failed_result_preserved": true,
+    "ordinary_status_output_verified": false,
+    "full_non_gms_prebuilt_coverage_verified": false,
+    "full_package_verified": false,
+    "upstream_lfs_reconciliation_performed": false,
+    "apk_signature_verification_performed": false,
+    "source_or_out_written": false
+  },
+  "module_records": [
+    {
+      "literal_ninja_command": {
+        "sha256": "57880b3bfaea46aa676d7c5ae78c007459e435b9a9f5ddfc4a1c570c206d6a4b",
+        "size_bytes": 2364
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-BigNum",
+      "native_badging_index": 6,
+      "native_badging_stdout": {
+        "sha256": "d65b10acba55367921efdb504e6c9e787157ded244fdda8abbd69e5c6a8e3d9d",
+        "size_bytes": 1342
+      },
+      "native_checker_index": 15,
+      "native_checker_stderr": {
+        "sha256": "f9164d59e3e9363187e9e0d0fc56112c51bacf34c03f30dffd9d6eec6bb4a8d1",
+        "size_bytes": 1248
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "c4c1939565eb6f926a0f8a5a2b91636d2453e71969cdcdbb2b04c763c3327077",
+        "size_bytes": 2292962,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-BigNum/SystemUIClocks-BigNum.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "d6294aacba5af5cd7af7bde13d7a6bb3e03543cd21b46fcee14ef55f91ca4961",
+        "size_bytes": 2379
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-Calligraphy",
+      "native_badging_index": 7,
+      "native_badging_stdout": {
+        "sha256": "7f7d4c67eeff900eb323fbde511e2d4d3a951f85e9b3527bf25632a50fee752f",
+        "size_bytes": 1352
+      },
+      "native_checker_index": 16,
+      "native_checker_stderr": {
+        "sha256": "47a30a197237046de2ea16f54bda6e0ae4109c885139ea4912d293ba33fc10ac",
+        "size_bytes": 1258
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "f730e709218f02c955e466ddc56367e222e01097b3167a8cc3a451ef85cbe7f6",
+        "size_bytes": 2266340,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Calligraphy/SystemUIClocks-Calligraphy.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "1c79a57e55b00585748954a1bb033340e65380421220d0f13879a70532789afd",
+        "size_bytes": 2358
+      },
+      "manifest_optional_libraries": [],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-Flex",
+      "native_badging_index": 8,
+      "native_badging_stdout": {
+        "sha256": "4d5d679c5f58b5d889ca443a1b06c1425d1df65f5d546b57b2a4d4c67be4a729",
+        "size_bytes": 1231
+      },
+      "native_checker_index": 17,
+      "native_checker_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "native_exit_code": 0,
+      "native_status": "passed",
+      "optional_uses_libraries_after": [],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "d5d335c557c377e2071b3ea3457bf77a614b27e5fb9b03c6a2f76fa93481dc4c",
+        "size_bytes": 1408072,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Flex/SystemUIClocks-Flex.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": false
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "018b9e16fa72842bcb0a656c18707e0d6bcefb570091b8b3f352445f666079ae",
+        "size_bytes": 2364
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-Growth",
+      "native_badging_index": 9,
+      "native_badging_stdout": {
+        "sha256": "21fb7945eee49c4af4b1551ef740408324f56e9dcd46719fddf981f2b0474548",
+        "size_bytes": 1342
+      },
+      "native_checker_index": 18,
+      "native_checker_stderr": {
+        "sha256": "3757f8c52c9a3bb08eae0471aa75315cd26a87088823da06aa345d330c34594a",
+        "size_bytes": 1248
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "52c9d2bb7dce71ed2b3a2222d59e01462da0c83bc929158ff4e536e28b584cf8",
+        "size_bytes": 2274518,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Growth/SystemUIClocks-Growth.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "51b6f41815c2bf2d89599c1c2af7eb7960c3328b9500ed7b749c3509796bdfb3",
+        "size_bytes": 2367
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-Inflate",
+      "native_badging_index": 10,
+      "native_badging_stdout": {
+        "sha256": "b11da3233ed1e8190e923b96f21d7b072f3e897665109a18d22f1331d0e3bdfc",
+        "size_bytes": 1344
+      },
+      "native_checker_index": 19,
+      "native_checker_stderr": {
+        "sha256": "b17f60b0b252096c6e04830d053df2f9483e10695b898e81d26627831bc34a2f",
+        "size_bytes": 1250
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "82ffb4cc09a3f9fe188067b999ed1356ec45d2f19a1ee70d6b8e82d548e73fa8",
+        "size_bytes": 2266331,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Inflate/SystemUIClocks-Inflate.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "ae553f83d1ffecbc6927a08a823a2ea3a1ba6091ca6eccd9be069984f11a1b6d",
+        "size_bytes": 2376
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-NumOverlap",
+      "native_badging_index": 12,
+      "native_badging_stdout": {
+        "sha256": "48b1182ade84ca927b2a9c7bdbba25d47bcff394aad812683e2f96d81c6fb79b",
+        "size_bytes": 1350
+      },
+      "native_checker_index": 21,
+      "native_checker_stderr": {
+        "sha256": "9e0df7d6a7c96f6be207c055a271c5287334b2f1b8a07ece7bdb50908a1aea19",
+        "size_bytes": 1256
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "b8c197185f0e0c28a9bebe178d17a66f250d352ff3643d4ed26b3eaab7701662",
+        "size_bytes": 2372843,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-NumOverlap/SystemUIClocks-NumOverlap.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "fccb9f497af2b41e51b64f70269ac44ff619c0393f42e79699f85b2d86774231",
+        "size_bytes": 2361
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-Metro",
+      "native_badging_index": 11,
+      "native_badging_stdout": {
+        "sha256": "7ccabae51253a7cbd765b7e4a7eedfd72a4fc31fbd39a94ef45e02c4192f655f",
+        "size_bytes": 1352
+      },
+      "native_checker_index": 20,
+      "native_checker_stderr": {
+        "sha256": "d500259b96b0fd11315ca7c481626926ca873674e38903b73186440a8a2dac88",
+        "size_bytes": 1246
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "7c858e2a41babe676854b9842bef02271c339cd529e93901f70b50f3540a8a69",
+        "size_bytes": 3380211,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Metro/SystemUIClocks-Metro.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    },
+    {
+      "literal_ninja_command": {
+        "sha256": "dbe871e4cfab2a67a026518db875bd4bd0a6843d0b67cec712a6c3f6b206aa1f",
+        "size_bytes": 2367
+      },
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "manifest_required_libraries": [],
+      "module": "SystemUIClocks-Weather",
+      "native_badging_index": 13,
+      "native_badging_stdout": {
+        "sha256": "6cee8852a34b2b0020fd3737c94303524a20dbf3dcc22be7c8fc4f87f752396b",
+        "size_bytes": 1344
+      },
+      "native_checker_index": 22,
+      "native_checker_stderr": {
+        "sha256": "97449d8194fb19ac1d6cc2c7d310fa525e61766aa1d92cf6280f8ff88b260311",
+        "size_bytes": 1250
+      },
+      "native_exit_code": 255,
+      "native_status": "manifest_mismatch",
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "optional_uses_libraries_before": [],
+      "ordinary_status_producer_verified": false,
+      "original_apk": {
+        "mode": "0644",
+        "sha256": "769a75c6c983a9d1be30e1ef0d4ec69223e2b8bd9c544bc005a08d2fabc5d683",
+        "size_bytes": 2442638,
+        "source_path": "vendor/extras/themes/SystemUIClocks/SystemUIClocks-Weather/SystemUIClocks-Weather.apk"
+      },
+      "required_uses_libraries_after": [],
+      "required_uses_libraries_before": [],
+      "source_changed": true
+    }
+  ],
+  "retained_module_settings": {
+    "module_type": "android_app_import",
+    "owner": "google",
+    "certificate": "platform",
+    "dex_preopt_enabled": false,
+    "privileged": true,
+    "system_ext_specific": true,
+    "source_apk_paths_unchanged": true
+  },
+  "source_effect": {
+    "changed_source_files": 1,
+    "imports_changed": 7,
+    "imports_preserved": 1,
+    "added_bytes": 644,
+    "added_crlf_lines": 28,
+    "original_source_bytes_retained_in_order": true,
+    "optional_arrays_added_only_to_failed_imports": true,
+    "original_apks_changed": false,
+    "Flex_module_changed": false,
+    "signing_changed": false,
+    "dexpreopt_settings_changed": false,
+    "enforcement_changed": false,
+    "shared_defaults_added": false,
+    "required_library_settings_changed": false,
+    "privileges_or_partition_changed": false,
+    "providers_or_library_registrations_added": false,
+    "source_lock_changed": false,
+    "normal_android_selinux_changed": false,
+    "page_size_changed": false,
+    "recovery_changed": false
+  },
+  "host_validation": {
+    "receipt": {
+      "path": "reports/bcr-uses-library-20260901/clock-patch-preparation-v1/host-verification.json",
+      "sha256": "f37ed82fdb6313daeff3ac34fd03dc8a16f2f60daffa2eaa9ac43db546198ad8",
+      "size_bytes": 84128
+    },
+    "complete_source_forward_reverse_byte_equal": true,
+    "source_mode_and_crlf_preserved": true,
+    "Flex_block_byte_equal": true,
+    "fuzz": 0,
+    "offsets": 0,
+    "negative_patch_cases_rejected": 12,
+    "synthetic_xml_cases": 13,
+    "corrected_declaration_positives": 7,
+    "unchanged_flex_positive": 1,
+    "expected_strict_negatives": 5,
+    "negative_cases": [
+      "original_empty_lists",
+      "reversed_order",
+      "missing_sidecar",
+      "incorrectly_required",
+      "spurious_flex_libraries"
+    ],
+    "negative_exit_code": 255,
+    "positive_status_files_empty": true,
+    "negative_status_files_absent": true,
+    "skipped_cases": 0,
+    "source_checker_path": "build/soong/scripts/manifest_check.py",
+    "source_checker_revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "source_checker_sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+    "source_checker_size_bytes": 14901,
+    "source_helper_sha256": "4ce7cf7d4a9f2086ee7a815aa7624ee3dccfde00e383dedecbe6cb553f2a9fa5",
+    "source_helper_size_bytes": 4758,
+    "host_checker_and_helper_match_fresh_native_audit_source_pins": true,
+    "original_audit_packaged_manifest_check": {
+      "sha256": "daf83a677e6eca76f88421596741e52373378ba6c5a3dcc68988e440f58810e4",
+      "size_bytes": 19231331
+    },
+    "original_audit_aapt2": {
+      "sha256": "9e0372a0143b3b8df41a7b901a962691ec16adc150c22cada067a277dfbc0ccc",
+      "size_bytes": 29791616
+    },
+    "relaxation_or_missing_markers_used": false,
+    "actual_apk_or_soong_graph_exercised_by_host_fixtures": false
+  },
+  "adoption_requirements": [
+    "Reauthenticate vendor/extras HEAD, actual project status, the complete Clock Blueprint and all eight original Clock APK hashes, modes and ordered native manifests, alongside the existing BCR and GMS inputs and all current source/input/output guards. Preserve the completed failed audit and the BCR 0021 source integration.",
+    "Use the existing reviewed source transaction for this one additional source path, with exact preimage/postimage SHA256, size, Git blobs, CRLF and mode 100755 guards. Reject duplicate application and drift. Preserve the entire Flex block. Derive the new file inventory, project inventory and build identity from the actual union; the 544-file inventory does not yet contain this Blueprint.",
+    "Regenerate the ordinary bka/bp4a user graph and inspect all eight Clock checker rules. Seven must have the exact ordered optional Window pair; Flex must retain empty library lists. Require no added required libraries, no missing-library markers and no relaxation. Keep the existing platform certificate, original APKs, privileges, placement and pre-existing dex_preopt enabled:false settings.",
+    "Require fresh successful ordinary status producer evidence for each corrected Clock, plus strict selected-prebuilt, module and signature evidence. An approved targeted build or actual packaging may supply the ordinary producer evidence; this contract prescribes no separate nine-module build. Inspect any library dependency and class-loader-context inputs produced by the real graph without claiming dexpreopt was enabled or executed for these imports. Synthetic XML passes and read-only native probes remain distinct from ordinary stamp production.",
+    "Keep existing target-files library, signature, VINTF, AVB, rollback and partition-fit gates enabled. Preserve normal Android enforcement, the 4 KiB baseline and working76 recovery. Package completion, boot and hardware support require their own evidence; phone mutations require fresh user authorization."
+  ],
+  "preparation_limits": {
+    "active_source_patch_applied": false,
+    "new_source_inventory_adopted": false,
+    "new_native_configuration_verified": false,
+    "new_native_graph_verified": false,
+    "corrected_actual_apk_checks_executed": false,
+    "ordinary_status_producers_verified": false,
+    "actual_module_or_signature_validation": false,
+    "target_files_package_verified": false,
+    "signed_images_admitted": false,
+    "rom_boot_or_ota_verified": false,
+    "guest_accessed_by_preparation": false,
+    "phone_accessed": false,
+    "proprietary_apks_redistributed": false,
+    "complete_rom_ready": false
+  }
+}

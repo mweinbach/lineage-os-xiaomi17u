@@ -10,6 +10,25 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The next verified blocker is the **nine-APK strict library audit: two passes
+and seven Clock manifest mismatches**, ending with exit 1 at
+**2026-09-01 21:49:21 UTC**. BCR and SystemUIClocks-Flex pass the standalone
+check. BigNum, Calligraphy, Growth, Inflate, Metro, NumOverlap and Weather each
+need the ordered optional Window library pair. All nine badging commands pass;
+all selected APKs were checked, with none waived, omitted or unresolved. This
+read-only audit changes no source, APK or Android output and establishes no
+ordinary status-file production or BCR component-build success.
+
+Reviewed [patch 0022](systemui-clocks-optional-window-libraries.md) adds the
+missing declarations to those seven imports and preserves Flex. Host tests and
+synthetic checker fixtures pass, but source adoption, regenerated rules and
+actual successful producer evidence remain pending. The active source remains
+**544 files/fifteen projects**, build number
+**`nezha.f9f678051a7b3de57c741ca2`**. The 4 KiB baseline, normal Android
+enforcement and working76 remain unchanged. Images3, Package3, the signed boot
+chain and hardware validation remain separate gates; complete-ROM readiness
+is false. The earlier checkpoints below retain their dated scope.
+
 The **544-file/fifteen-project source now passes config9, context9 and ordinary
 `nothing6`**. Nothing6 finishes with native exit 0 at **2026-09-01 20:23:46 UTC**
 and wrapper exit 0 at **20:26:41 UTC**. All six complete source/input guard maps

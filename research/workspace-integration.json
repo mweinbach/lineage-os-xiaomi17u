@@ -3661,5 +3661,262 @@
         "size_bytes": 3482
       }
     }
+  },
+  "nine_apk_failure_and_clock_patch_preparation_checkpoint_20260901": {
+    "status": "native-nine-apk-audit-failed-seven-clock-source-patch-prepared-not-adopted",
+    "guide": "docs/systemui-clocks-optional-window-libraries.md",
+    "source_files": 544,
+    "source_projects": 15,
+    "identity_sha256": "f9f678051a7b3de57c741ca215072e7bac189e87304da06b47bc061c227e0db1",
+    "build_number": "nezha.f9f678051a7b3de57c741ca2",
+    "audit": {
+      "root_started_utc": "2026-09-01T21:42:55.070078+00:00",
+      "root_finished_utc": "2026-09-01T21:49:21.991072+00:00",
+      "root_elapsed_seconds": 386.9196282079938,
+      "native_audit_exit_code": 1,
+      "root_exit_code": 1,
+      "audit_completed": true,
+      "audit_passed": false,
+      "selected_apks": 9,
+      "strict_counts": {
+        "manifest_mismatch": 7,
+        "passed": 2
+      },
+      "badging_counts": {
+        "passed": 9
+      },
+      "module_results": [
+        {
+          "module": "bcr",
+          "strict_status": "passed",
+          "strict_exit_code": 0,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "57b0356e32ba804b900e37a24b01f163b20af242f402a2f501720434456afc76",
+            "size_bytes": 5233666
+          }
+        },
+        {
+          "module": "SystemUIClocks-BigNum",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "c4c1939565eb6f926a0f8a5a2b91636d2453e71969cdcdbb2b04c763c3327077",
+            "size_bytes": 2292962
+          }
+        },
+        {
+          "module": "SystemUIClocks-Calligraphy",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "f730e709218f02c955e466ddc56367e222e01097b3167a8cc3a451ef85cbe7f6",
+            "size_bytes": 2266340
+          }
+        },
+        {
+          "module": "SystemUIClocks-Flex",
+          "strict_status": "passed",
+          "strict_exit_code": 0,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "d5d335c557c377e2071b3ea3457bf77a614b27e5fb9b03c6a2f76fa93481dc4c",
+            "size_bytes": 1408072
+          }
+        },
+        {
+          "module": "SystemUIClocks-Growth",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "52c9d2bb7dce71ed2b3a2222d59e01462da0c83bc929158ff4e536e28b584cf8",
+            "size_bytes": 2274518
+          }
+        },
+        {
+          "module": "SystemUIClocks-Inflate",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "82ffb4cc09a3f9fe188067b999ed1356ec45d2f19a1ee70d6b8e82d548e73fa8",
+            "size_bytes": 2266331
+          }
+        },
+        {
+          "module": "SystemUIClocks-Metro",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "7c858e2a41babe676854b9842bef02271c339cd529e93901f70b50f3540a8a69",
+            "size_bytes": 3380211
+          }
+        },
+        {
+          "module": "SystemUIClocks-NumOverlap",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "b8c197185f0e0c28a9bebe178d17a66f250d352ff3643d4ed26b3eaab7701662",
+            "size_bytes": 2372843
+          }
+        },
+        {
+          "module": "SystemUIClocks-Weather",
+          "strict_status": "manifest_mismatch",
+          "strict_exit_code": 255,
+          "badging_exit_code": 0,
+          "source_apk": {
+            "sha256": "769a75c6c983a9d1be30e1ef0d4ec69223e2b8bd9c544bc005a08d2fabc5d683",
+            "size_bytes": 2442638
+          }
+        }
+      ],
+      "mismatch_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "mismatch_build_optional_libraries": [],
+      "all_required_lists_empty": true,
+      "flex_optional_lists_empty": true,
+      "all_source_apk_hashes_modes_and_stats_guarded": true,
+      "source_apk_bytes": 23937581,
+      "input_snapshots_before_after_equal": 54,
+      "six_complete_current_nothing6_callback_returns_match": true,
+      "fresh_root_observation_bodies_retained": false,
+      "selected_apks_skipped": 0,
+      "waived_count": 0,
+      "omitted_count": 0,
+      "unresolved_selected_count": 0,
+      "errors": [],
+      "resource_or_transport_failure": false,
+      "streams_complete": true,
+      "source_apk_or_android_output_written": false,
+      "ordinary_status_stamp_produced": false,
+      "ordinary_bcr_component_built": false,
+      "apk_signatures_verified": false,
+      "full_non_gms_prebuilt_coverage_verified": false,
+      "completed_failure_review_verified": true,
+      "review_completed_utc": "2026-09-01T22:01:04.277028+00:00"
+    },
+    "prepared_patch": {
+      "id": "0022-systemui-clocks-optional-window-libraries",
+      "author_frozen_utc": "2026-09-01T22:05:03.673130+00:00",
+      "project": "vendor/extras",
+      "base_commit": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+      "source_transition": {
+        "after_git_blob": "26a114a748f81af9cfe851a5ca3bae6d486b6373",
+        "after_sha256": "60a4e55feec15932b0bb732742e0528dcbefcdc224363247afabcfff7b3fb58e",
+        "after_size_bytes": 2690,
+        "before_git_blob": "f8a352ab85bbcbc25f03036cbf3e82a29575d4f7",
+        "before_sha256": "361ee46333c9d7898b0a032b10944a3fa8ad32932174af4513a530e3c8eb1574",
+        "before_size_bytes": 2046,
+        "line_endings": "CRLF",
+        "mode": "100755",
+        "path": "themes/SystemUIClocks/Android.bp"
+      },
+      "changed_imports": [
+        "SystemUIClocks-BigNum",
+        "SystemUIClocks-Calligraphy",
+        "SystemUIClocks-Growth",
+        "SystemUIClocks-Inflate",
+        "SystemUIClocks-Metro",
+        "SystemUIClocks-NumOverlap",
+        "SystemUIClocks-Weather"
+      ],
+      "flex_entire_block_unchanged": true,
+      "all_eight_original_clock_apks_unchanged": true,
+      "all_original_source_bytes_preserved": true,
+      "signing_placement_privileges_and_existing_dexpreopt_settings_unchanged": true,
+      "no_shared_defaults_added": true,
+      "strict_library_checking_preserved": true,
+      "host_validation": {
+        "full_source_forward_reverse_byte_equal": true,
+        "host_checker_corrected_positives": 7,
+        "host_checker_expected_strict_negatives": 5,
+        "host_checker_skipped": 0,
+        "host_checker_synthetic_cases": 13,
+        "host_checker_unchanged_Flex_positive": 1,
+        "negative_patch_guard_cases": 12,
+        "offline_unit_tests_passed": 10,
+        "offline_unit_tests_skipped": 0
+      },
+      "host_checker_cases_are_synthetic_not_actual_apks": true,
+      "active_source_adoption": false,
+      "successor_source_inventory_adopted": false,
+      "corrected_actual_apk_checks_executed": false,
+      "new_ordinary_status_producer_evidence": false
+    },
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "prior_64_research_records_and_dated_history_preserved": true,
+    "next_gate": "Guarded Clock source adoption, derived source inventory and identity, regenerated rules, corrected strict checks and fresh ordinary producer evidence through an approved targeted build or packaging; current image and package gates remain separate.",
+    "limits": {
+      "images3_verified": false,
+      "package3_verified": false,
+      "signed_avb_chain_verified": false,
+      "partition_fit_verified_by_this_audit": false,
+      "rom_boot_or_ota_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "completed_native_audit": {
+        "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/capture.json",
+        "sha256": "659a44bb7ec0a320dcb3b1829c518d63391d0a57768fc61dc5bbc5a05d3fe76f",
+        "size_bytes": 329902
+      },
+      "completed_native_audit_stderr": {
+        "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/capture.stderr",
+        "sha256": "fe0a8748a67865effe7c02c2485828a33d317239d65c5bbcf3fb19b781b90644",
+        "size_bytes": 24251
+      },
+      "completed_native_transport": {
+        "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/transport.json",
+        "sha256": "e7d1a21265435488b613e342365592fe8b4f0cd252538a8d8a6ddc48d59449ea",
+        "size_bytes": 6781
+      },
+      "completed_root_audit": {
+        "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/completion.json",
+        "sha256": "d725fef1126ee53cfc9b09d3e7bb99e098ffd28b05a21f1a156a78fef9a05409",
+        "size_bytes": 28720
+      },
+      "completed_failure_review": {
+        "path": "reports/bcr-uses-library-20260901/root-nine-selected-prebuilt-audit-v1/completed-failure-review.json",
+        "sha256": "5f1500c0803591280f7770da9139a49b9676d44b77a2ba774192a7ce2b13790e",
+        "size_bytes": 41117
+      },
+      "prepared_patch": {
+        "path": "patches/evolution/0022-systemui-clocks-optional-window-libraries.patch",
+        "sha256": "ebae241f30864a722daba678822c03b05014c6e01c15dfac71d2032733b5faf0",
+        "size_bytes": 3087
+      },
+      "prepared_contract": {
+        "path": "patches/evolution/systemui-clocks-optional-window-libraries.json",
+        "sha256": "e06ce67fbdb128de35135fd4f9c2d1ed001929bf17c0602eea7ac61081c1859a",
+        "size_bytes": 22438
+      },
+      "host_patch_verification": {
+        "path": "reports/bcr-uses-library-20260901/clock-patch-preparation-v1/host-verification.json",
+        "sha256": "f37ed82fdb6313daeff3ac34fd03dc8a16f2f60daffa2eaa9ac43db546198ad8",
+        "size_bytes": 84128
+      },
+      "author_freeze": {
+        "path": "reports/bcr-uses-library-20260901/clock-patch-preparation-v1/author-freeze-v1.json",
+        "sha256": "8a120b7722afac9703bedec75823990d322e2b4021f01e35a02066aa98b4a764",
+        "size_bytes": 29097
+      }
+    }
   }
 }
