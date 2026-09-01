@@ -24,9 +24,12 @@ across thirteen projects**; the reviewed policy3 vendor/ODM leaves are selected
 as source inputs. The earlier capacity and Camera JNI mode-guard failures remain
 preserved. [Volume maintenance](apple-container.md) cleared the recorded budget,
 and the narrow archive-mode correction preserves the original JNI mode.
-The immediate preparation gate is rebinding the build identity to the declared
-private metadata-copy modes before new product queries. **Output-image builds,
-packaged-policy checks and target-files remain pending**. Commit **4335f1b** adds
+The build identity is now rebound to the recorded private metadata-copy modes,
+and **config6/context6 pass all 21 configuration and seven context value checks**
+on the adopted source. Ordinary `nothing3` graph regeneration and the six
+metadata-file checks are next; the queries verify literal file references,
+not those files' contents or freshness. **Output-image builds, packaged-policy
+checks and target-files remain pending**. Commit **4335f1b** adds
 the explicit [policy3 image-input profile](policy-image-inputs.md), including
 qualified installed sidecars. Source-input selection does not admit a final
 flashable artifact: the full signed chain and physical partition fit remain
@@ -750,14 +753,28 @@ review binds all three operations and nine journal events. The exact Camera JNI
 0711 archive exception leaves the original bytes, mode and inode unchanged;
 the failed prior stage is not selected. All **205 metadata payloads retain their
 bytes and roles**, but their new private source copies use declared mode
-**0600**, while retained originals use **0644**. The build-identity helper must
-verify that distinction before new queries; no source chmod is needed. Current
+**0600**, while retained originals use **0644**. Subsequent identity reprojection
+verifies that declared distinction, with no source chmod. Current
 strict 4 KiB settings and normal Android enforcement remain required. Selected
 source inputs are now active, but no new output images, packaged-policy checks
 or target-files have been built from them. The
 [installation and audit record](../research/workspace-integration.json) also
 binds the preceding **02:24:28 UTC** source audit: all **1,179** revisions and
 origins match, with seven reviewed modified projects preserved.
+
+The new identity **`nezha.8643b579050aab0dd3218ae3`** is independently reconstructed
+from the authenticated source/metadata records and selected by both actual
+product queries. **Config6 passes at 02:51:15 UTC** and **context6 at 03:01:01
+UTC**, returning 21 and seven checked values respectively. Both native processes
+exit 0 with complete streams, verified postchecks and clear independent reviews.
+All six before/after source/input guard maps match, including the 537-source,
+thirteen-project scope and unchanged 254-field generated configuration. The three `FROM_FILE` values
+remain literal references; the build number is bound through the actual invocation
+environment, not directly printed by the queries. Neither Ninja nor a new image
+build is required or observed. Each query retains the two kernel warnings for
+`AVB=failed` and `origin_verified=false`. Ordinary `nothing3` must next regenerate
+the graph and qualify the six metadata files; no successful six-file, packaging,
+signed-chain or boot result follows from these queries.
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
@@ -839,7 +856,12 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,189 tests in 178.752
+The latest completed full workspace suite passed **4,189 tests in 172.826
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `f875980` plus the three source-adoption documents, then committed as
+`f99a944`. All three bound document identities remained unchanged. This later
+query documentation and the native query results are outside that offline run.
+The preceding suite passed **4,189 tests in 178.752
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `ab083ee` plus the four maintenance documents, then committed as
 `f875980`. All four bound document identities remained unchanged. This later

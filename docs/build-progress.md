@@ -1,9 +1,22 @@
 # Nezha product and build progress
 
+The **2026-09-01 03:01:01 UTC product-query checkpoint** verifies the adopted
+537-source/thirteen-project configuration with identity
+`nezha.8643b579050aab0dd3218ae3`: config6 passes 21 values and context6 passes
+seven, with all six source/input guards and the full 254-field generated
+configuration unchanged. Reprojection binds the declared metadata-copy modes;
+it does not chmod the source. These are ordinary product queries, with no
+observed Ninja action or image build. Literal `FROM_FILE` references do not
+qualify six metadata-file contents or freshness. The next step is ordinary
+`nothing3` graph regeneration and metadata validation; kernel AVB/origin warnings,
+packaging, signed-chain and boot gates remain. See
+[current status](workspace-status.md) and the
+[query evidence](../research/workspace-integration.json).
+
 The **2026-09-01 02:14:58 UTC maintenance checkpoint** clears the recorded
 source-staging capacity blocker: the existing ext4 volume is now **1,024 GiB**,
 with 402,047,229,952 bytes available against the unchanged 226,459,516,499-byte
-budget. The same builder and current 539-source proof are verified after restart;
+budget. The same builder and then-current 539-source proof are verified after restart;
 the retained 800 GiB APFS clone/swap state is not an independent physical backup.
 This is environment maintenance, not a new Android build or source adoption.
 See [current status](workspace-status.md), [environment details](apple-container.md)

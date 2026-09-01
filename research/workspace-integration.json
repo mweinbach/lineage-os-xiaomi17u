@@ -813,5 +813,174 @@
         "size_bytes": 10451
       }
     }
+  },
+  "offline_validation_active_source_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests_run": 4189,
+    "reported_test_seconds": 172.826,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "f875980bd8c1e9c5ff4c5530bd487b7f01b29353",
+    "scope": "Committed code plus three unchanged source-adoption documents; this later query documentation and native query evidence are outside that offline run.",
+    "completed_utc": "2026-09-01T02:48:54.938549+00:00",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-policy3-active-source-v1/unittest.log",
+      "sha256": "d3b9f3402f593c09e5c4d82dd906623b5a76cecd8f73c5e55b339a1c71f89950",
+      "size_bytes": 729763
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-policy3-active-source-v1/completion.json",
+      "sha256": "dbd850daf25fc294c60c77f1bc6bacbe6a7b30204e48651fc1a76a2ac57f26b1",
+      "size_bytes": 1179
+    }
+  },
+  "post_adoption_product_queries_20260901": {
+    "status": "native-product-config-and-context-values-verified-not-six-metadata-files-or-images",
+    "identity": {
+      "build_number": "nezha.8643b579050aab0dd3218ae3",
+      "sha256": "8643b579050aab0dd3218ae364c00eb56a99db4d539f0f0ff239616a279548cd",
+      "host_reprojection_independently_verified": true,
+      "actual_invocation_environment_bound": true,
+      "build_number_directly_printed_by_queries": false,
+      "metadata_source_modes_authenticated": true,
+      "source_chmod_performed": false,
+      "review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/identity-reprojection-v1/actual-review-v1/review.json",
+        "sha256": "46654cc2161c654f379d63f7fb7e7ea634405703a2d51d7fc90759e3755791e0",
+        "size_bytes": 16399
+      },
+      "target_release_in_fixed_environment": "bp4a",
+      "target_release_query_value": ""
+    },
+    "configuration_query": {
+      "phase": "first-target-files-product-config-6",
+      "checked_values": 21,
+      "native_started_utc": "2026-09-01T02:50:22.450086+00:00",
+      "native_finished_utc": "2026-09-01T02:51:15.679127+00:00",
+      "native_exit_code": 0,
+      "profile_completed": true,
+      "profile_validation_verified": true,
+      "capture_only": false,
+      "process_reaped": true,
+      "streams_complete": true,
+      "six_guard_maps_equal": true,
+      "postcheck_errors": [],
+      "ninja_observed": false,
+      "ninja_required": false,
+      "evidence": {
+        "result": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-config-6-readback-v1/result.json",
+          "sha256": "e01b2fc9ab1b365eda3e0d6708dfbe96819223d06da5c394bb942d88c1c25e95",
+          "size_bytes": 10041835
+        },
+        "stdout": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-config-6-readback-v1/build.stdout",
+          "sha256": "6cfd0b623f71f32d3ec9551447b6e40c7e07f1ffd91f84071362d17956024a23",
+          "size_bytes": 4480
+        },
+        "stderr": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-config-6-readback-v1/build.stderr",
+          "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+          "size_bytes": 372
+        },
+        "readback_completion": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-config-6-readback-v1/completion.json",
+          "sha256": "ddf52fbff6f71fc1f4b260f2b7136197ac81e74c9129250043e7cd5c7320255a",
+          "size_bytes": 1222
+        }
+      }
+    },
+    "context_query": {
+      "phase": "first-target-files-product-context-6",
+      "checked_values": 7,
+      "native_started_utc": "2026-09-01T03:00:07.020403+00:00",
+      "native_finished_utc": "2026-09-01T03:01:01.120256+00:00",
+      "native_exit_code": 0,
+      "profile_completed": true,
+      "profile_validation_verified": true,
+      "capture_only": false,
+      "process_reaped": true,
+      "streams_complete": true,
+      "six_guard_maps_equal": true,
+      "postcheck_errors": [],
+      "ninja_observed": false,
+      "ninja_required": false,
+      "evidence": {
+        "result": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-context-6-readback-v1/result.json",
+          "sha256": "0f0bfedc6ea140c4978e68219e8481a2c3a4f03076a6ec6ab7c4b17f738a30f2",
+          "size_bytes": 10029165
+        },
+        "stdout": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-context-6-readback-v1/build.stdout",
+          "sha256": "629364929e5482740fd396858ddbd9918d486735c2ba87dc8f8d2a56f2f38d2c",
+          "size_bytes": 230
+        },
+        "stderr": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-context-6-readback-v1/build.stderr",
+          "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+          "size_bytes": 372
+        },
+        "readback_completion": {
+          "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-product-context-6-readback-v1/completion.json",
+          "sha256": "9407739d4b928bdf454507fe54c433e9ae8b9cb74ef19d71b80d9d227d36e6b0",
+          "size_bytes": 1222
+        }
+      }
+    },
+    "preservation": {
+      "source_files_checked": 537,
+      "source_projects_checked": 13,
+      "source_lock_heads_and_origins_match": 1179,
+      "intentional_modified_projects": 7,
+      "source_input_guard_groups": 6,
+      "generated_configuration_fields": 254,
+      "generated_configuration_unchanged": true,
+      "configuration_canonical_sha256": "84f28e4023dbecee7773f71d6913d2e487464525db638b35e9c92cd6b10be5f8",
+      "physical_selected_inputs": 1533,
+      "runtime_inputs": 1,
+      "protected_policy_inputs": 14,
+      "protected_runtime_inputs": 11,
+      "seven_small_preserved_copies_verified": true,
+      "original_current_small_outputs_required_unchanged": false,
+      "scope": "The explicit guarded sets are verified; this is not an atomic snapshot or a check of every source/output path."
+    },
+    "reviews": {
+      "configuration": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/config6-success-review-v1.json",
+        "sha256": "71b8d06e78adaffa4948357b5932bfb17632ce4732831b5fdcdc7bf01813f9be",
+        "size_bytes": 16874
+      },
+      "context": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/context6-success-review-v1.json",
+        "sha256": "a77466bb9e643a97c46e302074b92a131685684afeb2db71cad59c4031036cfa",
+        "size_bytes": 11932
+      }
+    },
+    "warnings": {
+      "known_kernel_warnings_per_query": 2,
+      "kernel_avb_record": "failed",
+      "kernel_origin_verified": false,
+      "kernel_module_compatibility_and_device_boot_verified": false
+    },
+    "next_gate": "Ordinary nothing3 graph regeneration and six metadata-file validation, followed by image and packaging checks.",
+    "limits": {
+      "from_file_values_are_literal_references": true,
+      "six_metadata_file_contents_verified": false,
+      "metadata_file_rewrites_or_freshness_verified": false,
+      "ninja_actions_observed": false,
+      "ninja_argv_or_sandbox_checks_verified": false,
+      "new_generated_images_verified": false,
+      "packaged_policy_gate_executed": false,
+      "target_files_admitted": false,
+      "complete_signed_chain_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "process_reaping_proves_all_vm_processes_extinct": false,
+      "testkey_configuration_proves_signing_success": false
+    }
   }
 }
