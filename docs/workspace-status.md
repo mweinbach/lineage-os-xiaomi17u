@@ -10,11 +10,22 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The **corrected GMS read-only graph capture passes at 2026-09-01 11:11:47 UTC**,
-with all nineteen query streams verified and source, graph and log guards
+The targeted four-module **GMS attempt fails its postcheck**. Native Soong exits
+0 at **2026-09-01 11:45:18 UTC**, recording four strict uses-library checks and
+four APK build/install pairs, but the wrapper exits 1 at **11:50:26 UTC**.
+CrossDevice's installed APK triggers `-Werr` with `No SourceStamp signature`:
+the old stamp-certificate digest survives platform signing without its matching
+stamp signature. Original APKs and the 541-file/fourteen-project `a2d9` source
+remain unchanged. The [prepared SignApk correction](signapk-source-stamp.md)
+preserves strict verification; source adoption and a successful retry are still
+required. Images2, package2 and ROM readiness remain blocked. See
+[GMS source integration](gms-source-integration.md) for the retained failure.
+
+The earlier **corrected GMS read-only graph capture passes at
+2026-09-01 11:11:47 UTC**, with all nineteen query streams verified and source, graph and log guards
 unchanged. Six proof records are staged at **11:21:37 UTC**; these are neither
-app builds nor image outputs. The four ordinary GMS module builds, Images2 and
-package2 remain pending. [GMS source integration](gms-source-integration.md)
+app builds nor image outputs. Their evidence does not establish successful
+module builds or packaging. [GMS source integration](gms-source-integration.md)
 records the source-defined HTTP runtime provider, existing precompilation
 settings and the preserved earlier capture failure. ROM readiness remains false.
 
@@ -26,8 +37,8 @@ context7 passes seven at **09:25:02 UTC**, and `nothing4` finishes at
 entries match; six actual metadata-file values match the new identity. Those
 value checks do not establish fresh file rewrites. The retained stdout shows
 165 frontend steps plus one `nothing` action, not GMS module or image builds.
-Fresh GMS status actions, APK outputs and final package selection remain
-unverified; the later bounded graph qualification does not establish them.
+Those query results do not qualify GMS status actions, APK outputs or final
+package selection; the later failed component attempt has its own evidence.
 
 The source audit matches all **1,179 pinned HEADs and origins**, with **eight
 intentional locally patched projects** whose statuses match the installed source

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "device": "nezha",
   "observed_on": "2026-09-01",
-  "status": "native-source-metadata-and-read-only-gms-graph-verified-components-and-packaging-pending",
+  "status": "native-soong-succeeded-component-postcheck-failed-source-stamp",
   "prior_checkpoint": "research/workspace-integration.json:selected_gms_manifest_audit_checkpoint_20260901",
   "source": {
     "prior_files": 537,
@@ -78,7 +78,7 @@
     "config7_dispatch_reported_utc": "2026-09-01T09:13:54+00:00",
     "context7": "passed",
     "nothing4": "passed",
-    "four_gms_modules": "pending",
+    "four_gms_modules": "failed-postcheck-after-native-soong-success",
     "images2": "pending",
     "package2": "pending",
     "prepared_nothing_argv": [
@@ -91,13 +91,16 @@
     "caller_changes_installed_source": false,
     "source_input_and_graph_guards_preserved": true,
     "regenerated_graph_verified": false,
-    "graph_verification_scope": "The corrected read-only capture and host qualification of twelve own actions are verified in read_only_graph_capture_checkpoint_20260901; complete transitive recipe provenance and native component execution remain unverified.",
+    "graph_verification_scope": "The corrected read-only capture and host qualification of twelve own actions are verified in read_only_graph_capture_checkpoint_20260901; complete transitive recipe provenance and completed artifact/fresh-action qualification remain unverified. The ordinary native attempt is recorded in ordinary_component_attempt_checkpoint_20260901.",
     "fresh_ordinary_gms_status_actions_verified": false,
     "actual_module_and_dexpreopt_contexts_verified": false,
     "target_files_package_verified": false,
     "read_only_graph_capture_verified": true,
     "scoped_own_action_graph_qualification_verified": true,
-    "module_context_scope": "The existing prebuilt-preopt-disabled source branch and two dependency configs are verified; four app configs are not produced, and no generated app class-loader context or runtime result is claimed."
+    "module_context_scope": "The existing prebuilt-preopt-disabled source branch and two dependency configs are verified; four app configs are not produced, and no generated app class-loader context or runtime result is claimed.",
+    "native_gms_stdout_reports_four_strict_status_actions": true,
+    "complete_gms_component_postcheck_verified": false,
+    "signapk_source_correction": "host-prepared-not-adopted"
   },
   "historical_audit_scope": {
     "original_selected_apks": 95,
@@ -620,6 +623,213 @@
         "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/component-proof-staging-preparation-v1/actual-render-v1/root-stage-gms-component-proofs-v1/completion.json",
         "sha256": "955587e9a73b77aaaa3461b6160509b7202526fd05e9e4a2576526ca19a08912",
         "size_bytes": 1212
+      }
+    }
+  },
+  "ordinary_component_attempt_checkpoint_20260901": {
+    "status": "native-soong-succeeded-component-postcheck-failed-source-stamp",
+    "phase": "first-target-files-gms-uses-library-components-1",
+    "source_files": 541,
+    "source_projects": 14,
+    "build_number": "nezha.a2d9ab6affbe09593d338212",
+    "branch": "bka",
+    "release_configuration": "bp4a",
+    "root_started_utc": "2026-09-01T11:41:00.052091+00:00",
+    "root_completed_utc": "2026-09-01T11:50:26.236978+00:00",
+    "wrapper_exit_code": 1,
+    "native_soong": {
+      "started_utc": "2026-09-01T11:43:38.788335+00:00",
+      "completed_utc": "2026-09-01T11:45:18.351575+00:00",
+      "exit_code": 0,
+      "argv": [
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j8",
+        "CrossDeviceAccessServicePrimary",
+        "CustomizationBundlePrebuiltFullVersion",
+        "PersistentBackgroundServices",
+        "SafetyHubPrebuilt"
+      ],
+      "strict_uses_library_rows": 4,
+      "prebuilt_apk_rows": 4,
+      "installed_apk_rows": 4,
+      "native_stdout_action_rows_are_not_tests": true,
+      "ninja_argv_verified": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "streams_complete": true,
+      "timed_out": false,
+      "output_overflow": false,
+      "disk_floor_breached": false,
+      "process_reaped": true
+    },
+    "guard_verification": {
+      "all_six_complete_source_input_maps_equal": true,
+      "all_254_configuration_values_equal": true,
+      "source_history_output_alias_and_strict_settings_equal": true,
+      "whole_dynamic_runtime_observations_claimed_equal": false,
+      "matching_source_lock_heads_and_origins": 1179,
+      "expected_locally_patched_projects": 8,
+      "source_files_and_original_apks_unchanged": true,
+      "android_build_outputs_claimed_unchanged": false
+    },
+    "postcheck": {
+      "completed": false,
+      "result": null,
+      "profile_completed": false,
+      "profile_validation_verified": false,
+      "error_type": "NativeLimitsError",
+      "failed_check": "gms-0-installed-signature",
+      "original_crossdevice_signature_exit_code": 0,
+      "original_crossdevice_manifest_badging_exit_code": 0,
+      "installed_crossdevice_signature_exit_code": 1,
+      "warnings_as_errors_retained": true,
+      "diagnostic": "WARNING: No SourceStamp signature",
+      "installed_v3_signature_success_reported": true,
+      "installed_source_stamp_verified": false,
+      "subsequent_checks_counted_as_passes": false,
+      "complete_artifact_and_fresh_action_qualification_verified": false,
+      "native_success_promoted_to_overall_success": false
+    },
+    "diagnostic_readback": {
+      "completed_utc": "2026-09-01T11:52:14.195106+00:00",
+      "exit_code": 0,
+      "stable_file_observations": 20,
+      "full_embedded_diagnostic_bodies": 19,
+      "full_result_identity_join_verified": true,
+      "native_verifiers_executed_by_readback": false,
+      "source_or_output_written": false
+    },
+    "source_stamp_structure": {
+      "captured_utc": "2026-09-01T11:56:54.983212+00:00",
+      "wrapper_exit_code": 0,
+      "original_source": {
+        "sha256": "c92b827634ae5a9522460b277390ac8a8eb4719962c322aa365a3a4ee841c97a",
+        "size_bytes": 16962727
+      },
+      "built_and_installed": {
+        "sha256": "f3a86078ec28d75b4b252a75f5ae8bf74d4d4f79ca91a11cdc9cc847bc831440",
+        "size_bytes": 16954535
+      },
+      "built_and_installed_bytes_match": true,
+      "unchanged_original_source_verified": true,
+      "all_three_retain_same_stamp_certificate_entry": true,
+      "stamp_certificate_entry_name": "stamp-cert-sha256",
+      "stamp_certificate_entry_size_bytes": 32,
+      "source_stamp_pair_id": "0x6dff800d",
+      "source_stamp_signature_pair_present_in_original": true,
+      "source_stamp_signature_pair_present_in_built_and_installed": false,
+      "apk_signing_block_present_in_all_three": true,
+      "apk_signature_verification_performed_by_structure_inspection": false,
+      "source_or_output_written": false
+    },
+    "next_source_slice": {
+      "status": "host-prepared-not-adopted",
+      "guide": "docs/signapk-source-stamp.md",
+      "source_contract": "patches/evolution/signapk-source-stamp.json",
+      "project": "build/make",
+      "base_commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "source_paths": [
+        "tools/signapk/src/com/android/signapk/SignApk.java",
+        "core/app_prebuilt_internal.mk"
+      ],
+      "correction": "Remove the stale stamp-cert-sha256 ZIP entry before replacement APK signatures, and add a normal SIGNAPK_JAR dependency for non-PRESIGNED prebuilts so a changed signer triggers their incremental rebuild.",
+      "preserve_original_proprietary_apks": true,
+      "preserve_whole_file_ota_signing": true,
+      "preserve_presigned_handling": true,
+      "preserve_warnings_as_errors": true,
+      "source_adoption_verified": false,
+      "rebuilt_signing_tool_verified": false,
+      "successful_ordinary_retry_verified": false
+    },
+    "limits": {
+      "images2_verified": false,
+      "package2_verified": false,
+      "target_files_package_verified": false,
+      "complete_current_vintf_verified": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "runtime_verified": false,
+      "hardware_tested": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "full_failed_result": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/component-launcher-preparation-v1/bound-components-1-v1/root-components-1-v1/stdout.jsonl",
+        "sha256": "8b3376f2d33c379a4c4e9ee05ca2df3f9bf1a6f3774ce474e03b9c12f7996a33",
+        "size_bytes": 10205010
+      },
+      "root_completion": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-components-execution-v1/completion.json",
+        "sha256": "050fa548930c44a2559365f39530c5a33d50caef9c1f882b119e2e502bc6360b",
+        "size_bytes": 376
+      },
+      "raw_diagnostic_readback": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/stdout.json",
+        "sha256": "79a84011208aad38b66853c16a1c014c280ba2180107a8bd46f85c04a70d6f01",
+        "size_bytes": 78479
+      },
+      "raw_diagnostic_completion": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/completion.json",
+        "sha256": "e2f09a015d5455dd436b6d27fb6704a328cc68129e83e2eea1294c25cd4542d9",
+        "size_bytes": 1092
+      },
+      "native_build_stdout": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/files/build.stdout",
+        "sha256": "1c3c5f493437431adb349cfeb6fe707767ad83e09ad50e77eb5ef783e73c8a93",
+        "size_bytes": 3661
+      },
+      "original_apk_signature_receipt": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/files/native-artifact-checks/gms-0-source-signature.receipt.json",
+        "sha256": "f1c55b149a7c83d1b45a2a0035cb92d8709837e78c3031c2b88ad09a432952d9",
+        "size_bytes": 7589
+      },
+      "original_apk_manifest_receipt": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/files/native-artifact-checks/gms-0-source-manifest.receipt.json",
+        "sha256": "f8ff63aebb722ed49233a0bf5466158b1cb6f99f981694db4d66b1400f5c1f5a",
+        "size_bytes": 5805
+      },
+      "installed_apk_signature_receipt": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/files/native-artifact-checks/gms-0-installed-signature.receipt.json",
+        "sha256": "fdac2d513bc6ccba1d0fc37a04d972cbbd7fe5e7070991fc70c68170722dd32f",
+        "size_bytes": 7665
+      },
+      "installed_apk_signature_stdout": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/files/native-artifact-checks/gms-0-installed-signature.stdout.log",
+        "sha256": "e83b38f4a3fbc5f306bfe074be7f97a3897fb4cf152f7f7adb2ab9fd3a71a60d",
+        "size_bytes": 1027
+      },
+      "installed_apk_signature_stderr": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-gms-postcheck-failure-readback-v1/files/native-artifact-checks/gms-0-installed-signature.stderr.log",
+        "sha256": "9a004115dc07b27d3ae63b8ea14a065b9629e0f09f99e2dab4e43ca07011b97c",
+        "size_bytes": 34
+      },
+      "source_stamp_structure": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-crossdevice-stamp-structure-v1/stdout.json",
+        "sha256": "95970ba5dcf8ddf41df274b700016a8d54e5151248a1ae21d6c8fffbe9f3d0ad",
+        "size_bytes": 5518
+      },
+      "source_stamp_structure_completion": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-crossdevice-stamp-structure-v1/completion.json",
+        "sha256": "5b7b593b13ffb98ce56b02a35d15ede0ab31874e9aff950a083ec0cb76b580cc",
+        "size_bytes": 1061
+      },
+      "apksigner_source": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-apksigner-source-stamp-source-v1/stdout.json",
+        "sha256": "852e5a29b676128aae8a6ee313bcf08d400694a5ce359d4498a2173e3fc292d3",
+        "size_bytes": 358077
+      },
+      "signapk_source": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-signapk-source-stamp-source-v1/stdout.json",
+        "sha256": "b55a95682ec9c6e3449e58a22e737499d413f44302d092ac7acb6d9562b5eaf5",
+        "size_bytes": 312802
+      },
+      "apkutils_source": {
+        "path": "reports/gms-uses-library-20260901/source-adoption-preparation-v2/root-apkutils-stamp-constant-source-v1/stdout.json",
+        "sha256": "92081532a22237a5d2cb49508837ce7ddb96ffecece9b3638295547171789395",
+        "size_bytes": 45626
       }
     }
   }

@@ -1,12 +1,32 @@
 # Nezha product and build progress
 
+The targeted **four-module GMS attempt remains failed overall**. Native Soong
+finishes with exit 0 at **2026-09-01 11:45:18 UTC**; its stdout records four strict
+uses-library checks, four APK builds and four installs. The wrapper exits 1 at
+**11:50:26 UTC** when installed CrossDevice verification emits
+`WARNING: No SourceStamp signature` under `-Werr`. Complete artifact and action
+qualification does not finish. The original source APKs, 541-file/fourteen-project
+source, `a2d9` identity and all six source/input guard maps remain unchanged.
+The SignApk source correction and a fully verified retry precede Images2 and
+package2; [GMS source integration](gms-source-integration.md) records the scope.
+
+The preceding capture/staging checkpoint was committed as **e8b2eff** after
+the coordinator's full suite passed **4,305 tests in 178.190 seconds with zero
+skips** at **11:51:27 UTC**. That run covers the six frozen capture/staging files,
+not this failed-component documentation update or the new signing correction.
+
+A separate read-only **Mac boot-tool runtime check passes at 11:49:34 UTC**,
+rehashing all 193 declared file-backed runtime dependencies. It runs no image
+commands and establishes neither complete dynamic runtime closure nor package,
+image or boot compatibility. This is preparation for later artifact inspection.
+
 The **2026-09-01 11:11:47 UTC corrected GMS read-only capture** passes with
 native/root exit 0, nineteen complete query streams and unchanged guarded
 source, graph and log observations. Six proof records are staged at
 **11:21:37 UTC**, without source or Android-output changes. Host qualification
-now covers the four modules' twelve own actions; their targeted build,
-Images2 and package2 remain pending. The original capture and earlier host
-admission failures remain retained. See [GMS source integration](gms-source-integration.md)
+then covers the four modules' twelve own actions; their targeted build,
+Images2 and package2 are pending at that checkpoint. The original capture and
+earlier host admission failures remain retained. See [GMS source integration](gms-source-integration.md)
 for the source-defined HTTP provider, precompilation and package-list scope.
 
 The preceding metadata checkpoint was committed as **2d138b8** after the
@@ -28,8 +48,8 @@ and component actions remain unqualified. All 1,179 source-lock HEADs and origin
 match; the eight expected locally patched projects match their installed guards.
 The post-run read-only measurement captures the complete stdout and log
 identities; the later graph capture above is separate evidence. Four GMS module
-builds, Images2 and package2 remain pending, with no Camera or hardware success
-implied.
+builds, Images2 and package2 are pending at that checkpoint, with no Camera or
+hardware success implied.
 See [GMS source integration](gms-source-integration.md) for exact phase evidence.
 
 The earlier six-file adoption checkpoint was committed as **8857312** after

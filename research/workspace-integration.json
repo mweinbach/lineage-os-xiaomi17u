@@ -2352,5 +2352,101 @@
     "runtime_verified": false,
     "complete_rom_ready": false,
     "phone_accessed": false
+  },
+  "offline_validation_gms_read_only_capture_checkpoint_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4305,
+    "elapsed_seconds": 178.19,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "2d138b846793109b992f4ef47be9b398ff1f0eff",
+    "started_utc": "2026-09-01T11:48:27.889362+00:00",
+    "completed_utc": "2026-09-01T11:51:27.096871+00:00",
+    "tested_files": 6,
+    "tested_files_unchanged": true,
+    "subsequent_commit": "e8b2eff0599d58e957cfd87a100c1e7b60266208",
+    "scope": "Committed code plus six unchanged corrected-capture/proof-staging documentation and research files, subsequently committed as e8b2eff0599d58e957cfd87a100c1e7b60266208. This later failed-component documentation and signing-source correction are outside that run.",
+    "log": {
+      "path": "reports/gms-uses-library-20260901/root-capture-checkpoint-tests-v1/tests.log",
+      "sha256": "f1f3fc6fa59b7c8074b8f8c6023fcefafba2f4ec128c6462ab41e1ec0e607ff2",
+      "size_bytes": 750327
+    },
+    "completion": {
+      "path": "reports/gms-uses-library-20260901/root-capture-checkpoint-tests-v1/completion.json",
+      "sha256": "d4c228c010d68ac39462ec4474123a647d040b1686643b0b4308f26909400552",
+      "size_bytes": 2746
+    }
+  },
+  "gms_component_postcheck_failure_checkpoint_20260901": {
+    "status": "native-soong-succeeded-component-postcheck-failed-source-stamp",
+    "supersedes_current_status_of": "gms_read_only_graph_capture_checkpoint_20260901",
+    "guide": "docs/gms-source-integration.md",
+    "record": "research/gms-source-integration.json:ordinary_component_attempt_checkpoint_20260901",
+    "source_files": 541,
+    "source_projects": 14,
+    "build_number": "nezha.a2d9ab6affbe09593d338212",
+    "native_started_utc": "2026-09-01T11:43:38.788335+00:00",
+    "native_completed_utc": "2026-09-01T11:45:18.351575+00:00",
+    "native_soong_exit_code": 0,
+    "root_completed_utc": "2026-09-01T11:50:26.236978+00:00",
+    "wrapper_exit_code": 1,
+    "strict_uses_library_rows": 4,
+    "prebuilt_apk_rows": 4,
+    "installed_apk_rows": 4,
+    "all_six_complete_source_input_maps_equal": true,
+    "all_254_configuration_values_equal": true,
+    "matching_source_lock_heads_and_origins": 1179,
+    "expected_locally_patched_projects": 8,
+    "postcheck_completed": false,
+    "failed_check": "installed-CrossDevice-apksigner-Werr",
+    "diagnostic": "WARNING: No SourceStamp signature",
+    "original_source_apks_unchanged": true,
+    "same_stamp_certificate_entry_retained_without_source_stamp_signature_pair": true,
+    "apk_signing_block_itself_absent": false,
+    "native_success_promoted_to_overall_success": false,
+    "signapk_source_correction_adopted": false,
+    "successful_component_retry_verified": false,
+    "complete_artifact_and_fresh_action_qualification_verified": false,
+    "images2_verified": false,
+    "package2_verified": false,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "normal_android_enforcing_required": true,
+    "complete_rom_ready": false,
+    "phone_accessed": false
+  },
+  "public_macos_boot_tool_runtime_checkpoint_20260901": {
+    "status": "declared-runtime-inputs-rehashed-no-image-or-boot-validation",
+    "started_utc": "2026-09-01T11:49:34.686662+00:00",
+    "completed_utc": "2026-09-01T11:49:34.977056+00:00",
+    "wrapper_exit_code": 0,
+    "declared_file_backed_runtime_dependencies_rehashed": 193,
+    "guarded_nonempty_inputs": 235,
+    "guarded_empty_inputs": 3,
+    "complete_live_input_recheck_passed": true,
+    "complete_dynamic_runtime_closure_proven_by_checker": false,
+    "independent_runtime_semantic_review_required": true,
+    "native_image_commands_executed": false,
+    "package_or_image_admitted": false,
+    "private_keys_or_local_recovery_configuration_accessed": false,
+    "vm_source_or_android_output_accessed": false,
+    "boot_verified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "evidence": {
+      "live_runtime_admission": {
+        "path": "reports/oem-policy-integration-20260829/root-public-boot-runtime-v1/runtime-live-admission-v1/stdout.json",
+        "sha256": "99d1fda75ba3dfb36a5c156069e02a07fa8db8dc5c6c9e951f90fb242ce8a76f",
+        "size_bytes": 3305
+      },
+      "execution_completion": {
+        "path": "reports/oem-policy-integration-20260829/root-public-boot-runtime-v1/runtime-live-admission-v1/completion.json",
+        "sha256": "b7aa7f6c35688bfdef49a96f88a26e0922ee2adfd0fbb4b62c07fe27c8d26561",
+        "size_bytes": 1717
+      }
+    }
   }
 }

@@ -1,16 +1,24 @@
 # GMS source integration
 
-The **corrected GMS read-only graph capture passes with native/root exit 0**
-at **2026-09-01 11:11:47 UTC**. All nineteen query streams are complete and
+The targeted **GMS component attempt failed overall**, despite native Soong
+exit 0 at **2026-09-01 11:45:18 UTC**. Its stdout records four strict uses-library
+checks, four APK builds and four installs. The wrapper exits 1 at **11:50:26 UTC**
+because installed CrossDevice verification reports `No SourceStamp signature`
+under `-Werr`. The complete postcheck does not finish. The source remains
+541 files/fourteen projects with build number `nezha.a2d9ab6affbe09593d338212`;
+no signing-source correction has been adopted at this checkpoint.
+
+The earlier **corrected GMS read-only graph capture passes with native/root
+exit 0** at **2026-09-01 11:11:47 UTC**. All nineteen query streams are complete and
 independently reviewed. Six proof records are staged at **11:21:37 UTC**.
 The later host qualification covers twelve own actions for the four GMS
-modules, but their targeted build, Images2 and package2 remain pending.
+modules; their targeted build, Images2 and package2 are pending at that checkpoint.
 Provider runtime bytes, registration and final package selection remain separate.
 
 The preceding native baseline passes **config7, context7 and `nothing4`**, with
 native/root exit 0 through **2026-09-01 09:46:14 UTC**. It selects 541 source
 files across fourteen projects and build number `nezha.a2d9ab6affbe09593d338212`.
-The four GMS module builds, Images2 and package2 remain pending; these successful
+The four GMS module builds, Images2 and package2 are then pending; these successful
 queries and the ordinary `nothing` run do not establish their status actions,
 class-loader contexts, images or package outputs.
 
@@ -31,6 +39,42 @@ to claim later native results.
 | nothing4 | 09:34:56.316554 | 09:46:14.038756 | Native/root 0; six metadata-file values pass |
 | Corrected read-only graph capture (root interval) | 10:58:17.868611 | 11:11:47.896959 | Native/root 0; fourteen GMS and five provider queries |
 | Six-proof staging (root interval) | 11:21:37.252232 | 11:21:37.544322 | Native/root 0; proof files only, no build |
+| Four-module Soong build | 11:43:38.788335 | 11:45:18.351575 | Native 0; four strict checks, four builds and four installs logged |
+| Component attempt including postcheck (root interval) | 11:41:00.052091 | 11:50:26.236978 | Root 1; installed CrossDevice fails strict SourceStamp verification |
+
+The component command is `build/soong/soong_ui.bash --make-mode -j8` with
+`CrossDeviceAccessServicePrimary`, `CustomizationBundlePrebuiltFullVersion`,
+`PersistentBackgroundServices` and `SafetyHubPrebuilt`. All six complete
+source/input guard maps and 254 configuration values match before and after;
+Ninja argv, limits and sandbox checks pass. These source checks do not imply
+unchanged Android build outputs. The full failed result retains `postcheck=null`,
+`profile_completed=false` and `profile_validation_verified=false`; the native
+action rows are not a completed artifact or freshness qualification.
+
+The postcheck completes CrossDevice's original-APK signature verification and
+manifest badging with exit 0. Installed-APK verification prints v3 signature
+success, then exits 1 because of the SourceStamp warning. Subsequent checks are
+not counted as passes. The retained full result, diagnostic receipts and raw
+stdout/stderr remain authoritative; this failure is not promoted to success.
+
+Read-only structure inspection finds the same original CrossDevice APK
+(`c92b8276…`, 16,962,727 bytes). Built and installed copies match
+(`f3a86078…`, 16,954,535 bytes). All three contain the same 32-byte
+`stamp-cert-sha256` entry, but the built/installed APK signing block lacks the
+original SourceStamp signature pair. The APK signing block itself remains
+present. This inspection does not independently verify any signature.
+
+Captured SignApk source discards the incoming APK signing block; the actual
+output confirms that the old certificate entry survives this signing path.
+Captured verifier source explains why the unmatched entry triggers the warning.
+The [host-prepared correction](signapk-source-stamp.md) removes the stale entry
+before new APK signatures and adds a normal `SIGNAPK_JAR` dependency for
+non-`PRESIGNED` prebuilts so an updated
+signer triggers their incremental rebuild. Whole-file/OTA signing, `PRESIGNED`
+handling, original proprietary APKs and strict `-Werr` behavior must remain
+unchanged. Source adoption, a rebuilt signing tool and an ordinary component
+retry are still required; the proposal is not an observed fix.
+Images2, package2 and all final ROM gates remain unverified.
 
 The journal's final `commit_verified` event is **09:06:54.418454 UTC**, before
 the complete installation acceptance finishes. Full readback binds the stage,
@@ -76,8 +120,8 @@ module builds. Ninja, its limits and sandbox are observed; descendant Ninja
 argv and native component actions remain outside this profile's qualification.
 The post-run read-only measurement retains that complete stdout and log
 measurements, without a module-info content claim. The later graph capture and
-bounded host qualification below are separate evidence; fresh ordinary status
-actions and APK verification still need the actual module build.
+bounded host qualification below are separate evidence; neither replaces the
+later component attempt's required artifact and freshness checks.
 
 The corrected capture retains all **fourteen GMS queries and five provider
 queries**, with **sixteen graph files totaling 6,862,572,001 bytes** and **four
