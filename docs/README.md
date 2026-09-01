@@ -32,6 +32,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Optional mi_ext care-map source](mi-ext-care-map.md) | Committed inactive successor binds all 22 original ODM property files and exact imports; native tools, final Evolution SYSTEM marker, packaging and OTA coverage remain unqualified |
 | [A/B recovery packaging](recovery-packaging.md) | Exact dedicated working76 payload without an inapplicable non-A/B two-step image |
 | [AVB image-set verification](avb-image-set.md) | Explicit per-role public keys, complete descriptor coverage and partial-result limits |
+| [Boot-image validation](boot-image-validation.md) | Verified source543 public runtime and retained raw-v6 omission; final-package inputs, native image checks and physical boot remain pending |
 | [Host AVB signing preparation](avb-signing.md) | Reproducible development-chain recipe, public preparation and Mac-only private signing; no completed signed ROM claim |
 | [Target-files AVB inventory](target-files-avb-inventory.md) | Read-only bounded ZIP/retained-input inspection with 42 synthetic tests; no actual target-files admission, extraction, image validation or signing |
 | [Target-files input materialization](target-files-materialization.md) | Copies thirteen ZIP images and two retained inputs; 44 synthetic tests, with publication, normalized signer-manifest identity and actual materialization kept separate |

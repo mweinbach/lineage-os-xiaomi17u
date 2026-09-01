@@ -21,6 +21,12 @@ failed. Graph qualification, strict GMS retry, Images2 and package2 remain
 pending. See [GMS source integration](gms-source-integration.md); the earlier
 source-adoption and failed-attempt checkpoints below retain their original scope.
 
+The prepared boot-content check's public macOS runtime separately passes its
+live recheck at **2026-09-01 14:56:33 UTC**, with outer exit 0.
+[Boot-image validation](boot-image-validation.md) records its exact inputs and
+the raw-v6 omission corrected by raw-v7. This does not admit package2 or any
+final boot image; the GMS/build gates above remain pending.
+
 The corrected **SignApk source installation succeeds at 2026-09-01 13:36:04
 UTC**, with two exchanges, seven journal events and no rollback. Full readback
 and independent review pass. The active inventory is **543 files/fourteen

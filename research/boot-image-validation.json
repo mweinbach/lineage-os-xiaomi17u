@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "observed_on": "2026-09-01",
+  "record_status": "public-runtime-verified-not-boot-image-or-ROM-admission",
+  "selected_source": {
+    "branch": "bka",
+    "release": "bp4a",
+    "variant": "user",
+    "source_files": 543,
+    "source_projects": 14,
+    "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+    "build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "source_spec": {
+      "sha256": "97c1ec842d697a0de38fb7623f188f056da7d2d8c504d5582aef0ad76a77e364",
+      "size_bytes": 899524
+    },
+    "page_size_bytes": 4096,
+    "recovery": "working76"
+  },
+  "runtime_admission": {
+    "capture": "raw-v7",
+    "consumer_completed_utc": "2026-09-01T14:56:33.029718+00:00",
+    "outer_completed_utc": "2026-09-01T14:56:33.084914+00:00",
+    "outer_exit_code": 0,
+    "complete_live_input_recheck_passed": true,
+    "runtime_files": 195,
+    "guarded_nonempty_inputs": 237,
+    "guarded_empty_inputs": 5,
+    "empty_runtime_sources": 3,
+    "public_observation_commands": 6,
+    "record_emission_commands": 3,
+    "independent_semantic_and_closed_record_reviews_passed": true
+  },
+  "correction": {
+    "missing_deferred_import": "base64",
+    "remedy": "Initialize the four pinned source-proof helpers before runtime enumeration; fresh raw-v7 observes the actual base64 source and cache.",
+    "raw_v6_status": "preserved-executed-but-unqualified",
+    "raw_v6_rejected_by_current_projector": true
+  },
+  "evidence": {
+    "milestone": {
+      "path": "reports/oem-policy-integration-20260829/boot-chain-current-package-preparation-v1/source543-package2-v3/runtime-live-milestone-v2.json",
+      "sha256": "a4542699f7ef72fea15636d5751b4ba9063afd5c12d671a06532166590eadc22",
+      "size_bytes": 19423
+    },
+    "stdout": {
+      "path": "reports/oem-policy-integration-20260829/root-public-boot-runtime-v1/root-live-raw7-v1/stdout.json",
+      "sha256": "24571d526049bdf6dfd5fba6de7c30fb8014c1608f3cf25bb822e58aba9c404c",
+      "size_bytes": 3814
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-public-boot-runtime-v1/root-live-raw7-v1/completion.json",
+      "sha256": "b0c8b9b8b4ba5675401b641de103af0684c23a099a51bc295a6a65b00b642a03",
+      "size_bytes": 2204
+    },
+    "tool_inputs": {
+      "path": "reports/oem-policy-integration-20260829/boot-chain-current-package-preparation-v1/source543-package2-v3/actual-runtime-assembly-v2/qualification-v1/tool-inputs.json",
+      "sha256": "80f1dadec48f98bafb673a4a783f8e31d1a9b5c756db10b85fffd5041b06d46b",
+      "size_bytes": 651
+    }
+  },
+  "limits": {
+    "macos_shared_cache_trust": "Explicit observed macOS build 26A5425a; shared-cache contents are not independently hashed.",
+    "complete_dynamic_runtime_closure_proven": false,
+    "hermetic_runtime_proven": false,
+    "process_execution_and_limits": "Root-recorded execution evidence; independent reviewers checked retained records rather than the historical processes.",
+    "tool_selector_is_an_image_manifest": false
+  },
+  "remaining_gates": [
+    "Successful current package2 request/result and verified final ZIP transfer",
+    "Actual final-image materialization",
+    "Fresh boot-source and producer evidence",
+    "Six native boot-image inspections",
+    "Complete signed AVB chain, rollback compatibility and partition fit",
+    "Full VINTF compatibility",
+    "Explicitly authorized physical Evolution boot and hardware validation"
+  ],
+  "scope": {
+    "package_or_boot_images_admitted": false,
+    "normal_android_selinux_mode_changed": false,
+    "working76_changed": false,
+    "complete_rom_ready": false,
+    "hardware_support_verified_by_this_milestone": false,
+    "phone_mutation_authorized": false
+  }
+}
