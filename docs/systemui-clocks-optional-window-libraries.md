@@ -1,5 +1,25 @@
 # SystemUI Clock optional Window libraries
 
+The **Clock-corrected 545-file/fifteen-project source now passes ordinary
+`nothing7`**, with native exit 0 at **2026-09-01 23:24:12 UTC** and a separately
+verified host command exit 0. Full-stream review at **23:30:31 UTC** binds all
+2,049 stdout bytes and empty stderr. Six physical metadata files match
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, epoch **1788144555** and the exact selected
+hostname/fingerprint/thumbprint. All six source/input maps and 254 configuration
+entries match both predecessor queries, with all 1,179 pinned HEADs/origins and
+nine intentional locally patched projects preserved.
+
+This establishes the ordinary graph/metadata checkpoint, not successful Clock
+APK or strict status-file production. The regenerated checker rules still need
+qualification, followed by corrected strict module checks and fresh ordinary
+producer/signature evidence. Matching metadata bodies do not prove fresh
+rewrites. Four separate read-only collectors retain log and dependency-config
+evidence without admitting a component build. Images3, Package3, the signed
+boot chain and hardware gates remain open; enforcing normal Android, 4 KiB,
+working76 and false ROM readiness are unchanged. See the
+[Nothing7 checkpoint](../research/workspace-integration.json). The preceding
+query/adoption checkpoints below keep their dated limits.
+
 The **545-file/fifteen-project source now passes native config10/context10**,
 with Soong exit 0 at **2026-09-01 23:00:17 UTC** and **23:08:51 UTC**. Both
 wrappers and complete retained-stream reviews pass; context10 closes at

@@ -10,6 +10,31 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **545-file/fifteen-project source now passes config10/context10 and ordinary
+`nothing7`**. The exact `--make-mode -j8 nothing` invocation exits native 0 at
+**2026-09-01 23:24:12 UTC**; its actual host command also completes with exit 0.
+Full retained-stream review passes at **23:30:31 UTC**, binding the 2,049-byte
+native stdout and empty stderr. Six physical metadata-file bodies confirm
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, epoch **1788144555**, the hostname and
+the expected fingerprint/thumbprint. These value checks do not prove fresh
+metadata rewrites or binary producer actions.
+
+All six complete source/input guard maps and 254 configuration entries match
+admission and both predecessor queries; all 1,179 pinned project HEADs and
+origins match, preserving nine reviewed locally patched projects. Four separate
+read-only collectors at **23:29:54 UTC** retain logs and selected dependency
+configuration evidence. Neither those captures nor the ordinary `nothing` goal
+qualify the corrected Clock checker rules or establish an APK component pass.
+
+The next gate is qualification of the regenerated Clock rules and corrected
+strict status/module checks, with fresh ordinary producer/signature evidence.
+Images3, Package3, final VINTF/AVB/partition checks and device testing remain
+separate. The selected-kernel AVB/origin warnings and `test-keys` remain visible;
+normal Android enforcement, 4 KiB, working76 and false complete-ROM readiness
+are unchanged. See the [build progress](build-progress.md) and
+[Nothing7 checkpoint](../research/workspace-integration.json). Earlier query,
+source-adoption and failure checkpoints below retain their original scope.
+
 The **545-file/fifteen-project Clock-corrected source now passes native
 config10 and context10**. Soong exits 0 at **2026-09-01 23:00:17 UTC** and
 **23:08:51 UTC**; the wrappers also exit 0, with context10 closing at

@@ -4308,5 +4308,243 @@
         "size_bytes": 2462
       }
     }
+  },
+  "clock_native_metadata_checkpoint_20260901": {
+    "status": "ordinary-nothing7-graph-metadata-and-full-stream-review-passed-no-component-build",
+    "guide": "docs/systemui-clocks-optional-window-libraries.md",
+    "source_files": 545,
+    "source_projects": 15,
+    "identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+    "build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+    "build_epoch": 1788144555,
+    "ordinary_argv": [
+      "build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j8",
+      "nothing"
+    ],
+    "native_started_utc": "2026-09-01T23:21:16.295550+00:00",
+    "native_finished_utc": "2026-09-01T23:24:12.530560+00:00",
+    "native_exit_code": 0,
+    "guest_transport_exit_code": 0,
+    "actual_host_process_exit_code": 0,
+    "host_process_completion_observed_utc": "2026-09-01T23:28:48.141Z",
+    "host_completion_not_inferred_from_guest_exit_receipt": true,
+    "full_stream_review_finished_utc": "2026-09-01T23:30:31.430377+00:00",
+    "full_native_stream_bodies": {
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stdout": {
+        "sha256": "24ac0047a6d1b96e889ccab9c3bd9b2ddb1433fa75c61d7bb696f1d15f558261",
+        "size_bytes": 2049
+      }
+    },
+    "full_native_stream_bodies_verified": true,
+    "native_stdout_warnings_preserved": true,
+    "ordinary_graph_generation_passed": true,
+    "native_metadata_values_verified": true,
+    "six_physical_metadata_files": {
+      "build_date.txt": {
+        "native_path": "/work/out/nezha-user-policy-20260827T2220Z/build_date.txt",
+        "sha256": "5bd41e8a4ecd6eee83ff6e6b1114af7efa2d607c40d4c0ce93423fee999ba85f",
+        "size_bytes": 10,
+        "value_utf8": "1788144555"
+      },
+      "file_name_tag.txt": {
+        "native_path": "/work/out/nezha-user-policy-20260827T2220Z/file_name_tag.txt",
+        "sha256": "7954c487519b5b2d8243ac5169da969f28548cbcda9d9c806db5a7dfc9dd9a98",
+        "size_bytes": 30,
+        "value_utf8": "nezha.b51a6b5609d2001e9ae1f7ae"
+      },
+      "soong/build_hostname.txt": {
+        "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/build_hostname.txt",
+        "sha256": "82199baf354fe3b7114cc9e43e1af71a13d62357ca3fd33eb118b1fcc18cc6f7",
+        "size_bytes": 13,
+        "value_utf8": "nezha-builder"
+      },
+      "soong/build_number.txt": {
+        "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/build_number.txt",
+        "sha256": "7954c487519b5b2d8243ac5169da969f28548cbcda9d9c806db5a7dfc9dd9a98",
+        "size_bytes": 30,
+        "value_utf8": "nezha.b51a6b5609d2001e9ae1f7ae"
+      },
+      "target/product/nezha/build_fingerprint-lineage_nezha.txt": {
+        "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/build_fingerprint-lineage_nezha.txt",
+        "sha256": "b6c2349e1d58fb6248acbe67bed7f1cfb0eebb2745798f7daa5644adad951e49",
+        "size_bytes": 92,
+        "value_utf8": "Xiaomi/lineage_nezha/nezha:16/BP4A.251205.006/nezha.b51a6b5609d2001e9ae1f7ae:user/test-keys\n"
+      },
+      "target/product/nezha/build_thumbprint-lineage_nezha.txt": {
+        "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/build_thumbprint-lineage_nezha.txt",
+        "sha256": "116f09812eb3f718bb6f89bab5e0b9a8a758251b9a57c0e0832a21f7e5f326c3",
+        "size_bytes": 65,
+        "value_utf8": "16/BP4A.251205.006/nezha.b51a6b5609d2001e9ae1f7ae:user/test-keys\n"
+      }
+    },
+    "pure_metadata_comparator_replay_exact": true,
+    "all_six_source_input_callbacks_equal_before_after_and_both_queries": true,
+    "configuration_fields": 254,
+    "configuration_matches_actual_admission_and_both_queries": true,
+    "upstream_revision_and_origin_matches": 1179,
+    "reviewed_locally_patched_projects_preserved": 9,
+    "ninja_observed": true,
+    "ninja_resource_limits_verified": true,
+    "ninja_descendant_argv_verified": false,
+    "sandbox_checks_passed": true,
+    "preflight_capacity": {
+      "filesystem": "ext4",
+      "architecture": "aarch64",
+      "case_sensitive": true,
+      "same_source_output_device": true,
+      "free_bytes": 344036077568,
+      "available_cpus": 17,
+      "memory_available_bytes": 132980674560,
+      "verified_at_invocation_preflight": true,
+      "reservation_created": false
+    },
+    "separate_read_only_collectors": {
+      "four-logs": {
+        "finished_utc": "2026-09-01T23:29:54.319910+00:00",
+        "exit_code": 0,
+        "read_only": true,
+        "component_admitted": false,
+        "completion": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/four-logs/completion.json",
+          "sha256": "e1ece76207da496305666f16cbccbab80e21622c3beddc697ba1df6bfe1d6891",
+          "size_bytes": 1433
+        },
+        "payload": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/four-logs/stdout.json",
+          "sha256": "68306928370b5d160ac62e5c906189823196b7eb5e719c31b3b7e82ffdcd2ba1",
+          "size_bytes": 85586
+        }
+      },
+      "six-gms-configs": {
+        "finished_utc": "2026-09-01T23:29:54.472149+00:00",
+        "exit_code": 0,
+        "read_only": true,
+        "component_admitted": false,
+        "completion": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/six-gms-configs/completion.json",
+          "sha256": "d616736cd6417c7292c736f27b00b9776422e28dd6d50ec735244568af61c09d",
+          "size_bytes": 1475
+        },
+        "payload": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/six-gms-configs/stdout.json",
+          "sha256": "28857efcfe7de4d329a783d0083605f35b31ddc41a3bec2833803913c8f7723e",
+          "size_bytes": 42261
+        }
+      },
+      "two-product-configs": {
+        "finished_utc": "2026-09-01T23:29:54.620874+00:00",
+        "exit_code": 0,
+        "read_only": true,
+        "component_admitted": false,
+        "completion": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/two-product-configs/completion.json",
+          "sha256": "1401b3f3da29e25f323e8d7acc65d0d83b42eba842487b322c10d79fa98c08cb",
+          "size_bytes": 1433
+        },
+        "payload": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/two-product-configs/stdout.json",
+          "sha256": "2a376faeac9566a4fc1dac30f7a415b0b1aedd2915776122e3626443c118bf9d",
+          "size_bytes": 45710
+        }
+      },
+      "one-bcr-config": {
+        "finished_utc": "2026-09-01T23:29:54.771584+00:00",
+        "exit_code": 0,
+        "read_only": true,
+        "component_admitted": false,
+        "completion": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/one-bcr-config/completion.json",
+          "sha256": "c7a7f16ee7a41271e4caa85a13c42c8b6712c6b341ac111704d66f80f83a4497",
+          "size_bytes": 1435
+        },
+        "payload": {
+          "path": "reports/continuation-20260901/native-preparation/post-nothing7-readers-v1/one-bcr-config/stdout.json",
+          "sha256": "fb45edbca1ec8b3b92bc1dd4ce1b26c07dbbc8fa129d33a58ccd79298c638080",
+          "size_bytes": 2415
+        }
+      }
+    },
+    "collector_scope": "Full Nothing7 streams, four Ninja-log measurements, selected GMS/product/BCR configuration bodies and exact absences; no component or graph-content admission.",
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "source_mutation_requested": false,
+    "output_invalidated_or_deleted": false,
+    "next_gate": "Qualify the regenerated Clock checker rules and collect corrected strict status/module plus fresh ordinary producer/signature evidence; Images3, Package3 and final boot-chain/hardware gates remain separate.",
+    "limits": {
+      "fresh_metadata_rewrites_verified": false,
+      "fresh_individual_ninja_producer_actions_verified": false,
+      "regenerated_clock_checker_rules_qualified": false,
+      "corrected_clock_strict_status_or_build_verified": false,
+      "bcr_component_build_verified": false,
+      "current_apk_signatures_verified": false,
+      "images3_verified": false,
+      "package3_verified": false,
+      "entire_output_tree_unchanged_claimed": false,
+      "image_reproducibility_verified": false,
+      "oem_signing_trust_established": false,
+      "signed_avb_chain_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "released_host_preparation": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/actual-build-bindings-continuation-v1/preparation-report.json",
+        "sha256": "8efe938228a16a73887f6a81c6e4b4adbda33a1689a873c76ebbb8b4748ba224",
+        "size_bytes": 12212
+      },
+      "native_request": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-nothing-7-continuation-v1/request.json",
+        "sha256": "471937c07e13131e55bc15a9f40e3f2ab828d05ff1cd553170ec842a803ee1d0",
+        "size_bytes": 32752242
+      },
+      "native_result": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-nothing-7-continuation-v1/stdout.jsonl",
+        "sha256": "81050d4fe07deafa4dd6bee4d69db1244181e6e1f74106db47632304202d5d3f",
+        "size_bytes": 10372777
+      },
+      "guest_transport_exit": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-nothing-7-continuation-v1/exit.json",
+        "sha256": "50bc6799c941a47bdf8360720d8f9ce8201370017fbd4b79fb10b0d13c7caa10",
+        "size_bytes": 65
+      },
+      "actual_host_command_completion": {
+        "path": "reports/continuation-20260901/nothing7-exec-completion.json",
+        "sha256": "6a0642b81f77d901fe6654fe13976bde185c537962dd2e9f068ef3d2f18f06d2",
+        "size_bytes": 404
+      },
+      "host_full_stream_review": {
+        "path": "reports/continuation-20260901/nothing7-review/full-stream-v1/review.json",
+        "sha256": "d9cabc844edff023ea944a13c7b0181eb74f87f927a59fdb77d9251fc3e7c34f",
+        "size_bytes": 14994
+      },
+      "host_metadata_and_collector_validation": {
+        "path": "reports/continuation-20260901/nothing7-review/checkpoint-validation.json",
+        "sha256": "b1a4758c19cb99ee6883fbbb7d4d9c3d7090134598d931f225d12eea5a1894fe",
+        "size_bytes": 4075
+      },
+      "host_reviewer": {
+        "path": "reports/continuation-20260901/nothing7-review/review.py",
+        "sha256": "0fdefab9a6354fa941c8f0d00e3e508d59a545a2acf168d09db51501ae43c960",
+        "size_bytes": 20520
+      },
+      "host_reviewer_helper_test_validation": {
+        "path": "reports/continuation-20260901/nothing7-review/preparation.json",
+        "sha256": "92d7f3cd40119a5143b7f30aa39a31be8bb18aab902449d2670a47341cba1886",
+        "size_bytes": 1084
+      }
+    }
   }
 }

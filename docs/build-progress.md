@@ -1,5 +1,42 @@
 # Nezha product and build progress
 
+The **ordinary `nothing7` graph/metadata checkpoint passes** on the
+545-file/fifteen-project source. The exact
+`build/soong/soong_ui.bash --make-mode -j8 nothing` command runs from
+**2026-09-01 23:21:16 UTC to 23:24:12 UTC**, exiting native 0. The host launcher's
+actual process completion is separately observed with exit 0; this is not
+inferred from the guest transport receipt. Full retained-stream review finishes
+at **23:30:31 UTC**, authenticating 2,049 stdout bytes and empty native stderr.
+The stdout records Blueprint analysis, packaging-rule regeneration and the
+`nothing` goal, while retaining the selected-kernel and sandbox warnings.
+
+Six physical metadata-file bodies match build number
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, epoch **1788144555**, hostname
+`nezha-builder` and the exact `BP4A.251205.006` fingerprint/thumbprint with
+`test-keys`. All six source/input callback maps match before/after and both
+predecessor queries; all 254 configuration entries match admission, and all
+1,179 pinned revisions/origins match. Nine intentional locally patched projects
+remain preserved. Ninja is observed with resource-limit and sandbox checks
+passing; descendant argv and fresh individual producer actions are not claimed.
+
+Native preflight measures **344,036,077,568 free bytes**, **17 available CPUs**
+and **132,980,674,560 available memory bytes** on the same aarch64, case-sensitive
+ext4 source/output filesystem. This is a dated capacity observation, not a
+reservation. Four separate read-only collectors close with exit 0 at
+**23:29:54 UTC**, retaining the full native streams, four Ninja-log measurements
+and selected GMS/product/BCR dependency configurations or exact absences. They
+do not admit an app build or establish that the whole output tree is unchanged.
+
+Graph completion and matching metadata values do not prove fresh metadata
+rewrites, corrected Clock status production or successful APK signatures.
+Qualification of the regenerated Clock rules, strict module checks and fresh
+ordinary producer/signature evidence remains next; Images3, Package3, the signed
+boot chain and hardware checks remain separate. Normal Android enforcement,
+4 KiB, working76 and false complete-ROM readiness are unchanged. The
+[Nothing7 record](../research/workspace-integration.json) binds the source,
+host-completion, metadata, full-stream review and four collector receipts.
+Earlier checkpoints below retain their original scope and failures.
+
 The **545-file/fifteen-project source passes config10 and context10**. The
 ordinary native dumpvars queries run at **2026-09-01 22:59:23–23:00:17 UTC**
 and **23:07:58–23:08:51 UTC**, both with exit 0. Their wrappers close with exit
