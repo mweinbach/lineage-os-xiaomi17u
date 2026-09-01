@@ -1,5 +1,16 @@
 # Nezha product and build progress
 
+The **2026-09-01 04:26:42 UTC images1 attempt** finishes with native exit 0
+and wrapper exit 1. The sole validation failure is the combined Ninja graph's
+pool-depth change from 15 to 8, explained by the pinned generator and observed
+`-j8`. The old graph body is reconstructed to its sealed hash, not independently
+captured; all six admission maps, 254 configuration fields and fifteen other
+graphs match. The failed receipt remains unchanged. The **separate read-only
+postcheck passes at 05:03:29 UTC**, checking four output images, three sidecars
+and all seven producers' fresh action evidence without another build or output
+write. Saved-receipt readback matches; independent artifact review remains pending;
+target-files, signing and boot remain unverified.
+
 The **2026-09-01 03:22:47 UTC ordinary `nothing3` checkpoint** passes graph
 regeneration, all six source/input guard groups and the six metadata-file value
 checks for `nezha.8643b579050aab0dd3218ae3`. The only change in the 254-field
@@ -8,19 +19,22 @@ Its 166 frontend steps plus one `nothing` phony are not component/image builds
 or tests. Ninja and its sandbox are observed, but exact Ninja arguments are not
 qualified by this profile; matching metadata values do not prove fresh rewrites.
 The subsequent read-only producer capture, exact recovery-declaration review
-and nine-proof staging are complete. They execute no image recipe; the outcome
-for four image targets and three policy sidecars, followed by target-files,
-remains unverified. The first
-optional AIDL capture fails its bounded Ninja query without compilation. Kernel
-AVB/origin, signing, super/OTA and hardware gates remain. See
+and nine-proof staging are complete; those preparation steps execute no image
+recipe. The later four-image/three-sidecar invocation is recorded above. The
+first optional AIDL capture fails its bounded query; v2 completes read-only
+capture of 1,163 nodes and 62 API-check descriptions without compiling or running
+the component checks. Independent review verifies this scoped capture, not full
+dependency closure. Kernel AVB/origin, signing, super/OTA and hardware gates remain. See
 [current status](workspace-status.md) and the
 [ordinary run and preparation evidence](../research/workspace-integration.json).
 
 Commit **1ef9bf3** adds the maintained
 [signed target-files reconciler](signed-target-files-reconciliation.md) and
 streaming archive copier. Its 72 added tests use synthetic archives and mocked
-cryptography; the full workspace suite passes 4,261 tests in 192.570 seconds,
-with zero skips. No actual signing or target-files reconciliation has run.
+cryptography; its full workspace suite passes 4,261 tests in 192.570 seconds,
+with zero skips. The later preparation-document checkpoint passes 4,261 tests
+in 204.808 seconds with zero skips, before this image-attempt/capture update.
+No actual signing or target-files reconciliation has run.
 
 The **2026-09-01 03:01:01 UTC product-query checkpoint** verifies the adopted
 537-source/thirteen-project configuration with identity

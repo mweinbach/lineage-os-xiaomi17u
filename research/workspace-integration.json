@@ -1286,5 +1286,236 @@
         "size_bytes": 11598019
       }
     }
+  },
+  "offline_validation_image_preparation_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests": 4261,
+    "elapsed_seconds": 204.808,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "1ef9bf398a424cff0d13de932f8309b6073ded12",
+    "completed_utc": "2026-09-01T04:28:35.252696+00:00",
+    "scope": "Committed tooling plus four unchanged preparation documents, subsequently committed as 4dad41f8b65642190f68c2984897bef5f8eb7bcc. This later images1/AIDL-capture documentation and native evidence are outside the offline suite.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-image-preparation-docs-v1/tests.log",
+      "sha256": "e859f3d7bd52ff53f5472e89ad014b8e84f57158172e5014d1147f1a8427a72e",
+      "size_bytes": 742361
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-image-preparation-docs-v1/completion.json",
+      "sha256": "fc0dda9a405762b02b48495ef858d1d00a9d887ef244901b5452609eb56b4ca9",
+      "size_bytes": 1952
+    }
+  },
+  "ordinary_images1_attempt_20260901": {
+    "status": "native-exit-zero-wrapper-failed-artifact-postcheck-pending",
+    "native_started_utc": "2026-09-01T04:23:45.866171+00:00",
+    "native_completed_utc": "2026-09-01T04:26:42.724870+00:00",
+    "native_exit_code": 0,
+    "wrapper_exit_code": 1,
+    "failed_receipt_preserved": true,
+    "image_goals": 4,
+    "policy_sidecar_goals": 3,
+    "profile_completed": false,
+    "profile_validation_verified": false,
+    "postcheck": null,
+    "sole_postcheck_error": "combined-lineage_nezha.ninja file binding mismatch",
+    "source_files": 537,
+    "source_projects": 13,
+    "six_complete_admission_groups_equal": true,
+    "configuration_fields": 254,
+    "configuration_changed_fields": [],
+    "graph_comparison": {
+      "paths": 16,
+      "unchanged_contents": 15,
+      "changed_contents": 1,
+      "only_changed_field": "combined graph highmem_pool depth",
+      "previous_depth": 15,
+      "current_depth": 8,
+      "observed_prior_ninja_jobs": 19,
+      "observed_current_ninja_jobs": 8,
+      "pinned_generator_explains_delta": true,
+      "old_body_independently_captured": false,
+      "old_body_reconstructed_to_sealed_hash": true,
+      "all_full_graph_bodies_reopened_by_host_reviewer": false,
+      "explanation_limit": "Uses pinned generator logic, observed arguments and subsequently captured memory; does not directly observe prior process RAM or the instruction that wrote the old graph."
+    },
+    "exact_current_ninja_argv_limits_and_sandbox_verified": true,
+    "source_read_only_output_writable": true,
+    "kernel_and_namespace_warnings_retained": true,
+    "separate_artifact_postcheck_pending": true,
+    "limits": {
+      "strict_image_profile_admitted": false,
+      "image_content_geometry_or_copy_provenance_qualified": false,
+      "packaged_policy_verified": false,
+      "target_files_admitted": false,
+      "signed_flashable_rom_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "actual_result": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-images-1-readback-v1/result.json",
+        "sha256": "adb8b114cfb770d39cf65048cc386e66fd73c963221ef7b927d7ee60425a43f8",
+        "size_bytes": 10080758
+      },
+      "independent_native_graph_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/actual-images1-native-graph-review-v1.json",
+        "sha256": "44cd2c11e77abf8fef9825077d046441580a2c165a3dda90af481e7c9378df5b",
+        "size_bytes": 36228
+      }
+    }
+  },
+  "aidl_capture_v2_20260901": {
+    "status": "scoped-read-only-capture-and-independent-review-passed-no-component-execution",
+    "first_bounded_query_failure_preserved": true,
+    "read_only_capture_verified": true,
+    "query_calls": 74,
+    "command_list_calls": 8,
+    "queried_nodes": 1163,
+    "captured_declarations": 753,
+    "captured_api_check_descriptions": 62,
+    "captured_aliases": 8,
+    "command_targets": 120,
+    "decoded_stdout_bytes": 13079173,
+    "captured_descriptions_are_executed_checks": false,
+    "preservation_scope": {
+      "policy_sidecars": 3,
+      "sidecar_size_bytes_each": 65,
+      "graphs": 16,
+      "logs": 4,
+      "outer_source_input_callbacks": 6,
+      "outer_source_files": 537,
+      "outer_source_projects": 13,
+      "source_files_verified_inside_jail": 0,
+      "seven_image_outputs_protected_claimed": false
+    },
+    "source_or_output_written": false,
+    "native_component_execution_performed": false,
+    "producer_mapping_verified": false,
+    "producer_actions_admitted": false,
+    "complete_definition_coverage_verified": false,
+    "intrinsic_ninja_no_write_guarantee": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "evidence": {
+      "capture": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/capture-preparation-v2/bound-v1/run-v1/capture.json",
+        "sha256": "6711c8d03cc1bc38be4a3da2813ac96ea6248feae999c4850a3aaf58618dcab0",
+        "size_bytes": 7732080
+      },
+      "outer_source_and_sidecar_observation": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/capture-preparation-v2/bound-v1/run-v1/outer-sidecar-presence.json",
+        "sha256": "bcedf70a0bbffeb23a9b8f23851169f95746a595486c722864607555305bca85",
+        "size_bytes": 58263
+      },
+      "transport": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/capture-preparation-v2/bound-v1/run-v1/transport.json",
+        "sha256": "f8a11396cc9dc4a811fd00f452bd983c17c88830469cb794b11f5d32c8ceb170",
+        "size_bytes": 17148
+      },
+      "stderr": {
+        "path": "reports/oem-policy-integration-20260829/aidl-seven-definition-admission-v1/native-next-check-v1/capture-preparation-v2/bound-v1/run-v1/capture.stderr",
+        "sha256": "a850b2882773d6a910b243401b545eb4be83680d715f58e16c7a5f7d0d4f987d",
+        "size_bytes": 46796
+      },
+      "independent_capture_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/actual-aidl-capture-v2-review-v1.json",
+        "sha256": "8f52c4e504834de33b0f2cb60434e2ffdc44c53b2a45962bbce1e45d575e1589",
+        "size_bytes": 24292
+      }
+    },
+    "unresolved_frontier_groups_outside_fixed_scope": 1996,
+    "full_dependency_closure_verified": false,
+    "complete_graph_and_log_bodies_rehashed_on_host": false,
+    "current_full_root_callback_bodies_received_on_host": false
+  },
+  "ordinary_images1_postcheck_20260901": {
+    "status": "separate-read-only-postcheck-and-saved-receipt-readback-passed-independent-review-pending",
+    "started_utc": "2026-09-01T04:59:16.122143+00:00",
+    "completed_utc": "2026-09-01T05:03:29.585347+00:00",
+    "post_build_verification_passed": true,
+    "original_image_attempt_native_exit_code": 0,
+    "original_image_attempt_wrapper_exit_code": 1,
+    "original_failed_receipt_rewritten": false,
+    "four_output_images_match_selected_source_copies": true,
+    "all_seven_fresh_producers_verified": true,
+    "freshness_inferred_from_matching_bytes": false,
+    "three_framework_sidecars_recomputed_and_equal_odm_basis": true,
+    "seven_framework_compiler_and_installed_inputs_verified": true,
+    "six_full_outer_callbacks_unchanged": true,
+    "source_files": 537,
+    "source_projects": 13,
+    "configuration_and_metadata_verified": true,
+    "native_build_commands_executed": false,
+    "prepare_outputs_called": false,
+    "capture_verbose_called": false,
+    "source_or_output_modified": false,
+    "output_images": {
+      "mi_ext": {
+        "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+        "size_bytes": 111198208
+      },
+      "odm": {
+        "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+        "size_bytes": 4767621120
+      },
+      "recovery": {
+        "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+        "size_bytes": 104857600
+      },
+      "vendor": {
+        "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+        "size_bytes": 959709184
+      }
+    },
+    "framework_sidecars": {
+      "plat": {
+        "sha256": "b0ebad72754afac819eb42b91ffe01c64694ae9c1b8831d333f0933224bbce42",
+        "size_bytes": 65
+      },
+      "product": {
+        "sha256": "47ac967fe4a690137321beb1f863778de31a7f3534e200c1642f6659e2a45d53",
+        "size_bytes": 65
+      },
+      "system_ext": {
+        "sha256": "50bf5b0d5a1df2170a898474f45246c0f4895b3489f27cbc6b628be23ae75981",
+        "size_bytes": 65
+      }
+    },
+    "independent_review_pending": true,
+    "saved_receipt_readback_pending": false,
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "limits": {
+      "metadata_hook_verified": false,
+      "target_files_admitted": false,
+      "signed_parent_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "runtime_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "actual_postcheck": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-images1-postcheck-v1/stdout.jsonl",
+        "sha256": "03718a1fcb13d03f86147f42792744883a46e5483ff2e70861180eb9f4ed9461",
+        "size_bytes": 113066
+      },
+      "saved_receipt": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-images1-postcheck-readback-v1/receipt.json",
+        "sha256": "03718a1fcb13d03f86147f42792744883a46e5483ff2e70861180eb9f4ed9461",
+        "size_bytes": 113066
+      },
+      "saved_receipt_readback_completion": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-images1-postcheck-readback-v1/completion.json",
+        "sha256": "1c628b064520effd5ccc63202302cea3a5769feb0da4624d26725e0c0e9cce42",
+        "size_bytes": 1351
+      }
+    },
+    "saved_receipt_matches_actual_result": true
   }
 }

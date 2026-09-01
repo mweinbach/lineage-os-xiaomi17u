@@ -29,11 +29,16 @@ and **config6/context6 pass all 21 configuration and seven context value checks*
 on the adopted source. The subsequent **ordinary `nothing3` run passes at
 2026-09-01 03:22:47 UTC**, including graph regeneration and the six actual
 metadata-file value checks for the new identity. This does not establish fresh
-rewrites or component/image actions. The current read-only producer/sidecar
-capture, exact recovery-declaration review and nine-record proof stage are
-complete. The execution outcome for four image targets and three policy
-sidecars, followed by target-files, remains unverified.
-**Output-image builds and packaged-policy checks remain pending**. Commit **4335f1b** adds
+rewrites or component/image actions. The subsequent seven-goal **images1 native
+process exits 0 at 04:26:42 UTC, but its wrapper exits 1**: validation rejects
+the combined Ninja graph's pool-depth change from 15 to 8. Independent review
+explains that exact change from the pinned source and observed `-j8`; it does
+not promote the failed wrapper result. A **separate read-only postcheck passes
+at 05:03:29 UTC**, verifying four output images, three policy sidecars and all
+seven producers' fresh action evidence. Its independent review and saved-receipt
+readback are separate: the saved receipt matches, while independent artifact
+review remains pending. **Packaged-policy checks and target-files remain
+unverified**. Commit **4335f1b** adds
 the explicit [policy3 image-input profile](policy-image-inputs.md), including
 qualified installed sidecars. Source-input selection does not admit a final
 flashable artifact: the full signed chain and physical partition fit remain
@@ -795,12 +800,33 @@ Subsequent read-only capture covers four image goals and three policy sidecars,
 with independent review of the outer 537-file/thirteen-project source guards and two
 Ninja queries. Separate review binds exactly two identical recovery goal/leaf
 command declarations. Nine proof records are staged without image bodies or
-private keys. These results prepare the image phase; they do not establish
-producer execution or a new recovery/image build. The first optional AIDL
-capture fails its 8 MiB Ninja-query bound, with no compilation; its failed
-capture is preserved while a successor is prepared. The seven-goal phase,
-target-files, optional AIDL, full signing, super/OTA and hardware checks remain
-separate gates. See the [actual preparation record](../research/workspace-integration.json).
+private keys. These preparation records do not establish producer execution.
+The later **images1 native invocation exits 0 at 04:26:42 UTC**, but its
+**wrapper remains failed** because the combined Ninja graph changes. Independent
+review finds only `highmem_pool` depth 15 to 8, consistent with the pinned
+generator and observed `-j8`; the old graph body is reconstructed to its sealed
+hash, not independently captured. All six admission maps, 254 configuration
+fields and the other fifteen graph contents match. The original failed receipt
+is preserved. A **separate read-only postcheck passes at 05:03:29 UTC**: the four
+output images match their selected source copies, the three framework sidecars
+are recomputed and match the ODM basis, and all seven fresh producer actions
+are tied to the recorded commands and log rows. This qualifies output production
+separately from the earlier source-image reconstruction. It performs no new
+build or source/output writes. The saved receipt matches the actual result;
+independent artifact review remains pending. Target-files and the packaged
+metadata hook are not verified.
+
+The first optional AIDL capture's 8 MiB query-bound failure is preserved. Its
+v2 successor completes reviewed, scoped read-only capture of 1,163 nodes,
+753 declarations and
+62 API-check descriptions through 74 query and eight command-list calls.
+Those are captured descriptions, not executed component checks. Protection
+covers exactly three policy sidecars, sixteen graphs/four logs and six outer
+source/input callbacks; it does not establish seven protected image outputs.
+The review retains 1,996 frontier groups outside the fixed scope; this is not
+full dependency closure. Artifact qualification, target-files,
+AIDL compilation, full signing, super/OTA and hardware checks remain separate
+gates. See the [actual attempt and capture records](../research/workspace-integration.json).
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
@@ -889,7 +915,12 @@ archive while integrating an already verified signed image set; the helper
 itself does not sign. No actual target-files archive, signing operation or
 reconciliation run is established by this tooling milestone.
 
-The latest completed full workspace suite passed **4,261 tests in 192.570
+The last full workspace suite recorded before this milestone passed **4,261 tests in 204.808
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `1ef9bf3` plus the four unchanged preparation documents, then committed
+as `4dad41f`. This later image-attempt/AIDL-capture documentation is outside that
+offline run; native execution and artifact validation remain separate evidence.
+The preceding suite passed **4,261 tests in 192.570
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `d5e9305` plus the five signed-target-files tooling files, then committed
 as `1ef9bf3`. All five identities remained unchanged. This later preparation
