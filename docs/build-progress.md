@@ -1,5 +1,28 @@
 # Nezha product and build progress
 
+The **0020 SignApk source stage passes at 2026-09-01 12:50:15 UTC**, but
+installation fails at **12:56:39 UTC** and both source exchanges roll back with
+verification. A retained history guard expected the old `build/make` status
+after the intended edits. Fresh readback preserves fifteen input observations
+and fourteen project contexts; only the two exchanged files' ctimes change.
+The active 541-file source and `a2d9` identity remain unchanged. Correcting that
+guard, adopting the source and rebuilding the signer remain required before
+a strict component retry; no new component, image or package build occurred.
+
+Separate read-only APK diagnostics finish at **12:26:06 UTC**: all sixteen
+commands return, fifteen exit 0 and installed CrossDevice exits 1 with the
+unchanged SourceStamp warning. Aggregate verification remains failed. A later
+host parser correction passes 97 author tests and 97 independent repeat tests,
+with zero skips, and accepts seven saved signature outputs and four saved
+manifest pairs. This is not new native success. See
+[GMS source integration](gms-source-integration.md) for both checkpoints.
+
+The preceding failed-component/SignApk preparation checkpoint was committed as
+**bb93933** after the coordinator's full suite passed **4,317 tests in 183.429
+seconds with zero skips** at **12:22:44 UTC**. The ten bound files stayed unchanged
+during that run. These later diagnostic, rollback and documentation changes are
+outside its scope.
+
 The targeted **four-module GMS attempt remains failed overall**. Native Soong
 finishes with exit 0 at **2026-09-01 11:45:18 UTC**; its stdout records four strict
 uses-library checks, four APK builds and four installs. The wrapper exits 1 at

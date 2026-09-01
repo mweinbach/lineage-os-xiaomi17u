@@ -1,5 +1,43 @@
 # GMS source integration
 
+The **0020 SignApk source-install attempt is rejected, with both exchanges
+rolled back and verified** at **2026-09-01 12:56:39 UTC**. The preceding stage
+passes at **12:50:15 UTC**, including full readback and independent review of
+the two original files, preserved copies and staged replacements. Its 543-entry
+candidate does not become active: the source remains **541 files/fourteen
+projects**, with build number `nezha.a2d9ab6affbe09593d338212`.
+
+After both intended edits, the retained `_allocator_project_history` check
+still expects the old live `build/make` status. The eleven-event journal records
+two forward and two reverse exchanges; `rollback_finished` has `verified=true`
+and no errors. The failure record, staged inputs and `INCOMPLETE` marker remain;
+neither `installation.json` nor `failed-installation-receipt.json` exists.
+Fresh readback at **12:58:10 UTC** confirms unchanged bytes and presence for all
+fifteen inputs (thirteen present files and two exact absences). The fourteen
+project revision/status contexts, two captured origin reports and both
+source/output roots also match. Original
+source inodes, bytes, modes and mtimes return; only the two exchanged files'
+ctimes differ. This is not a full output-tree comparison or a new source identity.
+The additive history-guard correction remains preparation, not a verified adoption.
+
+Separate **read-only APK diagnostics complete all sixteen native commands** at
+**12:26:06 UTC**. Seven signature commands and all eight manifest-badging commands
+exit 0; installed CrossDevice signature verification alone exits 1 with the same
+`No SourceStamp signature` warning under `-Werr`. The aggregate remains 1, with
+no completed artifact admission. All six full guard maps and the installed APK
+observations remain unchanged. The original validators also reject the pinned
+tools' source-stamp timestamp line and `minSdkVersion` spelling; their failed
+result and all sixteen command receipts remain intact.
+
+The later host parser correction recognizes those captured formats without
+relaxing native exit, warning, signer or manifest requirements. Its 97 author
+tests and 97 independent repeat tests pass with zero skips. Saved-output replay
+accepts seven signature outputs and four source/installed manifest pairs, while
+still rejecting installed CrossDevice. These are host checks of retained
+541-source diagnostics, not new native APK verification or proof of the proposed
+543-source candidate. Source adoption, a rebuilt SignApk and a complete strict
+ordinary component retry remain required before Images2 and package2.
+
 The targeted **GMS component attempt failed overall**, despite native Soong
 exit 0 at **2026-09-01 11:45:18 UTC**. Its stdout records four strict uses-library
 checks, four APK builds and four installs. The wrapper exits 1 at **11:50:26 UTC**
@@ -41,6 +79,10 @@ to claim later native results.
 | Six-proof staging (root interval) | 11:21:37.252232 | 11:21:37.544322 | Native/root 0; proof files only, no build |
 | Four-module Soong build | 11:43:38.788335 | 11:45:18.351575 | Native 0; four strict checks, four builds and four installs logged |
 | Component attempt including postcheck (root interval) | 11:41:00.052091 | 11:50:26.236978 | Root 1; installed CrossDevice fails strict SourceStamp verification |
+| Read-only APK diagnostics (root interval) | 12:20:22.282856 | 12:26:06.770618 | Root 1; sixteen commands complete, fifteen native 0 and installed CrossDevice signature 1 |
+| SignApk source stage (root interval) | 12:46:12.282056 | 12:50:15.260121 | Exit 0; two replacements staged, no source adoption |
+| SignApk source install (root interval) | 12:52:33.046595 | 12:56:39.065377 | Exit 1; both exchanges reversed and rollback verified |
+| Fresh post-rollback input capture (root interval) | 12:58:05.761870 | 12:58:10.457568 | Exit 0; scoped original bytes, absences and project state restored |
 
 The component command is `build/soong/soong_ui.bash --make-mode -j8` with
 `CrossDeviceAccessServicePrimary`, `CustomizationBundlePrebuiltFullVersion`,
@@ -51,10 +93,11 @@ unchanged Android build outputs. The full failed result retains `postcheck=null`
 `profile_completed=false` and `profile_validation_verified=false`; the native
 action rows are not a completed artifact or freshness qualification.
 
-The postcheck completes CrossDevice's original-APK signature verification and
+The original postcheck completes CrossDevice's original-APK signature verification and
 manifest badging with exit 0. Installed-APK verification prints v3 signature
 success, then exits 1 because of the SourceStamp warning. Subsequent checks are
-not counted as passes. The retained full result, diagnostic receipts and raw
+not counted as passes in that attempt; the later sixteen-command diagnostics
+above have separate receipts. The retained full result, diagnostic receipts and raw
 stdout/stderr remain authoritative; this failure is not promoted to success.
 
 Read-only structure inspection finds the same original CrossDevice APK

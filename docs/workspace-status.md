@@ -10,7 +10,18 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The targeted four-module **GMS attempt fails its postcheck**. Native Soong exits
+The **SignApk source-install attempt fails and rolls back both edits** at
+**2026-09-01 12:56:39 UTC**. Staging passed, but a retained history check rejected
+the intended `build/make` status change. The rollback and fresh input comparison
+pass; active source remains **541 files/fourteen projects with the `a2d9`
+identity**, not the staged 543-file candidate. The guard correction is still
+preparation, with no corrected signer build or successful component retry.
+Sixteen separate read-only APK commands complete with fifteen exits 0 and the
+same installed CrossDevice SourceStamp failure. The later parser correction
+passes saved-output replay only. [GMS source integration](gms-source-integration.md)
+records the failed installation, retained evidence and verification limits.
+
+The earlier targeted four-module **GMS attempt fails its postcheck**. Native Soong exits
 0 at **2026-09-01 11:45:18 UTC**, recording four strict uses-library checks and
 four APK build/install pairs, but the wrapper exits 1 at **11:50:26 UTC**.
 CrossDevice's installed APK triggers `-Werr` with `No SourceStamp signature`:
