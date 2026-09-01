@@ -982,5 +982,161 @@
       "process_reaping_proves_all_vm_processes_extinct": false,
       "testkey_configuration_proves_signing_success": false
     }
+  },
+  "offline_validation_query_checkpoint_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests_run": 4189,
+    "reported_test_seconds": 178.577,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "f99a9440fd31b4ebcc2afb89385d8f8233cbb2b5",
+    "completed_utc": "2026-09-01T03:12:01.448668+00:00",
+    "scope": "Committed code plus three unchanged query documents; the later nothing3 documentation and native result are outside that offline suite.",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-policy3-queries-v1/unittest.log",
+      "sha256": "9375af0bc35ff218ebbf7ab9a4d6cafb8ad5f0b9e6b444c1d122ea2804e5e7e0",
+      "size_bytes": 729763
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-policy3-queries-v1/completion.json",
+      "sha256": "6c0c8aaaf4cf84a1b2e6632298f094a157485e89aec90853103c4014253567ff",
+      "size_bytes": 1665
+    }
+  },
+  "ordinary_nothing3_20260901": {
+    "status": "verified-ordinary-graph-and-six-metadata-values-not-component-or-image-builds",
+    "build_number": "nezha.8643b579050aab0dd3218ae3",
+    "native_started_utc": "2026-09-01T03:10:16.750647+00:00",
+    "native_finished_utc": "2026-09-01T03:22:47.552668+00:00",
+    "native_exit_code": 0,
+    "capture_only": false,
+    "profile_completed": true,
+    "profile_validation_verified": true,
+    "postcheck_errors": [],
+    "source_files_checked": 537,
+    "source_projects_checked": 13,
+    "source_input_guard_groups_equal": 6,
+    "generated_configuration": {
+      "field_count": 254,
+      "only_changed_field": "NamespacesToExport",
+      "before_entry_count": 8,
+      "after_entry_count": 10,
+      "added_paths": [
+        "hardware/qcom-caf/sm8750",
+        "vendor/qcom/opensource/commonsys-intf/display"
+      ],
+      "before": {
+        "sha256": "e00f6c58d041f75549474240b95eab2b13d6c5673f24fe333ea374013445812a",
+        "size_bytes": 318922
+      },
+      "after": {
+        "sha256": "c95cfba5a33c7600e9d18d3e5f6e0509d27e0d2969a3a661c88c82ef5d24fca7",
+        "size_bytes": 318997
+      },
+      "other_fields_unchanged": true
+    },
+    "metadata": {
+      "actual_file_count": 6,
+      "total_captured_bytes": 240,
+      "values_verified": true,
+      "all_files_freshly_rewritten_verified": false,
+      "files": {
+        "build_date.txt": {
+          "sha256": "5bd41e8a4ecd6eee83ff6e6b1114af7efa2d607c40d4c0ce93423fee999ba85f",
+          "size_bytes": 10
+        },
+        "file_name_tag.txt": {
+          "sha256": "214f26864390bc5d27aa6f120369fd3f96742e8266697ce8d4f976a942f309c5",
+          "size_bytes": 30
+        },
+        "soong/build_hostname.txt": {
+          "sha256": "82199baf354fe3b7114cc9e43e1af71a13d62357ca3fd33eb118b1fcc18cc6f7",
+          "size_bytes": 13
+        },
+        "soong/build_number.txt": {
+          "sha256": "214f26864390bc5d27aa6f120369fd3f96742e8266697ce8d4f976a942f309c5",
+          "size_bytes": 30
+        },
+        "target/product/nezha/build_fingerprint-lineage_nezha.txt": {
+          "sha256": "c85c15b6e4562d3c150b4adb54f3f9e2c52072d9126293374b30f93fd0bf918f",
+          "size_bytes": 92
+        },
+        "target/product/nezha/build_thumbprint-lineage_nezha.txt": {
+          "sha256": "fd3d1da22caf8044a30bf2b95f3355b8f493703041a7c0b399883596007e6dcd",
+          "size_bytes": 65
+        }
+      }
+    },
+    "execution": {
+      "frontend_progress_rows": 166,
+      "nothing_phony_rows": 1,
+      "component_or_image_actions_qualified": false,
+      "ninja_observed": true,
+      "sandbox_checks_passed": true,
+      "sandbox_fallback": false,
+      "ninja_exact_argv_verified": false,
+      "observed_automatic_jobs": 19,
+      "process_reaped": true,
+      "streams_complete": true,
+      "forced_kill": false,
+      "timed_out": false
+    },
+    "warnings": {
+      "candidate_kernel_avb_origin_warnings": 4,
+      "kernel_avb_record": "failed",
+      "kernel_origin_verified": false,
+      "prebuilt_kernel_deprecation_banner_retained": true,
+      "nsjail_uid_gid_mapping_warnings": 2,
+      "stderr_empty": true
+    },
+    "write_scope": "Ordinary graph/configuration/metadata writes are allowed. Explicit source/input/protected-record guards remain verified; no claim that the entire OUT tree is unchanged.",
+    "next_gate": "Capture current producer and sidecar evidence, then execute the seven image goals and target-files; optional AIDL, signed-chain, super/OTA and hardware validation remain separate.",
+    "limits": {
+      "full_recursive_graph_provenance_verified": false,
+      "metadata_freshness_verified": false,
+      "new_component_or_image_builds_qualified": false,
+      "new_output_images_verified": false,
+      "packaged_policy_gate_executed": false,
+      "target_files_admitted": false,
+      "complete_signed_chain_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "request": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-nothing-3-v1/request.json",
+        "sha256": "d573de1cb8c04881e93f915f8e561abf68915d523abc13b08f93960f28a47c55",
+        "size_bytes": 6636030
+      },
+      "result": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-nothing-3-readback-v1/result.json",
+        "sha256": "75f297deac90d17567d9a8398d4c15ec3befa8937f8117f9bdd85e054eab272e",
+        "size_bytes": 10033453
+      },
+      "stdout": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-nothing-3-readback-v1/build.stdout",
+        "sha256": "8461490db8a2e1c70e3aca643c07315f98e238ba1696e28d6376ac5011c8a3ac",
+        "size_bytes": 18456
+      },
+      "stderr": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-nothing-3-readback-v1/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "readback_completion": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-nothing-3-readback-v1/completion.json",
+        "sha256": "9a8930466ef0ccc8f418ffa9286bde5083375ec2605dac60ad2345270bea2d6d",
+        "size_bytes": 1489
+      },
+      "independent_actual_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/native-query-review-v1/nothing3-success-review-v1.json",
+        "sha256": "9272ac008f2828b9e7a7983bae4ce0d5852a3e59029b7e450a8c34c88aceb1da",
+        "size_bytes": 19378
+      }
+    },
+    "independent_actual_review_verified": true
   }
 }

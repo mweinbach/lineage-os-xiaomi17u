@@ -26,10 +26,12 @@ preserved. [Volume maintenance](apple-container.md) cleared the recorded budget,
 and the narrow archive-mode correction preserves the original JNI mode.
 The build identity is now rebound to the recorded private metadata-copy modes,
 and **config6/context6 pass all 21 configuration and seven context value checks**
-on the adopted source. Ordinary `nothing3` graph regeneration and the six
-metadata-file checks are next; the queries verify literal file references,
-not those files' contents or freshness. **Output-image builds, packaged-policy
-checks and target-files remain pending**. Commit **4335f1b** adds
+on the adopted source. The subsequent **ordinary `nothing3` run passes at
+2026-09-01 03:22:47 UTC**, including graph regeneration and the six actual
+metadata-file value checks for the new identity. This does not establish fresh
+rewrites or component/image actions. Current producer/sidecar evidence is next,
+followed by the seven image goals and target-files. **Output-image builds and
+packaged-policy checks remain pending**. Commit **4335f1b** adds
 the explicit [policy3 image-input profile](policy-image-inputs.md), including
 qualified installed sidecars. Source-input selection does not admit a final
 flashable artifact: the full signed chain and physical partition fit remain
@@ -772,9 +774,24 @@ thirteen-project scope and unchanged 254-field generated configuration. The thre
 remain literal references; the build number is bound through the actual invocation
 environment, not directly printed by the queries. Neither Ninja nor a new image
 build is required or observed. Each query retains the two kernel warnings for
-`AVB=failed` and `origin_verified=false`. Ordinary `nothing3` must next regenerate
-the graph and qualify the six metadata files; no successful six-file, packaging,
-signed-chain or boot result follows from these queries.
+`AVB=failed` and `origin_verified=false`. Those queries alone do not establish
+six-file metadata, packaging, signed-chain or boot success.
+
+The subsequent **ordinary `nothing3` run passes at 03:22:47 UTC**, with native
+exit 0, completed postchecks, six matching source/input guard maps and clear
+independent review. The six actual metadata-file contents match `nezha.8643b579050aab0dd3218ae3`; this is a
+value check, without inferring that all files were freshly rewritten. Across
+the 254 generated configuration fields, only `NamespacesToExport` changes,
+from eight to ten entries for the two approved QTI paths. The log contains
+166 frontend steps and one `nothing` phony target, not 167 tests. Ninja and its
+sandbox are observed, but this profile does not require or verify exact Ninja
+arguments; its automatic `-j19` is not component-build qualification. Four
+kernel AVB/origin warnings, the prebuilt-kernel banner and two namespace UID/GID
+warnings remain preserved. The 537-source/thirteen-project input and protected
+records remain verified, while graph/configuration/metadata writes are allowed.
+Current producer and sidecar capture must precede the seven image goals and
+target-files; optional AIDL, full signing, super/OTA and hardware checks remain
+separate gates. See the [actual run record](../research/workspace-integration.json).
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
@@ -856,7 +873,12 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,189 tests in 172.826
+The latest completed full workspace suite passed **4,189 tests in 178.577
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `f99a944` plus the three query documents, then committed as `e6a0a63`.
+All three bound document identities remained unchanged. This later `nothing3`
+documentation and its native results are outside that offline suite.
+The preceding suite passed **4,189 tests in 172.826
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `f875980` plus the three source-adoption documents, then committed as
 `f99a944`. All three bound document identities remained unchanged. This later

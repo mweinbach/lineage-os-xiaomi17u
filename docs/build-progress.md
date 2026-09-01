@@ -1,5 +1,17 @@
 # Nezha product and build progress
 
+The **2026-09-01 03:22:47 UTC ordinary `nothing3` checkpoint** passes graph
+regeneration, all six source/input guard groups and the six metadata-file value
+checks for `nezha.8643b579050aab0dd3218ae3`. The only change in the 254-field
+configuration is the approved namespace-export list, from eight to ten entries.
+Its 166 frontend steps plus one `nothing` phony are not component/image builds
+or tests. Ninja and its sandbox are observed, but exact Ninja arguments are not
+qualified by this profile; matching metadata values do not prove fresh rewrites.
+Current producer/sidecar evidence, seven image goals and target-files are next.
+Kernel AVB/origin, signing, super/OTA and hardware gates remain. See
+[current status](workspace-status.md) and the
+[ordinary run evidence](../research/workspace-integration.json).
+
 The **2026-09-01 03:01:01 UTC product-query checkpoint** verifies the adopted
 537-source/thirteen-project configuration with identity
 `nezha.8643b579050aab0dd3218ae3`: config6 passes 21 values and context6 passes
@@ -7,9 +19,9 @@ seven, with all six source/input guards and the full 254-field generated
 configuration unchanged. Reprojection binds the declared metadata-copy modes;
 it does not chmod the source. These are ordinary product queries, with no
 observed Ninja action or image build. Literal `FROM_FILE` references do not
-qualify six metadata-file contents or freshness. The next step is ordinary
-`nothing3` graph regeneration and metadata validation; kernel AVB/origin warnings,
-packaging, signed-chain and boot gates remain. See
+qualify six metadata-file contents or freshness. The later `nothing3` result
+above separately verifies their values; kernel AVB/origin warnings, packaging,
+signed-chain and boot gates remain. See
 [current status](workspace-status.md) and the
 [query evidence](../research/workspace-integration.json).
 
