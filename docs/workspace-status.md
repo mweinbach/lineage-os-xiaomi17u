@@ -10,6 +10,25 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **544-file/fifteen-project source now passes config9, context9 and ordinary
+`nothing6`**. Nothing6 finishes with native exit 0 at **2026-09-01 20:23:46 UTC**
+and wrapper exit 0 at **20:26:41 UTC**. All six complete source/input guard maps
+remain equal; all 254 configuration entries match admission and both queries.
+All 1,179 pinned project HEADs and origins match. Six physical metadata-file
+values verify build number **`nezha.f9f678051a7b3de57c741ca2`** and the selected
+build epoch. Full native stdout readback and review pass; four subsequent
+read-only captures retain log and dependency-configuration evidence.
+
+This establishes graph generation and metadata values, without proving fresh
+metadata rewrites or complete binary provenance. BCR's strict status action,
+module/class-loader and APK-signature checks, the combined non-GMS audit,
+Images3 and Package3 remain separate gates, as do the signed AVB chain, boot and
+hardware validation. The 4 KiB baseline, normal Android enforcement and
+working76 are unchanged; complete-ROM readiness remains false. See
+[BCR source integration](bcr-optional-window-libraries.md) and
+[build progress](build-progress.md). The earlier checkpoints below retain their
+dated results and then-pending work.
+
 The **BCR 0021 source correction is now installed**, completing through the
 guarded Linux source transaction at **2026-09-01 19:32:56 UTC**, with native/root
 exit 0. One 85-byte optional-library assignment is added; the APK, signing

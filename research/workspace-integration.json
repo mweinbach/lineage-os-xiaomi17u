@@ -3440,5 +3440,226 @@
         "size_bytes": 3551
       }
     }
+  },
+  "bcr_native_metadata_checkpoint_20260901": {
+    "status": "native-config9-context9-nothing6-and-physical-metadata-values-passed",
+    "guide": "docs/bcr-optional-window-libraries.md",
+    "source_files": 544,
+    "source_projects": 15,
+    "pinned_project_heads_and_origins": 1179,
+    "identity_sha256": "f9f678051a7b3de57c741ca215072e7bac189e87304da06b47bc061c227e0db1",
+    "build_number": "nezha.f9f678051a7b3de57c741ca2",
+    "build_epoch": 1788144555,
+    "query_phases": [
+      {
+        "name": "config9",
+        "native_started_utc": "2026-09-01T19:46:14.240540+00:00",
+        "native_finished_utc": "2026-09-01T19:47:09.270233+00:00",
+        "native_exit_code": 0,
+        "postcheck_verified": true,
+        "result": {
+          "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-product-config-9-v1/stdout.jsonl",
+          "sha256": "126aa3326c91b60aba91118460e67eb76daa990622de85d8bd9d3e4e02d9e60e",
+          "size_bytes": 10305999
+        }
+      },
+      {
+        "name": "context9",
+        "native_started_utc": "2026-09-01T19:57:29.895135+00:00",
+        "native_finished_utc": "2026-09-01T19:58:23.489300+00:00",
+        "native_exit_code": 0,
+        "postcheck_verified": true,
+        "result": {
+          "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-product-context-9-v1/stdout.jsonl",
+          "sha256": "35c815ffb7de2273d295745beab46fdc89c67704c00ee6fa8ab7a5d986a83d3a",
+          "size_bytes": 10293324
+        }
+      }
+    ],
+    "nothing6": {
+      "argv": [
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j8",
+        "nothing"
+      ],
+      "native_started_utc": "2026-09-01T20:12:04.325793+00:00",
+      "native_finished_utc": "2026-09-01T20:23:46.335565+00:00",
+      "native_exit_code": 0,
+      "root_finished_utc": "2026-09-01T20:26:41.203767+00:00",
+      "root_exit_code": 0,
+      "profile_and_postcheck_verified": true,
+      "ninja_observed": true,
+      "observed_ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "descendant_ninja_argv_verified": false,
+      "full_native_stdout": {
+        "sha256": "e3dd19786d80f9780970ef5b12f02c956074926e7f45408f84d5ec764e7ce205",
+        "size_bytes": 17534
+      },
+      "full_native_stdout_readback_verified": true,
+      "native_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    },
+    "all_six_complete_source_input_guard_maps_equal": true,
+    "all_254_configuration_entries_equal_admission_queries_and_nothing6": true,
+    "six_physical_metadata_files": {
+      "build_date.txt": {
+        "sha256": "5bd41e8a4ecd6eee83ff6e6b1114af7efa2d607c40d4c0ce93423fee999ba85f",
+        "size_bytes": 10,
+        "value_utf8": "1788144555"
+      },
+      "file_name_tag.txt": {
+        "sha256": "48aa69e49f5c6e75bce9fa6439f02ae238b453b2f9d0ca2cc559b56c2cc44d59",
+        "size_bytes": 30,
+        "value_utf8": "nezha.f9f678051a7b3de57c741ca2"
+      },
+      "soong/build_hostname.txt": {
+        "sha256": "82199baf354fe3b7114cc9e43e1af71a13d62357ca3fd33eb118b1fcc18cc6f7",
+        "size_bytes": 13,
+        "value_utf8": "nezha-builder"
+      },
+      "soong/build_number.txt": {
+        "sha256": "48aa69e49f5c6e75bce9fa6439f02ae238b453b2f9d0ca2cc559b56c2cc44d59",
+        "size_bytes": 30,
+        "value_utf8": "nezha.f9f678051a7b3de57c741ca2"
+      },
+      "target/product/nezha/build_fingerprint-lineage_nezha.txt": {
+        "sha256": "911495a97dfc4e96098382808e91130d0f5c5edf6d0d0b9cabae605604a0ec35",
+        "size_bytes": 92,
+        "value_utf8": "Xiaomi/lineage_nezha/nezha:16/BP4A.251205.006/nezha.f9f678051a7b3de57c741ca2:user/test-keys\n"
+      },
+      "target/product/nezha/build_thumbprint-lineage_nezha.txt": {
+        "sha256": "ccff4a23b0e6ada1f91274b426bd88c52876c697893ec3254d0e8078288fc59b",
+        "size_bytes": 65,
+        "value_utf8": "16/BP4A.251205.006/nezha.f9f678051a7b3de57c741ca2:user/test-keys\n"
+      }
+    },
+    "separate_postrun_readers": [
+      {
+        "name": "four-logs",
+        "native_observed_utc": "2026-09-01T20:27:40.586213+00:00",
+        "root_finished_utc": "2026-09-01T20:27:40.605276+00:00",
+        "root_exit_code": 0,
+        "stdout": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/four-logs/stdout.json",
+          "sha256": "35fc2ed7bdaaf78c69f4e1c7ef9c70cffeb5fe91863aecd19bdc4fafb37bda89",
+          "size_bytes": 105004
+        },
+        "completion": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/four-logs/completion.json",
+          "sha256": "04ad18f0226d429b6983b36d634d2be8ec8c77c1084b8e75d2cd1b169398f6a0",
+          "size_bytes": 1194
+        }
+      },
+      {
+        "name": "six-gms-configs",
+        "native_observed_utc": "2026-09-01T20:27:40.696673+00:00",
+        "root_finished_utc": "2026-09-01T20:27:40.750026+00:00",
+        "root_exit_code": 0,
+        "stdout": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/six-gms-configs/stdout.json",
+          "sha256": "dd127615af65fef6788cdb3a2abe89f5755fd56a05085efbe1d8c839016e2f1a",
+          "size_bytes": 42261
+        },
+        "completion": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/six-gms-configs/completion.json",
+          "sha256": "bace63a487b1d7a65dffc59b08664ee0438b72e9f2e5e2692f42c1b339fcd82d",
+          "size_bytes": 1222
+        }
+      },
+      {
+        "name": "two-product-configs",
+        "native_observed_utc": "2026-09-01T20:27:40.857061+00:00",
+        "root_finished_utc": "2026-09-01T20:27:40.881039+00:00",
+        "root_exit_code": 0,
+        "stdout": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/two-product-configs/stdout.json",
+          "sha256": "d91954cc1301a1bd7ec2bfd506a7ad282861958a3df6f0a29f4a029b3bb158a8",
+          "size_bytes": 45710
+        },
+        "completion": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/two-product-configs/completion.json",
+          "sha256": "e6e1e5dec07a6fd04fcc688ad5f8cc741b5a7838ff02d1bbaa0137f59c22dae8",
+          "size_bytes": 1168
+        }
+      },
+      {
+        "name": "one-bcr-config",
+        "native_observed_utc": "2026-09-01T20:27:40.980143+00:00",
+        "root_finished_utc": "2026-09-01T20:27:41.014761+00:00",
+        "root_exit_code": 0,
+        "stdout": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/one-bcr-config/stdout.json",
+          "sha256": "2b76f1b0a0cd16b1dab52e6ab75b708ea1867df2c53421987206ef724de1ec03",
+          "size_bytes": 2415
+        },
+        "completion": {
+          "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/one-bcr-config/completion.json",
+          "sha256": "43e933cebc8f43a81a72536aa7f52571b91a9ea049306593b6111036cbebf57f",
+          "size_bytes": 1186
+        }
+      }
+    ],
+    "postrun_reader_scope": "Four read-only captures retain four log measurements, selected Window/GMS/product configuration bodies or absences, and the then-absent BCR dexpreopt config. Their observations do not qualify component actions or later output state.",
+    "completed_result_and_readback_review_passed": true,
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "prior_dated_adoption_preparation_and_failure_records_preserved": true,
+    "next_gate": "Qualify regenerated BCR rules and require a fresh strict status action, module/class-loader and APK-signature checks plus the combined non-GMS audit before the Images3 and Package3 sequence.",
+    "limits": {
+      "fresh_metadata_rewrites_verified": false,
+      "full_binary_provenance_verified": false,
+      "build_left_out_untouched_claimed": false,
+      "bcr_strict_status_action_verified": false,
+      "bcr_module_class_loader_and_apk_signatures_verified": false,
+      "combined_nongms_audit_completed": false,
+      "images3_verified": false,
+      "package3_verified": false,
+      "signed_avb_chain_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "nothing6_request": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-nothing-6-v1/request.json",
+        "sha256": "ad90a760568e974e963fa7ecba98bd8c458246dd144129bc76bdbad94caa0f2a",
+        "size_bytes": 20023670
+      },
+      "nothing6_result": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-nothing-6-v1/stdout.jsonl",
+        "sha256": "df4e44b21de83ca616a4e2c7600836a33e94b0962a61c7ad6ea068fb7ac73677",
+        "size_bytes": 10296883
+      },
+      "nothing6_root_exit": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-nothing-6-v1/exit.json",
+        "sha256": "935162c225fd4e1ff63db5937bae3d061fb8197255dc53067f88087f3413ce66",
+        "size_bytes": 65
+      },
+      "nothing6_root_completion": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-nothing-6-dispatch-v1/completion.json",
+        "sha256": "0adda39306c7edb132e9f00dbdca952c6673265dd15061cc2d82d3a35d13c3fe",
+        "size_bytes": 761
+      },
+      "completed_result_and_readback_review": {
+        "path": "reports/bcr-uses-library-20260901/source-adoption-preparation-v1/root-nothing-6-review-v1/review.json",
+        "sha256": "b9152869c8e8f02b1cad5225fdb5de96681a59f1f9e34044e3e19138c8455932",
+        "size_bytes": 14981
+      },
+      "separate_readers_completion": {
+        "path": "reports/bcr-uses-library-20260901/root-post-nothing6-readers-dispatch-v1/completion.json",
+        "sha256": "6743504a998796be9c3e584376752a14d0225a6c9523a29fc4f3815b9275baf9",
+        "size_bytes": 3482
+      }
+    }
   }
 }

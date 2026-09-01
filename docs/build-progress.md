@@ -1,5 +1,32 @@
 # Nezha product and build progress
 
+The **544-file/fifteen-project source passes config9, context9 and ordinary
+`nothing6`**. The two queries finish with native exit 0 at
+**2026-09-01 19:47:09 UTC** and **19:58:23 UTC**. The exact
+`build/soong/soong_ui.bash --make-mode -j8 nothing` invocation runs from
+**20:12:04 UTC to 20:23:46 UTC**, with native exit 0; its wrapper closes with
+exit 0 at **20:26:41 UTC**. All three postchecks pass. Six complete source/input
+guard maps remain equal before and after; all 254 configuration entries match
+admission and both queries. All 1,179 pinned project HEADs and origins match.
+
+Six physical metadata-file bodies verify build number
+**`nezha.f9f678051a7b3de57c741ca2`**, build epoch **1788144555**, hostname,
+fingerprint and thumbprint. Full readback verifies the 17,534-byte native stdout;
+the native stderr is empty. Four separate read-only captures at **20:27:40 UTC**
+retain log measurements and selected dependency configurations/absences, with
+their final wrapper closing at **20:27:41 UTC**. Review binds these receipts to
+the completed Nothing6 result. Matching metadata values do not establish fresh
+rewrites or full binary provenance. The follow-up captures are read-only; the
+build can write to OUT.
+
+BCR's fresh strict status action, module/class-loader and APK-signature checks,
+the combined non-GMS audit, Images3 and Package3 remain unverified. This graph
+and metadata milestone supplies no signed AVB-chain, runtime, boot or hardware
+success. The 4 KiB baseline, normal Android enforcement and working76 remain
+selected, with complete-ROM readiness false. [BCR source integration](bcr-optional-window-libraries.md)
+and the [native metadata checkpoint](../research/workspace-integration.json)
+retain the evidence. Earlier dated checkpoints below remain unchanged.
+
 The **BCR 0021 source adoption passes**, with the native installation running
 from **2026-09-01 19:25:36 UTC to 19:32:56 UTC** and both native/root exits 0.
 One file exchange produces five chronological journal events, with no rollback;

@@ -1,5 +1,22 @@
 # BCR optional Window libraries
 
+The **post-adoption config9/context9 queries and ordinary `nothing6` pass** on
+the 544-file/fifteen-project source. Nothing6 completes native execution at
+**2026-09-01 20:23:46 UTC** and its wrapper at **20:26:41 UTC**, both with exit 0.
+All six source/input guard maps and 254 configuration entries match; all 1,179
+pinned HEADs and origins match. Six physical metadata-file values now verify
+**`nezha.f9f678051a7b3de57c741ca2`** and epoch **1788144555**. Full native stdout
+readback and the separate post-run log/configuration captures are reviewed.
+
+This verifies the ordinary frontend and metadata values, not fresh metadata
+rewrites, BCR's regenerated strict status action or its APK signatures. Exact
+rule, module/class-loader and combined non-GMS checks remain required before
+Images3/Package3; neither current images, a signed boot chain nor device behavior
+is verified here. Normal Android enforcement, 4 KiB and working76 remain
+unchanged. The [native metadata checkpoint](../research/workspace-integration.json)
+binds the completed results. The earlier adoption and public preparation records
+below retain their original dated scope, including Package2's failure.
+
 The **actual BCR source installation succeeds at 2026-09-01 19:32:56 UTC**,
 with native/root exit 0, one exchange, five journal events and no rollback.
 Complete native receipt readback and independent review pass. The selected
