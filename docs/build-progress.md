@@ -1,5 +1,23 @@
 # Nezha product and build progress
 
+The **543-file source passes config8/context8 and ordinary `nothing5`** through
+**2026-09-01 14:33:17 UTC**, with native/root exit 0 and successful postchecks.
+All six input guard maps and 254 configuration entries remain equal before and
+after each phase. The six metadata-file values match
+**`nezha.3c24f46cf801e6abd6d5361c`**; the retained stdout shows 165 frontend steps
+and one `nothing` action. The **14:37:58 UTC** read-only captures retain four log
+measurements, two Window dependency-config bodies and four expected app-config
+absences. New graph/action qualification, the corrected signer build and strict
+GMS retry remain pending; the earlier CrossDevice failure is unchanged.
+[GMS source integration](gms-source-integration.md) records the native evidence
+and its limits. Images2, package2 and ROM readiness remain unverified.
+
+The preceding source-adoption checkpoint was committed as **d53620c** after the
+coordinator's full suite passed **4,317 tests in 209.206 seconds with zero
+skips** at **14:00:08 UTC**. The six tested files stayed unchanged and match that
+commit. This later native-metadata documentation milestone is outside that run;
+the earlier checkpoints below retain their original scopes.
+
 The corrected **0020 source installation passes at 2026-09-01 13:36:04 UTC**,
 following successful staging at **13:22:20 UTC**. Both edits commit through
 seven journal events without rollback; complete readback and independent

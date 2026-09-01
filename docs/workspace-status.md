@@ -10,6 +10,17 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **543-file/fourteen-project source passes config8, context8 and ordinary
+`nothing5`**, with native/root exit 0 through **2026-09-01 14:33:17 UTC**.
+Six actual metadata-file values verify build number
+**`nezha.3c24f46cf801e6abd6d5361c`**; matching values do not establish fresh
+producer actions. Fresh read-only log/config observations complete at
+**14:37:58 UTC**, without admitting a new graph or component build. The corrected
+SignApk has not yet been rebuilt, and the prior GMS SourceStamp failure remains
+failed. Graph qualification, strict GMS retry, Images2 and package2 remain
+pending. See [GMS source integration](gms-source-integration.md); the earlier
+source-adoption and failed-attempt checkpoints below retain their original scope.
+
 The corrected **SignApk source installation succeeds at 2026-09-01 13:36:04
 UTC**, with two exchanges, seven journal events and no rollback. Full readback
 and independent review pass. The active inventory is **543 files/fourteen

@@ -2,18 +2,19 @@
   "schema_version": 1,
   "device": "nezha",
   "observed_on": "2026-09-01",
-  "status": "signapk-source-v2-adopted-native-build-and-verification-pending",
+  "status": "signapk-source-native-metadata-verified-component-retry-pending",
   "current_source": {
-    "scope": "Installed 0020 source, with a separate host-calculated successor identity; native configuration and build outputs for it remain unverified.",
+    "scope": "Installed 0020 source with successful config8/context8/nothing5 and six actual metadata-file values; corrected signer and GMS artifact verification remain pending.",
     "files": 543,
     "projects": 14,
     "previous_adopted_source_files": 541,
     "source_adoption_completed_utc": "2026-09-01T13:36:04.974906+00:00",
     "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
-    "proposed_build_number": "nezha.3c24f46cf801e6abd6d5361c",
-    "identity_scope": "Host projection from the completed installation; observations are null and input closure/dispatch remain unverified.",
-    "native_configuration_and_metadata_values_verified": false,
-    "detail_record": "signapk_source_adoption_checkpoint_20260901"
+    "identity_scope": "Host-calculated identity subsequently selected by native config8/context8/nothing5; six captured metadata values match. This does not qualify fresh producer actions, a regenerated graph or component artifacts.",
+    "native_configuration_and_metadata_values_verified": true,
+    "detail_record": "signapk_native_metadata_checkpoint_20260901",
+    "build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "native_metadata_completed_utc": "2026-09-01T14:33:17.732834+00:00"
   },
   "historical_top_level_record_scope": "source, stage, installation and projected_identity preserve the earlier four-Makefile 0018/0019 adoption; current_source and the latest checkpoint describe the later 0020 adoption.",
   "prior_checkpoint": "research/workspace-integration.json:selected_gms_manifest_audit_checkpoint_20260901",
@@ -110,7 +111,7 @@
     "target_files_package_verified": false,
     "read_only_graph_capture_verified": false,
     "scoped_own_action_graph_qualification_verified": false,
-    "module_context_scope": "The prebuilt-preopt-disabled source branch is preserved. Prior dependency-config observations do not establish newly generated 543-source app class-loader contexts or runtime behavior.",
+    "module_context_scope": "Fresh 543-source observations retain two Window dependency-config bodies and four expected app-config absences under the existing prebuilt-preopt-disabled branch. They do not establish newly generated app class-loader contexts or runtime behavior.",
     "native_gms_stdout_reports_four_strict_status_actions": false,
     "complete_gms_component_postcheck_verified": false,
     "signapk_source_correction": "adopted-v2-source-native-build-pending",
@@ -118,10 +119,12 @@
     "read_only_apk_diagnostics": "prior-541-source-sixteen-commands-complete-aggregate-failed",
     "apk_output_format_correction": "host-saved-output-replay-passed-no-native-retry",
     "current_source_files": 543,
-    "config8": "pending",
-    "context8": "pending",
-    "nothing5": "pending",
-    "rebuilt_signapk_verified": false
+    "config8": "passed-on-adopted-543-source",
+    "context8": "passed-on-adopted-543-source",
+    "nothing5": "passed-on-adopted-543-source",
+    "rebuilt_signapk_verified": false,
+    "actual_metadata_file_values_verified": 6,
+    "fresh_read_only_log_and_config_observations_verified": true
   },
   "historical_audit_scope": {
     "original_selected_apks": 95,
@@ -1357,6 +1360,196 @@
         "path": "reports/signapk-source-stamp-20260901/identity-projection-v2/completed-v1/identity-calculation.json",
         "sha256": "2edfaf5e2605db6eeeb85ebf07d1c5bf709a7e5073a446d8542a4281ad46427d",
         "size_bytes": 3551
+      }
+    }
+  },
+  "signapk_native_metadata_checkpoint_20260901": {
+    "status": "config8-context8-nothing5-verified-new-graph-and-component-retry-pending",
+    "native_completed_utc": "2026-09-01T14:33:17.732834+00:00",
+    "read_only_completed_utc": "2026-09-01T14:37:58.112198+00:00",
+    "source_files": 543,
+    "source_projects": 14,
+    "build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+    "config8": {
+      "native_started_utc": "2026-09-01T13:58:58.704517+00:00",
+      "native_finished_utc": "2026-09-01T13:59:53.870564+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "postcheck_verified": true,
+      "ninja_observed": false,
+      "verified_assignments": 21
+    },
+    "context8": {
+      "native_started_utc": "2026-09-01T14:06:40.975556+00:00",
+      "native_finished_utc": "2026-09-01T14:07:34.889195+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "postcheck_verified": true,
+      "ninja_observed": false,
+      "verified_assignments": 7
+    },
+    "nothing5": {
+      "native_started_utc": "2026-09-01T14:21:38.439959+00:00",
+      "native_finished_utc": "2026-09-01T14:33:17.732834+00:00",
+      "native_exit_code": 0,
+      "wrapper_exit_code": 0,
+      "postcheck_verified": true,
+      "ninja_observed": true,
+      "frontend_argv": [
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j8",
+        "nothing"
+      ],
+      "frontend_steps": 165,
+      "nothing_actions": 1,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "descendant_ninja_argv_verified": false,
+      "native_component_actions_verified": false,
+      "actual_metadata_file_values_verified": 6,
+      "metadata_files": {
+        "build_date.txt": {
+          "sha256": "5bd41e8a4ecd6eee83ff6e6b1114af7efa2d607c40d4c0ce93423fee999ba85f",
+          "size_bytes": 10
+        },
+        "file_name_tag.txt": {
+          "sha256": "58dec7f0372ecd5bc81827eaa7927ff77e5d9fd132acea381c708d82990d95cd",
+          "size_bytes": 30
+        },
+        "soong/build_hostname.txt": {
+          "sha256": "82199baf354fe3b7114cc9e43e1af71a13d62357ca3fd33eb118b1fcc18cc6f7",
+          "size_bytes": 13
+        },
+        "soong/build_number.txt": {
+          "sha256": "58dec7f0372ecd5bc81827eaa7927ff77e5d9fd132acea381c708d82990d95cd",
+          "size_bytes": 30
+        },
+        "target/product/nezha/build_fingerprint-lineage_nezha.txt": {
+          "sha256": "ac54ee8eb7dba3afc4e3a9d6752f4855eda9cc2b1428e1d8c5086c7478eb34df",
+          "size_bytes": 92
+        },
+        "target/product/nezha/build_thumbprint-lineage_nezha.txt": {
+          "sha256": "06c650dbe2ce65de4d4f115759e70a2626d376176ae845133422112741b6f4dd",
+          "size_bytes": 65
+        }
+      },
+      "output_freshness_verified": false
+    },
+    "shared_verification": {
+      "all_six_complete_guard_maps_equal_for_each_phase": true,
+      "all_254_configuration_entries_equal_for_each_phase": true,
+      "output_aliases_source_history_and_strict_settings_equal": true,
+      "complete_runtime_observation_equality_claimed": false,
+      "source_lock_matching_heads": 1179,
+      "source_lock_matching_origins": 1179,
+      "expected_locally_patched_projects": 8,
+      "postcheck_errors": [],
+      "native_timeouts": 0,
+      "output_overflows": 0,
+      "disk_floor_breaches": 0,
+      "streams_complete": true,
+      "source_mutation_requested": false
+    },
+    "release_scope": "Fixed TARGET_RELEASE environment remains bp4a. config8 captures an empty TARGET_RELEASE dumpvar, not an independently verified release value.",
+    "fresh_read_only_observations": {
+      "measurement_wrapper_exit_code": 0,
+      "measurement_finished_utc": "2026-09-01T14:37:58.035735+00:00",
+      "config_paths_wrapper_exit_code": 0,
+      "config_paths_finished_utc": "2026-09-01T14:37:58.112198+00:00",
+      "current_ninja_log_files_measured": 4,
+      "current_ninja_log_total_bytes": 230713456,
+      "ninja_log_full_bodies_retained": false,
+      "full_nothing_stdout_embedded": {
+        "sha256": "a9e9dc69d4be4eb474fb60b84520131b7e926fd665daaae72db68285ae81a431",
+        "size_bytes": 17502
+      },
+      "pinned_base_rules_full_body_retained": true,
+      "window_dependency_config_full_bodies": 2,
+      "window_dependency_config_total_bytes": 21221,
+      "anchored_app_config_absences": 4,
+      "module_info_anchored_absence_observed": true,
+      "module_info_content_captured": false,
+      "graph_capture_admission_granted": false,
+      "component_admission_granted": false,
+      "source_or_output_written": false,
+      "scope": "Fresh log hash/stat measurements, two complete Window dependency-config bodies and four expected prebuilt app-config absences. These do not establish newly produced app class-loader contexts or a qualified graph."
+    },
+    "next_gates": {
+      "new_read_only_graph_capture_verified": false,
+      "regenerated_graph_verified": false,
+      "scoped_own_action_graph_qualification_verified": false,
+      "corrected_signapk_built": false,
+      "successful_component_retry_verified": false,
+      "prior_gms_component_attempt": "failed-installed-CrossDevice-SourceStamp-warning-unchanged",
+      "fresh_ordinary_gms_status_actions_verified": false,
+      "actual_module_and_dexpreopt_contexts_verified": false,
+      "images2": "pending",
+      "package2": "pending",
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "preserved_baseline": {
+      "branch": "bka",
+      "target_release_environment": "bp4a",
+      "variant": "user",
+      "with_gms": true,
+      "build_epoch": 1788144555,
+      "page_size_bytes": 4096,
+      "recovery": "working76",
+      "normal_android_enforcing_required": true
+    },
+    "evidence": {
+      "config8_result": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-product-config-8-v1/stdout.jsonl",
+        "sha256": "d470366e35f70ac2fd4ff9c5b75a50f05a86686b202bb282cc5191b864b26b8d",
+        "size_bytes": 10226543
+      },
+      "config8_root_exit": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-product-config-8-v1/exit.json",
+        "sha256": "92dbce29e4aacba4016c0b098180560c8ea7c04d388c8a1bb980c8a3c57907ce",
+        "size_bytes": 72
+      },
+      "context8_result": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-product-context-8-v1/stdout.jsonl",
+        "sha256": "10451ac1999cf881f1e78d8aca53a697da32991ded62abb49925d5e4fd122113",
+        "size_bytes": 10213867
+      },
+      "context8_root_exit": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-product-context-8-v1/exit.json",
+        "sha256": "63ee4274c34061b9bdd595ce21dcc8f50f9c636a13b8226d8bd5caf65581cab4",
+        "size_bytes": 73
+      },
+      "nothing5_result": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-nothing-5-v1/stdout.jsonl",
+        "sha256": "dfcdcbc0e3f6db3bcd9cf7f1e96785b899f3bae196a1b827f3f718a3ceec8d4c",
+        "size_bytes": 10217428
+      },
+      "nothing5_root_exit": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-nothing-5-v1/exit.json",
+        "sha256": "1943616a495461d7137c7121106d2eee4d39fc97983c1c09ec74fcbfe0d57f79",
+        "size_bytes": 65
+      },
+      "post_nothing_measurement": {
+        "path": "reports/signapk-source-stamp-20260901/root-post-nothing5-measurement-v1/stdout.json",
+        "sha256": "37914c9fd390ec4c87097c18bb4045bc0ce663dfefc1b9fb3d67c266a29f4818",
+        "size_bytes": 104960
+      },
+      "post_nothing_measurement_completion": {
+        "path": "reports/signapk-source-stamp-20260901/root-post-nothing5-measurement-v1/completion.json",
+        "sha256": "63bfd9af00f27adb20888ea950dcab5e4ff8db1ff4282671a4df41ffcba282d5",
+        "size_bytes": 660
+      },
+      "six_config_paths": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms-six-config-paths-v3/stdout.json",
+        "sha256": "f6dc187273efb2ada8be8d4f61fd418d35f1fcc36e108c678269c171b287099a",
+        "size_bytes": 42261
+      },
+      "six_config_paths_completion": {
+        "path": "reports/signapk-source-stamp-20260901/root-gms-six-config-paths-v3/completion.json",
+        "sha256": "f92d8ffc55c52f311a49708b3aaf9d3081b76b62e765a84d95ec27d67e486e41",
+        "size_bytes": 658
       }
     }
   }

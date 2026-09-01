@@ -1,5 +1,33 @@
 # GMS source integration
 
+The adopted **543-file/fourteen-project source passes config8, context8 and
+ordinary `nothing5`**, with native/root exit 0 and successful postchecks through
+**2026-09-01 14:33:17 UTC**. config8 verifies 21 assignments and context8 verifies
+seven. All six complete input guard maps, all 254 configuration entries, output
+aliases, source history and strict settings remain equal before/after each run.
+The fixed environment still selects `bp4a`; the captured `TARGET_RELEASE`
+dumpvar is empty, not a separate release-value verification.
+
+`nothing5` verifies six actual metadata-file values for build number
+**`nezha.3c24f46cf801e6abd6d5361c`**, including the number, tag, fingerprint and
+thumbprint with the unchanged pinned date and hostname. The complete retained
+stdout records 165 frontend steps and one `nothing` action. Ninja limits and
+sandbox checks pass; descendant Ninja argv and component actions are not
+qualified. Matching metadata values do not prove fresh rewrites. No timeout,
+output overflow or disk-floor breach occurs in any of the three runs.
+
+Fresh read-only captures finish at **14:37:58 UTC**. They retain four Ninja-log
+measurements totaling **230,713,456 bytes**, the complete `nothing5` stdout and
+pinned `base_rules.mk` body, two Window dependency-config bodies, and four
+anchored app-config absences consistent with the existing prebuilt-preopt
+setting. `module-info.json` is also absent; no contents are invented or required
+for this capture. These observations change neither source nor Android output
+and grant no graph or component admission. The corrected SignApk has not yet
+been built, and the prior GMS attempt remains failed on installed CrossDevice's
+SourceStamp warning. New graph qualification, signer production, strict GMS
+retry, Images2 and package2 remain pending. The source-adoption and failed-attempt
+records below preserve their earlier scopes.
+
 The corrected **0020 source transaction succeeds at 2026-09-01 13:36:04 UTC**,
 with native/root exit 0, following the successful **13:22:20 UTC** stage.
 Two source exchanges and seven journal events complete without rollback.
@@ -126,6 +154,11 @@ to claim later native results.
 | Corrected SignApk source stage (root interval) | 13:18:08.601814 | 13:22:20.092088 | Exit 0; two replacements staged with native history checks |
 | Corrected SignApk source install (root interval) | 13:28:32.839407 | 13:36:04.974906 | Exit 0; two exchanges, seven journal events and final acceptance |
 | Full corrected-installation readback (root interval) | 13:39:28.428797 | 13:39:28.663033 | Exit 0; complete installation/journal bodies and exact commit bytes retained |
+| config8 | 13:58:58.704517 | 13:59:53.870564 | Native/root 0; 21 configuration assignments pass |
+| context8 | 14:06:40.975556 | 14:07:34.889195 | Native/root 0; seven context assignments pass |
+| nothing5 | 14:21:38.439959 | 14:33:17.732834 | Native/root 0; six metadata-file values pass, no component-action qualification |
+| Post-nothing5 log/source measurement (root interval) | 14:37:57.743324 | 14:37:58.035735 | Exit 0; four log measurements and two full file bodies retained, no graph admission |
+| Six config-path observations (root interval) | 14:37:58.037515 | 14:37:58.112198 | Exit 0; two Window bodies and four anchored app-config absences, no component admission |
 
 The component command is `build/soong/soong_ui.bash --make-mode -j8` with
 `CrossDeviceAccessServicePrimary`, `CustomizationBundlePrebuiltFullVersion`,
