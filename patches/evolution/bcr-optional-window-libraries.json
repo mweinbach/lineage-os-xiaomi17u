@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "id": "bcr-optional-window-libraries-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-01 BCR source preparation after the Package2 failure",
+  "project": "vendor/extras",
+  "origin": "https://github.com/Evolution-X/vendor_extras",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "c401d732c0475b7010c205a2e9bfb0fd6888d0be",
+  "patch": "patches/evolution/0021-bcr-optional-window-libraries.patch",
+  "patch_sha256": "3e21e7033877d47f6dbaec1c4c501fb970fa1d4a15cd5471ccaea0dd10091856",
+  "patch_size_bytes": 784,
+  "files": [
+    {
+      "path": "bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk",
+      "mode": "100644",
+      "line_endings": "CRLF",
+      "before_sha256": "b1cd6bb0cfe700cab6501d47f3b5f68f7cc945366d3e0c3da1412693d22af254",
+      "before_size_bytes": 310,
+      "before_git_blob": "ff4bc1b27793fe5d7d28123124ca2d8bd9a009a6",
+      "after_sha256": "30d9b220f1c5103ad2326351cdafedde96fed4ebbac6e48ed9701a65d025b296",
+      "after_size_bytes": 395,
+      "after_git_blob": "5fe450509ec5281310c5009e0020bc0aab1c07fc",
+      "module": "bcr",
+      "required_uses_libraries_before": [],
+      "required_uses_libraries_after": [],
+      "optional_uses_libraries_before": [],
+      "optional_uses_libraries_after": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ]
+    }
+  ],
+  "purpose": "Match BCR's observed ordered optional-library manifest without weakening validation or changing the original APK, signing choice, privileges or partition.",
+  "retained_module_settings": {
+    "LOCAL_MODULE": "bcr",
+    "LOCAL_SRC_FILES": "bcr.apk",
+    "LOCAL_PRODUCT_MODULE": "true",
+    "LOCAL_MODULE_CLASS": "APPS",
+    "LOCAL_CERTIFICATE": "PRESIGNED",
+    "LOCAL_PRIVILEGED_MODULE": "true",
+    "LOCAL_MODULE_SUFFIX": "$(COMMON_ANDROID_PACKAGE_SUFFIX)"
+  },
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "early_source_observation": {
+    "project_receipt": {
+      "path": "reports/bcr-uses-library-20260901/root-early-source-observation-v1/stdout.json",
+      "sha256": "40b10c803d9567f7d6ec251aa0cdbfc50c86e081eb8da52d8b2595ffe627b4ad",
+      "size_bytes": 1794
+    },
+    "declaration_receipt": {
+      "path": "reports/bcr-uses-library-20260901/root-early-bcr-declarations-v1/stdout.json",
+      "sha256": "f306027b8483b965fd326d609519bd58c521b833b825576eb4c21ff569324f00",
+      "size_bytes": 5805
+    },
+    "observed_at_utc": "2026-09-01T18:22:44.239726+00:00",
+    "tracked_makefile_bodies": 5,
+    "total_source_body_bytes": 1037,
+    "project_head_and_index_stable": true,
+    "project_porcelain_status": "",
+    "all_captured_makefile_bodies_match_index_blobs": true,
+    "top_level_android_mk_and_android_bp_absent": true,
+    "global_source_guards_executed": false,
+    "source_adoption_admitted": false
+  },
+  "observed_failure": {
+    "result": {
+      "path": "reports/signapk-source-stamp-20260901/root-package2-failure-evidence-readback-v1/files/result.json",
+      "sha256": "e0b6ba01ad710f295fabd4544100757e2d41f3abbe84e657756952c98c764754",
+      "size_bytes": 10360251
+    },
+    "complete_stdout": {
+      "path": "reports/signapk-source-stamp-20260901/root-package2-failure-evidence-readback-v1/files/build.stdout",
+      "sha256": "613199650258f1329865ce1bb23ec7ce3cb1665a17ff514036d84117d2918e0b",
+      "size_bytes": 44438
+    },
+    "literal_failing_command": {
+      "path": "reports/bcr-uses-library-20260901/package2-failure-review-v1/native-failing-command.txt",
+      "sha256": "d8a2d6ffd28132aa3b2475b2bdd6ded153b94007e371f08cbb9af8205c7369a2",
+      "size_bytes": 2417
+    },
+    "module": "bcr",
+    "native_build_exit_code": 1,
+    "native_finished_at_utc": "2026-09-01T18:08:23.204202+00:00",
+    "failed_target": "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/APPS/bcr_intermediates/enforce_uses_libraries.status",
+    "build_required_libraries": [],
+    "build_optional_libraries": [],
+    "build_missing_optional_libraries": [],
+    "manifest_required_libraries": [],
+    "manifest_optional_libraries": [
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "dexpreopt_config_operands": [],
+    "strict_enforcement_retained": true,
+    "original_result_preserved": true,
+    "original_apk": {
+      "source_path": "vendor/extras/bcr/prebuilts/product/priv-app/com.chiller3.bcr/bcr.apk",
+      "raw_identity": null,
+      "raw_identity_pending_full_combined_intake": true,
+      "manifest_evidence": "Ordered tags and summary in the complete actual failing native checker diagnostic; this is not a fresh APK badging capture.",
+      "index_blob_not_a_raw_apk_sha256": "d8653ae7a3a0df87a30bbbe71af54c188eab51ee",
+      "signature_validation_performed_by_preparation": false
+    }
+  },
+  "source_effect": {
+    "changed_makefiles": 1,
+    "only_optional_uses_library_declaration_added": true,
+    "all_original_source_bytes_retained": true,
+    "required_library_settings_changed": false,
+    "apk_bytes_or_manifests_changed": false,
+    "signing_settings_changed": false,
+    "privilege_or_partition_changed": false,
+    "dexpreopt_settings_changed": false,
+    "enforcement_settings_changed": false,
+    "global_or_other_module_settings_changed": false,
+    "providers_or_library_registration_added": false,
+    "source_lock_changed": false,
+    "normal_android_selinux_changed": false,
+    "page_size_changed": false,
+    "recovery_changed": false
+  },
+  "host_validation": {
+    "full_source_replay": {
+      "path": "reports/bcr-uses-library-20260901/patch-preparation-v1/replay-receipt.json",
+      "sha256": "b5bc850c81aa280ea9b32c3b76ad9b40cf5d9cf0de01c2122caf8932cc56197c",
+      "size_bytes": 24510
+    },
+    "complete_forward_and_reverse_byte_equal": true,
+    "crlf_and_source_mode_preserved": true,
+    "fuzz": 0,
+    "offsets": 0,
+    "rejected_drift_duplicate_and_malformed_cases": 12,
+    "historical_0018_0019_0020_patch_contract_doc_triplets_unchanged": true,
+    "strict_checker_fixtures": {
+      "path": "reports/bcr-uses-library-20260901/patch-preparation-v1/strict-checker-fixtures-v1/receipt.json",
+      "sha256": "fde8924dd70bf0b08c35822f51b8c6a910ebdfaba8d3b09af2f97829220bfcaf",
+      "size_bytes": 31318
+    },
+    "checker_revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+    "checker_path": "build/soong/scripts/manifest_check.py",
+    "checker_sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+    "checker_size_bytes": 14901,
+    "helper_path": "build/soong/scripts/manifest.py",
+    "helper_sha256": "4ce7cf7d4a9f2086ee7a815aa7624ee3dccfde00e383dedecbe6cb553f2a9fa5",
+    "helper_size_bytes": 4758,
+    "tool_input_scope": "Previously captured pinned checker/helper files, authenticated unchanged before and after host execution; fresh active tool capture remains part of adoption.",
+    "synthetic_xml_cases": 5,
+    "corrected_declaration_passes": 1,
+    "expected_strict_failures": 4,
+    "negative_cases": [
+      "original_empty_lists",
+      "reversed_optional_order",
+      "missing_sidecar",
+      "optional_declared_as_required"
+    ],
+    "negative_exit_code": 255,
+    "positive_status_file_empty": true,
+    "negative_status_files_absent": true,
+    "skipped_cases": 0,
+    "relaxation_or_missing_marker_used": false,
+    "actual_apk_or_native_graph_exercised_by_host_fixtures": false
+  },
+  "adoption_requirements": [
+    "Complete the separately reviewed full combined intake before source adoption. Reauthenticate current source/input/output guards, project origins and revisions, clean vendor/extras status, all selected BCR declarations, the original APK hash and ordered native badging, and actual Make/checker/helper/AAPT inputs. The early scoped capture is not admission.",
+    "Apply only this one file through the existing reviewed source transaction, with exact preimage/postimage SHA256, sizes, complete Git blob IDs, mode 100644 and CRLF preservation. Reject duplicate application and drift; preserve every other source patch and original proprietary input. Derive any new source-file/project counts and build identity from the actual union, never from a guessed increment.",
+    "Regenerate the ordinary bka/bp4a user graph. Require BCR's exact ordered optional pair, no required libraries, no missing-library markers and no relaxation in the actual checker command. Keep its original APK, PRESIGNED signing choice, product placement and privileges. Do not infer effective check relaxation from the unchanged historical assignment in bcr/bcr.mk.",
+    "Require fresh successful execution of BCR's ordinary enforce_uses_libraries.status producer and an empty status file, followed by actual module and dexpreopt checks. Inspect real class-loader contexts, dependency configurations and selected Window library providers; the original failed command had no dexpreopt-config operands. Host synthetic XML success does not close these gates.",
+    "Resume ordinary target-files packaging with strict uses-library, signature, VINTF, AVB, rollback and partition-fit checks retained. Preserve prior source/build evidence, normal Android enforcement, the 4 KiB baseline and working76 recovery. Packaging, boot and hardware support need their own evidence and phone mutations require fresh user authorization."
+  ],
+  "preparation_limits": {
+    "full_combined_intake_completed": false,
+    "original_apk_raw_identity_verified": false,
+    "active_source_patch_applied": false,
+    "graph_regeneration_verified": false,
+    "actual_corrected_ordinary_status_action_verified": false,
+    "actual_module_dexpreopt_verified": false,
+    "target_files_package_verified": false,
+    "signed_images_admitted": false,
+    "rom_boot_or_ota_verified": false,
+    "guest_accessed_by_patch_preparation": false,
+    "phone_accessed": false,
+    "proprietary_apk_redistributed": false,
+    "complete_rom_ready": false
+  }
+}

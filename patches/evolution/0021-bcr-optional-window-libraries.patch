@@ -1,0 +1,17 @@
+diff --git a/bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk b/bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk
+index ff4bc1b27793fe5d7d28123124ca2d8bd9a009a6..5fe450509ec5281310c5009e0020bc0aab1c07fc 100644
+--- a/bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk
++++ b/bcr/prebuilts/product/priv-app/com.chiller3.bcr/Android.mk
+@@ -1,11 +1,12 @@
+ LOCAL_PATH:= $(call my-dir)
+ 
+ include $(CLEAR_VARS)
+ LOCAL_MODULE := bcr
+ LOCAL_SRC_FILES := bcr.apk
+ LOCAL_PRODUCT_MODULE := true
+ LOCAL_MODULE_CLASS := APPS
+ LOCAL_CERTIFICATE := PRESIGNED
+ LOCAL_PRIVILEGED_MODULE := true
+ LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
++LOCAL_OPTIONAL_USES_LIBRARIES := androidx.window.extensions androidx.window.sidecar
+ include $(BUILD_PREBUILT)
