@@ -10,6 +10,25 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The current build blocker is **Package2's strict BCR uses-library mismatch**.
+The ordinary `target-files-package` attempt exits native 1 at
+**2026-09-01 18:08:23 UTC** and wrapper 1 at **18:12:04 UTC**. BCR's manifest
+declares optional `androidx.window.extensions` then `androidx.window.sidecar`;
+its build declaration supplies neither. Both required-library lists are empty.
+Strict checking remains enabled. The active source remains **543 files/fourteen
+projects, identity `3c24`**, with the 4 KiB baseline and normal Android enforcement.
+No BCR source correction or successor inventory has been adopted.
+
+Complete readback retains the failed result and both native streams. All six
+source/input guard maps and 254 configuration entries match before and after;
+Ninja, sandbox, resource-limit and process checks pass without a resource fault.
+The artifact postcheck did not run. This failure capture provides no new
+package, image or boot verification. BCR input qualification, a reviewed
+declaration correction and a strict retry are the next slice. The earlier GMS2
+and Images2 successes retain their separate scopes. See
+[build progress](build-progress.md) and the
+[Package2 failure record](../research/workspace-integration.json).
+
 The **ordinary Images2 build and postcheck pass**, with native exit 0 at
 **2026-09-01 17:10:06 UTC** and wrapper exit 0 at **17:13:46 UTC**. All seven
 installed-output producers are verified fresh: the four selected prebuilt

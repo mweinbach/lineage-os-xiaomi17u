@@ -3162,5 +3162,124 @@
       "source_or_output_written": false,
       "phone_accessed": false
     }
+  },
+  "target_files_package2_failure_checkpoint_20260901": {
+    "status": "native-package-build-failed-strict-bcr-uses-library-check",
+    "guide": "docs/build-progress.md",
+    "source_files": 543,
+    "source_projects": 14,
+    "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+    "build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "native_argv": [
+      "build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j8",
+      "target-files-package"
+    ],
+    "native_started_utc": "2026-09-01T18:05:41.919892+00:00",
+    "native_finished_utc": "2026-09-01T18:08:23.204202+00:00",
+    "native_exit_code": 1,
+    "wrapper_completed_utc": "2026-09-01T18:12:04.134679+00:00",
+    "wrapper_exit_code": 1,
+    "profile_completed": false,
+    "profile_validation_verified": false,
+    "artifact_postcheck": null,
+    "failure": {
+      "module": "bcr",
+      "apk_source": "vendor/extras/bcr/prebuilts/product/priv-app/com.chiller3.bcr/bcr.apk",
+      "status_output": "obj/APPS/bcr_intermediates/enforce_uses_libraries.status",
+      "build_required_libraries": [],
+      "manifest_required_libraries": [],
+      "build_optional_libraries": [],
+      "manifest_optional_libraries": [
+        "androidx.window.extensions",
+        "androidx.window.sidecar"
+      ],
+      "library_order_retained": true,
+      "strict_checker_relaxed": false
+    },
+    "all_six_complete_source_input_maps_equal_before_after": true,
+    "all_254_configuration_entries_equal_before_after": true,
+    "native_ninja_argv_limits_and_sandbox_verified": true,
+    "native_process_reaped_and_streams_complete": true,
+    "native_resource_fault": false,
+    "source_mutation_requested": false,
+    "output_invalidated_or_deleted": false,
+    "bcr_source_correction_adopted": false,
+    "successor_source_inventory_verified": false,
+    "full_failure_evidence_readback": {
+      "file_count": 3,
+      "total_bytes": 10404689,
+      "stdout_bytes": 44438,
+      "stderr_bytes": 0,
+      "all_complete_bodies_and_final_native_identities_match": true,
+      "native_result_equals_completed_host_result": true,
+      "readback_completed_utc": "2026-09-01T18:18:44.396208+00:00",
+      "readback_exit_code": 0,
+      "source_or_output_written_by_readback": false
+    },
+    "prior_gms2_and_images2_success_scopes_preserved": true,
+    "proof_staging_success_promoted_to_package_success": false,
+    "branch": "bka",
+    "target_release": "bp4a",
+    "variant": "user",
+    "with_gms": true,
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "next_gate": "Capture and qualify current BCR source inputs, prepare a reviewed declaration correction, adopt it through the guarded source path and retry strict component/package checks.",
+    "limits": {
+      "target_files_archive_verified": false,
+      "archive_presence_or_absence_observed": false,
+      "current_output_contents_requalified": false,
+      "new_image_success_verified": false,
+      "complete_current_vintf_verified": false,
+      "signed_parent_chain_verified": false,
+      "runtime_or_boot_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "actual_failed_result": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-package-2-v1/stdout.jsonl",
+        "sha256": "e0b6ba01ad710f295fabd4544100757e2d41f3abbe84e657756952c98c764754",
+        "size_bytes": 10360251
+      },
+      "actual_request": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-package-2-v1/request.json",
+        "sha256": "49c9435881b420c99952c48f356d1b4e42031fd36c4469767cf87ec4a3d87cb2",
+        "size_bytes": 13298273
+      },
+      "wrapper_exit": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-package-2-v1/exit.json",
+        "sha256": "e581f1d9c285e35484d20a5af469d017e3044ed58af46244ce8d5fbc77a28b07",
+        "size_bytes": 65
+      },
+      "root_host_completion": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v2/root-package2-predispatch-v1/host-completion.json",
+        "sha256": "ba6aaf286fc85cf52538b24f3250a4e716ac3d909b3262c8932c4594be408a0f",
+        "size_bytes": 331
+      },
+      "full_failure_readback": {
+        "path": "reports/signapk-source-stamp-20260901/root-package2-failure-evidence-readback-v1/verification.json",
+        "sha256": "929ed3153abfc249b8ff8fd43d2963e1a5bf7b576f895bca3d1c90d746ac4360",
+        "size_bytes": 2553
+      },
+      "full_failure_readback_completion": {
+        "path": "reports/signapk-source-stamp-20260901/root-package2-failure-evidence-readback-v1/completion.json",
+        "sha256": "a536b72a4941aa7a9499f4544ce50b9956912e5f5141b57b417ab6898951e41c",
+        "size_bytes": 186
+      },
+      "complete_native_stdout": {
+        "path": "reports/signapk-source-stamp-20260901/root-package2-failure-evidence-readback-v1/files/build.stdout",
+        "sha256": "613199650258f1329865ce1bb23ec7ce3cb1665a17ff514036d84117d2918e0b",
+        "size_bytes": 44438
+      },
+      "complete_native_stderr": {
+        "path": "reports/signapk-source-stamp-20260901/root-package2-failure-evidence-readback-v1/files/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    }
   }
 }

@@ -1,5 +1,26 @@
 # Nezha product and build progress
 
+The ordinary **Package2 attempt fails at BCR's strict uses-library check**.
+`build/soong/soong_ui.bash --make-mode -j8 target-files-package` runs from
+**2026-09-01 18:05:41 UTC to 18:08:23 UTC**, exiting 1; the wrapper closes with
+exit 1 at **18:12:04 UTC**. The manifest's optional libraries are, in order,
+`androidx.window.extensions` and `androidx.window.sidecar`, while the build's
+optional list is empty. Both required lists are empty. The mismatch is retained
+without relaxing the checker or class-loader requirements.
+
+Full readback verifies the result, 44,438-byte native stdout and empty native
+stderr: **three files totaling 10,404,689 bytes**. All six source/input guard maps
+and all 254 configuration entries remain equal on the **543-file/fourteen-project
+source**, build number
+**`nezha.3c24f46cf801e6abd6d5361c`**. Observed Ninja arguments, sandbox, limits,
+reaping and complete streams pass; no timeout, overflow, forced kill or disk-floor
+fault occurred. `profile_completed` is false and the artifact postcheck is null.
+This capture does not establish ZIP presence or absence, requalify current output
+contents, or verify new images or a boot. Successful proof staging and the prior
+GMS2/Images2 results remain separate evidence. BCR source capture and correction
+are pending; no successor source has been adopted. Exact receipts are in the
+[Package2 failure record](../research/workspace-integration.json).
+
 The **ordinary Images2 phase passes its native build and postcheck** on the
 543-file/fourteen-project source, with build number
 **`nezha.3c24f46cf801e6abd6d5361c`**. Native execution runs from
