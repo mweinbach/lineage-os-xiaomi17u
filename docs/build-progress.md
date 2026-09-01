@@ -1,11 +1,29 @@
 # Nezha product and build progress
 
-The **first ordinary target-files build was dispatched at 2026-09-01
-06:10:14 UTC** and was observed in main Ninja. This checkpoint records it as
-in progress, without a completed native result or verified target-files ZIP.
-The selected source, `8643` identity and 4 KiB/enforcement/recovery settings are
-unchanged. Full VINTF is a separate final-package check; explicit final SKU and
-vendor-API selection and current package inputs remain required. Historical
+The **2026-09-01 08:03:01 UTC package1 checkpoint** records the first ordinary
+`target-files-package` attempt failing with native and wrapper exit 1, after
+native execution began at 06:11:54 UTC. Its only retained `FAILED:` entry is at
+line 58,282 of 58,306, at 68% progress: `CustomizationBundlePrebuiltFullVersion`
+omits the unchanged APK's optional `wear-sdk` from its Make declaration. Resource
+checks, process cleanup and all six source/input guard groups pass, but the
+package profile remains false and the artifact postcheck is null. No verified
+target-files ZIP is established.
+
+Complete result/stdout readback and all three action logs are retained. The
+action logs total **124,472,273 bytes**; streamed decompression verifies the
+verbose log's **361,487,676-byte** expanded identity without retaining another
+uncompressed copy. The original failed result and earlier host review remain
+unchanged, now paired with the complete native readback in the
+[checkpoint record](../research/workspace-integration.json).
+
+The [one-line GMS correction](gms-customization-optional-library.md) is prepared
+and passes host replay and strict checker fixtures. Native source adoption,
+graph regeneration and a fresh successful status action remain pending.
+Read-only capture includes 95 actual GMS status-leaf commands and native badging
+for the failing APK; the broader strict audit has not run. The selected 537-file/
+thirteen-project source, `8643` identity and 4 KiB/enforcement/recovery settings
+are unchanged. Full VINTF remains a separate final-package check: explicit final
+SKU/vendor-API selection and current package inputs are required. Historical
 220-source compatibility evidence does not qualify the final package.
 
 Commit **0f09135** adds the tested

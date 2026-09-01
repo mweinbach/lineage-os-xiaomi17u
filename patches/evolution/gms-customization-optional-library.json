@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "id": "gms-customization-optional-wear-sdk-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-01 host patch preparation",
+  "project": "vendor/gms",
+  "origin": "https://github.com/Evolution-X/vendor_gms",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "89c3940a77298c204c55a21efded92ddafb59fe9",
+  "patch": "patches/evolution/0018-gms-customization-optional-wear-sdk.patch",
+  "patch_sha256": "237bbcb622a0c0bd0288e042bfc44ee713a2d027d942ea1df0330776f7c74a29",
+  "patch_size_bytes": 661,
+  "files": [
+    {
+      "path": "product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/Android.mk",
+      "mode": "100644",
+      "before_sha256": "a8e2f012e4e44cbb3b555a1d67827d59d192c049839cfe799dc863cdadd6fa5c",
+      "before_size_bytes": 983,
+      "before_git_blob": "64ed4777cdd280140e51b757fe216adca00957d2",
+      "after_sha256": "915d1fdc2ed7cd843edff8399216584d3306b67d763243758829041c9dd34b45",
+      "after_size_bytes": 1025,
+      "after_git_blob": "ddea7bc32ba6b3292b7b19938c978efde5ece21a"
+    }
+  ],
+  "purpose": "Match the unchanged prebuilt APK's optional wear-sdk manifest declaration without disabling strict uses-library validation or inventing a runtime provider.",
+  "source_effect": {
+    "module": "CustomizationBundlePrebuiltFullVersion",
+    "added_line": "LOCAL_OPTIONAL_USES_LIBRARIES := wear-sdk",
+    "insertion_before": "include $(BUILD_PREBUILT)",
+    "required_uses_libraries_before": [],
+    "required_uses_libraries_after": [],
+    "optional_uses_libraries_before": [],
+    "optional_uses_libraries_after": [
+      "wear-sdk"
+    ],
+    "original_source_bytes_retained_in_order": true,
+    "certificate_preserved": "PRESIGNED",
+    "module_class_preserved": "APPS",
+    "product_placement_preserved": true,
+    "privileged_module_preserved": true,
+    "apk_bytes_or_manifest_changed": false,
+    "dexpreopt_settings_changed": false,
+    "enforcement_settings_changed": false,
+    "provider_or_library_registration_added": false,
+    "global_or_other_module_settings_changed": false,
+    "source_lock_changed": false,
+    "normal_android_selinux_changed": false,
+    "page_size_changed": false,
+    "recovery_changed": false
+  },
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "source_capture": {
+    "receipt": {
+      "path": "reports/gms-uses-library-20260901/root-source-capture-v3/stdout.json",
+      "sha256": "15eedb6a7ce1f68e09d1f843814770f0dcceac6c99d308ffa53caff35e2963f9",
+      "size_bytes": 162083
+    },
+    "gms_status_exit_code": 0,
+    "gms_porcelain_status": "",
+    "source_and_out_written": false,
+    "phone_accessed": false
+  },
+  "original_apk": {
+    "project_path": "product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/CustomizationBundlePrebuiltFullVersion.apk",
+    "sha256": "3c91e4cc1fa60228ad5e1747aebd63f71e196b99529c56976ebe0a8904f7f8fc",
+    "size_bytes": 12967838,
+    "mode": "100644",
+    "git_index_blob": "5f64416f65de611f8db82f054374b2fdd60dd998",
+    "package_name": "com.google.android.apps.pixel.customizationbundle",
+    "version_code": "10003735",
+    "version_name": "1.0.813706241.release",
+    "manifest_required_uses_libraries": [],
+    "manifest_optional_uses_libraries": [
+      "wear-sdk"
+    ],
+    "badging_exit_code": 0,
+    "native_aapt2": {
+      "sha256": "9e0372a0143b3b8df41a7b901a962691ec16adc150c22cada067a277dfbc0ccc",
+      "size_bytes": 29791616,
+      "mode": "0755"
+    },
+    "metadata_capture": {
+      "path": "reports/gms-uses-library-20260901/root-native-metadata-capture-v1/stdout.json",
+      "sha256": "b6a7b079659b77afa712bcf773ae891062b6973d11e2172b2f7b8eed67f72176",
+      "size_bytes": 550181
+    },
+    "metadata_capture_gms_status_exit_code": 128,
+    "metadata_capture_gms_status_limit": "The later read-only sandbox blocks a Git LFS clean-filter temporary write. Its status query is not a clean-status result; clean status is established only by the earlier source_capture receipt.",
+    "signature_verification_performed_by_this_preparation": false,
+    "proprietary_apk_redistributed": false
+  },
+  "observed_failure": {
+    "goal": "target-files-package",
+    "native_stdout": {
+      "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package-1-readback-v1/build.stdout",
+      "sha256": "03c4b98743efdf46ad6e19f8af05e4bee4668195e20eabd0a57a70165cb30d1e",
+      "size_bytes": 7176663
+    },
+    "failed_target_line": 58282,
+    "target_suffix": "target/product/nezha/obj/APPS/CustomizationBundlePrebuiltFullVersion_intermediates/enforce_uses_libraries.status",
+    "build_required_uses_libraries": [],
+    "build_optional_uses_libraries": [],
+    "apk_required_uses_libraries": [],
+    "apk_optional_uses_libraries": [
+      "wear-sdk"
+    ],
+    "original_failed_log_preserved": true,
+    "successful_target_files_package_established": false
+  },
+  "pinned_semantics": {
+    "make": {
+      "project": "build/make",
+      "revision": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "path": "core/dex_preopt_odex_install.mk",
+      "sha256": "ed519a7bafff2a8e1b9b89cc345ab4b882fd09f31fc8d617aae93e15e9b1d23f",
+      "size_bytes": 26203,
+      "checker_uses_full_declared_optional_list": true,
+      "dexpreopt_uses_product_filtered_optional_list": true,
+      "make_rule_adds_missing_optional_marker": false,
+      "early_product_filter_can_omit_indirectly_installed_libraries": true
+    },
+    "checker": {
+      "project": "build/soong",
+      "revision": "cbcbea9e65503ca15b363a0b06dda88fdbcb0154",
+      "path": "scripts/manifest_check.py",
+      "sha256": "ad2be68446c693befc2c4729016c57046a97783ff87567f2ca0221e84fead7b6",
+      "size_bytes": 14901,
+      "unchanged": true,
+      "required_library_checks_retained": true,
+      "ordered_optional_library_checks_retained": true
+    },
+    "product_packages": {
+      "sha256": "dcf6cd3b09d502143143bc7731d88184691c821aef8d7cf2ff0aeb1588b7d1c0",
+      "size_bytes": 26913,
+      "lines": 1229,
+      "consumer_present": true,
+      "exact_wear_sdk_entry_present": false,
+      "complete_runtime_provider_absence_proven": false
+    },
+    "source_verification": {
+      "path": "reports/gms-uses-library-20260901/semantics-review-v1/source-verification.json",
+      "sha256": "bea746d91f50ece874a15980bb1ddb66f1a1d951345d57e9a6cd27462e4f513b",
+      "size_bytes": 8948
+    },
+    "actual_capture_verification": {
+      "path": "reports/gms-uses-library-20260901/semantics-review-v1/actual-source-verification.json",
+      "sha256": "cba3f3fd7ad805fbf25b4596ba53c9852a6daacca794414c796a54612095ed3a",
+      "size_bytes": 10305
+    }
+  },
+  "host_validation": {
+    "replay_receipt": {
+      "path": "reports/gms-uses-library-20260901/patch-preparation-v1/receipt.json",
+      "sha256": "8e700ba5f3ad7f712998f39490fda2cf45467a3421bd5182ae5127f1c9453bad",
+      "size_bytes": 7268
+    },
+    "exact_forward_and_reverse_copies": 2,
+    "successful_patch_commands_have_no_diagnostics": true,
+    "original_source_and_mode_restored": true,
+    "duplicate_application_rejected": true,
+    "admission_guard_rejections": [
+      "preimage_bytes",
+      "source_mode",
+      "project_head",
+      "patch_bytes"
+    ],
+    "original_inputs_preserved": true,
+    "checker_receipt": {
+      "path": "reports/gms-uses-library-20260901/semantics-review-v1/manifest-review/host-checks-v1/receipt.json",
+      "sha256": "7fd0edce2d566e8d0cfc6a4795bb8b799cf5fdfbb7dbca4f8408afb25f01807b",
+      "size_bytes": 30081
+    },
+    "unchanged_checker_unit_tests_passed": 22,
+    "synthetic_xml_scenarios_passed": 9,
+    "synthetic_badging_scenarios_passed": 9,
+    "minimal_make_checker_receipt": {
+      "path": "reports/gms-uses-library-20260901/semantics-review-v1/manifest-review/make-supplement-v1/receipt.json",
+      "sha256": "9e604a1a2a6fb9ff8e6bf8bf4e5d84037eb2f3dba73b0a400e0b9abc60b2b78a",
+      "size_bytes": 5349
+    },
+    "minimal_make_declared_optional_case": {
+      "exit_code": 0,
+      "status_size_bytes": 0
+    },
+    "minimal_make_omitted_declaration_case": {
+      "exit_code": 255
+    },
+    "synthetic_checker_cases_use_relaxation": false,
+    "synthetic_checker_cases_validate_actual_apk_or_provider_availability": false,
+    "focused_workspace_tests": {
+      "receipt": {
+        "path": "reports/gms-uses-library-20260901/patch-preparation-v1/focused-tests.json",
+        "sha256": "a0fdc7f531fe3764d98792650abe9b07141793531a74f31800b1e7238b371d40",
+        "size_bytes": 873
+      },
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "scope": "Existing DEX-import and global uses-library-enforcement tests; separate from the actual GMS Make rule."
+    }
+  },
+  "adoption_requirements": [
+    "Recheck the GMS revision, source mode and preimage, exact original APK, pinned checker and Make inputs; preserve unrelated source and outputs. Keep this local patch separate from the unchanged source lock.",
+    "Admit the single Android.mk postimage through a separately reviewed source projection and recompute source-vector and build-identity bindings. This preparation does not change the prior 537-file/thirteen-project source or 8643 build identity.",
+    "Regenerate the actual graph through the ordinary pinned bka/bp4a user build. Require the real status command to retain --enforce-uses-libraries and exactly one --optional-uses-library wear-sdk, without relaxation, while consuming the identical original APK.",
+    "Require fresh successful execution of the actual enforce_uses_libraries.status producer and an empty status file. A hand-edited command, host fixture or graph-only pass is not native integration.",
+    "Inspect the actual module dexpreopt configuration and dependencies against selected package and library-registration inputs. Do not fabricate a missing provider; if a real wear-sdk provider is selected, verify its DEX path, registration and class-loader context.",
+    "Resume ordinary target-files packaging only after the guarded source and targeted native checks. Retain strict signing, dexpreopt, required-library, VINTF, AVB and rollback checks, normal Android enforcement, the 4 KiB baseline and working76 recovery.",
+    "Keep target-files completion, signed-image admission, runtime customization behavior, ROM boot and OTA validation separate from this one-module source correction."
+  ],
+  "preparation_limits": {
+    "active_source_patch_applied": false,
+    "graph_regeneration_verified": false,
+    "actual_apk_strict_action_pass_verified": false,
+    "actual_module_dexpreopt_verified": false,
+    "complete_runtime_provider_absence_verified": false,
+    "target_files_package_verified": false,
+    "signed_images_admitted": false,
+    "rom_boot_or_ota_verified": false,
+    "guest_accessed_by_patch_preparation": false,
+    "phone_accessed": false,
+    "complete_rom_ready": false
+  }
+}

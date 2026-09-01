@@ -1,0 +1,10 @@
+diff --git a/product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/Android.mk b/product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/Android.mk
+index 64ed4777cdd280140e51b757fe216adca00957d2..ddea7bc32ba6b3292b7b19938c978efde5ece21a 100644
+--- a/product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/Android.mk
++++ b/product/packages/privileged_apps/CustomizationBundlePrebuiltFullVersion/Android.mk
+@@ -26,4 +26,5 @@
+ LOCAL_PRIVILEGED_MODULE := true
+ LOCAL_MODULE_CLASS := APPS
+ LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
++LOCAL_OPTIONAL_USES_LIBRARIES := wear-sdk
+ include $(BUILD_PREBUILT)

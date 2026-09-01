@@ -1792,5 +1792,128 @@
         "size_bytes": 22594
       }
     }
+  },
+  "target_files_package_failure_checkpoint_20260901": {
+    "status": "failed-native-package-with-verified-readback-and-host-only-gms-patch-preparation",
+    "observed_on": "2026-09-01",
+    "supersedes_current_status_of": "target_files_package_and_materializer_checkpoint_20260901",
+    "historical_checkpoint_and_failed_receipt_preserved": true,
+    "package_attempt": {
+      "phase": "first-target-files-package-1",
+      "goal": "target-files-package",
+      "native_started_utc": "2026-09-01T06:11:54.385688+00:00",
+      "native_finished_utc": "2026-09-01T08:03:01.824584+00:00",
+      "native_exit_code": 1,
+      "wrapper_exit_code": 1,
+      "source_and_input_guard_groups_matching": 6,
+      "resource_limits_and_sandbox_verified": true,
+      "process_reaped": true,
+      "observer_stopped": true,
+      "streams_complete": true,
+      "profile_completed": false,
+      "profile_validation_verified": false,
+      "artifact_postcheck": null,
+      "verified_zip_identity": null,
+      "failure": {
+        "module": "CustomizationBundlePrebuiltFullVersion",
+        "target_suffix": "target/product/nezha/obj/APPS/CustomizationBundlePrebuiltFullVersion_intermediates/enforce_uses_libraries.status",
+        "failed_line_count": 1,
+        "failed_target_line": 58282,
+        "native_stdout_lines": 58306,
+        "displayed_progress_percent": 68,
+        "build_required_uses_libraries": [],
+        "build_optional_uses_libraries": [],
+        "apk_required_uses_libraries": [],
+        "apk_optional_uses_libraries": [
+          "wear-sdk"
+        ]
+      }
+    },
+    "active_source": {
+      "files": 537,
+      "projects": 13,
+      "build_number": "nezha.8643b579050aab0dd3218ae3",
+      "page_size_bytes": 4096,
+      "recovery": "working76",
+      "normal_android_enforcing_required": true,
+      "source_mutated_by_failure_review_or_readback": false
+    },
+    "readback": {
+      "result_byte_identical_to_original": true,
+      "native_stdout_and_stderr_complete": true,
+      "retained_action_logs": 3,
+      "retained_action_log_bytes": 124472273,
+      "verbose_expanded_bytes": 361487676,
+      "verbose_expanded_sha256": "c8bc3bf3507f747d71afbdd69d44beeb6cb72b8d91872198983f07b98d295d96",
+      "verbose_expanded_copy_materialized": false,
+      "original_failure_review_scope": "The freeze predates complete native-log readback and retains its pending-readback cause qualification. The later complete native readback establishes the uses-library mismatch without rewriting that historical review."
+    },
+    "gms_source_preparation": {
+      "guide": "docs/gms-customization-optional-library.md",
+      "contract": "patches/evolution/gms-customization-optional-library.json",
+      "project": "vendor/gms",
+      "base_commit": "89c3940a77298c204c55a21efded92ddafb59fe9",
+      "patch": {
+        "path": "patches/evolution/0018-gms-customization-optional-wear-sdk.patch",
+        "sha256": "237bbcb622a0c0bd0288e042bfc44ee713a2d027d942ea1df0330776f7c74a29",
+        "size_bytes": 661
+      },
+      "added_line": "LOCAL_OPTIONAL_USES_LIBRARIES := wear-sdk",
+      "host_patch_replay_and_strict_checker_fixtures_passed": true,
+      "original_apk_preserved": true,
+      "enforcement_or_dexpreopt_settings_changed": false,
+      "source_lock_changed": false,
+      "actual_gms_status_leaf_commands_captured": 95,
+      "failing_apk_native_badging_passed": true,
+      "broader_strict_gms_audit_executed": false,
+      "native_source_adopted": false,
+      "regenerated_native_graph_verified": false,
+      "fresh_successful_native_status_action_verified": false,
+      "actual_module_dexpreopt_context_verified": false
+    },
+    "limits": {
+      "target_files_package_verified": false,
+      "actual_materialization_performed": false,
+      "actual_signing_performed": false,
+      "complete_current_vintf_verified": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "runtime_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "evidence": {
+      "original_failed_result": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package-1-v1/stdout.jsonl",
+        "sha256": "28ff52f4039297f9aa8adce7c1be89da7f75894a896ce3e4234ba70cfdaef15c",
+        "size_bytes": 10051159
+      },
+      "complete_readback": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package-1-readback-v1/stdout.json",
+        "sha256": "46df911ab83fd4e588d3c05c870764d868d2f3f796d527bb810699c0364b35a2",
+        "size_bytes": 22970968
+      },
+      "native_stdout": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package-1-readback-v1/build.stdout",
+        "sha256": "03c4b98743efdf46ad6e19f8af05e4bee4668195e20eabd0a57a70165cb30d1e",
+        "size_bytes": 7176663
+      },
+      "failure_review_freeze": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/actual-package-failure-review-v1/freeze.json",
+        "sha256": "02378152ba4e158a5671f6170dbb0d898bc5b0ef0da08cd42714d2562555b746",
+        "size_bytes": 4152
+      },
+      "action_log_verification": {
+        "path": "reports/gms-uses-library-20260901/root-package-action-logs-readback-v1/verification.json",
+        "sha256": "2a3680127ed39b545af8d35963781386364a8c05b043c54b3b3c433327466da1",
+        "size_bytes": 904
+      },
+      "actual_gms_command_and_badging_capture": {
+        "path": "reports/gms-uses-library-20260901/root-native-metadata-capture-v1/stdout.json",
+        "sha256": "b6a7b079659b77afa712bcf773ae891062b6973d11e2172b2f7b8eed67f72176",
+        "size_bytes": 550181
+      }
+    }
   }
 }

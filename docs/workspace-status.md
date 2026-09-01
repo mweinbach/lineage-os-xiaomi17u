@@ -10,14 +10,21 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The **first ordinary `target-files-package` build is in progress** at this
-checkpoint. The coordinator records dispatch at **2026-09-01 06:10:14 UTC**
-and subsequent main Ninja activity; no completion result, successful native
-exit or verified ZIP is recorded here. The selected 537-file/thirteen-project
-source, `8643` build identity, 4 KiB baseline, working76 and normal Android
-enforcement are unchanged. Package production does not itself run the full
-VINTF comparison: final package inputs and explicit SKU/vendor-API selection
-still need admission. The older 220-source VINTF evidence remains historical.
+The **first ordinary `target-files-package` build fails with native and wrapper
+exit 1 at 2026-09-01 08:03:01 UTC**. Its single retained `FAILED:` entry is the
+strict uses-library check for `CustomizationBundlePrebuiltFullVersion`: the
+unchanged APK declares optional `wear-sdk`, absent from its Make declaration.
+The complete result, stdout and three action logs are retained and verified;
+the package profile remains false, with no artifact postcheck or verified ZIP.
+The [one-line GMS source correction](gms-customization-optional-library.md)
+passes isolated host replay and checker fixtures, but is not adopted into the
+native source or verified by a fresh generated status action. Read-only capture
+includes 95 GMS status-leaf commands and the failing APK's native badging; the
+broader strict audit has not run. The selected 537-file/thirteen-project source,
+`8643` build identity, 4 KiB baseline, working76 and normal Android enforcement
+are unchanged. Package production does not itself run the full VINTF comparison:
+final package inputs and explicit SKU/vendor-API selection still need admission.
+The older 220-source VINTF evidence remains historical.
 
 The corrected Evolution/factory policy source build and its **scoped policy3
 verification now pass**. Source/M4/context review retains all 6,399 assertions,
