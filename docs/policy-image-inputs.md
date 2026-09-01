@@ -322,8 +322,18 @@ relabel the earlier failure as a pass.
 The profile now reports `ready_for_evidence_validation`, which is only the
 prerequisite state for exact input validation and TAR preparation. Missing,
 changed or mismatched records still stop preparation before output creation.
-New raw policy3 images, repeated native comparison and the full AVB/package
-chain remain separate stages.
+The later policy3 raw reconstruction and NONE footer/FEC stages pass their
+separate repeated native comparisons. At **2026-09-01 02:37:56 UTC**, the reviewed
+vendor/ODM leaves and metadata are selected by the **source-v2** transaction:
+three tree exchanges, nine journal events and 537 verified source files across
+thirteen projects, with independent installation review. This advances source
+selection only; new output-image builds, packaged-policy checks, target-files,
+the full signed chain and physical partition fit remain pending. The 205
+metadata payloads retain their bytes and roles, while new private source copies
+use declared mode 0600 and retained originals use 0644; build-identity validation
+must bind that distinction before new product queries. See
+[current status](workspace-status.md) and the
+[installation record](../research/workspace-integration.json).
 
 ## Private input control
 

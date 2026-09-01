@@ -17,22 +17,21 @@ public-name freeze check is verified. The **policy3 raw-image reconstruction
 also passes**, with both TAR/image/export sets identical and independent review
 confirming exactly five policy-file replacements. The subsequent **NONE leaf
 footer/FEC production also passes** with identical repeated outputs. Private
-image copies and a separate inactive source stage are verified, but the later
-three-tree adoption stage **stopped at the disk-capacity preflight**, creating
-no candidate. Subsequent offline maintenance expanded the existing volume from
-**800 to 1,024 GiB**; the **2026-09-01 02:14:58 UTC** qualification verifies
-adequate capacity and the unchanged **539-file source** after restarting the
-same builder. The capacity blocker is cleared for the recorded staging budget;
-**source adoption and packaging remain pending**, with the reserve unchanged.
-The retry stops before activation at a file-mode guard for an unchanged Camera
-JNI output; its incomplete candidate is retained while the permission-validation
-fix is prepared. See the [maintenance record](apple-container.md). Commit
-**4335f1b** adds the explicit
-[policy3 image-input profile](policy-image-inputs.md), including qualified
-installed sidecars. The new raw images are not adopted; signing and physical
-partition fit remain unverified. Full recursive graph provenance and final
-installed-APK Treble coverage remain unverified; no ROM or boot readiness is
-implied.
+image copies and the later **source-v2 adoption now pass**: three tree exchanges
+commit at **2026-09-01 02:37:56 UTC**, with nine journal events, complete receipt
+readback and independent review. The active source inventory is **537 files
+across thirteen projects**; the reviewed policy3 vendor/ODM leaves are selected
+as source inputs. The earlier capacity and Camera JNI mode-guard failures remain
+preserved. [Volume maintenance](apple-container.md) cleared the recorded budget,
+and the narrow archive-mode correction preserves the original JNI mode.
+The immediate preparation gate is rebinding the build identity to the declared
+private metadata-copy modes before new product queries. **Output-image builds,
+packaged-policy checks and target-files remain pending**. Commit **4335f1b** adds
+the explicit [policy3 image-input profile](policy-image-inputs.md), including
+qualified installed sidecars. Source-input selection does not admit a final
+flashable artifact: the full signed chain and physical partition fit remain
+unverified. Full recursive graph provenance and final installed-APK Treble
+coverage remain unverified; no ROM or boot readiness is implied.
 `LINEAGE_BUILD=nezha` selects upstream policy directories absent from the earlier
 build configuration. The thirteen retained policy identities and earlier strict
 analysis remain historical evidence; they do not establish current policy or
@@ -60,7 +59,7 @@ Two host stagings reproduce all 63 policy-bundle files, with original factory
 inputs unchanged. The paired corrections and separate AIDL-audit source are
 now installed at **2026-08-31 18:10:01 UTC**, with four committed operations,
 eleven journal events, complete receipt readback and independent review.
-The current inventory is **539 source files across thirteen projects**;
+That policy3 build inventories **539 source files across thirteen projects**;
 strict 4 KiB checks and historical output archives are preserved. **Policy3
 passes all 32 requested goals at 2026-08-31 18:40:00 UTC**, with native and
 wrapper exit 0 and all six fresh source/input guard groups matching. The log
@@ -713,8 +712,9 @@ review. The separate footer run completes at **23:33:34 UTC** with **six checks,
 sixteen top-level commands and zero skips**, plus twelve nested FEC calls.
 Independent review verifies raw-prefix preservation, regenerated parity and
 identical repeated NONE leaves within the exact package budgets. This does not
-establish physical partition fit or a signed parent chain. Delivery/adoption
-and boot remain unverified; original images and the 539-file source are unchanged.
+establish physical partition fit or a signed parent chain. At that footer-only
+checkpoint, delivery/adoption and boot remained unverified, with original images
+and the 539-file source unchanged; the later source selection is recorded below.
 
 Commit **4505222** adds explicit policy3 delivery/construction-source support.
 The independent private image copies and inactive four-file image-source
@@ -724,8 +724,9 @@ its candidate. A separate read-only post-failure proof retains all 539 source
 files across thirteen projects and the current configuration. It records
 **165,301,895,168 bytes available**, below the unchanged requirement of
 **226,459,516,499 bytes**: a 200 GiB reserve plus 11,711,151,699 bytes of copies.
-The prospective 537-file source is not installed; no image-goal or target-files
-build has run from it. The earlier successful inactive stage remains separate.
+At that failed checkpoint, the prospective 537-file source was not installed.
+No image-goal or target-files build had run from it. The earlier successful
+inactive stage remains separate.
 This failed capacity check is preserved; subsequent maintenance clears that
 specific storage gate without adopting the candidate.
 
@@ -740,6 +741,23 @@ proof, strict 4 KiB configuration and inactive staged inputs. The same builder
 is the sole observed volume user. This maintenance is not an Android build,
 source adoption or ROM/boot proof; see the [environment details](apple-container.md)
 and [bounded maintenance evidence](../research/workspace-integration.json).
+
+The later **source-v2 transaction commits at 02:37:56 UTC** and returns native
+exit 0 at **02:38:56 UTC**. It exchanges the device, target-files metadata and
+policy-image source trees, verifying **537 source files/thirteen projects** and
+preserving fourteen policy plus eleven runtime outputs. Independent actual
+review binds all three operations and nine journal events. The exact Camera JNI
+0711 archive exception leaves the original bytes, mode and inode unchanged;
+the failed prior stage is not selected. All **205 metadata payloads retain their
+bytes and roles**, but their new private source copies use declared mode
+**0600**, while retained originals use **0644**. The build-identity helper must
+verify that distinction before new queries; no source chmod is needed. Current
+strict 4 KiB settings and normal Android enforcement remain required. Selected
+source inputs are now active, but no new output images, packaged-policy checks
+or target-files have been built from them. The
+[installation and audit record](../research/workspace-integration.json) also
+binds the preceding **02:24:28 UTC** source audit: all **1,179** revisions and
+origins match, with seven reviewed modified projects preserved.
 
 After a host restart, the
 coordinator resumed only the existing stopped builder. The **22:50:26 UTC**
@@ -761,9 +779,10 @@ compatibility remains unverified.
 
 Commit **9f0c8bd** separately adds an optional, explicit
 [Qualcomm AIDL namespace contract](../config/nezha-qti-aidl-namespaces.json) and
-generator support. The capability is not activated in the 539-file guest source.
-The post-failure native input guard verifies 666 regular files, one explicitly
-declared namespace alias and thirteen required project HEADs. This does not
+generator support. The source-v2 device configuration now selects the two
+recorded namespaces; it does not select new runtime services. The native input
+guard verifies 666 regular files, one explicitly declared namespace alias and
+thirteen required project HEADs. This does not
 compile metadata/APIs/backends or close the definition-coverage gap; runtime
 support remains unverified.
 
@@ -820,7 +839,13 @@ handling. It separates final image entries, generated vbmeta outputs and the
 two retained firmware inputs; it does not extract, validate or sign images.
 No actual target-files archive has been admitted with this helper.
 
-The latest completed full workspace suite passed **4,189 tests in 168.608
+The latest completed full workspace suite passed **4,189 tests in 178.752
+seconds with zero failures, errors or skips**, executed by the coordinator
+against `ab083ee` plus the four maintenance documents, then committed as
+`f875980`. All four bound document identities remained unchanged. This later
+source-adoption documentation update and the native installation are outside
+that offline run; neither is counted as a workspace test.
+The preceding suite passed **4,189 tests in 168.608
 seconds with zero failures, errors or skips**, executed by the coordinator
 against `e6bb4e7` plus eight integration files, then committed as `4505222`.
 All thirteen bound identities remained unchanged. The interrupted v1 run is

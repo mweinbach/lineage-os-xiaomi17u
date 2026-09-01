@@ -656,5 +656,162 @@
         }
       }
     }
+  },
+  "post_growth_source_audit_20260901": {
+    "completed_utc": "2026-09-01T02:24:28.262658+00:00",
+    "head_match_count": 1179,
+    "origin_match_count": 1179,
+    "clean_project_count": 1172,
+    "reviewed_local_change_paths": [
+      "build/make",
+      "build/soong",
+      "device/lineage/sepolicy",
+      "external/mdnsresponder",
+      "system/core",
+      "system/sepolicy",
+      "vendor/lineage"
+    ],
+    "upstream_base_only_not_complete_rom_input_audit": true,
+    "result": {
+      "path": "reports/oem-policy-integration-20260829/root-post-growth-source-audit-v1/stdout.json",
+      "sha256": "b0f3f6e8ebe5c8e23b4f8be87f76434cad4c5b50b79ea5f60ec7efeb0f9bdebb",
+      "size_bytes": 2968
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-post-growth-source-audit-v1/completion.json",
+      "sha256": "363c532b9c17da34015830e1c576a43f8c915c0ba1c792f1c42296032b138ce8",
+      "size_bytes": 1650
+    }
+  },
+  "offline_validation_expanded_volume_20260901": {
+    "command": "python3 -m unittest discover -s tests -v",
+    "executor": "coordinator",
+    "tests_run": 4189,
+    "reported_test_seconds": 178.752,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "git_head": "ab083ee00c6d14e0a36c3e3b1b217ea57c5a76cc",
+    "scope": "Committed code plus four unchanged maintenance documents; this subsequent source-adoption documentation and native operation are outside the run.",
+    "completed_utc": "2026-09-01T02:24:59.082549+00:00",
+    "log": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-expanded-source-volume-v1/unittest.log",
+      "sha256": "8354c250550e9685ab340fb236ca04252b146abf6913b423e2781128abddc79a",
+      "size_bytes": 729763
+    },
+    "completion": {
+      "path": "reports/oem-policy-integration-20260829/root-checkpoint-expanded-source-volume-v1/completion.json",
+      "sha256": "7b7f820b6665171020dd442846ccdfe6f12bb3da4a31d0a703c93aaddb4d5b6b",
+      "size_bytes": 1313
+    }
+  },
+  "policy3_source_adoption_20260901": {
+    "status": "verified-source-input-adoption-not-built-output-images-or-target-files",
+    "commit_verified_utc": "2026-09-01T02:37:56.855011+00:00",
+    "native_install_finished_utc": "2026-09-01T02:38:56.351490+00:00",
+    "native_install_exit_code": 0,
+    "tree_operations": 3,
+    "journal_events": 9,
+    "source_rows_before": 539,
+    "source_rows_after": 537,
+    "source_projects_checked": 13,
+    "selected_trees": [
+      "device/xiaomi/nezha",
+      "vendor/xiaomi/nezha-target-files-metadata",
+      "vendor/xiaomi/nezha-policy-images"
+    ],
+    "selected_vendor_odm_inputs_rehashed": true,
+    "original_metadata_payloads_and_roles_checked": 205,
+    "metadata_source_modes": {
+      "retained_original": "0644",
+      "new_private_source_copy": "0600",
+      "payload_bytes_unchanged": true,
+      "modes_unchanged": false,
+      "declared_source_spec_matches_actual_installation": true
+    },
+    "protected_policy_outputs_unchanged": 14,
+    "protected_runtime_outputs_unchanged": 11,
+    "independent_protected_copies_checked": 25,
+    "camera_jni_archive_exception": "Exact native path, SHA-256, size and typed 0711 mode only; original bytes/mode/inode unchanged, no chmod.",
+    "failed_prior_candidate": "Preserved by prior stage/release evidence and not selected; this installation readback does not freshly inventory that failed candidate.",
+    "namespace_selection": "The device source now exports the two recorded QTI namespaces; no new runtime services or compiled API support are established.",
+    "namespace_regular_sources_checked": 666,
+    "explicit_namespace_aliases_checked": 1,
+    "namespace_project_heads_checked": 13,
+    "maximum_page_size": 4096,
+    "strict_elf_and_prebuilt_alignment_checks_enabled": true,
+    "normal_android_enforcing_required": true,
+    "next_gate": "Rebind build-identity validation to authenticated metadata source modes, then execute new product queries and ordinary image/package checks.",
+    "scope": {
+      "source_input_adoption_performed": true,
+      "new_build_identity_calculated": false,
+      "native_android_build_performed": false,
+      "new_output_images_built": false,
+      "packaged_policy_gate_executed": false,
+      "images_admitted": false,
+      "target_files_admitted": false,
+      "complete_signed_chain_verified": false,
+      "physical_partition_fit_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false
+    },
+    "review_limits": {
+      "host_did_not_rehash_native_archive_or_image_bodies": true,
+      "marker_absence_not_separately_captured_in_this_readback": true,
+      "native_commit_path_rechecks25_protected_archives": true,
+      "native_commit_path_rechecks_independent_previous_source_copies": true,
+      "native_commit_path_rechecks_original_tree_inodes_in_staging": true,
+      "native_commit_path_replays_immutable_predecessor_history": true,
+      "post_commit_marker_absence_enforced_by_successful_final_native_callback": true,
+      "prior_failed_stage_directories_not_selected": true
+    },
+    "evidence": {
+      "installer": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/source-adoption-preparation-v1/prepared-v5/installation.py",
+        "sha256": "02e361e1c651d176d8359ebee9cc7f8a2ec72cb98f2c1402f42f5ff1254a1c21",
+        "size_bytes": 46428
+      },
+      "source_spec": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/source-adoption-preparation-v1/prepared-v5/source-spec.json",
+        "sha256": "457a5fe6515ebdc3c291c9ad46014532bb8cea090187588cb73588ad4fcb63b8",
+        "size_bytes": 981392
+      },
+      "source_map": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/source-adoption-preparation-v1/prepared-v5/source-map.json",
+        "sha256": "db3a81b1a8151eec68096369654dc06b423ae714d88dca6d51a4399763406a90",
+        "size_bytes": 4234838
+      },
+      "actual_commit": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v3/root-install-readback-v1/actual-commit.json",
+        "sha256": "b9c49713ce90ecfadbfa922c38df68739d45380c69a161c7fd446e51d5ff6f58",
+        "size_bytes": 481
+      },
+      "installation": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v3/root-install-readback-v1/installation.json",
+        "sha256": "3eaf0e1ce466d647dab1b495c04d16d334cf773e69d0d320a3350acf1009eebc",
+        "size_bytes": 1102943
+      },
+      "journal": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v3/root-install-readback-v1/transaction.jsonl",
+        "sha256": "204c36ed71f1e26da670b8e561186d9aa2333e484e30ac790409c037b0d46bfd",
+        "size_bytes": 96598
+      },
+      "install_exit": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v3/root-install-v1/exit.json",
+        "sha256": "7744816369d5ff8db81d659bb5b7a7429b6ff33336ef94ab6f55ae3d848f20ee",
+        "size_bytes": 463
+      },
+      "readback_completion": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v3/root-install-readback-v1/completion.json",
+        "sha256": "51fa2fb8a3e999b0160ca89db2260dd0121251602c5d0f156805a0bb8c3320a9",
+        "size_bytes": 1463
+      },
+      "independent_actual_review": {
+        "path": "reports/oem-policy-integration-20260829/policy3-image-adoption-preparation-v1/actual-binding-v1/native-execution-v3/actual-install-review-v1.json",
+        "sha256": "4d24fc4d178a6c720d36b98ff61cf1498aacc170c6d66ecdd9262d696a86c314",
+        "size_bytes": 10451
+      }
+    }
   }
 }
