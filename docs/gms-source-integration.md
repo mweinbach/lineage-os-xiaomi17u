@@ -1,6 +1,46 @@
 # GMS source integration
 
-The **0020 SignApk source-install attempt is rejected, with both exchanges
+The corrected **0020 source transaction succeeds at 2026-09-01 13:36:04 UTC**,
+with native/root exit 0, following the successful **13:22:20 UTC** stage.
+Two source exchanges and seven journal events complete without rollback.
+`commit_verified` is recorded at **13:33:51 UTC**, before final acceptance and
+process exit. The complete installation and journal readback passes independent
+review; `actual-commit.json` is an exact copy of the returned bytes, not a
+reserialized receipt.
+
+The active inventory is **543 files across fourteen projects**. It preserves
+all prior 541 source rows and adds the two reviewed `build/make` postimages:
+`SignApk.java` and `core/app_prebuilt_internal.mk`. The patch and source contract
+are unchanged. The installed SignApk code excludes the obsolete stamp digest
+before APK re-signing, and ordinary non-`PRESIGNED` prebuilts gain a normal signer dependency.
+These are installed source changes; regenerated dependency edges and corrected
+APK behavior still require native build and strict verification evidence.
+
+The history correction selects the exact before/after `build/make` status at
+each history call while preserving the six Git queries, three allocator-project
+predicates and seven historical rows. The real native stage/install execute the
+full history checks, including both installation phases, alongside complete
+543-file/mode and fourteen-project checks. The canonical predecessor-history
+identity remains `73499a4d…` / 312,989 bytes. The separate full host history-chain
+fixture replay remains pending and is not counted as a pass.
+
+Host projection from the completed installation calculates identity
+`3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e`
+and proposed build number **`nezha.3c24f46cf801e6abd6d5361c`**. All five descriptor
+vectors retain their prior rows and modes; only the source vector adds two inputs.
+The calculation does not recheck live private inputs or authorize dispatch;
+native configuration and metadata observations remain unset. config8/context8,
+the next ordinary frontend run, rebuilt SignApk, strict GMS retry, Images2 and
+package2 remain pending at this checkpoint.
+
+Eight projects still carry intentional patches; no upstream revision changes.
+Original GMS APKs and eight image observations (six present files/two exact
+absences) remain protected. `bka`, `bp4a`, `user`, `WITH_GMS`, epoch `1788144555`,
+4 KiB, normal Android enforcement and working76 are unchanged. No image, APK,
+package or hardware success follows from source adoption. The earlier failed
+attempts and host-only preparations below retain their original scopes.
+
+The first **0020 SignApk source-install attempt is rejected, with both exchanges
 rolled back and verified** at **2026-09-01 12:56:39 UTC**. The preceding stage
 passes at **12:50:15 UTC**, including full readback and independent review of
 the two original files, preserved copies and staged replacements. Its 543-entry
@@ -83,6 +123,9 @@ to claim later native results.
 | SignApk source stage (root interval) | 12:46:12.282056 | 12:50:15.260121 | Exit 0; two replacements staged, no source adoption |
 | SignApk source install (root interval) | 12:52:33.046595 | 12:56:39.065377 | Exit 1; both exchanges reversed and rollback verified |
 | Fresh post-rollback input capture (root interval) | 12:58:05.761870 | 12:58:10.457568 | Exit 0; scoped original bytes, absences and project state restored |
+| Corrected SignApk source stage (root interval) | 13:18:08.601814 | 13:22:20.092088 | Exit 0; two replacements staged with native history checks |
+| Corrected SignApk source install (root interval) | 13:28:32.839407 | 13:36:04.974906 | Exit 0; two exchanges, seven journal events and final acceptance |
+| Full corrected-installation readback (root interval) | 13:39:28.428797 | 13:39:28.663033 | Exit 0; complete installation/journal bodies and exact commit bytes retained |
 
 The component command is `build/soong/soong_ui.bash --make-mode -j8` with
 `CrossDeviceAccessServicePrimary`, `CustomizationBundlePrebuiltFullVersion`,

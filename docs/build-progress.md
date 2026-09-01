@@ -1,6 +1,22 @@
 # Nezha product and build progress
 
-The **0020 SignApk source stage passes at 2026-09-01 12:50:15 UTC**, but
+The corrected **0020 source installation passes at 2026-09-01 13:36:04 UTC**,
+following successful staging at **13:22:20 UTC**. Both edits commit through
+seven journal events without rollback; complete readback and independent
+review pass. The source now contains **543 files across fourteen projects**.
+Host projection calculates **`nezha.3c24f46cf801e6abd6d5361c`**, preserving the
+prior identity as history. config8/context8 and generated metadata values have
+not yet been verified for it. No SignApk, APK, image or package build has run
+from this source. The next checks remain the native queries, regenerated rules
+and strict component retry described in [GMS source integration](gms-source-integration.md).
+
+The preceding rollback checkpoint was committed as **266e0e0** after the
+coordinator's full suite passed **4,317 tests in 184.527 seconds with zero
+skips** at **13:15:54 UTC**. All six bound files stayed unchanged. That run
+does not cover this later source-adoption documentation milestone; the native
+transaction is separate evidence. The earlier checkpoints below remain intact.
+
+The first **0020 SignApk source stage passes at 2026-09-01 12:50:15 UTC**, but
 installation fails at **12:56:39 UTC** and both source exchanges roll back with
 verification. A retained history guard expected the old `build/make` status
 after the intended edits. Fresh readback preserves fifteen input observations

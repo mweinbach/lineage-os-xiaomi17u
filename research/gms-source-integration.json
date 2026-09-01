@@ -2,7 +2,20 @@
   "schema_version": 1,
   "device": "nezha",
   "observed_on": "2026-09-01",
-  "status": "signapk-source-stage-passed-install-rejected-rollback-verified",
+  "status": "signapk-source-v2-adopted-native-build-and-verification-pending",
+  "current_source": {
+    "scope": "Installed 0020 source, with a separate host-calculated successor identity; native configuration and build outputs for it remain unverified.",
+    "files": 543,
+    "projects": 14,
+    "previous_adopted_source_files": 541,
+    "source_adoption_completed_utc": "2026-09-01T13:36:04.974906+00:00",
+    "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+    "proposed_build_number": "nezha.3c24f46cf801e6abd6d5361c",
+    "identity_scope": "Host projection from the completed installation; observations are null and input closure/dispatch remain unverified.",
+    "native_configuration_and_metadata_values_verified": false,
+    "detail_record": "signapk_source_adoption_checkpoint_20260901"
+  },
+  "historical_top_level_record_scope": "source, stage, installation and projected_identity preserve the earlier four-Makefile 0018/0019 adoption; current_source and the latest checkpoint describe the later 0020 adoption.",
   "prior_checkpoint": "research/workspace-integration.json:selected_gms_manifest_audit_checkpoint_20260901",
   "source": {
     "prior_files": 537,
@@ -74,11 +87,11 @@
     "native_configuration_and_metadata_values_verified": false
   },
   "next_native_checks": {
-    "config7": "passed",
+    "config7": "passed-on-prior-541-source",
     "config7_dispatch_reported_utc": "2026-09-01T09:13:54+00:00",
-    "context7": "passed",
-    "nothing4": "passed",
-    "four_gms_modules": "failed-postcheck-after-native-soong-success",
+    "context7": "passed-on-prior-541-source",
+    "nothing4": "passed-on-prior-541-source",
+    "four_gms_modules": "pending-retry-on-adopted-543-source-prior-attempt-failed",
     "images2": "pending",
     "package2": "pending",
     "prepared_nothing_argv": [
@@ -91,19 +104,24 @@
     "caller_changes_installed_source": false,
     "source_input_and_graph_guards_preserved": true,
     "regenerated_graph_verified": false,
-    "graph_verification_scope": "The corrected read-only capture and host qualification of twelve own actions are verified in read_only_graph_capture_checkpoint_20260901; complete transitive recipe provenance and completed artifact/fresh-action qualification remain unverified. The ordinary native attempt is recorded in ordinary_component_attempt_checkpoint_20260901.",
+    "graph_verification_scope": "The 83f7622d read-only capture, twelve-own-action host qualification and original four-module action rows belong to the prior 541-source checkpoint. No regenerated graph, new own-action qualification or completed artifact/fresh-action verification is established for the adopted 543-source state.",
     "fresh_ordinary_gms_status_actions_verified": false,
     "actual_module_and_dexpreopt_contexts_verified": false,
     "target_files_package_verified": false,
-    "read_only_graph_capture_verified": true,
-    "scoped_own_action_graph_qualification_verified": true,
-    "module_context_scope": "The existing prebuilt-preopt-disabled source branch and two dependency configs are verified; four app configs are not produced, and no generated app class-loader context or runtime result is claimed.",
-    "native_gms_stdout_reports_four_strict_status_actions": true,
+    "read_only_graph_capture_verified": false,
+    "scoped_own_action_graph_qualification_verified": false,
+    "module_context_scope": "The prebuilt-preopt-disabled source branch is preserved. Prior dependency-config observations do not establish newly generated 543-source app class-loader contexts or runtime behavior.",
+    "native_gms_stdout_reports_four_strict_status_actions": false,
     "complete_gms_component_postcheck_verified": false,
-    "signapk_source_correction": "stage-passed-install-rejected-both-exchanges-rolled-back",
-    "signapk_history_guard_correction": "preparation-not-adopted",
-    "read_only_apk_diagnostics": "sixteen-native-commands-complete-aggregate-failed",
-    "apk_output_format_correction": "host-saved-output-replay-passed-no-native-retry"
+    "signapk_source_correction": "adopted-v2-source-native-build-pending",
+    "signapk_history_guard_correction": "adopted-v2-before-after-status-selection-native-history-verified",
+    "read_only_apk_diagnostics": "prior-541-source-sixteen-commands-complete-aggregate-failed",
+    "apk_output_format_correction": "host-saved-output-replay-passed-no-native-retry",
+    "current_source_files": 543,
+    "config8": "pending",
+    "context8": "pending",
+    "nothing5": "pending",
+    "rebuilt_signapk_verified": false
   },
   "historical_audit_scope": {
     "original_selected_apks": 95,
@@ -1112,6 +1130,233 @@
         "path": "reports/signapk-source-stamp-20260901/root-post-rollback-inputs-capture-v1/comparison.json",
         "sha256": "19bd4d3b679f0035d4c437c0e140d9960a008df1738f0c4e33c1cfa6385e1112",
         "size_bytes": 628
+      }
+    }
+  },
+  "signapk_source_adoption_checkpoint_20260901": {
+    "status": "corrected-source-v2-adopted-native-build-pending",
+    "supersedes_current_status_of": "signapk_source_adoption_attempt_checkpoint_20260901",
+    "prior_failed_attempt_and_verified_rollback_preserved": true,
+    "patch_contract": "patches/evolution/signapk-source-stamp.json",
+    "frozen_public_patch_contract_guide_and_tests_unchanged": true,
+    "source": {
+      "previous_adopted_inventory_files": 541,
+      "before_and_after_checked_inventory_files": 543,
+      "active_files": 543,
+      "projects": 14,
+      "expected_locally_patched_projects": 8,
+      "prior_541_inventory_rows_and_modes_preserved": true,
+      "inventory_paths_added": 2,
+      "source_file_edits": 2,
+      "new_files_created_in_android_checkout": 0,
+      "changed_project": "build/make",
+      "base_commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "changed_paths": [
+        "build/make/core/app_prebuilt_internal.mk",
+        "build/make/tools/signapk/src/com/android/signapk/SignApk.java"
+      ],
+      "upstream_revisions_unchanged": true,
+      "original_gms_apks_preserved": 4,
+      "protected_policy_inputs": 14,
+      "protected_runtime_inputs": 11,
+      "preserved_image_present_files": 6,
+      "preserved_exact_image_absences": 2,
+      "image_copies_created": false,
+      "source_spec": {
+        "sha256": "97c1ec842d697a0de38fb7623f188f056da7d2d8c504d5582aef0ad76a77e364",
+        "size_bytes": 899524
+      }
+    },
+    "stage": {
+      "started_utc": "2026-09-01T13:18:08.601814+00:00",
+      "completed_utc": "2026-09-01T13:22:20.092088+00:00",
+      "exit_code": 0,
+      "original_preimages": 2,
+      "independent_preserved_copies": 2,
+      "staged_replacements": 2,
+      "distinct_inodes": 6,
+      "complete_readback_verified": true,
+      "independent_review_passed": true
+    },
+    "installation": {
+      "started_utc": "2026-09-01T13:28:32.839407+00:00",
+      "completed_utc": "2026-09-01T13:36:04.974906+00:00",
+      "exit_code": 0,
+      "source_exchanges": 2,
+      "journal_events": 7,
+      "rollback_performed": false,
+      "commit_verified_utc": "2026-09-01T13:33:51.069201+00:00",
+      "final_acceptance_completed_after_commit_event_before_exit": true,
+      "actual_commit_raw_bytes_equal_completed_stdout": true,
+      "complete_installation_and_journal_readback_verified": true,
+      "independent_review_passed": true,
+      "exact_installed_and_preserved_inode_rows_verified": true
+    },
+    "history_correction": {
+      "scope": "Select the exact bound build/make before or after status at each history call; preserve all six real Git queries, three allocator-project predicates and seven historical rows.",
+      "explicit_phase_call_sites": 6,
+      "native_full_before_and_after_history_paths_passed": true,
+      "canonical_predecessor_history_identity": {
+        "sha256": "73499a4d1153d4342e196bfc5c912f1d54a8d4fe0704fee98f45216c26530e01",
+        "size_bytes": 312989
+      },
+      "canonical_history_matches_first_stage_and_corrected_stage": true,
+      "complete_current_source_and_mode_and_project_checks_passed": true,
+      "full_host_history_chain_fixture_replay": "pending-not-counted-as-a-pass",
+      "recorder_safety_tests_are_full_chain_coverage": false
+    },
+    "host_identity_projection": {
+      "identity_sha256": "3c24f46cf801e6abd6d5361cd840875eca0230aea6c648d8c7248d951e995b7e",
+      "proposed_build_number": "nezha.3c24f46cf801e6abd6d5361c",
+      "prior_identity_sha256": "a2d9ab6affbe09593d3382120be86d02f453c4f2c82dce1aef2a68910b16d488",
+      "actual_captured_installation_admitted": true,
+      "descriptor_vectors": 5,
+      "prior_descriptor_rows_and_modes_preserved": true,
+      "added_source_paths": [
+        "build/make/core/app_prebuilt_internal.mk",
+        "build/make/tools/signapk/src/com/android/signapk/SignApk.java"
+      ],
+      "recorded_canonical_identity_digest_recomputed": true,
+      "identity_calculation_complete": true,
+      "live_source_or_private_inputs_reverified": false,
+      "input_closure_verified": false,
+      "admission_or_dispatch_authorized": false,
+      "native_configuration_or_metadata_observations": null
+    },
+    "config8": "pending",
+    "context8": "pending",
+    "nothing5": "pending",
+    "signapk_source_correction_adopted": true,
+    "corrected_signapk_built": false,
+    "successful_component_retry_verified": false,
+    "images2_verified": false,
+    "package2_verified": false,
+    "native_build_performed": false,
+    "platform_branch": "bka",
+    "release": "bp4a",
+    "build_variant": "user",
+    "with_gms": true,
+    "build_datetime": "1788144555",
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "normal_android_enforcing_required": true,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "evidence": {
+      "source_history_preparation_freeze": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/freeze-v1.json",
+        "sha256": "21b89a05652b7633c2490ed8e3cab7f62d84862849040247fcd236a800da7d29",
+        "size_bytes": 10016
+      },
+      "source_history_derivation": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/derivation-v1.json",
+        "sha256": "15987fc5f131a248a954d4e1dc867fb3475847276c145767276ad4bf69a7b897",
+        "size_bytes": 1126
+      },
+      "independent_history_boundary_review": {
+        "path": "reports/signapk-source-stamp-20260901/source-history-boundary-review-v1/review.json",
+        "sha256": "ee7ffaf5b583b623997ffb8a72ae9dfc1134f85fc2a73bafe07c2389c9a678aa",
+        "size_bytes": 4262
+      },
+      "source_constructor": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/installation.py",
+        "sha256": "7591fa7a15118740f03c2ac4be96ce3a30dc1a765010251d88743172f0331296",
+        "size_bytes": 58527
+      },
+      "source_spec": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/source-spec.json",
+        "sha256": "97c1ec842d697a0de38fb7623f188f056da7d2d8c504d5582aef0ad76a77e364",
+        "size_bytes": 899524
+      },
+      "source_map": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/source-map.json",
+        "sha256": "1c15bc8996741a87fa34602c2820dd3d726f3399af8acb6cb53bcb392fcbc0dc",
+        "size_bytes": 10627462
+      },
+      "stage_exit": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-stage-v1/exit.json",
+        "sha256": "e2a71b5c695fb7b9b6f5cdd753c07378a67ec99db9260c8bd341247723dba90e",
+        "size_bytes": 462
+      },
+      "stage_return": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-stage-v1/stdout.jsonl",
+        "sha256": "55fab50018f53c90587be09e6cc327cc7175aaf09f11a2f93b9789a09bac0a25",
+        "size_bytes": 278
+      },
+      "full_stage_readback": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-stage-readback-v1/stdout.json",
+        "sha256": "096dcf2bd6cdb57169fcd11ef249a5e30e54b42cff7e229bf4dce69eca753397",
+        "size_bytes": 1823171
+      },
+      "stage_readback_completion": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-stage-readback-v1/completion.json",
+        "sha256": "924080c374babf6b23ca4402b0f378f8947204d1a32413c52c86a20f9127dfb1",
+        "size_bytes": 1524
+      },
+      "staged_record": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-stage-readback-v1/staged.json",
+        "sha256": "fefe3c2099ad94d169f4116660795a7bf48251b9288aa951bbba9970d3ce6374",
+        "size_bytes": 1367066
+      },
+      "independent_actual_stage_review": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/actual-stage-review-v1.json",
+        "sha256": "abe3991f72d79a181f5d584355cfa073936423c1ce7da9d8a33e212ff3535b7f",
+        "size_bytes": 1994
+      },
+      "install_exit": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-v1/exit.json",
+        "sha256": "c423b60ff77550b614baa9865e471e9ad3a89e67b8797f55e903c9f8099ba6b5",
+        "size_bytes": 464
+      },
+      "install_stdout": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-v1/stdout.jsonl",
+        "sha256": "30c352639a0f72d8740c128268625f22bbac6a516f45663eb70f12a0f80af15d",
+        "size_bytes": 480
+      },
+      "full_install_readback": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-readback-v1/stdout.json",
+        "sha256": "211d6769e7f1d97e31d3c0e9a96f3b41b2c53055ce1ce73e3f061511a3edd2de",
+        "size_bytes": 1473539
+      },
+      "install_readback_completion": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-readback-v1/completion.json",
+        "sha256": "cb52314f0014db6ace466dd108a907a0e5518510664ffe4242a724a539a694f2",
+        "size_bytes": 1886
+      },
+      "installation_record": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-readback-v1/installation.json",
+        "sha256": "97136132112e31c7dd1fe968f4bc0a37ff8a11283c301bde81fb83e6d43eb3cb",
+        "size_bytes": 1102351
+      },
+      "transaction_journal": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-readback-v1/transaction.jsonl",
+        "sha256": "bd068e5740666a80e3f720ebdf50be7f2337b124f242d75fefd55f62bc4c107a",
+        "size_bytes": 2249
+      },
+      "actual_commit_raw_copy": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/native-execution-v1/root-install-readback-v1/actual-commit.json",
+        "sha256": "30c352639a0f72d8740c128268625f22bbac6a516f45663eb70f12a0f80af15d",
+        "size_bytes": 480
+      },
+      "independent_actual_install_review": {
+        "path": "reports/signapk-source-stamp-20260901/source-adoption-preparation-v1/source-history-correction-v1/actual-install-review-v1.json",
+        "sha256": "d43dc99ab9bd9f758b0d3c1fc758ac4633e7cf68e3a1b22a32bec5ff01bb8da4",
+        "size_bytes": 2762
+      },
+      "host_identity_projection": {
+        "path": "reports/signapk-source-stamp-20260901/identity-projection-v2/completed-v1/projection.json",
+        "sha256": "170269fce24d1fb4b3494d2765b2b7dd2529a50fce6607aeffba2e29d98c2e16",
+        "size_bytes": 4256
+      },
+      "descriptor_fragment": {
+        "path": "reports/signapk-source-stamp-20260901/identity-projection-v2/completed-v1/descriptor-fragment.json",
+        "sha256": "ae2b17c729b5571555a915f4f4035147eb0a80112b686d872c3c039ed30222a8",
+        "size_bytes": 965870
+      },
+      "identity_calculation": {
+        "path": "reports/signapk-source-stamp-20260901/identity-projection-v2/completed-v1/identity-calculation.json",
+        "sha256": "2edfaf5e2605db6eeeb85ebf07d1c5bf709a7e5073a446d8542a4281ad46427d",
+        "size_bytes": 3551
       }
     }
   }

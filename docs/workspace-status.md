@@ -10,7 +10,18 @@ consolidates recorded evidence through **September 1, 2026 in UTC and
 New York**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-The **SignApk source-install attempt fails and rolls back both edits** at
+The corrected **SignApk source installation succeeds at 2026-09-01 13:36:04
+UTC**, with two exchanges, seven journal events and no rollback. Full readback
+and independent review pass. The active inventory is **543 files/fourteen
+projects**; the calculated successor build number is
+**`nezha.3c24f46cf801e6abd6d5361c`**. That identity is a host projection, not yet
+verified in native configuration or build output. config8/context8, a rebuilt
+signer, strict GMS retry, Images2 and package2 remain pending. Normal Android
+enforcement, the 4 KiB baseline and working76 are unchanged. See
+[GMS source integration](gms-source-integration.md) for the source transaction
+and its limits; the paragraphs below preserve earlier checkpoints.
+
+The first **SignApk source-install attempt fails and rolls back both edits** at
 **2026-09-01 12:56:39 UTC**. Staging passed, but a retained history check rejected
 the intended `build/make` status change. The rollback and fresh input comparison
 pass; active source remains **541 files/fourteen projects with the `a2d9`
