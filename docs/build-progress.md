@@ -1,5 +1,48 @@
 # Nezha product and build progress
 
+## Vendor/ODM retirement and five-image preparation — 2026-09-02
+
+The host-only retirement runs **22:13:10–22:14:08 UTC**, removing exactly
+**eight vendor/ODM image leaves from four historical bundles**. Prior ten
+candidate/keeper byte matches remain bound; 14 fresh full-body hashes cover
+**39,667,392,512 bytes**. All **323 primary controls and 133 additional outer
+inputs** remain unchanged, and all eight durable-intent/reader-barrier/unlink
+sequences are verified. **54 offline mock tests pass**, separate from execution.
+
+All parent directories, small manifests/receipts and six keeper images remain.
+Stock/current runtime inputs, source checkouts, active output, working76 and
+super images are not removed. **The four historical bundle manifests are now
+incomplete until their matching image bodies are restored**; they are not
+immediately reusable. Host availability rises from **158,860,337,152** to
+**181,437,829,120 bytes**, an operation-local **21.03 GiB** increase. This is not
+the allocated-byte count or an exclusive APFS attribution guarantee.
+
+Separately, the actual five-image **read-only capture completes at 21:41:01 UTC**;
+root review verifies both original query streams and all **13 retained original
+files**. At **21:55:47 UTC**, five proof records totaling **1,081,817 bytes** are
+staged and verified, with **115 held inputs unchanged**. Neither operation is
+an image build. Host preparation first fails closed before I/O at a Nothing11
+reader binding, then rejects the exact zero-byte graph shard. Shared-reader and
+literal-empty-graph corrections preserve the original validators, all **16
+graphs / 6,862,614,527 bytes**, all 19 roles and existing limits. **25 focused
+host tests pass**, including genuine native-style validation; final independent
+preparation review remains pending. **Five native rebuild not yet verified.**
+
+Exact local evidence is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `old-vendor-bundle-retirement-preparation-v1/root-execution-v1/completion.json` | `54e067713c37d45d8d95fea7c23db960afe7809cccce2145cdd3b09ae08b6198` | 164,383 |
+| `root-eight-host-retirement-result-review-v1/review.json` | `6688911698de79bcdd5bb8b7f550bb4c57c136ba3276252a0d6b40387f27a020` | 22,000 |
+| `root-five-query-result-review-v1/review.json` | `5e011a45a76243657265e181a839b176c710fa3dd933a8409364ce6744624894` | 18,758 |
+| `root-five-proof-staging-v1/completion.json` | `590f086694b24f3b76e23286a41a2d298465d6154ca8a5deea4e21f3694eb3ab` | 1,013 |
+| `root-five-proof-staging-v1/stdout.json` | `c8b742835795575eca9e128d0329ec2e67b3157039c3f5b732532e368df633d8` | 2,184 |
+
+The retirement uses no VM or phone. Images6 remains the verified image-stage
+checkpoint below; these later operations establish no Package6, signing, super,
+OTA or boot result. No new full-suite pass or flashable-ROM claim is made.
+
 ## Images6 verified build result — 2026-09-02
 
 The **Images6 native build, profile postcheck and complete
@@ -53,8 +96,9 @@ below is relative to `reports/avb-sha256-20260902/`.
 | `resume-build-20260902-v1/root-images6-complete-review-v1/review.json` | `3b8efcb6aa0f671cb3b0e56802b56f766340b157fee888384d87625db5c04202` | 6,280 |
 | `resume-build-20260902-v1/images6/actual-retention-result-review-v1/review.json` | `84350f24d978c8d13b03905b596aa1d47ba8a1a458d197ef2e47adeaf7d327ce` | 12,786 |
 
-The five-image query's host preparation is complete, and its **fresh read-only
-native capture starts at 21:31:09 UTC**; the capture result is not yet verified.
+At this earlier checkpoint the five-image query's host preparation is complete,
+and its **fresh read-only native capture starts at 21:31:09 UTC** with the result
+then pending; later verified query/staging is recorded above.
 The no-invalidation five-image SHA-256 build, Package6, signing, complete
 AVB/FEC/VINTF/super/partition checks, OTA and boot remain separate gates. No phone
 operation or additional cleanup is part of this checkpoint, and the ROM is

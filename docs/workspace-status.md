@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Eight obsolete vendor/ODM image files are retired.** The host-only operation
+completes at **2026-09-02 22:14:08 UTC**, recovering an observed **22,577,491,968
+bytes (21.03 GiB)** and leaving **181,437,829,120 bytes (168.98 GiB)** available.
+Only eight leaves from four historical bundles were removed; their manifests
+and directories remain, but the four manifests are incomplete until restoration.
+Six keeper images, stock/current runtime inputs, source/output, working76 and
+super images remain outside the deletion set.
+
+The **five-image read-only queries and proof staging pass**, including both
+query streams, 13 retained originals and 115 unchanged staging inputs. Narrow
+host-reader and exact empty-graph corrections pass 25 focused tests; final
+independent preparation review is pending. **Five native rebuild not yet
+verified**; Package6, signing and boot gates remain open. No phone operation
+occurs. See the [retirement and preparation checkpoint](build-progress.md#vendorodm-retirement-and-five-image-preparation--2026-09-02).
+
 **Images6 native build and complete source/action/retention review pass.**
 Native execution runs
 **2026-09-02 21:06:06–21:08:58 UTC**, exit **0**; the root dispatch closes at
@@ -24,9 +39,9 @@ logs reproduce all seven action objects, all four retained original images are
 hashed after the build, and nine sidecars pass their recorded checks. Host replay
 verifies all four compact retention records without exporting large image or
 Ninja-log bodies. The six metadata bodies also replay exactly; the image metadata hook,
-runtime and signed parent chain remain unverified. The five-image query's host
-preparation is complete; its fresh read-only native capture starts at
-**21:31:09 UTC**, with no verified capture result yet. Five-image SHA-256,
+runtime and signed parent chain remain unverified. At this earlier Images6
+checkpoint, the five-image read-only capture starts at **21:31:09 UTC** with its
+result then pending; its later verified query/staging is recorded above. Five-image SHA-256,
 Package6, signing, super and boot gates remain open. No phone operation occurs.
 See the [Images6 checkpoint](build-progress.md#images6-verified-build-result--2026-09-02).
 
