@@ -1,6 +1,58 @@
 # Nezha product and build progress
 
+## Selected4 component build — 2026-09-02
+
+The **Selected4 native component build, profile validation and postcheck pass**.
+Native execution runs **19:24:16.647368–19:25:59.283964 UTC**, exit **0**; the
+genuine root wrapper runs **19:19:44–19:37:41 UTC**, also exit **0**. The result
+contains **26 fresh producer actions and eight fresh strict library statuses**.
+Ninja observation is required and passes, with verified argv, limits and sandbox
+checks; no timeout, overflow, disk-floor breach or sandbox fallback is recorded.
+
+The nine selected APKs are BCR and eight SystemUI Clocks. Their configured
+signature/certificate and manifest-field checks pass through **36 recorded
+command results**. Flex has a separately verified **current-equivalent prior
+strict check**, not a ninth freshly produced status. The signature checks do
+not establish verification of every embedded scheme; selected manifest fields
+are not complete XML equivalence or runtime library compatibility.
+
+Backup-first preparation and the postcheck verify **26 retained originals plus
+26 independent copies**: nine built APKs, nine installed APKs and eight status
+outputs in each set. This is scoped output retention, not a fresh archive of
+the entire output tree. All **six complete source/input callback maps match**
+before/after, preserving **548 selected source files** and **1,179 project
+HEAD/origin matches**. Build identity remains
+**`nezha.86e40fe309189fdcd20dff9b`**, epoch **1788144555**. Normal Android
+enforcing, strict 4 KiB checks and the working76 recovery selection are unchanged.
+
+The root's **19:39:52 UTC result review** checks the complete actual result,
+its bound records and all 85 held controls. It does **not** independently replay
+the raw signature/manifest stdout. Their separate export and raw-stream replay
+remain outside this checkpoint; the command-record review must not be described
+as that completed replay. The original result and preservation records remain
+unchanged.
+
+Actual local receipts below are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`. The result's `.jsonl`
+file contains one complete JSON object.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `selected4/activation-v1/bound-nothing11-selected-four-v1/root-selected4-native-v1/stdout.jsonl` | `21b352c65eb079ee8dd56689d34c2454783488705d5bd0ac8db212676264fd33` | 11,521,390 |
+| `selected4/activation-v1/bound-nothing11-selected-four-v1/root-selected4-native-v1/exit.json` | `e7983de17dd7319d34b8b0a635daa339b4894064cf080b629bc2cf4d5359eebd` | 81 |
+| `root-selected4-dispatch-v2/completion.json` | `01469750646df6cd0ae4a20dc3d5cd99bcb038c55d82f1aad93600fa75963955` | 1,366 |
+| `root-selected4-result-review-v1/review.json` | `aba72b26ae59002ab23fcfd83ac26bf91efded21f065705afd66fc0d72e206eb` | 10,032 |
+
+**Images6, the no-invalidation five-image SHA-256 stage and Package6 still need
+their own actual results.** This component result admits no new images or
+signed ROM. Signing, complete AVB/FEC/VINTF/super/partition checks, OTA and
+device boot remain unverified. No source mutation, new private-key transfer or
+phone operation occurs; the ROM is **not flashable**.
+
 ## Nothing11 passes after storage cleanup — 2026-09-02
+
+This earlier checkpoint preserves its frontend-only scope and then-pending
+Selected4 component work.
 
 The resumed **Nothing11 native invocation and profile validation pass** after
 the [completed cleanup](storage-cleanup.md). The genuine root wrapper runs

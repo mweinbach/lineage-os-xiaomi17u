@@ -10,6 +10,32 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Selected4 component build and profile postcheck pass.** The native invocation
+runs **2026-09-02 19:24:16–19:25:59 UTC**, exit **0**; the root wrapper closes
+at **19:37:41 UTC**, also exit **0**. The result verifies **26 fresh producer
+actions and eight fresh strict library statuses**, plus configured signature
+and manifest checks for nine APKs. Flex's current-equivalent prior strict check
+is separate, not a ninth fresh status.
+
+All **six complete before/after callback maps match**, with **548 selected
+source files** and **1,179 project HEAD/origin matches**. Backup-first output
+preparation preserves **26 originals and 26 independent copies**. Source
+identity **`nezha.86e40fe309189fdcd20dff9b`**, normal Android enforcing, 4 KiB
+and working76 remain unchanged. The root reviewed the actual result and its
+36 signature/manifest command records; separate export/replay of those raw
+command streams is not established by this checkpoint. These checks do not
+verify every embedded signature scheme, full manifest XML or runtime behavior.
+
+**Images6, the five-image SHA-256 stage and Package6 remain pending**, followed
+by signing and complete AVB/FEC/VINTF/super/partition, OTA and device-boot gates.
+No source mutation or phone operation occurs, and the ROM is **not flashable**.
+See the [Selected4 checkpoint](build-progress.md#selected4-component-build--2026-09-02)
+for exact receipts and scope.
+
+## Earlier Nothing11 and cleanup checkpoint
+
+This entry preserves its frontend-only result and then-pending Selected4 work.
+
 **Nothing11 passes after cleanup.** The resumed native `m nothing` invocation
 runs **2026-09-02 17:51:18–17:53:01 UTC**, exit **0**; the genuine root wrapper
 closes at **17:56:39 UTC**, exit **0**. Profile validation, the metadata
