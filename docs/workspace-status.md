@@ -10,6 +10,18 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Further host scratch and Package5 duplicates are retired.** At
+**2026-09-02 20:31:31 UTC**, six scratch files and 15 duplicate P5 image bodies
+have been removed. Their operation-local host-free increases total **10.08
+GiB**, leaving **165,457,305,600 bytes (154.09 GiB)** available at that checkpoint.
+The old P5 ZIP, two original stock inputs, small records and directories remain.
+**The old P5 input manifest is now historical and incomplete**: reuse requires
+restoring all image bodies and fresh validation, not an automatic fallback or
+substitution with Package6. The subsequent Images6 read-only capture closes
+successfully at **20:31:59 UTC**; recovery-specific proof and the actual image
+rebuild remain separate, with no phone operation. See the
+[host-retirement checkpoint](build-progress.md#host-scratch-and-package5-duplicate-retirement--2026-09-02).
+
 **Second old-output cleanup completes with the original builder restored.** At
 **2026-09-02 20:14:46 UTC**, post-restart checks pass after removing **169,727
 descendant entries** from two reviewed historical intermediate directories;

@@ -1,5 +1,49 @@
 # Nezha product and build progress
 
+## Host scratch and Package5 duplicate retirement — 2026-09-02
+
+Two host-only retirements complete at **20:23:45 UTC** (six old TAR/synthetic
+scratch files) and **20:31:31 UTC** (15 duplicate materialized Package5 images).
+The retired v12e TAR belongs to a **successful historical predecessor**, not a
+failed build; its logs and seed/source evidence remain preserved.
+
+Before P5 removal, the root rehashes the complete retained ZIP and verifies
+full-byte joins for **13 unique ZIP members plus two original stock inputs**.
+All **507 controls**, keeper records and nine-field guards remain unchanged.
+The **10,997,962,405-byte P5 ZIP** (`622073f3…`), original `countrycode`/`pvmfw`
+inputs, all 15 small records and every directory are kept; only the 15 image
+leaves and their historical inode identities are lost. **The old P5 input
+manifest is historical/incomplete until all bodies are restored and freshly
+validated.** No active body consumer or fallback is selected, and Package6 is
+not used as a replacement.
+
+The six scratch files occupied **1,159,380,992 allocated bytes**, with an
+observed host-free increase of **1,148,145,664 bytes**. The P5 duplicates occupied
+**9,671,483,392 logical/allocated bytes**, with a separate host-free increase of
+**9,670,361,088 bytes**. The two observed deltas total **10,818,506,752 bytes
+(10.08 GiB)**; final host availability is **165,457,305,600 bytes (154.09 GiB)**.
+These operation-local observations may include concurrent host activity; do not
+add allocation sizes again or attribute earlier cleanup gains to this step.
+
+Evidence below is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `small-host-scratch-retirement-v1/root-retirement-v1/completion.json` | `d4eb0fe0d188e097880a29bd95c8e159b5c39aa1735d0496badeee482de2ebf6` | 1,617 |
+| `package5-materialized-duplicate-review-v1/root-body-replay-v2/replay.json` | `4b307c6305bad484f9d4b0cb15b0c55b80c16ab096ad93511b846918e5d8d881` | 1,349,445 |
+| `package5-materialized-duplicate-review-v1/root-retirement-v1/completion.json` | `12b373bc88c736a372a34fc9399a7d6b462aa5002131ceec0077dcc77838b406` | 4,898 |
+| `root-images6-capture-dispatch-v1/completion.json` | `025a4e6a6032c37b575af0bf99401398f6e079d20496536c8f023bcf593c86d1` | 1,719 |
+| `root-images6-capture-review-v1/review.json` | `bde24a01d2b27b19680141a34aa811377519d242bd95d2317617eb44f46b4bad` | 10,743 |
+
+The subsequent Images6 read-only capture closes successfully at **20:31:59
+UTC**. Root replays its complete packet and outer/source joins, both guarded
+Ninja query streams and unchanged before/after target and log observations;
+all 143 held inputs remain unchanged. Recovery-specific proof and the actual
+image rebuild still require their own results. These retirements and capture
+run no image build or phone operation and establish no Package6, signing or ROM
+result; the existing Selected4 and earlier cleanup checkpoints remain intact.
+
 ## Second old-output cleanup and trim — 2026-09-02
 
 The approved historical-intermediate removal completes with native **exit 0**
