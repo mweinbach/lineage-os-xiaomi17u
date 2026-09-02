@@ -10,6 +10,33 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **Package4 native retry fails** at a build-metadata guard, exiting 1 at
+**2026-09-02 07:15:57 UTC**. Full retained stdout confirms checksum `OK`, then
+**`native target-files mode differs`** at the failed `.zip.list` target. This
+concerns packaging configuration, not file permissions: `building_vendor_image`
+and `building_odm_image` are absent where the installer expects empty strings.
+A/B and VINTF enforcement remain `true`; `allow_non_ab` is absent.
+
+Complete native stream readback and all **three failure metadata bodies /
+227,334 bytes** are verified, with two matching reads and nine-field stat
+checks. Preflight and invocation occurred, but native success, profile
+completion and validation are false; no package postcheck or successful ZIP
+is verified. All six callbacks match before/after this run.
+
+The current checksum-adapter correction is committed as **`3e4f904`**, with
+**4,463 offline tests passing**, but is **not installed in the VM**. Successor
+metadata and mi_ext controls remain host candidates. The installed source is
+still **548 files/fifteen projects**, **`nezha.a7db36604f45fcc657373f89`**, epoch
+**1788144555**. Images4 remains a separate successful milestone. Normal Android
+enforcement, 4 KiB and `working76` remain unchanged; final VINTF/AVB/partition,
+signing/rollback, OTA and boot/hardware gates remain open. No phone operation
+occurs and the ROM is **not flashable**. See the dated [Package4 failure checkpoint](build-progress.md#package4-build-metadata-mode-failure--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Images4 checkpoint
+
+This entry preserves its original image/replay scope and then-pending work.
+
 The **Images4 native phase and complete original-evidence replay pass**.
 Native execution exits 0 at **2026-09-02 06:26:44 UTC**, verifying **seven fresh
 actions, three recomputed framework sidecars and four image outputs**. Four

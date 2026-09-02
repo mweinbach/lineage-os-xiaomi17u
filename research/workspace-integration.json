@@ -6868,5 +6868,410 @@
         "size_bytes": 53917
       }
     }
+  },
+  "package4_metadata_mode_failure_checkpoint_20260902": {
+    "status": "verified_package4_native_failure_complete_stream_and_metadata_readback_host_fix_committed_not_adopted",
+    "preceding_checkpoint_commit": "1d075c353e865bdc4bc7a3bad9c506150b8f80d0",
+    "preceding_checkpoint": "images4_native_checkpoint_20260902",
+    "native_failure": {
+      "phase": "first-target-files-package-4",
+      "started_at": "2026-09-02T07:13:33.542015+00:00",
+      "finished_at": "2026-09-02T07:15:57.068287+00:00",
+      "exit_code": 1,
+      "root_unified_exec_session_id": 78585,
+      "root_unified_exec_exit_code": 1,
+      "separate_outer_wrapper_interval_claimed": false,
+      "phase_results": {
+        "preflight_completed": true,
+        "native_invocation_executed": true,
+        "native_process_succeeded": false,
+        "profile_completed": false,
+        "profile_validation_verified": false
+      },
+      "postcheck": null,
+      "preflight_error": null,
+      "postcheck_errors": [],
+      "ninja_observed_argv_limits_sandbox_verified": true,
+      "native_streams_complete": true,
+      "timeout_disk_floor_or_output_limit_hit": false,
+      "native_stream_pins_as_recorded": {
+        "stderr": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-package-4/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-package-4/build.stdout",
+          "sha256": "b8cfd4cc28779ee2ccfa5d1fc74bb65bc4adc050308d42e056fcbf23fe4e266d",
+          "size_bytes": 45834
+        }
+      },
+      "host_transport_stderr_bytes": 285,
+      "host_transport_stderr_scope": "Retained caller traceback reporting failed normal invocation/profile; distinct from empty native build stderr."
+    },
+    "failure_diagnostic": {
+      "mode_refers_to": "A/B, VINTF and image-building metadata, not filesystem permissions",
+      "misc_info_native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files/META/misc_info.txt",
+      "misc_info_sha256": "745643cf478e97092360901562af6e1ec9e17fc2baddc46072641812e96d0ae3",
+      "misc_info_size_bytes": 6930,
+      "observed_fields": {
+        "ab_update": {
+          "present": true,
+          "value": "true"
+        },
+        "allow_non_ab": {
+          "present": false,
+          "value": null
+        },
+        "building_odm_image": {
+          "present": false,
+          "value": null
+        },
+        "building_vendor_image": {
+          "present": false,
+          "value": null
+        },
+        "vintf_enforce": {
+          "present": true,
+          "value": "true"
+        }
+      },
+      "old_prebuilt_flags_predicate": false,
+      "proposed_absent_defaults_prebuilt_flags_predicate": true,
+      "unchanged_ab_vintf_predicates_pass": true,
+      "canonical_full_base64_and_no_duplicate_keys_checked": true,
+      "host_diagnostic_only_not_native_install_pass": true,
+      "diagnostic_collection_started_at": "2026-09-02T07:18:14.351789+00:00",
+      "diagnostic_collection_finished_at": "2026-09-02T07:18:14.432608+00:00",
+      "diagnostic_collection_exit_code": 0,
+      "failure_and_checksum_text_verified_in_complete_native_stdout": true,
+      "checksum_command_reported_ok": true,
+      "next_guard_error": "native target-files mode differs"
+    },
+    "callbacks": {
+      "six_complete_results_equal_before_after": true,
+      "equality_to_nothing8_claimed": false
+    },
+    "build_number": "nezha.a7db36604f45fcc657373f89",
+    "build_epoch": 1788144555,
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "limits": {
+      "package_success_admitted": false,
+      "successful_target_files_zip_verified": false,
+      "metadata_packaging_hook_verified": false,
+      "successor_adapter_fix_adopted": false,
+      "successor_native_retry_verified": false,
+      "image_reproducibility_verified": false,
+      "signed_parent_chain_verified": false,
+      "runtime_verified": false,
+      "signed_flashable_rom_verified": false,
+      "ota_verified": false,
+      "hardware_or_rom_boot_verified": false,
+      "phone_accessed": false,
+      "native_or_vm_call_by_documentation_reviewer": false,
+      "complete_rom_ready": false,
+      "kernel_vintf_compatibility_verified": false
+    },
+    "evidence": {
+      "root_closed_failure_review": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/actual-package4-admission-v1/root-closed-native-failure-review-v1.json",
+        "sha256": "6f15be3504321564481d87767c7b762c354f4387987df1710fc1447a99b3a2bb",
+        "size_bytes": 4165
+      },
+      "closed_native_result": {
+        "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-package-4-v1/stdout.jsonl",
+        "sha256": "a0830c82e3ed88935880e1bf6d29f2ef1e5509a1556668ef9d04421d8be7ba5e",
+        "size_bytes": 11041286
+      },
+      "native_transport_exit": {
+        "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-package-4-v1/exit.json",
+        "sha256": "fcc9c47c89834d93e1aefbd7a2ad0c5b343d70547b636e49925077023eb78219",
+        "size_bytes": 65
+      },
+      "host_transport_stderr": {
+        "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-package-4-v1/stderr.log",
+        "sha256": "92dc09572331bab95187831b7b742e07dfef7bd0ff8bcfc1b195923936dbb81f",
+        "size_bytes": 285
+      },
+      "read_only_misc_diagnostic_wire": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/package4-mode-failure-diagnostic-v1/stdout.json",
+        "sha256": "06e9093ff39f696845e1cb1d3f740e2a606f12a37de86d9411e64af485d1938d",
+        "size_bytes": 10131
+      },
+      "read_only_misc_diagnostic_completion": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/package4-mode-failure-diagnostic-v1/completion.json",
+        "sha256": "927fd31c5320c5b57c838a76912fa0a491580c84a508cc09eeade19727e4561f",
+        "size_bytes": 307
+      },
+      "root_host_predicate_diagnostic": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/package4-mode-failure-diagnostic-v1/root-predicate-review-v1.json",
+        "sha256": "ef01db34ac71a72e0a81a0e9dfe7024f341938f67baee12b647aff8791a5617a",
+        "size_bytes": 548
+      },
+      "complete_native_stream_readback": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/decoded/verification.json",
+        "sha256": "621b0a36d75aba721dc3c424a5072068b0c1c39e4430f46322c59aa80a809d55",
+        "size_bytes": 1951
+      },
+      "complete_native_stream_readback_completion": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/completion.json",
+        "sha256": "bcd9f779ae666d86847348827cc0a70fd16b7c95b310c7f6a9ee40bb0d96b49f",
+        "size_bytes": 763
+      },
+      "complete_native_stream_wire": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/stdout.jsonl",
+        "sha256": "a591935b497d6551edc7b65a2de43b2697064b219754361b99dbf0b582b21240",
+        "size_bytes": 61746
+      },
+      "complete_native_stream_final_seal": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/stderr.json",
+        "sha256": "d3e2c05968978da52fe07b69f6554f13af2974d3a626ed0cfa4a1b89c6c849a8",
+        "size_bytes": 776
+      },
+      "complete_native_build_stdout": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/decoded/000.bin",
+        "sha256": "b8cfd4cc28779ee2ccfa5d1fc74bb65bc4adc050308d42e056fcbf23fe4e266d",
+        "size_bytes": 45834
+      },
+      "complete_native_build_stderr": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/decoded/001.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "historical_metadata_collector_v1_completion": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v1/actual-v1/completion.json",
+        "sha256": "f8210098d5f835839824a98dbf7b1758629fe67d00e114e001805182d6dd2c12",
+        "size_bytes": 643
+      },
+      "historical_metadata_collector_v1_stderr": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v1/actual-v1/stderr.log",
+        "sha256": "43d457878a9489378c98b470078568bd22ba2db600380abb57bec7e34be5535f",
+        "size_bytes": 453
+      },
+      "historical_metadata_collector_v2_completion": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v2/actual-v1/completion.json",
+        "sha256": "ccc2ec40823078366a93be8f9e6f24443cda1b30303215131c2c39cec7de10be",
+        "size_bytes": 644
+      },
+      "historical_metadata_collector_v2_stderr": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v2/actual-v1/stderr.log",
+        "sha256": "3c419736cca839700f60d70510fa4348d0269d394912e8b59b1579f7f563b000",
+        "size_bytes": 1063
+      },
+      "closed_failure_metadata_verification": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/decoded/verification.json",
+        "sha256": "8f8a34c50456fa0e6abdbc81f30819eb66ac10cbcafa5752339d8a13c661c88b",
+        "size_bytes": 14251
+      },
+      "closed_failure_metadata_completion": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/completion.json",
+        "sha256": "fc8f0ba9f96cf086e225d8b7db09cf7a7352e859fae55cbe808e498f551c0b55",
+        "size_bytes": 646
+      },
+      "closed_failure_metadata_wire": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/stdout.json",
+        "sha256": "437d2f23e4005e2d64305b21711ca11adebe41d793ab1495e484a57f13a9767e",
+        "size_bytes": 319428
+      },
+      "closed_failure_metadata_stderr": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "closed_metadata_body_misc_info.txt": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/decoded/misc_info.txt",
+        "sha256": "745643cf478e97092360901562af6e1ec9e17fc2baddc46072641812e96d0ae3",
+        "size_bytes": 6930
+      },
+      "closed_metadata_body_kernel_version.txt": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/decoded/kernel_version.txt",
+        "sha256": "9e54a919870005ef441be94ffd035875a2d00c4af46cec302516d1c598eb5288",
+        "size_bytes": 52
+      },
+      "closed_metadata_body_kernel_configs.txt": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/failure-metadata-three-v3/actual-v1/decoded/kernel_configs.txt",
+        "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+        "size_bytes": 220352
+      },
+      "committed_host_fix_receipt": {
+        "path": "reports/metadata-checksum-20260902/package4-mode-fix-checkpoint-tests/run-shpmes/root-commit-verification-v1.json",
+        "sha256": "cad64554f89105b1382b58acad7f1668cc24ef82cdc790784e477d6714f43e87",
+        "size_bytes": 418
+      },
+      "committed_host_fix_test_summary": {
+        "path": "reports/metadata-checksum-20260902/package4-mode-fix-checkpoint-tests/run-shpmes/summary.json",
+        "sha256": "3b5e4aacbcb687d9ff4f3718d083a497049cba84b07735bf269564159d83a158",
+        "size_bytes": 2412
+      },
+      "committed_host_fix_test_log": {
+        "path": "reports/metadata-checksum-20260902/package4-mode-fix-checkpoint-tests/run-shpmes/stderr.log",
+        "sha256": "aa032b2305ded115bc7888deee7365b6dd81c84c6e024cd9eccb188506a14f89",
+        "size_bytes": 778611
+      },
+      "current_checksum_host_fix_freeze": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/package4-mode-fix-preparation-v1/current-checksum-freeze.json",
+        "sha256": "8d3837b88ad2d7f1a090015380dd42c69edfc03c9697e20f596bce5568301798",
+        "size_bytes": 1608
+      },
+      "current_checksum_host_predicate_review": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/package4-mode-fix-preparation-v1/current-mode-review.json",
+        "sha256": "83a7d1f8ba1b3df881c7d10068f1009af412af5510842e9743708ce22ab01f3c",
+        "size_bytes": 2598
+      },
+      "historical_base_candidate_restoration": {
+        "path": "reports/metadata-checksum-20260902/packaging-preparation-v1/package4-mode-fix-preparation-v1/base-candidate-restoration.json",
+        "sha256": "4ddb30c3dd1fe8c49eee7d717f62ecb8ea001f2d539cfeea216237433c043cc4",
+        "size_bytes": 1483
+      }
+    },
+    "complete_native_stream_readback": {
+      "verified": true,
+      "files": 2,
+      "raw_bytes": 45834,
+      "started_at": "2026-09-02T07:24:35.550276+00:00",
+      "finished_at": "2026-09-02T07:24:35.699387+00:00",
+      "exit_code": 0,
+      "complete_canonical_payloads_and_nine_field_final_seals_verified": true,
+      "checksum_tool_check_reported_ok": true,
+      "mode_guard_failure_observed": true,
+      "failed_target_is_zip_list_not_successful_zip": true,
+      "observed_stdout_lines": {
+        "220": "FAILED: out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files.zip.list",
+        "222": "vendor/xiaomi/nezha-target-files-metadata/tools/target_files_metadata.py: OK",
+        "223": "candidate metadata delivery: native target-files mode differs"
+      },
+      "streams": {
+        "build.stdout": {
+          "host_path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/decoded/000.bin",
+          "native_path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-package-4/build.stdout",
+          "sha256": "b8cfd4cc28779ee2ccfa5d1fc74bb65bc4adc050308d42e056fcbf23fe4e266d",
+          "size_bytes": 45834,
+          "native_identity": [
+            65056,
+            43016951,
+            33152,
+            0,
+            0,
+            1,
+            45834,
+            1788333357062326012,
+            1788333357062326012
+          ]
+        },
+        "build.stderr": {
+          "host_path": "reports/metadata-checksum-20260902/packaging-preparation-v1/post-package4-evidence-v1/build-streams-v1/actual-v1/decoded/001.bin",
+          "native_path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-package-4/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0,
+          "native_identity": [
+            65056,
+            43016952,
+            33152,
+            0,
+            0,
+            1,
+            0,
+            1788333213541657588,
+            1788333213541657588
+          ]
+        }
+      },
+      "full_failure_kernel_and_misc_closure_verified": true,
+      "package_success_admitted": false
+    },
+    "guide": "docs/build-progress.md#package4-build-metadata-mode-failure--2026-09-02",
+    "closed_failure_metadata_readback": {
+      "verified": true,
+      "files": 3,
+      "raw_bytes": 227334,
+      "root_started_at": "2026-09-02T07:35:23.220484+00:00",
+      "root_finished_at": "2026-09-02T07:35:23.387945+00:00",
+      "exit_code": 0,
+      "native_collector_started_at": "2026-09-02T07:35:23.336719+00:00",
+      "native_collector_finished_at": "2026-09-02T07:35:23.344278+00:00",
+      "quiescence_checks_passed": true,
+      "two_complete_native_reads_match": true,
+      "full_canonical_payloads_and_nine_field_stats_verified": true,
+      "misc_matches_earlier_complete_diagnostic_bytes_and_all_nine_stats": true,
+      "bodies": [
+        {
+          "name": "misc_info.txt",
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files/META/misc_info.txt",
+          "sha256": "745643cf478e97092360901562af6e1ec9e17fc2baddc46072641812e96d0ae3",
+          "size_bytes": 6930
+        },
+        {
+          "name": "kernel_version.txt",
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files/META/kernel_version.txt",
+          "sha256": "9e54a919870005ef441be94ffd035875a2d00c4af46cec302516d1c598eb5288",
+          "size_bytes": 52
+        },
+        {
+          "name": "kernel_configs.txt",
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files/META/kernel_configs.txt",
+          "sha256": "73fa878baa4c748b2139e7acb4ed396d2056ca8ed71b565ded6f96b3558a98cd",
+          "size_bytes": 220352
+        }
+      ],
+      "default_file_bytes_exclusive": 65536,
+      "only_exact_path_inclusive_exception": {
+        "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files/META/kernel_configs.txt": 220352
+      },
+      "canonical_relative_alias_argument": "out-nezha-user-policy-20260827T2220Z",
+      "kernel_metadata_present_nonempty": true,
+      "kernel_vintf_compatibility_verified": false,
+      "source_or_output_written": false,
+      "package_success_admitted": false,
+      "historical_collector_attempts": [
+        {
+          "version": "v1",
+          "scope": "read-only metadata collector failure, separate from the Package4 native failure",
+          "started_at": "2026-09-02T07:28:19.451874+00:00",
+          "finished_at": "2026-09-02T07:28:19.574255+00:00",
+          "exit_code": 1,
+          "reason": "The generic 65,536-byte exclusive cap rejected the measured 220,352-byte kernel_configs.txt."
+        },
+        {
+          "version": "v2",
+          "scope": "read-only metadata collector failure, separate from the Package4 native failure",
+          "started_at": "2026-09-02T07:32:09.996837+00:00",
+          "finished_at": "2026-09-02T07:32:10.160267+00:00",
+          "exit_code": 1,
+          "reason": "The bounded collector failed while serializing a PosixPath argument as JSON."
+        }
+      ]
+    },
+    "host_fix": {
+      "commit": "3e4f904b9118b112c809bb86b79e624f761e4acf",
+      "scope": "Only the current checksum adapter and six regression tests; historical base and ancestor sources remain unchanged.",
+      "offline_tests_passed": 4463,
+      "offline_test_elapsed_seconds": 164.533,
+      "committed_files_equal_full_suite_tested_bodies": true,
+      "active_checksum_adapter": {
+        "sha256": "356ef19c73c3f04f834d83566d6347042c5afc64ef08990e2896d6c0673dd080",
+        "size_bytes": 13968
+      },
+      "generated_runtime": {
+        "sha256": "c4029700d44fc0273c5716aafd4bc0389aa236084baaddce8afbefedb8d2aff2",
+        "size_bytes": 222151
+      },
+      "generated_runtime_host_compiled_and_unit_checked": true,
+      "historical_base_and_ancestors_byte_identical": true,
+      "frozen_predecessor_source_count": 6,
+      "successor_metadata_and_mi_ext_controls_scope": "Host candidates only, not source adoption or native build results.",
+      "source_installed": false,
+      "native_package_retry_performed": false
+    },
+    "current_installed_vm_source": {
+      "source_files": 548,
+      "source_projects": 15,
+      "build_number": "nezha.a7db36604f45fcc657373f89",
+      "build_epoch": 1788144555,
+      "scope": "Existing Package4-bound source; no successor source installation claimed."
+    },
+    "next_gate": "Adopt the reviewed host-only successor inputs under separately verified source installation, then rerun the required native configuration/build/package gates. Final VINTF/AVB/partition, signing/rollback, OTA and boot/hardware remain unverified."
   }
 }

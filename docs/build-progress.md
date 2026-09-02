@@ -1,5 +1,56 @@
 # Nezha product and build progress
 
+## Package4 build-metadata mode failure — 2026-09-02
+
+The **Package4 native retry fails**, exit 1, running **07:13:33–07:15:57 UTC**.
+The root's direct unified session **78585** also exits 1. Preflight and native
+invocation occur; native success, profile completion and profile validation
+are false, with no package postcheck or successful target-files ZIP verified.
+Ninja observation, argv, limits and sandbox checks pass; no timeout, disk-floor
+breach or output overflow explains the failure. All six complete callbacks
+match before/after this run; no equality with Nothing8 is claimed.
+
+Complete native stream readback finishes at **07:24:35 UTC**, exit 0, retaining
+**45,834-byte stdout and empty stderr**. Full canonical payloads and nine-field
+final seals match the native result. Stdout records the failed `.zip.list`
+target, checksum `OK`, then **`native target-files mode differs`**. This guard
+concerns packaging build metadata, not file permissions. The separate
+**285-byte host transport stderr** is the failed-invocation/profile traceback,
+not native build stderr.
+
+The closed three-file metadata collector succeeds at **07:35:23 UTC**. It
+retains **227,334 bytes**: `misc_info.txt` **6,930**, `kernel_version.txt` **52**
+and `kernel_configs.txt` **220,352**. Two complete reads agree; quiescence,
+canonical payloads and all nine stat fields pass. Misc-info bytes and stats
+match the earlier diagnostic. Both `building_vendor_image` and
+`building_odm_image` are absent, not empty strings; `ab_update=true` and
+`vintf_enforce=true` remain present, while `allow_non_ab` is absent. The old
+two-flag predicate fails; the host absent-default correction accepts these
+flags without weakening the A/B or VINTF checks. Kernel metadata presence is
+**not a VINTF compatibility result**.
+
+Two earlier readback failures remain preserved separately from Package4:
+collector V1 exceeded its **64 KiB** file bound; V2 failed JSON serialization
+of a `Path` argument. V3 uses only the exact measured **220,352-byte** kernel
+exception and a canonical relative alias argument; it is a successful
+read-only collector, not a successful package retry.
+
+The **current checksum adapter** correction is committed as
+**`3e4f904b9118b112c809bb86b79e624f761e4acf`**, with six added regression tests
+and **4,463 offline tests passing in 164.533 seconds**. The historical base and
+ancestor sources remain byte-identical. Its generated helper and successor
+metadata/mi_ext controls are **host-only candidates**, not an installed source
+update or a native retry. The VM remains on **548 files/fifteen projects**,
+**`nezha.a7db36604f45fcc657373f89`**, epoch **1788144555**.
+
+Prior Package3 failure and Images4 success retain their original scope. Normal
+Android enforcing, 4 KiB, `working76`, kernel warnings and `test-keys` remain
+unchanged. Final VINTF/AVB/partition, signing/rollback, OTA and boot/hardware
+checks remain open; no phone operation occurs and no complete or flashable
+ROM is established. The [Package4 failure record](../research/workspace-integration.json)
+binds the native result, full readbacks, collector history and committed host
+fix without promoting any of them to source adoption or packaging success.
+
 ## Images4 and complete evidence replay — 2026-09-02
 
 The **Images4 native phase, image postchecks and complete host replay pass**.
