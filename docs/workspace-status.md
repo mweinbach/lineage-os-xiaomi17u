@@ -10,6 +10,22 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Five's native invocation exits 0, but its profile fails.** The ordinary Ninja
+build runs **2026-09-02 22:33:40–22:36:05 UTC**; the outer command closes at
+**22:40:08 UTC**, exit **1**, with `selected image build changed protected sidecars`.
+All **56 held inputs**, six complete before/after callback maps and **254
+configuration fields** remain unchanged. Each of the three 65-byte sidecars
+retains its bytes, path, eight other stat fields and ancestor identities; only
+`ctime` changes within the build window. Captured temporary-hardlink code is
+consistent with that observation, not a trace of the actual syscalls.
+
+The failed result remains immutable and **recovery is preparation only**.
+No rebuild or forced invalidation has recovered the profile, and no Five image
+admission, Package6, final AVB, signing or ROM success is established. No phone
+operation occurs. See the [Five failure checkpoint](build-progress.md#five-native-exit-and-protected-sidecar-failure--2026-09-02).
+
+## Earlier preparation, cleanup and Images6 checkpoints
+
 **Eight obsolete vendor/ODM image files are retired.** The host-only operation
 completes at **2026-09-02 22:14:08 UTC**, recovering an observed **22,577,491,968
 bytes (21.03 GiB)** and leaving **181,437,829,120 bytes (168.98 GiB)** available.
@@ -20,8 +36,8 @@ super images remain outside the deletion set.
 
 The **five-image read-only queries and proof staging pass**, including both
 query streams, 13 retained originals and 115 unchanged staging inputs. Narrow
-host-reader and exact empty-graph corrections pass 25 focused tests; final
-independent preparation review is pending. **Five native rebuild not yet
+host-reader and exact empty-graph corrections pass 25 focused tests; at that
+earlier checkpoint final independent preparation review is pending. **Five native rebuild not yet
 verified**; Package6, signing and boot gates remain open. No phone operation
 occurs. See the [retirement and preparation checkpoint](build-progress.md#vendorodm-retirement-and-five-image-preparation--2026-09-02).
 

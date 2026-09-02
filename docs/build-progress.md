@@ -1,5 +1,42 @@
 # Nezha product and build progress
 
+## Five native exit and protected-sidecar failure — 2026-09-02
+
+The ordinary Five Ninja invocation runs **22:33:40.346762–22:36:05.236215 UTC**,
+exit **0**, but the outer command closes at **22:40:08.639 UTC**, exit **1**.
+Profile completion/validation are false and the postcheck is null, with
+`selected image build changed protected sidecars`. Native exit 0 alone does
+not verify fresh image actions or admit the resulting images.
+
+All **56 held input hashes/nine-field stat records**, six complete before/after
+callback returns and **254 configuration values** remain unchanged. Five
+ordinary callback objects and the protected policy runtime also match Nothing11.
+The three **65-byte sidecars** retain their full bytes, paths, original inodes,
+permissions, mtime, all eight non-ctime stat fields and ancestor identities.
+Only `ctime` changes, inside the actual native invocation window.
+
+Captured `build_image.py` (`9397d764…`, 39,604 bytes) uses `CopyInputDirectory`
+with `os.link` inside a `TemporaryDirectory`. The actual tool ZIP's checked-hash
+cache header supports source binding; this makes temporary hardlinks a consistent
+explanation, **not a syscall trace or proof of the exact cause**.
+
+Exact local evidence is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-five-native-dispatch-v1/stdout.jsonl` | `c3cbe3532f49dad400f5eae9d0a5ee3e6a3e8dd93958e27ad96c7f5272389cae` | 10,637,537 |
+| `root-five-failed-profile-review-v1/review.json` | `adeda1d89032db33ed5c626db9dab41511d14db2da5e474153f10763ac76dcb7` | 5,135 |
+| `root-five-sidecar-diagnostic-v1/stdout.json` | `50a7e9d10b54491d3413aa2680d828d39a2576d001cb1ade10dc473fc2259bd8` | 81,249 |
+| `root-five-sidecar-cause-v2/stdout.json` | `cd7309816c4e041e33d5a7ed77b7ea10af47d9c616e15250ead0cb5a0d13fb09` | 268,198 |
+| `root-five-sidecar-cause-v3/stdout.json` | `aca9df2ad41558d16ed514270a6f1383c809ce4c3720365396b74a9287f89cc7` | 594,954 |
+
+The nine-file preparation review completed before launch; its 25 focused and
+17 staging tests and the prior 4,508-test checkpoint are not a successful native
+profile. **Recovery remains preparation**, with the original failure preserved,
+no rebuild or forced output invalidation, and no phone operation. Recovered
+profile, Package6, final AVB/signing, super, OTA and ROM/boot gates remain open.
+
 ## Vendor/ODM retirement and five-image preparation — 2026-09-02
 
 The host-only retirement runs **22:13:10–22:14:08 UTC**, removing exactly
@@ -25,8 +62,8 @@ an image build. Host preparation first fails closed before I/O at a Nothing11
 reader binding, then rejects the exact zero-byte graph shard. Shared-reader and
 literal-empty-graph corrections preserve the original validators, all **16
 graphs / 6,862,614,527 bytes**, all 19 roles and existing limits. **25 focused
-host tests pass**, including genuine native-style validation; final independent
-preparation review remains pending. **Five native rebuild not yet verified.**
+host tests pass**, including genuine native-style validation; at that earlier
+checkpoint final independent preparation review remains pending. **Five native rebuild not yet verified.**
 
 Exact local evidence is relative to
 `reports/avb-sha256-20260902/resume-build-20260902-v1/`.
