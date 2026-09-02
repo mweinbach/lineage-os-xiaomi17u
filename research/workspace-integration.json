@@ -5095,5 +5095,264 @@
       "native_dispatch_performed": false
     },
     "independent_full_raw_proof_replay_verified": true
+  },
+  "images3_native_checkpoint_20260902": {
+    "status": "ordinary-images3-native-build-postcheck-and-independent-full-retained-evidence-replay-passed",
+    "guide": "docs/build-progress.md",
+    "profile": "images",
+    "phase": "first-target-files-images-3",
+    "source_files": 545,
+    "source_projects": 15,
+    "identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+    "build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+    "build_epoch": 1788144555,
+    "ordinary_argv": [
+      "build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j8",
+      "recoveryimage",
+      "mi_extimage",
+      "vendorimage",
+      "odmimage",
+      "plat_sepolicy_and_mapping.sha256",
+      "system_ext_sepolicy_and_mapping.sha256",
+      "product_sepolicy_and_mapping.sha256"
+    ],
+    "native_started_utc": "2026-09-02T01:12:09.707511+00:00",
+    "native_finished_utc": "2026-09-02T01:13:56.252104+00:00",
+    "native_exit_code": 0,
+    "actual_host_process_exit_code": 0,
+    "host_completion_observed_utc": "2026-09-02T01:17:50.586277+00:00",
+    "process_reaped_and_streams_complete": true,
+    "profile_completed": true,
+    "postcheck_errors": [],
+    "freshness_from_ninja_and_verbose_evidence_not_matching_bytes": true,
+    "recovery_recipe_revalidation": {
+      "expected_verbose_executions": 2,
+      "observed_fresh_installed_rows": 1,
+      "observed_verbose_executions": 2,
+      "phony_goal_success_row_required": false,
+      "required_fresh_installed_rows": 1
+    },
+    "source_and_installed_image_pins_equal": true,
+    "installed_images": {
+      "mi_ext": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/mi_ext.img",
+        "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+        "size_bytes": 111198208
+      },
+      "odm": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/odm.img",
+        "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+        "size_bytes": 4767621120
+      },
+      "recovery": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/recovery.img",
+        "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+        "size_bytes": 104857600
+      },
+      "vendor": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/vendor.img",
+        "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+        "size_bytes": 959709184
+      }
+    },
+    "installed_framework_sidecars": {
+      "plat": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/system/etc/selinux/plat_sepolicy_and_mapping.sha256",
+        "sha256": "b0ebad72754afac819eb42b91ffe01c64694ae9c1b8831d333f0933224bbce42",
+        "size_bytes": 65
+      },
+      "product": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/product/etc/selinux/product_sepolicy_and_mapping.sha256",
+        "sha256": "47ac967fe4a690137321beb1f863778de31a7f3534e200c1642f6659e2a45d53",
+        "size_bytes": 65
+      },
+      "system_ext": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/system_ext/etc/selinux/system_ext_sepolicy_and_mapping.sha256",
+        "sha256": "50bf5b0d5a1df2170a898474f45246c0f4895b3489f27cbc6b628be23ae75981",
+        "size_bytes": 65
+      }
+    },
+    "working76_recovery_matches_selected_derivative": true,
+    "recovery_runtime_newly_compiled": false,
+    "vendor_runtime_newly_compiled": false,
+    "three_framework_sidecars_recomputed": true,
+    "seven_compiler_and_installed_policy_inputs_verified": true,
+    "intentional_preserved_rebuild": {
+      "output_invalidated_or_deleted": true,
+      "prior_installed_images_present": 4,
+      "prior_installed_images_moved_to_retained_locations": 4,
+      "all_four_original_image_inodes_retained": true,
+      "prior_installed_sidecars_present": 3,
+      "prior_installed_sidecars_moved_to_retained_locations": 3,
+      "sidecar_independent_copies_verified": 3,
+      "sidecar_originals_verified": 3,
+      "known_historical_archive_absences_preserved": [
+        "vendor",
+        "odm"
+      ],
+      "archive_absences_do_not_describe_current_installed_images": true,
+      "source_files_written": false,
+      "whole_output_tree_copied": false
+    },
+    "all_six_complete_ordinary_guard_maps_match_nothing7_before_after": true,
+    "configuration_fields": 254,
+    "configuration_matches_admission_before_after": true,
+    "source_inventory_rows_and_modes": 545,
+    "upstream_revision_and_origin_matches": 1179,
+    "reviewed_locally_patched_projects_preserved": 9,
+    "native_metadata_values_verified": true,
+    "captured_metadata_files": 6,
+    "metadata_embedded_bodies_decode_and_match_pins": true,
+    "metadata_errors": [],
+    "native_stream_identities": {
+      "stderr": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "stdout": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/build.stdout",
+        "sha256": "79ae2f1672f05caad9646ba99a46f8232cf707efd19928d33f9f0476c93e2a2e",
+        "size_bytes": 3013
+      }
+    },
+    "ninja_argv_limits_and_sandbox_checks_passed": true,
+    "native_process_timeout_overflow_or_disk_floor_fault": false,
+    "independent_full_retained_evidence_replay_verified": true,
+    "next_gate": "Package3 with its own current native admission and final VINTF/AVB/partition, signed boot-chain and hardware checks.",
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "selected_kernel_warnings_retained": true,
+    "test_keys_not_oem_signing_trust": true,
+    "limits": {
+      "large_image_or_graph_bodies_independently_read_back_to_host": false,
+      "fresh_metadata_rewrites_verified": false,
+      "metadata_hook_verified": false,
+      "package3_verified": false,
+      "image_reproducibility_verified": false,
+      "signed_parent_chain_verified": false,
+      "signed_flashable_rom_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "native_request": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-images3-continuation-v1/request.json",
+        "sha256": "7a3a569877b00c5bf536c5ed5cb2326569fc1af52b87accf781c7c3805deb7d4",
+        "size_bytes": 32790777
+      },
+      "native_result": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-images3-continuation-v1/stdout.jsonl",
+        "sha256": "6b121507812915ec0dffef6bc06b90d1db82903c37101dd9ae743b94b05a91be",
+        "size_bytes": 10444736
+      },
+      "guest_transport_exit": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-images3-continuation-v1/exit.json",
+        "sha256": "aa05b88b319606a92a2086576562619f10b12b12f9fd97e83831b0ae35f3abee",
+        "size_bytes": 64
+      },
+      "actual_host_command_completion": {
+        "path": "reports/continuation-20260901/images3-exec-completion.json",
+        "sha256": "1ab46d46afbff6f672c32e47a73399eec2b62978c2ad5a5a53e6ac06b7ef1697",
+        "size_bytes": 1017
+      },
+      "complete_retained_evidence_readback": {
+        "path": "reports/continuation-20260901/packaging-preparation/images-capture/actual-images3-readback-v1/complete-readback-v1/review.json",
+        "sha256": "3a3d9f3281c81a8d6ed2ce682b41548b57f0c72446a45b1fdc5ecff195cce033",
+        "size_bytes": 54487
+      },
+      "root_action_policy_metadata_replay": {
+        "path": "reports/continuation-20260901/packaging-preparation/images-capture/actual-images3-readback-v1/root-semantic-replay.json",
+        "sha256": "32c178fef243c7db53c48fa96f0e3a2dc26cce94887fd1f41e71cc3053275659",
+        "size_bytes": 1934
+      },
+      "root_complete_replay": {
+        "path": "reports/continuation-20260901/packaging-preparation/images-capture/actual-images3-readback-v1/root-complete-replay.stdout.json",
+        "sha256": "0402c098da53f76eaefffc497ccda8ae09defb0b44ba612b13cc2fe23398d42e",
+        "size_bytes": 28776
+      },
+      "complete_replay_helper": {
+        "path": "reports/continuation-20260901/packaging-preparation/images-capture/actual-images3-readback-v1/replay_complete.py",
+        "sha256": "52ef71e97483ebe55443db3d61d6ab6abf3ae14456516ab604da0000be226121",
+        "size_bytes": 14042
+      }
+    },
+    "native_postcheck_passed": true,
+    "fresh_installed_producers": 7,
+    "fresh_image_producers": 4,
+    "fresh_framework_sidecar_producers": 3,
+    "native_retention_evidence": {
+      "four_image_receipt": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/retained-installed-images/receipt.json",
+        "sha256": "a7c5407fc26768dd4f59a58aea9cb015ea1da86db241b38851106e7bc6f71985",
+        "size_bytes": 12626
+      },
+      "four_image_journal": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/retained-installed-images/transaction.jsonl",
+        "sha256": "f4855814ced124a6610ca854bb4cbfd06f87d65b70d1479ebd87d9059a268fa3",
+        "size_bytes": 11051
+      },
+      "three_sidecar_receipt": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/retained-installed-framework-sidecars/receipt.json",
+        "sha256": "a7a4c665040eb39079cb709381b7aeb8bfd5a39f7654ba8ae786d5b50351b368",
+        "size_bytes": 30317
+      },
+      "three_sidecar_journal": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/retained-installed-framework-sidecars/transaction.jsonl",
+        "sha256": "3fc043fb60c462a6e6793a2c88eb0476e780530c62f9c1e8809ef8e2eea23133",
+        "size_bytes": 19858
+      }
+    },
+    "full_retained_evidence_replay": {
+      "verified": true,
+      "files_rehashed": 56,
+      "bytes_rehashed": 138925847,
+      "root_action_policy_replay_started_utc": "2026-09-02T01:28:57.332561+00:00",
+      "root_action_policy_replay_finished_utc": "2026-09-02T01:28:58.644694+00:00",
+      "fresh_actions_replayed": 7,
+      "complete_action_objects_equal_native_postcheck": true,
+      "recovery_recipe_executions": 2,
+      "recovery_fresh_installed_rows": 1,
+      "recovery_original_proof_parser_passed": true,
+      "framework_compiler_and_installed_pairs_replayed": 7,
+      "genfs_pair_checked_but_not_in_sidecar_hash": true,
+      "policy_sidecars_recomputed": 3,
+      "current_and_preserved_metadata_files": 12,
+      "metadata_original_validator_equal": true,
+      "image_journal_events": 12,
+      "sidecar_journal_events": 17,
+      "sidecar_active_copy_retained_bodies": 9,
+      "independent_native_sidecar_inode_identities": 9,
+      "all_nine_staged_proofs_unchanged": true,
+      "preservation_finished_before_native_build": true,
+      "all_host_stat_records_unchanged": true,
+      "all_native_guard_maps_before_after_equal": true,
+      "native_result_equals_host_stdout": true,
+      "complete_native_build_streams": {
+        "stderr": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-3/build.stdout",
+          "sha256": "79ae2f1672f05caad9646ba99a46f8232cf707efd19928d33f9f0476c93e2a2e",
+          "size_bytes": 3013
+        }
+      },
+      "native_image_hash_checks_rely_on_completed_postcheck": true,
+      "large_image_and_graph_bodies_read_on_host": false,
+      "native_preservation_inodes_reobserved_on_host": false,
+      "native_path_stubs_used": false,
+      "native_or_vm_calls_performed": false,
+      "target_files_verified": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    }
   }
 }

@@ -10,6 +10,33 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **Images3 native build, postcheck and retained-evidence replay pass**. Native
+execution runs at **2026-09-02 01:12:09–01:13:56 UTC**, with exit 0 and actual host exit 0
+at **01:17:50 UTC**. All seven installed producers are verified fresh: recovery,
+mi_ext, vendor and ODM images plus three framework policy SHA sidecars. The four
+images match their pinned inputs; working76 remains **`a130ba75…`**. This is
+delivery of the selected prebuilt images, not new recovery/vendor runtime
+compilation or a verified Evolution boot.
+
+The result intentionally records **`output_invalidated_or_deleted=true`**:
+four prior installed images and three sidecars are moved to retained locations
+before rebuilding, with original inodes and three sidecar copies preserved.
+All six ordinary guard maps match Nothing7, and **545 source files/fifteen
+projects**, **1,179 pinned HEADs/origins** and **254 configuration fields** stay
+unchanged. Six metadata bodies match **`nezha.b51a6b5609d2001e9ae1f7ae`** and
+epoch **1788144555**.
+
+Full host replay verifies **56 retained files / 138,925,847 bytes**, including
+the seven fresh actions, policy pairs, three sidecar hashes and current/preserved
+metadata. Large image and graph bodies are not read back to the host; their
+native hash checks remain bound to the completed postcheck. Package3 and its
+VINTF/AVB/partition checks, the signed boot chain and hardware tests remain
+separate. The selected-kernel warnings, `test-keys`, enforcing normal Android,
+4 KiB and working76 are unchanged. No phone operation occurs and complete-ROM
+readiness is false. See [build progress](build-progress.md) and the
+[Images3 checkpoint](../research/workspace-integration.json). Earlier checkpoints
+below keep their dated results and then-pending work.
+
 The **selected-nine native build and retained-evidence replay pass**. BCR and all
 eight Clock apps build from **2026-09-02 00:16:36 to 00:18:20 UTC**, with native
 exit 0 and actual host completion at **00:27:52 UTC**, also exit 0. The complete

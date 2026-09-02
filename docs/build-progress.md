@@ -1,5 +1,54 @@
 # Nezha product and build progress
 
+The **Images3 native build, postcheck and retained-evidence replay pass** on the
+545-file/fifteen-project source. Its exact `--make-mode -j8` invocation builds
+`recoveryimage`, `mi_extimage`, `vendorimage`, `odmimage` and the three
+`*_sepolicy_and_mapping.sha256` goals from **2026-09-02 01:12:09 to 01:13:56 UTC**,
+with native exit 0. The actual host process completes with exit 0 at
+**01:17:50 UTC**, independently of the guest transport receipt.
+
+All **seven installed-output producers** have verified fresh Ninja rows and
+verbose evidence; recovery has both required recipe executions and one fresh
+installed-image row. The four image output hashes equal their selected source
+hashes, including working76 recovery **`a130ba75…`**. The three framework SHA
+sidecars are recomputed, with seven compiler-output/installed-policy pairs
+verified against the selected ODM basis. These checks verify delivery of the
+pinned prebuilt images, not newly compiled recovery or vendor runtimes.
+
+Before rebuilding, the preservation transaction moves **four prior installed
+images and three sidecars** into retained locations, preserving all original
+inodes and three independent sidecar copies. The result explicitly and
+intentionally records **`output_invalidated_or_deleted=true`**. The two known
+vendor/ODM historical-archive absences remain recorded; all four active images
+were present before preservation. No source change or phone operation occurs.
+
+All six ordinary source/input guard maps equal Nothing7 before and after; all
+254 configuration entries match admission. The 545 source rows and modes,
+fifteen projects, 1,179 pinned revisions/origins and nine reviewed locally
+patched projects remain unchanged. Six metadata bodies match
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, epoch **1788144555**, hostname and the exact
+`BP4A.251205.006` fingerprint/thumbprint with `test-keys`. Native process,
+Ninja argv, sandbox and resource-limit checks pass; retained stdout is 3,013
+bytes and native stderr is empty.
+
+Independent host replay verifies all **56 retained files / 138,925,847 bytes**.
+The action/policy replay passes at **01:28:58 UTC**; the complete replay also
+verifies seven fresh actions, seven compiler/installed policy pairs, three
+recomputed sidecars and twelve current/preserved metadata files. It checks
+twelve image-journal events, seventeen sidecar-journal events, nine independent
+sidecar inode identities and all nine staged proofs. Original validators match,
+complete native streams are retained, and preservation precedes the native build.
+No native path stubs or new VM calls supply the host replay. Large image and
+graph bodies are not read back to the host; their source/output hash equality
+remains the completed native postcheck's evidence.
+
+Package3 and its final VINTF/AVB/partition and signed boot-chain checks remain
+separate, as do hardware validation and physical Evolution boot. Normal Android enforcement,
+4 KiB, working76, selected-kernel warnings and false complete-ROM readiness are
+unchanged. The [Images3 record](../research/workspace-integration.json) binds the
+actual request/result, host completion, preservation and full replay evidence.
+Earlier checkpoints below keep their original scope and failures.
+
 The **selected-nine native build and full retained-evidence replay pass**, with
 native execution at **2026-09-02 00:16:36–00:18:20 UTC**, exit 0, and actual host
 completion at **00:27:52 UTC**, exit 0. The complete result and action receipt

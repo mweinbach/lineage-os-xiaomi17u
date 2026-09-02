@@ -1,5 +1,25 @@
 # SystemUI Clock optional Window libraries
 
+The successor **Images3 native build, postcheck and retained-evidence replay
+pass**. Native execution ends at **2026-09-02 01:13:56 UTC**, with actual host
+exit 0 at **01:17:50 UTC**. Seven
+installed image/sidecar producers are verified fresh on the same 545-file,
+fifteen-project Clock-corrected source. Four image hashes match the pinned
+inputs, including working76; three framework policy SHA sidecars are recomputed.
+All six ordinary guards, 254 configuration fields and 1,179 pinned HEADs/origins
+remain unchanged, with build **`nezha.b51a6b5609d2001e9ae1f7ae`**.
+
+Four prior installed images and three sidecars are preserved before the
+intentional rebuild, which records **`output_invalidated_or_deleted=true`**.
+Independent full host replay verifies **56 files / 138,925,847 bytes**, including
+fresh actions, policy/sidecar checks and current/preserved metadata. Large image
+and graph bodies are not read back to the host. Package3, the signed boot chain
+and hardware tests are separate. The selected-nine component result
+below retains its independently replayed scope. Enforcing normal Android,
+4 KiB, working76, kernel warnings and `test-keys` remain unchanged; no phone
+operation occurs and complete-ROM readiness is false. See the
+[Images3 checkpoint](../research/workspace-integration.json).
+
 The **selected-nine native build passes** at
 **2026-09-02 00:18:20 UTC**, followed by actual host exit 0 at **00:27:52 UTC**.
 BCR and eight Clocks have **26 verified fresh outputs**: nine built APKs, nine
