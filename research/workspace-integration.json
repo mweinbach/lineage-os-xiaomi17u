@@ -4546,5 +4546,247 @@
         "size_bytes": 1084
       }
     }
+  },
+  "shared_graph_capture_and_clock_payload_checkpoint_20260902": {
+    "status": "shared-read-only-graph-capture-and-eight-raw-clock-payload-readbacks-passed-no-component-build",
+    "guide": "docs/systemui-clocks-optional-window-libraries.md",
+    "source_files": 545,
+    "source_projects": 15,
+    "identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+    "build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+    "build_epoch": 1788144555,
+    "capture_host_session_id": 70086,
+    "capture_actual_host_exit_code": 0,
+    "capture_host_completion_observed_utc": "2026-09-01T23:58:47.572Z",
+    "complete_capture_review_finished_utc": "2026-09-02T00:00:32.315463+00:00",
+    "exact_outer_sidecar_and_source_guard_link_replay_passed": true,
+    "six_complete_callback_identities_match_nothing7_before_and_after": true,
+    "source_callback_identities": {
+      "verify_immutable_archive": {
+        "sha256": "a2bd09827419d9938ac9f4b3b77e27f8a62e288170ccfd756b4e4de5fa0ba29d",
+        "size_bytes": 348099
+      },
+      "verify_protected_inputs": {
+        "sha256": "80bd88120d533e9367bf8434c9a8acceda371cacfe0caf9d89d706c561c9ea1b",
+        "size_bytes": 6359
+      },
+      "verify_selected_inputs": {
+        "sha256": "527002d84208e9336221bfe5ab2d6c7e3ce15a499c81120ff756224324e72fa7",
+        "size_bytes": 387258
+      },
+      "verify_source_history": {
+        "sha256": "8c5ef6f5d68767c09c8f7aa5b2ec7cb94aa0ed88acbb8a2029b7168bf76ecc5b",
+        "size_bytes": 1010517
+      },
+      "verify_source_lock": {
+        "sha256": "d1eb1e7adecd2838eef1f5d8e166b0fe5914a436e4ca1a525c55567e9aaf7596",
+        "size_bytes": 3016
+      },
+      "verify_strict_settings": {
+        "sha256": "72ebaed93031bc3f89eb5d0f2c4256f14fb1683788059e9b16306d2487b2a686",
+        "size_bytes": 221
+      }
+    },
+    "before_after_graph_log_native_result_and_ninja_snapshots_equal": true,
+    "query_counts": {
+      "gms": 14,
+      "context_providers": 5,
+      "signapk": 6,
+      "selected_prebuilts": 58
+    },
+    "query_total": 83,
+    "all_queries_returned_exit_zero": true,
+    "all_query_streams_complete_untruncated_and_identity_verified": true,
+    "decoded_query_stdout_bytes": 2113303,
+    "query_stderr_bytes": 0,
+    "capture_stderr_bytes": 46831,
+    "capture_stderr_outer_observations_and_sandbox_warnings_retained": true,
+    "selected_graph_qualification": {
+      "module_count": 9,
+      "planned_required_output_count": 26,
+      "planned_apk_output_count": 18,
+      "planned_fresh_status_output_count": 8,
+      "qualified_detached_status_goals": 7,
+      "status_action_modes": {
+        "SystemUIClocks-BigNum": "explicit_detached_goal",
+        "SystemUIClocks-Calligraphy": "explicit_detached_goal",
+        "SystemUIClocks-Flex": "prior_readonly_check",
+        "SystemUIClocks-Growth": "explicit_detached_goal",
+        "SystemUIClocks-Inflate": "explicit_detached_goal",
+        "SystemUIClocks-Metro": "explicit_detached_goal",
+        "SystemUIClocks-NumOverlap": "explicit_detached_goal",
+        "SystemUIClocks-Weather": "explicit_detached_goal",
+        "bcr": "normal"
+      },
+      "flex_extra_goal_rejected": true,
+      "planned_outputs_are_not_produced_output_evidence": true
+    },
+    "raw_clock_payload_readback": {
+      "started_utc": "2026-09-02T00:01:42.686990+00:00",
+      "finished_utc": "2026-09-02T00:01:42.836085+00:00",
+      "returncode": 0,
+      "payload_count": 8,
+      "decoded_payload_bytes": 108277,
+      "all_present_nonempty_json_and_identity_verified": true,
+      "module_names_match_source_owned_raw_file_copy_declarations": true,
+      "all_enforce_uses_libraries": true,
+      "raw_payloads": {
+        "SystemUIClocks-BigNum": {
+          "sha256": "9af2592f9249964623398193c43dc67dc0dc962e2b84805a59f2c5833fca55b7",
+          "size_bytes": 13637
+        },
+        "SystemUIClocks-Calligraphy": {
+          "sha256": "e08f5646c11937d3e2fb1df9a1b1402d10b74f3d0f7fd7c66c4a9ae42cbbf67c",
+          "size_bytes": 13687
+        },
+        "SystemUIClocks-Flex": {
+          "sha256": "d5fd04118d4ff742d1a5598468910b61da1743f3a67be366ad0b59266570010d",
+          "size_bytes": 12718
+        },
+        "SystemUIClocks-Growth": {
+          "sha256": "087c486e8b85105727b0458fe99fce48ecab7061d4ddaaa7ff2623f6c360bd30",
+          "size_bytes": 13637
+        },
+        "SystemUIClocks-Inflate": {
+          "sha256": "0fc69f289957e18a00c71e88ee511c814ed58a576f6195776c68e1ddfc46bd38",
+          "size_bytes": 13647
+        },
+        "SystemUIClocks-Metro": {
+          "sha256": "1e35aa5d1d98c767987294df31d580939abea6d79eed23c60d2497ac69ec7d34",
+          "size_bytes": 13627
+        },
+        "SystemUIClocks-NumOverlap": {
+          "sha256": "15b6d097b7bbd995636c69b936f68398d71bdc26bd1812ae0aeabe50f1e81712",
+          "size_bytes": 13677
+        },
+        "SystemUIClocks-Weather": {
+          "sha256": "a73f8fa3d613b4c04e434b9ae5e77f02384904d0d93c2c39b6371084d94c91ef",
+          "size_bytes": 13647
+        }
+      },
+      "config_destination_existence_verified": false,
+      "copied_config_file_bytes_verified": false,
+      "fresh_payload_writes_claimed": false,
+      "preparation_time_false_fields_preserved": true
+    },
+    "retained_narrow_capture_limit_repairs": {
+      "previous_ninja_deps_ceiling_bytes": 170150920,
+      "measured_ninja_deps_ceiling_bytes": 170213408,
+      "previous_combined_json_limit_bytes": 67108864,
+      "combined_json_limit_bytes": 68157440,
+      "measured_complete_json_bytes": 67512218,
+      "individual_host_input_limit_bytes": 67108864,
+      "original_controls_retained": true,
+      "source_and_query_scope_changed": false,
+      "capture_inputs_dropped_or_reencoded": false
+    },
+    "retained_preliminary_host_replay_failure": {
+      "corrected_by": "Use pins wrapper without changing any serialized input",
+      "error": "KeyError: pins",
+      "native_call_made": false,
+      "reason": "Passed serialized packet fields rather than expected pins wrapper to existing replay API"
+    },
+    "prior_full_offline_validation": {
+      "head": "c3185795ec121efcde0bbd726324ddb7d7c3cd75",
+      "tests_passed": 4417,
+      "skips": 0,
+      "duration_seconds": 170.194,
+      "exit_code": 0,
+      "before_this_documentation_checkpoint": true,
+      "not_android_build_validation": true,
+      "log": {
+        "path": "reports/continuation-20260901/metadata-checkpoint-tests/run-bhdEIM/unittest.log",
+        "sha256": "32bfe5188a092283f9772f5d535ced6034e7127cba7029f2bdd3a2f063e6fe12",
+        "size_bytes": 769504
+      }
+    },
+    "next_gate": "Actual selected-app admission/build, eight fresh strict status outputs and 36 native signature/manifest invocations, including genuine Flex prior-check equivalence; Images3, Package3 and final boot-chain/hardware gates remain separate.",
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "limits": {
+      "native_component_admitted": false,
+      "native_build_or_checker_executed": false,
+      "fresh_individual_producer_actions_verified": false,
+      "corrected_clock_strict_status_or_build_verified": false,
+      "flex_prior_check_equivalence_newly_verified": false,
+      "current_apk_signatures_verified": false,
+      "images3_verified": false,
+      "package3_verified": false,
+      "all_guest_filesystem_writes_absent_claimed": false,
+      "source_or_android_output_written": false,
+      "signed_avb_chain_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "actual_capture_host_completion": {
+        "path": "reports/continuation-20260901/shared-capture-exec-completion.json",
+        "sha256": "86f4bb6191aec3c60faf895b3e70707011e08d7973e25fc9f63d5230e1a43d37",
+        "size_bytes": 412
+      },
+      "capture_control": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/bound-nothing7-continuation-v1/capture.py",
+        "sha256": "b4dcaf755bad4eb368f258d5d5b570b68fd47c6d4e0cf786f10d77201476a649",
+        "size_bytes": 35398
+      },
+      "complete_capture": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/bound-nothing7-continuation-v1/root-capture-v1/capture.json",
+        "sha256": "7d2c211d9cf8108d40267f5de756c2069a4f4d6855e49840726705dcd2fff012",
+        "size_bytes": 3184342
+      },
+      "capture_stderr": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/bound-nothing7-continuation-v1/root-capture-v1/capture.stderr",
+        "sha256": "a28b0c2df5264ba5a15fd65032f040f005ef8639e839cf6a5612d5e12ae354fc",
+        "size_bytes": 46831
+      },
+      "outer_sidecar_source_guard_link": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/bound-nothing7-continuation-v1/root-capture-v1/outer-sidecar-presence.json",
+        "sha256": "8ac07ea75bc885360450495b567f9a4ac7d61c95541124d2a507999a17390887",
+        "size_bytes": 58286
+      },
+      "packet": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/bound-nothing7-continuation-v1/root-capture-v1/packet.json",
+        "sha256": "58ec9191b7b312146cfbe7156180d926a93bb1f805a678726b0e356c73a7bc9b",
+        "size_bytes": 21051
+      },
+      "complete_host_replay_review": {
+        "path": "reports/continuation-20260901/root-shared-capture-review-v1.json",
+        "sha256": "7f9d7604fcb8da7835193d86011c27058fa0e55ef6864c8695ff278b12c2dd66",
+        "size_bytes": 3602
+      },
+      "measured_deps_limit_derivation": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/derivation.json",
+        "sha256": "aabed3d17781beb3cc1f7452a8ca4944a6da7e46430981e9c35b60e22cd2c441",
+        "size_bytes": 4232
+      },
+      "combined_envelope_limit_derivation": {
+        "path": "reports/continuation-20260901/native-preparation/capture-deps170213408-v1/envelope65-derivation.json",
+        "sha256": "f80237a8cb6197ee79756dee7f55599fc7e9a2713dbc1d19605b588c215adf2c",
+        "size_bytes": 2012
+      },
+      "raw_payload_derivation": {
+        "path": "reports/continuation-20260901/native-preparation/clock-payload-reader-v1/derivation.json",
+        "sha256": "b5a63a5586391641130d0f374c6404ec30ff1ffc579a969dffd95a57470a8aa1",
+        "size_bytes": 23248
+      },
+      "status_action_modes": {
+        "path": "reports/continuation-20260901/native-preparation/clock-payload-reader-v1/status-action-modes.json",
+        "sha256": "1db6a8fe1f160e7c08a8414a444482958de77dca8e76df963188f8ec38b32f81",
+        "size_bytes": 452
+      },
+      "raw_payload_readback_completion": {
+        "path": "reports/continuation-20260901/native-preparation/clock-payload-reader-v1/root-readback-v1/completion.json",
+        "sha256": "192af6303ef58857def726f9c66ad2982d02097fc6e53fe50730156e038a64ed",
+        "size_bytes": 1876
+      },
+      "raw_payload_readback": {
+        "path": "reports/continuation-20260901/native-preparation/clock-payload-reader-v1/root-readback-v1/stdout.json",
+        "sha256": "8795310ca9e92f40b952b1115b364502dc367eae7eb0b9a1f3b0ad3330947573",
+        "size_bytes": 157021
+      }
+    }
   }
 }

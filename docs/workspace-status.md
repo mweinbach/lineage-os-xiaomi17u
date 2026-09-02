@@ -6,9 +6,43 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 1, 2026 in UTC and
-New York**. UTC milestones before 04:00 occur on the preceding New York date.
+consolidates recorded evidence through **September 2, 2026 UTC (September 1 in
+New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
+
+The **shared graph capture and eight raw Clock configuration readbacks pass**.
+The capture's actual host process exits 0 at **2026-09-01 23:58:47 UTC**; complete
+host replay review passes at **2026-09-02 00:00:32 UTC**. All **83 read-only
+queries** return exit 0 with complete, untruncated streams: 14 GMS, five provider,
+six SignApk and 58 selected-prebuilt queries. All six complete root callback
+identities match Nothing7 on **545 files/fifteen projects**, and the before/after
+graph, log, native-result and Ninja snapshots match. The nonempty capture stderr
+and its sandbox warnings remain retained and bound to the outer source guard.
+
+The separate readback finishes at **00:01:42 UTC**, verifying eight nonempty raw
+JSON bodies totaling **108,277 bytes** against their source-owned
+`g.android.rawFileCopy` declarations. These are source payloads, not proof that
+the copied configuration destinations exist or were built. The qualified graph
+plans **26 outputs**: 18 APK outputs and eight fresh status outputs, with BCR on
+its normal route, seven corrected Clocks on explicit detached goals, and Flex
+requiring prior-read-only-check equivalence. No producer or checker executes in
+this capture, and mode selection alone does not establish that Flex equivalence.
+
+The measured `.ninja_deps` ceiling is **170,213,408 bytes**; the authenticated
+combined JSON envelope uses **65 MiB** for the measured 67,512,218-byte input.
+Both narrow limit repairs preserve original controls and query scope; the
+envelope repair leaves individual-file limits unchanged. A first host replay's
+`KeyError: pins` is corrected only in the wrapper shape, without a VM call or
+changed serialized evidence.
+
+Actual selected-app admission, build, fresh strict statuses and native
+signature/manifest checks remain next; Images3, Package3 and final boot-chain
+and hardware gates remain separate. The capture and raw readback change no
+source or Android output and do not access the phone. Normal Android
+enforcement, 4 KiB, working76, `test-keys`, the selected-kernel warnings and false
+complete-ROM readiness are unchanged. See [build progress](build-progress.md)
+and the [shared-capture checkpoint](../research/workspace-integration.json).
+Earlier checkpoints below retain their original scope and then-pending work.
 
 The **545-file/fifteen-project source now passes config10/context10 and ordinary
 `nothing7`**. The exact `--make-mode -j8 nothing` invocation exits native 0 at

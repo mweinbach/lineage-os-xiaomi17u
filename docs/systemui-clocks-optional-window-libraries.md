@@ -1,5 +1,26 @@
 # SystemUI Clock optional Window libraries
 
+The **regenerated selected-app graph is qualified**, with the completed shared
+capture reviewed at **2026-09-02 00:00:32 UTC** after actual host exit 0 at
+**2026-09-01 23:58:47 UTC**. All 83 read-only queries complete with exit 0 and
+untruncated streams; six root callback identities match Nothing7 on the
+545-file/fifteen-project source, with graph/log/native-result/Ninja snapshots
+unchanged. At **00:01:42 UTC**, a separate exit-0 readback verifies all eight
+source-owned raw Clock JSON bodies, totaling **108,277 bytes**. Their
+`g.android.rawFileCopy` source relationship does not prove that copied
+configuration destinations exist or contain those bytes.
+
+The graph plans **26 outputs**, not a completed build: 18 APK outputs plus eight
+fresh strict statuses. BCR takes its normal status route, seven corrected Clocks
+take qualified detached goals, and Flex requires genuine prior-read-only-check
+equivalence; a Flex extra goal is rejected. Actual component admission,
+producer/status freshness and 36 native signature/manifest invocations remain
+pending, as do Images3, Package3 and hardware validation. The capture executes
+no producer/checker, changes no source or Android output and accesses no phone.
+Normal Android enforcement, 4 KiB, working76 and false ROM readiness remain.
+See the [shared-capture checkpoint](../research/workspace-integration.json).
+Earlier checkpoints below preserve their dated limits.
+
 The **Clock-corrected 545-file/fifteen-project source now passes ordinary
 `nothing7`**, with native exit 0 at **2026-09-01 23:24:12 UTC** and a separately
 verified host command exit 0. Full-stream review at **23:30:31 UTC** binds all

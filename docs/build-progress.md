@@ -1,5 +1,42 @@
 # Nezha product and build progress
 
+The **completed shared capture qualifies the regenerated selected-app graph**,
+without executing an app build or checker. Host session 70086 exits 0 at
+**2026-09-01 23:58:47 UTC**, and complete replay review passes at
+**2026-09-02 00:00:32 UTC**. All **83 queries** return exit 0 with untruncated,
+authenticated streams: 14 GMS, five provider, six SignApk and 58 selected-prebuilt
+queries. Six complete root callback identities match Nothing7 on the
+545-file/fifteen-project source; before/after graph, log, native-result and
+Ninja snapshots are equal. The 46,831-byte capture stderr retains its outer
+observations and sandbox warnings; it is not described as empty query stderr.
+
+At **00:01:42 UTC**, the separate raw readback exits 0 and verifies eight
+nonempty Clock JSON bodies totaling **108,277 bytes**, each bound to its own
+`g.android.rawFileCopy` declaration. The actual graph plans **26 outputs**:
+18 built/installed APKs and eight fresh strict statuses. BCR uses its normal
+status route, seven corrected Clocks require explicit detached goals, and Flex
+requires genuine prior-read-only-check equivalence; its extra goal is rejected.
+No planned output, copied configuration destination or new Flex equivalence is
+proved by raw-payload readback.
+
+The retained narrow control repairs set the `.ninja_deps` ceiling to its measured
+**170,213,408 bytes** and allow a **65 MiB** combined JSON envelope for the
+67,512,218-byte authenticated input. The envelope change leaves individual-file
+bounds unchanged; both repairs retain original controls and query scope. The
+initial host-only replay `KeyError: pins` is fixed by supplying the expected
+wrapper without altering evidence or calling the VM.
+The full offline suite on `c318579` passes **4,417 tests, zero skips**, before
+this documentation checkpoint; it is not Android build validation.
+
+Actual selected-app admission/build, eight fresh strict statuses and 36 native
+signature/manifest invocations remain unverified. Images3, Package3, final
+VINTF/AVB/partition checks and device tests are later gates. Neither read-only
+operation changes source or Android output or accesses the phone. Normal
+Android enforcement, 4 KiB, working76 and false complete-ROM readiness remain.
+The [shared-capture record](../research/workspace-integration.json) retains exact
+completion, replay, raw-payload and limit-repair receipts. Earlier checkpoints
+below retain their original scope and failures.
+
 The **ordinary `nothing7` graph/metadata checkpoint passes** on the
 545-file/fifteen-project source. The exact
 `build/soong/soong_ui.bash --make-mode -j8 nothing` command runs from
