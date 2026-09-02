@@ -45,6 +45,14 @@ class ReconcileTests(unittest.TestCase):
         self.f = fixtures.SigningTests('test_plan_reads_no_local_configuration_images_keys_or_native_tools')
         self.f.setUp()
         self.addCleanup(self.f.doCleanups)
+        # The ordinary DTBO producer carries its build fingerprint. Keep its
+        # original payload/hash descriptor while making that real layout part
+        # of the existing end-to-end signing/reconciliation fixture.
+        dtbo = fixtures.fixture.with_footer(self.f.fx.payloads['dtbo'], fixtures.fixture.vbmeta([
+            self.f.fx.descriptors['dtbo'], fixtures.fixture.property_descriptor(
+                b'com.android.build.dtbo.fingerprint', b'canonical-fixture-fingerprint')]))
+        self.f.fx.write_image('dtbo', dtbo)
+        self.f.input['images']['dtbo'] = deepcopy(self.f.fx.manifest['images']['dtbo'])
         self.root = self.f.root
         self.prepared = self.f.prepare()
         self.signed = self.f.sign(self.prepared)
@@ -161,13 +169,15 @@ class ReconcileTests(unittest.TestCase):
             self.run_reconcile(**changes)
         self.assertFalse(self.output.exists())
 
-    def assert_success(self, result):
+    def assert_success(self, result, *, normalized_aliases=()):
         self.assertEqual('signed-image-archive-reconciled-only', result['status'])
         self.assertTrue(all(value is False for value in result['limits'].values()))
         report = json.loads((self.output / 'receipt.json').read_text())
         self.assertTrue(report['original_build_metadata_preserved'])
         self.assertTrue(report['fourteen_signer_inputs_preserved'])
         self.assertTrue(report['working76_preserved'])
+        self.assertEqual(set(normalized_aliases), set(report['alias_normalizations']))
+        self.assertEqual(report['alias_normalizations'], result['alias_normalizations'])
         self.assertFalse(report['archive_runtime']['cross_runtime_byte_reproduction_verified'])
         self.assertEqual(6, report['archive_runtime']['deflate_level'])
         self.assertTrue(report['archive_runtime']['python_version'])
@@ -182,6 +192,8 @@ class ReconcileTests(unittest.TestCase):
                 role = Path(name).stem
                 if name.startswith(('IMAGES/', 'BOOTABLE_IMAGES/', 'PREBUILT_IMAGES/')) and role in subject.CHANGED_ROLES:
                     self.assertEqual((self.signed[0] / (role + '.img')).read_bytes(), out.read(name))
+                elif name in normalized_aliases:
+                    self.assertEqual(original.read('IMAGES/dtbo.img'), out.read(name))
                 elif name == 'META/vbmeta_digest.txt':
                     self.assertEqual(fixture_digest({r: (self.signed[0] / (r + '.img')).read_bytes()
                                                     for r in subject.avb.SIGNED}), out.read(name))
@@ -209,6 +221,137 @@ class ReconcileTests(unittest.TestCase):
         self.members['BOOTABLE_IMAGES/boot.img'] = (self.signed[0] / 'boot.img').read_bytes()
         self.refresh_archive()
         self.assert_success(self.run_reconcile())
+
+    def dtbo_alias(self, *, payload=None, digest=None, properties=None, rollback=0, flags=0):
+        payload = self.f.fx.payloads['dtbo'] if payload is None else payload
+        if properties is None:
+            properties = [fixtures.fixture.property_descriptor(
+                b'com.android.build.dtbo.fingerprint', b'prebuilt-fixture-fingerprint')]
+        metadata = fixtures.fixture.vbmeta([
+            fixtures.fixture.hash_descriptor('dtbo', payload, salt=b'A' * 64, digest=digest),
+            *properties], rollback=rollback, flags=flags)
+        return fixtures.fixture.with_footer(payload, metadata)
+
+    def test_proven_dtbo_prebuilt_alias_is_normalized_without_changing_canonical_image(self):
+        alias = self.dtbo_alias()
+        self.members[subject.DTBO_ALIAS_MEMBER] = alias
+        self.refresh_archive(zipfile.ZIP_DEFLATED)
+        original_archive = self.archive.read_bytes()
+        result = self.run_reconcile()
+        self.assert_success(result, normalized_aliases=(subject.DTBO_ALIAS_MEMBER,))
+        proof = result['alias_normalizations'][subject.DTBO_ALIAS_MEMBER]
+        self.assertEqual(identity(alias), proof['before'])
+        self.assertEqual(identity(self.members['IMAGES/dtbo.img']), proof['after'])
+        self.assertEqual(identity(original_archive), proof['source_archive'])
+        self.assertEqual(original_archive, self.archive.read_bytes())
+        report = json.loads((self.output / 'receipt.json').read_text())
+        copied = report['archive_copy']
+        self.assertEqual(proof, copied['dtbo_alias_proof'])
+        replacement_names = {row['member'] for row in copied['replacement_members']}
+        self.assertIn(subject.DTBO_ALIAS_MEMBER, replacement_names)
+        self.assertNotIn('IMAGES/dtbo.img', replacement_names)
+
+    def test_identical_dtbo_alias_is_preserved_without_normalization_proof(self):
+        self.members[subject.DTBO_ALIAS_MEMBER] = self.members['IMAGES/dtbo.img']
+        self.refresh_archive()
+        with mock.patch.object(subject, 'inspect_dtbo_alias', side_effect=AssertionError('unneeded DTBO proof')):
+            self.assert_success(self.run_reconcile())
+
+    def test_absent_dtbo_alias_is_not_created_or_selected(self):
+        with mock.patch.object(subject, 'inspect_dtbo_alias', side_effect=AssertionError('absent DTBO alias')):
+            result = self.run_reconcile()
+        with zipfile.ZipFile(result['archive']['path']) as archive:
+            self.assertNotIn(subject.DTBO_ALIAS_MEMBER, archive.namelist())
+        self.assertEqual({}, result['alias_normalizations'])
+
+    def test_dtbo_exception_does_not_admit_other_alias_names(self):
+        for name in ('BOOTABLE_IMAGES/dtbo.img', 'PREBUILT_IMAGES/vendor.img'):
+            with self.subTest(name=name):
+                self.members[name] = self.dtbo_alias()
+                self.refresh_archive()
+                with mock.patch.object(subject, 'inspect_dtbo_alias', side_effect=AssertionError('wrong alias name')):
+                    self.fails()
+                self.assertEqual([], self.f.calls)
+                del self.members[name]
+
+    def test_dtbo_alias_changed_payload_or_unreviewed_metadata_fails_before_native(self):
+        payload = bytearray(self.f.fx.payloads['dtbo'])
+        payload[-1] ^= 1
+        property_descriptor = fixtures.fixture.property_descriptor
+        cases = {
+            'changed payload with a valid new hash': self.dtbo_alias(payload=bytes(payload)),
+            'incorrect payload digest': self.dtbo_alias(digest=b'D' * 32),
+            'changed flags': self.dtbo_alias(flags=1),
+            'changed rollback': self.dtbo_alias(rollback=1),
+            'missing fingerprint': self.dtbo_alias(properties=[]),
+            'renamed property': self.dtbo_alias(properties=[property_descriptor(b'com.android.build.other', b'other')]),
+            'extra property': self.dtbo_alias(properties=[
+                property_descriptor(b'com.android.build.dtbo.fingerprint', b'prebuilt'),
+                property_descriptor(b'com.android.build.extra', b'unreviewed')]),
+        }
+        for label, raw in cases.items():
+            with self.subTest(label=label):
+                self.members[subject.DTBO_ALIAS_MEMBER] = raw
+                self.refresh_archive()
+                self.fails()
+                self.assertEqual([], self.f.calls)
+
+    def test_dtbo_alias_nonzero_padding_and_unparsed_header_changes_fail_before_native(self):
+        alias = self.dtbo_alias()
+        metadata_at = struct.unpack_from('>Q', alias, len(alias) - 44)[0]
+        offsets = {
+            'payload padding': len(self.f.fx.payloads['dtbo']),
+            'metadata padding': len(alias) - 65,
+            'release string': metadata_at + 128,
+            'AVB header reserved': metadata_at + 176,
+            'footer reserved': len(alias) - 1,
+        }
+        for label, offset in offsets.items():
+            with self.subTest(label=label):
+                raw = bytearray(alias)
+                raw[offset] ^= 1
+                self.members[subject.DTBO_ALIAS_MEMBER] = bytes(raw)
+                self.refresh_archive()
+                self.fails()
+                self.assertEqual([], self.f.calls)
+
+    def test_dtbo_alias_proof_must_select_same_source_and_canonical_identities(self):
+        self.members[subject.DTBO_ALIAS_MEMBER] = self.dtbo_alias()
+        self.refresh_archive()
+        real = subject.inspect_dtbo_alias
+        for field in ('source_archive', 'before', 'after'):
+            def substitute(*args, **kwargs):
+                proof = real(*args, **kwargs)
+                proof[field]['sha256'] = '0' * 64
+                return proof
+            with self.subTest(field=field), mock.patch.object(subject, 'inspect_dtbo_alias', side_effect=substitute):
+                self.fails()
+                self.assertEqual([], self.f.calls)
+
+    def test_dtbo_alias_source_mutation_after_proof_fails(self):
+        self.members[subject.DTBO_ALIAS_MEMBER] = self.dtbo_alias()
+        self.refresh_archive()
+        real = subject.inspect_dtbo_alias
+        def mutate(*args, **kwargs):
+            proof = real(*args, **kwargs)
+            original = self.archive.read_bytes()
+            self.archive.write_bytes(original[:-1] + bytes([original[-1] ^ 1]))
+            return proof
+        with mock.patch.object(subject, 'inspect_dtbo_alias', side_effect=mutate):
+            self.fails()
+        self.assertEqual([], self.f.calls)
+
+    def test_dtbo_alias_copier_must_return_the_same_recomputed_proof(self):
+        self.members[subject.DTBO_ALIAS_MEMBER] = self.dtbo_alias()
+        self.refresh_archive()
+        real = subject.rewrite_archive
+        def substitute(*args, **kwargs):
+            report = real(*args, **kwargs)
+            report['dtbo_alias_proof'] = deepcopy(report['dtbo_alias_proof'])
+            report['dtbo_alias_proof']['before']['sha256'] = '0' * 64
+            return report
+        with mock.patch.object(subject, 'rewrite_archive', side_effect=substitute):
+            self.fails()
 
     def test_unknown_request_field_and_boolean_schema_fail_before_native(self):
         for key, value in (('schema_version', True), ('invented_bypass', True)):

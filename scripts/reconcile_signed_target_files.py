@@ -30,15 +30,16 @@ ROOT = HERE.parent
 if __package__:
     from . import target_files_avb_inventory as inventory
     from .artifact_files import publish_new_directory
-    from .target_files_archive_copy import rewrite_archive
+    from .target_files_archive_copy import inspect_dtbo_alias, rewrite_archive
 else:
     import target_files_avb_inventory as inventory
     from artifact_files import publish_new_directory
-    from target_files_archive_copy import rewrite_archive
+    from target_files_archive_copy import inspect_dtbo_alias, rewrite_archive
 
 signing, avb = inventory.signing, inventory.avb
 OPERATION = 'reconcile-nezha-signed-target-files-v1'
 CHANGED_ROLES = frozenset(('boot', 'vbmeta', 'vbmeta_system'))
+DTBO_ALIAS_MEMBER = 'PREBUILT_IMAGES/dtbo.img'
 RAW_ROLES = frozenset(('countrycode', 'pvmfw'))
 DATA_ROLES = frozenset(signing.INPUTS) - RAW_ROLES
 RECORD_FIELDS = frozenset(('target_files', 'inventory', 'retained_input_manifest',
@@ -401,10 +402,23 @@ def reconcile(request_path, expected_sha256, output_dir):
              'signing altered one of the fourteen retained input images')
     for role in RAW_ROLES:
         same(selected(original['images'][role]), selected(retained['images'][role]), 'retained firmware changed')
+    dtbo_alias_proof = None
     for name, alias in observed['aliases'].items():
         if alias['image_role'] not in CHANGED_ROLES:
-            same(selected(alias), selected(manifest['images'][alias['image_role']]),
-                 'an unchanged image alias differs from the admitted final image')
+            final_image = selected(manifest['images'][alias['image_role']])
+            if selected(alias) == final_image:
+                continue
+            require(name == DTBO_ALIAS_MEMBER and alias['image_role'] == 'dtbo',
+                    'an unchanged image alias differs from the admitted final image')
+            # AddDtbo can regenerate the copied prebuilt's AVB footer. Admit
+            # only its proven salt/fingerprint metadata change, never a new
+            # canonical DTBO or an exemption for another unchanged alias.
+            dtbo_alias_proof = inspect_dtbo_alias(paths['target_files'],
+                selected(request['target_files']), profile=profile)
+            same(dtbo_alias_proof['source_archive'], selected(request['target_files']),
+                 'DTBO alias proof selects another archive')
+            same(dtbo_alias_proof['before'], selected(alias), 'DTBO alias proof selects another prebuilt')
+            same(dtbo_alias_proof['after'], final_image, 'DTBO alias proof selects another canonical image')
     for record in original['source_records'] + retained['source_records']:
         guards.json(record['path'], record)
     for group in (original['images'], retained['images'], manifest['images']):
@@ -432,9 +446,16 @@ def reconcile(request_path, expected_sha256, output_dir):
         replacements = {'IMAGES/' + role + '.img': manifest['images'][role] for role in CHANGED_ROLES}
         replacements.update({name: manifest['images'][alias['image_role']] for name, alias in observed['aliases'].items()
                              if alias['image_role'] in CHANGED_ROLES})
+        alias_normalizations, copy_options = {}, {}
+        if dtbo_alias_proof is not None:
+            replacements[DTBO_ALIAS_MEMBER] = manifest['images']['dtbo']
+            alias_normalizations[DTBO_ALIAS_MEMBER] = dtbo_alias_proof
+            copy_options['dtbo_alias_proof'] = dtbo_alias_proof
         replacements['META/vbmeta_digest.txt'] = {'data': after_digest}
         copy_report = rewrite_archive(paths['target_files'], selected(request['target_files']),
-                                      staging / 'target-files.zip', replacements, profile=profile)
+                                      staging / 'target-files.zip', replacements, profile=profile, **copy_options)
+        if dtbo_alias_proof is not None:
+            same(copy_report['dtbo_alias_proof'], dtbo_alias_proof, 'copied DTBO alias proof differs')
         archive_identity = signing._identity(staging / 'target-files.zip', inventory.MAX_ARCHIVE)
         final_inventory = inventory.inspect_target_files(staging / 'target-files.zip', archive_identity,
             retained_input_manifest=paths['retained_input_manifest'],
@@ -464,6 +485,7 @@ def reconcile(request_path, expected_sha256, output_dir):
             'vbmeta_digest_before': avb._identity(before_digest), 'vbmeta_digest_after': avb._identity(after_digest),
             'fourteen_signer_inputs_preserved': True, 'working76_preserved': True,
             'original_build_metadata_preserved': True,
+            'alias_normalizations': alias_normalizations,
             'archive_runtime': {'python_implementation': sys.implementation.name,
                 'python_version': sys.version, 'zlib_compile_version': zlib.ZLIB_VERSION,
                 'zlib_runtime_version': zlib.ZLIB_RUNTIME_VERSION, 'deflate_level': 6,
@@ -497,7 +519,8 @@ def reconcile(request_path, expected_sha256, output_dir):
         publish_new_directory(staging, output_dir)
     return {'status': report['status'], 'output_directory': str(output_dir),
             'archive': {'path': str(output_dir / 'target-files.zip'), **archive_identity},
-            'receipt': {'path': str(output_dir / 'receipt.json'), **receipt_pin}, 'limits': FALSE_SCOPE}
+            'receipt': {'path': str(output_dir / 'receipt.json'), **receipt_pin},
+            'alias_normalizations': alias_normalizations, 'limits': FALSE_SCOPE}
 
 
 def main(argv=None):

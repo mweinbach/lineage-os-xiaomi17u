@@ -41,7 +41,7 @@ PUBLIC_PINS = {
     'scripts/avb_signing.py': ('ed87a8aa0ba7bbcf5bcc066cb03206dd5604c8e64379dbbd176260a0825ba1c3', 46629),
     'scripts/avb_image_set.py': ('08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c', 41370),
     'scripts/artifact_files.py': ('ddc784d1c378510c66621d95af267790ab7fb1965ac5951926b471e897bd6343', 1586),
-    'scripts/target_files_archive_copy.py': ('6027a04ba443e478590afcb16bd602a37f5c739007f18051888e24e575057ae3', 27585),
+    'scripts/target_files_archive_copy.py': ('1ae8ba5c8721ddc44807c825a9044a7010a11abf8c8bedea51b5318e08469650', 40588),
 }
 SPACE_CHECK_BYTES = archive_copy.SPACE_CHECK_BYTES
 FALSE_SCOPE = {name: False for name in (

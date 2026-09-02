@@ -18,6 +18,7 @@ import zipfile
 import zlib
 
 from scripts import target_files_archive_copy as subject
+from tests import test_avb_image_set as avb_fixture
 
 
 def pin(raw):
@@ -110,12 +111,42 @@ class ArchiveCopyTests(unittest.TestCase):
             self.source.write_bytes(target.getvalue())
         return pin(self.source.read_bytes())
 
-    def run_copy(self, *, expected=None, replacements=None, source=None, output=None, profile=None):
+    def run_copy(self, *, expected=None, replacements=None, source=None, output=None, profile=None,
+                 dtbo_alias_proof=None):
         return subject.rewrite_archive(source or self.source,
                                        expected or pin(self.source.read_bytes()),
                                        output or self.output,
                                        self.replacements if replacements is None else replacements,
-                                       profile=self.profile if profile is None else profile)
+                                       profile=self.profile if profile is None else profile,
+                                       dtbo_alias_proof=dtbo_alias_proof)
+
+    def dtbo_image(self, *, payload=None, salt=b"C" * 32, fingerprint=b"canonical fixture",
+                   descriptors=None, descriptor_end_offsets=False):
+        payload = avb_fixture.dtbo_payload() if payload is None else payload
+        if descriptors is None:
+            descriptors = [avb_fixture.hash_descriptor("dtbo", payload, salt=salt),
+                           avb_fixture.property_descriptor(subject.DTBO_FINGERPRINT.encode(), fingerprint)]
+        metadata = bytearray(avb_fixture.vbmeta(descriptors))
+        if descriptor_end_offsets:
+            length = struct.unpack_from(">Q", metadata, 104)[0]
+            struct.pack_into(">Q", metadata, 64, length)
+            struct.pack_into(">Q", metadata, 80, length)
+        return avb_fixture.with_footer(payload, bytes(metadata))
+
+    def add_dtbo_pair(self, *, canonical=None, alias=None, descriptor_end_offsets=False):
+        self.profile["image_budgets"]["dtbo"] = 16 * 1024
+        canonical = self.dtbo_image(descriptor_end_offsets=descriptor_end_offsets) if canonical is None else canonical
+        alias = (self.dtbo_image(salt=b"A" * 64, fingerprint=b"different alias fixture " * 4,
+                                 descriptor_end_offsets=descriptor_end_offsets) if alias is None else alias)
+        self.payloads[subject.DTBO_CANONICAL_MEMBER] = canonical
+        self.payloads[subject.DTBO_ALIAS_MEMBER] = alias
+        path = self.root / "canonical-dtbo.fixture"
+        path.write_bytes(canonical)
+        return {**self.replacements, subject.DTBO_ALIAS_MEMBER: {"path": path, **pin(canonical)}}
+
+    def inspect_dtbo(self, *, profile=None, expected=None):
+        return subject.inspect_dtbo_alias(self.source, expected or pin(self.source.read_bytes()),
+                                          profile=self.profile if profile is None else profile)
 
     def assert_success(self, report):
         self.assertEqual(report["status"], "passed")
@@ -203,6 +234,346 @@ class ArchiveCopyTests(unittest.TestCase):
             rows[name] = (cursor, end)
             cursor = end
         return rows
+
+    def test_dtbo_alias_only_normalization_preserves_canonical_and_every_other_member(self):
+        # Make the three ordinary replacement roles no-ops; DTBO alias is the
+        # only byte change, never an additional canonical replacement role.
+        for name, replacement in self.replacements.items():
+            self.payloads[name] = (replacement["data"] if "data" in replacement
+                                   else replacement["path"].read_bytes())
+        for end_offsets in (False, True):
+            for compression in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
+                with self.subTest(end_offsets=end_offsets, compression=compression):
+                    replacements = self.add_dtbo_pair(descriptor_end_offsets=end_offsets)
+                    expected = self.write_zip(compression=compression)
+                    before_paths = sorted(self.root.iterdir())
+                    proof = self.inspect_dtbo(expected=expected)
+                    self.assertEqual(sorted(self.root.iterdir()), before_paths)
+                    self.assertEqual(proof, self.inspect_dtbo(expected=expected))
+                    self.assertEqual(proof["source_archive"], expected)
+                    self.assertEqual(proof["before"], pin(self.payloads[subject.DTBO_ALIAS_MEMBER]))
+                    self.assertEqual(proof["after"], pin(self.payloads[subject.DTBO_CANONICAL_MEMBER]))
+                    self.assertEqual(proof["payload"], pin(avb_fixture.dtbo_payload()))
+                    self.assertNotEqual(proof["before_metadata"]["vbmeta"]["identity"],
+                                        proof["after_metadata"]["vbmeta"]["identity"])
+                    self.assertEqual(proof["before_metadata"]["vbmeta"]["invariant_header"],
+                                     proof["after_metadata"]["vbmeta"]["invariant_header"])
+                    self.output = self.root / f"dtbo-{end_offsets}-{compression}.zip"
+                    report = self.run_copy(replacements=replacements, dtbo_alias_proof=proof)
+                    ordinary = self.replacements
+                    self.replacements = replacements
+                    try:
+                        self.assert_success(report)
+                    finally:
+                        self.replacements = ordinary
+                    self.assertEqual(report["changed_member_count"], 1)
+                    self.assertEqual(report["dtbo_alias_proof"], proof)
+                    self.assertNotIn(subject.DTBO_CANONICAL_MEMBER,
+                                     {row["member"] for row in report["replacement_members"]})
+                    self.assertEqual(pin(self.source.read_bytes()), expected)
+
+    def test_default_copy_keeps_dtbo_alias_unchanged_and_rejects_extra_replacement(self):
+        replacements = self.add_dtbo_pair()
+        self.write_zip()
+        report = self.run_copy()
+        self.assertNotIn("dtbo_alias_proof", report)
+        with zipfile.ZipFile(self.output) as archive:
+            self.assertEqual(archive.read(subject.DTBO_ALIAS_MEMBER), self.payloads[subject.DTBO_ALIAS_MEMBER])
+        target = self.root / "unproved.zip"
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "replacement set"):
+            self.run_copy(replacements=replacements, output=target)
+        self.assertFalse(target.exists())
+        self.assertEqual(subject.ROLES, frozenset(("boot", "vbmeta", "vbmeta_system")))
+
+    def test_dtbo_proof_cannot_add_missing_alias_canonical_or_any_other_replacement(self):
+        replacements = self.add_dtbo_pair()
+        self.payloads["BOOTABLE_IMAGES/dtbo.img"] = self.payloads[subject.DTBO_CANONICAL_MEMBER]
+        self.write_zip()
+        proof = self.inspect_dtbo()
+        for name in (subject.DTBO_CANONICAL_MEMBER, "BOOTABLE_IMAGES/dtbo.img", "IMAGES/recovery.img"):
+            with self.subTest(extra=name), self.assertRaisesRegex(subject.ArchiveCopyError, "replacement set"):
+                self.run_copy(replacements={**replacements, name: {"data": b"unauthorized"}},
+                              dtbo_alias_proof=proof)
+            self.assertFalse(self.output.exists())
+        for missing in (subject.DTBO_ALIAS_MEMBER, subject.DTBO_CANONICAL_MEMBER):
+            payloads = dict(self.payloads)
+            payloads.pop(missing)
+            self.write_zip(payloads=payloads)
+            with self.subTest(missing=missing), self.assertRaisesRegex(subject.ArchiveCopyError, "existing canonical"):
+                self.run_copy(replacements=replacements, dtbo_alias_proof=proof)
+            self.assertFalse(self.output.exists())
+
+    def test_dtbo_proof_is_recomputed_type_exact_and_not_a_trusted_boolean(self):
+        replacements = self.add_dtbo_pair()
+        self.write_zip()
+        valid = self.inspect_dtbo()
+        forged = [True, [], {}, {"verified": True}, {**valid, "schema_version": True},
+                  {**valid, "unexpected": False}, {**valid, "before": valid["after"]},
+                  {**valid, "after": valid["before"]},
+                  {**valid, "source_archive": {**valid["source_archive"], "sha256": "0" * 64}}]
+        missing = copy.deepcopy(valid)
+        del missing["payload"]
+        forged.append(missing)
+        nested = copy.deepcopy(valid)
+        nested["before_metadata"]["salted_payload_digest_verified"] = 1
+        forged.append(nested)
+        for proof in forged:
+            with self.subTest(proof=repr(proof)[:80]), self.assertRaisesRegex(subject.ArchiveCopyError, "proof differs"):
+                self.run_copy(replacements=replacements, dtbo_alias_proof=proof)
+            self.assertFalse(self.output.exists())
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "replacement set"):
+            self.run_copy(dtbo_alias_proof=valid)  # The proved alias must actually be selected.
+        self.assertFalse(self.output.exists())
+
+    def test_dtbo_replacement_must_be_exact_canonical_bytes_not_just_the_same_payload(self):
+        replacements = self.add_dtbo_pair()
+        self.write_zip()
+        proof = self.inspect_dtbo()
+        for data in (self.payloads[subject.DTBO_ALIAS_MEMBER], b"unrelated replacement"):
+            bad = {**replacements, subject.DTBO_ALIAS_MEMBER: {"data": data}}
+            with self.assertRaisesRegex(subject.ArchiveCopyError, "unchanged canonical"):
+                self.run_copy(replacements=bad, dtbo_alias_proof=proof)
+            self.assertFalse(self.output.exists())
+        # A correctly declared identity with different actual file bytes also fails.
+        replacements[subject.DTBO_ALIAS_MEMBER]["path"].write_bytes(self.payloads[subject.DTBO_ALIAS_MEMBER])
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "replacement file identity"):
+            self.run_copy(replacements=replacements, dtbo_alias_proof=proof)
+        self.assertFalse(self.output.exists())
+
+    def test_dtbo_proof_is_bound_to_the_whole_archive_not_just_the_two_members(self):
+        replacements = self.add_dtbo_pair()
+        self.write_zip()
+        proof = self.inspect_dtbo()
+        self.payloads["SYSTEM/etc/unchanged.txt"] += b"different archive"
+        self.write_zip()
+        current = self.inspect_dtbo()
+        self.assertEqual(current["before"], proof["before"])
+        self.assertEqual(current["after"], proof["after"])
+        self.assertNotEqual(current["source_archive"], proof["source_archive"])
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "proof differs"):
+            self.run_copy(replacements=replacements, dtbo_alias_proof=proof)
+        self.assertFalse(self.output.exists())
+
+    def test_dtbo_complete_payload_comparison_includes_later_entries_table_words_and_gaps(self):
+        fdt = avb_fixture.dtbo_payload()[64:]
+        payload = (struct.pack(">8I", 0xD7B7AB1E, 200, 32, 32, 2, 32, 4096, 0)
+                   + struct.pack(">8I", 40, 96, 1, 0, 0, 0, 0, 0)
+                   + struct.pack(">8I", 40, 160, 2, 0, 0, 0, 0, 0)
+                   + fdt + bytes(24) + fdt)
+        canonical = self.dtbo_image(payload=payload)
+        for offset in (199, 60, 145):
+            altered = bytearray(payload)
+            altered[offset] ^= 1
+            # Deliberately valid freshly recomputed salted digest: equality of
+            # the entire declared payload, not just its first DTB, rejects this.
+            alias = self.dtbo_image(payload=bytes(altered), salt=b"A" * 64)
+            self.add_dtbo_pair(canonical=canonical, alias=alias)
+            self.write_zip()
+            with self.subTest(offset=offset), self.assertRaisesRegex(subject.ArchiveCopyError, "complete canonical payload"):
+                self.inspect_dtbo()
+
+    def test_dtbo_payload_geometry_and_independent_salted_digests_are_required(self):
+        payload = avb_fixture.dtbo_payload()
+        invalid = {}
+        bad_size = [avb_fixture.hash_descriptor("dtbo", payload, size=len(payload) - 1),
+                    avb_fixture.property_descriptor(subject.DTBO_FINGERPRINT.encode(), b"alias")]
+        invalid["hash coverage"] = self.dtbo_image(descriptors=bad_size)
+        for label, offset in (("header total", 7), ("entry outside payload", 35), ("sparse magic", 0)):
+            changed = bytearray(payload)
+            changed[offset] ^= 1
+            invalid[label] = self.dtbo_image(payload=bytes(changed))
+        changed = bytearray(self.dtbo_image())
+        changed[-1] = 1
+        invalid["footer reserved"] = bytes(changed)
+        changed = bytearray(self.dtbo_image())
+        changed[100] ^= 1
+        invalid["unhashed payload mutation"] = bytes(changed)
+        changed = bytearray(self.dtbo_image(salt=b"A" * 64))
+        offset = subject.avb.FOOTER.unpack(changed[-64:])[4]
+        changed[offset + 256 + subject.avb.HASH.size + 4 + 64] ^= 1
+        invalid["unverified metadata digest"] = bytes(changed)
+        for label, alias in invalid.items():
+            self.add_dtbo_pair(alias=alias)
+            self.write_zip()
+            with self.subTest(label=label), self.assertRaises(subject.ArchiveCopyError):
+                self.inspect_dtbo()
+
+    def test_dtbo_canonical_and_alias_both_require_verified_digests_and_zero_padding(self):
+        base = self.dtbo_image(fingerprint=b"short")
+        _, _, _, original, offset, size, _ = subject.avb.FOOTER.unpack(base[-64:])
+        first_size = struct.unpack_from(">Q", base, offset + 256 + 8)[0] + 16
+        property_at = offset + 256 + first_size
+        property_size = struct.unpack_from(">Q", base, property_at + 8)[0] + 16
+        key_length, value_length = struct.unpack_from(">QQ", base, property_at + 16)
+        property_padding = property_at + 32 + key_length + value_length + 2
+        self.assertLess(property_padding, property_at + property_size)
+        desc_size = struct.unpack_from(">Q", base, offset + 104)[0]
+        self.assertLess(256 + desc_size, size)
+        offsets = {
+            "pre-metadata padding": original, "post-metadata padding": offset + size,
+            "auxiliary padding": offset + size - 1, "property padding": property_padding,
+            "header reserved": offset + 176, "hash reserved": offset + 256 + 72,
+            "hash flags": offset + 256 + 71, "footer reserved": len(base) - 1,
+            "late payload digest": original - 1,
+            "declared digest": offset + 256 + subject.avb.HASH.size + 4 + 32,
+        }
+        for side in ("canonical", "alias"):
+            for label, changed_at in offsets.items():
+                changed = bytearray(base)
+                changed[changed_at] ^= 1
+                self.add_dtbo_pair(**{side: bytes(changed)})
+                self.write_zip()
+                with self.subTest(side=side, label=label), self.assertRaises(subject.ArchiveCopyError):
+                    self.inspect_dtbo()
+
+    def test_dtbo_raw_header_differences_cannot_hide_in_semantic_parser_omissions(self):
+        payload = avb_fixture.dtbo_payload()
+        base = self.dtbo_image()
+        _, _, _, _, offset, size, _ = subject.avb.FOOTER.unpack(base[-64:])
+        metadata = base[offset:offset + size]
+        desc_size = struct.unpack_from(">Q", metadata, 104)[0]
+        changes = {}
+        for label, at, data in (
+                ("release prefix", 128, b"X"), ("release after NUL", 175, b"X"),
+                ("required version", 8, struct.pack(">I", 1)),
+                ("arbitrary key offset", 64, struct.pack(">Q", 8)),
+                ("arbitrary metadata offset", 80, struct.pack(">Q", 1)),
+                ("key offset convention", 64, struct.pack(">Q", desc_size))):
+            changed = bytearray(metadata)
+            changed[at:at + len(data)] = data
+            changes[label] = bytes(changed)
+        changed = bytearray(metadata + bytes(64))
+        struct.pack_into(">Q", changed, 20, len(changed) - 256)
+        changes["unjustified auxiliary padding block"] = bytes(changed)
+        header = bytearray(metadata[:256])
+        auxiliary = avb_fixture.padded(bytes(8) + metadata[256:256 + desc_size], 64)
+        struct.pack_into(">Q", header, 20, len(auxiliary))
+        struct.pack_into(">Q", header, 96, 8)
+        changes["relocated descriptors"] = bytes(header) + auxiliary
+        for label, changed in changes.items():
+            # Every variant deliberately passes the general AVB parser, so
+            # these assertions exercise the additional narrow raw-layout guard.
+            subject.avb.parse_vbmeta(changed)
+            self.add_dtbo_pair(canonical=base, alias=avb_fixture.with_footer(payload, changed))
+            self.write_zip()
+            with self.subTest(label=label), self.assertRaises(subject.ArchiveCopyError):
+                self.inspect_dtbo()
+        descriptors = [avb_fixture.hash_descriptor("dtbo", payload),
+                       avb_fixture.property_descriptor(subject.DTBO_FINGERPRINT.encode(), b"alias")]
+        for kwargs in ({"rollback": 1}, {"location": 1}, {"key": avb_fixture.public_blob(7)}):
+            changed = avb_fixture.vbmeta(descriptors, **kwargs)
+            subject.avb.parse_vbmeta(changed)
+            self.add_dtbo_pair(canonical=base, alias=avb_fixture.with_footer(payload, changed))
+            self.write_zip()
+            with self.subTest(fields=sorted(kwargs)), self.assertRaisesRegex(subject.ArchiveCopyError, "unsigned NONE"):
+                self.inspect_dtbo()
+
+    def test_dtbo_zero_padding_cannot_justify_relocating_metadata_or_changing_full_size(self):
+        payload = avb_fixture.dtbo_payload()
+        base = self.dtbo_image()
+        footer = list(subject.avb.FOOTER.unpack(base[-64:]))
+        metadata = base[footer[4]:footer[4] + footer[5]]
+        def image_at(at):
+            footer[4] = at
+            prefix = payload + bytes(at - len(payload)) + metadata
+            return prefix + bytes(16384 - len(prefix) - 64) + subject.avb.FOOTER.pack(*footer)
+        self.add_dtbo_pair(canonical=image_at(4096), alias=image_at(8192))
+        self.write_zip()
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "metadata placement"):
+            self.inspect_dtbo()
+
+    def test_dtbo_only_its_fingerprint_value_and_hash_salt_may_change(self):
+        payload = avb_fixture.dtbo_payload()
+        own = avb_fixture.hash_descriptor("dtbo", payload)
+        fingerprint = avb_fixture.property_descriptor(subject.DTBO_FINGERPRINT.encode(), b"canonical")
+        same_other = avb_fixture.property_descriptor(b"com.android.build.dtbo.security_patch", b"2026-03-05")
+        canonical = self.dtbo_image(descriptors=[own, fingerprint, same_other])
+        changed_fp = avb_fixture.property_descriptor(subject.DTBO_FINGERPRINT.encode(), b"alias" * 31)
+        alias_own = avb_fixture.hash_descriptor("dtbo", payload, salt=b"S" * 64)
+        self.add_dtbo_pair(canonical=canonical,
+                           alias=self.dtbo_image(descriptors=[alias_own, changed_fp, same_other]))
+        self.write_zip()
+        self.inspect_dtbo()  # Identical extra properties are preserved, not removed.
+        bad = {
+            "other property changed": [alias_own, changed_fp, avb_fixture.property_descriptor(
+                b"com.android.build.dtbo.security_patch", b"2026-04-05")],
+            "other property missing": [alias_own, changed_fp],
+            "other property added": [alias_own, changed_fp, same_other,
+                                     avb_fixture.property_descriptor(b"extra", b"value")],
+            "wrong fingerprint namespace": [alias_own, avb_fixture.property_descriptor(
+                b"com.android.build.boot.fingerprint", b"alias"), same_other],
+            "reordered property": [changed_fp, alias_own, same_other],
+            "duplicate property": [alias_own, changed_fp, changed_fp, same_other],
+            "second hash": [alias_own, changed_fp, same_other,
+                            avb_fixture.hash_descriptor("boot", payload)],
+            "wrong hash owner": [avb_fixture.hash_descriptor("boot", payload), changed_fp, same_other],
+            "hashtree instead of hash": [avb_fixture.tree_descriptor("dtbo"), changed_fp, same_other],
+            "chain instead of hash": [avb_fixture.chain_descriptor(
+                "dtbo", 1, avb_fixture.public_blob(9)), changed_fp, same_other],
+        }
+        for label, rows in bad.items():
+            self.add_dtbo_pair(canonical=canonical, alias=self.dtbo_image(descriptors=rows))
+            self.write_zip()
+            with self.subTest(label=label), self.assertRaises(subject.ArchiveCopyError):
+                self.inspect_dtbo()
+
+    def test_dtbo_inspection_has_a_fixed_memory_bound_and_requires_equal_full_sizes(self):
+        self.add_dtbo_pair()
+        self.write_zip()
+        for budget in (None, False, 0, -1, "33554432", subject.MAX_DTBO_BYTES + 1, 8191):
+            profile = copy.deepcopy(self.profile)
+            profile["image_budgets"]["dtbo"] = budget
+            with self.subTest(budget=budget), mock.patch.object(
+                    subject, "_read_member", side_effect=AssertionError("must fail before member collection")):
+                with self.assertRaises(subject.ArchiveCopyError):
+                    self.inspect_dtbo(profile=profile)
+        self.payloads[subject.DTBO_ALIAS_MEMBER] += bytes(4096)
+        self.write_zip()
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "sizes differ"):
+            self.inspect_dtbo()
+
+    def test_dtbo_alias_inspection_retains_zip_integrity_and_member_safety_guards(self):
+        self.add_dtbo_pair()
+        for compression in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
+            self.write_zip(compression=compression)
+            self.patch_headers(subject.DTBO_ALIAS_MEMBER, crc=0)
+            with self.subTest(compression=compression), self.assertRaises(subject.ArchiveCopyError):
+                self.inspect_dtbo()
+        self.write_zip(compression=zipfile.ZIP_DEFLATED)
+        self.patch_deflate_payload(subject.DTBO_ALIAS_MEMBER, lambda data: data + b"trailing")
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "DEFLATE"):
+            self.inspect_dtbo()
+        self.write_zip(custom={subject.DTBO_ALIAS_MEMBER: {"external_attr": (stat.S_IFLNK | 0o777) << 16}})
+        with self.assertRaisesRegex(subject.ArchiveCopyError, "regular"):
+            self.inspect_dtbo()
+        for name in (subject.DTBO_ALIAS_MEMBER, "prebuilt_images/dtbo.img", "PREBUILT_IMAGES/../dtbo.img"):
+            self.write_zip()
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", UserWarning)
+                with zipfile.ZipFile(self.source, "a") as archive:
+                    archive.writestr(name, b"invalid member")
+            with self.subTest(name=name), self.assertRaises(subject.ArchiveCopyError):
+                self.inspect_dtbo()
+
+    def test_dtbo_inspection_and_copy_detect_same_byte_source_rebinding_before_output(self):
+        replacements = self.add_dtbo_pair()
+        self.write_zip()
+        proof = self.inspect_dtbo()
+        real = subject._inspect_dtbo_members
+        def rebind(*args):
+            result = real(*args)
+            alternate = self.root / "source-rebind.zip"
+            alternate.write_bytes(self.source.read_bytes())
+            alternate.replace(self.source)
+            return result
+        for copying in (False, True):
+            with self.subTest(copying=copying), mock.patch.object(subject, "_inspect_dtbo_members", side_effect=rebind):
+                with self.assertRaisesRegex(subject.ArchiveCopyError, "pathname/inode"):
+                    if copying:
+                        self.run_copy(replacements=replacements, dtbo_alias_proof=proof)
+                    else:
+                        self.inspect_dtbo()
+            self.assertFalse(self.output.exists())
 
     def test_streamed_stored_and_deflated_rewrites_preserve_all_metadata_and_payloads(self):
         for compression in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):

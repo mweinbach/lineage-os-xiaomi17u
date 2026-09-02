@@ -1,9 +1,12 @@
 """Stream a narrowly selected signed-image replacement into a fresh ZIP.
 
-This helper copies bytes; it does not verify AVB, signatures, FEC, source origin,
-partition fit, package compatibility, or a bootable ROM. The caller must bind
+This helper copies bytes; it does not verify the AVB chain, signatures, FEC,
+source origin, partition fit, package compatibility, or a bootable ROM. The caller must bind
 the public profile, original inventory, and actual signed-image verification.
 Only three image roles, their existing aliases, and vbmeta_digest can change.
+An explicit, freshly recomputed proof can additionally normalize the existing
+DTBO prebuilt alias to the unchanged canonical DTBO after strict payload and
+unsigned metadata checks. It never admits a fourth signing/replacement role.
 No archive member is extracted to the filesystem. A failure retains any partial
 destination for diagnosis, never returns success, and never deletes inputs.
 """
@@ -11,6 +14,7 @@ from __future__ import annotations
 
 from contextlib import ExitStack
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -30,6 +34,11 @@ else:
 avb = inventory.avb
 ROLES = frozenset(("boot", "vbmeta", "vbmeta_system"))
 DIGEST_MEMBER = "META/vbmeta_digest.txt"
+DTBO_ALIAS_MEMBER = "PREBUILT_IMAGES/dtbo.img"
+DTBO_CANONICAL_MEMBER = "IMAGES/dtbo.img"
+DTBO_FINGERPRINT = "com.android.build.dtbo.fingerprint"
+MAX_DTBO_BYTES = 32 * 1024**2
+MAX_DTBO_PROOF_BYTES = 128 * 1024
 MAX_OUTPUT = 128 * 1024**3
 CHUNK = avb.CHUNK
 SPACE_CHECK_BYTES = 64 * 1024**2
@@ -74,6 +83,28 @@ def _budgets(profile):
                  "invalid image budget: " + role)
         result[role] = value
     return result
+
+
+def _dtbo_budget(profile):
+    _budgets(profile)
+    value = profile["image_budgets"].get("dtbo")
+    # Other image roles stream; these two small images are collected in RAM.
+    # Never inherit the generic 128 GiB streaming limit for this operation.
+    _require(type(value) is int and 0 < value <= MAX_DTBO_BYTES,
+             "invalid bounded DTBO image budget")
+    return value
+
+
+def _same_proof(left, right):
+    """Type-exact, bounded by the generated proof, including bool versus int."""
+    if type(left) is not type(right):
+        return False
+    if type(left) is dict:
+        return (left.keys() == right.keys()
+                and all(_same_proof(value, right[key]) for key, value in left.items()))
+    if type(left) is list:
+        return len(left) == len(right) and all(_same_proof(a, b) for a, b in zip(left, right))
+    return left == right
 
 
 def _without_zip64(extra):
@@ -188,6 +219,175 @@ def _read_member(archive, info, following, sink=None):
             "semantic_metadata": _metadata(info, raw_name, local_extra)}
 
 
+def _dtbo_metadata(raw):
+    """Validate a complete raw DTBO; retain every nonpermitted metadata byte.
+
+    The maintained AVB parser validates descriptor framing, reserved fields,
+    digests' widths and block padding. Its semantic report intentionally omits
+    some raw header fields, so compare a narrowly normalized raw header too.
+    DTBO table bounds match read_image_metadata; no FDT/runtime claim is made.
+    """
+    _require(len(raw) >= 4096 and len(raw) % 4096 == 0,
+             "DTBO must be a complete page-aligned raw image")
+    footer_raw = raw[-avb.FOOTER.size:]
+    magic, major, minor, original, offset, size, reserved = avb.FOOTER.unpack(footer_raw)
+    _require(magic == b"AVBf" and (major, minor) == (1, 0) and not any(reserved)
+             and original > 0 and offset == (original + 4095) // 4096 * 4096
+             and 256 <= size <= avb.MAX_VBMETA and offset + size <= len(raw) - avb.FOOTER.size,
+             "invalid DTBO footer or metadata placement")
+    magic, payload, header_size, entry_size, count, table_at, page, version = struct.unpack_from(">8I", raw)
+    table_end = table_at + count * entry_size
+    _require(magic == 0xD7B7AB1E and header_size == entry_size == 32 and version == 0
+             and page == 4096 and 1 <= count <= 1024 and table_at >= header_size
+             and table_end <= payload == original,
+             "invalid DTBO table or incomplete authenticated payload")
+    for at in range(table_at, table_end, entry_size):
+        dt_size, dt_at = struct.unpack_from(">II", raw, at)
+        _require(dt_size > 0 and dt_at >= table_end and dt_at + dt_size <= payload,
+                 "DTBO entry exceeds authenticated payload")
+    view = memoryview(raw)
+    _require(not any(view[original:offset])
+             and not any(view[offset + size:-avb.FOOTER.size]),
+             "nonzero DTBO padding outside authenticated payload and metadata")
+    blob = raw[offset:offset + size]
+    meta = avb.parse_vbmeta(blob)
+    _require(meta["algorithm"] == "NONE" and meta["flags"] == 0
+             and meta["rollback_index"] == meta["header_rollback_index_location"] == 0,
+             "DTBO must have unsigned NONE metadata with zero flags and rollback fields")
+    own = [row for row in meta["descriptors"] if row["kind"] != "property"]
+    _require(len(own) == 1 and own[0]["kind"] == "hash" and own[0]["partition"] == "dtbo"
+             and own[0]["image_size"] == original,
+             "DTBO metadata must contain only its complete own SHA256 hash")
+    properties = [row["key"] for row in meta["descriptors"] if row["kind"] == "property"]
+    _require(DTBO_FINGERPRINT in properties, "DTBO fingerprint property is missing")
+    digest = hashlib.sha256(bytes.fromhex(own[0]["salt_hex"]))
+    digest.update(view[:original])
+    _require(digest.hexdigest() == own[0]["digest_hex"], "DTBO salted payload digest differs")
+
+    auth_size, aux_size = struct.unpack_from(">QQ", blob, 12)
+    key_at, key_size, key_meta_at, key_meta_size, desc_at, desc_size = struct.unpack_from(">6Q", blob, 64)
+    _require(auth_size == key_size == key_meta_size == desc_at == 0
+             and aux_size == (desc_size + 63) // 64 * 64
+             and key_at in (0, desc_size) and key_meta_at in (0, desc_size),
+             "DTBO raw metadata layout is not the compact unsigned descriptor layout")
+    invariant_header = bytearray(blob[:256])
+    # Only lengths derived from descriptor encoding may vary. Zero-length key
+    # fields use either zero or descriptor-end; even that convention must agree
+    # across the pair. All other header bytes, including release padding, stay.
+    struct.pack_into(">Q", invariant_header, 20, 0)
+    struct.pack_into(">Q", invariant_header, 64, int(key_at != 0))
+    struct.pack_into(">Q", invariant_header, 80, int(key_meta_at != 0))
+    struct.pack_into(">Q", invariant_header, 104, 0)
+    invariant_descriptors, cursor = [], 256
+    for row in meta["descriptors"]:
+        descriptor = blob[cursor:cursor + row["size_bytes"]]
+        cursor += row["size_bytes"]
+        if row["kind"] == "hash":
+            fixed = bytearray(descriptor[:avb.HASH.size])
+            # Following-length and salt-length are the only variable fields.
+            # Parser-checked name, digest width, flags and reserved bytes remain.
+            fixed[8:16] = bytes(8)
+            fixed[60:64] = bytes(4)
+            invariant_descriptors.append(("hash", bytes(fixed), row["partition"]))
+        elif row["key"] == DTBO_FINGERPRINT:
+            # _descriptor has already bound both length fields, exact key,
+            # NUL framing and zero alignment padding to this property value.
+            invariant_descriptors.append(("property", DTBO_FINGERPRINT))
+        else:
+            invariant_descriptors.append(("property", descriptor))
+    _require(cursor == 256 + desc_size, "DTBO descriptor extent differs")
+    invariant_footer = footer_raw[:28] + bytes(8) + footer_raw[36:]
+    report = {
+        "image_size_bytes": len(raw), "payload": _identity(view[:original]),
+        "dtbo_table": {"header": _identity(raw[:32]),
+                       "entries": _identity(view[table_at:table_end]),
+                       "total_size": payload, "entry_count": count, "table_offset": table_at,
+                       "header_size": header_size, "entry_size": entry_size,
+                       "page_size": page, "version": version},
+        "footer": {"identity": _identity(footer_raw), "version": [major, minor],
+                   "original_image_size": original, "vbmeta_offset": offset, "vbmeta_size": size},
+        "vbmeta": {"identity": _identity(blob), "header": _identity(blob[:256]),
+                   "invariant_header": _identity(invariant_header),
+                   "release_field": _identity(blob[128:176]),
+                   "algorithm": meta["algorithm"], "flags": meta["flags"],
+                   "required_libavb_version": meta["required_libavb_version"],
+                   "rollback_index": meta["rollback_index"],
+                   "header_rollback_index_location": meta["header_rollback_index_location"],
+                   "authentication_size_bytes": auth_size, "auxiliary_size_bytes": aux_size,
+                   "public_key_offset": key_at, "public_key_metadata_offset": key_meta_at,
+                   "descriptors_offset": desc_at, "descriptors_size_bytes": desc_size,
+                   "descriptors": meta["descriptors"]},
+        "zero_padding_bytes": {"before_vbmeta": offset - original,
+                               "after_vbmeta": len(raw) - avb.FOOTER.size - offset - size},
+        "salted_payload_digest_verified": True,
+    }
+    return report, (bytes(invariant_header), invariant_footer, invariant_descriptors)
+
+
+def _inspect_dtbo_members(archive, members, following, pin, budget):
+    names = (DTBO_CANONICAL_MEMBER, DTBO_ALIAS_MEMBER)
+    _require(all(name in members for name in names), "existing canonical DTBO and prebuilt alias are required")
+    _require(all(inventory._regular_member(members[name])
+                 and 0 < members[name].file_size <= budget for name in names),
+             "DTBO member must be regular and within the bounded image budget")
+    _require(members[names[0]].file_size == members[names[1]].file_size,
+             "DTBO canonical image and alias sizes differ")
+    data, identities, reports, invariants = {}, {}, {}, {}
+    for name in names:
+        with io.BytesIO() as sink:
+            row = _read_member(archive, members[name], following[members[name].header_offset], sink)
+            data[name] = sink.getvalue()
+        identities[name] = {key: row[key] for key in ("sha256", "size_bytes")}
+        reports[name], invariants[name] = _dtbo_metadata(data[name])
+    canonical, alias = names
+    size = reports[canonical]["payload"]["size_bytes"]
+    _require(reports[canonical]["payload"] == reports[alias]["payload"]
+             and memoryview(data[canonical])[:size] == memoryview(data[alias])[:size],
+             "DTBO alias differs from the complete canonical payload")
+    _require(invariants[canonical] == invariants[alias],
+             "DTBO metadata differs outside permitted salt and fingerprint encoding")
+    proof = {"schema_version": 1, "operation": "inspect-dtbo-alias-v1",
+             "source_archive": pin, "alias_member": alias, "canonical_member": canonical,
+             "before": identities[alias], "after": identities[canonical],
+             "payload": reports[canonical]["payload"],
+             "before_metadata": reports[alias], "after_metadata": reports[canonical],
+             "inputs_unchanged": True}
+    _require(len(_encoded(proof)) <= MAX_DTBO_PROOF_BYTES, "DTBO proof exceeds bound")
+    return proof
+
+
+def inspect_dtbo_alias(source: Path, expected_archive: dict, *, profile: dict) -> dict:
+    """Read-only proof for one existing alias; never authorize from a boolean.
+
+    Both complete members and the complete archive are freshly hashed, ZIP
+    framing/CRC/deflate termination checked, and the source held and rechecked.
+    Only salt and this DTBO's fingerprint value (with derived lengths) may
+    differ. No file is extracted, signed or modified and no native tool runs.
+    """
+    try:
+        _require(isinstance(source, Path), "source must be a Path")
+        source = avb.envelope._absolute_path(source)
+        pin = _pin(expected_archive, inventory.MAX_ARCHIVE, "archive")
+        budget = _dtbo_budget(profile)
+        with avb._input(source, inventory.MAX_ARCHIVE) as (stream, info):
+            signature = avb._signature(info)
+            _require(info.st_size == pin["size_bytes"], "source archive size differs")
+            bounds = inventory._zip_bounds(stream, info.st_size)
+            _require(inventory._stream_identity(stream, info.st_size) == pin, "source archive identity differs")
+            with zipfile.ZipFile(stream, "r") as archive:
+                members = inventory._members(archive, bounds, avb.PARTITIONS)
+                proof = _inspect_dtbo_members(archive, members, _geometry(archive, bounds), pin, budget)
+            _require(inventory._stream_identity(stream, info.st_size) == pin,
+                     "source archive changed during DTBO inspection")
+            _fresh_guard(source, stream, signature)
+        return proof
+    except ArchiveCopyError:
+        raise
+    except (OSError, ValueError, zipfile.BadZipFile, zipfile.LargeZipFile,
+            NotImplementedError, RuntimeError, EOFError, zlib.error) as exc:
+        raise ArchiveCopyError(str(exc)) from exc
+
+
 class _PreservedZipInfo(zipfile.ZipInfo):
     """Prevent stdlib from re-encoding CP437 and invalidating Unicode extras."""
     def _encodeFilenameFlags(self):
@@ -275,7 +475,7 @@ def _required_replacements(members):
     return selected
 
 
-def _replacement_specs(replacements, selected, budgets):
+def _replacement_specs(replacements, selected, budgets, dtbo_alias_proof=None):
     _require(type(replacements) is dict and set(replacements) == selected,
              "replacement set must exactly match canonical images, existing aliases, and digest")
     result = {}
@@ -296,7 +496,10 @@ def _replacement_specs(replacements, selected, budgets):
         if role:
             result[name]["role"] = role
     for name, row in result.items():
-        if name != DIGEST_MEMBER:
+        if name == DTBO_ALIAS_MEMBER:
+            _require(dtbo_alias_proof is not None and row["identity"] == dtbo_alias_proof["after"],
+                     "DTBO replacement must equal the unchanged canonical image")
+        elif name != DIGEST_MEMBER:
             _require(row["identity"] == result[f"IMAGES/{row['role']}.img"]["identity"],
                      "replacement alias differs from canonical image")
     return result
@@ -403,7 +606,7 @@ def _readback(stream, size, expected_rows, comment):
     return {**bounds, "member_identity_metadata_sha256": digest.hexdigest()}
 
 
-def _rewrite(source, expected_archive, destination, replacements, profile):
+def _rewrite(source, expected_archive, destination, replacements, profile, dtbo_alias_proof):
     _require(isinstance(source, Path) and isinstance(destination, Path), "source and destination must be Paths")
     source, destination = avb.envelope._absolute_path(source), avb.envelope._absolute_path(destination)
     _require(source != destination, "output must be a fresh archive path")
@@ -417,7 +620,15 @@ def _rewrite(source, expected_archive, destination, replacements, profile):
         with zipfile.ZipFile(stream, "r") as archive:
             members = inventory._members(archive, bounds, avb.PARTITIONS)
             selected, following = _required_replacements(members), _geometry(archive, bounds)
-            specs = _replacement_specs(replacements, selected, budgets)
+            recomputed_proof = None
+            if dtbo_alias_proof is not None:
+                budgets["dtbo"] = _dtbo_budget(profile)
+                recomputed_proof = _inspect_dtbo_members(archive, members, following, pin, budgets["dtbo"])
+                _require(_same_proof(recomputed_proof, dtbo_alias_proof),
+                         "DTBO alias proof differs from the freshly inspected source")
+                _fresh_guard(source, stream, source_signature)
+                selected.add(DTBO_ALIAS_MEMBER)
+            specs = _replacement_specs(replacements, selected, budgets, recomputed_proof)
             for name in selected:
                 maximum = budgets[specs[name]["role"]] if name != DIGEST_MEMBER else inventory.MAX_METADATA
                 _require(0 < members[name].file_size <= maximum, "original selected member exceeds budget")
@@ -481,6 +692,7 @@ def _rewrite(source, expected_archive, destination, replacements, profile):
                 "identical_replacement_count": len(selected) - changed,
                 "source_member_identity_metadata_sha256": source_aggregate,
                 "replacement_members": rows, "inputs_unchanged": True,
+                **({"dtbo_alias_proof": recomputed_proof} if recomputed_proof is not None else {}),
                 "all_members_independently_read_back": True,
                 "membership_order_and_semantic_metadata_preserved": True,
                 "space": {"output_upper_bound_bytes": output_bound,
@@ -508,16 +720,19 @@ def _rewrite(source, expected_archive, destination, replacements, profile):
 
 
 def rewrite_archive(source: Path, expected_archive: dict, destination: Path,
-                    replacements: dict, *, profile: dict) -> dict:
+                    replacements: dict, *, profile: dict, dtbo_alias_proof=None) -> dict:
     """Return a completed copy/readback summary or raise ArchiveCopyError.
 
     Replacement values are exact {path: Path, sha256: str, size_bytes: int}
     objects or {data: bytes}. The digest must be 65 lowercase-hex/newline bytes.
     The caller supplies a pinned public AVB profile; small synthetic budgets are
     useful in offline tests but cannot admit production artifacts by themselves.
+    Only an exact recomputation of inspect_dtbo_alias's proof permits adding
+    PREBUILT_IMAGES/dtbo.img to the replacement set; IMAGES/dtbo.img stays copied
+    unchanged and the alias replacement must have that canonical identity.
     """
     try:
-        return _rewrite(source, expected_archive, destination, replacements, profile)
+        return _rewrite(source, expected_archive, destination, replacements, profile, dtbo_alias_proof)
     except ArchiveCopyError:
         raise
     except (OSError, ValueError, zipfile.BadZipFile, zipfile.LargeZipFile,
