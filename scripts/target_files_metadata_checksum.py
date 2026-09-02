@@ -4,6 +4,8 @@
 The six previous consumers, image admission and policy evidence stay frozen.
 Only the separately pinned 0023 Makefile transition changes the current source
 composition. Staging copies metadata and evidence, never an image.
+The current installer accepts omitted disabled vendor/ODM build flags emitted
+by native Make; explicit nonempty flags and the A/B/VINTF checks stay strict.
 """
 
 import ast
@@ -231,7 +233,21 @@ _install_namespace = dict(_old._install_namespace)
 _install_namespace.update(
     verify_bundle=_impl["_install_verify"],
     _selected_receipt_source_contract=_selected_receipt_source_contract)
-exec(compile(_old._v2._install_source, "<unchanged-atomic-install-with-checksum-selector>", "exec"),
+
+
+def _current_install_source(source):
+    """Change only the two disabled-partition defaults in this current installer."""
+    require(type(source) is str, "checksum install source must be text")
+    for key in ("building_vendor_image", "building_odm_image"):
+        before = 'fields.get("' + key + '")'
+        after = 'fields.get("' + key + '", "")'
+        require(source.count(before) == 1, "checksum prebuilt-mode source boundary differs: " + key)
+        source = source.replace(before, after)
+    return source
+
+
+_install_source = _current_install_source(_old._v2._install_source)
+exec(compile(_install_source, "<atomic-install-with-checksum-selector-and-prebuilt-mode>", "exec"),
      _install_namespace)
 _impl.update(_install_namespace=_install_namespace, _install_impl=_install_namespace["install"])
 for _name in ("stage_from_original", "verify_bundle", "install", "selection", "main"):
