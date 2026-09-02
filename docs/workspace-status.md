@@ -10,6 +10,28 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Images6 native build and complete source/action/retention review pass.**
+Native execution runs
+**2026-09-02 21:06:06–21:08:58 UTC**, exit **0**; the root dispatch closes at
+**21:13:01 UTC**, also exit **0**. Seven fresh installed producers cover
+**vendor, ODM, mi_ext and working76 recovery**, plus three policy SHA sidecars.
+The current image identities match their selected inputs; recovery remains
+`a130ba75…`. All six complete source/input callback maps match before/after
+and the successful Nothing11 result, covering **548 files/fifteen projects**.
+
+The read-only supplement passes at **21:23:51 UTC**: complete before/after Ninja
+logs reproduce all seven action objects, all four retained original images are
+hashed after the build, and nine sidecars pass their recorded checks. Host replay
+verifies all four compact retention records without exporting large image or
+Ninja-log bodies. The six metadata bodies also replay exactly; the image metadata hook,
+runtime and signed parent chain remain unverified. The five-image query's host
+preparation is complete; its fresh read-only native capture starts at
+**21:31:09 UTC**, with no verified capture result yet. Five-image SHA-256,
+Package6, signing, super and boot gates remain open. No phone operation occurs.
+See the [Images6 checkpoint](build-progress.md#images6-verified-build-result--2026-09-02).
+
+## Earlier cleanup and Selected4 checkpoints
+
 **Further host scratch and Package5 duplicates are retired.** At
 **2026-09-02 20:31:31 UTC**, six scratch files and 15 duplicate P5 image bodies
 have been removed. Their operation-local host-free increases total **10.08

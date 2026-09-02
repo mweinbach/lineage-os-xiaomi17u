@@ -1,5 +1,65 @@
 # Nezha product and build progress
 
+## Images6 verified build result — 2026-09-02
+
+The **Images6 native build, profile postcheck and complete
+source/action/retention review pass**.
+The root dispatch runs **21:01:54–21:13:01 UTC**, exit **0**; native execution
+runs **21:06:06.519620–21:08:58.623094 UTC**, also exit **0**. Observed Ninja
+uses the exact `-j8` invocation with verified limits and sandbox namespaces:
+read-only source and writable work/output. No fallback or resource breach is
+recorded.
+
+All **seven installed-output actions are `fresh_success`**: vendor, ODM,
+mi_ext and recovery images plus three policy SHA sidecars. Recovery has **two
+verbose executions but one fresh installed-output row**; the other six actions
+each have one verbose execution. Freshness is not inferred from matching bytes.
+The four current images total **5,943,386,112 bytes** and match selected input
+identities; recovery remains the working76 derivative (`a130ba75…`).
+
+All **six complete callback maps match before/after and Nothing11's after-map**,
+with **548 source files/fifteen projects** and the exact requested configuration.
+The original validator replays all six metadata bodies byte-for-byte. Build
+identity stays **`nezha.86e40fe309189fdcd20dff9b`**, epoch **1788144555**;
+normal Android enforcing and strict 4 KiB checks remain unchanged.
+
+Before building, four original images and three original sidecars were retained,
+with three independent 65-byte sidecar copies. The separate **read-only native
+supplement passes at 21:23:51 UTC**, after running **21:23:47–21:23:51 UTC**.
+It reads the complete original before/after Ninja logs inside the VM and replays
+the original verbose/action functions, reproducing **all seven action objects
+exactly**. It hashes all **5,943,386,112 bytes** of the four retained original
+images after the build, verifying their original inodes and modes, plus **nine
+sidecars / 585 bytes** (three active, three originals, three independent copies).
+All **24 observations** retain their final nine-field stat and ancestor seals.
+
+The root and independent host retention reviews pass. All **four compact raw
+records / 73,852 bytes** are replayed, including **12 image and 17 sidecar journal
+events**. No large image or Ninja-log bodies are exported. This closes the supplement
+left pending by the preserved primary review; `metadata_hook_verified`, runtime,
+signed-parent-chain verification and image reproducibility remain unverified.
+
+Fresh four-log capture also passes at **21:16:11 UTC**. Exact local evidence
+below is relative to `reports/avb-sha256-20260902/`.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `native-preparation-v1/root-images-6-v1/stdout.jsonl` | `0feeedecf05e367e88911ae13c14b4f2e1af1e1644ba95af91c8aa6395e0df3e` | 10,699,989 |
+| `native-preparation-v1/root-images-6-v1/exit.json` | `08d90f50db32bf66f4a4973313075ff47403883bec903d0b3ffa73bda2a9b172` | 64 |
+| `resume-build-20260902-v1/root-images6-native-dispatch-v1/completion.json` | `cc899707e17552afa9d381b9f556050e43ff4c06b15a7a1089a0218d8b099590` | 610 |
+| `resume-build-20260902-v1/root-images6-result-review-v1/review.json` | `b97892a72fe31ef592d4df5c098a54176bf28a006605fda931c54bda89148441` | 6,982 |
+| `resume-build-20260902-v1/five-sha256/post-images6-four-logs-v1/actual-v1/stdout.json` | `d0aca70cc0327147f08c1bbe69bd32d88950545bf6e611a96b81f721a62d34ea` | 80,384 |
+| `resume-build-20260902-v1/root-images6-supplement-dispatch-v1/stdout.json` | `93c50d697a2619ad5b540973444667c6b35395d91995de7bbd66ac427f976756` | 219,731 |
+| `resume-build-20260902-v1/root-images6-complete-review-v1/review.json` | `3b8efcb6aa0f671cb3b0e56802b56f766340b157fee888384d87625db5c04202` | 6,280 |
+| `resume-build-20260902-v1/images6/actual-retention-result-review-v1/review.json` | `84350f24d978c8d13b03905b596aa1d47ba8a1a458d197ef2e47adeaf7d327ce` | 12,786 |
+
+The five-image query's host preparation is complete, and its **fresh read-only
+native capture starts at 21:31:09 UTC**; the capture result is not yet verified.
+The no-invalidation five-image SHA-256 build, Package6, signing, complete
+AVB/FEC/VINTF/super/partition checks, OTA and boot remain separate gates. No phone
+operation or additional cleanup is part of this checkpoint, and the ROM is
+**not flashable**.
+
 ## Host scratch and Package5 duplicate retirement — 2026-09-02
 
 Two host-only retirements complete at **20:23:45 UTC** (six old TAR/synthetic
