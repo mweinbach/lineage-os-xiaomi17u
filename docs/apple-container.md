@@ -6,11 +6,20 @@ Apple Container, while Rosetta handles x86-64 Linux executables. Source and
 output live on a persistent Linux ext4 volume. This preserves the distinction
 between a usable local environment and a verified complete Android 16 ROM build.
 
-The **2026-09-01 02:14:58 UTC maintenance checkpoint** expands the existing
-`evolution-nezha-work` volume from **800 to 1,024 GiB** offline, then restarts the
-same builder, `twrp-nezha-upstream74-20260829`. The original 800 GiB raw image and
-volume metadata are retained through APFS clone/swap; this is **not an independent
-physical backup**. Initial preen exits 1 and remains failed; separate confirmation,
+At the **2026-09-02 17:16:46 UTC host-cleanup checkpoint**, the detached old
+800 GiB raw snapshot has been **deleted with explicit approval to lose that
+rollback copy**. The current managed 1,024 GiB volume and small maintenance
+receipts remain intact. Removing the snapshot and ten verified duplicate
+crosscheck image bodies leaves **122,636,726,272 bytes (114.21 GiB)** available
+on the host at that checkpoint. This exceeds the unchanged 100 GiB reserve,
+not the full follow-on build budget. See the [cleanup record](storage-cleanup.md)
+for exact deletions, preservation checks and measured APFS space recovery.
+
+The historical **2026-09-01 02:14:58 UTC maintenance checkpoint** expanded the
+existing `evolution-nezha-work` volume from **800 to 1,024 GiB** offline, then
+restarted the same builder, `twrp-nezha-upstream74-20260829`. The original 800 GiB
+raw image and volume metadata were retained through APFS clone/swap; this was
+**not an independent physical backup**. Initial preen exits 1 and remains failed; separate confirmation,
 growth and postcheck return native exit 0. Complete old/grown raw-image hashes
 are recorded, without claiming semantic equivalence of every filesystem object.
 Post-restart checks verify aarch64, case-sensitive ext4, Rosetta Ninja, the same
@@ -419,8 +428,9 @@ disable the volume ownership check to run concurrent writers.
 `evolution-nezha-work` is an **Apple-managed named volume outside this Git
 checkout**. `/work/evolution` is therefore not the Mac's `sources/evolution`
 directory. Source, output and cache survive foreground container removal.
-Keep the volume; do not prune or delete it as routine cleanup. Its 800 GiB is
-the filesystem capacity, not necessarily its current physical disk usage.
+Keep the active volume; do not prune or delete it as routine cleanup. Its
+current capacity is 1,024 GiB; the 800 GiB setup observations above are historical.
+Filesystem capacity is not necessarily current physical disk usage.
 Apple documents sparse ext4 named volumes and warns that pruning can destroy
 their data. [Apple volume documentation](https://github.com/apple/container/blob/main/docs/volumes.md)
 

@@ -10,12 +10,27 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-**Native continuation is on hold for host storage.** The September 2
-**16:26:15 UTC** reserve check finds **63,488,000,000 bytes** free against the
-unchanged **100 GiB** minimum. An additional **45 GiB** was requested to restore
-that minimum; the full follow-on build budget is separate. Guest free space
-of roughly 267 GiB does not satisfy the host-volume gate. No reserve guard is
-lowered or bypassed.
+**Verified host cleanup clears the measured 100 GiB reserve threshold.** At
+**2026-09-02 17:16:46 UTC**, the host has **122,636,726,272 bytes (114.21 GiB)**
+available after removing the explicitly approved detached 800 GiB snapshot and
+ten byte-identical firmware crosscheck bodies. The two operation-local free-space
+increases total **64.35 GiB**, not the much larger apparent clone allocation.
+The active 1 TiB volume, source checkouts, working76, stock originals, current
+build inputs and small evidence files remain preserved. See the
+[dated cleanup record](storage-cleanup.md) for exact checks and receipts.
+
+The **full follow-on storage budget remains separate**, and **Nothing11 has not
+executed**. Availability, ownership and frozen inputs must be checked again
+before native work; this cleanup is not native-wrapper readiness or a new build
+result. No reserve guard is lowered or bypassed, and no phone operation occurs.
+
+## Earlier Nothing10 profile failure and storage hold
+
+At the September 2 **16:26:15 UTC** checkpoint, native continuation was held:
+the host reserve check found **63,488,000,000 bytes** free against the unchanged
+**100 GiB** minimum. An additional **45 GiB** was requested to restore that
+minimum. The roughly 267 GiB then free in the guest did not satisfy the
+host-volume gate. This historical hold precedes the host cleanup above.
 
 **Nothing10's native invocation exits 0, but its profile fails and the root
 command exits 1.** The generated configuration changes six SHA-256 leaves,
@@ -1532,8 +1547,8 @@ specific storage gate without adopting the candidate.
 
 At **2026-09-01 02:14:58 UTC**, the existing source volume is qualified at
 **1,024 GiB**, with **402,047,229,952 bytes available** against the unchanged
-226,459,516,499-byte staging requirement. The original 800 GiB image and volume
-metadata remain retained through APFS clone/swap, **not an independent physical
+226,459,516,499-byte staging requirement. At that checkpoint, the original
+800 GiB image and volume metadata were retained through APFS clone/swap, **not an independent physical
 backup**. The initial preen exit 1 remains a failed attempt; separate confirmation,
 growth and postcheck each return native exit 0. Complete raw-image hashes and
 post-restart checks bind the retained original, current 539-source/thirteen-project
@@ -1541,6 +1556,9 @@ proof, strict 4 KiB configuration and inactive staged inputs. The same builder
 is the sole observed volume user. This maintenance is not an Android build,
 source adoption or ROM/boot proof; see the [environment details](apple-container.md)
 and [bounded maintenance evidence](../research/workspace-integration.json).
+The old raw snapshot was subsequently removed with explicit approval at the
+[September 2 host-cleanup checkpoint](storage-cleanup.md); its small maintenance
+evidence and the current 1,024 GiB volume remain preserved.
 
 The later **source-v2 transaction commits at 02:37:56 UTC** and returns native
 exit 0 at **02:38:56 UTC**. It exchanges the device, target-files metadata and
