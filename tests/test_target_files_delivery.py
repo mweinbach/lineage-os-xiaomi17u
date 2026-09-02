@@ -516,21 +516,24 @@ class TargetFilesDeliveryTests(unittest.TestCase):
             g._target_files_metadata_binding(plan, binding)
 
     def test_policy3_construction_derives_after_camera_and_factory_includes(self):
-        plan = {"target_files_metadata": {"policy_image_delivery": {}}, "camera_property_capability": {},
-                "factory_property_contexts_capability": {}, construction.BINDING: {"contract_id": construction.POLICY3_CONTRACT_ID}}
         board_path = (g.DEVICE_PATH / "BoardConfig.mk").as_posix()
         before = g._policy_image_delivery_board((ROOT / board_path).read_bytes())
         before = policy_inputs.factory_property_contexts_board(policy_inputs.camera_property_board(before))
         after = before + b"# synthetic constructor result\n"
         payloads = {board_path: after, g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix(): b"# synthetic delivery guard\n"}
-        def derive(raw, contract_path=None):
-            self.assertEqual(raw, before)
-            self.assertEqual(contract_path, g.ROOT / construction.POLICY3_CONTRACT)
-            return after
-        with mock.patch.object(construction, "derive_board", side_effect=derive) as called, \
-                mock.patch.object(g, "_render_policy_image_delivery", return_value="# synthetic delivery guard\n"):
-            g._policy_image_delivery_source_guards(plan, payloads)
-            called.assert_called_once()
+        for contract_id, record in ((construction.POLICY3_CONTRACT_ID, construction.POLICY3_CONTRACT),
+                                    (construction.CHECKSUM_CONTRACT_ID, construction.CHECKSUM_CONTRACT)):
+            plan = {"target_files_metadata": {"policy_image_delivery": {}}, "camera_property_capability": {},
+                    "factory_property_contexts_capability": {}, construction.BINDING: {"contract_id": contract_id}}
+            def derive(raw, contract_path=None):
+                self.assertEqual(raw, before)
+                self.assertEqual(contract_path, g.ROOT / record)
+                return after
+            with self.subTest(contract_id=contract_id), \
+                    mock.patch.object(construction, "derive_board", side_effect=derive) as called, \
+                    mock.patch.object(g, "_render_policy_image_delivery", return_value="# synthetic delivery guard\n"):
+                g._policy_image_delivery_source_guards(plan, payloads)
+                called.assert_called_once()
 
     def test_policy3_audit_sources_are_exact_and_opt_in(self):
         selected = {"target_files_metadata": {"policy_image_delivery": {

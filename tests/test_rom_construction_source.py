@@ -262,5 +262,158 @@ class Policy3ConstructionSourceTests(unittest.TestCase):
             source.derive_board(self.board)
 
 
+class ChecksumConstructionSourceTests(unittest.TestCase):
+    def setUp(self):
+        from scripts import policy_inputs, target_files_metadata_checksum as checksum
+        self.public_root = source.ROOT
+        self.policy3, self.policy3_id = source.load_contract(source.ROOT / source.POLICY3_CONTRACT)
+        self.original = source.load_contract()
+        board = generator._policy_image_delivery_board((source.ROOT / source.BOARD).read_bytes())
+        self.board = policy_inputs.factory_property_contexts_board(policy_inputs.camera_property_board(board))
+        self.composition = checksum.compose_sources(source.ROOT, source_contract=checksum.SOURCE_CONTRACT)
+        self.composition_id = source.metadata.identity(source.metadata.encoded(self.composition))
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+        (self.root / "config").mkdir()
+        for name in (source.CONTRACT, source.POLICY3_CONTRACT):
+            (self.root / name).write_bytes((source.ROOT / name).read_bytes())
+        self.path = self.root / source.CHECKSUM_CONTRACT
+        self.contract = {**copy.deepcopy(self.policy3), "schema_version": 3,
+                         "contract_id": source.CHECKSUM_CONTRACT_ID, "base_admission": None,
+                         "selected_source_contract": copy.deepcopy(source.CHECKSUM_SOURCE_CONTRACT)}
+        self.path.write_bytes(source.metadata.encoded(self.contract))
+        for patch in (mock.patch.object(source, "ROOT", self.root),
+                      # The maintained composer is independently tested. Freeze
+                      # its real public output for these synthetic base fixtures.
+                      mock.patch.object(checksum, "compose_sources", return_value=self.composition)):
+            patch.start(); self.addCleanup(patch.stop)
+
+    def fixture(self):
+        files = {source.BOARD: self.board, "device/xiaomi/nezha/device.mk": b"# synthetic unrelated input\n"}
+        native = {"project_commit": self.composition["project"]["commit"],
+                  "files": self.composition["final_source_files"], "composition": self.composition,
+                  "composition_identity": self.composition_id}
+        plan = {"schema_version": 1, "profile": "synthetic-offline-fixture", "files": source.file_entries(files),
+                "target_files_metadata": {"source_contract": copy.deepcopy(source.CHECKSUM_SOURCE_CONTRACT),
+                    "native_source": copy.deepcopy(self.composition), "composition_identity": self.composition_id,
+                    "policy_image_delivery": {"contract": copy.deepcopy(self.policy3["selected_policy_image_contract"])}},
+                "mi_ext_inputs": {"native_source": copy.deepcopy(native)},
+                "admission": {"complete_target_files_allowed": False, "flash_allowed": False}}
+        contract = {**copy.deepcopy(self.contract), "base_admission": source.metadata.identity(source.metadata.encoded(plan))}
+        return plan, files, contract
+
+    def synthetic_binding(self, contract):
+        raw = source.metadata.encoded(contract)
+        self.path.write_bytes(raw)
+        return mock.patch.object(source, "CHECKSUM_CONTRACT_SHA256", source.metadata.identity(raw)["sha256"])
+
+    def test_checksum_public_binding_preserves_both_predecessors(self):
+        with mock.patch.object(source, "ROOT", self.public_root):
+            actual, _ = source.load_contract(self.public_root / source.CHECKSUM_CONTRACT)
+            self.assertEqual(source.load_contract(), self.original)
+            self.assertEqual(source.load_contract(self.public_root / source.POLICY3_CONTRACT), (self.policy3, self.policy3_id))
+            self.assertNotEqual(actual["base_admission"], self.policy3["base_admission"])
+            for name in set(self.policy3) - {"schema_version", "contract_id", "base_admission"}:
+                self.assertEqual(actual[name], self.policy3[name], name)
+            after = source.derive_board(self.board, self.public_root / source.CHECKSUM_CONTRACT)
+            self.assertEqual(source.restore_board(after, self.public_root / source.CHECKSUM_CONTRACT), self.board)
+            self.assertEqual(source.metadata.identity(source.render_guard()), self.policy3["guard"])
+
+    def test_checksum_missing_actual_binding_stops_before_payload_or_process(self):
+        class Unreadable(dict):
+            def get(self, *args): raise AssertionError("pending plan inspected")
+            def __getitem__(self, key): raise AssertionError("pending payload inspected")
+        with mock.patch.object(source, "CHECKSUM_CONTRACT_SHA256", None), \
+             mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "unbound"):
+                source.apply(Unreadable(), Unreadable(), self.path)
+        with self.synthetic_binding(self.contract):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "missing actual bindings"):
+                source.apply(Unreadable(), Unreadable(), self.path)
+
+    def test_checksum_synthetic_base_roundtrip_only_changes_board_and_guard(self):
+        plan, files, contract = self.fixture()
+        before = copy.deepcopy(plan), dict(files)
+        with self.synthetic_binding(contract), mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            selected, payloads = source.apply(plan, files, self.path)
+            self.assertEqual(source.validate(selected, payloads), plan)
+            self.assertEqual(set(payloads) - set(files), {source.GUARD})
+            self.assertEqual([name for name in files if files[name] != payloads[name]], [source.BOARD])
+            self.assertEqual(selected["admission"], plan["admission"])
+            self.assertEqual(payloads[source.GUARD], source.render_guard())
+            with self.assertRaisesRegex(source.ConstructionSourceError, "selected twice"):
+                source.apply(selected, payloads, self.path)
+        self.assertEqual((plan, files), before)
+
+    def test_checksum_descriptor_and_resealed_preserved_fields_are_closed(self):
+        _, _, original = self.fixture()
+        mutations = (
+            lambda d: d.update(extra=True), lambda d: d.update(schema_version=True),
+            lambda d: d["scope"].update(native_dispatch_allowed=True),
+            lambda d: d["recorded_policy_basis"].update(source_files=545),
+            lambda d: d["board_before"].update(size_bytes=4097),
+            lambda d: d["selected_policy_image_contract"].update(sha256="0" * 64),
+            lambda d: d["selected_source_contract"].update(path="patches/evolution/target-files-source-composition.json"),
+            lambda d: d["base_admission"].update(size_bytes=True),
+            lambda d: d.update(base_admission=copy.deepcopy(self.policy3["base_admission"])),
+        )
+        for mutate in mutations:
+            contract = copy.deepcopy(original); mutate(contract)
+            with self.subTest(mutate=mutate), self.synthetic_binding(contract):
+                with self.assertRaises(source.ConstructionSourceError):
+                    source.load_contract(self.path)
+        with self.synthetic_binding(original):
+            forged = self.root / "forged.json"
+            forged.write_bytes(self.path.read_bytes() + b"\n")
+            with self.assertRaisesRegex(source.ConstructionSourceError, "selector differs"):
+                source.load_contract(forged)
+
+    def test_checksum_resealed_source_selection_and_full_compositions_are_required(self):
+        for kind in ("selector", "metadata", "metadata_identity", "mi_ext"):
+            plan, files, contract = self.fixture()
+            if kind == "selector":
+                plan["target_files_metadata"]["source_contract"]["path"] = "patches/evolution/target-files-source-composition.json"
+            elif kind == "metadata":
+                plan["target_files_metadata"]["native_source"]["final_source_files"][0]["sha256"] = "0" * 64
+            elif kind == "metadata_identity":
+                plan["target_files_metadata"]["composition_identity"] = {"sha256": "0" * 64, "size_bytes": 1}
+            else:
+                plan["mi_ext_inputs"]["native_source"]["files"][0]["sha256"] = "0" * 64
+            contract["base_admission"] = source.metadata.identity(source.metadata.encoded(plan))
+            with self.subTest(kind=kind), self.synthetic_binding(contract):
+                with self.assertRaisesRegex(source.ConstructionSourceError, "checksum complete base"):
+                    source.apply(plan, files, self.path)
+
+    def test_checksum_board_payload_and_plan_mutations_cannot_be_resealed(self):
+        plan, files, contract = self.fixture()
+        with self.synthetic_binding(contract):
+            selected, payloads = source.apply(plan, files, self.path)
+            for name in payloads:
+                changed = {**payloads, name: payloads[name] + b"# mutation\n"}
+                with self.subTest(name=name), self.assertRaises(source.ConstructionSourceError):
+                    source.validate({**selected, "files": source.file_entries(changed)}, changed)
+            with self.assertRaisesRegex(source.ConstructionSourceError, "complete exact selected base"):
+                source.validate({**selected, "invented_native_success": True}, payloads)
+            for board in (self.board + b"\n", self.board.replace(source.BLOCK, b""), self.board + source.BLOCK):
+                with self.subTest(size=len(board)), self.assertRaises(source.ConstructionSourceError):
+                    source.derive_board(board, self.path)
+            with self.assertRaises(source.ConstructionSourceError):
+                source.restore_board(payloads[source.BOARD] + b"\n", self.path)
+
+    def test_checksum_selection_cannot_be_relabelled_as_a_predecessor(self):
+        plan, files, contract = self.fixture()
+        with self.synthetic_binding(contract):
+            selected, payloads = source.apply(plan, files, self.path)
+            for contract_id in (source.CONTRACT_ID, source.POLICY3_CONTRACT_ID, "unknown-successor"):
+                changed = copy.deepcopy(selected)
+                changed[source.BINDING]["contract_id"] = contract_id
+                with self.subTest(contract_id=contract_id), self.assertRaises(source.ConstructionSourceError):
+                    source.validate(changed, payloads)
+            for path in (source.CONTRACT, source.POLICY3_CONTRACT):
+                with self.subTest(path=path), self.assertRaises(source.ConstructionSourceError):
+                    source.apply(plan, files, self.root / path)
+
+
 if __name__ == "__main__":
     unittest.main()

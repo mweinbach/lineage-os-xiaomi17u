@@ -189,6 +189,16 @@ POLICY3_CONTRACT = "config/nezha-rom-construction-source-policy3-v1.json"
 POLICY3_CONTRACT_ID = "nezha-policy3-first-target-files-source-v1"
 POLICY3_CONTRACT_SHA256 = "8edf25080891ccd41a7650804f764ddaca0572ac834e294ecfc9e387f50f894c"
 POLICY3_BINDINGS = ("base_admission", "board_before", "board_after")
+CHECKSUM_CONTRACT = "config/nezha-rom-construction-source-checksum-v1.json"
+CHECKSUM_CONTRACT_ID = "nezha-metadata-checksum-first-target-files-source-v1"
+# Bound only after the complete checksum base has been generated and measured.
+CHECKSUM_CONTRACT_SHA256 = "18f0a6cd6c6e9e59d1ea8d0b0f3a8db3719543691a17e03c8d756a8bf3ce868e"
+CHECKSUM_SOURCE_CONTRACT = {
+    "path": "patches/evolution/target-files-metadata-checksum.json",
+    "contract_id": "nezha-target-files-metadata-checksum-v1",
+    "sha256": "ee28f64d09c75d724c0be5dc07d98816cf30c4f59cf09a45c6163f6c96428e01",
+    "size_bytes": 1455,
+}
 POLICY3_IMAGE_CONTRACT = "config/nezha-policy-image-delivery-policy3.json"
 POLICY3_IMAGE_CONTRACT_ID = "nezha-policy3-final-leaf-metadata-delivery-v1"
 POLICY3_BASIS = {
@@ -237,21 +247,47 @@ def _policy3_contract(raw):
     return value
 
 
+def _checksum_contract(raw):
+    value = metadata._json(raw)
+    old, _ = load_contract(ROOT / POLICY3_CONTRACT)
+    require(type(value) is dict and set(value) == set(old) | {"selected_source_contract"}
+            and type(value["schema_version"]) is int and value["schema_version"] == 3
+            and value["contract_id"] == CHECKSUM_CONTRACT_ID,
+            "unknown checksum construction source schema or fields")
+    # Reuse the policy3 binding checks, then close every field except the new
+    # complete base and explicit checksum source selector against that contract.
+    projected = {name: value[name] for name in old}
+    projected.update(schema_version=2, contract_id=POLICY3_CONTRACT_ID)
+    _policy3_contract(metadata.encoded(projected))
+    for name in set(old) - {"schema_version", "contract_id", "base_admission"}:
+        require(metadata.encoded(value[name]) == metadata.encoded(old[name]),
+                "checksum construction changes preserved policy3 field: " + name)
+    require(value["base_admission"] != old["base_admission"],
+            "checksum construction requires its separately measured complete base")
+    require(metadata.encoded(value["selected_source_contract"]) == metadata.encoded(CHECKSUM_SOURCE_CONTRACT),
+            "checksum construction source selector differs")
+    return value
+
+
 def load_contract(path=None):
-    """Omission retains v1; only exact explicit policy3 bytes select its route."""
+    """Omission retains v1; successors require exact explicit descriptor bytes."""
     if path is None:
         return _v1_load_contract()
     reader = metadata.Reader()
     selected = reader.read(path)
     value = metadata._json(selected)
-    if type(value) is not dict or value.get("contract_id") != POLICY3_CONTRACT_ID:
+    if type(value) is not dict or value.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID):
         reader.recheck()
         return _v1_load_contract(path)
-    raw = reader.read(ROOT / POLICY3_CONTRACT)
-    require(metadata.identity(raw)["sha256"] == POLICY3_CONTRACT_SHA256,
-            "maintained policy3 construction contract changed; review a new binding")
-    require(selected == raw, "policy3 construction selector differs from the maintained contract")
-    contract = _policy3_contract(raw)
+    checksum = value["contract_id"] == CHECKSUM_CONTRACT_ID
+    record = CHECKSUM_CONTRACT if checksum else POLICY3_CONTRACT
+    digest = CHECKSUM_CONTRACT_SHA256 if checksum else POLICY3_CONTRACT_SHA256
+    require(digest is not None, "checksum construction is unbound; missing actual complete base")
+    raw = reader.read(ROOT / record)
+    require(metadata.identity(raw)["sha256"] == digest,
+            "maintained construction successor contract changed; review a new binding")
+    require(selected == raw, "construction successor selector differs from the maintained contract")
+    contract = _checksum_contract(raw) if checksum else _policy3_contract(raw)
     reader.recheck()
     return contract, metadata.identity(raw)
 
@@ -269,8 +305,8 @@ def derive_board(raw, contract_path=None):
     if contract_path is None:
         return _v1_derive_board(raw)
     contract, _ = load_contract(contract_path)
-    return (_derive_policy3_board(raw, contract) if contract["contract_id"] == POLICY3_CONTRACT_ID
-            else _v1_derive_board(raw))
+    return (_derive_policy3_board(raw, contract)
+            if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID) else _v1_derive_board(raw))
 
 
 def _restore_policy3_board(raw, contract):
@@ -285,8 +321,8 @@ def restore_board(raw, contract_path=None):
     if contract_path is None:
         return _v1_restore_board(raw)
     contract, _ = load_contract(contract_path)
-    return (_restore_policy3_board(raw, contract) if contract["contract_id"] == POLICY3_CONTRACT_ID
-            else _v1_restore_board(raw))
+    return (_restore_policy3_board(raw, contract)
+            if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID) else _v1_restore_board(raw))
 
 
 def _check_policy3_base(plan, payloads, contract):
@@ -297,17 +333,35 @@ def _check_policy3_base(plan, payloads, contract):
     delivery = plan.get("target_files_metadata", {}).get("policy_image_delivery", {}).get("contract")
     require(metadata.encoded(delivery) == metadata.encoded(contract["selected_policy_image_contract"]),
             "policy3 complete base uses a different image delivery contract")
+    if contract["contract_id"] == CHECKSUM_CONTRACT_ID:
+        if __package__:
+            from . import target_files_metadata_checksum as checksum
+        else:
+            import target_files_metadata_checksum as checksum
+        selected = plan["target_files_metadata"]
+        require(metadata.encoded(selected.get("source_contract")) == metadata.encoded(CHECKSUM_SOURCE_CONTRACT),
+                "checksum complete base uses a different metadata source selector")
+        composition = checksum.compose_sources(ROOT, source_contract=CHECKSUM_SOURCE_CONTRACT["path"])
+        composition_id = metadata.identity(metadata.encoded(composition))
+        require(metadata.encoded(selected.get("native_source")) == metadata.encoded(composition)
+                and selected.get("composition_identity") == composition_id,
+                "checksum complete base uses a different complete source composition")
+        native_source = {"project_commit": composition["project"]["commit"],
+                         "files": composition["final_source_files"], "composition": composition,
+                         "composition_identity": composition_id}
+        require(metadata.encoded(plan.get("mi_ext_inputs", {}).get("native_source")) == metadata.encoded(native_source),
+                "checksum complete base requires the matching mi_ext source composition")
 
 
 def apply(plan, payloads, contract_path):
     contract, identity = load_contract(contract_path)
-    if contract["contract_id"] != POLICY3_CONTRACT_ID:
+    if contract["contract_id"] not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID):
         return _v1_apply(plan, payloads, contract_path)
     _check_policy3_base(plan, payloads, contract)
     result, files = copy.deepcopy(plan), dict(payloads)
     files[BOARD] = _derive_policy3_board(files[BOARD], contract)
     files[GUARD] = render_guard()
-    result[BINDING] = {"contract": identity, "contract_id": POLICY3_CONTRACT_ID,
+    result[BINDING] = {"contract": identity, "contract_id": contract["contract_id"],
                        "base_admission": contract["base_admission"], "scope": copy.deepcopy(contract["scope"])}
     result["files"] = file_entries(files)
     validate(result, files)
@@ -316,10 +370,11 @@ def apply(plan, payloads, contract_path):
 
 def validate(plan, payloads):
     binding = plan.get(BINDING)
-    if type(binding) is not dict or binding.get("contract_id") != POLICY3_CONTRACT_ID:
+    if type(binding) is not dict or binding.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID):
         return _v1_validate(plan, payloads)
-    contract, identity = load_contract(ROOT / POLICY3_CONTRACT)
-    expected = {"contract": identity, "contract_id": POLICY3_CONTRACT_ID,
+    record = CHECKSUM_CONTRACT if binding["contract_id"] == CHECKSUM_CONTRACT_ID else POLICY3_CONTRACT
+    contract, identity = load_contract(ROOT / record)
+    expected = {"contract": identity, "contract_id": contract["contract_id"],
                 "base_admission": contract["base_admission"], "scope": contract["scope"]}
     require(metadata.encoded(binding) == metadata.encoded(expected),
             "policy3 construction admission differs from the maintained capability")
