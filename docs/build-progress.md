@@ -1,5 +1,54 @@
 # Nezha product and build progress
 
+**Package3 fails in the metadata-verifier checksum guard**, during the ordinary
+target-files-directory recipe. Native execution runs from
+**2026-09-02 01:54:42 to 02:09:50 UTC**, ending with exit 1; the actual host
+launcher closes with exit 1 at **02:14:06 UTC**. Action **13,468/13,582**, producing
+`lineage_nezha-target_files.zip.list`, reports
+`sha256sum: Unknown option 'strict'`. The final parallel progress line is
+13,475/13,582. Subsequent Metalava warnings belong to parallel work, not the
+failed checksum action. The artifact postcheck is null and no current Package3
+ZIP success is inferred.
+
+Complete readback finishes at **02:16:27 UTC**, retaining all **three files /
+12,917,575 bytes**: the native result, 1,982,156-byte stdout and empty stderr.
+The native result equals the host result byte-for-byte; two complete hash/stat
+passes agree. All six ordinary source/input guard maps are equal before/after,
+as are both GMS and selected-app prerequisite summaries and all 254 configuration
+fields. Runtime observations change with build activity and logs. The source
+remains 545 files/fifteen projects, with build identity
+**`nezha.b51a6b5609d2001e9ae1f7ae`**. Preflight, Ninja argv, resource limits and
+sandbox checks pass, with no timeout, disk-floor or stream-overflow fault.
+
+The read-only compatibility probe pins the actual build-selected Toybox binary
+and verifies **14 expected outcomes**. The unsupported flag reproduces exit 1;
+canonical lowercase 64-hex validation plus `sha256sum -c` accepts correct input
+and fails closed for wrong bytes, malformed digests, missing files and tool
+failure. The first probe fails its provenance lookup at `paths.go`; the corrected
+probe reads `path.go`, preserving the failed attempt. Neither probe executes an
+Android build or changes source/output files.
+
+The exact rendered 0023 guard also passes **15 expected-outcome smoke cases**
+under actual Bash and the pinned Toybox binary. Only the matching digest reaches
+a test-only sentinel; malformed, injected, missing-file and command-failure
+cases exit 1. No Make/Kati, metadata installer or build executes. A subsequent
+read-only four-log collector passes at **02:21:39 UTC**, measuring output
+`.ninja_deps` at **171,696,396 bytes** and `.ninja_log` at **63,144,601 bytes**.
+Future captures must remeasure and rebind these files, not reuse the older
+170,213,408-byte dependency-log pin.
+
+Additive [patch 0023](../patches/evolution/0023-portable-target-files-metadata-checksum.patch)
+is prepared without rewriting patch 0009 or its history. It is **not adopted in
+the VM**, and no successful native retry is claimed. The current metadata bundle
+also verifies the full Makefile identity (`bf6e0668…`); its runtime and source
+composition require refreshed reviewed inputs. Source adoption, fresh
+source/configuration/metadata receipts and a new packaging attempt remain next.
+Images3 and the selected-app build retain their earlier verified scope;
+the signed boot chain, final VINTF/AVB/partition checks and hardware tests remain
+open. Normal Android enforcement, 4 KiB, working76 and false complete-ROM
+readiness are unchanged. The [failure record](../research/workspace-integration.json)
+and [metadata guide](target-files-metadata.md) retain exact evidence and limits.
+
 The **Images3 native build, postcheck and retained-evidence replay pass** on the
 545-file/fifteen-project source. Its exact `--make-mode -j8` invocation builds
 `recoveryimage`, `mi_extimage`, `vendorimage`, `odmimage` and the three

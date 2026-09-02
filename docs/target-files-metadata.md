@@ -1,5 +1,36 @@
 # Metadata for retained vendor and ODM images
 
+## September 2, 2026: Package3 checksum-hook failure
+
+The native Package3 attempt exits 1 at **02:09:50 UTC**, followed by host exit 1
+at **02:14:06 UTC**. The target-files-directory action reaches this hook and fails
+with `sha256sum: Unknown option 'strict'`. The build-selected command resolves
+to the pinned Toybox binary, which does not accept that flag. The artifact
+postcheck does not run; the complete result/stdout/stderr readback preserves the
+failure. Later parallel Metalava output is not the failed action.
+
+A read-only native probe verifies all **14 expected outcomes** for the actual
+tool. Canonical lowercase 64-hex digest validation followed by `sha256sum -c`
+accepts the correct verifier and rejects wrong bytes, malformed digests, missing
+files and checksum-command failure. The first probe's incorrect `paths.go`
+provenance lookup remains preserved; the successful probe uses `path.go`.
+
+The exact rendered 0023 guard separately passes **15 expected-outcome smoke
+cases** under actual Bash and pinned Toybox. Only the matching digest reaches
+the test sentinel. Wrong/malformed digests, newline/quote/substitution/backtick
+injection, missing files and checker failure exit 1 without that sentinel. This
+does not execute Make/Kati, the metadata installer or an Android build.
+
+[Patch 0023](../patches/evolution/0023-portable-target-files-metadata-checksum.patch)
+is an additive prepared correction; patch 0009 and its source history are not
+rewritten. **No replacement source has been adopted in the VM.** The current
+metadata bundle checks the complete Makefile identity (`bf6e0668…`), so its
+runtime and source composition also require refreshed reviewed inputs. Fresh
+source, configuration and metadata receipts and a successful packaging retry remain
+separate work. The [failure checkpoint](../research/workspace-integration.json)
+binds the actual failed result and probe. The earlier integration specification
+below retains its original scope and pinned source identities.
+
 Nezha currently selects opaque factory vendor and ODM images. The pinned
 Android target-files recipe copies those images into `IMAGES/` but does not
 populate their `VENDOR/` and `ODM/` metadata trees. Releasetools needs genuine

@@ -10,6 +10,39 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package3 fails at the target-files metadata checksum hook**, with native exit
+1 at **2026-09-02 02:09:50 UTC** and actual host exit 1 at **02:14:06 UTC**.
+The failing target-files-directory action is **13,468/13,582** and reports
+`sha256sum: Unknown option 'strict'`. Later parallel progress reaches 13,475;
+the failure is not an APK or Metalava error. No successful Package3 ZIP or
+artifact postcheck is established.
+
+Complete readback of the result and both native streams verifies **12,917,575
+bytes** and two matching hash/stat passes. All six ordinary guard maps and the
+GMS/selected-app prerequisite summaries match before and after. Runtime
+observations legitimately differ after the build; they are not asserted equal.
+The active source remains **545 files/fifteen projects**, build
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, with 254 configuration fields unchanged.
+
+A pinned native Toybox compatibility probe verifies all **14 expected outcomes**:
+canonical lowercase 64-hex digest validation followed by `sha256sum -c` accepts
+correct bytes and rejects wrong, malformed or missing inputs and command
+failure. The first probe's provenance-path typo remains recorded. Additive
+[patch 0023](../patches/evolution/0023-portable-target-files-metadata-checksum.patch)
+also passes a **15-case rendered-guard smoke test**, reaching a test sentinel
+only for the matching digest. No Make/Kati or metadata installer runs in that
+test. The patch is prepared only; no replacement source is installed in the VM.
+The metadata runtime and source composition must also be refreshed because the
+existing bundle pins the complete Makefile. Fresh source/configuration/metadata
+receipts precede a packaging retry.
+
+Images3 and selected-nine retain their verified scopes. Normal Android
+enforcement, 4 KiB, working76, kernel warnings and `test-keys` are unchanged;
+no phone operation occurs and complete-ROM readiness remains false. See
+[build progress](build-progress.md) and the
+[Package3 failure checkpoint](../research/workspace-integration.json). Earlier
+checkpoints below preserve their original results and then-pending work.
+
 The **Images3 native build, postcheck and retained-evidence replay pass**. Native
 execution runs at **2026-09-02 01:12:09–01:13:56 UTC**, with exit 0 and actual host exit 0
 at **01:17:50 UTC**. All seven installed producers are verified fresh: recovery,

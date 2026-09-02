@@ -1,5 +1,24 @@
 # SystemUI Clock optional Window libraries
 
+The later **Package3 attempt fails at the metadata checksum hook**, not a Clock
+APK check: native exit 1 at **2026-09-02 02:09:50 UTC**, host exit 1 at
+**02:14:06 UTC**, with `sha256sum: Unknown option 'strict'`. Full three-file
+readback passes; all six ordinary guards and the GMS/selected-app prerequisite
+summaries remain equal before/after. Runtime observations change with build
+activity, and the package artifact postcheck does not run.
+
+The pinned Toybox probe verifies 14 expected checksum outcomes, and the exact
+rendered 0023 guard passes 15 test-sentinel cases without a Make/Kati or installer
+run. The prepared
+[0023 correction](../patches/evolution/0023-portable-target-files-metadata-checksum.patch)
+is not installed in the VM; the metadata runtime/source composition also needs
+refreshing before source adoption and fresh native receipts. The active source
+stays at 545 files/fifteen projects and build `b51…`.
+The selected-nine and Images3 passes below retain their verified scopes, without
+implying a successful Package3 ZIP or ROM readiness. See
+[Package3 failure evidence](../research/workspace-integration.json) and the
+[metadata guide](target-files-metadata.md).
+
 The successor **Images3 native build, postcheck and retained-evidence replay
 pass**. Native execution ends at **2026-09-02 01:13:56 UTC**, with actual host
 exit 0 at **01:17:50 UTC**. Seven

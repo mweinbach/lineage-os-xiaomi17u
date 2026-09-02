@@ -5354,5 +5354,314 @@
       "phone_accessed": false,
       "complete_rom_ready": false
     }
+  },
+  "package3_metadata_checksum_failure_checkpoint_20260902": {
+    "status": "ordinary-package3-failed-at-metadata-checksum-hook-complete-failure-readback-and-native-compatibility-probe-verified",
+    "guide": "docs/target-files-metadata.md",
+    "profile": "package",
+    "phase": "first-target-files-package-3",
+    "source_files": 545,
+    "source_projects": 15,
+    "identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+    "build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+    "build_epoch": 1788144555,
+    "ordinary_argv": [
+      "build/soong/soong_ui.bash",
+      "--make-mode",
+      "-j8",
+      "target-files-package"
+    ],
+    "native_started_utc": "2026-09-02T01:54:42.207672+00:00",
+    "native_finished_utc": "2026-09-02T02:09:50.938382+00:00",
+    "native_exit_code": 1,
+    "actual_host_process_exit_code": 1,
+    "host_completion_observed_utc": "2026-09-02T02:14:06.537043+00:00",
+    "failure": {
+      "stage": "target-files-directory metadata-verifier checksum hook",
+      "target": "out-nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files.zip.list",
+      "error": "sha256sum: Unknown option 'strict'",
+      "failing_action_progress": 13468,
+      "reported_total_actions": 13582,
+      "last_parallel_progress": 13475,
+      "apk_or_metalava_failure": false,
+      "artifact_postcheck": null,
+      "profile_completed": false,
+      "profile_validation_verified": false,
+      "current_package_zip_success_inferred": false
+    },
+    "preflight_completed": true,
+    "ninja_observed_argv_limits_and_sandbox_verified": true,
+    "process_reaped_and_streams_complete": true,
+    "timeout_disk_floor_output_overflow_or_forced_kill": false,
+    "all_six_ordinary_guard_maps_equal_before_after": true,
+    "gms_component_prerequisite_summary_equal_before_after": true,
+    "selected_app_component_prerequisite_summary_equal_before_after": true,
+    "configuration_fields": 254,
+    "configuration_equal_before_after_and_admission": true,
+    "upstream_revision_and_origin_matches": 1179,
+    "runtime_observation_equal_before_after": false,
+    "all_source_observations_identical_claimed": false,
+    "runtime_observation_difference_scope": "Build/runtime/log observations legitimately change; the six ordinary guard maps and prerequisite summaries are compared separately.",
+    "complete_failure_readback": {
+      "verified": true,
+      "finished_utc": "2026-09-02T02:16:27.398707+00:00",
+      "native_reader_exit_code": 0,
+      "files": 3,
+      "decoded_bytes": 12917575,
+      "native_result_equals_host_stdout": true,
+      "two_complete_hash_stat_passes_match": true,
+      "regular_root_owned_single_link_files": true,
+      "native_stream_identities": {
+        "stderr": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-package-3/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-package-3/build.stdout",
+          "sha256": "69240a48c69b3d529ff81c937abfd1b6470b6849e3086441446a4d11453ff6e6",
+          "size_bytes": 1982156
+        }
+      },
+      "readback_success_is_not_package_success": true
+    },
+    "native_checksum_compatibility_probe": {
+      "verified": true,
+      "expected_outcomes_verified": 14,
+      "all_cases_expected_to_exit_zero": false,
+      "tool_requested_path": "/work/evolution/prebuilts/build-tools/path/linux-x86/sha256sum",
+      "tool_real_path": "/work/evolution/prebuilts/build-tools/linux-x86/bin/toybox",
+      "tool_sha256": "f945dbf9678a41a738605c01e37f8a0ec090751797deaa9efffcbd19d651c027",
+      "tool_size_bytes": 1520424,
+      "build_tools_head": "412724a805835d89234d67c363f7ada7f5f8a67f",
+      "actual_soong_path_source": "build/soong/ui/build/path.go",
+      "verified_metadata_source": {
+        "path": "/work/evolution/vendor/xiaomi/nezha-target-files-metadata/tools/target_files_metadata.py",
+        "sha256": "7920d0e838a2cb7a61c65cb008a40a587cd8431838e4529218647cdb6665e566",
+        "size_bytes": 193228
+      },
+      "tested_gate": "Require exactly 64 lowercase hexadecimal digest characters, then invoke the actual sha256sum -c -; all predicates and the checker must succeed.",
+      "cases": [
+        {
+          "name": "tool-help",
+          "exit_code": 0
+        },
+        {
+          "name": "reproduce-unsupported-strict",
+          "exit_code": 1
+        },
+        {
+          "name": "portable-check-valid",
+          "exit_code": 0
+        },
+        {
+          "name": "portable-check-wrong-digest",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-valid",
+          "exit_code": 0
+        },
+        {
+          "name": "canonical-gate-wrong-bytes",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-empty",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-short",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-uppercase",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-nonhex",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-space",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-newline-injection",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-missing-file",
+          "exit_code": 1
+        },
+        {
+          "name": "canonical-gate-checksum-command-failure",
+          "exit_code": 1
+        }
+      ],
+      "files_unchanged": true,
+      "native_build_executed": false,
+      "source_or_output_written": false,
+      "phone_accessed": false,
+      "retained_first_probe_failure": {
+        "error": "FileNotFoundError during provenance lookup",
+        "incorrect_path": "/work/evolution/build/soong/ui/build/paths.go",
+        "successful_probe_uses_correct_path_go": true,
+        "failed_attempt_preserved": true
+      }
+    },
+    "prepared_correction": {
+      "patch": {
+        "path": "patches/evolution/0023-portable-target-files-metadata-checksum.patch",
+        "sha256": "b09a642a578e44767a816896e604481ee4e6e79988bfd07f6ff4bc81a4daf66f",
+        "size_bytes": 1143
+      },
+      "additive_patch_number": "0023",
+      "patch_0009_and_source_history_preserved": true,
+      "native_source_adopted": false,
+      "native_configuration_or_metadata_successor_verified": false,
+      "successful_native_packaging_retry_verified": false,
+      "metadata_runtime_and_source_composition_refresh_required": true,
+      "current_makefile_source_pin": {
+        "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+        "size_bytes": 392084
+      },
+      "flag_change_alone_is_not_complete_source_adoption": true
+    },
+    "next_gate": "Refresh and review the metadata runtime and source composition that pin the complete Makefile, adopt the additive checksum correction with fresh source/configuration/metadata receipts, then retry packaging; final VINTF/AVB/partition, signed boot-chain and hardware gates remain separate.",
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "selected_kernel_warnings_retained": true,
+    "test_keys_not_oem_signing_trust": true,
+    "limits": {
+      "package3_succeeded": false,
+      "source_mutation_requested": false,
+      "whole_output_tree_unchanged_claimed": false,
+      "signed_flashable_rom_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "native_request": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-package3-continuation-v1/request.json",
+        "sha256": "73c841738e0cdeea742868a0c73bbacaef68fe5a6fa56a36f9b2f33b15c6c92a",
+        "size_bytes": 33004924
+      },
+      "native_result": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-package3-continuation-v1/stdout.jsonl",
+        "sha256": "c768e1285c82dddf8199710eff270f0237348552e185ab0162aa31de11c23c52",
+        "size_bytes": 10935419
+      },
+      "guest_transport_exit": {
+        "path": "reports/bcr-uses-library-20260901/clock-source-adoption-preparation-v1/root-package3-continuation-v1/exit.json",
+        "sha256": "6654867730f9a7dff9c0e1a227821b7b5ffa43fa5f28d7cd449eee50e8af1071",
+        "size_bytes": 65
+      },
+      "actual_host_command_completion": {
+        "path": "reports/continuation-20260901/package3-exec-completion.json",
+        "sha256": "8d323b39e307efd963108ef7645884a00740f12c5512e71a7f7ae28eca17a039",
+        "size_bytes": 918
+      },
+      "complete_failure_readback_verification": {
+        "path": "reports/continuation-20260901/package3-failure-evidence-v1/verification.json",
+        "sha256": "d079fa12cae23d7746fe7357f0b224a3ef0339737a1953b0557fba078e19e8e8",
+        "size_bytes": 1759
+      },
+      "decoded_native_result": {
+        "path": "reports/continuation-20260901/package3-failure-evidence-v1/decoded/result.json",
+        "sha256": "c768e1285c82dddf8199710eff270f0237348552e185ab0162aa31de11c23c52",
+        "size_bytes": 10935419
+      },
+      "complete_native_stdout": {
+        "path": "reports/continuation-20260901/package3-failure-evidence-v1/decoded/build.stdout",
+        "sha256": "69240a48c69b3d529ff81c937abfd1b6470b6849e3086441446a4d11453ff6e6",
+        "size_bytes": 1982156
+      },
+      "complete_native_stderr": {
+        "path": "reports/continuation-20260901/package3-failure-evidence-v1/decoded/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "native_checksum_probe_v2": {
+        "path": "reports/continuation-20260901/package3-checksum-probe-v2/stdout.json",
+        "sha256": "4d281ae7a81ae459a1a8a3ef12cb208fdcdd066fae5e171e140952d2d85d18bd",
+        "size_bytes": 8727
+      },
+      "native_checksum_probe_v2_helper": {
+        "path": "reports/continuation-20260901/package3-checksum-probe-v2/guest.py",
+        "sha256": "ddc06af86bb1511de9e5168c99a225d9ecfb39506b035b7a4a3af7a6b9d45a76",
+        "size_bytes": 3293
+      },
+      "retained_probe_v1_failure": {
+        "path": "reports/continuation-20260901/package3-checksum-probe-v1/stderr.log",
+        "sha256": "3b94bee0478ef9e3f140d029bb3d045914d87b6bc1d1508be112007722856d83",
+        "size_bytes": 574
+      },
+      "exact_rendered_guard_native_smoke": {
+        "path": "reports/continuation-20260901/patch0023-rendered-checksum-smoke-v1/stdout.json",
+        "sha256": "87fed44a6e0e124e6646abdf2eb1bceaf824a9a227653ddeb3045aec175e7749",
+        "size_bytes": 2327
+      },
+      "post_failure_four_log_measurement": {
+        "path": "reports/continuation-20260901/native-preparation/post-package3-four-logs-v1/stdout.json",
+        "sha256": "d3c6cb79a951d39da138451903b25610a2f4693288b05c7935aa533923edd212",
+        "size_bytes": 80396
+      }
+    },
+    "rendered_patch_native_smoke": {
+      "verified": true,
+      "expected_outcomes_verified": 15,
+      "matching_digest_reaches_test_sentinel": true,
+      "rejected_cases": [
+        "wrong-digest",
+        "empty",
+        "short",
+        "long",
+        "uppercase",
+        "nonhex",
+        "whitespace",
+        "newline",
+        "extra-checklist-line",
+        "quote-injection",
+        "substitution-injection",
+        "backtick-injection",
+        "missing-helper",
+        "checksum-command-failure"
+      ],
+      "all_rejected_cases_exit_one_without_sentinel": true,
+      "actual_bash_and_pinned_toybox_executed": true,
+      "patch_sha256": "b09a642a578e44767a816896e604481ee4e6e79988bfd07f6ff4bc81a4daf66f",
+      "sentinel_is_test_marker_only": true,
+      "make_or_kati_executed": false,
+      "metadata_installer_executed": false,
+      "android_build_executed": false,
+      "source_or_output_written": false,
+      "phone_accessed": false
+    },
+    "post_failure_four_log_measurement": {
+      "verified": true,
+      "finished_utc": "2026-09-02T02:21:39.835848+00:00",
+      "output_logs": {
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_deps": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/.ninja_deps",
+          "sha256": "767a4f8e394c65df34e58f3a003760aabe3a37638833f5ea9983bb4f107cb1ad",
+          "size_bytes": 171696396
+        },
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_log": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/.ninja_log",
+          "sha256": "d5fe972bcb96f33d718b6e0007fc1baa2ad59eead733aa13659bd172d14a63db",
+          "size_bytes": 63144601
+        }
+      },
+      "before_after_quiescence_recorded": true,
+      "graph_capture_admission_granted": false,
+      "future_capture_requires_remeasurement_and_rebinding": true,
+      "older_dependency_log_ceiling_bytes_not_current": 170213408,
+      "source_or_output_written": false,
+      "phone_accessed": false
+    }
   }
 }

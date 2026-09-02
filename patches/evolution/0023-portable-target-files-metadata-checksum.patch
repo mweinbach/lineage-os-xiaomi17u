@@ -1,0 +1,17 @@
+diff --git a/core/Makefile b/core/Makefile
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -7343,8 +7343,11 @@
+ ifeq ($(BOARD_NEZHA_PREBUILT_METADATA),true)
+ 	@# Verify the images actually copied above, the complete metadata input
+ 	@# closure and pinned source composition before any property consumer runs.
+-	$(hide) printf '%s  %s\n' '$(subst ','"'"',$(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256))' \
+-	    '$(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py' | sha256sum --strict -c -
++	$(hide) nezha_metadata_tool_sha='$(subst ','"'"',$(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256))' && \
++	    test "$${#nezha_metadata_tool_sha}" -eq 64 && \
++	    case "$$nezha_metadata_tool_sha" in *[!0123456789abcdef]*) exit 1;; esac && \
++	    printf '%s  %s\n' "$$nezha_metadata_tool_sha" \
++	    '$(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py' | sha256sum -c -
+ 	@# OUT_DIR may be a reviewed alias; resolve only this existing output root.
+ 	$(hide) nezha_target_files_root="$$(realpath -e -- '$(subst ','"'"',$(zip_root))')" && \
+ 	    python3 -I -S -B $(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py install \

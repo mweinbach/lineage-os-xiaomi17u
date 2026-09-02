@@ -1,10 +1,13 @@
 """Offline metadata projection tests; fixtures are not Android images or APEXes."""
 
 import copy
+import fnmatch
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
+import shlex
 import shutil
 import tempfile
 import unittest
@@ -543,6 +546,111 @@ class SourceCompositionTests(unittest.TestCase):
                 m.relative(path)
         self.assertEqual("etc/vintf/manifest_vendor.xiaomi.hardware.otrpagent@2.0.xml",
                          m.relative("etc/vintf/manifest_vendor.xiaomi.hardware.otrpagent@2.0.xml"))
+
+
+class PortableChecksumHookTests(unittest.TestCase):
+    """Inspect the actual additive recipe and model its two digest guards.
+
+    This is not a Bash, Make, Kati or checksum-tool execution test. Native
+    tool compatibility remains a separate check with the pinned Linux binary.
+    """
+
+    PATCH = "patches/evolution/0023-portable-target-files-metadata-checksum.patch"
+    DIGEST_VALUE = "$(subst ','\"'\"',$(BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256))"
+
+    def setUp(self):
+        self.enterContext(mock.patch("subprocess.Popen",
+                                     side_effect=AssertionError("native processes forbidden")))
+        self.enterContext(mock.patch("socket.socket",
+                                     side_effect=AssertionError("network forbidden")))
+        self.patch = (WORKSPACE / self.PATCH).read_bytes()
+        text = self.patch.decode()
+        self.assertTrue(text.startswith("diff --git a/core/Makefile b/core/Makefile\n"
+                                       "--- a/core/Makefile\n+++ b/core/Makefile\n"))
+        headers = list(re.finditer(r"^@@ -(\d+),(\d+) \+(\d+),(\d+) @@\n", text, re.M))
+        self.assertEqual(len(headers), 1)
+        self.position = tuple(map(int, headers[0].groups()))
+        lines = text[headers[0].end():].splitlines(keepends=True)
+        self.assertTrue(all(line.startswith((" ", "+", "-")) for line in lines))
+        self.old = "".join(line[1:] for line in lines if line[0] in " -")
+        self.new = "".join(line[1:] for line in lines if line[0] in " +")
+        self.removed = "".join(line[1:] for line in lines if line[0] == "-")
+        self.added = "".join(line[1:] for line in lines if line[0] == "+")
+        self.assertTrue(self.added.startswith("\t$(hide) "))
+        command = self.added.removeprefix("\t$(hide) ").replace("\\\n", " ").strip()
+        self.steps = re.split(r"\s*&&\s*", command)
+
+    def accepts_digest(self, value):
+        """Model only the length test and literal shell case character set."""
+        self.assertEqual(len(self.steps), 4)
+        self.assertEqual(self.steps[1], 'test "$${#nezha_metadata_tool_sha}" -eq 64')
+        self.assertEqual(self.steps[2],
+                         'case "$$nezha_metadata_tool_sha" in '
+                         '*[!0123456789abcdef]*) exit 1;; esac')
+        return len(value) == 64 and not fnmatch.fnmatchcase(value, "*[!0123456789abcdef]*")
+
+    def test_additive_patch_replaces_only_the_original_two_line_checksum_gate(self):
+        from scripts import target_files_source_composition as source
+
+        original = (WORKSPACE / m.PATCH).read_text().splitlines(keepends=True)
+        index = next(i for i, line in enumerate(original)
+                     if line.startswith("+\t$(hide) printf '%s  %s\\n' "))
+        self.assertEqual(self.removed, "".join(line[1:] for line in original[index:index + 2]))
+        self.assertEqual(self.position, (7343, 8, 7343, 11))
+        # Public, inert context at the real hunk position; no ignored checkout.
+        prefix = b"# unchanged fixture Makefile line\n" * (self.position[0] - 1)
+        suffix = b"# unchanged fixture Makefile suffix\n"
+        fixture = prefix + self.old.encode() + suffix
+        after = source._apply_exact_patch(fixture, self.patch, m.CORE)
+        self.assertEqual(after, prefix + self.new.encode() + suffix)
+        self.assertEqual(self.new, self.old.replace(self.removed, self.added, 1))
+
+    def test_changed_preimage_cannot_be_patched_with_fuzz_or_an_offset(self):
+        from scripts import target_files_source_composition as source
+
+        prefix = b"# unchanged fixture Makefile line\n" * (self.position[0] - 1)
+        fixture = prefix + self.old.encode() + b"# unchanged suffix\n"
+        for changed in (b"# shifted\n" + fixture,
+                        fixture.replace(b"sha256sum --strict -c -", b"sha256sum -c -", 1)):
+            with self.subTest(changed=changed[-200:]), self.assertRaises(ValueError):
+                source._apply_exact_patch(changed, self.patch, m.CORE)
+
+    def test_digest_guards_accept_only_canonical_lowercase_sha256(self):
+        for digest in ("0" * 64, "f" * 64, hashlib.sha256(b"fixture verifier").hexdigest()):
+            with self.subTest(digest=digest):
+                self.assertTrue(self.accepts_digest(digest))
+        for digest in ("", "0" * 63, "0" * 65, "A" * 64, "g" * 64,
+                       " " + "a" * 63, "a" * 63 + "\n", "a" * 63 + "\r",
+                       "a" * 63 + "\t", "a" * 63 + "\0", "é" * 64,
+                       "a" * 64 + "\n" + "b" * 64 + "  other-file"):
+            with self.subTest(digest=repr(digest)):
+                self.assertFalse(self.accepts_digest(digest))
+
+    def test_make_quote_substitution_keeps_untrusted_digest_in_one_shell_word(self):
+        self.assertEqual(self.steps[0], "nezha_metadata_tool_sha='" + self.DIGEST_VALUE + "'")
+        for digest in ("a" * 64, "' && exit 0; #", "$(false)", "`false`",
+                       "a'\n\"; false; #", "a" * 63 + "\\"):
+            with self.subTest(digest=repr(digest)):
+                rendered = self.steps[0].replace(self.DIGEST_VALUE,
+                                               digest.replace("'", "'\"'\"'"))
+                self.assertEqual(shlex.split(rendered), ["nezha_metadata_tool_sha=" + digest])
+                if digest != "a" * 64:
+                    self.assertFalse(self.accepts_digest(digest))
+
+    def test_checksum_pipeline_retains_fixed_path_and_propagates_its_status(self):
+        self.assertEqual(len(self.steps), 4)
+        self.assertEqual(shlex.split(self.steps[-1]),
+                         ["printf", "%s  %s\\n", "$$nezha_metadata_tool_sha",
+                          "$(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py",
+                          "|", "sha256sum", "-c", "-"])
+        self.assertNotIn("--strict", self.added)
+        # No semicolon, ignored-error prefix, fallback or later pipeline stage
+        # may mask a failed guard, missing file or nonzero checksum command.
+        self.assertEqual(self.added.count("&&"), 3)
+        self.assertNotIn("||", self.added)
+        self.assertNotIn("set -e", self.added)
+        self.assertTrue(self.new.endswith(
+            "\t    python3 -I -S -B $(NEZHA_PREBUILT_METADATA_ROOT)/tools/target_files_metadata.py install \\\n"))
 
 
 if __name__ == "__main__":
