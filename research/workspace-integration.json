@@ -7624,5 +7624,186 @@
         "size_bytes": 0
       }
     }
+  },
+  "selected_nine3_complete_replay_checkpoint_20260902": {
+    "status": "verified_selected3_native_build_and_complete_original_replay_not_images_or_package",
+    "guide": "docs/build-progress.md#selected3-and-complete-evidence-replay--2026-09-02",
+    "preceding_checkpoint_commit": "24e58614cc831a5a20d434597629ccfca863fc41",
+    "preceding_checkpoint": "metadata_mode_flags_queries_and_nothing9_checkpoint_20260902",
+    "source_files": 548,
+    "source_projects": 15,
+    "source_lock_revision_and_origin_matches": 1179,
+    "configuration_fields": 254,
+    "build_number": "nezha.b429840950d789320b04847a",
+    "build_epoch": 1788144555,
+    "native": {
+      "started_at": "2026-09-02T09:56:02.424508+00:00",
+      "finished_at": "2026-09-02T09:57:46.442670+00:00",
+      "exit_code": 0,
+      "all_five_phase_checks_passed": true,
+      "ninja_observed": true,
+      "ninja_argv_verified": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "require_observed_ninja": true,
+      "fresh_actions": 26,
+      "fresh_strict_statuses": 8,
+      "reused_actions": 0,
+      "prior_flex_verified_separately": true,
+      "fresh_or_reused_flex_status_claimed": false,
+      "output_invalidated_or_deleted": true,
+      "fresh_action_claims_from_matching_bytes": false,
+      "six_complete_callback_maps_equal_before_after": true
+    },
+    "direct_host_completion": {
+      "session_id": 50729,
+      "exit_observed_at": "2026-09-02T10:09:29.203Z",
+      "observed_exit_code": 0,
+      "outer_wrapper_executed": false,
+      "process_start_or_duration_claimed": false,
+      "tool_poll_duration_is_not_process_duration": true
+    },
+    "retention": {
+      "native_copies": 26,
+      "native_originals": 26,
+      "authenticated_metadata_files": 2,
+      "host_binary_readback_performed": false
+    },
+    "complete_replay": {
+      "verified": true,
+      "original_started_at": "2026-09-02T10:22:35.374956+00:00",
+      "original_finished_at": "2026-09-02T10:22:42.122336+00:00",
+      "root_check_only_started_at": "2026-09-02T10:23:17.754696+00:00",
+      "root_check_only_finished_at": "2026-09-02T10:23:24.427542+00:00",
+      "root_check_only_exit_code": 0,
+      "original_consumer": {
+        "sha256": "88ec3f57c03995ebaf64b71f81ff36c9c116c508a5625e02a1be1533697acb19",
+        "size_bytes": 44985
+      },
+      "complete_files": 203,
+      "raw_bytes": 165615424,
+      "evidence_files": 200,
+      "host_held_inputs_rechecked": 227,
+      "four_complete_two_pass_wires_and_nine_stat_seals_replayed": true,
+      "native_artifact_attempts": 36,
+      "native_attempt_streams": 72,
+      "both_build_streams_retained": true,
+      "consumer_filesystem_process_network_blocked": true,
+      "all_three_products_reproduced_byte_exact": true,
+      "selected_input_rows": 180,
+      "selected_output_rows": 26,
+      "earlier_native_and_decode_pending_flags_preserved_as_history": true
+    },
+    "package5_projection": {
+      "host_only_source_context_projection": true,
+      "uses_recorded_component_observations": true,
+      "fresh_physical_package_observation": false,
+      "package_phase_executed": false
+    },
+    "post_selected3_logs": {
+      "finished_at": "2026-09-02T10:11:35.817249+00:00",
+      "exit_code": 0,
+      "output_logs": {
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_deps": {
+          "sha256": "878c7ea46b1257149e7af8a3b9fdd28f9810c2caed1c9e54073efd9d9bbb215c",
+          "size_bytes": 171821860
+        },
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_log": {
+          "sha256": "85058ae885fda93e3eec3e4888f64237565b2b449ba6758d3cd122ea58c79546",
+          "size_bytes": 63204497
+        }
+      },
+      "existing_ninja_deps_guard_unchanged": true,
+      "graph_or_package_admission_granted": false
+    },
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "limits": {
+      "callback_equality_to_nothing9_claimed": false,
+      "host_52_retained_binary_exports_claimed": false,
+      "images5_verified": false,
+      "package5_verified": false,
+      "signed_flashable_rom_verified": false,
+      "ota_verified": false,
+      "hardware_or_boot_verified": false,
+      "phone_accessed": false,
+      "native_or_vm_operations_by_documentation_reviewer": false,
+      "complete_rom_ready": false
+    },
+    "next_gate": "Images5, then Package5, each with its own actual validation; final VINTF/AVB/partition, signing/rollback, OTA and boot/hardware remain separate.",
+    "evidence": {
+      "native_result": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/selected-components-v1/activation-v1/bound-metadata-mode-flags-selected-three-v1/root-selected-nine3-v1/stdout.jsonl",
+        "sha256": "755e7e1638954d083d832225a396146310a58c875b14c77cec15fe15504502ea",
+        "size_bytes": 11446556
+      },
+      "native_request": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/selected-components-v1/activation-v1/bound-metadata-mode-flags-selected-three-v1/root-selected-nine3-v1/request.json",
+        "sha256": "2ae8c3d207f98e334b71bdc6a73cf74189bd4a09259e1608aff2b0bc1c6f60fc",
+        "size_bytes": 10926621
+      },
+      "initial_native_actions_review": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/selected-components-v1/actual-selected3-preparation-v1/root-native-result-actions-review-v1.json",
+        "sha256": "00e26b06cddf70ce31046051ae1dbdafb99562245ffc22738491acf30961b7ce",
+        "size_bytes": 1660
+      },
+      "direct_host_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/selected-components-v1/actual-selected3-preparation-v1/root-direct-tool-completion-v1.json",
+        "sha256": "8df8c740a24a27c394a92ec721bfebc0b9d6ae41d2aa94f8dd218d45772783dc",
+        "size_bytes": 680
+      },
+      "complete_body_index": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/root-complete-body-index-v1.json",
+        "sha256": "293effafed54daf5c42b645c691e95019b11afc61efc81b586d82d491835c8a4",
+        "size_bytes": 148905
+      },
+      "complete_body_decode_review": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/root-complete-body-decode-review-v1.json",
+        "sha256": "974140457663449980f495973c24d6232cc93df91a751269391d5384b7f6dc26",
+        "size_bytes": 119161
+      },
+      "full_original_replay": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/full-replay-v1/verification.json",
+        "sha256": "c660e50c15f1a5469d222013da199dc682fe834c26eee5c49fb42e4cc595ab41",
+        "size_bytes": 123527
+      },
+      "consumer_output": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/full-replay-v1/consumer-output.json",
+        "sha256": "c6b29f4f39b881038b351a8ba3470481449558abd3773ea7a838ef01c419235e",
+        "size_bytes": 108739
+      },
+      "root_check_only_replay": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/root-full-replay-check-v1.json",
+        "sha256": "43b010a7ff30513e8d3ef9d316ff205baf876a211e7f3624dc717839d0bca299",
+        "size_bytes": 4030
+      },
+      "bound_replay_driver": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/replay_actual.py",
+        "sha256": "0c088c64263bb878584c3f5dbf76f4ae37a0bfd2bfbd2a1e53835111daf1c62a",
+        "size_bytes": 10864
+      },
+      "host_only_package_source_projection": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/full-replay-v1/host-only-package-source-projection.json",
+        "sha256": "5c9664361312da6db47963e2f900a36e13033ed601db98a471335e5a68c38e02",
+        "size_bytes": 4200991
+      },
+      "recorded_component_observations": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-readback-v1/actual-complete-export-v1/full-replay-v1/recorded-component-observations.json",
+        "sha256": "cbba3392363f5d6e53ad4239f922947280671805a1be5bcf4cde01082b4fd055",
+        "size_bytes": 1993497
+      },
+      "post_selected3_log_measurement": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-four-logs-v1/actual-v1/stdout.json",
+        "sha256": "d28ea4bf2a39c5b3e44c2c49aa630cc88516ae6b2dd8a96e028371e771deb2fc",
+        "size_bytes": 80396
+      },
+      "post_selected3_log_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-selected3-four-logs-v1/actual-v1/completion.json",
+        "sha256": "cda204e218967c7ca9e0fee953ef8d9c3728d04dc429516bf5e3b1448d867c56",
+        "size_bytes": 621
+      }
+    }
   }
 }

@@ -1,5 +1,42 @@
 # Nezha product and build progress
 
+## Selected3 and complete evidence replay — 2026-09-02
+
+The **Selected3 native build, postcheck and complete original replay pass**.
+Native execution runs **09:56:02–09:57:46 UTC**, exit 0. Direct host session
+**50729** is observed closed at **10:09:29 UTC**; no outer wrapper or separate
+process-start/duration is invented from its poll timing. All five phase checks
+and Ninja observation, argv, limits and sandbox checks pass, with observation
+required. The rebuild verifies **26 fresh producer actions, eight fresh strict
+statuses and zero reuse**; the verified prior Flex check is separate, with no
+fresh or reused Flex status claimed.
+
+The original consumer replay passes at **10:22:42 UTC**. The root independently
+repeats it at **10:23:17–10:23:24 UTC**, exit 0, reproducing all three products
+byte-for-byte. The four complete two-pass exports retain original records and
+nine-field seals for **203 files / 165,615,424 bytes**. Replay covers 200
+evidence files, **227 held inputs**, 36 recorded verification attempts, all
+72 attempt streams and both build streams. Consumer filesystem, process and
+network access are blocked during replay.
+
+Two retention-metadata files authenticate **26 native copies and 26 originals**;
+the 52 retained binary bodies are **not exported or rehashed on the host**.
+Freshness comes from native action evidence, not matching bytes. The host-only
+Package5 source-context projection uses recorded component observations; it
+is not a fresh physical Package5 observation or a package run.
+
+All six complete callback maps match before/after Selected3. Source
+**548/fifteen projects**, **1,179 revisions/origins**, **254 configuration
+fields**, **`nezha.b429840950d789320b04847a`** and epoch **1788144555** remain
+unchanged. The post-build collector retains `.ninja_deps` at **171,821,860
+bytes** under the existing guard; this is not new graph or package admission.
+Images5 and Package5 remain separate gates. Normal Android enforcing, 4 KiB,
+`working76`, kernel warnings and `test-keys` remain unchanged. Final
+VINTF/AVB/partition, signing/rollback, OTA and boot/hardware checks remain open;
+no phone operation occurs and no complete or flashable ROM is established.
+The [Selected3 record](../research/workspace-integration.json) preserves exact
+receipts and all earlier source, query, component and packaging history.
+
 ## Config12/context12 and Nothing9 — 2026-09-02
 
 The **two native queries, Nothing9 and complete host review pass** under

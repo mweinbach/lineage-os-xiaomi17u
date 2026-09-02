@@ -10,6 +10,31 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **Selected3 native build and complete original-evidence replay pass**.
+Native execution exits 0 at **2026-09-02 09:57:46 UTC**, with **26 fresh
+producer actions, eight fresh strict statuses and zero reuse**. Ninja
+observation, argv, limits and sandbox checks pass, with observation required.
+The prior Flex check remains separate. All six callback maps match before/after.
+
+Full replay covers **203 files / 165,615,424 bytes**, including 36 recorded
+verification attempts, 72 attempt streams and both build streams. The root's
+independent repeat reproduces all three outputs byte-for-byte with consumer
+filesystem/process/network access blocked. Retention metadata authenticates
+**26 native copies plus 26 originals**; those 52 binary bodies are not exported
+to the host. The Package5 source-context projection uses recorded observations
+and is **not physical Package5 admission or execution**.
+
+Source **548/fifteen projects**, **`nezha.b429840950d789320b04847a`**, epoch
+**1788144555**, enforcing normal Android, 4 KiB and `working76` remain unchanged.
+**Images5 and Package5 are next**, with signing/rollback, OTA and boot/hardware
+still unverified. No phone operation occurs and the ROM is **not flashable**.
+See the dated [Selected3 checkpoint](build-progress.md#selected3-and-complete-evidence-replay--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier query/Nothing9 checkpoint
+
+This entry preserves its query/build scope and then-pending component work.
+
 **Config12, Context12 and Nothing9 pass** under
 **`nezha.b429840950d789320b04847a`**, epoch **1788144555**. Nothing9 exits 0
 at **2026-09-02 09:04:46 UTC**; its genuine wrapper exits at **09:08:22 UTC**.
