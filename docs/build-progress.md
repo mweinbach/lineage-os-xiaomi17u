@@ -1,5 +1,49 @@
 # Nezha product and build progress
 
+## SHA256 source adoption and Config13/context13 — 2026-09-02
+
+The **reviewed SHA-256 producer correction is installed**, followed by two
+successful native queries under **`nezha.86e40fe309189fdcd20dff9b`**, epoch
+**1788144555**. All intervals below are September 2 UTC; each listed exit is 0.
+
+| Phase | Recorded interval and completion scope |
+| --- | --- |
+| Source staging | Root command 14:26:29–14:35:35 |
+| Source installation | Root command 14:38:12–14:50:37 |
+| Config13 | Native query 15:07:30–15:08:27; direct host exit observed at 15:13:07 |
+| Context13 | Native query 15:20:19–15:21:25; genuine wrapper 15:15:19–15:25:36 |
+
+Full raw-record verification at **14:52:32 UTC** confirms **one 35-file
+device-tree exchange and five journal events**. Only `BoardConfig.mk` changes
+within **548 source files/fifteen projects**, adding the five explicit
+SHA-256 hashtree footer arguments. The journal's **14:47:13 `commit_verified`**
+event precedes final command completion. Other source bytes, metadata and
+preserved image/recovery inputs remain unchanged; no image build is established.
+Host identity projection verifies the actual installed records and eight
+derived outputs before the query results establish the new build number.
+
+Both queries pass their postchecks and six complete before/after callback-map
+comparisons. All **1,179 HEADs/origins** match, with **1,170 clean projects and
+nine expected patched projects**. The **254-field configuration is identical**
+between Config13 and Context13. Config13 retains its direct-launch,
+26-input byte-only closure scope: no outer wrapper timing, full outer streams or prelaunch-stat
+snapshot is claimed. Neither query records observed Ninja or sandbox success.
+
+The **15:27:28 UTC** readback verifies the complete **49,437-byte Soong writer**
+against build/make commit `a438ca40c6ed779042f806142b1165ba1360a7b2` and the
+installed **4,131-byte BoardConfig**. The expected single Soong field change,
+`BoardAvbSystemAddHashtreeFooterArgs: [] → ["--hash_algorithm", "sha256"]`, is
+source-derived only: no regenerated after-configuration is observed or admitted.
+
+Nothing10, backup-first Selected4/Images6, the no-invalidation five-image stage
+and Package6 require their own actual results. The earlier Package5 archive,
+SHA-1 images and failed AVB/VINTF checkpoints remain historical evidence.
+Normal Android enforcing, 4 KiB and `working76` are preserved. No source sync,
+phone operation or private-key transfer to the VM occurs. Signing, complete
+AVB/FEC/super/partition/VINTF, OTA and boot/hardware remain unverified; no
+flashable ROM is established. The [forward checkpoint](../research/workspace-integration.json)
+binds actual adoption, identity, query and writer-readback receipts.
+
 ## Package5 host inputs and AVB/VINTF failures — 2026-09-02
 
 The complete **10,997,962,405-byte** Package5 ZIP is independently admitted on

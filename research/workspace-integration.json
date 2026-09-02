@@ -8691,5 +8691,241 @@
         "size_bytes": 0
       }
     }
+  },
+  "avb_sha256_source_config_context13_checkpoint_20260902": {
+    "status": "verified_sha256_source_adoption_and_config13_context13_queries_with_generated_transition_and_builds_pending",
+    "guide": "docs/build-progress.md#sha256-source-adoption-and-config13context13--2026-09-02",
+    "preceding_checkpoint_commit": "fb31808531361884ad1a931cdb0ff7f0f5504a58",
+    "preceding_checkpoint": "package5_host_inputs_avb_vintf_failures_checkpoint_20260902",
+    "source_adoption": {
+      "verified": true,
+      "source_files": 548,
+      "source_projects": 15,
+      "device_tree_exchange_files": 35,
+      "exchanges": 1,
+      "journal_events": 5,
+      "changed_source_paths": [
+        "device/xiaomi/nezha/BoardConfig.mk"
+      ],
+      "other_source_files_unchanged": 547,
+      "source_spec": {
+        "sha256": "01b20bceff6d856b84aa1d65218c3635c550bdf30885ef857c694fa158d5b90d",
+        "size_bytes": 1070292
+      },
+      "installed_board_config": {
+        "sha256": "9047a845e1149c24246223c2a3ee98610fc949b115bf84c1b44be00904da4233",
+        "size_bytes": 4131
+      },
+      "explicit_sha256_hashtree_roles": [
+        "system",
+        "system_ext",
+        "product",
+        "system_dlkm",
+        "vendor_dlkm"
+      ],
+      "stage_root_command": {
+        "started_at": "2026-09-02T14:26:29.289095+00:00",
+        "completed_at": "2026-09-02T14:35:35.295635+00:00",
+        "exit_code": 0
+      },
+      "install_root_command": {
+        "started_at": "2026-09-02T14:38:12.919115+00:00",
+        "completed_at": "2026-09-02T14:50:37.058460+00:00",
+        "exit_code": 0
+      },
+      "journal_commit_verified_at": "2026-09-02T14:47:13.778152+00:00",
+      "journal_commit_event_is_final_command_completion": false,
+      "full_record_verified_at": "2026-09-02T14:52:32.973536+00:00",
+      "full_raw_records_validated": true,
+      "metadata_source_and_strict_settings_preserved": true,
+      "preserved_image_and_recovery_inputs_unchanged": true,
+      "image_build_performed_by_source_adoption": false
+    },
+    "identity": {
+      "sha256": "86e40fe309189fdcd20dff9b1209014c7b9d8109e5c3d238cfe532437658ffe2",
+      "build_number": "nezha.86e40fe309189fdcd20dff9b",
+      "build_epoch": 1788144555,
+      "host_projection_over_actual_installed_records": true,
+      "projected_outputs_rechecked": 8,
+      "projection_inputs_rechecked": 9,
+      "projection_performed_native_dispatch": false,
+      "build_number_subsequently_observed_in_both_queries": true
+    },
+    "config13": {
+      "native_started_at": "2026-09-02T15:07:30.514326+00:00",
+      "native_completed_at": "2026-09-02T15:08:27.080001+00:00",
+      "native_exit_code": 0,
+      "direct_host_exit_code": 0,
+      "direct_host_exit_observed_at": "2026-09-02T15:13:07.782378+00:00",
+      "postcheck_verified": true,
+      "frozen_input_byte_pins_checked": 26,
+      "actual_three_preparation_files_match": true,
+      "closure_scope": "exact-prelaunch-serialized-byte-pins-only",
+      "outer_wrapper_executed": false,
+      "outer_full_stream_capture_claimed": false,
+      "prelaunch_stat_snapshot_verified": false,
+      "outer_process_start_or_elapsed_time_claimed": false
+    },
+    "context13": {
+      "native_started_at": "2026-09-02T15:20:19.910856+00:00",
+      "native_completed_at": "2026-09-02T15:21:25.429514+00:00",
+      "native_exit_code": 0,
+      "outer_started_at": "2026-09-02T15:15:19.490408+00:00",
+      "outer_completed_at": "2026-09-02T15:25:36.092907+00:00",
+      "outer_exit_code": 0,
+      "postcheck_verified": true,
+      "configuration_exactly_equals_completed_config13": true
+    },
+    "both_queries": {
+      "all_five_phase_success_flags": true,
+      "complete_source_callback_maps_checked": 6,
+      "all_six_maps_equal_before_after_and_between_queries": true,
+      "source_files": 548,
+      "source_projects": 15,
+      "source_lock_head_and_origin_matches": 1179,
+      "clean_projects": 1170,
+      "expected_patched_projects": 9,
+      "configuration_fields": 254,
+      "configuration_unchanged": true,
+      "ninja_observed": false,
+      "ninja_argv_verified": false,
+      "ninja_limits_verified": false,
+      "sandbox_checks_passed": false,
+      "require_observed_ninja": false,
+      "build_success_evaluated": false
+    },
+    "pending_soong_configuration_transition": {
+      "writer_readback_completed_at": "2026-09-02T15:27:28.385395+00:00",
+      "full_file_hash_stat_passes": 2,
+      "writer_path": "build/make/core/soong_config.mk",
+      "writer_sha256": "7d333ed88412e94d77ab367d4f2eb883fd2795b3bec841a88f4bba476987580b",
+      "writer_size_bytes": 49437,
+      "writer_matches_build_make_head": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+      "board_matches_actual_installed_source": true,
+      "expected_changed_field": "BoardAvbSystemAddHashtreeFooterArgs",
+      "observed_before": [],
+      "source_derived_expected_after": [
+        "--hash_algorithm",
+        "sha256"
+      ],
+      "actual_after_configuration_observed": false,
+      "expected_configuration_admitted": false,
+      "native_make_or_build_executed_by_readback": false
+    },
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "limits": {
+      "nothing10_verified": false,
+      "selected4_verified": false,
+      "images6_verified": false,
+      "five_image_sha256_rebuild_verified": false,
+      "package6_verified": false,
+      "historical_package5_images_or_failures_promoted": false,
+      "private_signing_performed": false,
+      "complete_avb_chain_verified": false,
+      "fec_payload_verified": false,
+      "super_image_verified": false,
+      "physical_partition_fit_verified": false,
+      "full_vintf_compatibility_verified": false,
+      "signed_chain_or_device_rollback_verified": false,
+      "ota_verified": false,
+      "runtime_or_boot_verified": false,
+      "complete_rom_ready": false,
+      "signed_flashable_rom_verified": false,
+      "phone_accessed": false,
+      "source_sync_performed": false,
+      "private_keys_transferred_to_vm": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Verify the exact Nothing10 generated-configuration transition; then obtain backup-first Selected4/Images6 evidence, the five-image SHA-256 stage with its no-invalidation rule, and Package6. Signing, complete AVB/FEC/super/partition/VINTF, OTA and device gates remain separate.",
+    "evidence": {
+      "source_full_record_verification": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/record-readback-v1/root-full-record-verification-v1.json",
+        "sha256": "1696f570393d0acd492d8b30b3b226029295b67e5aecdb375d33f19b7d0b5ab2",
+        "size_bytes": 3539
+      },
+      "source_stage_record": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/record-readback-v1/root-stage-readback-v1/staged.json",
+        "sha256": "b7c6afc49198e223fbf7f2e22361d3c23165304efb8ec5ecd3e3024d937f4ca3",
+        "size_bytes": 2004135
+      },
+      "source_installation_record": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/record-readback-v1/root-install-readback-v1/installation.json",
+        "sha256": "2ffa4c8b406534381e4d3ed7568aacc92c08607a0023873c793c36d33e50fa66",
+        "size_bytes": 1778491
+      },
+      "source_transaction_journal": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/record-readback-v1/root-install-readback-v1/transaction.jsonl",
+        "sha256": "b42d90ab50482db60ad96938aacb3370b00aa4fc3fc2af704a1e2090e80e8427",
+        "size_bytes": 11572
+      },
+      "source_actual_commit": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/record-readback-v1/root-install-readback-v1/actual-commit.json",
+        "sha256": "70205ae6c5fd1832aaa4252f18ecb62870519089832bf7b8ef5a35601b9a82a9",
+        "size_bytes": 481
+      },
+      "source_stage_command_completion": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-stage-v1/exit.json",
+        "sha256": "1a2757d7fd43946fa0429292224bc95d1b45904e2404e879f9aff73a087fe6ed",
+        "size_bytes": 461
+      },
+      "source_install_command_completion": {
+        "path": "reports/avb-sha256-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-v1/exit.json",
+        "sha256": "84a01083fae8bf7106912229cb02c61748142cdbf1c00a6ac90bbdebf1256744",
+        "size_bytes": 463
+      },
+      "actual_installed_identity_projection": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/identity-projection-v1/actual-installed-v1/result.json",
+        "sha256": "9247995891da6687af231ceaf9e8272ae258359ddb8ea031db350a9967d79f39",
+        "size_bytes": 6703
+      },
+      "config13_result": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-config-13-v1/stdout.jsonl",
+        "sha256": "1ece5a9bfda689618acded25d86b27afb1397ca58929320ea424361e27f88bd0",
+        "size_bytes": 10636989
+      },
+      "config13_root_review": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-config-13-observation-v1/root-review.json",
+        "sha256": "aae135edebf049a3403d975c95106bea742aa68aa9d1436a72933e75625aca17",
+        "size_bytes": 1753
+      },
+      "config13_direct_host_completion": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-config-13-observation-v1/unified-exec-completion.json",
+        "sha256": "e944236da6e8a4b9f26a71254b102a2a6087ca0e45e2c9df609a2a8bdc47e366",
+        "size_bytes": 228
+      },
+      "config13_byte_only_closure": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-config-13-observation-v1/closure.stdout.json",
+        "sha256": "98f59b6a1a97102b572403cc2f4917b4a46f3360e63a550f50bcefa9ff582237",
+        "size_bytes": 11215
+      },
+      "context13_result": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-context-13-v1/stdout.jsonl",
+        "sha256": "ad65d757f612a9823fc09e64a222dcd852586d92f2149dd02780dc115ab97b00",
+        "size_bytes": 10624425
+      },
+      "context13_root_review": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-context-13-dispatch-v1/root-review.json",
+        "sha256": "5b4373524dc04fd9f0bb8c4485222e98cecfead8f816c06c2df4ea8d2e5db2c9",
+        "size_bytes": 1636
+      },
+      "context13_outer_completion": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-product-context-13-dispatch-v1/completion.json",
+        "sha256": "9454d25f96dec04e145af9a70534b6ac83b100cd88846ac010188e38dd93e28f",
+        "size_bytes": 779
+      },
+      "writer_and_board_full_readback": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/nothing10-configuration-transition-v1/writer-readback-v1/actual-v1/stdout.json",
+        "sha256": "e8c5c2273d1840c1b74425e154db89b76a7577f1068bef53c1eb314c090bf5ba",
+        "size_bytes": 74654
+      },
+      "writer_readback_completion": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/nothing10-configuration-transition-v1/writer-readback-v1/actual-v1/completion.json",
+        "sha256": "bef1b2fd99222d633c47dca855a6c3b92d891e83520c9dd883c44e7030c907db",
+        "size_bytes": 617
+      }
+    }
   }
 }

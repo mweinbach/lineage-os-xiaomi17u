@@ -10,6 +10,34 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **SHA-256 hashtree source correction is installed**, and **Config13 and
+Context13 pass** under **`nezha.86e40fe309189fdcd20dff9b`**, epoch **1788144555**.
+One device-tree exchange changes only `BoardConfig.mk` among **548 source
+files/fifteen projects**. Full record validation checks five journal events;
+both queries retain all **1,179 HEAD/origin matches**, **1,170 clean projects**
+and **nine expected patched projects**, with all six callback maps stable.
+
+The **254 configuration fields remain unchanged** across the queries. Neither
+query observes Ninja or passes a sandbox check; query success is not image
+production. Full readback of the pinned Soong writer and installed BoardConfig
+supports the expected `BoardAvbSystemAddHashtreeFooterArgs` change from `[]` to
+`["--hash_algorithm", "sha256"]`, but that generated transition is **not yet
+observed** and remains a Nothing10 gate.
+
+**Nothing10, backup-first Selected4/Images6, the five-image SHA-256 rebuild and
+Package6 remain pending.** The five-image stage retains its no-invalidation
+rule. Earlier Package5 images, AVB preparation and VINTF failures are not
+retroactively promoted. Normal Android enforcing, 4 KiB and `working76` remain
+unchanged; no phone operation, source sync or private-key transfer to the VM
+occurs. Signing, super-image/partition, full VINTF, OTA and boot/hardware gates
+remain open, and the ROM is **not flashable**. See the dated
+[source-adoption and query checkpoint](build-progress.md#sha256-source-adoption-and-config13context13--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Package5 host-input checkpoint
+
+This entry preserves the closed host results and then-pending source correction.
+
 The **complete Package5 archive is independently admitted on the host**, and
 **15 image inputs are materialized**. The ZIP is **10,997,962,405 bytes**, with
 the same `622073f3…` SHA-256 as the native supplement. This does not promote the
