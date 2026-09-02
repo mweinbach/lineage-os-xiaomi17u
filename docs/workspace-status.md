@@ -10,6 +10,24 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Second old-output cleanup completes with the original builder restored.** At
+**2026-09-02 20:14:46 UTC**, post-restart checks pass after removing **169,727
+descendant entries** from two reviewed historical intermediate directories;
+both empty roots remain. Deletion recovers **16,106,471,424 bytes inside ext4**.
+The separately approved trim increases host availability by **16,114,458,624
+bytes (15.01 GiB)**; final host free space is **154,373,144,576 bytes (143.77
+GiB)** at that checkpoint. Guest and host recovery are not added together or
+counted again as part of the earlier 229.28 GiB cleanup.
+
+The current output and source checkouts remain outside the deletion set. The
+original builder configuration, output alias, four logs and three selected
+sentinels pass bounded preservation checks, not a complete filesystem audit.
+**Images6 capture is in progress; no new image result is established.** The
+five-image SHA-256 stage, Package6 and final signing/ROM/boot gates remain open.
+No phone operation occurs. See the
+[second cleanup checkpoint](build-progress.md#second-old-output-cleanup-and-trim--2026-09-02)
+for exact scope, accounting and receipts.
+
 **Selected4 component build and profile postcheck pass.** The native invocation
 runs **2026-09-02 19:24:16–19:25:59 UTC**, exit **0**; the root wrapper closes
 at **19:37:41 UTC**, also exit **0**. The result verifies **26 fresh producer

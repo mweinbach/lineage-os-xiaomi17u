@@ -1,5 +1,60 @@
 # Nezha product and build progress
 
+## Second old-output cleanup and trim — 2026-09-02
+
+The approved historical-intermediate removal completes with native **exit 0**
+at **20:06:51 UTC** and root completion at **20:06:52 UTC**. It deletes exactly
+**169,727 descendant entries**—124,631 regular files, 45,092 directories and
+four symlinks—from these two reviewed roots, leaving both root directories
+present and empty:
+
+- `/work/out/nezha-framework-20260827T1835Z/soong/.intermediates`
+- `/work/out/twrp-nezha/soong/.intermediates`
+
+The current user-policy output, source checkouts and installed tools are not
+deleted. Historical TWRP intermediate-object replay is explicitly relinquished;
+this does not remove the selected working76 recovery. The independent host
+review joins all 169,727 manifest entries to the saved deletion counts and
+metadata hashes, including all recorded progress prefixes. It verifies saved
+evidence, not a fresh whole-filesystem or all-file-content integrity probe.
+
+Guest availability increases from **392,391,049,216** to **408,497,520,640
+bytes**, a **16,106,471,424-byte** recovery. The deletion receipt performs no
+trim, and its concurrent host-free change is not attributed to the cleanup.
+
+The separately approved free-block trim stops the idle original builder and
+uses a temporary maintenance container, then restores the same sole writer.
+Maintenance completes at **20:13:53 UTC**, with post-restart identity checks
+completed at **20:14:46 UTC**. The temporary container is removed and the
+original configuration remains identical (`c8898a8f…`). The output alias and
+four complete log hashes/nine-field stat records match across the restart, as
+do all three selected sentinel hashes and stat records. Full source
+revalidation remains deferred to the next native phase.
+
+The trim's measured **host-free increase is 16,114,458,624 bytes (15.01 GiB)**.
+The backing allocation decreases by **16,135,897,088 bytes**, a different
+measurement; its 1 TiB logical size is unchanged. Final host availability after
+the post-restart checks is **154,373,144,576 bytes (143.77 GiB)**. Do not add the
+guest deletion to the host trim delta, or count either operation again in the
+earlier [229.28 GiB cleanup checkpoint](storage-cleanup.md). These are dated
+observations, not reserved space or proof of a complete future build budget.
+
+Exact local receipts below are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `old-output-prune-preparation-v1/actual-v1/completion.json` | `7bfecc6e5f6c5c0fd89405a5c9547d7e2454727bf546db9f0c2af657f98709ac` | 5,980 |
+| `old-output-prune-preparation-v1/actual-review-v1/review.json` | `7d7e54ad412d1245e6bf0d2a7a0fd8e52761af212ffcb5368d630e43579dd8d6` | 6,677 |
+| `old-output-trim-preparation-v1/actual-v1/completion.json` | `e99d128dbe86837d063b8b7263e8bf24567556f396abaeec6bcdf240b475ebba` | 1,207 |
+| `old-output-trim-preparation-v1/second-trim-completion.json` | `27bbb26071f6f1dece3dac964253d3748f1340f8299408df727a31c57f73c567` | 2,424 |
+
+**Images6 capture is in progress**, not a completed image build or admission.
+The existing Selected4 result below is unchanged. This cleanup performs no
+Android build or phone operation and does not establish image integrity,
+signing, complete AVB/FEC/VINTF/super/partition checks, OTA or bootability.
+The five-image SHA-256 stage and Package6 still need their own actual results.
+
 ## Selected4 component build — 2026-09-02
 
 The **Selected4 native component build, profile validation and postcheck pass**.
