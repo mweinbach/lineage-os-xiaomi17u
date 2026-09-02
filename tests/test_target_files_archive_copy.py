@@ -267,6 +267,76 @@ class ArchiveCopyTests(unittest.TestCase):
                 self.write_zip(compression=zipfile.ZIP_DEFLATED, force64=force64, descriptor=descriptor)
                 self.run_copy(output=self.root / ("zip64-%s-%s.zip" % (force64, descriptor)))
 
+    def streaming_zip64_headers(self, *, size=0x100000007, signed=True, local_zip64=False):
+        """Tiny span-only fixture; no valid large payload is generated or decoded."""
+        name, payload, crc = b"IMAGES/odm.img", b"x", 0x12345678
+        local_extra = extra(1, struct.pack("<QQ", 0, 0)) if local_zip64 else b""
+        placeholder = 0xffffffff if local_zip64 else 0
+        local = struct.pack("<4s5H3I2H", b"PK\x03\x04", 20, 8, zipfile.ZIP_DEFLATED,
+                            0, 33, 0, placeholder, placeholder, len(name), len(local_extra))
+        fmt = "<IQQ" if local_zip64 or size > 0xffffffff else "<III"
+        descriptor = (b"PK\x07\x08" if signed else b"") + struct.pack(fmt, crc, len(payload), size)
+        central_extra = extra(1, struct.pack("<QQQ", size, len(payload), 0))
+        central = struct.pack("<4s6H3I5H2I", b"PK\x01\x02", 20, 45, 8,
+                              zipfile.ZIP_DEFLATED, 0, 33, crc, 0xffffffff, 0xffffffff,
+                              len(name), len(central_extra), 0, 0, 0, 0, 0)
+        prefix = local + name + local_extra + payload + descriptor
+        directory = central + name + central_extra
+        end = struct.pack("<4s4H2IH", b"PK\x05\x06", 0, 0, 1, 1,
+                          len(directory), len(prefix), 0)
+        return bytearray(prefix + directory + end)
+
+    def test_streaming_zip64_version_upgrade_preserves_span_and_output_bound(self):
+        for signed in (False, True):
+            with self.subTest(signed=signed):
+                raw = self.streaming_zip64_headers(signed=signed)
+                self.assertLess(len(raw), 256)
+                with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                    info = archive.getinfo("IMAGES/odm.img")
+                    following = archive.start_dir
+                    self.assertEqual(subject._span(archive, info, following),
+                                     (30 + len(info.filename), info.filename.encode(), b""))
+                    bound = subject._output_bound(archive, {info.filename: info}, {0: following}, {})
+                    self.assertGreater(bound, info.file_size)
+
+    def test_streaming_zip64_version_upgrade_rejects_other_header_shapes(self):
+        for field in ("local_version", "central_version", "reserved", "small_size",
+                      "local_zip64", "crc", "compressed_size", "flags", "method"):
+            raw = self.streaming_zip64_headers(size=7 if field == "small_size" else 0x100000007,
+                                               local_zip64=field == "local_zip64")
+            central = self.central_entries(raw)["IMAGES/odm.img"][0]
+            if field == "local_version":
+                struct.pack_into("<H", raw, 4, 21)
+            elif field in ("central_version", "reserved"):
+                struct.pack_into("<H", raw, central + 6, 46 if field == "central_version" else 45 | 0x100)
+            elif field == "crc":
+                struct.pack_into("<I", raw, 14, 0x12345678)
+            elif field == "compressed_size":
+                struct.pack_into("<I", raw, 18, 1)
+            elif field in ("flags", "method"):
+                local_offset, central_offset = (6, 8) if field == "flags" else (8, 10)
+                struct.pack_into("<H", raw, local_offset, 0)
+                struct.pack_into("<H", raw, central + central_offset, 0)
+            with self.subTest(field=field), zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                with self.assertRaises(ValueError):
+                    subject._span(archive, archive.getinfo("IMAGES/odm.img"), archive.start_dir)
+
+    def test_streaming_zip64_version_upgrade_keeps_descriptor_and_overlap_checks(self):
+        for field in ("signature", "crc", "compressed_size", "file_size", "descriptor_boundary", "data_boundary"):
+            raw = self.streaming_zip64_headers()
+            descriptor = 30 + len(b"IMAGES/odm.img") + 1
+            if field in ("signature", "crc", "compressed_size", "file_size"):
+                offset = {"signature": 0, "crc": 4, "compressed_size": 8, "file_size": 16}[field]
+                raw[descriptor + offset] ^= 1
+            with self.subTest(field=field), zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                following = archive.start_dir
+                if field == "descriptor_boundary":
+                    following -= 1
+                elif field == "data_boundary":
+                    following = descriptor - 1
+                with self.assertRaises(ValueError):
+                    subject._span(archive, archive.getinfo("IMAGES/odm.img"), following)
+
     def test_central_order_different_from_physical_order_is_preserved(self):
         self.write_zip()
         raw = bytearray(self.source.read_bytes())

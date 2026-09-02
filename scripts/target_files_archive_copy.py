@@ -125,7 +125,16 @@ def _span(archive, info, following):
     start = inventory._selected_span(_SpanBoundary(archive, following), info)
     header = inventory._read_at(archive.fp, info.header_offset, 30)
     local_version = struct.unpack_from("<H", header, 4)[0]
-    _require(local_version == (info.extract_version | (info.reserved << 8)),
+    central_version = info.extract_version | (info.reserved << 8)
+    # AOSP's streaming writer emits v20 with empty local CRC/sizes, then
+    # promotes only the central entry to v45 when the final sizes need ZIP64.
+    # _selected_span already validated the 64-bit descriptor and its bounds.
+    # Support that writer convention, not arbitrary version disagreements.
+    streaming_zip64 = (local_version == 20 and central_version == 45
+                       and info.compress_type == zipfile.ZIP_DEFLATED and info.flag_bits & 8
+                       and max(info.file_size, info.compress_size) > 0xffffffff
+                       and header[14:26] == b"\x00" * 12)
+    _require(local_version == central_version or streaming_zip64,
              "local and central ZIP extraction versions differ")
     local_time, local_date = struct.unpack_from("<HH", header, 10)
     year, month, day, hour, minute, second = info.date_time
