@@ -476,5 +476,187 @@ class ModeFlagsConstructionSourceTests(ChecksumConstructionSourceTests):
                 source.apply(plan, files, self.root / source.CHECKSUM_CONTRACT)
 
 
+class AvbSha256ConstructionSourceTests(unittest.TestCase):
+    """A selected Board-only successor, not a change to historical renderers."""
+
+    def setUp(self):
+        self.public_root = source.ROOT
+        self.previous = {path: source.load_contract(self.public_root / path) for path in
+                         (source.CONTRACT, source.POLICY3_CONTRACT,
+                          source.CHECKSUM_CONTRACT, source.MODE_FLAGS_CONTRACT)}
+        self.legacy_board = generator._policy_image_delivery_board(
+            (self.public_root / source.BOARD).read_bytes())
+        # Reuse the existing complete source-composition fixture without
+        # inheriting tests whose checksum-specific base rule differs here.
+        self.base_case = ChecksumConstructionSourceTests()
+        self.addCleanup(self.base_case.doCleanups)
+        self.base_case.setUp()
+        self.root, self.board = self.base_case.root, self.base_case.board
+        for path in (source.CHECKSUM_CONTRACT, source.MODE_FLAGS_CONTRACT, source.AVB_SHA256_CONTRACT):
+            (self.root / path).write_bytes((self.public_root / path).read_bytes())
+        self.path = self.root / source.AVB_SHA256_CONTRACT
+        self.mode, _ = self.previous[source.MODE_FLAGS_CONTRACT]
+        self.actual, self.actual_id = source.load_contract(self.path)
+        self.old_final = self.board.replace(source.BLOCK, source.INCLUDE, 1)
+        self.arguments = [f"BOARD_AVB_{name}_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256".encode()
+                          for name in ("SYSTEM", "SYSTEM_EXT", "PRODUCT", "SYSTEM_DLKM", "VENDOR_DLKM")]
+
+    def fixture(self):
+        plan, files, _ = self.base_case.fixture()
+        # Both contracts bind this same synthetic complete base. The live
+        # descriptors and all native artifacts remain outside this fixture.
+        previous = {**copy.deepcopy(self.mode),
+                    "base_admission": source.metadata.identity(source.metadata.encoded(plan))}
+        contract = {**copy.deepcopy(self.actual), "base_admission": previous["base_admission"]}
+        return plan, files, previous, contract
+
+    def synthetic_binding(self, previous, contract):
+        stack = ExitStack()
+        for path, value, constant in ((source.MODE_FLAGS_CONTRACT, previous, "MODE_FLAGS_CONTRACT_SHA256"),
+                                      (source.AVB_SHA256_CONTRACT, contract, "AVB_SHA256_CONTRACT_SHA256")):
+            raw = source.metadata.encoded(value)
+            (self.root / path).write_bytes(raw)
+            stack.enter_context(mock.patch.object(source, constant, source.metadata.identity(raw)["sha256"]))
+        return stack
+
+    def test_public_selector_preserves_all_four_previous_contracts_and_board_derivations(self):
+        self.assertEqual(set(self.actual), set(self.mode))
+        self.assertEqual(self.actual["contract_id"], source.AVB_SHA256_CONTRACT_ID)
+        self.assertNotEqual(self.actual["board_after"], self.mode["board_after"])
+        for field in set(self.mode) - {"contract_id", "board_after"}:
+            self.assertEqual(self.actual[field], self.mode[field], field)
+        self.assertEqual(source.load_contract(), self.previous[source.CONTRACT])
+        for path, expected in self.previous.items():
+            with self.subTest(selector=path):
+                self.assertEqual(source.load_contract(self.root / path), expected)
+                board = self.legacy_board if path == source.CONTRACT else self.board
+                derived = source.derive_board(board, self.root / path)
+                self.assertEqual(source.metadata.identity(derived), expected[0]["board_after"])
+                self.assertEqual(source.restore_board(derived, self.root / path), board)
+                self.assertNotIn(b"--hash_algorithm sha256", derived)
+        self.assertEqual(source.metadata.identity(source.render_guard()), self.mode["guard"])
+
+    def test_exact_five_hashtree_arguments_follow_all_existing_hooks_without_other_board_changes(self):
+        derived = source.derive_board(self.board, self.path)
+        self.assertEqual(source.metadata.identity(derived), self.actual["board_after"])
+        self.assertTrue(derived.startswith(self.old_final))
+        suffix = derived[len(self.old_final):]
+        argument_lines = [line for line in suffix.splitlines() if line and not line.startswith(b"#")]
+        self.assertEqual(argument_lines, self.arguments)
+        self.assertEqual(derived.count(b"--hash_algorithm sha256"), 5)
+        for line in self.arguments:
+            self.assertGreater(derived.index(line), derived.rfind(b"include "))
+        self.assertNotIn(b"BOARD_AVB_MI_EXT_", suffix)
+        self.assertNotIn(b"BOARD_AVB_VENDOR_ADD_HASHTREE", suffix)
+        self.assertNotIn(b"BOARD_AVB_ODM_", suffix)
+        for protected in (b"--flags", b"--fec", b"--salt", b"KEY_PATH", b"ROLLBACK", b"SELINUX"):
+            self.assertNotIn(protected, suffix)
+        self.assertEqual(source.restore_board(derived, self.path), self.board)
+
+    def test_same_complete_base_roundtrips_with_only_board_changed_and_guard_added(self):
+        plan, files, previous, contract = self.fixture()
+        before = copy.deepcopy(plan), dict(files)
+        with self.synthetic_binding(previous, contract), \
+             mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            selected, payloads = source.apply(plan, files, self.path)
+            self.assertEqual(source.validate(selected, payloads), plan)
+            self.assertEqual(set(payloads) - set(files), {source.GUARD})
+            self.assertEqual([name for name in files if files[name] != payloads[name]], [source.BOARD])
+            self.assertEqual(payloads[source.GUARD], source.render_guard())
+            self.assertEqual(selected["admission"], plan["admission"])
+            self.assertEqual(selected[source.BINDING]["base_admission"], previous["base_admission"])
+            with self.assertRaises(source.ConstructionSourceError):
+                source.apply(selected, payloads, self.path)
+        self.assertEqual((plan, files), before)
+
+    def test_missing_duplicate_conflicting_or_extra_board_arguments_cannot_be_resealed(self):
+        plan, files, previous, contract = self.fixture()
+        with self.synthetic_binding(previous, contract):
+            selected, payloads = source.apply(plan, files, self.path)
+            good = payloads[source.BOARD]
+            changes = [good.replace(line + b"\n", b"", 1) for line in self.arguments]
+            changes += [good + self.arguments[0] + b"\n",
+                        good.replace(b"--hash_algorithm sha256", b"--hash_algorithm sha1", 1),
+                        good + b"BOARD_AVB_SYSTEM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha1\n",
+                        good + b"BOARD_AVB_MI_EXT_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256\n",
+                        good.replace(self.arguments[0], self.arguments[0].replace(b" += ", b" := "), 1)]
+            for changed in changes:
+                with self.subTest(size=len(changed)):
+                    with self.assertRaises(source.ConstructionSourceError):
+                        source.restore_board(changed, self.path)
+                    altered = {**payloads, source.BOARD: changed}
+                    with self.assertRaises(source.ConstructionSourceError):
+                        source.validate({**selected, "files": source.file_entries(altered)}, altered)
+            for changed in (self.board + b"\n", self.board.replace(source.BLOCK, b""),
+                            self.board + source.BLOCK, good):
+                with self.subTest(preimage_size=len(changed)), self.assertRaises(source.ConstructionSourceError):
+                    source.derive_board(changed, self.path)
+
+    def test_resealed_descriptor_cannot_change_preserved_base_scope_or_source_contract(self):
+        _, _, previous, original = self.fixture()
+        mutations = (
+            lambda d: d.update(extra=True), lambda d: d.update(schema_version=True),
+            lambda d: d["base_admission"].update(sha256="0" * 64),
+            lambda d: d["board_before"].update(size_bytes=1),
+            lambda d: d["guard"].update(sha256="0" * 64),
+            lambda d: d["scope"].update(native_dispatch_allowed=True),
+            lambda d: d["context"].update(with_gms=False),
+            lambda d: d["selected_source_contract"].update(path="unreviewed.json"),
+            lambda d: d["selected_policy_image_contract"].update(sha256="0" * 64),
+        )
+        for mutate in mutations:
+            contract = copy.deepcopy(original); mutate(contract)
+            with self.subTest(mutation=mutate), self.synthetic_binding(previous, contract):
+                with self.assertRaises(source.ConstructionSourceError):
+                    source.load_contract(self.path)
+        with self.synthetic_binding(previous, original):
+            forged = self.root / "forged.json"
+            forged.write_bytes(self.path.read_bytes() + b"\n")
+            with self.assertRaises(source.ConstructionSourceError):
+                source.load_contract(forged)
+
+    def test_resealing_new_descriptor_after_pin_cannot_authorize_arbitrary_board_bytes(self):
+        plan, files, previous, contract = self.fixture()
+        bad = self.old_final + b"BOARD_AVB_SYSTEM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha1\n"
+        contract["board_after"] = source.metadata.identity(bad)
+        with self.synthetic_binding(previous, contract), self.assertRaises(source.ConstructionSourceError):
+            source.apply(plan, files, self.path)
+
+    def test_complete_metadata_and_mi_ext_composition_guards_still_apply_to_new_selector(self):
+        for kind in ("selector", "metadata", "metadata_identity", "mi_ext"):
+            plan, files, previous, contract = self.fixture()
+            if kind == "selector":
+                plan["target_files_metadata"]["source_contract"]["path"] = "unreviewed.json"
+            elif kind == "metadata":
+                plan["target_files_metadata"]["native_source"]["final_source_files"][0]["sha256"] = "0" * 64
+            elif kind == "metadata_identity":
+                plan["target_files_metadata"]["composition_identity"] = {"sha256": "0" * 64, "size_bytes": 1}
+            else:
+                plan["mi_ext_inputs"]["native_source"]["files"][0]["sha256"] = "0" * 64
+            previous["base_admission"] = contract["base_admission"] = source.metadata.identity(source.metadata.encoded(plan))
+            with self.subTest(kind=kind), self.synthetic_binding(previous, contract):
+                with self.assertRaisesRegex(source.ConstructionSourceError, "checksum complete base"):
+                    source.apply(plan, files, self.path)
+
+    def test_selected_payloads_cannot_be_relabelled_as_any_previous_selector(self):
+        plan, files, previous, contract = self.fixture()
+        with self.synthetic_binding(previous, contract):
+            selected, payloads = source.apply(plan, files, self.path)
+            for path, (old, _) in self.previous.items():
+                changed = copy.deepcopy(selected)
+                changed[source.BINDING]["contract_id"] = old["contract_id"]
+                with self.subTest(selector=path), self.assertRaises(source.ConstructionSourceError):
+                    source.validate(changed, payloads)
+
+    def test_unbound_selector_fails_before_payload_inspection_or_native_calls(self):
+        class Unreadable(dict):
+            def get(self, *args): raise AssertionError("pending plan inspected")
+            def __getitem__(self, key): raise AssertionError("pending payload inspected")
+        with mock.patch.object(source, "AVB_SHA256_CONTRACT_SHA256", None), \
+             mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "unbound"):
+                source.apply(Unreadable(), Unreadable(), self.path)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,91 @@
+{
+  "base_admission": {
+    "sha256": "585d2dbe636a726d5bfc5c77d5622c881386f12254ef3d14e3b4c6d5558787c8",
+    "size_bytes": 637078
+  },
+  "board_after": {
+    "sha256": "9047a845e1149c24246223c2a3ee98610fc949b115bf84c1b44be00904da4233",
+    "size_bytes": 4131
+  },
+  "board_before": {
+    "sha256": "0a5008772424b758b2422bcc035bb19931dc277b55cbb8bc2da43c125b9685aa",
+    "size_bytes": 4096
+  },
+  "context": {
+    "branch": "bka",
+    "device": "nezha",
+    "maximum_page_size_bytes": 4096,
+    "product": "lineage_nezha",
+    "release_config": "bp4a",
+    "variant": "user",
+    "with_gms": true
+  },
+  "contract_id": "nezha-avb-sha256-first-target-files-source-v1",
+  "coverage_limits_retained": [
+    "one-uncovered-unlevelled-framework-matrix-definition-skip",
+    "two-framework-only-warnings",
+    "host-kernel-runtime-checks-do-not-prove-physical-kernel-behavior",
+    "stub-runtime-info-is-not-complete-runtime-compatibility",
+    "size-max-selinux-policy-version-is-not-device-version-evidence",
+    "default-disabled-avb-version-check-is-not-avb-chain-verification"
+  ],
+  "guard": {
+    "sha256": "fe1e32cffe0d7b7ba20a9fd1d90f1cf8712f9fa6b7aa0e3ec1a90a6b7058c469",
+    "size_bytes": 2553
+  },
+  "metadata_selection": "The separate installed 0012 capability and actual fixed input descriptors remain mandatory; BUILD_NUMBER stays invocation-only.",
+  "ordinary_goal": "target-files-package",
+  "recorded_policy_basis": {
+    "future_candidate_or_installation_verified": false,
+    "image_input_contract_id": "nezha-five-file-policy-image-inputs-policy3-evolution-v1",
+    "image_input_profile": "policy3-evolution",
+    "policy_build": {
+      "sha256": "344ba909febe8be29479f5bf1d48d122e931e88fb1d4d71dbcdab08708483c18",
+      "size_bytes": 10165316
+    },
+    "recorded_basis_only": true,
+    "sidecar_validation": {
+      "sha256": "57e2191f1d948407dda3adf040edb3b58ce018adb6bb4a1d56471bb0226682fd",
+      "size_bytes": 44989
+    },
+    "source_files": 539,
+    "source_projects": 13
+  },
+  "release_selector_binding": "The native invocation separately binds bp4a; BoardConfig uses the resulting release flags after TARGET_RELEASE is cleared or poisoned.",
+  "required_native_preflight": [
+    "nothing",
+    "recoveryimage",
+    "mi_extimage",
+    "vendorimage",
+    "odmimage",
+    "plat_sepolicy_and_mapping.sha256",
+    "system_ext_sepolicy_and_mapping.sha256",
+    "product_sepolicy_and_mapping.sha256"
+  ],
+  "schema_version": 3,
+  "scope": {
+    "complete_input_compatibility_verified": false,
+    "complete_rom_ready": false,
+    "complete_target_files_allowed": false,
+    "default_rom_super_ota_allowed": false,
+    "first_ordinary_target_files_source_selected": true,
+    "flash_allowed": false,
+    "hardware_tested": false,
+    "native_dispatch_allowed": false,
+    "native_preflight_verified_by_generator": false,
+    "phone_operations": [],
+    "source_derivation_only": true
+  },
+  "selected_policy_image_contract": {
+    "contract_id": "nezha-policy3-final-leaf-metadata-delivery-v1",
+    "path": "config/nezha-policy-image-delivery-policy3.json",
+    "sha256": "1c0548bccc990794fab45ffa15b6159d9c4294ac2dde9f4b202e437844bdc5c1",
+    "size_bytes": 240384
+  },
+  "selected_source_contract": {
+    "contract_id": "nezha-target-files-metadata-checksum-v1",
+    "path": "patches/evolution/target-files-metadata-checksum.json",
+    "sha256": "ee28f64d09c75d724c0be5dc07d98816cf30c4f59cf09a45c6163f6c96428e01",
+    "size_bytes": 1455
+  }
+}

@@ -1,5 +1,54 @@
 # Nezha product and build progress
 
+## Package5 host inputs and AVB/VINTF failures — 2026-09-02
+
+The complete **10,997,962,405-byte** Package5 ZIP is independently admitted on
+the host with SHA-256 **`622073f36dd1c0f733f1ed1d09518380190a58a80f4615586c815430bd9768b4`**.
+Copier v1 exits 1 at **12:40:56 UTC** with zero bytes and `EAGAIN`. Copier v2
+copies the full archive but exits 1 at **13:09:49 UTC** on `input ancestor
+changed` during final publication checks. Neither is marked successful; no
+`transfer.json` or after-copy volume receipt is invented. Fresh independent
+admission reuses the original held-file/ancestor and paired-result guards,
+rehashes the whole host ZIP and verifies its native proof without another copy
+or fresh volume check.
+
+| Actual host phase | Result on September 2 UTC |
+| --- | --- |
+| Independent archive admission | 13:21:47–13:21:54; passes separately from the failed copier |
+| Maintained input inventory | 13:23:12–13:24:04, exit 0; complete required-role inventory |
+| Image materialization | 13:25:18–13:27:27, exit 0; 13 ZIP images plus two retained inputs |
+| AVB plan | 13:28:30, exit 0; ready for public preparation, not a signing result |
+| AVB public preparation | 13:28:31–13:28:43, exit 2; invalid hash/hashtree algorithm, digest or flags |
+
+The materializer publishes **15 images**, its input manifest and receipt under
+`artifacts/avb/nezha/package5-20260902-v1/inputs`. The returned result verifies
+publication; the retained byte-verification receipt remains explicitly
+prepublication evidence. Materialization is not image-format, signature,
+partition-fit or compatibility verification.
+
+Public preparation fails before private-key use. Read-only descriptor diagnosis
+finds SHA-1 hashtrees with 20-byte digests in **product, system, system_ext,
+system_dlkm and vendor_dlkm**, contrary to the reviewed SHA-256 profile. The
+other **ten strict metadata parses pass**. The parser remains unchanged; this
+metadata-only diagnosis does not rehash whole images or establish the complete
+AVB chain, FEC or a finished public image set.
+
+Separately, VINTF staging verifies **31 files** without running native checks.
+Capture transport exits 1 at the original property parser:
+`malformed property/metadata line: ODM/etc/build.prop`. Empty stdout contains
+no ACK, and no successful capture completion is recorded. The exit receipt
+does not verify guest termination or admit native success. These receipts have
+no in-band start/end timestamps; no timing or VINTF compatibility result is
+inferred.
+
+The SHA-256 source-producer correction and faithful property-parser successor
+are in progress, **not validated or adopted**. Normal Android enforcing, 4 KiB,
+`working76` and prior Package5 history remain preserved. Private signing, a
+complete 17-image public set, ZIP reconciliation, FEC, super-image/partition,
+full VINTF, OTA and boot/hardware checks remain open. No phone operation occurs
+and no flashable ROM is established. The [checkpoint record](../research/workspace-integration.json)
+binds closed receipts without promoting failed or partial results.
+
 ## Package5 corrected supplement and complete evidence replay — 2026-09-02
 
 The **separate corrected Package5 post-build verifier passes** in the VM's

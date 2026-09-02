@@ -203,6 +203,21 @@ MODE_FLAGS_CONTRACT = "config/nezha-rom-construction-source-mode-flags-v1.json"
 MODE_FLAGS_CONTRACT_ID = "nezha-metadata-mode-flags-first-target-files-source-v1"
 # Bound only after the complete metadata mode-flags base is measured.
 MODE_FLAGS_CONTRACT_SHA256 = "8359d6510f76b66961824a89b4d58eeaa950181510c6aa73f8a374e80bd1b227"
+AVB_SHA256_CONTRACT = "config/nezha-rom-construction-source-avb-sha256-v1.json"
+AVB_SHA256_CONTRACT_ID = "nezha-avb-sha256-first-target-files-source-v1"
+AVB_SHA256_CONTRACT_SHA256 = "fdd43bbcad80ffbf135f9f9d614c19ec3b6af7dd3d74a9978c19ca3e45e619d5"
+AVB_SHA256_BOARD_AFTER = {
+    "sha256": "9047a845e1149c24246223c2a3ee98610fc949b115bf84c1b44be00904da4233",
+    "size_bytes": 4131,
+}
+AVB_SHA256_BLOCK = b"""
+# Explicit SHA-256 hashtrees for source-built logical images.
+BOARD_AVB_SYSTEM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+BOARD_AVB_SYSTEM_EXT_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+BOARD_AVB_PRODUCT_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+BOARD_AVB_SYSTEM_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+BOARD_AVB_VENDOR_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
+"""
 POLICY3_IMAGE_CONTRACT = "config/nezha-policy-image-delivery-policy3.json"
 POLICY3_IMAGE_CONTRACT_ID = "nezha-policy3-final-leaf-metadata-delivery-v1"
 POLICY3_BASIS = {
@@ -291,6 +306,24 @@ def _mode_flags_contract(raw):
     return value
 
 
+def _avb_sha256_contract(raw):
+    value = metadata._json(raw)
+    old, _ = load_contract(ROOT / MODE_FLAGS_CONTRACT)
+    require(type(value) is dict and set(value) == set(old)
+            and value.get("contract_id") == AVB_SHA256_CONTRACT_ID,
+            "unknown SHA-256 construction source schema or fields")
+    # Reuse every predecessor check; only the selected Board gains footer args.
+    projected = dict(value, contract_id=MODE_FLAGS_CONTRACT_ID,
+                     board_after=old["board_after"])
+    _mode_flags_contract(metadata.encoded(projected))
+    for name in set(old) - {"contract_id", "board_after"}:
+        require(metadata.encoded(value[name]) == metadata.encoded(old[name]),
+                "SHA-256 construction changes preserved mode-flags field: " + name)
+    require(value["board_after"] == AVB_SHA256_BOARD_AFTER,
+            "SHA-256 construction Board binding differs")
+    return value
+
+
 def load_contract(path=None):
     """Omission retains v1; successors require exact explicit descriptor bytes."""
     if path is None:
@@ -298,20 +331,21 @@ def load_contract(path=None):
     reader = metadata.Reader()
     selected = reader.read(path)
     value = metadata._json(selected)
-    if type(value) is not dict or value.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
+    if type(value) is not dict or value.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID, AVB_SHA256_CONTRACT_ID):
         reader.recheck()
         return _v1_load_contract(path)
     mode_flags = value["contract_id"] == MODE_FLAGS_CONTRACT_ID
     checksum = value["contract_id"] == CHECKSUM_CONTRACT_ID
-    record = MODE_FLAGS_CONTRACT if mode_flags else CHECKSUM_CONTRACT if checksum else POLICY3_CONTRACT
-    digest = MODE_FLAGS_CONTRACT_SHA256 if mode_flags else CHECKSUM_CONTRACT_SHA256 if checksum else POLICY3_CONTRACT_SHA256
-    label = "metadata mode-flags" if mode_flags else "checksum"
+    avb_sha256 = value["contract_id"] == AVB_SHA256_CONTRACT_ID
+    record = AVB_SHA256_CONTRACT if avb_sha256 else MODE_FLAGS_CONTRACT if mode_flags else CHECKSUM_CONTRACT if checksum else POLICY3_CONTRACT
+    digest = AVB_SHA256_CONTRACT_SHA256 if avb_sha256 else MODE_FLAGS_CONTRACT_SHA256 if mode_flags else CHECKSUM_CONTRACT_SHA256 if checksum else POLICY3_CONTRACT_SHA256
+    label = "SHA-256" if avb_sha256 else "metadata mode-flags" if mode_flags else "checksum"
     require(digest is not None, label + " construction is unbound; missing actual complete base")
     raw = reader.read(ROOT / record)
     require(metadata.identity(raw)["sha256"] == digest,
             "maintained construction successor contract changed; review a new binding")
     require(selected == raw, "construction successor selector differs from the maintained contract")
-    contract = _mode_flags_contract(raw) if mode_flags else _checksum_contract(raw) if checksum else _policy3_contract(raw)
+    contract = _avb_sha256_contract(raw) if avb_sha256 else _mode_flags_contract(raw) if mode_flags else _checksum_contract(raw) if checksum else _policy3_contract(raw)
     reader.recheck()
     return contract, metadata.identity(raw)
 
@@ -329,6 +363,12 @@ def derive_board(raw, contract_path=None):
     if contract_path is None:
         return _v1_derive_board(raw)
     contract, _ = load_contract(contract_path)
+    if contract["contract_id"] == AVB_SHA256_CONTRACT_ID:
+        old, _ = load_contract(ROOT / MODE_FLAGS_CONTRACT)
+        result = _derive_policy3_board(raw, old) + AVB_SHA256_BLOCK
+        require(metadata.identity(result) == contract["board_after"],
+                "SHA-256 construction Board derivation differs")
+        return result
     return (_derive_policy3_board(raw, contract)
             if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID) else _v1_derive_board(raw))
 
@@ -345,6 +385,15 @@ def restore_board(raw, contract_path=None):
     if contract_path is None:
         return _v1_restore_board(raw)
     contract, _ = load_contract(contract_path)
+    if contract["contract_id"] == AVB_SHA256_CONTRACT_ID:
+        require(type(raw) is bytes and metadata.identity(raw) == contract["board_after"]
+                and raw.endswith(AVB_SHA256_BLOCK) and raw.count(AVB_SHA256_BLOCK) == 1,
+                "SHA-256 construction Board bytes differ")
+        old, _ = load_contract(ROOT / MODE_FLAGS_CONTRACT)
+        result = _restore_policy3_board(raw[:-len(AVB_SHA256_BLOCK)], old)
+        require(derive_board(result, contract_path) == raw,
+                "SHA-256 Board changed outside its exact derivation")
+        return result
     return (_restore_policy3_board(raw, contract)
             if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID) else _v1_restore_board(raw))
 
@@ -357,7 +406,7 @@ def _check_policy3_base(plan, payloads, contract):
     delivery = plan.get("target_files_metadata", {}).get("policy_image_delivery", {}).get("contract")
     require(metadata.encoded(delivery) == metadata.encoded(contract["selected_policy_image_contract"]),
             "policy3 complete base uses a different image delivery contract")
-    if contract["contract_id"] in (CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
+    if contract["contract_id"] in (CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID, AVB_SHA256_CONTRACT_ID):
         if __package__:
             from . import target_files_metadata_checksum as checksum
         else:
@@ -379,11 +428,13 @@ def _check_policy3_base(plan, payloads, contract):
 
 def apply(plan, payloads, contract_path):
     contract, identity = load_contract(contract_path)
-    if contract["contract_id"] not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
+    if contract["contract_id"] not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID, AVB_SHA256_CONTRACT_ID):
         return _v1_apply(plan, payloads, contract_path)
     _check_policy3_base(plan, payloads, contract)
     result, files = copy.deepcopy(plan), dict(payloads)
-    files[BOARD] = _derive_policy3_board(files[BOARD], contract)
+    files[BOARD] = (derive_board(files[BOARD], contract_path)
+                    if contract["contract_id"] == AVB_SHA256_CONTRACT_ID
+                    else _derive_policy3_board(files[BOARD], contract))
     files[GUARD] = render_guard()
     result[BINDING] = {"contract": identity, "contract_id": contract["contract_id"],
                        "base_admission": contract["base_admission"], "scope": copy.deepcopy(contract["scope"])}
@@ -394,9 +445,10 @@ def apply(plan, payloads, contract_path):
 
 def validate(plan, payloads):
     binding = plan.get(BINDING)
-    if type(binding) is not dict or binding.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
+    if type(binding) is not dict or binding.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID, AVB_SHA256_CONTRACT_ID):
         return _v1_validate(plan, payloads)
-    record = (MODE_FLAGS_CONTRACT if binding["contract_id"] == MODE_FLAGS_CONTRACT_ID
+    record = (AVB_SHA256_CONTRACT if binding["contract_id"] == AVB_SHA256_CONTRACT_ID
+              else MODE_FLAGS_CONTRACT if binding["contract_id"] == MODE_FLAGS_CONTRACT_ID
               else CHECKSUM_CONTRACT if binding["contract_id"] == CHECKSUM_CONTRACT_ID else POLICY3_CONTRACT)
     contract, identity = load_contract(ROOT / record)
     expected = {"contract": identity, "contract_id": contract["contract_id"],
@@ -408,7 +460,9 @@ def validate(plan, payloads):
     base, files = copy.deepcopy(plan), dict(payloads)
     del base[BINDING]
     del files[GUARD]
-    files[BOARD] = _restore_policy3_board(files[BOARD], contract)
+    files[BOARD] = (restore_board(files[BOARD], ROOT / record)
+                    if binding["contract_id"] == AVB_SHA256_CONTRACT_ID
+                    else _restore_policy3_board(files[BOARD], contract))
     base["files"] = file_entries(files)
     _check_policy3_base(base, files, contract)
     return base

@@ -10,6 +10,35 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **complete Package5 archive is independently admitted on the host**, and
+**15 image inputs are materialized**. The ZIP is **10,997,962,405 bytes**, with
+the same `622073f3…` SHA-256 as the native supplement. This does not promote the
+copier to success: its first attempt failed with zero bytes and `EAGAIN`; the
+second copied the complete file but failed the final input-ancestor check.
+Both failures and the absence of `transfer.json` remain preserved.
+
+**AVB public preparation exits 2** on invalid hash/hashtree parameters. Five
+images—**product, system, system_ext, system_dlkm and vendor_dlkm**—carry SHA-1
+descriptors where the reviewed profile requires SHA-256. The other ten strict
+metadata parses pass, not complete image or signature verification. No private
+signing or completed public image set is established.
+
+**VINTF staging verifies 31 files, but capture exits 1** when the original
+property parser rejects `ODM/etc/build.prop`. There is no ACK or successful
+capture completion; this is not a VINTF compatibility result. A SHA-256 source
+producer correction and faithful property-parser successor remain **in
+progress, not validated or adopted**.
+
+Normal Android enforcing, 4 KiB and `working76` remain required. Signing,
+ZIP reconciliation, full AVB/VINTF, FEC, super-image/partition checks, OTA and
+boot/hardware remain open. No phone operation occurs and the ROM is **not
+flashable**. See the dated [host-input and AVB/VINTF checkpoint](build-progress.md#package5-host-inputs-and-avbvintf-failures--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Package5 supplement checkpoint
+
+This entry preserves the supplement replay and its then-pending host transfer.
+
 The **corrected Package5 post-build supplement and complete finite-evidence
 replay pass**. The separate verifier runs in the **VM Python supervisory
 harness**, finishing at **2026-09-02 12:17:30 UTC**, without rerunning the build.

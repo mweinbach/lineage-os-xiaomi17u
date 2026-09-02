@@ -4642,6 +4642,23 @@ class GenerateDeviceTreeTests(unittest.TestCase):
 
 
 class NezhaBoardHookTests(unittest.TestCase):
+    def test_explicit_avb_sha256_construction_route_preserves_prior_selection_paths(self):
+        source = generator.construction_source
+        for contract_id, path in (
+            (source.POLICY3_CONTRACT_ID, source.POLICY3_CONTRACT),
+            (source.CHECKSUM_CONTRACT_ID, source.CHECKSUM_CONTRACT),
+            (source.MODE_FLAGS_CONTRACT_ID, source.MODE_FLAGS_CONTRACT),
+            (source.AVB_SHA256_CONTRACT_ID, source.AVB_SHA256_CONTRACT),
+        ):
+            with self.subTest(contract_id=contract_id):
+                plan = {source.BINDING: {"contract_id": contract_id}}
+                self.assertEqual(generator._policy3_construction_path(plan), generator.ROOT / path)
+        for plan in ({}, {source.BINDING: {}},
+                     {source.BINDING: {"contract_id": source.CONTRACT_ID}},
+                     {source.BINDING: {"contract_id": "unreviewed-avb-selector"}}):
+            with self.subTest(unselected=plan):
+                self.assertIsNone(generator._policy3_construction_path(plan))
+
     def test_recovery_prebuilt_hook_is_public_and_precedes_lineage_without_relocating_recovery(self):
         board = (generator.ROOT / "device/xiaomi/nezha/BoardConfig.mk").read_text()
         recovery = (generator.ROOT / "device/xiaomi/nezha/recovery-prebuilt.mk").read_text()
