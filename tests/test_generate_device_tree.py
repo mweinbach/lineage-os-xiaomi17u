@@ -1456,6 +1456,73 @@ class GenerateDeviceTreeTests(unittest.TestCase):
                 generator._target_files_source_reference(selected)
             selected.rmdir() if kind == "directory" else selected.unlink()
 
+    def test_checksum_source_public_binding_preserves_policy_and_metadata_inputs(self):
+        from scripts import target_files_metadata_checksum as checksum
+        image = ROOT / generator.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT
+        before = generator._metadata_public_binding(
+            source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT, image_contract=image)
+        after = generator._metadata_public_binding(
+            source_contract=ROOT / generator.TARGET_FILES_CHECKSUM_SOURCE_CONTRACT, image_contract=image)
+        changed = {"source_contract", "control_files", "native_source", "composition_identity"}
+        self.assertEqual({key: value for key, value in before.items() if key not in changed},
+                         {key: value for key, value in after.items() if key not in changed})
+        old_sources = {row["path"]: row for row in before["native_source"]["final_source_files"]}
+        new_sources = {row["path"]: row for row in after["native_source"]["final_source_files"]}
+        self.assertEqual(new_sources, {**old_sources, checksum.CORE: {"path": checksum.CORE, **checksum.CORE_AFTER}})
+        self.assertEqual(after["native_source"], checksum._derive_composition(before["native_source"]))
+        runtime = next(row for row in after["control_files"] if row["path"] == "tools/target_files_metadata.py")
+        include = generator._render_metadata_include({**after, "receipt": {"sha256": "1" * 64}})
+        self.assertIn(runtime["sha256"], include)
+        self.assertEqual(generator._metadata_options(after), {
+            "source_contract": ROOT / generator.TARGET_FILES_CHECKSUM_SOURCE_CONTRACT,
+            "image_contract": image,
+        })
+
+    def test_checksum_source_module_requires_explicit_matching_policy3_images(self):
+        from scripts import target_files_metadata_checksum as checksum
+        from scripts import target_files_metadata_combined as combined
+        source = ROOT / generator.TARGET_FILES_CHECKSUM_SOURCE_CONTRACT
+        self.assertIs(generator._metadata_module(
+            source_contract=source, image_contract=ROOT / generator.POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT), checksum)
+        self.assertIs(generator._metadata_module(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT), combined)
+        for image in (None, ROOT / generator.POLICY_IMAGE_DELIVERY_CONTRACT,
+                      ROOT / generator.POLICY_IMAGE_DELIVERY_4K_CONTRACT):
+            with self.subTest(image=image), self.assertRaisesRegex(generator.CandidateError, "policy3"):
+                generator._metadata_module(source_contract=source, image_contract=image)
+
+    def test_checksum_source_reference_and_binding_reject_forgery(self):
+        source = ROOT / generator.TARGET_FILES_CHECKSUM_SOURCE_CONTRACT
+        selected = self.root / "checksum-source.json"
+        raw = source.read_bytes()
+        selected.write_bytes(raw)
+        reference = generator._target_files_source_reference(source)
+        self.assertEqual(generator._target_files_source_reference(selected), reference)
+        for changed in (raw + b"\n", b"not JSON", b"[]", b"\xff", b'{"contract_id":"unreviewed"}'):
+            selected.write_bytes(changed)
+            with self.subTest(changed=changed[:32]), self.assertRaises(generator.CandidateError):
+                generator._target_files_source_reference(selected)
+        for key, value in (("contract_id", generator.TARGET_FILES_SOURCE_CONTRACT_ID),
+                           ("path", generator.TARGET_FILES_SOURCE_CONTRACT),
+                           ("sha256", "0" * 64), ("size_bytes", True)):
+            forged = {**reference, key: value}
+            with self.subTest(key=key), self.assertRaises(generator.CandidateError):
+                generator._metadata_source_selection({"source_contract": forged})
+        selected.unlink()
+        selected.symlink_to(source)
+        with self.assertRaises(generator.CandidateError):
+            generator._target_files_source_reference(selected)
+
+    def test_checksum_recovery_renderer_uses_complete_new_source_guard(self):
+        from scripts import target_files_metadata_checksum as checksum
+        template = (ROOT / generator.DEVICE_PATH / "recovery-prebuilt.mk").read_bytes()
+        selected = ROOT / generator.TARGET_FILES_CHECKSUM_SOURCE_CONTRACT
+        rendered = generator._metadata_recovery_include(template, source_contract=selected)
+        composition = checksum.compose_sources(ROOT, source_contract=selected)
+        self.assertIn(checksum.identity(checksum.encoded(composition))["sha256"].encode(), rendered)
+        self.assertNotIn(checksum.CORE_BEFORE["sha256"].encode(), rendered)
+        for row in composition["final_source_files"]:
+            self.assertIn(row["sha256"].encode(), rendered, row["path"])
+
     def test_combined_source_validation_rejects_removed_forged_or_mixed_selection(self):
         inputs, _, _, _ = self.metadata_inputs(source_contract=ROOT / generator.TARGET_FILES_SOURCE_CONTRACT)
         output = self.root / "artifacts/combined-provenance"

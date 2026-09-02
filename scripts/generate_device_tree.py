@@ -85,6 +85,8 @@ TARGET_FILES_METADATA_CONTRACT = "patches/evolution/target-files-metadata.json"
 TARGET_FILES_METADATA_INCLUDE = DEVICE_PATH / "generated/target-files-metadata.mk"
 TARGET_FILES_SOURCE_CONTRACT = "patches/evolution/target-files-source-composition.json"
 TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
+TARGET_FILES_CHECKSUM_SOURCE_CONTRACT = "patches/evolution/target-files-metadata-checksum.json"
+TARGET_FILES_CHECKSUM_SOURCE_CONTRACT_ID = "nezha-target-files-metadata-checksum-v1"
 POLICY_IMAGE_DELIVERY_CONTRACT = "config/nezha-policy-image-delivery.json"
 POLICY_IMAGE_DELIVERY_CONTRACT_ID = "nezha-v13i-final-leaf-metadata-delivery-v2"
 POLICY_IMAGE_DELIVERY_4K_CONTRACT = "config/nezha-policy-image-delivery-v2.json"
@@ -2210,10 +2212,20 @@ def _bind_mi_ext_inputs(plan, records, path, payloads, fstab, *, composed_source
 
 
 def _metadata_module(*, source_contract=None, image_contract=None):
+    source = None if source_contract is None else _target_files_source_reference(source_contract)
+    checksum = source is not None and source["contract_id"] == TARGET_FILES_CHECKSUM_SOURCE_CONTRACT_ID
     if image_contract is not None:
         _require(source_contract is not None,
                  "policy-image delivery requires the explicit combined source composition")
         reference = _policy_image_delivery_reference(image_contract)
+        if checksum:
+            _require(reference["contract_id"] == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID,
+                     "checksum source selection requires the reviewed policy3 image delivery")
+            if __package__:
+                from . import target_files_metadata_checksum
+            else:
+                import target_files_metadata_checksum
+            return target_files_metadata_checksum
         if reference["contract_id"] == POLICY_IMAGE_DELIVERY_POLICY3_CONTRACT_ID:
             if __package__:
                 from . import target_files_metadata_delivery_policy3
@@ -2231,6 +2243,7 @@ def _metadata_module(*, source_contract=None, image_contract=None):
         else:
             import target_files_metadata_delivery
         return target_files_metadata_delivery
+    _require(not checksum, "checksum source selection requires explicit policy3 image delivery")
     if source_contract is not None:
         if __package__:
             from . import target_files_metadata_combined
@@ -2244,6 +2257,14 @@ def _metadata_module(*, source_contract=None, image_contract=None):
     return target_files_metadata
 
 
+def _target_files_source_spec(contract_id):
+    if contract_id == TARGET_FILES_SOURCE_CONTRACT_ID:
+        return TARGET_FILES_SOURCE_CONTRACT, 7, 8
+    if contract_id == TARGET_FILES_CHECKSUM_SOURCE_CONTRACT_ID:
+        return TARGET_FILES_CHECKSUM_SOURCE_CONTRACT, 8, 9
+    raise CandidateError("unknown explicit target-files source contract")
+
+
 def _target_files_source_reference(selected_contract):
     """Check a new source selector independently of every supplied private receipt."""
     if __package__:
@@ -2251,19 +2272,26 @@ def _target_files_source_reference(selected_contract):
     else:
         import mi_ext_inputs
     reader = mi_ext_inputs.Reader()
-    canonical = ROOT / TARGET_FILES_SOURCE_CONTRACT
     try:
-        raw = reader.read(canonical, maximum=MAX_JSON_BYTES)
         selected = reader.read(_no_symlinks(selected_contract), maximum=MAX_JSON_BYTES)
-        contract = json.loads(raw, object_pairs_hook=_unique_object)
-        _require(type(contract) is dict and type(contract.get("schema_version")) is int and
-                 contract["schema_version"] == 1 and selected == raw and
-                 contract.get("contract_id") == TARGET_FILES_SOURCE_CONTRACT_ID,
+        contract = json.loads(selected, object_pairs_hook=_unique_object)
+        _require(type(contract) is dict, "invalid target-files source descriptor")
+        record, _, _ = _target_files_source_spec(contract.get("contract_id"))
+        raw = reader.read(ROOT / record, maximum=MAX_JSON_BYTES)
+        _require(type(contract.get("schema_version")) is int and
+                 contract["schema_version"] == 1 and selected == raw,
                  "target-files source selection differs from the current reviewed contract")
+        if contract["contract_id"] == TARGET_FILES_CHECKSUM_SOURCE_CONTRACT_ID:
+            if __package__:
+                from . import target_files_metadata_checksum as checksum
+            else:
+                import target_files_metadata_checksum as checksum
+            _require(checksum.identity(raw) == checksum.SOURCE_CONTRACT_IDENTITY,
+                     "checksum source descriptor differs from the reviewed identity")
         reader.recheck()
-    except mi_ext_inputs.MiExtInputsError as exc:
+    except (mi_ext_inputs.MiExtInputsError, json.JSONDecodeError, UnicodeDecodeError) as exc:
         raise CandidateError(f"target-files source contract input refused: {exc}") from exc
-    return {"contract_id": TARGET_FILES_SOURCE_CONTRACT_ID, "path": TARGET_FILES_SOURCE_CONTRACT,
+    return {"contract_id": contract["contract_id"], "path": record,
             **mi_ext_inputs.identity(raw)}
 
 
@@ -2271,11 +2299,12 @@ def _metadata_source_selection(binding):
     _require(type(binding) is dict, "invalid target-files metadata capability")
     if "source_contract" not in binding:
         return None
-    expected = _target_files_source_reference(ROOT / TARGET_FILES_SOURCE_CONTRACT)
-    _require(type(binding["source_contract"]) is dict and
-             json.dumps(binding["source_contract"], sort_keys=True) == json.dumps(expected, sort_keys=True),
+    _require(type(binding["source_contract"]) is dict, "invalid target-files metadata source selector")
+    record, _, _ = _target_files_source_spec(binding["source_contract"].get("contract_id"))
+    expected = _target_files_source_reference(ROOT / record)
+    _require(json.dumps(binding["source_contract"], sort_keys=True) == json.dumps(expected, sort_keys=True),
              "target-files metadata source selector differs from current public controls")
-    return ROOT / TARGET_FILES_SOURCE_CONTRACT
+    return ROOT / record
 
 
 def _policy_image_delivery_spec(contract_id):
@@ -2401,11 +2430,12 @@ def _metadata_public_binding(*, source_contract=None, image_contract=None):
             _require(_target_files_source_reference(source_contract) == selection["source_contract"],
                      "target-files source contract changed during public control verification")
             reference = {key: selection["source_contract"][key] for key in ("path", "sha256", "size_bytes")}
-            _require(len(composition["ordered_patches"]) == 7 and len(composition["contracts"]) == 8 and
+            _, patch_count, contract_count = _target_files_source_spec(selection["source_contract"]["contract_id"])
+            _require(len(composition["ordered_patches"]) == patch_count and len(composition["contracts"]) == contract_count and
                      composition["contracts"][-1] == reference and len(composition["final_source_files"]) == 10 and
                      composition["patches_applied_by_this_tool"] is False and
                      composition["whole_source_tree_verified"] is False,
-                     "combined target-files metadata requires the exact seven-patch ten-file source composition")
+                     "target-files metadata requires its exact selected patch and ten-file source composition")
         return {
             **selection,
             "bundle": TARGET_FILES_METADATA_PATH,
@@ -3658,8 +3688,8 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
     if mi_ext_inputs_receipt is not None:
         options = {"composed_source_contract": ROOT / TARGET_FILES_METADATA_CONTRACT} if metadata_selected else {}
         if target_files_source_contract is not None:
-            _target_files_source_reference(target_files_source_contract)
-            options = {"composed_source_contract": ROOT / TARGET_FILES_SOURCE_CONTRACT}
+            reference = _target_files_source_reference(target_files_source_contract)
+            options = {"composed_source_contract": ROOT / reference["path"]}
         if direct_avb_readonly_contract is not None:
             # Validate the explicit selection before asking the bundle verifier
             # to use the new branch. A receipt never chooses the source path.
@@ -3781,11 +3811,12 @@ def generate(output, *, record_paths, kernel_receipt, vendor_receipt, fstab_sour
             _require(current == plan["target_files_metadata"],
                      "target-files metadata bundle changed before candidate publication")
             if target_files_source_contract is not None:
-                _require(_target_files_source_reference(target_files_source_contract) == current["source_contract"],
+                reference = _target_files_source_reference(target_files_source_contract)
+                _require(reference == current["source_contract"],
                          "combined target-files source contract changed before candidate publication")
                 mi_current = _verify_mi_ext_inputs(mi_ext_inputs_receipt,
                     expected_package_sha256=plan["source_packages"]["vendor"],
-                    composed_source_contract=ROOT / TARGET_FILES_SOURCE_CONTRACT)
+                    composed_source_contract=ROOT / reference["path"])
                 _require(json.dumps(mi_current, sort_keys=True) == json.dumps(plan["mi_ext_inputs"], sort_keys=True),
                          "combined target-files mi_ext inputs changed before candidate publication")
                 _readonly_mi_ext_inventory(mi_ext_inputs_receipt)

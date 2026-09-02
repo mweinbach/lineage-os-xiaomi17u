@@ -837,6 +837,48 @@ class RecoveryInputsTests(unittest.TestCase):
 
 
 class PublicRecoveryHookTests(unittest.TestCase):
+    def test_checksum_recovery_guard_keeps_payload_and_all_ten_source_checks(self):
+        from scripts import target_files_metadata_checksum as checksum
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        predecessor, predecessor_identity = composition.compose(root, root / composition.TARGET_FILES_PATH)
+        source, identity = composition.compose(root, root / composition.CHECKSUM_PATH)
+        rendered = composition.render_target_files_recovery_include(
+            template, root=root, selected_contract=root / composition.CHECKSUM_PATH)
+        chain = source["composition"]
+        self.assertEqual(chain, checksum.compose_sources(root, source_contract=checksum.SOURCE_CONTRACT))
+        self.assertEqual((len(chain["contracts"]), len(chain["ordered_patches"]),
+                          len(chain["final_source_files"])), (9, 8, 10))
+        self.assertIn(identity["sha256"].encode(), rendered)
+        self.assertNotIn(predecessor_identity["sha256"].encode(), rendered)
+        self.assertEqual([row for row in chain["final_source_files"] if row["path"] != composition.CORE_PATH],
+                         [row for row in predecessor["composition"]["final_source_files"]
+                          if row["path"] != composition.CORE_PATH])
+        for row in chain["final_source_files"]:
+            self.assertIn(f"test -f {row['path']} && test ! -L {row['path']}".encode(), rendered)
+            self.assertIn(f"wc -c < {row['path']} 2>/dev/null)),{row['size_bytes']})".encode(), rendered)
+            self.assertIn(f"sha256sum < {row['path']} 2>/dev/null | cut -d ' ' -f 1),{row['sha256']})".encode(),
+                          rendered)
+        boundary = b"ifneq ($(shell test -f vendor/xiaomi/nezha-recovery/recovery.img"
+        self.assertEqual(rendered.split(boundary, 1)[1], template.split(boundary, 1)[1])
+        self.assertEqual((root / composition.RECOVERY_TEMPLATE).read_bytes(), template)
+
+    def test_checksum_recovery_requires_its_explicit_exact_selector(self):
+        root = Path(__file__).resolve().parents[1]
+        template = (root / composition.RECOVERY_TEMPLATE).read_bytes()
+        with tempfile.TemporaryDirectory() as temp:
+            selected = Path(temp).resolve() / "checksum.json"
+            original = (root / composition.CHECKSUM_PATH).read_bytes()
+            selected.write_bytes(original)
+            self.assertEqual(composition.compose(root, selected),
+                             composition.compose(root, root / composition.CHECKSUM_PATH))
+            selected.write_bytes(original + b"\n")
+            with self.assertRaisesRegex(ValueError, "explicit target-files composition differs"):
+                composition.compose(root, selected)
+        for render in (composition.render_metadata_recovery_include, composition.render_readonly_recovery_include):
+            with self.subTest(renderer=render.__name__), self.assertRaisesRegex(ValueError, "requires explicit"):
+                render(template, root=root, selected_contract=root / composition.CHECKSUM_PATH)
+
     def test_combined_recovery_guard_keeps_payload_mode_and_all_ten_source_checks(self):
         root = Path(__file__).resolve().parents[1]
         template = (root / composition.RECOVERY_TEMPLATE).read_bytes()

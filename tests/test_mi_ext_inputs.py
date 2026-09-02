@@ -223,7 +223,7 @@ class MiExtInputsTests(unittest.TestCase):
                                      expected_package_sha256=mi.EXPECTED_PACKAGE,
                                      composed_source_contract=self.readonly_selected)
 
-    def target_files_controls(self):
+    def target_files_controls(self, *, checksum=False):
         """Validate real public controls, then mock only native fixture identities.
 
         The combined composer still checks the actual contract/patch graph on
@@ -231,13 +231,20 @@ class MiExtInputsTests(unittest.TestCase):
         only to exercise mi_ext's source reader using inert files. These fixture
         files are not patch outputs or evidence of a native Android build.
         """
-        from scripts import target_files_source_composition as combined
+        if checksum:
+            from scripts import target_files_metadata_checksum as combined
+        else:
+            from scripts import target_files_source_composition as combined
         real_compose = combined.compose_sources
-        public = real_compose(WORKSPACE)
+        selector = mi.CHECKSUM_SOURCE_CONTRACT_PATH if checksum else mi.TARGET_FILES_SOURCE_CONTRACT_PATH
+        options = {"source_contract": selector} if checksum else {}
+        public = real_compose(WORKSPACE, **options)
         self.target_files_module = combined
-        self.target_files_selected = self.controls / mi.TARGET_FILES_SOURCE_CONTRACT_PATH
+        self.target_files_selected = self.controls / selector
         paths = {row["path"] for row in [*public["contracts"], *public["ordered_patches"]]}
         paths.update(mi.TARGET_FILES_COMPOSER_CONTROLS)
+        if checksum:
+            paths.update(mi.CHECKSUM_COMPOSER_CONTROLS)
         paths.add(mi.TARGET_FILES_METADATA_PROFILE_PATH)
         for relative in paths:
             self.write(self.controls / relative, (WORKSPACE / relative).read_bytes())
@@ -246,11 +253,11 @@ class MiExtInputsTests(unittest.TestCase):
             raw = ("Inert combined native source fixture " + row["path"] + "\n").encode()
             self.write(self.source / row["path"], raw)
             native.append({"path": row["path"], **mi.identity(raw)})
-        def fixture_compose(root=WORKSPACE):
-            composition = real_compose(root)
+        def fixture_compose(root=WORKSPACE, **selection):
+            composition = real_compose(root, **selection)
             composition["final_source_files"] = copy.deepcopy(native)
             return composition
-        self.target_files_composition = fixture_compose(self.controls)
+        self.target_files_composition = fixture_compose(self.controls, **options)
         self.enterContext(mock.patch.object(combined, "compose_sources", side_effect=fixture_compose))
 
     def target_files_binding(self):
@@ -1143,6 +1150,141 @@ class MiExtInputsTests(unittest.TestCase):
                 self.stage(composed_source_contract=self.target_files_selected)
         self.assertIs(raised.exception.__cause__, cause)
         self.assertFalse(self.bundle.exists())
+
+    def test_checksum_successor_binds_full_controls_and_preserves_the_image(self):
+        self.target_files_controls(checksum=True)
+        before = {path: path.read_bytes() for path in (self.image, self.logical)}
+        self.stage(composed_source_contract=self.target_files_selected)
+        binding = self.target_files_binding()
+        native = binding["native_source"]
+        self.assertEqual(native["composition"], self.target_files_composition)
+        self.assertEqual(native["composition_identity"], mi.identity(mi.encoded(self.target_files_composition)))
+        self.assertEqual((len(native["composition"]["contracts"]),
+                          len(native["composition"]["ordered_patches"]), len(native["files"])), (9, 8, 10))
+        receipt = json.loads((self.bundle / mi.RECEIPT_NAME).read_bytes())
+        self.assertEqual({row["path"] for row in receipt["controls"]},
+                         {mi.CONTRACT_PATH, mi.FACTORY_RECORD_PATH, "scripts/mi_ext_inputs.py",
+                          "scripts/artifact_files.py", mi.TARGET_FILES_METADATA_PROFILE_PATH,
+                          *mi.CHECKSUM_COMPOSER_CONTROLS,
+                          *(row["path"] for row in native["composition"]["contracts"]),
+                          *(row["path"] for row in native["composition"]["ordered_patches"])})
+        self.assertEqual((self.bundle / mi.IMAGE_MEMBER).read_bytes(), before[self.image])
+        self.assertEqual((self.bundle / mi.LOGICAL_RECEIPT_MEMBER).read_bytes(), before[self.logical])
+        self.assertEqual(before, {path: path.read_bytes() for path in before})
+        self.assertEqual(receipt["scope"], mi.SCOPE)
+
+    def test_checksum_successor_checks_each_native_file_and_keeps_avb_guards(self):
+        self.target_files_controls(checksum=True)
+        self.stage(composed_source_contract=self.target_files_selected)
+        verified = self.verify(source_tree=self.source, composed_source_contract=self.target_files_selected)
+        self.assertTrue(verified["actual_native_source_bytes_checked"])
+        self.assertFalse(verified["native_avb_run"])
+        rendered = mi.render_board_include(self.target_files_binding(),
+                                            composed_source_contract=self.target_files_selected)
+        for row in self.target_files_composition["final_source_files"]:
+            with self.subTest(path=row["path"]):
+                self.assertIn(f"sha256sum < {row['path']} 2>/dev/null | cut -d ' ' -f 1),{row['sha256']}",
+                              rendered)
+                path = self.source / row["path"]
+                original = path.read_bytes()
+                path.write_bytes(original + b"changed\n")
+                self.refused(lambda: self.verify(source_tree=self.source,
+                                                 composed_source_contract=self.target_files_selected))
+                path.write_bytes(original)
+        self.assertIn("BOARD_AVB_CUSTOMIMAGES_DIRECT_PARTITION_LIST := mi_ext", rendered)
+        self.assertIn("Nezha mi_ext forbids child signing, alternate-image, or ZIP-exclusion", rendered)
+        self.assertNotIn("BOARD_MI_EXT_IMAGE_NO_FLASHALL :=", rendered)
+
+    def test_checksum_receipts_do_not_select_or_upgrade_any_historical_mode(self):
+        self.target_files_controls(checksum=True)
+        for path in mi.READONLY_COMPOSER_CONTROLS:
+            self.write(self.controls / path, (WORKSPACE / path).read_bytes())
+        self.stage(composed_source_contract=self.target_files_selected)
+        current = self.target_files_binding()
+        for selector in (None, self.controls / mi.SOURCE_CONTRACT_PATH,
+                         self.controls / mi.METADATA_SOURCE_CONTRACT_PATH,
+                         self.controls / mi.READONLY_SOURCE_CONTRACT_PATH,
+                         self.controls / mi.TARGET_FILES_SOURCE_CONTRACT_PATH):
+            with self.subTest(selector=selector):
+                historical = self.output_parent / ("old-" + (selector.stem if selector else "default"))
+                self.stage(historical, composed_source_contract=selector)
+                old_binding = mi.validate_admission(historical / mi.RECEIPT_NAME,
+                    expected_package_sha256=mi.EXPECTED_PACKAGE, composed_source_contract=selector)
+                self.refused(lambda: self.verify(composed_source_contract=selector))
+                self.refused(lambda: mi.render_board_include(current, composed_source_contract=selector))
+                self.refused(lambda: mi.verify_bundle(historical,
+                                                      composed_source_contract=self.target_files_selected))
+                self.refused(lambda: mi.render_board_include(old_binding,
+                                                             composed_source_contract=self.target_files_selected))
+
+    def test_checksum_selection_requires_exact_descriptor_and_bound_predecessor_profile(self):
+        self.target_files_controls(checksum=True)
+        selected = self.inputs / "checksum.json"
+        original = self.target_files_selected.read_bytes()
+        selected.write_bytes(original)
+        self.stage(composed_source_contract=selected)
+        self.assertEqual(self.verify(composed_source_contract=selected)["status"], "verified")
+        altered = json.loads(original)
+        altered["source_file"]["after"]["sha256"] = "0" * 64
+        for raw in (b"{}", original + b" ", mi.encoded(altered)):
+            selected.write_bytes(raw)
+            self.refused(lambda: self.verify(composed_source_contract=selected))
+        for relative in (mi.TARGET_FILES_SOURCE_CONTRACT_PATH, mi.TARGET_FILES_METADATA_PROFILE_PATH):
+            path = self.controls / relative
+            prior = path.read_bytes()
+            path.write_bytes(prior + b" ")
+            with self.subTest(path=relative):
+                self.refused(lambda: self.verify(composed_source_contract=self.target_files_selected))
+            path.write_bytes(prior)
+
+    def test_checksum_composer_closure_and_selector_reference_are_not_optional(self):
+        self.target_files_controls(checksum=True)
+        module = self.target_files_module
+        with mock.patch.object(module, "CONTROL_TOOLS", (*mi.CHECKSUM_COMPOSER_CONTROLS, "scripts/extra.py")):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "composer dependencies differ"):
+                self.stage(composed_source_contract=self.target_files_selected)
+        compose = module.compose_sources
+        def missing_selector(root, **options):
+            result = compose(root, **options)
+            result["contracts"] = result["contracts"][:-1]
+            return result
+        with mock.patch.object(module, "compose_sources", side_effect=missing_selector):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "omits its explicit selector"):
+                self.stage(composed_source_contract=self.target_files_selected)
+        cause = module.TargetFilesMetadataError("inert invalid checksum source")
+        with mock.patch.object(module, "compose_sources", side_effect=cause):
+            with self.assertRaisesRegex(mi.MiExtInputsError, "checksum source composition refused") as raised:
+                self.stage(composed_source_contract=self.target_files_selected)
+        self.assertIs(raised.exception.__cause__, cause)
+        self.assertFalse(self.bundle.exists())
+
+    def test_checksum_runtime_dependencies_are_bound_before_composition(self):
+        self.target_files_controls(checksum=True)
+        compose = self.target_files_module.compose_sources
+        for relative in mi.CHECKSUM_COMPOSER_CONTROLS:
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                original = path.read_bytes()
+                def change(root, **options):
+                    result = compose(root, **options)
+                    path.write_bytes(original + b"\n# changed during composition\n")
+                    return result
+                with mock.patch.object(self.target_files_module, "compose_sources", side_effect=change):
+                    self.refused(lambda: self.stage(composed_source_contract=self.target_files_selected))
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(original)
+
+    def test_checksum_runtime_dependencies_must_match_loaded_frozen_bytes(self):
+        self.target_files_controls(checksum=True)
+        for relative in mi.CHECKSUM_COMPOSER_CONTROLS:
+            with self.subTest(path=relative):
+                path = self.controls / relative
+                original = path.read_bytes()
+                path.write_bytes(original + b"\n# changed before selection\n")
+                with self.assertRaisesRegex(mi.MiExtInputsError, "checksum source composition refused"):
+                    self.stage(composed_source_contract=self.target_files_selected)
+                self.assertEqual(list(self.output_parent.iterdir()), [])
+                path.write_bytes(original)
 
     def test_public_composed_source_selection_preserves_historical_identities(self):
         from scripts import target_files_source_composition as combined

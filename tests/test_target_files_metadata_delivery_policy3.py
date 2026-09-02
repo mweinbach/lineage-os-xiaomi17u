@@ -284,5 +284,278 @@ class ActualPackagedGateTests(unittest.TestCase):
                 m._installation_report({}, "0" * 64, reader)
 
 
+class ChecksumSuccessorTests(unittest.TestCase):
+    """Public controls and inert fixtures only; no native execution or evidence."""
+
+    def setUp(self):
+        self.enterContext(mock.patch("subprocess.Popen", side_effect=AssertionError("native process forbidden")))
+        self.enterContext(mock.patch("os.system", side_effect=AssertionError("shell execution forbidden")))
+        self.enterContext(mock.patch("socket.socket", side_effect=AssertionError("network forbidden")))
+        from scripts import target_files_metadata_checksum
+        self.c = target_files_metadata_checksum
+        self.base = copy.deepcopy(TEMPLATE["source_composition"])
+        self.current = self.c._derive_composition(self.base)
+
+    def controls(self):
+        reader = self.c.Reader()
+        result = self.c._controls(CONTROL_ROOT, reader,
+            source_contract=self.c.SOURCE_CONTRACT, image_contract=self.c.IMAGE_CONTRACT)
+        reader.recheck()
+        return result
+
+    def temporary_root(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        return Path(temporary.name).resolve()
+
+    def selector_bundle(self, composition, *, descriptor=None, mutate=None):
+        bundle = self.temporary_root()
+        reference = composition["contracts"][-1]
+        raw = (CONTROL_ROOT / reference["path"]).read_bytes() if descriptor is None else descriptor
+        receipt = {"source_composition": copy.deepcopy(composition), "bundle_files": [
+            {"path": "controls/" + reference["path"], **self.c.identity(raw)}]}
+        if mutate is not None:
+            mutate(receipt)
+        write(bundle / "controls" / reference["path"], raw)
+        write(bundle / self.c.RECEIPT, self.c.encoded(receipt))
+        return bundle, self.c.identity(self.c.encoded(receipt))["sha256"]
+
+    def original_fixture(self):
+        admission = synthetic_admission()
+        files = {}
+        for index, member in enumerate(admission["metadata_members"]):
+            # Keep the public 205-path/byte-count shape, never use private payloads.
+            raw = bytes([97 + index % 26]) * member["payload"]["size_bytes"]
+            member["payload"] = self.c.identity(raw)
+            row = {key: member[key] for key in ("target_path", "partition", "path", "kind")}
+            row.update(self.c.identity(raw))
+            files[member["target_path"]] = (row, raw)
+        original = {"schema_version": 1, "operation": "stage-factory-target-files-metadata",
+            "profile": {"fixture": "synthetic original receipt only"},
+            "images": copy.deepcopy(admission["original_images"]), "source_composition": self.base,
+            "files": [files[path][0] for path in sorted(files)],
+            "property_closure": {"fixture": "synthetic property closure"}, "scope": {"metadata_only": True}}
+        raw = self.c.encoded(original)
+        receipt = copy.deepcopy(original)
+        receipt["source_composition"] = copy.deepcopy(self.current)
+        original_check = self.c._old._impl["_check_original"]
+        self.enterContext(mock.patch.dict(original_check.__globals__, ORIGINAL_ID=self.c.identity(raw)))
+        self.enterContext(mock.patch.object(self.c._old, "IMAGE_CONTRACT_IDENTITY",
+            self.c.identity(self.c.encoded(admission))))
+        return raw, receipt, files, admission
+
+    def test_public_composition_adds_only_the_pinned_checksum_transition(self):
+        result = self.c.compose_sources(CONTROL_ROOT, source_contract=self.c.SOURCE_CONTRACT)
+        wanted = copy.deepcopy(self.base)
+        descriptor = json.loads((CONTROL_ROOT / self.c.SOURCE_CONTRACT).read_bytes())
+        wanted["contracts"].append({"path": self.c.SOURCE_CONTRACT, **self.c.SOURCE_CONTRACT_IDENTITY})
+        wanted["ordered_patches"].append(descriptor["patch"])
+        wanted["source_transitions"].append({"patch": descriptor["patch"], **descriptor["source_file"]})
+        for row in wanted["final_source_files"]:
+            if row["path"] == self.c.CORE:
+                row.update(descriptor["source_file"]["after"])
+        self.assertEqual(result, wanted)
+        self.assertEqual(self.base, TEMPLATE["source_composition"])
+        self.assertEqual(self.c._old.compose_sources(CONTROL_ROOT,
+            source_contract=self.c.BASE_SOURCE_CONTRACT), self.base)
+
+    def test_public_composition_rejects_missing_old_and_unknown_selectors(self):
+        for selector in (None, self.c.BASE_SOURCE_CONTRACT, "patches/evolution/unknown-checksum.json"):
+            with self.subTest(selector=selector), self.assertRaises((OSError, self.c.TargetFilesMetadataError)):
+                self.c.compose_sources(CONTROL_ROOT, source_contract=selector)
+
+    def test_derive_composition_rejects_changed_base_core_and_unrelated_sources(self):
+        mutations = (
+            lambda d: next(row for row in d["final_source_files"] if row["path"] == self.c.CORE).update(sha256="0" * 64),
+            lambda d: next(row for row in d["final_source_files"] if row["path"] != self.c.CORE).update(size_bytes=1),
+            lambda d: d["ordered_patches"].reverse(),
+            lambda d: d["contracts"].pop(),
+            lambda d: d.update(whole_source_tree_verified=True),
+        )
+        for mutate in mutations:
+            changed = copy.deepcopy(self.base)
+            mutate(changed)
+            with self.subTest(mutate=mutate), self.assertRaisesRegex(self.c.TargetFilesMetadataError, "predecessor composition"):
+                self.c._derive_composition(changed)
+
+    def test_controls_preserve_original_bytes_and_add_exactly_three_members(self):
+        reader = m.Reader()
+        old_profile, old_composition, old_controls = m._controls(CONTROL_ROOT, reader,
+            source_contract=self.c.BASE_SOURCE_CONTRACT, image_contract=m.IMAGE_CONTRACT)
+        reader.recheck()
+        profile, composition, controls = self.controls()
+        self.assertEqual(profile, old_profile)
+        self.assertEqual(old_composition, self.base)
+        self.assertEqual(composition, self.current)
+        self.assertEqual(set(controls) - set(old_controls),
+            {self.c.ADAPTER, self.c.SOURCE_CONTRACT, self.c.PATCH["path"]})
+        self.assertEqual({name: controls[name] for name in old_controls}, old_controls)
+        for path, pin in ((self.c.SOURCE_CONTRACT, self.c.SOURCE_CONTRACT_IDENTITY),
+                          (self.c.PATCH["path"], self.c.PATCH), (self.c.ADAPTER, self.c._self_identity)):
+            self.assertEqual(self.c.identity(controls[path]), self.c.expected(pin))
+
+    def test_each_added_control_is_hash_bound(self):
+        controls = self.controls()[2]
+        root = self.temporary_root()
+        for name, raw in controls.items():
+            write(root / name, raw)
+        for name in (self.c.ADAPTER, self.c.SOURCE_CONTRACT, self.c.PATCH["path"]):
+            write(root / name, controls[name] + b"\n")
+            with self.subTest(name=name), self.assertRaises(self.c.TargetFilesMetadataError):
+                self.c._controls(root, self.c.Reader(), source_contract=self.c.SOURCE_CONTRACT,
+                    image_contract=self.c.IMAGE_CONTRACT)
+            write(root / name, controls[name])
+
+    def test_successor_runtime_freezes_all_six_original_sources(self):
+        controls = self.controls()[2]
+        self.assertEqual(self.c.identity(m.runtime_tool_payloads(controls)["tools/target_files_metadata.py"]),
+            self.c.PREDECESSOR_RUNTIME_ID)
+        self.assertEqual(tuple(self.c.CONTROL_TOOLS[:-1]), m.CONTROL_TOOLS)
+        for name in m.CONTROL_TOOLS:
+            self.assertEqual(controls[name], (CONTROL_ROOT / name).read_bytes())
+            changed = dict(controls)
+            changed[name] += b"\n# changed historical code\n"
+            with self.subTest(name=name), self.assertRaises((ValueError, self.c.TargetFilesMetadataError)):
+                self.c.runtime_tool_payloads(changed)
+
+    def test_runtime_refuses_modified_extension_and_missing_sources(self):
+        controls = self.controls()[2]
+        changed = dict(controls)
+        changed[self.c.ADAPTER] += b"\n"
+        with self.assertRaisesRegex(self.c.TargetFilesMetadataError, "adapter differs"):
+            self.c.runtime_tool_payloads(changed)
+        for name in self.c.CONTROL_TOOLS:
+            changed = dict(controls)
+            del changed[name]
+            with self.subTest(name=name), self.assertRaisesRegex(self.c.TargetFilesMetadataError, "source missing"):
+                self.c.runtime_tool_payloads(changed)
+
+    def test_standalone_runtime_is_deterministic_without_code_file_reads(self):
+        controls = self.controls()[2]
+        payloads = self.c.runtime_tool_payloads(controls)
+        self.assertEqual(payloads, self.c.runtime_tool_payloads(controls))
+        self.assertEqual(list(payloads), ["tools/target_files_metadata.py"])
+        namespace = {"__name__": "isolated_checksum_test", "__file__": str(self.temporary_root() / "tools/checker.py")}
+        with mock.patch("os.open", side_effect=AssertionError("external code read forbidden")):
+            exec(compile(payloads["tools/target_files_metadata.py"], namespace["__file__"], "exec"), namespace)
+        self.assertTrue(namespace["NATIVE"])
+        self.assertEqual(namespace["compose_sources"](CONTROL_ROOT, source_contract=self.c.SOURCE_CONTRACT), self.current)
+        self.assertEqual(namespace["runtime_tool_payloads"](controls), payloads)
+
+    def test_actual_install_namespace_selects_the_new_receipt_contract(self):
+        selector = self.c._install_namespace["_selected_receipt_source_contract"]
+        self.assertIs(selector, self.c._selected_receipt_source_contract)
+        self.assertIs(selector.__code__, self.c._selector_original.__code__)
+        before = self.c._selector_original.__globals__
+        self.assertEqual({key for key in before if before[key] is not self.c._selector_globals[key]},
+            {"COMBINED_CONTRACTS", "COMBINED_SOURCE_CONTRACT", "COMBINED_SOURCE_ID"})
+        bundle, digest = self.selector_bundle(self.current)
+        self.assertEqual(selector(bundle, digest), self.c.SOURCE_CONTRACT)
+        target = self.temporary_root()
+        (target / "META").mkdir()
+        stop = mock.Mock(side_effect=RuntimeError("stop after authenticated source selection"))
+        with mock.patch.dict(self.c._install_namespace, verify_bundle=stop):
+            with self.assertRaisesRegex(RuntimeError, "authenticated source selection"):
+                self.c.install(bundle, target, expected_receipt=digest, source_tree=target / "unused-source")
+        self.assertEqual(stop.call_args.kwargs["source_contract"], self.c.SOURCE_CONTRACT)
+
+    def test_install_selector_rejects_old_contract_hash_inventory_and_id(self):
+        selector = self.c._install_namespace["_selected_receipt_source_contract"]
+        bundle, digest = self.selector_bundle(self.base)
+        with self.assertRaises(self.c.TargetFilesMetadataError):
+            selector(bundle, digest)
+        for mutate in (
+            lambda d: d["source_composition"]["contracts"][-1].update(sha256="0" * 64),
+            lambda d: d["bundle_files"].clear(),
+            lambda d: d["bundle_files"].append(copy.deepcopy(d["bundle_files"][0])),
+        ):
+            bundle, digest = self.selector_bundle(self.current, mutate=mutate)
+            with self.subTest(mutate=mutate), self.assertRaises(self.c.TargetFilesMetadataError):
+                selector(bundle, digest)
+        descriptor = json.loads((CONTROL_ROOT / self.c.SOURCE_CONTRACT).read_bytes())
+        descriptor["contract_id"] = "unrecognized-checksum-contract"
+        raw = self.c.encoded(descriptor)
+        composition = copy.deepcopy(self.current)
+        composition["contracts"][-1].update(self.c.identity(raw))
+        bundle, digest = self.selector_bundle(composition, descriptor=raw)
+        with self.assertRaisesRegex(self.c.TargetFilesMetadataError, "copied source contract"):
+            selector(bundle, digest)
+
+    def test_original_check_uses_only_a_historical_source_comparison_view(self):
+        raw, receipt, files, admission = self.original_fixture()
+        snapshot = copy.deepcopy(receipt)
+        checked = mock.Mock(wraps=self.c._old._impl["_check_original"])
+        with mock.patch.dict(self.c._old._impl, _check_original=checked):
+            self.c._check_original(raw, receipt, files, admission)
+        checked.assert_called_once()
+        self.assertEqual(checked.call_args.args[1], dict(receipt, source_composition=self.base))
+        self.assertIs(checked.call_args.args[2], files)
+        self.assertIs(checked.call_args.args[3], admission)
+        self.assertEqual(receipt, snapshot)
+
+    def test_original_check_preserves_every_other_semantic_field(self):
+        raw, receipt, files, admission = self.original_fixture()
+        for key in ("profile", "images", "files", "property_closure", "scope"):
+            changed = copy.deepcopy(receipt)
+            changed[key] = {"fixture": "tampered " + key}
+            with self.subTest(key=key), self.assertRaisesRegex(self.c.TargetFilesMetadataError, "semantics differ: " + key):
+                self.c._check_original(raw, changed, files, admission)
+
+    def test_original_check_refuses_current_source_receipt_and_payload_tampering(self):
+        raw, receipt, files, admission = self.original_fixture()
+        for role in ("core", "unrelated"):
+            changed = copy.deepcopy(receipt)
+            row = next(row for row in changed["source_composition"]["final_source_files"]
+                if (row["path"] == self.c.CORE) == (role == "core"))
+            row["sha256"] = "0" * 64
+            with self.subTest(role=role), self.assertRaisesRegex(self.c.TargetFilesMetadataError, "exact checksum successor"):
+                self.c._check_original(raw, changed, files, admission)
+        with self.assertRaisesRegex(self.c.TargetFilesMetadataError, "original metadata receipt"):
+            self.c._check_original(raw + b"\n", receipt, files, admission)
+        changed_files = dict(files)
+        name = next(iter(changed_files))
+        row, body = changed_files[name]
+        changed_files[name] = (row, b"!" + body[1:])
+        with self.assertRaisesRegex(self.c.TargetFilesMetadataError, "original metadata bytes"):
+            self.c._check_original(raw, receipt, changed_files, admission)
+
+    def test_inherited_packaged_policy_gate_remains_identical_and_fail_closed(self):
+        fixture = ActualPackagedGateTests()
+        fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        expected_result = fixture.gate()
+        with mock.patch.object(self.c._old, "CURRENT_REPORT_ID", fixture.current_pin):
+            reader = self.c.Reader()
+            reader.policy3_product_verified = True
+            gate = self.c._impl["_current_policy_gate"]
+            self.assertEqual(gate(fixture.admission, fixture.target, reader, fixture.current), expected_result)
+            reader.recheck()
+            with self.assertRaisesRegex(self.c.TargetFilesMetadataError, "product source"):
+                gate(fixture.admission, fixture.target, self.c.Reader(), fixture.current)
+            (fixture.target / "SYSTEM/etc/selinux/plat_sepolicy_and_mapping.sha256").write_bytes(b"0" * 64 + b"\n")
+            with self.assertRaises(self.c.TargetFilesMetadataError):
+                gate(fixture.admission, fixture.target, reader, fixture.current)
+
+    def test_frozen_function_changes_are_only_two_counted_stage_selectors(self):
+        import ast
+        old_source, new_source = self.c._old._definitions(), self.c._definitions()
+        def definitions(source):
+            return {node.name: ast.dump(node) for node in ast.parse(source).body if isinstance(node, ast.FunctionDef)}
+        before, after = definitions(old_source), definitions(new_source)
+        self.assertEqual(set(before), set(after))
+        self.assertEqual({name for name in before if before[name] != after[name]}, {"stage_from_original"})
+        wanted = old_source
+        self.assertEqual(len(self.c.STAGE_TRANSFORMS), 2)
+        for old, new in self.c.STAGE_TRANSFORMS:
+            self.assertEqual(wanted.count(old), 1)
+            wanted = wanted.replace(old, new)
+            for changed in (old_source.replace(old, old.replace("source_contract=", "unrecognized_selector=")),
+                            old_source + "\n" + old_source):
+                with self.subTest(boundary=old), mock.patch.object(self.c._old, "_definitions", return_value=changed):
+                    with self.assertRaises(self.c.TargetFilesMetadataError):
+                        self.c._definitions()
+        self.assertEqual(new_source, wanted)
+
+
 if __name__ == "__main__":
     unittest.main()

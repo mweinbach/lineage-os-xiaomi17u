@@ -4,6 +4,7 @@ The original recovery contract remains the 0005-only contract. The optional
 paths bind 0005/0006/0007, its explicit 0010 readonly follow-up, or the separate
 0005/0006/0007/0008/0009 metadata composition. A separate combined selection
 adds the reviewed 0010 initialization and 0011 VINTF shipping-API follow-ups.
+An explicit checksum successor adds only the reviewed 0023 Makefile change.
 Each route binds its complete final source bytes without applying patches or
 admitting a ROM build.
 """
@@ -32,6 +33,8 @@ METADATA_PATH = "patches/evolution/target-files-metadata.json"
 METADATA_ID = "nezha-prebuilt-target-files-metadata-v1"
 TARGET_FILES_PATH = "patches/evolution/target-files-source-composition.json"
 TARGET_FILES_ID = "nezha-target-files-source-composition-v1"
+CHECKSUM_PATH = "patches/evolution/target-files-metadata-checksum.json"
+CHECKSUM_ID = "nezha-target-files-metadata-checksum-v1"
 READONLY_PATH = "patches/evolution/direct-avb-readonly.json"
 READONLY_PATCH = "patches/evolution/0010-initialize-direct-avb-readonly.patch"
 READONLY_ID = "nezha-direct-avb-readonly-v1"
@@ -241,6 +244,9 @@ def compose(root, selected_contract, *, expected_base=None, expected_base_identi
     if record.get("contract_id") == TARGET_FILES_ID:
         return _compose_target_files(root, selected, expected_base=expected_base,
                                      expected_base_identity=expected_base_identity)
+    if record.get("contract_id") == CHECKSUM_ID:
+        return _compose_target_files(root, selected, expected_base=expected_base,
+                                     expected_base_identity=expected_base_identity, checksum=True)
     if record.get("contract_id") != METADATA_ID:
         # This keeps the original validation and serialized result unchanged.
         return _compose_legacy(root, selected_contract, expected_base=expected_base,
@@ -274,24 +280,35 @@ def compose(root, selected_contract, *, expected_base=None, expected_base_identi
     return result, identity
 
 
-def _compose_target_files(root, selected, *, expected_base=None, expected_base_identity=None):
-    """Admit only the separately reviewed seven-patch source composition."""
-    _require(selected == _read(root / TARGET_FILES_PATH, limit=MAX_BYTES),
+def _compose_target_files(root, selected, *, expected_base=None, expected_base_identity=None, checksum=False):
+    """Admit the explicit combined composition or its checksum-only successor."""
+    selected_path = CHECKSUM_PATH if checksum else TARGET_FILES_PATH
+    _require(selected == _read(root / selected_path, limit=MAX_BYTES),
              "explicit target-files composition differs from the current reviewed contract")
     legacy, _ = _compose_legacy(root, root / COMPOSED_PATH,
                                expected_base=expected_base,
                                expected_base_identity=expected_base_identity)
-    if __package__:
-        from . import target_files_source_composition
+    if checksum:
+        if __package__:
+            from . import target_files_metadata_checksum
+        else:
+            import target_files_metadata_checksum
+        try:
+            composition = target_files_metadata_checksum.compose_sources(root, source_contract=selected_path)
+        except target_files_metadata_checksum.TargetFilesMetadataError as exc:
+            raise RecoverySourceError("target-files checksum source composition refused: " + str(exc)) from exc
     else:
-        import target_files_source_composition
-    try:
-        composition = target_files_source_composition.compose_sources(root)
-    except target_files_source_composition.TargetFilesSourceCompositionError as exc:
-        raise RecoverySourceError("target-files source composition refused: " + str(exc)) from exc
+        if __package__:
+            from . import target_files_source_composition
+        else:
+            import target_files_source_composition
+        try:
+            composition = target_files_source_composition.compose_sources(root)
+        except target_files_source_composition.TargetFilesSourceCompositionError as exc:
+            raise RecoverySourceError("target-files source composition refused: " + str(exc)) from exc
     _require(composition["contracts"][:3] == legacy["composition"]["contracts"]
              and composition["ordered_patches"][:3] == legacy["composition"]["ordered_patches"]
-             and composition["contracts"][-1] == {"path": TARGET_FILES_PATH, **_identity(selected)},
+             and composition["contracts"][-1] == {"path": selected_path, **_identity(selected)},
              "target-files composition must preserve the reviewed recovery predecessors and selector")
     rows = composition["final_source_files"]
     core = next(row for row in rows if row["path"] == CORE_PATH)
@@ -301,7 +318,7 @@ def _compose_target_files(root, selected, *, expected_base=None, expected_base_i
     result["composition"] = composition
     identity = _identity(_canonical(composition))
     result["composition_identity"] = identity
-    _require(selected == _read(root / TARGET_FILES_PATH, limit=MAX_BYTES),
+    _require(selected == _read(root / selected_path, limit=MAX_BYTES),
              "target-files composition contract changed during selection")
     return result, identity
 
@@ -324,7 +341,7 @@ def render_readonly_recovery_include(template, *, root, selected_contract):
 
 
 def render_target_files_recovery_include(template, *, root, selected_contract):
-    """Select the combined metadata, readonly and VINTF source guard explicitly."""
+    """Select the combined source guard, optionally its checksum successor."""
     return _render_recovery_include(template, root=root, selected_contract=selected_contract,
                                     metadata=True, target_files=True)
 
@@ -343,6 +360,10 @@ def _render_recovery_include(template, *, root, selected_contract, metadata, tar
     _require(type(template) is bytes and template == _read(root / RECOVERY_TEMPLATE, limit=MAX_BYTES),
              f"{label} recovery rendering requires the unchanged authored template")
     source, identity = compose(root, selected_contract)
+    if target_files and source["composition"]["contracts"][-1]["path"] == CHECKSUM_PATH:
+        ordered += "/0023"
+        last_patch = "0023"
+        expected_path = CHECKSUM_PATH
     _require(source["composition"]["contracts"][-1]["path"] == expected_path,
              f"{label} recovery rendering requires explicit {label} composition")
     core = source["source_files"][0]["after"]

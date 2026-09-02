@@ -1,5 +1,27 @@
 # Metadata for retained vendor and ODM images
 
+## Explicit checksum-source refresh
+
+The maintained [checksum adapter](../scripts/target_files_metadata_checksum.py)
+and [source descriptor](../patches/evolution/target-files-metadata-checksum.json)
+extend the existing composition with patch 0023. The device generator, recovery
+source guard and `mi_ext` input tooling accept this explicitly selected source
+contract. Metadata delivery also requires the unchanged, reviewed policy3 image
+contract; missing or mixed selectors fail rather than choosing an older path.
+
+The new composition retains all ten final semantic source files, replacing only
+the complete Makefile identity. The refreshed metadata bundle preserves all
+205 original payloads, image identities and policy evidence. Its standalone
+runtime verifies the new source composition. Recovery and `mi_ext` receipts and
+the four corresponding device includes must be regenerated together because
+they also bind the source or metadata receipt identities. Regenerating these
+small files does not change the selected images.
+
+These are host-side tooling and input capabilities, not a successful native
+adoption or packaging result. Existing source contracts remain available with
+their original semantics. A separately recorded source transaction, fresh build
+configuration and successful native packaging checks are still required.
+
 ## September 2, 2026: Package3 checksum-hook failure
 
 The native Package3 attempt exits 1 at **02:09:50 UTC**, followed by host exit 1

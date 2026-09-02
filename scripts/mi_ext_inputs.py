@@ -40,6 +40,14 @@ TARGET_FILES_SOURCE_CONTRACT_PATH = "patches/evolution/target-files-source-compo
 TARGET_FILES_SOURCE_CONTRACT_ID = "nezha-target-files-source-composition-v1"
 TARGET_FILES_COMPOSER_CONTROLS = ("scripts/target_files_source_composition.py",
                                 "scripts/target_files_metadata_combined.py", METADATA_COMPOSER_PATH)
+CHECKSUM_SOURCE_CONTRACT_PATH = "patches/evolution/target-files-metadata-checksum.json"
+CHECKSUM_SOURCE_CONTRACT_ID = "nezha-target-files-metadata-checksum-v1"
+CHECKSUM_COMPOSER_CONTROLS = (METADATA_COMPOSER_PATH, "scripts/target_files_metadata_combined.py",
+                            "scripts/target_files_metadata_policy_images.py",
+                            "scripts/target_files_metadata_delivery.py",
+                            "scripts/target_files_metadata_delivery_4k.py",
+                            "scripts/target_files_metadata_delivery_policy3.py",
+                            "scripts/target_files_metadata_checksum.py")
 TARGET_FILES_METADATA_PROFILE_PATH = "config/nezha-target-files-metadata.json"
 PATCH_PATH = "patches/evolution/0007-direct-avb-custom-images.patch"
 FACTORY_RECORD_PATH = "research/factory-firmware-validation.json"
@@ -265,7 +273,9 @@ def _controls(reader, composed_source_contract=None):
             selected_id = _json(selected).get("contract_id")
             readonly = selected_id == READONLY_SOURCE_CONTRACT_ID
             target_files = selected_id == TARGET_FILES_SOURCE_CONTRACT_ID
+            checksum = selected_id == CHECKSUM_SOURCE_CONTRACT_ID
             selected_path = (READONLY_SOURCE_CONTRACT_PATH if readonly else
+                             CHECKSUM_SOURCE_CONTRACT_PATH if checksum else
                              TARGET_FILES_SOURCE_CONTRACT_PATH if target_files else METADATA_SOURCE_CONTRACT_PATH)
             canonical = reader.read(ROOT / selected_path)
             require(selected == canonical,
@@ -288,25 +298,49 @@ def _controls(reader, composed_source_contract=None):
                 composition = composed_source["composition"]
                 require(composed_identity == identity(encoded(composition)),
                         "mi_ext readonly source composition identity differs")
-            elif target_files:
+            elif target_files or checksum:
                 controls[selected_path] = canonical
-                profile = _json(canonical).get("metadata_profile")
+                profile_contract = _json(canonical)
+                if checksum:
+                    predecessor = profile_contract.get("predecessor_contract")
+                    require(type(predecessor) is dict
+                            and predecessor.get("path") == TARGET_FILES_SOURCE_CONTRACT_PATH,
+                            "mi_ext checksum predecessor source contract differs")
+                    predecessor_raw = reader.read(ROOT / TARGET_FILES_SOURCE_CONTRACT_PATH, predecessor)
+                    controls[TARGET_FILES_SOURCE_CONTRACT_PATH] = predecessor_raw
+                    profile_contract = _json(predecessor_raw)
+                profile = profile_contract.get("metadata_profile")
                 require(type(profile) is dict and profile.get("path") == TARGET_FILES_METADATA_PROFILE_PATH,
                         "mi_ext target-files metadata profile differs")
                 controls[TARGET_FILES_METADATA_PROFILE_PATH] = reader.read(
                     ROOT / TARGET_FILES_METADATA_PROFILE_PATH, profile)
-                for path in TARGET_FILES_COMPOSER_CONTROLS:
+                composer_controls = CHECKSUM_COMPOSER_CONTROLS if checksum else TARGET_FILES_COMPOSER_CONTROLS
+                for path in composer_controls:
                     controls[path] = reader.read(ROOT / path)
-                if __package__:
-                    from . import target_files_source_composition
+                if checksum:
+                    if __package__:
+                        from . import target_files_metadata_checksum
+                    else:
+                        import target_files_metadata_checksum
+                    require(target_files_metadata_checksum.CONTROL_TOOLS == CHECKSUM_COMPOSER_CONTROLS,
+                            "mi_ext checksum composer dependencies differ")
+                    try:
+                        target_files_metadata_checksum.runtime_tool_payloads(controls)
+                        composition = target_files_metadata_checksum.compose_sources(
+                            ROOT, source_contract=selected_path)
+                    except ValueError as exc:
+                        raise MiExtInputsError(f"mi_ext checksum source composition refused: {exc}") from exc
                 else:
-                    import target_files_source_composition
-                require(target_files_source_composition.HOST_CONTROL_TOOLS == TARGET_FILES_COMPOSER_CONTROLS,
-                        "mi_ext target-files composer dependencies differ")
-                try:
-                    composition = target_files_source_composition.compose_sources(ROOT)
-                except target_files_source_composition.TargetFilesSourceCompositionError as exc:
-                    raise MiExtInputsError(f"mi_ext target-files source composition refused: {exc}") from exc
+                    if __package__:
+                        from . import target_files_source_composition
+                    else:
+                        import target_files_source_composition
+                    require(target_files_source_composition.HOST_CONTROL_TOOLS == TARGET_FILES_COMPOSER_CONTROLS,
+                            "mi_ext target-files composer dependencies differ")
+                    try:
+                        composition = target_files_source_composition.compose_sources(ROOT)
+                    except target_files_source_composition.TargetFilesSourceCompositionError as exc:
+                        raise MiExtInputsError(f"mi_ext target-files source composition refused: {exc}") from exc
                 require(composition["contracts"][-1] == {"path": selected_path, **identity(canonical)},
                         "mi_ext target-files composition omits its explicit selector")
             else:

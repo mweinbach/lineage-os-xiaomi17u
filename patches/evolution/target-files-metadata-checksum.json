@@ -1,0 +1,45 @@
+{
+  "contract_id": "nezha-target-files-metadata-checksum-v1",
+  "patch": {
+    "path": "patches/evolution/0023-portable-target-files-metadata-checksum.patch",
+    "sha256": "b09a642a578e44767a816896e604481ee4e6e79988bfd07f6ff4bc81a4daf66f",
+    "size_bytes": 1143
+  },
+  "predecessor_composition": {
+    "sha256": "152f6413cdeaa7221d4602da1f29fcaf472dd0b2cc4a71c320f8e9505fe0b427",
+    "size_bytes": 10955
+  },
+  "predecessor_contract": {
+    "path": "patches/evolution/target-files-source-composition.json",
+    "sha256": "b9c6c485ad7a1617bc29a315ba8ff89034ff28cbe4e8a9196eff726ee1811f2a",
+    "size_bytes": 19228
+  },
+  "project": {
+    "branch": "bka",
+    "commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+    "path": "build/make",
+    "repository": "https://github.com/Evolution-X/build"
+  },
+  "schema_version": 1,
+  "scope": {
+    "checksum_recipe_only": true,
+    "complete_rom_ready": false,
+    "hardware_tested": false,
+    "image_bytes_changed": false,
+    "metadata_payloads_changed": false,
+    "native_packaging_verified": false,
+    "policy_provenance_changed": false,
+    "source_installed": false
+  },
+  "source_file": {
+    "after": {
+      "sha256": "8fffff47144a95bd8a56bc3797b2984b61964da0777d19964faa24541eebbb3d",
+      "size_bytes": 392273
+    },
+    "before": {
+      "sha256": "bf6e0668ff571f3858fc09d5cefa039ff6a8fdebf5b9ecfdc690794f25889ba7",
+      "size_bytes": 392084
+    },
+    "path": "build/make/core/Makefile"
+  }
+}
