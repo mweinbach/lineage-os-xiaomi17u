@@ -1,5 +1,42 @@
 # Nezha product and build progress
 
+## Config12/context12 and Nothing9 — 2026-09-02
+
+The **two native queries, Nothing9 and complete host review pass** under
+**`nezha.b429840950d789320b04847a`**, epoch **1788144555**. All times below are
+September 2 UTC; every listed native/host exit is 0.
+
+| Phase | Native invocation | Actual host completion evidence |
+| --- | --- | --- |
+| Config12 | 08:27:52–08:28:46 | Direct session 2103 exit observed at 08:32:16; separate byte-only closure |
+| Context12 | 08:38:16–08:39:08 | Genuine wrapper 08:34:37–08:42:45 |
+| Nothing9 | 08:52:20–09:04:46 | Genuine wrapper 08:48:44–09:08:22 |
+
+Config12's closure checks **26 frozen byte pins** and three preparation files.
+It does not establish an outer wrapper, process-start/duration, full outer
+streams or prelaunch stat snapshot; its separate root review validates the
+native result. Neither query records observed Ninja or a sandbox pass.
+Nothing9 records Ninja observation, limit checks and sandbox success, but
+**`ninja_argv_verified=false`** and **`require_observed_ninja=false`**. No fresh
+component-action or metadata-rewrite claim follows from this run.
+
+Actual full stream capture completes at **09:15:17 UTC**. Original host review
+passes at **09:17:54 UTC**, followed by the independent root recheck at
+**09:19:15 UTC**. They verify **18,460-byte stdout, empty stderr**, six physical
+metadata values/newlines and all **six complete callback maps** before/after
+and across both queries. **21 held host-review files** retain their full bytes
+and nine-field stats; this does not upgrade Config12's launch evidence. The
+original source validator confirms **548 files/fifteen projects**, **1,179
+revision/origin matches**, **254 configuration fields** and strict 4 KiB.
+
+The next native gates are the **fresh 26-action selected-component rebuild,
+Images5, then Package5**; none is established here. Normal Android enforcement,
+`working76`, kernel warnings and `test-keys` remain unchanged. Final
+VINTF/AVB/partition, signing/rollback, OTA and boot/hardware checks remain open.
+No phone operation occurs and no complete or flashable ROM is established.
+The [query/Nothing9 record](../research/workspace-integration.json) binds exact
+receipts while retaining all earlier source, component and Package4 history.
+
 ## Metadata-mode flags source installation — 2026-09-02
 
 The **reviewed metadata-mode correction is installed**, with verified exit 0.

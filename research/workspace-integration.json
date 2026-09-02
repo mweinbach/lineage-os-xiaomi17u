@@ -7408,5 +7408,221 @@
         "size_bytes": 462
       }
     }
+  },
+  "metadata_mode_flags_queries_and_nothing9_checkpoint_20260902": {
+    "status": "verified_config12_context12_nothing9_and_complete_host_review_not_fresh_components_images_or_package",
+    "guide": "docs/build-progress.md#config12context12-and-nothing9--2026-09-02",
+    "preceding_checkpoint_commit": "fb763761244c1dcbc494a54e71730e5bda06be3b",
+    "preceding_checkpoint": "metadata_mode_flags_source_adoption_checkpoint_20260902",
+    "source_identity_sha256": "b429840950d789320b04847ac933d5d11e5a189a3aeccda70a86ffad29613071",
+    "build_number": "nezha.b429840950d789320b04847a",
+    "build_epoch": 1788144555,
+    "source_files": 548,
+    "source_projects": 15,
+    "source_lock_revision_and_origin_matches": 1179,
+    "configuration_fields": 254,
+    "phases": {
+      "config12": {
+        "native_started_at": "2026-09-02T08:27:52.932051+00:00",
+        "native_finished_at": "2026-09-02T08:28:46.121100+00:00",
+        "native_exit_code": 0,
+        "five_phase_checks_passed": true,
+        "ninja_observed": false,
+        "ninja_argv_verified": false,
+        "ninja_limits_verified": false,
+        "sandbox_checks_passed": false,
+        "require_observed_ninja": false,
+        "direct_launch": {
+          "session": 2103,
+          "exit_observed_at": "2026-09-02T08:32:16.359Z",
+          "observed_exit_code": 0,
+          "byte_only_frozen_inputs_checked": 26,
+          "three_preparation_files_match": true,
+          "outer_wrapper_executed": false,
+          "outer_start_duration_or_full_streams_claimed": false,
+          "prelaunch_stat_snapshot_verified": false,
+          "completion_helper_itself_validates_native_query": false
+        }
+      },
+      "context12": {
+        "native_started_at": "2026-09-02T08:38:16.101430+00:00",
+        "native_finished_at": "2026-09-02T08:39:08.647724+00:00",
+        "native_exit_code": 0,
+        "five_phase_checks_passed": true,
+        "ninja_observed": false,
+        "ninja_argv_verified": false,
+        "ninja_limits_verified": false,
+        "sandbox_checks_passed": false,
+        "require_observed_ninja": false,
+        "genuine_outer_wrapper": {
+          "started_at": "2026-09-02T08:34:37.461593+00:00",
+          "finished_at": "2026-09-02T08:42:45.028597+00:00",
+          "exit_code": 0
+        }
+      },
+      "nothing9": {
+        "native_started_at": "2026-09-02T08:52:20.039366+00:00",
+        "native_finished_at": "2026-09-02T09:04:46.690442+00:00",
+        "native_exit_code": 0,
+        "five_phase_checks_passed": true,
+        "ninja_observed": true,
+        "ninja_argv_verified": false,
+        "ninja_limits_verified": true,
+        "sandbox_checks_passed": true,
+        "require_observed_ninja": false,
+        "genuine_outer_wrapper": {
+          "started_at": "2026-09-02T08:48:44.929932+00:00",
+          "finished_at": "2026-09-02T09:08:22.628814+00:00",
+          "exit_code": 0
+        }
+      }
+    },
+    "complete_host_review": {
+      "passed": true,
+      "reviewed_at": "2026-09-02T09:17:54.564623+00:00",
+      "root_independent_recheck_at": "2026-09-02T09:19:15.238479+00:00",
+      "original_current_source_validator_rerun": true,
+      "held_review_files": 21,
+      "all_held_review_bytes_and_nine_field_stats_unchanged": true,
+      "all_six_full_callback_maps_match_before_after_and_both_queries": true,
+      "six_physical_metadata_values_and_newlines_verified": true,
+      "metadata_files": [
+        "build_date.txt",
+        "file_name_tag.txt",
+        "soong/build_hostname.txt",
+        "soong/build_number.txt",
+        "target/product/nezha/build_fingerprint-lineage_nezha.txt",
+        "target/product/nezha/build_thumbprint-lineage_nezha.txt"
+      ],
+      "fresh_metadata_rewrites_verified": false,
+      "native_action_freshness_claimed": false,
+      "initial_nothing9_review_pending_streams_preserved_as_history": true
+    },
+    "complete_native_stream_readback": {
+      "root_started_at": "2026-09-02T09:15:16.997265+00:00",
+      "root_finished_at": "2026-09-02T09:15:17.130901+00:00",
+      "exit_code": 0,
+      "two_complete_reads_match": true,
+      "stdout": {
+        "sha256": "c044d661e3c537f36b8eef37141dd96fb36472b476b19c22401629abd3496de2",
+        "size_bytes": 18460
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    },
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "limits": {
+      "config12_outer_wrapper_or_prelaunch_stats_upgraded": false,
+      "fresh_metadata_rewrites_verified": false,
+      "fresh_selected_component_actions_verified": false,
+      "selected3_verified": false,
+      "images5_verified": false,
+      "package5_verified": false,
+      "entire_output_tree_unchanged_claimed": false,
+      "signed_flashable_rom_verified": false,
+      "ota_verified": false,
+      "hardware_or_boot_verified": false,
+      "phone_accessed": false,
+      "native_or_vm_operations_by_documentation_reviewer": false,
+      "complete_rom_ready": false
+    },
+    "next_gate": "Fresh 26-action selected-component rebuild, then Images5, then Package5, each under its own actual verification; final VINTF/AVB/partition, signing/rollback, OTA and boot/hardware remain separate.",
+    "evidence": {
+      "config12_result": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-config-12-v1/stdout.jsonl",
+        "sha256": "7b7f6fa79922e5a1f57a6ecde7b06cc1a1239f49224ac5d743ed15d4f0fbdbf2",
+        "size_bytes": 10563922
+      },
+      "config12_root_review": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-config-12-observation-v1/root-native-review-v1.json",
+        "sha256": "675ddd054eaa739f531d52e93406cdcd9e8fcfb4324d4ebbc26c46a282467cb5",
+        "size_bytes": 1129
+      },
+      "config12_direct_exit_observation": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-config-12-observation-v1/unified-exec-completion.json",
+        "sha256": "b35c469a66c09e94146daad9c85b30eff380c6f998bf2437a2cbf7033df2891f",
+        "size_bytes": 220
+      },
+      "config12_byte_only_closure": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-config-12-dispatch-v1/completion.json",
+        "sha256": "4487a19b60b6463090823e1f522bd8d9645539f45c34171aee352e2a172c11e2",
+        "size_bytes": 10763
+      },
+      "context12_result": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-context-12-v1/stdout.jsonl",
+        "sha256": "f927fc4874fac49b8426ef55f427340cab71398e5b2f5cb2acf766c3d03bcffc",
+        "size_bytes": 10551247
+      },
+      "context12_root_review": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-context-12-dispatch-v1/root-native-review-v1.json",
+        "sha256": "d44d5d0c22455b5d1f7d23156ea4a822ad90517721cb1add7b92dc6b12841685",
+        "size_bytes": 1338
+      },
+      "context12_outer_completion": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-product-context-12-dispatch-v1/completion.json",
+        "sha256": "b9ae165c46943974b717cd5363cb48178826eed7d45f0dc1fed789e0382c1c15",
+        "size_bytes": 789
+      },
+      "nothing9_result": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-nothing-9-v1/stdout.jsonl",
+        "sha256": "ad68ee01e8d1eaf57edacd95bea5ce7f63ae348ec8256db9cab0cbc60cf7713c",
+        "size_bytes": 10554907
+      },
+      "nothing9_initial_root_review": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-nothing-9-dispatch-v1/root-native-review-v1.json",
+        "sha256": "52440890f467c550d541407f958ec7127d1c153b77158ab2c750a4ce208af8ed",
+        "size_bytes": 1904
+      },
+      "nothing9_outer_completion": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-nothing-9-dispatch-v1/completion.json",
+        "sha256": "b152b0f26ae9981e574d452647e56c974474b7c12c849825b63ad82b11d88efc",
+        "size_bytes": 772
+      },
+      "identity_calculation": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/identity-projection-v1/completed-v1/identity-calculation.json",
+        "sha256": "14629dca104e5faf43903576d0465ce6050a67813b816584a4e24c53a2625d70",
+        "size_bytes": 3551
+      },
+      "complete_native_stream_capture": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/two-streams-v1/actual-v1/stdout.json",
+        "sha256": "5eda3fd0b2b21d9a9eeaa9fae48232d6e990bc383d1230b53491d412ad0b8b2d",
+        "size_bytes": 29101
+      },
+      "complete_native_stream_capture_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/two-streams-v1/actual-v1/completion.json",
+        "sha256": "0af5751dae5555a0ca59243be20de22cd3549cc0d0590901e4277f6afe3de6fc",
+        "size_bytes": 631
+      },
+      "original_full_host_review": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/full-stream-v1/review.json",
+        "sha256": "158a46f7446d1eee86de39b02c42f5e5fb6850360eac8fe520bbcbd61ddeea88",
+        "size_bytes": 17190
+      },
+      "root_independent_full_host_review": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/full-stream-v1/root-verification-v1.json",
+        "sha256": "78cb0e8ea3ce99bd763d7441aeec1113284d805f46747f61433fb1cf13b46169",
+        "size_bytes": 593
+      },
+      "original_host_review_code": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/review.py",
+        "sha256": "30d99a4bf803a1ce4f2dcb8ed815c74fadc78e7bcf196b89a1e9acd1e3e81b64",
+        "size_bytes": 23911
+      },
+      "full_native_stdout": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/full-stream-v1/build.stdout",
+        "sha256": "c044d661e3c537f36b8eef37141dd96fb36472b476b19c22401629abd3496de2",
+        "size_bytes": 18460
+      },
+      "full_native_stderr": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-nothing9-native-evidence-v1/full-stream-v1/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    }
   }
 }

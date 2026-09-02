@@ -10,6 +10,30 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Config12, Context12 and Nothing9 pass** under
+**`nezha.b429840950d789320b04847a`**, epoch **1788144555**. Nothing9 exits 0
+at **2026-09-02 09:04:46 UTC**; its genuine wrapper exits at **09:08:22 UTC**.
+The original host review and independent root recheck verify complete
+**18,460-byte stdout and empty stderr**, six metadata values/newlines and all
+six callback maps across both queries and Nothing9. Source **548/fifteen
+projects**, **1,179 revisions/origins** and **254 configuration fields** pass.
+
+Config12 retains direct-launch, byte-only completion limits; no outer timing,
+full outer-stream or prelaunch-stat proof is invented. The queries record no
+observed Ninja or sandbox pass. Nothing9 observes Ninja and passes limit/sandbox
+checks, but **Ninja argv is unverified** and observation is not required. This
+does not prove fresh metadata rewrites or component actions.
+
+The next gates are a **fresh 26-action selected-component rebuild → Images5 →
+Package5**. Normal Android enforcing, 4 KiB and `working76` remain unchanged.
+Signing/rollback, OTA and boot/hardware remain unverified; no phone operation
+occurs and the ROM is **not flashable**. See the dated [query/Nothing9 checkpoint](build-progress.md#config12context12-and-nothing9--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier metadata-mode source-install checkpoint
+
+This entry preserves its source-only scope and then-pending native work.
+
 The **metadata-mode flags correction is installed in the source tree**. The
 root install command runs **2026-09-02 08:09:40–08:19:10 UTC**, exit 0; full
 readback completes at **08:19:21 UTC**. Original-record validation verifies
