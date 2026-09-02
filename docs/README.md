@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Verified host storage cleanup](storage-cleanup.md) | Approved detached 800 GiB snapshot and ten byte-identical crosscheck bodies removed; 114.21 GiB host free at the dated checkpoint, with active inputs preserved and the full continuation budget still separate |
+| [Verified storage cleanup](storage-cleanup.md) | 51 exact obsolete files removed and approved free-block trim completed; original builder restored, 273.56 GiB host free at the dated checkpoint, and bounded preservation checks kept separate from build readiness |
 | [Native ROM integration](native-rom-integration.md) | Current source, scoped policy3/VINTF/metadata verification and remaining image-delivery, packaging and boot gates; earlier failures remain preserved |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
 | [Pinned build metadata](pinned-build-metadata.md) | Explicit UTC epoch capability and retained isolated Kati qualification; active product and metadata-file results are recorded in current status |

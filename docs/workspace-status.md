@@ -10,19 +10,25 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-**Verified host cleanup clears the measured 100 GiB reserve threshold.** At
-**2026-09-02 17:16:46 UTC**, the host has **122,636,726,272 bytes (114.21 GiB)**
-available after removing the explicitly approved detached 800 GiB snapshot and
-ten byte-identical firmware crosscheck bodies. The two operation-local free-space
-increases total **64.35 GiB**, not the much larger apparent clone allocation.
-The active 1 TiB volume, source checkouts, working76, stock originals, current
-build inputs and small evidence files remain preserved. See the
-[dated cleanup record](storage-cleanup.md) for exact checks and receipts.
+**Verified cleanup leaves 273.56 GiB available on the host.** At
+**2026-09-02 17:45:04 UTC**, completed deletion of **51 obsolete files** and the
+separately approved free-block trim leave **293,727,363,072 bytes** available.
+The three operation-local host-free increases total **229.28 GiB**. The guest's
+**99.18 GiB** scratch deletion is not added again to that host total. The same
+builder is restored with its original configuration, the temporary maintenance
+container is removed, and the active 1 TiB volume remains present.
 
-The **full follow-on storage budget remains separate**, and **Nothing11 has not
-executed**. Availability, ownership and frozen inputs must be checked again
-before native work; this cleanup is not native-wrapper readiness or a new build
-result. No reserve guard is lowered or bypassed, and no phone operation occurs.
+Source checkouts, working76, stock originals, current build inputs and small
+evidence remain outside the deletion set. Preservation checks cover selected
+files and ownership, not every filesystem object. The earlier 114.21 GiB
+host-only milestone and failed unprivileged trim remain in the
+[dated cleanup record](storage-cleanup.md), with exact checks and receipts.
+
+The unchanged **100 GiB host reserve** is exceeded at this checkpoint; the
+**full follow-on storage budget and fresh build admission remain separate**.
+The subsequent Nothing11 result remains pending and separate from cleanup.
+Cleanup does not establish fresh component/image proof or a flashable ROM. No reserve
+guard is lowered or bypassed, and no phone operation occurs.
 
 ## Earlier Nothing10 profile failure and storage hold
 

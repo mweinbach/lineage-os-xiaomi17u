@@ -6,6 +6,17 @@ Apple Container, while Rosetta handles x86-64 Linux executables. Source and
 output live on a persistent Linux ext4 volume. This preserves the distinction
 between a usable local environment and a verified complete Android 16 ROM build.
 
+At the **2026-09-02 17:45:04 UTC cleanup checkpoint**, host availability is
+**293,727,363,072 bytes (273.56 GiB)**. After 40 exact obsolete guest scratch
+files were removed, the user-approved temporary `CAP_SYS_ADMIN` maintenance
+container successfully trimmed already-free ext4 blocks. The same builder was
+restored with its original configuration and the temporary container removed;
+the active raw volume remains 1,024 GiB. This adds **164.93 GiB of observed host
+free space**, separate from the guest's 99.18 GiB deletion. The earlier
+unprivileged trim failed and remains recorded as a failure. See the
+[cleanup record](storage-cleanup.md) for bounded preservation checks and exact
+space accounting; this is not a new Android build or complete integrity proof.
+
 At the **2026-09-02 17:16:46 UTC host-cleanup checkpoint**, the detached old
 800 GiB raw snapshot has been **deleted with explicit approval to lose that
 rollback copy**. The current managed 1,024 GiB volume and small maintenance
@@ -19,8 +30,9 @@ The historical **2026-09-01 02:14:58 UTC maintenance checkpoint** expanded the
 existing `evolution-nezha-work` volume from **800 to 1,024 GiB** offline, then
 restarted the same builder, `twrp-nezha-upstream74-20260829`. The original 800 GiB
 raw image and volume metadata were retained through APFS clone/swap; this was
-**not an independent physical backup**. Initial preen exits 1 and remains failed; separate confirmation,
-growth and postcheck return native exit 0. Complete old/grown raw-image hashes
+**not an independent physical backup**. Initial preen exits 1 and remains
+failed; separate confirmation, growth and postcheck return native exit 0.
+Complete old/grown raw-image hashes
 are recorded, without claiming semantic equivalence of every filesystem object.
 Post-restart checks verify aarch64, case-sensitive ext4, Rosetta Ninja, the same
 539 source files across thirteen projects, strict 4 KiB settings, and unchanged
