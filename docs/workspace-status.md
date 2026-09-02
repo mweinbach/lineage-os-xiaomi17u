@@ -10,6 +10,31 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The checksum 0023 source correction is installed**, with verified native exit
+0. The root install command ran **2026-09-02 03:23:44–03:33:54 UTC** and exited
+0; complete readback finished at **03:34:05 UTC**.
+Receipt review verifies six exchanges, **548 files/fifteen projects** and all
+**1,179 pinned HEADs/origins**. Ten existing source files change and three
+checksum controls are added; modes and observed images are preserved, with no
+image or public-key exchange. The original 205-file metadata source projection
+passes; that is not a packaged-metadata or ZIP result.
+
+The completed host identity projection over verified installed records yields
+**`nezha.a7db36604f45fcc657373f89`**; independent replay reproduces all eight
+outputs. This is not a fresh VM query. The **254-field configuration observed
+during installation remains the preceding `nezha.b51a6b5609d2001e9ae1f7ae`
+snapshot**, not native `a7db` evidence. config11/context11, Nothing8, physical metadata,
+selected-nine2, Images4 and Package4 remain pending. Package3 retains its
+historical failure below. Normal Android enforcement, 4 KiB, `working76`, kernel
+warnings and `test-keys` are unchanged; no phone operation occurs and the ROM
+remains **incomplete and not flashable**. See the dated
+[source-install checkpoint](build-progress.md#checksum-0023-source-installation--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Historical checkpoints
+
+The following entries preserve their original results and then-pending work.
+
 **Package3 fails at the target-files metadata checksum hook**, with native exit
 1 at **2026-09-02 02:09:50 UTC** and actual host exit 1 at **02:14:06 UTC**.
 The failing target-files-directory action is **13,468/13,582** and reports

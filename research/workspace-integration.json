@@ -5663,5 +5663,265 @@
       "source_or_output_written": false,
       "phone_accessed": false
     }
+  },
+  "checksum0023_source_adoption_checkpoint_20260902": {
+    "status": "actual-checksum0023-source-adoption-readback-and-host-identity-projection-passed-no-successor-native-configuration-or-build",
+    "guide": "docs/build-progress.md",
+    "source_files_before": 545,
+    "source_files": 548,
+    "source_projects": 15,
+    "upstream_revision_and_origin_matches": 1179,
+    "source_file_exchanges": 6,
+    "changed_existing_source_files": 10,
+    "added_source_controls": 3,
+    "removed_source_paths": 0,
+    "payload_files": 287,
+    "payload_bytes": 19884254,
+    "exchange_targets": [
+      "build/make/core/Makefile",
+      "device/xiaomi/nezha",
+      "vendor/xiaomi/nezha-target-files-metadata",
+      "vendor/xiaomi/nezha-mi-ext/mi-ext-inputs.json",
+      "vendor/xiaomi/nezha-recovery/receipt.json",
+      "vendor/xiaomi/nezha-recovery/recovery-inputs.mk"
+    ],
+    "changed_source_paths": [
+      "build/make/core/Makefile",
+      "device/xiaomi/nezha/generated/mi-ext-prebuilt.mk",
+      "device/xiaomi/nezha/generated/policy-image-delivery.mk",
+      "device/xiaomi/nezha/generated/target-files-metadata.mk",
+      "device/xiaomi/nezha/recovery-prebuilt.mk",
+      "vendor/xiaomi/nezha-target-files-metadata/target-files-metadata.json",
+      "vendor/xiaomi/nezha-target-files-metadata/tools/target_files_metadata.py",
+      "vendor/xiaomi/nezha-mi-ext/mi-ext-inputs.json",
+      "vendor/xiaomi/nezha-recovery/receipt.json",
+      "vendor/xiaomi/nezha-recovery/recovery-inputs.mk"
+    ],
+    "added_control_paths": [
+      "vendor/xiaomi/nezha-target-files-metadata/controls/patches/evolution/0023-portable-target-files-metadata-checksum.patch",
+      "vendor/xiaomi/nezha-target-files-metadata/controls/patches/evolution/target-files-metadata-checksum.json",
+      "vendor/xiaomi/nezha-target-files-metadata/controls/scripts/target_files_metadata_checksum.py"
+    ],
+    "source_modes_preserved": true,
+    "originals_retained": true,
+    "rollback_performed": false,
+    "root_install_command_started_utc": "2026-09-02T03:23:44.068093+00:00",
+    "root_install_command_finished_utc": "2026-09-02T03:33:54.089512+00:00",
+    "install_timing_scope": "Root operator command timestamps spanning the native invocation and final acceptance; not separately measured native start/end timestamps.",
+    "native_install_exit_code": 0,
+    "root_operator_exit_code": 0,
+    "journal_events": 15,
+    "journal_commit_verified_utc": "2026-09-02T03:31:01.910055+00:00",
+    "journal_commit_precedes_final_acceptance": true,
+    "journal_commit_is_not_install_completion_time": true,
+    "complete_readback_finished_utc": "2026-09-02T03:34:05.340012+00:00",
+    "complete_readback_exit_code": 0,
+    "complete_readback_bodies_verified": true,
+    "actual_commit_is_exact_native_stdout": true,
+    "pure_actual_receipt_review_verified": true,
+    "documentation_reviewer_pure_replay_matches_root": true,
+    "review_scope": "Pure host validation of the completed actual installation/readback, exact staged copies, canonical inventories and all six exchanges/15 journal events. No independent native observation or new native checks by either receipt replay.",
+    "preserved_image_observations": {
+      "exact_absences": 2,
+      "image_build_executed": false,
+      "image_copies_created": false,
+      "observation_identity": {
+        "sha256": "8e3d13885bf8ec79a9b8ffd6a1494d0f50d567539d26d881628bfee35db30529",
+        "size_bytes": 19494
+      },
+      "parent_membership_identity": {
+        "sha256": "d965ad4ab1837989f0225b5387af10ed4a75c7f22144b07c535d4a892f2e6c2f",
+        "size_bytes": 3431
+      },
+      "present_files": 6,
+      "verified": true
+    },
+    "metadata_source_projection": {
+      "complete_rom_ready": false,
+      "images_admitted": false,
+      "metadata_receipt": {
+        "sha256": "1bf88bc31225a02950b3c8073deb8c97d8033736a5700dcc1141ebd163e58b62",
+        "size_bytes": 350705
+      },
+      "original_metadata_files_checked": 205,
+      "packaged_policy_7cil_3sidecar_gate_executed": false,
+      "runtime": {
+        "sha256": "2d65bf81ce3e015a36a3bfeacf04325fa4a2dafea82b9476564b43785b721cbf",
+        "size_bytes": 221406
+      },
+      "selected_product_source_verified": true,
+      "selected_vendor_odm_images_rehashed": true,
+      "target_files_admitted": false,
+      "target_files_supplied": false,
+      "verified": true
+    },
+    "preserved_generated_configuration": {
+      "fields": 254,
+      "file": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/soong/soong.lineage_nezha.variables",
+        "sha256": "c95cfba5a33c7600e9d18d3e5f6e0509d27e0d2969a3a661c88c82ef5d24fca7",
+        "size_bytes": 318997
+      },
+      "configuration_delta_admitted": false,
+      "predecessor_build_number": "nezha.b51a6b5609d2001e9ae1f7ae",
+      "successor_native_configuration_verified": false,
+      "successor_physical_metadata_verified": false,
+      "observation_scope": "Unchanged 254-field predecessor configuration captured during installation; not native verification of the later host-projected a7db identity."
+    },
+    "host_identity_projection": {
+      "identity_calculation_complete": true,
+      "identity_sha256": "a7db36604f45fcc657373f892797c28c4a21dd5bfa988eef41d412679fc91ea8",
+      "build_number": "nezha.a7db36604f45fcc657373f89",
+      "build_epoch": 1788144555,
+      "prior_identity_sha256": "b51a6b5609d2001e9ae1f7aeb22efbe1a124da299171ca53aae9b314840aad38",
+      "actual_captured_installation_admitted": true,
+      "source_count_from_actual_union": 548,
+      "replaced_source_paths": 10,
+      "added_source_paths": 3,
+      "independent_host_replay_passed": true,
+      "independent_replay_reported_by_root_operator": true,
+      "replayed_output_files": 8,
+      "canonical_descriptor_roles": [
+        "generated",
+        "private",
+        "public_signing",
+        "source",
+        "tools"
+      ],
+      "documentation_reviewer_eight_output_hashes_and_exact_thirteen_path_delta_verified": true,
+      "untouched_descriptor_rows_and_modes_preserved": true,
+      "derivation_controls_added_to_identity": false,
+      "scope": "Host calculation over verified retained actual installation records and pinned descriptor roles; not a fresh VM query, current native environment or physical metadata/output observation.",
+      "live_source_or_private_inputs_reverified": false,
+      "native_dispatch_performed": false,
+      "native_configuration_or_metadata_verified": false,
+      "input_closure_verified": false,
+      "admission_or_dispatch_authorized_by_calculation": false,
+      "complete_rom_ready": false
+    },
+    "historical_package3_failure_checkpoint": "package3_metadata_checksum_failure_checkpoint_20260902",
+    "historical_package3_failure_preserved": true,
+    "preceding_host_code_test_basis": {
+      "source": "Root operator completed offline-suite reports; before this documentation delta, not Android build or hardware validation.",
+      "commits": [
+        {
+          "commit": "b340be832796e0d03a82f162701df99fcba15daf",
+          "offline_tests_passed": 4450
+        },
+        {
+          "commit": "d35988e8f3d7e3a19e9cafcd12e459deda3bc51c",
+          "offline_tests_passed": 4457
+        }
+      ],
+      "post_documentation_full_suite_verified": false
+    },
+    "next_gate": "Verify config11/context11 and Nothing8 plus physical metadata under the host-projected a7db identity, then obtain fresh selected-nine2, Images4 and Package4 receipts; final VINTF/AVB/partition, signed boot-chain/rollback, OTA and hardware gates remain separate.",
+    "page_size_bytes": 4096,
+    "normal_android_enforcing_required": true,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "selected_kernel_warnings_retained": true,
+    "test_keys_not_oem_signing_trust": true,
+    "limits": {
+      "source_exchange_performed": true,
+      "native_build_performed": false,
+      "image_payload_or_public_key_exchanged": false,
+      "new_recovery_runtime_compiled": false,
+      "whole_output_tree_unchanged_claimed": false,
+      "native_config11_context11_verified": false,
+      "ordinary_nothing8_verified": false,
+      "selected_nine2_verified": false,
+      "images4_verified": false,
+      "package4_executed": false,
+      "package4_verified": false,
+      "successful_current_target_files_zip_verified": false,
+      "signed_flashable_rom_verified": false,
+      "runtime_or_boot_verified": false,
+      "hardware_tested": false,
+      "phone_accessed": false,
+      "complete_rom_ready": false
+    },
+    "evidence": {
+      "source_installer": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/installation.py",
+        "sha256": "8d1efcfd3de4028dd9a9a7c983421924ccb1d2a7f8f06a24b26b86e153f2f006",
+        "size_bytes": 176477
+      },
+      "source_spec": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/source-spec.json",
+        "sha256": "1f53db3d930902399bba6207fd9212f84f44cc42032716376ed56e52fe79901d",
+        "size_bytes": 1483074
+      },
+      "source_map": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/source-map.json",
+        "sha256": "bb9d287f69d7c5ec50407fbbe13ac47b476e4e5551b2fb3647812419a7652765",
+        "size_bytes": 2312779
+      },
+      "actual_stage": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-readback-v1/staged.json",
+        "sha256": "ee462d9e6091465302923faf83158520a55a4471be71845eda2e590971a7c14b",
+        "size_bytes": 3159077
+      },
+      "native_result": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-v1/stdout.jsonl",
+        "sha256": "ec3c642b240f67a99f8e6075ecdce6cb92a11033c4792222fe85d8b178cb9c87",
+        "size_bytes": 482
+      },
+      "root_operator_completion": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-v1/exit.json",
+        "sha256": "bd8ec0c836edb9fee77237adb630b6b9e820729a1b122ad06aa5710b904e8010",
+        "size_bytes": 463
+      },
+      "actual_commit": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-readback-v1/actual-commit.json",
+        "sha256": "ec3c642b240f67a99f8e6075ecdce6cb92a11033c4792222fe85d8b178cb9c87",
+        "size_bytes": 482
+      },
+      "actual_installation": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-readback-v1/installation.json",
+        "sha256": "b34073d4de4c6d0d8e791528661166a855b03873571ba8c0a8505d129811ed7c",
+        "size_bytes": 3116130
+      },
+      "complete_journal": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-readback-v1/transaction.jsonl",
+        "sha256": "f1f570e8ebb9505fdf8449112f838fb5ee564ffe6770e09afbdb0d64a52f3faf",
+        "size_bytes": 98257
+      },
+      "complete_readback": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-readback-v1/completion.json",
+        "sha256": "96c82de74554259b1258935020e5d7ec107b3ffdb8a3494833d63641e913e96d",
+        "size_bytes": 5169
+      },
+      "root_actual_receipt_verification": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/transport-v1/native-execution-v1/root-install-readback-v1/root-verification.json",
+        "sha256": "3e348cb8a7bd0ac6c5dcbaa0ad566f4fd534d9822639f06e1d0850c4a20de371",
+        "size_bytes": 2517
+      },
+      "frozen_pure_receipt_verifier": {
+        "path": "reports/metadata-checksum-20260902/source-adoption-preparation-v1/readback-v1/verify.py",
+        "sha256": "47830263f29df875670fa22e6faeff124aaf5b65f08f057b509e327881b5e457",
+        "size_bytes": 10819
+      },
+      "documentation_reviewer_pure_replay": {
+        "path": "reports/metadata-checksum-20260902/documentation-preparation-v1/actual-installation-doc-review.json",
+        "sha256": "b77ea6310380ee145a4d4597bfe01d4ae6543f4cd65f7e532b72c2e43c1681f9",
+        "size_bytes": 1966
+      },
+      "host_identity_projection": {
+        "path": "reports/metadata-checksum-20260902/native-preparation-v1/identity-projection-v1/completed-v1/projection.json",
+        "sha256": "44b1795f02a1163bd092a10b0ffeb942674ca975f6e6ed578304c1dbdfb81537",
+        "size_bytes": 4959
+      },
+      "host_identity_calculation": {
+        "path": "reports/metadata-checksum-20260902/native-preparation-v1/identity-projection-v1/completed-v1/identity-calculation.json",
+        "sha256": "3127f4089951f7ccc6e0f8495c8383d273e7f0726ab5bb6cd9fe73eae7437cef",
+        "size_bytes": 3551
+      },
+      "host_identity_descriptor": {
+        "path": "reports/metadata-checksum-20260902/native-preparation-v1/identity-projection-v1/completed-v1/descriptor-fragment.json",
+        "sha256": "937028cc06da380d377528d8b02b235afbec76242a850bf18ed2a41884748cc2",
+        "size_bytes": 969620
+      }
+    }
   }
 }

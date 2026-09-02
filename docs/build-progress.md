@@ -1,5 +1,55 @@
 # Nezha product and build progress
 
+## Checksum 0023 source installation — 2026-09-02
+
+The **checksum 0023 source adoption and complete receipt review pass**. The
+**root install command ran 03:23:44–03:33:54 UTC**, with exit 0 and verified
+native exit 0. These are root-wrapper times, not separately measured native
+start/end times.
+The journal's **03:31:01 UTC `commit_verified`** event precedes final acceptance;
+it is not the completion time. Complete readback exits 0 at **03:34:05 UTC**,
+retaining the exact commit, installation, 15-event journal and staged receipt.
+The frozen pure host verifier checks all six exchanges and agrees with the root
+review; this replay makes no additional VM or phone call.
+
+The installed source contains **548 files across fifteen projects**, with all
+**1,179 pinned HEADs/origins** matching. The six exchanges carry **287 payload
+files / 19,884,254 bytes**: ten existing source files change and three checksum
+controls are added, with no removed source paths. Besides the additive Makefile
+guard, the changes refresh metadata/runtime and device, mi_ext and recovery
+provenance bindings. Source modes, retained originals and recorded image
+observations are preserved. No image or public key is exchanged or rebuilt.
+
+The new metadata runtime verifies the **205 original metadata payloads** and
+selected product source, rehashing the selected vendor/ODM images. It does not
+run the packaged seven-CIL/three-sidecar gate or admit target-files. The existing
+**254-field generated configuration observed during installation remains the
+prior `b51a6b56…` snapshot**.
+
+The subsequent **host identity calculation over verified actual installed
+records passes**, yielding build **`nezha.a7db36604f45fcc657373f89`** and identity
+`a7db36604f45fcc657373f892797c28c4a21dd5bfa988eef41d412679fc91ea8`, with pinned
+epoch **1788144555**. Independent replay reproduces all **eight output files**,
+including the five descriptor roles, and verifies the exact ten-replacement /
+three-addition source delta. Untouched descriptor rows and modes are preserved.
+This host calculation does not reobserve live source/private inputs, perform a
+native query or establish native `a7db` configuration, physical metadata, Ninja
+producer results or a successful ZIP.
+
+Next are config11/context11 and Nothing8 under the host-projected identity, followed
+by fresh selected-nine2, Images4 and Package4 evidence. The historical Package3
+checksum failure and earlier component/image results remain intact. Normal
+Android enforcement, 4 KiB, `working76` **`a130ba75…`**, kernel warnings,
+`test-keys` and false complete-ROM readiness are unchanged. Final
+VINTF/AVB/partition, signing/rollback, OTA and boot/hardware gates remain open;
+the ROM is **not flashable**. The
+[source-adoption record](../research/workspace-integration.json) binds exact
+source, root completion, readback, pure-review and host-projection identities.
+
+## Earlier checkpoints
+
+These dated records retain their original results and then-pending work.
+
 **Package3 fails in the metadata-verifier checksum guard**, during the ordinary
 target-files-directory recipe. Native execution runs from
 **2026-09-02 01:54:42 to 02:09:50 UTC**, ending with exit 1; the actual host
