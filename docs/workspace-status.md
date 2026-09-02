@@ -10,6 +10,33 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package5's native Soong invocation exits 0, but its profile postcheck
+fails**. Native execution finishes at **2026-09-02 11:41:29 UTC**; the direct
+host session exits 1, observed at **11:47:38 UTC**. The recorded error is
+`AttributeError`: the checker module has no `_installation_report` attribute.
+The profile postcheck runs in the VM's Python supervisory harness.
+The original result remains unchanged: preflight, invocation and native
+success are true, while **profile completion and validation are false** and
+**`postcheck=null`**.
+
+Both complete native streams are retained and verified: **801,876-byte stdout
+and empty stderr**, with matching two-pass seals and nine-field stats. Native
+Ninja observation, argv, limits and sandbox checks pass with observation
+required; all six complete callback maps match before/after. This does **not**
+establish archive admission, ZIP validation or the two fresh package-action
+proofs. A corrected checker and separate supplement remain pending.
+
+Source **548/fifteen projects**, **`nezha.b429840950d789320b04847a`**, epoch
+**1788144555**, enforcing normal Android, 4 KiB and `working76` remain unchanged.
+Final AVB/VINTF/partition, signing/rollback, OTA and boot/hardware gates remain
+open. No phone operation occurs and the ROM is **not flashable**. See the dated
+[Package5 postcheck failure](build-progress.md#package5-native-exit-and-profile-postcheck-failure--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Images5 checkpoint
+
+This entry preserves its image-only scope and then-pending package work.
+
 The **Images5 native build, postcheck and complete evidence replay pass**.
 Native execution exits 0 at **2026-09-02 10:56:15 UTC**, with **seven fresh
 actions, three recomputed policy sidecars and four image checks**. Ninja

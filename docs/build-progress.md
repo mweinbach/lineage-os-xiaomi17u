@@ -1,5 +1,44 @@
 # Nezha product and build progress
 
+## Package5 native exit and profile postcheck failure — 2026-09-02
+
+**Package5's native Soong invocation exits 0; its original profile
+postcheck fails.** Native execution runs **11:36:58–11:41:29 UTC**. Direct host
+session **55609** exits 1, observed at **11:47:38 UTC**; no outer wrapper or
+separate process duration is inferred from polling. Preflight, invocation and
+native-process success are true, but **`profile_completed=false`**,
+**`profile_validation_verified=false`** and **`postcheck=null`** remain in the
+original result.
+
+The only recorded postcheck error is **`AttributeError`**: module
+`actual_nezha_target_files_verifier` has no `_installation_report` attribute.
+This check runs in the VM's Python supervisory harness.
+Native Ninja observation, argv, limits and sandbox checks pass, with
+observation required. There is no output overflow, timeout, disk-floor breach
+or sandbox fallback. All six complete callback maps match before/after; the
+root verifies **28 held host files** with full hashes and nine-field stats.
+
+Read-only native stream capture completes at **11:50:08 UTC**, with root decode
+verification at **11:50:34 UTC**. The two complete files contain **801,876-byte
+stdout and empty stderr**; two-pass seals and nine-field stats match. The
+original traceback, result and failed profile flags remain preserved.
+Full stream readback is **not archive admission, ZIP validation or proof of
+the two fresh package actions**.
+
+A proposed checker correction uses the existing
+`tool._impl['_installation_report']` callback. Two absent-mode default lookups
+are **separate static findings**, not errors observed in this native run.
+Corrected-checker preparation and an actual supplementary postcheck remain
+pending; no native source installation, rebuild or original-flag rewrite is
+claimed.
+
+Source **548/fifteen projects**, **`nezha.b429840950d789320b04847a`**, epoch
+**1788144555**, normal Android enforcing, 4 KiB and `working76` remain unchanged.
+Final AVB/VINTF/partition, signing/rollback, OTA and boot/hardware remain open.
+No phone operation occurs and no complete or flashable ROM is established.
+The [Package5 failure record](../research/workspace-integration.json) binds
+exact original and full-stream receipts while preserving all prior history.
+
 ## Images5 and complete evidence replay — 2026-09-02
 
 The **Images5 native build, postcheck and complete original replay pass**.

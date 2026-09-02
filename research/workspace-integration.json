@@ -8045,5 +8045,140 @@
         "size_bytes": 559
       }
     }
+  },
+  "package5_native_success_profile_failure_checkpoint_20260902": {
+    "status": "verified_original_package5_native_exit_zero_with_profile_postcheck_failure_not_validated_package",
+    "guide": "docs/build-progress.md#package5-native-exit-and-profile-postcheck-failure--2026-09-02",
+    "preceding_checkpoint_commit": "99053403a475196a8a22f698a15e642a67908669",
+    "preceding_checkpoint": "images5_complete_replay_checkpoint_20260902",
+    "source_files": 548,
+    "source_projects": 15,
+    "build_number": "nezha.b429840950d789320b04847a",
+    "build_epoch": 1788144555,
+    "native": {
+      "started_at": "2026-09-02T11:36:58.699998+00:00",
+      "finished_at": "2026-09-02T11:41:29.385662+00:00",
+      "exit_code": 0,
+      "ninja_observed": true,
+      "ninja_argv_verified": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "require_observed_ninja": true,
+      "output_overflow": false,
+      "timed_out": false,
+      "disk_floor_breached": false,
+      "sandbox_fallback": false,
+      "streams_complete": true,
+      "process_reaped": true
+    },
+    "original_profile": {
+      "preflight_completed": true,
+      "native_invocation_executed": true,
+      "native_process_succeeded": true,
+      "profile_completed": false,
+      "profile_validation_verified": false,
+      "postcheck": null,
+      "postcheck_errors": [
+        {
+          "check": "profile-postcheck",
+          "message": "module 'actual_nezha_target_files_verifier' has no attribute '_installation_report'",
+          "type": "AttributeError"
+        }
+      ]
+    },
+    "direct_host_completion": {
+      "session_id": 55609,
+      "observed_at": "2026-09-02T11:47:38.872Z",
+      "exit_code": 1,
+      "outer_wrapper_executed": false,
+      "poll_wall_time_is_not_process_duration": true
+    },
+    "six_complete_callback_maps_equal_before_after": true,
+    "held_host_full_hashes_and_nine_stats_unchanged_by_root": 28,
+    "full_native_stream_readback": {
+      "complete_files": 2,
+      "complete_raw_bytes": 801876,
+      "root_verified_at": "2026-09-02T11:50:34.083919+00:00",
+      "two_pass_seal_and_nine_stat_records_match": true,
+      "native_stderr_empty": true,
+      "archive_admission_granted": false,
+      "original_package_profile_failure_preserved": true
+    },
+    "planned_checker_correction": {
+      "status": "preparation_pending_actual_supplement_unverified",
+      "missing_installation_report_attribute_is_only_observed_postcheck_error": true,
+      "proposed_callback_access": "tool._impl['_installation_report']",
+      "two_absent_mode_default_lookups_are_static_findings_not_observed_native_errors": true,
+      "actual_corrected_supplement_verified": false,
+      "native_source_installation_or_rebuild_claimed": false,
+      "original_native_result_or_failure_flags_rewritten": false,
+      "execution_location": "VM Python supervisory harness"
+    },
+    "limits": {
+      "package5_profile_verified": false,
+      "target_files_zip_verified": false,
+      "fresh_package_action_proof_verified": false,
+      "image_reproducibility_verified": false,
+      "final_avb_vintf_partition_verified": false,
+      "signed_parent_chain_verified": false,
+      "ota_verified": false,
+      "runtime_or_boot_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "native_or_vm_operations_by_documentation_owner": false,
+      "archive_admission_granted": false
+    },
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "next_gate": "Actual corrected profile postcheck supplement, then separate archive/ZIP and two fresh package-action validation; final AVB/VINTF/partition, signing/rollback, OTA and boot/hardware remain open.",
+    "evidence": {
+      "original_native_result": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-v1/stdout.jsonl",
+        "sha256": "b486b06e87f6f89e6f46e82de5459c02a269e300994e48fb547030e052fc4dbd",
+        "size_bytes": 11114722
+      },
+      "original_native_request": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-v1/request.json",
+        "sha256": "825863e1bc5528d37f62704862f662df21d407c801b2e7e17c291a589c6fefcd",
+        "size_bytes": 5651806
+      },
+      "original_host_stderr": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-v1/stderr.log",
+        "sha256": "92dc09572331bab95187831b7b742e07dfef7bd0ff8bcfc1b195923936dbb81f",
+        "size_bytes": 285
+      },
+      "root_native_review": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-observation-v1/native-review.json",
+        "sha256": "a98916f240173269c266b8bd9beebb76d7ef5f911ddb3531a9b89104b21dee93",
+        "size_bytes": 2278
+      },
+      "direct_host_completion": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-observation-v1/tool-completion.json",
+        "sha256": "1b38e1cf1a531e6545d58be95074bd087c7066ad70d17367e0201280ea53b7ff",
+        "size_bytes": 373
+      },
+      "full_native_stream_readback": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/build-streams-v1/actual-v1/decoded/verification.json",
+        "sha256": "5baf7cb934868653b8094dc05648ba80e854e086c3e1babd35140d395b401374",
+        "size_bytes": 2245
+      },
+      "full_native_stream_readback_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/build-streams-v1/actual-v1/completion.json",
+        "sha256": "2a9783cd8ee390aaf97222b9f034271d554ea4e8f2094b17061e527a0a8b0750",
+        "size_bytes": 765
+      },
+      "complete_native_stdout": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/build-streams-v1/actual-v1/decoded/build.stdout",
+        "sha256": "885761ad8a68bf572b870e17475b993912cb63af8a1e9d8a99767d2bacf3bab4",
+        "size_bytes": 801876
+      },
+      "complete_native_stderr": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/build-streams-v1/actual-v1/decoded/build.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      }
+    }
   }
 }
