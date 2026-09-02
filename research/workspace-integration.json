@@ -8927,5 +8927,301 @@
         "size_bytes": 617
       }
     }
+  },
+  "nothing10_profile_failure_host_reserve_checkpoint_20260902": {
+    "status": "nothing10_native_exit_zero_profile_failed_and_native_continuation_held_for_host_reserve",
+    "guide": "docs/build-progress.md#nothing10-profile-failure-and-host-storage-hold--2026-09-02",
+    "preceding_checkpoint_commit": "743c9cfa9b424cb530aa5a721c21f76834ab8503",
+    "preceding_checkpoint": "avb_sha256_source_config_context13_checkpoint_20260902",
+    "nothing10": {
+      "native_started_at": "2026-09-02T15:50:45.375820+00:00",
+      "native_completed_at": "2026-09-02T16:05:06.473721+00:00",
+      "native_exit_code": 0,
+      "root_wrapper_started_at": "2026-09-02T15:46:24.740515+00:00",
+      "root_wrapper_completed_at": "2026-09-02T16:06:23.919980+00:00",
+      "root_wrapper_exit_code": 1,
+      "preflight_completed": true,
+      "native_invocation_executed": true,
+      "native_process_succeeded": true,
+      "profile_completed": false,
+      "profile_validation_verified": false,
+      "postcheck": null,
+      "ninja_observed": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "ninja_argv_verified": false,
+      "require_observed_ninja": false,
+      "streams_complete": true,
+      "native_log_pins": {
+        "stderr": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-nothing-10/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-nothing-10/build.stdout",
+          "sha256": "ad7afb3b759e2c230731d2224352fe9bcef09861356496102171c5a6fe271d9d",
+          "size_bytes": 18460
+        }
+      },
+      "full_native_stream_bodies_replayed_by_documentation_owner": false,
+      "timed_out": false,
+      "output_overflow": false,
+      "disk_floor_breached": false,
+      "sandbox_fallback": false,
+      "output_invalidated_or_deleted": false,
+      "source_mutation_requested": false,
+      "original_failed_result_preserved": true,
+      "original_postcheck_errors": [
+        {
+          "check": "verify_source_history",
+          "message": "full generated Soong configuration differs from exact reviewed phase state",
+          "type": "ValueError"
+        },
+        {
+          "check": "verify_immutable_archive",
+          "message": "current-phase source history is unavailable before archive verification",
+          "type": "ValueError"
+        },
+        {
+          "check": "verify_strict_settings",
+          "message": "full generated Soong configuration differs from exact reviewed phase state",
+          "type": "ValueError"
+        }
+      ],
+      "all_six_after_callbacks_verified": false,
+      "successful_after_callbacks": [
+        "verify_protected_inputs",
+        "verify_selected_inputs",
+        "verify_source_lock"
+      ],
+      "before_callbacks_checked": [
+        "verify_immutable_archive",
+        "verify_protected_inputs",
+        "verify_selected_inputs",
+        "verify_source_history",
+        "verify_source_lock",
+        "verify_strict_settings"
+      ],
+      "before_callback_count": 6,
+      "successful_after_callback_count": 3
+    },
+    "configuration_diagnosis": {
+      "root_reviewed_at": "2026-09-02T16:17:14.605785+00:00",
+      "configuration_fields": 254,
+      "before": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/soong/soong.lineage_nezha.variables",
+        "sha256": "c95cfba5a33c7600e9d18d3e5f6e0509d27e0d2969a3a661c88c82ef5d24fca7",
+        "size_bytes": 318997
+      },
+      "after": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/soong/soong.lineage_nezha.variables",
+        "sha256": "da93ab71dc9ad8d9d9cdf8327927ce29796f658bcf58292939a0bd48e819af6e",
+        "size_bytes": 319139
+      },
+      "expected_changed_leaves_in_original_request": 1,
+      "actual_changed_leaves": 6,
+      "exact_changed_leaf_paths": [
+        [
+          "BoardAvbSystemAddHashtreeFooterArgs"
+        ],
+        [
+          "PartitionVarsForSoongMigrationOnlyDoNotUse",
+          "PartitionQualifiedVariables",
+          "product",
+          "BoardAvbAddHashtreeFooterArgs"
+        ],
+        [
+          "PartitionVarsForSoongMigrationOnlyDoNotUse",
+          "PartitionQualifiedVariables",
+          "system",
+          "BoardAvbAddHashtreeFooterArgs"
+        ],
+        [
+          "PartitionVarsForSoongMigrationOnlyDoNotUse",
+          "PartitionQualifiedVariables",
+          "system_dlkm",
+          "BoardAvbAddHashtreeFooterArgs"
+        ],
+        [
+          "PartitionVarsForSoongMigrationOnlyDoNotUse",
+          "PartitionQualifiedVariables",
+          "system_ext",
+          "BoardAvbAddHashtreeFooterArgs"
+        ],
+        [
+          "PartitionVarsForSoongMigrationOnlyDoNotUse",
+          "PartitionQualifiedVariables",
+          "vendor_dlkm",
+          "BoardAvbAddHashtreeFooterArgs"
+        ]
+      ],
+      "top_level_list_before": [],
+      "top_level_list_after": [
+        "--hash_algorithm",
+        "sha256"
+      ],
+      "five_partition_strings_before": "",
+      "five_partition_strings_after": "--hash_algorithm sha256",
+      "every_other_configuration_value_and_type_equal": true,
+      "failed_profile_admitted_after_configuration": false,
+      "archive_error_depends_on_unavailable_current_phase_source_history": true,
+      "archive_corruption_established_by_this_error": false
+    },
+    "source_files": 548,
+    "source_projects": 15,
+    "identity_sha256": "86e40fe309189fdcd20dff9b1209014c7b9d8109e5c3d238cfe532437658ffe2",
+    "build_number": "nezha.86e40fe309189fdcd20dff9b",
+    "build_epoch": 1788144555,
+    "source_lock_after": {
+      "clean_projects": 1170,
+      "origins_matched": 1179,
+      "project_heads_matched": 1179,
+      "reviewed_local_change_rows": 9
+    },
+    "post_nothing10_four_logs": {
+      "root_exit_code": 0,
+      "root_started_at": "2026-09-02T16:16:08.332080+00:00",
+      "root_completed_at": "2026-09-02T16:16:08.634068+00:00",
+      "bounded_readback_verified": true,
+      "measured_log_paths": 4,
+      "module_info_stat_only": true,
+      "graph_capture_admission_granted": false,
+      "source_or_output_written": false
+    },
+    "nothing11_host_preparation": {
+      "started_at": "2026-09-02T16:25:24.583879+00:00",
+      "completed_at": "2026-09-02T16:25:28.408884+00:00",
+      "exit_code": 0,
+      "check_bind_prepare_command_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "source_selected_configuration_leaf_count": 6,
+      "configuration_before_observed_from_failed_nothing10": true,
+      "configuration_after_expected_not_observed": true,
+      "focused_tests_passed": 36,
+      "focused_test_groups": [
+        13,
+        17,
+        6
+      ],
+      "focused_tests_started_at": "2026-09-02T16:28:05.112695+00:00",
+      "focused_tests_completed_at": "2026-09-02T16:28:09.619025+00:00",
+      "held_test_inputs": 11,
+      "held_test_input_bytes_and_nine_field_stats_unchanged": true,
+      "root_native_wrapper_readiness_claimed": false,
+      "native_dispatched": false,
+      "failed_nothing10_promoted_to_success": false
+    },
+    "host_storage_hold": {
+      "checked_at": "2026-09-02T16:26:15.801911+00:00",
+      "available_bytes": 63488000000,
+      "required_bytes": 107374182400,
+      "configured_reserve_gib": 100,
+      "measured_shortfall_bytes": 43886182400,
+      "additional_space_requested_gib": 45,
+      "requested_space_scope": "Restore the minimum host reserve only; complete follow-on storage budget remains separate",
+      "native_continuation_on_hold": true,
+      "passed": false,
+      "error": "Host free space is below the configured reserve; no operation started",
+      "guard_lowered_or_bypassed": false,
+      "guest_free_space_clears_host_reserve": false,
+      "reserve_check_accessed_vm": false,
+      "reserve_check_modified_source_or_output": false
+    },
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "limits": {
+      "nothing10_profile_verified": false,
+      "nothing11_verified": false,
+      "fresh_selected4_verified": false,
+      "images6_verified": false,
+      "five_image_sha256_rebuild_verified": false,
+      "package6_verified": false,
+      "complete_avb_chain_verified": false,
+      "private_signing_performed": false,
+      "fec_payload_verified": false,
+      "super_image_verified": false,
+      "physical_partition_fit_verified": false,
+      "full_vintf_compatibility_verified": false,
+      "ota_verified": false,
+      "runtime_or_boot_verified": false,
+      "complete_rom_ready": false,
+      "signed_flashable_rom_verified": false,
+      "phone_accessed": false,
+      "source_sync_performed": false,
+      "private_keys_transferred_to_vm": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Restore and recheck the unchanged 100 GiB host reserve, separately budget the full continuation, and complete guarded Nothing11 execution. Backup-first Selected4/Images6, the no-invalidation five-image stage, Package6 and final signing/AVB/VINTF/super/OTA/device gates need their own evidence.",
+    "evidence": {
+      "nothing10_result": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-nothing-10-v1/stdout.jsonl",
+        "sha256": "80de133bc78fb6c05274fab73049a8bfc425f4f4894f479c94b637606906ed9d",
+        "size_bytes": 6481088
+      },
+      "nothing10_request": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-nothing-10-v1/request.json",
+        "sha256": "b39e1de7e8e85bfc124f0ad8cc6bbdf5b3f33bd9707714678e72f3bf8f284dfc",
+        "size_bytes": 5061686
+      },
+      "nothing10_profile_exit": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-nothing-10-v1/exit.json",
+        "sha256": "6f6d237a9ce53f929a7fac09fc64263c995822ff63c7c6eca27e997260161f60",
+        "size_bytes": 66
+      },
+      "nothing10_profile_stderr": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-nothing-10-v1/stderr.log",
+        "sha256": "92dc09572331bab95187831b7b742e07dfef7bd0ff8bcfc1b195923936dbb81f",
+        "size_bytes": 285
+      },
+      "nothing10_root_completion": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-nothing-10-dispatch-v1/completion.json",
+        "sha256": "2953216f8a90c69b33b862c74fa51b63abc713ab274c164eb03a8009aaceb365",
+        "size_bytes": 765
+      },
+      "nothing10_root_diagnosis": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/root-nothing-10-observation-v1/root-review.json",
+        "sha256": "7795fd4788bb8ce214befb017ccb111bc04a007b83db27d91899a223136966b2",
+        "size_bytes": 5863
+      },
+      "post_nothing10_four_logs": {
+        "path": "reports/avb-sha256-20260902/build-continuation-preparation-v1/post-nothing10-four-logs-v1/actual-v1/stdout.json",
+        "sha256": "73c7b54499b957ddb8653ebe3ae5d046fdf03913d9c083edccd4ee6c201a20b0",
+        "size_bytes": 80396
+      },
+      "post_nothing10_four_logs_completion": {
+        "path": "reports/avb-sha256-20260902/build-continuation-preparation-v1/post-nothing10-four-logs-v1/actual-v1/completion.json",
+        "sha256": "73f1a616b9216f15e17cb96ee7c12dda9fb2817d4c5923b60e864aa9a552bc05",
+        "size_bytes": 621
+      },
+      "host_reserve_failure": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/nothing11-configuration-recovery-v1/root-host-reserve-v1/result.json",
+        "sha256": "e63de518aa6c121daf335f72440ad44d5f9146ae139f1c61cbab2bd7ef21ba25",
+        "size_bytes": 888
+      },
+      "nothing11_host_preparation_completion": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/nothing11-configuration-recovery-v1/host-preparation-v1/completion.json",
+        "sha256": "eef2eb925090c464f8a4fd0737c426dce712c43d9a534a1785a454966b05ae36",
+        "size_bytes": 1047
+      },
+      "nothing11_host_preparation_report": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/actual-build-bindings-nothing11-v1/preparation-report.json",
+        "sha256": "60d9d3d485163c747aabe82c0464d1da6cdd18bbf937f9621ed789dcfc25f47c",
+        "size_bytes": 13937
+      },
+      "nothing11_root_focused_tests": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/nothing11-configuration-recovery-v1/root-focused-tests-v1/summary.json",
+        "sha256": "e4f91072b448ee45bdee35a4d1ee464a0e7175b887350a24ff4205c2b50c3c0f",
+        "size_bytes": 8451
+      }
+    },
+    "selected_source_inventory_scope": "548 files/fifteen projects identifies the selected installed source; the failed after-source-history callback does not verify a fresh full post-invocation inventory",
+    "full_548_file_post_invocation_inventory_verified": false,
+    "selected_source_identity_unchanged": true
   }
 }

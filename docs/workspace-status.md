@@ -10,6 +10,35 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Native continuation is on hold for host storage.** The September 2
+**16:26:15 UTC** reserve check finds **63,488,000,000 bytes** free against the
+unchanged **100 GiB** minimum. An additional **45 GiB** was requested to restore
+that minimum; the full follow-on build budget is separate. Guest free space
+of roughly 267 GiB does not satisfy the host-volume gate. No reserve guard is
+lowered or bypassed.
+
+**Nothing10's native invocation exits 0, but its profile fails and the root
+command exits 1.** The generated configuration changes six SHA-256 leaves,
+not the single top-level field predicted by the request. Source-history and
+strict-settings checks reject that mismatch; the dependent archive-check
+error does not establish archive corruption. The original false profile
+flags and null postcheck remain intact. Source identity stays **86e40**, build
+**`nezha.86e40fe309189fdcd20dff9b`**.
+
+Nothing11 check/bind/preparation commands and **36 focused host tests pass**,
+but **Nothing11 has not executed**. No native-wrapper readiness, fresh
+component/image proof, Package6 result or flashable ROM is claimed. The
+backup-first Selected4/Images6 workflow, no-invalidation five-image stage and
+all signing/AVB/VINTF/super/OTA/boot gates remain pending. Normal Android
+**enforcing**, **4 KiB** and **`working76`** remain unchanged; no phone operation
+occurs. See the [Nothing10 and storage checkpoint](build-progress.md#nothing10-profile-failure-and-host-storage-hold--2026-09-02)
+and [exact receipts](../research/workspace-integration.json).
+
+## Earlier SHA256 source-adoption and query checkpoint
+
+This entry preserves the completed source/query milestone and its then-pending
+Nothing10 transition.
+
 The **SHA-256 hashtree source correction is installed**, and **Config13 and
 Context13 pass** under **`nezha.86e40fe309189fdcd20dff9b`**, epoch **1788144555**.
 One device-tree exchange changes only `BoardConfig.mk` among **548 source

@@ -1,5 +1,54 @@
 # Nezha product and build progress
 
+## Nothing10 profile failure and host-storage hold — 2026-09-02
+
+Nothing10's native invocation runs **15:50:45–16:05:06 UTC** and **exits 0**, but
+**profile completion and validation remain false**, with a null postcheck.
+The genuine root wrapper runs **15:46:24–16:06:23 UTC** and exits **1**. The
+original result, error records and completion are preserved without promotion.
+
+Root diagnosis and full raw configuration comparison identify exactly **six
+changed leaves** within the **254-field** configuration; every other value
+and type is unchanged. `BoardAvbSystemAddHashtreeFooterArgs` becomes
+`["--hash_algorithm", "sha256"]`; five nested `BoardAvbAddHashtreeFooterArgs`
+strings become `"--hash_algorithm sha256"` for **product, system, system_dlkm,
+system_ext and vendor_dlkm**. The request predicted only the top-level list.
+Source-history and strict-settings postchecks reject the incomplete expected
+map. The archive check then lacks current-phase source history; its dependent
+error is **not proof of archive corruption**. The observed after-configuration
+is `da93ab71…`, **319,139 bytes**, and is not admitted by the failed profile.
+
+Ninja is observed, with verified limits and sandbox checks, but
+`ninja_argv_verified=false` and `require_observed_ninja=false`; no fresh
+component or image result is established. Output invalidation/deletion is
+false. All **1,179 HEADs/origins** still match, with **1,170 clean projects and
+nine expected patched projects**. The selected source still covers **548
+files/fifteen projects** and uses the unchanged
+**`nezha.86e40fe309189fdcd20dff9b`** identity; this failure does **not establish
+six successful after-callbacks**. The successful
+**16:16:08 UTC** four-log readback is bounded evidence, not graph admission.
+
+Host-only Nothing11 check, bind and preparation commands close with exit 0 at
+**16:25:28 UTC**. Root's separate **36 focused tests** (13 bridge, 17 source,
+six caller cases) pass at **16:28:09 UTC**, with eleven held inputs unchanged.
+These results neither dispatch Nothing11 nor establish native-wrapper
+readiness or a successful successor profile.
+
+At **16:26:15 UTC**, the maintained host reserve check fails: **63,488,000,000
+bytes** are available against **107,374,182,400 bytes (100 GiB)** required.
+The measured shortfall is about **40.87 GiB**. An additional **45 GiB** was
+requested for the minimum reserve, not the complete follow-on budget. The
+VM's roughly 267 GiB free does not clear the host-volume requirement. Native
+work stays on hold; the guard is unchanged and the failed check starts no VM
+operation or source/output mutation.
+
+Nothing11, backup-first Selected4/Images6, the no-invalidation five-image
+stage and Package6 remain pending. Normal Android enforcing, 4 KiB and
+`working76` are preserved. Signing, full AVB/FEC/VINTF/super/partition checks,
+OTA and device boot remain unverified; no phone operation or flashable ROM is
+established. [Exact forward evidence](../research/workspace-integration.json)
+retains the earlier source/query and Package5 failure history.
+
 ## SHA256 source adoption and Config13/context13 — 2026-09-02
 
 The **reviewed SHA-256 producer correction is installed**, followed by two
