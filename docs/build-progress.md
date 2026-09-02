@@ -1,5 +1,52 @@
 # Nezha product and build progress
 
+## Selected-nine2 and retained-evidence replay — 2026-09-02
+
+The **selected-nine2 native build, postcheck and complete host replay pass**.
+Native execution runs **05:28:33–05:30:17 UTC**, exit 0; the genuine root wrapper
+runs **05:24:51–05:41:09 UTC**, exit 0. The preceding read-only shared capture
+covers 83 queries, and the seven-file proof stage passes before the component
+run. The chosen rebuild is **forced fresh**, not a scheduler-skip, cached-status
+or optional normal-`-n` result.
+
+All **26 producer actions are fresh**, with **eight fresh strict statuses and
+zero reused actions**. Flex's prior strict check is verified, without producing
+or reusing a Flex status. Ninja observation, argv, limits and sandbox checks
+pass for this component run; Nothing8's earlier argv limits remain historical.
+The result intentionally records **`output_invalidated_or_deleted=true`**:
+26 copies and 26 originals are retained while the selected outputs are rebuilt.
+The independent retention-metadata replay passes at **05:50:38 UTC**, checking
+all **109 journal events** and 26 copy/original inode pairs. Those **52 retained
+file bodies are not exported or rehashed on the host**; their post-build binary
+rechecks are native observations, distinct from host metadata replay.
+
+The four complete exports and final nine-field stat seals cover **203 files /
+165,002,879 bytes**. Full consumer replay passes at **05:52:30 UTC**, covering
+36 recorded native verification attempts, all 72 attempt streams and both build
+streams. The root's separate **05:53:11–05:53:17 UTC `--check-only`** run exits 0
+and reproduces the consumer output, host-only package-source projection and
+recorded component observations byte-for-byte. The consumer is blocked from
+filesystem, process and network access.
+
+All **six native callback results match before and after selected-nine2**.
+Against Nothing8, **only five complete callbacks are identical**;
+`verify_protected_inputs` contains the same **25 `ordinary_policy_runtime`
+rows** plus **180 `selected_app_inputs` rows**. This expected expanded result
+does not introduce a new guard. The build remains bound to
+**`nezha.a7db36604f45fcc657373f89`**, epoch **1788144555**.
+
+The host-only package-context projection does not execute Package4, reobserve
+the 173 GMS prerequisite files or establish current package-time physical state.
+The post-selected2 four-log readback retains output `.ninja_deps` at
+**171,758,884 bytes** and `.ninja_log` at **63,151,029 bytes**; it is not image
+admission. Images4, Package4, final VINTF/AVB/partition, signed-chain/rollback,
+OTA and boot/hardware checks remain separate. Normal Android enforcement,
+4 KiB, `working76`, kernel warnings and `test-keys` are unchanged; no phone
+operation occurs and no complete or flashable ROM is established. The
+[selected-nine2 record](../research/workspace-integration.json) binds exact
+native, export, retention and full-replay evidence. Earlier checkpoints retain
+their original scope and then-pending work.
+
 ## Config11/context11 and Nothing8 — 2026-09-02
 
 The **native queries, ordinary Nothing8 and six physical metadata value checks

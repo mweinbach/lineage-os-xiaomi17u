@@ -10,6 +10,32 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **selected-nine2 native build and complete retained-evidence replay pass**.
+Native execution exits 0 at **2026-09-02 05:30:17 UTC**, followed by genuine
+outer-wrapper exit 0 at **05:41:09 UTC**. The deliberately forced-fresh build
+verifies **26 fresh actions, eight fresh strict statuses and zero reuse**.
+Its 26 retained copies and 26 originals are preserved; host metadata replay
+checks all **109 journal events**, without exporting those 52 file bodies.
+
+Full host replay verifies **203 evidence files / 165,002,879 bytes**, including
+36 recorded native verification attempts and 72 streams. All three replay
+products reproduce byte-for-byte with consumer filesystem/process/network
+access blocked. Six native callbacks match before/after; compared with Nothing8,
+**five** are identical and the protected callback retains the same **25 ordinary
+inputs plus 180 selected-app inputs**. No new guard is introduced.
+
+The package-context projection uses recorded component observations: it is not
+Package4 execution or a fresh observation of the **173 GMS files**. Images4,
+Package4, final VINTF/AVB/partition, signing/rollback, OTA and boot/hardware gates
+remain open. Enforcing normal Android, 4 KiB, `working76`, kernel warnings and
+`test-keys` are unchanged; no phone operation occurs and the ROM is **not
+flashable**. See the dated [selected-nine2 checkpoint](build-progress.md#selected-nine2-and-retained-evidence-replay--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier query/Nothing8 checkpoint
+
+This entry preserves its original query/build scope and then-pending work.
+
 The **548-file/fifteen-project source passes config11/context11 and ordinary
 Nothing8**. Nothing8 finishes with native exit 0 at **2026-09-02 04:25:20 UTC**;
 its genuine root wrapper exits 0 at **04:28:56 UTC**. Full host review retains
