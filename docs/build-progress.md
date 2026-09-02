@@ -1,5 +1,46 @@
 # Nezha product and build progress
 
+## Images5 and complete evidence replay — 2026-09-02
+
+The **Images5 native build, postcheck and complete original replay pass**.
+Native execution runs **10:53:23–10:56:15 UTC**, exit 0. Direct host session
+**99619** is observed closed at **11:00:30 UTC**; no outer wrapper or separate
+process-start/duration is inferred from polling. All five phase checks and
+Ninja observation, argv, limits and sandbox checks pass, with observation
+required. The postcheck verifies **seven fresh actions**, recomputes the
+**plat/product/system_ext** sidecars and checks **mi_ext/odm/recovery/vendor**
+images. Four original image inodes and three sidecar copies plus three
+originals remain retained; `working76` remains the prebuilt recovery derivative.
+
+The successful unchanged host replay finishes at **11:14:38 UTC**; the root's
+independent repeat runs **11:15:18–11:15:20 UTC**, exit 0, with byte-identical
+output and the full strict-stat check passing. Replay covers **56 complete
+files / 144,374,566 bytes**, including both native build streams, **twelve
+current/preserved metadata files**, **seven compiler/policy pairs**, nine
+sidecar active/copy/original bodies with nine independent native inodes, twelve
+image-journal events, seventeen sidecar-journal events and nine staged proofs.
+The first host replay failed its final whole-file-stat check; its original
+empty stdout and failure stderr remain preserved. Diagnostic and repeat runs
+pass with unchanged code and guards. The cause is **unproven**; this retained
+host replay failure is separate from the successful native Images5 build.
+
+Large image and graph bodies are **not exported or read on the host**; image
+hashes rely on the completed native postcheck, not host rehashing. Ordinary
+**`postcheck.metadata.verified=true`** does not establish the image packaging
+hook: **`images.metadata_hook_verified=false`**, runtime and signed-parent-chain
+verification remain false. Neither replay nor byte equality establishes a
+fresh metadata rewrite or image reproducibility.
+
+All six complete callbacks match before/after Images5. Source **548/fifteen
+projects**, **1,179 revisions/origins**, **254 configuration fields**,
+**`nezha.b429840950d789320b04847a`**, epoch **1788144555** and the existing
+**171,821,860-byte `.ninja_deps` guard** remain unchanged. Package5 is a separate
+pending build/ZIP gate. Normal Android enforcing, 4 KiB, `working76`, kernel
+warnings and `test-keys` remain unchanged. Final AVB/VINTF/partition,
+signing/rollback, OTA and boot/hardware remain open; no phone operation occurs
+and no complete or flashable ROM is established. The [Images5 record](../research/workspace-integration.json)
+binds exact successful receipts and retains all prior failures and checkpoints.
+
 ## Selected3 and complete evidence replay — 2026-09-02
 
 The **Selected3 native build, postcheck and complete original replay pass**.

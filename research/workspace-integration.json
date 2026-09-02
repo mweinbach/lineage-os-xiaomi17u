@@ -7805,5 +7805,245 @@
         "size_bytes": 621
       }
     }
+  },
+  "images5_complete_replay_checkpoint_20260902": {
+    "status": "verified_images5_native_build_postcheck_and_complete_original_replay_not_package_or_rom",
+    "guide": "docs/build-progress.md#images5-and-complete-evidence-replay--2026-09-02",
+    "preceding_checkpoint_commit": "413644cefd6ecf604a016954e7a2c3bd576e572c",
+    "preceding_checkpoint": "selected_nine3_complete_replay_checkpoint_20260902",
+    "source_files": 548,
+    "source_projects": 15,
+    "source_lock_revision_and_origin_matches": 1179,
+    "configuration_fields": 254,
+    "native": {
+      "started_at": "2026-09-02T10:53:23.157380+00:00",
+      "finished_at": "2026-09-02T10:56:15.092196+00:00",
+      "exit_code": 0,
+      "all_five_phase_checks_passed": true,
+      "all_four_ninja_checks_and_required_observation_passed": true,
+      "six_complete_callback_maps_equal_before_after": true,
+      "held_inputs_full_hash_and_nine_stats_checked_by_root": 24
+    },
+    "direct_host_completion": {
+      "session_id_reported_by_root": 99619,
+      "exit_observed_at": "2026-09-02T11:00:30.179Z",
+      "exit_code": 0,
+      "outer_wrapper_executed": false,
+      "poll_wall_time_is_not_process_duration": true
+    },
+    "image_postcheck": {
+      "verified": true,
+      "fresh_actions": 7,
+      "action_goals": [
+        "recoveryimage",
+        "mi_extimage",
+        "vendorimage",
+        "odmimage",
+        "plat_sepolicy_and_mapping.sha256",
+        "system_ext_sepolicy_and_mapping.sha256",
+        "product_sepolicy_and_mapping.sha256"
+      ],
+      "three_framework_sidecars_recomputed": true,
+      "sidecars": [
+        "plat",
+        "product",
+        "system_ext"
+      ],
+      "four_images": {
+        "mi_ext": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/mi_ext.img",
+          "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+          "size_bytes": 111198208
+        },
+        "odm": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/odm.img",
+          "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+          "size_bytes": 4767621120
+        },
+        "recovery": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/recovery.img",
+          "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+          "size_bytes": 104857600
+        },
+        "vendor": {
+          "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/vendor.img",
+          "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+          "size_bytes": 959709184
+        }
+      },
+      "metadata_hook_verified": false,
+      "runtime_verified": false,
+      "signed_parent_chain_verified": false,
+      "byte_equality_used_as_fresh_action_proof": false
+    },
+    "ordinary_metadata_postcheck": {
+      "verified": true,
+      "scope": "postcheck.metadata success does not imply postcheck.images.metadata_hook_verified, runtime or signed-parent-chain success."
+    },
+    "retention": {
+      "original_image_inodes_retained": 4,
+      "sidecar_copies": 3,
+      "sidecar_originals": 3
+    },
+    "build_number": "nezha.b429840950d789320b04847a",
+    "build_epoch": 1788144555,
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "post_images5_logs": {
+      "root_finished_at": "2026-09-02T11:01:15.835496+00:00",
+      "exit_code": 0,
+      "output_logs": {
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_deps": {
+          "sha256": "878c7ea46b1257149e7af8a3b9fdd28f9810c2caed1c9e54073efd9d9bbb215c",
+          "size_bytes": 171821860
+        },
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_log": {
+          "sha256": "f13f7bf9ab259a8fd3a4d30619213adf5017e1efe7287a1877d9892a38a5e5ca",
+          "size_bytes": 63211582
+        }
+      },
+      "existing_ninja_deps_guard_unchanged": true,
+      "graph_or_package_admission_granted": false
+    },
+    "complete_replay": {
+      "verified": true,
+      "successful_unchanged_host_started_at": "2026-09-02T11:14:35.674415+00:00",
+      "successful_unchanged_host_finished_at": "2026-09-02T11:14:38.046940+00:00",
+      "root_repeat_started_at": "2026-09-02T11:15:18.037203+00:00",
+      "root_repeat_finished_at": "2026-09-02T11:15:20.401979+00:00",
+      "root_repeat_exit_code": 0,
+      "successful_host_and_root_outputs_byte_identical": true,
+      "full_files_rehashed": 56,
+      "full_bytes_rehashed": 144374566,
+      "fresh_actions_replayed": 7,
+      "all_host_stat_records_unchanged": true,
+      "all_native_guard_maps_before_after_equal": true,
+      "all_nine_staged_proofs_unchanged": true,
+      "compiler_installed_policy_pairs": 7,
+      "metadata_current_and_preserved_files": 12,
+      "metadata_original_validator_equal": true,
+      "image_journal_events": 12,
+      "sidecar_journal_events": 17,
+      "sidecar_active_copy_retained_bodies": 9,
+      "sidecar_independent_native_inodes": 9,
+      "four_original_image_moves_recorded": true,
+      "preservation_finished_before_native_build": true,
+      "recovery_original_proof_parser_passed": true,
+      "large_image_and_graph_bodies_read_on_host": false,
+      "native_image_hash_checks_rely_on_completed_postcheck": true,
+      "complete_native_build_streams": {
+        "stderr": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-5/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "path": "/work/validation/nezha-oem-policy-integration-20260829/first-target-files-images-5/build.stdout",
+          "sha256": "ea2f6e438041fad278dca22347c514cac4626f0c43770a2b577f84e42c37fbbb",
+          "size_bytes": 7180
+        }
+      }
+    },
+    "historical_first_host_replay_failure": {
+      "failed_at": "final_whole_file_stat_check",
+      "original_empty_stdout_and_failure_stderr_preserved": true,
+      "subsequent_unchanged_diagnostic_and_two_cli_runs_passed": true,
+      "successful_runs_changed_code_or_guards": false,
+      "cause_proven": false,
+      "atime_attribution_claimed": false,
+      "native_images5_failure": false
+    },
+    "limits": {
+      "image_metadata_packaging_hook_verified": false,
+      "fresh_metadata_rewrite_established_by_host_replay": false,
+      "image_reproducibility_verified": false,
+      "large_image_or_graph_host_export_claimed": false,
+      "runtime_verified": false,
+      "signed_parent_chain_verified": false,
+      "package5_verified": false,
+      "target_files_zip_verified": false,
+      "final_avb_vintf_partition_verified": false,
+      "signed_flashable_rom_verified": false,
+      "ota_verified": false,
+      "hardware_or_rom_boot_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Package5 with actual build and ZIP validation; final AVB/VINTF/partition, signing/rollback, OTA and boot/hardware remain separate.",
+    "evidence": {
+      "native_result": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-images-5-v1/stdout.jsonl",
+        "sha256": "d4156b93fc9534ef450e3a965bba61f7863d844dffa88eeccef7bb96727e080a",
+        "size_bytes": 10625002
+      },
+      "native_request": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-images-5-v1/request.json",
+        "sha256": "2e609bc9bb7bf9b3bd276643f1982ddf23182de15131f0502ceb950c10004bc1",
+        "size_bytes": 5559393
+      },
+      "root_native_review": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-images-5-observation-v1/native-review.json",
+        "sha256": "c8fecabc5255d414c727b6ae3b6c93d7e180297763330dab14eb7e8d4d470fc7",
+        "size_bytes": 886
+      },
+      "direct_host_completion": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-images-5-observation-v1/tool-completion.json",
+        "sha256": "fdd453e4b999682aeaa730147bb48300e9cd0bf4ede46fb716f3d717f5c06c42",
+        "size_bytes": 341
+      },
+      "post_images5_log_result": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-four-logs-v1/actual-v1/stdout.json",
+        "sha256": "0fc592d1953b25c413c7da93459c4838dfde9c6f048b2a8b19b6362358b08463",
+        "size_bytes": 80396
+      },
+      "post_images5_log_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-four-logs-v1/actual-v1/completion.json",
+        "sha256": "ffbc6103a5716960b280348c5a81592bdb9840682adc5f4758f7380b39f3976e",
+        "size_bytes": 619
+      },
+      "root_complete_replay": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/root-complete-replay-v1/stdout.json",
+        "sha256": "c7163ee263f24a9864794c17461be7b8676e39d3347dae7c80c5df47a7657e2f",
+        "size_bytes": 29090
+      },
+      "root_complete_replay_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/root-complete-replay-v1/completion.json",
+        "sha256": "f6a96a18f4eee31222feaf595fd40af6644cd1e49a8bb2b5aebf4534d111156c",
+        "size_bytes": 600
+      },
+      "successful_unchanged_host_replay": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/unchanged-retry-v1/stdout.json",
+        "sha256": "c7163ee263f24a9864794c17461be7b8676e39d3347dae7c80c5df47a7657e2f",
+        "size_bytes": 29090
+      },
+      "successful_unchanged_host_replay_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/unchanged-retry-v1/completion.json",
+        "sha256": "036c632e0556242aee71109e2e5ad9f337fd86982008117c544e50526406d0f5",
+        "size_bytes": 600
+      },
+      "unchanged_original_replay_driver": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/replay_complete.py",
+        "sha256": "0a9e47d17d1425b7430e42cd7d9b67492c0a6aa27b8da72f09cec861066c7865",
+        "size_bytes": 15116
+      },
+      "historical_first_replay_stdout": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/complete-replay.stdout.json",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      "historical_first_replay_stderr": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/complete-replay.stderr.log",
+        "sha256": "9aef170a3ff39c7e8340cfdead0d7287d5b7461112b7cb922bbfde3d407da8cb",
+        "size_bytes": 801
+      },
+      "unchanged_final_stat_diagnostic": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-images5-evidence-v1/final-stat-diagnostic-v1.json",
+        "sha256": "e31716af4cc67ae1427b640832e61e113004a35b6cab628f65a6e5b8d96a6521",
+        "size_bytes": 559
+      }
+    }
   }
 }

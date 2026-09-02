@@ -10,6 +10,33 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **Images5 native build, postcheck and complete evidence replay pass**.
+Native execution exits 0 at **2026-09-02 10:56:15 UTC**, with **seven fresh
+actions, three recomputed policy sidecars and four image checks**. Ninja
+observation, argv, limits and sandbox checks pass, with observation required.
+All six complete callback maps match before/after.
+
+The root's successful original replay covers **56 files / 144,374,566 bytes**,
+including twelve current/preserved metadata files, seven compiler/policy pairs
+and retained sidecar evidence. Four original image inodes and three sidecar
+copies plus three originals remain retained. Large image and graph bodies are
+**not read on the host**; image hashes remain completed native postcheck proof.
+
+Ordinary **`postcheck.metadata.verified=true`** is separate from
+**`images.metadata_hook_verified=false`**. Image reproducibility, runtime and
+the signed parent chain remain unverified. Source **548/fifteen projects**,
+**1,179 revisions/origins**, **254 configuration fields**,
+**`nezha.b429840950d789320b04847a`**, epoch **1788144555**, enforcing normal
+Android, 4 KiB and the `working76` prebuilt derivative remain unchanged.
+**Package5 is next**; final AVB/VINTF/partition, signing/rollback, OTA and
+boot/hardware gates remain open. No phone operation occurs and the ROM is
+**not flashable**. See the dated [Images5 checkpoint](build-progress.md#images5-and-complete-evidence-replay--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Selected3 checkpoint
+
+This entry preserves its component-only scope and then-pending image work.
+
 The **Selected3 native build and complete original-evidence replay pass**.
 Native execution exits 0 at **2026-09-02 09:57:46 UTC**, with **26 fresh
 producer actions, eight fresh strict statuses and zero reuse**. Ninja
