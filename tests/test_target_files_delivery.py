@@ -522,7 +522,8 @@ class TargetFilesDeliveryTests(unittest.TestCase):
         after = before + b"# synthetic constructor result\n"
         payloads = {board_path: after, g.POLICY_IMAGE_DELIVERY_INCLUDE.as_posix(): b"# synthetic delivery guard\n"}
         for contract_id, record in ((construction.POLICY3_CONTRACT_ID, construction.POLICY3_CONTRACT),
-                                    (construction.CHECKSUM_CONTRACT_ID, construction.CHECKSUM_CONTRACT)):
+                                    (construction.CHECKSUM_CONTRACT_ID, construction.CHECKSUM_CONTRACT),
+                                    (construction.MODE_FLAGS_CONTRACT_ID, construction.MODE_FLAGS_CONTRACT)):
             plan = {"target_files_metadata": {"policy_image_delivery": {}}, "camera_property_capability": {},
                     "factory_property_contexts_capability": {}, construction.BINDING: {"contract_id": contract_id}}
             def derive(raw, contract_path=None):

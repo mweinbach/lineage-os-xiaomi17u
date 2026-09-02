@@ -199,6 +199,10 @@ CHECKSUM_SOURCE_CONTRACT = {
     "sha256": "ee28f64d09c75d724c0be5dc07d98816cf30c4f59cf09a45c6163f6c96428e01",
     "size_bytes": 1455,
 }
+MODE_FLAGS_CONTRACT = "config/nezha-rom-construction-source-mode-flags-v1.json"
+MODE_FLAGS_CONTRACT_ID = "nezha-metadata-mode-flags-first-target-files-source-v1"
+# Bound only after the complete metadata mode-flags base is measured.
+MODE_FLAGS_CONTRACT_SHA256 = "8359d6510f76b66961824a89b4d58eeaa950181510c6aa73f8a374e80bd1b227"
 POLICY3_IMAGE_CONTRACT = "config/nezha-policy-image-delivery-policy3.json"
 POLICY3_IMAGE_CONTRACT_ID = "nezha-policy3-final-leaf-metadata-delivery-v1"
 POLICY3_BASIS = {
@@ -269,6 +273,24 @@ def _checksum_contract(raw):
     return value
 
 
+def _mode_flags_contract(raw):
+    value = metadata._json(raw)
+    old, _ = load_contract(ROOT / CHECKSUM_CONTRACT)
+    require(type(value) is dict and set(value) == set(old)
+            and type(value["schema_version"]) is int and value["schema_version"] == 3
+            and value["contract_id"] == MODE_FLAGS_CONTRACT_ID,
+            "unknown metadata mode-flags construction source schema or fields")
+    # The installer fix changes its complete generated base, not source
+    # composition, image inputs, BoardConfig, the construction guard or scope.
+    _checksum_contract(metadata.encoded(dict(value, contract_id=CHECKSUM_CONTRACT_ID)))
+    for name in set(old) - {"contract_id", "base_admission"}:
+        require(metadata.encoded(value[name]) == metadata.encoded(old[name]),
+                "metadata mode-flags construction changes preserved checksum field: " + name)
+    require(value["base_admission"] != old["base_admission"],
+            "metadata mode-flags construction requires its separately measured complete base")
+    return value
+
+
 def load_contract(path=None):
     """Omission retains v1; successors require exact explicit descriptor bytes."""
     if path is None:
@@ -276,18 +298,20 @@ def load_contract(path=None):
     reader = metadata.Reader()
     selected = reader.read(path)
     value = metadata._json(selected)
-    if type(value) is not dict or value.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID):
+    if type(value) is not dict or value.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
         reader.recheck()
         return _v1_load_contract(path)
+    mode_flags = value["contract_id"] == MODE_FLAGS_CONTRACT_ID
     checksum = value["contract_id"] == CHECKSUM_CONTRACT_ID
-    record = CHECKSUM_CONTRACT if checksum else POLICY3_CONTRACT
-    digest = CHECKSUM_CONTRACT_SHA256 if checksum else POLICY3_CONTRACT_SHA256
-    require(digest is not None, "checksum construction is unbound; missing actual complete base")
+    record = MODE_FLAGS_CONTRACT if mode_flags else CHECKSUM_CONTRACT if checksum else POLICY3_CONTRACT
+    digest = MODE_FLAGS_CONTRACT_SHA256 if mode_flags else CHECKSUM_CONTRACT_SHA256 if checksum else POLICY3_CONTRACT_SHA256
+    label = "metadata mode-flags" if mode_flags else "checksum"
+    require(digest is not None, label + " construction is unbound; missing actual complete base")
     raw = reader.read(ROOT / record)
     require(metadata.identity(raw)["sha256"] == digest,
             "maintained construction successor contract changed; review a new binding")
     require(selected == raw, "construction successor selector differs from the maintained contract")
-    contract = _checksum_contract(raw) if checksum else _policy3_contract(raw)
+    contract = _mode_flags_contract(raw) if mode_flags else _checksum_contract(raw) if checksum else _policy3_contract(raw)
     reader.recheck()
     return contract, metadata.identity(raw)
 
@@ -306,7 +330,7 @@ def derive_board(raw, contract_path=None):
         return _v1_derive_board(raw)
     contract, _ = load_contract(contract_path)
     return (_derive_policy3_board(raw, contract)
-            if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID) else _v1_derive_board(raw))
+            if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID) else _v1_derive_board(raw))
 
 
 def _restore_policy3_board(raw, contract):
@@ -322,7 +346,7 @@ def restore_board(raw, contract_path=None):
         return _v1_restore_board(raw)
     contract, _ = load_contract(contract_path)
     return (_restore_policy3_board(raw, contract)
-            if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID) else _v1_restore_board(raw))
+            if contract["contract_id"] in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID) else _v1_restore_board(raw))
 
 
 def _check_policy3_base(plan, payloads, contract):
@@ -333,7 +357,7 @@ def _check_policy3_base(plan, payloads, contract):
     delivery = plan.get("target_files_metadata", {}).get("policy_image_delivery", {}).get("contract")
     require(metadata.encoded(delivery) == metadata.encoded(contract["selected_policy_image_contract"]),
             "policy3 complete base uses a different image delivery contract")
-    if contract["contract_id"] == CHECKSUM_CONTRACT_ID:
+    if contract["contract_id"] in (CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
         if __package__:
             from . import target_files_metadata_checksum as checksum
         else:
@@ -355,7 +379,7 @@ def _check_policy3_base(plan, payloads, contract):
 
 def apply(plan, payloads, contract_path):
     contract, identity = load_contract(contract_path)
-    if contract["contract_id"] not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID):
+    if contract["contract_id"] not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
         return _v1_apply(plan, payloads, contract_path)
     _check_policy3_base(plan, payloads, contract)
     result, files = copy.deepcopy(plan), dict(payloads)
@@ -370,9 +394,10 @@ def apply(plan, payloads, contract_path):
 
 def validate(plan, payloads):
     binding = plan.get(BINDING)
-    if type(binding) is not dict or binding.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID):
+    if type(binding) is not dict or binding.get("contract_id") not in (POLICY3_CONTRACT_ID, CHECKSUM_CONTRACT_ID, MODE_FLAGS_CONTRACT_ID):
         return _v1_validate(plan, payloads)
-    record = CHECKSUM_CONTRACT if binding["contract_id"] == CHECKSUM_CONTRACT_ID else POLICY3_CONTRACT
+    record = (MODE_FLAGS_CONTRACT if binding["contract_id"] == MODE_FLAGS_CONTRACT_ID
+              else CHECKSUM_CONTRACT if binding["contract_id"] == CHECKSUM_CONTRACT_ID else POLICY3_CONTRACT)
     contract, identity = load_contract(ROOT / record)
     expected = {"contract": identity, "contract_id": contract["contract_id"],
                 "base_admission": contract["base_admission"], "scope": contract["scope"]}

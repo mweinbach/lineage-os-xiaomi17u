@@ -1944,6 +1944,8 @@ def _policy3_construction_path(plan):
         return ROOT / "config/nezha-rom-construction-source-policy3-v1.json"
     if binding.get("contract_id") == "nezha-metadata-checksum-first-target-files-source-v1":
         return ROOT / "config/nezha-rom-construction-source-checksum-v1.json"
+    if binding.get("contract_id") == "nezha-metadata-mode-flags-first-target-files-source-v1":
+        return ROOT / "config/nezha-rom-construction-source-mode-flags-v1.json"
     return None
 
 

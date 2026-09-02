@@ -415,5 +415,66 @@ class ChecksumConstructionSourceTests(unittest.TestCase):
                     source.apply(plan, files, self.root / path)
 
 
+class ModeFlagsConstructionSourceTests(ChecksumConstructionSourceTests):
+    """Reuse the checksum source checks for the runtime-only BASE successor."""
+
+    def setUp(self):
+        super().setUp()
+        # The new selector must validate the real bound checksum predecessor;
+        # only its own descriptor digest is replaced for synthetic fixtures.
+        self.path.write_bytes((self.public_root / source.CHECKSUM_CONTRACT).read_bytes())
+        self.checksum, self.checksum_id = source.load_contract(self.path)
+        self.path = self.root / source.MODE_FLAGS_CONTRACT
+        self.contract = {**copy.deepcopy(self.checksum),
+                         "contract_id": source.MODE_FLAGS_CONTRACT_ID, "base_admission": None}
+        self.path.write_bytes(source.metadata.encoded(self.contract))
+
+    def synthetic_binding(self, contract):
+        raw = source.metadata.encoded(contract)
+        self.path.write_bytes(raw)
+        return mock.patch.object(source, "MODE_FLAGS_CONTRACT_SHA256", source.metadata.identity(raw)["sha256"])
+
+    def test_checksum_public_binding_preserves_both_predecessors(self):
+        with mock.patch.object(source, "ROOT", self.public_root):
+            actual, _ = source.load_contract(self.public_root / source.MODE_FLAGS_CONTRACT)
+            self.assertEqual(source.load_contract(), self.original)
+            self.assertEqual(source.load_contract(self.public_root / source.POLICY3_CONTRACT), (self.policy3, self.policy3_id))
+            self.assertEqual(source.load_contract(self.public_root / source.CHECKSUM_CONTRACT), (self.checksum, self.checksum_id))
+            self.assertNotEqual(actual["base_admission"], self.checksum["base_admission"])
+            self.assertEqual(set(actual), set(self.checksum))
+            for name in set(self.checksum) - {"contract_id", "base_admission"}:
+                self.assertEqual(actual[name], self.checksum[name], name)
+            after = source.derive_board(self.board, self.public_root / source.MODE_FLAGS_CONTRACT)
+            self.assertEqual(source.restore_board(after, self.public_root / source.MODE_FLAGS_CONTRACT), self.board)
+            self.assertEqual(source.metadata.identity(source.render_guard()), self.checksum["guard"])
+
+    def test_checksum_missing_actual_binding_stops_before_payload_or_process(self):
+        class Unreadable(dict):
+            def get(self, *args): raise AssertionError("pending plan inspected")
+            def __getitem__(self, key): raise AssertionError("pending payload inspected")
+        with mock.patch.object(source, "MODE_FLAGS_CONTRACT_SHA256", None), \
+             mock.patch("subprocess.run", side_effect=AssertionError("native dispatch")):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "unbound"):
+                source.apply(Unreadable(), Unreadable(), self.path)
+        with self.synthetic_binding(self.contract):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "missing actual bindings"):
+                source.apply(Unreadable(), Unreadable(), self.path)
+
+    def test_mode_flags_checksum_base_and_selection_cannot_be_relabelled(self):
+        plan, files, contract = self.fixture()
+        reused = {**contract, "base_admission": copy.deepcopy(self.checksum["base_admission"])}
+        with self.synthetic_binding(reused):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "separately measured complete base"):
+                source.load_contract(self.path)
+        with self.synthetic_binding(contract):
+            selected, payloads = source.apply(plan, files, self.path)
+            changed = copy.deepcopy(selected)
+            changed[source.BINDING]["contract_id"] = source.CHECKSUM_CONTRACT_ID
+            with self.assertRaises(source.ConstructionSourceError):
+                source.validate(changed, payloads)
+            with self.assertRaisesRegex(source.ConstructionSourceError, "complete exact selected base"):
+                source.apply(plan, files, self.root / source.CHECKSUM_CONTRACT)
+
+
 if __name__ == "__main__":
     unittest.main()
