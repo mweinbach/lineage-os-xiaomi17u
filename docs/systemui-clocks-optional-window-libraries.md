@@ -1,5 +1,31 @@
 # SystemUI Clock optional Window libraries
 
+The **selected-nine native build passes** at
+**2026-09-02 00:18:20 UTC**, followed by actual host exit 0 at **00:27:52 UTC**.
+BCR and eight Clocks have **26 verified fresh outputs**: nine built APKs, nine
+installed APKs and eight strict statuses, with none reused. BCR's status is
+normal; seven corrected Clock statuses use qualified detached goals. Flex's
+prior strict check is equivalent, but its status is neither produced nor reused.
+
+All **36 native verifiers** pass for source and installed signatures
+and manifests, not intermediate APK signatures. BCR retains its signer, eight
+installed Clocks match the platform certificate, and all nine manifest semantic
+comparisons pass. All 180 inputs, six normalized ordinary guards, 545 source
+files/fifteen projects, 1,179 HEAD/origin matches and 254 configuration fields
+remain bound to Nothing7 and admission. Six metadata bodies match build
+**`nezha.b51a6b5609d2001e9ae1f7ae`** and epoch **1788144555**.
+
+The complete result/action receipts match. **Independent full host replay passes
+at 00:45:22 UTC**, rehashing all **201 retained files / 186,601,892 bytes** and
+reproducing the original consumer result. It verifies captured component-end
+observations, not fresh package-time VM observations or Package3 execution.
+Images3, Package3, signed boot-chain and device tests remain separate gates. The
+original failed seven-Clock audit stays recorded; it is not relabeled successful. Normal Android
+enforcement, 4 KiB, working76, selected-kernel warnings and `test-keys` remain;
+no phone operation occurs and complete-ROM readiness is false. See the
+[selected-nine checkpoint](../research/workspace-integration.json). Earlier
+checkpoints below preserve their dated limits.
+
 The **regenerated selected-app graph is qualified**, with the completed shared
 capture reviewed at **2026-09-02 00:00:32 UTC** after actual host exit 0 at
 **2026-09-01 23:58:47 UTC**. All 83 read-only queries complete with exit 0 and

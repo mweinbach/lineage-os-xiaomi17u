@@ -10,6 +10,34 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **selected-nine native build and retained-evidence replay pass**. BCR and all
+eight Clock apps build from **2026-09-02 00:16:36 to 00:18:20 UTC**, with native
+exit 0 and actual host completion at **00:27:52 UTC**, also exit 0. The complete
+result/action review and raw-proof replay verify **26 fresh outputs, zero reused**:
+nine built APKs, nine installed APKs and eight strict status files. BCR's status uses
+its normal route; seven corrected Clocks use qualified detached goals. Flex's
+prior strict check is equivalent, but no Flex status is produced or reused.
+
+All **180 selected input pins** match admission and before/after guards. The six
+normalized ordinary guards equal Nothing7, with **545 source files/fifteen
+projects**, **1,179 matching HEADs/origins** and all **254 configuration fields**
+preserved. The **36 successful native verifiers** cover source and installed APKs,
+not intermediate APK signatures: BCR retains its signer, installed Clocks match
+the platform certificate, and all nine manifest comparisons pass. Six metadata
+bodies match **`nezha.b51a6b5609d2001e9ae1f7ae`** and epoch **1788144555**.
+
+The **201-file retained-evidence export completes with exit 0**, and independent
+full host replay passes at **00:45:22 UTC**, rehashing **186,601,892 bytes** and
+reproducing the original consumer result. This verifies captured component-end
+observations, not fresh package-time VM observations or Package3 execution.
+Images3, Package3 and final VINTF/AVB/partition and device tests remain separate
+gates. The selected-kernel warnings, `test-keys`, enforcing normal Android,
+4 KiB and working76 remain;
+complete-ROM readiness is false and no phone operation occurs. See
+[build progress](build-progress.md) and the
+[selected-nine checkpoint](../research/workspace-integration.json). Earlier
+checkpoints below retain their original scope and then-pending work.
+
 The **shared graph capture and eight raw Clock configuration readbacks pass**.
 The capture's actual host process exits 0 at **2026-09-01 23:58:47 UTC**; complete
 host replay review passes at **2026-09-02 00:00:32 UTC**. All **83 read-only

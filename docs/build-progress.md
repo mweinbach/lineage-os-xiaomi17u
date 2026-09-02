@@ -1,5 +1,57 @@
 # Nezha product and build progress
 
+The **selected-nine native build and full retained-evidence replay pass**, with
+native execution at **2026-09-02 00:16:36–00:18:20 UTC**, exit 0, and actual host
+completion at **00:27:52 UTC**, exit 0. The complete result and action receipt
+agree on **26 fresh outputs, zero reused**: nine built APKs, nine installed APKs
+and eight strict statuses. Each is absent before/present after. BCR uses its
+normal strict route; seven corrected Clocks use explicitly qualified status
+goals. Flex has fresh APK outputs and verified prior-check equivalence, without
+new or reused status production. The earlier two-pass/seven-mismatch audit
+retains its failed overall result.
+
+The **36 successful native verification commands** comprise signature
+and manifest checks on nine source APKs and nine installed APKs; they do not
+verify intermediate APK signatures. BCR preserves its source signer, all eight
+installed Clocks match the platform certificate, and nine manifest semantic
+comparisons pass. Six captured metadata bodies match
+**`nezha.b51a6b5609d2001e9ae1f7ae`**, epoch **1788144555**, hostname and the
+expected `BP4A.251205.006` fingerprint/thumbprint ending in `test-keys`.
+
+All **180 input pins** match admission and complete before/after guards. The
+normalized six ordinary callbacks match Nothing7, preserving **545 files and
+modes/fifteen projects**, **1,179 pinned HEADs/origins**, nine reviewed locally
+patched projects and all **254 configuration fields**. Ninja argv, sandbox and
+resource-limit checks pass without a process, timeout, disk-floor or stream
+overflow fault. Recorded native stdout is 6,277 bytes; native stderr is empty.
+
+The retained prelaunch Flex replay failure routed qualified large graphs through
+a generic 1 GiB file bound. A narrow host adapter admits only exact qualified
+graph path/hash/size rows within the graph bounds, retaining the generic limit,
+original controls and full graph qualification. The original failure and
+[repair evidence](../research/workspace-integration.json) remain recorded;
+that failure makes no native call or source/output change.
+
+All **201 retained files** are exported with exit 0. Independent host replays
+finish at **00:44:13 UTC** and **00:45:22 UTC**, rehashing **186,601,892 bytes**
+and producing identical output through the unchanged consumer. Its 198-file
+proof closure includes the 191 action evidence files and required earlier/current
+records; the export also retains the original native result and both build
+streams. All 36 native attempts, 72 verifier streams and four final nine-field
+stat seals pass replay. The observations are the captured component-end rows:
+no fresh package-time VM observation, GMS prerequisite replay or Package3
+execution is claimed. The full offline suite on
+`d8591b7` passes **4,417 tests, zero skips, in 166.978 seconds**, before this
+documentation delta. That suite is not Android build or hardware validation.
+
+Images3, Package3 and final VINTF/AVB/partition and hardware checks remain open,
+as do whole-ROM signing and boot validation. Selected-kernel warnings and
+`test-keys` remain visible; normal Android enforcement, 4 KiB and working76 are
+unchanged. No phone operation occurs and complete-ROM readiness remains false.
+The [selected-nine record](../research/workspace-integration.json) binds exact
+native, host, action, export and independent replay receipts. Earlier checkpoints
+below keep their dated scope and failures.
+
 The **completed shared capture qualifies the regenerated selected-app graph**,
 without executing an app build or checker. Host session 70086 exits 0 at
 **2026-09-01 23:58:47 UTC**, and complete replay review passes at
