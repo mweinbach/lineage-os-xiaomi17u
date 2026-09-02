@@ -10,6 +10,33 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **corrected Package5 post-build supplement and complete finite-evidence
+replay pass**. The separate verifier runs in the **VM Python supervisory
+harness**, finishing at **2026-09-02 12:17:30 UTC**, without rerunning the build.
+It validates the **two original fresh directory/ZIP producer actions**, fresh
+metadata-hook execution, **205 metadata members** and **221 selected ZIP
+members**. The original native-exit-0/host-exit-1 result retains its false
+profile flags and null postcheck; the supplement does not rewrite that failure.
+
+Root replay verifies **242 complete files / 168,788,306 bytes**, including 219
+expanded-member bodies, six metadata values, seven policy bodies and three
+recomputed sidecars, with five complete export seals and 286 held host inputs.
+The separate paired-input replay admits the supplement alongside the original
+failure. **ZIP and image bodies are not exported to or read on the host**.
+The native archive is **10,997,962,405 bytes / 9,154 entries**; not every member
+or complete archive semantics is verified.
+
+Source **548/fifteen projects**, **`nezha.b429840950d789320b04847a`**, epoch
+**1788144555**, enforcing normal Android, 4 KiB and `working76` remain unchanged.
+ZIP transfer and final AVB/VINTF/partition, signing/rollback, OTA and
+boot/hardware gates remain pending. No phone operation occurs and the ROM is
+**not flashable**. See the dated [Package5 supplement](build-progress.md#package5-corrected-supplement-and-complete-evidence-replay--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Package5 profile-postcheck failure
+
+This entry preserves the original failure and its then-pending supplement.
+
 **Package5's native Soong invocation exits 0, but its profile postcheck
 fails**. Native execution finishes at **2026-09-02 11:41:29 UTC**; the direct
 host session exits 1, observed at **11:47:38 UTC**. The recorded error is

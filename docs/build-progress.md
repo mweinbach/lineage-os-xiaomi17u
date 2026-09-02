@@ -1,5 +1,46 @@
 # Nezha product and build progress
 
+## Package5 corrected supplement and complete evidence replay — 2026-09-02
+
+The **separate corrected Package5 post-build verifier passes** in the VM's
+Python supervisory harness, running **12:07:34–12:17:30 UTC**. Actual host
+session **84870** exits 0, observed at **12:17:32 UTC**; polling does not supply
+a separate process duration. No build, output preparation or verbose capture
+is rerun. The original native-exit-0/host-exit-1 result, false profile flags,
+null postcheck and `AttributeError` remain unchanged.
+
+The checker correction has three literal changes: the existing
+`_impl['_installation_report']` callback and defaults for two absent image-mode
+keys. Its eight-test qualification passes. The actual supplement verifies
+**two original fresh directory/ZIP producer actions**, fresh metadata-hook
+execution, **205 metadata members** and **221 selected ZIP members**. The
+native archive is **10,997,962,405 bytes**, SHA-256
+**`622073f36dd1c0f733f1ed1d09518380190a58a80f4615586c815430bd9768b4`**,
+with **9,154 entries**. These checks do not verify every member's contents or
+complete archive semantics. Six complete callback return maps and 26 captured
+native files match before/after; the root verifies 14 held host inputs.
+
+The root's complete finite-evidence replay runs **12:33:17–12:33:21 UTC**,
+exit 0. It verifies **242 files / 168,788,306 bytes**, all five export wires and
+final nine-field seals, **286 held host inputs**, **219 expanded-member
+bodies**, the original six-metadata validator, seven policy bodies and three
+recomputed sidecars. Original producer objects, append-only logs, gzip/plain
+equality and the separate supplement's original receipt verifier pass. Pure
+consumer filesystem/process/network calls are blocked. Paired-result admission
+is a **separate passing replay**, not a call made by this finite-body replay.
+
+**ZIP and image bodies are not exported or read on the host**; archive identity
+remains native postcheck evidence. The earlier root decode/native-review
+receipts keep their then-pending replay flags as history. Neither the original
+failed profile nor older image-only scope flags are rewritten.
+
+Source **548/fifteen projects**, **`nezha.b429840950d789320b04847a`**, epoch
+**1788144555**, normal Android enforcing, 4 KiB and `working76` remain unchanged.
+Controlled ZIP transfer, final AVB/VINTF/partition, signing/rollback, OTA and
+boot/hardware checks remain separate. No phone operation occurs and no complete
+or flashable ROM is established. The [supplement record](../research/workspace-integration.json)
+binds the native, paired-admission and complete finite-replay evidence.
+
 ## Package5 native exit and profile postcheck failure — 2026-09-02
 
 **Package5's native Soong invocation exits 0; its original profile

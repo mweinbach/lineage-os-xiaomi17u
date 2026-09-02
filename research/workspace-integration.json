@@ -8180,5 +8180,219 @@
         "size_bytes": 0
       }
     }
+  },
+  "package5_corrected_supplement_complete_replay_checkpoint_20260902": {
+    "status": "verified_corrected_package5_postcheck_supplement_and_complete_finite_evidence_replay_not_full_rom",
+    "guide": "docs/build-progress.md#package5-corrected-supplement-and-complete-evidence-replay--2026-09-02",
+    "preceding_checkpoint_commit": "6e383da23babf3d5c55c81d7ab094ad2aa163ad7",
+    "preceding_checkpoint": "package5_native_success_profile_failure_checkpoint_20260902",
+    "original_result": {
+      "native_exit_code": 0,
+      "host_exit_code": 1,
+      "profile_completed": false,
+      "profile_validation_verified": false,
+      "postcheck": null,
+      "postcheck_errors": [
+        {
+          "check": "profile-postcheck",
+          "message": "module 'actual_nezha_target_files_verifier' has no attribute '_installation_report'",
+          "type": "AttributeError"
+        }
+      ],
+      "receipt_rewritten": false
+    },
+    "supplement": {
+      "execution_location": "VM Python supervisory harness",
+      "started_at": "2026-09-02T12:07:34.440799+00:00",
+      "completed_at": "2026-09-02T12:17:30.270009+00:00",
+      "post_build_verification_passed": true,
+      "native_build_commands_executed": false,
+      "prepare_outputs_called": false,
+      "capture_verbose_called": false,
+      "source_or_output_modified": false,
+      "six_complete_callback_return_maps_equal_before_after": true,
+      "source_files_checked_each_phase": 548,
+      "source_projects_checked_each_phase": 15,
+      "captured_native_files_unchanged_before_after": 26,
+      "held_host_full_hashes_and_nine_stats_unchanged_by_root": 14
+    },
+    "direct_host_completion": {
+      "session_id": 84870,
+      "observed_at": "2026-09-02T12:17:32.007Z",
+      "exit_code": 0,
+      "poll_wall_time_is_not_process_duration": true,
+      "separate_wrapper_timing_claimed": false
+    },
+    "checker_correction": {
+      "exact_literal_changes": 3,
+      "scope": "Use existing tool._impl['_installation_report'] callback and defaults for two absent image-mode keys; not native source adoption.",
+      "root_qualification_tests_passed": 8,
+      "root_reported_test_seconds": 0.262,
+      "root_qualification_exit_code": 0
+    },
+    "package_postcheck": {
+      "verified": true,
+      "ordinary_metadata_verified": true,
+      "expanded_metadata_members_verified": 205,
+      "selected_zip_members_verified": 221,
+      "two_original_package_producer_actions_fresh": true,
+      "producer_actions": [
+        "target-files-dir",
+        "target-files-package"
+      ],
+      "metadata_hook_fresh_execution_verified": true,
+      "metadata_hook_report_replayed": true,
+      "byte_equality_used_as_fresh_action_proof": false,
+      "archive": {
+        "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files.zip",
+        "sha256": "622073f36dd1c0f733f1ed1d09518380190a58a80f4615586c815430bd9768b4",
+        "size_bytes": 10997962405
+      },
+      "zip_entries": 9154,
+      "declared_uncompressed_bytes": 15128717994,
+      "all_archive_members_content_verified": false,
+      "complete_archive_semantics_verified": false
+    },
+    "paired_admission_replay": {
+      "verified": true,
+      "started_at": "2026-09-02T12:29:35.270575+00:00",
+      "completed_at": "2026-09-02T12:29:36.120251+00:00",
+      "separate_supplement_admitted": true,
+      "original_failed_result_unchanged": true,
+      "pure_replay_file_process_network_calls_blocked": true,
+      "current_native_callbacks_executed": false,
+      "archive_bytes_read": false
+    },
+    "complete_finite_replay": {
+      "verified": true,
+      "root_started_at": "2026-09-02T12:33:17.998317+00:00",
+      "root_completed_at": "2026-09-02T12:33:21.816429+00:00",
+      "root_exit_code": 0,
+      "only_original_index_pin_bound": true,
+      "full_files_rehashed": 242,
+      "full_bytes_rehashed": 168788306,
+      "held_host_inputs_rehashed_with_nine_stats": 286,
+      "five_complete_wire_and_final_nine_stat_seals_replayed": true,
+      "selected_expanded_member_bodies_verified": 219,
+      "native_capture_file_stats_matched": 25,
+      "fresh_selected_producer_actions": 2,
+      "log_append_only": true,
+      "complete_gzip_plain_equality": true,
+      "original_six_metadata_validator_equal": true,
+      "framework_policy_bodies": 7,
+      "supplement_original_admission_and_receipt_verifier_passed": true,
+      "pure_consumers_filesystem_process_network_blocked": true,
+      "paired_package_consumer_invoked": false,
+      "fresh_six_source_callbacks_executed_on_host": false,
+      "full_native_target_files_postcheck_invoked_on_host": false,
+      "host_zip_member_extraction_performed": false,
+      "original_failed_profile_promoted": false,
+      "original_failure_and_separate_supplement_bodies_preserved": true,
+      "zip_or_image_body_exported": false,
+      "recomputed_sidecars": [
+        "PRODUCT/etc/selinux/product_sepolicy_and_mapping.sha256",
+        "SYSTEM/etc/selinux/plat_sepolicy_and_mapping.sha256",
+        "SYSTEM_EXT/etc/selinux/system_ext_sepolicy_and_mapping.sha256"
+      ],
+      "earlier_pending_decode_and_native_review_flags_preserved": true
+    },
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "build_number": "nezha.b429840950d789320b04847a",
+    "build_epoch": 1788144555,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "limits": {
+      "all_archive_member_contents_verified": false,
+      "complete_archive_semantics_verified": false,
+      "zip_or_image_bodies_exported_or_read_on_host": false,
+      "image_reproducibility_verified": false,
+      "final_avb_vintf_partition_verified": false,
+      "signed_parent_chain_verified": false,
+      "ota_verified": false,
+      "runtime_or_boot_verified": false,
+      "signed_flashable_rom_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Controlled ZIP transfer and remaining final-package checks; full AVB/VINTF/partition, signed-chain/rollback, OTA and boot/hardware remain separate.",
+    "evidence": {
+      "separate_actual_supplement": {
+        "path": "reports/oem-policy-integration-20260829/policy3-post-adoption-build-preparation-v1/root-package5-postcheck-v1/stdout.jsonl",
+        "sha256": "d773716356d052587477666d828114b93f35e3665e4bbf0778a4f9cca36f88bd",
+        "size_bytes": 1126474
+      },
+      "original_native_result_unchanged": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-v1/stdout.jsonl",
+        "sha256": "b486b06e87f6f89e6f46e82de5459c02a269e300994e48fb547030e052fc4dbd",
+        "size_bytes": 11114722
+      },
+      "original_native_request": {
+        "path": "reports/metadata-mode-flags-20260902/native-preparation-v1/root-package-5-v1/request.json",
+        "sha256": "825863e1bc5528d37f62704862f662df21d407c801b2e7e17c291a589c6fefcd",
+        "size_bytes": 5651806
+      },
+      "root_native_supplement_review": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/root-success-review-v1/review.json",
+        "sha256": "ae8d509c0cc22fdbb5b8bf86fd3548b81523143416a9d067bcb62bc6134b15c0",
+        "size_bytes": 1869
+      },
+      "actual_host_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/root-success-review-v1/tool-completion.json",
+        "sha256": "aecd914a166bd3a0ccda327dc106523fe5b06bd55e9759d7927fe7da60754334",
+        "size_bytes": 339
+      },
+      "root_paired_admission_replay": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/root-paired-admission-review-v1/review.json",
+        "sha256": "be181e8753a4805b3487c6fe2347e983a7733a4d54f2d6cb84347d756163bd1b",
+        "size_bytes": 7683
+      },
+      "corrected_checker": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/checker-v1/corrected_checker.py",
+        "sha256": "c1bc723cbd1024219e928207ad60427b3f4489ee679e28fee6097b19334f9248",
+        "size_bytes": 48888
+      },
+      "postcheck_driver": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/postcheck.py",
+        "sha256": "ae95daa063e27c924f9fb107c262f591a35f92330a91e61ec448fe0b12c1240a",
+        "size_bytes": 24648
+      },
+      "root_checker_qualification": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/checker-v1/root-checker-tests-v1/completion.json",
+        "sha256": "701a83b6bbba765253924fa795678e276af3887d27623d24fb0cb08b2cfa9c9f",
+        "size_bytes": 1971
+      },
+      "root_checker_qualification_stderr": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/package5-postcheck-recovery-v1/checker-v1/root-checker-tests-v1/stderr.log",
+        "sha256": "ee8905a678f719111f127698c58787d6c947bd60055f6debb9c553a78f6a53dd",
+        "size_bytes": 1582
+      },
+      "complete_body_index": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/actual-supplement-export-v1/root-complete-body-index-v1.json",
+        "sha256": "955873021c9290d6ac3bcd70a78f63126e9e48f43ae85b019c082f41fd630739",
+        "size_bytes": 187398
+      },
+      "root_export_closure_review": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/actual-supplement-export-v1/root-export-closure-review-v1.json",
+        "sha256": "f817165ec6f6182edab318dbdc32b9b510e87559713cdf17cdb3c6f1183922b6",
+        "size_bytes": 7720
+      },
+      "root_complete_finite_replay": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/actual-supplement-export-v1/root-full-finite-replay-v1/stdout.json",
+        "sha256": "dffdd7a9b9229788d9fbf40bbc57d52d1c015b34d6d3dacec1749432e1681d7e",
+        "size_bytes": 210669
+      },
+      "root_complete_finite_replay_completion": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/actual-supplement-export-v1/root-full-finite-replay-v1/completion.json",
+        "sha256": "edb461ed3b1d3da7f5f7417424104ae8a559a19560f31b8e4859a1989bd093cc",
+        "size_bytes": 822
+      },
+      "index_bound_original_replay_driver": {
+        "path": "reports/metadata-mode-flags-20260902/build-continuation-preparation-v1/post-package5-evidence-v1/actual-supplement-export-v1/replay_finite.py",
+        "sha256": "bd69ceb0161790929594cc5745da3e1c64f0516c287efdfd796e59ea5d98298a",
+        "size_bytes": 16573
+      }
+    }
   }
 }
