@@ -6,9 +6,34 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 2, 2026 UTC (September 1 in
+consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
+
+The **548-file/fifteen-project source passes config11/context11 and ordinary
+Nothing8**. Nothing8 finishes with native exit 0 at **2026-09-02 04:25:20 UTC**;
+its genuine root wrapper exits 0 at **04:28:56 UTC**. Full host review retains
+the complete **18,460-byte stdout, empty stderr and six physical metadata
+bodies** matching **`nezha.a7db36604f45fcc657373f89`**, epoch **1788144555**,
+hostname and fingerprint/thumbprint. This verifies values, not fresh rewrites.
+
+All six source/input guard maps match both queries and Nothing8 before/after;
+**1,179 pinned HEADs/origins** and **254 configuration fields** remain unchanged.
+Config11 retains its byte-only completion limits. Nothing8 observes Ninja and
+passes sandbox/limit checks, but does **not** verify Ninja argv or fresh
+component actions. The measured output `.ninja_deps` grows **62,488 bytes** to
+**171,758,884**; its narrow capture exception and shared-graph qualification
+remain pending, followed by selected-nine2, Images4 and Package4.
+
+Normal Android enforcement, 4 KiB, `working76`, kernel warnings and `test-keys`
+remain unchanged. No phone operation occurs; final VINTF/AVB/partition, signing,
+rollback, OTA and boot/hardware gates remain open, and the ROM is **not
+flashable**. See the dated [query/Nothing8 checkpoint](build-progress.md#config11context11-and-nothing8--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier source-install checkpoint
+
+This entry preserves its original source-only scope and then-pending work.
 
 **The checksum 0023 source correction is installed**, with verified native exit
 0. The root install command ran **2026-09-02 03:23:44–03:33:54 UTC** and exited

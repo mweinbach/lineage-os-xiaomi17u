@@ -5923,5 +5923,348 @@
         "size_bytes": 969620
       }
     }
+  },
+  "checksum0023_native_queries_and_nothing8_checkpoint_20260902": {
+    "status": "native-config11-context11-nothing8-full-stream-and-six-physical-metadata-value-checks-passed",
+    "guide": "docs/build-progress.md",
+    "preceding_source_checkpoint_commit": "e1e8f29900c9ff6eaf6aef7c7ffc615ba930d314",
+    "preceding_source_checkpoint": "checksum0023_source_adoption_checkpoint_20260902",
+    "source_files": 548,
+    "source_projects": 15,
+    "upstream_revision_and_origin_matches": 1179,
+    "reviewed_locally_patched_projects_preserved": 9,
+    "configuration_fields": 254,
+    "configuration_equal_before_after_and_both_queries": true,
+    "all_six_complete_guard_maps_equal_before_after_and_both_queries": true,
+    "all_source_observations_identical_claimed": false,
+    "identity_sha256": "a7db36604f45fcc657373f892797c28c4a21dd5bfa988eef41d412679fc91ea8",
+    "build_number": "nezha.a7db36604f45fcc657373f89",
+    "build_epoch": 1788144555,
+    "queries": {
+      "config11": {
+        "status": "native-query-pass-direct-host-exit-observed-and-separate-byte-only-closure-verified",
+        "native_started_utc": "2026-09-02T03:42:13.971292+00:00",
+        "native_finished_utc": "2026-09-02T03:43:08.428568+00:00",
+        "native_exit_code": 0,
+        "actual_direct_host_exit_code": 0,
+        "direct_host_exit_observed_utc": "2026-09-02T03:47:22.795Z",
+        "stdout_assignments": 21,
+        "original_review_outer_completion_closure_pending": true,
+        "separate_later_closure_verified": true,
+        "frozen_input_byte_pins_checked_by_closure": 26,
+        "actual_preparation_files_checked": 3,
+        "closure_scope": "exact-prelaunch-serialized-byte-pins-only",
+        "original_outer_wrapper_executed": false,
+        "prelaunch_stat_snapshot_verified": false,
+        "outer_process_start_or_elapsed_time_claimed": false,
+        "full_outer_stream_capture_claimed": false,
+        "closure_itself_validates_native_query": false,
+        "native_query_verified_separately": true,
+        "documentation_reviewer_reobserved_prelaunch_stats": false,
+        "evidence": {
+          "native_result": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-v1/stdout.jsonl",
+            "sha256": "d67af787718fa073278ec93bcf84b972f10995e014c4c6c4a015547d2d225dc6",
+            "size_bytes": 10491165
+          },
+          "native_transport_exit": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-v1/exit.json",
+            "sha256": "79c005667fb357151ab2aeb72e3374195dd0c2b3f35f655b0637cdf11df3c25f",
+            "size_bytes": 73
+          },
+          "query_verification": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-verification-v1/verification.json",
+            "sha256": "59c3c9a1da9a6b0a27717885b2a68fcd2d6d18bf205ed11de631397f4a664e4b",
+            "size_bytes": 1219
+          },
+          "complete_native_stdout": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-verification-v1/build.stdout",
+            "sha256": "6cfd0b623f71f32d3ec9551447b6e40c7e07f1ffd91f84071362d17956024a23",
+            "size_bytes": 4480
+          },
+          "complete_native_stderr": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-verification-v1/build.stderr",
+            "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+            "size_bytes": 372
+          },
+          "direct_host_exit_observation": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-observation-v1/unified-exec-completion.json",
+            "sha256": "e71f47452bd5ecdc18416693d1f6823d9687c3509d23710e49b5ecc521abaa5e",
+            "size_bytes": 221
+          },
+          "byte_only_completion_closure": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-dispatch-v1/completion.json",
+            "sha256": "267b498a5cba69a2c0e90fa2d09c6879b72fa802e47efd1ffa17571b5697d836",
+            "size_bytes": 10725
+          },
+          "byte_only_closure_verification": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-config-11-verification-v1/closure-verification.json",
+            "sha256": "d3cc57231fcbe25ead2e0574f3e17b1d0312d7c6b45d8312e730b39e5e54bc63",
+            "size_bytes": 424
+          }
+        }
+      },
+      "context11": {
+        "status": "native-query-pass-and-genuine-outer-wrapper-completion-verified",
+        "native_started_utc": "2026-09-02T03:57:21.185286+00:00",
+        "native_finished_utc": "2026-09-02T03:58:14.229854+00:00",
+        "native_exit_code": 0,
+        "outer_started_utc": "2026-09-02T03:53:47.399769+00:00",
+        "outer_finished_utc": "2026-09-02T04:01:40.597975+00:00",
+        "actual_outer_host_exit_code": 0,
+        "stdout_assignments": 7,
+        "genuine_outer_wrapper_executed": true,
+        "root_held_input_bytes_and_stats_rechecked": 91,
+        "source_input_guard_maps_equal_config11": true,
+        "documentation_reviewer_independently_reobserved_prior_held_stats": false,
+        "evidence": {
+          "native_result": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-v1/stdout.jsonl",
+            "sha256": "9e926da9949d5f99366292dc19cc9e3b80a0071bf2c9531c9933857558b4a421",
+            "size_bytes": 10478490
+          },
+          "native_transport_exit": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-v1/exit.json",
+            "sha256": "bc47881de2e1ad0035b100e02e643619bf2bb054f1085fc29e918e40d9123475",
+            "size_bytes": 74
+          },
+          "query_verification": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-verification-v1/verification.json",
+            "sha256": "c0097c6f37618fddb02722ecd78f9147c07227d8090487288289e39fc6a501e1",
+            "size_bytes": 1623
+          },
+          "complete_native_stdout": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-verification-v1/build.stdout",
+            "sha256": "629364929e5482740fd396858ddbd9918d486735c2ba87dc8f8d2a56f2f38d2c",
+            "size_bytes": 230
+          },
+          "complete_native_stderr": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-verification-v1/build.stderr",
+            "sha256": "b59d3a03c11b637aa3c70b9a3d9942330bef0c298b915dc7747cb5f5dc8e38fe",
+            "size_bytes": 372
+          },
+          "genuine_outer_completion": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-dispatch-v1/completion.json",
+            "sha256": "efee4d001a98b9f5909628fbe389f13e33ae772ec8f579ca458ac4dc5f04a6b5",
+            "size_bytes": 786
+          },
+          "complete_outer_stdout": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-dispatch-v1/stdout.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size_bytes": 0
+          },
+          "complete_outer_stderr": {
+            "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-product-context-11-dispatch-v1/stderr.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size_bytes": 0
+          }
+        }
+      }
+    },
+    "nothing8": {
+      "phase": "first-target-files-nothing-8",
+      "ordinary_argv": [
+        "build/soong/soong_ui.bash",
+        "--make-mode",
+        "-j8",
+        "nothing"
+      ],
+      "native_started_utc": "2026-09-02T04:12:29.653648+00:00",
+      "native_finished_utc": "2026-09-02T04:25:20.588312+00:00",
+      "native_exit_code": 0,
+      "outer_started_utc": "2026-09-02T04:09:04.828653+00:00",
+      "outer_finished_utc": "2026-09-02T04:28:56.499569+00:00",
+      "actual_outer_host_exit_code": 0,
+      "actual_unified_exec_exit_code": 0,
+      "actual_unified_exec_session_id": 93820,
+      "genuine_outer_wrapper_executed": true,
+      "root_launch_inputs_rechecked": 127,
+      "all_launch_input_bytes_and_nine_stats_unchanged": true,
+      "actual_three_preparation_files_match": true,
+      "process_reaped_and_native_streams_complete": true,
+      "ninja_observed": true,
+      "ninja_limits_verified": true,
+      "sandbox_checks_passed": true,
+      "ninja_argv_verified": false,
+      "require_observed_ninja": false,
+      "native_ninja_action_freshness_claimed": false,
+      "full_native_stream_bodies_verified": true,
+      "full_native_streams": {
+        "stderr": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "stdout": {
+          "sha256": "a54dfdfb4dd8f7dcec01e2223cbfe59f11d17fc3cdb737891c546b355aa33050",
+          "size_bytes": 18460
+        }
+      },
+      "full_host_reviewed_utc": "2026-09-02T04:30:35.487004+00:00",
+      "root_aggregate_verified_utc": "2026-09-02T04:31:10.850327+00:00",
+      "evidence": {
+        "native_request": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-v1/request.json",
+          "sha256": "d956d0ef3a3778584370c4f8650ccc3468151a60e0a747eabe43a38844566e67",
+          "size_bytes": 5160474
+        },
+        "native_result": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-v1/stdout.jsonl",
+          "sha256": "9910dbb9a6c9ad08934d13c50891e1969ab811746e695664d1fddbe3621bb069",
+          "size_bytes": 10482262
+        },
+        "native_transport_exit": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-v1/exit.json",
+          "sha256": "55c801f3c9235cb3747f715c016ffd6d7d741ec19308709f0515d9f74ed7bd8a",
+          "size_bytes": 65
+        },
+        "genuine_outer_completion": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-dispatch-v1/completion.json",
+          "sha256": "0a2341335504db6c1f92e649dfe35233acf5916ecdf30d6f13895e620e06e253",
+          "size_bytes": 769
+        },
+        "complete_outer_stdout": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-dispatch-v1/stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "complete_outer_stderr": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-dispatch-v1/stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "complete_native_stdout": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/post-nothing8-readback-v1/native-evidence/full-stream-v1/build.stdout",
+          "sha256": "a54dfdfb4dd8f7dcec01e2223cbfe59f11d17fc3cdb737891c546b355aa33050",
+          "size_bytes": 18460
+        },
+        "complete_native_stderr": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/post-nothing8-readback-v1/native-evidence/full-stream-v1/build.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "full_retained_evidence_review": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/post-nothing8-readback-v1/native-evidence/full-stream-v1/review.json",
+          "sha256": "847a2912762c0b946b3cf51a016f630efa4e309b84c6b25917b971e7a4d7929d",
+          "size_bytes": 14718
+        },
+        "root_complete_verification": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/root-nothing-8-verification-v1/verification.json",
+          "sha256": "f60e6a43b8b275d217b7fe2f1bad328bc5e65a4cb0f18af1129424575acd22b7",
+          "size_bytes": 4533
+        }
+      }
+    },
+    "physical_metadata": {
+      "captured_file_count": 6,
+      "complete_captured_bodies_and_values_verified": true,
+      "files": {
+        "build_date.txt": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/build_date.txt",
+          "sha256": "5bd41e8a4ecd6eee83ff6e6b1114af7efa2d607c40d4c0ce93423fee999ba85f",
+          "size_bytes": 10,
+          "value_utf8": "1788144555"
+        },
+        "file_name_tag.txt": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/file_name_tag.txt",
+          "sha256": "601220e76da054b124ed3e17ae33e4e1f87b905025f9c7dddd99fc2eeb4dc8dc",
+          "size_bytes": 30,
+          "value_utf8": "nezha.a7db36604f45fcc657373f89"
+        },
+        "soong/build_hostname.txt": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/build_hostname.txt",
+          "sha256": "82199baf354fe3b7114cc9e43e1af71a13d62357ca3fd33eb118b1fcc18cc6f7",
+          "size_bytes": 13,
+          "value_utf8": "nezha-builder"
+        },
+        "soong/build_number.txt": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/soong/build_number.txt",
+          "sha256": "601220e76da054b124ed3e17ae33e4e1f87b905025f9c7dddd99fc2eeb4dc8dc",
+          "size_bytes": 30,
+          "value_utf8": "nezha.a7db36604f45fcc657373f89"
+        },
+        "target/product/nezha/build_fingerprint-lineage_nezha.txt": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/build_fingerprint-lineage_nezha.txt",
+          "sha256": "27ea5d9bcc46644edd387bbcea349297c9f7c3afcd8195764f6bac622773cef1",
+          "size_bytes": 92,
+          "value_utf8": "Xiaomi/lineage_nezha/nezha:16/BP4A.251205.006/nezha.a7db36604f45fcc657373f89:user/test-keys\n"
+        },
+        "target/product/nezha/build_thumbprint-lineage_nezha.txt": {
+          "native_path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/build_thumbprint-lineage_nezha.txt",
+          "sha256": "8d561b9fd6903f7649b34d31945a165ef4d33dc879742e82aeceba4242986d8c",
+          "size_bytes": 65,
+          "value_utf8": "16/BP4A.251205.006/nezha.a7db36604f45fcc657373f89:user/test-keys\n"
+        }
+      },
+      "fresh_metadata_rewrites_verified": false,
+      "file_modes_verified_by_metadata_value_comparison": false,
+      "image_metadata_verified": false,
+      "native_ninja_actions_verified": false,
+      "scope": "Six complete file bodies retained in the actual Nothing8 native result and bound by full host review; exact bytes and semantic values verified, without fresh-write or producer-action claims."
+    },
+    "post_nothing8_read_only_capture": {
+      "started_utc": "2026-09-02T04:29:28.648245+00:00",
+      "finished_utc": "2026-09-02T04:29:28.981738+00:00",
+      "exit_code": 0,
+      "source_or_output_written": false,
+      "phone_accessed": false,
+      "log_measurements": {
+        "/work/evolution/.ninja_deps": {
+          "sha256": "971a2f3c7663b07e7e7a9854021dd31229b977a27ea8c13cf14f23da57814dcb",
+          "size_bytes": 16
+        },
+        "/work/evolution/.ninja_log": {
+          "sha256": "5b82b794db4d570773bc84bd089effa542b2017965cf316478f4f14f72930c14",
+          "size_bytes": 15
+        },
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_deps": {
+          "sha256": "c53c9f8e8364900b0db5ab68bd848dc5b11c22c05dc4dffb6507390b348e7f0c",
+          "size_bytes": 171758884
+        },
+        "/work/out/nezha-user-policy-20260827T2220Z/.ninja_log": {
+          "sha256": "9d06a385b9c6f616138e6e6c8d11190d7889014aa6d1849a29a117f14d1987d5",
+          "size_bytes": 63144717
+        }
+      },
+      "prior_post_package3_output_dependency_log_bytes": 171696396,
+      "output_dependency_log_growth_bytes": 62488,
+      "exact_new_dependency_log_capture_exception_and_shared_qualification_pending": true,
+      "shared_graph_capture_qualification_verified": false,
+      "subsequent_native_app_build_admitted": false,
+      "evidence": {
+        "actual_four_log_and_full_stream_capture": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/post-nothing8-readback-v1/four-logs/actual-v1/stdout.json",
+          "sha256": "a70de897314fa446c2708f91d6c6be1e819ee102d345716fd7647184b4264427",
+          "size_bytes": 107472
+        },
+        "actual_collector_completion": {
+          "path": "reports/metadata-checksum-20260902/native-preparation-v1/post-nothing8-readback-v1/four-logs/actual-v1/completion.json",
+          "sha256": "b7e85c87bdd3ce60b66a6b6d07ad5b271c6c45f318b79d5277fd008e59be7405",
+          "size_bytes": 637
+        }
+      }
+    },
+    "host_documentation_review_scope": "Direct comparison of retained query/Nothing8 guard and configuration maps, exact evidence byte pins, decoded six metadata bodies and complete native streams; no new VM/native query or independent reconstruction of earlier process stat/timing observations.",
+    "normal_android_enforcing_required": true,
+    "page_size_bytes": 4096,
+    "recovery": "working76",
+    "recovery_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+    "known_kernel_warnings_retained": true,
+    "test_keys_not_oem_signing_trust": true,
+    "new_york_date_scope": "2026-09-01 through 2026-09-02",
+    "next_gate": "Review the exact new dependency-log capture exception and complete shared-graph capture/qualification, then obtain fresh selected-nine2, Images4 and Package4 evidence. Final VINTF/AVB/partition, signed boot-chain/rollback, OTA and hardware gates remain separate.",
+    "limits": {
+      "fresh_metadata_rewrites_verified": false,
+      "new_component_producer_actions_verified": false,
+      "selected_nine2_verified": false,
+      "images4_verified": false,
+      "package4_verified": false,
+      "signed_flashable_rom_verified": false,
+      "ota_verified": false,
+      "hardware_or_boot_verified": false,
+      "whole_output_tree_unchanged_claimed": false,
+      "phone_accessed": false,
+      "native_or_vm_call_by_documentation_reviewer": false,
+      "complete_rom_ready": false
+    }
   }
 }

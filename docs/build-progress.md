@@ -1,5 +1,56 @@
 # Nezha product and build progress
 
+## Config11/context11 and Nothing8 — 2026-09-02
+
+The **native queries, ordinary Nothing8 and six physical metadata value checks
+pass** on the installed 548-file/fifteen-project source. Their completion
+evidence has distinct scopes; all times below are September 2 UTC.
+
+| Phase | Native invocation | Actual host completion |
+| --- | --- | --- |
+| config11 | 03:42:13–03:43:08, exit 0 | Direct host exit 0 observed at 03:47:22; separate 26-pin byte-only closure |
+| context11 | 03:57:21–03:58:14, exit 0 | Genuine wrapper 03:53:47–04:01:40, exit 0; 91 held byte/stat checks |
+| Nothing8 | 04:12:29–04:25:20, exit 0 | Genuine wrapper 04:09:04–04:28:56, exit 0; root verifies 127 held launch inputs and three actual preparation files |
+
+Config11's later closure verifies exact frozen bytes without inventing an
+original wrapper, prelaunch stat snapshot, host start/elapsed time or full outer
+streams. Its native result is verified separately. The retained queries contain
+**21 config assignments and seven context assignments**; deferred `*_FROM_FILE`
+expressions are not physical file readback. The original closure-pending record
+remains intact alongside the completed, narrowly scoped closure.
+
+Nothing8 executes **`build/soong/soong_ui.bash --make-mode -j8 nothing`**.
+Ninja is observed and its limits and sandbox checks pass, but
+**`ninja_argv_verified=false`** and **`require_observed_ninja=false`** remain
+explicit. This is an ordinary Nothing8 pass, not fresh component-action or
+subsequent app-build admission. All six complete guard maps agree within and
+across all three phases; 548 source rows/fifteen projects, all **1,179 pinned
+HEADs/origins**, nine reviewed patched projects and **254 configuration fields**
+are preserved. The Nothing8 launcher check covers bytes and all nine stat fields
+for its 127 held inputs, not a retrospective strengthening of config11.
+
+Complete host review passes at **04:30:35 UTC**, binding **18,460 stdout bytes
+and empty stderr** to the native logs. Six captured physical metadata bodies
+verify build/file-name tag **`nezha.a7db36604f45fcc657373f89`**, epoch
+**1788144555**, `nezha-builder` and the expected `BP4A.251205.006`
+fingerprint/thumbprint ending in `test-keys`. Neither matching values nor this
+readback proves fresh metadata rewrites or Ninja producer actions.
+
+The read-only four-log/full-stream collector exits 0 at **04:29:28 UTC**.
+Output `.ninja_deps` is now **171,758,884 bytes**, up **62,488** from the prior
+measurement; `.ninja_log` is **63,144,717 bytes**. The exact newly measured
+dependency-log exception and shared-graph capture/qualification remain pending;
+these measurements do not grant full-build or component admission.
+
+Next are qualified shared capture and fresh selected-nine2, Images4 and Package4
+evidence. The historical Package3 failure, enforcing normal Android, 4 KiB,
+`working76`, kernel warnings and `test-keys` remain unchanged. No phone operation
+occurs and no complete or flashable ROM is established. Final
+VINTF/AVB/partition, signing/rollback, OTA and boot/hardware gates remain open.
+The [combined checkpoint](../research/workspace-integration.json) binds exact
+query, closure, native, metadata, stream and collector receipts. Earlier entries
+retain their original scopes and then-pending work.
+
 ## Checksum 0023 source installation — 2026-09-02
 
 The **checksum 0023 source adoption and complete receipt review pass**. The
