@@ -1,6 +1,62 @@
 # Nezha product and build progress
 
+## Nothing11 passes after storage cleanup — 2026-09-02
+
+The resumed **Nothing11 native invocation and profile validation pass** after
+the [completed cleanup](storage-cleanup.md). The genuine root wrapper runs
+**17:46:40–17:56:39 UTC**, exit **0**; the native
+`build/soong/soong_ui.bash --make-mode -j8 nothing` invocation runs
+**17:51:18–17:53:01 UTC**, also exit **0**. Preflight, profile completion and
+profile validation are true, with an empty postcheck-error list. The metadata
+postcheck passes, including independently decoded and rehashed captures of all
+six metadata files under **`nezha.86e40fe309189fdcd20dff9b`**, epoch
+**1788144555**.
+
+All **six complete before/after callback maps are identical**. The raw
+**254-field** Soong configuration also remains identical, SHA-256
+**`da93ab71dc9ad8d9d9cdf8327927ce29796f658bcf58292939a0bd48e819af6e`**,
+**319,139 bytes**. It matches both frozen expected maps, including the top-level
+system SHA-256 arguments and the five partition-qualified SHA-256 strings.
+The earlier Nothing10 failure and its false profile flags remain unchanged;
+this is a separate successful successor, not a rewritten failure.
+
+Source checks retain **548 files/fifteen projects**, all **1,179 HEAD/origin
+matches**, **1,170 clean projects** and **nine expected patched projects**.
+The root completion verifies all **180 frozen host inputs** unchanged and all
+three actual preparation files identical to the prepared copies. Strict ELF
+and alignment checks, **4 KiB**, normal Android **enforcing** and **working76**
+remain required.
+
+Ninja is observed with verified limits and sandbox checks, but
+`ninja_argv_verified=false` and `require_observed_ninja=false` remain explicit.
+There is no timeout, output overflow, disk-floor breach or sandbox fallback.
+This `nothing` profile does **not** verify fresh component/image producer
+actions. Output invalidation/deletion and source-mutation requests remain
+false. The observation and metadata scope flags retain their narrow meaning;
+`complete_rom_ready`, `signed_flashable_rom_verified` and
+`image_reproducibility_verified` are still false.
+
+Actual local receipts below are relative to
+`reports/avb-sha256-20260902/native-preparation-v1/`. The result's `.jsonl` suffix
+is historical: its contents are one JSON object. These ignored receipts are
+not distributed by the workspace.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-nothing-11-v1/stdout.jsonl` | `b1b49614410164dba641622eaf0cef94e2ded51f2a7c6dc7f65ae6f3c960f03f` | 10,627,550 |
+| `root-nothing-11-v1/exit.json` | `0e4ba8d7f0b6b515dd2ef531dd9515939cbecfc297571aafe2ec6fb1ff55405c` | 66 |
+| `root-nothing-11-dispatch-v1/completion.json` | `d0316a17510b33bae0e5184980288eb4d4b50e131dce9a0cc203fde4fb23d31a` | 764 |
+| `root-nothing-11-review-v1/review.json` | `f07908ba753d6cb0c22e6332410d70b7ab232614dd1162f4d9795ba9a8a0c533` | 4,637 |
+
+Backup-first Selected4/Images6, the no-invalidation five-image SHA-256 stage
+and Package6 still need their own actual results. Signing, complete
+AVB/FEC/VINTF/super/partition checks, OTA and device boot remain unverified.
+No phone operation occurs and no flashable ROM is established.
+
 ## Nothing10 profile failure and host-storage hold — 2026-09-02
+
+This section preserves the earlier hold and then-pending Nothing11 state;
+the successful successor is recorded above.
 
 Nothing10's native invocation runs **15:50:45–16:05:06 UTC** and **exits 0**, but
 **profile completion and validation remain false**, with a null postcheck.

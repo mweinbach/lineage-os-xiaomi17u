@@ -10,6 +10,18 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Nothing11 passes after cleanup.** The resumed native `m nothing` invocation
+runs **2026-09-02 17:51:18–17:53:01 UTC**, exit **0**; the genuine root wrapper
+closes at **17:56:39 UTC**, exit **0**. Profile validation, the metadata
+postcheck and all six complete before/after callback-map comparisons pass.
+The **254-field configuration** is unchanged with all six expected SHA-256
+settings, under **`nezha.86e40fe309189fdcd20dff9b`**. This is a frontend/metadata
+validation result, not fresh component or image production. The
+[Nothing11 checkpoint](build-progress.md#nothing11-passes-after-storage-cleanup--2026-09-02)
+records actual receipts and the unchanged limits on Ninja/image/ROM claims.
+Selected4/Images6, the five-image SHA-256 stage, Package6, signing and final
+AVB/VINTF/super/OTA/boot gates remain pending. No phone operation occurs.
+
 **Verified cleanup leaves 273.56 GiB available on the host.** At
 **2026-09-02 17:45:04 UTC**, completed deletion of **51 obsolete files** and the
 separately approved free-block trim leave **293,727,363,072 bytes** available.
@@ -25,8 +37,8 @@ host-only milestone and failed unprivileged trim remain in the
 [dated cleanup record](storage-cleanup.md), with exact checks and receipts.
 
 The unchanged **100 GiB host reserve** is exceeded at this checkpoint; the
-**full follow-on storage budget and fresh build admission remain separate**.
-The subsequent Nothing11 result remains pending and separate from cleanup.
+**full follow-on storage budget and later build admission remain separate**.
+The subsequent Nothing11 result above is separate from cleanup itself.
 Cleanup does not establish fresh component/image proof or a flashable ROM. No reserve
 guard is lowered or bypassed, and no phone operation occurs.
 
@@ -46,8 +58,8 @@ error does not establish archive corruption. The original false profile
 flags and null postcheck remain intact. Source identity stays **86e40**, build
 **`nezha.86e40fe309189fdcd20dff9b`**.
 
-Nothing11 check/bind/preparation commands and **36 focused host tests pass**,
-but **Nothing11 has not executed**. No native-wrapper readiness, fresh
+At that earlier checkpoint, Nothing11 check/bind/preparation commands and
+**36 focused host tests pass**, but **Nothing11 has not executed**. No native-wrapper readiness, fresh
 component/image proof, Package6 result or flashable ROM is claimed. The
 backup-first Selected4/Images6 workflow, no-invalidation five-image stage and
 all signing/AVB/VINTF/super/OTA/boot gates remain pending. Normal Android

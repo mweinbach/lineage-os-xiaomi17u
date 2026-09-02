@@ -21,6 +21,11 @@ The unchanged 100 GiB host reserve is exceeded at this checkpoint; fresh build
 admission and the full follow-on budget remain separate. Cleanup establishes no
 new Nothing11, ROM, signing or boot result.
 
+The later [Nothing11 validation](build-progress.md#nothing11-passes-after-storage-cleanup--2026-09-02)
+closes successfully at **17:56:39 UTC**. That separate result verifies the
+resumed frontend/metadata check; it does not change the scope of this cleanup
+checkpoint or establish fresh image production or boot success.
+
 ## Host copies and measured space — 17:16:46 UTC
 
 | Completed UTC | Removed | Logical bytes | Allocated bytes before removal | Observed host-free increase |
