@@ -61,13 +61,44 @@ Only the following existing members may change:
 
 - `IMAGES/boot.img`, `IMAGES/vbmeta_system.img`, and `IMAGES/vbmeta.img`;
 - every existing `BOOTABLE_IMAGES` and `PREBUILT_IMAGES` alias of those roles;
+- only the existing `PREBUILT_IMAGES/dtbo.img`, when the proof below qualifies
+  normalization to the unchanged canonical DTBO;
 - `META/vbmeta_digest.txt`.
 
 Each changed-role alias receives its canonical final image, even if its bytes
-already match. Other recognized aliases must match their unchanged final image.
-No member is added or removed. Original APK/APEX payloads, care maps, signing
+already match. Apart from the single proven DTBO exception below, other
+recognized aliases must match their unchanged final image. No member is added
+or removed. Original APK/APEX payloads, care maps, signing
 metadata, symlink payloads, modes, timestamps, comments and member order stay
 unchanged. Symlinks remain archive bytes and are never followed or extracted.
+
+### Narrow DTBO alias normalization
+
+DTBO is not a fourth signing or canonical replacement role: the changed-role
+set stays exactly `boot`, `vbmeta` and `vbmeta_system`. Only an existing,
+mismatched `PREBUILT_IMAGES/dtbo.img` may be replaced with the exact unchanged
+`IMAGES/dtbo.img` bytes. An absent alias is not created, an identical alias stays
+untouched, and other mismatched aliases still fail.
+
+Both complete, equal-sized DTBO members must fit the unchanged profile budget
+and 32 MiB bound. The read-only inspector compares every byte of their complete
+declared payload, including table words, later entries and gaps, and recomputes
+both salted SHA-256 digests. Both sides must pass strict unsigned `NONE`
+metadata checks: zero flags and rollback fields, no authentication/key data,
+one complete own `dtbo` hash descriptor, valid table/footer geometry and zero
+padding. Only salt and `com.android.build.dtbo.fingerprint` value may differ,
+with their derived digest/encoding lengths; raw-header conventions, release
+bytes, descriptor order and all other properties remain invariant.
+
+The proof binds the whole source archive and both members. The copier recomputes
+it with type-exact equality rather than trusting a supplied boolean, requires
+the replacement's full identity to equal the canonical image, and returns the
+same recomputed proof to the reconciler. The reconciliation receipt records it
+in `alias_normalizations`; the request schema is unchanged.
+This unsigned metadata proof does not replace complete final AVB verification,
+FEC checks, FDT/runtime validation or boot testing.
+
+### Archive and digest preservation
 
 The old vbmeta digest must match the original root and child metadata. The new
 digest must agree between pinned `avbtool calculate_vbmeta_digest` and a bounded
@@ -145,9 +176,10 @@ python3 -B -m unittest tests.test_reconcile_signed_target_files \
 python3 -m unittest discover -s tests -v
 ```
 
-The 72 focused tests use synthetic ZIPs, inert signatures and mocked native
-operations. They cover receipt/manifest binding, unchanged payload and metadata
-preservation, malformed archives, alias handling, header-only rejection,
+The original promotion's 72 focused tests used synthetic ZIPs, inert signatures
+and mocked native operations. They cover receipt/manifest binding, unchanged
+payload and metadata preservation, malformed archives, alias handling,
+header-only rejection,
 mutation races, disk limits and exclusive publication. Native Android builds,
 real AVB verification and device tests are different evidence.
 
@@ -160,3 +192,42 @@ Its cleared coordinator was `0f3e639fc7167243d480d38d4ebfde9391a53593ee4e293d607
 the streamed copier was `cd6b2526bf29fa246921ff62795d54fa91d18f9078f48c8652a279fd4d782926`.
 The four existing pinned workspace dependencies and both public AVB contracts
 are unchanged; their future changes require explicit compatibility review.
+
+## DTBO correction checkpoint — September 2, 2026
+
+Commit `db4d07cce161eb67be6b1ec2614501bbf1731eb0` adds the narrow DTBO proof and
+alias normalization above, its negative tests, and the materializer's updated
+copier pin. It does not change native source or output, signing roles, public
+AVB/profile policies, the 548-file source baseline or historical freezes.
+
+The actual **Package5 read-only inspection passes at 18:47:59 UTC**. Its
+**10,997,962,405-byte** archive (`622073f36dd1c0f733f1ed1d09518380190a58a80f4615586c815430bd9768b4`)
+was freshly hashed twice. The two 32 MiB DTBO members have identical complete
+**1,495,111-byte payloads**, SHA-256
+`ea20dfcbf78f80f5cda7d3ea964e711b96cd1dacfa3992ed7cd799f067349baa`, and pass the
+strict unsigned metadata proof. The archive, image bodies and five changed
+implementation/test files remain unchanged during inspection. No archive was
+rewritten, no signing occurred, and no VM, phone, private key or local signing
+configuration was accessed.
+
+**258 focused offline tests pass** in 27.766 seconds. The root's independent
+**4,508-test full offline suite passes** at **18:51:23 UTC**; all 585 tracked
+files retain their bytes, types and nine-field stat records throughout the run.
+The subsequent commit receipt binds the exact tested five-file diff. These
+results do not establish an actual Package6 archive, signing, reconciliation,
+complete AVB/VINTF/FEC/super validation, OTA or a bootable ROM. Fresh Package6
+must supply its own archive, inventory, proof and all existing final gates.
+
+The following ignored local evidence is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`. The original handoff's
+pending full-suite/commit fields remain historical; the later root receipts
+record those completed checks separately.
+
+| Evidence | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-avb/host-fix-v1/handoff.json` | `e70da3375244e7d498c9441d4dda334cb6c326b9599e84174fbd686d0d665336` | 7,533 |
+| `final-avb/host-fix-v1/actual-package5-inspection-v1/proof.json` | `ed4ab52155ebe4ab347d9faea5c583c0e6d088206ce3b60e2362d44d8719e9fa` | 6,648 |
+| `final-avb/host-fix-v1/actual-package5-inspection-v1/completion.json` | `4ade639118a83c1150de81fcf703512cc90e500a1be6aaaff40fb13315ba5016` | 6,686 |
+| `final-avb/host-fix-v1/integrated-tests-v1/summary.json` | `f3045db2332ed8e0de1c1ead4ee5977aa99dd5444ab3878f302fcc6f4b2baec1` | 6,097 |
+| `root-dtbo-host-validation-v1/actual-v1/summary.json` | `638511d410ff860821b634016e0281e696d824aa16d75928a20308f9274aa2ab` | 3,178 |
+| `root-dtbo-commit-v1/completion.json` | `8fffc542b0d3596ee852887988bf6c4fb50fff7600d19f1718fa283d669393a1` | 923 |
