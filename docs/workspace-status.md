@@ -10,6 +10,27 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **metadata-mode flags correction is installed in the source tree**. The
+root install command runs **2026-09-02 08:09:40–08:19:10 UTC**, exit 0; full
+readback completes at **08:19:21 UTC**. Original-record validation verifies
+**three atomic exchanges, nine journal events and seven content replacements**
+within **548 files/fifteen projects**, with all **1,179 HEADs/origins** matching.
+Image, kernel, recovery and Makefile contents remain unchanged.
+
+This is source adoption, not a new configuration or build result. The retained
+**254-field configuration** is unchanged and its prior native build identity
+is **`nezha.a7db36604f45fcc657373f89`**; no successor identity calculation is
+included here. Config12/context12, Nothing9, Images5 and Package5 remain
+separate verification gates. Normal Android enforcing, 4 KiB and `working76`
+remain required. No phone operation occurs; signing/rollback, OTA and
+boot/hardware remain unverified, and the ROM is **not flashable**. See the
+[source-install checkpoint](build-progress.md#metadata-mode-flags-source-installation--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier Package4 failure checkpoint
+
+This entry preserves the failure and its then-uninstalled host-fix scope.
+
 The **Package4 native retry fails** at a build-metadata guard, exiting 1 at
 **2026-09-02 07:15:57 UTC**. Full retained stdout confirms checksum `OK`, then
 **`native target-files mode differs`** at the failed `.zip.list` target. This

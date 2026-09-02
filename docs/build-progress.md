@@ -1,5 +1,33 @@
 # Nezha product and build progress
 
+## Metadata-mode flags source installation — 2026-09-02
+
+The **reviewed metadata-mode correction is installed**, with verified exit 0.
+The root install command runs **08:09:40–08:19:10 UTC**; full readback completes
+at **08:19:21 UTC**. The journal's **08:16:15 `commit_verified`** event is an
+intermediate milestone, not the final command completion time. Earlier staging
+exits 0 at **08:08:00 UTC**, with 975 independent observed inodes checked.
+
+The original record validator accepts **nine journal events and three ordered
+atomic exchanges**. Source remains **548 files in fifteen projects**, with
+**seven existing content replacements**, preserved modes, expected local patch
+statuses and all **1,179 revision/origin matches**. Image, kernel, recovery and
+Makefile contents do not change. The installed checksum runtime is
+**`c4029700d44fc0273c5716aafd4bc0389aa236084baaddce8afbefedb8d2aff2`**
+(**222,151 bytes**), and its 205-file original metadata-source projection passes.
+
+The retained **254-field configuration** remains unchanged;
+**`nezha.a7db36604f45fcc657373f89`**, epoch **1788144555**, identifies the prior
+native configuration/build outputs, not the newly installed source identity.
+No successor identity calculation or config12/context12, Nothing9, Images5 or
+Package5 success is included in this source-only checkpoint. Normal Android
+enforcement, 4 KiB, `working76`, kernel warnings and `test-keys` remain unchanged.
+Final VINTF/AVB/partition, signing/rollback, OTA and boot/hardware gates remain
+open; no phone operation occurs and no complete or flashable ROM is established.
+The [source-adoption record](../research/workspace-integration.json) retains exact
+installation, journal and readback pins. Package3/Package4 failures and earlier
+checkpoints remain historical evidence, not erased or promoted to success.
+
 ## Package4 build-metadata mode failure — 2026-09-02
 
 The **Package4 native retry fails**, exit 1, running **07:13:33–07:15:57 UTC**.
