@@ -10,6 +10,33 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+The **Images4 native phase and complete original-evidence replay pass**.
+Native execution exits 0 at **2026-09-02 06:26:44 UTC**, verifying **seven fresh
+actions, three recomputed framework sidecars and four image outputs**. Four
+original image inodes and three sidecar copies plus three originals are
+retained. Recovery remains the pinned `working76` prebuilt derivative.
+
+The root's complete host replay exits 0 at **06:46:12 UTC**, checking **56
+evidence files / 144,194,084 bytes**, original names, nine-field stat records
+and final second-pass seals. It replays the fresh actions, twelve current and
+preserved metadata files, seven compiler/installed policy pairs and retention
+journals. **Large image and full graph bodies are not exported**; image hashes
+remain native postcheck evidence. All six callbacks match before/after and
+Nothing8, unlike selected-nine2's expanded protected-input callback.
+
+The source remains **548 files/fifteen projects**, build
+**`nezha.a7db36604f45fcc657373f89`**, epoch **1788144555**, enforcing normal
+Android and 4 KiB. Package4 remains the next unverified build phase; read-only
+preparation is not package success. The metadata packaging hook, image
+reproducibility, signed parent chain, final VINTF/AVB/partition, rollback, OTA
+and boot/hardware gates remain open. No phone operation occurs and the ROM is
+**not flashable**. See the dated [Images4 checkpoint](build-progress.md#images4-and-complete-evidence-replay--2026-09-02)
+and its [exact receipts](../research/workspace-integration.json).
+
+## Earlier selected-nine2 checkpoint
+
+This entry preserves its original component/replay scope and then-pending work.
+
 The **selected-nine2 native build and complete retained-evidence replay pass**.
 Native execution exits 0 at **2026-09-02 05:30:17 UTC**, followed by genuine
 outer-wrapper exit 0 at **05:41:09 UTC**. The deliberately forced-fresh build

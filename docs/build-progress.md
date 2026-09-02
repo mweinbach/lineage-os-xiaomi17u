@@ -1,5 +1,50 @@
 # Nezha product and build progress
 
+## Images4 and complete evidence replay — 2026-09-02
+
+The **Images4 native phase, image postchecks and complete host replay pass**.
+Native execution runs **06:23:50–06:26:44 UTC**, exit 0; all five phase checks
+pass. The root's direct unified session **93425** also closes with exit 0 and
+zero reported output tokens. No separately measured native outer-wrapper
+interval is claimed. Ninja observation, argv, resource-limit and sandbox checks
+pass, with **seven fresh actions, three recomputed framework sidecars and four
+verified image outputs**. Freshness is established by observed actions, not
+matching bytes. Recovery remains the pinned `working76` prebuilt derivative,
+not a newly source-compiled recovery runtime.
+
+Four original image inodes and three sidecar copies plus three originals are
+retained. Complete host readback covers **56 files / 144,194,084 bytes**: four
+live action-evidence files totaling **126,470,036 bytes**, plus 52 remaining
+files totaling **17,724,048 bytes**. Original names, all nine stat fields and
+final second-pass seals are retained. The root independently repeats the
+complete replay at **06:46:10–06:46:12 UTC**, exit 0, reproducing the same
+29,020-byte result.
+
+Replay verifies all seven complete fresh-action records, **twelve current and
+preserved metadata files**, seven compiler/installed policy pairs, nine staged
+proofs, **twelve image-journal events** and **seventeen sidecar-journal events**.
+Nine active/copy/retained sidecar bodies retain nine independent native inodes.
+Metadata value verification does not establish fresh metadata writes.
+**Large image and full graph bodies are not exported to the host**; their
+binary-hash claims remain grounded in the completed native postchecks.
+
+All **six complete callbacks match both before/after and actual Nothing8**;
+selected-nine2's expanded protected-input callback remains a distinct earlier
+scope. Source **548/fifteen projects**, **`nezha.a7db36604f45fcc657373f89`**,
+epoch **1788144555**, normal Android enforcement, 4 KiB, `working76`, kernel
+warnings and `test-keys` remain unchanged. The post-Images4 collector retains
+output `.ninja_deps` at **171,758,884 bytes** and measures `.ninja_log` at
+**63,158,114 bytes**; it does not grant package admission.
+
+The metadata packaging hook, image reproducibility, signed parent chain and
+runtime remain unverified. Package4 is the next build gate; preparatory
+read-only capture is not execution or success. Final VINTF/AVB/partition,
+signing/rollback, OTA and boot/hardware checks remain open. No phone operation
+occurs and no complete or flashable ROM is established. The
+[Images4 record](../research/workspace-integration.json) binds the native result,
+full readback and replay receipts; earlier checkpoints retain their original
+scope, including the Package3 failure and then-pending work.
+
 ## Selected-nine2 and retained-evidence replay — 2026-09-02
 
 The **selected-nine2 native build, postcheck and complete host replay pass**.
