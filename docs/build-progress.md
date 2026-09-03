@@ -1,6 +1,57 @@
 # Nezha product and build progress
 
+## Package6 prerequisite qualification and fresh captures — 2026-09-03
+
+At **00:47:15 UTC**, the exact-seven-stat consumer (`8294fd99…`, 69,393 bytes)
+passes root qualification: **18 tests** and genuine `_originals`,
+`_postcheck_recovery`, `read_plan` and full `_verbose` replay with three actual
+log bodies. Only `_retention`, `_verbose` and the dedicated `_verbose_stat`
+helper change; full nine-field validators and raw records remain unchanged.
+The plan retains **30 evidence rows, 47 inputs, six outputs and 19 controls**.
+The original failed result stays failed; canonical Package6 control/request
+bindings and complete prerequisite admission remain separate.
+
+The read-only GMS capture runs **00:45:00–01:05:36.507147 UTC**, exit **0**,
+with all **44 held inputs** unchanged. Independent review verifies the complete
+transport, exact packet/program/payload, original source/sidecar joins and
+graph/log comparison. The fresh host equivalence driver authenticates **22
+inputs and all sixteen current graphs**, producing a new proof and helper.
+**Two-proof native staging is prepared, not executed**; a successful host
+preparation command is not a guest staging receipt or Package6 admission.
+
+The Selected4 request is actually staged at **01:08:19.886349 UTC**, exit **0**:
+**10,413,456 bytes**, exact hash `89c4fd9b…`, with all **27 held files** unchanged.
+This stages one request, not image bodies or a rebuild. The separate two-producer
+capture starts at **01:09:48.387160 UTC**, with **119 inputs held at launch**;
+its result remains pending at this checkpoint.
+
+A read-only probe of three old vendor/ODM extraction trees verifies **80
+protected selectors**, unique inodes across the roots and no non-directory
+hardlinks. The **9,294,860,288 allocated bytes are not reclaimed space**.
+No tree is deleted: Selected4 staging changed a validation-parent stat record,
+so exact retirement requires a refreshed probe and full keeper hashes. No new
+cleanup follows the two-super retirement in this checkpoint. Host-space changes
+are not attributed solely to the source-volume backing file, and the full
+continuation capacity budget remains uncleared.
+
+Exact local evidence is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`; additional proof/helper,
+launch and completion pins are in the [integration record](../research/workspace-integration.json).
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-five-recovery-consumer-review-v2/review.json` | `23cfce32f1bf4fd62782d96c6ce663eeec089d3a3d81fcdc57e217fbc4b57ab6` | 1,907 |
+| `package6/post-recovery-gms-capture-review-v1/review.json` | `928f333e3173c2773b6d581896bfb329eca6993a02126ee3b1151639b396813d` | 15,504 |
+| `package6/post-recovery-gms-equivalence-preparation-v1/actual-handoff.json` | `77a8b74ad3bbd5b3234814a9ce4d7b395ecd5b29dd18ebbae2f301adfa0c44cb` | 10,469 |
+| `root-package6-selected4-stage-dispatch-v1/actual-v1/completion.json` | `ea30e0a6d44bbaf32ef307ffe2b2211b6891eb9e740bb0d6432ed7bfc9b2b976` | 1,457 |
+| `root-three-extraction-probe-result-review-v1/review.json` | `44e23045307174853d318b55b7e443bfb9c10c7a4314da756d9ed6fc0d76fb51` | 2,100 |
+
+Package6 build, final AVB/signing/FEC/VINTF/super/partition checks, OTA and device
+boot remain pending. No phone operation or new full-suite result is claimed.
+
 ## Five recovery execution and two-super retirement — 2026-09-03
+
+This earlier checkpoint records the then-pending stat-schema correction.
 
 The V2 postcheck-recovery command runs **September 2 23:56:10.365629–September 3
 00:08:48.554115 UTC**, exit **0**, with all **38 held files** unchanged. Its

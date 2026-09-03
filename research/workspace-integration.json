@@ -9582,5 +9582,179 @@
       "source_or_output_written": false,
       "phone_accessed": false
     }
+  },
+  "package6_consumer_and_fresh_capture_checkpoint_20260903": {
+    "status": "seven-stat-consumer-qualified-fresh-gms-capture-and-proof-verified-selected4-request-staged-two-producer-capture-pending",
+    "guide": "docs/build-progress.md#package6-prerequisite-qualification-and-fresh-captures--2026-09-03",
+    "preceding_checkpoint": "five_postcheck_recovery_and_raw_super_retirement_checkpoint_20260903",
+    "preceding_checkpoint_commit": "0e99182241848638359669786f247d4cebffc3b2",
+    "seven_stat_consumer_qualification": {
+      "completed_at": "2026-09-03T00:47:15.115334+00:00",
+      "root_tests_passed": 18,
+      "consumer_sha256": "8294fd99821e069ec2ea718b8f5622599f2309c5000ebff2b0467a12b0689d5d",
+      "consumer_size_bytes": 69393,
+      "changed_functions": [
+        "_retention",
+        "_verbose"
+      ],
+      "added_function": "_verbose_stat",
+      "genuine_apis_replayed": [
+        "_originals",
+        "_postcheck_recovery",
+        "read_plan",
+        "_verbose"
+      ],
+      "actual_verbose_bodies_replayed": 3,
+      "full_nine_stat_validators_unchanged": true,
+      "raw_records_unchanged": true,
+      "read_plan_counts": {
+        "evidence_rows": 30,
+        "input_rows": 47,
+        "output_rows": 6,
+        "controls": 19
+      },
+      "read_plan_evidence_bytes": 144692254,
+      "held_files_unchanged": 12,
+      "original_failed_result_still_failed": true,
+      "canonical_control_bindings": null,
+      "canonical_request_bindings": null,
+      "full_package6_prerequisite_verified": false,
+      "native_execution_by_qualification": false
+    },
+    "fresh_gms_capture": {
+      "started_at": "2026-09-03T00:45:00.076794+00:00",
+      "completed_at": "2026-09-03T01:05:36.507147+00:00",
+      "exit_code": 0,
+      "held_files": 44,
+      "held_full_hashes_and_nine_stats_unchanged": true,
+      "sole_owner_unchanged": true,
+      "complete_transport_verified": true,
+      "packet_program_outer_payload_exact": true,
+      "original_outer_source_sidecar_join_replayed": true,
+      "original_graph_log_comparator_replayed": true
+    },
+    "fresh_gms_host_equivalence": {
+      "driver_exit_code": 0,
+      "authenticated_inputs": 22,
+      "complete_current_graphs": 16,
+      "ordinary_tool_recipes_and_forward_vectors_unchanged": true,
+      "fresh_proof_and_helper_materialized": true,
+      "native_input_output_files_reobserved_by_host_equivalence": false,
+      "two_proof_native_staging_prepared": true,
+      "native_staging_performed": false,
+      "native_stage_receipt": null,
+      "full_package6_predicate_called": false
+    },
+    "selected4_request_staging": {
+      "completed_at": "2026-09-03T01:08:19.886349+00:00",
+      "exit_code": 0,
+      "files_verified": 1,
+      "request_sha256": "89c4fd9bb8b78cf9d15e041fae91f7043956ec9de15b6b695067332ce9812a19",
+      "request_size_bytes": 10413456,
+      "held_files": 27,
+      "held_full_hashes_and_nine_stats_unchanged": true,
+      "native_build_performed": false,
+      "source_or_android_output_modified": false,
+      "source_or_output_image_bytes_supplied": false,
+      "private_keys_supplied": false
+    },
+    "two_producer_capture": {
+      "started_at": "2026-09-03T01:09:48.387160+00:00",
+      "held_files_at_launch": 119,
+      "status": "in-progress-at-this-checkpoint",
+      "result_verified": false,
+      "native_build_executed": false
+    },
+    "three_extraction_tree_probe": {
+      "reviewed_at": "2026-09-03T01:13:59.327168+00:00",
+      "metadata_only_probe_verified": true,
+      "tree_count": 3,
+      "protected_selectors_checked": 80,
+      "all_inode_keys_unique_across_roots": true,
+      "all_non_directory_nlinks_one": true,
+      "candidate_allocated_bytes": 9294860288,
+      "trees_deleted": 0,
+      "deletion_ready": false,
+      "retirement_eligibility": null,
+      "allocation_is_reclaimed_space": false,
+      "next_required_checks": "Refresh the probe after the package query because Selected4 staging changed validation-parent stat9; fully hash keepers before exact retirement binding."
+    },
+    "limits": {
+      "new_cleanup_after_two_raw_supers": false,
+      "host_space_change_exclusively_attributed_to_source_backing": false,
+      "full_continuation_capacity_cleared": false,
+      "full_package6_admitted": false,
+      "package6_build_verified": false,
+      "private_signing_performed": false,
+      "complete_avb_chain_verified": false,
+      "rom_or_boot_verified": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Review the closed two-producer capture, perform and verify the separately prepared GMS proof staging, then complete Package6 prerequisite admission and build. Any extraction retirement needs refreshed exact guards and keeper hashes. Full capacity, AVB/signing/FEC/VINTF/super/partition fit, OTA and device boot remain separate gates.",
+    "evidence": {
+      "consumer_root_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-consumer-review-v2/review.json",
+        "sha256": "23cfce32f1bf4fd62782d96c6ce663eeec089d3a3d81fcdc57e217fbc4b57ab6",
+        "size_bytes": 1907
+      },
+      "consumer_actual_replay": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-consumer-review-v2/actual-replay.json",
+        "sha256": "8504da0b7e2bb5c471c7c521ac389a9a5ad7d3a61b71069c6dfffbb9cfd42b26",
+        "size_bytes": 2556
+      },
+      "gms_capture_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-gms-capture-dispatch-v1/actual-v1/completion.json",
+        "sha256": "1a3fba8238e0a7a3fa6752d93c62c1f049647af4ca5817c26d81404516939eca",
+        "size_bytes": 1436
+      },
+      "gms_actual_capture": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/shared83/capture-xz7e-v1/bound-package6-post-recovery-v1/root-capture-v1/capture.json",
+        "sha256": "c67d3d30b8b7af3d90ab7f717320282e4203c5adc5ba1fa082a10ec165a59459",
+        "size_bytes": 3185039
+      },
+      "gms_capture_independent_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-recovery-gms-capture-review-v1/review.json",
+        "sha256": "928f333e3173c2773b6d581896bfb329eca6993a02126ee3b1151639b396813d",
+        "size_bytes": 15504
+      },
+      "gms_actual_handoff": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-recovery-gms-equivalence-preparation-v1/actual-handoff.json",
+        "sha256": "77a8b74ad3bbd5b3234814a9ce4d7b395ecd5b29dd18ebbae2f301adfa0c44cb",
+        "size_bytes": 10469
+      },
+      "gms_current_equivalence": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-recovery-gms-equivalence-preparation-v1/equivalence-actual-v1/current-equivalence.json",
+        "sha256": "62504aebbe5e75975b4f8a16a6df9e7a9ada0aed9e4d2ece09b6237eef954640",
+        "size_bytes": 6191017
+      },
+      "gms_current_helper": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-recovery-gms-equivalence-preparation-v1/equivalence-actual-v1/current_gms_prerequisite.py",
+        "sha256": "0e14fcf93a40f8a2121daa62ba70d52607cbe602d81bbd9c7ff228bdcb91db14",
+        "size_bytes": 216733
+      },
+      "selected4_request_stage_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-selected4-stage-dispatch-v1/actual-v1/completion.json",
+        "sha256": "ea30e0a6d44bbaf32ef307ffe2b2211b6891eb9e740bb0d6432ed7bfc9b2b976",
+        "size_bytes": 1457
+      },
+      "selected4_request_stage_receipt": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-selected4-stage-dispatch-v1/actual-v1/stdout.json",
+        "sha256": "554ea9500f94491722a1ddccc099b6abb34a841164c9275afe4aa8a79ee67286",
+        "size_bytes": 831
+      },
+      "three_extraction_probe_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-three-extraction-probe-result-review-v1/review.json",
+        "sha256": "44e23045307174853d318b55b7e443bfb9c10c7a4314da756d9ed6fc0d76fb51",
+        "size_bytes": 2100
+      },
+      "two_producer_capture_launch": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-producer-capture-dispatch-v1/actual-v1/launch.json",
+        "sha256": "0ccec297bd2d28b6f9e1acd251736a5334ff840d040bd99d9226f89ab480c5b4",
+        "size_bytes": 985
+      }
+    }
   }
 }

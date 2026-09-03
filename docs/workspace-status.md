@@ -10,6 +10,27 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The exact-seven-field consumer correction is qualified.** Root tests and
+genuine `_originals`, `_postcheck_recovery`, `read_plan` and full verbose replay
+pass; the original failed result and full nine-field validators remain intact.
+This clears the recorded stat-schema blocker, not full Package6 admission.
+
+**Fresh GMS capture completes at 2026-09-03 01:05:36 UTC**, with independent
+transport/source/graph review and a fresh host equivalence proof. Its two-proof
+native staging is **prepared only**. The Selected4 request is actually staged
+at **01:08:19 UTC**, without rebuilding. The separate two-producer capture
+starts at **01:09:48 UTC**; its result is pending at this checkpoint.
+
+Three obsolete extraction trees are **probed, not deleted**. Their allocation
+is not reclaimed space, and retirement still needs refreshed guards and keeper
+hashes. No cleanup after the two raw supers, complete capacity clearance,
+Package6 build, signing or ROM/boot success is established; no phone operation
+occurs. See the [qualification and captures checkpoint](build-progress.md#package6-prerequisite-qualification-and-fresh-captures--2026-09-03).
+
+## Earlier recovery acceptance and two-super retirement
+
+The stat-schema correction was still pending in this earlier checkpoint.
+
 **Five's V2 native postcheck recovery passes**, exit **0**, at
 **2026-09-03 00:08:48 UTC**. Its native receipt and exported copy match exactly;
 the original failed result remains unchanged. This is postcheck-only recovery,
