@@ -1,17 +1,119 @@
 """Offline semantic-evidence tests; no image, native process, VM, or phone is used."""
 
+import ast
 import contextlib
 import copy
 import hashlib
 import io
 import json
 from pathlib import Path
+import re
 import stat
 import tempfile
 import unittest
 from unittest import mock
 
 from scripts import erofs_metadata as metadata
+
+
+class CompactEofHeadGuardTests(unittest.TestCase):
+    """Evaluate the actual C guard expression offline, not compiled C/liberofs.
+
+    This small integer/boolean subset keeps the source predicate under test
+    without requiring a native compiler in the standard-library test suite.
+    Native exporter qualification remains a separate execution gate.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.source = (Path(__file__).resolve().parents[1] /
+                      "tools/erofs-metadata/erofs_metadata_compact_eof.c").read_text()
+        match = re.search(
+            r"static bool discarded_compact_eof_head\([^{}]+\)\s*"
+            r"\{\s*return ([^;{}]+);\s*\}", cls.source)
+        if match is None:
+            raise AssertionError("missing single-expression EOF guard")
+        expression = match.group(1)
+        substitutions = {
+            "inode->datalayout": "layout", "inode->i_size": "size",
+            "image_sbi.primarydevice_blocks": "blocks",
+            "EROFS_INODE_COMPRESSED_COMPACT": "3",
+            "Z_EROFS_LCLUSTER_TYPE_PLAIN": "0",
+        }
+        for spelling, replacement in substitutions.items():
+            expression = expression.replace(spelling, replacement)
+        expression = re.sub(r"\b([0-9]+)U\b", r"\1", expression)
+        expression = expression.replace("&&", " and ").replace("||", " or ")
+        expression = expression.replace("/", "//")
+        tree = ast.parse(" ".join(expression.split()), mode="eval")
+        names = {"layout", "size", "blocks", "lcn", "offset", "type", "clusterofs", "pblk"}
+        allowed = (ast.Expression, ast.BoolOp, ast.Compare, ast.BinOp, ast.Name,
+                   ast.Constant, ast.Load, ast.And, ast.Or, ast.Eq, ast.Lt,
+                   ast.LtE, ast.Gt, ast.GtE, ast.FloorDiv, ast.Mod)
+        for node in ast.walk(tree):
+            if not isinstance(node, allowed):
+                raise AssertionError(f"unsupported guard syntax: {type(node).__name__}")
+            if isinstance(node, ast.Name) and node.id not in names:
+                raise AssertionError(f"unexpected guard name: {node.id}")
+            if isinstance(node, ast.Constant) and type(node.value) is not int:
+                raise AssertionError("guard constants must be integers")
+        cls.guard_code = compile(tree, "discarded_compact_eof_head", "eval")
+
+    def accepts(self, **changes):
+        values = dict(layout=3, size=408757, blocks=142992, lcn=99,
+                      offset=408756, type=0, clusterofs=3253, pblk=142992)
+        values.update(changes)
+        self.assertTrue(all(type(value) is int and value >= 0 for value in values.values()))
+        result = eval(self.guard_code, {"__builtins__": {}}, values)
+        self.assertIs(type(result), bool)
+        return result
+
+    def test_final_compact_pack_discards_only_the_unused_eof_address(self):
+        # Two 16-bit indexes and a 32-bit base, independently reproducible
+        # metadata: HEAD1 at 1639 followed by the PLAIN EOF marker at 3253.
+        pack = bytes.fromhex("6716b50c8e2e0200")
+        base = int.from_bytes(pack[4:], "little")
+        heads = []
+        for item in range(2):
+            word = int.from_bytes(pack[item * 2:item * 2 + 2], "little")
+            heads.append({"type": (word >> 12) & 3, "clusterofs": word & 4095,
+                          "pblk": base + item + 1, "lcn": 98 + item})
+        self.assertEqual(heads[0], dict(type=1, clusterofs=1639, pblk=142991, lcn=98))
+        self.assertEqual(heads[1], dict(type=0, clusterofs=3253, pblk=142992, lcn=99))
+        self.assertTrue(self.accepts(**heads[1]))
+        self.assertFalse(self.accepts(**heads[0]))
+        self.assertLess(heads[0]["pblk"], 142992)  # Selected predecessor is in range.
+
+    def test_exception_rejects_other_addresses_heads_and_queries(self):
+        cases = {
+            "full index": {"layout": 1},
+            "compressed head": {"type": 1},
+            "nonhead": {"type": 2},
+            "unsupported head": {"type": 3},
+            "past filesystem": {"pblk": 142993},
+            "already in range": {"pblk": 142991},
+            "not EOF cluster": {"lcn": 98},
+            "wrong EOF boundary": {"clusterofs": 3252},
+            "at EOF": {"offset": 408757},
+            "past EOF": {"offset": 408758},
+            "query in predecessor": {"offset": 98 * 4096 + 1639},
+            "nonterminal marker": {"size": 408758},
+            "aligned EOF": {"size": 409600, "lcn": 100, "clusterofs": 0, "offset": 409599},
+            "zero length": {"size": 0, "lcn": 0, "clusterofs": 0, "offset": 0},
+            "impossible cluster-zero lookback": {"size": 3253, "lcn": 0, "offset": 3252},
+        }
+        for label, changes in cases.items():
+            with self.subTest(label=label):
+                self.assertFalse(self.accepts(**changes))
+
+    def test_original_query_offset_reaches_both_raw_index_reads(self):
+        body = self.source.split("static int check_lookback(", 1)[1].split(
+            "static int checked_data_read(", 1)[0]
+        calls = re.findall(r"raw_lcluster\(([^;]+)\);", body)
+        self.assertEqual([" ".join(call.split()) for call in calls], [
+            "inode, lcn, offset, &type, &clusterofs, &delta",
+            "inode, lcn, offset, &type, &clusterofs, &delta",
+        ])
 
 
 def checksum(value):
