@@ -10,6 +10,23 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**P2's four producer observations and seven paired input files are admitted**,
+without establishing header closure or producer/runtime qualification.
+**Super producer evidence is recovered without a rebuild**: a separate review
+admits four retained commands and selected source/PYC joins; the original
+wrapper failure and its flags remain intact. Current artifact identity, full
+composition and generated-program runtime remain unverified.
+**Function-anchored BTF selects `module` type 257 and `sig_ok` at byte 377**,
+supporting a conditional static gate interpretation. The global two-type
+census remains ambiguous; live pointer identity, `sig_ok` value, signature
+trust and whole-policy behavior are not established. Full source/runtime,
+ABI, VINTF, super/fit, OTA and boot remain open. No phone operation or
+additional artifact cleanup occurs. See the [producer recovery and function-anchored BTF checkpoint](build-progress.md#package6-producer-recovery-and-function-anchored-btf--2026-09-03).
+
+## Earlier Package6 producer tools and kernel BTF
+
+The following checkpoint predates P2 admission, producer recovery and the function-anchored declaration review.
+
 **LN producer-listing review passes** for 33 ordered object recipes and their
 response file, without proving built-archive membership or producer provenance.
 **Machinery metadata is mixed-architecture**: AArch64 env/Python and x86-64

@@ -1,6 +1,59 @@
 # Nezha product and build progress
 
+## Package6 producer recovery and function-anchored BTF — 2026-09-03
+
+**P2 capture closes at 22:50:46 UTC**, exit **0**, with complete streams in
+**37.082 seconds**. Its **22:59:05 UTC** admission replays the original
+validators and 11 omission cases, preserving all 53 controls. Four query/command
+rows and **seven paired input files (352,136 bytes)** are admitted: one recovery
+source, two generated APEX sources and four depfiles. Observed generated-header
+inputs and the unqueried `mkbootimg` precompiled-ZIP producer do not establish
+header closure, complete source provenance, production or runtime behavior.
+
+**N9 readback closes at 22:57:27 UTC**, exit **0**, in **0.123 seconds**:
+nine text files are read in 18 passes, not nine worker commands. A separate
+ROOT-replayed recovery admits **four retained producer/verifier commands and
+19 paired inputs**, with selected source scope and whole **9,422-byte PYC
+equality**. No command is rerun or output rebuilt, and the original failed
+wrapper/guest flags remain unchanged. The readback does not itself admit source
+or worker semantics. Current generated-artifact identity, full container framing,
+composition, program entrypoint/runtime and `super.img` remain unqualified.
+
+**Function-anchored BTF semantic review closes at 23:03:12 UTC.** Eight saved-proof
+tests consume all 37 slices (1,552 bytes) and resolve the possible predecessor
+extents. `complete_formation`'s declared first parameter selects `module` type
+**257**; only member 20, **`sig_ok`**, spans bits **[3016, 3024)**, byte **377**.
+The global census still has two `module` types; its completeness and function
+uniqueness are closed-parser observations, not replayed by these sparse slices.
+The **23:05:34 UTC** conditional join matches that declaration to the same-name
+code's byte-377/bit-0 bypass. Under the stated helper/loop, declaration and normal
+memory/call conditions, the reviewed search supports protected-name membership
+and a nonnull returned **X0 pointer** leading to local **-13** rejection. The
+comparator's signed W0 is internal to the search, not the caller's pointer test.
+Independent review closes at **23:11:19 UTC**, passing **11 denied-I/O tests**
+and joining the exact member-extent and conditional-gate reports without findings.
+This does not establish live X0's type, a current `sig_ok` value, signature trust,
+whole compiled policy, or any module's admission/ABI outcome.
+
+Full source/runtime, VINTF, super/physical fit, OTA and boot remain open.
+No phone operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/next-two-root-inputs-v1/root-dispatch-v1/actual-v1/actual-admission-v1/review.json` | `e62ae6b2e763c7b82b064231c0ac6bda8ae66ab87ed2c1a1eb964bf061e8203f` | 16,131 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/observer-readback-v1/worker-stdout-successor-v1/root-dispatch-v1/actual-v1/completion.json` | `f7ff3c9a0398b731ff899c98bb01ec37a2b367cecdfae8b98b0ea4dc1489b2dc` | 3,725 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/parse-recovery-admission-v1/observer-schema-fix-v1/actual-admission-v1/recovery.json` | `7c78e2a8bbb99598d492380ef549ecd14ea1cfcfc8e8f78f20d72584cdc1e7e1` | 6,387 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/parse-recovery-admission-v1/observer-schema-fix-v1/actual-admission-v1/root-replay.json` | `2472877a8b806d950d6ef102a409930c092d13b8b10b57bd24c6fd99ea77ab97` | 669 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/func-anchored-btf-capture-preparation-v1/postcapture-review-v1/review.json` | `eafe53b1abd81105f10dceb2be8a76456cc891ff62b1c3596430aa1ab5665050` | 15,159 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/func-anchored-btf-capture-preparation-v1/postcapture-review-v1/conditional-gate.json` | `13a5fce3b1fe754c2ff6c0b6b4834aa6483f5eeb618d49fbdd6c7b1cc8702d32` | 7,979 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/func-anchored-btf-capture-preparation-v1/postcapture-review-v1/independent-review-v1/review.json` | `ce3134d74820d4c562dd89881fbe4596dbadb3c7d605f7b342b10869d918db61` | 15,913 |
+
 ## Package6 producer tools and kernel BTF — 2026-09-03
+
+This earlier checkpoint predates P2 admission, producer recovery and the function-anchored declaration review.
 
 **LN's finite producer review closes at 22:18:22 UTC.** All **33 object
 recipes** match the prior ordered archive inputs, and the **4,939-byte RSP**
