@@ -1,6 +1,45 @@
 # Nezha product and build progress
 
+## Package6 generated headers and Super help smoke — 2026-09-03
+
+**P3 capture closes at 23:23:18 UTC**, exit **0**, with complete streams,
+empty stderr and **28.334-second** transport. The **23:26:15 UTC** admission
+replays the original validators and four omission cases, preserving 68 controls
+and 14 actual records. Both generated APEX headers are present and paired,
+totaling **3,678 bytes**, alongside **two query/command rows**. The observed
+`mkbootimg` precompile recipe reaches an unqueried `mkbootimg.py.srcszip` input,
+not a qualified source endpoint. Full header closure, producer provenance,
+PYC, runtime and the complete 548-source guard remain unqualified.
+
+**The generated Super tool's actual `--help` run closes at 23:22:11 UTC**,
+native exit **0**, producing the expected **1,564-byte help text** in
+**0.458 seconds**, with empty stderr and paired current-tool identity.
+The original host wrapper exits **1** on namespace JSON token ordering. A
+separate host-only derivative corrects only that ordering, retaining the
+complete argument comparison and all other predicates; **23 ROOT tests**
+and actual replay pass. The original failed receipt remains unchanged and
+no native command is rerun. This admits the generated program's entrypoint/help
+execution only: full library/runtime, source preservation/full-source guard,
+functional Super and `super.img` assembly remain unverified.
+
+Diagnostic-build qualification, compiled policy, signature trust/ABI, full VINTF,
+super/physical fit, OTA and boot remain open. No phone operation or additional
+artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/next-two-root-inputs-v1/next-packaging-header-inputs-v1/root-dispatch-v1/actual-v1/actual-admission-v1/review.json` | `c67c64b8aad2407df8ab18238455f67122ce14ec8bcd1029799e116f020d7afc` | 18,167 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/next-two-root-inputs-v1/next-packaging-header-inputs-v1/root-dispatch-v1/actual-v1/root-replay.json` | `fbcda3f1de6f4fdd3ffd9e83697b24fc7b49bd24d4d9bee354115c933c0dfdcf` | 346 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/runtime-smoke-v1/outer/root-dispatch-v1/actual-v1/failure.json` | `1334312e5e55c0af1d42aaf588eebb156b83af7cbeef4304d151a6a352be3b62` | 3,517 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/runtime-smoke-v1/argv-order-admission-v1/admission.json` | `8c52584f4928eed28f06238556cd25868369fc0aec86f6a522e8d2a4ad29b3ae` | 18,005 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/runtime-smoke-v1/argv-order-admission-v1/root-replay.json` | `7baadf04347dd2c73a43a9db8733d43bbe835c29c5fcc5696de0b8a60db31ea2` | 674 |
+
 ## Package6 producer recovery and function-anchored BTF — 2026-09-03
+
+This earlier checkpoint predates P3 and the generated-tool help-smoke admission.
 
 **P2 capture closes at 22:50:46 UTC**, exit **0**, with complete streams in
 **37.082 seconds**. Its **22:59:05 UTC** admission replays the original

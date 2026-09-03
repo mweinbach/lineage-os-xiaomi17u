@@ -10,6 +10,20 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**P3 captures both generated headers and the next packaging-query pair**;
+the fixed observations are admitted, not complete header or source provenance.
+**The generated Super tool's `--help` smoke test passes**, with its current
+identity checked. A separate host-only correction recovers namespace-token
+ordering without rerunning native execution or rewriting the original host
+failure. This proves the entrypoint/help path, not broad library/runtime or
+functional Super behavior. No `super.img` is assembled. Full source/runtime,
+compiled policy, trust/ABI, VINTF, super/fit, OTA and boot remain open; no phone
+operation or additional artifact cleanup occurs. See the [generated-header and help-smoke checkpoint](build-progress.md#package6-generated-headers-and-super-help-smoke--2026-09-03).
+
+## Earlier Package6 producer recovery and function-anchored BTF
+
+The following checkpoint predates P3 and the generated-tool help-smoke admission.
+
 **P2's four producer observations and seven paired input files are admitted**,
 without establishing header closure or producer/runtime qualification.
 **Super producer evidence is recovered without a rebuild**: a separate review
