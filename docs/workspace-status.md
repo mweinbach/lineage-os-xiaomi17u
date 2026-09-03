@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The corrected NGB and vendor-ramdisk captures return cleanly**, while their
+earlier failed attempts remain preserved. Kernel-static evidence and Mac
+dependency admission also advance, without establishing ABI or runtime closure.
+**The compiled-metadata AIDL audit remains negative**: 127 missing names affect
+142 tuples, with 13 names matched; this does not prove absent services or runtime
+failures, and interpretation/provenance remain unfinished. Current ramdisk/DLKM
+ABI aggregation is still pending, with no claimed reduction of the 718 earlier
+unbound CRC expectations. Source-origin work, full VINTF, super/fit, OTA and boot
+remain open. No phone operation, additional artifact cleanup or push occurs.
+See the [corrected-capture and AIDL checkpoint](build-progress.md#package6-corrected-captures-and-negative-aidl-audit--2026-09-03).
+
+## Earlier Package6 independent VINTF inputs and retained ABI gaps
+
+The following checkpoint predates the corrected captures and negative AIDL audit.
+
 **Package6's independent VINTF input review passes on the host**, accounting
 for all 298 selected members and staging the third of six proof roles as a
 read-only host file. Native qualification and full VINTF compatibility remain

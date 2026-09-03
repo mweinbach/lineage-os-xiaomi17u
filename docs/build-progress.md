@@ -1,6 +1,56 @@
 # Nezha product and build progress
 
+## Package6 corrected captures and negative AIDL audit — 2026-09-03
+
+**The corrected NGB retry closes at 19:13:14 UTC**, exit **0**, with complete
+streams in **641.115 seconds**. It records nine query pairs/18 calls, four core
+bodies (**566,527 bytes**) and 21 boot-input bodies (**3,783,771 bytes**), with
+64 controls and source/input preservation verified. The original capture-limit
+failure remains separate; this return is not full source-origin, ROM or VINTF
+semantic qualification.
+
+**The compiled-metadata AIDL coverage audit returns a negative result**, exit
+**65**: **127 missing names, 142 affected tuples and 13 matched names**. ROOT's
+exact replay passes at **19:25:27 UTC**, not the audit itself. This does not
+establish absent services, runtime failures or a build defect. Metadata/binary
+provenance, runtime closure and interpretation remain open; the result is not waived.
+
+The kernel-static capture is admitted at **19:09:11 UTC** after correcting a
+postflight reader that rejected empty stderr; the original child had exited 0
+and is not rerun. Its failed postflight remains preserved. ROOT's **19:21:19 UTC**
+vermagic replay finds **103/484 full literal matches** and **484/484 matches
+under reference `has_crcs=true` semantics**. The current compiled loader branch,
+module ABI and signature trust remain unproven.
+
+**Vendor-ramdisk capture-v2 returns cleanly at 19:22:53 UTC**, with stream
+readback admitted at **19:23:41 UTC**: **430 module payloads / 47,961,360 bytes**, with
+its exact temporary scratch removed. The earlier wrong-sink attempt was killed
+with child exit **-9** and a partial stream; it cannot be admitted or relabeled
+as the fresh corrected run. Deep review and the current ramdisk/DLKM ABI union
+remain pending; no reduction of the earlier 718 unbound expectations is claimed.
+
+Mac dependency admission-v4 also passes at **19:22:34 UTC**, covering **195
+file-backed dependencies and 244 guarded inputs**; complete dynamic runtime
+closure and boot are not established. Source-origin follow-up and the next
+combined batch remain unqualified. Effective properties, full
+VINTF, super/physical fit, OTA and boot remain open. No phone operation,
+additional artifact cleanup or push occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/producer-followup-preparation-v1/next-grounded-batch-v1/merge-producer-retry-v1/root-dispatch-v1/actual-v1/completion.json` | `ae30a51500c5afe6a3c25e7dd5b3bd724fe4028661183c6a277a169b6f81da2c` | 15,401 |
+| `root-package6-aidl-negative-review-v1/review.json` | `4287de9035e42fb045739247d504bf97089dce2c29f504a7e8424550e47dfa61` | 4,221 |
+| `root-package6-kernel-static-capture-v1/admission-v1/completion.json` | `3928149212be2189b5b05e1548bfdf190a9750a9a6291b3d2bdfef7597eeb724` | 18,891 |
+| `root-package6-kernel-vermagic-review-v1/review.json` | `b977bbf3e4de369c104d861a984595595baff9e7010e554511d0c0b631df4136` | 56,413 |
+| `root-package6-vendor-ramdisk-capture-v2/stream-readback-admission.json` | `30c2c3e102918c37f58d6e0f45ea441cf91b571971fa18bf36654c2a01e4b636` | 2,531 |
+| `root-package6-boot-runtime-v4-review-v1/review.json` | `4d83ff76d88f4d3f22680c20de610f08895cedb7b6fbf0731061030f3555cf29` | 2,119 |
+
 ## Package6 independent VINTF inputs and retained ABI gaps — 2026-09-03
+
+This earlier checkpoint predates the corrected captures and negative AIDL audit.
 
 **Independent host review admits the 298 selected VINTF input members.** The
 recorded publication copy/readback chain accounts for **297 unchanged members**
