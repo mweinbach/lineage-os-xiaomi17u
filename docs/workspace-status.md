@@ -10,6 +10,26 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package6 public AVB preparation and host private signing pass.** Preparation
+closes at **2026-09-03 13:49:06 UTC**. All
+**18 host-tool invocations and 15 input checks** succeed, including the five
+rebuilt images' SHA-256 hashtree descriptors. The normalized signer manifest is
+recorded, source inputs stay unchanged and `working76` is preserved. ROOT's
+separate result review passes at **13:50:49 UTC**.
+
+Signing closes at **14:03:59 UTC** with **33 successful host-tool records** and
+a verified **17-role AVB image set**: 14 leaves remain unchanged, while `boot`,
+`vbmeta` and `vbmeta_system` reproduce identically in two signing passes.
+`working76` is preserved and the selected-key Android AVB chain passes; ROOT's
+postcheck replay agrees. **Archive reconciliation is in progress, not admitted.**
+Full FEC payload verification, VINTF semantic admission/compatibility, physical
+fit, OTA and device boot remain unverified. No new cleanup or phone operation
+is claimed. See the [preparation and signing checkpoint](build-progress.md#package6-public-avb-preparation-and-signing--2026-09-03).
+
+## Earlier Package6 input materialization and host retirement
+
+The following checkpoint predates successful public AVB preparation and signing.
+
 **Package6's 15 host signing inputs are materialized and the old P5 host ZIP is
 retired.** Materialization closes at **2026-09-03 03:55:41 UTC** with full output
 readback and local publication checks; ROOT's separate review passes. The

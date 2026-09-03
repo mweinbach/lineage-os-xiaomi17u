@@ -10655,5 +10655,180 @@
       "source_or_output_written_by_idle_check": false,
       "phone_accessed": false
     }
+  },
+  "package6_public_preparation_and_signing_checkpoint_20260903": {
+    "status": "package6-public-preparation-private-host-signing-and-selected-key-avb-chain-verified-reconciliation-in-progress-rom-pending",
+    "guide": "docs/build-progress.md#package6-public-avb-preparation-and-signing--2026-09-03",
+    "preceding_checkpoint": "package6_materialization_and_host_retirement_checkpoint_20260903",
+    "preceding_checkpoint_commit": "a87861fc64d5da4c9892909ade5da4ddc9105366",
+    "public_preparation": {
+      "completed_at": "2026-09-03T13:49:06.092582+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 24.130063000000064,
+      "status": "prepared_public_only",
+      "successful_host_native_tool_calls": 18,
+      "successful_input_verification_calls": 15,
+      "public_key_extraction_calls": 1,
+      "unsigned_retained_descriptor_carrier_calls": 2,
+      "five_rebuilt_sha256_hashtree_roles": [
+        "product",
+        "system",
+        "system_dlkm",
+        "system_ext",
+        "vendor_dlkm"
+      ],
+      "all_five_hash_algorithms_sha256": true,
+      "retained_hashtree_roles_are_not_excluded_by_five_role_count": true,
+      "normalized_signer_manifest_sha256": "44bc1fc5f7fd239e9d62b5657fd6b35383cdc3049eab3726589e37f89a3f0fcd",
+      "normalized_signer_manifest_size_bytes": 5660,
+      "signer_manifest_normalization_is_dtbo_archive_alias_replacement": false,
+      "source_inputs_unchanged": true,
+      "working76_identity_preserved": true,
+      "working76_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "root_review_completed_at": "2026-09-03T13:50:49.888823+00:00",
+      "root_review_passed": true,
+      "fresh_exact_postcheck_replay": true,
+      "held_small_inputs": 39,
+      "held_stat_only_inputs": 16,
+      "held_small_and_stat_only_inputs_unchanged": true,
+      "reserve_bytes": 107374182400,
+      "minimum_sampled_host_available_bytes": 172092657664,
+      "capacity_sample_count": 27,
+      "periodic_reserve_observation_only": true,
+      "full_continuation_capacity_cleared": false,
+      "private_key_accessed": false,
+      "private_key_copied": false,
+      "private_key_payload_read_by_python": false,
+      "keys_generated": false,
+      "signing_performed": false,
+      "guest_accessed": false,
+      "device_operations": []
+    },
+    "remaining_gates": {
+      "fec_payload_verified": false,
+      "dtbo_archive_alias_normalization_applied": false,
+      "vintf_capture_semantically_admitted": false,
+      "complete_static_vintf_verified": false,
+      "physical_partition_fit_verified": false,
+      "apk_apex_ota_signing_performed": false,
+      "device_rollback_compatibility_verified": false,
+      "oem_trust_established": false,
+      "complete_rom_ready": false,
+      "device_boot_verified": false,
+      "new_cleanup_performed": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_large_body_reads_by_documentation_owner": false,
+      "reconciliation_state": "running-no-successful-result-admitted-at-checkpoint",
+      "signed_archive_reconciliation_verified": false,
+      "provenance_semantics_verified": false
+    },
+    "next_gate": "Finish and independently admit signed target-files reconciliation, including the exact DTBO alias rule. The selected-key Android AVB chain passes, but full FEC payload checks, VINTF semantic admission and compatibility, super/physical fit, APK/APEX/OTA signing, device rollback compatibility and physical boot remain separate gates.",
+    "evidence": {
+      "public_preparation_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/host-stage-capacity-guard-v1/public-prepare-v1/prepare-v1/completion.json",
+        "sha256": "5f292a7fb3386e81025e84f738067120910bdd679293b5709af287b79ac61bdf",
+        "size_bytes": 380911
+      },
+      "actual_public_preparation": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/prepared-v1/preparation.json",
+        "sha256": "5bff18437f77271a686755024f79622267a3f8b85adc8252f3a7e92c4efebeee",
+        "size_bytes": 47363
+      },
+      "normalized_signer_input_manifest": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/prepared-v1/input-manifest.json",
+        "sha256": "44bc1fc5f7fd239e9d62b5657fd6b35383cdc3049eab3726589e37f89a3f0fcd",
+        "size_bytes": 5660
+      },
+      "root_public_preparation_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-public-prepare-result-review-v1/review.json",
+        "sha256": "1822c6f8dec217f5f51cc7bbe056c1984cdfe48cb344e48717ebf555bf1a260d",
+        "size_bytes": 4726
+      },
+      "private_signing_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/final-avb/package6-signing-continuation-v1/sign-v1/completion.json",
+        "sha256": "a0957822ecec9fa0f3983a0fde73409a3f61551d94c2658b5af54caede6e52e7",
+        "size_bytes": 744115
+      },
+      "actual_signing_receipt": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/signing-receipt.json",
+        "sha256": "8692f1da554d806e2115f9ab3587312df5d4d1d880be296822a72b01b9c72696",
+        "size_bytes": 88298
+      },
+      "verification_manifest": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/verification-manifest.json",
+        "sha256": "47626aa0fc3c3348559369f1c63a63a9325cd9829449b07058e56214df2987b0",
+        "size_bytes": 4203
+      },
+      "root_signing_result_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-sign-result-review-v1/review.json",
+        "sha256": "8c9a6e4c22faf68d0239b4d60b5759efd3cef9588f69be737770c92e59fcc377",
+        "size_bytes": 59288
+      }
+    },
+    "private_host_signing": {
+      "completed_at": "2026-09-03T14:03:59.601082+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 68.00015475000009,
+      "status": "signed_and_verified",
+      "successful_host_tool_records": 33,
+      "public_recheck_records": 18,
+      "signing_stage_records": 7,
+      "chain_verification_records": 8,
+      "verified_image_set_roles": 17,
+      "unchanged_leaf_count": 14,
+      "newly_generated_derivative_roles": [
+        "boot",
+        "vbmeta",
+        "vbmeta_system"
+      ],
+      "two_pass_reproduction_verified": true,
+      "two_derivative_pass_hash_and_size_maps_identical": true,
+      "derivative_pins": {
+        "boot": {
+          "sha256": "c3c8acac7eefc43b89fb4aecd6aa1f48739b670b4982e94194fa4620981427d3",
+          "size_bytes": 100663296
+        },
+        "vbmeta": {
+          "sha256": "0bc13c98439d63553f79d85ba7f769e4e8e821800901ffa646b35f5aae132047",
+          "size_bytes": 65536
+        },
+        "vbmeta_system": {
+          "sha256": "13624c5f4cfc54f879a28c45b83f33193ed23bea676730bb86cd1b87cdcd8d3f",
+          "size_bytes": 65536
+        }
+      },
+      "working76_preserved": true,
+      "working76_sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "source_inputs_unchanged": true,
+      "complete_chain_verified": true,
+      "verification_scope": "Selected public keys and package GPT/LP budgets; Android AVB closure only.",
+      "verified_key_roles": [
+        "vbmeta",
+        "boot",
+        "recovery",
+        "vbmeta_system"
+      ],
+      "missing_partitions": [],
+      "artifacts_without_native_payload_verification": [],
+      "package_budget_fit_verified": true,
+      "root_postcheck_replayed_exactly": true,
+      "root_preflight_equals_final_provenance": true,
+      "root_output_body_review_stat_only": true,
+      "root_independent_output_body_rehash_claimed": false,
+      "reserve_bytes": 107374182400,
+      "minimum_sampled_host_available_bytes": 166560354304,
+      "capacity_sample_count": 70,
+      "periodic_reserve_observation_only": true,
+      "full_continuation_capacity_cleared": false,
+      "private_key_accessed": true,
+      "private_key_reader": "pinned native host tools only",
+      "private_key_copied": false,
+      "private_key_payload_read_by_python": false,
+      "keys_generated": false,
+      "signing_performed": true,
+      "guest_accessed": false,
+      "device_operations": []
+    }
   }
 }

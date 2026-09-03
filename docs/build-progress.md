@@ -1,6 +1,47 @@
 # Nezha product and build progress
 
+## Package6 public AVB preparation and signing — 2026-09-03
+
+**Public preparation closes at 13:49:06.092582 UTC**, exit **0**, in **24.130
+seconds**. All **18 host AVB-tool invocations** succeed: one public-key
+extraction, two unsigned retained-input descriptor carriers and **15 input
+verification calls**. The five rebuilt **product, system, system_dlkm,
+system_ext and vendor_dlkm** images have SHA-256 hashtree descriptors. The
+normalized signer manifest is `44bc1fc5…` / **5,660 bytes**; normalization here
+is of the signer input manifest, not DTBO archive-alias replacement.
+
+ROOT's **13:50:49 UTC** review replays the exact postcheck and verifies
+`working76`'s unchanged identity, **39 small inputs and 16 stat-only inputs**.
+The original preparation reports unchanged source inputs, no guest/device
+operations and no private-key access. Minimum periodically sampled host
+availability is **172,092,657,664 bytes**, above the unchanged **100 GiB
+reserve**; this is not a guarantee of full continuation capacity.
+
+**Host private signing closes at 14:03:59.601082 UTC**, exit **0**, in **68.000
+seconds**. The **17-role image set** retains **14 unchanged leaves**, including
+`working76`; `boot`, `vbmeta` and `vbmeta_system` each reproduce byte-identically
+across two signing passes. All **33 recorded host-tool calls** succeed: 18
+public rechecks, seven signing/key operations and eight chain-verification
+calls. The selected-public-key Android AVB chain passes, with no missing
+partitions; package-budget checks pass but physical partition fit is unverified.
+
+ROOT replays the exact postcheck and confirms preserved input records and
+output stats; it does not independently rehash output bodies. The existing
+private key is used only by pinned host tools, not copied, and no key is
+generated or guest accessed. Signing's minimum periodic free-space sample is
+**166,560,354,304 bytes**; full continuation capacity is not thereby cleared.
+
+**Archive reconciliation is running; no successful result is admitted here.**
+Full FEC payload verification, VINTF semantic admission and compatibility,
+super/physical fit, OTA signing and device boot remain pending. Android AVB
+closure does not establish OEM trust or device rollback compatibility. No new
+cleanup, phone operation or new full-suite result is claimed. Exact preparation,
+signing, verification-manifest and ROOT-review pins are in the
+[integration record](../research/workspace-integration.json).
+
 ## Package6 input materialization and P5 host retirement — 2026-09-03
+
+This earlier checkpoint predates successful public AVB preparation and signing.
 
 **Exactly one old P5 host ZIP is retired**, after fresh full hashes of it and
 the retained Package6 ZIP: **22,004,565,441 bytes read**. Parents, immediate
