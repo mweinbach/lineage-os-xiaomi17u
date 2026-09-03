@@ -1,6 +1,44 @@
 # Nezha product and build progress
 
+## Package6 proof staging and extraction cleanup — 2026-09-03
+
+The two-producer read-only capture closes at **01:20:12.311790 UTC**, exit **0**,
+with all **119 held inputs** unchanged. The actual GMS two-proof stage completes
+at **01:30:02 UTC**, preserving 27 held files; the exact **21-record** proof/control
+stage completes at **01:41:58 UTC**, verifying **1,551,248 bytes** and preserving
+31 held files. These are capture/staging results, not a Package6 build.
+
+At **01:48:30 UTC**, the refreshed extraction retirement removes **10,876 descendants**, leaving
+all **three roots** intact, and fully hashes **eleven keepers / 5,750,240,056
+bytes**. Historical extraction replay now requires re-extraction.
+It recovers **9,294,848,000 bytes inside ext4**. At **01:50:12 UTC**, the separate
+approved trim reduces backing allocation by **9,294,950,400 bytes** and observes a
+**9,382,678,528-byte (8.74 GiB)** host-free increase, reaching **135,527,866,368
+bytes** at that operation's completion. These measurements are not added together
+or treated as current capacity. Post-restart comparison verifies the fresh
+alias, four logs, selected files, stat-only module-info observation and project record;
+the original configuration remains unchanged and the temporary container is
+removed. This is bounded preservation, not a complete filesystem integrity audit.
+
+**No Package6 native dispatch occurs.** Final host inspection finds the frozen
+`b16be31e…` caller passes the outer ordinary wrapper into the unchanged
+`c2017322…` checker, which requires the verified inner `target_files` record.
+A narrow caller correction and regression check remain in progress; historical
+receipts are not rewritten or promoted to build success.
+
+The current target-files tree and ZIP remain protected. Their read-only inventory
+already reports **26,106,458,112 allocated bytes (24.3135 GiB)** at the same paths.
+The older **24.332 GiB** package estimate is gross, not proven incremental growth.
+The full continuation budget still requires reconciliation; cleanup does not
+establish capacity for every remaining package/export/signing operation.
+
+Exact receipts are pinned in the [integration record](../research/workspace-integration.json).
+Package6 build, final AVB/signing/FEC/VINTF/super/partition checks, OTA and device
+boot remain pending. No phone operation or new full-suite result is claimed.
+
 ## Package6 prerequisite qualification and fresh captures — 2026-09-03
+
+This earlier checkpoint records the then-pending capture, native stages and cleanup.
 
 At **00:47:15 UTC**, the exact-seven-stat consumer (`8294fd99…`, 69,393 bytes)
 passes root qualification: **18 tests** and genuine `_originals`,

@@ -9756,5 +9756,165 @@
         "size_bytes": 985
       }
     }
+  },
+  "package6_proof_staging_and_extraction_cleanup_checkpoint_20260903": {
+    "status": "two-producer-capture-and-native-proof-stages-completed-extraction-retirement-and-trim-verified-package6-caller-fix-pending",
+    "guide": "docs/build-progress.md#package6-proof-staging-and-extraction-cleanup--2026-09-03",
+    "preceding_checkpoint": "package6_consumer_and_fresh_capture_checkpoint_20260903",
+    "preceding_checkpoint_commit": "abe711f19d53012182a91c482534824786410980",
+    "two_producer_capture": {
+      "completed_at": "2026-09-03T01:20:12.311790+00:00",
+      "exit_code": 0,
+      "held_files": 119,
+      "held_full_hashes_and_nine_stats_unchanged": true,
+      "sole_owner_unchanged": true,
+      "native_build_performed": false
+    },
+    "native_proof_staging": {
+      "gms_completed_at": "2026-09-03T01:30:02.074340+00:00",
+      "gms_exit_code": 0,
+      "gms_files_verified": 2,
+      "gms_held_files_unchanged": 27,
+      "twentyone_completed_at": "2026-09-03T01:41:58.905675+00:00",
+      "twentyone_exit_code": 0,
+      "twentyone_files_verified": 21,
+      "twentyone_bytes_verified": 1551248,
+      "twentyone_held_files_unchanged": 31,
+      "source_or_android_output_modified": false,
+      "package6_build_performed": false
+    },
+    "extraction_retirement": {
+      "started_at": "2026-09-03T01:48:25.664998+00:00",
+      "completed_at": "2026-09-03T01:48:30.252579+00:00",
+      "exit_code": 0,
+      "deleted_descendants": 10876,
+      "deleted_regular_files": 9703,
+      "deleted_directories": 563,
+      "deleted_symlinks": 610,
+      "original_roots_retained_empty": 3,
+      "keepers_fully_hashed": 11,
+      "keeper_full_hashed_bytes": 5750240056,
+      "guest_ext4_freed_bytes": 9294848000,
+      "protected_metadata_and_siblings_unchanged": true,
+      "independent_review_passed": true,
+      "stream_events_replayed": 15,
+      "host_input_hashes_checked": 31,
+      "frozen_handoff_stat9_records_unchanged": 8,
+      "stream_scope": "Keeper/progress/final JSONL, not a per-leaf durable intent journal.",
+      "host_reclamation_established_by_pruning": false,
+      "historical_extraction_replay_requires_reextraction": true
+    },
+    "separate_trim": {
+      "completed_at": "2026-09-03T01:50:12.448685+00:00",
+      "passed": true,
+      "backing_allocation_reduction_bytes": 9294950400,
+      "host_free_before_bytes": 126145187840,
+      "host_free_after_bytes": 135527866368,
+      "observed_operation_local_host_free_delta_bytes": 9382678528,
+      "guest_backing_and_host_gains_added_together": false,
+      "exclusive_cause_of_differences_claimed": false,
+      "original_builder_restored": true,
+      "original_config_unchanged": true,
+      "temporary_container_removed": true,
+      "three_sentinel_full_hash_stat_checks_unchanged": true,
+      "postrestart_entire_compared_objects_equal": [
+        "alias",
+        "logs",
+        "files",
+        "module_info_stat_only",
+        "project"
+      ],
+      "postrestart_held_files_unchanged": 8,
+      "full_live_file_integrity_claimed": false
+    },
+    "package6_caller_blocker": {
+      "inspected_caller_sha256": "b16be31efefd0040a608d0f7b1bc8fb9eff3afc5682269b996a69c0dcbcb0188",
+      "unchanged_checker_sha256": "c20173229274a2048d3c1e5d8aac67695474754e61c5db2c2279e1506bda7d4b",
+      "observed_boundary": "Caller supplies the outer ordinary postcheck wrapper; the unchanged checker requires its verified target_files inner record.",
+      "narrow_correction_and_regression_check": "in-progress-at-this-checkpoint",
+      "native_package6_dispatched": false
+    },
+    "protected_current_package_allocation": {
+      "target_files_tree_and_zip_remain_protected": true,
+      "tree_and_zip_allocated_bytes": 26106458112,
+      "previous_package_estimate_gib": 24.332,
+      "previous_estimate_is_gross_not_proven_incremental": true,
+      "inventory_read_body_bytes": 0,
+      "current_capacity_claimed": false,
+      "full_continuation_capacity_cleared": false
+    },
+    "limits": {
+      "package6_build_verified": false,
+      "private_signing_performed": false,
+      "complete_avb_chain_verified": false,
+      "rom_or_boot_ready": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Correct and regression-check the caller record boundary, then complete exact Package6 admission and guarded dispatch. Reconcile incremental capacity without deleting the current target-files tree/ZIP; final AVB/signing/FEC/VINTF/super/partition, OTA and device boot remain separate.",
+    "evidence": {
+      "two_producer_capture_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-producer-capture-dispatch-v1/actual-v1/completion.json",
+        "sha256": "a1d1ff5c4aca41686ade65f0a4327ae458383180aea3f45cfd2414f56f921afc",
+        "size_bytes": 1483
+      },
+      "gms_native_two_proof_stage": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-gms-stage-dispatch-v1/actual-v1/completion.json",
+        "sha256": "f0b67d2d4d1aa64cf68a350078ce17eac7e9f2368146f9a3474281df7ad2015b",
+        "size_bytes": 2168
+      },
+      "twentyone_stage_root_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-twentyone-stage-dispatch-v1/completion.json",
+        "sha256": "0969308bae5aaf3ac700e21b83acfeef1ae74505aa25c8fcc227d40fc0ed1a17",
+        "size_bytes": 1232
+      },
+      "twentyone_native_stage": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-recovery-proof-staging-v1/root-stage-package-proofs-v1/completion.json",
+        "sha256": "f75b12205866b95f049ee7168333580a96db2068cf4a7508fedebc9490224eb7",
+        "size_bytes": 1220
+      },
+      "extraction_retirement_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/additional-native-cleanup-candidates-v1/extraction-staging-retirement-preparation-v1/actual-bound-v1/actual-v1/completion.json",
+        "sha256": "7d087db86eab6a0ec35cea38c8e6f6133845e0fea954e7fd0faaf4940afcf3a4",
+        "size_bytes": 17416
+      },
+      "extraction_root_acceptance": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-three-extraction-retirement-acceptance-v1/result-review.json",
+        "sha256": "7cffb62ad640c38ab9fb1214982d12e83365c9aa098ede1b37f47449ac38d77f",
+        "size_bytes": 489
+      },
+      "extraction_independent_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/additional-native-cleanup-candidates-v1/extraction-staging-retirement-preparation-v1/actual-bound-v1/actual-review-v1/review.json",
+        "sha256": "5d16add3e1dd7e6f1b3e82469bba1cec4a7776a19445bbaabdc793733ec35552",
+        "size_bytes": 3401
+      },
+      "trim_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/extraction-staging-trim-v1/actual-v1/completion.json",
+        "sha256": "726406fff655eac55d82bd45163309dde98cbda28975758e70f26b7bacfa7cac",
+        "size_bytes": 1205
+      },
+      "trim_postrestart_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/extraction-staging-trim-v1/postrestart-v1/review.json",
+        "sha256": "69089edc356e4f7f75148f276db8697220dc21c0a81ecfabc4a1244a4eb207b7",
+        "size_bytes": 1237
+      },
+      "current_package_allocation": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-current-package-allocation-v1/allocation.stdout.json",
+        "sha256": "3e46ec1c86bed8f4d31f5e0f5b5e60faf7d6aa6be3dfe8a23abc3ae91f241f84",
+        "size_bytes": 2063
+      },
+      "inspected_caller": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/bridge-avb-sha256-package-v1.py",
+        "sha256": "b16be31efefd0040a608d0f7b1bc8fb9eff3afc5682269b996a69c0dcbcb0188",
+        "size_bytes": 516093
+      },
+      "unchanged_packaged_five_checker": {
+        "path": "reports/avb-sha256-20260902/build-continuation-preparation-v1/package6-five-package-postcheck-v1/postcheck.py",
+        "sha256": "c20173229274a2048d3c1e5d8aac67695474754e61c5db2c2279e1506bda7d4b",
+        "size_bytes": 41993
+      }
+    }
   }
 }

@@ -10,6 +10,26 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The two-producer capture closes successfully at 2026-09-03 01:20:12 UTC.**
+The GMS two-proof stage and exact 21-record proof/control stage are now actually
+completed, not merely prepared. These operations do not build Package6.
+
+**Extraction cleanup removes 10,876 descendants and retains all three roots.**
+It frees **9,294,848,000 bytes inside ext4**; subsequent trim observes a separate
+**9,382,678,528-byte (8.74 GiB)** host-space gain. The original builder and
+post-restart checks pass. Current target-files output/ZIP and retained inputs
+remain protected; these bounded checks do not establish whole-workspace integrity.
+
+**Package6 has not been dispatched.** Host inspection finds the caller passing
+an outer postcheck wrapper instead of its verified `target_files` record to the
+unchanged checker. A narrow correction and regression check are in progress.
+Full storage capacity, Package6, signing and ROM/boot readiness remain unverified;
+no phone operation occurs. See the [staging and cleanup checkpoint](build-progress.md#package6-proof-staging-and-extraction-cleanup--2026-09-03).
+
+## Earlier prerequisite qualification and fresh captures
+
+The following checkpoint records the then-pending capture, stages and cleanup.
+
 **The exact-seven-field consumer correction is qualified.** Root tests and
 genuine `_originals`, `_postcheck_recovery`, `read_plan` and full verbose replay
 pass; the original failed result and full nine-field validators remain intact.
