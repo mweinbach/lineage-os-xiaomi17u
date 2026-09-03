@@ -1,6 +1,34 @@
 # Nezha product and build progress
 
+## Package6 corrected projection and bound request — 2026-09-03
+
+The ordinary wrapper now supplies the verified inner `target_files` record to
+the unchanged checker. An exact shared Package6 source-context projection also
+passes qualification, with **98 focused tests**. Guarded host deployment and
+preparation complete at **02:28:30.222875 UTC**, preserving six previous native-
+preparation files and the original host preparation, with historical evidence
+unchanged.
+
+The genuine prepared request is `0b3cfb98…`, **5,298,505 bytes**. Its fully bound
+bridge is `9011098f…`, **519,654 bytes**, within the unchanged **524,288-byte**
+limit. The original request binder then completes default preparation,
+`--publish` and `--check-only` reproduction, all exit **0**, with identical
+preparation data and unchanged held inputs. The bound consumer is `9a19ac66…`,
+**73,419 bytes**. This verifies host request binding, not a native Package6 run
+or admission of an actual runtime result/archive.
+
+**Native Package6 remains unlaunched.** Storage review and the unchanged
+**100 GiB host reserve** still gate execution; full continuation capacity has
+not been cleared. This checkpoint records no subsequent ZIP retirement or trim.
+Package6, final AVB/signing/FEC/VINTF/super/partition checks, OTA and device boot
+remain unverified. No phone operation or new full-suite result is claimed.
+
+Exact deployment, qualification and binding pins are retained in the
+[integration record](../research/workspace-integration.json).
+
 ## Package6 proof staging and extraction cleanup — 2026-09-03
+
+The caller correction was still pending in this earlier checkpoint.
 
 The two-producer read-only capture closes at **01:20:12.311790 UTC**, exit **0**,
 with all **119 held inputs** unchanged. The actual GMS two-proof stage completes

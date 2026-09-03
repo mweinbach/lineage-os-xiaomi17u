@@ -10,6 +10,23 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The Package6 wrapper and shared source-context projection are corrected.**
+After **98 focused tests**, guarded host deployment and request preparation
+complete at **2026-09-03 02:28:30 UTC**. The genuine request is **5,298,505 bytes**;
+its fully bound bridge is **519,654 bytes**, below the unchanged **524,288-byte**
+limit. Six prior preparation files and the previous host preparation remain intact.
+
+The final request-consumer binding now passes default, publish and check-only
+reproduction with identical preparation data. **Package6 has not been launched**:
+no actual Package6 runtime result or archive is admitted. Storage remains a
+launch gate under the unchanged **100 GiB host reserve**; full capacity is not
+cleared. No subsequent ZIP retirement or trim is claimed here, and no phone
+operation occurs. See the [prepared-request checkpoint](build-progress.md#package6-corrected-projection-and-bound-request--2026-09-03).
+
+## Earlier proof staging and extraction cleanup
+
+The caller correction was still pending in the following checkpoint.
+
 **The two-producer capture closes successfully at 2026-09-03 01:20:12 UTC.**
 The GMS two-proof stage and exact 21-record proof/control stage are now actually
 completed, not merely prepared. These operations do not build Package6.

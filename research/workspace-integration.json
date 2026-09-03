@@ -9916,5 +9916,112 @@
         "size_bytes": 41993
       }
     }
+  },
+  "package6_corrected_projection_and_bound_request_checkpoint_20260903": {
+    "status": "corrected-wrapper-and-shared-projection-deployed-genuine-request-bound-native-package6-held-for-storage",
+    "guide": "docs/build-progress.md#package6-corrected-projection-and-bound-request--2026-09-03",
+    "preceding_checkpoint": "package6_proof_staging_and_extraction_cleanup_checkpoint_20260903",
+    "preceding_checkpoint_commit": "16f4ff2582bb60d93655ddd4d3447d00704b3b28",
+    "qualified_corrections": {
+      "ordinary_wrapper_passes_verified_target_files_inner_record": true,
+      "shared_authenticated_package6_source_context_projection": true,
+      "focused_tests_passed": 98,
+      "test_groups": {
+        "callbacks": 63,
+        "cohort_and_activation": 19,
+        "gms_helper": 16
+      },
+      "fixed_packaged_checker_unchanged": true,
+      "guard_or_action_predicates_unchanged": true,
+      "ordinary_postcheck_source_unchanged": true,
+      "original_records_unchanged": true
+    },
+    "host_deployment_and_preparation": {
+      "completed_at": "2026-09-03T02:28:30.222875+00:00",
+      "verified": true,
+      "previous_native_preparation_files_preserved": 6,
+      "original_host_preparation_unchanged": true,
+      "regenerated_phase_files": 4,
+      "replaced_controls": 2,
+      "all_five_records_unchanged": true,
+      "prepared_request_sha256": "0b3cfb9825c53c6e233b21200df8adae2d1be3195efb10d80013f7bb71968064",
+      "prepared_request_bytes": 5298505,
+      "fully_bound_bridge_sha256": "9011098f2efbb0f2be082b6e67f479721108a3b8dc9d6761ac8146fa9b91f682",
+      "fully_bound_bridge_bytes": 519654,
+      "unchanged_bridge_limit_bytes": 524288,
+      "bridge_within_unchanged_limit": true,
+      "native_execution_performed": false
+    },
+    "actual_request_consumer_binding": {
+      "original_binder_modes": [
+        "default",
+        "--publish",
+        "--check-only"
+      ],
+      "returncodes": [
+        0,
+        0,
+        0
+      ],
+      "all_three_preparation_reports_identical": true,
+      "held_inputs_unchanged": true,
+      "bound_consumer_sha256": "9a19ac6604375745625b39fff4482ac4c88f0b1bd8a701e9b5c02c37c5d17b4c",
+      "bound_consumer_bytes": 73419,
+      "verified_host_preparation": true,
+      "native_execution_performed": false,
+      "actual_result_admitted": false
+    },
+    "remaining_gates": {
+      "native_package6_launched": false,
+      "actual_package6_runtime_result_admitted": false,
+      "actual_package6_archive_admitted": false,
+      "host_reserve_gib": 100,
+      "host_reserve_unchanged": true,
+      "storage_launch_gate_cleared": false,
+      "full_continuation_capacity_cleared": false,
+      "subsequent_zip_retirement_claimed": false,
+      "subsequent_trim_claimed": false,
+      "package6_build_verified": false,
+      "private_signing_performed": false,
+      "complete_avb_chain_verified": false,
+      "rom_or_boot_ready": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Resolve and recheck storage under the unchanged host reserve before guarded Package6 dispatch. Host request binding does not admit an actual runtime result/archive; final AVB/signing/FEC/VINTF/super/partition checks, OTA and device boot remain separate.",
+    "evidence": {
+      "qualification_handoff": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/phase-context-projection-v1/handoff.json",
+        "sha256": "f52e107fd574e0b56a2012b639c588fdf7a0a54c76fb1d0fb88a679712109db3",
+        "size_bytes": 9194
+      },
+      "root_deployment_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-projection-deployment-v1/review.json",
+        "sha256": "9bb532a200346d1a3a6e3ee91864313c69b7a530343097cd90717738707b8834",
+        "size_bytes": 602
+      },
+      "root_deployment_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-projection-deployment-v1/completion.json",
+        "sha256": "06f430aa2da00f3c588f759c30d3215484016dc9b61abe6f2f13d049b481b6c0",
+        "size_bytes": 3657
+      },
+      "prepared_request": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/host-package6-preparation-v2/request.json",
+        "sha256": "0b3cfb9825c53c6e233b21200df8adae2d1be3195efb10d80013f7bb71968064",
+        "size_bytes": 5298505
+      },
+      "actual_request_binding": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/phase-context-projection-v1/actual-request-binding-review-v1/completion.json",
+        "sha256": "d3a720a82b57ce67250d5e19b7401bf1d5dd58cfb201494313db3b772ed4306f",
+        "size_bytes": 8966
+      },
+      "bound_consumer": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/phase-context-projection-v1/actual-helpers-v1/bound-package6-v1/current_package.py",
+        "sha256": "9a19ac6604375745625b39fff4482ac4c88f0b1bd8a701e9b5c02c37c5d17b4c",
+        "size_bytes": 73419
+      }
+    }
   }
 }
