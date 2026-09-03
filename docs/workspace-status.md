@@ -10,6 +10,27 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**FEC evidence now joins all eight final Package6 dynamic-image roles.** The
+clean host-wrapper return closes at **16:43:53 UTC**, followed by independent
+exact replay at **16:46:12 UTC** and ROOT admission. Six fresh semantic results
+are joined with two historical vendor/ODM proofs by exact final-image identity;
+those two checks are not rerun. All 14 held inputs and the published archive's
+observed identity remain unchanged. This is a separate FEC aggregate, not a
+rewrite of the earlier public verification report or a boot claim.
+
+**EROFS producer-query capture passes at 16:45:35 UTC**, and its one observed
+linker response file is captured at **16:51:00 UTC**. Isolated compilation and
+qualification of the corrected native reader remain pending. The eight-seed
+producer/PYC capture also closes successfully at
+**16:40:12 UTC**, with ROOT's envelope checks passing and semantic review still
+pending. Super discovery remains blocked in the query helper, with no super
+build. Final VINTF, physical fit, OTA and boot remain open gates; no additional
+cleanup or phone operation occurs. See the [eight-role FEC and query checkpoint](build-progress.md#package6-eight-role-fec-and-producer-queries--2026-09-03).
+
+## Earlier Package6 six-image FEC and published kernel admission
+
+The following checkpoint predates the complete eight-role FEC join and query captures.
+
 **Six Package6 images pass strict FEC semantic admission**: mi_ext, product,
 system, system_dlkm, system_ext and vendor_dlkm. ROOT independently reproduces
 all 32 diagnostic readback admissions and the original strict semantic result,

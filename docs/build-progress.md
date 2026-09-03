@@ -1,6 +1,54 @@
 # Nezha product and build progress
 
+## Package6 eight-role FEC and producer queries — 2026-09-03
+
+**The final eight-role FEC join passes**, with a clean host-wrapper return at
+**16:43:53.836856 UTC** and independent exact replay at **16:46:12.094947 UTC**.
+It combines the **six fresh semantic results** with **two historical vendor/ODM
+proofs**, reused through exact final-image identity joins, not rerun. ROOT
+reproduces the original **11-record** join, rechecks all **14 held inputs**, and
+confirms unchanged published-archive stats and ancestor identities. The separate
+aggregate verifies FEC content for all eight selected dynamic images; the older
+public verification report and its original FEC flag remain unchanged.
+The join's **66 focused tests** pass. No image/archive bodies, native execution,
+or fresh liveness probe are added by this host-only aggregation.
+
+**EROFS producer-query capture closes at 16:45:35.422078 UTC**, exit **0**, in
+**45.556 seconds**. It records three nodes and six query commands in an
+**84,266-byte** result. ROOT replays the exact bound validator, checks 32 held
+controls, and admits scoped preservation plus strict-idle/sole-owner checks.
+The one observed linker response file is subsequently captured at **16:51:00 UTC**:
+**1,503 bytes**, SHA-256 `81361ed7…`, with 48 held controls rechecked and separate
+strict-idle/sole-owner checks passing. Isolated compilation and qualification of
+the corrected native reader remain pending.
+
+The **eight-seed producer/PYC capture** closes at **16:40:12.326868 UTC**, exit
+**0**, in **690.467 seconds**, returning **8,830,411 bytes**. ROOT admits its
+execution envelope and 40 held controls, with strict-idle and sole-owner checks
+passing. Detailed semantic consumer review remains pending; capture success is
+not producer/runtime qualification. Super discovery still stops on the helper's
+handling of legitimate repeated input occurrences, and no super image is built.
+
+The preceding six-role results and earlier query failures remain historical
+checkpoints. Complete VINTF qualification and compatibility, native EROFS-reader
+qualification, super/physical fit, OTA and device boot remain unverified. No
+additional cleanup or phone operation occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-avb/package6-fec-continuation-v2/final-eight-role-join-v1/actual-v1/result.json` | `18d7dd1abb8f94635a08787c265b4e4acb9161cb8660d9c7a5923b83f079acc3` | 22,981 |
+| `root-package6-eight-fec-result-review-v1/review.json` | `7485cd41c36fe4f34d0e6b63f061e95e6ffede0dbf3455b25032aa590b7734cd` | 7,654 |
+| `final-avb/package6-fec-continuation-v2/final-eight-role-join-v1/independent-review-v1/actual-replay.json` | `b1b362eecca7baf081f3167b2561194d9d5c7aeb1412347a013a3aae72f36296` | 20,267 |
+| `root-package6-erofs-producer-result-review-v1/review.json` | `da28ea7f2aeded753378aacd72c640b7d4cf6f3f546069fe22f940e1506c2741` | 1,729 |
+| `root-package6-erofs-link-response-v1/completion.json` | `1ec43b7de76db02766d5b457ab76be982ad80976e21b1fe8bee8cfc6d42ccf1b` | 3,050 |
+| `root-package6-eight-seed-result-review-v1/review.json` | `4df5c34bbeb3282f28c320ef26865000a3fb58ebda3cbf7f091d16949ed484a7` | 1,696 |
+
 ## Package6 six-image FEC and published kernel admission — 2026-09-03
+
+This earlier checkpoint predates the complete eight-role FEC join and query captures.
 
 **The six-image FEC result passes strict semantic admission.** The corrected
 native run closes at **16:10:14.312955 UTC**; all **32 diagnostic files**,
