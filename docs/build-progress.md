@@ -1,6 +1,48 @@
 # Nezha product and build progress
 
+## Package6 producer retry and pointed-name reference review — 2026-09-03
+
+**The corrected producer retry completes at 21:02:17 UTC**, exit **0**, with
+the process reaped, full output streams and empty stderr in **813.91 seconds**.
+The **22,969,748-byte** result is retained; **104 controls**, source/input
+preservation, sole ownership and strict idle checks pass. **Original-driver,
+source and PYC admission passes at 21:16:56 UTC**, with six complete source
+callbacks and 16 graph metadata rows preserved; ROOT's source replay also
+passes. Ten fixed query/command calls and 11 nested boot query rows retain
+four core bodies (**60,207 bytes per pass**) and five boot file observations.
+Historical compilation is not rerun, and nested boot observations are not
+qualified source proofs or a completed boot constructor. The original failed
+batch remains preserved and unadmitted. Deeper boot, property, super and AIDL
+consumer reviews remain separate from this scoped closure.
+
+**Pointed-name capture and conditional reference assessment close at
+21:11:16 UTC.** Both name tables satisfy the reference byte-order precondition,
+and all six capture sidecars and the ordered join reproduce exactly. ROOT's
+**20-test** review replays **all 637 original payload comparisons**, all five
+detail shards and 90 input states. Marker cohorts describe observed
+bytes, **not cryptographic trust**. Actual provider selection, stage/load order,
+compiled count types and policy use, source equivalence and ABI remain open;
+no module-admission decision is established.
+
+The six-query continuation and five-selector/three-window kernel preparation
+have **not executed** at this checkpoint. VINTF diagnostic instrumentation is
+host-only and remains **unbuilt and unrun**. Full boot-source/runtime
+qualification, VINTF, super/physical fit, OTA and boot remain open. No phone
+operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/producer-followup-preparation-v1/next-producer-input-batch-v1/implicit-libc-retry-v1/root-dispatch-v1/actual-v1/completion.json` | `9761a68b6854fd2544314aa01ed9736c9a6be93063502a3c1a26c281cedf0669` | 19,301 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/producer-followup-preparation-v1/next-producer-input-batch-v1/implicit-libc-retry-v1/root-dispatch-v1/actual-v1/actual-semantic-review-v1/admission.json` | `b49bf50bb3a4b1050c8909c1f65401cd6184a5c4ea3de0bde0f0132522f7671e` | 12,992 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/pointed-string-capture-preparation-v1/postcapture-review-v1/handoff.json` | `6bf5b96f095fda9efa2742b1d52bd8b9bded4c042e89596d8fb59868dbeba140` | 16,582 |
+| `root-package6-pointed-name-reference-review-v1/review.json` | `3ddad0f0dbb82758ecf07e7bafc8adf47f328dec3a72cbcd8225fc82eecb347d` | 5,143 |
+
 ## Package6 static kernel mapping and pointed-string capture — 2026-09-03
+
+This earlier checkpoint predates the successful retry and closed pointed-name reference review.
 
 **Saved-byte conditional static mapping passes independent review at
 20:27:50 UTC**, with **40 tests**. All **9,696 table slots** are uniquely

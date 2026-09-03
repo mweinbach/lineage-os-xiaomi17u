@@ -10,6 +10,22 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The corrected producer retry completes at 21:02:17 UTC**, with exit 0 and
+complete output; the original failed batch remains unadmitted. Original-driver,
+source and PYC admission passes; deeper boot, property, super and AIDL
+consumer reviews remain separate from this scoped closure.
+**Pointed-name capture and reference assessment now close**, including exact
+replay across all 637 current payloads. Observed marker bytes are not
+cryptographic trust, and provider selection, stage order, compiled policy and
+ABI remain unverified. Further query/code-window preparations are unexecuted;
+VINTF diagnostics remain host-only, unbuilt and unrun. Full boot-source/runtime,
+VINTF, super/fit, OTA and boot remain open. No phone operation or additional
+artifact cleanup occurs. See the [retry and reference-review checkpoint](build-progress.md#package6-producer-retry-and-pointed-name-reference-review--2026-09-03).
+
+## Earlier Package6 static kernel mapping and pointed-string capture
+
+The following checkpoint predates the successful retry and closed pointed-name reference review.
+
 **Conditional static kernel mapping passes independent review**, covering
 9,696 RELR-backed table slots and 9,364 candidate targets. The subsequent
 **pointed-string capture closes cleanly at 20:45:22 UTC**, preserving those
