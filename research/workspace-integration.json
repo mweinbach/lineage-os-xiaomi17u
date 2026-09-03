@@ -9399,5 +9399,188 @@
         "size_bytes": 2827
       }
     }
+  },
+  "five_postcheck_recovery_and_raw_super_retirement_checkpoint_20260903": {
+    "status": "five-native-postcheck-recovery-verified-package6-read-plan-schema-blocked-two-derived-supers-retired",
+    "guide": "docs/build-progress.md#five-recovery-execution-and-two-super-retirement--2026-09-03",
+    "preceding_checkpoint": "five_recovery_and_retained_image_cleanup_checkpoint_20260902",
+    "preceding_checkpoint_commit": "a4cdc9a9a7128c5624500b4dc68153e9dc7a3585",
+    "recovery_v2": {
+      "started_at": "2026-09-02T23:56:10.365629+00:00",
+      "completed_at": "2026-09-03T00:08:48.554115+00:00",
+      "exit_code": 0,
+      "held_files": 38,
+      "held_full_hashes_and_nine_stats_unchanged": true,
+      "native_receipt_verified": true,
+      "host_consumer_semantic_admission": "receipt-only-validation-passed-read-plan-schema-correction-pending",
+      "export_completed_at": "2026-09-03T00:32:42.410940+00:00",
+      "exported_receipt_matches_native_output_byte_exact": true,
+      "exported_actions_match_bound_full_hash_and_size": true,
+      "original_failed_result_sha256": "c3cbe3532f49dad400f5eae9d0a5ee3e6a3e8dd93958e27ad96c7f5272389cae",
+      "original_failed_result_unchanged": true,
+      "original_failed_profile_promoted": false,
+      "native_build_reexecuted": false,
+      "outputs_invalidated": false,
+      "source_or_android_output_modified": false,
+      "receipt_only_apis_verified": [
+        "_originals",
+        "_postcheck_recovery",
+        "validate_postcheck_recovery_summary"
+      ],
+      "read_plan_blocker": {
+        "error": "retained gzip source differs from original completed verbose observation",
+        "retained_source_stat_fields": 9,
+        "original_verbose_after_stat_fields": 7,
+        "all_seven_common_values_equal": true,
+        "additional_retained_source_fields": {
+          "st_uid": 0,
+          "st_gid": 0
+        },
+        "evidence_records_changed": false,
+        "filesystem_drift_established": false,
+        "consumer_correction_pending": true,
+        "whole_native_main_called": false
+      },
+      "root_receipt_acceptance_at": "2026-09-03T00:38:02.176330+00:00",
+      "fresh_actions_verified": 5,
+      "all_six_callback_maps_unchanged": true,
+      "strict_descriptor_metadata_verified": true,
+      "built_system_equals_installed": true
+    },
+    "two_derived_super_retirement": {
+      "started_at": "2026-09-03T00:09:56.199373+00:00",
+      "completed_at": "2026-09-03T00:10:26.351547+00:00",
+      "exit_code": 0,
+      "independent_review_completed_at": "2026-09-03T00:35:06.055703+00:00",
+      "independent_review_passed": true,
+      "removed_regular_leaves": 2,
+      "removed_scope": "Only the Xiaomi.eu and factory reconstructed super.raw.img derivatives.",
+      "specific_prior_keep_supersession": true,
+      "all_other_keep_entries_superseded": false,
+      "fresh_action_full_body_hashes": 18,
+      "fresh_action_full_body_read_bytes": 54089758304,
+      "inner_full_hash_and_nine_stat_control_joins": 309,
+      "outer_full_hash_and_nine_stat_control_joins": 320,
+      "journal_and_dispatch_checks": 158,
+      "negative_mutations_rejected": 11,
+      "sparse_inputs_retained": 16,
+      "additional_original_archive_lp_runtime_bodies_retained": 22,
+      "retained_body_current_nine_stat_and_ancestor_checks": 38,
+      "large_bodies_rehashed_by_reviewers": false,
+      "original_archives_sparse_inputs_lp_sets_sources_and_small_records_preserved": true,
+      "all_workspace_files_integrity_claimed": false,
+      "native_or_phone_or_recursive_operations": false,
+      "restoration": "Reconstruct from the retained ordered sparse inputs into a fresh output, then verify the historical full raw hash. Direct raw inspection and LP re-extraction are unavailable until reconstruction; LP images alone are not a bit-identical restoration source.",
+      "durability_evidence": "Pinned reviewed fsync/readback code and consistent actual receipts; not an independent syscall trace or crash test.",
+      "root_acceptance_verified": true,
+      "root_acceptance_at": "2026-09-03T00:36:37.025086+00:00"
+    },
+    "host_space_observation": {
+      "before_available_bytes": 128594862080,
+      "after_available_bytes": 152120836096,
+      "observed_operation_local_increase_bytes": 23525974016,
+      "candidate_allocated_bytes_before": 23537713152,
+      "specific_cause_of_difference_established": false,
+      "exclusive_unlink_reclamation_attribution": false,
+      "current_capacity_claimed": false,
+      "prior_cleanup_gains_added": false,
+      "full_continuation_capacity_cleared": false
+    },
+    "limits": {
+      "package6_prerequisite_admission_verified": false,
+      "package6_build_verified": false,
+      "signed_parent_chain_verified": false,
+      "whole_hashtree_payload_verified": false,
+      "fec_payload_verified": false,
+      "final_vintf_ota_or_device_boot_verified": false,
+      "private_signing_performed": false,
+      "complete_rom_ready": false,
+      "signed_flashable_rom_verified": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Qualify the narrow Package6 read_plan stat-schema correction and complete prerequisite admission before capture/build. Package6 build, final AVB/signing/FEC/VINTF/super/partition fit, OTA and device-boot gates remain separate; the full continuation capacity budget is not cleared.",
+    "evidence": {
+      "recovery_native_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-native-dispatch-v2/actual-v1/completion.json",
+        "sha256": "888870546ae02959ed8a63873dffd4f5c4d34e39b473b8e4b4a2587688fedcc7",
+        "size_bytes": 1618
+      },
+      "recovery_native_receipt": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-native-dispatch-v2/actual-v1/stdout.json",
+        "sha256": "f84107c32716be85ce9e6d2764bf5b5a7bdf66ff173b61a2895ece4f8eca58b2",
+        "size_bytes": 968348
+      },
+      "recovery_export_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-evidence-export-v1/actual-v1/completion.json",
+        "sha256": "5359654038a866fdf9a41bbaf75ddfc9a76831ed7fb3b6066c70f925b17edbe5",
+        "size_bytes": 3993
+      },
+      "recovery_exported_receipt": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-evidence-export-v1/actual-v1/receipt.json",
+        "sha256": "f84107c32716be85ce9e6d2764bf5b5a7bdf66ff173b61a2895ece4f8eca58b2",
+        "size_bytes": 968348
+      },
+      "recovery_exported_actions": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-evidence-export-v1/actual-v1/selected-image-actions.json",
+        "sha256": "3acfccf1b727f97ca4290119943f7a92194782ceca3c22659713383534205fa1",
+        "size_bytes": 4140101
+      },
+      "super_retirement_dispatch": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-two-super-retirement-dispatch-v1/completion.json",
+        "sha256": "e89101d51f54ba29b5210ada09252cc1d6090fe3ea701d6ad1d6d9199a6035da",
+        "size_bytes": 1303
+      },
+      "super_retirement_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/derived-super-retirement-v1/root-execution-v1/completion.json",
+        "sha256": "bc272ef94cd2caf4b8eaae1575e13aca0ad3117cda6a2d8c06256abeba8e5aaa",
+        "size_bytes": 237744
+      },
+      "super_retirement_independent_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/derived-super-retirement-v1/actual-retirement-review-v1/review.json",
+        "sha256": "9e3bfbbf35d536eef7953bbcfec0d1f88bde773bfe88944645ccd505b86d1a35",
+        "size_bytes": 6106
+      },
+      "receipt_only_consumer_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/postcheck-recovery-actual-v1/independent-review-v1/review.json",
+        "sha256": "bfca94ba013604bf25c3d0c55c00903f8eb0e8e8e87e84abe6ef51160e6d416e",
+        "size_bytes": 11178
+      },
+      "read_plan_blocker": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/postcheck-recovery-actual-v1/independent-review-v1/read-plan-blocker.json",
+        "sha256": "6cb85d26feacbec0e73c2b7ac310faaab3497c5312cc82edd1a2a225bef7fb28",
+        "size_bytes": 897
+      },
+      "fresh_four_log_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-five-activation-preparation-v1/four-logs-v1/actual-v1/completion.json",
+        "sha256": "625abcb61d5c738c90c835d05f1913b3fe5a5444cbc208ee500434a429b9c858",
+        "size_bytes": 616
+      },
+      "fresh_four_log_readback": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/post-five-activation-preparation-v1/four-logs-v1/actual-v1/stdout.json",
+        "sha256": "7fcba3232599da62f62f8ea7b7a02b4b3ca88e5f35cd42cc7fd4cba7afe59c25",
+        "size_bytes": 80384
+      },
+      "root_super_retirement_acceptance": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-two-super-retirement-acceptance-v1/review.json",
+        "sha256": "1a234085c9f723a59989f08cb6863d8aa01b2071bf56375e50361c1deeb5f696",
+        "size_bytes": 4065
+      },
+      "root_receipt_acceptance": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-receipt-acceptance-v1/review.json",
+        "sha256": "24736775ab65ad5513f6f017cc76756828afc67a2ad9a681b6688de7fe0f0560",
+        "size_bytes": 4539
+      }
+    },
+    "fresh_four_log_readback": {
+      "completed_at": "2026-09-03T00:33:40.076638+00:00",
+      "exit_code": 0,
+      "verified": true,
+      "logs_measured": 4,
+      "graph_capture_admission_granted": false,
+      "source_or_output_written": false,
+      "phone_accessed": false
+    }
   }
 }

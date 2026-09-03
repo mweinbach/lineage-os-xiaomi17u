@@ -1,6 +1,64 @@
 # Nezha product and build progress
 
+## Five recovery execution and two-super retirement — 2026-09-03
+
+The V2 postcheck-recovery command runs **September 2 23:56:10.365629–September 3
+00:08:48.554115 UTC**, exit **0**, with all **38 held files** unchanged. Its
+receipt is verified by the native producer. The read-only export completes at
+**00:32:42 UTC**: the 968,348-byte receipt matches the native output exactly,
+and the 4,140,101-byte actions record matches its bound pin. The original
+`c3cbe353…` failed result remains unchanged. No build is rerun, no output is
+invalidated, and source/Android output is not modified by this recovery.
+Host receipt-only `_originals`, `_postcheck_recovery` and summary validation
+pass. The recovered receipt verifies **five fresh actions, all six unchanged
+callback maps, strict descriptor metadata and the built/installed system copy**;
+it does not verify whole hashtree/FEC payloads or a signed parent chain.
+**Package6 `read_plan` remains blocked** by nine-field versus seven-field
+verbose stat records: all seven shared values match, with only `uid/gid=0`
+additional in the former. No filesystem drift is established; the narrow
+consumer correction remains pending, not a native rerun. Fresh four-log readback
+passes at **00:33:40 UTC**, without source/output writes or graph-capture
+admission. No Package6 execution or signed-parent-chain success is established.
+
+The exact two-target raw-super retirement runs **00:09:56–00:10:26 UTC**, exit
+**0**, after complete reconstruction comparisons and fresh action guards.
+Only the Xiaomi.eu and factory reconstructed `super.raw.img` leaves are removed.
+The action freshly hashes **18 bodies / 54,089,758,304 bytes** and joins 309
+controls before/after. Independent journal and dispatch review passes **158
+checks and eleven negative cases**, including 320 outer-control joins. It checks
+current metadata for all 38 retained/protected bodies, not another complete read
+of those bodies or an audit of every workspace file.
+
+Host availability is **128,594,862,080 → 152,120,836,096 bytes**, an observed
+**23,525,974,016-byte (21.91 GiB)** operation-local gain; the candidates' prior
+allocation is **23,537,713,152 bytes**. These are separate measurements, and the
+difference has no proven specific cause. This is the historical action window,
+not current free capacity or clearance of the full continuation budget.
+Original archives, all sixteen sparse
+inputs, LP sets and small receipts remain. The two earlier raw KEEP entries are
+superseded only for this action: raw inspection and LP re-extraction now require
+reconstruction and the historical full-hash check. LP images alone are not a
+bit-identical restoration source. No VM, phone or recursive operation occurs
+in this retirement.
+
+Exact local evidence is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-five-recovery-native-dispatch-v2/actual-v1/stdout.json` | `f84107c32716be85ce9e6d2764bf5b5a7bdf66ff173b61a2895ece4f8eca58b2` | 968,348 |
+| `root-five-recovery-evidence-export-v1/actual-v1/selected-image-actions.json` | `3acfccf1b727f97ca4290119943f7a92194782ceca3c22659713383534205fa1` | 4,140,101 |
+| `derived-super-retirement-v1/root-execution-v1/completion.json` | `bc272ef94cd2caf4b8eaae1575e13aca0ad3117cda6a2d8c06256abeba8e5aaa` | 237,744 |
+| `root-two-super-retirement-acceptance-v1/review.json` | `1a234085c9f723a59989f08cb6863d8aa01b2071bf56375e50361c1deeb5f696` | 4,065 |
+| `root-five-recovery-receipt-acceptance-v1/review.json` | `24736775ab65ad5513f6f017cc76756828afc67a2ad9a681b6688de7fe0f0560` | 4,539 |
+| `package6/post-five-activation-preparation-v1/four-logs-v1/actual-v1/stdout.json` | `7fcba3232599da62f62f8ea7b7a02b4b3ca88e5f35cd42cc7fd4cba7afe59c25` | 80,384 |
+
+Package6, final signing/AVB/FEC/VINTF/super/partition checks, OTA and device boot
+remain separate gates. No new full-suite pass or flashable-ROM claim is made.
+
 ## Five recovery diagnostics and further cleanup — 2026-09-02
+
+This earlier checkpoint ended with V2 in progress and the two raw supers retained.
 
 Recovery v1 runs **23:37:10.386558–23:37:18.262120 UTC**, exit **1**, rejecting
 the native postcheck callable before the recovered full postbuild guards and

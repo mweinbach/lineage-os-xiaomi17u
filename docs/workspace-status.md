@@ -6,9 +6,30 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 in
+consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
+
+**Five's V2 native postcheck recovery passes**, exit **0**, at
+**2026-09-03 00:08:48 UTC**. Its native receipt and exported copy match exactly;
+the original failed result remains unchanged. This is postcheck-only recovery,
+not another build or forced output invalidation. Receipt-only host validation
+passes, but Package6's plan reader still needs a narrow stat-schema correction;
+all shared stat values match. **Package6, final AVB/signing and ROM/boot remain
+unverified**. Fresh four-log readback passes without granting graph admission.
+
+**The two reconstructed stock-super copies are now retired**, after the exact
+two-target action supersedes their earlier KEEP status. The operation observes
+**23,525,974,016 bytes (21.91 GiB)** more host free space, separately from its
+allocation count. Original archives, sixteen sparse inputs, LP images and small
+records remain; direct raw-super inspection requires reconstruction and a fresh
+historical-hash check. No phone operation occurs. See the
+[recovery and super-retirement checkpoint](build-progress.md#five-recovery-execution-and-two-super-retirement--2026-09-03).
+
+## Earlier recovery diagnostics and twelve-image cleanup
+
+This September 2 checkpoint records V2 still running and both raw supers still
+retained; the actual later outcomes are recorded above.
 
 **Five postcheck recovery is not yet verified.** Recovery v1 fails at callable
 authentication on **2026-09-02 23:37:18 UTC**, before the recovered full postbuild
