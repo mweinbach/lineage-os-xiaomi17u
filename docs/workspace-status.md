@@ -10,6 +10,27 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Six Package6 images pass strict FEC semantic admission**: mi_ext, product,
+system, system_dlkm, system_ext and vendor_dlkm. ROOT independently reproduces
+all 32 diagnostic readback admissions and the original strict semantic result,
+with all 148 held input states rechecked. Native liveness is verified separately
+at the **16:23:29 UTC** readback completion. Joining the separate vendor/ODM FEC
+evidence remains pending.
+
+**Published boot-chain/kernel/META binding also passes**, with the actual join
+closing at **16:19:43 UTC** and ROOT's exact replay admitted. All five boot-chain
+identities and the complete kernel META match the signed evidence, including
+6,405 config symbols, literal 4 KiB selection and preserved `working76`.
+Its unchanged `final_boot_kernel` proof is host-staged and read back; native
+staging and complete six-proof qualification remain pending. Module ABI,
+native EROFS-reader qualification, super/physical fit, OTA and boot remain
+unverified. No additional cleanup or phone operation occurs. See the
+[six-image FEC and kernel checkpoint](build-progress.md#package6-six-image-fec-and-published-kernel-admission--2026-09-03).
+
+## Earlier Package6 discovery admission and failed-archive retirement
+
+The following checkpoint predates six-image FEC and published-kernel admission.
+
 **Shared discovery-v3 passes at 15:34:25 UTC**, with ROOT admission at
 **15:37:18 UTC** and independent review at **15:43:26 UTC**. All six Package6
 source-callback vectors match, paired graph observations are preserved, and

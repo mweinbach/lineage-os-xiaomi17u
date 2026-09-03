@@ -1,6 +1,66 @@
 # Nezha product and build progress
 
+## Package6 six-image FEC and published kernel admission — 2026-09-03
+
+**The six-image FEC result passes strict semantic admission.** The corrected
+native run closes at **16:10:14.312955 UTC**; all **32 diagnostic files**,
+**206,103 bytes**, are subsequently read back. ROOT independently replays all
+32 readback admissions and the original strict success validator, reproducing
+the semantic result exactly and rechecking all **148 held input states**.
+Verified roles are **mi_ext, product, system, system_dlkm, system_ext and
+vendor_dlkm**, using the actual Package6 packaging images. Their protected
+prefix and FEC parity results pass; native input/runtime preservation is bound
+to the authenticated caller. This does not yet join the separate vendor/ODM
+FEC evidence into one complete result.
+
+The host semantic API does not establish guest termination. ROOT retains the
+separate readback completion at **16:23:29.442892 UTC**, with strict-idle and
+sole-volume-owner checks passing. No image bodies are reread on the host by
+semantic admission. Earlier failed native and adapter attempts remain separate
+from this admitted corrected result.
+
+**The published boot-chain/kernel/META join passes at 16:19:43.528998 UTC**,
+and ROOT admits its semantics by an exact record replay. All five boot-chain
+roles join to the published archive and signed evidence; `working76` remains
+unchanged. The complete **220,404-byte** kernel META matches the measured
+**39,963,136-byte** kernel, SHA-256 `4441e484…`, including all **6,405 config
+symbols** and literal **4 KiB** page selection. The bounded archive read totals
+**1,782,217 bytes**; archive stats remain unchanged, no image member is opened,
+and no whole-archive hash is repeated. ROOT rechecks 26 actual-read
+records and seven handoff records without rereading image/archive bodies.
+The unchanged **92,265-byte** role proof is then host-staged and read back as
+`final_boot_kernel.json`, mode **0400**, with a proposed native reference.
+Native staging/readback, complete six-proof VINTF qualification and kernel/module
+ABI qualification remain separate; host staging makes no other role claims.
+
+The EROFS exporter query still stops on the helper's handling of a duplicated
+output-consumer line in the **401-byte** raw query, with paired observations of
+the three protected exporter inputs, tools and graph preserved. No corrected
+native reader is qualified yet.
+Super discovery finds the installed `build_super_image` missing; the bounded
+two-path probe finds `lpmake` present, and a follow-up query remains pending.
+The eight-seed producer/PYC query is running as of **16:28:41 UTC**, without an
+admitted result. Final VINTF compatibility, super/physical fit, OTA and device
+boot remain unverified. No additional cleanup or phone operation occurs at this
+checkpoint; unrelated host-space increases are not credited to earlier cleanup.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-fec-dispatch-v2/run-v1/completion.json` | `c93bd80dc74e758b10a0c293d5c6df424d066501630e7453e81f4796226ffa1f` | 2,390 |
+| `final-avb/package6-fec-continuation-v2/result-readback-preparation-v1/semantic-admission-v2/actual-v2-admission-v1/actual-v1/semantic-result.json` | `70c1fe26ddf14643c2dad4faccf4af3c9394273f2fbe5cccca2fcf4fc3c0437a` | 13,394 |
+| `final-avb/package6-fec-continuation-v2/result-readback-preparation-v1/semantic-admission-v2/actual-v2-admission-v1/actual-v1/completion.json` | `3b0b0d6f7cbd93715fd8f12e8298c59123cf1fee0a7619db6abdefdb5e03953a` | 490,098 |
+| `root-package6-fec-semantic-result-review-v1/review.json` | `bb2ec4c6fb6f2895251feb6f62c2cfe3643694d42084611b4a406eddb9b596a2` | 9,214 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/boot/published-join-v1/review.json` | `c097100c2dac4113f8264f86727d68ff6b86b1ed6eec8812dac378c874b89840` | 92,265 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/boot/published-join-v1/handoff.json` | `d77151daa8798e99d4a009523b47057b39d8f4169540d581ac966c253cbd83fe` | 9,706 |
+| `root-package6-published-kernel-result-review-v1/review.json` | `5fe266e6a3c86862aea4823a0119b879472e2a5898b2e42c6dfbb6804f7da29a` | 978 |
+| `final-vintf/package6-qualification-staging-v1/kernel-staging-completion.json` | `32e48b7bde0f521a0e950f4df1293ae2d24c6b41d3ff3c02b940e9f5ac129826` | 25,614 |
+
 ## Package6 discovery admission and failed-archive retirement — 2026-09-03
+
+This earlier checkpoint predates six-image FEC and published-kernel admission.
 
 **Shared discovery-v3 closes at 15:34:25.018945 UTC**, exit **0**, with
 **607.744 seconds** recorded by the transport. The complete **8,888,513-byte**
