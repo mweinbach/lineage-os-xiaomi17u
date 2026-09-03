@@ -12,6 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
+| [Isolated EROFS reader build and query admission](build-progress.md#isolated-erofs-reader-build-and-query-admission--2026-09-03) | Corrected native reader builds and query semantics are admitted; three-image projection, producer/runtime qualification, full VINTF, super/fit, OTA and boot remain open |
 | [Package6 eight-role FEC and producer queries](build-progress.md#package6-eight-role-fec-and-producer-queries--2026-09-03) | All eight FEC roles join through six fresh results and two exact historical vendor/ODM proofs; query captures pass, while native reader qualification, detailed producer semantics and final ROM gates remain open |
 | [Package6 six-image FEC and published kernel](build-progress.md#package6-six-image-fec-and-published-kernel-admission--2026-09-03) | Six FEC roles pass strict semantic admission and published kernel/META identities join; vendor/ODM FEC aggregation, native EROFS qualification, final VINTF, super/fit, OTA and boot remain separate gates |
 | [Package6 discovery and failed-archive retirement](build-progress.md#package6-discovery-admission-and-failed-archive-retirement--2026-09-03) | Shared discovery-v3 and independent admission pass for preserved sources and observed query edges; one obsolete failed ZIP is retired, while producer/runtime, native EROFS, FEC and final ROM gates remain open |

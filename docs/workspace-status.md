@@ -10,6 +10,19 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The corrected native EROFS reader builds successfully at 17:07:42 UTC**,
+with 18 commands, 175 paired inputs and seven runtime files; ROOT's exact
+result replay passes. Its three-image projection remains pending. Four
+super-tool queries and the eight-seed semantic replay also pass, establishing
+observed installation copies and producer/response-file origins, not full
+producer/runtime qualification. Eight-role FEC and published-kernel evidence
+remain verified; image validation, final VINTF, super/fit, OTA and boot stay open.
+No cleanup or phone operation occurs. See the [reader-build checkpoint](build-progress.md#isolated-erofs-reader-build-and-query-admission--2026-09-03).
+
+## Earlier Package6 eight-role FEC and producer queries
+
+The following checkpoint predates the isolated reader build and later query admissions.
+
 **FEC evidence now joins all eight final Package6 dynamic-image roles.** The
 clean host-wrapper return closes at **16:43:53 UTC**, followed by independent
 exact replay at **16:46:12 UTC** and ROOT admission. Six fresh semantic results

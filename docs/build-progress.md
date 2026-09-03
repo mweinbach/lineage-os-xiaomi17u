@@ -1,6 +1,45 @@
 # Nezha product and build progress
 
+## Isolated EROFS reader build and query admission — 2026-09-03
+
+**The corrected native EROFS reader builds successfully at 17:07:42.997617 UTC**,
+exit **0**, with **5.442 seconds** recorded by the transport. The isolated build
+records **18 commands, 175 paired inputs and seven runtime files**, using the
+unchanged opt-in `c814fc64…` source. Its **3,613,016-byte** binary is SHA-256
+`058e53eca562da32c22eee0dcb5b2790151020dbb03c6b9f7b5da61cc9058ddd`.
+ROOT's **17:08:32 UTC** exact validator replay rechecks 28 held controls and
+the recorded strict-idle/sole-owner result. Pinned static-library `.a` archives
+are read and linked, but no ROM image or ZIP body is read.
+**Three-image projection is still pending**: this
+build does not yet demonstrate the compact-EOF fix against the final images.
+
+**Four super-tool queries pass at 17:02:42.323529 UTC**, exit **0**, in
+**38.227 seconds**. ROOT's replay passes with 33 held controls checked. The
+observed commands are installation copies; qualification of their preceding
+producers remains pending, and no super image is built.
+
+ROOT also admits the **eight-seed semantic replay at 17:04:41.484935 UTC**:
+22 held inputs are rechecked, the complete six callback vectors and four
+observation groups join to the prior capture, and the exact origins of two
+producer nodes and three response-file paths are reproduced. This does not
+qualify runtime closure or complete VINTF compatibility.
+
+The eight-role FEC and published-kernel results remain verified. Image-level
+EROFS validation, complete VINTF qualification, super/physical fit, OTA and
+device boot remain open. No additional cleanup or phone operation occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-erofs-build-result-review-v1/review.json` | `e421f60c67a42c73ea4028f79ed753572558c6b35c93798314fb07176b3e4a30` | 2,723 |
+| `root-package6-super-producer-result-review-v1/review.json` | `d91b76573ac8ba69212ea5104482e6094f584dd9ed89eb7763eadfffb7de3cb0` | 1,811 |
+| `root-package6-eight-seed-semantic-result-review-v1/review.json` | `fd29e4ea480646c8ef3ab27d2953ecb2ca620e469a5afb76498a7c7da6177552` | 15,794 |
+
 ## Package6 eight-role FEC and producer queries — 2026-09-03
+
+This earlier checkpoint predates the isolated reader build and later query admissions.
 
 **The final eight-role FEC join passes**, with a clean host-wrapper return at
 **16:43:53.836856 UTC** and independent exact replay at **16:46:12.094947 UTC**.
