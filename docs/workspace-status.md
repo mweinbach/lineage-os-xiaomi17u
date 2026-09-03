@@ -10,6 +10,24 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Native Package6 build, profile validation and exact host admission pass.**
+The native command runs **2026-09-03 02:49:41–02:54:14 UTC**, exit **0**; the
+outer executor closes at **03:01:01 UTC**, also exit **0**. Both directory and
+ZIP producers are fresh, with **205 metadata records and 221 selected ZIP
+members** verified. This is not verification of every archive member or a
+complete, signed or bootable ROM.
+
+A narrow host-only system-copy budget correction admits the unchanged completed
+result without a native rerun. Post-build free-block trim observes a separate
+**15,021,551,616-byte** host-space gain, restores the original builder and passes
+the recorded preservation checks; no new files are deleted by that trim.
+**Archive copy/inventory, signing, FEC, VINTF, super and device boot remain
+pending.** No phone operation occurs. See the [Package6 success checkpoint](build-progress.md#package6-build-and-host-admission--2026-09-03).
+
+## Earlier Package6 launch and P5 mirror retirement
+
+The following checkpoint records launch only, before the completed result was admitted.
+
 **Native Package6 launches at 2026-09-03 02:43:52 UTC.** The launch observes
 **142,274,932,736 bytes available**, exceeding its **133,769,298,255-byte**
 requirement while retaining the unchanged **100 GiB reserve**. This is a

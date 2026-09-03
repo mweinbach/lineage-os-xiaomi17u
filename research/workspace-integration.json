@@ -10159,5 +10159,135 @@
         "size_bytes": 952
       }
     }
+  },
+  "package6_build_and_host_admission_checkpoint_20260903": {
+    "status": "native-package6-build-and-profile-verified-host-admission-passed-postbuild-trim-completed-not-signed-or-boot-verified",
+    "guide": "docs/build-progress.md#package6-build-and-host-admission--2026-09-03",
+    "preceding_checkpoint": "native_p5_mirror_retirement_and_package6_launch_checkpoint_20260903",
+    "preceding_checkpoint_commit": "f3849dbbbce96f0ac4e6e24fefa62f64c2f753dc",
+    "native_package6": {
+      "root_started_at": "2026-09-03T02:43:52.799280+00:00",
+      "root_completed_at": "2026-09-03T03:01:01.638918+00:00",
+      "root_elapsed_seconds": 1028.835735792003,
+      "root_exit_code": 0,
+      "command_started_at": "2026-09-03T02:49:41.581029+00:00",
+      "command_completed_at": "2026-09-03T02:54:14.659305+00:00",
+      "command_exit_code": 0,
+      "profile_completed": true,
+      "profile_validation_verified": true,
+      "postcheck_errors": [],
+      "both_directory_and_zip_producers_fresh": true,
+      "expanded_metadata_records_verified": 205,
+      "selected_zip_members_verified": 221,
+      "all_archive_member_content_verified": false,
+      "complete_archive_semantics_verified": false,
+      "archive_sha256": "e3b9aa2be26a73b5bc4f57bc364034cb5600484df135686895f52e2678a1a56a",
+      "archive_size_bytes": 11006603036,
+      "held_files_unchanged": true,
+      "source_mutation_requested": false
+    },
+    "host_result_admission": {
+      "root_review_completed_at": "2026-09-03T03:11:08.575741+00:00",
+      "exact_completed_result_admitted": true,
+      "initial_failed_admission_preserved": true,
+      "system_copy_bytes": 596561920,
+      "unchanged_default_evidence_cap_bytes": 536870912,
+      "existing_system_partition_budget_bytes": 912273408,
+      "changed_call_sites": 2,
+      "change_scope": "Pass the existing packaged system budget to the two system-copy pin checks; no global cap increase or other consumer changes.",
+      "tests_passed": 8,
+      "additional_subtest_cases": 7,
+      "native_result_unchanged": true,
+      "native_build_or_callback_reexecuted": false,
+      "archive_body_read_or_copied_by_host_admission": false,
+      "source_or_output_modified_by_host_admission": false
+    },
+    "postbuild_free_block_trim": {
+      "completed_at": "2026-09-03T03:05:34.062025+00:00",
+      "passed": true,
+      "new_file_deletions": false,
+      "host_free_before_bytes": 115391803392,
+      "host_free_after_bytes": 130413355008,
+      "observed_operation_local_host_free_delta_bytes": 15021551616,
+      "backing_allocation_reduction_bytes": 15155810304,
+      "backing_and_host_deltas_added_together": false,
+      "current_capacity_claimed": false,
+      "original_builder_restored": true,
+      "original_config_unchanged": true,
+      "temporary_container_removed": true,
+      "three_sentinel_full_hash_and_stat_checks_unchanged": true,
+      "postrestart_entire_compared_objects_equal": [
+        "alias",
+        "logs",
+        "files",
+        "module_info_stat_only",
+        "project"
+      ],
+      "full_live_filesystem_integrity_claimed": false
+    },
+    "remaining_gates": {
+      "archive_host_copy_verified": false,
+      "host_archive_inventory_verified": false,
+      "private_signing_performed": false,
+      "whole_hashtree_or_fec_payload_verified": false,
+      "vintf_extraction_or_compatibility_verified": false,
+      "complete_avb_chain_verified": false,
+      "super_or_physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "rom_or_boot_ready": false,
+      "complete_rom_ready": false,
+      "full_continuation_capacity_cleared": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Copy and inventory the exact admitted archive under verified capacity and provenance, then complete signing, FEC/AVB, VINTF extraction/compatibility, super/partition fit, OTA and device-boot checks. Planned extraction roots are not completed extraction evidence.",
+    "evidence": {
+      "native_root_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-native-dispatch-v1/completion.json",
+        "sha256": "38bc8faf5ab7c315d496dbf967e26d017dcc86cb27e867778713306d764647f8",
+        "size_bytes": 2272
+      },
+      "completed_native_result": {
+        "path": "reports/avb-sha256-20260902/native-preparation-v1/host-package6-preparation-v2/stdout.jsonl",
+        "sha256": "506a7b7c8eae16aae2a143d90338a1bcec84f660076fa402c9b45607446763a0",
+        "size_bytes": 12102050
+      },
+      "preserved_initial_host_failure": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/actual-result-admission-v1/admission-v1.json",
+        "sha256": "c465ef2121c06ec8602ccd24e694096d1aab4d789b2415dc6d66d3fd4f55bbc4",
+        "size_bytes": 7399
+      },
+      "successful_host_admission": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/actual-result-admission-v1/admission-v2.json",
+        "sha256": "e0e9df39046435785cd221c112a7efa30289965b439d25ec23303fce870154aa",
+        "size_bytes": 8234
+      },
+      "corrected_host_consumer": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/actual-result-admission-v1/system-copy-budget-v1/current_package.py",
+        "sha256": "8e9c11badabbab7820a76006f36688d783fa7d13e50c11d18948117f9f2def74",
+        "size_bytes": 73484
+      },
+      "host_consumer_test_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/actual-result-admission-v1/system-copy-budget-v1/test-completion.json",
+        "sha256": "6d7d76e4a4ed04972169c60087cd99e9a3ace5beab4bd96aaa1056063266d858",
+        "size_bytes": 1019
+      },
+      "root_host_admission_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-result-admission-v1/review.json",
+        "sha256": "f517eec1099dc840e4d7d6c3d8a07d9582c09a31e1966214c629f59918b0fb8b",
+        "size_bytes": 2338
+      },
+      "postbuild_trim_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/post-package6-trim-v1/actual-v1/completion.json",
+        "sha256": "87d53fa375cc74b32ee09b3bde2bd52d03c7c96c8dacc300068cbbb54fefa7e5",
+        "size_bytes": 1207
+      },
+      "postbuild_postrestart_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/post-package6-trim-v1/postrestart-v1/review.json",
+        "sha256": "6bb59d367b52b4208f59e55374d1bb6ee2256668970e9dce441aeb461c1476e6",
+        "size_bytes": 1237
+      }
+    }
   }
 }

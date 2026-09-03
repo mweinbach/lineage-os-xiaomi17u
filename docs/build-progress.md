@@ -1,6 +1,44 @@
 # Nezha product and build progress
 
+## Package6 build and host admission — 2026-09-03
+
+**Native Package6 construction and profile validation pass.** The native command
+runs **02:49:41.581029–02:54:14.659305 UTC**, exit **0**; the root executor runs
+**02:43:52.799280–03:01:01.638918 UTC**, exit **0**, for **1,028.836 seconds**.
+`profile_completed` and `profile_validation_verified` are true, with no postcheck
+errors. Both target-files directory and ZIP producers are fresh. Validation
+covers **205 expanded metadata records and 221 selected ZIP members**, not all
+archive-member content or complete ROM semantics.
+
+The native archive is **11,006,603,036 bytes**, SHA-256 `e3b9aa2b…`; the completed
+result is `506a7b7c…`, **12,102,050 bytes**. The first pure-host admission fails
+because a **596,561,920-byte** system-copy identity exceeds the default evidence
+cap of **536,870,912 bytes**. Exactly two call sites are corrected to use the existing
+**912,273,408-byte system budget**, without changing the native result or global
+cap. **Eight tests plus seven subtest cases pass**. Corrected admission passes,
+followed by root independent replay at **03:11:08 UTC**; the original failure remains
+preserved. No native build/callback rerun or archive-body read/copy occurs in
+this host admission.
+
+Post-build free-block trim completes at **03:05:34.062025 UTC**, with **no new
+file deletions**. Host availability rises **115,391,803,392 → 130,413,355,008 bytes**,
+an operation-local **15,021,551,616-byte** increase; backing allocation decreases
+**15,155,810,304 bytes**. These are separate observations, not additive savings
+or current-capacity guarantees. The original builder/configuration is restored,
+the temporary container removed, and fresh pre/post alias, logs, selected files,
+stat-only module-info and project objects compare equal. Selected sentinels are
+preserved; complete live-filesystem integrity is not claimed.
+
+**The archive has not been copied to the host or signed at this checkpoint.**
+Host inventory, whole-payload FEC, VINTF extraction/compatibility, final AVB,
+super/partition fit, OTA and device boot remain pending. Planned extraction
+roots are not an extraction result. No phone operation or new full-suite result
+is claimed. Exact result, admission and trim pins are in the
+[integration record](../research/workspace-integration.json).
+
 ## Package6 launch after P5 mirror retirement — 2026-09-03
+
+This earlier checkpoint records launch only, before native completion and host admission.
 
 **The original native Package6 executor starts at 02:43:52.799280 UTC**, using
 the genuine `0b3cfb98…` request and `cf3c18eb…` guest. Launch availability is
