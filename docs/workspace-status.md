@@ -10,6 +10,20 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package6's two DLKM images pass exact module-membership verification**, after
+successful scans at **17:54:55 UTC** and ROOT semantic replay at **18:02:37 UTC**.
+All 484 modules and 11 metadata/selector files match the historical corpus by
+path, hash and size; eight ordinary `/etc` files remain recorded outside that
+comparison. This does not verify module ABI, signature trust, loader behavior
+or boot. The separate two-node source/PYC semantic replay also passes, without
+producer/runtime qualification. Five-image content projection remains verified;
+runtime property behavior, full VINTF, super/fit, OTA and boot remain open.
+No additional cleanup or phone operation occurs. See the [DLKM membership checkpoint](build-progress.md#package6-dlkm-membership-and-two-node-semantic-admission--2026-09-03).
+
+## Earlier Package6 five-image VINTF content projection
+
+The following checkpoint predates DLKM membership and two-node semantic admission.
+
 **Package6's five-image VINTF content projection passes**, after the corrected
 reader successfully captures system, system_ext and product at **17:16:09 UTC**.
 The join with retained vendor/ODM evidence covers 267 relevant files and 21

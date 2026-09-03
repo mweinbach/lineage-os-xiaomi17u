@@ -1,6 +1,41 @@
 # Nezha product and build progress
 
+## Package6 DLKM membership and two-node semantic admission — 2026-09-03
+
+**Both current DLKM image scans pass at 17:54:55.361365 UTC**, in **2.465
+seconds**, with unchanged inputs and strict-idle/sole-owner checks. ROOT's
+separate membership replay passes at **18:02:37 UTC**: all **103 system_dlkm
+and 381 vendor_dlkm modules**, plus **11 metadata/selector files**, match the
+historical corpus by path, hash and size. No modules are missing, extra or
+changed. The **eight ordinary `/etc` files** remain recorded outside the
+historical module-namespace comparison; equality is not claimed for them.
+
+ROOT reproduces the original preparation's six outputs and replays the typed
+proofs, complete manifests and membership comparison. **21 focused tests pass.**
+Historical evidence is not relabeled as fresh execution. Metadata/selector
+contents still need current semantic validation; loader-source binding,
+module ABI, signature trust and actual loading remain unverified.
+
+Separately, ROOT admits the earlier **two-node source/PYC semantic replay at
+17:44:17 UTC**, including all three fixed response files (**8,274 bytes**) and
+exact original source/PYC admissions. This is not producer/runtime qualification.
+The five-image VINTF content projection remains verified, while runtime property
+behavior, full VINTF, super/physical fit, OTA and boot remain open. No additional
+cleanup or phone operation occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-boot-content/package6-preparation-v1/dlkm-membership-preparation-v1/root-dispatch-v1/actual-v1/completion.json` | `f9510161485611f545d25b9ddac1110743225f6a5c870ccc3b22e037d05b4031` | 9,755 |
+| `root-package6-two-dlkm-result-review-v1/review.json` | `eb8560fc6fb59f1416e44d83a8e5933a1eb4669ca2f0a065eda7921776560ef6` | 2,514 |
+| `root-package6-two-dlkm-result-review-v1/membership-review.json` | `49a2c3ba05af1127ab45b54ab8a1b332fadea829ac86e270d697207bd28554f4` | 118,634 |
+| `root-package6-two-node-semantic-result-review-v1/review.json` | `f793642e67841dc6580ddf84b7f8c8a5a2351ab46e5ef388abc4719f4e5c1139` | 1,034 |
+
 ## Package6 five-image VINTF content projection — 2026-09-03
+
+This earlier checkpoint predates DLKM membership and two-node semantic admission.
 
 **The corrected reader captures system, system_ext and product successfully at
 17:16:09.410724 UTC**, in **43.851 seconds**, with **7,838 entries**. ROOT replays

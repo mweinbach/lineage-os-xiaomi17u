@@ -12,6 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
+| [Package6 DLKM membership and two-node semantic admission](build-progress.md#package6-dlkm-membership-and-two-node-semantic-admission--2026-09-03) | All 484 modules and 11 metadata/selector files match the historical corpus; two-node source/PYC semantics pass, while ABI, trust/loading, runtime, full VINTF, super/fit, OTA and boot remain open |
 | [Package6 five-image VINTF content projection](build-progress.md#package6-five-image-vintf-content-projection--2026-09-03) | Corrected reader captures pass and 267 relevant files join across five images; permission differences remain explicit, with source/runtime, full VINTF, super/fit, OTA and boot gates open |
 | [Isolated EROFS reader build and query admission](build-progress.md#isolated-erofs-reader-build-and-query-admission--2026-09-03) | Corrected native reader builds and query semantics are admitted; three-image projection, producer/runtime qualification, full VINTF, super/fit, OTA and boot remain open |
 | [Package6 eight-role FEC and producer queries](build-progress.md#package6-eight-role-fec-and-producer-queries--2026-09-03) | All eight FEC roles join through six fresh results and two exact historical vendor/ODM proofs; query captures pass, while native reader qualification, detailed producer semantics and final ROM gates remain open |
