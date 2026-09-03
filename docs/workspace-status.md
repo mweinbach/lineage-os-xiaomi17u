@@ -10,6 +10,26 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Shared discovery-v3 passes at 15:34:25 UTC**, with ROOT admission at
+**15:37:18 UTC** and independent review at **15:43:26 UTC**. All six Package6
+source-callback vectors match, paired graph observations are preserved, and
+the exact nine-target read-only query succeeds. Dependency-edge, PYC-identity
+and raw property-source joins are admitted, not producer/runtime or AIDL
+qualification, compiled property selection, or VINTF compatibility.
+
+**One obsolete failed reconciliation ZIP is retired at 15:36:46 UTC**:
+**10,834,328,619 logical bytes**, with 127 held keeper files and 17 directory
+identities preserved. The successful `reconciled-v2` output and small failure
+diagnostics remain; the old failed archive's exact body replay is lost. The
+observed **10,834,333,696-byte** host-space increase is not exclusively
+attributed to this file. The cleanup is host-only. Native EROFS-reader
+qualification, FEC, VINTF, super/physical fit, OTA and boot remain pending;
+neither operation touches the phone. See the [discovery and retirement checkpoint](build-progress.md#package6-discovery-admission-and-failed-archive-retirement--2026-09-03).
+
+## Earlier Package6 archive publication and reader corrections
+
+The following checkpoint predates discovery-v3 admission and failed-ZIP retirement.
+
 **The ZIP64 writer correction and opt-in EROFS reader are committed**, with
 **4,512 offline tests passing** on the frozen changes. The ZIP64 change fixes
 offset-only header-version promotion while preserving strict readback. The

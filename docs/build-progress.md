@@ -1,6 +1,59 @@
 # Nezha product and build progress
 
+## Package6 discovery admission and failed-archive retirement — 2026-09-03
+
+**Shared discovery-v3 closes at 15:34:25.018945 UTC**, exit **0**, with
+**607.744 seconds** recorded by the transport. The complete **8,888,513-byte**
+capture is admitted by ROOT at **15:37:18.994916 UTC**; independent review
+passes at **15:43:26.206997 UTC**. All six original source-callback vectors
+match Package6. Paired observations cover **15 reachable Ninja graphs plus
+one standalone bootstrap identity**, **6,862,614,527 bytes per pass**; the
+bootstrap's include closure is not traversed. All 15 held controls remain
+unchanged, with strict idle and sole-volume-owner checks passing at completion.
+
+The exact **nine-target read-only query** succeeds. The frozen semantic handoff
+admits observed dependency edges, nine current PYC identities with launcher and
+two-project joins, and raw property source/audit joins. These observations do
+not qualify compile/link commands, fresh tool binaries, runtime or generated
+AIDL provenance, compiled property selection, or the original native PYC
+verifier. The eight observed next selectors are preparation inputs, not an
+executed producer qualification. The earlier graph-mismatch failure and
+interrupted discovery-v2 remain separate, unadmitted attempts.
+
+**One superseded failed reconciliation ZIP is deleted at 15:36:46.040304 UTC**.
+The removed `target-files.zip` is inside the exact
+`.reconciled-v1.incomplete-d7c0f0bf2b0a42ff91dd6b48c8b8ec0e` directory, not the
+verified `reconciled-v2` output. It occupied **10,834,328,619 logical bytes** and
+**10,839,019,520 allocated bytes**. All **127 held keeper files and 17 directory
+identities** remain unchanged; the parent and small diagnostics are retained.
+The old failed ZIP's exact body replay is lost. Host availability observations
+rise by **10,834,333,696 bytes**, but this is not exclusive per-file reclamation
+or a current-capacity guarantee. This deletion accesses neither the VM nor the
+source volume or phone.
+
+The preceding publication checkpoint is committed as
+`08a3daacaea7e8f4e817c46aef87a6788ffe5209`, after **4,512 offline tests** pass
+at **15:38:19.851318 UTC**, with all **586 tracked files** unchanged during the
+run. That test result precedes this documentation edit. Native qualification
+of the opt-in EROFS reader, complete FEC payload checks, VINTF compatibility,
+super/physical fit, OTA and device boot remain pending. No new build or phone
+operation is established by this checkpoint.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-shared-discovery-v3/actual-v1/completion.json` | `95f9e37c3664980a15b6493d204f9dc57ff8def2decab319816fc1f5e61e9f75` | 14,798 |
+| `root-package6-shared-discovery-v3/outer-result-review.json` | `a4b54ee54503467b3eb3031470be93bfb468e6458435569489c704ed3c4103ce` | 1,783 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/handoff.json` | `72aa3807cc59fcf8bc79d6bbbf3775e4285d9fbc6bb1beb907b7696c35d4b0a8` | 11,614 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/independent/review.json` | `0ebd4d96c481be854422a911ca27ce7a14fdebf595119c6a1e2654d59c7e1ab1` | 6,045 |
+| `root-package6-failed-zip-retirement-v1/completion.json` | `c9fe8c168f18e6c053b19351533954e8a28ad0a7796b0646784ab36055e61b31` | 1,128 |
+| `root-package6-publication-checkpoint-validation-v1/actual-v1/summary.json` | `45187d3584f25cad6b55270834feae5bd1071eb5d21c762906c459c2d43b7ea7` | 2,877 |
+
 ## Package6 archive and reader corrections — 2026-09-03
+
+This earlier checkpoint predates discovery-v3 admission and failed-ZIP retirement.
 
 **Reconciliation-v2 closes at 14:44:59.368409 UTC**, exit **0**, in **677.609
 seconds**. All **9 recorded host AVB-tool calls** succeed. The maintained copier
