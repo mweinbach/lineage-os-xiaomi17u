@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**A bounded kernel gate window is captured at 21:23:03 UTC**, and static
+review identifies count/table arguments and a conditional local rejection
+path. Callback/search behavior, object-field meaning, runtime counts, trust
+and ABI remain unverified. **Six read-only libvintf producer queries complete
+at 21:25:35 UTC**, without reading producer bodies or executing their recipes.
+A host-only AIDL checker correction preserves the **127-name negative**;
+it does not establish missing runtime services. Further query/code work is
+unexecuted, and VINTF diagnostics remain unbuilt and unrun. Full boot-source/
+runtime, VINTF, super/fit, OTA and boot remain open. No phone operation or
+additional artifact cleanup occurs. See the [gate and producer-query checkpoint](build-progress.md#package6-protected-export-gate-and-libvintf-producer-query--2026-09-03).
+
+## Earlier Package6 producer retry and pointed-name reference review
+
+The following checkpoint predates the gate-window and libvintf producer-query results.
+
 **The corrected producer retry completes at 21:02:17 UTC**, with exit 0 and
 complete output; the original failed batch remains unadmitted. Original-driver,
 source and PYC admission passes; deeper boot, property, super and AIDL

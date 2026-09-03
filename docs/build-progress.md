@@ -1,6 +1,50 @@
 # Nezha product and build progress
 
+## Package6 protected-export gate and libvintf producer query — 2026-09-03
+
+**Kernel gate capture closes at 21:23:03 UTC**, exit **0**, with the local
+process reaped, full streams and empty stderr in **1.427 seconds**. Thirty
+child inputs and 44 outer controls remain unchanged. One **4,096-byte**
+`complete_formation` window is captured; two other exact function names are
+absent from the decoded name table, **not proven absent from compiled code**.
+
+**Static local-gate review closes at 21:31:11 UTC.** Two call sites load a
+**64-bit count** and pass table arguments; bit 0 at incoming-object byte 377
+can bypass those calls. A nonzero result reaches a conditional local **-13**
+return path, assuming normal external returns and no stack-check diversion.
+ROOT independently decodes the raw words. Callback/search implementation,
+object-field meaning, runtime count, complete policy behavior, trust and ABI
+remain unknown; this is not a module-admission or runtime execution result.
+
+**Six read-only libvintf query/command calls close at 21:25:35 UTC**, exit
+**0**, with full streams, empty stderr and the local process reaped in
+**46.015 seconds**. All **45 controls**, strict idle and sole ownership pass.
+Original validation and nested policy parsing replay independently; **zero
+producer-artifact or response-file body bytes** are read. No producer build,
+new source/PYC admission or runtime/provenance qualification is established.
+
+The narrow AIDL command checker now treats `-c` as a unary option and locates
+the terminal source correctly; **25 host tests pass**. Earlier incorrect
+projection evidence is retained, and the **127 missing-name metadata negative
+is unchanged**, without proving absent runtime services. Further query/code
+preparations have not executed; diagnostic instrumentation remains unbuilt
+and unrun. Full boot-source/runtime, VINTF, super/physical fit, OTA and boot
+remain open. No phone operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-protected-export-capture-dispatch-v1/completion.json` | `ec6d486b3ff1e2a877bced39f619baffd6a96a67fd98afd28548880f547499a4` | 13,892 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/protected-export-capture-preparation-v1/postcapture-review-v1/static-gate-review.json` | `f859fcca5c52df27850a695f4eb47debfe8a476b9c1981bf2339e10990bce5bf` | 11,003 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/root-dispatch-v1/actual-v1/completion.json` | `05bd231b57b91192fc5b15a5dae09d70c3e8b0e4fec5da9d40eec07145b1a04e` | 4,584 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/root-dispatch-v1/actual-v1/actual-admission-v1/outer-review.json` | `dc6c6cf5661bc848564588be140f657976a6634d1fda462c0cc9b8f8a4b0a178` | 39,053 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/producer-followup-preparation-v1/next-producer-input-batch-v1/implicit-libc-retry-v1/root-dispatch-v1/actual-v1/actual-semantic-review-v1/aidl/checker-correction-v1/independent-review/review.json` | `3f85406243bfe3a2022d4ad614a7519c99dc72d604e42079ca5fd3396ce72921` | 15,279 |
+
 ## Package6 producer retry and pointed-name reference review — 2026-09-03
+
+This earlier checkpoint predates the gate-window and libvintf producer-query results.
 
 **The corrected producer retry completes at 21:02:17 UTC**, exit **0**, with
 the process reaped, full output streams and empty stderr in **813.91 seconds**.
