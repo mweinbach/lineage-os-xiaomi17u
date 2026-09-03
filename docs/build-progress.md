@@ -1,6 +1,46 @@
 # Nezha product and build progress
 
+## Package6 conditional stages and kernel relocation capture — 2026-09-03
+
+**The vermagic comparison now covers all 637 distinct payloads / 914 current
+module instances.** Every payload matches under reference `has_crcs=true`
+suffix-comparison semantics; **103 payloads match literally**, while **534
+have differing prefixes**. This does not select the current compiled loader
+branch or verify ABI compatibility, signature trust or loader order.
+
+**Conditional early-ramdisk stage review passes at 20:02:35 UTC.** Restricting
+providers to the kernel plus ramdisk leaves **nine missing Wi-Fi expectations**,
+whose consumers are outside both the **154-module normal** and **426-module
+recovery** closures. Both closures have **zero nonmatching expectations and
+zero findings**, assuming simultaneous availability of modules reached through
+the recorded load roots and `modules.dep`. Mount timing, soft dependencies,
+blocklists, actual provider selection and module insertion remain unverified.
+
+**The kernel relocation capture closes at 20:06:38 UTC**, exit **0**, with full
+streams in **1.440 seconds**. It retains **47,072 relocation-body bytes** and
+**16,416 code/literal-window bytes**, with 42 child input states and 56 outer
+controls rechecked. A unique supported literal selector is observed, not a
+verified pointer mapping. Independent capture admission passes **35 tests**,
+including retained-byte consistency and genuine transport closure. Relocation
+interpretation, algorithm equivalence and compiled policy use remain unverified.
+
+ABI, trust, full boot-source/runtime qualification, VINTF, super/physical fit,
+OTA and boot remain open. No phone operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-all-current-vermagic-review-v1/review.json` | `a0c322c7d985ec9996b7f39075b12a2f67eba7befb0738de2d990e16c8d49e0c` | 12,089 |
+| `final-boot-content/package6-preparation-v1/current-ramdisk-abi-join-v1/early-ramdisk-stage-v1/independent-review.json` | `53935d3bcac21716edb48af60309fa6bb7c9755c62378b5cef6bdbea1cfecde4` | 81,407 |
+| `root-package6-kernel-relocation-dispatch-v1/completion.json` | `489be9e018a71c2c576d13aa4e616a28f46abb89e7c4dc4edf7ce66c0ed5e454` | 18,209 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/relocation-capture-preparation-v1/actual-v1/capture.json` | `327f593d2c0cd46ca6c99d91f812d669f08aa67cdd77a99b07d4120bc7c76690` | 220,432 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/relocation-capture-preparation-v1/postcapture-review-v1/capture-closure.json` | `72f225ab24fd471b160e82af5b27fc55eec0b1c2ad6b76837d873722d00a7ae3` | 8,233 |
+
 ## Package6 current module union and source-copy origin — 2026-09-03
+
+This earlier checkpoint predates extended vermagic, conditional stage review and relocation capture.
 
 **The current ramdisk/DLKM union closes the 718 previously missing CRC
 expectations**, using **49 now-current ramdisk providers**. ROOT's exact

@@ -10,6 +10,20 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Reference vermagic comparison now covers all 637 payloads / 914 instances**,
+without selecting the current compiled loader branch. The conditional normal
+and recovery ramdisk closures have no nonmatching expectations or findings;
+nine Wi-Fi gaps in the restricted provider pool lie outside those closures.
+This assumes simultaneous module availability, not verified load order or ABI.
+**Kernel relocation capture returns cleanly at 20:06:38 UTC**, and independent
+capture admission passes 35 tests. Pointer mapping remains pending. Trust, full boot-source and
+runtime qualification, VINTF, super/fit, OTA and boot remain open. No phone
+operation or additional artifact cleanup occurs. See the [stage and relocation checkpoint](build-progress.md#package6-conditional-stages-and-kernel-relocation-capture--2026-09-03).
+
+## Earlier Package6 current module union and source-copy origin
+
+The following checkpoint predates extended vermagic, conditional stage review and relocation capture.
+
 **The current ramdisk/DLKM union supplies matching CRC providers for all 718
 previously missing expectations**, with ROOT replay passing at **19:43:35 UTC**.
 Twenty ambiguous/mixed rows remain, including two mixed-CRC rows; ABI, trust
