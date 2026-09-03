@@ -1,6 +1,51 @@
 # Nezha product and build progress
 
+## Package6 input materialization and P5 host retirement — 2026-09-03
+
+**Exactly one old P5 host ZIP is retired**, after fresh full hashes of it and
+the retained Package6 ZIP: **22,004,565,441 bytes read**. Parents, immediate
+siblings and keepers remain. The removed file was **10,997,962,405 logical bytes**
+and **10,997,964,800 allocated bytes**. Host availability observations at
+**03:45:25–03:45:43 UTC** rise by only **119,111,680 bytes**; this is not exclusive
+per-file reclamation or a current-capacity guarantee. P5's exact old ZIP replay
+is lost; Package6 is not its byte-identical replacement. Historical receipts
+remain, including the earlier native-mirror retirement as a separate action.
+
+**Materialization closes at 03:55:41.725919 UTC**, exit **0**, after **125.986
+seconds**. The unchanged materializer creates **13 canonical Package6 images
+and two retained stock inputs**, independently reads back their bytes and
+returns successful local publication checks. ROOT review at **03:58:14 UTC**
+joins all 15 manifest identities to inventory/stock and confirms distinct,
+private, regular single-link files and retained controls. That review does not
+rehash the large bodies. The original prepublication receipt remains distinct
+from the successful returned publication result. Periodic observations stay
+above the **100 GiB reserve**; full continuation capacity is not cleared.
+
+The VINTF capture transport exits **0** and acknowledges result `d0c7c012…` /
+**19,117,617 bytes**, without running compatibility checks. After the recorded
+host reboot, the stopped builder is restored at **13:40:34 UTC** with the same
+configuration, renewed host-device binding, sole-writer ownership and strict
+idle checks; this does not verify whole-volume contents. Capture readback
+completes at **13:41:55.775938 UTC**, exit **0**: acknowledgment, native final
+hash, complete stream and host readback agree, with **16 controls unchanged**.
+**Semantic admission and VINTF compatibility execution remain pending.** The
+later **183,686,529,024-byte** availability observation is not attributed to a
+particular cleanup or treated as full continuation capacity.
+
+Separately, the **04:04:45 UTC** metadata probe identifies **20 regular native
+leaves**, **18,308,329,472 allocated bytes**, with four directories and 88
+protected entries retained. **No fresh body hashes, deletion admission,
+deletion or trim** result follows from that probe.
+
+Public AVB preparation, private signing, DTBO archive-alias normalization,
+FEC/complete AVB-chain verification, VINTF compatibility, super/partition fit,
+OTA and device boot remain pending. Materialization does not repack the archive
+or verify image formats. No phone operation or new full-suite result is claimed.
+Exact saved receipt pins are in the [integration record](../research/workspace-integration.json).
+
 ## Package6 host transfer and original inventory — 2026-09-03
+
+This earlier checkpoint predates input materialization and P5 host retirement.
 
 The completed Package6 archive is transferred to the host at **03:29:05.747875
 UTC**. Transport exits **0** after **38.279 seconds**, streaming exactly

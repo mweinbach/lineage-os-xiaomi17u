@@ -10430,5 +10430,230 @@
         "size_bytes": 5777
       }
     }
+  },
+  "package6_materialization_and_host_retirement_checkpoint_20260903": {
+    "status": "package6-input15-materialization-p5-host-retirement-builder-restoration-and-vintf-readback-complete-semantic-admission-pending-native20-probe-only",
+    "guide": "docs/build-progress.md#package6-input-materialization-and-p5-host-retirement--2026-09-03",
+    "preceding_checkpoint": "package6_host_transfer_and_original_inventory_checkpoint_20260903",
+    "preceding_checkpoint_commit": "b021258521c98a315536369897d888496ffec6e5",
+    "host_p5_retirement": {
+      "completed": true,
+      "removed_count": 1,
+      "removed_path": "artifacts/build-validation/nezha-target-files-package-3-transfer-v6/lineage_nezha-target_files.zip",
+      "removed_sha256": "622073f36dd1c0f733f1ed1d09518380190a58a80f4615586c815430bd9768b4",
+      "removed_logical_bytes": 10997962405,
+      "removed_allocated_bytes": 10997964800,
+      "full_p5_and_retained_p6_archive_hashes_checked": true,
+      "archive_body_bytes_read_by_retirement": 22004565441,
+      "parents_immediate_siblings_and_keepers_preserved": true,
+      "small_controls_rehashed": true,
+      "exact_old_p5_zip_replay_retained": false,
+      "p6_is_byte_identical_replacement": false,
+      "historical_receipts_retained": true,
+      "distinct_from_prior_native_p5_mirror_retirement": true,
+      "host_available_before_bytes": 118317023232,
+      "host_available_before_observed_at": "2026-09-03T03:45:25.460893+00:00",
+      "host_available_after_bytes": 118436134912,
+      "host_available_after_observed_at": "2026-09-03T03:45:43.604369+00:00",
+      "observed_host_available_delta_bytes": 119111680,
+      "exclusive_per_file_reclamation_measured": false,
+      "space_observation_is_exact_unlink_timestamp": false,
+      "space_observations_are_current_capacity": false
+    },
+    "input_materialization": {
+      "completed_at": "2026-09-03T03:55:41.725919+00:00",
+      "exit_code": 0,
+      "elapsed_seconds": 125.985617792001,
+      "status": "materialized-inputs-only",
+      "extracted_canonical_package6_images": 13,
+      "retained_stock_inputs": 2,
+      "total_images": 15,
+      "original_materializer_full_output_readback_verified": true,
+      "input_manifest_schema_verified": true,
+      "inputs_unchanged": true,
+      "prepublication_receipt_alone_claims_publication_durability": false,
+      "returned_publication_checks": {
+        "data_files_synced": true,
+        "directories_synced_before_and_after_rename": true,
+        "final_file_states_rechecked": true,
+        "parent_directory_synced": true
+      },
+      "root_review_completed_at": "2026-09-03T03:58:14.438470+00:00",
+      "root_review_passed": true,
+      "all_15_distinct_private_regular_single_link_files": true,
+      "all_15_manifest_identities_join_inventory_or_stock": true,
+      "large_bodies_rehashed_by_root_review": false,
+      "small_controls_unchanged": true,
+      "host_reserve_bytes": 107374182400,
+      "minimum_periodically_observed_available_bytes": 120381628416,
+      "reserve_observation_periodic_not_continuous": true,
+      "full_continuation_capacity_cleared": false,
+      "archive_repacked": false,
+      "image_formats_verified": false,
+      "private_key_or_local_config_accessed": false
+    },
+    "vintf_capture": {
+      "capture_host_command_completed": true,
+      "transport_exit_code": 0,
+      "all_pipes_eof": true,
+      "capture_identity_from_native_ack": {
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/final-package-vintf-6/input-capture.json",
+        "sha256": "d0c7c012fcf2b63eb0d1c20fd37516a618b0e39cc413a99d1962151493ac7a89",
+        "size_bytes": 19117617
+      },
+      "capture_body_read_back": true,
+      "capture_body_admitted": false,
+      "guest_termination_independently_verified": false,
+      "native_compatibility_checks_executed": false,
+      "complete_static_vintf_verified": false,
+      "readback_completed_at": "2026-09-03T13:41:55.775938+00:00",
+      "readback_exit_code": 0,
+      "readback_passed": true,
+      "streams_complete": true,
+      "capture_ack_native_final_hash_stream_and_host_readback_equal": true,
+      "held_controls_rechecked": 16,
+      "sole_owner_after": true,
+      "strict_idle_after": true,
+      "capture_body_semantically_admitted": false,
+      "capture_completion_semantics_checked_by_guest_reader": false,
+      "raw_capture_body_read_by_documentation_owner": false,
+      "readback_final_host_available_bytes": 183686529024,
+      "host_available_observed_at": "2026-09-03T13:41:55.775917+00:00",
+      "later_space_change_attributed_to_specific_cleanup": false,
+      "full_continuation_capacity_cleared": false
+    },
+    "obsolete_native_leaf_metadata_probe": {
+      "completed_at": "2026-09-03T04:04:45.394987+00:00",
+      "exit_code": 0,
+      "metadata_only": true,
+      "regular_leaves": 20,
+      "logical_bytes": 18308246525,
+      "allocated_bytes": 18308329472,
+      "directories_preserved": 4,
+      "protected_entries": 88,
+      "probe_stdout_identity_from_saved_receipts": {
+        "sha256": "a021f1b4abbf329a5c81bdadc1dc23ff6afba70b66a2d883c612b4a59efe3442",
+        "size_bytes": 98812
+      },
+      "probe_stdout_replayed_by_documentation_owner": false,
+      "fresh_body_hashes": null,
+      "deletion_admitted": false,
+      "leaves_deleted_at_checkpoint": 0,
+      "trim_executed": false,
+      "source_or_output_written": false
+    },
+    "remaining_gates": {
+      "public_avb_preparation_complete": false,
+      "private_signing_performed": false,
+      "dtbo_archive_alias_normalization_applied": false,
+      "whole_fec_or_complete_avb_chain_verified": false,
+      "vintf_compatibility_verified": false,
+      "super_or_physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "complete_rom_ready": false,
+      "device_boot_verified": false,
+      "public_artifact_publication_performed": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_large_body_reads_by_documentation_owner": false
+    },
+    "next_gate": "Semantically admit the read-back VINTF capture before executing compatibility checks. Public AVB preparation, private signing, signed-archive DTBO normalization and final FEC/chain/fit/OTA/boot checks remain separate. Any cleanup of the 20 metadata-probed leaves still requires fresh body proof and exact retirement admission.",
+    "evidence": {
+      "p5_host_retirement_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/host-package5-archive-retirement-preparation-v1/root-execution-v1/completion.json",
+        "sha256": "5cf774f0585bd616067ed2ab52a5f08578d2476559bec13484073bea0e4b9eb4",
+        "size_bytes": 10363
+      },
+      "materialization_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/host-stage-capacity-guard-v1/materialize-v1/completion.json",
+        "sha256": "56b073c4e844776db64c23d14f50ee3298361f745d0ffc2135486b464b463433",
+        "size_bytes": 170043
+      },
+      "materializer_returned_publication_result": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/host-stage-capacity-guard-v1/materialize-v1/stdout.log",
+        "sha256": "6868aac85e67d1fac345f4a5c1a36eeaab977635ebf470b4b1d546d46b57237e",
+        "size_bytes": 1543
+      },
+      "input_manifest": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/input-manifest.json",
+        "sha256": "582198a441810858a37e8f6c3a27656d14b7ee985e3dc199c59e94381e1f4c3e",
+        "size_bytes": 3700
+      },
+      "original_prepublication_receipt": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/receipt.json",
+        "sha256": "62433f6f9c7d302d3547f56ae5dcc38ff3a2ce75142ee8134ea730eca73b3012",
+        "size_bytes": 4817
+      },
+      "root_materialization_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-materialization-review-v1/review.json",
+        "sha256": "f8e7190ad9b89adc889e20a700442b5be5e7bc5863de42e931d966a8b76df05e",
+        "size_bytes": 5997
+      },
+      "vintf_capture_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/final-vintf/actual-package6-preparation-v1/transport-v1/report-capture-1/completion.json",
+        "sha256": "22baaec2531e55bcf62ab1d34b5056bf4b6bd0b0a015e73cc6534f435af461e5",
+        "size_bytes": 163
+      },
+      "vintf_capture_transport_exit": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/final-vintf/actual-package6-preparation-v1/transport-v1/report-capture-1/exit.json",
+        "sha256": "84b6bdd5f67ed7adea210ccb55e64d5a12812dfc0d961d7302cf623e676d40df",
+        "size_bytes": 1430
+      },
+      "vintf_capture_ack": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/final-vintf/actual-package6-preparation-v1/transport-v1/report-capture-1/command.stdout",
+        "sha256": "639580b8b1cbbf9d1501a5c7570e2a5e430ce65ff5f6a2cc78cd21bb5a6eb6df",
+        "size_bytes": 321
+      },
+      "native_metadata_probe_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/historical-policy-copy-cleanup-v1/probe-v1/actual-v1/completion.json",
+        "sha256": "bf30740f6ac690be932b35e619f1f241791b6076197c93085eccee33a104538a",
+        "size_bytes": 3416
+      },
+      "native_metadata_probe_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/historical-policy-copy-cleanup-v1/retirement-v1/actual-probe-review.json",
+        "sha256": "c1c593ce4db4b4cca5a959ce32968f8ea49d061c60c8f467cf7d8ed39878b880",
+        "size_bytes": 1109
+      },
+      "builder_stopped_observation": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-builder-resume-v1/before.json",
+        "sha256": "35b8e560d064bb6fc32d2771baf55a597f2d97d1eb67c6faa3c38b36f2056222",
+        "size_bytes": 3231
+      },
+      "builder_restore_intent": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-builder-resume-v2/actual-v1/intent.json",
+        "sha256": "708d6e4d17b869c4ff2d225438fefc92af0cc8e6d6a1684ef72f45f5329a65a1",
+        "size_bytes": 994
+      },
+      "builder_restore_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-builder-resume-v2/actual-v1/completion.json",
+        "sha256": "f410e080818f973857abe911967e74193cf44541c50a417de4903463c776cd50",
+        "size_bytes": 1648
+      },
+      "vintf_readback_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-vintf-readback-v1/actual-v1/completion.json",
+        "sha256": "c392c84e74636316b6b2f497b963da83ca07a55abf92080c96b3f4f1c4b618f1",
+        "size_bytes": 2951
+      },
+      "vintf_native_final_rehash_proof": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-vintf-readback-v1/actual-v1/command.stderr",
+        "sha256": "7bc3e3095fbf1cb042d228d92d78717c420940a841853a2b6a7175db3fa5fafe",
+        "size_bytes": 1178
+      }
+    },
+    "builder_restoration": {
+      "prior_builder_observed_stopped": true,
+      "operation": "restart-existing-builder-after-host-reboot",
+      "started_at": "2026-09-03T13:40:33.091813+00:00",
+      "completed_at": "2026-09-03T13:40:34.899174+00:00",
+      "passed": true,
+      "same_existing_builder_configuration_unchanged": true,
+      "configuration_sha256": "c8898a8f79f30e60ef654d2557290ad15dd7ef499651080aa15aea35b684d8f4",
+      "host_device_binding_renewed": true,
+      "sole_writer": true,
+      "strict_idle": true,
+      "whole_volume_hash_verified": false,
+      "source_or_output_written_by_idle_check": false,
+      "phone_accessed": false
+    }
   }
 }

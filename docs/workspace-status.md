@@ -6,9 +6,31 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 in
+consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
+
+**Package6's 15 host signing inputs are materialized and the old P5 host ZIP is
+retired.** Materialization closes at **2026-09-03 03:55:41 UTC** with full output
+readback and local publication checks; ROOT's separate review passes. The
+13 Package6 images and two retained stock inputs are not yet publicly prepared
+or signed, and DTBO archive-alias normalization remains pending.
+
+After the host reboot, the existing builder is restored at **13:40:34 UTC**
+with unchanged configuration, sole-writer ownership and strict idle checks.
+VINTF's **19,117,617-byte** capture is read back at **13:41:55 UTC**, matching
+the acknowledgment, native final hash and complete transfer. **Semantic
+admission and compatibility execution remain pending.**
+The **20 obsolete native leaves** inspected at **04:04:45 UTC** are only
+metadata-probed: **none is deleted**. P5's exact historical ZIP replay is lost;
+Package6 is retained, not a byte-identical replacement. No full-capacity,
+FEC/AVB-chain, VINTF, super, OTA or boot readiness is claimed. Later host-space
+changes are not attributed to this cleanup. No phone operation
+occurs. See the [materialization and retirement checkpoint](build-progress.md#package6-input-materialization-and-p5-host-retirement--2026-09-03).
+
+## Earlier Package6 transfer and original inventory
+
+The following checkpoint predates host input materialization and P5 host retirement.
 
 **Package6 is copied to the host and its original input inventory is complete.**
 Transfer finishes at **2026-09-03 03:29:05 UTC**, with native final hashing and

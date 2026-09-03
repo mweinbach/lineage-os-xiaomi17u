@@ -12,6 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
+| [Package6 inputs and P5 host retirement](build-progress.md#package6-input-materialization-and-p5-host-retirement--2026-09-03) | Fifteen inputs materialized, old P5 host ZIP retired, builder restored and VINTF capture read back; semantic admission, public preparation, signing and compatibility remain pending, and 20 native leaves are only metadata-probed |
 | [Verified storage cleanup](storage-cleanup.md) | 51 exact obsolete files removed and approved free-block trim completed; original builder restored, 273.56 GiB host free at the dated checkpoint, and bounded preservation checks kept separate from build readiness |
 | [Native ROM integration](native-rom-integration.md) | Current source, scoped policy3/VINTF/metadata verification and remaining image-delivery, packaging and boot gates; earlier failures remain preserved |
 | [Source lock](source-lock.md) | Exact platform revisions for fresh setup and read-only existing-source audits |
