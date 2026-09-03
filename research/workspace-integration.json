@@ -9223,5 +9223,181 @@
     "selected_source_inventory_scope": "548 files/fifteen projects identifies the selected installed source; the failed after-source-history callback does not verify a fresh full post-invocation inventory",
     "full_548_file_post_invocation_inventory_verified": false,
     "selected_source_identity_unchanged": true
+  },
+  "five_recovery_and_retained_image_cleanup_checkpoint_20260902": {
+    "status": "five-recovery-v1-failed-v2-in-progress-old-image-retirement-and-trim-verified-super-comparison-only",
+    "guide": "docs/build-progress.md#five-recovery-diagnostics-and-further-cleanup--2026-09-02",
+    "preceding_checkpoint": "nothing10_profile_failure_host_reserve_checkpoint_20260902",
+    "preceding_checkpoint_commit": "6e749c1b7badfa644f8d6f610ce5ccc2ee347b69",
+    "scope": "Late-evening checkpoint; intervening Nothing11, Selected4, Images6 and cleanup history remains in the dated guides. Existing registry entries retain their original scope.",
+    "recovery_v1": {
+      "started_at": "2026-09-02T23:37:10.386558+00:00",
+      "completed_at": "2026-09-02T23:37:18.262120+00:00",
+      "exit_code": 1,
+      "error": "native postcheck callable differs from the actual frozen original source",
+      "failed_before_recovered_full_postbuild_guards_and_recovery_artifact_writes": true,
+      "held_files": 23,
+      "held_full_hashes_and_nine_stats_unchanged": true,
+      "original_failed_result_unchanged": true
+    },
+    "compile_only_diagnostic": {
+      "completed_at": "2026-09-02T23:42:24.085268+00:00",
+      "python_version": "3.12.3",
+      "identical_hook_ast": true,
+      "isolated_hook_versus_full_bridge_shape_differences": [
+        "co_code"
+      ],
+      "original_result_and_three_sidecars_full_records_unchanged": true,
+      "recovery_artifacts_absent": true,
+      "native_context_called": false,
+      "native_build_called": false,
+      "native_files_written": false
+    },
+    "recovery_v2": {
+      "change": "Compile the complete frozen bridge when authenticating the expected callable; preserve the full shape guard and all four postcheck substitutions.",
+      "independent_test_executions_passed": 14,
+      "materializer_tests_passed": 16,
+      "exact_packet_reproduced": true,
+      "preparation_held_files_unchanged": 34,
+      "native_started_at": "2026-09-02T23:56:10.365629+00:00",
+      "native_status": "in-progress-at-this-checkpoint",
+      "native_launch_held_files": 38,
+      "native_result_verified": false,
+      "build_rerun_authorized": false,
+      "forced_output_invalidation_authorized": false,
+      "original_failed_result_promoted": false
+    },
+    "old_images12_retirement": {
+      "completed_at": "2026-09-02T23:46:11.993910+00:00",
+      "deleted_regular_image_leaves": 12,
+      "scope": "Retained recovery, mi_ext, vendor and ODM copies from Images2, Images3 and Images4 only.",
+      "logical_bytes": 17830158336,
+      "allocated_bytes": 17830182912,
+      "complete_body_hashes": 16,
+      "protected_selectors": 62,
+      "stream_events": 43,
+      "durable_journal_records": 26,
+      "held_host_files_unchanged": 52,
+      "source_keepers_preserved": 4,
+      "current_out_images5_images6_five_protected": true,
+      "historical_original_inode_replay_retired": true,
+      "deletion_allocation_is_not_macos_reclaimed_bytes": true
+    },
+    "separate_approved_trim": {
+      "completed_at": "2026-09-02T23:54:35.295231+00:00",
+      "postrestart_review_completed_at": "2026-09-02T23:55:20.230534+00:00",
+      "passed": true,
+      "host_free_before_bytes": 109865611264,
+      "host_free_after_bytes": 127870160896,
+      "observed_operation_local_host_free_delta_bytes": 18004549632,
+      "observed_backing_allocation_reduction_bytes": 18010460160,
+      "original_builder_and_config_restored": true,
+      "temporary_container_removed": true,
+      "output_alias_and_four_logs_unchanged": true,
+      "three_sentinel_full_hash_and_nine_stats_unchanged": true,
+      "all_source_or_output_integrity_claimed": false,
+      "guest_fstrim_and_previous_cleanup_bytes_added_to_host_delta": false
+    },
+    "two_super_comparison": {
+      "completed_at": "2026-09-02T23:45:30.560490+00:00",
+      "entire_reconstruction_directly_compared": true,
+      "full_sparse_and_raw_hashes_checked": true,
+      "complete_read_bytes": 84691400288,
+      "large_body_nine_stat_records_unchanged": 18,
+      "small_control_full_hash_and_nine_stat_records_unchanged": 16,
+      "stock_archive_bodies_rehashed": false,
+      "new_raw_images_created": false,
+      "deletion_performed": false,
+      "status": "both-KEEP-pending-specific-exact-target-retirement",
+      "comparison_authorizes_retirement": false,
+      "sparse_inputs_and_stock_originals_preserved": true
+    },
+    "limits": {
+      "five_recovered_profile_verified": false,
+      "package6_verified": false,
+      "complete_avb_chain_verified": false,
+      "private_signing_performed": false,
+      "runtime_or_boot_verified": false,
+      "complete_rom_ready": false,
+      "signed_flashable_rom_verified": false,
+      "phone_accessed": false,
+      "source_sync_performed": false,
+      "private_keys_transferred_to_vm": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Review the actually completed V2 postcheck before any Five admission; exact-target super retirement remains separate. Package6, final AVB/signing, super/partition fit, VINTF, OTA and device-boot gates remain open.",
+    "evidence": {
+      "recovery_v1_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-native-dispatch-v1/actual-v1/completion.json",
+        "sha256": "94fb7ca3d382122ba0a1e94e705fc0053e6b52b14ae04c4fd18c2bddbd92250b",
+        "size_bytes": 1609
+      },
+      "recovery_v1_failure": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-native-dispatch-v1/actual-v1/stderr.log",
+        "sha256": "71ace428b7626ae87898c9fa49ac3e5597828a28b09211f60caedfe81070e458",
+        "size_bytes": 617
+      },
+      "compile_diagnostic": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-code-shape-diagnostic-v1/actual-v1/stdout.json",
+        "sha256": "a3edbfcd7ee8d10987614f4be726722628f4b25c0142e14232c8b8c7988e89cc",
+        "size_bytes": 204294
+      },
+      "compile_diagnostic_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-code-shape-diagnostic-v1/actual-v1/completion.json",
+        "sha256": "66707137abb49b5b00845c3301a251681d614417495a872c04815daf8b6d6967",
+        "size_bytes": 1678
+      },
+      "v2_independent_tests": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/five-sha256/sidecar-cause-independent-review-v1/recovery-code-review-v1/compile-successor-review.json",
+        "sha256": "1ce85520ac01e459434aa5266f9e6ba3c244749bb6c163ccc581384fef2b991a",
+        "size_bytes": 8766
+      },
+      "v2_materializer_tests": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/five-sha256/actual-result-review-v1/compile-context-successor-v2/host-materialization-v2/tests-v2/review.json",
+        "sha256": "34d56f9108a7d3205182681775e5e639332f755876feb7f7ded12d880f64e6a7",
+        "size_bytes": 15931
+      },
+      "v2_preparation_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-v2-preparation-review-v1/review.json",
+        "sha256": "038354d8861942e2fd30f428ae82a2811fec2501792d88c315546f7c0b06be5c",
+        "size_bytes": 2267
+      },
+      "v2_native_launch": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-five-recovery-native-dispatch-v2/actual-v1/launch.json",
+        "sha256": "a14d64fd1d1a1eab735a87000698a183b5a5a7cce8ed2c9559011e13d8719eb6",
+        "size_bytes": 1218
+      },
+      "retirement_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-old-twelve-image-retirement-v1/completion.json",
+        "sha256": "e4ecfc226e691ef833a6b0bbf6b5b3e32331c812230ce98abc302bb6417e2b16",
+        "size_bytes": 1203
+      },
+      "retirement_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-old-twelve-image-retirement-review-v1/review.json",
+        "sha256": "b4e4e5a7c9c6757f0cf95c0e42f0974b82f472d9be952ef106c2e4aa417ae0a5",
+        "size_bytes": 3000
+      },
+      "trim_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/old-twelve-image-trim-v1/actual-v1/completion.json",
+        "sha256": "888d67e7191240f82cebe51379ecf5e007ff1ac73b21f6ccd44713759950855f",
+        "size_bytes": 1207
+      },
+      "trim_postrestart_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/old-twelve-image-trim-v1/postrestart-v1/review.json",
+        "sha256": "d9684751b1d0288c0f0754e27117e675d6377013ec2c1e1c19fcaa88a4ad212a",
+        "size_bytes": 1303
+      },
+      "super_comparison_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-two-super-comparison-v1/completion.json",
+        "sha256": "20a23606a6f38fbce999254e2194959ec5dd277268000c6dc69ccf061525f7a2",
+        "size_bytes": 1348
+      },
+      "super_comparison_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-two-super-comparison-review-v1/review.json",
+        "sha256": "f711af6484fe9aae4ae7dba99b82769eb2522af7a8f490b26e39913a66d80072",
+        "size_bytes": 2827
+      }
+    }
   }
 }

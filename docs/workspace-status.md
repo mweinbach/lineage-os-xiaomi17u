@@ -10,6 +10,27 @@ consolidates recorded evidence through **September 2, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Five postcheck recovery is not yet verified.** Recovery v1 fails at callable
+authentication on **2026-09-02 23:37:18 UTC**, before the recovered full postbuild
+guards and recovery artifact writes. All 23 held inputs and the original failed
+result remain unchanged.
+A compile-only Python 3.12 diagnostic finds identical hook ASTs but different
+`co_code` for isolated versus full-module compilation. V2 restores full-module
+compilation without weakening the shape guard or four postcheck substitutions.
+Its reviewed packet and focused tests pass; **native V2 starts at 23:56:10 UTC
+and is in progress**, with no result established by this checkpoint.
+
+**Twelve old Images2–4 retained image copies are retired.** The subsequent
+approved trim and post-restart review finish at **23:55:20 UTC**, restoring the
+original builder and recovering an observed **18,004,549,632 host bytes (16.77
+GiB)**. Bounded preservation checks pass; this is not a whole-source/output
+integrity claim. Two reconstructed stock supers pass full direct reconstruction
+comparison but remain **KEEP**, pending a separate exact-target retirement.
+No Five admission, Package6, signing, ROM/boot success or phone operation is
+established. See the [recovery and cleanup checkpoint](build-progress.md#five-recovery-diagnostics-and-further-cleanup--2026-09-02).
+
+## Earlier Five native failure
+
 **Five's native invocation exits 0, but its profile fails.** The ordinary Ninja
 build runs **2026-09-02 22:33:40–22:36:05 UTC**; the outer command closes at
 **22:40:08 UTC**, exit **1**, with `selected image build changed protected sidecars`.
@@ -19,7 +40,8 @@ retains its bytes, path, eight other stat fields and ancestor identities; only
 `ctime` changes within the build window. Captured temporary-hardlink code is
 consistent with that observation, not a trace of the actual syscalls.
 
-The failed result remains immutable and **recovery is preparation only**.
+At this earlier checkpoint, the failed result remains immutable and **recovery
+is preparation only**.
 No rebuild or forced invalidation has recovered the profile, and no Five image
 admission, Package6, final AVB, signing or ROM success is established. No phone
 operation occurs. See the [Five failure checkpoint](build-progress.md#five-native-exit-and-protected-sidecar-failure--2026-09-02).

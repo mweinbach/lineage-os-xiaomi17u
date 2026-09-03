@@ -1,5 +1,63 @@
 # Nezha product and build progress
 
+## Five recovery diagnostics and further cleanup — 2026-09-02
+
+Recovery v1 runs **23:37:10.386558–23:37:18.262120 UTC**, exit **1**, rejecting
+the native postcheck callable before the recovered full postbuild guards and
+recovery artifact writes. All **23 held inputs** and the original failed Five
+result remain unchanged. At
+**23:42:24 UTC**, a compile-only native Python 3.12 diagnostic finds identical
+hook ASTs but a sole `co_code` difference between isolated-hook and full-bridge
+compilation. It calls neither the native context nor build, writes no native
+files, and preserves the original result and all three sidecars; recovery
+artifacts remain absent.
+
+V2 changes only the expected full-bridge compilation context, retaining the
+complete callable-shape guard and all four postcheck substitutions. **14
+independent test executions and 16 materializer tests pass**, and the root
+reproduces the exact V2 packet with all 34 held files unchanged. These are
+preparation proofs. **Native V2 starts at 23:56:10.365629 UTC and is in progress**,
+with 38 host inputs held; neither a successful result nor promotion of the
+original failure is established by this checkpoint. No rebuild or forced
+output invalidation is authorized by this postcheck-only recovery.
+
+At **23:46:11.993910 UTC**, exactly **12 old Images2–4 retained image leaves**
+(recovery, mi_ext, vendor and ODM) are deleted after 16 complete hashes and 62
+protected selectors. Review replays all 43 events and 26 durable journal records;
+52 host inputs remain unchanged. Their **17,830,182,912 allocated bytes** are
+not a host-space measurement. Historical original-inode replay is retired;
+four SOURCE keepers, current output and Images5/6/Five remain protected.
+
+The separately approved trim completes at **23:54:35 UTC**, with post-restart
+review at **23:55:20 UTC**. Host availability rises **109,865,611,264 →
+127,870,160,896 bytes**: an operation-local **18,004,549,632-byte (16.77 GiB)**
+gain, distinct from the **18,010,460,160-byte** backing-allocation reduction.
+The original builder/configuration, output alias, four logs and three sentinels
+pass their checks; the temporary container is removed. This does not prove
+every source/output file unchanged. Guest allocation, FITRIM output and earlier
+cleanup gains are not added to this host delta.
+
+Separately, at **23:45:30.560490 UTC**, both reconstructed stock supers pass
+complete direct comparison against sparse reconstruction, with **84,691,400,288
+bytes read**, 18 body stat records and 16 small controls stable. No image is
+created or deleted by that comparison; sparse inputs and stock originals remain.
+**Both supers remain KEEP pending exact-target retirement.**
+
+Exact local evidence is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`; the
+[integration record](../research/workspace-integration.json) also pins the
+diagnostic, completion and test receipts.
+
+| Receipt | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-five-recovery-v2-preparation-review-v1/review.json` | `038354d8861942e2fd30f428ae82a2811fec2501792d88c315546f7c0b06be5c` | 2,267 |
+| `root-old-twelve-image-retirement-review-v1/review.json` | `b4e4e5a7c9c6757f0cf95c0e42f0974b82f472d9be952ef106c2e4aa417ae0a5` | 3,000 |
+| `old-twelve-image-trim-v1/postrestart-v1/review.json` | `d9684751b1d0288c0f0754e27117e675d6377013ec2c1e1c19fcaa88a4ad212a` | 1,303 |
+| `root-two-super-comparison-review-v1/review.json` | `f711af6484fe9aae4ae7dba99b82769eb2522af7a8f490b26e39913a66d80072` | 2,827 |
+
+No recovered Five profile, Package6, final AVB/signing, ROM/boot success or phone
+operation is established. A new full-suite result is not claimed here.
+
 ## Five native exit and protected-sidecar failure — 2026-09-02
 
 The ordinary Five Ninja invocation runs **22:33:40.346762–22:36:05.236215 UTC**,
@@ -33,7 +91,8 @@ Exact local evidence is relative to
 
 The nine-file preparation review completed before launch; its 25 focused and
 17 staging tests and the prior 4,508-test checkpoint are not a successful native
-profile. **Recovery remains preparation**, with the original failure preserved,
+profile. **Recovery was preparation at this earlier checkpoint**, with the
+original failure preserved,
 no rebuild or forced output invalidation, and no phone operation. Recovered
 profile, Package6, final AVB/signing, super, OTA and ROM/boot gates remain open.
 
