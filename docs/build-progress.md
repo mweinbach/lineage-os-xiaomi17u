@@ -1,6 +1,41 @@
 # Nezha product and build progress
 
+## Package6 host transfer and original inventory — 2026-09-03
+
+The completed Package6 archive is transferred to the host at **03:29:05.747875
+UTC**. Transport exits **0** after **38.279 seconds**, streaming exactly
+**11,006,603,036 bytes**, SHA-256 `e3b9aa2b…`. Native final hashing and host
+readback pass. Independent review replays the saved transfer evidence and
+checks retained records; it does not rehash the large archive again.
+
+The original inventory closes at **03:32:45.819849 UTC**, exit **0**, with no
+errors or missing required inputs: **13 data images, two generated vbmeta
+images and two retained stock inputs**. This is an input/role inventory, not
+complete archive semantics, signing or ROM verification.
+
+At **03:36:29 UTC**, ROOT joins the inventory to the completed native result.
+For **product, system, system_dlkm, system_ext and vendor_dlkm**, ZIP members
+match the expanded packaging images from independent producers; **all five
+explicitly differ from the earlier native component images**. Vendor/ODM joins
+also pass. Against the old inventory, **mi_ext, odm, recovery and vendor** are
+unchanged; the other nine data roles change. Neither comparison proves runtime
+compatibility or replaces the remaining image/chain checks.
+
+The fresh DTBO alias inspection proves identical **1,495,111-byte payloads**
+and tables, with unsigned `NONE`, zero flags/rollback and verified salted
+digests. Whole images differ through permitted salt/fingerprint metadata and
+associated sizing. **Inputs are unchanged and normalization is not applied**;
+payload equality is not whole-image byte equality.
+
+Host image materialization, signing, full FEC/AVB checks, VINTF, super/partition fit, OTA and
+device boot remain pending. No old P5 host archive had been deleted at this checkpoint, and no publication,
+phone operation or new full-suite result is claimed. Exact transfer, inventory,
+DTBO and ROOT-join pins are retained in the
+[integration record](../research/workspace-integration.json).
+
 ## Package6 build and host admission — 2026-09-03
+
+This earlier checkpoint predates the host transfer and original inventory.
 
 **Native Package6 construction and profile validation pass.** The native command
 runs **02:49:41.581029–02:54:14.659305 UTC**, exit **0**; the root executor runs

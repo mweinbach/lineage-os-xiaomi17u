@@ -10289,5 +10289,146 @@
         "size_bytes": 1237
       }
     }
+  },
+  "package6_host_transfer_and_original_inventory_checkpoint_20260903": {
+    "status": "package6-host-transfer-original-inventory-dtbo-inspection-and-native-joins-verified-materialization-and-signing-pending",
+    "guide": "docs/build-progress.md#package6-host-transfer-and-original-inventory--2026-09-03",
+    "preceding_checkpoint": "package6_build_and_host_admission_checkpoint_20260903",
+    "preceding_checkpoint_commit": "ea6cc45d2db08a0761358077b8ad73fb01e17ce1",
+    "host_transfer": {
+      "completed_at": "2026-09-03T03:29:05.747875+00:00",
+      "transport_exit_code": 0,
+      "transport_elapsed_seconds": 38.279,
+      "archive_sha256": "e3b9aa2be26a73b5bc4f57bc364034cb5600484df135686895f52e2678a1a56a",
+      "archive_size_bytes": 11006603036,
+      "stream_complete": true,
+      "native_final_rehash_verified": true,
+      "host_full_readback_verified": true,
+      "independent_saved_evidence_review_passed": true,
+      "archive_rehashed_by_independent_transfer_reviewer": false,
+      "source_or_android_output_written": false,
+      "new_vm_or_volume_attachment": false,
+      "archive_extracted_by_transfer": false
+    },
+    "original_inventory": {
+      "completed_at": "2026-09-03T03:32:45.819849+00:00",
+      "exit_code": 0,
+      "complete_input_inventory": true,
+      "complete_zip_role_inventory": true,
+      "data_image_roles": 13,
+      "generated_vbmeta_roles": 2,
+      "retained_stock_inputs": [
+        "countrycode",
+        "pvmfw"
+      ],
+      "errors": [],
+      "missing_required_inputs": false,
+      "inputs_unchanged": true,
+      "all_archive_member_content_verified": false
+    },
+    "root_inventory_native_joins": {
+      "completed_at": "2026-09-03T03:36:29.580415+00:00",
+      "passed": true,
+      "five_independent_packaging_roles": [
+        "product",
+        "system",
+        "system_dlkm",
+        "system_ext",
+        "vendor_dlkm"
+      ],
+      "five_zip_members_equal_expanded_packaging_images": true,
+      "all_five_native_components_equal_packaged": false,
+      "each_five_native_component_differs_from_packaged": true,
+      "ordinary_vendor_odm_joins_passed": true,
+      "unchanged_data_roles_from_old_inventory": [
+        "mi_ext",
+        "odm",
+        "recovery",
+        "vendor"
+      ],
+      "changed_data_roles_from_old_inventory": [
+        "boot",
+        "dtbo",
+        "init_boot",
+        "product",
+        "system",
+        "system_dlkm",
+        "system_ext",
+        "vendor_boot",
+        "vendor_dlkm"
+      ],
+      "archive_body_rehashed_by_join_reviewer": false,
+      "held_small_records_unchanged": true
+    },
+    "dtbo_alias_inspection": {
+      "operation": "inspect-dtbo-alias-v1",
+      "alias_member": "PREBUILT_IMAGES/dtbo.img",
+      "canonical_member": "IMAGES/dtbo.img",
+      "payload_sha256": "ea20dfcbf78f80f5cda7d3ea964e711b96cd1dacfa3992ed7cd799f067349baa",
+      "payload_size_bytes": 1495111,
+      "complete_payload_and_table_equal": true,
+      "whole_image_bytes_equal": false,
+      "unsigned_algorithm": "NONE",
+      "flags": 0,
+      "rollback_index": 0,
+      "salted_payload_digests_verified": true,
+      "permitted_differences": "Salt and fingerprint metadata with consequent metadata sizing; the complete DTBO payload/table remains equal.",
+      "inputs_unchanged": true,
+      "normalization_applied": false
+    },
+    "remaining_gates": {
+      "host_signing_inputs_materialized": false,
+      "private_signing_performed": false,
+      "whole_hashtree_or_fec_payload_verified": false,
+      "vintf_compatibility_verified": false,
+      "complete_avb_chain_verified": false,
+      "super_or_physical_partition_fit_verified": false,
+      "ota_verified": false,
+      "rom_or_boot_ready": false,
+      "complete_rom_ready": false,
+      "old_p5_host_archive_deleted": false,
+      "publication_performed": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "native_or_large_body_reads_by_documentation_owner": false
+    },
+    "next_gate": "Materialize the inventoried canonical inputs, then prepare and sign the image set. Reconcile the signed archive with the reviewed DTBO alias normalization before completing FEC/AVB, VINTF, super/partition fit, OTA and device boot. Materialization does not normalize archive aliases. ZIP-to-expanded packaging equality is not native installed-image equality or complete-ROM verification.",
+    "evidence": {
+      "host_transfer": {
+        "path": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/transfer.json",
+        "sha256": "7ac53c838b997167494e40012087873c089c213175845db4e1aabcab61cde830",
+        "size_bytes": 7012
+      },
+      "transport": {
+        "path": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/transport.json",
+        "sha256": "bf47de6d636c4cf43fceff596e48d1f40d3b477d4d4856c2216a4c1c43001658",
+        "size_bytes": 517
+      },
+      "transfer_independent_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/package6/actual-transfer-review-v1/review.json",
+        "sha256": "ebf3ede3afb593cf94ecfe1691324735690c5e721e8fe0dc8e3b37a7fe31ae0d",
+        "size_bytes": 3608
+      },
+      "root_inventory_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-inventory-v1/completion.json",
+        "sha256": "c6956d32d2f0fe6ba6c0f7b3e82ae299c872547bdfa429660171cda854df08fc",
+        "size_bytes": 547
+      },
+      "original_inventory": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/original-inventory.json",
+        "sha256": "61eb1093a60df62279214e14200d0fb901e056d826fc06da07e41d7ee35a269c",
+        "size_bytes": 13635
+      },
+      "dtbo_alias_proof": {
+        "path": "artifacts/avb/nezha/package6-20260903-v1/dtbo-alias-proof.json",
+        "sha256": "0606d946eee6eec69c99c7ad525d605072a15bcf4a3cfe9edb472a288a5776a1",
+        "size_bytes": 6648
+      },
+      "root_inventory_native_joins": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-inventory-joins-review-v1/review.json",
+        "sha256": "1f0304d9ce3b8999c1301e180793ea170b9a803f77789289b99b00d0cb1025fa",
+        "size_bytes": 5777
+      }
+    }
   }
 }

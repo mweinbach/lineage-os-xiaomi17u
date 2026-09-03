@@ -10,6 +10,23 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package6 is copied to the host and its original input inventory is complete.**
+Transfer finishes at **2026-09-03 03:29:05 UTC**, with native final hashing and
+host readback verified. Inventory closes at **03:32:45 UTC** without errors,
+covering **13 data-image roles, two generated vbmeta roles and two retained
+stock inputs**. The archive identity remains `e3b9aa2b…` / **11,006,603,036 bytes**.
+
+ROOT verifies the five independent **ZIP ↔ expanded-packaging** image joins,
+not equality with earlier native installed images. DTBO's **1,495,111-byte**
+payload matches across its aliases, with permitted unsigned metadata differences;
+**normalization is still pending**. Host image materialization, signing, FEC, VINTF, super
+and boot remain unverified. No old P5 host archive had been deleted at this checkpoint, and no publication
+or phone operation occurs. See the [transfer and inventory checkpoint](build-progress.md#package6-host-transfer-and-original-inventory--2026-09-03).
+
+## Earlier Package6 build and host admission
+
+The following checkpoint predates the host archive transfer and inventory.
+
 **Native Package6 build, profile validation and exact host admission pass.**
 The native command runs **2026-09-03 02:49:41–02:54:14 UTC**, exit **0**; the
 outer executor closes at **03:01:01 UTC**, also exit **0**. Both directory and
