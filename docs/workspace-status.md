@@ -10,6 +10,24 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Scoped boot and property observation reviews pass**, without qualifying
+the three boot-source proofs, packaged init provider or effective property
+selection. **Two kernel search windows are captured at 21:54:18 UTC** and
+limited static review passes. Actual string comparison, guard outcomes and
+BTF type interpretation remain unverified.
+Captured boot texts match candidate arguments; full constructor qualification remains open.
+**The 68-call producer follow-up completes at 22:14:12 UTC**, with a fixed
+response-file read and paired tool metadata. ROOT's validator replay passes;
+deeper consumer review remains pending.
+Fresh init remains unexecuted, and diagnostic instrumentation is unbuilt
+and unrun. Compiled policy, ABI/trust, full boot-source/runtime, VINTF,
+super/fit, OTA and boot remain open. No phone
+operation or additional artifact cleanup occurs. See the [boot-property and capture checkpoint](build-progress.md#package6-boot-property-reviews-and-follow-up-captures--2026-09-03).
+
+## Earlier Package6 protected-export gate and libvintf producer query
+
+The following checkpoint predates the scoped boot/property reviews and search-window capture.
+
 **A bounded kernel gate window is captured at 21:23:03 UTC**, and static
 review identifies count/table arguments and a conditional local rejection
 path. Callback/search behavior, object-field meaning, runtime counts, trust

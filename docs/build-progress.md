@@ -1,6 +1,73 @@
 # Nezha product and build progress
 
+## Package6 boot-property reviews and follow-up captures — 2026-09-03
+
+**Boot's host admission closes at 21:31:03 UTC**, replaying the original
+driver/emitter, graph/query, native-file and source-control predicates against
+the actual NR capture. It reruns **11 adapter and eight prior-contract tests**
+(**19 total**). The handoff binds the exact **7,341-byte response-file
+publication and readback**. All three boot-source
+semantic proofs remain unqualified, `source_capture.review` stays null, and
+historical first-stage action and the complete boot constructor remain open.
+
+**Property observation validation passes at 21:36:32 UTC**, with **19 tests
+and 17 held inputs**. Original policy/observer replay joins 64 ordered archive
+members, three compile/source listings and paired response/vendor-init text.
+These are source and command observations, not effective preprocessing,
+packaged-provider selection or runtime-property proof. Final source membership
+remains restricted to the original 72 rows; sidecar observations are not added.
+
+**Kernel search capture closes at 21:54:18 UTC**, exit **0**, with full streams,
+empty stderr and the local process reaped in **1.386 seconds**. It preserves
+32 child inputs and 48 outer controls and captures two **4,096-byte** windows
+for `cmp_string` and `bsearch`. **Limited static review passes at 22:02:24 UTC**,
+with **16 tests and 48 word/listing checks**: the callback load/call coordinate
+and 64-bit search-count, midpoint and conditional-return paths are observed.
+`strcmp` remains an `unknown_non_text_selector`, not proven non-executable;
+its comparison semantics, guard outcomes, pointer/count validity and compiled
+policy remain unverified. BTF boundaries remain metadata only, without body
+or type interpretation.
+
+**Six selected boot texts are captured at 22:02:57 UTC**, totaling **379 bytes**,
+with exit **0**, complete streams and **0.173-second** transport. The bounded
+ZIP reader consumes **1,685,506 bytes** with the original archive guard unchanged;
+no image is opened or extracted, and no whole-archive hash is repeated.
+The metadata matches source-derived candidates; full constructor qualification
+remains open.
+
+**The 68-call producer follow-up closes at 22:14:12 UTC**, exit **0**, with
+full streams, empty stderr and the local process reaped in **217.458 seconds**.
+All **60 controls**, strict idle and sole ownership pass. One fixed response
+file retains **4,939 bytes**, and `mkbootimg`/`soong_zip` metadata observations
+match across both passes. ROOT replays both original validators with all held
+controls unchanged. No queried executable or image body is exported, and
+neither the tools nor producer recipes execute. Deeper consumer review remains pending;
+this capture adds no source/PYC, producer/runtime or full VINTF qualification.
+
+Fresh init reproduction remains unexecuted; diagnostic instrumentation is
+unbuilt and unrun. ABI/trust, full
+boot-source/runtime, VINTF, super/physical fit, OTA and boot remain open.
+No phone operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-boot-content/package6-preparation-v1/consumer-v4/next-producer-result-admission-v2/handoff.json` | `64a133616995e2b97a326d027bb25b18ab5f73fa5dd103a1d9be0a2a63af79fd` | 15,308 |
+| `final-vintf/property-qualification-current-v1/ngb-property-successor-preparation-v1/actual-retry-v1/findings.json` | `2c4819876f37939ae718cdd639f51b889818730a0be2870d24191c0b83e94a99` | 25,887 |
+| `final-vintf/property-qualification-current-v1/ngb-property-successor-preparation-v1/actual-retry-v1/validation.json` | `2e8780a17f7b3c70b44ef02b5d9000862db5b1826d3a0654fc13260d06592dac` | 13,382 |
+| `root-package6-protected-search-capture-dispatch-v1/completion.json` | `1d0707227c33cd892febe3aaf6c46cfa527c432f75f62f136bd2e6790f53e093` | 13,894 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/protected-search-capture-preparation-v1/postcapture-review-v1/independent-review-v1/review.json` | `c49785acdfd8549055f552e6d22998e6253eff52ef5e852b2b02380b3aeff7cb` | 13,306 |
+| `root-package6-six-text-dispatch-v1/completion.json` | `7c971c952c810970815bd2d84499e2bdaea30e79b902de2ddc281af59bbcb535` | 2,214 |
+| `final-boot-content/package6-preparation-v1/consumer-v4/next-producer-result-admission-v2/six-text-zip-preparation-v1/constructor-join-v1/report.json` | `46d4b7a47dcc30acf817ef8fb13696e65151ad83c7b7040cb74eaae060de3560` | 12,311 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/root-dispatch-v1/actual-v1/completion.json` | `4a46f272eb5ef7035f090a02ad4696c9835831ea0726775e3df583012b035188` | 8,048 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/root-dispatch-v1/actual-v1/root-replay.json` | `a9c4cfb2cef345889a41ad95ce8b8e61a8f28e9195da36019a91ab307d6bbb82` | 726 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/root-dispatch-v1/actual-v1/root-replay-field-clarification.json` | `0cb28dd648c40ef75f101ce0cf0a7f8e203df0cc032acc3c07bf0e2d940ea685` | 426 |
+
 ## Package6 protected-export gate and libvintf producer query — 2026-09-03
+
+This earlier checkpoint predates the scoped boot/property reviews and search-window capture.
 
 **Kernel gate capture closes at 21:23:03 UTC**, exit **0**, with the local
 process reaped, full streams and empty stderr in **1.427 seconds**. Thirty
