@@ -638,6 +638,33 @@ class ArchiveCopyTests(unittest.TestCase):
                 self.write_zip(compression=zipfile.ZIP_DEFLATED, force64=force64, descriptor=descriptor)
                 self.run_copy(output=self.root / ("zip64-%s-%s.zip" % (force64, descriptor)))
 
+    def test_offset_only_zip64_promotion_preserves_local_and_central_versions(self):
+        self.write_zip()
+        member = "SYSTEM/etc/unchanged.txt"
+        baseline = self.root / "offset-baseline.zip"
+        self.run_copy(output=baseline)
+        with zipfile.ZipFile(baseline) as archive:
+            offset = archive.getinfo(member).header_offset
+            largest = max(info.file_size for info in archive.infolist())
+        # Only the offset crosses this tiny threshold, not the file-size
+        # threshold or stdlib's additional 5 percent size allowance.
+        self.assertLess(largest * 1.05, offset - 1)
+        for offset_minus_limit, version in ((-1, 20), (0, 20), (1, 45)):
+            with self.subTest(offset_minus_limit=offset_minus_limit):
+                limit = offset - offset_minus_limit
+                self.output = self.root / ("offset-boundary-%s.zip" % offset_minus_limit)
+                with mock.patch.object(zipfile, "ZIP64_LIMIT", limit):
+                    self.assert_success(self.run_copy())
+                    with zipfile.ZipFile(self.output) as archive:
+                        info = archive.getinfo(member)
+                        self.assertEqual(info.header_offset, offset)
+                        self.assertEqual(info.extract_version, version)
+                        with self.output.open("rb") as stream:
+                            stream.seek(info.header_offset)
+                            local = struct.unpack("<4s5H3I2H", stream.read(30))
+                        self.assertEqual(local[1], version)
+                        self.assertEqual(local[2] & 8, 0)
+
     def streaming_zip64_headers(self, *, size=0x100000007, signed=True, local_zip64=False):
         """Tiny span-only fixture; no valid large payload is generated or decoded."""
         name, payload, crc = b"IMAGES/odm.img", b"x", 0x12345678

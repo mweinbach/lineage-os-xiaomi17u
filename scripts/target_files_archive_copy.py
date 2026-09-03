@@ -571,6 +571,12 @@ def _copy_members(source_zip, output_zip, members, following, specs, opened):
         expected = specs.get(name)
         size = expected["identity"]["size_bytes"] if expected else info.file_size
         output_info = _write_info(info, raw_name, local_extra, size)
+        # ZipFile promotes central-directory versions for ZIP64 offsets only
+        # when closing the archive. Promote before the local header is written
+        # too, so our strict local/central version check remains valid.
+        if output_zip.start_dir > zipfile.ZIP64_LIMIT:
+            output_info.extract_version = max(output_info.extract_version, zipfile.ZIP64_VERSION)
+            output_info.create_version = max(output_info.create_version, zipfile.ZIP64_VERSION)
         if expected:
             original = _read_member(source_zip, info, following[info.header_offset])
             with output_zip.open(output_info, "w", force_zip64=size >= zipfile.ZIP64_LIMIT) as sink:
