@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Conditional static kernel mapping passes independent review**, covering
+9,696 RELR-backed table slots and 9,364 candidate targets. The subsequent
+**pointed-string capture closes cleanly at 20:45:22 UTC**, preserving those
+slots and decoded strings; its deeper semantic review remains pending.
+Three libvintf source files are captured and host-published, but the diagnostic
+implementation is unbuilt and unrun. The preceding native batch failed on a
+repeated implicit `libc.a` edge; its corrected retry is in progress, with no
+successful capture yet. Compiled policy, ABI/trust, boot-source/runtime, full
+VINTF, super/fit, OTA and boot remain open. No phone operation or additional
+artifact cleanup occurs. See the [static-mapping and capture checkpoint](build-progress.md#package6-static-kernel-mapping-and-pointed-string-capture--2026-09-03).
+
+## Earlier Package6 conditional stages and kernel relocation capture
+
+The following checkpoint predates conditional static mapping and pointed-string capture.
+
 **Reference vermagic comparison now covers all 637 payloads / 914 instances**,
 without selecting the current compiled loader branch. The conditional normal
 and recovery ramdisk closures have no nonmatching expectations or findings;

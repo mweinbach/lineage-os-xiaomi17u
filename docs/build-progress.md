@@ -1,6 +1,50 @@
 # Nezha product and build progress
 
+## Package6 static kernel mapping and pointed-string capture — 2026-09-03
+
+**Saved-byte conditional static mapping passes independent review at
+20:27:50 UTC**, with **40 tests**. All **9,696 table slots** are uniquely
+covered by RELR and map to **9,364 candidate target offsets** under the
+reviewed static-link interpretation. This does not establish runtime/KASLR
+mapping, compiled count types or policy use, source equivalence, ABI or trust.
+
+**The pointed-string capture closes at 20:45:22 UTC**, exit **0**, with full
+streams and empty stderr in **0.633 seconds**. It retains **9,364 strings**
+for the **9,696 original slots**, preserving **332 cross-table target aliases**
+and **222,399 name-plus-NUL bytes**; the longest name is **58 bytes**. ROOT
+rechecks 54 child inputs and 71 outer controls. Actual capture and derived
+output checks pass; deeper pointed-string semantics remain pending.
+
+**Three libvintf source files are captured at 20:26:08 UTC and host-published**:
+`CompatibilityMatrix.cpp`, `VintfObjectUtils.h` and `Android.bp`, totaling
+**28,331 bytes**. Both project observations are clean at
+`69c456ea4aa2f503a2904cfbc11f279a3b2efb09`. This is source-only evidence;
+the diagnostic implementation remains **unbuilt and unrun**.
+
+The prior next-producer batch fails at **20:24:10 UTC** on the repeated
+implicit `libc.a` edge. Its original failure is preserved, with no accepted
+completion; capacity, control, idle and ownership recovery checks pass. The
+corrected retry is now **in progress, with no successful capture yet**.
+Compiled protection policy, ABI/trust, full boot-source/runtime qualification,
+VINTF, super/physical fit, OTA and boot remain open. No phone operation or
+additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/relocation-capture-preparation-v1/postcapture-review-v1/semantics-v1/review.json` | `aebf93862bebefd1957aeedbe229d912c2540ca88813e10cc2a8584253616975` | 275,842 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/relocation-capture-preparation-v1/postcapture-review-v1/semantics-v1/independent-review-v1/review.json` | `b0e5e13fbdc49cea182d839cd39ae9a96cc41bd4c7f0b7e0eee35ca76431922d` | 278,827 |
+| `root-package6-kernel-pointed-strings-dispatch-v1/completion.json` | `2753e6c7836834d28eba9bc02038ff1fe1d5aa5b6577a93d4b95fbe69f13cc7a` | 35,034 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/pointed-string-capture-preparation-v1/actual-v1/capture.json` | `a651728f3e29b17426c45b7ac3846772a1ce5709c3d1244e3f9d5761b23fdd2a` | 273,285 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-source-capture-v1/actual-v1/completion.json` | `cd21bcb49b52b179505d10b40baac8676656d5aaea3f33a273f7752697dee8e5` | 2,398 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-source-capture-v1/host-bodies-v1/publication.json` | `047e40885e9f008c7bf86648f72cd0f7f7648dabc4f1304ded95ade2ed1f9aa5` | 13,925 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/producer-followup-preparation-v1/next-producer-input-batch-v1/root-dispatch-v1/actual-v1/failure.json` | `f01eca7d4d0a7eeb8876f47ffc59a1ba42e1844c632b59834b6939556e1a5823` | 17,209 |
+
 ## Package6 conditional stages and kernel relocation capture — 2026-09-03
+
+This earlier checkpoint predates conditional static mapping and pointed-string capture.
 
 **The vermagic comparison now covers all 637 distinct payloads / 914 current
 module instances.** Every payload matches under reference `has_crcs=true`
