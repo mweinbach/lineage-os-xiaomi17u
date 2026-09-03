@@ -1,6 +1,47 @@
 # Nezha product and build progress
 
+## Package6 independent VINTF inputs and retained ABI gaps — 2026-09-03
+
+**Independent host review admits the 298 selected VINTF input members.** The
+recorded publication copy/readback chain accounts for **297 unchanged members**
+and the expected `META/vbmeta_digest.txt` replacement; this is not fresh archive
+body inspection. Two ramdisk and two DLKM property files remain outside the
+five-image projection. **76 focused tests pass**, and ROOT's exact replay
+rechecks **109 held controls**. The unchanged `independent_input_review` proof
+is the **third of six roles staged on the host**, mode **0400**; native staging,
+aggregate qualification and full VINTF compatibility are not established.
+
+**Retained ABI analysis completes for all 484 current DLKM modules, without
+verifying ABI compatibility.** Of **29,503 CRC expectations**, **718 remain
+unbound to current providers**. The 49 historically matching ramdisk payloads
+are candidates only, not admitted current providers. ROOT independently
+reproduces the complete authority and analysis with held inputs and outputs
+unchanged. Current ramdisk binding, compiled vermagic, module protection and
+signature trust remain unresolved; this is not a successful module-load test.
+
+The original **next-grounded-batch (NGB) capture fails at 18:37:47 UTC**, after
+**655.888 seconds**, on a capture limit: rows 0–15 are complete, row 16 is
+truncated and row 17 is not reached. It returns 21 boot-input bodies but none
+of the four requested core bodies. Source preservation and recovery checks
+remain recorded; partial output is not a completed discovery result. A retry
+is separately prepared, with no retry result admitted here. Host runtime,
+effective properties, AIDL, full VINTF, super/physical fit, OTA and boot remain
+open. No cleanup or phone operation occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/independent-input-current-v1/root-replay.json` | `58ababd99aa314ff286f057b42d03b3bead45d83284f594b3108c63b4c86dbb7` | 323,595 |
+| `root-package6-independent-input-review-v1/review.json` | `522f67ed81fcf51e40443d234b9f532aa95b909b088ebc360f9ef9eded3852d1` | 1,133 |
+| `root-package6-independent-input-review-v1/host-staging.json` | `235a567ae66cb618849528de940fa9e9666d9e4f12a4282adafc99289bbef82a` | 908 |
+| `root-package6-dlkm-abi-review-v1/review.json` | `673166cb4e41360b5b0382194b0d60683f34df86ec91120d07756b1a8aa0cbbc` | 4,424 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/shared-discovery-success-v3/producer-followup-preparation-v1/next-grounded-batch-v1/root-dispatch-v1/actual-v1/failure.json` | `0a3b9938d3fb95c7045315a3ff4948ce6e2b8cf0b71b4fccdd5e4d9db734c492` | 14,709 |
+
 ## Package6 DLKM reference-model semantics and loader-text binding — 2026-09-03
+
+This earlier checkpoint predates independent input review and retained ABI analysis.
 
 **The 11 exact retained DLKM metadata bodies, 284,308 bytes, pass current
 semantic reuse at 18:10:30 UTC**; ROOT reproduces the original result at

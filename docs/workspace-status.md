@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package6's independent VINTF input review passes on the host**, accounting
+for all 298 selected members and staging the third of six proof roles as a
+read-only host file. Native qualification and full VINTF compatibility remain
+open. **The retained 484-module ABI analysis completes, but does not verify
+ABI compatibility**: 718 CRC expectations lack current providers, and historical
+ramdisk candidates are not current evidence. The original next-grounded-batch
+capture stops at a capture limit with partial results; no retry result is
+admitted here. Current ramdisk/vermagic/protection/trust, runtime properties,
+host runtime, AIDL, super/fit, OTA and boot remain open. No cleanup or phone
+operation occurs. See the [independent-input and ABI checkpoint](build-progress.md#package6-independent-vintf-inputs-and-retained-abi-gaps--2026-09-03).
+
+## Earlier Package6 DLKM reference-model semantics and loader-text binding
+
+The following checkpoint predates independent input review and retained ABI analysis.
+
 **Package6's DLKM reference-model analysis and current loader-text binding pass.**
 The 11 retained metadata bodies are admitted at **18:10:30 UTC**, and current
 image init texts, declared import selectors and DLKM links join at **18:26:49
