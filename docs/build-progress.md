@@ -1,6 +1,42 @@
 # Nezha product and build progress
 
+## Package6 source endpoint and diagnostic dependency failure — 2026-09-03
+
+**P4 closes at 23:46:38 UTC**, exit **0**, in **29.077 seconds**. Its two
+query/command rows name `system/tools/mkbootimg/mkbootimg.py` and the matching
+`-f` operand, without source/ZIP-body reads. Original APIs and eight mutation
+cases pass, with 69 controls and 13 actual records unchanged. The observed
+endpoint is not complete route, constructor, PYC, source or runtime qualification.
+
+**The diagnostic attempt fails at 23:37:38 UTC** after **575.439 seconds**:
+nine compiler commands exit 0, but only eight objects are recorded and no archive
+is admitted. Job08 fails the required diagnostic-header dependency check.
+**Three-file readback closes at 23:47:29 UTC**, exit **0**, retaining **94,770
+decoded bytes**. Its **84,199-byte depfile** has 941 dependency tokens and no
+`NezhaVintfTrace` header basename under any spelling. Original observer replay
+passes; the unchanged dependency validator still rejects this depfile.
+The intended source replacement is not proven.
+A PWD/VFS lookup mismatch remains a hypothesis, not an established mechanism.
+Separate source-guard recovery passes without changing the original failed
+compile/source flags or incomplete-stream record; no link or diagnostic run follows.
+
+Super assembly remains pending without an accepted result. Full source/runtime,
+header/ODR, policy/trust/ABI, VINTF, super/fit, OTA and boot remain open.
+No phone operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/next-two-root-inputs-v1/next-packaging-header-inputs-v1/next-mkbootimg-source-zip-v1/root-dispatch-v1/actual-v1/actual-admission-v1/review.json` | `867dcc2cd6f9b25d35ab7279c3dc60c7d2d09e0adddf105a3d3080190a17a8cf` | 12,624 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/compile-archive-stage-v1/root-dispatch-preparation-v1/bound-packet-v1/actual-v1/failure.json` | `339b2b38fe3e83cb00b4f61e0c98718ae5c7b244cb12a11f706765dd42acdcdb` | 14,865 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/compile-archive-stage-v1/root-dispatch-preparation-v1/bound-packet-v1/actual-v1/source-recovery.json` | `9408fd3b2a0a47a0532ad2e1c4daa8aa73a520097ac099304278d8e3b6c6bf05` | 2,711 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/compile-archive-stage-v1/failed-job08-readback-v1/actual-v1/semantic-admission.json` | `944e3cf661feed02112f769ea6c5eac66574eba8f6620b14727c561b71e44b2e` | 8,539 |
+
 ## Package6 generated headers and Super help smoke — 2026-09-03
+
+This earlier checkpoint predates P4 and the diagnostic dependency failure/readback.
 
 **P3 capture closes at 23:23:18 UTC**, exit **0**, with complete streams,
 empty stderr and **28.334-second** transport. The **23:26:15 UTC** admission

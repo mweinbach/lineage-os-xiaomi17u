@@ -10,6 +10,20 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**P4 observes the exact `mkbootimg.py` source endpoint**, without qualifying
+the complete installed-to-source route or constructor. **The diagnostic build
+attempt fails its job08 dependency gate**: the required trace header is absent
+from the depfile, so successful compiler exits do not establish the intended
+instrumented build. Separate source recovery preserves the original failed
+flags; no archive or diagnostic run is admitted. Super assembly remains
+pending, with no accepted result. Full source/runtime, policy/trust/ABI, VINTF,
+super/fit, OTA and boot remain open; no phone operation or additional cleanup
+occurs. See the [source-endpoint and diagnostic-failure checkpoint](build-progress.md#package6-source-endpoint-and-diagnostic-dependency-failure--2026-09-03).
+
+## Earlier Package6 generated headers and Super help smoke
+
+The following checkpoint predates P4 and the diagnostic dependency failure/readback.
+
 **P3 captures both generated headers and the next packaging-query pair**;
 the fixed observations are admitted, not complete header or source provenance.
 **The generated Super tool's `--help` smoke test passes**, with its current
