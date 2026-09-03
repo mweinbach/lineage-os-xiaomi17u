@@ -1,6 +1,102 @@
 # Nezha product and build progress
 
+## Package6 archive and reader corrections — 2026-09-03
+
+**Reconciliation-v2 closes at 14:44:59.368409 UTC**, exit **0**, in **677.609
+seconds**. All **9 recorded host AVB-tool calls** succeed. The maintained copier
+independently reads back all **9,154 ZIP members**: 9,149 are preserved and five
+change, including the signed image replacements and normalized DTBO prebuilt
+alias. The **17-role signed image set** joins to the archive/retained inputs,
+with all **14 unchanged signer leaves** and `working76` preserved. The selected
+public-key Android AVB chain is reverified; original build metadata and source
+inputs stay unchanged. This operation does not access the private key or VM.
+
+ROOT's separate **15:25:57.640832 UTC** review reproduces the exact postcheck,
+matches preflight and final provenance, and verifies 39 held small files and
+20 additional body stat records. It does not repeat the large-body hashes.
+The completed process is reaped, its streams and nested-tool cleanup are
+verified, and no liveness review remains required. Minimum periodically sampled
+host availability is **149,654,671,360 bytes**, above the unchanged **100 GiB
+reserve**, not a guarantee of full continuation capacity.
+
+The published archive is
+`artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip`,
+**10,834,328,619 bytes**, SHA-256
+`fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4`.
+**Published-path inventory closes at 15:32:08.871326 UTC**, exit **0**, in
+**48.239 seconds**. ROOT admits the result at **15:32:55.545808 UTC**: all 17
+roles match the signed manifest, all image aliases match their canonical images,
+and the complete **9,154-name** directory has no `IMAGES/system_other.img`.
+Archive stat records remain unchanged across the original CLI, bounded metadata
+capture and ROOT review. The metadata capture reads **1,687,413 bytes**; neither
+its wrapper nor ROOT repeats the whole-archive hashes performed by the original
+CLI. The earlier staging-path inventory remains preserved separately.
+
+Commit `1777ce653c8ed08e18a9680b8d3b169604901e22` promotes local and central
+ZIP header versions before writing members beyond the ZIP64 offset threshold.
+Strict readback and the separate AOSP streaming exception stay unchanged.
+Commit `26ed564670e4c76427df4cf50eb7cb9fb5015600` adds the **opt-in compact-EOF
+EROFS reader**. The historical canonical `89d6…` source is restored, its default
+selection stays unchanged, and the reviewed corrected C bytes live under the
+explicit variant filename. Historical source-pin contracts remain valid.
+This host change is not native reader qualification.
+
+The frozen changes pass **4,512 offline tests** at **14:31:13.527753 UTC**:
+**182.680 seconds** reported by unittest, **184.081 seconds** wall time, with
+all **586 tracked files** unchanged through the run. This precedes the current
+documentation edit; it is not a new test result for this checkpoint.
+
+**The first reconciliation attempt remains failed and preserved**: it closes
+at **14:14:35 UTC**, exit **2**. The original three-image
+EROFS scan stops on `system` at **14:12:01 UTC**, admitting **no manifests**.
+Source review identifies an unselected compact EOF marker rejected before
+payload mapping, not demonstrated excessive lookback or decoder failure.
+Shared VINTF discovery closes at **14:27:43 UTC**, exit **1**, before any Ninja
+query: the literal graph closure was incorrectly equated with the broader
+fixed-selector inventory. Both full source-guard returns match, but missing
+paired graph observations prevent whole-discovery preservation admission.
+Discovery-v2 is subsequently interrupted with an empty capture and no completion
+record. Discovery-v3 launches at **15:24:16 UTC**, using the identical reviewed
+successor wrapper after fresh strict-idle and sole-volume-owner checks. No
+completed discovery result is admitted at this checkpoint.
+
+Full FEC payload checks, VINTF compatibility, super/physical fit, OTA and device
+boot remain unresolved. Archive reconciliation is not signing-metadata, APK,
+APEX or OTA-payload signing and does not establish OEM trust or device rollback
+compatibility. No new cleanup or phone operation is performed by this checkpoint.
+
+Saved evidence below is relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`; raw failure streams
+remain retained separately.
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-avb/package6-reconcile-retry-v1/reconcile-v2/completion.json` | `0d077d0c14b2daa8c46f8f3b749f3a74171dde1f1c818b0aba9270716cd8d7cd` | 1,130,274 |
+| `root-package6-reconcile-result-review-v2/review.json` | `18079405fbf3d234a24d76f863e88725dd114c642b7c8fd06592edacea26b178` | 20,208 |
+| `final-avb/package6-super-continuation-v1/root-published-inventory-preparation-v1/actual-v1/completion.json` | `4cfe935ace3237b265423171df79ecc0a2a648a181cb4c8cf7e0346b1070b3ca` | 87,329 |
+| `final-avb/package6-super-continuation-v1/root-published-inventory-preparation-v1/actual-v1/inventory-metadata-admission.json` | `9b238ec4bd10ee16fa171bf7b05f96b5684716c514e81a17a4db886e6f5e1075` | 2,456 |
+| `root-package6-published-inventory-result-review-v1/review.json` | `9d0aa9b39190d3ba9ed3fde7320b79a81f8fe6bf6b444faac177c802cbaef575` | 7,846 |
+| `root-zip64-erofs-fixes-validation-v2/actual-v1/summary.json` | `8727c49d62b4bc16af81bfbf47027f568aecbf6abc866993dd6f2b30961d3d81` | 3,166 |
+| `final-avb/package6-signing-continuation-v1/reconcile-v1/completion.json` | `112fd66182367c7d78180615e339ff93682dda21d783b9d9864ba889bf387140` | 1,017,216 |
+| `root-package6-three-image-capture-v1/actual-v1/failure.json` | `426d207ad25ffcbd9026bb8cd7650ac50249889999561962881d80795a461ea9` | 3,421 |
+| `three-image-erofs-lookback-diagnosis-v1/independent-source-review-v1/source-review.json` | `abe80ff51fd5a675087ab66c5e0297c23359028162b318e45f8ee74c078ec172` | 10,094 |
+| `three-image-erofs-lookback-diagnosis-v1/independent-source-review-v1/source-variant-review.json` | `54658ea56aa729d8de5baf06dce0f76d8aa799baa74620c4dbd28f5f538fec60` | 5,726 |
+| `root-package6-shared-discovery-v1/actual-v1/failure.json` | `4272ed6067ec75fda5ce6da5944aa44d3c8db45c5f2098991bcc2eee4c2ab6ea` | 14,166 |
+| `final-vintf/actual-package6-preparation-v1/actual-capture-review-v1/tools/next-capture-preparation-v1/failure-analysis-v1/review.json` | `4da5aa82369674f65e93c89f96418ac24f58474a98219017fd9ebd800be6bd79` | 10,483 |
+| `root-package6-shared-discovery-v3/recovery-review.json` | `a91ae7149c50e0a0124ff3f209282b00778dc98afbd1b80cd68d1b3dba606cbf` | 1,200 |
+
+Published reconciliation and inventory evidence is relative to
+`artifacts/avb/nezha/package6-20260903-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `reconciled-v2/receipt.json` | `c9fb8b55c8dadafb48ca71f91ee1961ce2bd603034a9f96e7e91657cd7b1d2ae` | 35,781 |
+| `reconciled-v2/public-verification.json` | `9dba981b7a902971851d58611c83ce2c4cb9d55bdd011d17577f399e939e20bf` | 59,951 |
+| `published-inventory-v2.json` | `d56d1ab6bc17a83c9e0859a6c3b4b08989882eb03b83b52f82f396124f18ef7e` | 13,608 |
+
 ## Package6 public AVB preparation and signing — 2026-09-03
+
+This earlier checkpoint predates the archive retry and reader corrections.
 
 **Public preparation closes at 13:49:06.092582 UTC**, exit **0**, in **24.130
 seconds**. All **18 host AVB-tool invocations** succeed: one public-key

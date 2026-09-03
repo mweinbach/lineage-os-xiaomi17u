@@ -10,6 +10,34 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The ZIP64 writer correction and opt-in EROFS reader are committed**, with
+**4,512 offline tests passing** on the frozen changes. The ZIP64 change fixes
+offset-only header-version promotion while preserving strict readback. The
+EROFS successor handles an unused compact EOF marker without replacing the
+canonical reader or its default selection; native qualification remains pending.
+
+**Package6 reconciliation-v2 passes at 14:44:59 UTC.** All **9 host-tool records**
+succeed, all **9,154 ZIP members** are independently read back, and the DTBO
+prebuilt alias is normalized. The **17-role signed image set**, **14 unchanged
+leaves** and `working76` join successfully; ROOT's exact result replay passes
+at **15:25:57 UTC**. The resulting archive is `fbb6cba4…` /
+**10,834,328,619 bytes**. **Published-path inventory passes at 15:32:08 UTC**;
+ROOT admits all 17 role identities, matching aliases and the complete directory
+without `IMAGES/system_other.img` at **15:32:55 UTC**. The archive's observed
+state remains unchanged throughout inventory, metadata capture and review.
+
+The first archive attempt and original three-image EROFS failure remain
+preserved; the latter admitted no manifests. Shared VINTF discovery-v1 stopped
+on an adapter graph/closure mismatch, and v2 was interrupted with no result.
+The reviewed v3 successor launches at **15:24:16 UTC**, after fresh idle and
+sole-owner checks, but no completed discovery result is admitted here. FEC,
+VINTF compatibility, super/physical fit, OTA and boot remain open gates. No new
+cleanup or phone operation is claimed. See the [archive and reader checkpoint](build-progress.md#package6-archive-and-reader-corrections--2026-09-03).
+
+## Earlier Package6 public preparation and signing
+
+The following checkpoint predates the archive retry and reader corrections.
+
 **Package6 public AVB preparation and host private signing pass.** Preparation
 closes at **2026-09-03 13:49:06 UTC**. All
 **18 host-tool invocations and 15 input checks** succeed, including the five
