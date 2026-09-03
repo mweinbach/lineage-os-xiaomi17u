@@ -1,6 +1,43 @@
 # Nezha product and build progress
 
+## Package6 launch after P5 mirror retirement — 2026-09-03
+
+**The original native Package6 executor starts at 02:43:52.799280 UTC**, using
+the genuine `0b3cfb98…` request and `cf3c18eb…` guest. Launch availability is
+**142,274,932,736 bytes**, above the **133,769,298,255-byte** requirement including
+the unchanged **107,374,182,400-byte (100 GiB) host reserve**. This records launch
+only: no running output or incomplete result is inspected/admitted by this
+documentation task, and no completion, profile, archive or build success is claimed.
+
+The first read-only `dist` query fails its jail gate; the separate closed V2
+query establishes an **input-free phony** branch, with real read-only namespace
+and capability checks and unchanged full graph/tool/makefile/alias guards.
+It is a reader-closure check, not a package build or deletion.
+
+At **02:40:46 UTC**, exactly the old native P5 mirror ZIP is removed: **10,997,962,405
+logical bytes**, **10,997,968,896 allocated bytes**. Its fresh native full hash
+matches the retained host-keeper proof; that keeper's stat record remains unchanged,
+not freshly full-hashed by this deletion. Independent review verifies the single
+unlink, all 80 protected selectors and retained expanded tree/list/parents/siblings.
+This is an exact exception for the redundant ZIP, not removal of the output tree.
+The historical archive remains on the host; reuse at a native path needs a verified copy.
+
+Trim completes at **02:42:40.539751 UTC**. Host availability rises **131,279,601,664 →
+142,326,861,824 bytes**, an observed **11,047,260,160-byte** operation-local increase;
+backing allocation falls **10,997,972,992 bytes**. These are separate, non-additive
+observations. The original builder/configuration is restored and the temporary
+container removed. Fresh preflight collectors pass; the post-restart comparison
+shows the entire alias/logs/files/stat-only module-info/project records equal,
+with selected sentinels preserved. This is not full live-filesystem validation.
+
+Exact closure, retirement, trim and launch pins are in the
+[integration record](../research/workspace-integration.json). Full continuation
+capacity and final AVB/signing/FEC/VINTF/super/partition, OTA and device-boot gates
+remain separate. No phone operation or new full-suite result is claimed.
+
 ## Package6 corrected projection and bound request — 2026-09-03
+
+This earlier checkpoint records the then-unlaunched request and unresolved storage gate.
 
 The ordinary wrapper now supplies the verified inner `target_files` record to
 the unchanged checker. An exact shared Package6 source-context projection also

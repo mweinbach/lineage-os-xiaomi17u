@@ -10023,5 +10023,141 @@
         "size_bytes": 73419
       }
     }
+  },
+  "native_p5_mirror_retirement_and_package6_launch_checkpoint_20260903": {
+    "status": "exact-native-p5-mirror-retired-trim-verified-native-package6-launched-no-result-admitted",
+    "snapshot_scope": "Launch only; no running Package6 output or incomplete result inspected or admitted by the documentation owner.",
+    "guide": "docs/build-progress.md#package6-launch-after-p5-mirror-retirement--2026-09-03",
+    "preceding_checkpoint": "package6_corrected_projection_and_bound_request_checkpoint_20260903",
+    "preceding_checkpoint_commit": "3b84d1f83e52ec62c38bd5c5241519c31436fef5",
+    "dist_reader_closure": {
+      "v1_exit_code": 1,
+      "v1_failure": "read-only jail failed",
+      "original_failed_attempt_preserved": true,
+      "v2_completed_at": "2026-09-03T02:39:24.640053+00:00",
+      "v2_exit_code": 0,
+      "phony_has_no_inputs": true,
+      "no_old_zip_reader_from_dist_branch": true,
+      "read_only_namespace_and_capability_checks_passed": true,
+      "full_graph_tool_makefile_and_output_alias_guards_unchanged": true,
+      "native_build_or_deletion_by_query": false
+    },
+    "native_p5_mirror_retirement": {
+      "completed_at": "2026-09-03T02:40:46.097105+00:00",
+      "exit_code": 0,
+      "exact_unlinks": 1,
+      "scope": "Only the obsolete native P5 mirror ZIP; the expanded target-files tree, list and other output remain protected.",
+      "zip_sha256": "622073f36dd1c0f733f1ed1d09518380190a58a80f4615586c815430bd9768b4",
+      "logical_bytes": 10997962405,
+      "allocated_bytes": 10997968896,
+      "native_body_full_hash_equal_retained_host_keeper_proof": true,
+      "host_keeper_stat9_unchanged": true,
+      "host_keeper_freshly_full_hashed_by_deletion": false,
+      "protected_selectors": 80,
+      "expanded_tree_list_parents_and_siblings_preserved": true,
+      "independent_review_verified": true,
+      "stream_events_replayed": 5,
+      "journal_records_reconstructed": 4,
+      "deletion_alone_claims_host_reclamation": false,
+      "restoration": "Historical archive remains in the host keeper; reuse at a native path needs a verified copy and does not restore the old inode."
+    },
+    "separate_trim": {
+      "completed_at": "2026-09-03T02:42:40.539751+00:00",
+      "passed": true,
+      "host_free_before_bytes": 131279601664,
+      "host_free_after_bytes": 142326861824,
+      "observed_operation_local_host_free_delta_bytes": 11047260160,
+      "backing_allocation_reduction_bytes": 10997972992,
+      "allocation_and_host_delta_added_together": false,
+      "exclusive_reclamation_cause_claimed": false,
+      "original_builder_restored": true,
+      "original_config_unchanged": true,
+      "temporary_container_removed": true,
+      "three_sentinel_full_hashes_and_stats_unchanged": true,
+      "fresh_preflight_verified": true,
+      "postrestart_entire_compared_objects_equal": [
+        "alias",
+        "logs",
+        "files",
+        "module_info_stat_only",
+        "project"
+      ],
+      "postrestart_held_files_unchanged": 8,
+      "full_live_filesystem_integrity_claimed": false
+    },
+    "native_package6_launch": {
+      "started_at": "2026-09-03T02:43:52.799280+00:00",
+      "native_execution_started": true,
+      "request_sha256": "0b3cfb9825c53c6e233b21200df8adae2d1be3195efb10d80013f7bb71968064",
+      "request_bytes": 5298505,
+      "guest_sha256": "cf3c18eb2f1984a35fb0c3fe03a9751b209f7e6d2fdf7345f1198356d746156a",
+      "guest_bytes": 19566,
+      "host_free_before_bytes": 142274932736,
+      "required_free_bytes": 133769298255,
+      "retained_host_reserve_bytes": 107374182400,
+      "unchanged_launch_storage_gate_passed": true,
+      "completion_verified": false,
+      "profile_or_archive_result_admitted": false,
+      "build_success_claimed": false
+    },
+    "limits": {
+      "full_continuation_capacity_cleared": false,
+      "private_signing_performed": false,
+      "complete_avb_chain_verified": false,
+      "rom_or_boot_ready": false,
+      "complete_rom_ready": false,
+      "phone_accessed": false,
+      "new_full_suite_pass_claimed": false,
+      "running_package6_outputs_inspected_by_documentation_owner": false,
+      "native_or_vm_operations_by_documentation_owner": false
+    },
+    "next_gate": "Wait for the actual native Package6 executor to close before inspecting and admitting its complete result. Launch clearance is not complete build/ROM or final capacity proof; AVB/signing/FEC/VINTF/super/partition, OTA and device boot remain separate gates.",
+    "evidence": {
+      "dist_v1_failure": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-retirement-preparation-v1/dist-query-v1/actual-v1/completion.json",
+        "sha256": "e6bff0009862a574ac283a8128d07e638b0c0767beeaf3f410a12641952291d0",
+        "size_bytes": 1681
+      },
+      "dist_v2_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-retirement-preparation-v1/dist-query-v2/actual-v1/completion.json",
+        "sha256": "ca157133627e27968ff8227867d014b5e31d73351c13f0a564b4f944f46461ff",
+        "size_bytes": 97814
+      },
+      "dist_reader_closure": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-retirement-preparation-v1/root-dist-reader-review.json",
+        "sha256": "51d4c02f4ecaa08ba0ff99cde14a06d7c534576f0076390f93a63241cbae4a30",
+        "size_bytes": 4257
+      },
+      "retirement_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-retirement-preparation-v1/actual-v1/completion.json",
+        "sha256": "d976313119a84af6c095c37bff54650108856022e2d51abceccbd2379c206d68",
+        "size_bytes": 14784
+      },
+      "retirement_independent_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-retirement-preparation-v1/actual-review-v1/review.json",
+        "sha256": "6919c29edfe3b46c1db6aacb32532d5f77129bb3372266f043f2f9e4455ab45c",
+        "size_bytes": 2742
+      },
+      "trim_completion": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-trim-v1/actual-v1/completion.json",
+        "sha256": "aece9d2a7ec16fc485f4712e80593a44c224cda639acbeaaf1847ff1a2fbcc73",
+        "size_bytes": 1207
+      },
+      "trim_preflight_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-trim-v1/preflight-v1/review.json",
+        "sha256": "49652696790f18b88dfc144438aa440bfbda6364a5b9655391fe6656a787fca4",
+        "size_bytes": 1152
+      },
+      "trim_postrestart_review": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/native-package5-zip-trim-v1/postrestart-v1/review.json",
+        "sha256": "7d82c66db89970480ff3c312d3ac58dca2c57bf31e3b719e8347bafe2c3bcdf8",
+        "size_bytes": 1237
+      },
+      "package6_launch_only": {
+        "path": "reports/avb-sha256-20260902/resume-build-20260902-v1/root-package6-native-dispatch-v1/launch.json",
+        "sha256": "e64e075ca59eb0fc5a65288ce521e1ee8b2956312f054af36fcbc98cade551f5",
+        "size_bytes": 952
+      }
+    }
   }
 }

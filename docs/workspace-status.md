@@ -10,6 +10,24 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–2 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Native Package6 launches at 2026-09-03 02:43:52 UTC.** The launch observes
+**142,274,932,736 bytes available**, exceeding its **133,769,298,255-byte**
+requirement while retaining the unchanged **100 GiB reserve**. This is a
+**launch-only checkpoint**: no completed build, profile or archive result is
+inspected or admitted, and no ROM/signing/boot success is claimed.
+
+Before launch, exactly one obsolete **native P5 mirror ZIP** is retired. Its
+host keeper, expanded target-files tree, list and other protected inputs remain.
+The subsequent trim observes **11,047,260,160 bytes** more host free space,
+separately from backing allocation, and restores the original builder with
+unchanged configuration and passing post-restart checks. This does not establish
+full continuation capacity or whole-filesystem integrity. No phone operation
+occurs. See the [launch and mirror-retirement checkpoint](build-progress.md#package6-launch-after-p5-mirror-retirement--2026-09-03).
+
+## Earlier corrected projection and bound request
+
+The following checkpoint records preparation before cleanup and native launch.
+
 **The Package6 wrapper and shared source-context projection are corrected.**
 After **98 focused tests**, guarded host deployment and request preparation
 complete at **2026-09-03 02:28:30 UTC**. The genuine request is **5,298,505 bytes**;
