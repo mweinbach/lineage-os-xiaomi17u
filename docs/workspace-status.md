@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package6's DLKM reference-model analysis and current loader-text binding pass.**
+The 11 retained metadata bodies are admitted at **18:10:30 UTC**, and current
+image init texts, declared import selectors and DLKM links join at **18:26:49
+UTC**; ROOT's exact replays pass. Selected reference-model closures have no
+missing mandatory requests or hard/pre cycles, with 15 optional pre-requests
+still unresolved. A separate top-level early-init `msm_11ad_proxy` request has no
+current DLKM match, without proving a boot-fatal failure or built-in absence.
+These static results do not establish loader execution or source/binary
+equivalence. ABI/trust, effective properties, full VINTF, super/fit, OTA and boot
+remain open. No cleanup or phone operation occurs. See the [DLKM semantics and loader-text checkpoint](build-progress.md#package6-dlkm-reference-model-semantics-and-loader-text-binding--2026-09-03).
+
+## Earlier Package6 DLKM membership and two-node semantic admission
+
+The following checkpoint predates DLKM metadata semantics and current loader-text binding.
+
 **Package6's two DLKM images pass exact module-membership verification**, after
 successful scans at **17:54:55 UTC** and ROOT semantic replay at **18:02:37 UTC**.
 All 484 modules and 11 metadata/selector files match the historical corpus by

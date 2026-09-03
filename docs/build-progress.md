@@ -1,6 +1,46 @@
 # Nezha product and build progress
 
+## Package6 DLKM reference-model semantics and loader-text binding — 2026-09-03
+
+**The 11 exact retained DLKM metadata bodies, 284,308 bytes, pass current
+semantic reuse at 18:10:30 UTC**; ROOT reproduces the original result at
+**18:11:53 UTC**. The reference `system/core` model selects **101 system
+modules**, excluding the GKI `zram`/`zsmalloc` pair, and **380 vendor roots**
+from 381 vendor modules, excluding `ipclite_test`. The vendor selection reaches
+**382 modules**, including two system modules. The selected closures have no
+missing mandatory requests or hard/pre cycles; **15 unresolved optional
+pre-requests across nine names** remain explicit. This is conditional on the
+reference loader model, not a claim that every graph owner has no missing
+request, or that these modules actually load.
+
+**Current loader-text binding passes at 18:26:49 UTC**, followed by ROOT's
+exact replay at **18:29:00 UTC**. It joins **72 framework init RC files plus
+the root environment file**, six vendor text bodies, declared `androidboot.hardware=qcom`
+and `ro.zygote=zygote64`, candidate image import paths and DLKM directory links.
+ROOT reproduces 29 analysis fields with 29 held inputs; eight focused loader
+tests pass. Retained text origins and ZIP-only ramdisk text remain distinguished
+from fresh execution or decoding of boot-image components.
+
+The separate top-level early-init request for **`msm_11ad_proxy` has no matching
+current DLKM module**. Built-in or prior-stage availability is unverified; this is not
+proof of a boot-fatal failure. Effective property selection, competing init
+declarations, current executable/source equivalence, host-runtime qualification
+and loader execution remain open, as do module ABI/signature trust, full VINTF,
+super/physical fit, OTA and boot. No cleanup or phone operation occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-boot-content/package6-preparation-v1/dlkm-membership-preparation-v1/metadata-semantic-reuse-v1/review.json` | `a0164ada1be2e576199e3dbff5db56213497f5ebc8d3eb9b0b005633270abbbf` | 29,521 |
+| `root-package6-two-dlkm-result-review-v1/metadata-semantics-review.json` | `e6869cd5493499de834a74c8ff30134cd1f7785f5b4b59a0461f8fdbede19242` | 1,809 |
+| `final-boot-content/package6-preparation-v1/loader-binding-v1/review.json` | `d1ea8a005f57efd6f749eab367f287db5630f75b32013543c4e85e3832c2e037` | 127,958 |
+| `root-package6-loader-text-review-v1/review.json` | `5fc571327d2bea3164e62363d61bbf44fc8c2a1c2eff9b39114013d6177c2e7e` | 1,236 |
+
 ## Package6 DLKM membership and two-node semantic admission — 2026-09-03
+
+This earlier checkpoint predates DLKM metadata semantics and current loader-text binding.
 
 **Both current DLKM image scans pass at 17:54:55.361365 UTC**, in **2.465
 seconds**, with unchanged inputs and strict-idle/sole-owner checks. ROOT's
