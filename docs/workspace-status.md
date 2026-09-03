@@ -10,6 +10,20 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package6's five-image VINTF content projection passes**, after the corrected
+reader successfully captures system, system_ext and product at **17:16:09 UTC**.
+The join with retained vendor/ODM evidence covers 267 relevant files and 21
+property-import candidates; ROOT's exact API replay passes at **17:36:01 UTC**.
+The 46 system-root entries outside the partition view and five `build.prop`
+permission differences remain recorded. This does not establish runtime property
+behavior, inner APEX validation or full VINTF compatibility. Two-node and super
+precursor queries close, but their remaining qualifications and super/fit/OTA/boot
+gates stay open. No cleanup or phone operation occurs. See the [five-image projection checkpoint](build-progress.md#package6-five-image-vintf-content-projection--2026-09-03).
+
+## Earlier isolated EROFS reader build and query admission
+
+The following checkpoint predates successful image capture and content projection.
+
 **The corrected native EROFS reader builds successfully at 17:07:42 UTC**,
 with 18 commands, 175 paired inputs and seven runtime files; ROOT's exact
 result replay passes. Its three-image projection remains pending. Four

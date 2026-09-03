@@ -1,6 +1,50 @@
 # Nezha product and build progress
 
+## Package6 five-image VINTF content projection — 2026-09-03
+
+**The corrected reader captures system, system_ext and product successfully at
+17:16:09.410724 UTC**, in **43.851 seconds**, with **7,838 entries**. ROOT replays
+the original typed proofs and manifest parser; image hashes remain unchanged.
+The earlier compact-EOF failure is preserved as a separate historical result.
+
+**The combined five-image namespace and relevant-content projection passes.**
+It joins those three captures with the retained vendor/ODM evidence, covering
+**267 files: 201 VINTF, 27 property and 39 outer APEX packages**, plus **21
+property-import candidates**. There are **14,807 physical entries** and
+**14,761 partition-mapped entries**; 46 system-root entries outside the partition
+view remain recorded. All five canonical `build.prop` files retain the observed
+**0600 image versus 0644 expanded-tree** difference; permission equivalence is
+not claimed. Historical vendor/ODM exporter provenance is retained, not relabeled
+as execution by the corrected reader. Outer APEX equality is not payload validation.
+
+ROOT's **17:36:01 UTC** replay reproduces the original three- and five-role APIs'
+output bytes, deeply replays the retained 205-file vendor/ODM review, and checks
+51 held controls. **55 focused tests pass.** This admits content projection,
+not source provenance, runtime property behavior or complete VINTF compatibility.
+
+The two-node query closes at **17:31:45.226195 UTC**, in **657.847 seconds**:
+four calls, two nodes and three present response files; ROOT's envelope replay
+passes with 43 held controls, while deep semantic admission remains pending.
+The super precursor query closes at **17:34:25.858498 UTC**, in **28.576 seconds**,
+with two calls and an observed embedded-Python PAR recipe, not a tool build or
+runtime qualification; ROOT's result replay rechecks 35 controls before and after.
+Independent-checker, AIDL and final VINTF qualification, super,
+physical fit, OTA and boot remain open. No cleanup or phone operation occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-three-image-result-review-v1/review.json` | `7362ee497a86223a753154e609979212e6715daf7f8f2d00b0f2e2557d077977` | 3,273 |
+| `root-package6-five-image-projection-review-v1/review.json` | `44aefe761fd040b22894e12902e41c442211585d72822d34f008c0bdd9889ccf` | 1,243 |
+| `three-image-erofs-lookback-diagnosis-v1/native-build-preparation-v1/successor-v4/completion-schema-v1/consumer-duplicates-fix-v1/isolated-build-v1/three-image-rebind-v1/downstream-projection-v1/five-role-review-v2.json` | `6ccea80cf2cd72da1595894873e35530b98726ea91f139fa26ab7fec5ac327ff` | 1,025,459 |
+| `root-package6-two-node-result-review-v1/review.json` | `690a154bca7ea6e09c9ae3d6c157aed7ac7c16f9993036629ebf64b7001511e4` | 1,232 |
+| `root-package6-super-precursor-query-result-review-v1/review.json` | `a09f910d9120f0001932da4ea830b22ec746fd528408ba204b068da17086ce64` | 1,251 |
+
 ## Isolated EROFS reader build and query admission — 2026-09-03
+
+This earlier checkpoint predates successful image capture and content projection.
 
 **The corrected native EROFS reader builds successfully at 17:07:42.997617 UTC**,
 exit **0**, with **5.442 seconds** recorded by the transport. The isolated build
