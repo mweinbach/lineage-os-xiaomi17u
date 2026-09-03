@@ -1,6 +1,74 @@
 # Nezha product and build progress
 
+## Package6 producer tools and kernel BTF — 2026-09-03
+
+**LN's finite producer review closes at 22:18:22 UTC.** All **33 object
+recipes** match the prior ordered archive inputs, and the **4,939-byte RSP**
+equals those 33 ordered targets. Original validation and negative checks pass.
+This is not inspection of the built archive's member table. Paired tool
+metadata and an install-only `mkbootimg` recipe do not qualify production,
+complete source/header provenance, embedded Python or runtime behavior.
+
+**Machinery capture closes at 22:23:04 UTC**, exit **0**, with full streams,
+empty stderr and the local process reaped in **0.157 seconds**. All **23
+controls**, strict idle and sole ownership pass; ROOT replays both validators.
+The observed env/Python executables are **AArch64**, while nsjail is **x86-64**.
+Python and nsjail match retained identities; env's identity is newly observed.
+These metadata observations do not prove cross-architecture execution or
+loader/dependency closure, and no producer is built by this capture.
+
+**The subsequent Super tool-assembly wrapper fails at 22:44:51 UTC** after
+**604.709 seconds**. All four build/verifier commands report exit 0 before
+the missing `primitives.parse` raises `AttributeError`; the failed transport
+and guest/source admission flags remain unchanged. Recovery capacity,
+controls, idle and ownership checks pass. ROOT's separate original source-guard
+replay also passes, without rewriting the failed guest record. Generated
+outputs remain candidates awaiting readback/admission; no rebuild, runtime
+entrypoint or `super.img` success is claimed.
+
+**Kernel search/BTF capture closes at 22:34:17 UTC**, exit **0**, with full
+streams and **1.936-second** transport. It preserves 42 child inputs and 55
+outer controls, a **4,096-byte `strcmp` window** and **four guard bytes**.
+The bounded BTF parser finds **two complete `module` structure candidates**;
+the result is **ambiguous**, with no unique first-parameter or member mapping.
+**The static-review handoff closes at 22:47:43 UTC**: independent review passes
+**24 tests and 77 word-mutation checks**, supporting conditional unsigned-byte
+ordering sign and the on-disk guard match, not exact difference magnitude or
+runtime guard success. The type census remains a reported producer result,
+not a reconstruction from the retained header-only BTF proof. Compiled field
+meaning, pointer validity, policy and runtime behavior remain unverified.
+
+**FIFTEEN v2 stream-checks 15 selected ZIP members**: 11 expected hashes match
+and four META texts retain **27,089 bytes**, with 27 held inputs unchanged.
+It decodes **50,095,806 bytes**, reading **38,581,286 selected physical bytes**
+plus **1,687,346 structural bytes**; components are hashed without extraction,
+and no partition-image member is opened. The **22:47:30 UTC** host join closes
+a **29-member identity union and 10 metadata texts**, rechecking 35 records.
+Full constructor, source/runtime, CPIO permissions and boot-consumer qualification
+remain false; no original boot projection or replacement payload is executed.
+
+Compiled policy, ABI/trust, tool and boot runtime, full VINTF, super/physical
+fit, OTA and boot remain open. No phone operation or additional artifact
+cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/root-dispatch-v1/actual-v1/actual-admission-v1/outer-review.json` | `62a5867514fe9f107ffd8370bb9f280776545f8092ec1d6b26b487631064bf39` | 46,952 |
+| `final-vintf/coverage-policy-successor-v1/libvintf-producer-query-preparation-v1/next-archive-inputs-v1/root-dispatch-v1/actual-v1/actual-admission-v1/producer-frontier.json` | `7714d2f8eae20c423afc8b1678cfc1b62552dc908239a639aab723035e594ea7` | 56,456 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/machinery-capture-v1/root-dispatch-v1/actual-v1/completion.json` | `4a9109d5d23d7dd65bf204c91ca77393454dc698d3721db7fc0cb846aee19238` | 3,571 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/machinery-capture-v1/root-dispatch-v1/actual-v1/root-replay.json` | `35f3bf7f2f97327117cd0e89cc225765003f964f06a7cc7e4cca7a96aea1d416` | 501 |
+| `root-package6-protected-search-btf-capture-dispatch-v1/completion.json` | `67e9bb380119c6423209b02acd33665aef318842b83ef5ef94ab1f31d2070d42` | 18,206 |
+| `final-avb/package6-super-continuation-v1/tool-assembly-preparation-v1/native-producer-v1/environment-scope-fix-v1/root-dispatch-v1/actual-v1/failure.json` | `07d822432b30ddaa5eeb5d53ba75bf54cb267ccfc4d1b4fbb7b09ef18c905ff9` | 15,361 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/protected-search-btf-capture-preparation-v1/postcapture-review-v1/handoff.json` | `c77729a73271c20ec979469733df4e4f7a85e50ea67b77cda3dd0ee9edaabd91` | 5,767 |
+| `final-boot-content/package6-preparation-v1/consumer-v4/next-producer-result-admission-v2/fifteen-member-zip-preparation-v2/actual-v1/completion.json` | `a73102846ace5f1e797f5c95207f138ae1a6c9087c47b784a0c52aa65ce98475` | 79,356 |
+| `final-boot-content/package6-preparation-v1/consumer-v4/next-producer-result-admission-v2/fifteen-member-zip-preparation-v2/result-join-v1/report.json` | `a85bdba518240a8a2540563c420ab29af34ee6f2022550dd26498c9dba1ed960` | 50,011 |
+
 ## Package6 boot-property reviews and follow-up captures — 2026-09-03
+
+This earlier checkpoint predates LN producer interpretation, machinery capture and the BTF type result.
 
 **Boot's host admission closes at 21:31:03 UTC**, replaying the original
 driver/emitter, graph/query, native-file and source-control predicates against

@@ -10,6 +10,22 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**LN producer-listing review passes** for 33 ordered object recipes and their
+response file, without proving built-archive membership or producer provenance.
+**Machinery metadata is mixed-architecture**: AArch64 env/Python and x86-64
+nsjail; identity matches do not qualify execution. Limited kernel static
+review supports ordering sign and an on-disk guard match, but **two BTF
+`module` candidates prevent a unique type/field mapping**. FIFTEEN's member
+identities and metadata join without full boot-consumer qualification.
+**The Super tool wrapper fails after four reported zero-exit commands**;
+its outputs await recovery admission. Compiled policy, ABI/trust, tool and
+boot runtime, full VINTF, super/fit, OTA and boot remain open. No phone
+operation or additional artifact cleanup occurs. See the [producer-tool and BTF checkpoint](build-progress.md#package6-producer-tools-and-kernel-btf--2026-09-03).
+
+## Earlier Package6 boot-property reviews and follow-up captures
+
+The following checkpoint predates LN producer interpretation, machinery capture and the BTF type result.
+
 **Scoped boot and property observation reviews pass**, without qualifying
 the three boot-source proofs, packaged init provider or effective property
 selection. **Two kernel search windows are captured at 21:54:18 UTC** and
