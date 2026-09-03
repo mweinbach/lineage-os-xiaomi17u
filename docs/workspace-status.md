@@ -10,6 +10,21 @@ consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The current ramdisk/DLKM union supplies matching CRC providers for all 718
+previously missing expectations**, with ROOT replay passing at **19:43:35 UTC**.
+Twenty ambiguous/mixed rows remain, including two mixed-CRC rows; ABI, trust
+and load order are not verified. **Source/copy-origin review also closes** for
+21 boot-input copies after corrected read-only admission of the successful
+child; its original outer failure is retained. Full boot-source semantics and
+runtime remain open. Raw kernel protection-table words are captured but not
+mapped, and AIDL coverage remains negative with its successor unqualified.
+The next native batch, full VINTF, super/fit, OTA and boot remain pending. No
+phone operation or additional artifact cleanup occurs. See the [module-union and source-origin checkpoint](build-progress.md#package6-current-module-union-and-source-copy-origin--2026-09-03).
+
+## Earlier Package6 corrected captures and negative AIDL audit
+
+The following checkpoint predates the current module union and source/copy-origin admission.
+
 **The corrected NGB and vendor-ramdisk captures return cleanly**, while their
 earlier failed attempts remain preserved. Kernel-static evidence and Mac
 dependency admission also advance, without establishing ABI or runtime closure.

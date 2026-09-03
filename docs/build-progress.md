@@ -1,6 +1,46 @@
 # Nezha product and build progress
 
+## Package6 current module union and source-copy origin — 2026-09-03
+
+**The current ramdisk/DLKM union closes the 718 previously missing CRC
+expectations**, using **49 now-current ramdisk providers**. ROOT's exact
+denied-I/O replay passes at **19:43:35 UTC** across **914 module instances,
+637 distinct payloads and 36,963 CRC expectations**. Remaining missing-provider
+counts are zero, but **20 ambiguous/mixed rows remain**, including **two with
+both matching and conflicting provider CRCs**. This is not unambiguous provider
+selection or a pass for ABI compatibility, signature trust or loader order.
+
+**Source and copy origin are verified for 21 boot-input copies, 3,783,771 bytes.**
+The genuine successful child is admitted read-only at **19:47:40 UTC**, after
+correcting an outer checker that wrongly required every source-check boolean
+to be true. The original failure stays preserved; neither the child nor copy
+publication is rerun. The subsequent original-driver/source-origin API review
+passes with 120 held inputs and 127 consumer guards. Full boot-source semantics,
+first-stage producer, complete graph/log coverage and runtime remain open;
+`source_capture.review` remains null.
+
+The **19:45:50 UTC raw kernel-table handoff** preserves **590 protected-export
+and 9,106 permitted-import eight-byte words**. These are raw numeric candidates,
+not mapped symbol names or verified compiled protection-policy behavior.
+The AIDL coverage successor preserves all 127 metadata negatives; its actual
+production-API witness, binding and native qualification remain pending.
+The next boot/property/super/AIDL native batch has not executed at this
+checkpoint. Full VINTF, super/physical fit, OTA and boot remain open. No phone
+operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `root-package6-current-module-union-review-v1/review.json` | `ffbf7fb3c835689f71a3317083cc96479660998004a168a25e3eb9acb687aafb` | 12,014 |
+| `root-package6-boot-source-origin-dispatch-v2/read-only-admission-v1/completion.json` | `d1b5b730f6b0bee913b189a4893c17b9e8ca4d3d8a91119d33d6cfbd40809f8d` | 4,975 |
+| `root-package6-boot-source-origin-v1/successor-v2/actual-semantic-review-v1/completion.json` | `c21a7e4eb578929c9b9bbfddd21b77e90d8e2a410a23d212c22da3d66681b4fe` | 4,929 |
+| `final-boot-content/package6-preparation-v1/kernel-abi-gap-assessment-v1/table-capture-preparation-v1/postcapture-review-v1/handoff.json` | `c5bc03837c33600e62c895501434a63cd02c262e588360344a5e297848abcb50` | 136,125 |
+
 ## Package6 corrected captures and negative AIDL audit — 2026-09-03
+
+This earlier checkpoint predates the current module union and source/copy-origin admission.
 
 **The corrected NGB retry closes at 19:13:14 UTC**, exit **0**, with complete
 streams in **641.115 seconds**. It records nine query pairs/18 calls, four core
