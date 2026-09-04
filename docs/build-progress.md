@@ -1,6 +1,50 @@
 # Nezha product and build progress
 
+## Package6 diagnostic outcome and observer readback — 2026-09-04
+
+**Experimental diagnostic execution closes at 00:54:34 UTC**, after
+**632.775854 seconds**, with 39 fresh static host APEX materializations.
+The captured supervisor exit and trace terminal uint32 return are both **0**;
+the returned native structural review reports **265 events, 60 calls and four
+cache generations**, effective device level **202504** and retained original
+level **UNSPECIFIED**. Original driver/guest, link-authority and source-pair
+replay pass. This initial admission does not independently replay the native raw
+trace or establish a separate native child-wait observation.
+It remains `NONQUALIFIED_DIAGNOSTIC_OUTCOME_ONLY`, not the original checker.
+
+**Compile/archive/link observer readback closes at 00:55:06 UTC**, exit **0**.
+All **38 pairs / 76 files / 391,851 decoded bytes** pass the unchanged original
+observer verifier. This closes those stages' observer-body gate only: it does
+not parse mountinfo into a full mount table or cover this runtime's observer.
+
+**Runtime trace/observer readback closes at 00:59:28 UTC**: four files retain
+**18,160,895 decoded bytes**, including the **18,091,151-byte raw trace**.
+ROOT replays the original observer and trace summary, matching the runtime's
+complete structure exactly. Diagnostic stdout ends `COMPATIBLE`; this does not
+establish original-checker equivalence or full forward coverage.
+
+**All 155 retained AIDL package/version/interface/instance tuples match exact
+effective-device-manifest declarations**; 122 matched provider tuples use the
+existing parser's default version 1. This bounded declaration check does not
+erase the generated-metadata 127-name gap or prove live services/full requirements.
+
+Full combined-matrix requirements, header/ODR, original-CLI/runtime equivalence, VINTF,
+functional Super, flash safety, policy/trust/ABI, OTA and boot remain unqualified.
+No phone operation or additional artifact cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/diagnostic-execution-preparation-v1/root-dispatch-preparation-v1/bound-packet-v2/actual-v1/semantic-admission.json` | `3f20ccf064510105828a583794e9c0047c472a769e32955fff4de95691d35575` | 14,002 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/compile-link-observer-readback-v1/actual-v1/readback-admission.json` | `214b5df27647f9bb615592e7ef49fd084008e21658f45589859e890ce1ff2f2d` | 26,821 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/diagnostic-execution-preparation-v1/trace-readback-preparation-v1/actual-v1/root-trace-admission.json` | `42407ee89293146a06dcc6985fd12d880d7f1c4da341935939802e72503d89eb` | 5,712 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/diagnostic-execution-preparation-v1/trace-readback-preparation-v1/actual-v1/forward-declaration-check-v1/report.json` | `081721ee5eeafa89d889587c5b7189a7614d105a50bc44028672b68675bc3f87` | 63,032 |
+
 ## Package6 sparse Super and published boot candidates — 2026-09-04
+
+This earlier checkpoint predates diagnostic execution and compile/link observer-body readback.
 
 **Super assembly closes September 3 at 23:57:08 UTC**, in **568.338574 seconds**.
 One **9,291,741,260-byte sparse image** expands to **15,300,820,992 bytes**;

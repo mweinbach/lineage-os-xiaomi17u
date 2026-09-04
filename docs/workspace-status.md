@@ -10,6 +10,22 @@ consolidates recorded evidence through **September 4, 2026 UTC (September 1–3 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The experimental diagnostic executes with captured zero results**, and its
+trace-structure review passes after authenticated readback. **All 155 retained
+AIDL tuples match effective-manifest declarations**; this is not proof of live
+services or all combined-matrix requirements. The generated-metadata 127-name
+gap persists, not a finding of 127 missing providers. **All 38 compile/archive/link
+observer-body replays pass**, and the separate runtime observer/raw-trace readback
+also closes.
+Super static fit and prior boot-candidate comparisons remain recorded; functional
+Super, original-checker/ODR/runtime equivalence, full VINTF, flash safety,
+policy/trust/ABI, OTA and boot are unqualified. No phone operation or additional
+cleanup occurs. See the [diagnostic-outcome checkpoint](build-progress.md#package6-diagnostic-outcome-and-observer-readback--2026-09-04).
+
+## Earlier Package6 sparse Super and published boot candidates
+
+The following checkpoint predates diagnostic execution and compile/link observer-body readback.
+
 **A sparse Super image is assembled and statically validated**: full LP
 metadata, all eight embedded-image hashes and logical/group/physical fit pass.
 **Published boot-candidate comparison
