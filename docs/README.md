@@ -12,6 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
+| [Package6 sparse Super and published boot candidates](build-progress.md#package6-sparse-super-and-published-boot-candidates--2026-09-04) | Super LP/content/static fit, published candidate comparisons and diagnostic compile/archive pass; link/run, constructor/source/runtime, flash safety and ROM gates remain open |
 | [Package6 source endpoint and diagnostic dependency failure](build-progress.md#package6-source-endpoint-and-diagnostic-dependency-failure--2026-09-03) | P4 observes the source endpoint; failed diagnostic dependency and source recovery remain distinct, with no archive/run, accepted Super result or ROM qualification |
 | [Package6 generated headers and Super help smoke](build-progress.md#package6-generated-headers-and-super-help-smoke--2026-09-03) | Two headers and packaging-query observations are admitted; generated-tool help execution passes separate host recovery, with source/header, broad runtime, functional Super and ROM gates open |
 | [Package6 producer recovery and function-anchored BTF](build-progress.md#package6-producer-recovery-and-function-anchored-btf--2026-09-03) | P2 inputs and separate retained-producer recovery are admitted; function-anchored `sig_ok` layout supports a conditional static gate, while current identity/runtime, trust/policy/ABI and ROM gates stay open |

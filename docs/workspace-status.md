@@ -6,9 +6,23 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 3, 2026 UTC (September 1–3 in
+consolidates recorded evidence through **September 4, 2026 UTC (September 1–3 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
+
+**A sparse Super image is assembled and statically validated**: full LP
+metadata, all eight embedded-image hashes and logical/group/physical fit pass.
+**Published boot-candidate comparison
+passes**, without qualifying the historical build branch, complete constructor,
+source or runtime. The Super run closes September 3 UTC; the boot capture closes
+September 4 UTC, both on September 3 in New York. **Diagnostic compile-v2 completes
+36 compiles and the 33-input archive command**; linking and diagnostic execution remain
+unqualified. Functional Super, flash safety, policy/trust/ABI, full VINTF, OTA and
+boot remain open; no phone operation or additional cleanup occurs. See the [Super and boot-candidate checkpoint](build-progress.md#package6-sparse-super-and-published-boot-candidates--2026-09-04).
+
+## Earlier Package6 source endpoint and diagnostic dependency failure
+
+The following checkpoint predates Super assembly and published boot-candidate comparison.
 
 **P4 observes the exact `mkbootimg.py` source endpoint**, without qualifying
 the complete installed-to-source route or constructor. **The diagnostic build

@@ -1,6 +1,50 @@
 # Nezha product and build progress
 
+## Package6 sparse Super and published boot candidates — 2026-09-04
+
+**Super assembly closes September 3 at 23:57:08 UTC**, in **568.338574 seconds**.
+One **9,291,741,260-byte sparse image** expands to **15,300,820,992 bytes**;
+strict framing checks accept **171 chunks: 151 RAW, 11 FILL and nine DONT_CARE**.
+Output SHA-256: `ad8a0fb87b2ab7a60e5f71c8a633610444942a814b167ed0f32d651f4942fbac`.
+All eight fresh same-descriptor input pairs are preserved, including actual
+vendor/ODM paths. Semantic admission closes **September 4 at 00:02:31 UTC**,
+replaying original stage, observer and source-pair APIs with 17 named controls
+unchanged. **LP readback closes September 4 at 00:15:25 UTC**; its later admission
+verifies both geometry copies, six LP metadata copies and all eight embedded hashes.
+Static logical/group/physical fit passes with **5,969,076,224 bytes** of group-A
+headroom. Populated images contain no DONT_CARE or LP_ZERO bytes; all eight B
+partitions are empty. Runtime-library, functional Super and flash safety remain open.
+
+**The published boot-candidate capture closes September 4 at 00:04:21 UTC**,
+exit **0**, in **11.988 seconds**, with complete streams and empty stderr.
+It joins 29 retained member identities and compares the original DTBO payload,
+with two full published-ZIP hash checks and six unchanged metadata pairs. This is
+candidate-only evidence, not historical-branch selection, full constructor,
+source/runtime or ROM qualification. Helper replay accepts the actual result
+and rejects eight mutations. Both actual captures occur on September 3
+in New York; the UTC dates above distinguish the midnight crossing.
+
+**Diagnostic compile-v2 closes September 4 at 00:09:36 UTC**: 36 compiles and
+one archive command pass, preserving the original 33 archive operands/order.
+Mandatory native trace-header dependency checks and explicit host summary checks
+pass; raw depfiles and observer bodies are not independently replayed here.
+Linking, diagnostic execution, full header/ODR, source/runtime, policy/trust/ABI,
+VINTF, flash safety, OTA and boot remain open. No phone operation or cleanup occurs.
+
+Evidence paths are relative to
+`reports/avb-sha256-20260902/resume-build-20260902-v1/`:
+
+| Record | SHA-256 | Bytes |
+| --- | --- | ---: |
+| `final-avb/package6-super-continuation-v1/super-assembly-semantic-admission-v1/admission.json` | `2681c06a934866efba7a339206603b3fd8db6d3bb368eb7a1da357cf8fd69cbe` | 15,416 |
+| `final-boot-content/package6-preparation-v1/published-projection-preparation-v1/root-dispatch-v1/actual-v1/completion.json` | `5e5aa49d02cd9543735cfdfdae40ff55a6662fc8da7a3339d355a382e7c8efbf` | 2,391 |
+| `final-boot-content/package6-preparation-v1/published-projection-preparation-v1/result-admission-v1/receipt.json` | `2e1ebd7e1b0839712576017c489bec17c3d29277b3b773fae0607fb4ff9a1a78` | 7,227 |
+| `final-avb/package6-super-continuation-v1/super-lp-readback-v1/actual-semantic-admission-v1/admission.json` | `e25153d3f4669966c3937fc7e6c52f2427e6a8ea50c8985b902eeb3a696f4725` | 23,766 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/compile-archive-stage-v2/root-dispatch-preparation-v1/bound-packet-v1/actual-v1/semantic-admission.json` | `d59d1ca234c0a41794e53737d388ba946049383ea54c721752fbba2a13328b84` | 16,599 |
+
 ## Package6 source endpoint and diagnostic dependency failure — 2026-09-03
+
+This earlier checkpoint predates Super assembly and published boot-candidate comparison.
 
 **P4 closes at 23:46:38 UTC**, exit **0**, in **29.077 seconds**. Its two
 query/command rows name `system/tools/mkbootimg/mkbootimg.py` and the matching
