@@ -548,32 +548,117 @@
     }
   },
   "five_images2": {
-    "status": "capture-verified-native-context-initialization-failed",
-    "read_only_producer_queries": 2,
-    "image_producer_commands_verified": 5,
-    "system_copy_edge_verified": true,
-    "ordinary_android_invocation_executed": false,
-    "native_phase_directory_created": false,
-    "output_retention_started": false,
-    "source_or_output_changes_observed": false,
-    "error": "complete current source specification differs from Nothing11",
-    "cause": "Native admission received the source projection instead of the authenticated full installed specification.",
-    "new_source_patch_or_capture_required": false,
+    "status": "native-build-succeeded-ctime-only-postcheck-recovery-running",
+    "first_attempt": {
+      "status": "capture-verified-native-context-initialization-failed",
+      "read_only_producer_queries": 2,
+      "image_producer_commands_verified": 5,
+      "system_copy_edge_verified": true,
+      "ordinary_android_invocation_executed": false,
+      "native_phase_directory_created": false,
+      "output_retention_started": false,
+      "source_or_output_changes_observed": false,
+      "error": "complete current source specification differs from Nothing11",
+      "cause": "Native admission received the source projection instead of the authenticated full installed specification.",
+      "new_source_patch_or_capture_required": false,
+      "evidence": {
+        "capture": {
+          "path": "reports/flash-ready-20260904/build-continuation/five-image2-capture-native/capture.json",
+          "sha256": "9c8e4d96fcbbe1c4073ef404cdeabeeecb9d7941a8b4e27a53613d37e575a473",
+          "size_bytes": 992006
+        },
+        "capture_review": {
+          "path": "reports/flash-ready-20260904/build-continuation/five-image2-capture-native/capture-review.json",
+          "sha256": "5bbd218806f18e50501e47167943a2b924da75ab5543dc45a12e7aedddf5cde0",
+          "size_bytes": 3322
+        },
+        "failure": {
+          "path": "reports/flash-ready-20260904/root/five-images2-initialization-failure.json",
+          "sha256": "8140f7497491dcc98d2d1df04a4bf813454dcfc1dcbdbe4d913d1a4ee3abfda2",
+          "size_bytes": 1905
+        }
+      }
+    },
+    "ninja_actions_completed": 941,
+    "native_exit_code": 0,
+    "original_profile_completed": false,
+    "original_failure_preserved": true,
+    "source_callbacks_unchanged": true,
+    "postcheck_error": "selected image build changed protected sidecars",
+    "three_sidecar_bytes_unchanged": true,
+    "only_sidecar_stat_change": "st_ctime_ns",
+    "package7_built": false,
     "evidence": {
-      "capture": {
-        "path": "reports/flash-ready-20260904/build-continuation/five-image2-capture-native/capture.json",
-        "sha256": "9c8e4d96fcbbe1c4073ef404cdeabeeecb9d7941a8b4e27a53613d37e575a473",
-        "size_bytes": 992006
+      "native_result": {
+        "path": "reports/flash-ready-20260904/build-continuation/five-images2-retry1/native/stdout.jsonl",
+        "sha256": "4d9f82de7d0ec491657ff3c938a2b1d860384cd9f525d33ab366c46324c16fa4",
+        "size_bytes": 13872950
       },
-      "capture_review": {
-        "path": "reports/flash-ready-20260904/build-continuation/five-image2-capture-native/capture-review.json",
-        "sha256": "5bbd218806f18e50501e47167943a2b924da75ab5543dc45a12e7aedddf5cde0",
-        "size_bytes": 3322
+      "sidecar_observations": {
+        "path": "reports/flash-ready-20260904/root/image2-sidecar-hwservice-current.json",
+        "sha256": "aa9e0c5ed6ac1a0ce2bc1a826d9874f3e9d851910ce28fd0c6d89fe31ff17484",
+        "size_bytes": 39069
       },
-      "failure": {
-        "path": "reports/flash-ready-20260904/root/five-images2-initialization-failure.json",
-        "sha256": "8140f7497491dcc98d2d1df04a4bf813454dcfc1dcbdbe4d913d1a4ee3abfda2",
-        "size_bytes": 1905
+      "recovery_preparation": {
+        "path": "reports/flash-ready-20260904/build-continuation/five-images2-recovery-v1/preparation.json",
+        "sha256": "074b46f007e9a39edcf27e71fa2f1a00a6aabdc8dde276087fec83ef8bbe0b7a",
+        "size_bytes": 2108
+      }
+    },
+    "postcheck_recovery_completed": false
+  },
+  "package7_producer_capture": {
+    "status": "verified-read-only-capture",
+    "native_queries": 2,
+    "native_build_executed": false,
+    "source_or_output_written": false,
+    "evidence": {
+      "path": "reports/flash-ready-20260904/build-continuation/package7-producer-capture-actual-v1/capture.json",
+      "sha256": "9cb4a3ab451cb0366f2e24f5442c3898f2becbb8426c60fadca5a372592644d1",
+      "size_bytes": 7001891
+    }
+  },
+  "deadline_review": {
+    "operational_cutoff_utc": "2026-09-05T02:45:00+00:00",
+    "phone_mutations_authorized": false,
+    "new_kernel_or_display_source_fix_justified": false,
+    "android_ims_provider_missing": true,
+    "ims_voice_or_emergency_calls_verified": false,
+    "valid_mi_ext_overlay_apks": 4,
+    "zero_byte_mi_ext_apk_placeholders": 1,
+    "placeholder_failures_preserved": true,
+    "mi_ext_unconditional_startup_defect_proven": false,
+    "final_classpath_and_dlkm_delivery_checks_required": true,
+    "evidence": {
+      "kernel": {
+        "path": "reports/flash-ready-20260904/deadline-kernel/audit.json",
+        "sha256": "0dfa36786d3146f491aa19e10ba3aed5bc744be447597251695aa738b883cb22",
+        "size_bytes": 2017
+      },
+      "display": {
+        "path": "reports/flash-ready-20260904/deadline-display/receipt.json",
+        "sha256": "0354f8ba99661633b6139e5425b60596459fb4dc14f6c9d347fb35d6763b8432",
+        "size_bytes": 2892
+      },
+      "radio": {
+        "path": "reports/flash-ready-20260904/deadline-radio/REPORT.md",
+        "sha256": "af3298b6bee02b36dca80da29fa00f3538ba3adfd4000ec6efeacab5e373e455",
+        "size_bytes": 7397
+      },
+      "mi_ext": {
+        "path": "reports/flash-ready-20260904/deadline-mi-ext/completion.json",
+        "sha256": "bf05a9603665f6cf4b6669a763bfcbd6b02f2db2889643dc59feeda216cbb187",
+        "size_bytes": 5357
+      },
+      "first_boot": {
+        "path": "reports/flash-ready-20260904/boot-successor/deadline-priority-audit.md",
+        "sha256": "ae6e966379869ffe83df2a2c92bb7aa9ab2c3fa7ea9d5ea8e78a5bec879216e7",
+        "size_bytes": 8248
+      },
+      "return_plan": {
+        "path": "reports/flash-ready-20260904/stock-return/five-hour-deadline-plan.json",
+        "sha256": "5b7af5a2534f5e4f3a97efb188c53e1b167c922d8c1fe37cca30a34d287ee2ff",
+        "size_bytes": 9227
       }
     }
   }

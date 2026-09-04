@@ -36,12 +36,22 @@ are exported and hash-verified. Independent semantic replay of the complete
 300-file proof also passes, including all 36 artifact commands and the separate
 historical Flex check.
 Final platform images and the successor package still need building.
-The five-image producer capture passes, but the first image invocation stops
-during initialization: an inherited full-spec comparison receives the native
-source projection instead of the authenticated installed specification. No
-native phase directory, output retention or Ninja invocation was created.
-The failed attempt is preserved; the correction does not require source changes
-or another producer capture.
+The five-image producer capture passes. An initial source-spec handoff failure
+was corrected without changing Android source or repeating the capture. The
+retry completes **941 Ninja actions with exit zero**, including APK/APEX
+dependencies, but its postcheck rejects changed timestamps on three policy-hash
+sidecars. Their bytes, sizes, inodes, modes, owners, modification times and
+ancestors remain identical; only change times differ. A full postcheck-only
+recovery is running, with the original failed result preserved. The read-only
+Package7 producer capture also passes; the package itself is not built yet.
+
+The wider deadline review found no justified new kernel/display source change.
+It confirmed a missing Android IMS provider stack: **IMS, VoLTE, VoWiFi and
+emergency-call operation are unverified**, and a stock APK alone is not a safe
+fix. Four valid mi_ext overlays pass checks; its zero-byte Messaging placeholder
+is explicitly not a valid APK. No unconditional mi_ext startup defect was
+established. Final classpath and DLKM-content checks were added to the remaining
+artifact verification; no phone action is authorized by this work.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.

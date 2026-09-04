@@ -154,6 +154,28 @@ specification must be supplied to that comparison while preserving the ordinary
 source projection and guards. The original failure and successful capture remain
 unchanged; no new source patch or capture is indicated.
 
+That handoff correction now passes the real native boundary. The image build
+completes **941 Ninja actions** with exit zero, including signing and APEX
+dependencies. Its original postcheck subsequently rejects the three policy-hash
+sidecars: full readback finds identical bytes, inode, mode, ownership,
+modification time and ancestry, with only `ctime` changed. The original result
+stays failed. A separate recovery must run every remaining metadata, producer
+and six-image check; it cannot merely waive the timestamp failure. The
+read-only Package7 producer capture has passed independently, without claiming
+image admission or a package build.
+
+The wider deadline review confirms a separate feature omission: no Android IMS
+provider is packaged. Native radio executables and dependency-name closure pass,
+but VoLTE/VoWiFi and emergency-call operation cannot be claimed. An IMS import
+needs the matching Java/native stack and reviewed platform signing, permissions
+and compatibility behavior. Kernel, graphics and core-init audits do not justify
+new source changes. Final validation now includes the ordered classpath/JAR
+closure, 484 DLKM module paths beyond the separately checked 430 ramdisk modules,
+and mi_ext's effective-content scope. Its four valid resource overlays pass;
+the zero-byte Messaging placeholder's failures remain recorded and no hidden
+OverlayFS marker or FamilySpace collision was found. Runtime behavior still
+requires an authorized device test.
+
 ## Completed checks
 
 The first-stage init refresh completed at **2026-09-04 14:09:10 UTC** through
