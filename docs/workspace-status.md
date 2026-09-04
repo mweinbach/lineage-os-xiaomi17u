@@ -10,6 +10,14 @@ consolidates recorded evidence through **September 4, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The three original VINTF checker commands now pass**, with native and
+supervisor exits 0/0; full framework/vendor/kernel/APEX stdout ends `COMPATIBLE`.
+All six source callbacks, 548 selected source files, 1,179 locked HEADs/origins,
+and the 39-APEX input set remain unchanged. Independent host review passes.
+The framework-only mode retains **two definition-check skips and two warnings**;
+these are not passed subchecks or proof of runtime service compatibility.
+See [the exact original-checker scope](package6-static-validation.md#original-vintf-checker-results).
+
 **Fresh signed Package6 boot-content checks pass**: five images, 16 published
 archive members, the exact 4 KiB kernel, eight Canoe DTBs, working76 recovery,
 430 ramdisk modules, and the selected factory fstab/bootconfig values agree.
@@ -21,8 +29,8 @@ was changed. See [current static validation](package6-static-validation.md).
 
 The pinned checker does not impose a universal provider-presence requirement
 on the combined matrix. Preserve the separate proprietary metadata and
-runtime checks. Original VINTF CLI results, first-stage reproduction, signing/
-OTA behavior, device trust/fit and actual boot remain open; complete-ROM and
+runtime checks. First-stage reproduction, APK/APEX/OTA signing and
+update behavior, device trust/fit and actual boot remain open; complete-ROM and
 flash readiness stay false.
 
 ## Earlier Package6 diagnostic outcome

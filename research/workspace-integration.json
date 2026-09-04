@@ -10845,5 +10845,37 @@
     "source_or_image_mutations": false,
     "phone_accessed": false,
     "complete_rom_ready": false
+  },
+  "package6_original_vintf_checkpoint_20260904": {
+    "status": "original-three-checker-commands-complete-with-zero-native-and-supervisor-exits",
+    "guide": "docs/package6-static-validation.md#original-vintf-checker-results",
+    "record": "research/package6-static-validation.json",
+    "preceding_checkpoint_commit": "a773584",
+    "completed_utc": "2026-09-04T13:21:48.272907+00:00",
+    "native_and_supervisor_exits": [
+      0,
+      0,
+      0
+    ],
+    "source_files_checked": 548,
+    "source_projects_checked": 15,
+    "project_heads_and_origins_matched": 1179,
+    "apex_modules": 39,
+    "reported_definition_skips": 2,
+    "reported_warnings": 2,
+    "source_inputs_and_apex_preserved": true,
+    "full_vintf_qualified": false,
+    "complete_rom_ready": false,
+    "phone_accessed": false,
+    "workspace_validation": {
+      "tests_passed": 4512,
+      "tests_skipped": 0,
+      "unittest_seconds": 196.786,
+      "completion": {
+        "path": "reports/resume-20260904/root/unittest-vintf-checkpoint.json",
+        "sha256": "b7435f921ab658454fa2cfe63dca43c1c2f7621e9fb3ff20ec75f477b84d2097",
+        "size_bytes": 345
+      }
+    }
   }
 }

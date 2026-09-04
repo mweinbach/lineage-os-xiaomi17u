@@ -11,6 +11,50 @@ SHA-256 `fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4`,
 10,834,328,619 bytes. It is distinct from the original native Package6 ZIP
 (`e3b9aa2b…`). Both retain their original provenance.
 
+## Original VINTF checker results
+
+The three **unmodified current Android checker commands all exit 0**, with
+matching native/supervisor exits and complete streams. Collection completes at
+**13:21:48 UTC**, after 605.184 seconds including the before/after source and
+input checks. Full compatibility stdout ends `COMPATIBLE`.
+
+| Original command | Native / supervisor | Reported definition skips | Warnings |
+| --- | --- | ---: | ---: |
+| Framework `--check-one` | 0 / 0 | 2 | 2 |
+| Vendor/ODM `--check-one` | 0 / 0 | 0 | 0 |
+| Framework/vendor/kernel/APEX `--check-compat` | 0 / 0 | 0 | 0 |
+
+The final comparison uses all five partition maps, the selected Canoe/Nezha
+SKUs, vendor API 202504, shipping API 36, both static kernel metadata files and
+39 retained APEX modules. Their materialization is reverified before and after;
+no APEX is substituted or newly activated. All six original source callbacks
+match, including 548 source files across 15 selected projects and all 1,179
+locked project HEADs/origins. The nine intentionally patched projects are
+preserved. Complete source-callback returns, input and APEX maps agree across the run.
+
+The original framework-only mode still skips definition checks for the
+unlevelled system device matrix and product Lineage matrix. It also emits the
+retained device-manifest/target-FCM and kernel-FCM warnings: this CLI mode
+requires one primary partition mapping. The full comparison has all five maps
+and the explicit kernel inputs. Neither warning nor skip is silently removed,
+counted as a passed subcheck, or claimed to be covered by the final command.
+
+The host review verifies 24 exported evidence bodies (191,008 decoded bytes),
+original argv, native exits, sandbox/limits, preservation and the original
+coverage parser. Its first attempt incorrectly required every raw mountinfo row
+to say `ro`, including the hidden writable `/work` mount beneath the read-only
+bind. The correction follows the unchanged observer's effective `statvfs`
+flags, retains raw mountinfo/hash equality and rejects an effectively writable
+mount. The original failure is preserved; nine focused regression tests pass.
+No native check was changed or rerun to obtain a different result.
+
+These are original CLI results, separate from the earlier instrumented
+experiment. They do not qualify that experiment's ODR/runtime equivalence,
+proprietary AIDL definitions or method ABI, APEX activation/signatures, live
+SELinux/kernel state, AVB trust, OTA or boot. Native start/seal files were checked
+by the guest but not exported for independent host filesystem replay. Complete
+VINTF and ROM readiness flags remain false.
+
 ## Current boot-image contents
 
 The inspection completed at **13:11:52 UTC**. It rehashed the five standalone
@@ -89,6 +133,6 @@ ignored locations. The boot parser regression suites passed **124 tests**;
 the separate matrix source-review suite passed **7 tests**, with zero skips.
 The complete workspace suite passed **4,512 tests** at this checkpoint.
 
-Original VINTF CLI results, first-stage reproduction, APK/APEX/OTA signing and
-update behavior, live rollback/capacity, first boot and hardware stabilization
+The explicit VINTF coverage limits, first-stage reproduction, APK/APEX/OTA
+signing and update behavior, live rollback/capacity, first boot and hardware stabilization
 remain separate work. All complete-ROM and flash readiness flags stay false.

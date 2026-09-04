@@ -89,20 +89,8 @@
     "skips": 0,
     "interrupted_baseline_test_counted_as_pass": false
   },
-  "scope": {
-    "boot_or_hardware_verified": false,
-    "complete_rom_ready": false,
-    "content_static_only": true,
-    "cpio_nodes_materialized": false,
-    "cryptographic_signature_verification_repeated": false,
-    "image_or_archive_mutation": false,
-    "live_partition_capacity_or_rollback_verified": false,
-    "phone_or_guest_accessed": false,
-    "private_keys_accessed": false,
-    "source_producer_admission": false
-  },
   "remaining_gates": [
-    "Original unmodified VINTF CLI result and precise subcheck coverage.",
+    "Explicit unlevelled matrix-definition skips, proprietary metadata/ABI and runtime VINTF behavior remain outside the successful original CLI commands.",
     "Fresh first-stage source-to-binary reproduction; current byte identity is verified.",
     "Proprietary interface ABI, APK/APEX/OTA signing and update behavior.",
     "Bootloader trust, stored rollback, live partition capacities and actual first boot.",
@@ -134,5 +122,117 @@
       "sha256": "5d1a536e6f14b047a83904f2375cf2c021bbdb5e63a41f5d9b07d11d565b1dc2",
       "size_bytes": 330
     }
+  },
+  "original_vintf": {
+    "status": "original-three-checker-commands-complete-with-zero-native-and-supervisor-exits",
+    "completed_utc": "2026-09-04T13:21:48.272907+00:00",
+    "elapsed_seconds": 605.184477666,
+    "checker": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/host/linux-x86/bin/checkvintf",
+      "sha256": "bc05ff595a3aca13384ba71fbb4a250b68db880ee5c8028799c4fc4edfd5dca3",
+      "size_bytes": 6179616
+    },
+    "commands": [
+      {
+        "name": "framework-consistency",
+        "native_exit_code": 0,
+        "supervisor_exit_code": 0,
+        "complete_native_exit": true,
+        "reported_skips": 2,
+        "reported_warnings": 2
+      },
+      {
+        "name": "vendor-odm-consistency",
+        "native_exit_code": 0,
+        "supervisor_exit_code": 0,
+        "complete_native_exit": true,
+        "reported_skips": 0,
+        "reported_warnings": 0
+      },
+      {
+        "name": "full-framework-vendor-kernel-apex",
+        "native_exit_code": 0,
+        "supervisor_exit_code": 0,
+        "complete_native_exit": true,
+        "reported_skips": 0,
+        "reported_warnings": 0
+      }
+    ],
+    "final_stdout": "COMPATIBLE",
+    "apex_materialization_reused_after_verification": 39,
+    "source_lock": {
+      "project_count": 1179,
+      "head_match_count": 1179,
+      "origin_match_count": 1179,
+      "clean_project_count": 1170,
+      "base_revisions_match": true
+    },
+    "source_files_checked": 548,
+    "source_projects_checked": 15,
+    "intentional_modified_projects_preserved": 9,
+    "decoded_evidence_files": 24,
+    "decoded_evidence_bytes": 191008,
+    "definition_skips": [
+      "/system/etc/vintf/compatibility_matrix.device.xml",
+      "/product/etc/vintf/compatibility_matrix.lineage.xml"
+    ],
+    "framework_only_warning_scope": "Original --check-one requires one primary partition mapping. Device manifest/target FCM and kernel FCM warnings remain in the complete logs. Full --check-compat includes all five maps and static kernel inputs.",
+    "full_vintf_qualified": false,
+    "rom_ready": false,
+    "phone_accessed": false,
+    "focused_tests": {
+      "collector": 8,
+      "corrected_host_reviewer": 9,
+      "skips": 0
+    },
+    "reviewer_correction": "The failed host review required every raw mountinfo row to say ro. It now follows the unchanged native observer effective statvfs flags for the visible mount, while retaining exact raw mountinfo/hash equality and writable-mount rejection. Original reviewer and failure are preserved.",
+    "evidence": {
+      "completion": {
+        "path": "reports/resume-20260904/root/original-vintf-actual-v1/completion.json",
+        "sha256": "6ac9c919034f10ea13c371460006e1559b33f680488710e9529c3036ab1072d5",
+        "size_bytes": 2168
+      },
+      "native_result_and_evidence": {
+        "path": "reports/resume-20260904/root/original-vintf-actual-v1/stdout.json",
+        "sha256": "43fb6db51c6eb474bab06e3fb5ef08177f8386e2e49d32cc32e00b9c25d8e19c",
+        "size_bytes": 27564174
+      },
+      "host_review": {
+        "path": "reports/resume-20260904/original-vintf-review/review.json",
+        "sha256": "43c982be37384b5c0981cc136de505e19ce791b3ce12fad8d70fb8dba1ac47a5",
+        "size_bytes": 19190
+      },
+      "reviewer_correction": {
+        "path": "reports/resume-20260904/original-vintf-review/correction.json",
+        "sha256": "e35d782e9a3b89fd3bca1540e44888cc6015692c3daccdcc8cd7eba49900e5b9",
+        "size_bytes": 1508
+      }
+    },
+    "guest_accessed": true,
+    "source_callback_returns_and_full_input_apex_maps_match": true,
+    "source_probe_bookkeeping_equal": false,
+    "source_probe_bookkeeping_scope": "Probe PID, process start time and elapsed time vary; all six complete source-callback returns match.",
+    "workspace_validation": {
+      "tests_passed": 4512,
+      "tests_skipped": 0,
+      "unittest_seconds": 196.786,
+      "completion": {
+        "path": "reports/resume-20260904/root/unittest-vintf-checkpoint.json",
+        "sha256": "b7435f921ab658454fa2cfe63dca43c1c2f7621e9fb3ff20ec75f477b84d2097",
+        "size_bytes": 345
+      }
+    }
+  },
+  "boot_content_scope": {
+    "boot_or_hardware_verified": false,
+    "complete_rom_ready": false,
+    "content_static_only": true,
+    "cpio_nodes_materialized": false,
+    "cryptographic_signature_verification_repeated": false,
+    "image_or_archive_mutation": false,
+    "live_partition_capacity_or_rollback_verified": false,
+    "phone_or_guest_accessed": false,
+    "private_keys_accessed": false,
+    "source_producer_admission": false
   }
 }

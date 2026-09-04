@@ -1,5 +1,24 @@
 # Nezha product and build progress
 
+## Package6 original VINTF CLI results — 2026-09-04
+
+The original current `checkvintf` completes all three commands with **0 native
+and supervisor exits**, and full comparison stdout ends `COMPATIBLE`.
+Collection closes at **13:21:48 UTC**, after **605.184 seconds** including
+preservation checks. Six source callbacks, 548 selected files, 15 selected
+projects, all 1,179 locked HEADs/origins and 39 APEX modules agree before/after.
+Source callback returns and input/APEX maps are unchanged; this does not compare
+every file in Android OUT. No recovery or phone operation occurs.
+
+The original framework-only mode retains **two unlevelled definition skips
+and two warnings**. Host review authenticates 24 exported bodies / 191,008 bytes
+and replays the original argv/coverage helpers. A host-only stacked-mount
+interpretation error is corrected with nine regression tests; original native
+checks and their first results are unchanged. Full VINTF/runtime, first-stage
+reproduction, signing/OTA and actual boot remain separate gates. See
+[the detailed result and limits](package6-static-validation.md#original-vintf-checker-results)
+and [public record](../research/package6-static-validation.json).
+
 ## Package6 current boot-content validation — 2026-09-04
 
 Fresh host inspection completes at **13:11:52 UTC**: five current signed image
