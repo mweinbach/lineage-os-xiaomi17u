@@ -25,7 +25,7 @@ with `BUILD_NUMBER=nezha.128c96ed5e626cdd0d213542`. Only the source descriptor
 changes; private/generated/tool/public-signing descriptor hashes remain the
 same. New configuration queries, graph, signer/APK, images and target-files
 results are still required. Source installation is not rebuilt-image or flash
-readiness. The full workspace suite passes **4,567 tests**, zero skips.
+readiness. The full workspace suite passes **4,602 tests**, zero skips.
 
 ## Source fixes before the next image set
 
@@ -80,6 +80,28 @@ The original [three VINTF commands and boot-image checks](package6-static-valida
 also pass, retaining their two definition skips and two framework-only warnings.
 These do not prove service registration or hardware behavior.
 
+## Vendor and ODM application coverage
+
+Fresh EROFS scans and captures separately cover all **19 APKs in the current
+vendor/ODM images**: ten apps and nine overlays. All pass actual manifest,
+four-byte ZIP / 4 KiB native-library alignment, and strict signature checks for
+API 36 and their full supported range. The Adreno APK needs a separately pinned
+BouncyCastle provider for the SDK verifier's RSA-PSS operation; the original
+host-provider failure is preserved. Eighteen APKs retain Xiaomi signatures and
+one retains Qualcomm's. No platform/phone shared-UID certificate conflict was
+found. These checks supplement the 455 APKs found in target-files and APEXes.
+
+Eight requested `signature|privileged` grants remain unavailable to CneApp,
+TxPwrAdmin and the Goodix factory test app under the new platform signer. They
+are nonprivileged `app` packages, so this is separate from FamilySpace's fatal
+privileged-allowlist gap. Cne's restricted-network requests and Tx's startup
+precise-telephony registration catch the relevant exceptions. Later keepalive
+and permission-observer operations may still fail without a local handler.
+The reviewed DEX establishes no unconditional whole-Android startup failure;
+it does not prove radio or power behavior works. Preserve OEM signers and
+validate these functions on device before making a targeted integration change.
+Factory test applications receive no extra permissions.
+
 ## Delivery and device gates
 
 The current Super layout is **A-only**: all eight A logical partitions are
@@ -102,6 +124,12 @@ USB/power, an off-device data backup, and a concrete stock-return/recovery plan.
 Stock userdata/encryption migration is not verified. Wiping userdata or metadata
 requires a separate explicit decision and authorization; neither is automatic.
 Never relock on the development key.
+
+A [bounded read-only preflight helper](device-flash-preflight.md) is prepared
+for separately authorized collection. Its default is plan-only. It preserves
+unknown device observations, rejects fastbootd as independent bootloader
+evidence, and cannot authorize installation or modify the phone. It has not
+been run against a device.
 
 OTA is a separate milestone. This target-files ZIP is not a sideload or
 fastboot-update installer; OTA key references are blank and two retained vendor

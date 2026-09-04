@@ -28,6 +28,13 @@ blocking. No phone operation has occurred. See [experimental first-boot
 readiness](flash-readiness.md) for the precise completed checks, A-only Super
 risk, data/device gates and current feature limits.
 
+Fresh vendor/ODM extraction also verifies all **19 additional APKs** for
+signatures, manifests and 4 KiB alignment, with the Adreno host-provider
+exception recorded separately. Known OEM permission feature gaps remain; no
+OEM signer or grant was changed. A bounded read-only device preflight tool is
+prepared but has not contacted a phone. The current complete offline suite
+passes **4,602 tests, zero skips**.
+
 ## Earlier Package6 static checks
 
 This checkpoint precedes the first-stage reproduction and comprehensive APK audit above.

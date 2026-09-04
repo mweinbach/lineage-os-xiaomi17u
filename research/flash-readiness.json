@@ -88,11 +88,12 @@
     "ota_ready": false
   },
   "validation": {
-    "workspace_tests_passed": 4567,
+    "workspace_tests_passed": 4602,
     "workspace_tests_skipped": 0,
     "first_stage_helper_tests_passed": 40,
     "signature_parser_tests_passed": 22,
-    "tests_are_distinct_from_native_and_device_checks": true
+    "tests_are_distinct_from_native_and_device_checks": true,
+    "device_preflight_tests_passed": 35
   },
   "evidence": {
     "first_stage_completion": {
@@ -129,6 +130,16 @@
       "path": "reports/flash-ready-20260904/delivery-plan/delivery-plan.json",
       "sha256": "7ff5da03eb58ee365e3e9256c1bb07d9c0b489ff82f3c77dfdba038801a2e661",
       "size_bytes": 28345
+    },
+    "vendor_odm_apk_audit": {
+      "path": "reports/flash-ready-20260904/signing-successor/vendor-odm/vendor-odm-result.json",
+      "sha256": "87a0be3e734eae0e04284dd5dfd2958ad15082a008cd2bdd30f28725e5add931",
+      "size_bytes": 11644
+    },
+    "workspace_tests_device_preflight": {
+      "path": "reports/flash-ready-20260904/root/full-tests-device-preflight.log",
+      "sha256": "b2e3c4c80643110051647a87de1325fd18fa20cb5190cfeab71e28f9105106f1",
+      "size_bytes": 804270
     }
   },
   "source_installation": {
@@ -186,5 +197,28 @@
         "size_bytes": 2902
       }
     }
+  },
+  "vendor_odm_apk_audit": {
+    "current_images_freshly_scanned_and_captured": true,
+    "apk_count": 19,
+    "applications": 10,
+    "overlays": 9,
+    "strict_api36_signature_passes": 19,
+    "strict_full_range_signature_passes": 19,
+    "alignment_passes": 19,
+    "sdk_only_provider_failure_preserved": true,
+    "separate_pinned_provider_verification": true,
+    "missing_signature_privileged_request_pairs": 8,
+    "oem_signers_preserved": true,
+    "whole_android_boot_failure_established": false,
+    "hardware_functionality_verified": false
+  },
+  "device_preflight_tool": {
+    "script": "scripts/device_flash_preflight.py",
+    "default": "plan-only",
+    "phone_collection_executed": false,
+    "device_mutations_supported": false,
+    "requires_explicit_authorized_usb_device": true,
+    "grants_flash_admission": false
   }
 }

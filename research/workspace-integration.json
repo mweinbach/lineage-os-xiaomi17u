@@ -10950,5 +10950,26 @@
     },
     "guide": "docs/flash-readiness.md#current-source-state",
     "record": "research/flash-readiness.json"
+  },
+  "device_preflight_and_vendor_apks_20260904": {
+    "scope": "host-tool-and-current-vendor-image-validation-not-device-admission",
+    "workspace_tests": {
+      "passed": 4602,
+      "skipped": 0,
+      "log": {
+        "path": "reports/flash-ready-20260904/root/full-tests-device-preflight.log",
+        "sha256": "b2e3c4c80643110051647a87de1325fd18fa20cb5190cfeab71e28f9105106f1",
+        "size_bytes": 804270
+      }
+    },
+    "device_preflight_tool": "scripts/device_flash_preflight.py",
+    "new_mocked_preflight_tests": 35,
+    "current_vendor_odm_apks_checked": 19,
+    "oem_signers_preserved": true,
+    "known_vendor_permission_feature_gaps_preserved": true,
+    "phone_accessed": false,
+    "complete_rom_ready": false,
+    "flash_ready": false,
+    "details": "research/flash-readiness.json"
   }
 }
