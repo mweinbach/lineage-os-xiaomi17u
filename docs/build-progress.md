@@ -1,5 +1,22 @@
 # Nezha product and build progress
 
+## Package6 current boot-content validation — 2026-09-04
+
+Fresh host inspection completes at **13:11:52 UTC**: five current signed image
+bodies and 16 published target-files members match the selected section/input
+identities. Three AOSP unpacks and two bounded LZ4 decodes pass. The exact
+4 KiB kernel, eight Canoe DTBs, DTBO, working76, 430 modules, six module metadata
+files, 29 fstab rows and eight bootconfig values are preserved.
+
+Seven absent alternative GSI keys remain explicit. Pinned source provides a
+conditional ordinary-AVB fallback, with matching current parent descriptors;
+this does not establish device acceptance or justify weakening verification.
+The VINTF source review rejects an invented universal combined-matrix provider
+requirement. Original checker results, runtime services, first-stage reproduction,
+OTA and physical boot remain separate. The offline suite passes all **4,512
+tests**, zero skips. See [the detailed current validation](package6-static-validation.md)
+and [public record](../research/package6-static-validation.json).
+
 ## Package6 diagnostic outcome and observer readback — 2026-09-04
 
 **Experimental diagnostic execution closes at 00:54:34 UTC**, after

@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "platform_branch": "bka",
+  "release_config": "bp4a",
+  "observed_on": "2026-09-04",
+  "status": "current-package6-boot-content-static-checks-pass",
+  "published_archive": {
+    "sha256": "fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4",
+    "size_bytes": 10834328619
+  },
+  "images": {
+    "boot": {
+      "sha256": "c3c8acac7eefc43b89fb4aecd6aa1f48739b670b4982e94194fa4620981427d3",
+      "size_bytes": 100663296
+    },
+    "dtbo": {
+      "sha256": "0d68f060fa424b6a761397ad9e5638fc196343c1958868f1710e9993ee1737d5",
+      "size_bytes": 33554432
+    },
+    "init_boot": {
+      "sha256": "2522eefbb9acf27e8c17a89e796579e27ba813dda1d876424dcc0c6183b4248f",
+      "size_bytes": 8388608
+    },
+    "recovery": {
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600
+    },
+    "vendor_boot": {
+      "sha256": "8bd3b8fe71fd3cc01cf70b4ed4695f68d6b8070b3b7b12902156f958599c2797",
+      "size_bytes": 100663296
+    }
+  },
+  "checks": {
+    "boot_images": 5,
+    "published_member_comparisons": 16,
+    "fresh_aosp_unpack_operations": 3,
+    "bounded_lz4_decodes": 2,
+    "kernel_page_size_bytes": 4096,
+    "canoe_dtbs": 8,
+    "vendor_ramdisk_modules": 430,
+    "module_metadata_files": 6,
+    "selected_fstab_rows": 29,
+    "avb_fstab_rows": 13,
+    "bootconfig_values": 8,
+    "working76_unchanged": true,
+    "first_stage_init": {
+      "elf": {
+        "elf_class": 64,
+        "endianness": "little",
+        "entry_address": 2662400,
+        "executed": false,
+        "machine": 183,
+        "program_file_bounds_verified": true,
+        "program_header_count": 10,
+        "sha256": "40e909efe66f1e94b445bb6c71ade94be994470981606dcbede6c975bfbcff94",
+        "size_bytes": 2701184,
+        "type": 2
+      },
+      "metadata": {
+        "gid": 0,
+        "mode": "0o100750",
+        "nlink": 1,
+        "uid": 0
+      },
+      "sha256": "40e909efe66f1e94b445bb6c71ade94be994470981606dcbede6c975bfbcff94",
+      "size_bytes": 2701184
+    }
+  },
+  "alternative_gsi_keys": {
+    "absent_literal_paths_in_two_ramdisks": 7,
+    "ordinary_avb_fallback_exists_in_pinned_source": true,
+    "matching_system_parent_descriptors_observed": true,
+    "device_key_closure_verified": false,
+    "absence_alone_requires_image_change": false
+  },
+  "matrix_semantics": {
+    "combined_hal_rows": 223,
+    "matrix_package_format_pairs_absent_from_effective_manifest": 39,
+    "set_difference_is_required_provider_failure": false,
+    "universal_provider_requirement_not_implemented_by_pinned_checker": true,
+    "retained_declarations_matched": 155,
+    "generated_metadata_missing_names": 127
+  },
+  "validation": {
+    "workspace_tests": 4512,
+    "boot_parser_regression_tests": 124,
+    "matrix_source_review_tests": 7,
+    "skips": 0,
+    "interrupted_baseline_test_counted_as_pass": false
+  },
+  "scope": {
+    "boot_or_hardware_verified": false,
+    "complete_rom_ready": false,
+    "content_static_only": true,
+    "cpio_nodes_materialized": false,
+    "cryptographic_signature_verification_repeated": false,
+    "image_or_archive_mutation": false,
+    "live_partition_capacity_or_rollback_verified": false,
+    "phone_or_guest_accessed": false,
+    "private_keys_accessed": false,
+    "source_producer_admission": false
+  },
+  "remaining_gates": [
+    "Original unmodified VINTF CLI result and precise subcheck coverage.",
+    "Fresh first-stage source-to-binary reproduction; current byte identity is verified.",
+    "Proprietary interface ABI, APK/APEX/OTA signing and update behavior.",
+    "Bootloader trust, stored rollback, live partition capacities and actual first boot.",
+    "Hardware stabilization, encryption and native Xiaomi functionality."
+  ],
+  "evidence": {
+    "boot_content": {
+      "path": "reports/resume-20260904/boot-static/actual-v1/report.json",
+      "sha256": "b78ed49850a17ab5f8fbd6aba2570867cb685095d2632b9c0f963b7544611752",
+      "size_bytes": 288492
+    },
+    "gsi_key_fallback": {
+      "path": "reports/resume-20260904/boot-static/gsi-key-fallback.json",
+      "sha256": "12e1ab05dc4f080e3e6e93bc5da4d7cd1c2329db363a66e565b0e3c405ae9d0e",
+      "size_bytes": 27733
+    },
+    "matrix_semantics": {
+      "path": "reports/resume-20260904/matrix-requirements/audit.json",
+      "sha256": "d2258c3e8ecf14f89064677819f41cc493c958f9e7239a18fc43b0fe610516f4",
+      "size_bytes": 22661
+    },
+    "root_static_review": {
+      "path": "reports/resume-20260904/root/static-report-review.json",
+      "sha256": "d1808cee4ce32414c08daa98becd10c7b29cf6c597f00e206e2acdd68741680b",
+      "size_bytes": 944
+    },
+    "workspace_tests": {
+      "path": "reports/resume-20260904/root/unittest-v2.json",
+      "sha256": "5d1a536e6f14b047a83904f2375cf2c021bbdb5e63a41f5d9b07d11d565b1dc2",
+      "size_bytes": 330
+    }
+  }
+}

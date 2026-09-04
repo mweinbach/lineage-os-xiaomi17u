@@ -12,6 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
+| [Package6 current static validation](package6-static-validation.md) | Fresh boot-image contents, preserved factory hardware inputs, conditional AVB fallback and exact VINTF scope; no boot or flash readiness claim |
 | [Package6 diagnostic outcome and observer readback](build-progress.md#package6-diagnostic-outcome-and-observer-readback--2026-09-04) | Experimental execution, trace/observer readbacks and 155 exact declared AIDL matches pass; full matrix requirements, ODR/original-checker/runtime equivalence and ROM gates remain open |
 | [Package6 sparse Super and published boot candidates](build-progress.md#package6-sparse-super-and-published-boot-candidates--2026-09-04) | Super LP/content/static fit and published candidate comparisons pass; diagnostic compile/link completes, while run/ODR, constructor/source/runtime, flash safety and ROM gates remain open |
 | [Package6 source endpoint and diagnostic dependency failure](build-progress.md#package6-source-endpoint-and-diagnostic-dependency-failure--2026-09-03) | P4 observes the source endpoint; failed diagnostic dependency and source recovery remain distinct, with no archive/run, accepted Super result or ROM qualification |

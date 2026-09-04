@@ -6,9 +6,26 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 4, 2026 UTC (September 1–3 in
+consolidates recorded evidence through **September 4, 2026 UTC (September 1–4 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
+
+**Fresh signed Package6 boot-content checks pass**: five images, 16 published
+archive members, the exact 4 KiB kernel, eight Canoe DTBs, working76 recovery,
+430 ramdisk modules, and the selected factory fstab/bootconfig values agree.
+Seven alternative GSI key paths remain absent; the pinned source has a
+conditional ordinary-AVB fallback and the matching parent descriptors are
+present. This does not prove bootloader acceptance or key closure. The complete
+workspace suite passes **4,512 tests with zero skips**. No source, image or phone
+was changed. See [current static validation](package6-static-validation.md).
+
+The pinned checker does not impose a universal provider-presence requirement
+on the combined matrix. Preserve the separate proprietary metadata and
+runtime checks. Original VINTF CLI results, first-stage reproduction, signing/
+OTA behavior, device trust/fit and actual boot remain open; complete-ROM and
+flash readiness stay false.
+
+## Earlier Package6 diagnostic outcome
 
 **The experimental diagnostic executes with captured zero results**, and its
 trace-structure review passes after authenticated readback. **All 155 retained
