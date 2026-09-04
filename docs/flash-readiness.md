@@ -125,9 +125,18 @@ are now staged with their recorded hashes; the failed attempt remains intact.
 A separate Selected6 attempt uses the complete input map and a new phase
 record. It preserves all 26 old outputs as copies and retained originals, then
 completes all **35 ordinary Ninja actions** at **19:50:13 UTC** with exit zero.
-Ninja arguments, limits and sandbox checks pass. The complete source,
-retention, artifact and strict-status postchecks remain pending; the invocation
-alone does not qualify the app stage or final platform images.
+Ninja arguments, limits and sandbox checks pass. The complete native profile and
+postchecks now also pass, including 26 fresh required actions, eight fresh
+strict statuses, ten live verification passes and five verified intervals.
+All six before/after source callback maps match. Flex's prior read-only check
+remains separate and is not counted as a fresh status.
+
+All 193 retained evidence files (127,408,623 bytes) are exported with matching
+hashes and stable native descriptors. Independent review accepts the original
+process-success predicate and actual profile bindings. Full action/artifact
+semantic replay is still pending; platform images and Package7 remain unbuilt.
+The exact original request is retained after completion, explicitly recording
+that the native invocation consumed stdin rather than that later file.
 
 ## Completed checks
 

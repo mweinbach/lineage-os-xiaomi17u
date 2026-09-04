@@ -28,10 +28,12 @@ and the successor package are still pending.
 The first selected-app attempt stopped before Android invocation because its
 staging map omitted six capture-proof aliases. Those original files are now
 staged and hash-verified; the failed attempt and all build outputs are preserved.
-The separate Selected6 retry now completes all 35 ordinary Ninja actions with
-exit zero and verified sandbox, arguments and limits. Its complete source,
-retention, artifact and strict-status postchecks are still running; this is not
-yet a full app-stage pass or a final-image result.
+The separate Selected6 retry now passes the complete native profile and
+postchecks: 35 ordinary Ninja actions, 26 fresh required outputs including eight
+strict statuses, ten live verification passes, and all 52 retained copies and
+originals. All six source callback maps match. Its 193 retained evidence files
+are exported and hash-verified; complete independent semantic replay is pending.
+Final platform images and the successor package still need building.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.

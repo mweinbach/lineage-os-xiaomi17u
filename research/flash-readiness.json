@@ -469,7 +469,7 @@
     }
   },
   "selected6_build": {
-    "status": "ordinary-invocation-exited-zero-postchecks-pending",
+    "status": "native-profile-and-postchecks-pass-independent-semantic-replay-pending",
     "finished_at": "2026-09-04T19:50:13.371041+00:00",
     "native_exit_code": 0,
     "ninja_actions_completed": 35,
@@ -479,14 +479,44 @@
     "sandbox_checks_passed": true,
     "original_outputs_copied": 26,
     "original_outputs_moved_to_retention": 26,
-    "whole_phase_verified": false,
+    "whole_phase_verified": true,
     "final_images_verified": false,
     "evidence": {
       "invocation": {
         "path": "reports/flash-ready-20260904/root/selected6-invocation.json",
         "sha256": "b2a31ba8877b5f0f82ab79d71b07cb8636c18769b8785305758acacb7c77b700",
         "size_bytes": 6954
+      },
+      "native_result": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected6-accelerated/native/stdout.jsonl",
+        "sha256": "973e39cd526988a671d60a66ded345fafe13b0a219f35cf4a1af5b13691d02f4",
+        "size_bytes": 19320967
+      },
+      "process_review": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected6-result-process-review.json",
+        "sha256": "935be67cb655d8fee152abec97a9708da75d4cfb22d3697a3607077c04dc7374",
+        "size_bytes": 1906
+      },
+      "retained_evidence_manifest": {
+        "path": "reports/flash-ready-20260904/root/selected6-retained-evidence-v1/manifest.json",
+        "sha256": "db8c5bda5cc61cec0cd5641c268623e5e1c54f39f3ea979a2ab8e58991cb6a22",
+        "size_bytes": 202776
+      },
+      "request_postrun_retention": {
+        "path": "reports/flash-ready-20260904/root/selected6-request-postrun-retention.json",
+        "sha256": "7405f0eedbe6aa11cb714a3ec525e225a406de19a6c703ca662955d078e71428",
+        "size_bytes": 493
       }
-    }
+    },
+    "independent_semantic_replay_passed": false,
+    "fresh_required_actions": 26,
+    "fresh_strict_statuses": 8,
+    "reused_required_actions": 0,
+    "historical_flex_check_remains_separate": true,
+    "live_verification_passes": 10,
+    "verified_intervals": 5,
+    "six_source_callbacks_unchanged": true,
+    "retained_evidence_files": 193,
+    "retained_evidence_bytes": 127408623
   }
 }
