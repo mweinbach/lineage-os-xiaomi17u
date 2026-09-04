@@ -180,6 +180,11 @@
       "path": "reports/flash-ready-20260904/signing-successor/archive-gzip/package6-rehearsal-v2/final-readback.json",
       "sha256": "54fa07cdd717a13297b5b9cd8ba387f535d057de3719a5e1072e16d50869b06c",
       "size_bytes": 50556
+    },
+    "workspace_tests_images7_checkpoint": {
+      "path": "reports/flash-ready-20260904/root/full-tests-images7-checkpoint.log",
+      "sha256": "8c5fccdfb93898ee1c6da910ef2dcc83cd6590017a0076323d8a3f71d4bb4a92",
+      "size_bytes": 804270
     }
   },
   "source_installation": {
@@ -344,6 +349,37 @@
         "sha256": "bbdb53e8582eb200e8bbbf8a829f31ca940a36c2a73b7b37b008d605477d1470",
         "size_bytes": 1964
       }
+    }
+  },
+  "gms3_continuation": {
+    "capture_status": "captured",
+    "capture_errors": [],
+    "controller_initialization_status": "failed-before-build",
+    "initialization_error": "host-only recovery helper path initialization under a virtual module filename",
+    "native_phase_directory_created": false,
+    "android_build_invoked": false,
+    "source_or_output_changed": false,
+    "retry_requires_corrected_pure_api_loader": true,
+    "capture": {
+      "path": "reports/flash-ready-20260904/build-continuation/gms4-capture-native-v2/capture.json",
+      "sha256": "63cd41a6fcee2705d1d6f9aec81faacf9834c0d498b35278aad6fdf73a074789",
+      "size_bytes": 3191189
+    },
+    "failed_initialization_stderr": {
+      "path": "reports/flash-ready-20260904/build-continuation/gms3/native/stderr.log",
+      "sha256": "6d18216e2ab8dbabda78cf9a27bb9ce3fa55a58130034eab1c5075fd48d71af8",
+      "size_bytes": 784
+    }
+  },
+  "native_package6_keeper": {
+    "status": "verified-independent-copy",
+    "full_expanded_tree_preserved": false,
+    "original_archive_left_in_place_at_capture": true,
+    "minimum_free_space_bytes": 137438953472,
+    "receipt": {
+      "path": "reports/flash-ready-20260904/root/package6-native-keeper.json",
+      "sha256": "8772255d1ba8ad5ad59a9b4435eba8c6b256dd385a5e81007306bd4a60e4f312",
+      "size_bytes": 2118
     }
   }
 }

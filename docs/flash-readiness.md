@@ -81,6 +81,25 @@ remain unchanged; working76 and retained proprietary image bytes are preserved.
 This does not verify the final signed parent chain or runtime. Platform images
 and the successor target-files package are still pending.
 
+The shared app/graph capture now completes with no capture or guard errors.
+Its first attempt stopped at an outdated 128 MiB per-log limit: the intact
+Ninja dependency database is 171,935,084 bytes. The retry admits only that
+exact measured file, retains the ordinary 128 MiB default and 256 MiB total
+log cap, and verifies all graph-derived log paths. No database was removed,
+truncated or reset.
+
+The first GMS3 launcher attempt subsequently stopped during verification-helper
+initialization, before the native phase directory or Android build was created.
+A host-only recovery helper assumed a filesystem module path. The correction
+uses its authenticated pure pairing API; the original failed run and successful
+capture remain separate. Both current Ninja databases still match the capture.
+The full offline suite passes again: 4,602 tests, zero skips, in 201.844 seconds.
+
+The native Package6 ZIP is also retained as an independent, fully rehashed
+11,006,603,036-byte copy before Package7 can replace the ordinary output path.
+The original archive remains in place at this checkpoint; no complete expanded
+tree backup is claimed.
+
 ## Completed checks
 
 The first-stage init refresh completed at **2026-09-04 14:09:10 UTC** through
