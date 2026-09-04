@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "id": "familyspace-product-privapp-permissions-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-04 Package6 privileged-permission audit",
+  "project": "vendor/gms",
+  "origin": "https://github.com/Evolution-X/vendor_gms",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "89c3940a77298c204c55a21efded92ddafb59fe9",
+  "patch": "patches/evolution/0024-familyspace-product-privapp-permissions.patch",
+  "patch_sha256": "a174efb59a60a0fcb5ee82cd3afc83a308c60a52c64c6e34adeed3b482dc36a3",
+  "patch_size_bytes": 807,
+  "files": [
+    {
+      "path": "product/blobs/etc/permissions/privapp-permissions-google-p.xml",
+      "mode": "100644",
+      "line_endings": "LF",
+      "before_sha256": "1a923edbfaa765eccb40ee7a11cec65e627349cfe8f33a7a1ff433e089a6a7f5",
+      "before_size_bytes": 65108,
+      "before_git_blob": "5f37c2a0e6398f406f029a9801fd37ce7547c16b",
+      "after_sha256": "79ec429edf7269c1bf5a084cffabba08860ed981134ba75c8f00bd3cc196db71",
+      "after_size_bytes": 65356,
+      "after_git_blob": "0700b43c14ae3393b5ca0c894f84ee85f09e5148"
+    }
+  ],
+  "package": "com.google.android.apps.pixel.familyspace",
+  "permissions_added": [
+    "android.permission.GET_ACCOUNTS_PRIVILEGED",
+    "android.permission.WRITE_SECURE_SETTINGS"
+  ],
+  "purpose": "Resolve two source-confirmed privileged permission allowlist absences for the selected FamilySpace APK while retaining strict boot-time enforcement and the original signed APK.",
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "source_capture": {
+    "path": "reports/flash-ready-20260904/root/init-permission-capture-v1/stdout.json",
+    "sha256": "5bde8f13c2c9c649b6e9440e37efc30c6199e84672f30f28d905805138d7b5d9",
+    "size_bytes": 1110932,
+    "selector": "before.vendor/gms/product/blobs/etc/permissions/privapp-permissions-google-p.xml",
+    "returncode": 0,
+    "after_equal": true,
+    "source_mutated": false
+  },
+  "observed_apk": {
+    "module": "FamilySpacePrebuilt-v484",
+    "archive_member": "PRODUCT/priv-app/FamilySpacePrebuilt-v484/FamilySpacePrebuilt-v484.apk",
+    "published_target_files": {
+      "sha256": "fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4",
+      "size_bytes": 10834328619
+    },
+    "apk": {
+      "path": "reports/flash-ready-20260904/signing/files/0275.apk",
+      "sha256": "4f2a2f240d79460bb0b7a6348496c6944a364da3fc66147f3f9dc60fc88083a7",
+      "size_bytes": 3792756
+    },
+    "manifest_dump": {
+      "path": "reports/flash-ready-20260904/signing/commands/0275/manifest.stdout",
+      "sha256": "bde0941d36519d9e51e1a58761940f92d7cb737d21a44b55a2c20b602d7692fe",
+      "size_bytes": 19159
+    },
+    "native_result": {
+      "path": "reports/flash-ready-20260904/signing/commands/0275/result.json",
+      "sha256": "f1c2d65375ab46e64cff5b8c6ab3629736006d57d57c4b47fbcd6535dec5583f",
+      "size_bytes": 3339
+    },
+    "signature_stdout": {
+      "path": "reports/flash-ready-20260904/signing/commands/0275/signature.stdout",
+      "sha256": "f6d279f5bea43a0870adafabcbfb8857ef40cfb0490b41c888d76d5dd1411ffe",
+      "size_bytes": 1775
+    },
+    "signature_returncode": 0,
+    "signature_flags": [
+      "-Werr",
+      "--verbose",
+      "--print-certs"
+    ],
+    "signer_certificate_sha256": "6caed89b0c089fc60bb53dba637bbfada1a8cd4c959760af7db1d5b088fe6f42",
+    "manifest_package": "com.google.android.apps.pixel.familyspace",
+    "shared_user_id": null,
+    "install_constraints": false,
+    "request_max_sdk_or_feature_flag_constraints": false,
+    "source_makefile": {
+      "path": "reports/flash-ready-20260904/signing/current-source/Android.mk",
+      "sha256": "5fce4ccb1826309491c7c0ec2a7a3b83b01c53ca5d0dcb440e5839d52e5d96ea",
+      "size_bytes": 955
+    },
+    "module_selection": {
+      "path": "reports/flash-ready-20260904/signing/current-source/gms_full.mk",
+      "sha256": "0d49d2d57551569eeb1d99d07dfc4d404a77a797cd4124d2d4dfe3d3b77909db",
+      "size_bytes": 5337
+    }
+  },
+  "permission_audit": {
+    "analysis": {
+      "path": "reports/flash-ready-20260904/signing/analysis-v3.json",
+      "sha256": "caef7b674c2f6cf0999acc2317af9fddd2aee0a8f84e69434cc4257d0f710c1b",
+      "size_bytes": 1434616
+    },
+    "current_source_rules": {
+      "path": "reports/flash-ready-20260904/signing/privilege-rules/current-source-rules.json",
+      "sha256": "a7d045f7f7485d0774a31603f0da29047acb4a9da09463c932699a3a969b53ea",
+      "size_bytes": 14724
+    },
+    "source_rule": "The active Kotlin AppIdPermissionPolicy evaluates the privileged allowlist before signature eligibility and throws accumulated enforce-mode violations at systemReady. The package has no shared UID, avoiding shared-UID request short-circuit ambiguity for these two requests.",
+    "definition_owner": "android",
+    "definitions_privileged": true,
+    "effective_product_and_vendor_control_privapp_permissions": "enforce",
+    "device_boot_failure_observed": false
+  },
+  "retained_module_settings": {
+    "LOCAL_MODULE": "FamilySpacePrebuilt-v484",
+    "LOCAL_SRC_FILES": "FamilySpacePrebuilt-v484.apk",
+    "LOCAL_CERTIFICATE": "PRESIGNED",
+    "LOCAL_PRODUCT_MODULE": "true",
+    "LOCAL_PRIVILEGED_MODULE": "true"
+  },
+  "scope": {
+    "changed_packages": [
+      "com.google.android.apps.pixel.familyspace"
+    ],
+    "other_package_to_preserve": "com.google.android.gms.supervision",
+    "permissions_removed": [],
+    "original_package_blocks_preserved": 74,
+    "new_package_blocks": 1,
+    "inserted_bytes": 248,
+    "all_original_xml_bytes_preserved": true,
+    "enforcement_changed": false,
+    "apk_bytes_changed": false,
+    "signing_changed": false,
+    "placement_changed": false,
+    "selinux_changed": false,
+    "recovery_changed": false,
+    "page_size_changed": false
+  },
+  "reproduction": {
+    "helper": "scripts/familyspace_privapp_permissions.py",
+    "operation": "derive(bytes) returns only the pinned postimage; reverse(bytes) recovers only the pinned original. No filesystem or native commands are executed.",
+    "offline_tests": "python3 -m unittest tests.test_familyspace_privapp_permissions -v",
+    "private_prepared_source": "reports/flash-ready-20260904/familyspace/privapp-permissions-google-p.after.xml"
+  },
+  "adoption_requirements": [
+    "Reauthenticate the active vendor/gms revision, origin, exact complete XML preimage and mode before the existing reviewed source transaction. Preserve all prior patches and original proprietary inputs.",
+    "Install only the pinned one-file transition, record the new source composition/build identity, and regenerate the ordinary product permission copy and images from source. A hand-edited target-files XML or image is not source integration.",
+    "Read back the installed and rebuilt product allowlist and original FamilySpace APK; require exactly one block with exactly these two permission names, no changes to com.google.android.gms.supervision, unchanged PRESIGNED signing and product privileged placement, and ro.control_privapp_permissions=enforce.",
+    "Rerun the effective privileged-permission audit and relevant real component/packaging, signing, AVB, VINTF and partition checks for the rebuilt artifact set. Preserve normal Android SELinux enforcing, 4 KiB and working76 recovery. This source patch alone does not establish a bootable or flash-ready ROM."
+  ],
+  "preparation_limits": {
+    "active_source_installed": false,
+    "rebuilt_product_xml_verified": false,
+    "images_rebuilt": false,
+    "target_files_repackaged": false,
+    "phone_accessed": false,
+    "hardware_tested": false,
+    "complete_rom_ready": false,
+    "flash_ready": false
+  }
+}

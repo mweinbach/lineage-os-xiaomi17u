@@ -1,0 +1,14 @@
+diff --git a/product/blobs/etc/permissions/privapp-permissions-google-p.xml b/product/blobs/etc/permissions/privapp-permissions-google-p.xml
+index 5f37c2a0e6398f406f029a9801fd37ce7547c16b..0700b43c14ae3393b5ca0c894f84ee85f09e5148 100644
+--- a/product/blobs/etc/permissions/privapp-permissions-google-p.xml
++++ b/product/blobs/etc/permissions/privapp-permissions-google-p.xml
+@@ -1041,4 +1041,9 @@
+         <!-- Used to show notifications -->
+         <permission name="android.permission.POST_NOTIFICATIONS"/>
+     </privapp-permissions>
++
++    <privapp-permissions package="com.google.android.apps.pixel.familyspace">
++        <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED"/>
++        <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
++    </privapp-permissions>
+ </permissions>
