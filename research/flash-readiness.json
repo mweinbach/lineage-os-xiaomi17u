@@ -546,5 +546,35 @@
       "evidence_omitted": false,
       "package7_executed": false
     }
+  },
+  "five_images2": {
+    "status": "capture-verified-native-context-initialization-failed",
+    "read_only_producer_queries": 2,
+    "image_producer_commands_verified": 5,
+    "system_copy_edge_verified": true,
+    "ordinary_android_invocation_executed": false,
+    "native_phase_directory_created": false,
+    "output_retention_started": false,
+    "source_or_output_changes_observed": false,
+    "error": "complete current source specification differs from Nothing11",
+    "cause": "Native admission received the source projection instead of the authenticated full installed specification.",
+    "new_source_patch_or_capture_required": false,
+    "evidence": {
+      "capture": {
+        "path": "reports/flash-ready-20260904/build-continuation/five-image2-capture-native/capture.json",
+        "sha256": "9c8e4d96fcbbe1c4073ef404cdeabeeecb9d7941a8b4e27a53613d37e575a473",
+        "size_bytes": 992006
+      },
+      "capture_review": {
+        "path": "reports/flash-ready-20260904/build-continuation/five-image2-capture-native/capture-review.json",
+        "sha256": "5bbd218806f18e50501e47167943a2b924da75ab5543dc45a12e7aedddf5cde0",
+        "size_bytes": 3322
+      },
+      "failure": {
+        "path": "reports/flash-ready-20260904/root/five-images2-initialization-failure.json",
+        "sha256": "8140f7497491dcc98d2d1df04a4bf813454dcfc1dcbdbe4d913d1a4ee3abfda2",
+        "size_bytes": 1905
+      }
+    }
   }
 }

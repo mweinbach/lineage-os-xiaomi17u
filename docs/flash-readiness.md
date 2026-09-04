@@ -145,6 +145,15 @@ size limits. Package7 needs an explicit external-file transport while retaining
 the original checks and complete bytes. This is separate from the successful
 native app stage and independent semantic replay; neither requires a rebuild.
 
+The subsequent five-image capture also passes both read-only queries and its
+source/runtime guards. The first image invocation then stops during native
+context initialization: its inherited full-spec comparison receives a source
+projection with a different operation field. It does not create a native phase
+directory, preserve outputs or invoke Ninja. The full installed source
+specification must be supplied to that comparison while preserving the ordinary
+source projection and guards. The original failure and successful capture remain
+unchanged; no new source patch or capture is indicated.
+
 ## Completed checks
 
 The first-stage init refresh completed at **2026-09-04 14:09:10 UTC** through

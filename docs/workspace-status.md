@@ -36,6 +36,12 @@ are exported and hash-verified. Independent semantic replay of the complete
 300-file proof also passes, including all 36 artifact commands and the separate
 historical Flex check.
 Final platform images and the successor package still need building.
+The five-image producer capture passes, but the first image invocation stops
+during initialization: an inherited full-spec comparison receives the native
+source projection instead of the authenticated installed specification. No
+native phase directory, output retention or Ninja invocation was created.
+The failed attempt is preserved; the correction does not require source changes
+or another producer capture.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.
