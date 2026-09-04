@@ -12,7 +12,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | Current workflow | Purpose |
 | --- | --- |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
-| [Experimental first-boot readiness](flash-readiness.md) | Current source fixes, original init reproduction, complete APK/APEX audit, A-only delivery risks and remaining device gates |
+| [Experimental first-boot readiness](flash-readiness.md) | Current source fixes, original init reproduction, APK/APEX and compressed-app audits, A-only delivery risks and remaining device gates |
 | [Read-only device preflight](device-flash-preflight.md) | Explicit-device USB observations, bounded firmware/Super-prefix reads and unresolved snapshot/rollback/data gates; no phone mutations or automatic admission |
 | [Package6 current static validation](package6-static-validation.md) | Original VINTF commands pass with explicit skips/warnings; fresh boot-image contents and conditional AVB fallback are verified separately, with no boot or flash readiness claim |
 | [Package6 diagnostic outcome and observer readback](build-progress.md#package6-diagnostic-outcome-and-observer-readback--2026-09-04) | Experimental execution, trace/observer readbacks and 155 exact declared AIDL matches pass; full matrix requirements, ODR/original-checker/runtime equivalence and ROM gates remain open |

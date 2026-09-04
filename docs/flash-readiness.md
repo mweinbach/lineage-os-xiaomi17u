@@ -109,6 +109,16 @@ payloads, separately from the earlier image-content checks:
 | Shell's flagged permission | Absent from all packaged default flag stores; parser skips its definition. Existing device overrides are outside this check. |
 | Input preservation | Full published ZIP and all 520 copied APK/container inputs rehash unchanged |
 
+A subsequent image inventory found **three compressed full APK payloads**
+behind Chrome, WebView and Trichrome stubs. Their bounded expansions and all
+three stubs pass strict signature and alignment checks. Package names, versions
+and signing identities match; Chrome/WebView's Trichrome version 699,813,532
+and required certificate match the expanded library. The earlier incomplete
+host-readback attempt is preserved separately from the completed retry. These
+are additional Package6 artifact checks, not proof of on-device expansion or
+successor-image delivery. Effective manifest analysis substitutes the expanded
+APK for its stub instead of counting two installed packages.
+
 The original [three VINTF commands and boot-image checks](package6-static-validation.md)
 also pass, retaining their two definition skips and two framework-only warnings.
 These do not prove service registration or hardware behavior.

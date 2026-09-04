@@ -170,6 +170,16 @@
       "path": "reports/flash-ready-20260904/build-continuation/images7/native/stdout.jsonl",
       "sha256": "2acb6b308e789532e3e57347f8bf7a749ad739b6a5638a2bb52674367a59cc11",
       "size_bytes": 13934749
+    },
+    "package6_compressed_apk_summary": {
+      "path": "reports/flash-ready-20260904/signing-successor/archive-gzip/package6-rehearsal-v2/summary.json",
+      "sha256": "74da250d2dbd914b2e0977c493e8736f73e7d191b5fa9e5fc7e99b6ccb9edb5f",
+      "size_bytes": 7082
+    },
+    "package6_compressed_apk_readback": {
+      "path": "reports/flash-ready-20260904/signing-successor/archive-gzip/package6-rehearsal-v2/final-readback.json",
+      "sha256": "54fa07cdd717a13297b5b9cd8ba387f535d057de3719a5e1072e16d50869b06c",
+      "size_bytes": 50556
     }
   },
   "source_installation": {
@@ -290,5 +300,17 @@
     "six_source_callbacks_unchanged": true,
     "signed_parent_chain_verified": false,
     "runtime_verified": false
+  },
+  "package6_compressed_apk_audit": {
+    "expanded_apk_payloads": 3,
+    "matching_stubs": 3,
+    "signature_commands_passed": 12,
+    "alignment_checks_passed": 6,
+    "package_version_and_signer_pairs_match": true,
+    "trichrome_static_library_version": 699813532,
+    "effective_manifest_analysis_substitutes_expanded_for_stub": true,
+    "runtime_expansion_verified": false,
+    "successor_package_verified": false,
+    "earlier_incomplete_attempt_preserved": true
   }
 }
