@@ -23,8 +23,8 @@ source-inventory postcheck correction now passes separately, preserving the
 original failed receipt. The ordinary recovery/vendor/ODM/mi_ext and policy-
 hash rebuild passes, including all seven fresh producer checks. The GMS app
 stage also passes native checks and independent replay, distinguishing two
-fresh APK actions from verified reuse. Selected-app checks, platform images
-and the successor package are still pending.
+fresh APK actions from verified reuse. Selected-app checks now also pass;
+platform images and the successor package are still pending.
 The first selected-app attempt stopped before Android invocation because its
 staging map omitted six capture-proof aliases. Those original files are now
 staged and hash-verified; the failed attempt and all build outputs are preserved.
@@ -32,7 +32,9 @@ The separate Selected6 retry now passes the complete native profile and
 postchecks: 35 ordinary Ninja actions, 26 fresh required outputs including eight
 strict statuses, ten live verification passes, and all 52 retained copies and
 originals. All six source callback maps match. Its 193 retained evidence files
-are exported and hash-verified; complete independent semantic replay is pending.
+are exported and hash-verified. Independent semantic replay of the complete
+300-file proof also passes, including all 36 artifact commands and the separate
+historical Flex check.
 Final platform images and the successor package still need building.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,

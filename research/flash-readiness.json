@@ -8,7 +8,7 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-04",
-  "status": "gms-components-verified-selected-apps-and-platform-images-pending",
+  "status": "selected-app-components-verified-platform-images-and-package-pending",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
@@ -469,7 +469,7 @@
     }
   },
   "selected6_build": {
-    "status": "native-profile-and-postchecks-pass-independent-semantic-replay-pending",
+    "status": "native-and-independent-semantic-checks-passed",
     "finished_at": "2026-09-04T19:50:13.371041+00:00",
     "native_exit_code": 0,
     "ninja_actions_completed": 35,
@@ -506,9 +506,24 @@
         "path": "reports/flash-ready-20260904/root/selected6-request-postrun-retention.json",
         "sha256": "7405f0eedbe6aa11cb714a3ec525e225a406de19a6c703ca662955d078e71428",
         "size_bytes": 493
+      },
+      "semantic_reviewer": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected6-review-v1/review_selected6.py",
+        "sha256": "64751f080f8cd2d771b96a5e51c8d2c1143feff9f8dab2fbf243f9c4a5a0401c",
+        "size_bytes": 23896
+      },
+      "semantic_review": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected6-review-v1/receipt.json",
+        "sha256": "1ee32bc36f856aa963feed20716d1021371ac82e1cdd664f5a86a2e73b4fcc75",
+        "size_bytes": 184258
+      },
+      "inline_transport_measurement": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected6-complete-inline-measurement.json",
+        "sha256": "095ede1e7e5a783cacc7aea016164271a97cc1d1d53b129bd2d193954a29f467",
+        "size_bytes": 342844
       }
     },
-    "independent_semantic_replay_passed": false,
+    "independent_semantic_replay_passed": true,
     "fresh_required_actions": 26,
     "fresh_strict_statuses": 8,
     "reused_required_actions": 0,
@@ -517,6 +532,19 @@
     "verified_intervals": 5,
     "six_source_callbacks_unchanged": true,
     "retained_evidence_files": 193,
-    "retained_evidence_bytes": 127408623
+    "retained_evidence_bytes": 127408623,
+    "complete_proof_files_replayed": 300,
+    "complete_proof_bytes_replayed": 337629321,
+    "native_artifact_commands_replayed": 36,
+    "package_proof_transport": {
+      "status": "explicit-external-file-mode-required",
+      "actual_files": 300,
+      "inline_file_limit": 262,
+      "measured_compressed_bytes": 10176240,
+      "inline_compressed_limit_bytes": 8388608,
+      "original_inline_limits_preserved": true,
+      "evidence_omitted": false,
+      "package7_executed": false
+    }
   }
 }

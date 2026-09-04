@@ -133,10 +133,17 @@ remains separate and is not counted as a fresh status.
 
 All 193 retained evidence files (127,408,623 bytes) are exported with matching
 hashes and stable native descriptors. Independent review accepts the original
-process-success predicate and actual profile bindings. Full action/artifact
-semantic replay is still pending; platform images and Package7 remain unbuilt.
+process-success predicate and actual profile bindings. Full independent
+semantic replay now passes over all 300 proof files (337,629,321 bytes),
+including the 36 artifact commands, contexts, source guards, retention and
+separate historical Flex evidence. Platform images and Package7 remain unbuilt.
 The exact original request is retained after completion, explicitly recording
 that the native invocation consumed stdin rather than that later file.
+
+The full proof exceeds the old inline transport's file-count and compressed-
+size limits. Package7 needs an explicit external-file transport while retaining
+the original checks and complete bytes. This is separate from the successful
+native app stage and independent semantic replay; neither requires a rebuild.
 
 ## Completed checks
 
