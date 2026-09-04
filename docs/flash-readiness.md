@@ -122,9 +122,12 @@ source or output files. The subsequent Selected5 attempt stopped in preflight:
 its staging map omitted six existing capture-proof aliases. It did not prepare
 or invalidate outputs and did not invoke Android. All six original proof files
 are now staged with their recorded hashes; the failed attempt remains intact.
-A separate Selected6 attempt will use a complete input map and a new phase
-record. The ordinary selected-app build and its fresh status actions remain
-pending; these preparation results do not qualify final platform images.
+A separate Selected6 attempt uses the complete input map and a new phase
+record. It preserves all 26 old outputs as copies and retained originals, then
+completes all **35 ordinary Ninja actions** at **19:50:13 UTC** with exit zero.
+Ninja arguments, limits and sandbox checks pass. The complete source,
+retention, artifact and strict-status postchecks remain pending; the invocation
+alone does not qualify the app stage or final platform images.
 
 ## Completed checks
 

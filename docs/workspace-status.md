@@ -28,7 +28,10 @@ and the successor package are still pending.
 The first selected-app attempt stopped before Android invocation because its
 staging map omitted six capture-proof aliases. Those original files are now
 staged and hash-verified; the failed attempt and all build outputs are preserved.
-The corrected retry has a separate phase and must still pass the ordinary build.
+The separate Selected6 retry now completes all 35 ordinary Ninja actions with
+exit zero and verified sandbox, arguments and limits. Its complete source,
+retention, artifact and strict-status postchecks are still running; this is not
+yet a full app-stage pass or a final-image result.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.

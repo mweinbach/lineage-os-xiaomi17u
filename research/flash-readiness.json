@@ -454,7 +454,7 @@
     "missing_proof_aliases": 6,
     "aliases_now_staged_and_hash_verified": true,
     "retry_phase": "first-target-files-selected-app-components-6",
-    "retry_native_invocation_executed": false,
+    "retry_native_invocation_executed": true,
     "evidence": {
       "failure": {
         "path": "reports/flash-ready-20260904/build-continuation/selected5-accelerated/native/stdout.jsonl",
@@ -465,6 +465,27 @@
         "path": "reports/flash-ready-20260904/root/selected6-runtime-alias-staging/receipt.json",
         "sha256": "387734a71fe347c5cf5e4e5707aae59194b8e3ea0042476627b6d205a83520c6",
         "size_bytes": 2224
+      }
+    }
+  },
+  "selected6_build": {
+    "status": "ordinary-invocation-exited-zero-postchecks-pending",
+    "finished_at": "2026-09-04T19:50:13.371041+00:00",
+    "native_exit_code": 0,
+    "ninja_actions_completed": 35,
+    "ninja_observed": true,
+    "ninja_argv_verified": true,
+    "ninja_limits_verified": true,
+    "sandbox_checks_passed": true,
+    "original_outputs_copied": 26,
+    "original_outputs_moved_to_retention": 26,
+    "whole_phase_verified": false,
+    "final_images_verified": false,
+    "evidence": {
+      "invocation": {
+        "path": "reports/flash-ready-20260904/root/selected6-invocation.json",
+        "sha256": "b2a31ba8877b5f0f82ab79d71b07cb8636c18769b8785305758acacb7c77b700",
+        "size_bytes": 6954
       }
     }
   }
