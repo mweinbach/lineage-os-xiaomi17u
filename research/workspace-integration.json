@@ -10892,5 +10892,63 @@
     "complete_rom_ready": false,
     "flash_ready": false,
     "phone_accessed": false
+  },
+  "source549_familyspace_signapk_installation_20260904": {
+    "status": "native-two-file-source-installation-verified-builds-pending",
+    "completed_utc": "2026-09-04T14:36:30.375118+00:00",
+    "operations": 2,
+    "source_files_before": 548,
+    "source_files_after": 549,
+    "unchanged_existing_source_rows": 547,
+    "selected_projects": 15,
+    "locked_heads_and_origins_matched": 1179,
+    "source_spec": {
+      "sha256": "7d28bc411e818f966277a0f376e3a00629894d176076ad69b0e72f69a251350e",
+      "size_bytes": 542658
+    },
+    "identity_sha256": "128c96ed5e626cdd0d21354231daed97f878057def27af1def13051befe26d4d",
+    "build_number": "nezha.128c96ed5e626cdd0d213542",
+    "original_inodes_and_independent_copies_preserved": true,
+    "original_package6_inputs_unchanged": true,
+    "new_signer_built": false,
+    "new_apk_built": false,
+    "new_images_built": false,
+    "complete_rom_ready": false,
+    "flash_ready": false,
+    "phone_accessed": false,
+    "evidence": {
+      "actual_commit": {
+        "path": "reports/flash-ready-20260904/root/source549-actual-v1/readback/actual-commit.json",
+        "sha256": "29ebcfaf5cb418550ab7ea311ebdca3a2e509ed163430f801aa99a57f26d2a76",
+        "size_bytes": 2308
+      },
+      "after": {
+        "path": "reports/flash-ready-20260904/root/source549-actual-v1/readback/after.json",
+        "sha256": "bf33846e6b49f2e8f21f33c322b5b81c6372c236bf3e6cb4b11562f256e0cfec",
+        "size_bytes": 2372118
+      },
+      "journal": {
+        "path": "reports/flash-ready-20260904/root/source549-actual-v1/readback/transaction.jsonl",
+        "sha256": "d2d3031eb3f5575b97dd008a023cf32ec19a87fc10148f620e4a3aef7ac58b9e",
+        "size_bytes": 6746
+      },
+      "descriptor": {
+        "path": "reports/flash-ready-20260904/root/source549-actual-v1/readback/descriptor-fragment.json",
+        "sha256": "91d13e0b5d336d35dde1cb09a12c2e46ec6c805936e0642117ebbb3e33e2b6d1",
+        "size_bytes": 1192769
+      },
+      "identity": {
+        "path": "reports/flash-ready-20260904/root/source549-actual-v1/readback/identity-calculation.json",
+        "sha256": "b93620ca338d2ed164c965569002f58561549fa29ee9b3c94ec504b6197f8cf2",
+        "size_bytes": 4992
+      },
+      "independent_review": {
+        "path": "reports/flash-ready-20260904/source-integration/combined-v1/actual-review/report.json",
+        "sha256": "82f8fcf23a3d0260847765199142b111d5ad811e7818991c3656b92ab88d5178",
+        "size_bytes": 2902
+      }
+    },
+    "guide": "docs/flash-readiness.md#current-source-state",
+    "record": "research/flash-readiness.json"
   }
 }

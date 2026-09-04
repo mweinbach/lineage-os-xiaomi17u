@@ -51,3 +51,12 @@ product permission copy and affected images, and rerun the effective permission
 audit and artifact checks. Editing generated XML or target-files is insufficient.
 Normal enforcement remains required; this patch does not promote complete-ROM
 or flash readiness.
+
+## Native source adoption — September 4, 2026
+
+The combined two-file source transaction completed at **14:36:30 UTC** and
+passed full readback and independent review. Both original source inodes and
+independent originals remain retained. Current source is the 549-file
+`nezha.128c96ed5e626cdd0d213542` state; previous source-preparation records keep
+their historical scope. This does not yet establish a rebuilt signer, APK or
+image. Follow [current flash-readiness work](flash-readiness.md#current-source-state).

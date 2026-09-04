@@ -14,8 +14,11 @@ This page does not assert that a historical builder VM is still running.
 FamilySpace lacks two required product privileged-permission declarations, and
 TurboAdapter fails four-byte ZIP alignment because SignApk inherits timestamp
 metadata. Do not flash Package6 while their source/image fixes are pending.
-The FamilySpace source patch is reviewed and committed; the signer correction
-is in preparation. Neither has reached rebuilt images yet.
+Both source corrections are now installed and independently verified as a
+549-file source state, build identity `nezha.128c96ed5e626cdd0d213542`. The
+original Java/XML files and Package6 artifacts are preserved. Configuration
+queries and the ordinary rebuild are next; neither fix has reached rebuilt
+images yet.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.

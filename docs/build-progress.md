@@ -1,5 +1,22 @@
 # Nezha product and build progress
 
+## Combined FamilySpace and SignApk source adoption — 2026-09-04
+
+The native source transaction completes at **14:36:30 UTC**, exit 0, after
+**519.057 seconds**. Its six-event journal records exactly two exchanges and
+ends `commit_verified`. All seven actual readbacks and the complete current
+source/descriptor/identity proof pass independent review. The source state has
+549 selected files, 15 selected projects and all 1,179 pinned HEADs/origins;
+only SignApk Java and the existing product XML change. The XML is newly
+included in the selected-source vector.
+Original inodes, independent copies and Package6 inputs remain preserved.
+
+The new identity is `nezha.128c96ed5e626cdd0d213542`. Original query14/Nothing12
+continuation is prepared, but no new signer/APK/image result is claimed at this
+checkpoint. Full workspace tests pass **4,567**, zero skips. See
+[current source state](flash-readiness.md#current-source-state) and
+[the evidence index](../research/flash-readiness.json).
+
 ## First-stage reproduction and flash-readiness defects — 2026-09-04
 
 The original 16-action init refresh completes at **14:09:10 UTC**, native

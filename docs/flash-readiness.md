@@ -11,20 +11,38 @@ two integration defects that need source fixes and rebuilt images. The earlier
 VINTF and boot-content passes remain valid within their recorded scope; they
 did not detect these APK issues.
 
+## Current source state
+
+The two-file transaction completed at **14:36:30 UTC**, with complete native
+readback and independent verification. It changes the existing signer row and
+adds the permission XML to the tracked source inventory: **549 files across 15
+selected projects**, with all 1,179 pinned HEADs/origins matching. The other 547
+existing source rows remain unchanged. Both original inodes and independent
+copies are retained; Package6's existing input/artifact bytes are unchanged.
+
+The source identity is `128c96ed5e626cdd0d21354231daed97f878057def27af1def13051befe26d4d`,
+with `BUILD_NUMBER=nezha.128c96ed5e626cdd0d213542`. Only the source descriptor
+changes; private/generated/tool/public-signing descriptor hashes remain the
+same. New configuration queries, graph, signer/APK, images and target-files
+results are still required. Source installation is not rebuilt-image or flash
+readiness. The full workspace suite passes **4,567 tests**, zero skips.
+
 ## Source fixes before the next image set
 
 1. **FamilySpace lacks two product privileged-permission declarations.** Its
    unflagged requests for `GET_ACCOUNTS_PRIVILEGED` and `WRITE_SECURE_SETTINGS`
    are subject to the current enforce-mode startup check. The reviewed
    [source patch](familyspace-privapp-permissions.md) adds only those entries
-   for `com.google.android.apps.pixel.familyspace`. It is not installed yet.
+   for `com.google.android.apps.pixel.familyspace`. The source is installed;
+   its ordinary product copy and images still need rebuilding.
 2. **TurboAdapter has unaligned stored DEX/resources.** Its signed
    `classes.dex` starts at byte 65 and `resources.arsc` at 314,249; both violate
    four-byte ZIP alignment. This is not a 16 KiB page-size requirement.
    Current SignApk clones access/creation timestamps, and Java later emits
    a 13-byte extra field outside the signer's alignment calculation. A real
    no-key JDK fixture reproduces that displacement and verifies the proposed
-   fresh-entry correction. The ordinary signer/app pipeline must be rebuilt,
+   [fresh-entry correction](signapk-stored-entry-timestamps.md). Its source is
+   installed. The ordinary signer/app pipeline must be rebuilt,
    retaining the same platform certificate and original APK payload contents.
 
 Neither issue justifies disabling permission enforcement, skipping alignment

@@ -58,3 +58,12 @@ SignApk and ordinary TurboAdapter producer, verify every non-signing member
 payload without blanket `META-INF` exclusions, check the expected platform
 certificate and strict signatures, and pass `zipalign` with `-P 4`. Successor
 images and target-files need their own checks. Flash readiness remains false.
+
+## Native source adoption — September 4, 2026
+
+The combined two-file source transaction completed at **14:36:30 UTC** and
+passed full readback and independent review. Both original source inodes and
+independent originals remain retained. Current source is the 549-file
+`nezha.128c96ed5e626cdd0d213542` state; previous source-preparation records keep
+their historical scope. This does not yet establish a rebuilt signer, APK or
+image. Follow [current flash-readiness work](flash-readiness.md#current-source-state).
