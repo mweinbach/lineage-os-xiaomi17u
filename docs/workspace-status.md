@@ -15,9 +15,9 @@ metadata, all eight embedded-image hashes and logical/group/physical fit pass.
 **Published boot-candidate comparison
 passes**, without qualifying the historical build branch, complete constructor,
 source or runtime. The Super run closes September 3 UTC; the boot capture closes
-September 4 UTC, both on September 3 in New York. **Diagnostic compile-v2 completes
-36 compiles and the 33-input archive command**; linking and diagnostic execution remain
-unqualified. Functional Super, flash safety, policy/trust/ABI, full VINTF, OTA and
+September 4 UTC, both on September 3 in New York. **The diagnostic tool is compiled
+and linked**, but remains an unqualified link-only experiment: execution, ODR and
+runtime remain open. Functional Super, flash safety, policy/trust/ABI, full VINTF, OTA and
 boot remain open; no phone operation or additional cleanup occurs. See the [Super and boot-candidate checkpoint](build-progress.md#package6-sparse-super-and-published-boot-candidates--2026-09-04).
 
 ## Earlier Package6 source endpoint and diagnostic dependency failure

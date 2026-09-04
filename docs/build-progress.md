@@ -28,7 +28,14 @@ in New York; the UTC dates above distinguish the midnight crossing.
 one archive command pass, preserving the original 33 archive operands/order.
 Mandatory native trace-header dependency checks and explicit host summary checks
 pass; raw depfiles and observer bodies are not independently replayed here.
-Linking, diagnostic execution, full header/ODR, source/runtime, policy/trust/ABI,
+
+**The diagnostic link closes September 4 at 00:27:13 UTC**, exit **0**, in
+**539.949 seconds**. One exact command joins ten current archives and four
+closed-compile inputs, with source-pair replay passing. The **6,245,080-byte**
+binary has SHA-256 `22ed88de48f2e874d2e8518813b327ccdbdc1debd39b82920b717fbc8d76ac97`.
+It remains `NONQUALIFIED_EXPERIMENTAL_LINK_ONLY`; no diagnostic run is admitted.
+
+Diagnostic execution, full header/ODR, source/runtime, policy/trust/ABI,
 VINTF, flash safety, OTA and boot remain open. No phone operation or cleanup occurs.
 
 Evidence paths are relative to
@@ -41,6 +48,7 @@ Evidence paths are relative to
 | `final-boot-content/package6-preparation-v1/published-projection-preparation-v1/result-admission-v1/receipt.json` | `2e1ebd7e1b0839712576017c489bec17c3d29277b3b773fae0607fb4ff9a1a78` | 7,227 |
 | `final-avb/package6-super-continuation-v1/super-lp-readback-v1/actual-semantic-admission-v1/admission.json` | `e25153d3f4669966c3937fc7e6c52f2427e6a8ea50c8985b902eeb3a696f4725` | 23,766 |
 | `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/compile-archive-stage-v2/root-dispatch-preparation-v1/bound-packet-v1/actual-v1/semantic-admission.json` | `d59d1ca234c0a41794e53737d388ba946049383ea54c721752fbba2a13328b84` | 16,599 |
+| `final-vintf/coverage-policy-successor-v1/diagnostic-caller-implementation-v1/producer-grounded-build-proposal-v4/link-only-stage-v1/compile-v2-successor-v1/root-dispatch-preparation-v1/bound-packet-v1/actual-v1/semantic-admission.json` | `df0236b6f02b4a5f3991fa48d0c4006ac65522586bbdfcbecdf0d7bd69ed8604` | 25,713 |
 
 ## Package6 source endpoint and diagnostic dependency failure — 2026-09-03
 
