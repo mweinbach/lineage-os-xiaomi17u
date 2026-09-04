@@ -174,6 +174,21 @@ unknown device observations, rejects fastbootd as independent bootloader
 evidence, and cannot authorize installation or modify the phone. It has not
 been run against a device.
 
+The original **China OS3.0.309.0.WPACNXM (Android 16)** package provides an
+off-device Android return set: original Super and seven boot/AVB companions,
+with countrycode/pvmfw references and the original TGZ retained. Fresh hashes
+cover 25,662,099,569 bytes including the separate working76 rescue image; fresh
+sparse parsing finds no DONT_CARE inside the eight populated logical extents or
+LP metadata. The retired reconstructed raw Super is not a missing input: its
+original sparse image remains present.
+
+An unchanged factory AVB chain requires its **original recovery**, whose key
+differs from working76. Keep TWRP separately as the tested rescue artifact.
+This material supports returning to that original China package; it does not
+establish restoration of the prior xiaomi.eu installation, personal-data backup,
+current firmware/variant compatibility, or authorization to write any phone.
+Exact private paths and the reviewed plan are indexed in the research record.
+
 OTA is a separate milestone. This target-files ZIP is not a sideload or
 fastboot-update installer; OTA key references are blank and two retained vendor
 APEXes lack re-signing metadata rows. These do not invalidate their verified

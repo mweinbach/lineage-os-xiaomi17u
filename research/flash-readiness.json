@@ -312,5 +312,38 @@
     "runtime_expansion_verified": false,
     "successor_package_verified": false,
     "earlier_incomplete_attempt_preserved": true
+  },
+  "stock_return_material": {
+    "scope": "original-cn-package-android-return-set-available-not-device-admission",
+    "version": "OS3.0.309.0.WPACNXM",
+    "region": "China",
+    "android_version": 16,
+    "original_images_checked": 10,
+    "total_bytes_freshly_hashed_including_tgz_and_separate_working76": 25662099569,
+    "original_sparse_super_present": true,
+    "populated_extents_without_dont_care": 8,
+    "original_recovery_required_with_original_vbmeta": true,
+    "working76_preserved_as_separate_rescue": true,
+    "exact_prior_xiaomi_eu_restore_verified": false,
+    "userdata_backup_or_recovery_verified": false,
+    "device_compatibility_verified": false,
+    "phone_mutation_authorized": false,
+    "evidence": {
+      "stock-return-audit.json": {
+        "path": "reports/flash-ready-20260904/stock-return/stock-return-audit.json",
+        "sha256": "8de72a6066e13699ce160a893532268cc5d123987940c862f391f605ce4d849f",
+        "size_bytes": 18355
+      },
+      "stock-return-plan.json": {
+        "path": "reports/flash-ready-20260904/stock-return/stock-return-plan.json",
+        "sha256": "9b16b25308318d2f685376561d6901ed03ff7befe9921ccd013557270bb6ec9a",
+        "size_bytes": 8982
+      },
+      "sparse-coverage.json": {
+        "path": "reports/flash-ready-20260904/stock-return/sparse-coverage.json",
+        "sha256": "bbdb53e8582eb200e8bbbf8a829f31ca940a36c2a73b7b37b008d605477d1470",
+        "size_bytes": 1964
+      }
+    }
   }
 }

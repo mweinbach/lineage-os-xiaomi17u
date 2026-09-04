@@ -38,6 +38,9 @@ exception recorded separately. Known OEM permission feature gaps remain; no
 OEM signer or grant was changed. A bounded read-only device preflight tool is
 prepared but has not contacted a phone. The current complete offline suite
 passes **4,602 tests, zero skips**.
+The original China OS3.0.309.0.WPACNXM Android return set and separate working76
+rescue are also freshly hash-verified. Stock return requires the original
+recovery/AVB pairing; current-device fit and userdata recovery remain unproven.
 
 ## Earlier Package6 static checks
 
