@@ -90,10 +90,17 @@ truncated or reset.
 
 The first GMS3 launcher attempt subsequently stopped during verification-helper
 initialization, before the native phase directory or Android build was created.
-A host-only recovery helper assumed a filesystem module path. The correction
-uses its authenticated pure pairing API; the original failed run and successful
-capture remain separate. Both current Ninja databases still match the capture.
-The full offline suite passes again: 4,602 tests, zero skips, in 201.844 seconds.
+A host-only recovery helper assumed a filesystem module path. Its authenticated
+pure pairing API fixes that boundary without an Android source change or new
+capture. The retry now passes the full native/profile checks and independent
+semantic replay of all 91 retained evidence files. Two CrossDevice APK actions
+are fresh; six APK outputs and four strict statuses use verified reuse evidence.
+There are **zero fresh strict-status actions** in this phase. Sixteen native APK
+signature/manifest commands pass, and all six source callback maps match. The
+earlier component1 SignApk production stays separate from GMS3 tool reuse.
+The original failed run remains unchanged. Platform images and the final
+package still need building. The full offline suite passes again: 4,602 tests,
+zero skips, in 201.844 seconds.
 
 The native Package6 ZIP is also retained as an independent, fully rehashed
 11,006,603,036-byte copy before Package7 can replace the ordinary output path.

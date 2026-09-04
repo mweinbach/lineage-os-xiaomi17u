@@ -11004,5 +11004,27 @@
     "platform_image_and_package_delivery_pending": true,
     "phone_accessed": false,
     "complete_rom_ready": false
+  },
+  "source549_gms3_retry_20260904": {
+    "result": {
+      "path": "reports/flash-ready-20260904/build-continuation/gms3-retry1/native/stdout.jsonl",
+      "sha256": "536ed817bb4954b628c3f13054b04f4218c96015e359f19370873c86b15c4451",
+      "size_bytes": 14155744
+    },
+    "semantic_review": {
+      "path": "reports/flash-ready-20260904/build-continuation/gms3-retry1-semantic-review.json",
+      "sha256": "025294ddaf1a12800f4676678d5bcc6e7c6aae8ac42eeaa646b276d6b3298841",
+      "size_bytes": 6712
+    },
+    "native_and_wrapper_exit_code": 0,
+    "fresh_apk_actions": 2,
+    "reused_apk_outputs": 6,
+    "reused_strict_statuses": 4,
+    "fresh_status_actions": 0,
+    "native_apk_checks": 16,
+    "original_initialization_failure_preserved": true,
+    "source_or_phone_changes_for_loader_fix": false,
+    "platform_images_and_package_pending": true,
+    "complete_rom_ready": false
   }
 }
