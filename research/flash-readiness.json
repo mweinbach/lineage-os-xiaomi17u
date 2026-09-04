@@ -8,7 +8,7 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-04",
-  "status": "native-signer-apk-built-and-verified-postcheck-replay-and-images-pending",
+  "status": "signer-apk-and-postcheck-verified-images-rebuilding",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
@@ -155,6 +155,16 @@
       "path": "reports/flash-ready-20260904/signing-successor/turbo/component1-v1/result.json",
       "sha256": "09d27885d0fea967e8724318c3f3ad2b999aa256f895155eecfa66fc5cfb3aaf",
       "size_bytes": 30202
+    },
+    "signapk_component_corrected_postcheck": {
+      "path": "reports/flash-ready-20260904/build-continuation/component1-postcheck-recovery.json",
+      "sha256": "52d7e71fbd5f2298996017425d5d2c0f5feda60522760be95060dc8c96250f69",
+      "size_bytes": 2092869
+    },
+    "signapk_component_root_replay": {
+      "path": "reports/flash-ready-20260904/root/component1-postcheck-root-review.json",
+      "sha256": "e451e0aba556e65b473af3e9deb32e34b5994faaaf557e65ec620110f740a425",
+      "size_bytes": 2424
     }
   },
   "source_installation": {
@@ -246,10 +256,26 @@
     "sandbox_checks_passed": true,
     "six_source_callbacks_unchanged": true,
     "original_postcheck_error": "original NoBatt payload inventory differs",
-    "corrected_postcheck_replay_complete": false,
+    "corrected_postcheck_replay_complete": true,
     "independent_strict_signatures_alignment_manifest_payloads_verified": true,
     "platform_certificate_unchanged": true,
     "original_source_apk_preserved": true,
     "successor_images_verified": false
+  },
+  "ordinary_images7": {
+    "status": "running-not-admitted",
+    "profile": "images",
+    "phase": "first-target-files-images-7",
+    "goals": [
+      "recoveryimage",
+      "mi_extimage",
+      "vendorimage",
+      "odmimage",
+      "plat_sepolicy_and_mapping.sha256",
+      "system_ext_sepolicy_and_mapping.sha256",
+      "product_sepolicy_and_mapping.sha256"
+    ],
+    "result_pending": true,
+    "source_or_readiness_flags_changed": false
   }
 }

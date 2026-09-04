@@ -70,9 +70,13 @@ The original component wrapper remains a recorded failure: its postcheck
 incorrectly treated the original `stamp-cert-sha256` member as a payload that
 must survive, although patch 0020 already removes this obsolete signing stamp.
 The source APK's exact eight entries and the output's exact seven entries are
-captured; corrected structural/metadata replay is separate from the successful
-native invocation and artifact verification. No source APK was changed to
-satisfy the check. Image/package qualification remains pending.
+captured. Corrected structural/metadata replay now passes, including an
+independent full replay by the coordinating agent. Its separate receipt binds
+the exact original failure, complete corrected result and SDK verification;
+the original completion flag stays false. No native compilation was rerun and
+no source APK was changed to satisfy the check. The ordinary recovery/vendor/
+ODM/mi_ext/policy-hash rebuild has started; final image/package qualification
+remains pending.
 
 ## Completed checks
 

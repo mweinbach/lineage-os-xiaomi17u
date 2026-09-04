@@ -76,5 +76,6 @@ strict signature modes, manifest parsing and four-byte/4 KiB alignment; all
 four protected payloads and the platform certificate are unchanged. See the
 [current artifact result](flash-readiness.md#signerapk-rebuild-and-independent-verification)
 for hashes and the separately preserved wrapper failure caused by its original
-stamp-inventory assumption. Corrected postcheck replay and final image delivery
-remain distinct gates. This does not qualify a boot or authorize flashing.
+stamp-inventory assumption. Corrected postcheck replay now passes without
+rewriting the original failure or rerunning compilation. Final image delivery
+remains a separate gate. This does not qualify a boot or authorize flashing.

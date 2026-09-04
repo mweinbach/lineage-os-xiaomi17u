@@ -10971,5 +10971,22 @@
     "complete_rom_ready": false,
     "flash_ready": false,
     "details": "research/flash-readiness.json"
+  },
+  "source549_signer_component_recovery_20260904": {
+    "native_exit_code": 0,
+    "original_wrapper_exit_code": 1,
+    "original_failure": "original NoBatt payload inventory differs",
+    "corrected_postcheck_replay": {
+      "path": "reports/flash-ready-20260904/build-continuation/component1-postcheck-recovery.json",
+      "sha256": "52d7e71fbd5f2298996017425d5d2c0f5feda60522760be95060dc8c96250f69",
+      "size_bytes": 2092869
+    },
+    "original_result_changed": false,
+    "native_build_rerun": false,
+    "strict_signatures_alignment_manifest_and_payloads_verified": true,
+    "image_delivery_verified": false,
+    "complete_rom_ready": false,
+    "flash_ready": false,
+    "details": "research/flash-readiness.json"
   }
 }
