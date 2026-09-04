@@ -41,9 +41,13 @@ was corrected without changing Android source or repeating the capture. The
 retry completes **941 Ninja actions with exit zero**, including APK/APEX
 dependencies, but its postcheck rejects changed timestamps on three policy-hash
 sidecars. Their bytes, sizes, inodes, modes, owners, modification times and
-ancestors remain identical; only change times differ. A full postcheck-only
-recovery is running, with the original failed result preserved. The read-only
-Package7 producer capture also passes; the package itself is not built yet.
+ancestors remain identical; only change times differ. The separate full
+postcheck recovery and independent semantic replay now pass: five fresh image
+producers, the fresh system copy and six verified outputs. The original failed
+result remains unchanged. The read-only Package7 producer capture also passes,
+and the **real Package7 target-files build is running**. Its request fits the
+existing size limit; all 448 prerequisite/staging files were freshly hashed
+before launch. A finished or signed Package7 is not yet claimed.
 
 The wider deadline review found no justified new kernel/display source change.
 It confirmed a missing Android IMS provider stack: **IMS, VoLTE, VoWiFi and

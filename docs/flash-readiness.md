@@ -164,6 +164,15 @@ and six-image check; it cannot merely waive the timestamp failure. The
 read-only Package7 producer capture has passed independently, without claiming
 image admission or a package build.
 
+The full postcheck-only recovery and independent pair replay now pass. Five
+fresh image producers, the real system copy, all six image outputs, source
+callbacks and three sidecar continuity positions are verified. The original
+failed profile flag is preserved; the recovery is separate evidence. Package7's
+ordinary target-files build is now running from a 29,920,636-byte request that
+fits the original 32 MiB downstream limit. All 448 distinct prerequisite and
+staging paths passed fresh native hash checks before launch. All 435 external
+proof bindings remain present; none were removed to fit the request.
+
 The wider deadline review confirms a separate feature omission: no Android IMS
 provider is packaged. Native radio executables and dependency-name closure pass,
 but VoLTE/VoWiFi and emergency-call operation cannot be claimed. An IMS import

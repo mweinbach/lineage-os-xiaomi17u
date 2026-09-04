@@ -8,7 +8,7 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-04",
-  "status": "selected-app-components-verified-platform-images-and-package-pending",
+  "status": "image-components-verified-package7-running",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
@@ -548,7 +548,7 @@
     }
   },
   "five_images2": {
-    "status": "native-build-succeeded-ctime-only-postcheck-recovery-running",
+    "status": "native-images-and-separate-postcheck-recovery-verified",
     "first_attempt": {
       "status": "capture-verified-native-context-initialization-failed",
       "read_only_producer_queries": 2,
@@ -603,9 +603,29 @@
         "path": "reports/flash-ready-20260904/build-continuation/five-images2-recovery-v1/preparation.json",
         "sha256": "074b46f007e9a39edcf27e71fa2f1a00a6aabdc8dde276087fec83ef8bbe0b7a",
         "size_bytes": 2108
+      },
+      "recovery_receipt": {
+        "path": "reports/flash-ready-20260904/root/five-images2-recovery-records/receipt.json",
+        "sha256": "8587e89e807c9daecab87f634993b208317180bb94e8179b70ead75e2eaabbdd",
+        "size_bytes": 768042
+      },
+      "recovered_actions": {
+        "path": "reports/flash-ready-20260904/root/five-images2-recovery-records/selected-image-actions.json",
+        "sha256": "5e70ff785dff1b63173d178ba6d3a67d14f78feff83f664af0d290650107a155",
+        "size_bytes": 4143349
+      },
+      "full_pair_semantics": {
+        "path": "reports/flash-ready-20260904/build-continuation/five-images2-recovery-body-plan-v5.json",
+        "sha256": "26ee340082a2b06b25fb4f5ddd83e5a7633bed023fe0a1b7fd4363a3b21767e7",
+        "size_bytes": 358108
       }
     },
-    "postcheck_recovery_completed": false
+    "postcheck_recovery_completed": true,
+    "independent_full_pair_verified": true,
+    "fresh_image_producers": 5,
+    "fresh_system_copy": 1,
+    "verified_image_outputs": 6,
+    "signed_parent_chain_verified": false
   },
   "package7_producer_capture": {
     "status": "verified-read-only-capture",
@@ -661,5 +681,28 @@
         "size_bytes": 9227
       }
     }
+  },
+  "package7_build": {
+    "status": "running",
+    "native_build_completed": false,
+    "request": {
+      "path": "reports/flash-ready-20260904/build-continuation/package7/request.json",
+      "sha256": "1efc439e3a58e359e4be0ee3a35ae0f6672356688ec7e0cae9b1475952e926ab",
+      "size_bytes": 29920636
+    },
+    "request_fits_existing_32mib_limit": true,
+    "external_prerequisite_roles": [
+      "gms",
+      "selected",
+      "five"
+    ],
+    "role_bindings": 435,
+    "distinct_native_prerequisite_and_stage_files_hashed": 448,
+    "readiness_file_check": {
+      "path": "reports/flash-ready-20260904/root/package7-final-readiness.json",
+      "sha256": "3cad25fff37298cc0d0ebacb0aded2057f81920d04d48b23f32f47c42ea12236",
+      "size_bytes": 269030
+    },
+    "original_inputs_and_failures_preserved": true
   }
 }
