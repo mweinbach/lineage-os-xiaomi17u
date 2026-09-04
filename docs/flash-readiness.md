@@ -107,6 +107,20 @@ The native Package6 ZIP is also retained as an independent, fully rehashed
 The original archive remains in place at this checkpoint; no complete expanded
 tree backup is claimed.
 
+Selected-app preparation now has admitted **19 fresh query calls** against
+16 graph files (6,862,614,527 bytes), while preserving the original singleton
+query evidence separately. A failed first comparison treated containing-directory
+timestamps as cross-build absence identity. The corrected comparison retains
+path and directory identity checks and all current before/after stability checks;
+only the two timestamps differed in the actual failure, and the file remained
+absent throughout.
+
+All five original file-reader families and 26 current app/status observations
+also pass complete host replay, including source checks before and after.
+No old physical observations were reused, and this collection did not modify
+source or output files. The ordinary Selected5 build and its fresh status actions
+remain pending; these preparation results do not qualify final platform images.
+
 ## Completed checks
 
 The first-stage init refresh completed at **2026-09-04 14:09:10 UTC** through

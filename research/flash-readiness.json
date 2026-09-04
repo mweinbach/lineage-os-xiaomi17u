@@ -406,5 +406,43 @@
       "sha256": "8772255d1ba8ad5ad59a9b4435eba8c6b256dd385a5e81007306bd4a60e4f312",
       "size_bytes": 2118
     }
+  },
+  "selected5_preparation": {
+    "status": "fresh-query-equivalence-and-file-observations-verified-build-pending",
+    "fresh_native_query_calls": 19,
+    "query_graph_files": 16,
+    "query_graph_bytes": 6862614527,
+    "historical_queries_relabelled_as_fresh": false,
+    "fresh_output_observations": 26,
+    "original_reader_families": 5,
+    "source_or_output_written": false,
+    "ordinary_selected_build_performed": false,
+    "evidence": {
+      "query_capture": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected5-equivalence-native-retry1/capture.json",
+        "sha256": "57d40dfbcd650a6b9c214c4186494f7eaaaea79f935ef635a65b1d6e3f276ea9",
+        "size_bytes": 670445
+      },
+      "certificate": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected5-equivalence-certificate-v1/certificate.json",
+        "sha256": "307d6e28cf9c3020131b85089180b8fc62f53cab943f02fdb8284306c1e7dd90",
+        "size_bytes": 152241
+      },
+      "physical_inputs": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected5-physical/equivalence-actual-v1/physical-inputs.json",
+        "sha256": "5f49e3e343a94262ff6c7c0578871603aed6468d27cde8cd143ac988e63fc93e",
+        "size_bytes": 3308
+      },
+      "physical_closure": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected5-physical/equivalence-actual-v1/closure.json",
+        "sha256": "11ca463aa6372c9cc1a08ccfababfcbc69877b005de5228eba874f20de6a318c",
+        "size_bytes": 2656
+      },
+      "physical_independent_review": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected5-physical-independent-review.json",
+        "sha256": "b32db48e8ad80514c49ffdc23861b7eccdc81a201420e5f1611875c5bc625428",
+        "size_bytes": 2308
+      }
+    }
   }
 }
