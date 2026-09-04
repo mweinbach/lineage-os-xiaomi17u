@@ -234,5 +234,6 @@
     "phone_or_guest_accessed": false,
     "private_keys_accessed": false,
     "source_producer_admission": false
-  }
+  },
+  "later_readiness_record": "research/flash-readiness.json"
 }

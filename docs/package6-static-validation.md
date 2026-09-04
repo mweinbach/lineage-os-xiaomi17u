@@ -1,5 +1,8 @@
 # Package6 static validation — September 4, 2026
 
+For the later first-stage reproduction and APK defects found before flashing,
+see [current experimental first-boot readiness](flash-readiness.md).
+
 Fresh inspection of the current signed Package6 boot images passes. This adds
 direct image-content evidence to the earlier packaging and AVB records; it does
 not establish bootloader acceptance or a successful Evolution X boot. The

@@ -10877,5 +10877,20 @@
         "size_bytes": 345
       }
     }
+  },
+  "flash_readiness_audit_20260904": {
+    "status": "host-fixes-required-before-device-preflight",
+    "guide": "docs/flash-readiness.md",
+    "record": "research/flash-readiness.json",
+    "source_fixes_installed": false,
+    "first_stage_direct_source_outputs_reproduced": 16,
+    "apk_api36_signature_passes": 455,
+    "apex_payload_signature_passes": 39,
+    "apk_alignment_failures": 1,
+    "privileged_package_gaps": 1,
+    "workspace_tests_passed": 4554,
+    "complete_rom_ready": false,
+    "flash_ready": false,
+    "phone_accessed": false
   }
 }

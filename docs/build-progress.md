@@ -1,5 +1,22 @@
 # Nezha product and build progress
 
+## First-stage reproduction and flash-readiness defects — 2026-09-04
+
+The original 16-action init refresh completes at **14:09:10 UTC**, native
+supervisor exit 0, reproducing all outputs exactly. It rebuilds 13 direct source
+objects with enforcing/user flags; 59 selected source/tool/link inputs remain
+unchanged. Fresh depfiles record 1,405 dependency identities. Original outputs
+are retained; this is not a rebuild of every linked library or a hardware test.
+
+The complete package audit verifies 455 API-36 APK signatures and 39 APEX
+payload signatures/keys, but finds two concrete integration defects: FamilySpace
+privileged permissions and TurboAdapter ZIP alignment. A real no-key JDK fixture
+reproduces the signer's inherited-timestamp bug. Source/image fixes remain
+pending, so Package6 is not a flash candidate. Full-range legacy signature
+warnings, OTA gaps and device/data gates stay explicit. All **4,554 offline
+workspace tests pass**, zero skips. See [current flash-readiness work](flash-readiness.md)
+and [the evidence index](../research/flash-readiness.json).
+
 ## Package6 original VINTF CLI results — 2026-09-04
 
 The original current `checkvintf` completes all three commands with **0 native

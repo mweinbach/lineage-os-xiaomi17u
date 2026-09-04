@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "platform": {
+    "branch": "bka",
+    "release_config": "bp4a",
+    "page_size_bytes": 4096,
+    "normal_android_selinux": "enforcing"
+  },
+  "observed_on": "2026-09-04",
+  "status": "host-fixes-required-before-device-preflight",
+  "flash_ready": false,
+  "complete_rom_ready": false,
+  "phone_accessed": false,
+  "candidate_archive": {
+    "sha256": "fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4",
+    "size_bytes": 10834328619
+  },
+  "first_stage_reproduction": {
+    "completed_utc": "2026-09-04T14:09:10.375735+00:00",
+    "direct_compilations": 13,
+    "total_actions": 16,
+    "identical_outputs": 16,
+    "preserved_inputs": 59,
+    "fresh_dependency_files": 13,
+    "observed_dependency_identities": 1405,
+    "all_linked_libraries_rebuilt": false,
+    "source_mtimes_changed": false,
+    "images_rebuilt": false,
+    "originals_retained": true,
+    "supervisor_exit_code": 0
+  },
+  "apk_apex_audit": {
+    "api36_apk_signature_passes": 455,
+    "api36_apks_checked": 455,
+    "full_range_strict_passes": 515,
+    "full_range_checks": 520,
+    "legacy_warning_failures_preserved": 5,
+    "apex_payload_avb_passes": 39,
+    "capex_pairs_matched": 26,
+    "apk_alignment_passes": 454,
+    "apks_alignment_checked": 455,
+    "inputs_rehashed_unchanged": 520,
+    "required_library_name_coverage_only": true,
+    "class_loader_or_hardware_verified": false
+  },
+  "required_source_fixes": [
+    {
+      "id": "familyspace-product-privapp-permissions",
+      "status": "reviewed-source-patch-not-installed",
+      "patch": "patches/evolution/0024-familyspace-product-privapp-permissions.patch",
+      "package": "com.google.android.apps.pixel.familyspace",
+      "permissions": [
+        "android.permission.GET_ACCOUNTS_PRIVILEGED",
+        "android.permission.WRITE_SECURE_SETTINGS"
+      ]
+    },
+    {
+      "id": "signapk-stored-entry-timestamps",
+      "status": "root-cause-reproduced-source-patch-preparation",
+      "affected_apk": "TurboAdapter",
+      "extra_bytes": 13,
+      "four_byte_zip_alignment_failed": true,
+      "original_apk_and_certificate_must_be_preserved": true
+    }
+  ],
+  "delivery": {
+    "mode": "shared-super-a-only",
+    "candidate_payloads": 8,
+    "populated_slot": "a",
+    "empty_slot": "b",
+    "preserves_stock_logical_b": false,
+    "two_full_logical_sets_exceed_super_by_bytes": 3341697024,
+    "reference_only_firmware": [
+      "countrycode",
+      "pvmfw"
+    ],
+    "bundle_assembled": false,
+    "device_preflight_admitted": false,
+    "device_fields_measured": false
+  },
+  "feature_limits": {
+    "camera_app": "org.lineageos.aperture",
+    "factory_xiaomi_camera_selected": false,
+    "hardware_features_tested": false,
+    "duplicate_overlay_packages_recorded": 2,
+    "ota_ready": false
+  },
+  "validation": {
+    "workspace_tests_passed": 4554,
+    "workspace_tests_skipped": 0,
+    "first_stage_helper_tests_passed": 40,
+    "signature_parser_tests_passed": 22,
+    "tests_are_distinct_from_native_and_device_checks": true
+  },
+  "evidence": {
+    "first_stage_completion": {
+      "path": "reports/flash-ready-20260904/root/first-stage-actual-v2/completion.json",
+      "sha256": "ebd4c505cd175d8942f5f3706240a3e1e2946737ce6b878091ffc64711a92a25",
+      "size_bytes": 1022
+    },
+    "first_stage_report": {
+      "path": "reports/flash-ready-20260904/root/first-stage-actual-v2/report.json",
+      "sha256": "7ea365ebdf3010879c853b4ed58ed1f3c593919a1a0afe8a2d92843effadf4e2",
+      "size_bytes": 1522348
+    },
+    "signing_audit": {
+      "path": "reports/flash-ready-20260904/signing/summary.json",
+      "sha256": "28c155cbd2349406b12e487592ec05efee2fa36d6b06649f6850ca0e485fa526",
+      "size_bytes": 31039
+    },
+    "signing_inputs_readback": {
+      "path": "reports/flash-ready-20260904/signing/final-readback.json",
+      "sha256": "daae3c695d44baedf4d301f7bc52b3b626b0b324f4baca8380fef99b6330037a",
+      "size_bytes": 75323
+    },
+    "turbo_root_cause": {
+      "path": "reports/flash-ready-20260904/signing/turbo-root-cause.json",
+      "sha256": "3caad1492a971e8768cbd4a5117dbdc82b259fbb3088e39ad504ecb87d9001ed",
+      "size_bytes": 6710
+    },
+    "timestamp_reproduction": {
+      "path": "reports/flash-ready-20260904/signing/timestamp-repro/result.json",
+      "sha256": "c13a454e720166761a6543aa184624bff40c1fd71a4f605d2b0e97194cba733b",
+      "size_bytes": 6233
+    },
+    "delivery_plan": {
+      "path": "reports/flash-ready-20260904/delivery-plan/delivery-plan.json",
+      "sha256": "7ff5da03eb58ee365e3e9256c1bb07d9c0b489ff82f3c77dfdba038801a2e661",
+      "size_bytes": 28345
+    }
+  }
+}

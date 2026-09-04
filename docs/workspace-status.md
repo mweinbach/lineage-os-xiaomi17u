@@ -10,6 +10,25 @@ consolidates recorded evidence through **September 4, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Flash-readiness work has identified two APK integration defects in Package6:**
+FamilySpace lacks two required product privileged-permission declarations, and
+TurboAdapter fails four-byte ZIP alignment because SignApk inherits timestamp
+metadata. Do not flash Package6 while their source/image fixes are pending.
+The FamilySpace source patch is reviewed and committed; the signer correction
+is in preparation. Neither has reached rebuilt images yet.
+
+**First-stage init reproduction now passes:** 13 direct compilations plus link,
+strip and install reproduce all 16 outputs exactly, with retained originals.
+All 455 APKs pass signature verification for API 36 and all 39 APEX payloads
+pass their AVB/key checks; the distinct alignment and permission failures remain
+blocking. No phone operation has occurred. See [experimental first-boot
+readiness](flash-readiness.md) for the precise completed checks, A-only Super
+risk, data/device gates and current feature limits.
+
+## Earlier Package6 static checks
+
+This checkpoint precedes the first-stage reproduction and comprehensive APK audit above.
+
 **The three original VINTF checker commands now pass**, with native and
 supervisor exits 0/0; full framework/vendor/kernel/APEX stdout ends `COMPATIBLE`.
 All six source callbacks, 548 selected source files, 1,179 locked HEADs/origins,
