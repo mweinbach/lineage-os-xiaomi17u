@@ -23,8 +23,8 @@ source-inventory postcheck correction now passes separately, preserving the
 original failed receipt. The ordinary recovery/vendor/ODM/mi_ext and policy-
 hash rebuild passes, including all seven fresh producer checks. The GMS app
 stage also passes native checks and independent replay, distinguishing two
-fresh APK actions from verified reuse. Selected-app checks now also pass;
-platform images and the successor package are still pending.
+fresh APK actions from verified reuse. Selected-app and rebuilt platform-image
+checks now also pass; the successor package is still pending.
 The first selected-app attempt stopped before Android invocation because its
 staging map omitted six capture-proof aliases. Those original files are now
 staged and hash-verified; the failed attempt and all build outputs are preserved.
@@ -35,7 +35,6 @@ originals. All six source callback maps match. Its 193 retained evidence files
 are exported and hash-verified. Independent semantic replay of the complete
 300-file proof also passes, including all 36 artifact commands and the separate
 historical Flex check.
-Final platform images and the successor package still need building.
 The five-image producer capture passes. An initial source-spec handoff failure
 was corrected without changing Android source or repeating the capture. The
 retry completes **941 Ninja actions with exit zero**, including APK/APEX
@@ -45,9 +44,12 @@ ancestors remain identical; only change times differ. The separate full
 postcheck recovery and independent semantic replay now pass: five fresh image
 producers, the fresh system copy and six verified outputs. The original failed
 result remains unchanged. The read-only Package7 producer capture also passes,
-and the **real Package7 target-files build is running**. Its request fits the
-existing size limit; all 448 prerequisite/staging files were freshly hashed
-before launch. A finished or signed Package7 is not yet claimed.
+but **Package7 stopped in prerequisite verification before Android invocation**:
+the Selected consumer expected a missing `current_records` field. No outputs
+were prepared, invalidated or deleted. The failed result and its phase directory
+are preserved; the successor must use a new phase. The request fits the existing
+size limit, and all 448 prerequisite/staging files were freshly hashed before
+launch. A finished or signed successor package is not yet claimed.
 
 The wider deadline review found no justified new kernel/display source change.
 It confirmed a missing Android IMS provider stack: **IMS, VoLTE, VoWiFi and

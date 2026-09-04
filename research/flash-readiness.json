@@ -683,7 +683,7 @@
     }
   },
   "package7_build": {
-    "status": "running",
+    "status": "failed-prerequisite-observation-before-Android",
     "native_build_completed": false,
     "request": {
       "path": "reports/flash-ready-20260904/build-continuation/package7/request.json",
@@ -703,6 +703,17 @@
       "sha256": "3cad25fff37298cc0d0ebacb0aded2057f81920d04d48b23f32f47c42ea12236",
       "size_bytes": 269030
     },
-    "original_inputs_and_failures_preserved": true
+    "original_inputs_and_failures_preserved": true,
+    "native_invocation_executed": false,
+    "output_preparation_started": false,
+    "output_invalidated_or_deleted": false,
+    "wrapper_exit_code": 1,
+    "error": "KeyError: current_records in Selected native semantic replay",
+    "result": {
+      "path": "reports/flash-ready-20260904/build-continuation/package7/native/stdout.jsonl",
+      "sha256": "7a7a7f37288d6ec796e7620eadc7aa7ae29a8d7dec4ecea6cace38f59ee50cb9",
+      "size_bytes": 1974403
+    },
+    "retry_requires_new_phase": true
   }
 }
