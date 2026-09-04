@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "id": "signapk-stored-entry-timestamps-v1",
+  "status": "tested_source_patch_not_installed",
+  "checkpoint": "2026-09-04 Package6 TurboAdapter alignment audit",
+  "project": "build/make",
+  "origin": "https://github.com/Evolution-X/build",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "a438ca40c6ed779042f806142b1165ba1360a7b2",
+  "patch": "patches/evolution/0025-signapk-stored-entry-timestamps.patch",
+  "patch_sha256": "4b45ba0b654e1996caf71f8e968ea4f7388d3f961dfe1cf57853770cc3b6f0f1",
+  "patch_size_bytes": 1160,
+  "files": [
+    {
+      "path": "tools/signapk/src/com/android/signapk/SignApk.java",
+      "mode": "100644",
+      "line_endings": "LF",
+      "before_sha256": "a1ef3eaac711108c867c1834c475a84a4425d0fb29d07364b3fd20ed71f260f9",
+      "before_size_bytes": 61172,
+      "before_git_blob": "196daba1088e143f9a6f0a32915bded7b5a93c56",
+      "after_sha256": "e36126abbaa95f6762fb652139100a27032f2fe5ee4621f2be7debf4c9639111",
+      "after_size_bytes": 61517,
+      "after_git_blob": "49693b19155b034e23781fd19f6f8e1f837f150e"
+    }
+  ],
+  "predecessor_contract": {
+    "path": "patches/evolution/signapk-source-stamp.json",
+    "sha256": "dc51ea999c3c2c9a3e789984acd36cfb20ad27fa11354be3e88b5781bbb4cd6b",
+    "size_bytes": 11156
+  },
+  "source_snapshot": {
+    "path": "research/source-snapshots/evolution-bka-20260827.xml",
+    "sha256": "a7b9b5aec7f07a4d351771dbb834f4c4561c26564c7292930409f3f5968edeac",
+    "size_bytes": 287546
+  },
+  "source_capture": {
+    "path": "reports/flash-ready-20260904/root/turbo-parser-signing-source-capture.json",
+    "sha256": "c0a2a6047a2b1a2fa59098370bb14d59c383657c6efc7ae4e161082efbbd5988",
+    "size_bytes": 331838,
+    "selector": "files[path=/work/evolution/build/make/tools/signapk/src/com/android/signapk/SignApk.java]",
+    "source_mutated": false
+  },
+  "purpose": "Prevent inherited access/creation FileTimes from adding unaccounted ZIP local-header timestamp fields after STORED-entry alignment padding is computed.",
+  "observed_failure": {
+    "archive_member": "SYSTEM_EXT/priv-app/TurboAdapter/TurboAdapter.apk",
+    "target_sdk": 31,
+    "signed_apk": {
+      "path": "reports/flash-ready-20260904/signing/files/0460.apk",
+      "sha256": "d2283551105e74a092c2288d7f556ed961e73c956ee3c2309f1c064eda2139f4",
+      "size_bytes": 324091
+    },
+    "native_signing_audit": {
+      "path": "reports/flash-ready-20260904/signing/commands/0460/result.json",
+      "sha256": "c7ac6be2e6b0c4c72aba3463472ea0f1eb756177020f8192fcc9c7b90fdfbd36",
+      "size_bytes": 3312
+    },
+    "root_cause": {
+      "path": "reports/flash-ready-20260904/signing/turbo-root-cause.json",
+      "sha256": "3caad1492a971e8768cbd4a5117dbdc82b259fbb3088e39ad504ecb87d9001ed",
+      "size_bytes": 6710
+    },
+    "source_provenance": {
+      "path": "reports/flash-ready-20260904/signing/turbo-source-provenance.json",
+      "sha256": "ceda3d3ce0c9f36b63a90d152b34735f66f5b4d54aa7df2e6299741eb0d67baf",
+      "size_bytes": 8207
+    },
+    "source_apk": {
+      "sha256": "11f7dceacaa246b9c6aa30d298535e3a49d3dd86b025247af6c416846d26dbbc",
+      "size_bytes": 131698
+    },
+    "source_classes_compression": "DEFLATED before the existing zip2zip STORED conversion",
+    "source_timestamp_metadata": "NTFS extra field 0x000a carries access/creation times; current signed classes.dex carries their identical values in extended-timestamp field 0x5455.",
+    "signed_classes_data_offset": 65,
+    "signed_resources_data_offset": 314249,
+    "unexpected_timestamp_extra_bytes": 13,
+    "resources_alignment_mod4": 1,
+    "default_alignment_was_enabled": true,
+    "device_parse_or_boot_failure_observed": false
+  },
+  "scope": {
+    "changed_files": 1,
+    "changed_stored_copy_blocks": 1,
+    "payload_fields_copied": [
+      "name",
+      "method",
+      "size",
+      "compressed_size",
+      "crc"
+    ],
+    "input_comments": "discarded, preserving existing behavior",
+    "input_extra_fields": "discarded, preserving existing behavior",
+    "access_creation_filetimes_inheritance_removed": true,
+    "creator_os_and_external_unix_attributes": "Fresh JarEntry normalizes hidden central-directory creator OS and external Unix attributes to zero, as the existing compressed branch already does. Public Java APIs do not expose setters for these fields; no reflection is used.",
+    "general_purpose_zip_flags": "The no-key regression outputs retain the same flags in cloned and fresh variants; production source contains no flag or signing-option change.",
+    "timestamp_normalization_changed": false,
+    "alignment_algorithm_changed": false,
+    "compressed_branch_changed": false,
+    "source_stamp_filter_changed": false,
+    "signing_checks_changed": false,
+    "original_apk_changed": false,
+    "platform_certificate_changed": false,
+    "privileges_changed": false,
+    "page_size_changed": false,
+    "selinux_changed": false
+  },
+  "reproduction": {
+    "helper": "scripts/signapk_stored_entry_timestamps.py",
+    "operation": "derive(bytes) admits only the full 0020 postimage and returns the exact 0025 postimage; reverse(bytes) recovers only the exact 0020 postimage.",
+    "offline_tests": "python3 -m unittest tests.test_signapk_stored_entry_timestamps -v",
+    "java_fixture": {
+      "path": "tests/fixtures/SignApkStoredEntryTimestampRepro.java",
+      "sha256": "585ae59e78f39ae16fc7054bf0567913201f6981971abc129aa3b6c2abe9fac9",
+      "size_bytes": 4283
+    },
+    "original_no_key_jdk_proof": {
+      "path": "reports/flash-ready-20260904/signing/timestamp-repro/result.json",
+      "sha256": "c13a454e720166761a6543aa184624bff40c1fd71a4f605d2b0e97194cba733b",
+      "size_bytes": 6233
+    },
+    "expanded_no_key_jdk_proof": {
+      "path": "reports/flash-ready-20260904/signapk-timestamps/jdk-fixture-v3/result.json",
+      "sha256": "f91cbe6fcbf9cea64b15473aae6aebc9654378b51066cd6d0e35cfe3ca695abf",
+      "size_bytes": 392055
+    },
+    "host_jdk_case_count": 10,
+    "output_archives_validated": 20,
+    "expected_old_misalignment_cases": 8,
+    "input_timestamp_cases": [
+      "none",
+      "UT access only",
+      "UT creation only",
+      "UT access and creation",
+      "NTFS modification/access/creation"
+    ],
+    "alignments_tested_bytes": [
+      4,
+      4096
+    ],
+    "all_corrected_fixture_entries_aligned": true,
+    "payload_fields_normalized_time_comment_and_zip_flags_verified": true,
+    "signing_or_key_access_performed": false,
+    "historical_fixture_failure": "The first harness assumed whole-ZIP equality for the no-timestamp control. That fails because fresh entries normalize hidden creator/Unix attributes. The original harness and outputs remain preserved; later fixtures assert the exact normalization and retain strict local-byte, payload and metadata checks.",
+    "private_prepared_source": "reports/flash-ready-20260904/signapk-timestamps/SignApk.after.java"
+  },
+  "adoption_requirements": [
+    "Reauthenticate current source composition and exact SignApk preimage, preserving the previous 0020 source-stamp correction, Make signer dependency, all other patches and original proprietary APKs.",
+    "Use the reviewed source transaction to update only the existing SignApk source row, record successor identity, and rebuild the ordinary Android SignApk and TurboAdapter producers. The no-key host JDK fixture is not a native Android signer build or actual APK signing result.",
+    "For the real rebuilt TurboAdapter, compare every non-signing ZIP member payload SHA256, size and compression against the previous artifact; do not blanket-exempt META-INF. Require unchanged manifest, platform certificate and configured privileges, strict full-range and API36 signature verification, and zipalign with -P 4 plus four-byte resource-table alignment.",
+    "Review creator-OS and external Unix-attribute normalization for the actual affected APKs; the fixture does not prove equivalence for arbitrary ZIP consumers that use Unix mode bits. Preserve signature, alignment, API and packaging checks instead of relaxing them.",
+    "Rebuild affected images and target-files through the actual source path, then repeat signing, AVB, VINTF, permission and partition checks for the successor artifact set. Preserve normal Android enforcement, 4 KiB and working76 recovery. Flash and boot readiness are separate gates."
+  ],
+  "preparation_limits": {
+    "active_source_installed": false,
+    "android_signer_built": false,
+    "actual_turbo_apk_rebuilt": false,
+    "actual_rebuilt_apk_alignment_verified": false,
+    "images_rebuilt": false,
+    "target_files_repackaged": false,
+    "private_keys_accessed": false,
+    "phone_accessed": false,
+    "hardware_tested": false,
+    "complete_rom_ready": false,
+    "flash_ready": false
+  }
+}

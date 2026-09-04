@@ -1,0 +1,20 @@
+diff --git a/tools/signapk/src/com/android/signapk/SignApk.java b/tools/signapk/src/com/android/signapk/SignApk.java
+index 196daba1088e143f9a6f0a32915bded7b5a93c56..49693b19155b034e23781fd19f6f8e1f837f150e 100644
+--- a/tools/signapk/src/com/android/signapk/SignApk.java
++++ b/tools/signapk/src/com/android/signapk/SignApk.java
+@@ -454,8 +454,13 @@
+                 continue;
+             }
+ 
+-            // Preserve the STORED method of the input entry.
+-            JarEntry outEntry = new JarEntry(inEntry);
++            // Copy payload metadata without inheriting access/creation timestamps.
++            // JarOutputStream can emit those as unaccounted extra fields and break alignment.
++            JarEntry outEntry = new JarEntry(inEntry.getName());
++            outEntry.setMethod(inEntry.getMethod());
++            outEntry.setSize(inEntry.getSize());
++            outEntry.setCompressedSize(inEntry.getCompressedSize());
++            outEntry.setCrc(inEntry.getCrc());
+             outEntry.setTime(timestamp);
+             // Discard comment and extra fields of this entry to
+             // simplify alignment logic below and for consistency with
