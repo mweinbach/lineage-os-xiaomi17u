@@ -408,7 +408,7 @@
     }
   },
   "selected5_preparation": {
-    "status": "fresh-query-equivalence-and-file-observations-verified-build-pending",
+    "status": "fresh-query-equivalence-and-file-observations-verified-native-preflight-failed",
     "fresh_native_query_calls": 19,
     "query_graph_files": 16,
     "query_graph_bytes": 6862614527,
@@ -442,6 +442,29 @@
         "path": "reports/flash-ready-20260904/build-continuation/selected5-physical-independent-review.json",
         "sha256": "b32db48e8ad80514c49ffdc23861b7eccdc81a201420e5f1611875c5bc625428",
         "size_bytes": 2308
+      }
+    }
+  },
+  "selected5_preflight": {
+    "status": "failed-before-output-preparation",
+    "reason": "Six existing capture proof aliases were omitted from the generated staging map.",
+    "native_invocation_executed": false,
+    "output_preparation_started": false,
+    "original_failure_preserved": true,
+    "missing_proof_aliases": 6,
+    "aliases_now_staged_and_hash_verified": true,
+    "retry_phase": "first-target-files-selected-app-components-6",
+    "retry_native_invocation_executed": false,
+    "evidence": {
+      "failure": {
+        "path": "reports/flash-ready-20260904/build-continuation/selected5-accelerated/native/stdout.jsonl",
+        "sha256": "968a7836201f07069e804809cff78640014914a14d25014073671766fd31b7e3",
+        "size_bytes": 7423728
+      },
+      "alias_staging": {
+        "path": "reports/flash-ready-20260904/root/selected6-runtime-alias-staging/receipt.json",
+        "sha256": "387734a71fe347c5cf5e4e5707aae59194b8e3ea0042476627b6d205a83520c6",
+        "size_bytes": 2224
       }
     }
   }

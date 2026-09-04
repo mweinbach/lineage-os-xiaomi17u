@@ -118,8 +118,13 @@ absent throughout.
 All five original file-reader families and 26 current app/status observations
 also pass complete host replay, including source checks before and after.
 No old physical observations were reused, and this collection did not modify
-source or output files. The ordinary Selected5 build and its fresh status actions
-remain pending; these preparation results do not qualify final platform images.
+source or output files. The subsequent Selected5 attempt stopped in preflight:
+its staging map omitted six existing capture-proof aliases. It did not prepare
+or invalidate outputs and did not invoke Android. All six original proof files
+are now staged with their recorded hashes; the failed attempt remains intact.
+A separate Selected6 attempt will use a complete input map and a new phase
+record. The ordinary selected-app build and its fresh status actions remain
+pending; these preparation results do not qualify final platform images.
 
 ## Completed checks
 

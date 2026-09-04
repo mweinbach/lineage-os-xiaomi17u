@@ -25,6 +25,10 @@ hash rebuild passes, including all seven fresh producer checks. The GMS app
 stage also passes native checks and independent replay, distinguishing two
 fresh APK actions from verified reuse. Selected-app checks, platform images
 and the successor package are still pending.
+The first selected-app attempt stopped before Android invocation because its
+staging map omitted six capture-proof aliases. Those original files are now
+staged and hash-verified; the failed attempt and all build outputs are preserved.
+The corrected retry has a separate phase and must still pass the ordinary build.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.
