@@ -20,8 +20,9 @@ original Java/XML files and Package6 artifacts are preserved. Configuration
 queries and the ordinary SignApk/TurboAdapter build have completed. The new APK
 passes strict signatures, unchanged-payload checks and 4 KiB alignment. A
 source-inventory postcheck correction now passes separately, preserving the
-original failed receipt. The ordinary delivery-image rebuild is running;
-neither fix has reached final rebuilt platform images yet.
+original failed receipt. The ordinary recovery/vendor/ODM/mi_ext and policy-
+hash rebuild passes, including all seven fresh producer checks. Platform
+images and the successor package are still pending.
 
 **First-stage init reproduction now passes:** 13 direct compilations plus link,
 strip and install reproduce all 16 outputs exactly, with retained originals.

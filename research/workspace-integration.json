@@ -10988,5 +10988,21 @@
     "complete_rom_ready": false,
     "flash_ready": false,
     "details": "research/flash-readiness.json"
+  },
+  "source549_ordinary_images7_20260904": {
+    "result": {
+      "path": "reports/flash-ready-20260904/build-continuation/images7/native/stdout.jsonl",
+      "sha256": "2acb6b308e789532e3e57347f8bf7a749ad739b6a5638a2bb52674367a59cc11",
+      "size_bytes": 13934749
+    },
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "profile_and_postcheck_verified": true,
+    "all_seven_fresh_producers_verified": true,
+    "normal_android_selinux_changed": false,
+    "working76_recovery_preserved": true,
+    "platform_image_and_package_delivery_pending": true,
+    "phone_accessed": false,
+    "complete_rom_ready": false
   }
 }

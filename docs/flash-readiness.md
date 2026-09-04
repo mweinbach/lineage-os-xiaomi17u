@@ -75,8 +75,11 @@ independent full replay by the coordinating agent. Its separate receipt binds
 the exact original failure, complete corrected result and SDK verification;
 the original completion flag stays false. No native compilation was rerun and
 no source APK was changed to satisfy the check. The ordinary recovery/vendor/
-ODM/mi_ext/policy-hash rebuild has started; final image/package qualification
-remains pending.
+ODM/mi_ext/policy-hash rebuild also passes, with all seven fresh producer
+actions and three recomputed policy sidecars checked. Source/input callbacks
+remain unchanged; working76 and retained proprietary image bytes are preserved.
+This does not verify the final signed parent chain or runtime. Platform images
+and the successor target-files package are still pending.
 
 ## Completed checks
 

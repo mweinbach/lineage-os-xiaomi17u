@@ -8,7 +8,7 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-04",
-  "status": "signer-apk-and-postcheck-verified-images-rebuilding",
+  "status": "delivery-images-verified-platform-images-and-package-pending",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
@@ -165,6 +165,11 @@
       "path": "reports/flash-ready-20260904/root/component1-postcheck-root-review.json",
       "sha256": "e451e0aba556e65b473af3e9deb32e34b5994faaaf557e65ec620110f740a425",
       "size_bytes": 2424
+    },
+    "ordinary_images7": {
+      "path": "reports/flash-ready-20260904/build-continuation/images7/native/stdout.jsonl",
+      "sha256": "2acb6b308e789532e3e57347f8bf7a749ad739b6a5638a2bb52674367a59cc11",
+      "size_bytes": 13934749
     }
   },
   "source_installation": {
@@ -263,7 +268,7 @@
     "successor_images_verified": false
   },
   "ordinary_images7": {
-    "status": "running-not-admitted",
+    "status": "native-and-profile-verified",
     "profile": "images",
     "phase": "first-target-files-images-7",
     "goals": [
@@ -275,7 +280,15 @@
       "system_ext_sepolicy_and_mapping.sha256",
       "product_sepolicy_and_mapping.sha256"
     ],
-    "result_pending": true,
-    "source_or_readiness_flags_changed": false
+    "result_pending": false,
+    "source_or_readiness_flags_changed": false,
+    "native_exit_code": 0,
+    "wrapper_exit_code": 0,
+    "finished_utc": "2026-09-04T15:58:39.464130+00:00",
+    "all_seven_fresh_producers_verified": true,
+    "three_policy_sidecars_recomputed": true,
+    "six_source_callbacks_unchanged": true,
+    "signed_parent_chain_verified": false,
+    "runtime_verified": false
   }
 }
