@@ -23,9 +23,10 @@ copies are retained; Package6's existing input/artifact bytes are unchanged.
 The source identity is `128c96ed5e626cdd0d21354231daed97f878057def27af1def13051befe26d4d`,
 with `BUILD_NUMBER=nezha.128c96ed5e626cdd0d213542`. Only the source descriptor
 changes; private/generated/tool/public-signing descriptor hashes remain the
-same. New configuration queries, graph, signer/APK, images and target-files
-results are still required. Source installation is not rebuilt-image or flash
-readiness. The full workspace suite passes **4,602 tests**, zero skips.
+same. Configuration queries and the new graph are verified. The ordinary signer/APK
+build and independent artifact checks now pass as described below; image and
+target-files results remain pending. Source installation is not rebuilt-image
+or flash readiness. The full workspace suite passes **4,602 tests**, zero skips.
 
 ## Source fixes before the next image set
 
@@ -42,11 +43,36 @@ readiness. The full workspace suite passes **4,602 tests**, zero skips.
    a 13-byte extra field outside the signer's alignment calculation. A real
    no-key JDK fixture reproduces that displacement and verifies the proposed
    [fresh-entry correction](signapk-stored-entry-timestamps.md). Its source is
-   installed. The ordinary signer/app pipeline must be rebuilt,
-   retaining the same platform certificate and original APK payload contents.
+   installed. Its ordinary signer/app rebuild now produces a strictly verified,
+   aligned APK with the same platform certificate and protected payloads;
+   final image delivery remains pending.
 
 Neither issue justifies disabling permission enforcement, skipping alignment
 checks, changing certificates, or editing generated target-files XML/APKs.
+
+## Signer/APK rebuild and independent verification
+
+The ordinary `signapk TurboAdapter` build finished at **15:26:21 UTC**, native
+exit zero, with the required Ninja arguments, sandbox and limits observed.
+All six source/input callback maps remain identical before and after. The
+installed SignApk JAR is `da15c6c87386ac7c16fa019ecbaf2c5d3594f1aace11a5f4764562b88528cf40`
+(3,321,606 bytes). The installed TurboAdapter APK is
+`968f10081ddcb9fe1f9e6d0703a5d14f8d94eef19a9cb4184946f055279aae6a`
+(324,086 bytes).
+
+Independent native host checks pass strict signatures for API 36 and the full
+supported range, `zipalign -c -P 4 -v 4`, and manifest parsing. The platform
+certificate and all four non-signing payloads, sizes, CRCs and compression
+methods remain unchanged. DEX/resources offsets move from 65/314,249 to
+52/314,236, removing the incorrect timestamp-extra displacement.
+
+The original component wrapper remains a recorded failure: its postcheck
+incorrectly treated the original `stamp-cert-sha256` member as a payload that
+must survive, although patch 0020 already removes this obsolete signing stamp.
+The source APK's exact eight entries and the output's exact seven entries are
+captured; corrected structural/metadata replay is separate from the successful
+native invocation and artifact verification. No source APK was changed to
+satisfy the check. Image/package qualification remains pending.
 
 ## Completed checks
 

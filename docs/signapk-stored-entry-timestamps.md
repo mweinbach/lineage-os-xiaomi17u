@@ -67,3 +67,14 @@ independent originals remain retained. Current source is the 549-file
 `nezha.128c96ed5e626cdd0d213542` state; previous source-preparation records keep
 their historical scope. This does not yet establish a rebuilt signer, APK or
 image. Follow [current flash-readiness work](flash-readiness.md#current-source-state).
+
+## Actual ordinary build and APK verification — September 4, 2026
+
+The source549 ordinary `signapk TurboAdapter` command exits zero with observed
+Ninja, sandbox and resource checks. The rebuilt APK independently passes both
+strict signature modes, manifest parsing and four-byte/4 KiB alignment; all
+four protected payloads and the platform certificate are unchanged. See the
+[current artifact result](flash-readiness.md#signerapk-rebuild-and-independent-verification)
+for hashes and the separately preserved wrapper failure caused by its original
+stamp-inventory assumption. Corrected postcheck replay and final image delivery
+remain distinct gates. This does not qualify a boot or authorize flashing.

@@ -8,7 +8,7 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-04",
-  "status": "source-fixes-installed-rebuild-and-device-preflight-pending",
+  "status": "native-signer-apk-built-and-verified-postcheck-replay-and-images-pending",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
@@ -140,10 +140,25 @@
       "path": "reports/flash-ready-20260904/root/full-tests-device-preflight.log",
       "sha256": "b2e3c4c80643110051647a87de1325fd18fa20cb5190cfeab71e28f9105106f1",
       "size_bytes": 804270
+    },
+    "signapk_component_native": {
+      "path": "reports/flash-ready-20260904/build-continuation/component1/native/stdout.jsonl",
+      "sha256": "e8dfcbc35af4d0edc4e802eb89ab1277c622c0ce0e694847434068881b08484c",
+      "size_bytes": 13864544
+    },
+    "signapk_component_capture": {
+      "path": "reports/flash-ready-20260904/root/component1-postcheck-capture-v1/manifest.json",
+      "sha256": "f6c396db8f9aba4d951775ae034a613338d782ab9b426cf871d8a6d151993e87",
+      "size_bytes": 3126
+    },
+    "signapk_component_artifact_verification": {
+      "path": "reports/flash-ready-20260904/signing-successor/turbo/component1-v1/result.json",
+      "sha256": "09d27885d0fea967e8724318c3f3ad2b999aa256f895155eecfa66fc5cfb3aaf",
+      "size_bytes": 30202
     }
   },
   "source_installation": {
-    "status": "native-two-file-source-installation-verified-builds-pending",
+    "status": "native-source-installed-signer-apk-built-images-pending",
     "completed_utc": "2026-09-04T14:36:30.375118+00:00",
     "operations": 2,
     "source_files_before": 548,
@@ -159,8 +174,8 @@
     "build_number": "nezha.128c96ed5e626cdd0d213542",
     "original_inodes_and_independent_copies_preserved": true,
     "original_package6_inputs_unchanged": true,
-    "new_signer_built": false,
-    "new_apk_built": false,
+    "new_signer_built": true,
+    "new_apk_built": true,
     "new_images_built": false,
     "complete_rom_ready": false,
     "flash_ready": false,
@@ -220,5 +235,21 @@
     "device_mutations_supported": false,
     "requires_explicit_authorized_usb_device": true,
     "grants_flash_admission": false
+  },
+  "signapk_component": {
+    "native_exit_code": 0,
+    "wrapper_exit_code": 1,
+    "native_finished_utc": "2026-09-04T15:26:21.472632+00:00",
+    "ninja_observed": true,
+    "ninja_argv_verified": true,
+    "ninja_limits_verified": true,
+    "sandbox_checks_passed": true,
+    "six_source_callbacks_unchanged": true,
+    "original_postcheck_error": "original NoBatt payload inventory differs",
+    "corrected_postcheck_replay_complete": false,
+    "independent_strict_signatures_alignment_manifest_payloads_verified": true,
+    "platform_certificate_unchanged": true,
+    "original_source_apk_preserved": true,
+    "successor_images_verified": false
   }
 }
