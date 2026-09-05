@@ -1,0 +1,244 @@
+diff --git a/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java b/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java
+index f5a2f347364f6f7e126a22707a83c8452431338c..cab30d3e8e8ca8b6f567dcc9c9d95e0495fc50d0 100644
+--- a/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java
++++ b/services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java
+@@ -41,6 +41,8 @@
+ 
+     private static final String TAG = "SensorOverlays";
+ 
++    @Nullable private NezhaFingerprintOverlay mNezhaFingerprintOverlay;
++
+     @NonNull private final Optional<IUdfpsOverlayController> mUdfpsOverlayController;
+ 
+     /**
+@@ -73,6 +75,10 @@
+             try {
+                 mUdfpsOverlayController.get().showUdfpsOverlay(
+                         client.getRequestId(), sensorId, reason, callback);
++                if (mNezhaFingerprintOverlay != null) {
++                    mNezhaFingerprintOverlay.hide();
++                }
++                mNezhaFingerprintOverlay = NezhaFingerprintOverlay.show(sensorId, client);
+             } catch (RemoteException e) {
+                 Slog.e(TAG, "Remote exception when showing the UDFPS overlay", e);
+             }
+@@ -85,6 +91,10 @@
+      * @param sensorId sensor id
+      */
+     public void hide(int sensorId) {
++        if (mNezhaFingerprintOverlay != null) {
++            mNezhaFingerprintOverlay.hide();
++            mNezhaFingerprintOverlay = null;
++        }
+         if (mUdfpsOverlayController.isPresent()) {
+             try {
+                 mUdfpsOverlayController.get().hideUdfpsOverlay(sensorId);
+diff --git a/services/core/java/com/android/server/biometrics/sensors/NezhaFingerprintOverlay.java b/services/core/java/com/android/server/biometrics/sensors/NezhaFingerprintOverlay.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..7dc5fedda5da6586bbd596d2bd37c8b8d36c517a
+--- /dev/null
++++ b/services/core/java/com/android/server/biometrics/sensors/NezhaFingerprintOverlay.java
+@@ -0,0 +1,203 @@
++/*
++ * Copyright (C) 2026 The Evolution X Project
++ * SPDX-License-Identifier: Apache-2.0
++ */
++package com.android.server.biometrics.sensors;
++
++import android.hardware.display.DisplayManager;
++import android.os.Build;
++import android.os.Handler;
++import android.os.IBinder;
++import android.os.HandlerThread;
++import android.os.Parcel;
++import android.os.RemoteException;
++import android.os.ServiceManager;
++import android.os.SystemProperties;
++import android.util.Slog;
++import android.view.Display;
++
++/** Supplies the stock Nezha FOD engine with the framework operation and overlay lifecycle. */
++final class NezhaFingerprintOverlay implements DisplayManager.DisplayListener {
++    private static final String TAG = "NezhaFingerprintOverlay";
++    private static final String DESCRIPTOR =
++            "vendor.xiaomi.hardware.fingerprintextension.IXiaomiFingerprint";
++    private static final String SERVICE = DESCRIPTOR + "/default";
++    private static final int COMMAND_OVERLAY = 1;
++    private static final int COMMAND_POWER = 3;
++    private static final int COMMAND_OPERATION = 4;
++
++    private final DisplayManager mDisplayManager;
++    private IBinder mService;
++    private final Handler mHandler;
++    private volatile boolean mCanceled;
++    private boolean mLinked;
++    private final IBinder.DeathRecipient mDeathRecipient = this::hide;
++    private final int mStartMode;
++    private boolean mActive;
++    private boolean mListening;
++
++    private static final class Worker {
++        static final Handler HANDLER;
++        static {
++            final HandlerThread thread = new HandlerThread("NezhaFodLifecycle");
++            thread.start();
++            HANDLER = new Handler(thread.getLooper());
++        }
++    }
++
++    private NezhaFingerprintOverlay(DisplayManager displayManager, int startMode) {
++        mDisplayManager = displayManager;
++        mStartMode = startMode;
++        mHandler = Worker.HANDLER;
++    }
++
++    static NezhaFingerprintOverlay show(int sensorId, AcquisitionClient<?> client) {
++        // This wire contract is verified only for this device's sensor and stock v2 FOD engine.
++        if (!"nezha".equals(Build.DEVICE) || sensorId != 5
++                || !"2.0".equals(SystemProperties.get("ro.hardware.fp.fod.touch.ctl.version"))) {
++            return null;
++        }
++        final int startMode;
++        if (client instanceof EnrollClient) {
++            startMode = 1;
++        } else if (client instanceof AuthenticationClient) {
++            startMode = 3;
++        } else if (client instanceof DetectionConsumer) {
++            startMode = 7;
++        } else {
++            return null;
++        }
++        final DisplayManager displays = client.getContext().getSystemService(DisplayManager.class);
++        if (displays == null) {
++            Slog.w(TAG, "Display manager unavailable");
++            return null;
++        }
++        final NezhaFingerprintOverlay overlay =
++                new NezhaFingerprintOverlay(displays, startMode);
++        overlay.mHandler.post(overlay::start);
++        return overlay;
++    }
++
++    private void start() {
++        if (mCanceled) return;
++        // Never wait for vendor startup or transact on a biometric/SystemUI/main thread.
++        mService = ServiceManager.checkService(SERVICE);
++        if (mService == null) {
++            Slog.w(TAG, "Stock FOD lifecycle service unavailable");
++            return;
++        }
++        try {
++            mService.linkToDeath(mDeathRecipient, 0);
++            mLinked = true;
++            mDisplayManager.registerDisplayListener(this, mHandler);
++            mListening = true;
++            command(COMMAND_OPERATION, mStartMode);
++            updatePower();
++            if (mCanceled) {
++                stop();
++                return;
++            }
++            // The framework has successfully requested the SystemUI overlay at this point.
++            command(COMMAND_OVERLAY, 1);
++            mActive = true;
++        } catch (RemoteException | RuntimeException e) {
++            Slog.e(TAG, "Unable to start stock FOD lifecycle", e);
++            stop();
++        }
++    }
++
++    void hide() {
++        mCanceled = true;
++        mHandler.post(this::stop);
++    }
++
++    private void stop() {
++        mActive = false;
++        if (mListening) {
++            try {
++                mDisplayManager.unregisterDisplayListener(this);
++            } catch (RuntimeException e) {
++                Slog.w(TAG, "Unable to unregister stock FOD display listener", e);
++            } finally {
++                mListening = false;
++            }
++        }
++        if (mService == null) return;
++        if (mLinked) {
++            try {
++                mService.unlinkToDeath(mDeathRecipient, 0);
++            } catch (RuntimeException e) {
++                Slog.w(TAG, "Unable to unlink stock FOD death listener", e);
++            } finally {
++                mLinked = false;
++            }
++        }
++        // Separate attempts ensure an overlay failure does not suppress operation cleanup.
++        try {
++            command(COMMAND_OVERLAY, 0);
++        } catch (RemoteException | RuntimeException e) {
++            Slog.w(TAG, "Unable to clear stock FOD overlay", e);
++        }
++        try {
++            command(COMMAND_OPERATION, mStartMode + 1);
++        } catch (RemoteException | RuntimeException e) {
++            Slog.w(TAG, "Unable to stop stock FOD operation", e);
++        }
++        mService = null;
++    }
++
++    @Override
++    public void onDisplayChanged(int displayId) {
++        if (mActive && !mCanceled && displayId == Display.DEFAULT_DISPLAY) {
++            try {
++                updatePower();
++            } catch (RemoteException | RuntimeException e) {
++                Slog.e(TAG, "Unable to update stock FOD display state", e);
++                hide();
++            }
++        }
++    }
++
++    @Override
++    public void onDisplayAdded(int displayId) {}
++
++    @Override
++    public void onDisplayRemoved(int displayId) {
++        if (mActive && !mCanceled && displayId == Display.DEFAULT_DISPLAY) {
++            hide();
++        }
++    }
++
++    private void updatePower() throws RemoteException {
++        final Display display = mDisplayManager.getDisplay(Display.DEFAULT_DISPLAY);
++        // Vendor uses SurfaceFlinger power modes, not Display.STATE_* values.
++        final int powerMode;
++        switch (display == null ? Display.STATE_UNKNOWN : display.getState()) {
++            case Display.STATE_ON: powerMode = 2; break;
++            case Display.STATE_DOZE: powerMode = 1; break;
++            case Display.STATE_DOZE_SUSPEND: powerMode = 3; break;
++            case Display.STATE_ON_SUSPEND: powerMode = 4; break;
++            default: powerMode = 0; break;
++        }
++        command(COMMAND_POWER, powerMode);
++    }
++
++    private void command(int command, int parameter) throws RemoteException {
++        final Parcel data = Parcel.obtain();
++        final Parcel reply = Parcel.obtain();
++        try {
++            data.writeInterfaceToken(DESCRIPTOR);
++            data.writeInt(command);
++            data.writeInt(parameter);
++            if (!mService.transact(IBinder.FIRST_CALL_TRANSACTION, data, reply, 0)) {
++                throw new RemoteException("Stock FOD extension rejected lifecycle transaction");
++            }
++            reply.readException();
++            // The stock method returns an int; it is not a biometric authentication result.
++            reply.readInt();
++        } finally {
++            reply.recycle();
++            data.recycle();
++        }
++    }
++}

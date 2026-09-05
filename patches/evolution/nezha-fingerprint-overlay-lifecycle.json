@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "id": "nezha-fingerprint-overlay-lifecycle-v1",
+  "status": "compiled_candidate_not_hardware_verified",
+  "checkpoint": "2026-09-05 Package7 fingerprint enrollment",
+  "project": "frameworks/base",
+  "origin": "https://github.com/Evolution-X/frameworks_base",
+  "remote_name": "evo",
+  "branch": "bka",
+  "base_commit": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "patch": "patches/evolution/0027-nezha-fingerprint-overlay-lifecycle.patch",
+  "patch_sha256": "8d7ebd3891fabe97a8e305d77b65d36b29b526417471cfeefe93394ad32d0060",
+  "patch_size_bytes": 9654,
+  "files": [
+    {
+      "path": "services/core/java/com/android/server/biometrics/sensors/SensorOverlays.java",
+      "mode": "100644",
+      "line_endings": "LF",
+      "before_sha256": "4a6007e8b9aaee1713b42ae3aa5f6870ec5fb4544e3240205312f0b3af39d81b",
+      "before_size_bytes": 4299,
+      "before_git_blob": "f5a2f347364f6f7e126a22707a83c8452431338c",
+      "after_sha256": "98a57d562dd4807b9fc22d515e67d5b4f27282b45fc8ff4122343ad23c53c3fe",
+      "after_size_bytes": 4738,
+      "after_git_blob": "cab30d3e8e8ca8b6f567dcc9c9d95e0495fc50d0"
+    },
+    {
+      "path": "services/core/java/com/android/server/biometrics/sensors/NezhaFingerprintOverlay.java",
+      "mode": "100644",
+      "line_endings": "LF",
+      "before_sha256": null,
+      "before_size_bytes": 0,
+      "before_git_blob": null,
+      "after_sha256": "e52fee2946ddd26b0cadba2437435a4f1c765961c950bade102a46985c126e85",
+      "after_size_bytes": 7405,
+      "after_git_blob": "7dc5fedda5da6586bbd596d2bd37c8b8d36c517a"
+    }
+  ],
+  "purpose": "Restore stock Nezha v2 FOD engine operation, overlay and display-power lifecycle notifications while retaining the standard biometric HAL and trusted enrollment/authentication paths.",
+  "runtime_gate": {
+    "device": "nezha",
+    "sensor_id": 5,
+    "property": "ro.hardware.fp.fod.touch.ctl.version",
+    "value": "2.0",
+    "verified_on_package7": true
+  },
+  "stock_contract": {
+    "descriptor": "vendor.xiaomi.hardware.fingerprintextension.IXiaomiFingerprint",
+    "instance": "default",
+    "transaction": 1,
+    "flags": 0,
+    "request": [
+      "interface_token",
+      "command_int32",
+      "parameter_int32"
+    ],
+    "reply": [
+      "exception",
+      "int32"
+    ],
+    "commands": {
+      "1": "overlay requested / hidden: 1 / 0",
+      "3": "SurfaceFlinger power mode: off0 doze1 on2 doze-suspend3 on-suspend4",
+      "4": "enroll1/2 auth3/4 detect7/8 start/stop"
+    },
+    "geometry_unchanged": true,
+    "standard_hal_pointer_handling_unchanged": true,
+    "private_evidence_root": "artifacts/fingerprint-contract-20260905",
+    "daemon_sha256": "f155c923e79b00c378e87bd5ca44deab3454c70edde8771c4e7eab288bd2bce7",
+    "miui_services_sha256": "e32436e42d8724a4eefc4b9f02ac1ac936e30b81c0bf417c81b5eba3c826818c",
+    "note": "Full stock hashes and extraction provenance remain in ignored capture receipts; no proprietary Java implementation is copied."
+  },
+  "policy": {
+    "new_rules": false,
+    "source": "artifacts/policy-inputs/nezha-property-capabilities-20260831-v1/corpus/vendor/etc/selinux/vendor_sepolicy.cil",
+    "lines": [
+      15565,
+      15567,
+      15568,
+      15569,
+      15570
+    ],
+    "verified": "system_server_202504 reads vendor_fp_prop, finds vendor_hal_fingerprint_service_xiaomi and calls/transfers vendor_mfp-daemon",
+    "normal_android_enforcement_preserved": true,
+    "installed_policy_evidence": {
+      "vendor_cil": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/fingerprint-contract-20260905/patchstage/runtime-vendor-sepolicy.cil",
+      "vendor_sha256": "b0f3f4f0ca4d9526f3c0a05e7d650a1032ff32b3f81a2677aa6e929d9446d0c2",
+      "mapping": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/fingerprint-contract-20260905/patchstage/runtime-202504-mapping.cil",
+      "mapping_sha256": "a98f4b8479aa64e7d2b5a4146e6edc89fc50d62c80d37200258ff719dfced03b",
+      "mapping_line": 1036,
+      "read_only_package7_capture": true
+    }
+  },
+  "validation": {
+    "native_javac": "Passed selected JDK21 against Package7 framework-minus-apex-headers and services.core.unboosted headers; both changed classes, no stubs",
+    "native_javac_evidence": "artifacts/fingerprint-contract-20260905/patchstage/native-javac.json",
+    "lifecycle_harness_assertions": 111,
+    "full_services_build": "pending parent source adoption",
+    "hardware_enrollment": "not tested with candidate",
+    "runtime_property_evidence": "artifacts/fingerprint-contract-20260905/patchstage/runtime-property.json",
+    "lifecycle_harness_command": "python3 scripts/test_nezha_fingerprint_lifecycle.py",
+    "offline_unittest_count": 4
+  },
+  "limits": [
+    "A successful overlay request is the visibility lifecycle boundary; no new SystemUI rendering acknowledgment is claimed.",
+    "Dedicated worker serializes vendor transactions; missing/dead service is logged and does not block biometric or main threads.",
+    "This candidate does not establish enrollment, unlock, AOD or lockout behavior on hardware."
+  ]
+}
