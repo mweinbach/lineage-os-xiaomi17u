@@ -1,0 +1,219 @@
+diff --git a/app/src/main/java/org/lineageos/aperture/ApertureApplication.kt b/app/src/main/java/org/lineageos/aperture/ApertureApplication.kt
+--- a/app/src/main/java/org/lineageos/aperture/ApertureApplication.kt
++++ b/app/src/main/java/org/lineageos/aperture/ApertureApplication.kt
+@@ -7,6 +7,9 @@
+ 
+ import android.annotation.SuppressLint
+ import android.app.Application
++import androidx.camera.camera2.Camera2Config
++import androidx.camera.core.CameraXConfig
++import org.lineageos.aperture.compat.NezhaCameraFactory
+ import androidx.camera.camera2.internal.CameraCompatibilityFilter
+ import com.google.android.material.color.DynamicColors
+ import kotlinx.coroutines.MainScope
+@@ -15,7 +18,10 @@
+ import org.lineageos.aperture.repositories.OverlaysRepository
+ import org.lineageos.aperture.repositories.PreferencesRepository
+ 
+-class ApertureApplication : Application() {
++class ApertureApplication : Application(), CameraXConfig.Provider {
++    override fun getCameraXConfig(): CameraXConfig =
++        NezhaCameraFactory.configure(Camera2Config.defaultConfig())
++
+     private val coroutineScope = MainScope()
+ 
+     val cameraRepository by lazy { CameraRepository(this, coroutineScope, overlaysRepository) }
+diff --git a/app/src/main/java/org/lineageos/aperture/repositories/CameraRepository.kt b/app/src/main/java/org/lineageos/aperture/repositories/CameraRepository.kt
+--- a/app/src/main/java/org/lineageos/aperture/repositories/CameraRepository.kt
++++ b/app/src/main/java/org/lineageos/aperture/repositories/CameraRepository.kt
+@@ -7,6 +7,9 @@
+ 
+ import android.Manifest
+ import android.content.Context
++import android.os.Build
++import android.util.Log
++import java.util.concurrent.ExecutionException
+ import androidx.camera.camera2.interop.Camera2CameraInfo
+ import androidx.camera.camera2.interop.ExperimentalCamera2Interop
+ import androidx.camera.core.CameraInfo
+@@ -38,23 +41,30 @@
+     /**
+      * CameraX's [ProcessCameraProvider].
+      */
+-    private val cameraProvider by lazy {
++    private val cameraProvider: ProcessCameraProvider? by lazy {
+         requireCameraPermission()
+-        ProcessCameraProvider.getInstance(context).get()
++        try {
++            ProcessCameraProvider.getInstance(context).get()
++        } catch (error: ExecutionException) {
++            if (Build.DEVICE != "nezha") throw error
++            // Let the existing no-cameras UI handle an empty/failed provider.
++            Log.e("CameraRepository", "No usable Nezha camera provider", error)
++            null
++        }
+     }
+ 
+     /**
+      * CameraX's [ExtensionsManager].
+      */
+     private val extensionsManager: ExtensionsManager by lazy {
+-        ExtensionsManager.getInstanceAsync(context, cameraProvider).get()
++        ExtensionsManager.getInstanceAsync(context, requireNotNull(cameraProvider)).get()
+     }
+ 
+     /**
+      * List of internal cameras. These should never change.
+      */
+     private val internalCameras by lazy {
+-        cameraProvider.availableCameraInfos
++        cameraProvider?.availableCameraInfos.orEmpty()
+             .filter { cameraXCameraInfo ->
+                 cameraXCameraInfo.lensFacing != CameraSelector.LENS_FACING_EXTERNAL
+                         && cameraXCameraInfo.isInternalCameraAllowed()
+@@ -78,7 +88,7 @@
+      * List of external cameras. These will change once the user connects or disconnects a camera.
+      */
+     private val externalCameras = suspend {
+-        cameraProvider.availableCameraInfos
++        cameraProvider?.availableCameraInfos.orEmpty()
+             .filter { cameraXCameraInfo ->
+                 cameraXCameraInfo.lensFacing == CameraSelector.LENS_FACING_EXTERNAL
+             }
+diff --git a/app/src/main/java/org/lineageos/aperture/compat/NezhaCameraFactory.java b/app/src/main/java/org/lineageos/aperture/compat/NezhaCameraFactory.java
+new file mode 100644
+--- /dev/null
++++ b/app/src/main/java/org/lineageos/aperture/compat/NezhaCameraFactory.java
+@@ -0,0 +1,117 @@
++/* SPDX-License-Identifier: Apache-2.0 */
++package org.lineageos.aperture.compat;
++
++import android.annotation.SuppressLint;
++import android.hardware.camera2.CameraAccessException;
++import android.hardware.camera2.CameraCharacteristics;
++import android.hardware.camera2.CameraManager;
++import android.os.Build;
++import android.util.Log;
++import androidx.camera.core.CameraIdentifier;
++import androidx.camera.core.CameraUnavailableException;
++import androidx.camera.core.CameraXConfig;
++import androidx.camera.core.InitializationException;
++import androidx.camera.core.concurrent.CameraCoordinator;
++import androidx.camera.core.impl.CameraFactory;
++import androidx.camera.core.impl.CameraInternal;
++import androidx.camera.core.impl.Observable;
++import java.util.ArrayList;
++import java.util.LinkedHashSet;
++import java.util.List;
++import java.util.Set;
++
++/** Excludes Nezha processing-only devices before CameraX builds any stream maps. */
++@SuppressLint("RestrictedApi")
++public final class NezhaCameraFactory implements CameraFactory, CameraFactory.Interrogator {
++    private static final String TAG = "NezhaCameraFactory";
++    private final CameraFactory delegate;
++    private final CameraManager manager;
++
++    public static CameraXConfig configure(CameraXConfig base) {
++        if (!"nezha".equals(Build.DEVICE)) return base;
++        CameraFactory.Provider provider = base.getCameraFactoryProvider(null);
++        if (provider == null) throw new IllegalStateException("Camera2 factory provider is missing");
++        return CameraXConfig.Builder.fromConfig(base).setCameraFactoryProvider(
++                (context, threads, limiter, timeout, config, calculator) -> {
++                    CameraFactory factory = provider.newInstance(
++                            context, threads, limiter, timeout, config, calculator);
++                    try {
++                        return new NezhaCameraFactory(factory,
++                                context.getSystemService(CameraManager.class));
++                    } catch (InitializationException | RuntimeException error) {
++                        factory.shutdown();
++                        throw error;
++                    }
++                }).build();
++    }
++
++    NezhaCameraFactory(CameraFactory delegate, CameraManager manager) throws InitializationException {
++        this.delegate = delegate;
++        this.manager = manager;
++        // Also update the delegate's coordinator before surface-manager construction.
++        onCameraIdsUpdated(new ArrayList<>(delegate.getAvailableCameraIds()));
++    }
++
++    static boolean admits(int[] capabilities) {
++        if (capabilities == null) return false;
++        boolean backwardCompatible = false;
++        for (int capability : capabilities) {
++            if (capability == CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_SYSTEM_CAMERA) {
++                return false;
++            }
++            if (capability == CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES_BACKWARD_COMPATIBLE) {
++                backwardCompatible = true;
++            }
++        }
++        return backwardCompatible;
++    }
++
++    private List<String> filter(List<String> ids) {
++        List<String> result = new ArrayList<>();
++        for (String id : ids) {
++            try {
++                int[] capabilities = manager.getCameraCharacteristics(id).get(
++                        CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES);
++                if (admits(capabilities)) {
++                    result.add(id);
++                } else {
++                    Log.i(TAG, "Excluding processing-only camera " + id);
++                }
++            } catch (CameraAccessException | RuntimeException error) {
++                Log.w(TAG, "Cannot read capabilities for camera " + id, error);
++            }
++        }
++        return result;
++    }
++
++    @Override public Set<String> getAvailableCameraIds() {
++        return new LinkedHashSet<>(filter(new ArrayList<>(delegate.getAvailableCameraIds())));
++    }
++
++    @Override public List<String> getAvailableCameraIds(List<String> ids) {
++        List<String> filtered = filter(ids);
++        if (delegate instanceof CameraFactory.Interrogator) {
++            return ((CameraFactory.Interrogator) delegate).getAvailableCameraIds(filtered);
++        }
++        return filtered;
++    }
++
++    @Override public void onCameraIdsUpdated(List<String> ids) throws InitializationException {
++        delegate.onCameraIdsUpdated(filter(ids));
++    }
++
++    @Override public CameraInternal getCamera(String id) throws CameraUnavailableException {
++        if (!getAvailableCameraIds().contains(id)) {
++            throw new CameraUnavailableException(CameraUnavailableException.CAMERA_ERROR,
++                    "Camera " + id + " is not a public backward-compatible camera");
++        }
++        return delegate.getCamera(id);
++    }
++
++    @Override public CameraCoordinator getCameraCoordinator() { return delegate.getCameraCoordinator(); }
++    @Override public Object getCameraManager() { return delegate.getCameraManager(); }
++    @Override public Observable<List<CameraIdentifier>> getCameraPresenceSource() {
++        return delegate.getCameraPresenceSource();
++    }
++    @Override public void shutdown() { delegate.shutdown(); }
++}
+diff --git a/app/Android.bp b/app/Android.bp
+--- a/app/Android.bp
++++ b/app/Android.bp
+@@ -10,7 +10,10 @@
+ android_app {
+     name: "Aperture",
+ 
+-    srcs: ["src/main/java/**/*.kt"],
++    srcs: [
++        "src/main/java/**/*.kt",
++        "src/main/java/org/lineageos/aperture/compat/NezhaCameraFactory.java",
++    ],
+     resource_dirs: ["src/main/res"],
+     manifest: "src/main/AndroidManifest.xml",
+ 

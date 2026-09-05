@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "project": "packages/apps/Aperture",
+  "repository": "https://github.com/LineageOS/android_packages_apps_Aperture.git",
+  "revision": "88625a9b7c4178601169dbda2c38cd845b68cd38",
+  "branch": "lineage-23.2",
+  "device": "nezha",
+  "files": {
+    "app/src/main/java/org/lineageos/aperture/ApertureApplication.kt": {
+      "before_sha256": "590f1f0e27445ed25a813992c985e231383ae061344347c8b571541d65ec218d",
+      "after_sha256": "728ba97d4e001463de8b51c6a002c9eebbec5fb2d9e5167072a545f0e6d4644c",
+      "after_bytes": 1675
+    },
+    "app/src/main/java/org/lineageos/aperture/repositories/CameraRepository.kt": {
+      "before_sha256": "5657f0362711cff2e1aa5fa327d1a77240a17bfd47bc812b70f982c2561852aa",
+      "after_sha256": "704cf2000aec9f580e1d7c5e36d64effb8cb2ce21b30f24814befb1f4bf2ec0c",
+      "after_bytes": 5408
+    },
+    "app/src/main/java/org/lineageos/aperture/compat/NezhaCameraFactory.java": {
+      "before_sha256": null,
+      "after_sha256": "5147f5f1024fd2f2e18ae9200ec35522db918112e627f09d032e6c90f6caf62d",
+      "after_bytes": 5188
+    },
+    "app/Android.bp": {
+      "before_sha256": "991284d22cacf7abe21d7cdff032d496f7a868f4d4171eeabda7b6836eb1a829",
+      "after_sha256": "7f9b82aa19e89ffbd5b625e7f3b7ac74b7ec8a8edb8e4270e287c58f2538b22b",
+      "after_bytes": 2849
+    }
+  },
+  "phone_fix_verified": false,
+  "camera_opened_by_probe": false,
+  "evidence": "evidence/camera-metadata-probe-20260905-v1/outcome.json",
+  "patch": "patches/evolution/0026-aperture-nezha-camera-admission.patch",
+  "patch_sha256": "639e074016456b2258346154e38ce8b44579946a53e73423a73f3d7cf1c98c4e"
+}
