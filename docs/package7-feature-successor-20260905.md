@@ -53,10 +53,21 @@ Ordinary Soong uses separate output
 `/work/out/nezha-feature-fixes-20260905-v1` via the matching relative source
 alias. The preceding display/Camera-packet-only `nothing` build passed. The
 initial combined component build was intentionally interrupted to correct the
-Camera partition placement. The resumed native component build has been started for `framework-res`, SystemUI,
-services, Aperture, and NezhaXiaomiCamera; its result is not yet established by
-this checkpoint. All existing Package7 outputs, bundle, private inputs and
-working76 recovery remain preserved.
+Camera partition placement. The corrected run was resumed with 16 jobs after
+verifying 17 available CPUs and sufficient memory, preserving completed outputs.
+The native component build for `framework-res`, SystemUI, services, Aperture and
+NezhaXiaomiCamera **passed**, with exit 0 recorded under
+`/work/validation/feature-fixes-builds-20260905/20260905T175047`.
+Its before/after source snapshots match exactly. Both apps passed dexpreopt;
+Xiaomi Camera passed strict uses-library verification. The installed Camera APK
+matches the original hash, its same-partition permission XML is present, and no
+stale product Camera copy exists. Exact component hashes are retained in
+`reports/feature-fixes-20260905/component-artifacts.json`.
+
+The full `target-files-package` build has started in the same separate output;
+its result remains pending. Pre-package checks found the sole VM idle, 332 GiB
+guest free and 648 GiB host free. All existing Package7 outputs, bundle, private
+inputs and working76 recovery remain preserved.
 
 The selected build keeps the original pinned date interface, user variant,
 4 KiB checks, GMS selection, source sandboxing, strict library checks, normal
