@@ -7,6 +7,12 @@ NEZHA_KERNEL_INPUTS ?= vendor/xiaomi/nezha-kernel
 # Exact Nezha factory geometry; device overlays take priority over common ones.
 DEVICE_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/overlay
 
+# The opt-in successor uses the original signed factory Camera and a narrow
+# same-partition privilege policy. A selected but missing packet must fail.
+ifeq ($(NEZHA_XIAOMI_CAMERA),true)
+$(call inherit-product, vendor/xiaomi/nezha-camera/camera-product.mk)
+endif
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch.mk)
 $(call inherit-product, $(NEZHA_DEVICE_PATH)/generated/device-candidate.mk)
