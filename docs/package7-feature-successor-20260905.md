@@ -64,10 +64,19 @@ matches the original hash, its same-partition permission XML is present, and no
 stale product Camera copy exists. Exact component hashes are retained in
 `reports/feature-fixes-20260905/component-artifacts.json`.
 
-The full `target-files-package` build has started in the same separate output;
-its result remains pending. Pre-package checks found the sole VM idle, 332 GiB
-guest free and 648 GiB host free. All existing Package7 outputs, bundle, private
-inputs and working76 recovery remain preserved.
+The full `target-files-package` build **passed** in the same separate output,
+with exit 0 recorded under
+`/work/validation/feature-fixes-builds-20260905/20260905T220105`.
+The final source check passed; before/after snapshots match the selected source
+record. Two preceding attempts stopped on host-tool runtime crashes (Go
+`merge_zips`, then Java R8); their failure evidence remains preserved. The Go
+command succeeded on an isolated retry, and the final ordinary build completed
+with unchanged source and compiler settings. No failed attempt is used as a
+successful package record.
+
+Archive admission, host signing, Super assembly and final artifact qualification
+remain pending. All existing Package7 outputs, bundle, private inputs and
+working76 recovery remain preserved.
 
 The selected build keeps the original pinned date interface, user variant,
 4 KiB checks, GMS selection, source sandboxing, strict library checks, normal
