@@ -677,3 +677,10 @@ class MaterializerTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+
+
+class CurrentPublicContractTests(unittest.TestCase):
+    def test_current_public_contracts_load_without_mocks(self):
+        value = materializer.contracts()
+        self.assertEqual(value[1], hashlib.sha256(Path(materializer.signing.ROOT / "config/nezha-avb-signing.json").read_bytes()).hexdigest())
+        self.assertEqual(value[3], hashlib.sha256(Path(materializer.signing.ROOT / "config/nezha-avb-image-set.json").read_bytes()).hexdigest())

@@ -83,7 +83,7 @@ def selected(row):
 
 def controls():
     result = signing.load_contract()
-    require(result[1] == '8749a855328acac6c63d62b45e989e3e1d354aaaf86b754940dfe00caa257c3c'
+    require(result[1] == '86263c1db647228f882ee27a37dcc4ed124e29ad9bc9ce1d5494801ad87d2c3f'
             and result[3] == 'c5dbd4055c904422581ad511d34ba143672683a54aea3390c0581a4af321ba37',
             'only the reviewed signing and seventeen-image contracts are supported')
     return result
