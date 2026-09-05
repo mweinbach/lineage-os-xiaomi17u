@@ -2,7 +2,8 @@
 
 The selected target is **Evolution X Android 16 QPR2 `bka` for Xiaomi 17 Ultra
 (`nezha`, SM8850 / `canoe`)**, with **TWRP `working76` as the default recovery**.
-The ROM remains a `framework-checks` product, not a complete or flashable ROM.
+The product remains `framework-checks`. A verified experimental image bundle
+now exists; physical-device admission and a first Evolution boot are unverified.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
@@ -10,7 +11,15 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-**Signed Package7 is now published and verified off-device.** Its archive is
+**The eight-image Package7 bundle is assembled and independently verified.**
+See [the final experimental bundle and device gates](package7-experimental-bundle.md).
+Its manifest is `004650a587064b6b9a8438cc69c9ce168f89c2769544498fac51797ad0389308`.
+Native VINTF, static classpaths, Super assembly/readback/transfer and portable
+bundle verification pass within their documented scopes. No phone was accessed;
+fresh device admission, data handling and explicit action authorization remain
+required. The full-ROM and flash-readiness flags remain false.
+
+**Signed Package7 is published and verified off-device.** Its archive is
 `ba01cc71fa8122cea665454c194fea540b0a4b6b56a205d7aabc949790704da6`
 (10,834,328,127 bytes). The existing Mac key signs the complete 17-role AVB set;
 two-pass signing reproduction and preservation of all 14 input leaves pass.
@@ -20,9 +29,9 @@ Actual signed filesystem exports confirm FamilySpace's two grants and complete
 APK/APEX payload delivery. The original-archive audit is linked to the published
 archive through the reconciler's complete member-equality proof; its five legacy
 full-range failures, conditional Shell finding and known overlay duplicates
-remain recorded. Full native VINTF is running; classpath closure and the new
-Super/readback/eight-image bundle remain pending. No phone has been accessed,
-and this is not yet a flash-readiness or ROM-boot claim.
+remain recorded. Native VINTF retains two definition-check skips and two
+warnings. No phone has been accessed, and this is not a device-readiness or
+ROM-boot claim.
 
 **Flash-readiness work has identified two APK integration defects in Package6:**
 FamilySpace lacks two required product privileged-permission declarations, and

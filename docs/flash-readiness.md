@@ -6,6 +6,13 @@ The platform stays Android 16 QPR2 `bka` / `bp4a`, with 4 KiB pages, normal
 Android enforcing, and working76 recovery. No phone operation is authorized by
 this preparation.
 
+**Final off-device checkpoint:** [Package7's eight-image experimental bundle
+is assembled and independently verified](package7-experimental-bundle.md).
+All static build/signing/content/VINTF/classpath/Super gates described there
+have completed with their limitations preserved. Device preflight, data
+handling, explicit phone-action authorization and actual boot remain pending.
+`flash_ready` is deliberately still false; the bundle is not an OTA installer.
+
 **Do not flash the current Package6 image set.** The complete APK audit found
 two integration defects that need source fixes and rebuilt images. The earlier
 VINTF and boot-content passes remain valid within their recorded scope; they

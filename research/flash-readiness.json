@@ -8,7 +8,7 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-05",
-  "status": "signed-package7-vintf-classpath-super-and-bundle-pending",
+  "status": "experimental-bundle-verified-device-admission-pending",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
@@ -47,7 +47,7 @@
   "required_source_fixes": [
     {
       "id": "familyspace-product-privapp-permissions",
-      "status": "native-source-installed-images-pending",
+      "status": "source-built-and-signed-package7-image-verified",
       "patch": "patches/evolution/0024-familyspace-product-privapp-permissions.patch",
       "package": "com.google.android.apps.pixel.familyspace",
       "permissions": [
@@ -57,12 +57,13 @@
     },
     {
       "id": "signapk-stored-entry-timestamps",
-      "status": "native-source-installed-images-pending",
+      "status": "source-built-and-signed-package7-image-verified",
       "affected_apk": "TurboAdapter",
       "extra_bytes": 13,
-      "four_byte_zip_alignment_failed": true,
       "original_apk_and_certificate_must_be_preserved": true,
-      "patch": "patches/evolution/0025-signapk-stored-entry-timestamps.patch"
+      "patch": "patches/evolution/0025-signapk-stored-entry-timestamps.patch",
+      "original_package6_four_byte_zip_alignment_failed": true,
+      "package7_four_byte_zip_alignment_passed": true
     }
   ],
   "delivery": {
@@ -71,22 +72,36 @@
     "populated_slot": "a",
     "empty_slot": "b",
     "preserves_stock_logical_b": false,
-    "two_full_logical_sets_exceed_super_by_bytes": 3341697024,
+    "two_full_logical_sets_exceed_super_by_bytes": 3341688832,
     "reference_only_firmware": [
       "countrycode",
       "pvmfw"
     ],
-    "bundle_assembled": false,
+    "bundle_assembled": true,
     "device_preflight_admitted": false,
     "device_fields_measured": false,
-    "layout_quantities_scope": "Historical Package6 quantities until actual new Super readback; no current-size substitution"
+    "layout_quantities_scope": "Actual Package7 LP readback; connected-device geometry not remeasured",
+    "historical_package6_two_full_logical_sets_exceed_super_by_bytes": 3341697024,
+    "bundle_byte_verification_passed": true,
+    "bundle_manifest": {
+      "path": "artifacts/flash/nezha/package7-20260904-v1/manifest.json",
+      "sha256": "004650a587064b6b9a8438cc69c9ce168f89c2769544498fac51797ad0389308",
+      "size_bytes": 8215
+    },
+    "populated_a_bytes": 9321254912,
+    "physical_super_bytes": 15300820992
   },
   "feature_limits": {
     "camera_app": "org.lineageos.aperture",
     "factory_xiaomi_camera_selected": false,
     "hardware_features_tested": false,
     "duplicate_overlay_packages_recorded": 2,
-    "ota_ready": false
+    "ota_ready": false,
+    "ims_provider_selected": false,
+    "volte_verified": false,
+    "vowifi_verified": false,
+    "emergency_calling_verified": false,
+    "apex_data_overrides_observed": false
   },
   "validation": {
     "workspace_tests_passed": 4602,
@@ -94,7 +109,10 @@
     "first_stage_helper_tests_passed": 40,
     "signature_parser_tests_passed": 22,
     "tests_are_distinct_from_native_and_device_checks": true,
-    "device_preflight_tests_passed": 35
+    "device_preflight_tests_passed": 35,
+    "latest_workspace_test_seconds": 208.669,
+    "latest_workspace_test_log": "reports/flash-ready-20260904/root/full-tests-final-runners.log",
+    "super_runner_tests_passed": 48
   },
   "evidence": {
     "first_stage_completion": {
@@ -814,8 +832,98 @@
     "legacy_full_range_failures_retained": 5,
     "dlkm_modules_verified": 484,
     "dlkm_metadata_files_verified": 11,
-    "native_vintf": "running",
-    "classpath": "pending",
-    "phone_accessed": false
-  }
+    "native_vintf": {
+      "status": "native-commands-and-evidence-review-passed",
+      "completion": {
+        "path": "reports/flash-ready-20260904/vintf-successor/package7-actual-v1/completion.json",
+        "sha256": "f5d6b62bb6f8420a4ee06fbd29c1b4570ba8080464bf4d3c86de1f7ff35226b8",
+        "size_bytes": 14387
+      },
+      "review": {
+        "path": "reports/flash-ready-20260904/vintf-successor/package7-actual-v1/review.json",
+        "sha256": "136f762727ecc79f097c76c6c6cdfd333af9818ca5bc31942433dd9a91ed18ac",
+        "size_bytes": 20080
+      },
+      "commands_passed": 3,
+      "apex_packages": 39,
+      "reported_definition_skips": 2,
+      "reported_warnings": 2,
+      "runtime_verified": false
+    },
+    "classpath": {
+      "status": "static-order-sdk-presence-and-dac-passed",
+      "result": {
+        "path": "reports/flash-ready-20260904/signing-successor/classpath/package7-original-zip-v3/result.json",
+        "sha256": "cac7c9af876d3d8326afb7bc729be0e84f745347dda8e48555a20520ccaa43a1",
+        "size_bytes": 299342
+      },
+      "original_ext4_dac": {
+        "path": "reports/flash-ready-20260904/signing-successor/classpath/package7-original-ext4-dac-v2/result.json",
+        "sha256": "dfad640fba96d3e4f72986be607f7da87a855d8dbf61b4c8a033c5cab428284f",
+        "size_bytes": 212413
+      },
+      "published_binding": {
+        "path": "reports/flash-ready-20260904/signing-successor/classpath/package7-published-classpath-binding.json",
+        "sha256": "90a68fdbb5f3f474a2cdce8116c60cf21574541303ee9e494e2fcb4c208c0b3f",
+        "size_bytes": 5958
+      },
+      "fragments": 45,
+      "unique_jars": 70,
+      "runtime_class_loading_verified": false,
+      "earlier_diagnostic_failures_preserved": true
+    },
+    "phone_accessed": false,
+    "super": {
+      "assembly_completion": {
+        "path": "reports/flash-ready-20260904/delivery-successor/super/actual-inputs/assembly-actual-v2/completion.json",
+        "sha256": "d4ae4d6f66715ee8c0c95d4c3a48939876b4926924a0dad4db9839093d4a2be4",
+        "size_bytes": 13210
+      },
+      "lp_admission": {
+        "path": "reports/flash-ready-20260904/delivery-successor/super/actual-inputs/readback-actual-v1/admission.json",
+        "sha256": "71c5cbd6379cb0ab642be9460ac356c81a744622de79c5c8d43509408994f30d",
+        "size_bytes": 12679
+      },
+      "transfer": {
+        "path": "artifacts/build-validation/nezha-super-package-7-transfer-v1/transfer.json",
+        "sha256": "8cb7d2f96755a17e8d5f379a50da38fe63a5d9dc49138a8ae6639561e6c155ff",
+        "size_bytes": 2674
+      },
+      "image": {
+        "expanded_size_bytes": 15300820992,
+        "path": "/work/validation/nezha-oem-policy-integration-20260829/post-package7-super-assembly-v1/results/super.img",
+        "sha256": "0795239c0e842744974284ad91e0f93662c3eedbf198225b51912d38981302f0",
+        "size_bytes": 9291737164
+      },
+      "all_eight_hashes_verified": true,
+      "all_six_metadata_copies_identical": true,
+      "populated_dont_care_bytes": 0,
+      "populated_lp_zero_bytes": 0,
+      "source_guard_before_after_verified": true,
+      "readback_repeated_source_guard": false,
+      "earlier_import_and_host_selector_failures_preserved": true
+    },
+    "bundle": {
+      "directory": "artifacts/flash/nezha/package7-20260904-v1",
+      "manifest": {
+        "path": "artifacts/flash/nezha/package7-20260904-v1/manifest.json",
+        "sha256": "004650a587064b6b9a8438cc69c9ce168f89c2769544498fac51797ad0389308",
+        "size_bytes": 8215
+      },
+      "delivery_plan": {
+        "path": "reports/flash-ready-20260904/delivery-successor/super/actual-inputs/final-delivery-plan-v1/delivery-plan.json",
+        "sha256": "9dd8521977fb3677dc54d7d9f4d7ed28ed00386c65e898c999b3380206aa0825",
+        "size_bytes": 21391
+      },
+      "payload_count": 8,
+      "payload_bytes": 9639995468,
+      "assembly_exit_code": 0,
+      "independent_verification_exit_code": 0,
+      "independent_manifest_digest_matched": true,
+      "tool_status": "byte-identities-verified-not-device-admitted-not-flash-ready",
+      "verified_observation_utc": "2026-09-05T02:55:00Z",
+      "phone_authorization_granted": false
+    }
+  },
+  "handoff": "docs/package7-experimental-bundle.md"
 }
