@@ -6,7 +6,7 @@ The ROM remains a `framework-checks` product, not a complete or flashable ROM.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
-consolidates recorded evidence through **September 4, 2026 UTC (September 1–4 in
+consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 in
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
@@ -53,8 +53,14 @@ launch. The narrow correction now preserves that equality through the actual
 authenticated GMS3 records. Complete host emulation of all three prerequisite
 paths passes; it does not claim fresh native filesystem or runtime observations.
 After another live check of all 448 file hashes, volume ownership, idle state,
-and pinned manifest/Repo heads, **native attempt8 is running** for the same
-Package7 candidate. A finished or signed successor package is not yet claimed.
+and pinned manifest/Repo heads, **native attempt8 passes** for the same Package7
+candidate. Android completed at 01:25 UTC on September 5; the full wrapper and
+postchecks closed successfully at 01:37 UTC. The new 11,006,589,636-byte archive
+is `19ab4c0ea2fb9fe419f6ca965b8d6090887af06d719c3c5ee40f246a71e50317`.
+Both packaging producers are fresh, and the corrected FamilySpace XML matches
+source, installed file, expanded tree and ZIP member. Product-image content,
+final signing, compatibility, Super and delivery checks remain separate gates.
+No signed or flash-ready successor is claimed yet.
 
 The wider deadline review found no justified new kernel/display source change.
 It confirmed a missing Android IMS provider stack: **IMS, VoLTE, VoWiFi and

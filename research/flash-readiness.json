@@ -7,7 +7,7 @@
     "page_size_bytes": 4096,
     "normal_android_selinux": "enforcing"
   },
-  "observed_on": "2026-09-04",
+  "observed_on": "2026-09-05",
   "status": "image-components-verified-package7-running",
   "flash_ready": false,
   "complete_rom_ready": false,
@@ -717,10 +717,10 @@
     "retry_requires_new_phase": true
   },
   "package8_build": {
-    "status": "running",
+    "status": "native-profile-and-postchecks-passed",
     "candidate_generation": "Package7",
     "native_phase": "first-target-files-package-8",
-    "native_build_completed": false,
+    "native_build_completed": true,
     "request": {
       "path": "reports/flash-ready-20260904/build-continuation/package8/request.json",
       "sha256": "47333f895f28f765bf55286e7a9a4c34f15cd9b8cdb9f7fbafc57f4f2510fe12",
@@ -738,6 +738,25 @@
       "size_bytes": 160733
     },
     "live_files_rehashed": 448,
-    "original_failed_phase7_preserved": true
+    "original_failed_phase7_preserved": true,
+    "wrapper_exit_code": 0,
+    "native_exit_code": 0,
+    "profile_completed": true,
+    "postcheck_verified": true,
+    "postcheck_errors": [],
+    "six_source_callbacks_unchanged": true,
+    "result": {
+      "path": "reports/flash-ready-20260904/build-continuation/package8/native/stdout.jsonl",
+      "sha256": "5740366b99a5319dd812a9f718d4f274eca06921a6a7952dc11de85d3d1d6da6",
+      "size_bytes": 16415953
+    },
+    "archive": {
+      "path": "/work/out/nezha-user-policy-20260827T2220Z/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files.zip",
+      "sha256": "19ab4c0ea2fb9fe419f6ca965b8d6090887af06d719c3c5ee40f246a71e50317",
+      "size_bytes": 11006589636
+    },
+    "native_finished_utc": "2026-09-05T01:25:19.872706+00:00",
+    "complete_archive_payload_content_verified": false,
+    "product_image_familyspace_content_verified": false
   }
 }
