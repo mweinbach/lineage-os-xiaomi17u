@@ -8,10 +8,10 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-05",
-  "status": "experimental-bundle-verified-device-admission-pending",
+  "status": "experimental-bundle-verified-android-preflight-partial",
   "flash_ready": false,
   "complete_rom_ready": false,
-  "phone_accessed": false,
+  "phone_accessed": true,
   "candidate_archive": {
     "sha256": "ba01cc71fa8122cea665454c194fea540b0a4b6b56a205d7aabc949790704da6",
     "size_bytes": 10834328127
@@ -89,7 +89,9 @@
       "size_bytes": 8215
     },
     "populated_a_bytes": 9321254912,
-    "physical_super_bytes": 15300820992
+    "physical_super_bytes": 15300820992,
+    "partial_device_observations": true,
+    "device_geometry_measured": false
   },
   "feature_limits": {
     "camera_app": "org.lineageos.aperture",
@@ -925,5 +927,60 @@
       "phone_authorization_granted": false
     }
   },
-  "handoff": "docs/package7-experimental-bundle.md"
+  "handoff": "docs/package7-experimental-bundle.md",
+  "authorized_android_preflight": {
+    "scope": "User-authorized read-only collection from explicitly selected USB Nezha; no mutation or mode-transition authorization",
+    "observed_utc": "2026-09-05T03:21:55.826225+00:00",
+    "base_receipt": {
+      "path": "evidence/device-preflight-20260905T031715Z-android-a/manifest.json",
+      "sha256": "49b19887a58313c3daf4e794c1548871999ff8ba6e9f06966f3adea00b800819",
+      "size_bytes": 90216
+    },
+    "base_status": "partial-observations",
+    "base_exit_code": 3,
+    "base_command_count": 106,
+    "base_raw_streams_rehashed": 212,
+    "supplement_receipt": {
+      "path": "evidence/device-sysfs-preflight-20260905T032149Z/manifest.json",
+      "sha256": "84f139965da75431ba6f5a09a5280efc567b674e5b2095cd888f0288f52994d4",
+      "size_bytes": 106868
+    },
+    "supplement_command_count": 131,
+    "supplement_raw_streams_rehashed": 262,
+    "sysfs_denied_reads": 60,
+    "manufacturer": "Xiaomi",
+    "device": "nezha",
+    "board": "canoe",
+    "reported_hardware_region": "CN",
+    "current_mode": "adb-android",
+    "running_slot": "a",
+    "existing_adb_uid": 2000,
+    "page_size_bytes": 4096,
+    "selinux": "Enforcing",
+    "encryption_reported": "file-based",
+    "android_lock_properties": {
+      "flash_locked": "1",
+      "vbmeta_device_state": "locked",
+      "verifiedbootstate": "green"
+    },
+    "independent_bootloader_unlocked_confirmed": false,
+    "physical_capacities_verified": false,
+    "snapshot_idle_verified": false,
+    "retained_firmware_payloads_verified": false,
+    "secure_rollback_indices": null,
+    "battery_reported": {
+      "level": 54,
+      "scale": 100,
+      "charging": true,
+      "forced_update_stop_marker": false
+    },
+    "identity_transport_and_nodes_stable": true,
+    "raw_block_data_read": false,
+    "privilege_elevated": false,
+    "phone_mutations_performed": false,
+    "reboot_authorized": false,
+    "flash_authorized": false,
+    "data_wipe_authorized": false,
+    "report": "docs/device-preflight-20260905.md"
+  }
 }

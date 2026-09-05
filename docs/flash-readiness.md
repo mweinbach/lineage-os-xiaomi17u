@@ -13,6 +13,11 @@ have completed with their limitations preserved. Device preflight, data
 handling, explicit phone-action authorization and actual boot remain pending.
 `flash_ready` is deliberately still false; the bundle is not an OTA installer.
 
+The later [authorized Android preflight](device-preflight-20260905.md) confirms
+the connected device and running state but cannot establish independent
+bootloader unlock, physical capacity, retained firmware or snapshot idleness.
+No reboot, flash, wipe or slot change has been authorized or performed.
+
 **Do not flash the current Package6 image set.** The complete APK audit found
 two integration defects that need source fixes and rebuilt images. The earlier
 VINTF and boot-content passes remain valid within their recorded scope; they

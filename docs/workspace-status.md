@@ -11,12 +11,22 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**The authorized read-only Android preflight is complete but partial.** The
+connected phone reports Xiaomi/nezha/canoe/CN, running slot A, 4 KiB pages,
+enforcing SELinux and encrypted data; battery reports 54% and charging. Android
+reports locked/green, but independent bootloader state is unresolved. Direct
+capacity, bootconfig and supplemental sysfs reads were denied to UID 2000, so
+capacity and snapshot/firmware gates remain unknown. No phone mutation occurred.
+See [the current device observations](device-preflight-20260905.md). A reboot
+into bootloader mode requires a fresh explicit request.
+
 **The eight-image Package7 bundle is assembled and independently verified.**
 See [the final experimental bundle and device gates](package7-experimental-bundle.md).
 Its manifest is `004650a587064b6b9a8438cc69c9ce168f89c2769544498fac51797ad0389308`.
 Native VINTF, static classpaths, Super assembly/readback/transfer and portable
-bundle verification pass within their documented scopes. No phone was accessed;
-fresh device admission, data handling and explicit action authorization remain
+bundle verification pass within their documented scopes. Artifact preparation
+accessed no phone; the later authorized read-only preflight is described above.
+Fresh device admission, data handling and explicit action authorization remain
 required. The full-ROM and flash-readiness flags remain false.
 
 **Signed Package7 is published and verified off-device.** Its archive is
@@ -30,8 +40,8 @@ APK/APEX payload delivery. The original-archive audit is linked to the published
 archive through the reconciler's complete member-equality proof; its five legacy
 full-range failures, conditional Shell finding and known overlay duplicates
 remain recorded. Native VINTF retains two definition-check skips and two
-warnings. No phone has been accessed, and this is not a device-readiness or
-ROM-boot claim.
+warnings. That artifact verification involved no phone access and is not a
+device-readiness or ROM-boot claim.
 
 **Flash-readiness work has identified two APK integration defects in Package6:**
 FamilySpace lacks two required product privileged-permission declarations, and

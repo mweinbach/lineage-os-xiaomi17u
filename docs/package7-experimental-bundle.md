@@ -73,6 +73,11 @@ images and signing material remain private and ignored by Git.
 
 ## Required before any phone changes
 
+The subsequent [authorized read-only Android preflight](device-preflight-20260905.md)
+is now recorded. It confirms the device and running state, but permission
+denials leave physical capacities unknown and Android's locked/green properties
+require independent bootloader confirmation. No phone mutation has occurred.
+
 **No phone was accessed or changed for this milestone.** `flash_ready` and
 `complete_rom_ready` remain false because device admission and boot are pending.
 An explicitly identified, authorized device is required even for collection;
