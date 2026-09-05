@@ -503,7 +503,7 @@ class ContractTests(OfflineTests):
     def test_catalog_preserves_historical_canonical_bytes_and_requires_explicit_current_selection(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())
         historical = catalog["profiles"][policy.HISTORICAL_PROFILE]
-        self.assertEqual("0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
+        self.assertEqual("07d231ae80c1217867532d8f3cd9a5b31284350e8f02e8ddcf2b3d07f679a641",
                          identity(policy.json_bytes(historical))["sha256"])
         self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
         current = policy.plan(policy.EXPORT4_PROFILE)
@@ -2124,8 +2124,8 @@ class ProviderContractTests(OfflineTests):
     def test_additive_provider_catalog_preserves_both_prior_canonical_contracts(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())
         self.assertEqual({policy.HISTORICAL_PROFILE, policy.EXPORT4_PROFILE, policy.PROVIDER_PROFILE, policy.POLICY3_PROFILE}, set(catalog["profiles"]))
-        for name, expected in ((policy.HISTORICAL_PROFILE, "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4"),
-                               (policy.EXPORT4_PROFILE, "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4")):
+        for name, expected in ((policy.HISTORICAL_PROFILE, "07d231ae80c1217867532d8f3cd9a5b31284350e8f02e8ddcf2b3d07f679a641"),
+                               (policy.EXPORT4_PROFILE, "047dffb26261aa1511a42ab17e45135fee46cd44b7afcb4ad550c852623fe6f7")):
             self.assertEqual(expected, identity(policy.json_bytes(catalog["profiles"][name]))["sha256"])
         self.assertEqual(policy.HISTORICAL_PROFILE, policy.plan()["profile"])
         current = policy.plan(policy.PROVIDER_PROFILE)
@@ -2531,9 +2531,9 @@ class Policy3Evidence:
 class Policy3ContractTests(OfflineTests):
     def test_policy3_is_additive_explicit_and_cannot_promote_earlier_profiles(self):
         catalog = json.loads(policy.CONTRACT.read_bytes())["profiles"]
-        previous = {policy.HISTORICAL_PROFILE: "0a549e0374f17fcd24e25dba668bbe745750968bc1336c7c142583fac1816cc4",
-                    policy.EXPORT4_PROFILE: "5c7e020cbf2101bc6ed5af412f1e667d41e75e3259547c0700090d2d1f10ffb4",
-                    policy.PROVIDER_PROFILE: "39192f9272a222e4ca62caa501688e135ef227f1a2afe9e9a9a7c87dffdc53f0"}
+        previous = {policy.HISTORICAL_PROFILE: "07d231ae80c1217867532d8f3cd9a5b31284350e8f02e8ddcf2b3d07f679a641",
+                    policy.EXPORT4_PROFILE: "047dffb26261aa1511a42ab17e45135fee46cd44b7afcb4ad550c852623fe6f7",
+                    policy.PROVIDER_PROFILE: "86d46a0c63f07f424197195f158338dc049db0d3ebbede474d6ba3a81f0b6d70"}
         for name, expected in previous.items():
             with self.subTest(profile=name):
                 self.assertEqual(expected, identity(policy.json_bytes(catalog[name]))["sha256"])

@@ -32,8 +32,11 @@ approved OpenSSL binary; it cannot run as a Linux guest operation.
 The signing tool is pinned separately to avbtool commit
 `c92ce4cb9a1b6d20a1bc11b7e5864af9f78615bb`. This does not change the older avbtool
 selector used by the reproducible recovery builder. The existing AVB verifier
-profile is bound by its unchanged SHA256
-`14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567`.
+profile is bound by SHA256
+`c5dbd4055c904422581ad511d34ba143672683a54aea3390c0581a4af321ba37`.
+That profile retains the stock physical bounds and carries the measured,
+admission-pinned successor `system_ext` logical-image allowance described in
+[successor-logical-budget.md](successor-logical-budget.md).
 
 An ignored input manifest selects **15 final input images**. Root vbmeta and
 vbmeta_system are intentionally absent: they are new outputs, and no old root
