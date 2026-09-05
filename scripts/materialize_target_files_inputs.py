@@ -37,9 +37,9 @@ DATA_ROLES = frozenset(('boot', 'dtbo', 'init_boot', 'mi_ext', 'odm', 'product',
                        'recovery', 'system', 'system_dlkm', 'system_ext', 'vendor',
                        'vendor_boot', 'vendor_dlkm'))
 PUBLIC_PINS = {
-    'scripts/target_files_avb_inventory.py': ('160cf1c5c7abe8072956affc3cc6ebe3a55ce95705ca55c9c3c8cf9c4b82021b', 28544),
-    'scripts/avb_signing.py': ('ed87a8aa0ba7bbcf5bcc066cb03206dd5604c8e64379dbbd176260a0825ba1c3', 46629),
-    'scripts/avb_image_set.py': ('08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c', 41370),
+    'scripts/target_files_avb_inventory.py': ('893778a88df0badb6f27db0f88be5aff9885cb8f3111f06e062e5d7f0d7f89e4', 28614),
+    'scripts/avb_signing.py': ('e0afd0d9f86560306117aa43a5487e036751c2824e24b17080da2bb1b30cddb8', 46523),
+    'scripts/avb_image_set.py': ('f70c6f44b1c0cf02803a199f00331154fd51ab15351f368f38850d358a4d1bea', 43864),
     'scripts/artifact_files.py': ('ddc784d1c378510c66621d95af267790ab7fb1965ac5951926b471e897bd6343', 1586),
     'scripts/target_files_archive_copy.py': ('84675edaf28455c8433f999596e6ecc172df722d322be6c088ea81e56fe818b6', 41065),
 }
@@ -77,7 +77,7 @@ def selected(row):
 def contracts():
     value = signing.load_contract()
     require(value[1] == '8749a855328acac6c63d62b45e989e3e1d354aaaf86b754940dfe00caa257c3c'
-            and value[3] == '14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567',
+            and value[3] == 'c5dbd4055c904422581ad511d34ba143672683a54aea3390c0581a4af321ba37',
             'only the existing signing and verifier profiles are supported')
     return value
 
@@ -302,7 +302,7 @@ def materialize(target_files, expected_archive, inventory_record, expected_inven
         record_bodies.append(body)
     for role in RAW_ROLES:
         row = retained['images'][role]
-        remember(row['path'], row, profile['image_budgets'][role])
+        remember(row['path'], row, avb.image_budget(profile, role))
         require(guards[row['path']][1] == raw_signatures[role], 'retained input replaced since inventory')
     recheck()
     size = sum(row['size_bytes'] for row in observed['final_images'].values()) + sum(row['size_bytes'] for row in retained['images'].values())
@@ -325,7 +325,7 @@ def materialize(target_files, expected_archive, inventory_record, expected_inven
                 for role in sorted(DATA_ROLES):
                     name = 'IMAGES/' + role + '.img'
                     require(name in members and observed['final_images'][role]['member'] == name, 'exact IMAGES entry required')
-                    _copy_member(archive, members[name], staging / 'images' / (role + '.img'), observed['final_images'][role], profile['image_budgets'][role], budget)
+                    _copy_member(archive, members[name], staging / 'images' / (role + '.img'), observed['final_images'][role], avb.image_budget(profile, role), budget)
                     files['images/' + role + '.img'] = selected(observed['final_images'][role])
             same(inventory._stream_identity(stream, info.st_size), expected_archive, 'archive changed during extraction')
         # The archive's held-FD/parent guard has completed before manifest creation.
@@ -334,7 +334,7 @@ def materialize(target_files, expected_archive, inventory_record, expected_inven
             destination = staging / 'images' / (role + '.img')
             with avb.envelope._parent_directory(destination) as parent:
                 budget.check(parent)
-                avb._copy_image(row['path'], destination, row, profile['image_budgets'][role])
+                avb._copy_image(row['path'], destination, row, avb.image_budget(profile, role))
                 budget.consume(row['size_bytes'])
                 _sync_image(destination, row, budget)
             files['images/' + role + '.img'] = selected(row)

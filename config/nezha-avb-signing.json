@@ -14,8 +14,8 @@
   "implementation_dependencies": [
     {
       "path": "scripts/avb_image_set.py",
-      "size_bytes": 43341,
-      "sha256": "7a5cfe1462c0bb5778b369789a0e9ac0fb7124ba52ecdb76d7b24b2bdd3adecf"
+      "size_bytes": 43864,
+      "sha256": "f70c6f44b1c0cf02803a199f00331154fd51ab15351f368f38850d358a4d1bea"
     },
     {
       "path": "scripts/twrp_working.py",

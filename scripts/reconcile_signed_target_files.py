@@ -45,9 +45,9 @@ DATA_ROLES = frozenset(signing.INPUTS) - RAW_ROLES
 RECORD_FIELDS = frozenset(('target_files', 'inventory', 'retained_input_manifest',
                           'signing_preparation', 'signing_receipt', 'verification_manifest'))
 PUBLIC_PINS = {
-    'scripts/target_files_avb_inventory.py': ('160cf1c5c7abe8072956affc3cc6ebe3a55ce95705ca55c9c3c8cf9c4b82021b', 28544),
-    'scripts/avb_signing.py': ('ed87a8aa0ba7bbcf5bcc066cb03206dd5604c8e64379dbbd176260a0825ba1c3', 46629),
-    'scripts/avb_image_set.py': ('08dede641768c043e050e103b852503b2bc5af310aba3bef1d1f1824b7f9f80c', 41370),
+    'scripts/target_files_avb_inventory.py': ('893778a88df0badb6f27db0f88be5aff9885cb8f3111f06e062e5d7f0d7f89e4', 28614),
+    'scripts/avb_signing.py': ('e0afd0d9f86560306117aa43a5487e036751c2824e24b17080da2bb1b30cddb8', 46523),
+    'scripts/avb_image_set.py': ('f70c6f44b1c0cf02803a199f00331154fd51ab15351f368f38850d358a4d1bea', 43864),
     'scripts/artifact_files.py': ('ddc784d1c378510c66621d95af267790ab7fb1965ac5951926b471e897bd6343', 1586),
 }
 FALSE_SCOPE = {name: False for name in (
@@ -84,7 +84,7 @@ def selected(row):
 def controls():
     result = signing.load_contract()
     require(result[1] == '8749a855328acac6c63d62b45e989e3e1d354aaaf86b754940dfe00caa257c3c'
-            and result[3] == '14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567',
+            and result[3] == 'c5dbd4055c904422581ad511d34ba143672683a54aea3390c0581a4af321ba37',
             'only the reviewed signing and seventeen-image contracts are supported')
     return result
 
@@ -271,10 +271,10 @@ def _zip_old_digest(target_files, archive_pin, original, profile):
             blobs = {}
             for role in ('vbmeta', 'vbmeta_system'):
                 _, raw = inventory._member_identity(archive, members['IMAGES/' + role + '.img'],
-                                                     profile['image_budgets'][role], collect=True)
+                                                     avb.image_budget(profile, role), collect=True)
                 blobs[role] = _blob(raw)
             for role in ('boot', 'recovery'):
-                blobs[role] = image_blob(original['images'][role]['path'], role, profile['image_budgets'][role])
+                blobs[role] = image_blob(original['images'][role]['path'], role, avb.image_budget(profile, role))
             _, before = inventory._member_identity(archive, members['META/vbmeta_digest.txt'], 65, collect=True)
             require(re.fullmatch(rb'[0-9a-f]{64}\n', before) is not None
                     and before == digest_from_blobs(blobs), 'original target-files vbmeta digest is stale or malformed')
@@ -423,7 +423,7 @@ def reconcile(request_path, expected_sha256, output_dir):
         guards.json(record['path'], record)
     for group in (original['images'], retained['images'], manifest['images']):
         for role, row in group.items():
-            guards.remember(row['path'], row, profile['image_budgets'][role])
+            guards.remember(row['path'], row, avb.image_budget(profile, role))
     for row in manifest['public_keys'].values():
         same({k: row[k] for k in ('sha256', 'size_bytes', 'avb_sha256')},
              {**contract['public_key'], 'avb_sha256': contract['avb_public_key_sha256']}, 'unexpected intended public key')
@@ -441,7 +441,7 @@ def reconcile(request_path, expected_sha256, output_dir):
         signing.io._mkdir(staging)
         signing.io._mkdir(staging / 'digest')
         expected_digest = digest_from_blobs({role: image_blob(manifest['images'][role]['path'], role,
-            profile['image_budgets'][role]) for role in avb.SIGNED})
+            avb.image_budget(profile, role)) for role in avb.SIGNED})
         after_digest, digest_record, native = native_digest(staging / 'digest', manifest, profile, expected_digest)
         replacements = {'IMAGES/' + role + '.img': manifest['images'][role] for role in CHANGED_ROLES}
         replacements.update({name: manifest['images'][alias['image_role']] for name, alias in observed['aliases'].items()

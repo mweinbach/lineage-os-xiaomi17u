@@ -254,8 +254,18 @@ def load_profile():
 
 def image_budget(profile, name):
     """Return a physical stock bound or an explicitly reviewed logical bound."""
-    override = profile["dynamic_logical_budget_overrides"].get(name)
+    override = profile.get("dynamic_logical_budget_overrides", {}).get(name)
     return override["maximum_size_bytes"] if override is not None else profile["image_budgets"][name]
+
+
+def validate_image_budget(profile, name, row):
+    """Enforce the stock bound or the exact measured image behind an override."""
+    _require(row["size_bytes"] <= image_budget(profile, name) and row["size_bytes"] % 4096 == 0,
+             "image exceeds package budget or is unaligned")
+    override = profile.get("dynamic_logical_budget_overrides", {}).get(name)
+    if override is not None and row["size_bytes"] > override["stock_budget_bytes"]:
+        _require({key: row[key] for key in ("sha256", "size_bytes")} == override["measured_image"],
+                 "image above stock budget is not the admitted successor image")
 
 
 def load_manifest(path, expected_sha256, profile, profile_sha256):
@@ -278,8 +288,7 @@ def load_manifest(path, expected_sha256, profile, profile_sha256):
              set(value["images"]) & SIGNED, "missing or extra per-image public key")
     for name, row in value["images"].items():
         _identity_spec(row, path=True)
-        _require(row["size_bytes"] <= image_budget(profile, name)
-                 and row["size_bytes"] % 4096 == 0, "image exceeds package budget or is unaligned")
+        validate_image_budget(profile, name, row)
         if name == "recovery":
             _require({k: row[k] for k in ("size_bytes", "sha256")} == profile["working76"]["image"],
                      "recovery is not exact working76")

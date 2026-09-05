@@ -203,6 +203,30 @@ class TargetFilesAvbInventoryTests(unittest.TestCase):
         self.assert_scope_false(report)
         self.assertEqual(before, {p.name: identity(p.read_bytes()) for p in self.root.iterdir()})
 
+    def test_reviewed_logical_override_admits_image_above_stock_member_bound(self):
+        role = "system_ext"
+        self.images[role] = inert_image(role) + bytes(4 * 4096)
+        self.members["IMAGES/" + role + ".img"] = self.images[role]
+        self.profile["dynamic_logical_budget_overrides"] = {
+            role: {"stock_budget_bytes": self.profile["image_budgets"][role],
+                   "maximum_size_bytes": len(self.images[role]),
+                   "measured_image": identity(self.images[role])}}
+        self.write_zip()
+        report = self.inspect(retained=True)
+        self.assertEqual("complete", report["status"], report["errors"])
+        self.assertGreater(report["final_images"][role]["size_bytes"],
+                           self.profile["image_budgets"][role])
+        self.assertLessEqual(report["final_images"][role]["size_bytes"],
+                             inventory.avb.image_budget(self.profile, role))
+
+        substituted = bytearray(self.images[role])
+        substituted[-1] = 1
+        self.members["IMAGES/" + role + ".img"] = bytes(substituted)
+        self.write_zip()
+        blocked = self.inspect(retained=True)
+        self.assertEqual("blocked", blocked["status"])
+        self.assertTrue(blocked["errors"])
+
     def test_generated_metadata_is_not_a_final_signing_input(self):
         self.write_zip()
         report = self.inspect(retained=True)

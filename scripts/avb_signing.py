@@ -92,7 +92,7 @@ def load_contract():
              "unsupported signing contract")
     profile, profile_sha = avb.load_profile()
     _require(contract["verifier_profile"]["sha256"] == profile_sha
-             == "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
+             == "c5dbd4055c904422581ad511d34ba143672683a54aea3390c0581a4af321ba37",
              "the immutable AVB verifier contract changed")
     _require(contract["verifier_profile"]["path"] == "config/nezha-avb-image-set.json"
              and type(contract["implementation_dependencies"]) is list
@@ -183,8 +183,7 @@ def load_input(path, expected_sha, contract, contract_sha, profile):
              "invalid source provenance records")
     for name, row in value["images"].items():
         avb._identity_spec(row, path=True)
-        _require(row["size_bytes"] <= profile["image_budgets"][name] and row["size_bytes"] % 4096 == 0,
-                 "input exceeds package budget or is unaligned")
+        avb.validate_image_budget(profile, name, row)
         required = (profile["working76"]["image"] if name == "recovery" else
                     contract["raw_descriptor_sources"].get(name, {}).get("image"))
         if required:
@@ -470,8 +469,9 @@ def _collect(manifest, local, contract, profile, avbtool):
         for name in sorted(INPUTS):
             row = manifest["images"][name]
             copied = work / (name + ".img")
-            states[name] = avb._copy_image(row["path"], copied, row, profile["image_budgets"][name])
-            images[name] = avb.read_image_metadata(copied, name, profile["image_budgets"][name])
+            budget = avb.image_budget(profile, name)
+            states[name] = avb._copy_image(row["path"], copied, row, budget)
+            images[name] = avb.read_image_metadata(copied, name, budget)
             meta = images[name]
             if name == "recovery":
                 avb.validate_metadata({name: meta}, profile, {name: public})
@@ -488,12 +488,12 @@ def _collect(manifest, local, contract, profile, avbtool):
             if name in ("countrycode", "pvmfw"):
                 expected = contract["raw_descriptor_sources"][name]["descriptor"]
                 payload = work / (name + ".payload")
-                _, digest = _prefix(copied, expected["image_size"], profile["image_budgets"][name], payload,
+                _, digest = _prefix(copied, expected["image_size"], avb.image_budget(profile, name), payload,
                                      bytes.fromhex(expected["salt_hex"]))
                 _require(digest == expected["digest_hex"], "retained raw firmware descriptor differs")
                 carrier = work / (name + "-vbmeta.img")
                 native.call("raw-" + name, native.avb("add_hash_footer", "--image", payload,
-                    "--partition_name", name, "--partition_size", str(profile["image_budgets"][name]),
+                    "--partition_name", name, "--partition_size", str(avb.image_budget(profile, name)),
                     "--algorithm", "NONE", "--hash_algorithm", "sha256", "--flags", "0",
                     "--rollback_index", "0", "--rollback_index_location", "0", "--salt", expected["salt_hex"],
                     "--output_vbmeta_image", carrier, "--do_not_append_vbmeta_image"))
@@ -620,7 +620,7 @@ def sign(preparation_path, expected_sha, *, local_config, output_dir, avbtool=No
                 io._mkdir(out / directory)
             for name in sorted(INPUTS - {"boot"}):
                 avb._copy_image(work / (name + ".img"), out / (name + ".img"),
-                                manifest["images"][name], profile["image_budgets"][name])
+                                manifest["images"][name], avb.image_budget(profile, name))
             for name, data in carriers.items():
                 io._write(out / "metadata" / (name + ".vbmeta"), data)
             for prop in summary["boot_recipe"]["properties"]:
@@ -655,7 +655,7 @@ def sign(preparation_path, expected_sha, *, local_config, output_dir, avbtool=No
                         native, name, destination / (name + ".img"), key, out,
                         out / "public.avbpubkey", contract))
                     _pad_metadata(destination / (name + ".img"), contract)
-                results.append({n: _identity(destination / (n + ".img"), profile["image_budgets"][n])
+                results.append({n: _identity(destination / (n + ".img"), avb.image_budget(profile, n))
                                 for n in contract["reproduction"]["compare_images"]})
             _require(results[0] == results[1], "two signing passes produced different image bytes")
             for name in INPUTS - {"boot"}:

@@ -368,7 +368,7 @@ def _retained(manifest_path, expected_sha, contract, contract_sha, profile):
     images, signatures = {}, {}
     for name in sorted(names):
         row = value["images"][name]
-        with avb._input(row["path"], profile["image_budgets"][name]) as (stream, info):
+        with avb._input(row["path"], avb.image_budget(profile, name)) as (stream, info):
             _require(info.st_size == row["size_bytes"], "retained image size differs")
             identity = _stream_identity(stream, info.st_size)
             _require(identity == contract["raw_descriptor_sources"][name]["image"],
@@ -409,7 +409,7 @@ def inspect_target_files(target_files: Path, expected_identity: dict, *,
                 members = _members(archive, bounds, zip_roles)
                 selected_names = {f"{prefix}/{role}.img" for prefix in PREFIXES for role in zip_roles}
                 selected_names.update(REQUIRED_METADATA + OPTIONAL_METADATA)
-                read_budget = len(PREFIXES) * sum(profile["image_budgets"][role] for role in zip_roles)
+                read_budget = len(PREFIXES) * sum(avb.image_budget(profile, role) for role in zip_roles)
                 read_budget += len(REQUIRED_METADATA + OPTIONAL_METADATA) * MAX_METADATA
                 _require(sum(members[name].file_size for name in selected_names if name in members) <= read_budget,
                          "selected ZIP read budget exceeded")
@@ -420,7 +420,8 @@ def inspect_target_files(target_files: Path, expected_identity: dict, *,
                     if name not in members:
                         result[missing].append(role)
                         continue
-                    row, _ = _member_identity(archive, members[name], profile["image_budgets"][role])
+                    row, _ = _member_identity(archive, members[name], avb.image_budget(profile, role))
+                    avb.validate_image_budget(profile, role, row)
                     if role == "recovery":
                         _require({key: row[key] for key in ("sha256", "size_bytes")} == profile["working76"]["image"],
                                  "selected recovery differs from fixed working76 input")
@@ -430,7 +431,7 @@ def inspect_target_files(target_files: Path, expected_identity: dict, *,
                         name = f"{prefix}/{role}.img"
                         if name not in members:
                             continue
-                        row, _ = _member_identity(archive, members[name], profile["image_budgets"][role])
+                        row, _ = _member_identity(archive, members[name], avb.image_budget(profile, role))
                         final = result["final_images"].get(role, result["generated_vbmeta_images"].get(role))
                         result["aliases"][name] = {**row, "image_role": role,
                             "matches_final_image": None if final is None else all(row[k] == final[k] for k in ("sha256", "size_bytes"))}
