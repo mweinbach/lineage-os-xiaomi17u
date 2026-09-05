@@ -1,4 +1,4 @@
-# Authorized Android preflight — September 5, 2026
+# Authorized device preflight — September 5, 2026
 
 The user confirmed the connected Nezha in direct response to the request for a
 read-only USB preflight. One matching USB ADB device was identified and its
@@ -58,7 +58,7 @@ Private evidence, containing serials and raw logs, remains ignored:
   `84f139965da75431ba6f5a09a5280efc567b674e5b2095cd888f0288f52994d4`
   (106,868 bytes).
 
-## Next gate
+## Gate after the Android collection (historical)
 
 An explicitly authorized reboot into the proprietary bootloader is needed to
 read its independent unlock state, next-boot slot, capacities and supported
@@ -70,3 +70,40 @@ Retained firmware payloads, LP/snapshot state, secure rollback uncertainty,
 bootloader return behavior, backups and data handling remain separate gates.
 An already mounted `/metadata` does not prove snapshot idleness. Package7's
 verified bundle is unchanged; `flash_ready` and `complete_rom_ready` remain false.
+
+## Authorized bootloader follow-up
+
+The user subsequently explicitly authorized the bootloader reboot. Before the
+single `adb reboot bootloader`, the same private serial was matched to a USB
+Android connection and `nezha` / `canoe` identity was freshly checked. The same
+serial then appeared in fastboot. No flash, wipe, unlock, slot change, recovery
+transition or return reboot was performed; the phone was left in bootloader mode.
+The transition receipt is private in
+`evidence/bootloader-entry-20260905T1432Z/transition.json`.
+
+The bounded collector independently observed `is-userspace: no`, `product:
+nezha`, **`unlocked: yes`**, and next-boot slot **A**. This resolves the earlier
+Android-property uncertainty in favor of an unlocked bootloader. Both slots
+report not unbootable; A reports successful, B does not. Retry counts are 6/7.
+`snapshot-update-status` reports `none`; this is a bootloader observation, not
+verification of LP metadata or retained firmware payloads. Maximum download
+size reports 805,306,368 bytes.
+
+All 19 physical-capacity observations match the recorded package capacities:
+boot/vendor_boot 96 MiB each, dtbo 32 MiB, init_boot 8 MiB, recovery 100 MiB,
+vbmeta/vbmeta_system 128 KiB each, countrycode/pvmfw 1 MiB each (both slots),
+and Super 15,300,820,992 bytes. This does not independently validate candidate
+image contents, expanded sparse-image fit, or flash admission.
+
+Version fields and nine `has-slot` queries remain unsupported or empty. The
+collector therefore correctly returns `partial-observations`, exit 3, with no
+collection errors. Product, bootloader mode and next-boot slot were rechecked.
+All 96 saved streams from 48 commands were rehashed with no mismatch.
+
+Private manifest: `evidence/device-preflight-20260905T1433Z-bootloader-a/manifest.json`
+(SHA-256 `fcc840b3f0d6e18f5aa1c430b36f9c5002e12e5cc582884e8659697556bb3c13`).
+
+The next unresolved gates remain retained firmware/LP evidence, secure rollback
+uncertainty, backups/data handling and bootloader return behavior. Any further
+phone transition or flashing requires explicit authorization for that action.
+Package7 is unchanged; `flash_ready` and `complete_rom_ready` remain false.

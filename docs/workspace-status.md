@@ -11,14 +11,15 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-**The authorized read-only Android preflight is complete but partial.** The
-connected phone reports Xiaomi/nezha/canoe/CN, running slot A, 4 KiB pages,
-enforcing SELinux and encrypted data; battery reports 54% and charging. Android
-reports locked/green, but independent bootloader state is unresolved. Direct
-capacity, bootconfig and supplemental sysfs reads were denied to UID 2000, so
-capacity and snapshot/firmware gates remain unknown. No phone mutation occurred.
-See [the current device observations](device-preflight-20260905.md). A reboot
-into bootloader mode requires a fresh explicit request.
+**The authorized Android and bootloader preflights are complete but partial.**
+After the explicitly authorized reboot, the same device's proprietary bootloader
+reports **unlocked**, next-boot slot **A**, and snapshot status `none`. All 19
+queried physical capacities match the recorded package capacities. This resolves
+the earlier Android locked/green property uncertainty; retained firmware, LP,
+rollback and data-handling gates remain open. Unsupported version/has-slot reads
+remain unknown. The phone was left in bootloader mode; no flashing, wiping,
+unlocking or slot change occurred. See [the device observations](device-preflight-20260905.md).
+Further phone transitions require explicit authorization.
 
 **The eight-image Package7 bundle is assembled and independently verified.**
 See [the final experimental bundle and device gates](package7-experimental-bundle.md).
