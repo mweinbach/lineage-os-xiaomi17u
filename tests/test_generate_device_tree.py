@@ -10,6 +10,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest import mock
+import xml.etree.ElementTree as ET
 
 from scripts import generate_device_tree as generator
 
@@ -229,6 +230,49 @@ class GenerateDeviceTreeTests(unittest.TestCase):
         with self.assertRaisesRegex(generator.CandidateError, "input does not exist"):
             generator.generate(output, **inputs)
         self.assertFalse(output.exists())
+
+    def test_display_overlays_are_packaged_hashed_and_tamper_checked(self):
+        inputs = self.recovery_template_inputs()
+        overlays = (
+            "overlay/frameworks/base/core/res/res/values/config.xml",
+            "overlay/frameworks/base/packages/SystemUI/res/values/dimens.xml",
+        )
+        source_root = ROOT / generator.DEVICE_PATH
+        for name in (*overlays, "device.mk"):
+            source = source_root / name
+            (inputs["template_root"] / name).write_bytes(source.read_bytes())
+        for variant in generator.BUILD_VARIANTS:
+            with self.subTest(variant=variant):
+                output = self.root / "artifacts" / ("display-" + variant)
+                plan = generator.generate(output, variant=variant, **inputs)
+                self.assertEqual(generator.validate(output), plan)
+                self.assertIn("DEVICE_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/overlay",
+                              (output / generator.DEVICE_PATH / "device.mk").read_text())
+                for name in overlays:
+                    path = output / generator.DEVICE_PATH / name
+                    self.assertEqual(ET.fromstring(path.read_bytes()).tag, "resources")
+                    self.assertEqual(path.read_bytes(), (source_root / name).read_bytes())
+                    original = path.read_bytes()
+                    path.write_bytes(original + b"\n<!-- modified geometry -->\n")
+                    with self.assertRaises(generator.CandidateError):
+                        generator.validate(output)
+                    path.write_bytes(original)
+
+    def test_generation_fails_if_a_selected_display_overlay_is_missing(self):
+        inputs = self.recovery_template_inputs()
+        for name in (
+            "overlay/frameworks/base/core/res/res/values/config.xml",
+            "overlay/frameworks/base/packages/SystemUI/res/values/dimens.xml",
+        ):
+            with self.subTest(overlay=name):
+                source = inputs["template_root"] / name
+                original = source.read_bytes()
+                source.unlink()
+                output = self.root / "artifacts/missing-display-overlay"
+                with self.assertRaisesRegex(generator.CandidateError, "input does not exist"):
+                    generator.generate(output, **inputs)
+                self.assertFalse(output.exists())
+                source.write_bytes(original)
 
     def test_validation_rejects_missing_or_changed_recovery_template(self):
         self.candidate()

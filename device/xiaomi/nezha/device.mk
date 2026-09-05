@@ -4,6 +4,9 @@ NEZHA_DEVICE_PATH := device/xiaomi/nezha
 NEZHA_VENDOR_PATH ?= vendor/xiaomi/nezha
 NEZHA_KERNEL_INPUTS ?= vendor/xiaomi/nezha-kernel
 
+# Exact Nezha factory geometry; device overlays take priority over common ones.
+DEVICE_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/overlay
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch.mk)
 $(call inherit-product, $(NEZHA_DEVICE_PATH)/generated/device-candidate.mk)

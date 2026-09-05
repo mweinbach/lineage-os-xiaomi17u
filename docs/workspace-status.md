@@ -54,11 +54,12 @@ The older full-source TWRP experiments remain historical references.
 
 ## Remaining feature work
 
-The user confirmation establishes a working boot baseline. It does not identify
-which individual hardware features have been tested. The recorded clean-boot ADB
-shell was closed, so that attempt has no machine-read `sys.boot_completed` result.
-Capture fresh diagnostics when needed for the next issue instead of treating
-older bootloader/setup observations as the phone's current state.
+The user subsequently confirmed Google sign-in works and reported fingerprint
+enrollment, camera, and status-bar corner/icon spacing failures. A fresh September 5
+read-only capture on the same installed phone confirms the Package7 incremental
+identity and `sys.boot_completed=1`. The earlier closed-shell observation remains
+historical. See [feature triage](package7-feature-triage-20260905.md) for current
+diagnostics, the stock-derived display correction, and unresolved hardware work.
 
 Camera currently selects Aperture; Xiaomi/Leica integration remains separate.
 The Android IMS provider stack is not integrated, and VoLTE, VoWiFi and emergency

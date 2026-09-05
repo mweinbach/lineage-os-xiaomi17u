@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <!-- Native 1200 x 2608 panel pixels, from Nezha DevicesAndroidOverlay.
+         See overlay/README.md for the exact factory APK and extraction record. -->
+    <dimen name="rounded_corner_radius">170px</dimen>
+    <dimen name="rounded_corner_radius_top">170px</dimen>
+    <dimen name="rounded_corner_radius_bottom">170px</dimen>
+    <dimen name="status_bar_height_default">144px</dimen>
+    <dimen name="status_bar_height_portrait">144px</dimen>
+    <string name="config_mainBuiltInDisplayCutout" translatable="false">M 0,0 H -34 V 144 H 34 V 0 H 0 Z</string>
+</resources>

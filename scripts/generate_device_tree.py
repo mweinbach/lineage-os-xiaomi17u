@@ -37,6 +37,9 @@ TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",
     "recovery/root/init.recovery.qcom.rc",
+    "overlay/README.md",
+    "overlay/frameworks/base/core/res/res/values/config.xml",
+    "overlay/frameworks/base/packages/SystemUI/res/values/dimens.xml",
 )
 DSP_POLICY_RECORD = PurePosixPath("research/dsp-policy-integration.json")
 DSP_POLICY_CONTRACT_ID = "nezha-dsp-membership-v1"
