@@ -51,6 +51,10 @@ BOOTCTL_READS = (
     ('bootctl', 'get-active-boot-slot'), ('bootctl', 'get-snapshot-merge-status'),
 ) + tuple(('bootctl', operation, slot) for operation in (
     'get-suffix', 'is-slot-bootable', 'is-slot-marked-successful') for slot in ('0', '1'))
+RECOVERY_DEVICE_TREE = {
+    '/proc/device-tree/model': b'Qualcomm Technologies, Inc. Nezha based on SM8850\0',
+    '/proc/device-tree/compatible': b'qcom,canoe-mtp\0qcom,canoe\0qcom,canoep-mtp\0qcom,canoep\0qcom,mtp\0',
+}
 MAX_SESSION_BYTES = 16 * 1024 * 1024
 MAX_BLOCK_READ = 1024 * 1024
 
@@ -76,6 +80,7 @@ def read_allowlist(target_slot):
     reads = [('getprop', p) for p in PROPERTIES]
     reads += [('id', '-u'), ('getconf', 'PAGESIZE'), ('getenforce',),
               ('cat', '/proc/self/mountinfo'), ('cat', '/proc/bootconfig'), ('pidof', 'recovery')]
+    reads += [('cat', path) for path in RECOVERY_DEVICE_TREE]
     reads += list(BOOTCTL_READS)
     for partition in PARTITIONS:
         path = '/dev/block/by-name/' + partition
@@ -263,7 +268,8 @@ class Collector:
         tokens = validate_read(tokens, self.args.target_slot)
         if not self.transport:
             raise CollectionError('A selected transport is required.')
-        if not self.verified and not (tokens[0] == 'getprop' or tokens == ('pidof', 'recovery')):
+        if not self.verified and not (tokens[0] == 'getprop' or tokens == ('pidof', 'recovery')
+                or self.args.mode == 'adb-recovery' and tokens in tuple(('cat', path) for path in RECOVERY_DEVICE_TREE)):
             raise CollectionError('Device identity and mode must be verified before reads.')
         return self.execute(label, [self.args.adb, '-t', self.transport, 'shell', '-T', shlex.join(tokens)], limit)
 
@@ -296,11 +302,14 @@ class Collector:
         for name in IDENTITY_PROPERTIES + MODE_PROPERTIES:
             self.property(name)
         p = self.report['properties']
-        if (p['ro.product.manufacturer'] or '').casefold() != 'xiaomi' or p['ro.product.device'] != 'nezha' or p['ro.board.platform'] != 'canoe' or p['ro.kernel.qemu'] not in ('', '0'):
+        if (p['ro.product.manufacturer'] or '').casefold() != 'xiaomi' or p['ro.product.device'] != 'nezha' or p['ro.kernel.qemu'] not in ('', '0'):
             raise CollectionError('Exact physical Xiaomi/nezha/canoe identity was not observed.')
         modes = {p['ro.bootmode'], p['ro.boot.mode']}
         if self.args.mode == 'adb-recovery':
-            if p['init.svc.recovery'] != 'running' or (state != 'recovery' and 'recovery' not in modes) or any(m not in ('', 'recovery') for m in modes):
+            if p['ro.board.platform'] not in ('canoe', 'xiaomi_sm8750'):
+                raise CollectionError('Unreviewed recovery board property.')
+            self.recovery_device_tree('initial')
+            if p['init.svc.recovery'] != 'running' or (state != 'recovery' and 'recovery' not in modes) or any(m not in ('', 'unknown', 'recovery') for m in modes) or ('unknown' in modes and state != 'recovery'):
                 raise CollectionError('Already-running recovery mode was not observed.')
             if any(p[n] not in ('', 'stopped') for n in ('init.svc.zygote', 'init.svc.zygote_secondary', 'init.svc.surfaceflinger')):
                 raise CollectionError('Android framework markers conflict with recovery mode.')
@@ -308,11 +317,23 @@ class Collector:
             self.recovery_pid = pid
             if pid is None or re.fullmatch(r'[1-9][0-9]{0,9}', pid) is None:
                 raise CollectionError('One running recovery process is required.')
-        elif state != 'device' or p['sys.boot_completed'] != '1' or 'recovery' in modes or p['init.svc.recovery'] not in ('', 'stopped'):
+        elif p['ro.board.platform'] != 'canoe' or any(m not in ('', 'normal') for m in modes) or state != 'device' or p['sys.boot_completed'] != '1' or 'recovery' in modes or p['init.svc.recovery'] not in ('', 'stopped'):
             raise CollectionError('Already-running Android mode was not observed.')
         self.verified = True
 
+    def recovery_device_tree(self, stage):
+        observed = {}
+        for path, expected in RECOVERY_DEVICE_TREE.items():
+            result = self.shell('device-tree-' + stage + '-' + path.rsplit('/', 1)[1], ('cat', path), 4096)
+            if (result['status'] != 'ok' or result['exit_code'] != 0 or result['truncated_streams']
+                    or result['stdout'] != expected):
+                raise CollectionError('Exact live Nezha SM8850/canoe recovery device tree was not observed.')
+            observed[path] = result['stdout'].decode('ascii')
+        self.report['recovery_device_tree'] = observed
+
     def recheck_adb(self, stage):
+        if self.args.mode == 'adb-recovery':
+            self.recovery_device_tree(stage)
         for name in IDENTITY_PROPERTIES + MODE_PROPERTIES + ('ro.boot.slot_suffix',):
             if self.property(name, stage) != self.report['properties'][name]:
                 raise CollectionError('Device identity, mode or running slot changed during collection.')
@@ -380,7 +401,7 @@ class Collector:
                     raise CollectionError('Raw capture requires distinct physical UFS partition nodes, not dm/mapper or aliased nodes.')
             for partition in selected:
                 resolved, kind, size = identities[partition]
-                if not resolved or re.fullmatch(r'/dev/block/[A-Za-z0-9_./-]+', resolved) is None or not kind or not kind.startswith('block special file:') or parse_capacity(size) is None or parse_capacity(size) < MAX_BLOCK_READ:
+                if not resolved or re.fullmatch(r'/dev/block/[A-Za-z0-9_./-]+', resolved) is None or not kind or re.fullmatch(r'(?:block special file|block device):[0-9a-fA-F]+:[0-9a-fA-F]+', kind) is None or parse_capacity(size) is None or parse_capacity(size) < MAX_BLOCK_READ:
                     raise CollectionError('A fixed block node and its readable capacity are required before raw capture.')
                 path = '/dev/block/by-name/' + partition
                 result = self.shell('raw-' + partition, ('dd', 'if=' + path, 'bs=4096', 'count=256'), MAX_BLOCK_READ)

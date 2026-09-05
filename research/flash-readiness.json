@@ -982,5 +982,50 @@
     "flash_authorized": false,
     "data_wipe_authorized": false,
     "report": "docs/device-preflight-20260905.md"
+  },
+  "authorized_recovery_verification": {
+    "scope": "Explicit installed-recovery reboot, bounded reads and return to bootloader; no install or wipe performed",
+    "collection_receipt": {
+      "path": "evidence/device-preflight-20260905T1449Z-recovery-a/manifest.json",
+      "size_bytes": 125011,
+      "sha256": "fa14d4969be498106311473f269e008ea01463a3ed1a130ee4304b4cff9e9008"
+    },
+    "lp_review": {
+      "path": "evidence/device-preflight-20260905T1449Z-recovery-a/lp-prefix-review.json",
+      "size_bytes": 78449,
+      "sha256": "40fda01d944cc900c7e354dd33ea7c86351914a036f904eac079954d59bdc9cb"
+    },
+    "bootloader_return_receipt": {
+      "path": "evidence/recovery-verification-20260905T144120Z/bootloader-final.json",
+      "size_bytes": 680,
+      "sha256": "466ebfcb26feca8425dfa11e91d4fe00ff3f344499e64b9cb17c580e6c9eca51"
+    },
+    "collector_exit_code": 0,
+    "collection_commands": 154,
+    "saved_streams_rehashed": 308,
+    "retained_firmware_authenticated_and_full_image_matches": {
+      "countrycode_a": true,
+      "pvmfw_a": true
+    },
+    "live_lp_geometry_copies_valid_and_identical": true,
+    "live_lp_metadata_copies_valid": 6,
+    "live_lp_primary_backup_pairs_match": true,
+    "live_lp_physical_capacity_bytes": 15300820992,
+    "logical_b_entries_empty": true,
+    "logical_payload_hashes_verified": false,
+    "snapshot_bootloader_reports": "none",
+    "snapshot_service_attestation": false,
+    "current_mode": "fastboot-bootloader",
+    "next_boot_slot": "a",
+    "unlocked": true,
+    "secure_rollback_indices": null,
+    "user_accepts_phone_data_loss": true,
+    "flash_performed": false,
+    "wipe_performed": false,
+    "complete_rom_ready": false,
+    "failed_collection_attempts_preserved": [
+      "evidence/device-preflight-20260905T1441Z-recovery-a/manifest.json",
+      "evidence/device-preflight-20260905T1447Z-recovery-a/manifest.json"
+    ]
   }
 }

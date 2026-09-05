@@ -47,6 +47,17 @@ recovery identification. For each physical partition, the collector reads
 `readlink -f`, `stat -L -c %F:%t:%T` and `blockdev --getsize64`. It does not run
 an unrestricted command or pull a directory.
 
+Installed working76 recovery reports a donor `ro.board.platform=xiaomi_sm8750`
+and `ro.bootmode=unknown`. Recovery collection therefore additionally requires
+exact live `/proc/device-tree/model` and `/proc/device-tree/compatible` bytes
+for Nezha SM8850/canoe. These reads are repeated before raw capture and at the
+end. Only `canoe` and the observed recovery donor property are accepted; this
+does not change normal Android's `canoe` requirement. An unknown recovery boot
+mode requires an ADB `recovery` transport, a running recovery service/PID and
+no Android framework services. Block-node validation accepts both GNU's
+`block special file` and Toybox's `block device` labels with hexadecimal
+major/minor numbers; character devices and ordinary files remain refused.
+
 Physical names are both suffixes of `boot`, `dtbo`, `init_boot`, `recovery`,
 `vbmeta`, `vbmeta_system`, `vendor_boot`, `countrycode` and `pvmfw`, plus shared
 unsuffixed `super`. There are no logical-partition getvars or `getvar all`.

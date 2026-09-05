@@ -78,8 +78,9 @@ confirm the same device, unlocked proprietary bootloader, slot A, matching
 physical capacities and bootloader snapshot status `none`. Fresh verification
 confirms all eight image lengths fit, including expanded Super. The stock return
 images and rescue recovery were rehashed. The user accepts loss of phone data.
-Live retained firmware and LP metadata still require an authorized recovery
-transition; secure rollback counters and actual return execution remain unknown.
+The authorized recovery round trip now verifies retained target-A firmware
+contents and all six live LP metadata copies. The phone is back in bootloader
+mode. Secure rollback counters and actual stock restoration remain unknown.
 
 **No phone was accessed or changed for this milestone.** `flash_ready` and
 `complete_rom_ready` remain false because device admission and boot are pending.

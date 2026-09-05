@@ -142,3 +142,52 @@ host. This specific transition remains an explicit-authorization gate under
 AGENTS.md. Do not flash a replacement recovery just to collect it. Unsupported
 secure-counter reads remain an explicit risk-review limit, not an invented
 zero or a promise of attainable attestation. Flash readiness remains false.
+
+## Authorized recovery read and bootloader return
+
+The user explicitly approved entering the installed recovery, bounded reads and
+returning to bootloader. Both transitions succeeded on the same selected serial.
+No flash, wipe, slot switch, privilege elevation or manual mount was performed.
+
+Two failed collectors are preserved: the initial one rejected TWRP's donor board
+property and unknown bootmode; the second rejected Toybox's block-device label.
+Neither reached raw capture. The corrected collector uses exact live Nezha
+SM8850/canoe device-tree bytes and recovery process/transport checks, with
+identity rechecks, while accepting both documented block-device labels. The
+successful collection has 154 commands / 308 hash-verified streams, exit zero,
+and no unknowns or errors within its requested scope.
+
+Both target-A firmware references match: countrycode's 32-byte authenticated
+region and pvmfw's 778,240-byte authenticated region, plus their complete 1 MiB
+reference-image hashes. Each read was repeated with identical bytes and stable
+physical-node identities. The same paired read captured the first 1 MiB of Super.
+
+Host LP parsing verifies both geometry copies and all six metadata copies,
+including SHA256 checksums, partition/group/extents and measured physical bounds.
+All primary/backup pairs match. Geometry uses 65,536-byte metadata slots, three
+slots and 4 KiB logical blocks; the entire metadata region ends at byte 405,504,
+inside the captured prefix. All copies describe eight populated A partitions
+and empty B entries. Flags contain only the virtual-A/B-device bit, with no
+active-overlay or unknown header flags. Logical payload contents were not read
+or hashed. This is consistent with the bootloader's `none` snapshot observation;
+it is not a secure-storage or full snapshot-service attestation.
+
+On return, the proprietary bootloader again reports Nezha, unlocked, slot A and
+snapshot status `none`. The phone was left there. Secure rollback counters,
+first Evolution boot and physical-button reentry remain unverified; stock
+return files are verified off-device but restoration has not been executed.
+
+Private evidence:
+
+- `evidence/recovery-verification-20260905T144120Z/`: transition and diagnostic receipts.
+- `evidence/device-preflight-20260905T1441Z-recovery-a/`: first stopped collection.
+- `evidence/device-preflight-20260905T1447Z-recovery-a/`: second stopped collection.
+- `evidence/device-preflight-20260905T1449Z-recovery-a/manifest.json`: successful read receipt.
+- `evidence/device-preflight-20260905T1449Z-recovery-a/lp-prefix-review.json`: scoped host LP review.
+
+The bundle remains unchanged. An exact install/clean-data/stop/return plan is
+still separate from this authorization for recovery verification.
+
+Verification of the final collector revision: **4,610 offline tests passed**
+with zero skips, including **43 focused preflight tests**. The tests mock phone
+commands; the live firmware/LP results above are separate hardware evidence.

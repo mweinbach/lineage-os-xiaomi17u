@@ -11,15 +11,16 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-**The authorized Android and bootloader preflights are complete but partial.**
-After the explicitly authorized reboot, the same device's proprietary bootloader
-reports **unlocked**, next-boot slot **A**, and snapshot status `none`. All 19
-queried physical capacities match the recorded package capacities. This resolves
-the earlier Android locked/green property uncertainty; retained firmware, LP,
-rollback and data-handling gates remain open. Unsupported version/has-slot reads
-remain unknown. The phone was left in bootloader mode; no flashing, wiping,
-unlocking or slot change occurred. See [the device observations](device-preflight-20260905.md).
-Further phone transitions require explicit authorization.
+**The authorized Android, bootloader and recovery observations are recorded.**
+The same phone is back in its proprietary bootloader: unlocked, slot A, snapshot
+status `none`. All eight candidate images fit measured capacities. Recovery
+reads verify both retained target-A firmware references and all six live LP
+metadata copies; the layout has eight populated A partitions and empty B.
+The stock return/rescue files also pass fresh hashes. The user accepts loss of
+phone data. No flash or wipe occurred. Secure rollback counters, first Evolution
+boot and executed stock restoration remain unverified. See
+[the device observations](device-preflight-20260905.md). The recovery round trip
+was explicitly authorized; it did not authorize an install or clean-data plan.
 
 **The eight-image Package7 bundle is assembled and independently verified.**
 See [the final experimental bundle and device gates](package7-experimental-bundle.md).

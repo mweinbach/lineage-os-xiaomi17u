@@ -106,6 +106,11 @@ class CollectorTests(unittest.TestCase):
                            'ro.kernel.qemu': '0', 'ro.board.platform': 'canoe', 'ro.bootmode': 'recovery',
                            'init.svc.recovery': 'running', 'ro.twrp.version': '3.7.1_16-Xiaomi_17_Ultra',
                            'sys.boot_completed': '1', 'ro.boot.slot_suffix': '_a'})
+        self.adb_state = 'recovery'
+        self.dt = {
+            '/proc/device-tree/model': b'Qualcomm Technologies, Inc. Nezha based on SM8850\0',
+            '/proc/device-tree/compatible': b'qcom,canoe-mtp\0qcom,canoe\0qcom,canoep-mtp\0qcom,canoep\0qcom,mtp\0',
+        }
         self.uid = '0'
         self.mode = 'no'
         self.fwbody = b'C' * candidate.MAX_BLOCK_READ
@@ -122,7 +127,7 @@ class CollectorTests(unittest.TestCase):
         if command == ['adb', 'version']:
             return result(b'ADB test\n')
         if command == ['adb', 'devices', '-l']:
-            return result(f'{self.serial}\trecovery usb:fixture transport_id:7\n'.encode())
+            return result(f'{self.serial}\t{self.adb_state} usb:fixture transport_id:7\n'.encode())
         if command[:1] == ['fastboot']:
             self.assertEqual(command[1:4], ['-s', self.serial, 'getvar'])
             var = command[4]
@@ -132,13 +137,15 @@ class CollectorTests(unittest.TestCase):
             return result(stderr=f'{var}: {value}\nFinished. Total time: 0.001s\n'.encode())
         self.assertEqual(command[:3], ['adb', '-t', '7'])
         if command[3:] == ['get-state']:
-            return result(b'recovery\n')
+            return result((self.adb_state + '\n').encode())
         if command[3:] == ['features']:
             return result(b'shell_v2,cmd\n')
         self.assertEqual(command[3:5], ['shell', '-T'])
         cmd = shlex.split(command[5])
         if cmd[0] == 'getprop':
             return result((self.props[cmd[1]] + '\n').encode())
+        if cmd[0] == 'cat' and cmd[1] in self.dt:
+            return result(self.dt[cmd[1]])
         if cmd == ['pidof', 'recovery']:
             return result(b'123\n')
         if cmd == ['id', '-u']:
@@ -195,6 +202,51 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertFalse(any('dd ' in c.args[0][-1] or 'blockdev' in c.args[0][-1] for c in runner.call_args_list))
 
+    def test_installed_recovery_donor_property_requires_exact_live_device_tree(self):
+        self.props['ro.board.platform'] = 'xiaomi_sm8750'
+        self.props['ro.bootmode'] = 'unknown'
+        code, _, _, _ = self.invoke([*self.args, '--include-firmware'])
+        self.assertEqual(code, 0)
+        self.assertEqual(self.report()['recovery_device_tree'], {k: v.decode() for k, v in self.dt.items()})
+        self.assertTrue(self.report()['firmware'])
+
+    def test_canoe_property_cannot_replace_wrong_device_tree(self):
+        self.dt['/proc/device-tree/model'] = b'Other phone\0'
+        code, _, _, runner = self.invoke([*self.args, '--include-firmware'])
+        self.assertEqual(code, 2)
+        self.assertFalse(any('blockdev' in c.args[0][-1] or c.args[0][-1].startswith('dd ') for c in runner.call_args_list))
+
+    def test_recovery_device_tree_requires_complete_nul_terminated_bytes(self):
+        self.dt['/proc/device-tree/compatible'] = self.dt['/proc/device-tree/compatible'][:-1]
+        code, _, _, _ = self.invoke()
+        self.assertEqual(code, 2)
+
+    def test_unknown_recovery_mode_requires_recovery_transport(self):
+        self.props['ro.bootmode'] = 'unknown'
+        self.adb_state = 'device'
+        code, _, _, _ = self.invoke()
+        self.assertEqual(code, 2)
+
+    def test_android_unknown_mode_is_not_recovery_exception(self):
+        self.props['ro.bootmode'] = 'unknown'
+        self.props['init.svc.recovery'] = ''
+        self.adb_state = 'device'
+        code, _, _, _ = self.invoke([*self.args, '--mode', 'adb-android'])
+        self.assertEqual(code, 2)
+
+    def test_device_tree_change_before_raw_reads_stops_capture(self):
+        count = 0
+        def effect(command, **kwargs):
+            nonlocal count
+            if command[-1] == 'cat /proc/device-tree/model':
+                count += 1
+                if count > 1:
+                    return result(b'Other phone\0')
+            return self.fake(command, **kwargs)
+        code, _, _, runner = self.invoke([*self.args, '--include-firmware'], effect)
+        self.assertEqual(code, 2)
+        self.assertFalse(any(c.args[0][-1].startswith('dd ') for c in runner.call_args_list))
+
     def test_recovery_stays_transport_pinned_private_and_never_ready(self):
         code, out, err, runner = self.invoke()
         self.assertEqual(code, 0, err)
@@ -225,6 +277,26 @@ class CollectorTests(unittest.TestCase):
         self.assertTrue(all(not any(t.startswith('of=') for t in cmd) for cmd in raw))
         self.assertTrue(self.report()['firmware']['countrycode_a']['authenticated_region_matches'])
         self.assertTrue(self.report()['super_metadata_capture']['host_lp_parse_pending'])
+
+    def test_toybox_block_device_label_supports_same_raw_identity_checks(self):
+        def effect(command, **kwargs):
+            r = self.fake(command, **kwargs)
+            if command[-1].startswith('stat '):
+                r['stdout'] = r['stdout'].replace(b'block special file:', b'block device:')
+            return r
+        code, _, _, _ = self.invoke([*self.args, '--include-firmware'], effect)
+        self.assertEqual(code, 0)
+        self.assertTrue(self.report()['firmware'])
+
+    def test_nonblock_device_label_never_allows_raw_reads(self):
+        def effect(command, **kwargs):
+            r = self.fake(command, **kwargs)
+            if command[-1].startswith('stat '):
+                r['stdout'] = r['stdout'].replace(b'block special file:', b'character device:')
+            return r
+        code, _, _, runner = self.invoke([*self.args, '--include-firmware'], effect)
+        self.assertEqual(code, 2)
+        self.assertFalse(any(c.args[0][-1].startswith('dd ') for c in runner.call_args_list))
 
     def test_raw_reads_refused_without_existing_root(self):
         self.uid = '2000'
