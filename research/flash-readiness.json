@@ -1027,5 +1027,23 @@
       "evidence/device-preflight-20260905T1441Z-recovery-a/manifest.json",
       "evidence/device-preflight-20260905T1447Z-recovery-a/manifest.json"
     ]
+  },
+  "package7_first_flash": {
+    "report": "docs/package7-first-boot-20260905.md",
+    "execution_receipt": "evidence/package7-first-flash-20260905T145831Z/execution.json",
+    "execution_sha256": "9e6bcd9fd8a11569045b52324a454ef3b5d17d331c9e273753dd001299b3a038",
+    "user_flash_authorized": true,
+    "writes_succeeded": 8,
+    "sparse_super_chunks": 20,
+    "userdata_or_metadata_wiped": false,
+    "adb_candidate_identity_observed": true,
+    "boot_completed": false,
+    "failure": "PackageManagerService: There must be exactly one installer; found []",
+    "installer_apk_present_and_manifest_eligible": true,
+    "retained_package_state_cause_proven": false,
+    "returned_to_bootloader": true,
+    "final_slot": "a",
+    "stock_restoration_executed": false,
+    "complete_rom_ready": false
   }
 }

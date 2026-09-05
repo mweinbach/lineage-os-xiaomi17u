@@ -11,13 +11,21 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Package7 has been flashed; its first Android boot failed.** All eight writes
+succeeded on the authorized phone. The candidate exposes ADB and starts zygote,
+SurfaceFlinger and boot animation, but system server repeatedly fails to resolve
+its required package installer. The APK is present and manifest-eligible;
+retained package state is implicated but not proven as the cause. No data wipe
+was performed. The phone is back in bootloader, unlocked on A. See
+[the first-flash outcome and next experiment](package7-first-boot-20260905.md).
+
 **The authorized Android, bootloader and recovery observations are recorded.**
 The same phone is back in its proprietary bootloader: unlocked, slot A, snapshot
 status `none`. All eight candidate images fit measured capacities. Recovery
 reads verify both retained target-A firmware references and all six live LP
 metadata copies; the layout has eight populated A partitions and empty B.
 The stock return/rescue files also pass fresh hashes. The user accepts loss of
-phone data. No flash or wipe occurred. Secure rollback counters, first Evolution
+phone data. Those preflight checks performed no flash or wipe. Secure rollback counters, first Evolution
 boot and executed stock restoration remain unverified. See
 [the device observations](device-preflight-20260905.md). The recovery round trip
 was explicitly authorized; it did not authorize an install or clean-data plan.

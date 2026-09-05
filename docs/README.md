@@ -11,6 +11,7 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 
 | Current workflow | Purpose |
 | --- | --- |
+| [Package7 first flash and failed boot](package7-first-boot-20260905.md) | Eight writes succeeded; system-server installer-resolution failure, preserved data and bootloader return |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
 | [Verified experimental Package7 bundle](package7-experimental-bundle.md) | Eight checked images, exact manifest/archive/Super identities, completed off-device verification and required device authorization |
 | [Current read-only device preflight](device-preflight-20260905.md) | Android observations and authorized bootloader follow-up: unlocked, slot A, matching capacities and snapshot status none; remaining admission gates |
