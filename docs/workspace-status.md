@@ -49,7 +49,12 @@ the Selected consumer expected a missing `current_records` field. No outputs
 were prepared, invalidated or deleted. The failed result and its phase directory
 are preserved; the successor must use a new phase. The request fits the existing
 size limit, and all 448 prerequisite/staging files were freshly hashed before
-launch. A finished or signed successor package is not yet claimed.
+launch. The narrow correction now preserves that equality through the actual
+authenticated GMS3 records. Complete host emulation of all three prerequisite
+paths passes; it does not claim fresh native filesystem or runtime observations.
+After another live check of all 448 file hashes, volume ownership, idle state,
+and pinned manifest/Repo heads, **native attempt8 is running** for the same
+Package7 candidate. A finished or signed successor package is not yet claimed.
 
 The wider deadline review found no justified new kernel/display source change.
 It confirmed a missing Android IMS provider stack: **IMS, VoLTE, VoWiFi and

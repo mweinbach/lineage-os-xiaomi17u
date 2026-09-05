@@ -11,14 +11,16 @@ two integration defects that need source fixes and rebuilt images. The earlier
 VINTF and boot-content passes remain valid within their recorded scope; they
 did not detect these APK issues.
 
-**Latest checkpoint, September 4 at 23:21 UTC:** both source fixes, the selected
+**Latest checkpoint, September 5 at 01:15 UTC:** both source fixes, the selected
 app rebuilds, and the five platform-image producers are verified. The first
 successor package attempt stopped before Android invocation because the
 Selected prerequisite consumer expected a missing `current_records` field.
 The failed phase and result are preserved, and no build outputs were prepared,
-invalidated or deleted. A new native attempt is required after correcting that
-verifier interface. The candidate remains Package7, but is not yet built,
-signed, assembled into Super, or authorized for a phone.
+invalidated or deleted. The verifier correction retains the original equality
+using authenticated GMS3 records; all three prerequisite paths pass complete
+host emulation. Fresh native input/ownership/idle/manifest checks also pass.
+**Native attempt8 is running** for the same Package7 candidate. It is not yet
+built, signed, assembled into Super, or authorized for a phone.
 
 ## Current source state
 

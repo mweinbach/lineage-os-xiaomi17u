@@ -715,5 +715,29 @@
       "size_bytes": 1974403
     },
     "retry_requires_new_phase": true
+  },
+  "package8_build": {
+    "status": "running",
+    "candidate_generation": "Package7",
+    "native_phase": "first-target-files-package-8",
+    "native_build_completed": false,
+    "request": {
+      "path": "reports/flash-ready-20260904/build-continuation/package8/request.json",
+      "sha256": "47333f895f28f765bf55286e7a9a4c34f15cd9b8cdb9f7fbafc57f4f2510fe12",
+      "size_bytes": 29921452
+    },
+    "prerequisite_host_emulation": {
+      "path": "reports/flash-ready-20260904/build-continuation/package8-native-check-emulation-corrected.json",
+      "sha256": "4b01dabfa05374f93eb082f5a0b7b002358a57483e09c52df47ddf8ea96ddd5a",
+      "size_bytes": 5889
+    },
+    "emulation_claims_native_freshness": false,
+    "live_prerequisite_rehash": {
+      "path": "reports/flash-ready-20260904/root/package8-final-readiness.json",
+      "sha256": "1dd9a679f6e1d927605935cc0689bff1f878177fbfe5b0c951e04f46a5de8640",
+      "size_bytes": 160733
+    },
+    "live_files_rehashed": 448,
+    "original_failed_phase7_preserved": true
   }
 }
