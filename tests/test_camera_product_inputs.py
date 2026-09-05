@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from scripts import camera_apk_inputs as base
 from scripts import camera_product_inputs as product
 
@@ -39,14 +40,31 @@ class CameraProductTests(unittest.TestCase):
         rendered = product.render(source)
         self.assertEqual(rendered[base.PAYLOAD], source[base.PAYLOAD])
         bp = rendered['Android.bp'].decode()
-        for name in ['presigned', 'preprocessed', 'enforce_uses_libs', 'privileged', 'product_specific']:
+        for name in ['presigned', 'preprocessed', 'enforce_uses_libs', 'privileged', 'system_ext_specific']:
             self.assertIn(f'{name}: true', bp)
+        self.assertNotIn('product_specific', bp)
+        self.assertEqual(bp.count('system_ext_specific: true'), 2)
         self.assertIn('filename: "MiuiCamera.apk"', bp)
         self.assertIn('optional_uses_libs: ["miui-cameraopt", "androidx.window.extensions", "androidx.window.sidecar"]', bp)
         for forbidden in ['certificate:', 'relax', 'skip_preprocessed', 'dex_preopt:', 'overrides:']:
             self.assertNotIn(forbidden, bp)
         self.assertIn(product.MODULE, rendered['camera-product.mk'].decode())
         self.assertIn('sub_dir: "permissions"', bp)
+
+    def test_receipt_records_system_ext_partition(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp).resolve()
+            rows = []
+            for name, raw in self.source().items():
+                path = root/'source'/name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(raw)
+                rows.append({'path': 'source/'+name, **base.identity(raw)})
+            with mock.patch.object(base, 'verify_bundle', return_value={'files': rows, 'receipt': {}}):
+                files, receipt = product.expected_packet(root)
+            self.assertEqual(receipt['partition'], 'system_ext')
+            self.assertEqual(receipt['purpose'], 'factory-camera-system-ext-candidate')
+            self.assertNotIn(b'product_specific', files['source/Android.bp'])
 
     def test_producer_verifies_policy_and_apk_before_output(self):
         for tamper in [None, product.PERMISSION_FILE, base.PAYLOAD, 'camera-product.mk']:

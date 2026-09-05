@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage an opt-in original Xiaomi Camera product candidate; never install it."""
+"""Stage an opt-in original Xiaomi Camera system-ext candidate; never install it."""
 from __future__ import annotations
 import argparse
 import json
@@ -46,6 +46,9 @@ def render(source):
     blueprint = base._blueprint([*files, 'Android.bp']).decode()
     blueprint = blueprint.replace('// Generated build-only input packet; no product or image admission.',
         '// Original factory Camera product candidate; preserve signature and strict library checks.')
+    # System-ext keeps the platform-dependent app bundled in LoadedApk.
+    # Preserve all other import properties and the original payload bytes.
+    blueprint = blueprint.replace('    product_specific: true,', '    system_ext_specific: true,')
     blueprint = blueprint.replace(base.MODULE, MODULE)
     blueprint = blueprint.replace('nezha_factory_camera_', 'nezha_product_camera_')
     blueprint = blueprint.replace('    owner: "xiaomi",',
@@ -55,8 +58,9 @@ def render(source):
     src: "{PERMISSION_FILE}",
     filename: "privapp-permissions-nezha-camera.xml",
     sub_dir: "permissions",
-    product_specific: true,
+    system_ext_specific: true,
 }}\n'''
+    base.require('product_specific' not in blueprint, 'Camera integration must remain system-ext')
     files['Android.bp'] = blueprint.encode()
     files['tools/verify_camera_apk.py'] = base._native({n: base.identity(b) for n,b in sorted(files.items())})
     return files
@@ -68,7 +72,8 @@ def expected_packet(input_packet):
     source = {row['path'].removeprefix('source/'): reader.read(Path(input_packet)/row['path'], row, base.MAX_APK)
               for row in verified['files'] if row['path'].startswith('source/')}
     files = {'source/'+name: raw for name,raw in render(source).items()}
-    receipt = {'schema_version': 1, 'purpose': 'factory-camera-product-candidate',
+    receipt = {'schema_version': 1, 'purpose': 'factory-camera-system-ext-candidate',
+        'partition': 'system_ext',
         'namespace': NAMESPACE, 'module': MODULE, 'original_packet': verified['receipt'],
         'include': NAMESPACE+'/camera-product.mk',
         'apk_transformed_or_signed': False, 'phone_accessed': False,

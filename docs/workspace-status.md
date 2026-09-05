@@ -32,6 +32,12 @@ OTA or TWRP installer.
 
 ## Resume development
 
+The existing source checkout now contains the [feature successor](package7-feature-successor-20260905.md),
+identity `nezha.a6d3109ae93158c498bb30b0`, with fingerprint/Aperture patches,
+stock display overlays and an explicitly enabled Xiaomi Camera system-ext candidate.
+Package7 remains the installed baseline; successor native and device results
+must be checked separately before further work.
+
 1. Start from the existing source checkout and Package7 input state. Read
    [source-lock handling](source-lock.md), [device integration](../device/xiaomi/nezha/README.md)
    and [the build host guide](apple-container.md). Inspect `make apple-status`
@@ -62,6 +68,8 @@ historical. See [feature triage](package7-feature-triage-20260905.md) for curren
 diagnostics, the stock-derived display correction, and unresolved hardware work.
 
 Camera currently selects Aperture; Xiaomi/Leica integration remains separate.
+The source successor also selects the original Xiaomi Camera candidate; it is
+not yet a verified installed camera. See the feature-successor record above.
 The Android IMS provider stack is not integrated, and VoLTE, VoWiFi and emergency
 calling remain unverified. Track device results for networking, display/touch,
 audio, fingerprint, sensors, storage/encryption, charging and thermals as work
