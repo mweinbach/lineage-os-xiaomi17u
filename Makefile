@@ -10,8 +10,22 @@ RECOVERY_COMPOSED_SOURCE_CONTRACT ?=
 RECOVERY_COMPOSED_SOURCE_ARGS = $(if $(strip $(RECOVERY_COMPOSED_SOURCE_CONTRACT)),--composed-source-contract "$(RECOVERY_COMPOSED_SOURCE_CONTRACT)")
 SOURCE_LOCK_ARGS = $(if $(strip $(SOURCE_LOCK)),--source-lock "$(SOURCE_LOCK)")
 
+# The fast iteration suite for the Package7 baseline. Full discovery remains
+# the completion gate; update this selection when the active build path changes.
+CURRENT_TEST_MODULES = \
+	test_source_lock \
+	test_twrp_working_defaults test_twrp_working test_recovery_inputs \
+	test_factory_boot_build test_boot_dlkm_build \
+	test_avb_signing test_avb_image_set \
+	test_sparse_images test_logical_partitions \
+	test_target_files_delivery test_target_files_archive_copy \
+	test_reconcile_signed_target_files \
+	test_familyspace_privapp_permissions test_signapk_stored_entry_timestamps \
+	test_experimental_flash_bundle test_device_flash_preflight \
+	test_collect_stock test_collect_recovery
+
 .DEFAULT_GOAL := help
-.PHONY: help doctor refs verify test init sync source-plan source-check linux-packages stock-plan
+.PHONY: help doctor refs verify test test-current init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 .PHONY: twrp-plan twrp-source-plan recovery-plan recovery-build recovery-verify recovery-stage recovery-inputs-verify recovery-logs-plan
 
@@ -20,7 +34,8 @@ help:
 	  'make refs            Fetch pinned upstream references (safe on macOS)' \
 	  'make verify          Verify every reference revision and clean worktree' \
 	  'make doctor          Report build-host prerequisites' \
-	  'make test            Run offline workspace tests' \
+	  'make test-current    Run focused offline checks for Package7 iteration' \
+	  'make test            Run all offline workspace tests (completion gate)' \
 	  'make source-plan     Preview full platform init/sync commands' \
 	  'make source-check    Audit an existing platform against the reviewed source lock' \
 	  'make apple-status    Inspect this Mac Apple Container source task' \
@@ -53,6 +68,9 @@ verify:
 test:
 	$(PYTHON) -m unittest discover -s tests -v
 	bash -n scripts/setup-linux.sh
+
+test-current:
+	PYTHONPATH="$(CURDIR)/tests:$(CURDIR)" $(PYTHON) -m unittest -v $(CURRENT_TEST_MODULES)
 
 source-plan:
 	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" $(SOURCE_LOCK_ARGS) --dry-run
