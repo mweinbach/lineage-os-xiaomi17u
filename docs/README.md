@@ -1,15 +1,31 @@
 # Workspace documentation
 
-Start with [current status](workspace-status.md), the [TWRP guide](twrp-bringup.md),
-and the [source lock](source-lock.md). They distinguish current decisions from
-older experiments. A passed host test, component build, policy prototype or
-recovery boot is not a complete Evolution X ROM test.
+**Package7 is the booted working baseline.** Start with the current pages below;
+the expanded reference index preserves dated evidence and earlier experiments.
 
-The table below preserves the detailed research index. Many entries describe
-dated checkpoints; their original evidence and limitations remain intact.
-The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials.
+| Start here | Purpose |
+| --- | --- |
+| [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
+| [Package7 first boot](package7-first-boot-20260905.md) | Recorded install, retained-data failure and clean-data setup success |
+| [Package7 bundle](package7-experimental-bundle.md) | Exact artifact hashes and off-device verification checkpoint |
+| [Source lock](source-lock.md) | Reviewed upstream revisions and handling of existing local changes |
+| [Apple Container workflow](apple-container.md) | Resume the existing Linux build volume safely |
+| [Device integration](../device/xiaomi/nezha/README.md) | Authored product/device build inputs |
+| [Working recovery](../recovery/twrp-working/README.md) | Reproduce the selected working76 image |
+| [Native features](native-features.md) | Camera, IMS and other feature research for focused fixes |
+| [Workspace cleanup](workspace-cleanup-20260905.md) | Retained baseline, reclaimed duplicates and historical replay handling |
+| [Archived workspace status](workspace-status-history-20260905.md) | Unchanged pre-cleanup status and its historical checkpoints |
 
-| Current workflow | Purpose |
+## Reference and historical evidence
+
+Many linked pages describe a particular stage before Package7 booted. Their
+pending-gate language and test counts belong to that stage; consult current
+status for the selected baseline. Original evidence and limitations remain intact.
+
+<details>
+<summary>Expand the complete research and build-history index</summary>
+
+| Recorded workflow or checkpoint | Purpose |
 | --- | --- |
 | [Package7 first flash and clean-data setup success](package7-first-boot-20260905.md) | Eight writes succeeded; retained-data boot failed, authorized clean-data retry reached setup |
 | [Workspace status](workspace-status.md) | Verified results, selected inputs and remaining ROM gates |
@@ -166,3 +182,5 @@ The [TWRP history](twrp-bringup-history.md) contains the earlier recovery trials
 | [Recovery review](recovery-plan.md) | Selected TWRP default, dedicated recovery layout and remaining ROM compatibility gates |
 | [Build host](build-host.md) | Linux requirements, platform sync, and future build gates |
 | [Apple Container](apple-container.md) | Verified local Rosetta workflow, persistent storage, task status and limits |
+
+</details>

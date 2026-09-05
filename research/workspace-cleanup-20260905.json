@@ -1,0 +1,408 @@
+{
+  "date": "2026-09-05",
+  "scope": "Host duplicate expansions and disposable Go cache only; source volume untouched",
+  "removed_image_bytes": 47969536076,
+  "removed_cache_bytes": 1426741354,
+  "removed_images": [
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/boot.img",
+      "sha256": "c6296e550252a8bf4ad0801590b2080a46bbde652db40744e213339d3d2193e5",
+      "size_bytes": 100663296,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/dtbo.img",
+      "sha256": "0d68f060fa424b6a761397ad9e5638fc196343c1958868f1710e9993ee1737d5",
+      "size_bytes": 33554432,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/dtbo.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/init_boot.img",
+      "sha256": "2522eefbb9acf27e8c17a89e796579e27ba813dda1d876424dcc0c6183b4248f",
+      "size_bytes": 8388608,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/init_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/mi_ext.img",
+      "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+      "size_bytes": 111198208,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/mi_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/odm.img",
+      "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+      "size_bytes": 4767621120,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/odm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/product.img",
+      "sha256": "4f78bcdfa4e53231449653f2b8a042abc2b7dc508a0ea47d26aad83f70bedce1",
+      "size_bytes": 2200776704,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/product.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/recovery.img",
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/recovery.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/system.img",
+      "sha256": "0bb38438234b5a5b22f6e48275b3357a120050ce18ac9a863540a166f1613c1e",
+      "size_bytes": 596959232,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/system.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/system_dlkm.img",
+      "sha256": "5dc0534a31224724be54099db5e6f53a6a5121847b0d018dd5d01cf41336e2e2",
+      "size_bytes": 8413184,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/system_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/system_ext.img",
+      "sha256": "2c246fd4694ca52acf88ff87f14918f703cd712ef5218298dc3ff147a098184b",
+      "size_bytes": 622473216,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/system_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/vendor.img",
+      "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+      "size_bytes": 959709184,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/vendor.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/vendor_boot.img",
+      "sha256": "8bd3b8fe71fd3cc01cf70b4ed4695f68d6b8070b3b7b12902156f958599c2797",
+      "size_bytes": 100663296,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/vendor_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/inputs-v1/images/vendor_dlkm.img",
+      "sha256": "7f2b0d95a6be14da56e0cdcfbd659cf3256887c55b88d512ba516f171eee26f1",
+      "size_bytes": 54108160,
+      "archive": "artifacts/build-validation/nezha-target-files-package-6-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/vendor_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/boot.img",
+      "sha256": "c3c8acac7eefc43b89fb4aecd6aa1f48739b670b4982e94194fa4620981427d3",
+      "size_bytes": 100663296,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/dtbo.img",
+      "sha256": "0d68f060fa424b6a761397ad9e5638fc196343c1958868f1710e9993ee1737d5",
+      "size_bytes": 33554432,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/dtbo.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/init_boot.img",
+      "sha256": "2522eefbb9acf27e8c17a89e796579e27ba813dda1d876424dcc0c6183b4248f",
+      "size_bytes": 8388608,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/init_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/mi_ext.img",
+      "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+      "size_bytes": 111198208,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/mi_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/odm.img",
+      "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+      "size_bytes": 4767621120,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/odm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/product.img",
+      "sha256": "4f78bcdfa4e53231449653f2b8a042abc2b7dc508a0ea47d26aad83f70bedce1",
+      "size_bytes": 2200776704,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/product.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/recovery.img",
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/recovery.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/system.img",
+      "sha256": "0bb38438234b5a5b22f6e48275b3357a120050ce18ac9a863540a166f1613c1e",
+      "size_bytes": 596959232,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/system.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/system_dlkm.img",
+      "sha256": "5dc0534a31224724be54099db5e6f53a6a5121847b0d018dd5d01cf41336e2e2",
+      "size_bytes": 8413184,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/system_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/system_ext.img",
+      "sha256": "2c246fd4694ca52acf88ff87f14918f703cd712ef5218298dc3ff147a098184b",
+      "size_bytes": 622473216,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/system_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/vbmeta.img",
+      "sha256": "0bc13c98439d63553f79d85ba7f769e4e8e821800901ffa646b35f5aae132047",
+      "size_bytes": 65536,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/vbmeta.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/vbmeta_system.img",
+      "sha256": "13624c5f4cfc54f879a28c45b83f33193ed23bea676730bb86cd1b87cdcd8d3f",
+      "size_bytes": 65536,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/vbmeta_system.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/vendor.img",
+      "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+      "size_bytes": 959709184,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/vendor.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/vendor_boot.img",
+      "sha256": "8bd3b8fe71fd3cc01cf70b4ed4695f68d6b8070b3b7b12902156f958599c2797",
+      "size_bytes": 100663296,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/vendor_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package6-20260903-v1/signed-v1/vendor_dlkm.img",
+      "sha256": "7f2b0d95a6be14da56e0cdcfbd659cf3256887c55b88d512ba516f171eee26f1",
+      "size_bytes": 54108160,
+      "archive": "artifacts/avb/nezha/package6-20260903-v1/reconciled-v2/target-files.zip",
+      "member": "IMAGES/vendor_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/boot.img",
+      "sha256": "c6296e550252a8bf4ad0801590b2080a46bbde652db40744e213339d3d2193e5",
+      "size_bytes": 100663296,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/dtbo.img",
+      "sha256": "0d68f060fa424b6a761397ad9e5638fc196343c1958868f1710e9993ee1737d5",
+      "size_bytes": 33554432,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/dtbo.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/init_boot.img",
+      "sha256": "281ff75dd9df7fc1c956fc8e6aa1a1e50bb8c12f922fe8b4504e0d2e9071be7d",
+      "size_bytes": 8388608,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/init_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/mi_ext.img",
+      "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+      "size_bytes": 111198208,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/mi_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/odm.img",
+      "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+      "size_bytes": 4767621120,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/odm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/product.img",
+      "sha256": "66cd9c7643df5d8fb44aaa8997eb0daa9ec597e29e9ba584f39cde8cc40b77e8",
+      "size_bytes": 2200776704,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/product.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/recovery.img",
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/recovery.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/system.img",
+      "sha256": "78dbe1692253c2f139a385d5df323dcff8b4d20db29534c29184699deb1255b5",
+      "size_bytes": 596959232,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/system.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/system_dlkm.img",
+      "sha256": "bfb7e0bbe77d739c842f7a908f5a08d78a579d5df20e0f5eac29fb267c9f0682",
+      "size_bytes": 8413184,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/system_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/system_ext.img",
+      "sha256": "9bf45ba3a1e51125260767ae490ad2fa96dad5945858fd8d494603191b2f7526",
+      "size_bytes": 622469120,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/system_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/vendor.img",
+      "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+      "size_bytes": 959709184,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/vendor.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/vendor_boot.img",
+      "sha256": "8bd3b8fe71fd3cc01cf70b4ed4695f68d6b8070b3b7b12902156f958599c2797",
+      "size_bytes": 100663296,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/vendor_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/inputs-v1/images/vendor_dlkm.img",
+      "sha256": "050f5df5c0d7fc75cf212fa0279b4e88d486c8c8dbb09acfe284746e380e9e87",
+      "size_bytes": 54108160,
+      "archive": "artifacts/build-validation/nezha-target-files-package-7-transfer-v1/lineage_nezha-target_files.zip",
+      "member": "IMAGES/vendor_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/boot.img",
+      "sha256": "c3c8acac7eefc43b89fb4aecd6aa1f48739b670b4982e94194fa4620981427d3",
+      "size_bytes": 100663296,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/dtbo.img",
+      "sha256": "0d68f060fa424b6a761397ad9e5638fc196343c1958868f1710e9993ee1737d5",
+      "size_bytes": 33554432,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/dtbo.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/init_boot.img",
+      "sha256": "281ff75dd9df7fc1c956fc8e6aa1a1e50bb8c12f922fe8b4504e0d2e9071be7d",
+      "size_bytes": 8388608,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/init_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/mi_ext.img",
+      "sha256": "60f791178bed4694870be74190b4487d9371af575e18ffbc950fb91fdb97e196",
+      "size_bytes": 111198208,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/mi_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/odm.img",
+      "sha256": "52d13485eb3228260f33a90ef801a75cd8aa89df84e29819fce5bb419f587b27",
+      "size_bytes": 4767621120,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/odm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/product.img",
+      "sha256": "66cd9c7643df5d8fb44aaa8997eb0daa9ec597e29e9ba584f39cde8cc40b77e8",
+      "size_bytes": 2200776704,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/product.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/recovery.img",
+      "sha256": "a130ba7517c5c3bcb928b6c4e5c5ac24f5c6877011f3a95a02fa031fc0bb018e",
+      "size_bytes": 104857600,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/recovery.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/system.img",
+      "sha256": "78dbe1692253c2f139a385d5df323dcff8b4d20db29534c29184699deb1255b5",
+      "size_bytes": 596959232,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/system.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/system_dlkm.img",
+      "sha256": "bfb7e0bbe77d739c842f7a908f5a08d78a579d5df20e0f5eac29fb267c9f0682",
+      "size_bytes": 8413184,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/system_dlkm.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/system_ext.img",
+      "sha256": "9bf45ba3a1e51125260767ae490ad2fa96dad5945858fd8d494603191b2f7526",
+      "size_bytes": 622469120,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/system_ext.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/vbmeta.img",
+      "sha256": "24d003c3954d9a9873ad9869431b0e0dce0542a81c90806878b59624f8640286",
+      "size_bytes": 65536,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/vbmeta.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/vbmeta_system.img",
+      "sha256": "91948f33602c8ebaf4313ac7d654a97410871b26d31a8776b6acabd23c9eee8a",
+      "size_bytes": 65536,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/vbmeta_system.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/vendor.img",
+      "sha256": "ce11f1c6dfc87c29ade267e53d968426cb1e4fa7ce7decca9b1ee85dcb5c7a43",
+      "size_bytes": 959709184,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/vendor.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/vendor_boot.img",
+      "sha256": "8bd3b8fe71fd3cc01cf70b4ed4695f68d6b8070b3b7b12902156f958599c2797",
+      "size_bytes": 100663296,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/vendor_boot.img"
+    },
+    {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/vendor_dlkm.img",
+      "sha256": "050f5df5c0d7fc75cf212fa0279b4e88d486c8c8dbb09acfe284746e380e9e87",
+      "size_bytes": 54108160,
+      "archive": "artifacts/avb/nezha/package7-20260904-v1/reconciled-v1/target-files.zip",
+      "member": "IMAGES/vendor_dlkm.img"
+    },
+    {
+      "path": "artifacts/build-validation/nezha-super-package-7-transfer-v1/super.img",
+      "sha256": "0795239c0e842744974284ad91e0f93662c3eedbf198225b51912d38981302f0",
+      "size_bytes": 9291737164,
+      "keeper": "artifacts/flash/nezha/package7-20260904-v1/super.img"
+    }
+  ],
+  "retained_archives_and_super_stat_unchanged": true,
+  "restoration": "Extract named IMAGES member from retained archive to original path; copy keeper for transfer Super. All removed images were SHA256-equal to these retained bytes before retirement."
+}

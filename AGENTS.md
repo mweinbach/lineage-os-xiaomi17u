@@ -1,7 +1,9 @@
 # Evolution X for Xiaomi 17 Ultra
 
-This repository is the bring-up workspace, not a flashable ROM or a completed
-device tree. Keep verified facts separate from assumptions and unresolved work.
+This repository is the bring-up workspace for the user-confirmed booted Package7
+baseline. Start from `docs/workspace-status.md` when building fixes. The private
+eight-image bundle is not an OTA installer, and individual device features still
+need measured validation. Keep verified facts separate from unresolved work.
 
 You have access to practically as many subagents as you want to parrallelize work. Feel free to use as many as you want, more than three and up to 92. It may not seem like it's worth it, but if it can help even 1%, use a bunch. 
 
