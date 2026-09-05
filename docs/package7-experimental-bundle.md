@@ -29,7 +29,7 @@ Keep the manifest digest independently from the bundle. Verify a copy with:
 
 ```sh
 python3 -B scripts/experimental_flash_bundle.py verify \
-  --bundle artifacts/flash/nezha/package7-20260904-v1 \
+  --bundle /Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/flash/nezha/package7-20260904-v1 \
   --expected-manifest-sha256 004650a587064b6b9a8438cc69c9ce168f89c2769544498fac51797ad0389308
 ```
 
@@ -73,10 +73,13 @@ images and signing material remain private and ignored by Git.
 
 ## Required before any phone changes
 
-The subsequent [authorized read-only Android preflight](device-preflight-20260905.md)
-is now recorded. It confirms the device and running state, but permission
-denials leave physical capacities unknown and Android's locked/green properties
-require independent bootloader confirmation. No phone mutation has occurred.
+The subsequent [authorized device preflights](device-preflight-20260905.md)
+confirm the same device, unlocked proprietary bootloader, slot A, matching
+physical capacities and bootloader snapshot status `none`. Fresh verification
+confirms all eight image lengths fit, including expanded Super. The stock return
+images and rescue recovery were rehashed. The user accepts loss of phone data.
+Live retained firmware and LP metadata still require an authorized recovery
+transition; secure rollback counters and actual return execution remain unknown.
 
 **No phone was accessed or changed for this milestone.** `flash_ready` and
 `complete_rom_ready` remain false because device admission and boot are pending.

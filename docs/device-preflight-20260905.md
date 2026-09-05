@@ -107,3 +107,38 @@ The next unresolved gates remain retained firmware/LP evidence, secure rollback
 uncertainty, backups/data handling and bootloader return behavior. Any further
 phone transition or flashing requires explicit authorization for that action.
 Package7 is unchanged; `flash_ready` and `complete_rom_ready` remain false.
+
+## Pre-flash verification follow-up
+
+The user accepts losing all phone data and asked to verify the remaining risks.
+This resolves backup preservation as a user requirement; no wipe was performed
+or selected as an automatic action. No further mode transition was performed.
+
+Fresh bootloader collection at 14:36 UTC again reports unlocked, target A and
+snapshot status `none`. All 96 saved streams rehash correctly. The exact
+Package7 manifest and all eight payloads pass the portable verifier. Comparing
+actual image lengths (expanded sparse length for Super) with these live
+capacities confirms all eight candidates fit. Super expands to exactly
+15,300,820,992 bytes. This is a capacity check, not live LP admission.
+Private comparison: `reports/flash-ready-20260905/bundle-device-fit-review.json`.
+
+A separate host review freshly rehashed 11 stock/rescue files totaling
+12,883,155,616 bytes: the eight original China return images, two firmware
+references and working76. All match their recorded hashes; the original TGZ
+was not rehashed. Fresh stock/candidate AVB headers have identical rollback
+indices (root 0, boot/system 1769904000, recovery 1) and flags zero. Recovery
+header locations differ (stock 0, candidate 1); the previously reviewed parent
+chains use effective location 1. These facts reduce index-change risk but do
+not establish stored secure counters or actual full-chain boot acceptance.
+Stock return still requires original recovery with original vbmeta, and actual
+stock restoration has not been exercised.
+Private receipt: `reports/flash-ready-20260905/stock-return/rehash.json`, SHA-256
+`0b5acc60d2d0a023f0181f3e6c96612e2b8b2ef81779c46c4cdf9d60ada7dcc2`.
+
+The remaining direct evidence requires entering installed recovery: read the
+selected-slot countrycode/pvmfw authenticated contents and current Super LP
+metadata using the bounded collector, then review LP/snapshot state on the
+host. This specific transition remains an explicit-authorization gate under
+AGENTS.md. Do not flash a replacement recovery just to collect it. Unsupported
+secure-counter reads remain an explicit risk-review limit, not an invented
+zero or a promise of attainable attestation. Flash readiness remains false.
