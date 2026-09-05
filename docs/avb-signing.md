@@ -37,6 +37,9 @@ profile is bound by SHA256
 That profile retains the stock physical bounds and carries the measured,
 admission-pinned successor `system_ext` logical-image allowance described in
 [successor-logical-budget.md](successor-logical-budget.md).
+Maintained policy-image preparation selects
+`config/nezha-policy-images-successor.json`; the unversioned policy catalog
+retains its prior bytes for hash-bound historical metadata reconstruction.
 
 An ignored input manifest selects **15 final input images**. Root vbmeta and
 vbmeta_system are intentionally absent: they are new outputs, and no old root

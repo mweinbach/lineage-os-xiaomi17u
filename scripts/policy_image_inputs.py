@@ -32,7 +32,7 @@ else:
     import twrp_working as io
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT = ROOT / "config/nezha-policy-images.json"
+CONTRACT = ROOT / "config/nezha-policy-images-successor.json"
 CONTRACT_ID = "nezha-five-file-policy-image-inputs-v1"
 HISTORICAL_PROFILE = "historical-v12"
 EXPORT4_PROFILE = "v12-export4"

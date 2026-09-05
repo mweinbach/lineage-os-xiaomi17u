@@ -514,6 +514,21 @@ class ContractTests(OfflineTests):
         self.assert_boundaries(current)
         self.assertFalse(current["production_writer_admitted"])
 
+    def test_successor_catalog_is_separate_from_frozen_metadata_catalog(self):
+        frozen_path = REAL_ROOT / "config/nezha-policy-images.json"
+        successor_path = REAL_ROOT / "config/nezha-policy-images-successor.json"
+        self.assertEqual(successor_path, policy.CONTRACT)
+        self.assertEqual({"sha256": "878ab8f5e6aba3ccc343771dc964d263d6784912ab8cacb50529e2900593137b",
+                          "size_bytes": 61326}, identity(frozen_path.read_bytes()))
+        frozen = json.loads(frozen_path.read_bytes())["profiles"][policy.POLICY3_PROFILE]
+        successor = json.loads(successor_path.read_bytes())["profiles"][policy.POLICY3_PROFILE]
+        frozen_dependencies = {row["path"]: policy.identity(row) for row in frozen["dependencies"]}
+        successor_dependencies = {row["path"]: policy.identity(row) for row in successor["dependencies"]}
+        self.assertEqual({"sha256": "14f58671ecd15a1913ba5e1dd7767d0ebf163fd02d30f7fb4130e734790f3567",
+                          "size_bytes": 4339}, frozen_dependencies["config/nezha-avb-image-set.json"])
+        self.assertEqual({"sha256": "c5dbd4055c904422581ad511d34ba143672683a54aea3390c0581a4af321ba37",
+                          "size_bytes": 4943}, successor_dependencies["config/nezha-avb-image-set.json"])
+
     def test_unknown_or_mutated_profile_fails_before_private_input_reads(self):
         with self.assertRaisesRegex(ValueError, "unknown or incomplete"):
             policy.load_contract("v13-prototype")
