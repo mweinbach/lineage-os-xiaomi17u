@@ -8,13 +8,13 @@
     "normal_android_selinux": "enforcing"
   },
   "observed_on": "2026-09-05",
-  "status": "image-components-verified-package7-running",
+  "status": "signed-package7-vintf-classpath-super-and-bundle-pending",
   "flash_ready": false,
   "complete_rom_ready": false,
   "phone_accessed": false,
   "candidate_archive": {
-    "sha256": "fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4",
-    "size_bytes": 10834328619
+    "sha256": "ba01cc71fa8122cea665454c194fea540b0a4b6b56a205d7aabc949790704da6",
+    "size_bytes": 10834328127
   },
   "first_stage_reproduction": {
     "completed_utc": "2026-09-04T14:09:10.375735+00:00",
@@ -78,7 +78,8 @@
     ],
     "bundle_assembled": false,
     "device_preflight_admitted": false,
-    "device_fields_measured": false
+    "device_fields_measured": false,
+    "layout_quantities_scope": "Historical Package6 quantities until actual new Super readback; no current-size substitution"
   },
   "feature_limits": {
     "camera_app": "org.lineageos.aperture",
@@ -758,5 +759,63 @@
     "native_finished_utc": "2026-09-05T01:25:19.872706+00:00",
     "complete_archive_payload_content_verified": false,
     "product_image_familyspace_content_verified": false
+  },
+  "historical_package6_signed_archive": {
+    "sha256": "fbb6cba4ee1a0872634494c9398857bd7a176abba9b3adceee7c6bcbcbc0adb4",
+    "size_bytes": 10834328619
+  },
+  "package7_signed_delivery": {
+    "signing_receipt": {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/signing-receipt.json",
+      "sha256": "e95b9bb8e99e05e5f7a2c8ecdbdcb38247a1ffce72ec9e26d55708e48b05c4e0",
+      "size_bytes": 88300
+    },
+    "verification_manifest": {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/signed-v1/verification-manifest.json",
+      "sha256": "f5fe990ac42a15f73a87df04edfe6201edb93f181902cc6109f2b200b2fc25f7",
+      "size_bytes": 4203
+    },
+    "published_inventory": {
+      "path": "artifacts/avb/nezha/package7-20260904-v1/published-inventory.json",
+      "sha256": "6e0c0510ea605e7e3347a493b6a8f918291a43b8f8d403785544f27728d52222",
+      "size_bytes": 13608
+    },
+    "boot_content": {
+      "path": "reports/flash-ready-20260904/boot-successor/actual-package7-v1/report.json",
+      "sha256": "95b5fcfe8adbf6d3c945a2512f24fc0b707a8455781cc244367dcccc56d74fc8",
+      "size_bytes": 289465
+    },
+    "original_archive_audit": {
+      "path": "reports/flash-ready-20260904/signing-successor/archive-gzip/package7-original-assessment.json",
+      "sha256": "d43f29f9165e595285d6cf7bb3250faa152fad969ad11c97d6be2d2a88cb87e5",
+      "size_bytes": 4735
+    },
+    "published_audit_binding": {
+      "path": "reports/flash-ready-20260904/signing-successor/archive-gzip/package7-published-audit-binding.json",
+      "sha256": "bfbcfa43e4a24bc9d5b98d802f4da92fe1838e1f70fb7d09aeaff80030824af2",
+      "size_bytes": 62708
+    },
+    "image_delivery": {
+      "path": "reports/flash-ready-20260904/signing-successor/image-delivery/package7-original-zip-comparison-v1/result.json",
+      "sha256": "67e8e1e5405702a5bb5bccf2256fddf29dcdc4ccac4174090606adf6c16c1370",
+      "size_bytes": 426896
+    },
+    "required_libraries": {
+      "path": "reports/flash-ready-20260904/signing-successor/image-delivery/package7-required-libraries.json",
+      "sha256": "2a0c89c7a3cecbfbae85d0752a1c8dd829952c21bff4b56b3199cd642f8f3562",
+      "size_bytes": 8129
+    },
+    "signed_roles": 17,
+    "unchanged_input_leaves": 14,
+    "two_pass_signing_reproduction": true,
+    "apk_api36_and_4k_alignment_passes": 455,
+    "apex_payload_passes": 39,
+    "capex_pair_passes": 26,
+    "legacy_full_range_failures_retained": 5,
+    "dlkm_modules_verified": 484,
+    "dlkm_metadata_files_verified": 11,
+    "native_vintf": "running",
+    "classpath": "pending",
+    "phone_accessed": false
   }
 }

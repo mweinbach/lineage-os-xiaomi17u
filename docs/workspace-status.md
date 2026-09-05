@@ -10,6 +10,20 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
+**Signed Package7 is now published and verified off-device.** Its archive is
+`ba01cc71fa8122cea665454c194fea540b0a4b6b56a205d7aabc949790704da6`
+(10,834,328,127 bytes). The existing Mac key signs the complete 17-role AVB set;
+two-pass signing reproduction and preservation of all 14 input leaves pass.
+All 455 APK API-36 signature/alignment checks, 39 APEX payload checks, final
+boot-content checks, and the 484-module/11-metadata-file DLKM comparison pass.
+Actual signed filesystem exports confirm FamilySpace's two grants and complete
+APK/APEX payload delivery. The original-archive audit is linked to the published
+archive through the reconciler's complete member-equality proof; its five legacy
+full-range failures, conditional Shell finding and known overlay duplicates
+remain recorded. Full native VINTF is running; classpath closure and the new
+Super/readback/eight-image bundle remain pending. No phone has been accessed,
+and this is not yet a flash-readiness or ROM-boot claim.
+
 **Flash-readiness work has identified two APK integration defects in Package6:**
 FamilySpace lacks two required product privileged-permission declarations, and
 TurboAdapter fails four-byte ZIP alignment because SignApk inherits timestamp

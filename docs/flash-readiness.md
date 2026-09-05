@@ -11,7 +11,16 @@ two integration defects that need source fixes and rebuilt images. The earlier
 VINTF and boot-content passes remain valid within their recorded scope; they
 did not detect these APK issues.
 
-**Latest checkpoint, September 5 at 01:37 UTC:** both source fixes, the selected
+**Latest checkpoint, September 5 at 02:23 UTC:** the signed successor archive is
+published as `ba01cc71fa8122cea665454c194fea540b0a4b6b56a205d7aabc949790704da6`
+(10,834,328,127 bytes). All 17 AVB roles verify with the existing development
+key, and two-pass signing reproduction passes. Final boot-content, DLKM, and
+signed filesystem payload checks pass; the APK/APEX audit carries from the
+original archive through complete member equality. Findings and hardware
+limitations remain explicit. Native VINTF is running. Classpath and new Super,
+readback, transfer and eight-image bundle still need completion.
+
+**Preceding build checkpoint, September 5 at 01:37 UTC:** both source fixes, the selected
 app rebuilds, and the five platform-image producers are verified. The first
 successor package attempt stopped before Android invocation because the
 Selected prerequisite consumer expected a missing `current_records` field.
