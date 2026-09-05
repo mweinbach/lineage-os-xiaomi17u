@@ -3,7 +3,8 @@
 The selected target is **Evolution X Android 16 QPR2 `bka` for Xiaomi 17 Ultra
 (`nezha`, SM8850 / `canoe`)**, with **TWRP `working76` as the default recovery**.
 The product remains `framework-checks`. A verified experimental image bundle
-now exists; physical-device admission and a first Evolution boot are unverified.
+now exists; an authorized first Evolution boot has reached the setup screen. Full device
+qualification remains unverified.
 The recovery has a separate successful device test using the installed stock
 companion boot, kernel and vendor stack; it does not establish that it works
 with newly built Evolution components or that Evolution X boots. This page
@@ -11,13 +12,15 @@ consolidates recorded evidence through **September 5, 2026 UTC (September 1–4 
 New York)**. UTC milestones before 04:00 occur on the preceding New York date.
 This page does not assert that a historical builder VM is still running.
 
-**Package7 has been flashed; its first Android boot failed.** All eight writes
-succeeded on the authorized phone. The candidate exposes ADB and starts zygote,
-SurfaceFlinger and boot animation, but system server repeatedly fails to resolve
-its required package installer. The APK is present and manifest-eligible;
-retained package state is implicated but not proven as the cause. No data wipe
-was performed. The phone is back in bootloader, unlocked on A. See
-[the first-flash outcome and next experiment](package7-first-boot-20260905.md).
+**Package7 now reaches Android setup after an authorized clean-data reset.**
+All eight image writes succeeded. The first boot with retained userdata failed
+in Package Manager's installer resolution; the installer APK itself is present
+and manifest-eligible. The user then explicitly approved resetting userdata and
+encryption metadata. Both erases and the F2FS userdata format succeeded, and
+the user confirmed the setup screen after reboot. The phone was left at setup.
+ADB shell currently returns closed, so clean-boot `sys.boot_completed` is not
+machine-verified. Setup completion and hardware qualification remain pending.
+See [both first-boot attempts](package7-first-boot-20260905.md).
 
 **The authorized Android, bootloader and recovery observations are recorded.**
 The same phone is back in its proprietary bootloader: unlocked, slot A, snapshot

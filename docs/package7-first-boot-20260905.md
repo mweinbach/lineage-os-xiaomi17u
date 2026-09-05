@@ -62,3 +62,34 @@ package-dirs.log and final-bootloader.json. The exact installer manifest is
 
 No tooling code changed in this flash attempt. Evidence hashes and documentation
 were checked; the preceding 4,610-test tooling run is not relabeled as a device test.
+
+## Clean-data retry reached setup
+
+The user explicitly approved resetting userdata and encryption metadata and
+retrying boot. Fresh queries again confirmed the same unlocked Nezha bootloader,
+slot A and snapshot status none. Userdata reported F2FS; metadata reported raw.
+The verified Package7 fstab marks both as formattable, with F2FS userdata and
+metadata encryption keys under `/metadata/vold/metadata_encryption`.
+
+Three commands succeeded: erase userdata, erase metadata, then format userdata
+as F2FS using the installed platform-tools formatter. No cache, firmware, OS
+image or slot was changed. The userdata format sent a 97 KiB sparse payload;
+the logged sparse userdata AVB-footer warning was not a verification-disable
+operation. Android was then rebooted normally to initialize its fresh state.
+
+**The user directly confirmed the Android setup screen: “i see the setup
+screen!”** The phone was left at setup. This is the first observed Package7
+setup-screen success. It strongly supports inherited package state as the
+previous boot failure's cause, without identifying the exact persisted setting.
+
+ADB enumerated the selected device but shell and sync services returned closed;
+therefore no successful clean-boot `sys.boot_completed` read or crash-buffer
+capture is claimed. The earlier failed/empty queries are preserved. Setup
+completion and broad hardware validation remain pending; this is not full-ROM,
+OTA, camera, radio, encryption-round-trip or daily-driver qualification.
+
+Private receipt: `evidence/package7-clean-boot-20260905T152753Z/outcome.json`.
+It hashes the reset, reboot, preflight, formatter and diagnostic evidence.
+The reset used the standard fastboot erase/format operations reviewed against
+[AOSP Android 16 fastboot source](https://github.com/aosp-mirror/platform_system_core/blob/android-16.0.0_r1/fastboot/fastboot.cpp),
+with explicit partition selection so no cache or other partitions were included.

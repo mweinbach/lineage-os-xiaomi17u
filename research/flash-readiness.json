@@ -1045,5 +1045,23 @@
     "final_slot": "a",
     "stock_restoration_executed": false,
     "complete_rom_ready": false
+  },
+  "package7_clean_data_boot": {
+    "receipt": "evidence/package7-clean-boot-20260905T152753Z/outcome.json",
+    "user_authorized_data_and_metadata_reset": true,
+    "successful_operations": [
+      "erase userdata",
+      "erase metadata",
+      "format:f2fs userdata",
+      "reboot"
+    ],
+    "os_images_or_firmware_rewritten": false,
+    "user_confirmed_setup_screen": true,
+    "boot_completed_property_verified": false,
+    "adb_shell_closed": true,
+    "phone_left_at_setup": true,
+    "setup_completed": false,
+    "full_hardware_qualified": false,
+    "complete_rom_ready": false
   }
 }
