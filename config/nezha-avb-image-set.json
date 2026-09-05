@@ -69,6 +69,22 @@
     "vendor_boot": 100663296,
     "vendor_dlkm": 54132736
   },
+  "dynamic_logical_budget_overrides": {
+    "system_ext": {
+      "stock_budget_bytes": 713158656,
+      "maximum_size_bytes": 778199040,
+      "measured_image": {
+        "sha256": "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4",
+        "size_bytes": 778199040
+      },
+      "admission_record": {
+        "path": "artifacts/build-validation/feature-successor-package-admit-v3/admission.json",
+        "sha256": "35394333108fdcbb233cd702bca88260e8d2bb452571308465af420583da7238",
+        "size_bytes": 14222
+      },
+      "build_number": "nezha.a6d3109ae93158c498bb30b0"
+    }
+  },
   "logical_partitions": [
     "mi_ext",
     "odm",

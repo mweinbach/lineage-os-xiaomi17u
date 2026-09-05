@@ -200,6 +200,31 @@ def load_profile():
     group = [r["maximum_size"] for r in factory["logical_partitions"]["groups"]
              if r["name"] == "qti_dynamic_partitions_a"]
     _require(group == [profile["logical_group_budget"]], "logical group budget differs")
+    overrides = profile["dynamic_logical_budget_overrides"]
+    _require(type(overrides) is dict and set(overrides) == {"system_ext"},
+             "unexpected dynamic logical budget override")
+    override = overrides["system_ext"]
+    _keys(override, ("stock_budget_bytes", "maximum_size_bytes", "measured_image",
+                     "admission_record", "build_number"), "dynamic logical budget override")
+    _integer(override["stock_budget_bytes"], 4096, profile["logical_group_budget"],
+             "stock logical budget")
+    _integer(override["maximum_size_bytes"], 4096, profile["logical_group_budget"],
+             "successor logical budget")
+    _require(override["stock_budget_bytes"] == budgets["system_ext"]
+             and override["maximum_size_bytes"] >= override["stock_budget_bytes"]
+             and override["maximum_size_bytes"] % 4096 == 0,
+             "successor logical budget is not a bounded extension of stock evidence")
+    _identity_spec(override["measured_image"])
+    _identity_spec(override["admission_record"], path=True)
+    _require(override["maximum_size_bytes"] == override["measured_image"]["size_bytes"]
+             and override["measured_image"]["sha256"] ==
+             "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4"
+             and override["admission_record"] == {
+                 "path": "artifacts/build-validation/feature-successor-package-admit-v3/admission.json",
+                 "sha256": "35394333108fdcbb233cd702bca88260e8d2bb452571308465af420583da7238",
+                 "size_bytes": 14222}
+             and override["build_number"] == "nezha.a6d3109ae93158c498bb30b0",
+             "successor logical budget provenance differs")
     for name, expected in (("vbmeta", (0, 0)), ("boot", (1769904000, 0)),
                            ("recovery", (1, 1)), ("vbmeta_system", (1769904000, 0))):
         row = profile["signed_images"][name]
@@ -227,6 +252,12 @@ def load_profile():
     return profile, _sha(raw)
 
 
+def image_budget(profile, name):
+    """Return a physical stock bound or an explicitly reviewed logical bound."""
+    override = profile["dynamic_logical_budget_overrides"].get(name)
+    return override["maximum_size_bytes"] if override is not None else profile["image_budgets"][name]
+
+
 def load_manifest(path, expected_sha256, profile, profile_sha256):
     _digest(expected_sha256)
     path = envelope._absolute_path(path)
@@ -247,7 +278,7 @@ def load_manifest(path, expected_sha256, profile, profile_sha256):
              set(value["images"]) & SIGNED, "missing or extra per-image public key")
     for name, row in value["images"].items():
         _identity_spec(row, path=True)
-        _require(row["size_bytes"] <= profile["image_budgets"][name]
+        _require(row["size_bytes"] <= image_budget(profile, name)
                  and row["size_bytes"] % 4096 == 0, "image exceeds package budget or is unaligned")
         if name == "recovery":
             _require({k: row[k] for k in ("size_bytes", "sha256")} == profile["working76"]["image"],
@@ -542,7 +573,7 @@ def validate_metadata(images, profile, public_blobs):
             leaf = images[target]
             limit = leaf["footer"]["vbmeta_offset"] if leaf["footer"] else leaf["size_bytes"]
             end = row["fec_offset"] + row["fec_size"] if row["kind"] == "hashtree" else row["image_size"]
-            _require(end <= limit and row["image_size"] <= profile["image_budgets"][target],
+            _require(end <= limit and row["image_size"] <= image_budget(profile, target),
                      "descriptor exceeds payload/metadata/package bounds")
             if leaf["raw_leaf"]:
                 _require(row["image_size"] == {"countrycode": 32, "pvmfw": 778240}[target],
@@ -664,9 +695,10 @@ def verify(manifest_path, expected_manifest_sha256, *, inspect_only=False):
             snapshot_signatures[exported] = _file_signature(exported, MAX_PUBLIC_KEY)
         for name, row in manifest["images"].items():
             copied = work / (name + ".img")
-            source_signatures[name] = _copy_image(row["path"], copied, row, profile["image_budgets"][name])
-            snapshot_signatures[copied] = _file_signature(copied, profile["image_budgets"][name])
-            images[name] = read_image_metadata(copied, name, profile["image_budgets"][name])
+            budget = image_budget(profile, name)
+            source_signatures[name] = _copy_image(row["path"], copied, row, budget)
+            snapshot_signatures[copied] = _file_signature(copied, budget)
+            images[name] = read_image_metadata(copied, name, budget)
         _require(len({sig[:2] for sig in source_signatures.values()}) == len(source_signatures),
                  "different image roles alias one inode")
         validate_metadata(images, profile, public_blobs)

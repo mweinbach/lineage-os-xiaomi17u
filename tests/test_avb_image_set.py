@@ -683,6 +683,37 @@ class PublicProfileTests(NoNativeTests):
         self.assertEqual(len(digest), 64)
         self.assertFalse(profile["limits"]["full_rom_ready"])
 
+    def test_successor_system_ext_budget_is_measured_and_group_bounded(self):
+        profile, _ = avb.load_profile()
+        override = profile["dynamic_logical_budget_overrides"]["system_ext"]
+        self.assertEqual(profile["image_budgets"]["system_ext"], 713158656)
+        self.assertEqual(avb.image_budget(profile, "system_ext"), 778199040)
+        self.assertEqual(override["measured_image"], {
+            "sha256": "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4",
+            "size_bytes": 778199040})
+        admitted = {"mi_ext": 111198208, "odm": 4767621120, "product": 2200776704,
+                    "system": 596484096, "system_dlkm": 8413184,
+                    "system_ext": 778199040, "vendor": 959709184,
+                    "vendor_dlkm": 54108160}
+        self.assertEqual(sum(admitted.values()), 9476509696)
+        self.assertLessEqual(sum(admitted.values()), profile["logical_group_budget"])
+
+    def test_profile_rejects_unbounded_or_unproven_dynamic_override(self):
+        original = json.loads(avb.PROFILE.read_text())
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary).resolve() / "profile.json"
+            for mutate in (lambda p: p["dynamic_logical_budget_overrides"]["system_ext"].update(
+                                maximum_size_bytes=p["logical_group_budget"] + 4096),
+                           lambda p: p["dynamic_logical_budget_overrides"].update(
+                                product=deepcopy(p["dynamic_logical_budget_overrides"]["system_ext"])),
+                           lambda p: p["dynamic_logical_budget_overrides"]["system_ext"]["admission_record"].update(
+                                sha256="0" * 64)):
+                profile = deepcopy(original)
+                mutate(profile)
+                path.write_text(json.dumps(profile))
+                with mock.patch.object(avb, "PROFILE", path), self.assertRaises(avb.AvbImageSetError):
+                    avb.load_profile()
+
     def test_profile_rejects_boolean_schema_and_changed_chain_topology(self):
         original = json.loads(avb.PROFILE.read_text())
         with tempfile.TemporaryDirectory() as temporary:
