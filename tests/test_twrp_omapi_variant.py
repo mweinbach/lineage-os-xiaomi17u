@@ -8,8 +8,8 @@ import hashlib
 import json
 from pathlib import Path
 import unittest
-import xml.etree.ElementTree as ET
 
+from support import assert_frozen_owner_revision
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,13 +92,8 @@ class OmapiVariantTests(unittest.TestCase):
                 self.assertEqual(digest(path.read_bytes()), row["patch_sha256"])
 
     def test_frozen_owner_revision(self):
-        raw = (ROOT / "research/source-snapshots/twrp-16.0-linux-20260828.xml").read_bytes()
-        self.assertEqual(digest(raw), SOURCE_SNAPSHOT_SHA256)
-        owners = [p for p in ET.fromstring(raw).iter("project") if p.get("path", p.get("name")) == PROJECT]
-        self.assertEqual(len(owners), 1)
-        self.assertEqual(owners[0].get("revision"), REVISION)
-        self.assertEqual((self.row["project"], self.row["base_commit"], self.row["repository"]),
-                         (PROJECT, REVISION, REPOSITORY))
+        assert_frozen_owner_revision(self, self.row, PROJECT, REVISION, REPOSITORY,
+                                     SOURCE_SNAPSHOT_SHA256)
 
     def test_fresh_file_full_identities_and_thirty_byte_delta(self):
         self.assertEqual(len(self.row["files"]), 1)

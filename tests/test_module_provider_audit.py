@@ -5,6 +5,8 @@ from pathlib import Path, PurePosixPath
 import unittest
 from urllib.parse import urlsplit
 
+from support import walk_objects
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ACK = "f1bdb13583da85a47fcf1632a78ef52d6e6da651"
@@ -23,16 +25,6 @@ LIMITS = {
     "firmware_or_build_inputs_adopted", "kernel_or_module_bytes_modified", "signature_bytes_modified",
     "firmware_executed", "firmware_uploaded", "phone_accessed", "guest_accessed", "image_mounted", "origin_authenticated",
 }
-
-
-def objects(value):
-    if isinstance(value, dict):
-        yield value
-        for child in value.values():
-            yield from objects(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from objects(child)
 
 
 class ModuleProviderAuditTests(unittest.TestCase):
@@ -286,7 +278,7 @@ class ModuleProviderAuditTests(unittest.TestCase):
 
     def test_private_evidence_references_are_canonical_hashed_metadata_only(self):
         for section in (self.record["evidence"], self.record["preserved_history"], self.record["validation"]):
-            for row in objects(section):
+            for row in walk_objects(section):
                 if {"path", "sha256", "size_bytes"} <= row.keys():
                     path = PurePosixPath(row["path"])
                     self.assertEqual(path.as_posix(), row["path"])
@@ -315,7 +307,7 @@ class ModuleProviderAuditTests(unittest.TestCase):
         self.assertLess(len(self.raw.encode()), 24000)
         forbidden = {"exports", "imported_symbol_versions", "undefined_symbols", "raw_bytes", "base64",
                      "private_key", "commands", "modinfo", "payloads", "instance_records"}
-        for row in objects(self.record):
+        for row in walk_objects(self.record):
             self.assertFalse(forbidden & row.keys())
         for text in ("/Users/", "/work/", "BEGIN CERTIFICATE", "BEGIN PRIVATE KEY", "ro.serialno", "ro.boot.serialno"):
             self.assertNotIn(text, self.raw)

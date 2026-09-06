@@ -8,6 +8,8 @@ from pathlib import Path, PurePosixPath
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import assert_no_private_material
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FACTORY = "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b"
@@ -535,22 +537,7 @@ class SelinuxUserIntegrationTests(unittest.TestCase):
             self.assertIn(phrase, requirements)
         forbidden = {"raw_cil", "raw_xml", "raw_key", "private_key", "raw_log", "raw_rule", "rule_text",
                      "allow_rule", "neverallow_rule", "base64", "data_base64", "content", "serial", "imei", "imsi"}
-
-        def inspect(value):
-            if isinstance(value, dict):
-                self.assertFalse(forbidden.intersection(value))
-                for key, child in value.items():
-                    if key.endswith("sha256") and child is not None:
-                        self.assertRegex(child, r"^[0-9a-f]{64}$")
-                    inspect(child)
-            elif isinstance(value, list):
-                for child in value:
-                    inspect(child)
-            elif isinstance(value, str):
-                for marker in ("-----BEGIN PRIVATE KEY-----", "(allow ", "(neverallow ", "<manifest"):
-                    self.assertNotIn(marker, value)
-
-        inspect(self.record)
+        assert_no_private_material(self, self.record, forbidden)
 
 
 if __name__ == "__main__":

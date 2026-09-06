@@ -9,6 +9,8 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import assert_no_private_material
+
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORD = "research/dsp-policy-integration.json"
@@ -343,22 +345,7 @@ class DspPolicyIntegrationTests(unittest.TestCase):
     def test_public_record_contains_metadata_without_private_payloads(self):
         forbidden = {"raw_cil", "raw_xml", "raw_log", "raw_rule", "private_key", "base64", "data_base64",
                      "serial", "imei", "imsi", "content", "identity", "guest_identity", "guest_receipt_identity"}
-
-        def inspect(value):
-            if isinstance(value, dict):
-                self.assertFalse(forbidden.intersection(value))
-                for key, child in value.items():
-                    if key.endswith("sha256") and child is not None:
-                        self.assertRegex(child, r"^[0-9a-f]{64}$")
-                    inspect(child)
-            elif isinstance(value, list):
-                for child in value:
-                    inspect(child)
-            elif isinstance(value, str):
-                for marker in ("-----BEGIN PRIVATE KEY-----", "(allow ", "(neverallow ", "<manifest"):
-                    self.assertNotIn(marker, value)
-
-        inspect(self.record)
+        assert_no_private_material(self, self.record, forbidden)
 
 
 if __name__ == "__main__":

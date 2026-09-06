@@ -6,6 +6,8 @@ from pathlib import Path, PurePosixPath
 import re
 import unittest
 
+from support import walk_objects
+
 
 ROOT = Path(__file__).resolve().parents[1]
 STAGES = {
@@ -31,16 +33,6 @@ RECEIPTS = {
     "final_readback": ("module-stage-final-readback-v2.json", 7820, "6c5d28a77ed4e298b8bacdea4ae802de54ac8930696a67afe83d63fae252e5ce"),
     "factory_link_capture": ("symlink-text-v3/receipt.json", 3488, "06c5dd3ba773114b7861fb9faadd37abb309354ce0ce3fa82a7b4d46f5481880"),
 }
-
-
-def objects(value):
-    if isinstance(value, dict):
-        yield value
-        for child in value.values():
-            yield from objects(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from objects(child)
 
 
 def require(condition, message):
@@ -81,7 +73,7 @@ def validate_record(record):
     for key, (suffix, size, digest) in RECEIPTS.items():
         row = record["evidence"][key]
         require(row["path"].endswith(suffix) and row["size_bytes"] == size and row["sha256"] == digest, "sealed receipt binding")
-    for row in objects(record):
+    for row in walk_objects(record):
         if {"path", "sha256", "size_bytes"} <= row.keys():
             path = PurePosixPath(row["path"])
             require(not path.is_absolute() and str(path) == row["path"] and ".." not in path.parts, "safe evidence path")

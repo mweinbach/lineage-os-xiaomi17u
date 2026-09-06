@@ -5,6 +5,8 @@ from pathlib import Path, PurePosixPath
 import unittest
 from urllib.parse import urlsplit
 
+from support import walk_objects
+
 
 ROOT = Path(__file__).resolve().parents[1]
 ACK = "f1bdb13583da85a47fcf1632a78ef52d6e6da651"
@@ -16,16 +18,6 @@ RECEIPTS = {
     "corroboration_receipt": (9287, "4ae03a7d08afe2a16e91f5e6f38068906882ee56ff0788555f4e24e77d2072f2"),
     "format_source_receipt": (4132, "ccafc6836d762fc270bbf9667455bdca819c7750cfecc1a802aa4db53474268c"),
 }
-
-
-def objects(value):
-    if isinstance(value, dict):
-        yield value
-        for child in value.values():
-            yield from objects(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from objects(child)
 
 
 class KernelExportContractTests(unittest.TestCase):
@@ -251,7 +243,7 @@ class KernelExportContractTests(unittest.TestCase):
 
     def test_evidence_references_have_hashes_sizes_and_canonical_private_relative_paths(self):
         evidence = self.record["evidence"]
-        for item in objects(evidence):
+        for item in walk_objects(evidence):
             if {"path", "sha256", "size_bytes"} <= item.keys():
                 path = PurePosixPath(item["path"])
                 self.assertEqual(path.as_posix(), item["path"])
@@ -283,7 +275,7 @@ class KernelExportContractTests(unittest.TestCase):
     def test_public_record_is_compact_metadata_not_a_raw_export_or_firmware_dump(self):
         self.assertLess(len(self.raw.encode()), 20000)
         forbidden = {"exports", "imported_symbol_versions", "raw_bytes", "base64", "token_strings", "expanded_symbols"}
-        for item in objects(self.record):
+        for item in walk_objects(self.record):
             self.assertFalse(forbidden & item.keys())
         for text in ("/Users/", "/work/", "BEGIN CERTIFICATE", "BEGIN PRIVATE KEY", "ro.serialno", "ro.boot.serialno"):
             self.assertNotIn(text, self.raw)
