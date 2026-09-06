@@ -12,6 +12,11 @@ evidence is under
 `evidence/feature-successor-install-20260905-v1/`. Later builds or device tests
 need their own records.
 
+After this record, the [UI and Aperture follow-up](package7-ui-camera-followup-20260905.md)
+compiled source corrections under a new build identity. Those components are
+not installed; every result below still describes installed build
+`nezha.a6d3109ae93158c498bb30b0`.
+
 ## Installed artifact set
 
 The selected private bundle is
@@ -70,9 +75,9 @@ recorded PID 3389 for `system_server`. Normal Android reported SELinux
   icon. The installed SystemUI falls back to `pixel_pitch=-1`; that value drives
   roughly 3,074 px of internal padding inside a 148 px icon. The device reports
   419.25723 dpi, which derives a 60.58 micrometre physical pixel pitch for the
-  source correction. That correction is separate work and is not present in
-  this installed build, so fingerprint enrollment success does not close the
-  UDFPS rendering issue.
+  source correction. That correction now passes a component build under a new
+  identity but is not present in this installed build, so fingerprint enrollment
+  success does not close the UDFPS rendering issue.
 - Aperture still fails with `IllegalStateException: Camera configuration is
   null`. The captured click path exposes a separate initialization race between
   the mode selector and its nullable configuration state. A later Aperture
@@ -89,7 +94,7 @@ recorded PID 3389 for `system_server`. Normal Android reported SELinux
 Fingerprint enrollment is the first confirmed hardware improvement from this
 successor. Boot completion and enforcing SELinux are also confirmed on the
 installed bytes. Camera remains unresolved, the diagnosed UDFPS source
-correction still needs build and installation, and the other fingerprint lifecycle, status-bar, camera lens,
+correction still needs packaging and installation, and the other fingerprint lifecycle, status-bar, camera lens,
 photo/video, charging, telephony and OTA checks remain separate device work.
 
 ## Operational lesson

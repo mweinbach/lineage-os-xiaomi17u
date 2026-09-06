@@ -167,6 +167,15 @@ Soong intermediates, prune the named volume, or enable a new compiler-cache
 launcher as an incidental speed tweak. No new build was launched merely to
 create these cache records.
 
+This reuse policy was exercised by the next focused fixes. Source identity
+`nezha.376a73a742ddc9da2bdedab3` reused the same physical output, and Ninja
+scheduled 45 edges to rebuild Aperture and SystemUI. Both components completed
+with exit 0 while the 572-file before/after source inventories remained
+identical. The [follow-up record](package7-ui-camera-followup-20260905.md) pins
+the resulting APKs. This proves the focused cache route for that admitted
+source cohort; it does not carry the old package, signed-image or device
+qualification forward.
+
 
 ## Installation preflight lesson
 

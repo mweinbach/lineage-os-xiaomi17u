@@ -43,6 +43,14 @@ for incremental work: adopt a fresh source/build identity, retain intermediates,
 and let Ninja invalidate changed edges. Preserve the original Package7 bundle,
 this installed successor bundle, working76 and stock return inputs.
 
+The source checkout is now one step ahead of the installed phone. The
+[UI and Aperture follow-up](package7-ui-camera-followup-20260905.md) at source
+identity `nezha.376a73a742ddc9da2bdedab3` contains the Aperture initialization
+guard and measured UDFPS pixel pitch. A cached 45-edge component build passed
+and produced pinned SystemUI and Aperture APKs. No new target-files package,
+signing, Super, bundle or installation has been completed, so installed build
+`nezha.a6d3109ae93158c498bb30b0` remains the device baseline.
+
 1. Start from the existing source checkout and preserved Package7 input state. Read
    [source-lock handling](source-lock.md), [device integration](../device/xiaomi/nezha/README.md)
    and [the build host guide](apple-container.md). Inspect `make apple-status`
@@ -74,7 +82,12 @@ authentications and no fingerprint HAL death since boot. The installed
 SystemUI's invalid `pixel_pitch=-1` fallback produces roughly 3,074 px of
 internal padding inside the 148 px lockscreen icon. A source correction derived
 from the device's 419.25723 dpi display (60.58 micrometre pixel pitch) is
-separate work and has not been built or installed.
+absent from the installed build; its separate component result follows below.
+
+The two source corrections now have a successful component build under the new
+`nezha.376a73a742ddc9da2bdedab3` identity. They are still absent from the phone;
+full packaging, signing, bundle qualification and separately authorized
+installation remain required before either runtime result can change.
 
 Aperture and the installed original Xiaomi Camera both still fail for separately
 established reasons. Aperture has a mode-selector/configuration initialization
