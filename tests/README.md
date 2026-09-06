@@ -10,8 +10,8 @@ Add the affected module's tests when working outside that selection:
 python3 -m unittest discover -s tests -p 'test_camera_dependencies.py' -v
 ```
 
-Before completing a change, run `make test`. This retains the required full
-offline discovery command, followed by the Linux setup script's syntax check:
+Run `make test` once before completing a change. It runs full offline discovery,
+about four minutes for 4820 checks, then the Linux setup script's syntax check:
 
 ```sh
 python3 -m unittest discover -s tests -v
@@ -21,7 +21,11 @@ Historical bring-up and source-experiment checks remain in full discovery. They
 preserve the contracts behind retained tooling and dated evidence; they do not
 select an old build path. Keeping their small source files avoids losing useful
 regression checks while the focused target makes everyday iteration shorter.
-Generated `__pycache__` directories can be removed without losing test coverage.
+
+`AGENTS.md` describes what a check has to do to belong here: exercise a tool in
+`scripts/` or `tools/`, recompute a hash, link or total from the artifact on
+disk, or pin a measured value that carries a build decision. Shared walkers and
+record-safety helpers live in `support.py`, which discovery does not collect.
 
 These tests use Python's standard library and mocked process/device calls. They
 do not contact the phone, run a full Android build or qualify device features.

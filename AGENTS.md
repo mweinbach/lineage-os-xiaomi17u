@@ -41,8 +41,8 @@ alternatives the user did not ask about.
 
 ## Working rules
 
-- Make small, descriptive commits as useful work is completed. Run tests before
-  completing a change. Use `python3 -m unittest discover -s tests -v`.
+- Make small, descriptive commits as useful work is completed. See "Testing and
+  verification" below for which tests a change needs.
 - Check upstream branches and record commit IDs before depending on them.
 - Read `docs/workspace-status.md` for current decisions and gates; use
   `docs/README.md` to find the dated evidence behind them. Preserve historical
@@ -104,11 +104,26 @@ Do not write tests for reversible, low-impact changes that mirror the
 implementation. If you do choose to verify your work with tests, make sure
 that the tests are meaningful and necessary to verify implementation.
 
-Run tests appropriate to the change and complete required checks. Once those
-pass, broaden or repeat testing only when new changes, failures, or unresolved
-concerns justify it; otherwise, continue toward completing the task.
+Run tests appropriate to the change. Use `make test-current` while iterating on
+the working Package7 baseline, and add the affected module's tests when working
+outside that selection. Run `make test` once before completing a change. Once
+those pass, broaden or repeat testing only when new changes, failures, or
+unresolved concerns justify it; otherwise, continue toward completing the task.
 
-## Validation
+Most of what this workspace checks is recorded evidence rather than a function,
+so a test here earns its place in one of three ways:
+
+- Tool behavior: call a script in `scripts/` or `tools/` with synthetic inputs
+  and check what it derives, accepts and rejects.
+- Evidence integrity: recompute something from the artifact on disk, such as a
+  hash a record claims, a link a document cites, or a total that the record's
+  own parts must sum to.
+- Measured-value pins: assert a measured constant that would change a build
+  decision if a record were edited, and record in the test what it protects.
+
+An assertion that restates a value from a record it just read, without
+recomputing it or tying it to another file, only detects edits to that record.
+Pin the values that carry a build decision and leave the rest to the record.
 
 Tests must run offline with Python's standard library and must not need a phone.
 Mock device commands and network/process calls. Keep hardware validation and a
