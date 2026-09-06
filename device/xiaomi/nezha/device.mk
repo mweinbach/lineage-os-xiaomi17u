@@ -10,6 +10,12 @@ DEVICE_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/overlay
 # Exact-panel normal-brightness candidate, with explicit private-input gating.
 include $(NEZHA_DEVICE_PATH)/display-panel.mk
 
+# Optional framework controls; preserve factory vendor haptic calibration.
+include $(NEZHA_DEVICE_PATH)/haptics.mk
+
+# Manual Dolby controls only; do not replace the factory vendor backend.
+include $(NEZHA_DEVICE_PATH)/dolby.mk
+
 # The opt-in successor uses the original signed factory Camera and a narrow
 # same-partition privilege policy. A selected but missing packet must fail.
 ifeq ($(NEZHA_XIAOMI_CAMERA),true)

@@ -124,3 +124,31 @@ The final integration commit adds the Make shortcuts, focused test selection,
 documentation index, corrected audit and this handoff. No full Android build,
 shared source-volume mutation, main merge, signing, phone query or phone mutation
 was performed by this worktree task.
+
+## Follow-up: Dolby and haptics source candidates
+
+The subsequent request adds [manual Dolby controls](nezha-dolby-20260905.md)
+and [haptics controls](nezha-haptics-20260905.md) on this same branch.
+Both remain optional at product scope before inheriting the device product:
+
+```make
+NEZHA_DOLBY_CONTROLLER := true
+NEZHA_HAPTICS_CONTROLS := true
+```
+
+The new Dolby app uses the interface observed in the original MiSound APK with
+the preserved vendor effect. It does not transplant MiSound, import new blobs,
+change policy, or restore state automatically. The haptics overlays expose the
+existing three-level controls and keyboard toggle while leaving factory vendor
+calibration, default intensities and fallback waveforms untouched. Neither
+candidate is enabled in the active main build. Qualify them in a separately
+built and authorized installed successor; host checks do not establish working
+Atmos or tuned motor feel.
+
+Follow-up validation passed **4,725 offline tests in 208.439 seconds**, including
+all 29 new Dolby/haptics tests. The private full log is
+`reports/feature-fixes-worktree-20260905/dolby-haptics-all-tests.log`.
+Both real private-input verifiers passed, as did haptics resource compilation,
+Dolby resource compilation/linking and local Java syntax compilation with an
+explicit compile-only hidden-API stand-in. Java behavior tests use a fake
+AudioEffect; none of these results is native build or hardware proof.

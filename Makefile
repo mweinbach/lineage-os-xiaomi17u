@@ -24,7 +24,8 @@ CURRENT_TEST_MODULES = \
 	test_experimental_flash_bundle test_device_flash_preflight \
 	test_collect_stock test_collect_recovery \
 	test_hardware_qualification test_ims_inputs test_ims_telephony_api \
-	test_power_inputs test_display_panel_inputs
+	test_power_inputs test_display_panel_inputs \
+	test_dolby_inputs test_dolby_controller test_haptics_controls
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test test-current init sync source-plan source-check linux-packages stock-plan

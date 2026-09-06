@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "hardware_verified": false,
+  "captures": {
+    "product": {
+      "image_sha256": "67e6c683c1091abc0a548c27e4681bbe26471529129d15453b95c8d69417795f",
+      "files": {
+        "/app/MiSound/MiSound.apk": {"sha256": "1e9e7fa023f97af06be8dce6e57e25fba4e3dd1b08ab0fab473dc03f5e7ee962", "size_bytes": 17828830}
+      }
+    },
+    "vendor": {
+      "image_sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+      "files": {
+        "/etc/audio/sku_canoe/audio_effects.xml": {"sha256": "ba754f5a6c3a500a8b12edecb2607bba6031d08911a1899db1e2c5243968f1b3", "size_bytes": 9215},
+        "/etc/audio/sku_canoe/audio_effects_config.xml": {"sha256": "58661106b5ac88e19b0719f23256549aa47597b697763a1f3a268de72050cfb1", "size_bytes": 6918},
+        "/etc/dolby/dax-default.xml": {"sha256": "7c1c8e15a20214761f21f6c339ab3c9990566443de3864cf341ca1ace8d9543f", "size_bytes": 91440},
+        "/etc/dolby/dax-default-spatializer.xml": {"sha256": "fff6fb50e0451507d45077a73675713664c4a0e924c6006d358beec51f4358ef", "size_bytes": 43059},
+        "/etc/init/dms-service.rc": {"sha256": "b4493dc0964401332b701d33c39a832b114ad64531962f3c891264467cbcc324", "size_bytes": 169},
+        "/etc/vintf/manifest/dms-service.xml": {"sha256": "120ace26af893448224b09490738d1a75c136d45a4f691f403d6ed4ff6498a88", "size_bytes": 240}
+      }
+    }
+  },
+  "control_interface": {
+    "effect_type_uuid": "ec7178ec-e5e1-4432-a3f4-4657e6795210",
+    "effect_implementation_uuid": "9d4921da-8225-4f29-aefa-39537a04bcaa",
+    "priority": 0,
+    "session": 0,
+    "set_parameter_key": 5,
+    "get_parameter_key_offset": 5,
+    "integer_encoding": "little-endian int32",
+    "set_payload": ["parameter_id", 1, "value"],
+    "get_payload": ["parameter_id", 0, 0],
+    "enable_parameter": 0,
+    "profile_count_parameter": 50331648,
+    "current_profile_parameter": 167772160
+  },
+  "profiles": {"0": "Dynamic", "1": "Movie", "2": "Music", "3": "Custom", "4": "Mobility_default", "5": "Mobility_on_the_go", "6": "Mobility_commute", "7": "Mobility_travel", "8": "Voice"},
+  "scope": "Original interface facts only; no proprietary implementation or APK is redistributed. Presence and exact input identity are not working audio proof."
+}

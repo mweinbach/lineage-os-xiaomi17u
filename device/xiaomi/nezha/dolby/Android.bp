@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: Apache-2.0
+android_app {
+    name: "NezhaDolbyController",
+    manifest: "AndroidManifest.xml",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    platform_apis: true,
+    certificate: "platform",
+    system_ext_specific: true,
+    optimize: {
+        enabled: false,
+    },
+}

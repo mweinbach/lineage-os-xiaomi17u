@@ -17,6 +17,8 @@ the expanded reference index preserves dated evidence and earlier experiments.
 | [Native features](native-features.md) | Camera, IMS and other feature research for focused fixes |
 | [Remaining feature audit](package7-remaining-feature-audit-20260905.md) | Prioritized IMS, display, power, OEM integration and hardware-qualification work beyond the active fixes |
 | [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |
+| [Dolby controls candidate](nezha-dolby-20260905.md) | Exact factory effect protocol and opt-in manual source controller; playback qualification remains open |
+| [Haptics controls candidate](nezha-haptics-20260905.md) | Preserved factory calibration, Android intensity sliders and separate keyboard toggle |
 | [Hardware qualification](hardware-qualification.md) | Thirty measured checks and an offline evidence ledger for the actual installed build |
 | [Workspace cleanup](workspace-cleanup-20260905.md) | Retained baseline, reclaimed duplicates and historical replay handling |
 | [Archived workspace status](workspace-status-history-20260905.md) | Unchanged pre-cleanup status and its historical checkpoints |
