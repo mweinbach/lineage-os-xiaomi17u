@@ -9,6 +9,8 @@ the expanded reference index preserves dated evidence and earlier experiments.
 | [Package7 feature triage](package7-feature-triage-20260905.md) | Google sign-in and boot completion; fingerprint, camera and status-bar diagnostics |
 | [Feature successor](package7-feature-successor-20260905.md) | New source identity, fingerprint/Aperture fixes, native Camera candidate and build/device gates |
 | [Remaining feature audit](package7-remaining-feature-audit-20260905.md) | Prioritized IMS, display, power, OEM integration and hardware-qualification work beyond the active fixes |
+| [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |
+| [Hardware qualification](hardware-qualification.md) | Thirty measured checks and an offline evidence ledger for the actual installed build |
 | [Package7 first boot](package7-first-boot-20260905.md) | Recorded install, retained-data failure and clean-data setup success |
 | [Package7 bundle](package7-experimental-bundle.md) | Exact artifact hashes and off-device verification checkpoint |
 | [Source lock](source-lock.md) | Reviewed upstream revisions and handling of existing local changes |

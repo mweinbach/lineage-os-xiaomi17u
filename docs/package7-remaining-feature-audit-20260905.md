@@ -17,14 +17,20 @@ service capture contains the core audio, camera, GNSS, NFC, secure-element,
 power, power-stats, sensors, thermal and vibrator services, plus many Qualcomm
 and Xiaomi extensions. The two strongest additional omissions are the Android
 IMS provider stack and the exact-panel luminance/HBM configuration. Other
-concrete source gaps affect power accounting, Xiaomi `mi_ext` startup behavior
-and OEM charging controls. Most remaining hardware areas need measured device
+concrete source gaps affect power-accounting configuration and Xiaomi `mi_ext`
+startup behavior. OEM charging behavior remains untested; the later power-input
+review below corrects the original WLC interpretation. Most hardware areas need measured device
 qualification before a source change is justified.
 
 This was a read-only audit of existing source, artifact records, exact-stock
 captures and the Package7 service/display snapshots. It did not run a build,
 change the build VM or output tree, query the phone, or authorize a successor
 installation.
+
+The subsequent [worktree implementation](nezha-feature-fixes-worktree-20260905.md)
+adds calibrated normal-brightness source, guarded IMS input definitions and a
+repeatable hardware workflow. Its source/tool results do not change the installed
+Package7 results in this audit.
 
 ## Evidence classes
 
@@ -47,7 +53,7 @@ manifest declares a HAL, or a Binder service appears in one snapshot.
 | P0 | Android IMS and emergency calling | Verified omission | No Android `ImsService` provider is packaged; VoLTE, VoWiFi and IMS emergency operation cannot work through the intended framework path. |
 | P1 | Panel brightness, HBM and automatic brightness | Verified Package7/source omission | The phone uses generic display configuration even though exact-stock calibration for the active physical display is retained. |
 | P1 | Xiaomi `mi_ext` startup and effective overlays | Verified loader omission; overlay state untested | The retained partition is not equivalent to executing its init/property contract or applying its Telecom/TeleService/STK overlays. |
-| P1 | Power accounting and OEM charging controls | Verified source omissions; behavior untested | No Nezha power profile is authored, and the current property slice intentionally excludes the WLC/reverse-charge client contract. |
+| P1 | Power accounting and OEM charging controls | Profile missing; charging behavior untested | No calibrated Nezha profile is selected. Later exact-input review identifies WLC as workload classification, not a reverse-charge client; see the dated correction below. |
 | P1 | Camera feature closure | Active narrow fixes; runtime unqualified | Aperture admission does not create a front-camera selector, and Xiaomi Camera packaging does not prove its JNI/algorithm or lens paths. |
 | P1 | Daily-driver hardware qualification | Present but unqualified | Radio, audio/mics, suspend, charging, thermals, sensors, haptics, GNSS, NFC, Wi-Fi and Bluetooth still lack controlled Package7/successor results. |
 | P2 | CNE/TxPwr and Miracast client integration | Plausible runtime risks | OEM apps cannot receive several requested platform permissions; Sigma/WFD lacks a demonstrated client/start path. |
@@ -174,6 +180,13 @@ and the exact resolved target resources.
 
 These are two separate issues.
 
+**September 5 implementation correction:** the subsequent
+[exact-stock input check](nezha-power-inputs-20260905.md) finds that the retained
+framework `power_profile.xml` and `power_profile_kleerin.xml` are generic
+placeholders, and that `vendor_wlc_app` is the Qualcomm workload classifier.
+The original audit's WLC/reverse-charge association was incorrect. The updated
+interpretation below preserves charging behavior as unqualified.
+
 First, the authored Nezha overlay has no device-specific `power_profile.xml`.
 The selected source tree therefore has no reviewed Nezha battery-component
 model, even though the device overlay is active. A separate maintainer report
@@ -182,14 +195,26 @@ values must come from the hash-bound Nezha factory resources, not another ROM or
 device. This omission affects Android accounting, not the charger hardware
 contract itself.
 
+The retained factory framework profiles use 1000 mAh, a single 400 MHz CPU core
+and 0.1 mA screen-on values. Those are not admissible Nezha calibration. No
+replacement power profile was found in the bounded captured product/device
+overlay resource search, so the implementation must first locate an actual
+calibrated model rather than install the framework placeholder.
+
 Second, the current OEM-property restoration record explicitly excludes
 `vendor_wlc_app`, private `vendor_wlc_prop`, the `vendor_dpmd` provider and
-related system/system-server reads. It therefore records both
+related system/system-server reads. Exact factory seapp and APK evidence names
+this package `com.qualcomm.qti.workloadclassifier`; private WLC properties
+control workload classification and build-date metadata. This exclusion does
+not identify a missing wireless or reverse-charging client. The record preserves both
 `vendor_wlc_private_property_or_app_restored: false` and
 `wireless_charging_support_inferred: false` in
 [`config/nezha-oem-properties.json`](../config/nezha-oem-properties.json).
-Factory and the supplied framework also differ in `power-save-conf.xml`, with
-no Nezha reconciliation selected.
+Factory and the supplied framework also differ in `power-save-conf.xml`; the
+factory file is a package exemption list, not charger configuration. No measured
+charging failure justifies importing it. The separately retained PowerKeeper
+APK declares `android.uid.system` and needs its platform shared-UID signing
+relationship and OEM API dependencies resolved before any product selection.
 
 Package7's live services do include standard health, power, power-stats and
 thermal HALs, Xiaomi MiPower and MiCharge, and the framework power/thermal
@@ -201,11 +226,13 @@ wired or Qi charging may still work, while stock charge limits, battery-aging
 controls, reverse charging, or OEM power coordination may be absent or
 different. None of those behaviors has been qualified.
 
-**Focused implementation:** derive an exact Nezha power profile as an isolated
-resource change. Separately inventory the factory WLC/PowerKeeper client,
-private-property, permissions and sysconfig dependencies before restoring any
-charging-control slice. Do not copy another device's power values or bypass
-temperature/charge protections.
+**Focused implementation:** locate a calibrated exact-Nezha power profile for
+an isolated resource change. The new exact-input verifier pins and rejects the
+retained placeholder profiles. Track factory WLC app/model/JNI, private-property
+and signing/policy dependencies as workload classification. Review PowerKeeper
+independently; identify a real charging client and measured failure before
+restoring any charging-control slice. Do not copy another device's power values
+or bypass temperature/charge protections.
 
 **Promotion gate:** effective `PowerProfile`/BatteryStats resource inspection;
 then certified wired, wireless and reverse-power tests, controlled charging and

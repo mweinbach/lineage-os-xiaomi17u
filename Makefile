@@ -22,12 +22,15 @@ CURRENT_TEST_MODULES = \
 	test_reconcile_signed_target_files \
 	test_familyspace_privapp_permissions test_signapk_stored_entry_timestamps \
 	test_experimental_flash_bundle test_device_flash_preflight \
-	test_collect_stock test_collect_recovery
+	test_collect_stock test_collect_recovery \
+	test_hardware_qualification test_ims_inputs test_ims_telephony_api \
+	test_power_inputs test_display_panel_inputs
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test test-current init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 .PHONY: twrp-plan twrp-source-plan recovery-plan recovery-build recovery-verify recovery-stage recovery-inputs-verify recovery-logs-plan
+.PHONY: feature-diagnostics-plan hardware-qualification-plan
 
 help:
 	@printf '%s\n' \
@@ -47,6 +50,8 @@ help:
 	  'make init            Initialize full platform (Linux x86-64 only)' \
 	  'make sync JOBS=8     Sync full platform and save resolved manifest' \
 	  'make stock-plan      Preview read-only Xiaomi evidence commands' \
+	  'make feature-diagnostics-plan Preview extended feature observations without a phone' \
+	  'make hardware-qualification-plan Print the measured hardware acceptance checklist' \
 	  'make recovery-plan   Preview the working TWRP build and ROM input contract' \
 	  'make recovery-build  Reproduce working76 using ignored local input/tool/key paths' \
 	  'make recovery-verify RECOVERY_IMAGE=... Verify the exact image and AVB signature' \
@@ -91,6 +96,12 @@ sync:
 
 stock-plan:
 	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --dry-run
+
+feature-diagnostics-plan:
+	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --feature-diagnostics --dry-run
+
+hardware-qualification-plan:
+	$(PYTHON) scripts/hardware_qualification.py plan
 
 twrp-plan: recovery-plan
 
