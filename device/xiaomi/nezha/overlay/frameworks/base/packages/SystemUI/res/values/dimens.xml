@@ -4,4 +4,7 @@
     <!-- Native panel pixels, from Nezha DevicesOverlay; see overlay/README.md. -->
     <dimen name="rounded_corner_content_padding">100px</dimen>
     <dimen name="status_bar_padding_top">38px</dimen>
+    <!-- Micrometres per native panel pixel: 25400 / 419.25723 dpi.
+         A float, not a dp/px dimension; used for the 6000 um UDFPS icon. -->
+    <item name="pixel_pitch" format="float" type="dimen">60.583</item>
 </resources>
