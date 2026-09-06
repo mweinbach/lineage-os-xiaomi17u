@@ -43,12 +43,17 @@ for incremental work: adopt a fresh source/build identity, retain intermediates,
 and let Ninja invalidate changed edges. Preserve the original Package7 bundle,
 this installed successor bundle, working76 and stock return inputs.
 
-The source checkout is now one step ahead of the installed phone. The
+The source checkout is ahead of the installed phone. The preserved
 [UI and Aperture follow-up](package7-ui-camera-followup-20260905.md) at source
 identity `nezha.376a73a742ddc9da2bdedab3` contains the Aperture initialization
-guard and measured UDFPS pixel pitch. A cached 45-edge component build passed
-and produced pinned SystemUI and Aperture APKs. No new target-files package,
-signing, Super, bundle or installation has been completed, so installed build
+guard and measured UDFPS pixel pitch. Its cached 45-edge component build passed
+and produced pinned SystemUI and Aperture APKs. Commit `0784f4d` subsequently
+added the Nezha portrait shade-header alignment source. The current 574-row
+source inventory has SHA256
+`abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc`
+and build identity `nezha.f9e30611efe01b882f9ed0cb`; its native SystemUI build
+is still running. No new target-files package, signing, Super, bundle or
+installation has been completed, so installed build
 `nezha.a6d3109ae93158c498bb30b0` remains the device baseline.
 
 1. Start from the existing source checkout and preserved Package7 input state. Read
@@ -84,19 +89,28 @@ internal padding inside the 148 px lockscreen icon. A source correction derived
 from the device's 419.25723 dpi display (60.58 micrometre pixel pitch) is
 absent from the installed build; its separate component result follows below.
 
-The two source corrections now have a successful component build under the new
-`nezha.376a73a742ddc9da2bdedab3` identity. They are still absent from the phone;
-full packaging, signing, bundle qualification and separately authorized
-installation remain required before either runtime result can change.
+The Aperture and UDFPS source corrections have a successful component build
+under the preserved `nezha.376a73a742ddc9da2bdedab3` identity. They remain
+absent from the phone. The newer `nezha.f9e30611efe01b882f9ed0cb` source adds a
+Nezha-only portrait shade-header inset. It preserves the approved normal status
+bar's 100px horizontal content padding and 38px top padding, and leaves the new
+behavior disabled by default outside the Nezha overlay. Its SystemUI build is
+in progress, so no compiled `f9e` component is claimed. Full packaging, signing,
+bundle qualification and separately authorized installation remain required
+before any runtime result can change.
 
 Aperture and the installed original Xiaomi Camera both still fail for separately
-established reasons. Aperture has a mode-selector/configuration initialization
-race that throws on a null configuration. Xiaomi Camera reaches a vendor
-session-policy abort for operation mode `0x9005` and role 64. Similar provider
-aborts appear in the Aperture-era buffer, but the captured evidence does not map
-them to an exact Aperture action and they do not cause its earlier Kotlin
-exception. Preview, capture, lenses and OEM features remain unverified. See the
-installation record above for the exact point-in-time evidence.
+established reasons. One Aperture process hit the mode-selector/configuration
+initialization race that throws on a null configuration. In the later unlocked
+foreground attempt, the persistent Aperture process successfully opens public
+Camera0, then Xiaomi's vendor stack fails the normal preview-plus-JPEG stream
+configuration while constructing the internal logical camera 4 multicamera
+graph. That post-open failure includes an empty camera-role set, physical-to-role
+mapping failures and a missing `MCXSuperFG` sink port; the Aperture null guard
+does not resolve it. Xiaomi Camera separately reaches a vendor session-policy
+abort for operation mode `0x9005` and role 64. Preview, capture, lenses and OEM
+features remain unverified. See the installation record and linked follow-up
+for the exact point-in-time evidence.
 
 The Android IMS provider stack is not integrated, and VoLTE, VoWiFi and emergency
 calling remain unverified. Track device results for networking, display/touch,
