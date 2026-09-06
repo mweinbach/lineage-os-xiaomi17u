@@ -34,6 +34,15 @@ or TWRP installer.
 
 ## Resume development
 
+**September 6 source update:** the feature branch is now merged into main and
+the existing Linux checkout under identity `nezha.bc6311b1a714e310eaf1af56`, with
+603 hash-verified source inputs. Display, Dolby, haptics, camera scheduling and
+refresh candidates are selected; the IMS provider and workload classifier stay
+disabled. No native build or installation was performed by this merge. Use the
+[source-merge record and new runner](feature-candidates-build-merge-20260906.md)
+for the next build. The f9e source/build records below are preserved predecessor
+evidence, not the current source selection.
+
 The existing source checkout and preserved output produced the installed
 [feature successor](package7-feature-successor-20260905.md). Its fingerprint,
 Aperture and display patches and Xiaomi Camera system-ext candidate are now on
@@ -48,7 +57,7 @@ The source checkout is ahead of the installed phone. The preserved
 identity `nezha.376a73a742ddc9da2bdedab3` contains the Aperture initialization
 guard and measured UDFPS pixel pitch. Its cached 45-edge component build passed
 and produced pinned SystemUI and Aperture APKs. Commit `0784f4d` subsequently
-added the Nezha portrait shade-header alignment source. The current 574-row
+added the Nezha portrait shade-header alignment source. The f9e 574-row
 source inventory has SHA256
 `abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc`
 and build identity `nezha.f9e30611efe01b882f9ed0cb`. The installed-source and
