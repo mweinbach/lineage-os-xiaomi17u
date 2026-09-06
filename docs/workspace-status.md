@@ -69,9 +69,12 @@ The older full-source TWRP experiments remain historical references.
 
 The successor reached `sys.boot_completed=1` with enforcing SELinux. The user
 confirmed fingerprint enrollment works at 21:23 local time on September 5;
-framework evidence also records one enrolled print, successful authentication
-and no fingerprint HAL death since boot. The malformed UDFPS icon remains under
-diagnosis.
+framework evidence also records one enrolled print, two successful
+authentications and no fingerprint HAL death since boot. The installed
+SystemUI's invalid `pixel_pitch=-1` fallback produces roughly 3,074 px of
+internal padding inside the 148 px lockscreen icon. A source correction derived
+from the device's 419.25723 dpi display (60.58 micrometre pixel pitch) is
+separate work and has not been built or installed.
 
 Aperture and the installed original Xiaomi Camera both still fail. Current logs
 join the failure to the vendor camera provider's stream-configuration abort;

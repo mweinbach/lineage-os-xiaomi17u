@@ -66,9 +66,13 @@ recorded PID 3389 for `system_server`. Normal Android reported SELinux
 - At 21:23 local time on September 5, 2026, the user confirmed fingerprint
   enrollment works. The captured framework state reports sensor 5 with one
   enrolled print, successful authentications and no HAL deaths since boot.
-- The current screenshot shows a malformed on-screen fingerprint icon. Its
-  geometry and rendering are still under diagnosis, so fingerprint enrollment
-  success does not close the UDFPS visual issue.
+- The current lockscreen screenshot shows a malformed on-screen fingerprint
+  icon. The installed SystemUI falls back to `pixel_pitch=-1`; that value drives
+  roughly 3,074 px of internal padding inside a 148 px icon. The device reports
+  419.25723 dpi, which derives a 60.58 micrometre physical pixel pitch for the
+  source correction. That correction is separate work and is not present in
+  this installed build, so fingerprint enrollment success does not close the
+  UDFPS rendering issue.
 - Aperture still fails. It reaches the camera path, the vendor camera provider
   aborts while building stream configuration, and Aperture later throws
   `IllegalStateException: Camera configuration is null`.
@@ -79,8 +83,8 @@ recorded PID 3389 for `system_server`. Normal Android reported SELinux
 
 Fingerprint enrollment is the first confirmed hardware improvement from this
 successor. Boot completion and enforcing SELinux are also confirmed on the
-installed bytes. Camera remains unresolved, the UDFPS icon requires a focused
-visual fix, and the other fingerprint lifecycle, status-bar, camera lens,
+installed bytes. Camera remains unresolved, the diagnosed UDFPS source
+correction still needs build and installation, and the other fingerprint lifecycle, status-bar, camera lens,
 photo/video, charging, telephony and OTA checks remain separate device work.
 
 ## Operational lesson
@@ -92,4 +96,3 @@ guard fails after a device write, preserve the failure, establish what the
 device tool acknowledged, and reverify the exact source bytes before deciding
 whether to continue. Do not repeat a large shared-partition write merely to make
 a wrapper record look successful.
-
