@@ -637,5 +637,100 @@ class KernelInputsTests(unittest.TestCase):
         self.assert_rejected()
 
 
+class KernelProvenanceKindTests(unittest.TestCase):
+    """The provenance kind is additive: old contracts stay prebuilt, source needs its block."""
+
+    ACK = "f1bdb13583da85a47fcf1632a78ef52d6e6da651"
+    VENDOR = "45705be1220b4cfa8100516ad86711656c0b634e"
+
+    def setUp(self):
+        self.fixture = KernelInputsTests("test_research_package_preserves_hashes_paths_order_and_failed_trust")
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.doCleanups)
+
+    def source_block(self):
+        return {
+            "ack": {"url": "https://android.googlesource.com/kernel/common", "commit": self.ACK,
+                    "tag": "android16-6.12-2025-06_r8"},
+            "vendor": {"url": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource", "commit": self.VENDOR,
+                       "branch": "popsicle-w-oss"},
+            "devicetree": {"url": "https://github.com/MiCode/kernel_devicetree",
+                           "commit": "667482462e15458b602a2688a94efd47a5010141"},
+            "defconfig": {"path": "arch/arm64/configs/gki_defconfig", "sha256": "9" * 64},
+            "build_config": "build.config.msm.canoe", "kleaf_target": "//msm-kernel:canoe_gki_dist",
+            "toolchain": {"clang_version": "r536225"}, "builder_host": "apple-container-rosetta",
+        }
+
+    def source_contract(self):
+        contract = copy.deepcopy(self.fixture.contract)
+        block = self.source_block()
+        contract["source_build"] = block
+        contract["provenance"] = {**contract["provenance"], "kind": "source",
+                                  "parent_package_sha256": kernel_inputs.source_build_digest(block),
+                                  "source_kind": "built-from-pinned-sources", "package_kind": "kleaf-distribution"}
+        return contract
+
+    def test_contract_without_kind_packages_as_prebuilt(self):
+        receipt = self.fixture.package()
+        self.assertEqual(receipt["provenance"]["kind"], "prebuilt")
+        self.assertNotIn("source_build", receipt)
+        makefile = (self.fixture.output / "kernel-inputs.mk").read_text()
+        self.assertIn("NEZHA_KERNEL_PROVENANCE_KIND := prebuilt", makefile)
+        self.assertNotIn("NEZHA_KERNEL_SOURCE_ACK_COMMIT", makefile)
+
+    def test_prebuilt_contract_may_not_carry_a_source_block(self):
+        self.fixture.contract["source_build"] = self.source_block()
+        self.fixture.assert_rejected()
+        self.fixture.contract.pop("source_build")
+        self.fixture.contract["provenance"]["kind"] = "prebuilt"
+        self.fixture.package()
+
+    def test_source_contract_requires_a_complete_block_bound_by_its_digest(self):
+        contract = self.source_contract()
+        accepted = kernel_inputs._contract(json.dumps(contract).encode())
+        self.assertEqual(accepted["provenance"]["kind"], "source")
+        for label, mutate in {
+            "missing block": lambda c: c.pop("source_build"),
+            "short commit": lambda c: c["source_build"]["ack"].update(commit="abc"),
+            "http url": lambda c: c["source_build"]["vendor"].update(url="http://example.invalid/x"),
+            "missing tag": lambda c: c["source_build"]["ack"].pop("tag"),
+            "extra key": lambda c: c["source_build"].update(notes="x"),
+            "stale digest": lambda c: c["source_build"]["toolchain"].update(clang_version="r999999"),
+            "unknown kind": lambda c: c["provenance"].update(kind="downloaded"),
+        }.items():
+            with self.subTest(label=label):
+                mutated = copy.deepcopy(contract)
+                mutate(mutated)
+                with self.assertRaises(kernel_inputs.KernelInputsError):
+                    kernel_inputs._contract(json.dumps(mutated).encode())
+
+    def test_source_makefile_carries_the_pinned_commits_and_defconfig(self):
+        contract = self.source_contract()
+        sets = {stage: {"modules": [f"modules/{stage}/m.ko"], "load_list": {"entries": ["m.ko"]}, "blocklist": None}
+                for stage in kernel_inputs.SETS}
+        sets["vendor_ramdisk"]["recovery_load_list"] = None
+        roles = {"kernel": "kernel/Image", "dtbo": "dtbo/dtbo.img", "dtb": "dtb/vendor.dtb"}
+        makefile = kernel_inputs._makefile(contract, sets, roles, "build-candidate").decode()
+        self.assertIn("NEZHA_KERNEL_PROVENANCE_KIND := source", makefile)
+        self.assertIn(f"NEZHA_KERNEL_SOURCE_ACK_COMMIT := {self.ACK}", makefile)
+        self.assertIn(f"NEZHA_KERNEL_SOURCE_VENDOR_COMMIT := {self.VENDOR}", makefile)
+        self.assertIn("NEZHA_KERNEL_SOURCE_DEFCONFIG_SHA256 := " + "9" * 64, makefile)
+        self.assertIn("NEZHA_STOCK_INPUTS_PACKAGE_SHA256 := " + contract["provenance"]["parent_package_sha256"], makefile)
+
+    def test_consumer_defaults_match_the_config_audit_pins(self):
+        root = Path(__file__).resolve().parents[1]
+        wrapper = (root / "kernel/xiaomi/nezha/stock-prebuilt.mk").read_text()
+        recipe = json.loads((root / "kernel/xiaomi/nezha/config-audit/recipe.json").read_text())
+        commits = {source["repository"]: source["commit"] for source in recipe["sources"] if source.get("commit")}
+        self.assertIn("NEZHA_EXPECTED_KERNEL_PROVENANCE_KIND ?= prebuilt", wrapper)
+        self.assertIn(f"NEZHA_EXPECTED_KERNEL_SOURCE_ACK_COMMIT ?= {commits['ack']}", wrapper)
+        self.assertIn(f"NEZHA_EXPECTED_KERNEL_SOURCE_VENDOR_COMMIT ?= {commits['micode']}", wrapper)
+        self.assertIn("NEZHA_KERNEL_PROVENANCE_KIND := prebuilt\n", wrapper)
+        self.assertLess(wrapper.index("NEZHA_KERNEL_PROVENANCE_KIND := prebuilt"),
+                        wrapper.index("include $(NEZHA_KERNEL_INPUTS)/kernel-inputs.mk"))
+        self.assertIn("else ifeq ($(NEZHA_KERNEL_PROVENANCE_KIND),source)", wrapper)
+        self.assertIn("$(error Unsupported Nezha kernel provenance kind", wrapper)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -28,14 +28,15 @@ CURRENT_TEST_MODULES = \
 	test_dolby_inputs test_dolby_controller test_haptics_controls \
 	test_camera_task_profiles test_refresh_policy test_workload_classifier_inputs \
 	test_collect_performance test_performance_analysis \
-	test_input_closure test_release_workflow
+	test_input_closure test_release_workflow test_release_signing \
+	test_ota_package test_delivery_route test_kernel_inputs
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test test-current init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 .PHONY: twrp-plan twrp-source-plan recovery-plan recovery-build recovery-verify recovery-stage recovery-inputs-verify recovery-logs-plan
 .PHONY: feature-diagnostics-plan hardware-qualification-plan
-.PHONY: performance-plan refresh-policy-verify release-plan input-closure
+.PHONY: performance-plan refresh-policy-verify release-plan input-closure release-sign-plan ota-inspect
 
 help:
 	@printf '%s\n' \
@@ -61,6 +62,8 @@ help:
 	  'make refresh-policy-verify Verify the guarded refresh source resources offline' \
 	  'make release-plan BUILD_NUMBER=... ARTIFACT_SET=... Print the release stages and check host receipts' \
 	  'make input-closure CLOSURE_OUTPUT=... Write the non-upstream input manifest; add RECEIPTS="a.json b.json"' \
+	  'make release-sign-plan SELECTION=... SELECTION_SHA256=... Validate a signing selection and print its six stage commands' \
+	  'make ota-inspect OTA_PACKAGE=... [PUBLISHED_INVENTORY=...] Inspect an A/B OTA package offline; no device, no signature trust' \
 	  'make recovery-plan   Preview the working TWRP build and ROM input contract' \
 	  'make recovery-build  Reproduce working76 using ignored local input/tool/key paths' \
 	  'make recovery-verify RECOVERY_IMAGE=... Verify the exact image and AVB signature' \
@@ -104,6 +107,19 @@ CLOSURE_OUTPUT ?= $(CURDIR)/artifacts/input-closure/$(shell date -u +%Y%m%dT%H%M
 RECEIPTS ?=
 input-closure:
 	$(PYTHON) scripts/input_closure.py generate --output "$(CLOSURE_OUTPUT)" $(foreach r,$(RECEIPTS),--private-receipt "$(r)")
+
+SELECTION ?=
+SELECTION_SHA256 ?=
+release-sign-plan:
+	$(if $(strip $(SELECTION)),,$(error Set SELECTION to the signing selection JSON))
+	$(if $(strip $(SELECTION_SHA256)),,$(error Set SELECTION_SHA256 to the independently retained selection hash))
+	$(PYTHON) -B scripts/release_signing.py plan --selection "$(SELECTION)" --expected-sha256 "$(SELECTION_SHA256)"
+
+OTA_PACKAGE ?=
+PUBLISHED_INVENTORY ?=
+ota-inspect:
+	$(if $(strip $(OTA_PACKAGE)),,$(error Set OTA_PACKAGE to the package ZIP))
+	$(PYTHON) scripts/ota_package.py inspect --package "$(OTA_PACKAGE)" $(if $(strip $(PUBLISHED_INVENTORY)),--published-inventory "$(PUBLISHED_INVENTORY)")
 
 source-plan:
 	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" $(SOURCE_LOCK_ARGS) --dry-run

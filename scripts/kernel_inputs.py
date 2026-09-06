@@ -33,6 +33,10 @@ SETS = ("vendor_ramdisk", "vendor_dlkm", "system_dlkm")
 ROLES = {"kernel", "dtb", "dtbo", "kernel_config", "vendor_ramdisk",
          "init_ramdisk", "recovery_ramdisk", "bootconfig"}
 OPTIONAL_ROLES = {"fstab"}
+PROVENANCE_KINDS = ("prebuilt", "source")
+SOURCE_BUILD_KEYS = {"ack", "vendor", "devicetree", "defconfig", "build_config",
+                     "kleaf_target", "toolchain", "builder_host"}
+COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 SAFE_COMPONENT = re.compile(r"[A-Za-z0-9_+.-]+\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 
@@ -124,6 +128,12 @@ def _contract(data):
     for field in ("source_kind", "package_kind"):
         _require(isinstance(provenance.get(field), str) and provenance[field], "missing provenance")
     _require("source_url" in provenance, "unknown source URL must be explicit")
+    kind = provenance.get("kind", "prebuilt")
+    _require(kind in PROVENANCE_KINDS, "provenance kind must be prebuilt or source")
+    if kind == "source":
+        _source_build(value, provenance)
+    else:
+        _require("source_build" not in value, "prebuilt contracts must not carry a source_build block")
     validation = value["validation"]
     _require(validation.get("input_avb_status") in ("failed", "unverified", "verified-external"),
              "input AVB status must be explicit")
@@ -138,6 +148,36 @@ def _contract(data):
     _require(len(roles) == len(set(roles)) and ROLES <= set(roles)
              and set(roles) <= ROLES | OPTIONAL_ROLES, "all eight input roles are required, without duplicates")
     return value
+
+
+def source_build_digest(block):
+    """Identity of a source-built kernel: the canonical hash of its source_build block."""
+    return hashlib.sha256(json.dumps(block, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def _source_build(value, provenance):
+    block = value.get("source_build")
+    _require(isinstance(block, dict) and set(block) == SOURCE_BUILD_KEYS,
+             "source provenance requires a complete source_build block")
+    for name in ("ack", "vendor", "devicetree"):
+        repo = block[name]
+        _require(isinstance(repo, dict) and isinstance(repo.get("url"), str) and repo["url"].startswith("https://")
+                 and isinstance(repo.get("commit"), str) and COMMIT.fullmatch(repo["commit"]),
+                 f"source_build.{name} needs an https URL and a full commit")
+    _require(isinstance(block["ack"].get("tag"), str) and block["ack"]["tag"], "source_build.ack needs its tag")
+    _require(isinstance(block["vendor"].get("branch"), str) and block["vendor"]["branch"],
+             "source_build.vendor needs its branch")
+    defconfig = block["defconfig"]
+    _require(isinstance(defconfig, dict) and isinstance(defconfig.get("path"), str) and defconfig["path"],
+             "source_build.defconfig needs a path")
+    _digest(defconfig.get("sha256"))
+    for key in ("build_config", "kleaf_target", "builder_host"):
+        _require(isinstance(block[key], str) and block[key], f"source_build.{key} must be a nonempty string")
+    toolchain = block["toolchain"]
+    _require(isinstance(toolchain, dict) and isinstance(toolchain.get("clang_version"), str)
+             and toolchain["clang_version"], "source_build.toolchain needs clang_version")
+    _require(provenance["parent_package_sha256"] == source_build_digest(block),
+             "source provenance digest must be the canonical source_build hash")
 
 
 def _fdt(data):
@@ -381,7 +421,13 @@ def _makefile(contract, sets, roles, purpose):
              f"NEZHA_STOCK_KERNEL_RELEASE := {contract['kernel']['release']}",
              f"NEZHA_STOCK_INPUTS_PACKAGE_SHA256 := {contract['provenance']['parent_package_sha256']}",
              f"NEZHA_STOCK_INPUT_AVB_STATUS := {contract['validation']['input_avb_status']}",
-             "NEZHA_STOCK_INPUT_ORIGIN_VERIFIED := " + str(contract["provenance"]["origin_verified"]).lower()]
+             "NEZHA_STOCK_INPUT_ORIGIN_VERIFIED := " + str(contract["provenance"]["origin_verified"]).lower(),
+             "NEZHA_KERNEL_PROVENANCE_KIND := " + contract["provenance"].get("kind", "prebuilt")]
+    if contract["provenance"].get("kind", "prebuilt") == "source":
+        block = contract["source_build"]
+        lines += [f"NEZHA_KERNEL_SOURCE_ACK_COMMIT := {block['ack']['commit']}",
+                  f"NEZHA_KERNEL_SOURCE_VENDOR_COMMIT := {block['vendor']['commit']}",
+                  f"NEZHA_KERNEL_SOURCE_DEFCONFIG_SHA256 := {block['defconfig']['sha256']}"]
     for role, name in (("kernel", "KERNEL"), ("dtbo", "DTBO")):
         lines.append(f"NEZHA_STOCK_{name} := $(NEZHA_KERNEL_INPUTS)/{roles[role]}")
     lines.append(f"NEZHA_STOCK_DTB_DIR := $(NEZHA_KERNEL_INPUTS)/{PurePosixPath(roles['dtb']).parent}")
@@ -517,7 +563,11 @@ def _package_inputs(contract_path, source_root, output_dir, *, purpose, workspac
                   "contract_sha256": hashlib.sha256(contract_raw).hexdigest(),
                   "tool": {"path": "scripts/kernel_inputs.py",
                            "sha256": hashlib.sha256(_read(Path(__file__))).hexdigest()},
-                  "device": contract["device"], "provenance": contract["provenance"], "kernel": contract["kernel"],
+                  "device": contract["device"],
+                  "provenance": {**contract["provenance"], "kind": contract["provenance"].get("kind", "prebuilt")},
+                  **({"source_build": contract["source_build"]}
+                     if contract["provenance"].get("kind", "prebuilt") == "source" else {}),
+                  "kernel": contract["kernel"],
                   "validation": {**contract["validation"], "payload_hashes_verified": True,
                                  "input_avb_reverified_by_packager": False, "publisher_authenticated_by_packager": False,
                                  "build_verified": False, "phone_accessed": False, "firmware_executed": False},

@@ -78,8 +78,11 @@ ID `<name>-<date>-v<N>`.
 
 ### 5. Inventory, materialize, sign, reconcile
 
-- Owner: host, `run_f9e_successor_signing.py` driving six maintained scripts.
-  Stage logs live under `artifacts/avb/nezha/<set>/stage-logs/`.
+- Owner: host. For f9e, `run_f9e_successor_signing.py`; for the next
+  identity, `scripts/release_signing.py run` with a pinned selection (see the
+  [release tooling record](release-tooling-20260906.md)). Both drive the same
+  six maintained scripts. Stage logs live under
+  `artifacts/avb/nezha/<set>/stage-logs/`.
 
 | Log | Script | Purpose |
 | --- | --- | --- |
@@ -102,8 +105,10 @@ ID `<name>-<date>-v<N>`.
   with `transfer.json`, and the LP readback completion receipt.
 - Gate: every logical image fits its bound, the group total fits the
   15,290,335,232-byte maximum, and native, stream and host hashes agree.
-- Note: this stage populates logical A only. The roadmap's both-slot route
-  replaces it; see the [update mechanism record](update-mechanism-20260906.md).
+- Note: this stage populates logical A only, which is the Virtual A/B layout
+  stock also uses. The both-physical-slot route keeps this Super and adds the
+  B-chain writes; see the [update mechanism record](update-mechanism-20260906.md)
+  and `scripts/delivery_route.py`.
 
 ### 7. Qualify off-device
 
@@ -139,8 +144,7 @@ increment moves each into `scripts/` with the identity as a parameter:
 
 1. The native runner and its package admission (stage 3).
 2. The transfer adapter (stage 4).
-3. The signing orchestrator (stage 5), which is already a thin driver over
-   maintained scripts.
+3. The signing orchestrator (stage 5): done as `scripts/release_signing.py`.
 4. Super preparation and assembly (stage 6), rewritten for the both-slot
    route.
 5. The qualification adapters and the joined summary (stage 7).

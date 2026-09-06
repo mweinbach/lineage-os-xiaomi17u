@@ -12,10 +12,20 @@ endif
 
 # Overrides require a separately reviewed contract and a hash-verified receipt.
 # These expected values are comparison inputs, not authentication or boot proof.
+# The bundle's provenance kind selects which checks apply: `prebuilt` bundles
+# come from a captured package; `source` bundles come from a recorded ACK and
+# vendor build. Both kinds share every module, DTB, DTBO and boot setting below.
+NEZHA_EXPECTED_KERNEL_PROVENANCE_KIND ?= prebuilt
 NEZHA_EXPECTED_KERNEL_PACKAGE_SHA256 ?= b29afecc91f74f190e3d248f07b84b29f8b7d74e36b6ff079310e864bea22c69
 NEZHA_EXPECTED_KERNEL_RELEASE ?= 6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k
 NEZHA_EXPECTED_KERNEL_AVB_STATUS ?= failed
 NEZHA_EXPECTED_KERNEL_ORIGIN_VERIFIED ?= false
+NEZHA_EXPECTED_KERNEL_SOURCE_ACK_COMMIT ?= f1bdb13583da85a47fcf1632a78ef52d6e6da651
+NEZHA_EXPECTED_KERNEL_SOURCE_VENDOR_COMMIT ?= 45705be1220b4cfa8100516ad86711656c0b634e
+NEZHA_EXPECTED_KERNEL_SOURCE_DEFCONFIG_SHA256 ?=
+
+# Bundles generated before the provenance kind existed are prebuilt bundles.
+NEZHA_KERNEL_PROVENANCE_KIND := prebuilt
 
 # A missing bundle is an error, not permission to omit the kernel or modules.
 include $(NEZHA_KERNEL_INPUTS)/kernel-inputs.mk
@@ -23,17 +33,37 @@ include $(NEZHA_KERNEL_INPUTS)/kernel-inputs.mk
 ifneq ($(NEZHA_STOCK_INPUTS_SCHEMA_VERSION),1)
 $(error Unsupported Nezha kernel-input schema; regenerate and verify the bundle)
 endif
-ifneq ($(NEZHA_STOCK_INPUTS_PACKAGE_SHA256),$(NEZHA_EXPECTED_KERNEL_PACKAGE_SHA256))
-$(error Kernel-input bundle does not match the reviewed Nezha package)
+ifneq ($(NEZHA_KERNEL_PROVENANCE_KIND),$(NEZHA_EXPECTED_KERNEL_PROVENANCE_KIND))
+$(error Kernel-input provenance kind $(NEZHA_KERNEL_PROVENANCE_KIND) differs from the expected $(NEZHA_EXPECTED_KERNEL_PROVENANCE_KIND))
 endif
 ifneq ($(NEZHA_STOCK_KERNEL_RELEASE),$(NEZHA_EXPECTED_KERNEL_RELEASE))
 $(error Kernel-input release does not match the reviewed Nezha 4 KiB kernel)
+endif
+ifeq ($(NEZHA_KERNEL_PROVENANCE_KIND),prebuilt)
+ifneq ($(NEZHA_STOCK_INPUTS_PACKAGE_SHA256),$(NEZHA_EXPECTED_KERNEL_PACKAGE_SHA256))
+$(error Kernel-input bundle does not match the reviewed Nezha package)
 endif
 ifneq ($(NEZHA_STOCK_INPUT_AVB_STATUS),$(NEZHA_EXPECTED_KERNEL_AVB_STATUS))
 $(error Kernel-input AVB status differs from the reviewed package; review new evidence first)
 endif
 ifneq ($(NEZHA_STOCK_INPUT_ORIGIN_VERIFIED),$(NEZHA_EXPECTED_KERNEL_ORIGIN_VERIFIED))
 $(error Kernel-input origin status differs from the reviewed package; review new evidence first)
+endif
+else ifeq ($(NEZHA_KERNEL_PROVENANCE_KIND),source)
+ifneq ($(NEZHA_KERNEL_SOURCE_ACK_COMMIT),$(NEZHA_EXPECTED_KERNEL_SOURCE_ACK_COMMIT))
+$(error Source kernel bundle was built from ACK $(NEZHA_KERNEL_SOURCE_ACK_COMMIT), not the reviewed commit)
+endif
+ifneq ($(NEZHA_KERNEL_SOURCE_VENDOR_COMMIT),$(NEZHA_EXPECTED_KERNEL_SOURCE_VENDOR_COMMIT))
+$(error Source kernel bundle was built from vendor commit $(NEZHA_KERNEL_SOURCE_VENDOR_COMMIT), not the reviewed commit)
+endif
+ifeq ($(strip $(NEZHA_EXPECTED_KERNEL_SOURCE_DEFCONFIG_SHA256)),)
+$(error Set NEZHA_EXPECTED_KERNEL_SOURCE_DEFCONFIG_SHA256 to the reviewed defconfig hash before selecting a source kernel)
+endif
+ifneq ($(NEZHA_KERNEL_SOURCE_DEFCONFIG_SHA256),$(NEZHA_EXPECTED_KERNEL_SOURCE_DEFCONFIG_SHA256))
+$(error Source kernel bundle defconfig differs from the reviewed defconfig)
+endif
+else
+$(error Unsupported Nezha kernel provenance kind: $(NEZHA_KERNEL_PROVENANCE_KIND))
 endif
 
 # The core installer flattens .ko paths. Check inventory collisions without

@@ -49,6 +49,20 @@ cryptographic receipt verification. A new baseline requires its own reviewed
 contract and hash-verified receipt before changing the caller's expected values.
 Changing an expectation alone proves neither provenance nor compatibility.
 
+## Provenance kind
+
+Contracts and receipts carry `provenance.kind`: `prebuilt` (the default when
+absent, covering both existing bundles) or `source`. A source contract adds a
+`source_build` block naming the ACK, vendor and device-tree commits, the
+defconfig hash, build config, Kleaf target, toolchain and builder host; its
+`parent_package_sha256` is the canonical hash of that block. The consumer
+defaults `NEZHA_EXPECTED_KERNEL_PROVENANCE_KIND` to `prebuilt`; selecting a
+source bundle means setting it to `source` and supplying
+`NEZHA_EXPECTED_KERNEL_SOURCE_DEFCONFIG_SHA256`. Package, AVB and origin checks
+apply to prebuilt bundles; commit and defconfig checks apply to source
+bundles; the release check and everything below apply to both. No source
+bundle producer exists yet.
+
 ## Generated include contract
 
 The packager emits schema version `1` and metadata compared with these caller

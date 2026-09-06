@@ -13,6 +13,7 @@ preserves dated evidence and earlier experiments.
 | [Update mechanism](update-mechanism-20260906.md) | What the built target-files declares: Virtual A/B, COW v3, dynamic partitions, care map; consequences for the both-slot route and OTA |
 | [Input closure](input-closure.md) | Manifest of every non-upstream build input by hash, with patch-contract binding and private receipt identities |
 | [Next-steps plans](next-steps-plan-20260906.md) | Researched plans for the both-slot route, the OTA package, release keys, kernel provenance and the signing orchestrator, with the Virtual A/B slot correction |
+| [Release tooling](release-tooling-20260906.md) | Signing orchestrator, kernel provenance kind, OTA package inspector and both-slot route tools with their limits |
 | [Feature-successor installation](package7-feature-successor-install-20260905.md) | Exact installed images, retained-data boot, fingerprint success, camera failures and open UDFPS visual issue |
 | [UI, camera and shade successor installation](package7-f9e-install-20260906.md) | Eight acknowledged writes, completed f9e boot, loaded UI resources and pending post-unlock feature checks |
 | [UI and Aperture follow-up](package7-ui-camera-followup-20260905.md) | New source identity and successful cached component build for the UDFPS pitch and Aperture initialization fixes; packaging and installation pending |
