@@ -39,6 +39,17 @@ source identity is now `nezha.3dc84b361cb517a1d98941db` with one changed file.
 python3 reports/variant-opt-in-20260906/build_successor.py --variant userdebug nothing
 ```
 
+## Space reclaimed on September 6
+
+To make room for the userdebug signing outputs, six redundant payload copies
+(59.1 GiB) were deleted from `artifacts/build-validation/` at the user's
+request: the raw a6d and f9e target-files zips (their reconciled signed archives
+remain under `artifacts/avb/nezha/`), the raw Package 6 and Package 7 zips
+(their signed image sets remain), and the a6d and f9e super transfer copies
+(byte-identical to the retained flash bundles, verified by SHA-256 before
+removal). Each directory keeps its transfer receipt; the recorded hashes in the
+documentation still describe the deleted bytes.
+
 ## Metadata delivery exception for userdebug
 
 The first userdebug package attempt failed at the prebuilt target-files
