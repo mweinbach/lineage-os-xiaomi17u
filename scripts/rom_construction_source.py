@@ -466,3 +466,65 @@ def validate(plan, payloads):
     base["files"] = file_entries(files)
     _check_policy3_base(base, files, contract)
     return base
+
+
+# Explicit build-variant opt-in successor. The maintained user-only guard above
+# and every earlier contract stay unchanged. This derives one guard that keeps
+# `user` as the default and admits `userdebug` only when the native invocation
+# also sets NEZHA_BUILD_VARIANT_OPT_IN=userdebug; `eng` is never admitted.
+# Selecting it is a source change for the build guest, not a build or flash.
+VARIANT_OPT_IN_CONTRACT = "config/nezha-rom-construction-variant-opt-in-v1.json"
+VARIANT_OPT_IN_CONTRACT_ID = "nezha-first-target-files-variant-opt-in-v1"
+VARIANT_OPT_IN_CONTRACT_SHA256 = "2537a1a45681c8cb928a28f42c59b8375dab8916d46575510de164857d0a7937"
+VARIANT_OPT_IN_ENV = "NEZHA_BUILD_VARIANT_OPT_IN"
+VARIANT_DEFAULT = "user"
+VARIANTS = ("user", "userdebug")
+USER_ONLY_CLAUSE = ("ifneq ($(TARGET_BUILD_VARIANT),user)\n"
+                    "$(error Nezha first construction requires the user variant)\n"
+                    "endif\n")
+VARIANT_OPT_IN_CLAUSE = (
+    "ifneq ($(TARGET_BUILD_VARIANT),user)\n"
+    "ifneq ($(TARGET_BUILD_VARIANT)/$(NEZHA_BUILD_VARIANT_OPT_IN),userdebug/userdebug)\n"
+    "$(error Nezha first construction requires the user variant unless NEZHA_BUILD_VARIANT_OPT_IN=userdebug explicitly selects userdebug; eng is never admitted)\n"
+    "endif\n"
+    "endif\n")
+VARIANT_OPT_IN_GUARD_ID = {"sha256": "a6ae5a08ef2d21ea30d98e589ad4ce49697dbcc613d0bd7365b962a3c99137a3", "size_bytes": 2737}
+
+
+def render_variant_opt_in_guard():
+    """The maintained guard with only its variant clause widened to the opt-in form."""
+    base = render_guard().decode("ascii")
+    require(base.count(USER_ONLY_CLAUSE) == 1, "maintained guard lost its exact user-only clause")
+    raw = base.replace(USER_ONLY_CLAUSE, VARIANT_OPT_IN_CLAUSE, 1).encode("ascii")
+    require(metadata.identity(raw) == VARIANT_OPT_IN_GUARD_ID, "variant opt-in guard changed")
+    return raw
+
+
+def variant_environment(variant=VARIANT_DEFAULT):
+    """Environment the native runner must add; userdebug needs the explicit opt-in key."""
+    require(variant in VARIANTS, "build variant must be exactly user or userdebug; eng is not admitted")
+    env = {"TARGET_BUILD_VARIANT": variant}
+    if variant != VARIANT_DEFAULT:
+        env[VARIANT_OPT_IN_ENV] = variant
+    return env
+
+
+def load_variant_opt_in_contract(path=None):
+    reader = metadata.Reader()
+    raw = reader.read(ROOT / VARIANT_OPT_IN_CONTRACT)
+    require(metadata.identity(raw)["sha256"] == VARIANT_OPT_IN_CONTRACT_SHA256,
+            "maintained variant opt-in contract changed; review a new binding")
+    if path is not None:
+        require(reader.read(path) == raw, "variant opt-in selector differs from the maintained contract")
+    value = metadata._json(raw)
+    require(type(value) is dict and value.get("schema_version") == 1 and type(value["schema_version"]) is int
+            and value.get("contract_id") == VARIANT_OPT_IN_CONTRACT_ID
+            and value.get("predecessor") == {"contract_id": CONTRACT_ID, "guard": GUARD_ID}
+            and value.get("guard") == VARIANT_OPT_IN_GUARD_ID
+            and value.get("environment_key") == VARIANT_OPT_IN_ENV
+            and value.get("default_variant") == VARIANT_DEFAULT
+            and value.get("admitted_variants") == list(VARIANTS)
+            and value.get("rejected_variants") == ["eng"],
+            "variant opt-in contract identity differs")
+    reader.recheck()
+    return value, metadata.identity(raw)

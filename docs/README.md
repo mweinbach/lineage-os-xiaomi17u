@@ -22,6 +22,7 @@ preserves dated evidence and earlier experiments.
 | [Working recovery](../recovery/twrp-working/README.md) | Reproduce the selected working76 image |
 | [Native features](native-features.md) | Camera, IMS and other feature research for focused fixes |
 | [Remaining feature audit](package7-remaining-feature-audit-20260905.md) | Prioritized IMS, display, power, OEM integration and hardware-qualification work beyond the active fixes |
+| [Build-variant opt-in](build-variant-opt-in-20260906.md) | Default user builds with an explicit userdebug opt-in for adb-root camera diagnosis |
 | [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |
 | [Dolby controls candidate](nezha-dolby-20260905.md) | Exact factory effect protocol and opt-in manual source controller; playback qualification remains open |
 | [Haptics controls candidate](nezha-haptics-20260905.md) | Preserved factory calibration, Android intensity sliders and separate keyboard toggle |

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-first-target-files-variant-opt-in-v1",
+  "purpose": "Keep the user variant as the default native build and admit userdebug only through an explicit invocation opt-in; eng is never admitted.",
+  "predecessor": {
+    "contract_id": "nezha-first-target-files-source-v1",
+    "guard": {
+      "sha256": "fe1e32cffe0d7b7ba20a9fd1d90f1cf8712f9fa6b7aa0e3ec1a90a6b7058c469",
+      "size_bytes": 2553
+    }
+  },
+  "guard": {
+    "sha256": "a6ae5a08ef2d21ea30d98e589ad4ce49697dbcc613d0bd7365b962a3c99137a3",
+    "size_bytes": 2737
+  },
+  "guard_path": "device/xiaomi/nezha/generated/rom-construction.mk",
+  "environment_key": "NEZHA_BUILD_VARIANT_OPT_IN",
+  "default_variant": "user",
+  "admitted_variants": ["user", "userdebug"],
+  "rejected_variants": ["eng"],
+  "change": "Only the user-only variant clause of the predecessor guard is replaced; every other construction restriction is byte-identical.",
+  "userdebug_intent": "adb root for on-device vendor camera HAL diagnosis (persisted camera properties, vendor camera cache, CHI log masks, kernel log) without a working recovery.",
+  "scope": {
+    "source_derivation_only": true,
+    "native_dispatch_allowed": false,
+    "default_rom_super_ota_allowed": false,
+    "complete_rom_ready": false,
+    "flash_allowed": false,
+    "hardware_tested": false,
+    "phone_operations": []
+  }
+}

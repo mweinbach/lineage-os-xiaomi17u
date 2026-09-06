@@ -660,3 +660,58 @@ class AvbSha256ConstructionSourceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class VariantOptInGuardTests(unittest.TestCase):
+    """Tool behavior of the explicit build-variant opt-in successor."""
+
+    def test_opt_in_guard_changes_only_the_variant_clause(self):
+        base = source.render_guard().decode("ascii")
+        derived = source.render_variant_opt_in_guard().decode("ascii")
+        self.assertEqual(source.metadata.identity(derived.encode("ascii")), source.VARIANT_OPT_IN_GUARD_ID)
+        self.assertEqual(derived, base.replace(source.USER_ONLY_CLAUSE, source.VARIANT_OPT_IN_CLAUSE, 1))
+        self.assertNotIn(source.USER_ONLY_CLAUSE, derived)
+        self.assertIn(source.VARIANT_OPT_IN_ENV, derived)
+        self.assertNotIn("eng", source.VARIANT_OPT_IN_CLAUSE.split("$(error")[0])
+        with mock.patch.object(source, "VARIANT_OPT_IN_CLAUSE", source.VARIANT_OPT_IN_CLAUSE.replace("userdebug/userdebug", "eng/eng")):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "guard changed"):
+                source.render_variant_opt_in_guard()
+
+    def test_contract_binds_predecessor_and_derived_guard(self):
+        contract, identity = source.load_variant_opt_in_contract()
+        self.assertEqual(identity["sha256"], source.VARIANT_OPT_IN_CONTRACT_SHA256)
+        self.assertEqual(contract["predecessor"]["guard"], source.metadata.identity(source.render_guard()))
+        self.assertEqual(contract["guard"], source.metadata.identity(source.render_variant_opt_in_guard()))
+        self.assertEqual(contract["guard_path"], source.GUARD)
+        self.assertFalse(contract["scope"]["flash_allowed"])
+        with mock.patch.object(source, "VARIANT_OPT_IN_CONTRACT_SHA256", "0" * 64):
+            with self.assertRaisesRegex(source.ConstructionSourceError, "contract changed"):
+                source.load_variant_opt_in_contract()
+
+    def test_environment_defaults_to_user_and_rejects_eng(self):
+        self.assertEqual(source.variant_environment(), {"TARGET_BUILD_VARIANT": "user"})
+        self.assertEqual(source.variant_environment("userdebug"),
+                         {"TARGET_BUILD_VARIANT": "userdebug", source.VARIANT_OPT_IN_ENV: "userdebug"})
+        for variant in ("eng", "", "USER", None):
+            with self.subTest(variant=variant), self.assertRaisesRegex(source.ConstructionSourceError, "eng is not admitted"):
+                source.variant_environment(variant)
+
+    def test_host_make_admits_only_user_or_explicit_userdebug(self):
+        import shutil
+        import subprocess
+        make = shutil.which("make")
+        if make is None:
+            self.skipTest("host GNU Make unavailable")
+        with tempfile.TemporaryDirectory() as directory:
+            makefile = Path(directory) / "guard.mk"
+            makefile.write_bytes(source.VARIANT_OPT_IN_CLAUSE.encode("ascii") + b"all:\n\t@true\n")
+            cases = ((["TARGET_BUILD_VARIANT=user"], 0), (["TARGET_BUILD_VARIANT=user", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], 0),
+                     (["TARGET_BUILD_VARIANT=userdebug", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], 0),
+                     (["TARGET_BUILD_VARIANT=userdebug"], 2), (["TARGET_BUILD_VARIANT=userdebug", "NEZHA_BUILD_VARIANT_OPT_IN=user"], 2),
+                     (["TARGET_BUILD_VARIANT=eng", "NEZHA_BUILD_VARIANT_OPT_IN=eng"], 2), (["TARGET_BUILD_VARIANT=eng", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], 2))
+            for assignments, expected in cases:
+                with self.subTest(assignments=assignments):
+                    result = subprocess.run([make, "-s", "-f", str(makefile), *assignments], capture_output=True, text=True, env={"PATH": "/usr/bin:/bin"})
+                    self.assertEqual(result.returncode, expected, result.stderr)
+                    if expected:
+                        self.assertIn("explicitly selects userdebug", result.stderr)
