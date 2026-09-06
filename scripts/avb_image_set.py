@@ -217,7 +217,7 @@ def load_profile():
              "successor logical budget is not a bounded extension of stock evidence")
     _identity_spec(override["measured_image"])
     _identity_spec(override["admission_record"], path=True)
-    _require(override["maximum_size_bytes"] == override["measured_image"]["size_bytes"]
+    _require(override["measured_image"]["size_bytes"] == 778199040
              and override["measured_image"]["sha256"] ==
              "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4"
              and override["admission_record"] == {
@@ -227,27 +227,22 @@ def load_profile():
              and override["build_number"] == "nezha.a6d3109ae93158c498bb30b0",
              "successor logical budget provenance differs")
     additional = override["additional_measured_images"]
-    _require(type(additional) is list and len(additional) == 1,
-             "exact additional measured image admission required")
-    candidate = additional[0]
-    _keys(candidate, ("measured_image", "admission_record", "build_number"),
-          "additional measured image admission")
-    _identity_spec(candidate["measured_image"])
-    _identity_spec(candidate["admission_record"], path=True)
-    _require(candidate == {
-        "measured_image": {
-            "sha256": "707442120ef680143b653d765c6148617482fa196b951998844d7ed8edfa7432",
-            "size_bytes": 778190848},
-        "admission_record": {
-            "path": "artifacts/build-validation/feature-successor-f9e-package-admit-v1/admission.json",
-            "sha256": "aae261fc3bc3974a280426ad7a1711698ee7d5c476a1e8806b4e45b78ad505c7",
-            "size_bytes": 14226},
-        "build_number": "nezha.f9e30611efe01b882f9ed0cb"},
-        "additional measured image provenance differs")
-    _require(override["stock_budget_bytes"] < candidate["measured_image"]["size_bytes"]
-             <= override["maximum_size_bytes"]
-             and candidate["measured_image"]["size_bytes"] % 4096 == 0,
-             "additional measured image exceeds the existing logical allowance")
+    _require(type(additional) is list and len(additional) == len(ADDITIONAL_MEASURED_SYSTEM_EXT),
+             "exact additional measured image admissions required")
+    for candidate, expected in zip(additional, ADDITIONAL_MEASURED_SYSTEM_EXT):
+        _keys(candidate, ("measured_image", "admission_record", "build_number"),
+              "additional measured image admission")
+        _identity_spec(candidate["measured_image"])
+        _identity_spec(candidate["admission_record"], path=True)
+        _require(candidate == expected, "additional measured image provenance differs")
+        _require(override["stock_budget_bytes"] < candidate["measured_image"]["size_bytes"]
+                 <= override["maximum_size_bytes"]
+                 and candidate["measured_image"]["size_bytes"] % 4096 == 0,
+                 "additional measured image exceeds the logical allowance")
+    # The allowance is exactly the largest admitted measured image, never a round-up.
+    _require(override["maximum_size_bytes"] == max(
+        [override["measured_image"]["size_bytes"]] + [c["measured_image"]["size_bytes"] for c in additional]),
+        "successor logical budget is not the largest admitted measured image")
     for name, expected in (("vbmeta", (0, 0)), ("boot", (1769904000, 0)),
                            ("recovery", (1, 1)), ("vbmeta_system", (1769904000, 0))):
         row = profile["signed_images"][name]
@@ -273,6 +268,22 @@ def load_profile():
              ["7728e30f50bfa5cea165f473175a08803f6a8346642b5aa10913e9d9e6defef6"],
              "engineering-key guard differs")
     return profile, _sha(raw)
+
+
+# Explicitly admitted system_ext images above the stock budget, in admission order.
+# Each pairs the exact measured image with the native package-admission record.
+ADDITIONAL_MEASURED_SYSTEM_EXT = (
+    {"measured_image": {"sha256": "707442120ef680143b653d765c6148617482fa196b951998844d7ed8edfa7432",
+                        "size_bytes": 778190848},
+     "admission_record": {"path": "artifacts/build-validation/feature-successor-f9e-package-admit-v1/admission.json",
+                          "sha256": "aae261fc3bc3974a280426ad7a1711698ee7d5c476a1e8806b4e45b78ad505c7",
+                          "size_bytes": 14226},
+     "build_number": "nezha.f9e30611efe01b882f9ed0cb"},
+    # userdebug diagnostic opt-in build: the debug variant adds 5,300,224 bytes to system_ext.
+    {"measured_image": {"sha256": "9d96b82b7123cd1373141aeeae13c5425dc6f18a900536b2b23e92d28624649c", "size_bytes": 783491072},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v1-admit/admission.json", "sha256": "f8b7ee0961f36e73bf17658aaa3af323bfdbf9751518e91bc32815c4a4bd70b6", "size_bytes": 6908},
+     "build_number": "nezha.1088ec3b159be6c32e1403f2"},
+)
 
 
 def image_budget(profile, name):

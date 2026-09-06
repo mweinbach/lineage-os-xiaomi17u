@@ -130,6 +130,15 @@ admitted at 778,199,040 bytes. The f9e image is separately admitted at
 through the pinned f9e package-admission record. This adds no bytes to the
 logical maximum, physical Super size, dynamic group, or any physical partition.
 
+On September 6 the explicit userdebug opt-in build measured system_ext at
+783,491,072 bytes, SHA256
+`9d96b82b7123cd1373141aeeae13c5425dc6f18a900536b2b23e92d28624649c`
+(the debug variant adds 5,300,224 bytes). It is admitted as a second measured
+image through its own package-admission record, and the logical maximum is now
+exactly that largest admitted image. The dynamic group and every physical
+partition are unchanged; the admitted logical set totals 9,481,801,728 bytes
+against the 15,290,335,232-byte group.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting
