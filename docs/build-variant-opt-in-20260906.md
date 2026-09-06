@@ -70,6 +70,19 @@ init compiles SELinux policy at boot from the CIL files. This is acceptable for 
 diagnostic build and must be confirmed on the device (enforcing, no policy load
 failure); it is not a release configuration.
 
+## Restoring adb root on the userdebug build
+
+The first userdebug package flashed and booted (identity `nezha.1088ec3b…`,
+build type userdebug, SELinux enforcing) but reported `ro.debuggable=0`, so adbd
+refused root. Lineage's common product config sets
+`PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG` for userdebug builds, and the build
+property generator then emits `ro.debuggable=0`. The opt-in now also derives the
+device product makefile so that only the explicit userdebug/userdebug pair sets
+that single-value variable to false; the derivation is pinned in the same
+contract (`b53dc7f3…` 1,193 bytes before, `f9955fd7…` 1,561 bytes after) and was
+installed by a third guest transaction. A rebuilt package carries a fresh source
+identity and therefore a new measured system_ext image to admit.
+
 A userdebug image is a diagnostic build. It weakens `ro.debuggable` and adb
 policy and is not a release candidate. Signing, partition fit, device admission
 and the camera result remain separate gates; nothing here touches the phone.

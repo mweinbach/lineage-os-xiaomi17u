@@ -757,3 +757,47 @@ class VariantOptInMetadataSelectionTests(unittest.TestCase):
                     result = subprocess.run([make, "-s", "-f", str(makefile), *assignments], capture_output=True, text=True, env={"PATH": "/usr/bin:/bin"})
                     self.assertEqual(result.returncode, 0, result.stderr)
                     self.assertTrue(result.stdout.strip().startswith(expected), result.stdout)
+
+
+class VariantOptInProductSelectionTests(unittest.TestCase):
+    """The userdebug opt-in restores ro.debuggable=1 through the device product only."""
+
+    # The installed predecessor is the tracked product makefile plus the September 6
+    # merge's explicit candidate selection block inserted before the device inherit.
+    MERGE_SELECTION = (b"# Explicit September 6 successor candidates; native/device qualification remains pending.\n"
+                       b"NEZHA_CALIBRATED_DISPLAY := true\nNEZHA_DOLBY_CONTROLLER := true\nNEZHA_HAPTICS_CONTROLS := true\n"
+                       b"NEZHA_CAMERA_TASK_PROFILES := true\nNEZHA_REFRESH_POLICY := true\nNEZHA_WORKLOAD_CLASSIFIER := false\n\n")
+
+    def installed_predecessor(self):
+        tracked = (source.ROOT / source.PRODUCT_SELECTION).read_bytes()
+        anchor = source.PRODUCT_SELECTION_ANCHOR.encode("ascii")
+        self.assertEqual(tracked.count(anchor), 1)
+        return tracked.replace(anchor, self.MERGE_SELECTION + anchor, 1)
+
+    def test_derivation_inserts_only_the_override_before_the_device_inherit(self):
+        raw = self.installed_predecessor()
+        self.assertEqual(source.metadata.identity(raw), source.PRODUCT_SELECTION_BEFORE)
+        derived = source.derive_product_selection(raw)
+        self.assertEqual(source.metadata.identity(derived), source.PRODUCT_SELECTION_AFTER)
+        anchor = source.PRODUCT_SELECTION_ANCHOR.encode("ascii")
+        self.assertEqual(derived, raw.replace(anchor, source.PRODUCT_SELECTION_EXCEPTION.encode("ascii") + anchor, 1))
+        self.assertEqual(source.load_variant_opt_in_contract()[0]["product_selection"]["after"], source.PRODUCT_SELECTION_AFTER)
+        for changed in (raw + b"\n", derived):
+            with self.subTest(size=len(changed)), self.assertRaises(source.ConstructionSourceError):
+                source.derive_product_selection(changed)
+
+    def test_host_make_sets_the_flag_only_for_explicit_userdebug(self):
+        import shutil
+        import subprocess
+        make = shutil.which("make")
+        if make is None:
+            self.skipTest("host GNU Make unavailable")
+        with tempfile.TemporaryDirectory() as directory:
+            makefile = Path(directory) / "product.mk"
+            makefile.write_bytes(source.PRODUCT_SELECTION_EXCEPTION.encode("ascii") + b"all:\n\t@echo \"[$(PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG)]\"\n")
+            for assignments, expected in ((["TARGET_BUILD_VARIANT=user"], "[]"), (["TARGET_BUILD_VARIANT=userdebug"], "[]"),
+                                          (["TARGET_BUILD_VARIANT=userdebug", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], "[false]")):
+                with self.subTest(assignments=assignments):
+                    result = subprocess.run([make, "-s", "-f", str(makefile), *assignments], capture_output=True, text=True, env={"PATH": "/usr/bin:/bin"})
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(result.stdout.strip(), expected)

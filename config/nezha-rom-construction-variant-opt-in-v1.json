@@ -46,5 +46,17 @@
     },
     "effect": "userdebug/userdebug skips BOARD_NEZHA_PREBUILT_METADATA and its receipt/tool pins; user keeps the full delivery",
     "consequence": "the userdebug package has no injected VENDOR/ODM metadata trees and its packaged vendor/ODM policy images are not verified against the userdebug platform policy; init compiles SELinux policy at boot"
+  },
+  "product_selection": {
+    "path": "device/xiaomi/nezha/lineage_nezha.mk",
+    "before": {
+      "sha256": "b53dc7f36a63ec4db1f5ec134eaab58b836d07f2524944d9db0440737e98d4bf",
+      "size_bytes": 1193
+    },
+    "after": {
+      "sha256": "f9955fd70c79a512f2bdf947e3132b99caee1d1f5c974d95d81dfd56ba91760c",
+      "size_bytes": 1561
+    },
+    "effect": "userdebug/userdebug sets PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG := false so the diagnostic build emits ro.debuggable=1; user is unchanged"
   }
 }

@@ -475,7 +475,7 @@ def validate(plan, payloads):
 # Selecting it is a source change for the build guest, not a build or flash.
 VARIANT_OPT_IN_CONTRACT = "config/nezha-rom-construction-variant-opt-in-v1.json"
 VARIANT_OPT_IN_CONTRACT_ID = "nezha-first-target-files-variant-opt-in-v1"
-VARIANT_OPT_IN_CONTRACT_SHA256 = "9dedfc718ddcb475834e0595f18fff3323b5af781300c130eac5b9717ce99626"
+VARIANT_OPT_IN_CONTRACT_SHA256 = "a72f1e5f9e4cca047c5e193516055396379b9ef31543c620a3872a61a1396826"
 VARIANT_OPT_IN_ENV = "NEZHA_BUILD_VARIANT_OPT_IN"
 VARIANT_DEFAULT = "user"
 VARIANTS = ("user", "userdebug")
@@ -526,7 +526,9 @@ def load_variant_opt_in_contract(path=None):
             and value.get("admitted_variants") == list(VARIANTS)
             and value.get("rejected_variants") == ["eng"]
             and value.get("metadata_selection", {}).get("before") == METADATA_SELECTION_BEFORE
-            and value.get("metadata_selection", {}).get("after") == METADATA_SELECTION_AFTER,
+            and value.get("metadata_selection", {}).get("after") == METADATA_SELECTION_AFTER
+            and value.get("product_selection", {}).get("before") == PRODUCT_SELECTION_BEFORE
+            and value.get("product_selection", {}).get("after") == PRODUCT_SELECTION_AFTER,
             "variant opt-in contract identity differs")
     reader.recheck()
     return value, metadata.identity(raw)
@@ -558,4 +560,32 @@ def derive_metadata_selection(raw):
             "metadata selection requires the exact delivered predecessor")
     result = (METADATA_SELECTION_HEAD + METADATA_SELECTION_EXCEPTION).encode("ascii") + raw[len(METADATA_SELECTION_HEAD):] + b"endif\n"
     require(metadata.identity(result) == METADATA_SELECTION_AFTER, "metadata selection derivation differs")
+    return result
+
+
+# The opt-in also restores adb root on the userdebug diagnostic build. Lineage's
+# common product config sets PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG for userdebug,
+# which makes gen_build_prop emit ro.debuggable=0; the device product overrides
+# that single-value variable only for the explicit userdebug/userdebug pair.
+PRODUCT_SELECTION = "device/xiaomi/nezha/lineage_nezha.mk"
+PRODUCT_SELECTION_ANCHOR = "$(call inherit-product, device/xiaomi/nezha/device.mk)\n"
+PRODUCT_SELECTION_BEFORE = {"sha256": "b53dc7f36a63ec4db1f5ec134eaab58b836d07f2524944d9db0440737e98d4bf", "size_bytes": 1193}
+PRODUCT_SELECTION_AFTER = {"sha256": "f9955fd70c79a512f2bdf947e3132b99caee1d1f5c974d95d81dfd56ba91760c", "size_bytes": 1561}
+PRODUCT_SELECTION_EXCEPTION = (
+    "# Variant opt-in exception: the explicit userdebug diagnostic build restores\n"
+    "# ro.debuggable=1 so adb root works; Lineage's common config otherwise sets\n"
+    "# PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG for userdebug. The user build is unchanged.\n"
+    "ifeq ($(TARGET_BUILD_VARIANT)/$(NEZHA_BUILD_VARIANT_OPT_IN),userdebug/userdebug)\n"
+    "PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG := false\n"
+    "endif\n\n")
+
+
+def derive_product_selection(raw):
+    """Insert the opt-in override before the device inherit; nothing else changes."""
+    anchor = PRODUCT_SELECTION_ANCHOR.encode("ascii")
+    require(type(raw) is bytes and metadata.identity(raw) == PRODUCT_SELECTION_BEFORE and raw.count(anchor) == 1
+            and b"PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG" not in raw,
+            "product selection requires the exact installed predecessor")
+    result = raw.replace(anchor, PRODUCT_SELECTION_EXCEPTION.encode("ascii") + anchor, 1)
+    require(metadata.identity(result) == PRODUCT_SELECTION_AFTER, "product selection derivation differs")
     return result
