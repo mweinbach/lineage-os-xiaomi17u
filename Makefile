@@ -27,14 +27,15 @@ CURRENT_TEST_MODULES = \
 	test_power_inputs test_display_panel_inputs \
 	test_dolby_inputs test_dolby_controller test_haptics_controls \
 	test_camera_task_profiles test_refresh_policy test_workload_classifier_inputs \
-	test_collect_performance test_performance_analysis
+	test_collect_performance test_performance_analysis \
+	test_input_closure test_release_workflow
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test test-current init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 .PHONY: twrp-plan twrp-source-plan recovery-plan recovery-build recovery-verify recovery-stage recovery-inputs-verify recovery-logs-plan
 .PHONY: feature-diagnostics-plan hardware-qualification-plan
-.PHONY: performance-plan refresh-policy-verify
+.PHONY: performance-plan refresh-policy-verify release-plan input-closure
 
 help:
 	@printf '%s\n' \
@@ -58,6 +59,8 @@ help:
 	  'make hardware-qualification-plan Print the measured hardware acceptance checklist' \
 	  'make performance-plan Preview bounded read-only performance snapshots; no phone access' \
 	  'make refresh-policy-verify Verify the guarded refresh source resources offline' \
+	  'make release-plan BUILD_NUMBER=... ARTIFACT_SET=... Print the release stages and check host receipts' \
+	  'make input-closure CLOSURE_OUTPUT=... Write the non-upstream input manifest; add RECEIPTS="a.json b.json"' \
 	  'make recovery-plan   Preview the working TWRP build and ROM input contract' \
 	  'make recovery-build  Reproduce working76 using ignored local input/tool/key paths' \
 	  'make recovery-verify RECOVERY_IMAGE=... Verify the exact image and AVB signature' \
@@ -88,6 +91,19 @@ performance-plan:
 
 refresh-policy-verify:
 	$(PYTHON) scripts/refresh_policy.py verify-source
+
+BUILD_NUMBER ?=
+ARTIFACT_SET ?=
+release-plan:
+	$(if $(strip $(BUILD_NUMBER)),,$(error Set BUILD_NUMBER to the nezha.<hash> identity))
+	$(if $(strip $(ARTIFACT_SET)),,$(error Set ARTIFACT_SET to the artifact set name))
+	$(PYTHON) scripts/release_workflow.py plan --build-number "$(BUILD_NUMBER)" --artifact-set "$(ARTIFACT_SET)"
+	-$(PYTHON) scripts/release_workflow.py check --build-number "$(BUILD_NUMBER)" --artifact-set "$(ARTIFACT_SET)"
+
+CLOSURE_OUTPUT ?= $(CURDIR)/artifacts/input-closure/$(shell date -u +%Y%m%dT%H%M%SZ)/closure.json
+RECEIPTS ?=
+input-closure:
+	$(PYTHON) scripts/input_closure.py generate --output "$(CLOSURE_OUTPUT)" $(foreach r,$(RECEIPTS),--private-receipt "$(r)")
 
 source-plan:
 	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" $(SOURCE_LOCK_ARGS) --dry-run

@@ -9,6 +9,9 @@ preserves dated evidence and earlier experiments.
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
 | [Roadmap](roadmap-20260906.md) | Workstreams, sequencing and decisions for moving from guarded bring-up to a maintainable release |
+| [Release runbook](release-runbook.md) | The nine-stage source-to-bundle sequence the f9e build followed, its receipts and gates, and what the wrapper absorbs next |
+| [Update mechanism](update-mechanism-20260906.md) | What the built target-files declares: Virtual A/B, COW v3, dynamic partitions, care map; consequences for the both-slot route and OTA |
+| [Input closure](input-closure.md) | Manifest of every non-upstream build input by hash, with patch-contract binding and private receipt identities |
 | [Feature-successor installation](package7-feature-successor-install-20260905.md) | Exact installed images, retained-data boot, fingerprint success, camera failures and open UDFPS visual issue |
 | [UI, camera and shade successor installation](package7-f9e-install-20260906.md) | Eight acknowledged writes, completed f9e boot, loaded UI resources and pending post-unlock feature checks |
 | [UI and Aperture follow-up](package7-ui-camera-followup-20260905.md) | New source identity and successful cached component build for the UDFPS pitch and Aperture initialization fixes; packaging and installation pending |
