@@ -7,4 +7,6 @@
     <!-- Micrometres per native panel pixel: 25400 / 419.25723 dpi.
          A float, not a dp/px dimension; used for the 6000 um UDFPS icon. -->
     <item name="pixel_pitch" format="float" type="dimen">60.583</item>
+    <!-- Keep the shade header centered on the approved cutout-aware status bar. -->
+    <bool name="config_alignShadeHeaderWithStatusBar">true</bool>
 </resources>

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "id": "nezha-shade-header-alignment-v1",
+  "status": "source_candidate_not_hardware_verified",
+  "project": "frameworks/base",
+  "origin": "https://github.com/Evolution-X/frameworks_base",
+  "branch": "bka",
+  "base_commit": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "patch": "patches/evolution/0028-nezha-shade-header-alignment.patch",
+  "patch_sha256": "c4d9a47ea1dd8893013955a4bef1176219c0e0aa99968004b509b7a44a59b768",
+  "patch_size_bytes": 3107,
+  "files": [
+    {
+      "path": "packages/SystemUI/src/com/android/systemui/shade/NotificationsQSContainerController.kt",
+      "mode": "100644",
+      "before_sha256": "3f280a1a8e9f0b6ce7787d5c1dcbe6f71bc5435e50361653e0046d9db1bcc2d5",
+      "after_sha256": "e2e0c7e93ef0e944655823ed2d7f948d59e370b849082ccaf6c7974a9c014e3b",
+      "before_git_blob": "1582da37a03394d92fb6e6da773e1fe3805a0c36",
+      "after_git_blob": "dd1177c1fd29141324e1f295114d2f8abb35999b",
+      "before_size_bytes": 13901,
+      "after_size_bytes": 15098
+    },
+    {
+      "path": "packages/SystemUI/res/values/config_shade_header_alignment.xml",
+      "mode": "100644",
+      "before_sha256": null,
+      "after_sha256": "0c71ca904c756a8fa74da458efb9fa1f2fddc46baca8b15f591787d7b1fe74d1",
+      "before_git_blob": null,
+      "after_git_blob": "7f64cab811479aaa50b5c4b33d4002edf0cb8c29",
+      "before_size_bytes": 0,
+      "after_size_bytes": 266
+    }
+  ],
+  "purpose": "Align portrait QQS and expanded QS header with cutout-aware padded status bar content without changing approved standard status-bar geometry.",
+  "runtime_gate": {
+    "resource": "config_alignShadeHeaderWithStatusBar",
+    "default": false,
+    "nezha": true,
+    "portrait_only": true,
+    "split_shade": false,
+    "large_screen_header": false
+  },
+  "geometry": {
+    "cutout_height_px": 144,
+    "status_bar_padding_top_px": 38,
+    "header_row_height_at_density480_px": 84,
+    "derived_top_inset_px": 49
+  },
+  "validation": {
+    "native_preimage_export": "reports/feature-fixes-20260905/notification-shade-source/native-export.json",
+    "native_compile": "pending",
+    "hardware": "pending",
+    "offline_unittest_count": 4647,
+    "offline_unittest_seconds": 200.319,
+    "focused_test_count": 4,
+    "patch_replay": "Exact native preimage and both postimages passed",
+    "overlay_aapt2": "Passed build-tools36.0.0 compile",
+    "offline_log": "reports/feature-fixes-20260905/notification-shade-candidate/full-unittest.log"
+  },
+  "limits": [
+    "The existing header stub has no vertical constraint; the opted-in branch explicitly anchors header TOP to parent TOP.",
+    "Expanded header height and child motion constraints are preserved.",
+    "Only the Nezha overlay opts in; no global status-bar dimensions change."
+  ]
+}

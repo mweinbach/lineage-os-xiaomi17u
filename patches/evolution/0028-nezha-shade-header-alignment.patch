@@ -1,0 +1,56 @@
+diff --git a/packages/SystemUI/src/com/android/systemui/shade/NotificationsQSContainerController.kt b/packages/SystemUI/src/com/android/systemui/shade/NotificationsQSContainerController.kt
+index 1582da37a03394d92fb6e6da773e1fe3805a0c36..dd1177c1fd29141324e1f295114d2f8abb35999b 100644
+--- a/packages/SystemUI/src/com/android/systemui/shade/NotificationsQSContainerController.kt
++++ b/packages/SystemUI/src/com/android/systemui/shade/NotificationsQSContainerController.kt
+@@ -16,6 +16,7 @@
+ 
+ package com.android.systemui.shade
+ 
++import android.content.res.Configuration
+ import android.view.View
+ import android.view.ViewGroup
+ import android.view.WindowInsets
+@@ -26,6 +27,7 @@
+ import androidx.constraintlayout.widget.ConstraintSet.START
+ import androidx.constraintlayout.widget.ConstraintSet.TOP
+ import androidx.lifecycle.lifecycleScope
++import com.android.internal.policy.SystemBarUtils
+ import com.android.app.tracing.coroutines.launchTraced as launch
+ import com.android.systemui.LauncherProxyService
+ import com.android.systemui.LauncherProxyService.LauncherProxyListener
+@@ -282,6 +284,23 @@
+     }
+ 
+     private fun setLargeScreenShadeHeaderConstraints(constraintSet: ConstraintSet) {
++        if (resources.getBoolean(R.bool.config_alignShadeHeaderWithStatusBar)) {
++            // Move the whole header: adding padding inside its fixed height clips expanded QS.
++            val topInset =
++                if (!largeScreenShadeHeaderActive && !splitShadeEnabled &&
++                    resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
++                    val statusBarHeight = SystemBarUtils.getStatusBarHeight(mView.context)
++                    val statusBarPaddingTop =
++                        resources.getDimensionPixelSize(R.dimen.status_bar_padding_top)
++                    val headerRowHeight =
++                        resources.getDimensionPixelSize(R.dimen.large_screen_shade_header_min_height)
++                    // Match the center of the status bar's content below its top padding.
++                    ((statusBarHeight + statusBarPaddingTop - headerRowHeight) / 2).coerceAtLeast(0)
++                } else {
++                    0
++                }
++            constraintSet.connect(R.id.split_shade_status_bar, TOP, PARENT_ID, TOP, topInset)
++        }
+         if (largeScreenShadeHeaderActive) {
+             constraintSet.constrainHeight(R.id.split_shade_status_bar, largeScreenShadeHeaderHeight)
+         } else {
+diff --git a/packages/SystemUI/res/values/config_shade_header_alignment.xml b/packages/SystemUI/res/values/config_shade_header_alignment.xml
+new file mode 100644
+index 0000000000000000000000000000000000000000..7f64cab811479aaa50b5c4b33d4002edf0cb8c29
+--- /dev/null
++++ b/packages/SystemUI/res/values/config_shade_header_alignment.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- SPDX-License-Identifier: Apache-2.0 -->
++<resources>
++    <!-- Opt in when portrait QS must follow cutout-aware, padded status bar content. -->
++    <bool name="config_alignShadeHeaderWithStatusBar">false</bool>
++</resources>
