@@ -1,13 +1,16 @@
 # Workspace documentation
 
-**Package7 is the booted working baseline.** Start with the current pages below;
-the expanded reference index preserves dated evidence and earlier experiments.
+**The Package7 feature successor is the installed development baseline.** It
+boots with retained data and fingerprint enrollment works; camera and the UDFPS
+icon still need fixes. Start with the current pages below. The expanded index
+preserves dated evidence and earlier experiments.
 
 | Start here | Purpose |
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
-| [Package7 feature triage](package7-feature-triage-20260905.md) | Google sign-in and boot completion; fingerprint, camera and status-bar diagnostics |
-| [Feature successor](package7-feature-successor-20260905.md) | Fingerprint/Aperture/display fixes, native Camera candidate, verified private successor bundle and pending device tests |
+| [Feature-successor installation](package7-feature-successor-install-20260905.md) | Exact installed images, retained-data boot, fingerprint success, camera failures and open UDFPS visual issue |
+| [Package7 feature triage](package7-feature-triage-20260905.md) | Historical Package7 diagnostics that led to the successor |
+| [Feature successor](package7-feature-successor-20260905.md) | Source, build, signing and off-device qualification before installation |
 | [Feature-successor build lessons and cache reuse](feature-successor-build-lessons-20260905.md) | Successful build identity, Camera placement, transient retry, AVB/profile drift, publication failures and safe reuse of preserved outputs |
 | [Package7 first boot](package7-first-boot-20260905.md) | Recorded install, retained-data failure and clean-data setup success |
 | [Package7 bundle](package7-experimental-bundle.md) | Exact artifact hashes and off-device verification checkpoint |

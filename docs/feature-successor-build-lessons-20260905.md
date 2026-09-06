@@ -3,7 +3,7 @@
 This record captures what made build `nezha.a6d3109ae93158c498bb30b0`
 succeed, what failed on the way, and which outputs can accelerate the next
 Nezha build. It complements the [candidate qualification record](package7-feature-successor-20260905.md).
-Package7 and its working76 recovery remain the preserved installed baseline.
+Package7 and its working76 recovery remain the preserved rollback baseline.
 The successor was built in the existing single-writer named ext4 environment;
 none of these notes authorize deleting an older output, attaching the source
 volume to a second writer, or reusing bytes whose recorded inputs no longer
@@ -13,9 +13,12 @@ match.
 
 - VM: `twrp-nezha-upstream74-20260829`; source: `/work/evolution`.
 - Physical output: `/work/out/nezha-feature-fixes-20260905-v1`, reached from the
-  source checkout through its relative output alias. Preserve the physical
-  directory and `/work/out/current` alias when present; inspect and rebind an
-  alias deliberately instead of recreating or replacing its target.
+  source checkout through `/work/evolution/out-nezha-feature-fixes-20260905-v1`.
+  Preserve that exact alias and physical directory; do not replace the target.
+  The Go build cache is `/work/cache/nezha-framework-go`. Read-only verification
+  confirmed these paths, Soong intermediates, host tools and product objects on
+  the same persistent ext4 filesystem; the private observation is
+  `reports/feature-fixes-20260905/cache-native-paths.json`.
 - Source inventory: `reports/feature-fixes-20260905/source-installed.json`,
   SHA256 `20778fdee3c36fa1e42fe53c7c14f8eede047f40531d434e8bc42c5e63892e5b`.
 - Admitted unsigned target-files ZIP: SHA256
@@ -127,9 +130,11 @@ fall into four groups:
 
 1. **Build cache:** the physical `/work/out/nezha-feature-fixes-20260905-v1`
    tree contains host tools, Soong intermediates, object files, dexpreopt/R8
-   products, final images and target-files intermediates. Reuse it only after
-   confirming the same source inventory, product, variant, build number,
-   selectors, toolchain and output alias. Let Ninja invalidate changed edges.
+   products, final images and target-files intermediates. Exact-run resumption
+   requires the same source inventory, product, variant, build number, selectors,
+   toolchain and output alias. For the next reviewed fix, retain intermediates,
+   adopt the new source transaction/build identity, and let Ninja rebuild changed
+   dependencies; old final-image qualification does not carry across that change.
 2. **Source transaction cache:** the three
    `/work/validation/feature-fixes-source-20260905-v*` records preserve
    preimages and exact installed bytes. Use them to audit or roll back their own
@@ -144,9 +149,42 @@ fall into four groups:
    key derivation and the current contract pins. Never copy private keys into
    the VM, logs, source tree or repository.
 
-For a successor with any source or configuration change, create a new output
-path unless deliberate incremental reuse is justified and all input checks
-pass. Always create new admission, signing, reconciliation and qualification
-receipts. Preserve the old Package7 and feature-successor directories so a new
-run cannot silently turn historical evidence into a moving `current` target.
+For a subsequent source fix, choose deliberate incremental reuse of this working
+output after source/configuration admission; a clean output is not the default
+response to a source change or host-tool crash. Product/toolchain changes may
+require a separate output after review. Before reusing mutable intermediates,
+retain the prior admitted target-files, signed set, bundle and receipts as
+immutable host artifacts. Always produce new admission, signing, reconciliation
+and qualification receipts for the next image identity. Historical native output
+paths are point-in-time evidence and must reject later changed bytes. Keep the
+original Package7 output and rescue artifacts intact.
 
+The existing runner already uses this output and persistent Go cache. After the
+normal source, sole-writer and capacity preflight, resume only the needed goals
+with `python3 reports/feature-fixes-20260905/build_successor.py <goals>`; for
+packaging, select `target-files-package` by itself. Do not run `clean`, remove
+Soong intermediates, prune the named volume, or enable a new compiler-cache
+launcher as an incidental speed tweak. No new build was launched merely to
+create these cache records.
+
+
+## Installation preflight lesson
+
+The booted Package7 phone reports `ro.bootmode=unknown`, so the first Android
+collector rejected it despite completed boot and running framework services.
+The failed capture remains under
+`evidence/feature-successor-install-20260905-v1/android-before/`. The maintained
+collector now accepts that exact case only with physical Xiaomi/Nezha/canoe
+identity, USB ADB `device` state, completed boot, running primary Zygote and
+SurfaceFlinger, and absent recovery/TWRP markers. Incomplete or conflicting
+states still fail. Commit `f87015b` adds the positive and rejection regressions;
+the subsequent complete offline suite passed all 4,638 tests.
+
+The [installation record](package7-feature-successor-install-20260905.md)
+captures the resulting writes and boot. Its first flash wrapper compared raw
+`os.stat_result` values around the Super write and stopped after fastboot exit 0.
+That comparison includes access time, but its before fields were not serialized;
+the exact changed field is therefore unproven. A fresh full hash matched the
+pinned Super image, the remaining companions were written, and Super was not
+repeated. Future device-write wrappers must serialize the complete before cohort
+and distinguish stable input identity from read-sensitive metadata.
