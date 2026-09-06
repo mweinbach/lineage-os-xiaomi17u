@@ -37,6 +37,10 @@ bundles and target-files ZIPs are not OTA or TWRP installers.
 
 ## Resume development
 
+The [roadmap](roadmap-20260906.md) orders the remaining work and records the
+September 6 decisions: populate both slots, private audience, source kernel as
+the design goal with the prebuilt kernel kept selectable.
+
 **September 6 build-variant opt-in:** the construction guard now admits
 `userdebug` only through an explicit invocation opt-in; `user` stays the default.
 See the [build-variant opt-in record](build-variant-opt-in-20260906.md). It is a
