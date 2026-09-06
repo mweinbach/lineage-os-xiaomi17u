@@ -39,6 +39,26 @@ source identity is now `nezha.3dc84b361cb517a1d98941db` with one changed file.
 python3 reports/variant-opt-in-20260906/build_successor.py --variant userdebug nothing
 ```
 
+## Metadata delivery exception for userdebug
+
+The first userdebug package attempt failed at the prebuilt target-files
+metadata install: its policy gate pins the exact platform SELinux policy
+(`plat_sepolicy.cil` and sidecars) that the delivered vendor and ODM policy
+images were verified against, and a userdebug platform policy differs by
+construction. The opt-in therefore also derives
+`device/xiaomi/nezha/generated/target-files-metadata.mk` so that the explicit
+userdebug/userdebug pair leaves the delivery unselected; the default user build
+keeps the full delivery and gate. The derivation is pinned in the same contract
+(`bbf310cc…` 351 bytes before, `615b7ed9…` 791 bytes after) and was installed by
+a second guest transaction, source identity `nezha.1088ec3b159be6c32e1403f2`.
+
+Consequences for the userdebug package: no injected VENDOR/ODM metadata trees in
+target-files, and the packaged vendor/ODM policy images are not verified against
+the userdebug platform policy. Their precompiled policy hashes will not match, so
+init compiles SELinux policy at boot from the CIL files. This is acceptable for a
+diagnostic build and must be confirmed on the device (enforcing, no policy load
+failure); it is not a release configuration.
+
 A userdebug image is a diagnostic build. It weakens `ro.debuggable` and adb
 policy and is not a release candidate. Signing, partition fit, device admission
 and the camera result remain separate gates; nothing here touches the phone.

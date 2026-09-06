@@ -475,7 +475,7 @@ def validate(plan, payloads):
 # Selecting it is a source change for the build guest, not a build or flash.
 VARIANT_OPT_IN_CONTRACT = "config/nezha-rom-construction-variant-opt-in-v1.json"
 VARIANT_OPT_IN_CONTRACT_ID = "nezha-first-target-files-variant-opt-in-v1"
-VARIANT_OPT_IN_CONTRACT_SHA256 = "2537a1a45681c8cb928a28f42c59b8375dab8916d46575510de164857d0a7937"
+VARIANT_OPT_IN_CONTRACT_SHA256 = "9dedfc718ddcb475834e0595f18fff3323b5af781300c130eac5b9717ce99626"
 VARIANT_OPT_IN_ENV = "NEZHA_BUILD_VARIANT_OPT_IN"
 VARIANT_DEFAULT = "user"
 VARIANTS = ("user", "userdebug")
@@ -524,7 +524,38 @@ def load_variant_opt_in_contract(path=None):
             and value.get("environment_key") == VARIANT_OPT_IN_ENV
             and value.get("default_variant") == VARIANT_DEFAULT
             and value.get("admitted_variants") == list(VARIANTS)
-            and value.get("rejected_variants") == ["eng"],
+            and value.get("rejected_variants") == ["eng"]
+            and value.get("metadata_selection", {}).get("before") == METADATA_SELECTION_BEFORE
+            and value.get("metadata_selection", {}).get("after") == METADATA_SELECTION_AFTER,
             "variant opt-in contract identity differs")
     reader.recheck()
     return value, metadata.identity(raw)
+
+
+# The same opt-in also relaxes the prebuilt target-files metadata delivery for the
+# userdebug diagnostic build only. That delivery's policy gate pins the exact
+# platform SELinux policy the delivered vendor/ODM policy images were verified
+# against, which a userdebug platform policy can never satisfy. The derived
+# selection keeps the full delivery for user and skips it only for the explicit
+# userdebug/userdebug pair; init then compiles policy at boot on that build.
+METADATA_SELECTION = "device/xiaomi/nezha/generated/target-files-metadata.mk"
+METADATA_SELECTION_HEAD = "# Explicit policy-image metadata delivery; actual packaged-policy checks remain required.\n"
+METADATA_SELECTION_BEFORE = {"sha256": "bbf310ccc732bc68bb4ba330c75a3ded899174ff268b0b45ee8aa16ce1289bf8", "size_bytes": 351}
+METADATA_SELECTION_AFTER = {"sha256": "615b7ed98c72acf4a2195c2892117ebcc044b41e4732cbab580384d80f35a75c", "size_bytes": 791}
+METADATA_SELECTION_EXCEPTION = (
+    "# Variant opt-in exception: an explicitly selected userdebug diagnostic build skips the\n"
+    "# prebuilt metadata delivery because its framework SELinux policy differs from the policy\n"
+    "# the delivered vendor/ODM policy images were verified against; init compiles policy at\n"
+    "# boot instead. The default user variant keeps the full delivery and its policy gate.\n"
+    "ifneq ($(TARGET_BUILD_VARIANT)/$(NEZHA_BUILD_VARIANT_OPT_IN),userdebug/userdebug)\n")
+
+
+def derive_metadata_selection(raw):
+    """Wrap the exact installed selection in the opt-in conditional; nothing else changes."""
+    require(type(raw) is bytes and metadata.identity(raw) == METADATA_SELECTION_BEFORE
+            and raw.startswith(METADATA_SELECTION_HEAD.encode("ascii"))
+            and raw.count(b"BOARD_NEZHA_PREBUILT_METADATA := true\n") == 1 and b"ifneq" not in raw,
+            "metadata selection requires the exact delivered predecessor")
+    result = (METADATA_SELECTION_HEAD + METADATA_SELECTION_EXCEPTION).encode("ascii") + raw[len(METADATA_SELECTION_HEAD):] + b"endif\n"
+    require(metadata.identity(result) == METADATA_SELECTION_AFTER, "metadata selection derivation differs")
+    return result

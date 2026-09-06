@@ -16,8 +16,13 @@
   "guard_path": "device/xiaomi/nezha/generated/rom-construction.mk",
   "environment_key": "NEZHA_BUILD_VARIANT_OPT_IN",
   "default_variant": "user",
-  "admitted_variants": ["user", "userdebug"],
-  "rejected_variants": ["eng"],
+  "admitted_variants": [
+    "user",
+    "userdebug"
+  ],
+  "rejected_variants": [
+    "eng"
+  ],
   "change": "Only the user-only variant clause of the predecessor guard is replaced; every other construction restriction is byte-identical.",
   "userdebug_intent": "adb root for on-device vendor camera HAL diagnosis (persisted camera properties, vendor camera cache, CHI log masks, kernel log) without a working recovery.",
   "scope": {
@@ -28,5 +33,18 @@
     "flash_allowed": false,
     "hardware_tested": false,
     "phone_operations": []
+  },
+  "metadata_selection": {
+    "path": "device/xiaomi/nezha/generated/target-files-metadata.mk",
+    "before": {
+      "sha256": "bbf310ccc732bc68bb4ba330c75a3ded899174ff268b0b45ee8aa16ce1289bf8",
+      "size_bytes": 351
+    },
+    "after": {
+      "sha256": "615b7ed98c72acf4a2195c2892117ebcc044b41e4732cbab580384d80f35a75c",
+      "size_bytes": 791
+    },
+    "effect": "userdebug/userdebug skips BOARD_NEZHA_PREBUILT_METADATA and its receipt/tool pins; user keeps the full delivery",
+    "consequence": "the userdebug package has no injected VENDOR/ODM metadata trees and its packaged vendor/ODM policy images are not verified against the userdebug platform policy; init compiles SELinux policy at boot"
   }
 }

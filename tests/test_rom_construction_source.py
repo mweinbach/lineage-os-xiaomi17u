@@ -715,3 +715,45 @@ class VariantOptInGuardTests(unittest.TestCase):
                     self.assertEqual(result.returncode, expected, result.stderr)
                     if expected:
                         self.assertIn("explicitly selects userdebug", result.stderr)
+
+
+class VariantOptInMetadataSelectionTests(unittest.TestCase):
+    """The userdebug opt-in also skips the prebuilt metadata delivery whose policy gate cannot pass."""
+
+    PREDECESSOR = (source.METADATA_SELECTION_HEAD +
+                   "BOARD_NEZHA_PREBUILT_METADATA := true\n"
+                   "BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256 := 79975bdb7d7cf41ea61181420fd1a17c97d72e574bc161edff272d5ef6ee0458\n"
+                   "BOARD_NEZHA_PREBUILT_METADATA_TOOL_SHA256 := c4029700d44fc0273c5716aafd4bc0389aa236084baaddce8afbefedb8d2aff2\n").encode("ascii")
+
+    def test_predecessor_pin_is_recomputed_from_the_delivered_selection(self):
+        self.assertEqual(source.metadata.identity(self.PREDECESSOR), source.METADATA_SELECTION_BEFORE)
+
+    def test_derivation_only_wraps_the_selection_in_the_opt_in_conditional(self):
+        derived = source.derive_metadata_selection(self.PREDECESSOR)
+        self.assertEqual(source.metadata.identity(derived), source.METADATA_SELECTION_AFTER)
+        body = self.PREDECESSOR[len(source.METADATA_SELECTION_HEAD):]
+        self.assertEqual(derived, (source.METADATA_SELECTION_HEAD + source.METADATA_SELECTION_EXCEPTION).encode("ascii") + body + b"endif\n")
+        contract, _ = source.load_variant_opt_in_contract()
+        self.assertEqual(contract["metadata_selection"]["after"], source.METADATA_SELECTION_AFTER)
+        for changed in (self.PREDECESSOR + b"\n", self.PREDECESSOR.replace(b":= true", b":= false"), derived):
+            with self.subTest(size=len(changed)), self.assertRaises(source.ConstructionSourceError):
+                source.derive_metadata_selection(changed)
+
+    def test_host_make_keeps_delivery_except_for_explicit_userdebug(self):
+        import shutil
+        import subprocess
+        make = shutil.which("make")
+        if make is None:
+            self.skipTest("host GNU Make unavailable")
+        with tempfile.TemporaryDirectory() as directory:
+            makefile = Path(directory) / "selection.mk"
+            makefile.write_bytes(source.derive_metadata_selection(self.PREDECESSOR) +
+                                 b"all:\n\t@echo \"[$(BOARD_NEZHA_PREBUILT_METADATA)|$(BOARD_NEZHA_PREBUILT_METADATA_RECEIPT_SHA256)]\"\n")
+            for assignments, expected in ((["TARGET_BUILD_VARIANT=user"], "[true|79975bdb"),
+                                          (["TARGET_BUILD_VARIANT=userdebug"], "[true|79975bdb"),
+                                          (["TARGET_BUILD_VARIANT=userdebug", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], "[|]"),
+                                          (["TARGET_BUILD_VARIANT=user", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], "[true|79975bdb")):
+                with self.subTest(assignments=assignments):
+                    result = subprocess.run([make, "-s", "-f", str(makefile), *assignments], capture_output=True, text=True, env={"PATH": "/usr/bin:/bin"})
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertTrue(result.stdout.strip().startswith(expected), result.stdout)
