@@ -1,0 +1,35 @@
+// Review-only candidate: intentionally not Android.bp and not in PRODUCT_PACKAGES.
+android_app_import {
+    name: "NezhaWorkloadClassifier",
+    enabled: false,
+    apk: "//vendor/xiaomi/nezha-workload-classifier:nezha_wlc_apk",
+    system_ext_specific: true,
+    presigned: true,
+    preprocessed: true,
+    enforce_uses_libs: true,
+    dex_preopt: { enabled: false },
+    required: ["nezha_wlc_model", "libqti_workloadclassifiermodel_nezha"],
+}
+
+prebuilt_etc {
+    name: "nezha_wlc_model",
+    enabled: false,
+    src: "//vendor/xiaomi/nezha-workload-classifier:nezha_wlc_model_input",
+    filename: "wlc_model.tflite",
+    sub_dir: "perf",
+    system_ext_specific: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libqti_workloadclassifiermodel_nezha",
+    enabled: false,
+    stem: "libqti_workloadclassifiermodel",
+    srcs: ["//vendor/xiaomi/nezha-workload-classifier:nezha_wlc_jni"],
+    system_ext_specific: true,
+    compile_multilib: "64",
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    shared_libs: ["libnativehelper", "libcutils", "liblog", "libutils", "libbase",
+                  "libtflite", "libc++", "libc", "libm", "libdl"],
+}
