@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <!-- The retained Nezha vendor policy/config expose low, medium and high
+         effect strengths. Show Android's existing intensity sliders; keep
+         the medium framework defaults. Perceptual qualification is pending. -->
+    <integer name="config_vibration_supported_intensity_levels">3</integer>
+</resources>
