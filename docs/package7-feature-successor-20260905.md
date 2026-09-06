@@ -79,8 +79,8 @@ logical-partition readback, host transfer, and eight-image bundle assembly and
 independent byte verification have passed. The candidate is retained privately
 at `artifacts/flash/nezha/package7-feature-fixes-20260905-v1/`. Its manifest
 SHA256 is `8550182663180841592a47cc0a33efa5bb7a76f5d70a197faa4d662f47040c1f`.
-Boot-content qualification has passed; final error-correction qualification
-is still in progress at this checkpoint. All existing Package7 outputs, bundle, private inputs and
+Boot-content and all-eight-image error-correction qualification have passed.
+The candidate is ready for a separately authorized device installation and test. All existing Package7 outputs, bundle, private inputs and
 working76 recovery remain preserved.
 
 The selected build keeps the original pinned date interface, user variant,
@@ -133,11 +133,26 @@ Camera APK and its same-partition permission XML to final image bytes, root-owne
 mode 0644. The final Aperture APK is present in product. Original Xiaomi Camera
 SHA256 remains `7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e`.
 
+Final FEC comparison passed for all eight admitted logical images. The native
+source571 check also passed with matching before/after source cohorts. The outer
+wrapper subsequently rejected a directory timestamp changed by its own result
+publication; that failed transport remains preserved in
+`artifacts/build-validation/feature-successor-fec-prepare-v5/`. A separate
+read-only collector rehashed the 16 staged controls and exact completed receipts,
+then admitted all 42 finite readbacks through the unchanged FEC semantic checks.
+No FEC comparison was relabeled or rerun. Final collector/source/idle/sole-owner
+checks passed. The successful recovery is
+`artifacts/build-validation/feature-successor-fec-recovery-v2/completion.json`,
+SHA256 `f3a846c5b9b3718d24ad40e342f18df9741241dd6092a0eea4674758ce377b7e`.
+Its semantic admission is `c244278ef90608609d3067010e2b06167d78d78ec56e6fbe7b0e50dad1f83c34`.
+
 The bundle assembler and a separate portable verifier both rehashed all eight
 payloads against manifest SHA256
 `8550182663180841592a47cc0a33efa5bb7a76f5d70a197faa4d662f47040c1f`.
 This is a private image bundle, not an OTA or TWRP installer. Its device-admission,
-flash-authorization, boot and hardware fields remain false.
+flash-authorization, boot and hardware fields remain false. The consolidated
+private record is `reports/feature-fixes-20260905/qualification-summary.json`,
+SHA256 `2cba7071bc494b7dd8e13f3a39864764d09770c625b1ffafeed9590f58f1daa1`.
 
 ## Verification and remaining device work
 

@@ -35,8 +35,12 @@ OTA or TWRP installer.
 The existing source checkout now contains the [feature successor](package7-feature-successor-20260905.md),
 identity `nezha.a6d3109ae93158c498bb30b0`, with fingerprint/Aperture patches,
 stock display overlays and an explicitly enabled Xiaomi Camera system-ext candidate.
-The successor component and full target-files builds passed. Final signed-bundle
-qualification and device tests remain pending; Package7 is still installed.
+The successor component and full target-files builds passed. The signed eight-image
+bundle is assembled and byte-verified, with boot-content, APK/classpath delivery,
+selected VINTF commands, Super readback and all-eight-image FEC checks complete.
+It remains a private experimental image bundle with documented coverage limits.
+Device installation and feature tests require separate authorization; Package7
+is still installed.
 
 1. Start from the existing source checkout and Package7 input state. Read
    [source-lock handling](source-lock.md), [device integration](../device/xiaomi/nezha/README.md)
