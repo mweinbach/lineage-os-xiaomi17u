@@ -9,8 +9,11 @@ Its only supported context is Nezha `lineage_nezha`, `bka`, `bp4a`, `user`, with
 the selected 4096-byte baseline. No source, Android output, original image,
 proprietary input or device is changed.
 
+Paths under `reports/` below identify retained private evidence. They are not
+tracked repository files and may be absent from an isolated worktree.
+
 The implementation follows the audited
-[`treble-plan/plan.json`](../reports/remaining-policy-contexts-20260829/treble-plan/plan.json),
+`reports/remaining-policy-contexts-20260829/treble-plan/plan.json`,
 especially `inventory_projection`, `factory_totals`, `native_entry_points` and
 `policy_and_context_prerequisites`. It uses the original receipt formats from
 [`erofs_inventory.py`](../scripts/erofs_inventory.py) and the confined, bounded,
@@ -188,14 +191,15 @@ After successful actual Package2 inputs exist, the remaining work is concrete:
 6. Complete final APK signature, same-partition privileged-permission and
    effective signer-to-seinfo/seapp checks separately. The
    [factory Camera guide](factory-camera-apk.md) and
-   [pinned resolver review](../reports/factory-camera-apk-20260829/resolver-review-v1/README.md)
+   pinned resolver review at `reports/factory-camera-apk-20260829/resolver-review-v1/README.md`
    describe those boundaries. Native Treble labeling does not validate Android
    permission grants, actual runtime label selection, installation or hardware.
 
 ## Existing acquisition APIs and the first post-package read
 
-The [acquisition recipe](../reports/final-apk-projection-20260901/acquisition-preparation-v1/README.md)
-and its [closed call specification](../reports/final-apk-projection-20260901/acquisition-preparation-v1/call-specification.json)
+The acquisition recipe at `reports/final-apk-projection-20260901/acquisition-preparation-v1/README.md`
+and its closed call specification at
+`reports/final-apk-projection-20260901/acquisition-preparation-v1/call-specification.json`
 map the missing input work to existing implementations. Their future Package2,
 reader, APK, context, tool and native-result bindings remain null. This is a
 source543 baseline preparation; Camera554 needs a successor package and fresh
@@ -203,7 +207,7 @@ consumer admission. No additional maintained transfer, ZIP or executor wrapper
 was added.
 
 The existing
-[`source543-package2-v3/boot_current.py`](../reports/oem-policy-integration-20260829/boot-chain-current-package-preparation-v1/source543-package2-v3/boot_current.py)
+`reports/oem-policy-integration-20260829/boot-chain-current-package-preparation-v1/source543-package2-v3/boot_current.py`
 already composes `load_controls`, `admit_package` and `admit_materialization`.
 It checks the shared package consumer, strict transfer-v3 admission, actual
 outer completions and all 15 materialized image roles against a replayed

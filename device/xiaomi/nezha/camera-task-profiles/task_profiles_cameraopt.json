@@ -1,0 +1,17 @@
+{
+  "Profiles": [
+    {
+      "Name": "CAMERA_CAPTURE_SCHED",
+      "Actions": [
+        {
+          "Name": "JoinCgroup",
+          "Params": {"Controller": "cpuset", "Path": "camera-daemon"}
+        },
+        {
+          "Name": "JoinCgroup",
+          "Params": {"Controller": "cpu", "Path": "camera-daemon"}
+        }
+      ]
+    }
+  ]
+}

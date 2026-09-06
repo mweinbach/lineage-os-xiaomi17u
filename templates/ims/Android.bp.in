@@ -1,0 +1,472 @@
+// Offline disabled IMS native import candidate. No current source/build activation.
+// Preserve source bytes; enable only after module-name, ELF/ABI, policy and image review.
+soong_namespace { imports: ["vendor/xiaomi/nezha-ims"] }
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_libimscamera_jni",
+    enabled: false,
+    stem: "libimscamera_jni",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_libimscamera_jni_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libnativehelper",
+        "libcutils",
+        "libutils",
+        "liblog",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_libimsmedia_jni",
+    enabled: false,
+    stem: "libimsmedia_jni",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_libimsmedia_jni_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libnativehelper",
+        "libcutils",
+        "libutils",
+        "libgui",
+        "libbinder",
+        "liblog",
+        "libandroid",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_lib_imsvt",
+    enabled: false,
+    stem: "lib-imsvt",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_lib_imsvt_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "nezha_ims_lib_imsvideocodec",
+        "libmediandk",
+        "libnativewindow",
+        "libion",
+        "libdmabufheap",
+        "nezha_ims_lib_imsvtutils",
+        "libandroid",
+        "libhidlbase",
+        "nezha_ims_vendor_qti_imsrtpservice_3_0",
+        "nezha_ims_vendor_qti_imsrtpservice_3_1",
+        "libbinder",
+        "libbinder_ndk",
+        "nezha_ims_vendor_qti_ImsRtpService_V2_ndk",
+        "nezha_ims_libdiag_system",
+        "libcutils",
+        "libutils",
+        "liblog",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_lib_imsvideocodec",
+    enabled: false,
+    stem: "lib-imsvideocodec",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_lib_imsvideocodec_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "nezha_ims_lib_imsvtutils",
+        "nezha_ims_lib_imsvtextutils",
+        "libcutils",
+        "libutils",
+        "liblog",
+        "nezha_ims_libdiag_system",
+        "libgui",
+        "libandroid",
+        "libnativewindow",
+        "libmediandk",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_lib_imsvtutils",
+    enabled: false,
+    stem: "lib-imsvtutils",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_lib_imsvtutils_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libutils",
+        "libcutils",
+        "liblog",
+        "nezha_ims_libdiag_system",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_libdiag_system",
+    enabled: false,
+    stem: "libdiag_system",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_libdiag_system_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "nezha_ims_vendor_qti_diaghal_1_0",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "android.hidl.allocator@1.0",
+        "android.hidl.memory@1.0",
+        "libhidlmemory",
+        "libc",
+        "libcutils",
+        "libbinder_ndk",
+        "nezha_ims_vendor_qti_diaghal_V1_ndk",
+        "libc++",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_vendor_qti_ImsRtpService_V2_ndk",
+    enabled: false,
+    stem: "vendor.qti.ImsRtpService-V2-ndk",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_vendor_qti_ImsRtpService_V2_ndk_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libbinder_ndk",
+        "android.hardware.common-V2-ndk",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_vendor_qti_imsrtpservice_3_0",
+    enabled: false,
+    stem: "vendor.qti.imsrtpservice@3.0",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_vendor_qti_imsrtpservice_3_0_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_vendor_qti_imsrtpservice_3_1",
+    enabled: false,
+    stem: "vendor.qti.imsrtpservice@3.1",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_vendor_qti_imsrtpservice_3_1_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "nezha_ims_vendor_qti_imsrtpservice_3_0",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_lib_imsvtextutils",
+    enabled: false,
+    stem: "lib-imsvtextutils",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_lib_imsvtextutils_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libutils",
+        "libcutils",
+        "liblog",
+        "nezha_ims_libdiag_system",
+        "nezha_ims_lib_imsvtutils",
+        "libGLESv2",
+        "libEGL",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_vendor_qti_diaghal_1_0",
+    enabled: false,
+    stem: "vendor.qti.diaghal@1.0",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_vendor_qti_diaghal_1_0_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "libcutils",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_vendor_qti_diaghal_V1_ndk",
+    enabled: false,
+    stem: "vendor.qti.diaghal-V1-ndk",
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_vendor_qti_diaghal_V1_ndk_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "libbinder_ndk",
+        "android.hardware.common-V2-ndk",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "nezha_ims_libdiagatbparser_system",
+    enabled: false,
+    stem: "libdiagatbparser_system",
+    system_ext_specific: true,
+    compile_multilib: "64",
+    arch: { arm64: { srcs: ["//vendor/xiaomi/nezha-ims:nezha_ims_libdiagatbparser_system_input"] } },
+    check_elf_files: true,
+    allow_undefined_symbols: false,
+    strip: { none: true },
+    stl: "none",
+    system_shared_libs: [],
+    shared_libs: [
+        "liblog",
+        "libc++",
+        "libc",
+        "libm",
+        "libdl",
+    ],
+}
+
+
+// Disabled exact stock JNI symlink candidates; requires public native modules.
+install_symlink {
+    name: "nezha_ims_libimscamera_jni_app_link",
+    enabled: false,
+    system_ext_specific: true,
+    installed_location: "priv-app/ims/lib/arm64/libimscamera_jni.so",
+    symlink_target: "/system_ext/lib64/libimscamera_jni.so",
+    required: ["nezha_ims_libimscamera_jni"],
+}
+
+install_symlink {
+    name: "nezha_ims_libimsmedia_jni_app_link",
+    enabled: false,
+    system_ext_specific: true,
+    installed_location: "priv-app/ims/lib/arm64/libimsmedia_jni.so",
+    symlink_target: "/system_ext/lib64/libimsmedia_jni.so",
+    required: ["nezha_ims_libimsmedia_jni"],
+}
+
+
+// INACTIVE CANDIDATE: compose into device/xiaomi/nezha/ims only after the
+// complete IMS API, privilege, policy and native component review passes.
+// These are original DEX JARs, not JVM .class JARs. Preserve the already
+// reviewed dex-import-uses-library.patch. No .odex/.vdex is imported.
+// No product selection is emitted; modules are deliberately disabled.
+
+dex_import {
+    name: "qti-telephony-hidl-wrapper",
+    enabled: false,
+    jars: ["//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_hidl_wrapper_jar"],
+    system_ext_specific: true,
+    required: ["nezha_ims_qti_telephony_hidl_wrapper_xml"],
+    // XML declares no transitive required libraries. Do not invent uses_libs.
+}
+
+prebuilt_etc {
+    name: "nezha_ims_qti_telephony_hidl_wrapper_xml",
+    enabled: false,
+    src: "//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_hidl_wrapper_xml",
+    filename: "qti_telephony_hidl_wrapper.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "qti-telephony-utils",
+    enabled: false,
+    jars: ["//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_utils_jar"],
+    system_ext_specific: true,
+    required: ["nezha_ims_qti_telephony_utils_xml"],
+    // XML declares no transitive required libraries. Do not invent uses_libs.
+}
+
+prebuilt_etc {
+    name: "nezha_ims_qti_telephony_utils_xml",
+    enabled: false,
+    src: "//vendor/xiaomi/nezha-ims:nezha_ims_qti_telephony_utils_xml",
+    filename: "qti_telephony_utils.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "ims-ext-common",
+    enabled: false,
+    jars: ["//vendor/xiaomi/nezha-ims:nezha_ims_ims_ext_common_jar"],
+    product_specific: true,
+    required: ["nezha_ims_ims_ext_common_xml"],
+    // XML declares no transitive required libraries. Do not invent uses_libs.
+}
+
+prebuilt_etc {
+    name: "nezha_ims_ims_ext_common_xml",
+    enabled: false,
+    src: "//vendor/xiaomi/nezha-ims:nezha_ims_ims_ext_common_xml",
+    filename: "ims_ext_common.xml",
+    sub_dir: "permissions",
+    product_specific: true,
+}
+
+// Offline public candidate for device/xiaomi/nezha/ims/Android.bp.
+// Not installed in the Android source or selected. Private bytes stay in vendor.
+// Original IMS SHA256: 56f103215b1aa301e65b6ecde29bb67318cba07f3f3d91d2196372fd14d44172
+// Default candidate preserves the original verified Xiaomi-signed bytes.
+// No derivative, signing key, OEM API implementation or policy is fabricated here.
+// The consolidated native fragment supplies the sole public Soong namespace.
+
+android_app_import {
+    name: "ims",
+    enabled: false,
+    owner: "xiaomi",
+    apk: "//vendor/xiaomi/nezha-ims:nezha_ims_apk_input",
+    presigned: true,
+    preprocessed: true,
+    privileged: true,
+    system_ext_specific: true,
+    enforce_uses_libs: true,
+    uses_libs: [
+        "qti-telephony-hidl-wrapper",
+        "qti-telephony-utils",
+        "ims-ext-common",
+    ],
+    optional_uses_libs: [],
+    required: [
+        "nezha_ims_privapp_permissions",
+        "nezha_ims_qti_permission_groups",
+        "nezha_ims_libimscamera_jni_app_link",
+        "nezha_ims_libimsmedia_jni_app_link",
+        "nezha_ims_lib_imsvt",
+    ],
+}
+
+prebuilt_etc_xml {
+    name: "nezha_ims_privapp_permissions",
+    enabled: false,
+    src: "permissions/privapp-permissions-org.codeaurora.ims.xml",
+    sub_dir: "permissions",
+    filename: "privapp-permissions-org.codeaurora.ims.xml",
+    system_ext_specific: true,
+}
+
+// Preserve the exact factory DIAG and AUDIO supplementary-group contract only
+// after native/DAC review and target group-name resolution. No extra GIDs.
+prebuilt_etc_xml {
+    name: "nezha_ims_qti_permission_groups",
+    enabled: false,
+    src: "permissions/qti_permissions.xml",
+    sub_dir: "permissions",
+    filename: "qti_permissions.xml",
+    system_ext_specific: true,
+}

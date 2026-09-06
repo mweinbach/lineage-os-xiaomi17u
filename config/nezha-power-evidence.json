@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "purpose": "Exact factory power-input audit; no product or charging-control admission",
+  "aapt2_sha256": "13a206c0b022ba3b92f21b6f142f3a4b2d0f3bb1ac0bddfa820ee2c6b00c4c99",
+  "framework": {
+    "runtime_path": "/system/framework/framework-res.apk",
+    "sha256": "9e92be6fde2f503bdee5149fe4528abe6d1c046c701916321a30a037b4fe1f22",
+    "size_bytes": 26095150,
+    "members": {
+      "res/xml/power_profile.xml": "962905006180ae408e1bb6b3d4500c45b6f26421090892b94f3ab6fe239b9db2",
+      "res/xml/power_profile_kleerin.xml": "c17629d0d93a1c8ea7afdf98a142c632a7750ec57308cab823fee1d9a1fc2430"
+    }
+  },
+  "system_ext_image_sha256": "53dd447bf8453f07b9df24e91a9429c2a15b5589b31406747cc62f0fc79cab5e",
+  "captures": {
+    "system-ext": {
+      "/app/PowerKeeper/PowerKeeper.apk": {"sha256": "28d38b8008d68e91412efc12d00fc1b98f1d32135c7681d3466a9f26bd589428", "size_bytes": 5949840},
+      "/app/PowerSaveMode/PowerSaveMode.apk": {"sha256": "77bbd319796c9e693cfc2e9d29901a748a72d36d649df9e0d3e78fdcc5f3c46a", "size_bytes": 29333},
+      "/priv-app/PowerInsight/PowerInsight.apk": {"sha256": "0d78ac109ecd2508be88c1a4533966a0039c431d3301606e62d035e1b9b91e15", "size_bytes": 9804028},
+      "/etc/sysconfig/power-save-conf.xml": {"sha256": "2aa330e031365e3713c81a10c99795a4f77b14eca3dcf4f84b30ff38166de2fb", "size_bytes": 423},
+      "/etc/selinux/system_ext_seapp_contexts": {"sha256": "58d98d572af27865eb65a4f2f06d617969fcebbc612b89a2037e268599e304ae", "size_bytes": 7090},
+      "/etc/selinux/system_ext_property_contexts": {"sha256": "b5ec8cbb8191346a0d80d997a0591baa89a94d0d38df096d9f48e055b845e6dd", "size_bytes": 30955}
+    },
+    "wlc": {
+      "/app/workloadclassifier/workloadclassifier.apk": {"sha256": "b24a90cbe0fd89ade3f0aef86923cbdaadfa30983312855d5f5e29211a0f5808", "size_bytes": 78238},
+      "/etc/perf/wlc_model.tflite": {"sha256": "6dd48a8a3660d49589f7d2f928d30fec7a80198e62bc170e5cde3f252a91a366", "size_bytes": 92060},
+      "/lib64/libqti_workloadclassifiermodel.so": {"sha256": "fd41cd7aec0e5f9b6e6067dcb9c5c78b18a71b9260caa1607a8850306c885705", "size_bytes": 27672}
+    }
+  }
+}

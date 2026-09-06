@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "selector": "NEZHA_CAMERA_TASK_PROFILES",
+  "scope": "Opt-in standard camera-daemon compatibility mapping; not OEM limit-level equivalence or proven performance improvement",
+  "captures": {
+    "system_ext": {
+      "image_sha256": "53dd447bf8453f07b9df24e91a9429c2a15b5589b31406747cc62f0fc79cab5e",
+      "files": {
+        "/etc/task_profiles_cameraopt.json": {"sha256": "5ebbf21479f9b58a30b428d3808680419f64dd4c08960f969f8fa1982230b53c", "size_bytes": 5807}
+      }
+    },
+    "system": {
+      "image_sha256": "fee197e94c2da775eb253090c216bb00add42ad96b7668a07f22354af4584bc7",
+      "files": {
+        "/system/etc/task_profiles.json": {"sha256": "51bd5ae46dc0931665be713cd9ce96152a48c987037a6c5a6b640dc5518666fa", "size_bytes": 18292},
+        "/system/etc/cgroups.json": {"sha256": "69287b59ef6de28628079ec00e298331f80ceb10b86453e967a7d6dff879d180", "size_bytes": 805}
+      }
+    },
+    "vendor": {
+      "image_sha256": "c9c2a03b61cd7c96466f09ffebf723382f430fd1389b1b73186270f3e15dfb20",
+      "files": {
+        "/lib64/libprocessgroup.so": {"sha256": "4ba424ceb9c32229620e7265fd2bb7642934d2e1a306bd0e5624f861b94d4a1b", "size_bytes": 400112},
+        "/lib64/libcameraopt.so": {"sha256": "57dd37bea6b8dcc01915ff00fb3ae3c97623c78e9c405d3b76f0a330574c0162", "size_bytes": 1983432}
+      }
+    }
+  },
+  "upstream": {
+    "repository": "https://github.com/Evolution-X/system_core.git",
+    "branch": "bka",
+    "revision": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+    "branch_head_observed_20260905": "241488ea392c01079941d86ddc458b8a0c9ae6e1",
+    "source_sha256": {
+      "system/core/libprocessgroup/profiles/task_profiles.json": "31ca4240ca1aa71f745a048a9c68e0c060a92fe87dc7eafe48ea51f8633ee6b9",
+      "system/core/libprocessgroup/profiles/cgroups.json": "ab2ed667ff45958843fb0c6ee953a5512def0ae87470c4358aa9576a6a4b2e22",
+      "system/core/rootdir/init.rc": "ab5c2219e622d9ab3753e73b74dfe2f71d87d1431d235cc029b538ccf6f9654d"
+    },
+    "loader_sha256": "024ed910e5545243be35851a4689762a3878db7cc30807e9a1b920331b5a9664"
+  },
+  "loader": {
+    "partition": "preserved vendor",
+    "library": "/vendor/lib64/libprocessgroup.so",
+    "input": "/system_ext/etc/task_profiles_cameraopt.json",
+    "constructor_symbol": "_ZN12TaskProfilesC2Ev",
+    "constructor_va": "0x329f4",
+    "filename_va": "0x10621",
+    "access_call_va": "0x32c50",
+    "load_call_va": "0x32c98",
+    "basis": "Read-only ELF disassembly confirms constructor access check and subsequent TaskProfiles::Load using this filename, after system and vendor profile loads"
+  },
+  "oem_capture_actions": [
+    {"Controller": "cpuset", "Path": "camera-daemon/limit-level6"},
+    {"Controller": "cpu", "Path": "camera-daemon/limit-level2"}
+  ],
+  "candidate_actions": [
+    {"Controller": "cpuset", "Path": "camera-daemon"},
+    {"Controller": "cpu", "Path": "camera-daemon"}
+  ],
+  "native_build_verified": false,
+  "runtime_loader_verified": false,
+  "hardware_verified": false
+}

@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "purpose": "disabled-ims-candidate",
+  "activated": false,
+  "files": [
+    {
+      "path": "proprietary/system_ext/lib64/libimscamera_jni.so",
+      "sha256": "9ed2022d5859866a7172f3d448043fa2b27b371151b061073cd5c59435575573",
+      "size_bytes": 52488,
+      "filegroup": "nezha_ims_libimscamera_jni_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/libimscamera_jni.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/libimsmedia_jni.so",
+      "sha256": "5982c4b6ba79b2804f4824c6d8331d71bcede188daf1292b64a5ad891e45d300",
+      "size_bytes": 71280,
+      "filegroup": "nezha_ims_libimsmedia_jni_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/libimsmedia_jni.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/lib-imsvt.so",
+      "sha256": "44dbdad6dfa1af089222572fe0793fdc104e42d920101a464c453f178e66af2c",
+      "size_bytes": 380408,
+      "filegroup": "nezha_ims_lib_imsvt_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/lib-imsvt.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/lib-imsvideocodec.so",
+      "sha256": "b1489c6add238c0b3cbf7fdca59697ab2c6ebf4c738acd8a7ca58ff47dc09dc1",
+      "size_bytes": 167144,
+      "filegroup": "nezha_ims_lib_imsvideocodec_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/lib-imsvideocodec.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/lib-imsvtutils.so",
+      "sha256": "ff7455fd58c18d8c3721754249ac8bd7bc05c0e38dba4a65ca2f97e423472c94",
+      "size_bytes": 39848,
+      "filegroup": "nezha_ims_lib_imsvtutils_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/lib-imsvtutils.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/libdiag_system.so",
+      "sha256": "13c5a76e4fb240692c96a358faac8b276d3d5a51890a4ecb3ce0bfa097bc11c1",
+      "size_bytes": 372280,
+      "filegroup": "nezha_ims_libdiag_system_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/libdiag_system.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so",
+      "sha256": "a938b8cb94ecb6b3962eb1c48e5d864a3d421e1f68c7885d4da40fd4f7d24d36",
+      "size_bytes": 131584,
+      "filegroup": "nezha_ims_vendor_qti_ImsRtpService_V2_ndk_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/vendor.qti.imsrtpservice@3.0.so",
+      "sha256": "4ea261940d7561e2925c90988a036282fe5678f6815fd19f34b63a412c9393f2",
+      "size_bytes": 265272,
+      "filegroup": "nezha_ims_vendor_qti_imsrtpservice_3_0_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/vendor.qti.imsrtpservice@3.0.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/vendor.qti.imsrtpservice@3.1.so",
+      "sha256": "e9056929300a833834250a3537df1a82947f8dc1ef5ddb1c5c0b2f9f5441641b",
+      "size_bytes": 223824,
+      "filegroup": "nezha_ims_vendor_qti_imsrtpservice_3_1_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/vendor.qti.imsrtpservice@3.1.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/lib-imsvtextutils.so",
+      "sha256": "f3f110a07c71037d92f6bfbf334ee71d059c59295d8ac46907d61b5d9d632e4e",
+      "size_bytes": 18688,
+      "filegroup": "nezha_ims_lib_imsvtextutils_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/lib-imsvtextutils.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/vendor.qti.diaghal@1.0.so",
+      "sha256": "3012b1db3401c08284ae74d7d4f36b70778d8d195cb0096926e7a9259628be81",
+      "size_bytes": 185864,
+      "filegroup": "nezha_ims_vendor_qti_diaghal_1_0_input",
+      "kind": "native-required",
+      "runtime_path": "/system_ext/lib64/vendor.qti.diaghal@1.0.so"
+    },
+    {
+      "path": "proprietary/system/lib64/vendor.qti.diaghal-V1-ndk.so",
+      "sha256": "f2b51cda1c22b562cde04dc0d8cfc0a6495db39194c5f99e2a40744e0e72e6f8",
+      "size_bytes": 85816,
+      "filegroup": "nezha_ims_vendor_qti_diaghal_V1_ndk_input",
+      "kind": "native-required",
+      "runtime_path": "/system/lib64/vendor.qti.diaghal-V1-ndk.so"
+    },
+    {
+      "path": "proprietary/system_ext/lib64/libdiagatbparser_system.so",
+      "sha256": "6ac9bc16328b4043331c5ba9f2b8cd02065647bdbff15c2db4f3e90d55277e27",
+      "size_bytes": 27416,
+      "filegroup": "nezha_ims_libdiagatbparser_system_input",
+      "kind": "native-optional",
+      "runtime_path": "/system_ext/lib64/libdiagatbparser_system.so"
+    },
+    {
+      "path": "proprietary/system_ext/framework/qti-telephony-hidl-wrapper.jar",
+      "sha256": "0262c74a8ec7092b8b8ed1a9bed01a63be765583eb12c21cac718f6d8230d826",
+      "size_bytes": 29982,
+      "filegroup": "nezha_ims_qti_telephony_hidl_wrapper_jar",
+      "kind": "java-dex",
+      "runtime_path": "/system_ext/framework/qti-telephony-hidl-wrapper.jar"
+    },
+    {
+      "path": "proprietary/system_ext/framework/qti-telephony-utils.jar",
+      "sha256": "73f2fde1213dc40bbfc9f22251473028c64dfe93291dfe237265c235998e53a3",
+      "size_bytes": 49490,
+      "filegroup": "nezha_ims_qti_telephony_utils_jar",
+      "kind": "java-dex",
+      "runtime_path": "/system_ext/framework/qti-telephony-utils.jar"
+    },
+    {
+      "path": "proprietary/system_ext/etc/permissions/qti_telephony_hidl_wrapper.xml",
+      "sha256": "9c77a1f474bec0104854e92fcbeef3b03640cb2491bd5bb3355c937a41e0c0ce",
+      "size_bytes": 1704,
+      "filegroup": "nezha_ims_qti_telephony_hidl_wrapper_xml",
+      "kind": "java-registration",
+      "runtime_path": "/system_ext/etc/permissions/qti_telephony_hidl_wrapper.xml"
+    },
+    {
+      "path": "proprietary/system_ext/etc/permissions/qti_telephony_utils.xml",
+      "sha256": "e7d6f08e08a293c14c5f810ae3cd3c36ab1ef798605de663617476bb90b424ac",
+      "size_bytes": 1688,
+      "filegroup": "nezha_ims_qti_telephony_utils_xml",
+      "kind": "java-registration",
+      "runtime_path": "/system_ext/etc/permissions/qti_telephony_utils.xml"
+    },
+    {
+      "path": "proprietary/product/framework/ims-ext-common.jar",
+      "sha256": "e832235b8d2b6c254bd4b12f28214e1ab97e70c772456d1e30b5927252ebfe49",
+      "size_bytes": 198022,
+      "filegroup": "nezha_ims_ims_ext_common_jar",
+      "kind": "java-dex",
+      "runtime_path": "/product/framework/ims-ext-common.jar"
+    },
+    {
+      "path": "proprietary/product/etc/permissions/ims_ext_common.xml",
+      "sha256": "2d0231984a8b68c24f312f5b3ee227354e5cc706371476eff5cf67d892e8c3c0",
+      "size_bytes": 1675,
+      "filegroup": "nezha_ims_ims_ext_common_xml",
+      "kind": "java-registration",
+      "runtime_path": "/product/etc/permissions/ims_ext_common.xml"
+    },
+    {
+      "path": "proprietary/system_ext/priv-app/ims/ims.apk",
+      "sha256": "56f103215b1aa301e65b6ecde29bb67318cba07f3f3d91d2196372fd14d44172",
+      "size_bytes": 1594635,
+      "filegroup": "nezha_ims_apk_input",
+      "kind": "apk-original-oem",
+      "runtime_path": "/system_ext/priv-app/ims/ims.apk"
+    }
+  ],
+  "templates": [
+    {
+      "path": "Android.bp.in",
+      "sha256": "bc8ccb42e2419d1b7fb8380579a0e5881e414aef96af6429f4c907adab5b3f28"
+    },
+    {
+      "path": "permissions/privapp-permissions-org.codeaurora.ims.xml",
+      "sha256": "b4abb71ede4d73b43e6da23d3076ccba8142eb35a3dbab6c3e44ba372d455c79"
+    },
+    {
+      "path": "permissions/qti_permissions.xml",
+      "sha256": "dbcf45ab8a3056716b5f8db36a767d4347aa8c38e5b317b0a0f734539e637614"
+    },
+    {
+      "path": "overlay/packages/services/Telephony/res/values/config.xml",
+      "sha256": "d9523ac69f48c9654012585beb465e6cd5dca567bd8ceeac15515ef31f38b722"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "oem_telephony_api",
+      "detail": "Resolve android.telephony.TelephonyBaseUtilsStub.isMiuiRom()Z ABI and its factory/proxy behavior against the selected framework; no constant stub is accepted."
+    },
+    {
+      "id": "qtelephony_policy",
+      "detail": "Restore reviewed source-owned vendor_qtelephony domain, seapp selection and public mapping against retained vendor policy; compile with enforcing policy and neverallows."
+    },
+    {
+      "id": "permission_and_signer",
+      "detail": "Preserve OEM signer; verify necessary grants and supplementary groups. Pure-signature requests cannot be granted by a privileged allowlist."
+    },
+    {
+      "id": "component_and_image",
+      "detail": "Run strict uses-library/dexpreopt, ELF/version/namespace, SELinux and signed target-files delivery checks on the selected successor."
+    },
+    {
+      "id": "carrier_runtime",
+      "detail": "Authorized installation and carrier registration, provisioning and ordinary call tests remain required; emergency validation requires an approved procedure."
+    }
+  ],
+  "build_guard_template": {
+    "path": "verify_inputs.py.in",
+    "sha256": "3afd017b62dedd2cda072e0ab59ab9a4ff5ac4a6b5e6b93537e3fce10b838c94"
+  }
+}

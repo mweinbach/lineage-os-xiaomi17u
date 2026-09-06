@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "activated": false,
+  "purpose": "disabled exact-factory workload-classifier candidate",
+  "system_ext_image_sha256": "53dd447bf8453f07b9df24e91a9429c2a15b5589b31406747cc62f0fc79cab5e",
+  "audit_baseline_commit": "e4993feb94e5ff513eed4d1f433f21ae339da8f2",
+  "package": "com.qualcomm.qti.workloadclassifier",
+  "original_signer_certificate_sha256": "c9009d01ebf9f5d0302bc71b2fe9aa9a47a432bba17308a3111b75d7b2149025",
+  "files": [
+    {
+      "capture_path": "/app/workloadclassifier/workloadclassifier.apk",
+      "path": "proprietary/system_ext/app/workloadclassifier/workloadclassifier.apk",
+      "filegroup": "nezha_wlc_apk",
+      "sha256": "b24a90cbe0fd89ade3f0aef86923cbdaadfa30983312855d5f5e29211a0f5808",
+      "size_bytes": 78238
+    },
+    {
+      "capture_path": "/etc/perf/wlc_model.tflite",
+      "path": "proprietary/system_ext/etc/perf/wlc_model.tflite",
+      "filegroup": "nezha_wlc_model_input",
+      "sha256": "6dd48a8a3660d49589f7d2f928d30fec7a80198e62bc170e5cde3f252a91a366",
+      "size_bytes": 92060
+    },
+    {
+      "capture_path": "/lib64/libqti_workloadclassifiermodel.so",
+      "path": "proprietary/system_ext/lib64/libqti_workloadclassifiermodel.so",
+      "filegroup": "nezha_wlc_jni",
+      "sha256": "fd41cd7aec0e5f9b6e6067dcb9c5c78b18a71b9260caa1607a8850306c885705",
+      "size_bytes": 27672
+    }
+  ],
+  "templates": [
+    {"path": "Android.bp.in", "sha256": "e1185d80d2cb2b4dcc0c4feea528bb738e843c70cca331a3a5e3f3957bf4bd2c"},
+    {"path": "admission.mk", "sha256": "49cf12b8215ac38e54dc97bcd663af87bdd8795e0d0b09acfc1c2495adb7ce09"}
+  ],
+  "build_guard": {"path": "verify_inputs.py.in", "sha256": "bb6f44061c046b55a739e1e714e08c1a400afbe5bca3bdee3a13e8b45337afbd"},
+  "native_needed": ["libnativehelper.so", "libcutils.so", "liblog.so", "libutils.so", "libbase.so", "libtflite.so", "libc++.so", "libc.so", "libm.so", "libdl.so"],
+  "requested_permissions": ["android.permission.RECEIVE_BOOT_COMPLETED", "android.permission.QUERY_ALL_PACKAGES", "android.permission.PACKAGE_USAGE_STATS"],
+  "factory_domain": "vendor_wlc_app",
+  "factory_seinfo": "platform",
+  "private_property_type": "vendor_wlc_prop",
+  "read_only_properties": ["vendor.perf.workloadclassifier.enable", "vendor.mpctl.init.complete", "ro.vendor.wlc.exit.timeout", "ro.vendor.qti.skip_wlc_default_scan", "ro.vendor.qti.set_wlc_deferred_scan", "persist.vendor.build.date.utc", "ro.bootimage.build.date.utc", "ro.board.first_api_level"],
+  "blockers": [
+    "Original MIUI signer must remain unchanged; factory platform seinfo does not transfer to an Evolution-signed platform. Review package-specific signer/domain policy without granting general platform identity.",
+    "Reconstruct least-privilege enforcing app policy and exact private property mapping; the existing public mpctl mapping does not restore vendor_wlc_app or its write contract.",
+    "Resolve hidden PackageManager API and com.qualcomm.qti.Performance runtime class/JNI ownership and native namespace with the selected source; no generic hidden-API bypass.",
+    "Verify libtflite C++ ABI and all transitive native symbols against a built successor; the three exact bytes are not a closed dependency set.",
+    "Review effective usage-stats permission/app-op, package visibility, direct-boot service startup, and unexpected API 36 minimum versus API 35 target/maximum metadata.",
+    "Close the custom broadcast sender boundary with a supported original-signer-compatible design; do not weaken policy or re-sign a patched APK.",
+    "Native component/image gates and authorized on-device workload hint delivery, release, suspend and energy comparison remain unverified."
+  ]
+}

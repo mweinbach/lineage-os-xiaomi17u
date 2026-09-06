@@ -7,6 +7,24 @@ NEZHA_KERNEL_INPUTS ?= vendor/xiaomi/nezha-kernel
 # Exact Nezha factory geometry; device overlays take priority over common ones.
 DEVICE_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/overlay
 
+# Exact-panel normal-brightness candidate, with explicit private-input gating.
+include $(NEZHA_DEVICE_PATH)/display-panel.mk
+
+# Explicit normal-refresh policy; do not overwrite saved user preferences.
+include $(NEZHA_DEVICE_PATH)/refresh-policy.mk
+
+# CameraOpt compatibility profile consumed by the retained vendor loader.
+include $(NEZHA_DEVICE_PATH)/camera-task-profiles.mk
+
+# Unqualified workload-classifier requests must fail, not disappear silently.
+include $(NEZHA_DEVICE_PATH)/workload-classifier.mk
+
+# Optional framework controls; preserve factory vendor haptic calibration.
+include $(NEZHA_DEVICE_PATH)/haptics.mk
+
+# Manual Dolby controls only; do not replace the factory vendor backend.
+include $(NEZHA_DEVICE_PATH)/dolby.mk
+
 # The opt-in successor uses the original signed factory Camera and a narrow
 # same-partition privilege policy. A selected but missing packet must fail.
 ifeq ($(NEZHA_XIAOMI_CAMERA),true)

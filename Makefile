@@ -22,12 +22,19 @@ CURRENT_TEST_MODULES = \
 	test_reconcile_signed_target_files \
 	test_familyspace_privapp_permissions test_signapk_stored_entry_timestamps \
 	test_experimental_flash_bundle test_device_flash_preflight \
-	test_collect_stock test_collect_recovery
+	test_collect_stock test_collect_recovery \
+	test_hardware_qualification test_ims_inputs test_ims_telephony_api \
+	test_power_inputs test_display_panel_inputs \
+	test_dolby_inputs test_dolby_controller test_haptics_controls \
+	test_camera_task_profiles test_refresh_policy test_workload_classifier_inputs \
+	test_collect_performance test_performance_analysis
 
 .DEFAULT_GOAL := help
 .PHONY: help doctor refs verify test test-current init sync source-plan source-check linux-packages stock-plan
 .PHONY: apple-setup apple-doctor apple-smoke apple-init apple-sync apple-sync-bg apple-status apple-shell apple-plan
 .PHONY: twrp-plan twrp-source-plan recovery-plan recovery-build recovery-verify recovery-stage recovery-inputs-verify recovery-logs-plan
+.PHONY: feature-diagnostics-plan hardware-qualification-plan
+.PHONY: performance-plan refresh-policy-verify
 
 help:
 	@printf '%s\n' \
@@ -47,6 +54,10 @@ help:
 	  'make init            Initialize full platform (Linux x86-64 only)' \
 	  'make sync JOBS=8     Sync full platform and save resolved manifest' \
 	  'make stock-plan      Preview read-only Xiaomi evidence commands' \
+	  'make feature-diagnostics-plan Preview extended feature observations without a phone' \
+	  'make hardware-qualification-plan Print the measured hardware acceptance checklist' \
+	  'make performance-plan Preview bounded read-only performance snapshots; no phone access' \
+	  'make refresh-policy-verify Verify the guarded refresh source resources offline' \
 	  'make recovery-plan   Preview the working TWRP build and ROM input contract' \
 	  'make recovery-build  Reproduce working76 using ignored local input/tool/key paths' \
 	  'make recovery-verify RECOVERY_IMAGE=... Verify the exact image and AVB signature' \
@@ -72,6 +83,12 @@ test:
 test-current:
 	PYTHONPATH="$(CURDIR)/tests:$(CURDIR)" $(PYTHON) -m unittest -v $(CURRENT_TEST_MODULES)
 
+performance-plan:
+	$(PYTHON) scripts/collect_performance.py --serial EXPLICIT_AUTHORIZED_SERIAL --expected-device nezha --output artifacts/performance/preview --dry-run
+
+refresh-policy-verify:
+	$(PYTHON) scripts/refresh_policy.py verify-source
+
 source-plan:
 	$(PYTHON) scripts/workspace.py init --source-dir "$(SOURCE_DIR)" $(SOURCE_LOCK_ARGS) --dry-run
 	$(PYTHON) scripts/workspace.py sync --source-dir "$(SOURCE_DIR)" --jobs "$(JOBS)" $(SOURCE_LOCK_ARGS) --dry-run
@@ -91,6 +108,12 @@ sync:
 
 stock-plan:
 	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --dry-run
+
+feature-diagnostics-plan:
+	$(PYTHON) scripts/collect_stock.py --serial PREVIEW --expected-device nezha --feature-diagnostics --dry-run
+
+hardware-qualification-plan:
+	$(PYTHON) scripts/hardware_qualification.py plan
 
 twrp-plan: recovery-plan
 

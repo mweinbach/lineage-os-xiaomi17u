@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="app_name">Nezha Dolby test controller</string>
+    <string name="warning">Experimental manual controller for the existing vendor Dolby effect. Hardware audio quality, routing and persistence are unverified. Changes may not survive closing this screen, route changes or reboot. No settings are restored automatically.</string>
+    <string name="inspect">Inspect / refresh effect</string>
+    <string name="disconnected">Not connected. Tap Inspect to query the vendor effect. Opening this screen does not change settings.</string>
+    <string name="enable">Dolby enabled</string>
+    <string name="profile_label">Profile to apply</string>
+    <string name="apply_profile">Apply selected profile</string>
+    <string name="profile_warning">Names for IDs 0–8 come from the stock factory XML, not live labels. Other IDs are shown numerically. Runtime profile availability and behavior still require a device test.</string>
+    <string name="profile_unknown">Profile %1$d (name unknown)</string>
+    <string name="profile_named">%1$d — %2$s</string>
+    <string name="state">Readback: Dolby %1$s · framework effect %2$s\nCurrent profile: %3$s · profile count: %4$d\nThis reports current effect state, not audible output or persistence.</string>
+    <string name="on">on</string>
+    <string name="off">off</string>
+    <string name="error">Effect unavailable or operation unconfirmed: %1$s\nAn attempted change may have partially applied. Controls are disabled; tap Inspect to read the actual state.</string>
+    <string name="no_selection">Select a profile before applying.</string>
+</resources>

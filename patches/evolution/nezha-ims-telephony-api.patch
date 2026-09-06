@@ -1,0 +1,37 @@
+diff --git a/telephony/java/android/telephony/TelephonyBaseUtilsStub.java b/telephony/java/android/telephony/TelephonyBaseUtilsStub.java
+new file mode 100644
+--- /dev/null
++++ b/telephony/java/android/telephony/TelephonyBaseUtilsStub.java
+@@ -0,0 +1,32 @@
++/*
++ * Copyright (C) 2026 The Nezha bring-up contributors
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package android.telephony;
++
++import android.os.SystemProperties;
++
++/**
++ * ROM identity query required by the original Nezha IMS provider.
++ *
++ * @hide
++ */
++public final class TelephonyBaseUtilsStub {
++    private TelephonyBaseUtilsStub() {}
++
++    public static boolean isMiuiRom() {
++        return !SystemProperties.get("ro.miui.ui.version.name", "").isEmpty()
++                || !SystemProperties.get("ro.miui.ui.version.code", "").isEmpty();
++    }
++}

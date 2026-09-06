@@ -89,6 +89,27 @@ battery services. These reports may expose client package names, recent activity
 or other personal information. Neither the default nor this option runs full
 `dumpsys`, `logcat`, or a bugreport.
 
+For Package7/successor qualification, `--feature-diagnostics` includes those
+hardware dumps and adds a fixed set of IMS/phone, GNSS/location, NFC/secure
+element, Wi-Fi/Bluetooth, vibrator and BatteryStats observations. It also reads
+the mount table, `mi_ext` directory state, selected OEM properties, displayconfig
+listing, effective automatic-brightness boolean and IMS/Camera package state.
+Radio, location and network dumps may include personal information. All output
+uses the same private receipts and per-command timeouts. Unsupported services
+remain recorded failures; nothing starts a call, scan, camera session or charging
+operation. This flag does not collect APKs.
+
+Preview the exact additional commands without accessing a phone:
+
+```sh
+python3 scripts/collect_stock.py --serial PREVIEW --expected-device nezha \
+  --feature-diagnostics --dry-run
+```
+
+An actual collection still requires an explicitly authorized, identified device.
+Successful dumps are observations only; measured feature outcomes belong in the
+[hardware qualification ledger](hardware-qualification.md).
+
 Private APK copies are also a separate opt-in:
 
 ```sh

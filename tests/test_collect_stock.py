@@ -96,6 +96,45 @@ class StockCollectorTests(unittest.TestCase):
                 self.assertEqual(exc.exception.code, 2)
                 process.assert_not_called()
 
+    def test_feature_dry_run_lists_observations_without_accessing_phone(self):
+        result, stdout, _, process = self.invoke(["--dry-run", "--feature-diagnostics"])
+        self.assertEqual(result, 0)
+        process.assert_not_called()
+        self.assertFalse(self.output.exists())
+        self.assertIn("observations only", stdout)
+        self.assertIn("dumpsys telephony_ims", stdout)
+        self.assertIn("android:bool/config_automatic_brightness_available", stdout)
+        self.assertNotIn(self.serial, stdout)
+
+    def test_feature_diagnostics_are_explicit_private_and_read_only(self):
+        result, _, _, process = self.invoke(["--feature-diagnostics", "--include-dumpsys"])
+        self.assertEqual(result, 0)
+        manifest = self.manifest()
+        self.assertTrue(manifest["options"]["feature_diagnostics"])
+        commands = [call.args[0][3:] for call in process.call_args_list if call.args[0][1:3] == ["-s", self.serial]]
+        for label, command in stock.FEATURE_READ_COMMANDS:
+            self.assertEqual(commands.count(["shell", *command]), 1, label)
+        for service in stock.DUMPSYS_SERVICES:
+            self.assertEqual(commands.count(["shell", "dumpsys", service]), 1)
+        forbidden = {"root", "reboot", "remount", "setprop", "install", "uninstall", "push",
+                     "su", "settings", "--reset", "--enable", "--disable", "call"}
+        self.assertFalse(any(forbidden.intersection(command) for command in commands))
+        for artifact in manifest["artifacts"]:
+            self.assertEqual(stat.S_IMODE((self.output / artifact["path"]).stat().st_mode), 0o600)
+
+    def test_feature_failure_preserves_partial_result_and_continues(self):
+        def effect(command, **kwargs):
+            if command[3:] == ["shell", "dumpsys", "telephony_ims"]:
+                return subprocess.CompletedProcess(command, 1, b"", b"service unavailable")
+            return self.fake_adb(command, **kwargs)
+        result, _, _, _ = self.invoke(["--feature-diagnostics"], effect=effect)
+        self.assertEqual(result, 3)
+        manifest = self.manifest()
+        self.assertEqual(manifest["status"], "partial")
+        records = {row["label"]: row for row in manifest["commands"]}
+        self.assertEqual(records["feature-ims"]["status"], "failed")
+        self.assertEqual(records["feature-vibrator"]["status"], "ok")
+
     def test_rejects_invalid_serial_before_execution(self):
         self.arguments[1] = "SERIAL;reboot"
         with mock.patch.object(stock.subprocess, "run") as process:
@@ -149,6 +188,8 @@ class StockCollectorTests(unittest.TestCase):
     def test_default_commands_are_allowlisted_and_have_no_mutations_or_logs(self):
         result, _, _, process = self.invoke()
         self.assertEqual(result, 0)
+        self.assertFalse(self.manifest()["options"]["feature_diagnostics"])
+        self.assertFalse(any(row["label"].startswith("feature-") for row in self.manifest()["commands"]))
         forbidden = {"root", "reboot", "remount", "install", "uninstall", "push", "logcat", "bugreport", "dumpsys", "su", "settings", "fastboot"}
         for call in process.call_args_list:
             arguments = call.args[0]
