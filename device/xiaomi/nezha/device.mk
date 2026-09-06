@@ -10,6 +10,15 @@ DEVICE_PACKAGE_OVERLAYS += $(NEZHA_DEVICE_PATH)/overlay
 # Exact-panel normal-brightness candidate, with explicit private-input gating.
 include $(NEZHA_DEVICE_PATH)/display-panel.mk
 
+# Explicit normal-refresh policy; do not overwrite saved user preferences.
+include $(NEZHA_DEVICE_PATH)/refresh-policy.mk
+
+# CameraOpt compatibility profile consumed by the retained vendor loader.
+include $(NEZHA_DEVICE_PATH)/camera-task-profiles.mk
+
+# Unqualified workload-classifier requests must fail, not disappear silently.
+include $(NEZHA_DEVICE_PATH)/workload-classifier.mk
+
 # Optional framework controls; preserve factory vendor haptic calibration.
 include $(NEZHA_DEVICE_PATH)/haptics.mk
 

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "baseline": "Package7 installed; candidate builds must retain independent build identities",
+  "scope": "read-only snapshots and offline measured deltas, not automatic device tests or kernel tuning",
+  "collection": {
+    "script": "scripts/collect_performance.py",
+    "max_commands": 120,
+    "max_combined_output_bytes_per_command": 262144,
+    "max_total_seconds": 180,
+    "default_command_timeout_seconds": 5,
+    "max_command_timeout_seconds": 15,
+    "poll_during_idle": false,
+    "requires_explicit_serial": true,
+    "requires_exact_expected_device": "nezha",
+    "phone_mutations_allowed": false
+  },
+  "analysis": {
+    "script": "scripts/performance_analysis.py",
+    "requires_matching_serial_build_kernel_boot_identity": true,
+    "artifact_sha256_required": true,
+    "endpoint_context_is_not_full_interval_proof": true,
+    "service_registration_is_not_performance_proof": true,
+    "charge_counter_units": "microampere-hours per Linux power_supply ABI; device calibration unqualified",
+    "energy_estimate": "not computed",
+    "counter_reset_or_wrap": "reject affected delta; reject comparison on boot/uptime mismatch"
+  },
+  "gates": {
+    "screen_off": "User separately authorizes device collection, performs unplug/screen actions manually, records interval conditions; no ADB polling through idle",
+    "memory": "Record workload and repeated app-switch sequence manually; retain PSI, reclaim, zram and LMKD observations together; no app-retention claims from fixtures",
+    "power_hints": "Registered service/property is an observation; effective boost delivery and release need separate authorized traces",
+    "battery": "Repeated controlled comparable intervals on each build; account for USB reconnect and sampling, temperature, radios, apps and fuel-gauge uncertainty"
+  },
+  "not_selected": ["new zram size", "new compressor", "new swappiness", "new read-ahead", "new page-cluster", "overclock", "undervolt", "thermal protection changes", "kernel replacement"]
+}

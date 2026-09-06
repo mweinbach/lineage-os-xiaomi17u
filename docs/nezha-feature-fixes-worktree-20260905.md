@@ -152,3 +152,8 @@ Both real private-input verifiers passed, as did haptics resource compilation,
 Dolby resource compilation/linking and local Java syntax compilation with an
 explicit compile-only hidden-API stand-in. Java behavior tests use a fake
 AudioEffect; none of these results is native build or hardware proof.
+
+The subsequent [performance and battery follow-up](nezha-performance-worktree-20260905.md)
+adds the requested camera scheduling, refresh-policy, suspend, power-hint/classifier
+and memory-pressure tracks, with their source-versus-runtime limits recorded
+separately.
