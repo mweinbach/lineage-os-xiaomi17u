@@ -20,9 +20,11 @@ completed successfully.
 
 None of these changes has been installed. The completed `376a` and `f9e`
 component results do not prove Aperture preview/capture, vendor camera-provider
-repair, corrected UDFPS rendering or shade alignment on the phone. A fresh
-`f9e` full target-files build is in progress; it has no completed package,
-signing, Super, bundle or installation result.
+repair, corrected UDFPS rendering or shade alignment on the phone. The fresh
+`f9e` full target-files build, signing chain, Super assembly/readback and host
+qualification have completed off-device. The final private eight-image bundle
+also passed assembly and verification, but it is explicitly not device-admitted
+or flash-ready and there is no `f9e` installation result.
 
 ## Preserved `376a` source and component result
 
@@ -59,6 +61,12 @@ Focused source checks passed nine Aperture tests, three UDFPS tests and a host
 `aapt2` compile. The final full offline suite passed all 4,643 tests in 202.601
 seconds. These checks validate source contracts and the compiled components;
 they do not replace a device test.
+
+After the f9e package, signing, Super and qualification tooling was added, the
+current full offline suite passed all 4,647 tests in 195.747 seconds; the log is
+`reports/feature-fixes-20260905/shade-followup/full-unittest.log`. This includes
+the source contracts for commit `954bac6` and still does not establish runtime
+behavior on the phone.
 
 ## Current `f9e` shade source and component result
 
@@ -114,13 +122,60 @@ camera 4's multicamera graph. The null guard does not resolve that post-open
 vendor failure, and no provider fix is claimed. Xiaomi Camera's `0x9005` /
 role-64 abort remains a third, separately captured failure.
 
-A fresh full target-files build for `nezha.f9e30611efe01b882f9ed0cb` is running
-in native session 2162. Its preflight passed with the same persistent VM,
+The fresh full target-files build for `nezha.f9e30611efe01b882f9ed0cb`
+completed with exit 0 in native session 2162, using the same persistent VM,
 manifest head `cc4ebb8db9750afba6049825127304b09327f7c1`, case-sensitive ext filesystem
-and preserved output. It recorded 242,507,866,112 guest bytes and
-281,637,634,048 host bytes free. Build start is not package completion: no new
-target-files identity, archive admission, AVB signing/reconciliation, Super
-assembly/readback, qualification, bundle or installation is claimed. Any
-install requires its own authorization. Device validation must separately test
-the normal status bar, shade header, lockscreen icon, Aperture process survival,
-camera open, preview, capture and Xiaomi Camera.
+and preserved output. The admitted native archive is 11,277,109,433 bytes with
+SHA256 `cc8304be1bd04670de6505a938bdcc3f0f16e4c472f68b4f6a73df63e2803057`.
+Its packaged SystemUI and Aperture members exactly match the earlier component
+artifacts.
+
+The fresh AVB sequence completed inventory, materialization, preparation,
+signing, reconciliation and publication. The reconciled target-files archive is
+11,100,598,098 bytes with SHA256
+`4cd1374be9370a81b505b72eadd79fcceecd777b3fed1618e725742802f76bd8`;
+the signing receipt reports `signed_and_verified` with the complete chain
+verified. Super assembly and LP eight-image readback also passed, including
+logical and physical fit. The resulting compressed sparse Super is
+9,446,504,548 bytes, expands to 15,300,820,992 bytes and has SHA256
+`fd6fcfe734ffbc2b172049d0c34d61fc3df5bcfdeba740407fe708e358bd0551`.
+Its second host transfer completed with the native final hash, full host stream
+and host readback matching that identity. The first transfer remains a preserved
+failure after its full-ancestor guard rejected the partial run; the exact
+changed ancestor and field were not recorded. These are off-device artifact
+results. Functional Super qualification remains false in the LP readback
+receipt. The later FEC qualification closed through a
+read-only recovery collector: all eight native image checks and all 42 finite
+readbacks passed with the 574-row source cohort unchanged, final idle state and
+the sole VM owner re-established. Its completion receipt is 5,342 bytes with
+SHA256 `e1a7484fcd22e984b01cbb33ce17c21c0810796468c4f0d9c4d724540111d8aa`;
+the 18,509-byte semantic admission has SHA256
+`2ba3f467561fe7c1b53bed430d9c564ee79ea539a456e718a09cda343fd71a37`.
+The original collector failure remains preserved and is not reported as a
+successful transport.
+
+Host APK, boot, delivery and classpath qualification also completed. It checked
+456 APKs for API 36 signatures and 4 KiB alignment, preserved exact working76,
+matched the four focused delivery bytes, and resolved 70 classpath JARs from 45
+fragments. The aggregate admission covers the unchanged 574-row source cohort,
+15 native target-files roles and 17 signed roles. The host summary retains the
+documented APK findings and reports
+`completed_with_retained_apk_findings`; the aggregate status is `admitted`.
+Neither claims complete-ROM readiness.
+
+The private bundle is
+`artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/`. Assembly and
+independent verification both completed with exactly eight payloads. Its
+8,240-byte manifest has SHA256
+`78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85`.
+Both receipts retain `flash_ready=false` and status
+`byte-identities-verified-not-device-admitted-not-flash-ready`. This completes
+the off-device build and qualification chain without establishing any live
+feature result. The 5,918-byte joined qualification summary at
+`reports/feature-fixes-20260905/shade-followup/qualification-summary.json` has
+SHA256 `94020ef08a74c10c5924d9358e5023ef2a8edc364e72b9c8ae379146c683d0bd`.
+
+No `f9e` image has been installed. Any installation requires its own
+authorization. Device validation must separately test the normal status bar,
+shade header, lockscreen icon, Aperture process survival, camera open, preview,
+capture and Xiaomi Camera.

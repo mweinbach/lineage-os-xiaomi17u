@@ -19,7 +19,7 @@ match.
   confirmed these paths, Soong intermediates, host tools and product objects on
   the same persistent ext4 filesystem; the private observation is
   `reports/feature-fixes-20260905/cache-native-paths.json`.
-- Source inventory: `reports/feature-fixes-20260905/source-installed.json`,
+- Source inventory: `reports/feature-fixes-20260905/ui-camera-followup/source-installed-before.json`,
   SHA256 `20778fdee3c36fa1e42fe53c7c14f8eede047f40531d434e8bc42c5e63892e5b`.
 - Admitted unsigned target-files ZIP: SHA256
   `a93f8816068564052da34e72b9e6bb8ff8bb2e0238a7ff1fbe537f0129adb6ba`,
@@ -175,6 +175,91 @@ identical. The [follow-up record](package7-ui-camera-followup-20260905.md) pins
 the resulting APKs. This proves the focused cache route for that admitted
 source cohort; it does not carry the old package, signed-image or device
 qualification forward.
+
+The subsequent `nezha.f9e30611efe01b882f9ed0cb` package exercised the full
+successor path from that same retained output. Its exit-0 target-files package
+contains SystemUI and Aperture members that exactly match the focused component
+artifacts. This validates deliberate incremental reuse through packaging for
+the admitted 574-row source cohort; it still required fresh package admission,
+signing, reconciliation, Super and qualification evidence. The resulting
+private eight-image bundle has a separately verified 8,240-byte manifest with
+SHA256 `78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85`.
+Its receipts keep `flash_ready=false`; off-device completion does not admit a
+device or authorize installation.
+
+### Admit a measured successor image without enlarging Super
+
+The f9e package produced a 778,190,848-byte `system_ext.img`, eight KiB below
+the existing 778,199,040-byte successor maximum. Commit `954bac6` admitted that
+exact image identity and its native package-admission receipt alongside the a6d
+image, without increasing the logical maximum, dynamic group budget, physical
+Super size or any physical partition. It then propagated the updated verifier
+and implementation pins through inventory, materialization, signing,
+reconciliation and successor policy selection.
+
+Treat each later above-stock `system_ext` image as its own measured admission.
+Do not raise a capacity merely because the image differs, and do not replace an
+older admitted identity when the fixed budget can safely name both. The exact
+f9e admission led to a completed signing chain and a Super readback that passed
+both logical and physical fit.
+
+### Build fresh identity adapters around retained tooling
+
+The f9e archive could reuse maintained signing and Super implementations, but
+its adapters and selection records had to bind the new build number, 574-row
+source inventory, artifact namespace, package admission and current contract
+pins. Two preserved signing launches stopped at the inventory stage; the later
+sequence completed all six stages after the f9e-specific selection and pin
+cohort was in place. The retained failures establish only where those launches
+stopped, not an unrecorded runtime root cause.
+
+For another successor, create and test a narrowly scoped identity adapter rather
+than copying old build selectors into a new run. Preserve failed stage logs,
+reject predecessor build/source identities, use fresh output namespaces, and
+bind every downstream receipt to the admitted archive. Adapter reuse is safe
+only for the generic mechanism; candidate identity and evidence pins must be
+fresh.
+
+### Reuse the corrected FEC collector boundary
+
+The initial f9e FEC collector rejected its run after native parity work had
+completed because its own native outputs changed directory metadata beneath a
+protected input ancestor. Preserve that failed transport. It does not negate
+the native results, and it must not be rewritten as a successful collector run.
+
+The read-only recovery path did not rerun parity. It compared stable ancestor
+identities while retaining exact leaf and content checks, admitted all eight
+native results and 42 finite readbacks, verified the unchanged 574-row source
+cohort, then re-established idle state and the sole VM owner. The recovery
+completion receipt has SHA256
+`e1a7484fcd22e984b01cbb33ce17c21c0810796468c4f0d9c4d724540111d8aa`; its
+semantic admission has SHA256
+`2ba3f467561fe7c1b53bed430d9c564ee79ea539a456e718a09cda343fd71a37`.
+
+Use this corrected collector boundary for the next candidate. Protect stable
+inputs and leaf content, keep generated native outputs outside the ancestor
+metadata cohort they mutate, and collect already completed results read-only.
+Repeating the original ancestor-stat check would recreate a known wrapper
+failure without adding payload assurance.
+
+The final off-device host qualification kept the lanes explicit. APK, boot,
+delivery and classpath checks completed and the common admission joined them to
+the VINTF and recovered FEC evidence, covering 15 native target-files roles and
+17 signed roles. It retained the APK findings and left `complete_rom_ready`
+false because boot and feature behavior still require the phone. A successful
+aggregate admission is a compact join of its pinned receipts; it does not turn
+off-device checks into runtime proof.
+
+The first f9e Super host transfer stopped after a partial 64 MiB copy when its
+full-ancestor guard rejected the run. It emitted no native error body and did
+not record the exact changed ancestor or field, so do not assign a more specific
+cause. Preserve that failed transfer. The corrected second transfer used a host
+structural directory reader while retaining exact leaf identity, hash and size
+checks; its native final hash, complete host stream and final host readback all
+matched the 9,446,504,548-byte Super at SHA256
+`fd6fcfe734ffbc2b172049d0c34d61fc3df5bcfdeba740407fe708e358bd0551`.
+Reuse that corrected host reader for later Super transfers rather than replaying
+the known full-ancestor guard.
 
 
 ## Installation preflight lesson

@@ -18,7 +18,7 @@ Historical pending gates in that archive describe their original checkpoints.
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
 | Build identity | `nezha.a6d3109ae93158c498bb30b0` |
-| Source record | `reports/feature-fixes-20260905/source-installed.json`, SHA256 `20778fdee3c36fa1e42fe53c7c14f8eede047f40531d434e8bc42c5e63892e5b`; original source lock still matches 1,179 upstream revisions |
+| Source record | `reports/feature-fixes-20260905/ui-camera-followup/source-installed-before.json`, SHA256 `20778fdee3c36fa1e42fe53c7c14f8eede047f40531d434e8bc42c5e63892e5b`; immutable pre-follow-up copy of the installed a6d source cohort; original source lock still matches 1,179 upstream revisions |
 | Private installed bundle | `artifacts/flash/nezha/package7-feature-fixes-20260905-v1/` |
 | Bundle manifest SHA256 | `8550182663180841592a47cc0a33efa5bb7a76f5d70a197faa4d662f47040c1f` |
 | Reconciled target-files SHA256 | `26ae30eddfd3716212b08f4c77b9d6674db26c64c8d798e0038208f24331bc9a` |
@@ -54,9 +54,11 @@ source inventory has SHA256
 and build identity `nezha.f9e30611efe01b882f9ed0cb`. The installed-source and
 native pre-build and post-build inventories are byte-identical at those 574
 rows. Its native SystemUI build completed successfully in 51 Ninja edges and
-produced a host-matched APK. A fresh full target-files build has started after a
-passing preflight, but no new target-files package, signing, Super, bundle or
-installation has been completed, so installed build
+produced a host-matched APK. Its fresh full target-files package, verified
+signing chain, Super assembly/readback and host qualification have now completed
+off-device. The private eight-image bundle has also passed assembly and
+verification, while remaining explicitly not device-admitted or flash-ready.
+No `f9e` image has been installed, so build
 `nezha.a6d3109ae93158c498bb30b0` remains the device baseline.
 
 1. Start from the existing source checkout and preserved Package7 input state. Read
@@ -109,13 +111,58 @@ Host `aapt2` resolves the compiled opt-in to true alongside
 `pixel_pitch=60.583`, 100px rounded-corner content padding and 38px status-bar
 top padding.
 
-A fresh full `f9e` target-files build is now running in native session 2162.
-Its preflight passed for the same persistent VM, output and manifest head
-`cc4ebb8db9750afba6049825127304b09327f7c1`, with a case-sensitive ext
-filesystem, 242,507,866,112 guest bytes free and 281,637,634,048 host bytes free.
-No completed target-files archive, signing, Super assembly, bundle qualification
-or installation is claimed. Separately authorized installation remains required
-before any runtime result can change.
+The fresh full `f9e` target-files build completed with exit 0 in native session
+2162 after its passing preflight for the same persistent VM, output and manifest
+head `cc4ebb8db9750afba6049825127304b09327f7c1`. The admitted native archive is
+11,277,109,433 bytes with SHA256
+`cc8304be1bd04670de6505a938bdcc3f0f16e4c472f68b4f6a73df63e2803057`.
+The reconciled signed archive is 11,100,598,098 bytes with SHA256
+`4cd1374be9370a81b505b72eadd79fcceecd777b3fed1618e725742802f76bd8`,
+and its signing receipt reports a fully verified chain. Its packaged SystemUI
+and Aperture members exactly match the focused component artifacts.
+
+Super assembly and LP eight-image readback passed with logical and physical fit.
+The compressed sparse Super is 9,446,504,548 bytes, expands to 15,300,820,992
+bytes and has SHA256
+`fd6fcfe734ffbc2b172049d0c34d61fc3df5bcfdeba740407fe708e358bd0551`.
+The second host transfer completed with matching native final hash, complete
+host stream and host readback. Its predecessor remains a preserved failed
+partial transfer whose full-ancestor guard fired without recording the exact
+changed ancestor or field. This remains off-device artifact evidence: the LP
+readback receipt does not claim functional Super verification. FEC qualification
+subsequently closed through a
+read-only recovery collector without rerunning native parity: all eight native
+checks and 42 finite readbacks passed with source574 unchanged, final idle state
+and the sole VM owner. Its completion receipt has SHA256
+`e1a7484fcd22e984b01cbb33ce17c21c0810796468c4f0d9c4d724540111d8aa` and
+the semantic admission has SHA256
+`2ba3f467561fe7c1b53bed430d9c564ee79ea539a456e718a09cda343fd71a37`.
+The initial collector failure remains preserved; its transport did not pass.
+Host APK, boot, delivery and classpath qualification then completed with the
+documented APK findings retained. The aggregate admission binds the unchanged
+574-row source cohort, 15 native target-files roles and 17 signed roles; exact
+working76 preservation, the four focused delivery bytes, 456 API 36 signature
+and 4 KiB APK alignment checks, and 70 resolved classpath JARs all passed.
+Complete-ROM readiness remains false because the remaining gates are on-device
+boot, SystemUI shade geometry and visual behavior, runtime app loading and
+permission grants, camera operation and fingerprint icon geometry.
+
+The final private bundle is
+`artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/`. Its assembly and
+independent verification receipts passed with exactly eight payloads. The
+8,240-byte manifest has SHA256
+`78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85`.
+The bundle remains `byte-identities-verified-not-device-admitted-not-flash-ready`;
+no `f9e` image has been installed. Separately authorized installation is
+required before any runtime result can change. The joined off-device
+qualification summary is
+`reports/feature-fixes-20260905/shade-followup/qualification-summary.json`,
+5,918 bytes with SHA256
+`94020ef08a74c10c5924d9358e5023ef2a8edc364e72b9c8ae379146c683d0bd`.
+
+The current full offline suite, including the exact f9e `system_ext` admission
+contracts from commit `954bac6`, passed all 4,647 tests in 195.747 seconds. This
+is tooling and source-contract evidence, not an on-phone result.
 
 Aperture and the installed original Xiaomi Camera both still fail for separately
 established reasons. One Aperture process hit the mode-selector/configuration
