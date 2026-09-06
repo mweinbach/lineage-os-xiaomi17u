@@ -76,11 +76,14 @@ internal padding inside the 148 px lockscreen icon. A source correction derived
 from the device's 419.25723 dpi display (60.58 micrometre pixel pitch) is
 separate work and has not been built or installed.
 
-Aperture and the installed original Xiaomi Camera both still fail. Current logs
-join the failure to the vendor camera provider's stream-configuration abort;
-Aperture also reports a null camera configuration. Preview, capture, lenses and
-OEM features remain unverified. See the installation record above for the exact
-point-in-time evidence.
+Aperture and the installed original Xiaomi Camera both still fail for separately
+established reasons. Aperture has a mode-selector/configuration initialization
+race that throws on a null configuration. Xiaomi Camera reaches a vendor
+session-policy abort for operation mode `0x9005` and role 64. Similar provider
+aborts appear in the Aperture-era buffer, but the captured evidence does not map
+them to an exact Aperture action and they do not cause its earlier Kotlin
+exception. Preview, capture, lenses and OEM features remain unverified. See the
+installation record above for the exact point-in-time evidence.
 
 The Android IMS provider stack is not integrated, and VoLTE, VoWiFi and emergency
 calling remain unverified. Track device results for networking, display/touch,

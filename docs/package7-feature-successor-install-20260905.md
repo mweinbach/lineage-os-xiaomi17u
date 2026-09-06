@@ -73,13 +73,18 @@ recorded PID 3389 for `system_server`. Normal Android reported SELinux
   source correction. That correction is separate work and is not present in
   this installed build, so fingerprint enrollment success does not close the
   UDFPS rendering issue.
-- Aperture still fails. It reaches the camera path, the vendor camera provider
-  aborts while building stream configuration, and Aperture later throws
-  `IllegalStateException: Camera configuration is null`.
-- Xiaomi Camera still fails through the same vendor-provider stream
-  configuration path. The abort records
+- Aperture still fails with `IllegalStateException: Camera configuration is
+  null`. The captured click path exposes a separate initialization race between
+  the mode selector and its nullable configuration state. A later Aperture
+  process constructs Camera0 use cases and reaches CameraService, but no
+  successful open, preview or capture is established.
+- Xiaomi Camera still fails through the vendor-provider stream configuration
+  path. The fully captured abort records
   `get InternalStreamConfigInfo failed` for operation mode `0x9005` and role 64.
-  Neither camera has a successful preview or capture result.
+  Similar provider aborts exist in the Aperture-era crash buffer, but their
+  timing does not cause the earlier Kotlin exception and the evidence does not
+  map `0x9005` to an exact Aperture mode or stream. Neither camera has a
+  successful preview or capture result.
 
 Fingerprint enrollment is the first confirmed hardware improvement from this
 successor. Boot completion and enforcing SELinux are also confirmed on the
