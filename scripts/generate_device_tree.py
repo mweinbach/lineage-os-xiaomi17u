@@ -36,6 +36,7 @@ DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",
+    "display-panel.mk",
     "recovery/root/init.recovery.qcom.rc",
     "overlay/README.md",
     "overlay/frameworks/base/core/res/res/values/config.xml",
