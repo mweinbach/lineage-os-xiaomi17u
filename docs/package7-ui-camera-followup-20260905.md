@@ -15,13 +15,14 @@ Commit `0784f4d` now adds a third source correction: a Nezha-only opt-in that
 centers the portrait shade header on the cutout-aware status-bar content while
 preserving the approved normal status bar's 100px horizontal content padding
 and 38px top padding. It is staged under source identity
-`nezha.f9e30611efe01b882f9ed0cb`; its native SystemUI component build is still
-running.
+`nezha.f9e30611efe01b882f9ed0cb`; its native SystemUI component build has now
+completed successfully.
 
-None of these changes has been packaged, signed or installed. The completed
-`376a` component result does not prove Aperture preview/capture, vendor
-camera-provider repair, or corrected UDFPS rendering on the phone. The `f9e`
-shade source has no completed native component result yet.
+None of these changes has been installed. The completed `376a` and `f9e`
+component results do not prove Aperture preview/capture, vendor camera-provider
+repair, corrected UDFPS rendering or shade alignment on the phone. A fresh
+`f9e` full target-files build is in progress; it has no completed package,
+signing, Super, bundle or installation result.
 
 ## Preserved `376a` source and component result
 
@@ -59,7 +60,7 @@ Focused source checks passed nine Aperture tests, three UDFPS tests and a host
 seconds. These checks validate source contracts and the compiled components;
 they do not replace a device test.
 
-## Current `f9e` shade source and pending build
+## Current `f9e` shade source and component result
 
 The shade source transaction was applied on top of the preserved 572-row
 `376a` inventory. The current source inventory contains 574 rows and has SHA256
@@ -69,6 +70,24 @@ resource and patched `NotificationsQSContainerController.kt`, and updates the
 Nezha overlay to opt in. The resulting build number is
 `nezha.f9e30611efe01b882f9ed0cb`.
 
+The installed-source receipt and the native pre-build and post-build source
+inventories are byte-identical at 574 rows with that same SHA256. Native
+execution completed with exit 0 under
+`/work/validation/feature-fixes-builds-20260905/20260906T022159` and reused the
+preserved physical output `/work/out/nezha-feature-fixes-20260905-v1`. Ninja
+completed 51 edges for the SystemUI component.
+
+The final component identities independently match between native output and
+the host exports:
+
+| Component | Bytes | SHA256 |
+| --- | ---: | --- |
+| SystemUI | 51,257,403 | `7572a603498a18ff0bcf418e1819eb49f86d51ce718dbd9c8054d06dd3902ecf` |
+| Aperture | 8,311,019 | `a80bbe6322cfb2aa2b7cbd0bd683ecc07c18039b07144fba617359968f0667cd` |
+
+The Aperture artifact is unchanged from the `376a` component result. The
+SystemUI artifact changes because it includes the shade alignment source.
+
 Patch 0028 leaves `rounded_corner_content_padding=100px` and
 `status_bar_padding_top=38px` unchanged. The framework resource defaults the
 new behavior to false, while Nezha opts in. In portrait on the normal single
@@ -77,10 +96,11 @@ inset. Landscape, split shade and large-screen header modes retain a zero
 inset. The existing fixed header height and its internal constraints are
 preserved.
 
-The native SystemUI build is running against the preserved output. Until it
-returns successfully and its artifact is admitted, `f9e` is source evidence
-only. There is no new SystemUI APK identity, target-files package, signing,
-Super assembly, bundle or installation result from this transaction.
+Host `aapt2` inspection of the exported SystemUI APK resolves
+`config_alignShadeHeaderWithStatusBar=true`, `pixel_pitch=60.583`,
+`rounded_corner_content_padding=100px`, and
+`status_bar_padding_top=38px`. This confirms the compiled resource values; it
+does not establish visual behavior on the phone.
 
 ## Current boundaries and next gate
 
@@ -94,11 +114,13 @@ camera 4's multicamera graph. The null guard does not resolve that post-open
 vendor failure, and no provider fix is claimed. Xiaomi Camera's `0x9005` /
 role-64 abort remains a third, separately captured failure.
 
-First finish and admit the current SystemUI component build. Before
-installation, build a fresh target-files package for
-`nezha.f9e30611efe01b882f9ed0cb` or its explicit successor, then repeat archive
-admission, AVB signing/reconciliation, Super assembly/readback, qualification
-and bundle verification. Any install requires its own authorization. Device
-validation must separately test the normal status bar, shade header, lockscreen
-icon, Aperture process survival, camera open, preview, capture and Xiaomi
-Camera.
+A fresh full target-files build for `nezha.f9e30611efe01b882f9ed0cb` is running
+in native session 2162. Its preflight passed with the same persistent VM,
+manifest head `cc4ebb8db9750afba6049825127304b09327f7c1`, case-sensitive ext filesystem
+and preserved output. It recorded 242,507,866,112 guest bytes and
+281,637,634,048 host bytes free. Build start is not package completion: no new
+target-files identity, archive admission, AVB signing/reconciliation, Super
+assembly/readback, qualification, bundle or installation is claimed. Any
+install requires its own authorization. Device validation must separately test
+the normal status bar, shade header, lockscreen icon, Aperture process survival,
+camera open, preview, capture and Xiaomi Camera.

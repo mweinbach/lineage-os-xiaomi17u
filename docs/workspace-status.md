@@ -51,8 +51,11 @@ and produced pinned SystemUI and Aperture APKs. Commit `0784f4d` subsequently
 added the Nezha portrait shade-header alignment source. The current 574-row
 source inventory has SHA256
 `abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc`
-and build identity `nezha.f9e30611efe01b882f9ed0cb`; its native SystemUI build
-is still running. No new target-files package, signing, Super, bundle or
+and build identity `nezha.f9e30611efe01b882f9ed0cb`. The installed-source and
+native pre-build and post-build inventories are byte-identical at those 574
+rows. Its native SystemUI build completed successfully in 51 Ninja edges and
+produced a host-matched APK. A fresh full target-files build has started after a
+passing preflight, but no new target-files package, signing, Super, bundle or
 installation has been completed, so installed build
 `nezha.a6d3109ae93158c498bb30b0` remains the device baseline.
 
@@ -95,8 +98,23 @@ absent from the phone. The newer `nezha.f9e30611efe01b882f9ed0cb` source adds a
 Nezha-only portrait shade-header inset. It preserves the approved normal status
 bar's 100px horizontal content padding and 38px top padding, and leaves the new
 behavior disabled by default outside the Nezha overlay. Its SystemUI build is
-in progress, so no compiled `f9e` component is claimed. Full packaging, signing,
-bundle qualification and separately authorized installation remain required
+complete: native run
+`/work/validation/feature-fixes-builds-20260905/20260906T022159` returned exit 0
+after 51 Ninja edges, and the native and host SystemUI APKs independently match
+at 51,257,403 bytes with SHA256
+`7572a603498a18ff0bcf418e1819eb49f86d51ce718dbd9c8054d06dd3902ecf`.
+The unchanged Aperture APK remains 8,311,019 bytes with SHA256
+`a80bbe6322cfb2aa2b7cbd0bd683ecc07c18039b07144fba617359968f0667cd`.
+Host `aapt2` resolves the compiled opt-in to true alongside
+`pixel_pitch=60.583`, 100px rounded-corner content padding and 38px status-bar
+top padding.
+
+A fresh full `f9e` target-files build is now running in native session 2162.
+Its preflight passed for the same persistent VM, output and manifest head
+`cc4ebb8db9750afba6049825127304b09327f7c1`, with a case-sensitive ext
+filesystem, 242,507,866,112 guest bytes free and 281,637,634,048 host bytes free.
+No completed target-files archive, signing, Super assembly, bundle qualification
+or installation is claimed. Separately authorized installation remains required
 before any runtime result can change.
 
 Aperture and the installed original Xiaomi Camera both still fail for separately
