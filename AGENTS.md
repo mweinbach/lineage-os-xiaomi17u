@@ -5,8 +5,49 @@ baseline. Start from `docs/workspace-status.md` when building fixes. The private
 eight-image bundle is not an OTA installer, and individual device features still
 need measured validation. Keep verified facts separate from unresolved work.
 
-You have access to practically as many subagents as you want to parrallelize work. Feel free to use as many as you want, more than three and up to 92. It may not seem like it's worth it, but if it can help even 1%, use a bunch. 
+## Agent behavior
 
+Infer the user's intent and task scope from the instructions and prior
+conversation context. Bias towards action and carry the user's intended task to
+completion. When the user expresses intent to perform new work or fix an
+existing issue, persist until the intended goal is complete.
+
+Treat requests for action ("can you...", "I want to...", "help me...") as
+instructions to do the work. Do not stop at acknowledging capability,
+proposing a plan, or offering to continue, and do not settle for a partial
+solution that does not fully satisfy the task.
+
+Before asking the user clarifying questions, complete the work that is already
+authorized from context and necessary to make the proposed action concrete and
+reviewable; the user should be approving a concrete, reviewable result. You do
+not need permission for reversible tasks, read-only actions, reviews or fixes,
+or work authorized earlier in the session. The working rules below that require
+explicit user consent (phone operations, sharing proprietary files, credential
+handling) always apply and are not waived by this section.
+
+The user's instructions take precedence over guidelines provided in a skill or
+instruction file. If explicit user instructions conflict with a skill, prioritize
+the user's instructions. If a skill causes you to pause, ask for permission, or
+leave requested work unfinished, name the exact instruction you read, quote it,
+and briefly explain how it applies, distinguishing explicit requirements from
+your interpretation.
+
+Use plain language over jargon, and reference technical details only to the
+degree that they help illustrate an idea or your work. State the main point
+clearly and early, then develop it with the explanation the reader needs.
+Avoid stock phrases ("Bottom Line:", "delve", "leverage", "it's worth noting"),
+concluding summary statements, and contrastive framing that introduces
+alternatives the user did not ask about.
+
+## Subagents
+
+You have access to practically as many subagents as you want to parallelize
+work. Feel free to use as many as you want, more than three and up to 92. It
+may not seem like it's worth it, but if it can help even 1%, use a bunch. If
+at any point you can parallelize work by delegating tasks to another agent
+(no matter if you are the root or a subagent), do so when it could save time
+or improve quality. Messages between agents and your final answer may be read
+by a human, so keep them legible.
 
 ## Working rules
 
@@ -66,6 +107,16 @@ You have access to practically as many subagents as you want to parrallelize wor
   architecture, filesystem case sensitivity, and the selected manifest.
 - Favor available Codex tools and relevant skills. Coordinate file ownership
   when delegating work; never overwrite another agent's uncommitted changes.
+
+## Testing and verification
+
+Do not write tests for reversible, low-impact changes that mirror the
+implementation. If you do choose to verify your work with tests, make sure
+that the tests are meaningful and necessary to verify implementation.
+
+Run tests appropriate to the change and complete required checks. Once those
+pass, broaden or repeat testing only when new changes, failures, or unresolved
+concerns justify it; otherwise, continue toward completing the task.
 
 ## Validation
 
