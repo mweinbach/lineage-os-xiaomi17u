@@ -64,6 +64,32 @@ DUMPSYS_SERVICES = (
     "media.camera", "display", "sensorservice", "audio", "media.audio_policy",
     "thermalservice", "power", "battery",
 )
+# Explicit opt-in Package7/successor feature diagnostics. These are observations,
+# not functional tests: a registered service or a successful dump is not a pass.
+FEATURE_READ_COMMANDS = (
+    ("feature-mounts", ("cat", "/proc/mounts")),
+    ("feature-mi-ext", ("ls", "-ld", "/mnt/vendor/mi_ext", "/mi_ext")),
+    ("feature-displayconfig", ("ls", "-l", "/product/etc/displayconfig")),
+    ("feature-auto-brightness", ("cmd", "overlay", "lookup", "android",
+                                 "android:bool/config_automatic_brightness_available")),
+    ("feature-ims-package", ("dumpsys", "package", "org.codeaurora.ims")),
+    ("feature-camera-package", ("dumpsys", "package", "com.android.camera")),
+    ("feature-ims", ("dumpsys", "telephony_ims")),
+    ("feature-phone", ("dumpsys", "phone")),
+    ("feature-location", ("dumpsys", "location")),
+    ("feature-nfc", ("dumpsys", "nfc")),
+    ("feature-secure-element", ("dumpsys", "secure_element")),
+    ("feature-bluetooth", ("dumpsys", "bluetooth_manager")),
+    ("feature-wifi", ("dumpsys", "wifi")),
+    ("feature-batterystats", ("dumpsys", "batterystats", "--charged")),
+    ("feature-vibrator", ("dumpsys", "vibrator_manager")),
+)
+FEATURE_PROPERTIES = (
+    "sys.boot_completed", "ro.audio.audiozoom", "ro.audio.ozo.channelmask.in",
+    "ro.audio.ullunique", "ro.config.WlanAntTunerPolicy", "ro.thermal.iec.enable",
+    "persist.sys.power_mode_support", "ro.audio.bt.connect.disable.mute",
+    "persist.bluetooth.avrcp.skip.map.update",
+)
 APK_PACKAGES = ("com.android.camera", "com.miui.gallery")
 STOCK_PARTITIONS = {"system", "system_ext", "product", "vendor", "odm"}
 
@@ -152,6 +178,7 @@ class Collector:
             "device": {"serial": args.serial, "expected_device": args.expected_device},
             "options": {
                 "include_dumpsys": args.include_dumpsys,
+                "feature_diagnostics": args.feature_diagnostics,
                 "pull_stock_apks": args.pull_stock_apks,
                 "apk_packages": args.apk_package if args.pull_stock_apks else [],
                 "timeout_seconds": args.timeout,
@@ -328,9 +355,14 @@ class Collector:
             for source in METADATA_DIRECTORIES:
                 label = source.strip("/").replace("/", "-")
                 self.pull(label, source, self.output / "metadata" / label)
-            if self.args.include_dumpsys:
+            if self.args.include_dumpsys or self.args.feature_diagnostics:
                 for service in DUMPSYS_SERVICES:
                     self.run(f"dumpsys-{service}", ("shell", "dumpsys", service))
+            if self.args.feature_diagnostics:
+                for name in FEATURE_PROPERTIES:
+                    self.property(name)
+                for label, command in FEATURE_READ_COMMANDS:
+                    self.run(label, ("shell", *command))
             if self.args.pull_stock_apks:
                 self.pull_apks(packages)
         except KeyboardInterrupt:
@@ -361,6 +393,7 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--timeout", type=float, default=30, help="Per-command seconds; pulls get at least 120 seconds (default: 30).")
     result.add_argument("--dry-run", action="store_true", help="Describe collection without running ADB or writing files.")
     result.add_argument("--include-dumpsys", action="store_true", help="Opt in to potentially sensitive camera/audio/sensor/display reports.")
+    result.add_argument("--feature-diagnostics", action="store_true", help="Opt in to hardware dumps plus sensitive radio/location/network, mi_ext and brightness observations; never runs functional tests.")
     result.add_argument("--pull-stock-apks", action="store_true", help="Opt in to private copies of allowlisted stock system APKs.")
     result.add_argument("--apk-package", action="append", choices=APK_PACKAGES, help="Allowlisted package to pull; repeatable (default with --pull-stock-apks: com.android.camera).")
     return result
@@ -382,7 +415,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("Dry run: no ADB commands executed and no evidence files written.")
         print("Preflight: one explicitly selected authorized physical Xiaomi device; exact expected codename required.")
         print(f"Plan: {len(IDENTITY_PROPERTIES) + len(PROPERTIES)} allowlisted properties, {len(READ_COMMANDS)} hardware/package/HAL reads, {len(METADATA_DIRECTORIES)} VINTF/permission directory pulls.")
-        print(f"Detailed dumpsys reports: {'enabled (sensitive)' if args.include_dumpsys else 'disabled'}.")
+        print(f"Detailed dumpsys reports: {'enabled (sensitive)' if args.include_dumpsys or args.feature_diagnostics else 'disabled'}.")
+        print(f"Feature diagnostics: {'enabled (sensitive, observations only)' if args.feature_diagnostics else 'disabled'}.")
+        if args.feature_diagnostics:
+            for label, command in FEATURE_READ_COMMANDS:
+                print(f"  {label}: shell {' '.join(command)}")
+            print("  Additional properties: " + ", ".join(FEATURE_PROPERTIES))
         print(f"Stock APK pulls: {', '.join(args.apk_package) if args.pull_stock_apks else 'disabled'}.")
         print("No root, reboot, unlock, flash, install, settings changes, logcat, bugreport, or user-data pulls.")
         return 0
