@@ -205,7 +205,8 @@ def load_profile():
              "unexpected dynamic logical budget override")
     override = overrides["system_ext"]
     _keys(override, ("stock_budget_bytes", "maximum_size_bytes", "measured_image",
-                     "admission_record", "build_number"), "dynamic logical budget override")
+                     "admission_record", "build_number", "additional_measured_images"),
+          "dynamic logical budget override")
     _integer(override["stock_budget_bytes"], 4096, profile["logical_group_budget"],
              "stock logical budget")
     _integer(override["maximum_size_bytes"], 4096, profile["logical_group_budget"],
@@ -225,6 +226,28 @@ def load_profile():
                  "size_bytes": 14222}
              and override["build_number"] == "nezha.a6d3109ae93158c498bb30b0",
              "successor logical budget provenance differs")
+    additional = override["additional_measured_images"]
+    _require(type(additional) is list and len(additional) == 1,
+             "exact additional measured image admission required")
+    candidate = additional[0]
+    _keys(candidate, ("measured_image", "admission_record", "build_number"),
+          "additional measured image admission")
+    _identity_spec(candidate["measured_image"])
+    _identity_spec(candidate["admission_record"], path=True)
+    _require(candidate == {
+        "measured_image": {
+            "sha256": "707442120ef680143b653d765c6148617482fa196b951998844d7ed8edfa7432",
+            "size_bytes": 778190848},
+        "admission_record": {
+            "path": "artifacts/build-validation/feature-successor-f9e-package-admit-v1/admission.json",
+            "sha256": "aae261fc3bc3974a280426ad7a1711698ee7d5c476a1e8806b4e45b78ad505c7",
+            "size_bytes": 14226},
+        "build_number": "nezha.f9e30611efe01b882f9ed0cb"},
+        "additional measured image provenance differs")
+    _require(override["stock_budget_bytes"] < candidate["measured_image"]["size_bytes"]
+             <= override["maximum_size_bytes"]
+             and candidate["measured_image"]["size_bytes"] % 4096 == 0,
+             "additional measured image exceeds the existing logical allowance")
     for name, expected in (("vbmeta", (0, 0)), ("boot", (1769904000, 0)),
                            ("recovery", (1, 1)), ("vbmeta_system", (1769904000, 0))):
         row = profile["signed_images"][name]
@@ -264,7 +287,9 @@ def validate_image_budget(profile, name, row):
              "image exceeds package budget or is unaligned")
     override = profile.get("dynamic_logical_budget_overrides", {}).get(name)
     if override is not None and row["size_bytes"] > override["stock_budget_bytes"]:
-        _require({key: row[key] for key in ("sha256", "size_bytes")} == override["measured_image"],
+        admitted = [override["measured_image"]] + [
+            item["measured_image"] for item in override.get("additional_measured_images", [])]
+        _require({key: row[key] for key in ("sha256", "size_bytes")} in admitted,
                  "image above stock budget is not the admitted successor image")
 
 

@@ -82,7 +82,21 @@
         "sha256": "35394333108fdcbb233cd702bca88260e8d2bb452571308465af420583da7238",
         "size_bytes": 14222
       },
-      "build_number": "nezha.a6d3109ae93158c498bb30b0"
+      "build_number": "nezha.a6d3109ae93158c498bb30b0",
+      "additional_measured_images": [
+        {
+          "measured_image": {
+            "sha256": "707442120ef680143b653d765c6148617482fa196b951998844d7ed8edfa7432",
+            "size_bytes": 778190848
+          },
+          "admission_record": {
+            "path": "artifacts/build-validation/feature-successor-f9e-package-admit-v1/admission.json",
+            "sha256": "aae261fc3bc3974a280426ad7a1711698ee7d5c476a1e8806b4e45b78ad505c7",
+            "size_bytes": 14226
+          },
+          "build_number": "nezha.f9e30611efe01b882f9ed0cb"
+        }
+      ]
     }
   },
   "logical_partitions": [

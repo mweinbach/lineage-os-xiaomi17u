@@ -121,6 +121,15 @@ by this avbtool path and remain explicitly unverified in receipts. The wrapper
 does not claim filesystem semantic validation, kernel compatibility, VINTF,
 SELinux correctness, OTA support or firmware outside this Android root chain.
 
+The `system_ext` logical override keeps its existing 778,199,040-byte maximum.
+Above-stock images are admitted only by exact measured image identity and the
+corresponding native package-admission receipt. The original a6d image remains
+admitted at 778,199,040 bytes. The f9e image is separately admitted at
+778,190,848 bytes, SHA256
+`707442120ef680143b653d765c6148617482fa196b951998844d7ed8edfa7432`,
+through the pinned f9e package-admission record. This adds no bytes to the
+logical maximum, physical Super size, dynamic group, or any physical partition.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting
