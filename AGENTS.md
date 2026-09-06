@@ -39,16 +39,6 @@ Avoid stock phrases ("Bottom Line:", "delve", "leverage", "it's worth noting"),
 concluding summary statements, and contrastive framing that introduces
 alternatives the user did not ask about.
 
-## Subagents
-
-You have access to practically as many subagents as you want to parallelize
-work. Feel free to use as many as you want, more than three and up to 92. It
-may not seem like it's worth it, but if it can help even 1%, use a bunch. If
-at any point you can parallelize work by delegating tasks to another agent
-(no matter if you are the root or a subagent), do so when it could save time
-or improve quality. Messages between agents and your final answer may be read
-by a human, so keep them legible.
-
 ## Working rules
 
 - Make small, descriptive commits as useful work is completed. Run tests before
