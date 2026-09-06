@@ -74,8 +74,13 @@ command succeeded on an isolated retry, and the final ordinary build completed
 with unchanged source and compiler settings. No failed attempt is used as a
 successful package record.
 
-Archive admission, host signing, Super assembly and final artifact qualification
-remain pending. All existing Package7 outputs, bundle, private inputs and
+Archive admission, host AVB signing and reconciliation, Super assembly, full
+logical-partition readback, host transfer, and eight-image bundle assembly and
+independent byte verification have passed. The candidate is retained privately
+at `artifacts/flash/nezha/package7-feature-fixes-20260905-v1/`. Its manifest
+SHA256 is `8550182663180841592a47cc0a33efa5bb7a76f5d70a197faa4d662f47040c1f`.
+Boot-content qualification has passed; final error-correction qualification
+is still in progress at this checkpoint. All existing Package7 outputs, bundle, private inputs and
 working76 recovery remain preserved.
 
 The selected build keeps the original pinned date interface, user variant,
@@ -83,9 +88,61 @@ The selected build keeps the original pinned date interface, user variant,
 SELinux enforcement and verified-boot configuration. The internal construction
 capability remains source-owned. The development signing key stays on the Mac.
 
+## Signed artifact qualification
+
+The reconciled target-files ZIP is
+`artifacts/avb/nezha/package7-feature-fixes-20260905-v1/reconciled-v1/target-files.zip`,
+SHA256 `26ae30eddfd3716212b08f4c77b9d6674db26c64c8d798e0038208f24331bc9a`
+(11,100,598,089 bytes). Signing verified the full selected chain and both
+reproduction passes while retaining working76. The larger system-ext allocation
+is bound to the measured Camera-bearing image and admitted build, within the
+unchanged dynamic-partition group and physical Super capacities.
+
+The private delivery remains eight payloads: shared `super.img` plus `boot_a`,
+`dtbo_a`, `init_boot_a`, `recovery_a`, `vendor_boot_a`, `vbmeta_a`, and
+`vbmeta_system_a`. The sparse Super is 9,446,512,740 bytes, expanding to the
+original 15,300,820,992-byte partition. All eight populated logical images and
+six LP metadata copies match the reviewed assembly; logical B is empty.
+Firmware reference images remain references, not extra flash payloads.
+
+Completed off-device checks are recorded under
+`reports/feature-fixes-20260905/qualification-prep/host/results/`:
+
+- `apk-v1/summary.json`: all 456 APKs pass API-36 signature and 4 KiB alignment
+  checks; 39 APEX payloads, 26 CAPEX pairs, and three compressed-APK/stub pairs
+  pass their checks. Existing legacy signature-range, duplicate-overlay, Shell
+  and OTA-key findings remain explicit. The Camera candidate adds 22 unresolved
+  or ambiguous requested permissions; no extra permission grants were inferred.
+- `delivery-v1/result.json`: fresh filesystem exports match all 428 direct APKs,
+  36 APEX containers and three compressed APKs. FamilySpace permissions pass.
+- `classpath-v1/result.json`: selected classpath JARs, SDK selection, image DAC
+  and APEX payload DAC pass, with 43 protobuf captures bound to fresh inputs.
+- `boot-v3/report.json`: five boot-chain images, 16 archive-member joins, init,
+  fstab, ramdisk modules, DTBs/DTBO, the retained 4 KiB kernel and working76 pass.
+  First-stage init differs from Package7 only in its 16-byte GNU build ID;
+  all other ELF bytes and runtime CPIO ownership/mode are identical. The
+  earlier exact-hash rejection is retained alongside the measured derivation.
+- `vintf-semantic-review-v1.json`: all three native VINTF commands pass with 39
+  freshly materialized APEX packages. Relevant content and membership join 267
+  files across five images; vendor/ODM use exactly matching retained images.
+  Two definition-check skips and two warnings remain, so this is not a claim
+  of complete static VINTF coverage or runtime APEX/SELinux behavior.
+
+`camera-final-image-membership.json` additionally joins the original Xiaomi
+Camera APK and its same-partition permission XML to final image bytes, root-owned
+mode 0644. The final Aperture APK is present in product. Original Xiaomi Camera
+SHA256 remains `7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e`.
+
+The bundle assembler and a separate portable verifier both rehashed all eight
+payloads against manifest SHA256
+`8550182663180841592a47cc0a33efa5bb7a76f5d70a197faa4d662f47040c1f`.
+This is a private image bundle, not an OTA or TWRP installer. Its device-admission,
+flash-authorization, boot and hardware fields remain false.
+
 ## Verification and remaining device work
 
-All **4,630** offline workspace tests passed after the final system-ext integration (204.189 seconds). The fingerprint
+All **4,636** offline workspace tests passed after the final dynamic-budget and
+contract updates (206.250 seconds). The fingerprint
 classes also compiled against actual Package7 headers, with 111 Java lifecycle
 assertions. The Aperture helper compiled against its pinned CameraX APIs, with
 15 factory behavior checks. These checks are distinct from a full component or
