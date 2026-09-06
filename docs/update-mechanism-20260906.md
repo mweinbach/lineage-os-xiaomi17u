@@ -30,15 +30,14 @@ of what update package the ROM expects before any OTA is built.
 1. **Package type.** `ota_from_target_files` on the reconciled signed archive
    produces the right full package without extra flags for A/B or dynamic
    partitions. The care map and update-engine config are already inside.
-2. **Both-slot route.** Because Virtual A/B creates the target slot's logical
-   partitions itself, the first OTA into slot B will populate logical B. The
-   both-slot decision therefore matters for the state *before* the first OTA:
-   the fallback slot must hold a working ROM, not the empty logical B the
-   current Super leaves. The route needs the seven physical images written to
-   both slots and Super metadata with both `_a` and `_b` logical entries
-   populated. `super_empty.img` already carries both suffix sets, so the
-   assembler can fill both from the same image set, within the group maximum
-   applied per slot.
+2. **Both-slot route.** Virtual A/B creates the target slot's logical
+   partitions itself, and Super holds only one copy: two copies of the eight
+   logical images exceed the device by 3,341,697,024 bytes, and the captured
+   stock metadata lists `system_b` at zero bytes. The current A-only logical
+   layout is therefore the design, not a gap. What can be written to both
+   slots is the seven-image physical chain, which removes the stock boot
+   chain from B and puts `working76` on both recovery slots. See the
+   [detailed plans](next-steps-plan-20260906.md).
 3. **Snapshot state.** The recorded device preflight showed snapshot status
    `none`, which means no merge was pending. It does not say whether the stock
    bootloader and the ROM's first-stage init agree on snapshot handling; the
