@@ -9,6 +9,7 @@ preserves dated evidence and earlier experiments.
 | --- | --- |
 | [Current status](workspace-status.md) | Working build identity, retained inputs and development steps |
 | [Feature-successor installation](package7-feature-successor-install-20260905.md) | Exact installed images, retained-data boot, fingerprint success, camera failures and open UDFPS visual issue |
+| [UI, camera and shade successor installation](package7-f9e-install-20260906.md) | Eight acknowledged writes, completed f9e boot, loaded UI resources and pending post-unlock feature checks |
 | [UI and Aperture follow-up](package7-ui-camera-followup-20260905.md) | New source identity and successful cached component build for the UDFPS pitch and Aperture initialization fixes; packaging and installation pending |
 | [Package7 feature triage](package7-feature-triage-20260905.md) | Historical Package7 diagnostics that led to the successor |
 | [Feature successor](package7-feature-successor-20260905.md) | Source, build, signing and off-device qualification before installation |
