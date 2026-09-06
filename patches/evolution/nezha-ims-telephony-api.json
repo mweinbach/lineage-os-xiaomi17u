@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "device": "nezha",
+  "project": "frameworks/base",
+  "repository": "https://github.com/Evolution-X/frameworks_base.git",
+  "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "branch": "bka",
+  "branch_head_observed_20260905": "929be7281ce09a311d262c83415db04e9f127adb",
+  "patch": "patches/evolution/nezha-ims-telephony-api.patch",
+  "patch_sha256": "79b830562add351e74598bcb16e65975bb2b4cad7941a0ecf73d28f6a3311568",
+  "file": {
+    "path": "telephony/java/android/telephony/TelephonyBaseUtilsStub.java",
+    "before_sha256": null,
+    "after_sha256": "f5b624c6ff3d40cf31eb4d9585bd4a5b5ea1c1ee15814785356b2ecc1a69f7e5",
+    "lines": 32
+  },
+  "source_basis": {
+    "Android.bp": "6d743806b53f635d0924a76488201ac204655be3be2a61886ac98b044e0cb25a",
+    "telephony/java/Android.bp": "53bc41c152da8f5e55377f980aa65c4fc97c79ebbcc756fc76f75d779cfda346",
+    "core/java/android/content/pm/ApplicationInfo.java": "0afff37ce2715c59234ecc444e5507ece8b96bea47ab1634b3a62bc52bbfc6eb"
+  },
+  "abi": "Landroid/telephony/TelephonyBaseUtilsStub;->isMiuiRom()Z",
+  "semantics": {
+    "normal_factory_predicate": "Either ro.miui.ui.version.name or ro.miui.ui.version.code is nonempty",
+    "missing_property_default": "",
+    "property_reads_each_call": true,
+    "plugin_loader_emulated": false,
+    "scope": "The normal factory provider predicate used by four exact IMS callsites; not the full factory reflection/failure or automotive interface"
+  },
+  "callsites": [
+    "org.codeaurora.ims.ImsSubController.handleRadioAvailable",
+    "org.codeaurora.ims.ImsSubController.registerForRadioEvents",
+    "org.codeaurora.ims.ImsServiceSub.onStackConfigChanged",
+    "org.codeaurora.ims.ImsServiceStateReceiver.updateHDIcon"
+  ],
+  "hidden_api": {
+    "class_hidden_from_sdk": true,
+    "original_apk_usesNonSdkApi": true,
+    "existing_framework_rule": "ApplicationInfo permits a system or updated-system app whose original manifest sets usesNonSdkApi",
+    "new_allowlist": false,
+    "new_permission_grant": false,
+    "new_signer_or_seinfo": false
+  },
+  "evidence": [
+    {
+      "record": "deadline-radio/ims-candidate/java/platform-inventory/factory-oem-method/analysis.json",
+      "sha256": "0826593562e88f392eaac50dae4515602315201d6ad19a36e35e917f949f737f"
+    },
+    {
+      "record": "deadline-radio/ims-app/import-contract.json",
+      "sha256": "9083f6503a6e4b978661b8350dd593e64c72b2643e6b7a6a7548191b6dfa09f1"
+    }
+  ],
+  "activation_allowed": false,
+  "remaining": [
+    "Actual framework component build, DEX ABI and hidden-API classification/package eligibility readback",
+    "Complete vendor_qtelephony source-domain/seapp/public-mapping integration",
+    "IMS strict package/native/permission/image validation and authorized carrier runtime qualification"
+  ]
+}

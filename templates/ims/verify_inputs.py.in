@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""Soong input producer for exact IMS bytes; does not admit IMS activation."""
+import argparse
+import hashlib
+import os
+from pathlib import Path, PurePosixPath
+import stat
+
+EXPECTED = {}  # Replaced by the reviewed generator; never loaded from a receipt.
+
+
+def need(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def signature(info):
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+            info.st_mtime_ns, info.st_ctime_ns)
+
+
+def directory(path):
+    for item in [*reversed(path.parents), path]:
+        need(stat.S_ISDIR(item.lstat().st_mode), "symlink or non-directory ancestor")
+
+
+def produce(arguments, output):
+    need(EXPECTED and len(arguments) == len(EXPECTED), "exact IMS inputs required")
+    output = Path(os.path.abspath(output))
+    directory(output)
+    contents, states, roots = {}, [], set()
+    for argument in arguments:
+        matches = [name for name in EXPECTED
+                   if argument == name or argument.endswith("/" + name)]
+        need(len(matches) == 1 and matches[0] not in contents, "unknown or duplicate input")
+        name = matches[0]
+        path = Path(os.path.abspath(argument))
+        directory(path.parent)
+        roots.add(path.parents[len(PurePosixPath(name).parts) - 1])
+        before = path.lstat()
+        expected = EXPECTED[name]
+        need(stat.S_ISREG(before.st_mode) and before.st_size == expected["size_bytes"],
+             "wrong IMS input type or size")
+        with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK), "rb") as stream:
+            need(signature(before) == signature(os.fstat(stream.fileno())), "input replaced")
+            raw = stream.read(before.st_size + 1)
+            need(signature(before) == signature(os.fstat(stream.fileno())) == signature(path.lstat()),
+                 "input changed during read")
+        need(len(raw) == expected["size_bytes"] and
+             hashlib.sha256(raw).hexdigest() == expected["sha256"], "IMS input hash mismatch")
+        contents[name] = raw
+        states.append((path, signature(before)))
+    need(set(contents) == set(EXPECTED) and len(roots) == 1, "incomplete or mixed-root IMS inputs")
+    need(all(not output.is_relative_to(root) and not root.is_relative_to(output) for root in roots),
+         "IMS input/output trees overlap")
+    destinations = {name: output / "verified" / name for name in contents}
+    for target in destinations.values():
+        need(not target.exists() and not target.is_symlink(), "existing IMS output")
+    # No output is created until every exact input has passed the same invocation.
+    for path, original in states:
+        need(signature(path.lstat()) == original, "input changed before publication")
+    for name, target in destinations.items():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        directory(target.parent)
+        with target.open("xb") as stream:
+            stream.write(contents[name])
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", required=True)
+    parser.add_argument("inputs", nargs="+")
+    args = parser.parse_args()
+    try:
+        produce(args.inputs, args.output_dir)
+    except (OSError, ValueError) as exc:
+        parser.exit(2, "IMS input producer: " + str(exc) + "\n")
+
+
+if __name__ == "__main__":
+    main()

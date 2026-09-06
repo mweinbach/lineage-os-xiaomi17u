@@ -85,7 +85,8 @@ FEATURE_READ_COMMANDS = (
     ("feature-vibrator", ("dumpsys", "vibrator_manager")),
 )
 FEATURE_PROPERTIES = (
-    "sys.boot_completed", "ro.audio.audiozoom", "ro.audio.ozo.channelmask.in",
+    "sys.boot_completed", "ro.miui.ui.version.code",
+    "ro.audio.audiozoom", "ro.audio.ozo.channelmask.in",
     "ro.audio.ullunique", "ro.config.WlanAntTunerPolicy", "ro.thermal.iec.enable",
     "persist.sys.power_mode_support", "ro.audio.bt.connect.disable.mute",
     "persist.bluetooth.avrcp.skip.map.update",

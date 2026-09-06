@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Authored Nezha IMS candidate: only the two measured permission/GID pairs. -->
+<permissions>
+    <permission name="com.qti.permission.AUDIO">
+        <group gid="audio" />
+    </permission>
+    <permission name="com.qti.permission.DIAG">
+        <group gid="oem_2901" />
+    </permission>
+</permissions>
