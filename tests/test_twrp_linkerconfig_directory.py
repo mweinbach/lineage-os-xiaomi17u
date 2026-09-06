@@ -11,6 +11,8 @@ import stat
 import tempfile
 import unittest
 
+from support import canonical_json_sha256 as canonical
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PATCH_ID = "0033-create-recovery-linkerconfig-directory"
@@ -34,10 +36,6 @@ HEADER = (
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return sha(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def source_pair(raw):

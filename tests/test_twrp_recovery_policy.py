@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import unittest
 
+from support import canonical_json_sha256 as canonical
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PATCH_ID = "0032-enforce-user-recovery-domains"
@@ -39,10 +41,6 @@ HEADER = (
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return sha(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def source_pair(raw):

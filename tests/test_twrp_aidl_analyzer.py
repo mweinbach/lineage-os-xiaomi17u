@@ -3,12 +3,15 @@
 This checks pinned source edits, not dependency variants or a successful build.
 """
 
-import hashlib
 import json
 from pathlib import Path
 import unittest
 
-from support import assert_frozen_owner_revision
+from support import (
+    assert_frozen_owner_revision,
+    canonical_json_sha256 as canonical,
+    sha256_bytes as digest,
+)
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,14 +76,6 @@ AFTER = BEFORE.replace(ANCHOR, ANCHOR + ADDITION, 1)
 HEADER = ("diff --git a/Android.bp b/Android.bp\n"
           f"index {FILE['before_git_blob']}..{FILE['after_git_blob']} 100644\n"
           "--- a/Android.bp\n+++ b/Android.bp\n@@ -1102,40 +1102,41 @@\n")
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def fixture():

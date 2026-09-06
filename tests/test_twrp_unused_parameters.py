@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import unittest
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
+
 ROOT = Path(__file__).resolve().parents[1]
 
 PATCH_ID = '0029-explicit-unused-recovery-parameters'
@@ -286,14 +288,6 @@ DIAGNOSTICS = [('twrpTar.cpp', 113, 'signum'),
  ('partitionmanager.cpp', 3049, 'Storage_ID'),
  ('partitionmanager.cpp', 3061, 'Mount_Point'),
  ('partitionmanager.cpp', 3073, 'Storage_ID')]
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def serialized_records(text):

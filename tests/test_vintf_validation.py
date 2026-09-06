@@ -6,6 +6,8 @@ from pathlib import Path, PurePosixPath
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import walk_objects
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -226,23 +228,27 @@ class VintfValidationTests(unittest.TestCase):
         self.assertFalse(preflight["original_inputs_changed"])
 
     def test_receipts_and_public_record_do_not_need_private_inputs(self):
-        def walk(value):
-            if isinstance(value, dict):
-                forbidden = {"serial", "serialno", "imei", "imsi", "meid", "account", "email",
-                             "phone_number", "stdout", "stderr", "data", "base64", "content"}
-                self.assertFalse(forbidden.intersection(value))
-                for key, child in value.items():
-                    if key.endswith("sha256"):
-                        self.assertRegex(child, r"^[a-f0-9]{64}$", key)
-                    walk(child)
-            elif isinstance(value, list):
-                for child in value:
-                    walk(child)
-            elif isinstance(value, str):
-                self.assertNotIn("/Users/", value)
-                self.assertNotIn("/home/", value)
-                self.assertNotIn("-----BEGIN", value)
-        walk(self.record)
+        forbidden = {"serial", "serialno", "imei", "imsi", "meid", "account", "email",
+                     "phone_number", "stdout", "stderr", "data", "base64", "content"}
+
+        def list_strings(value):
+            pending = [value]
+            while pending:
+                child = pending.pop()
+                if isinstance(child, list):
+                    pending.extend(child)
+                elif isinstance(child, str):
+                    yield child
+
+        for item in walk_objects(self.record):
+            self.assertFalse(forbidden.intersection(item))
+            for key, child in item.items():
+                if key.endswith("sha256"):
+                    self.assertRegex(child, r"^[a-f0-9]{64}$", key)
+                for text in list_strings(child):
+                    self.assertNotIn("/Users/", text)
+                    self.assertNotIn("/home/", text)
+                    self.assertNotIn("-----BEGIN", text)
         for receipt in self.record["receipts"].values():
             path = PurePosixPath(receipt["path"])
             self.assertFalse(path.is_absolute())

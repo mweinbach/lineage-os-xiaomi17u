@@ -43,8 +43,8 @@ def fixture_digest(images):
 class ReconcileTests(unittest.TestCase):
     def setUp(self):
         self.f = fixtures.SigningTests('test_plan_reads_no_local_configuration_images_keys_or_native_tools')
-        self.f.setUp()
         self.addCleanup(self.f.doCleanups)
+        self.f.setUp()
         # The ordinary DTBO producer carries its build fingerprint. Keep its
         # original payload/hash descriptor while making that real layout part
         # of the existing end-to-end signing/reconciliation fixture.

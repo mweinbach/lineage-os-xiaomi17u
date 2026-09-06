@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import unittest
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PATCH_ID = "0031-explicit-unused-tarwrite-parameter"
@@ -34,14 +36,6 @@ HEADER = (
     f"index {FILE['before_git_blob']}..{FILE['after_git_blob']} 100644\n"
     "--- a/tarWrite.c\n+++ b/tarWrite.c\n@@ -1,113 +1,114 @@\n"
 )
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def exact_edit(before, after):

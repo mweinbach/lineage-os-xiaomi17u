@@ -5,12 +5,12 @@ model. They do not run Make, Kati, Soong, network/process calls or a phone, and
 need no ignored receipts or source checkout. Full source/body and actual GNU
 Make trace equivalence were separately reviewed before patch admission.
 """
-import hashlib
 import itertools
 import json
 from pathlib import Path
 import unittest
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 from scripts import twrp_patch_state, twrp_workspace
 
@@ -29,14 +29,6 @@ PATCH_SHA256 = '5ae39f0f9b033d1e083b6f32e69e284d35792de46f61341eeb6641a60c3462f3
 ENTRY_SHA256 = '26553801e31eb95d0d04ed5f08143acb2f7b61b9c1ebc20f8efdc961dcea6b0c'
 FILES = [{'path': 'build/tasks/continuous_instrumentation_metric_tests.mk', 'mode': '100644', 'before_sha256': '9258ae71cc7c8260cb73ea19bd209cc70ca055ee5bde11977320c061564a8811', 'after_sha256': 'b7ea184b30be1fedd3fa7472278e9c544fbd92c0bd2df9aab6fffdb6a7e0f9ab', 'before_size_bytes': 1432, 'after_size_bytes': 1855, 'before_git_blob': '0ff0aba51ff1a37058ff1bd6dd5c77f08d7c3b35', 'after_git_blob': 'e3224fc58cdf26389b632962e3b10b2feaae5368', 'source_url': 'https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_instrumentation_metric_tests.mk'}, {'path': 'build/tasks/continuous_instrumentation_tests.mk', 'mode': '100644', 'before_sha256': 'b2dc47a69d0bb8f6c098be80eeca76332f0c7c47ce73cba5dc1a1910531e7bba', 'after_sha256': 'b8300b270a3abd39b1f8ce94ee44694bd0f33eff3d7baddad0b6631a745aab46', 'before_size_bytes': 3779, 'after_size_bytes': 4202, 'before_git_blob': 'f8da9fc06892d1fc8c9fd8f5cc35a9ca1c25f959', 'after_git_blob': '977317c804866ef664bb8993971173f5da9b4314', 'source_url': 'https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_instrumentation_tests.mk'}, {'path': 'build/tasks/continuous_native_metric_tests.mk', 'mode': '100644', 'before_sha256': '8b4940eb7c208ec63c8670dab332307c47fc6bb30d769cfb30db6149528c76ad', 'after_sha256': '659b3c74cb37c26b6175f22661f4b767da62377516b152acf1dcc84dc95aa518', 'before_size_bytes': 1381, 'after_size_bytes': 1804, 'before_git_blob': '14ae3f69b0881269eb079e66781f2680ee46fdf0', 'after_git_blob': '148ae57931898deb0833613fbc2306b473636ec7', 'source_url': 'https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_native_metric_tests.mk'}, {'path': 'build/tasks/continuous_native_tests.mk', 'mode': '100644', 'before_sha256': '028aa9d345fe1a2b3742c2167d98362ea23ca69cb6b4a58fd1d1a160b462f03e', 'after_sha256': '8f42ff01e745606ab956618cb83cdcc7ada4a6c76c0eab80ed0dfc2bc0ca6a4d', 'before_size_bytes': 1311, 'after_size_bytes': 1734, 'before_git_blob': 'ef452f8cbdb5ec8ffb3a46baeac2b648afc7af5c', 'after_git_blob': 'b0e6163a38a168a3c45109d60b007c8a986f6378', 'source_url': 'https://android.googlesource.com/platform/platform_testing/+/7b48625b052b94b1ef24573ef5e8ffa5e2ea9783/build/tasks/continuous_native_tests.mk'}]
 CONTEXTS = {'build/tasks/continuous_instrumentation_metric_tests.mk': {'first': ['\n', '# Rules to generate a tests zip file that included test modules\n', '# based on the configuration.\n', '\n', 'LOCAL_PATH := $(call my-dir)\n', 'include $(LOCAL_PATH)/tests/instrumentation_metric_test_list.mk\n'], 'last': ['\n', '# Also build this when you run "make tests".\n', 'tests: continuous_instrumentation_metric_tests\n'], 'original_line_count': 36}, 'build/tasks/continuous_instrumentation_tests.mk': {'first': ['\n', '# Rules to generate a tests zip file that included test modules\n', '# based on the configuration.\n', '\n', 'LOCAL_PATH := $(call my-dir)\n', 'include $(LOCAL_PATH)/tests/instrumentation_test_list.mk\n'], 'last': ['dexdeps_exe :=\n', 'test_apks :=\n', 'api_coverage_dep :=\n'], 'original_line_count': 98}, 'build/tasks/continuous_native_metric_tests.mk': {'first': ['\n', '# Rules to generate a tests zip file that included test modules\n', '# based on the configuration for continuous metric testing.\n', '\n', 'LOCAL_PATH := $(call my-dir)\n', 'include $(LOCAL_PATH)/tests/native_metric_test_list.mk\n'], 'last': ['\n', '# Also build this when you run "make tests".\n', 'tests: continuous_native_metric_tests\n'], 'original_line_count': 36}, 'build/tasks/continuous_native_tests.mk': {'first': ['\n', '# Rules to generate a tests zip file that included test modules\n', '# based on the configuration for continuous testing.\n', '\n', 'LOCAL_PATH := $(call my-dir)\n', 'include $(LOCAL_PATH)/tests/native_test_list.mk\n'], 'last': ['\n', '# Also build this when you run "make tests".\n', 'tests: continuous_native_tests\n'], 'original_line_count': 36}}
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def validate_task_patch(raw):

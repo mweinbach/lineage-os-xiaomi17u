@@ -17,6 +17,7 @@ from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
 from scripts import twrp_patch_state as state
+from support import canonical_json_sha256 as canonical
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,10 +78,6 @@ WIFI_NETWORK_TOKENS = (
 
 def sha256(data):
     return hashlib.sha256(data).hexdigest()
-
-
-def canonical(value):
-    return sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def identity(data):

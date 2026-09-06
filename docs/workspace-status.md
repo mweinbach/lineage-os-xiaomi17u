@@ -1,12 +1,14 @@
 # Current Nezha workspace status
 
-**The Package7 feature successor boots on the Xiaomi 17 Ultra and is the
-installed development baseline.** On September 5, 2026, it reached completed
-Android with retained user data, and the user confirmed fingerprint enrollment
-works. Camera remains broken and the on-screen fingerprint icon is malformed.
-See the [installation record](package7-feature-successor-install-20260905.md).
-The original Package7 first boot remains preserved in its
-[dated record](package7-first-boot-20260905.md).
+**The Package7 UI, camera and shade successor (`f9e`) is the installed
+development baseline.** On September 6, 2026, it reached completed Android boot
+with enforcing SELinux and the intended UI resources loaded. Post-unlock
+retained-userdata access, UDFPS and shade visuals, and camera behavior remain
+unverified for this installation. See the
+[installation record](package7-f9e-install-20260906.md).
+The earlier [feature-successor installation](package7-feature-successor-install-20260905.md)
+and [original Package7 first boot](package7-first-boot-20260905.md) remain
+preserved evidence.
 
 This page selects the baseline for ongoing development. The previous 3,124-line
 status is preserved unchanged in the [dated status archive](workspace-status-history-20260905.md).
@@ -17,22 +19,28 @@ Historical pending gates in that archive describe their original checkpoints.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Build identity | `nezha.a6d3109ae93158c498bb30b0` |
-| Source record | `reports/feature-fixes-20260905/ui-camera-followup/source-installed-before.json`, SHA256 `20778fdee3c36fa1e42fe53c7c14f8eede047f40531d434e8bc42c5e63892e5b`; immutable pre-follow-up copy of the installed a6d source cohort; original source lock still matches 1,179 upstream revisions |
-| Private installed bundle | `artifacts/flash/nezha/package7-feature-fixes-20260905-v1/` |
-| Bundle manifest SHA256 | `8550182663180841592a47cc0a33efa5bb7a76f5d70a197faa4d662f47040c1f` |
-| Reconciled target-files SHA256 | `26ae30eddfd3716212b08f4c77b9d6674db26c64c8d798e0038208f24331bc9a` |
+| Installed build identity | `nezha.f9e30611efe01b882f9ed0cb` |
+| Installed build source evidence | [Preserved f9e source and build record](package7-ui-camera-followup-20260905.md); 574-row inventory, SHA256 `abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc` |
+| Development source selection | `nezha.bc6311b1a714e310eaf1af56`; see the [source-merge record](feature-candidates-build-merge-20260906.md), separate from the installed build |
+| Private installed bundle | `artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/` |
+| Bundle manifest SHA256 | `78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85` |
+| Reconciled target-files SHA256 | `4cd1374be9370a81b505b72eadd79fcceecd777b3fed1618e725742802f76bd8` |
 | Recovery | TWRP `working76`; preserve its runtime, hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; do not change normal Android to permissive |
-| Installation observed | Shared Super and seven A-chain companion writes; no wipe or slot change; completed boot with Zygote/SurfaceFlinger running and retained user data |
+| Installation observed | Shared Super and seven A-chain writes acknowledged; normal reboot, no wipe or slot change; completed boot with Zygote/SurfaceFlinger running; post-unlock retained-userdata access not yet established |
 
-The [feature-successor record](package7-feature-successor-20260905.md) holds its
-off-device checks and the [installation record](package7-feature-successor-install-20260905.md)
-holds exact written image identities and first device results. The original
-Package7 bundle remains rollback evidence. Neither target-files ZIP is an OTA
-or TWRP installer.
+The [preserved build record](package7-ui-camera-followup-20260905.md) holds the
+off-device checks and the [installation record](package7-f9e-install-20260906.md)
+holds the authorized write scope and first device results. The original
+Package7 and a6d bundles remain predecessor/rollback evidence. These private
+bundles and target-files ZIPs are not OTA or TWRP installers.
 
 ## Resume development
+
+**September 6 build-variant opt-in:** the construction guard now admits
+`userdebug` only through an explicit invocation opt-in; `user` stays the default.
+See the [build-variant opt-in record](build-variant-opt-in-20260906.md). It is a
+source and runner change, not a build or installation.
 
 **September 6 source update:** the feature branch is now merged into main and
 the existing Linux checkout under identity `nezha.bc6311b1a714e310eaf1af56`, with
@@ -43,14 +51,15 @@ disabled. No native build or installation was performed by this merge. Use the
 for the next build. The f9e source/build records below are preserved predecessor
 evidence, not the current source selection.
 
-The existing source checkout and preserved output produced the installed
-[feature successor](package7-feature-successor-20260905.md). Its fingerprint,
-Aperture and display patches and Xiaomi Camera system-ext candidate are now on
-the phone. Fingerprint enrollment works; both camera applications fail and the
-UDFPS icon remains visually wrong. Use the [build/cache lessons](feature-successor-build-lessons-20260905.md)
-for incremental work: adopt a fresh source/build identity, retain intermediates,
-and let Ninja invalidate changed edges. Preserve the original Package7 bundle,
-this installed successor bundle, working76 and stock return inputs.
+The existing source checkout and preserved output produced the
+[a6d feature successor](package7-feature-successor-20260905.md) and the later
+installed baseline selected above. On a6d, fingerprint enrollment worked,
+both camera applications failed and the UDFPS icon was visually wrong. The
+latest installation has not yet established post-unlock feature results. Use
+the [build/cache lessons](feature-successor-build-lessons-20260905.md) for
+incremental work: adopt a fresh source/build identity, retain intermediates,
+and let Ninja invalidate changed edges. Preserve the original Package7, a6d
+and current installed bundles, working76 and stock return inputs.
 
 The source checkout is ahead of the installed phone. The preserved
 [UI and Aperture follow-up](package7-ui-camera-followup-20260905.md) at source
@@ -65,10 +74,11 @@ native pre-build and post-build inventories are byte-identical at those 574
 rows. Its native SystemUI build completed successfully in 51 Ninja edges and
 produced a host-matched APK. Its fresh full target-files package, verified
 signing chain, Super assembly/readback and host qualification have now completed
-off-device. The private eight-image bundle has also passed assembly and
-verification, while remaining explicitly not device-admitted or flash-ready.
-No `f9e` image has been installed, so build
-`nezha.a6d3109ae93158c498bb30b0` remains the device baseline.
+off-device. The private eight-image bundle passed assembly and verification;
+those historical receipts deliberately stop short of device admission. The
+subsequent [authorized installation](package7-f9e-install-20260906.md) establishes
+the current installed baseline and completed first boot, separately from those
+off-device checks.
 
 1. Start from the existing source checkout and preserved Package7 input state. Read
    [source-lock handling](source-lock.md), [device integration](../device/xiaomi/nezha/README.md)
@@ -94,18 +104,19 @@ The older full-source TWRP experiments remain historical references.
 
 ## Remaining feature work
 
-The successor reached `sys.boot_completed=1` with enforcing SELinux. The user
-confirmed fingerprint enrollment works at 21:23 local time on September 5;
-framework evidence also records one enrolled print, two successful
-authentications and no fingerprint HAL death since boot. The installed
-SystemUI's invalid `pixel_pitch=-1` fallback produces roughly 3,074 px of
-internal padding inside the 148 px lockscreen icon. A source correction derived
-from the device's 419.25723 dpi display (60.58 micrometre pixel pitch) is
-absent from the installed build; its separate component result follows below.
+On the a6d predecessor, the user confirmed fingerprint enrollment worked at
+21:23 local time on September 5; framework evidence also recorded one enrolled
+print, two successful authentications and no fingerprint HAL death since boot.
+That build's invalid `pixel_pitch=-1` fallback produced roughly 3,074 px of
+internal padding inside the 148 px lockscreen icon. The current installation
+loads the corrected `pixel_pitch=60.583`, derived from the device's 419.25723 dpi
+display, along with the intended shade configuration. Post-unlock UDFPS and
+shade visual checks remain pending; loaded resources do not establish rendering
+correctness or fingerprint behavior.
 
-The Aperture and UDFPS source corrections have a successful component build
-under the preserved `nezha.376a73a742ddc9da2bdedab3` identity. They remain
-absent from the phone. The newer `nezha.f9e30611efe01b882f9ed0cb` source adds a
+The Aperture and UDFPS source corrections first passed a component build under
+the preserved `nezha.376a73a742ddc9da2bdedab3` identity and were included in the
+installed successor. The `nezha.f9e30611efe01b882f9ed0cb` source also adds a
 Nezha-only portrait shade-header inset. It preserves the approved normal status
 bar's 100px horizontal content padding and 38px top padding, and leaves the new
 behavior disabled by default outside the Nezha overlay. Its SystemUI build is
@@ -152,29 +163,34 @@ documented APK findings retained. The aggregate admission binds the unchanged
 574-row source cohort, 15 native target-files roles and 17 signed roles; exact
 working76 preservation, the four focused delivery bytes, 456 API 36 signature
 and 4 KiB APK alignment checks, and 70 resolved classpath JARs all passed.
-Complete-ROM readiness remains false because the remaining gates are on-device
-boot, SystemUI shade geometry and visual behavior, runtime app loading and
-permission grants, camera operation and fingerprint icon geometry.
+The preserved off-device admission leaves complete-ROM readiness false. The
+later installation establishes first boot and loaded UI resources, not full
+readiness: post-unlock userdata access, SystemUI shade geometry and visual
+behavior, runtime app loading and permission grants, camera operation and
+fingerprint icon geometry still need measured validation.
 
 The final private bundle is
 `artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/`. Its assembly and
 independent verification receipts passed with exactly eight payloads. The
 8,240-byte manifest has SHA256
 `78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85`.
-The bundle remains `byte-identities-verified-not-device-admitted-not-flash-ready`;
-no `f9e` image has been installed. Separately authorized installation is
-required before any runtime result can change. The joined off-device
-qualification summary is
+Its historical assembly status remains
+`byte-identities-verified-not-device-admitted-not-flash-ready`; do not rewrite
+that receipt to imply it performed device admission. The separately authorized
+[installation record](package7-f9e-install-20260906.md) supplies the later write,
+reboot and first-boot evidence. Future phone changes still require explicit
+authorization. The joined off-device qualification summary is
 `reports/feature-fixes-20260905/shade-followup/qualification-summary.json`,
 5,918 bytes with SHA256
 `94020ef08a74c10c5924d9358e5023ef2a8edc364e72b9c8ae379146c683d0bd`.
 
-The current full offline suite, including the exact f9e `system_ext` admission
+The recorded full offline suite, including the exact f9e `system_ext` admission
 contracts from commit `954bac6`, passed all 4,647 tests in 195.747 seconds. This
 is tooling and source-contract evidence, not an on-phone result.
 
-Aperture and the installed original Xiaomi Camera both still fail for separately
-established reasons. One Aperture process hit the mode-selector/configuration
+The predecessor's Aperture and original Xiaomi Camera tests failed for
+separately established reasons. Camera behavior has not been revalidated after
+the current installation. One Aperture process hit the mode-selector/configuration
 initialization race that throws on a null configuration. In the later unlocked
 foreground attempt, the persistent Aperture process successfully opens public
 Camera0, then Xiaomi's vendor stack fails the normal preview-plus-JPEG stream
@@ -183,8 +199,9 @@ graph. That post-open failure includes an empty camera-role set, physical-to-rol
 mapping failures and a missing `MCXSuperFG` sink port; the Aperture null guard
 does not resolve it. Xiaomi Camera separately reaches a vendor session-policy
 abort for operation mode `0x9005` and role 64. Preview, capture, lenses and OEM
-features remain unverified. See the installation record and linked follow-up
-for the exact point-in-time evidence.
+features remain unverified. See the
+[predecessor installation record](package7-feature-successor-install-20260905.md)
+and its linked follow-up for the exact point-in-time camera evidence.
 
 The Android IMS provider stack is not integrated, and VoLTE, VoWiFi and emergency
 calling remain unverified. Track device results for networking, display/touch,

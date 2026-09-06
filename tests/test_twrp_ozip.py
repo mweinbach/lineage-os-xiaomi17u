@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import unittest
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PATCH_ID = "0028-guard-unconfigured-ozip-decryption"
@@ -37,14 +39,6 @@ NEW_ERROR = '\t\t\t\tret_val = 1;\n\t\t\t\tLOGERR("Unable to decrypt OZIP packag
 HEADER = ("diff --git a/gui/action.cpp b/gui/action.cpp\n"
           f"index {FILE['before_git_blob']}..{FILE['after_git_blob']} 100644\n"
           "--- a/gui/action.cpp\n+++ b/gui/action.cpp\n@@ -1,2772 +1,2779 @@\n")
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def function(text, signature):

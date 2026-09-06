@@ -5,12 +5,21 @@ way they already import pinned constants from each other.
 """
 
 import hashlib
+import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 # Markers that must never reach a public record, whatever its forbidden keys are.
 PRIVATE_MARKERS = ("-----BEGIN PRIVATE KEY-----", "(allow ", "(neverallow ", "<manifest")
+
+
+def sha256_bytes(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def canonical_json_sha256(value):
+    return sha256_bytes(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def walk_objects(value):

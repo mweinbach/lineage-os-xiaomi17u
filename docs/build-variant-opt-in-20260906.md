@@ -25,9 +25,10 @@ the default build stays `user`.
 ## Using it
 
 The private runner `reports/variant-opt-in-20260906/build_successor.py`
-accepts `--variant user` (default) or `--variant userdebug`. A userdebug
-selection uses a separate output directory alias suffixed `-userdebug`, so the
-preserved user-variant intermediates stay intact. Before either variant can
+accepts `--variant user` (default) or `--variant userdebug`. Both variants reuse the
+existing physical output tree, following the incremental-build policy; a fresh
+tree under Rosetta would rebuild everything from scratch and exceed the guest
+reserve. Before either variant can
 build, the derived guard must be installed into the build guest by the reviewed
 source transaction in `prepare_variant_opt_in.py --execute`; that transaction
 records preimages and rolls back on any mismatch. That transaction ran on

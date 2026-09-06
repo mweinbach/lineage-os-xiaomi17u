@@ -5,6 +5,8 @@ from pathlib import Path
 import re
 import unittest
 
+from support import walk_objects
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FACTORY = "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b"
@@ -391,19 +393,12 @@ class FactoryBootContractTests(unittest.TestCase):
             self.assertIn(phrase, " ".join(self.doc.split()))
 
     def test_public_record_has_hashes_and_links_without_private_payloads(self):
-        def walk(value):
-            if isinstance(value, dict):
-                for key, item in value.items():
-                    if key.endswith("sha256") and item is not None:
-                        self.assertRegex(item, r"^[0-9a-f]{64}$", key)
-                    self.assertNotIn(key, {"serial", "serial_number", "imei", "key_bytes",
-                                           "private_key", "raw_contents", "base64_payload"})
-                    walk(item)
-            elif isinstance(value, list):
-                for item in value:
-                    walk(item)
-
-        walk(self.record)
+        for item in walk_objects(self.record):
+            for key, value in item.items():
+                if key.endswith("sha256") and value is not None:
+                    self.assertRegex(value, r"^[0-9a-f]{64}$", key)
+                self.assertNotIn(key, {"serial", "serial_number", "imei", "key_bytes",
+                                       "private_key", "raw_contents", "base64_payload"})
         serialized = json.dumps(self.record)
         self.assertNotIn("/Users/", serialized)
         self.assertNotIn("PRIVATE KEY-----", serialized)

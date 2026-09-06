@@ -14,6 +14,7 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
 from test_twrp_device import assignments, source_path_allowed
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 
@@ -100,16 +101,8 @@ CONTRACTS = (
 BY_ID = {entry["id"]: entry for entry in CONTRACTS}
 
 
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
 def git_blob(raw):
     return hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\0" + raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def expected_header(contract):

@@ -6,12 +6,12 @@ source. These tests require no ignored reports, checkout, network, or phone;
 they do not run fsgen/Soong or establish resource installation in an image.
 """
 
-import hashlib
 import json
 from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 
 
@@ -64,14 +64,6 @@ HUNK_SHA256 = {
     "before": "7018b76c137da6ef0244eb664508f56d2a5caca8177e5725be0c411bfa69c82a",
     "after": "aa2ec7a8eb796ddaa0e5337815015b29fae86da5be6130e3690c07efd5e30204",
 }
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def validate_patch(raw):

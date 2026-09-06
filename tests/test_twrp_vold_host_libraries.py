@@ -12,6 +12,7 @@ import re
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 
 
@@ -55,14 +56,6 @@ MODULE_NAMES = [
     "vold_prepare_subdirs", "vold_aidl", "libkeystoreinfo", "fscryptpolicyget",
     "soong-vold_defaults", "vold_defaults", "vold_flags", "vold_flags_c_lib",
 ]
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def serialized_records(text):

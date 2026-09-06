@@ -6,6 +6,8 @@ import re
 import unittest
 from urllib.parse import unquote, urlsplit
 
+from support import walk_objects
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -36,16 +38,8 @@ class DocumentationTests(unittest.TestCase):
         baseline = json.loads((ROOT / "research/device-baseline.json").read_text())
         forbidden = {"serial", "serialno", "imei", "imsi", "meid", "account", "email", "phone_number"}
 
-        def check(value):
-            if isinstance(value, dict):
-                self.assertFalse(forbidden.intersection(value))
-                for child in value.values():
-                    check(child)
-            elif isinstance(value, list):
-                for child in value:
-                    check(child)
-
-        check(baseline)
+        for item in walk_objects(baseline):
+            self.assertFalse(forbidden.intersection(item))
 
     def test_firmware_layout_retains_modified_origin_and_build_gates(self):
         layout = json.loads((ROOT / "research/firmware-layout.json").read_text())

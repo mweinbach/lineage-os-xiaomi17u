@@ -7,12 +7,12 @@ and ModuleBase semantics, not a Soong evaluator or a graph/build result.
 No ignored receipts, source checkout, network, subprocess, or phone is needed.
 """
 
-import hashlib
 import json
 from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
+from support import canonical_json_sha256 as canonical, sha256_bytes as digest
 from test_twrp_patches import hunks, SOURCE_SNAPSHOT_SHA256
 from test_twrp_device import assignments, source_path_allowed
 
@@ -80,14 +80,6 @@ HUNK_SHA256 = {
     "before": "481e957a2a1407cbf32fdfd6793dfe2eec390a9347197038cc5b8907f74b528c",
     "after": "37b1a293d1b9275c3e8af72587821de53bf86c7158f23afe5a269c9e2063c00e",
 }
-
-
-def digest(raw):
-    return hashlib.sha256(raw).hexdigest()
-
-
-def canonical(value):
-    return digest(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
 def validate_patch(raw):
