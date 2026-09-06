@@ -114,6 +114,17 @@ f9e archive:
 - The reconciled signed archive replaces only three image roles and
   `vbmeta_digest`; `META/` and the other `IMAGES/` members are unchanged, so
   it is a valid `ota_from_target_files` input.
+- Checked offline on September 6 against the `working76` ramdisk kept by the
+  reproduction build (4,210 members, SHA256 `fe554c9d…`, image equal to the
+  recorded `a130ba75…`): it carries `system/bin/update_engine_sideload`
+  (3,082,000 bytes), `minadbd`, `snapuserd` with its init file and
+  `libfusesideload.so`, and its init scripts wire the `sideload` USB
+  configuration. Its `otacerts.zip` trusts three certificates: a `lineage`
+  certificate, a third-party `releasekey` certificate of unknown origin, and
+  the AOSP test key whose digest `a40da80a…` equals the ROM's only trusted
+  certificate. A test-key-signed package therefore passes both trust lists;
+  the third-party release key is a trust boundary to remove when recovery is
+  rebuilt from source. Sideload behavior itself remains untested.
 
 Design:
 
@@ -137,10 +148,9 @@ Design:
 4. Transfer the package to `artifacts/ota/nezha/<set>/` with the existing
    archive-copy pattern and a transfer receipt.
 5. Device qualification, each step separately authorized:
-   - recovery path first: `adb sideload` through `working76`. Check first
-     that the `working76` ramdisk contains `update_engine_sideload`; the
-     working-defaults record does not list it and the recovery has never
-     applied an A/B package;
+   - recovery path first: `adb sideload` through `working76`, which carries
+     `update_engine_sideload` (checked above) but has never applied an A/B
+     package on this device;
    - in-ROM path: Updater local import, background install, reboot into B,
      `slot-successful:b` observed, retained userdata confirmed;
    - rollback: only possible until the merge completes, because the merge
@@ -300,7 +310,7 @@ Can start now: all of it.
    host tooling with tests.
 2. Plan 1 items 2, 3 and 5 (delivery plan builder, preflight, tests); item 1
    after the other thread's bundle is assembled.
-3. Plan 2 host inspector and the `working76` sideload-binary check.
+3. Plan 2 host inspector (done) and the `working76` sideload-binary check (done).
 4. Plan 3 decision from the user; key generation on the Mac can follow
    immediately.
 5. When the VM is free: `otatools`, the OTA package, and its host verification.
