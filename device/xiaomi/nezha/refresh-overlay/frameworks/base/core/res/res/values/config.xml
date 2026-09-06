@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <!-- Nezha advertises a maximum physical rate of 120 Hz, not 240 Hz.
+         Preserve the existing 120 Hz default; do not set a minimum, disable
+         thermal votes, or synthesize low-brightness blocking-zone curves. -->
+    <integer name="config_defaultPeakRefreshRate">120</integer>
+    <integer name="config_defaultRefreshRate">120</integer>
+</resources>

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "selector": "NEZHA_REFRESH_POLICY",
+  "resources": {
+    "config_defaultPeakRefreshRate": 120,
+    "config_defaultRefreshRate": 120
+  },
+  "frameworks_base_revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "frameworks_native_revision": "d78897741ad798fe9c183795026cfd87cd03a76c",
+  "vendor_evolution_revision": "11d2966a3294a0a692fc958127c770cfe9c00a3c",
+  "upstream_checks_20260905": {
+    "frameworks_base_bka": "929be7281ce09a311d262c83415db04e9f127adb",
+    "frameworks_native_bka": "d78897741ad798fe9c183795026cfd87cd03a76c"
+  },
+  "pinned_source_sha256": {
+    "DisplayModeDirector.java": "358ba6c85ded87de584dfb50b36c752b7fe0b1f90c333bffb5f2b398b40260db",
+    "RefreshRateSelector.cpp": "786d51f1cf80d359820743ed2089419a81ea46dea66867764e81c6d026d889ff",
+    "core/res/res/values/config.xml": "b7c169c6ce96e3e76617eb2e253e74deac4c3a1e9822025d5ba7443db235e0ba"
+  },
+  "retained_factory_properties": {
+    "ro.surface_flinger.use_content_detection_for_refresh_rate": "true",
+    "ro.surface_flinger.set_touch_timer_ms": "200"
+  },
+  "retained_vendor_build_prop_sha256": "2ea7fe521d0e7010bc3f068db034baf2056ae274023a964ff8a770ff726f4703",
+  "retained_odm_build_prop_sha256": "b4a5f8b818d0dbe8a3a400cba6890deaca5012737ff24baa903518027a94287b",
+  "minimum_rate_setting_modified": false,
+  "idle_timeout_added": false,
+  "low_rate_panel_qualification": "pending",
+  "battery_improvement_measured": false
+}
