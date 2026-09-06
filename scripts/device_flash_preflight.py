@@ -165,6 +165,23 @@ def compare_retained_firmware(body, reference):
             'complete_firmware_trust_or_bootloader_acceptance_proven': False}
 
 
+def android_mode_observed(properties, adb_state):
+    """Accept explicit normal mode or one measured completed-framework fallback."""
+    modes = {properties['ro.bootmode'], properties['ro.boot.mode']}
+    common = (properties['ro.board.platform'] == 'canoe' and adb_state == 'device'
+              and properties['sys.boot_completed'] == '1')
+    explicit_normal = (common and all(mode in ('', 'normal') for mode in modes)
+                       and 'recovery' not in modes
+                       and properties['init.svc.recovery'] in ('', 'stopped'))
+    unknown_completed_android = (
+        common and 'unknown' in modes and all(mode in ('', 'unknown') for mode in modes)
+        and properties['init.svc.recovery'] == '' and properties['ro.twrp.version'] == ''
+        and properties['init.svc.zygote'] == 'running'
+        and properties['init.svc.surfaceflinger'] == 'running'
+    )
+    return explicit_normal or unknown_completed_android
+
+
 def interpret_bootctl(result, operation=None):
     """A false getter is not a HAL error; retain every raw result separately."""
     text = result['stdout'].decode('utf-8', 'replace').strip()
@@ -317,7 +334,7 @@ class Collector:
             self.recovery_pid = pid
             if pid is None or re.fullmatch(r'[1-9][0-9]{0,9}', pid) is None:
                 raise CollectionError('One running recovery process is required.')
-        elif p['ro.board.platform'] != 'canoe' or any(m not in ('', 'normal') for m in modes) or state != 'device' or p['sys.boot_completed'] != '1' or 'recovery' in modes or p['init.svc.recovery'] not in ('', 'stopped'):
+        elif not android_mode_observed(p, state):
             raise CollectionError('Already-running Android mode was not observed.')
         self.verified = True
 

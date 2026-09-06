@@ -227,12 +227,52 @@ class CollectorTests(unittest.TestCase):
         code, _, _, _ = self.invoke()
         self.assertEqual(code, 2)
 
-    def test_android_unknown_mode_is_not_recovery_exception(self):
-        self.props['ro.bootmode'] = 'unknown'
-        self.props['init.svc.recovery'] = ''
+    def configure_observed_unknown_android(self):
+        self.props.update({'ro.kernel.qemu': '', 'ro.bootmode': 'unknown', 'ro.boot.mode': '',
+                           'init.svc.recovery': '', 'ro.twrp.version': '',
+                           'sys.boot_completed': '1', 'init.svc.zygote': 'running',
+                           'init.svc.surfaceflinger': 'running'})
         self.adb_state = 'device'
-        code, _, _, _ = self.invoke([*self.args, '--mode', 'adb-android'])
-        self.assertEqual(code, 2)
+
+    def test_exact_observed_completed_android_accepts_unknown_bootmode(self):
+        self.configure_observed_unknown_android()
+        code, out, err, _ = self.invoke([*self.args, '--mode', 'adb-android'])
+        self.assertEqual(code, 0, err)
+        self.assertNotIn(self.serial, out + err)
+        report = self.report()
+        self.assertEqual(report['properties']['ro.bootmode'], 'unknown')
+        self.assertEqual(report['properties']['ro.boot.mode'], '')
+        self.assertEqual(report['properties']['sys.boot_completed'], '1')
+        self.assertEqual(report['properties']['init.svc.zygote'], 'running')
+        self.assertEqual(report['properties']['init.svc.surfaceflinger'], 'running')
+        self.assertFalse(report['flash_ready'])
+
+    def test_unknown_android_rejects_incomplete_or_recovery_conflicts(self):
+        conflicts = (
+            ('not-completed', {'sys.boot_completed': '0'}),
+            ('zygote-stopped', {'init.svc.zygote': 'stopped'}),
+            ('surfaceflinger-stopped', {'init.svc.surfaceflinger': 'stopped'}),
+            ('recovery-service', {'init.svc.recovery': 'running'}),
+            ('twrp-marker', {'ro.twrp.version': '3.7.1'}),
+            ('recovery-mode', {'ro.boot.mode': 'recovery'}),
+        )
+        for index, (name, changes) in enumerate(conflicts):
+            with self.subTest(name=name):
+                self.configure_observed_unknown_android()
+                self.props.update(changes)
+                self.output = self.root / 'evidence' / f'unknown-conflict-{index}'
+                args = [*self.args, '--mode', 'adb-android', '--output', str(self.output)]
+                code, _, _, _ = self.invoke(args)
+                self.assertEqual(code, 2)
+
+    def test_explicit_normal_mode_keeps_existing_service_rules(self):
+        self.props.update({'ro.bootmode': 'normal', 'ro.boot.mode': '',
+                           'init.svc.recovery': 'stopped', 'ro.twrp.version': '',
+                           'sys.boot_completed': '1', 'init.svc.zygote': '',
+                           'init.svc.surfaceflinger': ''})
+        self.adb_state = 'device'
+        code, _, err, _ = self.invoke([*self.args, '--mode', 'adb-android'])
+        self.assertEqual(code, 0, err)
 
     def test_device_tree_change_before_raw_reads_stops_capture(self):
         count = 0
