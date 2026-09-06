@@ -11,14 +11,9 @@ import unittest
 from unittest import mock
 
 CONTROL_ROOT = Path(__file__).resolve().parents[1]
-REPO = CONTROL_ROOT
 from scripts import target_files_metadata_delivery_policy3 as m
+from support import write_file as write
 TEMPLATE = json.loads((CONTROL_ROOT / m.IMAGE_CONTRACT).read_bytes())
-
-
-def write(path, raw):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(raw)
 
 
 def synthetic_admission():

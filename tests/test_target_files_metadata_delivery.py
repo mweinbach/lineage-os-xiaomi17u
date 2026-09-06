@@ -13,6 +13,8 @@ import tempfile
 import unittest
 from unittest import mock
 
+from support import write_file as write
+
 
 def load(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -25,11 +27,6 @@ PATH = Path(__file__).resolve().parents[1] / "scripts/target_files_metadata_deli
 a = load("maintained_metadata_delivery_v2", PATH)
 v1tests = load("maintained_metadata_v1_fixtures", a.ROOT / "tests/test_target_files_metadata_policy_images.py")
 V1 = a._v1
-
-
-def write(path, raw):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(raw)
 
 
 class AssemblyTests(unittest.TestCase):

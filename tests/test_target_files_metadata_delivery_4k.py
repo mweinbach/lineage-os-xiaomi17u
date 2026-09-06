@@ -10,12 +10,8 @@ import unittest
 from unittest import mock
 
 from scripts import target_files_metadata_delivery_4k as m
+from support import write_file as write
 from tests import test_target_files_metadata_delivery as historical_tests
-
-
-def write(path, raw):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(raw)
 
 
 class DescriptorTests(unittest.TestCase):

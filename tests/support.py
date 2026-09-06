@@ -60,3 +60,9 @@ def assert_frozen_owner_revision(case, row, project, revision, repository, snaps
     case.assertEqual(owners[0].get("revision"), revision)
     case.assertEqual((row["project"], row["base_commit"], row["repository"]),
                      (project, revision, repository))
+
+
+def write_file(path, raw):
+    """Write bytes to a temp-tree path, creating parents. Shared by delivery tests."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(raw)

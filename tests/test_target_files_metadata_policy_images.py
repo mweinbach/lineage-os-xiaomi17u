@@ -11,15 +11,11 @@ import unittest
 from unittest import mock
 
 from scripts import target_files_metadata_policy_images as a
+from support import write_file as write
 from tests import test_target_files_metadata_combined as existing
 
 PATH = a.ROOT / a.ADAPTER
 REAL_FACTORY = a._factory
-
-
-def write(path, raw):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(raw)
 
 
 class BootstrapTests(unittest.TestCase):

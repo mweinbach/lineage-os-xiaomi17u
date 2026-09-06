@@ -14,14 +14,10 @@ from unittest import mock
 
 from scripts import target_files_metadata as legacy
 from scripts import target_files_metadata_combined as m
+from support import write_file as write
 
 
 WORKSPACE = m.ROOT
-
-
-def write(path, data):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(data)
 
 
 class CombinedSourceTests(unittest.TestCase):
