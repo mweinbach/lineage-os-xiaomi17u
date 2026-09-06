@@ -16,6 +16,7 @@ from scripts import aperture_camera_admission as admission
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests/fixtures/aperture-camera-admission"
 PREFIX = "app/src/main/java/org/lineageos/aperture/"
+VIEW_MODEL = PREFIX + "viewmodels/CameraViewModel.kt"
 
 
 class ApertureCameraAdmissionTest(unittest.TestCase):
@@ -27,7 +28,7 @@ class ApertureCameraAdmissionTest(unittest.TestCase):
         files = admission.candidate(FIXTURE)
         record = json.loads(admission.CONTRACT.read_bytes())
         self.assertEqual(record["revision"], "88625a9b7c4178601169dbda2c38cd845b68cd38")
-        self.assertEqual(len(files), 4)
+        self.assertEqual(len(files), 5)
         for path, data in files.items():
             self.assertEqual(hashlib.sha256(data).hexdigest(), record["files"][path]["after_sha256"])
 
@@ -47,6 +48,17 @@ class ApertureCameraAdmissionTest(unittest.TestCase):
             source = root / "source"
             shutil.copytree(FIXTURE, source)
             with (source / PREFIX / "ApertureApplication.kt").open("ab") as stream:
+                stream.write(b"// unrelated change\n")
+            with self.assertRaisesRegex(ValueError, "Aperture source differs"):
+                admission.stage(source, root / "output")
+            self.assertFalse((root / "output").exists())
+
+    def test_changed_view_model_fails_before_output(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source = root / "source"
+            shutil.copytree(FIXTURE, source)
+            with (source / VIEW_MODEL).open("ab") as stream:
                 stream.write(b"// unrelated change\n")
             with self.assertRaisesRegex(ValueError, "Aperture source differs"):
                 admission.stage(source, root / "output")
@@ -86,6 +98,28 @@ class ApertureCameraAdmissionTest(unittest.TestCase):
             self.assertNotIn(forbidden, factory)
         self.assertIn('if (Build.DEVICE != "nezha") throw error', repository)
         self.assertEqual(repository.count("cameraProvider?.availableCameraInfos.orEmpty()"), 2)
+
+    def test_null_initialization_race_has_nonfatal_source_contract(self):
+        # Source-level regression only; native coroutine execution belongs to the Aperture build.
+        view_model = admission.candidate(FIXTURE)[VIEW_MODEL].decode()
+        helper_start = view_model.index(
+            "private inline fun <reified T : CameraConfiguration> updateConfiguration("
+        )
+        helper_end = view_model.index("\n    companion object", helper_start)
+        helper = view_model[helper_start:helper_end]
+        guard = "val currentCameraConfiguration = _cameraConfiguration.value ?: return false"
+
+        self.assertIn(guard, helper)
+        self.assertNotIn('error(\n                "Camera configuration is null"', helper)
+        self.assertLess(helper.index("return try {"), helper.index(guard))
+        self.assertLess(helper.index(guard), helper.index("rebindMutex.unlock()"))
+
+        mode_start = view_model.index("fun setCameraMode(")
+        mode_end = view_model.index("\n    /**", mode_start)
+        self.assertIn(
+            "updateConfiguration<CameraConfiguration>",
+            view_model[mode_start:mode_end],
+        )
 
     def test_native_blueprint_selects_exact_java_helper_with_existing_kotlin(self):
         files = admission.candidate(FIXTURE)

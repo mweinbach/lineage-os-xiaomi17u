@@ -217,3 +217,17 @@ diff --git a/app/Android.bp b/app/Android.bp
      resource_dirs: ["src/main/res"],
      manifest: "src/main/AndroidManifest.xml",
  
+diff --git a/app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel.kt b/app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel.kt
+--- a/app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel.kt
++++ b/app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel.kt
+@@ -1847,9 +1847,7 @@
+         }
+ 
+         return try {
+-            val currentCameraConfiguration = _cameraConfiguration.value ?: error(
+-                "Camera configuration is null"
+-            )
++            val currentCameraConfiguration = _cameraConfiguration.value ?: return false
+ 
+             T::class.safeCast(currentCameraConfiguration)?.let {
+                 val newCameraConfiguration = block(it)
