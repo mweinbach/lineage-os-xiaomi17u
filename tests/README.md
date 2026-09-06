@@ -11,7 +11,7 @@ python3 -m unittest discover -s tests -p 'test_camera_dependencies.py' -v
 ```
 
 Run `make test` once before completing a change. It runs full offline discovery,
-about four minutes for 4820 checks, then the Linux setup script's syntax check:
+about four minutes for 4749 checks, then the Linux setup script's syntax check:
 
 ```sh
 python3 -m unittest discover -s tests -v

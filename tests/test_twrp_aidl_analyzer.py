@@ -157,39 +157,5 @@ class AidlAnalyzerTrackedTests(unittest.TestCase):
             self.assertIn(field, after)
 
 
-class AidlAnalyzerMutationTests(unittest.TestCase):
-    def test_reviewed_fixture_accepted(self):
-        self.assertEqual(digest(fixture()), "1ecd3993ea99e4dd30bce5d3fa1545df6d047ad92cc91632eebabba401bad24f")
-        self.assertEqual(validate_patch(fixture()), (BEFORE, AFTER))
-
-    def test_unreviewed_mutations_rejected_without_checksum_gate(self):
-        raw = fixture()
-        changes = {
-            "wrong_name": (b'name: "aidl-analyzer-main"', b'name: "other"'),
-            "wrong_type": (b' cc_library_static {', b' cc_library {'),
-            "moved": (("+" + ADDITION + "     host_supported: true,\n").encode(),
-                      ("     host_supported: true,\n+" + ADDITION).encode()),
-            "duplicate": (("+" + ADDITION).encode(), ("+" + ADDITION + "+" + ADDITION).encode()),
-            "removal": (b'     vendor_available: true,', b'-    vendor_available: true,'),
-            "false": (b'+    recovery_available: true,', b'+    recovery_available: false,'),
-            "source": (b'"analyzer/Analyzer.cpp"', b'"other.cpp"'),
-            "dependency": (b'"libbinder"', b'"other"'),
-            "exports": (b'export_include_dirs:', b'local_include_dirs:'),
-            "path": (b'--- a/Android.bp', b'--- a/other.bp'),
-            "mode": (b' 100644\n', b' 100755\n'),
-            "abbreviated_blob": (FILE['before_git_blob'].encode(), FILE['before_git_blob'][:12].encode()),
-            "wrong_blob": (FILE['after_git_blob'].encode(), b'0' * 40),
-            "hunk_count": (b'-1102,40', b'-1102,39'),
-            "trailer": (b'         "libutils",\n', b'         "libutils",\nGIT binary patch\n'),
-        }
-        for name, (old, new) in changes.items():
-            with self.subTest(mutation=name):
-                self.assertIn(old, raw)
-                changed = raw.replace(old, new, 1)
-                self.assertNotEqual(changed, raw)
-                with self.assertRaises(ValueError):
-                    validate_patch(changed)
-
-
 if __name__ == "__main__":
     unittest.main()

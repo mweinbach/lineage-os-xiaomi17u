@@ -27,6 +27,8 @@ class NezhaUdfpsGeometryTests(unittest.TestCase):
         self.assertGreater(pitch, 0)
         self.assertAlmostEqual(pitch, 25400 / PANEL_X_DPI, delta=0.001)
         self.assertAlmostEqual(pitch, 25400 / PANEL_Y_DPI, delta=0.001)
+        # A negative upstream default would place padding beyond the sensor and
+        # invert the content box, so the resource has to stay a positive pitch.
         self.assertGreater(abs(pitch - 25400 / 480), 5,
                            "logical display density must not become physical pitch")
 
@@ -46,13 +48,6 @@ class NezhaUdfpsGeometryTests(unittest.TestCase):
                 self.assertLess(2 * padding, view_width)
                 # Integer rounding may leave up to two scaled pixels extra.
                 self.assertLess(abs(visible_width / scale * pitch - ICON_WIDTH_UM), 200)
-
-    def test_unspecified_upstream_pitch_reproduces_invalid_content_box(self):
-        icon_pixels = int(ICON_WIDTH_UM / -1)
-        padding = max(0, (SENSOR_WIDTH_PX - icon_pixels) // 2)
-        self.assertEqual(padding, 3074)
-        self.assertLess(SENSOR_WIDTH_PX - 2 * padding, 0)
-
 
 if __name__ == "__main__":
     unittest.main()

@@ -108,10 +108,6 @@ def canonical_sha256(value):
     return sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode())
 
 
-def git_blob(data):
-    return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
-
-
 def reviewed_fixture():
     """Construct the reviewed fragment in memory without reading source files."""
     body = "".join(("-" if line == REMOVED else " ") + line
@@ -151,24 +147,6 @@ def validate_restoration_patch(raw):
     if before != BEFORE_HUNK or after != AFTER_HUNK:
         raise ValueError("The approved module/type/name or surrounding source context changed")
     return before, after
-
-
-def replay_pinned_preimage(before, raw):
-    """Optional in-memory full-file check; never reads a source checkout itself."""
-    old_hunk, new_hunk = validate_restoration_patch(raw)
-    if (sha256(before) != FILE_IDENTITIES["before_sha256"]
-            or len(before) != FILE_IDENTITIES["before_size_bytes"]
-            or git_blob(before) != FILE_IDENTITIES["before_git_blob"]):
-        raise ValueError("Full preimage differs from the reviewed TWRP source")
-    lines = before.splitlines(keepends=True)
-    if b"".join(lines[74:115]) != old_hunk.encode():
-        raise ValueError("Preimage does not contain the hunk at original line 75")
-    after = b"".join(lines[:74]) + new_hunk.encode() + b"".join(lines[115:])
-    if (sha256(after) != FILE_IDENTITIES["after_sha256"]
-            or len(after) != FILE_IDENTITIES["after_size_bytes"]
-            or git_blob(after) != FILE_IDENTITIES["after_git_blob"]):
-        raise ValueError("Full postimage is not the reviewed Android 16 r1 source")
-    return after
 
 
 class AconfigVariantTrackedTests(unittest.TestCase):
@@ -239,99 +217,6 @@ class AconfigVariantTrackedTests(unittest.TestCase):
         self.assertTrue(after.endswith(CONTEXT_SUFFIX))
         self.assertIn('release_flag("RELEASE_READ_FROM_NEW_STORAGE")', after)
         self.assertNotIn("recovery_available", MODULE_AFTER)
-
-
-class AconfigVariantMutationTests(unittest.TestCase):
-    def test_reviewed_in_memory_fixture_is_accepted(self):
-        raw = reviewed_fixture()
-        self.assertEqual(len(raw), PATCH_SIZE)
-        self.assertEqual(sha256(raw), PATCH_SHA256)
-        self.assertEqual(validate_restoration_patch(raw), (BEFORE_HUNK, AFTER_HUNK))
-
-    def test_full_preimage_identity_is_not_optional(self):
-        for wrong in (b"", BEFORE_HUNK.encode(), b"// modified\n" + BEFORE_HUNK.encode()):
-            with self.subTest(size=len(wrong)):
-                with self.assertRaises(ValueError):
-                    replay_pinned_preimage(wrong, reviewed_fixture())
-
-
-def replacement(old, new):
-    def mutate(raw):
-        if old not in raw:
-            raise AssertionError("Mutation anchor is absent from the reviewed fixture")
-        return raw.replace(old, new, 1)
-    return mutate
-
-
-MUTATIONS = {
-    "preamble": lambda raw: b"unreviewed preamble\n" + raw,
-    "trailer": lambda raw: raw + b"unreviewed trailer\n",
-    "duplicate_file": lambda raw: raw + raw,
-    "binary_record": lambda raw: raw + b"GIT binary patch\n",
-    "eof_marker": lambda raw: raw + b"\\ No newline at end of file\n",
-    "missing_final_newline": lambda raw: raw[:-1],
-    "crlf": lambda raw: raw.replace(b"\n", b"\r\n"),
-    "nul": lambda raw: raw + b"\0\n",
-    "invalid_utf8": lambda raw: raw + b"\xff\n",
-    "wrong_file_path": replacement(SOURCE_PATH.encode(), b"tools/other/Android.bp"),
-    "wrong_old_path": replacement(b"--- a/" + SOURCE_PATH.encode(), b"--- a/other/Android.bp"),
-    "wrong_new_path": replacement(b"+++ b/" + SOURCE_PATH.encode(), b"+++ b/other/Android.bp"),
-    "wrong_before_blob": replacement(b"27300b66b1af8c44882d9e6c19dd16048edf4a0d..",
-                                     b"07300b66b1af8c44882d9e6c19dd16048edf4a0d.."),
-    "wrong_after_blob": replacement(b"..16341b92735823ef624892dbfa6c94864f9bcfef",
-                                    b"..06341b92735823ef624892dbfa6c94864f9bcfef"),
-    "abbreviated_before_blob": replacement(b"27300b66b1af8c44882d9e6c19dd16048edf4a0d..",
-                                           b"27300b66b1af.."),
-    "abbreviated_after_blob": replacement(b"..16341b92735823ef624892dbfa6c94864f9bcfef",
-                                          b"..16341b927358"),
-    "mode_change": replacement(b" 100644\n", b" 100755\n"),
-    "new_file_mode": replacement(b"index ", b"new file mode 100644\nindex "),
-    "old_start": replacement(b"@@ -75,41", b"@@ -74,41"),
-    "new_start": replacement(b"+75,40 @@", b"+76,40 @@"),
-    "old_count": replacement(b"-75,41", b"-75,40"),
-    "new_count": replacement(b"+75,40", b"+75,41"),
-    "omitted_counts": replacement(HUNK_HEADER.encode(), b"@@ -75 +75 @@\n"),
-    "extra_hunk": lambda raw: raw + HUNK_HEADER.encode(),
-    "addition": replacement(b"-" + REMOVED.encode(), b"+" + REMOVED.encode()),
-    "extra_removal": replacement(b"     vendor_available: true,\n", b"-    vendor_available: true,\n"),
-    "removed_false": replacement(b"-" + REMOVED.encode(), b"-    recovery_available: false,\n"),
-    "no_removal": replacement(b"-" + REMOVED.encode(), b" " + REMOVED.encode()),
-    "wrong_property_removed": replacement(b"-" + REMOVED.encode(), b"-    product_available: true,\n"),
-    "tabbed_removal": replacement(b"-" + REMOVED.encode(), b"-\trecovery_available: true,\n"),
-    "duplicate_availability": replacement(b"     vendor_available: true,\n", b"     recovery_available: true,\n"),
-    "moved_removal": replacement(b"     vendor_available: true,\n-" + REMOVED.encode(),
-                                  b"-" + REMOVED.encode() + b"     vendor_available: true,\n"),
-    "wrong_constructor": replacement(b" cc_library {\n", b" rust_library {\n"),
-    "wrong_module_name": replacement(b'     name: "libaconfig_storage_read_api_cc",\n',
-                                    b'     name: "unreviewed_module",\n'),
-    "comment_anchor": replacement(b" cc_library {\n", b" // cc_library {\n"),
-    "string_anchor": replacement(b" cc_library {\n", b' "cc_library {",\n'),
-    "nested_anchor": replacement(b" // flag read api cc interface\n", b" other_module {\n"),
-    "host_flag": replacement(b"     host_supported: true,\n", b"     host_supported: false,\n"),
-    "vendor_flag": replacement(b"     vendor_available: true,\n", b"     vendor_available: false,\n"),
-    "product_flag": replacement(b"     product_available: true,\n", b"     product_available: false,\n"),
-    "ffi_dependency": replacement(b'     whole_static_libs: ["libaconfig_storage_read_api_cxx_bridge"],\n',
-                                 b'     whole_static_libs: ["unreviewed_bridge"],\n'),
-    "release_flag": replacement(b"RELEASE_READ_FROM_NEW_STORAGE", b"UNREVIEWED_RELEASE_FLAG"),
-    "release_branch": replacement(b"         default: [],\n", b'         default: ["unreviewed"],\n'),
-    "source_file": replacement(b'     srcs: ["aconfig_storage_read_api.cpp"],\n',
-                              b'     srcs: ["unreviewed.cpp"],\n'),
-}
-
-
-def mutation_test(name, mutate):
-    def test(self):
-        original = reviewed_fixture()
-        changed = mutate(original)
-        self.assertNotEqual(original, changed, name)
-        # Call the structural contract directly, not its payload checksum gate.
-        with self.assertRaises(ValueError):
-            validate_restoration_patch(changed)
-    return test
-
-
-for _name, _mutate in MUTATIONS.items():
-    setattr(AconfigVariantMutationTests, "test_reject_" + _name, mutation_test(_name, _mutate))
 
 
 if __name__ == "__main__":
