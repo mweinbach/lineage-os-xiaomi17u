@@ -8,14 +8,14 @@
   },
   "verifier_profile": {
     "path": "config/nezha-avb-image-set.json",
-    "size_bytes": 6032,
-    "sha256": "dbd1022c6a5ed8c12c5eb2903f969fb610ff27cc5e65388004fdc417322cb1ef"
+    "size_bytes": 6555,
+    "sha256": "bbea22ce413efafc5af8fc4b5e2aafcb9763b09cb05da2cddb7ef2198f3e8ca1"
   },
   "implementation_dependencies": [
     {
       "path": "scripts/avb_image_set.py",
-      "size_bytes": 46457,
-      "sha256": "a2720b4fbca0994e6cb66bbe4fd68a0f633d1c2833af8e2613e06ef1971a9a19"
+      "size_bytes": 46976,
+      "sha256": "8a422375564bb3fe297a41c08c6e2e84df15114bf24259244f3dc823eafe3ea8"
     },
     {
       "path": "scripts/twrp_working.py",

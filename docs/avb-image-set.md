@@ -139,6 +139,13 @@ exactly that largest admitted image. The dynamic group and every physical
 partition are unchanged; the admitted logical set totals 9,481,801,728 bytes
 against the 15,290,335,232-byte group.
 
+On September 7 the rebuilt userdebug opt-in package (identity `nezha.88dd3098…`,
+now with `ro.debuggable=1`) measured system_ext at the same 783,491,072 bytes
+with SHA256
+`da5ae04b78369864a5023febf8e9bf03b649a08cb8d8dac1027a6cae34f6c6d2`. It is
+admitted as a third measured image through its own package-admission record;
+the logical maximum and every physical partition are unchanged.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting

@@ -283,6 +283,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "9d96b82b7123cd1373141aeeae13c5425dc6f18a900536b2b23e92d28624649c", "size_bytes": 783491072},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v1-admit/admission.json", "sha256": "f8b7ee0961f36e73bf17658aaa3af323bfdbf9751518e91bc32815c4a4bd70b6", "size_bytes": 6908},
      "build_number": "nezha.1088ec3b159be6c32e1403f2"},
+    # userdebug diagnostic opt-in build with ro.debuggable=1 (fourth guest transaction); same size, new identity.
+    {"measured_image": {"sha256": "da5ae04b78369864a5023febf8e9bf03b649a08cb8d8dac1027a6cae34f6c6d2", "size_bytes": 783491072},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v3-admit/admission.json", "sha256": "6a878389deced14ebc735e4e9baa955d224661f0b478e48a960da3afb52dd1ef", "size_bytes": 7056},
+     "build_number": "nezha.88dd30980cd24ea68d6b701e"},
 )
 
 

@@ -38,8 +38,8 @@ DATA_ROLES = frozenset(('boot', 'dtbo', 'init_boot', 'mi_ext', 'odm', 'product',
                        'vendor_boot', 'vendor_dlkm'))
 PUBLIC_PINS = {
     'scripts/target_files_avb_inventory.py': ('893778a88df0badb6f27db0f88be5aff9885cb8f3111f06e062e5d7f0d7f89e4', 28614),
-    'scripts/avb_signing.py': ('13626e0bb99b2d4264c3c1cef90ede07549597fe13b08ff602f138a5dd2173d4', 46523),
-    'scripts/avb_image_set.py': ('a2720b4fbca0994e6cb66bbe4fd68a0f633d1c2833af8e2613e06ef1971a9a19', 46457),
+    'scripts/avb_signing.py': ('a48b1cbf65ed932f13d810ceef6b7507fba3c8315c3b5aa5ea21aa3ddd9a5b04', 46523),
+    'scripts/avb_image_set.py': ('8a422375564bb3fe297a41c08c6e2e84df15114bf24259244f3dc823eafe3ea8', 46976),
     'scripts/artifact_files.py': ('ddc784d1c378510c66621d95af267790ab7fb1965ac5951926b471e897bd6343', 1586),
     'scripts/target_files_archive_copy.py': ('84675edaf28455c8433f999596e6ecc172df722d322be6c088ea81e56fe818b6', 41065),
 }
@@ -76,8 +76,8 @@ def selected(row):
 
 def contracts():
     value = signing.load_contract()
-    require(value[1] == '587e0deeba39d6f317360fdb8a16792b9402161f7d021a795cf5b21d416770be'
-            and value[3] == 'dbd1022c6a5ed8c12c5eb2903f969fb610ff27cc5e65388004fdc417322cb1ef',
+    require(value[1] == '9b9a4247ce459889793dbb7ff7095cdef8b9c0f3ab628273cfa895b511e6766d'
+            and value[3] == 'bbea22ce413efafc5af8fc4b5e2aafcb9763b09cb05da2cddb7ef2198f3e8ca1',
             'only the existing signing and verifier profiles are supported')
     return value
 

@@ -693,7 +693,7 @@ class PublicProfileTests(NoNativeTests):
             "size_bytes": 778199040})
         self.assertEqual(override["additional_measured_images"], list(avb.ADDITIONAL_MEASURED_SYSTEM_EXT))
         self.assertEqual([c["build_number"] for c in override["additional_measured_images"]],
-                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2"])
+                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e"])
         self.assertEqual(override["maximum_size_bytes"],
                          max(c["measured_image"]["size_bytes"] for c in override["additional_measured_images"]))
         avb.validate_image_budget(profile, "system_ext", override["measured_image"])
