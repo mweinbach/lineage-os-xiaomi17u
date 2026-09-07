@@ -53,12 +53,13 @@ def jar(path, classes, *, compression=zipfile.ZIP_STORED, extra=None):
 
 
 class CameraOptServiceSelectionTests(unittest.TestCase):
-    def run_fragment(self, selector=None, *, target="nezha", prerequisites=None,
+    def run_fragment(self, selector=None, *, target="nezha", product="lineage_nezha", prerequisites=None,
                      existing_classpath=""):
         make = shutil.which("make")
         if make is None:
             self.skipTest("host GNU Make unavailable")
-        values = {"TARGET_DEVICE": target, "NEZHA_DEVICE_PATH": "device/xiaomi/nezha",
+        values = {"TARGET_DEVICE": target, "TARGET_PRODUCT": product,
+                  "NEZHA_DEVICE_PATH": "device/xiaomi/nezha",
                   "NEZHA_CAMERA_FRAMEWORK": "true", "NEZHA_CAMERAOPT_NATIVE_COMPAT": "true",
                   "NEZHA_CAMERA_PLATFORM_SIGNED": "true", "NEZHA_CAMERA_AUX_PACKAGES": "true",
                   "PRODUCT_SYSTEM_SERVER_JARS": existing_classpath}
@@ -128,6 +129,11 @@ class CameraOptServiceSelectionTests(unittest.TestCase):
                     self.assertEqual(result.stdout, "")
 
     def test_foreign_product_or_duplicate_classpath_is_rejected(self):
+        for product in (None, "", "other_product", "lineage_nezha other_product"):
+            with self.subTest(product=product):
+                result = self.run_fragment("true", product=product)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("TARGET_PRODUCT=lineage_nezha", result.stderr)
         result = self.run_fragment("true", target="other_device")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("TARGET_DEVICE=nezha", result.stderr)
@@ -137,6 +143,16 @@ class CameraOptServiceSelectionTests(unittest.TestCase):
                 result = self.run_fragment("true", existing_classpath="services " + entry)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("exclusive ownership", result.stderr)
+
+    def test_early_product_inheritance_accepts_unassigned_target_device(self):
+        # Soong queries product release configuration before TARGET_DEVICE is
+        # assigned. The selected TARGET_PRODUCT must still be checked here.
+        late = self.run_fragment("true")
+        for target in (None, "", " "):
+            with self.subTest(target=target):
+                early = self.run_fragment("true", target=target)
+                self.assertEqual(early.returncode, 0, early.stderr)
+                self.assertEqual(early.stdout, late.stdout)
 
 
 class CameraOptArtifactOwnershipTests(unittest.TestCase):

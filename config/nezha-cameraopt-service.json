@@ -73,8 +73,8 @@
   ],
   "contract_id": "nezha-cameraopt-service-v1",
   "default_enabled": false,
-  "fragment_sha256": "8b2640d0048c4ebe59a677481a857de6f42d6e0cf428e68499426e8e908f1bf1",
-  "fragment_size_bytes": 1820,
+  "fragment_sha256": "eecdd1702479ca7b12cddfa068087d32b89f4102ac1958815e5fd6b6cde682c8",
+  "fragment_size_bytes": 2137,
   "project": "frameworks/base",
   "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
   "patch": "patches/evolution/0031-cameraopt-process-state-compat.patch",
@@ -112,5 +112,6 @@
     "configuration_count": 1,
     "evidence": "reports/camera-completion-20260907/xiaomi-app/effective-service-array/receipt.json",
     "scope": "Compiled resource. Runtime overlay state not queried."
-  }
+  },
+  "target_product": "lineage_nezha"
 }

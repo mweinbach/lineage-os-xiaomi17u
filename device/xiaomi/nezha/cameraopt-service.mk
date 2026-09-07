@@ -7,8 +7,15 @@ ifneq ($(filter-out true false,$(strip $(NEZHA_CAMERAOPT_SERVICE))),)
 $(error NEZHA_CAMERAOPT_SERVICE must be true, false or unset)
 endif
 ifeq ($(strip $(NEZHA_CAMERAOPT_SERVICE)),true)
+# TARGET_DEVICE is assigned after product inheritance during early dumpvars.
+# TARGET_PRODUCT already identifies the selected product in both phases.
+ifneq ($(strip $(TARGET_PRODUCT)),lineage_nezha)
+$(error NEZHA_CAMERAOPT_SERVICE requires TARGET_PRODUCT=lineage_nezha)
+endif
+ifneq ($(strip $(TARGET_DEVICE)),)
 ifneq ($(strip $(TARGET_DEVICE)),nezha)
 $(error NEZHA_CAMERAOPT_SERVICE requires TARGET_DEVICE=nezha)
+endif
 endif
 ifneq ($(strip $(NEZHA_CAMERA_FRAMEWORK)),true)
 $(error NEZHA_CAMERAOPT_SERVICE requires NEZHA_CAMERA_FRAMEWORK=true)
