@@ -164,5 +164,31 @@
       "which static-caps step fails per sensor"
     ],
     "artifacts_ignored": "artifacts/camera-analysis/ (factory extractions, inventories, pulled vendor libraries, comparison JSON)"
+  },
+  "hal_reverse_engineering": {
+    "date": "2026-09-07",
+    "method": "strace, kernel uprobes with data and stack capture, simpleperf, and llvm-objdump of the pulled vendor libraries in the guest",
+    "libraries": [
+      "/vendor/lib64/hw/camera.qcom.core.so",
+      "/vendor/lib64/hw/com.qti.chi.override.so",
+      "/vendor/lib64/libchifeature2.so",
+      "/odm/lib64/camera/libchxlogicalcameratable.so",
+      "/vendor/lib64/com.xiaomi.camdfx.so",
+      "/vendor/lib64/com.xiaomi.xmdevprotection.tokmd.so",
+      "/vendor/lib64/libcamlog.so"
+    ],
+    "findings": {
+      "fail_list_is_an_output": "A libcutils property_set uprobe with user stack capture shows persist.vendor.camera.sensorffrlist=1,0,21,20 and mi.module.info=...=none are WRITTEN by the HAL during enumeration (call chain camera.qcom.so -> libmicamera_adapter -> libmicamera_hal_core, and the CHI ExtensionModule path). They are computed outputs, so clearing them cannot help; the HAL rewrites them on every provider start. This refutes the persisted-property theory at the code level.",
+      "camx_enumerates_four": "A uprobe in the CHI FillHwDeviceInformation (0x4f6914) shows ChiContextInterface::GetCameraInfo succeeds for physical camera indices 0,1,2,3; four devices, no error branch.",
+      "all_slots_available": "A uprobe in ExtensionModule::EnumerateGeneratedCameras (0x4e7db8) shows all ten logical-camera definitions (MultiCamera, Wide/Ultra/Tele/Front PhysicalCam_LogicalImpl, Front/Rear AON, FrontLogicalCam) evaluate available physical slots {0,1,2,3}, n=4.",
+      "collapse_point": "CameraIdXiaomi::buildCameraRoleIds produces mLogical2RoleCameraMap [4,0,0,64,2,3PartSat] (one logical camera, role 64). addDamagePyhCameraRoleIds then marks xmlId 1-4 (roles 1,0,21,20 = front/wide/ultra/tele) unAvailable because, for each XML entry expected id (loaded from the entry +0x1c), no built logical-camera record has a matching value at LogicalCameraInfo+0x2d50.",
+      "role_id_divergence": "com.xiaomi.camdfx GetSensorNameRoleIDMap logs mExpectSensorRoleId: 0 1 21 23 while the CHI table uses role 20 for tele, and cameradfxconfig logs a SensorNameRoleIDMap parse error. The tele role id differs (23 vs 20).",
+      "device_protection_not_gating": "com.xiaomi.xmdevprotection.tokmd.so drives kernel force-skip via /sys/module/camera/parameters/xm_cam_dev_probe_skip_switch and xm_cam_dev_probe_skip_camera_id; both read 0, so no sensor is being force-skipped.",
+      "selection_inputs_inert": "getLogicalCameraTable selects a table variant from ro.boot.camera.config (default empty; the code only special-cases the string \"0\"), and useCameraRoleId reads persist.vendor.camera.mapid (empty). Setting camera.config to 0 and mapid to 1 or 2 at runtime did not change the enumeration.",
+      "kernel_probe_clean": "strace of the provider start opens all seven sensor-module bins and reads all four EEPROM backups; the kernel logs Probe success for all four sensors on every restart. The only syscall failures are benign (absent DSP/rfsa paths, default_prop reads, the removed override file)."
+    },
+    "conclusion": "The camera enumeration collapse to a single 3PartSat logical camera is computed by the Xiaomi CHI override from CamX per-sensor GetCameraInfo output measured against the ODM logical-camera XML table. Both the XML table library and the sensor-module bins are byte-identical to stock, so the divergence originates upstream in CamX sensor static-caps, consistent with the camera-subsystem init errors seen at the kernel and firmware layer (no valid SFE HW devices; ICP ipclite interrupt init failed ret -3). The persisted userspace properties are effects, not causes.",
+    "tooling_left": "lldb-server (aarch64, from the tree prebuilts) is staged at /data/local/tmp/lldb-server for future live HAL debugging; it attaches but its gdb handshake did not complete in this session, so kernel uprobes were used instead. Pulled vendor libraries and their disassembly live under artifacts/camera-analysis/ and the guest /work/validation/camlibs.",
+    "phone_note": "ro.boot.camera.config was set to 0 during a runtime test and cannot be reset without a reboot; the camera still enumerates identically (three devices) with it at 0, and it clears on the next boot. No reboot was performed to change it."
   }
 }

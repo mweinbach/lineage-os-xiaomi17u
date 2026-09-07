@@ -81,6 +81,44 @@ copy, so a stock boot for comparison needs a stock super flash. Extractions,
 inventories, pulled vendor libraries and comparison outputs stay under the
 ignored `artifacts/camera-analysis/`.
 
+## Reverse engineering the camera HAL (2026-09-07)
+
+With root, the provider was traced at the syscall level (strace), sampled
+(simpleperf), and instrumented with kernel uprobes that capture arguments and
+user stacks, and its vendor libraries were disassembled in the guest. Findings:
+
+- **The fail list is an output, not an input.** A property-set uprobe with
+  stack capture shows `sensorffrlist=1,0,21,20` and `mi.module.info=…=none` are
+  written by the HAL during enumeration (through `camera.qcom.so`,
+  `libmicamera_adapter`, `libmicamera_hal_core` and the CHI extension module).
+  They are recomputed and rewritten on every provider start, which is why
+  clearing them never helped.
+- **CamX enumerates all four sensors.** A uprobe in the CHI's hardware pass
+  shows `GetCameraInfo` succeeds for physical camera indices 0 to 3, and the
+  generated-camera pass sees all ten logical-camera definitions with physical
+  slots {0,1,2,3} available. The kernel logs probe success for all four sensors
+  on every restart.
+- **The collapse is in Xiaomi's role map.** `buildCameraRoleIds` produces
+  `mLogical2RoleCameraMap [4,0,0,64,2,3PartSat]`, one logical camera at role 64,
+  and `addDamagePyhCameraRoleIds` marks the four per-lens roles unavailable
+  because no built logical-camera record matches each XML entry's expected id.
+  Xiaomi's diagnostic layer expects tele at role 23 while the table uses 20, and
+  logs a role-map parse error.
+- **The known gates are inert.** The device-protection kernel skip switches
+  (`/sys/module/camera/parameters/xm_cam_dev_probe_skip_*`) are both zero. The
+  table-selection inputs `ro.boot.camera.config` and `persist.vendor.camera.mapid`
+  are empty, and setting them at runtime changed nothing.
+
+Because the XML table library and the sensor-module binaries are byte-identical
+to stock, the divergence is upstream of userspace, in CamX's per-sensor
+static-caps, which matches the camera-subsystem init errors at the kernel and
+firmware layer (`no valid SFE HW devices`; ICP `ipclite` interrupt init failed
+`ret -3`). Confirming that against stock still needs a stock boot log.
+
+An aarch64 `lldb-server` from the tree prebuilts is staged on the phone at
+`/data/local/tmp/lldb-server` for future live debugging; it attached but its
+gdb handshake did not complete this session, so kernel uprobes were used.
+
 ## Magisk detour
 
 At the user's request a Magisk v30.7 route was tried between the root fixes.
