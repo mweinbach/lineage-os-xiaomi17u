@@ -76,12 +76,21 @@ The first userdebug package flashed and booted (identity `nezha.1088ec3b…`,
 build type userdebug, SELinux enforcing) but reported `ro.debuggable=0`, so adbd
 refused root. Lineage's common product config sets
 `PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG` for userdebug builds, and the build
-property generator then emits `ro.debuggable=0`. The opt-in now also derives the
-device product makefile so that only the explicit userdebug/userdebug pair sets
-that single-value variable to false; the derivation is pinned in the same
-contract (`b53dc7f3…` 1,193 bytes before, `f9955fd7…` 1,561 bytes after) and was
-installed by a third guest transaction. A rebuilt package carries a fresh source
-identity and therefore a new measured system_ext image to admit.
+property generator then emits `ro.debuggable=0`.
+
+A third guest transaction first overrode the variable to `false` from the device
+product makefile. The rebuilt package (identity `nezha.d4f428f2…`) still carried
+`ro.debuggable=0`: the build exports the variable with `add_json_bool`, which
+maps any non-empty value, including `false`, to true. That override is therefore
+recorded as ineffective and removed again (`f9955fd7…` 1,561 bytes installed,
+`b53dc7f3…` 1,193 bytes restored). The effective derivation wraps the assignment
+inside Lineage's common config so that only the explicit userdebug/userdebug
+pair leaves the variable unset (`2747b367…` 10,468 bytes before, `38ac0f28…`
+10,789 bytes after; the predecessor is snapshotted under
+`research/source-snapshots/`). Both changes form the fourth guest transaction;
+a host GNU Make test pins the three cases and the helper's non-empty rule. A
+rebuilt package carries a fresh source identity and therefore a new measured
+system_ext image to admit.
 
 A userdebug image is a diagnostic build. It weakens `ro.debuggable` and adb
 policy and is not a release candidate. Signing, partition fit, device admission

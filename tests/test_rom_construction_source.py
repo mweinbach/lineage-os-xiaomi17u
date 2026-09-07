@@ -760,43 +760,62 @@ class VariantOptInMetadataSelectionTests(unittest.TestCase):
 
 
 class VariantOptInProductSelectionTests(unittest.TestCase):
-    """The userdebug opt-in restores ro.debuggable=1 through the device product only."""
+    """The userdebug opt-in leaves PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG unset in Lineage's common config."""
 
-    # The installed predecessor is the tracked product makefile plus the September 6
+    # The merged product predecessor is the tracked product makefile plus the September 6
     # merge's explicit candidate selection block inserted before the device inherit.
     MERGE_SELECTION = (b"# Explicit September 6 successor candidates; native/device qualification remains pending.\n"
                        b"NEZHA_CALIBRATED_DISPLAY := true\nNEZHA_DOLBY_CONTROLLER := true\nNEZHA_HAPTICS_CONTROLS := true\n"
                        b"NEZHA_CAMERA_TASK_PROFILES := true\nNEZHA_REFRESH_POLICY := true\nNEZHA_WORKLOAD_CLASSIFIER := false\n\n")
 
-    def installed_predecessor(self):
+    def merged_product(self):
         tracked = (source.ROOT / source.PRODUCT_SELECTION).read_bytes()
         anchor = source.PRODUCT_SELECTION_ANCHOR.encode("ascii")
         self.assertEqual(tracked.count(anchor), 1)
         return tracked.replace(anchor, self.MERGE_SELECTION + anchor, 1)
 
-    def test_derivation_inserts_only_the_override_before_the_device_inherit(self):
-        raw = self.installed_predecessor()
-        self.assertEqual(source.metadata.identity(raw), source.PRODUCT_SELECTION_BEFORE)
-        derived = source.derive_product_selection(raw)
-        self.assertEqual(source.metadata.identity(derived), source.PRODUCT_SELECTION_AFTER)
+    def test_product_restore_removes_only_the_ineffective_override(self):
+        restored = self.merged_product()
+        self.assertEqual(source.metadata.identity(restored), source.PRODUCT_SELECTION_RESTORED)
         anchor = source.PRODUCT_SELECTION_ANCHOR.encode("ascii")
-        self.assertEqual(derived, raw.replace(anchor, source.PRODUCT_SELECTION_EXCEPTION.encode("ascii") + anchor, 1))
-        self.assertEqual(source.load_variant_opt_in_contract()[0]["product_selection"]["after"], source.PRODUCT_SELECTION_AFTER)
-        for changed in (raw + b"\n", derived):
+        installed = restored.replace(anchor, source.PRODUCT_SELECTION_INEFFECTIVE_OVERRIDE.encode("ascii") + anchor, 1)
+        self.assertEqual(source.metadata.identity(installed), source.PRODUCT_SELECTION_INEFFECTIVE)
+        self.assertEqual(source.restore_product_selection(installed), restored)
+        contract = source.load_variant_opt_in_contract()[0]
+        self.assertEqual(contract["product_selection"]["installed"], source.PRODUCT_SELECTION_INEFFECTIVE)
+        self.assertEqual(contract["product_selection"]["restored"], source.PRODUCT_SELECTION_RESTORED)
+        for changed in (installed + b"\n", restored):
             with self.subTest(size=len(changed)), self.assertRaises(source.ConstructionSourceError):
-                source.derive_product_selection(changed)
+                source.restore_product_selection(changed)
 
-    def test_host_make_sets_the_flag_only_for_explicit_userdebug(self):
+    def test_common_selection_wraps_only_the_assignment(self):
+        raw = (source.ROOT / source.COMMON_SELECTION_SNAPSHOT).read_bytes()
+        self.assertEqual(source.metadata.identity(raw), source.COMMON_SELECTION_BEFORE)
+        derived = source.derive_common_selection(raw)
+        self.assertEqual(source.metadata.identity(derived), source.COMMON_SELECTION_AFTER)
+        assignment = source.COMMON_SELECTION_ASSIGNMENT.encode("ascii")
+        self.assertEqual(derived, raw.replace(assignment, source.COMMON_SELECTION_EXCEPTION.encode("ascii"), 1))
+        self.assertEqual(derived.count(b"PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG"), 1)
+        self.assertEqual(source.load_variant_opt_in_contract()[0]["common_selection"]["after"], source.COMMON_SELECTION_AFTER)
+        for changed in (raw + b"\n", derived, raw.replace(assignment, assignment * 2, 1)):
+            with self.subTest(size=len(changed)), self.assertRaises(source.ConstructionSourceError):
+                source.derive_common_selection(changed)
+
+    def test_host_make_leaves_the_flag_unset_only_for_explicit_userdebug(self):
         import shutil
         import subprocess
         make = shutil.which("make")
         if make is None:
             self.skipTest("host GNU Make unavailable")
+        # add_json_bool as defined in build/make/common/json.mk: any non-empty value is true,
+        # which is why the earlier ":= false" override could not restore ro.debuggable=1.
+        helper = b"json_bool = $(if $(strip $(1)),true,false)\n"
         with tempfile.TemporaryDirectory() as directory:
-            makefile = Path(directory) / "product.mk"
-            makefile.write_bytes(source.PRODUCT_SELECTION_EXCEPTION.encode("ascii") + b"all:\n\t@echo \"[$(PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG)]\"\n")
-            for assignments, expected in ((["TARGET_BUILD_VARIANT=user"], "[]"), (["TARGET_BUILD_VARIANT=userdebug"], "[]"),
-                                          (["TARGET_BUILD_VARIANT=userdebug", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], "[false]")):
+            makefile = Path(directory) / "common.mk"
+            makefile.write_bytes(helper + source.COMMON_SELECTION_EXCEPTION.encode("ascii")
+                                 + b"all:\n\t@echo \"[$(PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG)] $(call json_bool,$(PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG)) $(call json_bool,false)\"\n")
+            for assignments, expected in ((["TARGET_BUILD_VARIANT=user"], "[true] true true"), (["TARGET_BUILD_VARIANT=userdebug"], "[true] true true"),
+                                          (["TARGET_BUILD_VARIANT=userdebug", "NEZHA_BUILD_VARIANT_OPT_IN=userdebug"], "[] false true")):
                 with self.subTest(assignments=assignments):
                     result = subprocess.run([make, "-s", "-f", str(makefile), *assignments], capture_output=True, text=True, env={"PATH": "/usr/bin:/bin"})
                     self.assertEqual(result.returncode, 0, result.stderr)
