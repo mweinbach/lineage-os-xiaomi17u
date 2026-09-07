@@ -295,6 +295,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "24728b8764d935055b4fbc07e173bae9bfc01cbeca0c62fc4c6266de1a43027e", "size_bytes": 783507456},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v5-admit/admission.json", "sha256": "1b6855e3c07d1ce24885f0973ba1f320ff63703fda4f097562252a8fd074ae03", "size_bytes": 7056},
      "build_number": "nezha.cc551b14bc2cc72c2b138bb0"},
+    # userdebug opt-in rebuilt with the QTI value-add framework flag in the system image (sixth guest transaction): same size, new identity.
+    {"measured_image": {"sha256": "b39b97737d6ab29e948a9a8839f1ef3f1c68cfa1257cc93ba6940d57d980b899", "size_bytes": 783507456},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v6-admit/admission.json", "sha256": "50bf940663c8bbcf22cf4e6e18e283119a80c45c96afeddd9a8fbdf7bb62983b", "size_bytes": 7066},
+     "build_number": "nezha.e2b55ae5f0effd944736a6b0"},
 )
 
 

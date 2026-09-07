@@ -162,6 +162,13 @@ bytes with SHA256
 admitted as a fifth measured image through its own package-admission record,
 and the logical maximum and every physical partition are unchanged.
 
+Later on September 7 the same environment was rebuilt with the QTI value-add
+framework flag selected in the system image (identity `nezha.e2b55ae5…`,
+sixth guest transaction). system_ext measured the same 783,507,456 bytes with
+SHA256 `b39b97737d6ab29e948a9a8839f1ef3f1c68cfa1257cc93ba6940d57d980b899`;
+it is admitted as a sixth measured image through its own package-admission
+record, and the logical maximum and every physical partition are unchanged.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting
