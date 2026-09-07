@@ -169,6 +169,13 @@ SHA256 `b39b97737d6ab29e948a9a8839f1ef3f1c68cfa1257cc93ba6940d57d980b899`;
 it is admitted as a sixth measured image through its own package-admission
 record, and the logical maximum and every physical partition are unchanged.
 
+Later on September 7 the userdebug opt-in was rebuilt with the ported HyperOS
+camera framework (identity `nezha.c6ad6008…`, delivery set v7). Its added
+system_ext camera libraries grow system_ext to 792,080,384 bytes with SHA256
+`c010c7ce84c014d7e290a552ff311a4877d0c2cdc1488dcaecb0f9696cdc04aa`; it is
+admitted as a seventh measured image and raises the system_ext logical
+maximum to that size. Every physical partition is unchanged.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting

@@ -299,6 +299,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "b39b97737d6ab29e948a9a8839f1ef3f1c68cfa1257cc93ba6940d57d980b899", "size_bytes": 783507456},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v6-admit/admission.json", "sha256": "50bf940663c8bbcf22cf4e6e18e283119a80c45c96afeddd9a8fbdf7bb62983b", "size_bytes": 7066},
      "build_number": "nezha.e2b55ae5f0effd944736a6b0"},
+    # userdebug opt-in with the ported HyperOS camera framework (seventh transaction): system_ext grows to 792,080,384 bytes for the added camera libraries.
+    {"measured_image": {"sha256": "c010c7ce84c014d7e290a552ff311a4877d0c2cdc1488dcaecb0f9696cdc04aa", "size_bytes": 792080384},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v7-admit/admission.json", "sha256": "803e018974cf494cb6963630b1ced1115fda5caf60a923866e963ea499e3b0d1", "size_bytes": 7080},
+     "build_number": "nezha.c6ad60080698a987390afc40"},
 )
 
 
