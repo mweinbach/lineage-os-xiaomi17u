@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-cameraopt-native-compat-v1",
+  "selector": "NEZHA_CAMERAOPT_NATIVE_COMPAT",
+  "default_enabled": false,
+  "requires_selector": "NEZHA_CAMERA_FRAMEWORK",
+  "fragment": "device/xiaomi/nezha/cameraopt-native-compat.mk",
+  "fragment_sha256": "84fb523db805ae6ee74e1669cc8cd1393ddd672eaf9ff75c1e30e14609d1497e",
+  "patch": "patches/evolution/0030-nezha-cameraopt-processgroup-compat.patch",
+  "patch_sha256": "dfb3e8734e8cb74c9d6811839550153d56b56e843a0952baa328f511a4af8f92",
+  "soong": {
+    "namespace": "nezha_cameraopt",
+    "variable": "native_compat",
+    "target": "android",
+    "define": "NEZHA_CAMERAOPT_NATIVE_COMPAT"
+  },
+  "upstream": {
+    "upstream": "https://github.com/Evolution-X/system_core",
+    "branch": "bka",
+    "revision": "241488ea392c01079941d86ddc458b8a0c9ae6e1"
+  },
+  "files": {
+    "libprocessgroup/Android.bp": {
+      "before_sha256": "1154256d207ca88d1d4e4be61e411344b4567cc584e12b6f3fc66cc1d94818b4",
+      "after_sha256": "91958459220d9a4f0112731d2e8d0f96c2290a029442243ff6cbac0bfadbe969"
+    },
+    "libprocessgroup/sched_policy.cpp": {
+      "before_sha256": "1400a97c950e4b07d213ea804cabee6d55ba79c9d4d03530f0f721744096b8df",
+      "after_sha256": "69f7a6870518e254a077f7f4303b4b8d15768b72cedef2725f1ba80e4d5d8586"
+    }
+  },
+  "export": {
+    "name": "get_cpuset_policy",
+    "signature": "extern C int get_cpuset_policy(pid_t, SchedPolicy*)",
+    "factory_address": "0x2eb3c",
+    "factory_size_bytes": 612,
+    "semantics": "Resolve zero tid to current thread; prefer nonempty recognized cpuset group, otherwise use cpu; preserve lookup errors. Decode normal AOSP groups plus measured factory audio-app=3, camera-daemon substring=9, display=12, audio=13, touch=14. Query only; does not change task state or public setters.",
+    "factory_extra_groups": {
+      "audio-app": 3,
+      "camera-daemon substring": 9,
+      "display": 12,
+      "audio": 13,
+      "touch": 14
+    }
+  },
+  "purpose": "Resolve the measured missing native import in the retained CameraOpt JNI. Service startup, Java dependencies and full camera acceptance are separate requirements.",
+  "verification": {
+    "source_installed": false,
+    "native_compilation": "unverified",
+    "runtime_jni_load": "unverified",
+    "cameraopt_binder_service": "unverified",
+    "device_admission": "not device-admitted"
+  }
+}

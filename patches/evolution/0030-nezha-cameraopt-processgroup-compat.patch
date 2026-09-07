@@ -1,0 +1,82 @@
+diff --git a/libprocessgroup/Android.bp b/libprocessgroup/Android.bp
+--- a/libprocessgroup/Android.bp
++++ b/libprocessgroup/Android.bp
+@@ -59,6 +59,15 @@
+         "task_profiles.cpp",
+     ],
+     name: "libprocessgroup",
++    // Restore only the factory CameraOpt query ABI for the selected product.
++    target: {
++        android: {
++            cflags: select(soong_config_variable("nezha_cameraopt", "native_compat"), {
++                true: ["-DNEZHA_CAMERAOPT_NATIVE_COMPAT"],
++                default: [],
++            }),
++        },
++    },
+     host_supported: true,
+     native_bridge_supported: true,
+     ramdisk_available: true,
+diff --git a/libprocessgroup/sched_policy.cpp b/libprocessgroup/sched_policy.cpp
+--- a/libprocessgroup/sched_policy.cpp
++++ b/libprocessgroup/sched_policy.cpp
+@@ -195,6 +195,59 @@
+     return 0;
+ }
+ 
++#ifdef NEZHA_CAMERAOPT_NATIVE_COMPAT
++// Factory CameraOpt uses these query-only policy IDs. Keep the public AOSP
++// scheduling enum and all task-policy setters unchanged.
++static int get_cameraopt_policy_from_group(const std::string& group, SchedPolicy* policy) {
++    constexpr int kCameraDaemon = 9;
++    constexpr int kDisplay = 12;
++    constexpr int kAudio = 13;
++    constexpr int kTouch = 14;
++    if (group == "audio-app") {
++        *policy = SP_AUDIO_APP;
++    } else if (group.find("camera-daemon") != std::string::npos) {
++        *policy = static_cast<SchedPolicy>(kCameraDaemon);
++    } else if (group == "display") {
++        *policy = static_cast<SchedPolicy>(kDisplay);
++    } else if (group == "audio") {
++        *policy = static_cast<SchedPolicy>(kAudio);
++    } else if (group == "touch") {
++        *policy = static_cast<SchedPolicy>(kTouch);
++    } else {
++        return get_sched_policy_from_group(group, policy);
++    }
++    return 0;
++}
++
++// The Nezha factory CameraOpt JNI imports this C ABI. It prefers the cpuset
++// controller, falls back to cpu for empty/unknown groups, and only reads state.
++extern "C" int get_cpuset_policy(pid_t tid, SchedPolicy* policy) {
++    if (tid == 0) {
++        tid = GetThreadId();
++    }
++
++    std::string group;
++    if (cpusets_enabled()) {
++        if (getCGroupSubsys(tid, "cpuset", group) < 0) {
++            LOG(ERROR) << "Failed to find cpuset cgroup for tid " << tid;
++            return -1;
++        }
++        if (!group.empty()) {
++            if (get_cameraopt_policy_from_group(group, policy) == 0) {
++                return 0;
++            }
++            group.clear();
++        }
++    }
++
++    if (cpuctl_enabled() && getCGroupSubsys(tid, "cpu", group) < 0) {
++        LOG(ERROR) << "Failed to find cpu cgroup for tid " << tid;
++        return -1;
++    }
++    return get_cameraopt_policy_from_group(group, policy);
++}
++#endif
++
+ int get_sched_policy(pid_t tid, SchedPolicy* policy) {
+     if (tid == 0) {
+         tid = GetThreadId();
