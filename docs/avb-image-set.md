@@ -155,6 +155,13 @@ through its own package-admission record, and the logical maximum is now
 exactly that image. The dynamic group and every physical partition are
 unchanged.
 
+On September 7 the same environment was rebuilt with the guarded permissive su
+policy (identity `nezha.cc551b14…`). system_ext measured the same 783,507,456
+bytes with SHA256
+`24728b8764d935055b4fbc07e173bae9bfc01cbeca0c62fc4c6266de1a43027e`; it is
+admitted as a fifth measured image through its own package-admission record,
+and the logical maximum and every physical partition are unchanged.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting
