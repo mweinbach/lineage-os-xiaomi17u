@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-native-camera-session-inject-v1",
+  "selector": "NEZHA_CAMERA_SESSION_INJECT",
+  "default_enabled": false,
+  "requires_selector": "NEZHA_CAMERA_FRAMEWORK",
+  "soong": {
+    "namespace": "nezha_camera_session",
+    "variable": "enabled",
+    "target": "android_arm64",
+    "define": "NEZHA_CAMERA_SESSION_INJECT"
+  },
+  "fragment": "device/xiaomi/nezha/camera-session-inject.mk",
+  "fragment_sha256": "74cee46a320377065b0227db9cf6b5f92e74623236c56b550df7ef0b5c21987b",
+  "fragment_size_bytes": 681,
+  "project": "frameworks/av",
+  "repository": "https://github.com/Evolution-X/frameworks_av",
+  "branch": "bka",
+  "revision": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
+  "patch": "patches/evolution/0029-nezha-camera-session-inject.patch",
+  "patch_sha256": "a0ef9b389a46a4e26323d0ffb3506102be5fd0fee570306e02b775736e282aee",
+  "files": {
+    "services/camera/libcameraservice/Android.bp": {
+      "before_sha256": "3c971f599028d520c0caa790a1b0d88a4cf4cf305f4698958aab2d1a94329bc2",
+      "after_sha256": "aa2b25de820f811bce4a00cebc5f7b85e317fa4caac25bb647ee2ba91222611c",
+      "after_bytes": 11814
+    },
+    "services/camera/libcameraservice/api1/Camera2Client.cpp": {
+      "before_sha256": "8b94300fafd38fdb6bba982cf9edd2be4a3807d3f99a9c4fa6ca76304fe01a6c",
+      "after_sha256": "a621541c77e0e68995c505cfd0b775c88ecb9c53d96c4c0030f63076ab3f53b1",
+      "after_bytes": 94361
+    },
+    "services/camera/libcameraservice/api2/CameraDeviceClient.cpp": {
+      "before_sha256": "22140bd81e8e451130750f00a41297f57dc49166a8c5d3c94acfec3dcb17a868",
+      "after_sha256": "7a701c3bb7340485be9514220397d92b1e37c3d7e41cb9860298788f77b2d6be",
+      "after_bytes": 121302
+    },
+    "services/camera/libcameraservice/device3/Camera3Device.cpp": {
+      "before_sha256": "c968af3101e1184b5fd2983c5a87a113271321ae6230c6785d3553f6a4e13a47",
+      "after_sha256": "162fdfe882a93caf94ef47b96c08091a013395280252dca4c656ab107dcddb0b",
+      "after_bytes": 225959
+    },
+    "services/camera/libcameraservice/common/aidl/AidlProviderInfo.cpp": {
+      "before_sha256": "06f8c24eb2620f1858898a334d48b547b6a0ba89e50eef40f8710c1928b807bf",
+      "after_sha256": "73855a3e26436e6bad61fbde4b1a3e971ecff9b57fb2ee2b2aa8c9a372bc5b9c",
+      "after_bytes": 47579
+    },
+    "services/camera/libcameraservice/utils/NezhaCameraSessionHook.h": {
+      "before_sha256": null,
+      "after_sha256": "44dc3db8fea759fb060b0bcdd4b25c43791f140aaf669c0a2af231baa9dddbde",
+      "after_bytes": 2050
+    },
+    "services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp": {
+      "before_sha256": null,
+      "after_sha256": "06f6c7f85e49538d57414cb78e72b239155596b33a2dd07f2d2b1fce72255dc7",
+      "after_bytes": 12682
+    }
+  },
+  "authored_templates": {
+    "templates/camera-session-inject/NezhaCameraSessionHook.cpp": {
+      "sha256": "06f6c7f85e49538d57414cb78e72b239155596b33a2dd07f2d2b1fce72255dc7",
+      "size_bytes": 12682
+    },
+    "templates/camera-session-inject/NezhaCameraSessionHook.h": {
+      "sha256": "44dc3db8fea759fb060b0bcdd4b25c43791f140aaf669c0a2af231baa9dddbde",
+      "size_bytes": 2050
+    }
+  },
+  "factory_cameraimpl_sha256": "403782350ef40558edec32ff63dda6ff9c4b8ab18573e30c4f2dab80842fc5c5",
+  "factory_cameraserver_sha256": "ab2b9ef0c93c17e8252e64932b6ebb8746e2d10d37c782051f2ee84f7c9ad118",
+  "loader": {
+    "path": "/system_ext/lib64/libcameraimpl.so",
+    "factory_export": "create",
+    "flags": [
+      "RTLD_NOW",
+      "RTLD_LOCAL"
+    ],
+    "failure": "logged once; no-op for this process lifetime"
+  },
+  "parameters": {
+    "lookup_key": "camera ID, not client package name",
+    "clientName_writer": "updateSessionParams",
+    "MiStreamUsecase_and_activityName_writer": "executeSceneIdentify",
+    "configuration_lifecycle": "update after AOSP session-key filtering; execute immediately before HAL configureStreams; detach after metadata unlock",
+    "aosp_setInjectedSessionParams_used": false
+  },
+  "abi_pins": {
+    "pointer_bytes": 8,
+    "libcxx_string_bytes": 24,
+    "camera_stream_offsets": {
+      "width": 4,
+      "height": 8,
+      "format": 12,
+      "use_case": 104
+    },
+    "camera_stream_configuration_offsets": {
+      "num_streams": 0,
+      "streams": 8,
+      "operation_mode": 16
+    },
+    "camera_metadata_bytes": 24,
+    "string8_bytes": 8
+  },
+  "status": "source-prepared-not-device-admitted",
+  "not_verified": [
+    "native compilation",
+    "runtime linker namespace access",
+    "rear JPEG capture in Aperture and Xiaomi Camera",
+    "single-sensor and front capture regression"
+  ]
+}

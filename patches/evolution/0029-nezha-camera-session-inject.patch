@@ -1,0 +1,565 @@
+diff --git a/services/camera/libcameraservice/Android.bp b/services/camera/libcameraservice/Android.bp
+--- a/services/camera/libcameraservice/Android.bp
++++ b/services/camera/libcameraservice/Android.bp
+@@ -132,6 +132,19 @@
+     defaults: [
+         "libcameraservice_deps",
+     ],
++    // The proprietary Nezha adapter is an explicit ARM64-only build opt-in.
++    target: {
++        android_arm64: {
++            srcs: select(soong_config_variable("nezha_camera_session", "enabled"), {
++                true: ["utils/NezhaCameraSessionHook.cpp"],
++                default: [],
++            }),
++            cflags: select(soong_config_variable("nezha_camera_session", "enabled"), {
++                true: ["-DNEZHA_CAMERA_SESSION_INJECT"],
++                default: [],
++            }),
++        },
++    },
+     // Camera service source
+ 
+     srcs: [
+diff --git a/services/camera/libcameraservice/api1/Camera2Client.cpp b/services/camera/libcameraservice/api1/Camera2Client.cpp
+--- a/services/camera/libcameraservice/api1/Camera2Client.cpp
++++ b/services/camera/libcameraservice/api1/Camera2Client.cpp
+@@ -49,6 +49,10 @@
+ 
+ #ifndef FALLTHROUGH_INTENDED
+ #define FALLTHROUGH_INTENDED [[fallthrough]]
++#endif
++
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++#include "utils/NezhaCameraSessionHook.h"
+ #endif
+ 
+ namespace android {
+@@ -78,6 +82,9 @@
+       mLatestRequestIds(kMaxRequestIds),
+       mLatestFailedRequestIds(kMaxRequestIds) {
+     ATRACE_CALL();
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    nezha::CameraSessionHook::registerClient(getPackageName(), 1, cameraDeviceId);
++#endif
+ 
+     mRotateAndCropMode = ANDROID_SCALER_ROTATE_AND_CROP_NONE;
+     mRotateAndCropIsSupported = false;
+diff --git a/services/camera/libcameraservice/api2/CameraDeviceClient.cpp b/services/camera/libcameraservice/api2/CameraDeviceClient.cpp
+--- a/services/camera/libcameraservice/api2/CameraDeviceClient.cpp
++++ b/services/camera/libcameraservice/api2/CameraDeviceClient.cpp
+@@ -57,6 +57,10 @@
+     binder::Status::fromServiceSpecificError(errorCode, \
+             fmt::sprintf("%s:%d: " errorString, __FUNCTION__, __LINE__, \
+                     __VA_ARGS__).c_str())
++
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++#include "utils/NezhaCameraSessionHook.h"
++#endif
+ 
+ namespace android {
+ using namespace camera2;
+@@ -104,6 +108,9 @@
+       mOverrideForPerfClass(overrideForPerfClass),
+       mOriginalCameraId(originalCameraId),
+       mIsVendorClient(isVendorClient) {
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    nezha::CameraSessionHook::registerClient(getPackageName(), 2, cameraId);
++#endif
+ 
+     std::vector<std::string> privilegedClientList = android::base::Split(
+             android::base::GetProperty("persist.vendor.camera.privapp.list", ""), ",");
+@@ -659,9 +666,19 @@
+ 
+                     physicalSettingsList.push_back({resolvedId, filteredParams,
+                             hasTestPatternModePhysicalKey, hasTestPatternDataPhysicalKey});
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++                    nezha::CameraSessionHook::notifyRequestSubmit(
++                            it.settings, mCameraIdStr, getClientUid(),
++                            getClientCallingPid(), submitInfo->mRequestId, streaming, getPackageName());
++#endif
+                 }
+             } else {
+                 physicalSettingsList.push_back({resolvedId, it.settings});
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++                nezha::CameraSessionHook::notifyRequestSubmit(
++                        it.settings, mCameraIdStr, getClientUid(),
++                        getClientCallingPid(), submitInfo->mRequestId, streaming, getPackageName());
++#endif
+             }
+         }
+ 
+@@ -815,6 +832,12 @@
+                 mCameraIdStr.c_str(), strerror(-err), err);
+     }
+ 
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    if (err == OK && lastFrameNumber != nullptr) {
++        nezha::CameraSessionHook::notifyCancelRequest(mCameraIdStr, getClientUid(),
++                getClientCallingPid(), getPackageName(), requestId, *lastFrameNumber);
++    }
++#endif
+     return res;
+ }
+ 
+diff --git a/services/camera/libcameraservice/device3/Camera3Device.cpp b/services/camera/libcameraservice/device3/Camera3Device.cpp
+--- a/services/camera/libcameraservice/device3/Camera3Device.cpp
++++ b/services/camera/libcameraservice/device3/Camera3Device.cpp
+@@ -87,6 +87,10 @@
+ 
+ namespace flags = com::android::internal::camera::flags;
+ namespace wm_flags = com::android::window::flags;
++
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++#include "utils/NezhaCameraSessionHook.h"
++#endif
+ 
+ namespace android {
+ 
+@@ -156,6 +160,9 @@
+ }
+ 
+ status_t Camera3Device::initializeCommonLocked(sp<CameraProviderManager> manager) {
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    nezha::CameraSessionHook::initializeDeviceInfo(mDeviceInfo, mId);
++#endif
+ 
+     /** Start up status tracker thread */
+     mStatusTracker = new StatusTracker(this);
+@@ -1427,6 +1434,9 @@
+             (!mRequestTemplateCache[mLastTemplateId].isEmpty())) {
+         ALOGV("%s: Speculative session param configuration with template id: %d", __func__,
+                 mLastTemplateId);
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++        nezha::CameraSessionHook::updateSessionParams(mRequestTemplateCache[mLastTemplateId], mId);
++#endif
+         return filterParamsAndConfigureLocked(mRequestTemplateCache[mLastTemplateId],
+                 operatingMode);
+     }
+@@ -1483,6 +1493,10 @@
+         filteredParams = request->mSettingsList.begin()->metadata;
+     }
+ 
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    // Keep Xiaomi's vendor tags after AOSP has filtered the application parameters.
++    nezha::CameraSessionHook::updateSessionParams(filteredParams, mId);
++#endif
+     return configureStreamsLocked(operatingMode, filteredParams);
+ }
+ 
+@@ -1534,6 +1548,9 @@
+ 
+         if (!mRequestTemplateCache[templateId].isEmpty()) {
+             *request = mRequestTemplateCache[templateId];
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++            nezha::CameraSessionHook::createCustomDefaultRequest(*request, mId);
++#endif
+             mLastTemplateId = templateId;
+             return OK;
+         }
+@@ -1566,6 +1583,9 @@
+         }
+ 
+         *request = mRequestTemplateCache[templateId];
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++        nezha::CameraSessionHook::createCustomDefaultRequest(*request, mId);
++#endif
+         mLastTemplateId = templateId;
+     }
+     return OK;
+@@ -2483,7 +2503,14 @@
+ 
+ 
+ status_t Camera3Device::configureStreamsLocked(int operatingMode,
+-        const CameraMetadata& sessionParams, bool notifyRequestThread) {
++        const CameraMetadata& originalSessionParams, bool notifyRequestThread) {
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    // The factory mutates the incoming metadata around configureStreams. Own the
++    // copy here so immutable callers and cached request metadata stay valid.
++    CameraMetadata sessionParams(originalSessionParams);
++#else
++    const CameraMetadata& sessionParams = originalSessionParams;
++#endif
+     ATRACE_CALL();
+     status_t res;
+     // Stream/surface setup can include a lot of binder IPC. Raise the
+@@ -2668,9 +2695,18 @@
+     // is not enabled but the HAL supports session specific hal buffer manager).
+ 
+     int64_t logId = mCameraServiceProxyWrapper->getCurrentLogIdForCamera(mId);
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    // This factory hook derives MiStreamUsecase from the actual stream set.
++    nezha::CameraSessionHook::executeSceneIdentify(sessionParams, &config, mId);
++#endif
+     const camera_metadata_t *sessionBuffer = sessionParams.getAndLock();
+     res = mInterface->configureStreams(sessionBuffer, &config, bufferSizes, logId);
+     sessionParams.unlock(sessionBuffer);
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    // MiStreamUsecase is a configure-only tag in the factory lifecycle.
++    nezha::CameraSessionHook::detachSceneIdentify(sessionParams);
++    ALOGI("Nezha session hook: camera=%s configureStreams status=%d", mId.c_str(), res);
++#endif
+ 
+     if (res == BAD_VALUE) {
+         // HAL rejected this set of streams as unsupported, clean up config
+diff --git a/services/camera/libcameraservice/common/aidl/AidlProviderInfo.cpp b/services/camera/libcameraservice/common/aidl/AidlProviderInfo.cpp
+--- a/services/camera/libcameraservice/common/aidl/AidlProviderInfo.cpp
++++ b/services/camera/libcameraservice/common/aidl/AidlProviderInfo.cpp
+@@ -38,6 +38,10 @@
+ const bool kEnableLazyHal(property_get_bool("ro.camera.enableLazyHal", false));
+ } // anonymous namespace
+ 
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++#include "utils/NezhaCameraSessionHook.h"
++#endif
++
+ namespace android {
+ 
+ namespace SessionConfigurationUtils = ::android::camera3::SessionConfigurationUtils;
+@@ -1012,6 +1016,9 @@
+ 
+     set_camera_metadata_vendor_id(rawRequest, mProviderTagid);
+     metadata->acquire(rawRequest);
++#ifdef NEZHA_CAMERA_SESSION_INJECT
++    nezha::CameraSessionHook::createCustomDefaultRequest(*metadata, mId);
++#endif
+ 
+     res = overrideDefaultRequestKeys(metadata);
+     if (res != OK) {
+diff --git a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h
+new file mode 100644
+--- /dev/null
++++ b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.h
+@@ -0,0 +1,54 @@
++/*
++ * Copyright (C) 2026 The LineageOS Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#pragma once
++
++#include <cstdint>
++#include <string>
++
++namespace android {
++
++class CameraMetadata;
++
++namespace camera3 {
++struct camera_stream_configuration;
++}
++
++namespace nezha {
++
++// Compiled only for the explicitly selected Nezha ARM64 camera integration.
++// The proprietary object remains opaque and is allocated by its own library.
++class CameraSessionHook final {
++public:
++    static void registerClient(const std::string& packageName, int api,
++            const std::string& cameraId);
++    static void initializeDeviceInfo(CameraMetadata& metadata, const std::string& cameraId);
++    static void updateSessionParams(CameraMetadata& metadata, const std::string& cameraId);
++    static void createCustomDefaultRequest(CameraMetadata& metadata, const std::string& cameraId);
++    static void executeSceneIdentify(CameraMetadata& metadata,
++            camera3::camera_stream_configuration* configuration, const std::string& cameraId);
++    static void detachSceneIdentify(CameraMetadata& metadata);
++    static void notifyRequestSubmit(const CameraMetadata& metadata, const std::string& cameraId,
++            int uid, int pid, int requestId, bool streaming, const std::string& packageName);
++    static void notifyCancelRequest(const std::string& cameraId, int uid, int pid,
++            const std::string& packageName, int requestId, int64_t lastFrameNumber);
++
++private:
++    CameraSessionHook() = delete;
++};
++
++} // namespace nezha
++} // namespace android
+diff --git a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp
+new file mode 100644
+--- /dev/null
++++ b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp
+@@ -0,0 +1,273 @@
++/*
++ * Copyright (C) 2026 The LineageOS Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++#define LOG_TAG "NezhaCameraSession"
++
++#include "NezhaCameraSessionHook.h"
++
++#include <cstddef>
++#include <dlfcn.h>
++
++#include <camera/CameraMetadata.h>
++#include <camera/VendorTagDescriptor.h>
++#include <log/log.h>
++#include <utils/String16.h>
++#include <utils/String8.h>
++
++#include "device3/InFlightRequest.h"
++
++// This is the library's global class name, used only as an opaque pointer.
++class CameraImpl;
++
++namespace android::nezha {
++namespace {
++
++// Pin the layouts actually read by the measured factory library. In particular,
++// camera_stream is the framework type, not the older hardware/camera3.h type.
++static_assert(sizeof(void*) == 8, "The factory camera hook requires ARM64 pointers");
++static_assert(sizeof(std::string) == 24, "The factory camera hook requires the libc++ string ABI");
++static_assert(sizeof(CameraMetadata) == 24, "The factory camera hook requires this metadata ABI");
++static_assert(sizeof(String8) == 8, "The factory camera hook requires this String8 ABI");
++static_assert(sizeof(long) == sizeof(int64_t), "The factory cancel hook requires a 64-bit long");
++static_assert(offsetof(camera3::camera_stream, width) == 4);
++static_assert(offsetof(camera3::camera_stream, height) == 8);
++static_assert(offsetof(camera3::camera_stream, format) == 12);
++static_assert(offsetof(camera3::camera_stream, use_case) == 104);
++static_assert(offsetof(camera3::camera_stream_configuration, num_streams) == 0);
++static_assert(offsetof(camera3::camera_stream_configuration, streams) == 8);
++static_assert(offsetof(camera3::camera_stream_configuration, operation_mode) == 16);
++
++struct Api final {
++    using Create = CameraImpl* (*)();
++    using HookModuleInit = void (*)(CameraImpl*);
++    using SplitClient = void (*)(CameraImpl*, const String16&, std::string&, std::string&);
++    using SetActivity = void (*)(CameraImpl*, const std::string&, const String8&);
++    using SetPackage = void (*)(CameraImpl*, const String16&, int, const String8&);
++    using ParseCustomization = void (*)(CameraImpl*, const String8&);
++    using MetadataWithId = void (*)(CameraImpl*, CameraMetadata&, const String8&);
++    using ExecuteScene = void (*)(CameraImpl*, CameraMetadata&,
++            camera3::camera_stream_configuration*, const String8&);
++    using DetachScene = void (*)(CameraImpl*, CameraMetadata&);
++    using NotifySubmit = void (*)(CameraImpl*, const CameraMetadata&, const std::string&,
++            int, int, int, bool, const std::string&);
++    using NotifyCancel = void (*)(CameraImpl*, const std::string&, int, int,
++            const std::string&, int, long);
++
++    CameraImpl* object = nullptr;
++    SplitClient splitClient = nullptr;
++    SetActivity setActivity = nullptr;
++    SetPackage setPackage = nullptr;
++    ParseCustomization parseCustomization = nullptr;
++    MetadataWithId initializeDeviceInfo = nullptr;
++    MetadataWithId updateSessionParams = nullptr;
++    MetadataWithId createCustomDefaultRequest = nullptr;
++    ExecuteScene executeSceneIdentify = nullptr;
++    DetachScene detachSceneIdentify = nullptr;
++    NotifySubmit notifyRequestSubmit = nullptr;
++    NotifyCancel notifyCancelRequest = nullptr;
++
++    static const Api& get() {
++        // The loader guard is held only during construction. The object and
++        // handle survive until process exit, avoiding destructor/dlclose races.
++        static const Api* const api = new Api;
++        return *api;
++    }
++
++private:
++    void* handle = nullptr;
++
++    template <typename Function>
++    bool resolve(Function& function, const char* name) {
++        dlerror();
++        void* symbol = dlsym(handle, name);
++        const char* error = dlerror();
++        if (error != nullptr || symbol == nullptr) {
++            ALOGE("Camera session hook disabled: dlsym %s failed: %s", name,
++                    error != nullptr ? error : "null symbol");
++            return false;
++        }
++        function = reinterpret_cast<Function>(symbol);
++        return true;
++    }
++
++    Api() {
++        handle = dlopen("/system_ext/lib64/libcameraimpl.so", RTLD_NOW | RTLD_LOCAL);
++        if (handle == nullptr) {
++            const char* error = dlerror();
++            ALOGE("Camera session hook disabled: dlopen failed: %s",
++                    error != nullptr ? error : "unknown linker error");
++            return;
++        }
++
++        Create create = nullptr;
++        HookModuleInit hookModuleInit = nullptr;
++        // These exported base methods are also the factory Qcom implementation
++        // for this ABI. Resolve everything before creating a usable object.
++        if (!resolve(create, "create") ||
++                !resolve(hookModuleInit, "_ZN10CameraImpl14hookModuleInitEv") ||
++                !resolve(splitClient,
++                        "_ZN10CameraImpl30splitClientPackageActivityNameERKN7android8String16E"
++                        "RNSt3__112basic_stringIcNS4_11char_traitsIcEENS4_9allocatorIcEEEESB_") ||
++                !resolve(setActivity,
++                        "_ZN10CameraImpl21setClientActivityNameERKNSt3__112basic_stringIcNS0_"
++                        "11char_traitsIcEENS0_9allocatorIcEEEERKN7android7String8E") ||
++                !resolve(setPackage,
++                        "_ZN10CameraImpl20setClientPackageNameERKN7android8String16EiRKNS0_7String8E") ||
++                !resolve(parseCustomization,
++                        "_ZN10CameraImpl23parseCustomizedJsonDataERKN7android7String8E") ||
++                !resolve(initializeDeviceInfo,
++                        "_ZN10CameraImpl20initializeDeviceInfoERN7android14CameraMetadataERKNS0_7String8E") ||
++                !resolve(updateSessionParams,
++                        "_ZN10CameraImpl19updateSessionParamsERN7android14CameraMetadataERKNS0_7String8E") ||
++                !resolve(createCustomDefaultRequest,
++                        "_ZN10CameraImpl26createCustomDefaultRequestERN7android14CameraMetadataERKNS0_7String8E") ||
++                !resolve(executeSceneIdentify,
++                        "_ZN10CameraImpl20executeSceneIdentifyERN7android14CameraMetadataEPNS0_"
++                        "7camera327camera_stream_configurationERKNS0_7String8E") ||
++                !resolve(detachSceneIdentify,
++                        "_ZN10CameraImpl19detachSceneIdentifyERN7android14CameraMetadataE") ||
++                !resolve(notifyRequestSubmit,
++                        "_ZN10CameraImpl19notifyRequestSubmitERKN7android14CameraMetadataERKNSt3__1"
++                        "12basic_stringIcNS4_11char_traitsIcEENS4_9allocatorIcEEEEiiibSC_") ||
++                !resolve(notifyCancelRequest,
++                        "_ZN10CameraImpl19notifyCancelRequestERKNSt3__112basic_stringIcNS0_"
++                        "11char_traitsIcEENS0_9allocatorIcEEEEiiS8_il")) {
++            return;
++        }
++
++        CameraImpl* const created = create();
++        if (created == nullptr) {
++            ALOGE("Camera session hook disabled: factory create returned null");
++            return;
++        }
++        hookModuleInit(created);
++        object = created;
++        ALOGI("Loaded factory camera session hook");
++    }
++};
++
++camera_metadata_ro_entry_t findTag(const CameraMetadata& metadata,
++        const sp<VendorTagDescriptor>& descriptor, const char* name) {
++    camera_metadata_ro_entry_t entry{};
++    uint32_t tag = 0;
++    if (CameraMetadata::getTagFromName(name, descriptor.get(), &tag) == OK) {
++        entry = metadata.find(tag);
++    }
++    return entry;
++}
++
++void logSessionTags(const CameraMetadata& metadata, const std::string& cameraId) {
++    sp<VendorTagDescriptor> descriptor = VendorTagDescriptor::getGlobalVendorTagDescriptor();
++    if (descriptor == nullptr || descriptor->getTagCount() <= 0) {
++        descriptor.clear();
++        const sp<VendorTagDescriptorCache> cache =
++                VendorTagDescriptorCache::getGlobalVendorTagCache();
++        if (cache != nullptr) {
++            const camera_metadata_t* raw = metadata.getAndLock();
++            const metadata_vendor_id_t vendorId = get_camera_metadata_vendor_id(raw);
++            metadata.unlock(raw);
++            cache->getVendorTagDescriptor(vendorId, &descriptor);
++        }
++    }
++    if (descriptor == nullptr) {
++        ALOGW("Camera %s session tags: vendor descriptor unavailable", cameraId.c_str());
++        return;
++    }
++
++    const auto usecase = findTag(metadata, descriptor, "com.xiaomi.sessionparams.MiStreamUsecase");
++    const auto client = findTag(metadata, descriptor, "com.xiaomi.sessionparams.clientName");
++    const auto activity = findTag(metadata, descriptor, "com.xiaomi.sessionparams.activityName");
++    if (usecase.count > 0 && usecase.type == TYPE_INT32) {
++        ALOGI("Camera %s session tags: MiStreamUsecase count=%zu type=%d value=%d; "
++                "clientName count=%zu type=%d; activityName count=%zu type=%d",
++                cameraId.c_str(), usecase.count, usecase.type, usecase.data.i32[0],
++                client.count, client.type, activity.count, activity.type);
++    } else {
++        ALOGW("Camera %s session tags: MiStreamUsecase count=%zu type=%d value=unavailable; "
++                "clientName count=%zu type=%d; activityName count=%zu type=%d",
++                cameraId.c_str(), usecase.count, usecase.type,
++                client.count, client.type, activity.count, activity.type);
++    }
++}
++
++} // namespace
++
++void CameraSessionHook::registerClient(const std::string& packageName, int api,
++        const std::string& cameraId) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    const String16 validatedPackage(packageName.c_str());
++    const String8 id(cameraId.c_str());
++    std::string splitPackage = "none";
++    std::string activity = "none";
++    hook.splitClient(hook.object, validatedPackage, splitPackage, activity);
++    hook.setActivity(hook.object, activity, id);
++    // Registration retains the framework's validated package identity.
++    hook.setPackage(hook.object, validatedPackage, api, id);
++    hook.parseCustomization(hook.object, id);
++}
++
++void CameraSessionHook::initializeDeviceInfo(CameraMetadata& metadata, const std::string& cameraId) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.initializeDeviceInfo(hook.object, metadata, String8(cameraId.c_str()));
++}
++
++void CameraSessionHook::updateSessionParams(CameraMetadata& metadata, const std::string& cameraId) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.updateSessionParams(hook.object, metadata, String8(cameraId.c_str()));
++}
++
++void CameraSessionHook::createCustomDefaultRequest(CameraMetadata& metadata,
++        const std::string& cameraId) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.createCustomDefaultRequest(hook.object, metadata, String8(cameraId.c_str()));
++}
++
++void CameraSessionHook::executeSceneIdentify(CameraMetadata& metadata,
++        camera3::camera_stream_configuration* configuration, const std::string& cameraId) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.executeSceneIdentify(hook.object, metadata, configuration, String8(cameraId.c_str()));
++    logSessionTags(metadata, cameraId);
++}
++
++void CameraSessionHook::detachSceneIdentify(CameraMetadata& metadata) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.detachSceneIdentify(hook.object, metadata);
++}
++
++void CameraSessionHook::notifyRequestSubmit(const CameraMetadata& metadata,
++        const std::string& cameraId, int uid, int pid, int requestId, bool streaming,
++        const std::string& packageName) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.notifyRequestSubmit(hook.object, metadata, cameraId, uid, pid, requestId, streaming,
++            packageName);
++}
++
++void CameraSessionHook::notifyCancelRequest(const std::string& cameraId, int uid, int pid,
++        const std::string& packageName, int requestId, int64_t lastFrameNumber) {
++    const Api& hook = Api::get();
++    if (hook.object == nullptr) return;
++    hook.notifyCancelRequest(hook.object, cameraId, uid, pid, packageName, requestId,
++            static_cast<long>(lastFrameNumber));
++}
++
++} // namespace android::nezha

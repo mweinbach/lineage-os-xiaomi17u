@@ -60,10 +60,13 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(source.metadata.identity(raw), source.CAMERA_FRAMEWORK_DEVICE_BEFORE)
         derived = source.derive_camera_framework_device(raw)
         self.assertEqual(source.metadata.identity(derived), source.CAMERA_FRAMEWORK_DEVICE_AFTER)
-        # device.mk now also carries the ported camera-framework include; strip it to compare the QTI derivation
+        # Later independent fragments do not change the historical QTI derivation.
         _camera_include = (b"# Ported HyperOS camera framework (native libs, configs, app, properties).\n"
                            b"include $(NEZHA_DEVICE_PATH)/camera-framework.mk\n\n")
-        self.assertEqual(derived, (ROOT / source.CAMERA_FRAMEWORK_DEVICE).read_bytes().replace(_camera_include, b"", 1))
+        _session_include = (b"# Native camera session tags for the retained HyperOS HAL; explicit opt-in.\n"
+                            b"include $(NEZHA_DEVICE_PATH)/camera-session-inject.mk\n\n")
+        current = (ROOT / source.CAMERA_FRAMEWORK_DEVICE).read_bytes()
+        self.assertEqual(derived, current.replace(_camera_include, b"", 1).replace(_session_include, b"", 1))
         anchor = source.CAMERA_FRAMEWORK_DEVICE_ANCHOR.encode("ascii")
         self.assertEqual(derived, raw.replace(anchor, anchor + source.CAMERA_FRAMEWORK_DEVICE_INCLUDE.encode("ascii"), 1))
         for changed in (raw + b"\n", derived, raw.replace(anchor, anchor * 2, 1)):
