@@ -691,7 +691,8 @@ class VariantOptInGuardTests(unittest.TestCase):
     def test_environment_defaults_to_user_and_rejects_eng(self):
         self.assertEqual(source.variant_environment(), {"TARGET_BUILD_VARIANT": "user"})
         self.assertEqual(source.variant_environment("userdebug"),
-                         {"TARGET_BUILD_VARIANT": "userdebug", source.VARIANT_OPT_IN_ENV: "userdebug"})
+                         {"TARGET_BUILD_VARIANT": "userdebug", source.VARIANT_OPT_IN_ENV: "userdebug", "WITH_SU": "true"})
+        self.assertEqual(source.load_variant_opt_in_contract()[0]["diagnostic_environment"], source.VARIANT_DIAGNOSTIC_ENV)
         for variant in ("eng", "", "USER", None):
             with self.subTest(variant=variant), self.assertRaisesRegex(source.ConstructionSourceError, "eng is not admitted"):
                 source.variant_environment(variant)

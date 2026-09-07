@@ -20,6 +20,10 @@
     "user",
     "userdebug"
   ],
+  "diagnostic_environment": {
+    "WITH_SU": "true"
+  },
+  "diagnostic_environment_effect": "userdebug opt-in builds add adb_root (system_ext) and su (system/xbin) so `adb root` can be enabled from Developer options; user builds never receive them",
   "rejected_variants": [
     "eng"
   ],

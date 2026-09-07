@@ -92,6 +92,15 @@ a host GNU Make test pins the three cases and the helper's non-empty rule. A
 rebuilt package carries a fresh source identity and therefore a new measured
 system_ext image to admit.
 
+The rebuilt package (identity `nezha.88dd3098…`) booted with `ro.debuggable=1`
+and SELinux enforcing, but `adb root` still returned nothing. Lineage routes
+`adb root` through an `adbroot_service` gate that Developer options toggles as
+"Rooted debugging", and the service binary (`adb_root`) plus `su` are only
+packaged for non-user builds when `WITH_SU=true`. The opt-in environment now
+adds that flag for userdebug only (contract field `diagnostic_environment`), so
+the next userdebug build carries the gate and the toggle; user builds are
+unchanged.
+
 A userdebug image is a diagnostic build. It weakens `ro.debuggable` and adb
 policy and is not a release candidate. Signing, partition fit, device admission
 and the camera result remain separate gates; nothing here touches the phone.

@@ -475,10 +475,11 @@ def validate(plan, payloads):
 # Selecting it is a source change for the build guest, not a build or flash.
 VARIANT_OPT_IN_CONTRACT = "config/nezha-rom-construction-variant-opt-in-v1.json"
 VARIANT_OPT_IN_CONTRACT_ID = "nezha-first-target-files-variant-opt-in-v1"
-VARIANT_OPT_IN_CONTRACT_SHA256 = "0fae7659863f195a9246cd003e7055a524c98def5037c69ee2d8109fcf1750cf"
+VARIANT_OPT_IN_CONTRACT_SHA256 = "057a383683643f0437e93035bff3a0a501195d03c452a9baa5edb90c386b5a29"
 VARIANT_OPT_IN_ENV = "NEZHA_BUILD_VARIANT_OPT_IN"
 VARIANT_DEFAULT = "user"
 VARIANTS = ("user", "userdebug")
+VARIANT_DIAGNOSTIC_ENV = {"WITH_SU": "true"}
 USER_ONLY_CLAUSE = ("ifneq ($(TARGET_BUILD_VARIANT),user)\n"
                     "$(error Nezha first construction requires the user variant)\n"
                     "endif\n")
@@ -506,6 +507,10 @@ def variant_environment(variant=VARIANT_DEFAULT):
     env = {"TARGET_BUILD_VARIANT": variant}
     if variant != VARIANT_DEFAULT:
         env[VARIANT_OPT_IN_ENV] = variant
+        # Lineage ships the adb_root service (the gate behind `adb root`) and su only
+        # for non-user builds with WITH_SU=true; without it adbd cannot reach the
+        # adbroot service and silently refuses root even with ro.debuggable=1.
+        env.update(VARIANT_DIAGNOSTIC_ENV)
     return env
 
 
@@ -524,6 +529,7 @@ def load_variant_opt_in_contract(path=None):
             and value.get("environment_key") == VARIANT_OPT_IN_ENV
             and value.get("default_variant") == VARIANT_DEFAULT
             and value.get("admitted_variants") == list(VARIANTS)
+            and value.get("diagnostic_environment") == VARIANT_DIAGNOSTIC_ENV
             and value.get("rejected_variants") == ["eng"]
             and value.get("metadata_selection", {}).get("before") == METADATA_SELECTION_BEFORE
             and value.get("metadata_selection", {}).get("after") == METADATA_SELECTION_AFTER
