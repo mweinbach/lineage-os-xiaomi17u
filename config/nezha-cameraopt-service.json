@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "status": "source_candidate_with_explicit_unported_apis",
+  "selector": "NEZHA_CAMERAOPT_SERVICE",
+  "target_device": "nezha",
+  "requires": [
+    "NEZHA_CAMERA_FRAMEWORK",
+    "NEZHA_CAMERAOPT_NATIVE_COMPAT",
+    "NEZHA_CAMERA_PLATFORM_SIGNED",
+    "NEZHA_CAMERA_AUX_PACKAGES"
+  ],
+  "enable_property": "ro.nezha.cameraopt.service",
+  "fragment": "device/xiaomi/nezha/cameraopt-service.mk",
+  "factory_jar_module": "miui-cameraopt",
+  "factory_jar_sha256": "feaad23fcdaced2a92a373c5aa696155a5da07fede8fb21f0e115eaff93d4a18",
+  "factory_required_classes": [
+    "Lcom/miui/cameraopt/ICameraOptManager;",
+    "Lcom/miui/cameraopt/ICameraOptManager$Stub;",
+    "Lcom/miui/cameraopt/ICameraOptManager$Stub$Proxy;",
+    "Lcom/miui/cameraopt/verify/Verifier;"
+  ],
+  "adapter_required_classes": [
+    "Lcom/android/server/cameraopt/NezhaCameraOptService;",
+    "Lcom/android/server/cameraopt/CameraStatusSampler;"
+  ],
+  "process_helper_class": "Lcom/android/server/am/NezhaCameraProcessPolicy;",
+  "allowed_platform_duplicates": [
+    "Landroid/hidl/base/V1_0/DebugInfo$Architecture;",
+    "Landroid/hidl/base/V1_0/DebugInfo;",
+    "Landroid/hidl/base/V1_0/IBase$Proxy;",
+    "Landroid/hidl/base/V1_0/IBase$Stub;",
+    "Landroid/hidl/base/V1_0/IBase;"
+  ],
+  "runtime_classpath_order": [
+    "/system/framework/services.jar",
+    "/system_ext/framework/miui-cameraopt.jar",
+    "/system_ext/framework/nezha-cameraopt-service.jar"
+  ],
+  "runtime_stubs_permitted": false,
+  "verifier_contract": "Unchanged original Verifier, including real PackageManagerInternal.isPlatformSigned and original native cache result; original phase-1000 callback retained.",
+  "verification_failure_handling": "Original boot-hook or verifier linkage/runtime errors are retained as unavailable state and converted to thrown unavailability, never a replacement Boolean verdict. Failed startup removes its worker and process-policy observer.",
+  "implemented_request_surfaces": [
+    "adjBoost",
+    "getSystemStatusJson",
+    "getVerifyResult",
+    "notifyCameraPostProcessState",
+    "sendCameraEvent"
+  ],
+  "process_policy_scope": "An authored temporary camera-owned OOM cap, not the full MIUI reclaim/performance policy. Camera close ends the sole cap; no post-close work model is inferred. Postprocessing completion can remove an explicit cap requested after close but does not release native handles or perform reclamation.",
+  "factory_immediate_return_methods": [
+    "reportMemPressure"
+  ],
+  "implemented_camera_event_ids": [
+    0,
+    3,
+    4,
+    7,
+    8
+  ],
+  "unported_app_reachable_methods": [
+    "boostCameraByThreshold",
+    "reclaimMemoryForCamera",
+    "notifyCameraPerformanceTime",
+    "updateCloudData"
+  ],
+  "remaining_api_usage": "Unknown. Unported methods throw UnsupportedOperationException and retain diagnostic counts; none is claimed unused.",
+  "prelaunch_history": "Not synthesized from camera client events. The sampler supports genuine activity-launch callbacks but no producer has yet been integrated.",
+  "validation_boundaries": [
+    "Host selector and artifact-ownership tests do not prove an Android build.",
+    "A present Binder service does not prove original verification or JNI initialization.",
+    "Unsupported API attempts remain incomplete integration even when a capture succeeds.",
+    "Capture, RAW, high-resolution, Ultra HDR, video and auxiliary ID evidence remain separate."
+  ],
+  "contract_id": "nezha-cameraopt-service-v1",
+  "default_enabled": false,
+  "fragment_sha256": "8b2640d0048c4ebe59a677481a857de6f42d6e0cf428e68499426e8e908f1bf1",
+  "fragment_size_bytes": 1820,
+  "project": "frameworks/base",
+  "revision": "8140698cc12983deecdbd434220affb5f931bfc6",
+  "patch": "patches/evolution/0031-cameraopt-process-state-compat.patch",
+  "patch_sha256": "1d53a1b1af475fe9affc030b2ad22ecda5f7fc412c45450f867b6f188a1fd86a",
+  "files": {
+    "services/core/java/com/android/server/am/psc/ProcessRecordInternal.java": {
+      "before_sha256": "76a3af4768fd450442e07a48695387d42c1fc8b592bd48a445db4ab901effb96",
+      "after_sha256": "fb48c379c58be168e07b50ddf581ff68b769917c28fa38bc0899c3da69dd9c39",
+      "after_bytes": 70374
+    },
+    "services/core/java/com/android/server/am/NezhaCameraProcessPolicy.java": {
+      "before_sha256": null,
+      "after_sha256": "7e65a3f707391be6a4b42efa64db32969dfcc0c66a0b30c48f1fcb252b4430a5",
+      "after_bytes": 18437
+    },
+    "services/proguard.flags": {
+      "before_sha256": "6fdae24f37ce537887103a22777ba3941ab499829b9f50b7ae308b0bfd79412f",
+      "after_sha256": "9f2b1511478dcb41e9c8ea6c89f15370c083aaf57d0b3e9f1d3bc6f11fc2ff07",
+      "after_bytes": 8509
+    }
+  },
+  "authored_templates": {
+    "device/xiaomi/nezha/cameraopt-service/process-policy/src/com/android/server/am/NezhaCameraProcessPolicy.java": {
+      "sha256": "7e65a3f707391be6a4b42efa64db32969dfcc0c66a0b30c48f1fcb252b4430a5",
+      "size_bytes": 18437
+    }
+  },
+  "effective_predecessor_service_array": {
+    "build": "variant-opt-in-userdebug-20260906-v8",
+    "member": "SYSTEM/framework/framework-res.apk",
+    "apk_sha256": "24147e85038e3a3a97b04091d132d9f1886c29edcb4f739ab3802fc451df5005",
+    "resource": "array/config_deviceSpecificSystemServices",
+    "resource_id": "0x01070051",
+    "entries": [],
+    "configuration_count": 1,
+    "evidence": "reports/camera-completion-20260907/xiaomi-app/effective-service-array/receipt.json",
+    "scope": "Compiled resource. Runtime overlay state not queried."
+  }
+}

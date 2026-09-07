@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: Apache-2.0
+
+// These declarations supply javac headers only. The original miui-cameraopt
+// dex_import has no Java class files and remains the sole runtime provider.
+java_library {
+    name: "nezha-cameraopt-compile-stubs",
+    srcs: ["compile-stubs/**/*.java"],
+    installable: false,
+    visibility: [":__subpackages__"],
+}
+
+java_library {
+    name: "nezha-cameraopt-service",
+    srcs: ["src/**/*.java"],
+    libs: [
+        "services",
+        "nezha-cameraopt-compile-stubs",
+    ],
+    required: ["miui-cameraopt"],
+    installable: true,
+    system_ext_specific: true,
+    optimize: {
+        enabled: false,
+    },
+}

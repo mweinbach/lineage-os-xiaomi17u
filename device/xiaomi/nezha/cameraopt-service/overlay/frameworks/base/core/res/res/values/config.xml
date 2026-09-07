@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Exact compiled v8 resource 0x01070051 is empty; no existing service is replaced. -->
+<resources>
+    <string-array name="config_deviceSpecificSystemServices" translatable="false">
+        <item>com.android.server.cameraopt.NezhaCameraOptService</item>
+    </string-array>
+</resources>
