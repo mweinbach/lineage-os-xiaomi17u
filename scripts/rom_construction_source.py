@@ -475,7 +475,7 @@ def validate(plan, payloads):
 # Selecting it is a source change for the build guest, not a build or flash.
 VARIANT_OPT_IN_CONTRACT = "config/nezha-rom-construction-variant-opt-in-v1.json"
 VARIANT_OPT_IN_CONTRACT_ID = "nezha-first-target-files-variant-opt-in-v1"
-VARIANT_OPT_IN_CONTRACT_SHA256 = "057a383683643f0437e93035bff3a0a501195d03c452a9baa5edb90c386b5a29"
+VARIANT_OPT_IN_CONTRACT_SHA256 = "315bf614f97190f0eaeba4bc8e3d08f8d65f2e7fabc3d172896afbaa932f59cc"
 VARIANT_OPT_IN_ENV = "NEZHA_BUILD_VARIANT_OPT_IN"
 VARIANT_DEFAULT = "user"
 VARIANTS = ("user", "userdebug")
@@ -536,7 +536,9 @@ def load_variant_opt_in_contract(path=None):
             and value.get("product_selection", {}).get("installed") == PRODUCT_SELECTION_INEFFECTIVE
             and value.get("product_selection", {}).get("restored") == PRODUCT_SELECTION_RESTORED
             and value.get("common_selection", {}).get("before") == COMMON_SELECTION_BEFORE
-            and value.get("common_selection", {}).get("after") == COMMON_SELECTION_AFTER,
+            and value.get("common_selection", {}).get("after") == COMMON_SELECTION_AFTER
+            and value.get("policy_selection", {}).get("before") == POLICY_SELECTION_BEFORE
+            and value.get("policy_selection", {}).get("after") == POLICY_SELECTION_AFTER,
             "variant opt-in contract identity differs")
     reader.recheck()
     return value, metadata.identity(raw)
@@ -626,4 +628,35 @@ def derive_common_selection(raw):
             "common selection requires the exact installed predecessor")
     result = raw.replace(assignment, COMMON_SELECTION_EXCEPTION.encode("ascii"), 1)
     require(metadata.identity(result) == COMMON_SELECTION_AFTER, "common selection derivation differs")
+    return result
+
+
+# The opt-in finally restores AOSP's permissive su domain for the diagnostic build.
+# This checkout's selinux-enforcement patch removes the unconditional
+# "permissive su;" so user builds have no permissive domain; adb root (adbd's
+# switch to u:r:su:s0) and the userdebug su binary both depend on that domain
+# being permissive, and its capability denials are dontaudited, so the failure
+# is silent. The derivation appends the statement inside userdebug_or_eng, which
+# expands to nothing for user builds, leaving their compiled policy unchanged.
+POLICY_SELECTION = "system/sepolicy/private/su.te"
+POLICY_SELECTION_SNAPSHOT = "research/source-snapshots/evolution-sepolicy-private-su-20260906.te"
+POLICY_SELECTION_TAIL = "  typeattribute su hal_wifi_supplicant_client;\n')\n"
+POLICY_SELECTION_BEFORE = {"sha256": "111c6d9384480ef07d0e47cabdc69cc990112831b783a6e14db619b26ca2dc01", "size_bytes": 5193}
+POLICY_SELECTION_AFTER = {"sha256": "bc90e1f13b93165f1699785038ada69c16dec7ab732cd09414581654af7f4776", "size_bytes": 5479}
+POLICY_SELECTION_EXCEPTION = (
+    "\n# Variant opt-in exception (nezha): the explicitly selected userdebug diagnostic\n"
+    "# build restores AOSP's permissive su domain, which adb root and the userdebug su\n"
+    "# binary rely on; user builds keep su subject to policy with no permissive domain.\n"
+    "userdebug_or_eng(`\n  permissive su;\n')\n")
+
+
+def derive_policy_selection(raw):
+    """Append the guarded permissive declaration to the exact hardened predecessor; nothing else changes."""
+    require(type(raw) is bytes and metadata.identity(raw) == POLICY_SELECTION_BEFORE
+            and raw.endswith(POLICY_SELECTION_TAIL.encode("ascii"))
+            and b"permissive su;" not in raw and b"NEZHA" not in raw,
+            "policy selection requires the exact hardened predecessor")
+    result = raw + POLICY_SELECTION_EXCEPTION.encode("ascii")
+    require(metadata.identity(result) == POLICY_SELECTION_AFTER and result.count(b"permissive su;") == 1,
+            "policy selection derivation differs")
     return result

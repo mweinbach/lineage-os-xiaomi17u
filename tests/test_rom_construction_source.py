@@ -3,6 +3,7 @@ import copy
 from contextlib import ExitStack
 from pathlib import Path
 import tempfile
+import json
 import unittest
 from unittest import mock
 
@@ -801,6 +802,21 @@ class VariantOptInProductSelectionTests(unittest.TestCase):
         for changed in (raw + b"\n", derived, raw.replace(assignment, assignment * 2, 1)):
             with self.subTest(size=len(changed)), self.assertRaises(source.ConstructionSourceError):
                 source.derive_common_selection(changed)
+
+    def test_policy_selection_appends_only_the_guarded_permissive_declaration(self):
+        raw = (source.ROOT / source.POLICY_SELECTION_SNAPSHOT).read_bytes()
+        self.assertEqual(source.metadata.identity(raw), source.POLICY_SELECTION_BEFORE)
+        patch = json.loads((source.ROOT / "patches/evolution/selinux-enforcement.json").read_text())["files"][0]
+        self.assertEqual({"sha256": patch["after_sha256"], "size_bytes": patch["after_size_bytes"]}, source.POLICY_SELECTION_BEFORE)
+        derived = source.derive_policy_selection(raw)
+        self.assertEqual(source.metadata.identity(derived), source.POLICY_SELECTION_AFTER)
+        self.assertEqual(derived, raw + source.POLICY_SELECTION_EXCEPTION.encode("ascii"))
+        self.assertEqual(derived.count(b"permissive su;"), 1)
+        self.assertIn(b"userdebug_or_eng(`\n  permissive su;\n')\n", derived)
+        self.assertEqual(source.load_variant_opt_in_contract()[0]["policy_selection"]["after"], source.POLICY_SELECTION_AFTER)
+        for changed in (raw + b"\n", derived, raw.replace(b"hal_wifi_supplicant_client", b"hal_wifi_client", 1)):
+            with self.subTest(size=len(changed)), self.assertRaises(source.ConstructionSourceError):
+                source.derive_policy_selection(changed)
 
     def test_host_make_leaves_the_flag_unset_only_for_explicit_userdebug(self):
         import shutil

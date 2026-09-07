@@ -75,5 +75,19 @@
     },
     "effect": "userdebug/userdebug leaves PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG unset so gen_build_prop emits ro.debuggable=1; user and unselected userdebug keep the := true assignment",
     "consequence": "the userdebug diagnostic build has ro.debuggable=1 and adb root; it is not a release configuration"
+  },
+  "policy_selection": {
+    "path": "system/sepolicy/private/su.te",
+    "predecessor_patch_contract": "patches/evolution/selinux-enforcement.json",
+    "before": {
+      "sha256": "111c6d9384480ef07d0e47cabdc69cc990112831b783a6e14db619b26ca2dc01",
+      "size_bytes": 5193
+    },
+    "after": {
+      "sha256": "bc90e1f13b93165f1699785038ada69c16dec7ab732cd09414581654af7f4776",
+      "size_bytes": 5479
+    },
+    "effect": "userdebug_or_eng(permissive su;) is appended; the userdebug diagnostic policy declares su permissive as AOSP does, user builds compile an unchanged policy",
+    "consequence": "the userdebug package has exactly one permissive domain (su); the selinux-enforcement requirement of no permissive domains applies to user builds only and the user policy identity must be re-verified at its next build"
   }
 }

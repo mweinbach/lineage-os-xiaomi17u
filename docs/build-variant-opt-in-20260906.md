@@ -101,6 +101,29 @@ adds that flag for userdebug only (contract field `diagnostic_environment`), so
 the next userdebug build carries the gate and the toggle; user builds are
 unchanged.
 
+The `WITH_SU` rebuild booted with the adbroot gate registered and "Rooted
+debugging" enabled, but `adb root` crash-looped adbd (SIGABRT from
+`selinux_android_setcon(u:r:su:s0)`), dropping the phone off USB until init
+gave up, and the userdebug `su` binary failed with `setgid: Operation not
+permitted` and no audit line. The cause is this repository's own
+`patches/evolution/0002-remove-permissive-su.patch`: it removes the
+unconditional `permissive su;` so user builds have no permissive domain, but
+AOSP's userdebug root path relies on that domain being permissive and its
+capability denials are dontaudited. The opt-in now derives the hardened su
+policy by appending the declaration inside `userdebug_or_eng` (`111c6d93…`
+5,193 bytes before, `bc90e1f1…` 5,479 bytes after; predecessor snapshotted
+under `research/source-snapshots/`). The user policy compiles unchanged, which
+must be re-verified at the next user build; the diagnostic build carries exactly
+one permissive domain, su.
+
+A Magisk detour was tried at the user's request between these steps: a
+Magisk v30.7 patched init_boot flashed with a verification-disabled vbmeta did
+not boot, and a `fastboot boot` of a boot image carrying the Magisk ramdisk
+booted but did not activate Magisk because this header-v4 device takes its
+ramdisk from init_boot. The signed v4 images were restored on slot A and
+verified booting afterwards. The Magisk manager app remains installed but
+inactive; Magisk artifacts and hashes stay under the ignored tools directory.
+
 A userdebug image is a diagnostic build. It weakens `ro.debuggable` and adb
 policy and is not a release candidate. Signing, partition fit, device admission
 and the camera result remain separate gates; nothing here touches the phone.
