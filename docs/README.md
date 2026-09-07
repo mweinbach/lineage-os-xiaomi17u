@@ -29,6 +29,7 @@ preserves dated evidence and earlier experiments.
 | [Native features](native-features.md) | Camera, IMS and other feature research for focused fixes |
 | [Remaining feature audit](package7-remaining-feature-audit-20260905.md) | Prioritized IMS, display, power, OEM integration and hardware-qualification work beyond the active fixes |
 | [Build-variant opt-in](build-variant-opt-in-20260906.md) | Default user builds with an explicit userdebug opt-in for adb-root camera diagnosis |
+| [Camera experiment with root](camera-root-experiment-20260907.md) | Root on the userdebug opt-in; clearing persisted camera state refuted; boot chain matches stock; ISP init errors as the open lead |
 | [Feature-fix worktree](nezha-feature-fixes-worktree-20260905.md) | Mergeable calibrated-display source, guarded IMS inputs, corrected power evidence and post-build handoff |
 | [Dolby controls candidate](nezha-dolby-20260905.md) | Exact factory effect protocol and opt-in manual source controller; playback qualification remains open |
 | [Haptics controls candidate](nezha-haptics-20260905.md) | Preserved factory calibration, Android intensity sliders and separate keyboard toggle |

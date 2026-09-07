@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-root-experiment-20260907",
+  "date": "2026-09-07",
+  "device": "nezha",
+  "phone_accessed": true,
+  "build": {
+    "identity": "nezha.cc551b14bc2cc72c2b138bb0",
+    "variant": "userdebug",
+    "selinux": "enforcing",
+    "ro_debuggable": "1",
+    "delivery_set": "variant-opt-in-userdebug-20260906-v5"
+  },
+  "root": {
+    "adb_root": "uid 0 in u:r:su:s0 after enabling the adbroot gate",
+    "su_binary": "su 0 id returns uid 0 from shell",
+    "root_check_record": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/root-check.json",
+      "sha256": "0af37a9ee5f4df5c6a073f8f767226ca96a08eab4b4d588841b5fe80d0d8f196",
+      "size_bytes": 316
+    },
+    "blocker_history": [
+      "ro.debuggable=0 (PRODUCT_NOT_DEBUGGABLE_IN_USERDEBUG set to false is still non-empty)",
+      "adb_root service absent without WITH_SU=true",
+      "permissive su removed by patches/evolution/0002-remove-permissive-su.patch; adbd setcon to u:r:su:s0 aborted and su setgid failed silently"
+    ]
+  },
+  "experiment": {
+    "action": "removed every persist.vendor.camera.* and persist.vendor.cameraid.* entry from /data/property/persistent_properties, moved /data/vendor/camera aside, rebooted",
+    "removed_persistent_keys": 26,
+    "camera_counts_before": [
+      "Number of camera devices: 3",
+      "Number of normal camera devices: 1"
+    ],
+    "camera_counts_after": [
+      "Number of camera devices: 3",
+      "Number of normal camera devices: 1"
+    ],
+    "properties_before": {
+      "persist.vendor.camera.sensorffrlist": "1,0,21,20",
+      "persist.vendor.camera.mi.module.info": "back_main=none;back_tele=none;",
+      "persist.vendor.camera.mi.module.infoext": "front_main=none;back_ultra=none;",
+      "persist.vendor.camera.sensor.immprobe": "<front:SSSSS><tele:SSSSS><ultra:SSSSS><wide:SSSSS>",
+      "persist.vendor.cameraid.totalnum": "3"
+    },
+    "properties_after": {
+      "persist.vendor.camera.sensorffrlist": "1,0,21,20",
+      "persist.vendor.camera.mi.module.info": "back_main=none;back_tele=none;",
+      "persist.vendor.camera.mi.module.infoext": "front_main=none;back_ultra=none;",
+      "persist.vendor.camera.sensor.immprobe": "<front:---SS><tele:---SS><ultra:---SS><wide:---SS>",
+      "persist.vendor.cameraid.totalnum": "3"
+    },
+    "chi_role_map_after": "[4,0,0,64,2,3PartSat]",
+    "damage_lines_after": 4,
+    "provider_aborts_after": 1,
+    "stream_config_failures_after": 2,
+    "result": "refuted: clearing persisted vendor camera state does not restore the per-lens cameras; the HAL regenerates the same fail list on a clean start"
+  },
+  "observations": {
+    "kernel_sensor_probe": "Probe success for all four sensors (ovx10500u wide, ov50m front, s5kjn5 ultra, s5khpe tele)",
+    "camx_eeprom_probe": "Probe EEPROM success for all four modules; immune system records probe successes",
+    "camx_static_caps": "ProbeAndInitSensorStaticCaps logs retryTimes 5 / expectSensorNumbers 4 at error level; per-sensor counts are info-level and stay hidden because log-mask overrides from /data parse to zero",
+    "chi_verdict": "addDamagePyhCameraRoleIds marks xmlId 1-4 (roles 1,0,21,20) unavailable from the CamX probe status; sensorffrlist sits next to GetProbeStatus in camera.qcom.core.so",
+    "kernel_isp_init_errors": [
+      "CAM-ISP cam_vfe_hw_init: inval param (three times)",
+      "CAM-ISP cam_ife_hw_mgr_init: no valid SFE HW devices",
+      "ICP firmware ipclite channel setup for host 3 failed (ret -3)"
+    ],
+    "dfx_role_map": "cameradfxconfig expects sensor roles 0 1 21 23 while the CHI table uses 20 for tele; SensorNameRoleIDMap parse error",
+    "boot_chain_vs_stock": {
+      "kernel": "identical GKI 6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k in stock and flashed boot images",
+      "dtb": "identical (sha256 prefix 1a5c30b75e816f33)",
+      "vendor_ramdisk": "identical except first_stage_ramdisk/fstab.qcom (stock 13,076 bytes, ours 5,850 bytes): only the mi_ext bind mount and its product/system overlay entries are absent",
+      "vendor_odm_builds": "OS3.0.309.0.WPACNXM, both dated 14 July 2026; camera.ko banner matches"
+    },
+    "persist_partition": "EEPROM backups for all four modules present under /mnt/vendor/persist/camera"
+  },
+  "not_proven": [
+    "whether the ISP init errors also occur on stock HyperOS (no stock boot log available)",
+    "which static-caps step fails per sensor",
+    "user-build policy identity after the guarded permissive-su change"
+  ],
+  "evidence": {
+    "execution": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/execution.json",
+      "sha256": "ac69c7874c8d5d7052eacfa5104e7b6c106bdcbd36a5ce99440480d9d02beaec",
+      "size_bytes": 3763
+    },
+    "summary": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/summary.json",
+      "sha256": "dd815c13c3e7baf5156773c521541a17c927beeb07d627a5ff8ff5251bb9479f",
+      "size_bytes": 1213
+    },
+    "fstab_stock": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/fstab-compare/fstab.qcom.stock",
+      "sha256": "1556b7e72c49c2a13ec4172e553279dcca672f2749834ac47630f2774c8a4bb7",
+      "size_bytes": 13076
+    },
+    "fstab_ours": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/fstab-compare/fstab.qcom.ours",
+      "sha256": "f1406e41b969daed6156892e2abafea20293a9e3cd532b7e42de6bf7ca7a987e",
+      "size_bytes": 5850
+    },
+    "kernel_log_after_clear": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/aftersalelog/aftersalelog/MICamera_KernelLog_2026-09-06--23-57-08-119382.milog",
+      "sha256": "1dd9bf9b5b712898039a8da870d7aa17ad0700a6a70b6374af71631c3da26bca",
+      "size_bytes": 684523
+    }
+  },
+  "magisk_detour": {
+    "apk_sha256": "e0d32d2123532860f97123d927b1bb86c4e08e6fd8a48bfc6b5bee0afae9ebd5",
+    "version": "v30.7",
+    "patched_init_boot_sha256": "e73b961c6e188f0ac5431b7d79395bf7c023278d4b774bd329051d5b4d346204",
+    "result": "flashed init_boot with verification-disabled vbmeta did not boot; fastboot boot of a boot image carrying the Magisk ramdisk booted without Magisk; signed images restored"
+  }
+}

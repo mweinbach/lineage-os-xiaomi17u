@@ -49,9 +49,12 @@ booted enforcing (the phone currently runs `nezha.88dd30980cd24ea68d6b701e` with
 `ro.debuggable=1`, the adbroot gate and `su`); root itself was blocked by this
 repository's permissive-su removal, so a fifth guest transaction restores
 `permissive su` under `userdebug_or_eng` only (identity
-`nezha.cc551b14bc2cc72c2b138bb0`, rebuild in progress). The camera experiment
-that needs root has not run. User builds are unaffected by the opt-in; the user
-policy identity is unverified until the next user build.
+`nezha.cc551b14bc2cc72c2b138bb0`, now flashed and booted with root working).
+The camera experiment ran: clearing persisted vendor camera state does not
+restore the per-lens cameras; see the [camera experiment record](camera-root-experiment-20260907.md)
+for the open leads (ISP init errors at camera driver load, tele role-ID
+mismatch). User builds are unaffected by the opt-in; the user policy identity
+is unverified until the next user build.
 
 **September 6 source update:** the feature branch is now merged into main and
 the existing Linux checkout under identity `nezha.bc6311b1a714e310eaf1af56`, with
