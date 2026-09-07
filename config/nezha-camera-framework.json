@@ -23,7 +23,8 @@
   },
   "result": "built, signed and flashed as delivery set v7 (nezha.c6ad60080698a987390afc40); boots enforcing with no regression; rear multi-camera capture still fails because the libcameraimpl MiStreamUsecase injection is never loaded on this AOSP framework; see docs/camera-framework-port-20260907.md",
   "not_verified": [
-    "rear multi-camera capture (the injector loads only for CameraX extension modes)",
-    "a CameraX extension (HDR/Night/Bokeh) session, which would load libcameraimpl via CameraExtensionsProxy"
-  ]
+    "rear multi-camera capture on the v7 blob-only build",
+    "runtime activation of the native cameraserver integration tracked by config/nezha-camera-session-inject.json"
+  ],
+  "native_hook_followup": "docs/camera-native-hook-20260907.md establishes the native create/updateSessionParams/executeSceneIdentify path; the earlier CameraExtensionsProxy and Java-framework loader interpretations were not verified."
 }

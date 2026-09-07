@@ -1,0 +1,398 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-native-hook-20260907",
+  "date": "2026-09-07",
+  "status": "source installed; native compilation unverified; not device-admitted",
+  "verification_scope": "Offline factory binary analysis, authored source review and verified guest source transaction. No v8 device result is recorded at this stage.",
+  "predecessor": {
+    "delivery_set": "variant-opt-in-userdebug-20260906-v7",
+    "source_identity": "nezha.c6ad60080698a987390afc40",
+    "bundle": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v7",
+    "retained": true
+  },
+  "factory_artifacts": {
+    "cameraserver": {
+      "path": "artifacts/camera-analysis/factory-extract/system/system/bin/cameraserver",
+      "sha256": "ab2b9ef0c93c17e8252e64932b6ebb8746e2d10d37c782051f2ee84f7c9ad118",
+      "size_bytes": 4065288,
+      "build_id": "38f5c0b11c15f9e0109745e0c1eb9ffb"
+    },
+    "libcameraimpl": {
+      "path": "artifacts/camera-analysis/factory-extract/system_ext/lib64/libcameraimpl.so",
+      "sha256": "403782350ef40558edec32ff63dda6ff9c4b8ab18573e30c4f2dab80842fc5c5",
+      "size_bytes": 1063968
+    }
+  },
+  "factory_findings": {
+    "method": "LLVM disassembly and symbols recovered from the factory cameraserver compressed .gnu_debugdata, checked against library exports and instruction argument flow.",
+    "loader": {
+      "function": "CameraSingleton::GetImplInstance()",
+      "entry": "0x2d077c",
+      "dlopen_call": "0x2d07b0",
+      "path_string_address": "0x38408",
+      "path": "/system_ext/lib64/libcameraimpl.so",
+      "flags": 1,
+      "flags_name": "RTLD_LAZY",
+      "dlsym_call": "0x2d07c8",
+      "symbol_string_address": "0x28702",
+      "symbol": "create",
+      "create_call": "0x2d07ec",
+      "signature": "void* create()",
+      "singleton_address": "0x3c0c18",
+      "handle_address": "0x3c0c10",
+      "lock_address": "0x3c0be8",
+      "failure": "logs dlerror and returns null; wrappers become no-op",
+      "other_dlsym_symbols": []
+    },
+    "camera_id_proof": {
+      "get_id_function": "0x1fa154",
+      "instruction": "0x1fa158 add x0,x0,#0xe8",
+      "meaning": "the updater String8 is camera ID, not package name"
+    },
+    "tag_writers": {
+      "clientName": "CameraImpl::updateSessionParams",
+      "MiStreamUsecase": "CameraImpl::executeSceneIdentify",
+      "activityName": "CameraImpl::executeSceneIdentify"
+    },
+    "configuration_calls": [
+      {
+        "caller": "Camera3Device::configureStreams",
+        "call": "0x1ff7dc",
+        "callee": "updateSessionParams",
+        "arguments": "mRequestTemplateCache[mLastTemplateId], String8(mId.c_str())",
+        "condition": "empty supplied params, valid last template id and nonempty cached template"
+      },
+      {
+        "caller": "Camera3Device::filterParamsAndConfigureLocked",
+        "call": "0x209f28",
+        "callee": "updateSessionParams",
+        "arguments": "filteredParams, String8(mId.c_str())",
+        "position": "after filtering and rotate/crop/autoframing overrides; before configureStreamsLocked"
+      },
+      {
+        "caller": "Camera3Device::configureStreamsLocked",
+        "call": "0x20b0e8",
+        "callee": "executeSceneIdentify",
+        "arguments": "sessionParams, &config, String8(mId.c_str())",
+        "position": "after streams/config fields populated and before getAndLock/HAL configure; incoming sessionParams const reference is cast mutable"
+      },
+      {
+        "caller": "Camera3Device::configureStreamsLocked",
+        "call": "0x20b1ac",
+        "callee": "detachSceneIdentify",
+        "arguments": "same sessionParams",
+        "position": "immediately after HAL call and metadata unlock, before HAL result checks"
+      }
+    ],
+    "metadata_flow": {
+      "incoming_x2_saved_x28": "0x20a32c",
+      "get_and_lock": "0x20b11c",
+      "hal_configure_call": "0x20b174",
+      "unlock": "0x20b1a4",
+      "source_correspondence": "Camera3Device.cpp current guest lines 2670-2673"
+    },
+    "client_registration": [
+      {
+        "caller": "CameraService::connectDeviceImpl",
+        "call": "0x11a618",
+        "callee": "splitClientPackageActivityName",
+        "arguments": "String16(clientAttribution.packageName), package, activity",
+        "output_initial_values": "none, none"
+      },
+      {
+        "caller": "CameraService::connectDeviceImpl",
+        "call": "0x11a62c",
+        "callee": "setClientActivityName",
+        "arguments": "activity, String8(cameraId.c_str())"
+      },
+      {
+        "caller": "CameraDeviceClient constructor",
+        "call": "0x19e3bc",
+        "callee": "setClientPackageName",
+        "arguments": "String16(clientAttribution.packageName.value_or(\"\")), 2, String8(cameraId.c_str())"
+      },
+      {
+        "caller": "CameraDeviceClient constructor",
+        "call": "0x19e3ec",
+        "callee": "parseCustomizedJsonData",
+        "arguments": "String8(cameraId.c_str())"
+      },
+      {
+        "caller": "Camera2Client constructor",
+        "call": "0x165208",
+        "callee": "setClientPackageName",
+        "arguments": "String16(clientAttribution.packageName.value_or(\"\")), 1, String8(cameraId.c_str())"
+      },
+      {
+        "caller": "Camera2Client constructor",
+        "call": "0x165238",
+        "callee": "parseCustomizedJsonData",
+        "arguments": "String8(cameraId.c_str())"
+      },
+      {
+        "caller": "Camera3Device::initializeCommonLocked",
+        "call": "0x216c40",
+        "callee": "initializeDeviceInfo",
+        "arguments": "mDeviceInfo, String8(mId.c_str())"
+      }
+    ],
+    "default_request_calls": [
+      {
+        "call": "0x15c6d8",
+        "caller": "AidlProviderInfo::AidlDeviceInfo3::createDefaultRequest",
+        "arguments": "*request, String8(mId.c_str())",
+        "position": "after acquire and vendor ID, before SessionConfigurationUtils::overrideDefaultRequestKeys"
+      },
+      {
+        "call": "0x200028",
+        "caller": "Camera3Device::createDefaultRequest",
+        "arguments": "*request, String8(mId.c_str())",
+        "position": "cache-hit path after output assignment"
+      },
+      {
+        "call": "0x200214",
+        "caller": "Camera3Device::createDefaultRequest",
+        "arguments": "*request, String8(mId.c_str())",
+        "position": "fresh-template path after output assignment"
+      }
+    ],
+    "notify_calls": [
+      {
+        "caller": "CameraDeviceClient::submitRequestList",
+        "call": "0x1a563c",
+        "callee": "notifyRequestSubmit",
+        "arguments": "metadata, mCameraIdStr, getClientUid(), getClientCallingPid(), submitInfo->mRequestId, streaming, getPackageName()",
+        "position": "per physical-settings loop after physicalSettingsList.push_back"
+      },
+      {
+        "caller": "CameraDeviceClient::cancelRequest",
+        "call": "0x1a784c",
+        "callee": "notifyCancelRequest",
+        "arguments": "mCameraIdStr, getClientUid(), getClientCallingPid(), getPackageName(), requestId, *lastFrameNumber"
+      }
+    ],
+    "vtable_offsets": {
+      "CameraStub::createCustomDefaultRequest": "0x100",
+      "CameraStub::detachSceneIdentify": "0x1e8",
+      "CameraStub::executeSceneIdentify": "0x1e0",
+      "CameraStub::hookModuleExit": "0x348",
+      "CameraStub::hookModuleInit": "0x340",
+      "CameraStub::initializeDeviceInfo": "0x28",
+      "CameraStub::notifyCancelRequest": "0x2f0",
+      "CameraStub::notifyRequestSubmit": "0x2e0",
+      "CameraStub::parseCustomizedJsonData": "0x18",
+      "CameraStub::setClientActivityName": "0x1d0",
+      "CameraStub::setClientPackageName": "0x10",
+      "CameraStub::updateSessionParams": "0x30"
+    },
+    "library_methods": {
+      "create": {
+        "address": "0xa52f8",
+        "return": "CameraImpl-compatible opaque pointer",
+        "behavior": "Allocates 920 bytes with operator new then invokes QcomCameraImpl constructor. Do not allocate opaque class storage in caller."
+      },
+      "destroy": {
+        "address": "0xa532c",
+        "behavior": "Null guard then invoke virtual deleting destructor at vtable offset 8."
+      },
+      "hookModuleInit": {
+        "address": "0x75c68",
+        "behavior": "No-op (BTI; RET), Qcom uses inherited method."
+      },
+      "setClientPackageName": {
+        "address": "0x6dda0",
+        "behavior": "String16 package stored in cameraId-keyed map at this+0x20; int API version stored in map at this+0x48; latest package copy stored at this+0xc8 under mutex."
+      },
+      "setClientActivityName": {
+        "address": "0x7251c",
+        "behavior": "Calls setClientActivityName on CameraSceneIdentify from cameraId-keyed map at this+0x70."
+      },
+      "parseCustomizedJsonData": {
+        "address": "0x6de68",
+        "behavior": "Looks up registered package/activity then passes those and cameraId to CameraCustomize::parseCustomizedJsonData. Supplies per-camera customization mask checked by executeSceneIdentify."
+      },
+      "initializeDeviceInfo": {
+        "address": "0x6e6c8",
+        "behavior": "Reads com.xiaomi.cameraid.role.cameraId static tag, stores per-camera role map this+0x358 and latest role this+0x33c. No direct use of these fields found in executeSceneIdentify."
+      },
+      "updateSessionParams": {
+        "address": "0x6e898",
+        "key_argument": "camera ID, not package name",
+        "writes": [
+          "com.xiaomi.sessionparams.clientName",
+          "com.xiaomi.sessionparams.customizeFunctionMask",
+          "com.xiaomi.sessionparams.trdCloudSwitch"
+        ],
+        "reads": [
+          "com.xiaomi.sessionparams.operation",
+          "com.xiaomi.sessionparams.cameraxConnection"
+        ],
+        "behavior": "Does not write MiStreamUsecase or activityName. clientName is the package previously registered for this cameraId."
+      },
+      "createCustomDefaultRequest": {
+        "address": "0x70864",
+        "behavior": "Applies package-aware default request adjustments and clientName/customization tags. Does not write MiStreamUsecase."
+      },
+      "executeSceneIdentify": {
+        "address": "0x72118",
+        "key_argument": "camera ID",
+        "writes": [
+          "com.xiaomi.sessionparams.MiStreamUsecase",
+          "com.xiaomi.sessionparams.activityName"
+        ],
+        "behavior": "Runs CameraSceneIdentify with stream configuration; optional per-camera customization bit1 forces usecase 4; logs usecase at 0x722cc; metadata int32 update at 0x72348. Activity written as NUL-terminated bytes, maximum 127 payload bytes."
+      },
+      "detachSceneIdentify": {
+        "address": "0x72980",
+        "behavior": "Erases MiStreamUsecase only after HAL configure; leaves clientName and activityName."
+      },
+      "notifyRequestSubmit": {
+        "address": "0x71f24",
+        "behavior": "Only delegates to optional CameraIntentAwareSingleton; no session-map mutation."
+      },
+      "notifyCancelRequest": {
+        "address": "0x7202c",
+        "behavior": "Only delegates to optional CameraIntentAwareSingleton; no session-map mutation."
+      },
+      "notifyCameraDisconnect": {
+        "address": "0x71b18",
+        "behavior": "Delegates to optional CameraIntentAwareSingleton; fifth explicit int==1 additionally reports CameraOpt status 4. Does not erase per-camera maps or scenes."
+      }
+    },
+    "aosp_per_request_injection_used": false,
+    "correction": "The observed normal capture hooks are native frameworks/av code. Earlier claims that this requires wholesale framework.jar/services.jar replacement are unsupported by the recovered configure call path."
+  },
+  "implementation": {
+    "contract": "config/nezha-camera-session-inject.json",
+    "fragment": "device/xiaomi/nezha/camera-session-inject.mk",
+    "selector": "NEZHA_CAMERA_SESSION_INJECT",
+    "default_enabled": false,
+    "requires_selector": "NEZHA_CAMERA_FRAMEWORK",
+    "target": "android_arm64",
+    "soong": {
+      "namespace": "nezha_camera_session",
+      "variable": "enabled",
+      "target": "android_arm64",
+      "define": "NEZHA_CAMERA_SESSION_INJECT"
+    },
+    "patch": "patches/evolution/0029-nezha-camera-session-inject.patch",
+    "patch_sha256": "a0ef9b389a46a4e26323d0ffb3506102be5fd0fee570306e02b775736e282aee",
+    "upstream": {
+      "repository": "https://github.com/Evolution-X/frameworks_av",
+      "branch": "bka",
+      "guest_revision": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
+      "guest_clean_before_integration": true
+    },
+    "abi_pins": {
+      "pointer_bytes": 8,
+      "libcxx_string_bytes": 24,
+      "camera_stream_offsets": {
+        "width": 4,
+        "height": 8,
+        "format": 12,
+        "use_case": 104
+      },
+      "camera_stream_configuration_offsets": {
+        "num_streams": 0,
+        "streams": 8,
+        "operation_mode": 16
+      },
+      "camera_metadata_bytes": 24,
+      "string8_bytes": 8
+    },
+    "intentional_differences": [
+      "Load lazily once per process with RTLD_NOW|RTLD_LOCAL, resolve all selected exports, allocate through create, call hookModuleInit and retain object/handle for process lifetime. A failure logs once and leaves calls as no-ops.",
+      "Factory dispatches virtual CameraStub methods after resolving create. Adapter resolves the measured exported CameraImpl base methods by mangled name with an explicit opaque this pointer; the supplied Qcom implementation inherits these methods.",
+      "Register activity and package together in the validated API1/API2 client constructor. Keep the framework validated package identity; do not alter attribution or permission checks.",
+      "Own a mutable CameraMetadata copy around configureStreamsLocked instead of casting away constness on caller metadata; complete raw-buffer cloning retains the vendor ID.",
+      "Log tag presence/type/count and MiStreamUsecase value before the HAL call, plus configureStreams status for acceptance evidence."
+    ],
+    "lifecycle": "Register client and customization, initialize device metadata, update defaults, update filtered session parameters, execute scene identification after stream configuration is populated, configure HAL, unlock and detach scene identification.",
+    "notify_metadata": "Original per-entry it.settings, matching factory, with camera ID, UID, calling PID, request ID, streaming state and package in measured argument order.",
+    "normal_android_selinux_changed": false,
+    "permission_checks_changed": false
+  },
+  "static_dependency_audit": {
+    "private_record": "reports/camera-native-hook-20260907/library-analysis/import-closure.json",
+    "private_record_sha256": "8dd587e925b97a89ab91cb4626ab1ab2e33865ce6df04c19fbc06d0425f1760f",
+    "libraries": 92,
+    "missing_libraries": 0,
+    "unresolved_global_imports": 0,
+    "core_path_extra_service": "No additional MIUI service dependency found in the examined session-update/scene-identification code. Device execution remains unverified.",
+    "optional_notification_path": {
+      "gate": "persist.sys.miui.camera.cameramind.supported",
+      "default": false,
+      "dlopen": "/system_ext/lib64/libcammsger.so",
+      "symbol": "create",
+      "failure_behavior": "Logged null/no-op"
+    },
+    "limits": [
+      "Static availability does not prove cameraserver linker namespace reachability.",
+      "Symbol resolution and size/offset pins do not prove all runtime C++ ABI behavior.",
+      "SELinux access, runtime loading and capture remain unverified."
+    ],
+    "v7_namespace_observation": {
+      "installed_build": "nezha.c6ad60080698a987390afc40",
+      "linkerconfig_sha256": "9d5ea2898fe39fb21e93b57a09f3c6c126f481f4530c6ef1ecea9108e6422cd1",
+      "system_ext_search_path": true,
+      "system_ext_permitted_path": true,
+      "cameramind_property": "true",
+      "runtime_dlopen_proven": false,
+      "optional_cammsger_present": false,
+      "optional_cammsger_presence_sha256": "0cfa3fcf51ab9e2d448c2b46e43172483de57f1bb42e02c802a3865beaae9edc",
+      "optional_path_assessment": "The live flag is true and libcammsger.so is absent. Disassembly shows request notifications handle a null optional instance; this is not a core session-tag prerequisite. Runtime result remains unverified."
+    }
+  },
+  "source_stage": {
+    "identity": "nezha.0e2658970d62a3712f0398de",
+    "inventory_rows": 613,
+    "changed_files": 10,
+    "transaction": "/work/validation/camera-native-hook-source-20260907-v1",
+    "private_receipt": "reports/camera-native-hook-20260907/source/source-installed.json",
+    "receipt_sha256": "87eb9268c0caaae04a94f4d9fcbbab06b14969d2a7715a3a921330c4a850ee85",
+    "predecessor_rows": 605,
+    "predecessor_receipt_sha256": "4d5cb9104ba5974217afb4f871892054d8257b96acb0a0969edf50c6b6fe238f",
+    "source_blobs_provenance_sha256": "e6dc8dffce8fc083e3ea67f287f99d360b1fcfc5f3c4eaf1c1154bcc474182fa"
+  },
+  "authorized_space_reclaim": {
+    "deleted_guest_file": "/work/validation/variant-opt-in-super-20260906-v7/super.img",
+    "sha256": "ac9cbf2d74fc58fd70b89cfd984da518db5afe757e9fbd56fa7049e3afa7b427",
+    "size_bytes": 9476081776,
+    "before_free_bytes": 209767469056,
+    "after_free_bytes": 219243556864,
+    "path_absent": true,
+    "retained_host_copies": [
+      {
+        "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v7-transfer/super.img",
+        "size_bytes": 9476081776,
+        "sha256": "ac9cbf2d74fc58fd70b89cfd984da518db5afe757e9fbd56fa7049e3afa7b427"
+      },
+      {
+        "path": "artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v7/super.img",
+        "size_bytes": 9476081776,
+        "sha256": "ac9cbf2d74fc58fd70b89cfd984da518db5afe757e9fbd56fa7049e3afa7b427"
+      }
+    ],
+    "scope": "Only the explicitly authorized duplicate v7 guest super.img was removed after both retained host copies hashed identically."
+  },
+  "verification": {
+    "native_compile": "unverified",
+    "v8_package": "unverified",
+    "v8_flash": "unverified",
+    "v8_boot": "unverified",
+    "v8_selinux": "unverified",
+    "v8_slot": "unverified",
+    "rear_aperture_jpeg": "unverified",
+    "rear_xiaomi_jpeg": "unverified",
+    "single_sensor_and_front": "unverified",
+    "provider_crash_free": "unverified",
+    "device_admission": "not device-admitted"
+  },
+  "acceptance_required": [
+    "Build and deliver a fresh v8 package, preserving v7 rollback.",
+    "Flash the authorized slot A shared-super route and boot with SELinux Enforcing.",
+    "Confirm session tags present, no missing MiStreamUsecase error, no VirtualSuperGraphDesc: 4 and camera 0 configureStreams success.",
+    "Save JPEGs from both Aperture and Xiaomi Camera, confirm front and single-sensor operation, and check provider crash buffer.",
+    "If a further required runtime component is identified, preserve exact evidence and report it before guessing."
+  ]
+}

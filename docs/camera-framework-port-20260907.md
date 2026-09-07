@@ -5,6 +5,12 @@ records that port: what was brought, how it was integrated, that it builds,
 signs, flashes and boots cleanly, and the measured outcome. It is delivery set
 v7 (`nezha.c6ad60080698a987390afc40`), flashed to slot A, enforcing.
 
+**Later correction:** the [native hook investigation](camera-native-hook-20260907.md)
+recovered the factory cameraserver call path. The missing integration is native
+`frameworks/av` code. The earlier Java-framework and CameraExtensionsProxy
+interpretations were not established runtime findings and are superseded by
+that binary evidence. The measured v7 capture failure remains unchanged.
+
 ## What was ported
 
 The complete transitive set of HyperOS camera components our build was missing,
@@ -60,27 +66,24 @@ MiCamService configureStreams status=-19  ->  Camera 0: Function not implemented
 ```
 
 The reason the port does not help: `libcameraimpl.so`, the component that would
-inject `MiStreamUsecase`, is present on disk but **loaded by no process**. It is
-not in any app's library namespace and not in `public.libraries`, and nothing
-calls `updateSessionParams`. Its loader is `CameraExtensionsProxy` for CameraX
-**extension modes** (HDR, Night, Bokeh); normal preview and capture never invoke
-it. The Xiaomi camera app runs its MIVI manager but still configures through
-standard `android.hardware.camera2` and hits the same HAL failure; on this
-AOSP-based framework it does not drive the MIUI code path that would set the
-Xiaomi session parameters.
+inject `MiStreamUsecase`, is present on disk but **loaded by no process**. The
+factory native cameraserver loader is absent from this AOSP-derived build.
+The Xiaomi camera app still configures through standard
+`android.hardware.camera2` and reaches the same HAL failure.
 
-So the missing piece is not a library or an app. It is the MIUI **framework**
-code (in `framework.jar` / `services.jar`, and the camera app's MIUI runtime)
-that wires the session-parameter injection into the normal capture path. That
-code is entangled with the whole HyperOS system and cannot be brought over as
-prebuilt blobs. Single physical sensors still stream, and enumeration is intact.
+The original assessment attributed this to `framework.jar` / `services.jar`
+without establishing a call site. Later disassembly instead found the native
+loader and both required metadata hooks: `updateSessionParams` writes the
+registered client name; `executeSceneIdentify` writes `MiStreamUsecase` and
+activity name immediately before HAL configuration. Both use a camera-ID key.
+See the native investigation for exact addresses and the guarded source port.
 
 ## What holds
 
 - Enumeration fix (`va_aosp`) and the full camera-framework blob port are both
   flashed and booting, enforcing, with no regression.
-- The one untested path where the injection could activate is a CameraX
-  **extension** session (HDR/Night/Bokeh), which loads `libcameraimpl` through
-  `CameraExtensionsProxy`; normal capture does not use it.
-- Bringing the rear multi-camera capture up would require porting the MIUI
-  camera framework hooks, i.e. most of the HyperOS system framework, not blobs.
+- No CameraExtensionsProxy loader was demonstrated by the v7 test. The presence
+  of vendor tag constants in the CameraX extension jar does not establish one.
+- The next candidate is the bounded native cameraserver integration documented
+  in the [native hook record](camera-native-hook-20260907.md). The binary evidence
+  does not require wholesale replacement of the HyperOS Java framework.
