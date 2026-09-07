@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-platform-signed-candidate-v1",
+  "selector": "NEZHA_CAMERA_PLATFORM_SIGNED",
+  "default_enabled": false,
+  "requires_selectors": [
+    "NEZHA_XIAOMI_CAMERA",
+    "NEZHA_CAMERA_FRAMEWORK"
+  ],
+  "fragment": "device/xiaomi/nezha/camera-platform-signed.mk",
+  "fragment_sha256": "f15379f9533d513ff47fb37fdb87a19ce45b0808398a353558c06a0f9ad2632c",
+  "generator": "scripts/camera_platform_product_inputs.py",
+  "generator_sha256": "bb8ebf8363f5b64c9e3659a2b9767eeda7f69413fc704bac44bb834ed357ad25",
+  "baseline_generator": "scripts/camera_product_inputs.py",
+  "baseline_generator_sha256": "64ab002209462acd2feca7b31e77a09c6cc6abac2b4c18a2752259162de3e364",
+  "namespace": "vendor/xiaomi/nezha-camera-platform",
+  "module": "NezhaXiaomiCameraPlatform",
+  "include": "vendor/xiaomi/nezha-camera-platform/camera-platform-product.mk",
+  "partition": "system_ext",
+  "package": "com.android.camera",
+  "certificate": "platform",
+  "preserved_input": {
+    "contract": "config/nezha-camera-apk.json",
+    "apk_sha256": "7bce1fb140802511bb3d6527f6fcc25ef7558f278d24229755413d3a9b42199e",
+    "apk_size_bytes": 204365218,
+    "factory_certificate_sha256": "c9009d01ebf9f5d0302bc71b2fe9aa9a47a432bba17308a3111b75d7b2149025",
+    "stage_uses_original_packet_verification": true,
+    "native_producer_hashes_every_declared_input": true,
+    "apk_bytes_changed_during_staging": false
+  },
+  "build_behavior": {
+    "signing": "Normal android_app_import certificate platform path in a separately authorized Android build",
+    "presigned_and_preprocessed_properties": "removed for this candidate only",
+    "enforce_uses_libs": true,
+    "optional_uses_libs_in_order": [
+      "miui-cameraopt",
+      "androidx.window.extensions",
+      "androidx.window.sidecar"
+    ],
+    "dexpreopt_relaxation_added": false,
+    "extra_privapp_permissions_added": [],
+    "verifier_or_package_manager_changes": false,
+    "old_and_new_camera_modules_may_be_selected_together": false
+  },
+  "signer_transition": {
+    "existing_app_data_migrated": false,
+    "compatible_signing_lineage_established": false,
+    "original_oem_signature_permission_relationships_preserved": "not established after re-signing",
+    "pure_platform_signature_requests_becoming_eligible": [
+      "android.permission.CONTROL_DEVICE_STATE",
+      "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+      "android.permission.INJECT_EVENTS"
+    ],
+    "actual_installed_grants_verified": false,
+    "retained_composed_mac_policy": "Both factory Camera and v8 platform public certificates map to seinfo platform; no signer-only domain change is predicted by that retained policy",
+    "successor_mac_label_verified": false
+  },
+  "required_build_and_device_evidence": [
+    "Exactly one selected com.android.camera module and source namespace",
+    "Successful strict uses-library and normal signing build outputs",
+    "Final Camera APK has the same verified public signer as the final platform package",
+    "Uncompressed non-signature APK entries, including DEX, resources, manifest and native libraries, match the original input",
+    "Explicitly reviewed existing-package signer and app-data transition before device replacement",
+    "Installed permission grants, seinfo, process domain and enforcing policy access",
+    "Unchanged factory Verifier platform check and native result, real CameraOpt initialization and Xiaomi capture"
+  ],
+  "evidence_document": "docs/camera-platform-signing-20260907.md",
+  "verification": {
+    "source_packet_staged_and_verified": true,
+    "source_installed": false,
+    "apk_signed": false,
+    "key_accessed": false,
+    "native_build_verified": false,
+    "runtime_verified": false,
+    "device_admission": "not device-admitted"
+  }
+}
