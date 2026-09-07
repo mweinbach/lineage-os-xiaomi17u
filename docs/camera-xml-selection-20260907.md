@@ -5,10 +5,13 @@ absent.** Stock HyperOS sets `ro.vendor.qti.va_aosp.support=1` in its system
 build.prop; the flashed build (`nezha.cc551b14bc2cc72c2b138bb0`) has no such
 property, while `ro.build.product` is `nezha` and the SoC id is 660. In the
 pinned CHI override those three inputs select the `kaanapali_gsi.xml`
-logical-camera table instead of `nezha.xml`. This is offline analysis of held
-evidence; no phone operation ran and no camera fix is device-admitted. The
-sanitized [record](../research/camera-xml-selection-20260907.json) pins every
-input hash and address.
+logical-camera table instead of `nezha.xml`. The offline analysis below was
+then confirmed by an authorized runtime test the same day (see
+[Runtime result](#runtime-result-measured-2026-09-07)): setting the flag makes
+the CHI select `nezha.xml` and enumerate nine camera devices with no damage
+verdicts. Capture is not yet confirmed and no camera fix is device-admitted.
+The sanitized [record](../research/camera-xml-selection-20260907.json) pins
+every input hash, address and measured count.
 
 ## Measured facts
 
@@ -48,9 +51,9 @@ none of them satisfies Xiaomi's expected XML ids 1 to 4, so the role map keeps
 only the three-sensor logical camera and reports the four per-lens roles as
 damaged. Restoring the factory flag from the system image should make the
 CHI keep `nezha.xml` (thirteen definitions) and build the per-lens cameras.
-This is not yet measured on the phone.
+Written before the runtime test; the enumeration half is now measured below.
 
-## Candidate fix (prepared, not installed)
+## Candidate fix (prepared; built as the v6 delivery set, see below)
 
 `device/xiaomi/nezha/qti-value-add-framework.mk`, selected by
 `NEZHA_QTI_VALUE_ADD_FRAMEWORK := true`, adds
@@ -100,6 +103,42 @@ Expected: `vef=1`, `name="nezha.xml"`, thirteen definitions, no damage lines,
 a higher device count. Cleanup: clear `uprobe_events`, disable the `cam` events
 and `tracing_on`. The property cannot be unset until the next reboot; that is
 a recorded state, and no reboot is part of this plan.
+
+## Runtime result (measured 2026-09-07)
+
+The user authorized the plan above on the installed userdebug build
+(`nezha.cc551b14bc2cc72c2b138bb0`, root shell, SELinux enforcing throughout).
+Both runs used the same uprobes and the same provider restart; the property
+write is volatile and clears at the next reboot. Raw traces stay under the
+ignored evidence directory of the v5 install.
+
+| Probe or count | Control run (flag absent) | Change run (`setprop ro.vendor.qti.va_aosp.support 1`) |
+| --- | --- | --- |
+| `isRunningWithVendorEnhancedFramework()` (`0x4e5758`) | 0 | 1 |
+| `IsGSIVersion()` (`0x4e5760`) | 0 | not reached (short-circuited) |
+| Selected XML at the picker (`0x4f70cc`) | `kaanapali_gsi.xml` | `nezha.xml` |
+| Slot lookups (`0x4e7db8`) | 10 over 8 definitions, front slot 4 | 29, including Wide, Tele, Ultrawide and FrontLogicalCamera |
+| `dumpsys media.camera` devices | 3 | 9 (2 normal, 7 auxiliary) |
+| `addDamagePyhCameraRoleIds` lines | 4 | 0 |
+| `persist.vendor.camera.sensorffrlist` after start | four failures | empty |
+| `persist.vendor.camera.module.info` after start | empty | populated (`back_main`, `back_tele`, ...) |
+
+This measures the selection and enumeration half of the hypothesis: the flag
+alone switches the table and removes every damage verdict. Reboot-persistence
+needs the flag in the system image, which is what the v6 build carries.
+
+**Capture is not confirmed.** With nine devices enumerated, opening the Xiaomi
+camera app aborted the provider once: `get InternalStreamConfigInfo failed,
+fwkOpMode:0x9005, roleId:64` raised in `libmicamera_hal_policy.so`
+(`DeviceSessionPolicy::buildVendorConfiguration`) from
+`mihal::Session::configureStreams`. The provider respawned, cameraserver
+re-added all nine devices, and no further crash occurred. That is a
+stream-configuration failure in the Xiaomi session policy for the app's
+vendor operating mode, distinct from the enumeration failure fixed here, and
+it is unexplained. Aperture verified lens facing through CameraX but opened no
+device within a 25 second window, logged no error, and saved nothing; its
+behaviour on the flashed build is the next check. The MIUI app also reports
+an unrelated missing `com.miui.cameraopt` native library.
 
 ## Acceptance checks for a fix
 

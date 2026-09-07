@@ -660,3 +660,84 @@ def derive_policy_selection(raw):
     require(metadata.identity(result) == POLICY_SELECTION_AFTER and result.count(b"permissive su;") == 1,
             "policy selection derivation differs")
     return result
+
+
+# The camera framework selection. Every build so far omits the factory system
+# property ro.vendor.qti.va_aosp.support=1, so libqti_vndfwk_detect reports no
+# value-add framework and the camera CHI override replaces the SoC's nezha.xml
+# logical-camera table with kaanapali_gsi.xml, whose entries never match the
+# four physical cameras (docs/camera-xml-selection-20260907.md). The selection
+# installs the guarded fragment that sets the property, includes it from
+# device.mk and enables it in the product's candidate block.
+CAMERA_FRAMEWORK_CONTRACT = "config/nezha-qti-value-add-framework.json"
+CAMERA_FRAMEWORK_CONTRACT_ID = {"sha256": "3dc719f3d20fd1668894639f0850cfd459a685fd6155afbffe01376638abbeda", "size_bytes": 6975}
+CAMERA_FRAMEWORK_SELECTOR = "NEZHA_QTI_VALUE_ADD_FRAMEWORK"
+CAMERA_FRAMEWORK_FRAGMENT = "device/xiaomi/nezha/qti-value-add-framework.mk"
+CAMERA_FRAMEWORK_FRAGMENT_ID = {"sha256": "fb1049dd463074796af54df196144f0eecd874267ef83a83faf0f1b15d43c600", "size_bytes": 1083}
+CAMERA_FRAMEWORK_DEVICE = "device/xiaomi/nezha/device.mk"
+CAMERA_FRAMEWORK_DEVICE_SNAPSHOT = "research/source-snapshots/nezha-device-20260906.mk"
+CAMERA_FRAMEWORK_DEVICE_ANCHOR = "include $(NEZHA_DEVICE_PATH)/dolby.mk\n\n"
+CAMERA_FRAMEWORK_DEVICE_INCLUDE = ("# Explicit QTI value-add framework flag; selected per build, off by default.\n"
+                                   "include $(NEZHA_DEVICE_PATH)/qti-value-add-framework.mk\n\n")
+CAMERA_FRAMEWORK_DEVICE_BEFORE = {"sha256": "e1b76c2a0314b7b09a7f82eecce295faf42eb55cee500b787fe266405eac3653", "size_bytes": 2952}
+CAMERA_FRAMEWORK_DEVICE_AFTER = {"sha256": "a34752e2cf5c4dd4948b5cd69479f3c2f766caa5c7accb56d04649afc1f54c1c", "size_bytes": 3086}
+CAMERA_FRAMEWORK_PRODUCT = PRODUCT_SELECTION
+CAMERA_FRAMEWORK_PRODUCT_ANCHOR = "NEZHA_WORKLOAD_CLASSIFIER := false\n"
+CAMERA_FRAMEWORK_PRODUCT_ASSIGNMENT = "NEZHA_QTI_VALUE_ADD_FRAMEWORK := true\n"
+CAMERA_FRAMEWORK_PRODUCT_BEFORE = PRODUCT_SELECTION_RESTORED
+CAMERA_FRAMEWORK_PRODUCT_AFTER = {"sha256": "271b529fed5d833d2759bb155b4d43f508b10513ed96738c705e2336f2cd5075", "size_bytes": 1231}
+
+
+def load_camera_framework_contract(path=None):
+    """Read the reviewed camera framework contract and check its pinned identity and selection."""
+    contract_path = Path(path) if path else ROOT / CAMERA_FRAMEWORK_CONTRACT
+    raw = contract_path.read_bytes()
+    require(metadata.identity(raw) == CAMERA_FRAMEWORK_CONTRACT_ID, "camera framework contract identity differs")
+    value = metadata._json(raw)
+    selection = value.get("source_selection", {})
+    require(value.get("selector") == CAMERA_FRAMEWORK_SELECTOR and value.get("fragment") == CAMERA_FRAMEWORK_FRAGMENT
+            and value.get("property", {}).get("product_variable") == "PRODUCT_SYSTEM_PROPERTIES"
+            and {k: selection.get("fragment", {}).get(k) for k in ("sha256", "size_bytes")} == CAMERA_FRAMEWORK_FRAGMENT_ID
+            and selection.get("device", {}).get("path") == CAMERA_FRAMEWORK_DEVICE
+            and selection.get("device", {}).get("snapshot") == CAMERA_FRAMEWORK_DEVICE_SNAPSHOT
+            and selection.get("device", {}).get("before") == CAMERA_FRAMEWORK_DEVICE_BEFORE
+            and selection.get("device", {}).get("after") == CAMERA_FRAMEWORK_DEVICE_AFTER
+            and selection.get("product", {}).get("path") == CAMERA_FRAMEWORK_PRODUCT
+            and selection.get("product", {}).get("assignment") == CAMERA_FRAMEWORK_PRODUCT_ASSIGNMENT.strip()
+            and selection.get("product", {}).get("before") == CAMERA_FRAMEWORK_PRODUCT_BEFORE
+            and selection.get("product", {}).get("after") == CAMERA_FRAMEWORK_PRODUCT_AFTER,
+            "camera framework contract does not describe this selection")
+    return value, metadata.identity(raw)
+
+
+def render_camera_framework_fragment():
+    """Return the tracked fragment bytes after checking their pinned identity."""
+    raw = (ROOT / CAMERA_FRAMEWORK_FRAGMENT).read_bytes()
+    require(metadata.identity(raw) == CAMERA_FRAMEWORK_FRAGMENT_ID and CAMERA_FRAMEWORK_SELECTOR.encode("ascii") in raw
+            and b"PRODUCT_SYSTEM_PROPERTIES" in raw and b"ro.vendor.qti.va_aosp.support=1" in raw,
+            "camera framework fragment differs from the reviewed one")
+    return raw
+
+
+def derive_camera_framework_device(raw):
+    """Add the fragment include after the Dolby include of the exact predecessor; nothing else changes."""
+    anchor = CAMERA_FRAMEWORK_DEVICE_ANCHOR.encode("ascii")
+    require(type(raw) is bytes and metadata.identity(raw) == CAMERA_FRAMEWORK_DEVICE_BEFORE and raw.count(anchor) == 1
+            and b"qti-value-add-framework" not in raw,
+            "camera framework device derivation requires the exact predecessor")
+    result = raw.replace(anchor, anchor + CAMERA_FRAMEWORK_DEVICE_INCLUDE.encode("ascii"), 1)
+    require(metadata.identity(result) == CAMERA_FRAMEWORK_DEVICE_AFTER and result.count(b"qti-value-add-framework.mk") == 1,
+            "camera framework device derivation differs")
+    return result
+
+
+def derive_camera_framework_product(raw):
+    """Enable the selector after the last September 6 candidate of the exact restored product; nothing else changes."""
+    anchor = CAMERA_FRAMEWORK_PRODUCT_ANCHOR.encode("ascii")
+    require(type(raw) is bytes and metadata.identity(raw) == CAMERA_FRAMEWORK_PRODUCT_BEFORE and raw.count(anchor) == 1
+            and CAMERA_FRAMEWORK_SELECTOR.encode("ascii") not in raw,
+            "camera framework product derivation requires the exact restored product")
+    result = raw.replace(anchor, anchor + CAMERA_FRAMEWORK_PRODUCT_ASSIGNMENT.encode("ascii"), 1)
+    require(metadata.identity(result) == CAMERA_FRAMEWORK_PRODUCT_AFTER and result.count(CAMERA_FRAMEWORK_SELECTOR.encode("ascii")) == 1,
+            "camera framework product derivation differs")
+    return result

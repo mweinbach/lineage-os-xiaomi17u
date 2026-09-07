@@ -74,8 +74,61 @@
   },
   "loader": "AOSP init loads /system/build.prop keys as the init context through CheckPermissions; the built platform policy allows init to set every property type; only ctl., sys.powerctl and the restorecon key are filtered",
   "not_verified": [
-    "that the phone's CHI selects nezha.xml once the property is present (runtime test pending authorization)",
-    "capture, stream configuration and camera switching after correction",
-    "behaviour of the non-camera consumers with the flag set on this framework"
-  ]
+    "capture, stream configuration and camera switching after correction: the MIUI camera app session (fwkOpMode 0x9005, roleId 64) still aborts the provider in DeviceSessionPolicy::buildVendorConfiguration, and Aperture opened no device within its test window",
+    "behaviour of the non-camera consumers with the flag set on this framework",
+    "the delivered package: the property must be present in the packaged system build.prop and the CHI must select nezha.xml from first boot without a runtime setprop"
+  ],
+  "source_selection": {
+    "purpose": "the guest source transaction that installs the fragment, includes it from device.mk and enables the selector in the product candidate block; derivations in scripts/rom_construction_source.py",
+    "fragment": {
+      "path": "device/xiaomi/nezha/qti-value-add-framework.mk",
+      "sha256": "fb1049dd463074796af54df196144f0eecd874267ef83a83faf0f1b15d43c600",
+      "size_bytes": 1083
+    },
+    "device": {
+      "path": "device/xiaomi/nezha/device.mk",
+      "snapshot": "research/source-snapshots/nezha-device-20260906.mk",
+      "before": {
+        "sha256": "e1b76c2a0314b7b09a7f82eecce295faf42eb55cee500b787fe266405eac3653",
+        "size_bytes": 2952
+      },
+      "after": {
+        "sha256": "a34752e2cf5c4dd4948b5cd69479f3c2f766caa5c7accb56d04649afc1f54c1c",
+        "size_bytes": 3086
+      },
+      "effect": "the fragment include follows the Dolby include; nothing else changes; the result is the tracked device.mk"
+    },
+    "product": {
+      "path": "device/xiaomi/nezha/lineage_nezha.mk",
+      "assignment": "NEZHA_QTI_VALUE_ADD_FRAMEWORK := true",
+      "before": {
+        "sha256": "b53dc7f36a63ec4db1f5ec134eaab58b836d07f2524944d9db0440737e98d4bf",
+        "size_bytes": 1193
+      },
+      "after": {
+        "sha256": "271b529fed5d833d2759bb155b4d43f508b10513ed96738c705e2336f2cd5075",
+        "size_bytes": 1231
+      },
+      "effect": "the selector joins the September 6 candidate block after NEZHA_WORKLOAD_CLASSIFIER := false; the tracked product file carries no candidate block and is unchanged"
+    }
+  },
+  "runtime_evidence_20260907": {
+    "method": "root shell on the installed userdebug build nezha.cc551b14bc2cc72c2b138bb0; kernel uprobes on the CHI override detector results and the XML selector; the flag set with setprop followed by a camera provider restart; the runtime flag is volatile and clears at reboot",
+    "control": {
+      "vendor_enhanced_framework": 0,
+      "gsi_version": 0,
+      "selected_xml": "kaanapali_gsi.xml",
+      "camera_devices": 3,
+      "damage_lines": 4
+    },
+    "with_flag": {
+      "vendor_enhanced_framework": 1,
+      "selected_xml": "nezha.xml",
+      "camera_devices": 9,
+      "normal_camera_devices": 2,
+      "damage_lines": 0,
+      "selinux": "Enforcing"
+    },
+    "record": "research/camera-xml-selection-20260907.json"
+  }
 }

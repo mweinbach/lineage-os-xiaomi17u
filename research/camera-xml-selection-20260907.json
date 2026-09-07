@@ -4,7 +4,7 @@
   "date": "2026-09-07",
   "device": "nezha",
   "phone_accessed": false,
-  "status": "offline; candidate fix prepared; runtime test and flash not authorized",
+  "status": "enumeration fix measured on device with a volatile property; capture unconfirmed; v6 build in progress",
   "measured_facts": {
     "current_build": {
       "identity": "nezha.cc551b14bc2cc72c2b138bb0",
@@ -106,9 +106,41 @@
     "bluetooth, IMS and connectivity unchanged after the flag (non-camera consumers)"
   ],
   "unverified": [
-    "the effective selector on the phone (needs the control run)",
-    "that the flag restores capture, not only enumeration",
+    "that the flag restores capture, not only enumeration (Xiaomi app session policy aborts on roleId 64; Aperture opened no device)",
+    "reboot persistence from the system image (needs the v6 build installed)",
     "non-camera consumer behaviour with the flag on this framework",
     "stock VFE/SFE/ICP diagnostics (unrelated to this finding, still unmeasured)"
-  ]
+  ],
+  "runtime_result_20260907": {
+    "phone_accessed": true,
+    "authorization": "user authorized the runtime test plan and the build; the property write is volatile and cleared by reboot",
+    "installed_build": "nezha.cc551b14bc2cc72c2b138bb0",
+    "selinux": "Enforcing",
+    "control": {
+      "vendor_enhanced_framework": 0,
+      "gsi_version": 0,
+      "selected_xml": "kaanapali_gsi.xml",
+      "slot_lookups": 10,
+      "definitions": 8,
+      "front_slot_requested": 4,
+      "camera_devices": 3,
+      "damage_lines": 4
+    },
+    "with_flag": {
+      "vendor_enhanced_framework": 1,
+      "selected_xml": "nezha.xml",
+      "slot_lookups": 29,
+      "camera_devices": 9,
+      "normal_camera_devices": 2,
+      "damage_lines": 0,
+      "sensorffrlist": "empty",
+      "module_info": "populated"
+    },
+    "capture_checks": {
+      "xiaomi_camera_app": "provider SIGABRT once: get InternalStreamConfigInfo failed, fwkOpMode:0x9005, roleId:64 in libmicamera_hal_policy.so DeviceSessionPolicy::buildVendorConfiguration from mihal::Session::configureStreams; provider respawned and re-enumerated nine devices; unexplained, distinct from enumeration",
+      "aperture": "CameraX validated lens facing; no device opened within 25 s; no error, no crash, no saved image",
+      "result": "capture not confirmed"
+    },
+    "evidence": "ignored evidence directory of the v5 install, camera-experiment subdirectory (control run, change run, capture checks 1-6, dumpsys with the flag on)"
+  }
 }

@@ -58,12 +58,18 @@ that CHI's damage verdict is a logical XML-ID lookup failure, not raw sensor
 probe status. The [XML selection record](camera-xml-selection-20260907.md)
 then measures the cause of that override on this build: the factory system
 property `ro.vendor.qti.va_aosp.support=1` is absent, so the CHI selects the
-GSI logical-camera table on SoC 660. A guarded system-property fix
-(`NEZHA_QTI_VALUE_ADD_FRAMEWORK`, off by default) and a runtime test plan are
-prepared; the effective runtime selector, capture and the non-camera consumers
-of that flag remain unverified. No camera fix is device-admitted. The phone
-also carries `ro.boot.camera.config=0` from a prior runtime test until its next
-reboot.
+GSI logical-camera table on SoC 660. The authorized runtime test on the
+installed build confirmed it: with the flag set for one boot the CHI selects
+`nezha.xml`, cameraserver reports nine devices instead of three and no role is
+reported damaged, SELinux enforcing. Capture is not confirmed: the Xiaomi app's
+session aborted the provider once in its stream-configuration policy
+(`roleId 64`), and Aperture opened no device in its window. The guarded
+system-property fix (`NEZHA_QTI_VALUE_ADD_FRAMEWORK`) is selected by a sixth
+guest transaction (identity `nezha.e2b55ae5f0effd944736a6b0`, 604 inputs) and
+is being built as delivery set v6; the non-camera consumers of the flag remain
+unverified. No camera fix is device-admitted. The phone also carries
+`ro.boot.camera.config=0` and the volatile flag from the runtime test until its
+next reboot.
 User builds are unaffected by the opt-in; the user policy identity
 is unverified until the next user build.
 
@@ -71,7 +77,10 @@ is unverified until the next user build.
 the existing Linux checkout under identity `nezha.bc6311b1a714e310eaf1af56`, with
 603 hash-verified source inputs. Display, Dolby, haptics, camera scheduling and
 refresh candidates are selected; the IMS provider and workload classifier stay
-disabled. No native build or installation was performed by this merge. Use the
+disabled. The September 7 camera transaction adds the QTI framework flag
+selection on top of the userdebug opt-in chain (identity
+`nezha.e2b55ae5f0effd944736a6b0`, 604 inputs). No native build or
+installation was performed by the merge itself. Use the
 [source-merge record and new runner](feature-candidates-build-merge-20260906.md)
 for the next build. The f9e source/build records below are preserved predecessor
 evidence, not the current source selection.
