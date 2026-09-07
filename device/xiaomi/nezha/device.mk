@@ -28,6 +28,9 @@ include $(NEZHA_DEVICE_PATH)/dolby.mk
 # Explicit QTI value-add framework flag; selected per build, off by default.
 include $(NEZHA_DEVICE_PATH)/qti-value-add-framework.mk
 
+# Ported HyperOS camera framework (native libs, configs, app, properties).
+include $(NEZHA_DEVICE_PATH)/camera-framework.mk
+
 # The opt-in successor uses the original signed factory Camera and a narrow
 # same-partition privilege policy. A selected but missing packet must fail.
 ifeq ($(NEZHA_XIAOMI_CAMERA),true)

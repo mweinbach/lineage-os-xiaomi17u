@@ -4,10 +4,15 @@
 (`nezha.e2b55ae5f0effd944736a6b0`) on slot A.** Flashed September 7, 2026, it
 boots enforcing with adb root and carries the QTI value-add framework flag in
 its system image, which makes the camera HAL enumerate nine devices with no
-damaged role. Camera capture still does not work: the default rear camera is a
-three-sensor Xiaomi logical device whose Unified Multi-Camera graph fails to
-build (see the [capture diagnosis](camera-capture-diagnosis-20260907.md)), while
-single sensors stream. Post-unlock retained-userdata access, UDFPS and shade
+damaged role. The phone now runs delivery set v7 (`nezha.c6ad60080698a987390afc40`),
+which additionally ports the full HyperOS camera framework (24 system_ext
+libraries, the CameraMind app, configs, init and the factory camera properties;
+see the [camera-framework port](camera-framework-port-20260907.md) and the
+[capture diagnosis](camera-capture-diagnosis-20260907.md)). Camera capture still
+does not work: the default rear camera is a three-sensor Xiaomi logical device
+whose Unified Multi-Camera graph fails to build because the libcameraimpl session
+parameter injection is never loaded on this AOSP framework, while single sensors
+stream. Post-unlock retained-userdata access, UDFPS and shade
 visuals remain unverified. The Package7 UI, camera and shade successor
 (`f9e`) stays the last installed user-variant baseline; see its
 [installation record](package7-f9e-install-20260906.md) and the
@@ -25,7 +30,7 @@ Historical pending gates in that archive describe their original checkpoints.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.e2b55ae5f0effd944736a6b0` (userdebug diagnostic opt-in, delivery set v6); last user-variant install `nezha.f9e30611efe01b882f9ed0cb` |
+| Installed build identity | `nezha.c6ad60080698a987390afc40` (userdebug diagnostic opt-in, delivery set v7, camera-framework port); last user-variant install `nezha.f9e30611efe01b882f9ed0cb` |
 | Installed build source evidence | Sixth guest transaction receipt, 604-row inventory, SHA256 `e02f13349063f394a0e92051bd5aaa8859f20eda7b9b208697d5ab6ef8dd5054` (private reports directory); f9e: [preserved source and build record](package7-ui-camera-followup-20260905.md), 574 rows, SHA256 `abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc` |
 | Development source selection | `nezha.bc6311b1a714e310eaf1af56`; see the [source-merge record](feature-candidates-build-merge-20260906.md), separate from the installed build |
 | Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v6/` (v5 retained as rollback; f9e: `artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/`) |

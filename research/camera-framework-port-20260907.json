@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-framework-port-20260907",
+  "date": "2026-09-07",
+  "phone_accessed": true,
+  "delivery_set": "variant-opt-in-userdebug-20260906-v7",
+  "build": "nezha.c6ad60080698a987390afc40",
+  "selinux": "Enforcing",
+  "status": "full HyperOS camera-framework blob port built, signed, flashed and booted with no regression; rear multi-camera capture still fails; not fixed",
+  "ported": {
+    "system_ext_native_libs": 24,
+    "total_bundle_files": 64,
+    "soong_modules": 35,
+    "key_injector": "libcameraimpl.so exports CameraImpl::updateSessionParams and defines com.xiaomi.sessionparams.MiStreamUsecase/clientName/activityName/cameraxConnection",
+    "app": "CameraMind",
+    "configs": [
+      "cameraopt*.json",
+      "camerascene.json",
+      "cameracustomize.json",
+      "camera_perfetto.cfg"
+    ],
+    "init": "init.miui.cameraopt.rc",
+    "properties": [
+      "vendor.camera.support.mivi=true",
+      "vendor.camera.aux.packagelist",
+      "vendor.camera.aux.packagelistext",
+      "persist.vendor.camera.privapp.list",
+      "hypercamera.disable_app_default_config"
+    ],
+    "already_present_jars": [
+      "camerax-vendor-extensions.jar",
+      "com.xiaomi.hardware.camera.companion-V1.jar",
+      "miui-cameraopt.jar"
+    ]
+  },
+  "integration": {
+    "bundle": "vendor/xiaomi/nezha-camera-framework (ignored)",
+    "fragment": "device/xiaomi/nezha/camera-framework.mk",
+    "selector": "NEZHA_CAMERA_FRAMEWORK",
+    "source_identity": "nezha.c6ad60080698a987390afc40",
+    "source_rows": 605,
+    "system_ext_bytes": 792080384
+  },
+  "result": {
+    "boot": "completed enforcing in ~25 s, no regression, 9 cameras, cgroups created, all 24 libs in /system_ext/lib64",
+    "rear_camera": "still fails: get MiStreamUsecaseName tag failed -> Failed to create VirtualSuperGraphDesc: 4 -> configureStreams status=-19 -> Camera 0 Function not implemented (-38)",
+    "libcameraimpl_loaded": "no process maps it; not in any app namespace or public.libraries; updateSessionParams never called",
+    "why": "the injector loads only via CameraExtensionsProxy for CameraX extension modes; normal capture never invokes it; the Xiaomi app configures via standard camera2 and hits the same HAL failure",
+    "single_sensor": "still streams; enumeration intact"
+  },
+  "conclusion": "the missing piece is MIUI framework code (framework.jar/services.jar + the app MIUI runtime) that wires the session-parameter injection into normal capture, which is entangled with the whole HyperOS system and cannot be ported as blobs",
+  "untested": "a CameraX extension (HDR/Night/Bokeh) session, which would load libcameraimpl via CameraExtensionsProxy"
+}

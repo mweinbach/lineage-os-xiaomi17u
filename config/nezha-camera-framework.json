@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-framework-port-v1",
+  "selector": "NEZHA_CAMERA_FRAMEWORK",
+  "fragment": "device/xiaomi/nezha/camera-framework.mk",
+  "fragment_sha256": "3d16e3a8367af00a5292d2f07cd6d65771f76ee1bf544f5ce3bcd15b9119e34d",
+  "fragment_size_bytes": 1221,
+  "purpose": "Select the ported HyperOS camera-framework bundle (native libs, CameraMind app, configs, init) and set the factory camera system properties. Off by default. The proprietary blobs live in the ignored vendor/xiaomi/nezha-camera-framework bundle.",
+  "properties": [
+    "vendor.camera.support.mivi=true",
+    "vendor.camera.aux.packagelist=com.xiaomi.runin,com.xiaomi.cameratest,com.xiaomi.factory.mmi,org.codeaurora.snapcam",
+    "vendor.camera.aux.packagelistext=com.xiaomi.factory.CameraTestItem,com.firefightcam1,com.phonetest.hwttss",
+    "persist.vendor.camera.privapp.list=org.codeaurora.snapcam",
+    "hypercamera.disable_app_default_config=true"
+  ],
+  "property_variable": "PRODUCT_SYSTEM_PROPERTIES",
+  "bundle": {
+    "path": "vendor/xiaomi/nezha-camera-framework",
+    "ignored": true,
+    "file_count": 64,
+    "provenance_record": "reports/camera-framework-port-20260907/bundle-provenance.json (ignored)",
+    "provenance_sha256": "e6dc8dffce8fc083e3ea67f287f99d360b1fcfc5f3c4eaf1c1154bcc474182fa"
+  },
+  "result": "built, signed and flashed as delivery set v7 (nezha.c6ad60080698a987390afc40); boots enforcing with no regression; rear multi-camera capture still fails because the libcameraimpl MiStreamUsecase injection is never loaded on this AOSP framework; see docs/camera-framework-port-20260907.md",
+  "not_verified": [
+    "rear multi-camera capture (the injector loads only for CameraX extension modes)",
+    "a CameraX extension (HDR/Night/Bokeh) session, which would load libcameraimpl via CameraExtensionsProxy"
+  ]
+}
