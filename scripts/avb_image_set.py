@@ -303,6 +303,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "c010c7ce84c014d7e290a552ff311a4877d0c2cdc1488dcaecb0f9696cdc04aa", "size_bytes": 792080384},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v7-admit/admission.json", "sha256": "803e018974cf494cb6963630b1ced1115fda5caf60a923866e963ea499e3b0d1", "size_bytes": 7080},
      "build_number": "nezha.c6ad60080698a987390afc40"},
+    # Native cameraserver hook for Xiaomi session parameters
+    {"measured_image": {"sha256": "ea1b5b227e328bdfbdd935439bee2994bd2dc363af273229f8118bddd2eaf2c1", "size_bytes": 792080384},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v8-admit/admission.json", "sha256": "a863f6b1f479149958375ac5e7f6f2687f764e36cfe1f7c4b27809f784f95998", "size_bytes": 7088},
+     "build_number": "nezha.f2e3feac321f56f92d2ad7ea"},
 )
 
 
