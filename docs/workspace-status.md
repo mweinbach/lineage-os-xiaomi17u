@@ -1,11 +1,14 @@
 # Current Nezha workspace status
 
-**The Package7 UI, camera and shade successor (`f9e`) is the installed
-development baseline.** On September 6, 2026, it reached completed Android boot
-with enforcing SELinux and the intended UI resources loaded. Post-unlock
-retained-userdata access, UDFPS and shade visuals, and camera behavior remain
-unverified for this installation. See the
-[installation record](package7-f9e-install-20260906.md).
+**The phone runs the v6 userdebug diagnostic package
+(`nezha.e2b55ae5f0effd944736a6b0`) on slot A.** Flashed September 7, 2026, it
+boots enforcing with adb root and carries the QTI value-add framework flag in
+its system image, which makes the camera HAL enumerate nine devices with no
+damaged role; camera capture, post-unlock retained-userdata access, UDFPS and
+shade visuals remain unverified. The Package7 UI, camera and shade successor
+(`f9e`) stays the last installed user-variant baseline; see its
+[installation record](package7-f9e-install-20260906.md) and the
+[camera XML selection record](camera-xml-selection-20260907.md) for v6.
 The earlier [feature-successor installation](package7-feature-successor-install-20260905.md)
 and [original Package7 first boot](package7-first-boot-20260905.md) remain
 preserved evidence.
@@ -19,15 +22,15 @@ Historical pending gates in that archive describe their original checkpoints.
 | Item | Selected value |
 | --- | --- |
 | Device/platform | Xiaomi 17 Ultra `nezha`, SM8850 / `canoe`; Evolution X Android 16 QPR2 `bka` / `bp4a`, 4 KiB pages |
-| Installed build identity | `nezha.f9e30611efe01b882f9ed0cb` |
-| Installed build source evidence | [Preserved f9e source and build record](package7-ui-camera-followup-20260905.md); 574-row inventory, SHA256 `abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc` |
+| Installed build identity | `nezha.e2b55ae5f0effd944736a6b0` (userdebug diagnostic opt-in, delivery set v6); last user-variant install `nezha.f9e30611efe01b882f9ed0cb` |
+| Installed build source evidence | Sixth guest transaction receipt, 604-row inventory, SHA256 `e02f13349063f394a0e92051bd5aaa8859f20eda7b9b208697d5ab6ef8dd5054` (private reports directory); f9e: [preserved source and build record](package7-ui-camera-followup-20260905.md), 574 rows, SHA256 `abaa6c525a6b2e628c7ac48d0a4015e43d43d331b3244b8282103d02a6cd27fc` |
 | Development source selection | `nezha.bc6311b1a714e310eaf1af56`; see the [source-merge record](feature-candidates-build-merge-20260906.md), separate from the installed build |
-| Private installed bundle | `artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/` |
-| Bundle manifest SHA256 | `78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85` |
-| Reconciled target-files SHA256 | `4cd1374be9370a81b505b72eadd79fcceecd777b3fed1618e725742802f76bd8` |
+| Private installed bundle | `artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v6/` (v5 retained as rollback; f9e: `artifacts/flash/nezha/package7-ui-camera-shade-20260906-v1/`) |
+| Bundle manifest SHA256 | `324553474d6c6d06032c3369b734540b1f56cf2308c0479f713011f4b0e7ce00` (f9e: `78693f3eb040b61dd7972bf4e432ab9d8f9000e7c6d1b433373f41a1711e4c85`) |
+| Reconciled target-files SHA256 | `884a62bcdf519b723653017f2d97332f261b181e9a8aea2b2d856758870f09fb` (f9e: `4cd1374be9370a81b505b72eadd79fcceecd777b3fed1618e725742802f76bd8`) |
 | Recovery | TWRP `working76`; preserve its runtime, hardware setup, permissive recovery policy and zero-vibration defaults |
 | Normal Android policy | Enforcing source/build baseline; do not change normal Android to permissive |
-| Installation observed | Shared Super and seven A-chain writes acknowledged; normal reboot, no wipe or slot change; completed boot with Zygote/SurfaceFlinger running; post-unlock retained-userdata access not yet established |
+| Installation observed | v6: shared Super and seven A-chain writes acknowledged; normal reboot, no wipe or slot change; boot completed in 25 s as userdebug with root; nine camera devices, no damaged role, capture unconfirmed; post-unlock retained-userdata access not yet established |
 
 The [preserved build record](package7-ui-camera-followup-20260905.md) holds the
 off-device checks and the [installation record](package7-f9e-install-20260906.md)
@@ -45,7 +48,7 @@ the design goal with the prebuilt kernel kept selectable.
 `userdebug` only through an explicit invocation opt-in; `user` stays the default.
 See the [build-variant opt-in record](build-variant-opt-in-20260906.md). Three
 userdebug diagnostic packages have since been flashed to slot A of the phone and
-booted enforcing (the phone currently runs `nezha.88dd30980cd24ea68d6b701e` with
+booted enforcing (the phone now runs the sixth, `nezha.e2b55ae5f0effd944736a6b0`, after `nezha.88dd30980cd24ea68d6b701e` with
 `ro.debuggable=1`, the adbroot gate and `su`); root itself was blocked by this
 repository's permissive-su removal, so a fifth guest transaction restores
 `permissive su` under `userdebug_or_eng` only (identity
@@ -65,11 +68,11 @@ reported damaged, SELinux enforcing. Capture is not confirmed: the Xiaomi app's
 session aborted the provider once in its stream-configuration policy
 (`roleId 64`), and Aperture opened no device in its window. The guarded
 system-property fix (`NEZHA_QTI_VALUE_ADD_FRAMEWORK`) is selected by a sixth
-guest transaction (identity `nezha.e2b55ae5f0effd944736a6b0`, 604 inputs) and
-is being built as delivery set v6; the non-camera consumers of the flag remain
-unverified. No camera fix is device-admitted. The phone also carries
-`ro.boot.camera.config=0` and the volatile flag from the runtime test until its
-next reboot.
+guest transaction (identity `nezha.e2b55ae5f0effd944736a6b0`, 604 inputs), built,
+signed and flashed as delivery set v6: the flashed image reproduces the nine
+devices and zero damage verdicts from first boot, enforcing, without any runtime
+property write, while neither app captured a photo and the non-camera consumers
+of the flag remain unverified. No camera fix is device-admitted.
 User builds are unaffected by the opt-in; the user policy identity
 is unverified until the next user build.
 

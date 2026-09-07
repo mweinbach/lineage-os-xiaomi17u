@@ -9,7 +9,8 @@ logical-camera table instead of `nezha.xml`. The offline analysis below was
 then confirmed by an authorized runtime test the same day (see
 [Runtime result](#runtime-result-measured-2026-09-07)): setting the flag makes
 the CHI select `nezha.xml` and enumerate nine camera devices with no damage
-verdicts. Capture is not yet confirmed and no camera fix is device-admitted.
+verdicts, and the fix built into the v6 system image reproduces that from
+first boot. Capture is not yet confirmed and no camera fix is device-admitted.
 The sanitized [record](../research/camera-xml-selection-20260907.json) pins
 every input hash, address and measured count.
 
@@ -139,6 +140,43 @@ it is unexplained. Aperture verified lens facing through CameraX but opened no
 device within a 25 second window, logged no error, and saved nothing; its
 behaviour on the flashed build is the next check. The MIUI app also reports
 an unrelated missing `com.miui.cameraopt` native library.
+
+## Build and delivery (v6, flashed 2026-09-07)
+
+The sixth guest transaction installed the fragment, the device.mk include and
+the product selector on top of the permissive-su userdebug source (identity
+`nezha.e2b55ae5f0effd944736a6b0`, 604 verified inputs, receipt SHA256
+`e02f13349063f394…`). The incremental userdebug target-files build placed
+`ro.vendor.qti.va_aosp.support=1` at line 123 of the packaged system
+build.prop. The package was admitted (system_ext unchanged in size, new
+identity), signed with the host AVB profile, bundled as
+`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v6/` (manifest
+SHA256 `324553474d6c6d06…`, reconciled archive `884a62bcdf519b72…`)
+and written to slot A over the same shared-super route as v5: eight writes
+acknowledged, no wipe, no slot change, reboot, boot completed in
+25.4 seconds as `userdebug` with `ro.debuggable=1`, adb root working.
+The v5 bundle is retained as rollback evidence.
+
+Acceptance on the flashed build, 62 seconds after boot and without any
+runtime property write:
+
+| Check | Result |
+| --- | --- |
+| `ro.vendor.qti.va_aosp.support` | 1, from `/system/build.prop` line 123 |
+| SELinux | Enforcing |
+| `dumpsys media.camera` | 9 camera devices, 2 normal, 2 public to API1 |
+| `addDamagePyhCameraRoleIds` lines since boot | 0 |
+| Provider crashes since boot, through both app sessions | 0 (same provider pid throughout) |
+| `persist.vendor.camera.sensorffrlist` / `module.info` | both empty at that point |
+| Aperture | verified lens facing, opened no device in 12 s, no photo, no error |
+| Xiaomi camera app | connected device 5 and disconnected within the same second; no provider abort this time; the `com.miui.cameraopt` UnsatisfiedLinkError persists; no photo |
+
+Enumeration is therefore fixed from the image and survives reboot. Capture is
+still not confirmed by either app, so no camera fix is device-admitted. The
+next checks are the reasons Aperture does not open a device and why the
+Xiaomi app releases device 5 immediately (its missing `cameraopt` native
+library on this framework is the first candidate); the earlier roleId 64
+abort did not recur in this single attempt and remains unexplained.
 
 ## Acceptance checks for a fix
 

@@ -4,7 +4,7 @@
   "date": "2026-09-07",
   "device": "nezha",
   "phone_accessed": false,
-  "status": "enumeration fix measured on device with a volatile property; capture unconfirmed; v6 build in progress",
+  "status": "enumeration fix measured at runtime and reproduced from the flashed v6 system image; capture unconfirmed; not device-admitted",
   "measured_facts": {
     "current_build": {
       "identity": "nezha.cc551b14bc2cc72c2b138bb0",
@@ -106,8 +106,8 @@
     "bluetooth, IMS and connectivity unchanged after the flag (non-camera consumers)"
   ],
   "unverified": [
-    "that the flag restores capture, not only enumeration (Xiaomi app session policy aborts on roleId 64; Aperture opened no device)",
-    "reboot persistence from the system image (needs the v6 build installed)",
+    "capture through either app (Aperture opens no device; the Xiaomi app releases device 5 at once, cameraopt native library missing on this framework)",
+    "the roleId 64 buildVendorConfiguration abort seen once with the volatile flag; not reproduced in the single v6 attempt",
     "non-camera consumer behaviour with the flag on this framework",
     "stock VFE/SFE/ICP diagnostics (unrelated to this finding, still unmeasured)"
   ],
@@ -142,5 +142,57 @@
       "result": "capture not confirmed"
     },
     "evidence": "ignored evidence directory of the v5 install, camera-experiment subdirectory (control run, change run, capture checks 1-6, dumpsys with the flag on)"
+  },
+  "build_delivery_v6": {
+    "source_identity": "nezha.e2b55ae5f0effd944736a6b0",
+    "source_inventory_rows": 604,
+    "source_receipt_sha256": "e02f13349063f394a0e92051bd5aaa8859f20eda7b9b208697d5ab6ef8dd5054",
+    "transaction": "sixth guest transaction: fragment installed, device.mk include, product selector NEZHA_QTI_VALUE_ADD_FRAMEWORK := true",
+    "packaged_system_build_prop": "ro.vendor.qti.va_aosp.support=1 at line 123",
+    "delivery_set": "variant-opt-in-userdebug-20260906-v6",
+    "bundle_manifest_sha256": "324553474d6c6d06032c3369b734540b1f56cf2308c0479f713011f4b0e7ce00",
+    "reconciled_archive": {
+      "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v6/reconciled-v1/target-files.zip",
+      "sha256": "884a62bcdf519b723653017f2d97332f261b181e9a8aea2b2d856758870f09fb",
+      "size_bytes": 11132181407
+    },
+    "super_sha256": "6be472816e975d8f4c531898026eaf9aba27a5d69b92611b10743dc1dfa443da",
+    "install": {
+      "slot": "a",
+      "writes": [
+        "super",
+        "dtbo",
+        "init_boot",
+        "vendor_boot",
+        "recovery",
+        "boot",
+        "vbmeta_system",
+        "vbmeta"
+      ],
+      "all_acknowledged": true,
+      "wipe": false,
+      "slot_change": false
+    },
+    "boot": {
+      "elapsed_seconds": 25.4,
+      "transport": "device",
+      "sys.boot_completed": "1",
+      "ro.build.version.incremental": "nezha.e2b55ae5f0effd944736a6b0",
+      "ro.build.type": "userdebug",
+      "ro.debuggable": "1",
+      "init.svc.zygote": "running",
+      "init.svc.surfaceflinger": "running"
+    },
+    "acceptance": {
+      "flag": "1 from /system/build.prop",
+      "selinux": "Enforcing",
+      "camera_devices": 9,
+      "normal_camera_devices": 2,
+      "damage_lines": 0,
+      "provider_crashes": 0,
+      "aperture": "lens facing verified; no device opened in 12 s; no photo; no error",
+      "xiaomi_camera": "connected and disconnected device 5 within one second; no provider abort; cameraopt UnsatisfiedLinkError; no photo"
+    },
+    "rollback": "v5 bundle retained"
   }
 }
