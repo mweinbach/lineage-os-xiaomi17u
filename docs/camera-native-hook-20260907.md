@@ -3,9 +3,9 @@
 The missing camera integration is a native `frameworks/av` hook, and the factory
 call path is now established from its binary. A guarded source implementation
 has been installed in the existing Evolution checkout as
-`nezha.0e2658970d62a3712f0398de` for the v8 successor. At this source checkpoint,
-native compilation and every v8 phone result are **unverified**; the change is
-**not device-admitted**. The installed v7 package and its host bundle remain the
+`nezha.f2e3feac321f56f92d2ad7ea` for the v8 successor. The focused cameraserver build passed with unchanged source inputs. The v8
+target-files build is in progress; every v8 phone result remains **unverified**
+and the change is **not device-admitted**. The installed v7 package and its host bundle remain the
 predecessor and rollback evidence.
 
 This record extends the [camera-framework port](camera-framework-port-20260907.md)
@@ -148,6 +148,16 @@ installed ten changed files and emitted a 613-row inventory for
 Its predecessor is the 605-row v7 receipt. This proves source installation,
 not compilation, delivery or capture.
 
+The first cameraserver compile stopped at a missing private metadata accessor
+declaration in the diagnostic logger. Its ABI size/offset assertions passed.
+Source revision 2 adds `camera_metadata_hidden.h`, keeps all 613 inventory rows,
+and creates identity `nezha.f2e3feac321f56f92d2ad7ea` through a second transaction.
+The first receipt and failed build result remain preserved in the structured
+record. The actual build compiler is `clang-r563880c`; `clang-r547379` supplied
+the analysis tools. Cross-DSO CFI stays enabled. The inspected Bionic loader
+already handles the uninstrumented factory library, so the adapter adds no CFI
+exemption.
+
 Only the explicitly approved duplicate guest file
 `/work/validation/variant-opt-in-super-20260906-v7/super.img` was reclaimed.
 Before removal, it and both retained host copies were 9,476,081,776 bytes with
@@ -157,8 +167,13 @@ The guest path was confirmed absent afterward and free bytes increased from
 under `artifacts/`; no other source checkout or build output was removed by
 this reclaim.
 
-At this checkpoint, native compile, v8 package admission, flash, boot, slot,
-SELinux state and camera results are all unverified. Device admission requires
+The second focused cameraserver build returned exit 0 at native run
+`20260907T205619-userdebug`, with identical 613-row source inventories before
+and after. Its installed cameraserver is 4,026,840 bytes, SHA256
+`a47fc0682722728b1433790a9dbe70d537d16b43979b99d84e0e263c86a5841f`. This is compile and artifact evidence.
+
+At this checkpoint, v8 package admission, flash, boot, slot, SELinux state and
+camera results are all unverified. Device admission requires
 an enforcing slot A boot, Xiaomi session tags present at rear configuration,
 no missing-use-case or virtual-super-graph error, successful camera 0
 configuration, and a saved JPEG from both Aperture and Xiaomi Camera. Front

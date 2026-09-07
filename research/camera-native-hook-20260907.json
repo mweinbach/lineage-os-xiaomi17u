@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_id": "nezha-camera-native-hook-20260907",
   "date": "2026-09-07",
-  "status": "source installed; native compilation unverified; not device-admitted",
+  "status": "native cameraserver compiled; v8 target-files build in progress; not device-admitted",
   "verification_scope": "Offline factory binary analysis, authored source review and verified guest source transaction. No v8 device result is recorded at this stage.",
   "predecessor": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v7",
@@ -276,7 +276,7 @@
       "define": "NEZHA_CAMERA_SESSION_INJECT"
     },
     "patch": "patches/evolution/0029-nezha-camera-session-inject.patch",
-    "patch_sha256": "a0ef9b389a46a4e26323d0ffb3506102be5fd0fee570306e02b775736e282aee",
+    "patch_sha256": "2b35f7e6b1976b523876fb62c1776b381588165a72978d0b8b495b7489681de3",
     "upstream": {
       "repository": "https://github.com/Evolution-X/frameworks_av",
       "branch": "bka",
@@ -341,18 +341,26 @@
       "optional_cammsger_present": false,
       "optional_cammsger_presence_sha256": "0cfa3fcf51ab9e2d448c2b46e43172483de57f1bb42e02c802a3865beaae9edc",
       "optional_path_assessment": "The live flag is true and libcammsger.so is absent. Disassembly shows request notifications handle a null optional instance; this is not a core session-tag prerequisite. Runtime result remains unverified."
+    },
+    "cfi_review": {
+      "private_record": "reports/camera-native-hook-20260907/library-analysis/cfi-review.json",
+      "sha256": "beb132f232edd5dfd46b4bab8a83d520d5755806d4cb7550013d2efce1306a60",
+      "libcameraimpl_exports_cfi_check": false,
+      "adapter_cfi_changed": false,
+      "assessment": "Current Bionic treats this uninstrumented DSO as unchecked; no adapter CFI exemption is required."
     }
   },
   "source_stage": {
-    "identity": "nezha.0e2658970d62a3712f0398de",
+    "identity": "nezha.f2e3feac321f56f92d2ad7ea",
     "inventory_rows": 613,
-    "changed_files": 10,
-    "transaction": "/work/validation/camera-native-hook-source-20260907-v1",
-    "private_receipt": "reports/camera-native-hook-20260907/source/source-installed.json",
-    "receipt_sha256": "87eb9268c0caaae04a94f4d9fcbbab06b14969d2a7715a3a921330c4a850ee85",
-    "predecessor_rows": 605,
-    "predecessor_receipt_sha256": "4d5cb9104ba5974217afb4f871892054d8257b96acb0a0969edf50c6b6fe238f",
-    "source_blobs_provenance_sha256": "e6dc8dffce8fc083e3ea67f287f99d360b1fcfc5f3c4eaf1c1154bcc474182fa"
+    "changed_files": 1,
+    "transaction": "/work/validation/camera-native-hook-source-20260907-v2",
+    "private_receipt": "reports/camera-native-hook-20260907/source-revision-2/source-installed.json",
+    "receipt_sha256": "254b42243742a8b3945fb064156a84a2b0d1e19db1990403f6da4d094fa1f651",
+    "predecessor_rows": 613,
+    "predecessor_receipt_sha256": "87eb9268c0caaae04a94f4d9fcbbab06b14969d2a7715a3a921330c4a850ee85",
+    "source_blobs_provenance_sha256": "e6dc8dffce8fc083e3ea67f287f99d360b1fcfc5f3c4eaf1c1154bcc474182fa",
+    "revision_reason": "Declare the private metadata vendor-ID accessor used by diagnostic tag logging."
   },
   "authorized_space_reclaim": {
     "deleted_guest_file": "/work/validation/variant-opt-in-super-20260906-v7/super.img",
@@ -376,7 +384,7 @@
     "scope": "Only the explicitly authorized duplicate v7 guest super.img was removed after both retained host copies hashed identically."
   },
   "verification": {
-    "native_compile": "unverified",
+    "native_compile": "passed; ABI assertions and cross-DSO CFI enabled",
     "v8_package": "unverified",
     "v8_flash": "unverified",
     "v8_boot": "unverified",
@@ -394,5 +402,44 @@
     "Confirm session tags present, no missing MiStreamUsecase error, no VirtualSuperGraphDesc: 4 and camera 0 configureStreams success.",
     "Save JPEGs from both Aperture and Xiaomi Camera, confirm front and single-sensor operation, and check provider crash buffer.",
     "If a further required runtime component is identified, preserve exact evidence and report it before guessing."
+  ],
+  "source_history": [
+    {
+      "identity": "nezha.0e2658970d62a3712f0398de",
+      "inventory_rows": 613,
+      "changed_files": 10,
+      "transaction": "/work/validation/camera-native-hook-source-20260907-v1",
+      "private_receipt": "reports/camera-native-hook-20260907/source/source-installed.json",
+      "receipt_sha256": "87eb9268c0caaae04a94f4d9fcbbab06b14969d2a7715a3a921330c4a850ee85",
+      "predecessor_rows": 605,
+      "predecessor_receipt_sha256": "4d5cb9104ba5974217afb4f871892054d8257b96acb0a0969edf50c6b6fe238f",
+      "source_blobs_provenance_sha256": "e6dc8dffce8fc083e3ea67f287f99d360b1fcfc5f3c4eaf1c1154bcc474182fa"
+    }
+  ],
+  "build_attempts": [
+    {
+      "run": "/work/validation/variant-opt-in-builds-20260906/20260907T204045-userdebug",
+      "source_identity": "nezha.0e2658970d62a3712f0398de",
+      "goal": "cameraserver",
+      "exit_code": 1,
+      "finding": "missing camera_metadata_hidden.h declaration for get_camera_metadata_vendor_id in diagnostic logger; corrected by source revision 2",
+      "abi_assertions": "passed compilation",
+      "compiler": "prebuilts/clang/host/linux-x86/clang-r563880c/bin/clang++",
+      "cfi": "cross-DSO CFI remains enabled"
+    },
+    {
+      "run": "/work/validation/variant-opt-in-builds-20260906/20260907T205619-userdebug",
+      "source_identity": "nezha.f2e3feac321f56f92d2ad7ea",
+      "goal": "cameraserver",
+      "exit_code": 0,
+      "source_before_after_identical": true,
+      "inventory_rows": 613,
+      "artifact": {
+        "path": "/work/out/nezha-feature-fixes-20260905-v1/target/product/nezha/system/bin/cameraserver",
+        "size_bytes": 4026840,
+        "sha256": "a47fc0682722728b1433790a9dbe70d537d16b43979b99d84e0e263c86a5841f"
+      },
+      "private_result_sha256": "ec3ec132ad758cfec0aa0729e748a5b0733ee9bfa019936714ea93ef111c3b6a"
+    }
   ]
 }

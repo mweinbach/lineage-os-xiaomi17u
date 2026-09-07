@@ -23,6 +23,7 @@
 
 #include <camera/CameraMetadata.h>
 #include <camera/VendorTagDescriptor.h>
+#include <camera_metadata_hidden.h>
 #include <log/log.h>
 #include <utils/String16.h>
 #include <utils/String8.h>

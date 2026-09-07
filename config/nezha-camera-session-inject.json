@@ -18,7 +18,7 @@
   "branch": "bka",
   "revision": "dfe1a704f074bbbc3f60b740a9e5ec6b786228f3",
   "patch": "patches/evolution/0029-nezha-camera-session-inject.patch",
-  "patch_sha256": "a0ef9b389a46a4e26323d0ffb3506102be5fd0fee570306e02b775736e282aee",
+  "patch_sha256": "2b35f7e6b1976b523876fb62c1776b381588165a72978d0b8b495b7489681de3",
   "files": {
     "services/camera/libcameraservice/Android.bp": {
       "before_sha256": "3c971f599028d520c0caa790a1b0d88a4cf4cf305f4698958aab2d1a94329bc2",
@@ -52,14 +52,14 @@
     },
     "services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp": {
       "before_sha256": null,
-      "after_sha256": "06f6c7f85e49538d57414cb78e72b239155596b33a2dd07f2d2b1fce72255dc7",
-      "after_bytes": 12682
+      "after_sha256": "d0eb41313213dbb7cd11aa90d9b56b30458000d3af7742456d775c9afc496175",
+      "after_bytes": 12718
     }
   },
   "authored_templates": {
     "templates/camera-session-inject/NezhaCameraSessionHook.cpp": {
-      "sha256": "06f6c7f85e49538d57414cb78e72b239155596b33a2dd07f2d2b1fce72255dc7",
-      "size_bytes": 12682
+      "sha256": "d0eb41313213dbb7cd11aa90d9b56b30458000d3af7742456d775c9afc496175",
+      "size_bytes": 12718
     },
     "templates/camera-session-inject/NezhaCameraSessionHook.h": {
       "sha256": "44dc3db8fea759fb060b0bcdd4b25c43791f140aaf669c0a2af231baa9dddbde",

@@ -289,7 +289,7 @@ diff --git a/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp b
 new file mode 100644
 --- /dev/null
 +++ b/services/camera/libcameraservice/utils/NezhaCameraSessionHook.cpp
-@@ -0,0 +1,273 @@
+@@ -0,0 +1,274 @@
 +/*
 + * Copyright (C) 2026 The LineageOS Project
 + *
@@ -315,6 +315,7 @@ new file mode 100644
 +
 +#include <camera/CameraMetadata.h>
 +#include <camera/VendorTagDescriptor.h>
++#include <camera_metadata_hidden.h>
 +#include <log/log.h>
 +#include <utils/String16.h>
 +#include <utils/String8.h>
