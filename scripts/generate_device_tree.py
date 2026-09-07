@@ -33,12 +33,37 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVICE_PATH = PurePosixPath("device/xiaomi/nezha")
+CAMERAOPT_SERVICE_FRAGMENT = DEVICE_PATH / "cameraopt-service.mk"
+CAMERAOPT_SERVICE_FRAGMENT_SHA256 = "8b2640d0048c4ebe59a677481a857de6f42d6e0cf428e68499426e8e908f1bf1"
 TEMPLATE_FILES = (
     "AndroidProducts.mk", "Android.bp", "BoardConfig.mk", "device.mk",
     "lineage_nezha.mk", "README.md", "recovery-prebuilt.mk", "init-helper-capability.mk",
     "display-panel.mk",
     "refresh-policy.mk",
     "refresh-overlay/frameworks/base/core/res/res/values/config.xml",
+    "qti-value-add-framework.mk",
+    "camera-framework.mk",
+    "camera-aux-packages.mk",
+    "camera-session-inject.mk",
+    "cameraopt-native-compat.mk",
+    "camera-jpegr-default.mk",
+    "camera-platform-signed.mk",
+    "cameraopt-service.mk",
+    "cameraopt-service/Android.bp",
+    "cameraopt-service/README.md",
+    "cameraopt-service/compile-stubs/com/miui/cameraopt/ICameraOptManager.java",
+    "cameraopt-service/compile-stubs/com/miui/cameraopt/verify/Verifier.java",
+    "cameraopt-service/overlay/frameworks/base/core/res/res/values/config.xml",
+    "cameraopt-service/process-policy/src/com/android/server/am/NezhaCameraProcessPolicy.java",
+    "cameraopt-service/sepolicy/private/cameraserver.te",
+    "cameraopt-service/sepolicy/private/property_contexts",
+    "cameraopt-service/sepolicy/private/service_contexts",
+    "cameraopt-service/sepolicy/private/system_server.te",
+    "cameraopt-service/sepolicy/public/property.te",
+    "cameraopt-service/sepolicy/public/service.te",
+    "cameraopt-service/src/com/android/server/cameraopt/CameraStatusSampler.java",
+    "cameraopt-service/src/com/android/server/cameraopt/NezhaCameraOptService.java",
+    "cameraopt-service/verify_artifacts.py",
     "camera-task-profiles.mk",
     "camera-task-profiles/task_profiles_cameraopt.json",
     "camera-task-profiles/verify.py",
@@ -4197,8 +4222,16 @@ def validate(output, *, purpose="configuration"):
                      "A/B partition selection may only use the reviewed generated product")
             _require(name == board_name or not re.search(rb"\b" + re.escape(group_variable) + rb"\b", raw),
                      "dynamic group partition selection may only use the reviewed generated board")
-            _require(name == board_name or (not re.search(rb"\bSYSTEM_EXT_(?:PUBLIC|PRIVATE)_SEPOLICY_DIRS\b", raw) and
-                                           not any(path.encode("ascii") in raw for path in OEM_PROPERTY_WIRING.values())),
+            # This independently guarded fragment owns only its CameraOpt
+            # policy. Pin its exact contents so a resealed candidate cannot
+            # use the path exception to select unrelated system policy.
+            cameraopt_policy_fragment = (
+                name == CAMERAOPT_SERVICE_FRAGMENT.as_posix() and
+                hashlib.sha256(raw).hexdigest() == CAMERAOPT_SERVICE_FRAGMENT_SHA256)
+            _require(name == board_name or (
+                         (cameraopt_policy_fragment or
+                          not re.search(rb"\bSYSTEM_EXT_(?:PUBLIC|PRIVATE)_SEPOLICY_DIRS\b", raw)) and
+                         not any(path.encode("ascii") in raw for path in OEM_PROPERTY_WIRING.values())),
                      "OEM property source selection may only use the reviewed generated board")
     if "init_helper_capability" in plan:
         wiring = "\n" + "\n".join(_init_helper_wiring_lines()) + "\n"

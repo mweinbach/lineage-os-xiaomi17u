@@ -30,15 +30,26 @@ include $(NEZHA_DEVICE_PATH)/qti-value-add-framework.mk
 
 # Ported HyperOS camera framework (native libs, configs, app, properties).
 include $(NEZHA_DEVICE_PATH)/camera-framework.mk
+include $(NEZHA_DEVICE_PATH)/camera-aux-packages.mk
 
 # Native camera session tags for the retained HyperOS HAL; explicit opt-in.
 include $(NEZHA_DEVICE_PATH)/camera-session-inject.mk
+include $(NEZHA_DEVICE_PATH)/cameraopt-native-compat.mk
 
-# The opt-in successor uses the original signed factory Camera and a narrow
-# same-partition privilege policy. A selected but missing packet must fail.
-ifeq ($(NEZHA_XIAOMI_CAMERA),true)
+# Seed the factory JPEG_R enable rule before the first camera session.
+include $(NEZHA_DEVICE_PATH)/camera-jpegr-default.mk
+
+# Keep the original presigned Camera and the platform-signed candidate mutually
+# exclusive. Both retain exact verified factory input and strict library checks.
+include $(NEZHA_DEVICE_PATH)/camera-platform-signed.mk
+ifeq ($(strip $(NEZHA_XIAOMI_CAMERA)),true)
+ifneq ($(strip $(NEZHA_CAMERA_PLATFORM_SIGNED)),true)
 $(call inherit-product, vendor/xiaomi/nezha-camera/camera-product.mk)
 endif
+endif
+
+# Start the authored CameraOpt bridge with the unchanged factory verifier.
+include $(NEZHA_DEVICE_PATH)/cameraopt-service.mk
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/generic_ramdisk.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch.mk)

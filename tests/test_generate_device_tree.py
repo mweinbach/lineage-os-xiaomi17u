@@ -231,6 +231,55 @@ class GenerateDeviceTreeTests(unittest.TestCase):
             generator.generate(output, **inputs)
         self.assertFalse(output.exists())
 
+    def test_generation_preserves_reviewed_cameraopt_policy_fragment(self):
+        inputs = self.generation_inputs()
+        name = (generator.DEVICE_PATH / "cameraopt-service.mk").as_posix()
+        expected = (ROOT / name).read_bytes()
+        for variant in generator.BUILD_VARIANTS:
+            with self.subTest(variant=variant):
+                output = self.root / "artifacts" / ("cameraopt-" + variant)
+                plan = generator.generate(output, variant=variant, **inputs)
+                self.assertEqual((output / name).read_bytes(), expected)
+                entry = next(row for row in plan["files"] if row["path"] == name)
+                self.assertEqual(entry, {"path": name, "size_bytes": len(expected),
+                                         "sha256": hashlib.sha256(expected).hexdigest()})
+                self.assertEqual(generator.validate(output), plan)
+                self.assertEqual(plan["admission"], self.plan(variant=variant)["admission"])
+                for purpose in ("target-files", "flash"):
+                    with self.assertRaisesRegex(generator.CandidateError, "admission refused"):
+                        generator.validate(output, purpose=purpose)
+
+    def test_cameraopt_policy_fragment_rejects_changed_sources_after_candidate_reseal(self):
+        inputs = self.generation_inputs()
+        output = self.root / "artifacts/cameraopt-policy-reseal"
+        plan = generator.generate(output, **inputs)
+        name = (generator.DEVICE_PATH / "cameraopt-service.mk").as_posix()
+        original = (output / name).read_bytes()
+        for addition in (
+            b"SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/xiaomi/nezha/unreviewed/public\n",
+            b"SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/xiaomi/nezha/unreviewed/private\n",
+            b"SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(NEZHA_DEVICE_PATH)/sepolicy/system_ext/oem_properties/private\n",
+        ):
+            with self.subTest(addition=addition):
+                self.reseal_candidate_file(output, plan, name, original + addition)
+                with self.assertRaisesRegex(generator.CandidateError, "property source selection may only"):
+                    generator.validate(output)
+                self.reseal_candidate_file(output, plan, name, original)
+                self.assertEqual(generator.validate(output), plan)
+
+    def test_reviewed_cameraopt_policy_cannot_be_relocated_to_another_fragment(self):
+        inputs = self.generation_inputs()
+        output = self.root / "artifacts/cameraopt-policy-relocated"
+        plan = generator.generate(output, **inputs)
+        original_fragment = (output / generator.DEVICE_PATH / "cameraopt-service.mk").read_bytes()
+        name = (generator.DEVICE_PATH / "device.mk").as_posix()
+        original = (output / name).read_bytes()
+        self.reseal_candidate_file(output, plan, name, original_fragment)
+        with self.assertRaisesRegex(generator.CandidateError, "property source selection may only"):
+            generator.validate(output)
+        self.reseal_candidate_file(output, plan, name, original)
+        self.assertEqual(generator.validate(output), plan)
+
     def test_display_overlays_are_packaged_hashed_and_tamper_checked(self):
         inputs = self.recovery_template_inputs()
         overlays = (
