@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-aux-packages-v1",
+  "selector": "NEZHA_CAMERA_AUX_PACKAGES",
+  "default_enabled": false,
+  "requires_selector": "NEZHA_CAMERA_FRAMEWORK",
+  "fragment": "device/xiaomi/nezha/camera-aux-packages.mk",
+  "fragment_sha256": "cb9c3b9ac4222b0ef0be21cb0ddc6556ab585e2de1154f057635a858abae1aeb",
+  "predecessor_fragment": "device/xiaomi/nezha/camera-framework.mk",
+  "predecessor_fragment_sha256": "3d16e3a8367af00a5292d2f07cd6d65771f76ee1bf544f5ce3bcd15b9119e34d",
+  "property": "vendor.camera.aux.packagelist",
+  "selected_packages": [
+    "com.android.camera",
+    "org.lineageos.aperture"
+  ],
+  "replaces_factory_diagnostic_allowlist": true,
+  "purpose": "Make auxiliary camera IDs visible through AOSP CameraManager to the bundled Xiaomi and Aperture apps; keep CAMERA permission and provider checks intact.",
+  "evidence": "docs/camera-native-hook-20260907.md",
+  "verification": {
+    "make_selection": "verified offline",
+    "source_installed": false,
+    "successor_build": "unverified",
+    "device_admission": "not device-admitted",
+    "separate_v8_runtime_result": "A boot-only allowlist test with com.android.camera exposed all nine IDs and enabled camera5 configuration; the prior allowlist was restored. The combined build list and Aperture auxiliary captures remain unverified."
+  }
+}
