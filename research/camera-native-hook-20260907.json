@@ -2,8 +2,8 @@
   "schema_version": 1,
   "record_id": "nezha-camera-native-hook-20260907",
   "date": "2026-09-07",
-  "status": "native cameraserver compiled; v8 target-files build in progress; not device-admitted",
-  "verification_scope": "Offline factory binary analysis, authored source review and verified guest source transaction. No v8 device result is recorded at this stage.",
+  "status": "v8 flashed and booted enforcing on slot A; native hook and Aperture ordinary-JPEG rear/front verified; Xiaomi capture and isolated rear lenses unverified; not device-admitted",
+  "verification_scope": "Factory native binary analysis, authored source, native compilation, signed eight-image delivery, authorized slot A installation and bounded on-device capture tests. Full camera acceptance did not pass.",
   "predecessor": {
     "delivery_set": "variant-opt-in-userdebug-20260906-v7",
     "source_identity": "nezha.c6ad60080698a987390afc40",
@@ -310,7 +310,25 @@
     "lifecycle": "Register client and customization, initialize device metadata, update defaults, update filtered session parameters, execute scene identification after stream configuration is populated, configure HAL, unlock and detach scene identification.",
     "notify_metadata": "Original per-entry it.settings, matching factory, with camera ID, UID, calling PID, request ID, streaming state and package in measured argument order.",
     "normal_android_selinux_changed": false,
-    "permission_checks_changed": false
+    "permission_checks_changed": false,
+    "omitted_factory_callback": {
+      "method": "CameraImpl::notifyConfigStream",
+      "factory_caller": "CameraStub::CameraConfigStream constructor/destructor",
+      "factory_calls": [
+        "0x2d4020",
+        "0x2d4544"
+      ],
+      "implementation_vtable_offset": "0x2c8",
+      "library_entry": "0x71818",
+      "optional_forwarding": "CameraIntentAwareSingleton instance is checked for null, then invoked through vtable +0x20 at 0x71890",
+      "cameraopt_branch": "Event 1, status 0 and stream format 0x22 select resetTimeStampInfo(streamId); CameraOpt wrapper returns when its optional handle/function pointer is null",
+      "relationship_to_app_compatibility_gate": "unproven",
+      "required_for_measured_ordinary_jpeg": "No: rear/front Aperture captures passed without this callback",
+      "private_evidence": [
+        "reports/camera-native-hook-20260907/factory-analysis/cameraserver.factory.annotated.dis",
+        "reports/camera-native-hook-20260907/library-analysis/libcameraimpl.annotated.txt"
+      ]
+    }
   },
   "static_dependency_audit": {
     "private_record": "reports/camera-native-hook-20260907/library-analysis/import-closure.json",
@@ -318,7 +336,7 @@
     "libraries": 92,
     "missing_libraries": 0,
     "unresolved_global_imports": 0,
-    "core_path_extra_service": "No additional MIUI service dependency found in the examined session-update/scene-identification code. Device execution remains unverified.",
+    "core_path_extra_service": "No additional MIUI service dependency found in the examined native session path. Runtime loading, tags and ordinary-JPEG capture succeeded.",
     "optional_notification_path": {
       "gate": "persist.sys.miui.camera.cameramind.supported",
       "default": false,
@@ -327,9 +345,7 @@
       "failure_behavior": "Logged null/no-op"
     },
     "limits": [
-      "Static availability does not prove cameraserver linker namespace reachability.",
-      "Symbol resolution and size/offset pins do not prove all runtime C++ ABI behavior.",
-      "SELinux access, runtime loading and capture remain unverified."
+      "Static symbols and ABI pins do not prove every library method. The selected runtime path loaded and captured ordinary JPEGs on v8; broader feature coverage remains unverified."
     ],
     "v7_namespace_observation": {
       "installed_build": "nezha.c6ad60080698a987390afc40",
@@ -385,15 +401,15 @@
   },
   "verification": {
     "native_compile": "passed; ABI assertions and cross-DSO CFI enabled",
-    "v8_package": "unverified",
-    "v8_flash": "unverified",
-    "v8_boot": "unverified",
-    "v8_selinux": "unverified",
-    "v8_slot": "unverified",
-    "rear_aperture_jpeg": "unverified",
-    "rear_xiaomi_jpeg": "unverified",
-    "single_sensor_and_front": "unverified",
-    "provider_crash_free": "unverified",
+    "v8_package": "passed target-files build, host transfer, admission, signing, reconciliation and eight-payload bundle verification",
+    "v8_flash": "passed: shared Super and seven slot A image writes acknowledged; no wipe or slot change",
+    "v8_boot": "passed: expected v8 identity and boot_completed=1 after 25.5 seconds",
+    "v8_selinux": "Enforcing before and after acceptance",
+    "v8_slot": "A before and after acceptance",
+    "rear_aperture_jpeg": "passed ordinary JPEG: camera 0, 4096x3072 decoded image; Ultra HDR failed",
+    "rear_xiaomi_jpeg": "unverified: no JPEG saved; app closes through explicit version/device compatibility dialog after camera 5 configures under temporary aux exposure",
+    "single_sensor_and_front": "front camera 1 ordinary-JPEG capture passed; direct isolated rear cameras 2/3/4 unverified",
+    "provider_crash_free": "no provider Fatal signal observed in retained crash buffers and test logs; provider and cameraserver PIDs stable",
     "device_admission": "not device-admitted"
   },
   "acceptance_required": [
@@ -440,6 +456,430 @@
         "sha256": "a47fc0682722728b1433790a9dbe70d537d16b43979b99d84e0e263c86a5841f"
       },
       "private_result_sha256": "ec3ec132ad758cfec0aa0729e748a5b0733ee9bfa019936714ea93ef111c3b6a"
+    },
+    {
+      "run": "/work/validation/variant-opt-in-builds-20260906/20260907T210017-userdebug",
+      "source_identity": "nezha.f2e3feac321f56f92d2ad7ea",
+      "goal": "target-files-package",
+      "exit_code": 0,
+      "source_before_after_identical": true,
+      "inventory_rows": 613
     }
-  ]
+  ],
+  "off_device_delivery": {
+    "target_files": {
+      "path": "/work/out/nezha-feature-fixes-20260905-v1/target/product/nezha/obj/PACKAGING/target_files_intermediates/lineage_nezha-target_files.zip",
+      "sha256": "99a68c4c723edfded894d77728ff1efe81398117494b7abf6d2cff8c86e47b0e",
+      "size_bytes": 11321887304
+    },
+    "super": {
+      "path": "/work/validation/variant-opt-in-super-20260906-v8/super.img",
+      "sha256": "b25f9b9fd3094ae270de7b52b8d2d254a81161cc53f8e4d8ef9dd3b9e49daf76",
+      "size_bytes": 9476085872
+    },
+    "package_receipt": {
+      "path": "reports/variant-opt-in-20260906/v8-package-receipt.json",
+      "size_bytes": 1056,
+      "sha256": "bc0efcee9eda3a04f63e96aa524c54192198693a162b661b93eb6721ffdcfcdb"
+    },
+    "transfer_receipt": {
+      "path": "reports/variant-opt-in-20260906/v8-transfer.json",
+      "size_bytes": 1399,
+      "sha256": "ac672a229c1f0014a2c1ca924e66eb7a753872cc396a6a207cb0470ed274e52a"
+    },
+    "admission_receipt": {
+      "path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v8-admit/admission.json",
+      "size_bytes": 7088,
+      "sha256": "a863f6b1f479149958375ac5e7f6f2687f764e36cfe1f7c4b27809f784f95998"
+    },
+    "system_ext": {
+      "sha256": "ea1b5b227e328bdfbdd935439bee2994bd2dc363af273229f8118bddd2eaf2c1",
+      "size_bytes": 792080384
+    },
+    "retained_manifest": {
+      "path": "reports/variant-opt-in-20260906/retained-input-manifest-userdebug-v8.json",
+      "size_bytes": 1246,
+      "sha256": "783255f0d902158fa08702fb496066f794275f709c58b60f2aff8d1d75aed24b"
+    },
+    "cameraserver_matches_component": true,
+    "signing": "signed_and_verified; reconciled; published inventory complete",
+    "bundle": "eight payloads assembled and independently verified",
+    "signing_sequence_receipt": {
+      "path": "reports/variant-opt-in-20260906/v8-signing.json",
+      "size_bytes": 1212,
+      "sha256": "c5d8ad2869bd56a9a229ecde90f6de217ab428c6451382f1420cc4813c7fee2d"
+    },
+    "signed_target_files": {
+      "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v8/reconciled-v1/target-files.zip",
+      "sha256": "f34b286df2748e4b8f5958c6b905d2d4a3e396cf9b16ede31d34a5a3768e8da1",
+      "size_bytes": 11144211941
+    },
+    "signing_receipt": {
+      "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/avb/nezha/variant-opt-in-userdebug-20260906-v8/signed-v1/signing-receipt.json",
+      "sha256": "409f958385fac3e9bedc928fafa92e00ba55f0c5c7ca73de42eabfb38cf0931d",
+      "size_bytes": 88486
+    },
+    "bundle_manifest": {
+      "path": "/Users/mweinbach/Projects/lineage-os-xiaomi17u/artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v8/manifest.json",
+      "sha256": "2f0d1a033596a3649a674ae6a0359324c48cd3ec3b0234ec0947bf76f43f9631",
+      "size_bytes": 7522
+    },
+    "bundle_receipt": {
+      "path": "reports/variant-opt-in-20260906/v8-bundle.json",
+      "size_bytes": 405,
+      "sha256": "0dc821ebc32a5c5ef90e2a1280a43b862ed08ae6ed35396b2c1d7526f3934601"
+    }
+  },
+  "tooling_verification": {
+    "test_current": {
+      "tests": 939,
+      "seconds": 29.18,
+      "result": "passed"
+    },
+    "affected_tests": [
+      "test_camera_session_inject: 6 passed",
+      "test_qti_value_add_framework: 6 passed"
+    ],
+    "full_make_test": {
+      "tests": 4809,
+      "seconds": 180.694,
+      "result": "passed",
+      "shell_checks": "passed",
+      "private_log": "reports/camera-native-hook-20260907/test-full.log",
+      "sha256": "871e9a422b83a2b71b0eaada5835fbcbe52604a3a5a8f4d105a7b0e4fa19f286"
+    },
+    "scope": "Offline tooling and evidence contracts; no camera-device conclusion",
+    "post_install_make_test": {
+      "tests": 4809,
+      "seconds": 177.51,
+      "result": "passed",
+      "exit_code": 0,
+      "shell_checks": "passed",
+      "private_log": "reports/camera-native-hook-20260907/test-post-install.log",
+      "sha256": "b625526fe40fdc65346789888dd9ccb3bad93f1f0f4b352df3a708cd3d02a217"
+    }
+  },
+  "on_device": {
+    "delivery_set": "v8",
+    "build_identity": "nezha.f2e3feac321f56f92d2ad7ea",
+    "variant": "userdebug",
+    "slot_suffix": "_a",
+    "selinux": "Enforcing",
+    "adb_root": true,
+    "boot_completed_seconds": 25.5,
+    "flash": {
+      "writes_acknowledged": [
+        "super",
+        "dtbo_a",
+        "init_boot_a",
+        "vendor_boot_a",
+        "recovery_a",
+        "boot_a",
+        "vbmeta_system_a",
+        "vbmeta_a"
+      ],
+      "wipe_performed": false,
+      "slot_changed": false,
+      "verification_disabled": false,
+      "execution": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/execution.json",
+        "size_bytes": 3762,
+        "sha256": "29d7c5ad8abe6cb62dbcc7331054276ce790bd1d6f84c92784c470143e198a88"
+      },
+      "reboot": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/reboot-android.json",
+        "size_bytes": 271,
+        "sha256": "fbe6640a4716ad80874dd958cbb1fb312ce2cb1e658783221ea94c0c3cb8e2cb"
+      },
+      "boot": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/boot-completed.json",
+        "size_bytes": 280,
+        "sha256": "145e28ecd2886e8a760afc53d66558ffc619770dc6a1cf3a4ddd33711b3075b1"
+      },
+      "root": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/root-check.json",
+        "size_bytes": 316,
+        "sha256": "0af37a9ee5f4df5c6a073f8f767226ca96a08eab4b4d588841b5fe80d0d8f196"
+      }
+    },
+    "initial_snapshot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/first-boot/snapshot.json",
+      "size_bytes": 14257,
+      "sha256": "9d1019101f909f61c9b73b0d7e663ff71773be9e1a4706812fff60d6f8af4af4"
+    },
+    "final_snapshot": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/final-cleanup/snapshot.json",
+      "size_bytes": 17458,
+      "sha256": "a93a30cd561c2d9112158edd36a691ead13efdc561cce2c07a553cafa4cffec1"
+    },
+    "final_binary_identities": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/final-binary-identities.json",
+      "size_bytes": 877,
+      "sha256": "e973e4447c53fc73d1f6061d15aeb3a253e48e0a981174b03b2b4f235260af21"
+    },
+    "enumeration": {
+      "provider_devices": 9,
+      "normal_api_devices": 2,
+      "damaged_roles_observed": 0
+    },
+    "native_hook": {
+      "loaded": true,
+      "cameraserver_pid": 2751,
+      "provider_pid": 2051,
+      "session_tags": [
+        "com.xiaomi.sessionparams.MiStreamUsecase",
+        "com.xiaomi.sessionparams.clientName",
+        "com.xiaomi.sessionparams.activityName"
+      ],
+      "mi_stream_use_case": 2,
+      "aperture_tag_type_counts": {
+        "MiStreamUsecase": "int32[1]",
+        "clientName": "byte[23]",
+        "activityName": "byte[5]"
+      },
+      "provider_reads_usecase": "0x2",
+      "loader_noop_observed": false,
+      "required_additional_core_service_proven": false,
+      "maps_observations": {
+        "present_in_cameraserver": 8,
+        "complete_snapshots": 9,
+        "first_boot_not_loaded_until_first_client": true,
+        "provider_contains_library": false
+      }
+    },
+    "aperture": {
+      "ordinary_jpeg_setting": "Save images as JPEG Ultra HDR disabled using visible app settings",
+      "rear": {
+        "camera_id": "0",
+        "logical_camera": true,
+        "configure_status": 0,
+        "sensor_start": "nezha_semco_ovx10500u_wide_i",
+        "graph_requests_initialized": true,
+        "jpeg": {
+          "path": "/sdcard/DCIM/Camera/2026-09-07-17-48-33-325.jpg",
+          "size_bytes": 1308821,
+          "sha256": "f20185958455d1f482ec154581751583c239cd37bb5b84e38b7c2bea9c761dfb",
+          "format": "JPEG",
+          "dimensions": [
+            4096,
+            3072
+          ],
+          "decoded": true,
+          "private_verification": {
+            "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/captured-jpegs/aperture-rear.json",
+            "size_bytes": 618,
+            "sha256": "17ec97d480c144ad498fecfe585c2b98634d2799804208921cd1d821900f299b"
+          }
+        }
+      },
+      "front": {
+        "camera_id": "1",
+        "configure_status": 0,
+        "sensor_start": "nezha_sunny_ov50m_front_i",
+        "jpeg": {
+          "path": "/sdcard/DCIM/Camera/2026-09-07-17-50-16-070.jpg",
+          "size_bytes": 5397082,
+          "sha256": "287021450c86e70f85249028af0340e1960b24dba9725da9b63c1d126bb9050b",
+          "format": "JPEG",
+          "dimensions": [
+            4096,
+            3072
+          ],
+          "decoded": true,
+          "private_verification": {
+            "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/captured-jpegs/aperture-front.json",
+            "size_bytes": 619,
+            "sha256": "02d7fca4a8542ca9a02eec2187885ad4b10d098b395ea13063e96b0ef78a67c5"
+          }
+        }
+      },
+      "ultra_hdr": {
+        "status": "failed graph configuration for rear and front despite all session tags present",
+        "dataspace": "JPEG_R",
+        "virtual_super_graph_error": 4,
+        "vendor_configure_status": -19,
+        "framework_configure_status": -38,
+        "comparison_limit": "Ordinary-JPEG mode also changes standard stream use cases from 0/0 to preview 1/still 2; dataspace alone was not isolated.",
+        "diagnosis": {
+          "path": "reports/camera-native-hook-20260907/runtime-diagnosis.json",
+          "size_bytes": 12284,
+          "sha256": "848fb97253f0f78737e24e81004e217f9042b118021a878523dda59fd3004f4d"
+        }
+      },
+      "invalid_control": "aperture-rear-jpeg.log remained JPEG_R because an unrelated dialog interrupted the settings tap; the confirmed ordinary-JPEG run is aperture-rear-jpeg-confirmed.log"
+    },
+    "xiaomi": {
+      "jpeg_saved": false,
+      "original_visibility": [
+        "0",
+        "1"
+      ],
+      "original_aux_property": "com.xiaomi.runin,com.xiaomi.cameratest,com.xiaomi.factory.mmi,org.codeaurora.snapcam",
+      "temporary_aux_property": "com.android.camera",
+      "temporary_result": {
+        "enumerated_devices": 9,
+        "camera_id": "5",
+        "configure_status": 0,
+        "mi_stream_use_case": 2,
+        "sensor_start": "nezha_semco_ovx10500u_wide_i",
+        "frames_observed": true
+      },
+      "closure": "Application displays version/device incompatibility dialog and finishes after three seconds; observed with both camera-intent and MAIN/LAUNCHER launches without a post-launch force-stop",
+      "compatibility_resource": "0x7f120018 (plurals/f5p)",
+      "compatibility_predicate": "unresolved; no particular missing service, library or property is proven",
+      "dialog_screenshot": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/xiaomi-launcher-aux-early.png",
+        "size_bytes": 71211,
+        "sha256": "700ba5340b01e0fec9edf93dce5f495c48864f251bd2bce8164286def68e534d"
+      },
+      "visibility_analysis": {
+        "path": "reports/camera-native-hook-20260907/xiaomi-visibility-analysis.md",
+        "size_bytes": 9564,
+        "sha256": "4c00ccd62d0b06d8c0049d2b549be091f040574840dc00c6ea5d89ae6689d289"
+      },
+      "aux_experiment": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/aux-exposure-experiment.json",
+        "size_bytes": 1021,
+        "sha256": "00c7825e30274b6eb4a3920c3714e767fb5fc0e73c5f39a02148a4415e8fc1ce"
+      },
+      "permission_change_performed": false,
+      "source_change_performed": false,
+      "compatibility_exit_analysis": {
+        "path": "reports/camera-native-hook-20260907/xiaomi-compatibility-exit-analysis.md",
+        "size_bytes": 7180,
+        "sha256": "b307054fdab64475a82cfa2a67f1da172fb25010c0fb195dce5e009bb99917e8"
+      },
+      "static_exit_routes": {
+        "observed_exit": "shared handler message 11, dialog kind 4, timer to Activity.finish",
+        "routes": [
+          "device-configuration compatibility helper",
+          "native BSP/security result from successfully loaded libHawk",
+          "cloud-security callback"
+        ],
+        "actual_runtime_sender": "unresolved: recorded logs have no distinguishing sender marker",
+        "missing_component_proven": false,
+        "private_bytecode_directory": "reports/camera-native-hook-20260907/compatibility-analysis/"
+      }
+    },
+    "isolated_rear_sensors": {
+      "android_ids": [
+        "2",
+        "3",
+        "4"
+      ],
+      "status": "unverified",
+      "limit": "A wide sensor producing frames within logical camera 0 or 5 is not proof of a direct isolated-ID session or of all rear sensors."
+    },
+    "cleanup": {
+      "aux_property_restored": true,
+      "usb_stay_awake_setting": 0,
+      "aperture_ultra_hdr_left_disabled": true,
+      "no_additional_flash_or_reboot": true,
+      "receipt": {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/acceptance-cleanup.json",
+        "size_bytes": 364,
+        "sha256": "f74cb9e76c9885b352ebc3afe6fc3c1dd29908d84bd9f4e08e6167370ba87910"
+      }
+    },
+    "acceptance": "not device-admitted",
+    "remaining_gates": [
+      "Xiaomi app JPEG capture",
+      "Isolated rear cameras 2/3/4",
+      "Ultra HDR graph configuration"
+    ],
+    "stop_reason": "Native hook works on the measured ordinary-JPEG path. Xiaomi app compatibility is an additional prerequisite beyond this hook. Its underlying predicate is unresolved; no speculative component or identity change was selected.",
+    "private_test_logs": [
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/aperture-rear.log",
+        "size_bytes": 3230610,
+        "sha256": "8614646ddd2722bc8c43657835db1104fc4674c08ae16fd9c83ecc39e7097fb9"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/aperture-front.log",
+        "size_bytes": 2532186,
+        "sha256": "b1236c118b16a6b12ea1fa09b904804c247e3bdddb579fab5a95e06e415db549"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/aperture-rear-jpeg.log",
+        "size_bytes": 1914080,
+        "sha256": "c7edf5f10023dbc5c83224da8ceef6f495f6105af28bb2780ec2e3a3634cf7cc"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/aperture-rear-jpeg-confirmed.log",
+        "size_bytes": 310080758,
+        "sha256": "2d10b9309313947a149c443898bbdb3857dd3f8d2f4ee5ef6787ccd1bc555793"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/aperture-front-jpeg.log",
+        "size_bytes": 124473089,
+        "sha256": "b734b04fb4e1e36f16315c6cfd1e16b7f0bd2ec233e5e608a9b88091a02d876e"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/xiaomi-rear.log",
+        "size_bytes": 3149518,
+        "sha256": "7446c8169b67030156919e9ad1209743189a4c2564cddc1f4bab7da6ae8801b7"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/xiaomi-rear-aux.log",
+        "size_bytes": 15273682,
+        "sha256": "508579cc67872ad7dfbe3c75f249ea762c353079e3bf6416cb064d3bec928605"
+      },
+      {
+        "path": "evidence/variant-opt-in-userdebug-20260906-v8-install/camera-check/xiaomi-launcher-aux.log",
+        "size_bytes": 14731809,
+        "sha256": "7b8125392ec39db5de1ce7d26b6a7f29fb27583f783b88c443a2071bb48d9b48"
+      }
+    ],
+    "independent_acceptance_audit": {
+      "path": "reports/camera-native-hook-20260907/final-acceptance-audit.json",
+      "size_bytes": 64529,
+      "sha256": "eed90c66997bc9768305d5e601076f25da8269f87c228591d9a84ba0047b94dc"
+    },
+    "crash_observation": {
+      "complete_snapshots": 9,
+      "start_utc": "2026-09-07T21:38:54.867956+00:00",
+      "end_utc": "2026-09-07T21:56:43.809214+00:00",
+      "stable_provider_pid": 2051,
+      "stable_cameraserver_pid": 2751,
+      "fatal_signal_lines": 0,
+      "native_signal_summary_lines": 0,
+      "unrelated_java_crash_process": "com.google.android.apps.wallpaper",
+      "unrelated_unique_java_crash_records": 4,
+      "scope": "Retained crash buffers and bounded test logs; cumulative buffers are not summed and this is not a general crash-free claim."
+    },
+    "successful_windows": [
+      {
+        "log": "aperture-rear-jpeg-confirmed.log",
+        "camera_id": "0",
+        "configure_status": 0,
+        "missing_mi_stream_tag_lines": 0,
+        "virtual_super_graph_error_4_lines": 0,
+        "fatal_signal_lines": 0
+      },
+      {
+        "log": "aperture-front-jpeg.log",
+        "camera_id": "1",
+        "configure_status": 0,
+        "missing_mi_stream_tag_lines": 0,
+        "virtual_super_graph_error_4_lines": 0,
+        "fatal_signal_lines": 0
+      },
+      {
+        "log": "xiaomi-rear-aux.log",
+        "camera_id": "5",
+        "configure_status": 0,
+        "missing_mi_stream_tag_lines": 0,
+        "virtual_super_graph_error_4_lines": 0,
+        "fatal_signal_lines": 0
+      },
+      {
+        "log": "xiaomi-launcher-aux.log",
+        "camera_id": "5",
+        "configure_status": 0,
+        "missing_mi_stream_tag_lines": 0,
+        "virtual_super_graph_error_4_lines": 0,
+        "fatal_signal_lines": 0
+      }
+    ]
+  }
 }

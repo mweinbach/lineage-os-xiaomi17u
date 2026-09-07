@@ -1,12 +1,19 @@
 # Native Xiaomi camera session hook (2026-09-07)
 
-The missing camera integration is a native `frameworks/av` hook, and the factory
-call path is now established from its binary. A guarded source implementation
-has been installed in the existing Evolution checkout as
-`nezha.f2e3feac321f56f92d2ad7ea` for the v8 successor. The focused cameraserver build passed with unchanged source inputs. The v8
-target-files build is in progress; every v8 phone result remains **unverified**
-and the change is **not device-admitted**. The installed v7 package and its host bundle remain the
-predecessor and rollback evidence.
+**The native hook is built, flashed and running on v8; Aperture saves ordinary
+JPEGs from rear camera 0 and front camera 1.** Both saved files independently
+decode as 4096×3072 images. The phone boots
+`nezha.f2e3feac321f56f92d2ad7ea` on slot A with SELinux Enforcing. The factory
+library loads into cameraserver, writes the Xiaomi session tags and reaches
+successful HAL configuration in those two capture windows.
+
+The change remains **not device-admitted** against the complete acceptance
+scope. Aperture's initial Ultra HDR/JPEG_R sessions fail graph construction;
+Xiaomi Camera reaches a measured compatibility dialog and self-exit after a
+temporary auxiliary-camera visibility test; no Xiaomi JPEG or isolated rear
+camera 2/3/4 result is verified. The v7 host package remains the immediate
+predecessor and rollback evidence. No further MIUI service requirement was
+identified for the native core used by the successful Aperture captures.
 
 This record extends the [camera-framework port](camera-framework-port-20260907.md)
 and [capture diagnosis](camera-capture-diagnosis-20260907.md). The
@@ -77,8 +84,7 @@ This evidence supersedes the earlier inference that normal rear capture needs
 wholesale replacement of `framework.jar` or `services.jar`. The examined core
 session-update and scene-identification functions use native state and camera
 configuration files. No additional MIUI service requirement was found in that
-path. Whether the port executes successfully on this build remains a device
-question.
+path; v8 now executes it successfully in the measured Aperture JPEG captures.
 
 ## Authored integration
 
@@ -125,18 +131,23 @@ factory ABI; they do not prove all runtime compatibility.
 
 A static dependency audit walked 92 libraries across the existing system,
 system_ext and runtime APEX artifacts. It found zero missing libraries and zero
-unresolved global imports. Runtime cameraserver namespace visibility, SELinux
-access and successful loading remain unverified. The optional notification path
-is gated by `persist.sys.miui.camera.cameramind.supported`, default false; when
-selected it attempts to load `libcammsger.so`, and failure is a logged no-op.
-The core tag-writing path has no such dependency in the examined code.
+unresolved global imports. The later v8 runtime confirms cameraserver can load
+the library and execute the core calls while Enforcing. This does not establish
+every optional method's runtime behavior. The optional notification path is
+gated by `persist.sys.miui.camera.cameramind.supported`, default false; when
+selected it attempts to load `libcammsger.so`, and a missing optional instance
+is handled without blocking the core tag-writing path.
 
-The live v7 linker configuration includes `system_ext/lib64` in its default
-system namespace search and permitted paths. The optional CameraMind flag is
-actually `true` on this phone while `libcammsger.so` is absent. The notification
-methods handle a null optional instance in the examined code; that absence is
-recorded separately from the core session-tag prerequisites. Successful v8
-loading and capture still require the device run.
+The v7 linker observation includes `system_ext/lib64` in its default system
+namespace search and permitted paths. At that checkpoint the optional CameraMind
+flag was `true` while `libcammsger.so` was absent. The notification methods
+handle a null optional instance in the examined code; that absence remains
+separate from the core session-tag prerequisites. The factory also calls
+`notifyConfigStream`, an omitted callback that can forward optional intent-aware
+notifications and reset CameraOpt timestamp state after successful configuration.
+The structured record preserves its exact call sites. No evidence connects it
+to the Xiaomi app compatibility gate or makes it a requirement for the measured
+ordinary-JPEG captures.
 
 ## Source checkpoint and retained artifacts
 
@@ -170,13 +181,108 @@ this reclaim.
 The second focused cameraserver build returned exit 0 at native run
 `20260907T205619-userdebug`, with identical 613-row source inventories before
 and after. Its installed cameraserver is 4,026,840 bytes, SHA256
-`a47fc0682722728b1433790a9dbe70d537d16b43979b99d84e0e263c86a5841f`. This is compile and artifact evidence.
+`a47fc0682722728b1433790a9dbe70d537d16b43979b99d84e0e263c86a5841f`.
+The final installed binary readback matches that hash. The installed
+`libcameraimpl.so` also matches its selected factory input at SHA256
+`403782350ef40558edec32ff63dda6ff9c4b8ab18573e30c4f2dab80842fc5c5`.
 
-At this checkpoint, v8 package admission, flash, boot, slot, SELinux state and
-camera results are all unverified. Device admission requires
-an enforcing slot A boot, Xiaomi session tags present at rear configuration,
-no missing-use-case or virtual-super-graph error, successful camera 0
-configuration, and a saved JPEG from both Aperture and Xiaomi Camera. Front
-and single-sensor operation and a provider crash-free acceptance window are
-also required. A further required runtime component, if observed, must be
-recorded with its evidence before selecting another change.
+The full target-files run `20260907T210017-userdebug` returned exit 0 with
+identical source inventories. Host transfer and measured image admission
+passed, and the packaged cameraserver matches the focused artifact exactly.
+Signing, signed-archive reconciliation and independent eight-payload bundle
+verification passed. The private bundle is
+`artifacts/flash/nezha/variant-opt-in-userdebug-20260906-v8/`.
+The structured record holds the source, target-files, Super, signing and bundle
+identities; these are distinct from the device results below.
+
+`make test-current` passed 939 tests. The affected selector tests passed, and
+`make test` passed all 4,809 tests before installation. The final post-install
+run passed the same 4,809 tests in 177.510 seconds plus shell checks. These are
+offline tooling and source-contract results.
+
+## V8 installation and camera results
+
+The authorized route acknowledged all eight writes: shared Super, then
+`dtbo_a`, `init_boot_a`, `vendor_boot_a`, `recovery_a`, `boot_a`,
+`vbmeta_system_a` and `vbmeta_a`. The phone rebooted without a wipe or slot
+change and reached `sys.boot_completed=1` in 25.5 seconds as userdebug with
+adb root. The first-boot and final snapshots independently identify f2e, slot A
+and Enforcing. Recovery remains the pinned working76 derivative.
+
+Nine acceptance snapshots span 17:38:54–17:56:43 local time. Each binds the same
+613-row revision 2 source receipt, SHA256
+`254b42243742a8b3945fb064156a84a2b0d1e19db1990403f6da4d094fa1f651`.
+The provider and cameraserver PIDs stay unchanged across those snapshots, and
+the captured crash buffers contain no native fatal signal or camera-process
+crash. The library appears in cameraserver mappings after its first load;
+the provider does not need to map it.
+
+| Acceptance item | Measured result |
+| --- | --- |
+| Native loader and tags | Factory hook loads in cameraserver. Aperture rear/front configurations contain MiStreamUsecase int32[1]=2, clientName byte[23], activityName byte[5]; provider reads use case 2. |
+| Aperture ordinary JPEG, rear camera 0 | Configure returns 0 at 17:47:59.514. Preview graph starts and a saved JPEG independently decodes as 4096×3072. |
+| Aperture ordinary JPEG, front camera 1 | Configure returns 0 at 17:50:15.871. A separate saved JPEG independently decodes as 4096×3072. |
+| Aperture Ultra HDR/JPEG_R | Initial rear and front sessions fail the MCXSuperFG sink-port check and return framework configure -38. No JPEG_R capture is admitted. |
+| Xiaomi Camera with selected source configuration | The existing Java auxiliary-camera policy exposes only IDs 0/1 to this package; role initialization does not reach a successful capture. |
+| Xiaomi temporary auxiliary exposure test | Exact `com.android.camera` allowlist exposes IDs 0–8. Camera 5 configures with status 0 and wide-sensor frames begin; the app then shows its compatibility dialog and exits after three seconds. No saved Xiaomi JPEG. |
+| Isolated rear cameras 2/3/4 | Unverified; neither the logical rear capture nor camera 5's active wide sensor establishes individual-lens acceptance. |
+
+The rear file is 1,308,821 bytes with SHA256
+`f20185958455d1f482ec154581751583c239cd37bb5b84e38b7c2bea9c761dfb`.
+The front file is 5,397,082 bytes with SHA256
+`287021450c86e70f85249028af0340e1960b24dba9725da9b63c1d126bb9050b`.
+Each host file matches its device-side stable metadata/hash receipt and passes
+an independent image decode. These are two measured Aperture captures, not a
+claim about every lens, mode or OEM feature.
+
+## Remaining JPEG_R and Xiaomi app failures
+
+The first JPEG_R failure is the vendor graph validator's missing MCXSuperFG
+sink `(FeatureId:3 InstanceId:0, Session:0 Pipeline:0 PortId:0 Type:0)`. That
+precedes `VirtualSuperGraphDesc:4`, vendor configure -19 and framework -38.
+The hook already loaded and the provider received its tags before that failure.
+The numerical feature ID has not been mapped to a named feature in this review.
+
+The vendor's ordinary JPEG snapshot predicate accepts output BLOB streams with
+dataspace `0x101` or `0x08c20000`, excluding JPEG_R `0x1005`. In the failed
+session its feature-requirements dump marks the still stream as IsSnapshot=0;
+the ordinary-JPEG run marks it as 1 and configures successfully. However,
+disabling Ultra HDR also changes Android's standard stream use cases from
+preview/still 0/0 to 1/2. Xiaomi's separate MiStreamUsecase remains 2, its normal
+classifier fallback, in both runs. The comparison proves the ordinary-JPEG
+configuration works without isolating dataspace alone as the cause. Yuv2Yuv
+0:1 pruning appears in both failed and successful sessions and cannot by itself
+explain the rejection. No JPEG_R-to-JPEG rewrite was found in the examined
+factory configure path.
+
+Xiaomi Camera's visibility issue comes from the existing framework helper's
+exact package matching against `vendor.camera.aux.packagelist`. The imported
+factory list omits `com.android.camera`; the package already has its required
+camera grants. The temporary test replaced the list with that exact package
+and confirmed nine app-visible IDs, successful camera 5 configuration and
+wide-sensor activity. Camera 5 uses a logical three-camera configuration, so
+that activity is not an isolated physical-camera test. The early screenshot
+and app log then establish a real
+compatibility rejection: the app says its Camera version is incompatible with
+the device model, announces a three-second exit and finishes itself. This
+measured v8 self-exit is separate from earlier experiments whose scripts
+force-stopped the app. The bounded static trace follows handler message 11 to dialog kind 4,
+resource `0x7f120018` (`plurals/f5p`), then the timer to `Activity.finish()`.
+Static bytecode exposes device-configuration, native BSP/security and cloud
+callback routes to that shared dialog. The retained logs do not identify which
+route fired; `libHawk` loaded successfully. The underlying compatibility
+predicate remains unresolved, so no required service, library or property
+change is established. Work stops at that
+additional app compatibility requirement without selecting a speculative fix.
+
+The full original auxiliary property was restored after the observation
+windows, and the temporary stay-awake setting was returned to 0. Aperture's
+visibly selected Ultra HDR-off setting remains as the measured ordinary-JPEG
+configuration. The final cleanup snapshot still reports f2e, A and Enforcing.
+
+Detailed runtime comparisons, app actions, snapshot receipts and the final
+acceptance audit remain in ignored reports and evidence; their paths and hashes
+are indexed by the structured record. Complete camera admission remains open
+for JPEG_R, a saved Xiaomi Camera JPEG, its compatibility/visibility issues and
+isolated rear-lens validation. Any further required component must be supported
+by its own evidence before selecting another change.
