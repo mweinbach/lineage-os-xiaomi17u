@@ -43,13 +43,21 @@
   },
   "apps": {
     "aperture": "CameraX; opens camera 0, error, 'will try to recover', retries rear, finishes to launcher in ~2 s; cannot reach the front-camera control",
-    "xiaomi_camera": "com.android.camera / NezhaXiaomiCamera; opens a single sensor, streams briefly, returns to launcher on its own; missing com.miui.cameraopt perf service (SELinux find denial + CameraPerfInterface UnsatisfiedLinkError), secondary"
+    "xiaomi_camera": "com.android.camera / NezhaXiaomiCamera; opens a single sensor and streams briefly in the recorded windows; test scripts force-stopped it, so the earlier spontaneous-exit inference is withdrawn; missing com.miui.cameraopt perf service (SELinux find denial + CameraPerfInterface UnsatisfiedLinkError), secondary"
   },
-  "assessment": "Full rear-camera capture is blocked inside Xiaomi's proprietary Unified Multi-Camera feature-graph builder, which needs HyperOS camera-framework stream use cases and session parameters absent from this AOSP-based build; not a config flip; sensors and lower CamX pipeline are healthy",
+  "assessment": "At this v6 checkpoint, full rear-camera capture is blocked inside Xiaomi's Unified Multi-Camera feature-graph builder while Xiaomi session tags are absent. Later factory analysis identifies native frameworks/av registration and metadata hooks for normal camera clients; it does not establish the Xiaomi app or wholesale Java-framework replacement as requirements for basic rear capture. Single physical sensors stream in the measured sessions.",
   "unverified": [
-    "capture from a single physical sensor to a saved file (no app stays on a single lens)",
-    "whether porting HyperOS stream-use-case injection lets the virtual super graph build",
+    "capture from a single physical sensor to a saved file in this v6 record",
+    "whether porting native stream-use-case injection lets the virtual super graph build; no successor device result is recorded here",
     "the exact predicate behind IsApolloArch"
   ],
-  "evidence": "ignored evidence dir variant-opt-in-userdebug-20260906-v6-install/camera-check (ap-window.log, miui-window-20260907T1220.log, dumpsys-full-v6.txt, pulled Xiaomi camera libs and stream configs)"
+  "evidence": "ignored evidence dir variant-opt-in-userdebug-20260906-v6-install/camera-check (ap-window.log, miui-window-20260907T1220.log, dumpsys-full-v6.txt, pulled Xiaomi camera libs and stream configs)",
+  "later_correction": {
+    "date": "2026-09-07",
+    "documentation": "docs/camera-native-hook-20260907.md",
+    "research": "research/camera-native-hook-20260907.json",
+    "native_path": "Factory cameraserver loads libcameraimpl through create; updateSessionParams writes clientName and executeSceneIdentify writes MiStreamUsecase/activityName before HAL configureStreams, using a camera-ID lookup key",
+    "xiaomi_app_termination": "The subsequent user mission clarified that earlier Xiaomi Camera self-exit reports came from test-script force-stops; the recorded close is not proof of an app crash or spontaneous exit",
+    "preserved_measurements": "v6 build identity, enumeration, single-sensor streaming, rear configuration failure and original evidence paths are unchanged"
+  }
 }

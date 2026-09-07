@@ -7,6 +7,14 @@ records why **capture still does not work in either camera app**, measured on
 the flashed build (`nezha.e2b55ae5f0effd944736a6b0`, root shell, enforcing).
 It is on-device diagnosis of a closed vendor stack; no fix is device-admitted.
 
+**Later correction:** the [native hook investigation](camera-native-hook-20260907.md)
+establishes the factory `cameraserver` loader and the metadata calls missing from
+this v6 checkpoint. `updateSessionParams` writes the registered client name;
+`executeSceneIdentify` writes `MiStreamUsecase` and activity name before HAL
+configuration. Both use a camera-ID key. This refines the framework-side
+diagnosis; the measured v6 failures below remain historical results. The earlier
+Xiaomi app self-exit interpretation is also corrected below.
+
 ## What works and what fails
 
 - **Single physical cameras open and stream.** The Xiaomi app opened device 5
@@ -69,24 +77,29 @@ configuration without them.
   to the launcher within about two seconds. It never reaches a state where the
   front camera can be selected from the UI.
 - **The Xiaomi app** (`com.android.camera`, the packaged `NezhaXiaomiCamera`)
-  opens a single sensor, streams briefly, then returns to the launcher on its
-  own. It also logs a missing `com.miui.cameraopt` perf service (a SELinux
+  opens a single sensor and streams briefly in the recorded test windows.
+  The earlier claim that it returned to the launcher on its own is withdrawn:
+  the test scripts force-stopped it, as clarified in the subsequent native-hook
+  task. This is not evidence of an app crash or spontaneous exit. It also logs
+  a missing `com.miui.cameraopt` perf service (a SELinux
   `find` denial for the `cameraopt` service and an `UnsatisfiedLinkError` for
   `CameraPerfInterface`); that boost service is a HyperOS system component and
   is secondary to the graph failure.
 
 ## Assessment
 
-Enumeration is fixed and flashed. Full capture through the default rear camera
-is blocked inside Xiaomi's proprietary Unified Multi-Camera feature-graph
-builder, which depends on HyperOS camera-framework components (stream use cases
-and session parameters, and the intended Xiaomi camera app) that this
-AOSP-based build does not provide. This is not a config flip: the vendor inputs
-are read-only and identical to factory, and no writable override toggles the
-architecture-gated multi-camera path. Single physical sensors stream, so the
-sensors and the lower CamX pipeline are healthy.
+At this v6 checkpoint, enumeration is fixed and flashed. Full capture through
+the default rear camera is blocked inside Xiaomi's proprietary Unified
+Multi-Camera feature-graph builder while the Xiaomi session tags are missing.
+The later native investigation identifies the factory `frameworks/av` integration
+that supplies them to normal camera clients. These findings do not establish
+the Xiaomi app or wholesale Java-framework replacement as requirements for
+basic rear capture. The vendor inputs remain read-only and identical to factory,
+and no writable override was found to toggle the architecture-gated multi-camera
+path. Single physical sensors stream, so the sensors and lower CamX pipeline
+work for those measured sessions.
 
-Not verified: capture from a single physical sensor to a saved file (no app in
-place stays on a single lens); whether porting the HyperOS stream-use-case
+Not verified in this record: capture from a single physical sensor to a saved
+file; whether porting the native stream-use-case
 injection would let the super graph build; the exact predicate behind
 `IsApolloArch`.
