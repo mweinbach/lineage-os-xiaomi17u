@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-xml-selection-20260907",
+  "date": "2026-09-07",
+  "device": "nezha",
+  "phone_accessed": false,
+  "status": "offline; candidate fix prepared; runtime test and flash not authorized",
+  "measured_facts": {
+    "current_build": {
+      "identity": "nezha.cc551b14bc2cc72c2b138bb0",
+      "property_capture_sha256": "782c74fa740eaece07902b1b68c0fd365d8c5f9eddaa968d5d8fde76e5d1a9b2",
+      "ro.vendor.qti.va_aosp.support": "absent",
+      "ro.vendor.qti.va_odm.support": "1",
+      "ro.build.product": "nezha",
+      "ro.vendor.qti.soc_id": "660",
+      "ro.build.tags": "test-keys"
+    },
+    "factory_system_build_prop": {
+      "sha256": "2c2811af2c883b7c114d8de2b217e2643f57cbecbd464ade00c31b3d6e81071f",
+      "line_197": "ro.vendor.qti.va_aosp.support=1",
+      "line_196": "#System Enable QCOM enhanced feature",
+      "ro.build.product": "missi"
+    },
+    "detector_source": {
+      "path": "hardware/qcom-caf/common/fwk-detect/vndfwk-detect.c",
+      "sha256": "4cd5dd5dea69854be04bad715ba87e8c47f21aeb890c415694eb65376374a63a",
+      "returns": "1 iff property_get_bool(ro.vendor.qti.va_aosp.support, false)"
+    },
+    "chi_override": {
+      "sha256": "45cb75971709901130d8dd2463684c51fb5532a60714fa82e01be118e74d37a7",
+      "needs": "libqti_vndfwk_detect.so",
+      "exec_segment": "file offset 0x154000 == vaddr 0x154000 (uprobe offsets equal vaddrs)",
+      "soc_660_route": "jump table 0x11279b index 0x53 byte 0 -> 0x4e5750",
+      "predicates": "0x4e5754 isRunningWithVendorEnhancedFramework (w0 tested 0x4e5758), 0x4e575c IsGSIVersion (w0 tested 0x4e5760)",
+      "false_false_assignment": "0x4e5764 loads 0xd09fe = kaanapali_gsi.xml, branch 0x4e576c -> 0x4e56e0 assign into ExtensionModule+0x480 string +0xd8",
+      "picker_call": "0x4f70cc, selector C string in x1 (resolved at 0x4f7084-0x4f7098)"
+    },
+    "loader": "init loads /system/build.prop keys as the init context (property_service.cpp CheckPermissions with pid 1); built plat CIL contains (allow init property_type (property_service (set))); property resolves to vendor_default_prop, which the provider already reads",
+    "consumers": {
+      "factory_vendor_files": 153,
+      "factory_odm_files": 17,
+      "non_camera_examples": [
+        "android.hardware.bluetooth@aidl-service-qti",
+        "btaudio_offload_if.so",
+        "cnd",
+        "libcne.so",
+        "lib-imsservice.so",
+        "libmiracast.so",
+        "qcc-vendor",
+        "xtra-daemon"
+      ]
+    },
+    "retained_slot_trace": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/uprobe-slot-availability.txt",
+      "events": 10,
+      "distinct_definitions": 8,
+      "front_definitions_requesting_slot_4": [
+        "FrontLogicalCam",
+        "FrontPhysicalCam_LogicalImpl",
+        "FrontAONCam_LogicalImpl"
+      ],
+      "available_slots": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "note": "probe at 0x4e7db8 fires before wmemchr; it records search arguments, not matches"
+    }
+  },
+  "hypothesis": "With ro.vendor.qti.va_aosp.support absent and ro.build.product=nezha, GetDevicesSettings replaces the nezha.xml selector with kaanapali_gsi.xml on SoC 660; the GSI table's eight definitions and implementation IDs (0x0f1000xx) never satisfy Xiaomi's expected XML IDs 1-4, and its front definitions request slot 4, which the four-sensor device lacks. Restoring the factory flag from the system image should reselect nezha.xml.",
+  "candidate_fix": {
+    "fragment": "device/xiaomi/nezha/qti-value-add-framework.mk",
+    "selector": "NEZHA_QTI_VALUE_ADD_FRAMEWORK",
+    "contract": "config/nezha-qti-value-add-framework.json",
+    "contract_sha256": "1a577df3338248650ddc3779d7943479a851100a32c88bb18cc72cad7d528c1a",
+    "test": "tests/test_qti_value_add_framework.py",
+    "effect": "PRODUCT_SYSTEM_PROPERTIES += ro.vendor.qti.va_aosp.support=1 when the selector is true; off by default",
+    "not_done": [
+      "guest transaction installing the selector",
+      "rebuild, admission, signing, flash"
+    ]
+  },
+  "runtime_test_plan": {
+    "authorization": "required for every step that restarts the provider, writes a property or arms tracing",
+    "device": "adb -s 32c100d6 (nezha); the Pixel 58201FDCG003BG is never selected",
+    "precheck_read_only": "getprop ro.build.version.incremental ro.vendor.qti.va_aosp.support ro.build.product ro.vendor.qti.soc_id; getenforce; id",
+    "probes": [
+      "p:cam/vef com.qti.chi.override.so:0x4e5758 vef=%x0:u32",
+      "p:cam/gsi com.qti.chi.override.so:0x4e5760 gsi=%x0:u32",
+      "p:cam/xml com.qti.chi.override.so:0x4f70cc name=+0(%x1):string",
+      "p:cam/slot com.qti.chi.override.so:0x4e7db8 name=+0(+0(%x19)):string slot=%x1:u32 n=%x2:u32 a0..a4=+0..+16(%x0):u32"
+    ],
+    "control_run": "arm probes; stop/start vendor.camera-provider; expect vef=0 gsi=0 name=kaanapali_gsi.xml, eight definitions, front slot 4",
+    "change_run": "setprop ro.vendor.qti.va_aosp.support 1 (root; unset ro property, context vendor_default_prop); stop/start the provider; expect vef=1 name=nezha.xml, thirteen definitions, no addDamagePyhCameraRoleIds lines, higher camera count",
+    "cleanup": "clear uprobe_events, disable cam events and tracing_on; the ro property stays set until the next reboot (state note, no reboot without permission)"
+  },
+  "acceptance_checks": [
+    "effective selected XML (probe at 0x4f70cc) is nezha.xml",
+    "physical sensor count 4 with slots 0-3 mapped to wide/front/ultra/tele",
+    "built logical XML IDs 1-4 present with Xiaomi roles 1/0/21/20; no damage verdicts",
+    "public versus auxiliary camera counts recorded from dumpsys media.camera",
+    "front, wide, ultrawide and tele capture through Aperture and the Xiaomi camera app",
+    "stream configuration, lens switching and provider crash-free over the session (logcat -b crash)",
+    "SELinux remains enforcing",
+    "bluetooth, IMS and connectivity unchanged after the flag (non-camera consumers)"
+  ],
+  "unverified": [
+    "the effective selector on the phone (needs the control run)",
+    "that the flag restores capture, not only enumeration",
+    "non-camera consumer behaviour with the flag on this framework",
+    "stock VFE/SFE/ICP diagnostics (unrelated to this finding, still unmeasured)"
+  ]
+}

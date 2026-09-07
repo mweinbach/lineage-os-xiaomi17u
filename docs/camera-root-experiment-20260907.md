@@ -32,6 +32,8 @@ The experimental outcomes and historical phone state below are unchanged.
   for all four modules, and Xiaomi's immune system records probe successes.
   The CHI's "sensor probe fail" verdict comes from CamX's per-sensor probe
   status after static-caps initialisation, not from the I2C probe.
+  *(Superseded on 2026-09-07: the verdict is a logical-camera XML-id lookup in
+  the CHI, see the [XML selection record](camera-xml-selection-20260907.md).)*
 - **The boot chain matches stock where it was compared.** The flashed boot
   image carries the same Google GKI kernel as both stock packages, the DTB is
   byte-identical, and the vendor ramdisk differs only in the first-stage
@@ -94,9 +96,13 @@ user stacks, and its vendor libraries were disassembled in the guest. Findings:
   They are recomputed and rewritten on every provider start, which is why
   clearing them never helped.
 - **CamX enumerates all four sensors.** A uprobe in the CHI's hardware pass
-  shows `GetCameraInfo` succeeds for physical camera indices 0 to 3, and the
-  generated-camera pass sees all ten logical-camera definitions with physical
-  slots {0,1,2,3} available. The kernel logs probe success for all four sensors
+  shows `ChiContextInterface::GetCameraInfo` (the per-sensor CamX query, distinct
+  from the logical `ExtensionModule::GetCameraInfo` the damage routine reads)
+  succeeds for physical camera indices 0 to 3, and the
+  generated-camera pass evaluates eight distinct definitions (ten lookup
+  events; MultiCamera contributes three) against available slots {0,1,2,3};
+  the three front definitions request slot 4. The probe fires before the
+  search executes, so it records arguments, not matches. The kernel logs probe success for all four sensors
   on every restart.
 - **The collapse is in Xiaomi's role map.** `buildCameraRoleIds` produces
   `mLogical2RoleCameraMap [4,0,0,64,2,3PartSat]`, one logical camera at role 64,
@@ -110,10 +116,13 @@ user stacks, and its vendor libraries were disassembled in the guest. Findings:
   are empty, and setting them at runtime changed nothing.
 
 Because the XML table library and the sensor-module binaries are byte-identical
-to stock, the divergence is upstream of userspace, in CamX's per-sensor
-static-caps, which matches the camera-subsystem init errors at the kernel and
-firmware layer (`no valid SFE HW devices`; ICP `ipclite` interrupt init failed
-`ret -3`). Confirming that against stock still needs a stock boot log.
+to stock, the divergence was first attributed to CamX's per-sensor
+static-caps and the kernel/firmware init errors. **That attribution is
+superseded**: the missing system property `ro.vendor.qti.va_aosp.support`
+switches the CHI to the GSI logical-camera table, which explains the XML-id
+mismatch without any hardware fault; see the
+[XML selection record](camera-xml-selection-20260907.md). The kernel messages
+remain unexplained observations.
 
 An aarch64 `lldb-server` from the tree prebuilts is staged on the phone at
 `/data/local/tmp/lldb-server` for future live debugging; it attached but its

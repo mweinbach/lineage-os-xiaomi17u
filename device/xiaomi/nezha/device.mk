@@ -25,6 +25,9 @@ include $(NEZHA_DEVICE_PATH)/haptics.mk
 # Manual Dolby controls only; do not replace the factory vendor backend.
 include $(NEZHA_DEVICE_PATH)/dolby.mk
 
+# Explicit QTI value-add framework flag; selected per build, off by default.
+include $(NEZHA_DEVICE_PATH)/qti-value-add-framework.mk
+
 # The opt-in successor uses the original signed factory Camera and a narrow
 # same-partition privilege policy. A selected but missing packet must fail.
 ifeq ($(NEZHA_XIAOMI_CAMERA),true)

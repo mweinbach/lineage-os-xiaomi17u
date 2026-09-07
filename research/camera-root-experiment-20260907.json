@@ -190,5 +190,16 @@
     "conclusion": "The camera enumeration collapse to a single 3PartSat logical camera is computed by the Xiaomi CHI override from CamX per-sensor GetCameraInfo output measured against the ODM logical-camera XML table. Both the XML table library and the sensor-module bins are byte-identical to stock, so the divergence originates upstream in CamX sensor static-caps, consistent with the camera-subsystem init errors seen at the kernel and firmware layer (no valid SFE HW devices; ICP ipclite interrupt init failed ret -3). The persisted userspace properties are effects, not causes.",
     "tooling_left": "lldb-server (aarch64, from the tree prebuilts) is staged at /data/local/tmp/lldb-server for future live HAL debugging; it attaches but its gdb handshake did not complete in this session, so kernel uprobes were used instead. Pulled vendor libraries and their disassembly live under artifacts/camera-analysis/ and the guest /work/validation/camlibs.",
     "phone_note": "ro.boot.camera.config was set to 0 during a runtime test and cannot be reset without a reboot; the camera still enumerates identically (three devices) with it at 0, and it clears on the next boot. No reboot was performed to change it."
+  },
+  "corrections_20260907": {
+    "superseded": [
+      "observations.camx_static_caps (retry line is the initial budget, not exhausted retries)",
+      "observations.chi_verdict (verdict is a logical-camera XML-id lookup, not CamX probe status; string proximity is not a dataflow)",
+      "hal_reverse_engineering.conclusion (divergence attributed to CamX static-caps and kernel/firmware init; superseded by the GSI XML selection finding)",
+      "hal_reverse_engineering.findings.all_slots_available (ten lookup events over eight definitions; probe records search arguments; front definitions request slot 4)",
+      "hal_reverse_engineering.findings.camx_enumerates_four (the probed call is ChiContextInterface::GetCameraInfo, the physical CamX query; ExtensionModule::GetCameraInfo is the logical array the damage routine reads)"
+    ],
+    "see": "research/camera-xml-selection-20260907.json",
+    "preserved": "historical observations above are kept verbatim"
   }
 }

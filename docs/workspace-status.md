@@ -55,9 +55,15 @@ restore the per-lens cameras; see the [camera experiment record](camera-root-exp
 for the historical experiment. The subsequent
 [offline library analysis](camera-library-analysis-20260907.md) establishes
 that CHI's damage verdict is a logical XML-ID lookup failure, not raw sensor
-probe status. A conditional GSI XML override matches the generated IDs and
-is the next lead to verify; the effective runtime selector and stock ISP
-behavior remain unverified. No camera fix is device-admitted.
+probe status. The [XML selection record](camera-xml-selection-20260907.md)
+then measures the cause of that override on this build: the factory system
+property `ro.vendor.qti.va_aosp.support=1` is absent, so the CHI selects the
+GSI logical-camera table on SoC 660. A guarded system-property fix
+(`NEZHA_QTI_VALUE_ADD_FRAMEWORK`, off by default) and a runtime test plan are
+prepared; the effective runtime selector, capture and the non-camera consumers
+of that flag remain unverified. No camera fix is device-admitted. The phone
+also carries `ro.boot.camera.config=0` from a prior runtime test until its next
+reboot.
 User builds are unaffected by the opt-in; the user policy identity
 is unverified until the next user build.
 

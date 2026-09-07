@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "selector": "NEZHA_QTI_VALUE_ADD_FRAMEWORK",
+  "fragment": "device/xiaomi/nezha/qti-value-add-framework.mk",
+  "property": {
+    "name": "ro.vendor.qti.va_aosp.support",
+    "value": "1",
+    "partition": "system",
+    "product_variable": "PRODUCT_SYSTEM_PROPERTIES"
+  },
+  "purpose": "Restore the factory framework flag that libqti_vndfwk_detect turns into isRunningWithVendorEnhancedFramework(); the camera CHI override selects kaanapali_gsi.xml instead of nezha.xml on SoC 660 when it is false and ro.build.product is not generic_arm64.",
+  "stock_evidence": {
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "factory_system_build_prop": {
+      "path": "artifacts/camera-analysis/factory-extract/system/system/build.prop",
+      "sha256": "2c2811af2c883b7c114d8de2b217e2643f57cbecbd464ade00c31b3d6e81071f",
+      "line": 197,
+      "text": "ro.vendor.qti.va_aosp.support=1",
+      "preceding_comment": "#System Enable QCOM enhanced feature"
+    },
+    "factory_odm_build_prop_va_odm": "ro.vendor.qti.va_odm.support=1 (line 42; the ODM image is shipped byte-identically and this key loads on the current build)"
+  },
+  "current_build_evidence": {
+    "build_identity": "nezha.cc551b14bc2cc72c2b138bb0",
+    "property_capture": {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/getprop-v5-20260907T0910.txt",
+      "sha256": "782c74fa740eaece07902b1b68c0fd365d8c5f9eddaa968d5d8fde76e5d1a9b2",
+      "lines": 2467
+    },
+    "ro.vendor.qti.va_aosp.support": "absent",
+    "ro.vendor.qti.va_odm.support": "1",
+    "ro.build.product": "nezha",
+    "ro.vendor.qti.soc_id": "660",
+    "property_context_on_current_build": "u:object_r:vendor_default_prop:s0 via the ro.vendor. prefix in plat_property_contexts; the provider already opens that context file successfully in the retained strace"
+  },
+  "detector": {
+    "source": "hardware/qcom-caf/common/fwk-detect/vndfwk-detect.c",
+    "source_sha256": "4cd5dd5dea69854be04bad715ba87e8c47f21aeb890c415694eb65376374a63a",
+    "source_commit": "27e52b36062239398d6f5d0c31c8d95c8404fc85",
+    "semantics": "isRunningWithVendorEnhancedFramework() returns 1 iff property_get_bool(ro.vendor.qti.va_aosp.support, false)",
+    "factory_library": {
+      "path": "artifacts/camera-analysis/factory-extract/vendor/lib64/libqti_vndfwk_detect.so",
+      "sha256": "f44221514512221acb4d196ff51e86696045b7a4bb202e1381530521cc9fbd8e"
+    }
+  },
+  "chi_override": {
+    "path": "artifacts/camera-analysis/nezha-vendor-libs/com.qti.chi.override.so",
+    "sha256": "45cb75971709901130d8dd2463684c51fb5532a60714fa82e01be118e74d37a7",
+    "address_kind": "ELF virtual address; the executable segment has file offset equal to its virtual address, so uprobe offsets equal these values",
+    "soc_jump_table": "0x11279b indexed by soc_id-0x241; entries for 0x294 and 0x295 are byte 0 -> 0x4e5750",
+    "framework_check_call": "0x4e5754 (isRunningWithVendorEnhancedFramework@plt), result tested at 0x4e5758",
+    "gsi_check_call": "0x4e575c (ChxUtils::IsGSIVersion@plt), result tested at 0x4e5760",
+    "replacement_string": {
+      "address": "0xd09fe",
+      "value": "kaanapali_gsi.xml"
+    },
+    "assignment": "0x4e56e0-0x4e56e8 into the auxiliary object at ExtensionModule+0x480, string +0xd8",
+    "picker_call": "0x4f70cc with the effective selector C string in x1"
+  },
+  "consumers": {
+    "factory_vendor_files_linking_detector": 153,
+    "factory_odm_files_linking_detector": 17,
+    "non_camera_examples": [
+      "android.hardware.bluetooth@aidl-service-qti",
+      "btaudio_offload_if.so",
+      "cnd",
+      "libcne.so",
+      "lib-imsservice.so",
+      "libmiracast.so",
+      "qcc-vendor",
+      "xtra-daemon"
+    ],
+    "note": "the flag is global; stock runs all of these with it set to 1"
+  },
+  "loader": "AOSP init loads /system/build.prop keys as the init context through CheckPermissions; the built platform policy allows init to set every property type; only ctl., sys.powerctl and the restorecon key are filtered",
+  "not_verified": [
+    "that the phone's CHI selects nezha.xml once the property is present (runtime test pending authorization)",
+    "capture, stream configuration and camera switching after correction",
+    "behaviour of the non-camera consumers with the flag set on this framework"
+  ]
+}
