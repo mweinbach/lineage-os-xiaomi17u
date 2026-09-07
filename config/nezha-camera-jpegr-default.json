@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "contract_id": "nezha-camera-jpegr-default-v1",
+  "selector": "NEZHA_CAMERA_JPEGR_DEFAULT",
+  "default_enabled": false,
+  "requires_selector": "NEZHA_CAMERA_FRAMEWORK",
+  "fragment": "device/xiaomi/nezha/camera-jpegr-default.mk",
+  "fragment_sha256": "7ce8c82f2d7149e72161b91c96f0537955d033d96ec7741c1874649e1c059d60",
+  "property_variable": "PRODUCT_SYSTEM_PROPERTIES",
+  "properties": [
+    "persist.vendor.camera.sdk.third.jpegr.enable=1"
+  ],
+  "purpose": "Initialize the factory third-party JPEG_R enable value before the first camera configuration for a fresh persistent-property store, removing the measured ordinary-JPEG-first dependency.",
+  "factory_provenance": {
+    "source": "odm/etc/camera/xiaomi/ecoMetaExtensionExt.json",
+    "source_sha256": "a4ee1a473b12fe4e6d75a5d423922cf4e139bda8e288f75c003c35de2ad57def",
+    "rule": "MiviThirdJpegr",
+    "source_property_values": [
+      "",
+      "0"
+    ],
+    "target_property_value": "1",
+    "stage": "EcoEngine Config",
+    "boot_assignment_found": false,
+    "integration_decision": "Seed the measured factory rule output as a system build-property default; not a copied factory init or build.prop assignment."
+  },
+  "persistent_property_semantics": {
+    "existing_persisted_values_override_default": true,
+    "migrates_existing_zero": false,
+    "runtime_property_writer_added": false,
+    "vendor_odm_images_modified": false
+  },
+  "evidence_document": "docs/camera-ultra-hdr-20260907.md",
+  "verification": {
+    "source_installed": false,
+    "generated_property_output": "unverified",
+    "native_compilation": "not required for the property fragment; successor build unverified",
+    "fresh_store_first_jpegr_session": "unverified",
+    "device_admission": "not device-admitted",
+    "separate_v8_runtime_result": "Rear and front Aperture JPEG_R saved and decoded with libultrahdr after the existing factory Eco rule initialized the property; this does not verify the new default."
+  }
+}
