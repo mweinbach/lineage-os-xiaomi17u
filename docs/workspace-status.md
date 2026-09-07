@@ -52,8 +52,13 @@ repository's permissive-su removal, so a fifth guest transaction restores
 `nezha.cc551b14bc2cc72c2b138bb0`, now flashed and booted with root working).
 The camera experiment ran: clearing persisted vendor camera state does not
 restore the per-lens cameras; see the [camera experiment record](camera-root-experiment-20260907.md)
-for the open leads (ISP init errors at camera driver load, tele role-ID
-mismatch). User builds are unaffected by the opt-in; the user policy identity
+for the historical experiment. The subsequent
+[offline library analysis](camera-library-analysis-20260907.md) establishes
+that CHI's damage verdict is a logical XML-ID lookup failure, not raw sensor
+probe status. A conditional GSI XML override matches the generated IDs and
+is the next lead to verify; the effective runtime selector and stock ISP
+behavior remain unverified. No camera fix is device-admitted.
+User builds are unaffected by the opt-in; the user policy identity
 is unverified until the next user build.
 
 **September 6 source update:** the feature branch is now merged into main and

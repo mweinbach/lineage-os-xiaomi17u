@@ -5,6 +5,12 @@ Record: `research/camera-root-experiment-20260907.json`. Build
 enforcing, `ro.debuggable=1`. The phone was accessed with explicit user
 authorization for flashing and adb use.
 
+**Interpretation correction:** the later
+[offline library analysis](camera-library-analysis-20260907.md) supersedes
+the raw CamX probe-status attribution below. CHI checks logical-camera XML
+IDs, and the retry message reports the initial budget, not exhausted retries.
+The experimental outcomes and historical phone state below are unchanged.
+
 ## What was verified
 
 - **Root works on the diagnostic build.** `adb root` yields uid 0 in

@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-library-analysis-20260907",
+  "date": "2026-09-07",
+  "device": "nezha",
+  "phone_accessed": false,
+  "status": "off-device; no fix device-admitted",
+  "inputs": [
+    {
+      "path": "artifacts/camera-analysis/nezha-vendor-libs/camera.qcom.core.so",
+      "sha256": "aa9712c9dfb6f82bed1557739f5158a4b315432625b4e8eee9d27a7a6e787833",
+      "size_bytes": 24170232
+    },
+    {
+      "path": "artifacts/camera-analysis/nezha-vendor-libs/com.qti.chi.override.so",
+      "sha256": "45cb75971709901130d8dd2463684c51fb5532a60714fa82e01be118e74d37a7",
+      "size_bytes": 7910576
+    },
+    {
+      "path": "artifacts/camera-analysis/factory-extract/vendor/lib64/libqti_vndfwk_detect.so",
+      "sha256": "f44221514512221acb4d196ff51e86696045b7a4bb202e1381530521cc9fbd8e",
+      "size_bytes": 35432
+    },
+    {
+      "path": "artifacts/camera-analysis/factory-extract/system/system/build.prop",
+      "sha256": "2c2811af2c883b7c114d8de2b217e2643f57cbecbd464ade00c31b3d6e81071f",
+      "size_bytes": 11883
+    },
+    {
+      "path": "evidence/variant-opt-in-userdebug-20260906-v5-install/camera-experiment/logcat-unrelease-provider-start.txt",
+      "sha256": "eda7ee92d3864e55927d7b7e691351505204adfe2513c7a8cb1c71eb8601b50f",
+      "size_bytes": 719194
+    }
+  ],
+  "address_kind": "ELF virtual address, before ASLR relocation",
+  "verified_binary_findings": {
+    "retry_log": {
+      "library": "camera.qcom.core.so",
+      "call": "0x12dac44",
+      "interpretation": "initial retry budget logged before per-module processing, not evidence of five failed attempts",
+      "termination_and_decrement": "0x12dde0c-0x12dde48"
+    },
+    "damage_check": {
+      "library": "com.qti.chi.override.so",
+      "entry": "0x632ea0",
+      "get_camera_info": "0x54b430",
+      "comparison": "0x632f8c-0x632f94",
+      "logical_record_xml_id_offset": "0x2d50",
+      "logical_record_stride": "0x2d68",
+      "interpretation": "missing matching logical-camera XML ID, not direct raw sensor-probe status"
+    },
+    "xml_selector": {
+      "static_string_offset": "0xf1d8",
+      "static_string_copy": "0x4f8d4c-0x4f8d54",
+      "auxiliary_pointer_offset": "0x480",
+      "auxiliary_string_offset": "0xd8",
+      "conditional_gsi_branch": "0x4e5754-0x4e576c",
+      "conditional_replacement": "kaanapali_gsi.xml",
+      "replacement_assignment": "0x4e56e0-0x4e56e8",
+      "picker_call": "0x4f70cc",
+      "picker": "0x37c6c0"
+    },
+    "predicates": {
+      "vendor_enhanced_framework": "boolean ro.vendor.qti.va_aosp.support, default false",
+      "is_gsi_version": "ro.build.product equals generic_arm64, case-insensitive and cached",
+      "factory_system_properties": {
+        "ro.vendor.qti.va_aosp.support": "1",
+        "ro.build.product": "missi"
+      }
+    }
+  },
+  "retained_generated_entries": [
+    {"logical_index": 0, "name": "UltrawidePhysicalCam", "sensor_id": 1, "xml_id": 252706820},
+    {"logical_index": 1, "name": "WidePhysicalCam", "sensor_id": 2, "xml_id": 252706817},
+    {"logical_index": 2, "name": "RearAONCam", "sensor_id": 3, "xml_id": 252706819},
+    {"logical_index": 3, "name": "TelePhysicalCam", "sensor_id": 3, "xml_id": 252706821},
+    {"logical_index": 4, "sensor_ids": [1, 2, 3], "xml_id": 0}
+  ],
+  "hypothesis": "framework detection selects a GSI configuration despite the nezha.xml raw override; four generated XML IDs match the compiled kaanapali_gsi.xml implementation IDs",
+  "not_proven": [
+    "the provider-visible framework property and ro.build.product values in the retained run",
+    "the effective runtime selector, selected XML handle and actual branch taken",
+    "uniqueness of the matching IDs across every compiled XML",
+    "why the front entry is absent",
+    "whether corrected XML selection restores capture and streaming",
+    "whether stock HyperOS has the same VFE/SFE/ICP diagnostics"
+  ]
+}

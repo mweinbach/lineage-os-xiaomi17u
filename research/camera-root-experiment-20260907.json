@@ -3,6 +3,14 @@
   "record_id": "nezha-camera-root-experiment-20260907",
   "date": "2026-09-07",
   "device": "nezha",
+  "interpretation_correction": {
+    "record": "research/camera-library-analysis-20260907.json",
+    "superseded_claims": [
+      "CHI damage verdicts come directly from CamX per-sensor probe status",
+      "the retryTimes 5 message establishes a failed or exhausted static-caps retry loop"
+    ],
+    "corrected_interpretation": "CHI compares logical-camera XML IDs; the retry message precedes the per-module pass. Historical experimental outcomes are unchanged."
+  },
   "phone_accessed": true,
   "build": {
     "identity": "nezha.cc551b14bc2cc72c2b138bb0",
