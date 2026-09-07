@@ -687,13 +687,13 @@ class PublicProfileTests(NoNativeTests):
         profile, _ = avb.load_profile()
         override = profile["dynamic_logical_budget_overrides"]["system_ext"]
         self.assertEqual(profile["image_budgets"]["system_ext"], 713158656)
-        self.assertEqual(avb.image_budget(profile, "system_ext"), 783491072)
+        self.assertEqual(avb.image_budget(profile, "system_ext"), 783507456)
         self.assertEqual(override["measured_image"], {
             "sha256": "c75d16fa4d06d2d30089cf469df9d845410cbd66446d4018cbec667c24521cc4",
             "size_bytes": 778199040})
         self.assertEqual(override["additional_measured_images"], list(avb.ADDITIONAL_MEASURED_SYSTEM_EXT))
         self.assertEqual([c["build_number"] for c in override["additional_measured_images"]],
-                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e"])
+                         ["nezha.f9e30611efe01b882f9ed0cb", "nezha.1088ec3b159be6c32e1403f2", "nezha.88dd30980cd24ea68d6b701e", "nezha.88dd30980cd24ea68d6b701e"])
         self.assertEqual(override["maximum_size_bytes"],
                          max(c["measured_image"]["size_bytes"] for c in override["additional_measured_images"]))
         avb.validate_image_budget(profile, "system_ext", override["measured_image"])
@@ -704,9 +704,9 @@ class PublicProfileTests(NoNativeTests):
                 "sha256": "0" * 64, "size_bytes": 778190848})
         admitted = {"mi_ext": 111198208, "odm": 4767621120, "product": 2200776704,
                     "system": 596484096, "system_dlkm": 8413184,
-                    "system_ext": 783491072, "vendor": 959709184,
+                    "system_ext": 783507456, "vendor": 959709184,
                     "vendor_dlkm": 54108160}
-        self.assertEqual(sum(admitted.values()), 9481801728)
+        self.assertEqual(sum(admitted.values()), 9481818112)
         self.assertLessEqual(sum(admitted.values()), profile["logical_group_budget"])
 
     def test_profile_rejects_unbounded_or_unproven_dynamic_override(self):

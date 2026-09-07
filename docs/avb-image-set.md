@@ -146,6 +146,15 @@ with SHA256
 admitted as a third measured image through its own package-admission record;
 the logical maximum and every physical partition are unchanged.
 
+On September 7 the same source identity was rebuilt with `WITH_SU=true` in the
+userdebug opt-in environment, adding the `adb_root` service to system_ext. The
+image measured 783,507,456 bytes, SHA256
+`4848f4dabcbaf9669ca8bcf7e74963db81b02538df42d3d122fb359200420761`, 16,384
+bytes above the previous maximum. It is admitted as a fourth measured image
+through its own package-admission record, and the logical maximum is now
+exactly that image. The dynamic group and every physical partition are
+unchanged.
+
 On 2026-08-29 the new wrapper inspected the prior v8 `user` init_boot,
 vendor_boot and dtbo artifacts plus working76 using real pinned avbtool/OpenSSL.
 All four component payload checks passed with unchanged input hashes. Attempting
