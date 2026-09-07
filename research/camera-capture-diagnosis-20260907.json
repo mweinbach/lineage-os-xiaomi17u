@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "record_id": "nezha-camera-capture-diagnosis-20260907",
+  "date": "2026-09-07",
+  "device": {
+    "codename": "nezha",
+    "soc": "SM8850",
+    "board": "canoe"
+  },
+  "phone_accessed": true,
+  "installed_build": "nezha.e2b55ae5f0effd944736a6b0",
+  "selinux": "Enforcing",
+  "status": "enumeration fixed and flashed; capture blocked in the Xiaomi Unified Multi-Camera graph for the default rear camera; single sensors stream; not device-admitted",
+  "works": {
+    "enumeration": "9 devices, 2 public, 0 damaged roles, provider crash-free from first boot",
+    "single_physical_camera": "Xiaomi app opened device 5 three times; each connected, streamed several seconds, closed cleanly; zero configureStreams or super-graph errors"
+  },
+  "failure": {
+    "trigger": "opening public camera 0, a Xiaomi logical device fusing 3 physical sensors (physicalCameraIds int32[3])",
+    "chain": [
+      "chifeature2generic DoQueryCaps multicamera 1 numPhysicalCameras:3 isUMcxEnabled:1",
+      "chifeature2graphmanager.cpp:342 Failed to create VirtualSuperGraphDesc: 4 (CDK EInvalidArg)",
+      "chxmulticamerabase.cpp:2880 CreateFeatureGraphManager Failed to allocate graph manager",
+      "chxmulticamerabase.cpp:2596 Failed to initialize Multicamera Usecase: 8",
+      "chxextensionmodule.cpp:7842 CreateUsecaseObjectFail",
+      "MiCamService AidlCameraDeviceSession.cpp:198 configureStreams status=-19 (No such device)",
+      "Camera3-Device Camera 0 configureStreamsLocked HAL Function not implemented (-38)"
+    ],
+    "gate": "CHI override string 'Invalid configuration, isUnifiedMCX is %d, IsApolloArch is %d'; UMcx path is architecture-gated, not a settable option",
+    "missing_framework_tags": [
+      "MI_SESSION_PARA_CLIENT_NAME",
+      "MI_SESSION_PARA_ACTIVITY_NAME",
+      "COM_XIAOMI_SESSIONPARAMS_MI_STREAM_USECASE",
+      "MiStreamUsecaseName tag",
+      "CameraX: Expected stream use case null cannot be set"
+    ]
+  },
+  "not_our_config": {
+    "table": "multiCameraLogicalXMLFile=nezha.xml set in read-only camxoverridesettings.txt",
+    "partitions": "/vendor and /odm are EROFS read-only, dm-verity enforcing, byte-identical to factory extract; not runtime-editable and not the difference from stock",
+    "libcsextimpl": "system_ext/lib64/libcsextimpl.so absent on our build and absent in the full factory system_ext extract (713 libs); CameraServiceExtFactory 'extension not loaded' is not the cause",
+    "data_override": "/data/vendor/camera is writable but CamX reads override settings from the read-only vendor partition, not there; no UMcx toggle available"
+  },
+  "apps": {
+    "aperture": "CameraX; opens camera 0, error, 'will try to recover', retries rear, finishes to launcher in ~2 s; cannot reach the front-camera control",
+    "xiaomi_camera": "com.android.camera / NezhaXiaomiCamera; opens a single sensor, streams briefly, returns to launcher on its own; missing com.miui.cameraopt perf service (SELinux find denial + CameraPerfInterface UnsatisfiedLinkError), secondary"
+  },
+  "assessment": "Full rear-camera capture is blocked inside Xiaomi's proprietary Unified Multi-Camera feature-graph builder, which needs HyperOS camera-framework stream use cases and session parameters absent from this AOSP-based build; not a config flip; sensors and lower CamX pipeline are healthy",
+  "unverified": [
+    "capture from a single physical sensor to a saved file (no app stays on a single lens)",
+    "whether porting HyperOS stream-use-case injection lets the virtual super graph build",
+    "the exact predicate behind IsApolloArch"
+  ],
+  "evidence": "ignored evidence dir variant-opt-in-userdebug-20260906-v6-install/camera-check (ap-window.log, miui-window-20260907T1220.log, dumpsys-full-v6.txt, pulled Xiaomi camera libs and stream configs)"
+}

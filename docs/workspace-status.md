@@ -4,8 +4,11 @@
 (`nezha.e2b55ae5f0effd944736a6b0`) on slot A.** Flashed September 7, 2026, it
 boots enforcing with adb root and carries the QTI value-add framework flag in
 its system image, which makes the camera HAL enumerate nine devices with no
-damaged role; camera capture, post-unlock retained-userdata access, UDFPS and
-shade visuals remain unverified. The Package7 UI, camera and shade successor
+damaged role. Camera capture still does not work: the default rear camera is a
+three-sensor Xiaomi logical device whose Unified Multi-Camera graph fails to
+build (see the [capture diagnosis](camera-capture-diagnosis-20260907.md)), while
+single sensors stream. Post-unlock retained-userdata access, UDFPS and shade
+visuals remain unverified. The Package7 UI, camera and shade successor
 (`f9e`) stays the last installed user-variant baseline; see its
 [installation record](package7-f9e-install-20260906.md) and the
 [camera XML selection record](camera-xml-selection-20260907.md) for v6.
