@@ -112,5 +112,49 @@
     "version": "v30.7",
     "patched_init_boot_sha256": "e73b961c6e188f0ac5431b7d79395bf7c023278d4b774bd329051d5b4d346204",
     "result": "flashed init_boot with verification-disabled vbmeta did not boot; fastboot boot of a boot image carrying the Magisk ramdisk booted without Magisk; signed images restored"
+  },
+  "stock_package_exploration": {
+    "date": "2026-09-07",
+    "factory_package_sha256": "d2cf57fd753311b352fe39fd450155231a38c6f536f66bf782588c797820cd8b",
+    "identical_to_factory": {
+      "kernel_payload": "byte-identical (GKI 6.12.23-android16-5-g75e9b1c7ae7c-abogki463945075-4k)",
+      "dtb": "byte-identical",
+      "dtbo_payload": "byte-identical DTBO table; only our AVB footer differs",
+      "vendor_ramdisk": "byte-identical except first_stage_ramdisk/fstab.qcom (mi_ext bind mount and its product/system overlays intentionally absent)",
+      "vendor_dlkm_and_system_dlkm_modules": "same 381 and 103 module basenames; image sizes differ only by packing",
+      "vendor_tree": "3389 files, all paths and contents identical except /vendor/etc/selinux/vendor_sepolicy.cil (67 display and connectivity binder rules blanked by the policy pipeline)",
+      "odm_tree": "2925 files, all paths and contents identical except the regenerated precompiled policy and its three hash files",
+      "mi_ext_image": "byte-identical"
+    },
+    "differences_from_stock": {
+      "vendor_boot_cmdline": "stock passes swinfo.fingerprint=nezha:16/OS3.0.309.0.WPACNXM:user; ours carries a duplicated bootconfig token instead (consumed by swinfo, bootmonitor and mtdoops modules only)",
+      "mi_ext_not_mounted": "its build.prop (ro.miui.build.region=cn, ro.product.mod_device=nezha, persist.vendor.camera.gesture.emoji.support=1) never loads; setting them at runtime changed nothing",
+      "vendor_init_property_denials": "26 keys from the identical vendor/ODM build.prop files never load because vendor_init lacks set permission under our platform policy (three persist.vendor.camera.* keys, ro.product.odm.marketname, ro.product.odm.cert, ro.miui.* and others); setting them at runtime changed nothing",
+      "build_tags": "ours test-keys, stock release-keys; only libcamlog reads it and mutes the camera log system as a \"manual build\"",
+      "system_side_components_absent": "CameraMind app, init.xiaomi.cammsger.rc, init.miui.cameraopt.rc, cameraopt/camerascene/cameracustomize configs; opening the /dev/cam_msger and /dev/cam_intentaware_fsys nodes as the stock script does changed nothing",
+      "model_property": "ours ro.product.model=2512BPNDAC (factory), the Xiaomi.eu capture reported 2512BPNDAG"
+    },
+    "runtime_experiments_negative": [
+      "clear persisted camera state and reboot",
+      "set mi_ext properties",
+      "set vendor_init-denied properties",
+      "open camera messenger device nodes",
+      "provider start with SELinux permissive",
+      "blank probe history",
+      "data override file (log masks and EnableSensorProbeOptimization parse to zero or are ignored)",
+      "property-based masks",
+      "bind-mounted vendor override file",
+      "unrelease log switch (build tags gate wins)"
+    ],
+    "binary_analysis": {
+      "chi_damage_routine": "CameraIdXiaomi::addDamagePyhCameraRoleIds iterates the logical camera XML entries and marks an entry damaged when no ExtensionModule::GetCameraInfo(i) record has a matching field at offset 0x2d50; it reads no property itself",
+      "camx_probe_loop": "ProbeAndInitSensorStaticCaps (local function inside the region objdump labels ImageSensorModuleData::ProbeEEPROM) logs the retry summary at error level; per-sensor outcomes are info-level and muted; it calls CameraDFX::CheckSensorProbeError and ImmuneSystemBigData::UpdateProbeCountProperty",
+      "camlog_gate": "libcamlog checks ro.build.tags, ro.boot.hwlevel (MP) and vendor.camera.sensor.logsystem.unrelease; test-keys forces the log system off"
+    },
+    "not_proven": [
+      "whether the ISP init errors and the CamX probe error occur on stock HyperOS (no stock boot log; slot B holds a boot chain but super has one logical copy, so a stock boot needs a stock super flash)",
+      "which static-caps step fails per sensor"
+    ],
+    "artifacts_ignored": "artifacts/camera-analysis/ (factory extractions, inventories, pulled vendor libraries, comparison JSON)"
   }
 }

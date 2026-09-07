@@ -44,6 +44,37 @@ authorization for flashing and adb use.
   keys in the `/data/vendor/camera` override file parse to zero on this
   vendor build, so a different logging route is needed.
 
+## Stock package exploration (2026-09-07)
+
+The factory China package (`d2cf57fd…`) was compared against the flashed
+build offline and, with root, against the phone. Identical to factory: the
+kernel bytes, the DTB, the DTBO table (only our AVB footer differs), the vendor
+ramdisk apart from the intentionally dropped mi_ext fstab entries, both DLKM
+module sets, the mi_ext image, and every file of the vendor and ODM trees
+except the regenerated SELinux policy files. Different from factory: the
+vendor_boot cmdline lacks `swinfo.fingerprint` (consumed only by the swinfo,
+bootmonitor and mtdoops modules); mi_ext is not mounted so its build.prop never
+loads; 26 keys of the identical vendor/ODM build.prop files never load because
+`vendor_init` is denied `set` under our platform policy; `ro.build.tags` is
+`test-keys`; and Xiaomi's system-side camera components (CameraMind, the
+cammsger and cameraopt init scripts, their configs) are absent.
+
+Every runtime experiment based on those differences was negative: setting the
+mi_ext and vendor_init-denied properties, opening the camera messenger nodes,
+a provider start with SELinux permissive, blanking the probe history, and every
+attempt to raise CamX log masks (data override, property, bind-mounted vendor
+override, the unrelease switch). The HAL regenerates the fail list on every
+provider start. Binary analysis shows the CHI's damage routine marks an XML
+entry damaged when no CamX camera record matches it, and CamX's static-caps
+loop only reports its retry summary because `libcamlog` mutes info logs on
+`test-keys` builds and MP hardware.
+
+Still unproven: whether the ISP init errors and the probe error occur on stock
+HyperOS. Slot B holds a boot chain but the super image carries one logical
+copy, so a stock boot for comparison needs a stock super flash. Extractions,
+inventories, pulled vendor libraries and comparison outputs stay under the
+ignored `artifacts/camera-analysis/`.
+
 ## Magisk detour
 
 At the user's request a Magisk v30.7 route was tried between the root fixes.
