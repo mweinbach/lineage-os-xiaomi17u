@@ -438,14 +438,14 @@ diff --git a/core/jni/android_hardware_camera2_DngCreator.cpp b/core/jni/android
 diff --git a/core/jni/Android.bp b/core/jni/Android.bp
 --- a/core/jni/Android.bp
 +++ b/core/jni/Android.bp
-@@ -29,6 +29,7 @@
+@@ -125,6 +125,7 @@
+     ],
  
- cc_defaults_for_libandroid_runtime {
-     name: "libandroid_runtime_defaults",
-+    defaults: ["nezha_compressed_dng_defaults"],
-     host_supported: true,
-     cflags: [
-         "-Wno-cast-function-type-mismatch",
+     defaults: [
++        "nezha_compressed_dng_defaults",
+         "aconfig_lib_cc_shared_link.defaults",
+         "latest_android_media_audio_common_types_cpp_target_shared",
+     ],
 @@ -615,3 +616,15 @@
          "-Wunreachable-code",
      ],
@@ -463,6 +463,7 @@ diff --git a/core/jni/Android.bp b/core/jni/Android.bp
 +    },
 +}
 diff --git a/core/jni/NezhaCompressedDng.h b/core/jni/NezhaCompressedDng.h
+new file mode 100644
 --- /dev/null
 +++ b/core/jni/NezhaCompressedDng.h
 @@ -0,0 +1,167 @@

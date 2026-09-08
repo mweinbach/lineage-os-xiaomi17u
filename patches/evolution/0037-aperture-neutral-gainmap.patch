@@ -144,6 +144,7 @@ diff --git a/app/src/main/java/org/lineageos/aperture/viewmodels/CameraViewModel
  
              override fun onError(exc: ImageCaptureException) {
 diff --git a/app/src/main/java/org/lineageos/aperture/compat/NezhaNeutralGainmap.java b/app/src/main/java/org/lineageos/aperture/compat/NezhaNeutralGainmap.java
+new file mode 100644
 --- /dev/null
 +++ b/app/src/main/java/org/lineageos/aperture/compat/NezhaNeutralGainmap.java
 @@ -0,0 +1,135 @@
