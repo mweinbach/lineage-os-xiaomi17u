@@ -115,15 +115,16 @@ tests in 27.607 seconds; `make test` passed 4,892 tests in 192.314 seconds plus
 shell checks. The focused contract checks also passed after correcting the
 build descriptor.
 
-The installed source revision 8 is `nezha.efda11d09f81d7685c018d03`, with
+The installed source revision 9 is `nezha.0a0b5c6187d711a32aa3e46e`, with
 668 source rows. Its receipt is
-`reports/camera-completion-20260907/source-revision-8/source-installed.json`,
-SHA256 `d4ff6f7e7726d7366bdbffdb92bab116e7101ceee106fcaf9668b64794101b4b`.
+`reports/camera-completion-20260907/source-revision-9/source-installed.json`,
+SHA256 `ef5452f69c340ce714849f467c4cfe106e31769bc4c40d286d8e9cb0f4a26245`.
 The initial component build rejected a duplicate Soong `defaults` property.
 Revision 8 merges the new default into the existing list and preserves the
 other 667 source rows. The failed revision 7, its log and the correction
-preimage remain recorded. Revision 8 passed source, manifest, filesystem,
-architecture, disk and one-writer preflight. The component/full ROM build and
+preimage remain recorded. The next build reached Kotlin compilation and found
+the new Java helper missing from Aperture's explicit source list. Revision 9
+adds that input and again preserves the other 667 source rows. The component/full ROM build and
 signed bundle remain separate pending gates before the next phone installation.
 
 The previous phone approval covered v11r1 only. A successor flash and reboot

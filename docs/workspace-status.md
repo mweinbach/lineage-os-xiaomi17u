@@ -18,8 +18,8 @@ unverified on v11 and failed on v10 with a null audio policy manager.
 
 A [successor source candidate](camera-save-audio-compat-20260908.md) adds the
 compressed-DNG save APIs, repairs the measured neutral HDR metadata and admits
-the two rejected audio enum values. Its host checks pass and source revision 8
-(`nezha.efda11d09f81d7685c018d03`, 668 rows) is installed in the build VM.
+the two rejected audio enum values. Its host checks pass and source revision 9
+(`nezha.0a0b5c6187d711a32aa3e46e`, 668 rows) is installed in the build VM.
 The component/full build, signing and successor phone validation are pending.
 
 The installed source includes the guarded [vendor-key discovery fix](camera-vendor-key-discovery-20260908.md),
