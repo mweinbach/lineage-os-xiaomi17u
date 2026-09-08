@@ -46,8 +46,8 @@ RECORD_FIELDS = frozenset(('target_files', 'inventory', 'retained_input_manifest
                           'signing_preparation', 'signing_receipt', 'verification_manifest'))
 PUBLIC_PINS = {
     'scripts/target_files_avb_inventory.py': ('893778a88df0badb6f27db0f88be5aff9885cb8f3111f06e062e5d7f0d7f89e4', 28614),
-    'scripts/avb_signing.py': ('074123568edadf916203dbc65556e307cb269163d70b8401a0a6377f321ee5fd', 46523),
-    'scripts/avb_image_set.py': ('ed798a7e11f084bd3d6d4941679fedcfe866b16545c48e8f21761208a2a08dac', 51992),
+    'scripts/avb_signing.py': ('4c359f4b63f692ef26a623dedf0f1ad40f49aa8f47f97927f3d9c68537b3f0bc', 46523),
+    'scripts/avb_image_set.py': ('2ed127ab4fb6ded27e6cbb74eb37f06c0384bb4631c9e5d911148bcefec955e6', 52500),
     'scripts/artifact_files.py': ('ddc784d1c378510c66621d95af267790ab7fb1965ac5951926b471e897bd6343', 1586),
 }
 FALSE_SCOPE = {name: False for name in (
@@ -83,8 +83,8 @@ def selected(row):
 
 def controls():
     result = signing.load_contract()
-    require(result[1] == '139de49d4474200a516a61be8758d17c6afd91869e0f9f8a119637cbf14ee0c5'
-            and result[3] == '73cd46cc53d4673b38cbfaeebf0a4226fab5b98d7540be692aff8d3adf0c2e09',
+    require(result[1] == '57a16340780f4bd9e4ab084feb5b435e910add4eba3dec104b761dbf3ef213e0'
+            and result[3] == 'baced5a5418d7e7e543122f79a7e1672fb74692e9bb55c345ecc9bad125601ce',
             'only the reviewed signing and seventeen-image contracts are supported')
     return result
 

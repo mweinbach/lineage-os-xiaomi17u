@@ -327,6 +327,10 @@ ADDITIONAL_MEASURED_SYSTEM_EXT = (
     {"measured_image": {"sha256": "a87066388590766c118fae7e8afea30c8b776715a2e9bc69feba6a7cbe798390", "size_bytes": 792690688},
      "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v13-admit/admission.json", "sha256": "a8924569f9baa38c4f3408aeb2e0448700816bcf10a8a9c5dae98875a38ac2c5", "size_bytes": 7091},
      "build_number": "nezha.2c510f47f6d99b93f0c3ee11"},
+    # Stale SystemUIClocks-Flex plugin removed so wallpaper picker clock discovery no longer crashes.
+    {"measured_image": {"sha256": "e14912d3645357c8ee8a525eea439c63cd9b55164d30a5f8c466a86f05756598", "size_bytes": 791797760},
+     "admission_record": {"path": "artifacts/build-validation/variant-opt-in-userdebug-20260906-v14-admit/admission.json", "sha256": "8d5eec4d9ac72489225e12ad9726989d8318ec0dab16a6c7206116623f3b97ac", "size_bytes": 7096},
+     "build_number": "nezha.98d08f70d20e5a87a2777f81"},
 )
 
 
